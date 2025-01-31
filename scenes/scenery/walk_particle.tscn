@@ -1,0 +1,81 @@
+[gd_scene load_steps=12 format=3 uid="uid://8883ovk6hvx"]
+
+[ext_resource type="Texture2D" path="res://textures/spritesheets/gfx/dust_trail_2.dds" id="1_v08c1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_11iv6"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02plh"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_415i8"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wicmd"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t4lvo"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_71da1"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p001p"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_13h5c"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_01jmf"]
+atlas = ExtResource("1_v08c1")
+region = Rect2(512, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ycojl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_11iv6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_02plh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_415i8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wicmd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t4lvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_71da1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p001p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_13h5c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_01jmf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="WalkParticle" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ycojl")
+autoplay = "default"
+frame_progress = 0.812445

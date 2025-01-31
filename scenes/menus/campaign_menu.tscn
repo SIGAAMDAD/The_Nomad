@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://udm1pfg83jk1"]
+
+[ext_resource type="Script" path="res://scripts/menus/campaign_menu.gd" id="1_ca5v0"]
+[ext_resource type="PackedScene" uid="uid://dodqhbm63d3ot" path="res://scenes/menus/save_slot_select.tscn" id="2_1oo8l"]
+[ext_resource type="PackedScene" uid="uid://b7bc5y8xsmbqd" path="res://scenes/menus/difficulty_select.tscn" id="3_p0crb"]
+
+[node name="CampaignMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ca5v0")
+
+[node name="DifficultySelect" parent="." instance=ExtResource("3_p0crb")]
+visible = false
+layout_mode = 1
+
+[node name="SaveSlotSelect" parent="." instance=ExtResource("2_1oo8l")]
+layout_mode = 1
+
+[connection signal="set_difficulty_select_menu" from="SaveSlotSelect" to="." method="_on_save_slot_select_set_difficulty_select_menu"]

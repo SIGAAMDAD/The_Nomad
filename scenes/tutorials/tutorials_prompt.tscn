@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cilqaqllre0do"]
+
+[ext_resource type="Script" path="res://scripts/tutorials/tutorials_prompt.gd" id="1_egxul"]
+
+[node name="TutorialsPrompt" type="ConfirmationDialog"]
+script = ExtResource("1_egxul")

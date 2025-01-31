@@ -1,0 +1,143 @@
+[gd_scene load_steps=8 format=3 uid="uid://cjy2h2wmmfkmc"]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_yjir7"]
+[ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
+[ext_resource type="Texture2D" uid="uid://cmhkbjyqs1vb3" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
+[ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
+[ext_resource type="Texture2D" uid="uid://bty200almbul3" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
+[ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
+[ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
+
+[node name="HeadsUpDisplay" type="CanvasLayer"]
+script = ExtResource("1_yjir7")
+
+[node name="Overlays" type="Node" parent="."]
+
+[node name="ReflexModeOverlay" type="TextureRect" parent="Overlays"]
+visible = false
+texture_filter = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_b27l1")
+expand_mode = 2
+
+[node name="DashOverlay" type="TextureRect" parent="Overlays"]
+visible = false
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_vkldb")
+expand_mode = 2
+
+[node name="RageBar" parent="." instance=ExtResource("2_4ecwx")]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 34.625
+offset_right = -806.0
+offset_bottom = -664.375
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" parent="." instance=ExtResource("2_bd8b1")]
+visible = false
+z_index = 3
+offset_left = 8.0
+offset_top = 10.0
+offset_right = -806.0
+offset_bottom = -689.0
+
+[node name="BossHealthBar" parent="." instance=ExtResource("4_y7hg5")]
+visible = false
+
+[node name="StatusBarTimer" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
+
+[node name="SaveSpinner" type="Node" parent="."]
+
+[node name="SaveSpinner" type="Range" parent="SaveSpinner"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 2
+auto_translate_mode = 0
+editor_description = ""
+visible = false
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+show_behind_parent = false
+top_level = false
+clip_children = 0
+light_mask = 1
+visibility_layer = 1
+z_index = 0
+z_as_relative = true
+y_sort_enabled = false
+texture_filter = 0
+texture_repeat = 0
+material = null
+use_parent_material = false
+clip_contents = true
+custom_minimum_size = Vector2(16, 16)
+layout_direction = 0
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -62.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = 0.0
+scale = Vector2(1, 1)
+pivot_offset = Vector2(0, 0)
+size_flags_horizontal = 1
+size_flags_vertical = 1
+size_flags_stretch_ratio = 1.0
+localize_numeral_system = true
+tooltip_text = ""
+focus_neighbor_left = NodePath("")
+focus_neighbor_top = NodePath("")
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 0
+mouse_force_pass_scroll_events = true
+mouse_default_cursor_shape = 0
+theme = null
+theme_type_variation = &""
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 0.0
+exp_edit = false
+rounded = false
+allow_greater = false
+allow_lesser = false
+script = ExtResource("7_50mcg")
+spin_fill_percent = 0.347
+
+[node name="SaveTimer" type="Timer" parent="SaveSpinner"]
+wait_time = 2.5
+one_shot = true
+
+[connection signal="timeout" from="StatusBarTimer" to="." method="_on_status_bar_timer_timeout"]
+[connection signal="timeout" from="SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]

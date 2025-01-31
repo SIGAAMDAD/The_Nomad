@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2sk4218wtapr"]
+
+[ext_resource type="Script" path="res://scripts/mobs/boss_health_bar.gd" id="1_6n7xe"]
+[ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="1_uyjvm"]
+
+[node name="BossHealthBar" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6n7xe")
+
+[node name="BossName" type="Label" parent="."]
+layout_mode = 0
+offset_left = 595.0
+offset_top = 631.0
+offset_right = 635.0
+offset_bottom = 654.0
+horizontal_alignment = 1
+
+[node name="HealthBar" parent="." instance=ExtResource("1_uyjvm")]
+layout_mode = 1
+offset_left = 46.0
+offset_top = 668.0
+offset_right = -60.0
+offset_bottom = -34.0

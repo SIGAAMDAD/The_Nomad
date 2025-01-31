@@ -1,0 +1,157 @@
+[gd_scene load_steps=4 format=3 uid="uid://bwvr3x7oln763"]
+
+[ext_resource type="Script" path="res://scripts/menus/poem.gd" id="1_e5efw"]
+
+[sub_resource type="Gradient" id="Gradient_bo6ix"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x1yfw"]
+gradient = SubResource("Gradient_bo6ix")
+
+[node name="Poem" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e5efw")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_x1yfw")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -179.0
+offset_top = -304.36
+offset_right = 179.0
+offset_bottom = -229.36
+grow_horizontal = 2
+grow_vertical = 2
+text = "It is the 91st millennium,
+All that was once known was lost.
+The machine of man betrayed its own makers."
+horizontal_alignment = 1
+
+[node name="Timer1" type="Timer" parent="Label"]
+wait_time = 3.5
+one_shot = true
+
+[node name="Label2" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -168.0
+offset_top = -191.51
+offset_right = 168.0
+offset_bottom = -142.51
+grow_horizontal = 2
+grow_vertical = 2
+text = "The Great Eye that Saw fell,
+With the Hand that Weaves taking its place."
+horizontal_alignment = 1
+
+[node name="Timer2" type="Timer" parent="Label2"]
+wait_time = 2.0
+
+[node name="Label3" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -163.5
+offset_top = -106.49
+offset_right = 163.5
+offset_bottom = -5.48999
+grow_horizontal = 2
+grow_vertical = 2
+text = "There is now no peace,
+That time has passed.
+Nothing is left but rubble and ruin,
+And the stains from memories of the past."
+horizontal_alignment = 1
+
+[node name="Timer3" type="Timer" parent="Label3"]
+wait_time = 4.5
+
+[node name="Label4" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -147.0
+offset_top = 35.545
+offset_right = 147.0
+offset_bottom = 84.545
+grow_horizontal = 2
+grow_vertical = 2
+text = "Once a haven, now a wasteland.
+The Earth has now lost the will to live."
+horizontal_alignment = 1
+
+[node name="Timer4" type="Timer" parent="Label4"]
+wait_time = 2.0
+
+[node name="Label5" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.5
+offset_top = 128.45
+offset_right = 128.5
+offset_bottom = 229.45
+grow_horizontal = 2
+grow_vertical = 2
+text = "We gaze at the dunes,
+Wondering: how did we get here?
+Why were we so short-sighted?
+How did we lose?"
+horizontal_alignment = 1
+
+[node name="AuthorName" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -192.0
+offset_top = -68.8
+offset_right = 192.0
+offset_bottom = -45.8
+grow_horizontal = 2
+grow_vertical = 0
+text = "- Razal the Open-Minded, from \"Poems of Valden\""
+horizontal_alignment = 1
+
+[connection signal="timeout" from="Label/Timer1" to="." method="_on_timer_1_timeout"]
+[connection signal="timeout" from="Label2/Timer2" to="." method="_on_timer_2_timeout"]
+[connection signal="timeout" from="Label3/Timer3" to="." method="_on_timer_3_timeout"]
+[connection signal="timeout" from="Label4/Timer4" to="." method="_on_timer_4_timeout"]

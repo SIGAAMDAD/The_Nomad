@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://cur8nem7iswfk"]
+
+[ext_resource type="Texture2D" uid="uid://c48k7ro1f3ep0" path="res://textures/env/flame_barrel_1.png" id="1_xrqh8"]
+[ext_resource type="Texture2D" uid="uid://c2b2qsrmdb6c1" path="res://textures/env/flame_barrel_2.png" id="2_whf1l"]
+[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="3_j4hcy"]
+[ext_resource type="AudioStream" uid="uid://cj62svdp0muym" path="res://sounds/env/Fire Crackling - Sound Effect [HQ].ogg" id="4_3maiy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_evtba"]
+atlas = ExtResource("1_xrqh8")
+region = Rect2(0, 0, 34, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f7p4b"]
+atlas = ExtResource("2_whf1l")
+region = Rect2(0, 0, 36, 51)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_q7ulc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_evtba")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f7p4b")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2e8c0"]
+size = Vector2(25, 29)
+
+[node name="BurningBarrel" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
+sprite_frames = SubResource("SpriteFrames_q7ulc")
+autoplay = "default"
+frame_progress = 0.691045
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+energy = 1.35
+shadow_enabled = true
+texture = ExtResource("3_j4hcy")
+texture_scale = 2.03
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_3maiy")
+autoplay = true
+bus = &"SFX"
+playback_type = 1
+parameters/looping = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4.5, 12.5)
+shape = SubResource("RectangleShape2D_2e8c0")

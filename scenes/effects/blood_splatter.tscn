@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://dfcnpofuxrbf"]
+
+[ext_resource type="Script" path="res://scripts/blood_splatter.gd" id="1_rs4nv"]
+[ext_resource type="Texture2D" uid="uid://dskr6ets2j4c5" path="res://textures/blood1.png" id="2_bllt4"]
+
+[sub_resource type="Gradient" id="Gradient_d8u1l"]
+colors = PackedColorArray(1, 0.142952, 0.101453, 1, 0.557335, 1.16717e-06, 9.62615e-08, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_w1q7c"]
+gradient = SubResource("Gradient_d8u1l")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_f643r"]
+particle_flag_disable_z = true
+spread = 40.0
+initial_velocity_min = 90.0
+initial_velocity_max = 90.0
+gravity = Vector3(0, 980, 0)
+scale_min = 0.25
+color_ramp = SubResource("GradientTexture1D_w1q7c")
+
+[node name="Blood" type="Node2D"]
+
+[node name="BloodSplatter" type="GPUParticles2D" parent="."]
+amount = 10
+process_material = SubResource("ParticleProcessMaterial_f643r")
+texture = ExtResource("2_bllt4")
+explosiveness = 0.9
+fixed_fps = 0
+draw_order = 0
+script = ExtResource("1_rs4nv")
+
+[node name="Timer" type="Timer" parent="BloodSplatter"]
+wait_time = 0.6
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="BloodSplatter/Timer" to="BloodSplatter" method="_on_timer_timeout"]

@@ -1,0 +1,89 @@
+[gd_scene load_steps=5 format=3 uid="uid://ba1debi5qxy5p"]
+
+[ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="1_16jr0"]
+[ext_resource type="Script" path="res://scripts/menus/main_menu.gd" id="1_xv101"]
+[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_4xp3b"]
+[ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xv101")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_16jr0")
+expand_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0104167
+anchor_top = 0.83179
+anchor_right = 0.329861
+anchor_bottom = 0.936728
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+scale = Vector2(1.25, 1.25)
+metadata/_edit_use_anchors_ = true
+
+[node name="CampaignButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "STORY"
+
+[node name="MultiplayerButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "MULTIPLAYER"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "SETTINGS"
+
+[node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "VALDEN'S BOOK"
+
+[node name="TalesAroundTheCampfireButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "TALES AROUND THE CAMPFIRE"
+
+[node name="QuitGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4xp3b")
+text = "QUIT"
+
+[node name="Logo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.396094
+anchor_top = 0.0902778
+anchor_right = 0.435937
+anchor_bottom = 0.0986111
+offset_left = -128.0
+offset_right = 128.0
+offset_bottom = 72.0
+grow_horizontal = 2
+scale = Vector2(1.48681, 1.60464)
+texture = ExtResource("3_5muy6")
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="VBoxContainer/CampaignButton" to="." method="_on_campaign_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitGameButton" to="." method="_on_quit_game_button_pressed"]

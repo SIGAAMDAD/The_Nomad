@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://d3bsthlqjvp8y"]
+
+[ext_resource type="Script" path="res://scripts/items/health_pack.gd" id="1_1jhfl"]
+[ext_resource type="Texture2D" path="res://textures/env/icon_health.dds" id="1_6tcba"]
+[ext_resource type="AudioStream" uid="uid://bcj5el8rr5uy4" path="res://sounds/env/StimPack_Activate1.ogg" id="3_vi4nk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2gp15"]
+size = Vector2(20, 14)
+
+[node name="HealthPack" type="CharacterBody2D"]
+script = ExtResource("1_1jhfl")
+_name = "Stim Pack"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1.90735e-06, -1)
+scale = Vector2(0.05375, 0.0375)
+texture = ExtResource("1_6tcba")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_2gp15")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_vi4nk")
+max_distance = 400.0
+bus = &"SFX"
+playback_type = 1
+
+[connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]

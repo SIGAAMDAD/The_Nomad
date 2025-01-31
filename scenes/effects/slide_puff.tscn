@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://cg4lyuifg8f7i"]
+
+[sub_resource type="Curve" id="Curve_xbfbh"]
+min_value = -2.65
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.996324, 0.366728), -0.635609, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_50rrn"]
+curve = SubResource("Curve_xbfbh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q2b3j"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 2.36
+initial_velocity_max = 50.75
+gravity = Vector3(0, -60, 0)
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_50rrn")
+color = Color(1, 0.713726, 0, 1)
+
+[node name="SlidePuff" type="GPUParticles2D"]
+rotation = -1.5708
+scale = Vector2(1, 1)
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_q2b3j")
+lifetime = 0.4
+fixed_fps = 0
+draw_order = 0

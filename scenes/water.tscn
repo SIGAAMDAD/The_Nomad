@@ -1,0 +1,32 @@
+[gd_scene load_steps=8 format=3 uid="uid://dvvp82e0q2hye"]
+
+[ext_resource type="Shader" path="res://shaders/water.gdshader" id="1_c0v50"]
+[ext_resource type="Texture2D" uid="uid://cwsgeosr5jlpf" path="res://icon.svg" id="2_8fe44"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_peti6"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nax58"]
+noise = SubResource("FastNoiseLite_peti6")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a8vqn"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f8t8s"]
+noise = SubResource("FastNoiseLite_a8vqn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8qpe5"]
+shader = ExtResource("1_c0v50")
+shader_parameter/scroll1 = Vector2(0.05, 0.05)
+shader_parameter/scroll2 = Vector2(-0.05, -0.05)
+shader_parameter/distortion_strength = 0.2
+shader_parameter/tone_color = Color(0.286691, 0.501014, 1, 1)
+shader_parameter/top_color = Color(0.178604, 0.410124, 1, 1)
+shader_parameter/light_start = 0.275
+shader_parameter/light_end = 0.4
+shader_parameter/noise1 = SubResource("NoiseTexture2D_nax58")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_f8t8s")
+
+[node name="Water" type="Node2D"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_8qpe5")
+texture = ExtResource("2_8fe44")

@@ -1,0 +1,147 @@
+[gd_scene load_steps=17 format=3 uid="uid://c4jer65lhh3po"]
+
+[ext_resource type="Script" path="res://scripts/mobs/mercenary/mercenary_shotgunner.gd" id="1_1chm0"]
+[ext_resource type="Texture2D" path="res://textures/spritesheets/shotty.dds" id="2_c2u4f"]
+[ext_resource type="AudioStream" uid="uid://ympaig6jw4ft" path="res://sounds/barks/21199.mp3" id="3_x23as"]
+[ext_resource type="AudioStream" uid="uid://dqnt12mpl1t04" path="res://sounds/barks/21167.mp3" id="4_afp5n"]
+[ext_resource type="AudioStream" uid="uid://bv2fi5kxmcj2g" path="res://sounds/barks/21200.mp3" id="5_w1mvx"]
+[ext_resource type="AudioStream" uid="uid://b0p8cjqawp7kl" path="res://sounds/barks/21201.mp3" id="6_0lkmq"]
+[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="7_ilfkp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3lvj0"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vkg66"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2jjx"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_byoko"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6s6x"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmtac"]
+atlas = ExtResource("2_c2u4f")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0lxm2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3lvj0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vkg66")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m2jjx")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_byoko")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vkg66")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6s6x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m2jjx")
+}],
+"loop": true,
+"name": &"move",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nmtac")
+}],
+"loop": true,
+"name": &"parry",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u4er2"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rl6hg"]
+radius = 81.0062
+
+[node name="MercenaryShotgunner" type="CharacterBody2D" node_paths=PackedStringArray("_navigation", "_target_spotted")]
+script = ExtResource("1_1chm0")
+_alert_color = null
+_is_rotating = null
+_rotation_speed = null
+_angle = null
+_movement_speed = 80.0
+_navigation = NodePath("NavigationAgent2D")
+_sight_detection_time = null
+_sight_detection_speed = 0.5
+_target_spotted = [NodePath("TargetSpotted0")]
+_direction = 1
+
+[node name="Animations" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
+sprite_frames = SubResource("SpriteFrames_0lxm2")
+animation = &"move"
+autoplay = "idle"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(1, 0, 0, 1)
+
+[node name="Bounds" type="CollisionShape2D" parent="."]
+position = Vector2(-3, 3)
+shape = SubResource("CircleShape2D_u4er2")
+
+[node name="ThinkTimer" type="Timer" parent="."]
+
+[node name="TargetSpotted0" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_x23as")
+
+[node name="TargetSpotted1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_afp5n")
+
+[node name="TargetSpotted2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_w1mvx")
+
+[node name="TargetSpotted3" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_0lkmq")
+
+[node name="FlashLight" type="PointLight2D" parent="."]
+energy = 2.19
+shadow_enabled = true
+texture = ExtResource("7_ilfkp")
+texture_scale = 1.68
+
+[node name="DetectionMeter" type="Line2D" parent="."]
+position = Vector2(10, 0)
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0
+
+[node name="SightCheck" type="Node2D" parent="."]
+
+[node name="SoundArea" type="Area2D" parent="."]
+
+[node name="SoundDetection" type="CollisionShape2D" parent="SoundArea"]
+position = Vector2(-5, 3)
+shape = SubResource("CircleShape2D_rl6hg")
+
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[connection signal="timeout" from="ThinkTimer" to="." method="think"]

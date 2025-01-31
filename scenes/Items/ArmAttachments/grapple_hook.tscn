@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b3ng4nhikv5ai"]
+
+[node name="GrappleHook" type="Node2D"]
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 150)

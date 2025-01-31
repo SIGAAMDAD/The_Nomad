@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://ct2ouor2samhw"]
+
+[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_ryqgx"]
+[ext_resource type="Shader" path="res://shaders/split_screen.gdshader" id="2_f1q1b"]
+[ext_resource type="Texture2D" uid="uid://bohvb2s1ak1bl" path="res://icon.webp" id="3_n6oy4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hfbcx"]
+shader = ExtResource("2_f1q1b")
+shader_parameter/viewport_size = null
+shader_parameter/split_active = null
+shader_parameter/player1_position = null
+shader_parameter/player2_position = null
+shader_parameter/split_line_thickness = null
+shader_parameter/split_line_color = null
+
+[node name="DynamicSplitScreen2" type="Node2D"]
+
+[node name="SoundEffectsBank" type="FmodBankLoader" parent="."]
+bank_paths = ["res://assets/Banks/sfx.bank", "res://assets/Banks/sfx.strings.bank"]
+
+[node name="MoveGravel0" type="FmodEventEmitter2D" parent="SoundEffectsBank"]
+event_guid = "{b08d3b2a-348b-4d04-bc76-2b1179b70b3f}"
+
+[node name="MoveGravel1" type="FmodEventEmitter2D" parent="SoundEffectsBank"]
+event_guid = "{b08d3b2a-348b-4d04-bc76-2b1179b70b3f}"
+
+[node name="MoveGravel2" type="FmodEventEmitter2D" parent="SoundEffectsBank"]
+event_guid = "{d0b48a1f-6f0e-4e1b-953e-fbad869c6adc}"
+
+[node name="MoveGravel3" type="FmodEventEmitter2D" parent="SoundEffectsBank"]
+event_guid = "{77d87e75-05f8-48a9-9c19-406a95151f4f}"
+
+[node name="TargetSpotted0" type="FmodEventEmitter2D" parent="SoundEffectsBank"]
+auto_release = true
+
+[node name="Cameras" type="Node2D" parent="."]
+position = Vector2(641, 358)
+scale = Vector2(10.0093, 5.66116)
+script = ExtResource("1_ryqgx")
+adaptive_split_line_thickness = true
+
+[node name="View" type="TextureRect" parent="Cameras"]
+material = SubResource("ShaderMaterial_hfbcx")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_n6oy4")
+expand_mode = 2
+stretch_mode = 3
+
+[node name="Viewport1" type="SubViewport" parent="Cameras"]
+
+[node name="Camera2D" type="Camera2D" parent="Cameras/Viewport1"]
+zoom = Vector2(2, 2)
+
+[node name="Viewport2" type="SubViewport" parent="Cameras"]
+
+[node name="Camera2D" type="Camera2D" parent="Cameras/Viewport2"]
+zoom = Vector2(2, 2)

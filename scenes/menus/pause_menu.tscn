@@ -1,0 +1,84 @@
+[gd_scene load_steps=5 format=3 uid="uid://de5ahm2yawr1u"]
+
+[ext_resource type="Script" path="res://scripts/menus/pause_menu.gd" id="1_egy30"]
+[ext_resource type="Shader" path="res://shaders/pause_menu.gdshader" id="2_pe2qk"]
+[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5wyai"]
+shader = ExtResource("2_pe2qk")
+shader_parameter/amount = 2.758
+
+[node name="PauseMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_egy30")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_5wyai")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(2, 2)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rkc7u")
+text = "PAUSED TALE"
+
+[node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rkc7u")
+text = "CONTINUE WRITING"
+
+[node name="HelpMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rkc7u")
+text = "VALDEN'S BOOK"
+
+[node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rkc7u")
+text = "TAKE A BREAK"
+
+[node name="ExitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rkc7u")
+text = "GIVE UP"
+
+[node name="ConfirmExit" type="ConfirmationDialog" parent="."]
+title = "Warning!"
+position = Vector2i(420, 190)
+size = Vector2i(200, 158)
+dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
+dialog_autowrap = true
+
+[node name="ConfirmQuit" type="ConfirmationDialog" parent="."]
+title = "Quit Game?"
+position = Vector2i(420, 190)
+dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
+dialog_autowrap = true
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HelpMenuButton" to="." method="_on_help_menu_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ExitToMainMenuButton" to="." method="_on_exit_to_main_menu_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ExitGameButton" to="." method="_on_exit_game_button_pressed"]
+[connection signal="canceled" from="ConfirmExit" to="." method="_on_confirm_exit_canceled"]
+[connection signal="confirmed" from="ConfirmExit" to="." method="_on_confirm_exit_confirmed"]
+[connection signal="canceled" from="ConfirmQuit" to="." method="_on_confirm_quit_canceled"]
+[connection signal="confirmed" from="ConfirmQuit" to="." method="_on_confirm_quit_confirmed"]

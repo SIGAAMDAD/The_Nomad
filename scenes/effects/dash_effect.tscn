@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://b2htdmaimgeg2"]
+
+[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="1_uv1oe"]
+
+[sub_resource type="Gradient" id="Gradient_s48sx"]
+offsets = PackedFloat32Array(0, 0.36214, 0.530864, 1)
+colors = PackedColorArray(0.712692, 2.93598e-06, 5.77569e-07, 1, 0.686275, 0.454902, 0.0470588, 1, 0.796078, 0.670588, 0.180392, 1, 0.890196, 0.819608, 0.556863, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m4qlm"]
+gradient = SubResource("Gradient_s48sx")
+
+[sub_resource type="Curve" id="Curve_u5nfw"]
+_data = [Vector2(0.00570342, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.554236), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_dx3gf"]
+curve = SubResource("Curve_u5nfw")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rvfub"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+gravity = Vector3(0, -120, 0)
+radial_accel_min = -13.44
+radial_accel_max = -9.86
+scale_min = 0.5
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_dx3gf")
+color_ramp = SubResource("GradientTexture1D_m4qlm")
+
+[node name="DashEffect" type="GPUParticles2D"]
+amount = 2000
+process_material = SubResource("ParticleProcessMaterial_rvfub")
+lifetime = 0.9
+fixed_fps = 0
+draw_order = 0
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0.905269, 2.38247e-06, 1.92523e-07, 1)
+energy = 1.8
+texture = ExtResource("1_uv1oe")
+texture_scale = 2.86

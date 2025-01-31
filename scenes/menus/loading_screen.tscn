@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://ceidjyb2qv8xs"]
+
+[ext_resource type="Script" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
+[ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="2_yvr2d"]
+
+[node name="LoadingScreen" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_kt3u6")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_yvr2d")
+expand_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel"]
+visible = false
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.999273, 1.00079)
+
+[node name="ImageChange" type="Timer" parent="."]
+wait_time = 2.5
+
+[connection signal="timeout" from="ImageChange" to="." method="_on_image_change_timeout"]

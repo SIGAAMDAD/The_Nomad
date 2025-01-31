@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bky7kqeq3nqso"]
+
+[ext_resource type="Script" path="res://scripts/rage_bar.gd" id="1_dwsyj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3p0l"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p06e3"]
+bg_color = Color(4.04298e-06, 0, 0.868564, 1)
+
+[node name="RageBar" type="ProgressBar"]
+offset_right = 299.0
+offset_bottom = 22.0
+theme_override_styles/background = SubResource("StyleBoxFlat_e3p0l")
+theme_override_styles/fill = SubResource("StyleBoxFlat_p06e3")
+value = 60.0
+allow_greater = true
+show_percentage = false
+script = ExtResource("1_dwsyj")

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bb64dsr0hfun5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vrrtp"]
+radius = 62.0081
+
+[node name="GursgoHellhammer" type="CharacterBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vrrtp")

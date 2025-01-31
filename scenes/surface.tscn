@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://mweov7nnbh7i"]
+
+[ext_resource type="Script" path="res://scripts/surface.gd" id="1_grqxp"]
+
+[node name="Surface" type="Sprite2D"]
+script = ExtResource("1_grqxp")

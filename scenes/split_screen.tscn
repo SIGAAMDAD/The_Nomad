@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://4ev56j72xslh"]
+
+[ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="1_ob163"]
+[ext_resource type="Script" path="res://scripts/split_screen.gd" id="1_vfoem"]
+
+[node name="SplitScreen2" type="Node2D"]
+script = ExtResource("1_vfoem")
+
+[node name="PlayerCount2" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 0
+
+[node name="Player1" type="SubViewportContainer" parent="PlayerCount2"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="PlayerCount2/Player1"]
+handle_input_locally = false
+size = Vector2i(640, 720)
+render_target_update_mode = 4
+
+[node name="Level" parent="PlayerCount2/Player1/SubViewport" instance=ExtResource("1_ob163")]
+
+[node name="Camera2D" type="Camera2D" parent="PlayerCount2/Player1/SubViewport"]
+
+[node name="ColorRect" type="ColorRect" parent="PlayerCount2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Player2" type="SubViewportContainer" parent="PlayerCount2"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="PlayerCount2/Player2"]
+handle_input_locally = false
+size = Vector2i(640, 720)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="PlayerCount2/Player2/SubViewport"]
+position = Vector2(644, 0)
+zoom = Vector2(4, 4)

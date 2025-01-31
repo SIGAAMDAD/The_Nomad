@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://b6hb01wurydo7"]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_4714g"]
+[ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="2_v43k5"]
+[ext_resource type="PackedScene" uid="uid://udm1pfg83jk1" path="res://scenes/menus/campaign_menu.tscn" id="3_66f1w"]
+[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
+[ext_resource type="PackedScene" uid="uid://dot7q6fxsd0g0" path="res://scenes/menus/settings_menu.tscn" id="4_y3mln"]
+[ext_resource type="PackedScene" uid="uid://cp2ega0a8ryv2" path="res://scenes/menus/multiplayer_menu.tscn" id="5_23c7l"]
+[ext_resource type="AudioStream" uid="uid://byx3qwftkyadu" path="res://music/ui/main.ogg" id="6_nrafk"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4714g")
+
+[node name="Theme" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_nrafk")
+bus = &"Music"
+playback_type = 1
+
+[node name="MainMenu" parent="." instance=ExtResource("2_v43k5")]
+layout_mode = 1
+
+[node name="CampaignMenu" parent="." instance=ExtResource("3_66f1w")]
+visible = false
+layout_mode = 1
+
+[node name="MultiplayerMenu" parent="." instance=ExtResource("5_23c7l")]
+visible = false
+layout_mode = 1
+
+[node name="SettingsMenu" parent="." instance=ExtResource("4_y3mln")]
+visible = false
+layout_mode = 1
+
+[node name="ExitButton" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -133.0
+offset_right = 197.0
+offset_bottom = -42.9999
+grow_vertical = 0
+scale = Vector2(1.35821, 1.35986)
+theme_override_fonts/font = ExtResource("4_24y2n")
+text = "< BACK"
+
+[connection signal="campaign_menu" from="MainMenu" to="." method="_on_main_menu_campaign_menu"]
+[connection signal="multiplayer_menu" from="MainMenu" to="." method="_on_main_menu_multiplayer_menu"]
+[connection signal="settings_menu" from="MainMenu" to="." method="_on_main_menu_settings_menu"]
+[connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

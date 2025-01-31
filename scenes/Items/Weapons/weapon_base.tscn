@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://brtukmd1ep2ci"]
+
+[ext_resource type="Script" path="res://scripts/items/WeaponEntity.gd" id="1_r7i5y"]
+
+[node name="WeaponBase" type="Node2D" groups=["Archive"]]
+script = ExtResource("1_r7i5y")
+
+[node name="Animations" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
+
+[node name="UseBlunt" type="AudioStreamPlayer2D" parent="."]
+
+[node name="UseBladed" type="AudioStreamPlayer2D" parent="."]
+
+[node name="UseFirearm" type="AudioStreamPlayer2D" parent="."]
+
+[node name="UseTime" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="UseTime" to="." method="_on_use_time_timeout"]
