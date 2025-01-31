@@ -413,6 +413,7 @@ shape = SubResource("CircleShape2D_qih7w")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
+process_callback = 0
 script = ExtResource("6_3chmt")
 
 [node name="SoundEffects" type="Node" parent="."]

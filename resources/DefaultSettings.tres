@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="DefaultSettings" load_steps=2 format=3 uid="uid://mwh4cmivwf82"]
+
+[ext_resource type="Script" path="res://scripts/menus/DefaultSettings.gd" id="1_n2pd2"]
+
+[resource]
+script = ExtResource("1_n2pd2")
+_window_mode = 2

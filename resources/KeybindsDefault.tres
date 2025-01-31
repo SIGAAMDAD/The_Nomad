@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="KeybindResource" load_steps=11 format=3 uid="uid://cso7olitgkdd7"]
+
+[ext_resource type="Script" path="res://scripts/menus/KeybindResource.gd" id="1_53mol"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_vrdm7"]
+device = -1
+keycode = 84
+unicode = 116
+
+[sub_resource type="InputEventKey" id="InputEventKey_mxkh5"]
+device = -1
+physical_keycode = 4194325
+location = 1
+
+[sub_resource type="InputEventKey" id="InputEventKey_4ysvg"]
+device = -1
+keycode = 32
+unicode = 32
+
+[sub_resource type="InputEventKey" id="InputEventKey_kcsvj"]
+device = -1
+keycode = 83
+unicode = 115
+
+[sub_resource type="InputEventKey" id="InputEventKey_c3reu"]
+keycode = 65
+
+[sub_resource type="InputEventKey" id="InputEventKey_d8a0l"]
+device = -1
+keycode = 68
+unicode = 68
+
+[sub_resource type="InputEventKey" id="InputEventKey_kcnfl"]
+device = -1
+keycode = 87
+unicode = 119
+
+[sub_resource type="InputEventKey" id="InputEventKey_ffcha"]
+device = -1
+keycode = 4194326
+
+[sub_resource type="InputEventMouseButton" id="InputEventMouseButton_gf2gw"]
+button_mask = 1
+position = Vector2(195, 29)
+global_position = Vector2(209, 99)
+button_index = 1
+pressed = true
+
+[resource]
+script = ExtResource("1_53mol")
+_DEFAULT_MOVE_LEFT_KEY = SubResource("InputEventKey_c3reu")
+_DEFAULT_MOVE_RIGHT_KEY = SubResource("InputEventKey_d8a0l")
+_DEFAULT_MOVE_UP_KEY = SubResource("InputEventKey_kcnfl")
+_DEFAULT_MOVE_DOWN_KEY = SubResource("InputEventKey_kcsvj")
+_DEFAULT_JUMP_KEY = SubResource("InputEventKey_4ysvg")
+_DEFAULT_DASH_KEY = SubResource("InputEventKey_mxkh5")
+_DEFAULT_SLIDE_KEY = SubResource("InputEventKey_ffcha")
+_DEFAULT_BULLET_TIME_KEY = SubResource("InputEventKey_vrdm7")
+_DEFAULT_USE_WEAPON_KEY = SubResource("InputEventMouseButton_gf2gw")

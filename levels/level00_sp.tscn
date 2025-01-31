@@ -1,0 +1,57 @@
+[gd_scene load_steps=10 format=3 uid="uid://uei7yka6gloe"]
+
+[ext_resource type="Script" path="res://scripts/single_player.gd" id="1_cx6df"]
+[ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="2_mu0nc"]
+[ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_wx1u4"]
+[ext_resource type="PackedScene" uid="uid://bjtff1xak3v85" path="res://scenes/adaptive_soundtrack.tscn" id="4_5bs55"]
+[ext_resource type="AudioStream" uid="uid://d4ixbt1vsatks" path="res://music/combat/level00_ambience.ogg" id="5_k2wiq"]
+[ext_resource type="AudioStream" uid="uid://clxkb8ts3vyny" path="res://music/combat/level00_combat_intro.ogg" id="6_v24lx"]
+[ext_resource type="AudioStream" uid="uid://d1t5s1lgx4r4o" path="res://music/combat/level00_combat_main.ogg" id="7_acent"]
+[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="8_yjbl7"]
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_7c8dp"]
+clip_count = 3
+clip_0/name = &"Ambience"
+clip_0/stream = ExtResource("5_k2wiq")
+clip_0/auto_advance = 1
+clip_0/next_clip = 0
+clip_1/name = &"Combat_intro"
+clip_1/stream = ExtResource("6_v24lx")
+clip_1/auto_advance = 1
+clip_1/next_clip = 2
+clip_2/name = &"Combat_Main"
+clip_2/stream = ExtResource("7_acent")
+clip_2/auto_advance = 1
+clip_2/next_clip = 0
+_transitions = {
+Vector2i(0, 0): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 0
+}
+}
+
+[node name="SinglePlayer" type="Node2D"]
+script = ExtResource("1_cx6df")
+
+[node name="Level" parent="." instance=ExtResource("2_mu0nc")]
+
+[node name="Network" type="Node" parent="."]
+
+[node name="Player1" parent="Network" instance=ExtResource("3_wx1u4")]
+position = Vector2(584, 562)
+
+[node name="AdaptiveSoundtrack" parent="." node_paths=PackedStringArray("_soundtrack") instance=ExtResource("4_5bs55")]
+_soundtrack = NodePath("../AudioStreamPlayer")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamInteractive_7c8dp")
+mix_target = 1
+bus = &"Music"
+playback_type = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("8_yjbl7")]
+visible = false

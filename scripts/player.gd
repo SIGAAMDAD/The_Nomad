@@ -85,6 +85,8 @@ var _move_up_name:String = "move_up_0"
 var _move_down_name:String = "move_down_0"
 var _dash_name:String = "dash_0"
 var _slide_name:String = "slide_0"
+var _useweapon_name:String = "useweapon_0"
+var _bullet_time_name:String = "bullet_time_0"
 
 const _ACCEL = 1500
 const _FRICTION = 1400
@@ -115,7 +117,7 @@ func on_damage( attacker: CharacterBody2D, damage: float ) -> void:
 func save( file: FileAccess ) -> void:
 	var section := SaveSection.new()
 	
-	section.save( "player", file )
+	section.save( "player_" + str( _input_device ), file )
 	section.save_float( "health", _health )
 	section.save_float( "rage", _rage )
 	section.save_float( "position.x", global_position.x )
@@ -123,6 +125,8 @@ func save( file: FileAccess ) -> void:
 	section.save_bool( "is_splitscreen", _split_screen )
 	section.save_int( "input_device", _input_device )
 	section.flush()
+	
+	_inventory.save()
 
 func load( file: FileAccess ) -> void:
 	var section := SaveSection.new()
@@ -146,6 +150,8 @@ func setup_split_screen( input_index: int ) -> void:
 	_move_right_name = "move_right_" + var_to_str( _input_device )
 	_move_down_name = "move_down_" + var_to_str( _input_device )
 	_move_up_name = "move_up_" + var_to_str( _input_device )
+	_useweapon_name = "use_weapon_" + var_to_str( _input_device )
+	_bullet_time_name = "bullet_time_" + var_to_str( _input_device )
 
 func switch_weapon_wielding() -> void:
 	var src:Arm = null
@@ -249,7 +255,7 @@ func mount_horse() -> void:
 #	_drantaril.global_transform = global_transform
 
 func _ready() -> void:
-	_camera_shake.enabled = is_multiplayer_authority()
+	Engine.max_fps = 0
 	_hud.init( _health, _rage )
 	if _drantaril:
 		_drantaril.connect( "player_mount_horse", mount_horse )
@@ -335,7 +341,8 @@ func _process( delta: float ) -> void:
 		_leg_animation.play( "slide" )
 	
 	if Input.is_action_just_pressed( "use_weapon_0" ):
-		_inventory._weapon_slots[ _inventory._current_weapon ]._weapon.use( _inventory._weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
+		if _inventory._weapon_slots[ _inventory._current_weapon ].is_used():
+			_inventory._weapon_slots[ _inventory._current_weapon ]._weapon.use( _inventory._weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
 	
 	if Input.is_action_just_pressed( "bullet_time_0" ):
 		if _flags & PlayerFlags.BulletTime:

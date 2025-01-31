@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmfn3fsv1i8mf"]
+
+[ext_resource type="Script" path="res://scripts/split_screen.gd" id="1_hggqe"]
+[ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="2_xhbpm"]
+[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="3_wb378"]
+
+[node name="SplitScreen2" type="Node2D"]
+script = ExtResource("1_hggqe")
+
+[node name="ScreenData" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 0
+
+[node name="Player1" type="SubViewportContainer" parent="ScreenData"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="ScreenData/Player1"]
+handle_input_locally = false
+size = Vector2i(640, 720)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="ScreenData/Player1/SubViewport"]
+zoom = Vector2(4, 4)
+
+[node name="Network" type="Node" parent="ScreenData/Player1/SubViewport"]
+
+[node name="Player1" parent="ScreenData/Player1/SubViewport/Network" instance=ExtResource("2_xhbpm")]
+position = Vector2(881, 446)
+
+[node name="Player2" parent="ScreenData/Player1/SubViewport/Network" instance=ExtResource("2_xhbpm")]
+position = Vector2(881, 446)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="ScreenData/Player1/SubViewport"]
+
+[node name="PauseMenu" parent="ScreenData/Player1/SubViewport/CanvasLayer" instance=ExtResource("3_wb378")]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="ScreenData"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Player2" type="SubViewportContainer" parent="ScreenData"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="ScreenData/Player2"]
+handle_input_locally = false
+size = Vector2i(640, 720)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="ScreenData/Player2/SubViewport"]
+zoom = Vector2(4, 4)

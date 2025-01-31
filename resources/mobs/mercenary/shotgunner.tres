@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="MobData" load_steps=11 format=3 uid="uid://b6weighxt4yd7"]
+
+[ext_resource type="Texture2D" path="res://textures/spritesheets/shotty.dds" id="1_02ud3"]
+[ext_resource type="Script" path="res://scripts/mobs/MobData.gd" id="1_8d4qf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ivwx8"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fe71g"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2nh05"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ak6c"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_upijw"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_44kax"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_avoiy"]
+atlas = ExtResource("1_02ud3")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xu1ye"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ivwx8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fe71g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2nh05")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ak6c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_upijw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_44kax")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_avoiy")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_8d4qf")
+_name = "Mercenary Shotgunner"
+_max_health = 100.0
+_movement_speed = 80.0
+_max_view_distance = 140.0
+_view_angle_amount = 0.785398
+_spritesheet = SubResource("SpriteFrames_xu1ye")
+_collision_radius = 7.0
+_valid_actions = PackedStringArray("GotoNode", "Idle", "InvestigateDisturbance")
+_valid_goals = PackedStringArray("FindThreats")
+_sight_detection_time = 10.0
+_sight_detection_speed = 0.5

@@ -11,6 +11,21 @@ var _current_weapon:int = 0
 var _slots:Array[ ItemStack ]
 var _weapon_slots:Array[ WeaponSlot ]
 
+func save( file: FileAccess, playerID: int = 0 ) -> void:
+	var section := JSON.new()
+	var sectionName = "inventory_" + str( playerID )
+	
+	section[ sectionName ][ "max_weight" ] = _max_weight
+	section[ sectionName ][ "current_weapon" ] = _current_weapon
+	section[ sectionName ][ "num_slots" ] = _slots.size()
+	
+	file.store_line( section.to_string() )
+
+func load( file: FileAccess, playerID: int = 0 ) -> void:
+	var section := SaveSection.new()
+	
+	section.load( file )
+
 func _ready() -> void:
 	_weapon_slots.resize( _MAX_WEAPON_SLOTS )
 	for i in _MAX_WEAPON_SLOTS:

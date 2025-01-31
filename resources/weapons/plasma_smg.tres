@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponBase" load_steps=3 format=3 uid="uid://dv4ctw7xlgg2j"]
+
+[ext_resource type="Script" path="res://scripts/items/WeaponBase.gd" id="1_aw8el"]
+[ext_resource type="Texture2D" path="res://textures/env/iconw_psmg.dds" id="1_iya4p"]
+
+[resource]
+script = ExtResource("1_aw8el")
+_one_handed = true
+_two_handed = true
+_is_bladed = null
+_is_blunt = true
+_is_firearm = true
+_magsize = 40
+_firemode = 2
+_icon = ExtResource("1_iya4p")
+_blunt_range = 0.0
+_bladed_range = 0.0
+_use_time = 0.0
+_reload_time = 0.0
+_damage = 0.0
+_default_one_handed = false
+_default_two_handed = false
+_default_is_bladed = false
+_default_is_blunt = false
+_default_is_firearm = false

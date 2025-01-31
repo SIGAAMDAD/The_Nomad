@@ -33,8 +33,6 @@ class_name SettingsManager extends Control
 @onready var _enemy_difficulty:GameConfiguration.GameDifficulty = _default._enemy_difficulty
 @onready var _equip_weapon_on_pickup:bool = _default._equip_weapon_on_pickup
 
-const MAIN_MENU_THEME = "res://music/main.ogg"
-
 # dedicated keybind hashmap
 var _keybind_dict:Dictionary
 
@@ -113,7 +111,11 @@ func create_keybinds_dict() -> Dictionary:
 		_keybinds.MOVE_RIGHT: _keybinds._DEFAULT_MOVE_RIGHT_KEY,
 		_keybinds.MOVE_UP: _keybinds._DEFAULT_MOVE_UP_KEY,
 		_keybinds.MOVE_DOWN: _keybinds._DEFAULT_MOVE_DOWN_KEY,
-		_keybinds.DASH: _keybinds._DEFAULT_DASH_KEY
+		_keybinds.DASH: _keybinds._DEFAULT_DASH_KEY,
+		_keybinds.CROUCH: _keybinds._DEFAULT_CROUCH_KEY,
+		_keybinds.SLIDE: _keybinds._DEFAULT_SLIDE_KEY,
+		_keybinds.BULLET_TIME: _keybinds._DEFAULT_BULLET_TIME_KEY,
+		_keybinds.USEWEAPON: _keybinds._DEFAULT_USE_WEAPON_KEY,
 	}
 	
 	return keybinds
@@ -148,12 +150,20 @@ func load_keybinds( file: FileAccess ) -> void:
 	loadedMoveUp.set_physical_keycode( int( data.move_up_0 ) )
 	loadedMoveDown.set_physical_keycode( int( data.move_down_0 ) )
 	loadedDash.set_physical_keycode( int( data.dash_0 ) )
+	loadedSlide.set_physical_keycode( int( data.slide_0 ) )
+	loadedCrouch.set_physical_keycode( int( data.crouch_0 ) )
+	loadedReflexMode.set_physical_keycode( int( data.bullet_time_0 ) )
+	loadedUseWeapon.set_physical_keycode( int( data.useweapon_0 ) )
 	
 	_keybinds._move_left_key = loadedMoveLeft
 	_keybinds._move_right_key = loadedMoveRight
 	_keybinds._move_up_key = loadedMoveUp
 	_keybinds._move_down_key = loadedMoveDown
 	_keybinds._dash_key = loadedDash
+	_keybinds._slide_key = loadedSlide
+	_keybinds._crouch_key = loadedCrouch
+	_keybinds._bullet_time_key = loadedReflexMode
+	_keybinds._use_weapon_key = loadedUseWeapon
 	
 	_keybind_dict = data
 
