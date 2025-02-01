@@ -6,13 +6,13 @@ class_name WeaponEntity extends Node2D
 
 @onready var _reserve:ItemStack = null
 @onready var _ammo:AmmoEntity = null
-@onready var _owner:CharacterBody2D = null
 @onready var _animations:AnimatedSprite2D = $Animations/AnimatedSprite2D
 @onready var _use_time:Timer = $UseTime
 @onready var _use_blunt_sfx:AudioStreamPlayer2D = $UseBlunt
 @onready var _use_bladed_sfx:AudioStreamPlayer2D = $UseBladed
 @onready var _use_firearm_sfx:AudioStreamPlayer2D = $UseFirearm
 @onready var _muzzle_flash:Array[ Sprite2D ]
+@onready var _owner:Inventory = null
 
 var _icon_sprite:Sprite2D = Sprite2D.new()
 var _area:Area2D = Area2D.new()
@@ -43,7 +43,7 @@ func _on_body_shape_entered( body_rid: RID, body: Node2D, body_shape_index: int,
 		return
 	
 	print( "Picking up entity..." )
-	_area.set_deferred( "monitoring", false )
+	_area.queue_free()
 	_icon_sprite.hide()
 	_owner = body
 	reparent( _owner )
@@ -219,7 +219,6 @@ func use( weaponMode: int ) -> float:
 func _on_use_time_timeout() -> void:
 	if _last_used_mode & WeaponBase.Properties.IsFirearm:
 		reload()
-		print( "reloading" )
 	else:
 		_current_state = WeaponState.Idle
 

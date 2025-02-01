@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="KeybindResource" load_steps=11 format=3 uid="uid://cso7olitgkdd7"]
+[gd_resource type="Resource" script_class="KeybindResource" load_steps=12 format=3 uid="uid://cso7olitgkdd7"]
 
 [ext_resource type="Script" path="res://scripts/menus/KeybindResource.gd" id="1_53mol"]
 
@@ -6,6 +6,11 @@
 device = -1
 keycode = 84
 unicode = 116
+
+[sub_resource type="InputEventKey" id="InputEventKey_rw7of"]
+device = -1
+keycode = 67
+unicode = 99
 
 [sub_resource type="InputEventKey" id="InputEventKey_mxkh5"]
 device = -1
@@ -56,4 +61,5 @@ _DEFAULT_JUMP_KEY = SubResource("InputEventKey_4ysvg")
 _DEFAULT_DASH_KEY = SubResource("InputEventKey_mxkh5")
 _DEFAULT_SLIDE_KEY = SubResource("InputEventKey_ffcha")
 _DEFAULT_BULLET_TIME_KEY = SubResource("InputEventKey_vrdm7")
+_DEFAULT_CROUCH_KEY = SubResource("InputEventKey_rw7of")
 _DEFAULT_USE_WEAPON_KEY = SubResource("InputEventMouseButton_gf2gw")

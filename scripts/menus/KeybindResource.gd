@@ -18,6 +18,7 @@ const BULLET_TIME:String = "bullet_time_0"
 @export var _DEFAULT_DASH_KEY:InputEvent = InputEventKey.new()
 @export var _DEFAULT_SLIDE_KEY:InputEvent = InputEventKey.new()
 @export var _DEFAULT_BULLET_TIME_KEY:InputEvent = InputEventKey.new()
+@export var _DEFAULT_CROUCH_KEY:InputEvent = InputEventKey.new()
 @export var _DEFAULT_USE_WEAPON_KEY:InputEvent = InputEventMouseButton.new()
 
 var _move_left_key:InputEvent = InputEventKey.new()

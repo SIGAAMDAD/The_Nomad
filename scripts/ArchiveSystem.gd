@@ -28,7 +28,7 @@ class SaveSlot:
 		
 		file.close()
 
-var _slots:Array
+var _slots:Array[ JSON ]
 
 func slot_exists( slot: int ) -> bool:
 	return FileAccess.file_exists( "user://SLOT_" + var_to_str( slot ) + ".ngd" )
@@ -60,3 +60,5 @@ func load_game() -> void:
 	for node in save_nodes:
 		if node.has_method( "load" ):
 			node.load( file )
+	
+	file.close()

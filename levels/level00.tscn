@@ -1,7 +1,6 @@
-[gd_scene load_steps=22 format=4 uid="uid://dy3x8fkn247sb"]
+[gd_scene load_steps=21 format=4 uid="uid://dy3x8fkn247sb"]
 
 [ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_t3van"]
-[ext_resource type="PackedScene" uid="uid://dvvp82e0q2hye" path="res://scenes/water.tscn" id="3_ekccm"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/Checkpoint.tscn" id="4_g3sbi"]
 [ext_resource type="Script" path="res://scripts/tile_map_layer.gd" id="4_ixyk1"]
@@ -15,7 +14,7 @@
 [ext_resource type="Resource" uid="uid://b6weighxt4yd7" path="res://resources/mobs/mercenary/shotgunner.tres" id="11_dsxqw"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_15f8e"]
-polygon = PackedVector2Array(-165.848, -28.3234, -148.849, -28.1474, -163.465, -65.3008, -157.528, -59.239, -149.518, -60.156, -149.108, -3.14871, -148.812, 64.858, -143.844, 67.9096, -124.845, 68.1064, -117.772, 61.1792, -124.192, 5.10974, -117.11, -2.81735, -141.363, -75.0724, -133.353, -75.9895, -132.187, -91.9783, -116.188, -91.8126, -115.991, -110.812, -109.033, -106.739, 2.99194, -108.579, 11.0226, -111.496, 10.8259, -92.4973, 82.8323, -92.7516, 83.1592, -27.7448, 94.8835, -97.6271, 59.6517, -171.996, -163.357, -172.305)
+polygon = PackedVector2Array(-165.848, -28.3234, -148.849, -28.1474, -148.843, 67.8579, -116.845, 68.1892, -116.188, -91.8126, 10.8259, -92.4973, 90.8112, -90.6689, 90.3187, -139.677, 122.327, -140.345, 123.079, -116.336, 247.082, -116.052, 245.486, -155.071, 330.492, -155.19, 329.031, -207.208, 138.658, -172.178, -163.357, -172.305)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_un7kv"]
 polygon = PackedVector2Array(0, 0, 0.155396, -14.9991, 3.15527, -14.9681, 2.99988, 0.0310669)
@@ -24,10 +23,10 @@ polygon = PackedVector2Array(0, 0, 0.155396, -14.9991, 3.15527, -14.9681, 2.9998
 polygon = PackedVector2Array(591.14, 86.1262, 447.148, 84.635, 447.23, 76.6354, 591.223, 78.1266)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_7y4ur"]
-polygon = PackedVector2Array(2.02075, -1.97919, -750.98, -5.77747, -750.524, -49.7751, -782.523, -50.1064, -784.062, 1.88068, -783.859, 78.8866, -15.8168, 78.8401, -15.8997, 86.8397, -7.98303, 94.9221, 0.0166016, 95.0049, 2.60803, 231.039, 10.5352, 238.122, 26.5343, 238.287, 33.6064, 231.36, 32.3463, 63.338, 0.348022, 63.0067)
+polygon = PackedVector2Array(2.02075, -1.97919, -750.98, -5.77747, -750.524, -49.7751, -782.523, -50.1064, -784.062, 1.88068, -783.859, 78.8866, -15.8168, 78.8401, -12.9827, 94.8703, 0.0166016, 95.0049, 2.53552, 238.039, 33.5339, 238.36, 32.3463, 63.338, 0.348022, 63.0067)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ls31r"]
-polygon = PackedVector2Array(1.9585, 4.02051, 162.96, 4.68781, 162.629, 36.6861, 450.644, 36.6686, 449.65, 132.663, 434.651, 132.508, 434.48, 52.5021, 179.462, 52.8613, 179.484, 243.872, 243.481, 244.535, 243.315, 260.534, 1106.35, 261.471, 1108.8, -457.542, 1090.85, -462.729, 1091.81, -555.724, 753.8, -556.224, 754.621, -249.199, 1010.66, -251.548, 1009.71, -159.552, 1010.71, -63.537, 1005.67, -59.5889, 983.672, -59.8168, 979.704, -62.8581, 978.729, -161.873, 980.319, -218.86, 754.29, -217.201, 707.297, -314.692, 708.457, -426.686, 723.456, -426.531, 722.792, -555.545, 435.776, -555.517, 434.854, -466.522, 424.751, -456.626, 347.766, -458.423, 146.299, -607.518, 1203.3, -602.572, 1205.65, 329.503, 1105.69, 325.467, -225.385, 325.684, -220.593, 152.724, -216.552, 148.766, -193.553, 149.004, -189.585, 152.045, -190.558, 246.04, -12.5366, 244.883, -12.8795, 84.8712, 3.11963, 85.0369)
+polygon = PackedVector2Array(1.9585, 4.02051, 162.96, 4.68781, 162.629, 36.6861, 450.644, 36.6686, 449.65, 132.663, 434.651, 132.508, 434.48, 52.5021, 179.462, 52.8613, 179.484, 243.872, 243.481, 244.535, 243.315, 260.534, 1106.35, 261.471, 1107.8, -457.553, 1090.8, -457.729, 1091.81, -555.724, 753.8, -556.224, 754.621, -249.199, 1010.66, -251.548, 1011.67, -59.5271, 980.673, -59.8481, 980.319, -218.86, 497.494, -217.568, 498.973, 5.16705, 306.973, 4.17883, 308.277, -314.825, 707.297, -314.692, 708.457, -426.686, 723.456, -426.531, 722.792, -555.545, 435.776, -555.517, 435.761, -457.512, 347.766, -458.423, 153.771, -556.438, 146.299, -607.518, 1203.3, -602.572, 1205.65, 329.503, -225.385, 325.684, -220.552, 148.724, -189.554, 149.045, -190.558, 246.04, -12.5366, 244.883, -12.8795, 84.8712, 3.11963, 85.0369)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_btyok"]
 a = Vector2(-763.817, 268.105)
@@ -37,9 +36,9 @@ b = Vector2(15.5524, -149.847)
 b = Vector2(151.293, 2386.69)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_51u6i"]
-vertices = PackedVector2Array(903.047, -4.96094, 1118.79, -5.90625, 998.898, 152.094, 509.156, 189.359, 298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 671.969, 470.5, 538.344, 479.289, 544.133, 292.07, 696.039, 369.242, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 1039.81, 280.688, 863.609, 364.062, 508.062, 255, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6, 7), PackedInt32Array(7, 8, 9, 4), PackedInt32Array(10, 11, 12, 13), PackedInt32Array(14, 15, 16, 17, 18), PackedInt32Array(14, 18, 19, 3), PackedInt32Array(3, 2, 20, 21, 13, 12, 22), PackedInt32Array(23, 24, 0, 3), PackedInt32Array(23, 3, 9, 25, 26, 27), PackedInt32Array(3, 19, 4, 9)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(152, 80, 280, 80, 288, -8, 152, -8, 168, -48, 193, -53, 188, -89, 370, -92, 373, -109, 663, -117, 838, -117, 843, -99, 903, -96, 912, -15, 1139, -16, 1010, 154, 1052, 286, 866, 374, 704, 379, 680, 480, 528, 490, 534, 296, 498, 259, 499, 199, 168, 187, -49, 195, -40, 6, 103, 10)])
+vertices = PackedVector2Array(298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 508.461, 189.344, 1671.25, 318, 1798.84, 318, 1794.15, 607.008, 532.438, 608.977, 1217.13, 386.898, 1151.78, -101.961, 1392.87, -101.031, 1391.12, 41.0938, 1149.79, -9.17188, 989.688, 45.1016, 903.07, -4.84375, 1214.13, 164.93, 1667.25, 162.062, 1000.31, 389.102, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(3, 4, 5, 0), PackedInt32Array(6, 7, 8, 9, 10), PackedInt32Array(6, 10, 11, 12), PackedInt32Array(13, 14, 15, 16, 17), PackedInt32Array(18, 19, 20, 21), PackedInt32Array(21, 20, 22, 23), PackedInt32Array(17, 24, 25, 13), PackedInt32Array(26, 17, 16), PackedInt32Array(22, 26, 16, 12, 23), PackedInt32Array(27, 28, 23, 12), PackedInt32Array(27, 12, 5, 29, 30, 31), PackedInt32Array(5, 12, 11, 0)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(152, 80, 280, 80, 288, -8, 152, -8, 168, -48, 193, -53, 188, -89, 370, -92, 373, -109, 663, -117, 838, -117, 843, -99, 903, -96, 912, -15, 1140, -19, 1142, -112, 1403, -111, 1401, 51, 1000, 55, 1010, 379, 1207, 377, 1204, 155, 1677, 152, 1681, 308, 1809, 308, 1804, 617, 523, 619, 499, 199, 168, 187, -49, 195, -40, 6, 103, 10)])
 
 [node name="InTheDarkofTheNight" type="Node2D"]
 position = Vector2(940, 448)
@@ -53,18 +52,6 @@ offset_top = -1517.0
 offset_right = 11435.0
 offset_bottom = 7004.0
 texture = ExtResource("1_t3van")
-
-[node name="Node2D" type="Node2D" parent="."]
-visible = false
-
-[node name="Water" parent="Node2D" instance=ExtResource("3_ekccm")]
-position = Vector2(548, 320)
-rotation = -0.0103557
-scale = Vector2(1.33942, 0.899554)
-
-[node name="Water2" parent="Node2D" instance=ExtResource("3_ekccm")]
-position = Vector2(572, 368)
-scale = Vector2(1.00944, 0.700807)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 clip_children = 2
@@ -127,6 +114,9 @@ position = Vector2(656.207, 562.826)
 [node name="BurningBarrel2" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(404.242, -117.82)
 
+[node name="BurningBarrel3" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
+position = Vector2(916.721, 514.521)
+
 [node name="Checkpoints" type="Node2D" parent="TileMapLayer"]
 
 [node name="Checkpoint" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
@@ -135,7 +125,7 @@ visibility_layer = 2
 position = Vector2(-391.336, 126.954)
 
 [node name="Checkpoint2" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
-position = Vector2(33.1491, 82.3477)
+position = Vector2(35.1385, 83.3684)
 
 [node name="Checkpoint3" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
 position = Vector2(951.076, 383.869)

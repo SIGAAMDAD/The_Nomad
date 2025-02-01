@@ -21,6 +21,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_dore7")
+expand_mode = 2
 
 [node name="LobbyContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -35,6 +36,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.5, 0.5)
 
 [node name="Lobbies" type="VBoxContainer" parent="LobbyContainer"]
 layout_mode = 2
@@ -48,6 +50,7 @@ offset_top = -26.0
 offset_right = 248.0
 offset_bottom = 26.0
 grow_vertical = 2
+scale = Vector2(0.75, 0.75)
 
 [node name="RefreshButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2

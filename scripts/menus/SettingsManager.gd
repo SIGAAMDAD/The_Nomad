@@ -47,16 +47,28 @@ enum WindowMode {
 };
 
 enum Resolution {
+	Res_640x480,
+	Res_800x600,
 	Res_1280x720,
 	Res_1600x1050,
 	Res_1600x1200,
-	Res_1920x1080
+	Res_1920x1080,
+	Res_2048x1152,
+};
+
+const SCREEN_RESOLUTIONS:Dictionary = {
+	Resolution.Res_640x480: Vector2i( 640, 480 ),
+	Resolution.Res_800x600: Vector2i( 800, 600 ),
+	Resolution.Res_1280x720: Vector2i( 1280, 720 ), 
+	Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
+	Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
+	Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
+	Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
 };
 
 enum AntiAliasing {
 	None,
 	FXAA,
-	TAA,
 	MSAA_2x,
 	MSAA_4x,
 	MSAA_8x
@@ -153,7 +165,7 @@ func load_keybinds( file: FileAccess ) -> void:
 	loadedSlide.set_physical_keycode( int( data.slide_0 ) )
 	loadedCrouch.set_physical_keycode( int( data.crouch_0 ) )
 	loadedReflexMode.set_physical_keycode( int( data.bullet_time_0 ) )
-	loadedUseWeapon.set_physical_keycode( int( data.useweapon_0 ) )
+	loadedUseWeapon.set_button_index( int( data.useweapon_0 ) )
 	
 	_keybinds._move_left_key = loadedMoveLeft
 	_keybinds._move_right_key = loadedMoveRight

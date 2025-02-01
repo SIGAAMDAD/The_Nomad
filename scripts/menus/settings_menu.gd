@@ -51,10 +51,6 @@ func apply_video_settings() -> void:
 			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_8X )
-		SettingsManager.AntiAliasing.TAA:
-			RenderingServer.viewport_set_use_taa( viewport, true )
-			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
-			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_DISABLED )
 	
 	RenderingServer.positional_soft_shadow_filter_set_quality( _shadow_quality.selected )
 	
@@ -73,10 +69,13 @@ func apply_video_settings() -> void:
 			DisplayServer.window_set_flag( DisplayServer.WINDOW_FLAG_BORDERLESS, true )
 	
 	const RESOLUTION_DICT := {
+		SettingsManager.Resolution.Res_640x480: Vector2i( 640, 480 ),
+		SettingsManager.Resolution.Res_800x600: Vector2i( 800, 600 ),
 		SettingsManager.Resolution.Res_1280x720: Vector2i( 1280, 720 ),
 		SettingsManager.Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
 		SettingsManager.Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
-		SettingsManager.Resolution.Res_1920x1080: Vector2i( 1920, 1080 )
+		SettingsManager.Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
+		SettingsManager.Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
 	};
 	
 	DisplayServer.window_set_size( RESOLUTION_DICT[ _resolution.selected ] )

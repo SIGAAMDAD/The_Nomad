@@ -139,6 +139,9 @@ func _process( delta: float ) -> void:
 		_detection_meter.default_color = Color.WHITE
 		_sight_detection_amount = 0.0
 	
+	if _sight_detection_amount >= 1.0 and sightTarget:
+		_navigation.target_position = sightTarget.global_position
+	
 	if velocity == Vector2.ZERO:
 		_animations.play( "idle" )
 	

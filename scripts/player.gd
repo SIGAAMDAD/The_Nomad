@@ -5,6 +5,9 @@ class_name Player extends EntityBase
 @onready var _dash_effect:GPUParticles2D = $Animations/DashEffect
 @onready var _jumpkit_sparks:AnimatedSprite2D = $Animations/JumpkitSparks
 
+@onready var _idle_timer:Timer = $IdleAnimationTimer
+@onready var _idle_animation:AnimatedSprite2D = $Animations/Idle
+
 @onready var _leg_animation:AnimatedSprite2D = $Animations/Legs
 @onready var _torso_animation:AnimatedSprite2D = $Animations/Torso
 @onready var _animations:Node2D = $Animations
@@ -49,14 +52,15 @@ enum Hands {
 };
 
 enum PlayerFlags {
-	Sliding		= 0x0001,
-	Crouching	= 0x0002,
-	BulletTime	= 0x0004,
-	Dashing		= 0x0008,
-	DemonRage	= 0x0010,
-	UsedMana	= 0x0020,
-	DemonSight	= 0x0040,
-	OnHorse		= 0x0080,
+	Sliding			= 0x0001,
+	Crouching		= 0x0002,
+	BulletTime		= 0x0004,
+	Dashing			= 0x0008,
+	DemonRage		= 0x0010,
+	UsedMana		= 0x0020,
+	DemonSight		= 0x0040,
+	OnHorse			= 0x0080,
+	IdleAnimation	= 0x1000,
 };
 
 # persistant data
@@ -66,6 +70,7 @@ var _health:float = 100.0
 var _rage:float = 0.0
 var _flags:int = 0
 
+var _last_mouse_position:Vector2 = Vector2.ZERO
 var _input_velocity:Vector2 = Vector2.ZERO
 var _hands_used:Hands = Hands.Left
 var _left_arm:int = 0
@@ -114,30 +119,25 @@ func on_damage( attacker: CharacterBody2D, damage: float ) -> void:
 	if _health <= 0.0:
 		on_death( attacker )
 
-func save( file: FileAccess ) -> void:
-	var section := SaveSection.new()
+func save( json: JSON ) -> void:
+	var sectionName := "player_" + var_to_str( _input_device )
 	
-	section.save( "player_" + str( _input_device ), file )
-	section.save_float( "health", _health )
-	section.save_float( "rage", _rage )
-	section.save_float( "position.x", global_position.x )
-	section.save_float( "position.y", global_position.y )
-	section.save_bool( "is_splitscreen", _split_screen )
-	section.save_int( "input_device", _input_device )
-	section.flush()
+	json[ sectionName ][ "hands_used" ] = _hands_used
+	json[ sectionName ][ "health" ] = _health
+	json[ sectionName ][ "rage" ] = _rage
+	json[ sectionName ][ "position" ] = global_position
+	json[ sectionName ][ "flags" ] = _flags
 	
-	_inventory.save()
+	_inventory.save( json, _input_device )
 
-func load( file: FileAccess ) -> void:
-	var section := SaveSection.new()
+func load( json: JSON ) -> void:
+	var sectionName := "player_" + var_to_str( _input_device )
 	
-	section.load( file )
-	_health = section.load_float( "health" )
-	_rage = section.load_float( "rage" )
-	global_position.x = section.load_float( "position.x" )
-	global_position.y = section.load_float( "position.y" )
-	_split_screen = section.load_bool( "is_splitscreen" )
-	_input_device = section.load_int( "input_device" )
+	_hands_used = json[ sectionName ][ "hands_used" ]
+	_health = json[ sectionName ][ "health" ]
+	_rage = json[ sectionName ][ "rage" ]
+	global_position = json[ sectionName ][ "position" ]
+	_flags = json[ sectionName ][ "flags" ]
 
 func setup_split_screen( input_index: int ) -> void:
 	print( "Setting up split-screen input for ", input_index )
@@ -231,6 +231,8 @@ func flip_sprite_left() -> void:
 		_drantaril._animations.flip_h = true
 
 func _input( event: InputEvent ) -> void:
+	_idle_timer.start()
+	
 	if event is not InputEventJoypadMotion:
 		return
 	elif event.get_axis() != JOY_AXIS_RIGHT_X && event.get_axis() != JOY_AXIS_RIGHT_Y:
@@ -255,6 +257,7 @@ func mount_horse() -> void:
 #	_drantaril.global_transform = global_transform
 
 func _ready() -> void:
+	_idle_timer.start()
 	Engine.max_fps = 0
 	_hud.init( _health, _rage )
 	if _drantaril:
@@ -263,6 +266,14 @@ func _ready() -> void:
 	_last_used_arm = _arm_right
 
 func _physics_process( _delta: float ) -> void:
+	if velocity != Vector2.ZERO:
+		_idle_timer.start()
+		_idle_animation.hide()
+		_torso_animation.show()
+		_arm_left._animations.show()
+		_arm_right._animations.show()
+		_leg_animation.show()
+	
 	var speed := _MAX_SPEED
 	if _flags & PlayerFlags.Dashing:
 		speed += 1800
@@ -317,6 +328,10 @@ func _process( delta: float ) -> void:
 		else:
 			mousePosition = get_viewport().get_mouse_position()
 		
+		if _last_mouse_position != mousePosition:
+			_last_mouse_position = mousePosition
+			_idle_timer.start()
+		
 		if mousePosition.x > screenSize.x / 2:
 			_arm_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
 			flip_sprite_right()
@@ -325,6 +340,7 @@ func _process( delta: float ) -> void:
 			flip_sprite_left()
 	
 	if Input.is_action_just_pressed( _dash_name ) && can_dash():
+		_idle_timer.start()
 		_flags |= PlayerFlags.Dashing
 		_dash_time.start()
 		play_sfx( _dash[ randi_range( 0, _dash.size() - 1 ) ] )
@@ -334,6 +350,7 @@ func _process( delta: float ) -> void:
 		_hud._dash_overlay.show()
 	
 	if Input.is_action_just_pressed( _slide_name ) && !( _flags & PlayerFlags.Sliding ):
+		_idle_timer.start()
 		_flags |= PlayerFlags.Sliding
 		_slide_time.start()
 		play_sfx( _slide[ randi_range( 0, _slide.size() - 1 ) ] )
@@ -341,10 +358,12 @@ func _process( delta: float ) -> void:
 		_leg_animation.play( "slide" )
 	
 	if Input.is_action_just_pressed( "use_weapon_0" ):
+		_idle_timer.start()
 		if _inventory._weapon_slots[ _inventory._current_weapon ].is_used():
 			_inventory._weapon_slots[ _inventory._current_weapon ]._weapon.use( _inventory._weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
 	
 	if Input.is_action_just_pressed( "bullet_time_0" ):
+		_idle_timer.start()
 		if _flags & PlayerFlags.BulletTime:
 			_flags &= ~PlayerFlags.BulletTime
 			play_sfx( _slowmo_end )
@@ -412,3 +431,14 @@ func _on_jumpkit_sparks_animation_finished() -> void:
 
 func _on_dash_cooldown_time_timeout() -> void:
 	pass # Replace with function body.
+
+func _on_idle_animation_timer_timeout() -> void:
+	_torso_animation.hide()
+	_arm_left._animations.hide()
+	_arm_right._animations.hide()
+	_leg_animation.hide()
+	_idle_animation.show()
+	_idle_animation.play( "start" )
+
+func _on_idle_animation_finished() -> void:
+	_idle_animation.play( "loop" )

@@ -23,6 +23,9 @@ render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="ScreenData/Player1/SubViewport"]
 zoom = Vector2(4, 4)
+process_callback = 0
+position_smoothing_enabled = true
+drag_vertical_enabled = true
 
 [node name="Level" parent="ScreenData/Player1/SubViewport" instance=ExtResource("2_k4c8g")]
 
