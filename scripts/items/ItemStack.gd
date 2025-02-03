@@ -1,4 +1,4 @@
-class_name ItemStack extends Node
+class_name ItemStac extends Node
 
 var _item_type:String = ""
 var _item_count:int = 0

@@ -36,6 +36,13 @@ func slot_exists( slot: int ) -> bool:
 func set_slot( slot: int ) -> void:
 	_save_slot = slot
 
+func compress( text: String ) -> Array:
+	var gzip := StreamPeerGZIP.new()
+	gzip.start_compression()
+	gzip.put_data( text.to_utf8_buffer() )
+	gzip.finish()
+	return gzip.get_data( gzip.get_available_bytes() )
+
 func save_game() -> void:
 	emit_signal( "on_save_game_start" )
 	print( "Saving game..." )

@@ -1,4 +1,4 @@
-class_name Inventory extends Node2D
+class_name InventoryManager extends Node2D
 
 const _MAX_WEAPON_SLOTS:int = 8
 
@@ -11,12 +11,12 @@ var _current_weapon:int = 0
 var _slots:Array[ ItemStack ]
 var _weapon_slots:Array[ WeaponSlot ]
 
-func save( section: JSON, playerID: int = 0 ) -> void:
+func save( section: JSON ) -> void:
 	section[ "inventory" ][ "max_weight" ] = _max_weight
 	section[ "inventory" ][ "current_weapon" ] = _current_weapon
 	section[ "inventory" ][ "num_slots" ] = _slots.size()
 
-func load( file: FileAccess, playerID: int = 0 ) -> void:
+func load( file: FileAccess ) -> void:
 	pass
 
 func _ready() -> void:

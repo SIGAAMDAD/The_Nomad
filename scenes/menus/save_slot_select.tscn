@@ -36,7 +36,7 @@ offset_right = 184.0
 offset_bottom = 46.0
 scale = Vector2(3.3319, 2.72047)
 theme_override_fonts/font = ExtResource("2_b8kik")
-text = "SAVE SLOTS"
+text = "SAVE_SLOTS_NAME"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0

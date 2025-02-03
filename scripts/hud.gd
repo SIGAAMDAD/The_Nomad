@@ -10,6 +10,15 @@ class_name HeadsUpDisplay extends CanvasLayer
 @onready var _save_timer:Timer = $SaveSpinner/SaveTimer
 @onready var _save_spinner:Spinner = $SaveSpinner/SaveSpinner
 
+@onready var _weapon_data:WeaponEntity = null
+@onready var _weapon_status:TextureRect = $WeaponStatus
+@onready var _weapon_status_firearm:VBoxContainer = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus
+@onready var _weapon_status_melee:VBoxContainer = $WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus
+@onready var _weapon_status_melee_icon:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon
+@onready var _weapon_status_firearm_icon:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon
+@onready var _weapon_status_bullet_count:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/AmmoInMagazineLabel
+@onready var _weapon_status_magazine_size:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/MagazineSizeLabel
+
 # why do I hear boss music...?
 @onready var _boss_health_bar:Control = $BossHealthBar
 
@@ -17,6 +26,31 @@ func show_status_bars() -> void:
 	_health_bar.show()
 	_rage_bar.show()
 	_status_bar_timer.start()
+
+func set_weapon( weapon: WeaponEntity ) -> void:
+	if weapon == null:
+		_weapon_status.hide()
+		return
+	else:
+		_weapon_status.show()
+	
+	if weapon._last_used_mode & WeaponBase.Properties.IsFirearm:
+		_weapon_status_firearm.show()
+		_weapon_status_melee.hide()
+		
+		_weapon_status_firearm_icon.texture = weapon._data.icon
+		_weapon_status_bullet_count.text = str( weapon._bullets_left )
+		_weapon_status_magazine_size.text = str( weapon._data.properties.magsize )
+		
+		_weapon_status_bullet_count._bullet_count = weapon._bullets_left
+		_weapon_status_bullet_count._magazine_size = weapon._data.properties.magsize
+		
+		_weapon_data = weapon
+	else:
+		_weapon_status_firearm.hide()
+		_weapon_status_melee.show()
+		
+		_weapon_status_melee_icon.texture = weapon._data.icon
 
 func set_health( health: float ) -> void:
 	_health_bar.health = health
@@ -49,8 +83,17 @@ func init( _health, _rage ):
 func _process( _delta: float ) -> void:
 	if Engine.time_scale == 0.0:
 		hide()
+		return
 	else:
 		show()
+	
+	if _weapon_data:
+		if _weapon_data._last_used_mode & WeaponBase.Properties.IsFirearm:
+			_weapon_status_bullet_count.text = str( _weapon_data._bullets_left )
+			_weapon_status_magazine_size.text = str( _weapon_data._data.properties.magsize )
+		
+			_weapon_status_bullet_count._bullet_count = _weapon_data._bullets_left
+			_weapon_status_bullet_count._magazine_size = _weapon_data._data.properties.magsize
 
 func _on_status_bar_timer_timeout() -> void:
 	_health_bar.hide()

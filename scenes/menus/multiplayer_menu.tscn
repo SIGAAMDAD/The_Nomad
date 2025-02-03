@@ -1,8 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cp2ega0a8ryv2"]
+[gd_scene load_steps=2 format=3 uid="uid://cp2ega0a8ryv2"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer_menu.gd" id="1_2mgra"]
-[ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_dore7"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_60jtm"]
+[ext_resource type="PackedScene" uid="uid://dpriw3r8df1su" path="res://scenes/multiplayer/lobby_browser.tscn" id="1_nte02"]
 
 [node name="MultiplayerMenu" type="Control"]
 layout_mode = 3
@@ -11,53 +9,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_2mgra")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="LobbyBrowser" parent="." instance=ExtResource("1_nte02")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_dore7")
-expand_mode = 2
-
-[node name="LobbyContainer" type="ScrollContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.5, 0.5)
-
-[node name="Lobbies" type="VBoxContainer" parent="LobbyContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -26.0
-offset_right = 248.0
-offset_bottom = 26.0
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
-
-[node name="RefreshButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_60jtm")
-text = "REFRESH LOBBIES"
-
-[node name="HostButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_60jtm")
-text = "HOST GAME"

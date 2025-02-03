@@ -1,6 +1,5 @@
 extends Control
 
-@onready var _level:Node2D = $"../Level"
 @onready var _confirm_exit_dlg:ConfirmationDialog = $ConfirmExit
 @onready var _confirm_quit_dlg:ConfirmationDialog = $ConfirmQuit
 

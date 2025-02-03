@@ -7,8 +7,8 @@ enum Type {
 	Player,
 };
 
-signal _on_damage( damage: float )
-signal _on_death( attacker: EntityBase )
+signal on_damage( damage: float )
+signal on_death( attacker: EntityBase, target: EntityBase )
 
 @export var _name:String = ""
 @export var _type:Type = Type.Item

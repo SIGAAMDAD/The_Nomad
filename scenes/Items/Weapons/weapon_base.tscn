@@ -18,4 +18,7 @@ script = ExtResource("1_r7i5y")
 [node name="UseTime" type="Timer" parent="."]
 one_shot = true
 
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(24, 0)
+
 [connection signal="timeout" from="UseTime" to="." method="_on_use_time_timeout"]

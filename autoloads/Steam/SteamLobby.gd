@@ -8,19 +8,40 @@ enum Visibility {
 	FriendsOnly
 };
 
+signal on_chat_message_recieved( sendor: int, message: String )
+signal on_data_recieved( sendor: int, data: Dictionary )
+
 var _is_host:bool = false
 var _lobby_id:int = 0
 var _lobby_members:Array = []
 var _lobby_visibility:Visibility = Visibility.Public
 var _lobby_max_members:int = 4
 
-# metadata
 var _lobby_name:String = ""
+var _lobby_list:Array[ int ] = []
+
+# filters
+var _lobby_filter_map:String = "Any"
+var _lobby_filter_gamemode:String = "Any"
+
+func open_lobby_list() -> void:
+	if _lobby_filter_map != "Any":
+		Steam.addRequestLobbyListStringFilter( "map", _lobby_filter_map, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
+	if _lobby_filter_gamemode != "Any":
+		Steam.addRequestLobbyListStringFilter( "gamemode", _lobby_filter_gamemode, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
+	Steam.addRequestLobbyListDistanceFilter( Steam.LobbyDistanceFilter.LOBBY_DISTANCE_FILTER_WORLDWIDE )
+	Steam.requestLobbyList()
+
+func _on_lobby_match_list( lobbies ) -> void:
+	for lobby in lobbies:
+		_lobby_list.push_back( lobby )
 
 func _ready() -> void:
 	Steam.lobby_created.connect( _on_lobby_create )
 	Steam.lobby_joined.connect( _on_lobby_joined )
+	Steam.lobby_match_list.connect( _on_lobby_match_list )
 	Steam.p2p_session_request.connect( _on_p2p_session_request )
+	open_lobby_list()
 
 func _process( delta: float ) -> void:
 	if _lobby_id > 0:
@@ -66,6 +87,19 @@ func get_lobby_members() -> void:
 		
 		_lobby_members.append( { "steam_id": memberSteamId, "steam_name": memberSteamName } )
 
+func send_message( text: String ) -> void:
+	var packetData:Dictionary = {
+		"message": "chat",
+		"steam_id": SteamManager._steam_id,
+		"username": SteamManager._steam_username,
+		"data": text
+	};
+	
+	print( "Sending chat message..." )
+	for member in _lobby_members:
+		if member[ "steam_id" ] != SteamManager._steam_id:
+			send_p2p_packet( member[ "steam_id" ], packetData )
+
 func send_p2p_packet( target: int, packetData: Dictionary, sendType: int = 0 ) -> void:
 	var channel := 0
 	var data:PackedByteArray
@@ -99,12 +133,14 @@ func read_p2p_packet() -> void:
 	
 	if packetSize > 0:
 		var packet := Steam.readP2PPacket( packetSize, 0 )
-		var packetSender:int = packet[ "remote_steam_id" ]
-		var packetCode:PackedByteArray = packet[ "data" ]
-		var readableData:Dictionary = bytes_to_var( packetCode )
+		var packetSender:int = packet[ "steam_id" ]
+		var data:Dictionary = bytes_to_var( packet[ "data" ] )
 		
-		if readableData.has( "message" ):
-			match readableData[ "message" ]:
-				"handshake":
-					print( "" )
-					get_lobby_members()
+		match data[ "message" ]:
+			"data":
+				emit_signal( "on_data_recieved", packetSender, data[ "data" ] )
+			"chat":
+				emit_signal( "on_chat_message_recieved", packetSender, data[ "text" ] )
+			"handshake":
+				print( "" )
+				get_lobby_members()

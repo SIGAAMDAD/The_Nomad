@@ -18,8 +18,8 @@
 [ext_resource type="AudioStream" uid="uid://b56upar4o3qex" path="res://sounds/player/slowmo_end.ogg" id="13_lsa8o"]
 [ext_resource type="AudioStream" uid="uid://dmhehb35u2dc1" path="res://sounds/player/slide0.ogg" id="15_1l0ip"]
 [ext_resource type="AudioStream" uid="uid://bvtb6qcnb7uve" path="res://sounds/player/slide1.ogg" id="16_b1rse"]
-[ext_resource type="Script" path="res://scripts/items/Inventory.gd" id="19_wq5od"]
 [ext_resource type="Script" path="res://scripts/player_system/arm.gd" id="20_gxr8m"]
+[ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bpphr"]
 atlas = ExtResource("2_q3siw")
@@ -647,15 +647,13 @@ script = ExtResource("20_gxr8m")
 _animations = NodePath("../Animations/ArmsRight")
 _parent = NodePath("..")
 
-[node name="Inventory" type="Node2D" parent="." node_paths=PackedStringArray("_left_arm", "_right_arm", "_parent")]
-script = ExtResource("19_wq5od")
-_left_arm = NodePath("../ArmLeft")
-_right_arm = NodePath("../ArmRight")
-_parent = NodePath("..")
-
 [node name="IdleAnimationTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 30.0
 one_shot = true
+
+[node name="Inventory" type="Inventory" parent="."]
+inventory_name = "Backpack"
+database = ExtResource("21_kgn6m")
 
 [connection signal="animation_looped" from="Animations/Legs" to="." method="_on_legs_animation_looped"]
 [connection signal="animation_finished" from="Animations/JumpkitSparks" to="." method="_on_jumpkit_sparks_animation_finished"]

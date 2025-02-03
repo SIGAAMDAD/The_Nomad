@@ -44,25 +44,25 @@ text = "PAUSED TALE"
 [node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "CONTINUE WRITING"
+text = "RESUME_BUTTON"
 alignment = 0
 
 [node name="HelpMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "VALDEN'S BOOK"
+text = "HELP_BUTTON"
 alignment = 0
 
 [node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "TAKE A BREAK"
+text = "EXIT_TO_MAIN_MENU"
 alignment = 0
 
 [node name="ExitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "GIVE UP"
+text = "EXIT_GAME_BUTTON"
 alignment = 0
 
 [node name="ConfirmExit" type="ConfirmationDialog" parent="."]

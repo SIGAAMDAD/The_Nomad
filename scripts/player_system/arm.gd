@@ -13,14 +13,14 @@ func _ready() -> void:
 
 func get_animation_set() -> SpriteFrames:
 	if _weapon_slot != -1:
-		var weapon:WeaponEntity = _parent._inventory._weapon_slots[ _weapon_slot ]._weapon
+		var weapon:WeaponEntity = _parent._weapon_slots[ _weapon_slot ]._weapon
 		if weapon:
 			if weapon._last_used_mode & WeaponBase.Properties.IsFirearm:
-				return weapon._data._firearm_frames_left if _flip else weapon._data._firearm_frames_right
+				return weapon._data.properties.firearm_frames_left if _flip else weapon._data.properties.firearm_frames_right
 			elif weapon._last_used_mode & WeaponBase.Properties.IsBlunt:
-				return weapon._data._blunt_frames_left if _flip else weapon._data._blunt_frames_right
+				return weapon._data.properties.blunt_frames_left if _flip else weapon._data.properties.blunt_frames_right
 			elif weapon._last_used_mode & WeaponBase.Properties.IsBladed:
-				return weapon._data._bladed_frames_left if _flip else weapon._data._bladed_frames_right
+				return weapon._data.properties.bladed_frames_left if _flip else weapon._data.properties.bladed_frames_right
 	
 	return _default_animation
 
@@ -28,7 +28,7 @@ func _process( _delta: float ) -> void:
 	var animation := get_animation_set()
 	
 	_animations.sprite_frames = animation
-	_animations.rotation = _parent._arm_rotation
+	_animations.global_rotation = _parent._draw_rotation
 	if _weapon_slot == -1:
 		_animations.flip_h = _flip
 		if _parent._input_velocity != Vector2.ZERO:
@@ -36,7 +36,7 @@ func _process( _delta: float ) -> void:
 		else:
 			_animations.play( "idle" )
 	else:
-		var weapon:WeaponEntity = _parent._inventory._weapon_slots[ _weapon_slot ]._weapon
+		var weapon:WeaponEntity = _parent._weapon_slots[ _weapon_slot ]._weapon
 		match weapon._current_state:
 			WeaponEntity.WeaponState.Idle:
 				_animations.play( "idle" )

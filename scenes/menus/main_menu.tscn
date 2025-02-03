@@ -40,45 +40,45 @@ scale = Vector2(0.802407, 0.878239)
 [node name="CampaignButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "STORY"
+text = "STORY_BUTTON"
 
 [node name="MultiplayerButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "MULTIPLAYER"
+text = "MULTIPLAYER_BUTTON"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "SETTINGS"
+text = "SETTINGS_BUTTON"
 
 [node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "VALDEN'S BOOK"
+text = "HELP_BUTTON"
 
 [node name="TalesAroundTheCampfireButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "TALES AROUND THE CAMPFIRE"
+text = "MODS_BUTTON"
 
 [node name="QuitGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
-text = "QUIT"
+text = "QUIT_BUTTON"
 
 [node name="Logo" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.396094
-anchor_top = 0.0902778
-anchor_right = 0.435937
-anchor_bottom = 0.0986111
+anchor_left = 0.460938
+anchor_top = 0.0375
+anchor_right = 0.5
+anchor_bottom = 0.0375
 offset_left = -128.0
 offset_right = 128.0
 offset_bottom = 72.0
 grow_horizontal = 2
-scale = Vector2(1.48681, 1.60464)
+scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
 metadata/_edit_use_anchors_ = true
 

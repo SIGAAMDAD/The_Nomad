@@ -5,6 +5,11 @@ class_name Player extends EntityBase
 @onready var _dash_effect:GPUParticles2D = $Animations/DashEffect
 @onready var _jumpkit_sparks:AnimatedSprite2D = $Animations/JumpkitSparks
 
+const _MAX_WEAPON_SLOTS:int = 8
+
+var _current_weapon:int = 0
+var _weapon_slots:Array[ WeaponSlot ]
+
 @onready var _idle_timer:Timer = $IdleAnimationTimer
 @onready var _idle_animation:AnimatedSprite2D = $Animations/Idle
 
@@ -23,7 +28,10 @@ class_name Player extends EntityBase
 
 @onready var _drantaril:CharacterBody2D = null
 
-@onready var _inventory = $Inventory
+@onready var _ammo_pellet_stack:ItemStack = ItemStack.new()
+@onready var _ammo_heavy_stack:ItemStack = ItemStack.new()
+@onready var _ammo_light_stack:ItemStack = ItemStack.new()
+@onready var _inventory:Inventory = $Inventory
 
 @onready var _move_gravel:Array[ AudioStreamPlayer2D ] = [
 	$SoundEffects/MoveGravel0,
@@ -69,6 +77,10 @@ var _input_device:int = 0
 var _health:float = 100.0
 var _rage:float = 0.0
 var _flags:int = 0
+var _perks:Array = [ null, null, null ]
+
+# Too Fucking Angry to Die
+var _perk0_active:bool = false
 
 var _last_mouse_position:Vector2 = Vector2.ZERO
 var _input_velocity:Vector2 = Vector2.ZERO
@@ -77,12 +89,15 @@ var _left_arm:int = 0
 var _right_arm:int = 0
 var _last_used_arm:Arm = null
 
+var _multiplayer_team:int = 0
+
 var _dash_overheat_amount:float = 0.0
 var _movement:Vector2 = Vector2.ZERO
 var _frame_damage:float = 0.0
 var _damage_mult:float = 0.0
 
 var _arm_rotation:float = 0.0
+var _draw_rotation:float = 0.0
 
 var _move_left_name:String = "move_left_0"
 var _move_right_name:String = "move_right_0"
@@ -98,46 +113,60 @@ const _FRICTION = 1400
 const _MAX_SPEED = 400.0
 const _JUMP_VELOCITY = -400.0
 
+signal on_player_death( attacker: EntityBase, target: EntityBase )
+
+func idle_reset() -> void:
+	_idle_timer.start()
+	_idle_animation.hide()
+	_idle_animation.stop()
+	
+	_leg_animation.show()
+	_torso_animation.show()
+	_arm_right._animations.show()
+	_arm_left._animations.show()
+
 func play_sfx( sfx: AudioStreamPlayer2D ) -> void:
 	sfx.global_position = global_position
 	sfx.play()
 
-func pickup_weapon( weapon: WeaponEntity ) -> void:
-	_inventory.pickup_weapon( weapon )
+func _on_death( attacker: EntityBase, target: EntityBase ) -> void:
+	if _perk0_active:
+		if _rage > 0.0:
+			# make sure they can't abuse it
+			_rage = 0.0
+			return
+	
+	emit_signal( "on_player_death", attacker, self )
+	_leg_animation.hide()
+	_arm_left._animations.hide()
+	_arm_right._animations.hide()
+	
+	_torso_animation.play( "death" )
 
-func on_pickup_ammo( ammo: AmmoEntity ) -> void:
-	_inventory.pickup_ammo( ammo )
-
-func on_death( attacker: CharacterBody2D ) -> void:
-	emit_signal( "_on_death", attacker )
-
-func on_damage( attacker: CharacterBody2D, damage: float ) -> void:
-	emit_signal( "_on_damage", attacker, damage )
+func _on_damage( attacker: CharacterBody2D, damage: float ) -> void:
+	if _flags & PlayerFlags.Dashing:
+		return
+	
+	emit_signal( "_on_player_damage", attacker, damage )
 	_health -= damage
 	_rage += damage
 	
 	if _health <= 0.0:
-		on_death( attacker )
+		_on_death( attacker, self )
 
-func save( json: JSON ) -> void:
-	var sectionName := "player_" + var_to_str( _input_device )
+func save( file: FileAccess ) -> void:
+	var section := SaveSection.new()
 	
-	json[ sectionName ][ "hands_used" ] = _hands_used
-	json[ sectionName ][ "health" ] = _health
-	json[ sectionName ][ "rage" ] = _rage
-	json[ sectionName ][ "position" ] = global_position
-	json[ sectionName ][ "flags" ] = _flags
-	
-	_inventory.save( json, _input_device )
+	section.save( "player_" + var_to_str( _input_device ), file )
+	section.save_int( "hands_used", _hands_used )
+	section.save_float( "health", _health )
+	section.save_float( "rage", _rage )
+	section.save_vector2( "position", global_position )
+	section.save_int( "flags", _flags )
+	section.flush()
 
-func load( json: JSON ) -> void:
-	var sectionName := "player_" + var_to_str( _input_device )
-	
-	_hands_used = json[ sectionName ][ "hands_used" ]
-	_health = json[ sectionName ][ "health" ]
-	_rage = json[ sectionName ][ "rage" ]
-	global_position = json[ sectionName ][ "position" ]
-	_flags = json[ sectionName ][ "flags" ]
+func load( file: FileAccess ) -> void:
+	var section := SaveSection.new()
 
 func setup_split_screen( input_index: int ) -> void:
 	print( "Setting up split-screen input for ", input_index )
@@ -257,22 +286,25 @@ func mount_horse() -> void:
 #	_drantaril.global_transform = global_transform
 
 func _ready() -> void:
+	_ammo_light_stack = AmmoStack.new()
+	_ammo_heavy_stack = AmmoStack.new()
+	_ammo_pellet_stack = AmmoStack.new()
+	
 	_idle_timer.start()
-	Engine.max_fps = 0
 	_hud.init( _health, _rage )
 	if _drantaril:
 		_drantaril.connect( "player_mount_horse", mount_horse )
 	set_process_input( _split_screen )
 	_last_used_arm = _arm_right
+	
+	_weapon_slots.resize( _MAX_WEAPON_SLOTS )
+	for i in _MAX_WEAPON_SLOTS:
+		_weapon_slots[i] = WeaponSlot.new()
+		_weapon_slots[i]._index = i
 
 func _physics_process( _delta: float ) -> void:
 	if velocity != Vector2.ZERO:
-		_idle_timer.start()
-		_idle_animation.hide()
-		_torso_animation.show()
-		_arm_left._animations.show()
-		_arm_right._animations.show()
-		_leg_animation.show()
+		idle_reset()
 	
 	var speed := _MAX_SPEED
 	if _flags & PlayerFlags.Dashing:
@@ -330,17 +362,18 @@ func _process( delta: float ) -> void:
 		
 		if _last_mouse_position != mousePosition:
 			_last_mouse_position = mousePosition
-			_idle_timer.start()
+			idle_reset()
 		
+		_arm_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
 		if mousePosition.x > screenSize.x / 2:
-			_arm_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
+			_draw_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
 			flip_sprite_right()
 		elif mousePosition.x < screenSize.x / 2:
-			_arm_rotation = -atan2( mousePosition.y - ( screenSize.x / 2 ), ( screenSize.x / 2 ) - mousePosition.x )
+			_draw_rotation = -atan2( mousePosition.y - ( screenSize.x / 2 ), ( screenSize.x / 2 ) - mousePosition.x )
 			flip_sprite_left()
 	
 	if Input.is_action_just_pressed( _dash_name ) && can_dash():
-		_idle_timer.start()
+		idle_reset()
 		_flags |= PlayerFlags.Dashing
 		_dash_time.start()
 		play_sfx( _dash[ randi_range( 0, _dash.size() - 1 ) ] )
@@ -350,7 +383,7 @@ func _process( delta: float ) -> void:
 		_hud._dash_overlay.show()
 	
 	if Input.is_action_just_pressed( _slide_name ) && !( _flags & PlayerFlags.Sliding ):
-		_idle_timer.start()
+		idle_reset()
 		_flags |= PlayerFlags.Sliding
 		_slide_time.start()
 		play_sfx( _slide[ randi_range( 0, _slide.size() - 1 ) ] )
@@ -358,12 +391,12 @@ func _process( delta: float ) -> void:
 		_leg_animation.play( "slide" )
 	
 	if Input.is_action_just_pressed( "use_weapon_0" ):
-		_idle_timer.start()
-		if _inventory._weapon_slots[ _inventory._current_weapon ].is_used():
-			_inventory._weapon_slots[ _inventory._current_weapon ]._weapon.use( _inventory._weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
+		idle_reset()
+		if _weapon_slots[ _current_weapon ].is_used():
+			_weapon_slots[ _current_weapon ]._weapon.use( _weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
 	
 	if Input.is_action_just_pressed( "bullet_time_0" ):
-		_idle_timer.start()
+		idle_reset()
 		if _flags & PlayerFlags.BulletTime:
 			_flags &= ~PlayerFlags.BulletTime
 			play_sfx( _slowmo_end )
@@ -433,6 +466,9 @@ func _on_dash_cooldown_time_timeout() -> void:
 	pass # Replace with function body.
 
 func _on_idle_animation_timer_timeout() -> void:
+	if _idle_animation.is_playing():
+		return
+	
 	_torso_animation.hide()
 	_arm_left._animations.hide()
 	_arm_right._animations.hide()
@@ -442,3 +478,73 @@ func _on_idle_animation_timer_timeout() -> void:
 
 func _on_idle_animation_finished() -> void:
 	_idle_animation.play( "loop" )
+
+func on_pickup_ammo( ammo: AmmoEntity ) -> void:
+	var stack:AmmoStack = null
+	match ammo._data.properties[ "type" ]:
+		AmmoBase.Type.Light:
+			stack = _ammo_light_stack as AmmoStack
+		AmmoBase.Type.Heavy:
+			stack = _ammo_heavy_stack as AmmoStack
+		AmmoBase.Type.Pellets:
+			stack = _ammo_pellet_stack as AmmoStack
+	
+	_inventory.add_to_stack( stack, ammo._data.id, ammo._data.properties.stack_add_amount, ammo._data.properties )
+	
+	for i in _MAX_WEAPON_SLOTS:
+		var slot := _weapon_slots[i]
+		if slot.is_used() && slot._weapon._data.properties.ammo_type == ammo._data.properties.type:
+			slot._weapon.set_reserve( stack )
+			slot._weapon.set_ammo( ammo )
+
+func get_equipped_weapon() -> WeaponSlot:
+	return _weapon_slots[ _current_weapon ]
+
+func equip_slot( slot: int ) -> void:
+	var currentWeapon := slot
+	
+	var weapon := _weapon_slots[ slot ]._weapon
+	if weapon:
+		# apply rules of various weapno properties
+		if weapon._last_used_mode & WeaponBase.Properties.IsTwoHanded:
+			_arm_left._weapon_slot = _current_weapon
+			_arm_right._weapon_slot = _current_weapon
+			
+			# this will automatically override any other modes
+			_weapon_slots[ _arm_left._weapon_slot ]._mode = weapon._default_mode
+			_weapon_slots[ _arm_right._weapon_slot ]._mode = weapon._default_mode
+		
+		_weapon_slots[ _last_used_arm._weapon_slot ]._mode = weapon._properties
+	else:
+		_arm_left._weapon_slot = -1
+		_arm_right._weapon_slot = -1
+	
+	# update hand data
+	_last_used_arm._weapon_slot = _current_weapon
+	
+	_hud.set_weapon( weapon )
+
+func pickup_weapon( weapon: WeaponEntity ) -> void:
+	for i in _MAX_WEAPON_SLOTS:
+		if !_weapon_slots[i].is_used():
+			_weapon_slots[i]._weapon = weapon
+			break
+	
+	_inventory.add( weapon._data.id, 1, weapon._data.properties )
+	
+	if SettingsData._equip_weapon_on_pickup:
+		_hud.set_weapon( weapon )
+		
+		# apply rules of various weapon properties
+		if weapon._last_used_mode & WeaponBase.Properties.IsTwoHanded:
+			_arm_left._weapon_slot = _current_weapon
+			_arm_right._weapon_slot = _current_weapon
+			
+			# this will automatically override any other modes
+			_weapon_slots[ _arm_left._weapon_slot ]._mode = weapon._default_mode
+			_weapon_slots[ _arm_right._weapon_slot ]._mode = weapon._default_mode
+			return
+		
+		# update the hand data
+		_last_used_arm._weapon_slot = _current_weapon
+		_weapon_slots[ _last_used_arm._weapon_slot ]._mode = weapon._properties
