@@ -1,0 +1,20 @@
+[gd_resource type="ItemDefinition" load_steps=3 format=3 uid="uid://5cw6j8k2dvv"]
+
+[ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="1_xe4vw"]
+[ext_resource type="AudioStream" uid="uid://c03oonlb7f07a" path="res://sounds/env/pickup_shells.ogg" id="2_r1lre"]
+
+[resource]
+id = "AMMO_12_GAUGE"
+max_stack = 64
+name = "12 Gauge"
+icon = ExtResource("1_xe4vw")
+weight = 2.5
+properties = {
+"damage": 40.5,
+"pickup_sfx": ExtResource("2_r1lre"),
+"range": 2450.0,
+"shotgun bullshit": 2,
+"stack_add_amount": 12,
+"type": 2,
+"velocity": 20.0
+}

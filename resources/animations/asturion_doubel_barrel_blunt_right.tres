@@ -1,0 +1,18 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3 uid="uid://5ate4k65twpv"]
+
+[ext_resource type="Texture2D" uid="uid://lfbrbmjqggms" path="res://textures/spritesheets/weapon_db.png" id="1_oi8cc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y4kt5"]
+atlas = ExtResource("1_oi8cc")
+region = Rect2(0, 32, 64, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y4kt5")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

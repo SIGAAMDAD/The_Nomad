@@ -1,0 +1,59 @@
+[gd_resource type="InventoryDatabase" load_steps=12 format=3 uid="uid://clhvh7ktysxhx"]
+
+[ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="1_fdjvp"]
+[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge_item.tres" id="2_eb41b"]
+[ext_resource type="Texture2D" uid="uid://uxkebd6eqafw" path="res://textures/env/iconw_katana.png" id="3_ljr05"]
+[ext_resource type="Texture2D" path="res://textures/env/iconw_psmg.dds" id="4_dfq3r"]
+
+[sub_resource type="ItemCategory" id="ItemCategory_klnow"]
+id = "ITEM_CATEGORY_WEAPON"
+name = "Weapons"
+color = Color(1, 0, 0, 1)
+
+[sub_resource type="ItemCategory" id="ItemCategory_5vpgy"]
+id = "ITEM_CATEGORY_AMMUNITION"
+name = "Ammunition"
+color = Color(0.0625, 1, 0, 1)
+
+[sub_resource type="ItemCategory" id="ItemCategory_hj1uw"]
+id = "WEAPON_CATEGORY_FIREARMS"
+name = "Firearms"
+color = Color(0.890625, 1, 0, 1)
+
+[sub_resource type="ItemCategory" id="ItemCategory_x6v50"]
+id = "WEAPON_CATEGORY_MELEE"
+name = "Melee"
+
+[sub_resource type="ItemDefinition" id="ItemDefinition_13bt0"]
+id = "WEAPON_FIREARM_ASTURION_DOUBLE_BARREL"
+can_stack = false
+max_stack = 1
+name = "Asturion Double-Barrel"
+icon = ExtResource("1_fdjvp")
+weight = 15.0
+size = Vector2i(6, 2)
+categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_hj1uw")])
+
+[sub_resource type="ItemDefinition" id="ItemDefinition_ealen"]
+id = "WEAPON_MELEE_KATANA"
+can_stack = false
+max_stack = 1
+name = "Katana"
+icon = ExtResource("3_ljr05")
+weight = 7.2
+size = Vector2i(4, 1)
+categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_x6v50")])
+
+[sub_resource type="ItemDefinition" id="ItemDefinition_gxibd"]
+id = "WEAPON_FIREARM_PLASMA_SMG"
+can_stack = false
+max_stack = 1
+name = "Plasma SMG"
+icon = ExtResource("4_dfq3r")
+weight = 12.9
+size = Vector2i(3, 2)
+categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_hj1uw")])
+
+[resource]
+items = Array[ItemDefinition]([SubResource("ItemDefinition_13bt0"), ExtResource("2_eb41b"), SubResource("ItemDefinition_ealen"), SubResource("ItemDefinition_gxibd")])
+item_categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_5vpgy"), SubResource("ItemCategory_hj1uw"), SubResource("ItemCategory_x6v50")])

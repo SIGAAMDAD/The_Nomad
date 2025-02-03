@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmc6jfet87hxo"]
+
+[ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_kaxx3"]
+[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_11eah"]
+
+[node name="LobbyFactory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.401968, 0.401968, 0.401968, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_kaxx3")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -73.0
+offset_top = 4.0
+offset_right = 73.0
+offset_bottom = 27.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_11eah")
+text = "HOST GAME"

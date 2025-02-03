@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccn5dc6ofsed7"]
+
+[ext_resource type="PackedScene" uid="uid://bnkthei3bm0aq" path="res://scenes/multiplayer/modes/overlays/ctf_overlay.tscn" id="1_pd181"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hashi"]
+size = Vector2(31, 47)
+
+[node name="CtfObjective" type="Node2D"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+
+[node name="PickupArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea"]
+shape = SubResource("RectangleShape2D_hashi")
+
+[node name="ReturnTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[node name="CtfOverlay" parent="." instance=ExtResource("1_pd181")]

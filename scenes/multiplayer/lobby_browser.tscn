@@ -1,0 +1,199 @@
+[gd_scene load_steps=6 format=3 uid="uid://dpriw3r8df1su"]
+
+[ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_xqq5e"]
+[ext_resource type="Script" path="res://scripts/multiplayer/lobby_browser.gd" id="1_yoo43"]
+[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
+
+[sub_resource type="Gradient" id="Gradient_y8dcd"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aa0nf"]
+gradient = SubResource("Gradient_y8dcd")
+
+[node name="LobbyBrowser" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yoo43")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.401968, 0.401968, 0.401968, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_xqq5e")
+expand_mode = 2
+
+[node name="MenuTitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -182.0
+offset_top = 4.0
+offset_right = 26.0
+offset_bottom = 27.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "LOBBY BROWSER"
+
+[node name="FilterLabel" type="Label" parent="."]
+layout_mode = 2
+offset_left = 486.0
+offset_top = 2.0
+offset_right = 598.0
+offset_bottom = 25.0
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "FILTERS"
+
+[node name="FilterList" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 28.0
+offset_right = 630.0
+offset_bottom = 343.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FilterList"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FullserversCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+text = "Show Full Servers"
+
+[node name="MapLabel" type="Label" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+text = "Filter Map"
+
+[node name="MapOptionButton" type="OptionButton" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+item_count = 1
+popup/item_0/text = "Any"
+
+[node name="GameModeLabel" type="Label" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+text = "Filter Game Mode"
+
+[node name="GameModeOptionButton" type="OptionButton" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+item_count = 1
+popup/item_0/text = "Any"
+
+[node name="LobbyListBackground" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.345098)
+layout_mode = 2
+offset_left = 14.0
+offset_top = 28.0
+offset_right = 444.0
+offset_bottom = 408.0
+scale = Vector2(1, 0.829)
+texture = SubResource("GradientTexture2D_aa0nf")
+expand_mode = 2
+
+[node name="LobbyList" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 15.9925
+anchor_bottom = 10.6967
+offset_left = 14.0
+offset_top = 28.0
+offset_right = -9791.2
+offset_bottom = -4726.42
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.00026, 0.828502)
+
+[node name="Lobbies" type="VBoxContainer" parent="LobbyList"]
+layout_mode = 2
+
+[node name="LobbyMetadataContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 340.0
+offset_right = 624.0
+offset_bottom = 430.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LobbyMetadataContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LobbyMetadataContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 112
+
+[node name="MapNameLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "MAP"
+
+[node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="LobbyMetadataContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PlayerCountLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer2"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "PLAYER(S)"
+
+[node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="LobbyMetadataContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="GameModeLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer3"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "GAMEMODE"
+
+[node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+
+[node name="ControlBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_top = -41.0
+offset_right = 160.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.75, 0.75)
+theme_override_constants/separation = 24
+
+[node name="RefreshButton" type="Button" parent="ControlBar"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "REFRESH_LOBBIES"
+
+[node name="HostButton" type="Button" parent="ControlBar"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "HOST_LOBBY"
+
+[node name="MatchmakeButton" type="Button" parent="ControlBar"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "MATCHMAKE"
