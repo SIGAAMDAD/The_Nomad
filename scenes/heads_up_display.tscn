@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=17 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_yjir7"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -13,7 +13,6 @@
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
 [ext_resource type="Texture2D" uid="uid://brybtxxdfifq4" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
 [ext_resource type="Texture2D" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
-[ext_resource type="Script" path="res://scripts/player_system/ammo_status.gd" id="15_8n80b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j85v5"]
 shader = ExtResource("9_jyyjq")
@@ -115,16 +114,16 @@ clip_contents = true
 custom_minimum_size = Vector2(16, 16)
 layout_direction = 0
 layout_mode = 3
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 2
+anchor_left = 0.0
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.0
 anchor_bottom = 1.0
-offset_left = -58.0
+offset_left = 0.0
 offset_top = -62.0
-offset_right = 0.0
+offset_right = 58.0
 offset_bottom = 0.0
-grow_horizontal = 0
+grow_horizontal = 1
 grow_vertical = 0
 rotation = 0.0
 scale = Vector2(1, 1)
@@ -235,17 +234,16 @@ layout_mode = 2
 [node name="AmmunitionContainer" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus"]
 layout_mode = 2
 
-[node name="AmmoInMagazineLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+[node name="BulletCountLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("10_125nm")
 theme_override_font_sizes/font_size = 10
-script = ExtResource("15_8n80b")
 
 [node name="HSeparator" type="HSeparator" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 
-[node name="MagazineSizeLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+[node name="BulletReserveLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("10_125nm")

@@ -5,7 +5,6 @@ class_name WeaponEntity extends Node2D
 @export var _data:ItemDefinition = null
 
 @onready var _raycast = $RayCast2D
-@onready var _root = $/root/SinglePlayer
 @onready var _bullets = load( "res://scenes/Items/bullet.tscn" )
 @onready var _reserve:AmmoStack = null
 @onready var _ammo:AmmoEntity = null
@@ -17,10 +16,18 @@ class_name WeaponEntity extends Node2D
 @onready var _muzzle_flash:Array[ Sprite2D ]
 @onready var _owner:Player = null
 
+@onready var _muzzle_flashes:Array = [
+	$MuzzleFlashes/Sprite2D,
+	$MuzzleFlashes/Sprite2D2,
+	$MuzzleFlashes/Sprite2D3,
+	$MuzzleFlashes/Sprite2D4
+];
+
 var _icon_sprite:Sprite2D = Sprite2D.new()
 var _area:Area2D = Area2D.new()
 var _last_used_mode:WeaponBase.Properties = WeaponBase.Properties.None
 var _bullets_left:int = 0
+var _current_muzzle_flash:Sprite2D = null
 
 enum WeaponState {
 	Idle,
@@ -142,6 +149,7 @@ func _ready() -> void:
 		_muzzle_flash.push_back( muzzleFlash2 )
 		
 		_reload_time = Timer.new()
+		_reload_time.one_shot = true
 		_reload_time.wait_time = _data.properties.reload_time
 		_reload_time.timeout.connect( _on_reload_time_timeout )
 		_noammo_sound = AudioStreamPlayer2D.new()
@@ -166,6 +174,11 @@ func _ready() -> void:
 	create_pickup_bounds()
 	
 	add_child( _icon_sprite )
+
+func _draw():
+	if _ammo and SettingsData._draw_aim_line:
+		if _ammo._data.properties.range:
+			draw_line( global_position, global_position + Vector2( _ammo._data.properties.range ), Color.RED )
 
 func set_use_mode( weaponMode: int ) -> void:
 	_last_used_mode = weaponMode
@@ -210,6 +223,7 @@ func reload() -> bool:
 		return false
 	if !_reserve.amount && !_bullets_left:
 		# no more ammo
+		_current_state = WeaponState.Idle
 		print( "cannot reload weapon..." )
 		return false
 	
@@ -219,14 +233,9 @@ func reload() -> bool:
 	return true
 
 func use_firearm( damage: float, weaponMode: int ) -> float:
-	if !_ammo || _bullets_left < 0:
+	if !_ammo || !_bullets_left:
 		play_sfx( _noammo_sound )
-		reload()
 		return 0.0
-	
-	if !_bullets_left:
-		if !reload():
-			return 0.0
 	
 	_current_state = WeaponState.Use
 	_use_time.start()
@@ -246,7 +255,13 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 #	bullet._spawn_angle = _owner._draw_rotation
 #	bullet._spawn_pos = global_position
 #	_root.add_child( bullet )
-	_muzzle_flash[ randi_range( 0, _muzzle_flash.size() - 1 ) ].show()
+	
+	_current_muzzle_flash = _muzzle_flashes[ randi_range( 0, _muzzle_flashes.size() - 1 ) ]
+	_current_muzzle_flash.show()
+	_current_muzzle_flash.rotation = _raycast.rotation
+	
+	if _raycast.is_colliding():
+		DebrisFactory.add_debris( _raycast.target_position )
 	
 	play_sfx( _use_firearm_sfx )
 	
@@ -260,6 +275,8 @@ func _process( _delta: float ) -> void:
 	_raycast.target_position.x = _ammo._data.properties.range
 
 func use( weaponMode: int ) -> float:
+	if Engine.time_scale == 0.0:
+		return 0.0
 	match _current_state:
 		WeaponState.Use, WeaponState.Reload:
 			return 0.0
@@ -277,7 +294,8 @@ func use( weaponMode: int ) -> float:
 
 func _on_use_time_timeout() -> void:
 	if _last_used_mode & WeaponBase.Properties.IsFirearm:
-		reload()
+		if !_bullets_left:
+			reload()
 		_current_muzzle_flash.hide()
 	else:
 		_current_state = WeaponState.Idle

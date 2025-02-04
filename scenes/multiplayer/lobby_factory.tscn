@@ -1,7 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://bmc6jfet87hxo"]
+[gd_scene load_steps=6 format=3 uid="uid://bmc6jfet87hxo"]
 
 [ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_kaxx3"]
+[ext_resource type="Script" path="res://scripts/multiplayer/lobby_factory.gd" id="1_p4euo"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_11eah"]
+
+[sub_resource type="Gradient" id="Gradient_neljt"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nundc"]
+gradient = SubResource("Gradient_neljt")
 
 [node name="LobbyFactory" type="Control"]
 layout_mode = 3
@@ -10,8 +18,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_p4euo")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 modulate = Color(0.401968, 0.401968, 0.401968, 1)
 layout_mode = 1
 anchors_preset = 15
@@ -34,3 +43,87 @@ offset_bottom = 27.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_11eah")
 text = "HOST GAME"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -210.0
+offset_right = 280.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+modulate = Color(0, 0, 0, 0.556863)
+layout_mode = 2
+texture = SubResource("GradientTexture2D_nundc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MapContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 128
+
+[node name="MapLabel" type="Label" parent="MarginContainer/VBoxContainer/MapContainer"]
+layout_mode = 2
+text = "MAP"
+
+[node name="MapOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/MapContainer"]
+layout_mode = 2
+
+[node name="GameModeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="GameModeLabel" type="Label" parent="MarginContainer/VBoxContainer/GameModeContainer"]
+layout_mode = 2
+text = "GAMEMODE"
+
+[node name="GameModeOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/GameModeContainer"]
+layout_mode = 2
+
+[node name="MaxPlayersContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 46
+
+[node name="MaxPlayersLabel" type="Label" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+layout_mode = 2
+text = "MAX PLAYER(S)"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 16.0
+value = 1.0
+
+[node name="LobbyTypeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="LobbyTypeLabel" type="Label" parent="MarginContainer/VBoxContainer/LobbyTypeContainer"]
+layout_mode = 2
+text = "LOBBY TYPE"
+
+[node name="LobbyTypeOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/LobbyTypeContainer"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "PUBLIC"
+popup/item_1/text = "PRIVATE"
+popup/item_1/id = 1
+popup/item_2/text = "FRIENDS ONLY"
+popup/item_2/id = 2
+
+[node name="Button" type="Button" parent="MarginContainer"]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "CREATE"

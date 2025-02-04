@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MultiplayerMap" load_steps=2 format=3 uid="uid://bn7qfg8wywobv"]
+
+[ext_resource type="Script" path="res://scripts/multiplayer/map.gd" id="1_u0lrh"]
+
+[resource]
+script = ExtResource("1_u0lrh")
+_name = "Galakas Outskirts"
+_mode_massacre = false
+_mode_team_brawl = false
+_mode_capture_the_flag = false
+_mode_king_of_the_hill = false
+_mode_duel = false

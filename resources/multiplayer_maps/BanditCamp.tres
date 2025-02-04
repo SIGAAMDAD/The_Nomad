@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MultiplayerMap" load_steps=3 format=3 uid="uid://cg2p7ts4kelrh"]
+
+[ext_resource type="PackedScene" uid="uid://donmwnx40q4pr" path="res://levels/level00_mp_massacre.tscn" id="1_oqrmv"]
+[ext_resource type="Script" path="res://scripts/multiplayer/map.gd" id="1_sfham"]
+
+[resource]
+script = ExtResource("1_sfham")
+_name = "Bandit Camp"
+_data_massacre = ExtResource("1_oqrmv")
+_mode_massacre = true
+_mode_team_brawl = false
+_mode_capture_the_flag = false
+_mode_king_of_the_hill = false
+_mode_duel = false

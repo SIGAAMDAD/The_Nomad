@@ -9,6 +9,9 @@ extends Control
 @onready var _save_slot_select:Control = $CampaignMenu/SaveSlotSelect
 @onready var _difficulty_select:Control = $CampaignMenu/DifficultySelect
 
+@onready var _lobby_browser:Control = $MultiplayerMenu/LobbyBrowser
+@onready var _lobby_factory:Control = $MultiplayerMenu/LobbyFactory
+
 enum MenuState {
 	Main,
 	Campaign,
@@ -31,6 +34,8 @@ func _on_exit_button_pressed() -> void:
 			_difficulty_select.hide()
 		MenuState.Multiplayer:
 			_multiplayer_menu.hide()
+			_lobby_browser.hide()
+			_lobby_factory.hide()
 		MenuState.Settings:
 			_settings_menu.hide()
 		_:
@@ -52,6 +57,7 @@ func _on_main_menu_multiplayer_menu() -> void:
 	_main_menu.hide()
 	_multiplayer_menu.show()
 	_exit_button.show()
+	_lobby_browser.show()
 	_menu_state = MenuState.Multiplayer
 
 func _on_main_menu_settings_menu() -> void:

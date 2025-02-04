@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var _network = $Network
 
+var _mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Massacre
 var _players:Dictionary = {}
 
 func _ready() -> void:

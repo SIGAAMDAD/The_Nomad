@@ -11,7 +11,13 @@ func pop_item() -> bool:
 	return true
 
 func remove_items( numItems: int ) -> int:
-	return amount if amount - numItems < 0 else numItems
+	if amount - numItems < 0:
+		var tmp := amount
+		amount = 0
+		return tmp
+	
+	amount -= numItems
+	return numItems
 
 func add_items( numItems: int ) -> void:
 	amount += numItems

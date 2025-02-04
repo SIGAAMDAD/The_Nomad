@@ -1,17 +1,10 @@
-[gd_scene load_steps=21 format=4 uid="uid://dy3x8fkn247sb"]
+[gd_scene load_steps=13 format=4 uid="uid://dy3x8fkn247sb"]
 
 [ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_t3van"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
-[ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/Checkpoint.tscn" id="4_g3sbi"]
 [ext_resource type="Script" path="res://scripts/tile_map_layer.gd" id="4_ixyk1"]
 [ext_resource type="PackedScene" uid="uid://mgg8wmojy0ea" path="res://scenes/scenery/hanging_corpse.tscn" id="6_bb5sl"]
 [ext_resource type="PackedScene" uid="uid://cur8nem7iswfk" path="res://scenes/scenery/burning_barrel.tscn" id="7_f4pjs"]
-[ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="8_tt3gm"]
-[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge_item.tres" id="8_vpkbu"]
-[ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="9_bos67"]
-[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/asturion_double_barrel_item.tres" id="10_4v1po"]
-[ext_resource type="PackedScene" uid="uid://cik5jg0byotvb" path="res://scenes/mobs/mob_base.tscn" id="10_pokn8"]
-[ext_resource type="Resource" uid="uid://b6weighxt4yd7" path="res://resources/mobs/mercenary/shotgunner.tres" id="11_dsxqw"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_un7kv"]
 polygon = PackedVector2Array(0, 0, 0.155396, -14.9991, 3.15527, -14.9681, 2.99988, 0.0310669)
@@ -35,11 +28,6 @@ b = Vector2(133.032, 770.419)
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_4iw77"]
 a = Vector2(-102.057, 4.94348)
 b = Vector2(877.366, -223.927)
-
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_51u6i"]
-vertices = PackedVector2Array(298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 508.461, 189.344, 1671.25, 318, 1798.84, 318, 1794.15, 607.008, 532.438, 608.977, 1217.13, 386.898, 1151.78, -101.961, 1392.87, -101.031, 1391.12, 41.0938, 1149.79, -9.17188, 989.688, 45.1016, 903.07, -4.84375, 1214.13, 164.93, 1667.25, 162.062, 1000.31, 389.102, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(3, 4, 5, 0), PackedInt32Array(6, 7, 8, 9, 10), PackedInt32Array(6, 10, 11, 12), PackedInt32Array(13, 14, 15, 16, 17), PackedInt32Array(18, 19, 20, 21), PackedInt32Array(21, 20, 22, 23), PackedInt32Array(17, 24, 25, 13), PackedInt32Array(26, 17, 16), PackedInt32Array(22, 26, 16, 12, 23), PackedInt32Array(27, 28, 23, 12), PackedInt32Array(27, 12, 5, 29, 30, 31), PackedInt32Array(5, 12, 11, 0)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(152, 80, 280, 80, 288, -8, 152, -8, 168, -48, 193, -53, 188, -89, 370, -92, 373, -109, 663, -117, 838, -117, 843, -99, 903, -96, 912, -15, 1140, -19, 1142, -112, 1403, -111, 1401, 51, 1000, 55, 1010, 379, 1207, 377, 1204, 155, 1677, 152, 1681, 308, 1809, 308, 1804, 617, 523, 619, 499, 199, 168, 187, -49, 195, -40, 6, 103, 10)])
 
 [node name="InTheDarkofTheNight" type="Node2D"]
 position = Vector2(940, 448)
@@ -120,48 +108,6 @@ position = Vector2(916.721, 514.521)
 
 [node name="BurningBarrel4" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(-326.004, 674.66)
-
-[node name="Checkpoints" type="Node2D" parent="TileMapLayer"]
-
-[node name="Checkpoint" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
-light_mask = 15
-visibility_layer = 2
-position = Vector2(-391.336, 126.954)
-
-[node name="Checkpoint2" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
-position = Vector2(35.1385, 83.3684)
-
-[node name="Checkpoint3" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
-position = Vector2(951.076, 383.869)
-
-[node name="Checkpoint4" parent="TileMapLayer/Checkpoints" instance=ExtResource("4_g3sbi")]
-position = Vector2(1757.45, 352.218)
-
-[node name="Tutorials" type="Node" parent="TileMapLayer"]
-
-[node name="AmmoBase" parent="TileMapLayer" instance=ExtResource("8_tt3gm")]
-position = Vector2(-427.386, 131.581)
-_data = ExtResource("8_vpkbu")
-
-[node name="WeaponBase" parent="TileMapLayer" instance=ExtResource("9_bos67")]
-position = Vector2(-478.352, 128.053)
-_data = ExtResource("10_4v1po")
-
-[node name="OpposingForce" type="Node2D" parent="."]
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="OpposingForce"]
-position = Vector2(156, -16)
-navigation_polygon = SubResource("NavigationPolygon_51u6i")
-
-[node name="Guard0" parent="OpposingForce" instance=ExtResource("10_pokn8")]
-position = Vector2(662, 66)
-_data = ExtResource("11_dsxqw")
-_direction = 1
-
-[node name="Guard1" parent="OpposingForce" instance=ExtResource("10_pokn8")]
-position = Vector2(656, 497)
-_data = ExtResource("11_dsxqw")
-_direction = 3
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.140447, 0.140447, 0.140447, 1)

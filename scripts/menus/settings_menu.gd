@@ -1,7 +1,7 @@
 extends Control
 
 @onready var _vsync:CheckBox = $TabContainer/Video/VBoxContainer/VSyncButton/VSyncCheckBox
-@onready var _resolution:OptionButton = $TabContainer/Video/VBoxContainer/ResolutionList/ResolutionOptionButton
+#@onready var _resolution:OptionButton = $TabContainer/Video/VBoxContainer/ResolutionList/ResolutionOptionButton
 @onready var _window_mode:OptionButton = $TabContainer/Video/VBoxContainer/WindowModeList/WindowModeOptionButton
 @onready var _antialiasing:OptionButton = $TabContainer/Video/VBoxContainer/AntiAliasingList/AntiAliasingOptionButton
 @onready var _shadow_quality:OptionButton = $TabContainer/Video/VBoxContainer/ShadowQualityList/ShadowQualityOptionButton
@@ -68,22 +68,22 @@ func apply_video_settings() -> void:
 			DisplayServer.window_set_mode( DisplayServer.WINDOW_MODE_FULLSCREEN )
 			DisplayServer.window_set_flag( DisplayServer.WINDOW_FLAG_BORDERLESS, true )
 	
-	const RESOLUTION_DICT := {
-		SettingsManager.Resolution.Res_640x480: Vector2i( 640, 480 ),
-		SettingsManager.Resolution.Res_800x600: Vector2i( 800, 600 ),
-		SettingsManager.Resolution.Res_1280x720: Vector2i( 1280, 720 ),
-		SettingsManager.Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
-		SettingsManager.Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
-		SettingsManager.Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
-		SettingsManager.Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
-	};
+#	const RESOLUTION_DICT := {
+#		SettingsManager.Resolution.Res_640x480: Vector2i( 640, 480 ),
+#		SettingsManager.Resolution.Res_800x600: Vector2i( 800, 600 ),
+#		SettingsManager.Resolution.Res_1280x720: Vector2i( 1280, 720 ),
+#		SettingsManager.Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
+#		SettingsManager.Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
+#		SettingsManager.Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
+#		SettingsManager.Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
+#	};
 	
-	DisplayServer.window_set_size( RESOLUTION_DICT[ _resolution.selected ] )
+#	DisplayServer.window_set_size( RESOLUTION_DICT[ _resolution.selected ] )
 	update_window_scale()
 
 func _ready() -> void:
 	_vsync.button_pressed = SettingsData._vsync
-	_resolution.selected = SettingsData._resolution
+#	_resolution.selected = SettingsData._resolution
 	_window_mode.selected = SettingsData._window_mode
 	
 	_effects_on.button_pressed = SettingsData._effects_on
@@ -100,7 +100,7 @@ func _ready() -> void:
 func _on_save_settings_button_pressed() -> void:
 	SettingsData._vsync = _vsync.button_pressed
 	SettingsData._window_mode = _window_mode.selected
-	SettingsData._resolution = _resolution.selected
+#	SettingsData._resolution = _resolution.selected
 	
 	SettingsData._effects_on = _effects_on.button_pressed
 	SettingsData._music_on = _music_on.button_pressed

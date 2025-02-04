@@ -7,7 +7,7 @@ class_name SettingsManager extends Control
 @onready var _sfx_bus:int = AudioServer.get_bus_index( "SFX" )
 @onready var _ambience_bus:int = AudioServer.get_bus_index( "Ambience" )
 
-@onready var _resolution:Resolution = _default._resolution
+#@onready var _resolution:Resolution = _default._resolution
 @onready var _window_mode:WindowMode = _default._window_mode
 @onready var _vsync:int = _default._vsync
 @onready var _antialiasing:AntiAliasing = _default._antialasing
@@ -32,6 +32,7 @@ class_name SettingsManager extends Control
 # gameplay options
 @onready var _enemy_difficulty:GameConfiguration.GameDifficulty = _default._enemy_difficulty
 @onready var _equip_weapon_on_pickup:bool = _default._equip_weapon_on_pickup
+@onready var _draw_aim_line:bool = _default._draw_aim_line
 
 # dedicated keybind hashmap
 var _keybind_dict:Dictionary
@@ -56,15 +57,15 @@ enum Resolution {
 	Res_2048x1152,
 };
 
-const SCREEN_RESOLUTIONS:Dictionary = {
-	Resolution.Res_640x480: Vector2i( 640, 480 ),
-	Resolution.Res_800x600: Vector2i( 800, 600 ),
-	Resolution.Res_1280x720: Vector2i( 1280, 720 ), 
-	Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
-	Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
-	Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
-	Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
-};
+#const SCREEN_RESOLUTIONS:Dictionary = {
+#	Resolution.Res_640x480: Vector2i( 640, 480 ),
+#	Resolution.Res_800x600: Vector2i( 800, 600 ),
+#	Resolution.Res_1280x720: Vector2i( 1280, 720 ), 
+#	Resolution.Res_1600x1050: Vector2i( 1600, 1050 ),
+#	Resolution.Res_1600x1200: Vector2i( 1600, 1200 ),
+#	Resolution.Res_1920x1080: Vector2i( 1920, 1080 ),
+#	Resolution.Res_2048x1152: Vector2i( 2048, 1152 )
+#};
 
 enum AntiAliasing {
 	None,
@@ -218,7 +219,7 @@ func save_audio_settings( file: FileAccess ) -> void:
 	AudioServer.set_bus_mute( _sfx_bus, !_effects_on )
 
 func load_video_settings( file: FileAccess ) -> void:
-	_resolution = file.get_32()
+#	_resolution = file.get_32()
 	_window_mode = file.get_32()
 	_max_fps = file.get_16()
 	_shadow_quality = file.get_8()
@@ -226,7 +227,7 @@ func load_video_settings( file: FileAccess ) -> void:
 	_vsync = file.get_8()
 
 func save_video_settings( file: FileAccess ) -> void:
-	file.store_32( _resolution )
+#	file.store_32( _resolution )
 	file.store_32( _window_mode )
 	file.store_16( _max_fps )
 	file.store_8( _shadow_quality )
@@ -247,6 +248,14 @@ func save_accessibility_settings( file: FileAccess ) -> void:
 	file.store_8( _autoaim )
 	file.store_8( _dyslexia_mode )
 
+func load_gameplay_settings( file: FileAccess ) -> void:
+	_equip_weapon_on_pickup = file.get_8()
+	_draw_aim_line = file.get_8()
+
+func save_gameplay_settings( file: FileAccess ) -> void:
+	file.store_8( _equip_weapon_on_pickup )
+	file.store_8( _draw_aim_line )
+
 func _ready() -> void:
 	print( "Loading game settings..." )
 	
@@ -259,6 +268,7 @@ func _ready() -> void:
 		load_video_settings( file )
 		load_audio_settings( file )
 		load_accessibility_settings(  file )
+		load_gameplay_settings( file )
 		load_keybinds( file )
 	else:
 		save()
@@ -266,6 +276,7 @@ func _ready() -> void:
 		load_video_settings( file )
 		load_audio_settings( file )
 		load_accessibility_settings(  file )
+		load_gameplay_settings( file )
 		load_keybinds( file )
 
 func save() -> void:
@@ -274,4 +285,5 @@ func save() -> void:
 	save_video_settings( file )
 	save_audio_settings( file )
 	save_accessibility_settings( file )
+	save_gameplay_settings( file )
 	save_keybinds( file )

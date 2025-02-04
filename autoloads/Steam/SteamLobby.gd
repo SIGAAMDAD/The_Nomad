@@ -30,6 +30,7 @@ func open_lobby_list() -> void:
 	if _lobby_filter_gamemode != "Any":
 		Steam.addRequestLobbyListStringFilter( "gamemode", _lobby_filter_gamemode, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
 	Steam.addRequestLobbyListDistanceFilter( Steam.LobbyDistanceFilter.LOBBY_DISTANCE_FILTER_WORLDWIDE )
+	Steam.requestInternetServerList( SteamManager._steam_app_id, [] )
 	Steam.requestLobbyList()
 
 func _on_lobby_match_list( lobbies ) -> void:

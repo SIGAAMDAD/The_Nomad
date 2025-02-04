@@ -74,6 +74,7 @@ text = "Filter Map"
 
 [node name="MapOptionButton" type="OptionButton" parent="FilterList/VBoxContainer"]
 layout_mode = 2
+selected = 0
 item_count = 1
 popup/item_0/text = "Any"
 
@@ -83,8 +84,19 @@ text = "Filter Game Mode"
 
 [node name="GameModeOptionButton" type="OptionButton" parent="FilterList/VBoxContainer"]
 layout_mode = 2
-item_count = 1
+selected = 0
+item_count = 6
 popup/item_0/text = "Any"
+popup/item_1/text = "Massacre"
+popup/item_1/id = 1
+popup/item_2/text = "Team Brawl"
+popup/item_2/id = 2
+popup/item_3/text = "Capture The Flag"
+popup/item_3/id = 3
+popup/item_4/text = "King of the Hill"
+popup/item_4/id = 4
+popup/item_5/text = "Duel"
+popup/item_5/id = 5
 
 [node name="LobbyListBackground" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.345098)
@@ -93,6 +105,7 @@ offset_left = 14.0
 offset_top = 28.0
 offset_right = 444.0
 offset_bottom = 408.0
+grow_vertical = 2
 scale = Vector2(1, 0.829)
 texture = SubResource("GradientTexture2D_aa0nf")
 expand_mode = 2
@@ -197,3 +210,29 @@ text = "HOST_LOBBY"
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "MATCHMAKE"
+
+[node name="ControlBar2" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_top = -41.0
+offset_right = 160.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.75, 0.75)
+theme_override_constants/separation = 24
+
+[node name="JoinButton" type="Button" parent="ControlBar2"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mpu1u")
+text = "MATCHMAKE"
+
+[connection signal="pressed" from="ControlBar/RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="pressed" from="ControlBar/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="ControlBar/MatchmakeButton" to="." method="_on_matchmake_button_pressed"]
+[connection signal="pressed" from="ControlBar2/JoinButton" to="." method="_on_join_button_pressed"]

@@ -60,6 +60,7 @@ SteamLobby="*res://autoloads/Steam/SteamLobby.gd"
 SteamData="*res://autoloads/Steam/SteamData.gd"
 GUIDE="*res://addons/guide/guide.gd"
 ItemDatabase="*res://autoloads/ItemDatabase.gd"
+DebrisFactory="*res://autoloads/DebrisFactory.gd"
 
 [display]
 

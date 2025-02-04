@@ -2,7 +2,8 @@ extends Control
 
 @onready var _host_game:Button = $ControlBar/HostButton
 @onready var _refresh_lobbies:Button = $ControlBar/RefreshButton
-@onready var _lobby_control:ScrollContainer = $LobbyList
+@onready var _matchmake:Button = $ControlBar/MatchmakeButton
+
 @onready var _lobby_table:VBoxContainer = $LobbyList/Lobbies
 
 class LobbyData:
@@ -17,13 +18,6 @@ class LobbyData:
 #		_game_mode = MultiplayerMode.GameMode.get( gameMode )
 
 var _lobby_list:Dictionary = {}
-
-func _on_refresh_pressed() -> void:
-	if _lobby_control.get_child_count() > 0:
-		for lobby in _lobby_control.get_children():
-			lobby.queue_free()
-	
-	Steam.requestLobbyList()
 
 func _on_host_pressed() -> void:
 	SteamLobby.create_lobby()
@@ -42,15 +36,14 @@ func get_lobby_list() -> void:
 	for lobby in SteamLobby._lobby_list:
 		var lobbyName := Steam.getLobbyData( lobby, "name" )
 		
-		var button = Button.new()
-		button.set_text( lobbyName )
-		button.set_size( Vector2( 240, 20 ) )
-#		button.pressed.connect( Callable( self, "join_lobby" ).bind( lobby ) )
-		
 		var lobbyMemberCount := Steam.getNumLobbyMembers( lobby )
 		var lobbyMaxMemberCount := Steam.getLobbyMemberLimit( lobby )
 		var lobbyMap := Steam.getLobbyData( lobby, "map" )
 		var lobbyGameMode := Steam.getLobbyData( lobby, "gamemode" )
+		
+		var button = Button.new()
+		button.set_text( lobbyName )
+		button.set_size( Vector2( 240, 20 ) )
 		
 		_lobby_table.add_child( button )
 		_lobby_list[ lobbyName ] = LobbyData.new( lobbyMap, lobbyMemberCount, lobbyMaxMemberCount, lobbyGameMode )
@@ -58,3 +51,19 @@ func get_lobby_list() -> void:
 func _process( delta: float ) -> void:
 	if !_lobby_table.get_child_count():
 		get_lobby_list()
+
+func _on_refresh_button_pressed() -> void:
+	if _lobby_table.get_child_count() > 0:
+		for lobby in _lobby_table.get_children():
+			lobby.queue_free()
+	
+	Steam.requestLobbyList()
+
+func _on_host_button_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_matchmake_button_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_join_button_pressed() -> void:
+	pass # Replace with function body.

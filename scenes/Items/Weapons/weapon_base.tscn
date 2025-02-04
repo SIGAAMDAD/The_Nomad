@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://brtukmd1ep2ci"]
+[gd_scene load_steps=6 format=3 uid="uid://brtukmd1ep2ci"]
 
 [ext_resource type="Script" path="res://scripts/items/WeaponEntity.gd" id="1_r7i5y"]
+[ext_resource type="Texture2D" path="res://textures/env/muzzle/mf0.dds" id="2_gbakd"]
+[ext_resource type="Texture2D" path="res://textures/env/muzzle/mf1.dds" id="3_5j14u"]
+[ext_resource type="Texture2D" path="res://textures/env/muzzle/mf2.dds" id="4_2wko3"]
+[ext_resource type="Texture2D" path="res://textures/env/muzzle/mf3.dds" id="5_8e488"]
 
 [node name="WeaponBase" type="Node2D" groups=["Archive"]]
 script = ExtResource("1_r7i5y")
@@ -20,5 +24,31 @@ one_shot = true
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(24, 0)
+
+[node name="MuzzleFlashes" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="MuzzleFlashes"]
+visible = false
+scale = Vector2(0.308594, 0.21875)
+texture = ExtResource("2_gbakd")
+offset = Vector2(160, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="MuzzleFlashes"]
+visible = false
+scale = Vector2(0.309, 0.219)
+texture = ExtResource("3_5j14u")
+offset = Vector2(160, 0)
+
+[node name="Sprite2D3" type="Sprite2D" parent="MuzzleFlashes"]
+visible = false
+scale = Vector2(0.309, 0.219)
+texture = ExtResource("4_2wko3")
+offset = Vector2(160, 0)
+
+[node name="Sprite2D4" type="Sprite2D" parent="MuzzleFlashes"]
+visible = false
+scale = Vector2(0.309, 0.219)
+texture = ExtResource("5_8e488")
+offset = Vector2(160, 0)
 
 [connection signal="timeout" from="UseTime" to="." method="_on_use_time_timeout"]

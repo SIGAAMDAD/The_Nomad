@@ -12,12 +12,15 @@ class_name HeadsUpDisplay extends CanvasLayer
 
 @onready var _weapon_data:WeaponEntity = null
 @onready var _weapon_status:TextureRect = $WeaponStatus
+@onready var _weapon_mode_bladed:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed
+@onready var _weapon_mode_blunt:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt
+@onready var _weapon_mode_firearm:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm
 @onready var _weapon_status_firearm:VBoxContainer = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus
 @onready var _weapon_status_melee:VBoxContainer = $WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus
 @onready var _weapon_status_melee_icon:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon
 @onready var _weapon_status_firearm_icon:TextureRect = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon
-@onready var _weapon_status_bullet_count:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/AmmoInMagazineLabel
-@onready var _weapon_status_magazine_size:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/MagazineSizeLabel
+@onready var _weapon_status_bullet_count:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel
+@onready var _weapon_status_bullet_reserve:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel
 
 # why do I hear boss music...?
 @onready var _boss_health_bar:Control = $BossHealthBar
@@ -40,10 +43,10 @@ func set_weapon( weapon: WeaponEntity ) -> void:
 		
 		_weapon_status_firearm_icon.texture = weapon._data.icon
 		_weapon_status_bullet_count.text = str( weapon._bullets_left )
-		_weapon_status_magazine_size.text = str( weapon._data.properties.magsize )
-		
-		_weapon_status_bullet_count._bullet_count = weapon._bullets_left
-		_weapon_status_bullet_count._magazine_size = weapon._data.properties.magsize
+		if weapon._reserve:
+			_weapon_status_bullet_reserve.text = str( weapon._reserve.amount )
+		else:
+			_weapon_status_bullet_reserve.text = "0"
 		
 		_weapon_data = weapon
 	else:
@@ -88,12 +91,15 @@ func _process( _delta: float ) -> void:
 		show()
 	
 	if _weapon_data:
+		_weapon_mode_bladed.material.set( "shader_parameter/status_active", _weapon_data._last_used_mode & WeaponBase.Properties.IsBladed )
+		_weapon_mode_blunt.material.set( "shader_parameter/status_active", _weapon_data._last_used_mode & WeaponBase.Properties.IsBlunt )
 		if _weapon_data._last_used_mode & WeaponBase.Properties.IsFirearm:
+			_weapon_mode_firearm.material.set( "shader_parameter/status_active", true )
 			_weapon_status_bullet_count.text = str( _weapon_data._bullets_left )
-			_weapon_status_magazine_size.text = str( _weapon_data._data.properties.magsize )
-		
-			_weapon_status_bullet_count._bullet_count = _weapon_data._bullets_left
-			_weapon_status_bullet_count._magazine_size = _weapon_data._data.properties.magsize
+			if _weapon_data._reserve:
+				_weapon_status_bullet_reserve.text = str( _weapon_data._reserve.amount )
+		else:
+			_weapon_mode_firearm.material.set( "shader_parameter/status_active", false )
 
 func _on_status_bar_timer_timeout() -> void:
 	_health_bar.hide()

@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwx3w3c22rx4i"]
+
+[ext_resource type="PackedScene" uid="uid://dfbq2o0ts0kaj" path="res://scenes/multiplayer/match_time_label.tscn" id="1_yknkq"]
+
+[node name="MassacreOverlay" type="CanvasLayer"]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="ScoreContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="PointLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "0"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="RankingLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="MatchTimeLabel" parent="MarginContainer/VBoxContainer" instance=ExtResource("1_yknkq")]
+layout_mode = 2
+size_flags_horizontal = 4

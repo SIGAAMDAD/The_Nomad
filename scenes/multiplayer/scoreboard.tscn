@@ -1,0 +1,627 @@
+[gd_scene load_steps=4 format=3 uid="uid://dev51gj4hyfmq"]
+
+[ext_resource type="Script" path="res://scripts/multiplayer/scoreboard.gd" id="1_shx72"]
+
+[sub_resource type="Gradient" id="Gradient_g1gde"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 0.352941)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7d7y8"]
+gradient = SubResource("Gradient_g1gde")
+
+[node name="Scoreboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shx72")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_7d7y8")
+
+[node name="Title" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "MATCH STATISTICS"
+
+[node name="PlayerList" type="MarginContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(0, 340)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MassacreData" type="VBoxContainer" parent="MarginContainer/PlayerList"]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="Legend" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 98
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/Legend"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "NAME"
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/Legend"]
+layout_mode = 2
+text = " KILLS"
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/Legend"]
+layout_mode = 2
+text = "DEATHS"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/Legend"]
+layout_mode = 2
+text = "               "
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PlayerList/MassacreData"]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="PlayerData0" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData0"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData0"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData0"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData0"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData1" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData1"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData1"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData1"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData1"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData2" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData2"]
+visible = false
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData2"]
+visible = false
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData2"]
+visible = false
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData2"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData3" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData3"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData3"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData3"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData3"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData4" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData4"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData4"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData4"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData4"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData5" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData5"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData5"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData5"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData5"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData6" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData6"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData6"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData6"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData6"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData7" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData7"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData7"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData7"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData7"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData8" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData8"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData8"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData8"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData8"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData9" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData9"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData9"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData9"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData9"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData10" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData10"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData10"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData10"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData10"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData11" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData11"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData11"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData11"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData11"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData12" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData12"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData12"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData12"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData12"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData13" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData13"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData13"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData13"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData13"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData14" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData14"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData14"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData14"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData14"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="PlayerData15" type="HBoxContainer" parent="MarginContainer/PlayerList/MassacreData"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData15"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 10
+text = "SIGAAMDAD"
+clip_text = true
+
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData15"]
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "32"
+clip_text = true
+
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData15"]
+custom_minimum_size = Vector2(156, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/MassacreData/PlayerData15"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0"

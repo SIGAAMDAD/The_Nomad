@@ -89,7 +89,14 @@ var _left_arm:int = 0
 var _right_arm:int = 0
 var _last_used_arm:Arm = null
 
+# multiplayer data
+var _multiplayer_username:String = ""
 var _multiplayer_team:int = 0
+var _multiplayer_captures:int = 0
+var _multiplayer_returns:int = 0
+var _multiplayer_hill_time:int = 0
+var _multiplayer_kills:int = 0
+var _multiplayer_deaths:int = 0
 
 var _dash_overheat_amount:float = 0.0
 var _movement:Vector2 = Vector2.ZERO

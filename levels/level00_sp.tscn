@@ -1,13 +1,25 @@
-[gd_scene load_steps=10 format=3 uid="uid://uei7yka6gloe"]
+[gd_scene load_steps=18 format=3 uid="uid://uei7yka6gloe"]
 
 [ext_resource type="Script" path="res://scripts/single_player.gd" id="1_cx6df"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="2_mu0nc"]
+[ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="3_gvbor"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_wx1u4"]
 [ext_resource type="PackedScene" uid="uid://bjtff1xak3v85" path="res://scenes/adaptive_soundtrack.tscn" id="4_5bs55"]
+[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/asturion_double_barrel_item.tres" id="4_88apl"]
+[ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_fnig8"]
 [ext_resource type="AudioStream" uid="uid://d4ixbt1vsatks" path="res://music/combat/level00_ambience.ogg" id="5_k2wiq"]
+[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge_item.tres" id="6_fjbdk"]
 [ext_resource type="AudioStream" uid="uid://clxkb8ts3vyny" path="res://music/combat/level00_combat_intro.ogg" id="6_v24lx"]
 [ext_resource type="AudioStream" uid="uid://d1t5s1lgx4r4o" path="res://music/combat/level00_combat_main.ogg" id="7_acent"]
+[ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/Checkpoint.tscn" id="7_o1egt"]
+[ext_resource type="PackedScene" uid="uid://cik5jg0byotvb" path="res://scenes/mobs/mob_base.tscn" id="8_bxr50"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="8_yjbl7"]
+[ext_resource type="Resource" uid="uid://b6weighxt4yd7" path="res://resources/mobs/mercenary/shotgunner.tres" id="9_y5sux"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_dm7o4"]
+vertices = PackedVector2Array(298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 508.461, 189.344, 1671.25, 318, 1798.84, 318, 1794.15, 607.008, 532.438, 608.977, 1217.13, 386.898, 1151.78, -101.961, 1392.87, -101.031, 1391.12, 41.0938, 1149.79, -9.17188, 989.688, 45.1016, 903.07, -4.84375, 1214.13, 164.93, 1667.25, 162.062, 1000.31, 389.102, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(3, 4, 5, 0), PackedInt32Array(6, 7, 8, 9, 10), PackedInt32Array(6, 10, 11, 12), PackedInt32Array(13, 14, 15, 16, 17), PackedInt32Array(18, 19, 20, 21), PackedInt32Array(21, 20, 22, 23), PackedInt32Array(17, 24, 25, 13), PackedInt32Array(26, 17, 16), PackedInt32Array(22, 26, 16, 12, 23), PackedInt32Array(27, 28, 23, 12), PackedInt32Array(27, 12, 5, 29, 30, 31), PackedInt32Array(5, 12, 11, 0)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(152, 80, 280, 80, 288, -8, 152, -8, 168, -48, 193, -53, 188, -89, 370, -92, 373, -109, 663, -117, 838, -117, 843, -99, 903, -96, 912, -15, 1140, -19, 1142, -112, 1403, -111, 1401, 51, 1000, 55, 1010, 379, 1207, 377, 1204, 155, 1677, 152, 1681, 308, 1809, 308, 1804, 617, 523, 619, 499, 199, 168, 187, -49, 195, -40, 6, 103, 10)])
 
 [sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_7c8dp"]
 clip_count = 3
@@ -37,10 +49,50 @@ script = ExtResource("1_cx6df")
 
 [node name="Level" parent="." instance=ExtResource("2_mu0nc")]
 
+[node name="WeaponBase" parent="Level" instance=ExtResource("3_gvbor")]
+position = Vector2(-344, 117)
+_data = ExtResource("4_88apl")
+
+[node name="AmmoBase" parent="Level" instance=ExtResource("5_fnig8")]
+position = Vector2(-311, 118)
+_data = ExtResource("6_fjbdk")
+
+[node name="Checkpoints" type="Node2D" parent="Level"]
+
+[node name="Checkpoint" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
+light_mask = 15
+visibility_layer = 2
+position = Vector2(-267, 113)
+
+[node name="Checkpoint2" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
+position = Vector2(35.1385, 83.3684)
+
+[node name="Checkpoint3" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
+position = Vector2(951.076, 383.869)
+
+[node name="Checkpoint4" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
+position = Vector2(1757.45, 352.218)
+
+[node name="OpposingForce" type="Node2D" parent="Level"]
+
+[node name="Guard0" parent="Level/OpposingForce" instance=ExtResource("8_bxr50")]
+position = Vector2(662, 66)
+_data = ExtResource("9_y5sux")
+_direction = 1
+
+[node name="Guard1" parent="Level/OpposingForce" instance=ExtResource("8_bxr50")]
+position = Vector2(656, 497)
+_data = ExtResource("9_y5sux")
+_direction = 3
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Level/OpposingForce"]
+position = Vector2(156, -16)
+navigation_polygon = SubResource("NavigationPolygon_dm7o4")
+
 [node name="Network" type="Node" parent="."]
 
 [node name="Player1" parent="Network" instance=ExtResource("3_wx1u4")]
-position = Vector2(584, 562)
+position = Vector2(427, 575)
 
 [node name="AdaptiveSoundtrack" parent="." node_paths=PackedStringArray("_soundtrack") instance=ExtResource("4_5bs55")]
 _soundtrack = NodePath("../AudioStreamPlayer")
