@@ -19,10 +19,18 @@ var _lobby_max_members:int = 4
 
 var _lobby_name:String = ""
 var _lobby_list:Array[ int ] = []
+var _matchmaking_phase:int = 0
 
 # filters
 var _lobby_filter_map:String = "Any"
 var _lobby_filter_gamemode:String = "Any"
+
+func matchmaking_loop() -> void:
+	if _matchmaking_phase < 4:
+		Steam.addRequestLobbyListDistanceFilter( _matchmaking_phase )
+		
+		# get the list
+		Steam.requestLobbyList()
 
 func open_lobby_list() -> void:
 	if _lobby_filter_map != "Any":
@@ -65,8 +73,10 @@ func create_lobby() -> void:
 
 func _on_lobby_create( connect: int, lobbyId: int ) -> void:
 	if connect != 1:
+		push_error( "lobby couldn't be created!" )
 		return
 	
+	print( "Created lobby %s" % lobbyId )
 	_lobby_id = lobbyId
 	Steam.setLobbyJoinable( _lobby_id, true )
 	Steam.setLobbyData( _lobby_id, "name", _lobby_name )

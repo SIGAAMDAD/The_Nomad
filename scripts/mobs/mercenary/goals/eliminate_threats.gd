@@ -10,6 +10,4 @@ func priority() -> int:
 	return 50 if _actor._world_state.get_state( "has_target", false ) else 1
 
 func get_desired_state() -> Dictionary:
-	return {
-		"has_target": false
-	}
+	return { "has_target": false }

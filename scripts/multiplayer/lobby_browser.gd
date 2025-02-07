@@ -6,6 +6,8 @@ extends Control
 
 @onready var _lobby_table:VBoxContainer = $LobbyList/Lobbies
 
+signal on_host_game()
+
 class LobbyData:
 	var _map:String = ""
 	var _player_count:int = 0
@@ -19,18 +21,10 @@ class LobbyData:
 
 var _lobby_list:Dictionary = {}
 
-func _on_host_pressed() -> void:
-	SteamLobby.create_lobby()
-	_host_game.hide()
-	_lobby_table.hide()
-
 func join_lobby( lobbyId: int ) -> void:
 	Steam.joinLobby( lobbyId )
 	_host_game.hide()
 	_lobby_table.hide()
-
-func _ready() -> void:
-	_host_game.pressed.connect( _on_host_pressed )
 
 func get_lobby_list() -> void:
 	for lobby in SteamLobby._lobby_list:
@@ -60,7 +54,7 @@ func _on_refresh_button_pressed() -> void:
 	Steam.requestLobbyList()
 
 func _on_host_button_pressed() -> void:
-	pass # Replace with function body.
+	emit_signal( "on_host_game" )
 
 func _on_matchmake_button_pressed() -> void:
 	pass # Replace with function body.

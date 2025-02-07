@@ -78,12 +78,16 @@ class SteamAchievement:
 	var _name:String = ""
 	var _description:String = ""
 	var _achieved:bool = false
+	var _value:Variant = null
 	
 	func _init( id: AchievementID, name: String, description: String ) -> void:
 		_id = id
-		_id_string = AchievementID.keys()[ id ]
+		_id_string = "ACH_" + AchievementID.keys()[ id ].to_upper()
 		_name = name
 		_description = description
+		
+		if SteamManager._is_me:
+			Steam.setAchievement( _id_string )
 		
 		print( "Added SteamAPI Achievement ", _id_string, "/\"", _name, "\"" )
 

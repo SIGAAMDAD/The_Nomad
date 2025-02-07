@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_sfham")
 _name = "Bandit Camp"
+_filename = "level00"
 _data_massacre = ExtResource("1_oqrmv")
 _mode_massacre = true
 _mode_team_brawl = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmc6jfet87hxo"]
+[gd_scene load_steps=7 format=3 uid="uid://bmc6jfet87hxo"]
 
 [ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_kaxx3"]
 [ext_resource type="Script" path="res://scripts/multiplayer/lobby_factory.gd" id="1_p4euo"]
@@ -10,6 +10,8 @@ colors = PackedColorArray(0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_nundc"]
 gradient = SubResource("Gradient_neljt")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_348y5"]
 
 [node name="LobbyFactory" type="Control"]
 layout_mode = 3
@@ -66,6 +68,17 @@ texture = SubResource("GradientTexture2D_nundc")
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
+[node name="NameContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 116
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+text = "NAME"
+
+[node name="NameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+
 [node name="MapContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 128
@@ -96,7 +109,7 @@ theme_override_constants/separation = 46
 layout_mode = 2
 text = "MAX PLAYER(S)"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+[node name="MaxPlayersHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 min_value = 1.0
@@ -121,9 +134,21 @@ popup/item_1/id = 1
 popup/item_2/text = "FRIENDS ONLY"
 popup/item_2/id = 2
 
-[node name="Button" type="Button" parent="MarginContainer"]
+[node name="CreateButton" type="Button" parent="MarginContainer"]
 custom_minimum_size = Vector2(140, 60)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "CREATE"
+
+[node name="MapIcon" type="TextureRect" parent="MarginContainer"]
+visible = false
+clip_contents = true
+custom_minimum_size = Vector2(200, 160)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+texture = SubResource("PlaceholderTexture2D_348y5")
+expand_mode = 2
+
+[connection signal="pressed" from="MarginContainer/CreateButton" to="." method="_on_create_button_pressed"]

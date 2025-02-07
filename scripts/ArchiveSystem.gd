@@ -56,6 +56,8 @@ func save_game() -> void:
 			node.save( file )
 	
 	file.close()
+	
+	SteamManager.save_cloud_file( "SLOT_" + var_to_str( _save_slot ) + ".ngd" )
 	emit_signal( "on_save_game_end" )
 
 func load_game() -> void:

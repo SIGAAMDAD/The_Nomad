@@ -16,3 +16,6 @@ class_name MobData extends Resource
 
 # how fast the mob goes from suspicious to FUCK THEM UP!
 @export var _sight_detection_speed:float = 0.1
+
+
+@export var _max_attack_range:float = 560.0

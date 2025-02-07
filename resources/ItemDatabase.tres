@@ -1,8 +1,6 @@
-[gd_resource type="InventoryDatabase" load_steps=12 format=3 uid="uid://clhvh7ktysxhx"]
+[gd_resource type="InventoryDatabase" load_steps=10 format=3 uid="uid://clhvh7ktysxhx"]
 
-[ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="1_fdjvp"]
 [ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge_item.tres" id="2_eb41b"]
-[ext_resource type="Texture2D" uid="uid://uxkebd6eqafw" path="res://textures/env/iconw_katana.png" id="3_ljr05"]
 [ext_resource type="Texture2D" path="res://textures/env/iconw_psmg.dds" id="4_dfq3r"]
 
 [sub_resource type="ItemCategory" id="ItemCategory_klnow"]
@@ -29,7 +27,6 @@ id = "WEAPON_FIREARM_ASTURION_DOUBLE_BARREL"
 can_stack = false
 max_stack = 1
 name = "Asturion Double-Barrel"
-icon = ExtResource("1_fdjvp")
 weight = 15.0
 size = Vector2i(6, 2)
 categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_hj1uw")])
@@ -39,7 +36,6 @@ id = "WEAPON_MELEE_KATANA"
 can_stack = false
 max_stack = 1
 name = "Katana"
-icon = ExtResource("3_ljr05")
 weight = 7.2
 size = Vector2i(4, 1)
 categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_x6v50")])

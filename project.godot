@@ -35,7 +35,7 @@ privateKey="59b91461435b8a75"
 [application]
 
 config/name="The Nomad"
-config/version="1.2.0-pre-alpha"
+config/version="120"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "GL Compatibility")
 run/max_fps=60
@@ -61,6 +61,11 @@ SteamData="*res://autoloads/Steam/SteamData.gd"
 GUIDE="*res://addons/guide/guide.gd"
 ItemDatabase="*res://autoloads/ItemDatabase.gd"
 DebrisFactory="*res://autoloads/DebrisFactory.gd"
+MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
 
 [display]
 
@@ -77,14 +82,9 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="The Nomad"
 
-[editor]
-
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true
-
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg")
+enabled=PackedStringArray("res://addons/inventory-system/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg")
 
 [input]
 

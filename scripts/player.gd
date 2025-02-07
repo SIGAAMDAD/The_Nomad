@@ -28,9 +28,10 @@ var _weapon_slots:Array[ WeaponSlot ]
 
 @onready var _drantaril:CharacterBody2D = null
 
-@onready var _ammo_pellet_stack:ItemStack = ItemStack.new()
-@onready var _ammo_heavy_stack:ItemStack = ItemStack.new()
-@onready var _ammo_light_stack:ItemStack = ItemStack.new()
+@onready var _last_used_ammo:AmmoEntity = null
+@onready var _ammo_pellet_stacks:Array[ AmmoStack ] = []
+@onready var _ammo_heavy_stacks:Array[ AmmoStack ] = []
+@onready var _ammo_light_stacks:Array[ AmmoStack ] = []
 @onready var _inventory:Inventory = $Inventory
 
 @onready var _move_gravel:Array[ AudioStreamPlayer2D ] = [
@@ -293,10 +294,6 @@ func mount_horse() -> void:
 #	_drantaril.global_transform = global_transform
 
 func _ready() -> void:
-	_ammo_light_stack = AmmoStack.new()
-	_ammo_heavy_stack = AmmoStack.new()
-	_ammo_pellet_stack = AmmoStack.new()
-	
 	_idle_timer.start()
 	_hud.init( _health, _rage )
 	if _drantaril:
@@ -488,21 +485,43 @@ func _on_idle_animation_finished() -> void:
 
 func on_pickup_ammo( ammo: AmmoEntity ) -> void:
 	var stack:AmmoStack = null
+	
 	match ammo._data.properties[ "type" ]:
 		AmmoBase.Type.Light:
-			stack = _ammo_light_stack as AmmoStack
+			for index in _ammo_light_stacks:
+				if ammo._data == index._ammo_type:
+					stack = index
+					break
+			
+			stack = AmmoStack.new()
+			_ammo_light_stacks.push_back( stack )
 		AmmoBase.Type.Heavy:
-			stack = _ammo_heavy_stack as AmmoStack
+			for index in _ammo_heavy_stacks:
+				if ammo._data == index._ammo_type:
+					stack = index
+					break
+			
+			stack = AmmoStack.new()
+			_ammo_heavy_stacks.push_back( stack )
 		AmmoBase.Type.Pellets:
-			stack = _ammo_pellet_stack as AmmoStack
+			for index in _ammo_pellet_stacks:
+				if ammo._data == index._ammo_type:
+					stack = index
+					break
+			
+			stack = AmmoStack.new()
+			_ammo_pellet_stacks.push_back( stack )
 	
+	stack.set_type( ammo )
 	_inventory.add_to_stack( stack, ammo._data.id, ammo._data.properties.stack_add_amount, ammo._data.properties )
 	
 	for i in _MAX_WEAPON_SLOTS:
 		var slot := _weapon_slots[i]
 		if slot.is_used() && slot._weapon._data.properties.ammo_type == ammo._data.properties.type:
 			slot._weapon.set_reserve( stack )
-			slot._weapon.set_ammo( ammo )
+			slot._weapon.set_ammo( ammo._data )
+	
+	_last_used_ammo = ammo
 
 func get_equipped_weapon() -> WeaponSlot:
 	return _weapon_slots[ _current_weapon ]
@@ -538,6 +557,24 @@ func pickup_weapon( weapon: WeaponEntity ) -> void:
 			break
 	
 	_inventory.add( weapon._data.id, 1, weapon._data.properties )
+	
+	var stack:AmmoStack = null
+	match weapon._data.properties.ammo_type:
+		AmmoBase.Type.Light:
+			if _ammo_light_stacks.size():
+				stack = _ammo_light_stacks.back()
+				weapon.set_reserve( stack )
+				weapon.set_ammo( _ammo_light_stacks.back()._ammo_type )
+		AmmoBase.Type.Heavy:
+			if _ammo_heavy_stacks.size():
+				stack = _ammo_heavy_stacks.back()
+				weapon.set_reserve( stack )
+				weapon.set_ammo( _ammo_heavy_stacks.back()._ammo_type )
+		AmmoBase.Type.Pellets:
+			if _ammo_pellet_stacks.size():
+				stack = _ammo_pellet_stacks.back()
+				weapon.set_reserve( stack )
+				weapon.set_ammo( _ammo_pellet_stacks.back()._ammo_type )
 	
 	if SettingsData._equip_weapon_on_pickup:
 		_hud.set_weapon( weapon )

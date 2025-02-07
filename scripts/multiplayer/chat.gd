@@ -7,7 +7,7 @@ var _text_buffer:Array[ String ]
 
 func _on_chat_message_recieved( sendor: int, message: String ) -> void:
 	var username := Steam.getFriendPersonaName( sendor )
-	_chat.text += str( "[", username, "] %s" % message )
+	_chat.text += str( "[", username, "] %s\n" % message )
 
 func _ready() -> void:
 	_chat.hide()

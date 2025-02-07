@@ -1,6 +1,7 @@
 class_name MultiplayerMap extends Resource
 
 @export var _name:String = ""
+@export var _filename:String = ""
 
 @export var _data_massacre:PackedScene = null
 @export var _data_team_brawl:PackedScene = null

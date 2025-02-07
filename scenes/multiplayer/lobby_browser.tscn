@@ -212,6 +212,7 @@ theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "MATCHMAKE"
 
 [node name="ControlBar2" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0

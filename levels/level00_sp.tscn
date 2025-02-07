@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://uei7yka6gloe"]
+[gd_scene load_steps=20 format=3 uid="uid://uei7yka6gloe"]
 
 [ext_resource type="Script" path="res://scripts/single_player.gd" id="1_cx6df"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="2_mu0nc"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://cik5jg0byotvb" path="res://scenes/mobs/mob_base.tscn" id="8_bxr50"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="8_yjbl7"]
 [ext_resource type="Resource" uid="uid://b6weighxt4yd7" path="res://resources/mobs/mercenary/shotgunner.tres" id="9_y5sux"]
+[ext_resource type="AudioStream" uid="uid://ympaig6jw4ft" path="res://sounds/barks/21199.mp3" id="10_73lfj"]
+[ext_resource type="AudioStream" uid="uid://dqnt12mpl1t04" path="res://sounds/barks/21167.mp3" id="11_ixjvl"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_dm7o4"]
 vertices = PackedVector2Array(298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 508.461, 189.344, 1671.25, 318, 1798.84, 318, 1794.15, 607.008, 532.438, 608.977, 1217.13, 386.898, 1151.78, -101.961, 1392.87, -101.031, 1391.12, 41.0938, 1149.79, -9.17188, 989.688, 45.1016, 903.07, -4.84375, 1214.13, 164.93, 1667.25, 162.062, 1000.31, 389.102, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)
@@ -57,6 +59,14 @@ _data = ExtResource("4_88apl")
 position = Vector2(-311, 118)
 _data = ExtResource("6_fjbdk")
 
+[node name="AmmoBase2" parent="Level" instance=ExtResource("5_fnig8")]
+position = Vector2(536, 91)
+_data = ExtResource("6_fjbdk")
+
+[node name="AmmoBase3" parent="Level" instance=ExtResource("5_fnig8")]
+position = Vector2(1339, 415)
+_data = ExtResource("6_fjbdk")
+
 [node name="Checkpoints" type="Node2D" parent="Level"]
 
 [node name="Checkpoint" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
@@ -67,27 +77,38 @@ position = Vector2(-267, 113)
 [node name="Checkpoint2" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
 position = Vector2(35.1385, 83.3684)
 
-[node name="Checkpoint3" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
-position = Vector2(951.076, 383.869)
-
 [node name="Checkpoint4" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
 position = Vector2(1757.45, 352.218)
 
 [node name="OpposingForce" type="Node2D" parent="Level"]
 
-[node name="Guard0" parent="Level/OpposingForce" instance=ExtResource("8_bxr50")]
+[node name="Guard0" parent="Level/OpposingForce" node_paths=PackedStringArray("_target_spotted") instance=ExtResource("8_bxr50")]
 position = Vector2(662, 66)
 _data = ExtResource("9_y5sux")
+_target_spotted = [NodePath("../TargetSpotted0"), NodePath("../TargetSpotted1")]
 _direction = 1
 
-[node name="Guard1" parent="Level/OpposingForce" instance=ExtResource("8_bxr50")]
+[node name="Guard1" parent="Level/OpposingForce" node_paths=PackedStringArray("_target_spotted") instance=ExtResource("8_bxr50")]
 position = Vector2(656, 497)
 _data = ExtResource("9_y5sux")
+_target_spotted = [NodePath("../TargetSpotted0"), NodePath("../TargetSpotted1")]
 _direction = 3
+
+[node name="Guard2" parent="Level/OpposingForce" node_paths=PackedStringArray("_target_spotted") instance=ExtResource("8_bxr50")]
+position = Vector2(1312, -59)
+_data = ExtResource("9_y5sux")
+_target_spotted = [NodePath("../TargetSpotted0"), NodePath("../TargetSpotted1")]
+_direction = 2
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="Level/OpposingForce"]
 position = Vector2(156, -16)
 navigation_polygon = SubResource("NavigationPolygon_dm7o4")
+
+[node name="TargetSpotted0" type="AudioStreamPlayer2D" parent="Level/OpposingForce"]
+stream = ExtResource("10_73lfj")
+
+[node name="TargetSpotted1" type="AudioStreamPlayer2D" parent="Level/OpposingForce"]
+stream = ExtResource("11_ixjvl")
 
 [node name="Network" type="Node" parent="."]
 

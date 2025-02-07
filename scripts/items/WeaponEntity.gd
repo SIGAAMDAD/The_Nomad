@@ -7,7 +7,7 @@ class_name WeaponEntity extends Node2D
 @onready var _raycast = $RayCast2D
 @onready var _bullets = load( "res://scenes/Items/bullet.tscn" )
 @onready var _reserve:AmmoStack = null
-@onready var _ammo:AmmoEntity = null
+@onready var _ammo:ItemDefinition = null
 @onready var _animations:AnimatedSprite2D = $Animations/AnimatedSprite2D
 @onready var _use_time:Timer = $UseTime
 @onready var _use_blunt_sfx:AudioStreamPlayer2D = $UseBlunt
@@ -175,10 +175,10 @@ func _ready() -> void:
 	
 	add_child( _icon_sprite )
 
-func _draw():
-	if _ammo and SettingsData._draw_aim_line:
-		if _ammo._data.properties.range:
-			draw_line( global_position, global_position + Vector2( _ammo._data.properties.range ), Color.RED )
+#func _draw():
+#	if _ammo and SettingsData._draw_aim_line:
+#		if _ammo.properties.range:
+#			draw_line( global_position, global_position + Vector2( _ammo.properties.range ), Color.RED )
 
 func set_use_mode( weaponMode: int ) -> void:
 	_last_used_mode = weaponMode
@@ -209,7 +209,7 @@ func use_blunt( damage: float, weaponMode: int ) -> float:
 	
 	return damage
 
-func set_ammo( ammo: AmmoEntity ) -> void:
+func set_ammo( ammo: ItemDefinition ) -> void:
 	_ammo = ammo
 
 func set_reserve( stack: AmmoStack ) -> void:
@@ -250,7 +250,7 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	# start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 	
 #	var bullet = _bullets.instantiate()
-#	bullet._data = _ammo._data
+#	bullet._data = _data
 #	bullet._dir = _owner._arm_rotation
 #	bullet._spawn_angle = _owner._draw_rotation
 #	bullet._spawn_pos = global_position
@@ -259,6 +259,13 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	_current_muzzle_flash = _muzzle_flashes[ randi_range( 0, _muzzle_flashes.size() - 1 ) ]
 	_current_muzzle_flash.show()
 	_current_muzzle_flash.rotation = _raycast.rotation
+	
+	if _owner._arm_left._animations.flip_h:
+		_current_muzzle_flash.offset.x = -160
+	else:
+		_current_muzzle_flash.offset.x = 160
+	
+	_current_muzzle_flash.flip_h = _owner._arm_left._animations.flip_h
 	
 	if _raycast.is_colliding():
 		DebrisFactory.add_debris( _raycast.target_position )
@@ -272,7 +279,7 @@ func _process( _delta: float ) -> void:
 		return
 	
 	_raycast.global_rotation = _owner._arm_rotation
-	_raycast.target_position.x = _ammo._data.properties.range
+	_raycast.target_position.x = _ammo.properties.range
 
 func use( weaponMode: int ) -> float:
 	if Engine.time_scale == 0.0:
