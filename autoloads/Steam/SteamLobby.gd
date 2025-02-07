@@ -19,29 +19,23 @@ var _lobby_max_members:int = 4
 
 var _lobby_name:String = ""
 var _lobby_list:Array[ int ] = []
-var _matchmaking_phase:int = 0
 
 # filters
 var _lobby_filter_map:String = "Any"
 var _lobby_filter_gamemode:String = "Any"
-
-func matchmaking_loop() -> void:
-	if _matchmaking_phase < 4:
-		Steam.addRequestLobbyListDistanceFilter( _matchmaking_phase )
-		
-		# get the list
-		Steam.requestLobbyList()
 
 func open_lobby_list() -> void:
 	if _lobby_filter_map != "Any":
 		Steam.addRequestLobbyListStringFilter( "map", _lobby_filter_map, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
 	if _lobby_filter_gamemode != "Any":
 		Steam.addRequestLobbyListStringFilter( "gamemode", _lobby_filter_gamemode, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
+	
 	Steam.addRequestLobbyListDistanceFilter( Steam.LobbyDistanceFilter.LOBBY_DISTANCE_FILTER_WORLDWIDE )
 	Steam.requestInternetServerList( SteamManager._steam_app_id, [] )
 	Steam.requestLobbyList()
 
-func _on_lobby_match_list( lobbies ) -> void:
+func _on_lobby_match_list( lobbies: Array ) -> void:
+	_lobby_list.clear()
 	for lobby in lobbies:
 		_lobby_list.push_back( lobby )
 
