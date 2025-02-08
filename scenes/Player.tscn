@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=95 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_hpfa0"]
 [ext_resource type="Texture2D" uid="uid://bs262hx302eh6" path="res://textures/spritesheets/skin.png" id="2_q3siw"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://bvtb6qcnb7uve" path="res://sounds/player/slide1.ogg" id="16_b1rse"]
 [ext_resource type="Script" path="res://scripts/player_system/arm.gd" id="20_gxr8m"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
+[ext_resource type="Script" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="21_o2nva"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bpphr"]
 atlas = ExtResource("2_q3siw")
@@ -666,6 +667,7 @@ position = Vector2(-7, 13)
 emitting = false
 
 [node name="JumpkitSparks" parent="Animations" instance=ExtResource("5_c3w3j")]
+visible = false
 position = Vector2(-12, 6)
 scale = Vector2(0.106667, 0.0841667)
 frame_progress = 0.0
@@ -790,6 +792,9 @@ one_shot = true
 [node name="Inventory" type="Inventory" parent="."]
 inventory_name = "Backpack"
 database = ExtResource("21_kgn6m")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("21_o2nva")
 
 [connection signal="animation_looped" from="Animations/Legs" to="." method="_on_legs_animation_looped"]
 [connection signal="animation_finished" from="Animations/JumpkitSparks" to="." method="_on_jumpkit_sparks_animation_finished"]

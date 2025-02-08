@@ -17,7 +17,7 @@ class LobbyData:
 	var _map:String = ""
 	var _player_count:int = 0
 	var _max_players:int = 0
-	var _game_mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Massacre
+	var _game_mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Bloodbath
 	
 	func _init( map: String, playerCount: int, maxPlayers: int, gameMode: String ) -> void:
 		_map = map
@@ -77,7 +77,7 @@ func auto_matchmake() -> void:
 			print( "Attempting to join lobby %s..." % lobby )
 			Steam.joinLobby( lobby )
 
-func _process( delta: float ) -> void:
+func _process(  delta: float ) -> void:
 	if !_lobby_table.get_child_count():
 		get_lobby_list()
 

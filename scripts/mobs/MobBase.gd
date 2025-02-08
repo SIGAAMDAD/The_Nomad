@@ -138,17 +138,25 @@ func _process( delta: float ) -> void:
 			sightTarget = ray.get_collider()
 			break
 	
-	if sightTarget && _sight_detection_amount < _data._sight_detection_time:
+	if sightTarget:
+		_sight_target = sightTarget
 		_detection_meter.default_color = Color( lerpf( 0.05, 1.0, _sight_detection_amount ), 0.0, 0.0, 1.0 )
 		_sight_detection_amount += _data._sight_detection_speed * delta
+		if _sight_detection_amount >= _data._sight_detection_time:
+			_world_state.set_state( "target", sightTarget )
+			_navigation.target_position = sightTarget.global_position
+			_target = sightTarget
+	elif _sight_detection_amount < _data._sight_detection_time:
+		_world_state.set_state( "alert", true )
+		_world_state.set_state( "search_position", _sight_target.global_position )
 	else:
 		_detection_meter.default_color = Color.WHITE
 		_sight_detection_amount = 0.0
 	
-	if _sight_detection_amount >= 1.0 && sightTarget:
-		_world_state.set_state( "target", sightTarget )
-		_navigation.target_position = sightTarget.global_position
-		_target = sightTarget
+	#if _sight_detection_amount >= 1.0:
+#		_world_state.set_state( "target", sightTarget )
+#		_navigation.target_position = sightTarget.global_position
+#		_target = sightTarget
 	
 	if velocity == Vector2.ZERO:
 		_animations.play( "idle" )

@@ -69,6 +69,6 @@ _spritesheet = SubResource("SpriteFrames_xu1ye")
 _collision_radius = 7.0
 _valid_actions = PackedStringArray("Idle", "InvestigateDisturbance", "Guard", "ShootTarget")
 _valid_goals = PackedStringArray("FindThreats", "EliminateThreats")
-_sight_detection_time = 10.0
+_sight_detection_time = 3.0
 _sight_detection_speed = 0.5
 _max_attack_range = 560.0

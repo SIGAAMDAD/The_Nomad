@@ -32,8 +32,8 @@ func _on_create_button_pressed() -> void:
 	
 	var modeName:String = ""
 	match _game_mode_list.selected:
-		MultiplayerMode.GameMode.Massacre:
-			modeName = "massacre"
+		MultiplayerMode.GameMode.Bloodbath:
+			modeName = "bloodbath"
 		MultiplayerMode.GameMode.TeamBrawl:
 			modeName = "teambrawl"
 		MultiplayerMode.GameMode.CaptureTheFlag:

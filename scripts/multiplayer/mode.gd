@@ -2,7 +2,7 @@ class_name MultiplayerMode extends Node
 
 enum GameMode {
 	# classic modes
-	Massacre,
+	Bloodbath,
 	TeamBrawl,
 	CaptureTheFlag,
 	KingOfTheHill,
@@ -17,7 +17,7 @@ enum GameMode {
 };
 
 const MODE_NAMES:Dictionary = {
-	GameMode.Massacre: "Massacre",
+	GameMode.Bloodbath: "Bloodbath",
 	GameMode.TeamBrawl: "Team Brawl",
 	GameMode.CaptureTheFlag: "Capture The Flag",
 	GameMode.KingOfTheHill: "King of the Hill",

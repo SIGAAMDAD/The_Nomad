@@ -12,7 +12,7 @@ func get_action_name() -> String:
 	return "InvestigateDisturbance"
 
 func get_cost( _blackboard ) -> int:
-	return 10
+	return _blackboard[ "search_position" ].distance_to( _blackboard[ "position" ] )
 
 func get_preconditions() -> Dictionary:
 	return PRECONDITIONS

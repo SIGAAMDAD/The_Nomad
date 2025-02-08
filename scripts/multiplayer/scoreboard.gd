@@ -9,7 +9,7 @@ func _ready() -> void:
 	var data_table:VBoxContainer = null
 	
 	match _root._mode:
-		MultiplayerMode.GameMode.Massacre:
+		MultiplayerMode.GameMode.Bloodbath:
 			data_table = _massacre_data
 	
 	for player in _root._players.values():

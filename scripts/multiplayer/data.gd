@@ -1,11 +1,18 @@
-extends Node2D
+class_name MultiplayerData extends Node2D
 
 @onready var _network = $Network
 
-var _mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Massacre
+class Team:
+	var _score:int = 0
+	var _players:Array[ Player ] = []
+	var _index:int = 0
+
+var _mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Bloodbath
 var _players:Dictionary = {}
 
-func _ready() -> void:
+func init( mode: MultiplayerMode.GameMode ) -> void:
+	_mode = mode
+	
 	for member in SteamLobby._lobby_members:
 		var steamId:int = member[ "steam_id" ]
 		

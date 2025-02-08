@@ -183,6 +183,7 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_mpu1u")
 
 [node name="MatchMakingLabel" type="Label" parent="."]
+visible = false
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 offset_left = 424.0
@@ -203,7 +204,7 @@ process_thread_group = 0
 physics_interpolation_mode = 2
 auto_translate_mode = 0
 editor_description = ""
-visible = true
+visible = false
 modulate = Color(1, 1, 1, 1)
 self_modulate = Color(1, 1, 1, 1)
 show_behind_parent = false

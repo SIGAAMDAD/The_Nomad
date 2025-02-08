@@ -58,10 +58,11 @@ SteamManager="*res://autoloads/Steam/SteamManager.gd"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.gd"
 SteamLobby="*res://autoloads/Steam/SteamLobby.gd"
 SteamData="*res://autoloads/Steam/SteamData.gd"
-GUIDE="*res://addons/guide/guide.gd"
 ItemDatabase="*res://autoloads/ItemDatabase.gd"
 DebrisFactory="*res://autoloads/DebrisFactory.gd"
 MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
+GUIDE="*res://addons/guide/guide.gd"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [debug]
 
@@ -84,7 +85,7 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/inventory-system/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/health_hitbox_hurtbox/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg")
 
 [input]
 
@@ -182,6 +183,7 @@ chat_send={
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
+locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue")
 
 [physics]
 
