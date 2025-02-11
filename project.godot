@@ -55,6 +55,7 @@ ArchiveSystem="*res://scripts/ArchiveSystem.gd"
 LoadManager="*res://scripts/LoadManager.gd"
 SoundManager="*res://addons/sound_manager/sound_manager.gd"
 SteamManager="*res://autoloads/Steam/SteamManager.gd"
+SteamNetwork="*res://autoloads/Steam/SteamNetwork.gd"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.gd"
 SteamLobby="*res://autoloads/Steam/SteamLobby.gd"
 SteamData="*res://autoloads/Steam/SteamData.gd"
@@ -63,10 +64,16 @@ DebrisFactory="*res://autoloads/DebrisFactory.gd"
 MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
 GUIDE="*res://addons/guide/guide.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+Console="*res://addons/console/console.gd"
+BloodSurface="*res://scenes/effects/blood_surface.tscn"
 
 [debug]
 
 file_logging/enable_file_logging=true
+
+[dialogue_manager]
+
+runtime/advanced/uses_dotnet=true
 
 [display]
 
@@ -85,7 +92,7 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/health_hitbox_hurtbox/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg")
+enabled=PackedStringArray("res://addons/RadialMenu/plugin.cfg", "res://addons/code_time/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/health_hitbox_hurtbox/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/radial_menu/plugin.cfg", "res://addons/rubonnek.quest_manager/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
 
 [input]
 
@@ -187,6 +194,8 @@ locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialog
 
 [physics]
 
+2d/run_on_separate_thread=true
+2d/physics_engine="Rapier2D"
 2d/solver/solver_iterations=12
 
 [rendering]

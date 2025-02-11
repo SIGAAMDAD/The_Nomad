@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=4 uid="uid://dy3x8fkn247sb"]
+[gd_scene load_steps=19 format=4 uid="uid://dy3x8fkn247sb"]
 
 [ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_t3van"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
 [ext_resource type="Script" path="res://scripts/tile_map_layer.gd" id="4_ixyk1"]
+[ext_resource type="Script" path="res://addons/simple_multimesh/SimpleMultiMesh2D/SimpleMultiMesh2D.gd" id="5_etmyv"]
 [ext_resource type="PackedScene" uid="uid://mgg8wmojy0ea" path="res://scenes/scenery/hanging_corpse.tscn" id="6_bb5sl"]
 [ext_resource type="PackedScene" uid="uid://cur8nem7iswfk" path="res://scenes/scenery/burning_barrel.tscn" id="7_f4pjs"]
 
@@ -28,6 +29,20 @@ b = Vector2(133.032, 770.419)
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_4iw77"]
 a = Vector2(-102.057, 4.94348)
 b = Vector2(877.366, -223.927)
+
+[sub_resource type="MultiMesh" id="MultiMesh_h8gg4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rek5e"]
+size = Vector2(207.539, 70.4611)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xkle"]
+size = Vector2(480.14, 112.363)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fw8ft"]
+size = Vector2(117.611, 89.1283)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8xu6"]
+size = Vector2(982.225, 220.096)
 
 [node name="InTheDarkofTheNight" type="Node2D"]
 position = Vector2(940, 448)
@@ -98,17 +113,56 @@ shape = SubResource("SegmentShape2D_4iw77")
 position = Vector2(833.436, -134.377)
 scale = Vector2(0.72, 0.72)
 
-[node name="BurningBarrel" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
+[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="TileMapLayer/Scenery"]
+
+[node name="SimpleMultiMesh2D" type="MultiMeshInstance2D" parent="TileMapLayer/Scenery/MultiMeshInstance2D"]
+multimesh = SubResource("MultiMesh_h8gg4")
+script = ExtResource("5_etmyv")
+update_mode = 2
+
+[node name="BurningBarrel" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
 position = Vector2(-186.06, 391.094)
 
-[node name="BurningBarrel2" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel2" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
 position = Vector2(404.242, -117.82)
 
-[node name="BurningBarrel3" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel3" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
 position = Vector2(916.721, 514.521)
 
-[node name="BurningBarrel4" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel4" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
 position = Vector2(-326.004, 674.66)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="TileMapLayer"]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D"]
+position = Vector2(-167.475, -51.1668)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_rek5e")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="TileMapLayer"]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D2"]
+position = Vector2(608.108, -168.593)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_0xkle")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="TileMapLayer"]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D3"]
+position = Vector2(411.002, 53.2095)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_fw8ft")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="TileMapLayer"]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(221.301, 97.3554)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_v8xu6")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.140447, 0.140447, 0.140447, 1)

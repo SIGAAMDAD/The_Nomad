@@ -91,6 +91,7 @@ var _right_arm:int = 0
 var _last_used_arm:Arm = null
 
 # multiplayer data
+var _multiplayer_id:int = 0
 var _multiplayer_username:String = ""
 var _multiplayer_team:MultiplayerData.Team = null
 var _multiplayer_flag_captures:int = 0
@@ -293,7 +294,20 @@ func mount_horse() -> void:
 	add_child( _collision )
 #	_drantaril.global_transform = global_transform
 
+func set_player_position( position ) -> void:
+	global_position = position
+
 func _ready() -> void:
+	if GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
+		_multiplayer_username = SteamManager._steam_username
+		_multiplayer_id = SteamManager._steam_id
+		
+		SteamNetwork.register_rpc( self, "set_player_position", SteamNetwork.PERMISSION.CLIENT_ALL )
+		SteamNetwork.register_rset( self, "_health", SteamNetwork.PERMISSION.CLIENT_ALL )
+		SteamNetwork.register_rset( self, "_rage", SteamNetwork.PERMISSION.CLIENT_ALL )
+		SteamNetwork.register_rset( self, "global_position", SteamNetwork.PERMISSION.CLIENT_ALL )
+		SteamNetwork.register_rpc( self, "on_death", SteamNetwork.PERMISSION.CLIENT_ALL )
+	
 	_idle_timer.start()
 	_hud.init( _health, _rage )
 	if _drantaril:
@@ -307,6 +321,9 @@ func _ready() -> void:
 		_weapon_slots[i]._index = i
 
 func _physics_process( _delta: float ) -> void:
+	if Console.is_visible():
+		return
+	
 	if velocity != Vector2.ZERO:
 		idle_reset()
 	
@@ -349,6 +366,9 @@ func can_dash() -> bool:
 	return !( _flags & PlayerFlags.Dashing ) && _dash_cooldown.time_left == 0.0
 
 func _process( delta: float ) -> void:
+	if Console.is_visible():
+		return
+	
 	if _split_screen:
 		var direction := Input.get_axis( _move_left_name, _move_right_name )
 		
@@ -557,6 +577,11 @@ func pickup_weapon( weapon: WeaponEntity ) -> void:
 			break
 	
 	_inventory.add( weapon._data.id, 1, weapon._data.properties )
+	
+	_torso_animation.flip_h = false
+	_arm_left._animations.flip_h = false
+	_arm_right._animations.flip_h = false
+	_leg_animation.flip_h = false
 	
 	var stack:AmmoStack = null
 	match weapon._data.properties.ammo_type:

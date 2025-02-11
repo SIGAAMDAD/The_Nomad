@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_14"
+type="Resource"
+uid="uid://1mrb6qxkews0"
+path="res://.godot/imported/merc_master.dialogue-f6c699192bf94c7d846792f14c2757b6.tres"
+
+[deps]
+
+source_file="res://resources/dialogue/merc_master.dialogue"
+dest_files=["res://.godot/imported/merc_master.dialogue-f6c699192bf94c7d846792f14c2757b6.tres"]
+
+[params]
+
+defaults=true

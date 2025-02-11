@@ -1,0 +1,7 @@
+~ start
+Mercenary Master: A new day for a new job, ain't it?
+Mercenary Master: Would you like a roster?
+- Give Me a Contract:
+	Mercenary Master: Of course...
+- Later...: => END!
+=> END

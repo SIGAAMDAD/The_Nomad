@@ -12,6 +12,7 @@ grow_vertical = 2
 script = ExtResource("1_yg0bw")
 
 [node name="TextEdit" type="TextEdit" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -31,4 +32,5 @@ offset_top = -31.67
 offset_right = 296.0
 offset_bottom = -0.670013
 grow_vertical = 0
+theme_override_colors/selection_color = Color(0, 0, 0, 1)
 placeholder_text = "Press '/' to begin typing"

@@ -5,17 +5,27 @@ extends Control
 
 var _text_buffer:Array[ String ]
 
-func _on_chat_message_recieved( sendor: int, message: String ) -> void:
+func _on_chat_message_received( sendor: int, message: String ) -> void:
+	print( "got message" )
 	var username := Steam.getFriendPersonaName( sendor )
-	_chat.text += str( "[", username, "] %s\n" % message )
+	Console.print_line( "[%s] %s\n" % [ username, message ] )
+	_chat.text += str( "[%s] %s\n" % [ username, message ] )
 
 func _ready() -> void:
+	print( "Connecting" )
+	SteamLobby.chat_message_received.connect( _on_chat_message_received )
 	_chat.hide()
 
 func _process( _delta: float ) -> void:
 	if Input.is_action_just_pressed( "chat_open" ):
-		_chat.show()
-		_message.editable = true
-	if Input.is_action_just_pressed( "chat_send" ):
+		if _message.editable:
+			_chat.hide()
+		else:
+			_chat.show()
+		
+		_message.editable = !_message.editable
+	
+	if Input.is_action_just_pressed( "chat_send" ) && _message.editable:
 		_message.editable = false
-		SteamLobby.send_message( _message.text )
+		Steam.sendLobbyChatMsg( SteamManager._steam_id, _message.text )
+		_message.clear()

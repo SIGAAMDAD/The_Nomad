@@ -1,0 +1,19 @@
+~ start
+if not GameState.has_met_asturion
+	Asturion: [[Ah]], Raio, its been a while.
+	set GameState.has_met_asturion = true
+Asturion: What would you like, old friend?
+- I need a tool forged
+	Asturion: Sure! => forge_tool
+- I need a new weapon:
+	Asturion: Why not. => forge_weapon
+- I'm good => END
+=> END
+
+~ forge_tool
+
+=> END
+
+~ forge_weapon
+
+=> END

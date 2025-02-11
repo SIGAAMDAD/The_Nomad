@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=96 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_hpfa0"]
 [ext_resource type="Texture2D" uid="uid://bs262hx302eh6" path="res://textures/spritesheets/skin.png" id="2_q3siw"]
@@ -629,6 +629,9 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_qih7w"]
 radius = 7.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
+radius = 153.118
+
 [node name="Player" type="CharacterBody2D" groups=["Archive"]]
 light_mask = 0
 visibility_layer = 2
@@ -795,6 +798,13 @@ database = ExtResource("21_kgn6m")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("21_o2nva")
+
+[node name="MultiplayerBulletTime" type="Node2D" parent="."]
+
+[node name="Area2D" type="Area2D" parent="MultiplayerBulletTime"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MultiplayerBulletTime/Area2D"]
+shape = SubResource("CircleShape2D_0s7ty")
 
 [connection signal="animation_looped" from="Animations/Legs" to="." method="_on_legs_animation_looped"]
 [connection signal="animation_finished" from="Animations/JumpkitSparks" to="." method="_on_jumpkit_sparks_animation_finished"]

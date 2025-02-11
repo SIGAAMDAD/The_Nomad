@@ -89,7 +89,6 @@ func on_finish_loading() -> void:
 
 func begin_level( difficulty: GameConfiguration.GameDifficulty ) -> void:
 	GameConfiguration._game_difficulty = difficulty
-	GameConfiguration._in_level = true
 	
 	var playerList := Input.get_connected_joypads()
 	

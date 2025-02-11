@@ -11,6 +11,8 @@ class_name MobBase extends CharacterBody2D
 
 @export_category( "Sounds" )
 @export var _target_spotted:Array[ AudioStreamPlayer2D ]
+@export var _take_damage:Array[ AudioStreamPlayer2D ]
+@export var _die:Array[ AudioStreamPlayer2D ]
 
 @export_category( "Start" )
 @export var _direction:GameConfiguration.DirType = GameConfiguration.DirType.North
@@ -48,6 +50,15 @@ var _valid_action_list:Array[ GoapAction ]
 func play_sfx( sfx: AudioStreamPlayer2D ) -> void:
 	sfx.global_position = global_position
 	sfx.play()
+
+func on_damage( damage: float ) -> void:
+	print( "Taking damage" )
+	
+	_health -= damage
+	play_sfx( _take_damage[ randi_range( 0, _take_damage.size() - 1 ) ] )
+	
+	var bloodSplatter = load( "res://scenes/effects/blood_particle.tscn" ).instantiate()
+	add_child( bloodSplatter )
 
 func allocate_goals() -> void:
 	for goal in _data._valid_goals:
@@ -146,7 +157,7 @@ func _process( delta: float ) -> void:
 			_world_state.set_state( "target", sightTarget )
 			_navigation.target_position = sightTarget.global_position
 			_target = sightTarget
-	elif _sight_detection_amount < _data._sight_detection_time:
+	elif _sight_detection_amount < _data._sight_detection_time && _sight_target:
 		_world_state.set_state( "alert", true )
 		_world_state.set_state( "search_position", _sight_target.global_position )
 	else:

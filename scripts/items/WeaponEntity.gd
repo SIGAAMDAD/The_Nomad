@@ -268,7 +268,12 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	_current_muzzle_flash.flip_h = _owner._arm_left._animations.flip_h
 	
 	if _raycast.is_colliding():
-		DebrisFactory.add_debris( _raycast.target_position )
+		var collision = _raycast.get_collider()
+		if collision is Player && GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
+			SteamNetwork.rpc_on_client( collision._multiplayer_id, _owner, "_on_damage", [ damage ] )
+			return damage
+		elif collision is MobBase:
+			collision.on_damage( damage )
 	
 	play_sfx( _use_firearm_sfx )
 	

@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5pey0pciodsr"]
+
+[ext_resource type="Texture2D" uid="uid://dxarrhmwshdrv" path="res://textures/blood.png" id="1_c8rxd"]
+[ext_resource type="Script" path="res://scripts/blood_particle.gd" id="1_svax4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_anvg3"]
+size = Vector2(2, 2)
+
+[node name="BloodParticle" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1_svax4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_c8rxd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_anvg3")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -31,8 +31,7 @@ enum GameMode {
 
 var _mute_unfocused:bool = true
 var _game_difficulty:GameDifficulty = GameDifficulty.Easy
-
-var _in_level:bool = false
+var _paused:bool = false
 
 var _game_mode:GameMode = GameMode.Singleplayer
 var _hosting_lobby: bool = false

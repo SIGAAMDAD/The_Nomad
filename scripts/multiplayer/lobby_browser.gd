@@ -4,10 +4,13 @@ extends Control
 @onready var _refresh_lobbies:Button = $ControlBar/RefreshButton
 @onready var _matchmake:Button = $ControlBar/MatchmakeButton
 
-@onready var _matchmaking_spinner:Spinner = $LobbyMetadataContainer/MatchMakingSpinner
-@onready var _matchmaking_label:Label = $LobbyMetadataContainer/MatchMakingLabel
+@onready var _matchmaking_spinner:Spinner = $MatchMakingSpinner
+@onready var _matchmaking_label:Label = $MatchMakingLabel
 
 @onready var _lobby_table:VBoxContainer = $LobbyList/Lobbies
+
+@onready var _loading_screen:Resource = preload( "res://scenes/menus/loading_screen.tscn" )
+@onready var _new_loading_screen:Node = null
 
 var _matchmaking_phase:int = 0
 
@@ -26,10 +29,35 @@ class LobbyData:
 
 var _lobby_list:Dictionary = {}
 
-func join_lobby( lobbyId: int ) -> void:
-	Steam.joinLobby( lobbyId )
-	_host_game.hide()
-	_lobby_table.hide()
+func _ready() -> void:
+	SteamLobby.lobby_joined.connect( _on_lobby_joined )
+	Steam.lobby_joined.connect( _on_lobby_joined )
+
+func on_loaded_map() -> void:
+	GameConfiguration.LoadedLevel.ChangeScene()
+	_new_loading_screen.hide()
+	SoundManager.stop_music( 0.5 )
+	self.hide()
+
+func _on_lobby_joined( lobbyId: int ) -> void:
+	print( "...joined" )
+	SteamLobby._lobby_id = lobbyId
+	
+	_new_loading_screen = _loading_screen.instantiate()
+	get_tree().get_root().add_child( _new_loading_screen )
+	
+	var modeName:String = ""
+	match SteamLobby._lobby_gamemode:
+		MultiplayerMode.GameMode.Bloodbath:
+			modeName = "bloodbath"
+		MultiplayerMode.GameMode.TeamBrawl:
+			modeName = "teambrawl"
+		MultiplayerMode.GameMode.CaptureTheFlag:
+			modeName = "ctf"
+	
+	print( "Loading map..." )
+	GameConfiguration.LoadedLevel = AsyncScene.new( "res://levels/" + MultiplayerMapManager._map_cache[ SteamLobby._lobby_map ]._filename + "_mp_" + modeName + ".tscn", AsyncScene.LoadingSceneOperation.Replace )
+	GameConfiguration.LoadedLevel.OnComplete.connect( on_loaded_map )
 
 func matchmaking_loop() -> void:
 	if _matchmaking_phase < 4:
@@ -39,6 +67,11 @@ func matchmaking_loop() -> void:
 		Steam.requestLobbyList()
 	else:
 		push_error( "[STEAM] failed to automatically match player with a lobby, please try again." )
+
+func _on_join_game( lobbyId: int ) -> void:
+	print( "Joining lobby %s..." % lobbyId )
+	emit_signal( "set_lobby_room_menu" )
+	Steam.joinLobby( lobbyId )
 
 func get_lobby_list() -> void:
 	for lobby in SteamLobby._lobby_list:
@@ -52,6 +85,8 @@ func get_lobby_list() -> void:
 		var button = Button.new()
 		button.set_text( lobbyName )
 		button.set_size( Vector2( 240, 20 ) )
+		
+		button.connect( "pressed", Callable( self, "_on_join_game" ).bind( lobby ) )
 		
 		_lobby_table.add_child( button )
 		_lobby_list[ lobbyName ] = LobbyData.new( lobbyMap, lobbyMemberCount, lobbyMaxMemberCount, lobbyGameMode )

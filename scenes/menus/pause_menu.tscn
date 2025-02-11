@@ -56,7 +56,7 @@ alignment = 0
 [node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "EXIT_TO_MAIN_MENU"
+text = "EXIT_TO_MAIN_MENU_BUTTON"
 alignment = 0
 
 [node name="ExitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]

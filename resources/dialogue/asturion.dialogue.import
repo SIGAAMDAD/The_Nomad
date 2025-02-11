@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_14"
+type="Resource"
+uid="uid://bra887cq3crrn"
+path="res://.godot/imported/asturion.dialogue-269281f2585e462b76a702bd04bdf240.tres"
+
+[deps]
+
+source_file="res://resources/dialogue/asturion.dialogue"
+dest_files=["res://.godot/imported/asturion.dialogue-269281f2585e462b76a702bd04bdf240.tres"]
+
+[params]
+
+defaults=true

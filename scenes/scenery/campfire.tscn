@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://dquuw2v114b15"]
+
+[ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="1_peitd"]
+[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="2_y35lw"]
+[ext_resource type="AudioStream" uid="uid://dmjel1d8n14nq" path="res://sounds/env/campfire.ogg" id="3_bcxb1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgbbe"]
+atlas = ExtResource("1_peitd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mahwr"]
+atlas = ExtResource("1_peitd")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4e2v"]
+atlas = ExtResource("1_peitd")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0gxoi"]
+atlas = ExtResource("1_peitd")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tcma8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgbbe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mahwr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4e2v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0gxoi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="Campfire" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_tcma8")
+autoplay = "default"
+frame_progress = 0.0443089
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+rotation = -2.45849e-05
+energy = 2.64
+shadow_enabled = true
+shadow_color = Color(0.166853, 0.166853, 0.166853, 0)
+texture = ExtResource("2_y35lw")
+texture_scale = 5.5
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_bcxb1")
+autoplay = true
+max_distance = 500.0
+attenuation = 27.8576
+bus = &"SFX"
+playback_type = 1
+parameters/looping = true

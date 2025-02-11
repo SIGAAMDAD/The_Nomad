@@ -4,12 +4,12 @@
 [ext_resource type="Script" path="res://scripts/multiplayer/lobby_factory.gd" id="1_p4euo"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_11eah"]
 
-[sub_resource type="Gradient" id="Gradient_neljt"]
+[sub_resource type="Gradient" id="Gradient_b251r"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_nundc"]
-gradient = SubResource("Gradient_neljt")
+gradient = SubResource("Gradient_b251r")
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_348y5"]
 
@@ -77,7 +77,9 @@ layout_mode = 2
 text = "NAME"
 
 [node name="NameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/NameContainer"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+placeholder_text = "MY LOBBY"
 
 [node name="MapContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
