@@ -1,2 +1,0 @@
-extends BaseQuestPool
-class_name CompletedQuestPool
