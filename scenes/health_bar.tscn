@@ -29,7 +29,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_dj7nm")
 theme_override_styles/fill = SubResource("StyleBoxFlat_n73pq")
-value = 50.0
+value = 80.0
 show_percentage = false
 script = ExtResource("1_fuljx")
 
@@ -43,7 +43,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_ltk1q")
 theme_override_styles/fill = SubResource("StyleBoxFlat_pvcxv")
-value = 80.0
+value = 100.0
 show_percentage = false
 
 [node name="Timer" type="Timer" parent="."]

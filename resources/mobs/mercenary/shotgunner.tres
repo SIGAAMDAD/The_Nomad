@@ -1,62 +1,7 @@
-[gd_resource type="Resource" script_class="MobData" load_steps=10 format=3 uid="uid://b6weighxt4yd7"]
+[gd_resource type="Resource" script_class="MobData" load_steps=3 format=3 uid="uid://b6weighxt4yd7"]
 
 [ext_resource type="Script" path="res://scripts/mobs/MobData.gd" id="1_8d4qf"]
-[ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="1_i58p3"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2ux7p"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jmscn"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7dxfa"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(64, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t1tkj"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(96, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ddq0e"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(128, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_eo3hh"]
-atlas = ExtResource("1_i58p3")
-region = Rect2(160, 0, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_xu1ye"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2ux7p")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_jmscn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7dxfa")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t1tkj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ddq0e")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_eo3hh")
-}],
-"loop": true,
-"name": &"move",
-"speed": 5.0
-}]
+[ext_resource type="SpriteFrames" uid="uid://bbd1gljxn4cqk" path="res://resources/animations/mobs/merc_shotgunner.tres" id="1_65i8l"]
 
 [resource]
 script = ExtResource("1_8d4qf")
@@ -65,7 +10,7 @@ _max_health = 100.0
 _movement_speed = 80.0
 _max_view_distance = 140.0
 _view_angle_amount = 0.785398
-_spritesheet = SubResource("SpriteFrames_xu1ye")
+_spritesheet = ExtResource("1_65i8l")
 _collision_radius = 7.0
 _valid_actions = PackedStringArray("Idle", "InvestigateDisturbance", "Guard", "ShootTarget")
 _valid_goals = PackedStringArray("FindThreats", "EliminateThreats")

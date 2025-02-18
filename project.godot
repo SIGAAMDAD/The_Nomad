@@ -34,7 +34,7 @@ privateKey="59b91461435b8a75"
 
 [application]
 
-config/name="The Nomad"
+config/name="TheNomad"
 config/version="120"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "GL Compatibility")
@@ -62,10 +62,12 @@ SteamData="*res://autoloads/Steam/SteamData.gd"
 ItemDatabase="*res://autoloads/ItemDatabase.gd"
 DebrisFactory="*res://autoloads/DebrisFactory.gd"
 MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
-GUIDE="*res://addons/guide/guide.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 Console="*res://addons/console/console.gd"
-BloodSurface="*res://scenes/effects/blood_surface.tscn"
+GUIDE="*res://addons/guide/guide.gd"
+Questify="*res://addons/questify/quest_manager.gd"
+QuestState="*res://autoloads/QuestManager.gd"
+TurnManager="*res://addons/godot_gameplay_systems/turn_based/./autoloads/turn_manager.gd"
 
 [debug]
 
@@ -73,6 +75,7 @@ file_logging/enable_file_logging=true
 
 [dialogue_manager]
 
+editor/wrap_long_lines=true
 runtime/advanced/uses_dotnet=true
 
 [display]
@@ -92,32 +95,33 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/RadialMenu/plugin.cfg", "res://addons/code_time/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/health_hitbox_hurtbox/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/radial_menu/plugin.cfg", "res://addons/rubonnek.quest_manager/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
+enabled=PackedStringArray("res://addons/code_time/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
+
+[global_group]
+
+SceneRelevant=""
+Archive=""
 
 [input]
 
 move_left_0={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"location":0,"echo":false,"script":null)
-, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":0,"axis_value":-1.0,"script":null)
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":0,"axis_value":-1.0,"script":null)
 ]
 }
 move_right_0={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"location":0,"echo":false,"script":null)
-, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":0,"axis_value":1.0,"script":null)
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":0,"axis_value":1.0,"script":null)
 ]
 }
 move_up_0={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"location":0,"echo":false,"script":null)
-, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":1,"axis_value":-1.0,"script":null)
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":1,"axis_value":-1.0,"script":null)
 ]
 }
 move_down_0={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"location":0,"echo":false,"script":null)
-, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":1,"axis_value":1.0,"script":null)
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":1,"axis_value":1.0,"script":null)
 ]
 }
 look_left_0={
@@ -138,16 +142,6 @@ dash_0={
 slide_0={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194326,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
-]
-}
-bullet_time_0={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"location":0,"echo":false,"script":null)
-]
-}
-use_weapon_0={
-"deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(274, 30),"global_position":Vector2(288, 100),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
 ui_exit={
@@ -186,11 +180,16 @@ chat_send={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+use_weapon_0={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(191, 33),"global_position":Vector2(205, 103),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
 
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
-locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue")
+locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue")
 
 [physics]
 
@@ -198,11 +197,15 @@ locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialog
 2d/physics_engine="Rapier2D"
 2d/solver/solver_iterations=12
 
+[questify]
+
+general/update_polling=true
+general/update_interval=0.5
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=3
 gl_compatibility/nvidia_disable_threaded_optimization=false
-renderer/rendering_method.mobile="forward_plus"
 renderer/rendering_method.web="forward_plus"
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true

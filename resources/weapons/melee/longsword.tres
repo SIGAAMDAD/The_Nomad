@@ -1,0 +1,6 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://kivw1x2pdd3i"]
+
+[resource]
+id = "WEAPON_MELEE_LONGSWORD"
+can_stack = false
+max_stack = 1

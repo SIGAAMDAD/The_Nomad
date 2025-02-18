@@ -1,7 +1,18 @@
 ~ start
 Mercenary Master: A new day for a new job, ain't it?
-Mercenary Master: Would you like a roster?
-- Give Me a Contract:
-	Mercenary Master: Of course...
-- Later...: => END!
+- Show me the list
+	Mercenary Master: Of course... => END
+- Show me the highest paying jobs
+	Mercenary Master: Of course... => list_high_pay_jobs
+- Show me the lowest paying jobs
+	Mercenary Master: Of course... => list_low_pay_jobs
+- Later... => END
+=> END
+
+~ list_high_pay_jobs
+	do GameState.job_filter = MercenaryMaster.JobFilter.HighPaying
+=> END
+
+~ list_low_pay_jobs
+	do GameState.job_filter = MercenaryMaster.JobFilter.LowPaying
 => END

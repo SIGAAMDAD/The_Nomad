@@ -1,9 +1,14 @@
 class_name HeadsUpDisplay extends CanvasLayer
 
+@export var _owner:Player = null
 @onready var _health_bar:ProgressBar = $HealthBar
 @onready var _rage_bar:ProgressBar = $RageBar
 @onready var _status_bar_timer:Timer = $StatusBarTimer
+@onready var _inventory:MarginContainer = $Inventory/MarginContainer
+@onready var _stack_list:VBoxContainer = $Inventory/MarginContainer/StackList/VScrollBar/Cloner
+@onready var _item_stack_cloner:HBoxContainer = $Inventory/MarginContainer/ItemStackCloner
 
+@onready var _demon_eye_overlay:TextureRect = $Overlays/DemonEyeOverlay
 @onready var _reflex_overlay:TextureRect = $Overlays/ReflexModeOverlay
 @onready var _dash_overlay:TextureRect = $Overlays/DashOverlay
 
@@ -25,10 +30,34 @@ class_name HeadsUpDisplay extends CanvasLayer
 # why do I hear boss music...?
 @onready var _boss_health_bar:Control = $BossHealthBar
 
-func show_status_bars() -> void:
-	_health_bar.show()
-	_rage_bar.show()
-	_status_bar_timer.start()
+#func show_status_bars() -> void:
+#	_health_bar.show()
+#	_rage_bar.show()
+#	_status_bar_timer.start()
+
+func free() -> void:
+	_status_bar_timer.queue_free()
+	_demon_eye_overlay.queue_free()
+	_reflex_overlay.queue_free()
+	_dash_overlay.queue_free()
+	_save_spinner.queue_free()
+	_save_timer.queue_free()
+	_health_bar.queue_free()
+	_rage_bar.queue_free()
+	_inventory.queue_free()
+	_weapon_data.queue_free()
+	_weapon_status.queue_free()
+	_weapon_mode_bladed.queue_free()
+	_weapon_mode_blunt.queue_free()
+	_weapon_mode_firearm.queue_free()
+	_weapon_status_melee.queue_free()
+	_weapon_status_melee_icon.queue_free()
+	_weapon_status_firearm_icon.queue_free()
+	_weapon_status_bullet_count.queue_free()
+	_weapon_status_bullet_reserve.queue_free()
+	_weapon_status.queue_free()
+	_boss_health_bar.queue_free()
+	queue_free()
 
 func set_weapon( weapon: WeaponEntity ) -> void:
 	if weapon == null:
@@ -56,12 +85,88 @@ func set_weapon( weapon: WeaponEntity ) -> void:
 		_weapon_status_melee_icon.texture = weapon._data.icon
 
 func set_health( health: float ) -> void:
-	_health_bar.health = health
-	show_status_bars()
+	pass
+#	_health_bar.health = health
+#	show_status_bars()
 
 func set_rage( rage: float ) -> void:
 	_rage_bar.rage = rage
-	show_status_bars()
+#	show_status_bars()
+
+func _on_show_inventory() -> void:
+	if _inventory.visible:
+		_inventory.hide()
+		return
+	
+	for child in _stack_list.get_children():
+		_stack_list.remove_child( child )
+		child.queue_free()
+	
+	_stack_list.show()
+	
+#	for stack in _owner._ammo_light_stacks:
+#		for child in _stack_list.get_children():
+#			if child.get_child( 1 ).text == stack.item_id:
+#				_stack_list.remove_child( child )
+#				child.queue_free()
+#				break
+#		
+#		var data := _item_stack_cloner.duplicate()
+#		
+#		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
+#		data.get_child( 1 ).text = stack._ammo_type.name
+#		data.get_child( 2 ).text = var_to_str( stack.amount )
+#		data.show()
+#		
+#		_stack_list.add_child( data )
+#	
+#	for stack in _owner._ammo_pellet_stacks:
+#		for child in _stack_list.get_children():
+#			if child.get_child( 1 ).text == stack.item_id:
+#				_stack_list.remove_child( child )
+#				child.queue_free()
+#				break
+#		
+#		var data := _item_stack_cloner.duplicate()
+#		
+#		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
+#		data.get_child( 1 ).text = stack._ammo_type.name
+#		data.get_child( 2 ).text = var_to_str( stack.amount )
+#		data.show()
+#		
+#		_stack_list.add_child( data )
+	
+	for stack in _owner._ammo_light_stacks:
+		var data := _item_stack_cloner.duplicate()
+		
+		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
+		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
+		data.get_child( 2 ).text = var_to_str( stack.amount )
+		data.show()
+		
+		_stack_list.add_child( data )
+	
+	for stack in _owner._ammo_pellet_stacks:
+		var data := _item_stack_cloner.duplicate()
+		
+		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
+		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
+		data.get_child( 2 ).text = var_to_str( stack.amount )
+		data.show()
+		
+		_stack_list.add_child( data )
+	
+	for stack in _owner._inventory.stacks:
+		var data := _item_stack_cloner.duplicate()
+		
+		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
+		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
+		data.get_child( 2 ).text = var_to_str( stack.amount )
+		data.show()
+		
+		_stack_list.add_child( data )
+	
+	_inventory.show()
 
 func save_start() -> void:
 	_save_spinner.show()
@@ -102,8 +207,9 @@ func _process( _delta: float ) -> void:
 			_weapon_mode_firearm.material.set( "shader_parameter/status_active", false )
 
 func _on_status_bar_timer_timeout() -> void:
-	_health_bar.hide()
-	_rage_bar.hide()
+	pass
+#	_health_bar.hide()
+#	_rage_bar.hide()
 
 func _on_save_timer_timeout() -> void:
 	_save_spinner.hide()

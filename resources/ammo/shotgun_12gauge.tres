@@ -1,15 +1,24 @@
-[gd_resource type="Resource" script_class="AmmoBase" load_steps=4 format=3 uid="uid://c5y771tvjdvh2"]
+[gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://5cw6j8k2dvv"]
 
-[ext_resource type="Script" path="res://scripts/items/AmmoBase.gd" id="1_du2iu"]
-[ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="1_onl25"]
-[ext_resource type="AudioStream" uid="uid://c03oonlb7f07a" path="res://sounds/env/pickup_shells.ogg" id="2_gl7rm"]
+[ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="1_54ujd"]
+[ext_resource type="Texture2D" uid="uid://b3l3mwnbajnj3" path="res://textures/env/bullet_casings/gauge12_shell.png" id="2_7chbo"]
+
+[sub_resource type="Resource" id="Resource_aglva"]
+metadata/__load_path__ = "res://sounds/env/pickup_shells.ogg"
 
 [resource]
-script = ExtResource("1_du2iu")
-_name = "12 Gauge"
-_damage = 40.5
-_ammo_type = 2
-_shotgun_bullshit = 4
-_item_stack_add = 12
-_icon = ExtResource("1_onl25")
-_pickup_sfx = ExtResource("2_gl7rm")
+id = "AMMO_12_GAUGE"
+max_stack = 64
+name = "12 Gauge"
+icon = ExtResource("1_54ujd")
+weight = 2.5
+properties = {
+"casing_icon": ExtResource("2_7chbo"),
+"damage": 40.5,
+"pickup_sfx": SubResource("Resource_aglva"),
+"range": 2450.0,
+"shotgun bullshit": 2,
+"stack_add_amount": 12,
+"type": 2,
+"velocity": 20.0
+}

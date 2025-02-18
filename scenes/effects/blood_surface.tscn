@@ -1,8 +1,13 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmnpq3olu615d"]
 
-[ext_resource type="Texture2D" uid="uid://cwsgeosr5jlpf" path="res://icon.svg" id="1_eqif3"]
 [ext_resource type="Script" path="res://scripts/blood_layer.gd" id="1_jt66x"]
 
-[node name="BloodSurface" type="Sprite2D"]
-texture = ExtResource("1_eqif3")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uk6se"]
+
+[node name="BloodSurface" type="TextureRect"]
 script = ExtResource("1_jt66x")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_uk6se")

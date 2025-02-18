@@ -8,9 +8,9 @@
 [ext_resource type="Resource" uid="uid://b6weighxt4yd7" path="res://resources/mobs/mercenary/shotgunner.tres" id="4_gvixv"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/Checkpoint.tscn" id="5_dh0no"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="6_aen4t"]
-[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/asturion_double_barrel_item.tres" id="7_6m8bs"]
+[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="7_6m8bs"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="8_xqdcm"]
-[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge_item.tres" id="9_ymbik"]
+[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="9_ymbik"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_5vue1"]
 vertices = PackedVector2Array(298.953, -18, 166.758, -18, 175.258, -39.25, 204.203, -45.0391, 199.453, -79.1797, 378.406, -82.1406, 168, 176.992, -38.4922, 184.602, -30.4688, 16.2734, 97.7031, 19.8516, 146.789, 90, 289.133, 90, 508.461, 189.344, 1671.25, 318, 1798.84, 318, 1794.15, 607.008, 532.438, 608.977, 1217.13, 386.898, 1151.78, -101.961, 1392.87, -101.031, 1391.12, 41.0938, 1149.79, -9.17188, 989.688, 45.1016, 903.07, -4.84375, 1214.13, 164.93, 1667.25, 162.062, 1000.31, 389.102, 835.297, -89.3672, 894, -86.4297, 381.422, -99.2188, 663.281, -107, 830.398, -107)

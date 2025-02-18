@@ -1,0 +1,46 @@
+[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://druoc8lqhmj03"]
+
+[ext_resource type="Texture2D" uid="uid://dyruak14a8cgp" path="res://textures/spritesheets/iconw_baller.png" id="1_nxwng"]
+[ext_resource type="SpriteFrames" uid="uid://5ljyypo5nb3l" path="res://resources/animations/baller_firearm_right.tres" id="2_f1bax"]
+[ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_rtiu6"]
+[ext_resource type="AudioStream" uid="uid://d36ysh63o3oj4" path="res://sounds/weapons/baller_reload.ogg" id="4_wry6g"]
+[ext_resource type="AudioStream" uid="uid://b483j3gv22a2n" path="res://sounds/player/melee.wav" id="5_316jg"]
+[ext_resource type="AudioStream" uid="uid://tk54tphbo4b3" path="res://sounds/weapons/SMGFIRE.ogg" id="6_hdb51"]
+
+[resource]
+id = "WEAPON_FIREARM_BALLER"
+can_stack = false
+max_stack = 1
+name = "Baller"
+icon = ExtResource("1_nxwng")
+weight = 4.2
+size = Vector2i(2, 1)
+properties = {
+"ammo_type": 1,
+"blunt_damage": 12.5,
+"blunt_frames_left": ExtResource("2_f1bax"),
+"blunt_frames_right": ExtResource("2_f1bax"),
+"blunt_range": 20.5,
+"default_is_bladed": false,
+"default_is_blunt": false,
+"default_is_firearm": true,
+"default_is_onehanded": true,
+"default_is_twohanded": false,
+"description": "The \"Hardballer\" as it's called by many, or just The \"Baller\" pistol, is a specialized sidearm that uses musket balls for ammunition instead of your standard 9mm or .45 ACP.",
+"firearm_frames_left": ExtResource("2_f1bax"),
+"firearm_frames_right": ExtResource("2_f1bax"),
+"firemode": 0,
+"is_bladed": false,
+"is_blunt": false,
+"is_firearm": true,
+"is_onehanded": true,
+"is_twohanded": false,
+"magazine_type": 1,
+"magsize": 10,
+"pickup_sfx": ExtResource("3_rtiu6"),
+"reload_sfx": ExtResource("4_wry6g"),
+"reload_time": 1.1,
+"use_blunt": ExtResource("5_316jg"),
+"use_firearm": ExtResource("6_hdb51"),
+"use_time": 0.2
+}

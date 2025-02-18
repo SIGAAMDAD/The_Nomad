@@ -6,9 +6,9 @@ class_name AdaptiveSoundtrack extends Node2D
 
 func init( player: Player ) -> void:
 	_player = player
-	_soundtrack.play()
+#	_soundtrack.play()
 
 func _process( delta: float ) -> void:
-	if _soundtrack[ "parameters/switch_to_clip" ] != "Ambience":
-		_soundtrack[ "parameters/switch_to_clip" ] = "Ambience"
+#	if _soundtrack[ "parameters/switch_to_clip" ] != "Ambience":
+#		_soundtrack[ "parameters/switch_to_clip" ] = "Ambience"
 	pass

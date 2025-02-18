@@ -1,0 +1,20 @@
+[gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://clxmuasul3bij"]
+
+[ext_resource type="Texture2D" path="res://textures/env/icona_bullets.dds" id="1_jebx1"]
+[ext_resource type="AudioStream" uid="uid://cguh3yruypu3j" path="res://sounds/weapons/DSCASIN3.ogg" id="2_rr3sm"]
+[ext_resource type="Texture2D" uid="uid://dnthcnh3ldfqe" path="res://textures/env/bullet_casings/musket_shell.png" id="3_76vip"]
+
+[resource]
+id = "AMMO_MUSKET_SLUG"
+max_stack = 100
+name = "Musket Slug"
+icon = ExtResource("1_jebx1")
+weight = 1.15
+properties = {
+"casing_icon": ExtResource("3_76vip"),
+"damage": 12.25,
+"pickup_sfx": ExtResource("2_rr3sm"),
+"range": 400.1,
+"stack_add_amount": 48,
+"type": 1
+}

@@ -6,6 +6,3 @@ var _mode:WeaponBase.Properties = WeaponBase.Properties.None
 
 func is_used() -> bool:
 	return _weapon != null
-
-func _ready() -> void:
-	pass

@@ -2,36 +2,18 @@ extends Node2D
 
 signal on_save_game_start()
 signal on_save_game_end()
+signal load_game_start()
+signal load_game_end()
+
+const _SAVE_GAME_DATA_HEADER := "NGD_DATA!"
+const _MAX_SAVE_SLOTS:int = 3
 
 var _save_slot:int = 0
 var _current_chapter:int = 0
 var _current_part:int = 0
-const _max_save_slots:int = 3
-
-class SaveSlot:
-	var _slot:int = 0
-	var _sections:Dictionary
-	
-	func load( slot:int ) -> void:
-		print( "Loading save slot ", slot, ", please do not exit the game..." )
-		self._slot = slot
-		
-		var fileName := "user://SLOT_" + var_to_str( slot ) + ".ngd"
-		var file := FileAccess.open( fileName, FileAccess.READ );
-		
-		var sectionCount := file.get_32()
-		
-		for i in range( 0, sectionCount ):
-			var section := SaveSection.new()
-			section.load( file )
-			_sections[ section._name ] = section
-		
-		file.close()
-
-var _slots:Array[ JSON ]
 
 func slot_exists( slot: int ) -> bool:
-	return FileAccess.file_exists( "user://SLOT_" + var_to_str( slot ) + ".ngd" )
+	return FileAccess.file_exists( "user://SaveData/SLOT_" + var_to_str( str ) + "/GameData.ngd" )
 
 func set_slot( slot: int ) -> void:
 	_save_slot = slot
@@ -47,8 +29,13 @@ func save_game() -> void:
 	emit_signal( "on_save_game_start" )
 	print( "Saving game..." )
 	
-	var name := "user://SLOT_" + var_to_str( _save_slot ) + ".ngd"
+	DirAccess.make_dir_recursive_absolute( "user://SaveData/SLOT_" + var_to_str( _save_slot ) )
+	
+	var name := "user://SaveData/SLOT_" + var_to_str( _save_slot ) + "/GameData.ngd"
 	var file := FileAccess.open( name, FileAccess.WRITE )
+	
+	file.store_buffer( var_to_bytes( _SAVE_GAME_DATA_HEADER ) )
+	file.store_pascal_string( ProjectSettings.get_setting( "application/config/version" ) )
 	
 	var save_nodes := get_tree().get_nodes_in_group( "Archive" )
 	for node in save_nodes:
@@ -57,13 +44,25 @@ func save_game() -> void:
 	
 	file.close()
 	
-	SteamManager.save_cloud_file( "SLOT_" + var_to_str( _save_slot ) + ".ngd" )
+	SteamManager.save_cloud_file( "SaveData/SLOT_" + var_to_str( _save_slot ) + "/GameData.ngd" )
 	emit_signal( "on_save_game_end" )
 
 func load_game() -> void:
 	print( "Loading game..." )
-	var name := "user://SLOT_" + var_to_str( _save_slot ) + ".ngd"
+	var name := "user://SaveData/SLOT_" + var_to_str( _save_slot ) + "/GameData.ngd"
 	var file := FileAccess.open( name, FileAccess.READ )
+	if !file:
+		return
+	
+	var header := var_to_str( file.get_buffer( _SAVE_GAME_DATA_HEADER.length() ) )
+	if header != _SAVE_GAME_DATA_HEADER:
+		push_error( "Saved game data (slot %s) doesn't have the correct header data, refusing load" % _save_slot )
+		return
+	
+	var version := file.get_pascal_string()
+	if version != ProjectSettings.get_setting( "application/config/version" ):
+		push_error( "Saved game data (slot %s) doesn't have the correct version, refusing load" % _save_slot )
+		return
 	
 	var save_nodes := get_tree().get_nodes_in_group( "Archive" )
 	for node in save_nodes:

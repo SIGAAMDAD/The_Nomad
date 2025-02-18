@@ -10,7 +10,14 @@ extends Area2D
 
 var _passed:bool = false
 
-# Called when the node enters the scene tree for the first time.
+func free() -> void:
+	_shape.queue_free()
+	_bonfire.queue_free()
+	_unlit.queue_free()
+	_light.queue_free()
+	_ambience.queue_free()
+	_passed_checkpoint.queue_free()
+
 func _ready() -> void:
 	pass
 

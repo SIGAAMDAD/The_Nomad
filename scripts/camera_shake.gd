@@ -1,4 +1,4 @@
-class_name CameraShake extends Camera2D
+extends Camera2D
 
 @export var _random_strength:float = 30.0
 @export var _shake_fade:float = 5.0

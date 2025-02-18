@@ -2,8 +2,9 @@ class_name MobBase extends CharacterBody2D
 
 @export var _data:MobData = null
 
-@onready var _angle_between_rays:float = deg_to_rad( 5.0 )
+@onready var _blood_splatter := preload( "res://scenes/effects/blood_particle.tscn" )
 
+@onready var _angle_between_rays:float = deg_to_rad( 5.0 )
 @onready var _navigation:NavigationAgent2D = NavigationAgent2D.new()
 
 @export_category( "Detection" )
@@ -13,6 +14,8 @@ class_name MobBase extends CharacterBody2D
 @export var _target_spotted:Array[ AudioStreamPlayer2D ]
 @export var _take_damage:Array[ AudioStreamPlayer2D ]
 @export var _die:Array[ AudioStreamPlayer2D ]
+@export var _die_low:AudioStreamPlayer2D = null
+@export var _die_high:AudioStreamPlayer2D = null
 
 @export_category( "Start" )
 @export var _direction:GameConfiguration.DirType = GameConfiguration.DirType.North
@@ -47,18 +50,49 @@ var _valid_action_list:Array[ GoapAction ]
 	"ShootTarget": load( "res://scripts/mobs/mercenary/actions/shoot_target.gd" )
 };
 
+func free() -> void:
+	_valid_goal_list.clear()
+	_valid_action_list.clear()
+	
+	_detection_meter.queue_free()
+	_animations.queue_free()
+	_navigation.queue_free()
+	_agent.queue_free()
+	_world_state.queue_free()
+	_sight_target.queue_free()
+	_sight.queue_free()
+	_action_planner.queue_free()
+	if _sound_bounds:
+		_sound_bounds.queue_free()
+
 func play_sfx( sfx: AudioStreamPlayer2D ) -> void:
 	sfx.global_position = global_position
 	sfx.play()
 
-func on_damage( damage: float ) -> void:
-	print( "Taking damage" )
+func on_death( source: EntityBase ) -> void:
+	var animation := "die_low"
+	var sound := _die_low
+	if randi_range( 0, 100 ) > 50:
+		animation = "die_high"
+		sound = _die_high
 	
+	_animations.play( animation )
+	play_sfx( _die[ randi_range( 0, _die.size() - 1 ) ] ) 
+	play_sfx( sound )
+
+func on_damage( source: EntityBase, damage: float ) -> void:
 	_health -= damage
 	play_sfx( _take_damage[ randi_range( 0, _take_damage.size() - 1 ) ] )
 	
-	var bloodSplatter = load( "res://scenes/effects/blood_particle.tscn" ).instantiate()
-	add_child( bloodSplatter )
+	if _health <= 0.0:
+		on_death( source )
+	
+	for i in range( 10 ):
+		var bloodSplatter = _blood_splatter.instantiate()
+		get_tree().get_current_scene().add_child( bloodSplatter )
+		bloodSplatter.z_index = 3
+		bloodSplatter.global_position = global_position
+		bloodSplatter.rotation = global_position.angle_to_point( source.global_position )
 
 func allocate_goals() -> void:
 	for goal in _data._valid_goals:
@@ -142,6 +176,12 @@ func set_target( target: CharacterBody2D ) -> void:
 	_target = target
 
 func _process( delta: float ) -> void:
+	if GameConfiguration._demon_eye_active:
+		var color = Color( -1.0, 2.0, 2.0 )
+		color.s = 0.0
+		color.v = 1.0
+		modulate = color
+	
 	recalc_sight()
 	var sightTarget:CharacterBody2D = null
 	for ray in _sight.get_children():

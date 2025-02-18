@@ -33,6 +33,8 @@ class_name SettingsManager extends Control
 @onready var _enemy_difficulty:GameConfiguration.GameDifficulty = _default._enemy_difficulty
 @onready var _equip_weapon_on_pickup:bool = _default._equip_weapon_on_pickup
 @onready var _draw_aim_line:bool = _default._draw_aim_line
+@onready var _hellbreaker:bool = _default._hellbreaker
+@onready var _hellbreaker_revanents:bool = _default._hellbreaker_revanents
 
 # dedicated keybind hashmap
 var _keybind_dict:Dictionary
@@ -251,10 +253,14 @@ func save_accessibility_settings( file: FileAccess ) -> void:
 func load_gameplay_settings( file: FileAccess ) -> void:
 	_equip_weapon_on_pickup = file.get_8()
 	_draw_aim_line = file.get_8()
+	_hellbreaker = file.get_8()
+	_hellbreaker_revanents = file.get_8()
 
 func save_gameplay_settings( file: FileAccess ) -> void:
 	file.store_8( _equip_weapon_on_pickup )
 	file.store_8( _draw_aim_line )
+	file.store_8( _hellbreaker )
+	file.store_8( _hellbreaker_revanents )
 
 func _ready() -> void:
 	print( "Loading game settings..." )

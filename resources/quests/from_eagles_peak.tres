@@ -1,0 +1,134 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=27 format=3 uid="uid://b2xg2fa752xmy"]
+
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_node.gd" id="2_m2far"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
+
+[sub_resource type="Resource" id="Resource_fvojw"]
+script = ExtResource("2_vo3f4")
+name = "From Eagle's Peak"
+description = "You've tracked the noble and sex trafficker, Kirosla, to his estate on the far reaches of the Salt Wastes. Take him out."
+id = "Fh2ovROsKX"
+optional = false
+graph_editor_position = Vector2(40, -60)
+graph_editor_size = Vector2(580, 610)
+
+[sub_resource type="Resource" id="Resource_wvoqg"]
+script = ExtResource("3_qpe8b")
+description = "Kill Kirosla"
+id = "-QlXsQUtlZ"
+optional = false
+graph_editor_position = Vector2(700, 40)
+graph_editor_size = Vector2(480, 620)
+
+[sub_resource type="Resource" id="Resource_jmq1u"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_fvojw")
+to = SubResource("Resource_wvoqg")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_rr1q4"]
+script = ExtResource("7_v7t5f")
+type = "variable"
+key = "slaves_freed"
+id = "f4m-pcODy_"
+optional = false
+graph_editor_position = Vector2(1080, 820)
+graph_editor_size = Vector2(377, 413)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_ntxco"]
+script = ExtResource("5_03jnm")
+id = "I5VeBgUO8y"
+optional = false
+graph_editor_position = Vector2(1700, 820)
+graph_editor_size = Vector2(207, 94)
+
+[sub_resource type="Resource" id="Resource_lugnb"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_rr1q4")
+to = SubResource("Resource_ntxco")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_ilp1n"]
+script = ExtResource("3_qpe8b")
+description = "Adopt Niran per her mother's final request"
+id = "4rxVQtorqc"
+optional = true
+graph_editor_position = Vector2(2040, 300)
+graph_editor_size = Vector2(468, 607)
+
+[sub_resource type="Resource" id="Resource_86itq"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_ntxco")
+to = SubResource("Resource_ilp1n")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_yipg1"]
+script = ExtResource("3_qpe8b")
+description = "Free the slaves"
+id = "cLLG97rijW"
+optional = true
+graph_editor_position = Vector2(1280, 140)
+graph_editor_size = Vector2(480, 607)
+
+[sub_resource type="Resource" id="Resource_c1k71"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_yipg1")
+to = SubResource("Resource_ilp1n")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_ke6ei"]
+script = ExtResource("6_0k53v")
+id = "zrGg4Icd2d"
+optional = false
+graph_editor_position = Vector2(2240, -340)
+graph_editor_size = Vector2(207, 94)
+
+[sub_resource type="Resource" id="Resource_can1c"]
+script = ExtResource("5_jw3f3")
+id = "b2LxSFTn2m"
+optional = false
+graph_editor_position = Vector2(2660, -340)
+graph_editor_size = Vector2(141, 94)
+
+[sub_resource type="Resource" id="Resource_bfc7k"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_ke6ei")
+to = SubResource("Resource_can1c")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_mbnjs"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_wvoqg")
+to = SubResource("Resource_yipg1")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_ek41x"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_yipg1")
+to = SubResource("Resource_ke6ei")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_mup2s"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_wvoqg")
+to = SubResource("Resource_ke6ei")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_67m5f"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_ilp1n")
+to = SubResource("Resource_ke6ei")
+edge_type = 0
+
+[resource]
+script = ExtResource("3_bnshu")
+nodes = Array[ExtResource("2_m2far")]([SubResource("Resource_wvoqg"), SubResource("Resource_yipg1"), SubResource("Resource_ntxco"), SubResource("Resource_ke6ei"), SubResource("Resource_can1c"), SubResource("Resource_fvojw"), SubResource("Resource_ilp1n"), SubResource("Resource_rr1q4")])
+edges = Array[ExtResource("1_dkeq6")]([SubResource("Resource_jmq1u"), SubResource("Resource_lugnb"), SubResource("Resource_86itq"), SubResource("Resource_c1k71"), SubResource("Resource_bfc7k"), SubResource("Resource_mbnjs"), SubResource("Resource_ek41x"), SubResource("Resource_mup2s"), SubResource("Resource_67m5f")])

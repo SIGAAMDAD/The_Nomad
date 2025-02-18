@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=108 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_hpfa0"]
 [ext_resource type="Texture2D" uid="uid://bs262hx302eh6" path="res://textures/spritesheets/skin.png" id="2_q3siw"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/camera_shake.gd" id="6_3chmt"]
 [ext_resource type="AudioStream" uid="uid://by1j14ka58kvv" path="res://sounds/player/moveGravel3.ogg" id="6_fvm2j"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="7_l33ml"]
+[ext_resource type="Script" path="res://addons/godot_gameplay_systems/camera_shake/nodes/camera_shake.gd" id="8_xdf2s"]
 [ext_resource type="AudioStream" uid="uid://c60jow5gm4qk7" path="res://sounds/player/jumpjet_burn_v2_m_01.wav" id="9_7kn2n"]
 [ext_resource type="PackedScene" uid="uid://cjy2h2wmmfkmc" path="res://scenes/heads_up_display.tscn" id="9_bfxfw"]
 [ext_resource type="AudioStream" uid="uid://b5viaehrw6hdh" path="res://sounds/player/jumpjet_burn_v2_m_02.wav" id="10_ue6o1"]
@@ -18,9 +19,90 @@
 [ext_resource type="AudioStream" uid="uid://b56upar4o3qex" path="res://sounds/player/slowmo_end.ogg" id="13_lsa8o"]
 [ext_resource type="AudioStream" uid="uid://dmhehb35u2dc1" path="res://sounds/player/slide0.ogg" id="15_1l0ip"]
 [ext_resource type="AudioStream" uid="uid://bvtb6qcnb7uve" path="res://sounds/player/slide1.ogg" id="16_b1rse"]
+[ext_resource type="AudioStream" uid="uid://clu17uajt8cam" path="res://sounds/player/pain0.ogg" id="18_7kyki"]
+[ext_resource type="AudioStream" uid="uid://jk4pdpmn6lg3" path="res://sounds/player/pain1.ogg" id="19_7rosy"]
 [ext_resource type="Script" path="res://scripts/player_system/arm.gd" id="20_gxr8m"]
+[ext_resource type="AudioStream" uid="uid://bkh4fm2a6b4ln" path="res://sounds/player/pain2.ogg" id="20_hplu2"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
+[ext_resource type="AudioStream" uid="uid://c2cu7fgddj4e0" path="res://sounds/player/death1.ogg" id="21_llkiu"]
 [ext_resource type="Script" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="21_o2nva"]
+[ext_resource type="AudioStream" uid="uid://b7o3cwjyja1it" path="res://sounds/player/death2.ogg" id="22_508jc"]
+[ext_resource type="AudioStream" uid="uid://dxkcyx64jh1tl" path="res://sounds/player/death3.ogg" id="23_8nbt6"]
+[ext_resource type="AudioStream" uid="uid://b6tpdekrp712r" path="res://sounds/player/Dark Souls ' You Died ' Sound Effect.ogg" id="24_1jj16"]
+[ext_resource type="AudioStream" uid="uid://b20pa5y0aj48e" path="res://sounds/player/he_needs_some_milk.ogg" id="25_y7i2x"]
+[ext_resource type="AudioStream" uid="uid://hwjq1if12hy0" path="res://sounds/player/Roblox Death Sound (Oof) - Sound Effect (HD).wav" id="26_6lnix"]
+[ext_resource type="AudioStream" uid="uid://bqnhuwoyswdon" path="res://sounds/player/demon_eye.ogg" id="27_61q3v"]
+[ext_resource type="AudioStream" uid="uid://bt7oqjr3u748k" path="res://sounds/player/Tactical Shotgun Equip (Fortnite Sound) - Sound Effect for editing.ogg" id="28_nqdhi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3t8ea"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oiuie"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0vrg0"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mescy"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8pscg"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nvbg6"]
+atlas = ExtResource("2_q3siw")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_83eos"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3t8ea")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oiuie")
+}],
+"loop": false,
+"name": &"melee",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0vrg0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mescy")
+}],
+"loop": true,
+"name": &"run",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8pscg")
+}],
+"loop": true,
+"name": &"stealth_active",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nvbg6")
+}],
+"loop": true,
+"name": &"stealth_hang",
+"speed": 5.0
+}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bpphr"]
 atlas = ExtResource("2_q3siw")
@@ -164,76 +246,6 @@ animations = [{
 }],
 "loop": true,
 "name": &"stealth_move",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3t8ea"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oiuie"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(96, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0vrg0"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mescy"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(64, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8pscg"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(160, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nvbg6"]
-atlas = ExtResource("2_q3siw")
-region = Rect2(128, 0, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_83eos"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3t8ea")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_oiuie")
-}],
-"loop": false,
-"name": &"melee",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0vrg0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_mescy")
-}],
-"loop": true,
-"name": &"run",
-"speed": 2.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8pscg")
-}],
-"loop": true,
-"name": &"stealth_active",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_nvbg6")
-}],
-"loop": true,
-"name": &"stealth_hang",
 "speed": 5.0
 }]
 
@@ -632,24 +644,25 @@ radius = 7.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
 
-[node name="Player" type="CharacterBody2D" groups=["Archive"]]
+[node name="Player" type="CharacterBody2D" groups=["Archive", "SceneRelevant"]]
 light_mask = 0
 visibility_layer = 2
+z_index = 4
 script = ExtResource("1_hpfa0")
 
 [node name="Animations" type="Node2D" parent="."]
 light_mask = 2
+
+[node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
+light_mask = 3
+sprite_frames = SubResource("SpriteFrames_83eos")
+animation = &"stealth_hang"
 
 [node name="Legs" type="AnimatedSprite2D" parent="Animations"]
 light_mask = 3
 sprite_frames = SubResource("SpriteFrames_yxodt")
 animation = &"idle"
 autoplay = "idle"
-
-[node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
-light_mask = 3
-sprite_frames = SubResource("SpriteFrames_83eos")
-animation = &"idle"
 
 [node name="Torso" type="AnimatedSprite2D" parent="Animations"]
 light_mask = 3
@@ -696,6 +709,13 @@ position_smoothing_enabled = true
 drag_vertical_enabled = true
 editor_draw_drag_margin = true
 script = ExtResource("6_3chmt")
+
+[node name="CameraShake" type="Node" parent="Camera2D"]
+script = ExtResource("8_xdf2s")
+camera_path = NodePath("..")
+min_strength = 1.5
+min_duration = 0.5
+min_frequency = 4
 
 [node name="SoundEffects" type="Node" parent="."]
 
@@ -761,6 +781,48 @@ max_distance = 800.0
 bus = &"SFX"
 playback_type = 1
 
+[node name="Pain0" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("18_7kyki")
+
+[node name="Pain1" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("19_7rosy")
+
+[node name="Pain2" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("20_hplu2")
+
+[node name="Death0" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("21_llkiu")
+
+[node name="Death1" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("22_508jc")
+
+[node name="Death2" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("23_8nbt6")
+
+[node name="DieSound0" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("24_1jj16")
+
+[node name="DieSound1" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("25_y7i2x")
+
+[node name="DieSound2" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("26_6lnix")
+
+[node name="DemonEye" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("27_61q3v")
+max_distance = 100.0
+attenuation = 6.72716
+bus = &"SFX"
+playback_type = 1
+parameters/looping = true
+
+[node name="ChangeWeapon" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("28_nqdhi")
+max_distance = 400.0
+attenuation = 2.2974
+bus = &"SFX"
+playback_type = 1
+
 [node name="Timers" type="Node" parent="."]
 
 [node name="DashTime" type="Timer" parent="Timers"]
@@ -772,8 +834,6 @@ one_shot = true
 
 [node name="DashCooldownTime" type="Timer" parent="Timers"]
 one_shot = true
-
-[node name="HeadsUpDisplay" parent="." instance=ExtResource("9_bfxfw")]
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -792,12 +852,11 @@ _parent = NodePath("..")
 wait_time = 30.0
 one_shot = true
 
-[node name="Inventory" type="Inventory" parent="."]
-inventory_name = "Backpack"
-database = ExtResource("21_kgn6m")
-
 [node name="Health" type="Node" parent="."]
 script = ExtResource("21_o2nva")
+
+[node name="HeadsUpDisplay" parent="." node_paths=PackedStringArray("_owner") instance=ExtResource("9_bfxfw")]
+_owner = NodePath("..")
 
 [node name="MultiplayerBulletTime" type="Node2D" parent="."]
 
@@ -805,6 +864,10 @@ script = ExtResource("21_o2nva")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MultiplayerBulletTime/Area2D"]
 shape = SubResource("CircleShape2D_0s7ty")
+
+[node name="Inventory" type="Inventory" parent="."]
+inventory_name = "Backpack"
+database = ExtResource("21_kgn6m")
 
 [connection signal="animation_looped" from="Animations/Legs" to="." method="_on_legs_animation_looped"]
 [connection signal="animation_finished" from="Animations/JumpkitSparks" to="." method="_on_jumpkit_sparks_animation_finished"]

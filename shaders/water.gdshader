@@ -2,7 +2,7 @@ shader_type canvas_item;
 
 uniform sampler2D noise1 : repeat_enable;
 uniform sampler2D noise2 : repeat_enable;
-uniform sampler2D screen : hint_screen_texture;
+uniform sampler2D screen : hint_screen_texture, filter_linear_mipmap;
 uniform vec2 scroll1 = vec2( 0.05, 0.05 );
 uniform vec2 scroll2 = vec2( -0.05, -0.05 );
 uniform float distortion_strength : hint_range( -1, 1 ) = 0.2;
@@ -18,6 +18,7 @@ void fragment() {
 		SCREEN_UV + distortion_strength * vec2( depth ) );
 	vec4 top_light = smoothstep( light_start, light_end, depth ) * top_color;
 	COLOR = screen_col * tone_color + top_light;
+//	COLOR = ( texture( screen, SCREEN_UV ) + screen_col ) * tone_color + top_light;
 	COLOR.a = 1.0;
 }
 

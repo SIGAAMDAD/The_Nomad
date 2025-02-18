@@ -150,7 +150,7 @@ func set_text_for_bind() -> void:
 #				JOY_AXIS_RIGHT_Y:
 #					text = "Joypad Right Down"
 	
-	_button.icon = ResourceLoader.load( KEY_ICONS[ text ] )
+#	_button.icon = ResourceLoader.load( KEY_ICONS[ text ] )
 
 func _ready() -> void:
 	set_process_unhandled_input( false )

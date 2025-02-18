@@ -1,14 +1,52 @@
 class_name Player extends EntityBase
 
+const _MAX_WEAPON_SLOTS:int = 8
+
 @onready var _walk_effect:GPUParticles2D = $Animations/DustPuff
 @onready var _slide_effect:GPUParticles2D = $Animations/SlidePuff
 @onready var _dash_effect:GPUParticles2D = $Animations/DashEffect
 @onready var _jumpkit_sparks:AnimatedSprite2D = $Animations/JumpkitSparks
 
-const _MAX_WEAPON_SLOTS:int = 8
+@onready var _damage_camera_shake:CameraShake = $Camera2D/CameraShake
+@onready var _blood_splatter = preload( "res://scenes/effects/blood_splatter.tscn" )
 
-var _current_weapon:int = 0
-var _weapon_slots:Array[ WeaponSlot ]
+@onready var _switch_to_keyboard:GUIDEAction = preload( "res://resources/binds/actions/gamepad/switch_to_keyboard.tres" )
+@onready var _switch_to_gamepad:GUIDEAction = preload( "res://resources/binds/actions/keyboard/switch_to_gamepad.tres" )
+@onready var _keyboard_input_mapping:GUIDEMappingContext = preload( "res://resources/binds/binds_keyboard.tres" )
+@onready var _gamepad_input_mapping:GUIDEMappingContext = preload( "res://resources/binds/binds_gamepad.tres" )
+
+@onready var _move_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/move_player0.tres" )
+@onready var _dash_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/dash_player0.tres" )
+@onready var _slide_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/slide_player0.tres" )
+@onready var _use_weapon_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/use_weapon_player0.tres" )
+@onready var _next_weapon_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/next_weapon_player0.tres" )
+@onready var _prev_weapon_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/prev_weapon_player0.tres" )
+@onready var _switch_weapon_mode_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player0.tres" )
+@onready var _bullet_time_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/bullet_time_player0.tres" )
+@onready var _arm_angle_action_gamepad:GUIDEAction = load( "res://resources/binds/actions/gamepad/arm_angle.tres" )
+
+@onready var _move_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/move_player0.tres" )
+@onready var _dash_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/dash_player0.tres" )
+@onready var _slide_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/slide_player0.tres" )
+@onready var _use_weapon_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/use_weapon_player0.tres" )
+@onready var _next_weapon_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/next_weapon_player0.tres" )
+@onready var _prev_weapon_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/prev_weapon_player0.tres" )
+@onready var _switch_weapon_mode_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/switch_weapon_mode_player0.tres" )
+@onready var _bullet_time_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/bullet_time_player0.tres" )
+@onready var _open_inventory_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/open_inventory.tres" )
+@onready var _demon_eye_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/demon_eye_player0.tres" )
+
+@onready var _move_action:GUIDEAction = null
+@onready var _dash_action:GUIDEAction = null
+@onready var _slide_action:GUIDEAction = null
+@onready var _use_weapon_action:GUIDEAction = null
+@onready var _next_weapon_action:GUIDEAction = null
+@onready var _prev_weapon_action:GUIDEAction = null
+@onready var _switch_weapon_mode_action:GUIDEAction = null
+@onready var _bullet_time_action:GUIDEAction = null
+@onready var _open_inventory_action:GUIDEAction = null
+@onready var _demon_eye_action:GUIDEAction = null
+@onready var _arm_angle_action:GUIDEAction = _arm_angle_action_gamepad
 
 @onready var _idle_timer:Timer = $IdleAnimationTimer
 @onready var _idle_animation:AnimatedSprite2D = $Animations/Idle
@@ -29,10 +67,32 @@ var _weapon_slots:Array[ WeaponSlot ]
 @onready var _drantaril:CharacterBody2D = null
 
 @onready var _last_used_ammo:AmmoEntity = null
+@onready var _stacks:Array[ ItemStack ] = []
 @onready var _ammo_pellet_stacks:Array[ AmmoStack ] = []
 @onready var _ammo_heavy_stacks:Array[ AmmoStack ] = []
 @onready var _ammo_light_stacks:Array[ AmmoStack ] = []
 @onready var _inventory:Inventory = $Inventory
+
+@onready var _demon_eye_sfx:AudioStreamPlayer2D = $SoundEffects/DemonEye
+@onready var _change_weapon_sfx:AudioStreamPlayer2D = $SoundEffects/ChangeWeapon
+
+@onready var _pain_sfx:Array[ AudioStreamPlayer2D ] = [
+	$SoundEffects/Pain0,
+	$SoundEffects/Pain1,
+	$SoundEffects/Pain2
+]
+
+@onready var _die_sfx:Array[ AudioStreamPlayer2D ] = [
+	$SoundEffects/Die0,
+	$SoundEffects/Die1,
+	$SoundEffects/Die2
+]
+
+@onready var _death_sfx:Array[ AudioStreamPlayer2D ] = [
+	$SoundEffects/DieSound0,
+	$SoundEffects/DieSound1,
+	$SoundEffects/DieSound2,
+]
 
 @onready var _move_gravel:Array[ AudioStreamPlayer2D ] = [
 	$SoundEffects/MoveGravel0,
@@ -72,13 +132,16 @@ enum PlayerFlags {
 	IdleAnimation	= 0x1000,
 };
 
-# persistant data
+# persistent data
 var _split_screen:bool = false
 var _input_device:int = 0
-var _health:float = 100.0
+var _health:float = 80.0
 var _rage:float = 0.0
 var _flags:int = 0
+var _hellbreaks:int = 0
 var _perks:Array = [ null, null, null ]
+var _current_weapon:int = 0
+var _weapon_slots:Array[ WeaponSlot ]
 
 # Too Fucking Angry to Die
 var _perk0_active:bool = false
@@ -88,7 +151,9 @@ var _input_velocity:Vector2 = Vector2.ZERO
 var _hands_used:Hands = Hands.Left
 var _left_arm:int = 0
 var _right_arm:int = 0
-var _last_used_arm:Arm = null
+var _last_used_arm:Arm = _arm_right
+
+var _level_stats:LevelStats = LevelStats.new()
 
 # multiplayer data
 var _multiplayer_id:int = 0
@@ -122,7 +187,17 @@ const _FRICTION = 1400
 const _MAX_SPEED = 400.0
 const _JUMP_VELOCITY = -400.0
 
-signal on_player_death( attacker: EntityBase, target: EntityBase )
+signal respawn()
+signal death( attacker: EntityBase, target: EntityBase )
+
+func get_weapon_hand( weapon: WeaponEntity ) -> Arm:
+	if _weapon_slots[ _arm_left._weapon_slot ]._weapon == weapon:
+		return _arm_left
+	elif _weapon_slots[ _arm_right._weapon_slot ]._weapon == weapon:
+		return _arm_right
+	
+	# not equipped
+	return null
 
 func idle_reset() -> void:
 	_idle_timer.start()
@@ -138,14 +213,31 @@ func play_sfx( sfx: AudioStreamPlayer2D ) -> void:
 	sfx.global_position = global_position
 	sfx.play()
 
+func free() -> void:
+	_torso_animation.queue_free()
+	_arm_left._animations.queue_free()
+	_arm_right._animations.queue_free()
+	_arm_left.queue_free()
+	_arm_right.queue_free()
+	
+	_idle_timer.queue_free()
+	_idle_animation.queue_free()
+	_inventory.queue_free()
+	_hud.queue_free()
+	
+	queue_free()
+
 func _on_death( attacker: EntityBase, target: EntityBase ) -> void:
+	if SettingsData._hellbreaker:
+		get_tree().get_current_scene().toggle_hellbreaker()
+	
 	if _perk0_active:
 		if _rage > 0.0:
 			# make sure they can't abuse it
 			_rage = 0.0
 			return
 	
-	emit_signal( "on_player_death", attacker, self )
+	death.emit( attacker, self )
 	_leg_animation.hide()
 	_arm_left._animations.hide()
 	_arm_right._animations.hide()
@@ -156,26 +248,72 @@ func _on_damage( attacker: CharacterBody2D, damage: float ) -> void:
 	if _flags & PlayerFlags.Dashing:
 		return
 	
-	emit_signal( "_on_player_damage", attacker, damage )
+	on_damage.emit( attacker, damage )
 	_health -= damage
 	_rage += damage
 	
+	_damage_camera_shake.shake( 2.0, 0.5, 4 )
+	
+	var blood := _blood_splatter.instantiate()
+	add_child( blood )
+	
 	if _health <= 0.0:
 		_on_death( attacker, self )
+	else:
+		play_sfx( _pain_sfx[ randi_range( 0, _pain_sfx.size() - 1 ) ] )
 
 func save( file: FileAccess ) -> void:
-	var section := SaveSection.new()
+	file.store_float( global_position.x )
+	file.store_float( global_position.y )
 	
-	section.save( "player_" + var_to_str( _input_device ), file )
-	section.save_int( "hands_used", _hands_used )
-	section.save_float( "health", _health )
-	section.save_float( "rage", _rage )
-	section.save_vector2( "position", global_position )
-	section.save_int( "flags", _flags )
-	section.flush()
+	file.store_float( _health )
+	file.store_float( _rage )
+	file.store_32( _flags )
+	file.store_32( _hellbreaks )
+	
+	file.store_32( _level_stats._collateral_amount )
+	file.store_32( _level_stats._death_count )
+	file.store_32( _level_stats._kill_count )
+	
+	file.store_8( _arm_left._weapon_slot )
+	file.store_8( _arm_right._weapon_slot )
+	
+	for slot in _weapon_slots:
+		file.store_32( slot._mode )
+		file.store_8( slot._weapon != null )
+		if slot._weapon:
+			file.store_pascal_string( slot._weapon._data.id )
+	
+	file.store_32( _ammo_heavy_stacks.size() )
+	for stack in _ammo_heavy_stacks:
+		file.store_pascal_string( stack._ammo_type.id )
+		file.store_32( stack.amount )
+	
+	file.store_32( _ammo_light_stacks.size() )
+	for stack in _ammo_light_stacks:
+		file.store_pascal_string( stack._ammo_type.id )
+		file.store_32( stack.amount )
+	
+	file.store_32( _ammo_pellet_stacks.size() )
+	for stack in _ammo_pellet_stacks:
+		file.store_pascal_string( stack._ammo_type.id )
+		file.store_32( stack.amount )
 
 func load( file: FileAccess ) -> void:
-	var section := SaveSection.new()
+	_health = file.get_float()
+	_rage = file.get_float()
+	_flags = file.get_32()
+	_hellbreaks = file.get_32()
+	
+	_arm_left._weapon_slot = file.get_8()
+	_arm_right._weapon_slot = file.get_8()
+	
+	for slot in _weapon_slots:
+		slot._mode = file.get_32()
+		if file.get_8():
+			slot._weapon = WeaponEntity.new()
+			add_child( slot._weapon )
+			slot._weapon._data = _inventory.database.get_item( file.get_pascal_string() )
 
 func setup_split_screen( input_index: int ) -> void:
 	print( "Setting up split-screen input for ", input_index )
@@ -268,15 +406,16 @@ func flip_sprite_left() -> void:
 	if _drantaril:
 		_drantaril._animations.flip_h = true
 
-func _input( event: InputEvent ) -> void:
-	_idle_timer.start()
-	
-	if event is not InputEventJoypadMotion:
-		return
-	elif event.get_axis() != JOY_AXIS_RIGHT_X && event.get_axis() != JOY_AXIS_RIGHT_Y:
-		return
-	
-	_arm_rotation = event.axis_value
+#func _input( event: InputEvent ) -> void:
+#	_idle_timer.start()
+#	
+#	if event is not InputEventJoypadMotion:
+#		return
+#	elif event.get_axis() != JOY_AXIS_RIGHT_X && event.get_axis() != JOY_AXIS_RIGHT_Y:
+#		return
+#	
+#	_arm_rotation = deg_to_rad( event.axis_value )
+#	_draw_rotation = event.axis_value
 
 func mount_horse() -> void:
 	print( "Mounting horse..." )
@@ -297,7 +436,177 @@ func mount_horse() -> void:
 func set_player_position( position ) -> void:
 	global_position = position
 
+func _on_dash() -> void:
+	idle_reset()
+	_flags |= PlayerFlags.Dashing
+	_dash_time.start()
+	play_sfx( _dash[ randi_range( 0, _dash.size() - 1 ) ] )
+	_dash_effect.show()
+	_dash_effect.emitting = true
+	_dash_direction = velocity
+	_hud._dash_overlay.show()
+
+func _on_slide() -> void:
+	if _flags & PlayerFlags.Sliding:
+		return
+	
+	idle_reset()
+	_flags |= PlayerFlags.Sliding
+	_slide_time.start()
+	play_sfx( _slide[ randi_range( 0, _slide.size() - 1 ) ] )
+	_slide_effect.emitting = true
+	_leg_animation.play( "slide" )
+
+func _on_use_weapon() -> void:
+	idle_reset()
+	if _weapon_slots[ _current_weapon ].is_used():
+		_frame_damage += _weapon_slots[ _current_weapon ]._weapon.use( _weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
+
+func _on_bullet_time() -> void:
+	idle_reset()
+	if _flags & PlayerFlags.BulletTime:
+		exit_bullet_time()
+	else:
+		_flags |= PlayerFlags.BulletTime
+		play_sfx( _slowmo_begin )
+		AudioServer.playback_speed_scale = 0.50
+		Engine.time_scale = 0.010
+
+func _on_arm_angle_changed() -> void:
+	_arm_rotation = _arm_angle_action.value_axis_1d
+	_draw_rotation = _arm_rotation
+
+func _on_next_weapon() -> void:
+	var index := 0 if _current_weapon == _MAX_WEAPON_SLOTS - 1 else _current_weapon + 1
+	while index < _MAX_WEAPON_SLOTS:
+		if _weapon_slots[ index ].is_used():
+			break
+		index += 1
+	
+	if index == _MAX_WEAPON_SLOTS:
+		index = -1
+	
+	play_sfx( _change_weapon_sfx )
+	_current_weapon = index
+	
+	# adjust arm state
+	if index != -1:
+		var weapon:WeaponEntity = null
+		var otherArm:Arm = null
+		match _last_used_arm:
+			_arm_left:
+				otherArm = _arm_right
+				_hands_used = Hands.Left
+			_arm_right:
+				otherArm = _arm_left
+				_hands_used = Hands.Right
+		
+		weapon = _weapon_slots[ index ]._weapon
+		if weapon._last_used_mode & WeaponBase.Properties.IsTwoHanded:
+			otherArm._weapon_slot = -1
+			_hands_used = Hands.Both
+		
+		_hud.set_weapon( weapon )
+	else:
+		_hud.set_weapon( null )
+	
+	_last_used_arm.set_weapon( _current_weapon )
+
+func _on_prev_weapon() -> void:
+	var index := _MAX_WEAPON_SLOTS - 1 if _current_weapon <= 0 else _current_weapon - 1
+	while index != -1:
+		if _weapon_slots[ index ].is_used():
+			break
+		index -= 1
+	
+	play_sfx( _change_weapon_sfx )
+	
+	if index != -1:
+		var weapon:WeaponEntity = null
+		var otherArm:Arm = null
+		match _last_used_arm:
+			_arm_left:
+				otherArm = _arm_right
+				_hands_used = Hands.Left
+			_arm_right:
+				otherArm = _arm_left
+				_hands_used = Hands.Right
+		
+		weapon = _weapon_slots[ index ]._weapon
+		if weapon._last_used_mode & WeaponBase.Properties.IsTwoHanded:
+			otherArm._weapon_slot = -1
+			_hands_used = Hands.Both
+		
+		_hud.set_weapon( weapon )
+	else:
+		_hud.set_weapon( null )
+	
+	_current_weapon = index
+	_last_used_arm.set_weapon( _current_weapon )
+
+func _on_demon_eye_on() -> void:
+	if !_demon_eye_sfx.playing:
+		play_sfx( _demon_eye_sfx )
+	_hud._demon_eye_overlay.show()
+	GameConfiguration._demon_eye_active = true
+
+func _on_demon_eye_off() -> void:
+	_demon_eye_sfx.stop()
+	_hud._demon_eye_overlay.hide()
+	GameConfiguration._demon_eye_active = false
+
+func _switch_input_mode( inputContext: GUIDEMappingContext ) -> void:
+	GUIDE.enable_mapping_context( inputContext )
+	
+	if inputContext == _keyboard_input_mapping:
+		_move_action = _move_action_keyboard
+		_dash_action = _dash_action_keyboard
+		_slide_action = _slide_action_keyboard
+		_bullet_time_action = _bullet_time_action_keyboard
+		_prev_weapon_action = _prev_weapon_action_keyboard
+		_next_weapon_action = _next_weapon_action_keyboard
+		_switch_weapon_mode_action = _switch_weapon_mode_action_keyboard
+		_use_weapon_action = _use_weapon_action_keyboard
+		_demon_eye_action = _demon_eye_action_keyboard
+	else:
+		_move_action = _move_action_gamepad
+		_dash_action = _dash_action_gamepad
+		_slide_action = _slide_action_gamepad
+		_bullet_time_action = _bullet_time_action_gamepad
+		_prev_weapon_action = _prev_weapon_action_gamepad
+		_next_weapon_action = _next_weapon_action_gamepad
+		_switch_weapon_mode_action = _switch_weapon_mode_action_gamepad
+#		_use_weapon_action = _use_weapon_action_gamepad
+
+func _cmd_set_health( health: float ) -> void:
+	_health = health
+
 func _ready() -> void:
+	Console.add_command( "set_player_health", _cmd_set_health, [ _health ], 1 )
+	
+	#
+	# initialize input context
+	#
+	_switch_to_keyboard.triggered.connect( _switch_input_mode.bind( _keyboard_input_mapping ) )
+	_switch_to_gamepad.triggered.connect( _switch_input_mode.bind( _gamepad_input_mapping ) )
+	
+	if _split_screen:
+		_arm_angle_action.triggered.connect( _on_arm_angle_changed )
+		_switch_input_mode( _gamepad_input_mapping )
+	else:
+		_switch_input_mode( _keyboard_input_mapping )
+	
+	_dash_action.triggered.connect( _on_dash )
+	_slide_action.triggered.connect( _on_slide )
+	_bullet_time_action.triggered.connect( _on_bullet_time )
+	_use_weapon_action.triggered.connect( _on_use_weapon )
+	_switch_weapon_mode_action.triggered.connect( switch_weapon_mode )
+	_next_weapon_action.triggered.connect( _on_next_weapon )
+	_prev_weapon_action.triggered.connect( _on_prev_weapon )
+	_open_inventory_action_keyboard.triggered.connect( _hud._on_show_inventory )
+#	_demon_eye_action.triggered.connect( _on_demon_eye_on )
+#	_demon_eye_action.completed.connect( _on_demon_eye_off )
+	
 	if GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
 		_multiplayer_username = SteamManager._steam_username
 		_multiplayer_id = SteamManager._steam_id
@@ -312,7 +621,6 @@ func _ready() -> void:
 	_hud.init( _health, _rage )
 	if _drantaril:
 		_drantaril.connect( "player_mount_horse", mount_horse )
-	set_process_input( _split_screen )
 	_last_used_arm = _arm_right
 	
 	_weapon_slots.resize( _MAX_WEAPON_SLOTS )
@@ -327,13 +635,15 @@ func _physics_process( _delta: float ) -> void:
 	if velocity != Vector2.ZERO:
 		idle_reset()
 	
+	_damage_camera_shake.shake( 20.0, 0.5, 4 )
+	
 	var speed := _MAX_SPEED
 	if _flags & PlayerFlags.Dashing:
 		speed += 1800
 	if _flags & PlayerFlags.Sliding:
 		speed += 400
 	
-	_input_velocity = Input.get_vector( _move_left_name, _move_right_name, _move_up_name, _move_down_name )
+	_input_velocity = _move_action.value_axis_2d
 	if _input_velocity != Vector2.ZERO:
 		velocity = velocity.move_toward( _input_velocity * speed, _delta * _ACCEL )
 	else:
@@ -365,9 +675,48 @@ func _physics_process( _delta: float ) -> void:
 func can_dash() -> bool:
 	return !( _flags & PlayerFlags.Dashing ) && _dash_cooldown.time_left == 0.0
 
+func exit_bullet_time() -> void:
+	_flags &= ~PlayerFlags.BulletTime
+	play_sfx( _slowmo_end )
+	_hud._reflex_overlay.hide()
+	AudioServer.playback_speed_scale = 1.0
+	Engine.time_scale = 1.0
+
+func check_status( delta: float ) -> void:
+#	if _rage < 100.0:
+#		_hud.show_rage_bar()
+	if _frame_damage > 0.0:
+		_rage += _frame_damage * delta
+		_frame_damage = 0.0
+		_flags |= PlayerFlags.UsedMana
+	
+#	_frame_damage = 0.0 # BUG: you can just stand still and nothing would kill you
+#	if _health < 100.0 && _rage > 0.0:
+#		_health += 0.075 * delta
+#		_rage -= 0.5 * delta
+#		
+#		_flags |= PlayerFlags.UsedMana
+	
+	if _flags & PlayerFlags.BulletTime:
+		if _rage <= 0.0:
+			exit_bullet_time()
+		_rage -= 0.5 * delta
+	
+	if _rage > 100.0:
+		_rage = 100.0
+	if _rage < 0.0:
+		_rage = 0.0
+	
+	_hud._health_bar._set_health( _health )
+	_hud._rage_bar.value = _rage
+
 func _process( delta: float ) -> void:
 	if Console.is_visible():
 		return
+	
+	# the voices!
+	if _demon_eye_sfx.playing:
+		_demon_eye_sfx.global_position = global_position
 	
 	if _split_screen:
 		var direction := Input.get_axis( _move_left_name, _move_right_name )
@@ -388,50 +737,14 @@ func _process( delta: float ) -> void:
 			_last_mouse_position = mousePosition
 			idle_reset()
 		
-		_arm_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
+		_arm_rotation = atan2( mousePosition.y - ( screenSize.y / 2 ), mousePosition.x - ( screenSize.x / 2 ) )
+#		_arm_rotation = get_local_mouse_position().angle()
 		if mousePosition.x > screenSize.x / 2:
-			_draw_rotation = atan2( mousePosition.y - ( screenSize.x / 2 ), mousePosition.x - ( screenSize.y / 2 ) )
 			flip_sprite_right()
 		elif mousePosition.x < screenSize.x / 2:
-			_draw_rotation = -atan2( mousePosition.y - ( screenSize.x / 2 ), ( screenSize.x / 2 ) - mousePosition.x )
 			flip_sprite_left()
 	
-	if Input.is_action_just_pressed( _dash_name ) && can_dash():
-		idle_reset()
-		_flags |= PlayerFlags.Dashing
-		_dash_time.start()
-		play_sfx( _dash[ randi_range( 0, _dash.size() - 1 ) ] )
-		_dash_effect.show()
-		_dash_effect.emitting = true
-		_dash_direction = velocity
-		_hud._dash_overlay.show()
-	
-	if Input.is_action_just_pressed( _slide_name ) && !( _flags & PlayerFlags.Sliding ):
-		idle_reset()
-		_flags |= PlayerFlags.Sliding
-		_slide_time.start()
-		play_sfx( _slide[ randi_range( 0, _slide.size() - 1 ) ] )
-		_slide_effect.emitting = true
-		_leg_animation.play( "slide" )
-	
-	if Input.is_action_just_pressed( "use_weapon_0" ):
-		idle_reset()
-		if _weapon_slots[ _current_weapon ].is_used():
-			_weapon_slots[ _current_weapon ]._weapon.use( _weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
-	
-	if Input.is_action_just_pressed( "bullet_time_0" ):
-		idle_reset()
-		if _flags & PlayerFlags.BulletTime:
-			_flags &= ~PlayerFlags.BulletTime
-			play_sfx( _slowmo_end )
-			_hud._reflex_overlay.hide()
-			AudioServer.playback_speed_scale = 1.0
-			Engine.time_scale = 1.0
-		else:
-			_flags |= PlayerFlags.BulletTime
-			play_sfx( _slowmo_begin )
-			AudioServer.playback_speed_scale = 0.50
-			Engine.time_scale = 0.10
+	check_status( delta )
 	
 	var back:Arm = null
 	var front:Arm = null
@@ -442,23 +755,23 @@ func _process( delta: float ) -> void:
 		back = _arm_left
 		front = _arm_right
 	
-	_arm_left.hide()
-	_arm_right.hide()
+	_arm_left._animations.hide()
+	_arm_right._animations.hide()
 	
 	if _hands_used == Hands.Both:
 		front = _last_used_arm
-		back.hide()
+		back._animations.hide()
 	else:
-		back.show()
+		back._animations.show()
 	
 	if _flags & PlayerFlags.OnHorse:
 		_animations.move_child( front._animations, 4 )
-		_animations.move_child( back._animations, 1 )
+		_animations.move_child( back._animations, 0 )
 	else:
+		_animations.move_child( back._animations, 0 )
 		_animations.move_child( front._animations, 3 )
-		_animations.move_child( back._animations, 1 )
 	
-	front.show()
+	front._animations.show()
 
 func _on_legs_animation_looped() -> void:
 	if velocity != Vector2.ZERO && !( _flags & PlayerFlags.OnHorse ):
@@ -499,6 +812,7 @@ func _on_idle_animation_timer_timeout() -> void:
 	_leg_animation.hide()
 	_idle_animation.show()
 	_idle_animation.play( "start" )
+	SteamAchievements.activate_achievement( SteamAchievements.AchievementID.Smoke_Break )
 
 func _on_idle_animation_finished() -> void:
 	_idle_animation.play( "loop" )
@@ -532,8 +846,10 @@ func on_pickup_ammo( ammo: AmmoEntity ) -> void:
 			stack = AmmoStack.new()
 			_ammo_pellet_stacks.push_back( stack )
 	
+	stack._player = self
 	stack.set_type( ammo )
-	_inventory.add_to_stack( stack, ammo._data.id, ammo._data.properties.stack_add_amount, ammo._data.properties )
+	stack.add_items( ammo._data.properties.stack_add_amount )
+#	_inventory.add( ammo._data.id, ammo._data.properties.stack_add_amount, ammo._data.properties )
 	
 	for i in _MAX_WEAPON_SLOTS:
 		var slot := _weapon_slots[i]
@@ -542,6 +858,7 @@ func on_pickup_ammo( ammo: AmmoEntity ) -> void:
 			slot._weapon.set_ammo( ammo._data )
 	
 	_last_used_ammo = ammo
+	_last_used_arm = _arm_right
 
 func get_equipped_weapon() -> WeaponSlot:
 	return _weapon_slots[ _current_weapon ]
@@ -574,6 +891,8 @@ func pickup_weapon( weapon: WeaponEntity ) -> void:
 	for i in _MAX_WEAPON_SLOTS:
 		if !_weapon_slots[i].is_used():
 			_weapon_slots[i]._weapon = weapon
+			_current_weapon = i
+			print( "assigning weapon slot %s..." % i )
 			break
 	
 	_inventory.add( weapon._data.id, 1, weapon._data.properties )
@@ -605,15 +924,30 @@ func pickup_weapon( weapon: WeaponEntity ) -> void:
 		_hud.set_weapon( weapon )
 		
 		# apply rules of various weapon properties
-		if weapon._last_used_mode & WeaponBase.Properties.IsTwoHanded:
+		if weapon._default_mode & WeaponBase.Properties.IsTwoHanded:
 			_arm_left._weapon_slot = _current_weapon
 			_arm_right._weapon_slot = _current_weapon
+			
+			_hands_used = Hands.Both
+			_last_used_arm = _arm_right
 			
 			# this will automatically override any other modes
 			_weapon_slots[ _arm_left._weapon_slot ]._mode = weapon._default_mode
 			_weapon_slots[ _arm_right._weapon_slot ]._mode = weapon._default_mode
-			return
+		elif weapon._default_mode & WeaponBase.Properties.IsOneHanded:
+			if !_last_used_arm:
+				_last_used_arm = _arm_right
+			_last_used_arm._weapon_slot = _current_weapon
+			
+			match _last_used_arm:
+				_arm_right:
+					_hands_used = Hands.Right
+				_arm_left:
+					_hands_used = Hands.Left
+			
+			_weapon_slots[ _last_used_arm._weapon_slot ]._mode = weapon._default_mode
 		
 		# update the hand data
 		_last_used_arm._weapon_slot = _current_weapon
 		_weapon_slots[ _last_used_arm._weapon_slot ]._mode = weapon._properties
+		weapon._last_used_mode = weapon._default_mode

@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_14"
+type="Resource"
+uid="uid://b1uiev8cwfse4"
+path="res://.godot/imported/kirosla.dialogue-d54d9906c59220c73dc654e9b62e0f10.tres"
+
+[deps]
+
+source_file="res://resources/dialogue/kirosla.dialogue"
+dest_files=["res://.godot/imported/kirosla.dialogue-d54d9906c59220c73dc654e9b62e0f10.tres"]
+
+[params]
+
+defaults=true

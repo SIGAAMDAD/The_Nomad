@@ -9,14 +9,15 @@ public partial class Player : CharacterBody2D {
 	};
 
 	private enum PlayerFlags {
-		Sliding		= 0x0001,
-		Crouching	= 0x0002,
-		BulletTime	= 0x0004,
-		Dashing		= 0x0008,
-		DemonRage	= 0x0010,
-		UsedMana	= 0x0020,
-		DemonSight	= 0x0040,
-		OnHorse		= 0x0080,
+		Sliding			= 0x0001,
+		Crouching		= 0x0002,
+		BulletTime		= 0x0004,
+		Dashing			= 0x0008,
+		DemonRage		= 0x0010,
+		UsedMana		= 0x0020,
+		DemonSight		= 0x0040,
+		OnHorse			= 0x0080,
+		IdleAnimation	= 0x1000
 	};
 
 

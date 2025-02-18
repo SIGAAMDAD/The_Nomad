@@ -1,0 +1,12 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://d01vxfpudal7u"]
+
+[ext_resource type="Texture2D" uid="uid://uxkebd6eqafw" path="res://textures/env/iconw_katana.png" id="1_7etuh"]
+
+[resource]
+id = "WEAPON_MELEE_KATANA"
+can_stack = false
+max_stack = 1
+name = "Katana"
+icon = ExtResource("1_7etuh")
+weight = 9.5
+size = Vector2i(4, 1)

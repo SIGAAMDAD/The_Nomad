@@ -1,0 +1,6 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://w4hagigx2s0c"]
+
+[resource]
+id = "WEAPON_FIREARM_MURSTAR"
+can_stack = false
+max_stack = 1

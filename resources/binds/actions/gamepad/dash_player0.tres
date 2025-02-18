@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://cx1mkkg2rhfia"]
+
+[ext_resource type="Script" path="res://addons/guide/guide_action.gd" id="1_ytv65"]
+
+[resource]
+script = ExtResource("1_ytv65")
+name = &"dash_player0"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Dash"
+display_category = "Movement"

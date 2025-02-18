@@ -33,5 +33,7 @@ var _mute_unfocused:bool = true
 var _game_difficulty:GameDifficulty = GameDifficulty.Easy
 var _paused:bool = false
 
+var _demon_eye_active:bool = false
+
 var _game_mode:GameMode = GameMode.Singleplayer
 var _hosting_lobby: bool = false

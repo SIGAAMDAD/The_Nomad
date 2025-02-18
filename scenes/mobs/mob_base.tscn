@@ -1,14 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://cik5jg0byotvb"]
+[gd_scene load_steps=6 format=3 uid="uid://cik5jg0byotvb"]
 
+[ext_resource type="Shader" path="res://shaders/mob.gdshader" id="1_7spd8"]
 [ext_resource type="Script" path="res://scripts/mobs/MobBase.gd" id="1_smdai"]
 [ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="2_67ibf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrfd3"]
+shader = ExtResource("1_7spd8")
+shader_parameter/demon_eye = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_omfrf"]
 
 [node name="MobBase" type="CharacterBody2D"]
+z_index = 4
 script = ExtResource("1_smdai")
 
 [node name="Animations" type="Node2D" parent="."]
+material = SubResource("ShaderMaterial_rrfd3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
 

@@ -29,7 +29,7 @@ func _update_joy_id(_ignore, _ignore2):
 	if joy_index < joypads.size():
 		_joy_id = joypads[joy_index]
 	else:
-		push_warning("Only ", joypads.size(), " joy pads/sticks connected. Cannot sample in put from index ", joy_index, ".")
+		push_warning("Only ", joypads.size(), " joy pads/sticks connected. Cannot sample input from index ", joy_index, ".")
 		_joy_id = -2
 	
 

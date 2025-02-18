@@ -1,9 +1,11 @@
 class_name AmmoStack extends ItemStack
 
 var _ammo_type:ItemDefinition = null
+var _player:Player = null
 
 func set_type( ammo: AmmoEntity ) -> void:
 	_ammo_type = ammo._data
+	item_id = _ammo_type.id
 
 func push_item() -> void:
 	amount += 1

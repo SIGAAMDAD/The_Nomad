@@ -10,6 +10,20 @@ Asturion: What would you like, old friend?
 - I'm good => END
 => END
 
+~ arm_gone
+Asturion: My brother in christ!
+Asturion: What the fuck happened to your arm?
+- Blown off
+	Asturion: Oh shit... => help_arm
+- Nothin' good
+	Asturion: Well clearly => help_arm
+- [i]{Groan in pain}[/i]
+	Asturion: Bloody hell... => help_arm
+=> END
+
+~ help_arm
+=> END
+
 ~ forge_tool
 
 => END

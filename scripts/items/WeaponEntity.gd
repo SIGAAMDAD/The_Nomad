@@ -4,8 +4,14 @@ class_name WeaponEntity extends Node2D
 
 @export var _data:ItemDefinition = null
 
-@onready var _raycast = $RayCast2D
-@onready var _bullets = load( "res://scenes/Items/bullet.tscn" )
+@onready var _bullet_shell := preload( "res://scenes/effects/bullet_shell.tscn" )
+@onready var _dust_cloud := preload( "res://scenes/effects/debris_cloud.tscn" )
+
+@export var _bullet_shell_sfx:Array[ AudioStream ] = []
+@export var _shotgun_shell_sfx:Array[ AudioStream ] = []
+
+@onready var _raycast := $RayCast2D
+@onready var _bullets := load( "res://scenes/Items/bullet.tscn" )
 @onready var _reserve:AmmoStack = null
 @onready var _ammo:ItemDefinition = null
 @onready var _animations:AnimatedSprite2D = $Animations/AnimatedSprite2D
@@ -15,6 +21,7 @@ class_name WeaponEntity extends Node2D
 @onready var _use_firearm_sfx:AudioStreamPlayer2D = $UseFirearm
 @onready var _muzzle_flash:Array[ Sprite2D ]
 @onready var _owner:Player = null
+@onready var _icon_sprite:Sprite2D = $Icon
 
 @onready var _muzzle_flashes:Array = [
 	$MuzzleFlashes/Sprite2D,
@@ -23,16 +30,21 @@ class_name WeaponEntity extends Node2D
 	$MuzzleFlashes/Sprite2D4
 ];
 
-var _icon_sprite:Sprite2D = Sprite2D.new()
 var _area:Area2D = Area2D.new()
 var _last_used_mode:WeaponBase.Properties = WeaponBase.Properties.None
 var _bullets_left:int = 0
 var _current_muzzle_flash:Sprite2D = null
+var _equipped:bool = false
 
 enum WeaponState {
 	Idle,
 	Use,
-	Reload
+	Reload,
+	
+	# magazine fed specific states
+	Empty,
+	
+	Invalid = -1
 };
 
 var _current_state:WeaponState = WeaponState.Idle
@@ -105,6 +117,12 @@ func init_properties() -> void:
 		_default_mode |= WeaponBase.Properties.IsBlunt
 	if _data.properties.default_is_firearm:
 		_default_mode |= WeaponBase.Properties.IsFirearm
+
+func set_equipped_state( equipped: bool ) -> void:
+	if !equipped:
+		_reload_time.stop()
+		_reload_sfx.stop()
+		pass
 
 func _ready() -> void:
 	if !_data:
@@ -218,14 +236,40 @@ func set_reserve( stack: AmmoStack ) -> void:
 		# force a reload
 		reload()
 
+func spawn_shells() -> void:
+	var bulletShell := _bullet_shell.instantiate()
+	bulletShell.global_position = global_position
+	get_tree().get_current_scene().add_child( bulletShell )
+	
+	match _data.properties.ammo_type:
+		AmmoBase.Type.Light, AmmoBase.Type.Heavy:
+			bulletShell._grounded_sfx.stream = _bullet_shell_sfx[ randi_range( 0, _bullet_shell_sfx.size() - 1 ) ]
+		AmmoBase.Type.Pellets:
+			bulletShell._grounded_sfx.stream = _shotgun_shell_sfx[ randi_range( 0, _shotgun_shell_sfx.size() - 1 ) ]
+	
+	bulletShell.texture = _ammo.properties.casing_icon
+
 func reload() -> bool:
 	if !_reserve:
 		return false
 	if !_reserve.amount && !_bullets_left:
 		# no more ammo
-		_current_state = WeaponState.Idle
+		if _data.properties.magazine_type == WeaponBase.MagazineType.Cycle:
+			_current_state = WeaponState.Empty
+		else:
+			_current_state = WeaponState.Idle
+		
 		print( "cannot reload weapon..." )
 		return false
+	
+	if _last_used_mode & WeaponBase.Properties.IsOneHanded:
+		_owner._last_used_arm = _owner.get_weapon_hand( self )
+		_owner._hands_used = Player.Hands.Both
+	
+	if _data.properties.magazine_type == WeaponBase.MagazineType.Breech && _ammo:
+		# ejecting shells
+		for i in range( _data.properties.magsize ):
+			spawn_shells()
 	
 	_reload_time.start()
 	_current_state = WeaponState.Reload
@@ -249,13 +293,6 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	# bullets work like those in Halo 3.
 	# start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 	
-#	var bullet = _bullets.instantiate()
-#	bullet._data = _data
-#	bullet._dir = _owner._arm_rotation
-#	bullet._spawn_angle = _owner._draw_rotation
-#	bullet._spawn_pos = global_position
-#	_root.add_child( bullet )
-	
 	_current_muzzle_flash = _muzzle_flashes[ randi_range( 0, _muzzle_flashes.size() - 1 ) ]
 	_current_muzzle_flash.show()
 	_current_muzzle_flash.rotation = _raycast.rotation
@@ -267,15 +304,23 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	
 	_current_muzzle_flash.flip_h = _owner._arm_left._animations.flip_h
 	
+	if _data.properties.magazine_type == WeaponBase.MagazineType.Cycle:
+		# ejecting shells
+		spawn_shells()
+	
+	play_sfx( _use_firearm_sfx )
+	
 	if _raycast.is_colliding():
 		var collision = _raycast.get_collider()
 		if collision is Player && GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
 			SteamNetwork.rpc_on_client( collision._multiplayer_id, _owner, "_on_damage", [ damage ] )
-			return damage
 		elif collision is MobBase:
-			collision.on_damage( damage )
-	
-	play_sfx( _use_firearm_sfx )
+			collision.on_damage( _owner, damage )
+		
+		var debris := _dust_cloud.instantiate()
+		get_tree().get_current_scene().add_child( debris )
+		var point:Vector2 = _raycast.get_collision_point()
+		debris.create( 0.0, global_position, point )
 	
 	return damage
 
@@ -306,12 +351,20 @@ func use( weaponMode: int ) -> float:
 
 func _on_use_time_timeout() -> void:
 	if _last_used_mode & WeaponBase.Properties.IsFirearm:
+		_current_muzzle_flash.hide()
 		if !_bullets_left:
 			reload()
-		_current_muzzle_flash.hide()
-	else:
-		_current_state = WeaponState.Idle
+			return
+	
+	_current_state = WeaponState.Idle
 
 func _on_reload_time_timeout() -> void:
 	_bullets_left = _reserve.remove_items( _data.properties.magsize )
+	if _last_used_mode & WeaponBase.Properties.IsOneHanded:
+		match _owner._last_used_arm:
+			_owner._arm_left:
+				_owner._hands_used = Player.Hands.Left
+			_owner._arm_right:
+				_owner._hands_used = Player.Hands.Right
+	
 	_current_state = WeaponState.Idle

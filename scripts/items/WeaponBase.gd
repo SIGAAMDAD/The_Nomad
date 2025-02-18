@@ -8,6 +8,13 @@ enum FireMode {
 	Invalid = -1
 };
 
+enum MagazineType {
+	Breech, # breech fed
+	Cycle, # uses a magazine
+	
+	Invalid = -1
+};
+
 enum Properties {
 	IsOneHanded			= 0b01000000,
 	IsTwoHanded			= 0b00100000,

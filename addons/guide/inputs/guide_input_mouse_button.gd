@@ -23,9 +23,8 @@ func _reset() -> void:
 	_was_pressed_this_frame = false
 	_value = _reset_to
 
-	
 func _input(event:InputEvent):
-	if not event is InputEventMouseButton:
+	if event is not InputEventMouseButton:
 		return
 	
 	if event.button_index != button:
