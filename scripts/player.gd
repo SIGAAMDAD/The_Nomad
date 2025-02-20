@@ -57,7 +57,7 @@ const _MAX_WEAPON_SLOTS:int = 8
 @onready var _camera_shake:Camera2D = $Camera2D
 @onready var _arm_left:Arm = $ArmLeft
 @onready var _arm_right:Arm = $ArmRight
-@onready var _hud:CanvasLayer = $HeadsUpDisplay
+@onready var _hud:HeadsUpDisplay = $HeadsUpDisplay
 @onready var _collision:CollisionShape2D = $TorsoCollision2D
 @onready var _dash_direction:Vector2 = Vector2.ZERO
 @onready var _dash_cooldown:Timer = $Timers/DashCooldownTime
@@ -67,7 +67,8 @@ const _MAX_WEAPON_SLOTS:int = 8
 @onready var _drantaril:CharacterBody2D = null
 
 @onready var _last_used_ammo:AmmoEntity = null
-@onready var _stacks:Array[ ItemStack ] = []
+@onready var _consumable_stacks:Array[ ItemStack ] = []
+@onready var _weapon_stacks:Array[ ItemStack ] = []
 @onready var _ammo_pellet_stacks:Array[ AmmoStack ] = []
 @onready var _ammo_heavy_stacks:Array[ AmmoStack ] = []
 @onready var _ammo_light_stacks:Array[ AmmoStack ] = []
@@ -284,6 +285,16 @@ func save( file: FileAccess ) -> void:
 		if slot._weapon:
 			file.store_pascal_string( slot._weapon._data.id )
 	
+	file.store_32( _weapon_stacks.size() )
+	for stack in _weapon_stacks:
+		file.store_pascal_string( stack.item_id )
+		file.store_32( stack.amount )
+	
+	file.store_32( _consumable_stacks.size() )
+	for stack in _consumable_stacks:
+		file.store_pascal_string( stack.item_id )
+		file.store_32( stack.amount )
+	
 	file.store_32( _ammo_heavy_stacks.size() )
 	for stack in _ammo_heavy_stacks:
 		file.store_pascal_string( stack._ammo_type.id )
@@ -433,10 +444,10 @@ func mount_horse() -> void:
 	add_child( _collision )
 #	_drantaril.global_transform = global_transform
 
-func set_player_position( position ) -> void:
-	global_position = position
-
 func _on_dash() -> void:
+	if !Console.is_visible():
+		return
+	
 	idle_reset()
 	_flags |= PlayerFlags.Dashing
 	_dash_time.start()
@@ -447,7 +458,9 @@ func _on_dash() -> void:
 	_hud._dash_overlay.show()
 
 func _on_slide() -> void:
-	if _flags & PlayerFlags.Sliding:
+	if !Console.is_visible():
+		return
+	elif _flags & PlayerFlags.Sliding:
 		return
 	
 	idle_reset()
@@ -458,11 +471,17 @@ func _on_slide() -> void:
 	_leg_animation.play( "slide" )
 
 func _on_use_weapon() -> void:
+	if !Console.is_visible():
+		return
+	
 	idle_reset()
 	if _weapon_slots[ _current_weapon ].is_used():
 		_frame_damage += _weapon_slots[ _current_weapon ]._weapon.use( _weapon_slots[ _last_used_arm._weapon_slot ]._weapon._last_used_mode )
 
 func _on_bullet_time() -> void:
+	if !Console.is_visible():
+		return
+	
 	idle_reset()
 	if _flags & PlayerFlags.BulletTime:
 		exit_bullet_time()
@@ -477,6 +496,9 @@ func _on_arm_angle_changed() -> void:
 	_draw_rotation = _arm_rotation
 
 func _on_next_weapon() -> void:
+	if !Console.is_visible():
+		return
+	
 	var index := 0 if _current_weapon == _MAX_WEAPON_SLOTS - 1 else _current_weapon + 1
 	while index < _MAX_WEAPON_SLOTS:
 		if _weapon_slots[ index ].is_used():
@@ -513,6 +535,9 @@ func _on_next_weapon() -> void:
 	_last_used_arm.set_weapon( _current_weapon )
 
 func _on_prev_weapon() -> void:
+	if !Console.is_visible():
+		return
+	
 	var index := _MAX_WEAPON_SLOTS - 1 if _current_weapon <= 0 else _current_weapon - 1
 	while index != -1:
 		if _weapon_slots[ index ].is_used():
@@ -545,12 +570,18 @@ func _on_prev_weapon() -> void:
 	_last_used_arm.set_weapon( _current_weapon )
 
 func _on_demon_eye_on() -> void:
+	if Console.is_visible():
+		return
+	
 	if !_demon_eye_sfx.playing:
 		play_sfx( _demon_eye_sfx )
 	_hud._demon_eye_overlay.show()
 	GameConfiguration._demon_eye_active = true
 
 func _on_demon_eye_off() -> void:
+	if !Console.is_visible():
+		return
+	
 	_demon_eye_sfx.stop()
 	_hud._demon_eye_overlay.hide()
 	GameConfiguration._demon_eye_active = false
@@ -576,14 +607,21 @@ func _switch_input_mode( inputContext: GUIDEMappingContext ) -> void:
 		_prev_weapon_action = _prev_weapon_action_gamepad
 		_next_weapon_action = _next_weapon_action_gamepad
 		_switch_weapon_mode_action = _switch_weapon_mode_action_gamepad
-#		_use_weapon_action = _use_weapon_action_gamepad
+		_use_weapon_action = _use_weapon_action_gamepad
 
-func _cmd_set_health( health: float ) -> void:
-	_health = health
+func _cmd_give_weapon( id: String, slot: int = -1 ) -> void:
+	var weaponSlot := slot
+	
+	if slot == -1:
+		for weapon in range( 0, _weapon_slots.size() - 1 ):
+			if !_weapon_slots[ weapon ].is_used():
+				weaponSlot =  weapon
+	
+	_weapon_slots[ weaponSlot ]._weapon = WeaponEntity.new()
+	_weapon_slots[ weaponSlot ]._weapon._data = _inventory.database.get_item( id )
+	add_child( _weapon_slots[ weaponSlot ]._weapon )
 
 func _ready() -> void:
-	Console.add_command( "set_player_health", _cmd_set_health, [ _health ], 1 )
-	
 	#
 	# initialize input context
 	#
@@ -690,12 +728,12 @@ func check_status( delta: float ) -> void:
 		_frame_damage = 0.0
 		_flags |= PlayerFlags.UsedMana
 	
-#	_frame_damage = 0.0 # BUG: you can just stand still and nothing would kill you
-#	if _health < 100.0 && _rage > 0.0:
-#		_health += 0.075 * delta
-#		_rage -= 0.5 * delta
-#		
-#		_flags |= PlayerFlags.UsedMana
+	_frame_damage = 0.0 # BUG: you can just stand still and nothing would kill you
+	if _health < 100.0 && _rage > 0.0:
+		_health += 0.075 * delta
+		_rage -= 0.5 * delta
+		
+		_flags |= PlayerFlags.UsedMana
 	
 	if _flags & PlayerFlags.BulletTime:
 		if _rage <= 0.0:
@@ -707,8 +745,8 @@ func check_status( delta: float ) -> void:
 	if _rage < 0.0:
 		_rage = 0.0
 	
-	_hud._health_bar._set_health( _health )
-	_hud._rage_bar.value = _rage
+	_hud._health_bar.health = _health
+	_hud._rage_bar.rage = _rage
 
 func _process( delta: float ) -> void:
 	if Console.is_visible():
@@ -817,6 +855,9 @@ func _on_idle_animation_timer_timeout() -> void:
 func _on_idle_animation_finished() -> void:
 	_idle_animation.play( "loop" )
 
+func on_pickup_item( ammo: ItemBase ) -> void:
+	pass
+
 func on_pickup_ammo( ammo: AmmoEntity ) -> void:
 	var stack:AmmoStack = null
 	
@@ -846,7 +887,6 @@ func on_pickup_ammo( ammo: AmmoEntity ) -> void:
 			stack = AmmoStack.new()
 			_ammo_pellet_stacks.push_back( stack )
 	
-	stack._player = self
 	stack.set_type( ammo )
 	stack.add_items( ammo._data.properties.stack_add_amount )
 #	_inventory.add( ammo._data.id, ammo._data.properties.stack_add_amount, ammo._data.properties )
@@ -895,7 +935,9 @@ func pickup_weapon( weapon: WeaponEntity ) -> void:
 			print( "assigning weapon slot %s..." % i )
 			break
 	
-	_inventory.add( weapon._data.id, 1, weapon._data.properties )
+	var itemStack := ItemStack.new()
+	_weapon_stacks.push_back( itemStack )
+	_inventory.add_to_stack( itemStack, weapon._data.id, 1, weapon._data.properties )
 	
 	_torso_animation.flip_h = false
 	_arm_left._animations.flip_h = false

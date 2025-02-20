@@ -1,4 +1,4 @@
-extends ProgressBar
+class_name RageBar extends ProgressBar
 
 var rage = 0.0 : set = _set_rage
 

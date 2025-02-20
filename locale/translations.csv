@@ -1,0 +1,40 @@
+key,en
+UNASSIGNED_BIND,UNASSIGNED
+MOVE_LEFT_BIND,MOVE LEFT
+HAPTIC_FEEDBACK,HAPTIC ENABLED
+HAPTIC_FEEDBACK_STRENGTH,HAPTIC STRENGTH
+AUTOAIM,AUTO-AIM
+DYSLEXIA_MODE,DYSLEXIA
+SOUND_EFFECTS_ON,SOUND EFFECTS ENABLED
+MUSIC_ON,MUSIC ENABLED
+SOUND_EFFECTS_VOLUME,SOUND EFFECTS VOLUME
+MUSIC_VOLUME,MUSIC VOLUME
+MUTE_ON_UNFOCUSED,MUTE ON UNFOCUSED
+SAVE_SETTINGS,SAVE
+REFRESH_LOBBIES,REFRESH LOBBIES
+HOST_LOBBY,HOST GAME
+RESUME_BUTTON,CONTINUE WRITING
+HELP_BUTTON,VALDEN'S BOOK
+EXIT_TO_MAIN_MENU_BUTTON,TAKE A BREAK
+EXIT_GAME_BUTTON,GIVE UP
+SAVE_SLOTS_NAME,SAVE SLOTS
+UNUSED_SLOT,UNUSED
+STORY_BUTTON,STORY
+MULTIPLAYER_BUTTON,MULTIPLAYER
+SETTINGS_BUTTON,SETTINGS
+HELP_BUTTON,VALDEN'S BOOK
+MODS_BUTTON,TALES AROUND THE CAMPFIRE
+QUIT_BUTTON,QUIT
+BEGIN_YOUR_TALE,BEGIN YOUR TALE
+EASY_MODE_NAME,F.N.G.
+NORMAL_MODE_NAME,Hold My Beer
+HARD_MODE_NAME,I Can Take It!
+VERY_HARD_MODE_NAME,Let's Break A Leg
+INSANE_MODE_NAME,The Black Death
+MEME_MODE_NAME,Meme Mode
+EASY_MODE_DESCRIPTION,"The most stress-free experience. You're new to the job. You'll be facing standard cannon-fodder militia. Play this if you just want the story."
+NORMAL_MODE_DESCRIPTION,"The standard difficulty. You'll get put against actual threats, but nothing too challenging. Still be on your toes though..."
+HARD_MODE_DESCRIPTION,"The game will stop pulling it's punches. You are expected to learn the mechanics, then utilize everything you have to your advantage."
+VERY_HARD_MODE_DESCRIPTION,"You know what you're doing and you can handle yourself in an open battle. Most attacks deal heavy damage, you'll have to be even faster and more precise than before."
+INSANE_MODE_DESCRIPTION,"Only the insane or suicidal will attempt this. All attacks are one shot kills. Your name is one to be feared. NOTE: this is the cannon difficulty"
+MEME_MODE_DESCRIPTION,"PAIN."

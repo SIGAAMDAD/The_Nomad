@@ -1,0 +1,261 @@
+[gd_scene load_steps=36 format=3 uid="uid://dp6wsnsw5y2nh"]
+
+[ext_resource type="Script" path="res://scripts/hellbreaker_exit.gd" id="1_qqn22"]
+[ext_resource type="Texture2D" uid="uid://1sh5fx0et1uv" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="2_catxn"]
+[ext_resource type="Texture2D" uid="uid://eaa7qjci7uvp" path="res://textures/env/brick_floor.jpg" id="2_h8q6y"]
+[ext_resource type="Texture2D" uid="uid://dxue0nobfcw65" path="res://textures/env/hellbreaker/Obelisk.png" id="3_tslpf"]
+[ext_resource type="Script" path="res://addons/godot_gameplay_systems/interactables/nodes/2d/interactable_area_2d.gd" id="4_7i8ap"]
+[ext_resource type="Script" path="res://addons/godot_gameplay_systems/interactables/resources/interaction.gd" id="5_qqsii"]
+[ext_resource type="PackedScene" uid="uid://cf4olomtbkg5o" path="res://scenes/scenery/brazier.tscn" id="6_3qvcn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vo0l8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_utb70"]
+atlas = ExtResource("2_catxn")
+region = Rect2(0, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_it8uj"]
+atlas = ExtResource("2_catxn")
+region = Rect2(190, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_771p0"]
+atlas = ExtResource("2_catxn")
+region = Rect2(380, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uf38k"]
+atlas = ExtResource("2_catxn")
+region = Rect2(570, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kw7s4"]
+atlas = ExtResource("2_catxn")
+region = Rect2(760, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8y3f"]
+atlas = ExtResource("2_catxn")
+region = Rect2(950, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tt4jr"]
+atlas = ExtResource("2_catxn")
+region = Rect2(1140, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_srvyo"]
+atlas = ExtResource("2_catxn")
+region = Rect2(1330, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_srayi"]
+atlas = ExtResource("2_catxn")
+region = Rect2(1520, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_devbk"]
+atlas = ExtResource("2_catxn")
+region = Rect2(1710, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_alcbm"]
+atlas = ExtResource("2_catxn")
+region = Rect2(1900, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lm8aj"]
+atlas = ExtResource("2_catxn")
+region = Rect2(2090, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cfxqg"]
+atlas = ExtResource("2_catxn")
+region = Rect2(2280, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g1pde"]
+atlas = ExtResource("2_catxn")
+region = Rect2(2470, 0, 190, 380)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0rplc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_utb70")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_it8uj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_771p0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uf38k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kw7s4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8y3f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tt4jr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_srvyo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_srayi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_devbk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_alcbm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lm8aj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cfxqg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g1pde")
+}],
+"loop": false,
+"name": &"use",
+"speed": 14.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y1rvq"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(1520, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fpbtr"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(0, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0wghy"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(190, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2jqw"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(380, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gwhew"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(570, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6b7gq"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(760, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kaph4"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(950, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kx2ab"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(1140, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_118o2"]
+atlas = ExtResource("3_tslpf")
+region = Rect2(1330, 0, 190, 240)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_av63q"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y1rvq")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fpbtr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0wghy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2jqw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gwhew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6b7gq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kaph4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kx2ab")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_118o2")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 12.0
+}]
+
+[sub_resource type="Resource" id="Resource_l8rc8"]
+script = ExtResource("5_qqsii")
+tags_added_on_start = Array[String]([])
+tags_added_on_block = Array[String]([])
+tags_added_on_cancel = Array[String]([])
+tags_added_on_end = Array[String]([])
+tags_required_to_start = Array[String]([])
+tags_required_to_block = Array[String]([])
+tags_required_to_cancel = Array[String]([])
+tags_required_to_end = Array[String]([])
+tags_removed_on_start = Array[String]([])
+tags_removed_on_block = Array[String]([])
+tags_removed_on_cancel = Array[String]([])
+tags_removed_on_end = Array[String]([])
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uh4sy"]
+size = Vector2(88, 216)
+
+[node name="HellbreakerExit" type="Node2D"]
+script = ExtResource("1_qqn22")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="Node2D"]
+texture_filter = 1
+texture_repeat = 3
+material = SubResource("ShaderMaterial_vo0l8")
+position = Vector2(168, 0)
+color = Color(0.219835, 0.252318, 0.26724, 1)
+texture = ExtResource("2_h8q6y")
+polygon = PackedVector2Array(-113, -88, -215, -88, -252, -64, -251, 102, -224, 141, -96, 140, -66, 108, -23, 139, -68, 204, -255, 201, -319, 105, -317, -89, -216, -159, -126, -159, -12, -87, -8, 117, -70, 202, -70, 111, -69, -62)
+
+[node name="Brazier" parent="Node2D" instance=ExtResource("6_3qvcn")]
+position = Vector2(-114, -13)
+
+[node name="Brazier2" parent="Node2D" instance=ExtResource("6_3qvcn")]
+position = Vector2(112, -14)
+
+[node name="Brazier3" parent="Node2D" instance=ExtResource("6_3qvcn")]
+position = Vector2(0, 154)
+
+[node name="UseAnimation" type="AnimatedSprite2D" parent="."]
+visible = false
+modulate = Color(1, 0, 1, 1)
+position = Vector2(0, -74)
+sprite_frames = SubResource("SpriteFrames_0rplc")
+animation = &"use"
+frame = 13
+frame_progress = 1.0
+
+[node name="Idle" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0, 1, 1)
+sprite_frames = SubResource("SpriteFrames_av63q")
+animation = &"dead"
+frame_progress = 1.0
+
+[node name="InteractableArea2D" type="Area2D" parent="."]
+script = ExtResource("4_7i8ap")
+interaction = SubResource("Resource_l8rc8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractableArea2D"]
+shape = SubResource("RectangleShape2D_uh4sy")
+
+[node name="ExitSound" type="AudioStreamPlayer2D" parent="."]
+
+[connection signal="animation_finished" from="UseAnimation" to="." method="_on_use_animation_animation_finished"]
+[connection signal="body_shape_entered" from="InteractableArea2D" to="." method="_on_area_2d_body_shape_entered"]

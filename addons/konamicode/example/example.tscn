@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=3 uid="uid://cqm0qmaaho3sp"]
+
+[ext_resource type="Script" path="res://addons/konamicode/konamicode.gd" id="1_32n17"]
+[ext_resource type="Script" path="res://addons/konamicode/example/example.gd" id="1_sv2t4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_e87h8"]
+font_size = 25
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_dhjpe"]
+font_size = 25
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_b2k5m"]
+font_size = 25
+font_color = Color(1, 0, 0.14902, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Example" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sv2t4")
+
+[node name="KonamiCode" type="Node" parent="." node_paths=PackedStringArray("timer")]
+script = ExtResource("1_32n17")
+fire_only_once = true
+time_limit_mode = true
+timer = NodePath("../TimeLimit")
+
+[node name="Instructions" type="Label" parent="."]
+layout_mode = 2
+offset_top = 2.0
+offset_right = 731.0
+offset_bottom = 37.0
+text = "Simply type the code you've set up in the KonamiCode Node."
+label_settings = SubResource("LabelSettings_e87h8")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Status:"
+label_settings = SubResource("LabelSettings_dhjpe")
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "not entered"
+label_settings = SubResource("LabelSettings_b2k5m")
+
+[node name="TimeLimit" type="Timer" parent="."]
+
+[connection signal="success" from="KonamiCode" to="." method="_on_konami_code_success"]

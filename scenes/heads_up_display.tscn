@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=37 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_yjir7"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -15,7 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://brybtxxdfifq4" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
 [ext_resource type="Texture2D" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
 [ext_resource type="Shader" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
+[ext_resource type="Texture2D" uid="uid://okv78x4jnolx" path="res://textures/hud/status_bladed.png" id="15_eelai"]
 [ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
+[ext_resource type="Texture2D" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
 [ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="18_lytyn"]
 
@@ -347,7 +349,7 @@ anchor_bottom = 0.5
 grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Inventory"]
-custom_minimum_size = Vector2(520, 410)
+custom_minimum_size = Vector2(640, 410)
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -361,39 +363,207 @@ grow_vertical = 2
 layout_mode = 2
 texture = SubResource("GradientTexture2D_ughat")
 
-[node name="StackList" type="VBoxContainer" parent="Inventory/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Inventory/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Inventory/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Inventory"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+
+[node name="Cloner" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ItemStackCloner" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner"]
+visible = false
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect3" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect4" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="ScrollContainer" type="MarginContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="VScrollBar" type="VScrollBar" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="ItemInfo" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Asturion Double-Barrel"
+
+[node name="MetaData" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="TypeContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
+layout_mode = 2
+text = "Weapon"
+
+[node name="NoHeldContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "No. Held"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+layout_mode = 2
+
+[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+layout_mode = 2
+text = "0/"
+
+[node name="MaxLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+custom_minimum_size = Vector2(90, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="EffectContainer" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+text = "Item Effect(s)"
+
+[node name="Label2" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+layout_mode = 2
+
+[node name="WeaponStatusContainer" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="BladedInfo" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("15_eelai")
+stretch_mode = 3
+
+[node name="DamageLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+layout_mode = 2
+
+[node name="BluntDamage" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("11_0t58g")
+stretch_mode = 3
+
+[node name="DamageLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+layout_mode = 2
+
+[node name="AmmoLoaded" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("16_qxnsc")
+stretch_mode = 3
+
+[node name="DamageLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+layout_mode = 2
+text = "N/A"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="AmmoStatusContainer" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+custom_minimum_size = Vector2(340, 120)
+layout_mode = 2
+bbcode_enabled = true
+scroll_following = true
+threaded = true
+
+[node name="StackList" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="VScrollBar" type="VScrollBar" parent="Inventory/MarginContainer/StackList"]
-layout_mode = 2
-
-[node name="Cloner" type="VBoxContainer" parent="Inventory/MarginContainer/StackList/VScrollBar"]
-layout_mode = 2
-offset_top = 32.0
-offset_right = 490.0
-offset_bottom = 96.0
-
-[node name="CategoryList" type="HBoxContainer" parent="Inventory/MarginContainer/StackList"]
+[node name="CategoryList" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 64
 
-[node name="WeaponIcon" type="TextureRect" parent="Inventory/MarginContainer/StackList/CategoryList"]
+[node name="WeaponIcon" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
 material = SubResource("ShaderMaterial_5p2fr")
 layout_mode = 2
 texture = ExtResource("16_nrav7")
 
-[node name="WeaponList" type="VScrollBar" parent="Inventory/MarginContainer/StackList/CategoryList/WeaponIcon"]
+[node name="WeaponList" type="VScrollBar" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon"]
 layout_mode = 2
 offset_left = -170.0
 offset_top = 72.0
 offset_right = -162.0
 offset_bottom = 80.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
 visible = false
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
@@ -403,28 +573,28 @@ offset_right = 535.0
 offset_bottom = 24.0
 theme_override_constants/separation = 24
 
-[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("16_nrav7")
 stretch_mode = 3
 
-[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Asturion Double-Barrel"
 
-[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 layout_mode = 2
 text = "1"
 
-[node name="AmmoIcon" type="TextureRect" parent="Inventory/MarginContainer/StackList/CategoryList"]
+[node name="AmmoIcon" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
 visible = false
 material = SubResource("ShaderMaterial_duloo")
 layout_mode = 2
 texture = ExtResource("17_rxc6h")
 
-[node name="AmmoList" type="VScrollBar" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon"]
+[node name="AmmoList" type="VScrollBar" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon"]
 layout_mode = 2
 offset_left = -266.0
 offset_top = 72.0
@@ -433,51 +603,30 @@ offset_bottom = 80.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="Cloner" type="VBoxContainer" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon/AmmoList"]
+[node name="Cloner" type="VBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList"]
 layout_mode = 0
 offset_left = 48.0
 offset_right = 432.0
 offset_bottom = 64.0
 theme_override_constants/separation = 24
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_constants/separation = 48
 
-[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("17_rxc6h")
 stretch_mode = 3
 
-[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "9mm"
 
-[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
-layout_mode = 2
-text = "1"
-
-[node name="ItemStackCloner" type="HBoxContainer" parent="Inventory/MarginContainer"]
-visible = false
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-theme_override_constants/separation = 24
-
-[node name="Icon" type="TextureRect" parent="Inventory/MarginContainer/ItemStackCloner"]
-custom_minimum_size = Vector2(128, 64)
-layout_mode = 2
-texture = ExtResource("16_nrav7")
-stretch_mode = 3
-
-[node name="NameLabel" type="Label" parent="Inventory/MarginContainer/ItemStackCloner"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "Asturion Double-Barrel"
-
-[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/ItemStackCloner"]
+[node name="CountLabel" type="Label" parent="Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 layout_mode = 2
 text = "1"
 
@@ -593,6 +742,7 @@ texture = ExtResource("16_nrav7")
 expand_mode = 3
 
 [node name="AmmoInfo" type="Control" parent="Inventory/MarginContainer"]
+visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Inventory/MarginContainer/AmmoInfo"]

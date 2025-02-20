@@ -26,7 +26,7 @@ properties = {
 "default_is_firearm": true,
 "default_is_onehanded": true,
 "default_is_twohanded": false,
-"description": "The \"Hardballer\" as it's called by many, or just The \"Baller\" pistol, is a specialized sidearm that uses musket balls for ammunition instead of your standard 9mm or .45 ACP.",
+"description": "[p]A favored sidearm of many mercenaries and even wealthier civilians as a means of self-defense.[/p][p][/p][p]The hardballer found its unique usage when someone managed to jam whatever they could find into the sidearm, making it especially formidable because one can never know what was coming out of the barrel.[/p][p][/p][p][i]\"How did you even get that in there? Buddy, that's even bigger than the barrel, that ain't gonna WORK-\"[/i][/p]",
 "firearm_frames_left": ExtResource("2_f1bax"),
 "firearm_frames_right": ExtResource("2_f1bax"),
 "firemode": 0,

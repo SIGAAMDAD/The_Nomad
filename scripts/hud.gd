@@ -1,12 +1,21 @@
 class_name HeadsUpDisplay extends CanvasLayer
 
 @export var _owner:Player = null
-@onready var _health_bar:ProgressBar = $HealthBar
-@onready var _rage_bar:ProgressBar = $RageBar
+@onready var _health_bar:HealthBar = $HealthBar
+@onready var _rage_bar:RageBar = $RageBar
 @onready var _status_bar_timer:Timer = $StatusBarTimer
 @onready var _inventory:MarginContainer = $Inventory/MarginContainer
-@onready var _stack_list:VBoxContainer = $Inventory/MarginContainer/StackList/VScrollBar/Cloner
-@onready var _item_stack_cloner:HBoxContainer = $Inventory/MarginContainer/ItemStackCloner
+@onready var _stack_list:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner
+@onready var _item_stack_cloner:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner
+
+@onready var _item_metadata:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/MetaData
+@onready var _item_name:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel
+@onready var _item_type:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label
+@onready var _item_count:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel
+@onready var _item_stack_max:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel
+@onready var _item_icon:TextureRect = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon
+@onready var _item_description:RichTextLabel = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel
+@onready var _item_effect:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2
 
 @onready var _demon_eye_overlay:TextureRect = $Overlays/DemonEyeOverlay
 @onready var _reflex_overlay:TextureRect = $Overlays/ReflexModeOverlay
@@ -93,78 +102,92 @@ func set_rage( rage: float ) -> void:
 	_rage_bar.rage = rage
 #	show_status_bars()
 
+func get_item_count( id: String ) -> int:
+	for item in _owner._inventory.stacks:
+		if item.item_id == id:
+			return item.amount
+	return 0
+
+func _on_inventory_item_selected( event: InputEvent, item: TextureRect ) -> void:
+	if !item.has_meta( "item_id" ) || event is not InputEventMouseButton:
+		return
+	elif event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	
+	var item_type := _owner._inventory.database.get_item( item.get_meta( "item_id" ) )
+	
+	if item_type.properties.has( "description" ):
+		_item_description.show()
+		_item_description.text = item_type.properties.description
+	else:
+		_item_description.hide()
+	
+	if item_type.properties.has( "effect" ):
+		_item_effect.show()
+		_item_effect.text = item_type.properties.effect
+	else:
+		_item_effect.hide()
+	
+	_item_name.text = item_type.name
+	_item_icon.texture = item_type.icon
+	_item_type.text = item_type.categories[0].name
+	
+	match item.get_meta( "category" ):
+		"misc", "ammo":
+			_item_count.text = var_to_str( get_item_count( item_type.id ) )
+			_item_stack_max.text = var_to_str( item_type.max_stack )
+		"weapon":
+			_item_count.text = "1"
+			_item_stack_max.text = var_to_str( item_type.max_stack )
+
+func add_item_to_inventory( row: HBoxContainer, stack: ItemStack ) -> HBoxContainer:
+	if row.get_child_count() == 4:
+		row = HBoxContainer.new()
+		_stack_list.add_child( row )
+	
+	var item := TextureRect.new()
+	row.add_child( item )
+	
+	var event:InputEvent = null
+	
+	item.gui_input.connect( Callable( _on_inventory_item_selected ).bind( item ) )
+	item.texture = _owner._inventory.database.get_item( stack.item_id ).icon
+	item.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	item.custom_minimum_size.x = 64
+	item.custom_minimum_size.y = 64
+	item.set_meta( "item_id", stack.item_id )
+	
+	return row
+
 func _on_show_inventory() -> void:
 	if _inventory.visible:
 		_inventory.hide()
 		return
 	
 	for child in _stack_list.get_children():
+		for image in child.get_children():
+			child.remove_child( image )
+			image.queue_free()
+		
 		_stack_list.remove_child( child )
 		child.queue_free()
 	
 	_stack_list.show()
 	
-#	for stack in _owner._ammo_light_stacks:
-#		for child in _stack_list.get_children():
-#			if child.get_child( 1 ).text == stack.item_id:
-#				_stack_list.remove_child( child )
-#				child.queue_free()
-#				break
-#		
-#		var data := _item_stack_cloner.duplicate()
-#		
-#		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
-#		data.get_child( 1 ).text = stack._ammo_type.name
-#		data.get_child( 2 ).text = var_to_str( stack.amount )
-#		data.show()
-#		
-#		_stack_list.add_child( data )
-#	
-#	for stack in _owner._ammo_pellet_stacks:
-#		for child in _stack_list.get_children():
-#			if child.get_child( 1 ).text == stack.item_id:
-#				_stack_list.remove_child( child )
-#				child.queue_free()
-#				break
-#		
-#		var data := _item_stack_cloner.duplicate()
-#		
-#		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
-#		data.get_child( 1 ).text = stack._ammo_type.name
-#		data.get_child( 2 ).text = var_to_str( stack.amount )
-#		data.show()
-#		
-#		_stack_list.add_child( data )
+	var row := HBoxContainer.new()
 	
+	_stack_list.add_child( row )
 	for stack in _owner._ammo_light_stacks:
-		var data := _item_stack_cloner.duplicate()
-		
-		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
-		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
-		data.get_child( 2 ).text = var_to_str( stack.amount )
-		data.show()
-		
-		_stack_list.add_child( data )
+		row = add_item_to_inventory( row, stack )
 	
 	for stack in _owner._ammo_pellet_stacks:
-		var data := _item_stack_cloner.duplicate()
-		
-		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
-		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
-		data.get_child( 2 ).text = var_to_str( stack.amount )
-		data.show()
-		
-		_stack_list.add_child( data )
+		row = add_item_to_inventory( row, stack )
+	
+	for stack in _owner._weapon_stacks:
+		row = add_item_to_inventory( row, stack )
 	
 	for stack in _owner._inventory.stacks:
-		var data := _item_stack_cloner.duplicate()
-		
-		data.get_child( 0 ).texture = _owner._inventory.database.get_item( stack.item_id ).icon
-		data.get_child( 1 ).text = _owner._inventory.database.get_item( stack.item_id ).name
-		data.get_child( 2 ).text = var_to_str( stack.amount )
-		data.show()
-		
-		_stack_list.add_child( data )
+		row = add_item_to_inventory( row, stack )
 	
 	_inventory.show()
 

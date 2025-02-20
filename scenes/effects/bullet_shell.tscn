@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqq6ekbeedhaw"]
+
+[ext_resource type="Texture2D" uid="uid://cegpm8ib1ojsj" path="res://icon.svg" id="1_b5meh"]
+[ext_resource type="Script" path="res://scripts/bullet_shell.gd" id="1_v35kn"]
+
+[node name="BulletShell" type="Sprite2D"]
+texture = ExtResource("1_b5meh")
+script = ExtResource("1_v35kn")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+autostart = true

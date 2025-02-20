@@ -649,6 +649,8 @@ light_mask = 0
 visibility_layer = 2
 z_index = 4
 script = ExtResource("1_hpfa0")
+_name = null
+_type = null
 
 [node name="Animations" type="Node2D" parent="."]
 light_mask = 2

@@ -1,0 +1,70 @@
+[gd_scene load_steps=16 format=3 uid="uid://cf4olomtbkg5o"]
+
+[ext_resource type="Texture2D" uid="uid://owfylim23eoy" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch1.png" id="1_kdeok"]
+[ext_resource type="Texture2D" uid="uid://cqvl80gmmeaoa" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch2.png" id="2_mqf4h"]
+[ext_resource type="Texture2D" uid="uid://c8bawxkww2qbf" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch3.png" id="3_v5x0m"]
+[ext_resource type="Texture2D" uid="uid://b0uq3r6qmwih0" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch4.png" id="4_ww57j"]
+[ext_resource type="Texture2D" uid="uid://bkr7s5u5px2m1" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch5.png" id="5_rccwo"]
+[ext_resource type="Texture2D" uid="uid://ckhxb7jhdrx6v" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch6.png" id="6_mxqof"]
+[ext_resource type="Texture2D" uid="uid://uavkhapghe61" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch7.png" id="7_unke7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rjmc4"]
+atlas = ExtResource("1_kdeok")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s4404"]
+atlas = ExtResource("2_mqf4h")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0x434"]
+atlas = ExtResource("3_v5x0m")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2pqpp"]
+atlas = ExtResource("4_ww57j")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rxec"]
+atlas = ExtResource("5_rccwo")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mvp1w"]
+atlas = ExtResource("6_mxqof")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wwbcu"]
+atlas = ExtResource("7_unke7")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j2ksa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rjmc4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s4404")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0x434")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2pqpp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rxec")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mvp1w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wwbcu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Brazier" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_j2ksa")
+frame_progress = 0.256442
