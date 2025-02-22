@@ -1,3 +1,4 @@
+/*
 using Godot;
 using GodotSteam;
 
@@ -30,3 +31,4 @@ public partial class SteamAppManager : Node {
 	public override void _Process( double delta ) {
 	}
 }
+*/

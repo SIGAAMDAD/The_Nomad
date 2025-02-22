@@ -76,6 +76,7 @@ file_logging/enable_file_logging=true
 [dialogue_manager]
 
 editor/wrap_long_lines=true
+runtime/advanced/uses_dotnet=true
 
 [display]
 
@@ -211,6 +212,7 @@ textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
 renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true
