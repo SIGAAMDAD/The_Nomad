@@ -84,6 +84,8 @@ func _ready() -> void:
 	Console.add_command( "send_message", _cmd_chat_message_send, [ message ], 1 )
 	
 	on_player_joined( SteamManager._steam_id )
+	
+	get_tree().set_current_scene( self )
 
 func _process( _delta: float ) -> void:
 	# TODO: optimize?
