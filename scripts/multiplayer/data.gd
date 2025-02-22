@@ -19,8 +19,6 @@ func on_player_joined( steamId: int ) -> void:
 	if _players.has( steamId ):
 		return
 	
-	SteamLobby.get_lobby_members()
-	
 	_players[ steamId ] = _player_scene.instantiate()
 	_players[ steamId ].global_position.x = 635
 	_players[ steamId ].global_position.y = 574
@@ -33,9 +31,21 @@ func on_player_left( steamId: int ) -> void:
 	Console.print_line( "Player " + var_to_str( SteamManager._steam_id ) + " has fled the scene...", true )
 	$Network.remove_child( _players[ steamId ] )
 	_players[ steamId ].queue_free()
+	_players.erase( steamId )
 
-func _on_add_player() -> void:
-	pass
+func on_lobby_data_changed() -> void:
+	SteamLobby.get_lobby_members()
+	
+	for member in SteamLobby._lobby_members:
+		if !_players.has( member[ "steam_id" ] ):
+			on_player_joined( member[ "steam_id" ] )
+	
+	for player in _players.values():
+		# left the lobby
+		if !SteamLobby._lobby_members.has( player._multiplayer_id ):
+			$Network.remove_child( _players[ player._multiplayer_id ] )
+			_players[ player._multiplayer_id ].queue_free()
+			_players.erase( player._multiplayer_id )
 
 func on_chat_message_received( senderSteamId: int, message: String ) -> void:
 	Console.print_line( "[" + _players[ senderSteamId ]._multiplayer_username + "] " + message )
@@ -48,6 +58,7 @@ func _ready() -> void:
 	_pause_menu.leave_lobby.connect( SteamLobby.leave_lobby )
 	SteamLobby.client_left_lobby.connect( on_player_left )
 	SteamLobby.client_joined_lobby.connect( on_player_joined )
+	SteamLobby.lobby_data_updated.connect( on_lobby_data_changed )
 	SteamLobby.chat_message_received.connect( on_chat_message_received )
 	
 	var message:String

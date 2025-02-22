@@ -14,7 +14,7 @@ signal client_left_lobby( steamId: int )
 signal client_joined_lobby( steamId: int )
 signal lobby_joined( lobbyId: int )
 signal lobby_created( lobbyId: int )
-signal lobby_data_updated( steamId: int )
+signal lobby_data_updated()
 signal lobby_owner_changed( formerOwnerId: int, newOwnerId: int )
 
 signal data_received( sender: int, data: Dictionary )
@@ -190,6 +190,7 @@ func _on_lobby_data_update( success: int, lobbyId: int, memberId: int ) -> void:
 			_lobby_owner_id = host
 		
 		print( "Lobby data updated..." )
+		lobby_data_updated.emit()
 
 func _on_lobby_message( result: int, senderSteamId: int, message: String, chatType: int ) -> void:
 	if result == 0:
