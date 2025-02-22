@@ -62,16 +62,6 @@ func init() -> void:
 func _process( _delta: float ) -> void:
 	init()
 	
-	# check if we're missing any players
-	for player in SteamLobby._lobby_members:
-		if !_players.has( player ):
-			on_player_joined( player )
-	
-	# check for excess players
-	for player in _players.values():
-		if !SteamLobby._lobby_members.has( player._multiplayer_id ):
-			on_player_left( player._multiplayer_id )
-	
 	return
 	
 	# TODO: optimize?
