@@ -46,8 +46,8 @@ func _cmd_chat_message_send( message: String ) -> void:
 
 func _ready() -> void:
 	_pause_menu.leave_lobby.connect( SteamLobby.leave_lobby )
-	SteamNetwork.player_left_lobby.connect( on_player_left )
-	SteamNetwork.player_joined_lobby.connect( on_player_joined )
+	SteamLobby.client_left_lobby.connect( on_player_left )
+	SteamLobby.client_joined_lobby.connect( on_player_joined )
 	SteamLobby.chat_message_received.connect( on_chat_message_received )
 	
 	var message:String

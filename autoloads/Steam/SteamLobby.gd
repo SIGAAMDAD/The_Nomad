@@ -10,6 +10,8 @@ enum Visibility {
 
 signal chat_message_received( senderSteamId: int, message: String )
 
+signal client_left_lobby( steamId: int )
+signal client_joined_lobby( steamId: int )
 signal lobby_joined( lobbyId: int )
 signal lobby_created( lobbyId: int )
 signal lobby_owner_changed( formerOwnerId: int, newOwnerId: int )
@@ -104,6 +106,23 @@ func get_lobby_members() -> void:
 		
 		_lobby_members.push_back( { "steam_id": steamId, "name": username } )
 
+func leave_lobby() -> void:
+	if _lobby_id == 0:
+		return
+	
+	print( "Leaving lobby %s..." % _lobby_id )
+	Steam.leaveLobby( _lobby_id )
+	_lobby_id = 0
+	
+	for member in _lobby_members:
+		var sessionState := Steam.getP2PSessionState( member )
+		if sessionState.has( "connection_active" ) && sessionState[ "connection_active" ]:
+			Steam.closeP2PSessionWithUser( member )
+	
+	_lobby_members.clear()
+	
+	client_left_lobby.emit( SteamManager._steam_idclietn )
+
 func create_lobby() -> void:
 	if _lobby_id == 0:
 		_is_host = true
@@ -186,10 +205,10 @@ func _on_lobby_chat_update( lobbyId: int, changeId: int, playerId: int, chatStat
 	match chatState:
 		Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
 			print( "%s: %s has joined the fray..." % [ SteamManager._steam_username, changerName ] )
-			emit_signal( "client_joined_lobby", changeId )
+			client_joined_lobby.emit( changeId )
 		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT:
 			print( "%s: %s has fled..." % [ SteamManager._steam_username, changerName ] )
-			emit_signal( "client_left_lobby", changeId )
+			client_left_lobby.emit( changeId )
 
 func make_p2p_handshake() -> void:
 	send_p2p_packet( 0, { "message": "handshake", "remote_steam_id": SteamManager._steam_id, "username": SteamManager._steam_username } )

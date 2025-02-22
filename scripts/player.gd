@@ -645,13 +645,6 @@ func _ready() -> void:
 #	_demon_eye_action.triggered.connect( _on_demon_eye_on )
 #	_demon_eye_action.completed.connect( _on_demon_eye_off )
 	
-	if GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
-		SteamNetwork.register_rpc( self, "set_player_position", SteamNetwork.PERMISSION.CLIENT_ALL )
-		SteamNetwork.register_rset( self, "_health", SteamNetwork.PERMISSION.CLIENT_ALL )
-		SteamNetwork.register_rset( self, "_rage", SteamNetwork.PERMISSION.CLIENT_ALL )
-		SteamNetwork.register_rset( self, "global_position", SteamNetwork.PERMISSION.CLIENT_ALL )
-		SteamNetwork.register_rpc( self, "on_death", SteamNetwork.PERMISSION.CLIENT_ALL )
-	
 	_idle_timer.start()
 	_hud.init( _health, _rage )
 	if _drantaril:
