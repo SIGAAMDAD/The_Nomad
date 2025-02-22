@@ -16,6 +16,7 @@ signal lobby_joined( lobbyId: int )
 signal lobby_created( lobbyId: int )
 signal lobby_data_updated()
 signal lobby_owner_changed( formerOwnerId: int, newOwnerId: int )
+signal lobby_members_updated()
 
 signal data_received( sender: int, data: Dictionary )
 signal on_member_joined( steamId: int )
@@ -62,9 +63,9 @@ func _cmd_lobby_metadata() -> void:
 	Console.print_line( "Name: " + _lobby_name )
 
 func _cmd_lobby_list_players() -> void:
-	Console.print_line( "[LOBBY MEMBERS]" )
+	Console.print_line( "[LOBBY MEMBERS]", true )
 	for member in _lobby_members:
-		Console.print_line( "[" + var_to_str( member[ "steam_id" ] ) + "] " + Steam.getFriendPersonaName( member[ "steam_id" ] ) )
+		Console.print_line( "[" + var_to_str( member[ "steam_id" ] ) + "] " + Steam.getFriendPersonaName( member[ "steam_id" ] ), true )
 
 func _on_lobby_created( connect: int, lobbyId: int ) -> void:
 	if connect != 1:
@@ -106,6 +107,8 @@ func get_lobby_members() -> void:
 		var username := Steam.getFriendPersonaName( steamId )
 		
 		_lobby_members.push_back( { "steam_id": steamId, "name": username } )
+	
+	lobby_members_updated.emit()
 
 func leave_lobby() -> void:
 	if _lobby_id == 0:

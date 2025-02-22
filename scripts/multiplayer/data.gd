@@ -15,9 +15,10 @@ var _players:Dictionary = {}
 var _player_data:Array[ Player ] = []
 
 func on_player_joined( steamId: int ) -> void:
-	print( "Adding %s to game..." % steamId )
 	if _players.has( steamId ):
 		return
+	
+	print( "Adding %s to game..." % steamId )
 	
 	_players[ steamId ] = _player_scene.instantiate()
 	_players[ steamId ].global_position.x = 635
@@ -33,9 +34,7 @@ func on_player_left( steamId: int ) -> void:
 	_players[ steamId ].queue_free()
 	_players.erase( steamId )
 
-func on_lobby_data_changed() -> void:
-	SteamLobby.get_lobby_members()
-	
+func _on_member_list_updated() -> void:
 	for member in SteamLobby._lobby_members:
 		if !_players.has( member[ "steam_id" ] ):
 			on_player_joined( member[ "steam_id" ] )
@@ -49,7 +48,6 @@ func on_lobby_data_changed() -> void:
 
 func on_chat_message_received( senderSteamId: int, message: String ) -> void:
 	Console.print_line( "[" + _players[ senderSteamId ]._multiplayer_username + "] " + message )
-	SteamNetwork.rpc_on_server( self, "set_player_position", [ _players[ senderSteamId ].global_position ] )
 
 func _cmd_chat_message_send( message: String ) -> void:
 	Steam.sendLobbyChatMsg( SteamLobby._lobby_id, message )
@@ -58,7 +56,7 @@ func _ready() -> void:
 	_pause_menu.leave_lobby.connect( SteamLobby.leave_lobby )
 	SteamLobby.client_left_lobby.connect( on_player_left )
 	SteamLobby.client_joined_lobby.connect( on_player_joined )
-	SteamLobby.lobby_data_updated.connect( on_lobby_data_changed )
+	SteamLobby.lobby_members_updated.connect( _on_member_list_updated )
 	SteamLobby.chat_message_received.connect( on_chat_message_received )
 	
 	var message:String
