@@ -1,3 +1,5 @@
+Node
+Button
 TextureRect
 TextEdit
 VBoxContainer
@@ -10,5 +12,3 @@ HSeparator
 MarginContainer
 Control
 Polygon2D
-MeshInstance2D
-MultiMeshInstance2D

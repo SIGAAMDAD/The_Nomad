@@ -11,6 +11,8 @@ script = ExtResource("1_rm61g")
 
 [node name="Player1" parent="Network" instance=ExtResource("2_7720f")]
 position = Vector2(881, 446)
+_name = ""
+_type = 0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

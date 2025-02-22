@@ -24,7 +24,7 @@ class_name DefaultSettings extends Resource
 @export var _dyslexia_mode:bool = false
 
 # gameplay
-@export var _enemy_difficulty:GameConfiguration.GameDifficulty = GameConfiguration.GameDifficulty.Normal
+@export var _enemy_difficulty:GameConfiguration.GameDifficulty = GameConfiguration.GameDifficulty.Intended
 @export var _equip_weapon_on_pickup:bool = true
 @export var _draw_aim_line:bool = false
 @export var _hellbreaker:bool = true

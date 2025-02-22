@@ -9,7 +9,7 @@ extends CanvasLayer
 	ResourceLoader.load( "res://textures/art/IMG_2251.JPG" ),
 	ResourceLoader.load( "res://textures/art/IMG_2412.JPG" ),
 	ResourceLoader.load( "res://textures/art/IMG_2414.JPG" ),
-	ResourceLoader.load( "res://textures/art/fromeaglespeak.jpg" )
+	ResourceLoader.load( "res://textures/fromeaglespeak.jpg" )
 ]
 
 func _ready() -> void:

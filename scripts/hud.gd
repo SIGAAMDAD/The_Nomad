@@ -8,7 +8,6 @@ class_name HeadsUpDisplay extends CanvasLayer
 @onready var _stack_list:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner
 @onready var _item_stack_cloner:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner
 
-@onready var _item_metadata:VBoxContainer = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/MetaData
 @onready var _item_name:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel
 @onready var _item_type:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label
 @onready var _item_count:Label = $Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel

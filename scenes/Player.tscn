@@ -649,8 +649,6 @@ light_mask = 0
 visibility_layer = 2
 z_index = 4
 script = ExtResource("1_hpfa0")
-_name = null
-_type = null
 
 [node name="Animations" type="Node2D" parent="."]
 light_mask = 2
@@ -658,7 +656,7 @@ light_mask = 2
 [node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
 light_mask = 3
 sprite_frames = SubResource("SpriteFrames_83eos")
-animation = &"stealth_hang"
+animation = &"idle"
 
 [node name="Legs" type="AnimatedSprite2D" parent="Animations"]
 light_mask = 3
@@ -792,13 +790,13 @@ stream = ExtResource("19_7rosy")
 [node name="Pain2" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("20_hplu2")
 
-[node name="Death0" type="AudioStreamPlayer2D" parent="SoundEffects"]
+[node name="Die0" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("21_llkiu")
 
-[node name="Death1" type="AudioStreamPlayer2D" parent="SoundEffects"]
+[node name="Die1" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("22_508jc")
 
-[node name="Death2" type="AudioStreamPlayer2D" parent="SoundEffects"]
+[node name="Die2" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("23_8nbt6")
 
 [node name="DieSound0" type="AudioStreamPlayer2D" parent="SoundEffects"]

@@ -646,9 +646,6 @@ func _ready() -> void:
 #	_demon_eye_action.completed.connect( _on_demon_eye_off )
 	
 	if GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
-		_multiplayer_username = SteamManager._steam_username
-		_multiplayer_id = SteamManager._steam_id
-		
 		SteamNetwork.register_rpc( self, "set_player_position", SteamNetwork.PERMISSION.CLIENT_ALL )
 		SteamNetwork.register_rset( self, "_health", SteamNetwork.PERMISSION.CLIENT_ALL )
 		SteamNetwork.register_rset( self, "_rage", SteamNetwork.PERMISSION.CLIENT_ALL )

@@ -71,10 +71,10 @@ func _on_lobby_chat_update( lobbyId: int, changeId: int, playerId: int, chatStat
 	
 	match chatState:
 		Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
-			print( "%s has joined the fray..." % changerName )
+			print( "%s: %s has joined the fray..." % [ SteamManager._steam_username, changerName ] )
 			emit_signal( "client_joined_lobby", changeId )
 		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT:
-			print( "%s has fled..." % changerName )
+			print( "%s: %s has fled..." % [ SteamManager._steam_username, changerName ] )
 			emit_signal( "client_left_lobby", changeId )
 
 func join_lobby( lobbyId: int ) -> void:

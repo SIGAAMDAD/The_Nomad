@@ -15,17 +15,17 @@
 [node name="Multiplayer" type="Node2D"]
 script = ExtResource("1_h1vuf")
 
-[node name="Network" type="Node2D" parent="."]
+[node name="Network" type="Node" parent="."]
 
-[node name="Players" type="Node2D" parent="Network"]
+[node name="Spawns" type="Node" parent="Network"]
 
-[node name="SpawnPoint" parent="Network" instance=ExtResource("2_3yql0")]
+[node name="SpawnPoint" parent="Network/Spawns" instance=ExtResource("2_3yql0")]
 position = Vector2(689, 463)
 
-[node name="SpawnPoint2" parent="Network" instance=ExtResource("2_3yql0")]
+[node name="SpawnPoint2" parent="Network/Spawns" instance=ExtResource("2_3yql0")]
 position = Vector2(579, 1119)
 
-[node name="SpawnPoint3" parent="Network" instance=ExtResource("2_3yql0")]
+[node name="SpawnPoint3" parent="Network/Spawns" instance=ExtResource("2_3yql0")]
 position = Vector2(2839, 799)
 
 [node name="InTheDarkofTheNight" parent="." instance=ExtResource("4_h5rqp")]

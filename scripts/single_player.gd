@@ -23,6 +23,8 @@ func toggle_hellbreaker() -> void:
 func free() -> void:
 	_player1.queue_free()
 	_adaptive_soundtrack.queue_free()
+	if _hellbreaker:
+		_hellbreaker.queue_free()
 
 func _ready() -> void:
 	get_tree().set_current_scene( self )

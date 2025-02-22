@@ -6,11 +6,13 @@ extends Node
 var LoadedLevel:AsyncScene = null
 
 enum GameDifficulty {
-	Easy,
-	Normal,
-	Hard,
-	VeryHard,
-	Insane,
+	# the actual experience
+	Intended,
+	
+	# just let 'em rip & tear...
+	PowerFantasy,
+	
+	# memes, the DNA of the soul!
 	MemeMode
 };
 
@@ -30,7 +32,7 @@ enum GameMode {
 };
 
 var _mute_unfocused:bool = true
-var _game_difficulty:GameDifficulty = GameDifficulty.Easy
+var _game_difficulty:GameDifficulty = GameDifficulty.Intended
 var _paused:bool = false
 
 var _demon_eye_active:bool = false

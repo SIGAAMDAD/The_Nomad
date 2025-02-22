@@ -84,6 +84,7 @@ func _on_meme_mode_button_mouse_entered() -> void:
 func on_finish_loading() -> void:
 	GameConfiguration.LoadedLevel.ChangeScene()
 	_new_loading_screen.hide()
+	_new_loading_screen.queue_free()
 	SoundManager.stop_music( 1.5 )
 	self.hide()
 
@@ -108,17 +109,5 @@ func begin_level( difficulty: GameConfiguration.GameDifficulty ) -> void:
 	
 	GameConfiguration.LoadedLevel.OnComplete.connect( on_finish_loading )
 
-func _on_easy_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.Easy )
-
-func _on_normal_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.Normal )
-
-func _on_hard_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.Hard )
-
-func _on_very_hard_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.VeryHard )
-
-func _on_insane_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.Insane )
+func _on_intended_mode_button_pressed() -> void:
+	begin_level( GameConfiguration.GameDifficulty.Intended )

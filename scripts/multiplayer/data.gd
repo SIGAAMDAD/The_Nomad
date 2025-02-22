@@ -26,13 +26,16 @@ func on_player_joined( steamId: int ) -> void:
 	_players[ steamId ].global_position.y = 574
 	_players[ steamId ]._multiplayer_username = Steam.getFriendPersonaName( steamId )
 	_players[ steamId ]._multiplayer_id = steamId
-	$Network/Players.add_child( _players[ steamId ] )
+	$Network.add_child( _players[ steamId ] )
 
 func on_player_left( steamId: int ) -> void:
 	SteamLobby.get_lobby_members()
 	Console.print_line( "Player " + var_to_str( SteamManager._steam_id ) + " has fled the scene...", true )
-	$Network/Players.remove_child( _players[ steamId ] )
+	$Network.remove_child( _players[ steamId ] )
 	_players[ steamId ].queue_free()
+
+func _on_add_player() -> void:
+	pass
 
 func on_chat_message_received( senderSteamId: int, message: String ) -> void:
 	Console.print_line( "[" + _players[ senderSteamId ]._multiplayer_username + "] " + message )
@@ -58,6 +61,16 @@ func init() -> void:
 
 func _process( _delta: float ) -> void:
 	init()
+	
+	# check if we're missing any players
+	for player in SteamLobby._lobby_members:
+		if !_players.has( player ):
+			on_player_joined( player )
+	
+	# check for excess players
+	for player in _players.values():
+		if !SteamLobby._lobby_members.has( player._multiplayer_id ):
+			on_player_left( player._multiplayer_id )
 	
 	return
 	

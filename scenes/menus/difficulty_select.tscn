@@ -45,30 +45,15 @@ offset_right = 335.0
 offset_bottom = 22.0
 grow_vertical = 2
 
-[node name="EasyModeButton" type="Button" parent="VBoxContainer"]
+[node name="IntendedModeButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ofj78")
-text = "EASY_MODE_NAME"
+text = "INTENDED_MODE_NAME"
 
-[node name="NormalModeButton" type="Button" parent="VBoxContainer"]
+[node name="PowerFantasyModeButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ofj78")
-text = "NORMAL_MODE_NAME"
-
-[node name="HardModeButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_ofj78")
-text = "HARD_MODE_NAME"
-
-[node name="VeryHardModeButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_ofj78")
-text = "VERY_HARD_MODE_NAME"
-
-[node name="InsaneModeButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_ofj78")
-text = "INSANE_MODE_NAME"
+text = "POWER_FANTASY_MODE_NAME"
 
 [node name="MemeModeButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -87,14 +72,5 @@ grow_vertical = 2
 scale = Vector2(0.698764, 0.628825)
 autowrap_mode = 2
 
-[connection signal="mouse_entered" from="VBoxContainer/EasyModeButton" to="." method="_on_easy_mode_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/EasyModeButton" to="." method="_on_easy_mode_button_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/NormalModeButton" to="." method="_on_normal_mode_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/NormalModeButton" to="." method="_on_normal_mode_button_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/HardModeButton" to="." method="_on_hard_mode_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/HardModeButton" to="." method="_on_hard_mode_button_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/VeryHardModeButton" to="." method="_on_very_hard_mode_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/VeryHardModeButton" to="." method="_on_very_hard_mode_button_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/InsaneModeButton" to="." method="_on_insane_mode_button_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/InsaneModeButton" to="." method="_on_insane_mode_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/IntendedModeButton" to="." method="_on_intended_mode_button_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/MemeModeButton" to="." method="_on_meme_mode_button_mouse_entered"]

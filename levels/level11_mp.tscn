@@ -9,6 +9,8 @@
 
 [node name="Player1" parent="Network" instance=ExtResource("1_bqcjb")]
 position = Vector2(881, 446)
+_name = ""
+_type = 0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
