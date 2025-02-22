@@ -96,6 +96,22 @@ func get_lobby_members() -> void:
 		
 		_lobby_members.push_back( { "steam_id": steamId, "name": username } )
 
+func create_lobby() -> void:
+	if _lobby_id == 0:
+		_is_host = true
+		
+		var lobbyType:Steam.LobbyType
+		match _lobby_visibility:
+			Visibility.Private:
+				lobbyType = Steam.LobbyType.LOBBY_TYPE_PRIVATE
+			Visibility.Public:
+				lobbyType = Steam.LobbyType.LOBBY_TYPE_PUBLIC
+			Visibility.FriendsOnly:
+				lobbyType = Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
+		
+		print( "Initializing SteamLobby..." )
+		Steam.createLobby( lobbyType, _lobby_max_members )
+
 func join_lobby( lobbyId: int ) -> void:
 	Steam.joinLobby( lobbyId )
 
