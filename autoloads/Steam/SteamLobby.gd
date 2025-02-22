@@ -10,9 +10,12 @@ enum Visibility {
 
 signal chat_message_received( senderSteamId: int, message: String )
 
+signal lobby_joined( lobbyId: int )
+signal lobby_created( lobbyId: int )
+signal lobby_owner_changed( formerOwnerId: int, newOwnerId: int )
+
 signal data_received( sender: int, data: Dictionary )
 signal on_member_joined( steamId: int )
-signal lobby_owner_changed( formerOwnerId: int, newOwnerId: int )
 
 var _is_host:bool = false
 var _lobby_owner_id:int = 0
@@ -76,14 +79,19 @@ func _on_lobby_created( connect: int, lobbyId: int ) -> void:
 	var setRelay := Steam.allowP2PPacketRelay( true )
 	if !setRelay:
 		push_error( "[STEAM] couldn't enable p2p packet relay!" )
+	
+	lobby_created.emit( lobbyId )
 
 func _on_lobby_joined( lobbyId: int, permissions: int, locked: bool, response: int ) -> void:
 	if response == Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
 		_lobby_id = lobbyId
+		_lobby_owner_id = Steam.getLobbyOwner( lobbyId )
 		
 		print( "Joined lobby %s." % lobbyId )
 		get_lobby_members()
 		make_p2p_handshake()
+		
+		lobby_joined.emit( lobbyId )
 
 func get_lobby_members() -> void:
 	_lobby_members.clear()
