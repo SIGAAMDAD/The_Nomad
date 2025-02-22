@@ -169,7 +169,7 @@ func read_p2p_packet() -> void:
 		
 		match data[ "message" ]:
 			"handshake":
-				print( "%s joined the fray" % data[ "username" ] )
+				print( "%s sent a handshake packet." % data[ "username" ] )
 				get_lobby_members()
 
 func read_all_packets( readCount: int = 0 ) -> void:
