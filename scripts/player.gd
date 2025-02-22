@@ -657,7 +657,7 @@ func _ready() -> void:
 		_weapon_slots[i]._index = i
 
 func _physics_process( _delta: float ) -> void:
-	if Console.is_visible():
+	if Console.control.visible || ( GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer && SteamManager._steam_id != _multiplayer_id ):
 		return
 	
 	if velocity != Vector2.ZERO:

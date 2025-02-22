@@ -219,6 +219,7 @@ func _on_lobby_chat_update( lobbyId: int, changeId: int, playerId: int, chatStat
 
 func make_p2p_handshake() -> void:
 	send_p2p_packet( 0, { "message": "handshake", "remote_steam_id": SteamManager._steam_id, "username": SteamManager._steam_username } )
+	lobby_members_updated.emit()
 
 func _ready() -> void:
 	Steam.lobby_chat_update.connect( _on_lobby_chat_update )

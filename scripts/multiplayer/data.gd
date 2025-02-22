@@ -58,7 +58,7 @@ func _ready() -> void:
 	_pause_menu.leave_lobby.connect( SteamLobby.leave_lobby )
 	SteamLobby.client_left_lobby.connect( on_player_left )
 	SteamLobby.client_joined_lobby.connect( on_player_joined )
-#	SteamLobby.lobby_members_updated.connect( _on_member_list_updated )
+	SteamLobby.lobby_members_updated.connect( _on_member_list_updated )
 	SteamLobby.chat_message_received.connect( on_chat_message_received )
 	
 	var message:String
