@@ -107,8 +107,6 @@ func get_lobby_members() -> void:
 		var username := Steam.getFriendPersonaName( steamId )
 		
 		_lobby_members.push_back( { "steam_id": steamId, "name": username } )
-	
-	lobby_members_updated.emit()
 
 func leave_lobby() -> void:
 	if _lobby_id == 0:

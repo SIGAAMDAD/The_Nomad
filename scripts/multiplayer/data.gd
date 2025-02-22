@@ -65,10 +65,10 @@ func _ready() -> void:
 	Console.add_command( "send_message", _cmd_chat_message_send, [ message ], 1 )
 
 func init() -> void:
-	if _players.has( SteamLobby._lobby_owner_id ):
+	if _players.has( SteamManager._steam_id ):
 		return
 	
-	on_player_joined( SteamLobby._lobby_owner_id )
+	on_player_joined( SteamManager._steam_id )
 
 func _process( _delta: float ) -> void:
 	init()
