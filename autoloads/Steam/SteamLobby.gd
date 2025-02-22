@@ -166,6 +166,8 @@ func read_p2p_packet() -> void:
 		var data:Dictionary = bytes_to_var( packet[ "data" ] )
 		
 		match data[ "message" ]:
+			"packet":
+				get_tree().get_current_scene().process_packet( data[ "packet" ], senderId )
 			"handshake":
 				print( "%s sent a handshake packet." % data[ "username" ] )
 				get_lobby_members()

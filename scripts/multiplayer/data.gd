@@ -1,6 +1,7 @@
 class_name MultiplayerData extends Node2D
 
 @onready var _network = $Network
+@onready var _spawn_tree:Node = $Network/Spawns
 @onready var _pause_menu = $CanvasLayer/PauseMenu
 
 var _player_scene := preload( "res://scenes/Player.tscn" )
@@ -12,20 +13,37 @@ class Team:
 
 var _mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Bloodbath
 var _players:Dictionary = {}
-var _player_data:Array[ Player ] = []
+
+func process_packet( data: Dictionary, sender: int ) -> void:
+	var player:Player = _players[ sender ]
+	
+	player.global_position = data[ "position" ]
+	player._arm_rotation = data[ "rotation" ]
+
+func spawn_player( playerId: int ) -> void:
+	var player:Player = _players[ playerId ]
+	var spawn := _spawn_tree.get_child( randi_range( 0, _spawn_tree.get_child_count() - 1 ) )
+	
+	player._health = 100.0
+	player.global_position = spawn.global_position
+	
+	print_debug( "spawning player %s..." % playerId )
 
 func on_player_joined( steamId: int ) -> void:
-	if _players.has( steamId ):
-		return
-	
 	print( "Adding %s to game..." % steamId )
 	
 	_players[ steamId ] = _player_scene.instantiate()
-	_players[ steamId ].global_position.x = 635
-	_players[ steamId ].global_position.y = 574
 	_players[ steamId ]._multiplayer_username = Steam.getFriendPersonaName( steamId )
 	_players[ steamId ]._multiplayer_id = steamId
 	$Network.add_child( _players[ steamId ] )
+	
+	if steamId == SteamManager._steam_id:
+		spawn_player( SteamManager._steam_id )
+	
+	SteamLobby.get_lobby_members()
+	for member in SteamLobby._lobby_members:
+		if !_players.has( member[ "steam_id" ] ) && member[ "steam_id" ] != steamId:
+			on_player_joined( member[ "steam_id" ] )
 
 func on_player_left( steamId: int ) -> void:
 	SteamLobby.get_lobby_members()
@@ -36,6 +54,7 @@ func on_player_left( steamId: int ) -> void:
 
 func _on_member_list_updated() -> void:
 	print( "updating member list..." )
+	return
 	
 	for member in SteamLobby._lobby_members:
 		if !_players.has( member[ "steam_id" ] ):
@@ -63,24 +82,16 @@ func _ready() -> void:
 	
 	var message:String
 	Console.add_command( "send_message", _cmd_chat_message_send, [ message ], 1 )
-
-func init() -> void:
-	if _players.has( SteamManager._steam_id ):
-		return
 	
 	on_player_joined( SteamManager._steam_id )
 
 func _process( _delta: float ) -> void:
-	init()
-	
-	return
-	
 	# TODO: optimize?
-	var packet:Dictionary = { "message": "data", "steam_id": SteamManager._steam_id }
-	for player in _players.values():
-		packet[ "data" ] = {
-			"position": player.global_position,
-			"arotation": player._arm_rotation,
-			"drotation": player._draw_rotation,
-		};
-		SteamLobby.send_p2p_packet( 0, packet )
+	var packet:Dictionary = { "message": "packet", "remote_steam_id": SteamManager._steam_id }
+	var player:Player = _players[ SteamManager._steam_id ]
+	
+	packet[ "packet" ] = {
+		"position": player.global_position,
+		"rotation": player._arm_rotation,
+	};
+	SteamLobby.send_p2p_packet( 0, packet )

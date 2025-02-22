@@ -37,6 +37,7 @@ func on_loaded_map() -> void:
 	GameConfiguration.LoadedLevel.ChangeScene()
 	_new_loading_screen.hide()
 	_new_loading_screen.queue_free()
+	
 	SoundManager.stop_music( 0.5 )
 	self.hide()
 

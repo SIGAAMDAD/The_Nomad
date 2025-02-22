@@ -663,8 +663,6 @@ func _physics_process( _delta: float ) -> void:
 	if velocity != Vector2.ZERO:
 		idle_reset()
 	
-	_damage_camera_shake.shake( 20.0, 0.5, 4 )
-	
 	var speed := _MAX_SPEED
 	if _flags & PlayerFlags.Dashing:
 		speed += 1800
