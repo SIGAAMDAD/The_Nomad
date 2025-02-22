@@ -41,4 +41,4 @@ res://shaders/lava.gdshader
 res://shaders/bad_apple.gdshader
 res://shaders/particle.gdshader
 res://addons/godot-rapier2d/water_shader.gdshader
-res://scripts/player.gd
+res://addons/tattomoosa.spinner/spinner.gd

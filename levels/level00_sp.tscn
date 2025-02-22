@@ -173,8 +173,6 @@ playback_type = 1
 
 [node name="Player1" parent="Network" instance=ExtResource("3_wx1u4")]
 position = Vector2(427, 575)
-_name = null
-_type = null
 
 [node name="AdaptiveSoundtrack" parent="." node_paths=PackedStringArray("_soundtrack") instance=ExtResource("4_5bs55")]
 _soundtrack = NodePath("../AudioStreamPlayer")
