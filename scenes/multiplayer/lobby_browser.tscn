@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dpriw3r8df1su"]
 
+[ext_resource type="Script" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
 [ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_xqq5e"]
-[ext_resource type="Script" path="res://scripts/multiplayer/lobby_browser.gd" id="1_yoo43"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
 [ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
@@ -19,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_yoo43")
+script = ExtResource("1_avp8t")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 modulate = Color(0.401968, 0.401968, 0.401968, 1)

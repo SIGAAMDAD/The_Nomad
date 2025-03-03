@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dm01rhsbrd1bn"]
+[gd_scene load_steps=4 format=3 uid="uid://dm01rhsbrd1bn"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/chat.gd" id="1_yg0bw"]
+[ext_resource type="Script" path="res://scripts/multiplayer/Chat.cs" id="1_321tg"]
+
+[sub_resource type="Gradient" id="Gradient_atfp8"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.2, 0.2, 0.2, 0.321569)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gbe2k"]
+gradient = SubResource("Gradient_atfp8")
 
 [node name="Chat" type="Control"]
 layout_mode = 3
@@ -9,19 +16,44 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_yg0bw")
+script = ExtResource("1_321tg")
 
-[node name="TextEdit" type="TextEdit" parent="."]
+[node name="Expanded" type="MarginContainer" parent="."]
 visible = false
+custom_minimum_size = Vector2(290, 280)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -181.775
-offset_right = 296.0
-offset_bottom = -32.385
+offset_top = -72.0
+offset_right = 40.0
+offset_bottom = -32.0
 grow_vertical = 0
-editable = false
+
+[node name="Background" type="TextureRect" parent="Expanded"]
+layout_mode = 2
+texture = SubResource("GradientTexture1D_gbe2k")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Expanded"]
+layout_mode = 2
+
+[node name="Minimized" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(290, 60)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -72.0
+offset_right = 40.0
+offset_bottom = -32.0
+grow_vertical = 0
+
+[node name="Background" type="TextureRect" parent="Minimized"]
+layout_mode = 2
+texture = SubResource("GradientTexture1D_gbe2k")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Minimized"]
+layout_mode = 2
 
 [node name="LineEdit" type="LineEdit" parent="."]
 layout_mode = 1
@@ -29,8 +61,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_top = -31.67
-offset_right = 296.0
+offset_right = 140.0
 offset_bottom = -0.670013
 grow_vertical = 0
 theme_override_colors/selection_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 10
 placeholder_text = "Press '/' to begin typing"

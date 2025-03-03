@@ -87,9 +87,6 @@ class SteamAchievement:
 		_name = name
 		_description = description
 		
-		if SteamManager._is_me:
-			Steam.setAchievement( _id_string )
-		
 		print( "Added SteamAPI Achievement ", _id_string, "/\"", _name, "\"" )
 
 var ACHIEVEMENT_TABLE:Dictionary = {
@@ -168,11 +165,12 @@ func _on_achievement_stored() -> void:
 func _on_current_stats_recieved( gameId: int, result: int, userId: int ) -> void:
 	print( "Got local player statistics & achievments" )
 	
-	if userId != SteamManager._steam_id:
+	if userId != SteamManager.GetSteamID():
+		
 		print( "Not this user, aborting." )
 		return
 	
-	if gameId != SteamManager._steam_app_id:
+	if gameId != SteamManager.GetAppID():
 		print( "Not this game, aborting." )
 		return
 	

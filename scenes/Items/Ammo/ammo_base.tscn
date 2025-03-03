@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://d14tdl6ni8oqu"]
 
 [ext_resource type="Shader" path="res://shaders/highlight.gdshader" id="1_6wvny"]
-[ext_resource type="Script" path="res://scripts/items/AmmoEntity.gd" id="1_nn0ly"]
+[ext_resource type="Script" path="res://scripts/items/AmmoEntity.cs" id="2_fbroq"]
 
 [sub_resource type="Gradient" id="Gradient_dwngt"]
 colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
@@ -29,7 +29,7 @@ radius = 7.0
 
 [node name="AmmoBase" type="Node2D"]
 material = SubResource("ShaderMaterial_cjprp")
-script = ExtResource("1_nn0ly")
+script = ExtResource("2_fbroq")
 
 [node name="Icon" type="Sprite2D" parent="."]
 use_parent_material = true

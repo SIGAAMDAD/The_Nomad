@@ -35,8 +35,8 @@ class_name MobBase extends CharacterBody2D
 @onready var _health:float = 0.0
 @onready var _sight_detection_amount:float = 0.0
 
-var _valid_goal_list:Array[ GoapGoal ]
-var _valid_action_list:Array[ GoapAction ]
+var _valid_goal_list:Array[ GoapGoal ] = []
+var _valid_action_list:Array[ GoapAction ] = []
 
 @onready var GOALS:Dictionary = {
 	"FindThreats": load( "res://scripts/mobs/mercenary/goals/find_threats.gd" ),
@@ -69,7 +69,7 @@ func play_sfx( sfx: AudioStreamPlayer2D ) -> void:
 	sfx.global_position = global_position
 	sfx.play()
 
-func on_death( source: EntityBase ) -> void:
+func on_death( source: CharacterBody2D ) -> void:
 	var animation := "die_low"
 	var sound := _die_low
 	if randi_range( 0, 100 ) > 50:
@@ -80,7 +80,7 @@ func on_death( source: EntityBase ) -> void:
 	play_sfx( _die[ randi_range( 0, _die.size() - 1 ) ] ) 
 	play_sfx( sound )
 
-func on_damage( source: EntityBase, damage: float ) -> void:
+func damage( source: CharacterBody2D, damage: float ) -> void:
 	_health -= damage
 	play_sfx( _take_damage[ randi_range( 0, _take_damage.size() - 1 ) ] )
 	
@@ -92,11 +92,10 @@ func on_damage( source: EntityBase, damage: float ) -> void:
 		get_tree().get_current_scene().add_child( bloodSplatter )
 		bloodSplatter.z_index = 3
 		bloodSplatter.global_position = global_position
-		bloodSplatter.rotation = global_position.angle_to_point( source.global_position )
+		bloodSplatter.global_rotation = -global_position.angle_to_point( source.global_position )
 
 func allocate_goals() -> void:
 	for goal in _data._valid_goals:
-		print( "Added goal " + goal + " to list" )
 		_valid_goal_list.push_back( GOALS[ goal ].new( self ) )
 	for action in _data._valid_actions:
 		_valid_action_list.push_back( ACTIONS[ action ].new() )

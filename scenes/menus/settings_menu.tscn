@@ -1,9 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=12 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="1_b64v3"]
 [ext_resource type="Script" path="res://scripts/menus/settings_menu.gd" id="1_itlg8"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
+[ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
+[ext_resource type="Script" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
+[ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="5_my37k"]
+[ext_resource type="Script" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
+[ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
+[ext_resource type="Script" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
+
+[sub_resource type="Resource" id="Resource_qxrc6"]
+script = ExtResource("7_2apr8")
+key = 4194305
+shift = false
+control = false
+alt = false
+meta = false
+allow_additional_modifiers = true
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -39,6 +54,7 @@ offset_bottom = -100.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_fonts/font = ExtResource("3_ybwfc")
 tab_alignment = 1
 current_tab = 0
 
@@ -323,24 +339,23 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 60
 
-[node name="MoveUpBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "move_up_0"
-
-[node name="MoveDownBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "move_down_0"
-
-[node name="MoveRightBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "move_right_0"
-
-[node name="MoveLeftBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-
 [node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
-_action_name = "dash_0"
+_action_name = "dash"
+_display_category = "Movement"
+_action = ExtResource("5_g1xt0")
+
+[node name="SlideBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_name = "slide"
+_display_category = "Movement"
+_action = ExtResource("6_uhm1t")
+
+[node name="MoveBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_name = "move"
+_display_category = "Movement"
+_action = ExtResource("5_my37k")
 
 [node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
 visible = false
@@ -463,5 +478,10 @@ grow_vertical = 0
 mouse_filter = 1
 theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "SAVE_SETTINGS"
+
+[node name="GUIDEInputDetector" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5_gmmd7")
+abort_detection_on = Array[ExtResource("6_u2rrl")]([SubResource("Resource_qxrc6")])
 
 [connection signal="pressed" from="SaveSettingsButton" to="." method="_on_save_settings_button_pressed"]

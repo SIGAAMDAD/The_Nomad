@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=4 format=3 uid="uid://bdtqrrsb2fib1"]
 
-[ext_resource type="Shader" path="res://shaders/water.gdshader" id="1_cwsfy"]
-[ext_resource type="Texture2D" uid="uid://cegpm8ib1ojsj" path="res://icon.svg" id="2_qgop0"]
+[ext_resource type="PackedScene" uid="uid://xagcn6hqoop7" path="res://levels/biomes/ashen_plains.tscn" id="1_v0en2"]
 
 [sub_resource type="Gradient" id="Gradient_ctobc"]
 offsets = PackedFloat32Array(0)
@@ -9,32 +8,6 @@ colors = PackedColorArray(1, 0.513726, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_rfkof"]
 gradient = SubResource("Gradient_ctobc")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0iyki"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x38px"]
-seamless = true
-seamless_blend_skirt = 0.415
-noise = SubResource("FastNoiseLite_0iyki")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cxab2"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lsepm"]
-seamless = true
-seamless_blend_skirt = 0.511
-noise = SubResource("FastNoiseLite_cxab2")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fnnyw"]
-shader = ExtResource("1_cwsfy")
-shader_parameter/scroll1 = Vector2(0.05, 0.05)
-shader_parameter/scroll2 = Vector2(-0.05, -0.05)
-shader_parameter/distortion_strength = 0.2
-shader_parameter/tone_color = Color(1, 0, 0, 1)
-shader_parameter/top_color = Color(1, 1, 0, 1)
-shader_parameter/light_start = 0.275
-shader_parameter/light_end = 0.4
-shader_parameter/noise1 = SubResource("NoiseTexture2D_x38px")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_lsepm")
 
 [node name="BellatumTerrae" type="Node2D"]
 
@@ -50,22 +23,6 @@ texture = SubResource("GradientTexture2D_rfkof")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SaltWastes"]
 position = Vector2(-4181, 3539)
-
-[node name="AshenPlains" type="Node2D" parent="."]
-position = Vector2(131584, 64256)
-
-[node name="LavaLake" type="Sprite2D" parent="AshenPlains"]
-material = SubResource("ShaderMaterial_fnnyw")
-position = Vector2(-2282.76, 18255.5)
-scale = Vector2(1424.68, 1342.07)
-texture = ExtResource("2_qgop0")
-
-[node name="Polygon2D" type="Polygon2D" parent="AshenPlains"]
-position = Vector2(12635, 3008)
-color = Color(0.207512, 0.207512, 0.207512, 1)
-polygon = PackedVector2Array(-14315, -61693, -24771, -2567, -17772, 24103, -12220, 37740, -55102, 83608, 10729, 47136, 12777, 45813, 15038, 44789, 19177, 44448, 22308, 45992, 24128, 48770, 40770, 87064, 46274, 81560, 29031, 38981, 24109, 38758, 22351, 39189, 20736, 38710, 19442, 38470, 18793, 37271, 19506, 35897, 29776, 31223, 18311, 21931, 661, 7939, -3073, -32721, 2793, -62907, 56671, -66836, 122010, -44708, 92181, 103811, -170091, 111747, -142443, 48259, -123115, -2685, -93035, -45181)
-
-[node name="TileMapLayer" type="TileMapLayer" parent="AshenPlains"]
 
 [node name="BurntHills" type="Node2D" parent="."]
 
@@ -88,3 +45,5 @@ polygon = PackedVector2Array(-14315, -61693, -24771, -2567, -17772, 24103, -1222
 [node name="DunesOfDesolation" type="Node2D" parent="."]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="DunesOfDesolation"]
+
+[node name="AshenPlains" parent="." instance=ExtResource("1_v0en2")]

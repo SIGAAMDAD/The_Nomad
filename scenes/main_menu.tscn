@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6hb01wurydo7"]
 
-[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_4714g"]
+[ext_resource type="Script" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="2_v43k5"]
 [ext_resource type="PackedScene" uid="uid://udm1pfg83jk1" path="res://scenes/menus/campaign_menu.tscn" id="3_66f1w"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_4714g")
+script = ExtResource("1_eotv5")
 
 [node name="Theme" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_nrafk")
@@ -52,7 +52,4 @@ scale = Vector2(0.726053, 0.530469)
 theme_override_fonts/font = ExtResource("4_24y2n")
 text = "< BACK"
 
-[connection signal="campaign_menu" from="MainMenu" to="." method="_on_main_menu_campaign_menu"]
-[connection signal="multiplayer_menu" from="MainMenu" to="." method="_on_main_menu_multiplayer_menu"]
-[connection signal="settings_menu" from="MainMenu" to="." method="_on_main_menu_settings_menu"]
 [connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

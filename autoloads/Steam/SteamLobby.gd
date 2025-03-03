@@ -48,7 +48,7 @@ func open_lobby_list() -> void:
 		Steam.addRequestLobbyListStringFilter( "gamemode", _lobby_filter_gamemode, Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL )
 	
 	Steam.addRequestLobbyListDistanceFilter( Steam.LobbyDistanceFilter.LOBBY_DISTANCE_FILTER_WORLDWIDE )
-	Steam.requestInternetServerList( SteamManager._steam_app_id, [] )
+	Steam.requestInternetServerList( SteamManager.GetAppID(), [] )
 	Steam.requestLobbyList()
 
 func _on_lobby_match_list( lobbies: Array ) -> void:
@@ -123,7 +123,7 @@ func leave_lobby() -> void:
 	
 	_lobby_members.clear()
 	
-	client_left_lobby.emit( SteamManager._steam_idclietn )
+	client_left_lobby.emit( SteamManager.GetSteamID() )
 
 func create_lobby() -> void:
 	if _lobby_id == 0:
@@ -153,7 +153,7 @@ func send_p2p_packet( target: int, packet: Dictionary, sendType: int = 0 ) -> vo
 	if target == 0:
 		if _lobby_members.size() > 1:
 			for member in _lobby_members:
-				if member[ "steam_id" ] != SteamManager._steam_id:
+				if member[ "steam_id" ] != SteamManager.GetSteamID():
 					Steam.sendP2PPacket( member[ "steam_id" ], data, sendType, channel )
 	else:
 		Steam.sendP2PPacket( target, data, sendType, channel )
@@ -167,6 +167,8 @@ func read_p2p_packet() -> void:
 		
 		match data[ "message" ]:
 			"packet":
+				get_tree().get_current_scene().process_packet( data[ "packet" ], senderId )
+			"update":
 				get_tree().get_current_scene().process_packet( data[ "packet" ], senderId )
 			"handshake":
 				print( "%s sent a handshake packet." % data[ "username" ] )
@@ -211,14 +213,14 @@ func _on_lobby_chat_update( lobbyId: int, changeId: int, playerId: int, chatStat
 	
 	match chatState:
 		Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
-			print( "%s: %s has joined the fray..." % [ SteamManager._steam_username, changerName ] )
+			print( "%s has joined..." % changerName )
 			client_joined_lobby.emit( changeId )
 		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT:
-			print( "%s: %s has fled..." % [ SteamManager._steam_username, changerName ] )
+			print( "%s has faded away..." % changerName )
 			client_left_lobby.emit( changeId )
 
 func make_p2p_handshake() -> void:
-	send_p2p_packet( 0, { "message": "handshake", "remote_steam_id": SteamManager._steam_id, "username": SteamManager._steam_username } )
+	send_p2p_packet( 0, { "message": "handshake", "remote_steam_id": SteamManager.GetSteamID(), "username": SteamManager.GetSteamName() } )
 	lobby_members_updated.emit()
 
 func _ready() -> void:

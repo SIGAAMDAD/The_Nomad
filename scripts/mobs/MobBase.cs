@@ -1,0 +1,175 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using Godot;
+using MountainGoap;
+using Renown;
+
+public partial class MobBase : CharacterBody2D {
+	public enum DirType {
+		North,
+		NorthEast,
+		East,
+		SouthEast,
+		South,
+		SouthWest,
+		West,
+		NorthWest
+	};
+
+	protected PackedScene BloodSplatter;
+
+	protected float AngleBetweenRays = Mathf.DegToRad( 5.0f );
+
+	[ExportCategory("Detection")]
+	[Export]
+	protected CollisionShape2D SoundBounds;
+	[Export]
+	protected float ViewAngleAmount = 45.0f;
+	[Export]
+	protected float MaxViewDistance = 0.0f;
+	[Export]
+	protected float SightDetectionSpeed = 0.1f;
+	[Export]
+	protected float SightDetectionTime = 1.0f;
+	[Export]
+	protected float LoseInterestTime = 10.5f;
+
+	[ExportCategory("Start")]
+	[Export]
+	protected DirType Direction;
+
+	[ExportCategory("Stats")]
+	[Export]
+	protected float Health = 0.0f;
+	[Export]
+	protected float MovementSpeed = 1.0f;
+	[Export]
+	protected float ThinkInterval = 0.2f;
+
+	protected Random RandomFactory = new Random();
+
+	protected CharacterBody2D SightTarget;
+	protected float SightDetectionAmount = 0.0f;
+	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
+
+	protected AudioStreamPlayer2D Bark;
+	protected Timer ThinkerTimer;
+	protected Timer LoseInterestTimer;
+	protected Node2D SightDetector;
+	protected Line2D DetectionMeter;
+	protected AnimatedSprite2D Animations;
+	protected NavigationAgent2D Navigation;
+	protected Color DetectionColor;
+
+	protected List<RayCast2D> SightLines;
+
+	protected Agent Agent;
+
+	protected void GenerateRaycasts() {
+		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
+		SightLines = new List<RayCast2D>();
+
+		for ( int i = 0; i < rayCount; i++ ) {
+			RayCast2D ray = new RayCast2D();
+			float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
+			ray.TargetPosition = AngleDir.Rotated( angle ) * MaxViewDistance;
+			ray.Enabled = true;
+			SightDetector.AddChild( ray );
+			SightLines.Add( ray );
+		}
+	}
+	protected void RecalcSight() {
+		SightDetector.GlobalTransform = GlobalTransform;
+		for ( int i = 0; i < SightLines.Count; i++ ) {
+			RayCast2D ray = SightLines[i];
+			float angle = AngleBetweenRays * ( i - SightLines.Count / 2.0f );
+			ray.TargetPosition = AngleDir.Rotated( angle ) * MaxViewDistance;
+		}
+	}
+
+	protected virtual void OnLoseInterestTimerTimeout() {
+	}
+
+	protected void Init() {
+		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
+
+		Animations = GetNode<AnimatedSprite2D>( "Animations/AnimatedSprite2D" );
+		SightDetector = GetNode<Node2D>( "SightCheck" );
+		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
+		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
+
+		Bark = new AudioStreamPlayer2D();
+		Bark.GlobalPosition = GlobalPosition;
+		AddChild( Bark );
+
+		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+
+		LoseInterestTimer = new Timer();
+		LoseInterestTimer.WaitTime = LoseInterestTime;
+		LoseInterestTimer.OneShot = true;
+		LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
+		AddChild( LoseInterestTimer );
+
+		switch ( Direction ) {
+		case DirType.North:
+			AngleDir = Godot.Vector2.Up;
+			break;
+		case DirType.East:
+			AngleDir = Godot.Vector2.Right;
+			break;
+		case DirType.South:
+			AngleDir = Godot.Vector2.Down;
+			break;
+		case DirType.West:
+			AngleDir = Godot.Vector2.Left;
+			break;
+		};
+
+		GenerateRaycasts();
+	}
+
+	protected bool MoveAlongPath() {
+		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
+		AngleDir = GlobalPosition.DirectionTo( nextPathPosition ) * MovementSpeed;
+		Animations.Play( "move" );
+		Velocity = AngleDir;
+		return MoveAndSlide();
+	}
+	protected void SetNavigationTarget( Godot.Vector2 target ) {
+		Navigation.TargetPosition = target;
+		Agent.State[ "TargetReached" ] = false;
+	}
+	protected void OnTargetReached() {
+		Agent.State[ "TargetReached" ] = true;
+	}
+
+#region Actions
+	protected ExecutionStatus Action_GotoNode( Agent agent, MountainGoap.Action action ) {
+		if ( (bool)Agent.State[ "TargetReached" ] ) {
+			return ExecutionStatus.Succeeded;
+		}
+		MoveAlongPath();
+		return ExecutionStatus.Executing;
+	}
+	protected ExecutionStatus Action_RunAway( Agent agent, MountainGoap.Action action ) {
+		if ( Health <= 0.0f ) {
+			return ExecutionStatus.Failed;
+		} else if ( (float)agent.State[ "TargetDistance" ] > 1500.0f ) {
+			return ExecutionStatus.Succeeded;
+		}
+		return ExecutionStatus.Executing;
+	}
+	protected ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
+		if ( agent.State[ "SightTarget" ] != null ) {
+			Bark.Stream = MobSfxCache.Instance.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.Instance.TargetSpotted.Count - 1 ) ];
+			Bark.Play();
+
+			agent.State[ "HasTarget " ] = true;
+			return ExecutionStatus.Succeeded;
+		}
+
+		return ExecutionStatus.Executing;
+	}
+#endregion
+};

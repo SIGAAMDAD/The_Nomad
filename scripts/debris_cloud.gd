@@ -10,12 +10,12 @@ func _on_timer_timeout() -> void:
 func _ready() -> void:
 	_timer.timeout.connect( _on_timer_timeout )
 
-func create( range: float, from: Vector2, to: Vector2 ) -> void:
-	var velocity := range - from.distance_to( to )
+func create( position: Vector2 ) -> void:
+#	var velocity := range - from.distance_to( to )
 	var numSmokeClouds := 64
 	
 	for i in range( numSmokeClouds ):
 		var cloud := DebrisSmoke.new()
 		cloud.texture = _texture
-		cloud.global_position = to
+		cloud.global_position = position
 		add_child( cloud )

@@ -20,7 +20,6 @@ color = Color(1, 0.713726, 0, 1)
 
 [node name="SlidePuff" type="GPUParticles2D"]
 rotation = -1.5708
-scale = Vector2(1, 1)
 amount = 100
 process_material = SubResource("ParticleProcessMaterial_q2b3j")
 lifetime = 0.4

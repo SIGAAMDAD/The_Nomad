@@ -1,28 +1,61 @@
 using Godot;
-using System;
 
 public partial class SinglePlayer : Node2D {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready() {
-		Node ArchiveSystem = GetNode( "/root/ArchiveSystem" );
+	[Export]
+	private Player Player1 = null;
+	private Node2D Hellbreaker = null;
+	private Node2D SettingsData = null;
 
-		PackedScene level = GD.Load<PackedScene>( "res://scenes/level"
-			+ Convert.ToString( (int)ArchiveSystem.Call( "GetPart" ) )
-			+ Convert.ToString( (int)ArchiveSystem.Call( "GetChapter" ) )
-			+ ".tscn" );
-		Node child = level.Instantiate();
-		AddChild( child );
+	[Export]
+	public Node2D LevelData = null;
+	
+	public void ToggleHellbreaker() {
+		LevelData.Hide();
+		LevelData.SetProcess( false );
+		LevelData.SetProcessInput( false );
+		LevelData.SetProcessInternal( false );
+		LevelData.SetPhysicsProcess( false );
+		LevelData.SetProcessUnhandledInput( false );
 
-		Player player1 = child.GetChild<Player>( 3 );
-		Player player2 = child.GetChild<Player>( 4 );
+		Hellbreaker.Show();
+		Hellbreaker.SetProcess( true );
+		Hellbreaker.SetProcessInput( true );
+		Hellbreaker.SetProcessInternal( true );
+		Hellbreaker.SetPhysicsProcess( true );
+		Hellbreaker.SetProcessUnhandledInput( true );
+		
+		AddChild( Hellbreaker );
+	}
 
-		player2.Hide();
-		if ( Input.GetConnectedJoypads().Count > 0 ) {
-			player1.SetupSplitScreen( 0 );
+	public override void _ExitTree() {
+		Player1.QueueFree();
+		if ( Hellbreaker != null ) {
+			Hellbreaker.QueueFree();
 		}
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process( double delta ) {
+	public override void _Ready() {
+		GetTree().CurrentScene = this;
+		if ( Input.GetConnectedJoypads().Count > 0 ) {
+			Player1.SetupSplitScreen( 0 );
+		}
+
+		_ = new MountainGoapLogging.DefaultLogger(
+			true,
+			"goap.log"
+		);
+
+		MobSfxCache.Instance.Cache();
+		Control SettingsData = GetNode<Control>( "/root/SettingsData" );
+		if ( (bool)SettingsData.Get( "_hellbreaker" ) ) {
+			Hellbreaker = ResourceLoader.Load<PackedScene>( "res://levels/hellbreaker.tscn" ).Instantiate<Node2D>();
+
+			Hellbreaker.Hide();
+			Hellbreaker.SetProcess( false );
+			Hellbreaker.SetProcessInput( false );
+			Hellbreaker.SetProcessInternal( false );
+			Hellbreaker.SetPhysicsProcess( false );
+			Hellbreaker.SetProcessUnhandledInput( false );
+		}
 	}
-}
+};

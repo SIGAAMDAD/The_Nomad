@@ -78,6 +78,7 @@ tile_map_data = PackedByteArray("AAAIAAIAAQAUAAsAAAADAAUAAQAWAAsAAAAGAAsAAQAZAA4
 tile_set = ExtResource("2_b54h6")
 
 [node name="Spawn" type="Sprite2D" parent="."]
+texture_repeat = 1
 material = SubResource("ShaderMaterial_of0ka")
 position = Vector2(42, 435)
 scale = Vector2(0.389844, 0.396777)

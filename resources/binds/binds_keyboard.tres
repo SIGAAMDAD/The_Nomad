@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=72 format=3 uid="uid://cva672a3bp3sm"]
 
 [ext_resource type="Script" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
-[ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move_player0.tres" id="2_hac6w"]
+[ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="2_84yx1"]
 [ext_resource type="Script" path="res://addons/guide/guide_input_mapping.gd" id="3_w7imu"]
 [ext_resource type="Script" path="res://addons/guide/inputs/guide_input_key.gd" id="4_3aewh"]
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier.gd" id="5_jakow"]
@@ -9,18 +9,18 @@
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier_input_swizzle.gd" id="7_ord2p"]
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier_negate.gd" id="8_0khea"]
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger.gd" id="9_ydc30"]
-[ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash_player0.tres" id="13_xochv"]
+[ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="10_5tk0t"]
+[ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="12_hjl5o"]
+[ext_resource type="Resource" uid="uid://d0n7i8dfjmem7" path="res://resources/binds/actions/keyboard/switch_weapon_mode.tres" id="13_uj0vk"]
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_pressed.gd" id="14_cvawn"]
-[ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide_player0.tres" id="16_dplwe"]
-[ext_resource type="Resource" uid="uid://d0n7i8dfjmem7" path="res://resources/binds/actions/keyboard/switch_weapon_mode_player0.tres" id="17_v0jnu"]
+[ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="15_wpeq0"]
+[ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="16_bt6fv"]
+[ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="17_22eqk"]
 [ext_resource type="Script" path="res://addons/guide/inputs/guide_input_mouse_button.gd" id="18_836tg"]
 [ext_resource type="Resource" uid="uid://cqyxax3wm7b0a" path="res://resources/binds/actions/keyboard/switch_to_gamepad.tres" id="19_n2nwk"]
-[ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon_player0.tres" id="19_ykfe8"]
+[ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="20_36aim"]
 [ext_resource type="Script" path="res://addons/guide/inputs/guide_input_any.gd" id="20_yudlm"]
-[ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon_player0.tres" id="21_hjmux"]
 [ext_resource type="Resource" uid="uid://b3wjmxhtiwox5" path="res://resources/binds/actions/keyboard/open_inventory.tres" id="21_wkymt"]
-[ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon_player0.tres" id="22_2ewbc"]
-[ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time_player0.tres" id="23_2a03p"]
 [ext_resource type="Script" path="res://addons/guide/guide_mapping_context.gd" id="25_f1bav"]
 
 [sub_resource type="Resource" id="Resource_oiqfq"]
@@ -125,7 +125,7 @@ triggers = Array[ExtResource("9_ydc30")]([])
 
 [sub_resource type="Resource" id="Resource_11we5"]
 script = ExtResource("1_7co6v")
-action = ExtResource("2_hac6w")
+action = ExtResource("2_84yx1")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_da27e"), SubResource("Resource_vhaqk"), SubResource("Resource_sog2e"), SubResource("Resource_2wkfa")])
 
 [sub_resource type="Resource" id="Resource_powr3"]
@@ -153,7 +153,7 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_36tpo")])
 
 [sub_resource type="Resource" id="Resource_jm1cg"]
 script = ExtResource("1_7co6v")
-action = ExtResource("13_xochv")
+action = ExtResource("10_5tk0t")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_bpck6")])
 
 [sub_resource type="Resource" id="Resource_eugng"]
@@ -181,7 +181,7 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_jmof8")])
 
 [sub_resource type="Resource" id="Resource_tnm07"]
 script = ExtResource("1_7co6v")
-action = ExtResource("16_dplwe")
+action = ExtResource("12_hjl5o")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_nfh7q")])
 
 [sub_resource type="Resource" id="Resource_idch4"]
@@ -204,7 +204,7 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_cyxe1")])
 
 [sub_resource type="Resource" id="Resource_ynhi6"]
 script = ExtResource("1_7co6v")
-action = ExtResource("17_v0jnu")
+action = ExtResource("13_uj0vk")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_6rnhs")])
 
 [sub_resource type="Resource" id="Resource_l41s1"]
@@ -227,7 +227,7 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_x21r0")])
 
 [sub_resource type="Resource" id="Resource_6a6oq"]
 script = ExtResource("1_7co6v")
-action = ExtResource("21_hjmux")
+action = ExtResource("15_wpeq0")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_pac6a")])
 
 [sub_resource type="Resource" id="Resource_a5emx"]
@@ -251,7 +251,7 @@ metadata/_guide_triggers_collapsed = false
 
 [sub_resource type="Resource" id="Resource_m36dn"]
 script = ExtResource("1_7co6v")
-action = ExtResource("22_2ewbc")
+action = ExtResource("16_bt6fv")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_1f5lf")])
 
 [sub_resource type="Resource" id="Resource_iycop"]
@@ -279,7 +279,7 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_xxrtk")])
 
 [sub_resource type="Resource" id="Resource_i0kou"]
 script = ExtResource("1_7co6v")
-action = ExtResource("23_2a03p")
+action = ExtResource("17_22eqk")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_lllj1")])
 
 [sub_resource type="Resource" id="Resource_5yqmb"]
@@ -328,12 +328,12 @@ triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_h3lpc")])
 
 [sub_resource type="Resource" id="Resource_5ybme"]
 script = ExtResource("1_7co6v")
-action = ExtResource("19_ykfe8")
+action = ExtResource("20_36aim")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_5lvet")])
 
-[sub_resource type="Resource" id="Resource_ib81r"]
+[sub_resource type="Resource" id="Resource_nuc7o"]
 script = ExtResource("4_3aewh")
-key = 4194306
+key = 4194308
 shift = false
 control = false
 alt = false
@@ -350,7 +350,7 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_ib81r")
+input = SubResource("Resource_nuc7o")
 modifiers = Array[ExtResource("5_jakow")]([])
 triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_foipv")])
 

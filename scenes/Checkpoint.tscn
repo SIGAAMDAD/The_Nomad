@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://co7rmsfdbg4m0"]
 
 [ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="1_0p5wp"]
-[ext_resource type="Script" path="res://scripts/checkpoint.gd" id="1_msn2c"]
+[ext_resource type="Script" path="res://scripts/Checkpoint.cs" id="1_lu6fa"]
 [ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Texture2D" uid="uid://qqv2wq54riuc" path="res://textures/unlit.png" id="4_2bgll"]
 [ext_resource type="AudioStream" uid="uid://dmjel1d8n14nq" path="res://sounds/env/campfire.ogg" id="5_qg5el"]
@@ -47,7 +47,7 @@ animations = [{
 radius = 12.0
 
 [node name="Checkpoint" type="Area2D"]
-script = ExtResource("1_msn2c")
+script = ExtResource("1_lu6fa")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 rotation = -2.45849e-05

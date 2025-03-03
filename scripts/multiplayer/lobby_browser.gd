@@ -16,22 +16,10 @@ var _matchmaking_phase:int = 0
 
 signal on_host_game()
 
-class LobbyData:
-	var _map:String = ""
-	var _player_count:int = 0
-	var _max_players:int = 0
-	var _game_mode:MultiplayerMode.GameMode = MultiplayerMode.GameMode.Bloodbath
-	
-	func _init( map: String, playerCount: int, maxPlayers: int, gameMode: String ) -> void:
-		_map = map
-		_player_count = playerCount
-#		_game_mode = MultiplayerMode.GameMode.get( gameMode )
-
 var _lobby_list:Dictionary = {}
 
 func _ready() -> void:
-	SteamLobby.lobby_joined.connect( _on_lobby_joined )
-	Steam.lobby_joined.connect( _on_lobby_joined )
+	SteamLobby.LobbyJoined.connect( _on_lobby_joined )
 
 func on_loaded_map() -> void:
 	GameConfiguration.LoadedLevel.ChangeScene()
@@ -72,7 +60,6 @@ func matchmaking_loop() -> void:
 
 func _on_join_game( lobbyId: int ) -> void:
 	print( "Joining lobby %s..." % lobbyId )
-	emit_signal( "set_lobby_room_menu" )
 	Steam.joinLobby( lobbyId )
 
 func get_lobby_list() -> void:
@@ -91,7 +78,6 @@ func get_lobby_list() -> void:
 		button.connect( "pressed", Callable( self, "_on_join_game" ).bind( lobby ) )
 		
 		_lobby_table.add_child( button )
-		_lobby_list[ lobbyName ] = LobbyData.new( lobbyMap, lobbyMemberCount, lobbyMaxMemberCount, lobbyGameMode )
 
 func auto_matchmake() -> void:
 	var attemptingJoin := false

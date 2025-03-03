@@ -36,6 +36,14 @@ class_name SettingsManager extends Control
 @onready var _hellbreaker:bool = _default._hellbreaker
 @onready var _hellbreaker_revanents:bool = _default._hellbreaker_revanents
 
+var _mapping_contexts:Array[ GUIDEMappingContext ] = [ load( "res://resources/binds/binds_keyboard.tres" ), load( "res://resources/binds/binds_gamepad.tres" ) ]
+var _remapper:GUIDERemapper = null
+var _remapping_config:GUIDERemappingConfig = load( "user://input_config.tres" )
+var _remappable_items:Array[GUIDERemapper.ConfigItem] = []
+var _mapping_formatter:GUIDEInputFormatter = GUIDEInputFormatter.new()
+
+var _move_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/move_action.tres" )
+
 # dedicated keybind hashmap
 var _keybind_dict:Dictionary
 
@@ -238,14 +246,14 @@ func save_video_settings( file: FileAccess ) -> void:
 
 func load_accessibility_settings( file: FileAccess ) -> void:
 	_colorblind_mode = file.get_32()
-	_haptic_strength = file.get_32()
+	_haptic_strength = file.get_float()
 	_haptic_feedback = file.get_8()
 	_autoaim = file.get_8()
 	_dyslexia_mode = file.get_8()
 
 func save_accessibility_settings( file: FileAccess ) -> void:
 	file.store_32( _colorblind_mode )
-	file.store_32( _haptic_strength )
+	file.store_float( _haptic_strength )
 	file.store_8( _haptic_feedback )
 	file.store_8( _autoaim )
 	file.store_8( _dyslexia_mode )
@@ -264,6 +272,11 @@ func save_gameplay_settings( file: FileAccess ) -> void:
 
 func _ready() -> void:
 	print( "Loading game settings..." )
+	
+	_remapper = GUIDERemapper.new()
+	_remapper.initialize( _mapping_contexts, _remapping_config )
+
+	_remappable_items = _remapper.get_remappable_items()
 	
 	_keybind_dict = create_keybinds_dict()
 	

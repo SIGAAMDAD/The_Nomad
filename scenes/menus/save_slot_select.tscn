@@ -1,11 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dodqhbm63d3ot"]
+[gd_scene load_steps=5 format=3 uid="uid://dodqhbm63d3ot"]
 
 [ext_resource type="Texture2D" uid="uid://hnq7r65v0tk1" path="res://textures/playBackground.jpg" id="1_bovun"]
-[ext_resource type="Script" path="res://scripts/menus/save_slot_select.gd" id="1_bvwvw"]
+[ext_resource type="Script" path="res://scripts/menus/SaveSlotSelect.cs" id="1_om3d8"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_b8kik"]
-[ext_resource type="Script" path="res://scripts/menus/save_slot_0_button.gd" id="4_0ekrd"]
-[ext_resource type="Script" path="res://scripts/menus/save_slot_1_button.gd" id="5_rshje"]
-[ext_resource type="Script" path="res://scripts/menus/save_slot_2_button.gd" id="6_kemx0"]
+[ext_resource type="Script" path="res://scripts/menus/SaveSlotButton.cs" id="4_4wbu2"]
 
 [node name="SaveSlotSelect" type="Control"]
 layout_mode = 3
@@ -14,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_bvwvw")
+script = ExtResource("1_om3d8")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -53,7 +51,7 @@ layout_mode = 2
 [node name="SaveSlot0Button" type="Button" parent="VBoxContainer/SaveSlot0"]
 layout_mode = 2
 text = "UNUSED"
-script = ExtResource("4_0ekrd")
+script = ExtResource("4_4wbu2")
 
 [node name="SaveSlot1" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -61,7 +59,8 @@ layout_mode = 2
 [node name="SaveSlot1Button" type="Button" parent="VBoxContainer/SaveSlot1"]
 layout_mode = 2
 text = "UNUSED"
-script = ExtResource("5_rshje")
+script = ExtResource("4_4wbu2")
+Slot = 1
 
 [node name="SaveSlot2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -69,7 +68,8 @@ layout_mode = 2
 [node name="SaveSlot2Button" type="Button" parent="VBoxContainer/SaveSlot2"]
 layout_mode = 2
 text = "UNUSED"
-script = ExtResource("6_kemx0")
+script = ExtResource("4_4wbu2")
+Slot = 2
 
 [connection signal="pressed" from="VBoxContainer/SaveSlot0/SaveSlot0Button" to="." method="_on_save_slot_0_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/SaveSlot1/SaveSlot1Button" to="." method="_on_save_slot_1_button_pressed"]

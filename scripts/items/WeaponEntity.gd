@@ -1,7 +1,6 @@
 class_name WeaponEntity extends Node2D
 
 # TODO: make flying weapons allowed and then make parrying them chunks allowed
-
 @export var _data:ItemDefinition = null
 
 @onready var _bullet_shell := preload( "res://scenes/effects/bullet_shell.tscn" )
@@ -90,7 +89,7 @@ func create_pickup_bounds() -> void:
 	collision.shape = circle
 	
 	_area.add_child( collision )
-	_area.connect( "body_shape_entered", _on_body_shape_entered )
+	_area.body_shape_entered.connect( _on_body_shape_entered )
 	
 	add_child( _area )
 
@@ -293,9 +292,13 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	# bullets work like those in Halo 3.
 	# start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 	
+	_raycast.global_position = global_position
+	_raycast.global_rotation = _owner._arm_rotation
+	_raycast.target_position.x = _ammo.properties.range
+	
 	_current_muzzle_flash = _muzzle_flashes[ randi_range( 0, _muzzle_flashes.size() - 1 ) ]
 	_current_muzzle_flash.show()
-	_current_muzzle_flash.rotation = _raycast.rotation
+	_current_muzzle_flash.global_rotation = _raycast.rotation
 	
 	if _owner._arm_left._animations.flip_h:
 		_current_muzzle_flash.offset.x = -160
@@ -312,24 +315,15 @@ func use_firearm( damage: float, weaponMode: int ) -> float:
 	
 	if _raycast.is_colliding():
 		var collision = _raycast.get_collider()
-		if collision is Player && GameConfiguration._game_mode == GameConfiguration.GameMode.Multiplayer:
-			SteamNetwork.rpc_on_client( collision._multiplayer_id, _owner, "_on_damage", [ damage ] )
-		elif collision is MobBase:
-			collision.on_damage( _owner, damage )
+		# FIXME: we aren't using rpc's anymore
+		if collision is CharacterBody2D:
+			collision.damage( _owner, _ammo.properties.damage )
 		
 		var debris := _dust_cloud.instantiate()
 		get_tree().get_current_scene().add_child( debris )
-		var point:Vector2 = _raycast.get_collision_point()
-		debris.create( 0.0, global_position, point )
+		debris.create( _raycast.get_collision_point() )
 	
-	return damage
-
-func _process( _delta: float ) -> void:
-	if !_ammo:
-		return
-	
-	_raycast.global_rotation = _owner._arm_rotation
-	_raycast.target_position.x = _ammo.properties.range
+	return _ammo.properties.damage
 
 func use( weaponMode: int ) -> float:
 	if Engine.time_scale == 0.0:

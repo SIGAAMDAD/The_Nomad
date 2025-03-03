@@ -44,7 +44,7 @@ func save_game() -> void:
 	
 	file.close()
 	
-	SteamManager.save_cloud_file( "SaveData/SLOT_" + var_to_str( _save_slot ) + "/GameData.ngd" )
+	SteamManager.SaveCloudFile( "SaveData/SLOT_" + var_to_str( _save_slot ) + "/GameData.ngd" )
 	emit_signal( "on_save_game_end" )
 
 func load_game() -> void:
@@ -54,6 +54,7 @@ func load_game() -> void:
 	if !file:
 		return
 	
+	ProjectSettings.get_setting( "application/config/version" )
 	var header := var_to_str( file.get_buffer( _SAVE_GAME_DATA_HEADER.length() ) )
 	if header != _SAVE_GAME_DATA_HEADER:
 		push_error( "Saved game data (slot %s) doesn't have the correct header data, refusing load" % _save_slot )

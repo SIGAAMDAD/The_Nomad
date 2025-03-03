@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bpfp6a60qwb4g"]
 
 [ext_resource type="Shader" path="res://shaders/fog.gdshader" id="1_enlju"]
-[ext_resource type="Script" path="res://scripts/debris_cloud.gd" id="2_ysdjh"]
+[ext_resource type="Script" path="res://scripts/effects/DebrisCloud.cs" id="2_xuwca"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m18su"]
 shader = ExtResource("1_enlju")
@@ -12,7 +12,7 @@ shader_parameter/speed = Vector2(0.02, 0.01)
 z_index = 2
 texture_filter = 1
 material = SubResource("ShaderMaterial_m18su")
-script = ExtResource("2_ysdjh")
+script = ExtResource("2_xuwca")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 30.0

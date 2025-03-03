@@ -29,11 +29,17 @@ extends Control
 	"Actual Living Hell",
 	"RNJesus Hates You",
 	"I AM THE DANGER",
-	"Awwww Does This Make U Cry?"
-]
+	"Awwww Does This Make U Cry?",
+	"Asian"
+];
+
+#TODO: asian dad skin
+
+@onready var _difficulty_description:Label = $DifficultyDescriptionLabel
 
 @onready var _meme_mode_button:Button = $VBoxContainer/MemeModeButton
-@onready var _difficulty_description:Label = $DifficultyDescriptionLabel
+@onready var _intended_experience_button:Button = $VBoxContainer/IntendedModeButton
+@onready var _power_fantasy_button:Button = $VBoxContainer/PowerFantasyModeButton
 
 #var _num_meme_mode_names:int = 0
 
@@ -57,6 +63,24 @@ extends Control
 #			_num_meme_mode_names += 1
 #		else:
 #			break
+
+func _on_intended_mode_button_pressed() -> void:
+	begin_level( GameConfiguration.GameDifficulty.Intended )
+
+func _on_intended_mode_button_mouse_entered() -> void:
+	_difficulty_description.text = "INTENDED_MODE_DESCRIPTION"
+
+func _on_power_fantasy_mode_button_pressed() -> void:
+	begin_level( GameConfiguration.GameDifficulty.PowerFantasy )
+
+func _on_power_fantasy_mode_button_mouse_entered() -> void:
+	_difficulty_description.text = "POWER_FANTASY_MODE_DESCRIPTION"
+
+func _ready() -> void:
+	_intended_experience_button.pressed.connect( _on_intended_mode_button_pressed )
+	_intended_experience_button.mouse_entered.connect( _on_intended_mode_button_mouse_entered )
+	_power_fantasy_button.pressed.connect( _on_power_fantasy_mode_button_pressed )
+	_power_fantasy_button.mouse_entered.connect( _on_power_fantasy_mode_button_mouse_entered )
 
 func set_meme_mode_name() -> void:
 	# change the name every time we enter the tree
@@ -108,6 +132,3 @@ func begin_level( difficulty: GameConfiguration.GameDifficulty ) -> void:
 		GameConfiguration.LoadedLevel = AsyncScene.new( levelName + "_2p.tscn", AsyncScene.LoadingSceneOperation.Replace )
 	
 	GameConfiguration.LoadedLevel.OnComplete.connect( on_finish_loading )
-
-func _on_intended_mode_button_pressed() -> void:
-	begin_level( GameConfiguration.GameDifficulty.Intended )

@@ -8,4 +8,4 @@ func _on_lobby_browser_host_game_pressed() -> void:
 	_lobby_factory.show()
 
 func _ready() -> void:
-	_lobby_browser.on_host_game.connect( _on_lobby_browser_host_game_pressed )
+	_lobby_browser.OnHostGame.connect( _on_lobby_browser_host_game_pressed )

@@ -1,9 +1,12 @@
 class_name RebindButton extends Control
 
-@onready var _label = $HBoxContainer/RebindLabel as Label
-@onready var _button = $HBoxContainer/RebindButton as Button
+@onready var _label:RichTextLabel = $RebindLabel
+#@onready var _button = $HBoxContainer/RebindButton as Button
+@onready var _input_detector:GUIDEInputDetector = %GUIDEInputDetector
 
 @export var _action_name:String = "move_left_0"
+@export var _display_category:String = ""
+@export var _action:GUIDEAction = null
 
 const ACTION_TO_LABEL:Dictionary = {
 	"move_left_0": "Move Left",
@@ -152,55 +155,37 @@ func set_text_for_bind() -> void:
 	
 #	_button.icon = ResourceLoader.load( KEY_ICONS[ text ] )
 
+func _rebind( event: InputEvent, item: GUIDERemapper.ConfigItem ) -> void:
+	if event is not InputEventMouseButton:
+		return
+	elif event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	
+	_input_detector.detect( item.value_type )
+	
+	_label.text = "Press Any Key..."
+	var input:GUIDEInput = await _input_detector.input_detected
+	if input == null:
+		return
+	
+	var collisions:Array[ GUIDERemapper.ConfigItem ] = SettingsData._remapper.get_input_collisions( item, input )
+	if collisions.any( func( it: GUIDERemapper.ConfigItem ): return not it.is_remappable ):
+		return
+	
+	for collision in collisions:
+		SettingsData._remapper.set_bound_input( collision, null )
+	
+	SettingsData._remapper.set_bound_input( item, input )
+	_label.parse_bbcode( await SettingsData._mapping_formatter.input_as_richtext_async( input ) )
+
 func _ready() -> void:
-	set_process_unhandled_input( false )
-	set_action_name()
-	set_text_for_bind()
-	load_keybinds()
-
-func load_keybinds() -> void:
-	rebind_action_key( SettingsData.get_keybind( _action_name ) )
-
-func _on_rebind_button_toggled( toggled_on: bool ) -> void:
-	if toggled_on:
-		_button.text = "Press Any Key..."
-		set_process_unhandled_input( toggled_on )
-		
-		for i in get_tree().get_nodes_in_group( "Rebindings" ):
-			if i._action_name != self._action_name:
-				i._button.toggle_mode = false
-				i.set_process_unhandled_input( false )
+	var items := SettingsData._remapper.get_remappable_items( null, "", _action )
+	var input:GUIDEInput = SettingsData._remapper.get_bound_input_or_null( items[0] )
+	if input == null:
+		_label.text = "Not bound"
 	else:
-		set_text_for_bind()
-		
-		for i in get_tree().get_nodes_in_group( "Rebindings" ):
-			if i._action_name != self._action_name:
-				i._button.toggle_mode = true
-				i.set_process_unhandled_input( false )
-
-func _unhandled_input( event ) -> void:
-	rebind_action_key( event )
-	_button.button_pressed = false
-
-func rebind_action_key( event ) -> void:
-	print( "Rebinding action event..." )
+		_label.parse_bbcode( await SettingsData._mapping_formatter.input_as_richtext_async( input ) )
 	
-	if Input.get_connected_joypads().size() > 0:
-		return # don't overwrite bindings
-	
-	InputMap.action_erase_events( _action_name )
-	InputMap.action_add_event( _action_name, event )
-	SettingsData.set_keybind( event, _action_name )
-	
-	set_process_unhandled_input( false )
-	set_text_for_bind()
-	set_action_name()
-
-
-func _on_rebind_button_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		return # we ain't doin' that here...
-	
-	rebind_action_key( event )
-	_button.button_pressed = true
-	_button.toggle_mode = false
+	var tmp:GUIDERemapper.ConfigItem
+	var event:InputEvent
+	_label.gui_input.connect( Callable( _rebind ).bind( event, tmp ) )

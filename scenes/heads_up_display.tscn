@@ -1,6 +1,6 @@
 [gd_scene load_steps=37 format=3 uid="uid://cjy2h2wmmfkmc"]
 
-[ext_resource type="Script" path="res://scripts/hud.gd" id="1_yjir7"]
+[ext_resource type="Script" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
 [ext_resource type="Texture2D" uid="uid://cmhkbjyqs1vb3" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
@@ -105,7 +105,7 @@ shader_parameter/is_selected = false
 shader_parameter/icon = ExtResource("17_rxc6h")
 
 [node name="HeadsUpDisplay" type="CanvasLayer"]
-script = ExtResource("1_yjir7")
+script = ExtResource("1_vxf1b")
 
 [node name="Overlays" type="Node" parent="."]
 
@@ -342,6 +342,7 @@ size_flags_vertical = 4
 layout_mode = 2
 
 [node name="Inventory" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 4
 anchor_top = 0.5
@@ -763,6 +764,22 @@ layout_mode = 2
 
 [node name="WeaponInfo" type="HBoxContainer" parent="Inventory/MarginContainer/AmmoInfo/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="DeathText" type="Label" parent="."]
+visible = false
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_125nm")
+theme_override_font_sizes/font_size = 64
+text = "YOU DIED"
+horizontal_alignment = 1
 
 [connection signal="timeout" from="StatusBarTimer" to="." method="_on_status_bar_timer_timeout"]
 [connection signal="timeout" from="SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]

@@ -1,14 +1,15 @@
 class_name Arm extends Node2D
 
 @export var _animations:AnimatedSprite2D = null
-@export var _parent:Player = null
 
 @onready var _default_animation:SpriteFrames = null
 @onready var _weapon_slot:int = -1
 
+var _parent:Player = null
 var _flip:bool = false
 
 func _ready() -> void:
+	_parent = get_parent()
 	_default_animation = _animations.sprite_frames
 
 func set_weapon( slot: int ) -> void:
@@ -32,17 +33,10 @@ func _process( _delta: float ) -> void:
 	
 	_animations.sprite_frames = animation
 	
-	if _parent._torso_animation.flip_h:
-		_animations.global_rotation = _parent._arm_rotation
-		_animations.flip_h = false
-		_animations.flip_v = true
-	else:
-		_animations.global_rotation = _parent._arm_rotation
-		_animations.flip_h = false
-		_animations.flip_v = false
+	_animations.global_rotation = _parent._arm_rotation
+	_animations.flip_v = _parent._torso_animation.flip_h
 	
 	if _weapon_slot == -1:
-#		_animations.flip_h = _flip
 		if _parent._input_velocity != Vector2.ZERO:
 			_animations.play( "run" )
 		else:
@@ -61,9 +55,7 @@ func _process( _delta: float ) -> void:
 				animationName = "empty"
 		
 		if weapon._last_used_mode & WeaponBase.Properties.IsOneHanded:
-			if self == _parent._arm_left && !_animations.flip_h:
-				animationName = animationName + "_flip"
-			elif self == _parent._arm_right && _animations.flip_h:
-				animationName = animationName + "_flip"
+			if ( self == _parent._arm_left && !_animations.flip_h ) || ( self == _parent._arm_right && _animations.flip_h ):
+				animationName += "_flip"
 		
 		_animations.play( animationName )

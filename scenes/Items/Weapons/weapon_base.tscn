@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://brtukmd1ep2ci"]
+[gd_scene load_steps=12 format=3 uid="uid://brtukmd1ep2ci"]
 
 [ext_resource type="Shader" path="res://shaders/highlight.gdshader" id="1_deedu"]
-[ext_resource type="Script" path="res://scripts/items/WeaponEntity.gd" id="1_r7i5y"]
+[ext_resource type="Script" path="res://scripts/items/WeaponEntity.cs" id="2_g8mpd"]
 [ext_resource type="Texture2D" path="res://textures/env/muzzle/mf0.dds" id="2_gbakd"]
 [ext_resource type="Texture2D" path="res://textures/env/muzzle/mf1.dds" id="3_5j14u"]
+[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="3_hlo55"]
 [ext_resource type="Texture2D" path="res://textures/env/muzzle/mf2.dds" id="4_2wko3"]
 [ext_resource type="Texture2D" path="res://textures/env/muzzle/mf3.dds" id="5_8e488"]
 
@@ -26,7 +27,8 @@ shader_parameter/color_gradient = SubResource("NoiseTexture2D_neabd")
 
 [node name="WeaponBase" type="Node2D" groups=["Archive", "SceneRelevant"]]
 material = SubResource("ShaderMaterial_f2rs7")
-script = ExtResource("1_r7i5y")
+script = ExtResource("2_g8mpd")
+Data = ExtResource("3_hlo55")
 
 [node name="Animations" type="Node2D" parent="."]
 

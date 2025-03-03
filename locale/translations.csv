@@ -26,6 +26,8 @@ HELP_BUTTON,VALDEN'S BOOK
 MODS_BUTTON,TALES AROUND THE CAMPFIRE
 QUIT_BUTTON,QUIT
 BEGIN_YOUR_TALE,BEGIN YOUR TALE
+INTENDED_MODE_NAME,Intended Experience
+POWER_FANTASY_MODE_NAME,Power Fantasy
 EASY_MODE_NAME,F.N.G.
 NORMAL_MODE_NAME,Hold My Beer
 HARD_MODE_NAME,I Can Take It!
@@ -37,4 +39,6 @@ NORMAL_MODE_DESCRIPTION,"The standard difficulty. You'll get put against actual 
 HARD_MODE_DESCRIPTION,"The game will stop pulling it's punches. You are expected to learn the mechanics, then utilize everything you have to your advantage."
 VERY_HARD_MODE_DESCRIPTION,"You know what you're doing and you can handle yourself in an open battle. Most attacks deal heavy damage, you'll have to be even faster and more precise than before."
 INSANE_MODE_DESCRIPTION,"Only the insane or suicidal will attempt this. All attacks are one shot kills. Your name is one to be feared. NOTE: this is the cannon difficulty"
+INTENDED_MODE_DESCRIPTION,"The intended experience. Play this if you want the most lore-accurate version of the story"
+POWER_FANTASY_MODE_DESCRIPTION,"You are given much more power and much more leeway, but at the cost of a less cinematic experience."
 MEME_MODE_DESCRIPTION,"PAIN."

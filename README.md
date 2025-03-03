@@ -1,25 +1,60 @@
-# CameraRegion2D
-A simple [Godot](https://godotengine.org/) addon for managing `Camera2D` transitions and behaviors using defined regions. Easily add camera transitions, shake effects, and region-specific configurations to your game.
+# Csharp-Console-Godot
+original project:
+[Godot Console](https://github.com/jitspoe/godot-console)
 
-<p align="center">
-  <img src="./demo/demo.gif" alt="demo" width="640">
-</p>
+example:
+```c#
+using Godot;
+public partial class Example : Node
+{
+    public override void _Ready()
+    {
+        CommandConsole.AddCommand("print", Print);
+        CommandConsole.AddCommandDescription("print", "Prints the given text in the console.");
+        CommandConsole.AddParameterDescription(CommandName: "print", param:"text", description:"The text to print.");
 
-## Installation
-1. Download or clone this repository.
-2. Copy the addon folder into your project's `addons/` directory.
-3. Enable the addon in your Godot project via **Project Settings > Plugins**.
+        CommandConsole.AddCommand("heloworld", HelloWorld);
+        CommandConsole.AddCommandDescription("heloworld", "Prints 'Hola Mundo!' in the console.");
+    }
 
-## Usage
-1. Add a `CameraRegionController2D` node to your scene.
-2. Add `CameraRegion2D` nodes as children of the `CameraRegionController2D` to specify the regions.
-3. Assign the `target_node` (e.g., the player) and the `camera` to the `CameraRegionController2D`.
-4. Customize transitions using the `CameraTransition` resource.
-5. Optionally, connect to signals such as `target_entered_region` or `shake_started` for further control.
+    void Print(string text)
+    {
+        GD.Print(text);
+    }
 
-**Note:**  
-Methods and variables prefixed with `_` are considered private and should not be accessed outside their source code.
+    void HelloWorld()
+    {
+        GD.PrintErr("Hola Mundo!");
+    }
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.  
-The demo assets are from [Kenney](https://kenney.nl/).
+    //also you can add the Attribute
+    [AddCommand("testing"), AddCommandDescription("[color=red]Prints on GD Console[/color]")]
+    public void testing(string text)
+    {
+        GD.Print(text);
+    }
+}
+
+```
+
+in game run with:
+> `test` "testing the example" => set `testing the example` as param value
+
+> `test` testing the example => set `testing` `the` `example` as params values
+
+> `test` "testing the" example => set `testing the` `example` as params
+
+![image](https://github.com/MolikoDeveloper/Csharp-Console-Godot/assets/58595683/d17ee243-80b2-47dc-9acf-477ce4562e2c)
+
+command_list command:
+
+![image](https://github.com/MolikoDeveloper/Csharp-Console-Godot/assets/58595683/5810666b-d237-406f-96fd-f655bd0f2feb)
+
+
+
+print example:
+
+![image](https://github.com/MolikoDeveloper/Csharp-Console-Godot/assets/58595683/4ebf6452-bbb5-4651-a0b0-a48eeb8148ae)
+
+
+all with a maximum of 16 params.

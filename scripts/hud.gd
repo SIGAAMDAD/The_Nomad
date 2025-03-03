@@ -35,6 +35,8 @@ class_name HeadsUpDisplay extends CanvasLayer
 @onready var _weapon_status_bullet_count:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel
 @onready var _weapon_status_bullet_reserve:Label = $WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel
 
+@onready var _death_text:Label = $DeathText
+
 # why do I hear boss music...?
 @onready var _boss_health_bar:Control = $BossHealthBar
 
@@ -65,6 +67,7 @@ func free() -> void:
 	_weapon_status_bullet_reserve.queue_free()
 	_weapon_status.queue_free()
 	_boss_health_bar.queue_free()
+	_death_text.queue_free()
 	queue_free()
 
 func set_weapon( weapon: WeaponEntity ) -> void:

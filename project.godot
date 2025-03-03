@@ -35,7 +35,7 @@ privateKey="59b91461435b8a75"
 [application]
 
 config/name="TheNomad"
-config/version="120"
+config/version="1.2.0"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "GL Compatibility")
 run/max_fps=60
@@ -51,23 +51,23 @@ general/default_playback_type.web=0
 
 SettingsData="*res://scripts/menus/SettingsManager.gd"
 GameConfiguration="*res://scripts/GameConfiguration.gd"
-ArchiveSystem="*res://scripts/ArchiveSystem.gd"
 LoadManager="*res://scripts/LoadManager.gd"
 SoundManager="*res://addons/sound_manager/sound_manager.gd"
-SteamManager="*res://autoloads/Steam/SteamManager.gd"
+SteamManager="*res://autoloads/Steam/SteamManager.cs"
 SteamNetwork="*res://autoloads/Steam/SteamNetwork.gd"
-SteamAchievements="*res://autoloads/Steam/SteamAchievements.gd"
-SteamLobby="*res://autoloads/Steam/SteamLobby.gd"
-SteamData="*res://autoloads/Steam/SteamData.gd"
+SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
+SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
+ArchiveSystem="*res://scripts/save_system/ArchiveSystem.cs"
 ItemDatabase="*res://autoloads/ItemDatabase.gd"
-DebrisFactory="*res://autoloads/DebrisFactory.gd"
 MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
-Console="*res://addons/console/console.gd"
 GUIDE="*res://addons/guide/guide.gd"
 Questify="*res://addons/questify/quest_manager.gd"
 QuestState="*res://autoloads/QuestManager.gd"
-TurnManager="*res://addons/godot_gameplay_systems/turn_based/./autoloads/turn_manager.gd"
+WeaponSfx="*res://autoloads/WeaponSfxCache.cs"
+Console="*res://addons/console/console.gd"
+CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
+MobSfx="*res://autoloads/MobSfxCache.cs"
 
 [debug]
 
@@ -95,7 +95,7 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/gdscript_sections/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/script_bench/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
+enabled=PackedStringArray("res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/gdscript2all/plugin.cfg", "res://addons/gdscript_sections/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/script_bench/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
 
 [global_group]
 

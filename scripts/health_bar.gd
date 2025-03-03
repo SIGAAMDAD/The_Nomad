@@ -18,7 +18,7 @@ func _set_health( new_health ) -> void:
 func init( _health ) -> void:
 	health = _health
 	max_value = health
-	value = 80
+	value = 100
 	damage_bar.max_value = health
 	damage_bar.value = health
 

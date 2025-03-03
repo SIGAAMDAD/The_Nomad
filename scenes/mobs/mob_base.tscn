@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cik5jg0byotvb"]
 
 [ext_resource type="Shader" path="res://shaders/mob.gdshader" id="1_7spd8"]
-[ext_resource type="Script" path="res://scripts/mobs/MobBase.gd" id="1_smdai"]
+[ext_resource type="Script" path="res://scripts/mobs/MobBase.cs" id="1_jlmcc"]
 [ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="2_67ibf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rrfd3"]
@@ -12,7 +12,7 @@ shader_parameter/demon_eye = false
 
 [node name="MobBase" type="CharacterBody2D"]
 z_index = 4
-script = ExtResource("1_smdai")
+script = ExtResource("1_jlmcc")
 
 [node name="Animations" type="Node2D" parent="."]
 material = SubResource("ShaderMaterial_rrfd3")

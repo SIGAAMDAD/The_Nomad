@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7bc5y8xsmbqd"]
 
-[ext_resource type="Script" path="res://scripts/menus/difficulty_select.gd" id="1_8uf20"]
+[ext_resource type="Script" path="res://scripts/menus/DifficultySelect.cs" id="1_mg70y"]
 [ext_resource type="Texture2D" uid="uid://hnq7r65v0tk1" path="res://textures/playBackground.jpg" id="1_n4bea"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_ofj78"]
 
@@ -11,7 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_8uf20")
+script = ExtResource("1_mg70y")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -72,5 +72,4 @@ grow_vertical = 2
 scale = Vector2(0.698764, 0.628825)
 autowrap_mode = 2
 
-[connection signal="pressed" from="VBoxContainer/IntendedModeButton" to="." method="_on_intended_mode_button_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/MemeModeButton" to="." method="_on_meme_mode_button_mouse_entered"]

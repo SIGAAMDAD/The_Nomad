@@ -30,10 +30,10 @@ func save_stats() -> void:
 			push_error( "Steam.storeStats failed!" )
 
 func load_stats() -> void:
-	Steam.requestUserStats( SteamManager._steam_id )
+	Steam.requestUserStats( SteamManager.GetSteamID() )
 
 func _on_request_user_stats( game: int, result: Steam.Result, user: int ) -> void:
-	if game != SteamManager._steam_app_id:
+	if game != SteamManager.GetAppID():
 		return
 	elif result != Steam.Result.RESULT_OK:
 		push_error( "_on_request_user_stats: couldn't fetch user stats!" )
@@ -49,14 +49,14 @@ func _on_request_user_stats( game: int, result: Steam.Result, user: int ) -> voi
 	_lifetime_kdr = Steam.getStatFloat( "LifeTime KDR" )
 
 func _on_user_stats_stored( game: int, result: Steam.Result ) -> void:
-	if game != SteamManager._steam_app_id:
+	if game != SteamManager.GetAppID():
 		return
 	elif result != Steam.Result.RESULT_OK:
 		push_error( "_on_user_stats_stored: couldn't store user stats!" )
 		return
 
 func _ready() -> void:
-	print( "Getting multiplayer statistics for \"%s\"..." % SteamManager._steam_username )
+	print( "Getting multiplayer statistics for \"%s\"..." % SteamManager.GetSteamName() )
 	
 	Steam.current_stats_received.connect( _on_request_user_stats )
 	Steam.user_stats_stored.connect( _on_user_stats_stored )

@@ -1,0 +1,4 @@
+using Godot;
+
+namespace Renown {
+};

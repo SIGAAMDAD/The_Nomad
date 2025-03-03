@@ -29,13 +29,16 @@ scale_curve = SubResource("CurveTexture_dx3gf")
 color_ramp = SubResource("GradientTexture1D_m4qlm")
 
 [node name="DashEffect" type="GPUParticles2D"]
+emitting = false
 amount = 2000
 process_material = SubResource("ParticleProcessMaterial_rvfub")
 lifetime = 0.9
+one_shot = true
 fixed_fps = 0
 draw_order = 0
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
+visible = false
 color = Color(0.905269, 2.38247e-06, 1.92523e-07, 1)
 energy = 1.8
 texture = ExtResource("1_uv1oe")

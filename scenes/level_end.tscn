@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://dl5ck2whlo4x2"]
 
-[ext_resource type="Script" path="res://scripts/level_end.gd" id="1_3nwm3"]
+[ext_resource type="Script" path="res://scripts/levels/LevelEndArea.cs" id="1_kex23"]
 [ext_resource type="Texture2D" uid="uid://bkgkkpfup1bv5" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_mk80d"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c6ty6"]
@@ -85,7 +85,7 @@ animations = [{
 radius = 31.1448
 
 [node name="LevelEnd" type="Node2D"]
-script = ExtResource("1_3nwm3")
+script = ExtResource("1_kex23")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_g5rqk")
@@ -98,5 +98,3 @@ frame_progress = 0.12344
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, 10)
 shape = SubResource("CircleShape2D_j88fb")
-
-[connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]

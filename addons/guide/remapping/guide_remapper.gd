@@ -284,7 +284,7 @@ class ConfigItem:
 	var value_type:GUIDEAction.GUIDEActionValueType:
 		get: return GUIDERemapper._get_effective_value_type(action, _input_mapping)
 	
-	var context:GUIDEMappingContext	
+	var context:GUIDEMappingContext
 	var action:GUIDEAction
 	var index:int
 	

@@ -6,13 +6,16 @@ signal campaign_menu
 signal settings_menu
 signal valdens_book
 signal multiplayer_menu
-signal tales_around_the_campfire
+signal mods_menu
 
 func _on_campaign_button_pressed() -> void:
 	emit_signal( "campaign_menu" )
 
 func _on_settings_button_pressed() -> void:
 	emit_signal( "settings_menu" )
+
+func _on_mods_button_pressed() -> void:
+	emit_signal( "mods_menu" )
 
 func _on_quit_game_button_pressed() -> void:
 	get_tree().quit()
