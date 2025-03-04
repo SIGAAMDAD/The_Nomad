@@ -3,6 +3,7 @@ using System;
 using PlayerSystem;
 using GDExtension.Wrappers;
 using System.Linq;
+using System.Collections.Generic;
 
 public partial class Player : CharacterBody2D {
 	public enum GameMode {
@@ -19,7 +20,7 @@ public partial class Player : CharacterBody2D {
 		Both
 	};
 
-	private enum PlayerFlags : uint {
+	public enum PlayerFlags : uint {
 		Sliding			= 0x0001,
 		Crouching		= 0x0002,
 		BulletTime		= 0x0004,
@@ -37,7 +38,7 @@ public partial class Player : CharacterBody2D {
 		Melee
 	};
 
-	private System.Collections.Generic.List<WeaponEntity.Properties> WeaponModeList = new System.Collections.Generic.List<WeaponEntity.Properties>{
+	private List<WeaponEntity.Properties> WeaponModeList = new List<WeaponEntity.Properties>{
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsFirearm,
@@ -123,7 +124,7 @@ public partial class Player : CharacterBody2D {
 	[Export]
 	private HeadsUpDisplay HUD;
 
-	private System.Collections.Generic.List<WeaponSlot> WeaponSlots;
+	private List<WeaponSlot> WeaponSlots;
 
 	private float Health = 100.0f;
 	private float Rage = 0.0f;
@@ -140,20 +141,20 @@ public partial class Player : CharacterBody2D {
 	public float MultiplayerHilltime = 0.0f;
 
 	private AudioStreamPlayer2D ChangeWeaponSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> PainSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> DieSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> DeathSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> MoveGravelSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> DashSfx;
-	private System.Collections.Generic.List<AudioStreamPlayer2D> SlideSfx;
+	private List<AudioStreamPlayer2D> PainSfx;
+	private List<AudioStreamPlayer2D> DieSfx;
+	private List<AudioStreamPlayer2D> DeathSfx;
+	private List<AudioStreamPlayer2D> MoveGravelSfx;
+	private List<AudioStreamPlayer2D> DashSfx;
+	private List<AudioStreamPlayer2D> SlideSfx;
 	private AudioStreamPlayer2D SlowMoBeginSfx;
 	private AudioStreamPlayer2D SlowMoEndSfx;
 
-	private System.Collections.Generic.List<WeaponEntity> WeaponsStack = new System.Collections.Generic.List<WeaponEntity>();
-	private System.Collections.Generic.List<Resource> ConsumableStacks = new System.Collections.Generic.List<Resource>();
-	private System.Collections.Generic.List<AmmoStack> AmmoPelletStacks = new System.Collections.Generic.List<AmmoStack>();
-	private System.Collections.Generic.List<AmmoStack> AmmoHeavyStacks = new System.Collections.Generic.List<AmmoStack>();
-	private System.Collections.Generic.List<AmmoStack> AmmoLightStacks = new System.Collections.Generic.List<AmmoStack>();
+	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
+	private List<Resource> ConsumableStacks = new List<Resource>();
+	private List<AmmoStack> AmmoPelletStacks = new List<AmmoStack>();
+	private List<AmmoStack> AmmoHeavyStacks = new List<AmmoStack>();
+	private List<AmmoStack> AmmoLightStacks = new List<AmmoStack>();
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
@@ -171,16 +172,19 @@ public partial class Player : CharacterBody2D {
 	[Signal]
 	public delegate void DamagedEventHandler( CharacterBody2D attacker, CharacterBody2D target, float nAmount );
 
-	public System.Collections.Generic.List<WeaponEntity> GetWeaponStack() {
+	public List<WeaponSlot> GetWeaponSlots() {
+		return WeaponSlots;
+	}
+	public List<WeaponEntity> GetWeaponStack() {
 		return WeaponsStack;
 	}
-	public System.Collections.Generic.List<AmmoStack> GetLightAmmoStacks() {
+	public List<AmmoStack> GetLightAmmoStacks() {
 		return AmmoLightStacks;
 	}
-	public System.Collections.Generic.List<AmmoStack> GetHeavyAmmoStacks() {
+	public List<AmmoStack> GetHeavyAmmoStacks() {
 		return AmmoHeavyStacks;
 	}
-	public System.Collections.Generic.List<AmmoStack> GetPelletAmmoStacks() {
+	public List<AmmoStack> GetPelletAmmoStacks() {
 		return AmmoPelletStacks;
 	}
 	public Inventory GetInventory() {
@@ -203,18 +207,44 @@ public partial class Player : CharacterBody2D {
 	public float GetArmAngle() {
 		return ArmAngle;
 	}
+	public void SetArmAngle( float nAngle ) {
+		ArmAngle = nAngle;
+	}
 	public Arm GetLastUsedArm() {
 		return LastUsedArm;
 	}
 	public void SetLastUsedArm( Arm arm ) {
 		LastUsedArm = arm;
 	}
-
+	public float GetHealth() {
+		return Health;
+	}
+	public void SetHealth( float nHealth ) {
+		Health = nHealth;
+	}
+	public float GetRage() {
+		return Rage;
+	}
+	public void SetRage( float nRage ) {
+		Rage = nRage;
+	}
+	public PlayerFlags GetFlags() {
+		return Flags;
+	}
+	public void SetFlags( PlayerFlags flags ) {
+		Flags = flags;
+	}
 	public Hands GetHandsUsed() {
 		return HandsUsed;
 	}
 	public void SetHandsUsed( Hands hands ) {
 		HandsUsed = hands;
+	}
+	public List<WeaponSlot> GetSlots() {
+		return WeaponSlots;
+	}
+	public void SetSlots( List<WeaponSlot> slots ) {
+		WeaponSlots = slots;
 	}
 
 	public Arm GetLeftArm() {
@@ -448,32 +478,32 @@ public partial class Player : CharacterBody2D {
 	private void LoadSfx() {
 		ChangeWeaponSfx = GetNode<AudioStreamPlayer2D>( "SoundEffects/ChangeWeapon" );
 		
-		PainSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		PainSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Pain0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Pain1" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Pain2" )
 		};
-		DieSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		DieSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Die0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Die1" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Die2" )
 		};
-		DeathSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		DeathSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/DieSound0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/DieSound1" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/DieSound2" )
 		};
-		MoveGravelSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		MoveGravelSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/MoveGravel0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/MoveGravel1" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/MoveGravel2" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/MoveGravel3" )
 		};
-		DashSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		DashSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Dash0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Dash1" )
 		};
-		SlideSfx = new System.Collections.Generic.List<AudioStreamPlayer2D>{
+		SlideSfx = new List<AudioStreamPlayer2D>{
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Slide0" ),
 			GetNode<AudioStreamPlayer2D>( "SoundEffects/Slide1" )
 		};
@@ -980,7 +1010,7 @@ public partial class Player : CharacterBody2D {
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
 
-		WeaponSlots = new System.Collections.Generic.List<WeaponSlot>();
+		WeaponSlots = new List<WeaponSlot>();
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlots.Add( new WeaponSlot() );
 			WeaponSlots[i].SetIndex( i );
@@ -1179,6 +1209,9 @@ public partial class Player : CharacterBody2D {
 				stack = new AmmoStack();
 				AmmoPelletStacks.Add( stack );
 			}
+			if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
+				( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.AmmoLight );
+			}
 			break; }
 		};
 
@@ -1195,10 +1228,6 @@ public partial class Player : CharacterBody2D {
 		}
 
 		LastUsedArm = ArmRight;
-
-		if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
-			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this );
-		}
 	}
 	public void PickupWeapon( WeaponEntity weapon ) {
 		GetNode( "/root/Console" ).Call( "print_line", "Picked up weapon...", true );
@@ -1280,7 +1309,7 @@ public partial class Player : CharacterBody2D {
 		}
 
 		if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
-			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this );
+			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.WeaponSlots );
 		}
 	}
 };

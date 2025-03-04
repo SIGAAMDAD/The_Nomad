@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Godot;
 using MountainGoap;
-using Renown;
 
 public partial class MobBase : CharacterBody2D {
 	public enum DirType {
@@ -15,6 +14,13 @@ public partial class MobBase : CharacterBody2D {
 		SouthWest,
 		West,
 		NorthWest
+	};
+	public enum Awareness : int {
+		Invalid = -1,		// invalid
+		Relaxed,
+		Suspicious,
+		Alert,
+		Count
 	};
 
 	protected PackedScene BloodSplatter;
@@ -65,6 +71,20 @@ public partial class MobBase : CharacterBody2D {
 	protected List<RayCast2D> SightLines;
 
 	protected Agent Agent;
+	protected Squad Squad;
+
+	public Agent GetAgent() {
+		return Agent;
+	}
+	public float GetHealth() {
+		return Health;
+	}
+	public void SetBlackboard( string value, object key ) {
+		Agent.Memory[ value ] = key;
+	}
+	public object GetBlackboard( string value ) {
+		return Agent.Memory[ value ];
+	}
 
 	protected void GenerateRaycasts() {
 		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
@@ -80,6 +100,7 @@ public partial class MobBase : CharacterBody2D {
 		}
 	}
 	protected void RecalcSight() {
+		Agent.State[ "SightPosition" ] = GlobalPosition;
 		SightDetector.GlobalTransform = GlobalTransform;
 		for ( int i = 0; i < SightLines.Count; i++ ) {
 			RayCast2D ray = SightLines[i];
@@ -87,6 +108,15 @@ public partial class MobBase : CharacterBody2D {
 			ray.TargetPosition = AngleDir.Rotated( angle ) * MaxViewDistance;
 		}
 	}
+
+#region Utility
+	protected bool IsDeadAI( CharacterBody2D bot ) {
+		return (float)bot.Get( "health" ) <= 0.0f;
+	}
+	protected bool IsValidTarget( GodotObject target ) {
+		return target is Player || target is MobBase;
+	}
+#endregion
 
 	protected virtual void OnLoseInterestTimerTimeout() {
 	}
@@ -162,7 +192,7 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
 		if ( agent.State[ "SightTarget" ] != null ) {
-			Bark.Stream = MobSfxCache.Instance.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.Instance.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
 			Bark.Play();
 
 			agent.State[ "HasTarget " ] = true;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Multiplayer;
 
@@ -10,8 +11,20 @@ public partial class MultiplayerData : Node2D {
 
 	private PackedScene PlayerScene = null;
 
+	public enum UpdateType : uint {
+		WeaponSlots,
+		WeaponsStack,
+		AmmoLight,
+		AmmoHeavy,
+		AmmoPellets,
+		Consumables,
+		MiscItems,
+
+		Count
+	};
+
 	public class Team {
-		public System.Collections.Generic.List<Player> Players = new System.Collections.Generic.List<Player>();
+		public List<Player> Players = new List<Player>();
 		public int Score = 0;
 		public int Index = 0;
 
@@ -23,17 +36,26 @@ public partial class MultiplayerData : Node2D {
 	public Team RedTeam = null;
 
 	private Mode ModeData = null;
-	private System.Collections.Generic.Dictionary<ulong, Player> Players = null;
+	private Dictionary<ulong, Player> Players = null;
+	private Player ThisPlayer;
 
 	// prebuild packets
-	private System.Collections.Generic.Dictionary<string, object> GameData = new System.Collections.Generic.Dictionary<string, object>();
-	private System.Collections.Generic.Dictionary<string, object> Packets = new System.Collections.Generic.Dictionary<string, object>();
+	private Dictionary<string, object> GameData = new Dictionary<string, object>();
+	private Dictionary<string, object> Packets = new Dictionary<string, object>();
+	private Dictionary<string, object> Update = new Dictionary<string, object>();
 
-	public void ProcessHeartbeat( System.Collections.Generic.Dictionary<string, object>  data ) {
+	public Mode.GameMode GetMode() {
+		return ModeData.GetMode();
+	}
+	public Dictionary<ulong, Player> GetPlayers() {
+		return Players;
+	}
+
+	public void ProcessHeartbeat( Dictionary<string, object>  data ) {
 		ModeData.SetMode( (Mode.GameMode)(int)data[ "mode" ] );
 
 		foreach ( var player in Players.Values ) {
-			System.Collections.Generic.Dictionary<string, object> values = (System.Collections.Generic.Dictionary<string, object>)data[ player.MultiplayerId.ToString() ];
+			Dictionary<string, object> values = (Dictionary<string, object>)data[ player.MultiplayerId.ToString() ];
 
 			player.MultiplayerKills = (uint)values[ "kills" ];
 			player.MultiplayerDeaths = (uint)values[ "deaths" ];
@@ -49,14 +71,30 @@ public partial class MultiplayerData : Node2D {
 			};
 		}
 	}
-	public void ProcessClientData( ulong senderId, System.Collections.Generic.Dictionary<string, object> packet ) {
+	public void ProcessClientData( ulong senderId, Dictionary<string, object> packet ) {
+		Player player = Players[ senderId ];
+
+		player.SetHealth( (float)packet[ "health" ] );
+		player.SetRage( (float)packet[ "rage" ] );
+		player.SetFlags( (Player.PlayerFlags)packet[ "flags" ] );
+		player.SetHandsUsed( (Player.Hands)packet[ "hands_used" ] );
+		player.GlobalPosition = (Godot.Vector2)packet[ "position" ];
+		player.SetArmAngle( (float)packet[ "rotation" ] );
+	}
+	public void ProcessPlayerUpdate( ulong senderId, Dictionary<string, object> packet ) {
 
 	}
-	public void ProcessPlayerUpdate( ulong senderId, System.Collections.Generic.Dictionary<string, object> packet ) {
 
-	}
+	public void SendPlayerUpdate( Player player, UpdateType type ) {
+		switch ( type ) {
+		case UpdateType.WeaponsStack:
+			Update[ "data" ] = player.GetWeaponStack();
+			break;
+		case UpdateType.WeaponSlots:
+			Update[ "slots" ] = player.GetWeaponSlots();
+			break;
+		};
 
-	public void SendPlayerUpdate( Player player ) {
 	}
 
 	private void OnServerHeartbeatTimeout() {
@@ -67,7 +105,7 @@ public partial class MultiplayerData : Node2D {
 		GameData[ "mode" ] = ModeData.GetMode();
 
 		foreach ( var player in Players.Values ) {
-			System.Collections.Generic.Dictionary<string, object> playerData = (System.Collections.Generic.Dictionary<string, object>)GameData[ player.MultiplayerId.ToString() ];
+			Dictionary<string, object> playerData = (Dictionary<string, object>)GameData[ player.MultiplayerId.ToString() ];
 
 			playerData[ "kills" ] = player.MultiplayerKills;
 			playerData[ "deaths" ] = player.MultiplayerDeaths;
@@ -88,6 +126,14 @@ public partial class MultiplayerData : Node2D {
 		SteamLobby.Instance.SendP2PPacket( 0, GameData );
 	}
 	private void OnClientHeartbeatTimeout() {
+		Packets[ "health" ] = ThisPlayer.GetHealth();
+		Packets[ "rage" ] = ThisPlayer.GetRage();
+		Packets[ "flags" ] = ThisPlayer.GetFlags();
+		Packets[ "hands_used" ] = ThisPlayer.GetHandsUsed();
+		Packets[ "rotation" ] = ThisPlayer.GetArmAngle();
+		Packets[ "position" ] = ThisPlayer.GlobalPosition;
+
+		SteamLobby.Instance.SendP2PPacket( 0, Packets );
 	}
 
 	public override void _Ready() {
@@ -98,7 +144,7 @@ public partial class MultiplayerData : Node2D {
 		ServerHeartbeat = GetNode<Timer>( "ServerHeartbeatTimer" );
 		ServerHeartbeat.Connect( "timeout", Callable.From( OnServerHeartbeatTimeout ) );
 
-		Players = new System.Collections.Generic.Dictionary<ulong, Player>();
+		Players = new Dictionary<ulong, Player>();
 
 		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/Player.tscn" );
 	}

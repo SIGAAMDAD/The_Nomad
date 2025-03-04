@@ -1,6 +1,7 @@
 using Godot;
 using DialogueManagerRuntime;
 
+/*
 namespace Renown {
 	public partial class Contract : Quest {
 		public enum ContractType {
@@ -14,10 +15,15 @@ namespace Renown {
 
 		private System.Collections.Generic.List<Resource> OptionalObjectives;
 
-		public Contract( Thinker contractor, Resource quest, ContractType type ) {
+        public Contract( Thinker contractor, ContractType type, Resource? preloadedQuest = null ) {
 			Contractor = contractor;
-			QuestResource = quest;
+			QuestResource = preloadedQuest;
 			Type = type;
+
+			if ( QuestResource == null ) {
+				QuestResource = ResourceLoader.Load<GDScript>( "res://addons/questify/scripts/model/quest_resource.gd" );
+				QuestResource = (Resource)QuestResource.Call( "instantiate" );
+			}
 		}
 
 		public void AddOptionalObjective( Resource objective ) {
@@ -49,3 +55,4 @@ namespace Renown {
 		}
     };
 };
+*/

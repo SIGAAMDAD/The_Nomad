@@ -9,6 +9,8 @@ public partial class MercenaryGatling : MobBase {
 
 		Init();
 
+		MobGlobalState.State[ "HeavyIsPresent" ] = true;
+
 		/*
 		Navigation.Connect( "target_reached", Callable.From( OnTargetReached ) );L
 		
