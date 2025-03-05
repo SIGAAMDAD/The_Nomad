@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://cw0eg3j021r7k"]
 
-[ext_resource type="Script" path="res://scripts/archive_system.gd" id="1_ydvyk"]
+[sub_resource type="Resource" id="Resource_u6nhm"]
+metadata/__load_path__ = "res://scripts/archive_system.gd"
 
 [node name="ArchiveSystem" type="Node2D"]
-script = ExtResource("1_ydvyk")
+script = SubResource("Resource_u6nhm")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=44 format=3 uid="uid://dwjed6glehgms"]
 
-[ext_resource type="Script" path="res://scripts/horse.gd" id="1_mtmp3"]
+[ext_resource type="Script" uid="uid://brcp373pn1ul6" path="res://scripts/horse.gd" id="1_mtmp3"]
 [ext_resource type="Texture2D" uid="uid://bkgkkpfup1bv5" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_kmv21"]
 [ext_resource type="Texture2D" uid="uid://0necjor8land" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_MountOn.png" id="3_8v83q"]
 [ext_resource type="AudioStream" uid="uid://cgg281fvm2jxi" path="res://sounds/env/gallop_gravel.ogg" id="4_myqu0"]

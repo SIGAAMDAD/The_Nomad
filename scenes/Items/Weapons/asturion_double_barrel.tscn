@@ -1,8 +1,8 @@
 [gd_scene load_steps=21 format=3 uid="uid://btaiqttoleyew"]
 
-[ext_resource type="Script" path="res://scripts/items/WeaponEntity.gd" id="1_56rel"]
-[ext_resource type="Texture2D" path="res://textures/spritesheets/double_barrel.dds" id="2_5liln"]
-[ext_resource type="Texture2D" path="res://textures/env/iconw_adb.dds" id="2_ia70w"]
+[ext_resource type="Script" uid="uid://i7agcjmxadvg" path="res://scripts/items/WeaponEntity.gd" id="1_56rel"]
+[ext_resource type="Texture2D" uid="uid://e17thegf1s21" path="res://textures/spritesheets/double_barrel.dds" id="2_5liln"]
+[ext_resource type="Texture2D" uid="uid://cy2pqyhfle1tn" path="res://textures/env/iconw_adb.dds" id="2_ia70w"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_debwq"]
 radius = 12.0

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cik5jg0byotvb"]
 
-[ext_resource type="Shader" path="res://shaders/mob.gdshader" id="1_7spd8"]
-[ext_resource type="Script" path="res://scripts/mobs/MobBase.cs" id="1_jlmcc"]
+[ext_resource type="Shader" uid="uid://6s0601lh0rk3" path="res://shaders/mob.gdshader" id="1_7spd8"]
+[ext_resource type="Script" uid="uid://bjq6weoaqhnxm" path="res://scripts/mobs/MobBase.cs" id="1_jlmcc"]
 [ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="2_67ibf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rrfd3"]

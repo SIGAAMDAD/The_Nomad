@@ -38,11 +38,9 @@ class_name SettingsManager extends Control
 
 var _mapping_contexts:Array[ GUIDEMappingContext ] = [ load( "res://resources/binds/binds_keyboard.tres" ), load( "res://resources/binds/binds_gamepad.tres" ) ]
 var _remapper:GUIDERemapper = null
-var _remapping_config:GUIDERemappingConfig = load( "user://input_config.tres" )
+var _remapping_config:GUIDERemappingConfig = null
 var _remappable_items:Array[GUIDERemapper.ConfigItem] = []
 var _mapping_formatter:GUIDEInputFormatter = GUIDEInputFormatter.new()
-
-var _move_action_keyboard:GUIDEAction = load( "res://resources/binds/actions/keyboard/move_action.tres" )
 
 # dedicated keybind hashmap
 var _keybind_dict:Dictionary
@@ -84,125 +82,6 @@ enum AntiAliasing {
 	MSAA_4x,
 	MSAA_8x
 };
-
-enum BindType {
-	KeyButton,
-	MouseButton,
-	JoystickButton,
-	JoystickMotion
-};
-
-func set_keybind( event:InputEvent, action_name:String ) -> void:
-	match action_name:
-		_keybinds.MOVE_LEFT:
-			_keybinds._move_left_key = event
-			_keybind_dict.move_left_0 = event
-		_keybinds.MOVE_RIGHT:
-			_keybinds._move_right_key = event
-			_keybind_dict.move_right_0 = event
-		_keybinds.MOVE_UP:
-			_keybinds._move_up_key = event
-			_keybind_dict.move_up_0 = event
-		_keybinds.MOVE_DOWN:
-			_keybinds._move_down_key = event
-			_keybind_dict.move_down_0 = event
-		_keybinds.DASH:
-			_keybinds._dash_key = event
-			_keybind_dict.dash_0 = event
-		_keybinds.SLIDE:
-			_keybinds._slide_key = event
-			_keybind_dict.slide_0 = event
-
-func get_keybind( action: String ) -> InputEvent:
-	match action:
-		_keybinds.MOVE_LEFT:
-			return _keybinds._move_left_key
-		_keybinds.MOVE_RIGHT:
-			return _keybinds._move_right_key
-		_keybinds.MOVE_UP:
-			return _keybinds._move_up_key
-		_keybinds.MOVE_DOWN:
-			return _keybinds._move_down_key
-		_keybinds.DASH:
-			return _keybinds._dash_key
-	
-	return null
-
-func create_keybinds_dict() -> Dictionary:
-	var keybinds : Dictionary = {
-		_keybinds.MOVE_LEFT: _keybinds._DEFAULT_MOVE_LEFT_KEY,
-		_keybinds.MOVE_RIGHT: _keybinds._DEFAULT_MOVE_RIGHT_KEY,
-		_keybinds.MOVE_UP: _keybinds._DEFAULT_MOVE_UP_KEY,
-		_keybinds.MOVE_DOWN: _keybinds._DEFAULT_MOVE_DOWN_KEY,
-		_keybinds.DASH: _keybinds._DEFAULT_DASH_KEY,
-		_keybinds.CROUCH: _keybinds._DEFAULT_CROUCH_KEY,
-		_keybinds.SLIDE: _keybinds._DEFAULT_SLIDE_KEY,
-		_keybinds.BULLET_TIME: _keybinds._DEFAULT_BULLET_TIME_KEY,
-		_keybinds.USEWEAPON: _keybinds._DEFAULT_USE_WEAPON_KEY,
-	}
-	
-	return keybinds
-
-func load_bind( file: FileAccess ) -> InputEvent:
-	var bindType := file.get_8()
-	var bind
-	match bindType:
-		BindType.KeyButton:
-			bind = InputEventKey.new()
-			bind.set_physical_keycode( int( file.get_32() ) )
-		_:
-			push_error( "invalid bind type!" )
-	
-	return bind
-
-func load_keybinds( file: FileAccess ) -> void:
-	var data:Dictionary = JSON.parse_string( file.get_line() )
-	
-	var loadedMoveLeft = InputEventKey.new()
-	var loadedMoveRight = InputEventKey.new()
-	var loadedMoveUp = InputEventKey.new()
-	var loadedMoveDown = InputEventKey.new()
-	var loadedDash = InputEventKey.new()
-	var loadedSlide = InputEventKey.new()
-	var loadedCrouch = InputEventKey.new()
-	var loadedReflexMode = InputEventKey.new()
-	var loadedUseWeapon = InputEventMouseButton.new()
-	
-	loadedMoveLeft.set_physical_keycode( int( data.move_left_0 ) )
-	loadedMoveRight.set_physical_keycode( int( data.move_right_0 ) )
-	loadedMoveUp.set_physical_keycode( int( data.move_up_0 ) )
-	loadedMoveDown.set_physical_keycode( int( data.move_down_0 ) )
-	loadedDash.set_physical_keycode( int( data.dash_0 ) )
-	loadedSlide.set_physical_keycode( int( data.slide_0 ) )
-	loadedCrouch.set_physical_keycode( int( data.crouch_0 ) )
-	loadedReflexMode.set_physical_keycode( int( data.bullet_time_0 ) )
-	loadedUseWeapon.set_button_index( int( data.useweapon_0 ) )
-	
-	_keybinds._move_left_key = loadedMoveLeft
-	_keybinds._move_right_key = loadedMoveRight
-	_keybinds._move_up_key = loadedMoveUp
-	_keybinds._move_down_key = loadedMoveDown
-	_keybinds._dash_key = loadedDash
-	_keybinds._slide_key = loadedSlide
-	_keybinds._crouch_key = loadedCrouch
-	_keybinds._bullet_time_key = loadedReflexMode
-	_keybinds._use_weapon_key = loadedUseWeapon
-	
-	_keybind_dict = data
-
-func save_bind( file: FileAccess, bind: InputEvent ) -> void:
-	if bind is InputEventKey:
-		file.store_8( BindType.KeyButton )
-		file.store_32( bind.get_physical_keycode_with_modifiers() )
-	else:
-		push_error( "invalid bind type!" )
-
-func save_keybinds( file: FileAccess ) -> void:
-	var jsonDataString = JSON.stringify( _keybind_dict );
-	file.store_line( jsonDataString )
-	
-	#save_bind( file, _keybinds._move_left_key )
-	#save_bind( file, _keybinds._move_right_key )
 
 func load_audio_settings( file: FileAccess ) -> void:
 	_effects_on = file.get_8()
@@ -274,11 +153,14 @@ func _ready() -> void:
 	print( "Loading game settings..." )
 	
 	_remapper = GUIDERemapper.new()
-	_remapper.initialize( _mapping_contexts, _remapping_config )
-
-	_remappable_items = _remapper.get_remappable_items()
 	
-	_keybind_dict = create_keybinds_dict()
+	_remapping_config = load( "user://input_context.tres" )
+	if !_remapping_config:
+		_remapping_config = GUIDERemappingConfig.new()
+	
+	_remapper.initialize( _mapping_contexts, _remapping_config )
+	
+	_remappable_items = _remapper.get_remappable_items()
 	
 	var file := FileAccess.open( "user://settings.dat", FileAccess.READ )
 	
@@ -288,15 +170,13 @@ func _ready() -> void:
 		load_audio_settings( file )
 		load_accessibility_settings(  file )
 		load_gameplay_settings( file )
-		load_keybinds( file )
 	else:
 		save()
 		file = FileAccess.open( "user://settings.dat", FileAccess.READ )
 		load_video_settings( file )
 		load_audio_settings( file )
-		load_accessibility_settings(  file )
+		load_accessibility_settings( file )
 		load_gameplay_settings( file )
-		load_keybinds( file )
 
 func save() -> void:
 	var file := FileAccess.open( "user://settings.dat", FileAccess.WRITE )
@@ -305,4 +185,5 @@ func save() -> void:
 	save_audio_settings( file )
 	save_accessibility_settings( file )
 	save_gameplay_settings( file )
-	save_keybinds( file )
+	
+	ResourceSaver.save( _remapping_config, "user://input_context.tres" )

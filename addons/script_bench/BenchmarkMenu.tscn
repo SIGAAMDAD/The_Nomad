@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://condimu1srxjm"]
 
-[ext_resource type="Script" path="res://addons/script_bench/BenchmarkMenu.gd" id="1_wtioc"]
+[ext_resource type="Script" uid="uid://c38bqa4tfxu2d" path="res://addons/script_bench/BenchmarkMenu.gd" id="1_wtioc"]
 
 [node name="BenchmarkMenu" type="Window" node_paths=PackedStringArray("script_path", "method_selector", "param_container", "param_type_selector", "param_static_container", "param_static", "param_generator_container", "param_generator_selector", "run_count", "warmup_count", "run_button")]
 title = "[ScriptBench] Benchmark Method..."

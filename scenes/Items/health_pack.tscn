@@ -1,14 +1,16 @@
 [gd_scene load_steps=5 format=3 uid="uid://d3bsthlqjvp8y"]
 
-[ext_resource type="Script" path="res://scripts/items/health_pack.gd" id="1_1jhfl"]
-[ext_resource type="Texture2D" path="res://textures/env/icon_health.dds" id="1_6tcba"]
+[ext_resource type="Texture2D" uid="uid://danectyh0qhe0" path="res://textures/env/icon_health.dds" id="1_6tcba"]
 [ext_resource type="AudioStream" uid="uid://bcj5el8rr5uy4" path="res://sounds/env/StimPack_Activate1.ogg" id="3_vi4nk"]
+
+[sub_resource type="Resource" id="Resource_n0j6n"]
+metadata/__load_path__ = "res://scripts/items/health_pack.gd"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2gp15"]
 size = Vector2(20, 14)
 
 [node name="HealthPack" type="CharacterBody2D"]
-script = ExtResource("1_1jhfl")
+script = SubResource("Resource_n0j6n")
 _name = "Stim Pack"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

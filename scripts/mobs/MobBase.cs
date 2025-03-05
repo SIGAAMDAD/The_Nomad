@@ -25,11 +25,11 @@ public partial class MobBase : CharacterBody2D {
 
 	protected PackedScene BloodSplatter;
 
-	protected float AngleBetweenRays = Mathf.DegToRad( 5.0f );
+	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
 
 	[ExportCategory("Detection")]
 	[Export]
-	protected CollisionShape2D SoundBounds;
+	protected float SoundDetectionLevel;
 	[Export]
 	protected float ViewAngleAmount = 45.0f;
 	[Export]
@@ -53,12 +53,14 @@ public partial class MobBase : CharacterBody2D {
 	[Export]
 	protected float ThinkInterval = 0.2f;
 
-	protected Random RandomFactory = new Random();
+	protected RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
 	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
+	protected Godot.Vector2 NextPathPosition;
 
+	protected Area2D SoundBounds;
 	protected AudioStreamPlayer2D Bark;
 	protected Timer ThinkerTimer;
 	protected Timer LoseInterestTimer;
@@ -79,11 +81,11 @@ public partial class MobBase : CharacterBody2D {
 	public float GetHealth() {
 		return Health;
 	}
-	public void SetBlackboard( string value, object key ) {
-		Agent.Memory[ value ] = key;
+	public void SetBlackboard( string key, object value ) {
+		Agent.Memory[ key ] = value;
 	}
-	public object GetBlackboard( string value ) {
-		return Agent.Memory[ value ];
+	public object GetBlackboard( string key ) {
+		return Agent.Memory[ key ];
 	}
 
 	protected void GenerateRaycasts() {
@@ -124,12 +126,14 @@ public partial class MobBase : CharacterBody2D {
 	protected void Init() {
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
+		SoundBounds = GetNode<Area2D>( "Node2D/SoundBounds" );
 		Animations = GetNode<AnimatedSprite2D>( "Animations/AnimatedSprite2D" );
 		SightDetector = GetNode<Node2D>( "SightCheck" );
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
 
 		Bark = new AudioStreamPlayer2D();
+		Bark.VolumeDb = 10.0f;
 		Bark.GlobalPosition = GlobalPosition;
 		AddChild( Bark );
 
@@ -192,7 +196,7 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
 		if ( agent.State[ "SightTarget" ] != null ) {
-			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.RandiRange( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
 			Bark.Play();
 
 			agent.State[ "HasTarget " ] = true;

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Godot;
 
 public partial class SinglePlayer : Node2D {
@@ -40,10 +41,10 @@ public partial class SinglePlayer : Node2D {
 			Player1.SetupSplitScreen( 0 );
 		}
 
-		_ = new MountainGoapLogging.DefaultLogger(
-			true,
-			"goap.log"
-		);
+//		_ = new MountainGoapLogging.DefaultLogger(
+//			true
+//			"goap.log"
+//		);
 
 		MobSfxCache.Instance.Cache();
 		Control SettingsData = GetNode<Control>( "/root/SettingsData" );

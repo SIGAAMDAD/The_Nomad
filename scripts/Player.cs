@@ -163,6 +163,7 @@ public partial class Player : CharacterBody2D {
 	private float FrameDamage;
 	private int Hellbreaks = 0;
 	private bool SplitScreen = false;
+	private float SoundLevel = 0.0f;
 	private Godot.Vector2 DashDirection = Godot.Vector2.Zero;
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
@@ -215,6 +216,9 @@ public partial class Player : CharacterBody2D {
 	}
 	public void SetLastUsedArm( Arm arm ) {
 		LastUsedArm = arm;
+	}
+	public float GetSoundLevel() {
+		return SoundLevel;
 	}
 	public float GetHealth() {
 		return Health;
@@ -1131,8 +1135,8 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 
-		PlayerSystem.Arm back = null;
-		PlayerSystem.Arm front = null;
+		PlayerSystem.Arm back;
+		PlayerSystem.Arm front;
 		if ( TorsoAnimation.FlipH ) {
 			back = ArmRight;
 			front = ArmLeft;
@@ -1167,13 +1171,11 @@ public partial class Player : CharacterBody2D {
 		AmmoStack stack = null;
 		bool found = false;
 
-		GD.Print( "Pickup up ammo..." );
-
 		switch ( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] ) {
 		case (int)AmmoEntity.Type.Light: {
-			GD.Print( "Pickup up light ammo" );
 			for ( int i = 0; i < AmmoLightStacks.Count; i++ ) {
 				if ( ammo.Data == AmmoLightStacks[i].AmmoType ) {
+					GD.Print( "Found stack" );
 					found = true;
 					stack = AmmoLightStacks[i];
 					break;

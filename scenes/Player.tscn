@@ -1,6 +1,6 @@
 [gd_scene load_steps=98 format=3 uid="uid://dc17uyypxry83"]
 
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_5fsym"]
+[ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="Texture2D" uid="uid://d3njgk76f1i25" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.png" id="2_j3scr"]
 [ext_resource type="Texture2D" uid="uid://bs262hx302eh6" path="res://textures/spritesheets/skin.png" id="2_q3siw"]
 [ext_resource type="AudioStream" uid="uid://c8p2yjq72o56r" path="res://sounds/player/moveGravel0.ogg" id="3_jeu37"]
@@ -10,12 +10,12 @@
 [ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="5_a260p"]
 [ext_resource type="PackedScene" uid="uid://bmotkc0p4v2ta" path="res://scenes/effects/spark_effect.tscn" id="5_c3w3j"]
 [ext_resource type="AudioStream" uid="uid://by8e13a5fip0v" path="res://sounds/player/moveGravel2.ogg" id="5_h04qv"]
-[ext_resource type="Script" path="res://scripts/camera_shake.gd" id="6_3chmt"]
+[ext_resource type="Script" uid="uid://4umtxidofo8e" path="res://scripts/camera_shake.gd" id="6_3chmt"]
 [ext_resource type="AudioStream" uid="uid://by1j14ka58kvv" path="res://sounds/player/moveGravel3.ogg" id="6_fvm2j"]
 [ext_resource type="Texture2D" uid="uid://tmiicgjg083r" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_right.png" id="6_ondas"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="7_l33ml"]
 [ext_resource type="Texture2D" uid="uid://dx2laa44hg1rf" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.png" id="8_dcu2r"]
-[ext_resource type="Script" path="res://addons/godot_gameplay_systems/camera_shake/nodes/camera_shake.gd" id="8_xdf2s"]
+[ext_resource type="Script" uid="uid://d3p5adrjo4883" path="res://addons/godot_gameplay_systems/camera_shake/nodes/camera_shake.gd" id="8_xdf2s"]
 [ext_resource type="AudioStream" uid="uid://c60jow5gm4qk7" path="res://sounds/player/jumpjet_burn_v2_m_01.wav" id="9_7kn2n"]
 [ext_resource type="PackedScene" uid="uid://cjy2h2wmmfkmc" path="res://scenes/heads_up_display.tscn" id="9_bfxfw"]
 [ext_resource type="AudioStream" uid="uid://b5viaehrw6hdh" path="res://sounds/player/jumpjet_burn_v2_m_02.wav" id="10_ue6o1"]
@@ -35,7 +35,7 @@
 [ext_resource type="AudioStream" uid="uid://hwjq1if12hy0" path="res://sounds/player/Roblox Death Sound (Oof) - Sound Effect (HD).wav" id="26_6lnix"]
 [ext_resource type="AudioStream" uid="uid://bqnhuwoyswdon" path="res://sounds/player/demon_eye.ogg" id="27_61q3v"]
 [ext_resource type="AudioStream" uid="uid://bt7oqjr3u748k" path="res://sounds/player/Tactical Shotgun Equip (Fortnite Sound) - Sound Effect for editing.ogg" id="28_nqdhi"]
-[ext_resource type="Script" path="res://scripts/player_system/Arm.cs" id="34_83yyn"]
+[ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/player_system/Arm.cs" id="34_83yyn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f3d04"]
 atlas = ExtResource("2_j3scr")

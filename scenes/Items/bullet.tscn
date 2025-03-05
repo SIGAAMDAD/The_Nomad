@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqxixrpig0btv"]
 
-[ext_resource type="Script" path="res://scripts/items/ammo/shotgun_slug.gd" id="1_lkvwr"]
+[ext_resource type="Script" uid="uid://b0bnyjf8yaaca" path="res://scripts/items/ammo/shotgun_slug.gd" id="1_lkvwr"]
 
 [sub_resource type="Gradient" id="Gradient_51pt6"]
 offsets = PackedFloat32Array(0)

@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://dpriw3r8df1su"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
+[ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
 [ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_xqq5e"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
-[ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
+[ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
 offsets = PackedFloat32Array(0)
@@ -78,6 +78,7 @@ layout_mode = 2
 selected = 0
 item_count = 1
 popup/item_0/text = "Any"
+popup/item_0/id = 0
 
 [node name="GameModeLabel" type="Label" parent="FilterList/VBoxContainer"]
 layout_mode = 2
@@ -88,6 +89,7 @@ layout_mode = 2
 selected = 0
 item_count = 6
 popup/item_0/text = "Any"
+popup/item_0/id = 0
 popup/item_1/text = "Massacre"
 popup/item_1/id = 1
 popup/item_2/text = "Team Brawl"
@@ -242,6 +244,7 @@ size_flags_vertical = 8
 size_flags_stretch_ratio = 1.0
 localize_numeral_system = true
 tooltip_text = ""
+tooltip_auto_translate_mode = 0
 focus_neighbor_left = NodePath("")
 focus_neighbor_top = NodePath("")
 focus_neighbor_right = NodePath("")

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DefaultSettings" load_steps=2 format=3 uid="uid://mwh4cmivwf82"]
 
-[ext_resource type="Script" path="res://scripts/menus/DefaultSettings.gd" id="1_n2pd2"]
+[ext_resource type="Script" uid="uid://bg0iue50alxns" path="res://scripts/menus/DefaultSettings.gd" id="1_n2pd2"]
 
 [resource]
 script = ExtResource("1_n2pd2")
@@ -23,3 +23,5 @@ _dyslexia_mode = false
 _enemy_difficulty = 1
 _equip_weapon_on_pickup = true
 _draw_aim_line = true
+_hellbreaker = true
+_hellbreaker_revanents = false

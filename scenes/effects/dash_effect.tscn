@@ -31,11 +31,11 @@ color_ramp = SubResource("GradientTexture1D_m4qlm")
 [node name="DashEffect" type="GPUParticles2D"]
 emitting = false
 amount = 2000
-process_material = SubResource("ParticleProcessMaterial_rvfub")
 lifetime = 0.9
 one_shot = true
 fixed_fps = 0
 draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_rvfub")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 visible = false

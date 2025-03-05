@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="MultiplayerMap" load_steps=2 format=3 uid="uid://cg2p7ts4kelrh"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/map.gd" id="1_sfham"]
+[ext_resource type="Script" uid="uid://qfp2d1jwqpfp" path="res://scripts/multiplayer/map.gd" id="1_sfham"]
 
 [resource]
 script = ExtResource("1_sfham")

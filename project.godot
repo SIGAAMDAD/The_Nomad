@@ -34,7 +34,7 @@ privateKey="59b91461435b8a75"
 
 [application]
 
-config/name="TheNomad"
+config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "GL Compatibility")
@@ -191,11 +191,14 @@ use_weapon_0={
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
 locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue")
 
+[navigation]
+
+pathfinding/max_threads=8
+
 [physics]
 
 2d/run_on_separate_thread=true
-2d/physics_engine="Rapier2D"
-2d/solver/solver_iterations=12
+2d/solver/solver_iterations=8
 
 [plugins]
 
@@ -219,7 +222,7 @@ textures/lossless_compression/force_png=true
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
 2d/shadow_atlas/size=1024
-gl_compatibility/item_buffer_size=10240
+gl_compatibility/item_buffer_size=1024
 reflections/sky_reflections/fast_filter_high_quality=true
 shading/overrides/force_vertex_shading=true
 shading/overrides/force_lambert_over_burley=true
@@ -233,4 +236,5 @@ textures/light_projectors/filter=0
 limits/global_shader_variables/buffer_size=8192
 environment/defaults/default_clear_color=Color(0.756986, 0.560337, 0.188805, 1)
 viewport/hdr_2d=true
+anti_aliasing/quality/screen_space_aa=1
 2d/snap/snap_2d_vertices_to_pixel=true

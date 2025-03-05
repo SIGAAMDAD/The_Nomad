@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://udm1pfg83jk1"]
 
-[ext_resource type="Script" path="res://scripts/menus/CampaignMenu.cs" id="1_b1iin"]
+[ext_resource type="Script" uid="uid://p4s53hebw0xq" path="res://scripts/menus/CampaignMenu.cs" id="1_b1iin"]
 [ext_resource type="PackedScene" uid="uid://dodqhbm63d3ot" path="res://scenes/menus/save_slot_select.tscn" id="2_1oo8l"]
 [ext_resource type="PackedScene" uid="uid://b7bc5y8xsmbqd" path="res://scenes/menus/difficulty_select.tscn" id="3_p0crb"]
 

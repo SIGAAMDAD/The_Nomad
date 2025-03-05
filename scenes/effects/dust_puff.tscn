@@ -1,8 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bftw0tto4ysht"]
 
 [sub_resource type="Curve" id="Curve_u04og"]
-min_value = -200.0
-max_value = 200.0
+_limits = [-200.0, 200.0, 0.0, 1.0]
 _data = [Vector2(0.0110294, 176.103), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -25,8 +24,8 @@ color = Color(0.92549, 0.709804, 0, 1)
 [node name="DustPuff" type="GPUParticles2D"]
 rotation = -4.5454
 amount = 20
-process_material = SubResource("ParticleProcessMaterial_g7kky")
 lifetime = 0.4
 explosiveness = 0.64
 fixed_fps = 0
 draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_g7kky")

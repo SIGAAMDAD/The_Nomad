@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cor8igwxetpgn"]
 
-[ext_resource type="Script" path="res://addons/dynamic_water_2d/water.gd" id="1"]
+[ext_resource type="Script" uid="uid://djf4tgrjrp3md" path="res://addons/dynamic_water_2d/water.gd" id="1"]
 
 [node name="Water" type="Node2D" node_paths=PackedStringArray("top_left_marker", "bottom_right_marker")]
 script = ExtResource("1")

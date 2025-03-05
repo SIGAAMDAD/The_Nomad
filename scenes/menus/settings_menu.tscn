@@ -1,15 +1,15 @@
 [gd_scene load_steps=12 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="1_b64v3"]
-[ext_resource type="Script" path="res://scripts/menus/settings_menu.gd" id="1_itlg8"]
+[ext_resource type="Script" uid="uid://7avf78u00acn" path="res://scripts/menus/settings_menu.gd" id="1_itlg8"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
-[ext_resource type="Script" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
+[ext_resource type="Script" uid="uid://gkdjwf0q6g1d" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
 [ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="5_my37k"]
-[ext_resource type="Script" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
+[ext_resource type="Script" uid="uid://dr5oxtww2bofb" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
-[ext_resource type="Script" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
+[ext_resource type="Script" uid="uid://btihawvdn0ykd" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
 
 [sub_resource type="Resource" id="Resource_qxrc6"]
 script = ExtResource("7_2apr8")

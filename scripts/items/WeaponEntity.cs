@@ -153,15 +153,17 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void ReleasePickupArea() {
-		CallDeferred( "remove_child", PickupArea );
-
 		PickupArea.GetChild( 0 ).CallDeferred( "queue_free" );
-		PickupArea.RemoveChild( PickupArea.GetChild( 0 ) );
+		PickupArea.CallDeferred( "remove_child", PickupArea.GetChild( 0 ) );
+
 		PickupArea.CallDeferred( "queue_free" );
+		CallDeferred( "remove_child", PickupArea );
 	}
 
 	public void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
-		IconSprite.Hide();
+		IconSprite.QueueFree();
+
+		ReleasePickupArea();
 
 		_Owner = (Player)body;
 		CallDeferred( "reparent", _Owner );
@@ -191,9 +193,10 @@ public partial class WeaponEntity : Node2D {
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
 		Icon = (Texture2D)Data.Get( "icon" );
-		Firemode = (FireMode)(int)properties[ "firemode" ];
-		MagType = (MagazineType)(int)properties[ "magazine_type" ];
+		Firemode = (FireMode)(uint)properties[ "firemode" ];
+		MagType = (MagazineType)(uint)properties[ "magazine_type" ];
 		MagazineSize = (int)properties[ "magsize" ];
+		Ammunition = (AmmoType)(uint)properties[ "ammo_type" ];
 
 		if ( (bool)properties[ "is_onehanded" ] ) {
 			PropertyBits |= Properties.IsOneHanded;
@@ -338,7 +341,6 @@ public partial class WeaponEntity : Node2D {
 
 		IconSprite = GetNode<Sprite2D>( "Icon" );
 		IconSprite.Texture = Icon;
-		AddChild( IconSprite );
 
 		_Owner = null;
 

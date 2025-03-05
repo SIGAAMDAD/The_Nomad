@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c0bwbf5nl7uyg"]
 
-[ext_resource type="Script" path="res://scripts/tilemap_floor.gd" id="1_nvod6"]
-[ext_resource type="Shader" path="res://shaders/floor.gdshader" id="1_r13di"]
+[ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="1_nvod6"]
+[ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="1_r13di"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_acc1w"]
 shader = ExtResource("1_r13di")

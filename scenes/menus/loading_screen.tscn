@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ceidjyb2qv8xs"]
 
-[ext_resource type="Script" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
+[ext_resource type="Script" uid="uid://djmhs8xaqjdqg" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
 [ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="2_yvr2d"]
 
 [node name="LoadingScreen" type="CanvasLayer"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://6cnqoj2bp0r3"]
+[gd_scene load_steps=8 format=3 uid="uid://6cnqoj2bp0r3"]
 
 [ext_resource type="Script" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
 [ext_resource type="Shader" path="res://shaders/mob.gdshader" id="2_mvput"]
@@ -11,17 +11,25 @@ shader_parameter/demon_eye = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_75x84"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_n8e85"]
+radius = 312.194
+
 [node name="MercenaryShotgunner" type="CharacterBody2D"]
 position = Vector2(-10, 0)
 script = ExtResource("1_skhq2")
-MaxViewDistance = 1600.0
+ViewAngleAmount = 70.0
+MaxViewDistance = 400.0
+SightDetectionTime = 2.0
+Health = 100.0
+MovementSpeed = 40.0
 
 [node name="Animations" type="Node2D" parent="."]
 material = SubResource("ShaderMaterial_jtvc8")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_jv7p5")
-animation = &"idle"
+animation = &"move"
+frame_progress = 0.536482
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_75x84")
@@ -40,3 +48,10 @@ energy = 0.69
 shadow_enabled = true
 texture = ExtResource("7_ilfkp")
 texture_scale = 1.68
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="SoundBounds" type="Area2D" parent="Node2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/SoundBounds"]
+shape = SubResource("CircleShape2D_n8e85")

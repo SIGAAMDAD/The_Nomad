@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dmqo2etwbw5ny"]
 
-[ext_resource type="Script" path="res://scripts/sign_post.gd" id="1_28x08"]
-[ext_resource type="Texture2D" path="res://textures/env/signpost.dds" id="1_j3e48"]
+[ext_resource type="Script" uid="uid://cnbn7nfdrb05i" path="res://scripts/sign_post.gd" id="1_28x08"]
+[ext_resource type="Texture2D" uid="uid://cbx34tcbrj5e1" path="res://textures/env/signpost.dds" id="1_j3e48"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xcppy"]
 radius = 69.0072

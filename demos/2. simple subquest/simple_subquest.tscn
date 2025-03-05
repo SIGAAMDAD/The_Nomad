@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dy2ue3qjth5bv"]
 
-[ext_resource type="Script" path="res://demos/2. simple subquest/simple_subquest.gd" id="1_2fl7m"]
+[ext_resource type="Script" uid="uid://dlvpqf0lbn02" path="res://demos/2. simple subquest/simple_subquest.gd" id="1_2fl7m"]
 
 [node name="Demo" type="PanelContainer"]
 anchors_preset = 15

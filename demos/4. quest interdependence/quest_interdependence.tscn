@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bi25jubhhpbfo"]
 
-[ext_resource type="Script" path="res://demos/4. quest interdependence/quest_interdependence.gd" id="1_6ay1c"]
+[ext_resource type="Script" uid="uid://kixv55vtfv1o" path="res://demos/4. quest interdependence/quest_interdependence.gd" id="1_6ay1c"]
 
 [node name="Demo" type="PanelContainer"]
 anchors_preset = 15

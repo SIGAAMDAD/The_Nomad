@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://4ev56j72xslh"]
 
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="1_ob163"]
-[ext_resource type="Script" path="res://scripts/split_screen.gd" id="1_vfoem"]
+[ext_resource type="Script" uid="uid://w2asj350t2ly" path="res://scripts/split_screen.gd" id="1_vfoem"]
 
 [node name="SplitScreen2" type="Node2D"]
 script = ExtResource("1_vfoem")

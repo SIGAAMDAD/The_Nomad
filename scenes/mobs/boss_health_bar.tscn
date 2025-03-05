@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://d2sk4218wtapr"]
 
-[ext_resource type="Script" path="res://scripts/mobs/boss_health_bar.gd" id="1_6n7xe"]
+[ext_resource type="Script" uid="uid://cb2684c2mmtqs" path="res://scripts/mobs/boss_health_bar.gd" id="1_6n7xe"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="1_uyjvm"]
 
 [node name="BossHealthBar" type="Control"]

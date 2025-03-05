@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bpfp6a60qwb4g"]
 
-[ext_resource type="Shader" path="res://shaders/fog.gdshader" id="1_enlju"]
-[ext_resource type="Script" path="res://scripts/effects/DebrisCloud.cs" id="2_xuwca"]
+[ext_resource type="Shader" uid="uid://d2ogg1ard0bw3" path="res://shaders/fog.gdshader" id="1_enlju"]
+[ext_resource type="Script" uid="uid://bgausqeoxl361" path="res://scripts/effects/DebrisCloud.cs" id="2_xuwca"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m18su"]
 shader = ExtResource("1_enlju")

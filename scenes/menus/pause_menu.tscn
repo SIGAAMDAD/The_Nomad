@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://de5ahm2yawr1u"]
 
-[ext_resource type="Script" path="res://scripts/menus/pause_menu.gd" id="1_egy30"]
-[ext_resource type="Shader" path="res://shaders/pause_menu.gdshader" id="2_pe2qk"]
+[ext_resource type="Script" uid="uid://bp5gnwr3m6wbb" path="res://scripts/menus/pause_menu.gd" id="1_egy30"]
+[ext_resource type="Shader" uid="uid://cf3fehel7f2df" path="res://shaders/pause_menu.gdshader" id="2_pe2qk"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5wyai"]

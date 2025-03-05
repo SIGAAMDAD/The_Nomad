@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cg4lyuifg8f7i"]
 
 [sub_resource type="Curve" id="Curve_xbfbh"]
-min_value = -2.65
+_limits = [-2.65, 1.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.996324, 0.366728), -0.635609, 0.0, 1, 0]
 point_count = 2
 
@@ -21,7 +21,7 @@ color = Color(1, 0.713726, 0, 1)
 [node name="SlidePuff" type="GPUParticles2D"]
 rotation = -1.5708
 amount = 100
-process_material = SubResource("ParticleProcessMaterial_q2b3j")
 lifetime = 0.4
 fixed_fps = 0
 draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_q2b3j")

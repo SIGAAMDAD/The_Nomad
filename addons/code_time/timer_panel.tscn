@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bisjbnqhm460p"]
 
-[ext_resource type="Script" path="res://addons/code_time/timer_panel.gd" id="1_ecqis"]
+[ext_resource type="Script" uid="uid://cisf7q7f0xgj0" path="res://addons/code_time/timer_panel.gd" id="1_ecqis"]
 
 [node name="TimerPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(250, 0)

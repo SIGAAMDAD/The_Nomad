@@ -1,6 +1,5 @@
 [gd_scene load_steps=8 format=3 uid="uid://d1wtiir0dwaqf"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/data.gd" id="1_1ghx7"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="1_epecy"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="2_l68nf"]
 [ext_resource type="PackedScene" uid="uid://c7hlaoisnc31n" path="res://scenes/multiplayer/spawn_point.tscn" id="2_ojsgc"]
@@ -8,8 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_eybvd"]
 [ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="6_j2b06"]
 
+[sub_resource type="Resource" id="Resource_1mi0g"]
+metadata/__load_path__ = "res://scripts/multiplayer/data.gd"
+
 [node name="Multiplayer" type="Node2D"]
-script = ExtResource("1_1ghx7")
+script = SubResource("Resource_1mi0g")
 
 [node name="Network" type="Node" parent="."]
 

@@ -1,7 +1,7 @@
 [gd_resource type="ItemDefinition" load_steps=11 format=3 uid="uid://dqt26pjfyn6tf"]
 
 [ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="1_dmupm"]
-[ext_resource type="Texture2D" path="res://textures/env/iconw_adb.dds" id="1_lavl7"]
+[ext_resource type="Texture2D" uid="uid://cy2pqyhfle1tn" path="res://textures/env/iconw_adb.dds" id="1_lavl7"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_egotk"]
 [ext_resource type="SpriteFrames" uid="uid://b2tojbx2ygf2m" path="res://resources/animations/asturion_double_barrel_blunt_left.tres" id="2_rr3y7"]
 [ext_resource type="SpriteFrames" uid="uid://5ate4k65twpv" path="res://resources/animations/asturion_doubel_barrel_blunt_right.tres" id="3_mny2h"]

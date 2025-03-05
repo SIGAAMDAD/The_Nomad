@@ -1,17 +1,17 @@
 [gd_scene load_steps=5 format=3 uid="uid://ct2ouor2samhw"]
 
-[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_ryqgx"]
-[ext_resource type="Shader" path="res://shaders/split_screen.gdshader" id="2_f1q1b"]
+[ext_resource type="Script" uid="uid://bh51chmka1sfk" path="res://scripts/camera_controller.gd" id="1_ryqgx"]
+[ext_resource type="Shader" uid="uid://w6eidtm752dm" path="res://shaders/split_screen.gdshader" id="2_f1q1b"]
 [ext_resource type="Texture2D" uid="uid://bohvb2s1ak1bl" path="res://icon.webp" id="3_n6oy4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hfbcx"]
 shader = ExtResource("2_f1q1b")
-shader_parameter/viewport_size = null
-shader_parameter/split_active = null
-shader_parameter/player1_position = null
-shader_parameter/player2_position = null
-shader_parameter/split_line_thickness = null
-shader_parameter/split_line_color = null
+shader_parameter/viewport_size = Vector2(0, 0)
+shader_parameter/split_active = false
+shader_parameter/player1_position = Vector2(0, 0)
+shader_parameter/player2_position = Vector2(0, 0)
+shader_parameter/split_line_thickness = 0.0
+shader_parameter/split_line_color = Color(0, 0, 0, 1)
 
 [node name="DynamicSplitScreen2" type="Node2D"]
 

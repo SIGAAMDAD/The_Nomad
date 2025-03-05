@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://tvr3kuu1ygjd"]
 
 [ext_resource type="Texture2D" uid="uid://b84ku6a8tdc60" path="res://textures/env/BigTreasureChest.png" id="1_mxhmu"]
-[ext_resource type="Script" path="res://scripts/loot_chest.gd" id="1_vd08w"]
+[ext_resource type="Script" uid="uid://7bv6apjb3ekm" path="res://scripts/loot_chest.gd" id="1_vd08w"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwvrm"]
 atlas = ExtResource("1_mxhmu")

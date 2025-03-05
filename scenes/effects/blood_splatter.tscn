@@ -20,12 +20,12 @@ color_ramp = SubResource("GradientTexture1D_8dmu3")
 [node name="BloodSplatter" type="GPUParticles2D"]
 emitting = false
 amount = 10
-process_material = SubResource("ParticleProcessMaterial_n5ep1")
 texture = ExtResource("2_bllt4")
 one_shot = true
 explosiveness = 0.9
 fixed_fps = 0
 draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_n5ep1")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.3

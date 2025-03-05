@@ -1,8 +1,7 @@
-[gd_scene load_steps=14 format=4 uid="uid://dy3x8fkn247sb"]
+[gd_scene load_steps=12 format=4 uid="uid://dy3x8fkn247sb"]
 
 [ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_t3van"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
-[ext_resource type="Script" path="res://addons/simple_multimesh/SimpleMultiMesh2D/SimpleMultiMesh2D.gd" id="5_etmyv"]
 [ext_resource type="PackedScene" uid="uid://mgg8wmojy0ea" path="res://scenes/scenery/hanging_corpse.tscn" id="6_bb5sl"]
 [ext_resource type="PackedScene" uid="uid://cur8nem7iswfk" path="res://scenes/scenery/burning_barrel.tscn" id="7_f4pjs"]
 
@@ -29,8 +28,6 @@ b = Vector2(133.032, 770.419)
 a = Vector2(-102.057, 4.94348)
 b = Vector2(877.366, -223.927)
 
-[sub_resource type="MultiMesh" id="MultiMesh_h8gg4"]
-
 [node name="InTheDarkofTheNight" type="Node2D"]
 position = Vector2(940, 448)
 
@@ -39,9 +36,9 @@ modulate = Color(0.26779, 0.26779, 0.26779, 1)
 z_index = -2
 texture_filter = 1
 offset_left = -1518.89
-offset_top = -464.668
+offset_top = -465.668
 offset_right = 2210.11
-offset_bottom = 1128.33
+offset_bottom = 1127.33
 texture = ExtResource("1_t3van")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -99,24 +96,21 @@ shape = SubResource("SegmentShape2D_4iw77")
 position = Vector2(833.436, -134.377)
 scale = Vector2(0.72, 0.72)
 
-[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="TileMapLayer/Scenery"]
-
-[node name="SimpleMultiMesh2D" type="MultiMeshInstance2D" parent="TileMapLayer/Scenery/MultiMeshInstance2D"]
-multimesh = SubResource("MultiMesh_h8gg4")
-script = ExtResource("5_etmyv")
-update_mode = 2
-
-[node name="BurningBarrel" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(-186.06, 391.094)
+scale = Vector2(1, 1)
 
-[node name="BurningBarrel2" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel2" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(404.242, -117.82)
+scale = Vector2(1, 1)
 
-[node name="BurningBarrel3" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel3" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(916.721, 514.521)
+scale = Vector2(1, 1)
 
-[node name="BurningBarrel4" parent="TileMapLayer/Scenery/MultiMeshInstance2D/SimpleMultiMesh2D" instance=ExtResource("7_f4pjs")]
+[node name="BurningBarrel4" parent="TileMapLayer/Scenery" instance=ExtResource("7_f4pjs")]
 position = Vector2(-326.004, 674.66)
+scale = Vector2(1, 1)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.140447, 0.140447, 0.140447, 1)

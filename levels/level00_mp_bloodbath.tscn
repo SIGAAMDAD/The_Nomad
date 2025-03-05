@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://donmwnx40q4pr"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_npri0"]
+[ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_npri0"]
 [ext_resource type="PackedScene" uid="uid://c7hlaoisnc31n" path="res://scenes/multiplayer/spawn_point.tscn" id="2_3yql0"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="4_h5rqp"]
 [ext_resource type="PackedScene" uid="uid://d1r5uoklelc55" path="res://scenes/multiplayer/spawner.tscn" id="4_qxcil"]
@@ -30,6 +30,7 @@ position = Vector2(2839, 799)
 [node name="InTheDarkofTheNight" parent="." instance=ExtResource("4_h5rqp")]
 
 [node name="Spawner" parent="InTheDarkofTheNight" instance=ExtResource("4_qxcil")]
+script = null
 
 [node name="AmmoBase" parent="InTheDarkofTheNight" instance=ExtResource("5_ajuou")]
 position = Vector2(151, 67)

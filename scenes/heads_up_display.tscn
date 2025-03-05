@@ -1,25 +1,25 @@
 [gd_scene load_steps=37 format=3 uid="uid://cjy2h2wmmfkmc"]
 
-[ext_resource type="Script" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
+[ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
 [ext_resource type="Texture2D" uid="uid://cmhkbjyqs1vb3" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
 [ext_resource type="Texture2D" uid="uid://bty200almbul3" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
-[ext_resource type="Shader" path="res://shaders/water.gdshader" id="4_yowj8"]
-[ext_resource type="Script" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
+[ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
+[ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
 [ext_resource type="Texture2D" uid="uid://bvjna3gg14v7a" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
-[ext_resource type="Shader" path="res://shaders/weapon_status.gdshader" id="9_jyyjq"]
-[ext_resource type="Texture2D" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
+[ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="9_jyyjq"]
+[ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
 [ext_resource type="Texture2D" uid="uid://brybtxxdfifq4" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
-[ext_resource type="Texture2D" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
-[ext_resource type="Shader" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
+[ext_resource type="Texture2D" uid="uid://cp1jwldw8j5s4" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
+[ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
 [ext_resource type="Texture2D" uid="uid://okv78x4jnolx" path="res://textures/hud/status_bladed.png" id="15_eelai"]
 [ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
-[ext_resource type="Texture2D" path="res://textures/env/bullet.dds" id="16_qxnsc"]
-[ext_resource type="Texture2D" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
-[ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="18_lytyn"]
+[ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
+[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
+[ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="18_lytyn"]
 
 [sub_resource type="Gradient" id="Gradient_p6ak3"]
 
@@ -53,6 +53,8 @@ noise = SubResource("FastNoiseLite_wanxd")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yfjc1"]
 shader = ExtResource("4_yowj8")
+shader_parameter/noise1 = SubResource("NoiseTexture2D_6adfp")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_cqjef")
 shader_parameter/scroll1 = Vector2(-0.9, -0.255)
 shader_parameter/scroll2 = Vector2(-0.23, -0.435)
 shader_parameter/distortion_strength = 0.1
@@ -60,8 +62,6 @@ shader_parameter/tone_color = Color(0.8, 0, 0.0745098, 0.14902)
 shader_parameter/top_color = Color(0.23, 0.23, 0.23, 0)
 shader_parameter/light_start = 0.047
 shader_parameter/light_end = 0.0
-shader_parameter/noise1 = SubResource("NoiseTexture2D_6adfp")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_cqjef")
 
 [sub_resource type="Gradient" id="Gradient_sa4mc"]
 offsets = PackedFloat32Array(0)
@@ -72,18 +72,18 @@ gradient = SubResource("Gradient_sa4mc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j85v5"]
 shader = ExtResource("9_jyyjq")
-shader_parameter/status_active = null
 shader_parameter/status_icon = ExtResource("10_2rlhc")
+shader_parameter/status_active = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nmltk"]
 shader = ExtResource("9_jyyjq")
-shader_parameter/status_active = false
 shader_parameter/status_icon = ExtResource("11_0t58g")
+shader_parameter/status_active = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xuc8q"]
 shader = ExtResource("9_jyyjq")
-shader_parameter/status_active = null
 shader_parameter/status_icon = ExtResource("12_obapo")
+shader_parameter/status_active = false
 
 [sub_resource type="Gradient" id="Gradient_qadep"]
 offsets = PackedFloat32Array(0)
@@ -217,6 +217,7 @@ size_flags_vertical = 1
 size_flags_stretch_ratio = 1.0
 localize_numeral_system = true
 tooltip_text = ""
+tooltip_auto_translate_mode = 0
 focus_neighbor_left = NodePath("")
 focus_neighbor_top = NodePath("")
 focus_neighbor_right = NodePath("")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://c0fhho0dp1svt"]
 
-[ext_resource type="Script" path="res://addons/ridiculous_coding/blip.gd" id="1_tp8nq"]
+[ext_resource type="Script" uid="uid://dgvhclivp6y5f" path="res://addons/ridiculous_coding/blip.gd" id="1_tp8nq"]
 [ext_resource type="Texture2D" uid="uid://d1tio2ceqgm7m" path="res://addons/ridiculous_coding/blip.png" id="2_kj7um"]
 [ext_resource type="AudioStream" uid="uid://b2ood3lkcgpqb" path="res://addons/ridiculous_coding/blip.wav" id="3_xg6qd"]
 [ext_resource type="FontFile" uid="uid://bvwnnnja1ur2i" path="res://addons/ridiculous_coding/font.tres" id="4_ullf3"]
@@ -109,7 +109,7 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8epm6"]
 _data = {
-"default": SubResource("Animation_u2m4c")
+&"default": SubResource("Animation_u2m4c")
 }
 
 [sub_resource type="Gradient" id="Gradient_mplh3"]

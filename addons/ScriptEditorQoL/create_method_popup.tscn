@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dlnf1rsvok04a"]
 
-[ext_resource type="Script" path="res://addons/ScriptEditorQoL/create_method_popup.gd" id="1_d5t28"]
+[ext_resource type="Script" uid="uid://caonhiixo11sa" path="res://addons/ScriptEditorQoL/create_method_popup.gd" id="1_d5t28"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_1w1np"]
 device = -1

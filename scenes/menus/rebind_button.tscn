@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bldmryd5eq435"]
 
-[ext_resource type="Script" path="res://scripts/menus/rebind_button.gd" id="1_w32cl"]
+[ext_resource type="Script" uid="uid://dar1mxk61oius" path="res://scripts/menus/rebind_button.gd" id="1_w32cl"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rhh8j"]
 
 [node name="RebindButton" type="Control" groups=["Rebindings"]]

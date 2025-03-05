@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bulute7i5ksyy" path="res://addons/vision_cone_2d/examples/enemy.tscn" id="1_d5bxy"]
 [ext_resource type="PackedScene" uid="uid://hm3o2foxwd2m" path="res://addons/vision_cone_2d/examples/wall.tscn" id="2_1w8mk"]
-[ext_resource type="Script" path="res://addons/vision_cone_2d/examples/player_movement.gd" id="2_bmy6t"]
+[ext_resource type="Script" uid="uid://rjniy5xbvgpp" path="res://addons/vision_cone_2d/examples/player_movement.gd" id="2_bmy6t"]
 
 [sub_resource type="Curve2D" id="Curve2D_kvoug"]
 _data = {

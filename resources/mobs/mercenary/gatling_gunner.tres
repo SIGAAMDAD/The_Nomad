@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="MobData" load_steps=2 format=3 uid="uid://bsovtk2yfbs16"]
 
-[ext_resource type="Script" path="res://scripts/mobs/MobData.gd" id="1_gvss6"]
+[ext_resource type="Script" uid="uid://bajs2wkucc3oi" path="res://scripts/mobs/MobData.gd" id="1_gvss6"]
 
 [resource]
 script = ExtResource("1_gvss6")
@@ -14,3 +14,4 @@ _valid_actions = PackedStringArray()
 _valid_goals = PackedStringArray()
 _sight_detection_time = 10.0
 _sight_detection_speed = 0.1
+_max_attack_range = 560.0

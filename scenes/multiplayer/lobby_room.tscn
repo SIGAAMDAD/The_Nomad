@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://lko4gtcm6aer"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/lobby_room.gd" id="1_fhufx"]
+[ext_resource type="Script" uid="uid://s0u1lkf1x383" path="res://scripts/multiplayer/lobby_room.gd" id="1_fhufx"]
 [ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_htm6t"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_dbjcx"]
 

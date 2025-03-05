@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="QuestResource" load_steps=27 format=3 uid="uid://b2xg2fa752xmy"]
 
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_node.gd" id="2_m2far"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
+[ext_resource type="Script" uid="uid://cqmykmmj8l0i6" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
+[ext_resource type="Script" uid="uid://b0coxxuqsyn67" path="res://addons/questify/scripts/model/quest_node.gd" id="2_m2far"]
+[ext_resource type="Script" uid="uid://cq4kexreiu27y" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
+[ext_resource type="Script" uid="uid://3t4usuwfkfwt" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
+[ext_resource type="Script" uid="uid://cl4edu0n2sqny" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
+[ext_resource type="Script" uid="uid://cjbxbla2aj7nl" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
+[ext_resource type="Script" uid="uid://cca673u23376l" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
+[ext_resource type="Script" uid="uid://crxjsoabkpx7q" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
+[ext_resource type="Script" uid="uid://dfur88vxpqysn" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
 
 [sub_resource type="Resource" id="Resource_epp5k"]
 script = ExtResource("2_vo3f4")

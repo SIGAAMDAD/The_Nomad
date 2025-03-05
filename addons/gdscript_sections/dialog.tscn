@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://djl3cfxiqbiq1"]
 
-[ext_resource type="Script" path="res://addons/gdscript_sections/dialog.gd" id="1_cvg1e"]
+[ext_resource type="Script" uid="uid://cbn1ekhwqyrnt" path="res://addons/gdscript_sections/dialog.gd" id="1_cvg1e"]
 
 [node name="Dialog" type="Window"]
 title = "GDScript Sections"

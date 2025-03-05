@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dodqhbm63d3ot"]
 
 [ext_resource type="Texture2D" uid="uid://hnq7r65v0tk1" path="res://textures/playBackground.jpg" id="1_bovun"]
-[ext_resource type="Script" path="res://scripts/menus/SaveSlotSelect.cs" id="1_om3d8"]
+[ext_resource type="Script" uid="uid://4ejk1spnvfhl" path="res://scripts/menus/SaveSlotSelect.cs" id="1_om3d8"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_b8kik"]
-[ext_resource type="Script" path="res://scripts/menus/SaveSlotButton.cs" id="4_4wbu2"]
+[ext_resource type="Script" uid="uid://cm6oqvcvril5c" path="res://scripts/menus/SaveSlotButton.cs" id="4_4wbu2"]
 
 [node name="SaveSlotSelect" type="Control"]
 layout_mode = 3

@@ -1,12 +1,12 @@
 [gd_scene load_steps=15 format=4 uid="uid://b3i7rvpundukw"]
 
 [ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_dll6n"]
-[ext_resource type="Script" path="res://scripts/levels/from_eagles_peak.gd" id="1_ogrm1"]
+[ext_resource type="Script" uid="uid://j4b5xpuyvxkf" path="res://scripts/levels/from_eagles_peak.gd" id="1_ogrm1"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="2_q1lvc"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="4_jbyux"]
-[ext_resource type="Script" path="res://scripts/tilemap_floor.gd" id="4_oupxb"]
-[ext_resource type="Shader" path="res://shaders/floor.gdshader" id="5_g7jqm"]
-[ext_resource type="Shader" path="res://shaders/mirror.gdshader" id="6_oabje"]
+[ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="4_oupxb"]
+[ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="5_g7jqm"]
+[ext_resource type="Shader" uid="uid://cb2a3snjeham7" path="res://shaders/mirror.gdshader" id="6_oabje"]
 [ext_resource type="Texture2D" uid="uid://cegpm8ib1ojsj" path="res://icon.svg" id="7_podb1"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="9_7yu1l"]
 
@@ -26,8 +26,8 @@ shader_parameter/alpha_blend = false
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rb1bw"]
 resource_local_to_scene = true
 shader = ExtResource("6_oabje")
-shader_parameter/amount = 0.024
 shader_parameter/reflection_viewport = SubResource("ViewportTexture_36x1s")
+shader_parameter/amount = 0.024
 
 [node name="FromEaglesPeak" type="Node2D"]
 script = ExtResource("1_ogrm1")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqm0qmaaho3sp"]
 
-[ext_resource type="Script" path="res://addons/konamicode/konamicode.gd" id="1_32n17"]
-[ext_resource type="Script" path="res://addons/konamicode/example/example.gd" id="1_sv2t4"]
+[ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="1_32n17"]
+[ext_resource type="Script" uid="uid://dgiim6dj6gsqr" path="res://addons/konamicode/example/example.gd" id="1_sv2t4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_e87h8"]
 font_size = 25

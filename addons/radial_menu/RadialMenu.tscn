@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dbdklljsgfj74"]
 
 [ext_resource type="Material" uid="uid://cxrukx4vto81h" path="res://addons/radial_menu/selector.tres" id="1"]
-[ext_resource type="Script" path="res://addons/radial_menu/CursorPos.gd" id="2"]
+[ext_resource type="Script" uid="uid://baiyhj2yimfv8" path="res://addons/radial_menu/CursorPos.gd" id="2"]
 
 [node name="RadialMenu" type="CenterContainer"]
 anchors_preset = 15

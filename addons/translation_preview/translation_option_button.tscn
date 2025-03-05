@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://blg54x277sf8t"]
 
-[ext_resource type="Script" path="res://addons/translation_preview/translation_option_button.gd" id="1_kguxh"]
+[ext_resource type="Script" uid="uid://cb0sa5p2ttw6u" path="res://addons/translation_preview/translation_option_button.gd" id="1_kguxh"]
 
 [node name="TranslationOptionButton" type="OptionButton"]
 anchors_preset = -1

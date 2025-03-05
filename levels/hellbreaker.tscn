@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=4 uid="uid://ktied7n30xfd"]
 
-[ext_resource type="Shader" path="res://shaders/water.gdshader" id="1_lh0ly"]
+[ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="1_lh0ly"]
 [ext_resource type="Texture2D" uid="uid://cegpm8ib1ojsj" path="res://icon.svg" id="1_vvh7t"]
 [ext_resource type="TileSet" uid="uid://dvnhum31uka27" path="res://resources/hell.tres" id="2_b54h6"]
 [ext_resource type="Texture2D" uid="uid://bpcso8xfjvgq4" path="res://textures/env/lava.png" id="2_d04io"]
 [ext_resource type="AudioStream" uid="uid://hn4i7ygb6s5p" path="res://sounds/env/lava.ogg" id="3_s277d"]
-[ext_resource type="Shader" path="res://shaders/hell_spawner.gdshader" id="5_n6pow"]
+[ext_resource type="Shader" uid="uid://dltpcgmmbjx2x" path="res://shaders/hell_spawner.gdshader" id="5_n6pow"]
 [ext_resource type="Texture2D" uid="uid://bk1rjc0us4lpd" path="res://textures/env/pentagram.png" id="6_ndd47"]
 [ext_resource type="PackedScene" uid="uid://dp6wsnsw5y2nh" path="res://levels/hellbreaker_exit.tscn" id="8_hecgn"]
 [ext_resource type="AudioStream" uid="uid://dku2a0n4unxde" path="res://music/combat/hellbreaker.ogg" id="9_nbbwv"]
@@ -19,6 +19,8 @@ noise = SubResource("FastNoiseLite_tbihw")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wshrl"]
 shader = ExtResource("1_lh0ly")
+shader_parameter/noise1 = ExtResource("2_d04io")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_4o1nc")
 shader_parameter/scroll1 = Vector2(-0.015, -0.025)
 shader_parameter/scroll2 = Vector2(-0.01, 0.015)
 shader_parameter/distortion_strength = 0.452
@@ -26,8 +28,6 @@ shader_parameter/tone_color = Color(1, 0, 0, 1)
 shader_parameter/top_color = Color(1, 1, 0, 1)
 shader_parameter/light_start = 0.564
 shader_parameter/light_end = 0.545
-shader_parameter/noise1 = ExtResource("2_d04io")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_4o1nc")
 
 [sub_resource type="Gradient" id="Gradient_3ixgg"]
 offsets = PackedFloat32Array(0, 0.788235)
@@ -43,14 +43,14 @@ noise = SubResource("FastNoiseLite_hnxl7")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_of0ka"]
 shader = ExtResource("5_n6pow")
+shader_parameter/vertical_gradient = SubResource("NoiseTexture2D_oowgm")
 shader_parameter/size_effect = -5.0
 shader_parameter/highlight_strength = 2.05
 shader_parameter/color_mode_toggle = false
 shader_parameter/is_horizontal = true
+shader_parameter/spin_texture = ExtResource("6_ndd47")
 shader_parameter/clockwise = true
 shader_parameter/speed = 1.485
-shader_parameter/vertical_gradient = SubResource("NoiseTexture2D_oowgm")
-shader_parameter/spin_texture = ExtResource("6_ndd47")
 
 [node name="Hellbreaker" type="Node2D"]
 

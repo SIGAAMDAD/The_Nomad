@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cp2ega0a8ryv2"]
 
-[ext_resource type="Script" path="res://scripts/menus/MultiplayerMenu.cs" id="1_gogso"]
+[ext_resource type="Script" uid="uid://dj8kxghn7pam5" path="res://scripts/menus/MultiplayerMenu.cs" id="1_gogso"]
 [ext_resource type="PackedScene" uid="uid://dpriw3r8df1su" path="res://scenes/multiplayer/lobby_browser.tscn" id="1_nte02"]
 [ext_resource type="PackedScene" uid="uid://bmc6jfet87hxo" path="res://scenes/multiplayer/lobby_factory.tscn" id="2_vjsp8"]
 

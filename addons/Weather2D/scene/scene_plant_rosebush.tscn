@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cry6t8woenkes"]
 
-[ext_resource type="Texture2D" uid="uid://0687fluvoxy4" path="res://Weather2D/demo-scene-texture/t_plant_rosebush.png" id="1_kwcqc"]
+[ext_resource type="Texture2D" uid="uid://0687fluvoxy4" path="res://addons/Weather2D/demo-scene-texture/t_plant_rosebush.png" id="1_kwcqc"]
 
 [node name="TPlantRosebush" type="TextureRect"]
 custom_minimum_size = Vector2(10, 10)

@@ -2,9 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="1_54ujd"]
 [ext_resource type="Texture2D" uid="uid://b3l3mwnbajnj3" path="res://textures/env/bullet_casings/gauge12_shell.png" id="2_7chbo"]
-
-[sub_resource type="Resource" id="Resource_aglva"]
-metadata/__load_path__ = "res://sounds/env/pickup_shells.ogg"
+[ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="3_kg6sp"]
 
 [resource]
 id = "AMMO_12_GAUGE"
@@ -15,7 +13,7 @@ weight = 2.5
 properties = {
 "casing_icon": ExtResource("2_7chbo"),
 "damage": 40.5,
-"pickup_sfx": SubResource("Resource_aglva"),
+"pickup_sfx": ExtResource("3_kg6sp"),
 "range": 2450.0,
 "shotgun bullshit": 2,
 "stack_add_amount": 12,
