@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cowa3234fk526"]
+
+[ext_resource type="Script" uid="uid://bbupn4xo6swhd" path="res://scripts/items/Interactable.cs" id="1_dt3pl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wne2f"]
+radius = 2.0
+
+[node name="Interactable" type="Sprite2D"]
+script = ExtResource("1_dt3pl")
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource("CircleShape2D_wne2f")
+
+[node name="InteractionArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="InteractionArea2D"]
+shape = SubResource("CircleShape2D_wne2f")

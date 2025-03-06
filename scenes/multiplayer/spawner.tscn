@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1r5uoklelc55"]
+
+[sub_resource type="Resource" id="Resource_2txff"]
+metadata/__load_path__ = "res://scripts/multiplayer/spawner.gd"
+
+[node name="Spawner" type="Node2D"]
+script = SubResource("Resource_2txff")
