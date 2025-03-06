@@ -1,6 +1,6 @@
 [gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://5cw6j8k2dvv"]
 
-[ext_resource type="Texture2D" path="res://textures/env/icona_shells.dds" id="1_54ujd"]
+[ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="1_54ujd"]
 [ext_resource type="Texture2D" uid="uid://b3l3mwnbajnj3" path="res://textures/env/bullet_casings/gauge12_shell.png" id="2_7chbo"]
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="3_kg6sp"]
 

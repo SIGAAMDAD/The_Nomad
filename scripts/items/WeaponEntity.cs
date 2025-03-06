@@ -1,5 +1,5 @@
 using System;
-using GDExtension.Wrappers;
+using System.Linq;
 using Godot;
 
 public partial class WeaponEntity : Node2D {
@@ -91,9 +91,6 @@ public partial class WeaponEntity : Node2D {
 	private PackedScene BulletShell;
 	private PackedScene DustCloud;
 
-	private RayCast2D RayCast;
-	private AmmoStack Reserve;
-	private Resource Ammo;
 	private AnimatedSprite2D Animations;
 	private Timer UseTime;
 	private AudioStreamPlayer2D UseBluntSfx;
@@ -102,8 +99,12 @@ public partial class WeaponEntity : Node2D {
 	private Player _Owner;
 	private Sprite2D IconSprite;
 
+	private Timer MuzzleFlashTimer;
+	private PointLight2D MuzzleLight;
+	private RayCast2D RayCast;
+	private AmmoStack Reserve;
+	private Resource Ammo;
 	private System.Collections.Generic.List<Sprite2D> MuzzleFlashes;
-
 	private Sprite2D CurrentMuzzleFlash;
 	private int BulletsLeft = 0;
 
@@ -122,7 +123,45 @@ public partial class WeaponEntity : Node2D {
 	private Properties DefaultMode = Properties.None;
 	private Properties LastUsedMode = Properties.None;
 
-	public AmmoStack GetReserve() {
+	~WeaponEntity() {
+		if ( ReloadTime != null ) {
+			ReloadTime.QueueFree();
+		}
+		if ( ReloadSfx != null ) {
+			ReloadSfx.QueueFree();
+		}
+		if ( NoAmmoSound != null ) {
+			NoAmmoSound.QueueFree();
+		}
+		if ( Reserve != null ) {
+			Reserve.QueueFree();
+		}
+		if ( MuzzleFlashes.Count > 0 ) {
+			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
+				MuzzleFlashes[i].QueueFree();
+			}
+		}
+		MuzzleFlashes.Clear();
+		if ( MuzzleFlashTimer != null ) {
+			MuzzleFlashTimer.QueueFree();
+		}
+		if ( MuzzleLight != null ) {
+			MuzzleLight.QueueFree();
+		}
+		if ( PickupArea != null ) {
+			PickupArea.QueueFree();
+		}
+
+		UseBladedSfx.QueueFree();
+		UseBluntSfx.QueueFree();
+		UseFirearmSfx.QueueFree();
+
+		IconSprite.QueueFree();
+		RayCast.QueueFree();
+		UseTime.QueueFree();
+	}
+
+    public AmmoStack GetReserve() {
 		return Reserve;
 	}
 	public int GetBulletCount() {
@@ -135,7 +174,7 @@ public partial class WeaponEntity : Node2D {
 		return LastUsedMode;
 	}
 	public AmmoType GetAmmoType() {
-		return Ammunition;
+		return (AmmoType)(int)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "ammo_type" ];
 	}
 
 	public Properties GetProperties() {
@@ -160,7 +199,7 @@ public partial class WeaponEntity : Node2D {
 		CallDeferred( "remove_child", PickupArea );
 	}
 
-	public void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
+	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		IconSprite.QueueFree();
 
 		ReleasePickupArea();
@@ -170,6 +209,10 @@ public partial class WeaponEntity : Node2D {
 		GlobalPosition = _Owner.GlobalPosition;
 		SetUseMode( DefaultMode );
 		_Owner.PickupWeapon( this );
+	}
+	private void OnMuzzleFlashTimerTimeout() {
+		CurrentMuzzleFlash.Hide();
+		MuzzleLight.Hide();
 	}
 
 	private void CreatePickupBounds() {
@@ -231,26 +274,35 @@ public partial class WeaponEntity : Node2D {
 
 			// only allocate muzzle flash sprites if we actually need them
 			MuzzleFlashes = new System.Collections.Generic.List<Sprite2D>();
-			RandomFactory = new Random();
-			/*
+			RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+
 			for ( int i = 0;; i++ ) {
-				Sprite2D muzzleFlash = new Sprite2D();
-				muzzleFlash.Texture = ResourceLoader.Load<Texture2D>( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" );
-				if ( muzzleFlash.Texture == null ) {
-					muzzleFlash.QueueFree();
+				if ( !FileAccess.FileExists( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" ) ) {
 					break;
 				}
-				muzzleFlash.Offset = new Godot.Vector2( 46, -2 );
-				muzzleFlash.Scale = new Godot.Vector2( 0.25f, 0.35f );
-				muzzleFlash.Hide();
-				Animations.AddChild( muzzleFlash );
-				MuzzleFlashes.Add( muzzleFlash );
-			}
-			*/
+				Sprite2D texture = new Sprite2D();
+				texture.Texture = ResourceLoader.Load<Texture2D>( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" );
+				texture.Offset = new Godot.Vector2( 160.0f, 0.0f );
+				texture.Scale = new Godot.Vector2( 0.309f, 0.219f );
+				texture.Hide();
 
-			for ( int i = 0; i < GetNode<Node2D>( "MuzzleFlashes" ).GetChildCount(); i++ ) {
-				MuzzleFlashes.Add( GetNode<Node2D>( "MuzzleFlashes" ).GetChild<Sprite2D>( i ) );
+				Animations.AddChild( texture );
+				MuzzleFlashes.Add( texture );
 			}
+
+			MuzzleFlashTimer = new Timer();
+			MuzzleFlashTimer.WaitTime = 0.2f;
+			MuzzleFlashTimer.OneShot = true;
+			MuzzleFlashTimer.Connect( "timeout", Callable.From( OnMuzzleFlashTimerTimeout ) );
+			AddChild( MuzzleFlashTimer );
+
+			MuzzleLight = new PointLight2D();
+			MuzzleLight.Texture = ResourceLoader.Load<Texture2D>( "res://textures/2d_lights_and_shadows_neutral_point_light.webp" );
+			MuzzleLight.TextureScale = 5.0f;
+			MuzzleLight.Energy = 2.5f;
+			MuzzleLight.Color = new Color( "#db7800" );
+			MuzzleLight.Hide();
+			AddChild( MuzzleLight );
 
 			ReloadTime = new Timer();
 			ReloadTime.OneShot = true;
@@ -291,32 +343,6 @@ public partial class WeaponEntity : Node2D {
 			ReloadSfx.Stop();
 			return;
 		}
-	}
-	public override void _ExitTree() {
-		/*
-		base._ExitTree();
-
-		if ( ReloadTime != null ) {
-			ReloadTime.QueueFree();
-		}
-		if ( ReloadSfx != null ) {
-			ReloadSfx.QueueFree();
-		}
-		if ( NoAmmoSound != null ) {
-			NoAmmoSound.QueueFree();
-		}
-		if ( Reserve != null ) {
-			Reserve.QueueFree();
-		}
-
-		UseBladedSfx.QueueFree();
-		UseBluntSfx.QueueFree();
-		UseFirearmSfx.QueueFree();
-
-		IconSprite.QueueFree();
-		RayCast.QueueFree();
-		UseTime.QueueFree();
-		*/
 	}
 	public override void _Ready() {
 		base._Ready();
@@ -472,6 +498,10 @@ public partial class WeaponEntity : Node2D {
 		CurrentMuzzleFlash.Show();
 		CurrentMuzzleFlash.Rotation = _Owner.GetArmAngle();
 
+		MuzzleLight.Show();
+		
+		MuzzleFlashTimer.Start();
+
 		float y = CurrentMuzzleFlash.Offset.Y;
 		if ( _Owner.GetLeftArm().Animations.FlipH ) {
 			CurrentMuzzleFlash.Offset = new Godot.Vector2( -160, y );
@@ -527,7 +557,6 @@ public partial class WeaponEntity : Node2D {
 
 	private void OnUseTimeTimeout() {
 		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			CurrentMuzzleFlash.Hide();
 			if ( BulletsLeft < 1 ) {
 				Reload();
 				return;

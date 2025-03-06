@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://brtukmd1ep2ci"]
+[gd_scene load_steps=13 format=3 uid="uid://brtukmd1ep2ci"]
 
 [ext_resource type="Shader" uid="uid://dsx3hbrjlx05o" path="res://shaders/highlight.gdshader" id="1_deedu"]
 [ext_resource type="Script" uid="uid://chj3e6vvwp28f" path="res://scripts/items/WeaponEntity.cs" id="2_g8mpd"]
@@ -7,6 +7,7 @@
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="3_hlo55"]
 [ext_resource type="Texture2D" uid="uid://bktv1fwp2eqs0" path="res://textures/env/muzzle/mf2.dds" id="4_2wko3"]
 [ext_resource type="Texture2D" uid="uid://dxps7lqqwp4f" path="res://textures/env/muzzle/mf3.dds" id="5_8e488"]
+[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="8_puxfl"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7lfh5"]
 
@@ -47,6 +48,7 @@ one_shot = true
 target_position = Vector2(24, 0)
 
 [node name="MuzzleFlashes" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="MuzzleFlashes"]
 visible = false
@@ -71,6 +73,13 @@ visible = false
 scale = Vector2(0.309, 0.219)
 texture = ExtResource("5_8e488")
 offset = Vector2(160, 0)
+
+[node name="PointLight2D" type="PointLight2D" parent="MuzzleFlashes"]
+visible = false
+color = Color(0.858824, 0.470588, 0, 1)
+energy = 2.5
+texture = ExtResource("8_puxfl")
+texture_scale = 5.0
 
 [node name="Icon" type="Sprite2D" parent="."]
 use_parent_material = true

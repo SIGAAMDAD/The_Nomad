@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://6cnqoj2bp0r3"]
 
-[ext_resource type="Script" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
-[ext_resource type="Shader" path="res://shaders/mob.gdshader" id="2_mvput"]
+[ext_resource type="Script" uid="uid://brgni4r6q2ofv" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
+[ext_resource type="Shader" uid="uid://6s0601lh0rk3" path="res://shaders/mob.gdshader" id="2_mvput"]
 [ext_resource type="SpriteFrames" uid="uid://bbd1gljxn4cqk" path="res://resources/animations/mobs/merc_shotgunner.tres" id="3_jv7p5"]
 [ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="7_ilfkp"]
 
@@ -29,7 +29,8 @@ material = SubResource("ShaderMaterial_jtvc8")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_jv7p5")
 animation = &"move"
-frame_progress = 0.536482
+frame = 2
+frame_progress = 0.730538
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_75x84")

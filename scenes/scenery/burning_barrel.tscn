@@ -31,6 +31,7 @@ animations = [{
 size = Vector2(25, 29)
 
 [node name="BurningBarrel" type="CharacterBody2D"]
+z_index = 4
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 1

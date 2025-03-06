@@ -37,7 +37,7 @@ privateKey="59b91461435b8a75"
 config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="res://scenes/main_menu.tscn"
-config/features=PackedStringArray("4.3", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 run/max_fps=60
 config/icon="res://desertbkgd_icon.png"
 config/windows_native_icon="res://desertbkgd_icon.ico"
@@ -51,10 +51,8 @@ general/default_playback_type.web=0
 
 SettingsData="*res://scripts/menus/SettingsManager.gd"
 GameConfiguration="*res://scripts/GameConfiguration.gd"
-LoadManager="*res://scripts/LoadManager.gd"
 SoundManager="*res://addons/sound_manager/sound_manager.gd"
 SteamManager="*res://autoloads/Steam/SteamManager.cs"
-SteamNetwork="*res://autoloads/Steam/SteamNetwork.gd"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
 SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
 ArchiveSystem="*res://scripts/save_system/ArchiveSystem.cs"
@@ -198,7 +196,9 @@ pathfinding/max_threads=8
 [physics]
 
 2d/run_on_separate_thread=true
+common/physics_jitter_fix=0.0
 2d/solver/solver_iterations=8
+common/physics_interpolation=true
 
 [plugins]
 
@@ -207,7 +207,7 @@ gdscript_utilities/print_internal_messages=true
 [questify]
 
 general/update_polling=true
-general/update_interval=0.5
+general/update_interval=1.0
 
 [rendering]
 
@@ -216,6 +216,7 @@ textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+driver/threads/thread_model=0
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true
@@ -231,10 +232,11 @@ textures/default_filters/anisotropic_filtering_level=0
 camera/depth_of_field/depth_of_field_bokeh_shape=0
 camera/depth_of_field/depth_of_field_bokeh_quality=0
 environment/ssao/quality=0
+environment/ssil/quality=0
+viewport/hdr_2d=true
 textures/decals/filter=0
 textures/light_projectors/filter=0
 limits/global_shader_variables/buffer_size=8192
 environment/defaults/default_clear_color=Color(0.756986, 0.560337, 0.188805, 1)
-viewport/hdr_2d=true
 anti_aliasing/quality/screen_space_aa=1
 2d/snap/snap_2d_vertices_to_pixel=true

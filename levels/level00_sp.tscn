@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://uei7yka6gloe"]
 
-[ext_resource type="Script" path="res://scripts/SinglePlayer.cs" id="1_oyyma"]
+[ext_resource type="Script" uid="uid://c6m56prls5p7o" path="res://scripts/SinglePlayer.cs" id="1_oyyma"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level00.tscn" id="2_mu0nc"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="3_gvbor"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_wx1u4"]
@@ -60,13 +60,13 @@ Data = ExtResource("8_jtgyk")
 [node name="Checkpoint" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
 light_mask = 15
 visibility_layer = 2
-position = Vector2(-133, 109)
+position = Vector2(-137, 107)
 
 [node name="Checkpoint2" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
-position = Vector2(1073, 312)
+position = Vector2(1257, 380)
 
 [node name="Checkpoint4" parent="Level/Checkpoints" instance=ExtResource("7_o1egt")]
-position = Vector2(1908, 281)
+position = Vector2(1922, 179)
 
 [node name="LevelEnd" parent="Level/Checkpoints" instance=ExtResource("10_n7kim")]
 position = Vector2(1922, 17)
@@ -118,7 +118,7 @@ playback_type = 1
 [node name="Network" type="Node" parent="."]
 
 [node name="Player1" parent="Network" instance=ExtResource("3_wx1u4")]
-position = Vector2(427, 575)
+position = Vector2(-443, 130)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

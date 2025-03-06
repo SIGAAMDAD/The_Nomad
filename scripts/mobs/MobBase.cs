@@ -23,9 +23,19 @@ public partial class MobBase : CharacterBody2D {
 		Count
 	};
 
+	protected Node2D BloodSplatterTree;
 	protected PackedScene BloodSplatter;
 
+	protected Node2D BulletShellTree;
+	protected PackedScene BulletShell;
+
 	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
+	
+	[ExportCategory("Sounds")]
+	[Export]
+	protected AudioStream AttackFirearmSfx;
+	[Export]
+	protected AudioStream AttackMeleeSfx;
 
 	[ExportCategory("Detection")]
 	[Export]
@@ -52,23 +62,38 @@ public partial class MobBase : CharacterBody2D {
 	protected float MovementSpeed = 1.0f;
 	[Export]
 	protected float ThinkInterval = 0.2f;
+	[Export]
+	protected float FirearmDamage = 0.0f;
+	[Export]
+	protected float BluntDamage = 0.0f;
+	[Export]
+	protected float BladedDamage = 0.0f;
 
 	protected RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
 	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
-	protected Godot.Vector2 NextPathPosition;
+	protected Godot.Vector2 NextPathPosition = Godot.Vector2.Zero;
+	protected float LookAngle = 0.0f;
+	protected float AimAngle = 0.0f;
 
 	protected Area2D SoundBounds;
 	protected AudioStreamPlayer2D Bark;
+	protected AudioStreamPlayer2D SequencedBark;
+	protected AudioStreamPlayer2D ActionSfx;
+	protected AudioStreamPlayer2D MoveSfx;
 	protected Timer ThinkerTimer;
 	protected Timer LoseInterestTimer;
+	protected Timer ChangeInvestigateAngleTimer;
 	protected Node2D SightDetector;
 	protected Line2D DetectionMeter;
-	protected AnimatedSprite2D Animations;
+	protected AnimatedSprite2D HeadAnimations;
+	protected AnimatedSprite2D BodyAnimations;
+	protected AnimatedSprite2D ArmAnimations;
 	protected NavigationAgent2D Navigation;
 	protected Color DetectionColor;
+	protected AIBlackboard Blackboard;
 
 	protected List<RayCast2D> SightLines;
 
@@ -118,27 +143,82 @@ public partial class MobBase : CharacterBody2D {
 	protected bool IsValidTarget( GodotObject target ) {
 		return target is Player || target is MobBase;
 	}
+	protected bool IsAlert() {
+		return Blackboard.GetAwareness() == Awareness.Alert || SightDetectionAmount >= SightDetectionTime;
+	}
+	protected bool IsSuspicious() {
+		return ( !IsAlert() && Blackboard.GetAwareness() == Awareness.Suspicious ) || SightDetectionAmount >= SightDetectionTime * 0.5f;
+	}
 #endregion
 
 	protected virtual void OnLoseInterestTimerTimeout() {
+	}
+	protected virtual void OnChangeInvestigateAngleTimerTimeout() {
+		float angle = RandomFactory.RandfRange( 0.0f, 360.0f );
+		AimAngle = angle;
+		LookAngle = angle;
+	}
+	
+	protected void OnSequencedBarkFinished() {
+		SequencedBark.Stream = null;
+	}
+	protected void OnBarkFinished() {
+		Bark.Stream = null;
+		if ( SequencedBark.Stream != null ) {
+			// play another bark right after the first
+			SequencedBark.Play();
+		}
+	}
+	protected void OnBodyAnimationFinished() {
+		if ( BodyAnimations.Animation == "move" ) {
+			MoveSfx.Play();
+		}
 	}
 
 	protected void Init() {
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
 		SoundBounds = GetNode<Area2D>( "Node2D/SoundBounds" );
-		Animations = GetNode<AnimatedSprite2D>( "Animations/AnimatedSprite2D" );
 		SightDetector = GetNode<Node2D>( "SightCheck" );
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
-
+		
+		HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
+		ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
+		BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
+		BodyAnimations.Connect( "animation_looped", Callable.From( OnBodyAnimationFinished ) );
+		
+		MoveSfx = GetNode<AudioStreamPlayer2D>( "MoveSfx" );
+		
+		ActionSfx = GetNode<AudioStreamPlayer2D>( "ActionSfx" );
+		
 		Bark = new AudioStreamPlayer2D();
 		Bark.VolumeDb = 10.0f;
 		Bark.GlobalPosition = GlobalPosition;
+		Bark.Connect( "finished", Callable.From( OnBarkFinished ) );
 		AddChild( Bark );
-
+		
+		SequencedBark = new AudioStreamPlayer2D();
+		SequencedBark.VolumeDb = 10.0f;
+		SequencedBark.GlobalPosition = GlobalPosition;
+		SequencedBark.Stream = null;
+		SequencedBark.Connect( "finished", Callable.From( OnSequencedBarkFinished ) );
+		AddChild( SequencedBark );
+		
+		BulletShellTree = new Node2D();
+		GetTree().CurrentScene.AddChild( BulletShellTree );
+		
+		BloodSplatterTree = new Node2D();
+		GetTree().CurrentScene.AddChild( BloodSplatterTree );
+		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-
+		
+		ChangeInvestigateAngleTimer = new Timer();
+		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
+		ChangeInvestigateAngleTimer.OneShot = true;
+		ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
+		AddChild( ChangeInvestigateAngleTimer );
+		
 		LoseInterestTimer = new Timer();
 		LoseInterestTimer.WaitTime = LoseInterestTime;
 		LoseInterestTimer.OneShot = true;
@@ -159,14 +239,42 @@ public partial class MobBase : CharacterBody2D {
 			AngleDir = Godot.Vector2.Left;
 			break;
 		};
+		LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
+		AimAngle = LookAngle;
 
 		GenerateRaycasts();
 	}
+	public override void _Process( double delta ) {
+		ArmAnimations.GlobalRotation = AimAngle;
+		HeadAnimations.GlobalRotation = LookAngle;
+		
+		if ( LookAngle > 0.0f ) {
+			HeadAnimations.FlipV = false;
+		} else if ( LookAngle < 0.0f ) {
+			HeadAnimations.FlipV = true;
+		}
+		if ( AimAngle > 0.0f ) {
+			ArmAnimations.FlipV = false;
+		} else if ( AimAngle < 0.0f ) {
+			ArmAnimations.FlipV = true;
+		}
+		if ( Velocity.X > 0.0f ) {
+			BodyAnimations.FlipH = false;
+		} else if ( Velocity.X < 0.0f ) {
+			BodyAnimations.FlipH = true;
+		}
 
+		if ( Velocity != Godot.Vector2.Zero ) {
+			BodyAnimations.Play( "move" );
+		} else {
+			BodyAnimations.Play( "idle" );
+		}
+	}
+	
 	protected bool MoveAlongPath() {
-		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
-		AngleDir = GlobalPosition.DirectionTo( nextPathPosition ) * MovementSpeed;
-		Animations.Play( "move" );
+		Godot.Vector2 lookDir = GlobalPosition.DirectionTo( Navigation.GetNextPathPosition() );
+		LookAngle = Mathf.Atan2( lookDir.Y, lookDir.X );
+		AngleDir = lookDir * MovementSpeed;
 		Velocity = AngleDir;
 		return MoveAndSlide();
 	}

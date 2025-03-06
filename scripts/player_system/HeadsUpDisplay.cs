@@ -309,13 +309,7 @@ namespace PlayerSystem {
 			
 			HBoxContainer row = new HBoxContainer();
 
-			foreach ( var stack in _Owner.GetLightAmmoStacks() ) {
-				row = AddAmmoStackToInventory( row, stack );
-			}
-			foreach ( var stack in _Owner.GetHeavyAmmoStacks() ) {
-				row = AddAmmoStackToInventory( row, stack );
-			}
-			foreach ( var stack in _Owner.GetPelletAmmoStacks() ) {
+			foreach ( var stack in _Owner.GetAmmoStacks() ) {
 				row = AddAmmoStackToInventory( row, stack );
 			}
 			foreach ( var stack in _Owner.GetWeaponStack() ) {

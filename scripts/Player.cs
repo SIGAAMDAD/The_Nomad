@@ -152,9 +152,7 @@ public partial class Player : CharacterBody2D {
 
 	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
 	private List<Resource> ConsumableStacks = new List<Resource>();
-	private List<AmmoStack> AmmoPelletStacks = new List<AmmoStack>();
-	private List<AmmoStack> AmmoHeavyStacks = new List<AmmoStack>();
-	private List<AmmoStack> AmmoLightStacks = new List<AmmoStack>();
+	private List<AmmoStack> AmmoStacks = new List<AmmoStack>();
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
@@ -179,14 +177,8 @@ public partial class Player : CharacterBody2D {
 	public List<WeaponEntity> GetWeaponStack() {
 		return WeaponsStack;
 	}
-	public List<AmmoStack> GetLightAmmoStacks() {
-		return AmmoLightStacks;
-	}
-	public List<AmmoStack> GetHeavyAmmoStacks() {
-		return AmmoHeavyStacks;
-	}
-	public List<AmmoStack> GetPelletAmmoStacks() {
-		return AmmoPelletStacks;
+	public List<AmmoStack> GetAmmoStacks() {
+		return AmmoStacks;
 	}
 	public Inventory GetInventory() {
 		return Inventory;
@@ -338,9 +330,7 @@ public partial class Player : CharacterBody2D {
 
 		ConsumableStacks.Clear();
 		WeaponsStack.Clear();
-		AmmoLightStacks.Clear();
-		AmmoHeavyStacks.Clear();
-		AmmoPelletStacks.Clear();
+		AmmoStacks.Clear();
 
 		QueueFree();
 	}
@@ -1170,59 +1160,27 @@ public partial class Player : CharacterBody2D {
 	public void PickupAmmo( AmmoEntity ammo ) {
 		AmmoStack stack = null;
 		bool found = false;
-
-		switch ( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] ) {
-		case (int)AmmoEntity.Type.Light: {
-			for ( int i = 0; i < AmmoLightStacks.Count; i++ ) {
-				if ( ammo.Data == AmmoLightStacks[i].AmmoType ) {
-					GD.Print( "Found stack" );
-					found = true;
-					stack = AmmoLightStacks[i];
-					break;
-				}
+		
+		for ( int i = 0; i < AmmoStacks.Count(); i++ ) {
+			if ( ammo.Data == AmmoStacks[i].AmmoType ) {
+				found = true;
+				stack = AmmoStacks[i];
+				break;
 			}
-			if ( !found ) {
-				stack = new AmmoStack();
-				AmmoLightStacks.Add( stack );
-			}
-			break; }
-		case (int)AmmoEntity.Type.Heavy: {
-			for ( int i = 0; i < AmmoHeavyStacks.Count; i++ ) {
-				if ( ammo.Data == AmmoHeavyStacks[i].AmmoType ) {
-					found = true;
-					stack = AmmoHeavyStacks[i];
-					break;
-				}
-			}
-			if ( !found ) {
-				stack = new AmmoStack();
-				AmmoHeavyStacks.Add( stack );
-			}
-			break; }
-		case (int)AmmoEntity.Type.Pellets: {
-			for ( int i = 0; i < AmmoPelletStacks.Count; i++ ) {
-				if ( ammo.Data == AmmoPelletStacks[i].AmmoType ) {
-					found = true;
-					stack = AmmoPelletStacks[i];
-					break;
-				}
-			}
-			if ( !found ) {
-				stack = new AmmoStack();
-				AmmoPelletStacks.Add( stack );
-			}
-			if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
-				( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.AmmoLight );
-			}
-			break; }
-		};
-
-		stack.SetType( ammo );
+		}
+		if ( !found ) {
+			GD.Print( "Adding ammo stack" );
+			stack = new AmmoStack();
+			stack.SetType( ammo );
+			AmmoStacks.Add( stack );
+		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[i];
-			if ( slot.IsUsed() && (int)( (Godot.Collections.Dictionary)slot.GetWeapon().Data.Get( "properties" ) )[ "ammo_type" ] == (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] ) {
+			if ( slot.IsUsed() && (int)( (Godot.Collections.Dictionary)slot.GetWeapon().Data.Get( "properties" ) )[ "ammo_type" ]
+				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
+			{
 				GetNode( "/root/Console" ).Call( "print_line", "Assigned weapon slot ammunition...", true );
 				slot.GetWeapon().SetReserve( stack );
 				slot.GetWeapon().SetAmmo( ammo.Data );
@@ -1243,33 +1201,21 @@ public partial class Player : CharacterBody2D {
 				break;
 			}
 		}
-		if ( CurrentWeapon == tmp ) {
-			return;
-		}
-
+		
 		WeaponsStack.Add( weapon );
 
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;
 
 		AmmoStack stack = null;
-		switch ( weapon.GetAmmoType() ) {
-		case WeaponEntity.AmmoType.Light: {
-			if ( AmmoLightStacks.Count > 0 ) {
-				stack = AmmoLightStacks.Last();
+		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
+			if ( (int)( (Godot.Collections.Dictionary)AmmoStacks[i].AmmoType.Get( "properties" ) )[ "type" ] ==
+				(int)weapon.GetAmmoType() )
+			{
+				stack = AmmoStacks[i];
+				break;
 			}
-			break; }
-		case WeaponEntity.AmmoType.Heavy: {
-			if ( AmmoHeavyStacks.Count > 0 ) {
-				stack = AmmoHeavyStacks.Last();
-			}
-			break; }
-		case WeaponEntity.AmmoType.Pellets: {
-			if ( AmmoPelletStacks.Count > 0 ) {
-				stack = AmmoPelletStacks.Last();
-			}
-			break; }
-		};
+		}
 		if ( stack != null ) {
 			weapon.SetReserve( stack );
 			weapon.SetAmmo( stack.AmmoType );
