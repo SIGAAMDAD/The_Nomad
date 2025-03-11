@@ -19,7 +19,7 @@ namespace Renown.World {
 		/// The current weather of the biome
 		/// </summary>
 		[Export]
-		private WeatherType CurrentWeather = WeatherType.Clear;
+		private uint CurrentWeather = 0;
 		
 		/// <summary>
 		/// Chance of biome clear & sunny weather
