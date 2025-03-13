@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://b2htdmaimgeg2"]
 
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="1_uv1oe"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="1_40cnk"]
 
 [sub_resource type="Gradient" id="Gradient_s48sx"]
 offsets = PackedFloat32Array(0, 0.36214, 0.530864, 1)
@@ -41,5 +41,5 @@ process_material = SubResource("ParticleProcessMaterial_rvfub")
 visible = false
 color = Color(0.905269, 2.38247e-06, 1.92523e-07, 1)
 energy = 1.8
-texture = ExtResource("1_uv1oe")
-texture_scale = 2.86
+texture = ExtResource("1_40cnk")
+texture_scale = 3.5

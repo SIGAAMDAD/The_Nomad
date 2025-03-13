@@ -53,6 +53,7 @@ theme_override_fonts/font = ExtResource("2_4xp3b")
 text = "SETTINGS_BUTTON"
 
 [node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4xp3b")
 text = "HELP_BUTTON"
@@ -81,8 +82,3 @@ grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
 metadata/_edit_use_anchors_ = true
-
-[connection signal="pressed" from="VBoxContainer/CampaignButton" to="." method="_on_campaign_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitGameButton" to="." method="_on_quit_game_button_pressed"]

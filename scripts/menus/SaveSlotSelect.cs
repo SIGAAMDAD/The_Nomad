@@ -7,6 +7,7 @@ public partial class SaveSlotSelect : Control {
 	[Signal]
 	public delegate void LoadSaveSlotEventHandler( int nSlot );
 
+	/*
 	private void NextMenu( int nSlot ) {
 		ArchiveSystem.Instance.SetSlot( nSlot );
 		if ( ArchiveSystem.Instance.SlotExists( nSlot ) ) {
@@ -36,4 +37,5 @@ public partial class SaveSlotSelect : Control {
 		Button Slot2Button = GetNode<Button>( "VBoxContainer/SaveSlot2/SaveSlot2Button" );
 		Slot2Button.Connect( "pressed", Callable.From( OnSaveSlot2ButtonPressed ) );
 	}
+	*/
 };

@@ -1,0 +1,95 @@
+[gd_scene load_steps=13 format=3 uid="uid://co7rmsfdbg4m0"]
+
+[ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/interactables/Checkpoint.cs" id="1_ihm5l"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
+[ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
+[ext_resource type="Texture2D" uid="uid://dyghteg051cwn" path="res://textures/unlit.dds" id="4_7no74"]
+[ext_resource type="AudioStream" uid="uid://dmjel1d8n14nq" path="res://sounds/env/campfire.ogg" id="5_qg5el"]
+[ext_resource type="AudioStream" uid="uid://103e8v0at8hd" path="res://sounds/common/passCheckpoint.ogg" id="6_1he1j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8wkao"]
+atlas = ExtResource("2_jkcg4")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mole"]
+atlas = ExtResource("2_jkcg4")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rgrtf"]
+atlas = ExtResource("2_jkcg4")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f2ipv"]
+atlas = ExtResource("2_jkcg4")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k5iii"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8wkao")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mole")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rgrtf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f2ipv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_btkcq"]
+radius = 21.0238
+
+[node name="Checkpoint" type="Area2D"]
+process_priority = -1
+process_physics_priority = -4
+script = ExtResource("1_ihm5l")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+rotation = -2.45849e-05
+energy = 1.75
+shadow_enabled = true
+shadow_color = Color(0.166853, 0.166853, 0.166853, 0)
+texture = ExtResource("2_7no74")
+texture_scale = 2.5
+
+[node name="Bonfire" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_k5iii")
+autoplay = "default"
+frame_progress = 0.683268
+
+[node name="Unlit" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-2, 2)
+scale = Vector2(0.2, 0.18)
+texture = ExtResource("4_7no74")
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 4)
+shape = SubResource("CircleShape2D_btkcq")
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_qg5el")
+autoplay = true
+max_distance = 15000.0
+bus = &"SFX"
+playback_type = 1
+parameters/looping = true
+
+[node name="PassCheckpoint" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_1he1j")
+bus = &"SFX"
+playback_type = 1
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+process_thread_group = 2
+process_thread_group_order = 1
+process_thread_messages = 2
+position = Vector2(-1, 3.5)
+scale = Vector2(1.3, 1.35)

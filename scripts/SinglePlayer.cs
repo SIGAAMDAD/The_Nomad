@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Godot;
 
 public partial class SinglePlayer : Node2D {
@@ -9,6 +8,10 @@ public partial class SinglePlayer : Node2D {
 
 	[Export]
 	public Node2D LevelData = null;
+
+//	public ThinkerPoolManager GetThinkerPool() {
+//		return ThinkerPool;
+//	}
 	
 	public void ToggleHellbreaker() {
 		LevelData.Hide();
@@ -18,6 +21,7 @@ public partial class SinglePlayer : Node2D {
 		LevelData.SetPhysicsProcess( false );
 		LevelData.SetProcessUnhandledInput( false );
 
+		Hellbreaker = ResourceLoader.Load<PackedScene>( "res://levels/hellbreaker" ).Instantiate<Node2D>();
 		Hellbreaker.Show();
 		Hellbreaker.SetProcess( true );
 		Hellbreaker.SetProcessInput( true );
@@ -37,6 +41,7 @@ public partial class SinglePlayer : Node2D {
 
 	public override void _Ready() {
 		GetTree().CurrentScene = this;
+		
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			Player1.SetupSplitScreen( 0 );
 		}
@@ -47,16 +52,12 @@ public partial class SinglePlayer : Node2D {
 //		);
 
 		MobSfxCache.Instance.Cache();
-		Control SettingsData = GetNode<Control>( "/root/SettingsData" );
-		if ( (bool)SettingsData.Get( "_hellbreaker" ) ) {
-			Hellbreaker = ResourceLoader.Load<PackedScene>( "res://levels/hellbreaker.tscn" ).Instantiate<Node2D>();
 
-			Hellbreaker.Hide();
-			Hellbreaker.SetProcess( false );
-			Hellbreaker.SetProcessInput( false );
-			Hellbreaker.SetProcessInternal( false );
-			Hellbreaker.SetPhysicsProcess( false );
-			Hellbreaker.SetProcessUnhandledInput( false );
+//		ThinkerPool = new ThinkerPoolManager();
+		
+		NavigationRegion2D NavMesh = GetNode<NavigationRegion2D>( "Level/OpposingForce/NavigationRegion2D" );
+		for ( int i = 0; i < NavMesh.GetChildCount(); i++ ) {
+//			ThinkerPool.AddThinker( (MobBase)NavMesh.GetChild( i ) );
 		}
 	}
 };

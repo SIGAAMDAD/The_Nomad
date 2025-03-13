@@ -30,8 +30,8 @@ public partial class TitleMenu : Control {
 		switch ( State ) {
 		case MenuState.Campaign:
 			CampaignMenu.Hide();
-			SaveSlotSelect.Hide();
-			DifficultySelect.Hide();
+//			SaveSlotSelect.Hide();
+//			DifficultySelect.Hide();
 			break;
 		case MenuState.Multiplayer:
 			MultiplayerMenu.Hide();
@@ -53,7 +53,7 @@ public partial class TitleMenu : Control {
 	private void OnMainMenuCampaignMenu() {
 		MainMenu.Hide();
 		CampaignMenu.Show();
-		SaveSlotSelect.Show();
+//		SaveSlotSelect.Show();
 		ExitButton.Show();
 		State = MenuState.Campaign;
 	}
@@ -84,8 +84,8 @@ public partial class TitleMenu : Control {
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
-		SaveSlotSelect = GetNode<Control>( "CampaignMenu/SaveSlotSelect" );
-		DifficultySelect = GetNode<Control>( "CampaignMenu/DifficultySelect" );
+//		SaveSlotSelect = GetNode<Control>( "CampaignMenu/SaveSlotSelect" );
+//		DifficultySelect = GetNode<Control>( "CampaignMenu/DifficultySelect" );
 
 		LobbyBrowser = GetNode<Control>( "MultiplayerMenu/LobbyBrowser" );
 		LobbyFactory = GetNode<Control>( "MultiplayerMenu/LobbyFactory" );

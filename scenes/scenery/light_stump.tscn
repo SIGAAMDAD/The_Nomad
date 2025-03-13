@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://ydsshybuc61o"]
+
+[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="1_5lvv7"]
+[ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="2_l75wd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5lvv7"]
+radius = 8.0
+
+[node name="LightStump" type="Sprite2D"]
+z_index = 4
+texture = ExtResource("1_5lvv7")
+hframes = 19
+vframes = 19
+frame = 259
+
+[node name="Latern0" parent="." instance=ExtResource("2_l75wd")]
+z_index = 4
+position = Vector2(-1, -6)
+scale = Vector2(0.229817, 0.171807)
+frame_progress = 0.0446251
+
+[node name="StaticBody2D" type="RigidBody2D" parent="."]
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_5lvv7")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

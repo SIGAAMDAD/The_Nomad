@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ckd1626alq2ej" path="res://textures/spritesheets/weapon_baller.png" id="1_wkt3x"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_y2xaq"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6hom"]
 atlas = ExtResource("1_wkt3x")
 region = Rect2(448, 0, 64, 32)
 
@@ -10,7 +10,7 @@ region = Rect2(448, 0, 64, 32)
 atlas = ExtResource("1_wkt3x")
 region = Rect2(448, 128, 64, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_yssi8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_song5"]
 atlas = ExtResource("1_wkt3x")
 region = Rect2(0, 0, 64, 32)
 
@@ -158,7 +158,7 @@ region = Rect2(448, 128, 64, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_y2xaq")
+"texture": SubResource("AtlasTexture_f6hom")
 }],
 "loop": true,
 "name": &"empty",
@@ -174,7 +174,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_yssi8")
+"texture": SubResource("AtlasTexture_song5")
 }],
 "loop": true,
 "name": &"idle",

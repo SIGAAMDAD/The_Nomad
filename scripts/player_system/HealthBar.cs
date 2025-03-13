@@ -21,6 +21,9 @@ namespace PlayerSystem {
 		}
 
 		public void Init( float nHealth ) {
+			Timer = GetNode<Timer>( "Timer" );
+			DamageBar = GetNode<ProgressBar>( "DamageBar" );
+
 			MaxValue = nHealth;
 			Value = nHealth;
 			DamageBar.MaxValue = nHealth;

@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3 uid="uid://bh3dqangoe8i2"]
+
+[ext_resource type="Script" uid="uid://dtapy2t46odlx" path="res://scripts/interactables/ActionTutorial.cs" id="1_fy36v"]
+[ext_resource type="Texture2D" uid="uid://b4jdovv5ktxb5" path="res://textures/tilesets/desert/decor_3.png" id="2_ur08t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bsglu"]
+size = Vector2(91.5, 67)
+
+[sub_resource type="Gradient" id="Gradient_qw384"]
+offsets = PackedFloat32Array(0.00347222)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_41gtw"]
+gradient = SubResource("Gradient_qw384")
+
+[node name="ActionTutorial" type="Area2D"]
+z_index = 5
+script = ExtResource("1_fy36v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 7.62939e-06)
+scale = Vector2(0.210526, 0.23913)
+texture = ExtResource("2_ur08t")
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_bsglu")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+z_index = 5
+offset_left = -128.0
+offset_top = -87.0
+offset_right = 128.0
+offset_bottom = -26.0
+texture = SubResource("GradientTexture1D_41gtw")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+z_index = 5
+offset_left = -128.0
+offset_top = -87.0
+offset_right = 128.0
+offset_bottom = -26.0
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(-0.5, -0.999999)
+scale = Vector2(1.35, 1.4)

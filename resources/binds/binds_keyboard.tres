@@ -282,7 +282,7 @@ script = ExtResource("1_7co6v")
 action = ExtResource("17_22eqk")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_lllj1")])
 
-[sub_resource type="Resource" id="Resource_5yqmb"]
+[sub_resource type="Resource" id="Resource_g8r37"]
 script = ExtResource("20_yudlm")
 mouse_buttons = false
 mouse_movement = false
@@ -293,20 +293,20 @@ touch = false
 mouse = false
 joy = true
 
-[sub_resource type="Resource" id="Resource_bpwu1"]
+[sub_resource type="Resource" id="Resource_8akdl"]
 script = ExtResource("3_w7imu")
 override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_5yqmb")
+input = SubResource("Resource_g8r37")
 modifiers = Array[ExtResource("5_jakow")]([])
 triggers = Array[ExtResource("9_ydc30")]([])
 
 [sub_resource type="Resource" id="Resource_7aj8t"]
 script = ExtResource("1_7co6v")
 action = ExtResource("19_n2nwk")
-input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_bpwu1")])
+input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_8akdl")])
 
 [sub_resource type="Resource" id="Resource_bo6vf"]
 script = ExtResource("18_836tg")

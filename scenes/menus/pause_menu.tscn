@@ -65,16 +65,27 @@ theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_GAME_BUTTON"
 alignment = 0
 
+[node name="ColorRect2" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_5wyai")
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ConfirmExit" type="ConfirmationDialog" parent="."]
 title = "Warning!"
-position = Vector2i(420, 190)
+position = Vector2i(220, 180)
 size = Vector2i(200, 158)
 dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
 dialog_autowrap = true
 
 [node name="ConfirmQuit" type="ConfirmationDialog" parent="."]
 title = "Quit Game?"
-position = Vector2i(420, 190)
+position = Vector2i(220, 180)
 dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
 dialog_autowrap = true
 

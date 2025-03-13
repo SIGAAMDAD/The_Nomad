@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cg1afgoakl3f3"]
+
+[ext_resource type="Texture2D" uid="uid://b84ku6a8tdc60" path="res://textures/env/BigTreasureChest.png" id="1_lndgn"]
+[ext_resource type="Script" uid="uid://2o80m3mthp8i" path="res://scripts/interactables/TreasureChest.cs" id="2_lndgn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lndgn"]
+size = Vector2(57, 47)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fm1cr"]
+size = Vector2(32, 24)
+
+[node name="TreasureChest" type="Area2D"]
+
+[node name="TreasureChest" type="Sprite2D" parent="."]
+z_index = 4
+scale = Vector2(2, 2)
+texture = ExtResource("1_lndgn")
+hframes = 2
+script = ExtResource("2_lndgn")
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+position = Vector2(0, 12)
+shape = SubResource("RectangleShape2D_lndgn")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_fm1cr")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

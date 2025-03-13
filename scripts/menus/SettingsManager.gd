@@ -109,7 +109,7 @@ func save_audio_settings( file: FileAccess ) -> void:
 
 func load_video_settings( file: FileAccess ) -> void:
 #	_resolution = file.get_32()
-	_window_mode = file.get_32()
+	_window_mode = file.get_16()
 	_max_fps = file.get_16()
 	_shadow_quality = file.get_8()
 	_antialiasing = file.get_8()
@@ -117,7 +117,7 @@ func load_video_settings( file: FileAccess ) -> void:
 
 func save_video_settings( file: FileAccess ) -> void:
 #	file.store_32( _resolution )
-	file.store_32( _window_mode )
+	file.store_16( _window_mode )
 	file.store_16( _max_fps )
 	file.store_8( _shadow_quality )
 	file.store_8( _antialiasing )

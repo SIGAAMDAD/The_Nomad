@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Linq;
 using Godot;
 
@@ -136,6 +137,9 @@ public partial class WeaponEntity : Node2D {
 		if ( Reserve != null ) {
 			Reserve.QueueFree();
 		}
+		if ( RayCast != null ) {
+			RayCast.QueueFree();
+		}
 		if ( MuzzleFlashes.Count > 0 ) {
 			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
 				MuzzleFlashes[i].QueueFree();
@@ -151,21 +155,37 @@ public partial class WeaponEntity : Node2D {
 		if ( PickupArea != null ) {
 			PickupArea.QueueFree();
 		}
-
-		UseBladedSfx.QueueFree();
-		UseBluntSfx.QueueFree();
-		UseFirearmSfx.QueueFree();
+		if ( UseBladedSfx != null ) {
+			UseBladedSfx.QueueFree();
+		}
+		if ( UseBluntSfx != null ) {
+			UseBluntSfx.QueueFree();
+		}
+		if ( UseFirearmSfx != null ) {
+			UseFirearmSfx.QueueFree();
+		}
 
 		IconSprite.QueueFree();
-		RayCast.QueueFree();
 		UseTime.QueueFree();
 	}
 
+	public void SetOwner( Player player ) {
+		_Owner = player;
+	}
+	public WeaponState GetWeaponState() {
+		return CurrentState;
+	}
+	public void SetWeaponState( WeaponState state ) {
+		CurrentState = state;
+	}
     public AmmoStack GetReserve() {
 		return Reserve;
 	}
 	public int GetBulletCount() {
 		return BulletsLeft;
+	}
+	public void SetBulletCount( int nBullets ) {
+		BulletsLeft = nBullets;
 	}
 	public Texture2D GetIcon() {
 		return Icon;
@@ -200,7 +220,12 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
-		IconSprite.QueueFree();
+		if ( _Owner != null ) {
+			return;
+		}
+		if ( IconSprite != null ) {
+			IconSprite.QueueFree();
+		}
 
 		ReleasePickupArea();
 
@@ -254,7 +279,9 @@ public partial class WeaponEntity : Node2D {
 			BladedFramesLeft = (SpriteFrames)properties[ "bladed_frames_left" ];
 			BladedFramesRight = (SpriteFrames)properties[ "bladed_frames_right" ];
 
+			UseBladedSfx = new AudioStreamPlayer2D();
 			UseBladedSfx.Stream = (AudioStream)properties[ "use_bladed" ];
+			AddChild( UseBladedSfx );
 		}
 		if ( (bool)properties[ "is_blunt" ] ) {
 			PropertyBits |= Properties.IsBlunt;
@@ -263,14 +290,14 @@ public partial class WeaponEntity : Node2D {
 			BluntFramesLeft = (SpriteFrames)properties[ "blunt_frames_left" ];
 			BluntFramesRight = (SpriteFrames)properties[ "blunt_frames_right" ];
 
+			UseBluntSfx = new AudioStreamPlayer2D();
 			UseBluntSfx.Stream = (AudioStream)properties[ "use_blunt" ];
+			AddChild( UseBluntSfx );
 		}
 		if ( (bool)properties[ "is_firearm" ] ) {
 			PropertyBits |= Properties.IsFirearm;
 			FirearmFramesLeft = (SpriteFrames)properties[ "firearm_frames_left" ];
 			FirearmFramesRight = (SpriteFrames)properties[ "firearm_frames_right" ];
-
-			UseFirearmSfx.Stream = (AudioStream)properties[ "use_firearm" ];
 
 			// only allocate muzzle flash sprites if we actually need them
 			MuzzleFlashes = new System.Collections.Generic.List<Sprite2D>();
@@ -317,6 +344,15 @@ public partial class WeaponEntity : Node2D {
 			NoAmmoSound = new AudioStreamPlayer2D();
 			NoAmmoSound.Stream = ResourceLoader.Load<AudioStream>( "res://sounds/weapons/noammo.wav" );
 			AddChild( NoAmmoSound );
+
+			UseFirearmSfx = new AudioStreamPlayer2D();
+			UseFirearmSfx.Stream = (AudioStream)properties[ "use_firearm" ];
+			AddChild( UseFirearmSfx );
+
+			RayCast = new RayCast2D();
+			RayCast.Enabled = true;
+			RayCast.TargetPosition = Godot.Vector2.Zero;
+			AddChild( RayCast );
 		}
 
 		if ( (bool)properties[ "default_is_onehanded" ] ) {
@@ -352,23 +388,23 @@ public partial class WeaponEntity : Node2D {
 			return;
 		}
 
-		RayCast = GetNode<RayCast2D>( "RayCast2D" );
-		Animations = GetNode<AnimatedSprite2D>( "Animations/AnimatedSprite2D" );
-		UseTime = GetNode<Timer>( "UseTime" );
-		UseTime.WaitTime = (float)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "use_time" ];
-		UseTime.Connect( "timeout", Callable.From( OnUseTimeTimeout ) );
+		Animations = new AnimatedSprite2D();
+		AddChild( Animations );
 
-		UseBladedSfx = GetNode<AudioStreamPlayer2D>( "UseBladed" );
-		UseBluntSfx = GetNode<AudioStreamPlayer2D>( "UseBlunt" );
-		UseFirearmSfx = GetNode<AudioStreamPlayer2D>( "UseFirearm" );
+		UseTime = new Timer();
+		UseTime.WaitTime = (float)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "use_time" ];
+		UseTime.OneShot = true;
+		UseTime.Connect( "timeout", Callable.From( OnUseTimeTimeout ) );
+		AddChild( UseTime );
 
 		InitProperties();
 		CreatePickupBounds();
 
-		IconSprite = GetNode<Sprite2D>( "Icon" );
-		IconSprite.Texture = Icon;
-
-		_Owner = null;
+		if ( _Owner == null ) {
+			IconSprite = new Sprite2D();
+			IconSprite.Texture = Icon;
+			AddChild( IconSprite );
+		}
 
 		BulletShell = ResourceLoader.Load<PackedScene>( "res://scenes/effects/bullet_shell.tscn" );
 		DustCloud = ResourceLoader.Load<PackedScene>( "res://scenes/effects/debris_cloud.tscn" );
@@ -388,11 +424,9 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 
-	public void Save( FileAccess file ) {
-
+	public void Save() {
 	}
-	public void Load( FileAccess file ) {
-
+	public void Load() {
 	}
 
 	private float UseBladed() {
@@ -566,7 +600,6 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnReloadTimeTimeout() {
-		GD.Print( "Weapon reloaded" );
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );
 		if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
 			if ( _Owner.GetLastUsedArm() == _Owner.GetLeftArm() ) {

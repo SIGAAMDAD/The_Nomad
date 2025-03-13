@@ -32,15 +32,19 @@ public partial class AmmoEntity : Node2D {
 
 		PickupSfx.Play();
 
-		RemoveChild( PickupSfx );
-		PickupSfx.QueueFree();
 		IconSprite.QueueFree();
 
+		PickupArea.CallDeferred( "remove_child", PickupArea.GetChild( 0 ) );
+		PickupArea.GetChild( 0 ).CallDeferred( "queue_free" );
 		PickupArea.CallDeferred( "queue_free" );
 		CallDeferred( "remove_child", PickupArea );
 
 		CallDeferred( "reparent", body );
 		( (Player)body ).PickupAmmo( this );
+	}
+	private void OnPickupSfxFinished() {
+		RemoveChild( PickupSfx );
+		PickupSfx.QueueFree();
 	}
 
 	public override void _Ready() {
@@ -57,6 +61,7 @@ public partial class AmmoEntity : Node2D {
 		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnPickupArea2DBodyShapeEntered ) );
 
 		PickupSfx = GetNode<AudioStreamPlayer2D>( "PickupSfx" );
+		PickupSfx.Connect( "finished", Callable.From( OnPickupSfxFinished ) );
 		PickupSfx.Stream = (AudioStream)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "pickup_sfx" ];
 	}
 };

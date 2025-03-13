@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://udm1pfg83jk1"]
+[gd_scene load_steps=3 format=3 uid="uid://udm1pfg83jk1"]
 
 [ext_resource type="Script" uid="uid://p4s53hebw0xq" path="res://scripts/menus/CampaignMenu.cs" id="1_b1iin"]
-[ext_resource type="PackedScene" uid="uid://dodqhbm63d3ot" path="res://scenes/menus/save_slot_select.tscn" id="2_1oo8l"]
-[ext_resource type="PackedScene" uid="uid://b7bc5y8xsmbqd" path="res://scenes/menus/difficulty_select.tscn" id="3_p0crb"]
+[ext_resource type="Texture2D" uid="uid://bkv5cpn5c6lpj" path="res://textures/playBackground.dds" id="2_rajmd"]
 
 [node name="CampaignMenu" type="Control"]
 layout_mode = 3
@@ -13,9 +12,50 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_b1iin")
 
-[node name="DifficultySelect" parent="." instance=ExtResource("3_p0crb")]
-visible = false
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_rajmd")
+expand_mode = 2
 
-[node name="SaveSlotSelect" parent="." instance=ExtResource("2_1oo8l")]
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 2
+offset_right = 200.0
+offset_bottom = 23.0
+scale = Vector2(2.18084, 2.2329)
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+text = "CAMPAIGN_TITLE"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
+offset_top = 50.0
+offset_right = 40.0
+offset_bottom = 90.0
+
+[node name="IntendedModeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "INTENDED_MODE_NAME"
+
+[node name="PowerFantasyModeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "POWER_FANTASY_MODE_NAME"
+
+[node name="MemeModeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "MEME_MODE_NAME"
+
+[node name="DifficultyDescriptionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_right = 900.0
+offset_bottom = 11.5
+grow_vertical = 2
+scale = Vector2(0.698764, 0.628825)
+autowrap_mode = 2

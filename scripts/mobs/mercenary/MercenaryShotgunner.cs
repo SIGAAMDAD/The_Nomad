@@ -2,9 +2,6 @@ using Godot;
 using MountainGoap;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System;
-using System.Linq.Expressions;
-
 
 // TODO: make alertness change based on target renown traits
 public partial class MercenaryShotgunner : MobBase {
@@ -15,6 +12,11 @@ public partial class MercenaryShotgunner : MobBase {
 	private Line2D ShootLine;
 	private AudioStreamPlayer2D HealSfx;
 	private AudioStream AimSfx;
+
+	public void Save() {
+	}
+	public void Load() {
+	}
 	
 	protected override void OnLoseInterestTimerTimeout() {
 		float fear = (float)Agent.State[ "Fear" ];
@@ -24,16 +26,16 @@ public partial class MercenaryShotgunner : MobBase {
 		Agent.State[ "Fear" ] = fear;
 		
 		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
-			Blackboard.SetAwareness( Awareness.Relaxed );
+			Agent.State[ "Awarensss" ] = Awareness.Relaxed;
 		}
 		// if we're not in power fantasy mode, the ai won't just shrug it off
 		
 		// SightTarget can ONLY EVER be assigned null here
 		SightTarget = null;
-		Navigation.TargetPosition = Blackboard.GetGuardPosition();
+		Navigation.TargetPosition = (Godot.Vector2)Agent.State[ "GuardPosition" ];
 		Agent.State[ "TargetReached" ] = false;
 		Agent.State[ "TargetDistance" ] = GlobalPosition.DistanceTo( Blackboard.GetGuardPosition() );
-		Blackboard.SetInvestigating( false );
+		Agent.State[ "Investigating" ] = false;
 	}
 	private void OnSoundBoundsBodyAreaEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
@@ -46,18 +48,18 @@ public partial class MercenaryShotgunner : MobBase {
 		soundLevel -= GlobalPosition.DistanceTo( body.GlobalPosition );
 		if ( soundLevel >= SoundDetectionLevel / 2.0f ) {
 			Blackboard.SetAwareness( Awareness.Suspicious );
-			Bark.Stream = MobSfxCache.Confusion[ RandomFactory.RandiRange( 0, MobSfxCache.Confusion.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
 			Bark.Play();
 		} else if ( soundLevel >= SoundDetectionLevel ) {
 			Blackboard.SetAwareness( Awareness.Alert );
-			Bark.Stream = MobSfxCache.Alert[ RandomFactory.RandiRange( 0, MobSfxCache.Alert.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.Alert[ RandomFactory.Next( 0, MobSfxCache.Alert.Count - 1 ) ];
 			Bark.Play();
 		}
 	}
 	
 	private void OnTargetMoveTimerTimeout() {
 		// "target's pinned!"
-		Bark.Stream = MobSfxCache.TargetPinned[ RandomFactory.RandiRange( 0, MobSfxCache.TargetPinned.Count - 1 ) ];
+		Bark.Stream = MobSfxCache.TargetPinned[ RandomFactory.Next( 0, MobSfxCache.TargetPinned.Count - 1 ) ];
 		Bark.Play();
 	}
 
@@ -72,7 +74,6 @@ public partial class MercenaryShotgunner : MobBase {
 		TargetMovedTimer.Connect( "timeout", Callable.From( OnTargetMoveTimerTimeout ) );
 
 		Navigation.Connect( "target_reached", Callable.From( OnTargetReached ) );
-		SoundBounds.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundBoundsBodyAreaEntered ) );
 
 		List<BaseGoal> goals = new List<BaseGoal>{
 			new ExtremeGoal(
@@ -249,7 +250,7 @@ public partial class MercenaryShotgunner : MobBase {
 				executor: ( Agent agent, MountainGoap.Action action ) => {
 					if ( !(bool)agent.State[ "CanSeeTarget" ] ) {
 						if ( ChangeInvestigateAngleTimer.IsStopped() ) {
-							if ( (bool)agent.State[ "Scared" ] ) {
+							if ( (float)agent.State[ "Fear" ] > 80.0f ) {
 								// if we're scared, more JIGGLE
 								ChangeInvestigateAngleTimer.WaitTime = 1.0f;
 							}
@@ -260,23 +261,23 @@ public partial class MercenaryShotgunner : MobBase {
 						if ( LoseInterestTimer.IsStopped() ) {
 							// we can't see them, so begin the interest timer
 							LoseInterestTimer.Start();
-						} else if ( !Blackboard.GetInvestigating() ) {
+						} else if ( !(bool)agent.State[ "Investigating" ] ) {
 							return ExecutionStatus.Failed;
 						}
 					}
 					else {
 						if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 0 ) { 
 							// FIXME: is this too harsh?
-							Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.RandiRange( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+							Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
 							Bark.Play();
-							Blackboard.SetTarget( SightTarget );
+							agent.State[ "Target" ] = SightTarget;
 							agent.PlanAsync();
 							return ExecutionStatus.Succeeded;
 						} else {
-							Bark.Stream = MobSfxCache.Confusion[ RandomFactory.RandiRange( 0, MobSfxCache.Confusion.Count - 1 ) ];
+							Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
 							Bark.Play();
 							
-							Blackboard.SetLastTargetPosition( SightTarget.GlobalPosition );
+							agent.State[ "LastTargetPosition" ] = SightTarget.GlobalPosition;
 						}
 					}
 					return ExecutionStatus.Executing;
@@ -300,7 +301,7 @@ public partial class MercenaryShotgunner : MobBase {
 				name: "RunAway",
 				null,
 				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( GlobalPosition == (Godot.Vector2)agent.State[ "TargetPosition" ] ) {
+					if ( GlobalPosition == (Godot.Vector2)agent.State[ "GotoPosition" ] ) {
 						return ExecutionStatus.Succeeded;
 					}
 					Action_GotoNode( agent, action );
@@ -320,9 +321,6 @@ public partial class MercenaryShotgunner : MobBase {
 		List<Sensor> sensors = new List<Sensor>{
 			new Sensor(
 				runCallback: ( Agent agent ) => {
-					if ( (float)agent.State[ "Fear" ] > 80.0f ) {
-						agent.State[ "Scared" ] = true;
-					}
 				},
 				name: "Scared"
 			),
@@ -356,7 +354,8 @@ public partial class MercenaryShotgunner : MobBase {
 				{ "Scared", false },
 				{ "CanSeeTarget", false },
 				{ "Stims", 2 },
-				{ "SightPosition", Godot.Vector2.Zero }
+				{ "SightPosition", Godot.Vector2.Zero },
+				{ "Awareness", Awareness.Relaxed }
 			},
 			null,
 			goals,
@@ -367,7 +366,7 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 
 	private void SetDetectionColor() {
-		Awareness alertState = Blackboard.GetAwareness();
+		Awareness alertState = (Awareness)Agent.State[ "Awareness" ];
 		
 		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
 			// allow relaxation if we're in a power fantasy
@@ -412,8 +411,8 @@ public partial class MercenaryShotgunner : MobBase {
 			break;
 		};
 
-		DetectionMeter.DefaultColor = DetectionColor;
-		Blackboard.SetAwareness( alertState );
+		DetectionMeter.SetDeferred( "default_color", DetectionColor );
+		Agent.State[ "Awareness" ] = alertState;
 	}
 	
 #region API
@@ -426,7 +425,6 @@ public partial class MercenaryShotgunner : MobBase {
 		DetectionMeter.QueueFree();
 		LoseInterestTimer.QueueFree();
 		Navigation.QueueFree();
-		SoundBounds.QueueFree();
 		ThinkerTimer.QueueFree();
 		Bark.QueueFree();
 		
@@ -457,27 +455,29 @@ public partial class MercenaryShotgunner : MobBase {
 		base._PhysicsProcess( delta );
 
 		if ( SightTarget != null ) {
-			Navigation.TargetPosition = SightTarget.GlobalPosition;
-			NextPathPosition = Navigation.GetNextPathPosition();
 			MoveAlongPath();
+			Navigation.TargetPosition = SightTarget.GlobalPosition;
 		}
 	}
-    public override void _Process( double delta ) {
-		base._Process( delta );
+	public override void Think( float delta ) {
+		ProcessAnimations();
 
-		if ( (float)Agent.State[ "Fear" ] >= 80.0f ) {
-			Bark.Stream = MobSfxCache.Curse[ RandomFactory.RandiRange( 0, MobSfxCache.Curse.Count - 1 ) ];
-			Bark.Play();
-		}
+//		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
+//		Agent.State[ "HasTarget" ] = Blackboard.GetTarget() != null;
+//		Agent.State[ "Fear" ] = Blackboard.GetFear();
+//		Agent.State[ "SightPosition" ] = Blackboard.GetSightPosition();
+//		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
+//		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
+
 		Agent.Step();
 	}
 #endregion
 
 #region Actions
 	public ExecutionStatus Action_CheckForTargets( Agent agent, MountainGoap.Action action ) {
-		if ( (bool)agent.State[ "HasTarget" ] ) {
-			return ExecutionStatus.Succeeded;
-		}
+//		if ( (CharacterBody2D)agent.State[ "Target" ] != null ) {
+//			return ExecutionStatus.Succeeded;
+//		}
 		return ExecutionStatus.Executing;
 	}
 	private ExecutionStatus Action_BlindFire( Agent agent, MountainGoap.Action action ) {
@@ -493,7 +493,7 @@ public partial class MercenaryShotgunner : MobBase {
 			ActionSfx.Stream = AimSfx;
 			ActionSfx.Play();
 			
-			ShootLine.Points[1] = Blackboard.GetLastTargetPosition();
+			ShootLine.Points[1] = (Godot.Vector2)agent.State[ "LastTargetPosition" ];
 			ShootLine.Width = 0.0f;
 			ShootLine.Show();
 		}
@@ -501,7 +501,7 @@ public partial class MercenaryShotgunner : MobBase {
 			// can't see the target, don't waste ammunition
 			
 			// "he's running away!"
-			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.RandiRange( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.Next( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
 			Bark.Play();
 			
 			ShootLine.Hide();
@@ -532,7 +532,7 @@ public partial class MercenaryShotgunner : MobBase {
 			return ExecutionStatus.Succeeded;
 		} else if ( collider is MobBase ) {
 			// "GET OUT OF THE WAY!"
-			Bark.Stream = MobSfxCache.OutOfTheWay[ RandomFactory.RandiRange( 0, MobSfxCache.OutOfTheWay.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.OutOfTheWay[ RandomFactory.Next( 0, MobSfxCache.OutOfTheWay.Count - 1 ) ];
 			Bark.Play();
 		}
 		return ExecutionStatus.Failed;
@@ -543,37 +543,32 @@ public partial class MercenaryShotgunner : MobBase {
 	private void SetAlert( bool bRunning ) {
 		if ( bRunning ) {
 			// "He's getting away!"
-			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.RandiRange( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.Next( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
 		} else {
 			// "there he is!'
-			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.RandiRange( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
 		}
 		Bark.Play();
 		
-		if ( (bool)Agent.State[ "Scared" ] ) {
+		if ( (float)Agent.State[ "Fear" ] > 80.0f ) {
 			// "shut the fuck up"
-//			SequencedBark.Stream = MobSfxCache.Quiet[ RandomFactory.RandiRange( 0, MobSfxCache.Quiet.Count - 1 ) ];
+//			SequencedBark.Stream = MobSfxCache.Quiet[ RandomFactory.Next( 0, MobSfxCache.Quiet.Count - 1 ) ];
 		}
-		Agent.State[ "HasTarget" ] = true;
-		Blackboard.SetTarget( SightTarget );
+		Agent.State[ "Target" ] = SightTarget;
 	}
 	private void SetSuspicious() {
 		// "what was that?"
 //		AISoundManager.RequestAISound( this, BarkType.Confusion );
-		Bark.Stream = MobSfxCache.Confusion[ RandomFactory.RandiRange( 0, MobSfxCache.Confusion.Count - 1 ) ];
+		Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
 		Bark.Play();
 		
-		SequencedBark.Stream = MobSfxCache.CheckItOut[ RandomFactory.RandiRange( 0, MobSfxCache.CheckItOut.Count - 1 ) ];
+		SequencedBark.Stream = MobSfxCache.CheckItOut[ RandomFactory.Next( 0, MobSfxCache.CheckItOut.Count - 1 ) ];
 		
 		Agent.State[ "TargetReached" ] = false;
 		Agent.State[ "TargetDistance" ] = GlobalPosition.DistanceTo( Blackboard.GetLastTargetPosition() );
 	}
 	
 	private bool Investigate( GodotObject sightTarget ) {
-		if ( !Blackboard.GetInvestigating() ) {
-			return false;
-		}
-		
 		if ( sightTarget != null ) {
 			// if we're running power fantasy mode, don't be as harsh
 			if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
@@ -589,15 +584,17 @@ public partial class MercenaryShotgunner : MobBase {
 			SightDetectionAmount -= SightDetectionSpeed * (float)GetProcessDeltaTime();
 		}
 		SetDetectionColor();
+
+		if ( IsAlert() ) {
+			SetAlert( sightTarget == null );
+		} else if ( IsSuspicious() ) {
+			SetSuspicious();
+		}
 		
 		return true;
 	}
 	
 	private void Sensor_Sight( Agent agent ) {
-		if ( GlobalPosition != (Godot.Vector2)agent.State[ "SightPosition" ] ) {
-			RecalcSight();
-		}
-		
 		GodotObject sightTarget = null;
 		for ( int i = 0; i < SightLines.Count; i++ ) {
 			sightTarget = SightLines[i].GetCollider();
@@ -613,7 +610,7 @@ public partial class MercenaryShotgunner : MobBase {
 			Grenade data = (Grenade)sightTarget;
 			if ( data.GlobalPosition.DistanceTo( GlobalPosition ) < data.GetRange() ) {
 				// "grenade!"
-				Bark.Stream = MobSfxCache.Grenade[ RandomFactory.RandiRange( 0, MobSfxCache.Grenade.Count - 1 ) ];
+				Bark.Stream = MobSfxCache.Grenade[ RandomFactory.Next( 0, MobSfxCache.Grenade.Count - 1 ) ];
 				Bark.Play();
 				
 				if ( !(bool)agent.State[ "InCover" ] ) {
@@ -626,13 +623,13 @@ public partial class MercenaryShotgunner : MobBase {
 		*/
 		
 		if ( Investigate( sightTarget ) ) {
-			return;
+//			return;
 		}
 		
 		// we got something, but they slipped out of view
-		if ( SightDetectionAmount > 0.0f && SightTarget != null && sightTarget == null ) {
+		if ( SightDetectionAmount > 0.0f && sightTarget == null ) {
 			// we still have some suspicion
-			switch ( Blackboard.GetAwareness() ) {
+			switch ( (Awareness)agent.State[ "Awareness" ] ) {
 			case Awareness.Relaxed:
 				// "must be nothing"
 				if ( sightTarget == null ) {
@@ -653,14 +650,14 @@ public partial class MercenaryShotgunner : MobBase {
 			
 			// replan
 			agent.PlanAsync();
-			
+
 			return;
 		}
 		
 		SightTarget = (CharacterBody2D)sightTarget;
 		if ( sightTarget is Player ) {
 			if ( sightTarget != null ) {
-				Blackboard.SetLastTargetPosition( SightTarget.GlobalPosition );
+				agent.State[ "LastTargetPosition" ] = SightTarget.GlobalPosition;
 			}
 			SightDetectionAmount += SightDetectionSpeed * (float)GetProcessDeltaTime();
 			
@@ -679,7 +676,7 @@ public partial class MercenaryShotgunner : MobBase {
 			
 			// corpse?
 			if ( IsDeadAI( SightTarget ) && !Blackboard.GetSeenBodies().Contains( mob ) ) {
-				float fear = (float)agent.State[ "Fear" ];
+				float fear = Blackboard.GetFear();
 				fear += 10.0f;
 				
 				if ( Blackboard.GetAwareness() == Awareness.Relaxed ) {
@@ -689,7 +686,7 @@ public partial class MercenaryShotgunner : MobBase {
 				}
 				
 				Blackboard.SetAwareness( Awareness.Alert );
-				agent.State[ "Fear" ] = fear;
+				Blackboard.SetFear( fear );
 				
 				int nBodyCount = Blackboard.GetBodyCount();
 				Blackboard.AddSeenBody( mob );
@@ -700,31 +697,31 @@ public partial class MercenaryShotgunner : MobBase {
 						Bark.Stream = MobSfxCache.SquadWiped;
 					} else {
 						// "I need backup now!"
-						Bark.Stream = MobSfxCache.NeedBackup;
+						Bark.Stream = MobSfxCache.NeedBackup[ RandomFactory.Next( 0, MobSfxCache.NeedBackup.Count - 1 ) ];
 					}
 					
 					float nAmount = 20.0f;
 					if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
 						nAmount = 70.0f;
 					}
-					if ( RandomFactory.RandfRange( 0.0f, 100.0f ) < nAmount ) {
+					if ( Randf( 0.0f, 100.0f ) < nAmount ) {
 						SequencedBark.Stream = MobSfxCache.Unstoppable;
 					}
 				}
 				else if ( nBodyCount == 2 ) {
 					// "I've got two men down!"
 					Bark.Stream = MobSfxCache.ManDown2;
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.RandiRange( 0, MobSfxCache.Curse.Count - 1 ) ];
+					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
 				}
 				else if ( nBodyCount == 3 ) {
 					// "I've got three men down!"
 					Bark.Stream = MobSfxCache.ManDown3;
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.RandiRange( 0, MobSfxCache.Curse.Count - 1 ) ];
+					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
 				}
 				else {
 					// "MAN DOWN!"
-					Bark.Stream = MobSfxCache.ManDown[ RandomFactory.RandiRange( 0, MobSfxCache.ManDown.Count - 1 ) ];
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.RandiRange( 0, MobSfxCache.Curse.Count - 1 ) ];
+					Bark.Stream = MobSfxCache.ManDown[ RandomFactory.Next( 0, MobSfxCache.ManDown.Count - 1 ) ];
+					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
 				}
 				Bark.Play();
 			}

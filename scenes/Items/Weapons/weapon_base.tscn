@@ -1,87 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://brtukmd1ep2ci"]
+[gd_scene load_steps=3 format=3 uid="uid://brtukmd1ep2ci"]
 
-[ext_resource type="Shader" uid="uid://dsx3hbrjlx05o" path="res://shaders/highlight.gdshader" id="1_deedu"]
 [ext_resource type="Script" uid="uid://chj3e6vvwp28f" path="res://scripts/items/WeaponEntity.cs" id="2_g8mpd"]
-[ext_resource type="Texture2D" uid="uid://bfe1m3cff4u66" path="res://textures/env/muzzle/mf0.dds" id="2_gbakd"]
-[ext_resource type="Texture2D" uid="uid://vrgh5j1yhd0r" path="res://textures/env/muzzle/mf1.dds" id="3_5j14u"]
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="3_hlo55"]
-[ext_resource type="Texture2D" uid="uid://bktv1fwp2eqs0" path="res://textures/env/muzzle/mf2.dds" id="4_2wko3"]
-[ext_resource type="Texture2D" uid="uid://dxps7lqqwp4f" path="res://textures/env/muzzle/mf3.dds" id="5_8e488"]
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="8_puxfl"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7lfh5"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_neabd"]
-noise = SubResource("FastNoiseLite_7lfh5")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ql62m"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_f2rs7"]
-shader = ExtResource("1_deedu")
-shader_parameter/vertical_gradient = SubResource("NoiseTexture2D_ql62m")
-shader_parameter/color_gradient = SubResource("NoiseTexture2D_neabd")
-shader_parameter/size_effect = 0.1
-shader_parameter/speed = 1.0
-shader_parameter/highlight_strength = 4.0
-shader_parameter/color_mode_toggle = false
-shader_parameter/is_horizontal = true
 
 [node name="WeaponBase" type="Node2D" groups=["Archive", "SceneRelevant"]]
-material = SubResource("ShaderMaterial_f2rs7")
 script = ExtResource("2_g8mpd")
 Data = ExtResource("3_hlo55")
-
-[node name="Animations" type="Node2D" parent="."]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
-
-[node name="UseBlunt" type="AudioStreamPlayer2D" parent="."]
-
-[node name="UseBladed" type="AudioStreamPlayer2D" parent="."]
-
-[node name="UseFirearm" type="AudioStreamPlayer2D" parent="."]
-
-[node name="UseTime" type="Timer" parent="."]
-one_shot = true
-
-[node name="RayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(24, 0)
-
-[node name="MuzzleFlashes" type="Node2D" parent="."]
-visible = false
-
-[node name="Sprite2D" type="Sprite2D" parent="MuzzleFlashes"]
-visible = false
-scale = Vector2(0.308594, 0.21875)
-texture = ExtResource("2_gbakd")
-offset = Vector2(160, 0)
-
-[node name="Sprite2D2" type="Sprite2D" parent="MuzzleFlashes"]
-visible = false
-scale = Vector2(0.309, 0.219)
-texture = ExtResource("3_5j14u")
-offset = Vector2(160, 0)
-
-[node name="Sprite2D3" type="Sprite2D" parent="MuzzleFlashes"]
-visible = false
-scale = Vector2(0.309, 0.219)
-texture = ExtResource("4_2wko3")
-offset = Vector2(160, 0)
-
-[node name="Sprite2D4" type="Sprite2D" parent="MuzzleFlashes"]
-visible = false
-scale = Vector2(0.309, 0.219)
-texture = ExtResource("5_8e488")
-offset = Vector2(160, 0)
-
-[node name="PointLight2D" type="PointLight2D" parent="MuzzleFlashes"]
-visible = false
-color = Color(0.858824, 0.470588, 0, 1)
-energy = 2.5
-texture = ExtResource("8_puxfl")
-texture_scale = 5.0
-
-[node name="Icon" type="Sprite2D" parent="."]
-use_parent_material = true
-
-[connection signal="timeout" from="UseTime" to="." method="_on_use_time_timeout"]

@@ -1,0 +1,5 @@
+[gd_resource type="ItemCategory" format=3 uid="uid://d2yy562ewd4q1"]
+
+[resource]
+id = "WEAPON_CATEGORY_FIREARM"
+name = "Firearm"

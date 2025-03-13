@@ -59,7 +59,7 @@ func _init(tscnPath: String, setOperation: LoadingSceneOperation = LoadingSceneO
 		return
 
 	# Request the scene to be loaded in a separate thread
-	ResourceLoader.load_threaded_request(tscnPath, "", true)
+	ResourceLoader.load_threaded_request(tscnPath, "", false)
 
 	# Call _setupUpdateSeconds() after the current frame is finished
 	call_deferred("_setupUpdateSeconds")

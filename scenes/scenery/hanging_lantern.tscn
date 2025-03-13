@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cvycx11rvjouu" path="res://textures/tilesets/Pixel Art Lantern Pack/Lantern 1/Bronze/Lantern 1 - Beonze and Orange.png" id="1_2542i"]
 [ext_resource type="Texture2D" uid="uid://dgvs4lja4jb34" path="res://textures/tilesets/Pixel Art Lantern Pack/Bonus Content - Lamp Posts and Chains/Chain - Bronze.png" id="2_1o82p"]
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="3_xgpbb"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="3_xgpbb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1o82p"]
 atlas = ExtResource("1_2542i")

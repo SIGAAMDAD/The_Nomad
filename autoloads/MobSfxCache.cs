@@ -18,8 +18,11 @@ public partial class MobSfxCache : Node {
 	public static AudioStream ManDown3;
 	public static AudioStream Deaf;
 	public static AudioStream SquadWiped;
-	public static AudioStream NeedBackup;
+	public static List<AudioStream> NeedBackup;
 	public static AudioStream Unstoppable;
+	
+	public static List<AudioStream> Help;
+	public static List<AudioStream> RepeatPlease;
 
 	private static MobSfxCache _Instance;
 	public static MobSfxCache Instance => _Instance;
@@ -33,6 +36,7 @@ public partial class MobSfxCache : Node {
 	}
 	public void Cache() {
 		TargetSpotted = new List<AudioStream>{
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21199.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21167.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21200.mp3" ),
@@ -43,14 +47,23 @@ public partial class MobSfxCache : Node {
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21205.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21207.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21208.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21209.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21210.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21211.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21212.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21213.mp3" ),
 		};
 		TargetPinned = new List<AudioStream>{
-
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21161.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21162.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21163.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21186.mp3" ),
 		};
 		TargetRunning = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21156.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21157.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21159.mp3" )
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21159.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21160.mp3" ),
 		};
 		Ceasefire = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_0.mp3" ),
@@ -59,11 +72,11 @@ public partial class MobSfxCache : Node {
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_4.mp3" ),
 		};
 		OutOfTheWay = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/bakrs/21376.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/bakrs/21377.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/bakrs/21381.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/bakrs/get_down_cmd_0.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/bakrs/get_down_cmd_1.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21376.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21377.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21381.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/get_down_cmd_0.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/get_down_cmd_1.mp3" ),
 		};
 		Curse = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21009.mp3" ),
@@ -73,18 +86,27 @@ public partial class MobSfxCache : Node {
 		Alert = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21164.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21170.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21169.mp3" )
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21169.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21028.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21029.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21030.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21033.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21034.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21026.mp3" )
 		};
 		CheckItOut = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21100.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21172.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21175.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/search_area_cmd_0.mp3" )
 		};
 		Confusion = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21028.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21029.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21033.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21034.mp3" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21030.mp3" )
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21164.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21165.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21168.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21169.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21170.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21171.mp3" ),
 		};
 		HeavyDead = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/14859.mp3" ),
@@ -99,5 +121,21 @@ public partial class MobSfxCache : Node {
 		ManDown2 = ResourceLoader.Load<AudioStream>( "res://sounds/barks/men_down_3_callout_0.mp3" );
 		Deaf = ResourceLoader.Load<AudioStream>( "res://sounds/barks/deaf_callout.mp3" );
 		SquadWiped = ResourceLoader.Load<AudioStream>( "res://sounds/barks/squad_wiped_callout_0.mp3" );
+
+		NeedBackup = new List<AudioStream>{
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21193.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21194.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21195.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21196.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21197.mp3" ),
+		};
+		Help = new List<AudioStream>{
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21189.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21190.mp3" )
+		};
+		RepeatPlease = new List<AudioStream>{
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/14865.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/14866.mp3" )
+		};
 	}
 };

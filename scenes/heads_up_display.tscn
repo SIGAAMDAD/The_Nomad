@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=43 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -7,19 +7,23 @@
 [ext_resource type="Texture2D" uid="uid://bty200almbul3" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
+[ext_resource type="Script" uid="uid://n6t22djo0nh7" path="res://scripts/player_system/HealthBar.cs" id="6_poeto"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
+[ext_resource type="Script" uid="uid://bhs0dt3m005ja" path="res://scripts/player_system/RageBar.cs" id="8_ot7dw"]
 [ext_resource type="Texture2D" uid="uid://bvjna3gg14v7a" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
 [ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="9_jyyjq"]
 [ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
 [ext_resource type="Texture2D" uid="uid://brybtxxdfifq4" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
 [ext_resource type="Texture2D" uid="uid://cp1jwldw8j5s4" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
+[ext_resource type="Texture2D" uid="uid://chkfktbcvttj1" path="res://textures/hud/status_blunt.dds" id="12_wjj4q"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
 [ext_resource type="Texture2D" uid="uid://okv78x4jnolx" path="res://textures/hud/status_bladed.png" id="15_eelai"]
 [ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
 [ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="18_lytyn"]
+[ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="24_ot7dw"]
 
 [sub_resource type="Gradient" id="Gradient_p6ak3"]
 
@@ -28,6 +32,8 @@ seed = 3
 frequency = 0.0077
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6adfp"]
+width = 64
+height = 64
 generate_mipmaps = false
 seamless = true
 seamless_blend_skirt = 1.0
@@ -45,6 +51,8 @@ seed = 2
 frequency = 0.0059
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cqjef"]
+width = 64
+height = 64
 generate_mipmaps = false
 seamless = true
 seamless_blend_skirt = 0.0
@@ -77,7 +85,7 @@ shader_parameter/status_active = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nmltk"]
 shader = ExtResource("9_jyyjq")
-shader_parameter/status_icon = ExtResource("11_0t58g")
+shader_parameter/status_icon = ExtResource("12_wjj4q")
 shader_parameter/status_active = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xuc8q"]
@@ -103,6 +111,13 @@ resource_local_to_scene = true
 shader = ExtResource("15_dwpkh")
 shader_parameter/is_selected = false
 shader_parameter/icon = ExtResource("17_rxc6h")
+
+[sub_resource type="Gradient" id="Gradient_wjj4q"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.106237, 0.106237, 0.106237, 0.698039)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8yqco"]
+gradient = SubResource("Gradient_wjj4q")
 
 [node name="HeadsUpDisplay" type="CanvasLayer"]
 script = ExtResource("1_vxf1b")
@@ -153,15 +168,18 @@ offset_bottom = 8.0
 grow_horizontal = 1
 grow_vertical = 1
 scale = Vector2(7.78676, 7.23962)
+script = ExtResource("6_poeto")
 
 [node name="RageBar" parent="." instance=ExtResource("2_4ecwx")]
 offset_top = 21.0
 offset_right = 40.0
 scale = Vector2(7.67931, 14.1339)
 allow_greater = false
+script = ExtResource("8_ot7dw")
 
 [node name="BossHealthBar" parent="." instance=ExtResource("4_y7hg5")]
 visible = false
+script = null
 
 [node name="StatusBarTimer" type="Timer" parent="."]
 wait_time = 8.0
@@ -296,7 +314,7 @@ stretch_mode = 3
 [node name="StatusBlunt" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
 material = SubResource("ShaderMaterial_nmltk")
 layout_mode = 2
-texture = ExtResource("11_0t58g")
+texture = ExtResource("12_wjj4q")
 stretch_mode = 3
 
 [node name="StatusFirearm" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
@@ -322,7 +340,6 @@ layout_mode = 2
 [node name="BulletCountLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("10_125nm")
 theme_override_font_sizes/font_size = 10
 
 [node name="HSeparator" type="HSeparator" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
@@ -331,7 +348,6 @@ layout_mode = 2
 [node name="BulletReserveLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("10_125nm")
 theme_override_font_sizes/font_size = 10
 
 [node name="MeleeStatus" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer"]
@@ -766,6 +782,99 @@ layout_mode = 2
 [node name="WeaponInfo" type="HBoxContainer" parent="Inventory/MarginContainer/AmmoInfo/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="CheckpointContainer" type="MarginContainer" parent="."]
+visible = false
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_top = 42.0
+offset_right = 256.0
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="CheckpointContainer"]
+layout_mode = 2
+texture = SubResource("GradientTexture1D_8yqco")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CheckpointContainer"]
+layout_mode = 2
+
+[node name="CheckpointNameLabel" type="Label" parent="CheckpointContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CheckpointContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="MainContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="SaveProgressButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+visible = false
+layout_mode = 2
+text = "SAVE_PROGRESS"
+
+[node name="LoadProgressButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+visible = false
+layout_mode = 2
+text = "LOAD_PROGRESS"
+
+[node name="OpenStorageButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+layout_mode = 2
+text = "OPEN_STORAGE"
+
+[node name="RestHereButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+layout_mode = 2
+text = "REST_HERE"
+
+[node name="WarpButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+layout_mode = 2
+text = "WARP_TO_CHECKPOINT"
+
+[node name="SavedGamesContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Cloner" type="HBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ScreenshotIcon" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner"]
+layout_mode = 2
+
+[node name="DateTimeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner"]
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="WarpLocationsContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar"]
+layout_mode = 2
+offset_right = 236.0
+offset_bottom = 428.0
+
+[node name="Cloner" type="HBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Icon" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+layout_mode = 2
+size_flags_horizontal = 0
+stretch_mode = 3
+
+[node name="ConfirmButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "NAME"
+
+[node name="BiomeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+layout_mode = 2
+text = "BIOME"
+
 [node name="DeathText" type="Label" parent="."]
 visible = false
 anchors_preset = 14
@@ -781,6 +890,20 @@ theme_override_fonts/font = ExtResource("10_125nm")
 theme_override_font_sizes/font_size = 64
 text = "YOU DIED"
 horizontal_alignment = 1
+
+[node name="DialogueLabel" type="RichTextLabel" parent="."]
+visible = false
+custom_minimum_size = Vector2(0, 180)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+threaded = true
+script = ExtResource("24_ot7dw")
+skip_pause_at_abbreviations = PackedStringArray("Mr", "Mrs", "Ms", "Dr", "etc", "eg", "ex")
+metadata/_custom_type_script = "uid://g32um0mltv5d"
 
 [connection signal="timeout" from="StatusBarTimer" to="." method="_on_status_bar_timer_timeout"]
 [connection signal="timeout" from="SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]

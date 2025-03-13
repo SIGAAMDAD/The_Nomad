@@ -1,58 +1,170 @@
-[gd_scene load_steps=8 format=3 uid="uid://6cnqoj2bp0r3"]
+[gd_scene load_steps=19 format=3 uid="uid://6cnqoj2bp0r3"]
 
 [ext_resource type="Script" uid="uid://brgni4r6q2ofv" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
-[ext_resource type="Shader" uid="uid://6s0601lh0rk3" path="res://shaders/mob.gdshader" id="2_mvput"]
 [ext_resource type="SpriteFrames" uid="uid://bbd1gljxn4cqk" path="res://resources/animations/mobs/merc_shotgunner.tres" id="3_jv7p5"]
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="7_ilfkp"]
+[ext_resource type="Texture2D" uid="uid://vsg3ur164atb" path="res://textures/dirlight.dds" id="4_i3ew1"]
+[ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="4_pt2do"]
+[ext_resource type="AudioStream" uid="uid://c8p2yjq72o56r" path="res://sounds/player/moveGravel0.ogg" id="6_i3ew1"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jtvc8"]
-shader = ExtResource("2_mvput")
-shader_parameter/demon_eye = false
+[sub_resource type="AtlasTexture" id="AtlasTexture_i3ew1"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kr1gj"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(32, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ia3ng"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c6ri7"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0bwo"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(32, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fp4g7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i3ew1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kr1gj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ia3ng")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6ri7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m0bwo")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pt2do"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pglr"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vsmb6"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(64, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kls6s"]
+atlas = ExtResource("4_pt2do")
+region = Rect2(64, 128, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7pglr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pt2do")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7pglr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsmb6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kls6s")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_75x84"]
+radius = 7.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_n8e85"]
-radius = 312.194
+[sub_resource type="CircleShape2D" id="CircleShape2D_pt2do"]
+radius = 6.08276
 
-[node name="MercenaryShotgunner" type="CharacterBody2D"]
-position = Vector2(-10, 0)
+[node name="MercenaryShotgunner" type="CharacterBody2D" groups=["Archive"]]
+z_index = 3
 script = ExtResource("1_skhq2")
 ViewAngleAmount = 70.0
-MaxViewDistance = 400.0
+MaxViewDistance = 150.0
 SightDetectionTime = 2.0
 Health = 100.0
-MovementSpeed = 40.0
+MovementSpeed = 80.0
 
 [node name="Animations" type="Node2D" parent="."]
-material = SubResource("ShaderMaterial_jtvc8")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-7, 0)
 sprite_frames = ExtResource("3_jv7p5")
-animation = &"move"
-frame = 2
-frame_progress = 0.730538
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.825292
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-7, -6)
+rotation = -0.0101152
+sprite_frames = SubResource("SpriteFrames_fp4g7")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.820278
+
+[node name="FlashLight" type="PointLight2D" parent="Animations/HeadAnimations"]
+position = Vector2(63.017, -1.36265)
+rotation = 0.0101152
+energy = 3.5
+texture = ExtResource("4_i3ew1")
+texture_scale = 1.75
+
+[node name="SightCheck" type="Node2D" parent="Animations/HeadAnimations"]
+position = Vector2(6.93895, 6.0705)
+rotation = 0.0101152
+
+[node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-6, -2)
+sprite_frames = SubResource("SpriteFrames_7pglr")
+animation = &"move"
+autoplay = "idle"
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 4)
 shape = SubResource("CircleShape2D_75x84")
 
-[node name="SightCheck" type="Node2D" parent="."]
-
 [node name="DetectionMeter" type="Line2D" parent="."]
-position = Vector2(10, 0)
+position = Vector2(3, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 10.0
+avoidance_enabled = true
+debug_enabled = true
 
-[node name="FlashLight" type="PointLight2D" parent="."]
-energy = 0.69
-shadow_enabled = true
-texture = ExtResource("7_ilfkp")
-texture_scale = 1.68
+[node name="MoveSfx" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_i3ew1")
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="Bounds" type="Node2D" parent="."]
 
-[node name="SoundBounds" type="Area2D" parent="Node2D"]
+[node name="Area2D" type="Area2D" parent="Bounds"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/SoundBounds"]
-shape = SubResource("CircleShape2D_n8e85")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Area2D"]
+position = Vector2(-6, -7)
+shape = SubResource("CircleShape2D_pt2do")

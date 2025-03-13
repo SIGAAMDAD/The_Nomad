@@ -1,0 +1,91 @@
+[gd_scene load_steps=14 format=3 uid="uid://uei7yka6gloe"]
+
+[ext_resource type="Script" uid="uid://c6m56prls5p7o" path="res://scripts/SinglePlayer.cs" id="1_ato02"]
+[ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level0.tscn" id="2_kiad1"]
+[ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="3_nxiwu"]
+[ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="4_b8e24"]
+[ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_swbre"]
+[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="6_diy6u"]
+[ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="7_mewpc"]
+[ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/interactables/checkpoint.tscn" id="8_fb31w"]
+[ext_resource type="PackedScene" uid="uid://dl5ck2whlo4x2" path="res://scenes/level_end.tscn" id="9_ctbrj"]
+[ext_resource type="PackedScene" uid="uid://6cnqoj2bp0r3" path="res://scenes/mobs/mercenary/mercenary_shotgunner.tscn" id="10_upqec"]
+[ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="11_itcay"]
+[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="12_mrrwr"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_dm7o4"]
+vertices = PackedVector2Array(1442.63, 146, 1693.08, 146, 1696.92, 596.203, 1075.24, 675.883, 837.672, -107, 1402.55, -77.4219, 551.07, 583.438, 492.469, 72.5703, 667.219, -107)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 0, 3, 6, 7, 8)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1451, 136, 1703, 136, 1707, 605, 1075, 686, 542, 592, 482, 69)])
+
+[node name="SinglePlayer" type="Node2D" node_paths=PackedStringArray("Player1")]
+script = ExtResource("1_ato02")
+Player1 = NodePath("Network/Player1")
+
+[node name="Level" parent="." instance=ExtResource("2_kiad1")]
+
+[node name="WeaponBase" parent="Level" instance=ExtResource("3_nxiwu")]
+position = Vector2(-344, 117)
+
+[node name="WeaponBase2" parent="Level" instance=ExtResource("3_nxiwu")]
+position = Vector2(-328, 164)
+Data = ExtResource("4_b8e24")
+
+[node name="AmmoBase" parent="Level" instance=ExtResource("5_swbre")]
+position = Vector2(-311, 118)
+Data = ExtResource("6_diy6u")
+
+[node name="AmmoBase2" parent="Level" instance=ExtResource("5_swbre")]
+position = Vector2(536, 91)
+Data = ExtResource("6_diy6u")
+
+[node name="AmmoBase3" parent="Level" instance=ExtResource("5_swbre")]
+position = Vector2(1339, 415)
+Data = ExtResource("6_diy6u")
+
+[node name="AmmoBase4" parent="Level" instance=ExtResource("5_swbre")]
+position = Vector2(-267, 164)
+Data = ExtResource("7_mewpc")
+
+[node name="Checkpoints" type="Node2D" parent="Level"]
+
+[node name="Checkpoint_RockyBastards" parent="Level/Checkpoints" instance=ExtResource("8_fb31w")]
+light_mask = 15
+visibility_layer = 2
+position = Vector2(-186, 114)
+Title = "Rocky Bastards Camp"
+
+[node name="Checkpoint_BanditBossOffice" parent="Level/Checkpoints" instance=ExtResource("8_fb31w")]
+position = Vector2(1502, -29)
+Title = "Bandit Boss Office"
+
+[node name="Checkpoint_LakaoPass" parent="Level/Checkpoints" instance=ExtResource("8_fb31w")]
+position = Vector2(1920, 263)
+Title = "Lakao Pass"
+
+[node name="LevelEnd" parent="Level/Checkpoints" instance=ExtResource("9_ctbrj")]
+position = Vector2(1922, 17)
+
+[node name="OpposingForce" type="Node2D" parent="Level"]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Level/OpposingForce"]
+position = Vector2(156, -16)
+navigation_polygon = SubResource("NavigationPolygon_dm7o4")
+
+[node name="Guard0" parent="Level/OpposingForce/NavigationRegion2D" instance=ExtResource("10_upqec")]
+position = Vector2(824, 325)
+Direction = 2
+ThinkInterval = 0.4
+
+[node name="MercenaryShotgunner" parent="Level/OpposingForce/NavigationRegion2D" instance=ExtResource("10_upqec")]
+position = Vector2(1093, 179)
+
+[node name="Network" type="Node" parent="."]
+
+[node name="Player1" parent="Network" instance=ExtResource("11_itcay")]
+position = Vector2(-455, 141)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("12_mrrwr")]
+visible = false

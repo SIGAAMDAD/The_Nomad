@@ -276,9 +276,8 @@ script = ExtResource("1_mtmp3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = SubResource("SpriteFrames_6fokt")
-animation = &"idle"
+animation = &"stop"
 autoplay = "idle"
-frame_progress = 0.322719
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(2.5, 7.5)

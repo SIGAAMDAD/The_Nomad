@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt868tou75he1"]
+
+[ext_resource type="PackedScene" uid="uid://drc6baetesnqd" path="res://levels/locations/galakas.tscn" id="1_aousx"]
+
+[node name="SafeSands" type="Node2D"]
+
+[node name="Galakas" type="Area2D" parent="."]
+
+[node name="Galakas" parent="Galakas" instance=ExtResource("1_aousx")]
+position = Vector2(-66, 29)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Galakas"]
+polygon = PackedVector2Array(-4967, -4958, -3862, 457, -211, 788, 5768, 288, 5843, -5969)
+
+[node name="Latan" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Latan"]
+position = Vector2(-28043, -1759)
+polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
+
+[node name="Sortior" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Sortior"]
+position = Vector2(11446, -12611)
+polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922, 11197, -1999)

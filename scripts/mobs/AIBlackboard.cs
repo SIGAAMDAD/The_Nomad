@@ -3,15 +3,39 @@ using System.Collections.Generic;
 public class AIBlackboard {
 	private Godot.Vector2 GuardPosition = Godot.Vector2.Zero;
 	private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
+	private Godot.Vector2 SightPosition = Godot.Vector2.Zero;
+	private Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
 	private MobBase.Awareness Alertness = MobBase.Awareness.Relaxed;
 	private int BodyCount = 0;
 	private Godot.CharacterBody2D Target = null;
 	private List<MobBase> SeenBodies = new List<MobBase>();
 	private bool Investigating = false;
+	private bool CanSeeTarget = false;
+	private bool TargetReached = false;
+	private float Fear = 0.0f;
+	private float TargetDistance = 0.0f;
 	
 	public AIBlackboard() {
 	}
-	
+
+	public void SetGotoPosition( Godot.Vector2 position ) { GotoPosition = position; }
+	public Godot.Vector2 GetGotoPosition() { return GotoPosition; }
+
+	public void SetTargetDistance( float distance ) { TargetDistance = distance; }
+	public float GetTargetDistance() { return TargetDistance; }
+
+	public void SetFear( float fear ) { Fear = fear; }
+	public float GetFear() { return Fear; }
+
+	public void SetTargetReached( bool bTargetReached ) { TargetReached = bTargetReached; }
+	public bool GetTargetReached() { return TargetReached; }
+
+	public void SetSightPosition( Godot.Vector2 sightPosition ) { SightPosition = sightPosition; }
+	public Godot.Vector2 GetSightPosition() { return SightPosition; }
+
+	public void SetCanSeeTarget( bool bCanSeeTarget ) { CanSeeTarget = bCanSeeTarget; }
+	public bool GetCanSeeTarget() { return CanSeeTarget; }
+
 	public void SetInvestigating( bool bInvestigating ) { Investigating = bInvestigating; }
 	public bool GetInvestigating() { return Investigating; }
 	

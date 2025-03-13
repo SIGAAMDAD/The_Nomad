@@ -1,14 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://couodamo5txu5"]
 
 [ext_resource type="SpriteFrames" uid="uid://bibry04hvbsdb" path="res://resources/animations/latern_0.tres" id="1_ltroq"]
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="2_17b07"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_ltroq"]
 
 [node name="Latern0" type="AnimatedSprite2D"]
 sprite_frames = ExtResource("1_ltroq")
-animation = &"toggle_on"
+animation = &"on"
+frame_progress = 0.67067
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 z_index = 5
+energy = 2.5
 shadow_enabled = true
-texture = ExtResource("2_17b07")
-texture_scale = 6.5
+texture = ExtResource("2_ltroq")
+texture_scale = 15.0

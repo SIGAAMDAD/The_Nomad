@@ -55,10 +55,10 @@ script = ExtResource("1_nfumt")
 action = ExtResource("2_ip6yk")
 input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_bthw5")])
 
-[sub_resource type="Resource" id="Resource_8ximx"]
-script = ExtResource("10_54cv3")
-button = 9
-joy_index = 0
+[sub_resource type="Resource" id="Resource_sa013"]
+script = ExtResource("15_0fge7")
+axis = 4
+joy_index = -1
 
 [sub_resource type="Resource" id="Resource_d3pup"]
 script = ExtResource("11_mja6x")
@@ -70,7 +70,7 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_8ximx")
+input = SubResource("Resource_sa013")
 modifiers = Array[ExtResource("5_an8na")]([])
 triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_d3pup")])
 
@@ -174,15 +174,15 @@ script = ExtResource("1_nfumt")
 action = ExtResource("14_xky1p")
 input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_1d3s3"), SubResource("Resource_h541c")])
 
-[sub_resource type="Resource" id="Resource_2digp"]
+[sub_resource type="Resource" id="Resource_scw7i"]
 script = ExtResource("17_d235s")
-mouse_buttons = false
-mouse_movement = false
+mouse_buttons = true
+mouse_movement = true
 joy_buttons = false
 joy_axes = false
 keyboard = true
 touch = false
-mouse = false
+mouse = true
 joy = false
 
 [sub_resource type="Resource" id="Resource_l3l0r"]
@@ -191,7 +191,7 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_2digp")
+input = SubResource("Resource_scw7i")
 modifiers = Array[ExtResource("5_an8na")]([])
 triggers = Array[ExtResource("7_7mvoh")]([])
 

@@ -1,0 +1,5 @@
+[gd_resource type="ItemCategory" format=3 uid="uid://wnl7i8f154lr"]
+
+[resource]
+id = "WEAPON_CATEGORY_PRIMARY"
+name = "Primary Weapon"

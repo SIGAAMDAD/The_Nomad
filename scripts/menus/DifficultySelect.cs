@@ -1,6 +1,5 @@
 using Godot;
 using NathanHoad;
-using System;
 
 public partial class DifficultySelect : Control {
 	private Control CampaignMenu;

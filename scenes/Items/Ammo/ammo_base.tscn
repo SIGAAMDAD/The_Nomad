@@ -9,6 +9,9 @@ colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_a1gxl"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1ul8s"]
+width = 24
+height = 24
+generate_mipmaps = false
 color_ramp = SubResource("Gradient_dwngt")
 noise = SubResource("FastNoiseLite_a1gxl")
 
@@ -40,5 +43,7 @@ use_parent_material = true
 shape = SubResource("CircleShape2D_oo816")
 
 [node name="PickupSfx" type="AudioStreamPlayer2D" parent="."]
+bus = &"SFX"
+playback_type = 1
 
-[connection signal="body_shape_entered" from="PickupArea2D" to="." method="_on_pickup_area_2d_body_shape_entered"]
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

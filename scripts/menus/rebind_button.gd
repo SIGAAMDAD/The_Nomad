@@ -179,7 +179,7 @@ func _rebind( event: InputEvent, item: GUIDERemapper.ConfigItem ) -> void:
 	_label.parse_bbcode( await SettingsData._mapping_formatter.input_as_richtext_async( input ) )
 
 func _ready() -> void:
-	var items := SettingsData._remapper.get_remappable_items( null, "", _action )
+	var items:Array[ GUIDERemapper.ConfigItem ] = SettingsData._remapper.get_remappable_items( null, "", _action )
 	var input:GUIDEInput = SettingsData._remapper.get_bound_input_or_null( items[0] )
 	if input == null:
 		_label.text = "Not bound"

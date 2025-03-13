@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Godot;
@@ -43,7 +42,7 @@ public partial class MobBase : CharacterBody2D {
 	[Export]
 	protected float ViewAngleAmount = 45.0f;
 	[Export]
-	protected float MaxViewDistance = 0.0f;
+	protected float MaxViewDistance;
 	[Export]
 	protected float SightDetectionSpeed = 0.1f;
 	[Export]
@@ -69,7 +68,7 @@ public partial class MobBase : CharacterBody2D {
 	[Export]
 	protected float BladedDamage = 0.0f;
 
-	protected RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
+	protected System.Random RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
@@ -77,8 +76,8 @@ public partial class MobBase : CharacterBody2D {
 	protected Godot.Vector2 NextPathPosition = Godot.Vector2.Zero;
 	protected float LookAngle = 0.0f;
 	protected float AimAngle = 0.0f;
+	protected PointLight2D FlashLight;
 
-	protected Area2D SoundBounds;
 	protected AudioStreamPlayer2D Bark;
 	protected AudioStreamPlayer2D SequencedBark;
 	protected AudioStreamPlayer2D ActionSfx;
@@ -122,17 +121,17 @@ public partial class MobBase : CharacterBody2D {
 			float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
 			ray.TargetPosition = AngleDir.Rotated( angle ) * MaxViewDistance;
 			ray.Enabled = true;
+			ray.CollisionMask = 1 | 2;
 			SightDetector.AddChild( ray );
 			SightLines.Add( ray );
 		}
 	}
 	protected void RecalcSight() {
 		Agent.State[ "SightPosition" ] = GlobalPosition;
-		SightDetector.GlobalTransform = GlobalTransform;
 		for ( int i = 0; i < SightLines.Count; i++ ) {
 			RayCast2D ray = SightLines[i];
 			float angle = AngleBetweenRays * ( i - SightLines.Count / 2.0f );
-			ray.TargetPosition = AngleDir.Rotated( angle ) * MaxViewDistance;
+			ray.TargetPosition = AngleDir.Rotated( angle ) * 140.0f;
 		}
 	}
 
@@ -149,12 +148,15 @@ public partial class MobBase : CharacterBody2D {
 	protected bool IsSuspicious() {
 		return ( !IsAlert() && Blackboard.GetAwareness() == Awareness.Suspicious ) || SightDetectionAmount >= SightDetectionTime * 0.5f;
 	}
+	protected float Randf( float min, float max ) {
+		return (float)( min + RandomFactory.NextDouble() * ( min - max ) );
+	}
 #endregion
 
 	protected virtual void OnLoseInterestTimerTimeout() {
 	}
 	protected virtual void OnChangeInvestigateAngleTimerTimeout() {
-		float angle = RandomFactory.RandfRange( 0.0f, 360.0f );
+		float angle = Randf( 0.0f, 360.0f );
 		AimAngle = angle;
 		LookAngle = angle;
 	}
@@ -171,15 +173,15 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected void OnBodyAnimationFinished() {
 		if ( BodyAnimations.Animation == "move" ) {
-			MoveSfx.Play();
+			MoveSfx.CallDeferred( "play" );
 		}
 	}
 
 	protected void Init() {
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
-		SoundBounds = GetNode<Area2D>( "Node2D/SoundBounds" );
-		SightDetector = GetNode<Node2D>( "SightCheck" );
+		SightDetector = GetNode<Node2D>( "Animations/HeadAnimations/SightCheck" );
+//		SightDetector = GetNode<Node2D>( "SightCheck" );
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
 		
@@ -190,7 +192,13 @@ public partial class MobBase : CharacterBody2D {
 		
 		MoveSfx = GetNode<AudioStreamPlayer2D>( "MoveSfx" );
 		
-		ActionSfx = GetNode<AudioStreamPlayer2D>( "ActionSfx" );
+//		ActionSfx = GetNode<AudioStreamPlayer2D>( "ActionSfx" );
+
+		ThinkerTimer = new Timer();
+		ThinkerTimer.WaitTime = 0.5f;
+		ThinkerTimer.Autostart = true;
+		ThinkerTimer.Timeout += () => { Think( (float)GetProcessDeltaTime() ); };
+		AddChild( ThinkerTimer );
 		
 		Bark = new AudioStreamPlayer2D();
 		Bark.VolumeDb = 10.0f;
@@ -245,30 +253,43 @@ public partial class MobBase : CharacterBody2D {
 		GenerateRaycasts();
 	}
 	public override void _Process( double delta ) {
-		ArmAnimations.GlobalRotation = AimAngle;
-		HeadAnimations.GlobalRotation = LookAngle;
+	}
+
+	protected void ProcessAnimations()  {
+		ArmAnimations.SetDeferred( "global_position", AimAngle );
+		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
 		
 		if ( LookAngle > 0.0f ) {
-			HeadAnimations.FlipV = false;
+			HeadAnimations.SetDeferred( "flip_v", true );
 		} else if ( LookAngle < 0.0f ) {
-			HeadAnimations.FlipV = true;
+			HeadAnimations.SetDeferred( "flip_v", false );
 		}
 		if ( AimAngle > 0.0f ) {
-			ArmAnimations.FlipV = false;
+			ArmAnimations.SetDeferred( "flip_v", true );
 		} else if ( AimAngle < 0.0f ) {
-			ArmAnimations.FlipV = true;
+			ArmAnimations.SetDeferred( "flip_v", false );
 		}
 		if ( Velocity.X > 0.0f ) {
-			BodyAnimations.FlipH = false;
+			BodyAnimations.SetDeferred( "flip_h", false );
+			ArmAnimations.SetDeferred( "flip_h", false );
 		} else if ( Velocity.X < 0.0f ) {
-			BodyAnimations.FlipH = true;
+			BodyAnimations.SetDeferred( "flip_h", true );
+			ArmAnimations.SetDeferred( "flip_h", true );
 		}
 
 		if ( Velocity != Godot.Vector2.Zero ) {
-			BodyAnimations.Play( "move" );
+			BodyAnimations.CallDeferred( "play", "move" );
+			ArmAnimations.CallDeferred( "play", "move" );
+			HeadAnimations.CallDeferred( "play", "move" );
 		} else {
-			BodyAnimations.Play( "idle" );
+			BodyAnimations.CallDeferred( "play", "idle" );
+			ArmAnimations.CallDeferred( "play", "idle" );
+			HeadAnimations.CallDeferred( "play", "idle" );
 		}
+
+//		FlashLight.GlobalRotation = LookAngle;
+	}
+	public virtual void Think( float delta ) {
 	}
 	
 	protected bool MoveAlongPath() {
@@ -304,7 +325,7 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
 		if ( agent.State[ "SightTarget" ] != null ) {
-			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.RandiRange( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
 			Bark.Play();
 
 			agent.State[ "HasTarget " ] = true;

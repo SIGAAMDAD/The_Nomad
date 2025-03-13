@@ -1,10 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=12 format=3 uid="uid://ceidjyb2qv8xs"]
 
 [ext_resource type="Script" uid="uid://djmhs8xaqjdqg" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
-[ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="2_yvr2d"]
+[ext_resource type="Texture2D" uid="uid://06opea2npplw" path="res://textures/fromeaglespeak.dds" id="2_q6361"]
+[ext_resource type="Texture2D" uid="uid://c31p8dx0cxgio" path="res://textures/art/IMG_1709.dds" id="3_3vglh"]
+[ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_7krkx"]
+[ext_resource type="Texture2D" uid="uid://c5d6b0lhhvm4x" path="res://textures/art/IMG_2189.dds" id="4_1n7lv"]
+[ext_resource type="Texture2D" uid="uid://cewypxn1uwb2" path="res://textures/art/IMG_2190.dds" id="5_mkirn"]
+[ext_resource type="Texture2D" uid="uid://brjgej3a5tyqe" path="res://textures/art/IMG_2251.dds" id="6_1n7lv"]
+[ext_resource type="Texture2D" uid="uid://b6nnt6g7d7yas" path="res://textures/art/IMG_2412.dds" id="7_mkirn"]
+[ext_resource type="Texture2D" uid="uid://cwqib6coyfus7" path="res://textures/art/IMG_2414.dds" id="8_mkirn"]
+
+[sub_resource type="Gradient" id="Gradient_7krkx"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.0901961, 0.0901961, 0.0901961, 0.709804)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_u6do7"]
+gradient = SubResource("Gradient_7krkx")
 
 [node name="LoadingScreen" type="CanvasLayer"]
 layer = 10
+visible = false
 script = ExtResource("1_kt3u6")
 
 [node name="Panel" type="Panel" parent="."]
@@ -14,15 +29,84 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="Panel"]
+[node name="Images" type="Control" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_yvr2d")
+
+[node name="Background0" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_q6361")
 expand_mode = 2
+
+[node name="Background1" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_3vglh")
+
+[node name="Background2" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_1n7lv")
+
+[node name="Background3" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_mkirn")
+
+[node name="Background4" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_1n7lv")
+
+[node name="Background5" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_mkirn")
+
+[node name="Background6" type="TextureRect" parent="Panel/Images"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_mkirn")
 
 [node name="ProgressBar" type="ProgressBar" parent="Panel"]
 visible = false
@@ -38,6 +122,87 @@ grow_vertical = 0
 scale = Vector2(0.999273, 1.00079)
 
 [node name="ImageChange" type="Timer" parent="."]
-wait_time = 2.5
+wait_time = 5.0
 
-[connection signal="timeout" from="ImageChange" to="." method="_on_image_change_timeout"]
+[node name="Tips" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 100)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Background" type="TextureRect" parent="Tips"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_u6do7")
+
+[node name="TipLabel" type="Label" parent="Tips"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ProgressLabel" type="Label" parent="Tips"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="Spinner" type="Range" parent="Tips"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 2
+auto_translate_mode = 0
+editor_description = ""
+visible = true
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+show_behind_parent = false
+top_level = false
+clip_children = 0
+light_mask = 1
+visibility_layer = 1
+z_index = 0
+z_as_relative = true
+y_sort_enabled = false
+texture_filter = 0
+texture_repeat = 0
+material = null
+use_parent_material = false
+clip_contents = true
+custom_minimum_size = Vector2(32, 32)
+layout_direction = 0
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+size_flags_stretch_ratio = 1.0
+localize_numeral_system = true
+tooltip_text = ""
+tooltip_auto_translate_mode = 0
+focus_neighbor_left = NodePath("")
+focus_neighbor_top = NodePath("")
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 0
+mouse_force_pass_scroll_events = true
+mouse_default_cursor_shape = 0
+theme = null
+theme_type_variation = &""
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 0.0
+exp_edit = false
+rounded = false
+allow_greater = false
+allow_lesser = false
+script = ExtResource("3_7krkx")
+metadata/_custom_type_script = "uid://bjlqnmhmtp0yj"
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

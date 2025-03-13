@@ -35,19 +35,20 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -179.0
-offset_top = -304.36
+offset_top = -232.495
 offset_right = 179.0
-offset_bottom = -229.36
+offset_bottom = -157.495
 grow_horizontal = 2
 grow_vertical = 2
 text = "It is the 91st millennium,
-All that was once known was lost.
+All that was once known is lost.
 The machine of man betrayed its own makers."
 horizontal_alignment = 1
 
 [node name="Timer1" type="Timer" parent="Label"]
 wait_time = 3.5
 one_shot = true
+autostart = true
 
 [node name="Label2" type="Label" parent="."]
 visible = false
@@ -58,9 +59,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -168.0
-offset_top = -191.51
+offset_top = -143.285
 offset_right = 168.0
-offset_bottom = -142.51
+offset_bottom = -94.285
 grow_horizontal = 2
 grow_vertical = 2
 text = "The Great Eye that Saw fell,
@@ -69,6 +70,7 @@ horizontal_alignment = 1
 
 [node name="Timer2" type="Timer" parent="Label2"]
 wait_time = 2.0
+one_shot = true
 
 [node name="Label3" type="Label" parent="."]
 visible = false
@@ -79,9 +81,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -163.5
-offset_top = -106.49
+offset_top = -80.575
 offset_right = 163.5
-offset_bottom = -5.48999
+offset_bottom = 20.425
 grow_horizontal = 2
 grow_vertical = 2
 text = "There is now no peace,
@@ -91,7 +93,8 @@ And the stains from memories of the past."
 horizontal_alignment = 1
 
 [node name="Timer3" type="Timer" parent="Label3"]
-wait_time = 4.5
+wait_time = 2.5
+one_shot = true
 
 [node name="Label4" type="Label" parent="."]
 visible = false
@@ -102,9 +105,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -147.0
-offset_top = 35.545
+offset_top = 34.28
 offset_right = 147.0
-offset_bottom = 84.545
+offset_bottom = 83.28
 grow_horizontal = 2
 grow_vertical = 2
 text = "Once a haven, now a wasteland.
@@ -113,6 +116,7 @@ horizontal_alignment = 1
 
 [node name="Timer4" type="Timer" parent="Label4"]
 wait_time = 2.0
+one_shot = true
 
 [node name="Label5" type="Label" parent="."]
 visible = false
@@ -123,9 +127,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -128.5
-offset_top = 128.45
+offset_top = 93.685
 offset_right = 128.5
-offset_bottom = 229.45
+offset_bottom = 194.685
 grow_horizontal = 2
 grow_vertical = 2
 text = "We gaze at the dunes,
@@ -133,6 +137,10 @@ Wondering: how did we get here?
 Why were we so short-sighted?
 How did we lose?"
 horizontal_alignment = 1
+
+[node name="Timer5" type="Timer" parent="Label5"]
+wait_time = 2.5
+one_shot = true
 
 [node name="AuthorName" type="Label" parent="."]
 visible = false
@@ -142,10 +150,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -192.0
-offset_top = -68.8
-offset_right = 192.0
-offset_bottom = -45.8
+offset_left = -186.535
+offset_top = -30.675
+offset_right = 197.465
+offset_bottom = -7.67499
 grow_horizontal = 2
 grow_vertical = 0
 text = "- Razal the Open-Minded, from \"Poems of Valden\""

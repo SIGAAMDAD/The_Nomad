@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3 uid="uid://bdtqrrsb2fib1"]
+
+[ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_pmfem"]
+[ext_resource type="PackedScene" uid="uid://b16ex50idp6s1" path="res://levels/biomes/salt_wastes.tscn" id="2_pmfem"]
+[ext_resource type="PackedScene" uid="uid://dt868tou75he1" path="res://levels/biomes/safe_sands.tscn" id="3_pmfem"]
+[ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="4_712nc"]
+[ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="5_712nc"]
+
+[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Areas")]
+script = ExtResource("1_pmfem")
+Areas = []
+
+[node name="SaltWastes" parent="." instance=ExtResource("2_pmfem")]
+position = Vector2(-88192, 52992)
+
+[node name="BiomeArea2D" type="Area2D" parent="SaltWastes"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SaltWastes/BiomeArea2D"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(-1, 57)
+polygon = PackedVector2Array(-26520, -42755, -6239, -22359, 17443, -17633, 38214, -13045, 59078, -5237, 78566, -2527, 61623, 11841, 61247, 36920, 10973, 30098, -18210, 15205, -60423, -7310)
+
+[node name="SafeSands" parent="." instance=ExtResource("3_pmfem")]
+position = Vector2(-30975, 27410)
+
+[node name="BiomeArea2D" type="Area2D" parent="SafeSands"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SafeSands/BiomeArea2D"]
+modulate = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-83738, -17116, -43318, -21388, -44602, -36278, 13550, -27399, 33262, -18183, 29194, 16457, 21347, 23113, 1860, 20402, -19004, 12594, -39775, 8006, -63454, 3282)
+
+[node name="BurntHills" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="BurntHills"]
+
+[node name="Area2D" type="Area2D" parent="BurntHills"]
+
+[node name="SeaOfSands" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="SeaOfSands"]
+
+[node name="BiomeArea2D" type="Area2D" parent="SeaOfSands"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SeaOfSands/BiomeArea2D"]
+modulate = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(2331, 9274, 5314, -21281, 19778, -52001, 78374, -70454, 113062, -15286, 98598, 29258, 62305, 49812, 34677, 47276, -1781, 43867)
+
+[node name="DunesOfDesolation" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="DunesOfDesolation"]
+
+[node name="BiomeArea2D" type="Area2D" parent="DunesOfDesolation"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="DunesOfDesolation/BiomeArea2D"]
+modulate = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-148616, 45739, -168872, -8067, -148392, -40579, -143845, -62895, -140637, -100134, -100992, -118467, -82037, -83781, -74293, 6022, -114713, 10294)
+
+[node name="AshenPlains" type="Node2D" parent="."]
+
+[node name="BiomeArea2D" type="Area2D" parent="AshenPlains"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="AshenPlains/BiomeArea2D"]
+modulate = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 62858, 44093, 87178, -26946, 89969)
+
+[node name="Roads" type="Node2D" parent="."]
+z_index = 3
+position = Vector2(23995, -9899)
+
+[node name="TheOldRoad" type="Polygon2D" parent="Roads"]
+position = Vector2(-83162, 49911)
+texture = ExtResource("4_712nc")
+polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26272, 6902, -27692, 11069, -28441, 11374, -28808, 11578, -29071, 11814, -29603, 12750, -29418, 12667, -29321, 12704, -29021, 11880, -28764, 11651, -28422, 11437, -27587, 11122, -26143, 7070, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15351, -4888, 15417, -4770, 15629, -4390, 16042, -3974, 16757, -3826, 17362, -3584, 17793, -3142, 18718, -2630, 18792, -2731, 17867, -3222, 17433, -3653, 16792, -3930, 16128, -4103, 15720, -4482, 15502, -4854, 15422.5, -5025.95, 15941, -5869, 17722, -7660, 19992, -8147, 24905, -10458, 25978, -11346, 27411, -12212, 27971, -12365, 28366, -12577, 27887, -12575, 27911, -12408, 27358, -12273, 25922, -11412, 24786, -10557, 23048, -9701, 22567, -10453, 22416, -10927, 21779, -11136, 21784, -11097, 22379, -10882, 22522, -10427, 22893, -9647, 19967, -8282)
+
+[node name="Player" parent="." instance=ExtResource("5_712nc")]
+position = Vector2(-88720, 53124)

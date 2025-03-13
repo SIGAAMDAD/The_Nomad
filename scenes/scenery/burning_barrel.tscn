@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c48k7ro1f3ep0" path="res://textures/env/flame_barrel_1.png" id="1_xrqh8"]
 [ext_resource type="Texture2D" uid="uid://c2b2qsrmdb6c1" path="res://textures/env/flame_barrel_2.png" id="2_whf1l"]
-[ext_resource type="Texture2D" uid="uid://bp0cnmrycpwa1" path="res://textures/2d_lights_and_shadows_neutral_point_light.webp" id="3_j4hcy"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="3_khv3g"]
 [ext_resource type="AudioStream" uid="uid://cj62svdp0muym" path="res://sounds/env/Fire Crackling - Sound Effect [HQ].ogg" id="4_3maiy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_evtba"]
@@ -32,6 +32,8 @@ size = Vector2(25, 29)
 
 [node name="BurningBarrel" type="CharacterBody2D"]
 z_index = 4
+collision_layer = 2
+collision_mask = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 1
@@ -40,10 +42,11 @@ autoplay = "default"
 frame_progress = 0.691045
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-energy = 1.35
-shadow_enabled = true
-texture = ExtResource("3_j4hcy")
-texture_scale = 2.03
+process_thread_group = 2
+process_thread_group_order = 1
+process_thread_messages = 2
+texture = ExtResource("3_khv3g")
+texture_scale = 3.0
 
 [node name="Ambience" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_3maiy")
@@ -56,3 +59,7 @@ parameters/looping = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-4.5, 12.5)
 shape = SubResource("RectangleShape2D_2e8c0")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(-1.5, 4)
+scale = Vector2(1.95, 3)

@@ -32,23 +32,23 @@ func apply_video_settings() -> void:
 	var viewport := get_tree().get_root().get_viewport_rid()
 	match _antialiasing.selected:
 		SettingsManager.AntiAliasing.None:
-			RenderingServer.viewport_set_use_taa( viewport, false )
+#			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_DISABLED )
 		SettingsManager.AntiAliasing.FXAA:
-			RenderingServer.viewport_set_use_taa( viewport, false )
+#			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_FXAA )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_DISABLED )
 		SettingsManager.AntiAliasing.MSAA_2x:
-			RenderingServer.viewport_set_use_taa( viewport, false )
+#			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_2X )
 		SettingsManager.AntiAliasing.MSAA_4x:
-			RenderingServer.viewport_set_use_taa( viewport, false )
+#			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_4X )
 		SettingsManager.AntiAliasing.MSAA_8x:
-			RenderingServer.viewport_set_use_taa( viewport, false )
+#			RenderingServer.viewport_set_use_taa( viewport, false )
 			RenderingServer.viewport_set_screen_space_aa( viewport, RenderingServer.VIEWPORT_SCREEN_SPACE_AA_DISABLED )
 			RenderingServer.viewport_set_msaa_2d( viewport, RenderingServer.VIEWPORT_MSAA_8X )
 	
