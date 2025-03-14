@@ -29,7 +29,7 @@ MULTIPLAYER_BUTTON,MULTIPLAYER
 SETTINGS_BUTTON,SETTINGS
 HELP_BUTTON,VALDEN'S BOOK
 MODS_BUTTON,TALES AROUND THE CAMPFIRE
-QUIT_BUTTON,QUIT
+QUIT_BUTTON,QUIT GAME
 CAMPAIGN_TITLE,START THE DREAM
 BEGIN_YOUR_TALE,BEGIN YOUR TALE
 INTENDED_MODE_NAME,INTENDED EXPERIENCE
@@ -39,7 +39,7 @@ NORMAL_MODE_NAME,Hold My Beer
 HARD_MODE_NAME,I Can Take It!
 VERY_HARD_MODE_NAME,Let's Break A Leg
 INSANE_MODE_NAME,The Black Death
-MEME_MODE_NAME,Meme Mode
+MEME_MODE_NAME,MEME MODE
 EASY_MODE_DESCRIPTION,"The most stress-free experience. You're new to the job. You'll be facing standard cannon-fodder militia. Play this if you just want the story."
 NORMAL_MODE_DESCRIPTION,"The standard difficulty. You'll get put against actual threats, but nothing too challenging. Still be on your toes though..."
 HARD_MODE_DESCRIPTION,"The game will stop pulling it's punches. You are expected to learn the mechanics, then utilize everything you have to your advantage."

@@ -24,14 +24,11 @@ func on_finished_loading() -> void:
 	LoadingScreen.hide()
 	SoundManager.stop_music( 1.5 )
 	hide()
+	queue_free()
 
-func _unhandled_input( event: InputEvent ) -> void:
-	if event is not InputEventKey:
-		return
-	elif ( event as InputEventKey ).keycode != KEY_ENTER:
-		return
-	
-	advance_timer()
+func _process( _delta: float ) -> void:
+	if Input.is_action_just_pressed( "ui_advance" ):
+		advance_timer()
 
 func advance_timer() -> void:
 	if _current_timer >= LABELS.size():

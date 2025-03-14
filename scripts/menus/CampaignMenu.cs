@@ -53,7 +53,7 @@ public partial class CampaignMenu : Control {
 		CommandConsole.PrintLine( "Loading game..." );
 //		GetNode( "/root/Console" ).Call( "print_line", "Loading level " + levelName + "_sp.tscn..." );
 		scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-			"res://levels/world.tscn"
+			"res://scenes/menus/poem.tscn"
 		);
 		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
 
