@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://ba1debi5qxy5p"]
 
-[ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="1_16jr0"]
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_4xp3b"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_6bivr"]
 [ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
 
 [node name="MainMenu" type="Control"]
@@ -15,26 +15,28 @@ grow_vertical = 2
 script = ExtResource("1_l4s3c")
 metadata/_edit_use_anchors_ = true
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="MenuBackground" parent="." instance=ExtResource("2_6bivr")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_16jr0")
-expand_mode = 2
+
+[node name="AppVersion" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "AppVer"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = -146.0
-offset_right = 410.0
-offset_bottom = 18.0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -24.0
+offset_right = 248.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(0.802407, 0.878239)
 
 [node name="CampaignButton" type="Button" parent="VBoxContainer"]
@@ -70,15 +72,13 @@ text = "QUIT_BUTTON"
 
 [node name="Logo" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.460938
-anchor_top = 0.0375
+anchors_preset = 5
+anchor_left = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.0375
-offset_left = -128.0
-offset_right = 128.0
-offset_bottom = 72.0
+offset_left = -210.0
+offset_top = 64.0
+offset_right = 248.0
+offset_bottom = 136.0
 grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
-metadata/_edit_use_anchors_ = true

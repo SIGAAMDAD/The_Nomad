@@ -98,6 +98,7 @@ namespace Renown.World {
 			EmitSignal( "AgentExitedArea", (CharacterBody2D)body );
 		}
 		
+		/*
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
@@ -129,6 +130,7 @@ namespace Renown.World {
 			
 			CurrentWeather = (WeatherType)reader.ReadUInt32();
 		}
+		*/
 		
 		public override void _Ready() {
 			WeatherChances = new System.Collections.Generic.Dictionary<WeatherType, float>{
@@ -144,7 +146,7 @@ namespace Renown.World {
 			
 			WeatherChangeTimer = new Timer();
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
-			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
+//			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			
 			RegionArea = GetNode<Area2D>( "BiomeArea" );
 			RegionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRegionBodyShape2DEntered ) );

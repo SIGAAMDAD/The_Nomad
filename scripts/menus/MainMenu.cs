@@ -21,8 +21,6 @@ public partial class MainMenu : Control {
 
 	public override void _ExitTree() {
 		base._ExitTree();
-
-		GetNode<TextureRect>( "Background" ).QueueFree();
 	}
 
 	private void OnFinishedLoading() {
@@ -90,6 +88,9 @@ public partial class MainMenu : Control {
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnQuitGameButtonPressed ) );
 		ButtonList.Add( ExitButton );
+
+		Label AppVersion = GetNode<Label>( "AppVersion" );
+		AppVersion.Text = "AppVer " + (string)ProjectSettings.GetSetting( "application/config/version" );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );

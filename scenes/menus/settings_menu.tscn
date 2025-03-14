@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://dot7q6fxsd0g0"]
 
-[ext_resource type="Texture2D" uid="uid://d2qd4ywssfie3" path="res://textures/fromeaglespeak.jpg" id="1_b64v3"]
 [ext_resource type="Script" uid="uid://7avf78u00acn" path="res://scripts/menus/settings_menu.gd" id="1_itlg8"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_mcc4n"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
@@ -31,16 +31,8 @@ mouse_filter = 2
 script = ExtResource("1_itlg8")
 metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="MenuBackground" parent="." instance=ExtResource("2_mcc4n")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("1_b64v3")
-expand_mode = 2
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1

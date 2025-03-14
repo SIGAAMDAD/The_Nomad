@@ -1,6 +1,5 @@
 using Godot;
 using NathanHoad;
-using System;
 
 public partial class TitleMenu : Control {
 	public enum MenuState {
@@ -11,6 +10,10 @@ public partial class TitleMenu : Control {
 		Help,
 		Mods
 	};
+	
+	private AudioStream MusicIntro;
+	private AudioStream MusicLoop;
+	private AudioStreamPlayer2D ThemeMusic;
 
 	private Control CampaignMenu;
 	private Control MultiplayerMenu;
@@ -90,11 +93,13 @@ public partial class TitleMenu : Control {
 		LobbyBrowser = GetNode<Control>( "MultiplayerMenu/LobbyBrowser" );
 		LobbyFactory = GetNode<Control>( "MultiplayerMenu/LobbyFactory" );
 
-		SoundManager.PlayMusic( ResourceLoader.Load<AudioStream>( "res://music/ui/main.ogg" ) );
+		SoundManager.PlayMusic( ResourceLoader.Load<AudioStream>( "res://music/ui/menu_intro.ogg" ) );
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+	public override void _Process( double delta ) {
+		if ( !SoundManager.IsMusicPlaying() ) {
+			SoundManager.PlayMusic( ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" ) );
+		}
 	}
 }

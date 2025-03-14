@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://dpriw3r8df1su"]
 
 [ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
-[ext_resource type="Texture2D" uid="uid://c31p8dx0cxgio" path="res://textures/art/IMG_1709.dds" id="2_lib35"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="3_lf2jg"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
@@ -21,16 +21,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avp8t")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-modulate = Color(0.401968, 0.401968, 0.401968, 1)
+[node name="MenuBackground" parent="." instance=ExtResource("3_lf2jg")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_lib35")
-expand_mode = 2
 
 [node name="MenuTitle" type="Label" parent="."]
 layout_mode = 1

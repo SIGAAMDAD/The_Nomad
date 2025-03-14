@@ -41,7 +41,7 @@ public partial class Player : CharacterBody2D {
 
 	public class WarpPoint {
 		private Checkpoint Location;
-		private Biome Biome;
+		private Renown.World.Biome Biome;
 		private Texture2D Icon;
 
 		public WarpPoint( Checkpoint checkpoint ) {
@@ -54,7 +54,7 @@ public partial class Player : CharacterBody2D {
 		public Checkpoint GetLocation() {
 			return Location;
 		}
-		public Biome GetBiome() {
+		public Renown.World.Biome GetBiome() {
 			return Biome;
 		}
 	};
@@ -1290,7 +1290,7 @@ public partial class Player : CharacterBody2D {
 //		if ( Input.GetConnectedJoypads().Count > 0 ) {
 //			SwitchInputMode( GamepadInputMappings );
 //		} else {
-			SwitchInputMode( KeyboardInputMappings );
+		SwitchInputMode( KeyboardInputMappings );
 //		}
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );

@@ -1,11 +1,12 @@
 using Godot;
 
+/*
 namespace Renown.World {
-	public partial class ResourceProducer : Interactable {
+	public partial class ResourceProducer : InteractionItem {
 		public enum Type : uint {
 			Metal,
 			Wood,
-			Gunpowder.
+			Gunpowder,
 			Drugflower,
 			
 			Count
@@ -66,3 +67,4 @@ namespace Renown.World {
 		}
 	};
 };
+*/

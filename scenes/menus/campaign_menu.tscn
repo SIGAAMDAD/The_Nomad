@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://udm1pfg83jk1"]
 
 [ext_resource type="Script" uid="uid://p4s53hebw0xq" path="res://scripts/menus/CampaignMenu.cs" id="1_b1iin"]
-[ext_resource type="Texture2D" uid="uid://bkv5cpn5c6lpj" path="res://textures/playBackground.dds" id="2_rajmd"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="3_helh6"]
 
 [node name="CampaignMenu" type="Control"]
 layout_mode = 3
@@ -12,15 +12,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_b1iin")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="MenuBackground" parent="." instance=ExtResource("3_helh6")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_rajmd")
-expand_mode = 2
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 2

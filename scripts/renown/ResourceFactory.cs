@@ -1,6 +1,7 @@
 using Godot;
 using GDExtension.Wrappers;
 
+/*
 namespace Renown {
 	public partial class ResourceFactory : Node2D {
 		[Export]
@@ -67,3 +68,4 @@ namespace Renown {
 		}
 	};
 };
+*/

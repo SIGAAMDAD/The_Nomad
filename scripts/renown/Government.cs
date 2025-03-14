@@ -1,6 +1,7 @@
 using Godot;
 
 namespace Renown.World {
+	/*
 	public partial class Government : Node2D {
 		public class Debt {
 			public Government Loaner;
@@ -96,8 +97,8 @@ namespace Renown.World {
 		
 		public override void _Ready() {
 			base._Ready();
-			
-			WorldTime.
 		}
 	};
+			WorldTime.
+	*/
 };

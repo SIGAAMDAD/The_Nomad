@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7bc5y8xsmbqd"]
+[gd_scene load_steps=5 format=3 uid="uid://b7bc5y8xsmbqd"]
 
 [ext_resource type="Script" uid="uid://brj54fm1rsxnp" path="res://scripts/menus/DifficultySelect.cs" id="1_mg70y"]
 [ext_resource type="Texture2D" uid="uid://hnq7r65v0tk1" path="res://textures/playBackground.jpg" id="1_n4bea"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_ofj78"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="3_i342y"]
 
 [node name="DifficultySelect" type="Control"]
 layout_mode = 3
@@ -14,6 +15,7 @@ grow_vertical = 2
 script = ExtResource("1_mg70y")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +24,9 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_n4bea")
 expand_mode = 2
+
+[node name="MenuBackground" parent="." instance=ExtResource("3_i342y")]
+layout_mode = 1
 
 [node name="MenuName" type="Label" parent="."]
 modulate = Color(1, 0, 0, 1)

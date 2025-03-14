@@ -1,6 +1,7 @@
-[gd_scene load_steps=38 format=4 uid="uid://b16ex50idp6s1"]
+[gd_scene load_steps=39 format=4 uid="uid://b16ex50idp6s1"]
 
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="1_5w8g6"]
+[ext_resource type="Script" uid="uid://f5142yd5qopg" path="res://scripts/levels/SaltWastes.cs" id="1_ayvqd"]
 [ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="2_pnosp"]
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="3_cls3k"]
 [ext_resource type="Texture2D" uid="uid://bwc7mgg7aylk" path="res://textures/env/food/09_baguette.png" id="4_jeorn"]
@@ -5568,6 +5569,7 @@ shader = ExtResource("15_85mog")
 shader_parameter/alpha_blend = false
 
 [node name="SaltWastes" type="Node2D"]
+script = ExtResource("1_ayvqd")
 
 [node name="RockyBastardsCamp" type="Node2D" parent="."]
 
@@ -6048,7 +6050,7 @@ tile_set = ExtResource("13_8ewd7")
 [node name="Checkpoint_RockyBastards" parent="Checkpoints" instance=ExtResource("12_27st8")]
 light_mask = 15
 visibility_layer = 2
-position = Vector2(606, 140)
+position = Vector2(473, 77)
 Title = "Rocky Bastards Camp"
 
 [node name="Checkpoint_BanditBossOffice" parent="Checkpoints" instance=ExtResource("12_27st8")]
@@ -6073,14 +6075,14 @@ TutorialString = "Dash while moving for I-Frames"
 Action = ExtResource("18_itvej")
 
 [node name="UseWeaponTutorial" parent="Tutorials" instance=ExtResource("17_8ewd7")]
-position = Vector2(-64, 133)
+position = Vector2(715, 49)
 TutorialString = "Attack"
 Action = ExtResource("20_85mog")
 
 [node name="ParryTutorial" parent="Tutorials" instance=ExtResource("17_8ewd7")]
-position = Vector2(99, 151)
+position = Vector2(-96, 107)
 TutorialString = "Parry"
 
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("19_itvej")]
-position = Vector2(515, 148)
+position = Vector2(220, 138)
 TutorialString = "Rest at campfire to heal"

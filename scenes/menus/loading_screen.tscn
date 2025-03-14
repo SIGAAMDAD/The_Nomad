@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=13 format=3 uid="uid://ceidjyb2qv8xs"]
 
 [ext_resource type="Script" uid="uid://djmhs8xaqjdqg" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
+[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_gwdd4"]
 [ext_resource type="Texture2D" uid="uid://06opea2npplw" path="res://textures/fromeaglespeak.dds" id="2_q6361"]
 [ext_resource type="Texture2D" uid="uid://c31p8dx0cxgio" path="res://textures/art/IMG_1709.dds" id="3_3vglh"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_7krkx"]
@@ -22,7 +23,10 @@ layer = 10
 visible = false
 script = ExtResource("1_kt3u6")
 
+[node name="MenuBackground" parent="." instance=ExtResource("2_gwdd4")]
+
 [node name="Panel" type="Panel" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
