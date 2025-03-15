@@ -214,10 +214,10 @@ public partial class MobBase : CharacterBody2D {
 		AddChild( SequencedBark );
 		
 		BulletShellTree = new Node2D();
-		GetTree().CurrentScene.AddChild( BulletShellTree );
+//		GetTree().CurrentScene.AddChild( BulletShellTree );
 		
 		BloodSplatterTree = new Node2D();
-		GetTree().CurrentScene.AddChild( BloodSplatterTree );
+//		GetTree().CurrentScene.AddChild( BloodSplatterTree );
 		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		

@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bmc6jfet87hxo"]
+[gd_scene load_steps=6 format=3 uid="uid://bmc6jfet87hxo"]
 
 [ext_resource type="Script" uid="uid://2qrdkhtmiuba" path="res://scripts/multiplayer/LobbyFactory.cs" id="1_rlbmi"]
-[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_3iwdt"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_11eah"]
 
 [sub_resource type="Gradient" id="Gradient_b251r"]
@@ -22,10 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rlbmi")
 
-[node name="MenuBackground" parent="." instance=ExtResource("2_3iwdt")]
-layout_mode = 1
-
-[node name="Label" type="Label" parent="."]
+[node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

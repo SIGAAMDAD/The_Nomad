@@ -7,14 +7,12 @@ public partial class LobbyBrowser : Control {
 	private Button HostGame;
 	private Button RefreshLobbies;
 	private Button Matchmake;
+	private AudioStreamPlayer UIChannel;
 
 	private Control MatchmakingSpinner;
 	private Label MatchmakingLabel;
 
 	private VBoxContainer LobbyTable;
-
-	private PackedScene LoadingScreen;
-	private CanvasLayer NewLoadingScreen;
 
 	private int MatchmakingPhase = 0;
 
@@ -24,8 +22,10 @@ public partial class LobbyBrowser : Control {
 	private void OnLobbyJoined( ulong lobbyId ) {
 		GetNode( "/root/Console" ).Call( "print_line", "...Joined lobby", true );
 
-		NewLoadingScreen = (CanvasLayer)LoadingScreen.Instantiate();
-		GetTree().Root.AddChild( NewLoadingScreen );
+		Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
+
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
 		string modeName;
 		switch ( SteamLobby.Instance.GetGameMode() ) {
@@ -42,8 +42,6 @@ public partial class LobbyBrowser : Control {
 			return;
 		};
 
-		GetNode( "/root/Console" ).Call( "print_line", "Starting game...", true );
-
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
 		);
@@ -52,10 +50,9 @@ public partial class LobbyBrowser : Control {
 	}
 	private void OnLoadedMap() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
-		NewLoadingScreen.Hide();
-		NewLoadingScreen.QueueFree();
 
-		SoundManager.StopMusic( 0.50f );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Hide();
+		SoundManager.StopMusic( 0.5f );
 		Hide();
 	}
 
@@ -74,16 +71,14 @@ public partial class LobbyBrowser : Control {
 	}
 
 	private void GetLobbyList() {
-		if ( SteamLobby.Instance == null ) {
-			GD.PushError( "STEAMLOBBY" );
-		}
-		foreach ( var lobby in SteamLobby.Instance.GetLobbyList() ) {
-			string lobbyName = Steam.GetLobbyData( lobby, "name" );
+		System.Collections.Generic.List<ulong> lobbyList = SteamLobby.Instance.GetLobbyList();
+		for ( int i = 0; i < lobbyList.Count; i++ ) {
+			string lobbyName = Steam.GetLobbyData( lobbyList[i], "name" );
 
-			long lobbyMemberCount = Steam.GetNumLobbyMembers( lobby );
-			long lobbyMaxMemberCount = Steam.GetLobbyMemberLimit( lobby );
-			string lobbyMap = Steam.GetLobbyData( lobby, "map" );
-			string lobbyGameMode = Steam.GetLobbyData( lobby, "gamemode" );
+			long lobbyMemberCount = Steam.GetNumLobbyMembers( lobbyList[i] );
+			long lobbyMaxMemberCount = Steam.GetLobbyMemberLimit( lobbyList[i] );
+			string lobbyMap = Steam.GetLobbyData( lobbyList[i], "map" );
+			string lobbyGameMode = Steam.GetLobbyData( lobbyList[i], "gamemode" );
 
 			Button button = new Button();
 			button.Text = lobbyName;
@@ -115,6 +110,11 @@ public partial class LobbyBrowser : Control {
 	private void OnJoinButtonPressed() {
 	}
 
+	private void OnButtonFocused() {
+		UIChannel.Stream = UISfxManager.ButtonFocused;
+		UIChannel.Play();
+	}
+
 	public override void _Process( double delta ) {
 		base._Process( delta );
 		if ( LobbyTable.GetChildCount() == 0 ) {
@@ -122,21 +122,50 @@ public partial class LobbyBrowser : Control {
 			SetProcess( false );
 		}
 	}
-
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			HostGame.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			HostGame.Theme = AccessibilityManager.DefaultTheme;
+		}
+		HostGame.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		HostGame.Connect( "pressed", Callable.From( OnHostGameButtonPressed ) );
 
 		RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			RefreshLobbies.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			RefreshLobbies.Theme = AccessibilityManager.DefaultTheme;
+		}
+		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			Matchmake.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			Matchmake.Theme = AccessibilityManager.DefaultTheme;
+		}
+		Matchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
 		MatchmakingLabel = GetNode<Label>( "MatchMakingLabel" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			MatchmakingLabel.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			MatchmakingLabel.Theme = AccessibilityManager.DefaultTheme;
+		}
 		
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			LobbyTable.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			LobbyTable.Theme = AccessibilityManager.DefaultTheme;
+		}
 
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
+
+		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
 	}
 };

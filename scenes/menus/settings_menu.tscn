@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://dot7q6fxsd0g0"]
 
-[ext_resource type="Script" uid="uid://7avf78u00acn" path="res://scripts/menus/settings_menu.gd" id="1_itlg8"]
+[ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_mcc4n"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
@@ -28,7 +28,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_itlg8")
+script = ExtResource("1_mcc4n")
 metadata/_edit_use_anchors_ = true
 
 [node name="MenuBackground" parent="." instance=ExtResource("2_mcc4n")]
@@ -47,6 +47,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_fonts/font = ExtResource("3_ybwfc")
+theme_override_font_sizes/font_size = 14
 tab_alignment = 1
 current_tab = 0
 
@@ -166,6 +167,7 @@ popup/item_4/text = "MSAA 8x"
 popup/item_4/id = 4
 
 [node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 
@@ -288,94 +290,10 @@ text = "MUTE_ON_UNFOCUSED"
 [node name="MuteOnUnfocusedCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
 layout_mode = 2
 
-[node name="Controls" type="TabBar" parent="TabContainer"]
-visible = false
-layout_mode = 2
-mouse_filter = 2
-metadata/_tab_index = 2
-
-[node name="KeyBindsLabel" type="Label" parent="TabContainer/Controls"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -144.0
-offset_right = 144.0
-offset_bottom = 36.0
-grow_horizontal = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-theme_override_font_sizes/font_size = 36
-text = "KEYBINDS"
-horizontal_alignment = 1
-
-[node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.5, 0.5)
-mouse_filter = 2
-current_tab = 0
-
-[node name="Movement" type="TabBar" parent="TabContainer/Controls/TabContainer"]
-layout_mode = 2
-mouse_filter = 2
-metadata/_tab_index = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Movement"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 60
-
-[node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "dash"
-_display_category = "Movement"
-_action = ExtResource("5_g1xt0")
-
-[node name="SlideBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "slide"
-_display_category = "Movement"
-_action = ExtResource("6_uhm1t")
-
-[node name="MoveBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_name = "move"
-_display_category = "Movement"
-_action = ExtResource("5_my37k")
-
-[node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Utility"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -110.5
-offset_top = -518.0
-offset_right = 110.5
-offset_bottom = 10.0
-grow_horizontal = 2
-grow_vertical = 0
-
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 3
+metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
 layout_mode = 1
@@ -457,6 +375,90 @@ text = "DYSLEXIA_MODE"
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
+
+[node name="Controls" type="TabBar" parent="TabContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+metadata/_tab_index = 3
+
+[node name="KeyBindsLabel" type="Label" parent="TabContainer/Controls"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -144.0
+offset_right = 144.0
+offset_bottom = 36.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_ybwfc")
+theme_override_font_sizes/font_size = 36
+text = "KEYBINDS"
+horizontal_alignment = 1
+
+[node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+current_tab = 0
+
+[node name="Movement" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+layout_mode = 2
+mouse_filter = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Movement"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 60
+
+[node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_name = "dash"
+_display_category = "Movement"
+_action = ExtResource("5_g1xt0")
+
+[node name="SlideBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_name = "slide"
+_display_category = "Movement"
+_action = ExtResource("6_uhm1t")
+
+[node name="MoveBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_name = "move"
+_display_category = "Movement"
+_action = ExtResource("5_my37k")
+
+[node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Utility"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -110.5
+offset_top = -518.0
+offset_right = 110.5
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="SaveSettingsButton" type="Button" parent="."]
 layout_mode = 1

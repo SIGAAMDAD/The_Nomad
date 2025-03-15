@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwvr3x7oln763"]
+[gd_scene load_steps=5 format=3 uid="uid://bwvr3x7oln763"]
 
 [ext_resource type="Script" uid="uid://dkwvqln7223a" path="res://scripts/menus/poem.gd" id="1_e5efw"]
+[ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="2_amyrm"]
 
 [sub_resource type="Gradient" id="Gradient_bo6ix"]
 offsets = PackedFloat32Array(0)
@@ -158,6 +159,8 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "- Razal the Open-Minded, from \"Poems of Valden\""
 horizontal_alignment = 1
+
+[node name="Fade" parent="." instance=ExtResource("2_amyrm")]
 
 [connection signal="timeout" from="Label/Timer1" to="." method="_on_timer_1_timeout"]
 [connection signal="timeout" from="Label2/Timer2" to="." method="_on_timer_2_timeout"]

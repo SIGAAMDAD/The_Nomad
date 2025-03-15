@@ -1,7 +1,8 @@
 extends Control
 
-signal poem_completed
+var _loading:bool = false
 
+@onready var _transition_screen:CanvasLayer = $Fade
 @onready var _current_timer:int = 0
 @onready var _author:Label = $AuthorName
 @onready var TIMERS:Array[ Timer ] = [
@@ -28,18 +29,25 @@ func on_finished_loading() -> void:
 
 func _process( _delta: float ) -> void:
 	if Input.is_action_just_pressed( "ui_advance" ):
-		advance_timer()
+		call_deferred( "advance_timer" )
 
 func advance_timer() -> void:
+	if _loading:
+		return
+
 	if _current_timer >= LABELS.size():
-		hide()
+		_loading = true
+
+		_transition_screen.transition()
+		await _transition_screen.transition_finished
+
 		LoadingScreen.show()
-		
+
 		Console.print_line( "Loading game..." )
-		
+
 		var scene:AsyncScene = AsyncScene.new( "res://levels/world.tscn", AsyncScene.LoadingSceneOperation.ReplaceImmediate )
 		GameConfiguration.LoadedLevel = scene
-		
+
 		scene.OnComplete.connect( on_finished_loading )
 		return
 	

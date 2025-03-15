@@ -168,7 +168,7 @@ func _rebind( event: InputEvent, item: GUIDERemapper.ConfigItem ) -> void:
 	if input == null:
 		return
 	
-	var collisions:Array[ GUIDERemapper.ConfigItem ] = SettingsData._remapper.get_input_collisions( item, input )
+	var collisions:Array[ GUIDERemapper.ConfigItem ] = SettingsData.GetRemapper().get_input_collisions( item, input )
 	if collisions.any( func( it: GUIDERemapper.ConfigItem ): return not it.is_remappable ):
 		return
 	
@@ -176,15 +176,15 @@ func _rebind( event: InputEvent, item: GUIDERemapper.ConfigItem ) -> void:
 		SettingsData._remapper.set_bound_input( collision, null )
 	
 	SettingsData._remapper.set_bound_input( item, input )
-	_label.parse_bbcode( await SettingsData._mapping_formatter.input_as_richtext_async( input ) )
+	_label.parse_bbcode( await SettingsData.GetMappingFormatter().input_as_richtext_async( input ) )
 
 func _ready() -> void:
-	var items:Array[ GUIDERemapper.ConfigItem ] = SettingsData._remapper.get_remappable_items( null, "", _action )
-	var input:GUIDEInput = SettingsData._remapper.get_bound_input_or_null( items[0] )
+	var items:Array[ GUIDERemapper.ConfigItem ] = SettingsData.GetRemapper().get_remappable_items( null, "", _action )
+	var input:GUIDEInput = SettingsData.GetRemapper().get_bound_input_or_null( items[0] )
 	if input == null:
 		_label.text = "Not bound"
 	else:
-		_label.parse_bbcode( await SettingsData._mapping_formatter.input_as_richtext_async( input ) )
+		_label.parse_bbcode( await SettingsData.GetMappingFormatter().input_as_richtext_async( input ) )
 	
 	var tmp:GUIDERemapper.ConfigItem
 	var event:InputEvent

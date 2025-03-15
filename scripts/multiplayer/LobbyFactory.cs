@@ -1,9 +1,6 @@
 using Godot;
-using GodotSteam;
 using Multiplayer;
 using NathanHoad;
-using System;
-
 public partial class LobbyFactory : Control {
 	private LineEdit LobbyName;
 	private HSlider MaxPlayers;
@@ -14,15 +11,45 @@ public partial class LobbyFactory : Control {
 	private CanvasLayer NewLoadingScreen;
 
 	public override void _Ready() {
+		Label TitleLabel = GetNode<Label>( "TitleLabel" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			TitleLabel.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			TitleLabel.Theme = AccessibilityManager.DefaultTheme;
+		}
+
 		LobbyName = GetNode<LineEdit>( "MarginContainer/VBoxContainer/NameContainer/NameLineEdit" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			LobbyName.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			LobbyName.Theme = AccessibilityManager.DefaultTheme;
+		}
 		MaxPlayers = GetNode<HSlider>( "MarginContainer/VBoxContainer/MaxPlayersContainer/MaxPlayersHSlider" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			MaxPlayers.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			MaxPlayers.Theme = AccessibilityManager.DefaultTheme;
+		}
 		MapList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/MapContainer/MapOptionButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			MapList.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			MapList.Theme = AccessibilityManager.DefaultTheme;
+		}
 		GameModeList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/GameModeContainer/GameModeOptionButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			GameModeList.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			GameModeList.Theme = AccessibilityManager.DefaultTheme;
+		}
 
-		LoadingScreen = ResourceLoader.Load<PackedScene>( "res://scenes/menus/loading_screen.tscn" );
-
-		Button createButton = GetNode<Button>( "MarginContainer/CreateButton" );
-		createButton.Connect( "pressed", Callable.From( OnCreateButtonPressed ) );
+		Button CreateButton = GetNode<Button>( "MarginContainer/CreateButton" );
+		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+			CreateButton.Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			CreateButton.Theme = AccessibilityManager.DefaultTheme;
+		}
+		CreateButton.Connect( "pressed", Callable.From( OnCreateButtonPressed ) );
 
 		MultiplayerMapManager.Init();
 
@@ -36,9 +63,8 @@ public partial class LobbyFactory : Control {
 
 	private void OnLoadedMap() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
-		NewLoadingScreen.Hide();
-		NewLoadingScreen.QueueFree();
 
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Hide();
 		SoundManager.StopMusic( 0.5f );
 		Hide();
 	}
@@ -75,6 +101,11 @@ public partial class LobbyFactory : Control {
 
 		CommandConsole.PrintLine( "Starting game..." );
 
+		Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
+
+		CommandConsole.PrintLine( "Loading game..." );
+//		GetNode( "/root/Console" ).Call( "print_line", "Loading level " + levelName + "_sp.tscn..." );
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels" + MultiplayerMapManager.MapCache[ MapList.Selected ].FileName + "_mp_" + modeName + ".tscn", 1
 		);
