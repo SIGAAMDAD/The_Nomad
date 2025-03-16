@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bwvr3x7oln763"]
 
-[ext_resource type="Script" uid="uid://dkwvqln7223a" path="res://scripts/menus/poem.gd" id="1_e5efw"]
+[ext_resource type="Script" uid="uid://dr403vxmggvbn" path="res://scripts/menus/Poem.cs" id="1_amyrm"]
 [ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="2_amyrm"]
 
 [sub_resource type="Gradient" id="Gradient_bo6ix"]
@@ -17,7 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_e5efw")
+script = ExtResource("1_amyrm")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -28,7 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_x1yfw")
 
-[node name="Label" type="Label" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,155 +36,90 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -134.0
-offset_top = -232.495
-offset_right = 224.0
-offset_bottom = -157.495
+offset_top = -224.0
+offset_right = 250.0
+offset_bottom = 341.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.75, 0.75)
+theme_override_constants/separation = 24
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
 text = "It is the 91st millennium,
 All that was once known is lost.
 The machine of man betrayed its own makers."
 horizontal_alignment = 1
 
-[node name="Timer1" type="Timer" parent="Label"]
+[node name="Timer1" type="Timer" parent="VBoxContainer/Label"]
 wait_time = 3.5
 one_shot = true
 autostart = true
 
-[node name="Label2" type="Label" parent="."]
+[node name="Label2" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -130.0
-offset_top = -160.0
-offset_right = 206.0
-offset_bottom = -111.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+layout_mode = 2
 text = "The Great Eye that Saw fell,
 With the Hand that Weaves taking its place."
 horizontal_alignment = 1
 
-[node name="Timer2" type="Timer" parent="Label2"]
+[node name="Timer2" type="Timer" parent="VBoxContainer/Label2"]
 wait_time = 3.0
 one_shot = true
 
-[node name="Label3" type="Label" parent="."]
+[node name="Label3" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -130.0
-offset_top = -110.0
-offset_right = 197.0
-offset_bottom = -9.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+layout_mode = 2
 text = "There is now no peace,
 That time has passed.
 Nothing is left but rubble and ruin,
 And the stains from memories of the past."
 horizontal_alignment = 1
 
-[node name="Timer3" type="Timer" parent="Label3"]
+[node name="Timer3" type="Timer" parent="VBoxContainer/Label3"]
 wait_time = 3.0
 one_shot = true
 
-[node name="Label4" type="Label" parent="."]
+[node name="Label4" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -110.0
-offset_top = -20.0
-offset_right = 184.0
-offset_bottom = 29.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+layout_mode = 2
 text = "Once a haven, now a wasteland.
 The Earth has lost the will to live."
 horizontal_alignment = 1
 
-[node name="Timer4" type="Timer" parent="Label4"]
+[node name="Timer4" type="Timer" parent="VBoxContainer/Label4"]
 wait_time = 3.0
 one_shot = true
 
-[node name="Label5" type="Label" parent="."]
+[node name="Label5" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = 30.0
-offset_right = 157.0
-offset_bottom = 131.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+layout_mode = 2
 text = "We gaze at the dunes,
 Wondering: how did we get here?
 Why were we so short-sighted?
 How did we lose?"
 horizontal_alignment = 1
 
-[node name="Timer5" type="Timer" parent="Label5"]
+[node name="Timer5" type="Timer" parent="VBoxContainer/Label5"]
 wait_time = 3.5
 one_shot = true
 
-[node name="AuthorName" type="Label" parent="."]
+[node name="AuthorName" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -188.0
-offset_top = -120.0
-offset_right = 196.0
-offset_bottom = -97.0
-grow_horizontal = 2
-grow_vertical = 0
+layout_mode = 2
 text = "- Razal the Open-Minded, from \"Poems of Valden\""
 horizontal_alignment = 1
 
-[node name="PressEnter" type="Label" parent="."]
+[node name="PressEnter" type="Label" parent="VBoxContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -106.5
-offset_top = -40.0
-offset_right = 106.5
-offset_bottom = -17.0
-grow_horizontal = 2
-grow_vertical = 0
+layout_mode = 2
 text = "PRESS ENTER TO CONTINUE"
+horizontal_alignment = 1
 
 [node name="Fade" parent="." instance=ExtResource("2_amyrm")]
 
-[connection signal="timeout" from="Label/Timer1" to="." method="_on_timer_1_timeout"]
-[connection signal="timeout" from="Label2/Timer2" to="." method="_on_timer_2_timeout"]
-[connection signal="timeout" from="Label3/Timer3" to="." method="_on_timer_3_timeout"]
-[connection signal="timeout" from="Label4/Timer4" to="." method="_on_timer_4_timeout"]
-[connection signal="timeout" from="Label5/Timer5" to="." method="_on_timer_5_timeout"]
+[connection signal="timeout" from="VBoxContainer/Label/Timer1" to="." method="_on_timer_1_timeout"]
+[connection signal="timeout" from="VBoxContainer/Label2/Timer2" to="." method="_on_timer_2_timeout"]
+[connection signal="timeout" from="VBoxContainer/Label3/Timer3" to="." method="_on_timer_3_timeout"]
+[connection signal="timeout" from="VBoxContainer/Label4/Timer4" to="." method="_on_timer_4_timeout"]
+[connection signal="timeout" from="VBoxContainer/Label5/Timer5" to="." method="_on_timer_5_timeout"]
