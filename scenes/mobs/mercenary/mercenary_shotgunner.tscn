@@ -129,14 +129,12 @@ frame_progress = 0.820278
 
 [node name="FlashLight" type="PointLight2D" parent="Animations/HeadAnimations"]
 position = Vector2(63.017, -1.36265)
-rotation = 0.0101152
 energy = 3.5
 texture = ExtResource("4_i3ew1")
 texture_scale = 1.75
 
 [node name="SightCheck" type="Node2D" parent="Animations/HeadAnimations"]
 position = Vector2(6.93895, 6.0705)
-rotation = 0.0101152
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-6, -2)
@@ -160,6 +158,8 @@ debug_enabled = true
 
 [node name="MoveSfx" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_i3ew1")
+bus = &"SFX"
+playback_type = 1
 
 [node name="Bounds" type="Node2D" parent="."]
 

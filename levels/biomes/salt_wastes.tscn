@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://b16ex50idp6s1"]
+[gd_scene load_steps=40 format=4 uid="uid://b16ex50idp6s1"]
 
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="1_5w8g6"]
 [ext_resource type="Script" uid="uid://f5142yd5qopg" path="res://scripts/levels/SaltWastes.cs" id="1_ayvqd"]
@@ -21,6 +21,7 @@
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="18_itvej"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="19_itvej"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="20_85mog"]
+[ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="21_sayq2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfcq3"]
 size = Vector2(16, 12)
@@ -5874,7 +5875,6 @@ navigation_polygon = SubResource("NavigationPolygon_521i4")
 [node name="Guard0" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D" instance=ExtResource("11_sayq2")]
 position = Vector2(824, 325)
 Direction = 2
-ThinkInterval = 0.4
 
 [node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D" instance=ExtResource("11_sayq2")]
 position = Vector2(1093, 179)
@@ -6082,6 +6082,7 @@ Action = ExtResource("20_85mog")
 [node name="ParryTutorial" parent="Tutorials" instance=ExtResource("17_8ewd7")]
 position = Vector2(-96, 107)
 TutorialString = "Parry"
+Action = ExtResource("21_sayq2")
 
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("19_itvej")]
 position = Vector2(220, 138)

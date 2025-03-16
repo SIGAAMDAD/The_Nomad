@@ -64,10 +64,8 @@ DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 GUIDE="*res://addons/guide/guide.gd"
 Questify="*res://addons/questify/quest_manager.gd"
 QuestState="*res://autoloads/QuestManager.gd"
-WeaponSfx="*res://autoloads/WeaponSfxCache.cs"
 Console="*res://addons/console/console.gd"
 CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
-MobSfx="*res://autoloads/MobSfxCache.cs"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 
 [debug]
@@ -96,7 +94,7 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/gdscript2all/plugin.cfg", "res://addons/gdscript_sections/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/script_bench/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
+enabled=PackedStringArray("res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/dynamic_day_night_cycles/plugin.cfg", "res://addons/gdscript2all/plugin.cfg", "res://addons/gdscript_sections/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/script_bench/plugin.cfg", "res://addons/simple_multimesh/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/split_screen_2d/plugin.cfg", "res://addons/toggle_external_editor/plugin.cfg", "res://addons/unused_md5_file_cleaner/plugin.cfg")
 
 [global_group]
 

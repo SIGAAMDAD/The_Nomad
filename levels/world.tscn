@@ -1,14 +1,43 @@
-[gd_scene load_steps=6 format=3 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=12 format=3 uid="uid://bdtqrrsb2fib1"]
 
-[ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_pmfem"]
+[ext_resource type="Script" uid="uid://c6m56prls5p7o" path="res://scripts/SinglePlayer.cs" id="1_712nc"]
 [ext_resource type="PackedScene" uid="uid://b16ex50idp6s1" path="res://levels/biomes/salt_wastes.tscn" id="2_pmfem"]
 [ext_resource type="PackedScene" uid="uid://dt868tou75he1" path="res://levels/biomes/safe_sands.tscn" id="3_pmfem"]
 [ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="4_712nc"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="5_712nc"]
+[ext_resource type="Script" uid="uid://bqdgnod1hrdmf" path="res://scripts/DayNightCycle.cs" id="6_i8ckm"]
 
-[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Areas")]
-script = ExtResource("1_pmfem")
-Areas = []
+[sub_resource type="Gradient" id="Gradient_i8ckm"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.503704, 0.8)
+colors = PackedColorArray(1, 0.443137, 0, 1, 1, 0.341176, 0, 1, 1, 0.580392, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vons5"]
+noise_type = 0
+seed = 6
+frequency = 0.1585
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_legw5"]
+width = 2048
+height = 2048
+generate_mipmaps = false
+seamless = true
+seamless_blend_skirt = 0.555
+color_ramp = SubResource("Gradient_i8ckm")
+noise = SubResource("FastNoiseLite_vons5")
+
+[sub_resource type="Gradient" id="Gradient_vons5"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.246528, 0.440972, 1)
+colors = PackedColorArray(0.20255, 0.0114778, 0.00964049, 1, 0.690393, 0.0904096, 0.057744, 1, 1, 0.197333, 0.14, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_legw5"]
+gradient = SubResource("Gradient_vons5")
+width = 2048
+
+[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Player1")]
+script = ExtResource("1_712nc")
+Player1 = NodePath("Player")
 
 [node name="SaltWastes" parent="." instance=ExtResource("2_pmfem")]
 position = Vector2(-88192, 52992)
@@ -18,6 +47,12 @@ position = Vector2(-88192, 52992)
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SaltWastes/BiomeArea2D"]
 modulate = Color(0, 0, 0, 1)
 position = Vector2(-1, 57)
+polygon = PackedVector2Array(-26520, -42755, -6239, -22359, 17443, -17633, 38214, -13045, 59078, -5237, 78566, -2527, 61623, 11841, 61247, 36920, 10973, 30098, -18210, 15205, -60423, -7310)
+
+[node name="Polygon2D" type="Polygon2D" parent="SaltWastes/BiomeArea2D"]
+z_index = -6
+texture_repeat = 3
+texture = SubResource("NoiseTexture2D_legw5")
 polygon = PackedVector2Array(-26520, -42755, -6239, -22359, 17443, -17633, 38214, -13045, 59078, -5237, 78566, -2527, 61623, 11841, 61247, 36920, 10973, 30098, -18210, 15205, -60423, -7310)
 
 [node name="SafeSands" parent="." instance=ExtResource("3_pmfem")]
@@ -74,3 +109,8 @@ polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3
 
 [node name="Player" parent="." instance=ExtResource("5_712nc")]
 position = Vector2(-88720, 53124)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+position = Vector2(0, -1)
+script = ExtResource("6_i8ckm")
+Gradient = SubResource("GradientTexture1D_legw5")

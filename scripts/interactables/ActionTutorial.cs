@@ -15,18 +15,7 @@ public partial class ActionTutorial : InteractionItem {
 		}
 
 		Player player = (Player)body;
-
-		/*
-		Node SettingsData = GetNode( "/root/SettingsData" );
-		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)( (RefCounted)SettingsData.Get( "_remapper" ) ).Call( "get_remappable_items", player.GetCurrentMappingContext(), "", Action );
-		Resource input = (Resource)( (RefCounted)SettingsData.Get( "_remapper" ) ).Call( "get_bound_input_or_null", items[0] );
-		if ( input == null ) {
-			Text.Text = "Press [color=red]UNBOUND[/color] to " + TutorialString;
-		} else {
-			Text.ParseBbcode( "Press " + (string)( (RefCounted)SettingsData.Get( "_mapping_formatter" ) ).Call( "input_as_richtext_async", input ) + " to " + TutorialString );
-		}
-		*/
-
+		
 		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)SettingsData.GetRemapper().Call( "get_remappable_items", player.GetCurrentMappingContext(), "", Action );
 		Resource input = (Resource)SettingsData.GetRemapper().Call( "get_bound_input_or_null", items[0] );
 		if ( input == null ) {

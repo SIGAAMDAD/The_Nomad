@@ -23,18 +23,10 @@ public partial class MobSfxCache : Node {
 	
 	public static List<AudioStream> Help;
 	public static List<AudioStream> RepeatPlease;
+	
+	public static void Cache() {
+		GD.Print( "Loading mob sound effects..." );
 
-	private static MobSfxCache _Instance;
-	public static MobSfxCache Instance => _Instance;
-
-	public override void _EnterTree() {
-		base._EnterTree();
-		if ( _Instance != null ) {
-			this.QueueFree();
-		}
-		_Instance = this;
-	}
-	public void Cache() {
 		TargetSpotted = new List<AudioStream>{
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21199.mp3" ),

@@ -50,14 +50,5 @@ public partial class SinglePlayer : Node2D {
 //			true
 //			"goap.log"
 //		);
-
-		MobSfxCache.Instance.Cache();
-
-//		ThinkerPool = new ThinkerPoolManager();
-		
-		NavigationRegion2D NavMesh = GetNode<NavigationRegion2D>( "Level/OpposingForce/NavigationRegion2D" );
-		for ( int i = 0; i < NavMesh.GetChildCount(); i++ ) {
-//			ThinkerPool.AddThinker( (MobBase)NavMesh.GetChild( i ) );
-		}
 	}
 };

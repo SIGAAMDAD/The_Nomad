@@ -60,20 +60,19 @@ public partial class MobBase : CharacterBody2D {
 	[Export]
 	protected float MovementSpeed = 1.0f;
 	[Export]
-	protected float ThinkInterval = 0.2f;
-	[Export]
 	protected float FirearmDamage = 0.0f;
 	[Export]
 	protected float BluntDamage = 0.0f;
 	[Export]
 	protected float BladedDamage = 0.0f;
 
-	protected System.Random RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+	protected System.Random RandomFactory;
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
 	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
 	protected Godot.Vector2 NextPathPosition = Godot.Vector2.Zero;
+	protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 	protected float LookAngle = 0.0f;
 	protected float AimAngle = 0.0f;
 	protected PointLight2D FlashLight;
@@ -178,6 +177,8 @@ public partial class MobBase : CharacterBody2D {
 	}
 
 	protected void Init() {
+		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
 		SightDetector = GetNode<Node2D>( "Animations/HeadAnimations/SightCheck" );
@@ -194,12 +195,6 @@ public partial class MobBase : CharacterBody2D {
 		
 //		ActionSfx = GetNode<AudioStreamPlayer2D>( "ActionSfx" );
 
-		ThinkerTimer = new Timer();
-		ThinkerTimer.WaitTime = 0.5f;
-		ThinkerTimer.Autostart = true;
-		ThinkerTimer.Timeout += () => { Think( (float)GetProcessDeltaTime() ); };
-		AddChild( ThinkerTimer );
-		
 		Bark = new AudioStreamPlayer2D();
 		Bark.VolumeDb = 10.0f;
 		Bark.GlobalPosition = GlobalPosition;
@@ -214,10 +209,10 @@ public partial class MobBase : CharacterBody2D {
 		AddChild( SequencedBark );
 		
 		BulletShellTree = new Node2D();
-//		GetTree().CurrentScene.AddChild( BulletShellTree );
+		GetTree().CurrentScene.AddChild( BulletShellTree );
 		
 		BloodSplatterTree = new Node2D();
-//		GetTree().CurrentScene.AddChild( BloodSplatterTree );
+		GetTree().CurrentScene.AddChild( BloodSplatterTree );
 		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		
@@ -251,8 +246,6 @@ public partial class MobBase : CharacterBody2D {
 		AimAngle = LookAngle;
 
 		GenerateRaycasts();
-	}
-	public override void _Process( double delta ) {
 	}
 
 	protected void ProcessAnimations()  {
@@ -289,13 +282,11 @@ public partial class MobBase : CharacterBody2D {
 
 //		FlashLight.GlobalRotation = LookAngle;
 	}
-	public virtual void Think( float delta ) {
-	}
 	
 	protected bool MoveAlongPath() {
-		Godot.Vector2 lookDir = GlobalPosition.DirectionTo( Navigation.GetNextPathPosition() );
-		LookAngle = Mathf.Atan2( lookDir.Y, lookDir.X );
-		AngleDir = lookDir * MovementSpeed;
+		LookDir = GlobalPosition.DirectionTo( Navigation.GetNextPathPosition() );
+		LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+		AngleDir = LookDir * MovementSpeed;
 		Velocity = AngleDir;
 		return MoveAndSlide();
 	}

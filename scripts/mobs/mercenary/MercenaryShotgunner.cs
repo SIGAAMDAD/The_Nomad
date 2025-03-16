@@ -459,7 +459,11 @@ public partial class MercenaryShotgunner : MobBase {
 			Navigation.TargetPosition = SightTarget.GlobalPosition;
 		}
 	}
-	public override void Think( float delta ) {
+	public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 2 ) != 0 ) {
+			return;
+		}
+
 		ProcessAnimations();
 
 //		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
@@ -623,7 +627,7 @@ public partial class MercenaryShotgunner : MobBase {
 		*/
 		
 		if ( Investigate( sightTarget ) ) {
-//			return;
+			return;
 		}
 		
 		// we got something, but they slipped out of view
