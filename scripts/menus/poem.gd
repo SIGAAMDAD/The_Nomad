@@ -22,7 +22,7 @@ var _loading:bool = false
 ];
 
 func _on_finished_loading() -> void:
-	LoadingScreen.hide()
+	LoadingScreen.FadeOut()
 	SoundManager.stop_music( 1.5 )
 
 func on_finished_loading_scene() -> void:
@@ -48,7 +48,7 @@ func advance_timer() -> void:
 
 		hide()
 
-		LoadingScreen.show()
+		LoadingScreen.FadeIn()
 
 		Console.print_line( "Loading game..." )
 

@@ -29,13 +29,13 @@ public partial class MainMenu : Control {
 	private void OnFinishedLoading() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		SoundManager.StopMusic( 1.5f );
 		Hide();
 	}
 	private void LoadGame() {
 		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 

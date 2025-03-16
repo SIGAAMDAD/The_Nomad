@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 using Godot;
 using Godot.Collections;
 using GodotSteam;
@@ -86,16 +83,42 @@ public partial class SteamAchievements : Node {
 		private string IdString;
 		private string Name;
 		private bool Achieved = false;
-		private Variant Value = new Variant();
+		private object Value = null;
+		private object MaxValue = null;
 
 		public SteamAchievement( AchievementID id, string name ) {
 			Id = id;
 			IdString = "ACH_" + id.ToString().ToUpper();
 			Name = name;
+			Value = 0;
+
+			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
+		}
+		public SteamAchievement( AchievementID id, string name, uint maxValue ) {
+			Id = id;
+			IdString = "ACH_" + id.ToString().ToUpper();
+			Name = name;
+			Value = 0;
+			MaxValue = maxValue;
+
+			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
+		}
+		public SteamAchievement( AchievementID id, string name, float maxValue ) {
+			Id = id;
+			IdString = "ACH_" + id.ToString().ToUpper();
+			Name = name;
+			Value = 0.0f;
+			MaxValue = maxValue;
 
 			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 
+		public object GetValue() {
+			return Value;
+		}
+		public object GetMaxValue() {
+			return MaxValue;
+		}
 		public string GetName() {
 			return Name;
 		}
@@ -161,8 +184,29 @@ public partial class SteamAchievements : Node {
 		Steam.RequestUserStats( Steam.GetSteamID() );
 	}
 
+	public static void SetAchievementProgress( string id, string statName, int nValue ) {
+		if ( !AchievementTable.ContainsKey( id ) ) {
+			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
+			return;
+		}
+
+		Steam.SetStatInt( statName, nValue );
+		while ( !Steam.StoreStats() ) {
+			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+		}
+	}
+	public static void SetAchievementProgress( string id, string statName, float nValue ) {
+		if ( !AchievementTable.ContainsKey( id ) ) {
+			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
+			return;
+		}
+
+		Steam.SetStatFloat( statName, nValue );
+		while ( !Steam.StoreStats() ) {
+			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+		}
+	}
 	public static void ActivateAchievement( string id ) {
-		GD.Print( "Activating achievement " + id );
 		if ( !AchievementTable.ContainsKey( id ) ) {
 			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
 			return;
@@ -170,7 +214,6 @@ public partial class SteamAchievements : Node {
 
 		AchievementTable[ id ].SetAchieved( true );
 
-//		Dictionary achievement = Steam.GetAchievement( id );
 		if ( !Steam.SetAchievement( id ) ) {
 			GD.PushError( "[STEAM] Error activating achievement!" );
 			return;
