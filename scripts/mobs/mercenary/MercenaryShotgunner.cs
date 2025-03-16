@@ -48,18 +48,18 @@ public partial class MercenaryShotgunner : MobBase {
 		soundLevel -= GlobalPosition.DistanceTo( body.GlobalPosition );
 		if ( soundLevel >= SoundDetectionLevel / 2.0f ) {
 			Blackboard.SetAwareness( Awareness.Suspicious );
-			Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
+			Bark.Stream = AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Count - 1 ) ];
 			Bark.Play();
 		} else if ( soundLevel >= SoundDetectionLevel ) {
 			Blackboard.SetAwareness( Awareness.Alert );
-			Bark.Stream = MobSfxCache.Alert[ RandomFactory.Next( 0, MobSfxCache.Alert.Count - 1 ) ];
+			Bark.Stream = AudioCache.Alert[ RandomFactory.Next( 0, AudioCache.Alert.Count - 1 ) ];
 			Bark.Play();
 		}
 	}
 	
 	private void OnTargetMoveTimerTimeout() {
 		// "target's pinned!"
-		Bark.Stream = MobSfxCache.TargetPinned[ RandomFactory.Next( 0, MobSfxCache.TargetPinned.Count - 1 ) ];
+		Bark.Stream = AudioCache.TargetPinned[ RandomFactory.Next( 0, AudioCache.TargetPinned.Count - 1 ) ];
 		Bark.Play();
 	}
 
@@ -268,13 +268,13 @@ public partial class MercenaryShotgunner : MobBase {
 					else {
 						if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 0 ) { 
 							// FIXME: is this too harsh?
-							Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+							Bark.Stream = AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Count - 1 ) ];
 							Bark.Play();
 							agent.State[ "Target" ] = SightTarget;
 							agent.PlanAsync();
 							return ExecutionStatus.Succeeded;
 						} else {
-							Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
+							Bark.Stream = AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Count - 1 ) ];
 							Bark.Play();
 							
 							agent.State[ "LastTargetPosition" ] = SightTarget.GlobalPosition;
@@ -505,7 +505,7 @@ public partial class MercenaryShotgunner : MobBase {
 			// can't see the target, don't waste ammunition
 			
 			// "he's running away!"
-			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.Next( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
+			Bark.Stream = AudioCache.TargetRunning[ RandomFactory.Next( 0, AudioCache.TargetRunning.Count - 1 ) ];
 			Bark.Play();
 			
 			ShootLine.Hide();
@@ -536,7 +536,7 @@ public partial class MercenaryShotgunner : MobBase {
 			return ExecutionStatus.Succeeded;
 		} else if ( collider is MobBase ) {
 			// "GET OUT OF THE WAY!"
-			Bark.Stream = MobSfxCache.OutOfTheWay[ RandomFactory.Next( 0, MobSfxCache.OutOfTheWay.Count - 1 ) ];
+			Bark.Stream = AudioCache.OutOfTheWay[ RandomFactory.Next( 0, AudioCache.OutOfTheWay.Count - 1 ) ];
 			Bark.Play();
 		}
 		return ExecutionStatus.Failed;
@@ -547,26 +547,26 @@ public partial class MercenaryShotgunner : MobBase {
 	private void SetAlert( bool bRunning ) {
 		if ( bRunning ) {
 			// "He's getting away!"
-			Bark.Stream = MobSfxCache.TargetRunning[ RandomFactory.Next( 0, MobSfxCache.TargetRunning.Count - 1 ) ];
+			Bark.Stream = AudioCache.TargetRunning[ RandomFactory.Next( 0, AudioCache.TargetRunning.Count - 1 ) ];
 		} else {
 			// "there he is!'
-			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Count - 1 ) ];
 		}
 		Bark.Play();
 		
 		if ( (float)Agent.State[ "Fear" ] > 80.0f ) {
 			// "shut the fuck up"
-//			SequencedBark.Stream = MobSfxCache.Quiet[ RandomFactory.Next( 0, MobSfxCache.Quiet.Count - 1 ) ];
+//			SequencedBark.Stream = AudioCache.Quiet[ RandomFactory.Next( 0, AudioCache.Quiet.Count - 1 ) ];
 		}
 		Agent.State[ "Target" ] = SightTarget;
 	}
 	private void SetSuspicious() {
 		// "what was that?"
 //		AISoundManager.RequestAISound( this, BarkType.Confusion );
-		Bark.Stream = MobSfxCache.Confusion[ RandomFactory.Next( 0, MobSfxCache.Confusion.Count - 1 ) ];
+		Bark.Stream = AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Count - 1 ) ];
 		Bark.Play();
 		
-		SequencedBark.Stream = MobSfxCache.CheckItOut[ RandomFactory.Next( 0, MobSfxCache.CheckItOut.Count - 1 ) ];
+		SequencedBark.Stream = AudioCache.CheckItOut[ RandomFactory.Next( 0, AudioCache.CheckItOut.Count - 1 ) ];
 		
 		Agent.State[ "TargetReached" ] = false;
 		Agent.State[ "TargetDistance" ] = GlobalPosition.DistanceTo( Blackboard.GetLastTargetPosition() );
@@ -614,7 +614,7 @@ public partial class MercenaryShotgunner : MobBase {
 			Grenade data = (Grenade)sightTarget;
 			if ( data.GlobalPosition.DistanceTo( GlobalPosition ) < data.GetRange() ) {
 				// "grenade!"
-				Bark.Stream = MobSfxCache.Grenade[ RandomFactory.Next( 0, MobSfxCache.Grenade.Count - 1 ) ];
+				Bark.Stream = AudioCache.Grenade[ RandomFactory.Next( 0, AudioCache.Grenade.Count - 1 ) ];
 				Bark.Play();
 				
 				if ( !(bool)agent.State[ "InCover" ] ) {
@@ -698,10 +698,10 @@ public partial class MercenaryShotgunner : MobBase {
 				if ( Squad != null && Squad.GetNumSquadMembers() == 1 ) {
 					if ( nBodyCount > 1 ) {
 						// "he wiped out the whole squad"
-						Bark.Stream = MobSfxCache.SquadWiped;
+						Bark.Stream = AudioCache.SquadWiped;
 					} else {
 						// "I need backup now!"
-						Bark.Stream = MobSfxCache.NeedBackup[ RandomFactory.Next( 0, MobSfxCache.NeedBackup.Count - 1 ) ];
+						Bark.Stream = AudioCache.NeedBackup[ RandomFactory.Next( 0, AudioCache.NeedBackup.Count - 1 ) ];
 					}
 					
 					float nAmount = 20.0f;
@@ -709,23 +709,23 @@ public partial class MercenaryShotgunner : MobBase {
 						nAmount = 70.0f;
 					}
 					if ( Randf( 0.0f, 100.0f ) < nAmount ) {
-						SequencedBark.Stream = MobSfxCache.Unstoppable;
+						SequencedBark.Stream = AudioCache.Unstoppable;
 					}
 				}
 				else if ( nBodyCount == 2 ) {
 					// "I've got two men down!"
-					Bark.Stream = MobSfxCache.ManDown2;
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
+					Bark.Stream = AudioCache.ManDown2;
+					SequencedBark.Stream = AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Count - 1 ) ];
 				}
 				else if ( nBodyCount == 3 ) {
 					// "I've got three men down!"
-					Bark.Stream = MobSfxCache.ManDown3;
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
+					Bark.Stream = AudioCache.ManDown3;
+					SequencedBark.Stream = AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Count - 1 ) ];
 				}
 				else {
 					// "MAN DOWN!"
-					Bark.Stream = MobSfxCache.ManDown[ RandomFactory.Next( 0, MobSfxCache.ManDown.Count - 1 ) ];
-					SequencedBark.Stream = MobSfxCache.Curse[ RandomFactory.Next( 0, MobSfxCache.Curse.Count - 1 ) ];
+					Bark.Stream = AudioCache.ManDown[ RandomFactory.Next( 0, AudioCache.ManDown.Count - 1 ) ];
+					SequencedBark.Stream = AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Count - 1 ) ];
 				}
 				Bark.Play();
 			}

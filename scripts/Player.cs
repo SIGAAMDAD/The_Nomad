@@ -183,17 +183,6 @@ public partial class Player : CharacterBody2D {
 	private AudioStreamPlayer2D SlowMoChannel;
 	private AudioStreamPlayer2D ActionChannel;
 
-	private AudioStream ChangeWeaponSfx;
-	private List<AudioStream> PainSfx;
-	private List<AudioStream> DieSfx;
-	private List<AudioStream> DeathSfx;
-	private List<AudioStream> MoveGravelSfx;
-	private List<AudioStream> DashSfx;
-	private List<AudioStream> SlideSfx;
-	private AudioStream DashExplosion;
-	private AudioStream SlowMoBeginSfx;
-	private AudioStream SlowMoEndSfx;
-
 	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
 	private List<ConsumableStack> ConsumableStacks = new List<ConsumableStack>();
 	private List<AmmoStack> AmmoStacks = new List<AmmoStack>();
@@ -579,13 +568,6 @@ public partial class Player : CharacterBody2D {
 		ActionChannel.QueueFree();
 		PainChannel.QueueFree();
 
-		PainSfx.Clear();
-		DieSfx.Clear();
-		DeathSfx.Clear();
-		MoveGravelSfx.Clear();
-		DashSfx.Clear();
-		SlideSfx.Clear();
-
 		DashTime.QueueFree();
 		SlideTime.QueueFree();
 		DashCooldownTime.QueueFree();
@@ -623,7 +605,7 @@ public partial class Player : CharacterBody2D {
 
 		TorsoAnimation.Play( "death" );
 
-		PainChannel.Stream = DieSfx[ RandomFactory.Next( 0, DieSfx.Count - 1 ) ];
+		PainChannel.Stream = AudioCache.PlayerDieSfx[ RandomFactory.Next( 0, AudioCache.PlayerDieSfx.Count - 1 ) ];
 		PainChannel.Play();
 
 		SetProcessUnhandledInput( true );
@@ -646,7 +628,7 @@ public partial class Player : CharacterBody2D {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			PainChannel.Stream = PainSfx[ RandomFactory.Next( 0, PainSfx.Count - 1 ) ];
+			PainChannel.Stream = AudioCache.PlayerPainSfx[ RandomFactory.Next( 0, AudioCache.PlayerPainSfx.Count - 1 ) ];
 			PainChannel.Play();
 		}
 	}
@@ -682,7 +664,7 @@ public partial class Player : CharacterBody2D {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			MoveChannel.Stream = MoveGravelSfx[ RandomFactory.Next( 0, MoveGravelSfx.Count - 1 ) ];
+			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Count - 1 ) ];
 			MoveChannel.Play();
 		}
 	}
@@ -708,7 +690,7 @@ public partial class Player : CharacterBody2D {
 	private void OnDash() {
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
-			DashChannel.Stream = DashExplosion;
+			DashChannel.Stream = AudioCache.DashExplosion;
 			DashChannel.Play();
 
 			DashBurnout = 0.0f;
@@ -718,7 +700,7 @@ public partial class Player : CharacterBody2D {
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
 		DashTime.Start();
-		DashChannel.Stream = DashSfx[ RandomFactory.Next( 0, DashSfx.Count - 1 ) ];
+		DashChannel.Stream = AudioCache.DashSfx[ RandomFactory.Next( 0, AudioCache.DashSfx.Count - 1 ) ];
 		DashChannel.PitchScale = 1.0f + DashBurnout;
 		DashChannel.Play();
 		( (PointLight2D)DashEffect.GetChild( 0 ) ).Show();
@@ -794,7 +776,7 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		ActionChannel.Stream = ChangeWeaponSfx;
+		ActionChannel.Stream = AudioCache.ChangeWeaponSfx;
 		ActionChannel.Play();
 
 		CurrentWeapon = index;
@@ -841,7 +823,7 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		ActionChannel.Stream = ChangeWeaponSfx;
+		ActionChannel.Stream =AudioCache.ChangeWeaponSfx;
 		ActionChannel.Play();
 
 		CurrentWeapon = index;
@@ -852,7 +834,7 @@ public partial class Player : CharacterBody2D {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			SlowMoChannel.Stream = SlowMoBeginSfx;
+			SlowMoChannel.Stream = AudioCache.SlowMoBeginSfx;
 			SlowMoChannel.Play();
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -1125,7 +1107,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	private void OnSlowMoSfxFinished() {
-		if ( SlowMoChannel.Stream == SlowMoBeginSfx ) {
+		if ( SlowMoChannel.Stream == AudioCache.SlowMoBeginSfx ) {
 			// only start lagging audio playback after the slowmo begin finishes
 			AudioServer.PlaybackSpeedScale = 0.50f;
 		}
@@ -1163,41 +1145,6 @@ public partial class Player : CharacterBody2D {
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		SlideChannel = GetNode<AudioStreamPlayer2D>( "SlideChannel" );
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
-
-		ChangeWeaponSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/change_weapon.ogg" );
-
-		PainSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/pain0.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/pain1.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/pain2.ogg" )
-		};
-		DieSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/death1.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/death2.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/death3.ogg" )
-		};
-		DeathSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_0.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_1.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_2.wav" )
-		};
-		MoveGravelSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel0.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel1.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel2.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel3.ogg" )
-		};
-		DashSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/jumpjet_burn_v2_m_01.wav" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/jumpjet_burn_v2_m_02.wav" )
-		};
-		SlideSfx = new List<AudioStream>{
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/slide0.ogg" ),
-			ResourceLoader.Load<AudioStream>( "res://sounds/player/slide1.ogg" )
-		};
-		SlowMoBeginSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/slowmo_begin.ogg" );
-		SlowMoEndSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/slowmo_end.ogg" );
-		DashExplosion = ResourceLoader.Load<AudioStream>( "res://sounds/player/dash_explosion.mp3" );
 	}
 
 	private void ExitBulletTime() {
@@ -1206,7 +1153,7 @@ public partial class Player : CharacterBody2D {
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-		SlowMoChannel.Stream = SlowMoEndSfx;
+		SlowMoChannel.Stream = AudioCache.SlowMoEndSfx;
 		SlowMoChannel.Play();
 	}
 
@@ -1458,8 +1405,7 @@ public partial class Player : CharacterBody2D {
 		} else {
 			Godot.Vector2 mousePosition;
 
-			// TODO: implement settings manager in C#?
-			if ( (int)GetNode( "/root/SettingsData" ).Get( "_window_mode" ) >= 2 ) {
+			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
 				mousePosition = DisplayServer.MouseGetPosition();
 			} else {
 				mousePosition = GetViewport().GetMousePosition();
@@ -1582,7 +1528,7 @@ public partial class Player : CharacterBody2D {
 			weapon.SetReserve( stack );
 			weapon.SetAmmo( stack.AmmoType );
 		}
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_equip_weapon_on_pickup" ) ) {
+		if ( SettingsData.GetEquipWeaponOnPickup() ) {
 			HUD.SetWeapon( weapon );
 
 			// apply rules of various weapon properties

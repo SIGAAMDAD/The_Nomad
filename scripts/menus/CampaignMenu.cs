@@ -96,21 +96,21 @@ public partial class CampaignMenu : Control {
 
 	public override void _Ready() {
 		Label TitleLabel = GetNode<Label>( "TitleLabel" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			TitleLabel.Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			TitleLabel.Theme = AccessibilityManager.DefaultTheme;
 		}
 
 		DifficultyDescriptionLabel = GetNode<Label>( "DifficultyDescriptionLabel" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			DifficultyDescriptionLabel.Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			DifficultyDescriptionLabel.Theme = AccessibilityManager.DefaultTheme;
 		}
 
 		Button IntendedModeButton = GetNode<Button>( "VBoxContainer/IntendedModeButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			IntendedModeButton.Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			IntendedModeButton.Theme = AccessibilityManager.DefaultTheme;
@@ -120,7 +120,7 @@ public partial class CampaignMenu : Control {
 		ButtonList.Add( IntendedModeButton );
 
 		Button PowerFantasyModeButton = GetNode<Button>( "VBoxContainer/PowerFantasyModeButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			PowerFantasyModeButton.Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			PowerFantasyModeButton.Theme = AccessibilityManager.DefaultTheme;
@@ -130,7 +130,7 @@ public partial class CampaignMenu : Control {
 		ButtonList.Add( PowerFantasyModeButton );
 
 		MemeModeButton = GetNode<Button>( "VBoxContainer/MemeModeButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			MemeModeButton.Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			MemeModeButton.Theme = AccessibilityManager.DefaultTheme;

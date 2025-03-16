@@ -90,7 +90,7 @@ public partial class SteamAchievements : Node {
 
 		public SteamAchievement( AchievementID id, string name ) {
 			Id = id;
-			IdString = "ACH_" + nameof( id ).ToUpper();
+			IdString = "ACH_" + id.ToString().ToUpper();
 			Name = name;
 
 			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
@@ -118,12 +118,13 @@ public partial class SteamAchievements : Node {
 		}
 
 		Steam.UserAchievementStored += ( gameId, groupAchieve, achievementName, currentProgress, maxProgress ) => {
+			GD.Print( "Stored user achievement data for " + achievementName );
 		};
 
 		Steam.UserStatsReceived += ( gameId, result, userId ) => {
 			GD.Print( "Got local player statistics & achievements" );
 
-			if ( userId != SteamManager.GetSteamID() ) {
+			if ( (ulong)userId != Steam.GetSteamID() ) {
 				GD.PushError( "Not this user, aborting." );
 				return;
 			}
@@ -143,25 +144,39 @@ public partial class SteamAchievements : Node {
 				if ( !(bool)steamStatus[ "ret" ] ) {
 					continue;
 				}
+				GD.Print( "Got achivement data for " + achievement.Value.GetIdString() + ", status: " + ( (bool)steamStatus[ "achieved" ] ).ToString() );
 				AchievementTable[ achievement.Key ].SetAchieved( (bool)steamStatus[ "achieved" ] );
 			}
 		};
 
-		Steam.RequestUserStats( SteamManager.GetSteamID() );
+		Steam.UserStatsStored += ( gameId, result ) => {
+			if ( result != 1 ) {
+				GD.PushError( "Steam couldn't store stats: " + result.ToString() );
+			}
+			if ( gameId != SteamManager.GetAppID() ) {
+				GD.PushError( "Not this game!" );
+			}
+		};
+
+		Steam.RequestUserStats( Steam.GetSteamID() );
 	}
 
 	public static void ActivateAchievement( string id ) {
+		GD.Print( "Activating achievement " + id );
 		if ( !AchievementTable.ContainsKey( id ) ) {
 			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
 			return;
 		}
 
-		Dictionary achievement = Steam.GetAchievement( id );
-		if ( (bool)achievement[ "achieved" ] ) {
+		AchievementTable[ id ].SetAchieved( true );
+
+//		Dictionary achievement = Steam.GetAchievement( id );
+		if ( !Steam.SetAchievement( id ) ) {
+			GD.PushError( "[STEAM] Error activating achievement!" );
 			return;
 		}
-
-		Steam.SetAchievement( id );
-		Steam.StoreStats();
+		while ( !Steam.StoreStats() ) {
+			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+		}
 	}
 };

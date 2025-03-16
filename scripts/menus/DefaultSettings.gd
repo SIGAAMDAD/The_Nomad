@@ -1,10 +1,25 @@
 class_name DefaultSettings extends Resource
 
+enum WindowMode {
+	Windowed,
+	BorderlessWindowed,
+	Fullscreen,
+	BorderlessFullscreen
+};
+
+enum AntiAliasing {
+	None,
+	FXAA,
+	MSAA_2x,
+	MSAA_4x,
+	MSAA_8x
+};
+
 # video
-@export var _window_mode:SettingsManager.WindowMode = SettingsManager.WindowMode.Fullscreen
+@export var _window_mode:WindowMode = WindowMode.Fullscreen
 @export var _vsync:bool = false
 #@export var _resolution:SettingsManager.Resolution = SettingsManager.Resolution.Res_1280x720
-@export var _antialasing:SettingsManager.AntiAliasing = SettingsManager.AntiAliasing.None
+@export var _antialasing:AntiAliasing = AntiAliasing.None
 @export var _shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
 @export var _max_fps:int = 60
 

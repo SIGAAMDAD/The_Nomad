@@ -1,15 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=5 format=3 uid="uid://ceidjyb2qv8xs"]
 
-[ext_resource type="Script" uid="uid://djmhs8xaqjdqg" path="res://scripts/menus/loading_screen.gd" id="1_kt3u6"]
-[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_gwdd4"]
-[ext_resource type="Texture2D" uid="uid://06opea2npplw" path="res://textures/fromeaglespeak.dds" id="2_q6361"]
-[ext_resource type="Texture2D" uid="uid://c31p8dx0cxgio" path="res://textures/art/IMG_1709.dds" id="3_3vglh"]
+[ext_resource type="Script" uid="uid://c8eph374f4si" path="res://scripts/menus/LoadingScreen.cs" id="1_gwdd4"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_7krkx"]
-[ext_resource type="Texture2D" uid="uid://c5d6b0lhhvm4x" path="res://textures/art/IMG_2189.dds" id="4_1n7lv"]
-[ext_resource type="Texture2D" uid="uid://cewypxn1uwb2" path="res://textures/art/IMG_2190.dds" id="5_mkirn"]
-[ext_resource type="Texture2D" uid="uid://brjgej3a5tyqe" path="res://textures/art/IMG_2251.dds" id="6_1n7lv"]
-[ext_resource type="Texture2D" uid="uid://b6nnt6g7d7yas" path="res://textures/art/IMG_2412.dds" id="7_mkirn"]
-[ext_resource type="Texture2D" uid="uid://cwqib6coyfus7" path="res://textures/art/IMG_2414.dds" id="8_mkirn"]
 
 [sub_resource type="Gradient" id="Gradient_7krkx"]
 offsets = PackedFloat32Array(0)
@@ -21,109 +13,7 @@ gradient = SubResource("Gradient_7krkx")
 [node name="LoadingScreen" type="CanvasLayer"]
 layer = 10
 visible = false
-script = ExtResource("1_kt3u6")
-
-[node name="MenuBackground" parent="." instance=ExtResource("2_gwdd4")]
-
-[node name="Panel" type="Panel" parent="."]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Images" type="Control" parent="Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Background0" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_q6361")
-expand_mode = 2
-
-[node name="Background1" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_3vglh")
-
-[node name="Background2" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_1n7lv")
-
-[node name="Background3" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("5_mkirn")
-
-[node name="Background4" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("6_1n7lv")
-
-[node name="Background5" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("7_mkirn")
-
-[node name="Background6" type="TextureRect" parent="Panel/Images"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("8_mkirn")
-
-[node name="ProgressBar" type="ProgressBar" parent="Panel"]
-visible = false
-texture_filter = 2
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -27.0
-grow_horizontal = 2
-grow_vertical = 0
-scale = Vector2(0.999273, 1.00079)
+script = ExtResource("1_gwdd4")
 
 [node name="ImageChange" type="Timer" parent="."]
 wait_time = 5.0
@@ -208,5 +98,3 @@ allow_greater = false
 allow_lesser = false
 script = ExtResource("3_7krkx")
 metadata/_custom_type_script = "uid://bjlqnmhmtp0yj"
-
-[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

@@ -316,7 +316,7 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
 		if ( agent.State[ "SightTarget" ] != null ) {
-			Bark.Stream = MobSfxCache.TargetSpotted[ RandomFactory.Next( 0, MobSfxCache.TargetSpotted.Count - 1 ) ];
+			Bark.Stream = AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Count - 1 ) ];
 			Bark.Play();
 
 			agent.State[ "HasTarget " ] = true;

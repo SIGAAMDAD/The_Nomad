@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bh3dqangoe8i2"]
+[gd_scene load_steps=7 format=3 uid="uid://bh3dqangoe8i2"]
 
 [ext_resource type="Script" uid="uid://dtapy2t46odlx" path="res://scripts/interactables/ActionTutorial.cs" id="1_fy36v"]
 [ext_resource type="Texture2D" uid="uid://b4jdovv5ktxb5" path="res://textures/tilesets/desert/decor_3.png" id="2_ur08t"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fy36v"]
+light_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bsglu"]
 size = Vector2(91.5, 67)
@@ -14,10 +17,15 @@ colors = PackedColorArray(0, 0, 0, 1)
 gradient = SubResource("Gradient_qw384")
 
 [node name="ActionTutorial" type="Area2D"]
+light_mask = 512
+visibility_layer = 512
 z_index = 5
+material = SubResource("CanvasItemMaterial_fy36v")
 script = ExtResource("1_fy36v")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 512
+visibility_layer = 512
 position = Vector2(0, 7.62939e-06)
 scale = Vector2(0.210526, 0.23913)
 texture = ExtResource("2_ur08t")
@@ -27,7 +35,10 @@ shape = SubResource("RectangleShape2D_bsglu")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false
+light_mask = 512
+visibility_layer = 512
 z_index = 5
+use_parent_material = true
 offset_left = -128.0
 offset_top = -87.0
 offset_right = 128.0
@@ -36,6 +47,8 @@ texture = SubResource("GradientTexture1D_41gtw")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 visible = false
+light_mask = 512
+visibility_layer = 512
 z_index = 5
 offset_left = -128.0
 offset_top = -87.0

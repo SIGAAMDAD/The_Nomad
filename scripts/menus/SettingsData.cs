@@ -139,6 +139,13 @@ public partial class SettingsData : Control {
 		DyslexiaMode = bDyslexiaMode;
 	}
 
+	public static bool GetEquipWeaponOnPickup() {
+		return EquipWeaponOnPickup;
+	}
+	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) {
+		EquipWeaponOnPickup = bEquipWeapon;
+	}
+
 	private static void LoadAudioSettings( System.IO.BinaryReader reader ) {
 		EffectsOn = reader.ReadBoolean();
 		EffectsVolume = (float)reader.ReadDouble();

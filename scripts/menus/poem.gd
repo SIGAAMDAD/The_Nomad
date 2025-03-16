@@ -5,6 +5,7 @@ var _loading:bool = false
 @onready var _transition_screen:CanvasLayer = $Fade
 @onready var _current_timer:int = 0
 @onready var _author:Label = $AuthorName
+@onready var _press_enter:Label = $PressEnter
 @onready var TIMERS:Array[ Timer ] = [
 	$Label/Timer1,
 	$Label2/Timer2,
@@ -20,12 +21,16 @@ var _loading:bool = false
 	$Label5
 ];
 
-func on_finished_loading() -> void:
-	GameConfiguration.LoadedLevel.ChangeScene()
+func _on_finished_loading() -> void:
 	LoadingScreen.hide()
 	SoundManager.stop_music( 1.5 )
-	hide()
+
+func on_finished_loading_scene() -> void:
+	GameConfiguration.LoadedLevel.ChangeScene()
 	queue_free()
+	
+	var scene:Node = GameConfiguration.LoadedLevel.currentSceneNode
+	scene.FinishedLoading.connect( _on_finished_loading )
 
 func _process( _delta: float ) -> void:
 	if Input.is_action_just_pressed( "ui_advance" ):
@@ -41,6 +46,8 @@ func advance_timer() -> void:
 		_transition_screen.transition()
 		await _transition_screen.transition_finished
 
+		hide()
+
 		LoadingScreen.show()
 
 		Console.print_line( "Loading game..." )
@@ -48,7 +55,7 @@ func advance_timer() -> void:
 		var scene:AsyncScene = AsyncScene.new( "res://levels/world.tscn", AsyncScene.LoadingSceneOperation.ReplaceImmediate )
 		GameConfiguration.LoadedLevel = scene
 
-		scene.OnComplete.connect( on_finished_loading )
+		scene.OnComplete.connect( on_finished_loading_scene )
 		return
 	
 	_current_timer += 1

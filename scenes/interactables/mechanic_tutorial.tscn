@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmyvcno3h47xb"]
+[gd_scene load_steps=7 format=3 uid="uid://cmyvcno3h47xb"]
 
 [ext_resource type="Script" uid="uid://djysi7ci800xg" path="res://scripts/interactables/MechanicTutorial.cs" id="1_egxh8"]
 [ext_resource type="Texture2D" uid="uid://b4jdovv5ktxb5" path="res://textures/tilesets/desert/decor_3.png" id="2_7v8s2"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_egxh8"]
+light_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k2ei4"]
 size = Vector2(91.5, 67)
@@ -14,9 +17,11 @@ colors = PackedColorArray(0, 0, 0, 1)
 gradient = SubResource("Gradient_bsglu")
 
 [node name="MechanicTutorial" type="Area2D"]
+material = SubResource("CanvasItemMaterial_egxh8")
 script = ExtResource("1_egxh8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+use_parent_material = true
 position = Vector2(0, 7.62939e-06)
 scale = Vector2(0.210526, 0.23913)
 texture = ExtResource("2_7v8s2")
@@ -26,6 +31,7 @@ shape = SubResource("RectangleShape2D_k2ei4")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false
+use_parent_material = true
 offset_left = -128.0
 offset_top = -51.0
 offset_right = 128.0
@@ -34,6 +40,7 @@ texture = SubResource("GradientTexture1D_uguxp")
 
 [node name="Label" type="Label" parent="."]
 visible = false
+use_parent_material = true
 offset_left = -130.0
 offset_top = -60.0
 offset_right = 130.0

@@ -740,18 +740,24 @@ database = ExtResource("21_kgn6m")
 
 [node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"
 
 [node name="PainChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"
 
 [node name="SlideChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"
 
 [node name="DashChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"
 
 [node name="SlowMoChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"
 
 [node name="ActionChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
+bus = &"SFX"

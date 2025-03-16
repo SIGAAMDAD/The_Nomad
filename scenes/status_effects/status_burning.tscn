@@ -1,3 +1,57 @@
-[gd_scene format=3 uid="uid://pkk3u737olsq"]
+[gd_scene load_steps=9 format=3 uid="uid://pkk3u737olsq"]
+
+[ext_resource type="Script" uid="uid://bqs6unm21g0bx" path="res://scripts/status_effects/StatusBurning.cs" id="1_reuod"]
+[ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_h27da"]
+[ext_resource type="AudioStream" uid="uid://byxwvbp5h01jr" path="res://sounds/env/fire.ogg" id="3_h27da"]
+
+[sub_resource type="Gradient" id="Gradient_gx4eq"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.579861)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.576471, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1hkjd"]
+gradient = SubResource("Gradient_gx4eq")
+width = 1
+
+[sub_resource type="Gradient" id="Gradient_reuod"]
+offsets = PackedFloat32Array(0.134752, 0.765766)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.666667, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_h27da"]
+gradient = SubResource("Gradient_reuod")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kd0fi"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 24.14
+angle_min = -50.0
+angle_max = 50.0
+angular_velocity_min = -50.0
+angular_velocity_max = 50.0
+gravity = Vector3(0, -1024, 0)
+color_ramp = SubResource("GradientTexture1D_h27da")
+hue_variation_min = -0.26
+hue_variation_max = 0.25
+turbulence_enabled = true
+turbulence_noise_speed_random = 0.45
 
 [node name="StatusBurning" type="Node2D"]
+script = ExtResource("1_reuod")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 400
+texture = SubResource("GradientTexture1D_1hkjd")
+lifetime = 0.5
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_kd0fi")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+energy = 1.5
+texture = ExtResource("2_h27da")
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_h27da")
+autoplay = true
+bus = &"SFX"
+playback_type = 1
