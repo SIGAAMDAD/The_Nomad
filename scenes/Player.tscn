@@ -604,6 +604,8 @@ radius = 7.0
 radius = 153.118
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD") groups=["Archive", "SceneRelevant"]]
+process_priority = 4
+process_physics_priority = 4
 light_mask = 0
 visibility_layer = 2
 z_index = 3
@@ -615,10 +617,16 @@ ArmRight = NodePath("ArmRight")
 HUD = NodePath("HeadsUpDisplay")
 
 [node name="Animations" type="Node2D" parent="."]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 3
 light_mask = 2
 y_sort_enabled = true
 
 [node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_83eos")
@@ -626,6 +634,9 @@ animation = &"idle"
 autoplay = "idle"
 
 [node name="Legs" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_yxodt")
@@ -633,12 +644,18 @@ animation = &"idle"
 autoplay = "idle"
 
 [node name="Torso" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_cd08d")
 autoplay = "default"
 
 [node name="ArmsRight" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_0titm")
@@ -646,16 +663,25 @@ animation = &"run"
 autoplay = "idle"
 
 [node name="DashEffect" parent="Animations" instance=ExtResource("4_d2uw3")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 y_sort_enabled = true
 position = Vector2(1, 4)
 one_shot = false
 
 [node name="SlidePuff" parent="Animations" instance=ExtResource("5_a260p")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 y_sort_enabled = true
 position = Vector2(-7, 13)
 emitting = false
 
 [node name="JumpkitSparks" parent="Animations" instance=ExtResource("5_c3w3j")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 visible = false
 y_sort_enabled = true
 position = Vector2(-12, 6)
@@ -664,11 +690,17 @@ frame_progress = 0.0
 flip_h = true
 
 [node name="DustPuff" parent="Animations" instance=ExtResource("7_l33ml")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 y_sort_enabled = true
 position = Vector2(-9.53674e-07, 14)
 emitting = false
 
 [node name="Idle" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 visible = false
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_10n7u")
@@ -724,6 +756,9 @@ wait_time = 30.0
 one_shot = true
 
 [node name="HeadsUpDisplay" parent="." node_paths=PackedStringArray("_Owner") instance=ExtResource("9_bfxfw")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 _Owner = NodePath("..")
 
 [node name="MultiplayerBulletTime" type="Node2D" parent="."]
@@ -740,24 +775,13 @@ database = ExtResource("21_kgn6m")
 
 [node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
-bus = &"SFX"
-
-[node name="PainChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-bus = &"SFX"
-
-[node name="SlideChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
+attenuation = 0.0441942
 bus = &"SFX"
 
 [node name="DashChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
 bus = &"SFX"
 
-[node name="SlowMoChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-bus = &"SFX"
-
-[node name="ActionChannel" type="AudioStreamPlayer2D" parent="."]
+[node name="MiscChannel" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
 bus = &"SFX"

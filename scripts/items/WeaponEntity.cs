@@ -455,10 +455,10 @@ public partial class WeaponEntity : Node2D {
 		switch ( Ammunition ) {
 		case AmmoType.Light:
 		case AmmoType.Heavy:
-			bulletShell.GroundedSfx.Stream = AudioCache.BulletShell[ RandomFactory.Next( 0, AudioCache.BulletShell.Count - 1 ) ];
+			bulletShell.GroundedSfx.Stream = AudioCache.BulletShell[ RandomFactory.Next( 0, AudioCache.BulletShell.Length - 1 ) ];
 			break;
 		case AmmoType.Pellets:
-			bulletShell.GroundedSfx.Stream = AudioCache.ShotgunShell[ RandomFactory.Next( 0, AudioCache.ShotgunShell.Count - 1 ) ];
+			bulletShell.GroundedSfx.Stream = AudioCache.ShotgunShell[ RandomFactory.Next( 0, AudioCache.ShotgunShell.Length - 1 ) ];
 			break;
 		};
 

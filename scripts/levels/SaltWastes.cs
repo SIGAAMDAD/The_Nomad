@@ -7,7 +7,7 @@ public partial class SaltWastes : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		Ambience = ResourceLoader.Load<AudioStream>( "res://music/Ambience/desert_ambience.ogg" );
-		SoundManager.PlayAmbientSound( Ambience, 0.25f, "Ambience" );
+//		Ambience = ResourceLoader.Load<AudioStream>( "res://music/Ambience/desert_ambience.ogg" );
+//		SoundManager.PlayAmbientSound( Ambience, 0.25f, "Ambience" );'
 	}
 };

@@ -254,6 +254,9 @@ height = 54.0
 radius = 26.0192
 
 [node name="HangingLantern" type="AnimatedSprite2D"]
+process_thread_group = 2
+process_thread_group_order = 4
+process_thread_messages = 1
 sprite_frames = SubResource("SpriteFrames_dbufb")
 frame_progress = 0.768921
 

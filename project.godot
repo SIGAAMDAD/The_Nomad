@@ -48,6 +48,7 @@ boot_splash/minimum_display_time=1500
 [audio]
 
 general/default_playback_type.web=0
+driver/output_latency=50
 
 [autoload]
 
@@ -139,15 +140,17 @@ locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialog
 
 [navigation]
 
-pathfinding/max_threads=8
+pathfinding/max_threads=12
 
 [physics]
 
 2d/run_on_separate_thread=true
+common/physics_ticks_per_second=40
 common/physics_jitter_fix=0.0
+2d/physics_engine="Rapier2D"
 2d/solver/solver_iterations=1
 2d/solver/contact_recycle_radius=8.0
-common/physics_interpolation=true
+common/enable_object_picking=false
 
 [plugins]
 
@@ -181,6 +184,7 @@ camera/depth_of_field/depth_of_field_bokeh_quality=0
 environment/ssao/quality=0
 environment/ssil/quality=0
 viewport/hdr_2d=true
+anti_aliasing/screen_space_roughness_limiter/enabled=false
 textures/decals/filter=0
 textures/light_projectors/filter=0
 limits/global_shader_variables/buffer_size=8192

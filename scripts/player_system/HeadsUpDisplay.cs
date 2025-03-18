@@ -88,16 +88,16 @@ namespace PlayerSystem {
 
 			HealthBar = GetNode<ProgressBar>( "HealthBar" );
 			RageBar = GetNode<ProgressBar>( "RageBar" );
-			Inventory = GetNode<MarginContainer>( "Inventory/MarginContainer" );
-			StackList = GetNode<VBoxContainer>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
+			Inventory = GetNode<MarginContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer" );
+			StackList = GetNode<VBoxContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
 
-			ItemName = GetNode<Label>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
-			ItemType = GetNode<Label>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
-			ItemCount = GetNode<Label>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
-			ItemStackMax = GetNode<Label>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
-			ItemIcon = GetNode<TextureRect>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
-			ItemDescription = GetNode<RichTextLabel>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
-			ItemEffect = GetNode<Label>( "Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
+			ItemName = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
+			ItemType = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
+			ItemCount = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
+			ItemStackMax = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
+			ItemIcon = GetNode<TextureRect>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
+			ItemDescription = GetNode<RichTextLabel>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
+			ItemEffect = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
 
 			CheckpointInteractor = GetNode<MarginContainer>( "CheckpointContainer" );
 
@@ -158,19 +158,19 @@ namespace PlayerSystem {
 			}
 
 			if ( WeaponData != null ) {
-				WeaponModeBladed.Material.CallDeferred( "set", "shader_parameter/status_active",
+				WeaponModeBladed.Material.Set( "shader_parameter/status_active",
 					( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0 );
-				WeaponModeBlunt.Material.CallDeferred( "set", "shader_parameter/status_active",
+				WeaponModeBlunt.Material.Set( "shader_parameter/status_active",
 					( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0 );
 				
 				if ( ( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-					WeaponModeFirearm.Material.CallDeferred( "set", "shader_parameter/status_active", true );
+					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", true );
 					WeaponStatusBulletCount.Text = WeaponData.GetBulletCount().ToString();
 					if ( WeaponData.GetReserve() != null ) {
 						WeaponStatusBulletReserve.Text = WeaponData.GetReserve().Amount.ToString();
 					}
 				} else {
-					WeaponModeFirearm.Material.CallDeferred( "set", "shader_parameter/status_active", false );
+					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", false );
 				}
 			}
 		}

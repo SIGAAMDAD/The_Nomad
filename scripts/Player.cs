@@ -3,7 +3,6 @@ using System;
 using PlayerSystem;
 using System.Linq;
 using System.Collections.Generic;
-using Renown;
 
 public partial class Player : CharacterBody2D {
 	public enum GameMode {
@@ -79,6 +78,7 @@ public partial class Player : CharacterBody2D {
 	private const float JUMP_VELOCITY = -400.0f;
 
 	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+	private readonly Godot.Vector2 JumpkitSparksOffset = new Godot.Vector2( 255.0f, 0.0f );
 
 	private static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
@@ -160,7 +160,7 @@ public partial class Player : CharacterBody2D {
 	private uint WarCrimeCount = 0;
 	private List<Renown.Trait> Traits = new List<Renown.Trait>();
 
-	private List<WeaponSlot> WeaponSlots;
+	private WeaponSlot[] WeaponSlots;
 
 	private float Health = 100.0f;
 	private float Rage = 60.0f;
@@ -178,10 +178,7 @@ public partial class Player : CharacterBody2D {
 
 	private AudioStreamPlayer2D MoveChannel;
 	private AudioStreamPlayer2D DashChannel;
-	private AudioStreamPlayer2D SlideChannel;
-	private AudioStreamPlayer2D PainChannel;
-	private AudioStreamPlayer2D SlowMoChannel;
-	private AudioStreamPlayer2D ActionChannel;
+	private AudioStreamPlayer2D MiscChannel;
 
 	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
 	private List<ConsumableStack> ConsumableStacks = new List<ConsumableStack>();
@@ -275,7 +272,7 @@ public partial class Player : CharacterBody2D {
 		}
 
 		writer.Write( MAX_WEAPON_SLOTS );
-		for ( int i = 0; i < WeaponSlots.Count; i++ ) {
+		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
 			writer.Write( WeaponSlots[i].IsUsed() );
 			if ( WeaponSlots[i].IsUsed() ) {
 				int weaponIndex;
@@ -438,7 +435,7 @@ public partial class Player : CharacterBody2D {
 	public Resource GetCurrentMappingContext() {
 		return CurrentMappingContext;
 	}
-	public List<WeaponSlot> GetWeaponSlots() {
+	public WeaponSlot[] GetWeaponSlots() {
 		return WeaponSlots;
 	}
 	public List<WeaponEntity> GetWeaponStack() {
@@ -505,10 +502,10 @@ public partial class Player : CharacterBody2D {
 	public void SetHandsUsed( Hands hands ) {
 		HandsUsed = hands;
 	}
-	public List<WeaponSlot> GetSlots() {
+	public WeaponSlot[] GetSlots() {
 		return WeaponSlots;
 	}
-	public void SetSlots( List<WeaponSlot> slots ) {
+	public void SetSlots( WeaponSlot[] slots ) {
 		WeaponSlots = slots;
 	}
 	public List<Checkpoint> GetWarpPoints() {
@@ -561,12 +558,17 @@ public partial class Player : CharacterBody2D {
 		}
 		WeaponsStack.Clear();
 
+		/*
 		MoveChannel.QueueFree();
 		DashChannel.QueueFree();
 		SlideChannel.QueueFree();
 		SlowMoChannel.QueueFree();
 		ActionChannel.QueueFree();
 		PainChannel.QueueFree();
+		*/
+		DashChannel.QueueFree();
+		MoveChannel.QueueFree();
+		MiscChannel.QueueFree();
 
 		DashTime.QueueFree();
 		SlideTime.QueueFree();
@@ -592,21 +594,19 @@ public partial class Player : CharacterBody2D {
 		Inventory.QueueFree();
 		HUD.QueueFree();
 
-		WeaponSlots.Clear();
-
 		QueueFree();
 	}
 
 	private void OnDeath( CharacterBody2D attacker ) {
 		EmitSignal( "Die", attacker, this );
-		LegAnimation.Hide();
-		ArmLeft.Animations.Hide();
-		ArmRight.Animations.Hide();
+		LegAnimation.CallDeferred( "hide" );
+		ArmLeft.Animations.CallDeferred( "hide" );
+		ArmRight.Animations.CallDeferred( "hide" );
 
-		TorsoAnimation.Play( "death" );
+		TorsoAnimation.CallDeferred( "play", "death" );
 
-		PainChannel.Stream = AudioCache.PlayerDieSfx[ RandomFactory.Next( 0, AudioCache.PlayerDieSfx.Count - 1 ) ];
-		PainChannel.Play();
+		MiscChannel.Stream = AudioCache.PlayerDieSfx[ RandomFactory.Next( 0, AudioCache.PlayerDieSfx.Length - 1 ) ];
+		MiscChannel.Play();
 
 		SetProcessUnhandledInput( true );
 	}
@@ -628,8 +628,8 @@ public partial class Player : CharacterBody2D {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			PainChannel.Stream = AudioCache.PlayerPainSfx[ RandomFactory.Next( 0, AudioCache.PlayerPainSfx.Count - 1 ) ];
-			PainChannel.Play();
+			MiscChannel.Stream = AudioCache.PlayerPainSfx[ RandomFactory.Next( 0, AudioCache.PlayerPainSfx.Length - 1 ) ];
+			MiscChannel.Play();
 		}
 	}
 
@@ -651,36 +651,36 @@ public partial class Player : CharacterBody2D {
 		if ( IdleAnimation.IsPlaying() ) {
 			return;
 		}
-		TorsoAnimation.Hide();
-		ArmLeft.Animations.Hide();
-		ArmRight.Animations.Hide();
-		LegAnimation.Hide();
-		IdleAnimation.Show();
-		IdleAnimation.Play( "start" );
+		TorsoAnimation.CallDeferred( "hide" );
+		ArmLeft.Animations.CallDeferred( "hide" );
+		ArmRight.Animations.CallDeferred( "hide" );
+		LegAnimation.CallDeferred( "hide" );
+		IdleAnimation.CallDeferred( "show" );
+		IdleAnimation.CallDeferred( "play", "start" );
 		SteamAchievements.ActivateAchievement( "ACH_SMOKE_BREAK" );
 	}
 	private void OnIdleAnimationAnimationFinished()	{
-		IdleAnimation.Play( "loop" );
+		IdleAnimation.CallDeferred( "play", "loop" );
 	}
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Count - 1 ) ];
+			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
 			MoveChannel.Play();
 		}
 	}
 	private void OnDashTimeTimeout() {
-		HUD.GetDashOverlay().Hide();
-		( (PointLight2D)DashEffect.GetChild( 0 ) ).Hide();
+		HUD.GetDashOverlay().CallDeferred( "hide" );
+		( (PointLight2D)DashEffect.GetChild( 0 ) ).CallDeferred( "hide" );
 		DashEffect.Emitting = false;
 		Flags &= ~PlayerFlags.Dashing;
 		if ( LegAnimation.FlipH ) {
 			JumpkitSparks.FlipH = false;
-			JumpkitSparks.Offset = new Godot.Vector2( 255.0f, 0.0f );
+			JumpkitSparks.Offset = JumpkitSparksOffset;
 		} else {
 			JumpkitSparks.FlipH = false;
 			JumpkitSparks.Offset = Godot.Vector2.Zero;
 		}
-		DashCooldownTime.Start();
+		DashCooldownTime.CallDeferred( "start" );
 	}
 	private void OnSlideTimeout() {
 		SlideEffect.Emitting = false;
@@ -699,17 +699,17 @@ public partial class Player : CharacterBody2D {
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
-		DashTime.Start();
-		DashChannel.Stream = AudioCache.DashSfx[ RandomFactory.Next( 0, AudioCache.DashSfx.Count - 1 ) ];
+		DashTime.CallDeferred( "start" );
+		DashChannel.Stream = AudioCache.DashSfx[ RandomFactory.Next( 0, AudioCache.DashSfx.Length - 1 ) ];
 		DashChannel.PitchScale = 1.0f + DashBurnout;
 		DashChannel.Play();
-		( (PointLight2D)DashEffect.GetChild( 0 ) ).Show();
+		( (PointLight2D)DashEffect.GetChild( 0 ) ).CallDeferred( "show" );
 		DashEffect.Emitting = true;
 		DashDirection = Velocity;
-		HUD.GetDashOverlay().Show();
+		HUD.GetDashOverlay().CallDeferred( "show" );
 
 		DashBurnout += 0.25f;
-		DashCooldownTime.Start();
+		DashCooldownTime.CallDeferred( "start" );
 	}
 	private void OnSlide() {
 		if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
@@ -717,9 +717,9 @@ public partial class Player : CharacterBody2D {
 		}
 		IdleReset();
 		Flags |= PlayerFlags.Sliding;
-		SlideTime.Start();
+		SlideTime.CallDeferred( "start" );
 		SlideEffect.Emitting = true;
-		LegAnimation.Play( "slide" );
+		LegAnimation.CallDeferred( "play", "slide" );
 	}
 	private void OnUseWeapon() {
 		IdleReset();
@@ -776,8 +776,8 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		ActionChannel.Stream = AudioCache.ChangeWeaponSfx;
-		ActionChannel.Play();
+		MiscChannel.Stream = AudioCache.ChangeWeaponSfx;
+		MiscChannel.Play();
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -823,8 +823,8 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		ActionChannel.Stream =AudioCache.ChangeWeaponSfx;
-		ActionChannel.Play();
+		MiscChannel.Stream = AudioCache.ChangeWeaponSfx;
+		MiscChannel.Play();
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -834,8 +834,9 @@ public partial class Player : CharacterBody2D {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			SlowMoChannel.Stream = AudioCache.SlowMoBeginSfx;
-			SlowMoChannel.Play();
+			MiscChannel.Stream = AudioCache.SlowMoBeginSfx;
+			MiscChannel.Play();
+
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
 		}
@@ -1085,9 +1086,9 @@ public partial class Player : CharacterBody2D {
 			SetProcessUnhandledInput( false );
 
 			TorsoAnimation.Play( "idle" );
-			LegAnimation.Show();
-			ArmLeft.Animations.Show();
-			ArmRight.Animations.Show();
+			LegAnimation.Visible = true;
+			ArmLeft.Animations.Visible = true;
+			ArmRight.Animations.Visible = true;
 
 			EmitSignal( "Respawn" );
 		}
@@ -1107,7 +1108,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	private void OnSlowMoSfxFinished() {
-		if ( SlowMoChannel.Stream == AudioCache.SlowMoBeginSfx ) {
+		if ( MiscChannel.Stream == AudioCache.SlowMoBeginSfx ) {
 			// only start lagging audio playback after the slowmo begin finishes
 			AudioServer.PlaybackSpeedScale = 0.50f;
 		}
@@ -1137,6 +1138,7 @@ public partial class Player : CharacterBody2D {
 		OpenInventoryActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/open_inventory.tres" );
 	}
 	private void LoadSfx() {
+		/*
 		ActionChannel = GetNode<AudioStreamPlayer2D>( "ActionChannel" );
 		PainChannel = GetNode<AudioStreamPlayer2D>( "PainChannel" );
 		SlowMoChannel = GetNode<AudioStreamPlayer2D>( "SlowMoChannel" );
@@ -1145,16 +1147,29 @@ public partial class Player : CharacterBody2D {
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		SlideChannel = GetNode<AudioStreamPlayer2D>( "SlideChannel" );
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
+		*/
+		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
+		MoveChannel.SetProcess( false );
+		MoveChannel.SetProcessInternal( false );
+
+		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
+		DashChannel.SetProcess( false );
+		DashChannel.SetProcessInternal( false );
+
+		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
+		MiscChannel.SetProcess( false );
+		MiscChannel.SetProcessInternal( false );
 	}
 
 	private void ExitBulletTime() {
 		Flags &= ~PlayerFlags.BulletTime;
-		HUD.GetReflexOverlay().Hide();
+		HUD.GetReflexOverlay().CallDeferred( "hide" );
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-		SlowMoChannel.Stream = AudioCache.SlowMoEndSfx;
-		SlowMoChannel.Play();
+//		SfxPool.PlaySfx( AudioCache.SlowMoEndSfx, GlobalPosition );
+		MiscChannel.Stream = AudioCache.SlowMoEndSfx;
+		MiscChannel.Play();
 	}
 
 	private void CmdSuicide() {
@@ -1264,9 +1279,9 @@ public partial class Player : CharacterBody2D {
 		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
 		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
 
-		WeaponSlots = new List<WeaponSlot>();
+		WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			WeaponSlots.Add( new WeaponSlot() );
+			WeaponSlots[i] = new WeaponSlot();
 			WeaponSlots[i].SetIndex( i );
 		}
 
@@ -1289,10 +1304,6 @@ public partial class Player : CharacterBody2D {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
-		if ( Velocity != Godot.Vector2.Zero ) {
-			IdleReset();
-		}
-
 		float speed = MAX_SPEED;
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			speed += 1800;
@@ -1308,6 +1319,16 @@ public partial class Player : CharacterBody2D {
 			Velocity = Velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
 		}
 
+		MoveAndSlide();
+
+		if ( ( Engine.GetPhysicsFrames() % 20 ) != 0 ) {
+			return;
+		}
+
+		if ( Velocity != Godot.Vector2.Zero ) {
+			IdleReset();
+		}
+
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
 				LegAnimation.CallDeferred( "play", "run" );
@@ -1319,13 +1340,24 @@ public partial class Player : CharacterBody2D {
 			SlideEffect.Emitting = false;
 		}
 
-		CallDeferred( "move_and_slide" );
+		// cool down the jet engine if applicable
+		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
+			DashBurnout -= 0.10f;
+			if ( DashBurnout < 0.0f ) {
+				DashBurnout = 0.0f;
+			}
+		}
+
+		CheckStatus( (float)delta );
+		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
+			Rage -= 0.05f * (float)delta;
+		}
     }
 
 	private void CalcArmAnimation( Arm arm ) {
 		arm.Animations.GlobalRotation = ArmAngle;
-		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 		arm.Animations.FlipV = TorsoAnimation.FlipH;
+		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.GetSlot() == WeaponSlot.INVALID ) {
 			arm.Animations.CallDeferred( "play", InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
@@ -1359,13 +1391,13 @@ public partial class Player : CharacterBody2D {
 		if ( Rage < 100.0f ) {
 			if ( ( Flags & PlayerFlags.UsedMana ) != 0 ) {
 			}
-			HUD.GetRageBar().Show();
+			HUD.GetRageBar().CallDeferred( "show" );
 		}
 		if ( FrameDamage > 0.0f ) {
 			Rage += FrameDamage * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().Show();
+			HUD.GetRageBar().CallDeferred( "show" );
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f ) {
@@ -1374,7 +1406,7 @@ public partial class Player : CharacterBody2D {
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetHealthBar().Show();
+			HUD.GetHealthBar().CallDeferred( "show" );
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
@@ -1387,14 +1419,6 @@ public partial class Player : CharacterBody2D {
 	}
     public override void _Process( double delta ) {
 		base._Process( delta );
-
-		// cool down the jet engine if applicable
-		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
-			DashBurnout -= 0.10f;
-			if ( DashBurnout < 0.0f ) {
-				DashBurnout = 0.0f;
-			}
-		}
 
 		if ( CurrentMappingContext == GamepadInputMappings ) {
 			if ( ArmAngle > 0.0f ) {
@@ -1429,6 +1453,9 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 
+		ArmLeft.Animations.CallDeferred( "show" );
+		ArmRight.Animations.CallDeferred( "show" );
+
 		Arm back;
 		Arm front;
 		if ( TorsoAnimation.FlipH ) {
@@ -1439,17 +1466,6 @@ public partial class Player : CharacterBody2D {
 			front = ArmRight;
 		}
 
-		CheckStatus( (float)delta );
-		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			Rage -= 0.05f * (float)delta;
-		}
-
-		ArmLeft.Animations.CallDeferred( "show" );
-		ArmRight.Animations.CallDeferred( "show" );
-
-		ArmLeft.Animations.Rotation = ArmAngle;
-		ArmRight.Animations.Rotation = ArmAngle;
-
 		if ( HandsUsed == Hands.Both ) {
 			front = LastUsedArm;
 			back.Animations.CallDeferred( "hide" );
@@ -1457,13 +1473,13 @@ public partial class Player : CharacterBody2D {
 			back.Animations.CallDeferred( "show" );
 		}
 
-		Animations.CallDeferred( "move_child", back.Animations, 0 );
-		Animations.CallDeferred( "move_child", front.Animations, 3 );
-
 		front.CallDeferred( "show" );
 
 		CalcArmAnimation( ArmLeft );
 		CalcArmAnimation( ArmRight );
+
+		Animations.CallDeferred( "move_child", back.Animations, 0 );
+		Animations.CallDeferred( "move_child", front.Animations, 3 );
 	}
 
 	public void PickupAmmo( AmmoEntity ammo ) {
@@ -1478,7 +1494,6 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 		if ( !found ) {
-			GD.Print( "Adding ammo stack" );
 			stack = new AmmoStack();
 			stack.SetType( ammo );
 			AmmoStacks.Add( stack );

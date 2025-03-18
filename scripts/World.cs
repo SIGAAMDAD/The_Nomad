@@ -21,6 +21,8 @@ public partial class World : Node2D {
 	private float Time = 0.0f;
 	private float PastMinute = -1.0f;
 
+	private SfxPool AudioPool;
+
 	[Signal]
 	public delegate void TimeTickEventHandler( uint day, uint hour, uint minute );
 	[Signal]
@@ -34,6 +36,7 @@ public partial class World : Node2D {
 	private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
 
 	private bool Loaded = false;
+	private Thread AudioLoadThread;
 
 	public void ToggleHellbreaker() {
 		LevelData.Hide();
@@ -70,7 +73,9 @@ public partial class World : Node2D {
 
 	private void OnAudioFinishedLoading() {
 		EmitSignal( "FinishedLoading" );
-		SetProcess( true );
+//		SetProcess( true );
+
+		AudioLoadThread.Join();
 	}
 
 	public override void _ExitTree() {
@@ -92,8 +97,8 @@ public partial class World : Node2D {
 //		);
 		
 		Time = InGameToRealMinuteDuration * InitialHour * MinutesPerHour;
-		Thread audioLoader = new Thread( () => { AudioCache.Cache( this ); } );
-		audioLoader.Start();
+		AudioLoadThread = new Thread( () => { AudioCache.Cache( this ); } );
+		AudioLoadThread.Start();
 
 		SetProcess( false );
 
@@ -103,8 +108,11 @@ public partial class World : Node2D {
 		base._Process( delta );
 
 		Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
-		float value = ( Mathf.Sin( Time * Mathf.Pi / 2.0f ) + 1.0f ) / 2.0f;
-		WorldTimeOverlay.Color = Gradient.Gradient.Sample( value );
 		RecalculateTime();
+
+		if ( ( (int)Engine.GetProcessFrames() % 60 ) != 0 ) {
+			float value = ( Mathf.Sin( Time * Mathf.Pi / 2.0f ) + 1.0f ) / 2.0f;
+			WorldTimeOverlay.Color = Gradient.Gradient.Sample( value );
+		}
 	}
 };

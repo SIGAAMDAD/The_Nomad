@@ -11,12 +11,20 @@ public class AIBlackboard {
 	private List<MobBase> SeenBodies = new List<MobBase>();
 	private bool Investigating = false;
 	private bool CanSeeTarget = false;
-	private bool TargetReached = false;
+	private bool TargetReached = true;
 	private float Fear = 0.0f;
 	private float TargetDistance = 0.0f;
+	private bool HasTarget = false;
+	private int Stims = 0;
 	
 	public AIBlackboard() {
 	}
+
+	public void SetStims( int nStims ) { Stims = nStims; }
+	public int GetStims() { return Stims; }
+
+	public void SetHasTarget( bool bHasTarget ) { HasTarget = bHasTarget; }
+	public bool GetHasTarget() { return HasTarget; }
 
 	public void SetGotoPosition( Godot.Vector2 position ) { GotoPosition = position; }
 	public Godot.Vector2 GetGotoPosition() { return GotoPosition; }
