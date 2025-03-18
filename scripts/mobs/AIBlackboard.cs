@@ -16,9 +16,13 @@ public class AIBlackboard {
 	private float TargetDistance = 0.0f;
 	private bool HasTarget = false;
 	private int Stims = 0;
+	private bool InCover = false;
 	
 	public AIBlackboard() {
 	}
+
+	public void SetInCover( bool bInCover ) { InCover = bInCover; }
+	public bool GetInCover() { return InCover; }
 
 	public void SetStims( int nStims ) { Stims = nStims; }
 	public int GetStims() { return Stims; }

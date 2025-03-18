@@ -12,7 +12,48 @@ public partial class MercenaryShotgunner : MobBase {
 	private RayCast2D AimLine;
 	private Line2D ShootLine;
 	private AudioStream AimSfx;
-
+	
+	private static readonly List<BaseGoal> Goals = new List<BaseGoal>{
+		new ExtremeGoal(
+			name: "Survive",
+			weight: 100.0f,
+			desiredState: new Dictionary<string, bool>{
+				{ "Health", true }
+			}
+		),
+		new Goal(
+			name: "FindThreats",
+			weight: 80.0f,
+			desiredState: new Dictionary<string, object>{
+				{ "HasTarget", true }
+			}
+		),
+		new Goal(
+			name: "InvestigateDisturbance",
+			weight: 82.0f,
+			desiredState: new Dictionary<string, object>{
+				{ "HasTarget", true },
+				{ "CanSeeTarget", true },
+				{ "TargetReached", true }
+			}
+		),
+		new Goal(
+			name: "AttackThreats",
+			weight: 90.0f,
+			desiredState: new Dictionary<string, object>{
+				{ "HasTarget", false }
+			}
+		),
+		new Goal(
+			name: "GetToCover",
+			weight: 84.0f,
+			desiredState: new Dictionary<string, object>{
+				{ "InCover", true },
+				{ "TargetReached", true }
+			}
+		),
+	};
+	
 	public void Save() {
 	}
 	public void Load() {
@@ -58,7 +99,8 @@ public partial class MercenaryShotgunner : MobBase {
 		// "target's pinned!"
 		Bark( BarkType.TargetPinned );
 	}
-
+	
+#region API
 	public override void _Ready() {
 		base._Ready();
 
@@ -69,149 +111,8 @@ public partial class MercenaryShotgunner : MobBase {
 		TargetMovedTimer.OneShot = true;
 		TargetMovedTimer.Connect( "timeout", Callable.From( OnTargetMoveTimerTimeout ) );
 		AddChild( TargetMovedTimer );
-
-		List<BaseGoal> goals = new List<BaseGoal>{
-			new ExtremeGoal(
-				name: "Survive",
-				weight: 100.0f,
-				desiredState: new Dictionary<string, bool>{
-					{ "Health", true },
-					{ "Fear", true }
-				}
-			),
-			new Goal(
-				name: "FindThreats",
-				weight: 80.0f,
-				desiredState: new Dictionary<string, object>{
-					{ "HasTarget", true }
-				}
-			),
-			/*
-			new Goal(
-				name: "EliminateThreats",
-				weight: 88.0f,
-				desiredState: new Dictionary<string, object>{
-					{ "TargetIsDead", true }
-				}
-			),
-			new Goal(
-				name: "Investigate",
-				weight: 75.0f,
-				desiredState: new Dictionary<string, object>{
-					{ "CanSeeTarget", true }
-				}
-			),
-			new Goal(
-				name: "GetToCover",
-				weight: 90.0f,
-				desiredState: new Dictionary<string, object>{
-					{ "InCover", true }
-				}
-			)
-			*/
-		};
+		
 		List<MountainGoap.Action> actions = new List<MountainGoap.Action>{
-			/*
-			new MountainGoap.Action(
-				name: "Stim",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					int nStims = (int)agent.State[ "Stims" ];
-					if ( nStims == 0 ) {
-						return ExecutionStatus.NotPossible;
-					}
-					if ( HealTimer.IsStopped() ) {
-						HealTimer.Start();
-//						HealSfx.Play();
-					} else if ( HealTimer.TimeLeft == 0.0f ) {
-						agent.State[ "Stims" ] = nStims - 1;
-						Health += 30.0f;
-						return ExecutionStatus.Succeeded;
-					}
-					return ExecutionStatus.Executing;
-				},
-				cost: 10.0f,
-				costCallback: null,
-				preconditions: null,
-				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "Health", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.LessThan } },
-					{ "Stims", new ComparisonValuePair{ Value = 0, Operator = ComparisonOperator.GreaterThan } }
-				}
-			),
-			new MountainGoap.Action(
-				name: "AimAtTarget",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => Action_AimAtTarget( agent, action ),
-				cost: 30.0f,
-				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
-					return GlobalPosition.DistanceTo( SightTarget.GlobalPosition );
-				},
-				preconditions: new Dictionary<string, object>{
-					{ "HasTarget", true },
-					{ "CanSeeTarget", true },
-					{ "IsAttackingTarget", true }
-				},
-				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "TargetDistance", new ComparisonValuePair{ Value = MaxViewDistance, Operator = ComparisonOperator.LessThanOrEquals } }
-				},
-				postconditions: new Dictionary<string, object>{
-					{ "HasTarget", false },
-					{ "TargetIsDead", true }
-				}
-			),
-			new MountainGoap.Action(
-				name: "ShootAtTarget",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => Action_ShootAtTarget( agent, action ),
-				cost: 28.0f,
-				costCallback: null,
-				preconditions: new Dictionary<string, object>{
-					{ "HasTarget", true },
-					{ "CanSeeTarget", true }
-				},
-				comparativePreconditions: null,
-				postconditions: new Dictionary<string, object>{
-					{ "HasTarget", false },
-					{ "TargetIsDead", true }
-				}
-			),
-			new MountainGoap.Action(
-				name: "BlindFire",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => Action_BlindFire( agent, action ),
-				cost: 35.0f,
-				costCallback: null,
-				preconditions: new Dictionary<string, object>{
-					{ "InCover", true },
-					{ "HasTarget", true }
-				},
-				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "TargetDistance", new ComparisonValuePair{ Value = MaxViewDistance, Operator = ComparisonOperator.LessThanOrEquals } }
-				},
-				postconditions: null
-			),
-			new MountainGoap.Action(
-				name: "ThrowGrenade",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					return ExecutionStatus.Succeeded;
-				},
-				cost: 20.0f,
-				costCallback: null,
-				preconditions: null,
-				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "Grenades", new ComparisonValuePair{ Value = 0, Operator = ComparisonOperator.GreaterThan } }
-				},
-				postconditions: null
-			),
-			*/
-//			new MountainGoap.Action(
-//				name: "FlankEnemy",
-//				null,
-//				executor: ( Agent agent, MountainGoap.Action action ) => Action_FlankEnemy( agent, action ),
-//				cost: 0.0f,
-//				costCallback: ()
-//			),
 			new MountainGoap.Action(
 				name: "GuardNode",
 				permutationSelectors: null,
@@ -228,76 +129,49 @@ public partial class MercenaryShotgunner : MobBase {
 			),
 			new MountainGoap.Action(
 				name: "InvestigateNode",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( !(bool)agent.State[ "CanSeeTarget" ] ) {
-						if ( ChangeInvestigateAngleTimer.IsStopped() ) {
-							if ( (float)agent.State[ "Fear" ] > 80.0f ) {
-								// if we're scared, more JIGGLE
-								ChangeInvestigateAngleTimer.WaitTime = 1.0f;
-							}
-							// occasionally jiggle the look angle
-							ChangeInvestigateAngleTimer.Start();
-						}
-						
-						if ( LoseInterestTimer.IsStopped() ) {
-							// we can't see them, so begin the interest timer
-							LoseInterestTimer.Start();
-						} else if ( !(bool)agent.State[ "Investigating" ] ) {
-							return ExecutionStatus.Failed;
-						}
-					}
-					else {
-						if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 0 ) { 
-							// FIXME: is this too harsh?
-							Bark( BarkType.TargetSpotted );
-
-							agent.State[ "Target" ] = SightTarget;
-							agent.PlanAsync();
-							return ExecutionStatus.Succeeded;
-						} else {
-							Bark( BarkType.Confusion );
-							
-							agent.State[ "LastTargetPosition" ] = SightTarget.GlobalPosition;
-						}
-					}
-					return ExecutionStatus.Executing;
+				permutationSelectors: null,
+				executor: ( Agent agent, MountainGoap.Action action ) => Action_InvestigateNode( agent, action ),
+				cost: 20.0f,
+				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
+					return Blackboard.GetAwareness() > Awareness.Suspicious ? 10.0f : 30.0f;
 				},
-				20.0f,
-				null,
 				preconditions: new Dictionary<string, object>{
 					{ "CanSeeTarget", false },
-					{ "TargetReached", false }
+					{ "TargetReached", true }
 				},
 				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "TargetDistance", new ComparisonValuePair{ Value = 1.0f, Operator = ComparisonOperator.LessThanOrEquals } }
+					{ "TargetDistance", new ComparisonValuePair{ Value = 10.0f, Operator = ComparisonOperator.LessThanOrEquals } }
 				},
 				postconditions: new Dictionary<string, object>{
 					{ "CanSeeTarget", true },
-					{ "TargetReached", true }
+					{ "HasTarget", true }
 				}
 			),
-			/*
 			new MountainGoap.Action(
-				name: "RunAway",
-				null,
+				name: "GotoNode",
+				permutationSelectors: null,
 				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( Navigation.TargetPosition == GlobalPosition ) {
-						SetNavigationTarget( (Godot.Vector2)agent.State[ "GotoPosition" ] );
+					if ( !Navigation.IsTargetReached() ) {
+						MoveAlongPath();
+					} else {
+
 					}
-					return (bool)agent.State[ "TargetReached" ] ? ExecutionStatus.Succeeded : ExecutionStatus.Executing;
+					return Navigation.IsTargetReachable() ? ExecutionStatus.Executing : ExecutionStatus.NotPossible;
 				},
-				cost: 2.0f,
-				costCallback: null,
-				preconditions: null,
+				cost: 40.0f,
+				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
+					return Blackboard.GetTargetDistance();
+				},
+				preconditions: new Dictionary<string, object>{
+					{ "TargetReached", false }
+				},
 				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "Health", new ComparisonValuePair{ Value = 20.0f, Operator = ComparisonOperator.LessThan } }
+					{ "TargetDistance", new ComparisonValuePair{ Value = 10.0f, Operator = ComparisonOperator.GreaterThanOrEquals } }
 				},
 				postconditions: new Dictionary<string, object>{
-					{ "Scared", false }
+					{ "TargetReached", true }
 				}
 			)
-			*/
 		};
 		List<Sensor> sensors = new List<Sensor>{
 			new Sensor(
@@ -311,7 +185,7 @@ public partial class MercenaryShotgunner : MobBase {
 			),
 			new Sensor(
 				runCallback: ( Agent agent ) => {
-					if ( SightTarget == null || (bool)agent.State[ "CanSeeTarget" ] ) {
+					if ( SightTarget == null || Blackboard.GetCanSeeTarget() ) {
 						return;
 					}
 					TargetMovedTimer.Start();
@@ -337,14 +211,96 @@ public partial class MercenaryShotgunner : MobBase {
 				{ "LastTargetPosition", Godot.Vector2.Zero }
 			},
 			null,
-			goals,
+			Goals,
 			actions,
 			sensors
 		);
 
 		Blackboard.SetGuardPosition( GlobalPosition );
 		Blackboard.SetStims( 2 );
+		
+		DemonEyeColor = new Color();
+		DemonEyeColor.R = 0.0f;
+		DemonEyeColor.G = 0.0f;
+		DemonEyeColor.B = 1.0f;
+		DemonEyeColor.A = 1.0f;
+		DemonEyeColor.R8 = 0;
+		DemonEyeColor.G8 = 0;
+		DemonEyeColor.B8 = 2;
 	}
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		HeadAnimations.QueueFree();
+		ArmAnimations.QueueFree();
+		BodyAnimations.QueueFree();
+		DetectionMeter.QueueFree();
+		LoseInterestTimer.QueueFree();
+		Navigation.QueueFree();
+		ThinkerTimer.QueueFree();
+		MoveChannel.QueueFree();
+		BarkChannel.QueueFree();
+		
+		for ( int i = 0; i < BloodSplatterTree.GetChildCount(); i++ ) {
+			BloodSplatterTree.GetChild( i ).QueueFree();
+			BloodSplatterTree.RemoveChild( SightDetector.GetChild( i ) );
+		}
+		BloodSplatterTree.QueueFree();
+		
+		for ( int i = 0; i < BulletShellTree.GetChildCount(); i++ ) {
+			BulletShellTree.GetChild( i ).QueueFree();
+			BulletShellTree.RemoveChild( SightDetector.GetChild( i ) );
+		}
+		BulletShellTree.QueueFree();
+		
+		for ( int i = 0; i < SightDetector.GetChildCount(); i++ ) {
+			SightDetector.GetChild( i ).QueueFree();
+			SightDetector.RemoveChild( SightDetector.GetChild( i ) );
+		}
+		SightDetector.QueueFree();
+		
+		for ( int i = 0; i < SightLines.Length; i++ ) {
+			SightLines[i].QueueFree();
+		}
+	}
+	public override void _PhysicsProcess( double delta ) {
+		base._PhysicsProcess( delta );
+		
+		PhysicsPosition = GlobalPosition;
+		if ( !Blackboard.GetTargetReached() ) {
+			MoveAlongPath();
+		}
+	}
+	public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 14 ) != 0 ) {
+			return;
+		}
+		
+		if ( (bool)GetNode( "/root/GameConfiguration" ).Get( "_demon_eye" ) ) {
+			HeadAnimations.Modulate = DemonEyeColor;
+			ArmAnimations.Modulate = DemonEyeColor;
+			BodyAnimations.Modulate = DemonEyeColor;
+		} else {
+			HeadAnimations.Modulate = DefaultColor;
+		}
+
+		ProcessAnimations();
+		
+		Agent.State[ "HasTarget" ] = Blackboard.GetHasTarget();
+		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
+		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
+		Agent.State[ "Fear" ] = Blackboard.GetFear();
+		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
+		Agent.State[ "Stims" ] = Blackboard.GetStims();
+		Agent.State[ "SightPosition" ] = Blackboard.GetSightPosition();
+		Agent.State[ "Awareness" ] = Blackboard.GetAwareness();
+		Agent.State[ "Investigating" ] = Blackboard.GetInvestigating();
+		Agent.State[ "InCover" ] = Blackboard.GetInCover();
+		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
+
+		Agent.Step( StepMode.OneAction );
+	}
+#endregion
 
 	private void SetDetectionColor() {
 		Awareness alertState = Blackboard.GetAwareness();
@@ -378,11 +334,15 @@ public partial class MercenaryShotgunner : MobBase {
 			else {
 				// blue cuz colorblind people will struggle with the difference between suspicious and alert
 				DetectionColor.R = 0.0f;
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+				DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+				DetectionColor.B = 0.0f;
 			}
 			break;
 		case Awareness.Suspicious:
+			DetectionColor.R = 0.0f;
+			DetectionColor.G = 0.0f;
+			DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+			break;
 		case Awareness.Alert:
 			DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
 			DetectionColor.G = 0.0f;
@@ -395,79 +355,12 @@ public partial class MercenaryShotgunner : MobBase {
 		DetectionMeter.SetDeferred( "default_color", DetectionColor );
 		Blackboard.SetAwareness( alertState );
 	}
-	
-#region API
-	public override void _ExitTree() {
-		base._ExitTree();
-
-		HeadAnimations.QueueFree();
-		ArmAnimations.QueueFree();
-		BodyAnimations.QueueFree();
-		DetectionMeter.QueueFree();
-		LoseInterestTimer.QueueFree();
-		Navigation.QueueFree();
-		ThinkerTimer.QueueFree();
-		MoveChannel.QueueFree();
-		BarkChannel.QueueFree();
-		
-		for ( int i = 0; i < BloodSplatterTree.GetChildCount(); i++ ) {
-			BloodSplatterTree.GetChild( i ).QueueFree();
-			BloodSplatterTree.RemoveChild( SightDetector.GetChild( i ) );
-		}
-		BloodSplatterTree.QueueFree();
-		
-		for ( int i = 0; i < BulletShellTree.GetChildCount(); i++ ) {
-			BulletShellTree.GetChild( i ).QueueFree();
-			BulletShellTree.RemoveChild( SightDetector.GetChild( i ) );
-		}
-		BulletShellTree.QueueFree();
-		
-		for ( int i = 0; i < SightDetector.GetChildCount(); i++ ) {
-			SightDetector.GetChild( i ).QueueFree();
-			SightDetector.RemoveChild( SightDetector.GetChild( i ) );
-		}
-		SightDetector.QueueFree();
-		
-		for ( int i = 0; i < SightLines.Count; i++ ) {
-			SightLines[i].QueueFree();
-		}
-		SightLines.Clear();
-	}
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-		
-		PhysicsPosition = GlobalPosition;
-		if ( !Blackboard.GetTargetReached() ) {
-			MoveAlongPath();
-		}
-	}
-	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
-			return;
-		}
-
-		ProcessAnimations();
-		
-		Agent.State[ "HasTarget" ] = Blackboard.GetHasTarget();
-		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
-		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
-		Agent.State[ "Fear" ] = Blackboard.GetFear();
-		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
-		Agent.State[ "Stims" ] = Blackboard.GetStims();
-		Agent.State[ "SightPosition" ] = Blackboard.GetSightPosition();
-		Agent.State[ "Awareness" ] = Blackboard.GetAwareness();
-		Agent.State[ "Investigating" ] = Blackboard.GetInvestigating();
-		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
-
-		Agent.Step( StepMode.OneAction );
-	}
-#endregion
 
 #region Actions
-	public ExecutionStatus Action_CheckForTargets( Agent agent, MountainGoap.Action action ) {
-//		if ( (CharacterBody2D)agent.State[ "Target" ] != null ) {
-//			return ExecutionStatus.Succeeded;
-//		}
+	private ExecutionStatus Action_CheckForTargets( Agent agent, MountainGoap.Action action ) {
+		if ( Blackboard.GetTarget() != null || Blackboard.GetAwareness() > Awareness.Relaxed ) {
+			return ExecutionStatus.Succeeded;
+		}
 		return ExecutionStatus.Executing;
 	}
 	private ExecutionStatus Action_BlindFire( Agent agent, MountainGoap.Action action ) {
@@ -479,15 +372,16 @@ public partial class MercenaryShotgunner : MobBase {
 			AimTimer.Start();
 			
 			ArmAnimations.Play( "aim" );
+			BodyAnimations.Play( "aim" );
 			
-			BarkChannel.Stream = AimSfx;
-			BarkChannel.Play();
+			AudioChannel.Stream = AimSfx;
+			AudioChannel.Play();
 			
-			ShootLine.Points[1] = (Godot.Vector2)agent.State[ "LastTargetPosition" ];
+			ShootLine.Points[1] = SightTarget.GlobalPosition;
 			ShootLine.Width = 0.0f;
 			ShootLine.Show();
 		}
-		else if ( !(bool)agent.State[ "CanSeeTarget" ] ) {
+		else if ( !Blackboard.GetCanSeeTarget() ) {
 			// can't see the target, don't waste ammunition
 			
 			// "he's running away!"
@@ -508,16 +402,11 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 	private ExecutionStatus Action_ShootAtTarget( Agent agent, MountainGoap.Action action ) {
 		GodotObject collider = AimLine.GetCollider();
-		if ( collider == null ) {
-//			ActionSfx.Stream = AttackFirearmSfx;
-//			ActionSfx.Play();
-			return ExecutionStatus.Failed;
-		}
 		if ( collider == SightTarget ) {
-//			ActionSfx.Stream = AttackFirearmSfx;
-//			ActionSfx.Play();
+			AudioChannel.Stream = AttackFirearmSfx;
+			AudioChannel.Play();
 			
-//			SightTarget.Damage( this, FirearmDamage );
+			SightTarget.Call( "Damage", this, FirearmDamage );
 			return ExecutionStatus.Succeeded;
 		} else if ( collider is MobBase ) {
 			// "GET OUT OF THE WAY!"
@@ -525,46 +414,67 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 		return ExecutionStatus.Failed;
 	}
+	private ExecutionStatus Action_InvestigateNode( Agent agent, MountainGoap.Action action ) {
+		if ( !Blackboard.GetCanSeeTarget() ) {
+			if ( ChangeInvestigateAngleTimer.IsStopped() ) {
+				if ( Blackboard.GetFear() > 80.0f ) {
+					// if we're scared, more JIGGLE
+					ChangeInvestigateAngleTimer.WaitTime = 1.0f;
+				}
+				// occasionally jiggle the look angle
+				ChangeInvestigateAngleTimer.Start();
+			}
+			
+			if ( LoseInterestTimer.IsStopped() ) {
+				// we can't see them, so begin the interest timer
+				LoseInterestTimer.Start();
+			} else if ( LoseInterestTimer.TimeLeft == 0.0f ) {
+				return ExecutionStatus.Failed;
+			}
+		}
+		else {
+			if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 0 ) { 
+				// FIXME: is this too harsh?
+				Bark( BarkType.TargetSpotted );
+				
+				Blackboard.SetAwareness( Awareness.Alert );
+				Blackboard.SetTarget( SightTarget );
+				
+				agent.PlanAsync();
+				
+				return ExecutionStatus.Succeeded;
+			} else {
+				Bark( BarkType.Confusion );
+				CreateAfterImage();
+				
+				LoseInterestTimer.Stop();
+			}
+		}
+		return ExecutionStatus.Executing;
+	} 
 #endregion
 
 #region Sensors
 	private void SetAlert( bool bRunning ) {
-		if ( Blackboard.GetAwareness() != Awareness.Alert ) {
-			if ( bRunning ) {
-				// "He's getting away!"
-				Bark( BarkType.TargetRunning );
-			} else  {
-				// "there he is!'
-				Bark( BarkType.TargetSpotted );
-			}
-		}
-		if ( Blackboard.GetFear() > 80.0f ) {
-			// "shut the fuck up"
-//			SequencedBarkChannel.Stream.Stream = AudioCache.Quiet[ RandomFactory.Next( 0, AudioCache.Quiet.Count - 1 ) ];
-		}
+		// "He's getting away!" or "Target spotted!"
+		Bark( bRunning ? BarkType.TargetRunning : BarkType.TargetSpotted,
+			Blackboard.GetFear() > 80.0f ? BarkType.Quiet : BarkType.Count
+		);
 		Blackboard.SetTarget( SightTarget );
 		Blackboard.SetHasTarget( true );
 		Blackboard.SetAwareness( Awareness.Alert );
 	}
 	private void SetSuspicious() {
 		// "what was that?"
-//		AISoundManager.RequestAISound( this, BarkChannel.StreamType.Confusion );
-		if ( Blackboard.GetAwareness() != Awareness.Suspicious ) {
-			Bark( BarkType.Confusion );
-		}
-		
-//		SequencedBarkChannel.Stream.Stream = AudioCache.CheckItOut[ RandomFactory.Next( 0, AudioCache.CheckItOut.Count - 1 ) ];
+		Bark( BarkType.Confusion, BarkType.CheckItOut );
 
-		Blackboard.SetTargetReached( false );
-		Blackboard.SetTargetDistance( PhysicsPosition.DistanceTo( Blackboard.GetLastTargetPosition() ) );
+		// make them investigate
+//		Blackboard.SetTargetReached( false );
+//		Blackboard.SetTargetDistance( PhysicsPosition.DistanceTo( Blackboard.GetLastTargetPosition() ) );
 		Blackboard.SetAwareness( Awareness.Suspicious );
 	}
 	
 	private bool Investigate( GodotObject sightTarget ) {
-		if ( !Blackboard.GetInvestigating() ) {
-//			return false;
-		}
-
 		if ( sightTarget != null ) {
 			// if we're running power fantasy mode, don't be as harsh
 			if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
@@ -600,7 +510,7 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 
 		GodotObject sightTarget = null;
-		for ( int i = 0; i < SightLines.Count; i++ ) {
+		for ( int i = 0; i < SightLines.Length; i++ ) {
 			sightTarget = SightLines[i].GetCollider();
 			if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
 				break;
@@ -626,23 +536,13 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 		*/
 
-		/*
-		if ( IsSuspicious() ) {
-			SetSuspicious();
-			agent.State[ "Awareness" ] = Awareness.Suspicious;
-		} else if ( IsAlert() ) {
-			SetAlert( sightTarget == null );
-			agent.State[ "Awareness" ] = Awareness.Alert;
-		}
-		*/
-
-		if ( Investigate( sightTarget ) ) {
-//			return;
-		}
+		Investigate( sightTarget );
 		
 		// we got something, but they slipped out of view
 		if ( SightDetectionAmount > 0.0f && sightTarget == null ) {
-			agent.State[ "CanSeeTarget" ] = false;
+			Blackboard.SetCanSeeTarget( true );
+			
+			CreateAfterImage();
 
 			// we still have some suspicion
 			switch ( Blackboard.GetAwareness() ) {
@@ -670,11 +570,11 @@ public partial class MercenaryShotgunner : MobBase {
 		SightTarget = (CharacterBody2D)sightTarget;
 		if ( sightTarget is Player ) {
 			if ( sightTarget != null ) {
-				agent.State[ "LastTargetPosition" ] = SightTarget.GlobalPosition;
+				Blackboard.SetLastTargetPosition( SightTarget.GlobalPosition );
 			}
 			SightDetectionAmount += SightDetectionSpeed;
-
-			agent.State[ "CanSeeTarget" ] = true;
+			
+			Blackboard.SetCanSeeTarget( true );
 			
 			if ( IsAlert() ) {
 				SetAlert( false );
@@ -705,21 +605,18 @@ public partial class MercenaryShotgunner : MobBase {
 				Blackboard.AddSeenBody( mob );
 				
 				if ( Squad != null && Squad.GetNumSquadMembers() == 1 ) {
-					if ( nBodyCount > 1 ) {
-						// "he wiped out the whole squad"
-						Bark( BarkType.SquadWiped );
-					} else {
-						// "I need backup now!"
-						Bark( BarkType.NeedBackup );
-					}
-					
 					float nAmount = 20.0f;
 					if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_difficulty" ) == 1 ) {
 						nAmount = 70.0f;
 					}
-					if ( Randf( 0.0f, 100.0f ) < nAmount ) {
-						SequencedBark = AudioCache.Unstoppable;
-//						BarkChannel.Play();
+					
+					BarkType sequenced = Randf( 0.0f, 100.0f ) < nAmount ? BarkType.Unstoppable : BarkType.Count;
+					if ( nBodyCount > 1 ) {
+						// "he wiped out the whole squad"
+						Bark( BarkType.SquadWiped, sequenced );
+					} else {
+						// "I need backup now!"
+						Bark( BarkType.NeedBackup, sequenced );
 					}
 				}
 				else if ( nBodyCount == 2 ) {

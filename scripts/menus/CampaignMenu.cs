@@ -42,6 +42,7 @@ public partial class CampaignMenu : Control {
 	private int ButtonIndex = 0;
 	private Button ExitButton;
 	private CanvasLayer TransitionScreen;
+	private bool Loading = false;
 
 	private void BeginLevel() {
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
@@ -53,6 +54,10 @@ public partial class CampaignMenu : Control {
 	}
 
 	private void OnIntendedModeButtonPressed() {
+		if ( Loading ) {
+			return;
+		}
+		Loading = true;
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );
@@ -67,6 +72,10 @@ public partial class CampaignMenu : Control {
 	}
 
 	private void OnPowerFantasyModeButtonPressed() {
+		if ( Loading ) {
+			return;
+		}
+		Loading = true;
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );

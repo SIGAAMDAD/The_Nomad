@@ -105,7 +105,7 @@ z_index = 3
 script = ExtResource("1_skhq2")
 ViewAngleAmount = 70.0
 MaxViewDistance = 150.0
-SightDetectionTime = 2.0
+SightDetectionTime = 10.0
 Health = 100.0
 MovementSpeed = 80.0
 

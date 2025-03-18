@@ -18,6 +18,9 @@ public enum BarkType : uint {
 	NeedBackup,
 	SquadWiped,
 	Curse,
+	Quiet,
+	CheckItOut,
+	Unstoppable,
 
 	Count
 };
@@ -47,6 +50,8 @@ public partial class MobBase : CharacterBody2D {
 	protected Node2D BulletShellTree;
 	protected PackedScene BulletShell;
 
+	protected Color DemonEyeColor;
+	protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
 	
 	[ExportCategory("Sounds")]
@@ -99,8 +104,9 @@ public partial class MobBase : CharacterBody2D {
 
 	protected AudioStreamPlayer2D MoveChannel;
 	protected AudioStreamPlayer2D BarkChannel;
+	protected AudioStreamPlayer2D AudioChannel;
 	protected BarkType LastBark;
-	protected AudioStream SequencedBark;
+	protected BarkType SequencedBark;
 	protected Timer ThinkerTimer;
 	protected Timer LoseInterestTimer;
 	protected Timer ChangeInvestigateAngleTimer;
@@ -112,8 +118,7 @@ public partial class MobBase : CharacterBody2D {
 	protected NavigationAgent2D Navigation;
 	protected Color DetectionColor;
 	protected AIBlackboard Blackboard;
-
-	protected List<RayCast2D> SightLines;
+	protected RayCast2D[] SightLines;
 
 	protected Agent Agent;
 	protected Squad Squad;
@@ -131,54 +136,57 @@ public partial class MobBase : CharacterBody2D {
 		return Agent.Memory[ key ];
 	}
 
-	protected void Bark( BarkType bark ) {
+	private AudioStream GetBarkResource( BarkType bark ) {
+		switch ( bark ) {
+		case BarkType.ManDown:
+			return AudioCache.ManDown[ RandomFactory.Next( 0, AudioCache.ManDown.Length - 1 ) ];
+		case BarkType.MenDown2:
+			return AudioCache.ManDown2;
+		case BarkType.MenDown3:
+			return AudioCache.ManDown3;
+		case BarkType.TargetSpotted:
+			return AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Length - 1 ) ];
+		case BarkType.TargetPinned:
+			return AudioCache.TargetPinned[ RandomFactory.Next( 0, AudioCache.TargetPinned.Length - 1 ) ];
+		case BarkType.TargetRunning:
+			return AudioCache.TargetRunning[ RandomFactory.Next( 0, AudioCache.TargetRunning.Length - 1 ) ];
+		case BarkType.Confusion:
+			return AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Length - 1 ) ];
+		case BarkType.Alert:
+			return AudioCache.Alert[ RandomFactory.Next( 0, AudioCache.Alert.Length - 1 ) ];
+		case BarkType.OutOfTheWay:
+			return AudioCache.OutOfTheWay[ RandomFactory.Next( 0, AudioCache.OutOfTheWay.Length - 1 ) ];
+		case BarkType.NeedBackup:
+			return AudioCache.NeedBackup[ RandomFactory.Next( 0, AudioCache.NeedBackup.Length - 1 ) ];
+		case BarkType.SquadWiped:
+			return AudioCache.SquadWiped;
+		case BarkType.Curse:
+			return AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Length - 1 ) ];
+		case BarkType.CheckItOut:
+			return AudioCache.CheckItOut[ RandomFactory.Next( 0, AudioCache.CheckItOut.Length - 1 ) ];
+		case BarkType.Quiet:
+			return AudioCache.Quiet[ RandomFactory.Next( 0, AudioCache.Quiet.Length - 1 ) ];
+		case BarkType.Unstoppable:
+			return AudioCache.Unstoppable;
+		case BarkType.Count:
+		default:
+			break;
+		};
+		return null;
+	}
+	protected void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
 		if ( LastBark == bark ) {
 			return;
 		}
 		LastBark = bark;
-		switch ( bark ) {
-		case BarkType.ManDown:
-			BarkChannel.Stream = AudioCache.ManDown[ RandomFactory.Next( 0, AudioCache.ManDown.Length - 1 ) ];
-			break;
-		case BarkType.MenDown2:
-			BarkChannel.Stream = AudioCache.ManDown2;
-			break;
-		case BarkType.MenDown3:
-			BarkChannel.Stream = AudioCache.ManDown3;
-			break;
-		case BarkType.TargetSpotted:
-			BarkChannel.Stream = AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Length - 1 ) ];
-			break;
-		case BarkType.TargetPinned:
-			BarkChannel.Stream = AudioCache.TargetPinned[ RandomFactory.Next( 0, AudioCache.TargetPinned.Length - 1 ) ];
-			break;
-		case BarkType.TargetRunning:
-			BarkChannel.Stream = AudioCache.TargetRunning[ RandomFactory.Next( 0, AudioCache.TargetRunning.Length - 1 ) ];
-			break;
-		case BarkType.Confusion:
-			BarkChannel.Stream = AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Length - 1 ) ];
-			break;
-		case BarkType.Alert:
-			BarkChannel.Stream = AudioCache.Alert[ RandomFactory.Next( 0, AudioCache.Alert.Length - 1 ) ];
-			break;
-		case BarkType.OutOfTheWay:
-			BarkChannel.Stream = AudioCache.OutOfTheWay[ RandomFactory.Next( 0, AudioCache.OutOfTheWay.Length - 1 ) ];
-			break;
-		case BarkType.NeedBackup:
-			BarkChannel.Stream = AudioCache.NeedBackup[ RandomFactory.Next( 0, AudioCache.NeedBackup.Length - 1 ) ];
-			break;
-		case BarkType.SquadWiped:
-			BarkChannel.Stream = AudioCache.SquadWiped;
-			break;
-		case BarkType.Curse:
-			BarkChannel.Stream = AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Length - 1 ) ];
-			break;
-		};
+		SequencedBark = sequenced;
+
+		BarkChannel.Stream = GetBarkResource( bark );
 		BarkChannel.Play();
 	}
 	protected void GenerateRaycasts() {
 		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-		SightLines = new List<RayCast2D>();
+		SightLines = new RayCast2D[ rayCount ];
 
 		for ( int i = 0; i < rayCount; i++ ) {
 			RayCast2D ray = new RayCast2D();
@@ -187,15 +195,15 @@ public partial class MobBase : CharacterBody2D {
 			ray.Enabled = true;
 			ray.CollisionMask = 1 | 2;
 			SightDetector.AddChild( ray );
-			SightLines.Add( ray );
+			SightLines[i] = ray;
 		}
 	}
 	protected void RecalcSight() {
-		Agent.State[ "SightPosition" ] = GlobalPosition;
-		for ( int i = 0; i < SightLines.Count; i++ ) {
+		Blackboard.SetSightPosition( GlobalPosition );
+		for ( int i = 0; i < SightLines.Length; i++ ) {
 			RayCast2D ray = SightLines[i];
-			float angle = AngleBetweenRays * ( i - SightLines.Count / 2.0f );
-			ray.TargetPosition = LookDir.Rotated( angle ) * MaxViewDistance;
+			float angle = AngleBetweenRays * ( i - SightLines.Length / 2.0f );
+			ray.SetDeferred( "target_position", LookDir.Rotated( angle ) * MaxViewDistance );
 		}
 	}
 
@@ -225,15 +233,15 @@ public partial class MobBase : CharacterBody2D {
 		LookAngle = angle;
 	}
 	
-	protected void OnSequencedBarkFinished() {
-		SequencedBark = null;
-	}
 	protected void OnBarkFinished() {
 		BarkChannel.Stream = null;
-		if ( SequencedBark != null ) {
+		if ( SequencedBark != BarkType.Count ) {
 			// play another bark right after the first
-			BarkChannel.Stream = SequencedBark;
+			GD.Print( "Sequencing bark " + SequencedBark.ToString() );
+
+			BarkChannel.Stream = GetBarkResource( SequencedBark );
 			BarkChannel.Play();
+			SequencedBark = BarkType.Count;
 		}
 	}
 	protected void OnBodyAnimationFinished() {
@@ -241,6 +249,9 @@ public partial class MobBase : CharacterBody2D {
 			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
 			MoveChannel.Play();
 		}
+	}
+	protected void CreateAfterImage() {
+//		AddChild( new PlayerSystem.AfterImage( SightTarget ) );
 	}
 
 	protected void Init() {
@@ -266,24 +277,7 @@ public partial class MobBase : CharacterBody2D {
 		BarkChannel = GetNode<AudioStreamPlayer2D>( "BarkChannel" );
 		BarkChannel.SetProcess( false );
 		BarkChannel.SetProcessInternal( false );
-		
-//		ActionSfx = GetNode<AudioStreamPlayer2D>( "ActionSfx" );
-
-		/*
-		Bark = new AudioStreamPlayer2D();
-		Bark.VolumeDb = 10.0f;
-		Bark.Bus = "SFX";
-		Bark.GlobalPosition = GlobalPosition;
-		Bark.Connect( "finished", Callable.From( OnBarkFinished ) );
-		AddChild( Bark );
-		
-		SequencedBark = new AudioStreamPlayer2D();
-		SequencedBark.VolumeDb = 10.0f;
-		SequencedBark.GlobalPosition = GlobalPosition;
-		SequencedBark.Stream = null;
-		SequencedBark.Connect( "finished", Callable.From( OnSequencedBarkFinished ) );
-		AddChild( SequencedBark );
-		*/
+		BarkChannel.Connect( "finished", Callable.From( OnBarkFinished ) );
 		
 		BulletShellTree = new Node2D();
 		GetTree().CurrentScene.AddChild( BulletShellTree );
@@ -364,11 +358,11 @@ public partial class MobBase : CharacterBody2D {
 		PhysicsPosition = GlobalPosition;
 	}
 
-    protected bool MoveAlongPath() {
+	protected bool MoveAlongPath() {
 		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
 		AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
 		LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-		Velocity = LookDir * MovementSpeed;
+		SetDeferred( "velocity", LookDir * MovementSpeed );
 		return MoveAndSlide();
 	}
 	protected void SetNavigationTarget( Godot.Vector2 target ) {

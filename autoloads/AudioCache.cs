@@ -14,6 +14,7 @@ public partial class AudioCache {
 	public static AudioStream[] TargetRunning;
 	public static AudioStream[] OutOfTheWay;
 	public static AudioStream[] CheckItOut;
+	public static AudioStream[] Quiet;
 	public static AudioStream ManDown2;
 	public static AudioStream ManDown3;
 	public static AudioStream Deaf;
@@ -63,6 +64,13 @@ public partial class AudioCache {
 		TargetSpotted[13] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21211.mp3" );
 		TargetSpotted[14] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21212.mp3" );
 		TargetSpotted[15] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21213.mp3" );
+
+		Quiet = new AudioStream[ 5 ];
+		Quiet[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_0.mp3" );
+		Quiet[1] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_1.mp3" );
+		Quiet[2] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_2.mp3" );
+		Quiet[3] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_3.mp3" );
+		Quiet[4] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_4.mp3" );
 
 		TargetPinned = new AudioStream[ 4 ];
 		TargetPinned[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21161.mp3" );
