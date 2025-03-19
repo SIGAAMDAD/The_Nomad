@@ -193,7 +193,7 @@ public partial class MobBase : CharacterBody2D {
 			float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
 			ray.TargetPosition = LookDir.Rotated( angle ) * MaxViewDistance;
 			ray.Enabled = true;
-			ray.CollisionMask = 1 | 2;
+			ray.CollisionMask = 2;
 			SightDetector.AddChild( ray );
 			SightLines[i] = ray;
 		}
@@ -361,14 +361,15 @@ public partial class MobBase : CharacterBody2D {
 	protected bool MoveAlongPath() {
 		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
 		AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
-		LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-		SetDeferred( "velocity", LookDir * MovementSpeed );
+		LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
+		Velocity = AngleDir * MovementSpeed;
 		return MoveAndSlide();
 	}
 	protected void SetNavigationTarget( Godot.Vector2 target ) {
 		Navigation.TargetPosition = target;
 		Blackboard.SetTargetReached( false );
 		Blackboard.SetTargetDistance( PhysicsPosition.DistanceTo( target ) );
+		Blackboard.SetGotoPosition( target );
 	}
 	protected void OnTargetReached() {
 		Blackboard.SetTargetReached( true );

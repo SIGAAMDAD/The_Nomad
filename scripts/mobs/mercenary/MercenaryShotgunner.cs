@@ -191,6 +191,14 @@ public partial class MercenaryShotgunner : MobBase {
 					TargetMovedTimer.Start();
 				},
 				name: "TargetMoved"
+			),
+			new Sensor(
+				runCallback: ( Agent agent ) => {
+					if ( PhysicsPosition.DistanceTo( Blackboard.GetGotoPosition() ) <= 10.0f ) {
+						Blackboard.SetTargetReached( true );
+					}
+				},
+				name: "NavPositionReached"
 			)
 		};
 		
@@ -466,7 +474,7 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 	private void SetSuspicious() {
 		// "what was that?"
-		Bark( BarkType.Confusion, BarkType.CheckItOut );
+		Bark( BarkType.Confusion );
 
 		// make them investigate
 //		Blackboard.SetTargetReached( false );
@@ -569,11 +577,9 @@ public partial class MercenaryShotgunner : MobBase {
 		
 		SightTarget = (CharacterBody2D)sightTarget;
 		if ( sightTarget is Player ) {
-			if ( sightTarget != null ) {
-				Blackboard.SetLastTargetPosition( SightTarget.GlobalPosition );
-			}
 			SightDetectionAmount += SightDetectionSpeed;
 			
+			SetNavigationTarget( SightTarget.GlobalPosition );
 			Blackboard.SetCanSeeTarget( true );
 			
 			if ( IsAlert() ) {

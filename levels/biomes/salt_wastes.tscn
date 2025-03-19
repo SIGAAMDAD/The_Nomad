@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://b16ex50idp6s1"]
+[gd_scene load_steps=36 format=4 uid="uid://b16ex50idp6s1"]
 
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="1_5w8g6"]
 [ext_resource type="Script" uid="uid://f5142yd5qopg" path="res://scripts/levels/SaltWastes.cs" id="1_ayvqd"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="9_85mog"]
 [ext_resource type="Texture2D" uid="uid://d1sx0hqsp6ucx" path="res://textures/tilesets/DesertTilemap16x16.png" id="11_5w8g6"]
 [ext_resource type="PackedScene" uid="uid://6cnqoj2bp0r3" path="res://scenes/mobs/mercenary/mercenary_shotgunner.tscn" id="11_sayq2"]
+[ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="12_8ewd7"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/interactables/checkpoint.tscn" id="12_27st8"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="13_8ewd7"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="14_itvej"]
@@ -25,9 +26,9 @@ size = Vector2(16, 12)
 size = Vector2(26.1224, 21.3119)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
-vertices = PackedVector2Array(1442.63, 146, 1693.08, 146, 1696.92, 596.203, 1075.24, 675.883, 837.672, -107, 1402.55, -77.4219, 551.07, 583.438, 492.469, 72.5703, 667.219, -107)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 0, 3, 6, 7, 8)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1451, 136, 1703, 136, 1707, 605, 1075, 686, 542, 592, 482, 69)])
+vertices = PackedVector2Array(1407.38, -77.1719, 1655.69, 112.453, 1459, 114, 1421, 12, 1074, 249, 1075, 176, 1079, 178, 802, 348, 803, 90, 837.672, -107, 1007, 42, 1010, 250, 1010, 281, 1087, 24, 559, 94, 561, 205, 545, 205, 492.328, 72.7109, 1204, 233, 1693.77, 227.258, 1696.92, 596.203, 1205, 377, 1011, 379, 1075.31, 675.867, 689.852, 602.977, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 545, 303, 656, 302, 657, 349, 535.211, 605.82, 1086, 39, 667.219, -107)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6), PackedInt32Array(7, 8, 9, 10, 11, 12), PackedInt32Array(0, 3, 13, 9), PackedInt32Array(14, 15, 16, 17), PackedInt32Array(18, 19, 20, 21), PackedInt32Array(22, 21, 20, 23, 24), PackedInt32Array(25, 26, 27, 28, 29), PackedInt32Array(4, 6, 25, 29), PackedInt32Array(30, 31, 32, 33), PackedInt32Array(13, 34, 10, 9), PackedInt32Array(35, 9, 8, 14, 17), PackedInt32Array(4, 29, 12, 11), PackedInt32Array(7, 12, 22, 24), PackedInt32Array(32, 7, 24, 33), PackedInt32Array(30, 33, 17, 16)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1703, 136, 1707, 605, 1075, 686, 689, 613, 526, 616, 482, 69)])
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pnosp"]
 texture = ExtResource("11_5w8g6")
@@ -5868,20 +5869,47 @@ vframes = 4
 
 [node name="OpposingForce" type="Node2D" parent="RockyBastardsCamp"]
 
+[node name="Guard0" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+position = Vector2(980, 309)
+Direction = 2
+
+[node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+position = Vector2(1249, 163)
+
+[node name="MercenaryShotgunner2" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+position = Vector2(817, 58)
+Direction = 2
+
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="RockyBastardsCamp/OpposingForce"]
 position = Vector2(156, -16)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 
-[node name="Guard0" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D" instance=ExtResource("11_sayq2")]
-position = Vector2(824, 325)
-Direction = 2
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+radius = 1.5
+vertices = PackedVector2Array(559, 94, 561, 205, 545, 205, 545, 303, 656, 302, 657, 349, 802, 348, 803, 90)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
 
-[node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D" instance=ExtResource("11_sayq2")]
-position = Vector2(1093, 179)
+[node name="NavigationObstacle2D2" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+vertices = PackedVector2Array(1007, 42, 1010, 250, 1074, 249, 1075, 176, 1079, 178, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 1010, 281, 1011, 379, 1205, 377, 1204, 233, 1716, 227, 1714, 112, 1459, 114, 1421, 12, 1087, 24, 1086, 39)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
 
-[node name="MercenaryShotgunner2" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D" instance=ExtResource("11_sayq2")]
-position = Vector2(661, 74)
-Direction = 2
+[node name="NodeCache" type="Node" parent="RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("CoverCache")]
+script = ExtResource("12_8ewd7")
+CoverCache = [NodePath("CoverNode"), NodePath("CoverNode2"), NodePath("CoverNode3"), NodePath("CoverNode4")]
+
+[node name="CoverNode" type="Node2D" parent="RockyBastardsCamp/OpposingForce/NodeCache"]
+position = Vector2(969, 91)
+
+[node name="CoverNode2" type="Node2D" parent="RockyBastardsCamp/OpposingForce/NodeCache"]
+position = Vector2(974, 318)
+
+[node name="CoverNode3" type="Node2D" parent="RockyBastardsCamp/OpposingForce/NodeCache"]
+position = Vector2(711, 293)
+
+[node name="CoverNode4" type="Node2D" parent="RockyBastardsCamp/OpposingForce/NodeCache"]
+position = Vector2(704, 92)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="RockyBastardsCamp"]
 position = Vector2(361, 238)
