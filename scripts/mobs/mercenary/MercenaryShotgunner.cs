@@ -6,13 +6,16 @@ using System;
 
 // TODO: make alertness change based on target renown traits
 public partial class MercenaryShotgunner : MobBase {
+	[Export]
+	private NavigationLink2D PatrolRoute;
+
 	private Timer TargetMovedTimer;
 	private Timer HealTimer;
 	private Timer AimTimer;
 	private RayCast2D AimLine;
 	private Line2D ShootLine;
 	private AudioStream AimSfx;
-	
+
 	private static readonly List<BaseGoal> Goals = new List<BaseGoal>{
 		new ExtremeGoal(
 			name: "Survive",
@@ -146,31 +149,6 @@ public partial class MercenaryShotgunner : MobBase {
 					{ "CanSeeTarget", true },
 					{ "HasTarget", true }
 				}
-			),
-			new MountainGoap.Action(
-				name: "GotoNode",
-				permutationSelectors: null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( !Navigation.IsTargetReached() ) {
-						MoveAlongPath();
-					} else {
-
-					}
-					return Navigation.IsTargetReachable() ? ExecutionStatus.Executing : ExecutionStatus.NotPossible;
-				},
-				cost: 40.0f,
-				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
-					return Blackboard.GetTargetDistance();
-				},
-				preconditions: new Dictionary<string, object>{
-					{ "TargetReached", false }
-				},
-				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-					{ "TargetDistance", new ComparisonValuePair{ Value = 10.0f, Operator = ComparisonOperator.GreaterThanOrEquals } }
-				},
-				postconditions: new Dictionary<string, object>{
-					{ "TargetReached", true }
-				}
 			)
 		};
 		List<Sensor> sensors = new List<Sensor>{
@@ -194,11 +172,27 @@ public partial class MercenaryShotgunner : MobBase {
 			),
 			new Sensor(
 				runCallback: ( Agent agent ) => {
+					if ( PatrolRoute != null ) {
+						return;
+					}
 					if ( PhysicsPosition.DistanceTo( Blackboard.GetGotoPosition() ) <= 10.0f ) {
 						Blackboard.SetTargetReached( true );
 					}
 				},
 				name: "NavPositionReached"
+			),
+			new Sensor(
+				runCallback: ( Agent agent ) => {
+					if ( PatrolRoute == null ) {
+						return;
+					}
+					if ( PhysicsPosition.DistanceTo( PatrolRoute.GetGlobalEndPosition() ) <= 10.0f ) {
+						SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+					} else if ( PhysicsPosition.DistanceTo( PatrolRoute.GetGlobalStartPosition() ) <= 10.0f ) {
+						SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+					}
+				},
+				name: "Patrol"
 			)
 		};
 		
@@ -216,7 +210,8 @@ public partial class MercenaryShotgunner : MobBase {
 				{ "SightPosition", Godot.Vector2.Zero },
 				{ "Awareness", Awareness.Relaxed },
 				{ "Investigating", false },
-				{ "LastTargetPosition", Godot.Vector2.Zero }
+				{ "LastTargetPosition", Godot.Vector2.Zero },
+				{ "PatrolRoute", PatrolRoute != null }
 			},
 			null,
 			Goals,
@@ -226,6 +221,10 @@ public partial class MercenaryShotgunner : MobBase {
 
 		Blackboard.SetGuardPosition( GlobalPosition );
 		Blackboard.SetStims( 2 );
+
+		if ( PatrolRoute != null ) {
+			SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+		}
 		
 		DemonEyeColor = new Color();
 		DemonEyeColor.R = 0.0f;
@@ -306,7 +305,7 @@ public partial class MercenaryShotgunner : MobBase {
 		Agent.State[ "InCover" ] = Blackboard.GetInCover();
 		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
 
-		Agent.Step( StepMode.OneAction );
+		Agent.Step();
 	}
 #endregion
 

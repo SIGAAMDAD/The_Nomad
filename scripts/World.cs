@@ -7,33 +7,14 @@ public partial class World : Node2D {
 	private Node2D Hellbreaker = null;
 	private Node2D SettingsData = null;
 
-	[Export]
-	private CanvasModulate WorldTimeOverlay;
-	[Export]
-	public Node2D LevelData = null;
-	[Export]
-	private GradientTexture1D Gradient;
-	[Export]
-	private float InGameSpeed = 1.0f;
-	[Export]
-	private float InitialHour = 12.0f;
-
-	private float Time = 0.0f;
-	private float PastMinute = -1.0f;
-
 	private SfxPool AudioPool;
 
-	[Signal]
-	public delegate void TimeTickEventHandler( uint day, uint hour, uint minute );
+	[Export]
+	public Node2D LevelData = null;
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
-
 	[Signal]
 	public delegate void AudioLoadingFinishedEventHandler();
-
-	private const uint MinutesPerDay = 2440;
-	private const uint MinutesPerHour = 60;
-	private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
 
 	private bool Loaded = false;
 	private Thread AudioLoadThread;
@@ -57,23 +38,9 @@ public partial class World : Node2D {
 		AddChild( Hellbreaker );
 	}
 
-	private void RecalculateTime() {
-		uint totalMinutes = (uint)( Time / InGameToRealMinuteDuration );
-		uint day = (uint)( totalMinutes / MinutesPerDay );
-
-		uint currentDayMinutes = totalMinutes % MinutesPerDay;
-		uint hour = (uint)( currentDayMinutes / MinutesPerHour );
-		uint minute = (uint)( currentDayMinutes % MinutesPerHour );
-
-		if ( PastMinute != minute ) {
-			EmitSignal( "TimeTick", day, hour, minute );
-			PastMinute = minute;
-		}
-	}
-
 	private void OnAudioFinishedLoading() {
 		EmitSignal( "FinishedLoading" );
-//		SetProcess( true );
+		SetProcess( true );
 
 		AudioLoadThread.Join();
 	}
@@ -96,23 +63,11 @@ public partial class World : Node2D {
 //			"goap.log"
 //		);
 		
-		Time = InGameToRealMinuteDuration * InitialHour * MinutesPerHour;
 		AudioLoadThread = new Thread( () => { AudioCache.Cache( this ); } );
 		AudioLoadThread.Start();
 
-		SetProcess( false );
-
 		AudioLoadingFinished += OnAudioFinishedLoading;
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
 
-		Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
-		RecalculateTime();
-
-		if ( ( (int)Engine.GetProcessFrames() % 60 ) != 0 ) {
-			float value = ( Mathf.Sin( Time * Mathf.Pi / 2.0f ) + 1.0f ) / 2.0f;
-			WorldTimeOverlay.Color = Gradient.Gradient.Sample( value );
-		}
+		SetProcess( false );
 	}
 };

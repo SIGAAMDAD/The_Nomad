@@ -95,7 +95,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_75x84"]
-radius = 7.0
+radius = 6.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pt2do"]
 radius = 5.0
@@ -145,7 +145,7 @@ animation = &"move"
 autoplay = "idle"
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
-position = Vector2(-7, 5)
+position = Vector2(-8, 5)
 shape = SubResource("CircleShape2D_75x84")
 
 [node name="DetectionMeter" type="Line2D" parent="."]
@@ -159,13 +159,11 @@ avoidance_enabled = true
 debug_enabled = true
 
 [node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-max_distance = 1800.0
+max_distance = 1000.0
 bus = &"SFX"
 
 [node name="BarkChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = -1.0
-max_distance = 1800.0
+max_distance = 1000.0
 bus = &"SFX"
 
 [node name="Bounds" type="Node2D" parent="."]

@@ -393,9 +393,10 @@ texture = SubResource("GradientTexture1D_0ed87")
 
 [node name="TabContainer" type="TabContainer" parent="Control/MarginContainer"]
 layout_mode = 2
-current_tab = 0
+current_tab = 1
 
 [node name="Inventory" type="TabBar" parent="Control/MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -816,7 +817,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Contracts" type="TabBar" parent="Control/MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 

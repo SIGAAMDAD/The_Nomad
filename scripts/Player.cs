@@ -185,6 +185,7 @@ public partial class Player : CharacterBody2D {
 	private List<AmmoStack> AmmoStacks = new List<AmmoStack>();
 
 	private List<Checkpoint> WarpList = new List<Checkpoint>();
+	private List<Renown.Contract> Contracts = new List<Renown.Contract>();
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
@@ -250,6 +251,10 @@ public partial class Player : CharacterBody2D {
 		writer.Write( ArmLeft.GetSlot() );
 		writer.Write( ArmRight.GetSlot() );
 
+		writer.Write( Renown.World.WorldTimeManager.Year );
+		writer.Write( Renown.World.WorldTimeManager.Month );
+		writer.Write( Renown.World.WorldTimeManager.Day );
+
 		/*
 		writer.Write( Traits.Count );
 		for ( int i = 0; i < Traits.Count; i++ ) {
@@ -290,6 +295,11 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < ConsumableStacks.Count; i++ ) {
 			writer.Write( ConsumableStacks[i].Amount );
 			writer.Write( (string)ConsumableStacks[i].ItemType.Get( "id" ) );
+		}
+
+		writer.Write( Contracts.Count );
+		for ( int i = 0; i < Contracts.Count; i++ ) {
+			writer.Write( (uint)Contracts[i].GetContractType() );
 		}
 
 //		SaveWriter = writer;
@@ -341,6 +351,10 @@ public partial class Player : CharacterBody2D {
 		WarCrimeCount = reader.ReadUInt32();
 		RenownAmount = reader.ReadUInt32();
 		TutorialCompleted = reader.ReadBoolean();
+
+		Renown.World.WorldTimeManager.Year = reader.ReadUInt32();
+		Renown.World.WorldTimeManager.Month = reader.ReadUInt32();
+		Renown.World.WorldTimeManager.Day = reader.ReadUInt32();	
 		
 		/*
 		Traits.Clear();
@@ -430,6 +444,19 @@ public partial class Player : CharacterBody2D {
 		}
 
 		HUD.SetWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
+	}
+
+	public AnimatedSprite2D GetTorsoAnimation() {
+		return TorsoAnimation;
+	}
+	public AnimatedSprite2D GetLegsAnimation() {
+		return LegAnimation;
+	}
+	public AnimatedSprite2D GetLeftArmAnimation() {
+		return ArmLeft.Animations;
+	}
+	public AnimatedSprite2D GetRightArmAnimation() {
+		return ArmRight.Animations;
 	}
 
 	public Resource GetCurrentMappingContext() {

@@ -1,58 +1,29 @@
 using Godot;
 using DialogueManagerRuntime;
 
-/*
 namespace Renown {
-	public partial class Contract : Quest {
-		public enum ContractType {
-			Count
-		};
+	public enum ContractType {
+		Kidnapping,
+		Assassination,
+		Extortion,
+		Sabotauge,
 
+		Count
+	};
+	public partial class Contract : Resource {
 		[Export]
 		private ContractType Type;
 		[Export]
-		private Thinker Contractor;
+		private uint DueYear = 0;
+		[Export]
+		private uint DueMonth = 0;
+		[Export]
+		private uint DueDay = 0;
 
-		private System.Collections.Generic.List<Resource> OptionalObjectives;
+		private World.WorldTimestamp DueDate;
 
-        public Contract( Thinker contractor, ContractType type, Resource? preloadedQuest = null ) {
-			Contractor = contractor;
-			QuestResource = preloadedQuest;
-			Type = type;
-
-			if ( QuestResource == null ) {
-				QuestResource = ResourceLoader.Load<GDScript>( "res://addons/questify/scripts/model/quest_resource.gd" );
-				QuestResource = (Resource)QuestResource.Call( "instantiate" );
-			}
-		}
-
-		public void AddOptionalObjective( Resource objective ) {
-			GDScript script = ResourceLoader.Load<GDScript>( "res://addons/questify/scripts/model/quest_objective.gd" );
-			OptionalObjectives.Add( (Resource)script.New() );
-		}
-
-		public Resource GetQuest() {
-			return QuestResource;
-		}
 		public ContractType GetContractType() {
 			return Type;
 		}
-
-		private void OnContractStarted( Resource quest ) {
-			
-		}
-		private void OnContractObjectiveAdded( Resource quest, Resource objective ) {
-
-		}
-		public override void _Ready() {
-			base._Ready();
-
-			Resource instance = (Resource)QuestResource.Call( "instantiate" );
-			GetNode( "/root/Questify" ).Connect( "quest_started", Callable.From<Resource>( OnContractStarted ) );
-			GetNode( "/root/Questify" ).Connect( "quest_objective_added", Callable.From<Resource, Resource>( OnContractObjectiveAdded ) );
-
-			GetNode( "/root/Questify" ).Call( "start_quest", instance );
-		}
     };
 };
-*/

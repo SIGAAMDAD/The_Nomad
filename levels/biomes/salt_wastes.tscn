@@ -26,9 +26,9 @@ size = Vector2(16, 12)
 size = Vector2(26.1224, 21.3119)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
-vertices = PackedVector2Array(1407.38, -77.1719, 1655.69, 112.453, 1459, 114, 1421, 12, 1074, 249, 1075, 176, 1079, 178, 802, 348, 803, 90, 837.672, -107, 1007, 42, 1010, 250, 1010, 281, 1087, 24, 559, 94, 561, 205, 545, 205, 492.328, 72.7109, 1204, 233, 1693.77, 227.258, 1696.92, 596.203, 1205, 377, 1011, 379, 1075.31, 675.867, 689.852, 602.977, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 545, 303, 656, 302, 657, 349, 535.211, 605.82, 1086, 39, 667.219, -107)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6), PackedInt32Array(7, 8, 9, 10, 11, 12), PackedInt32Array(0, 3, 13, 9), PackedInt32Array(14, 15, 16, 17), PackedInt32Array(18, 19, 20, 21), PackedInt32Array(22, 21, 20, 23, 24), PackedInt32Array(25, 26, 27, 28, 29), PackedInt32Array(4, 6, 25, 29), PackedInt32Array(30, 31, 32, 33), PackedInt32Array(13, 34, 10, 9), PackedInt32Array(35, 9, 8, 14, 17), PackedInt32Array(4, 29, 12, 11), PackedInt32Array(7, 12, 22, 24), PackedInt32Array(32, 7, 24, 33), PackedInt32Array(30, 33, 17, 16)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1703, 136, 1707, 605, 1075, 686, 689, 613, 526, 616, 482, 69)])
+vertices = PackedVector2Array(1540, 466, 1438, 302, 1456, 301, 1531, 301, 1605, 466, 1651, 495, 1547, 300, 1622, 300, 1715.73, 495, 945, 107, 857, 107, 803, 90, 667.219, -107, 837.672, -107, 1007, 42, 944, 239, 1010, 250, 1010, 281, 1698.75, 227.195, 1619, 260, 1204, 233, 1547, 260, 1074, 249, 1075, 176, 1079, 178, 802, 348, 858, 239, 692, 460, 692.891, 603.547, 689.852, 602.977, 645, 492, 657, 349, 1402.52, -77.4219, 1419.2, 18.0469, 1087, 24, 1205, 377, 1298, 483, 1300, 502, 1222, 503, 1157, 408, 1345, 301, 1363, 262, 1363, 302, 1342, 261, 559, 94, 561, 205, 545, 205, 492.328, 72.7109, 1093, 505, 1125, 504, 1126, 569, 1094, 569, 1542, 530, 1431, 532, 1430, 500, 1222, 631, 950, 634, 950, 617, 868, 411, 868, 379, 1011, 379, 886, 618, 885, 572, 1158, 569, 646.742, 603.766, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 708, 380, 708, 460, 1653, 594, 1608, 595, 580, 492, 545, 303, 656, 302, 1528, 261, 1456, 261, 580.617, 604.984, 535.211, 605.82, 1435, 262, 1270, 261, 1270, 301, 1414, 485, 1415, 500, 1086, 39)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(5, 4, 3, 6, 7, 8), PackedInt32Array(9, 10, 11, 12, 13, 14), PackedInt32Array(15, 9, 14, 16, 17), PackedInt32Array(18, 8, 7, 19), PackedInt32Array(20, 18, 19, 21), PackedInt32Array(22, 23, 24), PackedInt32Array(25, 11, 10, 26), PackedInt32Array(27, 28, 29, 30, 31), PackedInt32Array(32, 33, 34, 13), PackedInt32Array(35, 36, 37, 38, 39), PackedInt32Array(40, 41, 42, 36), PackedInt32Array(41, 40, 43), PackedInt32Array(44, 45, 46, 47), PackedInt32Array(48, 49, 50, 51), PackedInt32Array(0, 52, 53, 54, 1), PackedInt32Array(55, 56, 57, 51, 50), PackedInt32Array(39, 58, 59, 60), PackedInt32Array(61, 62, 51, 57), PackedInt32Array(55, 50, 63), PackedInt32Array(38, 55, 63, 39), PackedInt32Array(29, 64, 30), PackedInt32Array(65, 66, 67, 68, 69), PackedInt32Array(70, 71, 27, 31), PackedInt32Array(72, 73, 4, 5), PackedInt32Array(22, 24, 65, 69), PackedInt32Array(74, 75, 76, 31, 30), PackedInt32Array(6, 3, 77, 21), PackedInt32Array(20, 21, 77, 78), PackedInt32Array(74, 79, 80, 47, 75), PackedInt32Array(2, 1, 81, 78), PackedInt32Array(20, 78, 81, 41, 43), PackedInt32Array(20, 43, 82), PackedInt32Array(35, 20, 82, 83), PackedInt32Array(42, 1, 54, 84), PackedInt32Array(54, 85, 84), PackedInt32Array(42, 84, 36), PackedInt32Array(83, 40, 36, 35), PackedInt32Array(60, 35, 39), PackedInt32Array(26, 15, 17, 60, 59, 25), PackedInt32Array(34, 86, 14, 13), PackedInt32Array(12, 11, 44, 47), PackedInt32Array(22, 69, 17, 16), PackedInt32Array(25, 59, 70, 31), PackedInt32Array(47, 46, 75)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1447, 119, 1703, 136, 1726, 499, 1673, 605, 1075, 686, 689, 613, 526, 616, 482, 69)])
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pnosp"]
 texture = ExtResource("11_5w8g6")
@@ -5869,8 +5869,14 @@ vframes = 4
 
 [node name="OpposingForce" type="Node2D" parent="RockyBastardsCamp"]
 
-[node name="Guard0" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+[node name="PatrolRoute" type="NavigationLink2D" parent="RockyBastardsCamp/OpposingForce"]
+position = Vector2(156, -16)
+start_position = Vector2(811, 330)
+end_position = Vector2(1002, 325)
+
+[node name="Guard0" parent="RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("PatrolRoute") instance=ExtResource("11_sayq2")]
 position = Vector2(980, 309)
+PatrolRoute = NodePath("../PatrolRoute")
 Direction = 2
 
 [node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
@@ -5885,13 +5891,49 @@ position = Vector2(156, -16)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-radius = 1.5
+radius = 1.0
 vertices = PackedVector2Array(559, 94, 561, 205, 545, 205, 545, 303, 656, 302, 657, 349, 802, 348, 803, 90)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D2" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-vertices = PackedVector2Array(1007, 42, 1010, 250, 1074, 249, 1075, 176, 1079, 178, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 1010, 281, 1011, 379, 1205, 377, 1204, 233, 1716, 227, 1714, 112, 1459, 114, 1421, 12, 1087, 24, 1086, 39)
+radius = 1.0
+vertices = PackedVector2Array(1007, 42, 1010, 250, 1074, 249, 1075, 176, 1079, 178, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 1010, 281, 1011, 379, 1205, 377, 1204, 233, 1716, 227, 1714, 112, 1459, 114, 1422, 18, 1087, 24, 1086, 39)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D3" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+radius = 1.0
+vertices = PackedVector2Array(858, 239, 857, 107, 945, 107, 944, 239)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D4" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+radius = 1.0
+vertices = PackedVector2Array(708, 380, 868, 379, 868, 411, 1157, 408, 1158, 569, 1126, 569, 1125, 504, 1093, 505, 1094, 569, 885, 572, 886, 618, 950, 617, 950, 634, 1222, 631, 1222, 503, 1300, 502, 1298, 483, 1414, 485, 1415, 500, 1430, 500, 1431, 532, 1542, 530, 1540, 466, 1605, 466, 1608, 595, 1653, 594, 1651, 495, 1729, 495, 1679, 680, 957, 680, 518, 622, 580.709, 621.283, 580, 492, 645, 492, 647, 620, 693, 620, 692, 460, 708, 460)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D5" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D6" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+position = Vector2(93, 1)
+vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D7" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+position = Vector2(186, 0)
+vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="NavigationObstacle2D8" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+position = Vector2(277, -1)
+vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 

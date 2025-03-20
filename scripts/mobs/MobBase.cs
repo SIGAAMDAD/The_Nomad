@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Godot;
 using MountainGoap;
-using System.ComponentModel;
 
 public enum BarkType : uint {
 	TargetSpotted,
@@ -119,6 +118,7 @@ public partial class MobBase : CharacterBody2D {
 	protected Color DetectionColor;
 	protected AIBlackboard Blackboard;
 	protected RayCast2D[] SightLines;
+	protected PlayerSystem.AfterImage AfterImage;
 
 	protected Agent Agent;
 	protected Squad Squad;
@@ -251,7 +251,7 @@ public partial class MobBase : CharacterBody2D {
 		}
 	}
 	protected void CreateAfterImage() {
-//		AddChild( new PlayerSystem.AfterImage( SightTarget ) );
+		AfterImage.Update( (Player)SightTarget );
 	}
 
 	protected void Init() {
@@ -298,6 +298,9 @@ public partial class MobBase : CharacterBody2D {
 		LoseInterestTimer.OneShot = true;
 		LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
 		AddChild( LoseInterestTimer );
+
+		AfterImage = new PlayerSystem.AfterImage();
+		AddChild( AfterImage );
 
 		switch ( Direction ) {
 		case DirType.North:
@@ -374,6 +377,7 @@ public partial class MobBase : CharacterBody2D {
 	protected void OnTargetReached() {
 		Blackboard.SetTargetReached( true );
 		Blackboard.SetTargetDistance( 0.0f );
+		Velocity = Godot.Vector2.Zero;
 	}
 
 #region Actions

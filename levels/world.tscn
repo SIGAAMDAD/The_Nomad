@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="PackedScene" uid="uid://b16ex50idp6s1" path="res://levels/biomes/salt_wastes.tscn" id="2_pmfem"]
+[ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
 [ext_resource type="PackedScene" uid="uid://dt868tou75he1" path="res://levels/biomes/safe_sands.tscn" id="3_pmfem"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="5_712nc"]
 [ext_resource type="Script" uid="uid://bqdgnod1hrdmf" path="res://scripts/DayNightCycle.cs" id="6_i8ckm"]
@@ -10,13 +11,7 @@
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
 [ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="10_oxfhy"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
-
-[sub_resource type="Gradient" id="Gradient_wqmfy"]
-offsets = PackedFloat32Array(0, 0.229167, 0.475694, 1)
-colors = PackedColorArray(0.31, 0.155, 0.155, 1, 0.54, 0.1836, 0.18954, 1, 0.999767, 0.184271, 0.174462, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_mla2a"]
-gradient = SubResource("Gradient_wqmfy")
+[ext_resource type="Script" uid="uid://duyo2hg7flovm" path="res://scripts/renown/World/WorldTimeManager.cs" id="11_re8x6"]
 
 [sub_resource type="Gradient" id="Gradient_i8ckm"]
 interpolation_mode = 1
@@ -48,12 +43,14 @@ frequency = 0.4662
 color_ramp = SubResource("Gradient_lmpr0")
 noise = SubResource("FastNoiseLite_re8x6")
 
-[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Player1", "WorldTimeOverlay")]
+[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Player1")]
 script = ExtResource("1_re8x6")
 Player1 = NodePath("Player")
-WorldTimeOverlay = NodePath("CanvasModulate")
-Gradient = SubResource("GradientTexture1D_mla2a")
-InGameSpeed = 0.25
+
+[node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("WorldTimeOverlay")]
+script = ExtResource("11_re8x6")
+WorldTimeOverlay = NodePath("../CanvasModulate")
+Gradient = ExtResource("2_re8x6")
 
 [node name="SaltWastes" parent="." instance=ExtResource("2_pmfem")]
 process_thread_group = 2
