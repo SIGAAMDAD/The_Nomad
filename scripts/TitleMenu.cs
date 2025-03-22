@@ -116,12 +116,19 @@ public partial class TitleMenu : Control {
 		LobbyFactory.SetProcess( false );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
+		UIChannel.SetProcess( false );
+		UIChannel.SetProcessInternal( false );
 
 		SoundManager.PlayMusic( ResourceLoader.Load<AudioStream>( "res://music/ui/menu_intro.ogg" ) );
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
+			return;
+		}
 		if ( !SoundManager.IsMusicPlaying() ) {
 			SoundManager.PlayMusic( ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" ) );
 		}
