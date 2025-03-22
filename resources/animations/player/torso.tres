@@ -1,0 +1,65 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://t4ad26gwxx7"]
+
+[ext_resource type="Texture2D" uid="uid://dx2laa44hg1rf" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.png" id="1_kxev2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53mdq"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5f0rh"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wod13"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b20kv"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7i6om"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cinka"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hfddc"]
+atlas = ExtResource("1_kxev2")
+region = Rect2(0, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53mdq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5f0rh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wod13")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b20kv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7i6om")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cinka")
+}],
+"loop": false,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hfddc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
