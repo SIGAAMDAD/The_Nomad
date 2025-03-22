@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=20 format=3 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="PackedScene" uid="uid://b16ex50idp6s1" path="res://levels/biomes/salt_wastes.tscn" id="2_pmfem"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="10_oxfhy"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
 [ext_resource type="Script" uid="uid://duyo2hg7flovm" path="res://scripts/renown/World/WorldTimeManager.cs" id="11_re8x6"]
+[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="13_mla2a"]
 
 [sub_resource type="Gradient" id="Gradient_i8ckm"]
 interpolation_mode = 1
@@ -171,3 +172,5 @@ Action = ExtResource("10_oxfhy")
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
 position = Vector2(220, 138)
 TutorialString = "Rest at campfire to heal"
+
+[node name="PauseMenu" parent="." instance=ExtResource("13_mla2a")]
