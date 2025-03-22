@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dc70l8k6vu2w7"]
+
+[ext_resource type="Script" uid="uid://dyys2kuxj4psc" path="res://scripts/renown/Contracts/Assassination.cs" id="1_ykhng"]
+
+[resource]
+script = ExtResource("1_ykhng")
+TargetName = &"Kirosla"
+Type = 1

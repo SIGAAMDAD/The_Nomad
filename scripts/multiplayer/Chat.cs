@@ -1,5 +1,5 @@
 using Godot;
-using GodotSteam;
+using Steamworks;
 
 namespace Multiplayer {
 	public partial class Chat : Control {
@@ -29,12 +29,12 @@ namespace Multiplayer {
 			} else if ( ( (InputEventKey)@event ).Keycode == Key.Enter ) {
 				Message.Editable = false;
 				Message.Size = new Godot.Vector2( 140, 31 );
-				Steam.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text );
+				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
 				Message.Clear();
 			}
 		}
 		private void OnChatMessageReceived( ulong senderId, string message ) {
-			string username = Steam.GetFriendPersonaName( senderId );
+			string username = SteamFriends.GetFriendPersonaName( (CSteamID)senderId );
 			
 			RecentText.Clear();
 			RecentText.Text = message;

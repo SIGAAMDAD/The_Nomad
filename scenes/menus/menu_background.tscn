@@ -1,0 +1,121 @@
+[gd_scene load_steps=12 format=3 uid="uid://bc6bj5sw3gvf8"]
+
+[sub_resource type="Environment" id="Environment_5lchc"]
+background_mode = 3
+glow_enabled = true
+glow_levels/1 = 1.0
+glow_levels/2 = 1.0
+glow_levels/4 = 1.0
+glow_normalized = true
+glow_intensity = 2.5
+glow_bloom = 0.02
+glow_blend_mode = 0
+glow_hdr_threshold = 0.79
+glow_hdr_scale = 0.4
+
+[sub_resource type="Gradient" id="Gradient_imvie"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.0389953, 0.0202454, 0.010053, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5lchc"]
+gradient = SubResource("Gradient_imvie")
+width = 24
+
+[sub_resource type="Gradient" id="Gradient_rhrir"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(128.498, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6lvap"]
+gradient = SubResource("Gradient_rhrir")
+width = 1
+height = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rhrir"]
+lifetime_randomness = 0.75
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(320, 1, 0)
+angular_velocity_min = -8.00002
+angular_velocity_max = 7.99998
+gravity = Vector3(0, -16, 0)
+linear_accel_min = -20.0
+linear_accel_max = 20.0
+radial_accel_min = -14.0
+radial_accel_max = 14.0
+tangential_accel_min = -16.0
+tangential_accel_max = 16.0
+color = Color(1, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_8r73w"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 0.435294, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_u1nnk"]
+gradient = SubResource("Gradient_8r73w")
+width = 2
+height = 2
+
+[sub_resource type="Gradient" id="Gradient_0pfl6"]
+offsets = PackedFloat32Array(0, 0.734234)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.545098, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_u0sbq"]
+gradient = SubResource("Gradient_0pfl6")
+width = 32
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gj7it"]
+lifetime_randomness = 0.75
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(320, 1, 0)
+angular_velocity_min = -8.00002
+angular_velocity_max = 7.99998
+gravity = Vector3(0, -16, 0)
+linear_accel_min = -20.0
+linear_accel_max = 20.0
+radial_accel_min = -16.0
+radial_accel_max = 16.0
+tangential_accel_min = -16.0
+tangential_accel_max = 16.0
+color_ramp = SubResource("GradientTexture1D_u0sbq")
+
+[node name="MenuBackground" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5lchc")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_5lchc")
+
+[node name="EmberParticlesEmitter" type="GPUParticles2D" parent="."]
+modulate = Color(4, 1, 1, 1)
+position = Vector2(320, 500)
+amount = 1400
+texture = SubResource("GradientTexture2D_6lvap")
+lifetime = 12.0
+randomness = 0.25
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_rhrir")
+
+[node name="SandParticlesEmitter" type="GPUParticles2D" parent="."]
+position = Vector2(320, 490)
+amount = 240
+texture = SubResource("GradientTexture2D_u1nnk")
+lifetime = 14.0
+randomness = 0.25
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_gj7it")

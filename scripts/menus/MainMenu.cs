@@ -37,7 +37,11 @@ public partial class MainMenu : Control {
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
+		SteamLobby.Instance.CreateLobby();
+
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+
+		ArchiveSystem.LoadGame();
 
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels/world.tscn"

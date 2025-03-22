@@ -1,9 +1,7 @@
 using MessagePack;
 using Godot;
-using GodotSteam;
-using System.Xml;
-using System.Linq.Expressions;
-using System.Linq;
+using Steamworks;
+using System;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -15,13 +13,29 @@ public partial class SteamLobby : Node {
 	private static SteamLobby _Instance;
 	public static SteamLobby Instance => _Instance;
 
-	private System.Collections.Generic.List<ulong> LobbyMembers = new System.Collections.Generic.List<ulong>();
-	private ulong LobbyId = 0;
-	private ulong LobbyOwnerId = 0;
+	private Callback<LobbyEnter_t> LobbyEnter;
+	private Callback<LobbyChatMsg_t> LobbyChatMsg;
+	private Callback<LobbyChatUpdate_t> LobbyChatUpdate;
+	private Callback<P2PSessionRequest_t> P2PSessionRequest;
+	private Callback<P2PSessionConnectFail_t> P2PSessionConnectFail;
+
+	private CallResult<LobbyCreated_t> OnLobbyCreatedCallResult;
+	private CallResult<LobbyEnter_t> OnLobbyEnterCallResult;
+	private CallResult<LobbyMatchList_t> OnLobbyMatchListCallResult;
+
+	private System.Collections.Generic.List<CSteamID> LobbyMembers = new System.Collections.Generic.List<CSteamID>();
+	private CSteamID LobbyId = CSteamID.Nil;
+	private CSteamID LobbyOwnerId = CSteamID.Nil;
 	private bool IsHost = false;
 
-	private System.Collections.Generic.List<ulong> LobbyList = new System.Collections.Generic.List<ulong>();
-	private uint LobbyMaxMembers = 0;
+	private HServerListRequest ServerListRequest;
+	private ISteamMatchmakingServerListResponse ServerListResponse;
+	private ISteamMatchmakingPingResponse PingResponse;
+	private ISteamMatchmakingPlayersResponse PlayersResponse;
+	private ISteamMatchmakingRulesResponse RulesResponse;
+
+	private System.Collections.Generic.List<CSteamID> LobbyList = new System.Collections.Generic.List<CSteamID>();
+	private int LobbyMaxMembers = 0;
 	private uint LobbyGameMode = 0;
 	private string LobbyName;
 	private string LobbyMapName;
@@ -33,6 +47,7 @@ public partial class SteamLobby : Node {
 
 	private const uint PACKET_READ_LIMIT = 32;
 
+	/*
 	public enum ChatRoomEnterResponse {
 		CHAT_ROOM_ENTER_RESPONSE_SUCCESS = 1,
 		CHAT_ROOM_ENTER_RESPONSE_DOESNT_EXIST,
@@ -60,6 +75,7 @@ public partial class SteamLobby : Node {
 		CHAT_ENTRY_TYPE_WAS_BANNED,
 		CHAT_ENTRY_TYPE_DISCONNECTED
 	};
+	*/
 
 	public enum MessageType {
 		Handshake,
@@ -69,9 +85,6 @@ public partial class SteamLobby : Node {
 
 		// gamestate
 		ServerData,
-
-		// player data that only needs spare updates
-		PlayerUpdate,
 		
 		Count
 	};
@@ -84,8 +97,12 @@ public partial class SteamLobby : Node {
 	public delegate void ClientLeftLobbyEventHandler( ulong steamId );
 	[Signal]
 	public delegate void LobbyJoinedEventHandler( ulong lobbyId );
+	[Signal]
+	public delegate void LobbyCreatedEventHandler( ulong lobbyId );
+	[Signal]
+	public delegate void LobbyListUpdatedEventHandler();
 
-	public ulong GetLobbyID() {
+	public CSteamID GetLobbyID() {
 		return LobbyId;
 	}
 	public bool IsOwner() {
@@ -97,14 +114,14 @@ public partial class SteamLobby : Node {
 	public int GetMap() {
 		return LobbyMap;
 	}
-	public System.Collections.Generic.List<ulong> GetLobbyList() {
+	public System.Collections.Generic.List<CSteamID> GetLobbyList() {
 		return LobbyList;
 	}
 
 	public void SetLobbyName( string name ) {
 		LobbyName = name;
 	}
-	public void SetMaxMembers( uint nMaxMembers ) {
+	public void SetMaxMembers( int nMaxMembers ) {
 		LobbyMaxMembers = nMaxMembers;
 	}
 	public void SetGameMode( uint nGameMode ) {
@@ -118,163 +135,179 @@ public partial class SteamLobby : Node {
 		IsHost = bHost;
 	}
 
-	private void OpenLobbyList( Godot.Collections.Array lobbies ) {
-		LobbyList.Clear();
-		foreach ( var lobby in lobbies ) {
-			LobbyList.Add( (ulong)lobby );
-		}
-	}
+	private void OnLobbyChatUpdate( LobbyChatUpdate_t pCallback ) {
+		string changerName = SteamFriends.GetFriendPersonaName( (CSteamID)pCallback.m_ulSteamIDMakingChange );
+//		string changerName = SteamFriends.GetFriendPersonaName( changeId );
 
-	private void OnLobbyChatUpdate( ulong lobbyId, long changeId, long makingChangeId, long chatState ) {
-		string changerName = Steam.GetFriendPersonaName( (ulong)changeId );
-
-		switch ( chatState ) {
-		case (long)Steam.ChatMemberStateChange.Entered:
+		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
+		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
 			GetNode( "Console" ).Call( "print_line", changerName + " has joined...", true );
-			EmitSignal( "ClientJoinedLobby", changeId );
+			EmitSignal( "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
-		case (long)Steam.ChatMemberStateChange.Left:
+		case EChatMemberStateChange.k_EChatMemberStateChangeLeft:
 			GetNode( "Console" ).Call( "print_line", changerName + " has faded away...", true );
-			EmitSignal( "ClientLeftLobby", changeId );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			break;
+		case EChatMemberStateChange.k_EChatMemberStateChangeDisconnected:
+			GetNode( "Console" ).Call( "print_line", changerName + " tweaked out...", true );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			break;
+		case EChatMemberStateChange.k_EChatMemberStateChangeBanned:
+			GetNode( "Console" ).Call( "print_line", changerName + " was rejected...", true );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			break;
+		case EChatMemberStateChange.k_EChatMemberStateChangeKicked:
+			GetNode( "Console" ).Call( "print_line", changerName + " was excommunicated...", true );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		};
 	}
-	private void OnLobbyCreated( long connect, ulong lobbyId ) {
-		if ( connect != 1 ) {
+	private void OnLobbyCreated( LobbyCreated_t pCallback, bool bIOFailure ) {
+		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
 			return;
 		}
 
-		GD.Print( "Created lobby " + lobbyId + "." );
-		LobbyId = lobbyId;
+		GD.Print( "Created lobby " + pCallback.m_ulSteamIDLobby + "." );
+		LobbyId = (CSteamID)pCallback.m_ulSteamIDLobby;
 		IsHost = true;
 
-		Steam.SetLobbyJoinable( lobbyId, true );
-		Steam.SetLobbyData( lobbyId, "name", LobbyName );
-		Steam.SetLobbyData( lobbyId, "map", LobbyMap.ToString() );
-		Steam.SetLobbyData( lobbyId, "gamemode", LobbyGameMode.ToString() );
+		SteamMatchmaking.SetLobbyJoinable( LobbyId, true );
+		SteamMatchmaking.SetLobbyData( LobbyId, "appid", SteamManager.GetAppID().ToString() );
+		SteamMatchmaking.SetLobbyData( LobbyId, "name", LobbyName );
+		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap.ToString() );
+		SteamMatchmaking.SetLobbyData( LobbyId, "gamemode", LobbyGameMode.ToString() );
 
-		bool bSetRelay = Steam.AllowP2PPacketRelay( true );
+		bool bSetRelay = SteamNetworking.AllowP2PPacketRelay( true );
 		if ( !bSetRelay ) {
 			GD.PushError( "[STEAM] couldn't enable p2p packet relay!" );
 			return;
 		}
-
-		EmitSignal( "LobbyCreated", lobbyId );
 	}
-	private void OnLobbyMatchList( Godot.Collections.Array lobbyList ) {
+	private void OnLobbyMatchList( LobbyMatchList_t pCallback, bool bIOFailure ) {	
+		GD.Print( "Received lobby match list." );
+
 		LobbyList.Clear();
-		foreach ( var lobby in lobbyList ) {
-			LobbyList.Add( (ulong)lobby );
+		for ( int i = 0; i < pCallback.m_nLobbiesMatching; i++ ) {
+			LobbyList.Add( SteamMatchmaking.GetLobbyByIndex( i ) );
 		}
+
+		EmitSignal( "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
-		System.Collections.Generic.Dictionary<string, object> packet = new System.Collections.Generic.Dictionary<string, object>();
-		packet[ "message" ] = "handshake";
-		packet[ "remote_steam_id" ] = SteamManager.GetSteamID();
-		packet[ "username" ] = SteamManager.GetSteamName();
-		SendP2PPacket( 0, packet );
+		SendP2PPacket( CSteamID.Nil, new System.Collections.Generic.Dictionary<string, object>(), MessageType.Handshake );
 	}
-	private void GetLobbyMembers() {
+	public void GetLobbyMembers() {
 		LobbyMembers.Clear();
 
-		int memberCount = Steam.GetNumLobbyMembers( LobbyId );
+		int memberCount = SteamMatchmaking.GetNumLobbyMembers( LobbyId );
 		for ( int i = 0; i < memberCount; i++ ) {
-			ulong steamId = Steam.GetLobbyMemberByIndex( LobbyId, i );
-			string username = Steam.GetFriendPersonaName( steamId );
+			CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex( LobbyId, i );
+			string username = SteamFriends.GetFriendPersonaName( steamId );
 
 			LobbyMembers.Add( steamId );
 		}
 	}
 
-	private void OpenLobbyList() {
-		if ( LobbyFilterMap != "Any" ) {
-			Steam.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, Steam.LobbyComparison.LobbyComparisonEqual );
-		}
-		if ( LobbyFilterGameMode != "Any" ) {
-			Steam.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, Steam.LobbyComparison.LobbyComparisonEqual );
-		}
-		Steam.AddRequestLobbyListDistanceFilter( Steam.LobbyDistanceFilter.Worldwide );
-		Steam.RequestInternetServerList( SteamManager.GetAppID(), new Godot.Collections.Array() );
-		Steam.RequestLobbyList();
+	public void OpenLobbyList() {
+//		if ( LobbyFilterMap != "Any" ) {
+//			SteamMatchmaking.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, ELobbyComparison.k_ELobbyComparisonEqual );
+//		}
+//		if ( LobbyFilterGameMode != "Any" ) {
+//			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, ELobbyComparison.k_ELobbyComparisonEqual );
+//		}
+
+		SteamMatchmaking.AddRequestLobbyListDistanceFilter( ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide );
+
+		MatchMakingKeyValuePair_t[] filters = [];
+		ServerListRequest = SteamMatchmakingServers.RequestInternetServerList( SteamManager.GetAppID(), filters, 0, ServerListResponse );
+
+		SteamAPICall_t handle = SteamMatchmaking.RequestLobbyList();
+		OnLobbyMatchListCallResult.Set( handle );
 	}
 
 	public void CreateLobby() {
-		if ( LobbyId != 0 ) {
+		if ( LobbyId.IsValid() ) {
 			return;
 		}
 		IsHost = true;
 
-		Steam.LobbyType lobbyType = Steam.LobbyType.Private;
+		ELobbyType lobbyType = ELobbyType.k_ELobbyTypePrivate;
 		switch ( LobbyVisibility ) {
 		case Visibility.Private:
-			lobbyType = Steam.LobbyType.Private;
+			lobbyType = ELobbyType.k_ELobbyTypePrivate;
 			break;
 		case Visibility.Public:
-			lobbyType = Steam.LobbyType.Public;
+			lobbyType = ELobbyType.k_ELobbyTypePublic;
 			break;
 		case Visibility.FriendsOnly:
-			lobbyType = Steam.LobbyType.FriendsOnly;
+			lobbyType = ELobbyType.k_ELobbyTypeFriendsOnly;
 			break;
 		};
 
 		GD.Print( "Initializing SteamLobby..." );
-		Steam.CreateLobby( lobbyType, LobbyMaxMembers );
+		SteamMatchmaking.CreateLobby( lobbyType, LobbyMaxMembers );
 	}
-	public void JoinLobby( ulong lobbyId ) {
-		Steam.JoinLobby( lobbyId );
+	public void JoinLobby( CSteamID lobbyId ) {
+		SteamMatchmaking.JoinLobby( lobbyId );
 	}
 	public void LeaveLobby() {
-		if ( LobbyId == 0 ) {
+		if ( !LobbyId.IsValid() ) {
 			return;
 		}
 
 		GD.Print( "Leaving lobby " + LobbyId + "..." );
-		Steam.LeaveLobby( LobbyId );
-		LobbyId = 0;
+		SteamMatchmaking.LeaveLobby( LobbyId );
+		LobbyId = CSteamID.Nil;
 
-		foreach ( var member in LobbyMembers ) {
-			Godot.Collections.Dictionary sessionState = Steam.GetP2PSessionState( member );
-			if ( sessionState.ContainsKey( "connection_active" ) && (bool)sessionState[ "connection_active" ] ) {
-				Steam.CloseP2PSessionWithUser( member );
+		for ( int i = 0; i < LobbyMembers.Count; i++ ) {
+			P2PSessionState_t sessionState;
+			if ( !SteamNetworking.GetP2PSessionState( LobbyMembers[i], out sessionState ) ) {
+				continue;
+			}
+			if ( sessionState.m_bConnectionActive == 1 ) {
+				SteamNetworking.CloseP2PSessionWithUser( LobbyMembers[i] );
 			}
 		}
 		LobbyMembers.Clear();
 
-		EmitSignal( "ClientLeftLobby", SteamManager.GetSteamID() );
+		EmitSignal( "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
 	}
-	public void SendP2PPacket( ulong target, System.Collections.Generic.Dictionary<string, object> packet, Steam.P2PSend sendType = 0 ) {
+	public void SendP2PPacket( CSteamID target, System.Collections.Generic.Dictionary<string, object> packet, MessageType messageType ) {
 		int channel = 0;
 
-		if ( target == 0 ) {
-			foreach ( var member in LobbyMembers ) {
-				if ( member != SteamManager.GetSteamID() ) {
-					Steam.SendP2PPacket( member, MessagePackSerializer.Serialize( packet ), sendType, channel );
+		packet[ "message" ] = messageType;
+
+		byte[] data = MessagePackSerializer.Serialize( packet );
+		if ( !target.IsValid() ) {
+			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
+				if ( LobbyMembers[i] != SteamUser.GetSteamID() ) {
+					SteamNetworking.SendP2PPacket( LobbyMembers[i], data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
 				}
 			}
 		} else {
-			Steam.SendP2PPacket( target, MessagePackSerializer.Serialize( packet ), sendType, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
 		}
 	}
 	private void ReadP2Packet() {
-		uint packetSize = Steam.GetAvailableP2PPacketSize( 0 );
-		if ( packetSize == 0 ) {
+		uint packetSize;
+		if ( !SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
 			return;
 		}
-		Godot.Collections.Dictionary packet = Steam.ReadP2PPacket( packetSize, 0 );
-		System.Collections.Generic.Dictionary<string, object> data = MessagePackSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>( (byte[])packet[ "data" ] );
+
+		CSteamID senderId;
+		byte[] data = new byte[ packetSize ];
+		SteamNetworking.ReadP2PPacket( data, (uint)data.Length, out packetSize, out senderId );
+		System.Collections.Generic.Dictionary<string, object> packet = MessagePackSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>( data );
 		
-		switch ( (uint)data[ "message" ] ) {
+		switch ( (uint)packet[ "message" ] ) {
 		case (uint)MessageType.Handshake:
 			GD.Print( (string)packet[ "username" ] + " sent a handshake packet." );
 			break;
 		case (uint)MessageType.ClientData:
-			( (MultiplayerData)GetTree().CurrentScene ).ProcessClientData( (ulong)packet[ "remote_steam_id" ], (System.Collections.Generic.Dictionary<string, object>)data[ "packet" ] );
+			( (MultiplayerData)GetTree().CurrentScene ).ProcessClientData( (ulong)senderId, (System.Collections.Generic.Dictionary<string, object>)packet[ "packet" ] );
 			break;
 		case (uint)MessageType.ServerData:
-			( (MultiplayerData)GetTree().CurrentScene ).ProcessHeartbeat( (System.Collections.Generic.Dictionary<string, object>)data[ "packet" ] );
-			break;
-		case (uint)MessageType.PlayerUpdate:
-			( (MultiplayerData)GetTree().CurrentScene ).ProcessPlayerUpdate( (ulong)packet[ "remote_steam_id" ], (System.Collections.Generic.Dictionary<string, object>)data[ "packet" ] );
+			( (MultiplayerData)GetTree().CurrentScene ).ProcessHeartbeat( (System.Collections.Generic.Dictionary<string, object>)packet[ "packet" ] );
 			break;
 		};
 	}
@@ -283,41 +316,63 @@ public partial class SteamLobby : Node {
 			return;
 		}
 
-		if ( Steam.GetAvailableP2PPacketSize( 0 ) > 0 ) {
+		uint packetSize;
+		if ( SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
 			ReadP2Packet();
 			ReadAllPackets( readCount + 1 );
 		}
 	}
 	
-	private void OnLobbyJoined( ulong lobbyId, long permissions, bool locked, long response ) {
-		if ( response == (long)ChatRoomEnterResponse.CHAT_ROOM_ENTER_RESPONSE_SUCCESS ) {
-			LobbyId = lobbyId;
-			LobbyOwnerId = Steam.GetLobbyOwner( lobbyId );
-
-			GD.Print( "Joined lobby " + lobbyId + "." );
-
-			LobbyName = Steam.GetLobbyData( lobbyId, "name" );
-			LobbyMap = Steam.GetLobbyData( lobbyId, "map" ).ToInt();
-			LobbyGameMode = (uint)Steam.GetLobbyData( lobbyId, "gamemode" ).ToInt();
-
-			GetLobbyMembers();
-			MakeP2PHandkshake();
-
-			EmitSignal( "LobbyJoined", lobbyId );
-		}
+	private void OnLobbyJoined( LobbyEnter_t pCallback, bool bIOFailure ) {
+		OnLobbyJoined( pCallback );
 	}
-	private void OnP2PSessionRequest( ulong remoteId ) {
-		string requester = Steam.GetFriendPersonaName( remoteId );
-		Steam.AcceptP2PSessionWithUser( remoteId );
+	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
+		GD.Print( "...Joined" );
+		if ( pCallback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ) {
+			GD.PushError( "[STEAM] Error joining lobby " + pCallback.m_ulSteamIDLobby + ": " + ( (EChatRoomEnterResponse)pCallback.m_EChatRoomEnterResponse ).ToString() );
+			return;
+		}
+
+		LobbyId = (CSteamID)pCallback.m_ulSteamIDLobby;
+		LobbyOwnerId = SteamMatchmaking.GetLobbyOwner( LobbyId );
+
+		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
+
+		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+
+		GetLobbyMembers();
+		MakeP2PHandkshake();
+
+		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+	}
+	private void OnP2PSessionRequest( P2PSessionRequest_t pCallback ) {
+		string requester = SteamFriends.GetFriendPersonaName( pCallback.m_steamIDRemote );
+		SteamNetworking.AcceptP2PSessionWithUser( pCallback.m_steamIDRemote );
 	}
 	private void OnLobbyDataUpdated( long success, ulong lobbyId, ulong memberId ) {
 	}
-	private void OnLobbyMessage( ulong lobbyId, long user, string message, long chatType ) {
-		switch ( (ChatEntryType)chatType ) {
-		case ChatEntryType.CHAT_ENTRY_TYPE_CHAT_MSG:
-			EmitSignal( "ChatMessageReceived", (ulong)user, message );
-			break;
+	private void OnLobbyMessage( LobbyChatMsg_t pCallback ) {
+		byte[] szBuffer = new byte[ 4096 ];
+		CSteamID senderId;
+		EChatEntryType entryType;
+		int ret = SteamMatchmaking.GetLobbyChatEntry( (CSteamID)pCallback.m_ulSteamIDLobby, (int)pCallback.m_iChatID, out senderId, szBuffer, szBuffer.Length, out entryType );
+
+		switch ( entryType ) {
+		case EChatEntryType.k_EChatEntryTypeChatMsg: {
+			EmitSignal( "ChatMessageReceived", (ulong)senderId, szBuffer.ToString() );
+			break; }
 		};
+	}
+
+	private void OnRefreshComplete( HServerListRequest hRequest, EMatchMakingServerResponse response ) {
+		GD.Print( "[STEAM] Server list refresh finished: " + response.ToString() );
+	}
+	private void OnServerResponded( HServerListRequest hRequest, int iServer ) {
+	}
+	private void OnServerFailedToRespond( HServerListRequest hRequest, int iServer ) {
+		GD.PushError( "[STEAM] Server failed to respond" );
 	}
 
 	public override void _EnterTree() {
@@ -328,12 +383,26 @@ public partial class SteamLobby : Node {
 		_Instance = this;
 	}
     public override void _Ready() {
-		Steam.LobbyChatUpdate += ( lobbyId, changeId, makingChangeId, chatState ) => OnLobbyChatUpdate( lobbyId, changeId, makingChangeId, chatState );
-		Steam.LobbyCreated += ( connect, lobbyId ) => OnLobbyCreated( connect, lobbyId );
-		Steam.LobbyMatchList += ( lobbyList ) => OnLobbyMatchList( lobbyList );
-		Steam.LobbyMessage += ( lobbyId, user, message, chatType ) => OnLobbyMessage( lobbyId, user, message, chatType );
-		Steam.P2PSessionRequest += ( remoteId ) => OnP2PSessionRequest( remoteId );
-		Steam.LobbyJoined += ( lobbyId, permissions, locked, response  ) => OnLobbyJoined( lobbyId, permissions, locked, response );
+		LobbyEnter = Callback<LobbyEnter_t>.Create( OnLobbyJoined );
+		LobbyChatMsg = Callback<LobbyChatMsg_t>.Create( OnLobbyMessage );
+		LobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create( OnLobbyChatUpdate );
+		P2PSessionRequest = Callback<P2PSessionRequest_t>.Create( OnP2PSessionRequest );
+
+		OnLobbyCreatedCallResult = CallResult<LobbyCreated_t>.Create( OnLobbyCreated );
+		OnLobbyEnterCallResult = CallResult<LobbyEnter_t>.Create( OnLobbyJoined );
+		OnLobbyMatchListCallResult = CallResult<LobbyMatchList_t>.Create( OnLobbyMatchList );
+
+		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
+
+		/*
+		Steam.LobbyChatUpdate += OnLobbyChatUpdate;
+		Steam.LobbyCreated += OnLobbyCreated;
+		Steam.LobbyMatchList += OnLobbyMatchList;
+		Steam.LobbyMessage += OnLobbyMessage;
+		Steam.P2PSessionRequest += OnP2PSessionRequest;
+		Steam.LobbyJoined += OnLobbyJoined;
+		Steam.LobbyMatchList += OnLobbyMatchList;
+		*/
 
 		OpenLobbyList();
 	}

@@ -2,7 +2,6 @@ using Godot;
 using MountainGoap;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System;
 
 // TODO: make alertness change based on target renown traits
 public partial class MercenaryShotgunner : MobBase {
@@ -31,6 +30,7 @@ public partial class MercenaryShotgunner : MobBase {
 				{ "HasTarget", true }
 			}
 		),
+		/*
 		new Goal(
 			name: "InvestigateDisturbance",
 			weight: 82.0f,
@@ -55,6 +55,7 @@ public partial class MercenaryShotgunner : MobBase {
 				{ "TargetReached", true }
 			}
 		),
+		*/
 	};
 	
 	public void Save() {
@@ -467,6 +468,7 @@ public partial class MercenaryShotgunner : MobBase {
 		Bark( bRunning ? BarkType.TargetRunning : BarkType.TargetSpotted,
 			Blackboard.GetFear() > 80.0f ? BarkType.Quiet : BarkType.Count
 		);
+		SetNavigationTarget( SightTarget.GlobalPosition );
 		Blackboard.SetTarget( SightTarget );
 		Blackboard.SetHasTarget( true );
 		Blackboard.SetAwareness( Awareness.Alert );
@@ -476,8 +478,22 @@ public partial class MercenaryShotgunner : MobBase {
 		Bark( BarkType.Confusion );
 
 		// make them investigate
-//		Blackboard.SetTargetReached( false );
-//		Blackboard.SetTargetDistance( PhysicsPosition.DistanceTo( Blackboard.GetLastTargetPosition() ) );
+		SetNavigationTarget( Blackboard.GetLastTargetPosition() );
+		if ( PhysicsPosition.DistanceTo( Blackboard.GetLastTargetPosition() ) <= 10.0f ) {
+			Velocity = Godot.Vector2.Zero;
+			if ( ChangeInvestigateAngleTimer.TimeLeft == ChangeInvestigateAngleTimer.WaitTime ) {
+				if ( Blackboard.GetFear() > 80.0f ) {
+					// if we're scared, more JIGGLE
+					ChangeInvestigateAngleTimer.WaitTime = 1.0f;
+				}
+				// occasionally jiggle the look angle
+				ChangeInvestigateAngleTimer.Start();
+			}
+			if ( LoseInterestTimer.IsStopped() ) {
+				LoseInterestTimer.Start();
+			}
+		}
+
 		Blackboard.SetAwareness( Awareness.Suspicious );
 	}
 	
@@ -512,9 +528,7 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 	
 	private void Sensor_Sight( Agent agent ) {
-		if ( Blackboard.GetSightPosition() != GlobalPosition ) {
-			RecalcSight();
-		}
+		RecalcSight();
 
 		GodotObject sightTarget = null;
 		for ( int i = 0; i < SightLines.Length; i++ ) {
@@ -574,12 +588,11 @@ public partial class MercenaryShotgunner : MobBase {
 			return;
 		}
 		
-		SightTarget = (CharacterBody2D)sightTarget;
-		if ( sightTarget is Player ) {
+		SightTarget = sightTarget as Player;
+		if ( SightTarget != null ) {
 			SightDetectionAmount += SightDetectionSpeed;
-			
-			SetNavigationTarget( SightTarget.GlobalPosition );
-			Blackboard.SetCanSeeTarget( true );
+			Blackboard.SetLastTargetPosition( SightTarget.GlobalPosition );
+//			Blackboard.SetCanSeeTarget( true );
 			
 			if ( IsAlert() ) {
 				SetAlert( false );

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Godot;
 using MountainGoap;
+using System;
 
 public enum BarkType : uint {
 	TargetSpotted,
@@ -231,6 +232,11 @@ public partial class MobBase : CharacterBody2D {
 		float angle = Randf( 0.0f, 360.0f );
 		AimAngle = angle;
 		LookAngle = angle;
+
+		ArmAnimations.SetDeferred( "global_rotation", AimAngle );
+		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
+
+		RecalcSight();
 	}
 	
 	protected void OnBarkFinished() {
@@ -251,11 +257,11 @@ public partial class MobBase : CharacterBody2D {
 		}
 	}
 	protected void CreateAfterImage() {
-		AfterImage.Update( (Player)SightTarget );
+		AfterImage.CallDeferred( "Update", (Player)SightTarget );
 	}
 
 	protected void Init() {
-		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
@@ -286,6 +292,9 @@ public partial class MobBase : CharacterBody2D {
 		GetTree().CurrentScene.AddChild( BloodSplatterTree );
 		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+
+		AfterImage = new PlayerSystem.AfterImage();
+		GetTree().Root.AddChild( AfterImage );
 		
 		ChangeInvestigateAngleTimer = new Timer();
 		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
@@ -298,9 +307,6 @@ public partial class MobBase : CharacterBody2D {
 		LoseInterestTimer.OneShot = true;
 		LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
 		AddChild( LoseInterestTimer );
-
-		AfterImage = new PlayerSystem.AfterImage();
-		AddChild( AfterImage );
 
 		switch ( Direction ) {
 		case DirType.North:

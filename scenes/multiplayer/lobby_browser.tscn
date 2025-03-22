@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dpriw3r8df1su"]
+[gd_scene load_steps=7 format=3 uid="uid://dpriw3r8df1su"]
 
 [ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
+[ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="4_lib35"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
@@ -113,6 +114,7 @@ offset_bottom = -4726.42
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.00026, 0.828502)
+draw_focus_border = true
 
 [node name="Lobbies" type="VBoxContainer" parent="LobbyList"]
 layout_mode = 2
@@ -309,6 +311,8 @@ visible = false
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "MATCHMAKE"
+
+[node name="Fade" parent="." instance=ExtResource("4_lib35")]
 
 [connection signal="pressed" from="ControlBar/RefreshButton" to="." method="_on_refresh_button_pressed"]
 [connection signal="pressed" from="ControlBar/HostButton" to="." method="_on_host_button_pressed"]

@@ -1,7 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using Godot;
-using Godot.Collections;
-using GodotSteam;
+using Steamworks;
 
 [GlobalClass]
 public partial class SteamAchievements : Node {
@@ -74,6 +72,9 @@ public partial class SteamAchievements : Node {
 		Stop_Hitting_Yourself,
 		Fuck_This_Shit_Im_Out,
 		Smoke_Break,
+		Forever_Alone_Forever_Forlorn,
+		One_In_A_Million,
+		Touch_Grass,
 		
 		Count
 	};
@@ -130,7 +131,14 @@ public partial class SteamAchievements : Node {
 		}
     };
 
+	private Callback<UserStatsReceived_t> UserStatsReceived;
+	private Callback<UserStatsStored_t> UserStatsStored;
+	private Callback<UserAchievementStored_t> UserAchievementStored;
+
+	private CallResult<UserStatsReceived_t> UserStatsReceivedCallResult;
+	
 	private static System.Collections.Generic.Dictionary<string, SteamAchievement> AchievementTable;
+	private bool SteamStatsReceived = false;
 
 	public override void _Ready() {
 		AchievementTable = new System.Collections.Generic.Dictionary<string, SteamAchievement>();
@@ -140,48 +148,72 @@ public partial class SteamAchievements : Node {
 			AchievementTable.Add( "ACH_" + id.ToString().ToUpper(), new SteamAchievement( id, id.ToString() ) );
 		}
 
-		Steam.UserAchievementStored += ( gameId, groupAchieve, achievementName, currentProgress, maxProgress ) => {
-			GD.Print( "Stored user achievement data for " + achievementName );
-		};
+		UserStatsReceived = Callback<UserStatsReceived_t>.Create( OnUserStatsReceived );
+		UserStatsStored = Callback<UserStatsStored_t>.Create( OnUserStatsStored );
+		UserAchievementStored = Callback<UserAchievementStored_t>.Create( OnUserAchievementStored );
 
-		Steam.UserStatsReceived += ( gameId, result, userId ) => {
-			GD.Print( "Got local player statistics & achievements" );
+		UserStatsReceivedCallResult = CallResult<UserStatsReceived_t>.Create( OnUserStatsReceived );
 
-			if ( (ulong)userId != Steam.GetSteamID() ) {
-				GD.PushError( "Not this user, aborting." );
-				return;
+		if ( !SteamUserStats.RequestCurrentStats() ) {
+			GD.PushError( "[STEAM] Error fetching Steam stats!" );
+		}
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+		
+		if ( !SteamStatsReceived ) {
+			return;
+		}
+		foreach ( var achievement in AchievementTable ) {
+			bool bAchieved;
+			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bAchieved ) ) {
+				GD.PushError( "[STEAM] Error getting achievement data for " + achievement.Value.GetIdString() );
+				continue;
 			}
-			if ( gameId != SteamManager.GetAppID() ) {
-				GD.PushError( "Not this game, aborting." );
-				return;
-			}
+			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
+			AchievementTable[ achievement.Key ].SetAchieved( bAchieved );
+		}
+		SetProcess( false );
+	}
 
-			if ( result != 1 ) {
-				GD.PushError( "Steam couldn't fetch stats: " + result.ToString() );
-				return;
-			}
-			GD.Print( "Fetched user statistics." );
+    private void OnUserAchievementStored( UserAchievementStored_t pCallback ) {
+		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
+			GD.PushError( "[STEAM] Incorrect AppID!" );
+			return;
+		}
 
-			foreach ( var achievement in AchievementTable ) {
-				Dictionary steamStatus = Steam.GetAchievement( achievement.Value.GetIdString() );
-				if ( !(bool)steamStatus[ "ret" ] ) {
-					continue;
-				}
-				GD.Print( "Got achivement data for " + achievement.Value.GetIdString() + ", status: " + ( (bool)steamStatus[ "achieved" ] ).ToString() );
-				AchievementTable[ achievement.Key ].SetAchieved( (bool)steamStatus[ "achieved" ] );
-			}
-		};
+		GD.Print( "[STEAM] Stored achievement data for " + pCallback.m_rgchAchievementName + ", progress: " + pCallback.m_nCurProgress + "/" + pCallback.m_nMaxProgress );
+	}
+	private void OnUserStatsReceived( UserStatsReceived_t pCallback, bool bIOFailure ) {
+		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
+			GD.PushError( "[STEAM] Error fetching steam user statistics" );
+			return;
+		}
+		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
+			GD.PushError( "[STEAM] Incorrect AppID!" );
+			return;
+		}
+	}
+	private void OnUserStatsReceived( UserStatsReceived_t pCallback ) {
+		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
+			GD.PushError( "[STEAM] Error fetching steam user statistics" );
+			return;
+		}
+		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
+			GD.PushError( "[STEAM] Incorrect AppID!" );
+			return;
+		}
 
-		Steam.UserStatsStored += ( gameId, result ) => {
-			if ( result != 1 ) {
-				GD.PushError( "Steam couldn't store stats: " + result.ToString() );
-			}
-			if ( gameId != SteamManager.GetAppID() ) {
-				GD.PushError( "Not this game!" );
-			}
-		};
-
-		Steam.RequestUserStats( Steam.GetSteamID() );
+		GetNode( "/root/Console" ).Call( "print_line", "Got local player statistics & achievements.", true );
+		SteamStatsReceived = true;
+	}
+	private void OnUserStatsStored( UserStatsStored_t pCallback ) {
+		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
+			GD.PushError( "[STEAM] Couldn't store stats: " + pCallback.m_eResult );
+		}
+		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
+			GD.PushError( "[STEAM] Incorrect AppID!" );
+		}
 	}
 
 	public static void SetAchievementProgress( string id, string statName, int nValue ) {
@@ -190,8 +222,8 @@ public partial class SteamAchievements : Node {
 			return;
 		}
 
-		Steam.SetStatInt( statName, nValue );
-		while ( !Steam.StoreStats() ) {
+		SteamUserStats.SetStat( statName, nValue );
+		while ( !SteamUserStats.StoreStats() ) {
 			GD.PushError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
@@ -201,8 +233,8 @@ public partial class SteamAchievements : Node {
 			return;
 		}
 
-		Steam.SetStatFloat( statName, nValue );
-		while ( !Steam.StoreStats() ) {
+		SteamUserStats.SetStat( statName, nValue );
+		while ( !SteamUserStats.StoreStats() ) {
 			GD.PushError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
@@ -214,11 +246,11 @@ public partial class SteamAchievements : Node {
 
 		AchievementTable[ id ].SetAchieved( true );
 
-		if ( !Steam.SetAchievement( id ) ) {
+		if ( !SteamUserStats.SetAchievement( id ) ) {
 			GD.PushError( "[STEAM] Error activating achievement!" );
 			return;
 		}
-		while ( !Steam.StoreStats() ) {
+		while ( !SteamUserStats.StoreStats() ) {
 			GD.PushError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}

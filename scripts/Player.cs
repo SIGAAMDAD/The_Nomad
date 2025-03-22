@@ -3,6 +3,8 @@ using System;
 using PlayerSystem;
 using System.Linq;
 using System.Collections.Generic;
+using System.Xml;
+using Steamworks;
 
 public partial class Player : CharacterBody2D {
 	public enum GameMode {
@@ -168,7 +170,7 @@ public partial class Player : CharacterBody2D {
 	private int CurrentWeapon = 0;
 
 	// multiplayer data
-	public ulong MultiplayerId = 0; // literally just a steamID
+	public CSteamID MultiplayerId = CSteamID.Nil;
 	public string MultiplayerUsername;
 	public uint MultiplayerKills = 0;
 	public uint MultiplayerDeaths = 0;
@@ -176,9 +178,16 @@ public partial class Player : CharacterBody2D {
 	public uint MultiplayerFlagReturns = 0;
 	public float MultiplayerHilltime = 0.0f;
 
+	private PlayerAnimationState LeftArmAnimationState;
+	private PlayerAnimationState RightArmAnimationState;
+	private PlayerAnimationState TorsoAnimationState;
+	private PlayerAnimationState LegAnimationState;
+
 	private AudioStreamPlayer2D MoveChannel;
 	private AudioStreamPlayer2D DashChannel;
 	private AudioStreamPlayer2D MiscChannel;
+
+	private Dictionary<string, object> NetworkPacket = new Dictionary<string, object>();
 
 	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
 	private List<ConsumableStack> ConsumableStacks = new List<ConsumableStack>();
@@ -214,6 +223,7 @@ public partial class Player : CharacterBody2D {
 			return; // don't save other people's data, we ain't the government
 		}
 
+		/*
 		DirAccess.MakeDirRecursiveAbsolute( ArchiveSystem.Instance.GetSaveDirectory() );
 
 		string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "PlayerData.ngd" );
@@ -254,13 +264,6 @@ public partial class Player : CharacterBody2D {
 		writer.Write( Renown.World.WorldTimeManager.Year );
 		writer.Write( Renown.World.WorldTimeManager.Month );
 		writer.Write( Renown.World.WorldTimeManager.Day );
-
-		/*
-		writer.Write( Traits.Count );
-		for ( int i = 0; i < Traits.Count; i++ ) {
-			writer.Write( (uint)Traits[i].GetTraitType() );
-		}
-		*/
 
 		writer.Write( AmmoStacks.Count );
 		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
@@ -308,12 +311,70 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < nodes.Count; i++ ) {
 //			nodes[i].Call( "Save" );
 		}
+		*/
+		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
+		
+		writer.SaveFloat( "health", Health );
+		writer.SaveFloat( "rage", Rage );
+		writer.SaveInt( "hellbreaks", Hellbreaks );
+		writer.SaveInt( "current_weapon", CurrentWeapon );
+		writer.SaveUInt( "hands_used", (uint)HandsUsed );
+
+		writer.SaveVector2( "position", GlobalPosition );
+
+		writer.SaveInt( "arm_left_slot", ArmLeft.GetSlot() );
+		writer.SaveInt( "arm_right_slot", ArmRight.GetSlot() );
+
+		writer.SaveUInt( "world_time_year", Renown.World.WorldTimeManager.Year );
+		writer.SaveUInt( "world_time_month", Renown.World.WorldTimeManager.Month );
+		writer.SaveUInt( "world_time_day", Renown.World.WorldTimeManager.Day );
+
+		writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
+		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
+			writer.SaveInt( "ammo_stacks_amount_" + i.ToString(), AmmoStacks[i].Amount );
+			writer.SaveString( "ammo_stacks_type_" + i.ToString(), (string)AmmoStacks[i].AmmoType.Get( "id" ) );
+		}
+
+		writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
+		for ( int i = 0; i < WeaponsStack.Count; i++ ) {
+			writer.SaveString( "weapon_stacks_type_" + i.ToString(), (string)WeaponsStack[i].Data.Get( "id" ) );
+			if ( ( WeaponsStack[i].GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				writer.SaveInt( "weapon_stacks_bullet_count_" + i.ToString(), WeaponsStack[i].GetBulletCount() );
+			}
+		}
+
+		writer.SaveInt( "max_weapon_slots", MAX_WEAPON_SLOTS );
+		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
+			writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
+			if ( WeaponSlots[i].IsUsed() ) {
+				int weaponIndex;
+				for ( weaponIndex = 0; weaponIndex < WeaponsStack.Count; weaponIndex++ ) {
+					if ( WeaponsStack[ weaponIndex ] == WeaponSlots[ i ].GetWeapon() ) {
+						break;
+					}
+				}
+				writer.SaveInt( "weapon_slot_index_" + i.ToString(), weaponIndex );
+				writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
+			}
+		}
+		
+		writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
+		for ( int i = 0; i < ConsumableStacks.Count; i++ ) {
+			writer.SaveInt( "consumable_stacks_amount_" + i.ToString(), ConsumableStacks[i].Amount );
+			writer.SaveString( "consumable_stacks_type_" + i.ToString(), (string)ConsumableStacks[i].ItemType.Get( "id" ) );
+		}
+
+		writer.SaveInt( "contracts_count", Contracts.Count );
+		for ( int i = 0; i < Contracts.Count; i++ ) {
+			writer.SaveUInt( "contract_type_" + i.ToString(), (uint)Contracts[i].GetContractType() );
+		}
 	}
 	public void Load() {
 		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (uint)GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
 			return; // don't load other people's data, we ain't the government
 		}
 
+		/*
 		string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "PlayerData.ngd" );
 		System.IO.FileStream stream;
 		try {
@@ -355,14 +416,6 @@ public partial class Player : CharacterBody2D {
 		Renown.World.WorldTimeManager.Year = reader.ReadUInt32();
 		Renown.World.WorldTimeManager.Month = reader.ReadUInt32();
 		Renown.World.WorldTimeManager.Day = reader.ReadUInt32();	
-		
-		/*
-		Traits.Clear();
-		int numTraits = reader.ReadInt32();
-		for ( int i = 0; i < numTraits; i++ ) {
-			uint traitType = reader.ReadUInt32();
-		}
-		*/
 		
 		int leftSlot = reader.ReadInt32();
 		if ( leftSlot == WeaponSlot.INVALID ) {
@@ -442,8 +495,107 @@ public partial class Player : CharacterBody2D {
 			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", reader.ReadString() );
 			ConsumableStacks.Add( stack );
 		}
+		*/
+
+		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
+
+		Health = reader.LoadFloat( "health" );
+		Rage = reader.LoadFloat( "rage" );
+		Hellbreaks = reader.LoadInt( "hellbreaks" );
+		CurrentWeapon = reader.LoadInt( "current_weapon" );
+		HandsUsed = (Hands)reader.LoadUInt( "hands_used" );
+
+		GlobalPosition = reader.LoadVector2( "position" );
+
+		ArmLeft.SetWeapon( reader.LoadInt( "arm_left_slot" ) );
+		ArmRight.SetWeapon( reader.LoadInt( "arm_right_slot" ) );
+
+		Renown.World.WorldTimeManager.Year = reader.LoadUInt( "world_time_year" );
+		Renown.World.WorldTimeManager.Month = reader.LoadUInt( "world_time_month" );
+		Renown.World.WorldTimeManager.Day = reader.LoadUInt( "world_time_day" );
+
+		AmmoStacks.Clear();
+		int numAmmoStacks = reader.LoadInt( "ammo_stacks_count" );
+		for ( int i = 0; i < numAmmoStacks; i++ ) {
+			AmmoStack stack = new AmmoStack();
+			stack.Amount = reader.LoadInt( "ammo_stacks_amount_" + i.ToString() );
+			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "ammo_stacks_type_" + i.ToString() ) );
+			AmmoStacks.Add( stack );
+		}
+
+		WeaponsStack.Clear();
+		int numWeapons = reader.LoadInt( "weapon_stacks_count" );
+		for ( int i = 0; i < numWeapons; i++ ) {
+			WeaponEntity weapon = new WeaponEntity();
+			weapon.Data = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "weapon_stacks_type_" + i.ToString() ) );
+			weapon.SetOwner( this );
+			WeaponsStack.Add( weapon );
+			AddChild( weapon );
+
+			if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				int nBulletCount = reader.LoadInt( "weapon_stacks_bullet_count_" + i.ToString() );
+				if ( nBulletCount == 0 ) {
+					weapon.SetWeaponState( WeaponEntity.WeaponState.Reload );
+				} else {
+					weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
+				}
+				weapon.SetBulletCount( nBulletCount );
+			} else {
+				weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
+			}
+
+			AmmoStack stack = null;
+			for ( int a = 0; a < numAmmoStacks; a++ ) {
+				if ( (int)( (Godot.Collections.Dictionary)AmmoStacks[i].AmmoType.Get( "properties" ) )[ "type" ] ==
+					(int)weapon.GetAmmoType() )
+				{
+					stack = AmmoStacks[i];
+					break;
+				}
+			}
+			if ( stack != null ) {
+				weapon.SetReserve( stack );
+				weapon.SetAmmo( stack.AmmoType );
+			}
+		}
+
+		int maxSlots = reader.LoadInt( "max_weapon_slots" );
+		for ( int i = 0; i < maxSlots; i++ ) {
+			if ( reader.LoadBoolean( "weapon_slot_used_" + i.ToString() ) ) {
+				WeaponEntity weapon = WeaponsStack[ reader.LoadInt( "weapon_slot_index_" + i.ToString() ) ];
+				weapon.SetEquippedState( true );
+				WeaponSlots[i].SetWeapon( weapon );
+				WeaponSlots[i].SetMode( (WeaponEntity.Properties)reader.LoadUInt( "weapon_slot_mode_" + i.ToString() ) );
+				GD.Print( "Loaded weapon slot " + i.ToString() );
+			}
+		}
+
+		ConsumableStacks.Clear();
+		int numConsumableStacks = reader.LoadInt( "consumable_stacks_count" );
+		for ( int i = 0; i < numConsumableStacks; i++ ) {
+			ConsumableStack stack = new ConsumableStack();
+			stack.Amount = reader.LoadInt( "consumable_stacks_amount_" + i.ToString() );
+			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "consumable_stacks_type_" + i.ToString() ) );
+			ConsumableStacks.Add( stack );
+		}
 
 		HUD.SetWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
+	}
+
+	public void SendPacket() {
+		NetworkPacket[ "type" ] = PacketType.UpdatePlayer;
+		NetworkPacket[ "weapon" ] = (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" );
+		NetworkPacket[ "position" ] = GlobalPosition;
+		NetworkPacket[ "lrot" ] = ArmLeft.GlobalRotation;
+		NetworkPacket[ "lastate" ] = LeftArmAnimationState;
+		NetworkPacket[ "rrot" ] = ArmRight.GlobalRotation;
+		NetworkPacket[ "rastate" ] = RightArmAnimationState;
+		NetworkPacket[ "legastate" ] = LegAnimationState;
+		NetworkPacket[ "astate" ] = TorsoAnimationState;
+		NetworkPacket[ "mode" ] = WeaponSlots[ CurrentWeapon ].GetMode();
+		NetworkPacket[ "hands_used" ] = HandsUsed;
+
+		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, NetworkPacket, SteamLobby.MessageType.ClientData );
 	}
 
 	public AnimatedSprite2D GetTorsoAnimation() {
@@ -544,6 +696,9 @@ public partial class Player : CharacterBody2D {
 	}
 	public Arm GetRightArm() {
 		return ArmRight;
+	}
+	public int GetCurrentWeapon() {
+		return CurrentWeapon;
 	}
 
 	private void IdleReset() {
@@ -1607,7 +1762,7 @@ public partial class Player : CharacterBody2D {
 		}
 
 		if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
-			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.WeaponSlots );
+//			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.WeaponSlots );
 		}
 	}
 };

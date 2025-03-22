@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://622yixjqyqmq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s8stb"]
+radius = 7.0
+
+[node name="NetworkPlayer" type="CharacterBody2D"]
+
+[node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 1)
+shape = SubResource("CircleShape2D_s8stb")
+
+[node name="Torso" type="AnimatedSprite2D" parent="."]
+
+[node name="Legs" type="AnimatedSprite2D" parent="."]
+
+[node name="RightArm" type="AnimatedSprite2D" parent="."]
+
+[node name="LeftArm" type="AnimatedSprite2D" parent="."]

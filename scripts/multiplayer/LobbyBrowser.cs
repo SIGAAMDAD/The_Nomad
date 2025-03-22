@@ -1,7 +1,7 @@
 using Godot;
 using NathanHoad;
 using Multiplayer;
-using GodotSteam;
+using Steamworks;
 
 public partial class LobbyBrowser : Control {
 	private Button HostGame;
@@ -13,18 +13,37 @@ public partial class LobbyBrowser : Control {
 	private Label MatchmakingLabel;
 
 	private VBoxContainer LobbyTable;
+	private CanvasLayer TransitionScreen;
 
 	private int MatchmakingPhase = 0;
 
 	[Signal]
 	public delegate void OnHostGameEventHandler();
 
+	private void OnFinishedLoading() {
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		SoundManager.StopMusic( 1.5f );
+	}
+	private void OnFinishedLoadingScene() {
+		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		QueueFree();
+
+		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+	}
+
 	private void OnLobbyJoined( ulong lobbyId ) {
 		GetNode( "/root/Console" ).Call( "print_line", "...Joined lobby", true );
 
-		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
 
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
+		TransitionScreen.Call( "transition" );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
+		Hide();
+
+		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
 		string modeName;
@@ -42,11 +61,22 @@ public partial class LobbyBrowser : Control {
 			return;
 		};
 
-		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-			"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
-		);
+//		uint gameType = Convert.ToUInt32( Steam.GetLobbyData( lobbyId, "gametype" ) );
+		uint gameType = (uint)Player.GameMode.Coop2;
+
+		Node scene;
+		if ( gameType == (uint)Player.GameMode.Multiplayer ) {
+			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
+				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
+			);
+		}
+		else {
+			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
+				"res://levels/world.tscn"
+			);
+		}
 		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
-		scene.Connect( "OnComplete", Callable.From( OnLoadedMap ) );
+		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 	private void OnLoadedMap() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
@@ -58,43 +88,51 @@ public partial class LobbyBrowser : Control {
 
 	private void MatchmakingLoop() {
 		if ( MatchmakingPhase < 4 ) {
-			Steam.AddRequestLobbyListDistanceFilter( (Steam.LobbyDistanceFilter)MatchmakingPhase );
-			Steam.RequestLobbyList();
+			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
+			SteamMatchmaking.RequestLobbyList();
 		}
 		else {
 			GetNode( "/root/Console" ).Call( "print_line", "No lobby found.", true );
 		}
 	}
-	private void OnJoinGame( ulong lobbyId ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "..." );
+	private void OnJoinGame( CSteamID lobbyId ) {
+		GD.Print( "Joining" );
+		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
 
 	private void GetLobbyList() {
-		System.Collections.Generic.List<ulong> lobbyList = SteamLobby.Instance.GetLobbyList();
-		for ( int i = 0; i < lobbyList.Count; i++ ) {
-			string lobbyName = Steam.GetLobbyData( lobbyList[i], "name" );
+		GD.Print( "Building lobby table..." );
 
-			long lobbyMemberCount = Steam.GetNumLobbyMembers( lobbyList[i] );
-			long lobbyMaxMemberCount = Steam.GetLobbyMemberLimit( lobbyList[i] );
-			string lobbyMap = Steam.GetLobbyData( lobbyList[i], "map" );
-			string lobbyGameMode = Steam.GetLobbyData( lobbyList[i], "gamemode" );
+		System.Collections.Generic.List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
+		GD.Print( "Got " + lobbyList.Count + " lobbies" );
+		foreach ( var lobby in lobbyList ) {
+			string lobbyName = SteamMatchmaking.GetLobbyData( lobby, "name" );
+
+			long lobbyMemberCount = SteamMatchmaking.GetNumLobbyMembers( lobby );
+			long lobbyMaxMemberCount = SteamMatchmaking.GetLobbyMemberLimit( lobby );
+			string lobbyMap = SteamMatchmaking.GetLobbyData( lobby, "map" );
+			string lobbyGameMode = SteamMatchmaking.GetLobbyData( lobby, "gamemode" );
 
 			Button button = new Button();
 			button.Text = lobbyName;
 			button.Size = new Godot.Vector2( 240, 20 );
+			button.CustomMinimumSize = button.Size;
 
-			button.Connect( "pressed", Callable.From<ulong>( OnJoinGame ) );
+			button.Pressed += () => { OnJoinGame( lobby ); };
 
 			LobbyTable.AddChild( button );
 		}
 	}
 	private void OnRefreshButtonPressed() {
-		foreach ( var lobby in LobbyTable.GetChildren() ) {
-			LobbyTable.RemoveChild( lobby );
-			lobby.QueueFree();
+		GD.Print( "Refreshing lobbies..." );
+		for ( int i = 0; i < LobbyTable.GetChildCount(); i++ ) {
+			LobbyTable.GetChild( i ).QueueFree();
+			LobbyTable.RemoveChild( LobbyTable.GetChild( i ) );
 		}
-		Steam.RequestLobbyList();
+
+		SteamLobby.Instance.OpenLobbyList();
+		GetLobbyList();
 	}
 	private void OnHostGameButtonPressed() {
 		EmitSignal( "OnHostGame" );
@@ -164,7 +202,10 @@ public partial class LobbyBrowser : Control {
 			LobbyTable.Theme = AccessibilityManager.DefaultTheme;
 		}
 
+		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
+		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
 	}

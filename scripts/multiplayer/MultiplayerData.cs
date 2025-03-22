@@ -1,6 +1,20 @@
 using System.Collections.Generic;
 using Godot;
 using Multiplayer;
+using Steamworks;
+
+public enum PacketType : uint {
+	UpdatePlayer,
+	DamagePlayer,
+
+	UpdateMob,
+	DamageMob,
+
+	UpdateBot,
+	DamageBot,
+	
+	Count
+};
 
 public partial class MultiplayerData : Node2D {
 	private Node2D Network = null;
@@ -24,12 +38,10 @@ public partial class MultiplayerData : Node2D {
 	public Team RedTeam = null;
 
 	private Mode ModeData = null;
-	private Dictionary<ulong, Player> Players = null;
 	private Player ThisPlayer;
+	private Dictionary<CSteamID, NetworkPlayer> Players = null;	
 	
 	private Node PlayerList = null;
-	
-	private Control PauseMenu = null;
 
 	// prebuild packets
 	private Dictionary<string, object> GameData = new Dictionary<string, object>();
@@ -39,52 +51,21 @@ public partial class MultiplayerData : Node2D {
 	public Mode.GameMode GetMode() {
 		return ModeData.GetMode();
 	}
-	public Dictionary<ulong, Player> GetPlayers() {
+	public Dictionary<CSteamID, NetworkPlayer> GetPlayers() {
 		return Players;
 	}
 
-	public void ProcessHeartbeat( Dictionary<string, object>  data ) {
-		foreach ( var player in Players.Values ) {
-			Dictionary<string, object> values = (Dictionary<string, object>)data[ player.MultiplayerId.ToString() ];
-
-			player.MultiplayerKills = (uint)values[ "kills" ];
-			player.MultiplayerDeaths = (uint)values[ "deaths" ];
-
-			switch ( ModeData.GetMode() ) {
-			case Mode.GameMode.CaptureTheFlag:
-				player.MultiplayerFlagCaptures = (uint)values[ "flag_captures" ];
-				player.MultiplayerFlagReturns = (uint)values[ "flag_returns" ];
-				break;
-			case Mode.GameMode.KingOfTheHill:
-				player.MultiplayerHilltime = (float)values[ "hilltime" ];
-				break;
-			};
-		}
+	public void ProcessHeartbeat( Dictionary<string, object> data ) {
 	}
 	public void ProcessClientData( ulong senderId, Dictionary<string, object> packet ) {
-		NetworkPlayer player = Players[ senderId ] as NetworkPlayer;
-		
-		player.SetHealth( (float)packet[ "health" ] );
-		player.SetRage( (float)packet[ "rage" ] );
-		player.SetFlags( (Player.PlayerFlags)packet[ "flags" ] );
-		player.SetHandsUsed( (Player.Hands)packet[ "hands_used" ] );
-		player.GlobalPosition = (Godot.Vector2)packet[ "position" ];
-		
-		PlayerSystem.Arm leftArm = player.GetArmLeft();
-		PlayerSystem.Arm rightArm = player.GetArmRight();
-		
-		leftArm.SetMode( (WeaponEntity.Property)packet[ "arm_left_mode" ] );
-		leftArm.SetWeapon( (int)packet[ "arm_left_slot" ] );
-		leftArm.GlobalRotation = (float)packet[ "arm_left_rotation" ];
-		
-		rightArm.SetMode( (WeaponEntity.Property)packet[ "arm_right_mode" ] );
-		rightArm.SetWeapon( (int)packet[ "arm_right_slot" ] );
-		rightArm.GlobalRotation = (float)packet[ "arm_right_rotation" ];
-	}
-	public void ProcessStatusUpdate( Dictionary<string, object> packet ) {
-		Player player = Players[ (ulong)packet[ "id" ] ];
-		player.SetHealth( (float)packet[ "health" ] );
-		player.SetFlags( (PlayerFlags)packet[ "flags" ] );
+		switch ( (PacketType)packet[ "type" ] ) {
+		case PacketType.UpdatePlayer:
+			Players[ (CSteamID)senderId ].Update( packet );
+			break;
+		case PacketType.DamagePlayer:
+			ThisPlayer.Damage( (CharacterBody2D)packet[ "attacker" ], (float)packet[ "amount" ] );
+			break;
+		};
 	}
 	
 	/// <summary>
@@ -96,67 +77,39 @@ public partial class MultiplayerData : Node2D {
 		}
 
 		GameData[ "mode" ] = ModeData.GetMode();
-
-		foreach ( var player in Players.Values ) {
-			Dictionary<string, object> playerData = (Dictionary<string, object>)GameData[ player.MultiplayerId.ToString() ];
-
-			playerData[ "kills" ] = player.MultiplayerKills;
-			playerData[ "deaths" ] = player.MultiplayerDeaths;
-			switch ( ModeData.GetMode() ) {
-			case Mode.GameMode.Bloodbath:
-			case Mode.GameMode.Duel:
-			case Mode.GameMode.TeamBrawl:
-				break;
-			case Mode.GameMode.KingOfTheHill:
-				playerData[ "flag_captures" ] = player.MultiplayerFlagCaptures;
-				playerData[ "flag_returns" ] = player.MultiplayerFlagReturns;
-				break;
-			case Mode.GameMode.CaptureTheFlag:
-				playerData[ "hilltime" ] = player.MultiplayerHilltime;
-				break;
-			};
-		}
-		SteamLobby.Instance.SendP2PPacket( 0, GameData );
+		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, GameData, SteamLobby.MessageType.ServerData );
 	}
 	private void OnClientHeartbeatTimeout() {
-		Packets[ "health" ] = ThisPlayer.GetHealth();
-		Packets[ "rage" ] = ThisPlayer.GetRage();
-		Packets[ "flags" ] = ThisPlayer.GetFlags();
-		Packets[ "hands_used" ] = ThisPlayer.GetHandsUsed();
-		Packets[ "position" ] = ThisPlayer.GlobalPosition;
-		Packets[ "weapon" ] = (string)ThisPlayer.GetWeaponSlots()[ ThisPlayer.GetCurrentWeapon() ].GetWeapon().Data.Get( "id" );
-		
-		PlayerSystem.Arm leftArm = ThisPlayer.GetArmLeft();
-		Packets[ "arm_left_rotation" ] = leftArm.GlobalRotation;
-		Packets[ "arm_left_mode" ] = leftArm.GetMode();
-		
-		PlayerSystem.Arm rightArm = ThisPlayer.GetArmRight();
-		Packets[ "arm_right_rotation" ] = rightArm.GlobalRotation;
-		Packets[ "arm_right_mode" ] = rightArm.GetMode();
-		
-		SteamLobby.Instance.SendP2PPacket( 0, Packets );
+		ThisPlayer.SendPacket();
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
 		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game..." );
-		if ( Players.ContainsKey( steamId ) ) {
+
+		CSteamID userId = (CSteamID)steamId;
+		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
 			return;
 		}
 		
-		Player player = PlayerScene.Instantiate<Player>();
-		player.MutliplayerUserName = Steam.GetFriendPersonaName( steamId );
-		player.MutliplayerId = steamId;
-		SpawnPlayer( player );
-		Players.Add( steamId, player );
+		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
+		player.MultiplayerUsername = SteamFriends.GetFriendPersonaName( userId );
+		player.MultiplayerId = userId;
+//		SpawnPlayer( player );
+		Players.Add( userId, player );
 		PlayerList.AddChild( player );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
+
+		CSteamID userId = (CSteamID)steamId;
+		if ( userId == SteamUser.GetSteamID() ) {
+			return;
+		}
 		
-		GetNode( "/root/Console" ).Call( "print_line", Players[ steamId ].MultiplayerUserName + " has faded away..." );
-		PlayerList.RemoveChild();
-		Players[ steamId ].QueueFree();
-		Players.Remove( steamId );
+		GetNode( "/root/Console" ).Call( "print_line", Players[ userId ].MultiplayerUsername + " has faded away..." );
+		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
+		Players[ userId ].QueueFree();
+		Players.Remove( userId );
 	}
 	
 	public override void _Ready() {
@@ -165,18 +118,20 @@ public partial class MultiplayerData : Node2D {
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		
 		ServerHeartbeat = GetNode<Timer>( "ServerHeartbeatTimer" );
-		ServerHeartbeat.Connect( "timeout", Callable.From( OnServerHeartbeatTimeout ) );
+		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (uint)Player.GameMode.Multiplayer ) {
+			ServerHeartbeat.Connect( "timeout", Callable.From( OnServerHeartbeatTimeout ) );
+		}
+		
+		Players = new Dictionary<CSteamID, NetworkPlayer>();
 
-		Players = new Dictionary<ulong, Player>();
-
-		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/Player.tscn" );
+		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 		
-		PauseMenu.Connect( "leave_lobby", Callable.From( SteamLobby.LeaveLobby ) );
-		SteamLobby.Instance.Connect( "PlayerJoined", Callable.From( OnPlayerJoined ) );
-		SteamLobby.Instance.Connect( "PlayerLeftLobby", Callable.From( OnPlayerLeft ) );
+		PauseMenu.Connect( "leave_lobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		SteamLobby.Instance.Connect( "PlayerJoined", Callable.From<ulong>( OnPlayerJoined ) );
+		SteamLobby.Instance.Connect( "PlayerLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 	}
 };

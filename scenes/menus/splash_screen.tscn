@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0bb8bqic65vc"]
+
+[ext_resource type="Script" uid="uid://d4nklr8skyugg" path="res://scripts/splash_screen.gd" id="1_mvpjh"]
+[ext_resource type="VideoStream" uid="uid://cgoux6nhnr1km" path="res://godot_splash_screen.ogv" id="2_mvpjh"]
+
+[node name="SplashScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mvpjh")
+metadata/_edit_use_anchors_ = true
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("2_mvpjh")
+autoplay = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.831761, 0.831761, 0.831761, 1)
+
+[connection signal="finished" from="VideoStreamPlayer" to="." method="_on_video_stream_player_finished"]

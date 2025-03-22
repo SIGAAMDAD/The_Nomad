@@ -5891,48 +5891,52 @@ position = Vector2(156, -16)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-radius = 1.0
+radius = 10.0
 vertices = PackedVector2Array(559, 94, 561, 205, 545, 205, 545, 303, 656, 302, 657, 349, 802, 348, 803, 90)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D2" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-radius = 1.0
+radius = 10.0
 vertices = PackedVector2Array(1007, 42, 1010, 250, 1074, 249, 1075, 176, 1079, 178, 1096, 179, 1096, 170, 1131, 170, 1137, 184, 1138, 279, 1010, 281, 1011, 379, 1205, 377, 1204, 233, 1716, 227, 1714, 112, 1459, 114, 1422, 18, 1087, 24, 1086, 39)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D3" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-radius = 1.0
+radius = 10.0
 vertices = PackedVector2Array(858, 239, 857, 107, 945, 107, 944, 239)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D4" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
-radius = 1.0
+radius = 10.0
 vertices = PackedVector2Array(708, 380, 868, 379, 868, 411, 1157, 408, 1158, 569, 1126, 569, 1125, 504, 1093, 505, 1094, 569, 885, 572, 886, 618, 950, 617, 950, 634, 1222, 631, 1222, 503, 1300, 502, 1298, 483, 1414, 485, 1415, 500, 1430, 500, 1431, 532, 1542, 530, 1540, 466, 1605, 466, 1608, 595, 1653, 594, 1651, 495, 1729, 495, 1679, 680, 957, 680, 518, 622, 580.709, 621.283, 580, 492, 645, 492, 647, 620, 693, 620, 692, 460, 708, 460)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D5" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
+radius = 10.0
 vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D6" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
 position = Vector2(93, 1)
+radius = 10.0
 vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D7" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
 position = Vector2(186, 0)
+radius = 10.0
 vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D8" type="NavigationObstacle2D" parent="RockyBastardsCamp/OpposingForce/NavigationRegion2D"]
 position = Vector2(277, -1)
+radius = 10.0
 vertices = PackedVector2Array(1270, 261, 1270, 301, 1345, 301, 1342, 261)
 affect_navigation_mesh = true
 carve_navigation_mesh = true

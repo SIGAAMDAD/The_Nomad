@@ -75,7 +75,7 @@ public partial class LobbyFactory : Control {
 		Hide();
 
 		SteamLobby.Instance.SetLobbyName( LobbyName.Text );
-		SteamLobby.Instance.SetMaxMembers( (uint)MaxPlayers.Value );
+		SteamLobby.Instance.SetMaxMembers( (int)MaxPlayers.Value );
 		SteamLobby.Instance.SetMap( MapList.Selected );
 		SteamLobby.Instance.SetGameMode( (uint)GameModeList.Selected );
 		SteamLobby.Instance.SetHostStatus( true );

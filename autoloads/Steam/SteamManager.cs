@@ -1,27 +1,60 @@
 using Godot;
-using GodotSteam;
+using Steamworks;
 
 [GlobalClass]
 public partial class SteamManager : Node {
 	private static ulong VIP_ID = 76561199403850315;
 
-	private static uint SteamAppID = 3512240;
-	private static ulong SteamID = 0;
+	private static AppId_t SteamAppID;
+	private static int SteamAppBuildID;
+	private static string GameLanguage;
+
+	private static CSteamID SteamID = CSteamID.Nil;
 	private static string SteamUsername;
+
+	private static uint TimedTrialSecondsAllowed;
+	private static uint TimedTrialSecondsPlayed;
+
+	private SteamAPIWarningMessageHook_t DebugMessageHook;
 
 	private bool IsMe = false;
 
-	public static uint GetAppID() {
+	public static AppId_t GetAppID() {
 		return SteamAppID;
 	}
-	public static uint GetSteamID() {
-		return (uint)SteamID;
+	public static CSteamID GetSteamID() {
+		return SteamID;
 	}
 	public static string GetSteamName() {
 		return SteamUsername;
 	}
 
+	private static void LoadAppInfo() {
+		GameLanguage = SteamApps.GetCurrentGameLanguage();
+		SteamAppID = SteamUtils.GetAppID();
+		SteamAppBuildID = SteamApps.GetAppBuildId();
+
+		bool bIsTimedTrial;
+		if ( bIsTimedTrial = SteamApps.BIsTimedTrial( out TimedTrialSecondsAllowed, out TimedTrialSecondsPlayed ) ) {
+			if ( TimedTrialSecondsPlayed > TimedTrialSecondsAllowed ) {
+				GD.PushError( "[STEAM] Timed trial has expired" );
+			}
+		}
+
+		GD.Print( "Language: " + GameLanguage );
+		GD.Print( "AppId: " + SteamAppID );
+		GD.Print( "AppBuildId: " + SteamAppBuildID );
+	}
+	private static void LoadUserInfo() {
+		SteamID = SteamUser.GetSteamID();
+		SteamUsername = SteamFriends.GetPersonaName();
+
+		GD.Print( "SteamUser.Id: " + SteamID );
+		GD.Print( "SteamUser.UserName: " + SteamUsername );
+	}
+
     public override void _Ready() {
+		/*
 		if ( Engine.HasSingleton( "Steam" ) ) {
 			OS.SetEnvironment( "SteamAppId", SteamAppID.ToString() );
 			OS.SetEnvironment( "SteamGameId", SteamAppID.ToString() );
@@ -47,30 +80,52 @@ public partial class SteamManager : Node {
 			SteamID = 0;
 			SteamUsername = "";
 		}
+		*/
+
+		if ( !SteamAPI.IsSteamRunning() ) {
+			GD.Print( "Steam isn't running, not initializing SteamAPI" );
+			return;
+		}
+		
+		string errorMessage;
+		
+		if ( SteamAPI.InitEx( out errorMessage ) != ESteamAPIInitResult.k_ESteamAPIInitResult_OK ) {
+			GD.PushError( "[STEAM] Error initializing SteamAPI: " + errorMessage );
+			return;
+		}
+
+		DebugMessageHook = new SteamAPIWarningMessageHook_t( SteamAPIDebugTextCallback );
+		SteamClient.SetWarningMessageHook( DebugMessageHook );
+
+		LoadAppInfo();
+		LoadUserInfo();
+	}
+
+	private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
+		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString() );
 	}
 
 	public override void _Process( double delta ) {
-		Steam.RunCallbacks();
+		SteamAPI.RunCallbacks();
 	}
 
 	public static void SaveCloudFile( string path ) {
-		if ( !Steam.IsCloudEnabledForAccount() || !Steam.IsCloudEnabledForApp() ) {
+		if ( !SteamRemoteStorage.IsCloudEnabledForAccount() || !SteamRemoteStorage.IsCloudEnabledForApp() ) {
 			GD.Print( "SteamCloud isn't enabled for this application or the account" );
 			return;
 		}
 
-		FileAccess file = FileAccess.Open( "user://" + path, FileAccess.ModeFlags.Read );
-		if ( file == null ) {
-			GD.PushError( "Error opening file \"" + path + "\" in read mode!" );
-			return;
-		}
+		string realpath = ProjectSettings.GlobalizePath( "user://" + path );
+		System.IO.FileStream stream = new System.IO.FileStream( realpath, System.IO.FileMode.Open );
 
-		file.SeekEnd();
-		ulong length = file.GetPosition();
-		file.Seek( 0 );
-		byte[] data = file.GetBuffer( (long)length );
+		stream.Seek( 0, System.IO.SeekOrigin.End );
+		long length = stream.Position;
+		stream.Seek( 0, System.IO.SeekOrigin.Begin );
+
+		byte[] buffer = new byte[ length ];
+		stream.Read( buffer );
 
 		GD.Print( "Saving file \"" + path + "\" to SteamCloud..." );
-		Steam.FileWrite( path, data, (long)length );
+		SteamRemoteStorage.FileWrite( path, buffer, buffer.Length );
 	}
 };

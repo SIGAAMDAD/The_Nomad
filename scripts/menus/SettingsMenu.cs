@@ -68,10 +68,12 @@ public partial class SettingsMenu : Control {
 		case (int)WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );

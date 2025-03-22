@@ -1,4 +1,22 @@
 using Godot;
+using SaveSystem;
+
+namespace SaveSystem {
+	public enum FieldType : uint {
+		Int,
+		UInt,
+		Float,
+		Boolean,
+		String,
+		IntList,
+		UIntList,
+		FloatList,
+		StringList,
+		Vector2,
+
+		Count
+	};
+};
 
 public partial class ArchiveSystem : Node {
 	private static ArchiveSystem _Instance;
@@ -9,8 +27,11 @@ public partial class ArchiveSystem : Node {
 
 	private bool Loaded = false;
 
-//	public static System.IO.BinaryWriter WorldStateWriter = null;
-//	public static System.IO.BinaryReader 
+	private static System.Collections.Generic.Dictionary<string, SaveSectionReader> SectionCache = new System.Collections.Generic.Dictionary<string, SaveSectionReader>();
+
+	public static int SectionCount = 0;
+	public static System.IO.BinaryReader SaveReader = null;
+	public static System.IO.BinaryWriter SaveWriter = null;
 
 	/*
 	* A memory is less of an extra save file.
@@ -50,6 +71,15 @@ public partial class ArchiveSystem : Node {
 	private void Save( Image screenshot, Godot.Collections.Array<Node> nodes, uint memoryIndex ) {
 		DirAccess.MakeDirRecursiveAbsolute( SaveDirectory );
 
+		string path = ProjectSettings.GlobalizePath( SaveDirectory + "GameData.ngd" );
+		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
+		SaveWriter = new System.IO.BinaryWriter( stream );
+
+		SectionCount = 0;
+
+		// header
+		SaveWriter.Write( SectionCount );
+
 		/*
 		CurrentMemory = memoryIndex;
 
@@ -71,6 +101,9 @@ public partial class ArchiveSystem : Node {
 		for ( int i = 0; i < nodes.Count; i++ ) {
 			nodes[i].Call( "Save" );
 		}
+
+		stream.Seek( 0, System.IO.SeekOrigin.Begin );
+		SaveWriter.Write( SectionCount );
 	}
 
 	public static void SaveGame( Image screenshot, uint memoryIndex ) {
@@ -81,6 +114,30 @@ public partial class ArchiveSystem : Node {
 		
 		Instance.EmitSignal( "SaveGameEnd" );
 	}
+	public static void LoadGame() {
+		string path = ProjectSettings.GlobalizePath( Instance.SaveDirectory + "GameData.ngd" );
+		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
+		SaveReader = new System.IO.BinaryReader( stream );
+
+		int sectionCount = SaveReader.ReadInt32();
+		if ( sectionCount == 0 ) {
+			GD.PushError( "Save file with no sections" );
+			return;
+		}
+
+		for ( int i = 0; i < sectionCount; i++ ) {
+			string name = SaveReader.ReadString();
+			SectionCache.Add( name, new SaveSectionReader() );
+		}
+	}
+	public static SaveSectionReader GetSection( string name ) {
+		SaveSectionReader reader;
+		if ( SectionCache.TryGetValue( name, out reader ) ) {
+			return reader;
+		}
+		return null;
+	}
+
 	/*
 	public static bool LoadGame( uint memoryIndex ) {
 		Instance.EmitSignal( "LoadGameBegin" );

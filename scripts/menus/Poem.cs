@@ -31,6 +31,9 @@ public partial class Poem : Control {
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
+		SteamLobby.Instance.CreateLobby();
+		SteamLobby.Instance.SetLobbyName( SteamManager.GetSteamName() + "'s World" );
+
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels/world.tscn"
 		);
