@@ -31,7 +31,7 @@ animation = &"idle"
 [node name="Idle" type="AnimatedSprite2D" parent="."]
 visible = false
 sprite_frames = ExtResource("5_rhx3x")
-animation = &"checkpoint_drink"
+animation = &"loop"
 
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 1)

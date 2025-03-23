@@ -2,6 +2,8 @@ using Godot;
 using Multiplayer;
 using Steamworks;
 using System;
+using System.Collections.Generic;
+using System.Threading;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -23,7 +25,7 @@ public partial class SteamLobby : Node {
 	private CallResult<LobbyEnter_t> OnLobbyEnterCallResult;
 	private CallResult<LobbyMatchList_t> OnLobbyMatchListCallResult;
 
-	private System.Collections.Generic.List<CSteamID> LobbyMembers = new System.Collections.Generic.List<CSteamID>();
+	private List<CSteamID> LobbyMembers = new List<CSteamID>();
 	private CSteamID LobbyId = CSteamID.Nil;
 	private CSteamID LobbyOwnerId = CSteamID.Nil;
 	private bool IsHost = false;
@@ -34,7 +36,7 @@ public partial class SteamLobby : Node {
 	private ISteamMatchmakingPlayersResponse PlayersResponse;
 	private ISteamMatchmakingRulesResponse RulesResponse;
 
-	private System.Collections.Generic.List<CSteamID> LobbyList = new System.Collections.Generic.List<CSteamID>();
+	private List<CSteamID> LobbyList = new List<CSteamID>();
 	private int LobbyMaxMembers = 0;
 	private uint LobbyGameMode = 0;
 	private string LobbyName;
@@ -46,6 +48,10 @@ public partial class SteamLobby : Node {
 	private string LobbyFilterGameMode;
 
 	private const uint PACKET_READ_LIMIT = 32;
+
+	private Thread SendPacketsThread = null;
+	private readonly object packetSync = new object();
+	private bool bQuit = false;
 
 	/*
 	public enum ChatRoomEnterResponse {
@@ -114,8 +120,8 @@ public partial class SteamLobby : Node {
 		}
 	};
 
-	private System.Collections.Generic.Dictionary<int, NetworkNode> NodeCache = new System.Collections.Generic.Dictionary<int, NetworkNode>();
-	private System.Collections.Generic.Dictionary<string, NetworkNode> PlayerCache = new System.Collections.Generic.Dictionary<string, NetworkNode>();
+	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
+	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
@@ -144,7 +150,7 @@ public partial class SteamLobby : Node {
 	public int GetMap() {
 		return LobbyMap;
 	}
-	public System.Collections.Generic.List<CSteamID> GetLobbyList() {
+	public List<CSteamID> GetLobbyList() {
 		return LobbyList;
 	}
 
@@ -479,8 +485,27 @@ public partial class SteamLobby : Node {
 	private void OnServerFailedToRespond( HServerListRequest hRequest, int iServer ) {
 		GD.PushError( "[STEAM] Server failed to respond" );
 	}
+	private void SendPackets() {
+		lock ( packetSync ) {
+			while ( !bQuit ) {
+				Monitor.Wait( packetSync );
 
-	public override void _EnterTree() {
+				foreach ( var node in NodeCache ) {
+					node.Value.Send?.Invoke();
+				}
+				foreach ( var player in PlayerCache ) {
+					player.Value.Send?.Invoke();
+				}
+			}
+		}
+	}
+
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		bQuit = true;
+	}
+    public override void _EnterTree() {
 		base._EnterTree();
 		if ( _Instance != null ) {
 			this.QueueFree();
@@ -499,32 +524,17 @@ public partial class SteamLobby : Node {
 
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 
-		/*
-		Steam.LobbyChatUpdate += OnLobbyChatUpdate;
-		Steam.LobbyCreated += OnLobbyCreated;
-		Steam.LobbyMatchList += OnLobbyMatchList;
-		Steam.LobbyMessage += OnLobbyMessage;
-		Steam.P2PSessionRequest += OnP2PSessionRequest;
-		Steam.LobbyJoined += OnLobbyJoined;
-		Steam.LobbyMatchList += OnLobbyMatchList;
-		*/
+		SendPacketsThread = new Thread( SendPackets );
 
 		OpenLobbyList();
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
-			return;
-		}
-
 		ReadAllPackets();
 
-		foreach ( var node in NodeCache ) {
-			node.Value.Send?.Invoke();
-        }
-		foreach ( var player in PlayerCache ) {
-			player.Value.Send?.Invoke();
-        }
+		lock ( packetSync ) {
+			Monitor.Pulse( packetSync );
+		}
 	}
 };
