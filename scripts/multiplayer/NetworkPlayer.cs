@@ -190,7 +190,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
 			TorsoAnimation.Show();
-			TorsoAnimation.Play( "idle" );
+			TorsoAnimation.Play( "default" );
 			break;
 		case PlayerAnimationState.Running:
 			TorsoAnimation.Show();
