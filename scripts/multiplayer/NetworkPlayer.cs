@@ -212,6 +212,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 	public override void _Ready() {
 		base._Ready();
 
+		GD.Print( "Initializing network_player..." );
+
 		CurrentWeapon = null;
 		Database = ResourceLoader.Load<InventoryDatabase>( "res://resources/ItemDatabase.tres" );
 		
