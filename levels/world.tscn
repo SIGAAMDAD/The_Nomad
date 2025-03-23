@@ -46,7 +46,7 @@ noise = SubResource("FastNoiseLite_re8x6")
 
 [node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Player1")]
 script = ExtResource("1_re8x6")
-Player1 = NodePath("Player")
+Player1 = NodePath("Network/Players/Player0")
 
 [node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("WorldTimeOverlay")]
 script = ExtResource("11_re8x6")
@@ -145,7 +145,11 @@ scale = Vector2(116.425, 222.7)
 position = Vector2(-13953.8, 3832)
 scale = Vector2(1233.07, 345.6)
 
-[node name="Player" parent="." instance=ExtResource("5_712nc")]
+[node name="Network" type="Node" parent="."]
+
+[node name="Players" type="Node" parent="Network"]
+
+[node name="Player0" parent="Network/Players" instance=ExtResource("5_712nc")]
 position = Vector2(-88720, 53124)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
@@ -173,4 +177,7 @@ Action = ExtResource("10_oxfhy")
 position = Vector2(220, 138)
 TutorialString = "Rest at campfire to heal"
 
-[node name="PauseMenu" parent="." instance=ExtResource("13_mla2a")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("13_mla2a")]

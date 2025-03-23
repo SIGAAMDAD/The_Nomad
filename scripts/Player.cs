@@ -1,10 +1,9 @@
 using Godot;
 using System;
 using PlayerSystem;
-using System.Linq;
 using System.Collections.Generic;
-using System.Xml;
 using Steamworks;
+using System.Runtime.CompilerServices;
 
 public partial class Player : CharacterBody2D {
 	public enum GameMode {
@@ -162,7 +161,7 @@ public partial class Player : CharacterBody2D {
 	private uint WarCrimeCount = 0;
 	private List<Renown.Trait> Traits = new List<Renown.Trait>();
 
-	private WeaponSlot[] WeaponSlots;
+	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
 	private float Health = 100.0f;
 	private float Rage = 60.0f;
@@ -187,11 +186,13 @@ public partial class Player : CharacterBody2D {
 	private AudioStreamPlayer2D DashChannel;
 	private AudioStreamPlayer2D MiscChannel;
 
-	private Dictionary<string, object> NetworkPacket = new Dictionary<string, object>();
+	private System.IO.MemoryStream PacketStream = null;
+	private System.IO.BinaryWriter PacketWriter = null;
+	private byte[] NetworkPacket = new byte[ 256 ];
 
-	private List<WeaponEntity> WeaponsStack = new List<WeaponEntity>();
-	private List<ConsumableStack> ConsumableStacks = new List<ConsumableStack>();
-	private List<AmmoStack> AmmoStacks = new List<AmmoStack>();
+	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
+	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
+	private Dictionary<int, AmmoStack> AmmoStacks = new Dictionary<int, AmmoStack>();
 
 	private List<Checkpoint> WarpList = new List<Checkpoint>();
 	private List<Renown.Contract> Contracts = new List<Renown.Contract>();
@@ -208,6 +209,8 @@ public partial class Player : CharacterBody2D {
 	private Godot.Vector2 DashDirection = Godot.Vector2.Zero;
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
+
+	private int NodeHash = 0;
 
 	[Signal]
 	public delegate void DieEventHandler( CharacterBody2D attacker, CharacterBody2D target );
@@ -313,6 +316,7 @@ public partial class Player : CharacterBody2D {
 		}
 		*/
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
+		int stackIndex;
 		
 		writer.SaveFloat( "health", Health );
 		writer.SaveFloat( "rage", Rage );
@@ -330,17 +334,21 @@ public partial class Player : CharacterBody2D {
 		writer.SaveUInt( "world_time_day", Renown.World.WorldTimeManager.Day );
 
 		writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
-		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
-			writer.SaveInt( "ammo_stacks_amount_" + i.ToString(), AmmoStacks[i].Amount );
-			writer.SaveString( "ammo_stacks_type_" + i.ToString(), (string)AmmoStacks[i].AmmoType.Get( "id" ) );
+		stackIndex = 0;
+		foreach ( var stack in AmmoStacks ) {
+			writer.SaveInt( "ammo_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
+			writer.SaveString( "ammo_stacks_type_" + stackIndex.ToString(), (string)stack.Value.AmmoType.Get( "id" ) );
+			stackIndex++;
 		}
 
 		writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
-		for ( int i = 0; i < WeaponsStack.Count; i++ ) {
-			writer.SaveString( "weapon_stacks_type_" + i.ToString(), (string)WeaponsStack[i].Data.Get( "id" ) );
-			if ( ( WeaponsStack[i].GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				writer.SaveInt( "weapon_stacks_bullet_count_" + i.ToString(), WeaponsStack[i].GetBulletCount() );
+		stackIndex = 0;
+		foreach ( var stack in WeaponsStack ) {
+			writer.SaveString( "weapon_stacks_type_" + stackIndex.ToString(), (string)stack.Value.Data.Get( "id" ) );
+			if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				writer.SaveInt( "weapon_stacks_bullet_count_" + stackIndex.ToString(), stack.Value.GetBulletCount() );
 			}
+			stackIndex++;
 		}
 
 		writer.SaveInt( "max_weapon_slots", MAX_WEAPON_SLOTS );
@@ -359,9 +367,10 @@ public partial class Player : CharacterBody2D {
 		}
 		
 		writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
-		for ( int i = 0; i < ConsumableStacks.Count; i++ ) {
-			writer.SaveInt( "consumable_stacks_amount_" + i.ToString(), ConsumableStacks[i].Amount );
-			writer.SaveString( "consumable_stacks_type_" + i.ToString(), (string)ConsumableStacks[i].ItemType.Get( "id" ) );
+		stackIndex = 0;
+		foreach ( var stack in ConsumableStacks ) {
+			writer.SaveInt( "consumable_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
+			writer.SaveString( "consumable_stacks_type_" + stackIndex.ToString(), (string)stack.Value.ItemType.Get( "id" ) );
 		}
 
 		writer.SaveInt( "contracts_count", Contracts.Count );
@@ -519,17 +528,19 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < numAmmoStacks; i++ ) {
 			AmmoStack stack = new AmmoStack();
 			stack.Amount = reader.LoadInt( "ammo_stacks_amount_" + i.ToString() );
-			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "ammo_stacks_type_" + i.ToString() ) );
-			AmmoStacks.Add( stack );
+			string id = reader.LoadString( "ammo_stacks_type_" + i.ToString() );
+			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", id );
+			AmmoStacks.Add( id.GetHashCode(), stack );
 		}
 
 		WeaponsStack.Clear();
 		int numWeapons = reader.LoadInt( "weapon_stacks_count" );
 		for ( int i = 0; i < numWeapons; i++ ) {
 			WeaponEntity weapon = new WeaponEntity();
-			weapon.Data = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "weapon_stacks_type_" + i.ToString() ) );
+			string id = reader.LoadString( "weapon_stacks_type_" + i.ToString() );
+			weapon.Data = (Resource)Inventory.Call( "get_item_from_id", id );
 			weapon.SetOwner( this );
-			WeaponsStack.Add( weapon );
+			WeaponsStack.Add( id.GetHashCode(), weapon );
 			AddChild( weapon );
 
 			if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -575,57 +586,81 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < numConsumableStacks; i++ ) {
 			ConsumableStack stack = new ConsumableStack();
 			stack.Amount = reader.LoadInt( "consumable_stacks_amount_" + i.ToString() );
-			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", reader.LoadString( "consumable_stacks_type_" + i.ToString() ) );
-			ConsumableStacks.Add( stack );
+			string id = reader.LoadString( "consumable_stacks_type_" + i.ToString() );
+			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", id );
+			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
 
 		HUD.SetWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
 	}
 
 	public void SendPacket() {
-		NetworkPacket[ "type" ] = PacketType.UpdatePlayer;
-		NetworkPacket[ "weapon" ] = (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" );
-		NetworkPacket[ "position" ] = GlobalPosition;
-		NetworkPacket[ "lrot" ] = ArmLeft.GlobalRotation;
-		NetworkPacket[ "lastate" ] = LeftArmAnimationState;
-		NetworkPacket[ "rrot" ] = ArmRight.GlobalRotation;
-		NetworkPacket[ "rastate" ] = RightArmAnimationState;
-		NetworkPacket[ "legastate" ] = LegAnimationState;
-		NetworkPacket[ "astate" ] = TorsoAnimationState;
-		NetworkPacket[ "mode" ] = WeaponSlots[ CurrentWeapon ].GetMode();
-		NetworkPacket[ "hands_used" ] = HandsUsed;
+		if ( !SettingsData.GetNetworkingEnabled() ) {
+			return;
+		}
 
-		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, NetworkPacket, SteamLobby.MessageType.ClientData );
+		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
+		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
+		PacketWriter.Write( NodeHash );
+		PacketWriter.Write( CurrentWeapon );
+		if ( CurrentWeapon != -1 ) {
+			PacketWriter.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
+			PacketWriter.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
+			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
+				PacketWriter.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+			}
+		}
+		PacketWriter.Write( (double)GlobalPosition.X );
+		PacketWriter.Write( (double)GlobalPosition.Y );
+		PacketWriter.Write( (double)ArmLeft.GlobalRotation );
+		PacketWriter.Write( (byte)LeftArmAnimationState );
+		PacketWriter.Write( (double)ArmRight.GlobalRotation );
+		PacketWriter.Write( (byte)RightArmAnimationState );
+		PacketWriter.Write( (byte)LegAnimationState );
+		PacketWriter.Write( (byte)TorsoAnimationState );
+		PacketWriter.Write( (byte)HandsUsed );
+
+		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, NetworkPacket );
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public AnimatedSprite2D GetTorsoAnimation() {
 		return TorsoAnimation;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public AnimatedSprite2D GetLegsAnimation() {
 		return LegAnimation;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public AnimatedSprite2D GetLeftArmAnimation() {
 		return ArmLeft.Animations;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public AnimatedSprite2D GetRightArmAnimation() {
 		return ArmRight.Animations;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Resource GetCurrentMappingContext() {
 		return CurrentMappingContext;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public WeaponSlot[] GetWeaponSlots() {
 		return WeaponSlots;
 	}
-	public List<WeaponEntity> GetWeaponStack() {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Dictionary<int, WeaponEntity> GetWeaponStack() {
 		return WeaponsStack;
 	}
-	public List<AmmoStack> GetAmmoStacks() {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Dictionary<int, AmmoStack> GetAmmoStacks() {
 		return AmmoStacks;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Node GetInventory() {
 		return Inventory;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
 		if ( ArmLeft.GetSlot() != WeaponSlot.INVALID && WeaponSlots[ ArmLeft.GetSlot() ].GetWeapon() == weapon ) {
 			return ArmLeft;
@@ -634,69 +669,90 @@ public partial class Player : CharacterBody2D {
 		}
 		return null;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Godot.Vector2 GetInputVelocity() {
 		return InputVelocity;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public WeaponSlot GetSlot( int nSlot ) {
 		return WeaponSlots[ nSlot ];
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetArmAngle() {
 		return ArmAngle;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetArmAngle( float nAngle ) {
 		ArmAngle = nAngle;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Arm GetLastUsedArm() {
 		return LastUsedArm;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetLastUsedArm( Arm arm ) {
 		LastUsedArm = arm;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetSoundLevel() {
 		return SoundLevel;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetHealth() {
 		return Health;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetHealth( float nHealth ) {
 		Health = nHealth;
 		HUD.GetHealthBar().SetHealth( Health );
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetRage() {
 		return Rage;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetRage( float nRage ) {
 		Rage = nRage;
 		HUD.GetRageBar().Value = Rage;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public PlayerFlags GetFlags() {
 		return Flags;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetFlags( PlayerFlags flags ) {
 		Flags = flags;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Hands GetHandsUsed() {
 		return HandsUsed;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetHandsUsed( Hands hands ) {
 		HandsUsed = hands;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public WeaponSlot[] GetSlots() {
 		return WeaponSlots;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetSlots( WeaponSlot[] slots ) {
 		WeaponSlots = slots;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public List<Checkpoint> GetWarpPoints() {
 		return WarpList;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Arm GetLeftArm() {
 		return ArmLeft;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Arm GetRightArm() {
 		return ArmRight;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public int GetCurrentWeapon() {
 		return CurrentWeapon;
 	}
@@ -1438,30 +1494,42 @@ public partial class Player : CharacterBody2D {
 //		}
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );
+		DashTime.SetProcess( false );
+		DashTime.SetProcessInternal( false );
 		DashTime.Connect( "timeout", Callable.From( OnDashTimeTimeout ) );
 
 		IdleTimer = GetNode<Timer>( "IdleAnimationTimer" );
+		IdleTimer.SetProcess( false );
+		IdleTimer.SetProcessInternal( false );
 		IdleTimer.Connect( "timeout", Callable.From( OnIdleAnimationTimerTimeout ) );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Animations/Idle" );
+		IdleAnimation.SetProcess( false );
 		IdleAnimation.Connect( "animation_finished", Callable.From( OnIdleAnimationAnimationFinished ) );
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
+		LegAnimation.SetProcess( false );
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegsAnimationLooped ) );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
 		Animations = GetNode<Node2D>( "Animations" );
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
+		WalkEffect.SetProcess( false );
+
 		SlideEffect = GetNode<GpuParticles2D>( "Animations/SlidePuff" );
+		SlideEffect.SetProcess( false );
+
 		DashEffect = GetNode<GpuParticles2D>( "Animations/DashEffect" );
+		DashEffect.SetProcess( false );
+
 		JumpkitSparks = GetNode<AnimatedSprite2D>( "Animations/JumpkitSparks" );
+		JumpkitSparks.SetProcess( false );
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
 		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
 
-		WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlots[i] = new WeaponSlot();
 			WeaponSlots[i].SetIndex( i );
@@ -1477,6 +1545,12 @@ public partial class Player : CharacterBody2D {
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
 		GetNode( "/root/Console" ).Call( "add_command", "suicide", Callable.From( CmdSuicide ) );
+
+		PacketStream = new System.IO.MemoryStream( NetworkPacket );
+		PacketWriter = new System.IO.BinaryWriter( PacketStream );
+		NodeHash = GetPath().GetHashCode();
+
+		SteamLobby.Instance.AddNetworkNode( this, new SteamLobby.NetworkNode( this, SendPacket, null ) );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
@@ -1503,23 +1577,8 @@ public partial class Player : CharacterBody2D {
 
 		MoveAndSlide();
 
-		if ( ( Engine.GetPhysicsFrames() % 20 ) != 0 ) {
-			return;
-		}
-
 		if ( Velocity != Godot.Vector2.Zero ) {
 			IdleReset();
-		}
-
-		if ( InputVelocity != Godot.Vector2.Zero ) {
-			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
-				LegAnimation.CallDeferred( "play", "run" );
-				WalkEffect.Emitting = true;
-			}
-		} else {
-			LegAnimation.CallDeferred( "play", "idle" );
-			WalkEffect.Emitting = false;
-			SlideEffect.Emitting = false;
 		}
 
 		// cool down the jet engine if applicable
@@ -1535,7 +1594,8 @@ public partial class Player : CharacterBody2D {
 			Rage -= 0.05f * (float)delta;
 		}
     }
-
+	
+	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
 	private void CalcArmAnimation( Arm arm ) {
 		arm.Animations.GlobalRotation = ArmAngle;
 		arm.Animations.FlipV = TorsoAnimation.FlipH;
@@ -1599,7 +1659,23 @@ public partial class Player : CharacterBody2D {
 		HUD.GetHealthBar().SetHealth( Health );
 		HUD.GetRageBar().Value = Rage;
 	}
+	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 4 ) != 0 ) {
+			return;
+		}
+
+		if ( InputVelocity != Godot.Vector2.Zero ) {
+			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
+				LegAnimation.CallDeferred( "play", "run" );
+				WalkEffect.Emitting = true;
+			}
+		} else {
+			LegAnimation.CallDeferred( "play", "idle" );
+			WalkEffect.Emitting = false;
+			SlideEffect.Emitting = false;
+		}
+
 		base._Process( delta );
 
 		if ( CurrentMappingContext == GamepadInputMappings ) {
@@ -1635,8 +1711,8 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 
-		ArmLeft.Animations.CallDeferred( "show" );
-		ArmRight.Animations.CallDeferred( "show" );
+		ArmLeft.Animations.Show();
+		ArmRight.Animations.Show();
 
 		Arm back;
 		Arm front;
@@ -1650,25 +1726,25 @@ public partial class Player : CharacterBody2D {
 
 		if ( HandsUsed == Hands.Both ) {
 			front = LastUsedArm;
-			back.Animations.CallDeferred( "hide" );
+			back.Animations.Hide();
 		} else {
-			back.Animations.CallDeferred( "show" );
+			back.Animations.Show();
 		}
 
-		front.CallDeferred( "show" );
+		front.Show();
 
 		CalcArmAnimation( ArmLeft );
 		CalcArmAnimation( ArmRight );
 
-		Animations.CallDeferred( "move_child", back.Animations, 0 );
-		Animations.CallDeferred( "move_child", front.Animations, 3 );
+		Animations.MoveChild( back.Animations, 0 );
+		Animations.MoveChild( front.Animations, 3 );
 	}
 
 	public void PickupAmmo( AmmoEntity ammo ) {
 		AmmoStack stack = null;
 		bool found = false;
 		
-		for ( int i = 0; i < AmmoStacks.Count(); i++ ) {
+		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
 			if ( ammo.Data == AmmoStacks[i].AmmoType ) {
 				found = true;
 				stack = AmmoStacks[i];
@@ -1678,7 +1754,7 @@ public partial class Player : CharacterBody2D {
 		if ( !found ) {
 			stack = new AmmoStack();
 			stack.SetType( ammo );
-			AmmoStacks.Add( stack );
+			AmmoStacks.Add( ( (string)ammo.Data.Get( "id" ) ).GetHashCode(), stack );
 		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
@@ -1700,14 +1776,13 @@ public partial class Player : CharacterBody2D {
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			if ( !WeaponSlots[i].IsUsed() ) {
-				GetNode( "/root/Console" ).Call( "print_line", "Assigned weapon slot " + i.ToString() + "...", true );
 				WeaponSlots[i].SetWeapon( weapon );
 				CurrentWeapon = i;
 				break;
 			}
 		}
 		
-		WeaponsStack.Add( weapon );
+		WeaponsStack.Add( ( (string)weapon.Data.Get( "id" ) ).GetHashCode(), weapon );
 
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;
@@ -1741,9 +1816,7 @@ public partial class Player : CharacterBody2D {
 				WeaponSlots[ ArmRight.GetSlot() ].SetMode( weapon.GetDefaultMode() );
 			}
 			else if ( ( weapon.GetDefaultMode() & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
-				if ( LastUsedArm == null ) {
-					LastUsedArm = ArmRight;
-				}
+				LastUsedArm ??= ArmRight;
 				LastUsedArm.SetWeapon( CurrentWeapon );
 
 				if ( LastUsedArm == ArmRight ) {
@@ -1759,10 +1832,6 @@ public partial class Player : CharacterBody2D {
 			LastUsedArm.SetWeapon( CurrentWeapon );
 			WeaponSlots[ LastUsedArm.GetSlot() ].SetMode( weapon.GetProperties() );
 			weapon.SetUseMode( weapon.GetDefaultMode() );
-		}
-
-		if ( (int)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (int)GameMode.Multiplayer ) {
-//			( (MultiplayerData)GetTree().CurrentScene ).SendPlayerUpdate( this, MultiplayerData.UpdateType.WeaponSlots );
 		}
 	}
 };

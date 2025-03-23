@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bjtbbwfd87a5v"]
 
-[ext_resource type="Script" uid="uid://bprqxa7ewupk5" path="res://scripts/health_bar.gd" id="1_fuljx"]
+[ext_resource type="Script" uid="uid://n6t22djo0nh7" path="res://scripts/player_system/HealthBar.cs" id="1_1bvlm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dj7nm"]
 
@@ -31,7 +31,7 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_dj7nm")
 theme_override_styles/fill = SubResource("StyleBoxFlat_n73pq")
 value = 100.0
 show_percentage = false
-script = ExtResource("1_fuljx")
+script = ExtResource("1_1bvlm")
 
 [node name="DamageBar" type="ProgressBar" parent="."]
 z_index = -1

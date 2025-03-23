@@ -26,17 +26,17 @@ public partial class AudioCache {
 	public static AudioStream[] RepeatPlease;
 #endregion
 
-	public static AudioStream[] MoveGravel;
 	public static AudioStream Fire;
 	public static AudioStream[] BulletShell;
 	public static AudioStream[] ShotgunShell;
+	public static AudioStream[] MoveGravelSfx;
+	public static AudioStream[] MoveWaterSfx;
 
 #region Player Sound Effects
 	public static AudioStream ChangeWeaponSfx;
 	public static AudioStream[] PlayerPainSfx;
 	public static AudioStream[] PlayerDieSfx;
 	public static AudioStream[] PlayerDeathSfx;
-	public static AudioStream[] MoveGravelSfx;
 	public static AudioStream[] DashSfx;
 	public static AudioStream[] SlideSfx;
 	public static AudioStream DashExplosion;
@@ -184,10 +184,14 @@ public partial class AudioCache {
 		PlayerDeathSfx[2] = ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_2.wav" );
 
 		MoveGravelSfx = new AudioStream[ 4 ];
-		MoveGravelSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel0.ogg" );
-		MoveGravelSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel1.ogg" );
-		MoveGravelSfx[2] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel2.ogg" );
-		MoveGravelSfx[3] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel3.ogg" );
+		MoveGravelSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0.ogg" );
+		MoveGravelSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel1.ogg" );
+		MoveGravelSfx[2] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel2.ogg" );
+		MoveGravelSfx[3] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel3.ogg" );
+
+		MoveWaterSfx = new AudioStream[ 4 ];
+		MoveWaterSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater0.ogg" );
+		MoveWaterSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater1.ogg" );
 
 		DashSfx = new AudioStream[ 2 ];
 		DashSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/player/jumpjet_burn_v2_m_01.wav" );

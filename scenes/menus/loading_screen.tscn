@@ -18,6 +18,7 @@ script = ExtResource("1_gwdd4")
 
 [node name="ImageChange" type="Timer" parent="."]
 wait_time = 5.0
+autostart = true
 
 [node name="Tips" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(0, 100)

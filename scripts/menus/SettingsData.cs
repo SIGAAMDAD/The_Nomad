@@ -45,6 +45,9 @@ public partial class SettingsData : Control {
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
 
+	private static bool EnableNetworking;
+	private static bool FriendsOnlyNetworking;
+
 	private static Godot.Collections.Array<Resource> MappingContexts;
 	private static RefCounted Remapper;
 	private static Resource RemappingConfig;
@@ -56,6 +59,19 @@ public partial class SettingsData : Control {
 	}
 	public static RefCounted GetMappingFormatter() {
 		return MappingFormatter;
+	}
+
+	public static bool GetNetworkingEnabled() {
+		return EnableNetworking;
+	}
+	public static void SetNetworkingEnabled( bool bNetworking ) {
+		EnableNetworking = bNetworking;
+	}
+	public static bool GetFriendsOnlyNetworking() {
+		return FriendsOnlyNetworking;
+	}
+	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) {
+		FriendsOnlyNetworking = bFriendsOnlyNetworking;
 	}
 
 	public static WindowMode GetWindowMode() {
@@ -213,14 +229,14 @@ public partial class SettingsData : Control {
 		MaxFps = (int)Default.Get( "_max_fps" );
 
 		HapticStrength = (float)Default.Get( "_haptic_strength" );
-		HapticEnabled = (bool)Default.Get( "_haptic_enabled" );
+		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
 		QuicktimeAutocomplete = (bool)Default.Get( "_quicktime_autocomplete" );
 		ColorblindMode = (int)Default.Get( "_colorblind_mode" );
 		AutoAimEnabled = (bool)Default.Get( "_autoaim" );
 		DyslexiaMode = (bool)Default.Get( "_dyslexia_mode" );
 
-		EffectsOn = (bool)Default.Get( "_effects_on" );
-		EffectsVolume = (float)Default.Get( "_effects_volume" );
+		EffectsOn = (bool)Default.Get( "_sound_effects_on" );
+		EffectsVolume = (float)Default.Get( "_sound_effects_volume" );
 		MusicOn = (bool)Default.Get( "_music_on" );
 		MusicVolume = (float)Default.Get( "_music_volume" );
 		MuteUnfocused = (bool)Default.Get( "_mute_unfocused" );
@@ -228,6 +244,9 @@ public partial class SettingsData : Control {
 		EquipWeaponOnPickup = (bool)Default.Get( "_equip_weapon_on_pickup" );
 		HellbreakerEnabled = (bool)Default.Get( "_hellbreaker" );
 		HellbreakerRevanents = (bool)Default.Get( "_hellbreaker_revanents" );
+
+		EnableNetworking = (bool)Default.Get( "_networking_enabled" );
+		FriendsOnlyNetworking = (bool)Default.Get( "_friends_only" );
 	}
 
 	public override void _Ready() {
@@ -261,6 +280,8 @@ public partial class SettingsData : Control {
 	}
 
 	public static void Save() {
+		GD.Print( "Saving configuration data..." );
+
 		string path = ProjectSettings.GlobalizePath( "user://settings.dat" );
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
 		System.IO.BinaryWriter writer = new System.IO.BinaryWriter( stream );
@@ -269,6 +290,7 @@ public partial class SettingsData : Control {
 		SaveAudioSettings( writer );
 		SaveAccessibilitySettings( writer );
 		SaveGameplaySettings( writer );
+		writer.Flush();
 
 		ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );
 	}

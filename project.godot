@@ -139,12 +139,15 @@ pathfinding/max_threads=12
 [physics]
 
 2d/run_on_separate_thread=true
-common/physics_ticks_per_second=40
+common/physics_ticks_per_second=10
 common/physics_jitter_fix=0.0
 2d/physics_engine="Rapier2D"
 2d/solver/solver_iterations=1
 2d/solver/contact_recycle_radius=8.0
+common/physics_interpolation=true
 common/enable_object_picking=false
+rapier/solver/num_internal_stabilization_iterations=1
+rapier/solver/num_iterations=1
 
 [plugins]
 

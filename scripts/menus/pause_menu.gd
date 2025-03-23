@@ -13,13 +13,9 @@ func _process( _delta: float ) -> void:
 func pause_menu() -> void:
 	if GameConfiguration._paused:
 		hide()
-		if GameConfiguration._game_mode != GameConfiguration.GameMode.Multiplayer:
-			get_tree().paused = false
 	else:
 		show()
-		if GameConfiguration._game_mode != GameConfiguration.GameMode.Multiplayer:
-			get_tree().paused = true
-			Engine.time_scale = 0
+		Engine.time_scale = 0
 	
 	GameConfiguration._paused = !GameConfiguration._paused;
 

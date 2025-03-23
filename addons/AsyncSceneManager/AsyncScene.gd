@@ -134,7 +134,7 @@ func _setupUpdateSeconds() -> void:
 	# Set timer properties
 	timer.one_shot = false
 	timer.autostart = true
-	timer.set_wait_time(0.1)
+	timer.wait_time = 0.1
 
 	# Connect the timer timeout signal to _check_status
 	timer.timeout.connect(_check_status)
@@ -170,9 +170,11 @@ func _check_status() -> void:
 		_complete(false)
 	elif status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 		# Mark the scene loading as failed and stop the timer
+		print( "Resource failed to load, INVALID_RESOURCE" )
 		_complete(true)
 	elif status == ResourceLoader.THREAD_LOAD_FAILED:
 		# Mark the scene loading as failed and stop the timer
+		print( "Resource failed to load, FAILED" )
 		_complete(true)
 	elif status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 		# Get the loading progress

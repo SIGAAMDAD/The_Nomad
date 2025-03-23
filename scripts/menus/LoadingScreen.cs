@@ -6,6 +6,7 @@ public partial class LoadingScreen : CanvasLayer {
 	private Label ProgressLabel;
 	private CanvasLayer TransitionScreen;
 	private bool FadingOut = false;
+	private Timer ImageChange;
 	private System.Random random = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
 
 	private readonly System.Collections.Generic.List<string> Tips = new System.Collections.Generic.List<string>{
@@ -51,10 +52,20 @@ public partial class LoadingScreen : CanvasLayer {
 	public void FadeOut() {
 		TransitionScreen.Call( "transition" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+
+		ImageChange.SetProcess( false );
+		ImageChange.SetProcessInternal( false );
+		SetProcess( false );
+		SetProcessInternal( false );
 	}
 	public void FadeIn() {
 		TransitionScreen.Call( "transition" );
 		Visible = true;
+
+		ImageChange.SetProcess( true );
+		ImageChange.SetProcessInternal( true );
+		SetProcess( true );
+		SetProcessInternal( true );
 
 		Control MenuBackground = ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>();
 		AddChild( MenuBackground );
@@ -64,18 +75,17 @@ public partial class LoadingScreen : CanvasLayer {
 	public override void _Ready() {
 		base._Ready();
 
-		Timer ImageChange = GetNode<Timer>( "ImageChange" );
+		ImageChange = GetNode<Timer>( "ImageChange" );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
+		TipLabel.SetProcess( false );
+		TipLabel.SetProcessInternal( false );
 		TipLabel.Show();
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 
 		SetProcess( false );
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-//		ProgressLabel.Text = ( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "progress" ).ToString();
+		SetProcessInternal( false );
 	}
 };

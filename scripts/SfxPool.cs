@@ -84,21 +84,4 @@ public partial class SfxPool : Node {
 		channel.StreamPlayer.VolumeDb = volumeDb;
 		channel.StreamPlayer.Play();
 	}
-
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
-			return;
-		}
-		return;
-
-		for ( int i = 0; i < MaxChannels; i++ ) {
-			if ( !ChannelList[i].StreamPlayer.Playing ) {
-				ChannelList[i].StreamPlayer.Stream = null;
-				ChannelList[i].StreamPlayer.SetProcess( false );
-				ChannelList[i].StreamPlayer.SetProcessInternal( false );
-			}
-		}
-	}
 };

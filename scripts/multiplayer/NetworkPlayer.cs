@@ -1,5 +1,7 @@
+using System.Xml.Linq;
 using GDExtension.Wrappers;
 using Godot;
+using PlayerSystem;
 using Steamworks;
 
 public enum PlayerAnimationState : uint {
@@ -19,8 +21,9 @@ public enum PlayerAnimationState : uint {
 };
 
 public partial class NetworkPlayer : CharacterBody2D {
-	private System.Collections.Generic.Dictionary<string, object> Packet =
-		new System.Collections.Generic.Dictionary<string, object>();
+	private byte[] Packet = new byte[ 24 ];
+	private System.IO.MemoryStream PacketStream = null;
+	private System.IO.BinaryWriter PacketWriter = null;
 	
 	public string MultiplayerUsername;
 	public CSteamID MultiplayerId;
@@ -39,14 +42,22 @@ public partial class NetworkPlayer : CharacterBody2D {
 	
 	// TODO: find some way of sending values back to the client
 	
-	public void Update( System.Collections.Generic.Dictionary<string, object> packet ) {
-		GlobalPosition = (Godot.Vector2)packet[ "position" ];
-		CurrentWeapon = Database.GetItem( (string)packet[ "weapon" ] );
-		WeaponEntity.Properties mode = (WeaponEntity.Properties)packet[ "mode" ];
-		
-		LeftArmAnimation.GlobalRotation = (float)packet[ "lrot" ];
-		
-		switch ( (PlayerAnimationState)packet[ "lastate" ] ) {
+	public void Update( System.IO.BinaryReader packet ) {
+		WeaponEntity.Properties mode = WeaponEntity.Properties.None;
+		if ( packet.ReadInt32() != WeaponSlot.INVALID ) {
+			mode = (WeaponEntity.Properties)packet.ReadUInt32();
+			if ( packet.ReadBoolean() ) {
+				string weaponId = packet.ReadString();
+				CurrentWeapon = Database.GetItem( weaponId );
+			}
+		}
+		Godot.Vector2 position = Godot.Vector2.Zero;
+		position.X = (float)packet.ReadDouble();
+		position.Y = (float)packet.ReadDouble();
+		GlobalPosition = position;
+
+		LeftArmAnimation.GlobalRotation = (float)packet.ReadDouble();
+		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.Play( "idle" );
@@ -96,8 +107,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 			break;
 		};
 		
-		RightArmAnimation.GlobalRotation = (float)packet[ "rrot" ];
-		switch ( (PlayerAnimationState)packet[ "rastate" ] ) {
+		RightArmAnimation.GlobalRotation = (float)packet.ReadDouble();
+		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
 			RightArmAnimation.Show();
 			RightArmAnimation.Play( "idle" );
@@ -146,8 +157,26 @@ public partial class NetworkPlayer : CharacterBody2D {
 			RightArmAnimation.Play( "empty" );
 			break;
 		};
+
+		switch ( (PlayerAnimationState)packet.ReadByte() ) {
+		case PlayerAnimationState.Hide:
+			LegAnimation.Hide();
+			break;
+		case PlayerAnimationState.Idle:
+			LegAnimation.Show();
+			LegAnimation.Play( "idle" );
+			break;
+		case PlayerAnimationState.Running:
+			LegAnimation.Show();
+			LegAnimation.Play( "run" );
+			break;
+		case PlayerAnimationState.Sliding:
+			LegAnimation.Show();
+			LegAnimation.Play( "slide" );
+			break;
+		};
 		
-		switch ( (PlayerAnimationState)packet[ "astate" ] ) {
+		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
 			TorsoAnimation.Play( "idle" );
 			break;
@@ -167,13 +196,17 @@ public partial class NetworkPlayer : CharacterBody2D {
 			TorsoAnimation.Play( "dead" );
 			break;
 		};
+
+		byte handsUsed = packet.ReadByte();
 	}
 	
 	public void Damage( CharacterBody2D attacker, float nAmount ) {
-		Packet[ "type" ] = PacketType.DamagePlayer;
-		Packet[ "amount" ] = nAmount;
+		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
+		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
+		PacketWriter.Write( (int)attacker.Get( "NodeHash" ) );
+		PacketWriter.Write( nAmount );
 		
-		SteamLobby.Instance.SendP2PPacket( OwnerId, Packet, SteamLobby.MessageType.ClientData );
+		SteamLobby.Instance.SendP2PPacket( OwnerId, Packet );
 	}
 	
 	public override void _Ready() {
@@ -186,6 +219,11 @@ public partial class NetworkPlayer : CharacterBody2D {
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
 		RightArmAnimation = GetNode<AnimatedSprite2D>( "RightArm" );
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
+
+		PacketStream = new System.IO.MemoryStream( Packet );
+		PacketWriter = new System.IO.BinaryWriter( PacketStream );
+
+		SteamLobby.Instance.AddNetworkNode( this, new SteamLobby.NetworkNode( this, null, Update ) );
 	}
 
 	public void SetOwnerId( CSteamID steamId ) {

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bky7kqeq3nqso"]
 
-[ext_resource type="Script" uid="uid://dgg8scbu5fe21" path="res://scripts/rage_bar.gd" id="1_dwsyj"]
+[ext_resource type="Script" uid="uid://bhs0dt3m005ja" path="res://scripts/player_system/RageBar.cs" id="1_e2p8t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3p0l"]
 bg_color = Color(0.145098, 0.145098, 0.145098, 1)
@@ -16,4 +16,4 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_p06e3")
 value = 60.0
 allow_greater = true
 show_percentage = false
-script = ExtResource("1_dwsyj")
+script = ExtResource("1_e2p8t")

@@ -19,6 +19,9 @@ public partial class SettingsMenu : Control {
 	private CheckBox AutoAimEnabled;
 	private CheckBox DyslexiaMode;
 
+	private Button NetworkingEnabed;
+	private Button FriendsOnly;
+
 	private AudioStreamPlayer UIChannel;
 
 	private Label RestartToActivateLabel;

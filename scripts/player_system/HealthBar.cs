@@ -8,7 +8,7 @@ namespace PlayerSystem {
 
 		public void SetHealth( float health ) {
 			float prevHealth = (float)Value;
-			Value = Math.Min( health, (float)MaxValue );
+			Value = Mathf.Min( health, (float)MaxValue );
 			if ( (float)Value <= prevHealth ) {
 				Timer.Start();
 			} else {

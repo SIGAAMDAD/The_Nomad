@@ -1,7 +1,9 @@
-using MessagePack;
 using Godot;
 using Steamworks;
 using System;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Xml;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -102,6 +104,27 @@ public partial class SteamLobby : Node {
 	[Signal]
 	public delegate void LobbyListUpdatedEventHandler();
 
+	public class NetworkNode {
+		public readonly Node Node;
+		public readonly Action Send;
+		public readonly Action<System.IO.BinaryReader> Receive;
+
+		public NetworkNode( Node node, Action send, Action<System.IO.BinaryReader> receive ) {
+			Node = node;
+			Send = send;
+			Receive = receive;
+		}
+	};
+
+	private System.Collections.Generic.Dictionary<int, NetworkNode> NodeCache = new System.Collections.Generic.Dictionary<int, NetworkNode>();
+
+	public void AddNetworkNode( Node node, NetworkNode callbacks ) {
+		NodeCache.Add( node.GetPath().GetHashCode(), callbacks );
+	}
+	public Node GetNetworkNode( int hash ) {
+		return NodeCache[ hash ].Node;
+	}
+
 	public CSteamID GetLobbyID() {
 		return LobbyId;
 	}
@@ -194,7 +217,7 @@ public partial class SteamLobby : Node {
 		EmitSignal( "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
-		SendP2PPacket( CSteamID.Nil, new System.Collections.Generic.Dictionary<string, object>(), MessageType.Handshake );
+		SendP2PPacket( CSteamID.Nil, new byte[]{ (byte)MessageType.Handshake } );
 	}
 	public void GetLobbyMembers() {
 		LobbyMembers.Clear();
@@ -209,12 +232,12 @@ public partial class SteamLobby : Node {
 	}
 
 	public void OpenLobbyList() {
-//		if ( LobbyFilterMap != "Any" ) {
-//			SteamMatchmaking.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, ELobbyComparison.k_ELobbyComparisonEqual );
-//		}
-//		if ( LobbyFilterGameMode != "Any" ) {
-//			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, ELobbyComparison.k_ELobbyComparisonEqual );
-//		}
+		if ( LobbyFilterMap != "Any" ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, ELobbyComparison.k_ELobbyComparisonEqual );
+		}
+		if ( LobbyFilterGameMode != "Any" ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, ELobbyComparison.k_ELobbyComparisonEqual );
+		}
 
 		SteamMatchmaking.AddRequestLobbyListDistanceFilter( ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide );
 
@@ -272,12 +295,9 @@ public partial class SteamLobby : Node {
 
 		EmitSignal( "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
 	}
-	public void SendP2PPacket( CSteamID target, System.Collections.Generic.Dictionary<string, object> packet, MessageType messageType ) {
+	public void SendP2PPacket( CSteamID target, byte[] data ) {
 		int channel = 0;
 
-		packet[ "message" ] = messageType;
-
-		byte[] data = MessagePackSerializer.Serialize( packet );
 		if ( !target.IsValid() ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamUser.GetSteamID() ) {
@@ -297,17 +317,16 @@ public partial class SteamLobby : Node {
 		CSteamID senderId;
 		byte[] data = new byte[ packetSize ];
 		SteamNetworking.ReadP2PPacket( data, (uint)data.Length, out packetSize, out senderId );
-		System.Collections.Generic.Dictionary<string, object> packet = MessagePackSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>( data );
-		
-		switch ( (uint)packet[ "message" ] ) {
-		case (uint)MessageType.Handshake:
-			GD.Print( (string)packet[ "username" ] + " sent a handshake packet." );
+
+		System.IO.MemoryStream stream = new System.IO.MemoryStream( data );
+		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
+
+		switch ( (MessageType)reader.ReadByte() ) {
+		case MessageType.Handshake:
+			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
-		case (uint)MessageType.ClientData:
-			( (MultiplayerData)GetTree().CurrentScene ).ProcessClientData( (ulong)senderId, (System.Collections.Generic.Dictionary<string, object>)packet[ "packet" ] );
-			break;
-		case (uint)MessageType.ServerData:
-			( (MultiplayerData)GetTree().CurrentScene ).ProcessHeartbeat( (System.Collections.Generic.Dictionary<string, object>)packet[ "packet" ] );
+		case MessageType.ClientData:
+			NodeCache[ reader.ReadInt32() ].Receive( reader );
 			break;
 		};
 	}
@@ -414,5 +433,9 @@ public partial class SteamLobby : Node {
 		}
 
 		ReadAllPackets();
+
+		foreach ( var node in NodeCache ) {
+			node.Value.Send();
+		}
 	}
 };

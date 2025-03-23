@@ -281,23 +281,7 @@ public partial class MercenaryShotgunner : MobBase {
 		if ( !Blackboard.GetTargetReached() ) {
 			MoveAlongPath();
 		}
-	}
 
-	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 120 ) != 0 ) {
-			return;
-		}
-		
-		if ( (bool)GetNode( "/root/GameConfiguration" ).Get( "_demon_eye" ) ) {
-			HeadAnimations.Modulate = DemonEyeColor;
-			ArmAnimations.Modulate = DemonEyeColor;
-			BodyAnimations.Modulate = DemonEyeColor;
-		} else {
-			HeadAnimations.Modulate = DefaultColor;
-		}
-
-		ProcessAnimations();
-		
 		Agent.State[ "HasTarget" ] = Blackboard.GetHasTarget();
 		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
 		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
@@ -311,6 +295,22 @@ public partial class MercenaryShotgunner : MobBase {
 		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
 
 		Agent.Step();
+	}
+
+	public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+			return;
+		}
+		
+		if ( (bool)GetNode( "/root/GameConfiguration" ).Get( "_demon_eye" ) ) {
+			HeadAnimations.Modulate = DemonEyeColor;
+			ArmAnimations.Modulate = DemonEyeColor;
+			BodyAnimations.Modulate = DemonEyeColor;
+		} else {
+			HeadAnimations.Modulate = DefaultColor;
+		}
+
+		ProcessAnimations();
 	}
 #endregion
 

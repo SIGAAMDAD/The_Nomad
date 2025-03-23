@@ -57,16 +57,6 @@ public partial class MultiplayerData : Node2D {
 
 	public void ProcessHeartbeat( Dictionary<string, object> data ) {
 	}
-	public void ProcessClientData( ulong senderId, Dictionary<string, object> packet ) {
-		switch ( (PacketType)packet[ "type" ] ) {
-		case PacketType.UpdatePlayer:
-			Players[ (CSteamID)senderId ].Update( packet );
-			break;
-		case PacketType.DamagePlayer:
-			ThisPlayer.Damage( (CharacterBody2D)packet[ "attacker" ], (float)packet[ "amount" ] );
-			break;
-		};
-	}
 	
 	/// <summary>
 	///	sends gamestate data from the host to all the clients
@@ -76,8 +66,7 @@ public partial class MultiplayerData : Node2D {
 			return; // we're not the host
 		}
 
-		GameData[ "mode" ] = ModeData.GetMode();
-		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, GameData, SteamLobby.MessageType.ServerData );
+//		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, GameData, SteamLobby.MessageType.ServerData );
 	}
 	private void OnClientHeartbeatTimeout() {
 		ThisPlayer.SendPacket();
@@ -116,11 +105,6 @@ public partial class MultiplayerData : Node2D {
 		Network = GetNode<Node2D>( "Network" );
 		SpawnTree = GetNode( "Network/Spawns" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
-		
-		ServerHeartbeat = GetNode<Timer>( "ServerHeartbeatTimer" );
-		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (uint)Player.GameMode.Multiplayer ) {
-			ServerHeartbeat.Connect( "timeout", Callable.From( OnServerHeartbeatTimeout ) );
-		}
 		
 		Players = new Dictionary<CSteamID, NetworkPlayer>();
 

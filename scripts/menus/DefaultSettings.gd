@@ -44,3 +44,7 @@ enum AntiAliasing {
 @export var _draw_aim_line:bool = false
 @export var _hellbreaker:bool = true
 @export var _hellbreaker_revanents:bool = false
+
+
+@export var _networking_enabled:bool = true
+@export var _friends_only:bool = false

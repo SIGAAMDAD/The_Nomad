@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=43 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -7,9 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bty200almbul3" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
-[ext_resource type="Script" uid="uid://n6t22djo0nh7" path="res://scripts/player_system/HealthBar.cs" id="6_poeto"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
-[ext_resource type="Script" uid="uid://bhs0dt3m005ja" path="res://scripts/player_system/RageBar.cs" id="8_ot7dw"]
 [ext_resource type="Texture2D" uid="uid://bvjna3gg14v7a" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
 [ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="9_jyyjq"]
 [ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
@@ -176,14 +174,12 @@ offset_bottom = 8.0
 grow_horizontal = 1
 grow_vertical = 1
 scale = Vector2(7.78676, 7.23962)
-script = ExtResource("6_poeto")
 
 [node name="RageBar" parent="." instance=ExtResource("2_4ecwx")]
 offset_top = 21.0
 offset_right = 40.0
 scale = Vector2(7.67931, 14.1339)
 allow_greater = false
-script = ExtResource("8_ot7dw")
 
 [node name="BossHealthBar" parent="." instance=ExtResource("4_y7hg5")]
 visible = false

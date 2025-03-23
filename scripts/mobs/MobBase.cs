@@ -252,11 +252,13 @@ public partial class MobBase : CharacterBody2D {
 		}
 	}
 	protected void OnMoveTimerTimeout() {
-		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
-		MoveChannel.Play();
 		if ( Velocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
+		} else {
+			return;
 		}
+		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+		MoveChannel.Play();
 	}
 	protected void CreateAfterImage() {
 		AfterImage.CallDeferred( "Update", (Player)SightTarget );

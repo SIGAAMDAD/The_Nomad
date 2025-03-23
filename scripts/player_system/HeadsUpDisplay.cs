@@ -87,24 +87,63 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
 			HealthBar = GetNode<ProgressBar>( "HealthBar" );
+			HealthBar.SetProcess( false );
+			HealthBar.SetProcessInternal( false );
+
 			RageBar = GetNode<ProgressBar>( "RageBar" );
+			RageBar.SetProcess( false );
+			RageBar.SetProcessInternal( false );
+
 			Inventory = GetNode<MarginContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer" );
+			Inventory.SetProcess( false );
+			Inventory.SetProcessInternal( false );
+
 			StackList = GetNode<VBoxContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
 
 			ItemName = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
+			ItemName.SetProcess( false );
+			ItemName.SetProcessInternal( false );
+
 			ItemType = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
+			ItemType.SetProcess( false );
+			ItemType.SetProcessInternal( false );
+
 			ItemCount = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
+			ItemCount.SetProcess( false );
+			ItemCount.SetProcessInternal( false );
+
 			ItemStackMax = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
+			ItemStackMax.SetProcess( false );
+			ItemStackMax.SetProcessInternal( false );
+
 			ItemIcon = GetNode<TextureRect>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
+			ItemIcon.SetProcess( false );
+			ItemIcon.SetProcessInternal( false );
+
 			ItemDescription = GetNode<RichTextLabel>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
+			ItemDescription.SetProcess( false );
+			ItemDescription.SetProcessInternal( false );
+
 			ItemEffect = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
+			ItemEffect.SetProcess( false );
+			ItemEffect.SetProcessInternal( false );
 
 			CheckpointInteractor = GetNode<MarginContainer>( "CheckpointContainer" );
+			CheckpointInteractor.SetProcess( false );
+			CheckpointInteractor.SetProcessInternal( false );
 
 			ReflexOverlay = GetNode<TextureRect>( "Overlays/ReflexModeOverlay" );
+			ReflexOverlay.SetProcess( false );
+			ReflexOverlay.SetProcessInternal( false );
+
 			DashOverlay = GetNode<TextureRect>( "Overlays/DashOverlay" );
+			DashOverlay.SetProcess( false );
+			DashOverlay.SetProcessInternal( false );
+			DashOverlay.SetPhysicsProcess( false );
 
 			SaveTimer = GetNode<Timer>( "SaveSpinner/SaveTimer" );
+			SaveTimer.SetProcess( false );
+			SaveTimer.SetProcessInternal( false );
 			SaveTimer.Connect( "timeout", Callable.From( OnSaveTimerTimeout ) );
 
 			SaveSpinner = GetNode<Control>( "SaveSpinner/SaveSpinner" );
@@ -112,15 +151,44 @@ namespace PlayerSystem {
 
 			WeaponData = null;
 			WeaponStatus = GetNode<TextureRect>( "WeaponStatus" );
+			WeaponStatus.SetProcess( false );
+			WeaponStatus.SetProcessInternal( false );
+
 			WeaponModeBladed = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
+			WeaponModeBladed.SetProcess( false );
+			WeaponModeBladed.SetProcessInternal( false );
+
 			WeaponModeBlunt = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
+			WeaponModeBlunt.SetProcess( false );
+			WeaponModeBlunt.SetProcessInternal( false );
+
 			WeaponModeFirearm = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
+			WeaponModeFirearm.SetProcess( false );
+			WeaponModeFirearm.SetProcessInternal( false );
+
 			WeaponStatusFirearm = GetNode<VBoxContainer>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus" );
+			WeaponStatusFirearm.SetProcess( false );
+			WeaponStatusFirearm.SetProcessInternal( false );
+
 			WeaponStatusMelee = GetNode<VBoxContainer>( "WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus" );
+			WeaponStatusMelee.SetProcess( false );
+			WeaponStatusMelee.SetProcessInternal( false );
+
 			WeaponStatusMeleeIcon = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
+			WeaponStatusMeleeIcon.SetProcess( false );
+			WeaponStatusMeleeIcon.SetProcessInternal( false );
+
 			WeaponStatusFirearmIcon = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
+			WeaponStatusFirearmIcon.SetProcess( false );
+			WeaponStatusFirearmIcon.SetProcessInternal( false );
+
 			WeaponStatusBulletCount = GetNode<Label>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
+			WeaponStatusBulletCount.SetProcess( false );
+			WeaponStatusBulletCount.SetProcessInternal( false );
+
 			WeaponStatusBulletReserve = GetNode<Label>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
+			WeaponStatusBulletReserve.SetProcess( false );
+			WeaponStatusBulletReserve.SetProcessInternal( false );
 
 			SaveGameButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/SaveProgressButton" );
 //			SaveGameButton.Connect( "pressed", Callable.From( OnSaveGameButtonPressed ) );
@@ -148,11 +216,10 @@ namespace PlayerSystem {
 			( (RageBar)RageBar ).Init( 60.0f );
 		}
 		public override void _Process( double delta ) {
-			base._Process( delta );
-
-			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
 				return;
 			}
+			base._Process( delta );
 
 			if ( Engine.TimeScale == 0.0f ) {
 				Visible = false;
@@ -361,10 +428,10 @@ namespace PlayerSystem {
 			HBoxContainer row = new HBoxContainer();
 
 			foreach ( var stack in _Owner.GetAmmoStacks() ) {
-				row = AddAmmoStackToInventory( row, stack );
+				row = AddAmmoStackToInventory( row, stack.Value );
 			}
 			foreach ( var stack in _Owner.GetWeaponStack() ) {
-				row = AddWeaponToInventory( row, stack );
+				row = AddWeaponToInventory( row, stack.Value );
 			}
 //			foreach ( var stack in _Owner.GetInventory().Stacks ) {
 //				row = AddItemToInventory( row, stack );
