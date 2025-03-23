@@ -431,8 +431,8 @@ public partial class SteamLobby : Node {
 		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
 
 		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
-		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+//		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+//		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 
 		GD.Print( "Sending p2p handshake..." );
 		GetLobbyMembers();
