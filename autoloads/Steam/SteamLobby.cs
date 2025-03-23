@@ -116,8 +116,8 @@ public partial class SteamLobby : Node {
 
 	private System.Collections.Generic.Dictionary<int, NetworkNode> NodeCache = new System.Collections.Generic.Dictionary<int, NetworkNode>();
 
-	public void AddNetworkNode( Node node, NetworkNode callbacks ) {
-		NodeCache.Add( node.GetPath().GetHashCode(), callbacks );
+	public void AddNetworkNode( int hash, NetworkNode callbacks ) {
+		NodeCache.Add( hash, callbacks );
 	}
 	public Node GetNetworkNode( int hash ) {
 		return NodeCache[ hash ].Node;

@@ -33,6 +33,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 	private InventoryDatabase Database;
 	private Resource CurrentWeapon;
 	private CSteamID OwnerId;
+	private int NodeHash;
 	
 	private AnimatedSprite2D IdleAnimation;
 	private AnimatedSprite2D TorsoAnimation;
@@ -225,10 +226,11 @@ public partial class NetworkPlayer : CharacterBody2D {
 		PacketStream = new System.IO.MemoryStream( Packet );
 		PacketWriter = new System.IO.BinaryWriter( PacketStream );
 
-		SteamLobby.Instance.AddNetworkNode( this, new SteamLobby.NetworkNode( this, null, Update ) );
+		SteamLobby.Instance.AddNetworkNode( SteamFriends.GetFriendPersonaName( OwnerId ).GetHashCode(),
+			new SteamLobby.NetworkNode( this, null, Update ) );
 	}
 
-	public void SetOwnerId( CSteamID steamId ) {
-		OwnerId = steamId;
+	public void SetOwnerId( ulong steamId ) {
+		OwnerId = (CSteamID)steamId;
 	}
 };
