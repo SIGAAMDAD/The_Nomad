@@ -27,7 +27,7 @@ public partial class World : Node2D {
 	private Thread SceneLoadThread;
 
 	private Player ThisPlayer;
-	private Dictionary<CSteamID, NetworkPlayer> Players = null;	
+	private Dictionary<CSteamID, CharacterBody2D> Players = null;	
 	
 	private Node PlayerList = null;
 
@@ -68,9 +68,9 @@ public partial class World : Node2D {
 			return;
 		}
 		
-		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
-		player.MultiplayerUsername = SteamFriends.GetFriendPersonaName( userId );
-		player.MultiplayerId = userId;
+		CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
+		player.Set( "MultiplayerId", (ulong)userId );
 		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
@@ -84,7 +84,7 @@ public partial class World : Node2D {
 			return;
 		}
 		
-		GetNode( "/root/Console" ).Call( "print_line", Players[ userId ].MultiplayerUsername + " has faded away...", true );
+		GetNode( "/root/Console" ).Call( "print_line", (string)Players[ userId ].Get( "MultiplayerUsername" ) + " has faded away...", true );
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
@@ -108,7 +108,7 @@ public partial class World : Node2D {
 //			"goap.log"
 //		);
 
-		Players = new Dictionary<CSteamID, NetworkPlayer>();
+		Players = new Dictionary<CSteamID, CharacterBody2D>();
 
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
