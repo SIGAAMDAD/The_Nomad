@@ -232,12 +232,12 @@ public partial class SteamLobby : Node {
 	}
 
 	public void OpenLobbyList() {
-		if ( LobbyFilterMap != "Any" ) {
-			SteamMatchmaking.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, ELobbyComparison.k_ELobbyComparisonEqual );
-		}
-		if ( LobbyFilterGameMode != "Any" ) {
-			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, ELobbyComparison.k_ELobbyComparisonEqual );
-		}
+//		if ( LobbyFilterMap != "Any" ) {
+//			SteamMatchmaking.AddRequestLobbyListStringFilter( "map", LobbyFilterMap, ELobbyComparison.k_ELobbyComparisonEqual );
+//		}
+//		if ( LobbyFilterGameMode != "Any" ) {
+//			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", LobbyFilterGameMode, ELobbyComparison.k_ELobbyComparisonEqual );
+//		}
 
 		SteamMatchmaking.AddRequestLobbyListDistanceFilter( ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide );
 
