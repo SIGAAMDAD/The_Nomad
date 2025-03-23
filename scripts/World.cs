@@ -56,6 +56,8 @@ public partial class World : Node2D {
 
 		SceneLoadThread.Join();
 		AudioLoadThread.Join();
+
+		AudioCache.Initialized = true;
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {

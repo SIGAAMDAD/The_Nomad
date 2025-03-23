@@ -44,6 +44,8 @@ public partial class AudioCache {
 	public static AudioStream SlowMoEndSfx;
 #endregion
 
+	public static bool Initialized = false;
+
 	public static void Cache( Node world ) {
         GD.Print( "Loading sound effects..." );
 

@@ -31,6 +31,7 @@ public partial class LobbyBrowser : Control {
 	private void OnFinishedLoadingScene() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
 		QueueFree();
+		Hide();
 
 		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
 		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
@@ -106,7 +107,7 @@ public partial class LobbyBrowser : Control {
 		TransitionScreen.Call( "transition" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 		Hide();
-		
+
 		GD.Print( "Joining" );
 		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
