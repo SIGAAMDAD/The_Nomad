@@ -69,6 +69,7 @@ public partial class World : Node2D {
 		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
 		player.MultiplayerUsername = SteamFriends.GetFriendPersonaName( userId );
 		player.MultiplayerId = userId;
+		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );

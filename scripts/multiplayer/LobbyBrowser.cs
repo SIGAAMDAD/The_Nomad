@@ -86,14 +86,7 @@ public partial class LobbyBrowser : Control {
 		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
-	private void OnLoadedMap() {
-		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
-
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Hide();
-		SoundManager.StopMusic( 0.5f );
-		Hide();
-	}
-
+	
 	private void MatchmakingLoop() {
 		if ( MatchmakingPhase < 4 ) {
 			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
