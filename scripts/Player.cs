@@ -1548,9 +1548,9 @@ public partial class Player : CharacterBody2D {
 
 		PacketStream = new System.IO.MemoryStream( NetworkPacket );
 		PacketWriter = new System.IO.BinaryWriter( PacketStream );
-		NodeHash = MultiplayerId.GetHashCode();
+		NodeHash = SteamUser.GetSteamID().ToString().GetHashCode();
 
-		SteamLobby.Instance.AddNetworkNode( MultiplayerId.GetHashCode(),
+		SteamLobby.Instance.AddNetworkNode( NodeHash,
 			new SteamLobby.NetworkNode( this, SendPacket, null ) );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
