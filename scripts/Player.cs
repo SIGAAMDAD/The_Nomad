@@ -758,14 +758,14 @@ public partial class Player : CharacterBody2D {
 	}
 
 	private void IdleReset() {
-		IdleTimer.CallDeferred( "start" );
-		IdleAnimation.CallDeferred( "hide" );
-		IdleAnimation.CallDeferred( "stop" );
+		IdleTimer.Start();
+		IdleAnimation.Hide();
+		IdleAnimation.Stop();
 
-		LegAnimation.CallDeferred( "show" );
-		TorsoAnimation.CallDeferred( "show" );
-		ArmRight.Animations.CallDeferred( "show" );
-		ArmLeft.Animations.CallDeferred( "show" );
+		LegAnimation.Show();
+		TorsoAnimation.Show();
+		ArmRight.Animations.Show();
+		ArmLeft.Animations.Show();
 	}
 
 	public void SetupSplitScreen( int nInputIndex ) {
@@ -837,9 +837,9 @@ public partial class Player : CharacterBody2D {
 
 	private void OnDeath( CharacterBody2D attacker ) {
 		EmitSignal( "Die", attacker, this );
-		LegAnimation.CallDeferred( "hide" );
-		ArmLeft.Animations.CallDeferred( "hide" );
-		ArmRight.Animations.CallDeferred( "hide" );
+		LegAnimation.Hide();
+		ArmLeft.Animations.Hide();
+		ArmRight.Animations.Hide();
 
 		TorsoAnimation.CallDeferred( "play", "death" );
 
@@ -889,12 +889,19 @@ public partial class Player : CharacterBody2D {
 		if ( IdleAnimation.IsPlaying() ) {
 			return;
 		}
-		TorsoAnimation.CallDeferred( "hide" );
-		ArmLeft.Animations.CallDeferred( "hide" );
-		ArmRight.Animations.CallDeferred( "hide" );
-		LegAnimation.CallDeferred( "hide" );
-		IdleAnimation.CallDeferred( "show" );
-		IdleAnimation.CallDeferred( "play", "start" );
+
+		TorsoAnimation.Hide();
+		ArmLeft.Animations.Hide();
+		ArmRight.Animations.Hide();
+		LegAnimation.Hide();
+		IdleAnimation.Show();
+		IdleAnimation.Play( "start" );
+
+		TorsoAnimationState = PlayerAnimationState.TrueIdleStart;
+		LegAnimationState = PlayerAnimationState.TrueIdleStart;
+		LeftArmAnimationState = PlayerAnimationState.TrueIdleStart;
+		RightArmAnimationState = PlayerAnimationState.TrueIdleStart;
+
 		SteamAchievements.ActivateAchievement( "ACH_SMOKE_BREAK" );
 	}
 	private void OnIdleAnimationAnimationFinished()	{
@@ -907,8 +914,8 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	private void OnDashTimeTimeout() {
-		HUD.GetDashOverlay().CallDeferred( "hide" );
-		( (PointLight2D)DashEffect.GetChild( 0 ) ).CallDeferred( "hide" );
+		HUD.GetDashOverlay().Hide();
+		( (PointLight2D)DashEffect.GetChild( 0 ) ).Hide();
 		DashEffect.Emitting = false;
 		Flags &= ~PlayerFlags.Dashing;
 		if ( LegAnimation.FlipH ) {
@@ -955,9 +962,13 @@ public partial class Player : CharacterBody2D {
 		}
 		IdleReset();
 		Flags |= PlayerFlags.Sliding;
-		SlideTime.CallDeferred( "start" );
+		SlideTime.Start();
 		SlideEffect.Emitting = true;
-		LegAnimation.CallDeferred( "play", "slide" );
+
+		LegAnimationState = PlayerAnimationState.Sliding;
+		TorsoAnimationState = PlayerAnimationState.Sliding;
+
+		LegAnimation.Play( "slide" );
 	}
 	private void OnUseWeapon() {
 		IdleReset();
@@ -1401,7 +1412,7 @@ public partial class Player : CharacterBody2D {
 
 	private void ExitBulletTime() {
 		Flags &= ~PlayerFlags.BulletTime;
-		HUD.GetReflexOverlay().CallDeferred( "hide" );
+		HUD.GetReflexOverlay().Hide();
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 

@@ -58,20 +58,24 @@ public partial class NetworkPlayer : CharacterBody2D {
 
 		LeftArmAnimation.GlobalRotation = (float)packet.ReadDouble();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
+		case PlayerAnimationState.Hide:
+		case PlayerAnimationState.TrueIdleStart:
+		case PlayerAnimationState.TrueIdleLoop:
+		case PlayerAnimationState.Dead:
+			LeftArmAnimation.Stop();
+			LeftArmAnimation.Hide();
+			break;
 		case PlayerAnimationState.Idle:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
 			LeftArmAnimation.Show();
-			LeftArmAnimation.Play( "move" );
+			LeftArmAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.Sliding:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.Play( "slide" );
-			break;
-		case PlayerAnimationState.Hide:
-			LeftArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.WeaponIdle:
 			LeftArmAnimation.Show();
@@ -109,20 +113,23 @@ public partial class NetworkPlayer : CharacterBody2D {
 		
 		RightArmAnimation.GlobalRotation = (float)packet.ReadDouble();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
+		case PlayerAnimationState.Hide:
+		case PlayerAnimationState.TrueIdleStart:
+		case PlayerAnimationState.TrueIdleLoop:
+		case PlayerAnimationState.Dead:
+			RightArmAnimation.Hide();
+			break;
 		case PlayerAnimationState.Idle:
 			RightArmAnimation.Show();
 			RightArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
 			RightArmAnimation.Show();
-			RightArmAnimation.Play( "move" );
+			RightArmAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.Sliding:
 			RightArmAnimation.Show();
 			RightArmAnimation.Play( "slide" );
-			break;
-		case PlayerAnimationState.Hide:
-			RightArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.WeaponIdle:
 			RightArmAnimation.Show();
@@ -160,6 +167,9 @@ public partial class NetworkPlayer : CharacterBody2D {
 
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Hide:
+		case PlayerAnimationState.TrueIdleStart:
+		case PlayerAnimationState.TrueIdleLoop:
+		case PlayerAnimationState.Dead:
 			LegAnimation.Hide();
 			break;
 		case PlayerAnimationState.Idle:
@@ -178,16 +188,13 @@ public partial class NetworkPlayer : CharacterBody2D {
 		
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
+		case PlayerAnimationState.Sliding:
 			TorsoAnimation.Show();
 			TorsoAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
 			TorsoAnimation.Show();
-			TorsoAnimation.Play( "move" );
-			break;
-		case PlayerAnimationState.Sliding:
-			TorsoAnimation.Show();
-//			TorsoAnimation.Play( "slide" );
+			TorsoAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
 			TorsoAnimation.Hide();
