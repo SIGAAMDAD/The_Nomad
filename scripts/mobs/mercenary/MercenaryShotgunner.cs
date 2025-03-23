@@ -2,6 +2,7 @@ using Godot;
 using MountainGoap;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 // TODO: make alertness change based on target renown traits
 public partial class MercenaryShotgunner : MobBase {
@@ -15,7 +16,7 @@ public partial class MercenaryShotgunner : MobBase {
 	private Line2D ShootLine;
 	private AudioStream AimSfx;
 
-	private static readonly List<BaseGoal> Goals = new List<BaseGoal>{
+	private static readonly BaseGoal[] Goals = {
 		new ExtremeGoal(
 			name: "Survive",
 			weight: 100.0f,
@@ -105,6 +106,8 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 	
 #region API
+	private Stopwatch profiler = new Stopwatch();
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -116,7 +119,7 @@ public partial class MercenaryShotgunner : MobBase {
 		TargetMovedTimer.Connect( "timeout", Callable.From( OnTargetMoveTimerTimeout ) );
 		AddChild( TargetMovedTimer );
 		
-		List<MountainGoap.Action> actions = new List<MountainGoap.Action>{
+		MountainGoap.Action[] actions = {
 			new MountainGoap.Action(
 				name: "GuardNode",
 				permutationSelectors: null,
@@ -136,7 +139,7 @@ public partial class MercenaryShotgunner : MobBase {
 				permutationSelectors: null,
 				executor: ( Agent agent, MountainGoap.Action action ) => Action_InvestigateNode( agent, action ),
 				cost: 20.0f,
-				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
+				costCallback: ( MountainGoap.Action action, Dictionary<string, object> currentState ) => {
 					return Blackboard.GetAwareness() > Awareness.Suspicious ? 10.0f : 30.0f;
 				},
 				preconditions: new Dictionary<string, object>{
@@ -152,7 +155,7 @@ public partial class MercenaryShotgunner : MobBase {
 				}
 			)
 		};
-		List<Sensor> sensors = new List<Sensor>{
+		Sensor[] sensors = {
 			new Sensor(
 				runCallback: ( Agent agent ) => {
 				},
@@ -201,7 +204,7 @@ public partial class MercenaryShotgunner : MobBase {
 
 		Agent = new Agent(
 			"MercenaryShotgunner",
-			new ConcurrentDictionary<string, object>{
+			new Dictionary<string, object>{
 				{ "HasTarget", false },
 				{ "TargetDistance", 0.0f },
 				{ "TargetReached", true },
@@ -279,8 +282,9 @@ public partial class MercenaryShotgunner : MobBase {
 			MoveAlongPath();
 		}
 	}
+
 	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 14 ) != 0 ) {
+		if ( ( Engine.GetProcessFrames() % 120 ) != 0 ) {
 			return;
 		}
 		

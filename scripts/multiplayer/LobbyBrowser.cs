@@ -3,6 +3,8 @@ using NathanHoad;
 using Multiplayer;
 using Steamworks;
 
+// TODO: fix lobby refresh leaking memory
+
 public partial class LobbyBrowser : Control {
 	private Button HostGame;
 	private Button RefreshLobbies;

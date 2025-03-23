@@ -86,6 +86,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_5lchc")
@@ -100,11 +101,14 @@ grow_vertical = 2
 texture = SubResource("GradientTexture1D_5lchc")
 
 [node name="EmberParticlesEmitter" type="GPUParticles2D" parent="."]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
 modulate = Color(4, 1, 1, 1)
 position = Vector2(320, 500)
-amount = 1400
+amount = 1000
 texture = SubResource("GradientTexture2D_6lvap")
-lifetime = 12.0
+lifetime = 5.0
 randomness = 0.25
 fixed_fps = 0
 draw_order = 0
@@ -114,7 +118,7 @@ process_material = SubResource("ParticleProcessMaterial_rhrir")
 position = Vector2(320, 490)
 amount = 240
 texture = SubResource("GradientTexture2D_u1nnk")
-lifetime = 14.0
+lifetime = 10.0
 randomness = 0.25
 fixed_fps = 0
 draw_order = 0

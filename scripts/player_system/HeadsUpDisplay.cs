@@ -150,6 +150,10 @@ namespace PlayerSystem {
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
+			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+				return;
+			}
+
 			if ( Engine.TimeScale == 0.0f ) {
 				Visible = false;
 				return;

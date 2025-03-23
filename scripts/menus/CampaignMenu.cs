@@ -52,11 +52,18 @@ public partial class CampaignMenu : Control {
 	private void OnBeginGameFinished() {
 		BeginLevel();
 	}
+	private void OnAudioFadeFinished() {
+		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+	}
 
 	private void OnIntendedModeButtonPressed() {
 		if ( Loading ) {
 			return;
 		}
+		Tween AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+
 		Loading = true;
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
@@ -75,6 +82,10 @@ public partial class CampaignMenu : Control {
 		if ( Loading ) {
 			return;
 		}
+		Tween AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+
 		Loading = true;
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();

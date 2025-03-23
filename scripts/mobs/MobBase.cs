@@ -120,6 +120,7 @@ public partial class MobBase : CharacterBody2D {
 	protected AIBlackboard Blackboard;
 	protected RayCast2D[] SightLines;
 	protected PlayerSystem.AfterImage AfterImage;
+	protected Timer MoveTimer;
 
 	protected Agent Agent;
 	protected Squad Squad;
@@ -250,10 +251,11 @@ public partial class MobBase : CharacterBody2D {
 			SequencedBark = BarkType.Count;
 		}
 	}
-	protected void OnBodyAnimationFinished() {
-		if ( BodyAnimations.Animation == "move" ) {
-			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
-			MoveChannel.Play();
+	protected void OnMoveTimerTimeout() {
+		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+		MoveChannel.Play();
+		if ( Velocity != Godot.Vector2.Zero ) {
+			MoveTimer.Start();
 		}
 	}
 	protected void CreateAfterImage() {
@@ -266,7 +268,10 @@ public partial class MobBase : CharacterBody2D {
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
 		SightDetector = GetNode<Node2D>( "Animations/HeadAnimations/SightCheck" );
-		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
+
+		DetectionMeter = GetNode<Line2D>( "Animations/HeadAnimations/DetectionMeter" );
+		DetectionMeter.SetProcess( false );
+		DetectionMeter.SetProcessInternal( false );
 
 		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
 		Navigation.Connect( "target_reached", Callable.From( OnTargetReached ) );
@@ -274,8 +279,13 @@ public partial class MobBase : CharacterBody2D {
 		HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 		ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 		BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
-		BodyAnimations.Connect( "animation_looped", Callable.From( OnBodyAnimationFinished ) );
-		
+
+		MoveTimer = new Timer();
+		MoveTimer.OneShot = true;
+		MoveTimer.WaitTime = 0.40f;
+		MoveTimer.Connect( "timeout", Callable.From( OnMoveTimerTimeout ) );
+		AddChild( MoveTimer );
+
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		MoveChannel.SetProcess( false );
 		MoveChannel.SetProcessInternal( false );
@@ -299,12 +309,16 @@ public partial class MobBase : CharacterBody2D {
 		ChangeInvestigateAngleTimer = new Timer();
 		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
 		ChangeInvestigateAngleTimer.OneShot = true;
+		ChangeInvestigateAngleTimer.SetProcess( false );
+		ChangeInvestigateAngleTimer.SetProcessInternal( false );
 		ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
 		AddChild( ChangeInvestigateAngleTimer );
 		
 		LoseInterestTimer = new Timer();
 		LoseInterestTimer.WaitTime = LoseInterestTime;
 		LoseInterestTimer.OneShot = true;
+		LoseInterestTimer.SetProcess( false );
+		LoseInterestTimer.SetProcessInternal( false );
 		LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
 		AddChild( LoseInterestTimer );
 
@@ -365,6 +379,10 @@ public partial class MobBase : CharacterBody2D {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 		PhysicsPosition = GlobalPosition;
+
+		if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
+			MoveTimer.Start();
+		}
 	}
 
 	protected bool MoveAlongPath() {

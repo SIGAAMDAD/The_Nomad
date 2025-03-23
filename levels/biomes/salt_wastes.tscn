@@ -5957,10 +5957,6 @@ position = Vector2(711, 293)
 [node name="CoverNode4" type="Node2D" parent="RockyBastardsCamp/OpposingForce/NodeCache"]
 position = Vector2(704, 92)
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="RockyBastardsCamp"]
-position = Vector2(361, 238)
-scale = Vector2(81.858, 40.0383)
-
 [node name="LakaoPass" type="Node2D" parent="."]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="LakaoPass"]

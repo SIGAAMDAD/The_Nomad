@@ -26,11 +26,12 @@ public partial class MainMenu : Control {
 		base._ExitTree();
 	}
 
+	private void OnAudioFadeFinished() {
+		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+	}
 	private void OnFinishedLoading() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
-
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-		SoundManager.StopMusic( 1.5f );
 		Hide();
 	}
 	private void LoadGame() {
@@ -42,6 +43,10 @@ public partial class MainMenu : Control {
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
 		ArchiveSystem.LoadGame();
+
+		Tween AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels/world.tscn"

@@ -2,6 +2,7 @@ using Godot;
 using MountainGoap;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace Renown {
 	public partial class Relationship : Resource {
@@ -145,162 +146,43 @@ namespace Renown {
 		
 		// TODO: personality generation
 		
-		private List<MountainGoap.Action> GenerateActions() {
-			List<MountainGoap.Action> actions = new List<MountainGoap.Action>();
-			
+		private MountainGoap.Action[] GenerateActions() {
 			// action cost is basically how willing the bot is willing to execute said action
 			
 			//
 			// generic actions
 			//
-			
-			MountainGoap.Action GotoNode = new MountainGoap.Action(
-				name: "GotoNode",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( !MoveAlongPath() ) {
-						return ExecutionStatus.Failed;
-					}
-					if ( (bool)agent.State[ "TargetReached" ] || (float)agent.State[ "TargetDistance" ] < 10.0f ) {
-						agent.State[ "TargetReached" ] = false;
-						agent.State[ "TargetDistance" ] = 0.0f;
-						return ExecutionStatus.Succeeded;
-					}
-					return ExecutionStatus.Executing;
-				},
-				cost: 20,
-				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
-					return (float)currentState[ "TargetDistance" ];
-				},
-				preconditions: new Dictionary<string, object>{
-					{ "TargetReached", false }
-				},
-				comparativePreconditions: null,
-//				comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-//					{ "TargetDistance", new ComparisonValuePair{ Value = 1.0f, Operator = ComparisonOperator.GreaterThan } }
-//				},
-				postconditions: new Dictionary<string, object>{
-					{ "TargetReached", true }
-				}
-			);
-			actions.Add( GotoNode );
-			
-			/*
-			MountainGoap.Action BecomeMercenary = new MountainGoap.Action(
-				name: "BecomeMercenary",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( Settlement.GetMercenaryMaster() == null ) {
-						return ExecutionStatus.Failed;
-					}
-				},
-			);
-			actions.Add( BecomeMercenary );
-			*/
-			
-			MountainGoap.Action BecomeBlacksmith = new MountainGoap.Action(
-				
-			);
-			
-			MountainGoap.Action FindWork = new MountainGoap.Action(
-				name: "FindWork",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					switch ( (Occupation)agent.State[ "Job" ] ) {
-					case Occupation.Mercenary:
-						if ( !(bool)agent.State[ "HasContract" ] ) {
-							
-						} else {
-							
+			MountainGoap.Action[] actions = {
+				new MountainGoap.Action(
+					name: "GotoNode",
+					null,
+					executor: ( Agent agent, MountainGoap.Action action ) => {
+						if ( !MoveAlongPath() ) {
+							return ExecutionStatus.Failed;
 						}
-						break;
-					};
-					return ExecutionStatus.Succeeded;
-				},
-				cost: 20.0f,
-				costCallback: null,
-				preconditions: new Dictionary<string, object>{
-					{ "NeedsMoney", true }
-				}
-			);
-			
-			/*
-			MountainGoap.Action FindShelter = new MountainGoap.Action(
-				name: "FindShelter",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if (  )
-				},
-				cost: 0.0f,
-			);
-			actions.Add( FindShelter );
-			
-			MountainGoap.Action BuyFood = new MountainGoap.Action(
-				name: "BuyFood",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					uint nMoney = (uint)agent.State[ "Money" ];
-					Shop shop = (Shop)agent.State[ "Vendor" ];
-					
-					if ( shop.GetResourcePrice() > nMoney ) {
-						return ExecutionStatus.Failed;
-					}
-					nMoney -= shop.Buy();
-					agent.State[ "Money" ] = nMoney;
-					agent.State[ "FoodType" ] = ( (FoodShop)shop ).GetFoodType();
-					
-					return ExecutionStatus.Succeeded;
-				},
-				cost: 1.0f,
-				costCallback: ( MountainGoap.Action action, ConcurrentDictionary<string, object> currentState ) => {
-					return ( (Shop)agent.Memory[ "FoodVendor" ] ).GlobalPosition.DistanceTo( GlobalPosition );
-				},
-				preconditions: new Dictionary<string, object>{
-					{ "HasFood", false },
-					{ "AtFoodVendor", false },
-					{ "TargetReached", true }
-				},
-				comparativePreconditions: null,
-				postconditions: new Dictionary<string, object>{
-					{ "HasFood", true },
-					{ "AtFoodVendor", true }
-				}
-				
-			);
-			actions.Add( BuyFood );
-			
-			MountainGoap.Action Eat = new MountainGoap.Action(
-				name: "Eat",
-				null,
-				executor: ( Agent agent, MountainGoap.Action action ) => {
-					if ( EatDurationTimer.IsStopped() ) {
-						EatDurationTimer.Start();
+						if ( (bool)agent.State[ "TargetReached" ] || (float)agent.State[ "TargetDistance" ] < 10.0f ) {
+							agent.State[ "TargetReached" ] = false;
+							agent.State[ "TargetDistance" ] = 0.0f;
+							return ExecutionStatus.Succeeded;
+						}
 						return ExecutionStatus.Executing;
-					} else if ( EatDurationTimer.TimeLeft > 0.0f ) {
-						return ExecutionStatus.Executing;
+					},
+					cost: 20,
+					costCallback: ( MountainGoap.Action action, Dictionary<string, object> currentState ) => {
+						return (float)currentState[ "TargetDistance" ];
+					},
+					preconditions: new Dictionary<string, object>{
+						{ "TargetReached", false }
+					},
+					comparativePreconditions: null,
+//					comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+//						{ "TargetDistance", new ComparisonValuePair{ Value = 1.0f, Operator = ComparisonOperator.GreaterThan } }
+//					},
+					postconditions: new Dictionary<string, object>{
+						{ "TargetReached", true }
 					}
-					
-					float food = (float)agent.State[ "Food" ];
-					Food type = (Food)agent.State[ "FoodType" ];
-					food += type.GetValue();
-					
-					agent.State[ "FoodType" ] = null;
-					agent.State[ "Food" ] = food;
-					agent.State[ "HasFood" ] = false;
-					return ExecutionStatus.Succeeded;
-				},
-				cost: 5.0f,
-				costCallback: null,
-				preconditions: new Dictionary<string, object>{
-					{ "HasFood", true }
-				},
-				comparativePreconditions: null,
-				postconditions: new Dictionary<string, object>{
-					{ "HasFood", false }
-				}
-			);
-			actions.Add( Eat );
-			*/
+				)
+			};
 			
 			//
 			// personality influenced actions
@@ -328,8 +210,9 @@ namespace Renown {
 					name: "RobSomeone"
 				);
 			}
-			actions.Add( RobSomeone );
+			actions.Append( RobSomeone );
 			
+			// ...
 			MountainGoap.Action HaveSex;
 			if ( HasPersonality( "Horny" ) ) {
 				HaveSex = new MountainGoap.Action(
@@ -348,47 +231,41 @@ namespace Renown {
 
 			return actions;
 		}
-		private List<BaseGoal> GenerateGoals() {
-			List<BaseGoal> goals = new List<BaseGoal>();
-			
+		private BaseGoal[] GenerateGoals() {
 			//
 			// goals that apply to anyone
 			//
-			Goal SurviveGoal = new Goal(
-				name: "Survive",
-				weight: 95.0f,
-				desiredState: new Dictionary<string, object>{
-					
-				}
-			);
-			
-			ComparativeGoal GetFood = new ComparativeGoal(
-				name: "GetFood",
-				weight: 95.0f,
-				desiredState: new Dictionary<string, ComparisonValuePair>{
-					{ "Food", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } },
-					{ "AtFoodVendor", new ComparisonValuePair{ Value = true, Operator = ComparisonOperator.Equals } }
-				}
-			);
-			goals.Add( GetFood );
-			
-			ComparativeGoal GetWater = new ComparativeGoal(
-				name: "GetWater",
-				weight: 96.0f,
-				desiredState: new Dictionary<string, ComparisonValuePair>{
-					{ "Water", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } }
-				}
-			);
-			goals.Add( GetWater );
-			
-			ComparativeGoal GetJob = new ComparativeGoal(
-				name: "GetJob",
-				weight: 50.0f,
-				desiredState: new Dictionary<string, ComparisonValuePair>{
-					{ "Job", new ComparisonValuePair{ Value = (uint)Occupation.None, Operator = ComparisonOperator.GreaterThan } }
-				}
-			);
-			goals.Add( GetJob );
+			BaseGoal[] goals = {
+				new Goal(
+					name: "Survive",
+					weight: 95.0f,
+					desiredState: new Dictionary<string, object>{
+
+					}
+				),
+				new ComparativeGoal(
+					name: "GetFood",
+					weight: 95.0f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Food", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } },
+						{ "AtFoodVendor", new ComparisonValuePair{ Value = true, Operator = ComparisonOperator.Equals } }
+					}
+				),
+				new ComparativeGoal(
+					name: "GetWater",
+					weight: 96.0f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Water", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } }
+					}
+				),
+				new ComparativeGoal(
+					name: "GetJob",
+					weight: 50.0f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Job", new ComparisonValuePair{ Value = (uint)Occupation.None, Operator = ComparisonOperator.GreaterThan } }
+					}
+				),
+			};
 			
 			//
 			// personality based goals
@@ -407,7 +284,7 @@ namespace Renown {
 			else {
 				GetMoreMoney = new ComparativeGoal();
 			}
-			goals.Add( GetMoreMoney );
+			goals.Append( GetMoreMoney );
 			
 			Goal GetDrunk;
 			if ( HasPersonality( "Alcoholic" ) ) {
@@ -428,7 +305,7 @@ namespace Renown {
 					}
 				);
 			}
-			goals.Add( GetDrunk );
+			goals.Append( GetDrunk );
 			
 			if ( HasPersonality( "Daredevil" ) ) {
 				
@@ -489,9 +366,9 @@ namespace Renown {
 			Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
 			Navigation.Connect( "target_reached", Callable.From( OnNavigationTargetReached ) );
 			
-			List<BaseGoal> goals = GenerateGoals();
-			List<MountainGoap.Action> actions = GenerateActions();
-			List<Sensor> sensors = new List<Sensor>{
+			BaseGoal[] goals = GenerateGoals();
+			MountainGoap.Action[] actions = GenerateActions();
+			Sensor[] sensors = {
 				new Sensor(
 					runCallback: ( Agent agent ) => {
 						if ( (float)agent.State[ "Food" ] < 50.0f ) {
@@ -503,7 +380,7 @@ namespace Renown {
 			
 			Agent = new Agent(
 				name: "RenownThinker_" + BotName,
-				state: new ConcurrentDictionary<string, object>{
+				state: new Dictionary<string, object>{
 					{ "Drunk", false },
 					{ "Water", 100.0f },
 					{ "Food", 100.0f },

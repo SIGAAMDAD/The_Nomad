@@ -138,20 +138,25 @@ process_thread_group_order = 0
 process_thread_messages = 2
 position = Vector2(6.93895, 6.0705)
 
+[node name="DetectionMeter" type="Line2D" parent="Animations/HeadAnimations"]
+position = Vector2(9.9388, 6.10084)
+rotation = 0.0101152
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0
+
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-6, -2)
 sprite_frames = SubResource("SpriteFrames_7pglr")
 animation = &"move"
 autoplay = "idle"
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Animations"]
+position = Vector2(46.5, -7.5)
+scale = Vector2(6.95, 5.25)
+
 [node name="BodyShape" type="CollisionShape2D" parent="."]
 position = Vector2(-8, 5)
 shape = SubResource("CircleShape2D_75x84")
-
-[node name="DetectionMeter" type="Line2D" parent="."]
-position = Vector2(3, 0)
-points = PackedVector2Array(-25, -19, 4, -19)
-width = 6.0
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 10.0

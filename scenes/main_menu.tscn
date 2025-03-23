@@ -53,6 +53,9 @@ text = "< BACK"
 
 [node name="Theme" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_oa1go")
+autoplay = true
+bus = &"Music"
+playback_type = 1
 
 [node name="UIChannel" type="AudioStreamPlayer" parent="."]
 bus = &"SFX"

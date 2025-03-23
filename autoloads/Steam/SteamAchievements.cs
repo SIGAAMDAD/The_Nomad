@@ -158,23 +158,6 @@ public partial class SteamAchievements : Node {
 			GD.PushError( "[STEAM] Error fetching Steam stats!" );
 		}
 	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-		
-		if ( !SteamStatsReceived ) {
-			return;
-		}
-		foreach ( var achievement in AchievementTable ) {
-			bool bAchieved;
-			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bAchieved ) ) {
-				GD.PushError( "[STEAM] Error getting achievement data for " + achievement.Value.GetIdString() );
-				continue;
-			}
-			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
-			AchievementTable[ achievement.Key ].SetAchieved( bAchieved );
-		}
-		SetProcess( false );
-	}
 
     private void OnUserAchievementStored( UserAchievementStored_t pCallback ) {
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
@@ -192,6 +175,16 @@ public partial class SteamAchievements : Node {
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
 			GD.PushError( "[STEAM] Incorrect AppID!" );
 			return;
+		}
+
+		foreach ( var achievement in AchievementTable ) {
+			bool bAchieved;
+			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bAchieved ) ) {
+				GD.PushError( "[STEAM] Error getting achievement data for " + achievement.Value.GetIdString() );
+				continue;
+			}
+			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
+			AchievementTable[ achievement.Key ].SetAchieved( bAchieved );
 		}
 	}
 	private void OnUserStatsReceived( UserStatsReceived_t pCallback ) {

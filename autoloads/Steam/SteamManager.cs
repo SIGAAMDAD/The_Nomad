@@ -102,7 +102,7 @@ public partial class SteamManager : Node {
 	}
 
 	private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
-		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString() );
+		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString(), true );
 	}
 
 	public override void _Process( double delta ) {

@@ -27,7 +27,7 @@ namespace MountainGoapLogging {
 			logger = config.CreateLogger();
 		}
 
-		private void OnEvaluatedActionNode(ActionNode node, ConcurrentDictionary<ActionNode, ActionNode> nodes) {
+		private void OnEvaluatedActionNode(ActionNode node, Dictionary<ActionNode, ActionNode> nodes) {
 			var cameFromList = new List<ActionNode>();
 			var traceback = node;
 			while (nodes.ContainsKey(traceback) && traceback.Action != nodes[traceback].Action) {

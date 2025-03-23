@@ -406,4 +406,13 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+			return;
+		}
+
+		ReadAllPackets();
+	}
 };
