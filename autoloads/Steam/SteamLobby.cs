@@ -330,17 +330,18 @@ public partial class SteamLobby : Node {
 
 		CSteamID senderId;
 		SteamNetworking.ReadP2PPacket( CachedPacket, (uint)CachedPacket.Length, out packetSize, out senderId );
-		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
+		System.IO.MemoryStream stream = new System.IO.MemoryStream( CachedPacket );
+		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
 
-		switch ( (MessageType)PacketReader.ReadByte() ) {
+		switch ( (MessageType)reader.ReadByte() ) {
 		case MessageType.Handshake:
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
 		case MessageType.ClientData:
-			PlayerCache[ PacketReader.ReadString() ].Receive( PacketReader );
+			PlayerCache[ reader.ReadString() ].Receive( reader );
 			break;
 		case MessageType.GameData:
-			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
+			NodeCache[ reader.ReadInt32() ].Receive( reader );
 			break;
 		};
 	}
