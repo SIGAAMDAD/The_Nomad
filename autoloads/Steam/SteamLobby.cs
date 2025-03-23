@@ -329,7 +329,7 @@ public partial class SteamLobby : Node {
 		}
 
 		CSteamID senderId;
-		SteamNetworking.ReadP2PPacket( CachedPacket, (uint)CachedPacket.Length, out packetSize, out senderId );
+		SteamNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out senderId );
 		System.IO.MemoryStream stream = new System.IO.MemoryStream( CachedPacket );
 		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
 
