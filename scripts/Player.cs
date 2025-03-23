@@ -601,7 +601,7 @@ public partial class Player : CharacterBody2D {
 
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-		PacketWriter.Write( SteamUser.GetSteamID().ToString() );
+		PacketWriter.Write( (ulong)SteamUser.GetSteamID() );
 		PacketWriter.Write( CurrentWeapon );
 		if ( CurrentWeapon != -1 ) {
 			PacketWriter.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
@@ -905,6 +905,11 @@ public partial class Player : CharacterBody2D {
 		SteamAchievements.ActivateAchievement( "ACH_SMOKE_BREAK" );
 	}
 	private void OnIdleAnimationAnimationFinished()	{
+		TorsoAnimationState = PlayerAnimationState.TrueIdleLoop;
+		LegAnimationState = PlayerAnimationState.TrueIdleLoop;
+		LeftArmAnimationState = PlayerAnimationState.TrueIdleLoop;
+		RightArmAnimationState = PlayerAnimationState.TrueIdleLoop;
+
 		IdleAnimation.CallDeferred( "play", "loop" );
 	}
 	private void OnLegsAnimationLooped() {
@@ -1680,10 +1685,6 @@ public partial class Player : CharacterBody2D {
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 4 ) != 0 ) {
-			return;
-		}
-
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
 				LegAnimation.CallDeferred( "play", "run" );

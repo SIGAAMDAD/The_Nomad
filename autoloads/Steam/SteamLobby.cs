@@ -47,9 +47,11 @@ public partial class SteamLobby : Node {
 	private string LobbyFilterMap;
 	private string LobbyFilterGameMode;
 
-	private const uint PACKET_READ_LIMIT = 32;
+	private byte[] CachedPacket = new byte[ 1024 ];
+	private System.IO.MemoryStream PacketStream = null;
+	private System.IO.BinaryReader PacketReader = null;
 
-	private Thread SendPacketsThread = null;
+	private const uint PACKET_READ_LIMIT = 32;
 
 	/*
 	public enum ChatRoomEnterResponse {
@@ -119,14 +121,14 @@ public partial class SteamLobby : Node {
 	};
 
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
-	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
+	private Dictionary<ulong, NetworkNode> PlayerCache = new Dictionary<ulong, NetworkNode>();
 
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
-		PlayerCache.Add( userId.ToString(), callbacks );
+		PlayerCache.Add( (ulong)userId, callbacks );
 	}
 	public void RemovePlayer( CSteamID userId ) {
-		PlayerCache.Remove( userId.ToString() );
+		PlayerCache.Remove( (ulong)userId );
 	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
 		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
@@ -311,13 +313,24 @@ public partial class SteamLobby : Node {
 		int channel = 0;
 
 		if ( target == CSteamID.Nil ) {
-			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
-				if ( LobbyMembers[i] != SteamUser.GetSteamID() ) {
-					SteamNetworking.SendP2PPacket( LobbyMembers[i], data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
-				}
-			}
+			switch ( LobbyMembers.Count ) {
+			case 1:
+				return;
+			case 2:
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				break;
+			case 3:
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 2 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				break;
+			case 4:
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 2 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				SteamNetworking.SendP2PPacket( LobbyMembers[ 3 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				break;
+			};
 		} else {
-			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
 		}
 	}
 	private void ReadP2Packet() {
@@ -327,21 +340,18 @@ public partial class SteamLobby : Node {
 		}
 
 		CSteamID senderId;
-		byte[] data = new byte[ packetSize ];
-		SteamNetworking.ReadP2PPacket( data, (uint)data.Length, out packetSize, out senderId );
+		SteamNetworking.ReadP2PPacket( CachedPacket, (uint)CachedPacket.Length, out packetSize, out senderId );
+		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
-		System.IO.MemoryStream stream = new System.IO.MemoryStream( data );
-		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
-
-		switch ( (MessageType)reader.ReadByte() ) {
+		switch ( (MessageType)PacketReader.ReadByte() ) {
 		case MessageType.Handshake:
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
 		case MessageType.ClientData:
-			PlayerCache[ reader.ReadString() ].Receive( reader );
+			PlayerCache[ PacketReader.ReadUInt64() ].Receive( PacketReader );
 			break;
 		case MessageType.GameData:
-			NodeCache[ reader.ReadInt32() ].Receive( reader );
+			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
 			break;
 		};
 	}
@@ -484,10 +494,6 @@ public partial class SteamLobby : Node {
 		GD.PushError( "[STEAM] Server failed to respond" );
 	}
 
-	private void SendPackets() {
-
-	}
-
 	public override void _EnterTree() {
 		base._EnterTree();
 		if ( _Instance != null ) {
@@ -507,7 +513,8 @@ public partial class SteamLobby : Node {
 
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 
-		SendPacketsThread = new Thread( SendPackets );
+		PacketStream = new System.IO.MemoryStream( CachedPacket );
+		PacketReader = new System.IO.BinaryReader( PacketStream );
 
 		OpenLobbyList();
 	}
