@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using GDExtension.Wrappers;
 using Godot;
 using PlayerSystem;
@@ -30,7 +29,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 	public ulong MultiplayerKills;
 	public ulong MultiplayerDeaths;
 	
-	private InventoryDatabase Database;
+	private Resource Database;
 	private Resource CurrentWeapon;
 	private CSteamID OwnerId;
 	private int NodeHash;
@@ -49,7 +48,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 			mode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
 				string weaponId = packet.ReadString();
-				CurrentWeapon = Database.GetItem( weaponId );
+				CurrentWeapon = (Resource)Database.Call( "get_item_from_id",  weaponId );
 			}
 		}
 		Godot.Vector2 position = Godot.Vector2.Zero;
@@ -216,7 +215,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		GD.Print( "Initializing network_player..." );
 
 		CurrentWeapon = null;
-		Database = ResourceLoader.Load<InventoryDatabase>( "res://resources/ItemDatabase.tres" );
+		Database = ResourceLoader.Load<Resource>( "res://resources/ItemDatabase.tres" );
 		
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Torso" );
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );

@@ -510,7 +510,9 @@ public partial class SteamLobby : Node {
 		ReadAllPackets();
 
 		foreach ( var node in NodeCache ) {
-			node.Value.Send();
+			if ( node.Value.Send != null ) {
+				node.Value.Send();
+			}
 		}
 	}
 };

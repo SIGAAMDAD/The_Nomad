@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://622yixjqyqmq"]
+[gd_scene load_steps=8 format=3 uid="uid://622yixjqyqmq"]
 
 [ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="1_27uls"]
+[ext_resource type="Script" uid="uid://b35dx7vwc2186" path="res://scripts/multiplayer/NetworkPlayer.cs" id="1_hquwp"]
 [ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="2_hc1dv"]
 [ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="3_rhx3x"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="4_hquwp"]
@@ -10,6 +11,7 @@
 radius = 7.0
 
 [node name="NetworkPlayer" type="CharacterBody2D"]
+script = ExtResource("1_hquwp")
 
 [node name="LeftArm" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("4_hquwp")
