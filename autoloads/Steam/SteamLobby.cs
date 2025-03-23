@@ -50,8 +50,6 @@ public partial class SteamLobby : Node {
 	private const uint PACKET_READ_LIMIT = 32;
 
 	private Thread SendPacketsThread = null;
-	private readonly object packetSync = new object();
-	private bool bQuit = false;
 
 	/*
 	public enum ChatRoomEnterResponse {
@@ -485,27 +483,12 @@ public partial class SteamLobby : Node {
 	private void OnServerFailedToRespond( HServerListRequest hRequest, int iServer ) {
 		GD.PushError( "[STEAM] Server failed to respond" );
 	}
+
 	private void SendPackets() {
-		lock ( packetSync ) {
-			while ( !bQuit ) {
-				Monitor.Wait( packetSync );
 
-				foreach ( var node in NodeCache ) {
-					node.Value.Send?.Invoke();
-				}
-				foreach ( var player in PlayerCache ) {
-					player.Value.Send?.Invoke();
-				}
-			}
-		}
 	}
 
-	public override void _ExitTree() {
-		base._ExitTree();
-
-		bQuit = true;
-	}
-    public override void _EnterTree() {
+	public override void _EnterTree() {
 		base._EnterTree();
 		if ( _Instance != null ) {
 			this.QueueFree();
@@ -525,7 +508,6 @@ public partial class SteamLobby : Node {
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 
 		SendPacketsThread = new Thread( SendPackets );
-		SendPacketsThread.Start();
 
 		OpenLobbyList();
 	}
@@ -534,8 +516,11 @@ public partial class SteamLobby : Node {
 
 		ReadAllPackets();
 
-		lock ( packetSync ) {
-			Monitor.Pulse( packetSync );
+		foreach ( var node in NodeCache ) {
+			node.Value.Send?.Invoke();
+		}
+		foreach ( var player in PlayerCache ) {
+			player.Value.Send?.Invoke();
 		}
 	}
 };
