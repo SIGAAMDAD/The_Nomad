@@ -117,6 +117,7 @@ public partial class SteamLobby : Node {
 	private System.Collections.Generic.Dictionary<int, NetworkNode> NodeCache = new System.Collections.Generic.Dictionary<int, NetworkNode>();
 
 	public void AddNetworkNode( int hash, NetworkNode callbacks ) {
+		GD.Print( "Added node with hash " + hash + " to network sync cache." );
 		NodeCache.Add( hash, callbacks );
 	}
 	public Node GetNetworkNode( int hash ) {
