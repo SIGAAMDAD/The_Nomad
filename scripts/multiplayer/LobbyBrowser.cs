@@ -31,10 +31,9 @@ public partial class LobbyBrowser : Control {
 	private void OnFinishedLoadingScene() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
 		QueueFree();
-		Hide();
 
 		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
-		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		scene.CallDeferred( "connect", "FinishedLoading", Callable.From( OnFinishedLoading ) );
 	}
 
 	private void OnLobbyJoined( ulong lobbyId ) {
