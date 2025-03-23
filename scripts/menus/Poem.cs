@@ -32,6 +32,7 @@ public partial class Poem : Control {
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
+		SteamLobby.Instance.SetMaxMembers( 4 );
 		SteamLobby.Instance.CreateLobby();
 		SteamLobby.Instance.SetLobbyName( SteamManager.GetSteamName() + "'s World" );
 

@@ -199,6 +199,7 @@ public partial class SteamLobby : Node {
 		SteamMatchmaking.SetLobbyData( LobbyId, "name", LobbyName );
 		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap.ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gamemode", LobbyGameMode.ToString() );
+		SteamMatchmaking.SetLobbyMemberLimit( LobbyId, LobbyMaxMembers );
 
 		bool bSetRelay = SteamNetworking.AllowP2PPacketRelay( true );
 		if ( !bSetRelay ) {
