@@ -83,8 +83,8 @@ public partial class SteamLobby : Node {
 		// hot cache player data
 		ClientData,
 
-		// gamestate
-		ServerData,
+		// world data, node paths that will never change
+		GameData,
 		
 		Count
 	};
@@ -115,13 +115,18 @@ public partial class SteamLobby : Node {
 	};
 
 	private System.Collections.Generic.Dictionary<int, NetworkNode> NodeCache = new System.Collections.Generic.Dictionary<int, NetworkNode>();
+	private System.Collections.Generic.Dictionary<string, NetworkNode> PlayerCache = new System.Collections.Generic.Dictionary<string, NetworkNode>();
 
-	public void AddNetworkNode( int hash, NetworkNode callbacks ) {
-		GD.Print( "Added node with hash " + hash + " to network sync cache." );
-		NodeCache.Add( hash, callbacks );
+	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
+		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
+		PlayerCache.Add( userId.ToString(), callbacks );
 	}
-	public Node GetNetworkNode( int hash ) {
-		return NodeCache[ hash ].Node;
+	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
+		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
+		NodeCache.Add( node.GetHashCode(), callbacks );
+	}
+	public Node GetNetworkNode( NodePath node ) {
+		return NodeCache[ node.GetHashCode() ].Node;
 	}
 
 	public CSteamID GetLobbyID() {
@@ -326,6 +331,9 @@ public partial class SteamLobby : Node {
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
 		case MessageType.ClientData:
+			PlayerCache[ reader.ReadString() ].Receive( reader );
+			break;
+		case MessageType.GameData:
 			NodeCache[ reader.ReadInt32() ].Receive( reader );
 			break;
 		};
@@ -510,9 +518,10 @@ public partial class SteamLobby : Node {
 		ReadAllPackets();
 
 		foreach ( var node in NodeCache ) {
-			if ( node.Value.Send != null ) {
-				node.Value.Send();
-			}
-		}
+			node.Value.Send?.Invoke();
+        }
+		foreach ( var player in PlayerCache ) {
+			player.Value.Send?.Invoke();
+        }
 	}
 };

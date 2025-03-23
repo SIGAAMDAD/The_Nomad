@@ -225,8 +225,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		PacketStream = new System.IO.MemoryStream( Packet );
 		PacketWriter = new System.IO.BinaryWriter( PacketStream );
 
-		SteamLobby.Instance.AddNetworkNode( SteamFriends.GetFriendPersonaName( OwnerId ).GetHashCode(),
-			new SteamLobby.NetworkNode( this, null, Update ) );
+		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
 	}
 
 	public void SetOwnerId( ulong steamId ) {
