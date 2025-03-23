@@ -10,9 +10,6 @@ public partial class Poem : Control {
 	private System.Collections.Generic.List<Label> Labels;
 	private int CurrentTimer = 0;
 
-	private void OnAudioFadeFinished() {
-		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
-	}
 	private void OnFinishedLoading() {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}

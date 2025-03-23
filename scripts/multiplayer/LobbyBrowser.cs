@@ -22,9 +22,11 @@ public partial class LobbyBrowser : Control {
 	[Signal]
 	public delegate void OnHostGameEventHandler();
 
+	private void OnAudioFadeFinished() {
+		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+	}
 	private void OnFinishedLoading() {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-		SoundManager.StopMusic( 1.5f );
 	}
 	private void OnFinishedLoadingScene() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
@@ -38,6 +40,10 @@ public partial class LobbyBrowser : Control {
 		GetNode( "/root/Console" ).Call( "print_line", "...Joined lobby", true );
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
+
+		Tween AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();

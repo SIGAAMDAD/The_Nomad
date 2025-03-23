@@ -299,7 +299,7 @@ public partial class SteamLobby : Node {
 	public void SendP2PPacket( CSteamID target, byte[] data ) {
 		int channel = 0;
 
-		if ( !target.IsValid() ) {
+		if ( target == CSteamID.Nil ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamUser.GetSteamID() ) {
 					SteamNetworking.SendP2PPacket( LobbyMembers[i], data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
