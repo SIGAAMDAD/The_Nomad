@@ -61,7 +61,7 @@ public partial class World : Node2D {
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game...", true );
 
 		CSteamID userId = (CSteamID)steamId;
 		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
@@ -84,7 +84,7 @@ public partial class World : Node2D {
 			return;
 		}
 		
-		GetNode( "/root/Console" ).Call( "print_line", Players[ userId ].MultiplayerUsername + " has faded away..." );
+		GetNode( "/root/Console" ).Call( "print_line", Players[ userId ].MultiplayerUsername + " has faded away...", true );
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );

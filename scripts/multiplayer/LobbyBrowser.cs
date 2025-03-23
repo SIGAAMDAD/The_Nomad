@@ -48,8 +48,6 @@ public partial class LobbyBrowser : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		TransitionScreen.Call( "transition" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 		Hide();
 
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
@@ -105,7 +103,6 @@ public partial class LobbyBrowser : Control {
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 		Hide();
 
 		GD.Print( "Joining" );
@@ -215,6 +212,7 @@ public partial class LobbyBrowser : Control {
 		}
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
