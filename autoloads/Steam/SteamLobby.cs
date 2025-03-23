@@ -164,23 +164,23 @@ public partial class SteamLobby : Node {
 
 		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
 		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
-			GetNode( "Console" ).Call( "print_line", changerName + " has joined...", true );
+			GetNode( "/root/Console" ).Call( "print_line", changerName + " has joined...", true );
 			EmitSignal( "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeLeft:
-			GetNode( "Console" ).Call( "print_line", changerName + " has faded away...", true );
+			GetNode( "/root/Console" ).Call( "print_line", changerName + " has faded away...", true );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeDisconnected:
-			GetNode( "Console" ).Call( "print_line", changerName + " tweaked out...", true );
+			GetNode( "/root/Console" ).Call( "print_line", changerName + " tweaked out so hard they left the fever dream...", true );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeBanned:
-			GetNode( "Console" ).Call( "print_line", changerName + " was rejected...", true );
+			GetNode( "/root/Console" ).Call( "print_line", changerName + " was rejected...", true );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeKicked:
-			GetNode( "Console" ).Call( "print_line", changerName + " was excommunicated...", true );
+			GetNode( "/root/Console" ).Call( "print_line", changerName + " was excommunicated...", true );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		};
