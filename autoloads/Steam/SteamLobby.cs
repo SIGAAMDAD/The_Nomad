@@ -121,14 +121,14 @@ public partial class SteamLobby : Node {
 	};
 
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
-	private Dictionary<ulong, NetworkNode> PlayerCache = new Dictionary<ulong, NetworkNode>();
+	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
-		PlayerCache.Add( (ulong)userId, callbacks );
+		PlayerCache.Add( userId.ToString(), callbacks );
 	}
 	public void RemovePlayer( CSteamID userId ) {
-		PlayerCache.Remove( (ulong)userId );
+		PlayerCache.Remove( userId.ToString() );
 	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
 		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
@@ -348,7 +348,7 @@ public partial class SteamLobby : Node {
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
 		case MessageType.ClientData:
-			PlayerCache[ PacketReader.ReadUInt64() ].Receive( PacketReader );
+			PlayerCache[ PacketReader.ReadString() ].Receive( PacketReader );
 			break;
 		case MessageType.GameData:
 			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
