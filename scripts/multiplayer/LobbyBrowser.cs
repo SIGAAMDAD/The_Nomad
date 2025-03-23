@@ -30,7 +30,6 @@ public partial class LobbyBrowser : Control {
 	}
 	private void OnFinishedLoadingScene() {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
-		QueueFree();
 
 		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
 		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
