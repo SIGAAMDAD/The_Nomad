@@ -313,22 +313,11 @@ public partial class SteamLobby : Node {
 		int channel = 0;
 
 		if ( target == CSteamID.Nil ) {
-			switch ( LobbyMembers.Count ) {
-			case 1:
-				return;
-			case 2:
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				break;
-			case 3:
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 2 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				break;
-			case 4:
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 1 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 2 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				SteamNetworking.SendP2PPacket( LobbyMembers[ 3 ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
-				break;
-			};
+			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
+				if ( LobbyMembers[i] != SteamManager.GetSteamID() ) {
+					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+				}
+			}
 		} else {
 			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
 		}
