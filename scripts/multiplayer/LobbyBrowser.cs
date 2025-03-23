@@ -32,7 +32,7 @@ public partial class LobbyBrowser : Control {
 		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
 		QueueFree();
 
-		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		Node scene = GetTree().Root.GetChild( GetTree().Root.GetChildCount() - 1 );
 		scene.CallDeferred( "connect", "FinishedLoading", Callable.From( OnFinishedLoading ) );
 	}
 
