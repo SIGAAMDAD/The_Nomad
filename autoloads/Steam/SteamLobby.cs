@@ -342,7 +342,26 @@ public partial class SteamLobby : Node {
 	}
 	
 	private void OnLobbyJoined( LobbyEnter_t pCallback, bool bIOFailure ) {
-		OnLobbyJoined( pCallback );
+		GD.Print( "...Joined" );
+		if ( pCallback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ) {
+			GD.PushError( "[STEAM] Error joining lobby " + pCallback.m_ulSteamIDLobby + ": " + ( (EChatRoomEnterResponse)pCallback.m_EChatRoomEnterResponse ).ToString() );
+			return;
+		}
+
+		LobbyId = (CSteamID)pCallback.m_ulSteamIDLobby;
+		LobbyOwnerId = SteamMatchmaking.GetLobbyOwner( LobbyId );
+
+		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
+
+		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+
+		GD.Print( "Sending p2p handshake..." );
+		GetLobbyMembers();
+		MakeP2PHandkshake();
+		
+		EmitSignal( "LobbyJoined", (ulong)LobbyId );
 	}
 
 	private void OnAudioFadeFinished() {
@@ -419,9 +438,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		LoadGame( (ulong)LobbyId );
-
-//		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		EmitSignal( "LobbyJoined", (ulong)LobbyId );
 	}
 	private void OnP2PSessionRequest( P2PSessionRequest_t pCallback ) {
 		string requester = SteamFriends.GetFriendPersonaName( pCallback.m_steamIDRemote );
