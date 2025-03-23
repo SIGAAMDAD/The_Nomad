@@ -315,11 +315,11 @@ public partial class SteamLobby : Node {
 		if ( target == CSteamID.Nil ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamManager.GetSteamID() ) {
-					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliableNoDelay, channel );
 				}
 			}
 		} else {
-			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliableNoDelay, channel );
 		}
 	}
 	private void ReadP2Packet() {
