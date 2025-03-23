@@ -1,9 +1,7 @@
 using Godot;
+using Multiplayer;
 using Steamworks;
 using System;
-using System.Numerics;
-using System.Threading.Tasks;
-using System.Xml;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -346,6 +344,61 @@ public partial class SteamLobby : Node {
 	private void OnLobbyJoined( LobbyEnter_t pCallback, bool bIOFailure ) {
 		OnLobbyJoined( pCallback );
 	}
+
+	private void OnAudioFadeFinished() {
+		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+	}
+	private void OnFinishedLoading() {
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+	}
+	private void OnFinishedLoadingScene() {
+		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		QueueFree();
+
+		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+	}
+
+	private void LoadGame( ulong lobbyId ) {
+		GetNode( "/root/Console" ).Call( "print_line", "...Joined lobby", true );
+
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
+
+		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+
+		string modeName;
+		switch ( SteamLobby.Instance.GetGameMode() ) {
+		case (int)Mode.GameMode.Bloodbath:
+			modeName = "bloodbath";
+			break;
+		case (int)Mode.GameMode.TeamBrawl:
+			modeName = "teambrawl";
+			break;
+		case (int)Mode.GameMode.CaptureTheFlag:
+			modeName = "ctf";
+			break;
+		default:
+			return;
+		};
+
+//		uint gameType = Convert.ToUInt32( Steam.GetLobbyData( lobbyId, "gametype" ) );
+		uint gameType = (uint)Player.GameMode.Coop2;
+
+		Node scene;
+		if ( gameType == (uint)Player.GameMode.Multiplayer ) {
+			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
+				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
+			);
+		}
+		else {
+			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
+				"res://levels/world.tscn"
+			);
+		}
+		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
+	}
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
 		GD.Print( "...Joined" );
 		if ( pCallback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ) {
@@ -362,10 +415,13 @@ public partial class SteamLobby : Node {
 		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
 		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 
+		GD.Print( "Sending p2p handshake..." );
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		LoadGame( (ulong)LobbyId );
+
+//		EmitSignal( "LobbyJoined", (ulong)LobbyId );
 	}
 	private void OnP2PSessionRequest( P2PSessionRequest_t pCallback ) {
 		string requester = SteamFriends.GetFriendPersonaName( pCallback.m_steamIDRemote );

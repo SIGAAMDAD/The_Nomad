@@ -86,7 +86,7 @@ public partial class LobbyBrowser : Control {
 		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
-	
+
 	private void MatchmakingLoop() {
 		if ( MatchmakingPhase < 4 ) {
 			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
@@ -97,6 +97,16 @@ public partial class LobbyBrowser : Control {
 		}
 	}
 	private void OnJoinGame( CSteamID lobbyId ) {
+		Tween AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
+		TransitionScreen.Call( "transition" );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
+		Hide();
+		
 		GD.Print( "Joining" );
 		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
