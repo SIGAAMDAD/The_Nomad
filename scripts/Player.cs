@@ -1697,6 +1697,10 @@ public partial class Player : CharacterBody2D {
 			SlideEffect.Emitting = false;
 		}
 
+		if ( !IdleAnimation.IsPlaying() ) {
+			TorsoAnimationState = PlayerAnimationState.Idle;
+		}
+
 		base._Process( delta );
 
 		if ( CurrentMappingContext == GamepadInputMappings ) {

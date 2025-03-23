@@ -4,8 +4,6 @@ using PlayerSystem;
 using Steamworks;
 
 public enum PlayerAnimationState : uint {
-	TrueIdleStart,
-	TrueIdleLoop,
 	Idle,
 	Sliding,
 	Running,
@@ -15,6 +13,8 @@ public enum PlayerAnimationState : uint {
 	WeaponUse,
 	WeaponReload,
 	WeaponEmpty,
+	TrueIdleStart,
+	TrueIdleLoop,
 	
 	Count
 };
