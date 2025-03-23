@@ -601,7 +601,7 @@ public partial class Player : CharacterBody2D {
 
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-		PacketWriter.Write( (ulong)SteamUser.GetSteamID() );
+//		PacketWriter.Write( SteamUser.GetSteamID().ToString() );
 		PacketWriter.Write( CurrentWeapon );
 		if ( CurrentWeapon != -1 ) {
 			PacketWriter.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
