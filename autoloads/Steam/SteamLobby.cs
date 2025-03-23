@@ -525,6 +525,7 @@ public partial class SteamLobby : Node {
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 
 		SendPacketsThread = new Thread( SendPackets );
+		SendPacketsThread.Start();
 
 		OpenLobbyList();
 	}
