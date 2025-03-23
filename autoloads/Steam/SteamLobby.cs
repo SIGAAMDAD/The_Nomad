@@ -121,6 +121,9 @@ public partial class SteamLobby : Node {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
 		PlayerCache.Add( userId.ToString(), callbacks );
 	}
+	public void RemovePlayer( CSteamID userId ) {
+		PlayerCache.Remove( userId.ToString() );
+	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
 		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
 		NodeCache.Add( node.GetHashCode(), callbacks );

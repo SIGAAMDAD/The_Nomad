@@ -178,21 +178,29 @@ public partial class NetworkPlayer : CharacterBody2D {
 		
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
+			TorsoAnimation.Show();
 			TorsoAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
+			TorsoAnimation.Show();
 			TorsoAnimation.Play( "move" );
 			break;
 		case PlayerAnimationState.Sliding:
-			TorsoAnimation.Play( "slide" );
+			TorsoAnimation.Show();
+//			TorsoAnimation.Play( "slide" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.Play( "true_idle_start" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
+			IdleAnimation.Play( "start" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.Play( "true_idle_loop" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
+			IdleAnimation.Play( "loop" );
 			break;
 		case PlayerAnimationState.Dead:
+			TorsoAnimation.Show();
 			TorsoAnimation.Play( "dead" );
 			break;
 		};
@@ -221,6 +229,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
 		RightArmAnimation = GetNode<AnimatedSprite2D>( "RightArm" );
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
+		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
 
 		PacketStream = new System.IO.MemoryStream( Packet );
 		PacketWriter = new System.IO.BinaryWriter( PacketStream );

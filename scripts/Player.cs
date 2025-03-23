@@ -1597,28 +1597,35 @@ public partial class Player : CharacterBody2D {
     }
 	
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-	private void CalcArmAnimation( Arm arm ) {
+	private void CalcArmAnimation( Arm arm, out PlayerAnimationState animState ) {
 		arm.Animations.GlobalRotation = ArmAngle;
 		arm.Animations.FlipV = TorsoAnimation.FlipH;
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.GetSlot() == WeaponSlot.INVALID ) {
 			arm.Animations.CallDeferred( "play", InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
+			animState = InputVelocity != Godot.Vector2.Zero ? PlayerAnimationState.Running :
+				PlayerAnimationState.Idle;
 		} else {
 			WeaponEntity weapon = WeaponSlots[ arm.GetSlot() ].GetWeapon();
 			string animationName = "";
 			switch ( weapon.GetCurrentState() ) {
+			default:
 			case WeaponEntity.WeaponState.Idle:
 				animationName = "idle";
+				animState = PlayerAnimationState.WeaponIdle;
 				break;
 			case WeaponEntity.WeaponState.Reload:
 				animationName = "reload";
+				animState = PlayerAnimationState.WeaponReload;
 				break;
 			case WeaponEntity.WeaponState.Use:
 				animationName = "use";
+				animState = PlayerAnimationState.WeaponUse;
 				break;
 			case WeaponEntity.WeaponState.Empty:
 				animationName = "empty";
+				animState = PlayerAnimationState.WeaponEmpty;
 				break;
 			};
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
@@ -1669,10 +1676,12 @@ public partial class Player : CharacterBody2D {
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
 				LegAnimation.CallDeferred( "play", "run" );
+				LegAnimationState = PlayerAnimationState.Running;
 				WalkEffect.Emitting = true;
 			}
 		} else {
 			LegAnimation.CallDeferred( "play", "idle" );
+			LegAnimationState = PlayerAnimationState.Idle;
 			WalkEffect.Emitting = false;
 			SlideEffect.Emitting = false;
 		}
@@ -1734,8 +1743,8 @@ public partial class Player : CharacterBody2D {
 
 		front.Show();
 
-		CalcArmAnimation( ArmLeft );
-		CalcArmAnimation( ArmRight );
+		CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
+		CalcArmAnimation( ArmRight, out RightArmAnimationState );
 
 		Animations.MoveChild( back.Animations, 0 );
 		Animations.MoveChild( front.Animations, 3 );

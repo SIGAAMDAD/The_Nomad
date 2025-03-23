@@ -89,6 +89,7 @@ public partial class World : Node2D {
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
+		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
 	public override void _ExitTree() {
