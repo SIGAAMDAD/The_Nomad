@@ -61,6 +61,8 @@ public partial class World : Node2D {
 
 		AudioCache.Initialized = true;
 
+		GD.Print( "FINISHED FUCKING LOADING" );
+
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
 			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
