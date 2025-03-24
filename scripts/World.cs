@@ -4,6 +4,7 @@ using Steamworks;
 using Godot;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 
 public partial class World : Node2D {
 	[Export]
@@ -80,7 +81,19 @@ public partial class World : Node2D {
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
 
-		OnPlayerJoined( (ulong)SteamLobby.Instance.GetHost() );
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
+				continue;
+			}
+			player = PlayerScene.Instantiate<CharacterBody2D>();
+			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
+			player.Set( "MultiplayerId", (ulong)userId );
+			player.Call( "SetOwnerId", (ulong)userId );
+			player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
+	//		SpawnPlayer( player );
+			Players.Add( userId, player );
+			PlayerList.AddChild( player );
+		}
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
