@@ -71,7 +71,7 @@ public partial class World : Node2D {
 
 		CSteamID userId = (CSteamID)steamId;
 		if ( Players.ContainsKey( userId ) ) {
-//			return;
+			return;
 		}
 		
 		CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
