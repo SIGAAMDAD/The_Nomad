@@ -560,13 +560,16 @@ public partial class SteamLobby : Node {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		ReadPackets();
-
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
 		}
 		foreach ( var player in PlayerCache ) {
 			player.Value.Send?.Invoke();
 		}
+
+		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			return;
+		}
+		ReadPackets();
 	}
 };
