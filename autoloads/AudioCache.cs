@@ -207,6 +207,6 @@ public partial class AudioCache {
 		SlowMoEndSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/slowmo_end.ogg" );
 		DashExplosion = ResourceLoader.Load<AudioStream>( "res://sounds/player/dash_explosion.mp3" );
 
-		world.EmitSignal( "AudioLoadingFinished" );
+		world.CallDeferred( "emit_signal", "AudioLoadingFinished" );
     }
 };
