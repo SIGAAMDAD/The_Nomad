@@ -66,7 +66,7 @@ public partial class World : Node2D {
 		SteamLobby.Instance.GetLobbyMembers();
 
 		CSteamID userId = (CSteamID)steamId;
-		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
+		if ( Players.ContainsKey( userId ) ) {
 			return;
 		}
 		
