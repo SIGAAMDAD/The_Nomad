@@ -561,7 +561,7 @@ public partial class SteamLobby : Node {
 
 		hListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 27015, 0, null );
 
-		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
+//		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
