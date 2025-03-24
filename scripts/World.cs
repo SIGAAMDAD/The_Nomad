@@ -60,6 +60,23 @@ public partial class World : Node2D {
 		AudioLoadThread.Join();
 
 		AudioCache.Initialized = true;
+
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
+			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
+					continue;
+				}
+				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+				player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
+		//		SpawnPlayer( player );
+				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+				PlayerList.AddChild( player );
+			}
+		}
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
@@ -133,22 +150,5 @@ public partial class World : Node2D {
 		AudioLoadingFinished += OnAudioFinishedLoading;
 
 		SetProcess( false );
-
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
-			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
-					continue;
-				}
-				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
-				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-		//		SpawnPlayer( player );
-				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
-				PlayerList.AddChild( player );
-			}
-		}
 	}
 };
