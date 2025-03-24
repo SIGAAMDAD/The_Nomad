@@ -62,6 +62,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
+		case PlayerAnimationState.Sliding:
 			LeftArmAnimation.CallDeferred( "stop" );
 			LeftArmAnimation.Hide();
 			break;
@@ -72,10 +73,6 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.Running:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.Play( "move" );
-			break;
-		case PlayerAnimationState.Sliding:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.Play( "slide" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
 			LeftArmAnimation.Show();
@@ -117,6 +114,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
+		case PlayerAnimationState.Sliding:
 			RightArmAnimation.Show();
 			break;
 		case PlayerAnimationState.Idle:
@@ -126,10 +124,6 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.Running:
 			RightArmAnimation.Show();
 			RightArmAnimation.Play( "move" );
-			break;
-		case PlayerAnimationState.Sliding:
-			RightArmAnimation.Show();
-			RightArmAnimation.Play( "slide" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
 			RightArmAnimation.Show();
