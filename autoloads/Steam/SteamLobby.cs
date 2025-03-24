@@ -354,6 +354,8 @@ public partial class SteamLobby : Node {
 	}
 	*/
 
+	private Thread ProcessThread = null;
+
 	private void ReadP2Packet() {
 		uint packetSize;
 		if ( !SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
@@ -376,7 +378,7 @@ public partial class SteamLobby : Node {
 			break;
 		};
 	}
-	public void ReadAllPackets( uint readCount = 0 ) {
+	private void ReadPackets( uint readCount = 0 ) {
 		if ( readCount >= PACKET_READ_LIMIT ) {
 			return;
 		}
@@ -384,8 +386,11 @@ public partial class SteamLobby : Node {
 		uint packetSize;
 		if ( SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
 			ReadP2Packet();
-			ReadAllPackets( readCount + 1 );
+			ReadPackets( readCount + 1 );
 		}
+	}
+	public void ReadAllPackets() {
+		ReadPackets();
 	}
 	
 	private void OnLobbyJoined( LobbyEnter_t pCallback, bool bIOFailure ) {
@@ -552,12 +557,17 @@ public partial class SteamLobby : Node {
 
 		hListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 27015, 0, null );
 
+		ProcessThread = new Thread( ReadAllPackets );
+
 //		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		ReadAllPackets();
+		if ( ProcessThread.IsAlive ) {
+			ProcessThread.Join();
+		}
+		ProcessThread.Start();
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
