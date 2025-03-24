@@ -104,6 +104,14 @@ public partial class MercenaryShotgunner : MobBase {
 		// "target's pinned!"
 		Bark( BarkType.TargetPinned );
 	}
+
+	private void SendPacket() {
+	}
+	private void ReceivePacket( System.IO.BinaryReader reader ) {
+		Godot.Vector2 position = Godot.Vector2.Zero;
+		position.X = reader.ReadInt32();
+		GlobalPosition = position;
+	}
 	
 #region API
 	private Stopwatch profiler = new Stopwatch();
@@ -238,6 +246,8 @@ public partial class MercenaryShotgunner : MobBase {
 		DemonEyeColor.R8 = 0;
 		DemonEyeColor.G8 = 0;
 		DemonEyeColor.B8 = 2;
+
+		SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 	}
 	public override void _ExitTree() {
 		base._ExitTree();

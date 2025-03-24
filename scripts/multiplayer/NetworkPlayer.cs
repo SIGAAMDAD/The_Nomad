@@ -44,7 +44,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 	
 	public void Update( System.IO.BinaryReader packet ) {
 		WeaponEntity.Properties mode = WeaponEntity.Properties.None;
-		if ( packet.ReadInt32() != WeaponSlot.INVALID ) {
+		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			mode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
 				string weaponId = packet.ReadString();
@@ -52,11 +52,11 @@ public partial class NetworkPlayer : CharacterBody2D {
 			}
 		}
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadDouble();
-		position.Y = (float)packet.ReadDouble();
+		position.X = packet.ReadInt32();
+		position.Y = packet.ReadInt32();
 		GlobalPosition = position;
 
-		LeftArmAnimation.GlobalRotation = (float)packet.ReadDouble();
+		LeftArmAnimation.GlobalRotation = packet.ReadInt32();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
@@ -111,7 +111,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 			break;
 		};
 		
-		RightArmAnimation.GlobalRotation = (float)packet.ReadDouble();
+		RightArmAnimation.GlobalRotation = packet.ReadInt32();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:

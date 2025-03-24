@@ -601,8 +601,7 @@ public partial class Player : CharacterBody2D {
 
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-//		PacketWriter.Write( SteamUser.GetSteamID().ToString() );
-		PacketWriter.Write( CurrentWeapon );
+		PacketWriter.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != -1 ) {
 			PacketWriter.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			PacketWriter.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
@@ -610,11 +609,11 @@ public partial class Player : CharacterBody2D {
 				PacketWriter.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		PacketWriter.Write( (double)GlobalPosition.X );
-		PacketWriter.Write( (double)GlobalPosition.Y );
-		PacketWriter.Write( (double)ArmLeft.GlobalRotation );
+		PacketWriter.Write( Mathf.RoundToInt( GlobalPosition.X ) );
+		PacketWriter.Write( Mathf.RoundToInt( GlobalPosition.Y ) );
+		PacketWriter.Write( Mathf.RoundToInt( ArmLeft.GlobalRotation ) );
 		PacketWriter.Write( (byte)LeftArmAnimationState );
-		PacketWriter.Write( (double)ArmRight.GlobalRotation );
+		PacketWriter.Write( Mathf.RoundToInt( ArmRight.GlobalRotation ) );
 		PacketWriter.Write( (byte)RightArmAnimationState );
 		PacketWriter.Write( (byte)LegAnimationState );
 		PacketWriter.Write( (byte)TorsoAnimationState );
