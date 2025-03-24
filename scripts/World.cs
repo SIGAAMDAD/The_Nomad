@@ -79,12 +79,6 @@ public partial class World : Node2D {
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
-
-		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-			if ( !Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
-				OnPlayerJoined( (ulong)SteamLobby.Instance.LobbyMembers[i] );
-			}
-		}
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
