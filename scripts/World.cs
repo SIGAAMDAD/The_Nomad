@@ -81,7 +81,9 @@ public partial class World : Node2D {
 
 		GD.Print( "Added player to lobby with " + SteamLobby.Instance.LobbyMembers.Count + " members." );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-			OnPlayerJoined( (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			if ( SteamLobby.Instance.LobbyMembers[i] != userId ) {
+				OnPlayerJoined( (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			}
 		}
 	}
 	private void OnPlayerLeft( ulong steamId ) {
