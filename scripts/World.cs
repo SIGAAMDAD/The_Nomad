@@ -63,6 +63,8 @@ public partial class World : Node2D {
 	private void OnPlayerJoined( ulong steamId ) {
 		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game...", true );
 
+		SteamLobby.Instance.GetLobbyMembers();
+
 		CSteamID userId = (CSteamID)steamId;
 		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
 			return;
