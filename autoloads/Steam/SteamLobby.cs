@@ -354,8 +354,6 @@ public partial class SteamLobby : Node {
 	}
 	*/
 
-	private Thread ProcessThread = null;
-
 	private void ReadP2Packet() {
 		uint packetSize;
 		if ( !SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
@@ -557,17 +555,12 @@ public partial class SteamLobby : Node {
 
 		hListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 27015, 0, null );
 
-		ProcessThread = new Thread( ReadAllPackets );
-
 //		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		if ( ProcessThread.IsAlive ) {
-			ProcessThread.Join();
-		}
-		ProcessThread.Start();
+		ReadPackets();
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
