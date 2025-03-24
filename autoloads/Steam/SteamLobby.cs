@@ -322,11 +322,11 @@ public partial class SteamLobby : Node {
 		if ( target == CSteamID.Nil ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamManager.GetSteamID() ) {
-					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliableNoDelay, channel );
+					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 				}
 			}
 		} else {
-			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliableNoDelay, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 		}
 	}
 
@@ -565,8 +565,6 @@ public partial class SteamLobby : Node {
 
 		base._PhysicsProcess( delta );
 
-		ReadPackets();
-
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
 		}
@@ -575,5 +573,12 @@ public partial class SteamLobby : Node {
 		}
 	}
 	public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+			return;
+		}
+
+		base._Process( delta );
+
+		ReadPackets();
 	}
 };
