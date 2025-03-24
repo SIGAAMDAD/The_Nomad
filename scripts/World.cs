@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Steamworks;
 using Godot;
 using System.Threading.Tasks;
+using System.Linq;
 
 public partial class World : Node2D {
 	[Export]
@@ -65,6 +66,13 @@ public partial class World : Node2D {
 
 		SteamLobby.Instance.GetLobbyMembers();
 
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+			if ( !Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
+				OnPlayerJoined( (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			}
+		}
+
+
 		CSteamID userId = (CSteamID)steamId;
 		if ( Players.ContainsKey( userId ) ) {
 			return;
@@ -78,8 +86,6 @@ public partial class World : Node2D {
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
-
-		OnPlayerJoined( (ulong)SteamLobby.Instance.GetHost() );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
