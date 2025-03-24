@@ -143,6 +143,7 @@ public partial class SteamLobby : Node {
 		return NodeCache[ node.GetHashCode() ].Node;
 	}
 
+	public CSteamID GetHost() => LobbyOwnerId;
 	public CSteamID GetLobbyID() {
 		return LobbyId;
 	}
