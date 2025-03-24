@@ -64,7 +64,7 @@ public partial class World : Node2D {
 		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game...", true );
 
 		CSteamID userId = (CSteamID)steamId;
-		if ( userId == SteamUser.GetSteamID() ) {
+		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
 			return;
 		}
 		
@@ -76,6 +76,10 @@ public partial class World : Node2D {
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
+
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+			OnPlayerJoined( (ulong)SteamLobby.Instance.LobbyMembers[i] );
+		}
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();

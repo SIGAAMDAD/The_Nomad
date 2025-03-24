@@ -27,7 +27,7 @@ public partial class SteamLobby : Node {
 	private CallResult<LobbyEnter_t> OnLobbyEnterCallResult;
 	private CallResult<LobbyMatchList_t> OnLobbyMatchListCallResult;
 
-	private List<CSteamID> LobbyMembers = new List<CSteamID>();
+	public List<CSteamID> LobbyMembers = new List<CSteamID>();
 	private CSteamID LobbyId = CSteamID.Nil;
 	private CSteamID LobbyOwnerId = CSteamID.Nil;
 	private bool IsHost = false;
