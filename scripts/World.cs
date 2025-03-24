@@ -80,20 +80,6 @@ public partial class World : Node2D {
 //		SpawnPlayer( player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
-
-		for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
-				continue;
-			}
-			player = PlayerScene.Instantiate<CharacterBody2D>();
-			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
-			player.Set( "MultiplayerId", (ulong)userId );
-			player.Call( "SetOwnerId", (ulong)userId );
-			player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-	//		SpawnPlayer( player );
-			Players.Add( userId, player );
-			PlayerList.AddChild( player );
-		}
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
@@ -137,6 +123,22 @@ public partial class World : Node2D {
 		PauseMenu.Connect( "leave_lobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
+					continue;
+				}
+				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+				player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
+		//		SpawnPlayer( player );
+				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+				PlayerList.AddChild( player );
+			}
+		}
 		
 		SceneLoadThread = new Thread( () => { PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" ); } );
 		SceneLoadThread.Start();
