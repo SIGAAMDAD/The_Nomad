@@ -255,7 +255,7 @@ public partial class MobBase : CharacterBody2D {
 	protected void OnMoveTimerTimeout() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
-		} else if ( !AudioCache.Initialized || MoveChannel == null || AudioCache.MoveGravelSfx == null || RandomFactory == null ) {
+		} else if ( !AudioCache.Initialized || RandomFactory == null ) {
 			return;
 		}
 		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
