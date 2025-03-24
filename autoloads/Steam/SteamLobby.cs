@@ -557,8 +557,14 @@ public partial class SteamLobby : Node {
 
 //		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
 	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
+	public override void _PhysicsProcess( double delta ) {
+		if ( ( Engine.GetPhysicsFrames() % 8 ) != 0 ) {
+			return;
+		}
+
+		base._PhysicsProcess( delta );
+
+		ReadPackets();
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
@@ -566,10 +572,7 @@ public partial class SteamLobby : Node {
 		foreach ( var player in PlayerCache ) {
 			player.Value.Send?.Invoke();
 		}
-
-		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
-			return;
-		}
-		ReadPackets();
+	}
+	public override void _Process( double delta ) {
 	}
 };
