@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using Godot;
 using MountainGoap;
 using System;
+using Steamworks;
 
 public enum BarkType : uint {
 	TargetSpotted,
@@ -254,7 +255,7 @@ public partial class MobBase : CharacterBody2D {
 	protected void OnMoveTimerTimeout() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
-		} else {
+		} else if ( !AudioCache.Initialized ) {
 			return;
 		}
 		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
