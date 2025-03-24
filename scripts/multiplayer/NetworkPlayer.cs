@@ -52,8 +52,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 			}
 		}
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = packet.ReadInt32();
-		position.Y = packet.ReadInt32();
+		position.X = (float)packet.ReadDouble();
+		position.Y = (float)packet.ReadDouble();
 		GlobalPosition = position;
 
 		LeftArmAnimation.GlobalRotation = packet.ReadInt32();
@@ -63,26 +63,26 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
 			LeftArmAnimation.CallDeferred( "stop" );
-			LeftArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.Idle:
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "idle" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "run" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "move" );
 			break;
 		case PlayerAnimationState.Sliding:
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "slide" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "slide" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "idle" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.WeaponUse: {
-			LeftArmAnimation.CallDeferred( "show" );
+			LeftArmAnimation.Show();
 			
 			string property = "";
 			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -98,13 +98,13 @@ public partial class NetworkPlayer : CharacterBody2D {
 			LeftArmAnimation.CallDeferred( "play", "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
-			LeftArmAnimation.CallDeferred( "show" );
+			LeftArmAnimation.Show();
 			LeftArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
 			LeftArmAnimation.CallDeferred( "play", "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
-			LeftArmAnimation.CallDeferred( "show" );
+			LeftArmAnimation.Show();
 			LeftArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
 			LeftArmAnimation.CallDeferred( "play", "empty" );
@@ -117,26 +117,26 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
-			RightArmAnimation.CallDeferred( "show" );
+			RightArmAnimation.Show();
 			break;
 		case PlayerAnimationState.Idle:
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "idle" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "run" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "move" );
 			break;
 		case PlayerAnimationState.Sliding:
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "slide" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "slide" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "idle" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.WeaponUse: {
-			RightArmAnimation.CallDeferred( "show" );
+			RightArmAnimation.Show();
 			
 			string property = "";
 			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -152,13 +152,13 @@ public partial class NetworkPlayer : CharacterBody2D {
 			RightArmAnimation.CallDeferred( "play", "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
-			RightArmAnimation.CallDeferred( "show" );
+			RightArmAnimation.Show();
 			RightArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
 			RightArmAnimation.CallDeferred( "play", "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
-			RightArmAnimation.CallDeferred( "show" );
+			RightArmAnimation.Show();
 			RightArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
 			RightArmAnimation.CallDeferred( "play", "empty" );
@@ -170,44 +170,44 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
-			LegAnimation.CallDeferred( "hide" );
+			LegAnimation.Hide();
 			break;
 		case PlayerAnimationState.Idle:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "idle" );
+			LegAnimation.Show();
+			LegAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "run" );
+			LegAnimation.Show();
+			LegAnimation.Play( "move" );
 			break;
 		case PlayerAnimationState.Sliding:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "slide" );
+			LegAnimation.Show();
+			LegAnimation.Play( "slide" );
 			break;
 		};
 		
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
-			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.Show();
 			TorsoAnimation.CallDeferred( "play", "default" );
 			break;
 		case PlayerAnimationState.Running:
-			TorsoAnimation.CallDeferred( "show" );
-			TorsoAnimation.CallDeferred( "play", "run" );
+			TorsoAnimation.Show();
+			TorsoAnimation.Play( "move" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
 			IdleAnimation.CallDeferred( "play", "start" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
 			IdleAnimation.CallDeferred( "play", "loop" );
 			break;
 		case PlayerAnimationState.Dead:
-			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.Show();
 			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
 		};

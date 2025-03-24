@@ -609,11 +609,12 @@ public partial class Player : CharacterBody2D {
 				PacketWriter.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		PacketWriter.Write( Mathf.RoundToInt( GlobalPosition.X ) );
-		PacketWriter.Write( Mathf.RoundToInt( GlobalPosition.Y ) );
-		PacketWriter.Write( Mathf.RoundToInt( ArmLeft.GlobalRotation ) );
+		PacketWriter.Write( (double)GlobalPosition.X );
+		PacketWriter.Write( (double)GlobalPosition.Y );
+		PacketWriter.Write( (byte)TorsoAnimationState );
+		PacketWriter.Write( (double)ArmLeft.GlobalRotation );
 		PacketWriter.Write( (byte)LeftArmAnimationState );
-		PacketWriter.Write( Mathf.RoundToInt( ArmRight.GlobalRotation ) );
+		PacketWriter.Write( (double)ArmRight.GlobalRotation );
 		PacketWriter.Write( (byte)RightArmAnimationState );
 		PacketWriter.Write( (byte)LegAnimationState );
 		PacketWriter.Write( (byte)TorsoAnimationState );
