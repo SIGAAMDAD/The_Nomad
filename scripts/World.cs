@@ -64,7 +64,7 @@ public partial class World : Node2D {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
 			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) ) {
+				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 					continue;
 				}
 				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
