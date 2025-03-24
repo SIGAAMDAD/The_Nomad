@@ -302,11 +302,11 @@ public partial class SteamLobby : Node {
 
 		for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 			P2PSessionState_t sessionState;
-			if ( !SteamGameServerNetworking.GetP2PSessionState( LobbyMembers[i], out sessionState ) ) {
+			if ( !SteamNetworking.GetP2PSessionState( LobbyMembers[i], out sessionState ) ) {
 				continue;
 			}
 			if ( sessionState.m_bConnectionActive == 1 ) {
-				SteamGameServerNetworking.CloseP2PSessionWithUser( LobbyMembers[i] );
+				SteamNetworking.CloseP2PSessionWithUser( LobbyMembers[i] );
 			}
 		}
 		LobbyMembers.Clear();
@@ -324,11 +324,11 @@ public partial class SteamLobby : Node {
 		if ( target == CSteamID.Nil ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamManager.GetSteamID() ) {
-					SteamGameServerNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
+					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 				}
 			}
 		} else {
-			SteamGameServerNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 		}
 
 		profiler.Stop();
@@ -358,12 +358,12 @@ public partial class SteamLobby : Node {
 		profiler.Restart();
 
 		uint packetSize;
-		if ( !SteamGameServerNetworking.IsP2PPacketAvailable( out packetSize ) ) {
+		if ( !SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
 			return;
 		}
 
 		CSteamID senderId;
-		SteamGameServerNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out senderId );
+		SteamNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out senderId );
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
 		switch ( (MessageType)PacketReader.ReadByte() ) {
@@ -388,7 +388,7 @@ public partial class SteamLobby : Node {
 		}
 
 		uint packetSize;
-		if ( SteamGameServerNetworking.IsP2PPacketAvailable( out packetSize ) ) {
+		if ( SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
 			ReadP2Packet();
 			ReadAllPackets( readCount + 1 );
 		}
@@ -509,7 +509,7 @@ public partial class SteamLobby : Node {
 	*/
 	private void OnP2PSessionRequest( P2PSessionRequest_t pCallback ) {
 		string requester = SteamFriends.GetFriendPersonaName( pCallback.m_steamIDRemote );
-		SteamGameServerNetworking.AcceptP2PSessionWithUser( pCallback.m_steamIDRemote );
+		SteamNetworking.AcceptP2PSessionWithUser( pCallback.m_steamIDRemote );
 	}
 	private void OnLobbyDataUpdated( long success, ulong lobbyId, ulong memberId ) {
 	}
