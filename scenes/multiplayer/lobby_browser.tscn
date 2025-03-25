@@ -59,32 +59,36 @@ layout_mode = 2
 text = "Show Full Servers"
 
 [node name="MapLabel" type="Label" parent="FilterList/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Filter Map"
-
-[node name="MapItemList" type="ItemList" parent="FilterList/VBoxContainer"]
-layout_mode = 2
-select_mode = 2
-auto_width = true
-auto_height = true
 
 [node name="GameModeLabel" type="Label" parent="FilterList/VBoxContainer"]
 layout_mode = 2
 text = "Filter Game Mode"
 
-[node name="GameModeItemList" type="ItemList" parent="FilterList/VBoxContainer"]
+[node name="GameModeFilters" type="VScrollBar" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FilterList/VBoxContainer/GameModeFilters"]
+layout_mode = 0
+offset_left = 20.0
+offset_right = 140.0
+offset_bottom = 66.0
+
+[node name="BloodbathCheckBox" type="CheckBox" parent="FilterList/VBoxContainer/GameModeFilters/VBoxContainer"]
 visible = false
 layout_mode = 2
-select_mode = 2
-auto_width = true
-auto_height = true
-item_count = 6
-item_0/text = "Bloodbath"
-item_1/text = "Team Brawl"
-item_2/text = "Capture The Flag"
-item_3/text = "King of the Hill"
-item_4/text = "Duel"
-item_5/text = "Local World"
+text = "Bloodbath"
+
+[node name="TeamBrawlCheckBox" type="CheckBox" parent="FilterList/VBoxContainer/GameModeFilters/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Team Brawl"
+
+[node name="LocalWorldCheckBox" type="CheckBox" parent="FilterList/VBoxContainer/GameModeFilters/VBoxContainer"]
+layout_mode = 2
+text = "Local World"
 
 [node name="LobbyListBackground" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.345098)
@@ -99,7 +103,6 @@ texture = SubResource("GradientTexture2D_aa0nf")
 expand_mode = 2
 
 [node name="LobbyList" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 15.9925

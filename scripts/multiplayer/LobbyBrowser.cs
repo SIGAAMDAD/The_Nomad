@@ -87,13 +87,12 @@ public partial class LobbyBrowser : Control {
 	private static CanvasLayer TransitionScreen;
 
 	private static CheckBox ShowFullServers;
-	private static ItemList MapFilters;
-	private static ItemList GameModeFilters;
+	private static CheckBox GameFilter_LocalWorld;
 
 	private static int MatchmakingPhase = 0;
 
-//	private static System.Threading.Thread MatchmakingThread = null;
-//	private static object MatchmakingLobbyListReady = new object();
+	private static System.Threading.Thread MatchmakingThread = null;
+	private static object MatchmakingLobbyListReady = new object();
 
 	[Signal]
 	public delegate void OnHostGameEventHandler();
@@ -163,7 +162,6 @@ public partial class LobbyBrowser : Control {
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 
-	/*
 	private void MatchmakingLoop() {
 		// apply filters
 //		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
@@ -178,7 +176,6 @@ public partial class LobbyBrowser : Control {
 		}
 		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
 	}
-	*/
 	private void OnJoinGame( CSteamID lobbyId ) {
 		Tween AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
@@ -236,11 +233,11 @@ public partial class LobbyBrowser : Control {
 			LobbyTable.CallDeferred( "add_child", data.GetButton() );
 		}
 
-//		if ( MatchmakingThread.IsAlive ) {
-//			lock ( MatchmakingLobbyListReady ) {
-//				System.Threading.Monitor.Pulse( MatchmakingLobbyListReady );
-//			}
-//		}
+		if ( MatchmakingThread.IsAlive ) {
+			lock ( MatchmakingLobbyListReady ) {
+				System.Threading.Monitor.Pulse( MatchmakingLobbyListReady );
+			}
+		}
 	}
 	private void OnRefreshButtonPressed() {
 		GD.Print( "Refreshing lobbies..." );
@@ -259,7 +256,7 @@ public partial class LobbyBrowser : Control {
 		MatchmakingLabel.Text = "FINDING_MULTIPLAYER_GAME";
 		MatchmakingTimer.Start();
 
-//		MatchmakingThread.Start();
+		MatchmakingThread.Start();
 
 		MatchmakingPhase = 0;
 	}
@@ -330,7 +327,7 @@ public partial class LobbyBrowser : Control {
 		MatchmakingLabel.SetProcessInternal( false );
 
 		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
-//		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
+		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
 		
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
 		LobbyTable.SetProcess( false );
@@ -371,18 +368,10 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.SetProcessInternal( false );
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
-		GameModeFilters = GetNode<ItemList>( "FilterList/VBoxContainer/GameModeItemList" );
-		GameModeFilters.SetProcess( false );
-		GameModeFilters.SetProcessInternal( false );
-
-		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
-		MapFilters.SetProcess( false );
-		MapFilters.SetProcessInternal( false );
-
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 
-//		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
+		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
