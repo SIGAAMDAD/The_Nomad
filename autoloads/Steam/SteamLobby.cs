@@ -396,12 +396,6 @@ public partial class SteamLobby : Node {
 		}
 	}
 	public void ReadAllPackets() {
-		/*
-		int packetCount = SteamNetworkingMessages.ReceiveMessagesOnChannel( 0, MessageBuffer, MessageBuffer.Length );
-		for ( int i = 0; i < packetCount; i++ ) {
-			ReadP2Packet( i );
-		}
-		*/
 		ReadPackets();
 	}
 	
@@ -558,6 +552,11 @@ public partial class SteamLobby : Node {
 		}
 
 		base._PhysicsProcess( delta );
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		ReadPackets();
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
@@ -565,10 +564,5 @@ public partial class SteamLobby : Node {
 		foreach ( var player in PlayerCache ) {
 			player.Value.Send?.Invoke();
 		}
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		ReadPackets();
 	}
 };
