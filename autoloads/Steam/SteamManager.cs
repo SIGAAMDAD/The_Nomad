@@ -84,9 +84,6 @@ public partial class SteamManager : Node {
 
 	public override void _ExitTree() {
 		base._ExitTree();
-
-		Quit = true;
-		APIThread.Join();
 	}
     public override void _Ready() {
 		if ( !SteamAPI.IsSteamRunning() ) {
@@ -104,15 +101,17 @@ public partial class SteamManager : Node {
 		DebugMessageHook = new SteamAPIWarningMessageHook_t( SteamAPIDebugTextCallback );
 		SteamClient.SetWarningMessageHook( DebugMessageHook );
 
-		APIThread = new Thread( () => { while ( !Quit ) { if ( ( Engine.GetProcessFrames() % 120 ) == 0 ) { SteamAPI.RunCallbacks(); } } } );
-		APIThread.Start();
-
 		LoadAppInfo();
 		LoadUserInfo();
 		LoadDLCInfo();
 	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
 
-	private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
+		SteamAPI.RunCallbacks();
+	}
+
+    private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
 		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString(), true );
 	}
 
