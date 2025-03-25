@@ -63,7 +63,6 @@ layout_mode = 2
 text = "Filter Map"
 
 [node name="MapItemList" type="ItemList" parent="FilterList/VBoxContainer"]
-visible = false
 layout_mode = 2
 select_mode = 2
 auto_width = true
