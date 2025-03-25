@@ -566,6 +566,13 @@ public partial class SteamLobby : Node {
 		}
 
 		base._PhysicsProcess( delta );
+
+		foreach ( var node in NodeCache ) {
+			node.Value.Send?.Invoke();
+		}
+		foreach ( var player in PlayerCache ) {
+			player.Value.Send?.Invoke();
+		}
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
