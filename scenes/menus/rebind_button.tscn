@@ -13,12 +13,21 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_w32cl")
 
-[node name="RebindLabel" type="RichTextLabel" parent="."]
-custom_minimum_size = Vector2(260, 120)
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-scale = Vector2(2, 2)
+
+[node name="RebindNameLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 1
+
+[node name="RebindButtonLabel" type="RichTextLabel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(260, 120)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
 theme_override_fonts/normal_font = ExtResource("2_rhh8j")
 theme_override_fonts/mono_font = ExtResource("2_rhh8j")
 theme_override_fonts/italics_font = ExtResource("2_rhh8j")

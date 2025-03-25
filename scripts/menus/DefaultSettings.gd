@@ -17,7 +17,7 @@ enum AntiAliasing {
 
 # video
 @export var _window_mode:WindowMode = WindowMode.Fullscreen
-@export var _vsync:bool = false
+@export var _vsync:DisplayServer.VSyncMode = DisplayServer.VSyncMode.VSYNC_DISABLED
 #@export var _resolution:SettingsManager.Resolution = SettingsManager.Resolution.Res_1280x720
 @export var _antialasing:AntiAliasing = AntiAliasing.None
 @export var _shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
@@ -39,12 +39,10 @@ enum AntiAliasing {
 @export var _dyslexia_mode:bool = false
 
 # gameplay
-@export var _enemy_difficulty:GameConfiguration.GameDifficulty = GameConfiguration.GameDifficulty.Intended
 @export var _equip_weapon_on_pickup:bool = true
 @export var _draw_aim_line:bool = false
 @export var _hellbreaker:bool = true
 @export var _hellbreaker_revanents:bool = false
-
 
 @export var _networking_enabled:bool = true
 @export var _friends_only:bool = false

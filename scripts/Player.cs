@@ -6,14 +6,6 @@ using Steamworks;
 using System.Runtime.CompilerServices;
 
 public partial class Player : CharacterBody2D {
-	public enum GameMode {
-		Singleplayer,
-		Coop2,
-		Coop3,
-		Coop4,
-		Multiplayer
-	};
-
 	public enum Hands : byte {
 		Left,
 		Right,
@@ -177,10 +169,11 @@ public partial class Player : CharacterBody2D {
 	public uint MultiplayerFlagReturns = 0;
 	public float MultiplayerHilltime = 0.0f;
 
+	private bool NetworkNeedsSync = false;
 	private PlayerAnimationState LeftArmAnimationState;
 	private PlayerAnimationState RightArmAnimationState;
 	private PlayerAnimationState TorsoAnimationState;
-	private PlayerAnimationState LegAnimationState;
+    private PlayerAnimationState LegAnimationState;
 
 	private AudioStreamPlayer2D MoveChannel;
 	private AudioStreamPlayer2D DashChannel;
@@ -222,7 +215,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	public void Save() {
-		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (uint)GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
 			return; // don't save other people's data, we ain't the government
 		}
 
@@ -379,7 +372,7 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	public void Load() {
-		if ( (uint)GetNode( "/root/GameConfiguration" ).Get( "_game_mode" ) == (uint)GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
 			return; // don't load other people's data, we ain't the government
 		}
 
@@ -595,7 +588,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	public void SendPacket() {
-		if ( !SettingsData.GetNetworkingEnabled() ) {
+		if ( !SettingsData.GetNetworkingEnabled() || !NetworkNeedsSync ) {
 			return;
 		}
 

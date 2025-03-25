@@ -3,8 +3,6 @@ using Multiplayer;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Threading;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -179,7 +177,6 @@ public partial class SteamLobby : Node {
 
 	private void OnLobbyChatUpdate( LobbyChatUpdate_t pCallback ) {
 		string changerName = SteamFriends.GetFriendPersonaName( (CSteamID)pCallback.m_ulSteamIDMakingChange );
-//		string changerName = SteamFriends.GetFriendPersonaName( changeId );
 
 		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
 		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
@@ -206,19 +203,25 @@ public partial class SteamLobby : Node {
 	}
 	private void OnLobbyCreated( LobbyCreated_t pCallback, bool bIOFailure ) {
 		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
+			GD.PushError( "[STEAM] Error creating lobby!" );
 			return;
 		}
 
-		GD.Print( "Created lobby " + pCallback.m_ulSteamIDLobby + "." );
 		LobbyId = (CSteamID)pCallback.m_ulSteamIDLobby;
 		IsHost = true;
 
+		CallDeferred( "set_process", true );
+		CallDeferred( "set_physics_process", true );
+
 		SteamMatchmaking.SetLobbyJoinable( LobbyId, true );
 		SteamMatchmaking.SetLobbyData( LobbyId, "appid", SteamManager.GetAppID().ToString() );
+		SteamMatchmaking.SetLobbyData( LobbyId, "gametype", GameConfiguration.GameMode.ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "name", LobbyName );
 		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap.ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gamemode", LobbyGameMode.ToString() );
 		SteamMatchmaking.SetLobbyMemberLimit( LobbyId, LobbyMaxMembers );
+
+		GD.Print( "Created lobby [" + LobbyId.ToString() + "] Name: " + LobbyName + ", MaxMembers: " + LobbyMaxMembers + ", GameType: " + GameConfiguration.GameMode.ToString() );
 
 		bool bSetRelay = SteamNetworking.AllowP2PPacketRelay( true );
 		if ( !bSetRelay ) {
@@ -234,7 +237,7 @@ public partial class SteamLobby : Node {
 			LobbyList.Add( SteamMatchmaking.GetLobbyByIndex( i ) );
 		}
 
-		EmitSignal( "LobbyListUpdated" );
+		CallDeferred( "emit_signal", "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
 		SendP2PPacket( CSteamID.Nil, new byte[]{ (byte)MessageType.Handshake } );
@@ -288,7 +291,8 @@ public partial class SteamLobby : Node {
 		};
 
 		GD.Print( "Initializing SteamLobby..." );
-		SteamMatchmaking.CreateLobby( lobbyType, LobbyMaxMembers );
+		SteamAPICall_t handle = SteamMatchmaking.CreateLobby( lobbyType, LobbyMaxMembers );
+		OnLobbyCreatedCallResult.Set( handle );
 	}
 	public void JoinLobby( CSteamID lobbyId ) {
 		SteamMatchmaking.JoinLobby( lobbyId );
@@ -313,7 +317,10 @@ public partial class SteamLobby : Node {
 		}
 		LobbyMembers.Clear();
 
-		EmitSignal( "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
+		CallDeferred( "emit_signal", "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
+
+		SetProcess( false );
+		SetPhysicsProcess( false );
 	}
 
 	public void SendP2PPacket( CSteamID target, byte[] data ) {
@@ -405,14 +412,18 @@ public partial class SteamLobby : Node {
 		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
 
 		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-//		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
-//		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+		GameConfiguration.GameMode = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
+		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+
+		CallDeferred( "set_process", true );
+		CallDeferred( "set_physics_process", true );
 
 		GD.Print( "Sending p2p handshake..." );
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 		
-		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
 	}
 
 	private void OnAudioFadeFinished() {
@@ -422,10 +433,10 @@ public partial class SteamLobby : Node {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 	private void OnFinishedLoadingScene() {
-		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
 		QueueFree();
 
-		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );
 		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 	}
 
@@ -435,7 +446,7 @@ public partial class SteamLobby : Node {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
 
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 
 		string modeName;
 		switch ( SteamLobby.Instance.GetGameMode() ) {
@@ -452,11 +463,10 @@ public partial class SteamLobby : Node {
 			return;
 		};
 
-//		uint gameType = Convert.ToUInt32( Steam.GetLobbyData( lobbyId, "gametype" ) );
-		uint gameType = (uint)Player.GameMode.Coop2;
+		GameMode gameType = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
 
 		Node scene;
-		if ( gameType == (uint)Player.GameMode.Multiplayer ) {
+		if ( gameType == GameMode.Multiplayer ) {
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
 			);
@@ -466,7 +476,7 @@ public partial class SteamLobby : Node {
 				"res://levels/world.tscn"
 			);
 		}
-		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		GameConfiguration.LoadedLevel = scene;
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
@@ -482,14 +492,15 @@ public partial class SteamLobby : Node {
 		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
 
 		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-//		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
-//		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+		GameConfiguration.GameMode = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
+		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 
 		GD.Print( "Sending p2p handshake..." );
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
 	}
 	private void OnIncomingConnectionRequest( SteamNetConnectionStatusChangedCallback_t pCallback ) {
 		if ( pCallback.m_eOldState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting ) {
@@ -516,7 +527,7 @@ public partial class SteamLobby : Node {
 
 		switch ( entryType ) {
 		case EChatEntryType.k_EChatEntryTypeChatMsg: {
-			EmitSignal( "ChatMessageReceived", (ulong)senderId, szBuffer.ToString() );
+			CallDeferred( "emit_signal", "ChatMessageReceived", (ulong)senderId, szBuffer.ToString() );
 			break; }
 		};
 	}
@@ -528,6 +539,11 @@ public partial class SteamLobby : Node {
 	}
 	private void OnServerFailedToRespond( HServerListRequest hRequest, int iServer ) {
 		GD.PushError( "[STEAM] Server failed to respond" );
+	}
+
+	public float GetPing() {
+		SteamNetworkPingLocation_t hPingLocation = new SteamNetworkPingLocation_t();
+		return SteamNetworkingUtils.GetLocalPingLocation( out hPingLocation );
 	}
 
 	public override void _EnterTree() {
@@ -554,9 +570,10 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		hListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 27015, 0, null );
-
-//		NetConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create( OnIncomingConnectionRequest );
+		SetProcess( false );
+		SetProcessInternal( false );
+		SetPhysicsProcess( false );
+		SetPhysicsProcessInternal( false );
 	}
 	public override void _PhysicsProcess( double delta ) {
 		if ( ( Engine.GetPhysicsFrames() % 8 ) != 0 ) {
@@ -564,19 +581,8 @@ public partial class SteamLobby : Node {
 		}
 
 		base._PhysicsProcess( delta );
-
-		foreach ( var node in NodeCache ) {
-			node.Value.Send?.Invoke();
-		}
-		foreach ( var player in PlayerCache ) {
-			player.Value.Send?.Invoke();
-		}
 	}
 	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
-			return;
-		}
-
 		base._Process( delta );
 
 		ReadPackets();

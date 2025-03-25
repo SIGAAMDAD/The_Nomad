@@ -36,7 +36,7 @@ privateKey="59b91461435b8a75"
 
 config/name="The Nomad"
 config/version="1.2.0"
-run/main_scene="uid://c0bb8bqic65vc"
+run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
@@ -52,7 +52,6 @@ driver/output_latency=50
 [autoload]
 
 SettingsData="*res://scripts/menus/SettingsData.cs"
-GameConfiguration="*res://scripts/GameConfiguration.gd"
 SteamManager="*res://autoloads/Steam/SteamManager.cs"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
 SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
@@ -139,10 +138,10 @@ pathfinding/max_threads=12
 [physics]
 
 2d/run_on_separate_thread=true
-common/physics_ticks_per_second=10
+common/physics_ticks_per_second=30
 common/physics_jitter_fix=0.0
 2d/physics_engine="Rapier2D"
-2d/solver/solver_iterations=1
+2d/solver/solver_iterations=2
 2d/solver/contact_recycle_radius=8.0
 common/physics_interpolation=true
 common/enable_object_picking=false

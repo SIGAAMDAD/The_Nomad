@@ -21,6 +21,10 @@ namespace PlayerSystem {
 			CallDeferred( "add_child", Legs );
 		}
 		public void Update( Player player ) {
+			if ( player == null ) {
+				return;
+			}
+
 			GlobalPosition = player.GlobalPosition;
 			LeftArm.SpriteFrames = player.GetLeftArmAnimation().SpriteFrames;
 			RightArm.SpriteFrames = player.GetRightArmAnimation().SpriteFrames;

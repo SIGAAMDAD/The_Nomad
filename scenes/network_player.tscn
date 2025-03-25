@@ -36,3 +36,5 @@ animation = &"loop"
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 1)
 shape = SubResource("CircleShape2D_s8stb")
+
+[node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]

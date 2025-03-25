@@ -197,7 +197,7 @@ public partial class SteamAchievements : Node {
 			return;
 		}
 
-		GetNode( "/root/Console" ).Call( "print_line", "Got local player statistics & achievements.", true );
+		GD.Print( "Got local player statistics & achievements." );
 		SteamStatsReceived = true;
 	}
 	private void OnUserStatsStored( UserStatsStored_t pCallback ) {

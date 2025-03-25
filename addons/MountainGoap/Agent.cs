@@ -245,7 +245,8 @@ namespace MountainGoap {
 		private void StepAsync() {
 			if (!IsBusy && !IsPlanning) {
 				IsPlanning = true;
-				PlanThread.Start();
+				Planner.Plan(this, CostMaximum, StepMaximum);
+				//PlanThread.Start();
 			}
 			else if (!IsPlanning) Execute();
 		}

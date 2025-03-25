@@ -38,7 +38,7 @@ public partial class CampaignMenu : Control {
 
 	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-	private System.Collections.Generic.List<Button> ButtonList = new System.Collections.Generic.List<Button>();
+	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
 	private Button ExitButton;
 	private CanvasLayer TransitionScreen;
@@ -69,13 +69,7 @@ public partial class CampaignMenu : Control {
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
-		GetNode( "/root/GameConfiguration" ).Set( "_game_difficulty", 0 );
-	}
-	private void OnIntendedModeMouseEntered() {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
-
-		DifficultyDescriptionLabel.Text = "INTENDED_MODE_DESCRIPTION";
+		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
 	private void OnPowerFantasyModeButtonPressed() {
@@ -91,22 +85,22 @@ public partial class CampaignMenu : Control {
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
-		GetNode( "/root/GameConfiguration" ).Set( "_game_difficulty", 1 );
-	}
-	private void OnPowerFantasyModeMouseEntered() {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
-
-		DifficultyDescriptionLabel.Text = "POWER_FANTASY_MODE_DESCRIPTION";
+		GameConfiguration.GameDifficulty = GameDifficulty.PowerFantasy;
 	}
 
 	private void OnMemeModeButtonPressed() {
 	}
-	private void OnMemeModeMouseEntered() {
+
+	private void OnButtonFocused( string descriptionTextID, int nButtonIndex ) {
 		UIChannel.Stream = UISfxManager.ButtonFocused;
 		UIChannel.Play();
 
-		DifficultyDescriptionLabel.Text = "PAIN... COMING SOON! :)";
+		ButtonIndex = nButtonIndex;
+		ButtonList[ ButtonIndex ].Modulate = Selected;
+		DifficultyDescriptionLabel.Text = descriptionTextID;
+	}
+	private void OnButtonUnfocused() {
+		ButtonList[ ButtonIndex ].Modulate = Unselected;
 	}
 
 	public void SetMemeModeName() {
@@ -115,110 +109,83 @@ public partial class CampaignMenu : Control {
 	}
 
 	public override void _Ready() {
-		Label TitleLabel = GetNode<Label>( "TitleLabel" );
 		if ( SettingsData.GetDyslexiaMode() ) {
-			TitleLabel.Theme = AccessibilityManager.DyslexiaTheme;
+			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
-			TitleLabel.Theme = AccessibilityManager.DefaultTheme;
+			Theme = AccessibilityManager.DefaultTheme;
 		}
+
+		base._Ready();
+
+		Label TitleLabel = GetNode<Label>( "TitleLabel" );
+		TitleLabel.SetProcess( false );
+		TitleLabel.SetProcessInternal( false );
 
 		DifficultyDescriptionLabel = GetNode<Label>( "DifficultyDescriptionLabel" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			DifficultyDescriptionLabel.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			DifficultyDescriptionLabel.Theme = AccessibilityManager.DefaultTheme;
-		}
+		DifficultyDescriptionLabel.SetProcess( false );
+		DifficultyDescriptionLabel.SetProcessInternal( false );
 
 		Button IntendedModeButton = GetNode<Button>( "VBoxContainer/IntendedModeButton" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			IntendedModeButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			IntendedModeButton.Theme = AccessibilityManager.DefaultTheme;
-		}
+		IntendedModeButton.SetProcess( false );
+		IntendedModeButton.SetProcessInternal( false );
 		IntendedModeButton.Connect( "pressed", Callable.From( OnIntendedModeButtonPressed ) );
-		IntendedModeButton.Connect( "mouse_entered", Callable.From( OnIntendedModeMouseEntered ) );
-		ButtonList.Add( IntendedModeButton );
+		IntendedModeButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( "INTENDED_MODE_DESCRIPTION", 0 ); } ) );
+		IntendedModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( "INTENDED_MODE_DESCRIPTION", 0 ); } ) );
+		IntendedModeButton.Connect( "mouse_exited", Callable.From( OnButtonUnfocused ) );
+		IntendedModeButton.Connect( "focus_exited", Callable.From( OnButtonUnfocused ) );
 
 		Button PowerFantasyModeButton = GetNode<Button>( "VBoxContainer/PowerFantasyModeButton" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			PowerFantasyModeButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			PowerFantasyModeButton.Theme = AccessibilityManager.DefaultTheme;
-		}
+		PowerFantasyModeButton.SetProcess( false );
+		PowerFantasyModeButton.SetProcessInternal( false );
 		PowerFantasyModeButton.Connect( "pressed", Callable.From( OnPowerFantasyModeButtonPressed ) );
-		PowerFantasyModeButton.Connect( "mouse_entered", Callable.From( OnPowerFantasyModeMouseEntered ) );
-		ButtonList.Add( PowerFantasyModeButton );
+		PowerFantasyModeButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( "POWER_FANTASY_MODE_DESCRIPTION", 1 ); } ) );
+		PowerFantasyModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( "POWER_FANTASY_MODE_DESCRIPTION", 1 ); } ) );
+		PowerFantasyModeButton.Connect( "mouse_exited", Callable.From( OnButtonUnfocused ) );
+		PowerFantasyModeButton.Connect( "focus_exited", Callable.From( OnButtonUnfocused ) );
 
 		MemeModeButton = GetNode<Button>( "VBoxContainer/MemeModeButton" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			MemeModeButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			MemeModeButton.Theme = AccessibilityManager.DefaultTheme;
-		}
-		MemeModeButton.Connect( "mouse_entered", Callable.From( OnMemeModeMouseEntered ) );
-		ButtonList.Add( MemeModeButton );
+		MemeModeButton.SetProcess( false );
+		MemeModeButton.SetProcessInternal( false );
+		MemeModeButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( "MEME_MODE_DESCRIPTION", 2 ); } ) );
+		MemeModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( "MEME_MODE_DESCRIPTION", 2 ); } ) );
+		MemeModeButton.Connect( "mouse_exited", Callable.From( OnButtonUnfocused ) );
+		MemeModeButton.Connect( "focus_exited", Callable.From( OnButtonUnfocused ) );
 
 		ExitButton = GetNode<Button>( "../ExitButton" );
-		ButtonList.Add( ExitButton );
-
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
-
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+		
+		IntendedModeButton.Modulate = Selected;
+		ButtonList = [
+			IntendedModeButton,
+			PowerFantasyModeButton,
+			MemeModeButton
+		];
 	}
-    public override void _Process( double delta ) {
-		base._Process( delta );
+	public override void _UnhandledInput( InputEvent @event ) {
+		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			if ( ButtonIndex == ButtonList.Count - 1 ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {
 				ButtonIndex++;
 			}
-			switch ( ButtonIndex ) {
-			case 0:
-				OnIntendedModeMouseEntered();
-				break;
-			case 1:
-				OnPowerFantasyModeMouseEntered();
-				break;
-			case 2:
-				OnMemeModeMouseEntered();
-				break;
-			};
-			UIChannel.Stream = UISfxManager.ButtonFocused;
-			UIChannel.Play();
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 		}
-		if ( Input.IsActionJustPressed( "ui_up" ) ) {
+		else if ( Input.IsActionJustPressed( "ui_up" ) ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
 			if ( ButtonIndex == 0 ) {
-				ButtonIndex = ButtonList.Count - 1;
+				ButtonIndex = ButtonList.Length - 1;
 			} else {
 				ButtonIndex--;
 			}
-			switch ( ButtonIndex ) {
-			case 0:
-				OnIntendedModeMouseEntered();
-				break;
-			case 1:
-				OnPowerFantasyModeMouseEntered();
-				break;
-			case 2:
-				OnMemeModeMouseEntered();
-				break;
-			};
-			UIChannel.Stream = UISfxManager.ButtonFocused;
-			UIChannel.Play();
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 		}
-		if ( Input.IsActionJustPressed( "ui_exit" ) ) {
-			ExitButton.EmitSignal( "pressed" );
-			UIChannel.Stream = UISfxManager.ButtonPressed;
-			UIChannel.Play();
-		}
-		if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
+		else if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 			ButtonList[ ButtonIndex ].CallDeferred( "emit_signal", "pressed" );
 		}
-		for ( int i = 0; i < ButtonList.Count; i++ ) {
-			ButtonList[ i ].Modulate = Unselected;
-		}
-		ButtonList[ ButtonIndex ].Modulate = Selected;
 	}
 };

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=15 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_mcc4n"]
@@ -10,6 +10,9 @@
 [ext_resource type="Script" uid="uid://dr5oxtww2bofb" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
 [ext_resource type="Script" uid="uid://btihawvdn0ykd" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
+[ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="8_muhwa"]
+[ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="9_rrg86"]
+[ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
 
 [sub_resource type="Resource" id="Resource_qxrc6"]
 script = ExtResource("7_2apr8")
@@ -39,14 +42,13 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = 50.0
-offset_right = -100.0
-offset_bottom = -100.0
+offset_left = 10.0
+offset_top = 20.0
+offset_right = -10.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 theme_override_font_sizes/font_size = 14
 tab_alignment = 1
 current_tab = 0
@@ -58,73 +60,13 @@ metadata/_tab_index = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Video"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -251.0
-offset_top = -59.5
-offset_right = 749.0
-offset_bottom = 76.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.768)
-
-[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="ResolutionLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-text = "RESOLUTION"
-
-[node name="ResolutionOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-alignment = 1
-selected = 0
-item_count = 7
-popup/item_0/text = "640x480"
-popup/item_0/id = 0
-popup/item_1/text = "800x600"
-popup/item_1/id = 1
-popup/item_2/text = "1280x720"
-popup/item_2/id = 2
-popup/item_3/text = "1600x1050"
-popup/item_3/id = 3
-popup/item_4/text = "1600x1200"
-popup/item_4/id = 4
-popup/item_5/text = "1920x1080"
-popup/item_5/id = 5
-popup/item_6/text = "2048x1152"
-popup/item_6/id = 6
-
-[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-text = "WINDOW MODE"
-
-[node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-alignment = 1
-selected = 0
-item_count = 4
-popup/item_0/text = "WINDOWED"
-popup/item_0/id = 0
-popup/item_1/text = "BORDLERSS WINDOWED"
-popup/item_1/id = 1
-popup/item_2/text = "FULLSCREEN"
-popup/item_2/id = 2
-popup/item_3/text = "BORDERLESS FULLSCREEN"
-popup/item_3/id = 3
 
 [node name="VSyncButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
@@ -132,39 +74,20 @@ size_flags_horizontal = 4
 
 [node name="VSyncLabel" type="Label" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "VSYNC"
 
-[node name="VSyncCheckBox" type="CheckBox" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
+[node name="VSyncOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
-
-[node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="AntiAliasingLabel" type="Label" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-text = "ANTI-ALIASING"
-
-[node name="AntiAliasingOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 selected = 0
-item_count = 5
-popup/item_0/text = "NONE"
+item_count = 3
+popup/item_0/text = "DISABLED"
 popup/item_0/id = 0
-popup/item_1/text = "FXAA"
+popup/item_1/text = "ADAPTIVE"
 popup/item_1/id = 1
-popup/item_2/text = "MSAA 2x"
+popup/item_2/text = "ENABLED"
 popup/item_2/id = 2
-popup/item_3/text = "MSAA 4x"
-popup/item_3/id = 3
-popup/item_4/text = "MSAA 8x"
-popup/item_4/id = 4
 
 [node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 visible = false
@@ -194,6 +117,86 @@ popup/item_4/id = 4
 popup/item_5/text = "ULTRA"
 popup/item_5/id = 5
 
+[node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="AntiAliasingLabel" type="Label" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
+layout_mode = 2
+text = "ANTI-ALIASING"
+
+[node name="AntiAliasingOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
+layout_mode = 2
+selected = 0
+item_count = 7
+popup/item_0/text = "NONE"
+popup/item_0/id = 0
+popup/item_1/text = "FXAA"
+popup/item_1/id = 1
+popup/item_2/text = "MSAA 2x"
+popup/item_2/id = 2
+popup/item_3/text = "MSAA 4x"
+popup/item_3/id = 3
+popup/item_4/text = "MSAA 8x"
+popup/item_4/id = 4
+popup/item_5/text = "TAA"
+popup/item_5/id = 5
+popup/item_6/text = "FXAA+TAA"
+popup/item_6/id = 6
+
+[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+layout_mode = 2
+text = "WINDOW MODE"
+
+[node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+layout_mode = 2
+alignment = 1
+selected = 0
+item_count = 4
+popup/item_0/text = "WINDOWED"
+popup/item_0/id = 0
+popup/item_1/text = "BORDLERSS WINDOWED"
+popup/item_1/id = 1
+popup/item_2/text = "FULLSCREEN"
+popup/item_2/id = 2
+popup/item_3/text = "BORDERLESS FULLSCREEN"
+popup/item_3/id = 3
+
+[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ResolutionLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ybwfc")
+text = "RESOLUTION"
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ybwfc")
+alignment = 1
+selected = 0
+item_count = 7
+popup/item_0/text = "640x480"
+popup/item_0/id = 0
+popup/item_1/text = "800x600"
+popup/item_1/id = 1
+popup/item_2/text = "1280x720"
+popup/item_2/id = 2
+popup/item_3/text = "1600x1050"
+popup/item_3/id = 3
+popup/item_4/text = "1600x1200"
+popup/item_4/id = 4
+popup/item_5/text = "1920x1080"
+popup/item_5/id = 5
+popup/item_6/text = "2048x1152"
+popup/item_6/id = 6
+
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
@@ -202,18 +205,13 @@ metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -249.0
-offset_top = -59.5
-offset_right = 751.0
-offset_bottom = 60.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.5)
 
 [node name="EffectsOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
@@ -221,8 +219,6 @@ size_flags_horizontal = 4
 
 [node name="EffectsOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "SOUND_EFFECTS_ON"
 
 [node name="EffectsOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
@@ -236,7 +232,6 @@ size_flags_horizontal = 4
 
 [node name="EffectsVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "SOUND_EFFECTS_VOLUME"
 
 [node name="EffectsVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
@@ -253,7 +248,6 @@ size_flags_horizontal = 4
 
 [node name="MusicOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "MUSIC_ON"
 
 [node name="MusicOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
@@ -266,7 +260,6 @@ size_flags_horizontal = 4
 [node name="MusicVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "MUSIC_VOLUME"
 
 [node name="MusicVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
@@ -284,7 +277,6 @@ size_flags_horizontal = 4
 
 [node name="MuteOnUnfocusedButton" type="Label" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "MUTE_ON_UNFOCUSED"
 
 [node name="MuteOnUnfocusedCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
@@ -297,18 +289,13 @@ metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -248.0
-offset_top = -55.5
-offset_right = 752.0
-offset_bottom = 44.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.5)
 
 [node name="HapticFeedbackButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
@@ -317,8 +304,6 @@ tooltip_text = "Enables controller rumble"
 
 [node name="HapticFeedbackLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "HAPTIC_FEEDBACK"
 
 [node name="HapticFeedbackCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
@@ -333,7 +318,6 @@ tooltip_text = "Sets the rumble strength if using a controller"
 
 [node name="HapticStrengthLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "HAPTIC_FEEDBACK_STRENGTH"
 
 [node name="HapticStrengthSlider" type="HSlider" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
@@ -351,8 +335,6 @@ tooltip_text = "Enables Autoaim"
 
 [node name="AutoAimLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "AUTOAIM"
 
 [node name="AutoAimCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
@@ -367,8 +349,6 @@ tooltip_text = "Enables Autoaim"
 
 [node name="DyslexiaModeLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_ybwfc")
 text = "DYSLEXIA_MODE"
 
 [node name="DyslexiaCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
@@ -376,11 +356,53 @@ layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
 
+[node name="Network" type="TabBar" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Network"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EnableNetworkingButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="EnableNetworkingLabel" type="Label" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+layout_mode = 2
+text = "ENABLE_NETWORKING"
+
+[node name="EnableNetworkingCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="FriendsOnlyButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="FriendsOnlyLabel" type="Label" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "FRIENDS_ONLY"
+
+[node name="FriendsOnlyCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
 [node name="Controls" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
 mouse_filter = 2
-metadata/_tab_index = 3
+metadata/_tab_index = 4
 
 [node name="KeyBindsLabel" type="Label" parent="TabContainer/Controls"]
 visible = false
@@ -392,7 +414,6 @@ offset_left = -144.0
 offset_right = 144.0
 offset_bottom = 36.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
 theme_override_font_sizes/font_size = 36
 text = "KEYBINDS"
 horizontal_alignment = 1
@@ -404,11 +425,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.5)
 mouse_filter = 2
-current_tab = 0
+current_tab = 1
 
 [node name="Movement" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 metadata/_tab_index = 0
@@ -418,31 +439,35 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 60
+theme_override_constants/separation = 32
 
 [node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
-_action_name = "dash"
-_display_category = "Movement"
+_action_label = &"Dash"
+_action_name = &"dash"
+_display_category = &"movement"
 _action = ExtResource("5_g1xt0")
 
 [node name="SlideBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
-_action_name = "slide"
-_display_category = "Movement"
+_action_label = &"Slide"
+_action_name = &"slide"
+_display_category = &"movement"
 _action = ExtResource("6_uhm1t")
 
 [node name="MoveBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
-_action_name = "move"
-_display_category = "Movement"
+_action_label = &"Move"
+_action_name = &"move"
+_display_category = &"movement"
 _action = ExtResource("5_my37k")
 
 [node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -453,12 +478,49 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -110.5
-offset_top = -518.0
-offset_right = 110.5
-offset_bottom = 10.0
+offset_top = 40.0
+offset_right = 221.0
+offset_bottom = 568.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="Combat" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Combat"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 32
+
+[node name="UseWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Use Weapon"
+_action_name = &"use_weapon"
+_display_category = &"combat"
+_action = ExtResource("8_muhwa")
+
+[node name="NextWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Next Weapon"
+_action_name = &"next_weapon"
+_display_category = &"combat"
+_action = ExtResource("9_rrg86")
+
+[node name="PrevWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Previous Weapon"
+_action_name = &"prev_weapon"
+_display_category = &"combat"
+_action = ExtResource("10_l0eij")
 
 [node name="SaveSettingsButton" type="Button" parent="."]
 layout_mode = 1

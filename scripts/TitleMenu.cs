@@ -38,6 +38,7 @@ public partial class TitleMenu : Control {
 			CampaignMenu.Hide();
 			CampaignMenu.SetProcess( false );
 			CampaignMenu.SetProcessInternal( false );
+			CampaignMenu.SetProcessUnhandledInput( false );
 			break;
 		case MenuState.Multiplayer:
 			MultiplayerMenu.Hide();
@@ -45,13 +46,16 @@ public partial class TitleMenu : Control {
 			LobbyFactory.Hide();
 			LobbyBrowser.SetProcess( false );
 			LobbyBrowser.SetProcessInternal( false );
+			LobbyBrowser.SetProcessUnhandledInput( false );
 			LobbyFactory.SetProcess( false );
 			LobbyFactory.SetProcessInternal( false );
+			LobbyFactory.SetProcessUnhandledInput( false );
 			break;
 		case MenuState.Settings:
 			SettingsMenu.Hide();
 			SettingsMenu.SetProcess( false );
 			SettingsMenu.SetProcessInternal( true );
+			SettingsMenu.SetProcessUnhandledInput( true );
 			break;
 		default:
 			GD.PushError( "Invalid menu state!" );
@@ -60,6 +64,7 @@ public partial class TitleMenu : Control {
 
 		MainMenu.SetProcess( true );
 		MainMenu.SetProcessInternal( true );
+		MainMenu.SetProcessUnhandledInput( true );
 
 		ExitButton.Hide();
 		MainMenu.Show();
@@ -68,8 +73,10 @@ public partial class TitleMenu : Control {
 	private void OnMainMenuCampaignMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
+		MainMenu.SetProcessUnhandledInput( false );
 		CampaignMenu.SetProcess( true );
 		CampaignMenu.SetProcessInternal( true );
+		CampaignMenu.SetProcessUnhandledInput( true );
 
 		MainMenu.Hide();
 		CampaignMenu.Show();
@@ -79,8 +86,10 @@ public partial class TitleMenu : Control {
 	private void OnMainMenuMultiplayerMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
+		MainMenu.SetProcessUnhandledInput( false );
 		LobbyBrowser.SetProcess( true );
 		LobbyBrowser.SetProcessInternal( true );
+		LobbyBrowser.SetProcessUnhandledInput( true );
 
 		MainMenu.Hide();
 		MultiplayerMenu.Show();
@@ -91,8 +100,10 @@ public partial class TitleMenu : Control {
 	private void OnMainMenuSettingsMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
+		MainMenu.SetProcessUnhandledInput( false );
 		SettingsMenu.SetProcess( true );
 		SettingsMenu.SetProcessInternal( true );
+		SettingsMenu.SetProcessUnhandledInput( true );
 
 		MainMenu.Hide();
 		SettingsMenu.Show();
@@ -101,6 +112,8 @@ public partial class TitleMenu : Control {
 	}
 
 	public override void _Ready() {
+		PhysicsServer2D.SetActive( false );
+
 		Control Background = GetNode<Control>( "MenuBackground" );
 		Background.SetProcess( false );
 		Background.SetProcessInternal( false );
@@ -113,30 +126,30 @@ public partial class TitleMenu : Control {
 		CampaignMenu = GetNode<Control>( "CampaignMenu" );
 		CampaignMenu.SetProcess( false );
 		CampaignMenu.SetProcessInternal( false );
+		CampaignMenu.SetProcessUnhandledInput( false );
 
 		MultiplayerMenu = GetNode<Control>( "MultiplayerMenu" );
 		MultiplayerMenu.SetProcess( false );
 		MultiplayerMenu.SetProcessInternal( false );
+		MultiplayerMenu.SetProcessUnhandledInput( false );
 
 		SettingsMenu = GetNode<Control>( "SettingsMenu" );
 		SettingsMenu.SetProcess( false );
 		SettingsMenu.SetProcessInternal( false );
+		SettingsMenu.SetProcessUnhandledInput( false );
 
 		ExitButton = GetNode<Button>( "ExitButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			ExitButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			ExitButton.Theme = AccessibilityManager.DefaultTheme;
-		}
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
 		LobbyBrowser = GetNode<Control>( "MultiplayerMenu/LobbyBrowser" );
 		LobbyBrowser.SetProcess( false );
 		LobbyBrowser.SetProcessInternal( false );
+		LobbyBrowser.SetProcessUnhandledInput( false );
 
 		LobbyFactory = GetNode<Control>( "MultiplayerMenu/LobbyFactory" );
 		LobbyFactory.SetProcess( false );
 		LobbyFactory.SetProcessInternal( false );
+		LobbyFactory.SetProcessUnhandledInput( false );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.SetProcess( false );

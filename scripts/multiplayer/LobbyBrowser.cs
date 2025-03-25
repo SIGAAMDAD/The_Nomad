@@ -1,18 +1,54 @@
+using System;
+using System.Collections.Generic;
 using Godot;
-using NathanHoad;
 using Multiplayer;
 using Steamworks;
 
-// TODO: fix lobby refresh leaking memory
-
 public partial class LobbyBrowser : Control {
+	private class LobbyData {
+		private CSteamID LobbyId;
+		private Button Button;
+		private GameMode GameMode;
+
+		public LobbyData( CSteamID lobbyId ) {
+			LobbyId = lobbyId;
+
+			Button = new Button();
+
+			Refresh();
+		}
+
+		public bool Refresh() {
+			if ( SteamMatchmaking.GetNumLobbyMembers( LobbyId ) == 0 ) {
+				return false; // inactive
+			}
+
+			Button.Text = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+			GameMode = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
+			return true;
+		}
+		public int GetMaxMembers() {
+			return SteamMatchmaking.GetLobbyMemberLimit( LobbyId );
+		}
+	};
+
+	private Dictionary<CSteamID, LobbyData> LobbyList = null;
+
 	private Button HostGame;
 	private Button RefreshLobbies;
 	private Button Matchmake;
+	private Button CancelMatchmake;
 	private AudioStreamPlayer UIChannel;
+
+	private CSteamID SelectedLobby = CSteamID.Nil;
+
+	private Label MapNameLabel;
+	private Label PlayerCountLabel;
+	private Label GameModeLabel;
 
 	private Control MatchmakingSpinner;
 	private Label MatchmakingLabel;
+	private Timer MatchmakingTimer;
 
 	private VBoxContainer LobbyTable;
 	private CanvasLayer TransitionScreen;
@@ -29,9 +65,9 @@ public partial class LobbyBrowser : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 	private void OnFinishedLoadingScene() {
-		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
 
-		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );
 		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 	}
 
@@ -66,21 +102,22 @@ public partial class LobbyBrowser : Control {
 			return;
 		};
 
-//		uint gameType = Convert.ToUInt32( Steam.GetLobbyData( lobbyId, "gametype" ) );
-		uint gameType = (uint)Player.GameMode.Coop2;
+		string gameType = SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" );
 
-		Node scene;
-		if ( gameType == (uint)Player.GameMode.Multiplayer ) {
+		Node scene = null;
+		switch ( gameType ) {
+		case "Multiplayer":
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
 			);
-		}
-		else {
+			break;
+		case "Online":
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				"res://levels/world.tscn"
 			);
+			break;
 		}
-		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		GameConfiguration.LoadedLevel = scene;
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 
@@ -103,21 +140,49 @@ public partial class LobbyBrowser : Control {
 		TransitionScreen.Call( "transition" );
 		Hide();
 
-		GD.Print( "Joining" );
 		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
+	private void OnLobbySelected( CSteamID lobbyId ) {
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+
+		SelectedLobby = lobbyId;
+
+		PlayerCountLabel.Text = SteamMatchmaking.GetNumLobbyMembers( lobbyId ) + "/" + SteamMatchmaking.GetLobbyMemberLimit( lobbyId );
+
+		string gameType = SteamMatchmaking.GetLobbyData( lobbyId, "gametype" );
+		switch ( gameType ) {
+		case "Online":
+			GameModeLabel.Text = "Cooperative (LOCAL WORLD)";
+			MapNameLabel.Text = "The Fever Dream";
+			break;
+		case "Multiplayer": {
+			Mode.GameMode mode = (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( lobbyId, "gamemode" ) );
+			GameModeLabel.Text = Mode.ModeNames[ mode ];
+
+			MapNameLabel.Text = MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( lobbyId, "map" ) ) ].Name;
+			break; }
+		};
+	}
 
 	private void GetLobbyList() {
-		GD.Print( "Building lobby table..." );
+		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
-		System.Collections.Generic.List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
-		GD.Print( "Got " + lobbyList.Count + " lobbies" );
+		// FIXME:...?
+		for ( int i = 0; i < LobbyTable.GetChildCount(); i++ ) {
+			for ( int c = 0; c < LobbyTable.GetChild( i ).GetChildCount(); c++ ) {
+				LobbyTable.GetChild( i ).GetChild( c ).QueueFree();
+				LobbyTable.GetChild( i ).RemoveChild( LobbyTable.GetChild( i ).GetChild( c ) );
+			}
+			LobbyTable.GetChild( i ).QueueFree();
+			LobbyTable.RemoveChild( LobbyTable.GetChild( i ) );
+		}
 		foreach ( var lobby in lobbyList ) {
 			string lobbyName = SteamMatchmaking.GetLobbyData( lobby, "name" );
 
-			long lobbyMemberCount = SteamMatchmaking.GetNumLobbyMembers( lobby );
-			long lobbyMaxMemberCount = SteamMatchmaking.GetLobbyMemberLimit( lobby );
+			int lobbyMemberCount = SteamMatchmaking.GetNumLobbyMembers( lobby );
+			int lobbyMaxMemberCount = SteamMatchmaking.GetLobbyMemberLimit( lobby );
 			string lobbyMap = SteamMatchmaking.GetLobbyData( lobby, "map" );
 			string lobbyGameMode = SteamMatchmaking.GetLobbyData( lobby, "gamemode" );
 
@@ -126,7 +191,7 @@ public partial class LobbyBrowser : Control {
 			button.Size = new Godot.Vector2( 240, 20 );
 			button.CustomMinimumSize = button.Size;
 
-			button.Pressed += () => { OnJoinGame( lobby ); };
+			button.Pressed += () => { OnLobbySelected( lobby ); };
 
 			LobbyTable.AddChild( button );
 		}
@@ -134,6 +199,10 @@ public partial class LobbyBrowser : Control {
 	private void OnRefreshButtonPressed() {
 		GD.Print( "Refreshing lobbies..." );
 		for ( int i = 0; i < LobbyTable.GetChildCount(); i++ ) {
+			for ( int c = 0; c < LobbyTable.GetChild( i ).GetChildCount(); c++ ) {
+				LobbyTable.GetChild( i ).GetChild( c ).QueueFree();
+				LobbyTable.GetChild( i ).RemoveChild( LobbyTable.GetChild( i ).GetChild( c ) );
+			}
 			LobbyTable.GetChild( i ).QueueFree();
 			LobbyTable.RemoveChild( LobbyTable.GetChild( i ) );
 		}
@@ -148,11 +217,19 @@ public partial class LobbyBrowser : Control {
 		MatchmakingSpinner.Show();
 		MatchmakingLabel.Show();
 
-		MatchmakingLabel.Text = "SORTING CONTRACTS...";
+		CancelMatchmake.Show();
+
+		MatchmakingLabel.Text = "FINDING_MULTIPLAYER_GAME";
+		MatchmakingTimer.Start();
 
 		MatchmakingPhase = 0;
 	}
 	private void OnJoinButtonPressed() {
+		if ( MatchmakingLabel.Visible ) {
+			return; // matchmaking, can't join game
+		}
+
+		OnJoinGame( SelectedLobby );
 	}
 
 	private void OnButtonFocused() {
@@ -160,54 +237,91 @@ public partial class LobbyBrowser : Control {
 		UIChannel.Play();
 	}
 
-	public override void _Process( double delta ) {
-		base._Process( delta );
-		if ( LobbyTable.GetChildCount() == 0 ) {
-			GetLobbyList();
-			SetProcess( false );
+	private void OnMatchmakingLabelTimerTimeout() {
+		string text = MatchmakingLabel.Text;
+
+		int position = 0;
+		int numDots = 0;
+		while ( text.Find( '.', position, false ) != -1 ) {
+			numDots++;
 		}
+
+		if ( numDots < 3 ) {
+			text += ".";
+		} else {
+			text = "FINDING_MULTIPLAYER_GAME";
+		}
+
+		MatchmakingTimer.Start();
 	}
+
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			HostGame.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			HostGame.Theme = AccessibilityManager.DefaultTheme;
-		}
+		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+		HostGame.SetProcess( false );
+		HostGame.SetProcessInternal( false );
 		HostGame.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		HostGame.Connect( "pressed", Callable.From( OnHostGameButtonPressed ) );
 
 		RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			RefreshLobbies.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			RefreshLobbies.Theme = AccessibilityManager.DefaultTheme;
-		}
+		RefreshLobbies.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+		RefreshLobbies.SetProcess( false );
+		RefreshLobbies.SetProcessInternal( false );
 		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			Matchmake.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			Matchmake.Theme = AccessibilityManager.DefaultTheme;
-		}
+		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+		Matchmake.SetProcess( false );
+		Matchmake.SetProcessInternal( false );
 		Matchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
+		CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
+		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+		CancelMatchmake.SetProcess( false );
+		CancelMatchmake.SetProcessInternal( false );
+		CancelMatchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
+
 		MatchmakingLabel = GetNode<Label>( "MatchMakingLabel" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			MatchmakingLabel.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			MatchmakingLabel.Theme = AccessibilityManager.DefaultTheme;
-		}
+		MatchmakingLabel.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+		MatchmakingLabel.SetProcess( false );
+		MatchmakingLabel.SetProcessInternal( false );
+
+		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
+		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
 		
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			LobbyTable.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			LobbyTable.Theme = AccessibilityManager.DefaultTheme;
-		}
+		LobbyTable.SetProcess( false );
+		LobbyTable.SetProcessInternal( false );
+
+		Label MapName = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/MapNameLabel" );
+		MapName.SetProcess( false );
+		MapName.SetProcessInternal( false );
+
+		MapNameLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/Label" );
+		MapNameLabel.SetProcess( false );
+		MapNameLabel.SetProcessInternal( false );
+
+		Label PlayerCount = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/PlayerCountLabel" );
+		PlayerCount.SetProcess( false );
+		PlayerCount.SetProcessInternal( false );
+
+		PlayerCountLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/Label" );
+		PlayerCountLabel.SetProcess( false );
+		PlayerCountLabel.SetProcessInternal( false );
+
+		Label GameMode = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/GameModeLabel" );
+		GameMode.SetProcess( false );
+		GameMode.SetProcessInternal( false );
+
+		GameModeLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/Label" );
+		GameModeLabel.SetProcess( false );
+		GameModeLabel.SetProcessInternal( false );
+
+		Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
+		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
@@ -216,5 +330,7 @@ public partial class LobbyBrowser : Control {
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
+		UIChannel.SetProcess( false );
+		UIChannel.SetProcessInternal( false );
 	}
 };

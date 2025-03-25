@@ -79,7 +79,7 @@ public partial class LobbyFactory : Control {
 		SteamLobby.Instance.SetMap( MapList.Selected );
 		SteamLobby.Instance.SetGameMode( (uint)GameModeList.Selected );
 		SteamLobby.Instance.SetHostStatus( true );
-		GetNode( "/root/GameConfiguration" ).Set( "_game_mode", (uint)Player.GameMode.Multiplayer );
+		GameConfiguration.GameMode = GameMode.Multiplayer;
 
 		NewLoadingScreen = LoadingScreen.Instantiate<CanvasLayer>();
 		GetTree().Root.AddChild( NewLoadingScreen );
@@ -99,17 +99,16 @@ public partial class LobbyFactory : Control {
 			return;
 		};
 
-		CommandConsole.PrintLine( "Starting game..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Starting game...", true );
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
 
-		CommandConsole.PrintLine( "Loading game..." );
-//		GetNode( "/root/Console" ).Call( "print_line", "Loading level " + levelName + "_sp.tscn..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels" + MultiplayerMapManager.MapCache[ MapList.Selected ].FileName + "_mp_" + modeName + ".tscn", 1
 		);
-		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		GameConfiguration.LoadedLevel = scene;
 		scene.Connect( "OnComplete", Callable.From( OnLoadedMap ) );
 	}
 };

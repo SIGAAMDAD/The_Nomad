@@ -2,9 +2,6 @@ using System.Threading;
 using System.Collections.Generic;
 using Steamworks;
 using Godot;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 
 public partial class World : Node2D {
 	[Export]
@@ -14,8 +11,6 @@ public partial class World : Node2D {
 
 	private Control PauseMenu = null;
 	private PackedScene PlayerScene = null;
-
-	private SfxPool AudioPool;
 
 	[Export]
 	public Node2D LevelData = null;
@@ -53,7 +48,6 @@ public partial class World : Node2D {
 	}
 
 	private void OnAudioFinishedLoading() {
-		EmitSignal( "FinishedLoading" );
 		SetProcess( true );
 
 		SceneLoadThread.Join();
@@ -77,6 +71,10 @@ public partial class World : Node2D {
 				PlayerList.AddChild( player );
 			}
 		}
+
+		GD.Print( "Finished loading game world." );
+
+		CallDeferred( "emit_signal", "FinishedLoading" );
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
@@ -126,18 +124,13 @@ public partial class World : Node2D {
 			Player1.SetupSplitScreen( 0 );
 		}
 
-//		_ = new MountainGoapLogging.DefaultLogger(
-//			true
-//			"goap.log"
-//		);
-
 		Players = new Dictionary<CSteamID, CharacterBody2D>();
 
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 
-		PauseMenu.Connect( "leave_lobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		
@@ -149,6 +142,9 @@ public partial class World : Node2D {
 
 		AudioLoadingFinished += OnAudioFinishedLoading;
 
+		PhysicsServer2D.SetActive( true );
+
 		SetProcess( false );
+		SetProcessInternal( false );
 	}
 };

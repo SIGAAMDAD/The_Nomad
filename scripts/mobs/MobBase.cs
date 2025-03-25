@@ -26,6 +26,14 @@ public enum BarkType : uint {
 	Count
 };
 
+public enum AIAwareness : int {
+	Invalid = -1,		// invalid
+	Relaxed,
+	Suspicious,
+	Alert,
+	Count
+};
+
 public partial class MobBase : CharacterBody2D {
 	public enum DirType {
 		North,
@@ -36,13 +44,6 @@ public partial class MobBase : CharacterBody2D {
 		SouthWest,
 		West,
 		NorthWest
-	};
-	public enum Awareness : int {
-		Invalid = -1,		// invalid
-		Relaxed,
-		Suspicious,
-		Alert,
-		Count
 	};
 
 	protected Node2D BloodSplatterTree;
@@ -103,6 +104,17 @@ public partial class MobBase : CharacterBody2D {
 	protected float AimAngle = 0.0f;
 	protected PointLight2D FlashLight;
 
+	// memory
+	protected AIAwareness Awareness = AIAwareness.Relaxed;
+	protected Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
+	protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
+	protected Godot.Vector2 SightPosition = Godot.Vector2.Zero;
+	protected float Fear = 0.0f;
+	protected bool Investigating = false;
+	protected CharacterBody2D Target = null;
+	protected bool CanSeeTarget = false;
+	protected bool TargetReached = false;
+
 	protected AudioStreamPlayer2D MoveChannel;
 	protected AudioStreamPlayer2D BarkChannel;
 	protected AudioStreamPlayer2D AudioChannel;
@@ -118,27 +130,15 @@ public partial class MobBase : CharacterBody2D {
 	protected AnimatedSprite2D ArmAnimations;
 	protected NavigationAgent2D Navigation;
 	protected Color DetectionColor;
-	protected AIBlackboard Blackboard;
 	protected RayCast2D[] SightLines;
 	protected PlayerSystem.AfterImage AfterImage;
 	protected Timer MoveTimer;
 
-	protected Agent Agent;
 	protected Squad Squad;
 
-	public Agent GetAgent() {
-		return Agent;
-	}
 	public float GetHealth() {
 		return Health;
 	}
-	public void SetBlackboard( string key, object value ) {
-		Agent.Memory[ key ] = value;
-	}
-	public object GetBlackboard( string key ) {
-		return Agent.Memory[ key ];
-	}
-
 	private AudioStream GetBarkResource( BarkType bark ) {
 		switch ( bark ) {
 		case BarkType.ManDown:
@@ -202,7 +202,7 @@ public partial class MobBase : CharacterBody2D {
 		}
 	}
 	protected void RecalcSight() {
-		Blackboard.SetSightPosition( GlobalPosition );
+		SightPosition = GlobalPosition;
 		for ( int i = 0; i < SightLines.Length; i++ ) {
 			RayCast2D ray = SightLines[i];
 			float angle = AngleBetweenRays * ( i - SightLines.Length / 2.0f );
@@ -218,10 +218,10 @@ public partial class MobBase : CharacterBody2D {
 		return target is Player || target is MobBase;
 	}
 	protected bool IsAlert() {
-		return Blackboard.GetAwareness() == Awareness.Alert || SightDetectionAmount >= SightDetectionTime;
+		return Awareness == AIAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
 	}
 	protected bool IsSuspicious() {
-		return ( !IsAlert() && Blackboard.GetAwareness() == Awareness.Suspicious ) || SightDetectionAmount >= SightDetectionTime * 0.5f;
+		return ( !IsAlert() && Awareness == AIAwareness.Suspicious ) || SightDetectionAmount >= SightDetectionTime * 0.5f;
 	}
 	protected float Randf( float min, float max ) {
 		return (float)( min + RandomFactory.NextDouble() * ( min - max ) );
@@ -234,6 +234,8 @@ public partial class MobBase : CharacterBody2D {
 		float angle = Randf( 0.0f, 360.0f );
 		AimAngle = angle;
 		LookAngle = angle;
+
+		GD.Print( "Changing investigation angle" );
 
 		ArmAnimations.SetDeferred( "global_rotation", AimAngle );
 		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
@@ -255,7 +257,7 @@ public partial class MobBase : CharacterBody2D {
 	protected void OnMoveTimerTimeout() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
-		} else if ( !AudioCache.Initialized || RandomFactory == null ) {
+		} else if ( !AudioCache.Initialized ) {
 			return;
 		}
 		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
@@ -265,14 +267,48 @@ public partial class MobBase : CharacterBody2D {
 		AfterImage.CallDeferred( "Update", (Player)SightTarget );
 	}
 
+	protected void SetDetectionColor() {
+		switch ( Awareness ) {
+		case AIAwareness.Relaxed:
+			if ( SightDetectionAmount == 0.0f ) {
+				DetectionColor.R = 1.0f;
+				DetectionColor.G = 1.0f;
+				DetectionColor.B = 1.0f;
+			}
+			else {
+				// blue cuz colorblind people will struggle with the difference between suspicious and alert
+				DetectionColor.R = 0.0f;
+				DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+				DetectionColor.B = 0.0f;
+			}
+			break;
+		case AIAwareness.Suspicious:
+			DetectionColor.R = 0.0f;
+			DetectionColor.G = 0.0f;
+			DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+			break;
+		case AIAwareness.Alert:
+			DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+			DetectionColor.G = 0.0f;
+			DetectionColor.B = 0.0f;
+			break;
+		default:
+			break;
+		};
+
+		DetectionMeter.SetDeferred( "default_color", DetectionColor );
+	}
+
 	protected void Init() {
 		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
 		SightDetector = GetNode<Node2D>( "Animations/HeadAnimations/SightCheck" );
+		SightDetector.SetProcess( false );
+		SightDetector.SetProcessInternal( false );
 
-		DetectionMeter = GetNode<Line2D>( "Animations/HeadAnimations/DetectionMeter" );
+		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		DetectionMeter.SetProcess( false );
 		DetectionMeter.SetProcessInternal( false );
 
@@ -287,6 +323,8 @@ public partial class MobBase : CharacterBody2D {
 		MoveTimer.OneShot = true;
 		MoveTimer.WaitTime = 0.40f;
 		MoveTimer.Connect( "timeout", Callable.From( OnMoveTimerTimeout ) );
+		MoveTimer.SetProcess( false );
+		MoveTimer.SetProcessInternal( false );
 		AddChild( MoveTimer );
 
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
@@ -307,11 +345,13 @@ public partial class MobBase : CharacterBody2D {
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		AfterImage = new PlayerSystem.AfterImage();
+		AfterImage.SetProcess( false );
+		AfterImage.SetProcessInternal( false );
 		GetTree().Root.AddChild( AfterImage );
 		
 		ChangeInvestigateAngleTimer = new Timer();
 		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
-		ChangeInvestigateAngleTimer.OneShot = true;
+		ChangeInvestigateAngleTimer.OneShot = false;
 		ChangeInvestigateAngleTimer.SetProcess( false );
 		ChangeInvestigateAngleTimer.SetProcessInternal( false );
 		ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
@@ -343,6 +383,53 @@ public partial class MobBase : CharacterBody2D {
 		AimAngle = LookAngle;
 
 		GenerateRaycasts();
+	}
+	public override void _PhysicsProcess( double delta ) {
+		base._PhysicsProcess( delta );
+		
+		PhysicsPosition = GlobalPosition;
+		if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
+			MoveTimer.Start();
+		}
+		MoveAlongPath();
+	}
+
+	public override void _Process( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 24 ) != 0 ) {
+			return;
+		}
+
+		base._Process( delta );
+
+		if ( GameConfiguration.DemonEyeActive ) {
+			HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
+			ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
+			BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
+		} else {
+			HeadAnimations.SetDeferred( "modulate", DefaultColor );
+		}
+
+		ProcessAnimations();
+
+		/*
+		Agent.State[ "HasTarget" ] = Blackboard.GetHasTarget();
+		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
+		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
+		Agent.State[ "Fear" ] = Blackboard.GetFear();
+		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
+		Agent.State[ "Stims" ] = Blackboard.GetStims();
+		Agent.State[ "SightPosition" ] = Blackboard.GetSightPosition();
+		Agent.State[ "Awareness" ] = Blackboard.GetAwareness();
+		Agent.State[ "Investigating" ] = Blackboard.GetInvestigating();
+		Agent.State[ "InCover" ] = Blackboard.GetInCover();
+		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
+		Agent.State[ "LoseInterest" ] = Blackboard.GetLostInterest();
+
+		Agent.Step();
+		*/
+		Think( (float)delta );
+	}
+	protected virtual void Think( float delta ) {
 	}
 
 	protected void ProcessAnimations()  {
@@ -379,16 +466,12 @@ public partial class MobBase : CharacterBody2D {
 
 //		FlashLight.GlobalRotation = LookAngle;
 	}
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-		PhysicsPosition = GlobalPosition;
-
-		if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
-			MoveTimer.Start();
-		}
-	}
 
 	protected bool MoveAlongPath() {
+		if ( GlobalPosition.DistanceTo( GotoPosition ) <= 10.0f ) {
+			Velocity = Godot.Vector2.Zero;
+			return true;
+		}
 		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
 		AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
 		LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
@@ -397,24 +480,12 @@ public partial class MobBase : CharacterBody2D {
 	}
 	protected void SetNavigationTarget( Godot.Vector2 target ) {
 		Navigation.TargetPosition = target;
-		Blackboard.SetTargetReached( false );
-		Blackboard.SetTargetDistance( PhysicsPosition.DistanceTo( target ) );
-		Blackboard.SetGotoPosition( target );
+		TargetReached = false;
+		GotoPosition = target;
 	}
 	protected void OnTargetReached() {
-		Blackboard.SetTargetReached( true );
-		Blackboard.SetTargetDistance( 0.0f );
+		TargetReached = true;
+		GotoPosition = GlobalPosition;
 		Velocity = Godot.Vector2.Zero;
 	}
-
-#region Actions
-	protected ExecutionStatus Action_RunAway( Agent agent, MountainGoap.Action action ) {
-		if ( Health <= 0.0f ) {
-			return ExecutionStatus.Failed;
-		} else if ( (float)Blackboard.GetTargetDistance() > 1500.0f ) {
-			return ExecutionStatus.Succeeded;
-		}
-		return ExecutionStatus.Executing;
-	}
-#endregion
 };

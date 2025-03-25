@@ -38,8 +38,8 @@ public partial class Squad : Node2D {
 		int iDead = iMember;
 		for ( iMember = iDead; iMember < SquadMemberCount - 1; ++iMember ) {
 			// keep track of body counts
-			int nBodyCount = (int)SquadMembers[iMember].GetBlackboard( "BodyCount" );
-			SquadMembers[iMember].SetBlackboard( "BodyCount", nBodyCount + 1 );
+//			int nBodyCount = (int)SquadMembers[iMember].GetBlackboard( "BodyCount" );
+//			SquadMembers[iMember].SetBlackboard( "BodyCount", nBodyCount + 1 );
 		}
 	}
 };

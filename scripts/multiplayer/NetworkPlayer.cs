@@ -1,3 +1,4 @@
+using System;
 using GDExtension.Wrappers;
 using Godot;
 using PlayerSystem;
@@ -23,6 +24,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 	private byte[] Packet = new byte[ 24 ];
 	private System.IO.MemoryStream PacketStream = null;
 	private System.IO.BinaryWriter PacketWriter = null;
+
+	private Random RandomFactory = null;
 	
 	public string MultiplayerUsername;
 	public CSteamID MultiplayerId;
@@ -33,12 +36,16 @@ public partial class NetworkPlayer : CharacterBody2D {
 	private Resource CurrentWeapon;
 	private CSteamID OwnerId;
 	private int NodeHash;
+
+	private AudioStreamPlayer2D MoveChannel;
 	
 	private AnimatedSprite2D IdleAnimation;
 	private AnimatedSprite2D TorsoAnimation;
 	private AnimatedSprite2D LeftArmAnimation;
 	private AnimatedSprite2D RightArmAnimation;
 	private AnimatedSprite2D LegAnimation;
+
+	private PlayerAnimationState LegAnimationState;
 	
 	// TODO: find some way of sending values back to the client
 	
@@ -159,7 +166,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 			break;
 		};
 
-		switch ( (PlayerAnimationState)packet.ReadByte() ) {
+		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
@@ -205,7 +213,6 @@ public partial class NetworkPlayer : CharacterBody2D {
 
 		byte handsUsed = packet.ReadByte();
 	}
-	
 	public void Damage( CharacterBody2D attacker, float nAmount ) {
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
@@ -213,6 +220,12 @@ public partial class NetworkPlayer : CharacterBody2D {
 		PacketWriter.Write( nAmount );
 		
 		SteamLobby.Instance.SendP2PPacket( OwnerId, Packet );
+	}
+	private void OnLegAnimationFinished() {
+		if ( LegAnimationState == PlayerAnimationState.Running ) {
+			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+			MoveChannel.Play();
+		}
 	}
 	
 	public override void _Ready() {
@@ -227,6 +240,12 @@ public partial class NetworkPlayer : CharacterBody2D {
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
 		RightArmAnimation = GetNode<AnimatedSprite2D>( "RightArm" );
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
+		LegAnimation.Connect( "finished", Callable.From( OnLegAnimationFinished ) );
+
+		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
+		MoveChannel.SetProcess( false );
+		MoveChannel.SetProcessInternal( false );
+
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
 
 		PacketStream = new System.IO.MemoryStream( Packet );

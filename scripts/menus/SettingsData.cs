@@ -12,7 +12,9 @@ public enum AntiAliasing : uint {
 	FXAA,
 	MSAA_2x,
 	MSAA_4x,
-	MSAA_8x
+	MSAA_8x,
+	TAA,
+	FXAA_and_TAA
 };
 
 public partial class SettingsData : Control {
@@ -23,7 +25,7 @@ public partial class SettingsData : Control {
 	private static readonly int AmbienceBus = AudioServer.GetBusIndex( "Ambience" );
 
 	private static WindowMode WindowMode;
-	private static bool VSync;
+	private static DisplayServer.VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
 	private static RenderingServer.ShadowQuality ShadowQuality;
 	private static int MaxFps;
@@ -61,106 +63,40 @@ public partial class SettingsData : Control {
 		return MappingFormatter;
 	}
 
-	public static bool GetNetworkingEnabled() {
-		return EnableNetworking;
-	}
-	public static void SetNetworkingEnabled( bool bNetworking ) {
-		EnableNetworking = bNetworking;
-	}
-	public static bool GetFriendsOnlyNetworking() {
-		return FriendsOnlyNetworking;
-	}
-	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) {
-		FriendsOnlyNetworking = bFriendsOnlyNetworking;
-	}
+	public static bool GetNetworkingEnabled() => EnableNetworking;
+	public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
+	public static bool GetFriendsOnlyNetworking() => FriendsOnlyNetworking;
+	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) => FriendsOnlyNetworking = bFriendsOnlyNetworking;
 
-	public static WindowMode GetWindowMode() {
-		return WindowMode;
-	}
-	public static void SetWindowMode( WindowMode mode ) {
-		WindowMode = mode;
-	}
-	public static bool GetVSync() {
-		return VSync;
-	}
-	public static void SetVSync( bool bVSync ) {
-		VSync = bVSync;
-	}
-	public static AntiAliasing GetAntiAliasing() {
-		return AntiAliasing;
-	}
-	public static void SetAntiAliasing( AntiAliasing mode ) {
-		AntiAliasing = mode;
-	}
-	public static int GetMaxFps() {
-		return MaxFps;
-	}
-	public static void SetMaxFps( int nMaxFps ) {
-		MaxFps = nMaxFps;
-	}
+	public static WindowMode GetWindowMode() => WindowMode;
+	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
+	public static DisplayServer.VSyncMode GetVSync() => VSyncMode;
+	public static void SetVSync( DisplayServer.VSyncMode vsync ) => VSyncMode = vsync;
+	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
+	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
 
-	public static bool GetEffectsOn() {
-		return EffectsOn;
-	}
-	public static void SetEffectsOn( bool bEffectsOn ) {
-		EffectsOn = bEffectsOn;
-	}
-	public static float GetEffectsVolume() {
-		return EffectsVolume;
-	}
-	public static void SetEffectsVolume( float fEffectsVolume ) {
-		EffectsVolume = fEffectsVolume;
-	}
-	public static bool GetMusicOn() {
-		return MusicOn;
-	}
-	public static void SetMusicOn( bool bMusicOn ) {
-		MusicOn = bMusicOn;
-	}
-	public static float GetMusicVolume() {
-		return MusicVolume;
-	}
-	public static void SetMusicVolume( float fMusicVolume ) {
-		MusicVolume = fMusicVolume;
-	}
-	public static bool GetMuteUnfocused() {
-		return MuteUnfocused;
-	}
-	public static void SetMuteUnfocused( bool bMuteUnfocused ) {
-		MuteUnfocused = bMuteUnfocused;
-	}
+	public static bool GetEffectsOn() => EffectsOn;
+	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
+	public static float GetEffectsVolume() => EffectsVolume;
+	public static void SetEffectsVolume( float fEffectsVolume ) => EffectsVolume = fEffectsVolume;
+	public static bool GetMusicOn() => MusicOn;
+	public static void SetMusicOn( bool bMusicOn ) => MusicOn = bMusicOn;
+	public static float GetMusicVolume() => MusicVolume;
+	public static void SetMusicVolume( float fMusicVolume ) => MusicVolume = fMusicVolume;
+	public static bool GetMuteUnfocused() => MuteUnfocused;
+	public static void SetMuteUnfocused( bool bMuteUnfocused ) => MuteUnfocused = bMuteUnfocused;
 
-	public static bool GetHapticEnabled() {
-		return HapticEnabled;
-	}
-	public static void SetHapticEnabled( bool bHapticEnabled ) {
-		HapticEnabled = bHapticEnabled;
-	}
-	public static float GetHapticStrength() {
-		return HapticStrength;
-	}
-	public static void SetHapticStrength( float fHapticStrength ) {
-		HapticStrength = fHapticStrength;
-	}
-	public static bool GetAutoAimEnabled() {
-		return AutoAimEnabled;
-	}
-	public static void SetAutoAimEnabled( bool bAutoAimEnabled ) {
-		AutoAimEnabled = bAutoAimEnabled;
-	}
-	public static bool GetDyslexiaMode() {
-		return DyslexiaMode;
-	}
-	public static void SetDyslexiaMode( bool bDyslexiaMode ) {
-		DyslexiaMode = bDyslexiaMode;
-	}
+	public static bool GetHapticEnabled() => HapticEnabled;
+	public static void SetHapticEnabled( bool bHapticEnabled ) => HapticEnabled = bHapticEnabled;
+	public static float GetHapticStrength() => HapticStrength;
+	public static void SetHapticStrength( float fHapticStrength ) => HapticStrength = fHapticStrength;
+	public static bool GetAutoAimEnabled() => AutoAimEnabled;
+	public static void SetAutoAimEnabled( bool bAutoAimEnabled ) => AutoAimEnabled = bAutoAimEnabled;
+	public static bool GetDyslexiaMode() => DyslexiaMode;
+	public static void SetDyslexiaMode( bool bDyslexiaMode ) => DyslexiaMode = bDyslexiaMode;
 
-	public static bool GetEquipWeaponOnPickup() {
-		return EquipWeaponOnPickup;
-	}
-	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) {
-		EquipWeaponOnPickup = bEquipWeapon;
-	}
+	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
+	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
 
 	private static void LoadAudioSettings( System.IO.BinaryReader reader ) {
 		EffectsOn = reader.ReadBoolean();
@@ -185,14 +121,14 @@ public partial class SettingsData : Control {
 		MaxFps = reader.ReadInt32();
 		ShadowQuality = (RenderingServer.ShadowQuality)reader.ReadInt64();
 		AntiAliasing = (AntiAliasing)reader.ReadUInt32();
-		VSync = reader.ReadBoolean();
+		VSyncMode = (DisplayServer.VSyncMode)reader.ReadUInt32();
 	}
 	private static void SaveVideoSettings( System.IO.BinaryWriter writer ) {
 		writer.Write( (uint)WindowMode );
 		writer.Write( MaxFps );
 		writer.Write( (long)ShadowQuality );
 		writer.Write( (uint)AntiAliasing );
-		writer.Write( VSync );
+		writer.Write( (uint)VSyncMode );
 	}
 	private static void LoadAccessibilitySettings( System.IO.BinaryReader reader ) {
 		ColorblindMode = reader.ReadInt32();
@@ -218,12 +154,20 @@ public partial class SettingsData : Control {
 		writer.Write( HellbreakerEnabled );
 		writer.Write( HellbreakerRevanents );
 	}
+	private static void LoadNetworkingSettings( System.IO.BinaryReader reader ) {
+		EnableNetworking = reader.ReadBoolean();
+		FriendsOnlyNetworking = reader.ReadBoolean();
+	}
+	private static void SaveNetworkingSettings( System.IO.BinaryWriter writer ) {
+		writer.Write( EnableNetworking );
+		writer.Write( FriendsOnlyNetworking );
+	}
 
 	private void GetDefaultConfig() {
 		Default = ResourceLoader.Load( "res://resources/DefaultSettings.tres" );
 
 		WindowMode = (WindowMode)(uint)Default.Get( "_window_mode" );
-		VSync = (bool)Default.Get( "_vsync" );
+		VSyncMode = (DisplayServer.VSyncMode)(uint)Default.Get( "_vsync_mode" );
 		AntiAliasing = (AntiAliasing)(uint)Default.Get( "_anti_aliasing" );
 		ShadowQuality = (RenderingServer.ShadowQuality)(long)Default.Get( "_shadow_quality" );
 		MaxFps = (int)Default.Get( "_max_fps" );
@@ -252,7 +196,7 @@ public partial class SettingsData : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game configuration..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game configuration...", true );
 
 		RefCounted bindingSetup = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/menus/settings_bindings.gd" ).New();
 
@@ -268,7 +212,7 @@ public partial class SettingsData : Control {
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
-			GetNode( "/root/Console" ).Call( "print_line", "...settings file doesn't exist, using defaults" );
+			GetNode( "/root/Console" ).Call( "print_line", "...settings file doesn't exist, using defaults", true );
 			return;
 		}
 
@@ -277,6 +221,7 @@ public partial class SettingsData : Control {
 		LoadAudioSettings( reader );
 		LoadAccessibilitySettings( reader );
 		LoadGameplaySettings( reader );
+		LoadNetworkingSettings( reader );
 	}
 
 	public static void Save() {
@@ -290,6 +235,7 @@ public partial class SettingsData : Control {
 		SaveAudioSettings( writer );
 		SaveAccessibilitySettings( writer );
 		SaveGameplaySettings( writer );
+		SaveNetworkingSettings( writer );
 		writer.Flush();
 
 		ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );

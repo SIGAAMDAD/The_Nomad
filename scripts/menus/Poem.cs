@@ -11,13 +11,14 @@ public partial class Poem : Control {
 	private int CurrentTimer = 0;
 
 	private void OnFinishedLoading() {
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-	}
-	private void OnFinishedLoadingScene() {
-		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
 		QueueFree();
 
-		Node scene = (Node)( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Get( "currentSceneNode" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
+	}
+	private void OnFinishedLoadingScene() {
+		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );
 		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 	}
 	
@@ -27,21 +28,41 @@ public partial class Poem : Control {
 	private void OnTransitionFinished() {
 		Hide();
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 
-		SteamLobby.Instance.SetMaxMembers( 4 );
-		SteamLobby.Instance.CreateLobby();
-		SteamLobby.Instance.SetLobbyName( SteamManager.GetSteamName() + "'s World" );
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
+
+			GameConfiguration.GameMode = GameMode.Online;
+
+			SteamLobby.Instance.SetMaxMembers( 4 );
+			string name = SteamManager.GetSteamName();
+			if ( name[ name.Length - 1 ] == 's' ) {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+			} else {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+			}
+
+			SteamLobby.Instance.CreateLobby();
+		} else {
+			GameConfiguration.GameMode = GameMode.SinglePlayer;
+		}
 
 		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 			"res://levels/world.tscn"
 		);
-		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		GameConfiguration.LoadedLevel = scene;
 
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 
 	public override void _Ready() {
+		if ( SettingsData.GetDyslexiaMode() ) {
+			Theme = AccessibilityManager.DyslexiaTheme;
+		} else {
+			Theme = AccessibilityManager.DefaultTheme;
+		}
+
 		base._Ready();
 
 		Timers = new System.Collections.Generic.List<Timer>{
@@ -62,30 +83,12 @@ public partial class Poem : Control {
 		for ( int i = 0; i < Timers.Count; i++ ) {
 			Timers[i].Connect( "timeout", Callable.From( OnTimerTimeout ) );
 		}
-		for ( int i = 0; i < Labels.Count; i++ ) {
-			if ( SettingsData.GetDyslexiaMode() ) {
-				Labels[i].Theme = AccessibilityManager.DyslexiaTheme;
-			} else {
-				Labels[i].Theme = AccessibilityManager.DefaultTheme;
-			}
-		}
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		Author = GetNode<Label>( "VBoxContainer/AuthorName" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			Author.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			Author.Theme = AccessibilityManager.DefaultTheme;
-		}
-
 		PressEnter = GetNode<Label>( "VBoxContainer/PressEnter" );
-		if ( SettingsData.GetDyslexiaMode() ) {
-			PressEnter.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			PressEnter.Theme = AccessibilityManager.DefaultTheme;
-		}
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );

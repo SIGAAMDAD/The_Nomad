@@ -1,9 +1,13 @@
+using System.Collections.Generic;
+using System.Threading;
 using Godot;
 using Steamworks;
 
 [GlobalClass]
 public partial class SteamManager : Node {
 	private static ulong VIP_ID = 76561199403850315;
+
+	private static List<string> DlcList = null;
 
 	private static AppId_t SteamAppID;
 	private static int SteamAppBuildID;
@@ -14,6 +18,9 @@ public partial class SteamManager : Node {
 
 	private static uint TimedTrialSecondsAllowed;
 	private static uint TimedTrialSecondsPlayed;
+
+	private bool Quit = false;
+	private Thread APIThread = null;
 
 	private SteamAPIWarningMessageHook_t DebugMessageHook;
 
@@ -41,47 +48,46 @@ public partial class SteamManager : Node {
 			}
 		}
 
-		GD.Print( "Language: " + GameLanguage );
-		GD.Print( "AppId: " + SteamAppID );
-		GD.Print( "AppBuildId: " + SteamAppBuildID );
+		GD.Print( "...Language: " + GameLanguage );
+		GD.Print( "...AppId: " + SteamAppID );
+		GD.Print( "...AppBuildId: " + SteamAppBuildID );
 	}
 	private static void LoadUserInfo() {
 		SteamID = SteamUser.GetSteamID();
 		SteamUsername = SteamFriends.GetPersonaName();
 
-		GD.Print( "SteamUser.Id: " + SteamID );
-		GD.Print( "SteamUser.UserName: " + SteamUsername );
+		GD.Print( "...SteamUser.Id: " + SteamID );
+		GD.Print( "...SteamUser.UserName: " + SteamUsername );
+	}
+	private void LoadDLCInfo() {
+		GetNode( "/root/Console" ).Call( "print_line", "Loading Steam DLC information...", true );
+
+		int dlcCount = SteamApps.GetDLCCount();
+		if ( dlcCount == 0 ) {
+			GetNode( "/root/Console" ).Call( "print_line", "...None installed", true );
+			return;
+		}
+
+		GetNode( "/root/Console" ).Call( "print_line", "...Found " + dlcCount + " DLC packets", true );
+		for ( int i = 0; i < dlcCount; i++ ) {
+			bool available;
+			string name;
+			AppId_t dlcId;
+
+			if ( SteamApps.BGetDLCDataByIndex( i, out dlcId, out available, out name, 256 ) ) {
+				GetNode( "/root/Console" ).Call( "print_error", "...Couldn't load info for " + i, true );
+				continue;
+			}
+			GetNode( "/root/Console" ).Call( "print_line", "...Got DLC Packet \"" + name + "\", status: " + available.ToString(), true );
+		}
 	}
 
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		Quit = true;
+	}
     public override void _Ready() {
-		/*
-		if ( Engine.HasSingleton( "Steam" ) ) {
-			OS.SetEnvironment( "SteamAppId", SteamAppID.ToString() );
-			OS.SetEnvironment( "SteamGameId", SteamAppID.ToString() );
-
-			Steam.SteamInitEx( false );
-
-			bool isSteamRunning = Steam.IsSteamRunning();
-			if ( !isSteamRunning ) {
-				GD.PushError( "Steam is not running." );
-				return;
-			}
-
-			SteamID = Steam.GetSteamID();
-			SteamUsername = Steam.GetFriendPersonaName( SteamID );
-
-			if ( SteamID == VIP_ID ) {
-				IsMe = true;
-				GD.Print( "'ello" );
-			}
-
-			GD.Print( "SteamAPI initialized with username " + SteamUsername );
-		} else {
-			SteamID = 0;
-			SteamUsername = "";
-		}
-		*/
-
 		if ( !SteamAPI.IsSteamRunning() ) {
 			GD.Print( "Steam isn't running, not initializing SteamAPI" );
 			return;
@@ -97,16 +103,16 @@ public partial class SteamManager : Node {
 		DebugMessageHook = new SteamAPIWarningMessageHook_t( SteamAPIDebugTextCallback );
 		SteamClient.SetWarningMessageHook( DebugMessageHook );
 
+		APIThread = new Thread( () => { while ( !Quit ) { if ( ( Engine.GetProcessFrames() % 120 ) == 0 ) { SteamAPI.RunCallbacks(); } } } );
+		APIThread.Start();
+
 		LoadAppInfo();
 		LoadUserInfo();
+		LoadDLCInfo();
 	}
 
 	private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
 		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString(), true );
-	}
-
-	public override void _Process( double delta ) {
-		SteamAPI.RunCallbacks();
 	}
 
 	public static void SaveCloudFile( string path ) {

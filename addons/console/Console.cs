@@ -1,13 +1,12 @@
-/*
-using Godot;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using Godot;
+using Steamworks;
 
 public partial class Console : Node {
-	private static Node Instance;
-
-
 	private bool Enabled = true;
 	private bool PauseEnabled = false;
 
@@ -19,67 +18,62 @@ public partial class Console : Node {
 	public delegate void ConsoleUnknownCommandEventHandler();
 
 	private class ConsoleCommand {
-		public Action<List<string>> Function;
-		public List<string> Arguments;
-		public int Required;
+		public Callable Function;
+		public string[] Arguments;
+		public int RequiredArgs;
 		public string Description;
-		public bool Hidden;
+		public bool Hidden = false;
 
-		public ConsoleCommand( Action<List<string>> fn, List<string> args, int nRequired, string description ) {
+		public ConsoleCommand( Callable fn, string[] arguments, int requiredArgs, string description = "" ) {
 			Function = fn;
-			Arguments = args;
-			Required = nRequired;
+			Arguments = arguments;
+			RequiredArgs = requiredArgs;
 			Description = description;
 		}
 	};
 
 	private Control Control = new Control();
 
-	public RichTextLabel RichLabel = new RichTextLabel();
-	public LineEdit LineEdit = new LineEdit();
+	private static RichTextLabel RichLabel = new RichTextLabel();
+	private static LineEdit LineEdit = new LineEdit();
 
-	private Dictionary<string, ConsoleCommand> ConsoleCommands = new Dictionary<string, ConsoleCommand>();
-	private Dictionary<string, List<string>> CommandParameters = new Dictionary<string, List<string>>();
-	private List<string> ConsoleHistory = new List<string>();
-	private int ConsoleHistoryIndex = 0;
-	private bool WasPausedAlready = false;
+	private static Dictionary<string, ConsoleCommand> ConsoleCommands = new Dictionary<string, ConsoleCommand>();
+	private static Dictionary<string, string[]> CommandParameters = new Dictionary<string, string[]>();
+	private static List<string> ConsoleHistory = new List<string>();
+	private static int ConsoleHistoryIndex = 0;
+	private static bool WasPausedAlready = false;
 
-	public void AddCommand( string name, Action<List<string>> fn, List<Godot.Variant> args, int required, string description = "" ) {
-		List<string> strArgs = new List<string>();
-		for ( int i = 0; i < args.Count; i++ ) {
-			strArgs.Add( args[i].ToString() );
-		}
-		ConsoleCommands.Add( name, new ConsoleCommand( fn, strArgs, required, description ) );
+	public static void AddCommand( string name, Callable fn, string[] args, int requiredArgs, string description = "" ) {
+		ConsoleCommands.Add( name, new ConsoleCommand( fn, args, requiredArgs, description ) );
 	}
-	public void RemoveCommand( string name ) {
+	public static void RemoveCommand( string name ) {
 		ConsoleCommands.Remove( name );
 		CommandParameters.Remove( name );
 	}
-	public void AddCommandAutocomplete( string name, List<string> paramList ) {
+	public static void AddCommandAutocompleteList( string name, string[] paramList ) {
 		CommandParameters.Add( name, paramList );
 	}
 
 	public override void _EnterTree() {
 		base._EnterTree();
 
-		System.IO.StreamReader file = new System.IO.StreamReader(
-			ProjectSettings.GlobalizePath( "user://history.txt" )
-		);
-		
+		FileAccess file = FileAccess.Open( "user://history.txt", FileAccess.ModeFlags.Read );
 		if ( file != null ) {
-			while ( !file.EndOfStream ) {
-//				AddInputHistory( file.ReadLine() );
+			while ( !file.EofReached() ) {
+				string line = file.GetLine();
+				if ( line.Length > 0 ) {
+					//AddInputHistory( line );
+				}
 			}
 		}
 
 		CanvasLayer canvasLayer = new CanvasLayer();
 		canvasLayer.Layer = 3;
 		AddChild( canvasLayer );
-
 		Control.AnchorBottom = 1.0f;
 		Control.AnchorRight = 1.0f;
 		canvasLayer.AddChild( Control );
-
+		
 		StyleBoxFlat style = new StyleBoxFlat();
 		style.BgColor = new Color( "000000d7" );
 
@@ -90,128 +84,227 @@ public partial class Console : Node {
 		RichLabel.AnchorRight = 1.0f;
 		RichLabel.AnchorBottom = 0.5f;
 		RichLabel.AddThemeStyleboxOverride( "normal", style );
-		RichLabel.AppendText( "[DEVELOPER CONSOLE]\n" );
+		RichLabel.AppendText( "DEVELOPER CONSOLE\n" );
 		Control.AddChild( RichLabel );
-		
+
 		LineEdit.AnchorTop = 0.5f;
 		LineEdit.AnchorRight = 1.0f;
 		LineEdit.AnchorBottom = 0.5f;
 		LineEdit.PlaceholderText = "> ";
 		LineEdit.Connect( "text_submitted", Callable.From<string>( OnTextEntered ) );
-		LineEdit.Connect( "text_changed", Callable.From( OnLineEditTextChanged ) );
+		LineEdit.Connect( "text_changed", Callable.From<string>( OnLineEditTextChanged ) );
 		Control.AddChild( LineEdit );
-	}
 
+		Control.Visible = true;
+		ProcessMode = ProcessModeEnum.Always;
+	}
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		System.IO.StreamWriter file = new System.IO.StreamWriter(
-			ProjectSettings.GlobalizePath( "user://history.txt" )
-		);
+		FileAccess file = FileAccess.Open( "user://history.txt", FileAccess.ModeFlags.Write );
 		if ( file != null ) {
-			for ( int i = 0; i < ConsoleHistory.Count; i++ ) {
-				file.WriteLine( ConsoleHistory[i] );
+			int writeIndex = 0;
+			int startWriteIndex = ConsoleHistory.Count;
+			foreach ( var line in ConsoleHistory ) {
+				if ( writeIndex >= startWriteIndex ) {
+					file.StoreLine( line );
+				}
+				writeIndex++;
 			}
 		}
 	}
-
 	public override void _Ready() {
 		base._Ready();
-
-		AddCommand( "quit", Callable.From( Quit ), null, 0, "Exit application." );
-		AddCommand( "exit", Callable.From( Quit ), null, 0, "Exit application." );
 	}
-
 	public override void _Input( InputEvent @event ) {
 		base._Input( @event );
 
-		if ( @event is InputEventKey ) {
-			InputEventKey keyEvent = (InputEventKey)@event;
+		InputEventKey keyEvent = @event as InputEventKey;
+		if ( keyEvent != null ) {
 			if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Quoteleft ) {
 				if ( keyEvent.Pressed ) {
-					Toggle();
+					ToggleConsole();
+				}
+				GetTree().Root.SetInputAsHandled();
+			}
+			else if ( keyEvent.PhysicalKeycode == Key.Quoteleft && keyEvent.IsCommandOrControlPressed() ) {
+				if ( keyEvent.Pressed ) {
+					if ( Control.Visible ) {
+						ToggleSize();
+					} else {
+						ToggleConsole();
+						ToggleSize();
+					}
+				}
+				GetTree().Root.SetInputAsHandled();
+			}
+			else if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Escape && Control.Visible ) {
+				if ( keyEvent.Pressed ) {
+					ToggleConsole();
+					GetTree().Root.SetInputAsHandled();
+				}
+			}
+			else if ( Control.Visible && keyEvent.Pressed ) {
+				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Up ) {
+					GetTree().Root.SetInputAsHandled();
+					if ( ConsoleHistoryIndex > 0 ) {
+						ConsoleHistoryIndex--;
+						if ( ConsoleHistoryIndex >= 0 ) {
+							LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
+							LineEdit.CaretColumn = LineEdit.Text.Length;
+							ResetAutocomplete();
+						}
+					}
+				}
+				if( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Down ) {
+					GetTree().Root.SetInputAsHandled();
+					if ( ConsoleHistoryIndex < ConsoleHistory.Count ) {
+						ConsoleHistoryIndex++;
+						if ( ConsoleHistoryIndex < ConsoleHistory.Count ) {
+							LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
+							LineEdit.CaretColumn = LineEdit.Text.Length;
+							ResetAutocomplete();
+						}
+						else {
+							LineEdit.Clear();
+							ResetAutocomplete();
+						}
+					}
+				}
+				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Pageup ) {
+					ScrollBar scroll = RichLabel.GetVScrollBar();
+					Tween tween = CreateTween();
+					tween.TweenProperty( scroll, "value", scroll.Value - ( scroll.Page - scroll.Page * 0.1f ), 0.1f );
+					GetTree().Root.SetInputAsHandled();
+				}
+				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Pagedown ) {
+					ScrollBar scroll = RichLabel.GetVScrollBar();
+					Tween tween = CreateTween();
+					tween.TweenProperty( scroll, "value", scroll.Value + ( scroll.Page - scroll.Page * 0.1f ), 0.1f );
+					GetTree().Root.SetInputAsHandled();
+				}
+				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Tab ) {
+					Autocomplete();
+					GetTree().Root.SetInputAsHandled();
 				}
 			}
 		}
 	}
 
-	private List<string> Suggestions;
+	private List<string> Suggestions = new List<string>();
 	private int CurrentSuggest = 0;
 	private bool Suggesting = false;
 
-	public void Autocomplete() {
+	private void Autocomplete() {
 		if ( Suggesting ) {
 			for ( int i = 0; i < Suggestions.Count; i++ ) {
 				if ( CurrentSuggest == i ) {
-					LineEdit.Text = Suggestions[i].ToString();
+					LineEdit.Text = Suggestions[i];
 					LineEdit.CaretColumn = LineEdit.Text.Length;
 					if ( CurrentSuggest == Suggestions.Count - 1 ) {
 						CurrentSuggest = 0;
 					} else {
 						CurrentSuggest++;
 					}
-					return;
 				}
 			}
 		} else {
-			Suggesting = true;
+			Suggesting = false;
 
 			if ( LineEdit.Text.Find( " " ) != -1 ) {
-				string[] splitText = ParseLineInput( LineEdit.Text );
+				List<string> splitText = ParseLineInput( LineEdit.Text );
+				if ( splitText.Count > 1 ) {
+					string command = splitText[0];
+					string paramInput = splitText[1];
+					if ( CommandParameters.ContainsKey( command ) ) {
+						string[] parameters = CommandParameters[ command ];
+						for ( int i = 0; i < parameters.Length; i++ ) {
+							if ( paramInput.Find( parameters[i] ) != -1 ) {
+								Suggestions.Add( string.Format( "{0} {1}", command, parameters[i] ) );
+							}
+						}
+					}
+				}
 			}
+			else {
+				List<string> commands = new List<string>( ConsoleCommands.Count );
+				foreach ( var command in ConsoleCommands ) {
+					commands.Add( command.ToString() );
+				}
+				commands.Sort();
+				commands.Reverse();
+
+				int prevIndex = 0;
+				for ( int i = 0; i < commands.Count; i++ ) {
+					if ( LineEdit.Text.Length == 0 || commands[i].Contains( LineEdit.Text ) ) {
+						int index = commands[i].Find( LineEdit.Text );
+						if ( index <= prevIndex ) {
+							Suggestions.Insert( 0, commands[i] );
+						} else {
+							Suggestions.Add( commands[i] );
+						}
+						prevIndex = index;
+					}
+				}
+			}
+			Autocomplete();
 		}
 	}
-	private string[] ParseLineInput( string text ) {
-		string[] outArray = new string[ 64 ];
+	private List<string> ParseLineInput( string text ) {
+		List<string> result = new List<string>();
 		bool inQuotes = false;
 		bool escaped = false;
 		string token = "";
+		char c;
 
 		for ( int i = 0; i < text.Length; i++ ) {
-			char tmp = text[i];
+			c = text[i];
 			if ( text[i] == '\\' ) {
 				escaped = true;
-				continue;
-			} else if ( escaped ) {
+				break;
+			}
+			else if ( escaped ) {
 				switch ( text[i] ) {
 				case 'n':
-					tmp = '\n';
+					c = '\n';
 					break;
 				case 't':
-					tmp = '\t';
+					c = '\t';
 					break;
 				case 'r':
-					tmp = '\r';
+					c = '\r';
 					break;
 				case 'a':
-					tmp = '\a';
+					c = '\a';
 					break;
 				case 'b':
-					tmp = '\b';
+					c = '\b';
 					break;
 				case 'f':
-					tmp = '\f';
+					c = '\f';
 					break;
 				};
 				escaped = false;
-			} else if ( text[i] == '\"' ) {
+			}
+			else if ( c == '\"' ) {
 				inQuotes = !inQuotes;
 				continue;
-			} else if ( text[i] == ' ' || text[i] == '\t' ) {
+			}
+			else if ( c == ' ' || c == '\t' ) {
 				if ( !inQuotes ) {
-					outArray.Append( token );
+					result.Add( token );
 					token = "";
+					continue;
 				}
 			}
-			token += tmp;
+			token += c;
 		}
-		outArray.Append( token );
-		return outArray;
+		result.Add( token );
+		return result;
 	}
 	private void OnTextEntered( string text ) {
 		ScrollToBottom();
 		ResetAutocomplete();
-
 		LineEdit.Clear();
 		if ( LineEdit.HasMethod( "edit" ) ) {
 			LineEdit.CallDeferred( "edit" );
@@ -219,65 +312,79 @@ public partial class Console : Node {
 
 		if ( text.StripEdges().Length > 0 ) {
 			AddInputHistory( text );
-			PrintLine( "[i]> " + text + "[/i]" );
-			
-			string[] textSplit = ParseLineInput( text );
-			string command = textSplit.First();
+			PrintLine( string.Format( "[i]> {0}[/i]", text ) );
+			List<string> textSplit = ParseLineInput( text );
+			string command = textSplit[0];
 
-			if ( ConsoleCommands.Keys.Contains( command ) ) {
-				List<string> arguments = (List<string>)textSplit.Skip( 1 ).Take( textSplit.Length - 2 );
-				ConsoleCommand cmd = ConsoleCommands[ command ];
+			if ( ConsoleCommands.ContainsKey( command ) ) {
+				List<string> args = textSplit.Slice( 1, int.MaxValue );
+				ConsoleCommand consoleCommand = ConsoleCommands[ command ];
 
 				if ( command.Match( "calc" ) ) {
 					string expression = "";
-					foreach ( var word in arguments ) {
-						expression += word;
+					for ( int i = 0; i < args.Count; i++ ) {
+						expression += args[i];
 					}
-					cmd.Function.Call( (Godot.Variant)expression );
+					consoleCommand.Function.Call( new Godot.Collections.Array{ expression } );
 					return;
 				}
-
-				if ( arguments.Count < cmd.Required ) {
-					PrintLine( cmd.Description );
+				if ( args.Count > consoleCommand.RequiredArgs ) {
+					//PrintError( string.Format( "usage: {0} {1}", command, consoleCommands.Arguments.ToString() ) );
 					return;
+				} else if ( args.Count > consoleCommand.Arguments.Length ) {
+					args.RemoveRange( consoleCommand.Arguments.Length, args.Count - consoleCommand.Arguments.Length );
 				}
 
-				while ( arguments.Count < cmd.Arguments.Count ) {
-					arguments.Append( "" );
+				while ( args.Count < consoleCommand.Arguments.Length ) {
+					args.Add( "" );
 				}
 
-				cmd.Function.Call( (Godot.Variant)arguments );
+				Godot.Collections.Array<string> arguments = new Godot.Collections.Array<string>();
+				arguments.Resize( args.Count );
+				for ( int i = 0; i < args.Count; i++ ) {
+					arguments[i] = args[i];
+				}
+				consoleCommand.Function.Call( arguments );
+			}
+			else {
+				EmitSignal( "ConsoleUnknownCommand", text );
+				PrintError( "Command not found." );
 			}
 		}
 	}
 
-	public bool IsVisbile() {
-		return Control.Visible;
+
+	public static void PrintError( string text ) {
+		PrintLine( string.Format( "[color=light_coral]\tERROR:[/color] {0}", text ) );
 	}
-	public void ScrollToBottom() {
-		ScrollBar scroll = RichLabel.GetVScrollBar();
-		scroll.Value = scroll.MaxValue - scroll.Page;
+	public static void PrintWarning( string text ) {
+		PrintLine( string.Format( "[color=gold]\tWARNING:[/color] {0}", text ) );
 	}
-	public void ResetAutocomplete() {
+	public static void PrintLine( string text ) {
+		RichLabel.AppendText( string.Format( "{0}\n", text ) );
+		GD.Print( text );
+	}
+
+	private void Disable() {
+		Enabled = false;
+		ToggleConsole();
+	}
+	private void Enable() {
+		Enabled = true;
+	}
+	private void ResetAutocomplete() {
 		Suggestions.Clear();
 		CurrentSuggest = 0;
 		Suggesting = false;
 	}
-	public void ToggleSize() {
+	private void ToggleSize() {
 		if ( Control.AnchorBottom == 1.0f ) {
 			Control.AnchorBottom = 1.9f;
 		} else {
 			Control.AnchorBottom = 1.0f;
 		}
 	}
-	public void Disable() {
-		Enabled = false;
-		Toggle();
-	}
-	public void Enable() {
-		Enabled = true;
-	}
-	public void Toggle() {
+	private void ToggleConsole() {
 		if ( Enabled ) {
 			Control.Visible = !Control.Visible;
 		} else {
@@ -299,12 +406,119 @@ public partial class Console : Node {
 			EmitSignal( "ConsoleClosed" );
 		}
 	}
+	public bool IsVisible() {
+		return Control.Visible;
+	}
+	public void ScrollToBottom() {
+		ScrollBar scroll = RichLabel.GetVScrollBar();
+		scroll.Value = scroll.MaxValue - scroll.Page;
+	}
 
+	private void OnLineEditTextChanged( string newText ) {
+		//ResetAutocomplete();
+	}
+	private void Quit() {
+		GetTree().Quit();
+	}
+	private void Clear() {
+		RichLabel.Clear();
+	}
+	private void DeleteHistory() {
+		ConsoleHistory.Clear();
+		ConsoleHistoryIndex = 0;
+		DirAccess.RemoveAbsolute( "user://history.txt") ;
+	}
+	private void PrintHelp() {
+		RichLabel.AppendText(
+		@"    builtin commands:
+			[color=light_green]calc[/color]: Calculates a given expresion
+			[color=light_green]clear[/color]: Clears the registry view
+			[color=light_green]commands[/color]: Shows a reduced list of all the currently registered commands
+			[color=light_green]commands_list[/color]: Shows a detailed list of all the currently registered commands
+			[color=light_green]delete_history[/color]: Deletes the commands history
+			[color=light_green]echo[/color]: Prints a given string to the console
+			[color=light_green]echo_error[/color]: Prints a given string as an error to the console
+			[color=light_green]echo_info[/color]: Prints a given string as info to the console
+			[color=light_green]echo_warning[/color]: Prints a given string as warning to the console
+			[color=light_green]pause[/color]: Pauses node processing
+			[color=light_green]unpause[/color]: Unpauses node processing
+			[color=light_green]quit[/color]: Quits the game
+		Controls:
+			[color=light_blue]Up[/color] and [color=light_blue]Down[/color] arrow keys to navigate commands history
+			[color=light_blue]PageUp[/color] and [color=light_blue]PageDown[/color] to scroll registry
+			[[color=light_blue]Ctrl[/color] + [color=light_blue]~[/color]] to change console size between half screen and full screen
+			[color=light_blue]~[/color] or [color=light_blue]Esc[/color] key to close the console
+			[color=light_blue]Tab[/color] key to autocomplete, [color=light_blue]Tab[/color] again to cycle between matching suggestions
+			
+			"
+		);
+	}
+	private void Calculate( string command ) {
+		Expression expression = new Expression();
+		Error error = expression.Parse( command );
+		if ( error != Error.Ok ) {
+			PrintError( string.Format( expression.GetErrorText() ) );
+			return;
+		}
+		Godot.Variant result = expression.Execute();
+		if ( !expression.HasExecuteFailed() ) {
+			PrintLine( result.ToString() );
+		} else {
+			PrintError( expression.GetErrorText() );
+		}
+	}
+	private void Commands() {
+		List<string> commands = new List<string>( ConsoleCommands.Count );
+		foreach ( var command in ConsoleCommands ) {
+			commands.Add( command.ToString() );
+		}
+		commands.Sort();
+
+		RichLabel.AppendText( string.Format( "\t{0}\n\n", commands.ToString() ) );
+	}
+	private void ListCommands() {
+		List<string> commands = new List<string>( ConsoleCommands.Count );
+		foreach ( var command in ConsoleCommands ) {
+			commands.Add( command.ToString() );
+		}
+		commands.Sort();
+
+		for ( int i = 0; i < commands.Count; i++ ) {
+			string args = "";
+			string description = ConsoleCommands[ commands[i] ].Description;
+			for ( int a = 0; a < ConsoleCommands[ commands[i] ].Arguments.Length; i++ ) {
+				if ( a < ConsoleCommands[ commands[i] ].RequiredArgs ) {
+					args = "\t[color=cornflower_blue]<" + ConsoleCommands[ commands[i] ].Arguments[a] + ">[/color]";
+				} else {
+					args = "\t<" + ConsoleCommands[ commands[i] ].Arguments[a] + ">";
+				}
+			}
+			RichLabel.AppendText( string.Format( "\t[color=light_green]{0}[/color][color=gray]{1}[/color]:   {2}\n", commands[i], args, description ) );
+		}
+		RichLabel.AppendText( "\n" );
+	}
 	private void AddInputHistory( string text ) {
 		if ( ConsoleHistory.Count == 0 || text != ConsoleHistory.Last() ) {
 			ConsoleHistory.Add( text );
 		}
 		ConsoleHistoryIndex = ConsoleHistory.Count;
 	}
+	
+	private void Pause() {
+		GetTree().Paused = true;
+	}
+	private void Unpause() {
+		GetTree().Paused = false;
+	}
+	private void Exec( string filename ) {
+		string path = "user://" + filename;
+		FileAccess script = FileAccess.Open( path, FileAccess.ModeFlags.Read );
+		if ( script != null ) {
+			while ( !script.EofReached() ) {
+				OnTextEntered( script.GetLine() );
+			}
+		} else {
+			//PrintError( "Script " + filename + " not found." );
+		}
+	}
 };
-*/

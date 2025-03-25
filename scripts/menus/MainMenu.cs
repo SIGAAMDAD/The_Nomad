@@ -1,6 +1,6 @@
+using System.Reflection.Metadata;
 using Godot;
-using System;
-using NathanHoad;
+using Steamworks;
 
 public partial class MainMenu : Control {
 	[Signal]
@@ -16,7 +16,7 @@ public partial class MainMenu : Control {
 
 	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-	private System.Collections.Generic.List<Button> ButtonList = new System.Collections.Generic.List<Button>();
+	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
 
 	private AudioStreamPlayer UIChannel;
@@ -30,13 +30,21 @@ public partial class MainMenu : Control {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 	}
 	private void OnFinishedLoading() {
-		( (Node)GetNode( "/root/GameConfiguration" ).Get( "LoadedLevel" ) ).Call( "ChangeScene" );
+		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Hide();
 	}
 	private void LoadGame() {
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+
+		SteamLobby.Instance.SetMaxMembers( 4 );
+		string name = SteamManager.GetSteamName();
+		if ( name[ name.Length - 1 ] == 's' ) {
+			SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+		} else {
+			SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+		}
 
 		SteamLobby.Instance.CreateLobby();
 
@@ -52,7 +60,7 @@ public partial class MainMenu : Control {
 			"res://levels/world.tscn"
 		);
 
-		GetNode( "/root/GameConfiguration" ).Set( "LoadedLevel", scene );
+		GameConfiguration.LoadedLevel = scene;
 
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoading ) );
 	}
@@ -93,104 +101,118 @@ public partial class MainMenu : Control {
 		GetTree().Quit();
 	}
 
-	private void OnButtonFocused() {
+	private void OnButtonFocused( int nButtonIndex ) {
 		UIChannel.Stream = UISfxManager.ButtonFocused;
 		UIChannel.Play();
+
+		ButtonIndex = nButtonIndex;
+		ButtonList[ ButtonIndex ].Modulate = Selected;
+	}
+	private void OnButtonUnfocused( int nButtonIndex ) {
+		ButtonList[ ButtonIndex ].Modulate = Unselected;
 	}
 
 	public override void _Ready() {
-		Button CampaignButton = GetNode<Button>( "VBoxContainer/CampaignButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			CampaignButton.Theme = AccessibilityManager.DyslexiaTheme;
+		if ( SettingsData.GetDyslexiaMode() ) {
+			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
-			CampaignButton.Theme = AccessibilityManager.DefaultTheme;
+			Theme = AccessibilityManager.DefaultTheme;
 		}
-		CampaignButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		Button CampaignButton = GetNode<Button>( "VBoxContainer/CampaignButton" );
+		CampaignButton.SetProcess( false );
+		CampaignButton.SetProcessInternal( false );
+		CampaignButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		CampaignButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		CampaignButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		CampaignButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
 		CampaignButton.Connect( "pressed", Callable.From( OnCampaignButtonPressed ) );
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			CampaignButton.Text = "CONTINUE_STORY_BUTTON";
 		}
-		ButtonList.Add( CampaignButton );
 
 		Button MultiplayerButton = GetNode<Button>( "VBoxContainer/MultiplayerButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			MultiplayerButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			MultiplayerButton.Theme = AccessibilityManager.DefaultTheme;
-		}
-		MultiplayerButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		MultiplayerButton.SetProcess( false );
+		MultiplayerButton.SetProcessInternal( false );
+		MultiplayerButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 1 ); } ) );
+		MultiplayerButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 1 ); } ) );
+		MultiplayerButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 1 ); } ) );
+		MultiplayerButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 1 ); } ) );
 		MultiplayerButton.Connect( "pressed", Callable.From( OnMultiplayerButtonPressed ) );
-		ButtonList.Add( MultiplayerButton );
 
 		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			SettingsButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			SettingsButton.Theme = AccessibilityManager.DefaultTheme;
-		}
-		SettingsButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		SettingsButton.SetProcess( false );
+		SettingsButton.SetProcessInternal( false );
+		SettingsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 2 ); } ) );
+		SettingsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 2 ); } ) );
+		SettingsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 2 ); } ) );
+		SettingsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 2 ); } ) );
 		SettingsButton.Connect( "pressed", Callable.From( OnSettingsButtonPressed ) );
-		ButtonList.Add( SettingsButton );
 
 		Button ModsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			ModsButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			ModsButton.Theme = AccessibilityManager.DefaultTheme;
-		}
-		ModsButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ModsButton.SetProcess( false );
+		ModsButton.SetProcessInternal( false );
+		ModsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 3 ); } ) );
+		ModsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 3 ); } ) );
+		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 3 ); } ) );
+		ModsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 3 ); } ) );
 		ModsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
-		ButtonList.Add( ModsButton );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			ExitButton.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			ExitButton.Theme = AccessibilityManager.DefaultTheme;
-		}
-		ExitButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ExitButton.SetProcess( false );
+		ExitButton.SetProcessInternal( false );
+		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 4 ); } ) );
+		ExitButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 4 ); } ) );
+		ExitButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 4 ); } ) );
+		ExitButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 4 ); } ) );
 		ExitButton.Connect( "pressed", Callable.From( OnQuitGameButtonPressed ) );
-		ButtonList.Add( ExitButton );
 
 		Label AppVersion = GetNode<Label>( "AppVersion" );
-		if ( (bool)GetNode( "/root/SettingsData" ).Get( "_dyslexia_mode" ) ) {
-			AppVersion.Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			AppVersion.Theme = AccessibilityManager.DefaultTheme;
-		}
+		AppVersion.SetProcess( false );
+		AppVersion.SetProcessInternal( false );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
+		UIChannel.SetProcess( false );
+		UIChannel.SetProcessInternal( false );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+		TransitionScreen.SetProcess( false );
+		TransitionScreen.SetProcessInternal( false );
+
+		CampaignButton.Modulate = Selected;
+		ButtonList = [
+			CampaignButton,
+			MultiplayerButton,
+			SettingsButton,
+			ModsButton,
+			ExitButton
+		];
 	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
+	public override void _UnhandledInput( InputEvent @event ) {
+		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			if ( ButtonIndex == ButtonList.Count - 1 ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {
 				ButtonIndex++;
 			}
-			UIChannel.Stream = UISfxManager.ButtonFocused;
-			UIChannel.Play();
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 		}
-		if ( Input.IsActionJustPressed( "ui_up" ) ) {
+		else if ( Input.IsActionJustPressed( "ui_up" ) ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
 			if ( ButtonIndex == 0 ) {
-				ButtonIndex = ButtonList.Count - 1;
+				ButtonIndex = ButtonList.Length - 1;
 			} else {
 				ButtonIndex--;
 			}
-			UIChannel.Stream = UISfxManager.ButtonFocused;
-			UIChannel.Play();
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 		}
-		if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
+		else if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 			ButtonList[ ButtonIndex ].CallDeferred( "emit_signal", "pressed" );
 		}
-		for ( int i = 0; i < ButtonList.Count; i++ ) {
-			ButtonList[ i ].Modulate = Unselected;
-		}
-		ButtonList[ ButtonIndex ].Modulate = Selected;
 	}
 };

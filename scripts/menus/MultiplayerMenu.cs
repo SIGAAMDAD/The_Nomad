@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class MultiplayerMenu : Control {
 	private Control LobbyBrowser;
@@ -7,7 +6,12 @@ public partial class MultiplayerMenu : Control {
 
 	private void OnLobbyBrowserHostGamePressed() {
 		LobbyBrowser.Hide();
+		LobbyBrowser.SetProcess( false );
+		LobbyBrowser.SetProcessInternal( false );
+
 		LobbyFactory.Show();
+		LobbyFactory.SetProcess( false );
+		LobbyFactory.SetProcessInternal( false );
 	}
 
 	public override void _Ready() {
