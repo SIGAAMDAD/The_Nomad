@@ -588,7 +588,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	public void SendPacket() {
-		if ( !SettingsData.GetNetworkingEnabled() || !NetworkNeedsSync ) {
+		if ( !SettingsData.GetNetworkingEnabled() ) {
 			return;
 		}
 
