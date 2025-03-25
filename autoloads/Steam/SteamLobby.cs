@@ -49,8 +49,6 @@ public partial class SteamLobby : Node {
 	private string LobbyFilterMap;
 	private string LobbyFilterGameMode;
 
-	private nint[] MessageBuffer = new nint[ PACKET_READ_LIMIT ];
-
 	private byte[] CachedPacket = new byte[ 1024 ];
 	private System.IO.MemoryStream PacketStream = null;
 	private System.IO.BinaryReader PacketReader = null;
@@ -321,9 +319,6 @@ public partial class SteamLobby : Node {
 		LobbyMembers.Clear();
 
 		CallDeferred( "emit_signal", "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
-
-		CallDeferred( "set_process", false );
-		CallDeferred( "set_physics_process", false );
 	}
 
 	/*
@@ -542,9 +537,6 @@ public partial class SteamLobby : Node {
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
 		OpenLobbyList();
-
-		SetProcessInternal( false );
-		SetPhysicsProcessInternal( false );
 	}
 	public override void _PhysicsProcess( double delta ) {
 		if ( ( Engine.GetPhysicsFrames() % 8 ) != 0 ) {
