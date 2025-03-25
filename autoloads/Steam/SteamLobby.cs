@@ -176,28 +176,31 @@ public partial class SteamLobby : Node {
 		IsHost = bHost;
 	}
 
+	private void ChatUpdate( string status ) {
+		GetNode( "/root/Console" ).Call( "print_line", status, true );
+	}
 	private void OnLobbyChatUpdate( LobbyChatUpdate_t pCallback ) {
 		string changerName = SteamFriends.GetFriendPersonaName( (CSteamID)pCallback.m_ulSteamIDMakingChange );
 
 		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
 		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
-			GetNode( "/root/Console" ).CallDeferred( "print_line", changerName + " has joined...", true );
+			CallDeferred( "ChatUpdate", changerName + " has joined..." );
 			EmitSignal( "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeLeft:
-			GetNode( "/root/Console" ).CallDeferred( "print_line", changerName + " has faded away...", true );
+			CallDeferred( "ChatUpdate", changerName + " has faded away..." );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeDisconnected:
-			GetNode( "/root/Console" ).CallDeferred( "print_line", changerName + " tweaked out so hard they left the fever dream...", true );
+			CallDeferred( "ChatUpdate", changerName + " tweaked out so hard they left the fever dream..." );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeBanned:
-			GetNode( "/root/Console" ).CallDeferred( "print_line", changerName + " was rejected...", true );
+			CallDeferred( "ChatUpdate", changerName + " was rejected..." );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeKicked:
-			GetNode( "/root/Console" ).CallDeferred( "print_line", changerName + " was excommunicated...", true );
+			CallDeferred( "ChatUpdate", changerName + " was excommunicated..." );
 			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		};
