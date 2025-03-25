@@ -84,6 +84,8 @@ public partial class SteamManager : Node {
 
 	public override void _ExitTree() {
 		base._ExitTree();
+		Quit = true;
+		APIThread.Join();
 	}
     public override void _Ready() {
 		if ( !SteamAPI.IsSteamRunning() ) {
@@ -104,11 +106,14 @@ public partial class SteamManager : Node {
 		LoadAppInfo();
 		LoadUserInfo();
 		LoadDLCInfo();
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
 
-		SteamAPI.RunCallbacks();
+		APIThread = new Thread( () => {
+			while ( !Quit ) {
+				Thread.Sleep( 1500 );
+				SteamAPI.RunCallbacks();
+			}
+		} );
+		APIThread.Start();
 	}
 
     private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
