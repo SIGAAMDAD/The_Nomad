@@ -330,7 +330,7 @@ public partial class LobbyBrowser : Control {
 		MatchmakingLabel.SetProcessInternal( false );
 
 		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
-		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
+//		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
 		
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
 		LobbyTable.SetProcess( false );
@@ -375,9 +375,9 @@ public partial class LobbyBrowser : Control {
 		GameModeFilters.SetProcess( false );
 		GameModeFilters.SetProcessInternal( false );
 
-		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
-		MapFilters.SetProcess( false );
-		MapFilters.SetProcessInternal( false );
+//		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
+//		MapFilters.SetProcess( false );
+//		MapFilters.SetProcessInternal( false );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
