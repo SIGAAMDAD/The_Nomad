@@ -73,6 +73,9 @@ public partial class LobbyBrowser : Control {
 	private static Button CancelMatchmake;
 	private static AudioStreamPlayer UIChannel;
 
+	private static HBoxContainer JoinGame;
+	private static HBoxContainer LobbyManager;
+
 	private static CSteamID SelectedLobby = CSteamID.Nil;
 
 	private static Label MapNameLabel;
@@ -196,6 +199,9 @@ public partial class LobbyBrowser : Control {
 		LobbyData lobby = LobbyList[ lobbyId ];
 		lobby.Refresh();
 
+		LobbyManager.Hide();
+		JoinGame.Show();
+
 		SelectedLobby = lobbyId;
 		PlayerCountLabel.Text = lobby.GetNumMembers() + "/" + lobby.GetMaxMembers();
 
@@ -291,6 +297,12 @@ public partial class LobbyBrowser : Control {
 		MatchmakingTimer.Start();
 	}
 
+	public override void _EnterTree() {
+		base._EnterTree();
+
+		JoinGame.Hide();
+		LobbyManager.Show();
+	}
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -362,6 +374,9 @@ public partial class LobbyBrowser : Control {
 		JoinButton.SetProcessInternal( false );
 		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
+
+		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
+		JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
 
 		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
 		ShowFullServers.SetProcess( false );
