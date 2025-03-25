@@ -240,7 +240,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
 		RightArmAnimation = GetNode<AnimatedSprite2D>( "RightArm" );
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
-		LegAnimation.Connect( "finished", Callable.From( OnLegAnimationFinished ) );
+		LegAnimation.Connect( "animation_finished", Callable.From( OnLegAnimationFinished ) );
 
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		MoveChannel.SetProcess( false );
