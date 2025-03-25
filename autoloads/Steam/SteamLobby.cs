@@ -238,7 +238,8 @@ public partial class SteamLobby : Node {
 			LobbyList.Add( SteamMatchmaking.GetLobbyByIndex( i ) );
 		}
 
-		CallDeferred( "emit_signal", "LobbyListUpdated" );
+		EmitSignal( "LobbyListUpdated" );
+//		CallDeferred( "emit_signal", "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
 //		byte[] data = { (byte)MessageType.Handshake };
