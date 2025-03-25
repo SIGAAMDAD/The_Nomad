@@ -44,7 +44,6 @@ theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "FILTERS"
 
 [node name="FilterList" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 0
 offset_left = 450.0
 offset_top = 28.0
@@ -64,6 +63,7 @@ layout_mode = 2
 text = "Filter Map"
 
 [node name="MapItemList" type="ItemList" parent="FilterList/VBoxContainer"]
+visible = false
 layout_mode = 2
 select_mode = 2
 auto_width = true
@@ -74,6 +74,7 @@ layout_mode = 2
 text = "Filter Game Mode"
 
 [node name="GameModeItemList" type="ItemList" parent="FilterList/VBoxContainer"]
+visible = false
 layout_mode = 2
 select_mode = 2
 auto_width = true
