@@ -226,7 +226,7 @@ public partial class LobbyBrowser : Control {
 				// just refresh the cached data
 				if ( !LobbyList[ lobbyList[i] ].Refresh() ) {
 					// doesn't exist anymore
-					LobbyTable.RemoveChild( LobbyList[ lobbyList[i] ].GetButton() );
+					LobbyTable.CallDeferred( "remove_child", LobbyList[ lobbyList[i] ].GetButton() );
 					LobbyList.Remove( lobbyList[i] );
 				}
 				continue;
