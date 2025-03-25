@@ -418,7 +418,14 @@ public partial class SteamLobby : Node {
 		GD.Print( "Joined lobby " + pCallback.m_ulSteamIDLobby + "." );
 
 		LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-		GameConfiguration.GameMode = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
+		switch ( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) ) {
+		case "Online":
+			GameConfiguration.GameMode = GameMode.Online;
+			break;
+		case "Multiplayer":
+			GameConfiguration.GameMode = GameMode.Multiplayer;
+			break;
+		};
 		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
 		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 
