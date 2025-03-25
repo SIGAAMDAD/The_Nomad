@@ -550,6 +550,8 @@ public partial class SteamLobby : Node {
 
 		base._PhysicsProcess( delta );
 
+		ReadPackets();
+
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
 		}
@@ -559,7 +561,5 @@ public partial class SteamLobby : Node {
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
-
-		ReadPackets();
 	}
 };
