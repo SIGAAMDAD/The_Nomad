@@ -185,23 +185,23 @@ public partial class SteamLobby : Node {
 		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
 		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
 			CallDeferred( "ChatUpdate", changerName + " has joined..." );
-			EmitSignal( "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
+			CallDeferred( "emit_signal", "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeLeft:
 			CallDeferred( "ChatUpdate", changerName + " has faded away..." );
-			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeDisconnected:
 			CallDeferred( "ChatUpdate", changerName + " tweaked out so hard they left the fever dream..." );
-			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeBanned:
 			CallDeferred( "ChatUpdate", changerName + " was rejected..." );
-			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeKicked:
 			CallDeferred( "ChatUpdate", changerName + " was excommunicated..." );
-			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		};
 	}
