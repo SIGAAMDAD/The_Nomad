@@ -86,6 +86,9 @@ public partial class SteamManager : Node {
 		base._ExitTree();
 
 		Quit = true;
+		if ( APIThread != null ) {
+			APIThread.Join();
+		}
 	}
     public override void _Ready() {
 		if ( !SteamAPI.IsSteamRunning() ) {
@@ -103,8 +106,8 @@ public partial class SteamManager : Node {
 		DebugMessageHook = new SteamAPIWarningMessageHook_t( SteamAPIDebugTextCallback );
 		SteamClient.SetWarningMessageHook( DebugMessageHook );
 
-		APIThread = new Thread( () => { while ( !Quit ) { if ( ( Engine.GetProcessFrames() % 120 ) == 0 ) { SteamAPI.RunCallbacks(); } } } );
-		APIThread.Start();
+//		APIThread = new Thread( () => { while ( !Quit ) { if ( ( Engine.GetProcessFrames() % 120 ) == 0 ) { SteamAPI.RunCallbacks(); } } } );
+//		APIThread.Start();
 
 		LoadAppInfo();
 		LoadUserInfo();
@@ -114,8 +117,16 @@ public partial class SteamManager : Node {
 	private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
 		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString(), true );
 	}
+	public override void _Process(double delta) {
+		if ( ( Engine.GetProcessFrames() % 180 ) != 0 ) {
+			return;
+		}
+		base._Process(delta);
 
-	public static void SaveCloudFile( string path ) {
+		SteamAPI.RunCallbacks();
+	}
+
+    public static void SaveCloudFile( string path ) {
 		if ( !SteamRemoteStorage.IsCloudEnabledForAccount() || !SteamRemoteStorage.IsCloudEnabledForApp() ) {
 			GD.Print( "SteamCloud isn't enabled for this application or the account" );
 			return;
