@@ -549,9 +549,7 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		SetProcess( false );
 		SetProcessInternal( false );
-		SetPhysicsProcess( false );
 		SetPhysicsProcessInternal( false );
 	}
 	public override void _PhysicsProcess( double delta ) {
