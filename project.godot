@@ -138,7 +138,7 @@ pathfinding/max_threads=12
 [physics]
 
 2d/run_on_separate_thread=true
-common/physics_ticks_per_second=30
+common/physics_ticks_per_second=20
 common/physics_jitter_fix=0.0
 2d/physics_engine="Rapier2D"
 2d/solver/solver_iterations=2
