@@ -8,12 +8,14 @@ public partial class LobbyBrowser : Control {
 	private class LobbyData {
 		private CSteamID LobbyId;
 		private Button Button;
-		private GameMode GameMode;
 
 		public LobbyData( CSteamID lobbyId ) {
 			LobbyId = lobbyId;
 
 			Button = new Button();
+			Button.Size = new Godot.Vector2( 240, 20 );
+			Button.CustomMinimumSize = Button.Size;
+			Button.Pressed += () => { OnLobbySelected( lobbyId ); };
 
 			Refresh();
 		}
@@ -24,39 +26,79 @@ public partial class LobbyBrowser : Control {
 			}
 
 			Button.Text = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-			GameMode = (GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) );
 			return true;
 		}
 		public int GetMaxMembers() {
 			return SteamMatchmaking.GetLobbyMemberLimit( LobbyId );
 		}
+		public int GetNumMembers() {
+			return SteamMatchmaking.GetNumLobbyMembers( LobbyId );
+		}
+		public GameMode GetGameType() {
+			string gameType = SteamMatchmaking.GetLobbyData( LobbyId, "gametype" );
+			switch ( gameType ) {
+			case "Online":
+				return GameMode.Online;
+			case "Multiplayer":
+				return GameMode.Multiplayer;
+			default:
+				break;
+			};
+			GD.PushError( "[STEAM] Lobby " + LobbyId.ToString() + " doens't have a valid gametype: " + gameType );
+			return GameMode.SinglePlayer;
+		}
+		public Mode.GameMode GetGameMode() {
+			return (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+		}
+		public string GetMapName() {
+			return MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ].Name;
+		}
+		public string GetMapFileName() {
+			return MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ].FileName;
+		}
+		public string GetName() {
+			return SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+		}
+		public Button GetButton() {
+			return Button;
+		}
 	};
 
-	private Dictionary<CSteamID, LobbyData> LobbyList = null;
+	private static Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
+	private static Dictionary<int, bool> MapFilterList = new Dictionary<int, bool>();
 
-	private Button HostGame;
-	private Button RefreshLobbies;
-	private Button Matchmake;
-	private Button CancelMatchmake;
-	private AudioStreamPlayer UIChannel;
+	private static Button HostGame;
+	private static Button RefreshLobbies;
+	private static Button Matchmake;
+	private static Button CancelMatchmake;
+	private static AudioStreamPlayer UIChannel;
 
-	private CSteamID SelectedLobby = CSteamID.Nil;
+	private static CSteamID SelectedLobby = CSteamID.Nil;
 
-	private Label MapNameLabel;
-	private Label PlayerCountLabel;
-	private Label GameModeLabel;
+	private static Label MapNameLabel;
+	private static Label PlayerCountLabel;
+	private static Label GameModeLabel;
 
-	private Control MatchmakingSpinner;
-	private Label MatchmakingLabel;
-	private Timer MatchmakingTimer;
+	private static Control MatchmakingSpinner;
+	private static Label MatchmakingLabel;
+	private static Timer MatchmakingTimer;
 
-	private VBoxContainer LobbyTable;
-	private CanvasLayer TransitionScreen;
+	private static VBoxContainer LobbyTable;
+	private static CanvasLayer TransitionScreen;
 
-	private int MatchmakingPhase = 0;
+	private static CheckBox ShowFullServers;
+	private static ItemList MapFilters;
+	private static ItemList GameModeFilters;
+
+	private static int MatchmakingPhase = 0;
+
+	private static System.Threading.Thread MatchmakingThread = null;
+	private static object MatchmakingLobbyListReady = new object();
 
 	[Signal]
 	public delegate void OnHostGameEventHandler();
+	[Signal]
+	public delegate void MatchmakingFinishedEventHandler();
 
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
@@ -80,6 +122,9 @@ public partial class LobbyBrowser : Control {
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
 		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
+		LobbyData lobby = LobbyList[ (CSteamID)lobbyId ];
+		lobby.Refresh();
+
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		Hide();
@@ -87,31 +132,28 @@ public partial class LobbyBrowser : Control {
 		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
 		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
 
-		string modeName;
-		switch ( SteamLobby.Instance.GetGameMode() ) {
-		case (int)Mode.GameMode.Bloodbath:
-			modeName = "bloodbath";
-			break;
-		case (int)Mode.GameMode.TeamBrawl:
-			modeName = "teambrawl";
-			break;
-		case (int)Mode.GameMode.CaptureTheFlag:
-			modeName = "ctf";
-			break;
-		default:
-			return;
-		};
-
-		string gameType = SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" );
-
 		Node scene = null;
-		switch ( gameType ) {
-		case "Multiplayer":
+		switch ( lobby.GetGameType() ) {
+		case GameMode.Multiplayer: {
+			string modeName;
+			switch ( lobby.GetGameMode() ) {
+			case Mode.GameMode.Bloodbath:
+				modeName = "bloodbath";
+				break;
+			case Mode.GameMode.TeamBrawl:
+				modeName = "teambrawl";
+				break;
+			case Mode.GameMode.CaptureTheFlag:
+				modeName = "ctf";
+				break;
+			default:
+				return;
+			};
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
 			);
-			break;
-		case "Online":
+			break; }
+		case GameMode.Online:
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				"res://levels/world.tscn"
 			);
@@ -122,13 +164,18 @@ public partial class LobbyBrowser : Control {
 	}
 
 	private void MatchmakingLoop() {
-		if ( MatchmakingPhase < 4 ) {
+		// apply filters
+//		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
+
+		while ( MatchmakingPhase < 4 ) {
+			lock ( MatchmakingLobbyListReady ) {
+				System.Threading.Monitor.Wait( MatchmakingLobbyListReady );
+			}
+
 			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
 			SteamMatchmaking.RequestLobbyList();
 		}
-		else {
-			GetNode( "/root/Console" ).Call( "print_line", "No lobby found.", true );
-		}
+		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
 	}
 	private void OnJoinGame( CSteamID lobbyId ) {
 		Tween AudioFade = GetTree().Root.CreateTween();
@@ -143,25 +190,26 @@ public partial class LobbyBrowser : Control {
 		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
-	private void OnLobbySelected( CSteamID lobbyId ) {
+	private static void OnLobbySelected( CSteamID lobbyId ) {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
+		LobbyData lobby = LobbyList[ lobbyId ];
+		lobby.Refresh();
+
 		SelectedLobby = lobbyId;
+		PlayerCountLabel.Text = lobby.GetNumMembers() + "/" + lobby.GetMaxMembers();
 
-		PlayerCountLabel.Text = SteamMatchmaking.GetNumLobbyMembers( lobbyId ) + "/" + SteamMatchmaking.GetLobbyMemberLimit( lobbyId );
-
-		string gameType = SteamMatchmaking.GetLobbyData( lobbyId, "gametype" );
-		switch ( gameType ) {
-		case "Online":
+		switch ( lobby.GetGameType() ) {
+		case GameMode.Online:
 			GameModeLabel.Text = "Cooperative (LOCAL WORLD)";
 			MapNameLabel.Text = "The Fever Dream";
 			break;
-		case "Multiplayer": {
-			Mode.GameMode mode = (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( lobbyId, "gamemode" ) );
+		case GameMode.Multiplayer: {
+			Mode.GameMode mode = lobby.GetGameMode();
 			GameModeLabel.Text = Mode.ModeNames[ mode ];
 
-			MapNameLabel.Text = MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( lobbyId, "map" ) ) ].Name;
+			MapNameLabel.Text = lobby.GetMapName();
 			break; }
 		};
 	}
@@ -169,44 +217,29 @@ public partial class LobbyBrowser : Control {
 	private void GetLobbyList() {
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
-		// FIXME:...?
-		for ( int i = 0; i < LobbyTable.GetChildCount(); i++ ) {
-			for ( int c = 0; c < LobbyTable.GetChild( i ).GetChildCount(); c++ ) {
-				LobbyTable.GetChild( i ).GetChild( c ).QueueFree();
-				LobbyTable.GetChild( i ).RemoveChild( LobbyTable.GetChild( i ).GetChild( c ) );
+		for ( int i = 0; i < lobbyList.Count; i++ ) {
+			if ( LobbyList.ContainsKey( lobbyList[i] ) ) {
+				// just refresh the cached data
+				if ( !LobbyList[ lobbyList[i] ].Refresh() ) {
+					// doesn't exist anymore
+					LobbyTable.RemoveChild( LobbyList[ lobbyList[i] ].GetButton() );
+					LobbyList.Remove( lobbyList[i] );
+				}
+				continue;
 			}
-			LobbyTable.GetChild( i ).QueueFree();
-			LobbyTable.RemoveChild( LobbyTable.GetChild( i ) );
+			LobbyData data = new LobbyData( lobbyList[i] );
+			LobbyList.Add( lobbyList[i], data );
+			LobbyTable.AddChild( data.GetButton() );
 		}
-		foreach ( var lobby in lobbyList ) {
-			string lobbyName = SteamMatchmaking.GetLobbyData( lobby, "name" );
 
-			int lobbyMemberCount = SteamMatchmaking.GetNumLobbyMembers( lobby );
-			int lobbyMaxMemberCount = SteamMatchmaking.GetLobbyMemberLimit( lobby );
-			string lobbyMap = SteamMatchmaking.GetLobbyData( lobby, "map" );
-			string lobbyGameMode = SteamMatchmaking.GetLobbyData( lobby, "gamemode" );
-
-			Button button = new Button();
-			button.Text = lobbyName;
-			button.Size = new Godot.Vector2( 240, 20 );
-			button.CustomMinimumSize = button.Size;
-
-			button.Pressed += () => { OnLobbySelected( lobby ); };
-
-			LobbyTable.AddChild( button );
+		if ( MatchmakingThread.IsAlive ) {
+			lock ( MatchmakingLobbyListReady ) {
+				System.Threading.Monitor.Pulse( MatchmakingLobbyListReady );
+			}
 		}
 	}
 	private void OnRefreshButtonPressed() {
 		GD.Print( "Refreshing lobbies..." );
-		for ( int i = 0; i < LobbyTable.GetChildCount(); i++ ) {
-			for ( int c = 0; c < LobbyTable.GetChild( i ).GetChildCount(); c++ ) {
-				LobbyTable.GetChild( i ).GetChild( c ).QueueFree();
-				LobbyTable.GetChild( i ).RemoveChild( LobbyTable.GetChild( i ).GetChild( c ) );
-			}
-			LobbyTable.GetChild( i ).QueueFree();
-			LobbyTable.RemoveChild( LobbyTable.GetChild( i ) );
-		}
-
 		SteamLobby.Instance.OpenLobbyList();
 		GetLobbyList();
 	}
@@ -221,6 +254,8 @@ public partial class LobbyBrowser : Control {
 
 		MatchmakingLabel.Text = "FINDING_MULTIPLAYER_GAME";
 		MatchmakingTimer.Start();
+
+		MatchmakingThread.Start();
 
 		MatchmakingPhase = 0;
 	}
@@ -275,6 +310,7 @@ public partial class LobbyBrowser : Control {
 		Matchmake.SetProcess( false );
 		Matchmake.SetProcessInternal( false );
 		Matchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		Matchmake.Connect( "pressed", Callable.From( OnMatchmakeButtonPressed ) );
 
 		CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
 		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -321,10 +357,28 @@ public partial class LobbyBrowser : Control {
 		GameModeLabel.SetProcessInternal( false );
 
 		Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
+		JoinButton.SetProcess( false );
+		JoinButton.SetProcessInternal( false );
+		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
+
+		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
+		ShowFullServers.SetProcess( false );
+		ShowFullServers.SetProcessInternal( false );
+		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		GameModeFilters = GetNode<ItemList>( "FilterList/VBoxContainer/GameModeItemList" );
+		GameModeFilters.SetProcess( false );
+		GameModeFilters.SetProcessInternal( false );
+
+		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
+		MapFilters.SetProcess( false );
+		MapFilters.SetProcessInternal( false );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
+
+		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
