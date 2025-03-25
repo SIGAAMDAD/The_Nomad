@@ -44,6 +44,7 @@ theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "FILTERS"
 
 [node name="FilterList" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 450.0
 offset_top = 28.0
@@ -98,6 +99,7 @@ texture = SubResource("GradientTexture2D_aa0nf")
 expand_mode = 2
 
 [node name="LobbyList" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 15.9925
