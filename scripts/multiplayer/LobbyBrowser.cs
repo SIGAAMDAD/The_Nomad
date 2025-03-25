@@ -375,9 +375,9 @@ public partial class LobbyBrowser : Control {
 		GameModeFilters.SetProcess( false );
 		GameModeFilters.SetProcessInternal( false );
 
-//		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
-//		MapFilters.SetProcess( false );
-//		MapFilters.SetProcessInternal( false );
+		MapFilters = GetNode<ItemList>( "FilterList/VBoxContainer/MapItemList" );
+		MapFilters.SetProcess( false );
+		MapFilters.SetProcessInternal( false );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
