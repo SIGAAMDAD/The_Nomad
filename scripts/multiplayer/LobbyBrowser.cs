@@ -232,11 +232,11 @@ public partial class LobbyBrowser : Control {
 			LobbyTable.AddChild( data.GetButton() );
 		}
 
-		if ( MatchmakingThread.IsAlive ) {
-			lock ( MatchmakingLobbyListReady ) {
-				System.Threading.Monitor.Pulse( MatchmakingLobbyListReady );
-			}
-		}
+//		if ( MatchmakingThread.IsAlive ) {
+//			lock ( MatchmakingLobbyListReady ) {
+//				System.Threading.Monitor.Pulse( MatchmakingLobbyListReady );
+//			}
+//		}
 	}
 	private void OnRefreshButtonPressed() {
 		GD.Print( "Refreshing lobbies..." );
@@ -378,7 +378,7 @@ public partial class LobbyBrowser : Control {
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
 
-		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
+//		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
