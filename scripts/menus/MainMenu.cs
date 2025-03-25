@@ -31,8 +31,15 @@ public partial class MainMenu : Control {
 	}
 	private void OnFinishedLoading() {
 		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
+		QueueFree();
+
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Hide();
+
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			SteamLobby.Instance.SetProcess( true );
+			SteamLobby.Instance.SetPhysicsProcess( true );
+		}
 	}
 	private void LoadGame() {
 		Hide();
@@ -48,7 +55,7 @@ public partial class MainMenu : Control {
 
 		SteamLobby.Instance.CreateLobby();
 
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 
 		ArchiveSystem.LoadGame();
 

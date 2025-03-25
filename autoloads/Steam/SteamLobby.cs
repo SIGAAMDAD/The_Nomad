@@ -214,9 +214,6 @@ public partial class SteamLobby : Node {
 		LobbyId = (CSteamID)pCallback.m_ulSteamIDLobby;
 		IsHost = true;
 
-		CallDeferred( "set_process", true );
-		CallDeferred( "set_physics_process", true );
-
 		SteamMatchmaking.SetLobbyJoinable( LobbyId, true );
 		SteamMatchmaking.SetLobbyData( LobbyId, "appid", SteamManager.GetAppID().ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gametype", GameConfiguration.GameMode.ToString() );
@@ -431,9 +428,6 @@ public partial class SteamLobby : Node {
 		};
 		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
 		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
-
-		CallDeferred( "set_process", true );
-		CallDeferred( "set_physics_process", true );
 
 		GD.Print( "Sending p2p handshake..." );
 		GetLobbyMembers();
