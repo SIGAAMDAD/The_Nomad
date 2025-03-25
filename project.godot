@@ -38,6 +38,7 @@ config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+run/max_fps=60
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://desertbkgd_icon.png"

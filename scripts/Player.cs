@@ -1471,8 +1471,6 @@ public partial class Player : CharacterBody2D {
 	public override void _Ready() {
 		base._Ready();
 
-		Engine.MaxFps = 0;
-
 		Health = 100.0f;
 		Rage = 60.0f;
 
