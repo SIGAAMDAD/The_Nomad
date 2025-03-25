@@ -544,6 +544,10 @@ public partial class SteamLobby : Node {
 		SetPhysicsProcessInternal( false );
 	}
 	public override void _PhysicsProcess( double delta ) {
+		if ( ( Engine.GetPhysicsFrames() % 20 ) != 0 ) {
+			return;
+		}
+
 		base._PhysicsProcess( delta );
 
 		foreach ( var node in NodeCache ) {
