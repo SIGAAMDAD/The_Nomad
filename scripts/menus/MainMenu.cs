@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
 using Godot;
-using Steamworks;
 
 public partial class MainMenu : Control {
 	[Signal]
@@ -35,11 +33,6 @@ public partial class MainMenu : Control {
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Hide();
-
-		if ( SettingsData.GetNetworkingEnabled() ) {
-			SteamLobby.Instance.SetProcess( true );
-			SteamLobby.Instance.SetPhysicsProcess( true );
-		}
 	}
 	private void LoadGame() {
 		Hide();

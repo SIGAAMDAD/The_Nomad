@@ -16,11 +16,6 @@ public partial class Poem : Control {
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
-
-		if ( SettingsData.GetNetworkingEnabled() ) {
-			SteamLobby.Instance.SetProcess( true );
-			SteamLobby.Instance.SetPhysicsProcess( true );
-		}
 	}
 	private void OnFinishedLoadingScene() {
 		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );

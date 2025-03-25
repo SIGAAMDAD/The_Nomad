@@ -7,7 +7,6 @@ public partial class World : Node2D {
 	[Export]
 	private Player Player1 = null;
 	private Node2D Hellbreaker = null;
-	private Node2D SettingsData = null;
 
 	private Control PauseMenu = null;
 	private PackedScene PlayerScene = null;
@@ -54,6 +53,11 @@ public partial class World : Node2D {
 		AudioLoadThread.Join();
 
 		AudioCache.Initialized = true;
+
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			SteamLobby.Instance.SetProcess( true );
+			SteamLobby.Instance.SetPhysicsProcess( true );
+		}
 
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
