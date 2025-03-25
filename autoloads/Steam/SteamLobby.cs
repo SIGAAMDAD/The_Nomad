@@ -238,7 +238,6 @@ public partial class SteamLobby : Node {
 			LobbyList.Add( SteamMatchmaking.GetLobbyByIndex( i ) );
 		}
 
-		GD.Print( "Emitting signal" );
 		EmitSignal( "LobbyListUpdated" );
 //		CallDeferred( "emit_signal", "LobbyListUpdated" );
 	}

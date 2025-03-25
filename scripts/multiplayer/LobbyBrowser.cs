@@ -217,6 +217,8 @@ public partial class LobbyBrowser : Control {
 	}
 
 	private void GetLobbyList() {
+		GD.Print( "Building lobby list..." );
+
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
@@ -231,7 +233,7 @@ public partial class LobbyBrowser : Control {
 			}
 			LobbyData data = new LobbyData( lobbyList[i] );
 			LobbyList.Add( lobbyList[i], data );
-			LobbyTable.AddChild( data.GetButton() );
+			LobbyTable.CallDeferred( "add_child", data.GetButton() );
 		}
 
 //		if ( MatchmakingThread.IsAlive ) {
