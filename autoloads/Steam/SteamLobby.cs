@@ -344,11 +344,11 @@ public partial class SteamLobby : Node {
 		if ( target == CSteamID.Nil ) {
 			for ( int i = 0; i < LobbyMembers.Count; i++ ) {
 				if ( LobbyMembers[i] != SteamManager.GetSteamID() ) {
-					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
+					SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 				}
 			}
 		} else {
-			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliable, channel );
+			SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 		}
 	}
 
@@ -537,6 +537,11 @@ public partial class SteamLobby : Node {
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
 		OpenLobbyList();
+
+		SetProcess( false );
+		SetPhysicsProcess( false );
+		SetProcessInternal( false );
+		SetPhysicsProcessInternal( false );
 	}
 	public override void _PhysicsProcess( double delta ) {
 		if ( ( Engine.GetPhysicsFrames() % 8 ) != 0 ) {
@@ -544,11 +549,6 @@ public partial class SteamLobby : Node {
 		}
 
 		base._PhysicsProcess( delta );
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		ReadPackets();
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
@@ -556,5 +556,10 @@ public partial class SteamLobby : Node {
 		foreach ( var player in PlayerCache ) {
 			player.Value.Send?.Invoke();
 		}
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		ReadPackets();
 	}
 };
