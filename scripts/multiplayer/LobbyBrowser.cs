@@ -92,8 +92,8 @@ public partial class LobbyBrowser : Control {
 
 	private static int MatchmakingPhase = 0;
 
-	private static System.Threading.Thread MatchmakingThread = null;
-	private static object MatchmakingLobbyListReady = new object();
+//	private static System.Threading.Thread MatchmakingThread = null;
+//	private static object MatchmakingLobbyListReady = new object();
 
 	[Signal]
 	public delegate void OnHostGameEventHandler();
@@ -163,6 +163,7 @@ public partial class LobbyBrowser : Control {
 		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
 	}
 
+	/*
 	private void MatchmakingLoop() {
 		// apply filters
 //		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
@@ -177,6 +178,7 @@ public partial class LobbyBrowser : Control {
 		}
 		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
 	}
+	*/
 	private void OnJoinGame( CSteamID lobbyId ) {
 		Tween AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
@@ -255,7 +257,7 @@ public partial class LobbyBrowser : Control {
 		MatchmakingLabel.Text = "FINDING_MULTIPLAYER_GAME";
 		MatchmakingTimer.Start();
 
-		MatchmakingThread.Start();
+//		MatchmakingThread.Start();
 
 		MatchmakingPhase = 0;
 	}
