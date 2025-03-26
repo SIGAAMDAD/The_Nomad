@@ -12,16 +12,17 @@ enum AntiAliasing {
 	FXAA,
 	MSAA_2x,
 	MSAA_4x,
-	MSAA_8x
+	MSAA_8x,
+	TAA,
+	FXAA_And_TAA
 };
 
 # video
 @export var _window_mode:WindowMode = WindowMode.Fullscreen
 @export var _vsync:DisplayServer.VSyncMode = DisplayServer.VSyncMode.VSYNC_DISABLED
-#@export var _resolution:SettingsManager.Resolution = SettingsManager.Resolution.Res_1280x720
 @export var _antialasing:AntiAliasing = AntiAliasing.None
 @export var _shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
-@export var _max_fps:int = 60
+@export var _bloom_enabled:bool = true
 
 # audio
 @export var _sound_effects_on:bool = true

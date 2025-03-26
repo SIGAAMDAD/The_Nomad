@@ -150,12 +150,6 @@ public partial class SettingsMenu : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		if ( SettingsData.GetDyslexiaMode() ) {
-			Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			Theme = AccessibilityManager.DefaultTheme;
-		}
-
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncButton/VSyncOptionButton" );
 		VSync.SetProcess( false );
 		VSync.SetProcessInternal( false );

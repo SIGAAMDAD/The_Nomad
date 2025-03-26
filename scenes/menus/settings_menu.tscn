@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=25 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_mcc4n"]
@@ -13,6 +13,27 @@
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="8_muhwa"]
 [ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="9_rrg86"]
 [ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
+
+[sub_resource type="Theme" id="Theme_rrg86"]
+TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_rrg86"]
+
+[sub_resource type="SystemFont" id="SystemFont_s4m6w"]
+
+[sub_resource type="SystemFont" id="SystemFont_l0eij"]
+
+[sub_resource type="SystemFont" id="SystemFont_hg0fu"]
+
+[sub_resource type="SystemFont" id="SystemFont_udegp"]
+
+[sub_resource type="SystemFont" id="SystemFont_pt7eq"]
+
+[sub_resource type="SystemFont" id="SystemFont_fd2q8"]
+
+[sub_resource type="SystemFont" id="SystemFont_rxdtf"]
+
+[sub_resource type="SystemFont" id="SystemFont_08gdp"]
 
 [sub_resource type="Resource" id="Resource_qxrc6"]
 script = ExtResource("7_2apr8")
@@ -49,37 +70,54 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = SubResource("Theme_rrg86")
+theme_override_fonts/font = SubResource("SystemFont_rrg86")
 theme_override_font_sizes/font_size = 14
 tab_alignment = 1
-current_tab = 0
+current_tab = 3
 
 [node name="Video" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_s4m6w")
 metadata/_tab_index = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Video"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -293.0
+offset_top = -50.0
+offset_right = 287.0
+offset_bottom = 51.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VSyncButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="VSyncLabel" type="Label" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+size_flags_horizontal = 0
+theme_override_fonts/font = SubResource("SystemFont_l0eij")
 text = "VSYNC"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
+layout_mode = 2
 
 [node name="VSyncOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/VSyncButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
+theme_override_fonts/font = SubResource("SystemFont_hg0fu")
 selected = 0
 item_count = 3
 popup/item_0/text = "DISABLED"
@@ -119,14 +157,25 @@ popup/item_5/id = 5
 
 [node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 
 [node name="AntiAliasingLabel" type="Label" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+size_flags_horizontal = 0
+theme_override_fonts/font = SubResource("SystemFont_udegp")
 text = "ANTI-ALIASING"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
+layout_mode = 2
 
 [node name="AntiAliasingOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_fonts/font = SubResource("SystemFont_pt7eq")
 selected = 0
 item_count = 7
 popup/item_0/text = "NONE"
@@ -146,14 +195,22 @@ popup/item_6/id = 6
 
 [node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 
 [node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_fd2q8")
 text = "WINDOW MODE"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+layout_mode = 2
 
 [node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_rxdtf")
 alignment = 1
 selected = 0
 item_count = 4
@@ -201,40 +258,56 @@ popup/item_6/id = 6
 visible = false
 layout_mode = 2
 mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_08gdp")
 metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -67.0
+offset_right = 290.0
+offset_bottom = 67.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="EffectsOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
+tooltip_text = "Toggles sound effects"
 
 [node name="EffectsOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "SOUND_EFFECTS_ON"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+layout_mode = 2
 
 [node name="EffectsOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
 
 [node name="EffectsVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="EffectsVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "SOUND_EFFECTS_VOLUME"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
+layout_mode = 2
 
 [node name="EffectsVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
+modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(280, 0)
 layout_direction = 2
 layout_mode = 2
@@ -244,26 +317,36 @@ ticks_on_borders = true
 
 [node name="MusicOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="MusicOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "MUSIC_ON"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+layout_mode = 2
 
 [node name="MusicOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 
 [node name="MusicVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="MusicVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "MUSIC_VOLUME"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
+layout_mode = 2
 
 [node name="MusicVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
-custom_minimum_size = Vector2(280, 0)
+modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(308, 0)
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 6
@@ -273,13 +356,18 @@ ticks_on_borders = true
 
 [node name="MuteOnUnfocusedButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="MuteOnUnfocusedButton" type="Label" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "MUTE_ON_UNFOCUSED"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
+layout_mode = 2
 
 [node name="MuteOnUnfocusedCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
@@ -289,38 +377,50 @@ metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -276.0
+offset_top = -53.5
+offset_right = 276.0
+offset_bottom = 53.5
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HapticFeedbackButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-tooltip_text = "Enables controller rumble"
 
 [node name="HapticFeedbackLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "HAPTIC_FEEDBACK"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+layout_mode = 2
 
 [node name="HapticFeedbackCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
 
 [node name="HapticStrengthSlider" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-tooltip_text = "Sets the rumble strength if using a controller"
 
 [node name="HapticStrengthLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "HAPTIC_FEEDBACK_STRENGTH"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
+layout_mode = 2
 
 [node name="HapticStrengthSlider" type="HSlider" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
+modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(280, 0)
 layout_direction = 2
 layout_mode = 2
@@ -330,70 +430,91 @@ ticks_on_borders = true
 
 [node name="AutoAimButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 tooltip_text = "Enables Autoaim"
 
 [node name="AutoAimLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "AUTOAIM"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
+layout_mode = 2
 
 [node name="AutoAimCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
 
 [node name="DyslexiaModeButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 tooltip_text = "Enables Autoaim"
 
 [node name="DyslexiaModeLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "DYSLEXIA_MODE"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+layout_mode = 2
 
 [node name="DyslexiaCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 0
 theme_override_constants/h_separation = 0
 
 [node name="Network" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Network"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -148.0
+offset_top = -26.0
+offset_right = 148.0
+offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="EnableNetworkingButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="EnableNetworkingLabel" type="Label" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "ENABLE_NETWORKING"
 
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+layout_mode = 2
+
 [node name="EnableNetworkingCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="FriendsOnlyButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="FriendsOnlyLabel" type="Label" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "FRIENDS_ONLY"
 
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
+layout_mode = 2
+
 [node name="FriendsOnlyCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
+modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 8

@@ -4,3 +4,5 @@
 
 [resource]
 default_font = ExtResource("1_i71n2")
+TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
+TabBar/colors/font_selected_color = Color(0, 1, 0, 1)

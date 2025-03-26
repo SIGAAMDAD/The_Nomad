@@ -54,6 +54,32 @@ public partial class Console : Node {
 		CommandParameters.Add( name, paramList );
 	}
 
+	private void HistoryPrev() {
+		if ( ConsoleHistoryIndex == 0 ) {
+			return;
+		}
+
+		ConsoleHistoryIndex--;
+		if ( ConsoleHistoryIndex >= 0 ) {
+			LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
+			LineEdit.CaretColumn = LineEdit.Text.Length;
+			ResetAutocomplete();
+		}
+	}
+	private void HistoryNext() {
+		if ( ConsoleHistoryIndex == ConsoleHistory.Count - 1 ) {
+			LineEdit.Clear();
+			return;
+		}
+
+		ConsoleHistoryIndex++;
+		if ( ConsoleHistoryIndex < ConsoleHistory.Count ) {
+			LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
+			LineEdit.CaretColumn = LineEdit.Text.Length;
+		}
+		ResetAutocomplete();
+	}
+
 	public override void _EnterTree() {
 		base._EnterTree();
 
@@ -119,75 +145,38 @@ public partial class Console : Node {
 	public override void _Input( InputEvent @event ) {
 		base._Input( @event );
 
-		InputEventKey keyEvent = @event as InputEventKey;
-		if ( keyEvent != null ) {
-			if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Quoteleft ) {
-				if ( keyEvent.Pressed ) {
-					ToggleConsole();
-				}
-				GetTree().Root.SetInputAsHandled();
-			}
-			else if ( keyEvent.PhysicalKeycode == Key.Quoteleft && keyEvent.IsCommandOrControlPressed() ) {
-				if ( keyEvent.Pressed ) {
-					if ( Control.Visible ) {
-						ToggleSize();
-					} else {
-						ToggleConsole();
-						ToggleSize();
-					}
-				}
-				GetTree().Root.SetInputAsHandled();
-			}
-			else if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Escape && Control.Visible ) {
-				if ( keyEvent.Pressed ) {
-					ToggleConsole();
-					GetTree().Root.SetInputAsHandled();
-				}
-			}
-			else if ( Control.Visible && keyEvent.Pressed ) {
-				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Up ) {
-					GetTree().Root.SetInputAsHandled();
-					if ( ConsoleHistoryIndex > 0 ) {
-						ConsoleHistoryIndex--;
-						if ( ConsoleHistoryIndex >= 0 ) {
-							LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
-							LineEdit.CaretColumn = LineEdit.Text.Length;
-							ResetAutocomplete();
-						}
-					}
-				}
-				if( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Down ) {
-					GetTree().Root.SetInputAsHandled();
-					if ( ConsoleHistoryIndex < ConsoleHistory.Count ) {
-						ConsoleHistoryIndex++;
-						if ( ConsoleHistoryIndex < ConsoleHistory.Count ) {
-							LineEdit.Text = ConsoleHistory[ ConsoleHistoryIndex ];
-							LineEdit.CaretColumn = LineEdit.Text.Length;
-							ResetAutocomplete();
-						}
-						else {
-							LineEdit.Clear();
-							ResetAutocomplete();
-						}
-					}
-				}
-				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Pageup ) {
-					ScrollBar scroll = RichLabel.GetVScrollBar();
-					Tween tween = CreateTween();
-					tween.TweenProperty( scroll, "value", scroll.Value - ( scroll.Page - scroll.Page * 0.1f ), 0.1f );
-					GetTree().Root.SetInputAsHandled();
-				}
-				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Pagedown ) {
-					ScrollBar scroll = RichLabel.GetVScrollBar();
-					Tween tween = CreateTween();
-					tween.TweenProperty( scroll, "value", scroll.Value + ( scroll.Page - scroll.Page * 0.1f ), 0.1f );
-					GetTree().Root.SetInputAsHandled();
-				}
-				if ( keyEvent.GetPhysicalKeycodeWithModifiers() == Key.Tab ) {
-					Autocomplete();
-					GetTree().Root.SetInputAsHandled();
-				}
-			}
+		if ( @event.IsActionPressed( "toggle_console" ) ) {
+			ToggleConsole();
+			GetTree().Root.SetInputAsHandled();
+			return;
+		}
+		if ( !Control.Visible ) {
+			return;
+		}
+
+		bool validInput = false;
+
+		if ( @event.IsActionPressed( "console_history_prev" ) ) {
+			HistoryPrev();
+			validInput = true;
+		} else if ( @event.IsActionPressed( "console_history_next" ) ) {
+			HistoryNext();
+			validInput = true;
+		} else if ( @event.IsActionPressed( "console_bottom" ) ) {
+			ScrollBar scroll = RichLabel.GetVScrollBar();
+			scroll.Value -= scroll.Page - scroll.Page * 0.1f;
+			validInput = true;
+		} else if ( @event.IsActionPressed( "console_top" ) ) {
+			ScrollBar scroll = RichLabel.GetVScrollBar();
+			scroll.Value += scroll.Page + scroll.Page * 0.1f;
+			validInput = true;
+		} else if ( @event.IsActionPressed( "console_autocomplete" ) ) {
+			Autocomplete();
+			validInput = true;
+		}
+
+		if ( validInput ) {
+			GetTree().Root.SetInputAsHandled();
 		}
 	}
 
@@ -316,10 +305,8 @@ public partial class Console : Node {
 			List<string> textSplit = ParseLineInput( text );
 			string command = textSplit[0];
 
-			if ( ConsoleCommands.ContainsKey( command ) ) {
+			if ( ConsoleCommands.TryGetValue( command, out ConsoleCommand consoleCommand) ) {
 				List<string> args = textSplit.Slice( 1, int.MaxValue );
-				ConsoleCommand consoleCommand = ConsoleCommands[ command ];
-
 				if ( command.Match( "calc" ) ) {
 					string expression = "";
 					for ( int i = 0; i < args.Count; i++ ) {
@@ -348,7 +335,6 @@ public partial class Console : Node {
 			}
 			else {
 				EmitSignal( "ConsoleUnknownCommand", text );
-				PrintError( "Command not found." );
 			}
 		}
 	}
@@ -411,7 +397,7 @@ public partial class Console : Node {
 	public bool IsVisible() {
 		return Control.Visible;
 	}
-	public void ScrollToBottom() {
+	public static void ScrollToBottom() {
 		ScrollBar scroll = RichLabel.GetVScrollBar();
 		scroll.Value = scroll.MaxValue - scroll.Page;
 	}
@@ -422,15 +408,15 @@ public partial class Console : Node {
 	private void Quit() {
 		GetTree().Quit();
 	}
-	private void Clear() {
+	private static void Clear() {
 		RichLabel.Clear();
 	}
-	private void DeleteHistory() {
+	private static void DeleteHistory() {
 		ConsoleHistory.Clear();
 		ConsoleHistoryIndex = 0;
 		DirAccess.RemoveAbsolute( "user://history.txt") ;
 	}
-	private void PrintHelp() {
+	private static void PrintHelp() {
 		RichLabel.AppendText(
 		@"    builtin commands:
 			[color=light_green]calc[/color]: Calculates a given expresion
@@ -455,7 +441,7 @@ public partial class Console : Node {
 			"
 		);
 	}
-	private void Calculate( string command ) {
+	private static void Calculate( string command ) {
 		Expression expression = new Expression();
 		Error error = expression.Parse( command );
 		if ( error != Error.Ok ) {
@@ -469,7 +455,7 @@ public partial class Console : Node {
 			PrintError( expression.GetErrorText() );
 		}
 	}
-	private void Commands() {
+	private static void Commands() {
 		List<string> commands = new List<string>( ConsoleCommands.Count );
 		foreach ( var command in ConsoleCommands ) {
 			commands.Add( command.ToString() );
@@ -499,7 +485,7 @@ public partial class Console : Node {
 		}
 		RichLabel.AppendText( "\n" );
 	}
-	private void AddInputHistory( string text ) {
+	private static void AddInputHistory( string text ) {
 		if ( ConsoleHistory.Count == 0 || text != ConsoleHistory.Last() ) {
 			ConsoleHistory.Add( text );
 		}
@@ -520,7 +506,7 @@ public partial class Console : Node {
 				OnTextEntered( script.GetLine() );
 			}
 		} else {
-			//PrintError( "Script " + filename + " not found." );
+			PrintError( "Script " + filename + " not found." );
 		}
 	}
 };

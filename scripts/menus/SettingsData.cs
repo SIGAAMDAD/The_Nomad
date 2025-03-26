@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Configuration.Ini;
 using Godot;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using Microsoft.VisualBasic;
+using System;
 
 public enum WindowMode : uint {
 	Windowed,
@@ -29,6 +34,7 @@ public partial class SettingsData : Control {
 	private static AntiAliasing AntiAliasing;
 	private static RenderingServer.ShadowQuality ShadowQuality;
 	private static int MaxFps;
+	private static bool BloomEnabled;
 
 	private static float HapticStrength;
 	private static bool HapticEnabled;
@@ -74,6 +80,8 @@ public partial class SettingsData : Control {
 	public static void SetVSync( DisplayServer.VSyncMode vsync ) => VSyncMode = vsync;
 	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
 	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
+	public static bool GetBloomEnabled() => BloomEnabled;
+	public static void SetBloomEnabled( bool bBloomEnabled ) => BloomEnabled = bBloomEnabled;
 
 	public static bool GetEffectsOn() => EffectsOn;
 	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
@@ -98,11 +106,11 @@ public partial class SettingsData : Control {
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
 	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
 
-	private static void LoadAudioSettings( System.IO.BinaryReader reader ) {
-		EffectsOn = reader.ReadBoolean();
-		EffectsVolume = (float)reader.ReadDouble();
-		MusicOn = reader.ReadBoolean();
-		MusicVolume = (float)reader.ReadDouble();
+	private static void LoadAudioSettings( IDictionary<string, string> config ) {
+		EffectsOn = Convert.ToBoolean( config[ "Audio:SFXEnabled" ] );
+		EffectsVolume = (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] );
+		MusicOn = Convert.ToBoolean( config[ "Audio:MusicEnabled" ] );
+		MusicVolume = (float)Convert.ToDouble( config[ "Audio:MusicVolume" ] );
 
 		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
 		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
@@ -110,57 +118,120 @@ public partial class SettingsData : Control {
 		AudioServer.SetBusMute( MusicBus, !MusicOn );
 		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
-	private static void SaveAudioSettings( System.IO.BinaryWriter writer ) {
-		writer.Write( EffectsOn );
-		writer.Write( (double)EffectsVolume );
-		writer.Write( MusicOn );
-		writer.Write( (double)MusicVolume );
+	private static void SaveAudioSettings( System.IO.StreamWriter writer ) {
+		writer.WriteLine( "[Audio]" );
+		writer.WriteLine( string.Format( "SFXEnabled={0}", EffectsOn.ToString() ) );
+		writer.WriteLine( string.Format( "SFXVolume={0}", EffectsVolume ) );
+		writer.WriteLine( string.Format( "MusicEnabled={0}", MusicOn.ToString() ) );
+		writer.WriteLine( string.Format( "MusicVolume={0}", MusicVolume ) );
+		writer.WriteLine();
 	}
-	private static void LoadVideoSettings( System.IO.BinaryReader reader ) {
-		WindowMode = (WindowMode)reader.ReadUInt32();
-		MaxFps = reader.ReadInt32();
-		ShadowQuality = (RenderingServer.ShadowQuality)reader.ReadInt64();
-		AntiAliasing = (AntiAliasing)reader.ReadUInt32();
-		VSyncMode = (DisplayServer.VSyncMode)reader.ReadUInt32();
+	private static void LoadVideoSettings( IDictionary<string, string> config ) {
+		switch ( config[ "Video:WindowMode" ] ) {
+		case "Windowed":
+			WindowMode = WindowMode.Windowed;
+			break;
+		case "BorderlessWindowed":
+			WindowMode = WindowMode.BorderlessWindowed;
+			break;
+		case "Fullscreen":
+			WindowMode = WindowMode.Fullscreen;
+			break;
+		case "BorderlessFullscreen":
+			WindowMode = WindowMode.BorderlessFullscreen;
+			break;
+		default:
+			Console.PrintError( "Unknown window mode \"" + config[ "Video:WindowMode" ] + " defaulting to fullscreen." );
+			WindowMode = WindowMode.Fullscreen;
+			break;
+		};
+		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
+//		ShadowQuality = (RenderingServer.ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
+		switch ( config[ "Video:AntiAliasing" ] ) {
+		case "None":
+			AntiAliasing = AntiAliasing.None;
+			break;
+		case "FXAA":
+			AntiAliasing = AntiAliasing.FXAA;
+			break;
+		case "MSAA_2x":
+			AntiAliasing = AntiAliasing.MSAA_2x;
+			break;
+		case "MSAA_4x":
+			AntiAliasing = AntiAliasing.MSAA_4x;
+			break;
+		case "MSAA_8x":
+			AntiAliasing = AntiAliasing.MSAA_8x;
+			break;
+		case "TAA":
+			AntiAliasing = AntiAliasing.TAA;
+			break;
+		case "FXAA_and_TAA":
+			AntiAliasing = AntiAliasing.FXAA_and_TAA;
+			break;
+		};
+		switch ( config[ "Video:VSync" ] ) {
+		case "Disabled":
+			VSyncMode = DisplayServer.VSyncMode.Disabled;
+			break;
+		case "Adaptive":
+			VSyncMode = DisplayServer.VSyncMode.Adaptive;
+			break;
+		case "Enabled":
+			VSyncMode = DisplayServer.VSyncMode.Enabled;
+			break;
+		};
+		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 	}
-	private static void SaveVideoSettings( System.IO.BinaryWriter writer ) {
-		writer.Write( (uint)WindowMode );
-		writer.Write( MaxFps );
-		writer.Write( (long)ShadowQuality );
-		writer.Write( (uint)AntiAliasing );
-		writer.Write( (uint)VSyncMode );
+	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
+		writer.WriteLine( "[Video]" );
+		writer.WriteLine( string.Format( "WindowMode={0}", WindowMode ) );
+		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
+//		writer.WriteLine( string.Format( "ShadowQuality={0}", ShadowQuality ) );
+		writer.WriteLine( string.Format( "AntiAliasing={0}", AntiAliasing ) );
+		writer.WriteLine( string.Format( "VSync={0}", VSyncMode ) );
+		writer.WriteLine( string.Format( "Bloom={0}", BloomEnabled.ToString() ) );
+		writer.WriteLine();
 	}
-	private static void LoadAccessibilitySettings( System.IO.BinaryReader reader ) {
-		ColorblindMode = reader.ReadInt32();
-		HapticStrength = (float)reader.ReadDouble();
-		HapticEnabled = reader.ReadBoolean();
-		AutoAimEnabled = reader.ReadBoolean();
-		DyslexiaMode = reader.ReadBoolean();
+	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
+		ColorblindMode = Convert.ToInt32( config[ "Accessibility:ColorblindMode" ] );
+		HapticStrength = (float)Convert.ToDouble( config[ "Accessibility:HapticStrength" ] );
+		HapticEnabled = Convert.ToBoolean( config[ "Accessibility:HapticEnabled" ] );
+		AutoAimEnabled = Convert.ToBoolean( config[ "Accessibility:AutoAimEnabled" ] );
+		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ] );
+		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ] );
 	}
-	private static void SaveAccessibilitySettings( System.IO.BinaryWriter writer ) {
-		writer.Write( ColorblindMode );
-		writer.Write( (double)HapticStrength );
-		writer.Write( HapticEnabled );
-		writer.Write( AutoAimEnabled );
-		writer.Write( DyslexiaMode );
+	private static void SaveAccessibilitySettings( System.IO.StreamWriter writer ) {
+		writer.WriteLine( "[Accessibility]" );
+		writer.WriteLine( string.Format( "ColorblindMode={0}", ColorblindMode ) );
+		writer.WriteLine( string.Format( "HapticStrength={0}", HapticStrength ) );
+		writer.WriteLine( string.Format( "HapticEnabled={0}", HapticEnabled.ToString() ) );
+		writer.WriteLine( string.Format( "AutoAimEnabled={0}", AutoAimEnabled.ToString() ) );
+		writer.WriteLine( string.Format( "DyslexiaMode={0}", DyslexiaMode.ToString() ) );
+		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", QuicktimeAutocomplete.ToString() ) );
+		writer.WriteLine();
 	}
-	private static void LoadGameplaySettings( System.IO.BinaryReader reader ) {
-		EquipWeaponOnPickup = reader.ReadBoolean();
-		HellbreakerEnabled = reader.ReadBoolean();
-		HellbreakerRevanents = reader.ReadBoolean();
+	private static void LoadGameplaySettings( IDictionary<string, string> config ) {
+		EquipWeaponOnPickup = Convert.ToBoolean( config[ "Gameplay:EquipWeaponOnPickup" ] );
+		HellbreakerEnabled = Convert.ToBoolean( config[ "Gameplay:HellbreakerEnabled" ] );
+		HellbreakerRevanents = Convert.ToBoolean( config[ "Gameplay:HellbreakerRevanents" ] );
 	}
-	private static void SaveGameplaySettings( System.IO.BinaryWriter writer ) {
-		writer.Write( EquipWeaponOnPickup );
-		writer.Write( HellbreakerEnabled );
-		writer.Write( HellbreakerRevanents );
+	private static void SaveGameplaySettings( System.IO.StreamWriter writer ) {
+		writer.WriteLine( "[Gameplay]" );
+		writer.WriteLine( string.Format( "EquipWeaponOnPickup={0}", EquipWeaponOnPickup.ToString() ) );
+		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", HellbreakerEnabled.ToString() ) );
+		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", HellbreakerRevanents.ToString() ) );
+		writer.WriteLine();
 	}
-	private static void LoadNetworkingSettings( System.IO.BinaryReader reader ) {
-		EnableNetworking = reader.ReadBoolean();
-		FriendsOnlyNetworking = reader.ReadBoolean();
+	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
+		EnableNetworking = Convert.ToBoolean( config[ "Networking:EnableNetworking" ] );
+		FriendsOnlyNetworking = Convert.ToBoolean( config[ "Networking:FriendsOnlyNetworking" ] );
 	}
-	private static void SaveNetworkingSettings( System.IO.BinaryWriter writer ) {
-		writer.Write( EnableNetworking );
-		writer.Write( FriendsOnlyNetworking );
+	private static void SaveNetworkingSettings( System.IO.StreamWriter writer ) {
+		writer.WriteLine( "[Networking]" );
+		writer.WriteLine( string.Format( "EnableNetworking={0}", EnableNetworking.ToString() ) );
+		writer.WriteLine( string.Format( "FriendsOnlyNetworking={0}", FriendsOnlyNetworking.ToString() ) );
+		writer.WriteLine();
 	}
 
 	private void GetDefaultConfig() {
@@ -171,6 +242,7 @@ public partial class SettingsData : Control {
 		AntiAliasing = (AntiAliasing)(uint)Default.Get( "_anti_aliasing" );
 		ShadowQuality = (RenderingServer.ShadowQuality)(long)Default.Get( "_shadow_quality" );
 		MaxFps = (int)Default.Get( "_max_fps" );
+		BloomEnabled = (bool)Default.Get( "_bloom_enabled" );
 
 		HapticStrength = (float)Default.Get( "_haptic_strength" );
 		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
@@ -208,7 +280,7 @@ public partial class SettingsData : Control {
 
 		GetDefaultConfig();
 
-		string path = ProjectSettings.GlobalizePath( "user://settings.dat" );
+		string path = ProjectSettings.GlobalizePath( "user://settings.ini" );
 		System.IO.FileStream stream;
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
@@ -218,20 +290,20 @@ public partial class SettingsData : Control {
 			return;
 		}
 
-		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
-		LoadVideoSettings( reader );
-		LoadAudioSettings( reader );
-		LoadAccessibilitySettings( reader );
-		LoadGameplaySettings( reader );
-		LoadNetworkingSettings( reader );
+		IDictionary<string, string> iniData = IniStreamConfigurationProvider.Read( stream );
+		LoadVideoSettings( iniData );
+		LoadAudioSettings( iniData );
+		LoadAccessibilitySettings( iniData );
+		LoadGameplaySettings( iniData );
+		LoadNetworkingSettings( iniData );
 	}
 
 	public static void Save() {
 		Console.PrintLine( "Saving configuration data..." );
 
-		string path = ProjectSettings.GlobalizePath( "user://settings.dat" );
+		string path = ProjectSettings.GlobalizePath( "user://settings.ini" );
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-		System.IO.BinaryWriter writer = new System.IO.BinaryWriter( stream );
+		System.IO.StreamWriter writer = new System.IO.StreamWriter( stream );
 
 		SaveVideoSettings( writer );
 		SaveAudioSettings( writer );
