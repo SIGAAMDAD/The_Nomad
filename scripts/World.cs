@@ -14,8 +14,6 @@ public partial class World : Node2D {
 	[Export]
 	public Node2D LevelData = null;
 	[Signal]
-	public delegate void FinishedLoadingEventHandler();
-	[Signal]
 	public delegate void AudioLoadingFinishedEventHandler();
 
 	private bool Loaded = false;
@@ -76,9 +74,8 @@ public partial class World : Node2D {
 			}
 		}
 
-		GD.Print( "Finished loading game world." );
-
-		CallDeferred( "emit_signal", "FinishedLoading" );
+		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {

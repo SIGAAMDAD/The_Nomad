@@ -1,92 +1,14 @@
 using Godot;
-using MountainGoap;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
 
 namespace Renown {
-	public partial class Relationship : Resource {
-		public enum Type {
-			Acquaintance,
-			Friend,
-			
-			Sibling,
-			Parent,
-			Guardian,
-			
-			Lover,
-			Engaged,
-			Spouse,
-			
-			Dislikes,
-			Enemy,
-			RapBeef
-		};
-		
-		public static int REQUIRED_SCORE_DISLIKES = 50;
-		public static int REQUIRED_SCORE_ENEMY = 35;
-		public static int REQUIRED_SCORE_RAPBEEFs = 10;
-		
-		private Thinker Thinker1;
-		private Thinker Thinker2;
-		private Type Status;
-		private int Score = 50;
-//		[Export]
-//		private EventHistory History;
-		
-		public Relationship( Thinker thinker1, Thinker thinker2, Type type ) {
-			Thinker1 = thinker1;
-			Thinker2 = thinker2;
-			Status = type;
-			Score = 50;
-		}
-		public Relationship() {
-		}
-
-		private void EvaluateRelationStatus() {
-			if ( Score > 50 ) {
-				Status = Type.Acquaintance;
-			} else if ( Score <= 50 ) {
-				Status = Type.Dislikes;
-				if ( Score < 35 ) {
-					Status = Type.Enemy;
-				}
-				if ( Score < 10 ) {
-					Status = Type.RapBeef;
-				}
-			}
-		}
-		
-		public Thinker GetPerson1() {
-			return Thinker1;
-		}
-		public Thinker GetPerson2() {
-			return Thinker2;
-		}
-		public void DecreaseScore( int nAmount ) {
-			Score -= nAmount;
-			EvaluateRelationStatus();
-		}
-		public void IncreaseScore( int nAmount ) {
-			Score += nAmount;
-			EvaluateRelationStatus();
-		}
-		public Type GetStatus() {
-			return Status;
-		}
-		public int GetScore() {
-			return Score;
-		}
-//		public EventHistory GetHistory() {
-//			return History;
-//		}
-	};
-	
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : CharacterBody2D {
 		public enum Occupation {
 			None,
+
+			Bandit,
 			
 			Blacksmith,
 			
@@ -97,7 +19,7 @@ namespace Renown {
 		};
 		
 		[Export]
-		private string BotName;
+		private StringName BotName;
 		[Export]
 		private Godot.Collections.Array<Relationship> SetRelations; // preset relationships
 		[Export]
@@ -124,13 +46,35 @@ namespace Renown {
 		private bool HasMetPlayer = false;
 		[Export]
 		private Godot.Collections.Dictionary<string, bool> Personality;
+		[Export]
+		private float MovementSpeed = 40.0f;
 		
-		private Timer ThinkInterval;
-		private Agent Agent;
-		private List<Relationship> Relations;
-		private NavigationAgent2D Navigation;
+		private Dictionary<Thinker, Relationship> Relations = new Dictionary<Thinker, Relationship>();
+		protected NavigationAgent2D NavAgent;
 		private Godot.Vector2 AngleDir;
-		private Godot.Vector2 NextPathPosition;
+
+		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
+
+		private Settlement Settlement;
+
+		protected AnimatedSprite2D BodyAnimations;
+		protected AnimatedSprite2D ArmAnimations;
+		protected AnimatedSprite2D HeadAnimations;
+
+		// memory
+		protected bool TargetReached = false;
+		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
+		protected float LookAngle = 0.0f;
+		protected float AimAngle = 0.0f;
+
+		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+		protected Color DemonEyeColor;
+
+		protected Timer MoveTimer = null;
+		protected AudioStreamPlayer2D MoveChannel;
+
+		// networking
+		protected NetworkWriter SyncObject = null;
 
 		private uint Money = 0;
 		private uint Pay = 0;
@@ -140,346 +84,112 @@ namespace Renown {
 //			Agent.State[ "Vendor" ] = shop;
 //		}
 		// called when entering a settlement
-		public void SetCurrentSettlement( Settlement location ) {
-			Agent.State[ "Location" ] = location;
+		public void SetCurrentSettlement( Settlement location ) => Settlement = location;
+		
+		protected virtual void SendPacket() {
 		}
+		protected virtual void ReceivePacket( System.IO.BinaryReader reader ) {
+		}
+
+		public virtual void Save() {
+		}
+		public virtual void Load() {
+		}
+
+		protected void ProcessAnimations()  {
+			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
+			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
 		
-		// TODO: personality generation
-		
-		private MountainGoap.Action[] GenerateActions() {
-			// action cost is basically how willing the bot is willing to execute said action
-			
-			//
-			// generic actions
-			//
-			MountainGoap.Action[] actions = {
-				new MountainGoap.Action(
-					name: "GotoNode",
-					null,
-					executor: ( Agent agent, MountainGoap.Action action ) => {
-						if ( !MoveAlongPath() ) {
-							return ExecutionStatus.Failed;
-						}
-						if ( (bool)agent.State[ "TargetReached" ] || (float)agent.State[ "TargetDistance" ] < 10.0f ) {
-							agent.State[ "TargetReached" ] = false;
-							agent.State[ "TargetDistance" ] = 0.0f;
-							return ExecutionStatus.Succeeded;
-						}
-						return ExecutionStatus.Executing;
-					},
-					cost: 20,
-					costCallback: ( MountainGoap.Action action, Dictionary<string, object> currentState ) => {
-						return (float)currentState[ "TargetDistance" ];
-					},
-					preconditions: new Dictionary<string, object>{
-						{ "TargetReached", false }
-					},
-					comparativePreconditions: null,
-//					comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
-//						{ "TargetDistance", new ComparisonValuePair{ Value = 1.0f, Operator = ComparisonOperator.GreaterThan } }
-//					},
-					postconditions: new Dictionary<string, object>{
-						{ "TargetReached", true }
-					}
-				)
-			};
-			
-			//
-			// personality influenced actions
-			//
-			
-			MountainGoap.Action RobSomeone;
-			if ( HasPersonality( "Greedy" ) ) {
-				RobSomeone = new MountainGoap.Action(
-					name: "RobSomeone",
-					null,
-					executor: ( Agent agent, MountainGoap.Action action ) => {
-						return ExecutionStatus.Executing;
-					},
-					cost: 20.0f,
-					costCallback: null,
-					preconditions: new Dictionary<string, object>{
-					},
-					comparativePreconditions: null,
-					postconditions: new Dictionary<string, object>{
-					}
-				);
+			if ( LookAngle > 0.0f ) {
+				HeadAnimations.SetDeferred( "flip_v", true );
+			} else if ( LookAngle < 0.0f ) {
+				HeadAnimations.SetDeferred( "flip_v", false );
 			}
-			else {
-				RobSomeone = new MountainGoap.Action(
-					name: "RobSomeone"
-				);
+			if ( AimAngle > 0.0f ) {
+				ArmAnimations.SetDeferred( "flip_v", true );
+			} else if ( AimAngle < 0.0f ) {
+				ArmAnimations.SetDeferred( "flip_v", false );
 			}
-			actions.Append( RobSomeone );
-			
-			// ...
-			MountainGoap.Action HaveSex;
-			if ( HasPersonality( "Horny" ) ) {
-				HaveSex = new MountainGoap.Action(
-					name: "HaveSex",
-					null,
-					executor: ( Agent agent, MountainGoap.Action action ) => {
-						// check first if the bot has a relationship
-						
-						return ExecutionStatus.Executing;
-					}
-				);
-			}
-			else {
-				
+			if ( Velocity.X > 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", false );
+				ArmAnimations.SetDeferred( "flip_h", false );
+			} else if ( Velocity.X < 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", true );
+				ArmAnimations.SetDeferred( "flip_h", true );
 			}
 
-			return actions;
+			if ( Velocity != Godot.Vector2.Zero ) {
+				BodyAnimations.CallDeferred( "play", "move" );
+				ArmAnimations.CallDeferred( "play", "move" );
+				HeadAnimations.CallDeferred( "play", "move" );
+			} else {
+				BodyAnimations.CallDeferred( "play", "idle" );
+				ArmAnimations.CallDeferred( "play", "idle" );
+				HeadAnimations.CallDeferred( "play", "idle" );
+			}
 		}
-		private BaseGoal[] GenerateGoals() {
-			//
-			// goals that apply to anyone
-			//
-			BaseGoal[] goals = {
-				new Goal(
-					name: "Survive",
-					weight: 95.0f,
-					desiredState: new Dictionary<string, object>{
 
-					}
-				),
-				new ComparativeGoal(
-					name: "GetFood",
-					weight: 95.0f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Food", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } },
-						{ "AtFoodVendor", new ComparisonValuePair{ Value = true, Operator = ComparisonOperator.Equals } }
-					}
-				),
-				new ComparativeGoal(
-					name: "GetWater",
-					weight: 96.0f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Water", new ComparisonValuePair{ Value = 50.0f, Operator = ComparisonOperator.GreaterThanOrEquals } }
-					}
-				),
-				new ComparativeGoal(
-					name: "GetJob",
-					weight: 50.0f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Job", new ComparisonValuePair{ Value = (uint)Occupation.None, Operator = ComparisonOperator.GreaterThan } }
-					}
-				),
-			};
-			
-			//
-			// personality based goals
-			//
-			
-			ComparativeGoal GetMoreMoney;
-			if ( HasPersonality( "Greedy" ) ) {
-				GetMoreMoney = new ComparativeGoal(
-					name: "GetMoreMoney",
-					weight: 80.0f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-//						{ "Money", new ComparisonValuePair{ Value =  } }
-					}
-				);
+		public override void _Ready() {
+			base._Ready();
+
+			if ( SettingsData.GetNetworkingEnabled() ) {
+//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 			}
-			else {
-				GetMoreMoney = new ComparativeGoal();
-			}
-			goals.Append( GetMoreMoney );
-			
-			Goal GetDrunk;
-			if ( HasPersonality( "Alcoholic" ) ) {
-				GetDrunk = new Goal(
-					name: "GetDrunk",
-					weight: 80.0f,
-					desiredState: new Dictionary<string, object>{
-						{ "Drunk", false }
-					}
-				);
-			}
-			else {
-				GetDrunk = new Goal(
-					name: "GetDrunk",
-					weight: 40.0f,
-					desiredState: new Dictionary<string, object>{
-						{ "Drunk", false }
-					}
-				);
-			}
-			goals.Append( GetDrunk );
-			
-			if ( HasPersonality( "Daredevil" ) ) {
-				
-			}
-			else {
-			
-			}
-			
-			if ( HasPersonality( "Horny" ) ) {
-				// ...yep
-				Goal HaveSexGoal = new Goal(
-					name: "HaveSex",
-					weight: 80.0f,
-					desiredState: new Dictionary<string, object>{
-						{ "RecentlyHadSex", false }
-					}
-				);
-			}
-			else {
-				Goal HaveSexGoal = new Goal(
-					name: "HaveSex",
-					weight: Age < 30 ? 70.0f : 40.0f,
-					desiredState: new Dictionary<string, object>{
-						{ "RecentlyHadSex", false }
-					}
-				);
-			}
-			
-			return goals;
+
+			NavAgent = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
+			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 		}
+		public override void _Process( double delta ) {
+			if ( ( Engine.GetProcessFrames() % 24 ) != 0 ) {
+				return;
+			}
+
+			base._Process( delta );
+
+			if ( GameConfiguration.DemonEyeActive ) {
+				HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
+				ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
+				BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
+			} else {
+				HeadAnimations.SetDeferred( "modulate", DefaultColor );
+			}
+
+			ProcessAnimations();
+
+			Think( (float)delta );
+		}
+		public override void _PhysicsProcess( double delta ) {
+			base._PhysicsProcess( delta );
 		
-		private void OnThinkIntervalTimeout() {
-			Agent.Step();
-		}
-		private bool MoveAlongPath() {
-			if ( GlobalPosition == NextPathPosition ) {
-				NextPathPosition = Navigation.GetNextPathPosition();
+			PhysicsPosition = GlobalPosition;
+			if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
+				MoveTimer.Start();
 			}
-//			AngleDir = GlobalPosition.DirectionTo( nextPathPosition ) * MovementSpeed;
-//			Animations.Play( "move" );
-			Velocity = AngleDir;
+			MoveAlongPath();
+		}
+		protected virtual void Think( float delta ) {
+		}
+
+		protected bool MoveAlongPath() {
+			if ( GlobalPosition.DistanceTo( GotoPosition ) <= 10.0f ) {
+				Velocity = Godot.Vector2.Zero;
+				return true;
+			}
+			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
+			AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
+			LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
+			Velocity = AngleDir * MovementSpeed;
 			return MoveAndSlide();
 		}
-		private void OnNavigationTargetReached() {
-			Agent.State[ "TargetReached" ] = true;
+		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {
+			NavAgent.TargetPosition = target;
+			TargetReached = false;
+			GotoPosition = target;
 		}
-		
-		public override void _Ready() {
-			ThinkInterval = GetNode<Timer>( "ThinkInterval" );
-			ThinkInterval.Connect( "timeout", Callable.From( OnThinkIntervalTimeout ) );
-			ThinkInterval.WaitTime = 2.5f;
-			ThinkInterval.Autostart = true;
-			
-			for ( int i = 0; i < SetRelations.Count; i++ ) {
-				Relations.Add( SetRelations[i] );
-			}
-			
-			Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
-			Navigation.Connect( "target_reached", Callable.From( OnNavigationTargetReached ) );
-			
-			BaseGoal[] goals = GenerateGoals();
-			MountainGoap.Action[] actions = GenerateActions();
-			Sensor[] sensors = {
-				new Sensor(
-					runCallback: ( Agent agent ) => {
-						if ( (float)agent.State[ "Food" ] < 50.0f ) {
-							agent.State[ "TargetReached" ] = false;
-						}
-					}
-				)
-			};
-			
-			Agent = new Agent(
-				name: "RenownThinker_" + BotName,
-				state: new Dictionary<string, object>{
-					{ "Drunk", false },
-					{ "Water", 100.0f },
-					{ "Food", 100.0f },
-					{ "Job", (uint)Job },
-					{ "Age", Age },
-					{ "Money", Money },
-					{ "AtFoodVendor", false },
-					{ "AtWeaponsVendor", false },
-					{ "AtProvisionsVendor", false },
-					{ "RecentlyHadSex", false }
-				},
-				memory: new Dictionary<string, object>{
-				},
-				goals: goals,
-				actions: actions,
-				sensors: sensors
-			);
-			
-			Agent.Plan();
-		}
-		
-		public bool HasPersonality( string trait ) {
-			return Personality[ trait ];
-		}
-		public void SetBlackbook( string key, object value ) {
-			Agent.Memory[ key ] = value;
-		}
-		public object GetBlackbook( string key ) {
-			return Agent.Memory[ key ];
-		}
-		
-		public void Save( FileAccess file ) {
-		}
-		public void Load( FileAccess file ) {
-		}
-		
-		public List<Relationship> GetRelationships() {
-			return Relations;
-		}
-		
-		public Relationship GetRelation( Thinker thinker ) {
-			for ( int i = 0; i < Relations.Count; i++ ) {
-				if ( Relations[i].GetPerson1() == thinker || Relations[i].GetPerson2() == thinker ) {
-					return Relations[i];
-				}
-			}
-			return null;
-		}
-		
-		public void MeetPlayer() {
-			if ( HasMetPlayer ) {
-				
-			}
-		}
-		public void MeetThinker( Thinker thinker ) {
-			if ( GetRelation( thinker ) != null ) {
-				return; // already met
-			}
-			Relations.Add( new Relationship( this, thinker, Relationship.Type.Acquaintance ) );
-		}
-		public void AddMoney( uint nAmount ) {
-			Money += nAmount;
-		}
-		
-		//
-		// the juicy stuff
-		//
-		private int DetermineGrudgeSeverity( Relationship relation ) {
-			if ( relation.GetScore() > 50 ) {
-				return 0;
-			}
-			
-			switch ( relation.GetStatus() ) {
-			case Relationship.Type.Dislikes:
-//				return ( 40 + ( Relationship.REQUIRED_SCORE_DISLIKES - relation.GetScore() ) ) + relation.GetHistory().GetGrudgeScore();
-			case Relationship.Type.Enemy:
-//				return ( 80 + ( Relationship.REQUIRED_SCORE_ENEMY - relation.GetScore() ) ) + relation.GetHistory().GetGrudgeScore();
-			case Relationship.Type.RapBeef:
-//				
-			default:
-				break;
-			};
-			
-			return 0;
-		}
-		public void DecreaseRelationship( Thinker thinker, int nAmount ) {
-			Relationship relation = GetRelation( thinker );
-			if ( relation == null ) {
-				return;
-			}
-			relation.DecreaseScore( nAmount );
-//			GD.DebugPrint( "thinker " + Name + " decreased relationship with " + thinker.Name + " by " + nAmount.ToString() );
-		}
-		public void IncreaseRelationship( Thinker thinker, int nAmount ) {
-			Relationship relation = GetRelation( thinker );
-			if ( relation == null ) {
-				return;
-			}
-			relation.IncreaseScore( nAmount );
+		protected virtual void OnTargetReached() {
+			TargetReached = true;
+			GotoPosition = GlobalPosition;
+			Velocity = Godot.Vector2.Zero;
 		}
 	};
 };

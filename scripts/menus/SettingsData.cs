@@ -196,7 +196,8 @@ public partial class SettingsData : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game configuration...", true );
+//		GetNode( "/root/Console" ).Call( "print_line", "Loading game configuration...", true );
+		Console.PrintLine( "Loading game configuration..." );
 
 		RefCounted bindingSetup = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/menus/settings_bindings.gd" ).New();
 
@@ -212,7 +213,8 @@ public partial class SettingsData : Control {
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
-			GetNode( "/root/Console" ).Call( "print_line", "...settings file doesn't exist, using defaults", true );
+//			GetNode( "/root/Console" ).Call( "print_line", "...settings file doesn't exist, using defaults", true );
+			Console.PrintLine( "...settings file doesn't exist, using defaults" );
 			return;
 		}
 
@@ -225,7 +227,7 @@ public partial class SettingsData : Control {
 	}
 
 	public static void Save() {
-		GD.Print( "Saving configuration data..." );
+		Console.PrintLine( "Saving configuration data..." );
 
 		string path = ProjectSettings.GlobalizePath( "user://settings.dat" );
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );

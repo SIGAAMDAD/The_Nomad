@@ -1,6 +1,4 @@
-using System.ComponentModel.Design.Serialization;
 using Godot;
-using NathanHoad;
 
 public partial class CampaignMenu : Control {
 	private Label DifficultyDescriptionLabel;

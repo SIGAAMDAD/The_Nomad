@@ -5,6 +5,8 @@ public enum InteractionType {
 	TreasureChest,
 	Tutorial,
 
+	EaglesPeak,
+
 	Count
 };
 

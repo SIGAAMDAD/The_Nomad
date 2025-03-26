@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GDExtension.Wrappers;
 using Godot;
 
@@ -13,8 +12,10 @@ namespace PlayerSystem {
 		private VBoxContainer StackList;
 
 		private MarginContainer CheckpointInteractor;
+		private MarginContainer JumpInteractor;
 		private MarginContainer CurrentInteractor;
 
+		// checkpoint interaction
 		private Button SaveGameButton;
 		private Button LoadGameButton;
 		private Button OpenStorageButton;
@@ -57,27 +58,19 @@ namespace PlayerSystem {
 
 		private Control BossHealthBar;
 
-		public HealthBar GetHealthBar() {
-			return (HealthBar)HealthBar;
-		}
-		public RageBar GetRageBar() {
-			return (RageBar)RageBar;
-		}
-		public TextureRect GetReflexOverlay() {
-			return ReflexOverlay;
-		}
-		public TextureRect GetDashOverlay() {
-			return DashOverlay;
-		}
+		public HealthBar GetHealthBar() => (HealthBar)HealthBar;
+		public RageBar GetRageBar() => (RageBar)RageBar;
+		public TextureRect GetReflexOverlay() => ReflexOverlay;
+		public TextureRect GetDashOverlay() => DashOverlay;
 		
 		private void SaveStart() {
-			SaveSpinner.CallDeferred( "show" );
+			SaveSpinner.Show();
 		}
 		private void SaveEnd() {
-			SaveTimer.CallDeferred( "start" );
+			SaveTimer.Start();
 		}
 		private void OnSaveTimerTimeout() {
-			SaveSpinner.CallDeferred( "hide" );
+			SaveSpinner.Hide();
 		}
 
 		public override void _Ready() {
@@ -86,45 +79,47 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
-			HealthBar = GetNode<ProgressBar>( "HealthBar" );
+			HealthBar = GetNode<ProgressBar>( "MainHUD/HealthBar" );
 			HealthBar.SetProcess( false );
 			HealthBar.SetProcessInternal( false );
 
-			RageBar = GetNode<ProgressBar>( "RageBar" );
+			RageBar = GetNode<ProgressBar>( "MainHUD/RageBar" );
 			RageBar.SetProcess( false );
 			RageBar.SetProcessInternal( false );
 
-			Inventory = GetNode<MarginContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer" );
+			Inventory = GetNode<MarginContainer>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer" );
 			Inventory.SetProcess( false );
 			Inventory.SetProcessInternal( false );
 
-			StackList = GetNode<VBoxContainer>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
+			StackList = GetNode<VBoxContainer>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
+			StackList.SetProcess( false );
+			StackList.SetProcessInternal( false );
 
-			ItemName = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
+			ItemName = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
 			ItemName.SetProcess( false );
 			ItemName.SetProcessInternal( false );
 
-			ItemType = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
+			ItemType = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
 			ItemType.SetProcess( false );
 			ItemType.SetProcessInternal( false );
 
-			ItemCount = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
+			ItemCount = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
 			ItemCount.SetProcess( false );
 			ItemCount.SetProcessInternal( false );
 
-			ItemStackMax = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
+			ItemStackMax = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
 			ItemStackMax.SetProcess( false );
 			ItemStackMax.SetProcessInternal( false );
 
-			ItemIcon = GetNode<TextureRect>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
+			ItemIcon = GetNode<TextureRect>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
 			ItemIcon.SetProcess( false );
 			ItemIcon.SetProcessInternal( false );
 
-			ItemDescription = GetNode<RichTextLabel>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
+			ItemDescription = GetNode<RichTextLabel>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
 			ItemDescription.SetProcess( false );
 			ItemDescription.SetProcessInternal( false );
 
-			ItemEffect = GetNode<Label>( "Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
+			ItemEffect = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
 			ItemEffect.SetProcess( false );
 			ItemEffect.SetProcessInternal( false );
 
@@ -132,61 +127,61 @@ namespace PlayerSystem {
 			CheckpointInteractor.SetProcess( false );
 			CheckpointInteractor.SetProcessInternal( false );
 
-			ReflexOverlay = GetNode<TextureRect>( "Overlays/ReflexModeOverlay" );
+			ReflexOverlay = GetNode<TextureRect>( "MainHUD/Overlays/ReflexModeOverlay" );
 			ReflexOverlay.SetProcess( false );
 			ReflexOverlay.SetProcessInternal( false );
 
-			DashOverlay = GetNode<TextureRect>( "Overlays/DashOverlay" );
+			DashOverlay = GetNode<TextureRect>( "MainHUD/Overlays/DashOverlay" );
 			DashOverlay.SetProcess( false );
 			DashOverlay.SetProcessInternal( false );
 			DashOverlay.SetPhysicsProcess( false );
 
-			SaveTimer = GetNode<Timer>( "SaveSpinner/SaveTimer" );
+			SaveTimer = GetNode<Timer>( "MainHUD/SaveSpinner/SaveTimer" );
 			SaveTimer.SetProcess( false );
 			SaveTimer.SetProcessInternal( false );
 			SaveTimer.Connect( "timeout", Callable.From( OnSaveTimerTimeout ) );
 
-			SaveSpinner = GetNode<Control>( "SaveSpinner/SaveSpinner" );
+			SaveSpinner = GetNode<Control>( "MainHUD/SaveSpinner/SaveSpinner" );
 			SaveSpinner.SetProcess( false );
 
 			WeaponData = null;
-			WeaponStatus = GetNode<TextureRect>( "WeaponStatus" );
+			WeaponStatus = GetNode<TextureRect>( "MainHUD/WeaponStatus" );
 			WeaponStatus.SetProcess( false );
 			WeaponStatus.SetProcessInternal( false );
 
-			WeaponModeBladed = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
+			WeaponModeBladed = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
 			WeaponModeBladed.SetProcess( false );
 			WeaponModeBladed.SetProcessInternal( false );
 
-			WeaponModeBlunt = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
+			WeaponModeBlunt = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
 			WeaponModeBlunt.SetProcess( false );
 			WeaponModeBlunt.SetProcessInternal( false );
 
-			WeaponModeFirearm = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
+			WeaponModeFirearm = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
 			WeaponModeFirearm.SetProcess( false );
 			WeaponModeFirearm.SetProcessInternal( false );
 
-			WeaponStatusFirearm = GetNode<VBoxContainer>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus" );
+			WeaponStatusFirearm = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus" );
 			WeaponStatusFirearm.SetProcess( false );
 			WeaponStatusFirearm.SetProcessInternal( false );
 
-			WeaponStatusMelee = GetNode<VBoxContainer>( "WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus" );
+			WeaponStatusMelee = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus" );
 			WeaponStatusMelee.SetProcess( false );
 			WeaponStatusMelee.SetProcessInternal( false );
 
-			WeaponStatusMeleeIcon = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
+			WeaponStatusMeleeIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
 			WeaponStatusMeleeIcon.SetProcess( false );
 			WeaponStatusMeleeIcon.SetProcessInternal( false );
 
-			WeaponStatusFirearmIcon = GetNode<TextureRect>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
+			WeaponStatusFirearmIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
 			WeaponStatusFirearmIcon.SetProcess( false );
 			WeaponStatusFirearmIcon.SetProcessInternal( false );
 
-			WeaponStatusBulletCount = GetNode<Label>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
+			WeaponStatusBulletCount = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
 			WeaponStatusBulletCount.SetProcess( false );
 			WeaponStatusBulletCount.SetProcessInternal( false );
 
-			WeaponStatusBulletReserve = GetNode<Label>( "WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
+			WeaponStatusBulletReserve = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
 			WeaponStatusBulletReserve.SetProcess( false );
 			WeaponStatusBulletReserve.SetProcessInternal( false );
 
@@ -210,7 +205,9 @@ namespace PlayerSystem {
 			SavedGamesContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer" );
 			WarpLocationsContainer = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
 
-			BossHealthBar = GetNode<Control>( "BossHealthBar" );
+			JumpInteractor = GetNode<MarginContainer>( "JumpContainer" );
+
+			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
 			( (HealthBar)HealthBar ).Init( 100.0f );
 			( (RageBar)RageBar ).Init( 60.0f );
@@ -503,12 +500,17 @@ namespace PlayerSystem {
 			case InteractionType.Checkpoint:
 				CurrentInteractor = CheckpointInteractor;
 				break;
+			case InteractionType.EaglesPeak:
+				CurrentInteractor = JumpInteractor;
+				break;
 			};
 			
 			if ( CurrentInteractor != null ) {
 				CurrentInteractor.Show();
+			} else {
+				return;
 			}
-
+			
 			if ( CurrentInteractor == CheckpointInteractor ) {
 				CheckpointNameLabel.Text = ( (Checkpoint)item ).GetTitle();
 			}

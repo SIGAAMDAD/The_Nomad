@@ -127,14 +127,14 @@ public partial class SteamLobby : Node {
 
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
-		PlayerCache.Add( userId.ToString(), callbacks );
+		PlayerCache.TryAdd( userId.ToString(), callbacks );
 	}
 	public void RemovePlayer( CSteamID userId ) {
 		PlayerCache.Remove( userId.ToString() );
 	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
 		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
-		NodeCache.Add( node.GetHashCode(), callbacks );
+		NodeCache.TryAdd( node.GetHashCode(), callbacks );
 	}
 	public Node GetNetworkNode( NodePath node ) {
 		return NodeCache[ node.GetHashCode() ].Node;

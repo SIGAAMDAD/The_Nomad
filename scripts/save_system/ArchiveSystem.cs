@@ -1,3 +1,5 @@
+using System;
+using System.Text.RegularExpressions;
 using Godot;
 using SaveSystem;
 
@@ -76,27 +78,7 @@ public partial class ArchiveSystem : Node {
 		SaveWriter = new System.IO.BinaryWriter( stream );
 
 		SectionCount = 0;
-
-		// header
 		SaveWriter.Write( SectionCount );
-
-		/*
-		CurrentMemory = memoryIndex;
-
-		string path = SaveDirectory + "/Memories/GameData_" + memoryIndex + ".ngd";
-		if ( !FileAccess.FileExists( path ) ) {
-			MemoryCount++;
-			SaveMetadata();
-		}
-
-		screenshot.SavePng( "user://SaveData/SLOT_" + ArchiveSystem.Instance.GetCurrentSlot() + "/Memories/Screenshot_" + LastMemory + ".png" );
-
-		FileAccess file = FileAccess.Open( Dir + "/Memories/GameData_" + memoryIndex + ".ngd", FileAccess.ModeFlags.Write );
-		if ( file == null ) {
-			GD.PushError( "Error creating memory file!" );
-			return;
-		}
-		*/
 
 		for ( int i = 0; i < nodes.Count; i++ ) {
 			nodes[i].Call( "Save" );
@@ -104,6 +86,7 @@ public partial class ArchiveSystem : Node {
 
 		stream.Seek( 0, System.IO.SeekOrigin.Begin );
 		SaveWriter.Write( SectionCount );
+		SaveWriter.Flush();
 	}
 
 	public static void SaveGame( Image screenshot, uint memoryIndex ) {
@@ -119,22 +102,65 @@ public partial class ArchiveSystem : Node {
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		SaveReader = new System.IO.BinaryReader( stream );
 
-		int sectionCount = SaveReader.ReadInt32();
-		if ( sectionCount == 0 ) {
-			GD.PushError( "Save file with no sections" );
-			return;
+		Instance.Loaded = true;
+
+//		Godot.Collections.Array<Node> nodes = Instance.GetTree().GetNodesInGroup( "Archive" );
+		
+		/*
+		for ( int i = 0; i < nodes.Count; i++ ) {
+			nodes[i].Call( "Load" );
 		}
+		*/
+
+		int sectionCount = SaveReader.ReadInt32();
 
 		for ( int i = 0; i < sectionCount; i++ ) {
 			string name = SaveReader.ReadString();
+			GD.Print( "Loading save section \"" + name + "\"..." );
 			SectionCache.Add( name, new SaveSectionReader() );
+			GD.Print( "...Done" );
 		}
 	}
+
+	public static byte LoadByte() => SaveReader.ReadByte();
+	public static ushort LoadUShort() => SaveReader.ReadUInt16();
+	public static uint LoadUInt() => SaveReader.ReadUInt32();
+	public static ulong LoadULong() => SaveReader.ReadUInt64();
+	public static sbyte LoadSByte() => SaveReader.ReadSByte();
+	public static short LoadShort() => SaveReader.ReadInt16();
+	public static int LoadInt() => SaveReader.ReadInt32();
+	public static long LoadLong() => SaveReader.ReadInt64();
+	public static float LoadFloat() => (float)SaveReader.ReadDouble();
+	public static string LoadString() => SaveReader.ReadString();
+	public static Godot.Vector2 LoadVector2() {
+		Godot.Vector2 value = Godot.Vector2.Zero;
+		value.X = LoadFloat();
+		value.Y = LoadFloat();
+		return value;
+	}
+	public static bool LoadBoolean() => SaveReader.ReadBoolean();
+
+	public static void SaveByte( byte value ) => SaveWriter.Write( value );
+	public static void SaveUShort( ushort value ) => SaveWriter.Write( value );
+	public static void SaveUInt( uint value ) => SaveWriter.Write( value );
+	public static void SaveULong( ulong value ) => SaveWriter.Write( value );
+	public static void SaveSByte( sbyte value ) => SaveWriter.Write( value );
+	public static void SaveShort( short value ) => SaveWriter.Write( value );
+	public static void SaveInt( int value ) => SaveWriter.Write( value );
+	public static void SaveLong( long value ) => SaveWriter.Write( value );
+	public static void SaveFloat( float value ) => SaveWriter.Write( (double)value );
+	public static void SaveString( string value ) => SaveWriter.Write( value );
+	public static void SaveVector2( Godot.Vector2 value ) {
+		SaveFloat( value.X );
+		SaveFloat( value.Y );
+	}
+	public static void SaveBoolean( bool value ) => SaveWriter.Write( value );
+
 	public static SaveSectionReader GetSection( string name ) {
-		SaveSectionReader reader;
-		if ( SectionCache.TryGetValue( name, out reader ) ) {
-			return reader;
+		if ( SectionCache.ContainsKey( name ) ) {
+			return SectionCache[ name ];
 		}
+		GD.PushError( "Failed to find save section \"" + name + "\"!" );
 		return null;
 	}
 

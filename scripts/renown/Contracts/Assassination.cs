@@ -3,7 +3,7 @@ using Godot;
 namespace Renown {
 	public partial class Assassination : Contract {
 		[Export]
-		private StringName TargetName;
+		private StringName Target;
 
 		public Assassination() {
 		}

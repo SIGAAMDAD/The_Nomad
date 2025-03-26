@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=45 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -22,6 +22,21 @@
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
 [ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="18_lytyn"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="24_ot7dw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j85v5"]
+shader = ExtResource("9_jyyjq")
+shader_parameter/status_icon = ExtResource("10_2rlhc")
+shader_parameter/status_active = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nmltk"]
+shader = ExtResource("9_jyyjq")
+shader_parameter/status_icon = ExtResource("12_wjj4q")
+shader_parameter/status_active = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xuc8q"]
+shader = ExtResource("9_jyyjq")
+shader_parameter/status_icon = ExtResource("12_obapo")
+shader_parameter/status_active = false
 
 [sub_resource type="Gradient" id="Gradient_p6ak3"]
 
@@ -76,21 +91,6 @@ colors = PackedColorArray(0.61009, 1.56425e-06, 1.44392e-07, 0.533333)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ycpyq"]
 gradient = SubResource("Gradient_sa4mc")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_j85v5"]
-shader = ExtResource("9_jyyjq")
-shader_parameter/status_icon = ExtResource("10_2rlhc")
-shader_parameter/status_active = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nmltk"]
-shader = ExtResource("9_jyyjq")
-shader_parameter/status_icon = ExtResource("12_wjj4q")
-shader_parameter/status_active = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xuc8q"]
-shader = ExtResource("9_jyyjq")
-shader_parameter/status_icon = ExtResource("12_obapo")
-shader_parameter/status_active = false
-
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0.168627, 0.168627, 0.168627, 0.588235)
@@ -125,73 +125,28 @@ colors = PackedColorArray(0.106237, 0.106237, 0.106237, 0.698039)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_8yqco"]
 gradient = SubResource("Gradient_wjj4q")
 
+[sub_resource type="Gradient" id="Gradient_8yqco"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.278431, 0.278431, 0.278431, 0.831373)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_poeto"]
+gradient = SubResource("Gradient_8yqco")
+width = 1
+
 [node name="HeadsUpDisplay" type="CanvasLayer"]
 script = ExtResource("1_vxf1b")
 
-[node name="Overlays" type="Node" parent="."]
-
-[node name="ReflexModeOverlay" type="TextureRect" parent="Overlays"]
-visible = false
-texture_filter = 2
+[node name="MainHUD" type="Control" parent="."]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_b27l1")
-expand_mode = 2
 
-[node name="DashOverlay" type="TextureRect" parent="Overlays"]
-visible = false
-texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_vkldb")
-expand_mode = 2
+[node name="SaveSpinner" type="Node" parent="MainHUD"]
 
-[node name="DemonEyeOverlay" type="TextureRect" parent="Overlays"]
-visible = false
-material = SubResource("ShaderMaterial_yfjc1")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture2D_ycpyq")
-
-[node name="HealthBar" parent="." instance=ExtResource("2_bd8b1")]
-z_index = 3
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 8.0
-offset_top = 7.0
-offset_right = 44.0
-offset_bottom = 8.0
-grow_horizontal = 1
-grow_vertical = 1
-scale = Vector2(7.78676, 7.23962)
-
-[node name="RageBar" parent="." instance=ExtResource("2_4ecwx")]
-offset_top = 21.0
-offset_right = 40.0
-scale = Vector2(7.67931, 14.1339)
-allow_greater = false
-
-[node name="BossHealthBar" parent="." instance=ExtResource("4_y7hg5")]
-visible = false
-script = null
-
-[node name="StatusBarTimer" type="Timer" parent="."]
-wait_time = 8.0
-one_shot = true
-
-[node name="SaveSpinner" type="Node" parent="."]
-
-[node name="SaveSpinner" type="Range" parent="SaveSpinner"]
+[node name="SaveSpinner" type="Range" parent="MainHUD/SaveSpinner"]
 _import_path = NodePath("")
 unique_name_in_owner = false
 process_mode = 0
@@ -263,23 +218,31 @@ allow_lesser = false
 script = ExtResource("7_50mcg")
 spin_fill_percent = 0.347
 
-[node name="SaveTimer" type="Timer" parent="SaveSpinner"]
+[node name="SaveTimer" type="Timer" parent="MainHUD/SaveSpinner"]
 wait_time = 2.5
 one_shot = true
 
-[node name="WeaponStatus" type="TextureRect" parent="."]
+[node name="StatusBarTimer" type="Timer" parent="MainHUD"]
+process_callback = 0
+wait_time = 3.5
+one_shot = true
+
+[node name="WeaponStatus" type="TextureRect" parent="MainHUD"]
+layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -107.0
-offset_top = -104.0
+offset_left = 493.0
+offset_top = 336.0
+offset_right = 600.0
+offset_bottom = 440.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("8_ygw8h")
 
-[node name="MarginContainer" type="MarginContainer" parent="WeaponStatus"]
+[node name="MarginContainer" type="MarginContainer" parent="MainHUD/WeaponStatus"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -293,76 +256,136 @@ offset_bottom = 29.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="WeaponStatus/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="WeaponStatus/MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="StatusContainer" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="StatusContainer" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="StatusBladed" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
+[node name="StatusBladed" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
 material = SubResource("ShaderMaterial_j85v5")
 layout_mode = 2
 texture = ExtResource("10_2rlhc")
 stretch_mode = 3
 
-[node name="StatusBlunt" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
+[node name="StatusBlunt" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
 material = SubResource("ShaderMaterial_nmltk")
 layout_mode = 2
 texture = ExtResource("12_wjj4q")
 stretch_mode = 3
 
-[node name="StatusFirearm" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
+[node name="StatusFirearm" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer"]
 material = SubResource("ShaderMaterial_xuc8q")
 layout_mode = 2
 texture = ExtResource("12_obapo")
 stretch_mode = 3
 
-[node name="VSeparator" type="VSeparator" parent="WeaponStatus/MarginContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="FireArmStatus" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer"]
+[node name="FireArmStatus" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="WeaponIcon" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus"]
+[node name="WeaponIcon" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus"]
 layout_mode = 2
 
-[node name="AmmunitionContainer" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus"]
+[node name="AmmunitionContainer" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus"]
 layout_mode = 2
 
-[node name="BulletCountLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 10
-
-[node name="HSeparator" type="HSeparator" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
-layout_mode = 2
-
-[node name="BulletReserveLabel" type="Label" parent="WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+[node name="BulletCountLabel" type="Label" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 10
 
-[node name="MeleeStatus" type="VBoxContainer" parent="WeaponStatus/MarginContainer/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+layout_mode = 2
+
+[node name="BulletReserveLabel" type="Label" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 10
+
+[node name="MeleeStatus" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="WeaponIcon" type="TextureRect" parent="WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus"]
+[node name="WeaponIcon" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="."]
+[node name="BossHealthBar" parent="MainHUD" instance=ExtResource("4_y7hg5")]
+visible = false
+layout_mode = 1
+script = null
+
+[node name="HealthBar" parent="MainHUD" instance=ExtResource("2_bd8b1")]
+z_index = 3
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 8.0
+offset_top = 7.0
+offset_right = 44.0
+offset_bottom = 8.0
+grow_horizontal = 1
+grow_vertical = 1
+scale = Vector2(7.78676, 7.23962)
+
+[node name="RageBar" parent="MainHUD" instance=ExtResource("2_4ecwx")]
+layout_mode = 0
+offset_top = 21.0
+offset_right = 296.0
+offset_bottom = 36.0
+allow_greater = false
+
+[node name="Overlays" type="Node" parent="MainHUD"]
+
+[node name="ReflexModeOverlay" type="TextureRect" parent="MainHUD/Overlays"]
+visible = false
+texture_filter = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_b27l1")
+expand_mode = 2
+
+[node name="DashOverlay" type="TextureRect" parent="MainHUD/Overlays"]
+visible = false
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_vkldb")
+expand_mode = 2
+
+[node name="DemonEyeOverlay" type="TextureRect" parent="MainHUD/Overlays"]
+visible = false
+material = SubResource("ShaderMaterial_yfjc1")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_ycpyq")
+
+[node name="StatusControl" type="Control" parent="."]
 visible = false
 layout_mode = 3
 anchors_preset = 14
@@ -372,7 +395,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
+[node name="MarginContainer" type="MarginContainer" parent="StatusControl"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -383,20 +406,20 @@ offset_bottom = 231.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer"]
 layout_mode = 2
 texture = SubResource("GradientTexture1D_0ed87")
 
-[node name="TabContainer" type="TabContainer" parent="Control/MarginContainer"]
+[node name="TabContainer" type="TabContainer" parent="StatusControl/MarginContainer"]
 layout_mode = 2
 current_tab = 1
 
-[node name="Inventory" type="TabBar" parent="Control/MarginContainer/TabContainer"]
+[node name="Inventory" type="TabBar" parent="StatusControl/MarginContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/TabContainer/Inventory"]
+[node name="MarginContainer" type="MarginContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory"]
 custom_minimum_size = Vector2(640, 400)
 layout_mode = 1
 anchors_preset = 15
@@ -405,213 +428,213 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer"]
+[node name="Background" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = SubResource("GradientTexture2D_ughat")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 
-[node name="Cloner" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="Cloner" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="ItemStackCloner" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner"]
+[node name="ItemStackCloner" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner"]
 visible = false
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="TextureRect2" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+[node name="TextureRect2" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="TextureRect3" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+[node name="TextureRect3" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="TextureRect4" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
+[node name="TextureRect4" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner/ItemStackCloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="ScrollContainer" type="MarginContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ScrollContainer" type="MarginContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="VScrollBar" type="VScrollBar" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+[node name="VScrollBar" type="VScrollBar" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
 
-[node name="ItemInfo" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ItemInfo" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Asturion Double-Barrel"
 
-[node name="MetaData" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+[node name="MetaData" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+[node name="HSeparator2" type="HSeparator" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
 
-[node name="TypeContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+[node name="TypeContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
+[node name="Label" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
 layout_mode = 2
 text = "Weapon"
 
-[node name="NoHeldContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+[node name="NoHeldContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+[node name="Label" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "No. Held"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
 layout_mode = 2
 
-[node name="CountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+[node name="CountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
 layout_mode = 2
 text = "0/"
 
-[node name="MaxLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+[node name="MaxLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="Icon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
 custom_minimum_size = Vector2(90, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="HSeparator2" type="HSeparator" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator2" type="HSeparator" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="EffectContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="EffectContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+[node name="Label" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 text = "Item Effect(s)"
 
-[node name="Label2" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+[node name="Label2" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
 layout_mode = 2
 
-[node name="WeaponStatusContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="WeaponStatusContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="BladedInfo" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+[node name="BladedInfo" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 texture = ExtResource("15_eelai")
 stretch_mode = 3
 
-[node name="DamageLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+[node name="DamageLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 layout_mode = 2
 
-[node name="RangeLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+[node name="RangeLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 layout_mode = 2
 
-[node name="BluntDamage" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+[node name="BluntDamage" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 texture = ExtResource("11_0t58g")
 stretch_mode = 3
 
-[node name="DamageLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="DamageLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
 layout_mode = 2
 
-[node name="RangeLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="RangeLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
 layout_mode = 2
 
-[node name="AmmoLoaded" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+[node name="AmmoLoaded" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 texture = ExtResource("16_qxnsc")
 stretch_mode = 3
 
-[node name="DamageLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+[node name="DamageLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
 layout_mode = 2
 text = "N/A"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
 
-[node name="AmmoStatusContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="AmmoStatusContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator" type="HSeparator" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="DescriptionLabel" type="RichTextLabel" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="DescriptionLabel" type="RichTextLabel" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 custom_minimum_size = Vector2(340, 120)
 layout_mode = 2
 bbcode_enabled = true
 scroll_following = true
 threaded = true
 
-[node name="StackList" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="StackList" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="CategoryList" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList"]
+[node name="CategoryList" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 64
 
-[node name="WeaponIcon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
+[node name="WeaponIcon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
 material = SubResource("ShaderMaterial_5p2fr")
 layout_mode = 2
 texture = ExtResource("16_nrav7")
 
-[node name="WeaponList" type="VScrollBar" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon"]
+[node name="WeaponList" type="VScrollBar" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon"]
 layout_mode = 2
 offset_left = -170.0
 offset_top = 72.0
 offset_right = -162.0
 offset_bottom = 80.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
 visible = false
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
@@ -621,28 +644,28 @@ offset_right = 535.0
 offset_bottom = 24.0
 theme_override_constants/separation = 24
 
-[node name="Icon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("16_nrav7")
 stretch_mode = 3
 
-[node name="NameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Asturion Double-Barrel"
 
-[node name="CountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+[node name="CountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
 layout_mode = 2
 text = "1"
 
-[node name="AmmoIcon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
+[node name="AmmoIcon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
 visible = false
 material = SubResource("ShaderMaterial_duloo")
 layout_mode = 2
 texture = ExtResource("17_rxc6h")
 
-[node name="AmmoList" type="VScrollBar" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon"]
+[node name="AmmoList" type="VScrollBar" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon"]
 layout_mode = 2
 offset_left = -266.0
 offset_top = 72.0
@@ -651,38 +674,38 @@ offset_bottom = 80.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="Cloner" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList"]
+[node name="Cloner" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList"]
 layout_mode = 0
 offset_left = 48.0
 offset_right = 432.0
 offset_bottom = 64.0
 theme_override_constants/separation = 24
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_constants/separation = 48
 
-[node name="Icon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+[node name="Icon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("17_rxc6h")
 stretch_mode = 3
 
-[node name="NameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "9mm"
 
-[node name="CountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+[node name="CountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 layout_mode = 2
 text = "1"
 
-[node name="WeaponInfo" type="Control" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer"]
+[node name="WeaponInfo" type="Control" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer"]
 visible = false
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -690,110 +713,110 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Asturion Double-Barrel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="WeaponInfo" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer"]
+[node name="WeaponInfo" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 24
 
-[node name="StatsContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo"]
+[node name="StatsContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo"]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="BluntDamageContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
+[node name="BluntDamageContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
 layout_mode = 2
 
-[node name="StatLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntDamageContainer"]
+[node name="StatLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntDamageContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Damage (Blunt)"
 
-[node name="AmountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntDamageContainer"]
+[node name="AmountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntDamageContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0.0"
 
-[node name="BluntRangeContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
+[node name="BluntRangeContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
 layout_mode = 2
 
-[node name="StatLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntRangeContainer"]
+[node name="StatLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntRangeContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Range (Blunt)"
 
-[node name="AmountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntRangeContainer"]
+[node name="AmountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BluntRangeContainer"]
 layout_mode = 2
 text = "0.0"
 
-[node name="BladedDamageContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
+[node name="BladedDamageContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
 layout_mode = 2
 
-[node name="StatLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedDamageContainer"]
+[node name="StatLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedDamageContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Damage (Bladed)"
 
-[node name="AmountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedDamageContainer"]
+[node name="AmountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedDamageContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0.0"
 
-[node name="BladedRangeContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
+[node name="BladedRangeContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
 layout_mode = 2
 
-[node name="StatLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedRangeContainer"]
+[node name="StatLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedRangeContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Range (Bladed)"
 
-[node name="AmountLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedRangeContainer"]
+[node name="AmountLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/BladedRangeContainer"]
 layout_mode = 2
 text = "0.0"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer"]
 layout_mode = 2
 
-[node name="AmmoNameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/HBoxContainer"]
+[node name="AmmoNameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_125nm")
 text = "Ammunition"
 
-[node name="AmmoIcon" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/HBoxContainer"]
+[node name="AmmoIcon" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo/StatsContainer/HBoxContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("18_lytyn")
 stretch_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo"]
+[node name="TextureRect" type="TextureRect" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/WeaponInfo/VBoxContainer/VBoxContainer/WeaponInfo"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_horizontal = 8
 texture = ExtResource("16_nrav7")
 expand_mode = 3
 
-[node name="AmmoInfo" type="Control" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer"]
+[node name="AmmoInfo" type="Control" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer"]
 visible = false
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -801,22 +824,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NameLabel" type="Label" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "12 Gauge"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer"]
 layout_mode = 2
 
-[node name="WeaponInfo" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer/VBoxContainer"]
+[node name="WeaponInfo" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/AmmoInfo/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Contracts" type="TabBar" parent="Control/MarginContainer/TabContainer"]
+[node name="Contracts" type="TabBar" parent="StatusControl/MarginContainer/TabContainer"]
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/TabContainer/Contracts"]
+[node name="MarginContainer" type="MarginContainer" parent="StatusControl/MarginContainer/TabContainer/Contracts"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -824,34 +847,34 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="EmployerLabel" type="Label" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="EmployerLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "EMPLOYER"
 horizontal_alignment = 1
 
-[node name="GuildLabel" type="Label" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="GuildLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 text = "GUILD"
 horizontal_alignment = 1
 
-[node name="PayLabel" type="Label" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="PayLabel" type="Label" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 text = "PAY"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Control/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="StatusControl/MarginContainer/TabContainer/Contracts/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Inventory" type="Control" parent="Control"]
+[node name="Inventory" type="Control" parent="StatusControl"]
 visible = false
 layout_mode = 1
 anchors_preset = 4
@@ -954,6 +977,39 @@ text = "NAME"
 layout_mode = 2
 text = "BIOME"
 
+[node name="JumpContainer" type="MarginContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(0, 80)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Background" type="TextureRect" parent="JumpContainer"]
+layout_mode = 2
+texture = SubResource("GradientTexture1D_poeto")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="JumpContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="JumpContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "TAKE A LEAP OF FAITH?"
+horizontal_alignment = 1
+
+[node name="YesButton" type="Button" parent="JumpContainer/VBoxContainer"]
+layout_mode = 2
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="JumpContainer/VBoxContainer"]
+layout_mode = 2
+text = "No"
+
 [node name="DeathText" type="Label" parent="."]
 visible = false
 anchors_preset = 14
@@ -987,5 +1043,4 @@ script = ExtResource("24_ot7dw")
 skip_pause_at_abbreviations = PackedStringArray("Mr", "Mrs", "Ms", "Dr", "etc", "eg", "ex")
 metadata/_custom_type_script = "uid://g32um0mltv5d"
 
-[connection signal="timeout" from="StatusBarTimer" to="." method="_on_status_bar_timer_timeout"]
-[connection signal="timeout" from="SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]
+[connection signal="timeout" from="MainHUD/SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]

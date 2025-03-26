@@ -109,7 +109,7 @@ MaxViewDistance = 150.0
 SightDetectionSpeed = 0.5
 SightDetectionTime = 5.0
 LoseInterestTime = 6.5
-Health = 100.0
+MovementSpeed = 80.0
 MovementSpeed = 80.0
 
 [node name="Animations" type="Node2D" parent="."]

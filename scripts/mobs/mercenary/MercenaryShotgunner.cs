@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
+using System;
 using Godot;
 
 public partial class MercenaryShotgunner : MobBase {
-	[Export]
-	private NavigationLink2D PatrolRoute;
-
 	private Timer TargetMovedTimer;
 	private Timer HealTimer;
 	private Timer AimTimer;
@@ -13,8 +10,16 @@ public partial class MercenaryShotgunner : MobBase {
 	private Godot.Vector2 GuardPosition;
 
 	protected override void OnLoseInterestTimerTimeout() {
+		if ( GameConfiguration.GameDifficulty == GameDifficulty.PowerFantasy ) {
+			// "whatevs"
+			Awareness = AIAwareness.Relaxed;
+		}
+
 		Investigating = false;
 		SetNavigationTarget( GuardPosition );
+
+		// a little more on edge
+		Fear += 10;
 	}
 	
 	private void OnTargetMoveTimerTimeout() {
@@ -22,9 +27,15 @@ public partial class MercenaryShotgunner : MobBase {
 		Bark( BarkType.TargetPinned );
 	}
 
-	private void SendPacket() {
+	protected override void SendPacket() {
+		SyncObject.Write( GlobalPosition.X );
+		SyncObject.Write( GlobalPosition.Y );
+		SyncObject.Write( Health );
+		SyncObject.Write( Fear );
+		SyncObject.Write( Investigating );
+		SyncObject.Sync();
 	}
-	private void ReceivePacket( System.IO.BinaryReader reader ) {
+	protected override void ReceivePacket( System.IO.BinaryReader reader ) {
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)reader.ReadDouble();
 		position.Y = (float)reader.ReadDouble();
@@ -34,7 +45,9 @@ public partial class MercenaryShotgunner : MobBase {
 	public override void _Ready() {
 		base._Ready();
 
-		Init();
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			SyncObject = new NetworkWriter( 256 );
+		}
 
 		TargetMovedTimer = new Timer();
 		TargetMovedTimer.WaitTime = 10.0f;
@@ -56,14 +69,29 @@ public partial class MercenaryShotgunner : MobBase {
 		if ( Investigating ) {
 			Investigate();
 		}
+		
+		// if we've got any suspicion, then start patrolling
+		if ( Fear > 0 && PatrolRoute == null ) {
+			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+			State = AIState.PatrolStart;
+			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+		}
+		if ( Fear > 80 ) {
+		}
 	}
 
 	private void Investigate() {
+		if ( GlobalPosition != LastTargetPosition ) {
+			return; // not there yet
+		}
 		if ( ChangeInvestigateAngleTimer.IsStopped() ) {
 			if ( Fear >= 60.0f ) {
 				ChangeInvestigateAngleTimer.WaitTime = 0.6f;
 			}
 			ChangeInvestigateAngleTimer.Start();
+		}
+		if ( LoseInterestTimer.IsStopped() ) {
+			LoseInterestTimer.Start();
 		}
 	}
 
@@ -113,14 +141,16 @@ public partial class MercenaryShotgunner : MobBase {
 			return;
 		}
 
-		SightTarget = sightTarget as Player;
-		if ( SightTarget != null ) {
+		AfterImageUpdated = false;
+
+		SightTarget = (CharacterBody2D)sightTarget;
+		if ( sightTarget is Player || sightTarget is NetworkPlayer ) {
 			CanSeeTarget = true;
 			LastTargetPosition = SightTarget.GlobalPosition;
 			if ( Awareness >= AIAwareness.Suspicious ) {
 				SightDetectionAmount += ( SightDetectionSpeed * 2.0f );
 				Investigating = true;
-				SetNavigationTarget( SightTarget.GlobalPosition );
+				SetNavigationTarget( LastTargetPosition );
 			} else if ( Awareness == AIAwareness.Relaxed ) {
 				SightDetectionAmount += SightDetectionSpeed;
 			}

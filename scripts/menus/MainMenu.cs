@@ -1,3 +1,4 @@
+using System.Threading;
 using Godot;
 
 public partial class MainMenu : Control {
@@ -11,65 +12,75 @@ public partial class MainMenu : Control {
 	public delegate void MultiplayerMenuEventHandler();
 	[Signal]
 	public delegate void ModsMenuEventHandler();
+	[Signal]
+	public delegate void FinishedLoadingEventHandler();
 
 	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
+	private bool Loaded = false;
+
+	private PackedScene LoadedWorld = null;
+	private Thread LoadThread = null;
 
 	private AudioStreamPlayer UIChannel;
 	private CanvasLayer TransitionScreen;
-
-	public override void _ExitTree() {
-		base._ExitTree();
-	}
 
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 	}
 	private void OnFinishedLoading() {
-		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
+		LoadThread.Join();
 		QueueFree();
-
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-		Hide();
+		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void LoadGame() {
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
-		SteamLobby.Instance.SetMaxMembers( 4 );
-		string name = SteamManager.GetSteamName();
-		if ( name[ name.Length - 1 ] == 's' ) {
-			SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+		if ( SettingsData.GetNetworkingEnabled() ) {
+//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
+			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
+
+			GameConfiguration.GameMode = GameMode.Online;
+
+			SteamLobby.Instance.SetMaxMembers( 4 );
+			string name = SteamManager.GetSteamName();
+			if ( name[ name.Length - 1 ] == 's' ) {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+			} else {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+			}
+
+			SteamLobby.Instance.CreateLobby();
 		} else {
-			SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 
-		SteamLobby.Instance.CreateLobby();
-
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
-
 		ArchiveSystem.LoadGame();
+
+//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
+		Console.PrintLine( "Loading game..." );
 
 		Tween AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
 		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
-		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-			"res://levels/world.tscn"
-		);
-
-		GameConfiguration.LoadedLevel = scene;
-
-		scene.Connect( "OnComplete", Callable.From( OnFinishedLoading ) );
+		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		LoadThread = new Thread( () => {
+			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
+			CallDeferred( "emit_signal", "FinishedLoading" );
+		} );
+		LoadThread.Start();
 	}
 	private void OnContinueGameFinished() {
 		LoadGame();
 	}
 
     private void OnCampaignButtonPressed() {
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
+		if ( ArchiveSystem.Instance.IsLoaded() && !Loaded ) {
+			Loaded = true;
 			UIChannel.Stream = UISfxManager.BeginGame;
 			UIChannel.Play();
 			TransitionScreen.Call( "transition" );

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Godot;
 using Multiplayer;
 using Steamworks;
@@ -97,48 +98,61 @@ public partial class LobbyBrowser : Control {
 	private static System.Threading.Thread MatchmakingThread = null;
 	private static object MatchmakingLobbyListReady = new object();
 
+	private System.Threading.Thread LoadThread = null;
+	private PackedScene LoadedWorld = null;
+	private string LoadedScenePath = "";
+
 	[Signal]
 	public delegate void OnHostGameEventHandler();
 	[Signal]
 	public delegate void MatchmakingFinishedEventHandler();
 
-	private void OnAudioFadeFinished() {
-		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
-	}
 	private void OnFinishedLoading() {
+		LoadThread.Join();
+		GetTree().ChangeSceneToPacked( LoadedWorld );
+
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+//		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
+		Console.PrintLine( "...Finished loading game" );
 	}
-	private void OnFinishedLoadingScene() {
-		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
+	private void OnTransitionFinished() {
+		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
-		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );
-		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		LoadThread = new System.Threading.Thread( () => {
+			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
+			CallDeferred( "emit_signal", "FinishedLoading" );
+		} );
 	}
-
 	private void OnLobbyJoined( ulong lobbyId ) {
-		GetNode( "/root/Console" ).Call( "print_line", "...Joined lobby", true );
-
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Show();
-
-		Tween AudioFade = GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
-
-		LobbyData lobby = LobbyList[ (CSteamID)lobbyId ];
-		lobby.Refresh();
-
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
 		Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
-		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game..." );
+		if ( SettingsData.GetNetworkingEnabled() ) {
+//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
+			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
-		Node scene = null;
-		switch ( lobby.GetGameType() ) {
-		case GameMode.Multiplayer: {
+			GameConfiguration.GameMode = GameMode.Online;
+
+			SteamLobby.Instance.SetMaxMembers( 4 );
+			string name = SteamManager.GetSteamName();
+			if ( name[ name.Length - 1 ] == 's' ) {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+			} else {
+				SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+			}
+
+			SteamLobby.Instance.CreateLobby();
+		} else {
+			GameConfiguration.GameMode = GameMode.SinglePlayer;
+		}
+
+//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
+		Console.PrintLine( "Loading game..." );
+
+		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
+		case "Multiplayer": {
 			string modeName;
-			switch ( lobby.GetGameMode() ) {
+			switch ( (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gamemode" ) ) ) {
 			case Mode.GameMode.Bloodbath:
 				modeName = "bloodbath";
 				break;
@@ -151,18 +165,12 @@ public partial class LobbyBrowser : Control {
 			default:
 				return;
 			};
-			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-				"res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn", 1
-			);
+			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
 			break; }
-		case GameMode.Online:
-			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-				"res://levels/world.tscn"
-			);
+		case "Online":
+			LoadedScenePath = "res://levels/world.tscn";
 			break;
-		}
-		GameConfiguration.LoadedLevel = scene;
-		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
+		};
 	}
 
 	private void MatchmakingLoop() {
@@ -177,19 +185,21 @@ public partial class LobbyBrowser : Control {
 			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
 			SteamMatchmaking.RequestLobbyList();
 		}
-		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
+		Console.PrintLine( "...no open contracts found" );
+//		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
 	}
 	private void OnJoinGame( CSteamID lobbyId ) {
-		Tween AudioFade = GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+//		Tween AudioFade = GetTree().Root.CreateTween();
+//		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+//		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		TransitionScreen.Call( "transition" );
 		Hide();
 
-		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
+		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
+//		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
 	private static void OnLobbySelected( CSteamID lobbyId ) {
@@ -297,12 +307,6 @@ public partial class LobbyBrowser : Control {
 		MatchmakingTimer.Start();
 	}
 
-	public override void _EnterTree() {
-		base._EnterTree();
-
-		JoinGame.Hide();
-		LobbyManager.Show();
-	}
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -384,7 +388,7 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoadingScene ) );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoading ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 

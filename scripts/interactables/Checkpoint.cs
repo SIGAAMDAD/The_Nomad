@@ -16,41 +16,11 @@ public partial class Checkpoint : InteractionItem {
 	private bool Activated = false;
 
 	public void Save() {
-		/*
-		DirAccess.MakeDirRecursiveAbsolute( ArchiveSystem.Instance.GetSaveDirectory() + "Checkpoints/" );
-
-		string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "Checkpoints/Checkpoint_" + Title + ".ngd" );
-		System.IO.FileStream stream;
-		try {
-			stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-		} catch ( System.IO.FileNotFoundException exception ) {
-			GD.PushError( exception.Source + ":" + exception.Message + "\n" + exception.StackTrace );
-			return;
-		}
-		System.IO.BinaryWriter writer = new System.IO.BinaryWriter( stream );
-		*/
-
-		Player.SaveWriter.Write( Activated );
 	}
 	public void Load() {
-		/*
-		string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "Checkpoints/Checkpoint_" + Title + ".ngd" );
-		System.IO.FileStream stream;
-		try {
-			stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-		} catch ( System.IO.FileNotFoundException exception ) {
-			GD.PushError( exception.Source + ":" + exception.Message + "\n" + exception.StackTrace );
-			return;
-		}
-		System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
-		*/
-
-		Activated = Player.SaveReader.ReadBoolean();
 	}
 
-	public string GetTitle() {
-		return Title;
-	}
+	public string GetTitle() => Title;
 
 	public override void _ExitTree() {
 		base._ExitTree();

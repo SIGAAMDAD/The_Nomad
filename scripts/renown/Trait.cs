@@ -9,15 +9,14 @@ namespace Renown {
 		Count
 	};
 
-	public class Trait {
+	public abstract class Trait {
 		public Trait() {
 		}
 
-		public virtual string GetName() {
-			return "Invalid";
-		}
-		public virtual TraitType GetTraitType() {
-			return TraitType.Count;
-		}
+		public abstract string GetName();
+		public abstract TraitType GetTraitType();
+
+		public abstract sbyte GetFearBias();
+		public abstract sbyte GetTrustBias();
 	};
 };

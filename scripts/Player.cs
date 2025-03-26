@@ -179,9 +179,7 @@ public partial class Player : CharacterBody2D {
 	private AudioStreamPlayer2D DashChannel;
 	private AudioStreamPlayer2D MiscChannel;
 
-	private System.IO.MemoryStream PacketStream = null;
-	private System.IO.BinaryWriter PacketWriter = null;
-	private byte[] NetworkPacket = new byte[ 256 ];
+	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
 
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
 	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
@@ -215,10 +213,6 @@ public partial class Player : CharacterBody2D {
 	}
 
 	public void Save() {
-		if ( GameConfiguration.GameMode == GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
-			return; // don't save other people's data, we ain't the government
-		}
-
 		/*
 		DirAccess.MakeDirRecursiveAbsolute( ArchiveSystem.Instance.GetSaveDirectory() );
 
@@ -275,7 +269,7 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 
-		writer.Write( MAX_WEAPON_SLOTS );
+		ArchiveSystem.SaveInt( MAX_WEAPON_SLOTS );
 		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
 			writer.Write( WeaponSlots[i].IsUsed() );
 			if ( WeaponSlots[i].IsUsed() ) {
@@ -290,13 +284,13 @@ public partial class Player : CharacterBody2D {
 			}
 		}
 		
-		writer.Write( ConsumableStacks.Count );
+		ArchiveSystem.SaveInt( ConsumableStacks.Count );
 		for ( int i = 0; i < ConsumableStacks.Count; i++ ) {
-			writer.Write( ConsumableStacks[i].Amount );
-			writer.Write( (string)ConsumableStacks[i].ItemType.Get( "id" ) );
+			ArchiveSystem.SaveInt( ConsumableStacks[i].Amount );
+			ArchiveSystem.SaveString( (string)ConsumableStacks[i].ItemType.Get( "id" ) );
 		}
 
-		writer.Write( Contracts.Count );
+		ArchiveSystem.SaveInt( Contracts.Count );
 		for ( int i = 0; i < Contracts.Count; i++ ) {
 			writer.Write( (uint)Contracts[i].GetContractType() );
 		}
@@ -307,6 +301,7 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < nodes.Count; i++ ) {
 //			nodes[i].Call( "Save" );
 		}
+
 		*/
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
 		int stackIndex;
@@ -370,12 +365,10 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < Contracts.Count; i++ ) {
 			writer.SaveUInt( "contract_type_" + i.ToString(), (uint)Contracts[i].GetContractType() );
 		}
+
+		writer.Flush();
 	}
 	public void Load() {
-		if ( GameConfiguration.GameMode == GameMode.Multiplayer && MultiplayerId != SteamManager.GetSteamID() ) {
-			return; // don't load other people's data, we ain't the government
-		}
-
 		/*
 		string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "PlayerData.ngd" );
 		System.IO.FileStream stream;
@@ -415,40 +408,31 @@ public partial class Player : CharacterBody2D {
 		RenownAmount = reader.ReadUInt32();
 		TutorialCompleted = reader.ReadBoolean();
 
+		ArmLeft.SetWeapon( reader.ReadInt32() );
+		ArmRight.SetWeapon( reader.ReadInt32() );
+
 		Renown.World.WorldTimeManager.Year = reader.ReadUInt32();
 		Renown.World.WorldTimeManager.Month = reader.ReadUInt32();
-		Renown.World.WorldTimeManager.Day = reader.ReadUInt32();	
-		
-		int leftSlot = reader.ReadInt32();
-		if ( leftSlot == WeaponSlot.INVALID ) {
-			ArmLeft.SetWeapon( WeaponSlot.INVALID );
-		} else {
-			ArmLeft.SetWeapon( leftSlot );
-		}
-		
-		int rightSlot = reader.ReadInt32();
-		if ( rightSlot == WeaponSlot.INVALID ) {
-			ArmRight.SetWeapon( WeaponSlot.INVALID );
-		} else {
-			ArmRight.SetWeapon( rightSlot );
-		}
+		Renown.World.WorldTimeManager.Day = reader.ReadUInt32();
 
 		AmmoStacks.Clear();
 		int numAmmoStacks = reader.ReadInt32();
 		for ( int i = 0; i < numAmmoStacks; i++ ) {
 			AmmoStack stack = new AmmoStack();
 			stack.Amount = reader.ReadInt32();
-			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", reader.ReadString() );
-			AmmoStacks.Add( stack );
+			string id = reader.ReadString();
+			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", id );
+			AmmoStacks.Add( id.GetHashCode(), stack );
 		}
 
 		WeaponsStack.Clear();
 		int numWeapons = reader.ReadInt32();
 		for ( int i = 0; i < numWeapons; i++ ) {
 			WeaponEntity weapon = new WeaponEntity();
-			weapon.Data = (Resource)Inventory.Call( "get_item_from_id", reader.ReadString() );
+			string id = reader.ReadString();
+			weapon.Data = (Resource)Inventory.Call( "get_item_from_id", id );
 			weapon.SetOwner( this );
-			WeaponsStack.Add( weapon );
+			WeaponsStack.Add( id.GetHashCode(), weapon );
 			AddChild( weapon );
 
 			if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -494,8 +478,9 @@ public partial class Player : CharacterBody2D {
 		for ( int i = 0; i < numConsumableStacks; i++ ) {
 			ConsumableStack stack = new ConsumableStack();
 			stack.Amount = reader.ReadInt32();
-			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", reader.ReadString() );
-			ConsumableStacks.Add( stack );
+			string id = reader.ReadString();
+			stack.ItemType = (Resource)Inventory.Call( "get_item_from_id", id );
+			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
 		*/
 
@@ -592,28 +577,27 @@ public partial class Player : CharacterBody2D {
 			return;
 		}
 
-		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
-		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-		PacketWriter.Write( (sbyte)CurrentWeapon );
+		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != -1 ) {
-			PacketWriter.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
-			PacketWriter.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
+			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
+			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
 			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
-				PacketWriter.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		PacketWriter.Write( (double)GlobalPosition.X );
-		PacketWriter.Write( (double)GlobalPosition.Y );
-		PacketWriter.Write( (byte)TorsoAnimationState );
-		PacketWriter.Write( (double)ArmLeft.GlobalRotation );
-		PacketWriter.Write( (byte)LeftArmAnimationState );
-		PacketWriter.Write( (double)ArmRight.GlobalRotation );
-		PacketWriter.Write( (byte)RightArmAnimationState );
-		PacketWriter.Write( (byte)LegAnimationState );
-		PacketWriter.Write( (byte)TorsoAnimationState );
-		PacketWriter.Write( (byte)HandsUsed );
-
-		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, NetworkPacket );
+		SyncObject.Write( GlobalPosition.X );
+		SyncObject.Write( GlobalPosition.Y );
+		SyncObject.Write( (byte)TorsoAnimationState );
+		SyncObject.Write( ArmLeft.Rotation );
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( ArmRight.Rotation );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
+		SyncObject.Write( (byte)HandsUsed );
+		SyncObject.Write( (uint)Flags );
+		SyncObject.Sync();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -762,8 +746,6 @@ public partial class Player : CharacterBody2D {
 	}
 
 	public void SetupSplitScreen( int nInputIndex ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Setting up split-screen input for " + nInputIndex );
-
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			SplitScreen = true;
 		}
@@ -1414,7 +1396,6 @@ public partial class Player : CharacterBody2D {
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-//		SfxPool.PlaySfx( AudioCache.SlowMoEndSfx, GlobalPosition );
 		MiscChannel.Stream = AudioCache.SlowMoEndSfx;
 		MiscChannel.Play();
 	}
@@ -1551,10 +1532,9 @@ public partial class Player : CharacterBody2D {
 //		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
-		GetNode( "/root/Console" ).Call( "add_command", "suicide", Callable.From( CmdSuicide ) );
+		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0 );
+//		GetNode( "/root/Console" ).Call( "add_command", "suicide", Callable.From( CmdSuicide ) );
 
-		PacketStream = new System.IO.MemoryStream( NetworkPacket );
-		PacketWriter = new System.IO.BinaryWriter( PacketStream );
 		NodeHash = SteamFriends.GetFriendPersonaName( SteamUser.GetSteamID() ).GetHashCode();
 
 		SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
@@ -1780,7 +1760,6 @@ public partial class Player : CharacterBody2D {
 			if ( slot.IsUsed() && (int)( (Godot.Collections.Dictionary)slot.GetWeapon().Data.Get( "properties" ) )[ "ammo_type" ]
 				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
 			{
-				GetNode( "/root/Console" ).Call( "print_line", "Assigned weapon slot ammunition...", true );
 				slot.GetWeapon().SetReserve( stack );
 				slot.GetWeapon().SetAmmo( ammo.Data );
 			}
@@ -1789,8 +1768,6 @@ public partial class Player : CharacterBody2D {
 		LastUsedArm = ArmRight;
 	}
 	public void PickupWeapon( WeaponEntity weapon ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Picked up weapon...", true );
-
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			if ( !WeaponSlots[i].IsUsed() ) {
 				WeaponSlots[i].SetWeapon( weapon );

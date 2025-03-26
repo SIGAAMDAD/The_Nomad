@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using Godot;
-using MountainGoap;
-using System;
-using Steamworks;
 
 public enum BarkType : uint {
 	TargetSpotted,
@@ -26,15 +22,32 @@ public enum BarkType : uint {
 	Count
 };
 
-public enum AIAwareness : int {
-	Invalid = -1,		// invalid
+public enum AIAwareness : sbyte {
+	Invalid = -1,
 	Relaxed,
 	Suspicious,
 	Alert,
+
 	Count
 };
 
-public partial class MobBase : CharacterBody2D {
+public enum AIState : sbyte {
+	Invalid = -1,
+	Guarding, // guarding a node
+
+	// moving along a patrol link chain
+	PatrolStart,
+	Patrolling,
+
+	Scared, // Fear > 80
+	Investigating, // investigating a node
+
+	Dead, // U R DED, NO BIG SOOPRIZE
+	
+	Count
+};
+
+public partial class MobBase : Renown.Thinker {
 	public enum DirType {
 		North,
 		NorthEast,
@@ -52,8 +65,6 @@ public partial class MobBase : CharacterBody2D {
 	protected Node2D BulletShellTree;
 	protected PackedScene BulletShell;
 
-	protected Color DemonEyeColor;
-	protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
 	
 	[ExportCategory("Sounds")]
@@ -79,6 +90,10 @@ public partial class MobBase : CharacterBody2D {
 	[ExportCategory("Start")]
 	[Export]
 	protected DirType Direction;
+	[Export]
+	protected AINodeCache NodeCache;
+	[Export]
+	protected NavigationLink2D PatrolRoute;
 
 	[ExportCategory("Stats")]
 	[Export]
@@ -96,26 +111,23 @@ public partial class MobBase : CharacterBody2D {
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
-	protected Godot.Vector2 PhysicsPosition;
 	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
 	protected Godot.Vector2 NextPathPosition = Godot.Vector2.Zero;
 	protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
-	protected float LookAngle = 0.0f;
-	protected float AimAngle = 0.0f;
 	protected PointLight2D FlashLight;
 
 	// memory
 	protected AIAwareness Awareness = AIAwareness.Relaxed;
 	protected Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
-	protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
 	protected Godot.Vector2 SightPosition = Godot.Vector2.Zero;
-	protected float Fear = 0.0f;
+	protected byte Fear = 0;
 	protected bool Investigating = false;
 	protected CharacterBody2D Target = null;
 	protected bool CanSeeTarget = false;
-	protected bool TargetReached = false;
+	protected bool AfterImageUpdated = false;
 
-	protected AudioStreamPlayer2D MoveChannel;
+	protected AIState State = AIState.Guarding;
+
 	protected AudioStreamPlayer2D BarkChannel;
 	protected AudioStreamPlayer2D AudioChannel;
 	protected BarkType LastBark;
@@ -125,20 +137,13 @@ public partial class MobBase : CharacterBody2D {
 	protected Timer ChangeInvestigateAngleTimer;
 	protected Node2D SightDetector;
 	protected Line2D DetectionMeter;
-	protected AnimatedSprite2D HeadAnimations;
-	protected AnimatedSprite2D BodyAnimations;
-	protected AnimatedSprite2D ArmAnimations;
-	protected NavigationAgent2D Navigation;
 	protected Color DetectionColor;
 	protected RayCast2D[] SightLines;
 	protected PlayerSystem.AfterImage AfterImage;
-	protected Timer MoveTimer;
 
 	protected Squad Squad;
 
-	public float GetHealth() {
-		return Health;
-	}
+	public float GetHealth() => Health;
 	private AudioStream GetBarkResource( BarkType bark ) {
 		switch ( bark ) {
 		case BarkType.ManDown:
@@ -215,7 +220,7 @@ public partial class MobBase : CharacterBody2D {
 		return (float)bot.Get( "health" ) <= 0.0f;
 	}
 	protected bool IsValidTarget( GodotObject target ) {
-		return target is Player || target is MobBase;
+		return target is Player || target is NetworkPlayer || target is MobBase;
 	}
 	protected bool IsAlert() {
 		return Awareness == AIAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
@@ -234,8 +239,6 @@ public partial class MobBase : CharacterBody2D {
 		float angle = Randf( 0.0f, 360.0f );
 		AimAngle = angle;
 		LookAngle = angle;
-
-		GD.Print( "Changing investigation angle" );
 
 		ArmAnimations.SetDeferred( "global_rotation", AimAngle );
 		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
@@ -263,7 +266,13 @@ public partial class MobBase : CharacterBody2D {
 		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
 		MoveChannel.Play();
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	protected void CreateAfterImage() {
+		if ( AfterImageUpdated ) {
+			return;
+		}
+		AfterImageUpdated = true;
 		AfterImage.CallDeferred( "Update", (Player)SightTarget );
 	}
 
@@ -299,7 +308,9 @@ public partial class MobBase : CharacterBody2D {
 		DetectionMeter.SetDeferred( "default_color", DetectionColor );
 	}
 
-	protected void Init() {
+	public override void _Ready() {
+		base._Ready();
+
 		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
@@ -311,9 +322,6 @@ public partial class MobBase : CharacterBody2D {
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		DetectionMeter.SetProcess( false );
 		DetectionMeter.SetProcessInternal( false );
-
-		Navigation = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
-		Navigation.Connect( "target_reached", Callable.From( OnTargetReached ) );
 		
 		HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 		ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
@@ -325,7 +333,7 @@ public partial class MobBase : CharacterBody2D {
 		MoveTimer.Connect( "timeout", Callable.From( OnMoveTimerTimeout ) );
 		MoveTimer.SetProcess( false );
 		MoveTimer.SetProcessInternal( false );
-		AddChild( MoveTimer );
+		CallDeferred( "add_child", MoveTimer );
 
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		MoveChannel.SetProcess( false );
@@ -337,17 +345,17 @@ public partial class MobBase : CharacterBody2D {
 		BarkChannel.Connect( "finished", Callable.From( OnBarkFinished ) );
 		
 		BulletShellTree = new Node2D();
-		GetTree().CurrentScene.AddChild( BulletShellTree );
+		GetTree().CurrentScene.CallDeferred( "add_child", BulletShellTree );
 		
 		BloodSplatterTree = new Node2D();
-		GetTree().CurrentScene.AddChild( BloodSplatterTree );
+		GetTree().CurrentScene.CallDeferred( "add_child", BloodSplatterTree );
 		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		AfterImage = new PlayerSystem.AfterImage();
 		AfterImage.SetProcess( false );
 		AfterImage.SetProcessInternal( false );
-		GetTree().Root.AddChild( AfterImage );
+		GetTree().CurrentScene.CallDeferred( "add_child", AfterImage );
 		
 		ChangeInvestigateAngleTimer = new Timer();
 		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
@@ -383,109 +391,28 @@ public partial class MobBase : CharacterBody2D {
 		AimAngle = LookAngle;
 
 		GenerateRaycasts();
-	}
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-		
-		PhysicsPosition = GlobalPosition;
-		if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
-			MoveTimer.Start();
+
+		if ( PatrolRoute != null ) {
+			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+			State = AIState.PatrolStart;
 		}
-		MoveAlongPath();
 	}
 
-	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 24 ) != 0 ) {
-			return;
-		}
-
-		base._Process( delta );
-
-		if ( GameConfiguration.DemonEyeActive ) {
-			HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
-			ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
-			BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
-		} else {
-			HeadAnimations.SetDeferred( "modulate", DefaultColor );
-		}
-
-		ProcessAnimations();
-
-		/*
-		Agent.State[ "HasTarget" ] = Blackboard.GetHasTarget();
-		Agent.State[ "TargetDistance" ] = Blackboard.GetTargetDistance();
-		Agent.State[ "TargetReached" ] = Blackboard.GetTargetReached();
-		Agent.State[ "Fear" ] = Blackboard.GetFear();
-		Agent.State[ "CanSeeTarget" ] = Blackboard.GetCanSeeTarget();
-		Agent.State[ "Stims" ] = Blackboard.GetStims();
-		Agent.State[ "SightPosition" ] = Blackboard.GetSightPosition();
-		Agent.State[ "Awareness" ] = Blackboard.GetAwareness();
-		Agent.State[ "Investigating" ] = Blackboard.GetInvestigating();
-		Agent.State[ "InCover" ] = Blackboard.GetInCover();
-		Agent.State[ "LastTargetPosition" ] = Blackboard.GetLastTargetPosition();
-		Agent.State[ "LoseInterest" ] = Blackboard.GetLostInterest();
-
-		Agent.Step();
-		*/
-		Think( (float)delta );
-	}
-	protected virtual void Think( float delta ) {
-	}
-
-	protected void ProcessAnimations()  {
-		ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
-		
-		if ( LookAngle > 0.0f ) {
-			HeadAnimations.SetDeferred( "flip_v", true );
-		} else if ( LookAngle < 0.0f ) {
-			HeadAnimations.SetDeferred( "flip_v", false );
-		}
-		if ( AimAngle > 0.0f ) {
-			ArmAnimations.SetDeferred( "flip_v", true );
-		} else if ( AimAngle < 0.0f ) {
-			ArmAnimations.SetDeferred( "flip_v", false );
-		}
-		if ( Velocity.X > 0.0f ) {
-			BodyAnimations.SetDeferred( "flip_h", false );
-			ArmAnimations.SetDeferred( "flip_h", false );
-		} else if ( Velocity.X < 0.0f ) {
-			BodyAnimations.SetDeferred( "flip_h", true );
-			ArmAnimations.SetDeferred( "flip_h", true );
-		}
-
-		if ( Velocity != Godot.Vector2.Zero ) {
-			BodyAnimations.CallDeferred( "play", "move" );
-			ArmAnimations.CallDeferred( "play", "move" );
-			HeadAnimations.CallDeferred( "play", "move" );
-		} else {
-			BodyAnimations.CallDeferred( "play", "idle" );
-			ArmAnimations.CallDeferred( "play", "idle" );
-			HeadAnimations.CallDeferred( "play", "idle" );
-		}
-
-//		FlashLight.GlobalRotation = LookAngle;
-	}
-
-	protected bool MoveAlongPath() {
-		if ( GlobalPosition.DistanceTo( GotoPosition ) <= 10.0f ) {
-			Velocity = Godot.Vector2.Zero;
-			return true;
-		}
-		Godot.Vector2 nextPathPosition = Navigation.GetNextPathPosition();
-		AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
-		LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
-		Velocity = AngleDir * MovementSpeed;
-		return MoveAndSlide();
-	}
-	protected void SetNavigationTarget( Godot.Vector2 target ) {
-		Navigation.TargetPosition = target;
-		TargetReached = false;
-		GotoPosition = target;
-	}
-	protected void OnTargetReached() {
+	protected override void OnTargetReached() {
 		TargetReached = true;
-		GotoPosition = GlobalPosition;
-		Velocity = Godot.Vector2.Zero;
+
+		switch ( State ) {
+		case AIState.PatrolStart:
+			SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+			break;
+		case AIState.Patrolling:
+			PatrolRoute = ( (AIPatrolRoute)PatrolRoute ).GetNext();
+			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+			break;
+		default:
+			GotoPosition = GlobalPosition;
+			Velocity = Godot.Vector2.Zero;
+			break;
+		};
 	}
 };

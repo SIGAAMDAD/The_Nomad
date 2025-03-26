@@ -355,10 +355,12 @@ public partial class Console : Node {
 
 
 	public static void PrintError( string text ) {
-		PrintLine( string.Format( "[color=light_coral]\tERROR:[/color] {0}", text ) );
+		RichLabel.AppendText( string.Format( "[color=red]\tERROR:[/color] {0}", text ) );
+		GD.PushError( text );
 	}
 	public static void PrintWarning( string text ) {
-		PrintLine( string.Format( "[color=gold]\tWARNING:[/color] {0}", text ) );
+		RichLabel.AppendText( string.Format( "[color=gold]\tWARNING:[/color] {0}", text ) );
+		GD.PushWarning( text );
 	}
 	public static void PrintLine( string text ) {
 		RichLabel.AppendText( string.Format( "{0}\n", text ) );

@@ -1,6 +1,9 @@
 using Godot;
 
 public partial class Poem : Control {
+	[Signal]
+	public delegate void FinishedLoadingEventHandler();
+
 	private bool Loading = false;
 
 	private CanvasLayer TransitionScreen;
@@ -10,28 +13,25 @@ public partial class Poem : Control {
 	private System.Collections.Generic.List<Label> Labels;
 	private int CurrentTimer = 0;
 
-	private void OnFinishedLoading() {
-		GameConfiguration.LoadedLevel.Call( "ChangeScene" );
-		QueueFree();
-
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
-	}
-	private void OnFinishedLoadingScene() {
-		Node scene = (Node)GameConfiguration.LoadedLevel.Get( "currentSceneNode" );
-		scene.Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
-	}
+	private PackedScene LoadedWorld = null;
+	private System.Threading.Thread LoadThread = null;
 	
 	private void OnTimerTimeout() {
 		AdvanceTimer();
 	}
+
+	private void OnFinishedLoading() {
+		LoadThread.Join();
+		QueueFree();
+		GetTree().ChangeSceneToPacked( LoadedWorld );
+	}
 	private void OnTransitionFinished() {
 		Hide();
-		GetNode( "/root/LoadingScreen" ).Call( "FadeIn" );
-		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
-			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
+//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
+			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
 			GameConfiguration.GameMode = GameMode.Online;
 
@@ -48,12 +48,15 @@ public partial class Poem : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 
-		Node scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
-			"res://levels/world.tscn"
-		);
-		GameConfiguration.LoadedLevel = scene;
+//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
+		Console.PrintLine( "Loading game..." );
 
-		scene.Connect( "OnComplete", Callable.From( OnFinishedLoadingScene ) );
+		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		LoadThread = new System.Threading.Thread( () => {
+			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
+			CallDeferred( "emit_signal", "FinishedLoading" );
+		} );
+		LoadThread.Start();
 	}
 
 	public override void _Ready() {
