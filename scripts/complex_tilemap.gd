@@ -4,11 +4,8 @@ class_name ComplexTilemap extends Node2D
 @export var _exterior:TileMapLayer = null
 #@export var _quest:QuestResource = null
 
-func _ready() -> void:
-	pass
-
-func _physics_process( delta: float ) -> void:
-	pass
+@onready var _location_area:Area2D = $BuildingArea
+var _inside:bool = false
 
 func hide_all() -> void:
 	print( "hiding all floors..." )
@@ -25,3 +22,9 @@ func show_all() -> void:
 		floor._decor.show()
 	
 	_exterior.show()
+
+func _on_building_area_body_shape_entered(body_rid: RID, body: Node2D, body_shape_index: int, local_shape_index: int) -> void:
+	_inside = true
+
+func _on_building_area_body_shape_exited(body_rid: RID, body: Node2D, body_shape_index: int, local_shape_index: int) -> void:
+	_inside = false

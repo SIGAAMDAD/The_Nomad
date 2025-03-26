@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using Renown.World;
 
 namespace Renown {
 	// most thinkers except for politicians will most likely never get the chance nor the funds

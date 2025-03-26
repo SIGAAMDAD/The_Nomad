@@ -2,7 +2,7 @@ using Godot;
 
 public partial class Checkpoint : InteractionItem {
 	[Export]
-	private string Title;
+	private StringName Title;
 	
 	private AudioStreamPlayer2D PassedCheckpoint;
 	private AudioStreamPlayer2D Ambience;
@@ -15,12 +15,25 @@ public partial class Checkpoint : InteractionItem {
 
 	private bool Activated = false;
 
+	public bool GetActivated() => Activated;
+	public void Activate() => Activated = true;
+	public StringName GetTitle() => Title;
+
 	public void Save() {
+		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( Name );
+		writer.SaveBool( "activated", Activated );
+		writer.Flush();
 	}
 	public void Load() {
-	}
+		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( Name  );
 
-	public string GetTitle() => Title;
+		// save file compatibility
+		if ( reader == null ) {
+			return;
+		}
+
+		Activated = reader.LoadBoolean( "activated" );
+	}
 
 	public override void _ExitTree() {
 		base._ExitTree();

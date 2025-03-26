@@ -28,6 +28,14 @@ namespace PlayerSystem {
 		private VBoxContainer SavedGamesContainer;
 		private HBoxContainer MemoryCloner;
 
+		// eagles peak interaction
+		private Button JumpYesButton;
+		private Button JumpNoButton;
+		private TextureRect JumpViewImage;
+		private AudioStreamPlayer JumpMusic;
+		private Callable OnYesPressed;
+		private Callable OnNoPressed;
+
 		private Label ItemName;
 		private Label ItemType;
 		private Label ItemCount;
@@ -206,6 +214,25 @@ namespace PlayerSystem {
 			WarpLocationsContainer = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
 
 			JumpInteractor = GetNode<MarginContainer>( "JumpContainer" );
+			JumpInteractor.SetProcess( false );
+			JumpInteractor.SetProcessInternal( false );
+
+			JumpViewImage = GetNode<TextureRect>( "JumpContainer/ViewImage" );
+			JumpViewImage.SetProcess( false );
+			JumpViewImage.SetProcessInternal( false );
+
+			JumpYesButton = GetNode<Button>( "JumpContainer/JumpQueryContainer/VBoxContainer/YesButton" );
+			JumpYesButton.SetProcess( false );
+			JumpYesButton.SetProcessInternal( false );
+			
+			JumpNoButton = GetNode<Button>( "JumpContainer/JumpQueryContainer/VBoxContainer/NoButton" );
+			JumpNoButton.SetProcess( false );
+			JumpNoButton.SetProcessInternal( false );
+
+			JumpMusic = GetNode<AudioStreamPlayer>( "JumpContainer/Theme" );
+			JumpMusic.SetProcess( false );
+			JumpMusic.SetProcessInternal( false );
+			JumpMusic.Set( "parameters/looping", true );
 
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
@@ -495,6 +522,11 @@ namespace PlayerSystem {
 		}
 		*/
 
+		private void OnJumpAudioTweenFadeOutFinished() {
+			JumpMusic.Stop();
+			JumpMusic.VolumeDb = 0.0f;
+		}
+
 		public void ShowInteraction( InteractionItem item ) {
 			switch ( item.GetInteractionType() ) {
 			case InteractionType.Checkpoint:
@@ -513,6 +545,19 @@ namespace PlayerSystem {
 			
 			if ( CurrentInteractor == CheckpointInteractor ) {
 				CheckpointNameLabel.Text = ( (Checkpoint)item ).GetTitle();
+			} else if ( CurrentInteractor == JumpInteractor ) {
+				EaglesPeak data = (EaglesPeak)item;
+
+				OnYesPressed = Callable.From( data.OnYesButtonPressed );
+				OnNoPressed = Callable.From( data.OnNoButtonPressed );
+
+				JumpYesButton.Connect( "pressed", OnYesPressed );
+				JumpNoButton.Connect( "pressed", OnNoPressed );
+
+				JumpViewImage.Texture = data.GetViewImage();
+				JumpMusic.Stream = data.GetMusic();
+
+				JumpMusic.Play();
 			}
 		}
 		public void HideInteraction() {
@@ -520,6 +565,13 @@ namespace PlayerSystem {
 				CheckpointMainContainer.Show();
 				WarpLocationsContainer.Hide();
 				SavedGamesContainer.Hide();
+			} else if ( CurrentInteractor == JumpInteractor ) {
+				Tween AudioTween = CreateTween();
+				AudioTween.TweenProperty( JumpMusic, "volume_db", -20.0f, 1.5f );
+				AudioTween.Connect( "finished", Callable.From( OnJumpAudioTweenFadeOutFinished ) );
+
+				JumpYesButton.Disconnect( "pressed", OnYesPressed );
+				JumpNoButton.Disconnect( "pressed", OnNoPressed );
 			}
 			if ( CurrentInteractor != null ) {
 				CurrentInteractor.Hide();

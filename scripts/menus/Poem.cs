@@ -48,7 +48,6 @@ public partial class Poem : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 
-//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 		Console.PrintLine( "Loading game..." );
 
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );

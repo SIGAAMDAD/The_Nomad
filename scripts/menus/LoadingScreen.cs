@@ -44,9 +44,6 @@ public partial class LoadingScreen : CanvasLayer {
 	}
 
 	private void OnTransitionFinished() {
-		Control MenuBackground = GetChild<Control>( 0 );
-		CallDeferred( "remove_child", MenuBackground );
-		MenuBackground.QueueFree();
 		Visible = false;
 	}
 	public void FadeOut() {
@@ -66,10 +63,6 @@ public partial class LoadingScreen : CanvasLayer {
 		ImageChange.SetProcessInternal( true );
 		SetProcess( true );
 		SetProcessInternal( true );
-
-		Control MenuBackground = ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>();
-		AddChild( MenuBackground );
-		MoveChild( MenuBackground, 0 );
 	}
 
 	public override void _Ready() {

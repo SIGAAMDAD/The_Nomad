@@ -33,6 +33,7 @@ public partial class AudioCache {
 	public static AudioStream[] MoveWaterSfx;
 
 #region Player Sound Effects
+	public static AudioStream LeapOfFaithSfx;
 	public static AudioStream ChangeWeaponSfx;
 	public static AudioStream[] PlayerPainSfx;
 	public static AudioStream[] PlayerDieSfx;
@@ -206,6 +207,8 @@ public partial class AudioCache {
 		SlowMoBeginSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/slowmo_begin.ogg" );
 		SlowMoEndSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/slowmo_end.ogg" );
 		DashExplosion = ResourceLoader.Load<AudioStream>( "res://sounds/player/dash_explosion.mp3" );
+
+		LeapOfFaithSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/leap_of_faith.ogg" );
 
 		world.CallDeferred( "emit_signal", "AudioLoadingFinished" );
     }

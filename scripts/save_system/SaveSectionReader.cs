@@ -32,7 +32,7 @@ namespace SaveSystem {
 					Value = value;
 					break; }
 				case FieldType.IntList: {
-					System.Collections.Generic.List<int> value = new System.Collections.Generic.List<int>();
+					List<int> value = new List<int>();
 					int count = reader.ReadInt32();
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadInt32() );
@@ -40,7 +40,7 @@ namespace SaveSystem {
 					Value = value;
 					break; }
 				case FieldType.UIntList: {
-					System.Collections.Generic.List<uint> value = new System.Collections.Generic.List<uint>();
+					List<uint> value = new List<uint>();
 					int count = reader.ReadInt32();
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadUInt32() );
@@ -48,7 +48,7 @@ namespace SaveSystem {
 					Value = value;
 					break; }
 				case FieldType.FloatList: {
-					System.Collections.Generic.List<float> value = new System.Collections.Generic.List<float>();
+					List<float> value = new List<float>();
 					int count = reader.ReadInt32();
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( (float)reader.ReadDouble() );
@@ -56,7 +56,7 @@ namespace SaveSystem {
 					Value = value;
 					break; }
 				case FieldType.StringList: {
-					System.Collections.Generic.List<string> value = new System.Collections.Generic.List<string>();
+					List<string> value = new List<string>();
 					int count = reader.ReadInt32();
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadString() );
@@ -77,10 +77,10 @@ namespace SaveSystem {
 			}
 		};
 
-		private System.Collections.Generic.Dictionary<string, SaveField> FieldList;
+		private Dictionary<string, SaveField> FieldList;
 
 		public SaveSectionReader() {
-			FieldList = new System.Collections.Generic.Dictionary<string, SaveField>();
+			FieldList = new Dictionary<string, SaveField>();
 
 			int fieldCount = ArchiveSystem.SaveReader.ReadInt32();
 			GD.Print( "Got " + fieldCount + " fields..." );

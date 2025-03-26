@@ -1,12 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0bwbf5nl7uyg"]
+[gd_scene load_steps=2 format=3 uid="uid://c0bwbf5nl7uyg"]
 
-[ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="1_nvod6"]
-[ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="1_r13di"]
+[ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="2_rtf2t"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_acc1w"]
-shader = ExtResource("1_r13di")
-shader_parameter/alpha_blend = false
-
-[node name="TileMapFloor" type="Node2D"]
-material = SubResource("ShaderMaterial_acc1w")
-script = ExtResource("1_nvod6")
+[node name="TileMapFloor" type="Node2D" node_paths=PackedStringArray("InteriorLayers")]
+script = ExtResource("2_rtf2t")
+InteriorLayers = []

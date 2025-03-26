@@ -341,15 +341,15 @@ public partial class Console : Node {
 
 
 	public static void PrintError( string text ) {
-		RichLabel.AppendText( string.Format( "[color=red]\tERROR:[/color] {0}", text ) );
+		RichLabel.CallDeferred( "append_text", string.Format( "[color=red]\tERROR:[/color] {0}", text ) );
 		GD.PushError( text );
 	}
 	public static void PrintWarning( string text ) {
-		RichLabel.AppendText( string.Format( "[color=gold]\tWARNING:[/color] {0}", text ) );
+		RichLabel.CallDeferred( "append_text", string.Format( "[color=gold]\tWARNING:[/color] {0}", text ) );
 		GD.PushWarning( text );
 	}
 	public static void PrintLine( string text ) {
-		RichLabel.AppendText( string.Format( "{0}\n", text ) );
+		RichLabel.CallDeferred( "append_text", string.Format( "{0}\n", text ) );
 		GD.Print( text );
 	}
 

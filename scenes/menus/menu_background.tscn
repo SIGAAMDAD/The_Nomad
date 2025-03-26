@@ -31,7 +31,7 @@ radial_accel_min = -14.0
 radial_accel_max = 14.0
 tangential_accel_min = -16.0
 tangential_accel_max = 16.0
-color = Color(1, 0, 0, 1)
+color = Color(4.75, 0, 0, 1)
 
 [sub_resource type="Gradient" id="Gradient_8r73w"]
 offsets = PackedFloat32Array(0)
@@ -91,7 +91,6 @@ texture = SubResource("GradientTexture1D_5lchc")
 process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
-modulate = Color(4, 1, 1, 1)
 position = Vector2(320, 500)
 amount = 1400
 texture = SubResource("GradientTexture2D_6lvap")

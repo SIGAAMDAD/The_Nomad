@@ -25,6 +25,9 @@ namespace Renown.World {
 		private float Time = 0.0f;
 		private float PastMinute = -1.0f;
 
+		private NetworkWriter SyncObject = null;
+		private bool IsHostWorld = false;
+
 		private const uint MinutesPerDay = 1440;
 		private const uint MinutesPerHour = 60;
 		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
@@ -66,6 +69,20 @@ namespace Renown.World {
 			}
 		}
 
+		private void SendPacket() {
+			SyncObject.Write( Year );
+			SyncObject.Write( Month );
+			SyncObject.Write( Day );
+			SyncObject.Write( Time );
+			SyncObject.Sync();
+		}
+		private void ReceivePacket( System.IO.BinaryReader reader ) {
+			Year = reader.ReadUInt32();
+			Month = reader.ReadUInt32();
+			Day = reader.ReadUInt32();
+			Time = (float)reader.ReadDouble();
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -74,13 +91,30 @@ namespace Renown.World {
 			Year = StartingYear;
 			Month = StartingMonth;
 			Day = StartingDay;
-		}
 
+			SetProcessInternal( false );
+
+			if ( SettingsData.GetNetworkingEnabled() ) {
+				SyncObject = new NetworkWriter( sizeof( uint ) * 3 + sizeof( double ) );
+				if ( SteamLobby.Instance.IsOwner() ) {
+					// we're running the host's world
+					SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
+					IsHostWorld = true;
+				} else {
+					SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+					SetProcess( false );
+				}
+			} else {
+				IsHostWorld = true;
+			}
+		}
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
-			Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
-			RecalculateTime();
+			if ( IsHostWorld ) {
+				Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
+				RecalculateTime();
+			}
 
 			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
 				float value = ( Mathf.Sin( Time * Mathf.Pi / 2.0f ) + 1.0f ) / 2.0f;

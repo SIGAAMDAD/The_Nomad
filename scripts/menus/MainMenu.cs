@@ -40,7 +40,6 @@ public partial class MainMenu : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
-//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
 			GameConfiguration.GameMode = GameMode.Online;
@@ -60,7 +59,6 @@ public partial class MainMenu : Control {
 
 		ArchiveSystem.LoadGame();
 
-//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 		Console.PrintLine( "Loading game..." );
 
 		Tween AudioFade = GetTree().Root.CreateTween();
@@ -79,7 +77,10 @@ public partial class MainMenu : Control {
 	}
 
     private void OnCampaignButtonPressed() {
-		if ( ArchiveSystem.Instance.IsLoaded() && !Loaded ) {
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			if ( Loaded ) {
+				return;
+			}
 			Loaded = true;
 			UIChannel.Stream = UISfxManager.BeginGame;
 			UIChannel.Play();
