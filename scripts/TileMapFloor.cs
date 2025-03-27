@@ -1,5 +1,5 @@
-using System;
 using Godot;
+using Renown.World;
 
 public partial class TileMapFloor : Node2D {
 	[Export]
@@ -8,10 +8,18 @@ public partial class TileMapFloor : Node2D {
 	private TileMapLayer Decor;
 	[Export]
 	private Area2D Area;
+	[Export]
+	private StaticBody2D FloorBounds;
+	[Export]
+	private TileMapFloor Exterior;
+	[Export]
+	private WorldArea ParentLocation;
+	[Export]
+	private int Level = 0; // "floor"
 
-	/// <summary>
+	/// <Summary>
 	/// only in use if this is the exterior
-	/// </summary>
+	/// </Summary>
 	[Export]
 	private TileMapFloor[] InteriorLayers = null;
 	[Export]
@@ -24,10 +32,20 @@ public partial class TileMapFloor : Node2D {
 
 	private bool IsPlayerHere = false;
 
+	public bool GetPlayerStatus() => IsPlayerHere;
+	public TileMapFloor GetUpper() => UpperLayer;
+	public TileMapFloor GetLower() => LowerLayer;
+
 	private void OnArea2DBodyShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
+			if ( body is NetworkPlayer ) {
+			} else if ( body is Renown.Thinker ) {
+				( body as Renown.Thinker ).SetTileMapFloor( this );
+			}
 			return;
 		}
+
+		body.CallDeferred( "SetTileMapFloorLevel", Level );
 
 		( Floor.Material as ShaderMaterial )?.SetShaderParameter( "alpha_blend", false );
 		if ( UpperLayer != null ) {
@@ -53,10 +71,20 @@ public partial class TileMapFloor : Node2D {
 
 		CallDeferred( "show" );
 
+		LowerLayer?.Floor.SetDeferred( "collision_enabled", false );
+
+		Floor.SetDeferred( "collision_enabled", true );
+		FloorBounds?.SetDeferred( "collision_layer", 1 | 2 );
+		FloorBounds?.SetDeferred( "collision_mask", 1 );
 		IsPlayerHere = true;
 	}
 	private void OnArea2DBodyShapeExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
+			if ( body is NetworkPlayer ) {
+
+			} else if ( body is Renown.Thinker ) {
+				( body as Renown.Thinker ).SetTileMapFloor( null );
+			}
 			return;
 		}
 
@@ -75,6 +103,9 @@ public partial class TileMapFloor : Node2D {
 			}
 		}
 
+		Floor.SetDeferred( "collision_enabled", false );
+		FloorBounds?.SetDeferred( "collision_layer", 0 );
+		FloorBounds?.SetDeferred( "collision_mask", 0 );
 		IsPlayerHere = false;
 	}
 
@@ -86,5 +117,8 @@ public partial class TileMapFloor : Node2D {
 
 		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 		ProcessThreadGroupOrder = 4;
+
+		SetProcess( false );
+		SetProcessInternal( false );
 	}
 };

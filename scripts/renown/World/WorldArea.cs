@@ -1,63 +1,53 @@
-using System.Threading;
 using Godot;
 
 namespace Renown.World {
-	public partial class WorldArea : Node2D {
+	public partial class WorldArea : Area2D {
+		public static DataCache<WorldArea> Cache;
+
 		[Export]
-		private StringName AreaName;
-		[Export]
-		private StringName PathName;
+		protected StringName AreaName;
 
-		private Area2D LoadArea;
-		private Area2D ProcessArea;
+		public StringName GetAreaName() => AreaName;
 
-		private Thread LoadThread;
-		private PackedScene LoadedScene;
-		private Node2D SceneData;
-
-		private void OnSceneLoad() {
-			LoadedScene = ResourceLoader.Load<PackedScene>( "res://levels/areas/" + PathName + ".tscn" );
-			SceneData = LoadedScene.Instantiate<Node2D>();
-			CallDeferred( "add_child", SceneData );
+		public virtual void Save() {
 		}
-	
-		private void OnLoadAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is not Player ) {
+		public virtual void Load() {
+		}
+
+		private void OnProcessAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			CharacterBody2D data = body as CharacterBody2D;
+			if ( data == null ) {
 				return;
 			}
-			LoadThread.Start();
-		}
-		private void OnLoadAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			RemoveChild( SceneData );
-			SceneData.QueueFree();
-			LoadedScene.Free();
-		}
-		private void OnProcessAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			LoadThread.Join();
-			SceneData.SetProcess( true );
-			SceneData.SetProcessInternal( true );
-			SceneData.SetPhysicsProcess( true );
-			SceneData.SetPhysicsProcessInternal( true );
+			GD.Print( "Setting location of " + body.GetPath() );
+			data.CallDeferred( "SetLocation", this );
 		}
 		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			SceneData.SetProcess( false );
-			SceneData.SetProcessInternal( false );
-			SceneData.SetPhysicsProcess( false );
-			SceneData.SetPhysicsProcessInternal( false );
+			CharacterBody2D data = body as CharacterBody2D;
+			if ( data == null ) {
+				return;
+			}
+//			data.CallDeferred( "SetLocation", null );
 		}
 
 		public override void _Ready() {	
 			base._Ready();
 
-			LoadThread = new Thread( OnSceneLoad );
+			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DEntered ) );
+			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DExited ) );
 
-			LoadArea = GetNode<Area2D>( "LoadArea" );
-			LoadArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnLoadAreaBodyShape2DEntered ) );
-			LoadArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnLoadAreaBodyShape2DExited ) );
+			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+			ProcessThreadGroupOrder = 0;
+			ProcessThreadMessages = ProcessThreadMessagesEnum.Messages;
 
-			ProcessArea = GetNode<Area2D>( "ProcessArea" );
-			ProcessArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DEntered ) );
-			ProcessArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DExited ) );
+			if ( SettingsData.GetNetworkingEnabled() ) {
+			}
+			if ( !IsInGroup( "Archive" ) ) {
+				AddToGroup( "Archive" );
+			}
+			if ( !IsInGroup( "Locations" ) ) {
+				AddToGroup( "Locations" );
+			}
 		}
     };
 };

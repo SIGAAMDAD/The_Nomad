@@ -1,3 +1,5 @@
+using Godot;
+
 namespace SaveSystem {
 	public class SaveSectionWriter {
 		private long BeginPosition = 0;

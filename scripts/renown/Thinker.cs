@@ -6,6 +6,8 @@ namespace Renown {
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : CharacterBody2D {
+		public static DataCache<Thinker> Cache;
+
 		public enum Occupation {
 			None,
 
@@ -18,45 +20,52 @@ namespace Renown {
 			
 			Count
 		};
+
+		[Export]
+		protected TileMapFloor Floor;
 		
 		[Export]
-		private StringName BotName;
+		protected StringName BotName;
 		[Export]
-		private Godot.Collections.Array<Relationship> SetRelations; // preset relationships
+		protected Godot.Collections.Array<Relationship> SetRelations; // preset relationships
 		[Export]
-		private Occupation Job;
+		protected Occupation Job;
 //		[Export]
 //		private EventHistory History;
 //		[Export]
 //		private Godot.Collections.Array<Trait> Traits;
 		[Export]
-		private uint Age = 0; // in years
+		protected uint Age = 0; // in years
 		[Export]
-		private Settlement Location = null;
+		protected WorldArea Location;
+
+		[ExportCategory("Start")]
+		[Export]
+		protected DirType Direction;
 		
 		[ExportCategory("Stats")]
 		[Export]
-		private uint Strength;
+		protected uint Strength;
 		[Export]
-		private uint Intelligence;
+		protected uint Intelligence;
 		[Export]
-		private uint Constitution;
+		protected uint Constitution;
 		[Export]
-		private float Health = 100.0f;
+		protected float Health = 100.0f;
 		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
 		private Godot.Collections.Dictionary<string, bool> Personality;
 		[Export]
 		private float MovementSpeed = 40.0f;
+		[Export]
+		protected Faction Faction;
 		
-		private Dictionary<Thinker, Relationship> Relations = new Dictionary<Thinker, Relationship>();
+		protected Dictionary<Thinker, Relationship> Relations = new Dictionary<Thinker, Relationship>();
 		protected NavigationAgent2D NavAgent;
-		private Godot.Vector2 AngleDir;
+		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 
 		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
-
-		private Settlement Settlement;
 
 		protected AnimatedSprite2D BodyAnimations;
 		protected AnimatedSprite2D ArmAnimations;
@@ -77,15 +86,18 @@ namespace Renown {
 		// networking
 		protected NetworkWriter SyncObject = null;
 
-		private uint Money = 0;
-		private uint Pay = 0;
+		protected uint Money = 0;
+		protected uint Pay = 0;
+
+		private VisibleOnScreenNotifier2D VisibilityNotifier;
+		protected bool OnScreen = false;
 		
 		// called when entering a shop
 //		public void SetCurrentShop( Shop shop ) {
 //			Agent.State[ "Vendor" ] = shop;
 //		}
 		// called when entering a settlement
-		public void SetCurrentSettlement( Settlement location ) => Settlement = location;
+		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 		
 		protected virtual void SendPacket() {
 		}
@@ -93,71 +105,52 @@ namespace Renown {
 		}
 
 		public virtual void Save() {
+			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
+
+			writer.SaveVector2( "position", GlobalPosition );
+			writer.SaveFloat( "health", Health );
+			writer.SaveUInt( "age", Age );
+			writer.Flush();
 		}
 		public virtual void Load() {
-		}
+			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + GetPath() );
 
-		protected void ProcessAnimations()  {
-			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
-		
-			if ( LookAngle > 0.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", true );
-			} else if ( LookAngle < 0.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", false );
-			}
-			if ( AimAngle > 0.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", true );
-			} else if ( AimAngle < 0.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", false );
-			}
-			if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
-				ArmAnimations.SetDeferred( "flip_h", false );
-			} else if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
-				ArmAnimations.SetDeferred( "flip_h", true );
-			}
-
-			if ( Velocity != Godot.Vector2.Zero ) {
-				BodyAnimations.CallDeferred( "play", "move" );
-				ArmAnimations.CallDeferred( "play", "move" );
-				HeadAnimations.CallDeferred( "play", "move" );
-			} else {
-				BodyAnimations.CallDeferred( "play", "idle" );
-				ArmAnimations.CallDeferred( "play", "idle" );
-				HeadAnimations.CallDeferred( "play", "idle" );
-			}
-		}
-
-		public override void _Ready() {
-			base._Ready();
-
-			if ( SettingsData.GetNetworkingEnabled() ) {
-//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
-			}
-
-			NavAgent = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
-			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
-		}
-		public override void _Process( double delta ) {
-			if ( ( Engine.GetProcessFrames() % 24 ) != 0 ) {
+			// save file compability
+			if ( reader == null ) {
 				return;
 			}
 
-			base._Process( delta );
+			GlobalPosition = reader.LoadVector2( "position" );
+			Health = reader.LoadFloat( "health" );
+			Age = reader.LoadUInt( "age" );
+		}
 
-			if ( GameConfiguration.DemonEyeActive ) {
-				HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
-				ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
-				BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
-			} else {
-				HeadAnimations.SetDeferred( "modulate", DefaultColor );
+		protected virtual void OnScreenEnter() {
+			OnScreen = true;
+		}
+		protected virtual void OnScreenExit() {
+			OnScreen = false;
+		}
+
+		protected void InitBaseThinker() {
+			base._Ready();
+
+			NavAgent = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
+			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
+
+			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
+			VisibilityNotifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );
+			VisibilityNotifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
+			
+			if ( SettingsData.GetNetworkingEnabled() ) {
+				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 			}
-
-			ProcessAnimations();
-
-			Think( (float)delta );
+			if ( !IsInGroup( "Archive" ) ) {
+				AddToGroup( "Archive" );
+			}
+			if ( !IsInGroup( "Thinkers" ) ) {
+				AddToGroup( "Thinkers" );
+			}
 		}
 		public override void _PhysicsProcess( double delta ) {
 			base._PhysicsProcess( delta );
@@ -177,9 +170,9 @@ namespace Renown {
 				return true;
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
-			AngleDir = GlobalPosition.DirectionTo( nextPathPosition );
-			LookAngle = Mathf.Atan2( AngleDir.Y, AngleDir.X );
-			Velocity = AngleDir * MovementSpeed;
+			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			Velocity = LookDir * MovementSpeed;
 			return MoveAndSlide();
 		}
 		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {

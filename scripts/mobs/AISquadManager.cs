@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 public class AISquadManager {
 	private static System.Collections.Generic.List<AISquad> SquadList =

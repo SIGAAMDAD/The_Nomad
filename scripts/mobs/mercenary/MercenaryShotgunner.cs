@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using Renown.World;
 
 public partial class MercenaryShotgunner : MobBase {
 	private Timer TargetMovedTimer;
@@ -8,6 +9,28 @@ public partial class MercenaryShotgunner : MobBase {
 	private RayCast2D AimLine;
 	private Line2D ShootLine;
 	private Godot.Vector2 GuardPosition;
+
+	public void SetLocation( Renown.World.WorldArea location ) => Location = location;
+
+	public override void Save() {
+		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
+		writer.SaveVector2( "position", GlobalPosition );
+		writer.SaveFloat( "health", Health );
+		writer.SaveUInt( "age", Age );
+		writer.Flush();
+	}
+	public override void Load() {
+		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + GetPath() );
+
+		// save file compability
+		if ( reader == null ) {
+			return;
+		}
+
+		GlobalPosition = reader.LoadVector2( "position" );
+		Health = reader.LoadFloat( "health" );
+		Age = reader.LoadUInt( "age" );
+	}
 
 	protected override void OnLoseInterestTimerTimeout() {
 		if ( GameConfiguration.GameDifficulty == GameDifficulty.PowerFantasy ) {
@@ -32,7 +55,7 @@ public partial class MercenaryShotgunner : MobBase {
 		SyncObject.Write( GlobalPosition.Y );
 		SyncObject.Write( Health );
 		SyncObject.Write( Fear );
-		SyncObject.Write( Investigating );
+		SyncObject.Write( (uint)State );
 		SyncObject.Sync();
 	}
 	protected override void ReceivePacket( System.IO.BinaryReader reader ) {
@@ -43,7 +66,7 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 
 	public override void _Ready() {
-		base._Ready();
+		base.InitSubThinker();
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SyncObject = new NetworkWriter( 256 );
@@ -60,13 +83,12 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 
 		GuardPosition = GlobalPosition;
-
 		DemonEyeColor = new Color();
 	}
 	protected override void Think( float delta ) {
 		CheckSight( delta );
 
-		if ( Investigating ) {
+		if ( State == AIState.Investigating ) {
 			Investigate();
 		}
 		
@@ -104,18 +126,20 @@ public partial class MercenaryShotgunner : MobBase {
 		Awareness = AIAwareness.Suspicious;
 	}
 	private void CheckSight( float delta ) {
-		if ( SightPosition != GlobalPosition ) {
-			RecalcSight();
-		}
+		RecalcSight();
 
 		GodotObject sightTarget = null;
 		for ( int i = 0; i < SightLines.Length; i++ ) {
 			sightTarget = SightLines[i].GetCollider();
 			if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-				break; 
+				break;
 			} else {
 				sightTarget = null;
 			}
+		}
+
+		if ( SightTarget != null && Awareness == AIAwareness.Alert ) {
+//			return; // hunt them down
 		}
 
 		// we saw something, but it slipped out of view

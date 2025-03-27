@@ -138,12 +138,12 @@ namespace SaveSystem {
 			if ( FieldList.ContainsKey( name ) ) {
 				SaveField field = FieldList[ name ];
 				if ( field.GetFieldType() != FieldType.String ) {
-					return "";
+					return new string( "" );
 				}
 				return (string)FieldList[ name ].GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
-			return "";
+			return new string( "" );
 		}
 		public Godot.Vector2 LoadVector2( string name ) {
 			SaveField field = null;

@@ -128,7 +128,6 @@ public partial class LobbyBrowser : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
-//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
 			GameConfiguration.GameMode = GameMode.Online;

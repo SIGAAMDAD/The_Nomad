@@ -4,6 +4,7 @@ using PlayerSystem;
 using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
+using Renown.World;
 
 public partial class Player : CharacterBody2D {
 	public enum Hands : byte {
@@ -131,6 +132,8 @@ public partial class Player : CharacterBody2D {
 	private AnimatedSprite2D LegAnimation;
 	private AnimatedSprite2D IdleAnimation;
 
+	private WorldArea Location = null;
+
 	private Timer IdleTimer;
 
 	private Timer DashTime;
@@ -201,6 +204,8 @@ public partial class Player : CharacterBody2D {
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
 
+	private int TileMapLevel = 0;
+
 	private int NodeHash = 0;
 
 	[Signal]
@@ -211,6 +216,10 @@ public partial class Player : CharacterBody2D {
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
 	}
+
+	public WorldArea GetLocation() => Location;
+	public void SetLocation( WorldArea location ) => Location = location;
+	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
 
 	public void Save() {
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );

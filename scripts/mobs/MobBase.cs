@@ -47,18 +47,18 @@ public enum AIState : sbyte {
 	Count
 };
 
-public partial class MobBase : Renown.Thinker {
-	public enum DirType {
-		North,
-		NorthEast,
-		East,
-		SouthEast,
-		South,
-		SouthWest,
-		West,
-		NorthWest
-	};
+public enum DirType {
+	North,
+	NorthEast,
+	East,
+	SouthEast,
+	South,
+	SouthWest,
+	West,
+	NorthWest
+};
 
+public partial class MobBase : Renown.Thinker {
 	protected Node2D BloodSplatterTree;
 	protected PackedScene BloodSplatter;
 
@@ -89,15 +89,11 @@ public partial class MobBase : Renown.Thinker {
 
 	[ExportCategory("Start")]
 	[Export]
-	protected DirType Direction;
-	[Export]
 	protected AINodeCache NodeCache;
 	[Export]
 	protected NavigationLink2D PatrolRoute;
 
 	[ExportCategory("Stats")]
-	[Export]
-	protected float Health = 0.0f;
 	[Export]
 	protected float MovementSpeed = 1.0f;
 	[Export]
@@ -111,9 +107,6 @@ public partial class MobBase : Renown.Thinker {
 
 	protected CharacterBody2D SightTarget;
 	protected float SightDetectionAmount = 0.0f;
-	protected Godot.Vector2 AngleDir = Godot.Vector2.Zero;
-	protected Godot.Vector2 NextPathPosition = Godot.Vector2.Zero;
-	protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 	protected PointLight2D FlashLight;
 
 	// memory
@@ -142,6 +135,13 @@ public partial class MobBase : Renown.Thinker {
 	protected PlayerSystem.AfterImage AfterImage;
 
 	protected Squad Squad;
+
+	public override void Save() {
+		base.Save();
+	}
+	public override void Load() {
+		base.Load();
+	}
 
 	public float GetHealth() => Health;
 	private AudioStream GetBarkResource( BarkType bark ) {
@@ -195,11 +195,10 @@ public partial class MobBase : Renown.Thinker {
 	protected void GenerateRaycasts() {
 		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
 		SightLines = new RayCast2D[ rayCount ];
-
 		for ( int i = 0; i < rayCount; i++ ) {
 			RayCast2D ray = new RayCast2D();
 			float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-			ray.TargetPosition = LookDir.Rotated( angle ) * MaxViewDistance;
+			ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
 			ray.Enabled = true;
 			ray.CollisionMask = 2;
 			SightDetector.AddChild( ray );
@@ -211,7 +210,7 @@ public partial class MobBase : Renown.Thinker {
 		for ( int i = 0; i < SightLines.Length; i++ ) {
 			RayCast2D ray = SightLines[i];
 			float angle = AngleBetweenRays * ( i - SightLines.Length / 2.0f );
-			ray.SetDeferred( "target_position", LookDir.Rotated( angle ) * MaxViewDistance );
+			ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
 		}
 	}
 
@@ -307,22 +306,117 @@ public partial class MobBase : Renown.Thinker {
 
 		DetectionMeter.SetDeferred( "default_color", DetectionColor );
 	}
+	protected override void OnScreenEnter() {
+		base.OnScreenEnter();
+		
+		OnScreen = true;
 
-	public override void _Ready() {
-		base._Ready();
+//		FlashLight.Show();
+
+//		HeadAnimations.Show();
+//		BodyAnimations.Show();
+//		ArmAnimations.Show();
+
+		if ( GameConfiguration.GameDifficulty == GameDifficulty.PowerFantasy ) {
+			DetectionMeter.Show();
+		}
+	}
+	protected override void OnScreenExit() {
+		base.OnScreenExit();
+
+		OnScreen = false;
+
+//		FlashLight.Hide();
+
+//		HeadAnimations.Hide();
+//		HeadAnimations.SetProcess( false );
+//		HeadAnimations.SetProcessInternal( false );
+
+//		BodyAnimations.Hide();
+//		BodyAnimations.SetProcess( false );
+//		BodyAnimations.SetProcessInternal( false );
+
+//		ArmAnimations.Hide();
+//		ArmAnimations.SetProcess( false );
+//		ArmAnimations.SetProcessInternal( false );
+		
+		if ( GameConfiguration.GameDifficulty == GameDifficulty.PowerFantasy ) {
+			DetectionMeter.Hide();
+		}
+	}
+
+	protected void ProcessAnimations()  {
+		if ( Floor != null ) {
+			if ( Floor.GetUpper() != null && Floor.GetUpper().GetPlayerStatus() ) {
+				Visible = true;
+			} else {
+				Visible = Floor.GetPlayerStatus();
+			}
+		} else {
+			Visible = true;
+		}
+		/*
+		if ( OnScreen ) {
+			if ( Floor != null ) {
+				if ( Floor.GetUpper() != null && Floor.GetUpper().GetPlayerStatus() ) {
+					Visible = true;
+				} else {
+					Visible = Floor.GetPlayerStatus();
+				}
+			} else {
+				Visible = true;
+			}
+			Visible = true;
+		} else {
+			Visible = false;
+		}
+		*/
+
+		ArmAnimations.GlobalRotation = AimAngle;
+		HeadAnimations.GlobalRotation = LookAngle;
+		
+		if ( LookAngle > 0.0f ) {
+			HeadAnimations.SetDeferred( "flip_v", true );
+		} else if ( LookAngle < 0.0f ) {
+			HeadAnimations.SetDeferred( "flip_v", false );
+		}
+		if ( AimAngle > 0.0f ) {
+			ArmAnimations.SetDeferred( "flip_v", true );
+		} else if ( AimAngle < 0.0f ) {
+			ArmAnimations.SetDeferred( "flip_v", false );
+		}
+		if ( Velocity.X > 0.0f ) {
+			BodyAnimations.SetDeferred( "flip_h", false );
+			ArmAnimations.SetDeferred( "flip_h", false );
+		} else if ( Velocity.X < 0.0f ) {
+			BodyAnimations.SetDeferred( "flip_h", true );
+			ArmAnimations.SetDeferred( "flip_h", true );
+		}
+
+		if ( Velocity != Godot.Vector2.Zero ) {
+			BodyAnimations.CallDeferred( "play", "move" );
+			ArmAnimations.CallDeferred( "play", "move" );
+			HeadAnimations.CallDeferred( "play", "move" );
+		} else {
+			BodyAnimations.CallDeferred( "play", "idle" );
+			ArmAnimations.CallDeferred( "play", "idle" );
+			HeadAnimations.CallDeferred( "play", "idle" );
+		}
+	}
+
+	protected void InitSubThinker() {
+		base.InitBaseThinker();
 
 		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
 		SightDetector = GetNode<Node2D>( "Animations/HeadAnimations/SightCheck" );
-		SightDetector.SetProcess( false );
-		SightDetector.SetProcessInternal( false );
 
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		DetectionMeter.SetProcess( false );
 		DetectionMeter.SetProcessInternal( false );
-		
+
 		HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 		ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 		BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
@@ -386,6 +480,9 @@ public partial class MobBase : Renown.Thinker {
 		case DirType.West:
 			LookDir = Godot.Vector2.Left;
 			break;
+		default:
+			GD.PushError( "Invalid direction!" );
+			break;
 		};
 		LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 		AimAngle = LookAngle;
@@ -396,6 +493,47 @@ public partial class MobBase : Renown.Thinker {
 			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 			State = AIState.PatrolStart;
 		}
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			return;
+		}
+
+		if ( GameConfiguration.DemonEyeActive ) {
+			HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
+			ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
+			BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
+		} else {
+			HeadAnimations.SetDeferred( "modulate", DefaultColor );
+		}
+
+		if ( SightTarget == null ) {
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				break;
+			default:
+				GD.PushError( "Invalid direction!" );
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+		}
+
+		ProcessAnimations();
+
+		Think( (float)delta );
 	}
 
 	protected override void OnTargetReached() {

@@ -2,6 +2,9 @@ using System.Threading;
 using System.Collections.Generic;
 using Steamworks;
 using Godot;
+using Renown.World;
+using Renown;
+using System.ComponentModel;
 
 public partial class World : Node2D {
 	[Export]
@@ -135,7 +138,22 @@ public partial class World : Node2D {
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		
-		SceneLoadThread = new Thread( () => { PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" ); } );
+		SceneLoadThread = new Thread( () => {
+			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
+			Faction.Cache = new DataCache<Faction>( this, "Factions" );
+			Settlement.Cache = new DataCache<Settlement>( this, "Settlements" );
+			WorldArea.Cache = new DataCache<WorldArea>( this, "Locations" );
+			Thinker.Cache = new DataCache<Thinker>( this, "Thinkers" );
+
+			if ( !ArchiveSystem.Instance.IsLoaded() ) {
+				return;
+			}
+
+			Faction.Cache.Load();
+			Settlement.Cache.Load();
+			WorldArea.Cache.Load();
+			Thinker.Cache.Load();
+		} );
 		SceneLoadThread.Start();
 
 		AudioLoadThread = new Thread( () => { AudioCache.Cache( this ); } );
