@@ -1,9 +1,13 @@
+using System;
+using System.Collections;
 using Godot;
 
 public partial class PauseMenu : Control {
 	private ConfirmationDialog ConfirmExitDlg;
 	private ConfirmationDialog ConfirmQuitDlg;
 	private ColorRect ConfirmDlgOverlay;
+
+	private PackedScene MainMenu;
 
 	[Signal]
 	public delegate void LeaveLobbyEventHandler();
@@ -27,20 +31,33 @@ public partial class PauseMenu : Control {
 	private void OnConfirmExitConfirmed() {
 		GameConfiguration.Paused = false;
 
+		SteamLobby.Instance.SetPhysicsProcess( false );
+		SteamLobby.Instance.SetPhysicsProcessInternal( false );
+
+		if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
+			ArchiveSystem.SaveGame( null, 0 );
+		}
+
+		GetTree().Paused = false;
 		Engine.TimeScale = 1.0f;
-		GameConfiguration.LoadedLevel.Call( "UnloadScene" );
-		GameConfiguration.LoadedLevel.Free();
-		GameConfiguration.LoadedLevel = null;
+		ArchiveSystem.Clear();
 
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer
 			|| GameConfiguration.GameMode == GameMode.Online )
 		{
 			EmitSignal( "LeaveLobby" );
 		}
+
+		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
+		GC.Collect( GC.MaxGeneration, GCCollectionMode.Forced );
+
+		GetTree().ChangeSceneToPacked( MainMenu );
 	}
 
 	public override void _Ready() {
 		base._Ready();
+
+		MainMenu = ResourceLoader.Load<PackedScene>( "res://scenes/main_menu.tscn" );
 
 		ConfirmExitDlg = GetNode<ConfirmationDialog>( "ConfirmExit" );
 		ConfirmExitDlg.Connect( "confirmed", Callable.From( OnConfirmExitConfirmed ) );
@@ -51,6 +68,13 @@ public partial class PauseMenu : Control {
 
 		ConfirmQuitDlg = GetNode<ConfirmationDialog>( "ConfirmQuit" );
 		ConfirmQuitDlg.Connect( "confirmed", Callable.From( () => {
+			SteamLobby.Instance.SetPhysicsProcess( false );
+			SteamLobby.Instance.SetPhysicsProcessInternal( false );
+
+			if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
+				ArchiveSystem.SaveGame( null, 0 );
+			}
+
 			ConfirmDlgOverlay.Hide();
 			GetTree().Quit();
 		} ) );

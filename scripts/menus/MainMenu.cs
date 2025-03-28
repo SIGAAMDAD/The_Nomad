@@ -32,8 +32,11 @@ public partial class MainMenu : Control {
 	}
 	private void OnFinishedLoading() {
 		LoadThread.Join();
-		QueueFree();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
+
+		ButtonList = null;
+		LoadThread = null;
+		LoadedWorld = null;
 	}
 	private void LoadGame() {
 		Hide();

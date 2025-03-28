@@ -22,6 +22,15 @@ public enum AntiAliasing : uint {
 	FXAA_and_TAA
 };
 
+public enum ShadowQuality : uint {
+	Off,
+	NoFilter,
+	Low,
+	High,
+
+	Count
+};
+
 public partial class SettingsData : Control {
 	private Resource Default;
 
@@ -32,11 +41,10 @@ public partial class SettingsData : Control {
 	private static WindowMode WindowMode;
 	private static DisplayServer.VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
-	private static RenderingServer.ShadowQuality ShadowQuality;
 	private static int MaxFps;
 	private static bool BloomEnabled;
-	private static bool SunShadowEnabled;
-	private static RenderingServer.ShadowQuality SunShadowQuality;
+	private static bool SunLightEnabled;
+	private static ShadowQuality SunShadowQuality;
 
 	private static float HapticStrength;
 	private static bool HapticEnabled;
@@ -84,6 +92,10 @@ public partial class SettingsData : Control {
 	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
 	public static bool GetBloomEnabled() => BloomEnabled;
 	public static void SetBloomEnabled( bool bBloomEnabled ) => BloomEnabled = bBloomEnabled;
+	public static bool GetSunLightEnabled() => SunLightEnabled;
+	public static void SetSunLightEnabled( bool bSunLightEnabled ) => SunLightEnabled = bSunLightEnabled;
+	public static ShadowQuality GetSunShadowQuality() => SunShadowQuality;
+	public static void SetSunShadowQuality( ShadowQuality sunShadowQuality ) => SunShadowQuality = sunShadowQuality;
 
 	public static bool GetEffectsOn() => EffectsOn;
 	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
@@ -172,6 +184,20 @@ public partial class SettingsData : Control {
 			AntiAliasing = AntiAliasing.FXAA_and_TAA;
 			break;
 		};
+		switch ( config[ "Video:SunShadowQuality" ] ) {
+		case "None":
+			SunShadowQuality = ShadowQuality.Off;
+			break;
+		case "NoFilter":
+			SunShadowQuality = ShadowQuality.NoFilter;
+			break;
+		case "Low":
+			SunShadowQuality = ShadowQuality.Low;
+			break;
+		case "High":
+			SunShadowQuality = ShadowQuality.High;
+			break;
+		};
 		switch ( config[ "Video:VSync" ] ) {
 		case "Disabled":
 			VSyncMode = DisplayServer.VSyncMode.Disabled;
@@ -184,6 +210,7 @@ public partial class SettingsData : Control {
 			break;
 		};
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
+		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 	}
 	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Video]" );
@@ -193,6 +220,8 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "AntiAliasing={0}", AntiAliasing ) );
 		writer.WriteLine( string.Format( "VSync={0}", VSyncMode ) );
 		writer.WriteLine( string.Format( "Bloom={0}", BloomEnabled.ToString() ) );
+		writer.WriteLine( string.Format( "SunShadowQuality={0}", SunShadowQuality ) );
+		writer.WriteLine( string.Format( "SunLight={0}", SunLightEnabled ) );
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
@@ -242,9 +271,10 @@ public partial class SettingsData : Control {
 		WindowMode = (WindowMode)(uint)Default.Get( "_window_mode" );
 		VSyncMode = (DisplayServer.VSyncMode)(uint)Default.Get( "_vsync_mode" );
 		AntiAliasing = (AntiAliasing)(uint)Default.Get( "_anti_aliasing" );
-		ShadowQuality = (RenderingServer.ShadowQuality)(long)Default.Get( "_shadow_quality" );
 		MaxFps = (int)Default.Get( "_max_fps" );
 		BloomEnabled = (bool)Default.Get( "_bloom_enabled" );
+		SunShadowQuality = (ShadowQuality)(uint)Default.Get( "_sun_shadow_quality" );
+		SunLightEnabled = (bool)Default.Get( "_sun_light_enabled" );
 
 		HapticStrength = (float)Default.Get( "_haptic_strength" );
 		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
@@ -270,7 +300,6 @@ public partial class SettingsData : Control {
 	public override void _Ready() {
 		base._Ready();
 
-//		GetNode( "/root/Console" ).Call( "print_line", "Loading game configuration...", true );
 		Console.PrintLine( "Loading game configuration..." );
 
 		RefCounted bindingSetup = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/menus/settings_bindings.gd" ).New();
@@ -287,7 +316,6 @@ public partial class SettingsData : Control {
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
-//			GetNode( "/root/Console" ).Call( "print_line", "...settings file doesn't exist, using defaults", true );
 			Console.PrintLine( "...settings file doesn't exist, using defaults" );
 			return;
 		}
@@ -315,5 +343,8 @@ public partial class SettingsData : Control {
 		writer.Flush();
 
 		ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );
+
+		SteamManager.SaveCloudFile( "settings.ini" );
+		SteamManager.SaveCloudFile( "input_context.tres" );
 	}
 };

@@ -8,11 +8,20 @@ namespace PlayerSystem {
 		[Export]
 		public Player _Owner;
 
+		private Tween FadeOutTween;
+		private Tween FadeInTween;
+
 		private ProgressBar HealthBar;
 		private ProgressBar RageBar;
 		private MarginContainer Inventory;
 		private VBoxContainer StackList;
 
+		private MarginContainer AnnouncementContainer;
+		private TextureRect AnnouncementBackground;
+		private Label AnnouncementText;
+		private Timer AnnouncementTimer;
+
+		private Checkpoint CurrentCheckpoint;
 		private MarginContainer CheckpointInteractor;
 		private MarginContainer JumpInteractor;
 		private MarginContainer CurrentInteractor;
@@ -26,6 +35,8 @@ namespace PlayerSystem {
 		private Label CheckpointNameLabel;
 		private HBoxContainer WarpCloner;
 		private VScrollBar WarpLocationsContainer;
+		private Button ActiveCheckpointButton;
+		private VBoxContainer InactiveContainter;
 		private VBoxContainer CheckpointMainContainer;
 		private VBoxContainer SavedGamesContainer;
 		private HBoxContainer MemoryCloner;
@@ -88,6 +99,10 @@ namespace PlayerSystem {
 		private void OnSaveTimerTimeout() {
 			SaveSpinner.Hide();
 		}
+		private void OnAnnouncementFadeOutTweenFinished() {
+			FadeOutTween.Disconnect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
+			AnnouncementText.Hide();
+		}
 
 		private void OnWorldTimeTick( uint day, uint hour, uint minute ) {
 			WorldTimeYear.Text = WorldTimeManager.Year.ToString();
@@ -112,6 +127,27 @@ namespace PlayerSystem {
 			RageBar = GetNode<ProgressBar>( "MainHUD/RageBar" );
 			RageBar.SetProcess( false );
 			RageBar.SetProcessInternal( false );
+
+			AnnouncementContainer = GetNode<MarginContainer>( "MainHUD/AnnouncementLabel" );
+			AnnouncementContainer.SetProcess( false );
+			AnnouncementContainer.SetProcessInternal( false );
+
+			AnnouncementBackground = GetNode<TextureRect>( "MainHUD/AnnouncementLabel/TextureRect" );
+			AnnouncementBackground.SetProcess( false );
+			AnnouncementBackground.SetProcessInternal( false );
+
+			AnnouncementText = GetNode<Label>( "MainHUD/AnnouncementLabel/TextureRect/Label" );
+			AnnouncementText.SetProcess( false );
+			AnnouncementText.SetProcessInternal( false );
+
+			AnnouncementTimer = GetNode<Timer>( "MainHUD/AnnouncementLabel/Timer" );
+			AnnouncementTimer.SetProcess( false );
+			AnnouncementTimer.SetProcessInternal( false );
+			AnnouncementTimer.Connect( "timeout", Callable.From( () => {
+				FadeOutTween = CreateTween();
+				FadeOutTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.0f, 2.5f );
+				FadeOutTween.Connect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
+			} ) );
 
 			Inventory = GetNode<MarginContainer>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer" );
 			Inventory.SetProcess( false );
@@ -246,7 +282,16 @@ namespace PlayerSystem {
 			WarpCloner = GetNode<HBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner" );
 			CheckpointNameLabel = GetNode<Label>( "CheckpointContainer/VBoxContainer/CheckpointNameLabel" );
 
+			ActiveCheckpointButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer/Button" );
+			ActiveCheckpointButton.SetProcess( false );
+			ActiveCheckpointButton.SetProcessInternal( false );
+			ActiveCheckpointButton.Connect( "pressed", Callable.From( () => {
+				CurrentCheckpoint.Activate();
+				ShowAnnouncement( "ACQUIRED_MEMORY" );
+			} ) );
+
 			MemoryCloner = GetNode<HBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner" );
+			InactiveContainter = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer" );
 			CheckpointMainContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer" );
 			SavedGamesContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer" );
 			WarpLocationsContainer = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
@@ -568,6 +613,7 @@ namespace PlayerSystem {
 		public void ShowInteraction( InteractionItem item ) {
 			switch ( item.GetInteractionType() ) {
 			case InteractionType.Checkpoint:
+				CurrentCheckpoint = (Checkpoint)item;
 				CurrentInteractor = CheckpointInteractor;
 				break;
 			case InteractionType.EaglesPeak:
@@ -582,7 +628,14 @@ namespace PlayerSystem {
 			}
 			
 			if ( CurrentInteractor == CheckpointInteractor ) {
-				CheckpointNameLabel.Text = ( (Checkpoint)item ).GetTitle();
+				CheckpointNameLabel.Text = CurrentCheckpoint.GetTitle();
+				if ( CurrentCheckpoint.GetActivated() ) {
+					InactiveContainter.Hide();
+					CheckpointMainContainer.Show();
+				} else {
+					InactiveContainter.Show();
+					CheckpointMainContainer.Hide();
+				}
 			} else if ( CurrentInteractor == JumpInteractor ) {
 				EaglesPeak data = (EaglesPeak)item;
 
@@ -615,6 +668,20 @@ namespace PlayerSystem {
 				CurrentInteractor.Hide();
 			}
 			CurrentInteractor = null;
+		}
+
+		public void ShowAnnouncement( string text ) {
+			AnnouncementContainer.Show();
+
+			AnnouncementTimer.Start();
+
+			AnnouncementBackground.Material.Set( "shader_parameter/alpha", 0.0f );
+			AnnouncementText.Text = text;
+			AnnouncementText.Show();
+			AnnouncementTimer.Start();
+
+			FadeInTween = CreateTween();
+			FadeInTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.90f, 2.5f );
 		}
     };
 };

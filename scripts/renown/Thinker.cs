@@ -120,9 +120,9 @@ namespace Renown {
 				return;
 			}
 
-			GlobalPosition = reader.LoadVector2( "position" );
-			Health = reader.LoadFloat( "health" );
-			Age = reader.LoadUInt( "age" );
+			SetDeferred( "global_position", reader.LoadVector2( "position" ) );
+			SetDeferred( "health", reader.LoadFloat( "health" ) );
+			SetDeferred( "age", reader.LoadUInt( "age" ) );
 		}
 
 		protected virtual void OnScreenEnter() {
@@ -152,7 +152,8 @@ namespace Renown {
 				AddToGroup( "Thinkers" );
 			}
 		}
-		public override void _PhysicsProcess( double delta ) {
+		
+        public override void _PhysicsProcess( double delta ) {
 			base._PhysicsProcess( delta );
 		
 			PhysicsPosition = GlobalPosition;

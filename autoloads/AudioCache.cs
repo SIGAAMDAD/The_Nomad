@@ -32,6 +32,9 @@ public partial class AudioCache {
 	public static AudioStream[] MoveGravelSfx;
 	public static AudioStream[] MoveWaterSfx;
 
+	public static AudioStream ActivatedCheckpointSfx;
+	public static AudioStream CampfireAmbienceSfx;
+
 #region Player Sound Effects
 	public static AudioStream LeapOfFaithSfx;
 	public static AudioStream ChangeWeaponSfx;
@@ -209,6 +212,9 @@ public partial class AudioCache {
 		DashExplosion = ResourceLoader.Load<AudioStream>( "res://sounds/player/dash_explosion.mp3" );
 
 		LeapOfFaithSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/leap_of_faith.ogg" );
+
+		ActivatedCheckpointSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/bonfire_create.ogg" );
+		CampfireAmbienceSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/campfire.ogg" );
 
 		world.CallDeferred( "emit_signal", "AudioLoadingFinished" );
     }

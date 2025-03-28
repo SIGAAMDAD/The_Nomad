@@ -45,6 +45,18 @@ namespace Renown.World {
 			}
 			body.Call( "EndInteraction", this );
 		}
+
+		public void Save() {
+		}
+		public void Load() {
+			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );
+
+			// save file compatibility
+			if ( reader == null ) {
+				return;
+			}
+			Storage = reader.LoadUInt( "storage" );
+		}
 		
 		private void OnResourceReplenishTimerTimeout() {
 			if ( !LocationIsStable ) {

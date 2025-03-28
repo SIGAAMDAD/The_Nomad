@@ -44,7 +44,7 @@ public partial class Console : Node {
 	private static bool WasPausedAlready = false;
 
 	public static void AddCommand( string name, Callable fn, string[] args, int requiredArgs, string description = "" ) {
-		ConsoleCommands.Add( name, new ConsoleCommand( fn, args, requiredArgs, description ) );
+		ConsoleCommands.TryAdd( name, new ConsoleCommand( fn, args, requiredArgs, description ) );
 	}
 	public static void RemoveCommand( string name ) {
 		ConsoleCommands.Remove( name );

@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
 [ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Texture2D" uid="uid://dyghteg051cwn" path="res://textures/unlit.dds" id="4_7no74"]
+[ext_resource type="AudioStream" uid="uid://7oajulqw4xah" path="res://sounds/env/bonfire_create.ogg" id="5_7no74"]
 [ext_resource type="AudioStream" uid="uid://dmjel1d8n14nq" path="res://sounds/env/campfire.ogg" id="5_qg5el"]
-[ext_resource type="AudioStream" uid="uid://103e8v0at8hd" path="res://sounds/common/passCheckpoint.ogg" id="6_1he1j"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8wkao"]
 atlas = ExtResource("2_jkcg4")
@@ -52,21 +52,22 @@ process_physics_priority = -4
 script = ExtResource("1_ihm5l")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
+visible = false
 rotation = -2.45849e-05
 color = Color(0.9, 0.9, 0.9, 1)
-energy = 1.75
+energy = 0.0
 shadow_enabled = true
 shadow_color = Color(0.166853, 0.166853, 0.166853, 0)
 texture = ExtResource("2_7no74")
 texture_scale = 2.5
 
 [node name="Bonfire" type="AnimatedSprite2D" parent="."]
+visible = false
 sprite_frames = SubResource("SpriteFrames_k5iii")
 autoplay = "default"
 frame_progress = 0.683268
 
 [node name="Unlit" type="Sprite2D" parent="."]
-visible = false
 position = Vector2(-2, 2)
 scale = Vector2(0.2, 0.18)
 texture = ExtResource("4_7no74")
@@ -75,18 +76,20 @@ texture = ExtResource("4_7no74")
 position = Vector2(-1, 4)
 shape = SubResource("CircleShape2D_btkcq")
 
-[node name="Ambience" type="AudioStreamPlayer2D" parent="."]
+[node name="ActivateChannel" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_7no74")
+max_distance = 650.0
+attenuation = 0.143587
+bus = &"SFX"
+playback_type = 1
+
+[node name="AmbienceChannel" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_qg5el")
-autoplay = true
-max_distance = 15000.0
+max_distance = 900.0
+attenuation = 0.0915054
 bus = &"SFX"
 playback_type = 1
 parameters/looping = true
-
-[node name="PassCheckpoint" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("6_1he1j")
-bus = &"SFX"
-playback_type = 1
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 process_thread_group = 2

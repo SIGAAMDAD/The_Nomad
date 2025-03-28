@@ -4,8 +4,7 @@ public partial class Checkpoint : InteractionItem {
 	[Export]
 	private StringName Title;
 	
-	private AudioStreamPlayer2D PassedCheckpoint;
-	private AudioStreamPlayer2D Ambience;
+	private AudioStreamPlayer2D AudioChannel;
 
 	private PointLight2D Light;
 	private AnimatedSprite2D Bonfire;
@@ -16,7 +15,30 @@ public partial class Checkpoint : InteractionItem {
 	private bool Activated = false;
 
 	public bool GetActivated() => Activated;
-	public void Activate() => Activated = true;
+	public void Activate() {
+		Activated = true;
+
+		Bonfire.Show();
+		Light.Show();
+
+		Unlit.Hide();
+		Unlit.QueueFree();
+
+		Bonfire.Play( "default" );
+
+		Tween BrightnessTween = CreateTween();
+		BrightnessTween.TweenProperty( Light, "energy", 1.75f, 2.5f );
+
+		AudioChannel.Connect( "finished", Callable.From( () => {
+			AudioChannel.QueueFree();
+			AudioChannel = GetNode<AudioStreamPlayer2D>( "AmbienceChannel" );
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			AudioChannel.SetProcess( false );
+			AudioChannel.SetProcessInternal( false );
+			AudioChannel.Play();
+		} ) );
+		AudioChannel.Play();
+	}
 	public StringName GetTitle() => Title;
 
 	public void Save() {
@@ -33,25 +55,26 @@ public partial class Checkpoint : InteractionItem {
 		}
 
 		Activated = reader.LoadBoolean( "activated" );
-	}
 
-	public override void _ExitTree() {
-		base._ExitTree();
+		if ( Activated ) {
+			Light.Show();
+			Bonfire.Show();
+			Bonfire.Play( "default" );
 
-		if ( Bonfire != null ) {
-			Bonfire.QueueFree();
-		}
-		if ( Unlit != null ) {
+			Light.Energy = 1.75f;
+
+			AudioChannel.QueueFree();
+			AudioChannel = GetNode<AudioStreamPlayer2D>( "AmbienceChannel" );
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			AudioChannel.SetProcess( false );
+			AudioChannel.SetProcessInternal( false );
+			AudioChannel.Play();
+			
+			Unlit.Hide();
 			Unlit.QueueFree();
 		}
-		if ( Light != null ) {
-			Light.QueueFree();
-		}
-		if ( Ambience != null ) {
-			Ambience.QueueFree();
-		}
 	}
-
+	
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
 			return;
@@ -68,11 +91,6 @@ public partial class Checkpoint : InteractionItem {
 		Player player = (Player)body;
 		player.EndInteraction();
 	}
-
-	private void OnPassedCheckpointFinished() {
-		PassedCheckpoint.QueueFree();
-	}
-
 	public override InteractionType GetInteractionType() {
 		return InteractionType.Checkpoint;
 	}
@@ -83,14 +101,26 @@ public partial class Checkpoint : InteractionItem {
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
-		PassedCheckpoint = GetNode<AudioStreamPlayer2D>( "PassCheckpoint" );
-		PassedCheckpoint.Connect( "finished", Callable.From( OnPassedCheckpointFinished ) );
+		AudioChannel = GetNode<AudioStreamPlayer2D>( "ActivateChannel" );
+		AudioChannel.SetProcess( false );
+		AudioChannel.SetProcessInternal( false );
 
-		Ambience = GetNode<AudioStreamPlayer2D>( "Ambience" );
+		GetNode<AudioStreamPlayer2D>( "AmbienceChannel" ).ProcessMode = ProcessModeEnum.Disabled;
 
 		Light = GetNode<PointLight2D>( "PointLight2D" );
+		Light.SetProcess( false );
+		Light.SetProcessInternal( false );
 
 		Bonfire = GetNode<AnimatedSprite2D>( "Bonfire" );
+		Bonfire.SetProcess( false );
+		Bonfire.SetProcessInternal( false );
+
 		Unlit = GetNode<Sprite2D>( "Unlit" );
+		Unlit.SetProcess( false );
+		Unlit.SetProcessInternal( false );
+
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			Load();
+		}
 	}
 };

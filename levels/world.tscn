@@ -13462,7 +13462,6 @@ Title = &"Kirosla Estate"
 process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 1
-monitoring = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/BiomeArea2D"]
 modulate = Color(0, 0, 0, 1)
@@ -13501,6 +13500,7 @@ position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
 
 [node name="SafeSands" type="Node2D" parent="Biomes"]
+process_mode = 4
 position = Vector2(-30975, 27410)
 
 [node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "Producers", "Factories")]
@@ -13595,12 +13595,14 @@ position = Vector2(-25408, -6656)
 scale = Vector2(5895.4, 2932.2)
 
 [node name="BurntHills" type="Node2D" parent="Biomes"]
+process_mode = 4
 
 [node name="TileMapLayer" type="TileMapLayer" parent="Biomes/BurntHills"]
 
 [node name="Area2D" type="Area2D" parent="Biomes/BurntHills"]
 
 [node name="SeaOfSands" type="Node2D" parent="Biomes"]
+process_mode = 4
 
 [node name="TileMapLayer" type="TileMapLayer" parent="Biomes/SeaOfSands"]
 
@@ -13615,6 +13617,7 @@ position = Vector2(58826, -65856)
 scale = Vector2(-5971.25, 11335.4)
 
 [node name="DunesOfDesolation" type="Node2D" parent="Biomes"]
+process_mode = 4
 
 [node name="TileMapLayer" type="TileMapLayer" parent="Biomes/DunesOfDesolation"]
 
@@ -13625,6 +13628,7 @@ modulate = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-148616, 45739, -168872, -8067, -148392, -40579, -143845, -62895, -140637, -100134, -100992, -118467, -82037, -83781, -74293, 6022, -114713, 10294)
 
 [node name="AshenPlains" type="Node2D" parent="Biomes"]
+process_mode = 4
 
 [node name="BiomeArea2D" type="Area2D" parent="Biomes/AshenPlains"]
 
@@ -13713,6 +13717,7 @@ Action = ExtResource("10_oxfhy")
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
 light_mask = 512
 visibility_layer = 512
+z_index = 5
 position = Vector2(220, 138)
 TutorialString = "Rest at campfire to heal"
 

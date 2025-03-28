@@ -17,10 +17,13 @@ colors = PackedColorArray(0, 0, 0, 1)
 gradient = SubResource("Gradient_bsglu")
 
 [node name="MechanicTutorial" type="Area2D"]
+z_index = 5
 material = SubResource("CanvasItemMaterial_egxh8")
 script = ExtResource("1_egxh8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 512
+visibility_layer = 512
 use_parent_material = true
 position = Vector2(0, 7.62939e-06)
 scale = Vector2(0.210526, 0.23913)

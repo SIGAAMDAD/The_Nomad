@@ -5,6 +5,7 @@ using Godot;
 using Renown.World;
 using Renown;
 using System.ComponentModel;
+using System;
 
 public partial class World : Node2D {
 	[Export]
@@ -117,6 +118,20 @@ public partial class World : Node2D {
 
 	public override void _ExitTree() {
 		Player1.QueueFree();
+
+		Players.Clear();
+		PlayerList.QueueFree();
+
+		Faction.Cache.ClearCache();
+		Settlement.Cache.ClearCache();
+		WorldArea.Cache.ClearCache();
+		Thinker.Cache.ClearCache();
+
+		Faction.Cache = null;
+		Settlement.Cache = null;
+		WorldArea.Cache = null;
+		Thinker.Cache = null;
+
 		if ( Hellbreaker != null ) {
 			Hellbreaker.QueueFree();
 		}

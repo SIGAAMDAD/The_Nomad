@@ -25,6 +25,8 @@ public partial class ArchiveSystem : Node {
 	private static ArchiveSystem _Instance;
 	public static ArchiveSystem Instance => _Instance;
 
+	private const ulong MAGIC = 0xffead4546B727449;
+
 	private string SaveDirectory;
 	private uint CurrentMemory = 0;
 
@@ -78,6 +80,9 @@ public partial class ArchiveSystem : Node {
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
 		SaveWriter = new System.IO.BinaryWriter( stream );
 
+		SaveWriter.Write( MAGIC );
+		SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
+
 		SectionCount = 0;
 		SaveWriter.Write( SectionCount );
 
@@ -86,8 +91,11 @@ public partial class ArchiveSystem : Node {
 		}
 
 		stream.Seek( 0, System.IO.SeekOrigin.Begin );
+		SaveWriter.Write( MAGIC );
+		SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
 		SaveWriter.Write( SectionCount );
 		SaveWriter.Flush();
+		SaveWriter.Close();
 	}
 
 	public static void SaveGame( Image screenshot, uint memoryIndex ) {
@@ -96,7 +104,7 @@ public partial class ArchiveSystem : Node {
 		Godot.Collections.Array<Node> nodes = Instance.GetTree().GetNodesInGroup( "Archive" );
 		Instance.Save( screenshot, nodes, memoryIndex );
 
-		SteamManager.SaveCloudFile( Instance.SaveDirectory + "GameData.ngd" );
+		SteamManager.SaveCloudFile( "SaveData/GameData.ngd" );
 		
 		Instance.EmitSignal( "SaveGameEnd" );
 	}
@@ -105,15 +113,17 @@ public partial class ArchiveSystem : Node {
 		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		SaveReader = new System.IO.BinaryReader( stream );
 
-		Instance.Loaded = true;
-
-//		Godot.Collections.Array<Node> nodes = Instance.GetTree().GetNodesInGroup( "Archive" );
-		
-		/*
-		for ( int i = 0; i < nodes.Count; i++ ) {
-			nodes[i].Call( "Load" );
+		ulong magic = SaveReader.ReadUInt64();
+		if ( magic != MAGIC ) {
+			Console.PrintError( "Save data has invalid magic in header!" );
+			Instance.Loaded = false;
+			return;
 		}
-		*/
+
+		string version = SaveReader.ReadString();
+		// TODO: version compatibility conversion
+
+		Instance.Loaded = true;
 
 		int sectionCount = SaveReader.ReadInt32();
 
@@ -123,6 +133,11 @@ public partial class ArchiveSystem : Node {
 			SectionCache.Add( name, new SaveSectionReader() );
 			GD.Print( "...Done" );
 		}
+
+		SaveReader.Close();
+	}
+	public static void Clear() {
+		SectionCache.Clear();
 	}
 
 	public static byte LoadByte() => SaveReader.ReadByte();

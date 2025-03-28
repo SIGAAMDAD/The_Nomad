@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Godot;
@@ -23,6 +24,8 @@ public partial class SteamManager : Node {
 	private Thread APIThread = null;
 
 	private SteamAPIWarningMessageHook_t DebugMessageHook;
+
+	private Callback<GameOverlayActivated_t> GameOverlayActivated;
 
 	private bool IsMe = false;
 
@@ -82,6 +85,22 @@ public partial class SteamManager : Node {
 		}
 	}
 
+	private void OnGameOverlayActived( GameOverlayActivated_t pCallback ) {
+		if ( pCallback.m_nAppID != SteamAppID ) {
+			Console.PrintError( "[STEAM] Invalid GameOverlay AppID!" );
+			return;
+		}
+
+		Console.PrintLine( "[STEAM] In-Game overlay activated." );
+		
+		if ( Convert.ToBoolean( pCallback.m_bActive ) ) {
+			// feed a pause event
+			InputEventKey keyEvent = new InputEventKey();
+			keyEvent.PhysicalKeycode = Key.Escape;
+			Input.ParseInputEvent( keyEvent );
+		}
+	}
+
 	public override void _ExitTree() {
 		base._ExitTree();
 
@@ -109,6 +128,8 @@ public partial class SteamManager : Node {
 		LoadAppInfo();
 		LoadUserInfo();
 		LoadDLCInfo();
+
+		GameOverlayActivated = Callback<GameOverlayActivated_t>.Create( OnGameOverlayActived );
 
 		APIThread = new Thread( () => {
 			while ( !Quit ) {

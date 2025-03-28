@@ -13,23 +13,10 @@ public partial class MercenaryShotgunner : MobBase {
 	public void SetLocation( Renown.World.WorldArea location ) => Location = location;
 
 	public override void Save() {
-		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
-		writer.SaveVector2( "position", GlobalPosition );
-		writer.SaveFloat( "health", Health );
-		writer.SaveUInt( "age", Age );
-		writer.Flush();
+		base.Save();
 	}
 	public override void Load() {
-		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + GetPath() );
-
-		// save file compability
-		if ( reader == null ) {
-			return;
-		}
-
-		GlobalPosition = reader.LoadVector2( "position" );
-		Health = reader.LoadFloat( "health" );
-		Age = reader.LoadUInt( "age" );
+		base.Load();
 	}
 
 	protected override void OnLoseInterestTimerTimeout() {
@@ -65,7 +52,34 @@ public partial class MercenaryShotgunner : MobBase {
 		GlobalPosition = position;
 	}
 
-	public override void _Ready() {
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		DetectionMeter.QueueFree();
+		TargetMovedTimer.QueueFree();
+
+		if ( PatrolRoute != null ) {
+			PatrolRoute.QueueFree();
+		}
+		ChangeInvestigateAngleTimer.QueueFree();
+
+		for ( int i = 0; i < SightLines.Length; i++ ) {
+			SightLines[i].QueueFree();
+		}
+
+		LoseInterestTimer.QueueFree();
+		MoveChannel.QueueFree();
+
+		if ( AudioChannel != null ) {
+			AudioChannel.QueueFree();
+		}
+		HeadAnimations.QueueFree();
+		ArmAnimations.QueueFree();
+		BodyAnimations.QueueFree();
+
+		QueueFree();
+	}
+    public override void _Ready() {
 		base.InitSubThinker();
 
 		if ( SettingsData.GetNetworkingEnabled() ) {

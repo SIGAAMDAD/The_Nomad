@@ -1,4 +1,6 @@
+using System.Text;
 using Godot;
+using MessagePack.ImmutableCollection;
 
 namespace Renown.World {
 	public partial class WorldTimeManager : Node {
@@ -112,14 +114,44 @@ namespace Renown.World {
 			base._EnterTree();
 			Instance = this;
 		}
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			for ( int i = 0; i < Months.Length; i++ ) {
+				Months[i] = null;
+			}
+
+			Instance = null;
+		}
         public override void _Ready() {
 			base._Ready();
 
 			RedSunLight = GetNode<DirectionalLight2D>( "SunLight" );
-			RedSunLight.ShadowEnabled = true;
-			RedSunLight.GlobalRotation = Mathf.DegToRad( Mathf.Lerp( 0.0f, 360.0f, 1.0f / StartingHour ) );
-			//TODO: adjustable sunlight shadow quality
-
+			if ( SettingsData.GetSunLightEnabled() ) {
+				switch ( SettingsData.GetSunShadowQuality() ) {
+				case ShadowQuality.Off:
+					RedSunLight.ShadowEnabled = false;
+					break;
+				case ShadowQuality.NoFilter:
+					RedSunLight.ShadowEnabled = true;
+					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.None;
+					break;
+				case ShadowQuality.Low:
+					RedSunLight.ShadowEnabled = true;
+					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.Pcf5;
+					break;
+				case ShadowQuality.High:
+					RedSunLight.ShadowEnabled = true;
+					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.Pcf13;
+					break;
+				};
+				RedSunLight.GlobalRotation = Mathf.DegToRad( Mathf.Lerp( 0.0f, 360.0f, 1.0f / StartingHour ) );
+				RedSunLight.ProcessMode = ProcessModeEnum.Inherit;
+				RedSunLight.Show();
+			} else {
+				RedSunLight.ProcessMode = ProcessModeEnum.Disabled;
+				RedSunLight.Hide();
+			}
 			Time = InGameToRealMinuteDuration * StartingHour * MinutesPerHour;
 
 			Year = StartingYear;
@@ -127,13 +159,14 @@ namespace Renown.World {
 			Day = StartingDay;
 
 			for ( int i = 0; i < Months.Length; i++ ) {
-				Console.PrintLine( "Month day count: " + Months[i].GetDayCount() );
 				TotalDaysInYear += Months[i].GetDayCount();
 			}
 
 			Console.PrintLine( string.Format( "Starting time is [{0}, {1}:{2}]", Year, Month, Day ) );
 
 			SetProcessInternal( false );
+			SetPhysicsProcess( false );
+			SetPhysicsProcessInternal( false );
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
 				SyncObject = new NetworkWriter( sizeof( uint ) * 3 + sizeof( double ) );

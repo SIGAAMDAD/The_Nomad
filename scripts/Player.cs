@@ -52,7 +52,7 @@ public partial class Player : CharacterBody2D {
 		}
 	};
 
-	private List<WeaponEntity.Properties> WeaponModeList = new List<WeaponEntity.Properties>{
+	private readonly WeaponEntity.Properties[] WeaponModeList = [
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsFirearm,
@@ -60,7 +60,7 @@ public partial class Player : CharacterBody2D {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsBlunt,
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
-	};
+	];
 
 	private const int MAX_WEAPON_SLOTS = 4;
 	public static System.IO.BinaryReader SaveReader = null;
@@ -369,7 +369,7 @@ public partial class Player : CharacterBody2D {
 			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
 
-		HUD.SetWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
+//		HUD.SetWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
 	}
 
 	public void SendPacket() {
@@ -570,6 +570,10 @@ public partial class Player : CharacterBody2D {
 			WeaponsStack[i].QueueFree();
 		}
 		WeaponsStack.Clear();
+
+		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
+			WeaponSlots[i] = null;
+		}
 
 		/*
 		MoveChannel.QueueFree();

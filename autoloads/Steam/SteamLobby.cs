@@ -2,6 +2,7 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Xml;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -317,6 +318,9 @@ public partial class SteamLobby : Node {
 			}
 		}
 		LobbyMembers.Clear();
+
+		NodeCache.Clear();
+		PlayerCache.Clear();
 
 		CallDeferred( "emit_signal", "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
 	}

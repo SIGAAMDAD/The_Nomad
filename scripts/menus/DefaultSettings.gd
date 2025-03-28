@@ -17,14 +17,21 @@ enum AntiAliasing {
 	FXAA_And_TAA
 };
 
+enum SunShadowQuality {
+	Off,
+	NoFilter,
+	Low,
+	High
+};
+
 # video
 @export var _window_mode:WindowMode = WindowMode.Fullscreen
 @export var _vsync:DisplayServer.VSyncMode = DisplayServer.VSyncMode.VSYNC_DISABLED
 @export var _antialasing:AntiAliasing = AntiAliasing.None
 @export var _shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
 @export var _bloom_enabled:bool = true
-@export var _sun_shadow_enabled:bool = true
-@export var _sun_shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
+@export var _sun_light_enabled:bool = true
+@export var _sun_shadow_quality:SunShadowQuality = SunShadowQuality.NoFilter
 
 # audio
 @export var _sound_effects_on:bool = true

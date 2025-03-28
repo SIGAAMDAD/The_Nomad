@@ -1,3 +1,4 @@
+using System.Collections;
 using Godot;
 using Steamworks;
 
@@ -19,9 +20,6 @@ public partial class TitleMenu : Control {
 	private Control MainMenu;
 	private Button ExitButton;
 
-	private Control SaveSlotSelect;
-	private Control DifficultySelect;
-
 	private Control LobbyBrowser;
 	private Control LobbyFactory;
 
@@ -29,7 +27,24 @@ public partial class TitleMenu : Control {
 
 	private MenuState State = MenuState.Main;
 
-	private void OnExitButtonPressed() {
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		LobbyBrowser.QueueFree();
+		LobbyFactory.QueueFree();
+
+		CampaignMenu.QueueFree();
+		MultiplayerMenu.QueueFree();
+		SettingsMenu.QueueFree();
+		MainMenu.QueueFree();
+		ExitButton.QueueFree();
+
+		UIChannel.QueueFree();
+
+		QueueFree();
+	}
+
+    private void OnExitButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 

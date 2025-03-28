@@ -6,6 +6,8 @@ public partial class SettingsMenu : Control {
 	private OptionButton WindowModeOption;
 	private OptionButton AntiAliasingOption;
 	private OptionButton ShadowQuality;
+	private OptionButton SunShadowQuality;
+	private CheckBox SunLightEnabled;
 
 	private CheckBox EffectsOn;
 	private HSlider EffectsVolume;
@@ -117,6 +119,8 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetVSync( (DisplayServer.VSyncMode)VSync.Selected );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Selected );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Selected );
+		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
+		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -150,7 +154,7 @@ public partial class SettingsMenu : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncButton/VSyncOptionButton" );
+		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
 		VSync.SetProcess( false );
 		VSync.SetProcessInternal( false );
 		VSync.Connect( "pressed", Callable.From( OnButtonPressed ) );
@@ -177,6 +181,19 @@ public partial class SettingsMenu : Control {
 		ShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		ShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		SunShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/SunShadowQualityList/SunShadowQualityOptionButton" );
+		SunShadowQuality.SetProcess( false );
+		SunShadowQuality.SetProcessInternal( false );
+		SunShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		SunShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		SunShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		SunLightEnabled = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/SunLightEnabledButton/SunLightEnabledCheckBox" );
+		SunLightEnabled.SetProcess( false );
+		SunLightEnabled.SetProcessInternal( false );
+		SunLightEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		SunLightEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		EffectsOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/EffectsOnButton/EffectsOnCheckBox" );
 		EffectsOn.SetProcess( false );
@@ -257,6 +274,8 @@ public partial class SettingsMenu : Control {
 		VSync.Selected = (int)SettingsData.GetVSync();
 		WindowModeOption.Selected = (int)SettingsData.GetWindowMode();
 		AntiAliasingOption.Selected = (int)SettingsData.GetAntiAliasing();
+		SunLightEnabled.ButtonPressed = SettingsData.GetSunLightEnabled();
+		SunShadowQuality.Selected = (int)SettingsData.GetSunShadowQuality();
 
 		EffectsOn.ButtonPressed = SettingsData.GetEffectsOn();
 		EffectsVolume.Value = SettingsData.GetEffectsVolume();
