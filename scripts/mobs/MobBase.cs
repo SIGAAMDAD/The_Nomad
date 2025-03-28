@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Godot;
+using Renown.World;
 
 public enum BarkType : uint {
 	TargetSpotted,
@@ -345,32 +346,16 @@ public partial class MobBase : Renown.Thinker {
 		}
 	}
 
-	protected void ProcessAnimations()  {
+	protected override void ProcessAnimations()  {
 		if ( Floor != null ) {
 			if ( Floor.GetUpper() != null && Floor.GetUpper().GetPlayerStatus() ) {
 				Visible = true;
-			} else {
+			} else if ( Floor.IsInside() ) {
 				Visible = Floor.GetPlayerStatus();
 			}
 		} else {
 			Visible = true;
 		}
-		/*
-		if ( OnScreen ) {
-			if ( Floor != null ) {
-				if ( Floor.GetUpper() != null && Floor.GetUpper().GetPlayerStatus() ) {
-					Visible = true;
-				} else {
-					Visible = Floor.GetPlayerStatus();
-				}
-			} else {
-				Visible = true;
-			}
-			Visible = true;
-		} else {
-			Visible = false;
-		}
-		*/
 
 		ArmAnimations.GlobalRotation = AimAngle;
 		HeadAnimations.GlobalRotation = LookAngle;
@@ -406,6 +391,17 @@ public partial class MobBase : Renown.Thinker {
 
 	protected void InitSubThinker() {
 		base.InitBaseThinker();
+
+		FlashLight = GetNode<PointLight2D>( "Animations/HeadAnimations/FlashLight" );
+		WorldTimeManager.Instance.TimeTick += ( day, hour, minute ) => {
+			if ( hour == 20 ) {
+				// turn on flashlights when it gets dark
+				FlashLight.Show();
+			}
+			else if ( hour == 8 ) {
+				FlashLight.Hide();
+			}
+		};
 
 		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
@@ -493,47 +489,6 @@ public partial class MobBase : Renown.Thinker {
 			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 			State = AIState.PatrolStart;
 		}
-	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
-			return;
-		}
-
-		if ( GameConfiguration.DemonEyeActive ) {
-			HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
-			ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
-			BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
-		} else {
-			HeadAnimations.SetDeferred( "modulate", DefaultColor );
-		}
-
-		if ( SightTarget == null ) {
-			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				break;
-			default:
-				GD.PushError( "Invalid direction!" );
-				break;
-			};
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			AimAngle = LookAngle;
-		}
-
-		ProcessAnimations();
-
-		Think( (float)delta );
 	}
 
 	protected override void OnTargetReached() {

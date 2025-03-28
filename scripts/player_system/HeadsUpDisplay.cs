@@ -1,5 +1,7 @@
 using GDExtension.Wrappers;
 using Godot;
+using Renown;
+using Renown.World;
 
 namespace PlayerSystem {
 	public partial class HeadsUpDisplay : CanvasLayer {
@@ -66,6 +68,12 @@ namespace PlayerSystem {
 
 		private Control BossHealthBar;
 
+		private Label WorldTimeYear;
+		private Label WorldTimeMonth;
+		private Label WorldTimeDay;
+		private Label WorldTimeHour;
+		private Label WorldTimeMinute;
+
 		public HealthBar GetHealthBar() => (HealthBar)HealthBar;
 		public RageBar GetRageBar() => (RageBar)RageBar;
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
@@ -81,8 +89,18 @@ namespace PlayerSystem {
 			SaveSpinner.Hide();
 		}
 
+		private void OnWorldTimeTick( uint day, uint hour, uint minute ) {
+			WorldTimeYear.Text = WorldTimeManager.Year.ToString();
+			WorldTimeMonth.Text = WorldTimeManager.Month.ToString();
+			WorldTimeDay.Text = day.ToString();
+			WorldTimeHour.Text = hour.ToString();
+			WorldTimeMinute.Text = minute.ToString();
+		}
+
 		public override void _Ready() {
 			base._Ready();
+
+			WorldTimeManager.Instance.TimeTick += OnWorldTimeTick;
 
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
@@ -143,6 +161,26 @@ namespace PlayerSystem {
 			DashOverlay.SetProcess( false );
 			DashOverlay.SetProcessInternal( false );
 			DashOverlay.SetPhysicsProcess( false );
+
+			WorldTimeYear = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/YearLabel" );
+			WorldTimeYear.SetProcess( false );
+			WorldTimeYear.SetProcessInternal( false );
+
+			WorldTimeMonth = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/MonthLabel" );
+			WorldTimeMonth.SetProcess( false );
+			WorldTimeMonth.SetProcessInternal( false );
+
+			WorldTimeDay = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/DayLabel" );
+			WorldTimeDay.SetProcess( false );
+			WorldTimeDay.SetProcessInternal( false );
+
+			WorldTimeHour = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/HourLabel" );
+			WorldTimeHour.SetProcess( false );
+			WorldTimeHour.SetProcessInternal( false );
+
+			WorldTimeMinute = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/MinuteLabel" );
+			WorldTimeMinute.SetProcess( false );
+			WorldTimeMinute.SetProcessInternal( false );
 
 			SaveTimer = GetNode<Timer>( "MainHUD/SaveSpinner/SaveTimer" );
 			SaveTimer.SetProcess( false );

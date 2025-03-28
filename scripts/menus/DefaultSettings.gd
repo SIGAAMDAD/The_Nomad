@@ -23,6 +23,8 @@ enum AntiAliasing {
 @export var _antialasing:AntiAliasing = AntiAliasing.None
 @export var _shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
 @export var _bloom_enabled:bool = true
+@export var _sun_shadow_enabled:bool = true
+@export var _sun_shadow_quality:RenderingServer.ShadowQuality = RenderingServer.ShadowQuality.SHADOW_QUALITY_HARD
 
 # audio
 @export var _sound_effects_on:bool = true

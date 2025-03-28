@@ -32,6 +32,7 @@ public partial class TileMapFloor : Node2D {
 
 	private bool IsPlayerHere = false;
 
+	public bool IsInside() => !IsExterior;
 	public bool GetPlayerStatus() => IsPlayerHere;
 	public TileMapFloor GetUpper() => UpperLayer;
 	public TileMapFloor GetLower() => LowerLayer;

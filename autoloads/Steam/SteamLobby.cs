@@ -555,7 +555,4 @@ public partial class SteamLobby : Node {
 
 		ReadPackets();
 	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-	}
 };

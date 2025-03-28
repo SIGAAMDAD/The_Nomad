@@ -161,7 +161,27 @@ namespace Renown {
 			}
 			MoveAlongPath();
 		}
-		protected virtual void Think( float delta ) {
+		public override void _Process( double delta ) {
+			base._Process( delta );
+			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+				return;
+			}
+
+			if ( GameConfiguration.DemonEyeActive ) {
+				HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
+				ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
+				BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
+			} else {
+				HeadAnimations.SetDeferred( "modulate", DefaultColor );
+			}
+
+			ProcessAnimations();
+
+			Think( (float)delta );
+		}
+        protected virtual void Think( float delta ) {
+		}
+		protected virtual void ProcessAnimations() {
 		}
 
 		protected bool MoveAlongPath() {

@@ -100,6 +100,28 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 		if ( Fear > 80 ) {
 		}
+
+		if ( SightTarget == null ) {
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				break;
+			default:
+				GD.PushError( "Invalid direction!" );
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+		}
 	}
 
 	private void Investigate() {

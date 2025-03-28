@@ -234,10 +234,8 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 493.0
-offset_top = 336.0
-offset_right = 600.0
-offset_bottom = 440.0
+offset_left = -107.0
+offset_top = -104.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("8_ygw8h")
@@ -386,6 +384,43 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_ycpyq")
+
+[node name="WorldTimeContainer" type="MarginContainer" parent="MainHUD"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainHUD/WorldTimeContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainHUD/WorldTimeContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="YearLabel" type="Label" parent="MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="MonthLabel" type="Label" parent="MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MainHUD/WorldTimeContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DayLabel" type="Label" parent="MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="HourLabel" type="Label" parent="MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="MinuteLabel" type="Label" parent="MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
 
 [node name="StatusControl" type="Control" parent="."]
 visible = false

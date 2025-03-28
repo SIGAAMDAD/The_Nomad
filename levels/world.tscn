@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=96 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -5803,9 +5803,9 @@ sources/0 = SubResource("TileSetAtlasSource_8ewd7")
 size = Vector2(187, 129)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_3bhl6"]
-vertices = PackedVector2Array(-670, 126, -867, 128, -866, 96, -789, 57.0312, -644.953, 56.0234, -643.953, 135.977, -671, 132, -866, 39, -789, 23.9766, -1102.02, 23.0078, -1086, 39, -1102.59, 126.438, -1086, 97, -982, 128, -979, 132, -872, 133, -479.812, 136.969, -476.25, 210, -846, 211, -972, 211, -971, 213, -1129, 184, -1129, 136, -1102.64, 136.047, -1225, 210.008, -1225, 192, -1211, 192, -1211, 184, -1173.55, 184, -1173, 189, -1164, 189, -1162.89, 184, -1102.62, 132.797, -847, 226, -888, 225, -889, 228, -929, 226, -971, 225, -929, 229, -910.859, 460.953, -1251.49, 397.758, -1225.1, 213, -974, 228, -843, 213, -476.102, 213, -476.008, 214.977, -490.742, 415.367, -844, 228, -975, 213)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(0, 4, 5, 6), PackedInt32Array(3, 2, 7, 8), PackedInt32Array(9, 8, 7, 10), PackedInt32Array(11, 9, 10, 12), PackedInt32Array(13, 11, 12, 2), PackedInt32Array(14, 13, 2, 1, 15), PackedInt32Array(16, 17, 18, 5), PackedInt32Array(19, 15, 6, 5, 18, 20), PackedInt32Array(21, 22, 23, 19), PackedInt32Array(24, 25, 26, 19), PackedInt32Array(26, 27, 28, 29), PackedInt32Array(19, 26, 29, 30), PackedInt32Array(19, 30, 31, 21), PackedInt32Array(19, 23, 32, 14, 15), PackedInt32Array(20, 18, 33, 34), PackedInt32Array(20, 34, 35, 36), PackedInt32Array(36, 37, 20), PackedInt32Array(38, 36, 35, 39), PackedInt32Array(39, 40, 41, 42), PackedInt32Array(43, 44, 45, 46, 47), PackedInt32Array(47, 46, 39, 35), PackedInt32Array(41, 48, 42), PackedInt32Array(38, 39, 42)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-1133, 132, -1106.62, 132.04, -1106, 19, -785, 20, -785, 53, -641, 52, -640, 132, -476, 133, -472, 215, -487, 419, -911, 465, -1256, 401, -1229, 212, -1229, 188, -1215, 188, -1215, 180, -1133, 180)])
+vertices = PackedVector2Array(-670, 126, -867, 128, -866, 96, -789, 57.0312, -644.953, 56.0234, -643.953, 135.977, -671, 132, -866, 39, -789, 23.9766, -1102.02, 23.0078, -1086, 39, -1102.59, 126.438, -1086, 97, -982, 128, -979, 132, -872, 133, -906.023, 485.953, -1306.48, 426.758, -1225.1, 213, -974, 228, -479.812, 136.969, -476.25, 210, -846, 211, -972, 211, -971, 213, -1129, 184, -1129, 136, -1102.64, 136.047, -1225, 210.008, -1225, 192, -1211, 192, -1211, 184, -1173.55, 184, -1173, 189, -1164, 189, -1162.89, 184, -1102.62, 132.797, -847, 226, -888, 225, -889, 228, -929, 226, -971, 225, -929, 229, -843, 213, -476.102, 213, -476.008, 214.977, -490.758, 415.578, -844, 228, -975, 213)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(0, 4, 5, 6), PackedInt32Array(3, 2, 7, 8), PackedInt32Array(9, 8, 7, 10), PackedInt32Array(11, 9, 10, 12), PackedInt32Array(13, 11, 12, 2), PackedInt32Array(14, 13, 2, 1, 15), PackedInt32Array(16, 17, 18, 19), PackedInt32Array(20, 21, 22, 5), PackedInt32Array(23, 15, 6, 5, 22, 24), PackedInt32Array(25, 26, 27, 23), PackedInt32Array(28, 29, 30, 23), PackedInt32Array(30, 31, 32, 33), PackedInt32Array(23, 30, 33, 34), PackedInt32Array(23, 34, 35, 25), PackedInt32Array(23, 27, 36, 14, 15), PackedInt32Array(24, 22, 37, 38), PackedInt32Array(24, 38, 39, 40), PackedInt32Array(40, 41, 24), PackedInt32Array(42, 40, 39, 16), PackedInt32Array(43, 44, 45, 46, 47), PackedInt32Array(47, 46, 16, 39), PackedInt32Array(18, 48, 19), PackedInt32Array(42, 16, 19)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-1133, 132, -1106.62, 132.04, -1106, 19, -785, 20, -785, 53, -641, 52, -640, 132, -476, 133, -472, 215, -487, 419, -906, 490, -1312, 430, -1229, 212, -1229, 188, -1215, 188, -1215, 180, -1133, 180)])
 agent_radius = 4.0
 
 [sub_resource type="Gradient" id="Gradient_ije12"]
@@ -6244,6 +6244,9 @@ texture = ExtResource("25_cyobr")
 [sub_resource type="TileSet" id="TileSet_aebnb"]
 physics_layer_0/collision_layer = 3
 sources/0 = SubResource("TileSetAtlasSource_hc03g")
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cyobr"]
+polygon = PackedVector2Array(-369, -73, -369, 197, 432, 198, 430, -73)
 
 [sub_resource type="Gradient" id="Gradient_i8ckm"]
 interpolation_mode = 1
@@ -12590,8 +12593,15 @@ Player1 = NodePath("Network/Players/Player0")
 
 [node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("WorldTimeOverlay")]
 script = ExtResource("11_re8x6")
+StartingYear = 89950
+StartingHour = 1.0
 WorldTimeOverlay = NodePath("../CanvasModulate")
 Gradient = ExtResource("2_re8x6")
+
+[node name="SunLight" type="DirectionalLight2D" parent="WorldTime"]
+rotation = -1.22348
+color = Color(1, 1, 1, 0.486275)
+shadow_enabled = true
 
 [node name="Biomes" type="Node2D" parent="."]
 
@@ -13403,11 +13413,14 @@ tile_set = SubResource("TileSet_aebnb")
 [node name="ExteriorArea2D" type="Area2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior"]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior/ExteriorArea2D"]
-polygon = PackedVector2Array(-381, -78, -369, 198, 431, 198, 432, -79, 510, -79, 515, 255, -434, 251, -430, -124, 512, -137, 510, -79)
+polygon = PackedVector2Array(-369, -73, -369, 198, 431, 198, 432, -85, 719, -88, 729, 449, -535, 439, -535, -275, 717, -243, 718, -88)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior"]
+occluder = SubResource("OccluderPolygon2D_cyobr")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate"]
 position = Vector2(-16, 105)
-polygon = PackedVector2Array(-368, -289, -703, 132, -343, 559, 734, 665, 1025, -301, 276, -381)
+polygon = PackedVector2Array(-550, -428, -703, 132, -343, 559, 734, 665, 1025, -301, 375, -538)
 
 [node name="Checkpoints" type="Node2D" parent="Biomes/SaltWastes"]
 process_priority = -1

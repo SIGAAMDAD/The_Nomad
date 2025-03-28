@@ -14,13 +14,17 @@ namespace Renown.World {
 		public static uint Year = 0;
 		public static uint Month = 0;
 		public static uint Day = 0;
+		public static WorldTimeManager Instance;
+
+		// not a superman reference
+		private DirectionalLight2D RedSunLight;
 
 		[Export]
 		private CanvasModulate WorldTimeOverlay;
 		[Export]
 		private GradientTexture1D Gradient;
 		[Export]
-		private float InGameSpeed = 20.5f;
+		private float InGameSpeed = 5.0f;
 
 		private float Time = 0.0f;
 		private float PastMinute = -1.0f;
@@ -28,7 +32,7 @@ namespace Renown.World {
 		private NetworkWriter SyncObject = null;
 		private bool IsHostWorld = false;
 
-		private const uint MinutesPerDay = 1440;
+		private const uint MinutesPerDay = 2440;
 		private const uint MinutesPerHour = 60;
 		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
 
@@ -47,10 +51,17 @@ namespace Renown.World {
 			uint hour = currentDayMinutes / MinutesPerHour;
 			uint minute = currentDayMinutes % MinutesPerHour;
 
+			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / hour ) * 0.01f;
+			if ( hour < 7 || hour > 21 ) {
+				RedSunLight.Energy = 0.0f;
+			} else {
+				RedSunLight.Energy = 1.0f;
+			}
 			if ( PastMinute != minute ) {
 				if ( minute == 0 ) {
-					if ( hour == 0 ) {
+					if ( hour == 24 ) {
 						Day++;
+						hour = 0;
 					} else if ( hour >= 20 ) {
 						EmitSignal( "NightTimeStart" );
 					} else if ( hour >= 7 ) {
@@ -83,8 +94,17 @@ namespace Renown.World {
 			Time = (float)reader.ReadDouble();
 		}
 
-		public override void _Ready() {
+		public override void _EnterTree() {
+			base._EnterTree();
+			Instance = this;
+		}
+        public override void _Ready() {
 			base._Ready();
+
+			RedSunLight = GetNode<DirectionalLight2D>( "SunLight" );
+			RedSunLight.ShadowEnabled = true;
+			RedSunLight.GlobalRotation = Mathf.DegToRad( Mathf.Lerp( 0.0f, 360.0f, 1.0f / StartingHour ) );
+			//TODO: adjustable sunlight shadow quality
 
 			Time = InGameToRealMinuteDuration * StartingHour * MinutesPerHour;
 
@@ -117,7 +137,7 @@ namespace Renown.World {
 			}
 
 			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
-				float value = ( Mathf.Sin( Time * Mathf.Pi / 2.0f ) + 1.0f ) / 2.0f;
+				float value = Time;
 				WorldTimeOverlay.Color = Gradient.Gradient.Sample( value );
 			}
 		}

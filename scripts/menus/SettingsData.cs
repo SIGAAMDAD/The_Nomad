@@ -35,6 +35,8 @@ public partial class SettingsData : Control {
 	private static RenderingServer.ShadowQuality ShadowQuality;
 	private static int MaxFps;
 	private static bool BloomEnabled;
+	private static bool SunShadowEnabled;
+	private static RenderingServer.ShadowQuality SunShadowQuality;
 
 	private static float HapticStrength;
 	private static bool HapticEnabled;
