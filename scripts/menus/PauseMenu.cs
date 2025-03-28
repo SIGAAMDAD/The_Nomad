@@ -11,9 +11,15 @@ public partial class PauseMenu : Control {
 	private void Pause() {
 		if ( GameConfiguration.Paused ) {
 			Hide();
+			if ( !( SteamLobby.Instance.LobbyMembers.Count <= 1 ) ) {
+				GetTree().Paused = false;
+			}
 			Engine.TimeScale = 1.0f;
 		} else {
 			Show();
+			if ( !( SteamLobby.Instance.LobbyMembers.Count <= 1 ) ) {
+				GetTree().Paused = true;
+			}
 			Engine.TimeScale = 0.0f;
 		}
 		GameConfiguration.Paused = !GameConfiguration.Paused;
@@ -77,6 +83,8 @@ public partial class PauseMenu : Control {
 			ConfirmQuitDlg.Show();
 			ConfirmDlgOverlay.Show();
 		} ) );
+
+		ProcessMode = ProcessModeEnum.Always;
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

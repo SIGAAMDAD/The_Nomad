@@ -84,8 +84,11 @@ public partial class SteamManager : Node {
 
 	public override void _ExitTree() {
 		base._ExitTree();
+
 		Quit = true;
 		APIThread.Join();
+
+		SteamAPI.Shutdown();
 	}
     public override void _Ready() {
 		if ( !SteamAPI.IsSteamRunning() ) {

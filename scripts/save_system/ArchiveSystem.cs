@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Design.Serialization;
 using System.Text.RegularExpressions;
 using Godot;
 using SaveSystem;
@@ -94,6 +95,8 @@ public partial class ArchiveSystem : Node {
 
 		Godot.Collections.Array<Node> nodes = Instance.GetTree().GetNodesInGroup( "Archive" );
 		Instance.Save( screenshot, nodes, memoryIndex );
+
+		SteamManager.SaveCloudFile( Instance.SaveDirectory + "GameData.ngd" );
 		
 		Instance.EmitSignal( "SaveGameEnd" );
 	}

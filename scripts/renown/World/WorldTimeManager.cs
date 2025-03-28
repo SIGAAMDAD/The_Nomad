@@ -11,10 +11,15 @@ namespace Renown.World {
 		[Export]
 		private float StartingHour = 12.0f;
 
+		[Export]
+		private Month[] Months;
+
 		public static uint Year = 0;
 		public static uint Month = 0;
 		public static uint Day = 0;
 		public static WorldTimeManager Instance;
+
+		private int TotalDaysInYear = 0;
 
 		// not a superman reference
 		private DirectionalLight2D RedSunLight;
@@ -24,7 +29,7 @@ namespace Renown.World {
 		[Export]
 		private GradientTexture1D Gradient;
 		[Export]
-		private float InGameSpeed = 5.0f;
+		private float InGameSpeed = 1.0f;
 
 		private float Time = 0.0f;
 		private float PastMinute = -1.0f;
@@ -45,7 +50,7 @@ namespace Renown.World {
 
 		private void RecalculateTime() {
 			uint totalMinutes = (uint)( Time / InGameToRealMinuteDuration );
-			uint day = totalMinutes / MinutesPerDay;
+//			uint day = totalMinutes / MinutesPerDay;
 
 			uint currentDayMinutes = totalMinutes % MinutesPerDay;
 			uint hour = currentDayMinutes / MinutesPerHour;
@@ -59,8 +64,17 @@ namespace Renown.World {
 			}
 			if ( PastMinute != minute ) {
 				if ( minute == 0 ) {
-					if ( hour == 24 ) {
+					if ( hour >= 24 ) {
 						Day++;
+						if ( Day >= Months[ Month ].GetDayCount() ) {
+							Day = 0;
+							GD.Print( "new month" );
+							Month++;
+							if ( Month >= Months.Length ) {
+								Month = 0;
+								Year++;
+							}
+						}
 						hour = 0;
 					} else if ( hour >= 20 ) {
 						EmitSignal( "NightTimeStart" );
@@ -75,7 +89,7 @@ namespace Renown.World {
 				} else if ( Year - StartingYear >= 1000000000 ) {
 					SteamAchievements.ActivateAchievement( "ACH_TOUCH_GRASS" );
 				}
-				EmitSignal( "TimeTick", day, hour, minute );
+				EmitSignal( "TimeTick", Day, hour, minute );
 				PastMinute = minute;
 			}
 		}
@@ -112,6 +126,13 @@ namespace Renown.World {
 			Month = StartingMonth;
 			Day = StartingDay;
 
+			for ( int i = 0; i < Months.Length; i++ ) {
+				Console.PrintLine( "Month day count: " + Months[i].GetDayCount() );
+				TotalDaysInYear += Months[i].GetDayCount();
+			}
+
+			Console.PrintLine( string.Format( "Starting time is [{0}, {1}:{2}]", Year, Month, Day ) );
+
 			SetProcessInternal( false );
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
@@ -131,7 +152,7 @@ namespace Renown.World {
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
-			if ( IsHostWorld ) {
+			if ( IsHostWorld && ( Engine.GetProcessFrames() % 30 ) != 0 ) {
 				Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
 				RecalculateTime();
 			}

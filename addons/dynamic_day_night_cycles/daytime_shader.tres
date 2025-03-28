@@ -20,7 +20,7 @@ uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 float get_time_color_pct() {
 	float scaled_twilight_duration = twilight_duration * twilight_duration_factor;
-	
+
 	if (current_time < sunrise_time) {
 		return 0.0f; // (Morning) night
 	}

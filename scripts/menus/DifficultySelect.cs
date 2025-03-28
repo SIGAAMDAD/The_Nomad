@@ -54,8 +54,7 @@ public partial class DifficultySelect : Control {
 		if ( playerList.Count < 2 ) {
 			// we either have someone with a controller hooked up,
 			// or we're just running solo
-			CommandConsole.PrintLine( "Loading level " + levelName + "_sp.tscn" );
-//			GetNode( "/root/Console" ).Call( "print_line", "Loading level " + levelName + "_sp.tscn..." );
+			Console.PrintLine( "Loading level " + levelName + "_sp.tscn" );
 			scene = (Node)ResourceLoader.Load<GDScript>( "res://addons/AsyncSceneManager/AsyncScene.gd" ).New(
 				levelName + "_sp.tscn"
 			);

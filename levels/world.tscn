@@ -1,7 +1,8 @@
-[gd_scene load_steps=96 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=97 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
+[ext_resource type="Script" uid="uid://dmcodbyfmkuqw" path="res://scripts/renown/World/Month.cs" id="4_cyobr"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="5_712nc"]
 [ext_resource type="Script" uid="uid://cbt2oea17d7uh" path="res://scripts/renown/World/WorldArea.cs" id="5_cyobr"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="5_qxdx5"]
@@ -12591,17 +12592,26 @@ noise = SubResource("FastNoiseLite_re8x6")
 script = ExtResource("1_re8x6")
 Player1 = NodePath("Network/Players/Player0")
 
-[node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("WorldTimeOverlay")]
+[node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
 script = ExtResource("11_re8x6")
 StartingYear = 89950
 StartingHour = 1.0
+Months = [NodePath("LongSummer"), NodePath("LongWinter")]
 WorldTimeOverlay = NodePath("../CanvasModulate")
 Gradient = ExtResource("2_re8x6")
 
 [node name="SunLight" type="DirectionalLight2D" parent="WorldTime"]
-rotation = -1.22348
+rotation = -1.19904
 color = Color(1, 1, 1, 0.486275)
 shadow_enabled = true
+
+[node name="LongSummer" type="Node" parent="WorldTime"]
+script = ExtResource("4_cyobr")
+DayCount = 156
+
+[node name="LongWinter" type="Node" parent="WorldTime"]
+script = ExtResource("4_cyobr")
+DayCount = 286
 
 [node name="Biomes" type="Node2D" parent="."]
 
@@ -13681,6 +13691,8 @@ position = Vector2(-88720, 53124)
 script = ExtResource("6_i8ckm")
 
 [node name="Tutorials" type="Node2D" parent="."]
+light_mask = 512
+visibility_layer = 512
 position = Vector2(-88195, 52992)
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
@@ -13699,10 +13711,12 @@ TutorialString = "Parry"
 Action = ExtResource("10_oxfhy")
 
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
+light_mask = 512
+visibility_layer = 512
 position = Vector2(220, 138)
 TutorialString = "Rest at campfire to heal"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-visible = false
 
 [node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("13_mla2a")]
+visible = false

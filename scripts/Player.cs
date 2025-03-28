@@ -301,10 +301,6 @@ public partial class Player : CharacterBody2D {
 		ArmLeft.SetWeapon( reader.LoadInt( "arm_left_slot" ) );
 		ArmRight.SetWeapon( reader.LoadInt( "arm_right_slot" ) );
 
-		Renown.World.WorldTimeManager.Year = reader.LoadUInt( "world_time_year" );
-		Renown.World.WorldTimeManager.Month = reader.LoadUInt( "world_time_month" );
-		Renown.World.WorldTimeManager.Day = reader.LoadUInt( "world_time_day" );
-
 		AmmoStacks.Clear();
 		int numAmmoStacks = reader.LoadInt( "ammo_stacks_count" );
 		for ( int i = 0; i < numAmmoStacks; i++ ) {
