@@ -58,9 +58,9 @@ namespace Renown.World {
 			uint hour = currentDayMinutes / MinutesPerHour;
 			uint minute = currentDayMinutes % MinutesPerHour;
 
-			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / hour ) * 0.01f;
+			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / hour ) * 0.001f;
 			if ( hour < 7 || hour > 21 ) {
-				RedSunLight.Energy = 0.0f;
+				RedSunLight.Energy = -0.01f;
 			} else {
 				RedSunLight.Energy = 1.0f;
 			}
@@ -70,7 +70,6 @@ namespace Renown.World {
 						Day++;
 						if ( Day >= Months[ Month ].GetDayCount() ) {
 							Day = 0;
-							GD.Print( "new month" );
 							Month++;
 							if ( Month >= Months.Length ) {
 								Month = 0;

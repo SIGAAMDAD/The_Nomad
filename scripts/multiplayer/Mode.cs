@@ -1,5 +1,6 @@
-using System;
+using System.Collections.Generic;
 using Godot;
+using Steamworks;
 
 namespace Multiplayer {
 	public partial class Mode : Node {
@@ -23,7 +24,7 @@ namespace Multiplayer {
 
 		protected GameMode Type;
 
-		public static System.Collections.Generic.Dictionary<GameMode, string> ModeNames = new System.Collections.Generic.Dictionary<GameMode, string>{
+		public static readonly Dictionary<GameMode, string> ModeNames = new Dictionary<GameMode, string>{
 			{ GameMode.Bloodbath, "Bloodbath" },
 			{ GameMode.TeamBrawl, "Team Brawl" },
 			{ GameMode.CaptureTheFlag, "Capture The Flag" },
@@ -36,6 +37,11 @@ namespace Multiplayer {
 			{ GameMode.ExtractionPVP, "Extraction PVP" },
 			{ GameMode.Duel, "Duel" }
 		};
+
+		public virtual void OnPlayerJoined( Player player ) {
+		}
+		public virtual void OnPlayerLeft( Player player ) {
+		}
 
 		public GameMode GetMode() {
 			return Type;

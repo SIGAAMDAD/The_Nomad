@@ -1,4 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bc6bj5sw3gvf8"]
+[gd_scene load_steps=12 format=3 uid="uid://bc6bj5sw3gvf8"]
+
+[ext_resource type="Script" uid="uid://dmgkt5ycualg6" path="res://scripts/menus/MenuBackground.cs" id="1_6lvap"]
 
 [sub_resource type="Gradient" id="Gradient_imvie"]
 offsets = PackedFloat32Array(0)
@@ -77,6 +79,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("1_6lvap")
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -86,6 +90,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture1D_5lchc")
+metadata/_edit_use_anchors_ = true
 
 [node name="EmberParticlesEmitter" type="GPUParticles2D" parent="."]
 process_thread_group = 2

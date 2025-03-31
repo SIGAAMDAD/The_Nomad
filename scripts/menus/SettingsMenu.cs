@@ -110,7 +110,7 @@ public partial class SettingsMenu : Control {
 			break;
 		};
 
-		UpdateWindowScale();
+//		UpdateWindowScale();
 	}
 	private void OnSaveSettingsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;

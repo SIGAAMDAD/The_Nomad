@@ -21,6 +21,8 @@ public partial class Poem : Control {
 	}
 
 	private void OnFinishedLoading() {
+		FinishedLoading -= OnFinishedLoading;
+
 		LoadThread.Join();
 		QueueFree();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
@@ -50,7 +52,7 @@ public partial class Poem : Control {
 
 		Console.PrintLine( "Loading game..." );
 
-		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		FinishedLoading += OnFinishedLoading;
 		LoadThread = new System.Threading.Thread( () => {
 			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
 			CallDeferred( "emit_signal", "FinishedLoading" );

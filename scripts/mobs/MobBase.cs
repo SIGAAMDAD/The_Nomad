@@ -148,35 +148,35 @@ public partial class MobBase : Renown.Thinker {
 	private AudioStream GetBarkResource( BarkType bark ) {
 		switch ( bark ) {
 		case BarkType.ManDown:
-			return AudioCache.ManDown[ RandomFactory.Next( 0, AudioCache.ManDown.Length - 1 ) ];
+			return ResourceCache.ManDown[ RandomFactory.Next( 0, ResourceCache.ManDown.Length - 1 ) ];
 		case BarkType.MenDown2:
-			return AudioCache.ManDown2;
+			return ResourceCache.ManDown2;
 		case BarkType.MenDown3:
-			return AudioCache.ManDown3;
+			return ResourceCache.ManDown3;
 		case BarkType.TargetSpotted:
-			return AudioCache.TargetSpotted[ RandomFactory.Next( 0, AudioCache.TargetSpotted.Length - 1 ) ];
+			return ResourceCache.TargetSpotted[ RandomFactory.Next( 0, ResourceCache.TargetSpotted.Length - 1 ) ];
 		case BarkType.TargetPinned:
-			return AudioCache.TargetPinned[ RandomFactory.Next( 0, AudioCache.TargetPinned.Length - 1 ) ];
+			return ResourceCache.TargetPinned[ RandomFactory.Next( 0, ResourceCache.TargetPinned.Length - 1 ) ];
 		case BarkType.TargetRunning:
-			return AudioCache.TargetRunning[ RandomFactory.Next( 0, AudioCache.TargetRunning.Length - 1 ) ];
+			return ResourceCache.TargetRunning[ RandomFactory.Next( 0, ResourceCache.TargetRunning.Length - 1 ) ];
 		case BarkType.Confusion:
-			return AudioCache.Confusion[ RandomFactory.Next( 0, AudioCache.Confusion.Length - 1 ) ];
+			return ResourceCache.Confusion[ RandomFactory.Next( 0, ResourceCache.Confusion.Length - 1 ) ];
 		case BarkType.Alert:
-			return AudioCache.Alert[ RandomFactory.Next( 0, AudioCache.Alert.Length - 1 ) ];
+			return ResourceCache.Alert[ RandomFactory.Next( 0, ResourceCache.Alert.Length - 1 ) ];
 		case BarkType.OutOfTheWay:
-			return AudioCache.OutOfTheWay[ RandomFactory.Next( 0, AudioCache.OutOfTheWay.Length - 1 ) ];
+			return ResourceCache.OutOfTheWay[ RandomFactory.Next( 0, ResourceCache.OutOfTheWay.Length - 1 ) ];
 		case BarkType.NeedBackup:
-			return AudioCache.NeedBackup[ RandomFactory.Next( 0, AudioCache.NeedBackup.Length - 1 ) ];
+			return ResourceCache.NeedBackup[ RandomFactory.Next( 0, ResourceCache.NeedBackup.Length - 1 ) ];
 		case BarkType.SquadWiped:
-			return AudioCache.SquadWiped;
+			return ResourceCache.SquadWiped;
 		case BarkType.Curse:
-			return AudioCache.Curse[ RandomFactory.Next( 0, AudioCache.Curse.Length - 1 ) ];
+			return ResourceCache.Curse[ RandomFactory.Next( 0, ResourceCache.Curse.Length - 1 ) ];
 		case BarkType.CheckItOut:
-			return AudioCache.CheckItOut[ RandomFactory.Next( 0, AudioCache.CheckItOut.Length - 1 ) ];
+			return ResourceCache.CheckItOut[ RandomFactory.Next( 0, ResourceCache.CheckItOut.Length - 1 ) ];
 		case BarkType.Quiet:
-			return AudioCache.Quiet[ RandomFactory.Next( 0, AudioCache.Quiet.Length - 1 ) ];
+			return ResourceCache.Quiet[ RandomFactory.Next( 0, ResourceCache.Quiet.Length - 1 ) ];
 		case BarkType.Unstoppable:
-			return AudioCache.Unstoppable;
+			return ResourceCache.Unstoppable;
 		case BarkType.Count:
 		default:
 			break;
@@ -260,10 +260,10 @@ public partial class MobBase : Renown.Thinker {
 	protected void OnMoveTimerTimeout() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
-		} else if ( !AudioCache.Initialized ) {
+		} else if ( !ResourceCache.Initialized ) {
 			return;
 		}
-		MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+		MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
 		MoveChannel.Play();
 	}
 

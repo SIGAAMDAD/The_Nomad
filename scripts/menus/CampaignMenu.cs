@@ -5,7 +5,7 @@ public partial class CampaignMenu : Control {
 	private Button MemeModeButton;
 	private AudioStreamPlayer UIChannel;
 
-	private System.Collections.Generic.List<string> MemeModeNameList = new System.Collections.Generic.List<string>{
+	private readonly string[] MemeModeNameList = [
 		"POV: Kazuma",
 		"Dark Souls",
 		"Writing in C++",
@@ -32,7 +32,7 @@ public partial class CampaignMenu : Control {
 		"I AM THE DANGER",
 		"Awwww Does This Make U Cry?",
 		"Asian"
-	};
+	];
 
 	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -103,21 +103,9 @@ public partial class CampaignMenu : Control {
 
 	public void SetMemeModeName() {
 		// FIXME:?
-		MemeModeButton.Text = MemeModeNameList[ new RandomNumberGenerator().RandiRange( 0, MemeModeNameList.Count - 1 ) ];
+		MemeModeButton.Text = MemeModeNameList[ new RandomNumberGenerator().RandiRange( 0, MemeModeNameList.Length - 1 ) ];
 	}
 
-	public override void _ExitTree() {
-		base._ExitTree();
-
-		MemeModeNameList.Clear();
-
-		for ( int i = 0; i < ButtonList.Length; i++ ) {
-			ButtonList[i] = null;
-		}
-		ButtonList = null;
-
-		QueueFree();
-	}
     public override void _Ready() {
 		if ( SettingsData.GetDyslexiaMode() ) {
 			Theme = AccessibilityManager.DyslexiaTheme;

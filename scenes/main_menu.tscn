@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_tbmy8"]
 [ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="2_v43k5"]
-[ext_resource type="PackedScene" uid="uid://udm1pfg83jk1" path="res://scenes/menus/campaign_menu.tscn" id="3_66f1w"]
+[ext_resource type="PackedScene" uid="uid://udm1pfg83jk1" path="res://scenes/menus/campaign_menu_old.tscn" id="3_66f1w"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
 [ext_resource type="PackedScene" uid="uid://dot7q6fxsd0g0" path="res://scenes/menus/settings_menu.tscn" id="4_y3mln"]
 [ext_resource type="PackedScene" uid="uid://cp2ega0a8ryv2" path="res://scenes/menus/multiplayer_menu.tscn" id="5_23c7l"]

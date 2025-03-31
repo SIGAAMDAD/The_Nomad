@@ -1,8 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://lko4gtcm6aer"]
+[gd_scene load_steps=4 format=3 uid="uid://lko4gtcm6aer"]
 
-[ext_resource type="Script" uid="uid://s0u1lkf1x383" path="res://scripts/multiplayer/lobby_room.gd" id="1_fhufx"]
-[ext_resource type="Texture2D" uid="uid://b3n3usslqrc1t" path="res://textures/art/IMG_1709.JPG" id="1_htm6t"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_dbjcx"]
+[ext_resource type="Script" uid="uid://bqykmjcgqyyi0" path="res://scripts/multiplayer/LobbyRoom.cs" id="1_c6vvr"]
 
 [sub_resource type="Gradient" id="Gradient_neljt"]
 offsets = PackedFloat32Array(0)
@@ -18,18 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fhufx")
-
-[node name="Background" type="TextureRect" parent="."]
-modulate = Color(0.401968, 0.401968, 0.401968, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_htm6t")
-expand_mode = 2
+script = ExtResource("1_c6vvr")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -41,10 +28,10 @@ offset_top = 4.0
 offset_right = 73.0
 offset_bottom = 27.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("3_dbjcx")
 text = "LOBBY WAITING ROOM"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(480, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -77,7 +64,7 @@ offset_left = -105.0
 offset_top = -31.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "TO VICTORY!"
+text = "START_MULTIPLAYER_GAME"
 
 [node name="ExitLobbyButton" type="Button" parent="."]
 layout_mode = 1
@@ -87,7 +74,4 @@ anchor_bottom = 1.0
 offset_top = -31.0
 offset_right = 44.0
 grow_vertical = 0
-text = "FLEE"
-
-[connection signal="pressed" from="StartGameButton" to="." method="_on_start_game_button_pressed"]
-[connection signal="pressed" from="ExitLobbyButton" to="." method="_on_exit_lobby_button_pressed"]
+text = "EXIT_LOBBY"

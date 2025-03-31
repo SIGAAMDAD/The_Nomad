@@ -622,7 +622,7 @@ public partial class Player : CharacterBody2D {
 
 		TorsoAnimation.CallDeferred( "play", "death" );
 
-		MiscChannel.Stream = AudioCache.PlayerDieSfx[ RandomFactory.Next( 0, AudioCache.PlayerDieSfx.Length - 1 ) ];
+		MiscChannel.Stream = ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ];
 		MiscChannel.Play();
 
 		SetProcessUnhandledInput( true );
@@ -645,7 +645,7 @@ public partial class Player : CharacterBody2D {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			MiscChannel.Stream = AudioCache.PlayerPainSfx[ RandomFactory.Next( 0, AudioCache.PlayerPainSfx.Length - 1 ) ];
+			MiscChannel.Stream = ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ];
 			MiscChannel.Play();
 		}
 	}
@@ -693,7 +693,7 @@ public partial class Player : CharacterBody2D {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+			MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
 			MoveChannel.Play();
 		}
 	}
@@ -719,7 +719,7 @@ public partial class Player : CharacterBody2D {
 	private void OnDash() {
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
-			DashChannel.Stream = AudioCache.DashExplosion;
+			DashChannel.Stream = ResourceCache.DashExplosion;
 			DashChannel.Play();
 
 			DashBurnout = 0.0f;
@@ -729,7 +729,7 @@ public partial class Player : CharacterBody2D {
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
 		DashTime.CallDeferred( "start" );
-		DashChannel.Stream = AudioCache.DashSfx[ RandomFactory.Next( 0, AudioCache.DashSfx.Length - 1 ) ];
+		DashChannel.Stream = ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ];
 		DashChannel.PitchScale = 1.0f + DashBurnout;
 		DashChannel.Play();
 		( (PointLight2D)DashEffect.GetChild( 0 ) ).CallDeferred( "show" );
@@ -809,7 +809,7 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		MiscChannel.Stream = AudioCache.ChangeWeaponSfx;
+		MiscChannel.Stream = ResourceCache.ChangeWeaponSfx;
 		MiscChannel.Play();
 
 		CurrentWeapon = index;
@@ -856,7 +856,7 @@ public partial class Player : CharacterBody2D {
 			HUD.SetWeapon( null );
 		}
 
-		MiscChannel.Stream = AudioCache.ChangeWeaponSfx;
+		MiscChannel.Stream = ResourceCache.ChangeWeaponSfx;
 		MiscChannel.Play();
 
 		CurrentWeapon = index;
@@ -867,7 +867,7 @@ public partial class Player : CharacterBody2D {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			MiscChannel.Stream = AudioCache.SlowMoBeginSfx;
+			MiscChannel.Stream = ResourceCache.SlowMoBeginSfx;
 			MiscChannel.Play();
 
 			Flags |= PlayerFlags.BulletTime;
@@ -985,7 +985,7 @@ public partial class Player : CharacterBody2D {
 		bool IsTwoHanded = ( props & WeaponEntity.Properties.IsTwoHanded ) != 0;
 		const WeaponEntity.Properties hands = ~(  WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsTwoHanded );
 
-		for ( int i = 0; i < WeaponModeList.Count; i++ ) {
+		for ( int i = 0; i < WeaponModeList.Length; i++ ) {
 			WeaponEntity.Properties current = WeaponModeList[i];
 			if ( mode == current ) {
 				// same mode, don't switch
@@ -1039,32 +1039,16 @@ public partial class Player : CharacterBody2D {
 	private void SwitchInputMode( Resource InputContext ) {
 		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext );
 
-		GD.Print( "Remapping input..." );
+		Console.PrintLine( "Remapping input..." );
 		
-		if ( SwitchWeaponModeAction != null ) {
-			SwitchWeaponModeAction.Disconnect( "triggered", Callable.From( SwitchWeaponMode ) );
-		}
-		if ( BulletTimeAction != null ) {
-			BulletTimeAction.Disconnect( "triggered", Callable.From( OnBulletTime ) );
-		}
-		if ( NextWeaponAction != null ) {
-			NextWeaponAction.Disconnect( "triggered", Callable.From( OnNextWeapon ) );
-		}
-		if ( PrevWeaponAction != null ) {
-			PrevWeaponAction.Disconnect( "triggered", Callable.From( OnPrevWeapon ) );
-		}
-		if ( DashAction != null ) {
-			DashAction.Disconnect( "triggered", Callable.From( OnDash ) );
-		}
-		if ( SlideAction != null ) {
-			SlideAction.Disconnect( "triggered", Callable.From( OnSlide ) );
-		}
-		if ( UseWeaponAction != null ) {
-			UseWeaponAction.Disconnect( "triggered", Callable.From( OnUseWeapon ) );
-		}
-		if ( OpenInventoryAction != null ) {
-			OpenInventoryAction.Disconnect( "triggered", Callable.From( OnToggleInventory ) );
-		}
+		SwitchWeaponModeAction?.Disconnect( "triggered", Callable.From( SwitchWeaponMode ) );
+		BulletTimeAction?.Disconnect( "triggered", Callable.From( OnBulletTime ) );
+		NextWeaponAction?.Disconnect( "triggered", Callable.From( OnNextWeapon ) );
+		PrevWeaponAction?.Disconnect( "triggered", Callable.From( OnPrevWeapon ) );
+		DashAction?.Disconnect( "triggered", Callable.From( OnDash ) );
+		SlideAction?.Disconnect( "triggered", Callable.From( OnSlide ) );
+		UseWeaponAction?.Disconnect( "triggered", Callable.From( OnUseWeapon ) );
+		OpenInventoryAction?.Disconnect( "triggered", Callable.From( OnToggleInventory ) );
 
 		if ( InputContext == KeyboardInputMappings ) {
 			MoveAction = MoveActionKeyboard;
@@ -1141,7 +1125,7 @@ public partial class Player : CharacterBody2D {
 	}
 
 	private void OnSlowMoSfxFinished() {
-		if ( MiscChannel.Stream == AudioCache.SlowMoBeginSfx ) {
+		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
 			// only start lagging audio playback after the slowmo begin finishes
 			AudioServer.PlaybackSpeedScale = 0.50f;
 		}
@@ -1200,7 +1184,7 @@ public partial class Player : CharacterBody2D {
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-		MiscChannel.Stream = AudioCache.SlowMoEndSfx;
+		MiscChannel.Stream = ResourceCache.SlowMoEndSfx;
 		MiscChannel.Play();
 	}
 

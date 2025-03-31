@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class AmmoEntity : Node2D {
 	public enum Type {
@@ -43,7 +42,7 @@ public partial class AmmoEntity : Node2D {
 		( (Player)body ).PickupAmmo( this );
 	}
 	private void OnPickupSfxFinished() {
-		RemoveChild( PickupSfx );
+		CallDeferred( "remove_child", PickupSfx );
 		PickupSfx.QueueFree();
 	}
 
@@ -55,12 +54,18 @@ public partial class AmmoEntity : Node2D {
 		}
 
 		IconSprite = GetNode<Sprite2D>( "Icon" );
+		IconSprite.SetProcess( false );
+		IconSprite.SetProcessInternal( false );
 		IconSprite.Texture = (Texture2D)Data.Get( "icon" );
 
 		PickupArea = GetNode<Area2D>( "PickupArea2D" );
+		PickupArea.SetProcess( false );
+		PickupArea.SetProcessInternal( false );
 		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnPickupArea2DBodyShapeEntered ) );
 
 		PickupSfx = GetNode<AudioStreamPlayer2D>( "PickupSfx" );
+		PickupSfx.SetProcess( false );
+		PickupSfx.SetProcessInternal( false );
 		PickupSfx.Connect( "finished", Callable.From( OnPickupSfxFinished ) );
 		PickupSfx.Stream = (AudioStream)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "pickup_sfx" ];
 	}

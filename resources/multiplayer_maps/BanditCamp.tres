@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_sfham")
 _name = "Bandit Camp"
-_filename = "level00"
+_filename = "level0"
 _mode_bloodbath = true
 _mode_team_brawl = false
 _mode_capture_the_flag = false

@@ -1,6 +1,4 @@
-using System.Collections;
 using Godot;
-using Steamworks;
 
 public partial class TitleMenu : Control {
 	public enum MenuState {
@@ -13,8 +11,8 @@ public partial class TitleMenu : Control {
 	};
 
 	private AudioStreamPlayer UIChannel;
+	private AudioStreamPlayer Theme;
 
-	private Control CampaignMenu;
 	private Control MultiplayerMenu;
 	private Control SettingsMenu;
 	private Control MainMenu;
@@ -33,13 +31,16 @@ public partial class TitleMenu : Control {
 		LobbyBrowser.QueueFree();
 		LobbyFactory.QueueFree();
 
-		CampaignMenu.QueueFree();
 		MultiplayerMenu.QueueFree();
 		SettingsMenu.QueueFree();
 		MainMenu.QueueFree();
 		ExitButton.QueueFree();
 
 		UIChannel.QueueFree();
+
+//		MainMenu.Disconnect( "CampaignMenu", Callable.From( OnMainMenuCampaignMenu ) );
+		MainMenu.Disconnect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
+		MainMenu.Disconnect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
 
 		QueueFree();
 	}
@@ -49,12 +50,14 @@ public partial class TitleMenu : Control {
 		UIChannel.Play();
 
 		switch ( State ) {
+		/*
 		case MenuState.Campaign:
 			CampaignMenu.Hide();
 			CampaignMenu.SetProcess( false );
 			CampaignMenu.SetProcessInternal( false );
 			CampaignMenu.SetProcessUnhandledInput( false );
 			break;
+			*/
 		case MenuState.Multiplayer:
 			MultiplayerMenu.Hide();
 			LobbyBrowser.Hide();
@@ -85,6 +88,7 @@ public partial class TitleMenu : Control {
 		MainMenu.Show();
 		State = MenuState.Main;
 	}
+	/*
 	private void OnMainMenuCampaignMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
@@ -98,6 +102,7 @@ public partial class TitleMenu : Control {
 		ExitButton.Show();
 		State = MenuState.Campaign;
 	}
+	*/
 	private void OnMainMenuMultiplayerMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
@@ -134,14 +139,8 @@ public partial class TitleMenu : Control {
 		Background.SetProcessInternal( false );
 
 		MainMenu = GetNode<Control>( "MainMenu" );
-		MainMenu.Connect( "CampaignMenu", Callable.From( OnMainMenuCampaignMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
 		MainMenu.Connect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
-
-		CampaignMenu = GetNode<Control>( "CampaignMenu" );
-		CampaignMenu.SetProcess( false );
-		CampaignMenu.SetProcessInternal( false );
-		CampaignMenu.SetProcessUnhandledInput( false );
 
 		MultiplayerMenu = GetNode<Control>( "MultiplayerMenu" );
 		MultiplayerMenu.SetProcess( false );
@@ -170,9 +169,9 @@ public partial class TitleMenu : Control {
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
 
-		AudioStreamPlayer theme = GetNode<AudioStreamPlayer>( "Theme" );
-		theme.SetProcess( false );
-		theme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
+		Theme = GetNode<AudioStreamPlayer>( "Theme" );
+		Theme.SetProcess( false );
+		Theme.Finished += OnThemeIntroFinished;
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
 
@@ -182,10 +181,9 @@ public partial class TitleMenu : Control {
 	}
 
 	private void OnThemeIntroFinished() {
-		AudioStreamPlayer theme = GetNode<AudioStreamPlayer>( "Theme" );
-		theme.Stream = LoopingTheme;
-		theme.Play();
-		theme.Set( "parameters/looping", true );
-		theme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
+		Theme.Stream = LoopingTheme;
+		Theme.Play();
+		Theme.Set( "parameters/looping", true );
+		Theme.Finished -= OnThemeIntroFinished;
 	}
 }

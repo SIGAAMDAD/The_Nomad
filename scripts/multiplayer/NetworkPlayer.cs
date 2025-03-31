@@ -63,7 +63,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		position.Y = (float)packet.ReadDouble();
 		GlobalPosition = position;
 
-		LeftArmAnimation.GlobalRotation = packet.ReadInt32();
+		LeftArmAnimation.GlobalRotation = (float)packet.ReadDouble();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
@@ -115,7 +115,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 			break;
 		};
 		
-		RightArmAnimation.GlobalRotation = packet.ReadInt32();
+		RightArmAnimation.GlobalRotation = (float)packet.ReadDouble();
 		switch ( (PlayerAnimationState)packet.ReadByte() ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
@@ -223,7 +223,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 	}
 	private void OnLegAnimationFinished() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
-			MoveChannel.Stream = AudioCache.MoveGravelSfx[ RandomFactory.Next( 0, AudioCache.MoveGravelSfx.Length - 1 ) ];
+			MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
 			MoveChannel.Play();
 		}
 	}

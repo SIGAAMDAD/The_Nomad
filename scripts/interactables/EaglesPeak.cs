@@ -18,10 +18,10 @@ public partial class EaglesPeak : InteractionItem {
 	}
 	public void OnYesButtonPressed() {
 		AudioStreamPlayer audio = new AudioStreamPlayer();
-		AddChild( audio );
-		audio.Stream = AudioCache.LeapOfFaithSfx;
+		Interactor.AddChild( audio );
+		audio.Stream = ResourceCache.LeapOfFaithSfx;
 		audio.Connect( "finished", Callable.From( () => {
-			RemoveChild( audio );
+			Interactor.RemoveChild( audio );
 			audio.QueueFree();
 		} ) );
 		audio.Play();
@@ -50,8 +50,6 @@ public partial class EaglesPeak : InteractionItem {
 			return;
 		}
 		player.EndInteraction();
-
-		Interactor = null;
 	}
 	
 	public override InteractionType GetInteractionType() {

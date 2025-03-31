@@ -1,3 +1,4 @@
+/*
 using Godot;
 using System.Collections.Generic;
 
@@ -26,6 +27,8 @@ public partial class AudioCache {
 	public static AudioStream[] RepeatPlease;
 #endregion
 
+	public static AudioStream NoAmmoSfx;
+
 	public static AudioStream Fire;
 	public static AudioStream[] BulletShell;
 	public static AudioStream[] ShotgunShell;
@@ -48,10 +51,23 @@ public partial class AudioCache {
 	public static AudioStream SlowMoEndSfx;
 #endregion
 
+	private static Dictionary<string, AudioStream> DynamicCache;
+
 	public static bool Initialized = false;
+
+	public static AudioStream GetStream( string key ) {
+		if ( DynamicCache.TryGetValue( key, out AudioStream value ) ) {
+			return value;
+		}
+		value = ResourceLoader.Load<AudioStream>( key );
+		DynamicCache.Add( key, value );
+		return value;
+	}
 
 	public static void Cache( Node world ) {
         GD.Print( "Loading sound effects..." );
+
+		DynamicCache = new Dictionary<string, AudioStream>();
 
 		TargetSpotted = new AudioStream[ 16 ];
 		TargetSpotted[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" );
@@ -174,6 +190,8 @@ public partial class AudioCache {
 
 		ChangeWeaponSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/change_weapon.ogg" );
 
+		NoAmmoSfx = ResourceLoader.Load<AudioStream>( "res://sounds/weapons/noammo.wav" );
+
 		PlayerPainSfx = new AudioStream[ 3 ];
 		PlayerPainSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/player/pain0.ogg" );
 		PlayerPainSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/player/pain1.ogg" );
@@ -219,3 +237,4 @@ public partial class AudioCache {
 		world.CallDeferred( "emit_signal", "AudioLoadingFinished" );
     }
 };
+*/

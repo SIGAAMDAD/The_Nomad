@@ -78,14 +78,14 @@ shape = SubResource("CircleShape2D_btkcq")
 
 [node name="ActivateChannel" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_7no74")
-max_distance = 650.0
+max_distance = 300.0
 attenuation = 0.143587
 bus = &"SFX"
 playback_type = 1
 
 [node name="AmbienceChannel" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_qg5el")
-max_distance = 900.0
+max_distance = 300.0
 attenuation = 0.0915054
 bus = &"SFX"
 playback_type = 1

@@ -125,7 +125,7 @@ process_thread_messages = 0
 visible = false
 y_sort_enabled = true
 sprite_frames = ExtResource("10_0rnld")
-animation = &"start"
+animation = &"loop"
 
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -1)

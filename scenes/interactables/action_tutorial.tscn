@@ -26,6 +26,8 @@ script = ExtResource("1_fy36v")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 light_mask = 512
 visibility_layer = 512
+z_index = 5
+use_parent_material = true
 position = Vector2(0, 7.62939e-06)
 scale = Vector2(0.210526, 0.23913)
 texture = ExtResource("2_ur08t")
@@ -50,6 +52,7 @@ visible = false
 light_mask = 512
 visibility_layer = 512
 z_index = 5
+use_parent_material = true
 offset_left = -128.0
 offset_top = -87.0
 offset_right = 128.0

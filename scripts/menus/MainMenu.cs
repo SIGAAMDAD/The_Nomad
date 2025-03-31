@@ -3,8 +3,6 @@ using Godot;
 
 public partial class MainMenu : Control {
 	[Signal]
-	public delegate void CampaignMenuEventHandler();
-	[Signal]
 	public delegate void SettingsMenuEventHandler();
 	[Signal]
 	public delegate void HelpMenuEventHandler();
@@ -15,32 +13,60 @@ public partial class MainMenu : Control {
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
 
+	private enum IndexedButton : int {
+		Story,
+		Multiplayer,
+		Settings,
+		Mods,
+		Quit,
+
+		Count
+	};
+
 	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
 	private bool Loaded = false;
 
-	private PackedScene LoadedWorld = null;
-	private Thread LoadThread = null;
+	private static PackedScene LoadedWorld = null;
+	private static Thread LoadThread = null;
+	private static object LoadSync = new object();
 
 	private AudioStreamPlayer UIChannel;
 	private CanvasLayer TransitionScreen;
 
+	private static Tween AudioFade;
+
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+		AudioFade.Finished -= OnAudioFadeFinished;
 	}
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
-
-		ButtonList = null;
-		LoadThread = null;
-		LoadedWorld = null;
 	}
-	private void LoadGame() {
+	private void OnBeginGameFinished() {
+		TransitionScreen.Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
+		QueueFree();
+	}
+
+	private void OnContinueGameButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
+		Loaded = true;
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
+		TransitionScreen.Call( "transition" );
+
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+
+		AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -64,10 +90,6 @@ public partial class MainMenu : Control {
 
 		Console.PrintLine( "Loading game..." );
 
-		Tween AudioFade = GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
-
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
 			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
@@ -75,26 +97,25 @@ public partial class MainMenu : Control {
 		} );
 		LoadThread.Start();
 	}
-	private void OnContinueGameFinished() {
-		LoadGame();
+	private void OnNewGameButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
+		Loaded = true;
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+
+		AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
+		TransitionScreen.Call( "transition" );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
-    private void OnCampaignButtonPressed() {
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
-			if ( Loaded ) {
-				return;
-			}
-			Loaded = true;
-			UIChannel.Stream = UISfxManager.BeginGame;
-			UIChannel.Play();
-			TransitionScreen.Call( "transition" );
-			TransitionScreen.Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
-		} else {
-			UIChannel.Stream = UISfxManager.ButtonPressed;
-			UIChannel.Play();
-			EmitSignal( "CampaignMenu" );
-		}
-	}
 	private void OnSettingsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
@@ -134,52 +155,62 @@ public partial class MainMenu : Control {
 			Theme = AccessibilityManager.DefaultTheme;
 		}
 
-		Button CampaignButton = GetNode<Button>( "VBoxContainer/CampaignButton" );
-		CampaignButton.SetProcess( false );
-		CampaignButton.SetProcessInternal( false );
-		CampaignButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		CampaignButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		CampaignButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		CampaignButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		CampaignButton.Connect( "pressed", Callable.From( OnCampaignButtonPressed ) );
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
-			CampaignButton.Text = "CONTINUE_STORY_BUTTON";
-		}
+		Button NewGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
+		NewGameButton.SetProcess( false );
+		NewGameButton.SetProcessInternal( false );
+		NewGameButton.Visible = !ArchiveSystem.Instance.IsLoaded();
+		NewGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		NewGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		NewGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		NewGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		NewGameButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
+		NewGameButton.Scale = GetTree().Root.ContentScaleSize;
+		
+		Button ContinueGameButton = GetNode<Button>( "VBoxContainer/ContinueGameButton" );
+		ContinueGameButton.SetProcess( false );
+		ContinueGameButton.SetProcessInternal( false );
+		ContinueGameButton.Visible = ArchiveSystem.Instance.IsLoaded();
+		ContinueGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		ContinueGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		ContinueGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		ContinueGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		ContinueGameButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
+		ContinueGameButton.Scale = GetTree().Root.ContentScaleSize;
 
 		Button MultiplayerButton = GetNode<Button>( "VBoxContainer/MultiplayerButton" );
 		MultiplayerButton.SetProcess( false );
 		MultiplayerButton.SetProcessInternal( false );
-		MultiplayerButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 1 ); } ) );
-		MultiplayerButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 1 ); } ) );
-		MultiplayerButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 1 ); } ) );
-		MultiplayerButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 1 ); } ) );
+		MultiplayerButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Multiplayer ); } ) );
+		MultiplayerButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Multiplayer ); } ) );
+		MultiplayerButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Multiplayer ); } ) );
+		MultiplayerButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Multiplayer ); } ) );
 		MultiplayerButton.Connect( "pressed", Callable.From( OnMultiplayerButtonPressed ) );
 
 		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
 		SettingsButton.SetProcess( false );
 		SettingsButton.SetProcessInternal( false );
-		SettingsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 2 ); } ) );
-		SettingsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 2 ); } ) );
-		SettingsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 2 ); } ) );
-		SettingsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 2 ); } ) );
+		SettingsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
+		SettingsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Settings ); } ) );
+		SettingsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
+		SettingsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Settings ); } ) );
 		SettingsButton.Connect( "pressed", Callable.From( OnSettingsButtonPressed ) );
 
 		Button ModsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
 		ModsButton.SetProcess( false );
 		ModsButton.SetProcessInternal( false );
-		ModsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 3 ); } ) );
-		ModsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 3 ); } ) );
-		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 3 ); } ) );
-		ModsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 3 ); } ) );
+		ModsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
+		ModsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
+		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
+		ModsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
 		ModsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
 		ExitButton.SetProcess( false );
 		ExitButton.SetProcessInternal( false );
-		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 4 ); } ) );
-		ExitButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 4 ); } ) );
-		ExitButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 4 ); } ) );
-		ExitButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 4 ); } ) );
+		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
+		ExitButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Quit ); } ) );
+		ExitButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
+		ExitButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Quit ); } ) );
 		ExitButton.Connect( "pressed", Callable.From( OnQuitGameButtonPressed ) );
 
 		Label AppVersion = GetNode<Label>( "AppVersion" );
@@ -195,14 +226,25 @@ public partial class MainMenu : Control {
 		TransitionScreen.SetProcess( false );
 		TransitionScreen.SetProcessInternal( false );
 
-		CampaignButton.Modulate = Selected;
-		ButtonList = [
-			CampaignButton,
-			MultiplayerButton,
-			SettingsButton,
-			ModsButton,
-			ExitButton
-		];
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			ButtonList = [
+				ContinueGameButton,
+				MultiplayerButton,
+				SettingsButton,
+				ModsButton,
+				ExitButton
+			];
+			OnButtonFocused( 0 );
+		} else {
+			ButtonList = [
+				NewGameButton,
+				MultiplayerButton,
+				SettingsButton,
+				ModsButton,
+				ExitButton
+			];
+			OnButtonFocused( 0 );
+		}
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

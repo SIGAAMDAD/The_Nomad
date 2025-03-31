@@ -47,10 +47,6 @@ public partial class PauseMenu : Control {
 		{
 			EmitSignal( "LeaveLobby" );
 		}
-
-		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
-		GC.Collect( GC.MaxGeneration, GCCollectionMode.Forced );
-
 		GetTree().ChangeSceneToPacked( MainMenu );
 	}
 

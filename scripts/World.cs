@@ -54,7 +54,7 @@ public partial class World : Node2D {
 		SceneLoadThread.Join();
 		AudioLoadThread.Join();
 
-		AudioCache.Initialized = true;
+		ResourceCache.Initialized = true;
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.SetProcess( true );
@@ -171,7 +171,7 @@ public partial class World : Node2D {
 		} );
 		SceneLoadThread.Start();
 
-		AudioLoadThread = new Thread( () => { AudioCache.Cache( this ); } );
+		AudioLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
 		AudioLoadThread.Start();
 
 		AudioLoadingFinished += OnAudioFinishedLoading;

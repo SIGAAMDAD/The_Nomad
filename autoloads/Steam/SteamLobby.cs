@@ -2,7 +2,6 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -88,6 +87,9 @@ public partial class SteamLobby : Node {
 
 	public enum MessageType {
 		Handshake,
+		
+		// lobby command: start game
+		StartGame,
 
 		// hot cache player data
 		ClientData,
@@ -110,6 +112,8 @@ public partial class SteamLobby : Node {
 	public delegate void LobbyCreatedEventHandler( ulong lobbyId );
 	[Signal]
 	public delegate void LobbyListUpdatedEventHandler();
+	[Signal]
+	public delegate void StartGameEventHandler();
 
 	public class NetworkNode {
 		public readonly Node Node;
@@ -304,7 +308,7 @@ public partial class SteamLobby : Node {
 			return;
 		}
 
-		GD.Print( "Leaving lobby " + LobbyId + "..." );
+		Console.PrintLine( "Leaving lobby " + LobbyId + "..." );
 		SteamMatchmaking.LeaveLobby( LobbyId );
 		LobbyId = CSteamID.Nil;
 
@@ -374,6 +378,9 @@ public partial class SteamLobby : Node {
 		switch ( (MessageType)PacketReader.ReadByte() ) {
 		case MessageType.Handshake:
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
+			break;
+		case MessageType.StartGame:
+
 			break;
 		case MessageType.ClientData:
 			PlayerCache[ senderId.ToString() ].Receive( PacketReader );
