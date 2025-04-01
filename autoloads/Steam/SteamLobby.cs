@@ -29,7 +29,7 @@ public partial class SteamLobby : Node {
 	public static SteamLobby Instance => _Instance;
 	
 	private const uint PACKET_READ_LIMIT = 32;
-	private const uint MAX_LOBBY_MEMBERS = 16;
+	public static readonly uint MAX_LOBBY_MEMBERS = 16;
 	
 	private Callback<LobbyEnter_t> LobbyEnter;
 	private Callback<LobbyChatMsg_t> LobbyChatMsg;
