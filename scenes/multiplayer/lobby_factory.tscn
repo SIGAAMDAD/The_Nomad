@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmc6jfet87hxo"]
+[gd_scene load_steps=5 format=3 uid="uid://bmc6jfet87hxo"]
 
 [ext_resource type="Script" uid="uid://2qrdkhtmiuba" path="res://scripts/multiplayer/LobbyFactory.cs" id="1_rlbmi"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_11eah"]
 
 [sub_resource type="Gradient" id="Gradient_b251r"]
 offsets = PackedFloat32Array(0)
@@ -20,19 +19,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rlbmi")
+metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -73.0
-offset_top = 4.0
-offset_right = 73.0
-offset_bottom = 27.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_11eah")
 text = "HOST GAME"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 0.556863)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1125
+anchor_top = 0.116667
+anchor_right = 0.892187
+anchor_bottom = 0.633333
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 33.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_nundc")
+metadata/_edit_use_anchors_ = true
+
+[node name="CreateButton" type="Button" parent="."]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+offset_left = 466.0
+offset_top = 412.0
+offset_right = 606.0
+offset_bottom = 472.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "CREATE"
+metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -47,20 +73,17 @@ offset_right = 280.0
 offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
-modulate = Color(0, 0, 0, 0.556863)
-layout_mode = 2
-texture = SubResource("GradientTexture2D_nundc")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
 [node name="NameContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 116
 
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/NameContainer"]
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "NAME"
 
@@ -71,9 +94,9 @@ placeholder_text = "MY LOBBY"
 
 [node name="MapContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 128
 
 [node name="MapLabel" type="Label" parent="MarginContainer/VBoxContainer/MapContainer"]
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "MAP"
 
@@ -82,9 +105,9 @@ layout_mode = 2
 
 [node name="GameModeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 70
 
 [node name="GameModeLabel" type="Label" parent="MarginContainer/VBoxContainer/GameModeContainer"]
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "GAMEMODE"
 
@@ -93,24 +116,30 @@ layout_mode = 2
 
 [node name="MaxPlayersContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 46
 
 [node name="MaxPlayersLabel" type="Label" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "MAX PLAYER(S)"
 
-[node name="MaxPlayersHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MaxPlayersContainer"]
+layout_mode = 2
+
+[node name="MaxPlayersHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MaxPlayersContainer/HBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 min_value = 1.0
 max_value = 16.0
 value = 1.0
 
+[node name="PlayerCountLabel" type="Label" parent="MarginContainer/VBoxContainer/MaxPlayersContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="LobbyTypeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 70
 
 [node name="LobbyTypeLabel" type="Label" parent="MarginContainer/VBoxContainer/LobbyTypeContainer"]
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "LOBBY TYPE"
 
@@ -124,13 +153,6 @@ popup/item_1/text = "PRIVATE"
 popup/item_1/id = 1
 popup/item_2/text = "FRIENDS ONLY"
 popup/item_2/id = 2
-
-[node name="CreateButton" type="Button" parent="MarginContainer"]
-custom_minimum_size = Vector2(140, 60)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-text = "CREATE"
 
 [node name="MapIcon" type="TextureRect" parent="MarginContainer"]
 visible = false

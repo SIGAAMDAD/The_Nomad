@@ -115,7 +115,9 @@ namespace PlayerSystem {
 		public override void _Ready() {
 			base._Ready();
 
-			WorldTimeManager.Instance.TimeTick += OnWorldTimeTick;
+			if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+				WorldTimeManager.Instance.TimeTick += OnWorldTimeTick;
+			}
 
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );

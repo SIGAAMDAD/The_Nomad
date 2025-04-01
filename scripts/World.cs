@@ -4,12 +4,8 @@ using Steamworks;
 using Godot;
 using Renown.World;
 using Renown;
-using System.ComponentModel;
-using System;
 
 public partial class World : Node2D {
-	[Export]
-	private Player Player1 = null;
 	private Node2D Hellbreaker = null;
 
 	private Control PauseMenu = null;
@@ -17,17 +13,17 @@ public partial class World : Node2D {
 
 	[Export]
 	public Node2D LevelData = null;
-	[Signal]
-	public delegate void AudioLoadingFinishedEventHandler();
 
 	private bool Loaded = false;
-	private Thread AudioLoadThread;
+	private Thread ResourceLoadThread;
 	private Thread SceneLoadThread;
 
 	private Player ThisPlayer;
 	private Dictionary<CSteamID, CharacterBody2D> Players = null;	
-	
 	private Node PlayerList = null;
+
+	[Signal]
+	public delegate void ResourcesLoadingFinishedEventHandler();
 
 	public void ToggleHellbreaker() {
 		LevelData.Hide();
@@ -48,11 +44,11 @@ public partial class World : Node2D {
 		AddChild( Hellbreaker );
 	}
 
-	private void OnAudioFinishedLoading() {
+	private void OnResourcesFinishedLoading() {
 		SetProcess( true );
 
 		SceneLoadThread.Join();
-		AudioLoadThread.Join();
+		ResourceLoadThread.Join();
 
 		ResourceCache.Initialized = true;
 
@@ -71,19 +67,34 @@ public partial class World : Node2D {
 				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
 				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-		//		SpawnPlayer( player );
 				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
 				PlayerList.AddChild( player );
 			}
 		}
 
-		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
+		Console.PrintLine( "...Finished loading game" );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
+	private void SpawnPlayer( NetworkPlayer player ) {
+		Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Checkpoints" );
+		Checkpoint warpPoint = null;
+		Godot.Vector2 position = ThisPlayer.GlobalPosition;
+		float bestDistance = float.MaxValue;
+
+		for ( int i = 0; i < nodes.Count; i++ ) {
+			Checkpoint checkpoint = nodes[i] as Checkpoint;
+			float dist = position.DistanceTo( checkpoint.GlobalPosition );
+			
+			if ( dist < bestDistance ) {
+				bestDistance = dist;
+				warpPoint = checkpoint;
+			}
+		}
+		player.GlobalPosition = warpPoint.GlobalPosition;
+	}
 	private void OnPlayerJoined( ulong steamId ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game...", true );
+		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
 
 		SteamLobby.Instance.GetLobbyMembers();
 
@@ -97,7 +108,7 @@ public partial class World : Node2D {
 		player.Set( "MultiplayerId", (ulong)userId );
 		player.Call( "SetOwnerId", (ulong)userId );
 		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-//		SpawnPlayer( player );
+		SpawnPlayer( (NetworkPlayer)player );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
 	}
@@ -109,7 +120,9 @@ public partial class World : Node2D {
 			return;
 		}
 		
-		GetNode( "/root/Console" ).Call( "print_line", (string)Players[ userId ].Get( "MultiplayerUsername" ) + " has faded away...", true );
+		Console.PrintLine(
+			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerUsername )
+		);
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
@@ -117,8 +130,6 @@ public partial class World : Node2D {
 	}
 
 	public override void _ExitTree() {
-		Player1.QueueFree();
-
 		Players.Clear();
 		PlayerList.QueueFree();
 
@@ -139,15 +150,15 @@ public partial class World : Node2D {
 	public override void _Ready() {
 		GetTree().CurrentScene = this;
 
-		if ( Input.GetConnectedJoypads().Count > 0 ) {
-			Player1.SetupSplitScreen( 0 );
-		}
-
 		Players = new Dictionary<CSteamID, CharacterBody2D>();
 
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
+
+		if ( Input.GetConnectedJoypads().Count > 0 ) {
+			ThisPlayer.SetupSplitScreen( 0 );
+		}
 
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
@@ -171,10 +182,10 @@ public partial class World : Node2D {
 		} );
 		SceneLoadThread.Start();
 
-		AudioLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
-		AudioLoadThread.Start();
+		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
+		ResourceLoadThread.Start();
 
-		AudioLoadingFinished += OnAudioFinishedLoading;
+		ResourcesLoadingFinished += OnResourcesFinishedLoading;
 
 		PhysicsServer2D.SetActive( true );
 

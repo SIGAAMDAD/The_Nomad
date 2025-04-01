@@ -39,7 +39,7 @@ public static class MultiplayerMapManager {
 		for ( int i = 0; i < mapList.Count; i++ ) {
 			MapCache.Add( new MapData( ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace ) ) );
 			if ( MapCache.Last() != null ) {
-				GD.Print( "...Loaded multiplayer map data for \"" + mapList[i] + "\"" );
+				GD.Print( "...Loaded multiplayer map data for \"" + mapList[i] + "\", fileName: " + MapCache[i].FileName );
 			} else {
 				GD.PushError( "...Couldn't load map data for \"" + mapList[i] + "\"" );
 			}

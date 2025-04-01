@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0lv5gvmvhrcn"]
+
+[ext_resource type="Script" uid="uid://cekbjmk6p420v" path="res://scripts/exterior_tile_map_floor.gd" id="1_m78ki"]
+
+[node name="ExteriorTileMapFloor" type="Node2D"]
+script = ExtResource("1_m78ki")

@@ -63,8 +63,6 @@ public partial class Player : CharacterBody2D {
 	];
 
 	private const int MAX_WEAPON_SLOTS = 4;
-	public static System.IO.BinaryReader SaveReader = null;
-	public static System.IO.BinaryWriter SaveWriter = null;
 
 	private const float ACCEL = 900.0f;
 	private const float FRICTION = 1400.0f;
@@ -222,6 +220,10 @@ public partial class Player : CharacterBody2D {
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
 
 	public void Save() {
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			return;
+		}
+
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
 		int stackIndex;
 		
@@ -235,10 +237,6 @@ public partial class Player : CharacterBody2D {
 
 		writer.SaveInt( "arm_left_slot", ArmLeft.GetSlot() );
 		writer.SaveInt( "arm_right_slot", ArmRight.GetSlot() );
-
-		writer.SaveUInt( "world_time_year", Renown.World.WorldTimeManager.Year );
-		writer.SaveUInt( "world_time_month", Renown.World.WorldTimeManager.Month );
-		writer.SaveUInt( "world_time_day", Renown.World.WorldTimeManager.Day );
 
 		writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
 		stackIndex = 0;
@@ -288,6 +286,10 @@ public partial class Player : CharacterBody2D {
 		writer.Flush();
 	}
 	public void Load() {
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			return;
+		}
+
 		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
 		Health = reader.LoadFloat( "health" );

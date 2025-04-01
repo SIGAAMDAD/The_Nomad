@@ -1,91 +1,82 @@
 using System.Collections.Generic;
+using System.Threading;
 using Godot;
 using Multiplayer;
 using Steamworks;
 
-public enum PacketType : uint {
-	UpdatePlayer,
-	DamagePlayer,
-
-	UpdateMob,
-	DamageMob,
-
-	UpdateBot,
-	DamageBot,
-	
-	Count
-};
-
 public partial class MultiplayerData : Node2D {
-	private Node2D Network = null;
-	private Node SpawnTree = null;
 	private Control PauseMenu = null;
-	private Timer ClientHeartbeat = null;
-	private Timer ServerHeartbeat = null;
-
 	private PackedScene PlayerScene = null;
 
-	public class Team {
-		public List<Player> Players = new List<Player>();
-		public int Score = 0;
-		public int Index = 0;
-
-		public Team() {
-		}
-	};
-
-	public Team BlueTeam = null;
-	public Team RedTeam = null;
-
 	private Mode ModeData = null;
-	private Player ThisPlayer;
-	private Dictionary<CSteamID, NetworkPlayer> Players = null;	
-	
+
+	private bool Loaded = false;
+	private Thread ResourceLoadThread = null;
+	private Thread SceneLoadThread = null;
+
+	private Player ThisPlayer = null;
+	private Dictionary<CSteamID, CharacterBody2D> Players = null;
 	private Node PlayerList = null;
 
-	// prebuild packets
-	private Dictionary<string, object> GameData = new Dictionary<string, object>();
-	private Dictionary<string, object> Packets = new Dictionary<string, object>();
-	private Dictionary<string, object> Update = new Dictionary<string, object>();
-	
+	[Signal]
+	public delegate void ResourcesLoadingFinishedEventHandler();
+
 	public Mode.GameMode GetMode() {
 		return ModeData.GetMode();
 	}
-	public Dictionary<CSteamID, NetworkPlayer> GetPlayers() {
-		return Players;
-	}
 
-	public void ProcessHeartbeat( Dictionary<string, object> data ) {
-	}
-	
-	/// <summary>
-	///	sends gamestate data from the host to all the clients
-	/// </summary>
-	private void OnServerHeartbeatTimeout() {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			return; // we're not the host
+	private void OnResourcesFinishedLoading() {
+		SetProcess( true );
+
+		SceneLoadThread.Join();
+		ResourceLoadThread.Join();
+
+		ResourceCache.Initialized = true;
+
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			SteamLobby.Instance.SetPhysicsProcess( true );
 		}
 
-//		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, GameData, SteamLobby.MessageType.ServerData );
-	}
-	private void OnClientHeartbeatTimeout() {
-		ThisPlayer.SendPacket();
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
+			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
+				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+					continue;
+				}
+				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+		//		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
+		//		SpawnPlayer( player );
+				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+				PlayerList.AddChild( player );
+			}
+		}
+
+		Console.PrintLine( "...Finished loading game" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
-		GetNode( "/root/Console" ).Call( "print_line", "Adding " + steamId + " to game..." );
+		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
+
+		SteamLobby.Instance.GetLobbyMembers();
 
 		CSteamID userId = (CSteamID)steamId;
-		if ( Players.ContainsKey( userId ) || userId == SteamUser.GetSteamID() ) {
+		if ( Players.ContainsKey( userId ) ) {
 			return;
 		}
 		
-		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
-		player.MultiplayerUsername = SteamFriends.GetFriendPersonaName( userId );
-		player.MultiplayerId = userId;
-//		SpawnPlayer( player );
+		CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
+		player.Set( "MultiplayerId", (ulong)userId );
+		player.Call( "SetOwnerId", (ulong)userId );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
+
+		ModeData.OnPlayerJoined( player );
+		ModeData.SpawnPlayer( player );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
@@ -94,28 +85,49 @@ public partial class MultiplayerData : Node2D {
 		if ( userId == SteamUser.GetSteamID() ) {
 			return;
 		}
+
+		ModeData.OnPlayerLeft( Players[ userId ] );
 		
-		GetNode( "/root/Console" ).Call( "print_line", Players[ userId ].MultiplayerUsername + " has faded away..." );
+		Console.PrintLine(
+			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerUsername )
+		);
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
+		SteamLobby.Instance.RemovePlayer( userId );
 	}
 	
 	public override void _Ready() {
-		Network = GetNode<Node2D>( "Network" );
-		SpawnTree = GetNode( "Network/Spawns" );
-		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
-		
-		Players = new Dictionary<CSteamID, NetworkPlayer>();
+		GetTree().CurrentScene = this;
 
-		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
+		Players = new Dictionary<CSteamID, CharacterBody2D>();
 		
+		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
+
+		ModeData = GetNode<Node2D>( "ModeData" ) as Mode;
 		
-		PauseMenu.Connect( "leave_lobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
-		SteamLobby.Instance.Connect( "PlayerJoined", Callable.From<ulong>( OnPlayerJoined ) );
-		SteamLobby.Instance.Connect( "PlayerLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
+		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+
+		SceneLoadThread = new Thread( () => {
+			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
+		} );
+		SceneLoadThread.Start();
+
+		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
+		ResourceLoadThread.Start();
+
+		ResourcesLoadingFinished += OnResourcesFinishedLoading;
+
+		PhysicsServer2D.SetActive( true );
+
+		ModeData.OnPlayerJoined( ThisPlayer );
+		ModeData.SpawnPlayer( ThisPlayer );
+
+		SetProcess( false );
+		SetProcessInternal( false );
 	}
 };

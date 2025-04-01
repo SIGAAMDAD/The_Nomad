@@ -21,6 +21,7 @@ namespace Multiplayer {
 				break;
 			};
 
+			/*
 			foreach ( var player in Root.GetPlayers().Values ) {
 				HBoxContainer data = (HBoxContainer)dataTable.GetChild( startIndex );
 				
@@ -31,6 +32,7 @@ namespace Multiplayer {
 
 				startIndex++;
 			}
+			*/
 		}
 	};
 };

@@ -45,6 +45,7 @@ public partial class MainMenu : Control {
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
+		QueueFree();
 	}
 	private void OnBeginGameFinished() {
 		TransitionScreen.Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );

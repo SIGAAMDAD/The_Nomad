@@ -11,7 +11,7 @@ public partial class TitleMenu : Control {
 	};
 
 	private AudioStreamPlayer UIChannel;
-	private AudioStreamPlayer Theme;
+	private AudioStreamPlayer MusicTheme;
 
 	private Control MultiplayerMenu;
 	private Control SettingsMenu;
@@ -169,9 +169,9 @@ public partial class TitleMenu : Control {
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
 
-		Theme = GetNode<AudioStreamPlayer>( "Theme" );
-		Theme.SetProcess( false );
-		Theme.Finished += OnThemeIntroFinished;
+		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
+		MusicTheme.SetProcess( false );
+		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
 
@@ -181,9 +181,9 @@ public partial class TitleMenu : Control {
 	}
 
 	private void OnThemeIntroFinished() {
-		Theme.Stream = LoopingTheme;
-		Theme.Play();
-		Theme.Set( "parameters/looping", true );
-		Theme.Finished -= OnThemeIntroFinished;
+		MusicTheme.Stream = LoopingTheme;
+		MusicTheme.Play();
+		MusicTheme.Set( "parameters/looping", true );
+		MusicTheme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
 	}
 }

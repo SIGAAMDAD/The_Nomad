@@ -12581,9 +12581,8 @@ sources/0 = SubResource("TileSetAtlasSource_1fb1p")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t368"]
 size = Vector2(552, 305)
 
-[node name="BellatumTerrae" type="Node2D" node_paths=PackedStringArray("Player1")]
+[node name="BellatumTerrae" type="Node2D"]
 script = ExtResource("1_re8x6")
-Player1 = NodePath("Network/Players/Player0")
 
 [node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
 script = ExtResource("11_re8x6")

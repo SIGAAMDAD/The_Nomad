@@ -42,7 +42,7 @@ namespace Renown.World {
 		public Thinker GetLeader() => Leader;
 
 		public void Save() {
-			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Faction_" + GetPath() );
+			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
 
 			writer.SaveUInt( "alignment", (uint)PrimaryAlignment );
 			writer.SaveString( "leader", Leader != null ? Leader.GetPath() : "nil" );
@@ -53,7 +53,7 @@ namespace Renown.World {
 			writer.Flush();
 		}
 		public void Load() {
-			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Faction_" + GetPath() );
+			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );
 
 			// save file compatibility
 			if ( reader == null ) {

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Godot;
-using Steamworks;
 
 namespace Multiplayer {
-	public partial class Mode : Node {
+	public partial class Mode : Node2D {
 		public enum GameMode {
 			// classic modes
 			Bloodbath,
@@ -12,12 +11,12 @@ namespace Multiplayer {
 			KingOfTheHill,
 	
 			// merc modes
+			Duel,
 			Blitz,
 			BountyHuntPVE,
 			BountyHuntPVP,
 			ExtractionPVE,
 			ExtractionPVP,
-			Duel,
 
 			Count
 		};
@@ -30,17 +29,19 @@ namespace Multiplayer {
 			{ GameMode.CaptureTheFlag, "Capture The Flag" },
 			{ GameMode.KingOfTheHill, "King of the Hill" },
 
+			{ GameMode.Duel, "Duel" },
 			{ GameMode.Blitz, "Blitz" },
 			{ GameMode.BountyHuntPVE, "Bounty Hunt PVE" },
 			{ GameMode.BountyHuntPVP, "Bounty Hunt PVP" },
 			{ GameMode.ExtractionPVE, "Extraction PVE" },
-			{ GameMode.ExtractionPVP, "Extraction PVP" },
-			{ GameMode.Duel, "Duel" }
+			{ GameMode.ExtractionPVP, "Extraction PVP" }
 		};
 
-		public virtual void OnPlayerJoined( Player player ) {
+		public virtual void OnPlayerJoined( CharacterBody2D player ) {
 		}
-		public virtual void OnPlayerLeft( Player player ) {
+		public virtual void OnPlayerLeft( CharacterBody2D player ) {
+		}
+		public virtual void SpawnPlayer( CharacterBody2D player ) {
 		}
 
 		public GameMode GetMode() {
