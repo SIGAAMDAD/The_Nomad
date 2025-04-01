@@ -8,24 +8,49 @@ public partial class LobbyRoom : Control {
 	private VBoxContainer PlayerList;
 	private Button StartGameButton;
 	private Button ExitLobbyButton;
+	
+	private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+	private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
-	private static Thread LoadThread;
-	private static PackedScene LoadedLevel;
+	private Thread LoadThread;
+	private PackedScene LoadedLevel;
+	
+	private AudioStreamPlayer UIChannel;
 
 	private HBoxContainer ClonerContainer;
+	
+	private Dictionary<CSteamID, bool> StartGameVotes = null;
 
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
 
+	private void VoteStart( CSteamID senderId ) {
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			return;
+		}
+		if ( !StartGameVotes.ContainsKey( senderId ) ) {
+			StartGameVotes.Add( senderId, true );
+		}
+	}
+	private void CancelVote( CSteamID senderId ) {
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			return;
+		}
+		if ( !StartGameVotes.ContainsKey( senderId ) ) {
+			StartGameVotes.Add( senderId, false );
+		} else {
+			StartGameVotes[ senderId ] = false;
+		}
+	}
+	
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedLevel );
 		QueueFree();
 	}
-	private void OnStartGameButtonPressed() {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			return;
-		}
+	private void LoadGame() {
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
@@ -52,14 +77,36 @@ public partial class LobbyRoom : Control {
 
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
-			LoadedLevel = ResourceLoader.Load<PackedScene>( "res://levels/" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn" );
+			LoadedLevel = ResourceLoader.Load<PackedScene>( "res://levels/" +
+				MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName
+				+ "_mp_" + modeName + ".tscn"
+			);
 			CallDeferred( "emit_signal", "FinishedLoading" );
 		} );
 		LoadThread.Start();
-
-		SteamLobby.Instance.SendP2PPacket( CSteamID.Nil, new byte[]{ (byte)SteamLobby.MessageType.StartGame } );
+	}
+	
+	private void OnStartGameButtonPressed() {
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			// if we're not the host, send a vote to start command
+			byte[] packet = [ (byte)SteamLobby.MessageType.ServerCommand, (uint)ServerCommandType.VoteStart ];
+			SteamLobby.Instance.SendP2PPacket( packet );
+			
+			return;
+		}
+		
+		LoadGame();
+		
+		byte[] packet = [ (byte)SteamLobby.MessageType.ServerCommand, (uint)ServerCommandType.StartGame ];
+		SteamLobby.Instance.SendP2PPacket( packet );
 	}
 	private void OnExitLobbyButtonPressed() {
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+		
+		SteamLobby.Instance.LeaveLobby();
+		
+		GetTree().ChangeSceneToPacked( ResourceCache.GetScene( "res://scenes/main_menu.tscn" ) );
 	}
 
 	private void OnPlayerJoined( ulong steamId ) {
@@ -70,6 +117,8 @@ public partial class LobbyRoom : Control {
 		CSteamID userId = (CSteamID)steamId;
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+		container.SetProcess( false );
+		container.SetProcessInternal( false );
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
 		PlayerList.AddChild( container );
@@ -100,7 +149,19 @@ public partial class LobbyRoom : Control {
 	/// requirements are met to automatically start the game
 	/// </summary>
 	public void CheckAutoStart() {
-
+		if ( !SteamLobby.Instance.
+		
+		int numStartVotes = 0;
+		int requiredVotes = ( SteamLobby.Instance.LobbyMemberCount / 2 );
+		 
+		foreach ( var vote in StartGameVotes ) {
+			if ( vote.Value ) {
+				numStartVotes++;
+			}
+		}
+		if ( numStartVotes >= requiredVotes ) {
+			
+		}
 	}
 
 	private bool PlayerIsInQueue( CSteamID userId ) {
@@ -114,6 +175,16 @@ public partial class LobbyRoom : Control {
 		}
 		return false;
 	}
+	
+	private void OnButtonFocused( Button self ) {
+		UIChannel.Stream = UISfxManager.ButtonFocused;
+		UIChannel.Play();
+		
+		self.Modulate = Selected;
+	}
+	private void OnButtonUnfocused( Button self ) {
+		self.Modulate = Unselected;
+	}
 
 	public override void _Ready() {
 		base._Ready();
@@ -123,34 +194,57 @@ public partial class LobbyRoom : Control {
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
 		PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
+		PlayerList.SetProcess( false );
+		PlayerList.SetProcessInternal( false );
 
 		StartGameButton = GetNode<Button>( "StartGameButton" );
+		StartGameButton.SetProcess( false );
+		StartGameButton.SetProcessInternal( false );
+		StartGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
+		StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
+		StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
+		StartGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
 
 		ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
+		ExitLobbyButton.SetProcess( false );
+		ExitLobbyButton.SetProcessInternal( false );
+		ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
+		ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
+		ExitLobbyButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
+		ExitLobbyButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
 		ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
 
 		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
+		ClonerContainer.SetProcess( false );
+		ClonerContainer.SetProcessInternal( false );
+		
+		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
+		UIChannel.SetProcess( false );
+		UIChannel.SetProcessInternal( false );
 
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+		
+		if ( SteamLobby.Instance.IsOwner() ) {
+			StartGameVote = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
+		}
+		
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
 
-		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
-		container.Show();
-		( container.GetChild( 0 ) as Label ).Text = SteamManager.GetSteamName();
-		PlayerList.AddChild( container );
-
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
-			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-				if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
-					continue;
-				}
-				container = ClonerContainer.Duplicate() as HBoxContainer;
-				container.Show();
-				( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
-				PlayerList.AddChild( container );
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] )
+				|| SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() )
+			{
+				continue;
 			}
+			container = ClonerContainer.Duplicate() as HBoxContainer;
+			container.SetProcess( false );
+			container.SetProcessInternal( false );
+			container.Show();
+			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
+			PlayerList.AddChild( container );
 		}
 	}
 };
