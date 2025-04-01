@@ -14,8 +14,6 @@ public partial class LobbyRoom : Control {
 
 	private HBoxContainer ClonerContainer;
 
-	private Dictionary<CSteamID, HBoxContainer> Players;
-
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
 
@@ -28,6 +26,8 @@ public partial class LobbyRoom : Control {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			return;
 		}
+
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
 		string modeName;
 		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
@@ -68,15 +68,11 @@ public partial class LobbyRoom : Control {
 		SteamLobby.Instance.GetLobbyMembers();
 
 		CSteamID userId = (CSteamID)steamId;
-		if ( Players.ContainsKey( userId ) ) {
-			return;
-		}
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
 		PlayerList.AddChild( container );
-		Players.Add( userId, container );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
@@ -85,14 +81,38 @@ public partial class LobbyRoom : Control {
 		if ( userId == SteamUser.GetSteamID() ) {
 			return;
 		}
+
+		string username = SteamFriends.GetFriendPersonaName( userId );
+		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
+				PlayerList.GetChild( i ).QueueFree();
+				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
+				break;
+			}
+		}
 		
-		Console.PrintLine(
-			string.Format( "{0} has faded away...", SteamFriends.GetFriendPersonaName( userId ) )
-		);
-		PlayerList.RemoveChild( Players[ userId ] );
-		Players[ userId ].QueueFree();
-		Players.Remove( userId );
+		Console.PrintLine( string.Format( "{0} has faded away...", username ) );
 		SteamLobby.Instance.RemovePlayer( userId );
+	}
+
+	/// <summary>
+	/// if the host is currently AFK, then check to see if all the
+	/// requirements are met to automatically start the game
+	/// </summary>
+	public void CheckAutoStart() {
+
+	}
+
+	private bool PlayerIsInQueue( CSteamID userId ) {
+		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+			string username = SteamFriends.GetFriendPersonaName( userId );
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
+				PlayerList.GetChild( i ).QueueFree();
+				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public override void _Ready() {
@@ -119,19 +139,17 @@ public partial class LobbyRoom : Control {
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamManager.GetSteamName();
 		PlayerList.AddChild( container );
-		Players.Add( SteamManager.GetSteamID(), container );
 
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMembers.Count + ") to game..." );
 			for ( int i = 0; i < SteamLobby.Instance.LobbyMembers.Count; i++ ) {
-				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+				if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 					continue;
 				}
 				container = ClonerContainer.Duplicate() as HBoxContainer;
 				container.Show();
 				( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
 				PlayerList.AddChild( container );
-				Players.Add( SteamLobby.Instance.LobbyMembers[i], container );
 			}
 		}
 	}

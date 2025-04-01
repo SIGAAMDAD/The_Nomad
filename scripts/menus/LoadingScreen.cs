@@ -48,7 +48,6 @@ public partial class LoadingScreen : CanvasLayer {
 	}
 	public void FadeOut() {
 		TransitionScreen.Call( "transition" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		ImageChange.SetProcess( false );
 		ImageChange.SetProcessInternal( false );
@@ -77,6 +76,7 @@ public partial class LoadingScreen : CanvasLayer {
 		TipLabel.Show();
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		SetProcess( false );
 		SetProcessInternal( false );

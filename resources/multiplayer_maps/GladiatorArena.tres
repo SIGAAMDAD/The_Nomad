@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MultiplayerMap" load_steps=2 format=3 uid="uid://cxxinrxnjqf35"]
+
+[ext_resource type="Script" uid="uid://qfp2d1jwqpfp" path="res://scripts/multiplayer/map.gd" id="1_o1lht"]
+
+[resource]
+script = ExtResource("1_o1lht")
+_name = "Gladiator Arena"
+_filename = "gladiator_arena"
+_mode_bloodbath = false
+_mode_team_brawl = false
+_mode_capture_the_flag = false
+_mode_king_of_the_hill = false
+_mode_duel = true
+metadata/_custom_type_script = "uid://qfp2d1jwqpfp"

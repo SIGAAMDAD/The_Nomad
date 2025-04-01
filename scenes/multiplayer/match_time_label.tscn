@@ -1,10 +1,10 @@
 [gd_scene load_steps=2 format=3 uid="uid://dfbq2o0ts0kaj"]
 
-[ext_resource type="Script" uid="uid://tmyuttqj77if" path="res://scripts/multiplayer/match_timer.gd" id="1_gnrwu"]
+[ext_resource type="Script" uid="uid://cw4ogs258p5pt" path="res://scripts/multiplayer/MatchTimeLabel.cs" id="1_h73nv"]
 
 [node name="MatchTimeLabel" type="Label"]
 offset_right = 40.0
 offset_bottom = 23.0
-script = ExtResource("1_gnrwu")
+script = ExtResource("1_h73nv")
 
 [node name="Timer" type="Timer" parent="."]
