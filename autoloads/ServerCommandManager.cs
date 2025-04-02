@@ -25,6 +25,8 @@ public class ServerCommandManager {
 		packet[2] = (byte)( ( command >> 8 ) & 0xff );
 		packet[3] = (byte)( ( command >> 16 ) & 0xff );
 		packet[4] = (byte)( ( command >> 24 ) & 0xff );
+
+		Console.PrintLine( string.Format( "Sending server command: {0}...", nType.ToString() ) );
 		SteamLobby.Instance.SendP2PPacket( packet );
 	}
 	public static void RegisterCommandCallback( ServerCommandType nType, Action<CSteamID> callback ) {
