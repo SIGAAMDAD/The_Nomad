@@ -320,14 +320,9 @@ public partial class SteamLobby : Node {
 	public void SendP2PPacket( byte[] data ) {
 		int channel = 0;
 		
-		for ( int i = 0; i < LobbyMemberCount; i += 2 ) {
+		for ( int i = 0; i < LobbyMemberCount; i++ ) {
 			if ( i != ThisSteamIDIndex ) {
 				SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length,
-					EP2PSend.k_EP2PSendReliableWithBuffering, channel
-				);
-			}
-			if ( i + 1 != ThisSteamIDIndex ) {
-				SteamNetworking.SendP2PPacket( LobbyMembers[ i + 1 ], data, (uint)data.Length,
 					EP2PSend.k_EP2PSendReliableWithBuffering, channel
 				);
 			}

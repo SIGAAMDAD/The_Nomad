@@ -233,6 +233,14 @@ public partial class LobbyRoom : Control {
 		
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
+		
+		// add ourself
+		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+		container.SetProcess( false );
+		container.SetProcessInternal( false );
+		container.Show();
+		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		PlayerList.AddChild( container );
 
 		SteamLobby.Instance.GetLobbyMembers();
 
@@ -242,7 +250,7 @@ public partial class LobbyRoom : Control {
 			{
 				continue;
 			}
-			HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+			container = ClonerContainer.Duplicate() as HBoxContainer;
 			container.SetProcess( false );
 			container.SetProcessInternal( false );
 			container.Show();
