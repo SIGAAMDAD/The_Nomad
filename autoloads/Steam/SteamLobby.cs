@@ -403,7 +403,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 		
-		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
+		LobbyBrowser.OnLobbyJoined( (ulong)LobbyId );
 	}
 
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
@@ -434,10 +434,11 @@ public partial class SteamLobby : Node {
 		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 
 		GD.Print( "Sending p2p handshake..." );
+
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
+		LobbyBrowser.OnLobbyJoined( (ulong)LobbyId );
 	}
 
 	/*

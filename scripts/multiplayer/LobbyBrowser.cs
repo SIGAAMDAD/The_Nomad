@@ -102,6 +102,8 @@ public partial class LobbyBrowser : Control {
 	private PackedScene LoadedWorld = null;
 	private string LoadedScenePath = "";
 
+	private static LobbyBrowser Instance;
+
 	[Signal]
 	public delegate void OnHostGameEventHandler();
 	[Signal]
@@ -125,7 +127,7 @@ public partial class LobbyBrowser : Control {
 		} );
 		LoadThread.Start();
 	}
-	private void OnLobbyJoined( ulong lobbyId ) {
+	public static void OnLobbyJoined( ulong lobbyId ) {
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -168,15 +170,15 @@ public partial class LobbyBrowser : Control {
 				break;
 			};
 //			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
-			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
+			Instance.LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 			break; }
 		case "Online":
-			LoadedScenePath = "res://levels/world.tscn";
+			Instance.LoadedScenePath = "res://levels/world.tscn";
 			break;
 		};
 
-		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		Instance.Hide();
+		Instance.GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	private void MatchmakingLoop() {
@@ -402,5 +404,7 @@ public partial class LobbyBrowser : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
+
+		Instance = this;
 	}
 };
