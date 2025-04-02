@@ -3,7 +3,6 @@ using Steamworks;
 using Multiplayer;
 using System.Threading;
 using System.Collections.Generic;
-using System;
 
 public partial class LobbyRoom : Control {
 	private VBoxContainer PlayerList;
@@ -29,9 +28,11 @@ public partial class LobbyRoom : Control {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			return;
 		}
+		Console.PrintLine( "Received lobby vote..." );
 		if ( !StartGameVotes.ContainsKey( senderId ) ) {
 			StartGameVotes.Add( senderId, true );
 		}
+		StartGameVotes[ senderId ] = true;
 	}
 	private void CancelVote( CSteamID senderId ) {
 		if ( !SteamLobby.Instance.IsOwner() ) {

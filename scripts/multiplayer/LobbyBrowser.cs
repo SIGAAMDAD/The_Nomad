@@ -116,10 +116,19 @@ public partial class LobbyBrowser : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Console.PrintLine( "...Finished loading game" );
 
-		QueueFree();
-		GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
+		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void OnTransitionFinished() {
+		if ( LoadedScenePath == "res://scenes/multiplayer/lobby_room.tscn" ) {
+			// loading a multiplayer game instead a co-op world
+			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+			Console.PrintLine( "...Finished loading game" );
+
+			QueueFree();
+			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
+			return;
+		}
+
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
 		LoadThread = new System.Threading.Thread( () => {

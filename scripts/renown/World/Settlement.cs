@@ -2,7 +2,7 @@ using Godot;
 
 namespace Renown.World {
 	public partial class Settlement : WorldArea {
-		public static DataCache<Settlement> Cache;
+		public static DataCache<Settlement> Cache = null;
 
 		[Export]
 		private TradeRoute[] TradeRoutes;

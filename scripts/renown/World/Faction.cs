@@ -1,4 +1,4 @@
-using System;
+using System.Threading;
 using System.Collections.Generic;
 using Godot;
 
@@ -51,7 +51,7 @@ namespace Renown.World {
 		[Export]
 		protected float Reserves = 0.0f;
 		[Export]
-		protected Godot.Collections.Dictionary<Node2D< float> ExistingDebts;
+		protected Godot.Collections.Dictionary<Node2D, float> ExistingDebts;
 		[Export]
 		protected Godot.Collections.Dictionary<Node2D, float> ExistingRelations;
 		
@@ -104,6 +104,7 @@ namespace Renown.World {
 			Leader = Thinker.Cache.SearchCache( reader.LoadString( "leader" ) );
 		}
 		
+		/*
 		public virtual void ReceiveMessenger( Messenger actor ) {
 			// start a relation link if we haven't already
 			Node sender = actor.GetSender();
@@ -117,11 +118,12 @@ namespace Renown.World {
 		public virtual void SendMessenger( Faction destination, MessageType nType ) {
 			Messenger actor = new Messenger( this, destination, nType );
 		}
+		*/
 		public void MemberJoin( CharacterBody2D member ) {
-			member.Connect( "Die", Callable.From( OnMemberDeath ) );
+			member.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
 		}
 		public void MemberLeave( CharacterBody2D member ) {
-			member.Disconnect( "Die", Callable.From( OnMemberDeath ) );
+			member.Disconnect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
 		}
 		public void RelationIncrease( Node other, float nAmount ) {
 			if ( !RelationList.ContainsKey( other ) ) {
@@ -143,7 +145,7 @@ namespace Renown.World {
 			}
 			
 			float amount = 0.0f;
-			int favor = member.GetFactionImportance();
+			int favor = (int)member.Call( "GetFactionImportance" );
 			if ( favor > 50 ) {
 				// leader
 				amount = (float)favor;
@@ -156,10 +158,10 @@ namespace Renown.World {
 			if ( RelationList[ killer ] < -80.0f ) {
 				// bounty
 				if ( !BountyList.ContainsKey( killer ) ) {
-					BountyList.Add( killer, new Bounty( this, killer, -RelationList[ killer ] ) );
+//					BountyList.Add( killer, new Bounty( this, killer, -RelationList[ killer ] ) );
 				} else {
 					// increase bounty on target's head exponentially
-					BountyList[ killer ].Increase( -RelationList[ killer ] );
+//					BountyList[ killer ].Increase( -RelationList[ killer ] );
 				}
 			}
 		}
@@ -183,8 +185,8 @@ namespace Renown.World {
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			} else {
-				DebtList = new Dictionary<Node2D, float>( ExistingDebts.Count );
-				RelationList = new Dictionary<Node2D, float>( ExistingRelations.Count );
+				DebtList = new Dictionary<Node, float>( ExistingDebts.Count );
+				RelationList = new Dictionary<Node, float>( ExistingRelations.Count );
 			}
 			
 			WorkThread = new Thread( Think );
@@ -199,27 +201,11 @@ namespace Renown.World {
 			
 			lock ( LockObject ) {
 				// allow it to run again
-				Moniter.Pulse( LockObject );
+				Monitor.Pulse( LockObject );
 			}
 		}
 		
-		private int GetNumMembersOfOccupation( Occupation job ) {
-			int count = 0;
-			foreach ( var member in MemberCache ) {
-				if ( member.Value.GetOccupation() == job ) {
-					count++;
-				}
-			}
-			return count;
-		}
 		private void UpdateWarStatus( Faction faction ) {
-			// check if we need more fighters
-			int mercenaryCount = GetNumMembersOfOccupation( Occupation.Mercenary );
-			
-			if ( mercenaryCount < 40 ) {
-				// hire some more
-				
-			}
 		}
 		private void UpdateRelations() {
 			foreach ( var relation in RelationList ) {
@@ -234,7 +220,7 @@ namespace Renown.World {
 		private void Think() {
 			lock ( LockObject ) {
 				// wait for frame sync
-				Moniter.Wait( LockObject );
+				Monitor.Wait( LockObject );
 			}
 			
 			UpdateRelations();
