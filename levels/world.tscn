@@ -13631,17 +13631,23 @@ polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 6
 
 [node name="Factions" type="Node2D" parent="."]
 
-[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList") groups=["Archive", "Factions"]]
+[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "TerritoryBounds", "ExistingDebts", "ExistingRelations") groups=["Archive", "Factions"]]
 position = Vector2(-30014, 25051)
 script = ExtResource("31_x3q2i")
 FactionName = &"Guns \'n\' Grenades"
 PrimaryAlignment = 7
 MemberList = []
+TerritoryBounds = []
+ExistingDebts = {}
+ExistingRelations = {}
 
-[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList") groups=["Archive", "Factions"]]
+[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "TerritoryBounds", "ExistingDebts", "ExistingRelations") groups=["Archive", "Factions"]]
 script = ExtResource("31_x3q2i")
 FactionName = &"Rocky Bastards"
 MemberList = []
+TerritoryBounds = []
+ExistingDebts = {}
+ExistingRelations = {}
 
 [node name="Roads" type="Node2D" parent="."]
 process_thread_group = 2
