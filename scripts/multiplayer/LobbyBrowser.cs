@@ -121,6 +121,7 @@ public partial class LobbyBrowser : Control {
 			LoadedWorld = ResourceCache.GetScene( LoadedScenePath );
 			CallDeferred( "emit_signal", "FinishedLoading" );
 		} );
+		LoadThread.Start();
 	}
 	private void OnLobbyJoined( ulong lobbyId ) {
 		Hide();
