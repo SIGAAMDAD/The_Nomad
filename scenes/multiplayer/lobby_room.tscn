@@ -90,3 +90,5 @@ offset_right = 44.0
 grow_vertical = 0
 text = "EXIT_LOBBY"
 metadata/_edit_use_anchors_ = true
+
+[node name="UIChannel" type="AudioStreamPlayer" parent="."]

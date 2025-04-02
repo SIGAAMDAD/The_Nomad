@@ -6,13 +6,20 @@ public partial class MatchTimeLabel : Label {
 	public void SetMatchTime( double time, Callable callback ) {
 		Timer.WaitTime = time;
 		Timer.OneShot = true;
-		Timer.Connect( "timeout", callback );
+		if ( !Timer.IsConnected( "timeout", callback ) ) {
+			Timer.Connect( "timeout", callback );
+		}
+		Timer.Start();
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
 		Timer = GetNode<Timer>( "Timer" );
+		Timer.SetProcess( false );
+		Timer.SetProcessInternal( false );
+
+		SetProcessInternal( false );
 	}
 	public override void _Process( double delta ) {
 		if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
@@ -21,6 +28,6 @@ public partial class MatchTimeLabel : Label {
 
 		base._Process( delta );
 
-		Text = Timer.TimeLeft.ToString();
+		Text = Timer.TimeLeft.ToString( "F2" );
 	}
 };

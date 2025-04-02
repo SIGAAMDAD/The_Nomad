@@ -216,10 +216,9 @@ public partial class NetworkPlayer : CharacterBody2D {
 	public void Damage( CharacterBody2D attacker, float nAmount ) {
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-		PacketWriter.Write( (int)attacker.Get( "NodeHash" ) );
 		PacketWriter.Write( nAmount );
 		
-		SteamLobby.Instance.SendP2PPacket( OwnerId, Packet );
+		SteamLobby.Instance.SendTargetPacket( OwnerId, Packet );
 	}
 	private void OnLegAnimationFinished() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {

@@ -3,6 +3,7 @@ using Steamworks;
 using Multiplayer;
 using System.Threading;
 using System.Collections.Generic;
+using System;
 
 public partial class LobbyRoom : Control {
 	private VBoxContainer PlayerList;
@@ -89,16 +90,13 @@ public partial class LobbyRoom : Control {
 	private void OnStartGameButtonPressed() {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			// if we're not the host, send a vote to start command
-			byte[] packet = [ (byte)SteamLobby.MessageType.ServerCommand, (uint)ServerCommandType.VoteStart ];
-			SteamLobby.Instance.SendP2PPacket( packet );
-			
+			ServerCommandManager.SendCommand( ServerCommandType.VoteStart );
 			return;
 		}
 		
 		LoadGame();
 		
-		byte[] packet = [ (byte)SteamLobby.MessageType.ServerCommand, (uint)ServerCommandType.StartGame ];
-		SteamLobby.Instance.SendP2PPacket( packet );
+		ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 	}
 	private void OnExitLobbyButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
@@ -106,6 +104,7 @@ public partial class LobbyRoom : Control {
 		
 		SteamLobby.Instance.LeaveLobby();
 		
+		Hide();
 		GetTree().ChangeSceneToPacked( ResourceCache.GetScene( "res://scenes/main_menu.tscn" ) );
 	}
 
@@ -149,10 +148,12 @@ public partial class LobbyRoom : Control {
 	/// requirements are met to automatically start the game
 	/// </summary>
 	public void CheckAutoStart() {
-		if ( !SteamLobby.Instance.
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			return;
+		}
 		
 		int numStartVotes = 0;
-		int requiredVotes = ( SteamLobby.Instance.LobbyMemberCount / 2 );
+		int requiredVotes = SteamLobby.Instance.LobbyMemberCount / 2;
 		 
 		foreach ( var vote in StartGameVotes ) {
 			if ( vote.Value ) {
@@ -160,7 +161,7 @@ public partial class LobbyRoom : Control {
 			}
 		}
 		if ( numStartVotes >= requiredVotes ) {
-			
+			ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 		}
 	}
 
@@ -227,11 +228,13 @@ public partial class LobbyRoom : Control {
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		
 		if ( SteamLobby.Instance.IsOwner() ) {
-			StartGameVote = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
+			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
 		}
 		
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
+
+		SteamLobby.Instance.GetLobbyMembers();
 
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] )
@@ -239,7 +242,7 @@ public partial class LobbyRoom : Control {
 			{
 				continue;
 			}
-			container = ClonerContainer.Duplicate() as HBoxContainer;
+			HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 			container.SetProcess( false );
 			container.SetProcessInternal( false );
 			container.Show();

@@ -22,12 +22,16 @@ public class NetworkWriter {
 
 	public void Sync( CSteamID target ) {
 		// send the packet
-		SteamLobby.Instance.SendP2PPacket( target, Packet );
+		SteamLobby.Instance.SendTargetPacket( target, Packet );
 
 		// rewind
 		Stream.Seek( 0, SeekOrigin.Begin );
 	}
 	public void Sync() {
-		Sync( CSteamID.Nil );
+		// send the packet
+		SteamLobby.Instance.SendP2PPacket( Packet );
+
+		// rewind
+		Stream.Seek( 0, SeekOrigin.Begin );
 	}
 };

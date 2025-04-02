@@ -24,6 +24,7 @@ public partial class Player : CharacterBody2D {
 		OnHorse			= 0x0080,
 		IdleAnimation	= 0x1000,
 		Checkpoint		= 0x2000,
+		BlockedInput	= 0x4000
 	};
 
 	public enum AnimationState : byte {
@@ -652,6 +653,14 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 
+	public void BlockInput( bool bBlocked ) {
+		if ( bBlocked ) {
+			Flags |= PlayerFlags.BlockedInput;
+		} else {
+			Flags &= ~PlayerFlags.BlockedInput;
+		}
+	}
+
 	public void EndInteraction() {
 		HUD.HideInteraction();
 		Flags &= ~PlayerFlags.Checkpoint;
@@ -719,6 +728,10 @@ public partial class Player : CharacterBody2D {
 	}
 
 	private void OnDash() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
 			DashChannel.Stream = ResourceCache.DashExplosion;
@@ -743,7 +756,9 @@ public partial class Player : CharacterBody2D {
 		DashCooldownTime.CallDeferred( "start" );
 	}
 	private void OnSlide() {
-		if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		} else if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
 			return;
 		}
 		IdleReset();
@@ -757,6 +772,10 @@ public partial class Player : CharacterBody2D {
 		LegAnimation.Play( "slide" );
 	}
 	private void OnUseWeapon() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		IdleReset();
 
 		int slot = LastUsedArm.GetSlot();
@@ -768,9 +787,17 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	private void OnArmAngleChanged() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		ArmAngle = (float)ArmAngleAction.Get( "value_axis_1d" );
 	}
 	private void OnPrevWeapon() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		int index = CurrentWeapon <= 0 ? MAX_WEAPON_SLOTS - 1 : CurrentWeapon - 1;
 		while ( index != -1 ) {
 			if ( WeaponSlots[ index ].IsUsed() ) {
@@ -818,6 +845,10 @@ public partial class Player : CharacterBody2D {
 		LastUsedArm.SetWeapon( CurrentWeapon );
 	}
 	private void OnNextWeapon() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		int index = CurrentWeapon == MAX_WEAPON_SLOTS - 1 ? 0 : CurrentWeapon + 1;
 		while ( index < MAX_WEAPON_SLOTS ) {
 			if ( WeaponSlots[ index ].IsUsed() ) {
@@ -865,6 +896,10 @@ public partial class Player : CharacterBody2D {
 		LastUsedArm.SetWeapon( CurrentWeapon );
 	}
 	private void OnBulletTime() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		IdleReset();
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
@@ -877,9 +912,17 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	private void OnToggleInventory() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		HUD.OnShowInventory();
 	}
 	private void SwitchWeaponWielding() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
+
 		Arm src;
 		Arm dst;
 
@@ -927,6 +970,9 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	private void SwitchWeaponHand() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
 		// TODO: implement use both hands
 		
 		switch ( HandsUsed ) {
@@ -950,6 +996,9 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	private void SwitchWeaponMode() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return;
+		}
 		// weapon mode order (default)
 		// blade -> blunt -> firearm
 

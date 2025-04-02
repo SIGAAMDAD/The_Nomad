@@ -29,7 +29,7 @@ public partial class SteamLobby : Node {
 	public static SteamLobby Instance => _Instance;
 	
 	private const uint PACKET_READ_LIMIT = 32;
-	public static readonly uint MAX_LOBBY_MEMBERS = 16;
+	public static readonly int MAX_LOBBY_MEMBERS = 16;
 	
 	private Callback<LobbyEnter_t> LobbyEnter;
 	private Callback<LobbyChatMsg_t> LobbyChatMsg;
@@ -317,7 +317,7 @@ public partial class SteamLobby : Node {
 		
 		SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendReliableWithBuffering, channel );
 	}
-	public void SendP2PPacket( CSteamID target, byte[] data ) {
+	public void SendP2PPacket( byte[] data ) {
 		int channel = 0;
 		
 		for ( int i = 0; i < LobbyMemberCount; i += 2 ) {
@@ -345,17 +345,17 @@ public partial class SteamLobby : Node {
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
 		switch ( (MessageType)PacketReader.ReadByte() ) {
-		case MessageType.Handshake:
-			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
-			break;
-		case MessageType.ServerCommand:
-			ServerCommandManager.ExecuteCommand( (ServerCommandType)PacketReader.ReadUInt32() );
-			break;
 		case MessageType.ClientData:
 			PlayerCache[ senderId.ToString() ].Receive( PacketReader );
 			break;
 		case MessageType.GameData:
 			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
+			break;
+		case MessageType.Handshake:
+			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
+			break;
+		case MessageType.ServerCommand:
+			ServerCommandManager.ExecuteCommand( senderId, (ServerCommandType)PacketReader.ReadUInt32() );
 			break;
 		};
 	}
@@ -364,8 +364,7 @@ public partial class SteamLobby : Node {
 			return;
 		}
 
-		uint packetSize;
-		if ( SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
+		if ( SteamNetworking.IsP2PPacketAvailable( out uint packetSize ) ) {
 			ReadP2Packet();
 			ReadPackets( readCount + 1 );
 		}
@@ -415,7 +414,7 @@ public partial class SteamLobby : Node {
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
 		if ( pCallback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ) {
 			Console.PrintError(
-				string.Format( "[STEAM] Error joining lobby {0}: {1}", pCallback.m_ulSteamIDLobby
+				string.Format( "[STEAM] Error joining lobby {0}: {1}", pCallback.m_ulSteamIDLobby,
 					( (EChatRoomEnterResponse)pCallback.m_EChatRoomEnterResponse ).ToString()
 				)
 			);
@@ -476,7 +475,8 @@ public partial class SteamLobby : Node {
 	private void OnLobbyDataUpdated( long success, ulong lobbyId, ulong memberId ) {
 	}
 	private void OnLobbyMessage( LobbyChatMsg_t pCallback ) {
-		byte[] szBuffer = new byte[ 4096 ];
+		byte[] szBuffer = new byte[ 1024 ];
+
 		CSteamID senderId;
 		EChatEntryType entryType;
 		int ret = SteamMatchmaking.GetLobbyChatEntry( (CSteamID)pCallback.m_ulSteamIDLobby,

@@ -1,4 +1,5 @@
 using Godot;
+using Multiplayer.Overlays;
 using Steamworks;
 
 namespace Multiplayer.Modes {
@@ -11,20 +12,27 @@ namespace Multiplayer.Modes {
 		private CharacterBody2D Player2 = null;
 		private Node2D Player1Spawn;
 		private Node2D Player2Spawn;
-		private CanvasLayer Overlay;
+		private DuelOverlay Overlay;
+
+		private NetworkWriter SyncObject = new NetworkWriter( 12 );
 
 		private void OnNewRoundStart() {
-			if ( (ulong)Player1.Get( "MultiplayerId" ) == (ulong)SteamManager.GetSteamID() ) {
+			Announcer.Fight();
+			if ( Player1 is Player ) {
 				Player1.Call( "BlockInput", false );
 			} else {
 				Player2.Call( "BlockInput", false );
 			}
 		}
-		public void NewRound() {
-			if ( (ulong)Player1.Get( "MultiplayerId" ) == (ulong)SteamManager.GetSteamID() ) {
+		public void OnRoundEnd() {
+			GD.Print( "Beginning new dueling round..." );
+
+			if ( Player1 is Player ) {
 				Player1.Call( "BlockInput", true );
+				Player1.GlobalPosition = Player1Spawn.GlobalPosition;
 			} else {
 				Player2.Call( "BlockInput", true );
+				Player2.GlobalPosition = Player2Spawn.GlobalPosition;
 			}
 			
 			RoundIndex++;
@@ -34,23 +42,48 @@ namespace Multiplayer.Modes {
 				return;
 			}
 			
-			Overlay.Call( "SetPlayer1Score", Player1Score );
-			Overlay.Call( "SetPlayer2Score", Player2Score );
-			Overlay.Call( "BeginNewRound" );
+			Overlay.SetPlayer1Score( Player1Score );
+			Overlay.SetPlayer2Score( Player2Score );
+			Overlay.BeginNewRound();
+
+			if ( SteamLobby.Instance.IsOwner() ) {
+				SyncObject.Write( Player1Score );
+				SyncObject.Write( Player2Score );
+				SyncObject.Write( RoundIndex );
+				SyncObject.Sync();
+			}
 		}
 
 		private void OnPlayerScore( CharacterBody2D attacker, CharacterBody2D target ) {
-			attacker.Set( "MultiplayerKills", (int)attacker.Get( "MultiplayerKills" ) + 1 ) );
-			target.Set( "MultiplayerDeaths", (int)target.Get( "MultiplayerDeaths" ) + 1 );
+//			attacker.Set( "MultiplayerKills", (int)attacker.Get( "MultiplayerKills" ) + 1 );
+//			target.Set( "MultiplayerDeaths", (int)target.Get( "MultiplayerDeaths" ) + 1 );
 
-			SteamUserStats.StoreStats();
+//			SteamUserStats.StoreStats();
 
 			if ( attacker == Player1 ) {
 				Player1Score++;
 			} else if ( attacker == Player2 ) {
 				Player2Score++;
 			}
-			NewRound();
+			if ( Player1 is Player ) {
+				if ( Player2Score > Player1Score ) {
+					Announcer.LostLead();
+				} else if ( Player2Score == Player1Score ) {
+					Announcer.TiedLead();
+				} else if ( Player2Score < Player1Score ) {
+					Announcer.TakenLead();
+				}
+			} else if ( Player2 is Player ) {
+				if ( Player1Score > Player2Score ) {
+					Announcer.LostLead();
+				} else if ( Player1Score == Player2Score ) {
+					Announcer.TiedLead();
+				} else if ( Player1Score < Player2Score ) {
+					Announcer.TakenLead();
+				}
+			}
+
+			OnNewRoundStart();
 		}
 
 		public override void OnPlayerJoined( CharacterBody2D player ) {
@@ -75,11 +108,19 @@ namespace Multiplayer.Modes {
 		public override void _Ready() {
 			base._Ready();
 			
-			Overlay = GetNode<CanvasLayer>( "Overlay" );
+			Overlay = GetNode<DuelOverlay>( "Overlay" );
+			Overlay.SetProcessInternal( false );
+			Overlay.Connect( "RoundEnd", Callable.From( OnRoundEnd ) );
 			Overlay.Connect( "RoundStart", Callable.From( OnNewRoundStart ) );
-			
+			Overlay.Call( "BeginNewRound" );
+
 			Player1Spawn = GetNode<Node2D>( "Player1Spawn" );
+			Player1Spawn.SetProcess( false );
+			Player1Spawn.SetProcessInternal( false );
+
 			Player2Spawn = GetNode<Node2D>( "Player2Spawn" );
+			Player2Spawn.SetProcess( false );
+			Player2Spawn.SetProcessInternal( false );
 		}
     };
 };
