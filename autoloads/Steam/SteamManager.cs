@@ -20,9 +20,6 @@ public partial class SteamManager : Node {
 	private static uint TimedTrialSecondsAllowed;
 	private static uint TimedTrialSecondsPlayed;
 
-	private bool Quit = false;
-	private Thread APIThread = null;
-
 	private SteamAPIWarningMessageHook_t DebugMessageHook;
 
 	private Callback<GameOverlayActivated_t> GameOverlayActivated;
@@ -104,9 +101,6 @@ public partial class SteamManager : Node {
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		Quit = true;
-		APIThread.Join();
-
 		SteamAPI.Shutdown();
 	}
     public override void _Ready() {
@@ -130,14 +124,11 @@ public partial class SteamManager : Node {
 		LoadDLCInfo();
 
 		GameOverlayActivated = Callback<GameOverlayActivated_t>.Create( OnGameOverlayActived );
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
 
-		APIThread = new Thread( () => {
-			while ( !Quit ) {
-				Thread.Sleep( 1500 );
-				SteamAPI.RunCallbacks();
-			}
-		} );
-		APIThread.Start();
+		SteamAPI.RunCallbacks();
 	}
 
     private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {

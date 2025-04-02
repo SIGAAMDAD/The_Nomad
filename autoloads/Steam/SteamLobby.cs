@@ -403,7 +403,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 		
-		LobbyBrowser.Instance.CallDeferred( "OnLobbyJoined", (ulong)LobbyId );
+		LobbyBrowser.Instance.OnLobbyJoined( (ulong)LobbyId );
 	}
 
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
@@ -438,7 +438,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		LobbyBrowser.Instance.CallDeferred( "OnLobbyJoined", (ulong)LobbyId );
+		LobbyBrowser.Instance.OnLobbyJoined( (ulong)LobbyId );
 	}
 
 	/*
