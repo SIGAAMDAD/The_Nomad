@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bwx3w3c22rx4i"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/Overlays/Bloodbath.cs" id="1_jy00i"]
+[ext_resource type="Script" uid="uid://bke6kobyqhvd7" path="res://scripts/multiplayer/Overlays/BloodbathOverlay.cs" id="1_jy00i"]
 [ext_resource type="PackedScene" uid="uid://dfbq2o0ts0kaj" path="res://scenes/multiplayer/match_time_label.tscn" id="1_yknkq"]
 
 [node name="BloodBathOverlay" type="CanvasLayer"]
