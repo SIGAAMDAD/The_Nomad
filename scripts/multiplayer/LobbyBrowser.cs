@@ -112,14 +112,13 @@ public partial class LobbyBrowser : Control {
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-//		GetNode( "/root/Console" ).Call( "print_line", "...Finished loading game", true );
 		Console.PrintLine( "...Finished loading game" );
 	}
 	private void OnTransitionFinished() {
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
 		LoadThread = new System.Threading.Thread( () => {
-			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
+			LoadedWorld = ResourceCache.GetScene( LoadedScenePath );
 			CallDeferred( "emit_signal", "FinishedLoading" );
 		} );
 	}
@@ -145,7 +144,6 @@ public partial class LobbyBrowser : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 
-//		GetNode( "/root/Console" ).Call( "print_line", "Loading game...", true );
 		Console.PrintLine( "Loading game..." );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
@@ -164,7 +162,8 @@ public partial class LobbyBrowser : Control {
 			default:
 				return;
 			};
-			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
+//			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
+			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 			break; }
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
@@ -185,7 +184,6 @@ public partial class LobbyBrowser : Control {
 			SteamMatchmaking.RequestLobbyList();
 		}
 		Console.PrintLine( "...no open contracts found" );
-//		GetNode( "/root/Console" ).Call( "print_line", "...No open contracts found", true );
 	}
 	private void OnJoinGame( CSteamID lobbyId ) {
 //		Tween AudioFade = GetTree().Root.CreateTween();

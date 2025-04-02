@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://g5kjq1b8iven"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer/Overlays/DuelOverlay.cs" id="1_c34ed"]
+[ext_resource type="Script" uid="uid://xu3wqc3bimdw" path="res://scripts/multiplayer/Overlays/DuelOverlay.cs" id="1_c34ed"]
 [ext_resource type="PackedScene" uid="uid://dfbq2o0ts0kaj" path="res://scenes/multiplayer/match_time_label.tscn" id="1_t3iyh"]
 [ext_resource type="Script" uid="uid://cm343mwkqc47w" path="res://scripts/multiplayer/Overlays/Countdown.cs" id="2_c34ed"]
 
