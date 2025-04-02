@@ -118,7 +118,7 @@ public partial class LobbyBrowser : Control {
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
 		LoadThread = new System.Threading.Thread( () => {
-			LoadedWorld = ResourceCache.GetScene( LoadedScenePath );
+			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
 			CallDeferred( "emit_signal", "FinishedLoading" );
 		} );
 		LoadThread.Start();
