@@ -108,19 +108,33 @@ public partial class MultiplayerData : Node2D {
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 
-		SceneLoadThread = new Thread( () => {
-			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-		} );
-		SceneLoadThread.Start();
+		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
+		ResourceCache.Cache( this );
 
-		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
-		ResourceLoadThread.Start();
+		ResourceCache.Initialized = true;
 
-		ResourcesLoadingFinished += OnResourcesFinishedLoading;
+		ModeData.OnPlayerJoined( ThisPlayer );
+		ModeData.SpawnPlayer( ThisPlayer );
+
+		GD.Print( "Adding " + SteamLobby.Instance.LobbyMemberCount + " members." );
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+				continue;
+			}
+			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			ModeData.SpawnPlayer( player );
+			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+			PlayerList.AddChild( player );
+		}
+
+		Console.PrintLine( "...Finished loading game" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
 		PhysicsServer2D.SetActive( true );
 
-		SetProcess( false );
 		SetProcessInternal( false );
 	}
 };
