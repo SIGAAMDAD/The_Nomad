@@ -349,9 +349,11 @@ public partial class SteamLobby : Node {
 		case MessageType.Handshake:
 			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
-		case MessageType.ServerCommand:
-			ServerCommandManager.ExecuteCommand( senderId, (ServerCommandType)PacketReader.ReadUInt32() );
-			break;
+		case MessageType.ServerCommand: {
+			ServerCommandType nCommandType = (ServerCommandType)PacketReader.ReadUInt32();
+			Console.PrintLine( string.Format( "Received server command: {0}", nCommandType.ToString() ) );
+			ServerCommandManager.ExecuteCommand( senderId, nCommandType );
+			break; }
 		};
 	}
 	private void ReadPackets( uint readCount = 0 ) {
