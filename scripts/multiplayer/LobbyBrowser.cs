@@ -113,10 +113,11 @@ public partial class LobbyBrowser : Control {
 
 	private void OnFinishedLoading() {
 		LoadThread.Join();
-		GetTree().ChangeSceneToPacked( LoadedWorld );
-
+		
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Console.PrintLine( "...Finished loading game" );
+
+		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void OnTransitionFinished() {
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
