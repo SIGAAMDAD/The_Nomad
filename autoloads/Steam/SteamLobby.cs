@@ -431,11 +431,12 @@ public partial class SteamLobby : Node {
 			break;
 		case "Multiplayer":
 			GameConfiguration.GameMode = GameMode.Multiplayer;
+			LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+			LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+			Console.PrintLine( string.Format( "Lobby map: {0}", Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ) );
 			break;
 		};
-		LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
-		LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
-
+		
 		GD.Print( "Sending p2p handshake..." );
 
 		GetLobbyMembers();
