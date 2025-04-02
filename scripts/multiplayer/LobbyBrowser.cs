@@ -164,10 +164,10 @@ public partial class LobbyBrowser : Control {
 			};
 //			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
 			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
-			Console.PrintLine( "Loading lobby waiting room..." );
 			break; }
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
+			Console.PrintLine( "Loading lobby waiting room..." );
 			break;
 		};
 	}
@@ -197,7 +197,6 @@ public partial class LobbyBrowser : Control {
 		Hide();
 
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
-//		GetNode( "/root/Console" ).Call( "print_line", "Joining lobby " + lobbyId.ToString() + "...", true );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
 	private static void OnLobbySelected( CSteamID lobbyId ) {
