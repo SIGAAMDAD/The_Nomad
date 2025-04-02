@@ -146,7 +146,7 @@ public partial class LobbyBrowser : Control {
 		}
 		*/
 
-		Console.PrintLine( "Loading game..." );
+		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
 		case "Multiplayer": {
