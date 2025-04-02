@@ -167,9 +167,9 @@ public partial class LobbyBrowser : Control {
 			break; }
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
-			Console.PrintLine( "Loading lobby waiting room..." );
 			break;
 		};
+		Console.PrintLine( "Lobby gametype: {0}", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) );
 	}
 
 	private void MatchmakingLoop() {
