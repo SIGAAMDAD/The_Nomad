@@ -338,9 +338,11 @@ public partial class SteamLobby : Node {
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
 		switch ( (MessageType)PacketReader.ReadByte() ) {
-		case MessageType.ClientData:
-			PlayerCache[ senderId.ToString() ].Receive( PacketReader );
-			break;
+		case MessageType.ClientData: {
+			if ( PlayerCache.TryGetValue( senderId.ToString(), out NetworkNode node ) ) {
+				node.Receive( PacketReader );
+			}
+			break; }
 		case MessageType.GameData:
 			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
 			break;
