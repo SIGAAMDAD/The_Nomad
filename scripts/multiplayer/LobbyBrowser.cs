@@ -387,7 +387,7 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnFinishedLoading ) );
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
