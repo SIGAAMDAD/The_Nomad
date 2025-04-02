@@ -126,9 +126,7 @@ public partial class LobbyBrowser : Control {
 		LoadThread.Start();
 	}
 	private void OnLobbyJoined( ulong lobbyId ) {
-		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
-
+		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
@@ -146,6 +144,7 @@ public partial class LobbyBrowser : Control {
 		} else {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
+		*/
 
 		Console.PrintLine( "Loading game..." );
 
@@ -174,6 +173,9 @@ public partial class LobbyBrowser : Control {
 			LoadedScenePath = "res://levels/world.tscn";
 			break;
 		};
+
+		Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	private void MatchmakingLoop() {
