@@ -33,8 +33,20 @@ public partial class MultiplayerData : Node2D {
 
 		ResourceCache.Initialized = true;
 
-		if ( SettingsData.GetNetworkingEnabled() ) {
-			SteamLobby.Instance.SetPhysicsProcess( true );
+		ModeData.OnPlayerJoined( ThisPlayer );
+		ModeData.SpawnPlayer( ThisPlayer );
+
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+				continue;
+			}
+			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			ModeData.SpawnPlayer( player );
+			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+			PlayerList.AddChild( player );
 		}
 
 		Console.PrintLine( "...Finished loading game" );
@@ -106,22 +118,6 @@ public partial class MultiplayerData : Node2D {
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;
 
 		PhysicsServer2D.SetActive( true );
-
-		ModeData.OnPlayerJoined( ThisPlayer );
-		ModeData.SpawnPlayer( ThisPlayer );
-
-		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
-				continue;
-			}
-			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
-			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-			ModeData.SpawnPlayer( player );
-			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
-			PlayerList.AddChild( player );
-		}
 
 		SetProcess( false );
 		SetProcessInternal( false );
