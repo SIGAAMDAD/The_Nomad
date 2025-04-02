@@ -442,7 +442,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
+		EmitSignal( "LobbyJoined", (ulong)LobbyId );
 	}
 
 	/*
