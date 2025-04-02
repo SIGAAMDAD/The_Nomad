@@ -192,6 +192,8 @@ public partial class LobbyRoom : Control {
 		base._Ready();
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		
+		SteamLobby.Instance.SetPhysicsProcess( true );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
