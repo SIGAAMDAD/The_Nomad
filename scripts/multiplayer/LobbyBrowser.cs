@@ -169,7 +169,7 @@ public partial class LobbyBrowser : Control {
 			LoadedScenePath = "res://levels/world.tscn";
 			break;
 		};
-		Console.PrintLine( "Lobby gametype: {0}", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) );
+		Console.PrintLine( string.Format( "Lobby gametype: {0}", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 	}
 
 	private void MatchmakingLoop() {
