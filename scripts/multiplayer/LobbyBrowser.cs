@@ -106,6 +106,8 @@ public partial class LobbyBrowser : Control {
 	public delegate void OnHostGameEventHandler();
 	[Signal]
 	public delegate void MatchmakingFinishedEventHandler();
+	[Signal]
+	public delegate void FinishedLoadingEventHandler();
 
 	private void OnFinishedLoading() {
 		LoadThread.Join();
