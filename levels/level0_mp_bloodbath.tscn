@@ -59,6 +59,7 @@ position = Vector2(571, 113)
 position = Vector2(145, 18)
 
 [node name="Overlay" parent="." instance=ExtResource("10_54cce")]
+script = null
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

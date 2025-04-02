@@ -10,7 +10,7 @@ namespace Renown {
 
 		Count
 	};
-	public partial class Contract : Resource {
+	public partial class Contract : Node {
 		[Export]
 		private ContractType Type;
 		[Export]

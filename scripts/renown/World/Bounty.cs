@@ -9,7 +9,7 @@ namespace Renown.World {
 		private float Amount = 0.0f;
 		
 		[Signal]
-		public delegate void Completed( Bounty bounty, CharacterBody2D completer );
+		public delegate void CompletedEventHandler( Bounty bounty, CharacterBody2D completer );
 		
 		public void Save() {
 		}
@@ -44,7 +44,7 @@ namespace Renown.World {
 			
 			BountyCache.Add( contract );
 			
-			GetTree().CurrentScene.GetNode( "Bounties" ).AddChild( contract );
+			contract.GetTree().CurrentScene.GetNode( "Bounties" ).AddChild( contract );
 			
 			return contract;
 		}
