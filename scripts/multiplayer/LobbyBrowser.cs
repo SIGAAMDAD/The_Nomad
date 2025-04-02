@@ -164,6 +164,7 @@ public partial class LobbyBrowser : Control {
 			};
 //			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
 			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
+			Console.PrintLine( "Loading lobby waiting room..." );
 			break; }
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
