@@ -103,6 +103,7 @@ namespace Multiplayer.Modes {
 			} else if ( player == Player2 ) {
 				player.GlobalPosition = Player2Spawn.GlobalPosition;
 			}
+			player.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnPlayerScore ) );
 		}
 
 		public override void _Ready() {
