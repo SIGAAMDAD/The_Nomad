@@ -86,22 +86,13 @@ namespace Multiplayer.Modes {
 			OnNewRoundStart();
 		}
 
-		public override void OnPlayerJoined( CharacterBody2D player ) {
-			player.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnPlayerScore ) );
-
-			if ( Player1 == null ) {
-				Player1 = player;
-			} else {
-				Player2 = player;
-			}
-		}
-		public override void OnPlayerLeft( CharacterBody2D player ) {
-		}
 		public override void SpawnPlayer( CharacterBody2D player ) {
-			if ( player == Player1 ) {
+			if ( Player1 == null ) {
 				player.GlobalPosition = Player1Spawn.GlobalPosition;
-			} else if ( player == Player2 ) {
+				Player1 = player;
+			} else if ( Player2 == null ) {
 				player.GlobalPosition = Player2Spawn.GlobalPosition;
+				Player2 = player;
 			}
 			player.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnPlayerScore ) );
 		}
