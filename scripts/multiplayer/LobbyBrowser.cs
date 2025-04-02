@@ -51,10 +51,10 @@ public partial class LobbyBrowser : Control {
 			return (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 		}
 		public string GetMapName() {
-			return MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ].Name;
+			return SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 		}
 		public string GetMapFileName() {
-			return MultiplayerMapManager.MapCache[ Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ].FileName;
+			return MultiplayerMapManager.MapCache[ SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ].FileName;
 		}
 		public string GetName() {
 			return SteamMatchmaking.GetLobbyData( LobbyId, "name" );

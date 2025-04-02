@@ -2,6 +2,7 @@ using System;
 using Godot;
 using Multiplayer;
 using System.Threading;
+using System.Linq;
 
 public partial class LobbyFactory : Control {
 	private LineEdit LobbyName;
@@ -35,7 +36,7 @@ public partial class LobbyFactory : Control {
 		MultiplayerMapManager.Init();
 
 		foreach ( var map in MultiplayerMapManager.MapCache ) {
-			MapList.AddItem( map.Name );
+			MapList.AddItem( map.Value.Name );
 		}
 		for ( int i = 0; i < (int)Mode.GameMode.Count; i++ ) {
 			GameModeList.AddItem( Mode.ModeNames[ (Mode.GameMode)i ] );
@@ -57,14 +58,14 @@ public partial class LobbyFactory : Control {
 
 		SteamLobby.Instance.SetLobbyName( LobbyName.Text );
 		SteamLobby.Instance.SetMaxMembers( (int)MaxPlayers.Value );
-		SteamLobby.Instance.SetMap( MapList.Selected );
+		SteamLobby.Instance.SetMap( MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name );
 		SteamLobby.Instance.SetGameMode( (uint)GameModeList.Selected );
 		SteamLobby.Instance.SetHostStatus( true );
 		GameConfiguration.GameMode = GameMode.Multiplayer;
 
 		SteamLobby.Instance.CreateLobby();
 
-		Console.PrintLine( string.Format( "Starting game [map: {0}, gamemode: {1}]...", MultiplayerMapManager.MapCache[ MapList.Selected ].Name, GameModeList.Selected ) );
+		Console.PrintLine( string.Format( "Starting game [map: {0}, gamemode: {1}]...", MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name, GameModeList.Selected ) );
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );

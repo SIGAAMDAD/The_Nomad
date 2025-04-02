@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 
 public static class MultiplayerMapManager {
@@ -13,7 +12,7 @@ public static class MultiplayerMapManager {
 		}
 	};
 
-	public static System.Collections.Generic.List<MapData> MapCache;
+	public static System.Collections.Generic.Dictionary<string, MapData> MapCache;
 
 	private static void LoadMapList( string path, System.Collections.Generic.List<string> list ) {
 		DirAccess dir = DirAccess.Open( path );
@@ -35,14 +34,10 @@ public static class MultiplayerMapManager {
 
 		GD.Print( "Loading maps..." );
 
-		MapCache = new System.Collections.Generic.List<MapData>();
+		MapCache = new System.Collections.Generic.Dictionary<string, MapData>();
 		for ( int i = 0; i < mapList.Count; i++ ) {
-			MapCache.Add( new MapData( ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace ) ) );
-			if ( MapCache.Last() != null ) {
-				GD.Print( "...Loaded multiplayer map data for \"" + mapList[i] + "\", fileName: " + MapCache[i].FileName );
-			} else {
-				GD.PushError( "...Couldn't load map data for \"" + mapList[i] + "\"" );
-			}
+			Resource map = ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace );
+			MapCache.Add( (string)map.Get( "_name" ), new MapData( map ) );
 		}
 	}
 };

@@ -57,8 +57,7 @@ public partial class SteamLobby : Node {
 	private int LobbyMaxMembers = 0;
 	private uint LobbyGameMode = 0;
 	private string LobbyName;
-	private string LobbyMapName;
-	private int LobbyMap = 0;
+	private string LobbyMap;
 	private Visibility LobbyVisibility = Visibility.Public;
 
 	private string LobbyFilterMap;
@@ -142,9 +141,8 @@ public partial class SteamLobby : Node {
 	public void SetGameMode( uint nGameMode ) {
 		LobbyGameMode = nGameMode;
 	}
-	public void SetMap( int nMapIndex ) {
-		LobbyMap = nMapIndex;
-		LobbyMapName = MultiplayerMapManager.MapCache[ LobbyMap ].Name;
+	public void SetMap( string mapname ) {
+		LobbyMap = mapname;
 	}
 	public void SetHostStatus( bool bHost ) {
 		IsHost = bHost;
@@ -192,7 +190,7 @@ public partial class SteamLobby : Node {
 		SteamMatchmaking.SetLobbyData( LobbyId, "appid", SteamManager.GetAppID().ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gametype", GameConfiguration.GameMode.ToString() );
 		SteamMatchmaking.SetLobbyData( LobbyId, "name", LobbyName );
-		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap.ToString() );
+		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gamemode", LobbyGameMode.ToString() );
 		SteamMatchmaking.SetLobbyMemberLimit( LobbyId, LobbyMaxMembers );
 		
@@ -394,9 +392,9 @@ public partial class SteamLobby : Node {
 			break;
 		case "Multiplayer":
 			GameConfiguration.GameMode = GameMode.Multiplayer;
-			LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+			LobbyMap = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 			LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
-			Console.PrintLine( string.Format( "Lobby map: {0}", Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ) );
+			Console.PrintLine( string.Format( "Lobby map: {0}", LobbyMap ) );
 			break;
 		};
 
@@ -431,12 +429,12 @@ public partial class SteamLobby : Node {
 			break;
 		case "Multiplayer":
 			GameConfiguration.GameMode = GameMode.Multiplayer;
-			LobbyMap = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+			LobbyMap = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 			LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
-			Console.PrintLine( string.Format( "Lobby map: {0}", Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ) ) );
+			Console.PrintLine( string.Format( "Lobby map: {0}", LobbyMap ) );
 			break;
 		};
-		
+
 		GD.Print( "Sending p2p handshake..." );
 
 		GetLobbyMembers();
