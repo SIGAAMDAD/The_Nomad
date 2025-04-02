@@ -395,7 +395,7 @@ public partial class LobbyBrowser : Control {
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
-		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
+		SteamLobby.Instance.LobbyJoined += OnLobbyJoined;
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );

@@ -408,7 +408,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 		
-		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
 	}
 
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
@@ -442,7 +442,7 @@ public partial class SteamLobby : Node {
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
-		EmitSignal( "LobbyJoined", (ulong)LobbyId );
+		CallDeferred( "emit_signal", "LobbyJoined", (ulong)LobbyId );
 	}
 
 	/*
