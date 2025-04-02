@@ -145,7 +145,8 @@ public partial class LobbyBrowser : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 		*/
-
+		
+		GD.Print( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
