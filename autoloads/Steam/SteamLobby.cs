@@ -125,8 +125,8 @@ public partial class SteamLobby : Node {
 	public uint GetGameMode() {
 		return LobbyGameMode;
 	}
-	public int GetMap() {
-		return Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "map" ) );
+	public string GetMap() {
+		return SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 	}
 	public List<CSteamID> GetLobbyList() {
 		return LobbyList;
