@@ -110,20 +110,21 @@ public partial class LobbyBrowser : Control {
 	public delegate void FinishedLoadingEventHandler();
 
 	private void OnFinishedLoading() {
-		LoadThread.Join();
-		GetTree().ChangeSceneToPacked( LoadedWorld );
+//		LoadThread.Join();
+		GetTree().ChangeSceneToFile( SceneFilePath );
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Console.PrintLine( "...Finished loading game" );
 	}
 	private void OnTransitionFinished() {
-		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		OnFinishedLoading();
+//		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
-		LoadThread = new System.Threading.Thread( () => {
-			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
-			CallDeferred( "emit_signal", "FinishedLoading" );
-		} );
-		LoadThread.Start();
+//		LoadThread = new System.Threading.Thread( () => {
+//			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
+//			CallDeferred( "emit_signal", "FinishedLoading" );
+//		} );
+//		LoadThread.Start();
 	}
 	private void OnLobbyJoined( ulong lobbyId ) {
 		/*
