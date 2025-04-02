@@ -37,23 +37,6 @@ public partial class MultiplayerData : Node2D {
 			SteamLobby.Instance.SetPhysicsProcess( true );
 		}
 
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMemberCount + ") to game..." );
-			for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
-					continue;
-				}
-				CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
-				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-		//		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-		//		SpawnPlayer( player );
-				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
-				PlayerList.AddChild( player );
-			}
-		}
-
 		Console.PrintLine( "...Finished loading game" );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
@@ -106,7 +89,7 @@ public partial class MultiplayerData : Node2D {
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 
-		ModeData = GetNode<Node2D>( "ModeData" ) as Mode;
+		ModeData = GetNode<Mode>( "ModeData" );
 		
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
@@ -126,6 +109,19 @@ public partial class MultiplayerData : Node2D {
 
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
+
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+				continue;
+			}
+			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
+			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			ModeData.SpawnPlayer( player );
+			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+			PlayerList.AddChild( player );
+		}
 
 		SetProcess( false );
 		SetProcessInternal( false );
