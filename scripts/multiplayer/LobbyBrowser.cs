@@ -102,7 +102,7 @@ public partial class LobbyBrowser : Control {
 	private PackedScene LoadedWorld = null;
 	private string LoadedScenePath = "";
 
-	private static LobbyBrowser Instance;
+	public static LobbyBrowser Instance;
 
 	[Signal]
 	public delegate void OnHostGameEventHandler();
@@ -127,7 +127,7 @@ public partial class LobbyBrowser : Control {
 		} );
 		LoadThread.Start();
 	}
-	public static void OnLobbyJoined( ulong lobbyId ) {
+	public void OnLobbyJoined( ulong lobbyId ) {
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -170,15 +170,15 @@ public partial class LobbyBrowser : Control {
 				break;
 			};
 //			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
-			Instance.LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
+			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 			break; }
 		case "Online":
-			Instance.LoadedScenePath = "res://levels/world.tscn";
+			LoadedScenePath = "res://levels/world.tscn";
 			break;
 		};
 
-		Instance.Hide();
-		Instance.GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		Hide();
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	private void MatchmakingLoop() {
