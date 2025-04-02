@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Godot;
 using Multiplayer;
 using Steamworks;
@@ -117,7 +116,8 @@ public partial class LobbyBrowser : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Console.PrintLine( "...Finished loading game" );
 
-		GetTree().ChangeSceneToPacked( LoadedWorld );
+		QueueFree();
+		GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
 	}
 	private void OnTransitionFinished() {
 		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
@@ -149,7 +149,6 @@ public partial class LobbyBrowser : Control {
 		}
 		*/
 		
-		GD.Print( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
