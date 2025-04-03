@@ -70,6 +70,6 @@ public partial class LobbyFactory : Control {
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
-		GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
+		GetTree().ChangeSceneToPacked( ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/lobby_room.tscn" ) );
 	}
 };
