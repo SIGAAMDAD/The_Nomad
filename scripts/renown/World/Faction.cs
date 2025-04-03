@@ -76,6 +76,7 @@ namespace Renown.World {
 			writer.SaveString( "leader", Leader != null ? Leader.GetPath() : "nil" );
 			
 			counter = 0;
+			writer.SaveInt( "debt_count", DebtList.Count );
 			foreach ( var debt in DebtList ) {
 				string key = string.Format( "debt_{0}", counter );
 				writer.SaveString( key + "_node", debt.Key.GetPath() );
@@ -84,6 +85,7 @@ namespace Renown.World {
 			}
 			
 			counter = 0;
+			writer.SaveInt( "relation_count", RelationList.Count );
 			foreach ( var relation in RelationList ) {
 				string key = string.Format( "relation_{0}", counter );
 				writer.SaveString( key + "_node", relation.Key.GetPath() );
@@ -102,6 +104,8 @@ namespace Renown.World {
 
 			PrimaryAlignment = (AIAlignment)reader.LoadUInt( "alignment" );
 			Leader = Thinker.Cache.SearchCache( reader.LoadString( "leader" ) );
+			
+			int debtCount = reader.LoadInt( "" );
 		}
 		
 		/*
@@ -119,12 +123,19 @@ namespace Renown.World {
 			Messenger actor = new Messenger( this, destination, nType );
 		}
 		*/
-		public void MemberJoin( CharacterBody2D member ) {
+		public bool CanJoin( Entity member ) {
+			
+		}
+		public void MemberJoin( Entity member ) {
 			member.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
+			member.SetFaction( this );
 		}
-		public void MemberLeave( CharacterBody2D member ) {
+		public void MemberLeave( Entity member ) {
 			member.Disconnect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
+			member.SetFaction( null );
 		}
+		
+		public float GetRelationScore( Node other ) => RelationList.TryGetValue( other, out float score ) ? score : 0.0f;
 		public void RelationIncrease( Node other, float nAmount ) {
 			if ( !RelationList.ContainsKey( other ) ) {
 				RelationList.Add( other, 0.0f );
@@ -138,14 +149,14 @@ namespace Renown.World {
 			RelationList[ other ] -= nAmount;
 		}
 		
-		private void OnMemberDeath( CharacterBody2D killer, CharacterBody2D member ) {
-			if ( (Faction)member.Call( "GetFaction" ) != this ) {
+		private void OnMemberDeath( Entity killer, Entity member ) {
+			if ( member.GetFaction() != this ) {
 				// warning?
 				return;
 			}
 			
 			float amount = 0.0f;
-			int favor = (int)member.Call( "GetFactionImportance" );
+			int favor = member.GetFactionImportance();
 			if ( favor > 50 ) {
 				// leader
 				amount = (float)favor;
@@ -165,20 +176,19 @@ namespace Renown.World {
 				}
 			}
 		}
-		public void OnBountyCompleted( Bounty bounty, CharacterBody2D completer ) {
+		public void OnBountyCompleted( Bounty bounty, Entity entity ) {
 			if ( Reserves - bounty.GetAmount() < 0.0f ) {
-				DebtList.Add( completer, bounty.GetAmount() );
+				AddDebt( entity, bount.GetAmount() );
 			} else {
-				completer.Call( "AddMoney", bounty.GetAmount() );
+				entity.AddMoney( bounty.GetAmount() );
 			}
+			Reserves -= bounty.GetAmount();
 //			ContractManager.Remove( bounty );
 		}
 		
 		public override void _Ready() {
 			base._Ready();
-
-			if ( SettingsData.GetNetworkingEnabled() ) {
-			}
+			
 			if ( !IsInGroup( "Factions" ) ) {
 				AddToGroup( "Factions" );
 			}
@@ -205,6 +215,70 @@ namespace Renown.World {
 			}
 		}
 		
+		private bool CreateDebt( float nAmount ) {
+			// TODO: allow debt with politicians & specific rich mercs outside of faction
+			Godot.Collections.Array<Node> factions = GetTree().GetNodesInGroup( "Factions" );
+			foreach ( var faction in factions ) {
+				Faction loaner = faction as Faction;
+				if ( loaner.CanLoanMoney( this, nAmount ) ) {
+					AddDebt( loaner, nAmount );
+					return true;
+				}
+			}
+			return false;
+		}
+		public bool CanLoanMoney( Node destination, float nAmount ) {
+			if ( !RelationList.TryGetValue( destination, out float score ) ) {
+				RelationList.Add( destination, -10.0f );
+				return false; // they don't have an active relation with said node, so start off on a bad note
+			}
+			
+			// if we hate them, don't give them any money
+			if ( score < 0.0f ) {
+				RelationList[ destination ] -= 10.0f;
+				return false;
+			}
+			// TODO: implement malicious debt creation
+			// TODO: implement debt counter over time mechanic
+			
+			if ( Reserves - nAmount < 0.0f ) {
+				// we don't have enough in the reserves
+				// but if we're good enough friends, then create a new
+				// debt with a different node
+				if ( score >= 50.0f && CreateDebt( nAmount ) ) {
+					return true;
+				}
+				return false;
+			}
+			Reserves -= nAmount;
+			
+			// if we have enough money and the relation is neutral or friendly, give them money
+			return true;
+		}
+		private void AddDebt( Node to, float nAmount ) {
+			if ( !DebtList.ContainsKey( to ) ) {
+				DebtList.Add( to, 0.0f );
+			}
+			DebtList[ to ] += nAmount;
+		}
+		private void PayDebt( Node to, float nAmount ) {
+			// sanity check
+			if ( !DebtList.TryGetValue( to, out float amount ) ) {
+				Console.PrintError(
+					string.Format( "Faction.PayDebt: debt from {0} to {1} doesn't exist!", GetPath(), to.GetPath() )
+				);
+				return;
+			}
+			amount -= nAmount;
+			if ( amount <= 0.0f ) {
+				// paid in full, remove it
+				DebtList.Remove( to );
+			} else {
+				DebtList[ to ] = amount;
+			}
+			Reserves -= nAmount;
+		}
+		
 		private void UpdateWarStatus( Faction faction ) {
 		}
 		private void UpdateRelations() {
@@ -217,6 +291,17 @@ namespace Renown.World {
 				}
 			}
 		}
+		private void UpdateDebts() {
+			float amount = 0.0f;
+			
+			foreach ( var debt in DebtList ) {
+				// start the debt payment at the debt's value
+				
+				if ( Reserves > debt.Value - ( Reserves * 0.25f ) ) {
+					PayDebt( debt.Key, debt.Value );
+				}
+			}
+		}
 		private void Think() {
 			lock ( LockObject ) {
 				// wait for frame sync
@@ -224,6 +309,7 @@ namespace Renown.World {
 			}
 			
 			UpdateRelations();
+			UpdateDebts();
 			
 			SubThink();
 		}
