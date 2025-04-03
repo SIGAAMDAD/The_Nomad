@@ -48,7 +48,6 @@ public partial class LobbyRoom : Control {
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedLevel );
-		QueueFree();
 	}
 	private void LoadGame() {
 		UIChannel.Stream = UISfxManager.BeginGame;
