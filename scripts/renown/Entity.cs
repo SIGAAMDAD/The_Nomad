@@ -34,7 +34,7 @@ public partial class Entity : CharacterBody2D {
 	[Export]
 	protected int FactionImportance;
 	
-	protected HashSet<TraitType> TraitCache = null;
+	protected HashSet<Trait> TraitCache = null;
 	protected Dictionary<Node, float> RelationCache = null;
 	protected Dictionary<Node, float> DebtCache = null;
 	
@@ -61,9 +61,9 @@ public partial class Entity : CharacterBody2D {
 	[Signal]
 	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
 	[Signal]
-	public delegate void EarnTraitEventHandler( Entity entity, TraitType nType );
+	public delegate void EarnTraitEventHandler( Entity entity, Trait trait );
 	[Signal]
-	public delegate void LoseTraitEventHandler( Entity entity, TraitType nType );
+	public delegate void LoseTraitEventHandler( Entity entity, Trait trait );
 	[Signal]
 	public delegate void MeetEntityEventHandler( Entity other, Entity entity );
 	[Signal]
@@ -143,16 +143,79 @@ public partial class Entity : CharacterBody2D {
 		EmitSignal( "FactionPromotion", Faction, this );
 	}
 	
-	public bool HasTrait( TraitType nType ) => TraitCache.Contains( nType );
-	public virtual void AddTrait( TraitType nType ) {
-		EmitSignal( "EarnTrait", this, nType );
-		TraitCache.Add( nType );
+	public int GetRenownScore() => RenownScore;
+	public void AddRenown( int nAmount ) {
+		RenownScore += nAmount;
+	}
+	
+	/// <summary>
+	/// returns true if the entity has the given trait
+	/// </summary>
+	public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
+	
+	/// <summary>
+	/// checks if the given trait conflicts with this entity's values
+	/// </summary>
+	public bool HasConflictingTrait( Trait other ) {
+		foreach ( var trait in TraitCache ) {
+			if ( trait.Conflicts( other ) ) {
+				return bool;
+			}
+		}
+		return false;
+	}
+	public List<Trait> GetConflicingTraits( Trait other ) {
+		List<Trait> traits = new List<Trait>();
+		foreach ( var trait in TraitCache ) {
+			if ( trait.Conflicts( other ) ) {
+				traits.Add( trait );
+			}
+		}
+		return traits;
+	}
+	public List<Trait> GetAgreeableTraits( Trait other ) {
+		List<Trait> traits = new List<Trait>();
+		foreach ( var trait in TraitCache ) {
+			if ( trait.Agrees( other ) ) {
+				traits.Add( trait );
+			}
+		}
+		return traits;
+	}
+	public virtual void AddTrait( Trait trait ) {
+		EmitSignal( "EarnTrait", this, trait );
+		TraitCache.Add( trait );
 	}
 	public virtual void RemoveTrait( TraitType nType ) {
 		EmitSignal( "LoseTrait", this, nType );
 		TraitCache.Remove( nType );
 	}
 	
+	protected virtual void DetermineRelationStatus( Node other ) {
+		float score = RelationCache[ other ];
+		int renownScore = (int)other.Call( "GetRenownScore" );
+		
+		// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
+		
+		if ( Faction.GetRelationStatus( other ) >= RelationStatus.Hates ) {
+			score -= Faction.GetRelationScore( other );
+		}
+		
+		HashSet<Trait> traitList = other.GetTraits();
+		foreach ( var trait in traitList ) {
+			List<Trait> conflicting = GetConflictingTraits( trait );
+			for ( int i = 0; i < conflicting.Count; i++ ) {
+				score -= conflicting[i].GetNegativeRelationScore( trait );
+			}
+			
+			List<Trait> agreeables = GetAgreeableTraits( trait );
+			for ( int i = 0; i < agreeables.Count; i++ ) {
+				score += conflicting[i].GetPositiveRelationScore( trait );
+			}
+		}
+		
+		RelationCache[ other ] = score;
+	}
 	protected virtual void Meet( Node other ) {
 		RelationCache.Add( other, 0.0f );
 		
@@ -189,9 +252,10 @@ public partial class Entity : CharacterBody2D {
 	public override void _Ready() {
 		base._Ready();
 		
-		TraitCache = new HashSet<TraitType>( Traits.Length );
+		TraitCache = new HashSet<Trait>( Traits.Length );
 		for ( int i = 0; i < Traits.Length; i++ ) {
-			TraitCache.Add( Traits[i] );
+//			FIXME:
+//			TraitCache.Add( new Trait(  ) );
 		}
 		
 		RelationCache = new Dictionary<Node, float>( Relations.Count );
