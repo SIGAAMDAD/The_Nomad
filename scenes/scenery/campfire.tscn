@@ -49,14 +49,13 @@ frame_progress = 0.0443089
 rotation = -2.45849e-05
 energy = 2.64
 shadow_enabled = true
-shadow_color = Color(0.166853, 0.166853, 0.166853, 0)
 texture = ExtResource("2_5upm2")
 texture_scale = 10.5
 
 [node name="Ambience" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_bcxb1")
 autoplay = true
-max_distance = 500.0
+max_distance = 250.0
 attenuation = 27.8576
 bus = &"SFX"
 playback_type = 1

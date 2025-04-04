@@ -6,7 +6,13 @@ Mercenary Master: A new day for a new job, ain't it?
 	Mercenary Master: Of course... => list_high_pay_jobs
 - Show me the lowest paying jobs
 	Mercenary Master: Of course... => list_low_pay_jobs
+- Show me the leaderboards
+	Mercenary Master: Oh, competing eh? => show_leaderboard
 - Later... => END
+=> END
+
+~ show_leaderboard
+#	do GameState.
 => END
 
 ~ list_high_pay_jobs

@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://dpriw3r8df1su"]
+[gd_scene load_steps=6 format=3 uid="uid://dpriw3r8df1su"]
 
 [ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_mpu1u"]
 [ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="4_lib35"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
@@ -23,16 +22,15 @@ script = ExtResource("1_avp8t")
 
 [node name="MenuTitle" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -182.0
-offset_top = 4.0
-offset_right = 26.0
-offset_bottom = 27.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 159.0
+offset_top = 1.0
+offset_right = -348.0
+offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "LOBBY BROWSER"
+metadata/_edit_use_anchors_ = true
 
 [node name="FilterLabel" type="Label" parent="."]
 layout_mode = 2
@@ -40,8 +38,8 @@ offset_left = 486.0
 offset_top = 2.0
 offset_right = 598.0
 offset_bottom = 25.0
-theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "FILTERS"
+metadata/_edit_use_anchors_ = true
 
 [node name="FilterList" type="ScrollContainer" parent="."]
 layout_mode = 0
@@ -139,12 +137,10 @@ theme_override_constants/separation = 112
 [node name="MapNameLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/MapNameContainer"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "MAP"
 
 [node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/MapNameContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 
 [node name="PlayerCountContainer" type="HBoxContainer" parent="LobbyMetadataContainer/VBoxContainer"]
 layout_mode = 2
@@ -153,12 +149,10 @@ theme_override_constants/separation = 16
 [node name="PlayerCountLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/PlayerCountContainer"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "PLAYER(S)"
 
 [node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/PlayerCountContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 
 [node name="GameModeContainer" type="HBoxContainer" parent="LobbyMetadataContainer/VBoxContainer"]
 layout_mode = 2
@@ -167,24 +161,29 @@ theme_override_constants/separation = 32
 [node name="GameModeLabel" type="Label" parent="LobbyMetadataContainer/VBoxContainer/GameModeContainer"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 text = "GAMEMODE"
 
 [node name="Label" type="Label" parent="LobbyMetadataContainer/VBoxContainer/GameModeContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mpu1u")
 
 [node name="MatchMakingLabel" type="Label" parent="."]
 visible = false
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-offset_left = 424.0
-offset_top = 405.0
-offset_right = 602.0
-offset_bottom = 428.0
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 359.0
+offset_top = -76.0
+offset_right = -41.0
+offset_bottom = -53.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "SORTING CONTRACTS..."
+metadata/_edit_use_anchors_ = true
 
 [node name="MatchMakingLabelTimer" type="Timer" parent="MatchMakingLabel"]
 

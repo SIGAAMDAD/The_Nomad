@@ -17,6 +17,8 @@ namespace Multiplayer.Overlays {
 
 		public void SetPlayer1Score( int nScore ) => Player1Score.Text = nScore.ToString();
 		public void SetPlayer2Score( int nScore ) => Player2Score.Text = nScore.ToString();
+		public void SetRemainingTime( float time ) => CountdownLabel.SetTimeLeft( time );
+		public float GetRemainingTime() => CountdownLabel.GetTimeLeft();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void NewRound() {

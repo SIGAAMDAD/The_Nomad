@@ -37,6 +37,9 @@ namespace Multiplayer {
 			{ GameMode.ExtractionPVP, "Extraction PVP" }
 		};
 
+		[Signal]
+		public delegate void ShowScoreboardEventHandler();
+
 		public virtual void OnPlayerJoined( CharacterBody2D player ) {
 		}
 		public virtual void OnPlayerLeft( CharacterBody2D player ) {
@@ -44,11 +47,7 @@ namespace Multiplayer {
 		public virtual void SpawnPlayer( CharacterBody2D player ) {
 		}
 
-		public GameMode GetMode() {
-			return Type;
-		}
-		public void SetMode( GameMode mode ) {
-			Type = mode;
-		}
+		public GameMode GetMode() => Type;
+		public void SetMode( GameMode mode ) => Type = mode;
 	};
 };

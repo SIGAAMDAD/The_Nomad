@@ -156,24 +156,24 @@ public partial class SteamLobby : Node {
 
 		switch ( (EChatMemberStateChange)pCallback.m_rgfChatMemberStateChange ) {
 		case EChatMemberStateChange.k_EChatMemberStateChangeEntered:
-			CallDeferred( "ChatUpdate", string.Format( "{0} has joined...", changerName ) );
-			CallDeferred( "emit_signal", "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
+			ChatUpdate( string.Format( "{0} has joined...", changerName ) );
+			EmitSignal( "ClientJoinedLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeLeft:
-			CallDeferred( "ChatUpdate", string.Format( "{0} has faded away...", changerName ) );
-			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			ChatUpdate( string.Format( "{0} has faded away...", changerName ) );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeDisconnected:
-			CallDeferred( "ChatUpdate", string.Format( "{0} tweaked out so hard they left the fever dream...", changerName ) );
-			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			ChatUpdate( string.Format( "{0} tweaked out so hard they left the fever dream...", changerName ) );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeBanned:
-			CallDeferred( "ChatUpdate", string.Format( "{0} was rejected...", changerName ) );
-			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			ChatUpdate( string.Format( "{0} was rejected...", changerName ) );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		case EChatMemberStateChange.k_EChatMemberStateChangeKicked:
-			CallDeferred( "ChatUpdate", string.Format( "{0} was excommunicated...", changerName ) );
-			CallDeferred( "emit_signal", "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
+			ChatUpdate( string.Format( "{0} was excommunicated...", changerName ) );
+			EmitSignal( "ClientLeftLobby", pCallback.m_ulSteamIDMakingChange );
 			break;
 		};
 	}
@@ -211,7 +211,7 @@ public partial class SteamLobby : Node {
 			LobbyList.Add( SteamMatchmaking.GetLobbyByIndex( i ) );
 		}
 
-		CallDeferred( "emit_signal", "LobbyListUpdated" );
+		EmitSignal( "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
 		SendP2PPacket( new byte[]{ (byte)MessageType.Handshake } );
@@ -290,7 +290,7 @@ public partial class SteamLobby : Node {
 		NodeCache.Clear();
 		PlayerCache.Clear();
 
-		CallDeferred( "emit_signal", "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
+		EmitSignal( "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
 	}
 
 	/*

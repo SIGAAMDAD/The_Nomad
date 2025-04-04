@@ -57,11 +57,11 @@ SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
 SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
 ArchiveSystem="*res://scripts/save_system/ArchiveSystem.cs"
 MultiplayerMapManager="*res://autoloads/MultiplayerMapManager.gd"
-DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 GUIDE="*res://addons/guide/guide.gd"
 Console="*res://addons/console/console.gd"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [debug]
 
@@ -187,7 +187,7 @@ general/update_interval=1.0
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
-driver/threads/thread_model=0
+driver/threads/thread_model=2
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true

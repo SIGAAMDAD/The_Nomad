@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://gsxci7b6en7c"]
+[gd_scene load_steps=11 format=4 uid="uid://gsxci7b6en7c"]
 
 [ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_7mv7g"]
 [ext_resource type="Script" uid="uid://bm2ij7e6lo88x" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="3_mn27o"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_r1lm7"]
 [ext_resource type="PackedScene" uid="uid://g5kjq1b8iven" path="res://scenes/multiplayer/modes/overlays/duel_overlay.tscn" id="5_jr0op"]
+[ext_resource type="PackedScene" uid="uid://dev51gj4hyfmq" path="res://scenes/multiplayer/scoreboard.tscn" id="6_ume2v"]
 [ext_resource type="Script" uid="uid://s0fwanyja5qk" path="res://scripts/multiplayer/Announcer.cs" id="7_py8m6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jr0op"]
@@ -986,6 +987,9 @@ tile_set = SubResource("TileSet_py8m6")
 
 [node name="Player0" parent="Network/Players" instance=ExtResource("3_r1lm7")]
 position = Vector2(-166, 227)
+
+[node name="Scoreboard" parent="." instance=ExtResource("6_ume2v")]
+visible = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

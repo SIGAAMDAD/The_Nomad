@@ -162,23 +162,6 @@ public partial class LobbyBrowser : Control {
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
 		case "Multiplayer": {
-			string modeName;
-			switch ( (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gamemode" ) ) ) {
-			case Mode.GameMode.Bloodbath:
-				modeName = "bloodbath";
-				break;
-			case Mode.GameMode.TeamBrawl:
-				modeName = "teambrawl";
-				break;
-			case Mode.GameMode.CaptureTheFlag:
-				modeName = "ctf";
-				break;
-			case Mode.GameMode.Duel:
-				break;
-			default:
-				break;
-			};
-//			LoadedScenePath = "res://levels" + MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName + "_mp_" + modeName + ".tscn";
 			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 			break; }
 		case "Online":
@@ -295,7 +278,6 @@ public partial class LobbyBrowser : Control {
 		if ( MatchmakingLabel.Visible ) {
 			return; // matchmaking, can't join game
 		}
-
 		OnJoinGame( SelectedLobby );
 	}
 
@@ -319,7 +301,18 @@ public partial class LobbyBrowser : Control {
 			text = "FINDING_MULTIPLAYER_GAME";
 		}
 
+		MatchmakingLabel.Text = text;
 		MatchmakingTimer.Start();
+	}
+
+	public void ResetBrowser() {
+		MatchmakingSpinner.Hide();
+		MatchmakingLabel.Hide();
+		CancelMatchmake.Hide();
+
+		RefreshLobbies.Show();
+		HostGame.Show();
+		Matchmake.Show();
 	}
 
     public override void _Ready() {
@@ -395,7 +388,12 @@ public partial class LobbyBrowser : Control {
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
+		LobbyManager.SetProcess( false );
+		LobbyManager.SetProcessInternal( false );
+
 		JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
+		JoinGame.SetProcess( false );
+		JoinGame.SetProcessInternal( false );
 
 		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
 		ShowFullServers.SetProcess( false );
@@ -403,6 +401,7 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
+		TransitionScreen.SetProcessInternal( false );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );

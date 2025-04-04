@@ -1,7 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dev51gj4hyfmq"]
 
-[sub_resource type="Resource" id="Resource_8dvry"]
-metadata/__load_path__ = "res://scripts/multiplayer/scoreboard.gd"
+[ext_resource type="Script" uid="uid://dgykwd7umgmht" path="res://scripts/multiplayer/ScoreBoard.cs" id="1_mhiw8"]
 
 [sub_resource type="Gradient" id="Gradient_g1gde"]
 offsets = PackedFloat32Array(0)
@@ -17,9 +16,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = SubResource("Resource_8dvry")
+script = ExtResource("1_mhiw8")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+process_mode = 4
 custom_minimum_size = Vector2(560, 420)
 layout_mode = 1
 anchors_preset = 8
@@ -33,6 +33,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
 layout_mode = 2
@@ -42,7 +43,7 @@ texture = SubResource("GradientTexture2D_7d7y8")
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "MATCH STATISTICS"
+text = "SCOREBOARD"
 
 [node name="PlayerList" type="MarginContainer" parent="MarginContainer"]
 custom_minimum_size = Vector2(0, 340)
@@ -50,23 +51,25 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="BloodbathData" type="VBoxContainer" parent="MarginContainer/PlayerList"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = -2
 
 [node name="Legend" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_constants/separation = 98
 
 [node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/Legend"]
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "NAME"
 
 [node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/Legend"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = " KILLS"
+size_flags_horizontal = 0
+text = "KILLS"
 
 [node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/Legend"]
 layout_mode = 2
@@ -80,13 +83,12 @@ text = "               "
 layout_mode = 2
 theme_override_constants/separation = -2
 
-[node name="PlayerData0" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
+[node name="ClonerContainer" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData0"]
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/ClonerContainer"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -94,33 +96,67 @@ theme_override_font_sizes/font_size = 10
 text = "SIGAAMDAD"
 clip_text = true
 
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData0"]
-custom_minimum_size = Vector2(136, 0)
+[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/ClonerContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 14
 text = "32"
 clip_text = true
 
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData0"]
-custom_minimum_size = Vector2(156, 0)
+[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/ClonerContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "0"
 
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData0"]
+[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/ClonerContainer"]
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "0"
 
-[node name="PlayerData1" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
+[node name="DuelData" type="VBoxContainer" parent="MarginContainer/PlayerList"]
+layout_mode = 2
+
+[node name="Legend" type="HBoxContainer" parent="MarginContainer/PlayerList/DuelData"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/DuelData/Legend"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "NAME"
+
+[node name="Round0" type="Label" parent="MarginContainer/PlayerList/DuelData/Legend"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "1ST ROUND"
+horizontal_alignment = 1
+
+[node name="Round1" type="Label" parent="MarginContainer/PlayerList/DuelData/Legend"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "2ND ROUND"
+horizontal_alignment = 1
+
+[node name="Round2" type="Label" parent="MarginContainer/PlayerList/DuelData/Legend"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "3RD ROUND"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PlayerList/DuelData"]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="ThisPlayerContainer" type="HBoxContainer" parent="MarginContainer/PlayerList/DuelData"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData1"]
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/DuelData/ThisPlayerContainer"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -128,34 +164,35 @@ theme_override_font_sizes/font_size = 10
 text = "SIGAAMDAD"
 clip_text = true
 
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData1"]
-custom_minimum_size = Vector2(136, 0)
+[node name="Round0" type="Label" parent="MarginContainer/PlayerList/DuelData/ThisPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 14
-text = "32"
+text = "/"
+horizontal_alignment = 1
 clip_text = true
 
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData1"]
-custom_minimum_size = Vector2(156, 0)
+[node name="Round1" type="Label" parent="MarginContainer/PlayerList/DuelData/ThisPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "0"
+text = "/"
+horizontal_alignment = 1
 
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData1"]
-visible = false
+[node name="Round2" type="Label" parent="MarginContainer/PlayerList/DuelData/ThisPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "0"
+text = "/"
+horizontal_alignment = 1
 
-[node name="PlayerData2" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
+[node name="OtherPlayerContainer" type="HBoxContainer" parent="MarginContainer/PlayerList/DuelData"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData2"]
-visible = false
+[node name="Name" type="Label" parent="MarginContainer/PlayerList/DuelData/OtherPlayerContainer"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -163,466 +200,25 @@ theme_override_font_sizes/font_size = 10
 text = "SIGAAMDAD"
 clip_text = true
 
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData2"]
-visible = false
-custom_minimum_size = Vector2(136, 0)
+[node name="Round0" type="Label" parent="MarginContainer/PlayerList/DuelData/OtherPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 14
-text = "32"
+text = "/"
+horizontal_alignment = 1
 clip_text = true
 
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData2"]
-visible = false
-custom_minimum_size = Vector2(156, 0)
+[node name="Round1" type="Label" parent="MarginContainer/PlayerList/DuelData/OtherPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "0"
+text = "/"
+horizontal_alignment = 1
 
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData2"]
-visible = false
+[node name="Round2" type="Label" parent="MarginContainer/PlayerList/DuelData/OtherPlayerContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData3" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData3"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData3"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData3"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData3"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData4" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData4"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData4"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData4"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData4"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData5" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData5"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData5"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData5"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData5"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData6" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData6"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData6"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData6"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData6"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData7" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData7"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData7"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData7"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData7"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData8" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData8"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData8"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData8"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData8"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData9" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData9"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData9"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData9"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData9"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData10" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData10"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData10"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData10"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData10"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData11" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData11"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData11"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData11"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData11"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData12" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData12"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData12"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData12"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData12"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData13" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData13"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData13"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData13"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData13"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData14" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData14"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData14"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData14"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData14"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="PlayerData15" type="HBoxContainer" parent="MarginContainer/PlayerList/BloodbathData"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Name" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData15"]
-custom_minimum_size = Vector2(170, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 10
-text = "SIGAAMDAD"
-clip_text = true
-
-[node name="Kills" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData15"]
-custom_minimum_size = Vector2(136, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "32"
-clip_text = true
-
-[node name="Deaths" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData15"]
-custom_minimum_size = Vector2(156, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
-
-[node name="Assists" type="Label" parent="MarginContainer/PlayerList/BloodbathData/PlayerData15"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "0"
+text = "/"
+horizontal_alignment = 1

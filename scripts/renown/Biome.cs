@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 
 namespace Renown.World {
@@ -19,7 +20,7 @@ namespace Renown.World {
 		/// The current weather of the biome
 		/// </summary>
 		[Export]
-		private uint CurrentWeather = 0;
+		private WeatherType CurrentWeather = WeatherType.Clear;
 		
 		/// <summary>
 		/// Chance of biome clear & sunny weather
@@ -97,8 +98,6 @@ namespace Renown.World {
 			}
 			EmitSignal( "AgentExitedArea", (CharacterBody2D)body );
 		}
-		
-		/*
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
@@ -114,24 +113,6 @@ namespace Renown.World {
 			CurrentWeather = weather;
 		}
 		
-		public void Save() {
-			DirAccess.MakeDirRecursiveAbsolute( ArchiveSystem.Instance.GetSaveDirectory() + "WorldData/" + AreaName + ".ngd" );
-			
-			string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "WorldData/" + AreaName + ".ngd" );
-			System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-			System.IO.BinaryWriter writer = new System.IO.BinaryWriter( stream );
-			
-			writer.Write( (uint)CurrentWeather );
-		}
-		public void Load() {
-			string path = ProjectSettings.GlobalizePath( ArchiveSystem.Instance.GetSaveDirectory() + "WorldData/" + AreaName + ".ngd" );
-			System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
-			System.IO.BinaryReader reader = new System.IO.BinaryReader( stream );
-			
-			CurrentWeather = (WeatherType)reader.ReadUInt32();
-		}
-		*/
-		
 		public override void _Ready() {
 			WeatherChances = new System.Collections.Generic.Dictionary<WeatherType, float>{
 				{ WeatherType.Clear, WeatherChanceClear },
@@ -145,12 +126,19 @@ namespace Renown.World {
 			};
 			
 			WeatherChangeTimer = new Timer();
+			WeatherChangeTimer.SetProcess( false );
+			WeatherChangeTimer.SetProcessInternal( false );
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
-//			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
+			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
+			AddChild( WeatherChangeTimer );
 			
 			RegionArea = GetNode<Area2D>( "BiomeArea" );
 			RegionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRegionBodyShape2DEntered ) );
 			RegionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnRegionBodyShape2DExited ) );
+
+			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
+			ProcessThreadMessages = ProcessThreadMessagesEnum.MessagesPhysics;
 		}
 	};
 };

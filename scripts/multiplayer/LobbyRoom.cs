@@ -244,6 +244,8 @@ public partial class LobbyRoom : Control {
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
 		PlayerList.AddChild( container );
 
+		PlayerList.AddChild( new HSeparator() );
+
 		SteamLobby.Instance.GetLobbyMembers();
 
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
@@ -258,6 +260,10 @@ public partial class LobbyRoom : Control {
 			container.Show();
 			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
 			PlayerList.AddChild( container );
+
+			if ( i < SteamLobby.Instance.LobbyMemberCount - 1 ) {
+				PlayerList.AddChild( new HSeparator() );
+			}
 		}
 	}
 };

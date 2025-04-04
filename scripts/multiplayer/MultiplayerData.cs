@@ -36,7 +36,6 @@ public partial class MultiplayerData : Node2D {
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
 
-		GD.Print( "Adding " + SteamLobby.Instance.LobbyMemberCount + " members." );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
@@ -102,7 +101,12 @@ public partial class MultiplayerData : Node2D {
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 
+		Control Scoreboard = GetNode<Control>( "Scoreboard" );
+		Scoreboard.SetProcess( false );
+		Scoreboard.SetProcessInternal( false );
+
 		ModeData = GetNode<Mode>( "ModeData" );
+		ModeData.Connect( "ShowScoreboard", Callable.From( Scoreboard.Show ) );
 		
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
@@ -121,7 +125,7 @@ public partial class MultiplayerData : Node2D {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
 			}
-			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+			CharacterBody2D player = PlayerScene.Instantiate<NetworkPlayer>();
 			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
 			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );

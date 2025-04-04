@@ -31,6 +31,9 @@ signal dialogue_ended(resource: DialogueResource)
 ## Used internally.
 signal bridge_get_next_dialogue_line_completed(line: DialogueLine)
 
+## Used internally
+signal bridge_dialogue_started(resource: DialogueResource)
+
 ## Used inernally
 signal bridge_mutated()
 
@@ -161,7 +164,7 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
 	if not resource.lines.has(key):
 		assert(false, DMConstants.translate(&"errors.key_not_found").format({ key = key }))
 
-	var data: Dictionary = resource.lines.get(key)
+	var data: Dictionary = resource.lines.get(key).duplicate(true)
 
 	# If next_id is an expression we need to resolve it.
 	if data.has(&"next_id_expression"):
@@ -204,14 +207,13 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
 				cummulative_weight += sibling.weight
 
 	# Find any simultaneously said lines.
-	var concurrent_lines: Array[DialogueLine] = []
 	if data.has(&"concurrent_lines"):
 		# If the list includes this line then it isn't the origin line so ignore it.
 		if not data.concurrent_lines.has(data.id):
-			for concurrent_id: String in data.concurrent_lines:
-				var concurrent_line: DialogueLine = await get_line(resource, concurrent_id, extra_game_states)
-				if concurrent_line:
-					concurrent_lines.append(concurrent_line)
+			# Resolve IDs to their actual lines.
+			data.concurrent_lines = data.concurrent_lines.map(func(line_id):
+				return await get_line(resource, line_id, extra_game_states)
+			)
 
 	# If this line is blank and it's the last line then check for returning snippets.
 	if data.type in [DMConstants.TYPE_COMMENT, DMConstants.TYPE_UNKNOWN]:
@@ -249,7 +251,6 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
 
 	# Set up a line object.
 	var line: DialogueLine = await create_dialogue_line(data, extra_game_states)
-	line.concurrent_lines = concurrent_lines
 
 	# If the jump point somehow has no content then just end.
 	if not line: return null
@@ -451,6 +452,7 @@ func _start_balloon(balloon: Node, resource: DialogueResource, title: String, ex
 		assert(false, DMConstants.translate(&"runtime.dialogue_balloon_missing_start_method"))
 
 	dialogue_started.emit(resource)
+	bridge_dialogue_started.emit(resource)
 
 
 # Get the path to the example balloon
@@ -863,7 +865,18 @@ func _resolve(tokens: Array, extra_game_states: Array):
 		limit += 1
 		var token: Dictionary = tokens[i]
 
-		if token.type == DMConstants.TOKEN_FUNCTION:
+		if token.type == DMConstants.TOKEN_NULL_COALESCE:
+			var caller: Dictionary = tokens[i - 1]
+			if caller.value == null:
+				# If the caller is null then the method/property is also null
+				caller.type = DMConstants.TOKEN_VALUE
+				caller.value = null
+				tokens.remove_at(i + 1)
+				tokens.remove_at(i)
+			else:
+				token.type = DMConstants.TOKEN_DOT
+
+		elif token.type == DMConstants.TOKEN_FUNCTION:
 			var function_name: String = token.function
 			var args = await _resolve_each(token.value, extra_game_states)
 			if tokens[i - 1].type == DMConstants.TOKEN_DOT:
@@ -1326,6 +1339,9 @@ func _is_valid(line: DialogueLine) -> bool:
 
 # Check that a thing has a given method.
 func _thing_has_method(thing, method: String, args: Array) -> bool:
+	if not is_instance_valid(thing):
+		return false
+
 	if Builtins.is_supported(thing, method):
 		return thing != _autoloads
 	elif thing is Dictionary:
@@ -1340,9 +1356,9 @@ func _thing_has_method(thing, method: String, args: Array) -> bool:
 	if thing.has_method(method):
 		return true
 
-	if method.to_snake_case() != method and DMSettings.check_for_dotnet_solution():
+	if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
 		# If we get this far then the method might be a C# method with a Task return type
-		return _get_dotnet_dialogue_manager().ThingHasMethod(thing, method)
+		return _get_dotnet_dialogue_manager().ThingHasMethod(thing, method, args)
 
 	return false
 
@@ -1362,16 +1378,23 @@ func _thing_has_property(thing: Object, property: String) -> bool:
 	return false
 
 
-func _get_method_info_for(thing, method: String) -> Dictionary:
+func _get_method_info_for(thing: Variant, method: String, args: Array) -> Dictionary:
 	# Use the thing instance id as a key for the caching dictionary.
 	var thing_instance_id: int = thing.get_instance_id()
 	if not _method_info_cache.has(thing_instance_id):
 		var methods: Dictionary = {}
 		for m in thing.get_method_list():
-			methods[m.name] = m
+			methods["%s:%d" % [m.name, m.args.size()]] = m
+			if not methods.has(m.name):
+				methods[m.name] = m
 		_method_info_cache[thing_instance_id] = methods
 
-	return _method_info_cache.get(thing_instance_id, {}).get(method)
+	var methods: Dictionary = _method_info_cache.get(thing_instance_id, {})
+	var method_key: String = "%s:%d" % [method, args.size()]
+	if methods.has(method_key):
+		return methods.get(method_key)
+	else:
+		return methods.get(method)
 
 
 func _resolve_thing_method(thing, method: String, args: Array):
@@ -1382,7 +1405,7 @@ func _resolve_thing_method(thing, method: String, args: Array):
 
 	if thing.has_method(method):
 		# Try to convert any literals to the right type
-		var method_info: Dictionary = _get_method_info_for(thing, method)
+		var method_info: Dictionary = _get_method_info_for(thing, method, args)
 		var method_args: Array = method_info.args
 		if method_info.flags & METHOD_FLAG_VARARG == 0 and method_args.size() < args.size():
 			assert(false, DMConstants.translate(&"runtime.expected_n_got_n_args").format({ expected = method_args.size(), method = method, received = args.size()}))

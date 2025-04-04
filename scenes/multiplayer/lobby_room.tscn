@@ -50,21 +50,34 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+visible = false
 modulate = Color(0, 0, 0, 0.556863)
 layout_mode = 2
 texture = SubResource("GradientTexture2D_f0wps")
 
 [node name="PlayerList" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
 
 [node name="ClonerContainer" type="HBoxContainer" parent="MarginContainer/PlayerList"]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 4
 
-[node name="Label" type="Label" parent="MarginContainer/PlayerList/ClonerContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/PlayerList/ClonerContainer"]
+custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+text = "CLONER PLAYER"
+
+[node name="KickButton" type="Button" parent="MarginContainer/PlayerList/ClonerContainer"]
+modulate = Color(1, 1, 0, 1)
+layout_mode = 2
+text = "KICK"
+
+[node name="BanButton" type="Button" parent="MarginContainer/PlayerList/ClonerContainer"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "BAN"
 
 [node name="StartGameButton" type="Button" parent="."]
 layout_mode = 1

@@ -103,9 +103,9 @@ namespace Renown.World {
 			}
 
 			PrimaryAlignment = (AIAlignment)reader.LoadUInt( "alignment" );
-			Leader = Thinker.Cache.SearchCache( reader.LoadString( "leader" ) );
+//			Leader = (Thinker)GetTree().CurrentScene.GetNode( reader.LoadString( "leader" ) );
 			
-			int debtCount = reader.LoadInt( "" );
+			int debtCount = reader.LoadInt( "debt_count" );
 		}
 		
 		/*
@@ -124,14 +124,14 @@ namespace Renown.World {
 		}
 		*/
 		public bool CanJoin( Entity member ) {
-			
+			return true;
 		}
 		public void MemberJoin( Entity member ) {
-			member.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
+			member.Connect( "Die", Callable.From<Entity, Entity>( OnMemberDeath ) );
 			member.SetFaction( this );
 		}
 		public void MemberLeave( Entity member ) {
-			member.Disconnect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnMemberDeath ) );
+			member.Disconnect( "Die", Callable.From<Entity, Entity>( OnMemberDeath ) );
 			member.SetFaction( null );
 		}
 		
@@ -178,7 +178,7 @@ namespace Renown.World {
 		}
 		public void OnBountyCompleted( Bounty bounty, Entity entity ) {
 			if ( Reserves - bounty.GetAmount() < 0.0f ) {
-				AddDebt( entity, bount.GetAmount() );
+				AddDebt( entity, bounty.GetAmount() );
 			} else {
 				entity.AddMoney( bounty.GetAmount() );
 			}

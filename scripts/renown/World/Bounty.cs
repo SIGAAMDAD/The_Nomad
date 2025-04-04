@@ -39,7 +39,7 @@ namespace Renown.World {
 			
 			contract.Amount = nAmount;
 			contract.Target = target;
-			contract.Completed += creator.OnBountyCompleted;
+//			contract.Completed += creator.OnBountyCompleted;
 			contract.AddToGroup( "Archive" );
 			
 			BountyCache.Add( contract );

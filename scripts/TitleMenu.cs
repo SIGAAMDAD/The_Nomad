@@ -13,13 +13,13 @@ public partial class TitleMenu : Control {
 	private AudioStreamPlayer UIChannel;
 	private AudioStreamPlayer MusicTheme;
 
-	private Control MultiplayerMenu;
-	private Control SettingsMenu;
-	private Control MainMenu;
+	private MultiplayerMenu MultiplayerMenu;
+	private SettingsMenu SettingsMenu;
+	private MainMenu MainMenu;
 	private Button ExitButton;
 
-	private Control LobbyBrowser;
-	private Control LobbyFactory;
+	private LobbyBrowser LobbyBrowser;
+	private LobbyFactory LobbyFactory;
 
 	private AudioStream LoopingTheme;
 
@@ -111,6 +111,8 @@ public partial class TitleMenu : Control {
 		LobbyBrowser.SetProcessInternal( true );
 		LobbyBrowser.SetProcessUnhandledInput( true );
 
+		LobbyBrowser.ResetBrowser();
+
 		MainMenu.Hide();
 		MultiplayerMenu.Show();
 		ExitButton.Show();
@@ -138,16 +140,16 @@ public partial class TitleMenu : Control {
 		Background.SetProcess( false );
 		Background.SetProcessInternal( false );
 
-		MainMenu = GetNode<Control>( "MainMenu" );
+		MainMenu = GetNode<MainMenu>( "MainMenu" );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
 		MainMenu.Connect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
 
-		MultiplayerMenu = GetNode<Control>( "MultiplayerMenu" );
+		MultiplayerMenu = GetNode<MultiplayerMenu>( "MultiplayerMenu" );
 		MultiplayerMenu.SetProcess( false );
 		MultiplayerMenu.SetProcessInternal( false );
 		MultiplayerMenu.SetProcessUnhandledInput( false );
 
-		SettingsMenu = GetNode<Control>( "SettingsMenu" );
+		SettingsMenu = GetNode<SettingsMenu>( "SettingsMenu" );
 		SettingsMenu.SetProcess( false );
 		SettingsMenu.SetProcessInternal( false );
 		SettingsMenu.SetProcessUnhandledInput( false );
@@ -155,12 +157,12 @@ public partial class TitleMenu : Control {
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
-		LobbyBrowser = GetNode<Control>( "MultiplayerMenu/LobbyBrowser" );
+		LobbyBrowser = GetNode<LobbyBrowser>( "MultiplayerMenu/LobbyBrowser" );
 		LobbyBrowser.SetProcess( false );
 		LobbyBrowser.SetProcessInternal( false );
 		LobbyBrowser.SetProcessUnhandledInput( false );
 
-		LobbyFactory = GetNode<Control>( "MultiplayerMenu/LobbyFactory" );
+		LobbyFactory = GetNode<LobbyFactory>( "MultiplayerMenu/LobbyFactory" );
 		LobbyFactory.SetProcess( false );
 		LobbyFactory.SetProcessInternal( false );
 		LobbyFactory.SetProcessUnhandledInput( false );
@@ -171,6 +173,7 @@ public partial class TitleMenu : Control {
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
 		MusicTheme.SetProcess( false );
+		MusicTheme.SetProcessInternal( false );
 		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );

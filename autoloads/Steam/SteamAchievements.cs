@@ -155,32 +155,32 @@ public partial class SteamAchievements : Node {
 		UserStatsReceivedCallResult = CallResult<UserStatsReceived_t>.Create( OnUserStatsReceived );
 
 		if ( !SteamUserStats.RequestCurrentStats() ) {
-			GD.PushError( "[STEAM] Error fetching Steam stats!" );
+			Console.PrintError( "[STEAM] Error fetching Steam stats!" );
 		}
 	}
 
     private void OnUserAchievementStored( UserAchievementStored_t pCallback ) {
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
-			GD.PushError( "[STEAM] Incorrect AppID!" );
+			Console.PrintError( "[STEAM] Incorrect AppID!" );
 			return;
 		}
 
-		GD.Print( "[STEAM] Stored achievement data for " + pCallback.m_rgchAchievementName + ", progress: " + pCallback.m_nCurProgress + "/" + pCallback.m_nMaxProgress );
+		Console.PrintLine( string.Format( "[STEAM] Stored achievement data for {0}, progress: {1}/{2}", pCallback.m_rgchAchievementName, pCallback.m_nCurProgress, pCallback.m_nMaxProgress ) );
 	}
 	private void OnUserStatsReceived( UserStatsReceived_t pCallback, bool bIOFailure ) {
 		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
-			GD.PushError( "[STEAM] Error fetching steam user statistics" );
+			Console.PrintError( "[STEAM] Error fetching steam user statistics" );
 			return;
 		}
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
-			GD.PushError( "[STEAM] Incorrect AppID!" );
+			Console.PrintError( "[STEAM] Incorrect AppID!" );
 			return;
 		}
 
 		foreach ( var achievement in AchievementTable ) {
 			bool bAchieved;
 			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bAchieved ) ) {
-				GD.PushError( "[STEAM] Error getting achievement data for " + achievement.Value.GetIdString() );
+				Console.PrintError( string.Format( "[STEAM] Error getting achievement data for {0}", achievement.Value.GetIdString() ) );
 				continue;
 			}
 			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
@@ -189,11 +189,11 @@ public partial class SteamAchievements : Node {
 	}
 	private void OnUserStatsReceived( UserStatsReceived_t pCallback ) {
 		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
-			GD.PushError( "[STEAM] Error fetching steam user statistics" );
+			Console.PrintError( "[STEAM] Error fetching steam user statistics" );
 			return;
 		}
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
-			GD.PushError( "[STEAM] Incorrect AppID!" );
+			Console.PrintError( "[STEAM] Incorrect AppID!" );
 			return;
 		}
 
@@ -202,49 +202,49 @@ public partial class SteamAchievements : Node {
 	}
 	private void OnUserStatsStored( UserStatsStored_t pCallback ) {
 		if ( pCallback.m_eResult != EResult.k_EResultOK ) {
-			GD.PushError( "[STEAM] Couldn't store stats: " + pCallback.m_eResult );
+			Console.PrintError( string.Format( "[STEAM] Couldn't store stats: {0}", pCallback.m_eResult ) );
 		}
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
-			GD.PushError( "[STEAM] Incorrect AppID!" );
+			Console.PrintError( "[STEAM] Incorrect AppID!" );
 		}
 	}
 
 	public static void SetAchievementProgress( string id, string statName, int nValue ) {
 		if ( !AchievementTable.ContainsKey( id ) ) {
-			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
+			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
 		SteamUserStats.SetStat( statName, nValue );
 		while ( !SteamUserStats.StoreStats() ) {
-			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+			Console.PrintError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
 	public static void SetAchievementProgress( string id, string statName, float nValue ) {
 		if ( !AchievementTable.ContainsKey( id ) ) {
-			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
+			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
 		SteamUserStats.SetStat( statName, nValue );
 		while ( !SteamUserStats.StoreStats() ) {
-			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+			Console.PrintError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
 	public static void ActivateAchievement( string id ) {
 		if ( !AchievementTable.ContainsKey( id ) ) {
-			GD.PushError( "[STEAM] Achievement " + id + " doesn't exist!" );
+			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
 		AchievementTable[ id ].SetAchieved( true );
 
 		if ( !SteamUserStats.SetAchievement( id ) ) {
-			GD.PushError( "[STEAM] Error activating achievement!" );
+			Console.PrintError( "[STEAM] Error activating achievement!" );
 			return;
 		}
 		while ( !SteamUserStats.StoreStats() ) {
-			GD.PushError( "[STEAM] Steam couldn't store stats!" );
+			Console.PrintError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
 };

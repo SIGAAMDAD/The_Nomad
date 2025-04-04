@@ -17,6 +17,28 @@ public partial class LobbyFactory : Control {
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
 
+	private void OnMapSelectionChanged( int nSelected ) {
+		MultiplayerMapManager.MapData data = MultiplayerMapManager.MapCache.Values.ElementAt( nSelected );
+
+		GameModeList.Clear();
+		if ( data.ModeBloodbath ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Bloodbath ] );
+		}
+		if ( data.ModeTeamBrawl ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.TeamBrawl ] );
+		}
+		if ( data.ModeCaptureTheFlag ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.CaptureTheFlag ] );
+		}
+		if ( data.ModeKingOfTheHill ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.KingOfTheHill ] );
+		}
+		if ( data.ModeDuel ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ] );
+		}
+		GameModeList.Selected = 0;
+	}
+
 	public override void _Ready() {
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
@@ -27,7 +49,11 @@ public partial class LobbyFactory : Control {
 		MaxPlayers.Connect( "value_changed", Callable.From<double>( ( value ) => { PlayerCountLabel.Text = Convert.ToString( (int)value ); } ) );
 
 		PlayerCountLabel = GetNode<Label>( "MarginContainer/VBoxContainer/MaxPlayersContainer/HBoxContainer/PlayerCountLabel" );
+		PlayerCountLabel.Text = Convert.ToString( MaxPlayers.Value );
+
 		MapList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/MapContainer/MapOptionButton" );
+		MapList.Connect( "item_selected", Callable.From<int>( OnMapSelectionChanged ) );
+
 		GameModeList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/GameModeContainer/GameModeOptionButton" );
 
 		Button CreateButton = GetNode<Button>( "CreateButton" );

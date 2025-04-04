@@ -176,8 +176,10 @@ max_distance = 1000.0
 bus = &"SFX"
 
 [node name="Bounds" type="Node2D" parent="."]
+process_mode = 4
 
 [node name="Area2D" type="Area2D" parent="Bounds"]
+monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Area2D"]
 position = Vector2(-6, -7)
