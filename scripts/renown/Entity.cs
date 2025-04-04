@@ -93,23 +93,23 @@ public partial class Entity : CharacterBody2D {
 	public float GetHealth() => Health;
 	
 	public float GetMoney() => Money;
-	public void DecreaseMoney( float nAmount ) {
+	public virtual void DecreaseMoney( float nAmount ) {
 		Money -= nAmount;
 		EmitSignal( "LoseMoney", this, nAmount );
 	}
-	public void IncreaseMoney( float nAmount ) {
+	public virtual void IncreaseMoney( float nAmount ) {
 		Money += nAmount;
 		EmitSignal( "GainMoney", this, nAmount );
 	}
 	
 	public int GetWarCrimeCount() => WarCrimeCount;
-	public void CommitWarCrime( WarCrimeType nType ) {
+	public virtual void CommitWarCrime( WarCrimeType nType ) {
 		EmitSignal( "CommitWarCrime", this, nType );
 		WarCrimeCount++;
 	}
 	
 	public Faction GetFaction() => Faction;
-	public void SetFaction( Faction faction ) {
+	public virtual void SetFaction( Faction faction ) {
 		// sanity
 		if ( Faction == faction ) {
 			Console.PrintWarning( "Entity.SetFaction: same faction" );
@@ -124,7 +124,7 @@ public partial class Entity : CharacterBody2D {
 	}
 	
 	public int GetFactionImportance() => FactionImportance;
-	public void DecreaseFactionImportance( int nAmount ) {
+	public virtual void DecreaseFactionImportance( int nAmount ) {
 		// sanity
 		if ( Faction == null ) {
 			Console.PrintError( "Entity.DecreaseFactionImportance: no faction" );
@@ -133,7 +133,7 @@ public partial class Entity : CharacterBody2D {
 		FactionImportance -= nAmount;
 		EmitSignal( "FactionDemotion", Faction, this );
 	}
-	public void IncreaseFactionImportance( int nAmount ) {
+	public virtual void IncreaseFactionImportance( int nAmount ) {
 		// sanity
 		if ( Faction == null ) {
 			Console.PrintError( "Entity.IncreaseFactionImportance: no faction" );
@@ -144,16 +144,16 @@ public partial class Entity : CharacterBody2D {
 	}
 	
 	public bool HasTrait( TraitType nType ) => TraitCache.Contains( nType );
-	public void AddTrait( TraitType nType ) {
+	public virtual void AddTrait( TraitType nType ) {
 		EmitSignal( "EarnTrait", this, nType );
 		TraitCache.Add( nType );
 	}
-	public void RemoveTrait( TraitType nType ) {
+	public virtual void RemoveTrait( TraitType nType ) {
 		EmitSignal( "LoseTrait", this, nType );
 		TraitCache.Remove( nType );
 	}
 	
-	private void Meet( Node other ) {
+	protected virtual void Meet( Node other ) {
 		RelationCache.Add( other, 0.0f );
 		
 		Entity entity = other as Entity;
@@ -169,7 +169,7 @@ public partial class Entity : CharacterBody2D {
 		}
 	}
 	public bool HasRelation( Node other ) => RelationCache.ContainsKey( other );
-	public void RelationIncrease( Node other, float nAmount ) {
+	public virtual void RelationIncrease( Node other, float nAmount ) {
 		if ( !RelationCache.TryGetValue( other, out float score ) ) {
 			Meet( other );
 		}
@@ -177,7 +177,7 @@ public partial class Entity : CharacterBody2D {
 		EmitSignal( "RelationIncrease", other, this, nAmount );
 		RelationCache[ other ] = score;
 	}
-	public void RelationDecrease( Node other, float nAmount ) {
+	public virtual void RelationDecrease( Node other, float nAmount ) {
 		if ( !RelationCache.TryGetValue( other, out float score ) ) {
 			Meet( other );
 		}
