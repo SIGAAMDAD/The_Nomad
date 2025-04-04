@@ -72,6 +72,14 @@ public partial class Entity : CharacterBody2D {
 	public delegate void RelationIncreaseEventHandler( Node other, Entity entity, float nAmount );
 	[Signal]
 	public delegate void RelationDecreaseEventHandler( Node other, Entity entity, float nAmount );
+	[Signal]
+	public delegate void StartContractEventHandler( Contract contract, Entity entity );
+	[Signal]
+	public delegate void CompleteContractEventHandler( Contract contract, Entity entity );
+	[Signal]
+	public delegate void FailedContractEventHandler( Contract contract, Entity entity );
+	[Signal]
+	public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
 	
 	public virtual void Damage( Entity source, float nAmount ) {
 		EmitSignal( "Damage", source, this, nAmount );
