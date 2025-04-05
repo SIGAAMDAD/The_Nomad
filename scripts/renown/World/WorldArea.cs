@@ -19,7 +19,6 @@ namespace Renown.World {
 			if ( data == null ) {
 				return;
 			}
-			GD.Print( "Setting location of " + body.GetPath() );
 			data.CallDeferred( "SetLocation", this );
 		}
 		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

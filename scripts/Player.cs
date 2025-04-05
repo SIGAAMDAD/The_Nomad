@@ -6,7 +6,7 @@ using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown.World;
 
-public partial class Player : CharacterBody2D {
+public partial class Player : Entity {
 	public enum Hands : byte {
 		Left,
 		Right,
@@ -131,8 +131,6 @@ public partial class Player : CharacterBody2D {
 	private AnimatedSprite2D LegAnimation;
 	private AnimatedSprite2D IdleAnimation;
 
-	private WorldArea Location = null;
-
 	private Timer IdleTimer;
 
 	private Timer DashTime;
@@ -150,14 +148,8 @@ public partial class Player : CharacterBody2D {
 
 	private static bool TutorialCompleted = false;
 
-	// renown data
-	private uint RenownAmount = 0;
-	private uint WarCrimeCount = 0;
-	private List<Renown.Trait> Traits = new List<Renown.Trait>();
-
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
-	private float Health = 100.0f;
 	private float Rage = 60.0f;
 	private PlayerFlags Flags = 0;
 	private int CurrentWeapon = 0;
@@ -206,11 +198,6 @@ public partial class Player : CharacterBody2D {
 	private int TileMapLevel = 0;
 
 	private int NodeHash = 0;
-
-	[Signal]
-	public delegate void DieEventHandler( CharacterBody2D attacker, CharacterBody2D target );
-	[Signal]
-	public delegate void DamagedEventHandler( CharacterBody2D attacker, CharacterBody2D target, float nAmount );
 
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
@@ -476,10 +463,6 @@ public partial class Player : CharacterBody2D {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetSoundLevel() {
 		return SoundLevel;
-	}
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public float GetHealth() {
-		return Health;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetHealth( float nHealth ) {
@@ -1372,9 +1355,6 @@ public partial class Player : CharacterBody2D {
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
 		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0 );
-//		GetNode( "/root/Console" ).Call( "add_command", "suicide", Callable.From( CmdSuicide ) );
-
-		NodeHash = SteamFriends.GetFriendPersonaName( SteamUser.GetSteamID() ).GetHashCode();
 
 		SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
 			new SteamLobby.NetworkNode( this, SendPacket, null ) );

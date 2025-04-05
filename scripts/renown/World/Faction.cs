@@ -68,6 +68,27 @@ namespace Renown.World {
 		public AIAlignment GetAlignment() => PrimaryAlignment;
 		public Thinker GetLeader() => Leader;
 
+		public RelationStatus GetRelationStatus( Node other ) {
+			float score = GetRelationScore( other );
+			
+			if ( score < -100.0f ) {
+				return RelationStatus.KendrickAndDrake;
+			}
+			if ( score < -50.0f ) {
+				return RelationStatus.Hates;
+			}
+			if ( score < 0.0f ) {
+				return RelationStatus.Dislikes;
+			}
+			if ( score > 25.0f ) {
+				return RelationStatus.Friends;
+			}
+			if ( score > 100.0f ) {
+				return RelationStatus.GoodFriends;
+			}
+			return RelationStatus.Neutral;
+		}
+
 		public virtual void Save() {
 			int counter;
 			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
@@ -180,7 +201,7 @@ namespace Renown.World {
 			if ( Reserves - bounty.GetAmount() < 0.0f ) {
 				AddDebt( entity, bounty.GetAmount() );
 			} else {
-				entity.AddMoney( bounty.GetAmount() );
+				entity.IncreaseMoney( bounty.GetAmount() );
 			}
 			Reserves -= bounty.GetAmount();
 //			ContractManager.Remove( bounty );
@@ -199,8 +220,8 @@ namespace Renown.World {
 				RelationList = new Dictionary<Node, float>( ExistingRelations.Count );
 			}
 			
-			WorkThread = new Thread( Think );
-			WorkThread.Start();
+//			WorkThread = new Thread( Think );
+//			WorkThread.Start();
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % 120 ) != 0 ) {
@@ -209,10 +230,10 @@ namespace Renown.World {
 			
 			base._Process( delta );
 			
-			lock ( LockObject ) {
+//			lock ( LockObject ) {
 				// allow it to run again
-				Monitor.Pulse( LockObject );
-			}
+//				Monitor.Pulse( LockObject );
+//			}
 		}
 		
 		private bool CreateDebt( float nAmount ) {
@@ -256,9 +277,7 @@ namespace Renown.World {
 			return true;
 		}
 		private void AddDebt( Node to, float nAmount ) {
-			if ( !DebtList.ContainsKey( to ) ) {
-				DebtList.Add( to, 0.0f );
-			}
+			DebtList.TryAdd( to, 0.0f );
 			DebtList[ to ] += nAmount;
 		}
 		private void PayDebt( Node to, float nAmount ) {

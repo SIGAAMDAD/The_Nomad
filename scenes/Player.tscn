@@ -22,7 +22,7 @@ size = Vector2(16, 30)
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD") groups=["Archive", "SceneRelevant"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "Relations", "Debts") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
 process_physics_priority = 4
 light_mask = 0
@@ -36,6 +36,8 @@ Inventory = NodePath("Inventory")
 ArmLeft = NodePath("ArmLeft")
 ArmRight = NodePath("ArmRight")
 HUD = NodePath("HeadsUpDisplay")
+Relations = {}
+Debts = {}
 
 [node name="Animations" type="Node2D" parent="."]
 process_thread_group = 1

@@ -1,3 +1,5 @@
+using Godot;
+
 namespace Renown {
 	public enum TraitType : uint {
 		Greedy,
@@ -9,14 +11,17 @@ namespace Renown {
 		Count
 	};
 
-	public abstract class Trait {
+	public abstract partial class Trait : Node {
 		public Trait() {
 		}
 
-		public abstract string GetName();
+		public abstract string GetTraitName();
 		public abstract TraitType GetTraitType();
 
 		public abstract sbyte GetFearBias();
 		public abstract sbyte GetTrustBias();
+
+		public abstract bool Conflicts( Trait other );
+		public abstract bool Agrees( Trait other );
 	};
 };

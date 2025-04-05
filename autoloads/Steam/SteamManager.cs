@@ -60,25 +60,25 @@ public partial class SteamManager : Node {
 		GD.Print( "...SteamUser.UserName: " + SteamUsername );
 	}
 	private void LoadDLCInfo() {
-		GetNode( "/root/Console" ).Call( "print_line", "Loading Steam DLC information...", true );
+		Console.PrintLine( "Loading Steam DLC information..." );
 
 		int dlcCount = SteamApps.GetDLCCount();
 		if ( dlcCount == 0 ) {
-			GetNode( "/root/Console" ).Call( "print_line", "...None installed", true );
+			Console.PrintLine( "...None installed" );
 			return;
 		}
 
-		GetNode( "/root/Console" ).Call( "print_line", "...Found " + dlcCount + " DLC packets", true );
+		Console.PrintLine( string.Format( "...Found {0} DLC packets", dlcCount ) );
 		for ( int i = 0; i < dlcCount; i++ ) {
 			bool available;
 			string name;
 			AppId_t dlcId;
 
 			if ( SteamApps.BGetDLCDataByIndex( i, out dlcId, out available, out name, 256 ) ) {
-				GetNode( "/root/Console" ).Call( "print_error", "...Couldn't load info for " + i, true );
+				Console.PrintError( string.Format( "...Couldn't load info for {0}", i ) );
 				continue;
 			}
-			GetNode( "/root/Console" ).Call( "print_line", "...Got DLC Packet \"" + name + "\", status: " + available.ToString(), true );
+			Console.PrintLine( string.Format( "...Got DLC Packet \"{0}\", status: {1}", name, available.ToString() ) );
 		}
 	}
 
@@ -112,7 +112,7 @@ public partial class SteamManager : Node {
 		string errorMessage;
 		
 		if ( SteamAPI.InitEx( out errorMessage ) != ESteamAPIInitResult.k_ESteamAPIInitResult_OK ) {
-			GD.PushError( "[STEAM] Error initializing SteamAPI: " + errorMessage );
+			Console.PrintError( string.Format( "[STEAM] Error initializing SteamAPI: {0}", errorMessage ) );
 			return;
 		}
 
@@ -132,7 +132,7 @@ public partial class SteamManager : Node {
 	}
 
     private void SteamAPIDebugTextCallback( int nSeverity, System.Text.StringBuilder debugText ) {
-		GetNode( "/root/Console" ).Call( "print_line", "[STEAM] " + debugText.ToString(), true );
+		Console.PrintLine( string.Format( "[STEAM] {0}", debugText.ToString() ) );
 	}
 
     public static void SaveCloudFile( string path ) {

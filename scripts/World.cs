@@ -149,7 +149,7 @@ public partial class World : Node2D {
 	}
 	public override void _Ready() {
 		GetTree().CurrentScene = this;
-
+		
 		Players = new Dictionary<CSteamID, CharacterBody2D>();
 
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );

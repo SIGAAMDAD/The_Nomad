@@ -31,7 +31,6 @@ public partial class MainMenu : Control {
 
 	private static PackedScene LoadedWorld = null;
 	private static Thread LoadThread = null;
-	private static object LoadSync = new object();
 
 	private AudioStreamPlayer UIChannel;
 	private CanvasLayer TransitionScreen;
@@ -45,29 +44,15 @@ public partial class MainMenu : Control {
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
-		QueueFree();
 	}
 	private void OnBeginGameFinished() {
 		TransitionScreen.Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 		QueueFree();
 	}
-
-	private void OnContinueGameButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		Loaded = true;
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
-		TransitionScreen.Call( "transition" );
-
+	private void OnContinueGameFinished() {
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
-
-		AudioFade = GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -98,6 +83,21 @@ public partial class MainMenu : Control {
 		} );
 		LoadThread.Start();
 	}
+
+	private void OnContinueGameButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
+		Loaded = true;
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
+		TransitionScreen.Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
+		TransitionScreen.Call( "transition" );
+
+		AudioFade = GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+	}
 	private void OnNewGameButtonPressed() {
 		if ( Loaded ) {
 			return;
@@ -112,8 +112,8 @@ public partial class MainMenu : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		TransitionScreen.Call( "transition" );
 		TransitionScreen.Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		TransitionScreen.Call( "transition" );
 		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 

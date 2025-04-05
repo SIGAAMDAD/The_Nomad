@@ -1,15 +1,16 @@
-using System.Diagnostics.Tracing;
 using Godot;
 
 public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
 	private Label ProgressLabel;
+	private Range Spinner;
 	private CanvasLayer TransitionScreen;
 	private bool FadingOut = false;
 	private Timer ImageChange;
-	private System.Random random = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+	private System.Random random = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day
+		+ System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
 
-	private readonly System.Collections.Generic.List<string> Tips = new System.Collections.Generic.List<string>{
+	private readonly string[] Tips = [
 		"You can parry anything that's flashing green, including blades, bullets, etc.",
 		"Dashing into an enemy will send them flying",
 		"Just parry the bullet dude!",
@@ -24,17 +25,19 @@ public partial class LoadingScreen : CanvasLayer {
 		"There are tips here, y'know, read 'em",
 		"Always keep in mind that STEALTH is optional",
 		"ANYTHING and EVERYTHING is a weapon",
+		"Parry that you filthy casual",
+		"This game won't baby you, so stop acting like a child",
 		"You can slice bullets in half, just make sure whatever's behind you can take the hit",
 		"You are literally too angry to die",
 		"Stop hiding behind cover like a little coward",
 		"Don't blame the game for your skill issue"
-	};
+	];
 
 	private void OnImageChangeTimeout() {
-		int tipIndex = random.Next( 0, Tips.Count - 1 );
+		int tipIndex = random.Next( 0, Tips.Length - 1 );
 		string newTip = Tips[ tipIndex ];
 		if ( newTip == TipLabel.Text ) {
-			if ( tipIndex == Tips.Count - 1 ) {
+			if ( tipIndex == Tips.Length - 1 ) {
 				tipIndex = 0;
 			} else {
 				tipIndex++;
@@ -48,26 +51,19 @@ public partial class LoadingScreen : CanvasLayer {
 	}
 	public void FadeOut() {
 		TransitionScreen.Call( "transition" );
-
-		ImageChange.SetProcess( false );
-		ImageChange.SetProcessInternal( false );
-		SetProcess( false );
-		SetProcessInternal( false );
+		Visible = false;
 	}
 	public void FadeIn() {
 		TransitionScreen.Call( "transition" );
 		Visible = true;
-
-		ImageChange.SetProcess( true );
-		ImageChange.SetProcessInternal( true );
-		SetProcess( true );
-		SetProcessInternal( true );
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
 		ImageChange = GetNode<Timer>( "ImageChange" );
+		ImageChange.SetProcess( false );
+		ImageChange.SetProcessInternal( false );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
@@ -76,7 +72,12 @@ public partial class LoadingScreen : CanvasLayer {
 		TipLabel.Show();
 
 		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		TransitionScreen.SetProcess( false );
+		TransitionScreen.SetProcessInternal( false );
+
+		Spinner = GetNode<Range>( "Tips/Spinner" );
+		Spinner.SetProcess( false );
+		Spinner.SetProcessInternal( false );
 
 		SetProcess( false );
 		SetProcessInternal( false );

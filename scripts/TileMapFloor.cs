@@ -96,7 +96,7 @@ public partial class TileMapFloor : Node2D {
 		if ( UpperLayer != null && !IsPlayerHere ) {
 			UpperLayer.CallDeferred( "hide" );
 		} else if ( UpperLayer != null && !UpperLayer.IsExterior ) {
-			( Floor.Material as ShaderMaterial )?.SetShaderParameter( "alpha_blend", true );
+			( Floor.Material as ShaderMaterial )?.SetDeferred( "shader_parameter/alpha_blend", true );
 		}
 		if ( LowerLayer != null ) {
 			if ( IsExterior ) {

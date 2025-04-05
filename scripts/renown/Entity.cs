@@ -1,7 +1,6 @@
 using Godot;
 using Renown;
 using Renown.World;
-using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -19,7 +18,7 @@ public partial class Entity : CharacterBody2D {
 	[Export]
 	protected int WarCrimeCount = 0;
 	[Export]
-	private TraitType[] Traits = null;
+	private Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
 	[Export]
 	private Godot.Collections.Dictionary<Node, float> Relations = null;
 	[Export]
@@ -39,7 +38,7 @@ public partial class Entity : CharacterBody2D {
 	protected Dictionary<Node, float> DebtCache = null;
 	
 	[Signal]
-	public delegate void DamageEventHandler( Entity source, Entity target, float nAmount );
+	public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
 	
 	//
 	// renown events
@@ -58,8 +57,8 @@ public partial class Entity : CharacterBody2D {
 	public delegate void GainMoneyEventHandler( Entity entity, float nAmount );
 	[Signal]
 	public delegate void LoseMoneyEventHandler( Entity entity, float nAmount );
-	[Signal]
-	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
+//	[Signal]
+//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
 	[Signal]
 	public delegate void EarnTraitEventHandler( Entity entity, Trait trait );
 	[Signal]
@@ -69,9 +68,9 @@ public partial class Entity : CharacterBody2D {
 	[Signal]
 	public delegate void MeetFactionEventHandler( Faction faction, Entity entity );
 	[Signal]
-	public delegate void RelationIncreaseEventHandler( Node other, Entity entity, float nAmount );
+	public delegate void IncreaseRelationEventHandler( Node other, Entity entity, float nAmount );
 	[Signal]
-	public delegate void RelationDecreaseEventHandler( Node other, Entity entity, float nAmount );
+	public delegate void DecreaseRelationEventHandler( Node other, Entity entity, float nAmount );
 	[Signal]
 	public delegate void StartContractEventHandler( Contract contract, Entity entity );
 	[Signal]
@@ -82,7 +81,7 @@ public partial class Entity : CharacterBody2D {
 	public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
 	
 	public virtual void Damage( Entity source, float nAmount ) {
-		EmitSignal( "Damage", source, this, nAmount );
+		EmitSignal( "Damaged", source, this, nAmount );
 		Health -= nAmount;
 		
 		if ( Health <= 0.0f ) {
@@ -102,11 +101,13 @@ public partial class Entity : CharacterBody2D {
 		EmitSignal( "GainMoney", this, nAmount );
 	}
 	
-	public int GetWarCrimeCount() => WarCrimeCount;
-	public virtual void CommitWarCrime( WarCrimeType nType ) {
-		EmitSignal( "CommitWarCrime", this, nType );
-		WarCrimeCount++;
-	}
+//	public int GetWarCrimeCount() => WarCrimeCount;
+//	public virtual void CommitWarCrime( WarCrimeType nType ) {
+//		EmitSignal( "CommitWarCrime", this, nType );
+//		WarCrimeCount++;
+//	}
+
+	public HashSet<Trait> GetTraits() => TraitCache;
 	
 	public Faction GetFaction() => Faction;
 	public virtual void SetFaction( Faction faction ) {
@@ -159,7 +160,7 @@ public partial class Entity : CharacterBody2D {
 	public bool HasConflictingTrait( Trait other ) {
 		foreach ( var trait in TraitCache ) {
 			if ( trait.Conflicts( other ) ) {
-				return bool;
+				return true;
 			}
 		}
 		return false;
@@ -186,9 +187,9 @@ public partial class Entity : CharacterBody2D {
 		EmitSignal( "EarnTrait", this, trait );
 		TraitCache.Add( trait );
 	}
-	public virtual void RemoveTrait( TraitType nType ) {
-		EmitSignal( "LoseTrait", this, nType );
-		TraitCache.Remove( nType );
+	public virtual void RemoveTrait( Trait trait ) {
+		EmitSignal( "LoseTrait", this, trait );
+		TraitCache.Remove( trait );
 	}
 	
 	protected virtual void DetermineRelationStatus( Node other ) {
@@ -201,6 +202,7 @@ public partial class Entity : CharacterBody2D {
 			score -= Faction.GetRelationScore( other );
 		}
 		
+		/*
 		HashSet<Trait> traitList = other.GetTraits();
 		foreach ( var trait in traitList ) {
 			List<Trait> conflicting = GetConflictingTraits( trait );
@@ -213,22 +215,21 @@ public partial class Entity : CharacterBody2D {
 				score += conflicting[i].GetPositiveRelationScore( trait );
 			}
 		}
+		*/
 		
 		RelationCache[ other ] = score;
 	}
 	protected virtual void Meet( Node other ) {
 		RelationCache.Add( other, 0.0f );
 		
-		Entity entity = other as Entity;
-		if ( entity != null ) { 
-			EmitSinal( "MeetEntity", entity, this );
+		if ( other is Entity entity && entity != null ) { 
+			EmitSignal( "MeetEntity", entity, this );
 		} else {
-			Faction faction = other as Faction;
-			if ( faction == null ) {
-				Console.PushError( "Entity.Meet: node isn't an entity or faction!" );
+			if ( other is Faction faction && faction != null ) {
+				EmitSignal( "MeetFaction", faction, this );
 				return;
 			}
-			EmitSignal( "MeetFaction", faction, this );
+			Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
 		}
 	}
 	public bool HasRelation( Node other ) => RelationCache.ContainsKey( other );
@@ -237,7 +238,7 @@ public partial class Entity : CharacterBody2D {
 			Meet( other );
 		}
 		score += nAmount;
-		EmitSignal( "RelationIncrease", other, this, nAmount );
+		EmitSignal( "IncreaseRelation", other, this, nAmount );
 		RelationCache[ other ] = score;
 	}
 	public virtual void RelationDecrease( Node other, float nAmount ) {
@@ -245,15 +246,15 @@ public partial class Entity : CharacterBody2D {
 			Meet( other );
 		}
 		score -= nAmount;
-		EmitSignal( "RelationDecrease", other, this, nAmount );
+		EmitSignal( "DecreaseRelation", other, this, nAmount );
 		RelationCache[ other ] = score;
 	}
 	
 	public override void _Ready() {
 		base._Ready();
 		
-		TraitCache = new HashSet<Trait>( Traits.Length );
-		for ( int i = 0; i < Traits.Length; i++ ) {
+		TraitCache = new HashSet<Trait>( Traits.Count );
+		for ( int i = 0; i < Traits.Count; i++ ) {
 //			FIXME:
 //			TraitCache.Add( new Trait(  ) );
 		}

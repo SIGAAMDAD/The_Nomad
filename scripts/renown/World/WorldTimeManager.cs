@@ -50,6 +50,10 @@ namespace Renown.World {
 		[Signal]
 		public delegate void NightTimeStartEventHandler();
 
+		public static WorldTimestamp Now() {
+			return new WorldTimestamp();
+		}
+
 		private void RecalculateTime() {
 			uint totalMinutes = (uint)( Time / InGameToRealMinuteDuration );
 //			uint day = totalMinutes / MinutesPerDay;

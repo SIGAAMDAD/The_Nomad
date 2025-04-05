@@ -9,8 +9,8 @@ public partial class Poem : Control {
 	private CanvasLayer TransitionScreen;
 	private Label Author;
 	private Label PressEnter;
-	private System.Collections.Generic.List<Timer> Timers;
-	private System.Collections.Generic.List<Label> Labels;
+	private Timer[] Timers;
+	private Label[] Labels;
 	private int CurrentTimer = 0;
 
 	private PackedScene LoadedWorld = null;
@@ -32,7 +32,6 @@ public partial class Poem : Control {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
-//			GetNode( "/root/Console" ).Call( "print_line", "Networking enabled, creating co-op lobby...", true );
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
 			GameConfiguration.GameMode = GameMode.Online;
@@ -69,22 +68,22 @@ public partial class Poem : Control {
 
 		base._Ready();
 
-		Timers = new System.Collections.Generic.List<Timer>{
+		Timers = [
 			GetNode<Timer>( "VBoxContainer/Label/Timer1" ),
 			GetNode<Timer>( "VBoxContainer/Label2/Timer2" ),
 			GetNode<Timer>( "VBoxContainer/Label3/Timer3" ),
 			GetNode<Timer>( "VBoxContainer/Label4/Timer4" ),
 			GetNode<Timer>( "VBoxContainer/Label5/Timer5" )
-		};
-		Labels = new System.Collections.Generic.List<Label>{
+		];
+		Labels = [
 			GetNode<Label>( "VBoxContainer/Label" ),
 			GetNode<Label>( "VBoxContainer/Label2" ),
 			GetNode<Label>( "VBoxContainer/Label3" ),
 			GetNode<Label>( "VBoxContainer/Label4" ),
 			GetNode<Label>( "VBoxContainer/Label5" )
-		};
+		];
 
-		for ( int i = 0; i < Timers.Count; i++ ) {
+		for ( int i = 0; i < Timers.Length; i++ ) {
 			Timers[i].Connect( "timeout", Callable.From( OnTimerTimeout ) );
 		}
 
@@ -106,17 +105,17 @@ public partial class Poem : Control {
 		if ( Loading ) {
 			return;
 		}
-		if ( CurrentTimer >= Labels.Count ) {
+		if ( CurrentTimer >= Labels.Length ) {
 			Loading = true;
 			TransitionScreen.Call( "transition" );
 			return;
 		}
 
 		CurrentTimer++;
-		if ( CurrentTimer < Timers.Count ) {
+		if ( CurrentTimer < Timers.Length ) {
 			Labels[ CurrentTimer ].Show();
 			Timers[ CurrentTimer ].Start();
-			if ( CurrentTimer == Timers.Count - 1 ) {
+			if ( CurrentTimer == Timers.Length - 1 ) {
 				Author.Show();
 				PressEnter.Show();
 			}

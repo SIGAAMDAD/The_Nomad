@@ -75,14 +75,16 @@ namespace Renown.World {
 			base._Ready();
 
 			ReplenishTimer = GetNode<Timer>( "ReplenishTimer" );
+			ReplenishTimer.SetProcess( false );
+			ReplenishTimer.SetProcessInternal( false );
 			ReplenishTimer.Connect( "timeout", Callable.From( OnResourceReplenishTimerTimeout ) );
 			
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DEntered ) );
 			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DExited ) );
 
-			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			ProcessThreadGroupOrder = 1;
-			ProcessThreadMessages = ProcessThreadMessagesEnum.Messages;
+//			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+//			ProcessThreadGroupOrder = 1;
+//			ProcessThreadMessages = ProcessThreadMessagesEnum.Messages;
 		}
 	};
 };
