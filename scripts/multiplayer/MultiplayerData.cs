@@ -15,7 +15,7 @@ public partial class MultiplayerData : Node2D {
 	private Thread SceneLoadThread = null;
 
 	private Player ThisPlayer = null;
-	private Dictionary<CSteamID, CharacterBody2D> Players = null;
+	private Dictionary<CSteamID, Renown.Entity> Players = null;
 	private Node PlayerList = null;
 
 	[Signal]
@@ -40,7 +40,7 @@ public partial class MultiplayerData : Node2D {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
 			}
-			CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+			Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
 			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
 			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
@@ -63,7 +63,7 @@ public partial class MultiplayerData : Node2D {
 			return;
 		}
 		
-		CharacterBody2D player = PlayerScene.Instantiate<CharacterBody2D>();
+		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
 		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
 		player.Set( "MultiplayerId", (ulong)userId );
 		player.Call( "SetOwnerId", (ulong)userId );
@@ -95,7 +95,7 @@ public partial class MultiplayerData : Node2D {
 	public override void _Ready() {
 		GetTree().CurrentScene = this;
 
-		Players = new Dictionary<CSteamID, CharacterBody2D>();
+		Players = new Dictionary<CSteamID, Renown.Entity>();
 		
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
@@ -125,7 +125,7 @@ public partial class MultiplayerData : Node2D {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
 			}
-			CharacterBody2D player = PlayerScene.Instantiate<NetworkPlayer>();
+			Renown.Entity player = PlayerScene.Instantiate<NetworkPlayer>();
 			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
 			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );

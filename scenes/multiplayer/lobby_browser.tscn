@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dpriw3r8df1su"]
+[gd_scene load_steps=5 format=3 uid="uid://dpriw3r8df1su"]
 
 [ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
-[ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="4_lib35"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
@@ -314,5 +313,3 @@ theme_override_constants/separation = 24
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "JOIN_GAME"
-
-[node name="Fade" parent="." instance=ExtResource("4_lib35")]

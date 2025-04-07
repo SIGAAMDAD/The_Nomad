@@ -38,12 +38,11 @@ script = ExtResource("2_fbroq")
 use_parent_material = true
 
 [node name="PickupArea2D" type="Area2D" parent="."]
+process_mode = 3
+collision_layer = 19
+collision_mask = 18
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea2D"]
 shape = SubResource("CircleShape2D_oo816")
-
-[node name="PickupSfx" type="AudioStreamPlayer2D" parent="."]
-bus = &"SFX"
-playback_type = 1
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

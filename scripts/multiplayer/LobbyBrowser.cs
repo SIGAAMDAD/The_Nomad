@@ -87,7 +87,6 @@ public partial class LobbyBrowser : Control {
 	private static Timer MatchmakingTimer;
 
 	private static VBoxContainer LobbyTable;
-	private static CanvasLayer TransitionScreen;
 
 	private static CheckBox ShowFullServers;
 	private static CheckBox GameFilter_LocalWorld;
@@ -123,6 +122,8 @@ public partial class LobbyBrowser : Control {
 			// loading a multiplayer game instead a co-op world
 			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 			Console.PrintLine( "...Finished loading game" );
+
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 			QueueFree();
 			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
@@ -194,7 +195,8 @@ public partial class LobbyBrowser : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		TransitionScreen.Call( "transition" );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		Hide();
 
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
@@ -399,10 +401,6 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.SetProcess( false );
 		ShowFullServers.SetProcessInternal( false );
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
-
-		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.SetProcessInternal( false );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 

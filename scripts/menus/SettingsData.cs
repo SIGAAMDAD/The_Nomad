@@ -313,6 +313,12 @@ public partial class SettingsData : Control {
 
 		string path = ProjectSettings.GlobalizePath( "user://settings.ini" );
 		System.IO.FileStream stream;
+
+		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
+		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
+
+		AudioServer.SetBusMute( MusicBus, !MusicOn );
+		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
@@ -326,6 +332,12 @@ public partial class SettingsData : Control {
 		LoadAccessibilitySettings( iniData );
 		LoadGameplaySettings( iniData );
 		LoadNetworkingSettings( iniData );
+
+		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
+		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
+
+		AudioServer.SetBusMute( MusicBus, !MusicOn );
+		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
 
 	public static void Save() {
@@ -346,5 +358,11 @@ public partial class SettingsData : Control {
 
 		SteamManager.SaveCloudFile( "settings.ini" );
 		SteamManager.SaveCloudFile( "input_context.tres" );
+
+		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
+		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
+
+		AudioServer.SetBusMute( MusicBus, !MusicOn );
+		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
 };

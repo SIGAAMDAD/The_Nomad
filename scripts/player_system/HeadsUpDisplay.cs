@@ -11,8 +11,10 @@ namespace PlayerSystem {
 		private Tween FadeOutTween;
 		private Tween FadeInTween;
 
-		private ProgressBar HealthBar;
-		private ProgressBar RageBar;
+		private readonly Godot.Vector2 InventoryItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+
+		private HealthBar HealthBar;
+		private RageBar RageBar;
 		private MarginContainer Inventory;
 		private VBoxContainer StackList;
 
@@ -85,8 +87,8 @@ namespace PlayerSystem {
 		private Label WorldTimeHour;
 		private Label WorldTimeMinute;
 
-		public HealthBar GetHealthBar() => (HealthBar)HealthBar;
-		public RageBar GetRageBar() => (RageBar)RageBar;
+		public HealthBar GetHealthBar() => HealthBar;
+		public RageBar GetRageBar() => RageBar;
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
 		public TextureRect GetDashOverlay() => DashOverlay;
 		
@@ -122,11 +124,11 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
-			HealthBar = GetNode<ProgressBar>( "MainHUD/HealthBar" );
+			HealthBar = GetNode<HealthBar>( "MainHUD/HealthBar" );
 			HealthBar.SetProcess( false );
 			HealthBar.SetProcessInternal( false );
 
-			RageBar = GetNode<ProgressBar>( "MainHUD/RageBar" );
+			RageBar = GetNode<RageBar>( "MainHUD/RageBar" );
 			RageBar.SetProcess( false );
 			RageBar.SetProcessInternal( false );
 
@@ -321,38 +323,27 @@ namespace PlayerSystem {
 
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
-			( (HealthBar)HealthBar ).Init( 100.0f );
-			( (RageBar)RageBar ).Init( 60.0f );
-		}
-		public override void _Process( double delta ) {
-			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
-				return;
-			}
-			base._Process( delta );
-
-			if ( Engine.TimeScale == 0.0f ) {
-				Visible = false;
-				return;
-			} else {
-				Visible = true;
-			}
-
-			if ( WeaponData != null ) {
+			_Owner.Damaged += ( Entity source, Entity target, float nAmount ) => { HealthBar.SetHealth( target.GetHealth() ); };
+			_Owner.SwitchedWeapon += SetWeapon;
+			_Owner.SwitchedWeaponMode += ( WeaponEntity source, WeaponEntity.Properties useMode ) => {
 				WeaponModeBladed.Material.Set( "shader_parameter/status_active",
-					( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0 );
+					( source.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0 );
 				WeaponModeBlunt.Material.Set( "shader_parameter/status_active",
-					( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0 );
+					( source.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0 );
 				
-				if ( ( WeaponData.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", true );
-					WeaponStatusBulletCount.Text = WeaponData.GetBulletCount().ToString();
-					if ( WeaponData.GetReserve() != null ) {
-						WeaponStatusBulletReserve.Text = WeaponData.GetReserve().Amount.ToString();
+					WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
+					if ( source.GetReserve() != null ) {
+						WeaponStatusBulletReserve.Text = source.GetReserve().Amount.ToString();
 					}
 				} else {
 					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", false );
 				}
-			}
+			};
+
+			HealthBar.Init( 100.0f );
+			RageBar.Init( 60.0f );
 		}
         public override void _ExitTree() {
             base._ExitTree();
@@ -392,32 +383,42 @@ namespace PlayerSystem {
 			QueueFree();
         }
 
-		public void SetWeapon( WeaponEntity weapon ) {
+		private void OnWeaponReloaded( WeaponEntity source ) {
+			WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
+			WeaponStatusBulletReserve.Text = source.GetReserve() != null ? source.GetReserve().Amount.ToString() : "0";
+		}
+		private void OnWeaponUsed( WeaponEntity source ) {
+			if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
+			}
+		}
+		private void SetWeapon( WeaponEntity weapon ) {
+			if ( WeaponData != weapon && WeaponData != null ) {
+				WeaponData.Reloaded -= OnWeaponReloaded;
+				WeaponData.Used -= OnWeaponUsed;
+			}
+
 			if ( weapon == null ) {
-				WeaponStatus.CallDeferred( "hide" );
+				WeaponStatus.Hide();
 				return;
 			} else {
-				WeaponStatus.CallDeferred( "show" );
+				WeaponStatus.Show();
 			}
 
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				WeaponStatusFirearm.CallDeferred( "show" );
-				WeaponStatusMelee.CallDeferred( "hide" );
+				WeaponStatusFirearm.Show();
+				WeaponStatusMelee.Hide();
 
-				WeaponStatusFirearmIcon.SetDeferred( "texture", weapon.GetIcon() );
-				WeaponStatusBulletCount.SetDeferred( "text", weapon.GetBulletCount().ToString() );
-				if ( weapon.GetReserve() != null ) {
-					WeaponStatusBulletReserve.SetDeferred( "text", ( (int)weapon.GetReserve().Get( "amount" ) ).ToString() );
-				} else {
-					WeaponStatusBulletReserve.SetDeferred( "text", "0" );
-				}
-				WeaponData = weapon;
+				WeaponStatusFirearmIcon.Texture = weapon.GetIcon();
+			} else {
+				WeaponStatusFirearm.Hide();
+				WeaponStatusMelee.Show();
+				WeaponStatusMeleeIcon.Texture = weapon.GetIcon();
 			}
-			else {
-				WeaponStatusFirearm.CallDeferred( "hide" );
-				WeaponStatusMelee.CallDeferred( "show" );
-				WeaponStatusMeleeIcon.SetDeferred( "texture", weapon.GetIcon() );
-			}
+			
+			WeaponData = weapon;
+			WeaponData.Reloaded += OnWeaponReloaded;
+			WeaponData.Used += OnWeaponUsed;
 		}
 
 		private int GetItemCount( string id ) {
@@ -475,9 +476,9 @@ namespace PlayerSystem {
 			row.AddChild( item );
 
 			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-//			item.Texture = _Owner.GetInventory().Database.GetItem( (string)stack.Get( "item_id" ) ).Icon;
+			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)WeaponData.Data.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+			item.CustomMinimumSize = InventoryItemMinimumSize;
 			item.SetMeta( "item_id", (string)stack.Get( "item_id" ) );
 
 			return row;
@@ -492,9 +493,9 @@ namespace PlayerSystem {
 			row.AddChild( item );
 
 			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-//			item.Texture = _Owner.GetInventory().Database.GetItem( (string)stack.AmmoType.Get( "item_id" ) ).Icon;
+			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)WeaponData.Data.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+			item.CustomMinimumSize = InventoryItemMinimumSize;
 			item.SetMeta( "item_id", (string)stack.AmmoType.Get( "item_id" ) );
 
 			return row;
@@ -509,9 +510,9 @@ namespace PlayerSystem {
 			row.AddChild( item );
 
 			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-//			item.Texture = _Owner.GetInventory().Database.GetItem( (string)weapon.Data.Get( "id" ) ).Icon;
+			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)weapon.Data.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+			item.CustomMinimumSize = InventoryItemMinimumSize;
 			item.SetMeta( "item_id", (string)weapon.Data.Get( "id" ) );
 
 			return row;
@@ -520,8 +521,11 @@ namespace PlayerSystem {
 		public void OnShowInventory() {
 			if ( Inventory.Visible ) {
 				Inventory.Visible = false;
+				GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Ignore;
 				return;
 			}
+
+			GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Stop;
 
 			foreach ( var child in StackList.GetChildren() ) {
 				foreach ( var image in child.GetChildren() ) {
@@ -666,9 +670,7 @@ namespace PlayerSystem {
 				JumpYesButton.Disconnect( "pressed", OnYesPressed );
 				JumpNoButton.Disconnect( "pressed", OnNoPressed );
 			}
-			if ( CurrentInteractor != null ) {
-				CurrentInteractor.Hide();
-			}
+			CurrentInteractor?.Hide();
 			CurrentInteractor = null;
 		}
 

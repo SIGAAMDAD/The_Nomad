@@ -61,6 +61,7 @@ GUIDE="*res://addons/guide/guide.gd"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 
 [debug]
 
@@ -155,6 +156,12 @@ report_bug={
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
 locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue")
 
+[layer_names]
+
+2d_physics/layer_1="Entity/Sprite Collision"
+2d_physics/layer_2="Common Sprite Collision"
+2d_physics/layer_5="Player Collision"
+
 [navigation]
 
 pathfinding/max_threads=12
@@ -165,12 +172,10 @@ pathfinding/max_threads=12
 common/physics_ticks_per_second=20
 common/physics_jitter_fix=0.0
 2d/physics_engine="Rapier2D"
-2d/solver/solver_iterations=1
+2d/solver/solver_iterations=2
 2d/solver/contact_recycle_radius=8.0
 common/physics_interpolation=true
 common/enable_object_picking=false
-rapier/solver/num_internal_stabilization_iterations=1
-rapier/solver/num_iterations=1
 
 [plugins]
 
@@ -192,7 +197,6 @@ textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
-2d/shadow_atlas/size=1024
 gl_compatibility/item_buffer_size=1024
 reflections/sky_reflections/fast_filter_high_quality=true
 shading/overrides/force_vertex_shading=true

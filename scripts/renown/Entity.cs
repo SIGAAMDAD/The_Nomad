@@ -1,5 +1,4 @@
 using Godot;
-using Renown;
 using Renown.World;
 using System.Collections.Generic;
 
@@ -7,266 +6,320 @@ using System.Collections.Generic;
 /// the base parent class which all living renown entities inherit from
 /// implements most common renown events
 /// </summary>
-public partial class Entity : CharacterBody2D {
-	[ExportCategory("Base Stats")]
-	[Export]
-	protected float Health;
-	[Export]
-	protected int RenownScore = 0;
-	[Export]
-	protected float Money = 0.0f;
-	[Export]
-	protected int WarCrimeCount = 0;
-	[Export]
-	private Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
-	[Export]
-	private Godot.Collections.Dictionary<Node, float> Relations = null;
-	[Export]
-	private Godot.Collections.Dictionary<Node, float> Debts = null;
-	
-	[Export]
-	protected WorldArea Location;
-	
-	[ExportCategory("Faction")]
-	[Export]
-	protected Faction Faction;
-	[Export]
-	protected int FactionImportance;
-	
-	protected HashSet<Trait> TraitCache = null;
-	protected Dictionary<Node, float> RelationCache = null;
-	protected Dictionary<Node, float> DebtCache = null;
-	
-	[Signal]
-	public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
-	
-	//
-	// renown events
-	//
-	[Signal]
-	public delegate void DieEventHandler( Entity source, Entity target );
-	[Signal]
-	public delegate void JoinFactionEventHandler( Faction faction, Entity entity );
-	[Signal]
-	public delegate void LeaveFactionEventHandler( Faction faction, Entity entity );
-	[Signal]
-	public delegate void FactionPromotionEventHandler( Faction faction, Entity entity );
-	[Signal]
-	public delegate void FactionDemotionEventHandler( Faction faction, Entity entity );
-	[Signal]
-	public delegate void GainMoneyEventHandler( Entity entity, float nAmount );
-	[Signal]
-	public delegate void LoseMoneyEventHandler( Entity entity, float nAmount );
-//	[Signal]
-//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
-	[Signal]
-	public delegate void EarnTraitEventHandler( Entity entity, Trait trait );
-	[Signal]
-	public delegate void LoseTraitEventHandler( Entity entity, Trait trait );
-	[Signal]
-	public delegate void MeetEntityEventHandler( Entity other, Entity entity );
-	[Signal]
-	public delegate void MeetFactionEventHandler( Faction faction, Entity entity );
-	[Signal]
-	public delegate void IncreaseRelationEventHandler( Node other, Entity entity, float nAmount );
-	[Signal]
-	public delegate void DecreaseRelationEventHandler( Node other, Entity entity, float nAmount );
-	[Signal]
-	public delegate void StartContractEventHandler( Contract contract, Entity entity );
-	[Signal]
-	public delegate void CompleteContractEventHandler( Contract contract, Entity entity );
-	[Signal]
-	public delegate void FailedContractEventHandler( Contract contract, Entity entity );
-	[Signal]
-	public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
-	
-	public virtual void Damage( Entity source, float nAmount ) {
-		EmitSignal( "Damaged", source, this, nAmount );
-		Health -= nAmount;
-		
-		if ( Health <= 0.0f ) {
-			EmitSignal( "Die", source, this );
-		}
-	}
-	
-	public float GetHealth() => Health;
-	
-	public float GetMoney() => Money;
-	public virtual void DecreaseMoney( float nAmount ) {
-		Money -= nAmount;
-		EmitSignal( "LoseMoney", this, nAmount );
-	}
-	public virtual void IncreaseMoney( float nAmount ) {
-		Money += nAmount;
-		EmitSignal( "GainMoney", this, nAmount );
-	}
-	
-//	public int GetWarCrimeCount() => WarCrimeCount;
-//	public virtual void CommitWarCrime( WarCrimeType nType ) {
-//		EmitSignal( "CommitWarCrime", this, nType );
-//		WarCrimeCount++;
-//	}
+namespace Renown {
+	public partial class Entity : RigidBody2D, Object {
+		[ExportCategory("Base Stats")]
+		[Export]
+		protected float Health;
+		[Export]
+		protected int RenownScore = 0;
+		[Export]
+		protected float Money = 0.0f;
+		[Export]
+		protected int WarCrimeCount = 0;
+		[Export]
+		private Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
+		[Export]
+		private Godot.Collections.Dictionary<Node, float> Relations = null;
+		[Export]
+		private Godot.Collections.Dictionary<Node, float> Debts = null;
 
-	public HashSet<Trait> GetTraits() => TraitCache;
-	
-	public Faction GetFaction() => Faction;
-	public virtual void SetFaction( Faction faction ) {
-		// sanity
-		if ( Faction == faction ) {
-			Console.PrintWarning( "Entity.SetFaction: same faction" );
-			return;
+		[Export]
+		protected WorldArea Location;
+
+		[ExportCategory("Faction")]
+		[Export]
+		protected Faction Faction;
+		[Export]
+		protected int FactionImportance;
+
+		protected HashSet<Trait> TraitCache = null;
+		protected Dictionary<Object, float> RelationCache = null;
+		protected Dictionary<Object, float> DebtCache = null;
+
+		[Signal]
+		public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
+
+		//
+		// renown events
+		//
+		[Signal]
+		public delegate void DieEventHandler( Entity source, Entity target );
+		[Signal]
+		public delegate void JoinFactionEventHandler( Faction faction, Entity entity );
+		[Signal]
+		public delegate void LeaveFactionEventHandler( Faction faction, Entity entity );
+		[Signal]
+		public delegate void FactionPromotionEventHandler( Faction faction, Entity entity );
+		[Signal]
+		public delegate void FactionDemotionEventHandler( Faction faction, Entity entity );
+		[Signal]
+		public delegate void GainMoneyEventHandler( Node entity, float nAmount );
+		[Signal]
+		public delegate void LoseMoneyEventHandler( Node entity, float nAmount );
+	//	[Signal]
+	//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
+		[Signal]
+		public delegate void StartContractEventHandler( Contract contract, Entity entity );
+		[Signal]
+		public delegate void CompleteContractEventHandler( Contract contract, Entity entity );
+		[Signal]
+		public delegate void FailedContractEventHandler( Contract contract, Entity entity );
+		[Signal]
+		public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
+		[Signal]
+		public delegate void EarnTraitEventHandler( Node self, Trait trait );
+		[Signal]
+		public delegate void LoseTraitEventHandler( Node self, Trait trait );
+		[Signal]
+		public delegate void MeetEntityEventHandler( Entity other, Node self );
+		[Signal]
+		public delegate void MeetFactionEventHandler( Faction faction, Node self );
+		[Signal]
+		public delegate void IncreaseRelationEventHandler( Node other, Node self, float nAmount );
+		[Signal]
+		public delegate void DecreaseRelationEventHandler( Node other, Node self, float nAmount );
+		[Signal]
+		public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
+
+		public WorldArea GetLocation() => Location;
+		public void SetLocation( WorldArea location ) => Location = location;
+
+		public virtual void Save() {
 		}
-		if ( faction != null ) {
-			CallDeferred( "emit_signal", "JoinFaction", faction, this );
-		} else {
-			CallDeferred( "emit_signal", "LeaveFaction", Faction, this );
+		public virtual void Load() {
 		}
-		Faction = faction;
-	}
-	
-	public int GetFactionImportance() => FactionImportance;
-	public virtual void DecreaseFactionImportance( int nAmount ) {
-		// sanity
-		if ( Faction == null ) {
-			Console.PrintError( "Entity.DecreaseFactionImportance: no faction" );
-			return;
+
+		protected void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+			channel.Stream = stream;
+			channel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			channel.Play();
 		}
-		FactionImportance -= nAmount;
-		EmitSignal( "FactionDemotion", Faction, this );
-	}
-	public virtual void IncreaseFactionImportance( int nAmount ) {
-		// sanity
-		if ( Faction == null ) {
-			Console.PrintError( "Entity.IncreaseFactionImportance: no faction" );
-			return;
-		}
-		FactionImportance += nAmount;
-		EmitSignal( "FactionPromotion", Faction, this );
-	}
-	
-	public int GetRenownScore() => RenownScore;
-	public void AddRenown( int nAmount ) {
-		RenownScore += nAmount;
-	}
-	
-	/// <summary>
-	/// returns true if the entity has the given trait
-	/// </summary>
-	public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
-	
-	/// <summary>
-	/// checks if the given trait conflicts with this entity's values
-	/// </summary>
-	public bool HasConflictingTrait( Trait other ) {
-		foreach ( var trait in TraitCache ) {
-			if ( trait.Conflicts( other ) ) {
-				return true;
+
+		public virtual void Damage( Entity source, float nAmount ) {
+			EmitSignalDamaged( source, this, nAmount );
+			Health -= nAmount;
+
+			if ( Health <= 0.0f ) {
+				EmitSignalDie( source, this );
 			}
 		}
-		return false;
-	}
-	public List<Trait> GetConflicingTraits( Trait other ) {
-		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in TraitCache ) {
-			if ( trait.Conflicts( other ) ) {
-				traits.Add( trait );
-			}
+
+		public float GetHealth() => Health;
+
+		public NodePath GetHash() => GetPath();
+
+		public virtual float GetMoney() => Money;
+		public virtual void DecreaseMoney( float nAmount ) {
+			Money -= nAmount;
+			EmitSignalLoseMoney( this, nAmount );
 		}
-		return traits;
-	}
-	public List<Trait> GetAgreeableTraits( Trait other ) {
-		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in TraitCache ) {
-			if ( trait.Agrees( other ) ) {
-				traits.Add( trait );
-			}
+		public virtual void IncreaseMoney( float nAmount ) {
+			Money += nAmount;
+			EmitSignalGainMoney( this, nAmount );
 		}
-		return traits;
-	}
-	public virtual void AddTrait( Trait trait ) {
-		EmitSignal( "EarnTrait", this, trait );
-		TraitCache.Add( trait );
-	}
-	public virtual void RemoveTrait( Trait trait ) {
-		EmitSignal( "LoseTrait", this, trait );
-		TraitCache.Remove( trait );
-	}
-	
-	protected virtual void DetermineRelationStatus( Node other ) {
-		float score = RelationCache[ other ];
-		int renownScore = (int)other.Call( "GetRenownScore" );
-		
-		// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
-		
-		if ( Faction.GetRelationStatus( other ) >= RelationStatus.Hates ) {
-			score -= Faction.GetRelationScore( other );
-		}
-		
-		/*
-		HashSet<Trait> traitList = other.GetTraits();
-		foreach ( var trait in traitList ) {
-			List<Trait> conflicting = GetConflictingTraits( trait );
-			for ( int i = 0; i < conflicting.Count; i++ ) {
-				score -= conflicting[i].GetNegativeRelationScore( trait );
-			}
-			
-			List<Trait> agreeables = GetAgreeableTraits( trait );
-			for ( int i = 0; i < agreeables.Count; i++ ) {
-				score += conflicting[i].GetPositiveRelationScore( trait );
-			}
-		}
-		*/
-		
-		RelationCache[ other ] = score;
-	}
-	protected virtual void Meet( Node other ) {
-		RelationCache.Add( other, 0.0f );
-		
-		if ( other is Entity entity && entity != null ) { 
-			EmitSignal( "MeetEntity", entity, this );
-		} else {
-			if ( other is Faction faction && faction != null ) {
-				EmitSignal( "MeetFaction", faction, this );
+
+	//	public int GetWarCrimeCount() => WarCrimeCount;
+	//	public virtual void CommitWarCrime( WarCrimeType nType ) {
+	//		EmitSignal( "CommitWarCrime", this, nType );
+	//		WarCrimeCount++;
+	//	}
+
+		public HashSet<Trait> GetTraits() => TraitCache;
+
+		public Faction GetFaction() => Faction;
+		public virtual void SetFaction( Faction faction ) {
+			// sanity
+			if ( Faction == faction ) {
+				Console.PrintWarning( "Entity.SetFaction: same faction" );
 				return;
 			}
-			Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
+			if ( faction != null ) {
+				EmitSignalJoinFaction( faction, this );
+			} else {
+				EmitSignalLeaveFaction( Faction, this );
+			}
+			Faction = faction;
 		}
-	}
-	public bool HasRelation( Node other ) => RelationCache.ContainsKey( other );
-	public virtual void RelationIncrease( Node other, float nAmount ) {
-		if ( !RelationCache.TryGetValue( other, out float score ) ) {
-			Meet( other );
+
+		public int GetFactionImportance() => FactionImportance;
+		public virtual void DecreaseFactionImportance( int nAmount ) {
+			// sanity
+			if ( Faction == null ) {
+				Console.PrintError( "Entity.DecreaseFactionImportance: no faction" );
+				return;
+			}
+			FactionImportance -= nAmount;
+			EmitSignalFactionDemotion( Faction, this );
 		}
-		score += nAmount;
-		EmitSignal( "IncreaseRelation", other, this, nAmount );
-		RelationCache[ other ] = score;
-	}
-	public virtual void RelationDecrease( Node other, float nAmount ) {
-		if ( !RelationCache.TryGetValue( other, out float score ) ) {
-			Meet( other );
+		public virtual void IncreaseFactionImportance( int nAmount ) {
+			// sanity
+			if ( Faction == null ) {
+				Console.PrintError( "Entity.IncreaseFactionImportance: no faction" );
+				return;
+			}
+			FactionImportance += nAmount;
+			EmitSignalFactionPromotion( Faction, this );
 		}
-		score -= nAmount;
-		EmitSignal( "DecreaseRelation", other, this, nAmount );
-		RelationCache[ other ] = score;
-	}
-	
-	public override void _Ready() {
-		base._Ready();
-		
-		TraitCache = new HashSet<Trait>( Traits.Count );
-		for ( int i = 0; i < Traits.Count; i++ ) {
-//			FIXME:
-//			TraitCache.Add( new Trait(  ) );
+
+		public int GetRenownScore() => RenownScore;
+		public void AddRenown( int nAmount ) {
+			RenownScore += nAmount;
+			EmitSignalIncreaseRenown( this, nAmount );
 		}
-		
-		RelationCache = new Dictionary<Node, float>( Relations.Count );
-		foreach ( var relation in Relations ) {
-			RelationCache.Add( relation.Key, relation.Value );
+
+		/// <summary>
+		/// returns true if the entity has the given trait
+		/// </summary>
+		public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
+
+		/// <summary>
+		/// checks if the given trait conflicts with this entity's values
+		/// </summary>
+		public bool HasConflictingTrait( Trait other ) {
+			foreach ( var trait in TraitCache ) {
+				if ( trait.Conflicts( other ) ) {
+					return true;
+				}
+			}
+			return false;
 		}
-		
-		DebtCache = new Dictionary<Node, float>( Debts.Count );
-		foreach ( var debt in Debts ) {
-			DebtCache.Add( debt.Key, debt.Value );
+		public List<Trait> GetConflictingTraits( Trait other ) {
+			List<Trait> traits = new List<Trait>();
+			foreach ( var trait in TraitCache ) {
+				if ( trait.Conflicts( other ) ) {
+					traits.Add( trait );
+				}
+			}
+			return traits;
 		}
-	}
+		public List<Trait> GetAgreeableTraits( Trait other ) {
+			List<Trait> traits = new List<Trait>();
+			foreach ( var trait in TraitCache ) {
+				if ( trait.Agrees( other ) ) {
+					traits.Add( trait );
+				}
+			}
+			return traits;
+		}
+		public virtual void AddTrait( Trait trait ) {
+			EmitSignalEarnTrait( this, trait );
+			TraitCache.Add( trait );
+		}
+		public virtual void RemoveTrait( Trait trait ) {
+			EmitSignalLoseTrait( this, trait );
+			TraitCache.Remove( trait );
+		}
+
+		public virtual void DetermineRelationStatus( Object other ) {
+			float score = RelationCache[ other ];
+			int renownScore = other.GetRenownScore();
+
+			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
+
+			if ( Faction.GetRelationStatus( other ) >= RelationStatus.Hates ) {
+				score -= Faction.GetRelationScore( other );
+			}
+
+			/*
+			HashSet<Trait> traitList = other.GetTraits();
+			foreach ( var trait in traitList ) {
+				List<Trait> conflicting = GetConflictingTraits( trait );
+				for ( int i = 0; i < conflicting.Count; i++ ) {
+					score -= conflicting[i].GetNegativeRelationScore( trait );
+				}
+
+				List<Trait> agreeables = GetAgreeableTraits( trait );
+				for ( int i = 0; i < agreeables.Count; i++ ) {
+					score += conflicting[i].GetPositiveRelationScore( trait );
+				}
+			}
+			*/
+
+			RelationCache[ other ] = score;
+		}
+		public virtual void Meet( Object other ) {
+			RelationCache.Add( other, 0.0f );
+
+			if ( other is Entity entity && entity != null ) { 
+				EmitSignalMeetEntity( entity, this );
+			} else {
+				if ( other is Faction faction && faction != null ) {
+					EmitSignalMeetFaction( faction, this );
+					return;
+				}
+				Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
+			}
+		}
+		public bool HasRelation( Object other ) => RelationCache.ContainsKey( other );
+		public virtual void RelationIncrease( Object other, float nAmount ) {
+			if ( !RelationCache.TryGetValue( other, out float score ) ) {
+				Meet( other );
+			}
+			score += nAmount;
+			EmitSignalIncreaseRelation( other as Node, this, nAmount );
+			RelationCache[ other ] = score;
+		}
+		public virtual void RelationDecrease( Object other, float nAmount ) {
+			if ( !RelationCache.TryGetValue( other, out float score ) ) {
+				Meet( other );
+			}
+			score -= nAmount;
+			EmitSignalDecreaseRelation( other as Node, this, nAmount );
+			RelationCache[ other ] = score;
+		}
+		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( other, out float score ) ? score : 0.0f;
+		public RelationStatus GetRelationStatus( Object other ) {
+			float score = GetRelationScore( other );
+			
+			if ( score < -100.0f ) {
+				return RelationStatus.KendrickAndDrake;
+			}
+			if ( score < -50.0f ) {
+				return RelationStatus.Hates;
+			}
+			if ( score < 0.0f ) {
+				return RelationStatus.Dislikes;
+			}
+			if ( score > 25.0f ) {
+				return RelationStatus.Friends;
+			}
+			if ( score > 100.0f ) {
+				return RelationStatus.GoodFriends;
+			}
+			return RelationStatus.Neutral;
+		}
+
+		public override void _Ready() {
+			base._Ready();
+
+			TraitCache = new HashSet<Trait>( Traits.Count );
+			for ( int i = 0; i < Traits.Count; i++ ) {
+	//			FIXME:
+	//			TraitCache.Add( new Trait(  ) );
+			}
+
+			RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
+			foreach ( var relation in Relations ) {
+				if ( relation.Key is Faction faction && faction != null ) {
+					RelationCache.Add( faction, relation.Value );
+				} else if ( relation.Key is Entity entity && entity != null ) {
+					RelationCache.Add( entity, relation.Value );
+				} else {
+					Console.PrintError( string.Format( "Entity._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
+				}
+			}
+
+			DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
+			foreach ( var debt in Debts ) {
+				if ( debt.Key is Faction faction && faction != null ) {
+					DebtCache.Add( faction, debt.Value );
+				} else if ( debt.Key is Entity entity && entity != null ) {
+					DebtCache.Add( entity, debt.Value );
+				} else {
+					Console.PrintError( string.Format( "Entity._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
+				}
+			}
+		}
+	};
 };

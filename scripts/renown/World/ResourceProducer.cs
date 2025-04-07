@@ -1,20 +1,11 @@
 using Godot;
 
 namespace Renown.World {
-	public enum RawResourceType : uint {
-		Metal,
-		Wood,
-		Gunpowder,
-		Drugflower,
-		
-		Count
-	};
-
 	public partial class ResourceProducer : InteractionItem {
 		[Export]
 		private Settlement Location = null;
 		[Export]
-		private Resource Type = null;
+		private ResourceType Type;
 		[Export]
 		private uint MaxStorage = 0;
 		[Export]
@@ -81,10 +72,6 @@ namespace Renown.World {
 			
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DEntered ) );
 			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DExited ) );
-
-//			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-//			ProcessThreadGroupOrder = 1;
-//			ProcessThreadMessages = ProcessThreadMessagesEnum.Messages;
 		}
 	};
 };

@@ -2,6 +2,7 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -99,12 +100,15 @@ public partial class SteamLobby : Node {
 
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
+	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
 
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
 		PlayerCache.TryAdd( userId.ToString(), callbacks );
+		PlayerList.Add( callbacks );
 	}
 	public void RemovePlayer( CSteamID userId ) {
+		PlayerList.Remove( PlayerCache[ userId.ToString() ] );
 		PlayerCache.Remove( userId.ToString() );
 	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {

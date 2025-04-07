@@ -90,13 +90,13 @@ namespace Renown.World {
 				return;
 			}
 			body.Call( "SetLocation", this );
-			EmitSignal( "AgentEnteredArea", (CharacterBody2D)body );
+//			EmitSignal( "AgentEnteredArea", (CharacterBody2D)body );
 		}
 		private void OnRegionBodyShape2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 			if ( body is not CharacterBody2D ) {
 				return;
 			}
-			EmitSignal( "AgentExitedArea", (CharacterBody2D)body );
+//			EmitSignal( "AgentExitedArea", (CharacterBody2D)body );
 		}
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;

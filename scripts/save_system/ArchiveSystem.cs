@@ -130,7 +130,7 @@ public partial class ArchiveSystem : Node {
 		for ( int i = 0; i < sectionCount; i++ ) {
 			string name = SaveReader.ReadString();
 			GD.Print( "Loading save section \"" + name + "\"..." );
-			SectionCache.Add( name, new SaveSectionReader() );
+			SectionCache.TryAdd( name, new SaveSectionReader() );
 			GD.Print( "...Done" );
 		}
 

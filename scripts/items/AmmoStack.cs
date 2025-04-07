@@ -1,4 +1,3 @@
-using GDExtension.Wrappers;
 using Godot;
 
 public partial class AmmoStack : Node {

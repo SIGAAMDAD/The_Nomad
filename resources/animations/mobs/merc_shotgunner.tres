@@ -1,18 +1,15 @@
-[gd_resource type="SpriteFrames" load_steps=20 format=3 uid="uid://bbd1gljxn4cqk"]
+[gd_resource type="SpriteFrames" load_steps=19 format=3 uid="uid://bbd1gljxn4cqk"]
 
 [ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="1_1og1x"]
+[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="2_bbxhc"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kmhol"]
-atlas = ExtResource("1_1og1x")
+[sub_resource type="AtlasTexture" id="AtlasTexture_jgbwu"]
+atlas = ExtResource("2_bbxhc")
 region = Rect2(256, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_k7xgp"]
-atlas = ExtResource("1_1og1x")
+[sub_resource type="AtlasTexture" id="AtlasTexture_7efea"]
+atlas = ExtResource("2_bbxhc")
 region = Rect2(288, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cu3ho"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(320, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_62lxv"]
 atlas = ExtResource("1_1og1x")
@@ -46,45 +43,38 @@ region = Rect2(32, 64, 32, 32)
 atlas = ExtResource("1_1og1x")
 region = Rect2(64, 64, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_x8mfg"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(0, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_bbxhc"]
+atlas = ExtResource("2_bbxhc")
+region = Rect2(32, 192, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_s7y1y"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(32, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_hr5c1"]
+atlas = ExtResource("2_bbxhc")
+region = Rect2(64, 192, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_f4xn7"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(64, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_2kr3p"]
+atlas = ExtResource("2_bbxhc")
+region = Rect2(160, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6w8iy"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(128, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0t5bf"]
-atlas = ExtResource("1_1og1x")
+[sub_resource type="AtlasTexture" id="AtlasTexture_enyhv"]
+atlas = ExtResource("2_bbxhc")
 region = Rect2(96, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6yflm"]
-atlas = ExtResource("1_1og1x")
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2sm8"]
+atlas = ExtResource("2_bbxhc")
 region = Rect2(64, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xif3e"]
-atlas = ExtResource("1_1og1x")
-region = Rect2(160, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_qa2qy"]
+atlas = ExtResource("2_bbxhc")
+region = Rect2(128, 0, 32, 32)
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_kmhol")
+"texture": SubResource("AtlasTexture_jgbwu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_k7xgp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cu3ho")
+"texture": SubResource("AtlasTexture_7efea")
 }],
 "loop": false,
 "name": &"attack",
@@ -125,31 +115,28 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_x8mfg")
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_bbxhc")
 }, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_s7y1y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f4xn7")
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_hr5c1")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6w8iy")
+"texture": SubResource("AtlasTexture_2kr3p")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0t5bf")
+"texture": SubResource("AtlasTexture_enyhv")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6yflm")
+"texture": SubResource("AtlasTexture_a2sm8")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xif3e")
+"texture": SubResource("AtlasTexture_qa2qy")
 }],
 "loop": true,
 "name": &"move",

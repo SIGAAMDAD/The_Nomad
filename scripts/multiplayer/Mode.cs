@@ -40,11 +40,11 @@ namespace Multiplayer {
 		[Signal]
 		public delegate void ShowScoreboardEventHandler();
 
-		public virtual void OnPlayerJoined( CharacterBody2D player ) {
+		public virtual void OnPlayerJoined( Renown.Entity player ) {
 		}
-		public virtual void OnPlayerLeft( CharacterBody2D player ) {
+		public virtual void OnPlayerLeft( Renown.Entity player ) {
 		}
-		public virtual void SpawnPlayer( CharacterBody2D player ) {
+		public virtual void SpawnPlayer( Renown.Entity player ) {
 		}
 
 		public GameMode GetMode() => Type;

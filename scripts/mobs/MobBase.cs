@@ -106,9 +106,13 @@ public partial class MobBase : Renown.Thinker {
 
 	protected System.Random RandomFactory;
 
-	protected CharacterBody2D SightTarget;
+	protected Renown.Entity SightTarget;
 	protected float SightDetectionAmount = 0.0f;
 	protected PointLight2D FlashLight;
+
+	protected AnimatedSprite2D BodyAnimations;
+	protected AnimatedSprite2D ArmAnimations;
+	protected AnimatedSprite2D HeadAnimations;
 
 	// memory
 	protected AIAwareness Awareness = AIAwareness.Relaxed;
@@ -144,7 +148,6 @@ public partial class MobBase : Renown.Thinker {
 		base.Load();
 	}
 
-	public float GetHealth() => Health;
 	private AudioStream GetBarkResource( BarkType bark ) {
 		switch ( bark ) {
 		case BarkType.ManDown:
@@ -258,7 +261,7 @@ public partial class MobBase : Renown.Thinker {
 		}
 	}
 	protected void OnMoveTimerTimeout() {
-		if ( Velocity != Godot.Vector2.Zero ) {
+		if ( LinearVelocity != Godot.Vector2.Zero ) {
 			MoveTimer.Start();
 		} else if ( !ResourceCache.Initialized ) {
 			return;
@@ -273,7 +276,7 @@ public partial class MobBase : Renown.Thinker {
 			return;
 		}
 		AfterImageUpdated = true;
-		AfterImage.CallDeferred( "Update", (Player)SightTarget );
+		AfterImage.Update( SightTarget as Player );
 	}
 
 	protected void SetDetectionColor() {
@@ -361,36 +364,36 @@ public partial class MobBase : Renown.Thinker {
 		HeadAnimations.GlobalRotation = LookAngle;
 		
 		if ( LookAngle > 0.0f ) {
-			HeadAnimations.SetDeferred( "flip_v", true );
+			HeadAnimations.FlipV = true;
 		} else if ( LookAngle < 0.0f ) {
-			HeadAnimations.SetDeferred( "flip_v", false );
+			HeadAnimations.FlipV = false;
 		}
 		if ( AimAngle > 0.0f ) {
-			ArmAnimations.SetDeferred( "flip_v", true );
+			ArmAnimations.FlipV = true;
 		} else if ( AimAngle < 0.0f ) {
-			ArmAnimations.SetDeferred( "flip_v", false );
+			ArmAnimations.FlipV = false;
 		}
-		if ( Velocity.X > 0.0f ) {
-			BodyAnimations.SetDeferred( "flip_h", false );
-			ArmAnimations.SetDeferred( "flip_h", false );
-		} else if ( Velocity.X < 0.0f ) {
-			BodyAnimations.SetDeferred( "flip_h", true );
-			ArmAnimations.SetDeferred( "flip_h", true );
+		if ( LinearVelocity.X > 0.0f ) {
+			BodyAnimations.FlipH = false;
+			ArmAnimations.FlipH = false;
+		} else if ( LinearVelocity.X < 0.0f ) {
+			BodyAnimations.FlipH = true;
+			ArmAnimations.FlipH = true;
 		}
 
-		if ( Velocity != Godot.Vector2.Zero ) {
-			BodyAnimations.CallDeferred( "play", "move" );
-			ArmAnimations.CallDeferred( "play", "move" );
-			HeadAnimations.CallDeferred( "play", "move" );
+		if ( LinearVelocity != Godot.Vector2.Zero ) {
+			BodyAnimations.Play( "move" );
+			ArmAnimations.Play( "move" );
+			HeadAnimations.Play( "move" );
 		} else {
-			BodyAnimations.CallDeferred( "play", "idle" );
-			ArmAnimations.CallDeferred( "play", "idle" );
-			HeadAnimations.CallDeferred( "play", "idle" );
+			BodyAnimations.Play( "idle" );
+			ArmAnimations.Play( "idle" );
+			HeadAnimations.Play( "idle" );
 		}
 	}
 
-	protected void InitSubThinker() {
-		base.InitBaseThinker();
+	public override void _Ready() {
+		base._Ready();
 
 		FlashLight = GetNode<PointLight2D>( "Animations/HeadAnimations/FlashLight" );
 		WorldTimeManager.Instance.TimeTick += ( day, hour, minute ) => {
@@ -504,7 +507,7 @@ public partial class MobBase : Renown.Thinker {
 			break;
 		default:
 			GotoPosition = GlobalPosition;
-			Velocity = Godot.Vector2.Zero;
+			LinearVelocity = Godot.Vector2.Zero;
 			break;
 		};
 	}

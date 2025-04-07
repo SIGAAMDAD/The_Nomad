@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=77 format=3 uid="uid://cva672a3bp3sm"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=79 format=3 uid="uid://cva672a3bp3sm"]
 
 [ext_resource type="Script" uid="uid://bd74abvyklro7" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
 [ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="2_84yx1"]
@@ -20,6 +20,7 @@
 [ext_resource type="Resource" uid="uid://cqyxax3wm7b0a" path="res://resources/binds/actions/keyboard/switch_to_gamepad.tres" id="19_n2nwk"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="20_36aim"]
 [ext_resource type="Script" uid="uid://do0er3lstjrxb" path="res://addons/guide/inputs/guide_input_any.gd" id="20_yudlm"]
+[ext_resource type="Script" uid="uid://kctggvwx7efl" path="res://addons/guide/triggers/guide_trigger_down.gd" id="21_ovldy"]
 [ext_resource type="Resource" uid="uid://b3wjmxhtiwox5" path="res://resources/binds/actions/keyboard/open_inventory.tres" id="21_wkymt"]
 [ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="22_jyx3s"]
 [ext_resource type="Script" uid="uid://c3a8aj86g23bg" path="res://addons/guide/guide_mapping_context.gd" id="25_f1bav"]
@@ -309,12 +310,16 @@ script = ExtResource("1_7co6v")
 action = ExtResource("19_n2nwk")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_8akdl")])
 
-[sub_resource type="Resource" id="Resource_bo6vf"]
+[sub_resource type="Resource" id="Resource_jyx3s"]
 script = ExtResource("18_836tg")
 button = 1
 
 [sub_resource type="Resource" id="Resource_h3lpc"]
 script = ExtResource("14_cvawn")
+actuation_threshold = 0.5
+
+[sub_resource type="Resource" id="Resource_n1237"]
+script = ExtResource("21_ovldy")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_5lvet"]
@@ -323,9 +328,9 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_bo6vf")
+input = SubResource("Resource_jyx3s")
 modifiers = Array[ExtResource("5_jakow")]([])
-triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_h3lpc")])
+triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_h3lpc"), SubResource("Resource_n1237")])
 
 [sub_resource type="Resource" id="Resource_5ybme"]
 script = ExtResource("1_7co6v")

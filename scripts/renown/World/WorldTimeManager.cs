@@ -1,6 +1,4 @@
-using System.Text;
 using Godot;
-using MessagePack.ImmutableCollection;
 
 namespace Renown.World {
 	public partial class WorldTimeManager : Node {
@@ -39,6 +37,7 @@ namespace Renown.World {
 		private NetworkWriter SyncObject = null;
 		private bool IsHostWorld = false;
 
+		private uint CurrentHour = 0;
 		private const uint MinutesPerDay = 2440;
 		private const uint MinutesPerHour = 60;
 		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
@@ -59,18 +58,18 @@ namespace Renown.World {
 //			uint day = totalMinutes / MinutesPerDay;
 
 			uint currentDayMinutes = totalMinutes % MinutesPerDay;
-			uint hour = currentDayMinutes / MinutesPerHour;
+			CurrentHour = currentDayMinutes / MinutesPerHour;
 			uint minute = currentDayMinutes % MinutesPerHour;
 
-			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / hour ) * 0.001f;
-			if ( hour < 7 || hour > 21 ) {
-				RedSunLight.Energy = -0.01f;
+			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / CurrentHour ) * 0.001f;
+			if ( CurrentHour < 7 || CurrentHour > 21 ) {
+				RedSunLight.Energy = 0.0f;
 			} else {
 				RedSunLight.Energy = 1.0f;
 			}
 			if ( PastMinute != minute ) {
 				if ( minute == 0 ) {
-					if ( hour >= 24 ) {
+					if ( CurrentHour >= 24 ) {
 						Day++;
 						if ( Day >= Months[ Month ].GetDayCount() ) {
 							Day = 0;
@@ -80,11 +79,11 @@ namespace Renown.World {
 								Year++;
 							}
 						}
-						hour = 0;
-					} else if ( hour >= 20 ) {
-						EmitSignal( "NightTimeStart" );
-					} else if ( hour >= 7 ) {
-						EmitSignal( "DayTimeStart" );
+						CurrentHour = 0;
+					} else if ( CurrentHour >= 20 ) {
+						EmitSignalNightTimeStart();
+					} else if ( CurrentHour >= 7 ) {
+						EmitSignalDayTimeStart();
 					}
 				}
 				if ( Year - StartingYear >= 1000 ) {
@@ -94,7 +93,7 @@ namespace Renown.World {
 				} else if ( Year - StartingYear >= 1000000000 ) {
 					SteamAchievements.ActivateAchievement( "ACH_TOUCH_GRASS" );
 				}
-				EmitSignal( "TimeTick", Day, hour, minute );
+				EmitSignalTimeTick( Day, CurrentHour, minute );
 				PastMinute = minute;
 			}
 		}
@@ -194,30 +193,40 @@ namespace Renown.World {
 			}
 
 			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
-				float value = Time;
-				WorldTimeOverlay.Color = Gradient.Gradient.Sample( value );
+				WorldTimeOverlay.Color = Gradient.Gradient.Sample( Mathf.Lerp( 0.0f, Gradient.Width, 1.0f / CurrentHour ) );
 			}
 		}
 	};
-	public partial class WorldTimestamp : Node {
-		private uint Year = 0;
-		private uint Month = 0;
-		private uint Day = 0;
-
+	public class WorldTimestamp {
+		private uint SavedYear = 0;
+		private uint SavedMonth = 0;
+		private uint SavedDay = 0;
+		
 		public WorldTimestamp() {
-			Year = WorldTimeManager.Year;
-			Month = WorldTimeManager.Month;
-			Day = WorldTimeManager.Day;
+			SavedYear = WorldTimeManager.Year;
+			SavedMonth = WorldTimeManager.Month;
+			SavedDay = WorldTimeManager.Day;
+		}
+		public WorldTimestamp( WorldTimestamp other ) {
+			SavedYear = other.SavedYear;
+			SavedMonth = other.SavedMonth;
+			SavedDay = other.SavedDay;
 		}
 
-		public uint GetYear() {
-			return Year;
-		}
-		public uint GetMonth() {
-			return Month;
-		}
-		public uint GetDay() {
-			return Day;
-		}
+		public bool LaterThan( WorldTimestamp other ) => SavedYear > other.SavedYear && SavedMonth > other.SavedMonth && SavedDay > other.SavedDay;
+		public bool EarlierThan( WorldTimestamp other ) => SavedYear < other.SavedYear && SavedMonth < other.SavedMonth && SavedDay < other.SavedDay;
+
+		public bool LaterThanOrSame( WorldTimestamp other ) => SavedYear >= other.SavedYear && SavedMonth >= other.SavedMonth && SavedDay >= other.SavedDay;
+		public bool EarlierThanOrSame( WorldTimestamp other ) => SavedYear <= other.SavedYear && SavedMonth <= other.SavedMonth && SavedDay <= other.SavedDay;
+
+		public static bool operator >( WorldTimestamp a, WorldTimestamp b ) => a.LaterThan( b );
+		public static bool operator <( WorldTimestamp a, WorldTimestamp b ) => a.EarlierThan( b );
+
+		public static bool operator >=( WorldTimestamp a, WorldTimestamp b ) => a.LaterThanOrSame( b );
+		public static bool operator <=( WorldTimestamp a, WorldTimestamp b ) => a.EarlierThanOrSame( b );
+
+		public uint GetYear() => SavedYear;
+		public uint GetMonth() => SavedMonth;
+		public uint GetDay() => SavedDay;
 	};
 };

@@ -1,9 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://6cnqoj2bp0r3"]
+[gd_scene load_steps=19 format=3 uid="uid://6cnqoj2bp0r3"]
 
 [ext_resource type="Script" uid="uid://brgni4r6q2ofv" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
 [ext_resource type="SpriteFrames" uid="uid://bbd1gljxn4cqk" path="res://resources/animations/mobs/merc_shotgunner.tres" id="3_jv7p5"]
 [ext_resource type="Texture2D" uid="uid://vsg3ur164atb" path="res://textures/dirlight.dds" id="4_i3ew1"]
 [ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="4_pt2do"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fp4g7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i3ew1"]
 atlas = ExtResource("4_pt2do")
@@ -100,10 +102,16 @@ radius = 6.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_pt2do"]
 radius = 5.0
 
-[node name="MercenaryShotgunner" type="CharacterBody2D" groups=["Archive"]]
+[node name="MercenaryShotgunner" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Archive"]]
 z_index = 4
-collision_layer = 17
-collision_mask = 17
+collision_layer = 19
+collision_mask = 18
+physics_material_override = SubResource("PhysicsMaterial_fp4g7")
+gravity_scale = 0.0
+freeze_mode = 1
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_skhq2")
 ViewAngleAmount = 90.0
 MaxViewDistance = 250.0
@@ -112,23 +120,22 @@ SightDetectionTime = 5.0
 LoseInterestTime = 6.5
 MovementSpeed = 80.0
 MovementSpeed = 80.0
+Relations = {}
+Debts = {}
 
 [node name="Animations" type="Node2D" parent="."]
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-7, 0)
 sprite_frames = ExtResource("3_jv7p5")
-animation = &"idle"
+animation = &"attack"
 autoplay = "idle"
-frame_progress = 0.825292
 
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-7, -6)
-rotation = -0.0101152
 sprite_frames = SubResource("SpriteFrames_fp4g7")
-animation = &"idle"
+animation = &"move"
 autoplay = "idle"
-frame_progress = 0.820278
 
 [node name="FlashLight" type="PointLight2D" parent="Animations/HeadAnimations"]
 position = Vector2(63.017, -1.36265)
@@ -145,7 +152,7 @@ position = Vector2(6.93895, 6.0705)
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-6, -2)
 sprite_frames = SubResource("SpriteFrames_7pglr")
-animation = &"move"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]

@@ -1,20 +1,28 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
+using Renown.Thinkers;
 
 namespace Renown {
+	public enum ThinkerFlags : uint {
+		Pushed		= 0x0001,
+		Dead		= 0x0002,
+	};
+	
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
-	public partial class Thinker : CharacterBody2D {
-		public static DataCache<Thinker> Cache;
+	public partial class Thinker : Entity {
+		public static DataCache<Thinker> Cache = null;
 
-		public enum Occupation {
+		public enum Occupation : uint {
 			None,
 
 			Bandit,
 			
 			Blacksmith,
+			Merchant,
 			
+			MercenaryMaster,
 			Mercenary,
 			Politician,
 			
@@ -27,17 +35,11 @@ namespace Renown {
 		[Export]
 		protected StringName BotName;
 		[Export]
-		protected Godot.Collections.Array<Relationship> SetRelations; // preset relationships
-		[Export]
 		protected Occupation Job;
-//		[Export]
-//		private EventHistory History;
-//		[Export]
-//		private Godot.Collections.Array<Trait> Traits;
 		[Export]
 		protected uint Age = 0; // in years
 		[Export]
-		protected WorldArea Location;
+		protected FamilyTree FamilyTree;
 
 		[ExportCategory("Start")]
 		[Export]
@@ -51,15 +53,9 @@ namespace Renown {
 		[Export]
 		protected uint Constitution;
 		[Export]
-		protected float Health = 100.0f;
-		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
-		private Godot.Collections.Dictionary<string, bool> Personality;
-		[Export]
 		private float MovementSpeed = 40.0f;
-		[Export]
-		protected Faction Faction;
 		
 		protected Dictionary<Thinker, Relationship> Relations = new Dictionary<Thinker, Relationship>();
 		protected NavigationAgent2D NavAgent;
@@ -67,9 +63,7 @@ namespace Renown {
 
 		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
 
-		protected AnimatedSprite2D BodyAnimations;
-		protected AnimatedSprite2D ArmAnimations;
-		protected AnimatedSprite2D HeadAnimations;
+		protected ThinkerFlags Flags;
 
 		// memory
 		protected bool TargetReached = false;
@@ -86,7 +80,6 @@ namespace Renown {
 		// networking
 		protected NetworkWriter SyncObject = null;
 
-		protected uint Money = 0;
 		protected uint Pay = 0;
 
 		private VisibleOnScreenNotifier2D VisibilityNotifier;
@@ -104,7 +97,19 @@ namespace Renown {
 		protected virtual void ReceivePacket( System.IO.BinaryReader reader ) {
 		}
 
-		public virtual void Save() {
+		protected virtual void OnRigidBody2DShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null ) {
+				// momentum combat
+				float speed = entity.LinearVelocity.Length();
+				if ( speed >= Constants.DAMAGE_VELOCITY ) {
+					Damage( entity, speed );
+					LinearVelocity = entity.LinearVelocity * 2.0f;
+					Flags |= ThinkerFlags.Pushed;
+				}
+			}
+		}
+
+		public override void Save() {
 			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
 
 			writer.SaveVector2( "position", GlobalPosition );
@@ -112,7 +117,7 @@ namespace Renown {
 			writer.SaveUInt( "age", Age );
 			writer.Flush();
 		}
-		public virtual void Load() {
+		public override void Load() {
 			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + GetPath() );
 
 			// save file compability
@@ -125,6 +130,9 @@ namespace Renown {
 			SetDeferred( "age", reader.LoadUInt( "age" ) );
 		}
 
+		protected virtual void SetAnimationsColor( Color color ) {
+		}
+
 		protected virtual void OnScreenEnter() {
 			OnScreen = true;
 		}
@@ -132,7 +140,7 @@ namespace Renown {
 			OnScreen = false;
 		}
 
-		protected void InitBaseThinker() {
+		public override void _Ready() {
 			base._Ready();
 
 			NavAgent = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
@@ -141,6 +149,10 @@ namespace Renown {
 			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
 			VisibilityNotifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );
 			VisibilityNotifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
+
+			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRigidBody2DShapeEntered ) );
+
+			GotoPosition = GlobalPosition;
 			
 			if ( SettingsData.GetNetworkingEnabled() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
@@ -152,49 +164,54 @@ namespace Renown {
 				AddToGroup( "Thinkers" );
 			}
 		}
-		
+
         public override void _PhysicsProcess( double delta ) {
 			base._PhysicsProcess( delta );
 		
 			PhysicsPosition = GlobalPosition;
-			if ( MoveTimer.IsStopped() && Velocity != Godot.Vector2.Zero ) {
-				MoveTimer.Start();
+
+			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
+				if ( LinearVelocity == Godot.Vector2.Zero ) {
+					Flags &= ~ThinkerFlags.Pushed;
+					PhysicsMaterialOverride.Friction = 1.0f;
+				} else {
+					return;
+				}
+			}
+			GlobalRotation = 0.0f;
+			if ( MoveTimer != null ) {
+				if ( MoveTimer.IsStopped() && LinearVelocity != Godot.Vector2.Zero ) {
+					MoveTimer.Start();
+				}
 			}
 			MoveAlongPath();
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );
-			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || ( Engine.GetProcessFrames() % 30 ) != 0 ) {
 				return;
 			}
 
-			if ( GameConfiguration.DemonEyeActive ) {
-				HeadAnimations.SetDeferred( "modulate", DemonEyeColor );
-				ArmAnimations.SetDeferred( "modulate", DemonEyeColor );
-				BodyAnimations.SetDeferred( "modulate", DemonEyeColor );
-			} else {
-				HeadAnimations.SetDeferred( "modulate", DefaultColor );
-			}
-
+			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
 			ProcessAnimations();
 
 			Think( (float)delta );
 		}
-        protected virtual void Think( float delta ) {
+		protected virtual void Think( float delta ) {
 		}
 		protected virtual void ProcessAnimations() {
 		}
 
 		protected bool MoveAlongPath() {
 			if ( GlobalPosition.DistanceTo( GotoPosition ) <= 10.0f ) {
-				Velocity = Godot.Vector2.Zero;
+				LinearVelocity = Godot.Vector2.Zero;
 				return true;
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			Velocity = LookDir * MovementSpeed;
-			return MoveAndSlide();
+			LinearVelocity = LookDir * MovementSpeed;
+			return true;
 		}
 		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {
 			NavAgent.TargetPosition = target;
@@ -204,7 +221,7 @@ namespace Renown {
 		protected virtual void OnTargetReached() {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
-			Velocity = Godot.Vector2.Zero;
+			LinearVelocity = Godot.Vector2.Zero;
 		}
 	};
 };

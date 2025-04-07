@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Godot;
 
@@ -10,8 +11,6 @@ public partial class MainMenu : Control {
 	public delegate void MultiplayerMenuEventHandler();
 	[Signal]
 	public delegate void ModsMenuEventHandler();
-	[Signal]
-	public delegate void FinishedLoadingEventHandler();
 
 	private enum IndexedButton : int {
 		Story,
@@ -29,11 +28,10 @@ public partial class MainMenu : Control {
 	private int ButtonIndex = 0;
 	private bool Loaded = false;
 
-	private static PackedScene LoadedWorld = null;
-	private static Thread LoadThread = null;
+	private PackedScene LoadedWorld;
+	private Thread LoadThread;
 
 	private AudioStreamPlayer UIChannel;
-	private CanvasLayer TransitionScreen;
 
 	private static Tween AudioFade;
 
@@ -41,18 +39,17 @@ public partial class MainMenu : Control {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 		AudioFade.Finished -= OnAudioFadeFinished;
 	}
-	private void OnFinishedLoading() {
-		LoadThread.Join();
-		GetTree().ChangeSceneToPacked( LoadedWorld );
-	}
 	private void OnBeginGameFinished() {
-		TransitionScreen.Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
-		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 		QueueFree();
+		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 	}
 	private void OnContinueGameFinished() {
 		Hide();
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+
+		LoadThread.Join();
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -76,12 +73,7 @@ public partial class MainMenu : Control {
 
 		Console.PrintLine( "Loading game..." );
 
-		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
-		LoadThread = new Thread( () => {
-			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
-			CallDeferred( "emit_signal", "FinishedLoading" );
-		} );
-		LoadThread.Start();
+		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 
 	private void OnContinueGameButtonPressed() {
@@ -91,8 +83,9 @@ public partial class MainMenu : Control {
 		Loaded = true;
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
-		TransitionScreen.Call( "transition" );
+
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
@@ -112,25 +105,25 @@ public partial class MainMenu : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
-		TransitionScreen.Call( "transition" );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
 	private void OnSettingsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
-		EmitSignal( "SettingsMenu" );
+		EmitSignalSettingsMenu();
 	}
 	private void OnModsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
-		EmitSignal( "ModsMenu" );
+		EmitSignalModsMenu();
 	}
 	private void OnMultiplayerButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
-		EmitSignal( "MultiplayerMenu" );
+		EmitSignalMultiplayerMenu();
 	}
 	private void OnQuitGameButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
@@ -219,13 +212,12 @@ public partial class MainMenu : Control {
 		AppVersion.SetProcessInternal( false );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
 
+		LoadThread = new Thread( () => { LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" ); } );
+		LoadThread.Start();
+
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
-
-		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.SetProcess( false );
-		TransitionScreen.SetProcessInternal( false );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			ButtonList = [
@@ -251,7 +243,7 @@ public partial class MainMenu : Control {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
 			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {

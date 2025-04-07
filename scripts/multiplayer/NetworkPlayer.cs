@@ -20,7 +20,7 @@ public enum PlayerAnimationState : uint {
 	Count
 };
 
-public partial class NetworkPlayer : CharacterBody2D {
+public partial class NetworkPlayer : Renown.Entity {
 	private byte[] Packet = new byte[ 24 ];
 	private System.IO.MemoryStream PacketStream = null;
 	private System.IO.BinaryWriter PacketWriter = null;
@@ -70,7 +70,7 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
 		case PlayerAnimationState.Sliding:
-			LeftArmAnimation.CallDeferred( "stop" );
+			LeftArmAnimation.Play( "stop" );
 			LeftArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.Idle:
@@ -99,19 +99,19 @@ public partial class NetworkPlayer : CharacterBody2D {
 			
 			LeftArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			LeftArmAnimation.CallDeferred( "play", "use" );
+			LeftArmAnimation.Play( "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
-			LeftArmAnimation.CallDeferred( "play", "reload" );
+			LeftArmAnimation.Play( "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
 			LeftArmAnimation.Show();
 			LeftArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
-			LeftArmAnimation.CallDeferred( "play", "empty" );
+			LeftArmAnimation.Play( "empty" );
 			break;
 		};
 		
@@ -150,19 +150,19 @@ public partial class NetworkPlayer : CharacterBody2D {
 			
 			RightArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			RightArmAnimation.CallDeferred( "play", "use" );
+			RightArmAnimation.Play( "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
 			RightArmAnimation.Show();
 			RightArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
-			RightArmAnimation.CallDeferred( "play", "reload" );
+			RightArmAnimation.Play( "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
 			RightArmAnimation.Show();
 			RightArmAnimation.SpriteFrames =
 				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
-			RightArmAnimation.CallDeferred( "play", "empty" );
+			RightArmAnimation.Play( "empty" );
 			break;
 		};
 
@@ -193,21 +193,21 @@ public partial class NetworkPlayer : CharacterBody2D {
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
 			TorsoAnimation.Show();
-			TorsoAnimation.CallDeferred( "play", "default" );
+			TorsoAnimation.Play( "default" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
 			TorsoAnimation.Hide();
 			IdleAnimation.Show();
-			IdleAnimation.CallDeferred( "play", "start" );
+			IdleAnimation.Play( "start" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
 			TorsoAnimation.Hide();
 			IdleAnimation.Show();
-			IdleAnimation.CallDeferred( "play", "loop" );
+			IdleAnimation.Play( "loop" );
 			break;
 		case PlayerAnimationState.Dead:
 			TorsoAnimation.Show();
-			TorsoAnimation.CallDeferred( "play", "dead" );
+			TorsoAnimation.Play( "dead" );
 			break;
 		};
 
@@ -249,6 +249,8 @@ public partial class NetworkPlayer : CharacterBody2D {
 
 		PacketStream = new System.IO.MemoryStream( Packet );
 		PacketWriter = new System.IO.BinaryWriter( PacketStream );
+
+		ProcessMode = ProcessModeEnum.Disabled;
 
 		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
 	}

@@ -10,7 +10,7 @@ public partial class MercenaryShotgunner : MobBase {
 	private Line2D ShootLine;
 	private Godot.Vector2 GuardPosition;
 
-	public void SetLocation( Renown.World.WorldArea location ) => Location = location;
+	private object LockObject = new object();
 
 	public override void Save() {
 		base.Save();
@@ -38,8 +38,8 @@ public partial class MercenaryShotgunner : MobBase {
 	}
 
 	protected override void SendPacket() {
-		SyncObject.Write( GlobalPosition.X );
-		SyncObject.Write( GlobalPosition.Y );
+		SyncObject.Write( PhysicsPosition.X );
+		SyncObject.Write( PhysicsPosition.Y );
 		SyncObject.Write( Health );
 		SyncObject.Write( Fear );
 		SyncObject.Write( (uint)State );
@@ -80,7 +80,7 @@ public partial class MercenaryShotgunner : MobBase {
 		QueueFree();
 	}
     public override void _Ready() {
-		base.InitSubThinker();
+		base._Ready();
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SyncObject = new NetworkWriter( 256 );
@@ -203,7 +203,7 @@ public partial class MercenaryShotgunner : MobBase {
 
 		AfterImageUpdated = false;
 
-		SightTarget = (CharacterBody2D)sightTarget;
+		SightTarget = (Renown.Entity)sightTarget;
 		if ( sightTarget is Player || sightTarget is NetworkPlayer ) {
 			CanSeeTarget = true;
 			LastTargetPosition = SightTarget.GlobalPosition;

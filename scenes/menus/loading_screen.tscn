@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=6 format=3 uid="uid://ceidjyb2qv8xs"]
 
 [ext_resource type="Script" uid="uid://c8eph374f4si" path="res://scripts/menus/LoadingScreen.cs" id="1_gwdd4"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_u6do7"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_7krkx"]
-[ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="3_u6do7"]
 
 [sub_resource type="Gradient" id="Gradient_7krkx"]
 offsets = PackedFloat32Array(0)
@@ -103,5 +102,3 @@ allow_greater = false
 allow_lesser = false
 script = ExtResource("3_7krkx")
 metadata/_custom_type_script = "uid://bjlqnmhmtp0yj"
-
-[node name="Fade" parent="." instance=ExtResource("3_u6do7")]

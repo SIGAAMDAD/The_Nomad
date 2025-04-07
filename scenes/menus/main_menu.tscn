@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://ba1debi5qxy5p"]
+[gd_scene load_steps=4 format=3 uid="uid://ba1debi5qxy5p"]
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
 [ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
-[ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="4_6bivr"]
 [ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="4_imvie"]
 
 [node name="MainMenu" type="Control"]
@@ -122,8 +121,6 @@ grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
 metadata/_edit_use_anchors_ = true
-
-[node name="Fade" parent="." instance=ExtResource("4_6bivr")]
 
 [node name="KonamiCode" type="Node" parent="." node_paths=PackedStringArray("timer")]
 script = ExtResource("4_imvie")

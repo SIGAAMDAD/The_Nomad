@@ -45,7 +45,7 @@ public partial class PauseMenu : Control {
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer
 			|| GameConfiguration.GameMode == GameMode.Online )
 		{
-			EmitSignal( "LeaveLobby" );
+			EmitSignalLeaveLobby();
 		}
 		GetTree().ChangeSceneToPacked( MainMenu );
 	}

@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown.World;
+using Renown;
+using GDExtension.Wrappers;
 
-public partial class Player : Entity {
+public partial class Player : Renown.Entity {
 	public enum Hands : byte {
 		Left,
 		Right,
@@ -24,7 +26,8 @@ public partial class Player : Entity {
 		OnHorse			= 0x0080,
 		IdleAnimation	= 0x1000,
 		Checkpoint		= 0x2000,
-		BlockedInput	= 0x4000
+		BlockedInput	= 0x4000,
+		UsingWeapon		= 0x8000
 	};
 
 	public enum AnimationState : byte {
@@ -122,6 +125,7 @@ public partial class Player : Entity {
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
 	private GpuParticles2D DashEffect;
+	private PointLight2D DashLight;
 	private AnimatedSprite2D JumpkitSparks;
 
 	private PackedScene BloodSplatter;
@@ -179,9 +183,6 @@ public partial class Player : Entity {
 	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
 	private Dictionary<int, AmmoStack> AmmoStacks = new Dictionary<int, AmmoStack>();
 
-	private List<Checkpoint> WarpList = new List<Checkpoint>();
-	private List<Renown.Contract> Contracts = new List<Renown.Contract>();
-
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
 	private float ArmAngle = 0.0f;
@@ -199,19 +200,18 @@ public partial class Player : Entity {
 
 	private int NodeHash = 0;
 
+	[Signal]
+	public delegate void SwitchedWeaponEventHandler( WeaponEntity weapon );
+	[Signal]
+	public delegate void SwitchedWeaponModeEventHandler( WeaponEntity weapon, WeaponEntity.Properties useMode );
+
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
 	}
 
-	public WorldArea GetLocation() => Location;
-	public void SetLocation( WorldArea location ) => Location = location;
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
 
-	public void Save() {
-		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
-			return;
-		}
-
+	public override void Save() {
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
 		int stackIndex;
 		
@@ -248,11 +248,12 @@ public partial class Player : Entity {
 		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
 			writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
 			if ( WeaponSlots[i].IsUsed() ) {
-				int weaponIndex;
-				for ( weaponIndex = 0; weaponIndex < WeaponsStack.Count; weaponIndex++ ) {
-					if ( WeaponsStack[ weaponIndex ] == WeaponSlots[ i ].GetWeapon() ) {
+				int weaponIndex = 0;
+				foreach ( var stack in WeaponsStack ) {
+					if ( stack.Value == WeaponSlots[ i ].GetWeapon() ) {
 						break;
 					}
+					weaponIndex++;
 				}
 				writer.SaveInt( "weapon_slot_index_" + i.ToString(), weaponIndex );
 				writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
@@ -266,18 +267,9 @@ public partial class Player : Entity {
 			writer.SaveString( "consumable_stacks_type_" + stackIndex.ToString(), (string)stack.Value.ItemType.Get( "id" ) );
 		}
 
-		writer.SaveInt( "contracts_count", Contracts.Count );
-		for ( int i = 0; i < Contracts.Count; i++ ) {
-			writer.SaveUInt( "contract_type_" + i.ToString(), (uint)Contracts[i].GetContractType() );
-		}
-
 		writer.Flush();
 	}
-	public void Load() {
-		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
-			return;
-		}
-
+	public override void Load() {
 		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
 		Health = reader.LoadFloat( "health" );
@@ -297,7 +289,7 @@ public partial class Player : Entity {
 			AmmoStack stack = new AmmoStack();
 			stack.Amount = reader.LoadInt( "ammo_stacks_amount_" + i.ToString() );
 			string id = reader.LoadString( "ammo_stacks_type_" + i.ToString() );
-			stack.AmmoType = (Resource)Inventory.Call( "get_item_from_id", id );
+			stack.AmmoType = ( (Inventory)Inventory ).GetItemFromId( id );
 			AmmoStacks.Add( id.GetHashCode(), stack );
 		}
 
@@ -391,42 +383,24 @@ public partial class Player : Entity {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public AnimatedSprite2D GetTorsoAnimation() {
-		return TorsoAnimation;
-	}
+	public AnimatedSprite2D GetTorsoAnimation() => TorsoAnimation;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public AnimatedSprite2D GetLegsAnimation() {
-		return LegAnimation;
-	}
+	public AnimatedSprite2D GetLegsAnimation() => LegAnimation;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public AnimatedSprite2D GetLeftArmAnimation() {
-		return ArmLeft.Animations;
-	}
+	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public AnimatedSprite2D GetRightArmAnimation() {
-		return ArmRight.Animations;
-	}
+	public AnimatedSprite2D GetRightArmAnimation() => ArmRight.Animations;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Resource GetCurrentMappingContext() {
-		return CurrentMappingContext;
-	}
+	public Resource GetCurrentMappingContext() => CurrentMappingContext;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public WeaponSlot[] GetWeaponSlots() {
-		return WeaponSlots;
-	}
+	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Dictionary<int, WeaponEntity> GetWeaponStack() {
-		return WeaponsStack;
-	}
+	public Dictionary<int, WeaponEntity> GetWeaponStack() => WeaponsStack;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Dictionary<int, AmmoStack> GetAmmoStacks() {
-		return AmmoStacks;
-	}
+	public Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Node GetInventory() {
-		return Inventory;
-	}
+	public Node GetInventory() => Inventory;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
 		if ( ArmLeft.GetSlot() != WeaponSlot.INVALID && WeaponSlots[ ArmLeft.GetSlot() ].GetWeapon() == weapon ) {
@@ -437,88 +411,50 @@ public partial class Player : Entity {
 		return null;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Godot.Vector2 GetInputVelocity() {
-		return InputVelocity;
-	}
+	public Godot.Vector2 GetInputVelocity() => InputVelocity;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public WeaponSlot GetSlot( int nSlot ) {
-		return WeaponSlots[ nSlot ];
-	}
+	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public float GetArmAngle() {
-		return ArmAngle;
-	}
+	public float GetArmAngle() => ArmAngle;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetArmAngle( float nAngle ) {
-		ArmAngle = nAngle;
-	}
+	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Arm GetLastUsedArm() {
-		return LastUsedArm;
-	}
+	public Arm GetLastUsedArm() => LastUsedArm;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetLastUsedArm( Arm arm ) {
-		LastUsedArm = arm;
-	}
+	public void SetLastUsedArm( Arm arm ) => LastUsedArm = arm;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public float GetSoundLevel() {
-		return SoundLevel;
-	}
+	public float GetSoundLevel() => SoundLevel;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetHealth( float nHealth ) {
 		Health = nHealth;
 		HUD.GetHealthBar().SetHealth( Health );
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public float GetRage() {
-		return Rage;
-	}
+	public float GetRage() => Rage;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetRage( float nRage ) {
 		Rage = nRage;
 		HUD.GetRageBar().Value = Rage;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public PlayerFlags GetFlags() {
-		return Flags;
-	}
+	public PlayerFlags GetFlags() => Flags;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetFlags( PlayerFlags flags ) {
-		Flags = flags;
-	}
+	public void SetFlags( PlayerFlags flags ) => Flags = flags;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Hands GetHandsUsed() {
-		return HandsUsed;
-	}
+	public Hands GetHandsUsed() => HandsUsed;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetHandsUsed( Hands hands ) {
-		HandsUsed = hands;
-	}
+	public void SetHandsUsed( Hands hands ) => HandsUsed = hands;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public WeaponSlot[] GetSlots() {
-		return WeaponSlots;
-	}
+	public WeaponSlot[] GetSlots() => WeaponSlots;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetSlots( WeaponSlot[] slots ) {
-		WeaponSlots = slots;
-	}
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public List<Checkpoint> GetWarpPoints() {
-		return WarpList;
-	}
+	public void SetSlots( WeaponSlot[] slots ) => WeaponSlots = slots;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Arm GetLeftArm() {
-		return ArmLeft;
-	}
+	public Arm GetLeftArm() => ArmLeft;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Arm GetRightArm() {
-		return ArmRight;
-	}
+	public Arm GetRightArm() => ArmRight;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int GetCurrentWeapon() {
-		return CurrentWeapon;
-	}
+	public int GetCurrentWeapon() => CurrentWeapon;
 
 	private void IdleReset() {
 		IdleTimer.Start();
@@ -600,26 +536,23 @@ public partial class Player : Entity {
 		QueueFree();
 	}
 
-	private void OnDeath( CharacterBody2D attacker ) {
-		EmitSignal( "Die", attacker, this );
+	private void OnDeath( Entity attacker ) {
+		EmitSignalDie( attacker, this );
 		LegAnimation.Hide();
 		ArmLeft.Animations.Hide();
 		ArmRight.Animations.Hide();
 
-		TorsoAnimation.CallDeferred( "play", "death" );
+		TorsoAnimation.Play( "death" );
 
-		MiscChannel.Stream = ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ];
-		MiscChannel.Play();
+		PlaySound( MiscChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		SetProcessUnhandledInput( true );
 	}
 
-	public void Damage( CharacterBody2D attacker, float nAmount ) {
+	public override void Damage( Entity attacker, float nAmount ) {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
-
-		EmitSignal( "Damaged", attacker, this, nAmount );
 
 		Health -= nAmount;
 		Rage += nAmount;
@@ -631,9 +564,10 @@ public partial class Player : Entity {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			MiscChannel.Stream = ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ];
-			MiscChannel.Play();
+			PlaySound( MiscChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
 		}
+
+		EmitSignalDamaged( attacker, this, nAmount );
 	}
 
 	public void BlockInput( bool bBlocked ) {
@@ -683,17 +617,16 @@ public partial class Player : Entity {
 		LeftArmAnimationState = PlayerAnimationState.TrueIdleLoop;
 		RightArmAnimationState = PlayerAnimationState.TrueIdleLoop;
 
-		IdleAnimation.CallDeferred( "play", "loop" );
+		IdleAnimation.Play( "loop" );
 	}
 	private void OnLegsAnimationLooped() {
-		if ( Velocity != Godot.Vector2.Zero ) {
-			MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
-			MoveChannel.Play();
+		if ( LinearVelocity != Godot.Vector2.Zero ) {
+			PlaySound( MoveChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 		}
 	}
 	private void OnDashTimeTimeout() {
 		HUD.GetDashOverlay().Hide();
-		( (PointLight2D)DashEffect.GetChild( 0 ) ).Hide();
+		DashLight.Hide();
 		DashEffect.Emitting = false;
 		Flags &= ~PlayerFlags.Dashing;
 		if ( LegAnimation.FlipH ) {
@@ -703,7 +636,7 @@ public partial class Player : Entity {
 			JumpkitSparks.FlipH = false;
 			JumpkitSparks.Offset = Godot.Vector2.Zero;
 		}
-		DashCooldownTime.CallDeferred( "start" );
+		DashCooldownTime.Start();
 	}
 	private void OnSlideTimeout() {
 		SlideEffect.Emitting = false;
@@ -717,8 +650,7 @@ public partial class Player : Entity {
 
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
-			DashChannel.Stream = ResourceCache.DashExplosion;
-			DashChannel.Play();
+			PlaySound( DashChannel, ResourceCache.DashExplosion );
 
 			DashBurnout = 0.0f;
 			return;
@@ -726,17 +658,16 @@ public partial class Player : Entity {
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
-		DashTime.CallDeferred( "start" );
-		DashChannel.Stream = ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ];
+		DashTime.Start();
 		DashChannel.PitchScale = 1.0f + DashBurnout;
-		DashChannel.Play();
-		( (PointLight2D)DashEffect.GetChild( 0 ) ).CallDeferred( "show" );
+		PlaySound( DashChannel, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ] );
+		DashLight.Show();
 		DashEffect.Emitting = true;
-		DashDirection = Velocity;
-		HUD.GetDashOverlay().CallDeferred( "show" );
+		DashDirection = LinearVelocity;
+		HUD.GetDashOverlay().Show();
 
 		DashBurnout += 0.25f;
-		DashCooldownTime.CallDeferred( "start" );
+		DashCooldownTime.Start();
 	}
 	private void OnSlide() {
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
@@ -766,7 +697,8 @@ public partial class Player : Entity {
 			return; // nothing equipped
 		}
 		if ( WeaponSlots[ slot ].IsUsed() ) {
-			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode() );
+			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), ( Flags & PlayerFlags.UsingWeapon ) != 0 );
+			Flags |= PlayerFlags.UsingWeapon;
 		}
 	}
 	private void OnArmAngleChanged() {
@@ -816,13 +748,12 @@ public partial class Player : Entity {
 				HandsUsed = Hands.Both;
 			}
 
-			HUD.SetWeapon( weapon );
+			EmitSignalSwitchedWeapon( weapon );
 		} else {
-			HUD.SetWeapon( null );
+			EmitSignalSwitchedWeapon( null );
 		}
 
-		MiscChannel.Stream = ResourceCache.ChangeWeaponSfx;
-		MiscChannel.Play();
+		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -867,13 +798,12 @@ public partial class Player : Entity {
 				HandsUsed = Hands.Both;
 			}
 
-			HUD.SetWeapon( weapon );
+			EmitSignalSwitchedWeapon( weapon );
 		} else {
-			HUD.SetWeapon( null );
+			EmitSignalSwitchedWeapon( null );
 		}
 
-		MiscChannel.Stream = ResourceCache.ChangeWeaponSfx;
-		MiscChannel.Play();
+		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -887,8 +817,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			MiscChannel.Stream = ResourceCache.SlowMoBeginSfx;
-			MiscChannel.Play();
+			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
 
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -951,6 +880,7 @@ public partial class Player : Entity {
 			src.SetWeapon( WeaponSlot.INVALID );
 			dst.SetWeapon( tmp );
 		}
+		EmitSignalSwitchedWeaponMode( srcWeapon, srcWeapon.GetLastUsedMode() );
 	}
 	private void SwitchWeaponHand() {
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
@@ -970,7 +900,7 @@ public partial class Player : Entity {
 		// can't switch if we're using both hands for one weapon
 		case Hands.Both:
 		default:
-			GD.PushWarning( "SwitchWeaponHand: invalid hand, setting to default of right" );
+			Console.PrintError( "SwitchWeaponHand: invalid hand, setting to default of right" );
 			HandsUsed = Hands.Right;
 			break;
 		};
@@ -1067,8 +997,9 @@ public partial class Player : Entity {
 		// update hand data
 		LastUsedArm.SetWeapon( CurrentWeapon );
 
-		HUD.SetWeapon( weapon );
+		EmitSignalSwitchedWeapon( weapon );
 	}
+	private void OnStoppedUsingWeapon() => Flags &= ~PlayerFlags.UsingWeapon;
 
 	private void SwitchInputMode( Resource InputContext ) {
 		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext );
@@ -1082,6 +1013,7 @@ public partial class Player : Entity {
 		DashAction?.Disconnect( "triggered", Callable.From( OnDash ) );
 		SlideAction?.Disconnect( "triggered", Callable.From( OnSlide ) );
 		UseWeaponAction?.Disconnect( "triggered", Callable.From( OnUseWeapon ) );
+		UseWeaponAction?.Disconnect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		OpenInventoryAction?.Disconnect( "triggered", Callable.From( OnToggleInventory ) );
 
 		if ( InputContext == KeyboardInputMappings ) {
@@ -1121,6 +1053,7 @@ public partial class Player : Entity {
 		DashAction.Connect( "triggered", Callable.From( OnDash ) );
 		SlideAction.Connect( "triggered", Callable.From( OnSlide ) );
 		UseWeaponAction.Connect( "triggered", Callable.From( OnUseWeapon ) );
+		UseWeaponAction.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		OpenInventoryAction.Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 
@@ -1140,8 +1073,6 @@ public partial class Player : Entity {
 			LegAnimation.Visible = true;
 			ArmLeft.Animations.Visible = true;
 			ArmRight.Animations.Visible = true;
-
-			EmitSignal( "Respawn" );
 		}
 	}
 
@@ -1218,8 +1149,7 @@ public partial class Player : Entity {
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-		MiscChannel.Stream = ResourceCache.SlowMoEndSfx;
-		MiscChannel.Play();
+		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
 	}
 
 	private void CmdSuicide() {
@@ -1332,6 +1262,9 @@ public partial class Player : Entity {
 
 		DashEffect = GetNode<GpuParticles2D>( "Animations/DashEffect" );
 		DashEffect.SetProcess( false );
+		DashEffect.SetProcessInternal( false );
+
+		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
 
 		JumpkitSparks = GetNode<AnimatedSprite2D>( "Animations/JumpkitSparks" );
 		JumpkitSparks.SetProcess( false );
@@ -1356,8 +1289,10 @@ public partial class Player : Entity {
 
 		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0 );
 
-		SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
-			new SteamLobby.NetworkNode( this, SendPacket, null ) );
+		if ( SettingsData.GetNetworkingEnabled() ) {
+			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
+				new SteamLobby.NetworkNode( this, SendPacket, null ) );
+		}
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
@@ -1377,14 +1312,14 @@ public partial class Player : Entity {
 
 		InputVelocity = (Godot.Vector2)MoveAction.Get( "value_axis_2d" );
 		if ( InputVelocity != Godot.Vector2.Zero ) {
-			Velocity = Velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
+			LinearVelocity = LinearVelocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
 		} else {
-			Velocity = Velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
+			LinearVelocity = LinearVelocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
 		}
 
-		MoveAndSlide();
+		GlobalRotation = 0.0f;
 
-		if ( Velocity != Godot.Vector2.Zero ) {
+		if ( LinearVelocity != Godot.Vector2.Zero ) {
 			IdleReset();
 		}
 
@@ -1409,12 +1344,12 @@ public partial class Player : Entity {
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.GetSlot() == WeaponSlot.INVALID ) {
-			arm.Animations.CallDeferred( "play", InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
+			arm.Animations.Play( InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
 			animState = InputVelocity != Godot.Vector2.Zero ? PlayerAnimationState.Running :
 				PlayerAnimationState.Idle;
 		} else {
 			WeaponEntity weapon = WeaponSlots[ arm.GetSlot() ].GetWeapon();
-			string animationName = "";
+			string animationName;
 			switch ( weapon.GetCurrentState() ) {
 			default:
 			case WeaponEntity.WeaponState.Idle:
@@ -1440,20 +1375,19 @@ public partial class Player : Entity {
 					animationName += "_flip";
 				}
 			}
-			arm.Animations.CallDeferred( "play", animationName );
+			arm.Animations.Play( animationName );
 		}
 	}
 	private void CheckStatus( float delta ) {
 		if ( Rage < 100.0f ) {
 			if ( ( Flags & PlayerFlags.UsedMana ) != 0 ) {
 			}
-			HUD.GetRageBar().CallDeferred( "show" );
 		}
 		if ( FrameDamage > 0.0f ) {
 			Rage += FrameDamage * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().CallDeferred( "show" );
+			HUD.GetRageBar().Show();
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f ) {
@@ -1462,27 +1396,24 @@ public partial class Player : Entity {
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetHealthBar().CallDeferred( "show" );
+			HUD.GetHealthBar().Show();
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
 		} else if ( Rage < 0.0f ) {
 			Rage = 0.0f;
 		}
-
-		HUD.GetHealthBar().SetHealth( Health );
-		HUD.GetRageBar().Value = Rage;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public override void _Process( double delta ) {
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
-				LegAnimation.CallDeferred( "play", "run" );
+				LegAnimation.Play( "run" );
 				LegAnimationState = PlayerAnimationState.Running;
 				WalkEffect.Emitting = true;
 			}
 		} else {
-			LegAnimation.CallDeferred( "play", "idle" );
+			LegAnimation.Play( "idle" );
 			LegAnimationState = PlayerAnimationState.Idle;
 			WalkEffect.Emitting = false;
 			SlideEffect.Emitting = false;
@@ -1503,11 +1434,11 @@ public partial class Player : Entity {
 		} else {
 			Godot.Vector2 mousePosition;
 
-			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
-				mousePosition = DisplayServer.MouseGetPosition();
-			} else {
+//			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
+//				mousePosition = DisplayServer.MouseGetPosition();
+//			} else {
 				mousePosition = GetViewport().GetMousePosition();
-			}
+//			}
 			
 			float y = mousePosition.Y;
 			float x = mousePosition.X;
@@ -1556,6 +1487,8 @@ public partial class Player : Entity {
 		Animations.MoveChild( front.Animations, 3 );
 	}
 
+	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalSwitchedWeaponMode( source, useMode );
+
 	public void PickupAmmo( AmmoEntity ammo ) {
 		AmmoStack stack = null;
 		bool found = false;
@@ -1574,9 +1507,11 @@ public partial class Player : Entity {
 		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
+		PlaySound( MiscChannel, ammo.GetPickupSound() );
+
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[i];
-			if ( slot.IsUsed() && (int)( (Godot.Collections.Dictionary)slot.GetWeapon().Data.Get( "properties" ) )[ "ammo_type" ]
+			if ( slot.IsUsed() && (int)slot.GetWeapon().GetAmmoType()
 				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
 			{
 				slot.GetWeapon().SetReserve( stack );
@@ -1600,12 +1535,14 @@ public partial class Player : Entity {
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;
 
+		weapon.Connect( "ModeChanged", Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
+
 		AmmoStack stack = null;
-		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
-			if ( (int)( (Godot.Collections.Dictionary)AmmoStacks[i].AmmoType.Get( "properties" ) )[ "type" ] ==
+		foreach ( var ammo in AmmoStacks ) {
+			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
 				(int)weapon.GetAmmoType() )
 			{
-				stack = AmmoStacks[i];
+				stack = ammo.Value;
 				break;
 			}
 		}
@@ -1614,8 +1551,6 @@ public partial class Player : Entity {
 			weapon.SetAmmo( stack.AmmoType );
 		}
 		if ( SettingsData.GetEquipWeaponOnPickup() ) {
-			HUD.SetWeapon( weapon );
-
 			// apply rules of various weapon properties
 			if ( ( weapon.GetDefaultMode() & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
 				ArmLeft.SetWeapon( CurrentWeapon );
@@ -1645,6 +1580,8 @@ public partial class Player : Entity {
 			LastUsedArm.SetWeapon( CurrentWeapon );
 			WeaponSlots[ LastUsedArm.GetSlot() ].SetMode( weapon.GetProperties() );
 			weapon.SetUseMode( weapon.GetDefaultMode() );
+			
+			EmitSignalSwitchedWeapon( weapon );
 		}
 	}
 };

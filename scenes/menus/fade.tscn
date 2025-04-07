@@ -2,21 +2,6 @@
 
 [ext_resource type="Script" uid="uid://bsn7dhytwb1qo" path="res://scripts/menus/fade.gd" id="1_lpbv8"]
 
-[sub_resource type="Animation" id="Animation_lpbv8"]
-resource_name = "fade_to_black"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("ColorRect:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
 [sub_resource type="Animation" id="Animation_p81mj"]
 length = 0.001
 tracks/0/type = "value"
@@ -32,8 +17,25 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_lpbv8"]
+resource_name = "fade_to_black"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_0bci0"]
 resource_name = "fade_to_normal"
+length = 1.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -54,7 +56,7 @@ _data = {
 &"fade_to_normal": SubResource("Animation_0bci0")
 }
 
-[node name="Fade" type="CanvasLayer"]
+[node name="TransitionScreen" type="CanvasLayer"]
 script = ExtResource("1_lpbv8")
 
 [node name="ColorRect" type="ColorRect" parent="."]

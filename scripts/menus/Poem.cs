@@ -6,7 +6,6 @@ public partial class Poem : Control {
 
 	private bool Loading = false;
 
-	private CanvasLayer TransitionScreen;
 	private Label Author;
 	private Label PressEnter;
 	private Timer[] Timers;
@@ -24,7 +23,6 @@ public partial class Poem : Control {
 		FinishedLoading -= OnFinishedLoading;
 
 		LoadThread.Join();
-		QueueFree();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void OnTransitionFinished() {
@@ -87,8 +85,7 @@ public partial class Poem : Control {
 			Timers[i].Connect( "timeout", Callable.From( OnTimerTimeout ) );
 		}
 
-		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
 		Author = GetNode<Label>( "VBoxContainer/AuthorName" );
 		PressEnter = GetNode<Label>( "VBoxContainer/PressEnter" );
@@ -107,7 +104,7 @@ public partial class Poem : Control {
 		}
 		if ( CurrentTimer >= Labels.Length ) {
 			Loading = true;
-			TransitionScreen.Call( "transition" );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 			return;
 		}
 

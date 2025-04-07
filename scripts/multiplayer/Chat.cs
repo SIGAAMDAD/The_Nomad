@@ -50,7 +50,7 @@ namespace Multiplayer {
 			RecentText = GetNode<RichTextLabel>( "Mimimized/RichTextLabel" );
 			Message = GetNode<LineEdit>( "LineEdit" );
 
-			GetNode( "/root/SteamLobby" ).Connect( "ChatMessageReceived", Callable.From<ulong, string>( OnChatMessageReceived ) );
+			SteamLobby.Instance.Connect( "ChatMessageReceived", Callable.From<ulong, string>( OnChatMessageReceived ) );
 		}
     };
 };

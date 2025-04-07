@@ -12,9 +12,11 @@ public partial class DebrisCloud : Node2D {
 
 	public override void _Ready() {
 		Timer = GetNode<Timer>( "Timer" );
+		Timer.SetProcess( false );
+		Timer.SetProcessInternal( false );
 		Timer.Connect( "timeout", Callable.From( OnTimerTimeout ) );
 
-		Texture = ResourceLoader.Load<Texture2D>( "res://textures/env/dustcloud.png" );
+		Texture = ResourceCache.GetTexture( "res://textures/env/dustcloud.png" );
 	}
 
     public void Create( Vector2 position ) {

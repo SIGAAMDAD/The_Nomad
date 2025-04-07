@@ -110,6 +110,7 @@ public partial class TitleMenu : Control {
 		LobbyBrowser.SetProcess( true );
 		LobbyBrowser.SetProcessInternal( true );
 		LobbyBrowser.SetProcessUnhandledInput( true );
+		MultiplayerMenu.ProcessMode = ProcessModeEnum.Always;
 
 		LobbyBrowser.ResetBrowser();
 
@@ -126,6 +127,7 @@ public partial class TitleMenu : Control {
 		SettingsMenu.SetProcess( true );
 		SettingsMenu.SetProcessInternal( true );
 		SettingsMenu.SetProcessUnhandledInput( true );
+		SettingsMenu.ProcessMode = ProcessModeEnum.Always;
 
 		MainMenu.Hide();
 		SettingsMenu.Show();
@@ -148,11 +150,13 @@ public partial class TitleMenu : Control {
 		MultiplayerMenu.SetProcess( false );
 		MultiplayerMenu.SetProcessInternal( false );
 		MultiplayerMenu.SetProcessUnhandledInput( false );
+		MultiplayerMenu.ProcessMode = ProcessModeEnum.Disabled;
 
 		SettingsMenu = GetNode<SettingsMenu>( "SettingsMenu" );
 		SettingsMenu.SetProcess( false );
 		SettingsMenu.SetProcessInternal( false );
 		SettingsMenu.SetProcessUnhandledInput( false );
+		SettingsMenu.ProcessMode = ProcessModeEnum.Disabled;
 
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
@@ -172,8 +176,6 @@ public partial class TitleMenu : Control {
 		UIChannel.SetProcessInternal( false );
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
-		MusicTheme.SetProcess( false );
-		MusicTheme.SetProcessInternal( false );
 		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
@@ -181,12 +183,17 @@ public partial class TitleMenu : Control {
 		GetTree().CurrentScene = this;
 
 		SetProcess( false );
+		SetProcessInternal( false );
 	}
 
 	private void OnThemeIntroFinished() {
+		Console.PrintLine( "Menu intro theme finished, moving to loop..." );
+
 		MusicTheme.Stream = LoopingTheme;
 		MusicTheme.Play();
 		MusicTheme.Set( "parameters/looping", true );
+		MusicTheme.SetProcess( false );
+		MusicTheme.SetProcessInternal( false );
 		MusicTheme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
 	}
 }

@@ -3,8 +3,8 @@ using Godot;
 public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
 	private Label ProgressLabel;
+	private MenuBackground Background;
 	private Range Spinner;
-	private CanvasLayer TransitionScreen;
 	private bool FadingOut = false;
 	private Timer ImageChange;
 	private System.Random random = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day
@@ -46,16 +46,17 @@ public partial class LoadingScreen : CanvasLayer {
 		TipLabel.Text = Tips[ tipIndex ];
 	}
 
-	private void OnTransitionFinished() {
-		Visible = false;
+	private void OnFadeOutFinished() {
+		Hide();
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnFadeOutFinished ) );
 	}
 	public void FadeOut() {
-		TransitionScreen.Call( "transition" );
-		Visible = false;
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnFadeOutFinished ) );
 	}
 	public void FadeIn() {
-		TransitionScreen.Call( "transition" );
-		Visible = true;
+		Show();
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 
 	public override void _Ready() {
@@ -66,14 +67,12 @@ public partial class LoadingScreen : CanvasLayer {
 		ImageChange.SetProcessInternal( false );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
+		Background = GetNode<MenuBackground>( "MenuBackground" );
+
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
 		TipLabel.SetProcess( false );
 		TipLabel.SetProcessInternal( false );
 		TipLabel.Show();
-
-		TransitionScreen = GetNode<CanvasLayer>( "Fade" );
-		TransitionScreen.SetProcess( false );
-		TransitionScreen.SetProcessInternal( false );
 
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );

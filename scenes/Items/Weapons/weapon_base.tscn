@@ -1,8 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://brtukmd1ep2ci"]
+[gd_scene load_steps=2 format=3 uid="uid://brtukmd1ep2ci"]
 
 [ext_resource type="Script" uid="uid://chj3e6vvwp28f" path="res://scripts/items/WeaponEntity.cs" id="2_g8mpd"]
-[ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="3_hlo55"]
 
-[node name="WeaponBase" type="Node2D" groups=["Archive", "SceneRelevant"]]
+[node name="WeaponBase" type="Node2D" groups=["Archive"]]
+process_mode = 3
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 script = ExtResource("2_g8mpd")
-Data = ExtResource("3_hlo55")
+
+[node name="WeaponTimer" type="Timer" parent="."]

@@ -22,7 +22,12 @@ namespace PlayerSystem {
 
 		public void Init( float nHealth ) {
 			Timer = GetNode<Timer>( "Timer" );
+			Timer.SetProcess( false );
+			Timer.SetProcessInternal( false );
+
 			DamageBar = GetNode<ProgressBar>( "DamageBar" );
+			DamageBar.SetProcess( false );
+			DamageBar.SetProcessInternal( false );
 
 			MaxValue = nHealth;
 			Value = nHealth;

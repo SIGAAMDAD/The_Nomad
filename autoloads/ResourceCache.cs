@@ -50,6 +50,8 @@ public class ResourceCache {
 	public static AudioStream SlowMoEndSfx;
 #endregion
 
+	public static Texture2D Light;
+
 	private static Dictionary<string, AudioStream> AudioCache = new Dictionary<string, AudioStream>();
 	private static Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
 	private static Dictionary<string, PackedScene> SceneCache = new Dictionary<string, PackedScene>();
@@ -248,6 +250,8 @@ public class ResourceCache {
 
 		ActivatedCheckpointSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/bonfire_create.ogg" );
 		CampfireAmbienceSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/campfire.ogg" );
+
+		Light = ResourceLoader.Load<Texture2D>( "res://textures/point_light.dds" );
 
 		world.CallDeferred( "emit_signal", "ResourcesLoadingFinished" );
 	}

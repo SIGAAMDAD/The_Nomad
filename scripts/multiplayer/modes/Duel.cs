@@ -41,7 +41,7 @@ namespace Multiplayer.Modes {
 			SendPacket();
 		}
 
-		private void OnPlayerScore( CharacterBody2D attacker, CharacterBody2D target ) {
+		private void OnPlayerScore( Renown.Entity attacker, Renown.Entity target ) {
 //			attacker.Set( "MultiplayerKills", (int)attacker.Get( "MultiplayerKills" ) + 1 );
 //			target.Set( "MultiplayerDeaths", (int)target.Get( "MultiplayerDeaths" ) + 1 );
 
@@ -63,11 +63,11 @@ namespace Multiplayer.Modes {
 			OnNewRoundStart();
 		}
 
-		public override void SpawnPlayer( CharacterBody2D player ) {
+		public override void SpawnPlayer( Renown.Entity player ) {
 			ThisPlayer = player as Player;
 			if ( ThisPlayer != null ) {
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-				ThisPlayer.Connect( "Die", Callable.From<CharacterBody2D, CharacterBody2D>( OnPlayerScore ) );
+				ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
 			}
 		}
 
