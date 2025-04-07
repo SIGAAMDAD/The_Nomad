@@ -32,57 +32,53 @@ namespace SaveSystem {
 					Value = value;
 					break; }
 				case FieldType.IntList: {
-					List<int> value = new List<int>();
 					int count = reader.ReadInt32();
+					List<int> value = new List<int>( count );
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadInt32() );
 					}
 					Value = value;
 					break; }
 				case FieldType.UIntList: {
-					List<uint> value = new List<uint>();
 					int count = reader.ReadInt32();
+					List<uint> value = new List<uint>( count );
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadUInt32() );
 					}
 					Value = value;
 					break; }
 				case FieldType.FloatList: {
-					List<float> value = new List<float>();
 					int count = reader.ReadInt32();
+					List<float> value = new List<float>( count );
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( (float)reader.ReadDouble() );
 					}
 					Value = value;
 					break; }
 				case FieldType.StringList: {
-					List<string> value = new List<string>();
 					int count = reader.ReadInt32();
+					List<string> value = new List<string>( count );
 					for ( int i = 0; i < count; i++ ) {
 						value.Add( reader.ReadString() );
 					}
 					Value = value;
 					break; }
 				default:
-					GD.PushError( "Unknown save field type " + Type.ToString() + " found in save file!" );
+					Console.PrintError( "Unknown save field type " + Type.ToString() + " found in save file!" );
 					break;
 				};
 			}
 
-			public FieldType GetFieldType() {
-				return Type;
-			}
-			public object GetValue() {
-				return Value;
-			}
+			public FieldType GetFieldType() => Type;
+			public object GetValue() => Value;
 		};
 
-		private Dictionary<string, SaveField> FieldList;
+		private Dictionary<string, SaveField> FieldList = null;
 
 		public SaveSectionReader() {
-			FieldList = new Dictionary<string, SaveField>();
-
 			int fieldCount = ArchiveSystem.SaveReader.ReadInt32();
+			FieldList = new Dictionary<string, SaveField>( fieldCount );
+			
 			GD.Print( "Got " + fieldCount + " fields..." );
 			for ( int i = 0; i < fieldCount; i++ ) {
 				string name = ArchiveSystem.SaveReader.ReadString();
@@ -90,25 +86,23 @@ namespace SaveSystem {
 				GD.Print( "...loaded field \"" + name + "\"" );
 			}
 		}
-
+		
 		public int LoadInt( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Int ) {
 					return 0;
 				}
-				return (int)FieldList[ name ].GetValue();
+				return (int)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return 0;
 		}
 		public uint LoadUInt( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Int ) {
 					return 0;
 				}
-				return (uint)FieldList[ name ].GetValue();
+				return (int)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return 0;
@@ -116,75 +110,69 @@ namespace SaveSystem {
 		public float LoadFloat( string name ) {
 			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Float ) {
-					return 0;
+					return 0.0f;
 				}
 				return (float)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
-			return 0;
+			return 0.0f;
 		}
 		public bool LoadBoolean( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Boolean ) {
 					return false;
 				}
-				return (bool)FieldList[ name ].GetValue();
+				return (bool)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return false;
 		}
 		public string LoadString( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.String ) {
 					return new string( "" );
 				}
-				return (string)FieldList[ name ].GetValue();
+				return (string)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new string( "" );
 		}
 		public Godot.Vector2 LoadVector2( string name ) {
-			SaveField field = null;
-			if ( FieldList.TryGetValue( name, out field ) ) {
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Vector2 ) {
 					return new Godot.Vector2( 0.0f, 0.0f );
 				}
-				return (Godot.Vector2)FieldList[ name ].GetValue();
+				return (Godot.Vector2)field.GetValue();
 			}
-			GD.PushError( "Couldn't find field " + name );
+			Console.PrintError( "Couldn't find field " + name );
 			return new Godot.Vector2( 0.0f, 0.0f );
 		}
 		public List<int> LoadIntList( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.IntList ) {
 					return new List<int>();
 				}
-				return (List<int>)FieldList[ name ].GetValue();
+				return (List<int>)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new List<int>();
 		}
 		public List<uint> LoadUIntList( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.UIntList ) {
 					return new List<uint>();
 				}
-				return (List<uint>)FieldList[ name ].GetValue();
+				return (List<uint>)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new List<uint>();
 		}
 		public List<float> LoadFloatList( string name ) {
-			if ( FieldList.ContainsKey( name ) ) {
-				SaveField field = FieldList[ name ];
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.FloatList ) {
 					return new List<float>();
 				}
-				return (List<float>)FieldList[ name ].GetValue();
+				return (List<float>)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new List<float>();
