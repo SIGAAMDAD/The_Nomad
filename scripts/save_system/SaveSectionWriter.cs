@@ -19,37 +19,19 @@ namespace SaveSystem {
 			ArchiveSystem.SaveWriter.Write( FieldCount );
 			ArchiveSystem.SaveWriter.BaseStream.Seek( position, System.IO.SeekOrigin.Begin );
 		}
+		
+		private void SaveValue( string name, FieldType type, object value ) {
+			ArchiveSystem.SaveWriter.Write( name );
+			ArchiveSystem.SaveWriter.Write( (uint)type );
+			ArchiveSystem.SaveWriter.Write( value );
+			FieldCount++;
+		}
 
-		public void SaveInt( string name, int value ) {
-			ArchiveSystem.SaveWriter.Write( name );
-			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Int );
-			ArchiveSystem.SaveWriter.Write( value );
-			FieldCount++;
-		}
-		public void SaveUInt( string name, uint value ) {
-			ArchiveSystem.SaveWriter.Write( name );
-			ArchiveSystem.SaveWriter.Write( (uint)FieldType.UInt );
-			ArchiveSystem.SaveWriter.Write( value );
-			FieldCount++;
-		}
-		public void SaveFloat( string name, float value ) {
-			ArchiveSystem.SaveWriter.Write( name );
-			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Float );
-			ArchiveSystem.SaveWriter.Write( (double)value );
-			FieldCount++;
-		}
-		public void SaveString( string name, string value ) {
-			ArchiveSystem.SaveWriter.Write( name );
-			ArchiveSystem.SaveWriter.Write( (uint)FieldType.String );
-			ArchiveSystem.SaveWriter.Write( value );
-			FieldCount++;
-		}
-		public void SaveBool( string name, bool value ) {
-			ArchiveSystem.SaveWriter.Write( name );
-			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Boolean );
-			ArchiveSystem.SaveWriter.Write( value );
-			FieldCount++;
-		}
+		public void SaveInt( string name, int value ) => SaveValue( name, FieldType.Int, value );
+		public void SaveUInt( string name, uint value ) => SaveValue( name, FieldType.UInt, value );
+		public void SaveFloat( string name, float value ) => SaveValue( name, FieldType.Float, value );
+		public void SaveString( string name, string value ) => SaveValue( name, FieldType.String, value );
+		public void SaveBool( string name, bool value ) => SaveValue( name, FieldType.Boolean, value );
 		public void SaveVector2( string name, Godot.Vector2 value ) {
 			ArchiveSystem.SaveWriter.Write( name );
 			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Vector2 );
