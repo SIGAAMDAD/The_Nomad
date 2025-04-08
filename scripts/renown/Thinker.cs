@@ -5,8 +5,15 @@ using Renown.Thinkers;
 
 namespace Renown {
 	public enum ThinkerFlags : uint {
-		Pushed		= 0x0001,
-		Dead		= 0x0002,
+		// physics slapped
+		Pushed		= 0x00000001,
+		
+		// ...duh
+		Dead		= 0x00000002,
+		
+		Intoxicated	= 0x00000004,
+		Pregnant	= 0x00000008,
+		Sterile		= 0x00000010,
 	};
 	
 	// most thinkers except for politicians will most likely never get the chance nor the funds
@@ -21,6 +28,10 @@ namespace Renown {
 			
 			Blacksmith,
 			Merchant,
+			Gunsmith,
+			
+			// DNA splicer
+			Splicer,
 			
 			MercenaryMaster,
 			Mercenary,
@@ -40,24 +51,49 @@ namespace Renown {
 		protected uint Age = 0; // in years
 		[Export]
 		protected FamilyTree FamilyTree;
+		[Export]
+		protected Settlement BirthPlace = null;
 
 		[ExportCategory("Start")]
 		[Export]
 		protected DirType Direction;
 		
 		[ExportCategory("Stats")]
+		
+		/// <summary>
+		/// physical power
+		/// </summary>
 		[Export]
-		protected uint Strength;
+		protected int Strength;
+		
+		/// <summary>
+		/// manuverability, reflexes
+		/// </summary>
+		protected int Dexterity;
+		
+		/// <summary>
+		/// quantity of data, not how to use it
+		/// </summary>
 		[Export]
-		protected uint Intelligence;
+		protected int Intelligence;
+		
+		/// <summary>
+		/// resistances to poisons, illnesses, etc. overall health
+		/// </summary>
 		[Export]
-		protected uint Constitution;
+		protected int Constitution;
+		
+		/// <summary>
+		/// "common sense"
+		/// </summary>
+		[Export]
+		protected int Wisdom;
+		
 		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
 		private float MovementSpeed = 40.0f;
 		
-		protected Dictionary<Thinker, Relationship> Relations = new Dictionary<Thinker, Relationship>();
 		protected NavigationAgent2D NavAgent;
 		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 
@@ -201,6 +237,9 @@ namespace Renown {
 		}
 		protected virtual void ProcessAnimations() {
 		}
+		
+		protected void HaveChild() {
+		}
 
 		protected bool MoveAlongPath() {
 			if ( GlobalPosition.DistanceTo( GotoPosition ) <= 10.0f ) {
@@ -222,6 +261,44 @@ namespace Renown {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
 			LinearVelocity = Godot.Vector2.Zero;
+		}
+		
+		public static Thinker Create( Settlement location ) {
+			// TODO: create outliers, special bots
+			
+			Thinker thinker = new Thinker();
+			RandomNumberGenerator random = new RandomNumberGenerator();
+			
+			Godot.Collections.Array<Node> families = location.GetFamilies();
+			
+			thinker.BirthPlace = location;
+			thinker.FamilyTree = families[ random.RandiRange( 0, families.Count - 1 ) ] as FamilyTree;
+			thinker.Age = 0;
+			thinker.BotName = string.Format( "{0} {1}", location.CreateBotName(), thinker.FamilyTree.Name );
+			
+			// now we pull a D&D
+			// TODO: incorporate evolution over millions of years
+			thinker.Strength = random.Next( 3, thinker.FamilyTree.GetStrengthMax() )
+				+ thinker.FamilyTree.GetStrengthBonus();
+			
+			thinker.Consitution = random.Next( 3, thinker.FamilyTree.GetConsitutionMax() )
+				+ thinker.FamilyTree.GetConstitutionBonus();
+			
+			thinker.Intelligence = random.Next( 3, thinker.FamilyTree.GetIntelligenceMax() )
+				+ thinker.FamilyTree.GetIntelligenceBonus();
+			
+			thinker.Wisdom = random.Next( 3, thinker.FamilyTree.GetWisdomMax() )
+				+ thinker.FamilyTree.GetWisdomBonus();
+			
+			thinker.Dexterity = random.Next( 3, thinker.FamilyTree.GetDexterityMax() )
+				+ thinker.FamilyTree.GetDexterityBonus();
+			
+			thinker.MovementSpeed += thinker.Dexterity * 10.0f;
+			thinker.Health += thinker.Strength * 2.0f + ( thinker.Constitution * 10.0f );
+			
+			thinker.GetTree().CurrentScene.GetNode( "Thinkers" ).AddChild( thinker );
+			
+			return thinker;
 		}
 	};
 };
