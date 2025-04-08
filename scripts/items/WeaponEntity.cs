@@ -380,6 +380,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void SpawnShells() {
+		/*
 		BulletShell bulletShell = BulletShell.Instantiate<BulletShell>();
 		bulletShell.GlobalPosition = GlobalPosition;
 		GetTree().CurrentScene.AddChild( bulletShell );
@@ -395,6 +396,8 @@ public partial class WeaponEntity : Node2D {
 		};
 
 		bulletShell.Texture = (Texture2D)( (Godot.Collections.Dictionary)Ammo.Get( "properties" ) )[ "casing_icon" ];
+		*/
+		BulletShellMesh.AddShell( GlobalPosition, (Texture2D)( (Godot.Collections.Dictionary)Ammo.Get( "properties" ) )[ "casing_icon" ] );
 	}
 
 	private bool Reload() {

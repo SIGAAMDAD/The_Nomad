@@ -263,6 +263,7 @@ namespace Renown {
 			LinearVelocity = Godot.Vector2.Zero;
 		}
 		
+		/*
 		public static Thinker Create( Settlement location ) {
 			// TODO: create outliers, special bots
 			
@@ -300,5 +301,6 @@ namespace Renown {
 			
 			return thinker;
 		}
+		*/
 	};
 };
