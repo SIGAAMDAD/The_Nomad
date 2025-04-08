@@ -23,7 +23,23 @@ namespace SaveSystem {
 		private void SaveValue( string name, FieldType type, object value ) {
 			ArchiveSystem.SaveWriter.Write( name );
 			ArchiveSystem.SaveWriter.Write( (uint)type );
-			ArchiveSystem.SaveWriter.Write( value );
+			switch ( type ) {
+			case FieldType.Int:
+				ArchiveSystem.SaveWriter.Write( (int)value );
+				break;
+			case FieldType.UInt:
+				ArchiveSystem.SaveWriter.Write( (uint)value );
+				break;
+			case FieldType.Float:
+				ArchiveSystem.SaveWriter.Write( (double)(float)value );
+				break;
+			case FieldType.Boolean:
+				ArchiveSystem.SaveWriter.Write( (bool)value );
+				break;
+			case FieldType.String:
+				ArchiveSystem.SaveWriter.Write( (string)value );
+				break;
+			};
 			FieldCount++;
 		}
 

@@ -436,7 +436,7 @@ public partial class MobBase : Renown.Thinker {
 		BarkChannel.SetProcess( false );
 		BarkChannel.SetProcessInternal( false );
 		BarkChannel.Connect( "finished", Callable.From( OnBarkFinished ) );
-		
+
 		BulletShellTree = new Node2D();
 		GetTree().CurrentScene.CallDeferred( "add_child", BulletShellTree );
 		

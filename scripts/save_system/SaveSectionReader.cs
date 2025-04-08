@@ -99,10 +99,10 @@ namespace SaveSystem {
 		}
 		public uint LoadUInt( string name ) {
 			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
-				if ( field.GetFieldType() != FieldType.Int ) {
+				if ( field.GetFieldType() != FieldType.UInt ) {
 					return 0;
 				}
-				return (int)field.GetValue();
+				return (uint)field.GetValue();
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return 0;

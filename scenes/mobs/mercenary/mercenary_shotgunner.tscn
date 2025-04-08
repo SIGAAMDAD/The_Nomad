@@ -128,8 +128,9 @@ Debts = {}
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-7, 0)
 sprite_frames = ExtResource("3_jv7p5")
-animation = &"attack"
+animation = &"move"
 autoplay = "idle"
+frame_progress = 0.0281243
 
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(-7, -6)
