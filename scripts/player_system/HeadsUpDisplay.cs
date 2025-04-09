@@ -1,4 +1,3 @@
-using GDExtension.Wrappers;
 using Godot;
 using Renown;
 using Renown.World;
@@ -6,17 +5,15 @@ using Renown.World;
 namespace PlayerSystem {
 	public partial class HeadsUpDisplay : CanvasLayer {
 		[Export]
-		public Player _Owner;
+		private Player _Owner;
+
+		private Notebook NoteBook;
 
 		private Tween FadeOutTween;
 		private Tween FadeInTween;
 
-		private readonly Godot.Vector2 InventoryItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
-
 		private HealthBar HealthBar;
 		private RageBar RageBar;
-		private MarginContainer Inventory;
-		private VBoxContainer StackList;
 
 		private MarginContainer AnnouncementContainer;
 		private TextureRect AnnouncementBackground;
@@ -50,14 +47,6 @@ namespace PlayerSystem {
 		private AudioStreamPlayer JumpMusic;
 		private Callable OnYesPressed;
 		private Callable OnNoPressed;
-
-		private Label ItemName;
-		private Label ItemType;
-		private Label ItemCount;
-		private Label ItemStackMax;
-		private TextureRect ItemIcon;
-		private RichTextLabel ItemDescription;
-		private Label ItemEffect;
 
 		private TextureRect ReflexOverlay;
 		private TextureRect DashOverlay;
@@ -124,6 +113,10 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
+			NoteBook = GetNode<Notebook>( "NotebookContainer" );
+			NoteBook.SetProcess( false );
+			NoteBook.SetProcessInternal( false );
+
 			HealthBar = GetNode<HealthBar>( "MainHUD/HealthBar" );
 			HealthBar.SetProcess( false );
 			HealthBar.SetProcessInternal( false );
@@ -152,42 +145,6 @@ namespace PlayerSystem {
 				FadeOutTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.0f, 2.5f );
 				FadeOutTween.Connect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
 			} ) );
-
-			Inventory = GetNode<MarginContainer>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer" );
-			Inventory.SetProcess( false );
-			Inventory.SetProcessInternal( false );
-
-			StackList = GetNode<VBoxContainer>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/Cloner" );
-			StackList.SetProcess( false );
-			StackList.SetProcessInternal( false );
-
-			ItemName = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
-			ItemName.SetProcess( false );
-			ItemName.SetProcessInternal( false );
-
-			ItemType = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
-			ItemType.SetProcess( false );
-			ItemType.SetProcessInternal( false );
-
-			ItemCount = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
-			ItemCount.SetProcess( false );
-			ItemCount.SetProcessInternal( false );
-
-			ItemStackMax = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
-			ItemStackMax.SetProcess( false );
-			ItemStackMax.SetProcessInternal( false );
-
-			ItemIcon = GetNode<TextureRect>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
-			ItemIcon.SetProcess( false );
-			ItemIcon.SetProcessInternal( false );
-
-			ItemDescription = GetNode<RichTextLabel>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
-			ItemDescription.SetProcess( false );
-			ItemDescription.SetProcessInternal( false );
-
-			ItemEffect = GetNode<Label>( "StatusControl/MarginContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
-			ItemEffect.SetProcess( false );
-			ItemEffect.SetProcessInternal( false );
 
 			CheckpointInteractor = GetNode<MarginContainer>( "CheckpointContainer" );
 			CheckpointInteractor.SetProcess( false );
@@ -350,16 +307,6 @@ namespace PlayerSystem {
 
 			HealthBar.QueueFree();
 			RageBar.QueueFree();
-			Inventory.QueueFree();
-			StackList.QueueFree();
-
-			ItemName.QueueFree();
-			ItemType.QueueFree();
-			ItemCount.QueueFree();
-			ItemStackMax.QueueFree();
-			ItemIcon.QueueFree();
-			ItemDescription.QueueFree();
-			ItemEffect.QueueFree();
 
 			ReflexOverlay.QueueFree();
 			DashOverlay.QueueFree();
@@ -419,138 +366,6 @@ namespace PlayerSystem {
 			WeaponData = weapon;
 			WeaponData.Reloaded += OnWeaponReloaded;
 			WeaponData.Used += OnWeaponUsed;
-		}
-
-		private int GetItemCount( string id ) {
-			Godot.Collections.Array<ItemStack> stackList = (Godot.Collections.Array<ItemStack>)_Owner.GetInventory().Get( "stacks" );
-			for ( int i = 0; i < stackList.Count; i++ ) {
-				if ( stackList[i].ItemId == id ) {
-					return stackList[i].Amount;
-				}
-			}
-			return 0;
-		}
-
-		private void OnInventoryItemSelected( InputEvent guiEvent, TextureRect item ) {
-			if ( !item.HasMeta( "item_id" ) || guiEvent is not InputEventMouseButton ) {
-				return;
-			} else if ( ( (InputEventMouseButton)guiEvent ).ButtonIndex != MouseButton.Left ) {
-				return;
-			}
-
-			ItemDefinition itemType = (ItemDefinition)(Resource)_Owner.GetInventory().Call( "get_item_from_id", (string)item.GetMeta( "item_id" ) );
-			if ( itemType.Properties.ContainsKey( "description" ) ) {
-				ItemDescription.Show();
-				ItemDescription.Text = (string)itemType.Properties[ "description" ];
-			} else {
-				ItemDescription.Hide();
-			}
-
-			if ( itemType.Properties.ContainsKey( "effect" ) ) {
-				ItemEffect.Show();
-				ItemEffect.Text = (string)itemType.Properties[ "effects" ];
-			} else {
-				ItemEffect.Hide();
-			}
-
-			ItemName.Text = itemType.Name;
-			ItemIcon.Texture = itemType.Icon;
-			ItemType.Text = itemType.Categories[0].Name;
-
-			string category = itemType.Categories[0].Name;
-			if ( category == "misc" || category == "ammo" ) {
-				ItemCount.Text = GetItemCount( itemType.Id ).ToString();
-			} else if ( category == "weapon" ) {
-				ItemCount.Text = "1";
-			}
-			ItemStackMax.Text = itemType.MaxStack.ToString();
-		}
-
-		private HBoxContainer AddItemToInventory( HBoxContainer row, Resource stack ) {
-			if ( row.GetChildCount() == 4 ) {
-				row = new HBoxContainer();
-				StackList.AddChild( row );
-			}
-
-			TextureRect item = new TextureRect();
-			row.AddChild( item );
-
-			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)WeaponData.Data.Get( "id" ) ) ).Get( "icon" );
-			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
-			item.SetMeta( "item_id", (string)stack.Get( "item_id" ) );
-
-			return row;
-		}
-		private HBoxContainer AddAmmoStackToInventory( HBoxContainer row, AmmoStack stack ) {
-			if ( row.GetChildCount() == 4 ) {
-				row = new HBoxContainer();
-				StackList.AddChild( row );
-			}
-
-			TextureRect item = new TextureRect();
-			row.AddChild( item );
-
-			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)WeaponData.Data.Get( "id" ) ) ).Get( "icon" );
-			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
-			item.SetMeta( "item_id", (string)stack.AmmoType.Get( "item_id" ) );
-
-			return row;
-		}
-		private HBoxContainer AddWeaponToInventory( HBoxContainer row, WeaponEntity weapon ) {
-			if ( row.GetChildCount() == 4 ) {
-				row = new HBoxContainer();
-				StackList.AddChild( row );
-			}
-
-			TextureRect item = new TextureRect();
-			row.AddChild( item );
-
-			item.Connect( "gui_input", Callable.From<InputEvent, TextureRect>( OnInventoryItemSelected ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "Database" ) ).Call( "get_item_from_id", (string)weapon.Data.Get( "id" ) ) ).Get( "icon" );
-			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
-			item.SetMeta( "item_id", (string)weapon.Data.Get( "id" ) );
-
-			return row;
-		}
-
-		public void OnShowInventory() {
-			if ( Inventory.Visible ) {
-				Inventory.Visible = false;
-				GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Ignore;
-				return;
-			}
-
-			GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Stop;
-
-			foreach ( var child in StackList.GetChildren() ) {
-				foreach ( var image in child.GetChildren() ) {
-					child.RemoveChild( image );
-					image.QueueFree();
-				}
-				StackList.RemoveChild( child );
-				child.QueueFree();
-			}
-
-			StackList.Visible = true;
-			
-			HBoxContainer row = new HBoxContainer();
-
-			foreach ( var stack in _Owner.GetAmmoStacks() ) {
-				row = AddAmmoStackToInventory( row, stack.Value );
-			}
-			foreach ( var stack in _Owner.GetWeaponStack() ) {
-				row = AddWeaponToInventory( row, stack.Value );
-			}
-//			foreach ( var stack in _Owner.GetInventory().Stacks ) {
-//				row = AddItemToInventory( row, stack );
-//			}
-
-			Inventory.Visible = true;
 		}
 
 		private void OnWarpButtonPressed() {
@@ -686,6 +501,18 @@ namespace PlayerSystem {
 
 			FadeInTween = CreateTween();
 			FadeInTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.90f, 2.5f );
+		}
+
+		public void OnShowInventory() {
+			if ( NoteBook.Visible ) {
+				NoteBook.Visible = false;
+				GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Ignore;
+				return;
+			}
+			GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Stop;
+
+			NoteBook.Visible = true;
+			NoteBook.OnShowInventory();
 		}
     };
 };

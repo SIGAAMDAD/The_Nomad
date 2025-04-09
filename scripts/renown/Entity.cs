@@ -109,6 +109,8 @@ namespace Renown {
 
 		public NodePath GetHash() => GetPath();
 
+		public virtual StringName GetObjectName() => "Entity";
+
 		public virtual float GetMoney() => Money;
 		public virtual void DecreaseMoney( float nAmount ) {
 			Money -= nAmount;

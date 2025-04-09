@@ -62,6 +62,7 @@ LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
+Questify="*res://addons/questify/quest_manager.gd"
 
 [debug]
 
@@ -89,7 +90,7 @@ project/assembly_name="The Nomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg")
 
 [global_group]
 
@@ -154,7 +155,7 @@ report_bug={
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
-locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue")
+locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres")
 
 [layer_names]
 
@@ -184,7 +185,8 @@ gdscript_utilities/print_internal_messages=true
 [questify]
 
 general/update_polling=true
-general/update_interval=1.0
+general/update_interval=1.5
+general/add_quests_to_pot_generation=true
 
 [rendering]
 

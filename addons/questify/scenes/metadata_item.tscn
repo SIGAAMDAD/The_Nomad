@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bvqno4wx4v7qs"]
 
 [ext_resource type="PackedScene" uid="uid://cdmvb6rdyjmhy" path="res://addons/questify/scenes/metadata_input.tscn" id="1_buno3"]
-[ext_resource type="Script" uid="uid://bkdwqj3octisd" path="res://addons/questify/scripts/components/metadata_item.gd" id="1_ojjqx"]
+[ext_resource type="Script" uid="uid://d3pnvii5de2qx" path="res://addons/questify/scripts/components/metadata_item.gd" id="1_ojjqx"]
 
 [sub_resource type="Image" id="Image_jk8yt"]
 data = {

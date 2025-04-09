@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="QuestResource" load_steps=17 format=3 uid="uid://ywjxv8nwt708"]
+[gd_resource type="Resource" script_class="QuestResource" load_steps=16 format=3 uid="uid://ywjxv8nwt708"]
 
-[ext_resource type="Script" uid="uid://cqmykmmj8l0i6" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_xe5cd"]
-[ext_resource type="Script" uid="uid://dfur88vxpqysn" path="res://addons/questify/scripts/model/quest_condition.gd" id="2_0nt67"]
-[ext_resource type="Script" uid="uid://b0coxxuqsyn67" path="res://addons/questify/scripts/model/quest_node.gd" id="2_m0id5"]
-[ext_resource type="Script" uid="uid://3t4usuwfkfwt" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_e6gmr"]
-[ext_resource type="Script" uid="uid://cl4edu0n2sqny" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_ich07"]
-[ext_resource type="Script" uid="uid://cq4kexreiu27y" path="res://addons/questify/scripts/model/quest_start.gd" id="4_t4ruv"]
-[ext_resource type="Script" uid="uid://cca673u23376l" path="res://addons/questify/scripts/model/quest_end.gd" id="6_iowms"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_xe5cd"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="2_0nt67"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_e6gmr"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_ich07"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="4_t4ruv"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="6_iowms"]
 
 [sub_resource type="Resource" id="Resource_re85w"]
 script = ExtResource("2_0nt67")
@@ -76,5 +75,5 @@ edge_type = 0
 
 [resource]
 script = ExtResource("3_e6gmr")
-nodes = Array[ExtResource("2_m0id5")]([SubResource("Resource_0fl8r"), SubResource("Resource_re85w"), SubResource("Resource_xkwin"), SubResource("Resource_qgpyc"), SubResource("Resource_xi35p")])
-edges = Array[ExtResource("1_xe5cd")]([SubResource("Resource_4yjpy"), SubResource("Resource_rq5fu"), SubResource("Resource_li5rq"), SubResource("Resource_ycqmm")])
+nodes = [SubResource("Resource_0fl8r"), SubResource("Resource_re85w"), SubResource("Resource_xkwin"), SubResource("Resource_qgpyc"), SubResource("Resource_xi35p")]
+edges = [SubResource("Resource_4yjpy"), SubResource("Resource_rq5fu"), SubResource("Resource_li5rq"), SubResource("Resource_ycqmm")]

@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="QuestResource" load_steps=27 format=3 uid="uid://b2xg2fa752xmy"]
 
-[ext_resource type="Script" uid="uid://cqmykmmj8l0i6" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
-[ext_resource type="Script" uid="uid://b0coxxuqsyn67" path="res://addons/questify/scripts/model/quest_node.gd" id="2_m2far"]
-[ext_resource type="Script" uid="uid://cq4kexreiu27y" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
-[ext_resource type="Script" uid="uid://3t4usuwfkfwt" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
-[ext_resource type="Script" uid="uid://cl4edu0n2sqny" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
-[ext_resource type="Script" uid="uid://cjbxbla2aj7nl" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
-[ext_resource type="Script" uid="uid://cca673u23376l" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
-[ext_resource type="Script" uid="uid://crxjsoabkpx7q" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
-[ext_resource type="Script" uid="uid://dfur88vxpqysn" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_node.gd" id="8_mqchu"]
 
 [sub_resource type="Resource" id="Resource_epp5k"]
 script = ExtResource("2_vo3f4")
@@ -130,5 +130,5 @@ edge_type = 0
 
 [resource]
 script = ExtResource("3_bnshu")
-nodes = Array[ExtResource("2_m2far")]([SubResource("Resource_wnoll"), SubResource("Resource_c26bm"), SubResource("Resource_faed7"), SubResource("Resource_epp5k"), SubResource("Resource_h8iw0"), SubResource("Resource_fdq6b"), SubResource("Resource_oys41"), SubResource("Resource_hmp3r")])
+nodes = Array[ExtResource("8_mqchu")]([SubResource("Resource_wnoll"), SubResource("Resource_c26bm"), SubResource("Resource_faed7"), SubResource("Resource_epp5k"), SubResource("Resource_h8iw0"), SubResource("Resource_fdq6b"), SubResource("Resource_oys41"), SubResource("Resource_hmp3r")])
 edges = Array[ExtResource("1_dkeq6")]([SubResource("Resource_lrcwu"), SubResource("Resource_faa86"), SubResource("Resource_kg38d"), SubResource("Resource_3jkw6"), SubResource("Resource_c8ugc"), SubResource("Resource_jplk6"), SubResource("Resource_je23p"), SubResource("Resource_3wecu"), SubResource("Resource_rysbf")])

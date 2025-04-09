@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cqq6ekbeedhaw"]
 
-[ext_resource type="Texture2D" uid="uid://chi43xinmk2lj" path="res://icon.svg" id="1_b5meh"]
+[ext_resource type="Texture2D" uid="uid://dqlgypqtgls3p" path="res://icon.svg" id="1_b5meh"]
 [ext_resource type="Script" uid="uid://duij3528byumu" path="res://scripts/effects/BulletShell.cs" id="2_72k06"]
 
 [node name="BulletShell" type="Sprite2D"]

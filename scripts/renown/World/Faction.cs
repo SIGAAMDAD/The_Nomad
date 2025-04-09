@@ -90,6 +90,8 @@ namespace Renown.World {
 	#region Object
 		public NodePath GetHash() => GetPath();
 
+		public StringName GetObjectName() => GetFactionName();
+
 		public float GetMoney() => Money;
 		public virtual void DecreaseMoney( float nAmount ) {
 			Money -= nAmount;
@@ -317,6 +319,7 @@ namespace Renown.World {
 				*/
 			}
 		}
+		/*
 		public void OnBountyCompleted( Bounty bounty, Entity entity ) {
 			if ( Money - bounty.GetAmount() < 0.0f ) {
 				AddDebt( entity, bounty.GetAmount() );
@@ -326,6 +329,7 @@ namespace Renown.World {
 			Money -= bounty.GetAmount();
 //			ContractManager.Remove( bounty );
 		}
+		*/
 		
 		public override void _Ready() {
 			base._Ready();

@@ -145,6 +145,8 @@ namespace Renown {
 			}
 		}
 
+		public override StringName GetObjectName() => BotName;
+
 		public override void Save() {
 			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
 

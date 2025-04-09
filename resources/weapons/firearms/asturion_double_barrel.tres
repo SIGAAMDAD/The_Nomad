@@ -1,5 +1,6 @@
-[gd_resource type="ItemDefinition" load_steps=11 format=3 uid="uid://dqt26pjfyn6tf"]
+[gd_resource type="ItemDefinition" load_steps=12 format=3 uid="uid://dqt26pjfyn6tf"]
 
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_8gr3y"]
 [ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="1_dmupm"]
 [ext_resource type="Texture2D" uid="uid://cy2pqyhfle1tn" path="res://textures/env/iconw_adb.dds" id="1_lavl7"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_egotk"]
@@ -29,6 +30,7 @@ properties = {
 "default_is_firearm": true,
 "default_is_onehanded": false,
 "default_is_twohanded": true,
+"description": "ASTURION_DOUBLE_BARREL_DESCRIPTION",
 "firearm_frames_left": ExtResource("4_nwhao"),
 "firearm_frames_right": ExtResource("5_1lbng"),
 "firemode": 1,
@@ -46,4 +48,4 @@ properties = {
 "use_firearm": ExtResource("8_5smrx"),
 "use_time": 0.5
 }
-categories = Array[ItemCategory]([ExtResource("1_dmupm"), ExtResource("2_egotk")])
+categories = Array[ItemCategory]([ExtResource("1_8gr3y"), ExtResource("1_dmupm"), ExtResource("2_egotk")])
