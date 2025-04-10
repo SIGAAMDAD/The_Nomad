@@ -3,8 +3,6 @@ using Godot;
 public partial class Checkpoint : InteractionItem {
 	[Export]
 	private StringName Title;
-	
-	private AudioStreamPlayer2D AudioChannel;
 
 	private PointLight2D Light;
 	private AnimatedSprite2D Bonfire;
@@ -29,17 +27,22 @@ public partial class Checkpoint : InteractionItem {
 		Tween BrightnessTween = CreateTween();
 		BrightnessTween.TweenProperty( Light, "energy", 1.75f, 2.5f );
 
-		AudioChannel.Connect( "finished", Callable.From( () => {
-			AudioChannel.QueueFree();
-			AudioChannel = GetNode<AudioStreamPlayer2D>( "AmbienceChannel" );
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
-			AudioChannel.SetProcess( false );
-			AudioChannel.SetProcessInternal( false );
-			AudioChannel.Play();
+		AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/bonfire_create.ogg" ), false, 1.0f, new System.Action( () => {
+			AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/campfire.ogg" ), true );
 		} ) );
-		AudioChannel.Play();
 	}
 	public StringName GetTitle() => Title;
+
+	private void OnScreenEnter() {
+		ProcessMode = ProcessModeEnum.Pausable;
+		if ( Activated ) {
+			AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/campfire.ogg" ), true );
+		}
+	}
+	private void OnScreenExit() {
+		ProcessMode = ProcessModeEnum.Disabled;
+		AudioPlayer.StopSound( this );
+	}
 
 	public void Save() {
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( Name );
@@ -62,13 +65,6 @@ public partial class Checkpoint : InteractionItem {
 			Bonfire.Play( "default" );
 
 			Light.Energy = 1.75f;
-
-			AudioChannel.QueueFree();
-			AudioChannel = GetNode<AudioStreamPlayer2D>( "AmbienceChannel" );
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
-			AudioChannel.SetProcess( false );
-			AudioChannel.SetProcessInternal( false );
-			AudioChannel.Play();
 			
 			Unlit.Hide();
 			Unlit.QueueFree();
@@ -101,11 +97,9 @@ public partial class Checkpoint : InteractionItem {
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
-		AudioChannel = GetNode<AudioStreamPlayer2D>( "ActivateChannel" );
-		AudioChannel.SetProcess( false );
-		AudioChannel.SetProcessInternal( false );
-
-		GetNode<AudioStreamPlayer2D>( "AmbienceChannel" ).ProcessMode = ProcessModeEnum.Disabled;
+		VisibleOnScreenNotifier2D notifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
+		notifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );
+		notifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
 
 		Light = GetNode<PointLight2D>( "PointLight2D" );
 		Light.SetProcess( false );

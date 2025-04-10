@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Renown;
 using GDExtension.Wrappers;
 
-public partial class Player : Renown.Entity {
+public partial class Player : Entity {
 	public enum Hands : byte {
 		Left,
 		Right,
@@ -172,10 +172,6 @@ public partial class Player : Renown.Entity {
 	private PlayerAnimationState TorsoAnimationState;
     private PlayerAnimationState LegAnimationState;
 
-	private AudioStreamPlayer2D MoveChannel;
-	private AudioStreamPlayer2D DashChannel;
-	private AudioStreamPlayer2D MiscChannel;
-
 	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
 
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
@@ -209,6 +205,15 @@ public partial class Player : Renown.Entity {
 	}
 
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
+	
+	/*
+	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		channel ??= MiscChannel;
+		channel.Stream = stream;
+		channel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		channel.Play();
+	}
+	*/
 
 	public override void Save() {
 		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
@@ -504,9 +509,9 @@ public partial class Player : Renown.Entity {
 		ActionChannel.QueueFree();
 		PainChannel.QueueFree();
 		*/
-		DashChannel.QueueFree();
-		MoveChannel.QueueFree();
-		MiscChannel.QueueFree();
+//		DashChannel.QueueFree();
+//		MoveChannel.QueueFree();
+//		MiscChannel.QueueFree();
 
 		DashTime.QueueFree();
 		SlideTime.QueueFree();
@@ -543,7 +548,8 @@ public partial class Player : Renown.Entity {
 
 		TorsoAnimation.Play( "death" );
 
-		PlaySound( MiscChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+		AudioPlayer.PlaySound( this, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+//		PlaySound( MiscChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		SetProcessUnhandledInput( true );
 	}
@@ -563,7 +569,8 @@ public partial class Player : Renown.Entity {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			PlaySound( MiscChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+			AudioPlayer.PlaySound( this, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+//			PlaySound( MiscChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
 		}
 
 		EmitSignalDamaged( attacker, this, nAmount );
@@ -620,7 +627,8 @@ public partial class Player : Renown.Entity {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( LinearVelocity != Godot.Vector2.Zero ) {
-			PlaySound( MoveChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+			AudioPlayer.PlaySound( this, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+//			PlaySound( MoveChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 		}
 	}
 	private void OnDashTimeTimeout() {
@@ -649,23 +657,26 @@ public partial class Player : Renown.Entity {
 
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
-			PlaySound( DashChannel, ResourceCache.DashExplosion );
+			AudioPlayer.PlaySound( this, ResourceCache.DashExplosion );
 
 			DashBurnout = 0.0f;
+
+			// extension of recharge time
+			DashCooldownTime.WaitTime = 2.50f;
 			return;
 		}
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
 		DashTime.Start();
-		DashChannel.PitchScale = 1.0f + DashBurnout;
-		PlaySound( DashChannel, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ] );
+		AudioPlayer.PlaySound( this, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ], false, 1.0f + DashBurnout );
 		DashLight.Show();
 		DashEffect.Emitting = true;
 		DashDirection = LinearVelocity;
 		HUD.GetDashOverlay().Show();
 
 		DashBurnout += 0.25f;
+		DashCooldownTime.WaitTime = 0.80f;
 		DashCooldownTime.Start();
 	}
 	private void OnSlide() {
@@ -752,7 +763,8 @@ public partial class Player : Renown.Entity {
 			EmitSignalSwitchedWeapon( null );
 		}
 
-		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		AudioPlayer.PlaySound( this, ResourceCache.ChangeWeaponSfx );
+//		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -802,7 +814,8 @@ public partial class Player : Renown.Entity {
 			EmitSignalSwitchedWeapon( null );
 		}
 
-		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		AudioPlayer.PlaySound( this, ResourceCache.ChangeWeaponSfx );
+//		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -816,7 +829,8 @@ public partial class Player : Renown.Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
+			AudioPlayer.PlaySound( this, ResourceCache.SlowMoBeginSfx );
+//			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
 
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -1089,10 +1103,10 @@ public partial class Player : Renown.Entity {
 	}
 
 	private void OnSlowMoSfxFinished() {
-		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
-			// only start lagging audio playback after the slowmo begin finishes
-			AudioServer.PlaybackSpeedScale = 0.50f;
-		}
+//		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
+//			// only start lagging audio playback after the slowmo begin finishes
+//			AudioServer.PlaybackSpeedScale = 0.50f;
+//		}
 	}
 
 	private void LoadGamepadBinds() {
@@ -1129,6 +1143,7 @@ public partial class Player : Renown.Entity {
 		SlideChannel = GetNode<AudioStreamPlayer2D>( "SlideChannel" );
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		*/
+		/*
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		MoveChannel.SetProcess( false );
 		MoveChannel.SetProcessInternal( false );
@@ -1140,6 +1155,7 @@ public partial class Player : Renown.Entity {
 		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
 		MiscChannel.SetProcess( false );
 		MiscChannel.SetProcessInternal( false );
+		*/
 	}
 
 	private void ExitBulletTime() {
@@ -1148,7 +1164,8 @@ public partial class Player : Renown.Entity {
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 
-		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
+		AudioPlayer.PlaySound( this, ResourceCache.SlowMoEndSfx );
+//		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
 	}
 
 	private void CmdSuicide() {
@@ -1212,6 +1229,10 @@ public partial class Player : Renown.Entity {
 
 		SetProcessUnhandledInput( false );
 
+		if ( !Renown.Constants.StartingQuestPath.IsEmpty ) {
+			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
+		}
+
 		KeyboardInputMappings = ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
 		GamepadInputMappings = ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
 
@@ -1255,18 +1276,23 @@ public partial class Player : Renown.Entity {
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
 		WalkEffect.SetProcess( false );
+		WalkEffect.SetProcessInternal( false );
 
 		SlideEffect = GetNode<GpuParticles2D>( "Animations/SlidePuff" );
 		SlideEffect.SetProcess( false );
+		SlideEffect.SetProcessInternal( false );
 
 		DashEffect = GetNode<GpuParticles2D>( "Animations/DashEffect" );
 		DashEffect.SetProcess( false );
 		DashEffect.SetProcessInternal( false );
 
 		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
+		DashLight.SetProcess( false );
+		DashLight.SetProcessInternal( false );
 
 		JumpkitSparks = GetNode<AnimatedSprite2D>( "Animations/JumpkitSparks" );
 		JumpkitSparks.SetProcess( false );
+		JumpkitSparks.SetProcessInternal( false );
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
@@ -1492,10 +1518,10 @@ public partial class Player : Renown.Entity {
 		AmmoStack stack = null;
 		bool found = false;
 		
-		for ( int i = 0; i < AmmoStacks.Count; i++ ) {
-			if ( ammo.Data == AmmoStacks[i].AmmoType ) {
+		foreach ( var it in AmmoStacks ) {
+			if ( ammo.Data == it.Value.AmmoType ) {
 				found = true;
-				stack = AmmoStacks[i];
+				stack = it.Value;
 				break;
 			}
 		}
@@ -1506,7 +1532,8 @@ public partial class Player : Renown.Entity {
 		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
-		PlaySound( MiscChannel, ammo.GetPickupSound() );
+		AudioPlayer.PlaySound( this, ammo.GetPickupSound() );
+//		PlaySound( MiscChannel, ammo.GetPickupSound() );
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[i];

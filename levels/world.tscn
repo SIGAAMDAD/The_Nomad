@@ -1,4 +1,4 @@
-[gd_scene load_steps=107 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=111 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -37,10 +37,12 @@
 [ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/interactables/EaglesPeak.cs" id="18_pjcgv"]
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="19_vg7yo"]
 [ext_resource type="Texture2D" uid="uid://06opea2npplw" path="res://textures/fromeaglespeak.dds" id="19_x3q2i"]
+[ext_resource type="ItemDefinition" uid="uid://gm6rna0vx71" path="res://resources/ammo/762_ammo.tres" id="19_x7eec"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="20_7te1h"]
 [ext_resource type="AudioStream" uid="uid://byx3qwftkyadu" path="res://music/ui/main.ogg" id="20_x3q2i"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="21_qrdf2"]
 [ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="22_3mxq2"]
+[ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="22_f13vj"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/interactables/checkpoint.tscn" id="24_vg7yo"]
 [ext_resource type="Texture2D" uid="uid://dx0j1h81kkid8" path="res://textures/tilesets/kirosla_estate.png" id="25_cyobr"]
 [ext_resource type="Script" uid="uid://ckxrjpdanp73b" path="res://scripts/renown/World/Settlement.cs" id="25_qxdx5"]
@@ -54,6 +56,8 @@
 [ext_resource type="Texture2D" uid="uid://cdrlq1g2trjlq" path="res://textures/env/dirt.dds" id="34_hc03g"]
 [ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/FamilyTree.cs" id="38_aebnb"]
 [ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="54_3mxq2"]
+[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="55_ktfth"]
+[ext_resource type="Script" uid="uid://dd8abpahxbix1" path="res://scripts/AudioPlayer.cs" id="56_vg7yo"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
 vertices = PackedVector2Array(1456, 301, 1531, 301, 1438, 302, 1547, 300, 1622, 300, 3597, 266, 3642, 266, 3557, 267, 3816, 164, 4014, 165, 3884, 167, 3620, 134, 3619, 166, 3483.64, 2517.15, 562.844, 627.922, 957, 680, 4050.07, -2610.86, 9032.83, -1210.15, 1679, 680, 7179.81, 1481.34, 945, 107, 1007, 42, 1010, 250, 944, 239, 1718.12, 229.016, 1619, 260, 1204, 233, 1547, 260, 1074, 249, 1075, 176, 1079, 178, 1421, 13, 1421.91, 15.1016, 1087, 24, 4011, 251, 1958, 495, 1812, 495, 1651, 495, 1010, 281, 1011, 379, 807, 352, 491.906, 67.5078, -18.7734, -2232.09, 1298, 483, 1300, 502, 1222, 503, 3620, 77, 1363, 262, 1363, 302, 1345, 301, 1342, 261, 3400, 135, 3614, 171, 3557, 264, 1093, 505, 1125, 504, 1126, 569, 1094, 569, 814, -100, 1037, -106, 1038, -23, 1140, -72, 1421, -76, 1137, -25, 1540, 466, 1542, 530, 1431, 532, 1430, 500, 1222, 631, 950, 634, 950, 617, 1157, 408, 868, 411, 868, 379, 4009, 171, 4010, 248, 3640, 249, 3884, 171, 886, 618, 885, 572, 1158, 569, 692, 460, 693, 620, 647, 620, 645, 492, 1096, 179, 1096, 170, 1131, 170, 708, 380, 708, 460, 1653, 594, 1608, 595, 1605, 466, 3514, 249, 3258, 248, 3258, 226, 580, 492, 580.711, 621.281, 553.062, 621.594, 535.57, 610.281, 3353, 218, 3353, 171, 3507, 170, 1528, 261, 1456, 261, 1435, 262, 1270, 261, 1205, 377, 1270, 301, 3515, 263, 3515, 251, 557, 89, 559, 202, 541, 203, 3639, 264, 3598, 263, 3815, 170, 3256, 251, 3511, 251, 3512, 266, 3643, 251, 1954, -337, 3256, 217, 3264, 201, 1415, 500, 1414, 485, 657, 353, 544, 304, 655, 307, 1086, 39, 857, 107, 3271, 218, 3312, 218, 3313, 227, 1137, 184, 1138, 279, 3400, 77, 858, 239, 804, 86, 3322, 227, 3324, 218, 3349, 164, 3504, 166)
@@ -12635,9 +12639,18 @@ process_mode = 3
 position = Vector2(-42.0524, 7.565)
 Data = ExtResource("17_3mxq2")
 
+[node name="AmmoBase2" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DeadBandit" instance=ExtResource("16_qrdf2")]
+process_mode = 3
+position = Vector2(-44.3718, 38.5441)
+Data = ExtResource("19_x7eec")
+
 [node name="WeaponBase" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DeadBandit" instance=ExtResource("18_ktfth")]
 position = Vector2(-15.103, 10.8446)
 Data = ExtResource("19_vg7yo")
+
+[node name="WeaponBase2" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DeadBandit" instance=ExtResource("18_ktfth")]
+position = Vector2(-13.4253, 41.8651)
+Data = ExtResource("22_f13vj")
 
 [node name="OpposingForce" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp"]
 process_mode = 3
@@ -13421,30 +13434,27 @@ Debts = {}
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 script = ExtResource("6_i8ckm")
 
-[node name="Tutorials" type="Node2D" parent="."]
-light_mask = 512
-visibility_layer = 512
-position = Vector2(-88195, 52992)
+[node name="Tutorials" type="Node" parent="."]
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
-position = Vector2(-212, 125)
+position = Vector2(-88566, 53079)
 TutorialString = "Dash while moving for I-Frames"
 Action = ExtResource("8_wqmfy")
 
 [node name="UseWeaponTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
-position = Vector2(715, 49)
+position = Vector2(-87513, 53032)
 TutorialString = "Attack"
 Action = ExtResource("9_mla2a")
 
 [node name="ParryTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
-position = Vector2(-96, 107)
+position = Vector2(-87517, 52942)
 TutorialString = "Parry"
 Action = ExtResource("10_oxfhy")
 
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
 light_mask = 512
 visibility_layer = 512
-position = Vector2(220, 138)
+position = Vector2(-87829, 53074)
 TutorialString = "Rest at campfire to heal"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -13458,3 +13468,9 @@ script = ExtResource("54_3mxq2")
 [node name="Cloner" type="MultiMeshInstance2D" parent="BulletShellMesh"]
 visible = false
 multimesh = SubResource("MultiMesh_ktfth")
+
+[node name="DebrisMesh" type="Node" parent="."]
+script = ExtResource("55_ktfth")
+
+[node name="AudioPool" type="Node" parent="."]
+script = ExtResource("56_vg7yo")

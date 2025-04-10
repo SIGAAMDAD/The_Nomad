@@ -96,14 +96,6 @@ sprite_frames = ExtResource("5_0rnld")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="DashEffect" parent="Animations" instance=ExtResource("4_d2uw3")]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 0
-y_sort_enabled = true
-position = Vector2(1, 4)
-one_shot = false
-
 [node name="SlidePuff" parent="Animations" instance=ExtResource("5_a260p")]
 process_thread_group = 1
 process_thread_group_order = 0
@@ -139,6 +131,14 @@ visible = false
 y_sort_enabled = true
 sprite_frames = ExtResource("10_0rnld")
 animation = &"loop"
+
+[node name="DashEffect" parent="Animations" instance=ExtResource("4_d2uw3")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+y_sort_enabled = true
+position = Vector2(1, 4)
+one_shot = false
 
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -1)
@@ -204,16 +204,3 @@ shape = SubResource("CircleShape2D_0s7ty")
 [node name="Inventory" type="Inventory" parent="."]
 inventory_name = "Backpack"
 database = ExtResource("21_kgn6m")
-
-[node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-attenuation = 0.0441942
-bus = &"SFX"
-
-[node name="DashChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-bus = &"SFX"
-
-[node name="MiscChannel" type="AudioStreamPlayer2D" parent="."]
-volume_db = 10.0
-bus = &"SFX"

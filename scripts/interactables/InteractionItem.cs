@@ -4,6 +4,7 @@ public enum InteractionType {
 	Checkpoint,
 	TreasureChest,
 	Tutorial,
+	Note,
 
 	EaglesPeak,
 

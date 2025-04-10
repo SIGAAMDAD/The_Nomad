@@ -126,8 +126,6 @@ public partial class MobBase : Renown.Thinker {
 
 	protected AIState State = AIState.Guarding;
 
-	protected AudioStreamPlayer2D BarkChannel;
-	protected AudioStreamPlayer2D AudioChannel;
 	protected BarkType LastBark;
 	protected BarkType SequencedBark;
 	protected Timer ThinkerTimer;
@@ -193,8 +191,9 @@ public partial class MobBase : Renown.Thinker {
 		LastBark = bark;
 		SequencedBark = sequenced;
 
-		BarkChannel.Stream = GetBarkResource( bark );
-		BarkChannel.Play();
+		AudioPlayer.PlaySound( this, GetBarkResource( bark ) );
+//		BarkChannel.Stream = GetBarkResource( bark );
+//		BarkChannel.Play();
 	}
 	protected void GenerateRaycasts() {
 		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
@@ -250,13 +249,13 @@ public partial class MobBase : Renown.Thinker {
 	}
 	
 	protected void OnBarkFinished() {
-		BarkChannel.Stream = null;
+//		BarkChannel.Stream = null;
 		if ( SequencedBark != BarkType.Count ) {
 			// play another bark right after the first
 			GD.Print( "Sequencing bark " + SequencedBark.ToString() );
 
-			BarkChannel.Stream = GetBarkResource( SequencedBark );
-			BarkChannel.Play();
+//			BarkChannel.Stream = GetBarkResource( SequencedBark );
+//			BarkChannel.Play();
 			SequencedBark = BarkType.Count;
 		}
 	}
@@ -266,8 +265,7 @@ public partial class MobBase : Renown.Thinker {
 		} else if ( !ResourceCache.Initialized ) {
 			return;
 		}
-		MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
-		MoveChannel.Play();
+		AudioPlayer.PlaySound( this, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -427,15 +425,6 @@ public partial class MobBase : Renown.Thinker {
 		MoveTimer.SetProcess( false );
 		MoveTimer.SetProcessInternal( false );
 		CallDeferred( "add_child", MoveTimer );
-
-		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
-		MoveChannel.SetProcess( false );
-		MoveChannel.SetProcessInternal( false );
-
-		BarkChannel = GetNode<AudioStreamPlayer2D>( "BarkChannel" );
-		BarkChannel.SetProcess( false );
-		BarkChannel.SetProcessInternal( false );
-		BarkChannel.Connect( "finished", Callable.From( OnBarkFinished ) );
 
 		BulletShellTree = new Node2D();
 		GetTree().CurrentScene.CallDeferred( "add_child", BulletShellTree );

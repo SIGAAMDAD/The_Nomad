@@ -90,7 +90,7 @@ namespace Renown {
 		public virtual void Load() {
 		}
 
-		protected void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			channel.Stream = stream;
 			channel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 			channel.Play();

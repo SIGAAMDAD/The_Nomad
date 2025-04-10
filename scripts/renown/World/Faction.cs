@@ -363,8 +363,8 @@ namespace Renown.World {
 				Load();
 			}
 			
-			WorkThread = new Thread( Think );
-			WorkThread.Start();
+//			WorkThread = new Thread( Think );
+//			WorkThread.Start();
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % 120 ) != 0 ) {
@@ -372,11 +372,15 @@ namespace Renown.World {
 			}
 			
 			base._Process( delta );
+
+			Think();
 			
+			/*
 			lock ( LockObject ) {
 				// allow it to run again
 				Monitor.Pulse( LockObject );
 			}
+			*/
 		}
 		
 		private bool CreateDebt( float nAmount ) {
@@ -465,10 +469,12 @@ namespace Renown.World {
 			}
 		}
 		private void Think() {
+			/*
 			lock ( LockObject ) {
 				// wait for frame sync
 				Monitor.Wait( LockObject );
 			}
+			*/
 			
 			UpdateRelations();
 			UpdateDebts();

@@ -1,0 +1,5 @@
+[gd_resource type="ItemCategory" format=3 uid="uid://0wiipwekxix3"]
+
+[resource]
+id = "ITEM_CATEGORY_AMMO"
+name = "Ammo"

@@ -1,11 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://co7rmsfdbg4m0"]
+[gd_scene load_steps=11 format=3 uid="uid://co7rmsfdbg4m0"]
 
 [ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/interactables/Checkpoint.cs" id="1_ihm5l"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
 [ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Texture2D" uid="uid://dyghteg051cwn" path="res://textures/unlit.dds" id="4_7no74"]
-[ext_resource type="AudioStream" uid="uid://7oajulqw4xah" path="res://sounds/env/bonfire_create.ogg" id="5_7no74"]
-[ext_resource type="AudioStream" uid="uid://dmjel1d8n14nq" path="res://sounds/env/campfire.ogg" id="5_qg5el"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8wkao"]
 atlas = ExtResource("2_jkcg4")
@@ -76,24 +74,6 @@ texture = ExtResource("4_7no74")
 position = Vector2(-1, 4)
 shape = SubResource("CircleShape2D_btkcq")
 
-[node name="ActivateChannel" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("5_7no74")
-max_distance = 300.0
-attenuation = 0.143587
-bus = &"SFX"
-playback_type = 1
-
-[node name="AmbienceChannel" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("5_qg5el")
-max_distance = 300.0
-attenuation = 0.0915054
-bus = &"SFX"
-playback_type = 1
-parameters/looping = true
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
-process_thread_group = 2
-process_thread_group_order = 1
-process_thread_messages = 2
-position = Vector2(-1, 3.5)
-scale = Vector2(1.3, 1.35)
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(-1.5, -1.5)
+scale = Vector2(5.55, 4.15)

@@ -1,26 +1,18 @@
-[gd_resource type="Resource" script_class="WeaponBase" load_steps=3 format=3 uid="uid://dv4ctw7xlgg2j"]
+[gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://bmnekgxpyq2f7"]
 
-[ext_resource type="Script" uid="uid://ct4n2xpucg3oo" path="res://scripts/items/WeaponBase.gd" id="1_aw8el"]
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_1rrme"]
 [ext_resource type="Texture2D" uid="uid://b5pu6adjnbqft" path="res://textures/env/iconw_psmg.dds" id="1_iya4p"]
+[ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_tnmqm"]
 
 [resource]
-script = ExtResource("1_aw8el")
-_one_handed = true
-_two_handed = true
-_is_bladed = null
-_is_blunt = true
-_is_firearm = true
-_magsize = 40
-_firemode = 2
-_icon = ExtResource("1_iya4p")
-_blunt_range = 0.0
-_bladed_range = 0.0
-_use_time = 0.0
-_reload_time = 0.0
-_damage = 0.0
-_ammo_type = 0
-_default_one_handed = false
-_default_two_handed = false
-_default_is_bladed = false
-_default_is_blunt = false
-_default_is_firearm = false
+id = "WEAPON_FIREARM_PLASMA_SMG"
+can_stack = false
+max_stack = 1
+name = "Plasma SMG"
+icon = ExtResource("1_iya4p")
+weight = 8.5
+properties = {
+"magazine_type": 0,
+"magsize": 40
+}
+categories = Array[ItemCategory]([ExtResource("1_1rrme"), ExtResource("2_tnmqm")])

@@ -224,11 +224,12 @@ public class ResourceCache {
 		PlayerDeathSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_1.ogg" );
 		PlayerDeathSfx[2] = ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_2.wav" );
 
-		MoveGravelSfx = new AudioStream[ 4 ];
-		MoveGravelSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0.ogg" );
-		MoveGravelSfx[1] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel1.ogg" );
-		MoveGravelSfx[2] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel2.ogg" );
-		MoveGravelSfx[3] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel3.ogg" );
+		MoveGravelSfx = [
+			ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0.wav" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel1.wav" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel2.wav" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel3.wav" ),
+		];
 
 		MoveWaterSfx = new AudioStream[ 4 ];
 		MoveWaterSfx[0] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater0.ogg" );
@@ -249,7 +250,7 @@ public class ResourceCache {
 		LeapOfFaithSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/leap_of_faith.ogg" );
 
 		ActivatedCheckpointSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/bonfire_create.ogg" );
-		CampfireAmbienceSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/campfire.ogg" );
+		CampfireAmbienceSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/campfire.wav" );
 
 		Light = ResourceLoader.Load<Texture2D>( "res://textures/point_light.dds" );
 

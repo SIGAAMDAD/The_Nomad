@@ -111,7 +111,6 @@ namespace Renown {
 		protected Color DemonEyeColor;
 
 		protected Timer MoveTimer = null;
-		protected AudioStreamPlayer2D MoveChannel;
 
 		// networking
 		protected NetworkWriter SyncObject = null;

@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="QuestResource" load_steps=40 format=3 uid="uid://c0f2fpmj6w5br"]
 
-[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_88qo8"]
-[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="2_6kc3t"]
-[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_br02v"]
-[ext_resource type="Script" uid="uid://do8usipgxxcl2" path="res://addons/questify/scripts/model/quest_conditional_branch.gd" id="4_6srrh"]
-[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="5_wqqdc"]
-[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="6_dr2gt"]
-[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="7_ao7l2"]
-[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="8_fv21p"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_88qo8"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="2_6kc3t"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_br02v"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_conditional_branch.gd" id="4_6srrh"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="5_wqqdc"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="6_dr2gt"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_node.gd" id="7_ao7l2"]
+[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="8_fv21p"]
 
 [sub_resource type="Resource" id="Resource_pcmik"]
 script = ExtResource("2_6kc3t")
@@ -240,5 +240,5 @@ edge_type = 1
 
 [resource]
 script = ExtResource("8_fv21p")
-nodes = Array[ExtResource("7_ao7l2")]([SubResource("Resource_0srpt"), SubResource("Resource_lycma"), SubResource("Resource_v4twt"), SubResource("Resource_gviwb"), SubResource("Resource_1b1j1"), SubResource("Resource_3pnpm"), SubResource("Resource_yu7ia"), SubResource("Resource_4biwq"), SubResource("Resource_we3v4"), SubResource("Resource_pcmik"), SubResource("Resource_3dqsb"), SubResource("Resource_4ionk"), SubResource("Resource_3ft00"), SubResource("Resource_pkai7"), SubResource("Resource_lmkio"), SubResource("Resource_7dn38")])
+nodes = Array[ExtResource("7_ao7l2")]([SubResource("Resource_0srpt"), SubResource("Resource_lycma"), SubResource("Resource_v4twt"), SubResource("Resource_gviwb"), SubResource("Resource_1b1j1"), SubResource("Resource_3pnpm"), SubResource("Resource_yu7ia"), SubResource("Resource_4biwq"), SubResource("Resource_we3v4"), SubResource("Resource_pcmik"), SubResource("Resource_3dqsb"), SubResource("Resource_4ionk"), SubResource("Resource_3ft00"), SubResource("Resource_pkai7"), SubResource("Resource_7dn38"), SubResource("Resource_lmkio")])
 edges = Array[ExtResource("1_88qo8")]([SubResource("Resource_a7rnr"), SubResource("Resource_ibdqo"), SubResource("Resource_pdlau"), SubResource("Resource_ww7pq"), SubResource("Resource_yinb3"), SubResource("Resource_l0may"), SubResource("Resource_pqw0o"), SubResource("Resource_t7hft"), SubResource("Resource_1wbcb"), SubResource("Resource_r3yj8"), SubResource("Resource_wp6gm"), SubResource("Resource_q0lht"), SubResource("Resource_xmxyl"), SubResource("Resource_n76qn"), SubResource("Resource_8d1v8")])

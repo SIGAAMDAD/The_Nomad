@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Configuration.Ini;
 using Godot;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using Microsoft.VisualBasic;
 using System;
 
 public enum WindowMode : uint {
@@ -33,10 +31,6 @@ public enum ShadowQuality : uint {
 
 public partial class SettingsData : Control {
 	private Resource Default;
-
-	private static readonly int MusicBus = AudioServer.GetBusIndex( "Music" );
-	private static readonly int SfxBus = AudioServer.GetBusIndex( "SFX" );
-	private static readonly int AmbienceBus = AudioServer.GetBusIndex( "Ambience" );
 
 	private static WindowMode WindowMode;
 	private static DisplayServer.VSyncMode VSyncMode;
@@ -125,12 +119,6 @@ public partial class SettingsData : Control {
 		EffectsVolume = (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] );
 		MusicOn = Convert.ToBoolean( config[ "Audio:MusicEnabled" ] );
 		MusicVolume = (float)Convert.ToDouble( config[ "Audio:MusicVolume" ] );
-
-		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
-		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
-
-		AudioServer.SetBusMute( MusicBus, !MusicOn );
-		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
 	private static void SaveAudioSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Audio]" );
@@ -314,11 +302,6 @@ public partial class SettingsData : Control {
 		string path = ProjectSettings.GlobalizePath( "user://settings.ini" );
 		System.IO.FileStream stream;
 
-		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
-		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
-
-		AudioServer.SetBusMute( MusicBus, !MusicOn );
-		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 		try {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
@@ -332,12 +315,6 @@ public partial class SettingsData : Control {
 		LoadAccessibilitySettings( iniData );
 		LoadGameplaySettings( iniData );
 		LoadNetworkingSettings( iniData );
-
-		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
-		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
-
-		AudioServer.SetBusMute( MusicBus, !MusicOn );
-		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
 
 	public static void Save() {
@@ -358,11 +335,5 @@ public partial class SettingsData : Control {
 
 		SteamManager.SaveCloudFile( "settings.ini" );
 		SteamManager.SaveCloudFile( "input_context.tres" );
-
-		AudioServer.SetBusVolumeDb( MusicBus, MusicVolume / 100.0f );
-		AudioServer.SetBusVolumeDb( SfxBus, EffectsVolume / 100.0f );
-
-		AudioServer.SetBusMute( MusicBus, !MusicOn );
-		AudioServer.SetBusMute( SfxBus, !EffectsOn );
 	}
 };

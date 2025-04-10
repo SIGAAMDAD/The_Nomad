@@ -1,0 +1,6 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://cnf43mfuhif3j"]
+
+[resource]
+id = "AMMO_556"
+max_stack = 256
+name = "5.56mm"

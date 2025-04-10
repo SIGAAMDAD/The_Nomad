@@ -175,14 +175,6 @@ avoidance_enabled = true
 max_neighbors = 20
 debug_enabled = true
 
-[node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
-max_distance = 1000.0
-bus = &"SFX"
-
-[node name="BarkChannel" type="AudioStreamPlayer2D" parent="."]
-max_distance = 1000.0
-bus = &"SFX"
-
 [node name="Bounds" type="Node2D" parent="."]
 process_mode = 4
 

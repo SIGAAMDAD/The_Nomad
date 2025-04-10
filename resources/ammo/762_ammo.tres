@@ -1,0 +1,26 @@
+[gd_resource type="ItemDefinition" load_steps=6 format=3 uid="uid://gm6rna0vx71"]
+
+[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="1_a8w8a"]
+[ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_lhqhs"]
+[ext_resource type="Texture2D" uid="uid://bp513nsbaeyb3" path="res://textures/env/bullet_casings/rifle_shell.png" id="2_i4m1o"]
+[ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="4_qnvb1"]
+
+[sub_resource type="Curve" id="Curve_lhqhs"]
+_data = [Vector2(0, 0.901887), 0.0, 0.0, 1, 0, Vector2(0.75625, 0.532076), 0.0905662, 0.0, 0, 0]
+point_count = 2
+
+[resource]
+id = "AMMO_762"
+max_stack = 256
+name = "7.62mm"
+icon = ExtResource("1_a8w8a")
+properties = {
+"casing_icon": ExtResource("2_i4m1o"),
+"damage": 25.25,
+"damage_falloff": SubResource("Curve_lhqhs"),
+"pickup_sfx": ExtResource("4_qnvb1"),
+"range": 60.8,
+"stack_add_amount": 32,
+"type": 1
+}
+categories = Array[ItemCategory]([ExtResource("1_lhqhs")])

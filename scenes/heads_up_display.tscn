@@ -950,7 +950,6 @@ z_index = 6
 layout_mode = 2
 
 [node name="Theme" type="AudioStreamPlayer" parent="JumpContainer"]
-bus = &"Music"
 playback_type = 1
 
 [node name="JumpQueryContainer" type="MarginContainer" parent="JumpContainer"]

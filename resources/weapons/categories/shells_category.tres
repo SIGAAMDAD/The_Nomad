@@ -1,0 +1,6 @@
+[gd_resource type="ItemCategory" format=3 uid="uid://tulgaen38mij"]
+
+[resource]
+id = "AMMO_CATEGORY_SHELLS"
+name = "Shells"
+color = Color(1, 0, 0, 1)

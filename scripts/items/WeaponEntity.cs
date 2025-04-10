@@ -113,7 +113,7 @@ public partial class WeaponEntity : Node2D {
 
 	private WeaponState CurrentState = WeaponState.Idle;
 
-	private AudioStreamPlayer2D AudioChannel;
+//	private AudioStreamPlayer2D AudioChannel;
 
 	private SpriteFrames AnimationsLeft;
 	private SpriteFrames AnimationsRight;
@@ -161,11 +161,13 @@ public partial class WeaponEntity : Node2D {
 		}
 		IconSprite?.QueueFree();
 
+		/*
 		AudioChannel = new AudioStreamPlayer2D();
 		AudioChannel.SetProcess( false );
 		AudioChannel.SetProcessInternal( false );
 		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 		AddChild( AudioChannel );
+		*/
 
 		Animations = new AnimatedSprite2D();
 		AddChild( Animations );
@@ -310,7 +312,7 @@ public partial class WeaponEntity : Node2D {
 	public void SetEquippedState( bool bEquipped ) {
 		if ( !bEquipped ) {
 			WeaponTimer.Stop();
-			AudioChannel.Stop();
+//			AudioChannel.Stop();
 			return;
 		}
 	}
@@ -380,24 +382,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void SpawnShells() {
-		/*
-		BulletShell bulletShell = BulletShell.Instantiate<BulletShell>();
-		bulletShell.GlobalPosition = GlobalPosition;
-		GetTree().CurrentScene.AddChild( bulletShell );
-
-		switch ( Ammunition ) {
-		case AmmoType.Light:
-		case AmmoType.Heavy:
-			bulletShell.GroundedSfx.Stream = ResourceCache.BulletShell[ RandomFactory.Next( 0, ResourceCache.BulletShell.Length - 1 ) ];
-			break;
-		case AmmoType.Pellets:
-			bulletShell.GroundedSfx.Stream = ResourceCache.ShotgunShell[ RandomFactory.Next( 0, ResourceCache.ShotgunShell.Length - 1 ) ];
-			break;
-		};
-
-		bulletShell.Texture = (Texture2D)( (Godot.Collections.Dictionary)Ammo.Get( "properties" ) )[ "casing_icon" ];
-		*/
-		BulletShellMesh.AddShell( GlobalPosition, (Texture2D)( (Godot.Collections.Dictionary)Ammo.Get( "properties" ) )[ "casing_icon" ] );
+		BulletShellMesh.AddShell( GlobalPosition, Ammo );
 	}
 
 	private bool Reload() {
@@ -433,16 +418,14 @@ public partial class WeaponEntity : Node2D {
 		WeaponTimer.Start();
 
 		CurrentState = WeaponState.Reload;
-		AudioChannel.Stream = ReloadSfx;
-		AudioChannel.Play();
+		AudioPlayer.PlaySound( this, ReloadSfx );
 
 		return true;
 	}
 
 	private float UseFirearm( bool held ) {
-		if ( Ammo == null || BulletsLeft < 1 ) {
-			AudioChannel.Stream = ResourceCache.NoAmmoSfx;
-			AudioChannel.Play();
+		if ( ( Ammo == null || BulletsLeft < 1 ) && !held ) {
+			AudioPlayer.PlaySound( this, ResourceCache.NoAmmoSfx );
 			return 0.0f;
 		}
 
@@ -502,19 +485,23 @@ public partial class WeaponEntity : Node2D {
 		RayCast.CollisionMask = 2 | 5;
 		RayCast.TargetPosition = Godot.Vector2.Right.Rotated( _Owner.GetArmAngle() ) * (float)properties[ "range" ];
 
-		AudioChannel.Stream = UseFirearmSfx;
-		AudioChannel.Play();
+		AudioPlayer.PlaySound( this, UseFirearmSfx );
 		
 		float damage = (float)properties[ "damage" ];
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
 			if ( collision is Entity entity && entity != null ) {
 				entity.Damage( _Owner, damage );
 			} else {
+				/*
 				DebrisCloud debris = DustCloud.Instantiate<DebrisCloud>();
 				GetTree().CurrentScene.AddChild( debris );
 				debris.Create( RayCast.GetCollisionPoint() );
+				*/
+				DebrisFactory.Create( RayCast.GetCollisionPoint() );
 			}
 		}
+
+		EmitSignalUsed( this );
 
 		return damage;
 	}

@@ -68,11 +68,7 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 
 		LoseInterestTimer.QueueFree();
-		MoveChannel.QueueFree();
 
-		if ( AudioChannel != null ) {
-			AudioChannel.QueueFree();
-		}
 		HeadAnimations.QueueFree();
 		ArmAnimations.QueueFree();
 		BodyAnimations.QueueFree();
