@@ -419,7 +419,35 @@ public partial class Player : Entity {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public float GetArmAngle() => ArmAngle;
+	public float GetArmAngle() {
+		if ( CurrentMappingContext == KeyboardInputMappings ) {
+			Godot.Vector2 mousePosition;
+
+			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
+				mousePosition = DisplayServer.MouseGetPosition();
+			} else {
+				mousePosition = GetViewport().GetMousePosition();
+			}
+			
+			float y = mousePosition.Y;
+			float x = mousePosition.X;
+			int width = ScreenSize.X;
+			int height = ScreenSize.Y;
+
+			if ( LastMousePosition != mousePosition ) {
+				LastMousePosition = mousePosition;
+				IdleReset();
+			}
+
+			ArmAngle = (float)Math.Atan2( y - ( height / 2.0f ), x - ( width / 2.0f ) );
+			if ( x > width * 0.5f ) {
+				FlipSpriteRight();
+			} else if ( x < width * 0.5f ) {
+				FlipSpriteLeft();
+			}
+		}
+		return ArmAngle;
+	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -715,7 +743,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
 			return;
 		}
-
+		
 		ArmAngle = (float)ArmAngleAction.Get( "value_axis_1d" );
 	}
 	private void OnPrevWeapon() {
@@ -1450,38 +1478,7 @@ public partial class Player : Entity {
 
 		base._Process( delta );
 
-		if ( CurrentMappingContext == GamepadInputMappings ) {
-			if ( ArmAngle > 0.0f ) {
-				FlipSpriteRight();
-			} else if ( ArmAngle < 0.0f ) {
-				FlipSpriteLeft();
-			}
-		} else {
-			Godot.Vector2 mousePosition;
-
-//			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
-//				mousePosition = DisplayServer.MouseGetPosition();
-//			} else {
-				mousePosition = GetViewport().GetMousePosition();
-//			}
-			
-			float y = mousePosition.Y;
-			float x = mousePosition.X;
-			int width = ScreenSize.X;
-			int height = ScreenSize.Y;
-
-			if ( LastMousePosition != mousePosition ) {
-				LastMousePosition = mousePosition;
-				IdleReset();
-			}
-
-			ArmAngle = (float)Math.Atan2( y - ( height / 2.0f ), x - ( width / 2.0f ) );
-			if ( x > width * 0.5f ) {
-				FlipSpriteRight();
-			} else if ( x < width * 0.5f ) {
-				FlipSpriteLeft();
-			}
-		}
+		GetArmAngle();
 
 		ArmLeft.Animations.Show();
 		ArmRight.Animations.Show();

@@ -19,7 +19,7 @@ properties = {
 "damage": 25.25,
 "damage_falloff": SubResource("Curve_lhqhs"),
 "pickup_sfx": ExtResource("4_qnvb1"),
-"range": 60.8,
+"range": 2260.0,
 "stack_add_amount": 32,
 "type": 1
 }

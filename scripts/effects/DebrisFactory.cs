@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Godot;
 
 public partial class DebrisFactory : Node {
@@ -10,7 +11,11 @@ public partial class DebrisFactory : Node {
 	private static DebrisFactory Instance = null;
 
 	private void OnReleaseTimerTimeout() {
-		MeshManager.Multimesh.VisibleInstanceCount--;
+		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
+		if ( instanceCount < 0 ) {
+			instanceCount = 0;
+		}
+		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
 		if ( Instance.MeshManager.Multimesh.VisibleInstanceCount > 0 ) {
 			ReleaseTimer.Start();
 		}
@@ -65,17 +70,26 @@ public partial class DebrisFactory : Node {
 	}
 
 	public static void Create( Vector2 position ) {
-		const int numSmokeClouds = 64;
+		const int numSmokeClouds = 24;
 
-		int startIndex = Instance.MeshManager.Multimesh.VisibleInstanceCount;
-		Instance.MeshManager.Multimesh.VisibleInstanceCount += numSmokeClouds;
+		int instanceCount = Instance.MeshManager.Multimesh.VisibleInstanceCount;
+		int startIndex = instanceCount;
 
-		Instance.ReleaseTimer.Start();
+		instanceCount += numSmokeClouds;
+		if ( instanceCount >= Instance.MeshManager.Multimesh.InstanceCount ) {
+			instanceCount -= Instance.MeshManager.Multimesh.InstanceCount / 2;
+		}
+
+		if ( Instance.ReleaseTimer.IsStopped() ) {
+			Instance.ReleaseTimer.Start();
+		}
 
 		for ( int i = 0; i < numSmokeClouds; i++ ) {
 			Instance.Speeds[ startIndex + i ] = new Vector2( Instance.Random.RandfRange( -0.25f, 0.25f ), Instance.Random.RandfRange( -0.1f, 0.1f ) );
 			Instance.Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
 			Instance.MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Instance.Transforms[i] );
 		}
+
+		Instance.MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
 	}
 };

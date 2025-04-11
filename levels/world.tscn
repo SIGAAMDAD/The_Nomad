@@ -12157,7 +12157,7 @@ sources/0 = SubResource("TileSetAtlasSource_1fb1p")
 size = Vector2(552, 305)
 
 [sub_resource type="QuadMesh" id="QuadMesh_3mxq2"]
-size = Vector2(4, -4)
+size = Vector2(5, -2)
 
 [sub_resource type="MultiMesh" id="MultiMesh_ktfth"]
 mesh = SubResource("QuadMesh_3mxq2")
