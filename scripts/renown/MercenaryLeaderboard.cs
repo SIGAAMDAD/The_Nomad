@@ -1,0 +1,114 @@
+using Steamworks;
+using System.Collections.Generic;
+
+// NOTE: implement bounty hunt mechanic for top merc
+
+namespace Renown {
+	public class MercenaryLeaderboard {
+		public class LeaderboardEntry {
+			public readonly ContractType Type;
+			public readonly CSteamID UserId = CSteamID.Nil;
+			public readonly int TimeCompletedMinutes = 0;
+			public readonly int TimeCompletedSeconds = 0;
+			public readonly int TimeCompletedMilliseconds = 0;
+			public readonly int Score = 0;
+			
+			public LeaderboardEntry( LeaderboardEntry_t entry, int[] details ) {
+				UserId = entry.m_steamIDUser;
+				Score = entry.m_nScore;
+				
+				if ( details.Length != 4 ) {
+					Console.PushError( "[STEAM] Invalid leaderboard entry data!" );
+					return;
+				}
+				
+				Type = (Renown.ContractType)details[0];
+				TimeCompletedMinutes = details[1];
+				TimeCompletedSeconds = details[2];
+				TimeCompletedMilliseconds = details[3];
+			}
+		};
+		
+		private static Dictionary<int, LeaderboardEntry> LeaderboardData = null;
+		private static int LeaderboardEntryCount = 0;
+		private static SteamLeaderboardEntries_t LeaderboardEntries;
+		private static SteamLeaderboard_t hLeaderboard;
+		
+		private static CallResult<LeaderboardFindResult_t> OnLeaderboardFindResult;
+		private static CallResult<LeaderboardScoreUploaded_t> OnLeaderboardScoreUploaded;
+		private static CallResult<LeaderboardScoreDownloaded_t> OnLeaderboardScoreDownloaded;
+		
+		private static void OnFindLeaderboard( LeaderboardFindResult_t pCallback ) {
+			hLeaderboard = pCallback.m_hSteamLeaderboard;
+		}
+		private static void OnScoreUploaded( LeaderboardScoreUploaded_t pCallback ) {
+			if ( !pCallback.m_bSuccess ) {
+				Console.PrintError( "[STEAM] Error uploading stats to global leaderboards!" );
+				return;
+			}
+		}
+		private static void OnScoreDownloaded( LeaderboardScoreDownloaded_t pCallback ) {
+			int[] details = new int[4];
+			LeaderboardEntries = pCallback.m_hSteamLeaderboardEntries;
+			
+			for ( int i = 0; i < pCallback.m_cEntryCount; i++ ) {
+				LeaderboardEntry_t entry;
+				if ( !SteamUserStats.GetDownloadedLeaderboardEntry( LeaderboardEntries, i, out entry, details, details.Length ) ) {
+					Console.PrintError( "[STEAM] Error fetching downloaded leaderboard entry!" );
+					continue;
+				}
+				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardData( entry, details ) );
+			}
+		}
+		
+		private static void FetchLeaderboardData() {
+			LeaderboardEntryCount = SteamUserStats.GetLeaderboardEntry( hLeaderboard );
+			
+			LeaderboardData.Clear();
+			LeaderboardData = new Dictionary<int, LeaderboardEntry>( LeaderboardEntryCount );
+			
+			SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, entryCount );
+			OnLeaderboardScoresDownloaded.Set( handle );
+		}
+		
+		public static void Init() {
+			OnLeaderboardFindResult = CallResult<LeaderboardFindResult>.Create( OnFindLeaderboard );
+			OnLeaderboardScoreUploaded = CallResult<LeaderboardScoreUploaded_t>.Create( OnScoreUploaded );
+			OnLeaderboardScoreDownloaded = CallResult<LeaderboardScoreDownloaded_t>.Create( OnScoreDownloaded );
+			
+			SteamAPICall_t handle = SteamUserStats.FindLeaderboard( "Global Mercenary Leaderboard" );
+			OnLeaderboardFindResult.Set( handle );
+			
+			FetchLeaderboardData();
+		}
+		
+		/// <summary>
+		/// the score with all the bonuses should be calculated before calling this
+		/// </summary>
+		public static void UploadData( ContractType nType, int TimeMinutes, int TimeSeconds, int TimeMilliseconds, int nScore ) {
+			Console.PrintLine( "[STEAM] Uploading local statistics to global leaderboards..." );
+			
+			int[] details = [
+				(int)nType,
+				TimeMinutes,
+				TimeSeconds,
+				TimeMillisecondss
+			];
+			
+			SteamUserStats.UploadLeaderboardScore(
+				hLeaderboard,
+				ELeaderboardUploadScoreMethod.k_ELeaderboardUploadScoreMethodKeepBest,
+				details,
+				details.Length
+			);
+		}
+		
+		public static List<LeaderboardEntry> GetLeaderboardEntries() {
+			List<LeaderboardEntry> entries = new List<LeaderboardEntry>( LeaderboardData.Count );
+			for ( int i = 0; i < LeaderboardData.Count; i++ ) {
+				entries.Add( LeaderboardData[i] );
+			}
+			return entries;
+		}
+	};
+};
