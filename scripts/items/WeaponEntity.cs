@@ -113,7 +113,7 @@ public partial class WeaponEntity : Node2D {
 
 	private WeaponState CurrentState = WeaponState.Idle;
 
-//	private AudioStreamPlayer2D AudioChannel;
+	private AudioStreamPlayer2D AudioChannel;
 
 	private SpriteFrames AnimationsLeft;
 	private SpriteFrames AnimationsRight;
@@ -147,6 +147,11 @@ public partial class WeaponEntity : Node2D {
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
 
+	private void PlaySound( AudioStream stream ) {
+		AudioChannel.Stream = stream;
+		AudioChannel.Play();
+	}
+
 	private void ReleasePickupArea() {
 		PickupArea.GetChild( 0 ).CallDeferred( "queue_free" );
 		PickupArea.CallDeferred( "remove_child", PickupArea.GetChild( 0 ) );
@@ -160,14 +165,6 @@ public partial class WeaponEntity : Node2D {
 			return;
 		}
 		IconSprite?.QueueFree();
-
-		/*
-		AudioChannel = new AudioStreamPlayer2D();
-		AudioChannel.SetProcess( false );
-		AudioChannel.SetProcessInternal( false );
-		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
-		AddChild( AudioChannel );
-		*/
 
 		Animations = new AnimatedSprite2D();
 		AddChild( Animations );
@@ -191,9 +188,9 @@ public partial class WeaponEntity : Node2D {
 			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
 				MuzzleFlashes[i].Hide();
 			}
-			return;
+		} else {
+			CurrentMuzzleFlash.Hide();
 		}
-		CurrentMuzzleFlash.Hide();
 		MuzzleLight.Hide();
 	}
 
@@ -215,6 +212,10 @@ public partial class WeaponEntity : Node2D {
 
 	private void InitProperties() {
 		PropertyBits = Properties.None;
+
+		AudioChannel = new AudioStreamPlayer2D();
+		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		AddChild( AudioChannel );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
@@ -317,7 +318,7 @@ public partial class WeaponEntity : Node2D {
 	public void SetEquippedState( bool bEquipped ) {
 		if ( !bEquipped ) {
 			WeaponTimer.Stop();
-//			AudioChannel.Stop();
+			AudioChannel.Stop();
 			return;
 		}
 	}
@@ -386,7 +387,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void SpawnShells() {
-		BulletShellMesh.AddShell( GlobalPosition, Ammo );
+		BulletShellMesh.AddShell( _Owner, Ammo );
 	}
 
 	private bool Reload() {
@@ -422,14 +423,14 @@ public partial class WeaponEntity : Node2D {
 		WeaponTimer.Start();
 
 		CurrentState = WeaponState.Reload;
-		AudioPlayer.PlaySound( this, ReloadSfx );
+		PlaySound( ReloadSfx );
 
 		return true;
 	}
 
 	private float UseFirearm( bool held ) {
 		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
-			AudioPlayer.PlaySound( this, ResourceCache.NoAmmoSfx );
+			PlaySound( ResourceCache.NoAmmoSfx );
 			return 0.0f;
 		}
 
@@ -495,7 +496,7 @@ public partial class WeaponEntity : Node2D {
 		RayCast.CollisionMask = 2 | 5;
 		RayCast.TargetPosition = Godot.Vector2.Right.Rotated( _Owner.GetArmAngle() ) * (float)properties[ "range" ];
 
-		AudioPlayer.PlaySound( this, UseFirearmSfx );
+		PlaySound( UseFirearmSfx );
 		
 		float damage = (float)properties[ "damage" ];
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {

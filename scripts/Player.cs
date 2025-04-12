@@ -172,6 +172,11 @@ public partial class Player : Entity {
 	private PlayerAnimationState TorsoAnimationState;
     private PlayerAnimationState LegAnimationState;
 
+	private AudioStreamPlayer2D AudioChannel;
+	private AudioStreamPlayer2D DashChannel;
+
+	private FootSteps FootSteps;
+
 	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
 
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
@@ -499,6 +504,12 @@ public partial class Player : Entity {
 		ArmLeft.Animations.Show();
 	}
 
+	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		channel ??= AudioChannel;
+		channel.Stream = stream;
+		channel.Play();
+	}
+
 	public void SetupSplitScreen( int nInputIndex ) {
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			SplitScreen = true;
@@ -576,8 +587,7 @@ public partial class Player : Entity {
 
 		TorsoAnimation.Play( "death" );
 
-		AudioPlayer.PlaySound( this, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
-//		PlaySound( MiscChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+		PlaySound( AudioChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		SetProcessUnhandledInput( true );
 	}
@@ -597,8 +607,7 @@ public partial class Player : Entity {
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
 		} else {
-			AudioPlayer.PlaySound( this, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
-//			PlaySound( MiscChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+			PlaySound( AudioChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
 		}
 
 		EmitSignalDamaged( attacker, this, nAmount );
@@ -655,8 +664,8 @@ public partial class Player : Entity {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( LinearVelocity != Godot.Vector2.Zero ) {
-			AudioPlayer.PlaySound( this, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
-//			PlaySound( MoveChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+			FootSteps.AddStep( GlobalPosition );
 		}
 	}
 	private void OnDashTimeTimeout() {
@@ -685,7 +694,7 @@ public partial class Player : Entity {
 
 		// TODO: upgradable dash burnout?
 		if ( DashBurnout >= 1.0f ) {
-			AudioPlayer.PlaySound( this, ResourceCache.DashExplosion );
+			PlaySound( AudioChannel, ResourceCache.DashExplosion );
 
 			DashBurnout = 0.0f;
 
@@ -697,7 +706,8 @@ public partial class Player : Entity {
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
 		DashTime.Start();
-		AudioPlayer.PlaySound( this, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ], false, 1.0f + DashBurnout );
+		DashChannel.PitchScale = 1.0f + DashBurnout;
+		PlaySound( DashChannel, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ] );
 		DashLight.Show();
 		DashEffect.Emitting = true;
 		DashDirection = LinearVelocity;
@@ -717,6 +727,8 @@ public partial class Player : Entity {
 		Flags |= PlayerFlags.Sliding;
 		SlideTime.Start();
 		SlideEffect.Emitting = true;
+
+		PlaySound( AudioChannel, ResourceCache.SlideSfx[ RandomFactory.Next( 0, ResourceCache.SlideSfx.Length - 1 ) ] );
 
 		LegAnimationState = PlayerAnimationState.Sliding;
 		TorsoAnimationState = PlayerAnimationState.Sliding;
@@ -790,9 +802,7 @@ public partial class Player : Entity {
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-
-		AudioPlayer.PlaySound( this, ResourceCache.ChangeWeaponSfx );
-//		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( AudioChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -841,9 +851,7 @@ public partial class Player : Entity {
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-
-		AudioPlayer.PlaySound( this, ResourceCache.ChangeWeaponSfx );
-//		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( AudioChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -857,8 +865,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			AudioPlayer.PlaySound( this, ResourceCache.SlowMoBeginSfx );
-//			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
+			PlaySound( AudioChannel, ResourceCache.SlowMoBeginSfx );
 
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -1191,9 +1198,7 @@ public partial class Player : Entity {
 		HUD.GetReflexOverlay().Hide();
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
-
-		AudioPlayer.PlaySound( this, ResourceCache.SlowMoEndSfx );
-//		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
+		PlaySound( AudioChannel, ResourceCache.SlowMoEndSfx );
 	}
 
 	private void CmdSuicide() {
@@ -1269,6 +1274,14 @@ public partial class Player : Entity {
 		//
 		SwitchToGamepad = ResourceLoader.Load( "res://resources/binds/actions/keyboard/switch_to_gamepad.tres" );
 		SwitchToKeyboard = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_to_keyboard.tres" );
+
+		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
+		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+
+		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
+		DashChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+
+		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
 //		SwitchToGamepad.Connect( "triggered", Callable.From<Resource>( SwitchInputMode ) );
 //		SwitchToKeyboard.Connect( "triggered", Callable.From<Resource>( SwitchInputMode ) );
@@ -1529,8 +1542,7 @@ public partial class Player : Entity {
 		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
-		AudioPlayer.PlaySound( this, ammo.GetPickupSound() );
-//		PlaySound( MiscChannel, ammo.GetPickupSound() );
+		PlaySound( AudioChannel, ammo.GetPickupSound() );
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[i];

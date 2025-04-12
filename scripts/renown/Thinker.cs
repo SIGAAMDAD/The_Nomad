@@ -115,6 +115,8 @@ namespace Renown {
 		// networking
 		protected NetworkWriter SyncObject = null;
 
+		protected AudioStreamPlayer2D AudioChannel;
+
 		protected uint Pay = 0;
 
 		private VisibleOnScreenNotifier2D VisibilityNotifier;
@@ -182,6 +184,10 @@ namespace Renown {
 
 			NavAgent = GetNode<NavigationAgent2D>( "NavigationAgent2D" );
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
+
+			AudioChannel = new AudioStreamPlayer2D();
+			AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			AddChild( AudioChannel );
 
 			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
 			VisibilityNotifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );

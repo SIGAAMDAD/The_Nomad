@@ -8,6 +8,8 @@ public partial class Checkpoint : InteractionItem {
 	private AnimatedSprite2D Bonfire;
 	private Sprite2D Unlit;
 
+	private AudioStreamPlayer2D AudioChannel;
+
 	private Texture2D Icon;
 
 	private bool Activated = false;
@@ -27,21 +29,27 @@ public partial class Checkpoint : InteractionItem {
 		Tween BrightnessTween = CreateTween();
 		BrightnessTween.TweenProperty( Light, "energy", 1.75f, 2.5f );
 
-		AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/bonfire_create.ogg" ), false, 1.0f, new System.Action( () => {
-			AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/campfire.ogg" ), true );
+		AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/bonfire_create.ogg" );
+		AudioChannel.Connect( "finished", Callable.From( () => {
+			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
+			AudioChannel.Set( "parameters/looping", true );
+			AudioChannel.Play();
 		} ) );
+		AudioChannel.Play();
 	}
 	public StringName GetTitle() => Title;
 
 	private void OnScreenEnter() {
 		ProcessMode = ProcessModeEnum.Pausable;
 		if ( Activated ) {
-			AudioPlayer.PlaySound( this, ResourceCache.GetSound( "res://sounds/env/campfire.ogg" ), true );
+			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
+			AudioChannel.Set( "parameters/looping", true );
+			AudioChannel.Play();
 		}
 	}
 	private void OnScreenExit() {
 		ProcessMode = ProcessModeEnum.Disabled;
-		AudioPlayer.StopSound( this );
+		AudioChannel.Stop();
 	}
 
 	public void Save() {
@@ -65,6 +73,10 @@ public partial class Checkpoint : InteractionItem {
 			Bonfire.Play( "default" );
 
 			Light.Energy = 1.75f;
+
+			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
+			AudioChannel.Set( "parameters/looping", true );
+			AudioChannel.Play();
 			
 			Unlit.Hide();
 			Unlit.QueueFree();
@@ -112,6 +124,9 @@ public partial class Checkpoint : InteractionItem {
 		Unlit = GetNode<Sprite2D>( "Unlit" );
 		Unlit.SetProcess( false );
 		Unlit.SetProcessInternal( false );
+
+		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
+		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();

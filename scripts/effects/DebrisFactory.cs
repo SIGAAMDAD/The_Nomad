@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public partial class DebrisFactory : Node {
@@ -7,7 +8,6 @@ public partial class DebrisFactory : Node {
 	private Color[] Colors = null;
 	private MultiMeshInstance2D MeshManager = null;
 	private RandomNumberGenerator Random = null;
-
 	private static DebrisFactory Instance = null;
 
 	private void OnReleaseTimerTimeout() {
@@ -46,7 +46,7 @@ public partial class DebrisFactory : Node {
 		AddChild( MeshManager );
 
 		// cache a shitload
-		MeshManager.Multimesh.InstanceCount = 1024;
+		MeshManager.Multimesh.InstanceCount = 8192;
 		MeshManager.Multimesh.VisibleInstanceCount = 0;
 
 		Speeds = new Vector2[ MeshManager.Multimesh.InstanceCount ];
@@ -59,33 +59,52 @@ public partial class DebrisFactory : Node {
 		}
 	}
 	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
+		if ( MeshManager.Multimesh.VisibleInstanceCount == 0 || ( Engine.GetProcessFrames() % 120 ) != 0 ) {
 			return;
 		}
 
 		base._Process( delta );
 
 		for ( int i = 0; i < Instance.MeshManager.Multimesh.VisibleInstanceCount; i++ ) {
-			Vector2 position = Transforms[i].Origin;
-			position.X += Speeds[i].X;
-			position.Y += Speeds[i].Y;
-			Transforms[i].Origin = position;
+			if ( Speeds[i].X > 0.0f ) {
+				Speeds[i].X -= 0.0025f;
+				if ( Speeds[i].X < 0.0f ) {
+					Speeds[i].X = 0.0f;
+				}
+			} else if ( Speeds[i].X < 0.0f ) {
+				Speeds[i].X += 0.0025f;
+				if ( Speeds[i].X > 0.0f ) {
+					Speeds[i].X = 0.0f;
+				}
+			}
+			if ( Speeds[i].Y > 0.0f ) {
+				Speeds[i].Y -= 0.0025f;
+				if ( Speeds[i].Y < 0.0f ) {
+					Speeds[i].Y = 0.0f;
+				}
+			} else if ( Speeds[i].Y < 0.0f ) {
+				Speeds[i].Y += 0.0025f;
+				if ( Speeds[i].Y > 0.0f ) {
+					Speeds[i].Y = 0.0f;
+				}
+			}
+			Transforms[i].Origin += Speeds[i];
 			Colors[i].A -= 0.25f * (float)delta;
 
 			MeshManager.Multimesh.SetInstanceColor( i, Colors[i] );
 			MeshManager.Multimesh.SetInstanceTransform2D( i, Transforms[i] );
 		}
 	}
-
 	public static void Create( Vector2 position ) {
-		const int numSmokeClouds = 32;
+		const int numSmokeClouds = 8;
 
 		int instanceCount = Instance.MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;
 
 		instanceCount += numSmokeClouds;
 		if ( instanceCount > Instance.MeshManager.Multimesh.InstanceCount ) {
-			Instance.MeshManager.Multimesh.VisibleInstanceCount -= 128;
+			instanceCount = numSmokeClouds;
+			startIndex = 0;
 		}
 
 		if ( Instance.ReleaseTimer.IsStopped() ) {

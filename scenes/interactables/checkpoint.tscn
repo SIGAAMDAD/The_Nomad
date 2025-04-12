@@ -77,3 +77,7 @@ shape = SubResource("CircleShape2D_btkcq")
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 position = Vector2(-1.5, -1.5)
 scale = Vector2(5.55, 4.15)
+
+[node name="AudioChannel" type="AudioStreamPlayer2D" parent="."]
+max_distance = 500.0
+attenuation = 1.93187

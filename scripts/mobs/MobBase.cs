@@ -114,6 +114,8 @@ public partial class MobBase : Renown.Thinker {
 	protected AnimatedSprite2D ArmAnimations;
 	protected AnimatedSprite2D HeadAnimations;
 
+	private AudioStreamPlayer2D BarkChannel;
+
 	// memory
 	protected AIAwareness Awareness = AIAwareness.Relaxed;
 	protected Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
@@ -144,6 +146,11 @@ public partial class MobBase : Renown.Thinker {
 	}
 	public override void Load() {
 		base.Load();
+	}
+
+	public override void Damage( Renown.Entity source, float nAmount ) {
+		base.Damage( source, nAmount );
+		BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
 	}
 
 	private AudioStream GetBarkResource( BarkType bark ) {
@@ -191,9 +198,7 @@ public partial class MobBase : Renown.Thinker {
 		LastBark = bark;
 		SequencedBark = sequenced;
 
-		AudioPlayer.PlaySound( this, GetBarkResource( bark ) );
-//		BarkChannel.Stream = GetBarkResource( bark );
-//		BarkChannel.Play();
+		PlaySound( BarkChannel, GetBarkResource( bark ) );
 	}
 	protected void GenerateRaycasts() {
 		int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
@@ -249,13 +254,11 @@ public partial class MobBase : Renown.Thinker {
 	}
 	
 	protected void OnBarkFinished() {
-//		BarkChannel.Stream = null;
+		BarkChannel.Stream = null;
 		if ( SequencedBark != BarkType.Count ) {
 			// play another bark right after the first
-			GD.Print( "Sequencing bark " + SequencedBark.ToString() );
-
-//			BarkChannel.Stream = GetBarkResource( SequencedBark );
-//			BarkChannel.Play();
+			BarkChannel.Stream = GetBarkResource( SequencedBark );
+			BarkChannel.Play();
 			SequencedBark = BarkType.Count;
 		}
 	}
@@ -265,7 +268,7 @@ public partial class MobBase : Renown.Thinker {
 		} else if ( !ResourceCache.Initialized ) {
 			return;
 		}
-		AudioPlayer.PlaySound( this, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+		PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -395,16 +398,16 @@ public partial class MobBase : Renown.Thinker {
 
 		FlashLight = GetNode<PointLight2D>( "Animations/HeadAnimations/FlashLight" );
 		WorldTimeManager.Instance.TimeTick += ( day, hour, minute ) => {
-			if ( hour == 20 ) {
+			if ( hour >= 20 || hour < 7 ) {
 				// turn on flashlights when it gets dark
 				FlashLight.Show();
 			}
-			else if ( hour == 8 ) {
+			else if ( hour >= 7 ) {
 				FlashLight.Hide();
 			}
 		};
 
-		RandomFactory = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
+		RandomFactory = new System.Random();
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
@@ -413,6 +416,10 @@ public partial class MobBase : Renown.Thinker {
 		DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 		DetectionMeter.SetProcess( false );
 		DetectionMeter.SetProcessInternal( false );
+
+		BarkChannel = new AudioStreamPlayer2D();
+		BarkChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		AddChild( BarkChannel );
 
 		HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 		ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
