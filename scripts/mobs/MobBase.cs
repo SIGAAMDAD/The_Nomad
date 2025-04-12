@@ -142,6 +142,8 @@ public partial class MobBase : Renown.Thinker {
 	protected RayCast2D[] SightLines;
 	protected PlayerSystem.AfterImage AfterImage;
 
+	protected Tween Tweener;
+
 	public override void Save() {
 		base.Save();
 	}
@@ -247,11 +249,9 @@ public partial class MobBase : Renown.Thinker {
 	}
 	protected virtual void OnChangeInvestigateAngleTimerTimeout() {
 		float angle = Randf( 0.0f, 360.0f );
+		LookDir = GlobalPosition.Rotated( angle );
 		AimAngle = angle;
 		LookAngle = angle;
-
-		ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-		HeadAnimations.SetDeferred( "global_rotation", LookAngle );
 
 		RecalcSight();
 	}
@@ -451,7 +451,7 @@ public partial class MobBase : Renown.Thinker {
 		
 		ChangeInvestigateAngleTimer = new Timer();
 		ChangeInvestigateAngleTimer.WaitTime = 1.5f;
-		ChangeInvestigateAngleTimer.OneShot = false;
+		ChangeInvestigateAngleTimer.OneShot = true;
 		ChangeInvestigateAngleTimer.SetProcess( false );
 		ChangeInvestigateAngleTimer.SetProcessInternal( false );
 		ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
