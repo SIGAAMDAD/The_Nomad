@@ -101,6 +101,8 @@ namespace Renown {
 
 		protected ThinkerFlags Flags;
 
+		protected ThinkerGroup Squad;
+
 		// memory
 		protected bool TargetReached = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
@@ -132,6 +134,11 @@ namespace Renown {
 		protected virtual void SendPacket() {
 		}
 		protected virtual void ReceivePacket( System.IO.BinaryReader reader ) {
+		}
+
+		public virtual void Notify( GroupEvent nEventType, Thinker source ) {
+		}
+		private void FindGroup() {
 		}
 
 		protected virtual void OnRigidBody2DShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

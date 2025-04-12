@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Godot;
+using Renown;
 using Renown.World;
 
 public enum BarkType : uint {
@@ -39,6 +40,8 @@ public enum AIState : sbyte {
 	// moving along a patrol link chain
 	PatrolStart,
 	Patrolling,
+
+	Attacking,
 
 	Scared, // Fear > 80
 	Investigating, // investigating a node
@@ -139,14 +142,14 @@ public partial class MobBase : Renown.Thinker {
 	protected RayCast2D[] SightLines;
 	protected PlayerSystem.AfterImage AfterImage;
 
-	protected Squad Squad;
-
 	public override void Save() {
 		base.Save();
 	}
 	public override void Load() {
 		base.Load();
 	}
+
+	public Entity GetSightTarget() => SightTarget;
 
 	public override void Damage( Renown.Entity source, float nAmount ) {
 		base.Damage( source, nAmount );

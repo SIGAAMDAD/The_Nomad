@@ -600,9 +600,7 @@ public partial class Player : Entity {
 		Health -= nAmount;
 		Rage += nAmount;
 
-		Node2D blood = BloodSplatter.Instantiate<Node2D>();
-		blood.GlobalPosition = GlobalPosition;
-		AddChild( blood );
+		BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
 
 		if ( Health <= 0.0f ) {
 			OnDeath( attacker );
