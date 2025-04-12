@@ -1,0 +1,11 @@
+[gd_resource type="Recipe" load_steps=3 format=3 uid="uid://c86qttfrt5gtk"]
+
+[ext_resource type="CraftStationType" uid="uid://cmtu16e3xcq4p" path="res://resources/crafting_station.tres" id="1_0tfo7"]
+
+[sub_resource type="ItemStack" id="ItemStack_bvyk5"]
+item_id = "CONSUMABLE_DRUGFLOWER"
+amount = 5
+
+[resource]
+station = ExtResource("1_0tfo7")
+ingredients = Array[ItemStack]([SubResource("ItemStack_bvyk5")])

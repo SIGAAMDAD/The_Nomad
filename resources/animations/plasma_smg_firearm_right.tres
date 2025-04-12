@@ -1,0 +1,75 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://dssja0dusu0hq"]
+
+[ext_resource type="Texture2D" uid="uid://rrrl8lssf6hu" path="res://textures/spritesheets/weapon_plasma_smg.png" id="1_cugwa"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cugwa"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(0, 160, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0mgwn"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(0, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kp4xt"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(64, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_em2tc"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(128, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yg80"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(192, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aw3as"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(256, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nswmn"]
+atlas = ExtResource("1_cugwa")
+region = Rect2(0, 0, 64, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cugwa")
+}],
+"loop": true,
+"name": &"empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0mgwn")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kp4xt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_em2tc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3yg80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aw3as")
+}],
+"loop": false,
+"name": &"reload",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nswmn")
+}],
+"loop": false,
+"name": &"use",
+"speed": 5.0
+}]

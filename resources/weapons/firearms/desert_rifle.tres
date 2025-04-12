@@ -22,6 +22,7 @@ properties = {
 "default_is_firearm": true,
 "default_is_onehanded": false,
 "default_is_twohanded": true,
+"description": "DESERT_RIFLE_DESCRIPTION",
 "firearm_frames_left": ExtResource("6_20qhm"),
 "firearm_frames_right": ExtResource("7_2g0rn"),
 "firemode": 0,

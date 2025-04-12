@@ -187,6 +187,12 @@ public partial class WeaponEntity : Node2D {
 		_Owner.PickupWeapon( this );
 	}
 	private void OnMuzzleFlashTimerTimeout() {
+		if ( Firemode == FireMode.Automatic ) {
+			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
+				MuzzleFlashes[i].Hide();
+			}
+			return;
+		}
 		CurrentMuzzleFlash.Hide();
 		MuzzleLight.Hide();
 	}
@@ -212,7 +218,6 @@ public partial class WeaponEntity : Node2D {
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
-		Icon = (Texture2D)Data.Get( "icon" );
 		Firemode = (FireMode)(uint)properties[ "firemode" ];
 		MagType = (MagazineType)(uint)properties[ "magazine_type" ];
 		MagazineSize = (int)properties[ "magsize" ];
@@ -323,6 +328,8 @@ public partial class WeaponEntity : Node2D {
 			Console.PrintError( "Cannot initialize WeaponEntity without a valid ItemDefinition (null)" );
 			return;
 		}
+		
+		Icon = (Texture2D)Data.Get( "icon" );
 
 		CreatePickupBounds();
 
@@ -333,9 +340,6 @@ public partial class WeaponEntity : Node2D {
 			IconSprite.Texture = Icon;
 			AddChild( IconSprite );
 		}
-
-		BulletShell = ResourceCache.GetScene( "res://scenes/effects/bullet_shell.tscn" );
-		DustCloud = ResourceCache.GetScene( "res://scenes/effects/debris_cloud.tscn" );
 	}
 
     public void SetUseMode( Properties weaponMode ) {
@@ -424,7 +428,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private float UseFirearm( bool held ) {
-		if ( ( Ammo == null || BulletsLeft < 1 ) && !held ) {
+		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
 			AudioPlayer.PlaySound( this, ResourceCache.NoAmmoSfx );
 			return 0.0f;
 		}
@@ -439,6 +443,9 @@ public partial class WeaponEntity : Node2D {
 			break;
 		case FireMode.Burst:
 			BulletsLeft -= 2;
+			break;
+		case FireMode.Automatic:
+			BulletsLeft--;
 			break;
 		case FireMode.Invalid:
 		default:
@@ -493,20 +500,19 @@ public partial class WeaponEntity : Node2D {
 		float damage = (float)properties[ "damage" ];
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
 			if ( collision is Entity entity && entity != null ) {
+				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
+				damage = distance / (float)properties[ "range" ];
+				damage = ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( damage );
+
 				entity.Damage( _Owner, damage );
 			} else {
-				/*
-				DebrisCloud debris = DustCloud.Instantiate<DebrisCloud>();
-				GetTree().CurrentScene.AddChild( debris );
-				debris.Create( RayCast.GetCollisionPoint() );
-				*/
 				DebrisFactory.Create( RayCast.GetCollisionPoint() );
 			}
 		}
 
 		EmitSignalUsed( this );
 
-		return damage;
+		return 0.0f;
 	}
 	public float Use( Properties weaponMode, bool held = false ) {
 		if ( Engine.TimeScale == 0.0f ) {

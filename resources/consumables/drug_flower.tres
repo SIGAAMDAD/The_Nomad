@@ -1,0 +1,6 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://bdtqihw62d0uq"]
+
+[resource]
+id = "CONSUMABLE_DRUGFLOWER"
+max_stack = 1024
+name = "Drug Flower"

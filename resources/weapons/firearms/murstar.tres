@@ -10,4 +10,15 @@ can_stack = false
 max_stack = 1
 icon = ExtResource("3_qn5c0")
 weight = 9.0
+properties = {
+"default_is_bladed": false,
+"default_is_blunt": false,
+"default_is_firearm": true,
+"default_is_onehanded": false,
+"default_is_twohanded": true,
+"description": "MURSTAR_DESCRIPTION",
+"firemode": 0,
+"magazine_type": 1,
+"magsize": 7
+}
 categories = Array[ItemCategory]([ExtResource("1_srs2j"), ExtResource("2_681sd")])

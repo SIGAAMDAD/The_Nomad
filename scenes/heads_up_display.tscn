@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=42 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/player_system/HeadsUpDisplay.cs" id="1_vxf1b"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -18,6 +18,7 @@
 [ext_resource type="Shader" uid="uid://bd74grhuc8kqh" path="res://shaders/announcement.gdshader" id="14_poeto"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
 [ext_resource type="Texture2D" uid="uid://okv78x4jnolx" path="res://textures/hud/status_bladed.png" id="15_eelai"]
+[ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="15_ot7dw"]
 [ext_resource type="Script" uid="uid://dqu07i6qx5kvd" path="res://scripts/player_system/Notebook.cs" id="15_poeto"]
 [ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
@@ -96,22 +97,6 @@ gradient = SubResource("Gradient_sa4mc")
 shader = ExtResource("14_poeto")
 shader_parameter/alpha = 1.0
 
-[sub_resource type="Gradient" id="Gradient_poeto"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 0.662745)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_ot7dw"]
-gradient = SubResource("Gradient_poeto")
-width = 1
-
-[sub_resource type="Gradient" id="Gradient_0ed87"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0.160784, 0.160784, 0.160784, 0.65098)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_nyije"]
-gradient = SubResource("Gradient_0ed87")
-width = 1
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5p2fr"]
 resource_local_to_scene = true
 shader = ExtResource("15_dwpkh")
@@ -123,13 +108,6 @@ resource_local_to_scene = true
 shader = ExtResource("15_dwpkh")
 shader_parameter/is_selected = false
 shader_parameter/icon = ExtResource("17_rxc6h")
-
-[sub_resource type="Gradient" id="Gradient_wjj4q"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0.106237, 0.106237, 0.106237, 0.698039)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8yqco"]
-gradient = SubResource("Gradient_wjj4q")
 
 [sub_resource type="Gradient" id="Gradient_8yqco"]
 offsets = PackedFloat32Array(0)
@@ -150,6 +128,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="SaveSpinner" type="Node" parent="MainHUD"]
 
@@ -209,7 +188,9 @@ focus_neighbor_bottom = NodePath("")
 focus_next = NodePath("")
 focus_previous = NodePath("")
 focus_mode = 0
+focus_recursive_behavior = 0
 mouse_filter = 0
+mouse_recursive_behavior = 0
 mouse_force_pass_scroll_events = true
 mouse_default_cursor_shape = 0
 theme = null
@@ -444,10 +425,10 @@ grow_vertical = 2
 [node name="TextureRect" type="TextureRect" parent="MainHUD/AnnouncementLabel"]
 material = SubResource("ShaderMaterial_ot7dw")
 layout_mode = 2
-texture = SubResource("GradientTexture1D_ot7dw")
+texture = ExtResource("15_ot7dw")
 
 [node name="Label" type="Label" parent="MainHUD/AnnouncementLabel/TextureRect"]
-layout_mode = 2
+layout_mode = 0
 offset_top = 48.0
 offset_right = 640.0
 offset_bottom = 71.0
@@ -469,7 +450,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="NotebookContainer"]
 layout_mode = 2
-texture = SubResource("GradientTexture1D_nyije")
+texture = ExtResource("15_ot7dw")
 
 [node name="TabContainer" type="TabContainer" parent="NotebookContainer"]
 layout_mode = 2
@@ -487,6 +468,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Inventory/MarginContainer"]
 layout_mode = 2
@@ -503,7 +485,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Cloner" type="VBoxContainer" parent="NotebookContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar"]
-layout_mode = 2
+layout_mode = 0
 offset_right = 260.0
 offset_bottom = 368.0
 
@@ -680,7 +662,7 @@ layout_mode = 2
 texture = ExtResource("16_nrav7")
 
 [node name="WeaponList" type="VScrollBar" parent="NotebookContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon"]
-layout_mode = 2
+layout_mode = 0
 offset_left = -170.0
 offset_top = 72.0
 offset_right = -162.0
@@ -689,7 +671,7 @@ offset_bottom = 80.0
 [node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
 visible = false
 custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
+layout_mode = 0
 offset_left = 170.0
 offset_top = -40.0
 offset_right = 535.0
@@ -718,7 +700,7 @@ layout_mode = 2
 texture = ExtResource("17_rxc6h")
 
 [node name="AmmoList" type="VScrollBar" parent="NotebookContainer/TabContainer/Inventory/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon"]
-layout_mode = 2
+layout_mode = 0
 offset_left = -266.0
 offset_top = 72.0
 offset_right = -258.0
@@ -843,10 +825,11 @@ anchor_bottom = 1.0
 offset_top = 42.0
 offset_right = 256.0
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="CheckpointContainer"]
 layout_mode = 2
-texture = SubResource("GradientTexture1D_8yqco")
+texture = ExtResource("15_ot7dw")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CheckpointContainer"]
 layout_mode = 2
@@ -914,7 +897,7 @@ visible = false
 layout_mode = 2
 
 [node name="WarpLocationsContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar"]
-layout_mode = 2
+layout_mode = 0
 offset_right = 236.0
 offset_bottom = 428.0
 
@@ -948,6 +931,7 @@ grow_vertical = 2
 [node name="ViewImage" type="TextureRect" parent="JumpContainer"]
 z_index = 6
 layout_mode = 2
+texture = ExtResource("15_ot7dw")
 
 [node name="Theme" type="AudioStreamPlayer" parent="JumpContainer"]
 playback_type = 1

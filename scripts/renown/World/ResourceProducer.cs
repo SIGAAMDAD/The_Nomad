@@ -12,6 +12,8 @@ namespace Renown.World {
 		private TradeRoute Route = null;
 		[Export]
 		private float ReplenishRate = 0.5f;
+		[Export]
+		private ResourceFactory Factory;
 	
 		private float ItemGeneration = 0.0f;
 		private uint Storage = 0;
@@ -38,6 +40,9 @@ namespace Renown.World {
 		}
 
 		public void Save() {
+			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
+
+			writer.SaveUInt( "storage", Storage );
 		}
 		public void Load() {
 			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );

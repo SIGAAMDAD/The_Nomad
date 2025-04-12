@@ -11,6 +11,11 @@ namespace Renown.World {
 
 		private uint Stock = 0;
 
+		private Timer CraftTimer;
+
+		[Signal]
+		public delegate void NeedsResourcesEventHandler();
+
 		public override void _Ready() {
 			base._Ready();
 		}

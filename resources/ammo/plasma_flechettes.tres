@@ -1,0 +1,26 @@
+[gd_resource type="ItemDefinition" load_steps=5 format=3 uid="uid://bbg71vw5lg4u1"]
+
+[ext_resource type="Texture2D" uid="uid://b7j6bikja8o4m" path="res://textures/env/icona_plasma.png" id="1_46ycc"]
+[ext_resource type="Texture2D" uid="uid://dllybiri2t01u" path="res://textures/env/bullet_casings/plasma_shell.png" id="2_rx2al"]
+[ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_e2ki1"]
+
+[sub_resource type="Curve" id="Curve_orkxq"]
+_data = [Vector2(0, 0.834762), 0.0, 0.0, 0, 0, Vector2(0.425061, 0.769435), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[resource]
+id = "AMMO_PLASMA_FLECHETTES"
+max_stack = 1000
+name = "Plasma Flechettes"
+icon = ExtResource("1_46ycc")
+weight = 2.5
+properties = {
+"casing_icon": ExtResource("2_rx2al"),
+"damage": 12.0,
+"damage_falloff": SubResource("Curve_orkxq"),
+"description": "PLASMA_FLECHETTES_DESCRIPTION",
+"pickup_sfx": ExtResource("3_e2ki1"),
+"range": 680.0,
+"stack_add_amount": 200,
+"type": 0
+}

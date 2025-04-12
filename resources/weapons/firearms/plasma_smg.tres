@@ -1,8 +1,12 @@
-[gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://bmnekgxpyq2f7"]
+[gd_resource type="ItemDefinition" load_steps=8 format=3 uid="uid://bmnekgxpyq2f7"]
 
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_1rrme"]
 [ext_resource type="Texture2D" uid="uid://b5pu6adjnbqft" path="res://textures/env/iconw_psmg.dds" id="1_iya4p"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_tnmqm"]
+[ext_resource type="SpriteFrames" uid="uid://cjwquib2eavft" path="res://resources/animations/plasma_smg_firearm_left.tres" id="4_v6eh2"]
+[ext_resource type="SpriteFrames" uid="uid://dssja0dusu0hq" path="res://resources/animations/plasma_smg_firearm_right.tres" id="5_m7dsw"]
+[ext_resource type="AudioStream" uid="uid://b2lccyx8ujfqg" path="res://sounds/weapons/plasma_smg_rld.ogg" id="6_mb2o0"]
+[ext_resource type="AudioStream" uid="uid://dx66fipd1tsv0" path="res://sounds/weapons/plasma_smg_use.ogg" id="7_ej1km"]
 
 [resource]
 id = "WEAPON_FIREARM_PLASMA_SMG"
@@ -12,7 +16,26 @@ name = "Plasma SMG"
 icon = ExtResource("1_iya4p")
 weight = 8.5
 properties = {
-"magazine_type": 0,
-"magsize": 40
+"ammo_type": 0,
+"default_is_bladed": false,
+"default_is_blunt": false,
+"default_is_firearm": true,
+"default_is_onehanded": false,
+"default_is_twohanded": true,
+"description": "PLASMA_SMG__DESCRIPTION",
+"firearm_frames_left": ExtResource("4_v6eh2"),
+"firearm_frames_right": ExtResource("5_m7dsw"),
+"firemode": 2,
+"is_bladed": false,
+"is_blunt": false,
+"is_firearm": true,
+"is_onehanded": false,
+"is_twohanded": true,
+"magazine_type": 1,
+"magsize": 40,
+"reload_sfx": ExtResource("6_mb2o0"),
+"reload_time": 0.5,
+"use_firearm": ExtResource("7_ej1km"),
+"use_time": 0.1
 }
 categories = Array[ItemCategory]([ExtResource("1_1rrme"), ExtResource("2_tnmqm")])

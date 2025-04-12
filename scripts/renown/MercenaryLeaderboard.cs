@@ -1,4 +1,6 @@
+using Multiplayer;
 using Steamworks;
+using System;
 using System.Collections.Generic;
 
 // NOTE: implement bounty hunt mechanic for top merc
@@ -18,11 +20,11 @@ namespace Renown {
 				Score = entry.m_nScore;
 				
 				if ( details.Length != 4 ) {
-					Console.PushError( "[STEAM] Invalid leaderboard entry data!" );
+					Console.PrintError( "[STEAM] Invalid leaderboard entry data!" );
 					return;
 				}
 				
-				Type = (Renown.ContractType)details[0];
+				Type = (ContractType)details[0];
 				TimeCompletedMinutes = details[1];
 				TimeCompletedSeconds = details[2];
 				TimeCompletedMilliseconds = details[3];
@@ -36,18 +38,18 @@ namespace Renown {
 		
 		private static CallResult<LeaderboardFindResult_t> OnLeaderboardFindResult;
 		private static CallResult<LeaderboardScoreUploaded_t> OnLeaderboardScoreUploaded;
-		private static CallResult<LeaderboardScoreDownloaded_t> OnLeaderboardScoreDownloaded;
+		private static CallResult<LeaderboardScoresDownloaded_t> OnLeaderboardScoresDownloaded;
 		
-		private static void OnFindLeaderboard( LeaderboardFindResult_t pCallback ) {
+		private static void OnFindLeaderboard( LeaderboardFindResult_t pCallback, bool bIOFailure ) {
 			hLeaderboard = pCallback.m_hSteamLeaderboard;
 		}
-		private static void OnScoreUploaded( LeaderboardScoreUploaded_t pCallback ) {
-			if ( !pCallback.m_bSuccess ) {
+		private static void OnScoreUploaded( LeaderboardScoreUploaded_t pCallback, bool bIOFailure ) {
+			if ( pCallback.m_bSuccess == 0 ) {
 				Console.PrintError( "[STEAM] Error uploading stats to global leaderboards!" );
 				return;
 			}
 		}
-		private static void OnScoreDownloaded( LeaderboardScoreDownloaded_t pCallback ) {
+		private static void OnScoreDownloaded( LeaderboardScoresDownloaded_t pCallback, bool bIOFailure ) {
 			int[] details = new int[4];
 			LeaderboardEntries = pCallback.m_hSteamLeaderboardEntries;
 			
@@ -57,31 +59,31 @@ namespace Renown {
 					Console.PrintError( "[STEAM] Error fetching downloaded leaderboard entry!" );
 					continue;
 				}
-				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardData( entry, details ) );
+				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardEntry( entry, details ) );
 			}
 		}
 		
 		private static void FetchLeaderboardData() {
-			LeaderboardEntryCount = SteamUserStats.GetLeaderboardEntry( hLeaderboard );
+			LeaderboardEntryCount = SteamUserStats.GetLeaderboardEntryCount( hLeaderboard );
 			
 			LeaderboardData.Clear();
 			LeaderboardData = new Dictionary<int, LeaderboardEntry>( LeaderboardEntryCount );
 			
-			SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, entryCount );
+			SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, LeaderboardEntryCount );
 			OnLeaderboardScoresDownloaded.Set( handle );
 		}
 		
 		public static void Init() {
-			OnLeaderboardFindResult = CallResult<LeaderboardFindResult>.Create( OnFindLeaderboard );
+			OnLeaderboardFindResult = CallResult<LeaderboardFindResult_t>.Create( OnFindLeaderboard );
 			OnLeaderboardScoreUploaded = CallResult<LeaderboardScoreUploaded_t>.Create( OnScoreUploaded );
-			OnLeaderboardScoreDownloaded = CallResult<LeaderboardScoreDownloaded_t>.Create( OnScoreDownloaded );
+			OnLeaderboardScoresDownloaded = CallResult<LeaderboardScoresDownloaded_t>.Create( OnScoreDownloaded );
 			
 			SteamAPICall_t handle = SteamUserStats.FindLeaderboard( "Global Mercenary Leaderboard" );
 			OnLeaderboardFindResult.Set( handle );
 			
 			FetchLeaderboardData();
 		}
-		
+
 		/// <summary>
 		/// the score with all the bonuses should be calculated before calling this
 		/// </summary>
@@ -92,12 +94,13 @@ namespace Renown {
 				(int)nType,
 				TimeMinutes,
 				TimeSeconds,
-				TimeMillisecondss
+				TimeMilliseconds
 			];
 			
 			SteamUserStats.UploadLeaderboardScore(
 				hLeaderboard,
 				ELeaderboardUploadScoreMethod.k_ELeaderboardUploadScoreMethodKeepBest,
+				nScore,
 				details,
 				details.Length
 			);

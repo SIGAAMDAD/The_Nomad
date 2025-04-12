@@ -20,7 +20,7 @@ properties = {
 "damage_falloff": SubResource("Curve_lhqhs"),
 "pickup_sfx": ExtResource("4_qnvb1"),
 "range": 2260.0,
-"stack_add_amount": 32,
+"stack_add_amount": 60,
 "type": 1
 }
 categories = Array[ItemCategory]([ExtResource("1_lhqhs")])
