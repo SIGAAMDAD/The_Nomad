@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Renown.World;
 using Renown.Thinkers;
+using System.Runtime.Versioning;
 
 namespace Renown {
 	public enum ThinkerFlags : uint {

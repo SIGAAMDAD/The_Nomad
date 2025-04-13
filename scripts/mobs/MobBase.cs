@@ -70,12 +70,6 @@ public partial class MobBase : Renown.Thinker {
 	protected PackedScene BulletShell;
 
 	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
-	
-	[ExportCategory("Sounds")]
-	[Export]
-	protected AudioStream AttackFirearmSfx;
-	[Export]
-	protected AudioStream AttackMeleeSfx;
 
 	[ExportCategory("Detection")]
 	[Export]
@@ -90,6 +84,8 @@ public partial class MobBase : Renown.Thinker {
 	protected float SightDetectionTime = 1.0f;
 	[Export]
 	protected float LoseInterestTime = 10.5f;
+	[Export]
+	protected float SoundTolerance = 0.0f;
 
 	[ExportCategory("Start")]
 	[Export]
@@ -151,7 +147,17 @@ public partial class MobBase : Renown.Thinker {
 		base.Load();
 	}
 
+	public float GetSoundTolerance() => SoundTolerance;
+	public Godot.Vector2 GetLastTargetPosition() => LastTargetPosition;
 	public Entity GetSightTarget() => SightTarget;
+
+	public void Alert( Entity target ) {
+		SightTarget = target;
+		LastTargetPosition = target.GlobalPosition;
+		Awareness = AIAwareness.Suspicious;
+		Bark( BarkType.Alert );
+		SetNavigationTarget( LastTargetPosition );
+	}
 
 	public override void Damage( Renown.Entity source, float nAmount ) {
 		base.Damage( source, nAmount );
@@ -393,6 +399,8 @@ public partial class MobBase : Renown.Thinker {
 				ArmAnimations.Hide();
 				HeadAnimations.Hide();
 			} else {
+				ArmAnimations.Show();
+				HeadAnimations.Show();
 				BodyAnimations.Play( "idle" );
 				ArmAnimations.Play( "idle" );
 				HeadAnimations.Play( "idle" );
@@ -493,7 +501,7 @@ public partial class MobBase : Renown.Thinker {
 
 		if ( PatrolRoute != null ) {
 			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
-			State = AIState.PatrolStart;
+			State = AIState.Patrolling;
 		}
 	}
 
@@ -503,6 +511,7 @@ public partial class MobBase : Renown.Thinker {
 		switch ( State ) {
 		case AIState.PatrolStart:
 			SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+			State = AIState.Patrolling;
 			break;
 		case AIState.Patrolling:
 			PatrolRoute = ( (AIPatrolRoute)PatrolRoute ).GetNext();

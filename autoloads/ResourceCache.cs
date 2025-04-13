@@ -15,6 +15,8 @@ public class ResourceCache {
 	public static AudioStream[] OutOfTheWay;
 	public static AudioStream[] CheckItOut;
 	public static AudioStream[] Quiet;
+	public static AudioStream[] Pain;
+	public static AudioStream[] Die;
 	public static AudioStream ManDown2;
 	public static AudioStream ManDown3;
 	public static AudioStream Deaf;
@@ -86,36 +88,39 @@ public class ResourceCache {
 	public static void Cache( Node world ) {
 		Console.PrintLine( "Loading sound effects..." );
 
-		TargetSpotted = new AudioStream[ 16 ];
-		TargetSpotted[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" );
-		TargetSpotted[1] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21199.mp3" );
-		TargetSpotted[2] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21167.mp3" );
-		TargetSpotted[3] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21200.mp3" );
-		TargetSpotted[4] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21201.mp3" );
-		TargetSpotted[5] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21202.mp3" );
-		TargetSpotted[6] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21203.mp3" );
-		TargetSpotted[7] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21204.mp3" );
-		TargetSpotted[8] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21205.mp3" );
-		TargetSpotted[9] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21207.mp3" );
-		TargetSpotted[10] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21208.mp3" );
-		TargetSpotted[11] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21209.mp3" );
-		TargetSpotted[12] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21210.mp3" );
-		TargetSpotted[13] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21211.mp3" );
-		TargetSpotted[14] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21212.mp3" );
-		TargetSpotted[15] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21213.mp3" );
+		TargetSpotted = [
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21199.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21167.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21200.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21201.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21202.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21203.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21204.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21205.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21207.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21208.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21209.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21210.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21211.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21212.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21213.mp3" ),
+		];
 
-		Quiet = new AudioStream[ 5 ];
-		Quiet[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_0.mp3" );
-		Quiet[1] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_1.mp3" );
-		Quiet[2] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_2.mp3" );
-		Quiet[3] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_3.mp3" );
-		Quiet[4] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_4.mp3" );
+		Quiet = [
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_0.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_1.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_2.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_3.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_4.mp3" ),
+		];
 
-		TargetPinned = new AudioStream[ 4 ];
-		TargetPinned[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21161.mp3" );
-		TargetPinned[1] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21162.mp3" );
-		TargetPinned[2] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21163.mp3" );
-		TargetPinned[3] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21186.mp3" );
+		TargetPinned = [
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21161.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21162.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21163.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21186.mp3" )
+		];
 
 		TargetRunning = new AudioStream[ 4 ];
 		TargetRunning[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21156.mp3" );
@@ -179,6 +184,29 @@ public class ResourceCache {
 		ManDown2 = ResourceLoader.Load<AudioStream>( "res://sounds/barks/men_down_3_callout_0.mp3" );
 		Deaf = ResourceLoader.Load<AudioStream>( "res://sounds/barks/deaf_callout.mp3" );
 		SquadWiped = ResourceLoader.Load<AudioStream>( "res://sounds/barks/squad_wiped_callout_0.mp3" );
+
+		Pain = [
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304a.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304c.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304d.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304e.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304f.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21305a.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21305b.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21306a.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21306b.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307a.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307b.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307c.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307d.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307e.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307f.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307g.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307h.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21307i.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21308a.mp3" ),
+			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21308b.mp3" ),
+		];
 
 		NeedBackup = new AudioStream[ 5 ];
 		NeedBackup[0] = ResourceLoader.Load<AudioStream>( "res://sounds/barks/21193.mp3" );

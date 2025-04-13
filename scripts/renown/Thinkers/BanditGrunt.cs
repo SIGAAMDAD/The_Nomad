@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -12,6 +14,8 @@ namespace Renown.Thinkers {
 		private Line2D ShootLine;
 		private Godot.Vector2 GuardPosition;
 
+		private AIPatrolRoute NextRoute;
+
 		private bool Aiming = false;
 
 		public override void Save() {
@@ -23,19 +27,26 @@ namespace Renown.Thinkers {
 
 		public override void Damage( Entity source, float nAmount ) {
 			base.Damage( source, nAmount );
+
+			BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
+
+			PlaySound( AudioChannel, ResourceCache.Pain[ RandomFactory.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+
+			Awareness = AIAwareness.Alert;
+			float angle = Randf( 0.0f, 360.0f );
+			AimAngle = angle;
+			LookAngle = angle;
+			Bark( BarkType.Alert );
 		}
 
 		protected override void OnLoseInterestTimerTimeout() {
-			if ( GameConfiguration.GameDifficulty == GameDifficulty.PowerFantasy ) {
-				// "whatevs"
-				Awareness = AIAwareness.Relaxed;
-			}
-
 			Investigating = false;
-			State = AIState.Guarding;
+			State = AIState.PatrolStart;
 			SightTarget = null;
 			Bark( BarkType.Curse );
-			SetNavigationTarget( GuardPosition );
+
+			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 
 			// a little more on edge
 			Fear += 10;
@@ -53,9 +64,11 @@ namespace Renown.Thinkers {
 			switch ( nEventType ) {
 			case GroupEvent.TargetChanged:
 				SightTarget = ( source as MobBase ).GetSightTarget();
+				LastTargetPosition = ( source as MobBase ).GetLastTargetPosition();
 				Awareness = AIAwareness.Alert;
-				GotoPosition = NodeCache.FindClosestCover( GlobalPosition, SightTarget.GlobalPosition ).GlobalPosition;
-				SetNavigationTarget( GotoPosition );
+				State = AIState.PatrolStart;
+				PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+				SetNavigationTarget( LastTargetPosition );
 				Bark( BarkType.Curse );
 				break;
 			case GroupEvent.Count:
@@ -120,18 +133,18 @@ namespace Renown.Thinkers {
 			AimLine.CollisionMask = 2 | 5;
 			ArmAnimations.AddChild( AimLine );
 
+			/*
 			ShootLine = new Line2D();
 			ShootLine.Name = "ShootLine";
 			ShootLine.DefaultColor = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 			ShootLine.Hide();
 			ArmAnimations.AddChild( ShootLine );
+			*/
 
 			GuardPosition = GlobalPosition;
 		}
 		
 		private void OnAimTimerTimeout() {
-			ShootLine.Hide();
-
 			// desert carbine
 			AttackTimer.Start();
 			PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
@@ -177,12 +190,18 @@ namespace Renown.Thinkers {
 				ArmAnimations.FlipH = true;
 			}
 
-			if ( !Aiming ) {
-				if ( LinearVelocity != Godot.Vector2.Zero ) {
-					BodyAnimations.Play( "move" );
-					ArmAnimations.Play( "move" );
-					HeadAnimations.Play( "move" );
+			if ( LinearVelocity != Godot.Vector2.Zero ) {
+				BodyAnimations.Play( "move" );
+				ArmAnimations.Play( "move" );
+				HeadAnimations.Play( "move" );
+			} else {
+				if ( Awareness == AIAwareness.Relaxed ) {
+					BodyAnimations.Play( "calm" );
+					ArmAnimations.Hide();
+					HeadAnimations.Hide();
 				} else {
+					ArmAnimations.Show();
+					HeadAnimations.Show();
 					BodyAnimations.Play( "idle" );
 					ArmAnimations.Play( "idle" );
 					HeadAnimations.Play( "idle" );
@@ -190,14 +209,6 @@ namespace Renown.Thinkers {
 			}
 		}
 		protected override void Think( float delta ) {
-			if ( SightTarget == null ) {
-				BodyAnimations.Play( "idle" );
-				HeadAnimations.Hide();
-				ArmAnimations.Hide();
-			} else {
-				HeadAnimations.Show();
-				ArmAnimations.Show();
-			}
 
 			CheckSight( delta );
 
@@ -207,7 +218,6 @@ namespace Renown.Thinkers {
 					ChangeInvestigateAngleTimer.Stop();
 				} else {
 					State = AIState.Investigating;
-					SetNavigationTarget( LastTargetPosition );
 				}
 			}
 			if ( Aiming ) {
@@ -215,43 +225,27 @@ namespace Renown.Thinkers {
 				GotoPosition = GlobalPosition;
 				LinearVelocity = Godot.Vector2.Zero;
 			}
+			if ( PatrolRoute != null && GlobalPosition.DistanceTo( PatrolRoute.GetGlobalEndPosition() ) < 10.0f ) {
+				PatrolRoute = ( PatrolRoute as AIPatrolRoute ).GetNext();
+				SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+			}
 
 			switch ( State ) {
 			case AIState.Investigating: {
 				Investigate();
 				// if we've got any suspicion, then start patrolling
+
 				if ( Fear > 0 && PatrolRoute == null ) {
-//					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
-//					State = AIState.PatrolStart;
-//					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+					State = AIState.PatrolStart;
+					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 				}
 				if ( Fear > 80 ) {
 				}
-				/*
-				switch ( Direction ) {
-				case DirType.North:
-					LookDir = Godot.Vector2.Up;
-					break;
-				case DirType.East:
-					LookDir = Godot.Vector2.Right;
-					break;
-				case DirType.South:
-					LookDir = Godot.Vector2.Down;
-					break;
-				case DirType.West:
-					LookDir = Godot.Vector2.Left;
-					break;
-				default:
-					GD.PushError( "Invalid direction!" );
-					break;
-				};
-				*/
 				LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 				AimAngle = LookAngle;
 				break; }
 			case AIState.Attacking:
-				ShootLine.Width = (float)Mathf.Lerp( 30.0f, 0.5f, 1.0f / AimTimer.TimeLeft );
-
 				if ( AimTimer.TimeLeft > AimTimer.TimeLeft * 0.25f ) {
 					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
 					AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
@@ -261,6 +255,13 @@ namespace Renown.Thinkers {
 				if ( AimTimer.TimeLeft > 0.0f && !CanSeeTarget ) {
 					Bark( BarkType.TargetRunning );
 				}
+				if ( Aiming && !AimLine.IsColliding() ) {
+					// running
+					Bark( BarkType.TargetRunning );
+				} else if ( Aiming && AimLine.GetCollider() is MobBase mob && mob != null ) {
+					Aiming = false;
+					Bark( BarkType.OutOfTheWay );
+				}
 
 				if ( ( GlobalPosition.DistanceTo( SightTarget.GlobalPosition ) < Range ) && AimLine.GetCollider() is Entity entity && entity == SightTarget && !Aiming ) {
 					LinearVelocity = Godot.Vector2.Zero;
@@ -269,12 +270,55 @@ namespace Renown.Thinkers {
 					HeadAnimations.Play( "idle" );
 
 					ArmAnimations.Play( "attack" );
-					ShootLine.Show();
 					AimTimer.Start();
 					Aiming = true;
 
 					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_reload.ogg" ) );
 				}
+				break;
+			case AIState.Patrolling:
+				if ( GlobalPosition.DistanceTo( GotoPosition ) < 10.0f ) {
+					NextRoute = ( PatrolRoute as AIPatrolRoute ).GetNext();
+					State = AIState.PatrolStart;
+					SetNavigationTarget( NextRoute.GetGlobalStartPosition() );
+				}
+				break;
+			case AIState.PatrolStart:
+				if ( GlobalPosition.DistanceTo( PatrolRoute.GetGlobalStartPosition() ) < 10.0f ) {
+					State = AIState.Patrolling;
+					SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+				}
+				break;
+			case AIState.Guarding:
+				if ( Awareness > AIAwareness.Relaxed ) {
+					State = AIState.Investigating;
+					Investigating = true;
+				}
+				break;
+			};
+		}
+
+		protected override void SetNavigationTarget( Godot.Vector2 target ) {
+			NavAgent.TargetPosition = target;
+			TargetReached = false;
+			GotoPosition = target;
+			if ( NextRoute != null ) {
+				if ( NextRoute.GetGlobalStartPosition() == target ) {
+					State = AIState.Patrolling;
+				}
+			}
+		}
+		protected override void OnTargetReached() {
+			TargetReached = true;
+
+			switch ( State ) {
+			case AIState.Patrolling:
+				PatrolRoute = NextRoute;
+				SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+				break;
+			default:
+				GotoPosition = GlobalPosition;
+				LinearVelocity = Godot.Vector2.Zero;
 				break;
 			};
 		}
@@ -292,7 +336,9 @@ namespace Renown.Thinkers {
 		}
 
 		private void SetAlert( bool bRunning ) {
-			Bark( BarkType.TargetSpotted );
+			if ( Awareness != AIAwareness.Alert ) {
+				Bark( BarkType.TargetSpotted );
+			}
 			Awareness = AIAwareness.Alert;
 		}
 		private void SetSuspicious() {
@@ -356,9 +402,7 @@ namespace Renown.Thinkers {
 					SightDetectionAmount += SightDetectionSpeed;
 				}
 			}
-			if ( SightDetectionAmount < SightDetectionTime * 0.5f ) {
-				Awareness = AIAwareness.Relaxed;
-			} else if ( SightDetectionAmount < SightDetectionTime ) {
+			if ( SightDetectionAmount > SightDetectionTime * 0.5f ) {
 				Awareness = AIAwareness.Suspicious;
 			}
 			if ( IsAlert() ) {

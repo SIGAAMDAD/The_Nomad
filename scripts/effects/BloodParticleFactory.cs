@@ -4,6 +4,7 @@ public partial class BloodParticleFactory : Node {
 	private Timer ReleaseTimer = null;
 	private Transform2D[] Transforms = null;
 	private MultiMeshInstance2D MeshManager = null;
+	private RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
 
 	private static BloodParticleFactory Instance = null;
 
@@ -48,14 +49,19 @@ public partial class BloodParticleFactory : Node {
 		Transforms = new Transform2D[ MeshManager.Multimesh.InstanceCount ];
 	}
 	public static void Create( Vector2 from, Vector2 to ) {
-		int bloodAmount = (int)Mathf.Lerp( 2.0f, 60.0f, 1.0f / from.DistanceSquaredTo( to ) );
+		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, 1.0f / from.DistanceSquaredTo( to ) );
 
 		int instanceCount = Instance.MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;
 
 		instanceCount += bloodAmount;
-		if ( instanceCount >= Instance.MeshManager.Multimesh.InstanceCount ) {
-			instanceCount -= Instance.MeshManager.Multimesh.InstanceCount / 2;
+		if ( instanceCount > Instance.MeshManager.Multimesh.InstanceCount ) {
+			instanceCount = bloodAmount;
+			startIndex = 0;
+		}
+
+		if ( Instance.ReleaseTimer.IsStopped() ) {
+			Instance.ReleaseTimer.Start();
 		}
 
 		if ( Instance.ReleaseTimer.IsStopped() ) {
@@ -63,7 +69,10 @@ public partial class BloodParticleFactory : Node {
 		}
 
 		for ( int i = 0; i < bloodAmount; i++ ) {
-			Instance.Transforms[ startIndex + i ] = new Transform2D( 0.0f, to );
+			Godot.Vector2 position = to;
+			position.X += Instance.RandomFactory.RandfRange( -20.25f, 20.25f );
+			position.X += Instance.RandomFactory.RandfRange( -50.25f, 50.25f );
+			Instance.Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
 			Instance.MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Instance.Transforms[i] );
 		}
 

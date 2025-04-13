@@ -129,10 +129,12 @@ public partial class Player : Entity {
 
 	private PackedScene BloodSplatter;
 
-	private Node2D Animations;
+	private Node Animations;
 	private AnimatedSprite2D TorsoAnimation;
 	private AnimatedSprite2D LegAnimation;
 	private AnimatedSprite2D IdleAnimation;
+
+	private CollisionShape2D SoundBounds;
 
 	private Timer IdleTimer;
 
@@ -389,6 +391,16 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)HandsUsed );
 		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
+	}
+	
+	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		if ( body is MobBase mob && mob != null ) {
+			if ( SoundLevel >= mob.GetSoundTolerance() ) {
+				mob.Alert( this );
+			}
+		}
+	}
+	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -747,6 +759,7 @@ public partial class Player : Entity {
 		if ( WeaponSlots[ slot ].IsUsed() ) {
 			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			Flags |= PlayerFlags.UsingWeapon;
+			SoundLevel += 4.0f;
 		}
 	}
 	private void OnArmAngleChanged() {
@@ -1285,6 +1298,11 @@ public partial class Player : Entity {
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		DashChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 
+		SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
+
+		Area2D SoundArea = GetNode<Area2D>( "SoundArea" );
+		SoundArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
+
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
 //		SwitchToGamepad.Connect( "triggered", Callable.From<Resource>( SwitchInputMode ) );
@@ -1319,7 +1337,7 @@ public partial class Player : Entity {
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegsAnimationLooped ) );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
-		Animations = GetNode<Node2D>( "Animations" );
+		Animations = GetNode( "Animations" );
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
 		WalkEffect.SetProcess( false );
@@ -1496,6 +1514,14 @@ public partial class Player : Entity {
 		}
 
 		base._Process( delta );
+
+		if ( SoundLevel > 0.0f ) {
+			SoundLevel -= 1.0f;
+			if ( SoundLevel < 0.0f ) {
+				SoundLevel = 0.0f;
+			}
+		}
+		( SoundBounds.Shape as CircleShape2D ).Radius = SoundLevel;
 
 		GetArmAngle();
 

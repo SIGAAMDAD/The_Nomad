@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=21 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -25,6 +25,8 @@ size = Vector2(16, 30)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_srp4u"]
 
 [node name="Player" type="RigidBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "Relations", "Debts") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
@@ -55,8 +57,6 @@ Debts = {}
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 3
-light_mask = 2
-y_sort_enabled = true
 
 [node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
 process_thread_group = 1
@@ -122,6 +122,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 y_sort_enabled = true
 position = Vector2(-9.53674e-07, 14)
+rotation = 1.73779
 emitting = false
 
 [node name="Idle" type="AnimatedSprite2D" parent="Animations"]
@@ -212,3 +213,8 @@ database = ExtResource("21_kgn6m")
 
 [node name="FootSteps" type="Node" parent="."]
 script = ExtResource("16_srp4u")
+
+[node name="SoundArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SoundArea"]
+shape = SubResource("CircleShape2D_srp4u")
