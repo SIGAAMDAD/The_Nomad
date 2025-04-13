@@ -379,10 +379,8 @@ public partial class MobBase : Renown.Thinker {
 		}
 		if ( LinearVelocity.X > 0.0f ) {
 			BodyAnimations.FlipH = false;
-			ArmAnimations.FlipH = false;
 		} else if ( LinearVelocity.X < 0.0f ) {
 			BodyAnimations.FlipH = true;
-			ArmAnimations.FlipH = true;
 		}
 
 		if ( LinearVelocity != Godot.Vector2.Zero ) {
@@ -390,9 +388,15 @@ public partial class MobBase : Renown.Thinker {
 			ArmAnimations.Play( "move" );
 			HeadAnimations.Play( "move" );
 		} else {
-			BodyAnimations.Play( "idle" );
-			ArmAnimations.Play( "idle" );
-			HeadAnimations.Play( "idle" );
+			if ( Awareness == AIAwareness.Relaxed ) {
+				BodyAnimations.Play( "calm" );
+				ArmAnimations.Hide();
+				HeadAnimations.Hide();
+			} else {
+				BodyAnimations.Play( "idle" );
+				ArmAnimations.Play( "idle" );
+				HeadAnimations.Play( "idle" );
+			}
 		}
 	}
 

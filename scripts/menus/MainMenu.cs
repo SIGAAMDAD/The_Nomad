@@ -11,9 +11,12 @@ public partial class MainMenu : Control {
 	public delegate void MultiplayerMenuEventHandler();
 	[Signal]
 	public delegate void ModsMenuEventHandler();
+	[Signal]
+	public delegate void CoopMenuEventHandler();
 
 	private enum IndexedButton : int {
 		Story,
+		Coop,
 		Multiplayer,
 		Settings,
 		Mods,
@@ -27,6 +30,8 @@ public partial class MainMenu : Control {
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
 	private bool Loaded = false;
+
+	private Button CoopButton;
 
 	private PackedScene LoadedWorld;
 	private Thread LoadThread;
@@ -110,6 +115,11 @@ public partial class MainMenu : Control {
 		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
+	private void OnCoopButtonPressed() {
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+		EmitSignalCoopMenu();
+	}
 	private void OnSettingsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
@@ -149,6 +159,8 @@ public partial class MainMenu : Control {
 			Theme = AccessibilityManager.DefaultTheme;
 		}
 
+		MultiplayerMapManager.Init();
+
 		Button NewGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
 		NewGameButton.SetProcess( false );
 		NewGameButton.SetProcessInternal( false );
@@ -158,7 +170,6 @@ public partial class MainMenu : Control {
 		NewGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
 		NewGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
 		NewGameButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
-		NewGameButton.Scale = GetTree().Root.ContentScaleSize;
 		
 		Button ContinueGameButton = GetNode<Button>( "VBoxContainer/ContinueGameButton" );
 		ContinueGameButton.SetProcess( false );
@@ -169,7 +180,15 @@ public partial class MainMenu : Control {
 		ContinueGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
 		ContinueGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
 		ContinueGameButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
-		ContinueGameButton.Scale = GetTree().Root.ContentScaleSize;
+
+		CoopButton = GetNode<Button>( "VBoxContainer/CoopButton" );
+		CoopButton.SetProcess( false );
+		CoopButton.SetProcessInternal( false );
+		CoopButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Coop ); } ) );
+		CoopButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Coop ); } ) );
+		CoopButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Coop ); } ) );
+		CoopButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Coop ); } ) );
+		CoopButton.Connect( "pressed", Callable.From( OnCoopButtonPressed ) );
 
 		Button MultiplayerButton = GetNode<Button>( "VBoxContainer/MultiplayerButton" );
 		MultiplayerButton.SetProcess( false );
@@ -218,10 +237,12 @@ public partial class MainMenu : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
+		UIChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			ButtonList = [
 				ContinueGameButton,
+				CoopButton,
 				MultiplayerButton,
 				SettingsButton,
 				ModsButton,
@@ -231,6 +252,7 @@ public partial class MainMenu : Control {
 		} else {
 			ButtonList = [
 				NewGameButton,
+				CoopButton,
 				MultiplayerButton,
 				SettingsButton,
 				ModsButton,

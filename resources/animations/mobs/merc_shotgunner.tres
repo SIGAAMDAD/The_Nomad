@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=19 format=3 uid="uid://bbd1gljxn4cqk"]
+[gd_resource type="SpriteFrames" load_steps=20 format=3 uid="uid://bbd1gljxn4cqk"]
 
 [ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="1_1og1x"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_bbxhc"]
@@ -10,6 +10,14 @@ region = Rect2(256, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_jgbwu"]
 atlas = ExtResource("1_bbxhc")
 region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7efea"]
+atlas = ExtResource("1_bbxhc")
+region = Rect2(32, 192, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2kr3p"]
+atlas = ExtResource("1_bbxhc")
+region = Rect2(64, 192, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_62lxv"]
 atlas = ExtResource("1_1og1x")
@@ -43,13 +51,9 @@ region = Rect2(32, 64, 32, 32)
 atlas = ExtResource("1_1og1x")
 region = Rect2(64, 64, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7efea"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2wmu"]
 atlas = ExtResource("1_bbxhc")
-region = Rect2(32, 192, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2kr3p"]
-atlas = ExtResource("1_bbxhc")
-region = Rect2(64, 192, 32, 32)
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bbxhc"]
 atlas = ExtResource("1_bbxhc")
@@ -79,6 +83,17 @@ animations = [{
 "loop": false,
 "name": &"attack",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_7efea")
+}, {
+"duration": 6.0,
+"texture": SubResource("AtlasTexture_2kr3p")
+}],
+"loop": true,
+"name": &"calm",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -115,15 +130,12 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 4.0,
-"texture": SubResource("AtlasTexture_7efea")
-}, {
-"duration": 6.0,
-"texture": SubResource("AtlasTexture_2kr3p")
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2wmu")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 1.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,

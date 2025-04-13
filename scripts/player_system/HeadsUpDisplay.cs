@@ -81,6 +81,7 @@ namespace PlayerSystem {
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
 		public TextureRect GetDashOverlay() => DashOverlay;
 		
+		public Player GetPlayerOwner() => _Owner;
 		private void SaveStart() {
 			SaveSpinner.Show();
 		}
@@ -106,7 +107,9 @@ namespace PlayerSystem {
 		public override void _Ready() {
 			base._Ready();
 
-			if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+			if ( GameConfiguration.GameMode != GameMode.Multiplayer
+				&& GetTree().CurrentScene.Name == "World" )
+			{
 				WorldTimeManager.Instance.TimeTick += OnWorldTimeTick;
 			}
 

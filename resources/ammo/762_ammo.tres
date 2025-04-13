@@ -6,8 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="4_qnvb1"]
 
 [sub_resource type="Curve" id="Curve_lhqhs"]
-_data = [Vector2(0, 0.901887), 0.0, 0.0, 1, 0, Vector2(0.75625, 0.532076), 0.0905662, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 0.0, 1, 0, Vector2(0.79375, 0.879245), 0.0, 0.0, 0, 0, Vector2(1, 0.54717), 0.0905662, 0.0, 0, 0]
+point_count = 3
 
 [resource]
 id = "AMMO_762"

@@ -59,8 +59,6 @@ public partial class LobbyFactory : Control {
 		Button CreateButton = GetNode<Button>( "CreateButton" );
 		CreateButton.Connect( "pressed", Callable.From( OnCreateButtonPressed ) );
 
-		MultiplayerMapManager.Init();
-
 		foreach ( var map in MultiplayerMapManager.MapCache ) {
 			MapList.AddItem( map.Value.Name );
 		}

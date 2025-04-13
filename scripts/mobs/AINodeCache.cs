@@ -7,7 +7,7 @@ public partial class AINodeCache : Node {
 	private NavigationLink2D[] PatrolRoutes;
 
 	public Node2D FindClosestCover( Godot.Vector2 position, Godot.Vector2 target ) {
-		Node2D node = null;
+		Node2D node = CoverCache[0];
 		float bestDistance = float.MaxValue;
 
 		RayCast2D sightLineCheck = new RayCast2D();
@@ -29,7 +29,7 @@ public partial class AINodeCache : Node {
 		return node;
 	}
 	public AIPatrolRoute FindClosestRoute( Godot.Vector2 position ) {
-		NavigationLink2D route = null;
+		NavigationLink2D route = PatrolRoutes[0];
 		float bestDistance = float.MaxValue;
 
 		for ( int i = 0; i < PatrolRoutes.Length; ++i ) {

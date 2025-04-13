@@ -4,6 +4,7 @@ public partial class TitleMenu : Control {
 	public enum MenuState {
 		Main,
 		Campaign,
+		Coop,
 		Multiplayer,
 		Settings,
 		Help,
@@ -13,6 +14,7 @@ public partial class TitleMenu : Control {
 	private AudioStreamPlayer UIChannel;
 	private AudioStreamPlayer MusicTheme;
 
+	private CoopMenu CoopMenu;
 	private MultiplayerMenu MultiplayerMenu;
 	private SettingsMenu SettingsMenu;
 	private MainMenu MainMenu;
@@ -31,6 +33,7 @@ public partial class TitleMenu : Control {
 		LobbyBrowser.QueueFree();
 		LobbyFactory.QueueFree();
 
+		CoopMenu.QueueFree();
 		MultiplayerMenu.QueueFree();
 		SettingsMenu.QueueFree();
 		MainMenu.QueueFree();
@@ -39,6 +42,7 @@ public partial class TitleMenu : Control {
 		UIChannel.QueueFree();
 
 //		MainMenu.Disconnect( "CampaignMenu", Callable.From( OnMainMenuCampaignMenu ) );
+		MainMenu.Disconnect( "CoopMenu", Callable.From( OnMainMenuCoopMenu ) );
 		MainMenu.Disconnect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
 		MainMenu.Disconnect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
 
@@ -58,6 +62,12 @@ public partial class TitleMenu : Control {
 			CampaignMenu.SetProcessUnhandledInput( false );
 			break;
 			*/
+		case MenuState.Coop:
+			CoopMenu.Hide();
+			CoopMenu.SetProcess( false );
+			CoopMenu.SetProcessInternal( false );
+			CoopMenu.ProcessMode = ProcessModeEnum.Disabled;
+			break;
 		case MenuState.Multiplayer:
 			MultiplayerMenu.Hide();
 			LobbyBrowser.Hide();
@@ -103,6 +113,20 @@ public partial class TitleMenu : Control {
 		State = MenuState.Campaign;
 	}
 	*/
+	private void OnMainMenuCoopMenu() {
+		MainMenu.SetProcess( false );
+		MainMenu.SetProcessInternal( false );
+		MainMenu.SetProcessUnhandledInput( false );
+		CoopMenu.SetProcess( true );
+		CoopMenu.SetProcessInternal( true );
+		CoopMenu.SetProcessUnhandledInput( true );
+		CoopMenu.ProcessMode = ProcessModeEnum.Always;
+
+		MainMenu.Hide();
+		CoopMenu.Show();
+		ExitButton.Show();
+		State = MenuState.Coop;
+	}
 	private void OnMainMenuMultiplayerMenu() {
 		MainMenu.SetProcess( false );
 		MainMenu.SetProcessInternal( false );
@@ -143,8 +167,15 @@ public partial class TitleMenu : Control {
 		Background.SetProcessInternal( false );
 
 		MainMenu = GetNode<MainMenu>( "MainMenu" );
+		MainMenu.Connect( "CoopMenu", Callable.From( OnMainMenuCoopMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
 		MainMenu.Connect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
+
+		CoopMenu = GetNode<CoopMenu>( "CoopMenu" );
+		CoopMenu.SetProcess( false );
+		CoopMenu.SetProcessInternal( false );
+		CoopMenu.SetProcessUnhandledInput( false );
+		CoopMenu.ProcessMode = ProcessModeEnum.Disabled;
 
 		MultiplayerMenu = GetNode<MultiplayerMenu>( "MultiplayerMenu" );
 		MultiplayerMenu.SetProcess( false );
@@ -176,6 +207,7 @@ public partial class TitleMenu : Control {
 		UIChannel.SetProcessInternal( false );
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
+		MusicTheme.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetMusicVolume() );
 		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );

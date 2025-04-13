@@ -78,8 +78,8 @@ public partial class Player : Entity {
 	private static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
 	private Resource CurrentMappingContext;
-	private Resource KeyboardInputMappings;
-	private Resource GamepadInputMappings;
+	public static Resource KeyboardInputMappings;
+	public static Resource GamepadInputMappings;
 
 	private Resource SwitchToKeyboard;
 	private Resource SwitchToGamepad;
@@ -1047,10 +1047,14 @@ public partial class Player : Entity {
 	}
 	private void OnStoppedUsingWeapon() => Flags &= ~PlayerFlags.UsingWeapon;
 
-	private void SwitchInputMode( Resource InputContext ) {
+	public void SwitchInputMode( Resource InputContext ) {
 		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext );
 
 		Console.PrintLine( "Remapping input..." );
+
+		if ( GameConfiguration.GameMode == GameMode.LocalCoop2 ) {
+			LoadGamepadBinds();
+		}
 		
 		SwitchWeaponModeAction?.Disconnect( "triggered", Callable.From( SwitchWeaponMode ) );
 		BulletTimeAction?.Disconnect( "triggered", Callable.From( OnBulletTime ) );
@@ -1142,17 +1146,17 @@ public partial class Player : Entity {
 //		}
 	}
 
-	private void LoadGamepadBinds() {
-		MoveActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/move_player0.tres" );
-		DashActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/dash_player0.tres" );
-		SlideActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/slide_player0.tres" );
-		UseWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_weapon_player0.tres" );
-		NextWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/next_weapon_player0.tres" );
-		PrevWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/prev_weapon_player0.tres" );
-		SwitchWeaponModeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player0.tres" );
-		BulletTimeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player0.tres" );
-		OpenInventoryActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/open_inventory_player0.tres" );
-		ArmAngleAction = ResourceLoader.Load( "res://resources/binds/actions/gamepad/arm_angle.tres" );
+	public void LoadGamepadBinds() {
+		MoveActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/move_player" + InputDevice.ToString() + ".tres" );
+		DashActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/dash_player" + InputDevice.ToString() + ".tres" );
+		SlideActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/slide_player" + InputDevice.ToString() + ".tres" );
+		UseWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_weapon_player" + InputDevice.ToString() + ".tres" );
+		NextWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/next_weapon_player" + InputDevice.ToString() + ".tres" );
+		PrevWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/prev_weapon_player" + InputDevice.ToString() + ".tres" );
+		SwitchWeaponModeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player" + InputDevice.ToString() + ".tres" );
+		BulletTimeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player" + InputDevice.ToString() + ".tres" );
+		OpenInventoryActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/open_inventory_player" + InputDevice.ToString() + ".tres" );
+		ArmAngleAction = ResourceLoader.Load( "res://resources/binds/actions/gamepad/arm_angle_player" + InputDevice.ToString() + ".tres" );
 	}
 	private void LoadKeyboardBinds() {
 		MoveActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/move.tres" );
@@ -1254,13 +1258,15 @@ public partial class Player : Entity {
 		Health = 100.0f;
 		Rage = 60.0f;
 
-		LoadKeyboardBinds();
-		LoadGamepadBinds();
+		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
+			LoadKeyboardBinds();
+			LoadGamepadBinds();
+		}
 		LoadSfx();
 
 		SetProcessUnhandledInput( false );
 
-		if ( !Renown.Constants.StartingQuestPath.IsEmpty ) {
+		if ( !Renown.Constants.StartingQuestPath.IsEmpty && GetTree().CurrentScene.Name == "World" ) {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
 
@@ -1289,7 +1295,9 @@ public partial class Player : Entity {
 //		if ( Input.GetConnectedJoypads().Count > 0 ) {
 //			SwitchInputMode( GamepadInputMappings );
 //		} else {
-		SwitchInputMode( KeyboardInputMappings );
+		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
+			SwitchInputMode( KeyboardInputMappings );
+		}
 //		}
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );

@@ -1,4 +1,4 @@
-[gd_scene load_steps=123 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=122 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -25,7 +25,6 @@
 [ext_resource type="Texture2D" uid="uid://bq70gpo8kknwv" path="res://textures/tilesets/desert/decor_2.png" id="12_cyobr"]
 [ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="13_mla2a"]
-[ext_resource type="PackedScene" uid="uid://6cnqoj2bp0r3" path="res://scenes/mobs/mercenary/mercenary_shotgunner.tscn" id="14_aebnb"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
 [ext_resource type="PackedScene" uid="uid://dil6cvnitkb3b" path="res://scenes/mobs/bandits/bandit_grunt.tscn" id="15_i5qqy"]
@@ -12880,49 +12879,6 @@ collision_mask = 3
 priority = 1
 script = ExtResource("5_cyobr")
 AreaName = &"Kirosla Estate"
-
-[node name="OpposingForce" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate"]
-process_mode = 3
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 2
-position = Vector2(929, -26)
-
-[node name="MercenaryShotgunner" parent="Biomes/SaltWastes/KiroslaEstate/OpposingForce" node_paths=PackedStringArray("Floor", "Relations", "Debts", "Location", "Faction") groups=["Thinkers"] instance=ExtResource("14_aebnb")]
-position = Vector2(-1108, 140)
-collision_mask = 19
-Floor = NodePath("../../FirstFloorLayer1")
-BotName = &"Carev"
-Job = 3
-Age = 32
-Direction = 2
-Relations = {}
-Debts = {}
-Location = NodePath("../..")
-Faction = NodePath("../../../../../Factions/GunsAndGrenades")
-
-[node name="MercenaryShotgunner2" parent="Biomes/SaltWastes/KiroslaEstate/OpposingForce" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") groups=["Thinkers"] instance=ExtResource("14_aebnb")]
-position = Vector2(-1004, 247)
-collision_mask = 19
-BotName = &"Assel"
-Age = 24
-Direction = 4
-Relations = {}
-Debts = {}
-Location = NodePath("../..")
-Faction = NodePath("../../../../../Factions/GunsAndGrenades")
-
-[node name="MercenaryShotgunner3" parent="Biomes/SaltWastes/KiroslaEstate/OpposingForce" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") groups=["Thinkers"] instance=ExtResource("14_aebnb")]
-position = Vector2(-806, 252)
-collision_mask = 19
-BotName = &"Mokka"
-Job = 3
-Age = 30
-Direction = 4
-Relations = {}
-Debts = {}
-Location = NodePath("../..")
-Faction = NodePath("../../../../../Factions/GunsAndGrenades")
 
 [node name="Basement" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate"]
 visible = false
