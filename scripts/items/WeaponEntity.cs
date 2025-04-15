@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Renown;
+using Steamworks;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -322,6 +323,7 @@ public partial class WeaponEntity : Node2D {
 			return;
 		}
 	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -340,6 +342,13 @@ public partial class WeaponEntity : Node2D {
 			IconSprite.SetProcessInternal( false );
 			IconSprite.Texture = Icon;
 			AddChild( IconSprite );
+		}
+	}
+	public override void _PhysicsProcess( double delta ) {
+		base._PhysicsProcess( delta );
+
+		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
+			RayCast.GlobalRotation = _Owner.GetArmAngle();
 		}
 	}
 
@@ -428,7 +437,8 @@ public partial class WeaponEntity : Node2D {
 		return true;
 	}
 
-	private float UseFirearm( bool held ) {
+	private float UseFirearm( out float soundLevel, bool held ) {
+		soundLevel = 0.0f;
 		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
 			PlaySound( ResourceCache.NoAmmoSfx );
 			return 0.0f;
@@ -462,14 +472,13 @@ public partial class WeaponEntity : Node2D {
 		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 		// NOTE: correction, they WILL work like that eventually
 
-		Godot.Vector2 mousePosition = GetViewport().GetMousePosition();
-
+		float angle = _Owner.GetArmAngle();
 
 		CurrentMuzzleFlash = MuzzleFlashes[
 			RandomFactory.Next( 0, MuzzleFlashes.Count - 1 )
 		];
 		CurrentMuzzleFlash.Show();
-		CurrentMuzzleFlash.Rotation = _Owner.GetArmAngle();
+		CurrentMuzzleFlash.Rotation = angle;
 
 		MuzzleLight.Show();
 		
@@ -490,19 +499,20 @@ public partial class WeaponEntity : Node2D {
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Ammo.Get( "properties" );
 
+		soundLevel = (float)properties[ "range" ];
 		RayCast.GlobalPosition = _Owner.GlobalPosition;
 		RayCast.CollideWithAreas = true;
 		RayCast.CollideWithBodies = true;
 		RayCast.CollisionMask = 2 | 5;
-		RayCast.TargetPosition = Godot.Vector2.Right.Rotated( _Owner.GetArmAngle() ) * (float)properties[ "range" ];
+		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
 
 		PlaySound( UseFirearmSfx );
 		
 		float damage = (float)properties[ "damage" ];
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is MobBase entity && entity != null ) {
+			if ( collision is Renown.Thinkers.MobBase entity && entity != null ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-				distance /= (float)properties[ "range" ];
+				distance /= soundLevel;
 				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
 
 				entity.Damage( _Owner, damage );
@@ -515,7 +525,8 @@ public partial class WeaponEntity : Node2D {
 
 		return 0.0f;
 	}
-	public float Use( Properties weaponMode, bool held = false ) {
+	public float Use( Properties weaponMode, out float soundLevel, bool held = false ) {
+		soundLevel = 0.0f;
 		if ( Engine.TimeScale == 0.0f ) {
 			return 0.0f;
 		}
@@ -528,7 +539,7 @@ public partial class WeaponEntity : Node2D {
 		SetUseMode( weaponMode );
 
 		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			return UseFirearm( held );
+			return UseFirearm( out soundLevel, held );
 		} else if ( ( LastUsedMode & Properties.IsBlunt ) != 0 ) {
 			return UseBlunt();
 		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {

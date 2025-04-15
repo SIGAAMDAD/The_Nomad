@@ -25,21 +25,27 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Damage( Entity source, float nAmount ) {
+			BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
+
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
 			base.Damage( source, nAmount );
 
+			PlaySound( AudioChannel, ResourceCache.Pain[ RandomFactory.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+
 			if ( Health < 0.0f ) {
+				LinearVelocity = Godot.Vector2.Zero;
+				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
 				BodyAnimations.Play( "die_high" );
 				return;
 			}
-			if ( source is MobBase && source.GetFaction() == Faction ) {
+			if ( source.GetFaction() == Faction ) {
 				// "CEASEFIRE!"
 			}
-
-			BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
-
-			PlaySound( AudioChannel, ResourceCache.Pain[ RandomFactory.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			Awareness = AIAwareness.Alert;
 			float angle = Randf( 0.0f, 360.0f );
@@ -57,12 +63,17 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void OnLoseInterestTimerTimeout() {
-			Investigating = false;
 			State = AIState.PatrolStart;
 			SightTarget = null;
 			Bark( BarkType.Curse );
 
+			// once we've lost the target for a long period of time, resume patrol routes with a little more suspicion
 			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+			
+			AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
+			if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
+				PatrolRoute = route.GetNext();
+			}
 			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 
 			// a little more on edge
@@ -332,7 +343,6 @@ namespace Renown.Thinkers {
 			case AIState.Guarding:
 				if ( Awareness > AIAwareness.Relaxed ) {
 					State = AIState.Investigating;
-					Investigating = true;
 				}
 				break;
 			};
@@ -375,18 +385,7 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		private void SetAlert( bool bRunning ) {
-			if ( Awareness != AIAwareness.Alert ) {
-				Bark( BarkType.TargetSpotted );
-			}
-			Awareness = AIAwareness.Alert;
-		}
-		private void SetSuspicious() {
-			if ( Awareness != AIAwareness.Suspicious ) {
-				Bark( BarkType.Confusion );
-			}
-			Awareness = AIAwareness.Suspicious;
-		}
+		/*
 		private void CheckSight( float delta ) {
 			if ( ( Engine.GetPhysicsFrames() % 30 ) != 0 ) {
 				RecalcSight();
@@ -437,7 +436,6 @@ namespace Renown.Thinkers {
 				LastTargetPosition = SightTarget.GlobalPosition;
 				if ( Awareness >= AIAwareness.Suspicious ) {
 					SightDetectionAmount += ( SightDetectionSpeed * 2.0f );
-					Investigating = true;
 					SetNavigationTarget( LastTargetPosition );
 					Squad.NotifyGroup( GroupEvent.TargetChanged, this );
 				} else if ( Awareness == AIAwareness.Relaxed ) {
@@ -454,5 +452,6 @@ namespace Renown.Thinkers {
 			}
 			SetDetectionColor();
 		}
+		*/
 	};
 };

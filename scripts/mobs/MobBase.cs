@@ -63,7 +63,7 @@ namespace Renown.Thinkers {
 		NorthWest
 	};
 	
-	public partial class MobBase : Renown.Thinker {
+	public partial class MobBase : Thinker {
 		protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
 
 		[ExportCategory("Detection")]
@@ -98,7 +98,7 @@ namespace Renown.Thinkers {
 
 		protected System.Random RandomFactory;
 
-		protected Renown.Entity SightTarget;
+		protected Entity SightTarget;
 		protected float SightDetectionAmount = 0.0f;
 	
 		protected AnimatedSprite2D BodyAnimations;
@@ -248,13 +248,6 @@ namespace Renown.Thinkers {
 		}
 #endregion
 		protected virtual void OnLoseInterestTimerTimeout() {
-			// once we've lost the target for a long period of time, resume patrol routes with a little more suspicion
-			PatrolRoute = NodeCache.FindClosestPatrolRotue( GlobalPosition );
-			
-			AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
-			if ( Squad.IsRouteOccupied( route ) ) {
-				PatrolRoute = route.GetNext();
-			}
 		}
 		protected virtual void OnChangeInvestigateAngleTimerTimeout() {
 			float angle = Randf( 0.0f, 360.0f );
@@ -487,9 +480,20 @@ namespace Renown.Thinkers {
 				break;
 			};
 		}
-		
-		
-		private void CheckSight( float delta ) {
+
+		protected void SetAlert( bool bRunning ) {
+			if ( Awareness != AIAwareness.Alert ) {
+				Bark( BarkType.TargetSpotted );
+			}
+			Awareness = AIAwareness.Alert;
+		}
+		protected void SetSuspicious() {
+			if ( Awareness != AIAwareness.Suspicious ) {
+				Bark( BarkType.Confusion );
+			}
+			Awareness = AIAwareness.Suspicious;
+		}
+		protected void CheckSight( float delta ) {
 			if ( ( Engine.GetPhysicsFrames() % 30 ) != 0 ) {
 				RecalcSight();
 			}

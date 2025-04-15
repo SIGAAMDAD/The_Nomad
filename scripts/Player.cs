@@ -394,7 +394,7 @@ public partial class Player : Entity {
 	}
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is MobBase mob && mob != null ) {
+		if ( body is Renown.Thinkers.MobBase mob && mob != null ) {
 			if ( SoundLevel >= mob.GetSoundTolerance() ) {
 				mob.Alert( this );
 			}
@@ -758,9 +758,10 @@ public partial class Player : Entity {
 			return; // nothing equipped
 		}
 		if ( WeaponSlots[ slot ].IsUsed() ) {
-			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), ( Flags & PlayerFlags.UsingWeapon ) != 0 );
+			float soundLevel;
+			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			Flags |= PlayerFlags.UsingWeapon;
-			SoundLevel += 4.0f;
+			SoundLevel += soundLevel;
 		}
 	}
 	private void OnArmAngleChanged() {
@@ -1540,7 +1541,13 @@ public partial class Player : Entity {
 		}
 
 		if ( HandsUsed == Hands.Both ) {
-			front = LastUsedArm;
+			if ( TorsoAnimation.FlipH ) {
+				Arm tmp = back;
+				back = front;
+				front = back;
+			} else {
+				front = LastUsedArm;
+			}
 			back.Animations.Hide();
 		} else {
 			back.Animations.Show();
@@ -1548,11 +1555,11 @@ public partial class Player : Entity {
 
 		front.Show();
 
-		CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
-		CalcArmAnimation( ArmRight, out RightArmAnimationState );
-
 		Animations.MoveChild( back.Animations, 0 );
 		Animations.MoveChild( front.Animations, 3 );
+
+		CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
+		CalcArmAnimation( ArmRight, out RightArmAnimationState );
 	}
 
 	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalSwitchedWeaponMode( source, useMode );

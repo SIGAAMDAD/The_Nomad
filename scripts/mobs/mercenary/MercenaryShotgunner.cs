@@ -2,7 +2,8 @@ using System;
 using Godot;
 using Renown.World;
 
-public partial class MercenaryShotgunner : MobBase {
+public partial class MercenaryShotgunner : Renown.Thinkers.MobBase {
+	/*
 	private Timer TargetMovedTimer;
 	private Timer HealTimer;
 	private Timer AimTimer;
@@ -236,4 +237,5 @@ public partial class MercenaryShotgunner : MobBase {
 		}
 		SetDetectionColor();
 	}
+	*/
 };
