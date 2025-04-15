@@ -10,6 +10,8 @@ public partial class MercenaryShotgunner : MobBase {
 	private Line2D ShootLine;
 	private Godot.Vector2 GuardPosition;
 
+	private PointLight2D FlashLight;
+
 	private object LockObject = new object();
 
 	public override void Save() {
@@ -77,6 +79,17 @@ public partial class MercenaryShotgunner : MobBase {
 	}
     public override void _Ready() {
 		base._Ready();
+
+		FlashLight = GetNode<PointLight2D>( "Animations/HeadAnimations/FlashLight" );
+		WorldTimeManager.Instance.TimeTick += ( day, hour, minute ) => {
+			if ( hour >= 20 || hour < 7 ) {
+				// turn on flashlights when it gets dark
+				FlashLight.Show();
+			}
+			else if ( hour >= 7 ) {
+				FlashLight.Hide();
+			}
+		};
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SyncObject = new NetworkWriter( 256 );

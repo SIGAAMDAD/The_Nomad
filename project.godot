@@ -63,6 +63,7 @@ GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
+BugReportingForm="*res://scenes/menus/bug_reporter.tscn"
 
 [debug]
 
@@ -162,6 +163,7 @@ locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialog
 2d_physics/layer_1="Entity/Sprite Collision"
 2d_physics/layer_2="Common Sprite Collision"
 2d_physics/layer_5="Player Collision"
+2d_physics/layer_7="Sound Detection"
 
 [navigation]
 

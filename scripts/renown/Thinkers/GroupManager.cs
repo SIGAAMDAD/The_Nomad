@@ -6,7 +6,20 @@ namespace Renown.Thinkers {
 		private static List<ThinkerGroup> GroupCache = new List<ThinkerGroup>();
 
 		private static ThinkerGroup CreateGroup( GroupType nType, Faction faction ) {
-			ThinkerGroup group = new ThinkerGroup( nType, faction );
+			ThinkerGroup group = null;
+
+			switch ( nType ) {
+			case GroupType.Military:
+				group = new MilitarySquad( faction );
+				break;
+			case GroupType.Bandit:
+				group = new BanditGroup( faction );
+				break;
+			default:
+				Console.PrintError( "GroupManager.CreateGroup: Type isn't valid!" );
+				return null;
+			};
+
 			GroupCache.Add( group );
 			return group;
 		}

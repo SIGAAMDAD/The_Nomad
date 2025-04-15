@@ -215,6 +215,7 @@ database = ExtResource("21_kgn6m")
 script = ExtResource("16_srp4u")
 
 [node name="SoundArea" type="Area2D" parent="."]
+collision_layer = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoundArea"]
 shape = SubResource("CircleShape2D_srp4u")

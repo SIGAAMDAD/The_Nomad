@@ -1,10 +1,9 @@
 using System;
-using System.ComponentModel;
 using Godot;
 
 namespace Renown.Thinkers {
 	public partial class BanditGrunt : MobBase {
-		private static readonly float Range = 200.0f;
+		private static readonly float Range = 300.0f;
 
 		private Timer TargetMovedTimer;
 		private Timer AttackTimer;
@@ -28,6 +27,16 @@ namespace Renown.Thinkers {
 		public override void Damage( Entity source, float nAmount ) {
 			base.Damage( source, nAmount );
 
+			if ( Health < 0.0f ) {
+				HeadAnimations.Hide();
+				ArmAnimations.Hide();
+				BodyAnimations.Play( "die_high" );
+				return;
+			}
+			if ( source is MobBase && source.GetFaction() == Faction ) {
+				// "CEASEFIRE!"
+			}
+
 			BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
 
 			PlaySound( AudioChannel, ResourceCache.Pain[ RandomFactory.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
@@ -36,7 +45,15 @@ namespace Renown.Thinkers {
 			float angle = Randf( 0.0f, 360.0f );
 			AimAngle = angle;
 			LookAngle = angle;
-			Bark( BarkType.Alert );
+
+			LastTargetPosition = source.GlobalPosition;
+			PatrolRoute = null;
+
+			if ( Awareness == AIAwareness.Alert ) {
+				
+			} else {
+				Bark( BarkType.Alert );
+			}
 		}
 
 		protected override void OnLoseInterestTimerTimeout() {
@@ -66,8 +83,8 @@ namespace Renown.Thinkers {
 				SightTarget = ( source as MobBase ).GetSightTarget();
 				LastTargetPosition = ( source as MobBase ).GetLastTargetPosition();
 				Awareness = AIAwareness.Alert;
-				State = AIState.PatrolStart;
-				PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+				State = AIState.Investigating;
+
 				SetNavigationTarget( LastTargetPosition );
 				Bark( BarkType.Curse );
 				break;
@@ -99,7 +116,7 @@ namespace Renown.Thinkers {
 			}
 
 			AttackTimer = new Timer();
-			AttackTimer.WaitTime = 1.5f;
+			AttackTimer.WaitTime = 0.5f;
 			AttackTimer.OneShot = true;
 			AttackTimer.Connect( "timeout", Callable.From( () => { Aiming = false; } ) );
 			AddChild( AttackTimer );
@@ -114,7 +131,7 @@ namespace Renown.Thinkers {
 				DetectionMeter.Hide();
 			}
 
-			Squad = GroupManager.GetGroup( GroupType.Military, Faction, GlobalPosition );
+			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
 
 			GuardPosition = GlobalPosition;
@@ -122,7 +139,7 @@ namespace Renown.Thinkers {
 
 			AimTimer = new Timer();
 			AimTimer.Name = "AimTimer";
-			AimTimer.WaitTime = 1.5f;
+			AimTimer.WaitTime = 1.0f;
 			AimTimer.OneShot = true;
 			AimTimer.Connect( "timeout", Callable.From( OnAimTimerTimeout ) );
 			AddChild( AimTimer );
@@ -147,14 +164,20 @@ namespace Renown.Thinkers {
 		private void OnAimTimerTimeout() {
 			// desert carbine
 			AttackTimer.Start();
-			PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
 			
 			if ( AimLine.IsColliding() ) {
 				if ( AimLine.GetCollider() is Entity entity && entity != null ) {
-					// FIXME:
-					entity.Damage( this, 20.0f );
+					if ( entity.GetFaction() == Faction ) {
+						Bark( BarkType.OutOfTheWay );
+					} else {
+						// FIXME:
+						entity.Damage( this, 20.0f );
+						PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
+					}
 				} else {
 					DebrisFactory.Create( AimLine.GetCollisionPoint() );
+					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
+
 				}
 			}
 		}
@@ -167,6 +190,12 @@ namespace Renown.Thinkers {
 				}
 			} else {
 				Visible = true;
+			}
+
+			if ( SightTarget != null ) {
+				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+				LookAngle = AimAngle;
 			}
 
 			ArmAnimations.GlobalRotation = AimAngle;
@@ -190,6 +219,10 @@ namespace Renown.Thinkers {
 				ArmAnimations.FlipH = true;
 			}
 
+			if ( Health <= 0.0f ) {
+				return;
+			}
+
 			if ( LinearVelocity != Godot.Vector2.Zero ) {
 				BodyAnimations.Play( "move" );
 				ArmAnimations.Play( "move" );
@@ -209,7 +242,6 @@ namespace Renown.Thinkers {
 			}
 		}
 		protected override void Think( float delta ) {
-
 			CheckSight( delta );
 
 			if ( SightTarget != null ) {
@@ -237,6 +269,13 @@ namespace Renown.Thinkers {
 
 				if ( Fear > 0 && PatrolRoute == null ) {
 					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+
+					// if the route is occupied, just pick a different one
+					AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
+					if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
+						PatrolRoute = route.GetNext();
+					}
+
 					State = AIState.PatrolStart;
 					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 				}
@@ -260,6 +299,7 @@ namespace Renown.Thinkers {
 					Bark( BarkType.TargetRunning );
 				} else if ( Aiming && AimLine.GetCollider() is MobBase mob && mob != null ) {
 					Aiming = false;
+					AimTimer.Stop();
 					Bark( BarkType.OutOfTheWay );
 				}
 
@@ -342,7 +382,9 @@ namespace Renown.Thinkers {
 			Awareness = AIAwareness.Alert;
 		}
 		private void SetSuspicious() {
-			Bark( BarkType.Confusion );
+			if ( Awareness != AIAwareness.Suspicious ) {
+				Bark( BarkType.Confusion );
+			}
 			Awareness = AIAwareness.Suspicious;
 		}
 		private void CheckSight( float delta ) {

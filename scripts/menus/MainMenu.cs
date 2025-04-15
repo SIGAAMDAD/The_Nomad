@@ -237,7 +237,6 @@ public partial class MainMenu : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
-		UIChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			ButtonList = [

@@ -205,6 +205,7 @@ public partial class TitleMenu : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
+		UIChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
 		MusicTheme.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetMusicVolume() );

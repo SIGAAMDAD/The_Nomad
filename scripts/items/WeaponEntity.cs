@@ -502,8 +502,8 @@ public partial class WeaponEntity : Node2D {
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
 			if ( collision is MobBase entity && entity != null ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-				damage = distance / (float)properties[ "range" ];
-				damage = ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( damage );
+				distance /= (float)properties[ "range" ];
+				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
 
 				entity.Damage( _Owner, damage );
 			} else {

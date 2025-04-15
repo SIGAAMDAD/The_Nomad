@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_e2ki1"]
 
 [sub_resource type="Curve" id="Curve_orkxq"]
-_data = [Vector2(0, 0.834762), 0.0, 0.0, 0, 0, Vector2(0.425061, 0.769435), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.7, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.735849), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [resource]

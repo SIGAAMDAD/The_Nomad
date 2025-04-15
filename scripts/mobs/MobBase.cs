@@ -63,12 +63,6 @@ public enum DirType {
 };
 
 public partial class MobBase : Renown.Thinker {
-	protected Node2D BloodSplatterTree;
-	protected PackedScene BloodSplatter;
-
-	protected Node2D BulletShellTree;
-	protected PackedScene BulletShell;
-
 	protected float AngleBetweenRays = Mathf.DegToRad( 2.0f );
 
 	[ExportCategory("Detection")]
@@ -95,8 +89,6 @@ public partial class MobBase : Renown.Thinker {
 
 	[ExportCategory("Stats")]
 	[Export]
-	protected float MovementSpeed = 1.0f;
-	[Export]
 	protected float FirearmDamage = 0.0f;
 	[Export]
 	protected float BluntDamage = 0.0f;
@@ -107,7 +99,6 @@ public partial class MobBase : Renown.Thinker {
 
 	protected Renown.Entity SightTarget;
 	protected float SightDetectionAmount = 0.0f;
-	protected PointLight2D FlashLight;
 
 	protected AnimatedSprite2D BodyAnimations;
 	protected AnimatedSprite2D ArmAnimations;
@@ -147,16 +138,22 @@ public partial class MobBase : Renown.Thinker {
 		base.Load();
 	}
 
+	public AIPatrolRoute GetPatrolRoute() => PatrolRoute as AIPatrolRoute;
 	public float GetSoundTolerance() => SoundTolerance;
 	public Godot.Vector2 GetLastTargetPosition() => LastTargetPosition;
 	public Entity GetSightTarget() => SightTarget;
 
 	public void Alert( Entity target ) {
-		SightTarget = target;
 		LastTargetPosition = target.GlobalPosition;
-		Awareness = AIAwareness.Suspicious;
-		Bark( BarkType.Alert );
+		if ( Awareness == AIAwareness.Relaxed ) {
+			Awareness = AIAwareness.Suspicious;
+		}
+		State = AIState.Investigating;
+		PatrolRoute = null;
+		Bark( BarkType.Confusion );
 		SetNavigationTarget( LastTargetPosition );
+
+		// TODO: make everyone else suspicious
 	}
 
 	public override void Damage( Renown.Entity source, float nAmount ) {
@@ -203,7 +200,7 @@ public partial class MobBase : Renown.Thinker {
 		return null;
 	}
 	protected void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
-		if ( LastBark == bark ) {
+		if ( Health <= 0.0f || LastBark == bark ) {
 			return;
 		}
 		LastBark = bark;
@@ -411,17 +408,6 @@ public partial class MobBase : Renown.Thinker {
 	public override void _Ready() {
 		base._Ready();
 
-		FlashLight = GetNode<PointLight2D>( "Animations/HeadAnimations/FlashLight" );
-		WorldTimeManager.Instance.TimeTick += ( day, hour, minute ) => {
-			if ( hour >= 20 || hour < 7 ) {
-				// turn on flashlights when it gets dark
-				FlashLight.Show();
-			}
-			else if ( hour >= 7 ) {
-				FlashLight.Hide();
-			}
-		};
-
 		RandomFactory = new System.Random();
 
 		ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
@@ -447,12 +433,6 @@ public partial class MobBase : Renown.Thinker {
 		MoveTimer.SetProcess( false );
 		MoveTimer.SetProcessInternal( false );
 		CallDeferred( "add_child", MoveTimer );
-
-		BulletShellTree = new Node2D();
-		GetTree().CurrentScene.CallDeferred( "add_child", BulletShellTree );
-		
-		BloodSplatterTree = new Node2D();
-		GetTree().CurrentScene.CallDeferred( "add_child", BloodSplatterTree );
 		
 		DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 

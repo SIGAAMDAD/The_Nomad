@@ -18,13 +18,13 @@ icon = ExtResource("1_54ujd")
 weight = 2.5
 properties = {
 "casing_icon": ExtResource("2_7chbo"),
-"damage": 40.5,
+"damage": 120.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_DESCRIPTION",
 "pickup_sfx": ExtResource("3_kg6sp"),
 "range": 2450.0,
 "shotgun bullshit": 2,
-"stack_add_amount": 12,
+"stack_add_amount": 64,
 "type": 2,
 "velocity": 20.0
 }

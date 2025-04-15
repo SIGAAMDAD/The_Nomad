@@ -93,7 +93,7 @@ namespace Renown {
 		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
-		private float MovementSpeed = 40.0f;
+		protected float MovementSpeed = 40.0f;
 		
 		protected NavigationAgent2D NavAgent;
 		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
@@ -217,6 +217,10 @@ namespace Renown {
 		}
 
         public override void _PhysicsProcess( double delta ) {
+			if ( Health <= 0.0f ) {
+				return;
+			}
+
 			base._PhysicsProcess( delta );
 		
 			PhysicsPosition = GlobalPosition;
@@ -245,6 +249,10 @@ namespace Renown {
 
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
 			ProcessAnimations();
+
+			if ( Health <= 0.0f ) {
+				return;
+			}
 
 			Think( (float)delta );
 		}

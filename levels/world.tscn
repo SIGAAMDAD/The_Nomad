@@ -13384,7 +13384,6 @@ position = Vector2(-87207, 53307)
 mass = 120.0
 MaxViewDistance = 140.0
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-MovementSpeed = 150.0
 BotName = &"Dumbo"
 Age = 20
 Direction = 2
@@ -13402,12 +13401,26 @@ FactionImportance = 50
 [node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87323, 53041)
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-MovementSpeed = 150.0
 BotName = &"Wriggler"
-Age = 44
+Age = 21
 BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
 Direction = 2
 MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-87041, 53312)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
 Relations = {}
 Debts = {}
 Faction = NodePath("../../Factions/RockyBastards")
@@ -13510,24 +13523,24 @@ script = ExtResource("6_i8ckm")
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-88566, 53079)
-TutorialString = "Dash while moving for I-Frames"
+TutorialString = "Dash, use to go fast"
 Action = ExtResource("8_wqmfy")
 
 [node name="UseWeaponTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-87513, 53032)
-TutorialString = "Attack"
+TutorialString = "KILL THEM"
 Action = ExtResource("9_mla2a")
 
 [node name="ParryTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-87517, 52942)
-TutorialString = "Parry"
+TutorialString = "Parry.... almost anything"
 Action = ExtResource("10_oxfhy")
 
 [node name="CampfireTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
 light_mask = 512
 visibility_layer = 512
 position = Vector2(-87829, 53074)
-TutorialString = "Rest at campfire to heal"
+TutorialString = "Go ahead, take a breather at the campfire, you'll need it"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

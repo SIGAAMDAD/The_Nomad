@@ -676,6 +676,7 @@ public partial class Player : Entity {
 		if ( LinearVelocity != Godot.Vector2.Zero ) {
 			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			FootSteps.AddStep( GlobalPosition );
+			SoundLevel += 14.0f;
 		}
 	}
 	private void OnDashTimeTimeout() {
@@ -1132,7 +1133,7 @@ public partial class Player : Entity {
 			SetPhysicsProcess( true );
 			SetProcessUnhandledInput( false );
 
-			TorsoAnimation.Play( "idle" );
+			TorsoAnimation.Play( "default" );
 			LegAnimation.Visible = true;
 			ArmLeft.Animations.Visible = true;
 			ArmRight.Animations.Visible = true;
@@ -1516,7 +1517,7 @@ public partial class Player : Entity {
 		base._Process( delta );
 
 		if ( SoundLevel > 0.0f ) {
-			SoundLevel -= 1.0f;
+			SoundLevel -= 0.05f;
 			if ( SoundLevel < 0.0f ) {
 				SoundLevel = 0.0f;
 			}

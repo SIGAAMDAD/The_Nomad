@@ -6,7 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="4_qnvb1"]
 
 [sub_resource type="Curve" id="Curve_lhqhs"]
-_data = [Vector2(0, 1), 0.0, 0.0, 1, 0, Vector2(0.79375, 0.879245), 0.0, 0.0, 0, 0, Vector2(1, 0.54717), 0.0905662, 0.0, 0, 0]
+_limits = [0.0, 2.0, 0.0, 1.4875]
+_data = [Vector2(0, 2), 0.0, 0.0, 1, 0, Vector2(0.846016, 2), 0.0, 0.0, 0, 0, Vector2(1.4875, 1.10943), 0.0905662, 0.0, 0, 0]
 point_count = 3
 
 [resource]
@@ -16,7 +17,7 @@ name = "7.62mm"
 icon = ExtResource("1_a8w8a")
 properties = {
 "casing_icon": ExtResource("2_i4m1o"),
-"damage": 25.25,
+"damage": 80.0,
 "damage_falloff": SubResource("Curve_lhqhs"),
 "pickup_sfx": ExtResource("4_qnvb1"),
 "range": 2260.0,
