@@ -1544,7 +1544,7 @@ public partial class Player : Entity {
 			if ( TorsoAnimation.FlipH ) {
 				Arm tmp = back;
 				back = front;
-				front = back;
+				front = tmp;
 			} else {
 				front = LastUsedArm;
 			}

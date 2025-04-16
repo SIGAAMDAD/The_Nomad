@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6hb01wurydo7"]
+[gd_scene load_steps=11 format=3 uid="uid://b6hb01wurydo7"]
 
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_tbmy8"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dot7q6fxsd0g0" path="res://scenes/menus/settings_menu.tscn" id="4_y3mln"]
 [ext_resource type="PackedScene" uid="uid://cp2ega0a8ryv2" path="res://scenes/menus/multiplayer_menu.tscn" id="5_23c7l"]
 [ext_resource type="AudioStream" uid="uid://b6jcyfb1jdyj8" path="res://music/ui/menu_intro.ogg" id="7_oa1go"]
+[ext_resource type="PackedScene" uid="uid://d1lincyw81i1f" path="res://scenes/menus/bug_reporter.tscn" id="10_5dd4i"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -64,5 +65,8 @@ playback_type = 1
 
 [node name="UIChannel" type="AudioStreamPlayer" parent="."]
 playback_type = 1
+
+[node name="BugReporter" parent="." instance=ExtResource("10_5dd4i")]
+layout_mode = 1
 
 [connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]
