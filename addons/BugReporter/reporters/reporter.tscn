@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://dj67hsmvv1p38"]
+
+[ext_resource type="Script" uid="uid://c3oajsua0m4cx" path="res://addons/BugReporter/reporters/reporter.gd" id="1_7afts"]
+[ext_resource type="PackedScene" uid="uid://dmn75l8pt7i8t" path="res://addons/BugReporter/webhook_builder/webhook_builder.tscn" id="2_hokb7"]
+
+[node name="Reporter" type="PanelContainer" node_paths=PackedStringArray("_message_text", "_mail_line_edit", "_options", "_screenshot_check", "_screenshot", "_analytics_button", "_send_button", "_text_limit")]
+offset_right = 387.0
+offset_bottom = 488.0
+script = ExtResource("1_7afts")
+_message_text = NodePath("VBox/MessageText")
+_mail_line_edit = NodePath("VBox/Mail/ContactLineEdit")
+_options = NodePath("VBox/MessageOptions")
+_screenshot_check = NodePath("VBox/ScreenshotButton")
+_screenshot = NodePath("VBox/ScreenshotTexture")
+_analytics_button = NodePath("VBox/AnalyticsButton")
+_send_button = NodePath("VBox/SendButton")
+_text_limit = NodePath("VBox/TextLimit")
+
+[node name="WebhookBuilder" parent="." instance=ExtResource("2_hokb7")]
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Feedback"
+
+[node name="MessageOptions" type="OptionButton" parent="VBox"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Bug Report"
+popup/item_0/id = 0
+popup/item_1/text = "Feedback"
+popup/item_1/id = 1
+popup/item_2/text = "Feature Request"
+popup/item_2/id = 2
+
+[node name="Label2" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Message:"
+
+[node name="MessageText" type="TextEdit" parent="VBox"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="TextLimit" type="Label" parent="VBox"]
+visible = false
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="Mail" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBox/Mail"]
+layout_mode = 2
+text = "Contact Info (Optional):"
+
+[node name="ContactLineEdit" type="LineEdit" parent="VBox/Mail"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "e-mail or Discord Username"
+max_length = 1024
+
+[node name="ScreenshotButton" type="CheckBox" parent="VBox"]
+layout_mode = 2
+disabled = true
+text = "attach last screenshot"
+
+[node name="ScreenshotTexture" type="TextureRect" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 2
+stretch_mode = 5
+
+[node name="AnalyticsButton" type="CheckBox" parent="VBox"]
+layout_mode = 2
+button_pressed = true
+text = "Send Analytics"
+
+[node name="SendButton" type="Button" parent="VBox"]
+layout_mode = 2
+text = "Send"
+
+[connection signal="request_completed" from="WebhookBuilder" to="." method="_on_webhook_builder_request_completed"]
+[connection signal="text_changed" from="VBox/MessageText" to="." method="_on_message_text_text_changed"]
+[connection signal="pressed" from="VBox/SendButton" to="." method="_on_SendButton_pressed"]
