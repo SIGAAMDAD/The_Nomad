@@ -121,7 +121,6 @@ namespace Renown.Thinkers {
 
 		protected BarkType LastBark;
 		protected BarkType SequencedBark;
-		protected Timer ThinkerTimer;
 		protected Timer LoseInterestTimer;
 		protected Timer ChangeInvestigateAngleTimer;
 		protected Node2D SightDetector;
@@ -143,6 +142,24 @@ namespace Renown.Thinkers {
 		public float GetSoundTolerance() => SoundTolerance;
 		public Godot.Vector2 GetLastTargetPosition() => LastTargetPosition;
 		public Entity GetSightTarget() => SightTarget;
+
+		private void OnDeath( Entity source, Entity target ) {
+			Tweener.Free();
+
+			for ( int i = 0; i < SightLines.Length; i++ ) {
+				SightDetector.RemoveChild( SightLines[i] );
+				SightLines[i].QueueFree();
+			}
+			LoseInterestTimer.QueueFree();
+			ChangeInvestigateAngleTimer.QueueFree();
+
+			ArmAnimations.QueueFree();
+			HeadAnimations.QueueFree();
+			BarkChannel.QueueFree();
+			SightDetector.QueueFree();
+			DetectionMeter.QueueFree();
+			NavAgent.QueueFree();
+		}
 
 		public virtual void Alert( Entity target ) {
 			LastTargetPosition = target.GlobalPosition;
@@ -388,6 +405,8 @@ namespace Renown.Thinkers {
 
 		public override void _Ready() {
 			base._Ready();
+
+			Die += OnDeath;
 
 			RandomFactory = new System.Random();
 

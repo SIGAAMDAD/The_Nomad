@@ -1,19 +1,7 @@
-using System;
 using System.Threading;
 using Godot;
 
 public partial class MainMenu : Control {
-	[Signal]
-	public delegate void SettingsMenuEventHandler();
-	[Signal]
-	public delegate void HelpMenuEventHandler();
-	[Signal]
-	public delegate void MultiplayerMenuEventHandler();
-	[Signal]
-	public delegate void ModsMenuEventHandler();
-	[Signal]
-	public delegate void CoopMenuEventHandler();
-
 	private enum IndexedButton : int {
 		Story,
 		Coop,
@@ -40,6 +28,19 @@ public partial class MainMenu : Control {
 
 	private static Tween AudioFade;
 
+	[Signal]
+	public delegate void SettingsMenuEventHandler();
+	[Signal]
+	public delegate void HelpMenuEventHandler();
+	[Signal]
+	public delegate void MultiplayerMenuEventHandler();
+	[Signal]
+	public delegate void ModsMenuEventHandler();
+	[Signal]
+	public delegate void CoopMenuEventHandler();
+	[Signal]
+	public delegate void FinishedLoadingEventHandler();
+
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 		AudioFade.Finished -= OnAudioFadeFinished;
@@ -49,12 +50,14 @@ public partial class MainMenu : Control {
 		QueueFree();
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 	}
+
 	private void OnContinueGameFinished() {
-		Hide();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
+
+		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
-		LoadThread.Join();
+		Console.PrintLine( "Loading game..." );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -74,13 +77,17 @@ public partial class MainMenu : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 
-		ArchiveSystem.LoadGame();
-
-		Console.PrintLine( "Loading game..." );
-
-		GetTree().ChangeSceneToPacked( LoadedWorld );
+		FinishedLoading += () => {
+			LoadThread.Join();
+			GetTree().ChangeSceneToPacked( LoadedWorld );
+		};
+		LoadThread = new Thread( () => {
+			ArchiveSystem.LoadGame();
+			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
+			CallDeferred( "emit_signal", "FinishedLoading" );
+		} );
+		LoadThread.Start();
 	}
-
 	private void OnContinueGameButtonPressed() {
 		if ( Loaded ) {
 			return;
@@ -89,6 +96,7 @@ public partial class MainMenu : Control {
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 
+		Hide();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
@@ -230,9 +238,6 @@ public partial class MainMenu : Control {
 		AppVersion.SetProcess( false );
 		AppVersion.SetProcessInternal( false );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
-
-		LoadThread = new Thread( () => { LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" ); } );
-		LoadThread.Start();
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 		UIChannel.SetProcess( false );

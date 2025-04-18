@@ -27,28 +27,6 @@ public partial class TitleMenu : Control {
 
 	private MenuState State = MenuState.Main;
 
-	public override void _ExitTree() {
-		base._ExitTree();
-
-		LobbyBrowser.QueueFree();
-		LobbyFactory.QueueFree();
-
-		CoopMenu.QueueFree();
-		MultiplayerMenu.QueueFree();
-		SettingsMenu.QueueFree();
-		MainMenu.QueueFree();
-		ExitButton.QueueFree();
-
-		UIChannel.QueueFree();
-
-//		MainMenu.Disconnect( "CampaignMenu", Callable.From( OnMainMenuCampaignMenu ) );
-		MainMenu.Disconnect( "CoopMenu", Callable.From( OnMainMenuCoopMenu ) );
-		MainMenu.Disconnect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
-		MainMenu.Disconnect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
-
-		QueueFree();
-	}
-
     private void OnExitButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();

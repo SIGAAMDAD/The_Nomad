@@ -19,8 +19,8 @@ script = ExtResource("1_gwdd4")
 [node name="MenuBackground" parent="." instance=ExtResource("2_u6do7")]
 
 [node name="ImageChange" type="Timer" parent="."]
-wait_time = 5.0
-autostart = true
+wait_time = 3.0
+one_shot = true
 
 [node name="Tips" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(0, 100)
@@ -87,7 +87,9 @@ focus_neighbor_bottom = NodePath("")
 focus_next = NodePath("")
 focus_previous = NodePath("")
 focus_mode = 0
+focus_recursive_behavior = 0
 mouse_filter = 0
+mouse_recursive_behavior = 0
 mouse_force_pass_scroll_events = true
 mouse_default_cursor_shape = 0
 theme = null

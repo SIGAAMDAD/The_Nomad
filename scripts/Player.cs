@@ -100,6 +100,7 @@ public partial class Player : Entity {
 	private Resource PrevWeaponAction;
 	private Resource OpenInventoryAction;
 	private Resource BulletTimeAction;
+	private Resource ArmAngleAction;
 	public readonly Resource InteractionAction;
 
 	private Resource MoveActionGamepad;
@@ -112,7 +113,7 @@ public partial class Player : Entity {
 	private Resource PrevWeaponActionGamepad;
 	private Resource OpenInventoryActionGamepad;
 	private Resource BulletTimeActionGamepad;
-	private Resource ArmAngleAction;
+	private Resource ArmAngleActionGamepad;
 	public readonly Resource InteractionActionGamepad;
 
 	private Resource MoveActionKeyboard;
@@ -125,6 +126,7 @@ public partial class Player : Entity {
 	private Resource PrevWeaponActionKeyboard;
 	private Resource OpenInventoryActionKeyboard;
 	private Resource BulletTimeActionKeyboard;
+	private Resource ArmAngleActionKeyboad;
 	public readonly Resource InteractionActionKeyboard;
 
 	private GpuParticles2D WalkEffect;
@@ -239,6 +241,7 @@ public partial class Player : Entity {
 	}
 	*/
 
+#region Load & Save
 	public override void Save() {
 		using ( var writer = new SaveSystem.SaveSectionWriter( "Player" ) ) {
 			int stackIndex;
@@ -257,6 +260,7 @@ public partial class Player : Entity {
 			writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
 			stackIndex = 0;
 			foreach ( var stack in AmmoStacks ) {
+				// TODO: FIXME!
 				writer.SaveInt( "ammo_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
 				writer.SaveString( "ammo_stacks_type_" + stackIndex.ToString(), (string)stack.Value.AmmoType.Get( "id" ) );
 				stackIndex++;
@@ -265,7 +269,7 @@ public partial class Player : Entity {
 			writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
 			stackIndex = 0;
 			foreach ( var stack in WeaponsStack ) {
-				writer.SaveString( "weapon_stacks_type_" + stackIndex.ToString(), (string)stack.Value.Data.Get( "id" ) );
+				writer.SaveString( "weapon_stacks_path_" + stackIndex.ToString(), stack.Value.GetInitialPath() );
 				if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 					writer.SaveInt( "weapon_stacks_bullet_count_" + stackIndex.ToString(), stack.Value.GetBulletCount() );
 				}
@@ -276,14 +280,14 @@ public partial class Player : Entity {
 			for ( int i = 0; i < WeaponSlots.Length; i++ ) {
 				writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
 				if ( WeaponSlots[i].IsUsed() ) {
-					string weaponId = "";
+					NodePath weaponId = "";
 					foreach ( var stack in WeaponsStack ) {
 						if ( stack.Value == WeaponSlots[ i ].GetWeapon() ) {
-							weaponId = (string)stack.Value.Data.Get( "id" );
+							weaponId = stack.Value.GetInitialPath();
 							break;
 						}
 					}
-					writer.SaveString( "weapon_slot_id_" + i.ToString(), weaponId );
+					writer.SaveString( "weapon_slot_hash_" + i.ToString(), weaponId );
 					writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
 				}
 			}
@@ -332,48 +336,13 @@ public partial class Player : Entity {
 		WeaponsStack.Clear();
 		int numWeapons = reader.LoadInt( "weapon_stacks_count" );
 		for ( int i = 0; i < numWeapons; i++ ) {
-			WeaponEntity weapon = new WeaponEntity();
-			string id = reader.LoadString( "weapon_stacks_type_" + i.ToString() );
-			weapon.Data = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
-			weapon.SetOwner( this );
-			WeaponsStack.Add( id.GetHashCode(), weapon );
-			weapon.OverrideRayCast( AimRayCast );
-			AddChild( weapon );
-
-			if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				int nBulletCount = reader.LoadInt( "weapon_stacks_bullet_count_" + i.ToString() );
-				if ( nBulletCount == 0 ) {
-					weapon.SetWeaponState( WeaponEntity.WeaponState.Reload );
-				} else {
-					weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
-				}
-				weapon.SetBulletCount( nBulletCount );
-			} else {
-				weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
-			}
-
-			AmmoStack stack = null;
-			foreach ( var it in AmmoStacks ) {
-				if ( (int)( (Godot.Collections.Dictionary)it.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
-					(int)weapon.GetAmmoType() )
-				{
-					stack = it.Value;
-					break;
-				}
-			}
-			if ( stack != null ) {
-				weapon.SetReserve( stack );
-				weapon.SetAmmo( stack.AmmoType );
-			}
+			CallDeferred( "LoadWeapon", reader.LoadString( "weapon_stacks_path_" + i.ToString() ), reader.LoadInt( "weapon_stacks_bullet_count_" + i.ToString() ) );
 		}
 
 		int maxSlots = reader.LoadInt( "max_weapon_slots" );
 		for ( int i = 0; i < maxSlots; i++ ) {
 			if ( reader.LoadBoolean( "weapon_slot_used_" + i.ToString() ) ) {
-				WeaponEntity weapon = WeaponsStack[ reader.LoadString( "weapon_slot_id_" + i.ToString() ).GetHashCode() ];
-				weapon.SetEquippedState( true );
-				WeaponSlots[i].SetWeapon( weapon );
-				WeaponSlots[i].SetMode( (WeaponEntity.Properties)reader.LoadUInt( "weapon_slot_mode_" + i.ToString() ) );
+				CallDeferred( "InitWeaponSlot", i, reader.LoadString( "weapon_slot_hash_" + i.ToString() ), reader.LoadUInt( "weapon_slot_mode_" + i.ToString() ) );
 			}
 		}
 
@@ -387,8 +356,49 @@ public partial class Player : Entity {
 			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
 
-		EmitSignalSwitchedWeapon( WeaponSlots[ CurrentWeapon ].GetWeapon() );
+		CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
 	}
+
+	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
+		WeaponEntity weapon = WeaponsStack[ path.GetHashCode() ];
+		weapon.SetEquippedState( true );
+		WeaponSlots[ nSlot ].SetWeapon( weapon );
+		WeaponSlots[ nSlot ].SetMode( (WeaponEntity.Properties)mode );
+	}
+	private void LoadWeapon( NodePath path, int bulletCount ) {
+		WeaponEntity weapon = GetNode<WeaponEntity>( path );
+
+		weapon.SetOwner( this );
+		WeaponsStack.Add( path.GetHashCode(), weapon );
+		weapon.OverrideRayCast( AimRayCast );
+
+		if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+			int nBulletCount = bulletCount;
+			if ( nBulletCount == 0 ) {
+				weapon.SetWeaponState( WeaponEntity.WeaponState.Reload );
+			} else {
+				weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
+			}
+			weapon.SetBulletCount( nBulletCount );
+		} else {
+			weapon.SetWeaponState( WeaponEntity.WeaponState.Idle );
+		}
+
+		AmmoStack stack = null;
+		foreach ( var it in AmmoStacks ) {
+			if ( (int)( (Godot.Collections.Dictionary)it.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
+				(int)weapon.GetAmmoType() )
+			{
+				stack = it.Value;
+				break;
+			}
+		}
+		if ( stack != null ) {
+			weapon.SetReserve( stack );
+			weapon.SetAmmo( stack.AmmoType );
+		}
+	}
+#endregion
 
 	public void SendPacket() {
 		if ( !SettingsData.GetNetworkingEnabled() ) {
@@ -472,17 +482,15 @@ public partial class Player : Entity {
 				mousePosition = GetViewport().GetMousePosition();
 			}
 
-			float y = mousePosition.Y;
 			float x = mousePosition.X;
 			int width = ScreenSize.X;
-			int height = ScreenSize.Y;
 
-//			if ( LastMousePosition != mousePosition ) {
-//				LastMousePosition = mousePosition;
-//				IdleReset();
-//			}
+			if ( LastMousePosition != mousePosition ) {
+				LastMousePosition = mousePosition;
+				IdleReset();
+			}
 
-			ArmAngle = GetGlobalMousePosition().Angle();
+			ArmAngle = GetLocalMousePosition().Angle();
 //			ArmAngle = (float)Math.Atan2( y - ( height / 2.0f ), x - ( width / 2.0f ) );
 			AimLine.GlobalRotation = ArmAngle;
 			AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( ArmAngle ) ) * AimLine.Points[1].X;
@@ -829,9 +837,13 @@ public partial class Player : Entity {
 			return;
 		}
 		
-		ArmAngle = (float)ArmAngleAction.Get( "value_axis_1d" );
+		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
+			GetArmAngle();
+		} else {
+			ArmAngle = (float)ArmAngleAction.Get( "value_axis_1d" );
+		}
 		AimLine.GlobalRotation = ArmAngle;
-		AimRayCast.GlobalRotation = ArmAngle;
+		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[1].X;
 	}
 	private void OnPrevWeapon() {
 		if ( IsInputBlocked() ) {
@@ -1137,16 +1149,6 @@ public partial class Player : Entity {
 		if ( GameConfiguration.GameMode == GameMode.LocalCoop2 ) {
 			LoadGamepadBinds();
 		}
-		
-		SwitchWeaponModeAction?.Disconnect( "triggered", Callable.From( SwitchWeaponMode ) );
-		BulletTimeAction?.Disconnect( "triggered", Callable.From( OnBulletTime ) );
-		NextWeaponAction?.Disconnect( "triggered", Callable.From( OnNextWeapon ) );
-		PrevWeaponAction?.Disconnect( "triggered", Callable.From( OnPrevWeapon ) );
-		DashAction?.Disconnect( "triggered", Callable.From( OnDash ) );
-		SlideAction?.Disconnect( "triggered", Callable.From( OnSlide ) );
-		UseWeaponAction?.Disconnect( "triggered", Callable.From( OnUseWeapon ) );
-		UseWeaponAction?.Disconnect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		OpenInventoryAction?.Disconnect( "triggered", Callable.From( OnToggleInventory ) );
 
 		if ( InputContext == ResourceCache.KeyboardInputMappings ) {
 			MoveAction = MoveActionKeyboard;
@@ -1173,16 +1175,6 @@ public partial class Player : Entity {
 
 			CurrentMappingContext = ResourceCache.GamepadInputMappings;
 		}
-
-		SwitchWeaponModeAction.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
-		BulletTimeAction.Connect( "triggered", Callable.From( OnBulletTime ) );
-		NextWeaponAction.Connect( "triggered", Callable.From( OnNextWeapon ) );
-		PrevWeaponAction.Connect( "triggered", Callable.From( OnPrevWeapon ) );
-		DashAction.Connect( "triggered", Callable.From( OnDash ) );
-		SlideAction.Connect( "triggered", Callable.From( OnSlide ) );
-		UseWeaponAction.Connect( "triggered", Callable.From( OnUseWeapon ) );
-		UseWeaponAction.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		OpenInventoryAction.Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 
 	public override void _UnhandledInput( InputEvent @event ) {
@@ -1234,7 +1226,17 @@ public partial class Player : Entity {
 		SwitchWeaponModeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player" + InputDevice.ToString() + ".tres" );
 		BulletTimeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player" + InputDevice.ToString() + ".tres" );
 		OpenInventoryActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/open_inventory_player" + InputDevice.ToString() + ".tres" );
-		ArmAngleAction = ResourceLoader.Load( "res://resources/binds/actions/gamepad/arm_angle_player" + InputDevice.ToString() + ".tres" );
+		ArmAngleActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/arm_angle_player" + InputDevice.ToString() + ".tres" );
+
+		SwitchWeaponModeActionGamepad.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		BulletTimeActionGamepad.Connect( "triggered", Callable.From( OnBulletTime ) );
+		NextWeaponActionGamepad.Connect( "triggered", Callable.From( OnNextWeapon ) );
+		PrevWeaponActionGamepad.Connect( "triggered", Callable.From( OnPrevWeapon ) );
+		DashActionGamepad.Connect( "triggered", Callable.From( OnDash ) );
+		SlideActionGamepad.Connect( "triggered", Callable.From( OnSlide ) );
+		UseWeaponActionGamepad.Connect( "triggered", Callable.From( OnUseWeapon ) );
+		UseWeaponActionGamepad.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
+		OpenInventoryActionGamepad.Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 	private void LoadKeyboardBinds() {
 		MoveActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/move.tres" );
@@ -1246,6 +1248,17 @@ public partial class Player : Entity {
 		SwitchWeaponModeActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/switch_weapon_mode.tres" );
 		BulletTimeActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/bullet_time.tres" );
 		OpenInventoryActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/open_inventory.tres" );
+		ArmAngleActionKeyboad = ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
+
+		SwitchWeaponModeActionKeyboard.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		BulletTimeActionKeyboard.Connect( "triggered", Callable.From( OnBulletTime ) );
+		NextWeaponActionKeyboard.Connect( "triggered", Callable.From( OnNextWeapon ) );
+		PrevWeaponActionKeyboard.Connect( "triggered", Callable.From( OnPrevWeapon ) );
+		DashActionKeyboard.Connect( "triggered", Callable.From( OnDash ) );
+		SlideActionKeyboard.Connect( "triggered", Callable.From( OnSlide ) );
+		UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
+		UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
+		OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 	private void LoadSfx() {
 		/*
@@ -1333,12 +1346,14 @@ public partial class Player : Entity {
 	public override void _Ready() {
 		base._Ready();
 
+		ScreenSize = DisplayServer.WindowGetSize();
+
 		StartingPosition = GlobalPosition;
 
 		AimLine = GetNode<Line2D>( "AimAssist/AimLine" );
 		AimRayCast = GetNode<RayCast2D>( "AimAssist/AimLine/RayCast2D" );
 
-		AimLine.Points[1].X = AimLine.Points[0].X * PunchRange;
+		AimLine.Points[1].X = AimLine.Points[0].X * ( ScreenSize.X / 2.0f );
 		AimRayCast.TargetPosition = GlobalPosition * PunchRange;
 
 		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
@@ -1447,8 +1462,6 @@ public partial class Player : Entity {
 
 		LastUsedArm = ArmRight;
 
-		ScreenSize = DisplayServer.WindowGetSize();
-
 		GetTree().Root.SizeChanged += OnScreenSizeChanged;
 
 //		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
@@ -1548,9 +1561,6 @@ public partial class Player : Entity {
 					|| ( arm == ArmRight && arm.Animations.FlipH ) ) {
 					animationName += "_flip";
 				}
-			}
-			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				AimLine.Points[1].X = (float)( (Godot.Collections.Dictionary)weapon.GetReserve().AmmoType.Get( "properties" ) )[ "range" ];
 			}
 			arm.Animations.Play( animationName );
 		}
@@ -1690,7 +1700,7 @@ public partial class Player : Entity {
 			}
 		}
 		
-		WeaponsStack.Add( ( (string)weapon.Data.Get( "id ") ).GetHashCode(), weapon );
+		WeaponsStack.Add( weapon.GetInitialPath().GetHashCode(), weapon );
 
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;

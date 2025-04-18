@@ -8215,6 +8215,174 @@ Debts = {}
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 30
 
+[node name="Jaffon Ollavan2" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-79166, 52639)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan3" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-79053, 53198)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan4" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-77995, 53749)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan5" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-78825, 53496)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan6" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-79096, 53801)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan7" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-80119, 53880)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan8" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-78109, 54186)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan9" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-80477, 53137)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan10" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-81211, 53898)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan11" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-79944, 53120)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan12" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-79595, 52657)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan13" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-80119, 54125)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
 [node name="Factions" type="Node" parent="."]
 
 [node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("Leader", "MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]

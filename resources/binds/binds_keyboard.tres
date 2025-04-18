@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=85 format=3 uid="uid://cva672a3bp3sm"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=84 format=3 uid="uid://cva672a3bp3sm"]
 
 [ext_resource type="Script" uid="uid://bd74abvyklro7" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
 [ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="2_84yx1"]
@@ -398,10 +398,6 @@ input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_kek1g")])
 [sub_resource type="Resource" id="Resource_jmu4i"]
 script = ExtResource("25_gg66h")
 
-[sub_resource type="Resource" id="Resource_27byw"]
-script = ExtResource("14_cvawn")
-actuation_threshold = 0.5
-
 [sub_resource type="Resource" id="Resource_hiyb6"]
 script = ExtResource("3_w7imu")
 override_action_settings = false
@@ -410,7 +406,7 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_jmu4i")
 modifiers = Array[ExtResource("5_jakow")]([])
-triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_27byw")])
+triggers = Array[ExtResource("9_ydc30")]([])
 
 [sub_resource type="Resource" id="Resource_17381"]
 script = ExtResource("1_7co6v")

@@ -26,6 +26,8 @@ public partial class Poem : Control {
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void OnTransitionFinished() {
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
+
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 

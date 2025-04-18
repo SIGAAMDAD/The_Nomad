@@ -94,8 +94,7 @@ public partial class WeaponEntity : Node2D {
 	private float UseTime;
 	private float ReloadTime;
 
-	private PackedScene BulletShell;
-	private PackedScene DustCloud;
+	private NodePath InitialPath;
 
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
@@ -131,6 +130,7 @@ public partial class WeaponEntity : Node2D {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
+	public NodePath GetInitialPath() => GetPath();
 	public void SetOwner( Player player ) =>_Owner = player;
 	public WeaponState GetWeaponState() => CurrentState;
 	public void SetWeaponState( WeaponState state ) => CurrentState = state;
@@ -340,6 +340,11 @@ public partial class WeaponEntity : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
+		InitialPath = GetPath();
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			Load();
+		}
+
 		if ( !IsInGroup( "Archive" ) ) {
 			AddToGroup( "Archive" );
 		}
@@ -399,8 +404,29 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	public void Save() {
+		if ( Data == null ) {
+			return;
+		}
+		using ( var writer = new SaveSystem.SaveSectionWriter( InitialPath ) ) {
+			writer.SaveBool( "HasOwner", _Owner != null );
+			if ( _Owner != null ) {
+				writer.SaveString( "Owner", _Owner.GetPath() );
+			}
+		}
 	}
 	public void Load() {
+		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( InitialPath );
+
+		// save file compatibility
+		if ( reader == null ) {
+			return;
+		}
+
+		if ( reader.LoadBoolean( "HasOwner" ) ) {
+			_Owner = GetNode<Player>( reader.LoadString( "Owner" ) );
+			
+			CallDeferred( "reparent", _Owner );
+		}
 	}
 
 	private float UseBladed() {

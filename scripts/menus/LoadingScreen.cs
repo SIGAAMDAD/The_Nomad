@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using DialogueManagerRuntime;
 using Godot;
 
 public partial class LoadingScreen : CanvasLayer {
@@ -7,8 +9,7 @@ public partial class LoadingScreen : CanvasLayer {
 	private Range Spinner;
 	private bool FadingOut = false;
 	private Timer ImageChange;
-	private System.Random random = new System.Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day
-		+ System.DateTime.Now.Second + System.DateTime.Now.Millisecond );
+	private System.Random random = new System.Random();
 
 	private readonly string[] Tips = [
 		"You can parry anything that's flashing green, including blades, bullets, etc.",
@@ -44,19 +45,29 @@ public partial class LoadingScreen : CanvasLayer {
 			}
 		}
 		TipLabel.Text = Tips[ tipIndex ];
+
+		ImageChange.Start();
 	}
 
 	private void OnFadeOutFinished() {
 		Hide();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnFadeOutFinished ) );
+
+		ImageChange.Stop();
+		Spinner.SetProcess( false );
 	}
 	public void FadeOut() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnFadeOutFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 	public void FadeIn() {
+		Spinner.SetProcess( true );
+
 		Show();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+
+		ImageChange.Start();
+		OnImageChangeTimeout();
 	}
 
 	public override void _Ready() {
@@ -77,6 +88,7 @@ public partial class LoadingScreen : CanvasLayer {
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );
 		Spinner.SetProcessInternal( false );
+		Spinner.Show();
 
 		SetProcess( false );
 		SetProcessInternal( false );

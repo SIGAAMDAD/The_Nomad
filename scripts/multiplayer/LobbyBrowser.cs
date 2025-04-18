@@ -170,8 +170,10 @@ public partial class LobbyBrowser : Control {
 			break;
 		};
 
-		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			Hide();
+			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		}
 	}
 
 	private void MatchmakingLoop() {
