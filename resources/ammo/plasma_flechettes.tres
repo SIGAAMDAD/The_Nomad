@@ -1,6 +1,7 @@
-[gd_resource type="ItemDefinition" load_steps=5 format=3 uid="uid://bbg71vw5lg4u1"]
+[gd_resource type="ItemDefinition" load_steps=6 format=3 uid="uid://bbg71vw5lg4u1"]
 
 [ext_resource type="Texture2D" uid="uid://b7j6bikja8o4m" path="res://textures/env/icona_plasma.png" id="1_46ycc"]
+[ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_rx2al"]
 [ext_resource type="Texture2D" uid="uid://dllybiri2t01u" path="res://textures/env/bullet_casings/plasma_shell.png" id="2_rx2al"]
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_e2ki1"]
 
@@ -10,7 +11,7 @@ point_count = 3
 
 [resource]
 id = "AMMO_PLASMA_FLECHETTES"
-max_stack = 1000
+max_stack = 100
 name = "Plasma Flechettes"
 icon = ExtResource("1_46ycc")
 weight = 2.5
@@ -24,3 +25,4 @@ properties = {
 "stack_add_amount": 200,
 "type": 0
 }
+categories = Array[ItemCategory]([ExtResource("1_rx2al")])

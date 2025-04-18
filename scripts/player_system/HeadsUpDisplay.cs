@@ -360,6 +360,9 @@ namespace PlayerSystem {
 				WeaponStatusMelee.Hide();
 
 				WeaponStatusFirearmIcon.Texture = weapon.GetIcon();
+
+				WeaponStatusBulletCount.Text = weapon.GetBulletCount().ToString();
+				WeaponStatusBulletReserve.Text = weapon.GetReserve() != null ? weapon.GetReserve().Amount.ToString() : "0";
 			} else {
 				WeaponStatusFirearm.Hide();
 				WeaponStatusMelee.Show();
@@ -506,6 +509,7 @@ namespace PlayerSystem {
 			FadeInTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.90f, 2.5f );
 		}
 
+		public bool IsNotebookOpen() => NoteBook.Visible;
 		public void OnShowInventory() {
 			if ( NoteBook.Visible ) {
 				NoteBook.Visible = false;

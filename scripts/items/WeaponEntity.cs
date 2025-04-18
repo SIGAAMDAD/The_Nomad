@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using Renown;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -146,6 +147,8 @@ public partial class WeaponEntity : Node2D {
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
 
+	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
+
 	private void PlaySound( AudioStream stream ) {
 		AudioChannel.Stream = stream;
 		AudioChannel.Play();
@@ -164,14 +167,6 @@ public partial class WeaponEntity : Node2D {
 			return;
 		}
 		IconSprite?.QueueFree();
-
-		Animations = new AnimatedSprite2D();
-		AddChild( Animations );
-
-		WeaponTimer = GetNode<Timer>( "WeaponTimer" );
-		WeaponTimer.SetProcess( false );
-		WeaponTimer.SetProcessInternal( false );
-		WeaponTimer.OneShot = true;
 
 		ReleasePickupArea();
 
@@ -212,9 +207,23 @@ public partial class WeaponEntity : Node2D {
 	private void InitProperties() {
 		PropertyBits = Properties.None;
 
+		Animations = new AnimatedSprite2D();
+		Animations.Name = "Animations";
+		AddChild( Animations );
+
+		WeaponTimer = new Timer();
+		WeaponTimer.Name = "WeaponTimer";
+		WeaponTimer.SetProcess( false );
+		WeaponTimer.SetProcessInternal( false );
+		WeaponTimer.OneShot = true;
+		AddChild( WeaponTimer );
+
 		AudioChannel = new AudioStreamPlayer2D();
+		AudioChannel.Name = "AudioChannel";
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		AddChild( AudioChannel );
+
+		Icon = (Texture2D)Data.Get( "icon" );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
@@ -261,6 +270,7 @@ public partial class WeaponEntity : Node2D {
 					break;
 				}
 				Sprite2D texture = new Sprite2D();
+				texture.Name = "MuzzleFlash_" + i.ToString();
 				texture.Texture = ResourceCache.GetTexture( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" );
 				texture.Offset = new Godot.Vector2( 160.0f, 0.0f );
 				texture.Scale = new Godot.Vector2( 0.309f, 0.219f );
@@ -271,12 +281,14 @@ public partial class WeaponEntity : Node2D {
 			}
 
 			MuzzleFlashTimer = new Timer();
+			MuzzleFlashTimer.Name = "MuzzleFlashTimer";
 			MuzzleFlashTimer.WaitTime = 0.2f;
 			MuzzleFlashTimer.OneShot = true;
 			MuzzleFlashTimer.Connect( "timeout", Callable.From( OnMuzzleFlashTimerTimeout ) );
 			AddChild( MuzzleFlashTimer );
 
 			MuzzleLight = new PointLight2D();
+			MuzzleLight.Name = "MuzzleLight";
 			MuzzleLight.Texture = ResourceCache.Light;
 			MuzzleLight.TextureScale = 5.0f;
 			MuzzleLight.Energy = 2.5f;
@@ -287,10 +299,13 @@ public partial class WeaponEntity : Node2D {
 			ReloadSfx = (AudioStream)properties[ "reload_sfx" ];
 			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
 
-			RayCast = new RayCast2D();
-			RayCast.Enabled = true;
-			RayCast.TargetPosition = Godot.Vector2.Zero;
-			AddChild( RayCast );
+			if ( RayCast == null ) {
+				RayCast = new RayCast2D();
+				RayCast.Name = "RayCast";
+				RayCast.Enabled = true;
+				RayCast.TargetPosition = Godot.Vector2.Zero;
+				AddChild( RayCast );
+			}
 
 			UseTime = (float)properties[ "use_time" ];
 			ReloadTime = (float)properties[ "reload_time" ];
@@ -325,17 +340,24 @@ public partial class WeaponEntity : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		if ( Data == null ) {
+		if ( !IsInGroup( "Archive" ) ) {
+			AddToGroup( "Archive" );
+		}
+
+		if ( _Owner != null ) {
+			InitProperties();
+
+			return;
+		} else if ( Data == null ) {
 			Console.PrintError( "Cannot initialize WeaponEntity without a valid ItemDefinition (null)" );
 			return;
 		}
-		
-		Icon = (Texture2D)Data.Get( "icon" );
 
 		CreatePickupBounds();
 
 		if ( _Owner == null ) {
 			IconSprite = new Sprite2D();
+			IconSprite.Name = "IconSprite";
 			IconSprite.SetProcess( false );
 			IconSprite.SetProcessInternal( false );
 			IconSprite.Texture = Icon;
@@ -345,8 +367,14 @@ public partial class WeaponEntity : Node2D {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
+		if ( _Owner == null ) {
+			return;
+		}
+
 		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			RayCast.GlobalRotation = _Owner.GetArmAngle();
+//			if ( _Owner is Renown.Thinker thinker && thinker != null ) {
+//				RayCast.GlobalRotation = _Owner.GetArmAngle();
+//			}
 		}
 	}
 
@@ -498,10 +526,10 @@ public partial class WeaponEntity : Node2D {
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Ammo.Get( "properties" );
 
 		soundLevel = (float)properties[ "range" ];
-		RayCast.GlobalPosition = _Owner.GlobalPosition;
-		RayCast.CollideWithAreas = true;
-		RayCast.CollideWithBodies = true;
-		RayCast.CollisionMask = 2 | 5;
+//		RayCast.GlobalPosition = _Owner.GlobalPosition;
+//		RayCast.CollideWithAreas = true;
+//		RayCast.CollideWithBodies = true;
+//		RayCast.CollisionMask = 2 | 5;
 		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
 
 		PlaySound( UseFirearmSfx );

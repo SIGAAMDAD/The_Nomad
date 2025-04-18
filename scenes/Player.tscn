@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=21 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -21,6 +21,10 @@ absorbent = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
 size = Vector2(16, 30)
+
+[sub_resource type="Curve" id="Curve_0rnld"]
+_data = [Vector2(0, 0.738211), 0.0, 0.0, 0, 0, Vector2(1, 0.237828), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
@@ -171,6 +175,21 @@ one_shot = true
 [node name="DashCooldownTime" type="Timer" parent="Timers"]
 wait_time = 0.8
 one_shot = true
+
+[node name="AimAssist" type="Node2D" parent="."]
+process_mode = 4
+
+[node name="AimLine" type="Line2D" parent="AimAssist"]
+position = Vector2(9.53674e-07, -2)
+scale = Vector2(0.324304, 0.375)
+points = PackedVector2Array(0, 5.615, 718.462, 5.33333)
+width = 9.615
+width_curve = SubResource("Curve_0rnld")
+
+[node name="RayCast2D" type="RayCast2D" parent="AimAssist/AimLine"]
+process_mode = 1
+position = Vector2(-1.90735e-06, 5.33333)
+target_position = Vector2(740.047, 0)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true

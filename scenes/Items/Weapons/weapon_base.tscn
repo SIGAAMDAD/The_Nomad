@@ -8,5 +8,3 @@ process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
 script = ExtResource("2_g8mpd")
-
-[node name="WeaponTimer" type="Timer" parent="."]

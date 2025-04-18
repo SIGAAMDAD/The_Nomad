@@ -22,7 +22,7 @@ properties = {
 "default_is_firearm": true,
 "default_is_onehanded": false,
 "default_is_twohanded": true,
-"description": "PLASMA_SMG__DESCRIPTION",
+"description": "PLASMA_SMG_DESCRIPTION",
 "firearm_frames_left": ExtResource("4_v6eh2"),
 "firearm_frames_right": ExtResource("5_m7dsw"),
 "firemode": 2,

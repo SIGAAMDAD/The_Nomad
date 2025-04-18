@@ -205,14 +205,14 @@ public partial class TitleMenu : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
-		UIChannel.VolumeDb = Mathf.LinearToDb( SettingsData.GetEffectsVolumeLinear() );
+		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
-		MusicTheme.VolumeDb = Mathf.LinearToDb( SettingsData.GetMusicVolumeLinear() );
+		MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear();
 		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
-		SettingsData.Instance.MusicVolumeChanged += () => { MusicTheme.VolumeDb = Mathf.LinearToDb( SettingsData.GetMusicVolumeLinear()); };
-		SettingsData.Instance.EffectsVolumeChanged += () => { UIChannel.VolumeDb = Mathf.LinearToDb( SettingsData.GetEffectsVolumeLinear() ); };
+		SettingsData.Instance.MusicVolumeChanged += () => { MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear(); };
+		SettingsData.Instance.EffectsVolumeChanged += () => { UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear(); };
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
 

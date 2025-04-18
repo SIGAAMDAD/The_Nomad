@@ -31,13 +31,13 @@
 [ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="15_qx5q4"]
 [ext_resource type="Script" uid="uid://b5dpy3k5bcf4w" path="res://scripts/mobs/AIPatrolRoute.cs" id="16_i5qqy"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="16_qrdf2"]
-[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="17_3mxq2"]
 [ext_resource type="Texture2D" uid="uid://d1sx0hqsp6ucx" path="res://textures/tilesets/DesertTilemap16x16.png" id="17_8pkr3"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="18_ktfth"]
 [ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/interactables/EaglesPeak.cs" id="18_pjcgv"]
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="19_vg7yo"]
 [ext_resource type="Texture2D" uid="uid://06opea2npplw" path="res://textures/fromeaglespeak.dds" id="19_x3q2i"]
 [ext_resource type="ItemDefinition" uid="uid://gm6rna0vx71" path="res://resources/ammo/762_ammo.tres" id="19_x7eec"]
+[ext_resource type="ItemDefinition" uid="uid://bsixsjgbyrcph" path="res://resources/ammo/shotgun_12gauge_slug.tres" id="19_ybss6"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="20_7te1h"]
 [ext_resource type="AudioStream" uid="uid://byx3qwftkyadu" path="res://music/ui/main.ogg" id="20_x3q2i"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="21_qrdf2"]
@@ -7521,7 +7521,7 @@ frame = 96
 [node name="AmmoBase" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DeadBandit" instance=ExtResource("16_qrdf2")]
 process_mode = 3
 position = Vector2(-42.0524, 7.565)
-Data = ExtResource("17_3mxq2")
+Data = ExtResource("19_ybss6")
 
 [node name="AmmoBase2" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DeadBandit" instance=ExtResource("16_qrdf2")]
 process_mode = 3

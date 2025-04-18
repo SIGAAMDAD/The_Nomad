@@ -39,12 +39,12 @@ public partial class SplitScreenCoop : Node2D {
 
 		Player1 = GetNode<Player>( "ScreenData/Player1/SubViewport/Network/Player1" );
 		Player1.SetupSplitScreen( 0 );
-		Player1.SwitchInputMode( Player.GamepadInputMappings );
+		Player1.SwitchInputMode( ResourceCache.GamepadInputMappings );
 		Player1.RemoveChild( Player1.GetNode<Camera2D>( "Camera2D" ) );
 
 		Player2 = GetNode<Player>( "ScreenData/Player1/SubViewport/Network/Player2" );
 		Player2.SetupSplitScreen( 1 );
-		Player2.SwitchInputMode( Player.GamepadInputMappings );
+		Player2.SwitchInputMode( ResourceCache.GamepadInputMappings );
 		Player2.RemoveChild( Player2.GetNode<Camera2D>( "Camera2D" ) );
 
 		Viewport2.World2D = Viewport1.World2D;
