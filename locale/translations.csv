@@ -71,3 +71,7 @@ MURSTAR_DESCRIPTION,"[p]Originally the unique sidearm of Havlic Murstar, a notor
 PLASMA_FETCHETTES_DESCRIPTION,""
 
 LETTER_TO_THE_BOSS_BANDIT_HIDEOUT,"[i]Hey, boss, sent Hickey and Longboy to Galakas for the toilet you wanted. They haven't returned though. Send reinforcements? Imma go out for some ciggies. Regards, Wriggler.[/i]"
+
+INVENTORY_BUTTON,BACKPACK
+CONTRACTS_BUTTON,CONTRACTS
+RECENT_EVENTS_BUTTON,NOTES

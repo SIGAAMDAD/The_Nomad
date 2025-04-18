@@ -1,6 +1,8 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
+using System.Linq;
+using System.Reflection;
 
 namespace Renown.Thinkers {
 	public enum MerchantState : uint {
@@ -14,58 +16,59 @@ namespace Renown.Thinkers {
 	public partial class Merchant : Thinker {
 		[Export]
 		private Godot.Collections.Dictionary<ResourceType, int> StartingGoods = null;
-		[Export]
-		private ResourceType[] TradeTypes;
+//		[Export]
+//		private Godot.Collections.Array<ResourceType> TradeTypes;
 		
 		private Dictionary<ResourceType, int> Inventory = null;
-		private TradeRoute CurrentRoad = null;
+		private Road CurrentRoad = null;
 		
 		private MerchantState State = MerchantState.Idle;
-		private List<Merchant> CompatibleTrades = null;
 		private Marketplace CurrentMarket = null;
 		
-		private int LastHourTraded = 0;
+		private uint LastHourTraded = 0;
 		private int NumDaysTrading = 0;
 		
 		// TODO: write one-on-one trading
-		
+
+		public override void SetLocation( WorldArea location ) {
+			base.SetLocation( location );
+
+			if ( Location is Settlement settlement && settlement != null ) {
+				// find a suitable marketplace
+				Marketplace[] markets = settlement.GetMarketplaces();
+				float bestDistance = float.MaxValue;
+
+				for ( int i = 0; i < markets.Length; i++ ) {
+					float distance = markets[i].GlobalPosition.DistanceTo( GlobalPosition );
+					if ( distance < bestDistance ) {
+						CurrentMarket = markets[i];
+						bestDistance = distance;
+					}
+				}
+
+				SetNavigationTarget( CurrentMarket.GlobalPosition );
+			}
+		}
+
 		private void OnTimeTick( uint day, uint hour, uint minute ) {
 			if ( hour != LastHourTraded ) {
 				LastHourTraded = hour;
-				
-				// refresh trade list
-				FindCompatibleTrades();
-				
-				for ( int i = 0; i < CompatibleTrades.Count; i++ ) {
-					TryTrade( CompatibleTrades[i] );
-				}
 			}
 		}
 		private void OnDayStart() {
 			if ( State == MerchantState.MarketTrading ) {
 				NumDaysTrading++;
-				if ( NumDaysTrading >= Constants.MaxMerchantTradingDays ) {
-					Settlement to = Settlement.Cache.FindNearestSettlement( GlobalPosition );
+				if ( NumDaysTrading >= 7 ) {
+					Settlement to = Settlement.Cache.FindNearest( GlobalPosition );
 					CurrentRoad = RoadNetwork.GetRoad( to, Location );
 					if ( CurrentRoad == null ) {
 						// blocked/restricted for some reason
 						return;
 					}
 					State = MerchantState.Travelling;
-					SetNavigationTarget( CurrentRoad.FindClosestEntryPoint( GlobalPosition ) );
+					SetNavigationTarget( CurrentRoad.FindClosestEntryPoint( Location, GlobalPosition ).GlobalPosition );
 				}
 			}
-		}
-		
-		public bool IsCompatibleMerchant( Merchant merchant ) {
-			for ( int i = 0; i < TradeTypes.Length; i++ ) {
-				for ( int a = 0; a < merchant.TradeTypes.Length; a++ ) {
-					if ( TradeTypes[i] == merchant.TradeTypes[a] ) {
-						return true;
-					}
-				}
-			}
-			return false;
 		}
 		
 		public override void Save() {
@@ -120,11 +123,11 @@ namespace Renown.Thinkers {
 		protected override void Think( float delta ) {
 			switch ( State ) {
 			case MerchantState.Idle:
-				IdleThink();
 				break;
 			case MerchantState.Travelling:
 				break;
-			case MerchantState.Trading:
+			case MerchantState.RoadTrading:
+			case MerchantState.MarketTrading:
 				TradeThink();
 				break;
 			};
@@ -136,41 +139,9 @@ namespace Renown.Thinkers {
 		/// can lead to a heated argument then a fist-fight or a shootout
 		/// can also lead to a grudge, then a bounty
 		/// </summary>
-		private void TryTrade( Merchant merchant ) {
-			//
-			// find a compatible trade type (there could be multiple)
-			//
-			
-			bool[] types = new bool[ (int)ResourceType.Count ];
-		}
 		
-		private void FindCompatibleTrades() {
-			if ( Location is Settlement settlement && settlement != null ) {
-				Marketplace market = settlement.GetMarketplace();
-				
-				List<Merchant> sellers = market.GetActiveMerchants();
-				
-				// find compatible trades
-				CompatibleTrades.Clear();
-				for ( int i = 0; i < sellers.Count; i++ ) {
-					if ( IsCompatibleMerchant( sellers[i] ) ) {
-						CompatibleTrades.Add( sellers[i] );
-					}
-				}
-			}
-		}
+
 		private void TradeThink() {
-			if ( Location is Settlement settlement && settlement != null ) {
-				if ( CurrentMarket == null ) {
-					MarketplaceSlot slot = settlement.GetMarketplace().GetFreeTradingSpace();
-					if ( slot == null ) {
-						// well... shit
-					}
-					
-					SetNavigationTarget( slot );
-					FindCompatibleTrades();
-				}
-			}
 		}
 	};
 };

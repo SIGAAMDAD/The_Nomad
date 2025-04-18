@@ -60,18 +60,28 @@ public partial class SettingsData : Control {
 	private static bool EnableNetworking;
 	private static bool FriendsOnlyNetworking;
 
+	private static float EffectsVolumeDb_Flat = 0.0f;
+	private static float MusicVolumeDb_Flat = 0.0f;
+
 	private static Godot.Collections.Array<Resource> MappingContexts;
 	private static RefCounted Remapper;
 	private static Resource RemappingConfig;
 	private static Godot.Collections.Array<RefCounted> RemappableItems;
 	private static RefCounted MappingFormatter;
 
-	public static RefCounted GetRemapper() {
-		return Remapper;
-	}
-	public static RefCounted GetMappingFormatter() {
-		return MappingFormatter;
-	}
+	public static SettingsData Instance = null;
+
+	[Signal]
+	public delegate void EffectsToggledEventHandler();
+	[Signal]
+	public delegate void EffectsVolumeChangedEventHandler();
+	[Signal]
+	public delegate void MusicToggledEventHandler();
+	[Signal]
+	public delegate void MusicVolumeChangedEventHandler();
+
+	public static RefCounted GetRemapper() => Remapper;
+	public static RefCounted GetMappingFormatter() => MappingFormatter;
 
 	public static bool GetNetworkingEnabled() => EnableNetworking;
 	public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
@@ -92,13 +102,29 @@ public partial class SettingsData : Control {
 	public static void SetSunShadowQuality( ShadowQuality sunShadowQuality ) => SunShadowQuality = sunShadowQuality;
 
 	public static bool GetEffectsOn() => EffectsOn;
-	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
+	public static void SetEffectsOn( bool bEffectsOn ) {
+		EffectsOn = bEffectsOn;
+		Instance.EmitSignalEffectsToggled();
+	}
 	public static float GetEffectsVolume() => EffectsVolume;
-	public static void SetEffectsVolume( float fEffectsVolume ) => EffectsVolume = fEffectsVolume;
+	public static float GetEffectsVolumeLinear() => EffectsVolumeDb_Flat;
+	public static void SetEffectsVolume( float fEffectsVolume ) {
+		EffectsVolume = fEffectsVolume;
+		EffectsVolumeDb_Flat = Mathf.LinearToDb( EffectsVolume * 0.01f );
+		Instance.EmitSignalEffectsVolumeChanged();
+	}
 	public static bool GetMusicOn() => MusicOn;
-	public static void SetMusicOn( bool bMusicOn ) => MusicOn = bMusicOn;
+	public static void SetMusicOn( bool bMusicOn ) {
+		MusicOn = bMusicOn;
+		Instance.EmitSignalMusicToggled();
+	}
 	public static float GetMusicVolume() => MusicVolume;
-	public static void SetMusicVolume( float fMusicVolume ) => MusicVolume = fMusicVolume;
+	public static float GetMusicVolumeLinear() => MusicVolumeDb_Flat;
+	public static void SetMusicVolume( float fMusicVolume ) {
+		MusicVolume = fMusicVolume;
+		MusicVolumeDb_Flat = Mathf.LinearToDb( MusicVolume * 0.01f );
+		Instance.EmitSignalMusicVolumeChanged();
+	}
 	public static bool GetMuteUnfocused() => MuteUnfocused;
 	public static void SetMuteUnfocused( bool bMuteUnfocused ) => MuteUnfocused = bMuteUnfocused;
 
@@ -116,9 +142,9 @@ public partial class SettingsData : Control {
 
 	private static void LoadAudioSettings( IDictionary<string, string> config ) {
 		EffectsOn = Convert.ToBoolean( config[ "Audio:SFXEnabled" ] );
-		EffectsVolume = (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] );
+		SetEffectsVolume( (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] ) );
 		MusicOn = Convert.ToBoolean( config[ "Audio:MusicEnabled" ] );
-		MusicVolume = (float)Convert.ToDouble( config[ "Audio:MusicVolume" ] );
+		SetMusicVolume( (float)Convert.ToDouble( config[ "Audio:MusicVolume" ] ) );
 	}
 	private static void SaveAudioSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Audio]" );
@@ -272,9 +298,9 @@ public partial class SettingsData : Control {
 		DyslexiaMode = (bool)Default.Get( "_dyslexia_mode" );
 
 		EffectsOn = (bool)Default.Get( "_sound_effects_on" );
-		EffectsVolume = (float)Default.Get( "_sound_effects_volume" );
+		SetEffectsVolume( (float)Default.Get( "_sound_effects_volume" ) );
 		MusicOn = (bool)Default.Get( "_music_on" );
-		MusicVolume = (float)Default.Get( "_music_volume" );
+		SetMusicVolume( (float)Default.Get( "_music_volume" ) );
 		MuteUnfocused = (bool)Default.Get( "_mute_unfocused" );
 
 		EquipWeaponOnPickup = (bool)Default.Get( "_equip_weapon_on_pickup" );
@@ -287,6 +313,8 @@ public partial class SettingsData : Control {
 
 	public override void _Ready() {
 		base._Ready();
+
+		Instance = this;
 
 		Console.PrintLine( "Loading game configuration..." );
 

@@ -13,12 +13,13 @@ namespace Renown.World {
 		[Export]
 		private Godot.Collections.Dictionary<WorldArea, Node2D[]> EntryNodes;
 		
-		protected HashSet<Settlement> LocationLinks = null;
+		protected HashSet<WorldArea> LocationLinks = null;
 		protected Dictionary<WorldArea, Node2D[]> EntryPoints = null;
 		
-		public StringName GetRoadName() => return Title;
-		public NavigationRegion2D GetNavRegion() => return NavRegion;
-		public HashSet<Settlement> GetLocationLinks() => LocationLinks;
+		public StringName GetRoadName() => Title;
+		public NavigationRegion2D GetNavRegion() => NavRegion;
+		public HashSet<WorldArea> GetLocationLinks() => LocationLinks;
+		public bool HasLocationLink( WorldArea location ) => LocationLinks.Contains( location );
 		
 		public Node2D FindClosestEntryPoint( WorldArea location, Godot.Vector2 position ) {
 			if ( !EntryPoints.TryGetValue( location, out Node2D[] nodes ) ) {
@@ -47,7 +48,7 @@ namespace Renown.World {
 				EntryPoints.Add( node.Key, node.Value );
 			}
 			
-			LocationLinks = new HashSet<Settlement>();
+			LocationLinks = new HashSet<WorldArea>();
 			for ( int i = 0; i < Links.Length; i++ ) {
 				LocationLinks.Add( Links[i] );
 			}

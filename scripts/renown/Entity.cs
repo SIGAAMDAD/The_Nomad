@@ -1,6 +1,7 @@
 using Godot;
 using Renown.World;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 /// <summary>
 /// the base parent class which all living renown entities inherit from
@@ -36,6 +37,11 @@ namespace Renown {
 		protected HashSet<Trait> TraitCache = null;
 		protected Dictionary<Object, float> RelationCache = null;
 		protected Dictionary<Object, float> DebtCache = null;
+
+		protected List<LightData> LightSources = new List<LightData>();
+		protected float LightAmount = 0.0f;
+
+		protected System.Threading.Mutex Lock = new System.Threading.Mutex();
 
 		[Signal]
 		public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
@@ -83,7 +89,15 @@ namespace Renown {
 		public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
 
 		public WorldArea GetLocation() => Location;
-		public void SetLocation( WorldArea location ) => Location = location;
+		public virtual void SetLocation( WorldArea location ) => Location = location;
+
+		public virtual void AddLightSource( LightData lightSource ) {
+			LightSources.Add( lightSource );
+		}
+		public virtual void RemoveLightSource( LightData lightSource ) {
+			LightSources.Remove( lightSource );
+		}
+		public float GetLightAmount() => LightAmount;
 
 		public virtual void Save() {
 		}
@@ -92,7 +106,7 @@ namespace Renown {
 
 		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			channel.Stream = stream;
-			channel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			channel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			channel.Play();
 		}
 
@@ -322,6 +336,21 @@ namespace Renown {
 					Console.PrintError( string.Format( "Entity._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
 				}
 			}
+		}
+		public override void _Process( double delta ) {
+			if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+				return;
+			}
+
+			base._Process( delta );
+
+			Lock.WaitOne();
+			LightAmount = 0.0f;
+			for ( int i = 0; i < LightSources.Count; i++ ) {
+				float distance = GlobalPosition.DistanceTo( LightSources[i].GlobalPosition );
+				LightAmount += ( LightSources[i].Energy * LightSources[i].TextureScale ) - distance;
+			}
+			Lock.ReleaseMutex();
 		}
 	};
 };

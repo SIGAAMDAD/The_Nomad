@@ -439,14 +439,12 @@ wait_time = 5.0
 one_shot = true
 
 [node name="NotebookContainer" type="MarginContainer" parent="."]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("15_poeto")
-metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="NotebookContainer"]
 layout_mode = 2

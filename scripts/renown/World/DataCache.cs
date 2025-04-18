@@ -43,5 +43,17 @@ namespace Renown.World {
 				cacheEntry.Value?.Call( "Load" );
 			}
 		}
+		public T FindNearest( Godot.Vector2 position ) {
+			T best = null;
+			float bestDistance = float.MaxValue;
+			foreach ( var node in Cache ) {
+				float distance = ( node.Value as Node2D ).GlobalPosition.DistanceTo( position );
+				if ( distance < bestDistance ) {
+					bestDistance = distance;
+					best = node.Value;
+				}
+			}
+			return best;
+		}
 	};
 };

@@ -1,7 +1,8 @@
+using System;
 using Godot;
 
 namespace SaveSystem {
-	public class SaveSectionWriter {
+	public class SaveSectionWriter : IDisposable {
 		private long BeginPosition = 0;
 		private int FieldCount = 0;
 
@@ -12,6 +13,9 @@ namespace SaveSystem {
 			ArchiveSystem.SectionCount++;
 		}
 
+		public void Dispose() {
+			Flush();
+		}
 		public void Flush() {
 			long position = ArchiveSystem.SaveWriter.BaseStream.Position;
 

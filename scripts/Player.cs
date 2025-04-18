@@ -67,6 +67,9 @@ public partial class Player : Entity {
 
 	private const int MAX_WEAPON_SLOTS = 4;
 
+	public static bool InCombat = false;
+	public static int NumTargets = 0;
+
 	private const float ACCEL = 900.0f;
 	private const float FRICTION = 1400.0f;
 	private const float MAX_SPEED = 240.0f;
@@ -134,8 +137,6 @@ public partial class Player : Entity {
 	private AnimatedSprite2D LegAnimation;
 	private AnimatedSprite2D IdleAnimation;
 
-	private CollisionShape2D SoundBounds;
-
 	private Timer IdleTimer;
 
 	private Timer DashTime;
@@ -198,6 +199,8 @@ public partial class Player : Entity {
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
 
+	private CircleShape2D SoundArea;
+
 	private int TileMapLevel = 0;
 
 	private int NodeHash = 0;
@@ -212,6 +215,11 @@ public partial class Player : Entity {
 	}
 
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
+	public void SetSoundLevel( float nSoundLevel ) {
+		if ( nSoundLevel > SoundLevel ) {
+			SoundLevel = nSoundLevel;
+		}
+	}
 	
 	/*
 	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
@@ -223,62 +231,61 @@ public partial class Player : Entity {
 	*/
 
 	public override void Save() {
-		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Player" );
-		int stackIndex;
-		
-		writer.SaveFloat( "health", Health );
-		writer.SaveFloat( "rage", Rage );
-		writer.SaveInt( "hellbreaks", Hellbreaks );
-		writer.SaveInt( "current_weapon", CurrentWeapon );
-		writer.SaveUInt( "hands_used", (uint)HandsUsed );
+		using ( var writer = new SaveSystem.SaveSectionWriter( "Player" ) ) {
+			int stackIndex;
 
-		writer.SaveVector2( "position", GlobalPosition );
+			writer.SaveFloat( "health", Health );
+			writer.SaveFloat( "rage", Rage );
+			writer.SaveInt( "hellbreaks", Hellbreaks );
+			writer.SaveInt( "current_weapon", CurrentWeapon );
+			writer.SaveUInt( "hands_used", (uint)HandsUsed );
 
-		writer.SaveInt( "arm_left_slot", ArmLeft.GetSlot() );
-		writer.SaveInt( "arm_right_slot", ArmRight.GetSlot() );
+			writer.SaveVector2( "position", GlobalPosition );
 
-		writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
-		stackIndex = 0;
-		foreach ( var stack in AmmoStacks ) {
-			writer.SaveInt( "ammo_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
-			writer.SaveString( "ammo_stacks_type_" + stackIndex.ToString(), (string)stack.Value.AmmoType.Get( "id" ) );
-			stackIndex++;
-		}
+			writer.SaveInt( "arm_left_slot", ArmLeft.GetSlot() );
+			writer.SaveInt( "arm_right_slot", ArmRight.GetSlot() );
 
-		writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
-		stackIndex = 0;
-		foreach ( var stack in WeaponsStack ) {
-			writer.SaveString( "weapon_stacks_type_" + stackIndex.ToString(), (string)stack.Value.Data.Get( "id" ) );
-			if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				writer.SaveInt( "weapon_stacks_bullet_count_" + stackIndex.ToString(), stack.Value.GetBulletCount() );
+			writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
+			stackIndex = 0;
+			foreach ( var stack in AmmoStacks ) {
+				writer.SaveInt( "ammo_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
+				writer.SaveString( "ammo_stacks_type_" + stackIndex.ToString(), (string)stack.Value.AmmoType.Get( "id" ) );
+				stackIndex++;
 			}
-			stackIndex++;
-		}
 
-		writer.SaveInt( "max_weapon_slots", MAX_WEAPON_SLOTS );
-		for ( int i = 0; i < WeaponSlots.Length; i++ ) {
-			writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
-			if ( WeaponSlots[i].IsUsed() ) {
-				int weaponIndex = 0;
-				foreach ( var stack in WeaponsStack ) {
-					if ( stack.Value == WeaponSlots[ i ].GetWeapon() ) {
-						break;
-					}
-					weaponIndex++;
+			writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
+			stackIndex = 0;
+			foreach ( var stack in WeaponsStack ) {
+				writer.SaveString( "weapon_stacks_type_" + stackIndex.ToString(), (string)stack.Value.Data.Get( "id" ) );
+				if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+					writer.SaveInt( "weapon_stacks_bullet_count_" + stackIndex.ToString(), stack.Value.GetBulletCount() );
 				}
-				writer.SaveInt( "weapon_slot_index_" + i.ToString(), weaponIndex );
-				writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
+				stackIndex++;
+			}
+
+			writer.SaveInt( "max_weapon_slots", MAX_WEAPON_SLOTS );
+			for ( int i = 0; i < WeaponSlots.Length; i++ ) {
+				writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
+				if ( WeaponSlots[i].IsUsed() ) {
+					int weaponIndex = 0;
+					foreach ( var stack in WeaponsStack ) {
+						if ( stack.Value == WeaponSlots[ i ].GetWeapon() ) {
+							break;
+						}
+						weaponIndex++;
+					}
+					writer.SaveInt( "weapon_slot_index_" + i.ToString(), weaponIndex );
+					writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
+				}
+			}
+
+			writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
+			stackIndex = 0;
+			foreach ( var stack in ConsumableStacks ) {
+				writer.SaveInt( "consumable_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
+				writer.SaveString( "consumable_stacks_type_" + stackIndex.ToString(), (string)stack.Value.ItemType.Get( "id" ) );
 			}
 		}
-		
-		writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
-		stackIndex = 0;
-		foreach ( var stack in ConsumableStacks ) {
-			writer.SaveInt( "consumable_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
-			writer.SaveString( "consumable_stacks_type_" + stackIndex.ToString(), (string)stack.Value.ItemType.Get( "id" ) );
-		}
-
-		writer.Flush();
 	}
 	public override void Load() {
 		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
@@ -395,9 +402,7 @@ public partial class Player : Entity {
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.MobBase mob && mob != null ) {
-			if ( SoundLevel >= mob.GetSoundTolerance() ) {
-				mob.Alert( this );
-			}
+			mob.Alert( this );
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -437,6 +442,9 @@ public partial class Player : Entity {
 	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public float GetArmAngle() {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
+			return 0.0f;
+		}
 		if ( CurrentMappingContext == KeyboardInputMappings ) {
 			Godot.Vector2 mousePosition;
 
@@ -591,6 +599,9 @@ public partial class Player : Entity {
 		QueueFree();
 	}
 
+	private void OnRespawnFinished() {
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnRespawnFinished ) );
+	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
 		LegAnimation.Hide();
@@ -602,6 +613,12 @@ public partial class Player : Entity {
 		PlaySound( AudioChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		SetProcessUnhandledInput( true );
+		SetProcess( false );
+
+		ArchiveSystem.SaveGame( null, 0 );
+
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnRespawnFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 
 	public override void Damage( Entity attacker, float nAmount ) {
@@ -676,7 +693,7 @@ public partial class Player : Entity {
 		if ( LinearVelocity != Godot.Vector2.Zero ) {
 			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			FootSteps.AddStep( GlobalPosition );
-			SoundLevel += 14.0f;
+			SetSoundLevel( 14.0f );
 		}
 	}
 	private void OnDashTimeTimeout() {
@@ -761,7 +778,7 @@ public partial class Player : Entity {
 			float soundLevel;
 			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			Flags |= PlayerFlags.UsingWeapon;
-			SoundLevel += soundLevel;
+			SetSoundLevel( soundLevel );
 		}
 	}
 	private void OnArmAngleChanged() {
@@ -1295,15 +1312,16 @@ public partial class Player : Entity {
 		SwitchToKeyboard = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_to_keyboard.tres" );
 
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
-		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
-		DashChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
-		SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
+		CollisionShape2D SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
+		SoundArea = SoundBounds.Shape as CircleShape2D;
 
-		Area2D SoundArea = GetNode<Area2D>( "SoundArea" );
-		SoundArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
+		Area2D Area = GetNode<Area2D>( "SoundArea" );
+		Area.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
 
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
@@ -1518,12 +1536,12 @@ public partial class Player : Entity {
 		base._Process( delta );
 
 		if ( SoundLevel > 0.0f ) {
-			SoundLevel -= 0.05f;
+			SoundLevel -= 1.0f;
 			if ( SoundLevel < 0.0f ) {
 				SoundLevel = 0.0f;
 			}
 		}
-		( SoundBounds.Shape as CircleShape2D ).Radius = SoundLevel;
+		SoundArea.Radius = SoundLevel;
 
 		GetArmAngle();
 

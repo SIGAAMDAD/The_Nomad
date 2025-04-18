@@ -65,7 +65,10 @@ namespace Renown.Thinkers {
 		protected override void OnLoseInterestTimerTimeout() {
 			State = AIState.PatrolStart;
 			SightTarget = null;
-			Bark( BarkType.Curse );
+
+			if ( Fear > 80 ) {
+				Bark( BarkType.Curse );
+			}
 
 			// once we've lost the target for a long period of time, resume patrol routes with a little more suspicion
 			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
@@ -188,7 +191,6 @@ namespace Renown.Thinkers {
 				} else {
 					DebrisFactory.Create( AimLine.GetCollisionPoint() );
 					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
-
 				}
 			}
 		}
@@ -278,6 +280,7 @@ namespace Renown.Thinkers {
 				Investigate();
 				// if we've got any suspicion, then start patrolling
 
+				/*
 				if ( Fear > 0 && PatrolRoute == null ) {
 					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
 
@@ -290,7 +293,9 @@ namespace Renown.Thinkers {
 					State = AIState.PatrolStart;
 					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 				}
-				if ( Fear > 80 ) {
+				*/
+				if ( Fear > 80 && CanSeeTarget ) {
+					OnAimTimerTimeout();
 				}
 				LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 				AimAngle = LookAngle;

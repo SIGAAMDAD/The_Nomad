@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://co7rmsfdbg4m0"]
+[gd_scene load_steps=12 format=3 uid="uid://co7rmsfdbg4m0"]
 
 [ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/interactables/Checkpoint.cs" id="1_ihm5l"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
 [ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
+[ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_bcsha"]
 [ext_resource type="Texture2D" uid="uid://dyghteg051cwn" path="res://textures/unlit.dds" id="4_7no74"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8wkao"]
@@ -50,7 +51,6 @@ process_physics_priority = -4
 script = ExtResource("1_ihm5l")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-visible = false
 rotation = -2.45849e-05
 color = Color(0.9, 0.9, 0.9, 1)
 energy = 0.0
@@ -58,6 +58,7 @@ shadow_enabled = true
 shadow_color = Color(0.166853, 0.166853, 0.166853, 0)
 texture = ExtResource("2_7no74")
 texture_scale = 2.5
+script = ExtResource("3_bcsha")
 
 [node name="Bonfire" type="AnimatedSprite2D" parent="."]
 visible = false

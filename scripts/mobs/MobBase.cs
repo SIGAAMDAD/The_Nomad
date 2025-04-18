@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Godot;
 using Renown;
@@ -143,15 +144,21 @@ namespace Renown.Thinkers {
 		public Godot.Vector2 GetLastTargetPosition() => LastTargetPosition;
 		public Entity GetSightTarget() => SightTarget;
 
-		public void Alert( Entity target ) {
+		public virtual void Alert( Entity target ) {
 			LastTargetPosition = target.GlobalPosition;
-			if ( Awareness == AIAwareness.Relaxed ) {
-				Awareness = AIAwareness.Suspicious;
+			if ( Fear > 60 ) {
+				State = AIState.Attacking;
+				Bark( BarkType.Curse, RandomFactory.Next( 0, 100 ) > 60 ? BarkType.Quiet : BarkType.Count );
+			} else {
+				if ( Awareness == AIAwareness.Relaxed ) {
+					Awareness = AIAwareness.Suspicious;
+				}
+				State = AIState.Investigating;
+				PatrolRoute = null;
+				Bark( BarkType.Confusion );
 			}
-			State = AIState.Investigating;
-			PatrolRoute = null;
-			Bark( BarkType.Confusion );
 			SetNavigationTarget( LastTargetPosition );
+			Fear += 30;
 
 			// TODO: make everyone else suspicious
 		}
@@ -394,7 +401,7 @@ namespace Renown.Thinkers {
 
 			BarkChannel = new AudioStreamPlayer2D();
 			BarkChannel.Name = "BarkChannel";
-			BarkChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			BarkChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			AddChild( BarkChannel );
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );

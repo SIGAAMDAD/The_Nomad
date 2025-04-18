@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://couodamo5txu5"]
+[gd_scene load_steps=4 format=3 uid="uid://couodamo5txu5"]
 
 [ext_resource type="SpriteFrames" uid="uid://bibry04hvbsdb" path="res://resources/animations/latern_0.tres" id="1_ltroq"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_ltroq"]
+[ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_17b07"]
 
 [node name="Latern0" type="AnimatedSprite2D"]
 sprite_frames = ExtResource("1_ltroq")
@@ -14,3 +15,4 @@ energy = 2.5
 shadow_enabled = true
 texture = ExtResource("2_ltroq")
 texture_scale = 15.0
+script = ExtResource("3_17b07")

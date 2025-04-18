@@ -1,7 +1,5 @@
 using System;
 using Godot;
-using Renown;
-using Steamworks;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -215,7 +213,7 @@ public partial class WeaponEntity : Node2D {
 		PropertyBits = Properties.None;
 
 		AudioChannel = new AudioStreamPlayer2D();
-		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		AddChild( AudioChannel );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );

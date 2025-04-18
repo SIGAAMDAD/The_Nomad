@@ -157,12 +157,11 @@ namespace Renown {
 		public override StringName GetObjectName() => BotName;
 
 		public override void Save() {
-			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() );
-
-			writer.SaveVector2( "position", GlobalPosition );
-			writer.SaveFloat( "health", Health );
-			writer.SaveUInt( "age", Age );
-			writer.Flush();
+			using ( var writer = new SaveSystem.SaveSectionWriter( "Thinker_" + GetPath() ) ) {
+				writer.SaveVector2( "position", GlobalPosition );
+				writer.SaveFloat( "health", Health );
+				writer.SaveUInt( "age", Age );
+			}
 		}
 		public override void Load() {
 			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + GetPath() );
@@ -194,7 +193,7 @@ namespace Renown {
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 
 			AudioChannel = new AudioStreamPlayer2D();
-			AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			AddChild( AudioChannel );
 
 			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );

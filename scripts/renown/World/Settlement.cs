@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace Renown.World {
@@ -5,7 +6,9 @@ namespace Renown.World {
 		public static DataCache<Settlement> Cache = null;
 
 		[Export]
-		private TradeRoute[] TradeRoutes;
+		private Marketplace[] Markets;
+		[Export]
+		private Road[] TradeRoutes;
 		[Export]
 		private ResourceProducer[] Producers;
 		[Export]
@@ -17,12 +20,18 @@ namespace Renown.World {
 
 		private int Population = 0;
 
+		public Road[] GetTradeRoutes() => TradeRoutes;
+		public int GetPopulation() => Population;
+		public float GetBirthRate() => BirthRate;
+		public Marketplace[] GetMarketplaces() => Markets;
+
 		public override void Save() {
 			base.Save();
 
-			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
-
-			writer.SaveInt( "population", Population );
+			using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
+				writer.SaveInt( "Population", Population );
+				writer.SaveFloat( "BirthRate", BirthRate );
+			}
 		}
 		public override void Load() {
 			base.Load();
@@ -34,7 +43,8 @@ namespace Renown.World {
 				return;
 			}
 
-			Population = reader.LoadInt( "population" );
+			Population = reader.LoadInt( "Population" );
+			BirthRate = reader.LoadFloat( "BirthRate" );
 		}
 
 		public void OnGenerateThinkers() {

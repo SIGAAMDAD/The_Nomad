@@ -37,11 +37,7 @@ namespace PlayerSystem {
 		public override void _Ready() {
 			base._Ready();
 
-			if ( GameConfiguration.GameMode == GameMode.SinglePlayer ) {
-				_Owner = GetTree().CurrentScene.GetNode<Player>( "Network/Players/Player0" );
-			} else if ( GameConfiguration.GameMode == GameMode.LocalCoop2 ) {
-				_Owner = GetParent<HeadsUpDisplay>().GetPlayerOwner();
-			}
+			_Owner = GetParent<HeadsUpDisplay>().GetPlayerOwner();
 
 			Inventory = GetNode<TabBar>( "TabContainer/Inventory" );
 			Inventory.SetProcess( false );
