@@ -1,4 +1,4 @@
-[gd_scene load_steps=124 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=125 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -55,6 +55,7 @@
 [ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="32_fgsnb"]
 [ext_resource type="NavigationPolygon" uid="uid://ca7bmv85ki84" path="res://resources/navmesh_cache/the_great_round_road_navmesh.tres" id="33_3bhl6"]
 [ext_resource type="Texture2D" uid="uid://cdrlq1g2trjlq" path="res://textures/env/dirt.dds" id="34_hc03g"]
+[ext_resource type="Script" uid="uid://bxvargqmrd2aq" path="res://scripts/renown/Biome.cs" id="37_n2t61"]
 [ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/FamilyTree.cs" id="38_aebnb"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
 [ext_resource type="TileSet" uid="uid://cbjpm3df4cd0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
@@ -7095,8 +7096,11 @@ DayCount = 286
 
 [node name="Biomes" type="Node" parent="."]
 
-[node name="SaltWastes" type="Node2D" parent="Biomes"]
+[node name="SaltWastes" type="Area2D" parent="Biomes"]
 position = Vector2(-88192, 52992)
+script = ExtResource("37_n2t61")
+WeatherChangeInterval = 2000.0
+AreaName = &"Salt Wastes"
 
 [node name="MountainCollision" type="StaticBody2D" parent="Biomes/SaltWastes"]
 position = Vector2(155, -13)
@@ -7187,15 +7191,15 @@ vertices = PackedVector2Array(-308, 162, -267, 162, -265, 207, 486, 199, 488, 26
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
-[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" groups=["Archive", "Locations"]]
-process_mode = 4
+[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome") groups=["Archive", "Locations"]]
 collision_layer = 3
 collision_mask = 3
-priority = 1
 script = ExtResource("5_cyobr")
+Biome = NodePath("..")
 AreaName = &"Rocky Bastards Camp"
 
 [node name="RockyBastardsTileMapLayer" type="TileMapLayer" parent="Biomes/SaltWastes/RockyBastardsCamp"]
+process_mode = 4
 process_priority = -1
 process_physics_priority = -2
 visibility_layer = 2
@@ -7651,13 +7655,12 @@ Destination = NodePath("../../Checkpoints/Checkpoint_KiroslaEstate")
 position = Vector2(129.5, 26.5)
 shape = SubResource("RectangleShape2D_itvej")
 
-[node name="KiroslaEstate" type="Area2D" parent="Biomes/SaltWastes" groups=["Archive", "Locations"]]
-process_mode = 4
+[node name="KiroslaEstate" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome") groups=["Archive", "Locations"]]
 position = Vector2(3713, 48)
 collision_layer = 3
 collision_mask = 3
-priority = 1
 script = ExtResource("5_cyobr")
+Biome = NodePath("..")
 AreaName = &"Kirosla Estate"
 
 [node name="Basement" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate"]
@@ -7912,14 +7915,12 @@ Title = &"Eagle\'s Peak"
 position = Vector2(3116, 242)
 Title = &"Kirosla Estate"
 
-[node name="BiomeArea2D" type="Area2D" parent="Biomes/SaltWastes"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/BiomeArea2D"]
+[node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SaltWastes"]
 modulate = Color(0, 0, 0, 1)
 position = Vector2(-1, 57)
 polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342)
 
-[node name="Polygon2D" type="Polygon2D" parent="Biomes/SaltWastes/BiomeArea2D"]
+[node name="Polygon2D" type="Polygon2D" parent="Biomes/SaltWastes"]
 process_mode = 4
 z_index = -6
 texture_repeat = 3
@@ -7951,22 +7952,31 @@ shape = SubResource("SegmentShape2D_x3q2i")
 position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
 
-[node name="SafeSands" type="Node2D" parent="Biomes"]
+[node name="SafeSands" type="Area2D" parent="Biomes"]
 process_mode = 4
 position = Vector2(-30975, 27410)
+collision_layer = 19
+collision_mask = 18
+input_pickable = false
+script = ExtResource("37_n2t61")
+CurrentWeather = 6
+WeatherChangeInterval = 6000.0
+AreaName = &"Safe Sands"
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories")]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList", "Biome")]
 position = Vector2(-66, 29)
 collision_layer = 19
 collision_mask = 18
 input_pickable = false
 script = ExtResource("25_qxdx5")
 Markets = []
-TradeRoutes = [NodePath("../../../Roads/TheOldRoad"), NodePath("../../../Roads/TheGreatRoundRoad")]
+TradeRoutes = []
 Producers = []
 Factories = []
 BirthRate = 3.5
-MaxPopulation = 1000
+MaxPopulation = 256
+FamilyList = [NodePath("../../../FamilyTrees/Erron"), NodePath("../../../FamilyTrees/Kasca")]
+Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
 
 [node name="UnderCity" type="TileMapLayer" parent="Biomes/SafeSands/Galakas"]
@@ -8019,7 +8029,7 @@ tile_set = SubResource("TileSet_1r2vu")
 visible = false
 polygon = PackedVector2Array(-4967, -4958, -3862, 457, -211, 788, 5768, 288, 5843, -5969)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(723, -2864)
 input_pickable = false
 script = ExtResource("25_qxdx5")
@@ -8027,6 +8037,7 @@ Markets = []
 TradeRoutes = []
 Producers = []
 Factories = []
+FamilyList = []
 AreaName = &"Feohenni"
 
 [node name="FoodProducer" type="Area2D" parent="Biomes/SafeSands/Feohenni" node_paths=PackedStringArray("Route")]
@@ -8047,33 +8058,33 @@ autostart = true
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories") groups=["Archive", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
 Producers = []
 Factories = []
+FamilyList = []
 AreaName = &"Latan"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Latan"]
 position = Vector2(-28043, -1759)
 polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories") groups=["Archive", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
 Producers = []
 Factories = []
+FamilyList = []
 AreaName = &"Kingdom of Sortior"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Sortior"]
 position = Vector2(11446, -12611)
 polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922, 11197, -1999)
 
-[node name="BiomeArea2D" type="Area2D" parent="Biomes/SafeSands"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/BiomeArea2D"]
+[node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SafeSands"]
 modulate = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-83738, -17116, -43318, -21388, -44602, -36278, 13550, -27399, 33262, -18183, 29194, 16457, 21347, 23113, 1860, 20402, -19004, 12594, -39775, 8006, -63454, 3282)
 
@@ -8187,7 +8198,7 @@ Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
-[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87323, 53041)
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
 BotName = &"Wriggler"
@@ -8198,10 +8209,11 @@ MovementSpeed = 150.0
 Health = 100.0
 Relations = {}
 Debts = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 30
 
-[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
+[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87041, 53312)
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
 BotName = &"Kissy"
@@ -8212,180 +8224,13 @@ MovementSpeed = 150.0
 Health = 100.0
 Relations = {}
 Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan2" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-79166, 52639)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan3" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-79053, 53198)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan4" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-77995, 53749)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan5" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-78825, 53496)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan6" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-79096, 53801)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan7" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-80119, 53880)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan8" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-78109, 54186)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan9" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-80477, 53137)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan10" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-81211, 53898)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan11" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-79944, 53120)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan12" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-79595, 52657)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan13" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-80119, 54125)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 30
 
 [node name="Factions" type="Node" parent="."]
 
-[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("Leader", "MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
+[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("Leader", "MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
 position = Vector2(-30014, 25051)
 script = ExtResource("31_x3q2i")
 FactionName = &"Guns \'n\' Grenades"
@@ -8398,13 +8243,15 @@ Debts = {}
 Relations = {
 NodePath("../../Network/Players/Player0"): 20.0
 }
+Location = NodePath("../../Biomes/SafeSands/Galakas")
 
-[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
+[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
 script = ExtResource("31_x3q2i")
 FactionName = &"Rocky Bastards"
 MemberList = []
 Debts = {}
 Relations = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 
 [node name="SwordsOfSortior" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 script = ExtResource("31_x3q2i")
@@ -8463,6 +8310,15 @@ Members = []
 [node name="Erron" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members")]
 script = ExtResource("38_aebnb")
 Members = [NodePath("../../Thinkers/Hillec Erron")]
+MaxStrength = 20
+MaxDexterity = 20
+MaxIntelligence = 18
+MaxWisdom = 16
+MaxConsitution = 13
+StrengthBonus = 5
+DexterityBonus = 2
+IntelligenceBonus = 1
+WisdomBonus = 2
 
 [node name="Kasca" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members")]
 script = ExtResource("38_aebnb")

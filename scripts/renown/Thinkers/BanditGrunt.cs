@@ -1,4 +1,5 @@
 using System;
+using System.Transactions;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -89,7 +90,7 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Notify( GroupEvent nEventType, Thinker source ) {
-			if ( source == this ) {
+			if ( source == this || ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 			switch ( nEventType ) {
@@ -109,8 +110,8 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void SendPacket() {
-			SyncObject.Write( PhysicsPosition.X );
-			SyncObject.Write( PhysicsPosition.Y );
+			SyncObject.Write( GlobalPosition.X );
+			SyncObject.Write( GlobalPosition.Y );
 			SyncObject.Write( Health );
 			SyncObject.Write( Fear );
 			SyncObject.Write( (uint)State );
@@ -195,6 +196,11 @@ namespace Renown.Thinkers {
 			}
 		}
 		protected override void ProcessAnimations()  {
+			if ( SightTarget != null ) {
+				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+				LookAngle = AimAngle;
+			}
 			if ( Floor != null ) {
 				if ( Floor.GetUpper() != null && Floor.GetUpper().GetPlayerStatus() ) {
 					Visible = true;
@@ -204,11 +210,8 @@ namespace Renown.Thinkers {
 			} else {
 				Visible = true;
 			}
-
-			if ( SightTarget != null ) {
-				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-				LookAngle = AimAngle;
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
 			}
 
 			ArmAnimations.GlobalRotation = AimAngle;
@@ -230,10 +233,6 @@ namespace Renown.Thinkers {
 			} else if ( LinearVelocity.X < 0.0f ) {
 				BodyAnimations.FlipH = true;
 				ArmAnimations.FlipH = true;
-			}
-
-			if ( Health <= 0.0f ) {
-				return;
 			}
 
 			if ( LinearVelocity != Godot.Vector2.Zero ) {
@@ -301,6 +300,10 @@ namespace Renown.Thinkers {
 				AimAngle = LookAngle;
 				break; }
 			case AIState.Attacking:
+				if ( SightTarget == null ) {
+					State = AIState.Investigating;
+					break;
+				}
 				if ( AimTimer.TimeLeft > AimTimer.TimeLeft * 0.25f ) {
 					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
 					AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
@@ -369,6 +372,7 @@ namespace Renown.Thinkers {
 			switch ( State ) {
 			case AIState.Patrolling:
 				PatrolRoute = NextRoute;
+				PatrolRoute ??= NodeCache.FindClosestRoute( GlobalPosition );
 				SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 				break;
 			default:

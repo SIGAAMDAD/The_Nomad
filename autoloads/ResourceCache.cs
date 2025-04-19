@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 
 public class ResourceCache {
@@ -59,9 +61,9 @@ public class ResourceCache {
 	public static Resource KeyboardInputMappings;
 	public static Resource GamepadInputMappings;
 
-	private static Dictionary<string, AudioStream> AudioCache = new Dictionary<string, AudioStream>();
-	private static Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
-	private static Dictionary<string, PackedScene> SceneCache = new Dictionary<string, PackedScene>();
+	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 1024 );
+	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 1024 );
+	private static ConcurrentDictionary<string, PackedScene> SceneCache = new ConcurrentDictionary<string, PackedScene>( 1024, 1024 );
 
 	public static bool Initialized = false;
 
@@ -70,7 +72,7 @@ public class ResourceCache {
 			return value;
 		}
 		value = ResourceLoader.Load<AudioStream>( key );
-		AudioCache.Add( key, value );
+		AudioCache.TryAdd( key, value );
 		return value;
 	}
 	public static Texture2D GetTexture( string key ) {
@@ -78,7 +80,7 @@ public class ResourceCache {
 			return value;
 		}
 		value = ResourceLoader.Load<Texture2D>( key );
-		TextureCache.Add( key, value );
+		TextureCache.TryAdd( key, value );
 		return value;
 	}
 	public static PackedScene GetScene( string key ) {
@@ -86,7 +88,7 @@ public class ResourceCache {
 			return value;
 		}
 		value = ResourceLoader.Load<PackedScene>( key );
-		SceneCache.Add( key, value );
+		SceneCache.TryAdd( key, value );
 		return value;
 	}
 

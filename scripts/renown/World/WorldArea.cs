@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 
 namespace Renown.World {
@@ -5,28 +6,45 @@ namespace Renown.World {
 		public static DataCache<WorldArea> Cache;
 
 		[Export]
+		protected Biome Biome;
+		[Export]
 		protected StringName AreaName;
 
+		protected bool PlayerStatus = false;
+
+		protected int ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
+
 		public StringName GetAreaName() => AreaName;
+
+		[Signal]
+		public delegate void PlayerEnteredEventHandler();
+		[Signal]
+		public delegate void PlayerExitedEventHandler();
 
 		public virtual void Save() {
 		}
 		public virtual void Load() {
 		}
 
+		public bool IsPlayerHere() => PlayerStatus;
+		public Biome GetBiome() => Biome;
+
 		private void OnProcessAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			CharacterBody2D data = body as CharacterBody2D;
-			if ( data == null ) {
+			Player player = body as Player;
+			if ( player == null ) {
 				return;
 			}
-			data.CallDeferred( "SetLocation", this );
+			PlayerStatus = true;
+			EmitSignalPlayerEntered();
 		}
 		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			CharacterBody2D data = body as CharacterBody2D;
-			if ( data == null ) {
+			Player player = body as Player;
+			if ( player == null ) {
 				return;
 			}
-//			data.CallDeferred( "SetLocation", null );
+			PlayerStatus = false;
+			EmitSignalPlayerExited();
 		}
 
 		public override void _Ready() {	
@@ -35,9 +53,9 @@ namespace Renown.World {
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DEntered ) );
 			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DExited ) );
 
+			ProcessMode = ProcessModeEnum.Pausable;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			ProcessThreadGroupOrder = 0;
-			ProcessThreadMessages = ProcessThreadMessagesEnum.Messages;
+			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
 			}

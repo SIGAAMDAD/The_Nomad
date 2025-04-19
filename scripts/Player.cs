@@ -1474,6 +1474,8 @@ public partial class Player : Entity {
 				new SteamLobby.NetworkNode( this, SendPacket, null ) );
 		}
 
+		ProcessMode = ProcessModeEnum.Pausable;
+
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
 		}

@@ -15,6 +15,7 @@ script = ExtResource("1_l4s3c")
 metadata/_edit_use_anchors_ = true
 
 [node name="AppVersion" type="Label" parent="."]
+process_mode = 4
 texture_filter = 1
 layout_mode = 1
 offset_left = 16.0
@@ -26,6 +27,7 @@ text = "AppVer "
 metadata/_edit_use_anchors_ = true
 
 [node name="CopyrightLabel" type="RichTextLabel" parent="."]
+process_mode = 4
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -104,16 +106,8 @@ layout_mode = 2
 text = "QUIT_BUTTON"
 flat = true
 
-[node name="VScrollBar" type="VScrollBar" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 160.0
-offset_top = 270.5
-offset_right = 168.0
-offset_bottom = 278.5
-metadata/_edit_use_anchors_ = true
-
 [node name="Logo" type="TextureRect" parent="."]
+process_mode = 4
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

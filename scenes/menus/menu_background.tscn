@@ -83,6 +83,7 @@ script = ExtResource("1_6lvap")
 metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
+process_mode = 4
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -106,6 +107,9 @@ draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_rhrir")
 
 [node name="SandParticlesEmitter" type="GPUParticles2D" parent="."]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
 position = Vector2(320, 490)
 amount = 180
 texture = SubResource("GradientTexture2D_u1nnk")

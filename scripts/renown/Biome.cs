@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Godot;
 
 namespace Renown.World {
@@ -77,27 +76,13 @@ namespace Renown.World {
 		private float WeatherChangeInterval = 0.0f;
 		
 		private Timer WeatherChangeTimer;
-		private Area2D RegionArea;
 		private System.Collections.Generic.Dictionary<WeatherType, float> WeatherChances;
 		
 		[Signal]
 		public delegate void AgentEnteredAreaEventHandler( CharacterBody2D agent );
 		[Signal]
 		public delegate void AgentExitedAreaEventHandler( CharacterBody2D agent );
-		
-		private void OnRegionBodyShape2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is not CharacterBody2D ) {
-				return;
-			}
-			body.Call( "SetLocation", this );
-//			EmitSignal( "AgentEnteredArea", (CharacterBody2D)body );
-		}
-		private void OnRegionBodyShape2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is not CharacterBody2D ) {
-				return;
-			}
-//			EmitSignal( "AgentExitedArea", (CharacterBody2D)body );
-		}
+
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
@@ -131,14 +116,6 @@ namespace Renown.World {
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );
-			
-			RegionArea = GetNode<Area2D>( "BiomeArea" );
-			RegionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRegionBodyShape2DEntered ) );
-			RegionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnRegionBodyShape2DExited ) );
-
-			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
-			ProcessThreadMessages = ProcessThreadMessagesEnum.MessagesPhysics;
 		}
 	};
 };

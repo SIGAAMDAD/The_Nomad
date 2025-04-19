@@ -188,6 +188,9 @@ width_curve = SubResource("Curve_0rnld")
 
 [node name="RayCast2D" type="RayCast2D" parent="AimAssist/AimLine"]
 process_mode = 1
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 2
 position = Vector2(-1.90735e-06, 5.33333)
 target_position = Vector2(740.047, 0)
 

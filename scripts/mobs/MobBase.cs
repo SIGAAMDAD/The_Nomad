@@ -144,7 +144,7 @@ namespace Renown.Thinkers {
 		public Entity GetSightTarget() => SightTarget;
 
 		private void OnDeath( Entity source, Entity target ) {
-			Tweener.Free();
+			Tweener?.Free();
 
 			for ( int i = 0; i < SightLines.Length; i++ ) {
 				SightDetector.RemoveChild( SightLines[i] );
@@ -162,9 +162,14 @@ namespace Renown.Thinkers {
 		}
 
 		public virtual void Alert( Entity target ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
 			LastTargetPosition = target.GlobalPosition;
+			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 			if ( Fear > 60 ) {
-				State = AIState.Attacking;
+				State = AIState.Investigating;
 				Bark( BarkType.Curse, RandomFactory.Next( 0, 100 ) > 60 ? BarkType.Quiet : BarkType.Count );
 			} else {
 				if ( Awareness == AIAwareness.Relaxed ) {
@@ -181,8 +186,13 @@ namespace Renown.Thinkers {
 		}
 	
 		public override void Damage( Renown.Entity source, float nAmount ) {
-			base.Damage( source, nAmount );
 			BloodParticleFactory.Create( source.GlobalPosition, GlobalPosition );
+
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
+			base.Damage( source, nAmount );
 		}
 
 		private AudioStream GetBarkResource( BarkType bark ) {
@@ -520,9 +530,7 @@ namespace Renown.Thinkers {
 			Awareness = AIAwareness.Suspicious;
 		}
 		protected void CheckSight( float delta ) {
-			if ( ( Engine.GetPhysicsFrames() % 30 ) != 0 ) {
-				RecalcSight();
-			}
+			RecalcSight();
 
 			GodotObject sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {

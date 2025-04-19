@@ -4,6 +4,9 @@ using Steamworks;
 using Godot;
 using Renown.World;
 using Renown;
+using System.Diagnostics;
+using System;
+using System.Security.Permissions;
 
 public partial class World : Node2D {
 	private Node2D Hellbreaker = null;
@@ -71,6 +74,8 @@ public partial class World : Node2D {
 				PlayerList.AddChild( player );
 			}
 		}
+
+		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
 
 		Console.PrintLine( "...Finished loading game" );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
@@ -179,6 +184,8 @@ public partial class World : Node2D {
 			Settlement.Cache.Load();
 			WorldArea.Cache.Load();
 			Thinker.Cache.Load();
+
+			ThinkerFactory.WaitForFinished();
 		} );
 		SceneLoadThread.Start();
 
@@ -191,5 +198,21 @@ public partial class World : Node2D {
 
 		SetProcess( false );
 		SetProcessInternal( false );
+
+		//
+		// force the game to run at the highest priority possible
+		//
+		using ( Process process = Process.GetCurrentProcess() ) {
+			process.PriorityBoostEnabled = true;
+
+			switch ( OS.GetName() ) {
+			case "Linux":
+			case "Windows":
+				process.ProcessorAffinity = 16;
+				break;
+			};
+
+			process.PriorityClass = ProcessPriorityClass.High;
+		}
 	}
 };

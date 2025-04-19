@@ -1,4 +1,3 @@
-using System.Threading;
 using System.Collections.Generic;
 using Godot;
 
@@ -54,6 +53,8 @@ namespace Renown.World {
 		protected Godot.Collections.Dictionary<Node, float> Debts = null;
 		[Export]
 		protected Godot.Collections.Dictionary<Node, float> Relations = null;
+		[Export]
+		protected WorldArea Location = null;
 
 		protected HashSet<Trait> TraitCache = null;
 		protected Dictionary<Object, float> DebtCache = null;
@@ -61,8 +62,10 @@ namespace Renown.World {
 		
 		protected HashSet<Faction> WarList = null;
 		
-		private Thread WorkThread = null;
-		private object LockObject = new object();
+		protected System.Threading.Thread ThinkThread = null;
+		protected bool Quit = false;
+		protected int ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
 		[Signal]
 		public delegate void EarnTraitEventHandler( Node self, Trait trait );
@@ -330,7 +333,12 @@ namespace Renown.World {
 //			ContractManager.Remove( bounty );
 		}
 		*/
-		
+
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			Quit = true;
+		}
 		public override void _Ready() {
 			base._Ready();
 
@@ -362,25 +370,31 @@ namespace Renown.World {
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			}
-			
-//			WorkThread = new Thread( Think );
-//			WorkThread.Start();
-		}
-		public override void _Process( double delta ) {
-			if ( ( Engine.GetProcessFrames() % 120 ) != 0 ) {
-				return;
-			}
-			
-			base._Process( delta );
 
-			Think();
-			
-			/*
-			lock ( LockObject ) {
-				// allow it to run again
-				Monitor.Pulse( LockObject );
-			}
-			*/
+			// this isn't an entity
+			ProcessMode = ProcessModeEnum.Disabled;
+
+			Location.PlayerEntered += () => {
+				ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_AREA;
+				Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
+
+				ThinkThread.Priority = Importance;
+			};
+			Location.PlayerExited += () => {
+				if ( Location.GetBiome().IsPlayerHere() ) {
+					ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_BIOME;
+					Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
+				} else {
+					ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+					Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
+				}
+
+				ThinkThread.Priority = Importance;
+			};
+
+			ThinkThread = new System.Threading.Thread( Think );
+			ThinkThread.Priority = Importance;
+			ThinkThread.Start();
 		}
 		
 		private bool CreateDebt( float nAmount ) {
@@ -469,17 +483,14 @@ namespace Renown.World {
 			}
 		}
 		private void Think() {
-			/*
-			lock ( LockObject ) {
-				// wait for frame sync
-				Monitor.Wait( LockObject );
+			while ( !Quit ) {
+				System.Threading.Thread.Sleep( ThreadSleep );
+
+				UpdateRelations();
+				UpdateDebts();
+
+				SubThink();
 			}
-			*/
-			
-			UpdateRelations();
-			UpdateDebts();
-			
-			SubThink();
 		}
 		protected virtual void SubThink() {
 		}

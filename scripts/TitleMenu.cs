@@ -92,11 +92,7 @@ public partial class TitleMenu : Control {
 	}
 	*/
 	private void OnMainMenuCoopMenu() {
-		MainMenu.SetProcess( false );
-		MainMenu.SetProcessInternal( false );
 		MainMenu.SetProcessUnhandledInput( false );
-		CoopMenu.SetProcess( true );
-		CoopMenu.SetProcessInternal( true );
 		CoopMenu.SetProcessUnhandledInput( true );
 		CoopMenu.ProcessMode = ProcessModeEnum.Always;
 
@@ -106,11 +102,7 @@ public partial class TitleMenu : Control {
 		State = MenuState.Coop;
 	}
 	private void OnMainMenuMultiplayerMenu() {
-		MainMenu.SetProcess( false );
-		MainMenu.SetProcessInternal( false );
 		MainMenu.SetProcessUnhandledInput( false );
-		LobbyBrowser.SetProcess( true );
-		LobbyBrowser.SetProcessInternal( true );
 		LobbyBrowser.SetProcessUnhandledInput( true );
 		MultiplayerMenu.ProcessMode = ProcessModeEnum.Always;
 
@@ -123,11 +115,7 @@ public partial class TitleMenu : Control {
 		State = MenuState.Multiplayer;
 	}
 	private void OnMainMenuSettingsMenu() {
-		MainMenu.SetProcess( false );
-		MainMenu.SetProcessInternal( false );
 		MainMenu.SetProcessUnhandledInput( false );
-		SettingsMenu.SetProcess( true );
-		SettingsMenu.SetProcessInternal( true );
 		SettingsMenu.SetProcessUnhandledInput( true );
 		SettingsMenu.ProcessMode = ProcessModeEnum.Always;
 

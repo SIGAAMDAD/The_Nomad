@@ -28,18 +28,22 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="CoopMenu" parent="." instance=ExtResource("4_jk1qb")]
+process_mode = 4
 visible = false
 layout_mode = 1
 
 [node name="CampaignMenu" parent="." instance=ExtResource("3_66f1w")]
+process_mode = 4
 visible = false
 layout_mode = 1
 
 [node name="MultiplayerMenu" parent="." instance=ExtResource("5_23c7l")]
+process_mode = 4
 visible = false
 layout_mode = 1
 
 [node name="SettingsMenu" parent="." instance=ExtResource("4_y3mln")]
+process_mode = 4
 visible = false
 layout_mode = 1
 

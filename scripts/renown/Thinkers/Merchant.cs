@@ -1,8 +1,6 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
-using System.Linq;
-using System.Reflection;
 
 namespace Renown.Thinkers {
 	public enum MerchantState : uint {

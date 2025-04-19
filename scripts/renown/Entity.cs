@@ -1,6 +1,7 @@
 using Godot;
 using Renown.World;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 
 /// <summary>
@@ -105,9 +106,9 @@ namespace Renown {
 		}
 
 		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-			channel.Stream = stream;
-			channel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			channel.Play();
+			channel.SetDeferred( "stream", stream );
+			channel.SetDeferred( "volume_db", SettingsData.GetEffectsVolumeLinear() );
+			channel.CallDeferred( "play" );
 		}
 
 		public virtual void Damage( Entity source, float nAmount ) {
@@ -315,26 +316,34 @@ namespace Renown {
 	//			TraitCache.Add( new Trait(  ) );
 			}
 
-			RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
-			foreach ( var relation in Relations ) {
-				if ( relation.Key is Faction faction && faction != null ) {
-					RelationCache.Add( faction, relation.Value );
-				} else if ( relation.Key is Entity entity && entity != null ) {
-					RelationCache.Add( entity, relation.Value );
-				} else {
-					Console.PrintError( string.Format( "Entity._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
+			if ( Relations != null ) {
+				RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
+				foreach ( var relation in Relations ) {
+					if ( relation.Key is Faction faction && faction != null ) {
+						RelationCache.Add( faction, relation.Value );
+					} else if ( relation.Key is Entity entity && entity != null ) {
+						RelationCache.Add( entity, relation.Value );
+					} else {
+						Console.PrintError( string.Format( "Entity._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
+					}
 				}
+			} else {
+				RelationCache = new Dictionary<Object, float>();
 			}
 
-			DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
-			foreach ( var debt in Debts ) {
-				if ( debt.Key is Faction faction && faction != null ) {
-					DebtCache.Add( faction, debt.Value );
-				} else if ( debt.Key is Entity entity && entity != null ) {
-					DebtCache.Add( entity, debt.Value );
-				} else {
-					Console.PrintError( string.Format( "Entity._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
+			if ( Debts != null ) {
+				DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
+				foreach ( var debt in Debts ) {
+					if ( debt.Key is Faction faction && faction != null ) {
+						DebtCache.Add( faction, debt.Value );
+					} else if ( debt.Key is Entity entity && entity != null ) {
+						DebtCache.Add( entity, debt.Value );
+					} else {
+						Console.PrintError( string.Format( "Entity._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
+					}
 				}
+			} else {
+				DebtCache = new Dictionary<Object, float>();
 			}
 		}
 		public override void _Process( double delta ) {
@@ -344,6 +353,8 @@ namespace Renown {
 
 			base._Process( delta );
 
+			/*
+
 			Lock.WaitOne();
 			LightAmount = 0.0f;
 			for ( int i = 0; i < LightSources.Count; i++ ) {
@@ -351,6 +362,8 @@ namespace Renown {
 				LightAmount += ( LightSources[i].Energy * LightSources[i].TextureScale ) - distance;
 			}
 			Lock.ReleaseMutex();
+			
+			*/
 		}
 	};
 };
