@@ -103,6 +103,8 @@ namespace Renown {
 
 		protected ThinkerGroup Squad;
 
+		protected bool Initialized = false;
+
 		// memory
 		protected bool TargetReached = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
@@ -152,15 +154,26 @@ namespace Renown {
 
 		private void OnPlayerEnteredArea() {
 			SetProcess( true );
+			SetPhysicsProcess( true );
 
 			ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_AREA;
 			Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
 
+			if ( !IsInsideTree() ) {
+				GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "add_child", this );
+			}
+
 			ThinkThread.Priority = Importance;
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+				AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			}
 		}
 		private void OnPlayerExitedArea() {
 			SetProcess( false );
+			SetPhysicsProcess( false );
+
+			GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "remove_child", this );
 
 			if ( Location.GetBiome().IsPlayerHere() ) {
 				ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_BIOME;
@@ -171,7 +184,10 @@ namespace Renown {
 			}
 
 			ThinkThread.Priority = Importance;
-			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+				AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+			}
 		}
 		public override void SetLocation( WorldArea location ) {
 			Location.PlayerEntered -= OnPlayerEnteredArea;
@@ -198,8 +214,10 @@ namespace Renown {
 		public override StringName GetObjectName() => BotName;
 
 		public override void Save() {
-			using ( var writer = new SaveSystem.SaveSectionWriter( "Thinker_" + BotName + FamilyTree.Name ) ) {
-				writer.SaveVector2( "Position", GlobalPosition );
+			using ( var writer = new SaveSystem.SaveSectionWriter( "Thinker_" + Name + ( FamilyTree != null ? FamilyTree.Name : "" ) ) ) {
+				int count;
+
+				writer.SaveVector2( nameof( GlobalPosition ), GlobalPosition );
 				writer.SaveFloat( nameof( Health ), Health );
 				writer.SaveUInt( nameof( Age ), Age );
 
@@ -213,19 +231,45 @@ namespace Renown {
 				writer.SaveUInt( nameof( Flags ), (uint)Flags );
 				writer.SaveFloat( nameof( MovementSpeed ), MovementSpeed );
 				writer.SaveUInt( nameof( Job ), (uint)Job );
+				writer.SaveString( nameof( Location ), Location.Name );
+				writer.SaveBool( nameof( HasMetPlayer ), HasMetPlayer );
+
+				writer.SaveInt( "RelationCount", RelationCache.Count );
+				count = 0;
+				foreach ( var relation in RelationCache ) {
+					count++;
+				}
+
+				writer.SaveInt( "TraitCount", TraitCache.Count );
+				count = 0;
+				foreach ( var trait in TraitCache ) {
+					writer.SaveString( string.Format( "TraitName_{0}", count ), trait.GetTraitName() );
+					writer.SaveUInt( string.Format( "TraitType_{0}", count ), (uint)trait.GetTraitType() );
+					count++;
+				}
 			}
 		}
 		public override void Load() {
-			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + BotName + FamilyTree.Name );
+			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + Name + ( FamilyTree != null ? FamilyTree.Name : "" ) );
 
 			// save file compability
 			if ( reader == null ) {
 				return;
 			}
 
-			SetDeferred( "global_position", reader.LoadVector2( "Position" ) );
-			SetDeferred( "health", reader.LoadFloat( "Health" ) );
-			SetDeferred( "age", reader.LoadUInt( "Age" ) );
+			GlobalPosition = reader.LoadVector2( nameof( GlobalPosition ) );
+			Health = reader.LoadFloat( nameof( Health ) );
+			Age = reader.LoadUInt( nameof( Age ) );
+
+			Flags = (ThinkerFlags)reader.LoadUInt( nameof( Flags ) );
+			MovementSpeed = reader.LoadFloat( nameof( MovementSpeed ) );
+			Job = (Occupation)reader.LoadUInt( nameof( Job ) );
+			HasMetPlayer = reader.LoadBoolean( nameof( HasMetPlayer ) );
+
+			Strength = reader.LoadInt( nameof( Strength ) );
+			Dexterity = reader.LoadInt( nameof( Dexterity ) );
+			Wisdom = reader.LoadInt( nameof( Wisdom ) );
+			Intelligence = reader.LoadInt( nameof( Intelligence ) );
 		}
 
 		protected virtual void SetAnimationsColor( Color color ) {
@@ -238,6 +282,14 @@ namespace Renown {
 			OnScreen = false;
 		}
 
+		public Thinker() {
+			if ( !IsInGroup( "Archive" ) ) {
+				AddToGroup( "Archive" );
+			}
+			if ( !IsInGroup( "Thinkers" ) ) {
+				AddToGroup( "Thinkers" );
+			}
+		}
 		public override void _ExitTree() {
 			base._ExitTree();
 
@@ -268,28 +320,21 @@ namespace Renown {
 			*/
 
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRigidBody2DShapeEntered ) );
-
 			GotoPosition = GlobalPosition;
 			
 			if ( SettingsData.GetNetworkingEnabled() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 			}
-			if ( !IsInGroup( "Archive" ) ) {
-				AddToGroup( "Archive" );
-			}
-			if ( !IsInGroup( "Thinkers" ) ) {
-				AddToGroup( "Thinkers" );
-			}
 
 			ProcessMode = ProcessModeEnum.Pausable;
-
+			
 			Location.PlayerEntered += OnPlayerEnteredArea;
 			Location.PlayerExited += OnPlayerExitedArea;
 
 			ThinkThread = new System.Threading.Thread( () => {
 				while ( !Quit ) {
 					System.Threading.Thread.Sleep( ThreadSleep );
-					if ( Health <= 0.0f ) {
+					if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 						continue;
 					}
 					RenownProcess();
@@ -297,8 +342,6 @@ namespace Renown {
 			} );
 			ThinkThread.Priority = Importance;
 			ThinkThread.Start();
-
-			SetProcess( false );
 		}
 
         public override void _PhysicsProcess( double delta ) {
@@ -395,9 +438,9 @@ namespace Renown {
 			
 			thinker.Location = location;
 			thinker.BirthPlace = location;
-			thinker.FamilyTree = families[ random.Next( 0, families.Count - 1 ) ] as FamilyTree;
+			thinker.FamilyTree = families[ random.Next( 0, families.Count - 1 ) ];
 			thinker.Age = 0;
-//			thinker.BotName = string.Format( "{0} {1}", location.CreateBotName(), thinker.FamilyTree.Name );
+			thinker.Name = string.Format( "{0} {1}", "", thinker.FamilyTree.Name );
 			
 			// now we pull a D&D
 			// TODO: incorporate evolution over millions of years
@@ -419,8 +462,8 @@ namespace Renown {
 			thinker.MovementSpeed += thinker.Dexterity * 10.0f;
 			thinker.Health += thinker.Strength * 2.0f + ( thinker.Constitution * 10.0f );
 
-			location.CallDeferred( "AddThinker", thinker );
-			
+			thinker.ProcessMode = ProcessModeEnum.Disabled;
+	
 			return thinker;
 		}
 	};

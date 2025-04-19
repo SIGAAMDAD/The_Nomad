@@ -136,6 +136,12 @@ namespace Renown.Thinkers {
 		}
 		public override void Load() {
 			base.Load();
+
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				BodyAnimations.Play( "dead" );
+
+				OnDeath( null, this );
+			}
 		}
 
 		public AIPatrolRoute GetPatrolRoute() => PatrolRoute as AIPatrolRoute;
@@ -144,21 +150,44 @@ namespace Renown.Thinkers {
 		public Entity GetSightTarget() => SightTarget;
 
 		private void OnDeath( Entity source, Entity target ) {
-			Tweener?.Free();
+			Tweener?.CallDeferred( "free" );
 
 			for ( int i = 0; i < SightLines.Length; i++ ) {
-				SightDetector.RemoveChild( SightLines[i] );
+				SightDetector.CallDeferred( "remove_child", SightLines[i] );
 				SightLines[i].QueueFree();
 			}
 			LoseInterestTimer.QueueFree();
+			CallDeferred( "remove_child", LoseInterestTimer );
+
 			ChangeInvestigateAngleTimer.QueueFree();
+			CallDeferred( "remove_child", ChangeInvestigateAngleTimer );
 
 			ArmAnimations.QueueFree();
+			CallDeferred( "remove_child", ArmAnimations );
+
 			HeadAnimations.QueueFree();
+			CallDeferred( "remove_child", HeadAnimations );
+
 			BarkChannel.QueueFree();
+			CallDeferred( "remove_child", BarkChannel );
+
 			SightDetector.QueueFree();
+			CallDeferred( "remove_child", SightDetector );
+
 			DetectionMeter.QueueFree();
+			CallDeferred( "remove_child", DetectionMeter );
+
 			NavAgent.QueueFree();
+			CallDeferred( "remove_child", NavAgent );
+
+			CollisionShape2D shape = GetNode<CollisionShape2D>( "BodyShape" );
+			shape.QueueFree();
+			CallDeferred( "remove_child", shape );
+
+			if ( AudioChannel != null ) {
+				AudioChannel.QueueFree();
+				CallDeferred( "remove_child", AudioChannel );
+			}
 		}
 
 		public virtual void Alert( Entity target ) {
@@ -454,6 +483,7 @@ namespace Renown.Thinkers {
 			GetTree().CurrentScene.CallDeferred( "add_child", AfterImage );
 		
 			ChangeInvestigateAngleTimer = new Timer();
+			ChangeInvestigateAngleTimer.Name = "ChangeInvestigateAngleTimer";
 			ChangeInvestigateAngleTimer.WaitTime = 1.5f;
 			ChangeInvestigateAngleTimer.OneShot = true;
 			ChangeInvestigateAngleTimer.SetProcess( false );

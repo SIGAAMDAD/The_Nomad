@@ -124,6 +124,11 @@ namespace Renown.Thinkers {
 			GlobalPosition = position;
 		}
 	    public override void _Ready() {
+			if ( Initialized ) {
+				return;
+			}
+			Initialized = true;
+
 			base._Ready();
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
@@ -141,10 +146,6 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.OneShot = true;
 			TargetMovedTimer.Connect( "timeout", Callable.From( OnTargetMoveTimerTimeout ) );
 			AddChild( TargetMovedTimer );
-
-			if ( GameConfiguration.GameDifficulty == GameDifficulty.Intended ) {
-				DetectionMeter.Hide();
-			}
 
 			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
@@ -164,14 +165,6 @@ namespace Renown.Thinkers {
 			AimLine.TargetPosition = Godot.Vector2.Right * Range;
 			AimLine.CollisionMask = 2 | 5;
 			ArmAnimations.AddChild( AimLine );
-
-			/*
-			ShootLine = new Line2D();
-			ShootLine.Name = "ShootLine";
-			ShootLine.DefaultColor = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-			ShootLine.Hide();
-			ArmAnimations.AddChild( ShootLine );
-			*/
 
 			GuardPosition = GlobalPosition;
 		}

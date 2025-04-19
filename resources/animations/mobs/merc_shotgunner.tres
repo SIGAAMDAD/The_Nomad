@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=20 format=3 uid="uid://bbd1gljxn4cqk"]
+[gd_resource type="SpriteFrames" load_steps=21 format=3 uid="uid://bbd1gljxn4cqk"]
 
 [ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="1_1og1x"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_bbxhc"]
@@ -18,6 +18,10 @@ region = Rect2(32, 192, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_2kr3p"]
 atlas = ExtResource("1_bbxhc")
 region = Rect2(64, 192, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0btpu"]
+atlas = ExtResource("1_bbxhc")
+region = Rect2(224, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_62lxv"]
 atlas = ExtResource("1_1og1x")
@@ -94,6 +98,14 @@ animations = [{
 "loop": true,
 "name": &"calm",
 "speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0btpu")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
