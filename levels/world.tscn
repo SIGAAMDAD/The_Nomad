@@ -1,4 +1,4 @@
-[gd_scene load_steps=125 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=128 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -59,6 +59,9 @@
 [ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/FamilyTree.cs" id="38_aebnb"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
 [ext_resource type="TileSet" uid="uid://cbjpm3df4cd0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
+[ext_resource type="Script" uid="uid://cg3unpmkqeo6f" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
+[ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
+[ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
 [ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="54_3mxq2"]
 [ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="55_ktfth"]
 [ext_resource type="Script" uid="uid://cwj2dumw6cwqn" path="res://scripts/effects/BloodParticleFactory.cs" id="61_ybss6"]
@@ -7094,6 +7097,96 @@ DayCount = 156
 script = ExtResource("4_cyobr")
 DayCount = 286
 
+[node name="Thinkers" type="Node" parent="." groups=["Archive"]]
+script = ExtResource("44_1r2vu")
+
+[node name="Tarane Massava" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") instance=ExtResource("32_aebnb")]
+mass = 160.0
+gravity_scale = 0.0
+BotName = &"Tarane Masava"
+Job = 3
+Age = 32
+Direction = 2
+HasMetPlayer = true
+Health = 100.0
+RenownScore = 400
+Money = 32000.0
+Traits = Array[int]([4])
+Relations = {
+NodePath("../../Network/Players/Player0"): 35.0
+}
+Debts = {}
+Location = NodePath("../../Biomes/SafeSands/Galakas")
+Faction = NodePath("../../Factions/GunsAndGrenades")
+FactionImportance = 100
+
+[node name="Hillec Erron" parent="Thinkers" node_paths=PackedStringArray("FamilyTree", "Relations", "Debts", "Location") instance=ExtResource("32_aebnb")]
+position = Vector2(-31058, 26572)
+mass = 240.0
+gravity_scale = 0.0
+BotName = &"Hillec Erron"
+Job = 3
+Age = 20
+FamilyTree = NodePath("../../FamilyTrees/Erron")
+Direction = 2
+MovementSpeed = 100.0
+Health = 100.0
+RenownScore = 35
+Money = 800.0
+Traits = Array[int]([0])
+Relations = {}
+Debts = {}
+Location = NodePath("../../Biomes/SafeSands/Galakas")
+
+[node name="Pedric Kasca" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-87207, 53307)
+mass = 120.0
+MaxViewDistance = 140.0
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Dumbo"
+Age = 20
+Direction = 2
+MovementSpeed = 150.0
+Health = 100.0
+RenownScore = 20
+Money = 200.0
+Traits = Array[int]([3, 1])
+Relations = {}
+Debts = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 50
+
+[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-87323, 53041)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Wriggler"
+Age = 21
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 2
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
+[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+position = Vector2(-87041, 53312)
+NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+BotName = &"Kissy"
+Age = 24
+BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+Direction = 6
+MovementSpeed = 150.0
+Health = 100.0
+Relations = {}
+Debts = {}
+Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
+FactionImportance = 30
+
 [node name="Biomes" type="Node" parent="."]
 
 [node name="SaltWastes" type="Area2D" parent="Biomes"]
@@ -7889,6 +7982,25 @@ shape = SubResource("RectangleShape2D_aebnb")
 position = Vector2(-16, 105)
 polygon = PackedVector2Array(-550, -428, -703, 132, -343, 559, 734, 665, 1025, -301, 375, -538)
 
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Buildings", "Markets", "TradeRoutes", "Producers", "Factories", "FamilyList", "Biome") groups=["Archive", "Settlements"]]
+position = Vector2(45472, -4116)
+script = ExtResource("25_qxdx5")
+StartingReserves = 56000000
+Buildings = []
+Markets = []
+TradeRoutes = []
+Producers = []
+Factories = []
+BirthRate = 4.0
+MaxPopulation = 180
+FamilyList = [NodePath("../../../FamilyTrees/Erron"), NodePath("../../../FamilyTrees/Kasca")]
+NameCache = Array[StringName]([&"Iggsy", &"Hayan", &"Erova", &"Saffa", &"Ofal", &"Kassan", &"Fajhal"])
+Biome = NodePath("..")
+AreaName = &"Abazan, City of Gold"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/Abazan"]
+polygon = PackedVector2Array(-3372, 889, -856, 2204, 1490, 315, 1419, -920, 99, -1362)
+
 [node name="Checkpoints" type="Node2D" parent="Biomes/SaltWastes"]
 process_priority = -1
 process_physics_priority = -2
@@ -7963,12 +8075,15 @@ CurrentWeather = 6
 WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList", "Biome")]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Buildings", "Markets", "TradeRoutes", "Producers", "Factories", "FamilyList", "Biome")]
 position = Vector2(-66, 29)
 collision_layer = 19
 collision_mask = 18
 input_pickable = false
 script = ExtResource("25_qxdx5")
+StartingReserves = 15000000
+Government = NodePath("../../../Factions/GalakanOligarchy")
+Buildings = [NodePath("MidCity/House")]
 Markets = []
 TradeRoutes = []
 Producers = []
@@ -7976,6 +8091,7 @@ Factories = []
 BirthRate = 3.5
 MaxPopulation = 256
 FamilyList = [NodePath("../../../FamilyTrees/Erron"), NodePath("../../../FamilyTrees/Kasca")]
+NameCache = Array[StringName]([&"Iggsy", &"Hayan", &"Erova", &"Saffa", &"Ofal", &"Kassan", &"Fajhal"])
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
 
@@ -7984,23 +8100,30 @@ tile_set = SubResource("TileSet_tikye")
 
 [node name="MidCity" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "InteriorLayers", "LowerLayer")]
 script = ExtResource("38_ybss6")
-Floor = NodePath("MidCityFloor")
+Floor = NodePath("")
 InteriorLayers = []
 LowerLayer = NodePath("../../../SaltWastes/KiroslaEstate/Exterior")
 
 [node name="GunsAndGrenadesGuildHall" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 position = Vector2(-8, -502)
 
-[node name="MidCityFloor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity"]
-position = Vector2(-8, -502)
-tile_map_data = PackedByteArray("AADl/wMAAAAaACcAAADl/wQAAAAaACgAAADl/wUAAAAaACkAAADl/wYAAAAaACoAAADl/wcAAAAaACsAAADl/wgAAAAaACwAAADm/wMAAAAbACcAAADm/wQAAAAbACgAAADm/wUAAAAbACkAAADm/wYAAAAbACoAAADm/wcAAAAbACsAAADm/wgAAAAbACwAAADm/wkAAAAbAC0AAADn/wMAAAAcACcAAADn/wQAAAAcACgAAADn/wUAAAAcACkAAADn/wYAAAAcACoAAADn/wcAAAAcACsAAADn/wgAAAAcACwAAADn/wkAAAAcAC0AAADo/wMAAAAdACcAAADo/wQAAAAdACgAAADo/wUAAAAdACkAAADo/wYAAAAdACoAAADo/wcAAAAdACsAAADo/wgAAAAdACwAAADo/wkAAAAdAC0AAADp/wMAAAAeACcAAADp/wQAAAAeACgAAADp/wUAAAAeACkAAADp/wYAAAAeACoAAADp/wcAAAAeACsAAADp/wgAAAAeACwAAADp/wkAAAAeAC0AAADq/wMAAAAfACcAAADq/wQAAAAfACgAAADq/wUAAAAfACkAAADq/wYAAAAfACoAAADq/wcAAAAfACsAAADq/wgAAAAfACwAAADq/wkAAAAfAC0AAADr/wMAAAAgACcAAADr/wQAAAAgACgAAADr/wUAAAAgACkAAADr/wYAAAAgACoAAADr/wcAAAAgACsAAADr/wgAAAAgACwAAADr/wkAAAAgAC0AAADs/wMAAAAhACcAAADs/wQAAAAhACgAAADs/wUAAAAhACkAAADs/wYAAAAhACoAAADs/wcAAAAhACsAAADs/wgAAAAhACwAAADs/wkAAAAhAC0AAADt/wMAAAAiACcAAADt/wQAAAAiACgAAADt/wUAAAAiACkAAADt/wYAAAAiACoAAADt/wcAAAAiACsAAADt/wgAAAAiACwAAADt/wkAAAAiAC0AAAAFAAQAAAAaACQAAAAFAAUAAAAaACUAAAAGAAMAAAAbACMAAAAGAAQAAAAbACQAAAAGAAUAAAAbACUAAAAHAP7/AAAcAB4AAAAHAP//AAAcAB8AAAAHAAAAAAAcACAAAAAHAAEAAAAcACEAAAAHAAIAAAAcACIAAAAHAAMAAAAcACMAAAAHAAQAAAAcACQAAAAHAAUAAAAcACUAAAAIAP7/AAAdAB4AAAAIAP//AAAdAB8AAAAIAAAAAAAdACAAAAAIAAEAAAAdACEAAAAIAAIAAAAdACIAAAAIAAMAAAAdACMAAAAIAAQAAAAdACQAAAAIAAUAAAAdACUAAAAJAP7/AAAeAB4AAAAJAP//AAAeAB8AAAAJAAAAAAAeACAAAAAJAAEAAAAeACEAAAAJAAIAAAAeACIAAAAJAAMAAAAeACMAAAAJAAQAAAAeACQAAAAJAAUAAAAeACUAAAAKAP7/AAAfAB4AAAAKAP//AAAfAB8AAAAKAAAAAAAfACAAAAAKAAEAAAAfACEAAAAKAAIAAAAfACIAAAAKAAMAAAAfACMAAAAKAAQAAAAfACQAAAAKAAUAAAAfACUAAAALAP7/AAAgAB4AAAALAP//AAAgAB8AAAALAAAAAAAgACAAAAALAAEAAAAgACEAAAALAAIAAAAgACIAAAALAAMAAAAgACMAAAALAAQAAAAgACQAAAALAAUAAAAgACUAAAAMAP7/AAAhAB4AAAAMAP//AAAhAB8AAAAMAAAAAAAhACAAAAAMAAEAAAAhACEAAAAMAAIAAAAhACIAAAAMAAMAAAAhACMAAAAMAAQAAAAhACQAAAAMAAUAAAAhACUAAAANAP7/AAAiAB4AAAANAP//AAAiAB8AAAANAAAAAAAiACAAAAANAAEAAAAiACEAAAANAAIAAAAiACIAAAANAAMAAAAiACMAAAANAAQAAAAiACQAAAANAAUAAAAiACUAAAAOAP7/AAAjAB4AAAAOAP//AAAjAB8AAAAOAAAAAAAjACAAAAAOAAEAAAAjACEAAAAOAAIAAAAjACIAAAAOAAMAAAAjACMAAAAOAAQAAAAjACQAAAAOAAUAAAAjACUAAAAPAP7/AAAkAB4AAAAPAP//AAAkAB8AAAAPAAAAAAAkACAAAAAPAAEAAAAkACEAAAAPAAIAAAAkACIAAAAPAAMAAAAkACMAAAAPAAQAAAAkACQAAAAPAAUAAAAkACUAAAAQAP//AAAlAB8AAAAQAAAAAAAlACAAAAAQAAEAAAAlACEAAAAQAAIAAAAlACIAAAAQAAMAAAAlACMAAAAQAAQAAAAlACQAAAAQAAUAAAAlACUAAADj//X/AAAaABYAAADj//b/AAAaABcAAADj//f/AAAaABgAAADj//j/AAAaABkAAADj//n/AAAaABoAAADk//X/AAAbABYAAADk//b/AAAbABcAAADk//f/AAAbABgAAADk//j/AAAbABkAAADk//n/AAAbABoAAADl//X/AAAcABYAAADl//b/AAAcABcAAADl//f/AAAcABgAAADl//j/AAAcABkAAADl//n/AAAcABoAAADm//X/AAAdABYAAADm//b/AAAdABcAAADm//f/AAAdABgAAADm//j/AAAdABkAAADm//n/AAAdABoAAADn//X/AAAeABYAAADn//b/AAAeABcAAADn//f/AAAeABgAAADn//j/AAAeABkAAADn//n/AAAeABoAAADn//r/AAAeABsAAADo//X/AAAfABYAAADo//b/AAAfABcAAADo//f/AAAfABgAAADo//j/AAAfABkAAADo//n/AAAfABoAAADo//r/AAAfABsAAADo//v/AAAfABwAAADp//X/AAAgABYAAADp//b/AAAgABcAAADp//f/AAAgABgAAADp//j/AAAgABkAAADp//n/AAAgABoAAADp//r/AAAgABsAAADp//v/AAAgABwAAADq//X/AAAhABYAAADq//b/AAAhABcAAADq//f/AAAhABgAAADq//j/AAAhABkAAADq//n/AAAhABoAAADq//r/AAAhABsAAADq//v/AAAhABwAAADr//X/AAAiABYAAADr//b/AAAiABcAAADr//f/AAAiABgAAADr//j/AAAiABkAAADr//n/AAAiABoAAADr//r/AAAiABsAAADr//v/AAAiABwAAADs//X/AAAjABYAAADs//b/AAAjABcAAADs//f/AAAjABgAAADs//j/AAAjABkAAADs//n/AAAjABoAAADs//r/AAAjABsAAADs//v/AAAjABwAAADt//X/AAAkABYAAADt//b/AAAkABcAAADt//f/AAAkABgAAADt//j/AAAkABkAAADt//n/AAAkABoAAADt//r/AAAkABsAAAARAO3/AAAaABYAABAQAO3/AAAbABYAABAPAO3/AAAcABYAABAOAO3/AAAdABYAABANAO3/AAAeABYAABAMAO3/AAAfABYAABALAO3/AAAgABYAABAKAO3/AAAhABYAABAJAO3/AAAiABYAABAIAO3/AAAjABYAABARAO7/AAAaABcAABAQAO7/AAAbABcAABAPAO7/AAAcABcAABAOAO7/AAAdABcAABANAO7/AAAeABcAABAMAO7/AAAfABcAABALAO7/AAAgABcAABAKAO7/AAAhABcAABAJAO7/AAAiABcAABAIAO7/AAAjABcAABARAO//AAAaABgAABAQAO//AAAbABgAABAPAO//AAAcABgAABAOAO//AAAdABgAABANAO//AAAeABgAABAMAO//AAAfABgAABALAO//AAAgABgAABAKAO//AAAhABgAABAJAO//AAAiABgAABAIAO//AAAjABgAABARAPD/AAAaABkAABAQAPD/AAAbABkAABAPAPD/AAAcABkAABAOAPD/AAAdABkAABANAPD/AAAeABkAABAMAPD/AAAfABkAABALAPD/AAAgABkAABAKAPD/AAAhABkAABAJAPD/AAAiABkAABAIAPD/AAAjABkAABARAPH/AAAaABoAABAQAPH/AAAbABoAABAPAPH/AAAcABoAABAOAPH/AAAdABoAABANAPH/AAAeABoAABAMAPH/AAAfABoAABALAPH/AAAgABoAABAKAPH/AAAhABoAABAJAPH/AAAiABoAABAIAPH/AAAjABoAABANAPL/AAAeABsAABAMAPL/AAAfABsAABALAPL/AAAgABsAABAKAPL/AAAhABsAABAJAPL/AAAiABsAABAIAPL/AAAjABsAABAMAPP/AAAfABwAABALAPP/AAAgABwAABAKAPP/AAAhABwAABAJAPP/AAAiABwAABAIAPP/AAAjABwAABAHAO3/AAAkABYAABAHAO7/AAAkABcAABAHAO//AAAkABgAABAHAPD/AAAkABkAABAHAPH/AAAkABoAABAHAPL/AAAkABsAABDL/+H/AAAcAA8AABDK/+H/AAAdAA8AABDJ/+H/AAAeAA8AABDI/+H/AAAfAA8AABDM/+L/AAAbABAAABDL/+L/AAAcABAAABDK/+L/AAAdABAAABDJ/+L/AAAeABAAABDI/+L/AAAfABAAABDH/+L/AAAgABAAABDM/+P/AAAbABEAABDL/+P/AAAcABEAABDK/+P/AAAdABEAABDJ/+P/AAAeABEAABDI/+P/AAAfABEAABDH/+P/AAAgABEAABDM/+T/AAAbABIAABDL/+T/AAAcABIAABDK/+T/AAAdABIAABDJ/+T/AAAeABIAABDI/+T/AAAfABIAABDH/+T/AAAgABIAABDM/+X/AAAbABMAABDL/+X/AAAcABMAABDK/+X/AAAdABMAABDJ/+X/AAAeABMAABDI/+X/AAAfABMAABDH/+X/AAAgABMAABDM/+b/AAAbABQAABDL/+b/AAAcABQAABDK/+b/AAAdABQAABDJ/+b/AAAeABQAABDI/+b/AAAfABQAABDH/+b/AAAgABQAABDt/woAAAAiAC4AAADs/woAAAAhAC4AAADr/woAAAAgAC4AAADq/woAAAAfAC4AAADp/woAAAAeAC4AAADo/woAAAAdAC4AAADn/woAAAAcAC4AAADm/woAAAAbAC4AAADk/wMAAAAaACcAABDj/wMAAAAbACcAABDi/wMAAAAcACcAABDh/wMAAAAdACcAABDg/wMAAAAeACcAABDf/wMAAAAfACcAABDe/wMAAAAgACcAABDd/wMAAAAhACcAABDc/wMAAAAiACcAABDk/wQAAAAaACgAABDj/wQAAAAbACgAABDi/wQAAAAcACgAABDh/wQAAAAdACgAABDg/wQAAAAeACgAABDf/wQAAAAfACgAABDe/wQAAAAgACgAABDd/wQAAAAhACgAABDc/wQAAAAiACgAABDk/wUAAAAaACkAABDj/wUAAAAbACkAABDi/wUAAAAcACkAABDh/wUAAAAdACkAABDg/wUAAAAeACkAABDf/wUAAAAfACkAABDe/wUAAAAgACkAABDd/wUAAAAhACkAABDc/wUAAAAiACkAABDk/wYAAAAaACoAABDj/wYAAAAbACoAABDi/wYAAAAcACoAABDh/wYAAAAdACoAABDg/wYAAAAeACoAABDf/wYAAAAfACoAABDe/wYAAAAgACoAABDd/wYAAAAhACoAABDc/wYAAAAiACoAABDk/wcAAAAaACsAABDj/wcAAAAbACsAABDi/wcAAAAcACsAABDh/wcAAAAdACsAABDg/wcAAAAeACsAABDf/wcAAAAfACsAABDe/wcAAAAgACsAABDd/wcAAAAhACsAABDc/wcAAAAiACsAABDk/wgAAAAaACwAABDj/wgAAAAbACwAABDi/wgAAAAcACwAABDh/wgAAAAdACwAABDg/wgAAAAeACwAABDf/wgAAAAfACwAABDe/wgAAAAgACwAABDd/wgAAAAhACwAABDc/wgAAAAiACwAABDj/wkAAAAbAC0AABDi/wkAAAAcAC0AABDh/wkAAAAdAC0AABDg/wkAAAAeAC0AABDf/wkAAAAfAC0AABDe/wkAAAAgAC0AABDd/wkAAAAhAC0AABDc/wkAAAAiAC0AABDj/woAAAAbAC4AABDi/woAAAAcAC4AABDh/woAAAAdAC4AABDg/woAAAAeAC4AABDf/woAAAAfAC4AABDe/woAAAAgAC4AABDd/woAAAAhAC4AABDc/woAAAAiAC4AABDv/wkAAABBAGMAAADv/woAAABBAGQAAADw/wkAAABCAGMAAADx/wkAAABDAGMAAADx/woAAABDAGQAAADy/wkAAABEAGMAAADy/woAAABEAGQAAADz/wkAAABFAGMAAADz/woAAABFAGQAAADv/wsAAABBAGUAAADw/woAAABCAGQAAADw/wsAAABCAGUAAADx/wsAAABDAGUAAADy/wsAAABEAGUAAADz/wsAAABFAGUAAAAbAPn/AgAYAAUAAAAbAPr/AgAYAAYAAAAbAPv/AgAYAAcAAAAbAPz/AgAYAAgAAAAbAP3/AgAYAAkAAAAbAP7/AgAYAAoAAAAbAP//AgAYAAsAAAAcAPn/AgAZAAUAAAAcAPr/AgAZAAYAAAAcAPv/AgAZAAcAAAAcAPz/AgAZAAgAAAAcAP3/AgAZAAkAAAAcAP7/AgAZAAoAAAAcAP//AgAZAAsAAAAiAPr/AgAfAAUAAAAiAPv/AgAfAAcAAAAiAPz/AgAfAAgAAAAiAP3/AgAfAAkAAAAiAP7/AgAfAAoAAAAiAP//AgAfAAsAAAAjAPr/AgAgAAUAAAAjAPv/AgAgAAcAAAAjAPz/AgAgAAgAAAAjAP3/AgAgAAkAAAAjAP7/AgAgAAoAAAAjAP//AgAgAAsAAAAiAPn/AgAfAAQAAAAjAPn/AgAgAAQAAAAbAPj/AgAYAAQAAAAcAPj/AgAZAAQAAAAcAPf/AgAZAAMAAAAdAPb/AgAaAAIAAAAdAPf/AgAaAAMAAAAeAPb/AgAbAAIAAAAeAPX/AgAbAAEAAAAfAPX/AgAdAAEAAAAfAPb/AgAdAAIAAAAgAPb/AgAeAAIAAAAhAPf/AgAfAAMAAAAiAPj/AgAgAAQAAAAgAPf/AgAeAAMAAAAhAPn/AgAeAAUAAAAdAPr/AgAaAAYAAAAeAPr/AgAbAAYAAAAfAPr/AgAcAAYAAAAgAPr/AgAdAAYAAAAhAPr/AgAeAAYAAAAdAPj/AgAaAAQAAAAdAPn/AgAaAAUAAAAeAPj/AgAbAAQAAAAeAPn/AgAbAAUAAAAfAPj/AgAcAAQAAAAfAPn/AgAcAAUAAAAgAPj/AgAdAAQAAAAgAPn/AgAdAAUAAAAhAPj/AgAfAAQAAAAeAPf/AgAbAAMAAAAfAPf/AgAbAAMAAAAkAPn/AgAaAAYAAAAkAPr/AgAaAAcAAAAkAPv/AgAaAAgAAAAkAPz/AgAaAAkAAAAkAP3/AgAaAAoAAAAkAP7/AgAaAAsAAAAlAPn/AgAbAAYAAAAlAPr/AgAbAAcAAAAlAPv/AgAbAAgAAAAlAPz/AgAbAAkAAAAlAP3/AgAbAAoAAAAlAP7/AgAbAAsAAAAmAPn/AgAcAAYAAAAmAPr/AgAcAAcAAAAmAPv/AgAcAAgAAAAmAPz/AgAcAAkAAAAmAP3/AgAcAAoAAAAmAP7/AgAcAAsAAAAnAPn/AgAdAAYAAAAnAPr/AgAdAAcAAAAnAPv/AgAdAAgAAAAnAPz/AgAdAAkAAAAnAP3/AgAdAAoAAAAnAP7/AgAdAAsAAAAoAPn/AgAeAAYAAAAoAPr/AgAeAAcAAAAoAPv/AgAeAAgAAAAoAPz/AgAeAAkAAAAoAP3/AgAeAAoAAAAoAP7/AgAeAAsAAAApAPn/AgAfAAYAAAApAPr/AgAfAAcAAAApAPv/AgAfAAgAAAApAPz/AgAfAAkAAAApAP3/AgAfAAoAAAApAP7/AgAfAAsAAAAsAPn/AgAgAAYAAAAsAPr/AgAgAAcAAAAsAPv/AgAgAAgAAAAsAPz/AgAgAAkAAAAsAP3/AgAgAAoAAAAsAP7/AgAgAAsAAAAqAPn/AgAeAAYAAAAqAPr/AgAeAAcAAAAqAPv/AgAeAAgAAAAqAPz/AgAeAAkAAAAqAP3/AgAeAAoAAAAqAP7/AgAeAAsAAAArAPn/AgAeAAYAAAArAPr/AgAeAAcAAAArAPv/AgAeAAgAAAArAPz/AgAeAAkAAAArAP3/AgAeAAoAAAArAP7/AgAeAAsAAAA=")
+[node name="House" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
+position = Vector2(-332, -461)
+script = ExtResource("40_ho3mn")
+
+[node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House"]
+scale = Vector2(0.4, 0.4)
+tile_map_data = PackedByteArray("AAD7//v/AgAYAAQAAAD7//z/AgAYAAUAAAD7//3/AgAYAAYAAAD7//7/AgAYAAcAAAD7////AgAYAAgAAAD7/wAAAgAYAAkAAAD7/wEAAgAYAAoAAAD7/wIAAgAYAAsAAAD8//r/AgAZAAMAAAD8//v/AgAZAAQAAAD8//z/AgAZAAUAAAD8//3/AgAZAAYAAAD8//7/AgAZAAcAAAD8////AgAZAAgAAAD8/wAAAgAZAAkAAAD8/wEAAgAZAAoAAAD8/wIAAgAZAAsAAAD9//n/AgAaAAIAAAD9//r/AgAaAAMAAAD9//v/AgAaAAQAAAD9//z/AgAaAAUAAAD9//3/AgAaAAYAAAD9//7/AgAaAAcAAAD9////AgAaAAgAAAD9/wAAAgAaAAkAAAD9/wEAAgAaAAoAAAD9/wIAAgAaAAsAAAD+//j/AgAbAAEAAAD+//n/AgAbAAIAAAD+//r/AgAbAAMAAAD+//v/AgAbAAQAAAD+//z/AgAbAAUAAAD+//3/AgAbAAYAAAD+//7/AgAbAAcAAAD+////AgAbAAgAAAD+/wAAAgAbAAkAAAD+/wEAAgAbAAoAAAD+/wIAAgAbAAsAAAD///j/AgAcAAEAAAD///n/AgAcAAIAAAD///r/AgAcAAMAAAD///v/AgAcAAQAAAD///z/AgAcAAUAAAD///3/AgAcAAYAAAD///7/AgAcAAcAAAD/////AgAcAAgAAAD//wAAAgAcAAkAAAD//wEAAgAcAAoAAAD//wIAAgAcAAsAAAAAAPj/AgAdAAEAAAAAAPn/AgAdAAIAAAAAAPr/AgAdAAMAAAAAAPv/AgAdAAQAAAAAAPz/AgAdAAUAAAAAAP3/AgAdAAYAAAAAAP7/AgAdAAcAAAAAAP//AgAdAAgAAAAAAAAAAgAdAAkAAAAAAAEAAgAdAAoAAAAAAAIAAgAdAAsAAAABAPn/AgAeAAIAAAABAPr/AgAeAAMAAAABAPv/AgAeAAQAAAABAPz/AgAeAAUAAAABAP3/AgAeAAYAAAABAP7/AgAeAAcAAAABAP//AgAeAAgAAAABAAAAAgAeAAkAAAABAAEAAgAeAAoAAAABAAIAAgAeAAsAAAACAPr/AgAfAAMAAAACAPv/AgAfAAQAAAACAPz/AgAfAAUAAAACAP3/AgAfAAYAAAACAP7/AgAfAAcAAAACAP//AgAfAAgAAAACAAAAAgAfAAkAAAACAAEAAgAfAAoAAAACAAIAAgAfAAsAAAADAPv/AgAgAAQAAAADAPz/AgAgAAUAAAADAP3/AgAgAAYAAAADAP7/AgAgAAcAAAADAP//AgAgAAgAAAADAAAAAgAgAAkAAAADAAEAAgAgAAoAAAADAAIAAgAgAAsAAADy//3/AgAYAAYAAADy//7/AgAYAAcAAADy////AgAYAAgAAADy/wAAAgAYAAkAAADy/wEAAgAYAAoAAADy/wIAAgAYAAsAAADz//3/AgAZAAYAAADz//7/AgAZAAcAAADz////AgAZAAgAAADz/wAAAgAZAAkAAADz/wEAAgAZAAoAAADz/wIAAgAZAAsAAAD0//3/AgAaAAYAAAD0//7/AgAaAAcAAAD0////AgAaAAgAAAD0/wAAAgAaAAkAAAD0/wEAAgAaAAoAAAD0/wIAAgAaAAsAAAD1//3/AgAbAAYAAAD1//7/AgAbAAcAAAD1////AgAbAAgAAAD1/wAAAgAbAAkAAAD1/wEAAgAbAAoAAAD1/wIAAgAbAAsAAAD2//3/AgAcAAYAAAD2//7/AgAcAAcAAAD2////AgAcAAgAAAD2/wAAAgAcAAkAAAD2/wEAAgAcAAoAAAD2/wIAAgAcAAsAAAD3//3/AgAdAAYAAAD3//7/AgAdAAcAAAD3////AgAdAAgAAAD3/wAAAgAdAAkAAAD3/wEAAgAdAAoAAAD3/wIAAgAdAAsAAAD4//3/AgAeAAYAAAD4//7/AgAeAAcAAAD4////AgAeAAgAAAD4/wAAAgAeAAkAAAD4/wEAAgAeAAoAAAD4/wIAAgAeAAsAAAD5//3/AgAfAAYAAAD5//7/AgAfAAcAAAD5////AgAfAAgAAAD5/wAAAgAfAAkAAAD5/wEAAgAfAAoAAAD5/wIAAgAfAAsAAAD6//3/AgAgAAYAAAD6//7/AgAgAAcAAAD6////AgAgAAgAAAD6/wAAAgAgAAkAAAD6/wEAAgAgAAoAAAD6/wIAAgAgAAsAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="MidCityDecor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity"]
-tile_map_data = PackedByteArray("AADu/+X/AABdAB4AAADu/+b/AABdAB8AAADu/+f/AABdACAAAADu/+j/AABdACEAAADu/+n/AABdACIAAADv/+T/AABeAB0AAADv/+X/AABeAB4AAADv/+b/AABeAB8AAADv/+f/AABeACAAAADv/+j/AABeACEAAADv/+n/AABeACIAAADw/+T/AABfAB0AAADw/+X/AABfAB4AAADx/+T/AABgAB0AAADx/+X/AABgAB4AAADy/+T/AABhAB0AAADy/+X/AABhAB4AAADy/+b/AABhAB8AAADy/+f/AABhACAAAADy/+j/AABhACEAAADy/+n/AABhACIAAADz/+X/AABiAB4AAADz/+b/AABiAB8AAADz/+f/AABiACAAAADz/+j/AABiACEAAADz/+n/AABiACIAAAAcANH/AQAYABMAAAAcANL/AQAYABQAAAAcANP/AQAYABUAAAAcANT/AQAYABYAAAAcANX/AQAYABcAAAAcANb/AQAYABgAAAAcANf/AQAYABkAAAAcANj/AQAYABoAAAAdAND/AQAZABIAAAAdANH/AQAZABMAAAAdANL/AQAZABQAAAAdANP/AQAZABUAAAAdANT/AQAZABYAAAAdANX/AQAZABcAAAAdANb/AQAZABgAAAAdANf/AQAZABkAAAAeAM//AQAfAAwAAAAeAND/AQAfAA0AAAAeANH/AQAfAA4AAAAeANL/AQAfAA8AAAAeANP/AQAfABAAAAAeANT/AQAfABEAAAAeANX/AQAfABIAAAAeANb/AQAfABMAAAAfAND/AQAmABMAAAAfANH/AQAmABQAAAAfANL/AQAmABUAAAAfANP/AQAmABYAAAAfANT/AQAmABcAAAAfANX/AQAmABgAAAAfANb/AQAmABkAAAAfANf/AQAmABoAAAAgANH/AQAmABMAAAAgANL/AQAmABQAAAAgANP/AQAmABUAAAAgANT/AQAmABYAAAAgANX/AQAmABcAAAAgANb/AQAmABgAAAAgANf/AQAmABkAAAAgANj/AQAmABoAAAAhANL/AQAmABMAAAAhANP/AQAmABQAAAAhANT/AQAmABUAAAAhANX/AQAmABYAAAAhANb/AQAmABcAAAAhANf/AQAmABgAAAAhANj/AQAmABkAAAAhANn/AQAmABoAAAAiANP/AQAmABMAAAAiANT/AQAmABQAAAAiANX/AQAmABUAAAAiANb/AQAmABYAAAAiANf/AQAmABcAAAAiANj/AQAmABgAAAAiANn/AQAmABkAAAAiANr/AQAmABoAAAAjANT/AQAmABMAAAAjANX/AQAmABQAAAAjANb/AQAmABUAAAAjANf/AQAmABYAAAAjANj/AQAmABcAAAAjANn/AQAmABgAAAAkANX/AQAgABsAAAAkANb/AQAgABwAAAAkANf/AQAgAB0AAAAkANj/AQAgAB4AAAAkANn/AQAgAB8AAAAlANX/AQAhABsAAAAlANb/AQAhABwAAAAlANf/AQAhAB0AAAAlANj/AQAhAB4AAAAlANn/AQAhAB8AAAAmANX/AQAiABsAAAAmANb/AQAiABwAAAAmANf/AQAiAB0AAAAmANj/AQAiAB4AAAAmANn/AQAiAB8AAAAnANX/AQAjABsAAAAnANb/AQAjABwAAAAnANf/AQAjAB0AAAAnANj/AQAjAB4AAAAnANn/AQAjAB8AAAAoANX/AQAgABsAAAAoANb/AQAgABwAAAAoANf/AQAgAB0AAAAoANj/AQAgAB4AAAAoANn/AQAgAB8AAAApANX/AQAgABsAAAApANb/AQAgABwAAAApANf/AQAgAB0AAAApANj/AQAgAB4AAAApANn/AQAgAB8AAAAqANX/AQAhABsAAAAqANb/AQAhABwAAAAqANf/AQAhAB0AAAAqANj/AQAhAB4AAAAqANn/AQAhAB8AAAArANX/AQAiABsAAAArANb/AQAiABwAAAArANf/AQAiAB0AAAArANj/AQAiAB4AAAArANn/AQAiAB8AAAAsANf/AQAjAB0AAAAsANj/AQAjAB4AAAAsANn/AQAjAB8AAAAsANX/AQAjABsAAAAsANb/AQAjABwAAAAcANv/AQASABsAAAAcANz/AQASABwAAAAcAN3/AQASAB0AAAAcAN7/AQASAB4AAAAcAN//AQASAB8AAAAcAOD/AQASACAAAAAdANv/AQATABsAAAAdANz/AQATABwAAAAeANv/AQAUABsAAAAeANz/AQAUABwAAAAfANv/AQAVABsAAAAfANz/AQAVABwAAAAgANv/AQAWABsAAAAgANz/AQAWABwAAAAhANv/AQAXABsAAAAhANz/AQAXABwAAAAhAN3/AQAXAB0AAAAhAN7/AQAXAB4AAAAhAN//AQAXAB8AAAAhAOD/AQAXACAAAAAbANL/AQAYABMAAAAbANP/AQAYABQAAAAbANT/AQAYABUAAAAbANX/AQAYABYAAAAbANb/AQAYABcAAAAbANf/AQAYABgAAAAbANj/AQAYABkAAAAbANn/AQAYABoAAAAaANP/AQAYABMAAAAaANT/AQAYABQAAAAaANX/AQAYABUAAAAaANb/AQAYABYAAAAaANf/AQAYABcAAAAaANj/AQAYABgAAAAaANn/AQAYABkAAAAaANr/AQAYABoAAAAjANr/AQAmABkAAAAjANv/AQAmABoAAAAkANr/AQAgACAAAAAlANr/AQAhACAAAAAmANr/AQAiACAAAAAnANr/AQAjACAAAAAoANr/AQAgACAAAAApANr/AQAgACAAAAAqANr/AQAhACAAAAArANr/AQAiACAAAAAsANr/AQAjACAAAAA=")
+[node name="Decor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House"]
+position = Vector2(3.00003, 204)
+scale = Vector2(0.4, 0.4)
+tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
 [node name="OutskirtsWall" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "InteriorLayers")]
+visible = false
 script = ExtResource("38_ybss6")
 Floor = NodePath("TileMapLayer")
 InteriorLayers = []
@@ -8029,15 +8152,18 @@ tile_set = SubResource("TileSet_1r2vu")
 visible = false
 polygon = PackedVector2Array(-4967, -4958, -3862, 457, -211, 788, 5768, 288, 5843, -5969)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Buildings", "Markets", "TradeRoutes", "Producers", "Factories", "FamilyList", "Biome") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(723, -2864)
 input_pickable = false
 script = ExtResource("25_qxdx5")
+Government = NodePath("../../../Factions/GalakanOligarchy")
+Buildings = []
 Markets = []
 TradeRoutes = []
 Producers = []
 Factories = []
 FamilyList = []
+Biome = NodePath("..")
 AreaName = &"Feohenni"
 
 [node name="FoodProducer" type="Area2D" parent="Biomes/SafeSands/Feohenni" node_paths=PackedStringArray("Route")]
@@ -8058,8 +8184,9 @@ autostart = true
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Buildings", "Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
+Buildings = []
 Markets = []
 TradeRoutes = []
 Producers = []
@@ -8071,8 +8198,9 @@ AreaName = &"Latan"
 position = Vector2(-28043, -1759)
 polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Buildings", "Markets", "TradeRoutes", "Producers", "Factories", "FamilyList") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
+Buildings = []
 Markets = []
 TradeRoutes = []
 Producers = []
@@ -8139,95 +8267,6 @@ visible = false
 modulate = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 62858, 44093, 87178, -26946, 89969)
 
-[node name="Thinkers" type="Node" parent="."]
-
-[node name="Tarane Massava" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") instance=ExtResource("32_aebnb")]
-mass = 160.0
-gravity_scale = 0.0
-BotName = &"Tarane Masava"
-Job = 3
-Age = 32
-Direction = 2
-HasMetPlayer = true
-Health = 100.0
-RenownScore = 400
-Money = 32000.0
-Traits = Array[int]([4])
-Relations = {
-NodePath("../../Network/Players/Player0"): 35.0
-}
-Debts = {}
-Location = NodePath("../../Biomes/SafeSands/Galakas")
-Faction = NodePath("../../Factions/GunsAndGrenades")
-FactionImportance = 100
-
-[node name="Hillec Erron" parent="Thinkers" node_paths=PackedStringArray("FamilyTree", "Relations", "Debts", "Location") instance=ExtResource("32_aebnb")]
-position = Vector2(-31058, 26572)
-mass = 240.0
-gravity_scale = 0.0
-BotName = &"Hillec Erron"
-Job = 3
-Age = 20
-FamilyTree = NodePath("../../FamilyTrees/Erron")
-Direction = 2
-MovementSpeed = 100.0
-Health = 100.0
-RenownScore = 35
-Money = 800.0
-Traits = Array[int]([0])
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SafeSands/Galakas")
-
-[node name="Pedric Kasca" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87207, 53307)
-mass = 120.0
-MaxViewDistance = 140.0
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Dumbo"
-Age = 20
-Direction = 2
-MovementSpeed = 150.0
-Health = 100.0
-RenownScore = 20
-Money = 200.0
-Traits = Array[int]([3, 1])
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 50
-
-[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87323, 53041)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Wriggler"
-Age = 21
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 2
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
-[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87041, 53312)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
-BotName = &"Kissy"
-Age = 24
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
-
 [node name="Factions" type="Node" parent="."]
 
 [node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("Leader", "MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
@@ -8236,7 +8275,7 @@ script = ExtResource("31_x3q2i")
 FactionName = &"Guns \'n\' Grenades"
 PrimaryAlignment = 7
 Leader = NodePath("../../Thinkers/Tarane Massava")
-MemberList = [null]
+MemberList = []
 Money = 540000.0
 RenownScore = 500
 Debts = {}
@@ -8260,6 +8299,19 @@ PrimaryAlignment = 8
 MemberList = []
 Debts = {}
 Relations = {}
+
+[node name="GalakanOligarchy" type="Node2D" parent="Factions" node_paths=PackedStringArray("Members", "TerritoryList", "MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
+script = ExtResource("48_7dl3v")
+Members = []
+TerritoryList = [NodePath("../../Biomes/SafeSands/Galakas"), NodePath("../../Biomes/SafeSands/Feohenni")]
+FactionName = &"Galakan Oligarchy"
+PrimaryAlignment = 2
+MemberList = []
+Money = 5.6e+07
+RenownScore = 5000
+Debts = {}
+Relations = {}
+Location = NodePath("../../Biomes/SafeSands")
 
 [node name="Roads" type="Node" parent="."]
 process_mode = 4
@@ -8303,26 +8355,29 @@ polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299
 [node name="FamilyTrees" type="Node" parent="."]
 process_mode = 4
 
-[node name="Gurnovil" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members")]
+[node name="Gurnovil" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members") groups=["Families"]]
 script = ExtResource("38_aebnb")
 Members = []
 
-[node name="Erron" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members")]
+[node name="Erron" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members") groups=["Families"]]
 script = ExtResource("38_aebnb")
 Members = [NodePath("../../Thinkers/Hillec Erron")]
 MaxStrength = 20
 MaxDexterity = 20
 MaxIntelligence = 18
-MaxWisdom = 16
-MaxConsitution = 13
 StrengthBonus = 5
-DexterityBonus = 2
-IntelligenceBonus = 1
-WisdomBonus = 2
 
-[node name="Kasca" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members")]
+[node name="Kasca" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members") groups=["Families"]]
 script = ExtResource("38_aebnb")
 Members = [NodePath("../../Thinkers/Pedric Kasca")]
+
+[node name="Havlar" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members") groups=["Families"]]
+script = ExtResource("38_aebnb")
+Members = []
+
+[node name="Jarono" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("Members") groups=["Families"]]
+script = ExtResource("38_aebnb")
+Members = []
 
 [node name="Network" type="Node" parent="."]
 

@@ -1,5 +1,4 @@
 using System;
-using Godot;
 
 namespace SaveSystem {
 	public class SaveSectionWriter : IDisposable {
@@ -28,6 +27,12 @@ namespace SaveSystem {
 			ArchiveSystem.SaveWriter.Write( name );
 			ArchiveSystem.SaveWriter.Write( (uint)type );
 			switch ( type ) {
+			case FieldType.SByte:
+				ArchiveSystem.SaveWriter.Write( (sbyte)value );
+				break;
+			case FieldType.Byte:
+				ArchiveSystem.SaveWriter.Write( (byte)value );
+				break;
 			case FieldType.Int:
 				ArchiveSystem.SaveWriter.Write( (int)value );
 				break;
@@ -47,6 +52,8 @@ namespace SaveSystem {
 			FieldCount++;
 		}
 
+		public void SaveSByte( string name, sbyte value ) => SaveValue( name, FieldType.SByte, value );
+		public void SaveByte( string name, byte value ) => SaveValue( name, FieldType.Byte, value );
 		public void SaveInt( string name, int value ) => SaveValue( name, FieldType.Int, value );
 		public void SaveUInt( string name, uint value ) => SaveValue( name, FieldType.UInt, value );
 		public void SaveFloat( string name, float value ) => SaveValue( name, FieldType.Float, value );

@@ -39,8 +39,8 @@ namespace Renown.World {
 			Cache.Clear();
 		}
 		public void Load() {
-			foreach ( var cacheEntry in Cache ) {
-				cacheEntry.Value?.Call( "Load" );
+			foreach ( var entry in Cache ) {
+				entry.Value.Call( "Load" );
 			}
 		}
 		public T FindNearest( Godot.Vector2 position ) {

@@ -10,7 +10,7 @@ namespace Renown {
 		public static readonly int THREAD_GROUP_FACTIONS = 2;
 
 		public static readonly int THREADSLEEP_PLAYER_IN_AREA = 500;
-		public static readonly int THREADSLEEP_PLAYER_IN_BIOME = 2000;
+		public static readonly int THREADSLEEP_PLAYER_IN_BIOME = 10000;
 		public static readonly int THREADSLEEP_PLAYER_AWAY = 15000;
 
 		public static readonly System.Threading.ThreadPriority THREAD_IMPORTANCE_PLAYER_IN_AREA = System.Threading.ThreadPriority.Highest;

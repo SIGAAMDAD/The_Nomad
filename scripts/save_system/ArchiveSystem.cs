@@ -1,11 +1,10 @@
-using System;
-using System.ComponentModel.Design.Serialization;
-using System.Text.RegularExpressions;
 using Godot;
 using SaveSystem;
 
 namespace SaveSystem {
 	public enum FieldType : uint {
+		SByte,
+		Byte,
 		Int,
 		UInt,
 		Float,

@@ -92,8 +92,10 @@ public class ResourceCache {
 		return value;
 	}
 
-	public static void Cache( Node world ) {
+	public static void Cache( Node world, System.Threading.Thread SceneLoadThread ) {
 		Console.PrintLine( "Loading sound effects..." );
+
+		SceneLoadThread?.Start();
 
 		TargetSpotted = [
 			ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
@@ -308,6 +310,8 @@ public class ResourceCache {
 		CampfireAmbienceSfx = ResourceLoader.Load<AudioStream>( "res://sounds/env/campfire.wav" );
 
 		Light = ResourceLoader.Load<Texture2D>( "res://textures/point_light.dds" );
+
+		SceneLoadThread?.Join();
 
 		world.CallDeferred( "emit_signal", "ResourcesLoadingFinished" );
 	}

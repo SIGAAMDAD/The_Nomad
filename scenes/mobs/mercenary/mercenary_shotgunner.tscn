@@ -102,7 +102,7 @@ radius = 6.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_pt2do"]
 radius = 5.0
 
-[node name="MercenaryShotgunner" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Archive"]]
+[node name="MercenaryShotgunner" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
 z_index = 4
 collision_layer = 19
 collision_mask = 18
@@ -118,7 +118,6 @@ MaxViewDistance = 250.0
 SightDetectionSpeed = 0.5
 SightDetectionTime = 5.0
 LoseInterestTime = 6.5
-MovementSpeed = 80.0
 MovementSpeed = 80.0
 Relations = {}
 Debts = {}

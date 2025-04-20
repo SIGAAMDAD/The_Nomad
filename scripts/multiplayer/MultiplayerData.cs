@@ -113,7 +113,7 @@ public partial class MultiplayerData : Node2D {
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 
 		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-		ResourceCache.Cache( this );
+		ResourceCache.Cache( this, null );
 
 		ResourceCache.Initialized = true;
 

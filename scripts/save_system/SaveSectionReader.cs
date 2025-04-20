@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
 namespace SaveSystem {
-	public class SaveSectionReader {
+	public class SaveSectionReader : IDisposable {
 		private class SaveField {
 			private FieldType Type;
 			private object Value;
@@ -10,6 +11,12 @@ namespace SaveSystem {
 			public SaveField( System.IO.BinaryReader reader ) {
 				Type = (FieldType)reader.ReadUInt32();
 				switch ( Type ) {
+				case FieldType.SByte:
+					Value = reader.ReadSByte();
+					break;
+				case FieldType.Byte:
+					Value = reader.ReadByte();
+					break;
 				case FieldType.Int:
 					Value = reader.ReadInt32();
 					break;
@@ -79,14 +86,39 @@ namespace SaveSystem {
 			int fieldCount = ArchiveSystem.SaveReader.ReadInt32();
 			FieldList = new Dictionary<string, SaveField>( fieldCount );
 			
-			GD.Print( "Got " + fieldCount + " fields..." );
+			Console.PrintLine( string.Format( "Got {0} fields.", fieldCount ) );
+
 			for ( int i = 0; i < fieldCount; i++ ) {
 				string name = ArchiveSystem.SaveReader.ReadString();
 				FieldList.Add( name, new SaveField( ArchiveSystem.SaveReader ) );
-				GD.Print( "...loaded field \"" + name + "\"" );
+				Console.PrintLine( string.Format( "...loaded field \"{0}\"", name ) );
 			}
 		}
+
+		public void Dispose() {
+			FieldList.Clear();
+		}
 		
+		public sbyte LoadSByte( string name ) {
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
+				if ( field.GetFieldType() != FieldType.SByte ) {
+					return 0;
+				}
+				return (sbyte)field.GetValue();
+			}
+			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
+			return 0;
+		}
+		public byte LoadByte( string name ) {
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
+				if ( field.GetFieldType() != FieldType.Byte ) {
+					return 0;
+				}
+				return (byte)field.GetValue();
+			}
+			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
+			return 0;
+		}
 		public int LoadInt( string name ) {
 			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
 				if ( field.GetFieldType() != FieldType.Int ) {

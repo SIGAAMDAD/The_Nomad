@@ -6,7 +6,6 @@ using Renown.World;
 using Renown;
 using System.Diagnostics;
 using System;
-using System.Security.Permissions;
 
 public partial class World : Node2D {
 	private Node2D Hellbreaker = null;
@@ -27,6 +26,8 @@ public partial class World : Node2D {
 
 	[Signal]
 	public delegate void ResourcesLoadingFinishedEventHandler();
+	[Signal]
+	public delegate void RenownInitFinishedEventHandler();
 
 	public void ToggleHellbreaker() {
 		LevelData.Hide();
@@ -141,12 +142,10 @@ public partial class World : Node2D {
 		Faction.Cache.ClearCache();
 		Settlement.Cache.ClearCache();
 		WorldArea.Cache.ClearCache();
-		Thinker.Cache.ClearCache();
 
 		Faction.Cache = null;
 		Settlement.Cache = null;
 		WorldArea.Cache = null;
-		Thinker.Cache = null;
 
 		if ( Hellbreaker != null ) {
 			Hellbreaker.QueueFree();
@@ -174,7 +173,6 @@ public partial class World : Node2D {
 			Faction.Cache = new DataCache<Faction>( this, "Factions" );
 			Settlement.Cache = new DataCache<Settlement>( this, "Settlements" );
 			WorldArea.Cache = new DataCache<WorldArea>( this, "Locations" );
-			Thinker.Cache = new DataCache<Thinker>( this, "Thinkers" );
 
 			if ( !ArchiveSystem.Instance.IsLoaded() ) {
 				return;
@@ -183,13 +181,11 @@ public partial class World : Node2D {
 			Faction.Cache.Load();
 			Settlement.Cache.Load();
 			WorldArea.Cache.Load();
-			Thinker.Cache.Load();
 
-			ThinkerFactory.WaitForFinished();
+//			ThinkerFactory.WaitForFinished();
 		} );
-		SceneLoadThread.Start();
 
-		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this ); } );
+		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;

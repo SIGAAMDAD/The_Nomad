@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Renown.World;
 using Renown.Thinkers;
+using Renown.World.Buildings;
 
 namespace Renown {
 	public enum ThinkerFlags : uint {
@@ -19,8 +20,6 @@ namespace Renown {
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : Entity {
-		public static DataCache<Thinker> Cache = null;
-
 		public enum Occupation : uint {
 			None,
 
@@ -43,16 +42,24 @@ namespace Renown {
 		[Export]
 		protected TileMapFloor Floor;
 		
+		private NodePath InitialPath;
+		
+		[Export]
+		private bool IsPremade = false;
+		[Export]
+		protected Building Home;
 		[Export]
 		protected StringName BotName;
 		[Export]
 		protected Occupation Job;
 		[Export]
-		protected uint Age = 0; // in years
+		protected int Age = 0; // in years
 		[Export]
 		protected FamilyTree FamilyTree;
 		[Export]
 		protected Settlement BirthPlace = null;
+
+		protected StringName FirstName;
 
 		[ExportCategory("Start")]
 		[Export]
@@ -129,7 +136,9 @@ namespace Renown {
 		protected System.Threading.Thread ThinkThread = null;
 		protected bool Quit = false;
 		protected int ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
-		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
+
+		public int GetAge() => Age;
+		public StringName GetFirstName() => FirstName;
 
 		public void SetOccupation( Occupation job ) => Job = job;
 		public Occupation GetOccupation() => Job;
@@ -156,14 +165,14 @@ namespace Renown {
 			SetProcess( true );
 			SetPhysicsProcess( true );
 
-			ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_AREA;
-			Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
+			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_PLAYER_IN_AREA );
+			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
+
+			ProcessMode = ProcessModeEnum.Pausable;
 
 			if ( !IsInsideTree() ) {
-				GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "add_child", this );
+//				GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "add_child", this );
 			}
-
-			ThinkThread.Priority = Importance;
 
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 				AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
@@ -173,17 +182,17 @@ namespace Renown {
 			SetProcess( false );
 			SetPhysicsProcess( false );
 
-			GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "remove_child", this );
+			ProcessMode = ProcessModeEnum.Disabled;
+
+//			GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "remove_child", this );
 
 			if ( Location.GetBiome().IsPlayerHere() ) {
-				ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_BIOME;
-				Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
+				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_PLAYER_IN_BIOME );
+				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
 			} else {
-				ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
-				Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
+				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_PLAYER_AWAY );
+				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 			}
-
-			ThinkThread.Priority = Importance;
 
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 				AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
@@ -211,65 +220,66 @@ namespace Renown {
 			}
 		}
 
-		public override StringName GetObjectName() => BotName;
+		public override StringName GetObjectName() => Name;
 
-		public override void Save() {
-			using ( var writer = new SaveSystem.SaveSectionWriter( "Thinker_" + Name + ( FamilyTree != null ? FamilyTree.Name : "" ) ) ) {
-				int count;
+		public void Save( SaveSystem.SaveSectionWriter writer, int nIndex ) {
+			string key = "Thinker" + nIndex;
+			int count;
 
-				writer.SaveVector2( nameof( GlobalPosition ), GlobalPosition );
-				writer.SaveFloat( nameof( Health ), Health );
-				writer.SaveUInt( nameof( Age ), Age );
+			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
+			if ( IsPremade ) {
+				writer.SaveString( key + nameof( InitialPath ), InitialPath );
+			}
 
-				// stats
-				writer.SaveInt( nameof( Strength ), Strength );
-				writer.SaveInt( nameof( Dexterity ), Dexterity );
-				writer.SaveInt( nameof( Wisdom ), Wisdom );
-				writer.SaveInt( nameof( Intelligence ), Intelligence );
-				writer.SaveInt( nameof( Constitution ), Constitution );
+			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
+			writer.SaveFloat( key + nameof( Health ), Health );
+			writer.SaveInt( key + nameof( Age ), Age );
 
-				writer.SaveUInt( nameof( Flags ), (uint)Flags );
-				writer.SaveFloat( nameof( MovementSpeed ), MovementSpeed );
-				writer.SaveUInt( nameof( Job ), (uint)Job );
-				writer.SaveString( nameof( Location ), Location.Name );
-				writer.SaveBool( nameof( HasMetPlayer ), HasMetPlayer );
+			// stats
+			writer.SaveInt( key + nameof( Strength ), Strength );
+			writer.SaveInt( key + nameof( Dexterity ), Dexterity );
+			writer.SaveInt( key + nameof( Wisdom ), Wisdom );
+			writer.SaveInt( key + nameof( Intelligence ), Intelligence );
+			writer.SaveInt( key + nameof( Constitution ), Constitution );
 
-				writer.SaveInt( "RelationCount", RelationCache.Count );
-				count = 0;
-				foreach ( var relation in RelationCache ) {
-					count++;
-				}
+			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
+			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
+			writer.SaveUInt( key + nameof( Job ), (uint)Job );
+			writer.SaveString( key + nameof( Location ), Location.Name );
+			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
 
-				writer.SaveInt( "TraitCount", TraitCache.Count );
-				count = 0;
-				foreach ( var trait in TraitCache ) {
-					writer.SaveString( string.Format( "TraitName_{0}", count ), trait.GetTraitName() );
-					writer.SaveUInt( string.Format( "TraitType_{0}", count ), (uint)trait.GetTraitType() );
-					count++;
-				}
+			writer.SaveInt( key + "RelationCount", RelationCache.Count );
+			count = 0;
+			foreach ( var relation in RelationCache ) {
+				writer.SaveString( string.Format( "{0}RelationNode{1}", key, count ), relation.Key.GetObjectName() );
+				writer.SaveFloat( string.Format( "{0}RelationValue{1}", key, count ), relation.Value );
+				count++;
+			}
+
+			writer.SaveInt( key + "TraitCount", TraitCache.Count );
+			count = 0;
+			foreach ( var trait in TraitCache ) {
+				writer.SaveString( string.Format( "{0}TraitName{1}", key, count ), trait.GetTraitName() );
+				writer.SaveUInt( string.Format( "{0}TraitType{1}", key, count ), (uint)trait.GetTraitType() );
+				count++;
 			}
 		}
-		public override void Load() {
-			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Thinker_" + Name + ( FamilyTree != null ? FamilyTree.Name : "" ) );
+		public void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
+			string key = "Thinker" + nIndex;
 
-			// save file compability
-			if ( reader == null ) {
-				return;
-			}
+			GlobalPosition = reader.LoadVector2( key + nameof( GlobalPosition ) );
+			Health = reader.LoadFloat( key + nameof( Health ) );
+			Age = reader.LoadInt( key + nameof( Age ) );
 
-			GlobalPosition = reader.LoadVector2( nameof( GlobalPosition ) );
-			Health = reader.LoadFloat( nameof( Health ) );
-			Age = reader.LoadUInt( nameof( Age ) );
+			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
+			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
+			Job = (Occupation)reader.LoadUInt( key + nameof( Job ) );
+			HasMetPlayer = reader.LoadBoolean( key + nameof( HasMetPlayer ) );
 
-			Flags = (ThinkerFlags)reader.LoadUInt( nameof( Flags ) );
-			MovementSpeed = reader.LoadFloat( nameof( MovementSpeed ) );
-			Job = (Occupation)reader.LoadUInt( nameof( Job ) );
-			HasMetPlayer = reader.LoadBoolean( nameof( HasMetPlayer ) );
-
-			Strength = reader.LoadInt( nameof( Strength ) );
-			Dexterity = reader.LoadInt( nameof( Dexterity ) );
-			Wisdom = reader.LoadInt( nameof( Wisdom ) );
-			Intelligence = reader.LoadInt( nameof( Intelligence ) );
+			Strength = reader.LoadInt( key + nameof( Strength ) );
+			Dexterity = reader.LoadInt( key + nameof( Dexterity ) );
+			Wisdom = reader.LoadInt( key + nameof( Wisdom ) );
+			Intelligence = reader.LoadInt( key + nameof( Intelligence ) );
 		}
 
 		protected virtual void SetAnimationsColor( Color color ) {
@@ -283,9 +293,6 @@ namespace Renown {
 		}
 
 		public Thinker() {
-			if ( !IsInGroup( "Archive" ) ) {
-				AddToGroup( "Archive" );
-			}
 			if ( !IsInGroup( "Thinkers" ) ) {
 				AddToGroup( "Thinkers" );
 			}
@@ -319,6 +326,10 @@ namespace Renown {
 			AddChild( VisibilityNotifier );
 			*/
 
+			if ( IsPremade ) {
+				InitialPath = GetPath();
+			}
+
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRigidBody2DShapeEntered ) );
 			GotoPosition = GlobalPosition;
 			
@@ -340,7 +351,7 @@ namespace Renown {
 					RenownProcess();
 				}
 			} );
-			ThinkThread.Priority = Importance;
+			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 			ThinkThread.Start();
 		}
 
@@ -428,19 +439,86 @@ namespace Renown {
 			LinearVelocity = Godot.Vector2.Zero;
 		}
 		
-		public static Thinker Create( Settlement location ) {
+		public void GenerateRelations() {
+			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Thinkers" );
+
+			for ( int i = 0; i < nodes.Count; i++ ) {
+				Thinker thinker = nodes[i] as Thinker;
+
+				float meetChance = 0.0f;
+				if ( thinker.GetLocation() == Location ) {
+					meetChance += 40.0f;
+				}
+			}
+		}
+		public static Thinker Create( Settlement location, int specificAge ) {
 			// TODO: create outliers, special bots
 			
 			Thinker thinker = new Thinker();
 			System.Random random = new System.Random();
 			
-			Godot.Collections.Array<FamilyTree> families = location.GetFamilyTrees();
+			Godot.Collections.Array<Node> families = location.GetTree().GetNodesInGroup( "Families" );
 			
 			thinker.Location = location;
 			thinker.BirthPlace = location;
-			thinker.FamilyTree = families[ random.Next( 0, families.Count - 1 ) ];
-			thinker.Age = 0;
-			thinker.Name = string.Format( "{0} {1}", "", thinker.FamilyTree.Name );
+			thinker.Age = specificAge == -1 ? random.Next( 0, 70 ) : specificAge;
+			thinker.FamilyTree = families[ random.Next( 0, families.Count - 1 ) ] as FamilyTree;
+			thinker.FirstName = location.NameCache[ random.Next( 0, location.NameCache.Length - 1 ) ];
+			thinker.BotName = string.Format( "{0} {1}", thinker.FirstName, thinker.FamilyTree.Name );
+			thinker.Name = string.Format( "{0}{1}{2}{3}", thinker.FirstName, thinker.FamilyTree.Name, thinker.BirthPlace.Name, thinker.Age );
+			thinker.FamilyTree.AddMember( thinker );
+
+			//
+			// generate traits, relations, and debts
+			//
+
+			int traitCount = random.Next( 2, (int)TraitType.Count - 1 );
+			thinker.Traits = new Godot.Collections.Array<TraitType>();
+			thinker.Traits.Resize( traitCount );
+
+			for ( int i = 0; i < traitCount; i++ ) {
+				Trait trait = null;
+
+				while ( trait == null ) {
+					TraitType proposed = (TraitType)random.Next( 0, (int)TraitType.Count - 1 );
+					switch ( proposed ) {
+					case TraitType.Cruel:
+						trait = new Traits.Cruel();
+						break;
+					case TraitType.Greedy:
+						trait = new Traits.Greedy();
+						break;
+					case TraitType.Honorable:
+						trait = new Traits.Honorable();
+						break;
+					case TraitType.Reliable:
+						trait = new Traits.Reliable();
+						break;
+					case TraitType.Merciful:
+						trait = new Traits.Merciful();
+						break;
+					case TraitType.Liar:
+						trait = new Traits.Liar();
+						break;
+					case TraitType.WarCriminal:
+						// cant really have an infant being a war criminal
+						if ( thinker.Age < 10 ) {
+							continue;
+						}
+						trait = new Traits.WarCriminal();
+						break;
+					};
+
+					// check for conflicting traits
+					for ( int t = 0; t < thinker.Traits.Count; t++ ) {
+						if ( trait.Conflicts( thinker.Traits[i] ) ) {
+							// trash it, try again
+							trait = null;
+							break;
+						}
+					}
+				}
+			}
 			
 			// now we pull a D&D
 			// TODO: incorporate evolution over millions of years
@@ -463,6 +541,8 @@ namespace Renown {
 			thinker.Health += thinker.Strength * 2.0f + ( thinker.Constitution * 10.0f );
 
 			thinker.ProcessMode = ProcessModeEnum.Disabled;
+
+			ThinkerCache.AddThinker( thinker );
 	
 			return thinker;
 		}

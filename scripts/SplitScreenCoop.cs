@@ -59,7 +59,7 @@ public partial class SplitScreenCoop : Node2D {
 		Viewport1.GetNode<Camera2D>( "Camera2D" ).MakeCurrent();
 		Player2.AddChild( transform2 );
 
-		ResourceLoadThread = new System.Threading.Thread( () => { ResourceCache.Cache( this ); } );
+		ResourceLoadThread = new System.Threading.Thread( () => { ResourceCache.Cache( this, null ); } );
 		ResourceLoadThread.Start();
 
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;

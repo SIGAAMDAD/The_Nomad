@@ -7,6 +7,8 @@ namespace Renown {
 		WarCriminal,
 		Honorable,
 		Reliable,
+		Merciful,
+		Liar,
 
 		Count
 	};
@@ -22,6 +24,8 @@ namespace Renown {
 		public abstract sbyte GetTrustBias();
 
 		public abstract bool Conflicts( Trait other );
+		public abstract bool Conflicts( TraitType other );
 		public abstract bool Agrees( Trait other );
+		public abstract bool Agrees( TraitType other );
 	};
 };

@@ -20,11 +20,11 @@ namespace Renown {
 		[Export]
 		protected int WarCrimeCount = 0;
 		[Export]
-		private Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
+		protected Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
 		[Export]
-		private Godot.Collections.Dictionary<Node, float> Relations = null;
+		protected Godot.Collections.Dictionary<Node, float> Relations = null;
 		[Export]
-		private Godot.Collections.Dictionary<Node, float> Debts = null;
+		protected Godot.Collections.Dictionary<Node, float> Debts = null;
 
 		[Export]
 		protected WorldArea Location;
