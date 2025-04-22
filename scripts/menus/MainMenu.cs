@@ -269,7 +269,7 @@ public partial class MainMenu : Control {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
+			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
 			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {

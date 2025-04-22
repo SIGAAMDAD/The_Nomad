@@ -12,7 +12,7 @@ namespace Renown.World {
 
 		protected bool PlayerStatus = false;
 
-		protected int ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+		protected int ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_AWAY;
 		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
 		public StringName GetAreaName() => AreaName;

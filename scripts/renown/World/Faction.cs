@@ -44,7 +44,7 @@ namespace Renown.World {
 		[Export]
 		protected Entity Leader;
 		[Export]
-		protected Entity[] MemberList;
+		protected Godot.Collections.Array<Entity> MemberList;
 		[Export]
 		protected float Money = 0.0f;
 		[Export]
@@ -64,7 +64,7 @@ namespace Renown.World {
 		
 		protected System.Threading.Thread ThinkThread = null;
 		protected bool Quit = false;
-		protected int ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+		protected int ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_AWAY;
 		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
 		[Signal]
@@ -165,15 +165,11 @@ namespace Renown.World {
 		}
 		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( other, out float score ) ? score : 0.0f;
 		public void RelationIncrease( Object other, float nAmount ) {
-			if ( !RelationCache.ContainsKey( other ) ) {
-				RelationCache.Add( other, 0.0f );
-			}
+			RelationCache.TryAdd(other, 0.0f);
 			RelationCache[ other ] += nAmount;
 		}
 		public void RelationDecrease( Object other, float nAmount ) {
-			if ( !RelationCache.ContainsKey( other ) ) {
-				RelationCache.Add( other, 0.0f );
-			}
+			RelationCache.TryAdd(other, 0.0f);
 			RelationCache[ other ] -= nAmount;
 		}
 		public virtual void DetermineRelationStatus( Object other ) {
@@ -196,7 +192,7 @@ namespace Renown.World {
 				}
 			}
 			*/
-
+			
 			RelationCache[ other ] = score;
 		}
 		public RelationStatus GetRelationStatus( Object other ) {
@@ -230,24 +226,22 @@ namespace Renown.World {
 			int counter;
 			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
 
-			writer.SaveUInt( "alignment", (uint)PrimaryAlignment );
-			writer.SaveString( "leader", Leader != null ? Leader.GetPath() : "nil" );
+			writer.SaveUInt( nameof( PrimaryAlignment ), (uint)PrimaryAlignment );
+			writer.SaveString( nameof( Leader ), Leader != null ? Leader.GetPath() : "nil" );
 			
 			counter = 0;
-			writer.SaveInt( "debt_count", DebtCache.Count );
+			writer.SaveInt( "DebtCount", DebtCache.Count );
 			foreach ( var debt in DebtCache ) {
-				string key = string.Format( "debt_{0}", counter );
-				writer.SaveString( key + "_node", debt.Key.GetHash() );
-				writer.SaveFloat( key + "_amount", debt.Value );
+				writer.SaveString( string.Format( "DebtNode{0}", counter ), debt.Key.GetHash() );
+				writer.SaveFloat( string.Format( "DebtValue{0}", counter ), debt.Value );
 				counter++;
 			}
 			
 			counter = 0;
-			writer.SaveInt( "relation_count", RelationCache.Count );
+			writer.SaveInt( "RelationCount", RelationCache.Count );
 			foreach ( var relation in RelationCache ) {
-				string key = string.Format( "relation_{0}", counter );
-				writer.SaveString( key + "_node", relation.Key.GetHash() );
-				writer.SaveFloat( key + "_amount", relation.Value );
+				writer.SaveString( string.Format( "DebtNode{0}", counter ), relation.Key.GetHash() );
+				writer.SaveFloat( string.Format( "DebtValue{0}", counter ), relation.Value );
 				counter++;
 			}
 			writer.Flush();
@@ -260,10 +254,10 @@ namespace Renown.World {
 				return;
 			}
 
-			PrimaryAlignment = (AIAlignment)reader.LoadUInt( "alignment" );
+			PrimaryAlignment = (AIAlignment)reader.LoadUInt( "Alignment" );
 //			Leader = (Thinker)GetTree().CurrentScene.GetNode( reader.LoadString( "leader" ) );
 			
-			int debtCount = reader.LoadInt( "debt_count" );
+			int debtCount = reader.LoadInt( "DebtCount" );
 		}
 		
 		/*
@@ -303,11 +297,11 @@ namespace Renown.World {
 			int favor = member.GetFactionImportance();
 			if ( favor > 50 ) {
 				// leader
-				amount = (float)favor;
+				amount = favor;
 			} else if ( favor > 0 ) {
 				amount = ( favor * 0.001f );
 			} else if ( favor < 0 ) {
-				amount = (float)-favor;
+				amount = -favor;
 			}
 			RelationDecrease( killer, amount );
 			if ( RelationCache[ killer ] < -80.0f ) {
@@ -341,63 +335,63 @@ namespace Renown.World {
 		}
 		public override void _Ready() {
 			base._Ready();
-
-			RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
-			foreach ( var relation in Relations ) {
-				if ( relation.Key is Faction faction && faction != null ) {
-					RelationCache.Add( faction, relation.Value );
-				} else if ( relation.Key is Entity entity && entity != null ) {
-					RelationCache.Add( entity, relation.Value );
-				} else {
-					Console.PrintError( string.Format( "Faction._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
-				}
-			}
-
-			DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
-			foreach ( var debt in Debts ) {
-				if ( debt.Key is Faction faction && faction != null ) {
-					DebtCache.Add( faction, debt.Value );
-				} else if ( debt.Key is Entity entity && entity != null ) {
-					DebtCache.Add( entity, debt.Value );
-				} else {
-					Console.PrintError( string.Format( "Faction._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
-				}
-			}
 			
 			if ( !IsInGroup( "Factions" ) ) {
 				AddToGroup( "Factions" );
 			}
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
+			} else {
+				RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
+				foreach ( var relation in Relations ) {
+					if ( relation.Key is Faction faction && faction != null ) {
+						RelationCache.Add( faction, relation.Value );
+					} else if ( relation.Key is Entity entity && entity != null ) {
+						RelationCache.Add( entity, relation.Value );
+					} else {
+						Console.PrintError( string.Format( "Faction._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
+					}
+				}
+
+				DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
+				foreach ( var debt in Debts ) {
+					if ( debt.Key is Faction faction && faction != null ) {
+						DebtCache.Add( faction, debt.Value );
+					} else if ( debt.Key is Entity entity && entity != null ) {
+						DebtCache.Add( entity, debt.Value );
+					} else {
+						Console.PrintError( string.Format( "Faction._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
+					}
+				}
 			}
 
 			// this isn't an entity
 			ProcessMode = ProcessModeEnum.Disabled;
 
 			Location.PlayerEntered += () => {
-				ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_AREA;
+				ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_IN_AREA;
 				Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
 
 				ThinkThread.Priority = Importance;
 			};
 			Location.PlayerExited += () => {
 				if ( Location.GetBiome().IsPlayerHere() ) {
-					ThreadSleep = Constants.THREADSLEEP_PLAYER_IN_BIOME;
+					ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_IN_BIOME;
 					Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
 				} else {
-					ThreadSleep = Constants.THREADSLEEP_PLAYER_AWAY;
+					ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_AWAY;
 					Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 				}
 
 				ThinkThread.Priority = Importance;
 			};
 
-			ThinkThread = new System.Threading.Thread( Think );
+			ThinkThread = new System.Threading.Thread( RenownProcess, 512*1024 );
 			ThinkThread.Priority = Importance;
 			ThinkThread.Start();
 		}
 		
-		private bool CreateDebt( float nAmount ) {
+		protected bool CreateDebt( float nAmount ) {
 			// TODO: allow debt with politicians & specific rich mercs outside of faction
 			Godot.Collections.Array<Node> factions = GetTree().GetNodesInGroup( "Factions" );
 			foreach ( var faction in factions ) {
@@ -437,11 +431,11 @@ namespace Renown.World {
 			// if we have enough money and the relation is neutral or friendly, give them money
 			return true;
 		}
-		private void AddDebt( Object to, float nAmount ) {
+		protected void AddDebt( Object to, float nAmount ) {
 			DebtCache.TryAdd( to, 0.0f );
 			DebtCache[ to ] += nAmount;
 		}
-		private void PayDebt( Object to, float nAmount ) {
+		protected void PayDebt( Object to, float nAmount ) {
 			// sanity check
 			if ( !DebtCache.TryGetValue( to, out float amount ) ) {
 				Console.PrintError(
@@ -459,9 +453,9 @@ namespace Renown.World {
 			Money -= nAmount;
 		}
 		
-		private void UpdateWarStatus( Faction faction ) {
+		protected void UpdateWarStatus( Faction faction ) {
 		}
-		private void UpdateRelations() {
+		protected void UpdateRelations() {
 			foreach ( var relation in RelationCache ) {
 				Faction faction = relation.Key as Faction;
 				if ( faction != null ) {
@@ -471,7 +465,7 @@ namespace Renown.World {
 				}
 			}
 		}
-		private void UpdateDebts() {
+		protected void UpdateDebts() {
 			float amount = 0.0f;
 			
 			foreach ( var debt in DebtCache ) {
@@ -482,17 +476,13 @@ namespace Renown.World {
 				}
 			}
 		}
-		private void Think() {
+		protected virtual void RenownProcess() {
 			while ( !Quit ) {
 				System.Threading.Thread.Sleep( ThreadSleep );
 
 				UpdateRelations();
 				UpdateDebts();
-
-				SubThink();
 			}
-		}
-		protected virtual void SubThink() {
 		}
 	};
 };

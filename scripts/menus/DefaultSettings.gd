@@ -32,6 +32,7 @@ enum SunShadowQuality {
 @export var _bloom_enabled:bool = true
 @export var _sun_light_enabled:bool = true
 @export var _sun_shadow_quality:SunShadowQuality = SunShadowQuality.NoFilter
+@export var _show_fps:bool = false
 
 # audio
 @export var _sound_effects_on:bool = true

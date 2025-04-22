@@ -36,6 +36,7 @@ config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+run/max_fps=60
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://desertbkgd_icon.png"
@@ -62,6 +63,7 @@ DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
 BugReportingForm="*res://scenes/menus/bug_reporter.tscn"
+FpsCounter="*res://scenes/fps_counter.tscn"
 
 [debug]
 
@@ -80,7 +82,6 @@ window/size/resizable=false
 window/size/borderless=true
 window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
-window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 
 [dotnet]
@@ -100,6 +101,7 @@ Settlements=""
 SceneRelevant=""
 Thinkers=""
 Families=""
+Buildings=""
 
 [input]
 
@@ -201,7 +203,7 @@ general/add_quests_to_pot_generation=true
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
-driver/threads/thread_model=0
+driver/threads/thread_model=2
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true

@@ -6,7 +6,7 @@ namespace Renown.World {
 	public partial class Marketplace : Area2D {
 		[Export]
 		private MarketplaceSlot[] TradingSpaces;
-		
+
 		private List<Merchant> ActiveMerchants = null;
 		
 		public List<Merchant> GetActiveMerchants() => ActiveMerchants;

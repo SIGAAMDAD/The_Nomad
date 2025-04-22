@@ -1,9 +1,8 @@
 using Godot;
-using Renown.World.Settlements;
+using Renown.Thinkers;
 
 namespace Renown.World.Buildings {
 	public enum BuildingType : uint {
-		Mansion,
 		House,
 		Blacksmith,
 		School,
@@ -17,27 +16,33 @@ namespace Renown.World.Buildings {
 		Count
 	};
 	public enum BuildingState : uint {
+		Stable,
 		BuildingInProgress,
 		Rubble,
-		Stable,
 
 		Count
 	};
 	public partial class Building : Node2D {
-		private BuildingType Type;
-		private BuildingState State;
-		private LaborCategoryType LaborType;
+		[Export]
+		protected BuildingType Type;
+		[Export]
+		protected BuildingState State;
+		[Export]
+		protected OccupationType LaborType;
+		[Export]
+		protected Settlement Location;
 
 		public int MaxLaborers;
+
+		public Settlement GetLocation() => Location;
 
 		public BuildingType GetBuildingType() => Type;
 		public BuildingState GetState() => State;
 
-		public LaborCategoryType GetLaborCategory() => LaborType;
-		public void SetLaborCategory( LaborCategoryType type ) => LaborType = type;
+		public OccupationType GetLaborCategory() => LaborType;
+		public void SetLaborCategory( OccupationType type ) => LaborType = type;
 		
 		public bool IsHouse() => Type == BuildingType.House;
-		public bool IsMansion() => Type == BuildingType.Mansion;
 		public bool IsBlacksmith() => Type == BuildingType.Blacksmith;
 		public bool IsSchool() => Type == BuildingType.School;
 		public bool IsFactory() => Type == BuildingType.Factory;

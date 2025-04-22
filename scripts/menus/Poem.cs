@@ -22,6 +22,8 @@ public partial class Poem : Control {
 	private void OnFinishedLoading() {
 		FinishedLoading -= OnFinishedLoading;
 
+//		ProjectSettings.SetSetting( "application/run/low_processor_mode", true );
+
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}

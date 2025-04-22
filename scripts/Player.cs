@@ -483,6 +483,7 @@ public partial class Player : Entity {
 			}
 
 			float x = mousePosition.X;
+			float y = mousePosition.Y;
 			int width = ScreenSize.X;
 
 			if ( LastMousePosition != mousePosition ) {
@@ -490,13 +491,13 @@ public partial class Player : Entity {
 				IdleReset();
 			}
 
+			ArmAngle = (float)Math.Atan2( mousePosition.Y - ( ScreenSize.Y / 2.0f ), mousePosition.X - ( ScreenSize.X / 2.0f ) );
 			ArmAngle = GetLocalMousePosition().Angle();
-//			ArmAngle = (float)Math.Atan2( y - ( height / 2.0f ), x - ( width / 2.0f ) );
 			AimLine.GlobalRotation = ArmAngle;
 			AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( ArmAngle ) ) * AimLine.Points[1].X;
-			if ( x > width * 0.5f ) {
+			if ( x >= width / 2.0f ) {
 				FlipSpriteRight();
-			} else if ( x < width * 0.5f ) {
+			} else if ( x <= width / 2.0f ) {
 				FlipSpriteLeft();
 			}
 		}
@@ -1366,6 +1367,19 @@ public partial class Player : Entity {
 			LoadGamepadBinds();
 		}
 		LoadSfx();
+
+		Resource screenshot = ResourceLoader.Load( "res://resources/binds/actions/keyboard/screenshot.tres" );
+		screenshot.Connect( "triggered", Callable.From( () => {
+			HUD.Hide();
+
+			RenderingServer.ForceDraw();
+			DirAccess.MakeDirRecursiveAbsolute( "user://screenshots" );
+			GetViewport().GetTexture().GetImage().SavePng(
+				string.Format( "user://screenshots/screenshot{0}.png", DateTime.Now )
+			);
+
+			HUD.Show();
+		} ) );
 
 		SetProcessUnhandledInput( false );
 

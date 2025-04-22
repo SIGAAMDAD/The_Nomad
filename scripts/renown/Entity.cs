@@ -1,8 +1,6 @@
 using Godot;
 using Renown.World;
 using System.Collections.Generic;
-using System.Security.AccessControl;
-using System.Security.Cryptography.X509Certificates;
 
 /// <summary>
 /// the base parent class which all living renown entities inherit from
@@ -189,6 +187,14 @@ namespace Renown {
 		/// returns true if the entity has the given trait
 		/// </summary>
 		public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
+		public bool HasTrait( TraitType trait ) {
+			foreach ( var it in TraitCache ) {
+				if ( it.GetTraitType() == trait ) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// checks if the given trait conflicts with this entity's values

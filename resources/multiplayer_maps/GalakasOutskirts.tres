@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1_u0lrh")
 _name = "Galakas Outskirts"
-_filename = ""
-_mode_bloodbath = false
-_mode_team_brawl = false
-_mode_capture_the_flag = false
-_mode_king_of_the_hill = false
+_filename = "galakas_outskirts"
+_mode_bloodbath = true
+_mode_team_brawl = true
+_mode_capture_the_flag = true
+_mode_king_of_the_hill = true
 _mode_duel = false

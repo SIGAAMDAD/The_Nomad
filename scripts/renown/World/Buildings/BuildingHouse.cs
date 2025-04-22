@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+using Godot;
+using Renown.Thinkers;
 
 namespace Renown.World.Buildings {
 	public enum HouseLevel : uint {
@@ -12,44 +12,42 @@ namespace Renown.World.Buildings {
 		Count,
 	};
 	public partial class BuildingHouse : Building {
-		public static readonly int MaxHouseMembers = 16;
+		public static readonly int MaxHouseMembers = 30;
 
-		private HouseLevel Level;
-
-		public List<Thinker> Members = new List<Thinker>();
+		private Family Family = null;
 		
+		[Export]
+		private HouseLevel Level;
 		public int MaxPeople;
-		public int Population;
+		[Export]
 		public int TaxIncomeOrStorage;
 		public byte WaterSupply;
 		public byte HouseHappiness;
 		public bool CriminalActive;
+
+		[Export]
 		public bool TaxCoverage;
 
 		public bool WaterRequired;
 		public bool FoodRequired;
 		public bool BeerRequired;
 
+		[Export]
 		public int CrimeRisk;
-
+		[Export]
 		public int TaxMultiplier;
 
-		public int PopulationRoom() {
-			return Math.Max( MaxPeople - Population, 0 ) - Population;
-		}
-
+		public bool HasOwner() => Family != null;
 		public HouseLevel GetLevel() => Level;
-		public bool IsNobility() => Level >= HouseLevel.Manor;
-		public bool AddMember( Thinker thinker ) {
-			if ( Members.Count >= MaxPeople ) {
-				return false;
-			}
-			Members.Add( thinker );
-			return true;
-		}
+		public bool IsNobility() => Family.GetSocietyRank() >= SocietyRank.Upper;
+
+		public void SetOwner( Family family ) => Family = family;
+		public Family GetFamily() => Family;
 
 		public override void _Ready() {
 			base._Ready();
+
+			ProcessMode = ProcessModeEnum.Disabled;
 
 			switch ( Level ) {
 			case HouseLevel.MudHut:

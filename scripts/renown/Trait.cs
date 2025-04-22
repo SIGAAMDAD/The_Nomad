@@ -17,6 +17,28 @@ namespace Renown {
 		public Trait() {
 		}
 
+		public static Trait Create( TraitType nType ) {
+			switch ( nType ) {
+			case TraitType.Greedy:
+				return new Traits.Greedy();
+			case TraitType.Cruel:
+				return new Traits.Cruel();
+			case TraitType.WarCriminal:
+				return new Traits.WarCriminal();
+			case TraitType.Honorable:
+				return new Traits.Honorable();
+			case TraitType.Reliable:
+				return new Traits.Reliable();
+			case TraitType.Merciful:
+				return new Traits.Merciful();
+			case TraitType.Liar:
+				return new Traits.Liar();
+			default:
+				break;
+			};
+			return null;
+		}
+
 		public abstract string GetTraitName();
 		public abstract TraitType GetTraitType();
 

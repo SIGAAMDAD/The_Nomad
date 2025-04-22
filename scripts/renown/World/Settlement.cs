@@ -1,87 +1,191 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
 using Godot;
 using Renown.Thinkers;
 using Renown.World.Buildings;
-using Renown.World.Settlements;
 
 namespace Renown.World {
+	public enum SettlementType : uint {
+		Village,
+		City,
+
+		Count,
+	};
 	public partial class Settlement : WorldArea {
 		public static DataCache<Settlement> Cache = null;
 
-		private Taxes Taxes = new Taxes();
-		private Economy Economy = new Economy();
-		private Labor Labor = new Labor();
-		private Population Population = new Population();
-
 		[Export]
-		private int Health = 0;
+		private SettlementType Type;
 		[Export]
-		private int StartingReserves = 0;
+		private float Treasury = 0;
 		[Export]
 		private Government Government;
-		[Export]
-		private Building[] Buildings;
 		[Export]
 		private Marketplace[] Markets;
 		[Export]
 		private Road[] TradeRoutes;
 		[Export]
-		private ResourceProducer[] Producers;
-		[Export]
-		private ResourceFactory[] Factories;
+		private BuildingResourceProducer[] Producers;
 		[Export]
 		private float BirthRate = 0.0f;
-		[Export]
-		private int MaxPopulation = 0;
-		[Export]
-		private Godot.Collections.Array<FamilyTree> FamilyList;
-		[Export]
-		public StringName[] NameCache;
 
-		protected System.Threading.Thread ThinkThread = null;
-		protected bool Quit = false;
+		/// <summary>
+		/// the statistics regarding the socioeconomic makeup of the settlement.
+		/// will change over time the economy evolves
+		/// </summary>
+		[Export]
+		private Godot.Collections.Dictionary<SocietyRank, float> SocietyScale;
+
+		/// <summary>
+		/// the one npc that doesn't use a renown thinker except for premade npcs.
+		/// there will only ever be one merc master per settlement
+		/// </summary>
+		[Export]
+		private MercenaryMaster MercenaryMaster;
+
+		private List<Family> FamilyList = new List<Family>();
+		private List<Building> BuildingList = new List<Building>();
+
+		private System.Threading.Thread ThinkThread = null;
+		private bool Quit = false;
+
+		private float TaxationRate = 0.0f;
+
+		private int MaxPopulation = 0;
+		private int Population = 0;
+		private HashSet<Thinker> Citizens = null;
 
 		[Signal]
 		public delegate void PopulationChangedEventHandler( int nCurrent );
+		[Signal]
+		public delegate void RequestedMoneyEventHandler( Settlement settlement, float nAmount );
 
+		public float GetTaxationRate() => TaxationRate;
 		public Road[] GetTradeRoutes() => TradeRoutes;
 		public float GetBirthRate() => BirthRate;
 		public Marketplace[] GetMarketplaces() => Markets;
-		public Godot.Collections.Array<FamilyTree> GetFamilyTrees() => FamilyList;
-		public Population GetPopulation() => Population;
-		public Taxes GetTaxes() => Taxes;
-		public Labor GetLabor() => Labor;
+		public List<Family> GetFamilies() => FamilyList;
+		public int GetPopulation() => Population;
 		public Government GetGovernment() => Government;
-		public int GetHealth() => Health;
-		public int GetBuildingCount() => Buildings.Length;
-		public Building GetBuilding( int nIndex ) => Buildings[ nIndex ];
+		public List<Building> GetBuildings() => BuildingList;
+		public MercenaryMaster GetMercenaryMaster() => MercenaryMaster;
+
+		public int GetNumThinkerInOccupation( OccupationType job ) {
+			int count = 0;
+			foreach ( var thinker in Citizens ) {
+				if ( thinker.GetOccupation().GetOccupationType() == job ) {
+					count++;
+				}
+			}
+			return count;
+		}
+
+		public OccupationType CalcJob( Random random, Thinker thinker ) {
+			OccupationType job = OccupationType.Count;
+			Span<int> chances = stackalloc int[ (int)OccupationType.Count ];
+
+			for ( OccupationType occupation = OccupationType.None; occupation < OccupationType.Count; occupation++ ) {
+				chances[ (int)occupation ] = Constants.JobChances_SocioEconomicStatus[ occupation ][ thinker.GetSocietyRank() ];
+			}
+
+			if ( thinker.GetSocietyRank() == SocietyRank.Lower ) {
+				if ( Type == SettlementType.City ) {
+					// ...child labor
+					if ( thinker.GetAge() < 14 && thinker.GetAge() > 5 && random.Next( 0, 100 ) >= 75 ) {
+						job = OccupationType.Industry;
+					}
+				}
+			}
+			for ( int i = 0; i < chances.Length; i++ ) {
+				int rand = random.Next( 0, 100 );
+				if ( rand <= chances[i] ) {
+					job = (OccupationType)i;
+				}
+			}
+
+			return job;
+		}
+		public void AddFamily( Family family ) {
+			FamilyList.Add( family );
+		}
+
+		public float GetSocietyRankMaxPercentage( SocietyRank rank ) {
+			return SocietyScale[ rank ];
+		}
+		public float GetPercentageOfSocietyRank( SocietyRank rank ) {
+			return Util.CalcPercentage( GetNumberOfSocietyRank( rank ), Citizens.Count );
+		}
+		public int GetNumberOfSocietyRank( SocietyRank min, SocietyRank max ) {
+			int count = 0;
+			for ( int i = 0; i < FamilyList.Count; i++ ) {
+				if ( FamilyList[i].GetSocietyRank() >= min && FamilyList[i].GetSocietyRank() <= max ) {
+					count += FamilyList[i].GetMemberCount();
+				}
+			}
+			return count;
+		}
+		public int GetNumberOfSocietyRank( SocietyRank rank ) {
+			int count = 0;
+			for ( int i = 0; i < FamilyList.Count; i++ ) {
+				if ( FamilyList[i].GetSocietyRank() == rank ) {
+					count += FamilyList[i].GetMemberCount();
+				}
+			}
+			return count;
+		}
+
+		public void AssignHouse( Family family ) {
+			for ( int i = 0; i < BuildingList.Count; i++ ) {
+				if ( BuildingList[i] is BuildingHouse house && house != null ) {
+					if ( !house.HasOwner() ) {
+						house.SetOwner( family );
+						family.SetHome( house );
+						return;
+					}
+				}
+			}
+		}
 
 		public void ForEachBuildings( System.Action<Building> callback, bool bThreaded = true ) {
 			if ( bThreaded ) {
-				System.Threading.Tasks.Parallel.ForEach( Buildings, callback );
+				System.Threading.Tasks.Parallel.ForEach( BuildingList, callback );
 			} else {
-				for ( int i = 0; i < Buildings.Length; i++ ) {
-					callback( Buildings[i] );
+				for ( int i = 0; i < BuildingList.Count; i++ ) {
+					callback( BuildingList[i] );
 				}
 			}
 		}
 		public void ForEachBuildingsValid( System.Action<Building> callback, bool bThreaded = true ) {
 			if ( bThreaded ) {
-				System.Threading.Tasks.Parallel.ForEach( Buildings, ( Building building ) => {
+				System.Threading.Tasks.Parallel.ForEach( BuildingList, ( Building building ) => {
 					if ( building.GetState() == BuildingState.Stable ) {
 						callback( building );
 					}
 				} );
 			} else {
-				for ( int i = 0; i < Buildings.Length; i++ ) {
-					if ( Buildings[i].GetState() == BuildingState.Stable ) {
-						callback( Buildings[i] );
+				for ( int i = 0; i < BuildingList.Count; i++ ) {
+					if ( BuildingList[i].GetState() == BuildingState.Stable ) {
+						callback( BuildingList[i] );
 					}
 				}
 			}
 		}
 
 		public void AddThinker( Thinker thinker ) {
-			GetTree().CurrentScene.GetNode( "Thinkers" ).CallDeferred( "add_child", thinker );
+			CallDeferred( "AddToPopulation", thinker );
+		}
+		public void AddToPopulation( Thinker thinker ) {
+			if ( Citizens.Contains( thinker ) ) {
+				return;
+			}
+			Citizens.Add( thinker );
+		}
+		public void RemoveFromPopulation( Thinker thinker ) {
+			if ( !Citizens.Contains( thinker ) ) {
+				return;
+			}
+			Citizens.Add( thinker );
 		}
 
 		public override void Save() {
@@ -97,56 +201,11 @@ namespace Renown.World {
 				// population
 				//
 
-				writer.SaveInt( nameof( Population.Current ), Population.Current );
-				writer.SaveInt( nameof( Population.LastDayCurrent ), Population.LastDayCurrent );
-				writer.SaveInt( nameof( Population.LastYear ), Population.LastYear );
-				writer.SaveInt( nameof( Population.SchoolAge ), Population.SchoolAge );
-				writer.SaveInt( nameof( Population.AcademyAge ), Population.AcademyAge );
-				writer.SaveInt( nameof( Population.WorkingAge ), Population.WorkingAge );
+				writer.SaveInt( nameof( Population ), Population );
 
 				//
 				// save economy state
 				//
-
-				writer.SaveFloat( nameof( Economy.TreasuryValue ), Economy.TreasuryValue );
-				writer.SaveInt( nameof( Economy.TaxPercentage ), Economy.TaxPercentage );
-				writer.SaveFloat( nameof( Economy.InterestSoFar ), Economy.InterestSoFar );
-				writer.SaveFloat( nameof( Economy.SalarySoFar ), Economy.SalarySoFar );
-				writer.SaveFloat( nameof( Economy.WagesSoFar ), Economy.WagesSoFar );
-				writer.SaveFloat( nameof( Economy.WageRatePaidLastYear ), Economy.WageRatePaidLastYear );
-				writer.SaveFloat( nameof( Economy.WageRatePaidThisYear ), Economy.WageRatePaidThisYear );
-
-				writer.SaveFloat( "LastYear.Income.Taxes", Economy.LastYear.Income.Taxes );
-				writer.SaveFloat( "LastYear.Income.Exports", Economy.LastYear.Income.Exports );
-				writer.SaveUInt( "LastYear.Income.GoldExtracted", Economy.LastYear.Income.GoldExtracted );
-				writer.SaveFloat( "LastYear.Income.Donated", Economy.LastYear.Income.Donated );
-				writer.SaveFloat( "LastYear.Income.Total", Economy.LastYear.Income.Total );
-				writer.SaveFloat( "LastYear.Expenses.Imports", Economy.LastYear.Expenses.Imports );
-				writer.SaveFloat( "LastYear.Expenses.Wages", Economy.LastYear.Expenses.Wages );
-				writer.SaveFloat( "LastYear.Expenses.Construction", Economy.LastYear.Expenses.Construction );
-				writer.SaveFloat( "LastYear.Expenses.Interest", Economy.LastYear.Expenses.Interest );
-				writer.SaveFloat( "LastYear.Expenses.Salary", Economy.LastYear.Expenses.Salary );
-				writer.SaveFloat( "LastYear.Expenses.Stolen", Economy.LastYear.Expenses.Stolen );
-				writer.SaveFloat( "LastYear.Expenses.Debt", Economy.LastYear.Expenses.Debt );
-				writer.SaveFloat( "LastYear.Expenses.Total", Economy.LastYear.Expenses.Total );
-				writer.SaveFloat( "LastYear.NetInOut", Economy.LastYear.NetInOut );
-				writer.SaveFloat( "LastYear.Balance", Economy.LastYear.Balance );
-
-				writer.SaveFloat( "ThisYear.Income.Taxes", Economy.ThisYear.Income.Taxes );
-				writer.SaveFloat( "ThisYear.Income.Exports", Economy.ThisYear.Income.Exports );
-				writer.SaveUInt( "ThisYear.Income.GoldExtracted", Economy.ThisYear.Income.GoldExtracted );
-				writer.SaveFloat( "ThisYear.Income.Donated", Economy.ThisYear.Income.Donated );
-				writer.SaveFloat( "ThisYear.Income.Total", Economy.ThisYear.Income.Total );
-				writer.SaveFloat( "ThisYear.Expenses.Imports", Economy.ThisYear.Expenses.Imports );
-				writer.SaveFloat( "ThisYear.Expenses.Wages", Economy.ThisYear.Expenses.Wages );
-				writer.SaveFloat( "ThisYear.Expenses.Construction", Economy.ThisYear.Expenses.Construction );
-				writer.SaveFloat( "ThisYear.Expenses.Interest", Economy.ThisYear.Expenses.Interest );
-				writer.SaveFloat( "ThisYear.Expenses.Salary", Economy.ThisYear.Expenses.Salary );
-				writer.SaveFloat( "ThisYear.Expenses.Stolen", Economy.ThisYear.Expenses.Stolen );
-				writer.SaveFloat( "ThisYear.Expenses.Debt", Economy.ThisYear.Expenses.Debt );
-				writer.SaveFloat( "ThisYear.Expenses.Total", Economy.ThisYear.Expenses.Total );
-				writer.SaveFloat( "ThisYear.NetInOut", Economy.ThisYear.NetInOut );
-				writer.SaveFloat( "ThisYear.Balance", Economy.ThisYear.Balance );
 			}
 		}
 		public override void Load() {
@@ -165,14 +224,14 @@ namespace Renown.World {
 		public void OnGenerateThinkers() {
 			Godot.Collections.Array<Node> thinkers = GetTree().GetNodesInGroup( "Thinkers" );
 
-			Population.Current = 0;
+			Population = 0;
 			for ( int i = 0; i < thinkers.Count; i++ ) {
 				Thinker thinker = thinkers[i] as Thinker;
 				if ( thinker.GetLocation() == this ) {
-					Population.Current++;
+					Population++;
 				}
 			}
-			if ( Population.Current >= MaxPopulation ) {
+			if ( Population >= MaxPopulation ) {
 				Console.PrintLine( "Maximum population already reached for settlement " + Name );
 				return;
 			}
@@ -182,13 +241,6 @@ namespace Renown.World {
 			for ( int i = 0; i < addPopulation; i++ ) {
 				ThinkerFactory.QueueThinker( this );
 			}
-
-			Labor.AllocateWorkersToCategories();
-			Economy.TreasuryValue = StartingReserves;
-		}
-
-		public void CollectTaxes() {
-			Economy.CollectMonthlyTaxes();
 		}
 
 		public override void _ExitTree() {
@@ -199,9 +251,25 @@ namespace Renown.World {
 		public override void _Ready() {
 			base._Ready();
 
-			ThinkThread = new System.Threading.Thread( Think );
+			ThinkThread = new System.Threading.Thread( Think, 256*1024 );
 			ThinkThread.Priority = Importance;
-			ThinkThread.Start();
+//			ThinkThread.Start();
+
+			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Buildings" );
+			MaxPopulation = 0;
+			for ( int i = 0; i < nodes.Count; i++ ) {
+				Building building = nodes[i] as Building;
+				if ( building.GetLocation() == this ) {
+					if ( building.GetBuildingType() == BuildingType.House ) {
+						MaxPopulation += ( building as BuildingHouse ).MaxPeople;
+					}
+					BuildingList.Add( building );
+				}
+			}
+
+			Citizens = new HashSet<Thinker>( MaxPopulation );
+
+			ProcessMode = ProcessModeEnum.Disabled;
 
 			if ( !IsInGroup( "Settlements" ) ) {
 				AddToGroup( "Settlements" );
@@ -210,37 +278,36 @@ namespace Renown.World {
 				OnGenerateThinkers();
 			}
 		}
-		public override void _Process( double delta ) {
-			base._Process( delta );
-			
-			/*
-			ImGui.Begin( "[Settlement] " + Name );
-			if ( ImGui.CollapsingHeader( "Economy" ) ) {
-				ImGui.Text( "Taxes:" );
-				ImGui.Indent();
-				{
-					ImGui.Text( "TaxesNobles: " + Taxes.TaxesNobles );
-					ImGui.Text( "TaxesCitizens: " + Taxes.TaxedCitizens );
-					ImGui.Text( "Monthly.CollectedNobles: " + Taxes.Monthly.CollectedNobles );
-					ImGui.Text( "Monthly.CollectedCitizens: " + Taxes.Monthly.CollectedCitizens );
-					ImGui.Text( "Monthly.UncollectedNobles: " + Taxes.Monthly.UncollectedNobles );
-					ImGui.Text( "Monthly.UncollectedCitizens: " + Taxes.Monthly.UncollectedCitizens );
-					ImGui.Text( "PercentageTaxedCitizens: " + Taxes.PercentageTaxedCitizens );
-					ImGui.Text( "PercentageTaxedNobles: " + Taxes.PercentageTaxedNobles );
-					ImGui.Text( "PercentageTaxedPeople: " + Taxes.PercentageTaxedPeople );
-					ImGui.Text( "UntaxedNobles: " + Taxes.UntaxedNobles );
-					ImGui.Text( "UntaxedCitizens: " + Taxes.UntaxedCitizens );
-				}
-				ImGui.Unindent();
+
+		private void DecreaseMoney( float nAmount ) {
+			Treasury -= nAmount;
+
+			if ( Treasury < 0.0f ) {
+				EmitSignalRequestedMoney( this, nAmount );
 			}
-			if ( ImGui.CollapsingHeader( "Buildings" ) ) {
-				for ( int i = 0; i < Buildings.Length; i++ ) {
-					ImGui.Text( "Building[" + Buildings[i].GetHashCode() + "]:" );
-					ImGui.Text( "\tType: " + Buildings[i].GetBuildingType().ToString() );
-				}
+		}
+
+		public float CollectTaxes() {
+			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
+
+			float totalCollected = 0.0f;
+			float totalUncollected = 0.0f;
+
+			foreach ( var citizen in Citizens ) {
+				float expected;
+				float paid;
+
+				citizen.PayMonthlyTaxes( out expected, out paid );
+				
+				totalCollected += paid;
+				totalUncollected += expected - paid;
 			}
-			ImGui.End();
-			*/
+
+			stopwatch.Stop();
+			GD.Print( "CollectTaxes: " + stopwatch.ElapsedMilliseconds );
+
+			return totalCollected;
 		}
 
 		private void Think() {

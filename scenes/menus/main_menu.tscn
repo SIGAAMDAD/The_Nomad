@@ -26,7 +26,7 @@ scale = Vector2(0.75, 0.75)
 text = "AppVer "
 metadata/_edit_use_anchors_ = true
 
-[node name="CopyrightLabel" type="RichTextLabel" parent="."]
+[node name="CopyrightLabel" type="Label" parent="."]
 process_mode = 4
 layout_mode = 1
 anchors_preset = 12
@@ -37,9 +37,7 @@ offset_top = -22.0
 offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 0
-bbcode_enabled = true
 text = " Copyright © 2025 GDR Games"
-scroll_active = false
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 

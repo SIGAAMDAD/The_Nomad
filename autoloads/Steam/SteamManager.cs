@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Godot;
 using Steamworks;
+using System.Threading;
 
 [GlobalClass]
 public partial class SteamManager : Node {
@@ -36,28 +36,28 @@ public partial class SteamManager : Node {
 		return SteamUsername;
 	}
 
-	private static void LoadAppInfo() {
+	private void LoadAppInfo() {
 		GameLanguage = SteamApps.GetCurrentGameLanguage();
 		SteamAppID = SteamUtils.GetAppID();
 		SteamAppBuildID = SteamApps.GetAppBuildId();
 
-		bool bIsTimedTrial;
-		if ( bIsTimedTrial = SteamApps.BIsTimedTrial( out TimedTrialSecondsAllowed, out TimedTrialSecondsPlayed ) ) {
+		if ( SteamApps.BIsTimedTrial( out TimedTrialSecondsAllowed, out TimedTrialSecondsPlayed ) ) {
 			if ( TimedTrialSecondsPlayed > TimedTrialSecondsAllowed ) {
-				GD.PushError( "[STEAM] Timed trial has expired" );
+				Console.PrintError( "[STEAM] Timed trial has expired" );
+				GetTree().Quit();
 			}
 		}
 
-		GD.Print( "...Language: " + GameLanguage );
-		GD.Print( "...AppId: " + SteamAppID );
-		GD.Print( "...AppBuildId: " + SteamAppBuildID );
+		Console.PrintLine( string.Format( "...Language: {0}", GameLanguage ) );
+		Console.PrintLine( string.Format( "...AppId: {0}", SteamAppID ) );
+		Console.PrintLine( string.Format( "...AppBuildId: {0}", SteamAppBuildID ) );
 	}
 	private static void LoadUserInfo() {
 		SteamID = SteamUser.GetSteamID();
 		SteamUsername = SteamFriends.GetPersonaName();
 
-		GD.Print( "...SteamUser.Id: " + SteamID );
-		GD.Print( "...SteamUser.UserName: " + SteamUsername );
+		Console.PrintLine( string.Format( "...SteamUser.Id: {0}", SteamID ) );
+		Console.PrintLine( string.Format( "...SteamUser.UserName: {0}", SteamUsername ) );
 	}
 	private void LoadDLCInfo() {
 		Console.PrintLine( "Loading Steam DLC information..." );
@@ -105,7 +105,7 @@ public partial class SteamManager : Node {
 	}
     public override void _Ready() {
 		if ( !SteamAPI.IsSteamRunning() ) {
-			GD.Print( "Steam isn't running, not initializing SteamAPI" );
+			Console.PrintError( "Steam isn't running, not initializing SteamAPI" );
 			return;
 		}
 		
@@ -124,10 +124,13 @@ public partial class SteamManager : Node {
 		LoadDLCInfo();
 
 		GameOverlayActivated = Callback<GameOverlayActivated_t>.Create( OnGameOverlayActived );
+
+		ProcessMode = ProcessModeEnum.Always;
 	}
 	public override void _Process( double delta ) {
-		base._Process( delta );
-
+		if ( ( Engine.GetProcessFrames() % 180 ) != 0 ) {
+			return;
+		}
 		SteamAPI.RunCallbacks();
 	}
 
@@ -137,7 +140,7 @@ public partial class SteamManager : Node {
 
     public static void SaveCloudFile( string path ) {
 		if ( !SteamRemoteStorage.IsCloudEnabledForAccount() || !SteamRemoteStorage.IsCloudEnabledForApp() ) {
-			GD.Print( "SteamCloud isn't enabled for this application or the account" );
+			Console.PrintLine( "SteamCloud isn't enabled for this application or the account" );
 			return;
 		}
 
@@ -151,7 +154,7 @@ public partial class SteamManager : Node {
 		byte[] buffer = new byte[ length ];
 		stream.Read( buffer );
 
-		GD.Print( "Saving file \"" + path + "\" to SteamCloud..." );
+		Console.PrintLine( string.Format( "Saving file \"{0}\" to SteamCloud...", path ) );
 		SteamRemoteStorage.FileWrite( path, buffer, buffer.Length );
 	}
 };

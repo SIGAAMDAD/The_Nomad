@@ -133,6 +133,9 @@ public partial class TitleMenu : Control {
 		Background.SetProcessInternal( false );
 
 		MainMenu = GetNode<MainMenu>( "MainMenu" );
+		MainMenu.SetProcess( true );
+		MainMenu.SetProcessInternal( true );
+		MainMenu.SetProcessUnhandledInput( true );
 		MainMenu.Connect( "CoopMenu", Callable.From( OnMainMenuCoopMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
 		MainMenu.Connect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );

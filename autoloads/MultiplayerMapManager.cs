@@ -42,12 +42,16 @@ public static class MultiplayerMapManager {
 		System.Collections.Generic.List<string> mapList = new System.Collections.Generic.List<string>();
 		LoadMapList( "res://resources/multiplayer_maps", mapList );
 
-		GD.Print( "Loading maps..." );
+		Console.PrintLine( "Loading maps..." );
 
 		MapCache = new System.Collections.Generic.Dictionary<string, MapData>();
 		for ( int i = 0; i < mapList.Count; i++ ) {
 			Resource map = ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace );
-			MapCache.Add( (string)map.Get( "_name" ), new MapData( map ) );
+			if ( map != null ) {
+				MapCache.Add( (string)map.Get( "_name" ), new MapData( map ) );
+			} else {
+				Console.PrintError( string.Format( "Error loading multiplayer map {0}!", mapList[i] ) );
+			}
 		}
 	}
 };

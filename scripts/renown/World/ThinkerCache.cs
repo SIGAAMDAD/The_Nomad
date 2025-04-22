@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 using Renown.Thinkers;
@@ -6,10 +5,23 @@ using Renown.Thinkers;
 namespace Renown.World {
 	public partial class ThinkerCache : Node {
 		private Dictionary<int, Thinker> Thinkers = null;
+		private Dictionary<int, Family> Families = null;
+
+		public static int ThinkerCount = 0;
 
 		private static ThinkerCache Instance = null;
 
 		public void Load() {
+			using ( var reader = ArchiveSystem.GetSection( "FamilyCache" ) ) {
+				int cacheSize = reader.LoadInt( "CacheSize" );
+				Families = new Dictionary<int, Family>( cacheSize );
+
+				for ( int i = 0; i < cacheSize; i++ ) {
+					Family family = new Family();
+					family.Load( reader, i );
+					Families.Add( family.GetHashCode(), family );
+				}
+			}
 			using ( var reader = ArchiveSystem.GetSection( "ThinkerCache" ) ) {
 				int cacheSize = reader.LoadInt( "CacheSize" );
 				Thinkers = new Dictionary<int, Thinker>( cacheSize );
@@ -32,6 +44,15 @@ namespace Renown.World {
 			}
 		}
 		public void Save() {
+			using ( var writer = new SaveSystem.SaveSectionWriter( "FamilyCache" ) ) {
+				writer.SaveInt( "CacheSize", Families.Count );
+
+				int index = 0;
+				foreach ( var family in Families ) {
+					family.Value.Save( writer, index );
+					index++;
+				}
+			}
 			using ( var writer = new SaveSystem.SaveSectionWriter( "ThinkerCache" ) ) {
 				writer.SaveInt( "CacheSize", Thinkers.Count );
 
@@ -62,13 +83,26 @@ namespace Renown.World {
 					Thinker thinker = nodes[i] as Thinker;
 					Thinkers.Add( thinker.GetHashCode(), thinker );
 				}
+
+				Families = new Dictionary<int, Family>();
 			}
 		}
 
+		public static Family GetFamily( Settlement settlement ) {
+			foreach ( var family in Instance.Families ) {
+				if ( family.Value.CanAddMember() ) {
+					return family.Value;
+				}
+			}
+			Family instance = Family.Create( settlement );
+			Instance.Families.Add( instance.GetHashCode(), instance );
+			return instance;
+		}
 		public static void AddThinker( Thinker thinker ) {
 			Instance.Thinkers.TryAdd( thinker.GetHashCode(), thinker );
 			Instance.CallDeferred( "add_child", thinker );
 			thinker.SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled );
+			System.Threading.Interlocked.Increment( ref ThinkerCount );
 		}
 	};
 };

@@ -39,6 +39,7 @@ public partial class SettingsData : Control {
 	private static bool BloomEnabled;
 	private static bool SunLightEnabled;
 	private static ShadowQuality SunShadowQuality;
+	private static bool ShowFPS;
 
 	private static float HapticStrength;
 	private static bool HapticEnabled;
@@ -87,7 +88,7 @@ public partial class SettingsData : Control {
 	public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
 	public static bool GetFriendsOnlyNetworking() => FriendsOnlyNetworking;
 	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) => FriendsOnlyNetworking = bFriendsOnlyNetworking;
-
+	
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
 	public static DisplayServer.VSyncMode GetVSync() => VSyncMode;
@@ -100,6 +101,12 @@ public partial class SettingsData : Control {
 	public static void SetSunLightEnabled( bool bSunLightEnabled ) => SunLightEnabled = bSunLightEnabled;
 	public static ShadowQuality GetSunShadowQuality() => SunShadowQuality;
 	public static void SetSunShadowQuality( ShadowQuality sunShadowQuality ) => SunShadowQuality = sunShadowQuality;
+	public static bool GetShowFPS() => ShowFPS;
+	public static void SetShowFPS( bool bShowFPS ) {
+		ShowFPS = bShowFPS;
+		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ShowFPS ? ProcessModeEnum.Always : ProcessModeEnum.Disabled;
+		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = ShowFPS;
+	}
 
 	public static bool GetEffectsOn() => EffectsOn;
 	public static void SetEffectsOn( bool bEffectsOn ) {
@@ -225,6 +232,7 @@ public partial class SettingsData : Control {
 		};
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
+		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
 	}
 	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Video]" );
@@ -236,6 +244,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "Bloom={0}", BloomEnabled.ToString() ) );
 		writer.WriteLine( string.Format( "SunShadowQuality={0}", SunShadowQuality ) );
 		writer.WriteLine( string.Format( "SunLight={0}", SunLightEnabled ) );
+		writer.WriteLine( string.Format( "ShowFPS={0}", ShowFPS.ToString() ) );
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
@@ -289,6 +298,7 @@ public partial class SettingsData : Control {
 		BloomEnabled = (bool)Default.Get( "_bloom_enabled" );
 		SunShadowQuality = (ShadowQuality)(uint)Default.Get( "_sun_shadow_quality" );
 		SunLightEnabled = (bool)Default.Get( "_sun_light_enabled" );
+		SetShowFPS( (bool)Default.Get( "_show_fps" ) );
 
 		HapticStrength = (float)Default.Get( "_haptic_strength" );
 		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
@@ -343,6 +353,8 @@ public partial class SettingsData : Control {
 		LoadAccessibilitySettings( iniData );
 		LoadGameplaySettings( iniData );
 		LoadNetworkingSettings( iniData );
+
+		Console.PrintLine( "...Finished applying settings" );
 	}
 
 	public static void Save() {

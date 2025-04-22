@@ -1,4 +1,5 @@
 using Godot;
+using Steamworks;
 
 public partial class SettingsMenu : Control {
 	private OptionButton VSync;
@@ -8,6 +9,7 @@ public partial class SettingsMenu : Control {
 	private OptionButton ShadowQuality;
 	private OptionButton SunShadowQuality;
 	private CheckBox SunLightEnabled;
+	private CheckBox ShowFPS;
 
 	private CheckBox EffectsOn;
 	private HSlider EffectsVolume;
@@ -31,6 +33,7 @@ public partial class SettingsMenu : Control {
 	private TabBar VideoTabBar;
 	private TabBar AudioTabBar;
 	private TabBar AccessibilityTabBar;
+	private TabBar NetworkTabBar;
 
 	private void UpdateWindowScale() {
 		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
@@ -103,10 +106,12 @@ public partial class SettingsMenu : Control {
 		case (int)WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.BorderlessFullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		};
 
@@ -121,6 +126,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Selected );
 		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
 		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
+		SettingsData.SetShowFPS( ShowFPS.ButtonPressed );
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -195,6 +201,12 @@ public partial class SettingsMenu : Control {
 		SunLightEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		SunLightEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
+		ShowFPS = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowFPSButton/ShowFPSCheckBox" );
+		ShowFPS.SetProcess( false );
+		ShowFPS.SetProcessInternal( false );
+		ShowFPS.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		ShowFPS.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
 		EffectsOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/EffectsOnButton/EffectsOnCheckBox" );
 		EffectsOn.SetProcess( false );
 		EffectsOn.SetProcessInternal( false );
@@ -259,23 +271,141 @@ public partial class SettingsMenu : Control {
 		FriendsOnly.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		FriendsOnly.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
+		TabContainer TabContainer = GetNode<TabContainer>( "TabContainer" );
+		TabContainer.Connect( "tab_clicked", Callable.From(
+				( int tab ) => {
+					OnButtonPressed();
+					switch ( tab ) {
+					case 0:
+						VideoTabBar.SetProcess( true );
+						VideoTabBar.SetProcessInternal( true );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Always;
+
+						AudioTabBar.SetProcess( false );
+						AudioTabBar.SetProcessInternal( false );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AccessibilityTabBar.SetProcess( false );
+						AccessibilityTabBar.SetProcessInternal( false );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						ControlsTabBar.SetProcess( false );
+						ControlsTabBar.SetProcessInternal( false );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						NetworkTabBar.SetProcess( false );
+						NetworkTabBar.SetProcessInternal( false );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+						break;
+					case 1:
+						VideoTabBar.SetProcess( false );
+						VideoTabBar.SetProcessInternal( false );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AudioTabBar.SetProcess( true );
+						AudioTabBar.SetProcessInternal( true );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Always;
+
+						AccessibilityTabBar.SetProcess( false );
+						AccessibilityTabBar.SetProcessInternal( false );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						ControlsTabBar.SetProcess( false );
+						ControlsTabBar.SetProcessInternal( false );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						NetworkTabBar.SetProcess( false );
+						NetworkTabBar.SetProcessInternal( false );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+						break;
+					case 2:
+						VideoTabBar.SetProcess( false );
+						VideoTabBar.SetProcessInternal( false );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AudioTabBar.SetProcess( false );
+						AudioTabBar.SetProcessInternal( false );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AccessibilityTabBar.SetProcess( true );
+						AccessibilityTabBar.SetProcessInternal( true );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Always;
+
+						ControlsTabBar.SetProcess( false );
+						ControlsTabBar.SetProcessInternal( false );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						NetworkTabBar.SetProcess( false );
+						NetworkTabBar.SetProcessInternal( false );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+						break;
+					case 3:
+						VideoTabBar.SetProcess( false );
+						VideoTabBar.SetProcessInternal( false );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AudioTabBar.SetProcess( false );
+						AudioTabBar.SetProcessInternal( false );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AccessibilityTabBar.SetProcess( false );
+						AccessibilityTabBar.SetProcessInternal( false );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						ControlsTabBar.SetProcess( true );
+						ControlsTabBar.SetProcessInternal( true );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Always;
+
+						NetworkTabBar.SetProcess( false );
+						NetworkTabBar.SetProcessInternal( false );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+						break;
+					case 4:
+						VideoTabBar.SetProcess( false );
+						VideoTabBar.SetProcessInternal( false );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AudioTabBar.SetProcess( false );
+						AudioTabBar.SetProcessInternal( false );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AccessibilityTabBar.SetProcess( false );
+						AccessibilityTabBar.SetProcessInternal( false );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						ControlsTabBar.SetProcess( false );
+						ControlsTabBar.SetProcessInternal( false );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						NetworkTabBar.SetProcess( true );
+						NetworkTabBar.SetProcessInternal( true );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Always;
+						break;
+					};
+				}
+			)
+		);
+
 		VideoTabBar = GetNode<TabBar>( "TabContainer/Video" );
-		VideoTabBar.Connect( "tab_button_pressed", Callable.From( ( int tab ) => { OnButtonPressed(); } ) );
 
 		AudioTabBar = GetNode<TabBar>( "TabContainer/Audio" );
-		AudioTabBar.Connect( "tab_button_pressed", Callable.From( ( int tab ) => { OnButtonPressed(); } ) );
+		AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 		AccessibilityTabBar = GetNode<TabBar>( "TabContainer/Accessibility" );
-		AccessibilityTabBar.Connect( "tab_button_pressed", Callable.From( ( int tab ) => { OnButtonPressed(); } ) );
+		AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 		ControlsTabBar = GetNode<TabBar>( "TabContainer/Controls" );
-		ControlsTabBar.Connect( "tab_button_pressed", Callable.From( ( int tab ) => { OnButtonPressed(); } ) );
+		ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+		NetworkTabBar = GetNode<TabBar>( "TabContainer/Network" );
+		NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 		VSync.Selected = (int)SettingsData.GetVSync();
 		WindowModeOption.Selected = (int)SettingsData.GetWindowMode();
 		AntiAliasingOption.Selected = (int)SettingsData.GetAntiAliasing();
 		SunLightEnabled.ButtonPressed = SettingsData.GetSunLightEnabled();
 		SunShadowQuality.Selected = (int)SettingsData.GetSunShadowQuality();
+		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();
 
 		EffectsOn.ButtonPressed = SettingsData.GetEffectsOn();
 		EffectsVolume.Value = SettingsData.GetEffectsVolume();

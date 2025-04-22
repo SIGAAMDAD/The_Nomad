@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cw0eg3j021r7k"]
-
-[sub_resource type="Resource" id="Resource_u6nhm"]
-metadata/__load_path__ = "res://scripts/archive_system.gd"
-
-[node name="ArchiveSystem" type="Node2D"]
-script = SubResource("Resource_u6nhm")

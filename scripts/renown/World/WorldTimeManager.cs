@@ -48,6 +48,10 @@ namespace Renown.World {
 		public delegate void DayTimeStartEventHandler();
 		[Signal]
 		public delegate void NightTimeStartEventHandler();
+		[Signal]
+		public delegate void NewMonthEventHandler();
+		[Signal]
+		public delegate void NewYearEventHandler();
 
 		public static WorldTimestamp Now() {
 			return new WorldTimestamp();
@@ -74,9 +78,11 @@ namespace Renown.World {
 						if ( Day >= Months[ Month ].GetDayCount() ) {
 							Day = 0;
 							Month++;
+							EmitSignalNewMonth();
 							if ( Month >= Months.Length ) {
 								Month = 0;
 								Year++;
+								EmitSignalNewYear();
 							}
 						}
 						CurrentHour = 0;
@@ -85,13 +91,6 @@ namespace Renown.World {
 					} else if ( CurrentHour >= 7 ) {
 						EmitSignalDayTimeStart();
 					}
-				}
-				if ( Year - StartingYear >= 1000 ) {
-					SteamAchievements.ActivateAchievement( "ACH_FOREVER_ALONE_FOREVER_FORLORN" );
-				} else if ( Year - StartingYear >= 1000000 ) {
-					SteamAchievements.ActivateAchievement( "ACH_ONE_IN_A_MILLION" );
-				} else if ( Year - StartingYear >= 1000000000 ) {
-					SteamAchievements.ActivateAchievement( "ACH_TOUCH_GRASS" );
 				}
 				EmitSignalTimeTick( Day, CurrentHour, minute );
 				PastMinute = minute;
@@ -153,6 +152,7 @@ namespace Renown.World {
 			} else {
 				RedSunLight.ProcessMode = ProcessModeEnum.Disabled;
 				RedSunLight.Hide();
+				CallDeferred( "remove_child", RedSunLight );
 			}
 			Time = InGameToRealMinuteDuration * StartingHour * MinutesPerHour;
 
@@ -163,6 +163,16 @@ namespace Renown.World {
 			for ( int i = 0; i < Months.Length; i++ ) {
 				TotalDaysInYear += Months[i].GetDayCount();
 			}
+
+			NewYear += () => {
+				if ( Year - StartingYear >= 1000 ) {
+					SteamAchievements.ActivateAchievement( "ACH_FOREVER_ALONE_FOREVER_FORLORN" );
+				} else if ( Year - StartingYear >= 1000000 ) {
+					SteamAchievements.ActivateAchievement( "ACH_ONE_IN_A_MILLION" );
+				} else if ( Year - StartingYear >= 1000000000 ) {
+					SteamAchievements.ActivateAchievement( "ACH_TOUCH_GRASS" );
+				}
+			};
 
 			Console.PrintLine( string.Format( "Starting time is [{0}, {1}:{2}]", Year, Month, Day ) );
 

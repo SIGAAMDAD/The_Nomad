@@ -18,22 +18,31 @@
 TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_rrg86"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_s4m6w"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_l0eij"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_hg0fu"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_udegp"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_pt7eq"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_fd2q8"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_rxdtf"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
+subpixel_positioning = 0
 
 [sub_resource type="Resource" id="Resource_qxrc6"]
 script = ExtResource("7_2apr8")
@@ -119,11 +128,11 @@ theme_override_constants/h_separation = 0
 theme_override_fonts/font = SubResource("SystemFont_hg0fu")
 selected = 0
 item_count = 3
-popup/item_0/text = "DISABLED"
+popup/item_0/text = "VSYNC_OFF"
 popup/item_0/id = 0
-popup/item_1/text = "ADAPTIVE"
+popup/item_1/text = "VSYNC_ADAPTIVE"
 popup/item_1/id = 1
-popup/item_2/text = "ENABLED"
+popup/item_2/text = "VSYNC_ON"
 popup/item_2/id = 2
 
 [node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
@@ -163,7 +172,7 @@ custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_fonts/font = SubResource("SystemFont_udegp")
-text = "ANTI-ALIASING"
+text = "ANTI_ALIASING"
 horizontal_alignment = 2
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
@@ -200,7 +209,7 @@ size_flags_horizontal = 0
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_fd2q8")
-text = "WINDOW MODE"
+text = "WINDOW_MODE"
 horizontal_alignment = 2
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
@@ -260,7 +269,7 @@ size_flags_horizontal = 0
 [node name="SunLightEnabledLabel" type="Label" parent="TabContainer/Video/VBoxContainer/SunLightEnabledButton"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "SUNLIGHT"
+text = "SUNLIGHT_ENABLED"
 horizontal_alignment = 2
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/SunLightEnabledButton"]
@@ -277,7 +286,7 @@ size_flags_horizontal = 0
 [node name="SunShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/SunShadowQualityList"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "SUNLIGHT SHADOW QUALITY"
+text = "SUNLIGHT_SHADOW_QUALITY"
 horizontal_alignment = 2
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/SunShadowQualityList"]
@@ -296,6 +305,23 @@ popup/item_2/text = "LOW"
 popup/item_2/id = 2
 popup/item_3/text = "HIGH"
 popup/item_3/id = 3
+
+[node name="ShowFPSButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ShowFPSLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "SHOW_FPS"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
+layout_mode = 2
+
+[node name="ShowFPSCheckBox" type="CheckBox" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
