@@ -1,4 +1,4 @@
-[gd_resource type="InventoryDatabase" load_steps=16 format=3 uid="uid://clhvh7ktysxhx"]
+[gd_resource type="InventoryDatabase" load_steps=18 format=3 uid="uid://clhvh7ktysxhx"]
 
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="1_ipyfw"]
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="2_e1fjv"]
@@ -11,26 +11,12 @@
 [ext_resource type="ItemDefinition" uid="uid://gm6rna0vx71" path="res://resources/ammo/762_ammo.tres" id="6_hreys"]
 [ext_resource type="ItemDefinition" uid="uid://cnf43mfuhif3j" path="res://resources/ammo/556_ammo.tres" id="7_2y7i3"]
 [ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="8_w67u1"]
-
-[sub_resource type="ItemCategory" id="ItemCategory_klnow"]
-id = "ITEM_CATEGORY_WEAPON"
-name = "Weapons"
-color = Color(1, 0, 0, 1)
-
-[sub_resource type="ItemCategory" id="ItemCategory_5vpgy"]
-id = "ITEM_CATEGORY_AMMUNITION"
-name = "Ammunition"
-color = Color(0.0625, 1, 0, 1)
-
-[sub_resource type="ItemCategory" id="ItemCategory_hj1uw"]
-id = "WEAPON_CATEGORY_FIREARMS"
-name = "Firearms"
-color = Color(0.890625, 1, 0, 1)
-
-[sub_resource type="ItemCategory" id="ItemCategory_x6v50"]
-id = "WEAPON_CATEGORY_MELEE"
-name = "Melee"
+[ext_resource type="ItemDefinition" uid="uid://peem0o81pm62" path="res://resources/items/food.tres" id="12_ng3yj"]
+[ext_resource type="ItemDefinition" uid="uid://crpeqdg11pnud" path="res://resources/items/wood.tres" id="13_5sc1t"]
+[ext_resource type="ItemDefinition" uid="uid://cp1xhm5arcw5e" path="res://resources/items/metal.tres" id="14_r58cu"]
+[ext_resource type="ItemDefinition" uid="uid://c0cymjjvn2w4w" path="res://resources/items/gunpowder.tres" id="15_ykb72"]
+[ext_resource type="ItemDefinition" uid="uid://w275sde2hivv" path="res://resources/items/drugflower.tres" id="16_uf0br"]
+[ext_resource type="ItemDefinition" uid="uid://5kyt2cm2wae0" path="res://resources/items/water.tres" id="17_lkvuq"]
 
 [resource]
-items = Array[ItemDefinition]([ExtResource("1_ipyfw"), ExtResource("2_k10k0"), ExtResource("3_gpkdr"), ExtResource("4_garsa"), ExtResource("4_34pe8"), ExtResource("5_iqfuk"), ExtResource("4_1djen"), ExtResource("2_e1fjv"), ExtResource("6_hreys"), ExtResource("7_2y7i3"), ExtResource("8_w67u1")])
-item_categories = Array[ItemCategory]([SubResource("ItemCategory_klnow"), SubResource("ItemCategory_5vpgy"), SubResource("ItemCategory_hj1uw"), SubResource("ItemCategory_x6v50")])
+items = Array[ItemDefinition]([ExtResource("1_ipyfw"), ExtResource("2_k10k0"), ExtResource("3_gpkdr"), ExtResource("4_garsa"), ExtResource("4_34pe8"), ExtResource("5_iqfuk"), ExtResource("4_1djen"), ExtResource("2_e1fjv"), ExtResource("6_hreys"), ExtResource("7_2y7i3"), ExtResource("8_w67u1"), ExtResource("12_ng3yj"), ExtResource("13_5sc1t"), ExtResource("14_r58cu"), ExtResource("15_ykb72"), ExtResource("16_uf0br"), ExtResource("17_lkvuq")])

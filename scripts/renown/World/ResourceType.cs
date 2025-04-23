@@ -8,6 +8,11 @@ namespace Renown.World {
 		Gunpowder,
 		Drugflower,
 
+		Food,
+		Water,
+
+		Count,
+
 		//
 		// produced resources
 		//
@@ -17,7 +22,5 @@ namespace Renown.World {
 		Rations,
 		Tobacco,
 		Cocaine,
-
-		Count
 	};
 };

@@ -95,6 +95,14 @@ namespace Renown.World {
 
 		public StringName GetObjectName() => GetFactionName();
 
+		public virtual void PayWorker( float nIncomeTax, float nAmount, Thinker thinker ) {
+			Settlement settlement = thinker.GetLocation() as Settlement;
+			
+			settlement.GetGovernment().IncreaseMoney( nIncomeTax );
+			thinker.IncreaseMoney( nAmount );
+			DecreaseMoney( nAmount );
+		}
+
 		public float GetMoney() => Money;
 		public virtual void DecreaseMoney( float nAmount ) {
 			Money -= nAmount;

@@ -482,22 +482,17 @@ public partial class Player : Entity {
 				mousePosition = GetViewport().GetMousePosition();
 			}
 
-			float x = mousePosition.X;
-			float y = mousePosition.Y;
-			int width = ScreenSize.X;
-
 			if ( LastMousePosition != mousePosition ) {
 				LastMousePosition = mousePosition;
 				IdleReset();
 			}
 
-			ArmAngle = (float)Math.Atan2( mousePosition.Y - ( ScreenSize.Y / 2.0f ), mousePosition.X - ( ScreenSize.X / 2.0f ) );
 			ArmAngle = GetLocalMousePosition().Angle();
 			AimLine.GlobalRotation = ArmAngle;
 			AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( ArmAngle ) ) * AimLine.Points[1].X;
-			if ( x >= width / 2.0f ) {
+			if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
 				FlipSpriteRight();
-			} else if ( x <= width / 2.0f ) {
+			} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
 				FlipSpriteLeft();
 			}
 		}
@@ -1389,7 +1384,6 @@ public partial class Player : Entity {
 
 		ResourceCache.KeyboardInputMappings = ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
 		ResourceCache.GamepadInputMappings = ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
-		ResourceCache.ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
 
 		//
 		// initialize input context

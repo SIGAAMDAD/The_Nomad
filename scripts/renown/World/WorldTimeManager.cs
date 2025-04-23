@@ -1,4 +1,6 @@
+using System;
 using Godot;
+using Microsoft.VisualBasic;
 
 namespace Renown.World {
 	public partial class WorldTimeManager : Node {
@@ -17,6 +19,7 @@ namespace Renown.World {
 		public static uint Year = 0;
 		public static uint Month = 0;
 		public static uint Day = 0;
+		public static uint Hour = 0;
 		public static WorldTimeManager Instance;
 
 		private int TotalDaysInYear = 0;
@@ -37,7 +40,6 @@ namespace Renown.World {
 		private NetworkWriter SyncObject = null;
 		private bool IsHostWorld = false;
 
-		private uint CurrentHour = 0;
 		private const uint MinutesPerDay = 2440;
 		private const uint MinutesPerHour = 60;
 		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
@@ -62,18 +64,18 @@ namespace Renown.World {
 //			uint day = totalMinutes / MinutesPerDay;
 
 			uint currentDayMinutes = totalMinutes % MinutesPerDay;
-			CurrentHour = currentDayMinutes / MinutesPerHour;
+			Hour = currentDayMinutes / MinutesPerHour;
 			uint minute = currentDayMinutes % MinutesPerHour;
 
-			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / CurrentHour ) * 0.001f;
-			if ( CurrentHour < 7 || CurrentHour > 21 ) {
+			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / Hour ) * 0.001f;
+			if ( Hour < 7 || Hour > 21 ) {
 				RedSunLight.Energy = 0.0f;
 			} else {
 				RedSunLight.Energy = 1.0f;
 			}
 			if ( PastMinute != minute ) {
-				if ( minute == 0 ) {
-					if ( CurrentHour >= 24 ) {
+				if ( minute == 60 ) {
+					if ( Hour >= 24 ) {
 						Day++;
 						if ( Day >= Months[ Month ].GetDayCount() ) {
 							Day = 0;
@@ -85,14 +87,14 @@ namespace Renown.World {
 								EmitSignalNewYear();
 							}
 						}
-						CurrentHour = 0;
-					} else if ( CurrentHour >= 20 ) {
+						Hour = 0;
+					} else if ( Hour >= 20 ) {
 						EmitSignalNightTimeStart();
-					} else if ( CurrentHour >= 7 ) {
+					} else if ( Hour >= 7 ) {
 						EmitSignalDayTimeStart();
 					}
 				}
-				EmitSignalTimeTick( Day, CurrentHour, minute );
+				EmitSignalTimeTick( Day, Hour, minute );
 				PastMinute = minute;
 			}
 		}
@@ -110,6 +112,8 @@ namespace Renown.World {
 			Day = reader.ReadUInt32();
 			Time = (float)reader.ReadDouble();
 		}
+
+		public static float GetGameSpeed() => Instance.InGameSpeed;
 
 		public override void _EnterTree() {
 			base._EnterTree();
@@ -193,6 +197,19 @@ namespace Renown.World {
 			} else {
 				IsHostWorld = true;
 			}
+
+			float scale = 0.0f;
+			Console.AddCommand(
+				name: "set_time_scale",
+				fn: Callable.From(
+					( float arg ) => {
+						GD.Print( "Setting world time scale to " + arg );
+						InGameSpeed = arg;
+					}
+				),
+				args: [ scale ],
+				required: 1
+			);
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );
@@ -203,7 +220,7 @@ namespace Renown.World {
 			}
 
 			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
-				WorldTimeOverlay.Color = Gradient.Gradient.Sample( Mathf.Lerp( 0.0f, Gradient.Width, 1.0f / CurrentHour ) );
+				WorldTimeOverlay.Color = Gradient.Gradient.Sample( Mathf.Lerp( 0.0f, Gradient.Width, 1.0f / Hour ) );
 			}
 		}
 	};

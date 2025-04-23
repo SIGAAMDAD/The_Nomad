@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using Renown.Thinkers;
+using Renown.World;
 
 namespace Renown {
 	public static class Constants {
@@ -18,17 +19,9 @@ namespace Renown {
 				}
 			},
 			{
-				OccupationType.Farmer,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 80 },
-					{ SocietyRank.Middle, 20 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
 				OccupationType.Industry,
 				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 80 },
+					{ SocietyRank.Lower, 90 },
 					{ SocietyRank.Middle, 20 },
 					{ SocietyRank.Upper, 0 }
 				}
@@ -36,7 +29,7 @@ namespace Renown {
 			{
 				OccupationType.Bandit,
 				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 70 },
+					{ SocietyRank.Lower, 50 },
 					{ SocietyRank.Middle, 28 },
 					{ SocietyRank.Upper, 2 }
 				}
@@ -81,6 +74,15 @@ namespace Renown {
 					{ SocietyRank.Upper, 90 }
 				}
 			},
+		};
+
+		public static readonly Dictionary<ResourceType, Resource> RawResources = new Dictionary<ResourceType, Resource>{
+			{ ResourceType.Metal, ResourceLoader.Load( "res://resources/items/metal.tres" ) },
+			{ ResourceType.Wood, ResourceLoader.Load( "res://resources/items/wood.tres" ) },
+			{ ResourceType.Drugflower, ResourceLoader.Load( "res://resources/items/drugflower.tres" ) },
+			{ ResourceType.Gunpowder, ResourceLoader.Load( "res://resources/items/gunpowder.tres" ) },
+			{ ResourceType.Food, ResourceLoader.Load( "res://resources/items/food.tres" ) },
+			{ ResourceType.Water, ResourceLoader.Load( "res://resources/items/water.tres" ) }
 		};
 
 		public static readonly int THREAD_GROUP_THINKERS = 1;

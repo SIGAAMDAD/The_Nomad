@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Godot;
 using Renown.Thinkers;
+using Renown.Thinkers.Occupations;
 using Renown.World.Buildings;
 
 namespace Renown.World {
@@ -50,7 +51,8 @@ namespace Renown.World {
 		private System.Threading.Thread ThinkThread = null;
 		private bool Quit = false;
 
-		private float TaxationRate = 0.0f;
+		[Export]
+		private float TaxationRate = 30.75f;
 
 		private int MaxPopulation = 0;
 		private int Population = 0;
@@ -81,8 +83,8 @@ namespace Renown.World {
 			return count;
 		}
 
-		public OccupationType CalcJob( Random random, Thinker thinker ) {
-			OccupationType job = OccupationType.Count;
+		public OccupationType CalcJob( Random random, Thinker thinker, out Building workPlace ) {
+			OccupationType job = OccupationType.None;
 			Span<int> chances = stackalloc int[ (int)OccupationType.Count ];
 
 			for ( OccupationType occupation = OccupationType.None; occupation < OccupationType.Count; occupation++ ) {
@@ -101,6 +103,16 @@ namespace Renown.World {
 				int rand = random.Next( 0, 100 );
 				if ( rand <= chances[i] ) {
 					job = (OccupationType)i;
+				}
+			}
+
+			workPlace = null;
+			if ( job == OccupationType.Industry ) {
+				for ( int i = 0; i < BuildingList.Count; i++ ) {
+					if ( BuildingList[i] is BuildingResourceProducer producer && producer != null ) {
+						producer.AddWorker( thinker );
+						workPlace = producer;
+					}
 				}
 			}
 
@@ -251,10 +263,6 @@ namespace Renown.World {
 		public override void _Ready() {
 			base._Ready();
 
-			ThinkThread = new System.Threading.Thread( Think, 256*1024 );
-			ThinkThread.Priority = Importance;
-//			ThinkThread.Start();
-
 			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Buildings" );
 			MaxPopulation = 0;
 			for ( int i = 0; i < nodes.Count; i++ ) {
@@ -288,9 +296,6 @@ namespace Renown.World {
 		}
 
 		public float CollectTaxes() {
-			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-			stopwatch.Start();
-
 			float totalCollected = 0.0f;
 			float totalUncollected = 0.0f;
 
@@ -298,14 +303,11 @@ namespace Renown.World {
 				float expected;
 				float paid;
 
-				citizen.PayMonthlyTaxes( out expected, out paid );
+				citizen.PayTaxes( out expected, out paid );
 				
 				totalCollected += paid;
 				totalUncollected += expected - paid;
 			}
-
-			stopwatch.Stop();
-			GD.Print( "CollectTaxes: " + stopwatch.ElapsedMilliseconds );
 
 			return totalCollected;
 		}

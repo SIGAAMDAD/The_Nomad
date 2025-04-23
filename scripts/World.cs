@@ -204,7 +204,7 @@ public partial class World : Node2D {
 			switch ( OS.GetName() ) {
 			case "Linux":
 			case "Windows":
-				process.ProcessorAffinity = 16;
+				process.ProcessorAffinity = System.Environment.ProcessorCount;
 				break;
 			};
 

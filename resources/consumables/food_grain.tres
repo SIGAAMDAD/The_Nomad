@@ -1,7 +1,0 @@
-[gd_resource type="ItemDefinition" format=3 uid="uid://cio18ru3s3hlw"]
-
-[resource]
-id = "CONSUMABLE_FOOD_GRAIN"
-max_stack = 4096
-name = "Grain"
-weight = 0.5

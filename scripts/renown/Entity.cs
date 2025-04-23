@@ -1,5 +1,7 @@
+using GDExtension.Wrappers;
 using Godot;
 using Renown.World;
+using Renown.World.Settlements;
 using System.Collections.Generic;
 
 /// <summary>
@@ -282,6 +284,8 @@ namespace Renown {
 			score += nAmount;
 			EmitSignalIncreaseRelation( other as Node, this, nAmount );
 			RelationCache[ other ] = score;
+
+			GD.Print( "Relation between " + this + " and " + other + " increased by " + nAmount );
 		}
 		public virtual void RelationDecrease( Object other, float nAmount ) {
 			if ( !RelationCache.TryGetValue( other, out float score ) ) {
@@ -290,6 +294,8 @@ namespace Renown {
 			score -= nAmount;
 			EmitSignalDecreaseRelation( other as Node, this, nAmount );
 			RelationCache[ other ] = score;
+
+			GD.Print( "Relation between " + this + " and " + other + " decreased by " + nAmount );
 		}
 		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( other, out float score ) ? score : 0.0f;
 		public RelationStatus GetRelationStatus( Object other ) {

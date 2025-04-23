@@ -117,7 +117,7 @@ namespace Renown.Thinkers {
 		protected bool CanSeeTarget = false;
 		protected bool AfterImageUpdated = false;
 
-		protected AIState State = AIState.Guarding;
+		protected AIState AIState = AIState.Guarding;
 
 		protected BarkType LastBark;
 		protected BarkType SequencedBark;
@@ -154,40 +154,33 @@ namespace Renown.Thinkers {
 
 			for ( int i = 0; i < SightLines.Length; i++ ) {
 				SightDetector.CallDeferred( "remove_child", SightLines[i] );
-				SightLines[i].QueueFree();
+				SightLines[i].CallDeferred( "queue_free" );
 			}
-			LoseInterestTimer.QueueFree();
 			CallDeferred( "remove_child", LoseInterestTimer );
+			LoseInterestTimer.CallDeferred( "queue_free" );
 
-			ChangeInvestigateAngleTimer.QueueFree();
 			CallDeferred( "remove_child", ChangeInvestigateAngleTimer );
+			ChangeInvestigateAngleTimer.CallDeferred( "queue_free" );
 
-			ArmAnimations.QueueFree();
+			/*
 			CallDeferred( "remove_child", ArmAnimations );
+			ArmAnimations.CallDeferred( "queue_free" );
 
-			HeadAnimations.QueueFree();
 			CallDeferred( "remove_child", HeadAnimations );
+			HeadAnimations.CallDeferred( "queue_free" );
+			*/
 
-			BarkChannel.QueueFree();
 			CallDeferred( "remove_child", BarkChannel );
+			BarkChannel.CallDeferred( "queue_free" );
 
-			SightDetector.QueueFree();
-			CallDeferred( "remove_child", SightDetector );
+//			CallDeferred( "remove_child", SightDetector );
+//			SightDetector.CallDeferred( "queue_free" );
 
-			DetectionMeter.QueueFree();
 			CallDeferred( "remove_child", DetectionMeter );
+			DetectionMeter.CallDeferred( "queue_free" );
 
-			NavAgent.QueueFree();
 			CallDeferred( "remove_child", NavAgent );
-
-			CollisionShape2D shape = GetNode<CollisionShape2D>( "BodyShape" );
-			shape.QueueFree();
-			CallDeferred( "remove_child", shape );
-
-			if ( AudioChannel != null ) {
-				AudioChannel.QueueFree();
-				CallDeferred( "remove_child", AudioChannel );
-			}
+			NavAgent.CallDeferred( "queue_free" );
 		}
 
 		public virtual void Alert( Entity target ) {
@@ -198,13 +191,13 @@ namespace Renown.Thinkers {
 			LastTargetPosition = target.GlobalPosition;
 			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 			if ( Fear > 60 ) {
-				State = AIState.Investigating;
+				AIState = AIState.Investigating;
 				Bark( BarkType.Curse, RandomFactory.Next( 0, 100 ) > 60 ? BarkType.Quiet : BarkType.Count );
 			} else {
 				if ( Awareness == AIAwareness.Relaxed ) {
 					Awareness = AIAwareness.Suspicious;
 				}
-				State = AIState.Investigating;
+				AIState = AIState.Investigating;
 				PatrolRoute = null;
 				Bark( BarkType.Confusion );
 			}
@@ -352,6 +345,9 @@ namespace Renown.Thinkers {
 		}
 	
 		protected void SetDetectionColor() {
+			if ( SightDetectionAmount > SightDetectionTime ) {
+				SightDetectionAmount = SightDetectionTime;
+			}
 			switch ( Awareness ) {
 			case AIAwareness.Relaxed:
 				if ( SightDetectionAmount == 0.0f ) {
@@ -431,7 +427,6 @@ namespace Renown.Thinkers {
 				if ( Awareness == AIAwareness.Relaxed ) {
 					BodyAnimations.Play( "calm" );
 					ArmAnimations.Hide();
-					HeadAnimations.Hide();
 				} else {
 					ArmAnimations.Show();
 					HeadAnimations.Show();
@@ -524,17 +519,17 @@ namespace Renown.Thinkers {
 
 			if ( PatrolRoute != null ) {
 				SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
-				State = AIState.Patrolling;
+				AIState = AIState.Patrolling;
 			}
 		}
 		
 		protected override void OnTargetReached() {
 			TargetReached = true;
 			
-			switch ( State ) {
+			switch ( AIState ) {
 			case AIState.PatrolStart:
 				SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
-				State = AIState.Patrolling;
+				AIState = AIState.Patrolling;
 				break;
 			case AIState.Patrolling:
 				PatrolRoute = ( (AIPatrolRoute)PatrolRoute ).GetNext();
@@ -560,7 +555,7 @@ namespace Renown.Thinkers {
 			Awareness = AIAwareness.Suspicious;
 		}
 		protected void CheckSight( float delta ) {
-			RecalcSight();
+//			RecalcSight();
 
 			GodotObject sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
@@ -592,7 +587,6 @@ namespace Renown.Thinkers {
 				};
 				SetDetectionColor();
 				CanSeeTarget = false;
-				return;
 			}
 			
 			AfterImageUpdated = false;
@@ -610,18 +604,21 @@ namespace Renown.Thinkers {
 					
 					if ( Awareness >= AIAwareness.Suspicious ) {
 						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += ( SightDetectionSpeed * 2.0f ) * delta;
+						SightDetectionAmount += ( SightDetectionSpeed * 2.0f );
 					} else {
-						SightDetectionAmount += SightDetectionSpeed * delta;
+						SightDetectionAmount += SightDetectionSpeed;
 					}
 				}
 			}
-			if ( SightDetectionAmount >= SightDetectionTime * 0.5f ) {
+			if ( SightDetectionAmount >= SightDetectionTime * 0.5f && SightDetectionAmount < SightDetectionTime * 0.90f && AIState != AIState.Investigating ) {
 				Awareness = AIAwareness.Suspicious;
-				State = AIState.Investigating;
+				AIState = AIState.Investigating;
+				SetNavigationTarget( LastTargetPosition );
 				if ( LoseInterestTimer.IsStopped() ) {
 					LoseInterestTimer.Start();
 				}
+			} else if ( SightDetectionAmount >= SightDetectionAmount * 0.90f ) {
+				SetAlert( false );
 			}
 			if ( IsAlert() ) {
 				SetAlert( false );

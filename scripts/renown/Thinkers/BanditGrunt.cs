@@ -1,5 +1,4 @@
 using System;
-using System.Transactions;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -64,21 +63,21 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void OnLoseInterestTimerTimeout() {
-			State = AIState.PatrolStart;
+			AIState = AIState.Investigating;
 			SightTarget = null;
 
 			if ( Fear > 80 ) {
-				Bark( BarkType.Curse );
+//				Bark( BarkType.Curse );
 			}
 
 			// once we've lost the target for a long period of time, resume patrol routes with a little more suspicion
-			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+//			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
 			
-			AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
-			if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
-				PatrolRoute = route.GetNext();
-			}
-			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+//			AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
+//			if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
+//				PatrolRoute = route.GetNext();
+//			}
+//			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 
 			// a little more on edge
 			Fear += 10;
@@ -98,7 +97,7 @@ namespace Renown.Thinkers {
 				SightTarget = ( source as MobBase ).GetSightTarget();
 				LastTargetPosition = ( source as MobBase ).GetLastTargetPosition();
 				Awareness = AIAwareness.Alert;
-				State = AIState.Investigating;
+				AIState = AIState.Investigating;
 
 				SetNavigationTarget( LastTargetPosition );
 				Bark( BarkType.Curse );
@@ -210,14 +209,14 @@ namespace Renown.Thinkers {
 			ArmAnimations.GlobalRotation = AimAngle;
 			HeadAnimations.GlobalRotation = LookAngle;
 
-			if ( LookAngle > 0.0f ) {
+			if ( LookAngle > 225.0f ) {
 				HeadAnimations.FlipV = true;
-			} else if ( LookAngle < 0.0f ) {
+			} else if ( LookAngle < 135.0f ) {
 				HeadAnimations.FlipV = false;
 			}
-			if ( AimAngle > 0.0f ) {
+			if ( AimAngle > 225.0f ) {
 				ArmAnimations.FlipV = true;
-			} else if ( AimAngle < 0.0f ) {
+			} else if ( AimAngle < 135.0f ) {
 				ArmAnimations.FlipV = false;
 			}
 			if ( LinearVelocity.X > 0.0f ) {
@@ -236,7 +235,6 @@ namespace Renown.Thinkers {
 				if ( Awareness == AIAwareness.Relaxed ) {
 					BodyAnimations.Play( "calm" );
 					ArmAnimations.Hide();
-					HeadAnimations.Hide();
 				} else {
 					ArmAnimations.Show();
 					HeadAnimations.Show();
@@ -250,11 +248,11 @@ namespace Renown.Thinkers {
 			CheckSight( delta );
 
 			if ( SightTarget != null ) {
-				if ( CanSeeTarget ) {
-					State = AIState.Attacking;
+				if ( CanSeeTarget && Awareness == AIAwareness.Alert ) {
+					AIState = AIState.Attacking;
 					ChangeInvestigateAngleTimer.Stop();
 				} else {
-					State = AIState.Investigating;
+					AIState = AIState.Investigating;
 				}
 			}
 			if ( Aiming ) {
@@ -267,7 +265,7 @@ namespace Renown.Thinkers {
 				SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
 			}
 
-			switch ( State ) {
+			switch ( AIState ) {
 			case AIState.Investigating: {
 				Investigate();
 				// if we've got any suspicion, then start patrolling
@@ -287,17 +285,18 @@ namespace Renown.Thinkers {
 				}
 				*/
 				if ( Fear > 80 && CanSeeTarget ) {
-					OnAimTimerTimeout();
+					Bark( BarkType.Curse );
+//					OnAimTimerTimeout();
 				}
 				LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 				AimAngle = LookAngle;
 				break; }
 			case AIState.Attacking:
-				if ( SightTarget == null ) {
-					State = AIState.Investigating;
+				if ( !CanSeeTarget ) {
+					AIState = AIState.Investigating;
 					break;
 				}
-				if ( AimTimer.TimeLeft > AimTimer.TimeLeft * 0.25f ) {
+				if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.25f ) {
 					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
 					AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 					LookAngle = AimAngle;
@@ -310,9 +309,11 @@ namespace Renown.Thinkers {
 					// running
 					Bark( BarkType.TargetRunning );
 				} else if ( Aiming && AimLine.GetCollider() is MobBase mob && mob != null ) {
-					Aiming = false;
-					AimTimer.Stop();
-					Bark( BarkType.OutOfTheWay );
+					if ( mob.GetHealth() > 0.0f && mob.GetFaction() != Faction ) {
+						Aiming = false;
+						AimTimer.Stop();
+						Bark( BarkType.OutOfTheWay );
+					}
 				}
 
 				if ( ( GlobalPosition.DistanceTo( SightTarget.GlobalPosition ) < Range ) && AimLine.GetCollider() is Entity entity && entity == SightTarget && !Aiming ) {
@@ -331,19 +332,19 @@ namespace Renown.Thinkers {
 			case AIState.Patrolling:
 				if ( GlobalPosition.DistanceTo( GotoPosition ) < 10.0f ) {
 					NextRoute = ( PatrolRoute as AIPatrolRoute ).GetNext();
-					State = AIState.PatrolStart;
+					AIState = AIState.PatrolStart;
 					SetNavigationTarget( NextRoute.GetGlobalStartPosition() );
 				}
 				break;
 			case AIState.PatrolStart:
 				if ( GlobalPosition.DistanceTo( PatrolRoute.GetGlobalStartPosition() ) < 10.0f ) {
-					State = AIState.Patrolling;
+					AIState = AIState.Patrolling;
 					SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
 				}
 				break;
 			case AIState.Guarding:
 				if ( Awareness > AIAwareness.Relaxed ) {
-					State = AIState.Investigating;
+					AIState = AIState.Investigating;
 				}
 				break;
 			};
@@ -353,16 +354,16 @@ namespace Renown.Thinkers {
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
-			if ( NextRoute != null ) {
+			if ( AIState == AIState.Patrolling && NextRoute != null ) {
 				if ( NextRoute.GetGlobalStartPosition() == target ) {
-					State = AIState.Patrolling;
+					AIState = AIState.Patrolling;
 				}
 			}
 		}
 		protected override void OnTargetReached() {
 			TargetReached = true;
 
-			switch ( State ) {
+			switch ( AIState ) {
 			case AIState.Patrolling:
 				PatrolRoute = NextRoute;
 				PatrolRoute ??= NodeCache.FindClosestRoute( GlobalPosition );
@@ -385,75 +386,10 @@ namespace Renown.Thinkers {
 			if ( LoseInterestTimer.IsStopped() ) {
 				LoseInterestTimer.Start();
 			}
+			if ( SightTarget != null && CanSeeTarget ) {
+				AIState = AIState.Attacking;
+				Squad.NotifyGroup( GroupEvent.TargetChanged, this );
+			}
 		}
-
-		/*
-		private void CheckSight( float delta ) {
-			if ( ( Engine.GetPhysicsFrames() % 30 ) != 0 ) {
-				RecalcSight();
-			}
-
-			GodotObject sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider();
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-					break;
-				} else {
-					sightTarget = null;
-				}
-			}
-
-			if ( SightTarget != null && Awareness == AIAwareness.Alert ) {
-	//			return; // hunt them down
-			}
-
-			// we saw something, but it slipped out of view
-			if ( SightDetectionAmount > 0.0f && sightTarget == null ) {
-				CreateAfterImage();
-				switch ( Awareness ) {
-				case AIAwareness.Relaxed:
-					// "must be nothing"
-					SightDetectionAmount -= SightDetectionSpeed * delta;
-					if ( SightDetectionAmount <= 0.0f ) {
-						SightDetectionAmount = 0.0f;
-					}
-					break;
-				case AIAwareness.Suspicious:
-					SetSuspicious();
-					break;
-				case AIAwareness.Alert:
-					SetAlert( true );
-					break;
-				};
-				SetDetectionColor();
-				CanSeeTarget = false;
-				return;
-			}
-
-			AfterImageUpdated = false;
-
-			SightTarget = (Entity)sightTarget;
-			if ( sightTarget is Player || sightTarget is NetworkPlayer ) {
-				CanSeeTarget = true;
-				LastTargetPosition = SightTarget.GlobalPosition;
-				if ( Awareness >= AIAwareness.Suspicious ) {
-					SightDetectionAmount += ( SightDetectionSpeed * 2.0f );
-					SetNavigationTarget( LastTargetPosition );
-					Squad.NotifyGroup( GroupEvent.TargetChanged, this );
-				} else if ( Awareness == AIAwareness.Relaxed ) {
-					SightDetectionAmount += SightDetectionSpeed;
-				}
-			}
-			if ( SightDetectionAmount > SightDetectionTime * 0.5f ) {
-				Awareness = AIAwareness.Suspicious;
-			}
-			if ( IsAlert() ) {
-				SetAlert( false );
-			} else if ( IsSuspicious() ) {
-				SetSuspicious();
-			}
-			SetDetectionColor();
-		}
-		*/
 	};
 };

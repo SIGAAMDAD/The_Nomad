@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Renown.World;
 using Renown.Thinkers;
 using Renown.World.Buildings;
+using Renown.Thinkers.Occupations;
 using System;
+using System.Linq;
 
 namespace Renown {
 	public enum ThinkerFlags : uint {
@@ -20,6 +22,38 @@ namespace Renown {
 	public enum Sex : uint {
 		Male,
 		Female,
+
+		Count
+	};
+	public enum ThinkerRequirements : uint {
+		Food,
+		Water,
+		Entertainment,
+		Money,
+		Energy,
+		Happiness,
+
+		Count
+	};
+	public enum ThinkerAction {
+		Working,
+		MovingToPoint,
+		BuyingGoods,
+
+		// replenish energy
+		Sleep,
+		DoOpiod,
+		DoSteroid,
+		
+		Haggle,
+
+		None,
+	};
+	public enum ThinkerState : uint {
+		Sleeping,
+		Working,
+		Eating,
+		Moving,
 
 		Count
 	};
@@ -85,18 +119,57 @@ namespace Renown {
 		/// </summary>
 		[Export]
 		protected int Wisdom;
+
+		[Export]
+		protected int Charisma;
 		
 		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
 		protected float MovementSpeed = 40.0f;
-		
+
+		protected Dictionary<ThinkerRequirements, int> Requirements = new Dictionary<ThinkerRequirements, int>();
+//		protected Dictionary<ThinkerRequirements, float> Priorities = new Dictionary<ThinkerRequirements, float>();
+
+		// pseudo goap
+		protected float CurrentPriority = 0.0f;
+		protected ThinkerRequirements CurrentFocus;
+		protected Queue<ThinkerAction> ActionPlan = new Queue<ThinkerAction>();
+		protected ThinkerAction CurrentAction;
+	
+		// small adjustments made to priority scores so that even if we're bored, we don't forget to eat food
+		private static readonly Dictionary<ThinkerRequirements, float> PriorityMultiplier = new Dictionary<ThinkerRequirements, float>{
+			{ ThinkerRequirements.Food, 6.0f },
+			{ ThinkerRequirements.Water, 8.0f },
+			{ ThinkerRequirements.Entertainment, 0.0f },
+			{ ThinkerRequirements.Money, 2.0f },
+			{ ThinkerRequirements.Energy, 3.5f },
+			{ ThinkerRequirements.Happiness, 2.75f },
+		};
+
+		private static readonly Dictionary<ThinkerAction, System.Action<Thinker>> Actions = new Dictionary<ThinkerAction, Action<Thinker>>{
+			{ ThinkerAction.MovingToPoint, MoveToPoint },
+			{ ThinkerAction.Working, Work },
+			{ ThinkerAction.Sleep, Sleep }
+		};
+
+		protected uint LastFoodDrainTime = 0;
+		protected uint LastWaterDrainTime = 0;
+		protected uint LastEntertainmentDrainTime = 0;
+
+		protected uint SleepTimeStartHour = 0;
+		protected uint WorkTimeStart = 0;
+		protected uint WorkTimeEnd = 0;
+
+		protected float CostOfLiving = 0.0f;
+
 		protected NavigationAgent2D NavAgent;
 		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 
 		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
 
 		protected ThinkerFlags Flags;
+		protected ThinkerState State;
 
 		protected ThinkerGroup Squad;
 
@@ -112,6 +185,8 @@ namespace Renown {
 		protected Color DemonEyeColor;
 
 		protected Timer MoveTimer = null;
+		
+		protected uint LastPayDay = 0;
 
 		// networking
 		protected NetworkWriter SyncObject = null;
@@ -131,7 +206,10 @@ namespace Renown {
 
 		[Signal]
 		public delegate void HaveChildEventHandler( Thinker parent );
+		[Signal]
+		private delegate void ActionFinishedEventHandler();
 
+		public ThinkerState GetState() => State;
 		public SocietyRank GetSocietyRank() => SocietyRank;
 		public int GetAge() => Age;
 		public StringName GetFirstName() => FirstName;
@@ -143,7 +221,11 @@ namespace Renown {
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 
 		public override void Damage( Entity source, float nAmount ) {
-			Job.Damage( source, nAmount );
+			if ( IsPremade ) {
+				base.Damage( source, nAmount );
+			} else {
+				Job.Damage( source, nAmount );
+			}
 		}
 		
 		protected virtual void SendPacket() {
@@ -240,13 +322,14 @@ namespace Renown {
 			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
 			if ( IsPremade ) {
 				writer.SaveString( key + nameof( InitialPath ), InitialPath );
+			} else {
+				writer.SaveString( key + nameof( Family ), Family.GetPath() );
 			}
 
 			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
 			writer.SaveFloat( key + nameof( Health ), Health );
 			writer.SaveInt( key + nameof( Age ), Age );
 			writer.SaveString( key + nameof( BotName ), BotName );
-			writer.SaveString( key + nameof( Family ), Family.GetPath() );
 
 			// stats
 			writer.SaveInt( key + nameof( Strength ), Strength );
@@ -297,7 +380,10 @@ namespace Renown {
 			Health = reader.LoadFloat( key + nameof( Health ) );
 			Age = reader.LoadInt( key + nameof( Age ) );
 			BotName = reader.LoadString( key + nameof( BotName ) );
-			Family = GetTree().Root.GetNode<Family>( reader.LoadString( key + nameof( Family ) ) );
+
+			if ( !IsPremade ) {
+				Family = GetTree().Root.GetNode<Family>( reader.LoadString( key + nameof( Family ) ) );
+			}
 
 			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
 			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
@@ -307,6 +393,7 @@ namespace Renown {
 			Dexterity = reader.LoadInt( key + nameof( Dexterity ) );
 			Wisdom = reader.LoadInt( key + nameof( Wisdom ) );
 			Intelligence = reader.LoadInt( key + nameof( Intelligence ) );
+			Constitution = reader.LoadInt( key + nameof( Constitution ) );
 
 			Job.Load( reader, key );
 
@@ -350,6 +437,80 @@ namespace Renown {
 				AddToGroup( "Thinkers" );
 			}
 		}
+
+		private void DrainRequirements( uint hour ) {
+			if ( hour - LastFoodDrainTime >= 8 ) {
+				LastFoodDrainTime = hour;
+				Requirements[ ThinkerRequirements.Food ] -= 24;
+
+				// starve
+				if ( Requirements[ ThinkerRequirements.Food ] < 0 ) {
+					System.Threading.Interlocked.Exchange( ref Health, Health - 10.0f );
+				}
+			}
+			if ( State == ThinkerState.Working ) {
+				if ( hour - LastEntertainmentDrainTime >= 2 ) {
+					Requirements[ ThinkerRequirements.Entertainment ] -= 10;
+				}
+			} else {
+				if ( hour - LastEntertainmentDrainTime >= 5 ) {
+					Requirements[ ThinkerRequirements.Entertainment ] -= 2;
+				}
+			}
+			/* for later
+			if ( LastWaterDrainTime != hour ) {
+				LastWaterDrainTime = hour;
+				Requirements[ ThinkerRequirements.Water ] -= 2;
+
+				if ( Requirements[ ThinkerRequirements.Water ] <= 0 ) {
+					System.Threading.Interlocked.Exchange( ref Health, Health - 10.0f );
+				}
+			}
+			*/
+		}
+
+		private void CreateActionPlan() {
+			switch ( CurrentFocus ) {
+			case ThinkerRequirements.Food: {
+				if ( Location is Settlement settlement && settlement != null ) {
+				} else {
+					// we're fucked... kind of
+					SetNavigationTarget( Settlement.Cache.FindNearest( PhysicsPosition ).GlobalPosition );
+					ActionPlan.Enqueue( ThinkerAction.MovingToPoint );
+					ActionPlan.Enqueue( ThinkerAction.BuyingGoods );
+				}
+				break; }
+			case ThinkerRequirements.Energy:
+				SetNavigationTarget( Home.GlobalPosition );
+				ActionPlan.Enqueue( ThinkerAction.MovingToPoint );
+				ActionPlan.Enqueue( ThinkerAction.Sleep );
+				break;
+			case ThinkerRequirements.Water:
+				break;
+			case ThinkerRequirements.Entertainment:
+				break;
+			case ThinkerRequirements.Money:
+				if ( Job == null || Occupation == OccupationType.None ) {
+					// TODO: implement crime
+				} else {
+					SetNavigationTarget( Job.GetWorkPlace().GlobalPosition );
+					ActionPlan.Enqueue( ThinkerAction.MovingToPoint );
+					ActionPlan.Enqueue( ThinkerAction.Working );
+				}
+				break;
+			};
+			if ( ActionPlan.Count > 0 ) {
+				CurrentAction = ActionPlan.Dequeue();
+			}
+		}
+		private void OnTimeTick( uint day, uint hour, uint minute ) {
+			if ( LastPayDay != day ) {
+				GetPaid();
+			}
+
+			DrainRequirements( hour );
+		}
+
 		public override void _ExitTree() {
 			base._ExitTree();
 
@@ -372,6 +533,10 @@ namespace Renown {
 			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
 			AddChild( AudioChannel );
+
+			if ( !IsPremade ) {
+				WorldTimeManager.Instance.TimeTick += OnTimeTick;
+			}
 
 			/*
 			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
@@ -406,7 +571,50 @@ namespace Renown {
 				}
 			}, 512*1024 );
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
-			ThinkThread.Start();
+//			ThinkThread.Start();
+
+			ActionFinished += () => {
+				if ( !ActionPlan.TryDequeue( out CurrentAction ) ) {
+					CurrentAction = ThinkerAction.None;
+				}
+			};
+		}
+
+		private static void MoveToPoint( Thinker thinker ) {
+			// completion check
+			if ( thinker.NavAgent.IsTargetReached() ) {
+				thinker.LinearVelocity = Godot.Vector2.Zero;
+				thinker.EmitSignalActionFinished();
+				return;
+			}
+
+			// execution
+			Godot.Vector2 nextPathPosition = thinker.NavAgent.GetNextPathPosition();
+			thinker.LookDir = thinker.GlobalPosition.DirectionTo( nextPathPosition );
+			thinker.LookAngle = Mathf.Atan2( thinker.LookDir.Y, thinker.LookDir.X );
+			thinker.LinearVelocity = thinker.LookDir * thinker.MovementSpeed;
+			thinker.State = ThinkerState.Moving;
+		}
+		private static void Sleep( Thinker thinker ) {
+			if ( WorldTimeManager.Hour >= thinker.WorkTimeStart ) {
+				thinker.EmitSignalActionFinished();
+				thinker.State = ThinkerState.Working;
+				return; // get up for the daily 7-8
+			}
+			thinker.Requirements[ ThinkerRequirements.Energy ] += 20;
+			thinker.State = ThinkerState.Sleeping;
+		}
+		private static void Work( Thinker thinker ) {
+			if ( WorldTimeManager.Hour > thinker.WorkTimeEnd ) {
+				thinker.EmitSignalActionFinished();
+				thinker.State = ThinkerState.Sleeping;
+				return; // go back home
+			}
+			if ( thinker.LastEntertainmentDrainTime - WorldTimeManager.Hour >= 1 ) {
+				thinker.Requirements[ ThinkerRequirements.Entertainment ] -= 10;
+			}
+			thinker.Job.Process();
+			thinker.State = ThinkerState.Working;
 		}
 
         public override void _PhysicsProcess( double delta ) {
@@ -432,8 +640,9 @@ namespace Renown {
 					}
 				}
 			}
-
-			MoveAlongPath();
+			if ( IsPremade ) {
+				CallDeferred( "MoveAlongPath" );
+			}
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
@@ -449,7 +658,36 @@ namespace Renown {
 				return;
 			}
 
-			Think( (float)delta );
+			if ( IsPremade ) {
+				Think( (float)delta );
+				return;
+			}
+
+			// evaluate which action has the highest priority, used as an override
+			ThinkerRequirements focus = ThinkerRequirements.Count;
+			float highest = float.MinValue;
+			foreach( var state in Requirements ) {
+				float priorityScore = state.Value * PriorityMultiplier[ state.Key ];
+				if ( priorityScore > highest ) {
+					highest = priorityScore;
+					focus = state.Key;
+				}
+			}
+			if ( highest > CurrentPriority ) {
+				CurrentPriority = highest;
+				CurrentFocus = focus;
+				ActionPlan.Clear();
+
+				CreateActionPlan();
+				return;
+			}
+
+			if ( CurrentAction != ThinkerAction.None ) {
+				GD.Print( "Executing" );
+				Actions[ CurrentAction ].Invoke( this );
+			} else {
+				CreateActionPlan();
+			}
 		}
 
 		/// <summary>
@@ -464,7 +702,6 @@ namespace Renown {
 		/// expensive, but not animations and very little godot engine calls will be present.
 		/// </summary>
 		protected virtual void RenownProcess() {
-			
 		}
 		protected virtual void ProcessAnimations() {
 		}
@@ -484,25 +721,42 @@ namespace Renown {
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
+			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
 		}
 		protected virtual void OnTargetReached() {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
 			LinearVelocity = Godot.Vector2.Zero;
+			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
 		}
 
-		public void PayMonthlyTaxes( out float expectedTaxes, out float paidTaxes ) {
-			expectedTaxes = 0.0f;
+		public void PayTaxes( out float expectedTaxes, out float paidTaxes ) {
 			paidTaxes = 0.0f;
 
 			float taxationPercentage = Job.GetWage() / ( Home as BuildingHouse ).GetLocation().GetTaxationRate();
+			expectedTaxes = taxationPercentage;
 
 			if ( SocietyRank >= SocietyRank.Upper || Occupation == OccupationType.Politician ) {
 				// if we're a little more greedy than everyone else, pay a little less taxes
 				if ( HasTrait( TraitType.Greedy ) ) {
 
 				}
+			} else {
+				if ( Money - expectedTaxes < 0.0f ) {
+					float decreaseAmount = ( Money - expectedTaxes ) * 0.01f;
+					RelationDecrease( ( Home as BuildingHouse ).GetLocation().GetGovernment(), decreaseAmount );
+					// TODO: create debt
+				}
+
+				paidTaxes = expectedTaxes;
 			}
+		}
+		public void GetPaid() {
+			float amount = Job.GetWage();
+			float incomeTax = amount / ( Location as Settlement ).GetTaxationRate();
+			amount -= incomeTax;
+			
+			Job.GetCompany().PayWorker( incomeTax, amount, this );
 		}
 		
 		public void GenerateRelations() {
@@ -521,7 +775,7 @@ namespace Renown {
 		public static Thinker Create( Settlement location, int specificAge ) {
 			// TODO: create outliers, special bots
 			
-			Thinker thinker = new Thinker();
+			Thinker thinker = ResourceLoader.Load<PackedScene>( "res://scenes/renown/thinker.tscn" ).Instantiate<Thinker>();
 			System.Random random = new System.Random();
 			
 			thinker.Location = location;
@@ -532,21 +786,61 @@ namespace Renown {
 			thinker.BotName = string.Format( "{0} {1}", thinker.FirstName, thinker.Family.Name );
 			thinker.SocietyRank = thinker.Family.GetSocietyRank();
 
-			Span<int> jobChances = stackalloc int[ (int)OccupationType.Count ];
+			System.Span<int> jobChances = stackalloc int[ (int)OccupationType.Count ];
 			for ( OccupationType occupation = OccupationType.None; occupation < OccupationType.Count; occupation++ ) {
 				jobChances[ (int)occupation ] = Constants.JobChances_SocioEconomicStatus[ occupation ][ thinker.SocietyRank ];
+			}
+
+			for ( ThinkerRequirements requirements = ThinkerRequirements.Food; requirements < ThinkerRequirements.Count; requirements++ ) {
+				thinker.Requirements.Add( requirements, 100 );
 			}
 
 			Godot.Collections.Array<Node> factions = location.GetTree().GetNodesInGroup( "Factions" );
 			thinker.Family.GetHome().GetLocation().GetGovernment().MemberJoin( thinker );
 
-			thinker.Occupation = thinker.Family.GetHome().GetLocation().CalcJob( random, thinker );
-			thinker.Job = Thinkers.Occupation.Create( thinker.Occupation, thinker.Faction );
+			Building workplace;
+			thinker.Occupation = thinker.Family.GetHome().GetLocation().CalcJob( random, thinker, out workplace );
+			thinker.Job = Thinkers.Occupation.Create( thinker.Occupation, thinker, thinker.Faction );
+			if ( thinker.Occupation == OccupationType.Merchant ) {
+				MarketplaceSlot slot = null;
+
+				//FIXME: THIS
+				for ( int i = 0; i < thinker.Family.GetHome().GetLocation().GetMarketplaces().Length; i++ ) {
+					slot = thinker.Family.GetHome().GetLocation().GetMarketplaces()[i].GetFreeTradingSpace();
+					if ( slot != null ) {
+						( thinker.GetOccupation() as Merchant ).SetTradingSlot( slot );
+						break;
+					}
+				}
+				if ( slot == null ) {
+					// just be a merc
+					thinker.Occupation = OccupationType.Mercenary;
+					thinker.Job = Thinkers.Occupation.Create( thinker.Occupation, thinker, thinker.Faction );
+				}
+			}
+			thinker.Job.SetWorkPlace( workplace );
 
 			thinker.Name = string.Format( "{0}{1}{2}{3}{4}", thinker.FirstName, thinker.Family.Name, thinker.BirthPlace.Name, thinker.Age, thinker.GetHashCode() );
 
 			thinker.Home = thinker.Family.GetHome();
 			thinker.Family.AddMember( thinker );
+
+			switch ( thinker.SocietyRank ) {
+			case SocietyRank.Lower:
+				thinker.CostOfLiving = 800.0f;
+				thinker.Money = new RandomNumberGenerator().RandfRange( 200, 1000 );
+				thinker.WorkTimeStart = 7;
+				thinker.WorkTimeEnd = 20;
+				break;
+			case SocietyRank.Middle:
+				thinker.CostOfLiving = 16000.0f;
+				thinker.Money = new RandomNumberGenerator().RandfRange( 4000, 25000 );
+				break;
+			case SocietyRank.Upper:
+				thinker.CostOfLiving = 60000.0f;
+				thinker.Money = new RandomNumberGenerator().RandfRange( 30000, 120000 );
+				break;
+			};
 
 			//
 			// generate traits, relations, and debts
@@ -602,20 +896,23 @@ namespace Renown {
 			
 			// now we pull a D&D
 			// TODO: incorporate evolution over millions of years
-			thinker.Strength = random.Next( 3, thinker.Family.GetStrengthMax() )
-				+ thinker.Family.GetStrengthBonus();
+			thinker.Strength = random.Next( 3, thinker.Family.MaxStrength )
+				+ thinker.Family.StrengthBonus;
 			
-			thinker.Constitution = random.Next( 3, thinker.Family.GetConstitutionMax() )
-				+ thinker.Family.GetConstitutionBonus();
+			thinker.Constitution = random.Next( 3, thinker.Family.MaxConstitution )
+				+ thinker.Family.ConstitutionBonus;
 			
-			thinker.Intelligence = random.Next( 3, thinker.Family.GetIntelligenceMax() )
-				+ thinker.Family.GetIntelligenceBonus();
+			thinker.Intelligence = random.Next( 3, thinker.Family.MaxIntelligence )
+				+ thinker.Family.IntelligenceBonus;
 			
-			thinker.Wisdom = random.Next( 3, thinker.Family.GetWisdomMax() )
-				+ thinker.Family.GetWisdomBonus();
+			thinker.Wisdom = random.Next( 3, thinker.Family.MaxWisdom )
+				+ thinker.Family.WisdomBonus;
 			
-			thinker.Dexterity = random.Next( 3, thinker.Family.GetDexterityMax() )
-				+ thinker.Family.GetDexterityBonus();
+			thinker.Dexterity = random.Next( 3, thinker.Family.MaxDexterity )
+				+ thinker.Family.DexterityBonus;
+			
+			thinker.Charisma = random.Next( 3, thinker.Family.MaxCharisma )
+				+ thinker.Family.CharismaBonus;
 			
 			thinker.MovementSpeed += thinker.Dexterity * 10.0f;
 			thinker.Health += thinker.Strength * 2.0f + ( thinker.Constitution * 10.0f );
@@ -627,7 +924,6 @@ namespace Renown {
 			GD.Print( "\t\tAge: " + thinker.Age );
 			GD.Print( "\t\tRenown Score: " + thinker.RenownScore );
 			GD.Print( "\t\tMoney: " + thinker.Money );
-
 			GD.Print( "\t\tWage: " + thinker.Job.GetWage() );
 
 			if ( thinker.Faction != null ) {
@@ -638,8 +934,18 @@ namespace Renown {
 			GD.Print( "\t\tOccupation: " + thinker.Occupation.ToString() );
 			GD.Print( "\t\tHome: " + thinker.Home.GetPath() );
 			GD.Print( "\tStats:" );
+			GD.Print( "\t\tStrength: " + thinker.Strength );
+			GD.Print( "\t\tDexterity: " + thinker.Dexterity );
+			GD.Print( "\t\tIntelligence: " + thinker.Intelligence );
+			GD.Print( "\t\tWisdom: " + thinker.Wisdom );
+			GD.Print( "\t\tConstitution: " + thinker.Constitution );
 
-			thinker.ProcessMode = ProcessModeEnum.Disabled;
+			thinker.CallDeferred( "set_process", true );
+			thinker.CallDeferred( "set_physics_process", true );
+			thinker.GetNode<CollisionShape2D>( "BodyCollision" ).SetDeferred( "disabled", true );
+
+			thinker.ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+			thinker.ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
 			ThinkerCache.AddThinker( thinker );
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=129 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=130 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -60,6 +60,7 @@
 [ext_resource type="TileSet" uid="uid://cbjpm3df4cd0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
 [ext_resource type="Script" uid="uid://cg3unpmkqeo6f" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
 [ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
+[ext_resource type="Script" uid="uid://c1abw17p525cp" path="res://scripts/renown/World/Buildings/BuildingResourceProducer.cs" id="45_uh3ev"]
 [ext_resource type="Script" uid="uid://cjys0gcmej7e2" path="res://scripts/renown/World/Marketplace.cs" id="46_woxng"]
 [ext_resource type="Script" uid="uid://2vcoap7j1gor" path="res://scripts/renown/World/MarketplaceSlot.cs" id="47_uh3ev"]
 [ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
@@ -7113,6 +7114,7 @@ script = ExtResource("44_1r2vu")
 [node name="Tarane Massava" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") instance=ExtResource("32_aebnb")]
 mass = 160.0
 gravity_scale = 0.0
+IsPremade = true
 BotName = &"Tarane Masava"
 Age = 32
 Direction = 2
@@ -7133,6 +7135,7 @@ FactionImportance = 100
 position = Vector2(-31058, 26572)
 mass = 240.0
 gravity_scale = 0.0
+IsPremade = true
 BotName = &"Hillec Erron"
 Age = 20
 Direction = 2
@@ -7150,6 +7153,7 @@ position = Vector2(-87207, 53307)
 mass = 120.0
 MaxViewDistance = 140.0
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+IsPremade = true
 BotName = &"Dumbo"
 Age = 20
 Direction = 2
@@ -7167,6 +7171,7 @@ FactionImportance = 50
 [node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87323, 53041)
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+IsPremade = true
 BotName = &"Wriggler"
 Age = 21
 BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
@@ -7182,6 +7187,7 @@ FactionImportance = 30
 [node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87041, 53312)
 NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
+IsPremade = true
 BotName = &"Kissy"
 Age = 24
 BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
@@ -8077,11 +8083,13 @@ WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
 
 [node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome")]
-position = Vector2(-66, 29)
+position = Vector2(-56, 59)
 collision_layer = 19
 collision_mask = 18
 input_pickable = false
 script = ExtResource("25_qxdx5")
+Type = 1
+Treasury = 50000.0
 Government = NodePath("../../../Factions/GalakanOligarchy")
 Markets = [NodePath("MidCity/MainMarketplace")]
 TradeRoutes = []
@@ -8092,6 +8100,7 @@ SocietyScale = Dictionary[int, float]({
 1: 40.0,
 2: 10.0
 })
+TaxationRate = 60.0
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
 
@@ -8701,6 +8710,15 @@ tile_set = ExtResource("39_ybss6")
 [node name="GunFactory" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 position = Vector2(624, -774)
 
+[node name="FoodPlant" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+position = Vector2(-2703, -329)
+script = ExtResource("45_uh3ev")
+ProduceType = 4
+ReplenishRate = 100.0
+Type = 3
+LaborType = 1
+Location = NodePath("../..")
+
 [node name="MainMarketplace" type="Area2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("TradingSpaces")]
 position = Vector2(184, -317)
 script = ExtResource("46_woxng")
@@ -8818,6 +8836,13 @@ AreaName = &"Kingdom of Sortior"
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Sortior"]
 position = Vector2(11446, -12611)
 polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922, 11197, -1999)
+
+[node name="Checkpoints" type="Node" parent="Biomes/SafeSands"]
+
+[node name="Checkpoint_GalakasOutskirts" parent="Biomes/SafeSands/Checkpoints" instance=ExtResource("24_vg7yo")]
+position = Vector2(-30433, 27874)
+priority = -2
+Title = &"Galakas Outskirts"
 
 [node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SafeSands"]
 modulate = Color(0, 0, 0, 1)

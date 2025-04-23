@@ -1,3 +1,32 @@
+using Godot;
+
+public partial class Console : Node {
+	private static Node Instance;
+
+	public override void _Ready() {
+		base._Ready();
+
+		Instance = GetTree().Root.GetNode( "/root/GDConsole" );
+	}
+
+	public static void AddCommand( string name, Callable fn, Godot.Collections.Array args, int required, string description = "" ) {
+		Instance.CallDeferred( "add_command", name, fn, args, required, description );
+	}
+	public static void RemoveCommand( string name ) {
+		Instance.CallDeferred( "remove_command", name );
+	}
+	public static void PrintLine( string text ) {
+		Instance.CallDeferred( "print_line", text );
+	}
+	public static void PrintError( string text ) {
+		Instance.CallDeferred( "print_error", text );
+	}
+	public static void PrintWarning( string text ) {
+		Instance.CallDeferred( "print_warning", text );
+	}
+};
+
+/*
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -236,7 +265,6 @@ public partial class Console : Node {
 					}
 				}
 			}
-			Autocomplete();
 		}
 	}
 	private List<string> ParseLineInput( string text ) {
@@ -305,8 +333,8 @@ public partial class Console : Node {
 			List<string> textSplit = ParseLineInput( text );
 			string command = textSplit[0];
 
-			if ( ConsoleCommands.TryGetValue( command, out ConsoleCommand consoleCommand) ) {
-				List<string> args = textSplit.Slice( 1, int.MaxValue );
+			if ( ConsoleCommands.TryGetValue( command, out ConsoleCommand consoleCommand ) ) {
+				List<string> args = textSplit[1..];
 				if ( command.Match( "calc" ) ) {
 					string expression = "";
 					for ( int i = 0; i < args.Count; i++ ) {
@@ -316,7 +344,7 @@ public partial class Console : Node {
 					return;
 				}
 				if ( args.Count > consoleCommand.RequiredArgs ) {
-					//PrintError( string.Format( "usage: {0} {1}", command, consoleCommands.Arguments.ToString() ) );
+					PrintError( string.Format( "usage: {0} {1}", command, consoleCommand.Arguments.ToString() ) );
 					return;
 				} else if ( args.Count > consoleCommand.Arguments.Length ) {
 					args.RemoveRange( consoleCommand.Arguments.Length, args.Count - consoleCommand.Arguments.Length );
@@ -403,7 +431,7 @@ public partial class Console : Node {
 	}
 
 	private void OnLineEditTextChanged( string newText ) {
-		//ResetAutocomplete();
+		ResetAutocomplete();
 	}
 	private void Quit() {
 		GetTree().Quit();
@@ -510,3 +538,4 @@ public partial class Console : Node {
 		}
 	}
 };
+*/

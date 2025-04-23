@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
+using Renown.World;
 
 public class ResourceCache {
 #region Mob Sound Effects
@@ -94,6 +95,9 @@ public class ResourceCache {
 
 	public static void Cache( Node world, System.Threading.Thread SceneLoadThread ) {
 		Console.PrintLine( "Loading sound effects..." );
+
+		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
+		GlobalEconomy.Init();
 
 		SceneLoadThread?.Start();
 
