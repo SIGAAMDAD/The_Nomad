@@ -3,8 +3,8 @@ using Godot;
 public partial class Console : Node {
 	private static Node Instance;
 
-	public override void _Ready() {
-		base._Ready();
+	public override void _EnterTree() {
+		base._EnterTree();
 
 		Instance = GetTree().Root.GetNode( "/root/GDConsole" );
 	}

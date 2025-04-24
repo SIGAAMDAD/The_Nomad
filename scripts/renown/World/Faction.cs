@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Renown.Thinkers;
 
 namespace Renown.World {
 	public enum AIAlignment {
@@ -396,7 +397,7 @@ namespace Renown.World {
 
 			ThinkThread = new System.Threading.Thread( RenownProcess, 512*1024 );
 			ThinkThread.Priority = Importance;
-			ThinkThread.Start();
+//			ThinkThread.Start();
 		}
 		
 		protected bool CreateDebt( float nAmount ) {

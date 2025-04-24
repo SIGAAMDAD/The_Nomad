@@ -1,13 +1,11 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
-using Renown.Thinkers;
 using Renown.World.Buildings;
 using Renown.Thinkers.Occupations;
 using System;
-using System.Linq;
 
-namespace Renown {
+namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
 		// physics slapped
 		Pushed		= 0x00000001,
@@ -60,34 +58,53 @@ namespace Renown {
 	
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
-	public partial class Thinker : Entity {
+	sealed public partial class Thinker : Entity {
+		//
+		// Occupations
+		//
+		public partial class Bandit : Occupation {};
+		public partial class Mercenary : Occupation {};
+		public partial class Doctor : Occupation {};
+		public partial class None : Occupation {};
+
+		private Random Random = new Random();
+
+		private AnimatedSprite2D BodyAnimations;
+
+		// these two are only ever used for combat scenarios
+		private AnimatedSprite2D ArmAnimations;
+		private AnimatedSprite2D HeadAnimations;
+
 		[Export]
-		protected TileMapFloor Floor;
+		private TileMapFloor Floor;
 		
 		private NodePath InitialPath;
+		
+		private Godot.Vector2 Velocity = Godot.Vector2.Zero;
+		private Area2D HitBox;
 		
 		[Export]
 		private bool IsPremade = false;
 		[Export]
-		protected Building Home;
+		private Building Home;
 		[Export]
-		protected StringName BotName;
+		private StringName BotName;
 		[Export]
-		protected OccupationType Occupation;
+		private OccupationType Occupation;
 		[Export]
-		protected int Age = 0; // in years
+		private int Age = 0; // in years
 		[Export]
-		protected Family Family;
+		private Family Family;
 		[Export]
-		protected Settlement BirthPlace = null;
+		private Settlement BirthPlace = null;
 		[Export]
-		protected Sex Sex;
+		private Sex Sex;
 
-		protected StringName FirstName;
+		private StringName FirstName;
 
 		[ExportCategory("Start")]
 		[Export]
-		protected DirType Direction;
+		private DirType Direction;
 		
 		[ExportCategory("Stats")]
 		
@@ -95,47 +112,47 @@ namespace Renown {
 		/// physical power
 		/// </summary>
 		[Export]
-		protected int Strength;
+		private int Strength;
 		
 		/// <summary>
 		/// manuverability, reflexes
 		/// </summary>
-		protected int Dexterity;
+		private int Dexterity;
 		
 		/// <summary>
 		/// quantity of data, not how to use it
 		/// </summary>
 		[Export]
-		protected int Intelligence;
+		private int Intelligence;
 		
 		/// <summary>
 		/// resistances to poisons, illnesses, etc. overall health
 		/// </summary>
 		[Export]
-		protected int Constitution;
+		private int Constitution;
 		
 		/// <summary>
 		/// "common sense"
 		/// </summary>
 		[Export]
-		protected int Wisdom;
+		private int Wisdom;
 
 		[Export]
-		protected int Charisma;
+		private int Charisma;
 		
 		[Export]
 		private bool HasMetPlayer = false;
 		[Export]
-		protected float MovementSpeed = 40.0f;
+		private float MovementSpeed = 40.0f;
 
-		protected Dictionary<ThinkerRequirements, int> Requirements = new Dictionary<ThinkerRequirements, int>();
-//		protected Dictionary<ThinkerRequirements, float> Priorities = new Dictionary<ThinkerRequirements, float>();
+		private Dictionary<ThinkerRequirements, int> Requirements = new Dictionary<ThinkerRequirements, int>();
+//		private Dictionary<ThinkerRequirements, float> Priorities = new Dictionary<ThinkerRequirements, float>();
 
 		// pseudo goap
-		protected float CurrentPriority = 0.0f;
-		protected ThinkerRequirements CurrentFocus;
-		protected Queue<ThinkerAction> ActionPlan = new Queue<ThinkerAction>();
-		protected ThinkerAction CurrentAction;
+		private float CurrentPriority = 0.0f;
+		private ThinkerRequirements CurrentFocus;
+		private Queue<ThinkerAction> ActionPlan = new Queue<ThinkerAction>();
+		private ThinkerAction CurrentAction;
 	
 		// small adjustments made to priority scores so that even if we're bored, we don't forget to eat food
 		private static readonly Dictionary<ThinkerRequirements, float> PriorityMultiplier = new Dictionary<ThinkerRequirements, float>{
@@ -153,56 +170,56 @@ namespace Renown {
 			{ ThinkerAction.Sleep, Sleep }
 		};
 
-		protected uint LastFoodDrainTime = 0;
-		protected uint LastWaterDrainTime = 0;
-		protected uint LastEntertainmentDrainTime = 0;
+		private uint LastFoodDrainTime = 0;
+		private uint LastWaterDrainTime = 0;
+		private uint LastEntertainmentDrainTime = 0;
 
-		protected uint SleepTimeStartHour = 0;
-		protected uint WorkTimeStart = 0;
-		protected uint WorkTimeEnd = 0;
+		private uint SleepTimeStartHour = 0;
+		private uint WorkTimeStart = 0;
+		private uint WorkTimeEnd = 0;
 
-		protected float CostOfLiving = 0.0f;
+		private Node2D Animations;
 
-		protected NavigationAgent2D NavAgent;
-		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
+		private float CostOfLiving = 0.0f;
 
-		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
+		private NavigationAgent2D NavAgent;
+		private Godot.Vector2 LookDir = Godot.Vector2.Zero;
 
-		protected ThinkerFlags Flags;
-		protected ThinkerState State;
+		private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
 
-		protected ThinkerGroup Squad;
+		private ThinkerFlags Flags;
+		private ThinkerState State;
 
-		protected bool Initialized = false;
+		private ThinkerGroup Squad;
+
+		private bool Initialized = false;
 
 		// memory
-		protected bool TargetReached = false;
-		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		protected float LookAngle = 0.0f;
-		protected float AimAngle = 0.0f;
+		private bool TargetReached = false;
+		private Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
+		private float LookAngle = 0.0f;
+		private float AimAngle = 0.0f;
 
-		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-		protected Color DemonEyeColor;
-
-		protected Timer MoveTimer = null;
+		private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+		private Color DemonEyeColor;
 		
-		protected uint LastPayDay = 0;
+		private uint LastPayDay = 0;
 
 		// networking
-		protected NetworkWriter SyncObject = null;
+		private NetworkWriter SyncObject = null;
 
-		protected AudioStreamPlayer2D AudioChannel;
+		private AudioStreamPlayer2D AudioChannel;
 
 		private VisibleOnScreenNotifier2D VisibilityNotifier;
-		protected bool OnScreen = false;
+		private bool OnScreen = false;
 
-		protected Occupation Job;
-		protected SocietyRank SocietyRank;
+		private Occupation Job;
+		private SocietyRank SocietyRank;
 
-		protected System.Threading.Thread ThinkThread = null;
-		protected bool Quit = false;
+		private System.Threading.Thread ThinkThread = null;
+		private bool Quit = false;
 		
-		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_AWAY;
+		private int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_AWAY;
 
 		[Signal]
 		public delegate void HaveChildEventHandler( Thinker parent );
@@ -228,31 +245,24 @@ namespace Renown {
 			}
 		}
 		
-		protected virtual void SendPacket() {
+		private void SendPacket() {
 			if ( !OnScreen ) {
 				return;
 			}
 
-			SyncObject.Write( GlobalPosition );
-			SyncObject.Sync();
-		}
-		protected virtual void ReceivePacket( System.IO.BinaryReader reader ) {
-			if ( !OnScreen ) {
-				return;
-			}
-
-			Godot.Vector2 position;
-			position.X = (float)reader.ReadDouble();
-			position.Y = (float)reader.ReadDouble();
-			GlobalPosition = position;
+//			SyncObject.Write( GlobalPosition );
+//			SyncObject.Write( BodyAnimations.Animation );
+//			SyncObject.Write( HeadAnimations != null );
+//			SyncObject.Write( ArmAnimations != null );
+//			SyncObject.Sync();
 		}
 
-		public virtual void Notify( GroupEvent nEventType, Thinker source ) {
+		public void Notify( GroupEvent nEventType, Thinker source ) {
 		}
 		private void FindGroup() {
 		}
 
-		protected virtual void OnPlayerEnteredArea() {
+		private void OnPlayerEnteredArea() {
 			SetProcess( true );
 			SetPhysicsProcess( true );
 
@@ -261,11 +271,11 @@ namespace Renown {
 
 			ProcessMode = ProcessModeEnum.Pausable;
 
-//			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 //				AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
-//			}
+			}
 		}
-		protected virtual void OnPlayerExitedArea() {
+		private void OnPlayerExitedArea() {
 			SetProcess( false );
 			SetPhysicsProcess( false );
 
@@ -279,9 +289,11 @@ namespace Renown {
 				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 			}
 
-//			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+			Visible = false;
+
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 //				AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
-//			}
+			}
 		}
 		public override void SetLocation( WorldArea location ) {
 			Location.PlayerEntered -= OnPlayerEnteredArea;
@@ -299,18 +311,6 @@ namespace Renown {
 
 			Location.PlayerEntered += OnPlayerEnteredArea;
 			Location.PlayerExited += OnPlayerExitedArea;
-		}
-
-		protected virtual void OnRigidBody2DShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is Entity entity && entity != null ) {
-				// momentum combat
-				float speed = entity.LinearVelocity.Length();
-				if ( speed >= Constants.DAMAGE_VELOCITY ) {
-					Damage( entity, speed );
-					LinearVelocity = entity.LinearVelocity * 2.0f;
-					Flags |= ThinkerFlags.Pushed;
-				}
-			}
 		}
 
 		public override StringName GetObjectName() => Name;
@@ -422,13 +422,23 @@ namespace Renown {
 			}
 		}
 
-		protected virtual void SetAnimationsColor( Color color ) {
+		public void StopMoving() {
+			Velocity = Godot.Vector2.Zero;
+			GotoPosition = GlobalPosition;
+			BodyAnimations.Play( "idle" );
+
+			HeadAnimations?.Play( "idle" );
+			ArmAnimations?.Play( "idle" );
 		}
 
-		protected virtual void OnScreenEnter() {
+		private void SetAnimationsColor( Color color ) {
+			Animations.Modulate = color;
+		}
+
+		private void OnScreenEnter() {
 			OnScreen = true;
 		}
-		protected virtual void OnScreenExit() {
+		private void OnScreenExit() {
 			OnScreen = false;
 		}
 
@@ -511,13 +521,36 @@ namespace Renown {
 			DrainRequirements( hour );
 		}
 
+		private void OnBodyAnimationFinished() {
+			if ( BodyAnimations.Animation == "move" ) {
+				PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ Random.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+			}
+		}
+
 		public override void _ExitTree() {
 			base._ExitTree();
 
 			Quit = true;
 		}
 		public override void _Ready() {
+			if ( Initialized ) {
+				return;
+			}
+			Initialized = true;
+
+			if ( IsPremade ) {
+				InitRenownStats();
+			}
+
 			base._Ready();
+			
+			HitBox = new Area2D();
+			AddChild( HitBox );
+
+			Animations = new Node2D();
+			AddChild( Animations );
+
+			ProcessMode = ProcessModeEnum.Disabled;
 
 			NavAgent = new NavigationAgent2D();
 			NavAgent.PathMaxDistance = 10000.0f;
@@ -525,13 +558,13 @@ namespace Renown {
 			NavAgent.Radius = 60.0f;
 			NavAgent.MaxNeighbors = 20;
 			NavAgent.MaxSpeed = 200.0f;
-			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 			AddChild( NavAgent );
 
 			AudioChannel = new AudioStreamPlayer2D();
 			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
 			AddChild( AudioChannel );
 
 			if ( !IsPremade ) {
@@ -549,14 +582,13 @@ namespace Renown {
 				InitialPath = GetPath();
 			}
 
-			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnRigidBody2DShapeEntered ) );
 			GotoPosition = GlobalPosition;
 			
 			if ( SettingsData.GetNetworkingEnabled() ) {
-				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
+				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
 			}
 
-			ProcessMode = ProcessModeEnum.Pausable;
+			ProcessMode = ProcessModeEnum.Disabled;
 
 			Location.PlayerEntered += OnPlayerEnteredArea;
 			Location.PlayerExited += OnPlayerExitedArea;
@@ -571,6 +603,7 @@ namespace Renown {
 				}
 			}, 512*1024 );
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
+
 //			ThinkThread.Start();
 
 			ActionFinished += () => {
@@ -583,7 +616,7 @@ namespace Renown {
 		private static void MoveToPoint( Thinker thinker ) {
 			// completion check
 			if ( thinker.NavAgent.IsTargetReached() ) {
-				thinker.LinearVelocity = Godot.Vector2.Zero;
+				thinker.Velocity = Godot.Vector2.Zero;
 				thinker.EmitSignalActionFinished();
 				return;
 			}
@@ -592,7 +625,7 @@ namespace Renown {
 			Godot.Vector2 nextPathPosition = thinker.NavAgent.GetNextPathPosition();
 			thinker.LookDir = thinker.GlobalPosition.DirectionTo( nextPathPosition );
 			thinker.LookAngle = Mathf.Atan2( thinker.LookDir.Y, thinker.LookDir.X );
-			thinker.LinearVelocity = thinker.LookDir * thinker.MovementSpeed;
+			thinker.Velocity = thinker.LookDir * thinker.MovementSpeed;
 			thinker.State = ThinkerState.Moving;
 		}
 		private static void Sleep( Thinker thinker ) {
@@ -613,7 +646,7 @@ namespace Renown {
 			if ( thinker.LastEntertainmentDrainTime - WorldTimeManager.Hour >= 1 ) {
 				thinker.Requirements[ ThinkerRequirements.Entertainment ] -= 10;
 			}
-			thinker.Job.Process();
+//			thinker.Job.Process();
 			thinker.State = ThinkerState.Working;
 		}
 
@@ -625,24 +658,16 @@ namespace Renown {
 			base._PhysicsProcess( delta );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
-				if ( LinearVelocity == Godot.Vector2.Zero ) {
+				if ( Velocity == Godot.Vector2.Zero ) {
 					Flags &= ~ThinkerFlags.Pushed;
-					PhysicsMaterialOverride.Friction = 1.0f;
 				} else {
 					return;
 				}
 			}
 			if ( Location.IsPlayerHere() ) {
 				GlobalRotation = 0.0f;
-				if ( MoveTimer != null ) {
-					if ( MoveTimer.IsStopped() && LinearVelocity != Godot.Vector2.Zero ) {
-						MoveTimer.Start();
-					}
-				}
 			}
-			if ( IsPremade ) {
-				CallDeferred( "MoveAlongPath" );
-			}
+			MoveAlongPath();
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
@@ -651,15 +676,11 @@ namespace Renown {
 
 			base._Process( delta );
 
-			ProcessAnimations();
+			Job.ProcessAnimations();
+			Job.Process();
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
-				return;
-			}
-
-			if ( IsPremade ) {
-				Think( (float)delta );
 				return;
 			}
 
@@ -694,21 +715,19 @@ namespace Renown {
 		/// Runs more specific and detailed interactions when the player is in the area.
 		/// </summary>
 		/// <param name="delta"></param>
-		protected virtual void Think( float delta ) {
+		private void Think( float delta ) {
 		}
 		
 		/// <summary>
 		/// Processes various relations, debts, etc. to run the renown system per entity.
 		/// expensive, but not animations and very little godot engine calls will be present.
 		/// </summary>
-		protected virtual void RenownProcess() {
-		}
-		protected virtual void ProcessAnimations() {
+		private void RenownProcess() {
 		}
 
-		protected bool MoveAlongPath() {
+		private bool MoveAlongPath() {
 			if ( NavAgent.IsTargetReached() ) {
-				LinearVelocity = Godot.Vector2.Zero;
+//				Velocity = Godot.Vector2.Zero;
 				return true;
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
@@ -717,17 +736,21 @@ namespace Renown {
 			LinearVelocity = LookDir * MovementSpeed;
 			return true;
 		}
-		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {
+		private void SetNavigationTarget( Godot.Vector2 target ) {
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
 			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+
+			Job.SetNavigationTarget( target );
 		}
-		protected virtual void OnTargetReached() {
+		private void OnTargetReached() {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
-			LinearVelocity = Godot.Vector2.Zero;
+			Velocity = Godot.Vector2.Zero;
 			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
+
+			Job.OnTargetReached();
 		}
 
 		public void PayTaxes( out float expectedTaxes, out float paidTaxes ) {
@@ -772,73 +795,77 @@ namespace Renown {
 			}
 		}
 
-		public static Thinker Create( Settlement location, int specificAge ) {
-			// TODO: create outliers, special bots
-			
-			Thinker thinker = ResourceLoader.Load<PackedScene>( "res://scenes/renown/thinker.tscn" ).Instantiate<Thinker>();
-			System.Random random = new System.Random();
-			
-			thinker.Location = location;
-			thinker.BirthPlace = location;
-			thinker.Age = specificAge == -1 ? random.Next( 0, 70 ) : specificAge;
-			thinker.Family = ThinkerCache.GetFamily( location );
-			thinker.FirstName = NameGenerator.GenerateName();
-			thinker.BotName = string.Format( "{0} {1}", thinker.FirstName, thinker.Family.Name );
-			thinker.SocietyRank = thinker.Family.GetSocietyRank();
-
-			System.Span<int> jobChances = stackalloc int[ (int)OccupationType.Count ];
-			for ( OccupationType occupation = OccupationType.None; occupation < OccupationType.Count; occupation++ ) {
-				jobChances[ (int)occupation ] = Constants.JobChances_SocioEconomicStatus[ occupation ][ thinker.SocietyRank ];
+		private void InitRenownStats( int specificAge = -1 ) {
+			if ( !IsPremade ) {
+				Age = specificAge == -1 ? Random.Next( 0, 70 ) : specificAge;
+				FirstName = NameGenerator.GenerateName();
+				Family = ThinkerCache.GetFamily( Location as Settlement );
+				BotName = string.Format( "{0} {1}", FirstName, Family.Name );
 			}
 
+			SocietyRank = Family.GetSocietyRank();
+
+			if ( !IsPremade ) {
+				System.Span<int> jobChances = stackalloc int[ (int)OccupationType.Count ];
+				for ( OccupationType occupation = OccupationType.None; occupation < OccupationType.Count; occupation++ ) {
+					jobChances[ (int)occupation ] = Constants.JobChances_SocioEconomicStatus[ occupation ][ SocietyRank ];
+				}
+			}
+			
 			for ( ThinkerRequirements requirements = ThinkerRequirements.Food; requirements < ThinkerRequirements.Count; requirements++ ) {
-				thinker.Requirements.Add( requirements, 100 );
+				Requirements.Add( requirements, 100 );
 			}
 
-			Godot.Collections.Array<Node> factions = location.GetTree().GetNodesInGroup( "Factions" );
-			thinker.Family.GetHome().GetLocation().GetGovernment().MemberJoin( thinker );
+			Godot.Collections.Array<Node> factions = Location.GetTree().GetNodesInGroup( "Factions" );
+			Family.GetHome().GetLocation().GetGovernment().MemberJoin( this );
 
-			Building workplace;
-			thinker.Occupation = thinker.Family.GetHome().GetLocation().CalcJob( random, thinker, out workplace );
-			thinker.Job = Thinkers.Occupation.Create( thinker.Occupation, thinker, thinker.Faction );
-			if ( thinker.Occupation == OccupationType.Merchant ) {
-				MarketplaceSlot slot = null;
+			if ( !IsPremade ) {
+				Building workplace;
+				Occupation = Family.GetHome().GetLocation().CalcJob( Random, this, out workplace );
+				Job = Thinkers.Occupation.Create( Occupation, this, Faction );
+				if ( Occupation == OccupationType.Merchant ) {
+					MarketplaceSlot slot = null;
 
-				//FIXME: THIS
-				for ( int i = 0; i < thinker.Family.GetHome().GetLocation().GetMarketplaces().Length; i++ ) {
-					slot = thinker.Family.GetHome().GetLocation().GetMarketplaces()[i].GetFreeTradingSpace();
-					if ( slot != null ) {
-						( thinker.GetOccupation() as Merchant ).SetTradingSlot( slot );
-						break;
+					//FIXME: THIS
+					for ( int i = 0; i < Family.GetHome().GetLocation().GetMarketplaces().Length; i++ ) {
+						slot = Family.GetHome().GetLocation().GetMarketplaces()[i].GetFreeTradingSpace();
+						if ( slot != null ) {
+							( GetOccupation() as Merchant ).SetTradingSlot( slot );
+							break;
+						}
+					}
+					if ( slot == null ) {
+						// just be a merc
+						Occupation = OccupationType.Mercenary;
+						Job = Thinkers.Occupation.Create( Occupation, this, Faction );
 					}
 				}
-				if ( slot == null ) {
-					// just be a merc
-					thinker.Occupation = OccupationType.Mercenary;
-					thinker.Job = Thinkers.Occupation.Create( thinker.Occupation, thinker, thinker.Faction );
+				if ( Job == null ) {
+					GD.PushError( "Invalid JOB!" );
 				}
+				Job.SetWorkPlace( workplace );
+				Name = string.Format( "{0}{1}{2}{3}{4}", FirstName, Family.Name, BirthPlace.Name, Age, GetHashCode() );
+			} else {
+				Job = Thinkers.Occupation.Create( Occupation, this, Faction );
 			}
-			thinker.Job.SetWorkPlace( workplace );
 
-			thinker.Name = string.Format( "{0}{1}{2}{3}{4}", thinker.FirstName, thinker.Family.Name, thinker.BirthPlace.Name, thinker.Age, thinker.GetHashCode() );
+			Home = Family.GetHome();
+			Family.AddMember( this );
 
-			thinker.Home = thinker.Family.GetHome();
-			thinker.Family.AddMember( thinker );
-
-			switch ( thinker.SocietyRank ) {
+			switch ( SocietyRank ) {
 			case SocietyRank.Lower:
-				thinker.CostOfLiving = 800.0f;
-				thinker.Money = new RandomNumberGenerator().RandfRange( 200, 1000 );
-				thinker.WorkTimeStart = 7;
-				thinker.WorkTimeEnd = 20;
+				CostOfLiving = 800.0f;
+				Money = new RandomNumberGenerator().RandfRange( 200, 1000 );
+				WorkTimeStart = 7;
+				WorkTimeEnd = 20;
 				break;
 			case SocietyRank.Middle:
-				thinker.CostOfLiving = 16000.0f;
-				thinker.Money = new RandomNumberGenerator().RandfRange( 4000, 25000 );
+				CostOfLiving = 16000.0f;
+				Money = new RandomNumberGenerator().RandfRange( 4000, 25000 );
 				break;
 			case SocietyRank.Upper:
-				thinker.CostOfLiving = 60000.0f;
-				thinker.Money = new RandomNumberGenerator().RandfRange( 30000, 120000 );
+				CostOfLiving = 60000.0f;
+				Money = new RandomNumberGenerator().RandfRange( 30000, 120000 );
 				break;
 			};
 
@@ -846,15 +873,15 @@ namespace Renown {
 			// generate traits, relations, and debts
 			//
 
-			int traitCount = random.Next( 2, (int)TraitType.Count - 1 );
-			thinker.Traits = new Godot.Collections.Array<TraitType>();
-			thinker.Traits.Resize( traitCount );
+			int traitCount = Random.Next( 2, (int)TraitType.Count - 1 );
+			Traits = new Godot.Collections.Array<TraitType>();
+			Traits.Resize( traitCount );
 
 			for ( int i = 0; i < traitCount; i++ ) {
 				Trait trait = null;
 
 				while ( trait == null ) {
-					TraitType proposed = (TraitType)random.Next( 0, (int)TraitType.Count - 1 );
+					TraitType proposed = (TraitType)Random.Next( 0, (int)TraitType.Count - 1 );
 					switch ( proposed ) {
 					case TraitType.Cruel:
 						trait = new Traits.Cruel();
@@ -876,7 +903,7 @@ namespace Renown {
 						break;
 					case TraitType.WarCriminal:
 						// cant really have an infant being a war criminal
-						if ( thinker.Age < 10 ) {
+						if ( Age < 10 ) {
 							continue;
 						}
 						trait = new Traits.WarCriminal();
@@ -884,8 +911,8 @@ namespace Renown {
 					};
 
 					// check for conflicting traits
-					for ( int t = 0; t < thinker.Traits.Count; t++ ) {
-						if ( trait.Conflicts( thinker.Traits[i] ) ) {
+					for ( int t = 0; t < Traits.Count; t++ ) {
+						if ( trait.Conflicts( Traits[i] ) ) {
 							// trash it, try again
 							trait = null;
 							break;
@@ -896,26 +923,26 @@ namespace Renown {
 			
 			// now we pull a D&D
 			// TODO: incorporate evolution over millions of years
-			thinker.Strength = random.Next( 3, thinker.Family.MaxStrength )
-				+ thinker.Family.StrengthBonus;
+			Strength = Random.Next( 3, Family.MaxStrength ) + Family.StrengthBonus;
+			Constitution = Random.Next( 3, Family.MaxConstitution ) + Family.ConstitutionBonus;
+			Intelligence = Random.Next( 3, Family.MaxIntelligence ) + Family.IntelligenceBonus;
+			Wisdom = Random.Next( 3, Family.MaxWisdom ) + Family.WisdomBonus;
+			Dexterity = Random.Next( 3, Family.MaxDexterity ) + Family.DexterityBonus;
+			Charisma = Random.Next( 3, Family.MaxCharisma ) + Family.CharismaBonus;
 			
-			thinker.Constitution = random.Next( 3, thinker.Family.MaxConstitution )
-				+ thinker.Family.ConstitutionBonus;
-			
-			thinker.Intelligence = random.Next( 3, thinker.Family.MaxIntelligence )
-				+ thinker.Family.IntelligenceBonus;
-			
-			thinker.Wisdom = random.Next( 3, thinker.Family.MaxWisdom )
-				+ thinker.Family.WisdomBonus;
-			
-			thinker.Dexterity = random.Next( 3, thinker.Family.MaxDexterity )
-				+ thinker.Family.DexterityBonus;
-			
-			thinker.Charisma = random.Next( 3, thinker.Family.MaxCharisma )
-				+ thinker.Family.CharismaBonus;
-			
-			thinker.MovementSpeed += thinker.Dexterity * 10.0f;
-			thinker.Health += thinker.Strength * 2.0f + ( thinker.Constitution * 10.0f );
+			MovementSpeed += Dexterity * 10.0f;
+			Health += Strength * 2.0f + ( Constitution * 10.0f );
+		}
+
+		public static Thinker Create( Settlement location, int specificAge ) {
+			// TODO: create outliers, special bots
+
+			return  null;
+
+			Thinker thinker = new Thinker();
+			thinker.Location = location;
+			thinker.BirthPlace = location;
+			thinker.InitRenownStats( specificAge );
 
 			GD.Print( "Thinker " + thinker.Name + " Generated:" );
 			GD.Print( "\t[Renown Data]" );
@@ -940,12 +967,10 @@ namespace Renown {
 			GD.Print( "\t\tWisdom: " + thinker.Wisdom );
 			GD.Print( "\t\tConstitution: " + thinker.Constitution );
 
-			thinker.CallDeferred( "set_process", true );
-			thinker.CallDeferred( "set_physics_process", true );
-			thinker.GetNode<CollisionShape2D>( "BodyCollision" ).SetDeferred( "disabled", true );
-
-			thinker.ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			thinker.ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
+			thinker.SetProcess( false );
+			thinker.SetPhysicsProcess( false );
+			thinker.ProcessMode = ProcessModeEnum.Disabled;
+			thinker.Visible = false;
 
 			ThinkerCache.AddThinker( thinker );
 	

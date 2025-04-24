@@ -1,0 +1,149 @@
+[gd_scene load_steps=14 format=3 uid="uid://dil6cvnitkb3b"]
+
+[ext_resource type="Script" uid="uid://b83akkws10guh" path="res://scripts/renown/Thinkers/Thinker.cs" id="1_5wxvn"]
+[ext_resource type="SpriteFrames" uid="uid://c2jibvnbe8avt" path="res://resources/animations/thinkers/bandit/body.tres" id="2_5wxvn"]
+[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="2_q3nyr"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_gnc44"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohua8"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w2v4m"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lqbnx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ohua8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w2v4m")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnc44"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q3nyr"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sse78"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02k6i"]
+atlas = ExtResource("2_q3nyr")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sv13l"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnc44")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q3nyr")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sse78")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_02k6i")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gnc44"]
+size = Vector2(16, 28)
+
+[node name="BanditGrunt" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
+collision_layer = 65
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_gnc44")
+gravity_scale = 0.0
+freeze_mode = 1
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 4
+script = ExtResource("1_5wxvn")
+Relations = {}
+Debts = {}
+
+[node name="Animations" type="Node2D" parent="."]
+z_index = 5
+
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-7, 0)
+sprite_frames = ExtResource("2_5wxvn")
+animation = &"calm"
+autoplay = "calm"
+
+[node name="SmokeEmitter" type="CPUParticles2D" parent="Animations/BodyAnimations"]
+position = Vector2(11, -6)
+emitting = false
+amount = 50
+lifetime = 2.0
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 4.0
+gravity = Vector2(0, -50)
+angle_min = -4.5
+angle_max = 65.1
+
+[node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-7, -6)
+sprite_frames = SubResource("SpriteFrames_lqbnx")
+animation = &"move"
+autoplay = "idle"
+
+[node name="SightCheck" type="Node2D" parent="Animations/HeadAnimations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 2
+position = Vector2(6.93895, 6.0705)
+
+[node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(-6, -2)
+sprite_frames = SubResource("SpriteFrames_sv13l")
+animation = &"attack"
+autoplay = "idle"
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(49, -11)
+scale = Vector2(6.7, 4.6)
+rect = Rect2(-10.8955, -2.82609, 4.92537, 9.13043)
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 2)
+shape = SubResource("RectangleShape2D_gnc44")
+
+[node name="DetectionMeter" type="Line2D" parent="."]
+position = Vector2(3, -2.86102e-06)
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0

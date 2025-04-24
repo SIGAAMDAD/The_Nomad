@@ -1,4 +1,5 @@
 using Godot;
+using Renown.Thinkers;
 
 namespace Renown {
 	public partial class Relationship : Resource {

@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dg5obbk3ebp8g"]
+
+[ext_resource type="Script" uid="uid://1oaftnd6a18v" path="res://scripts/fps_counter.gd" id="1_u321x"]
+
+[node name="FpsCounter" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_u321x")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.00416667
+anchor_right = 1.0
+anchor_bottom = 0.00416667
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+horizontal_alignment = 2
+metadata/_edit_use_anchors_ = true

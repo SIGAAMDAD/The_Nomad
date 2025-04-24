@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using Renown.Thinkers;
 
 namespace Renown.World {
 	public class ThinkerFactory {

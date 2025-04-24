@@ -101,7 +101,6 @@ namespace Renown.World {
 		public static void AddThinker( Thinker thinker ) {
 			Instance.Thinkers.TryAdd( thinker.GetHashCode(), thinker );
 			Instance.CallDeferred( "add_child", thinker );
-			thinker.SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled );
 			System.Threading.Interlocked.Increment( ref ThinkerCount );
 		}
 	};

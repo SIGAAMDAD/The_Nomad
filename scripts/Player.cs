@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Renown;
 using GDExtension.Wrappers;
 using System.Xml;
+using Renown.Thinkers;
 
 public partial class Player : Entity {
 	public enum Hands : byte {
@@ -429,8 +430,8 @@ public partial class Player : Entity {
 	}
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is Renown.Thinkers.MobBase mob && mob != null ) {
-			mob.Alert( this );
+		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
+//			( mob.GetOccupation() ).Alert( this );
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

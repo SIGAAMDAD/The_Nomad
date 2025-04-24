@@ -43,7 +43,7 @@ namespace Renown.World {
 		/// there will only ever be one merc master per settlement
 		/// </summary>
 		[Export]
-		private MercenaryMaster MercenaryMaster;
+		private Thinker MercenaryMaster;
 
 		private List<Family> FamilyList = new List<Family>();
 		private List<Building> BuildingList = new List<Building>();
@@ -71,7 +71,7 @@ namespace Renown.World {
 		public int GetPopulation() => Population;
 		public Government GetGovernment() => Government;
 		public List<Building> GetBuildings() => BuildingList;
-		public MercenaryMaster GetMercenaryMaster() => MercenaryMaster;
+		public Thinker GetMercenaryMaster() => MercenaryMaster;
 
 		public int GetNumThinkerInOccupation( OccupationType job ) {
 			int count = 0;

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctokiarvjvf14"]
+
+[ext_resource type="Script" uid="uid://cfshsdahkefhj" path="res://scripts/interactables/ItemPickup.cs" id="1_s6oxg"]
+
+[node name="ItemPickup" type="Area2D"]
+script = ExtResource("1_s6oxg")

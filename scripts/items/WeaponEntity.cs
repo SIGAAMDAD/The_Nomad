@@ -562,7 +562,7 @@ public partial class WeaponEntity : Node2D {
 		
 		float damage = (float)properties[ "damage" ];
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is Renown.Thinkers.MobBase entity && entity != null ) {
+			if ( collision is Renown.Thinkers.Thinker entity && entity != null ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
 				distance /= soundLevel;
 				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );

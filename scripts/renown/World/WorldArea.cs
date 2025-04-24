@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.Collections.Generic;
 using Godot;
 
 namespace Renown.World {
@@ -9,6 +9,10 @@ namespace Renown.World {
 		protected Biome Biome;
 		[Export]
 		protected StringName AreaName;
+		[Export]
+		protected AINodeCache NodeCache;
+		[Export]
+		protected TileMapLayer[] TileMaps;
 
 		protected bool PlayerStatus = false;
 
@@ -27,6 +31,7 @@ namespace Renown.World {
 		public virtual void Load() {
 		}
 
+		public AINodeCache GetNodeCache() => NodeCache;
 		public bool IsPlayerHere() => PlayerStatus;
 		public Biome GetBiome() => Biome;
 

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c381bhutop3yn"]
+
+[ext_resource type="Script" uid="uid://b83akkws10guh" path="res://scripts/renown/Thinkers/Thinker.cs" id="1_nv4km"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h6v4o"]
+
+[node name="Thinker" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
+process_mode = 4
+script = ExtResource("1_nv4km")
+Relations = {}
+Debts = {}
+
+[node name="Animations" type="Node2D" parent="."]
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+process_mode = 4
+shape = SubResource("RectangleShape2D_h6v4o")

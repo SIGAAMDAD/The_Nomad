@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://cgt737rjolo2o"]
+
+[ext_resource type="Shader" uid="uid://dltpcgmmbjx2x" path="res://shaders/hell_spawner.gdshader" id="1_37p5r"]
+[ext_resource type="Texture2D" uid="uid://bt38ybdi27a40" path="res://textures/env/flag_red.dds" id="1_jg74i"]
+[ext_resource type="Texture2D" uid="uid://bk1rjc0us4lpd" path="res://textures/env/pentagram.png" id="2_wvmko"]
+
+[sub_resource type="Gradient" id="Gradient_ysgkx"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_16p4j"]
+seed = 2
+frequency = 0.0199
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oowgm"]
+width = 1
+height = 1
+generate_mipmaps = false
+normalize = false
+color_ramp = SubResource("Gradient_ysgkx")
+noise = SubResource("FastNoiseLite_16p4j")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lx8on"]
+shader = ExtResource("1_37p5r")
+shader_parameter/vertical_gradient = SubResource("NoiseTexture2D_oowgm")
+shader_parameter/size_effect = -5.0
+shader_parameter/highlight_strength = 2.05
+shader_parameter/color_mode_toggle = false
+shader_parameter/is_horizontal = true
+shader_parameter/spin_texture = ExtResource("2_wvmko")
+shader_parameter/clockwise = true
+shader_parameter/speed = 1.485
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hashi"]
+size = Vector2(31, 47)
+
+[node name="RedCtfObjective" type="Node2D"]
+
+[node name="FlashyThing" type="Sprite2D" parent="."]
+texture_repeat = 1
+material = SubResource("ShaderMaterial_lx8on")
+scale = Vector2(0.389844, 0.396777)
+texture = ExtResource("2_wvmko")
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(1, -15)
+texture = ExtResource("1_jg74i")
+
+[node name="PickupArea" type="Area2D" parent="."]
+position = Vector2(0, -13)
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea"]
+shape = SubResource("RectangleShape2D_hashi")
+
+[node name="ReturnTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true

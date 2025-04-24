@@ -44,5 +44,4 @@ func _ready() -> void:
 	
 	_name.text = _action_label
 	
-	var event:InputEvent
 	_label.gui_input.connect( Callable( _rebind ).bind( items[0] ) )

@@ -1,0 +1,140 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1lincyw81i1f"]
+
+[ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="1_2b05p"]
+[ext_resource type="Script" uid="uid://c3oajsua0m4cx" path="res://addons/BugReporter/reporters/reporter.gd" id="3_1ehp8"]
+[ext_resource type="Script" uid="uid://diwpjr5f33lde" path="res://addons/BugReporter/webhook_builder/webhook_builder.gd" id="3_3k2m6"]
+
+[node name="BugReporter" type="PanelContainer" node_paths=PackedStringArray("_message_text", "_mail_line_edit", "_options", "_screenshot_check", "_screenshot", "_analytics_button", "_send_button", "_text_limit")]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_1ehp8")
+_message_text = NodePath("MarginContainer/VBoxContainer/DescriptionTextEdit")
+_mail_line_edit = NodePath("MarginContainer/VBoxContainer/EmailContainer/TextEdit")
+_options = NodePath("MarginContainer/VBoxContainer/OptionButton")
+_screenshot_check = NodePath("MarginContainer/VBoxContainer/ScreenshotContainer/HBoxContainer/SaveScreenshotButton")
+_screenshot = NodePath("MarginContainer/VBoxContainer/ScreenshotContainer/Screenshot")
+_analytics_button = NodePath("MarginContainer/VBoxContainer/AnalyticsContainer/AnalyticsButton")
+_send_button = NodePath("MarginContainer/VBoxContainer/SubmitButton")
+_text_limit = NodePath("MarginContainer/VBoxContainer/DescriptionContainer/LimitLabel")
+metadata/_custom_type_script = "uid://c3oajsua0m4cx"
+metadata/_edit_use_anchors_ = true
+
+[node name="WebhookBuilder" type="HTTPRequest" parent="."]
+script = ExtResource("3_3k2m6")
+metadata/_custom_type_script = "uid://diwpjr5f33lde"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("1_2b05p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "BUG REPORTER"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EmailContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/EmailContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "EMAIL:"
+horizontal_alignment = 2
+
+[node name="TextEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/EmailContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="TitleContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "TITLE:"
+horizontal_alignment = 2
+
+[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="DescriptionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DescriptionContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "DESCRIPTION:"
+horizontal_alignment = 2
+
+[node name="LimitLabel" type="Label" parent="MarginContainer/VBoxContainer/DescriptionContainer"]
+layout_mode = 2
+
+[node name="DescriptionTextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="ScreenshotContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScreenshotContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ScreenshotContainer/HBoxContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "SEND SCREENSHOT?"
+horizontal_alignment = 2
+
+[node name="SaveScreenshotButton" type="Button" parent="MarginContainer/VBoxContainer/ScreenshotContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Screenshot" type="TextureRect" parent="MarginContainer/VBoxContainer/ScreenshotContainer"]
+custom_minimum_size = Vector2(200, 120)
+layout_mode = 2
+expand_mode = 2
+
+[node name="AnalyticsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AnalyticsContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "SEND ANALYTICS?"
+horizontal_alignment = 2
+
+[node name="AnalyticsButton" type="CheckBox" parent="MarginContainer/VBoxContainer/AnalyticsContainer"]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SubmitButton" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "SUBMIT"
+
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/DescriptionTextEdit" to="." method="_on_message_text_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ScreenshotContainer/HBoxContainer/SaveScreenshotButton" to="." method="_on_screenshot_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SubmitButton" to="." method="_on_SendButton_pressed"]

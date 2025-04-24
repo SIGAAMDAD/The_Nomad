@@ -1,3 +1,4 @@
+/*
 using System;
 using Godot;
 
@@ -270,20 +271,18 @@ namespace Renown.Thinkers {
 				Investigate();
 				// if we've got any suspicion, then start patrolling
 
-				/*
-				if ( Fear > 0 && PatrolRoute == null ) {
-					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
-
-					// if the route is occupied, just pick a different one
-					AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
-					if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
-						PatrolRoute = route.GetNext();
-					}
-
-					State = AIState.PatrolStart;
-					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
-				}
-				*/
+//				if ( Fear > 0 && PatrolRoute == null ) {
+//					PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+//
+//					// if the route is occupied, just pick a different one
+//					AIPatrolRoute route = PatrolRoute as AIPatrolRoute;
+//					if ( ( Squad as BanditGroup ).IsRouteOccupied( route ) ) {
+//						PatrolRoute = route.GetNext();
+//					}
+//
+//					State = AIState.PatrolStart;
+//					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+//				}
 				if ( Fear > 80 && CanSeeTarget ) {
 					Bark( BarkType.Curse );
 //					OnAimTimerTimeout();
@@ -388,8 +387,10 @@ namespace Renown.Thinkers {
 			}
 			if ( SightTarget != null && CanSeeTarget ) {
 				AIState = AIState.Attacking;
+				SetAlert( false );
 				Squad.NotifyGroup( GroupEvent.TargetChanged, this );
 			}
 		}
 	};
 };
+*/

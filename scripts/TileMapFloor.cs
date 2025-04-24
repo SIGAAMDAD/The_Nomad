@@ -40,8 +40,8 @@ public partial class TileMapFloor : Node2D {
 	private void OnArea2DBodyShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
 			if ( body is NetworkPlayer ) {
-			} else if ( body is Renown.Thinker ) {
-				( body as Renown.Thinker ).SetTileMapFloor( this );
+			} else if ( body is Renown.Thinkers.Thinker ) {
+				( body as Renown.Thinkers.Thinker ).SetTileMapFloor( this );
 			}
 			return;
 		}
@@ -83,8 +83,8 @@ public partial class TileMapFloor : Node2D {
 		if ( body is not Player ) {
 			if ( body is NetworkPlayer ) {
 
-			} else if ( body is Renown.Thinker ) {
-				( body as Renown.Thinker ).SetTileMapFloor( null );
+			} else if ( body is Renown.Thinkers.Thinker ) {
+				( body as Renown.Thinkers.Thinker ).SetTileMapFloor( null );
 			}
 			return;
 		}

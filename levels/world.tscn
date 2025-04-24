@@ -51,7 +51,6 @@
 [ext_resource type="Texture2D" uid="uid://crpyi5goxf4ar" path="res://textures/tilesets/galakas.png" id="26_x7eec"]
 [ext_resource type="Script" uid="uid://b2hrnfl66v3f1" path="res://scripts/renown/World/ResourceProducer.cs" id="28_5yiud"]
 [ext_resource type="Script" uid="uid://4e2off6748xr" path="res://scripts/renown/World/Faction.cs" id="31_x3q2i"]
-[ext_resource type="PackedScene" uid="uid://c381bhutop3yn" path="res://scenes/renown/thinker.tscn" id="32_aebnb"]
 [ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="32_fgsnb"]
 [ext_resource type="NavigationPolygon" uid="uid://ca7bmv85ki84" path="res://resources/navmesh_cache/the_great_round_road_navmesh.tres" id="33_3bhl6"]
 [ext_resource type="Texture2D" uid="uid://cdrlq1g2trjlq" path="res://textures/env/dirt.dds" id="34_hc03g"]
@@ -66,6 +65,7 @@
 [ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
 [ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="54_3mxq2"]
 [ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="55_ktfth"]
+[ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/Family.cs" id="58_qxuuj"]
 [ext_resource type="Script" uid="uid://cwj2dumw6cwqn" path="res://scripts/effects/BloodParticleFactory.cs" id="61_ybss6"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
@@ -7108,54 +7108,27 @@ position = Vector2(-88720, 53124)
 Relations = {}
 Debts = {}
 
+[node name="FamilyTrees" type="Node" parent="."]
+process_mode = 4
+
+[node name="Ollavan" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
+script = ExtResource("58_qxuuj")
+CachedMembers = [NodePath("../../Thinkers/Pedric Ollavan"), NodePath("../../Thinkers/Gass Ollavan"), NodePath("../../Thinkers/Jaffon Ollavan")]
+Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House35")
+SocioEconomicStatus = 1
+IsPremade = true
+
 [node name="Thinkers" type="Node" parent="." groups=["Archive"]]
 script = ExtResource("44_1r2vu")
 
-[node name="Tarane Massava" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Location", "Faction") instance=ExtResource("32_aebnb")]
-mass = 160.0
-gravity_scale = 0.0
-IsPremade = true
-BotName = &"Tarane Masava"
-Age = 32
-Direction = 2
-HasMetPlayer = true
-Health = 100.0
-RenownScore = 400
-Money = 32000.0
-Traits = Array[int]([4])
-Relations = {
-NodePath("../../Network/Players/Player0"): 35.0
-}
-Debts = {}
-Location = NodePath("../../Biomes/SafeSands/Galakas")
-Faction = NodePath("../../Factions/GunsAndGrenades")
-FactionImportance = 100
-
-[node name="Hillec Erron" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Location") instance=ExtResource("32_aebnb")]
-position = Vector2(-31058, 26572)
-mass = 240.0
-gravity_scale = 0.0
-IsPremade = true
-BotName = &"Hillec Erron"
-Age = 20
-Direction = 2
-MovementSpeed = 100.0
-Health = 100.0
-RenownScore = 35
-Money = 800.0
-Traits = Array[int]([0])
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SafeSands/Galakas")
-
-[node name="Pedric Kasca" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87207, 53307)
 mass = 120.0
-MaxViewDistance = 140.0
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
 IsPremade = true
 BotName = &"Dumbo"
+Occupation = 2
 Age = 20
+Family = NodePath("../../FamilyTrees/Ollavan")
 Direction = 2
 MovementSpeed = 150.0
 Health = 100.0
@@ -7168,12 +7141,13 @@ Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
-[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87323, 53041)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
 IsPremade = true
 BotName = &"Wriggler"
+Occupation = 2
 Age = 21
+Family = NodePath("../../FamilyTrees/Ollavan")
 BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
 Direction = 2
 MovementSpeed = 150.0
@@ -7184,12 +7158,13 @@ Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 30
 
-[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
+[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
 position = Vector2(-87041, 53312)
-NodeCache = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache")
 IsPremade = true
 BotName = &"Kissy"
+Occupation = 2
 Age = 24
+Family = NodePath("../../FamilyTrees/Ollavan")
 BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
 Direction = 6
 MovementSpeed = 150.0
@@ -7202,11 +7177,12 @@ FactionImportance = 30
 
 [node name="Biomes" type="Node" parent="."]
 
-[node name="SaltWastes" type="Area2D" parent="Biomes"]
+[node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 position = Vector2(-88192, 52992)
 script = ExtResource("37_n2t61")
 WeatherChangeInterval = 2000.0
 AreaName = &"Salt Wastes"
+TileMaps = []
 
 [node name="MountainCollision" type="StaticBody2D" parent="Biomes/SaltWastes"]
 position = Vector2(155, -13)
@@ -7297,12 +7273,14 @@ vertices = PackedVector2Array(-308, 162, -267, 162, -265, 207, 486, 199, 488, 26
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
-[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome") groups=["Archive", "Locations"]]
+[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome", "NodeCache", "TileMaps") groups=["Archive", "Locations"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("5_cyobr")
 Biome = NodePath("..")
 AreaName = &"Rocky Bastards Camp"
+NodeCache = NodePath("OpposingForce/NodeCache")
+TileMaps = []
 
 [node name="RockyBastardsTileMapLayer" type="TileMapLayer" parent="Biomes/SaltWastes/RockyBastardsCamp"]
 process_mode = 4
@@ -7761,13 +7739,14 @@ Destination = NodePath("../../Checkpoints/Checkpoint_KiroslaEstate")
 position = Vector2(129.5, 26.5)
 shape = SubResource("RectangleShape2D_itvej")
 
-[node name="KiroslaEstate" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome") groups=["Archive", "Locations"]]
+[node name="KiroslaEstate" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome", "TileMaps") groups=["Archive", "Locations"]]
 position = Vector2(3713, 48)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("5_cyobr")
 Biome = NodePath("..")
 AreaName = &"Kirosla Estate"
+TileMaps = []
 
 [node name="Basement" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate"]
 visible = false
@@ -7995,7 +7974,7 @@ shape = SubResource("RectangleShape2D_aebnb")
 position = Vector2(-16, 105)
 polygon = PackedVector2Array(-550, -428, -703, 132, -343, 559, 734, 665, 1025, -301, 375, -538)
 
-[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Biome") groups=["Archive", "Settlements"]]
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Settlements"]]
 position = Vector2(45472, -4116)
 script = ExtResource("25_qxdx5")
 Markets = []
@@ -8004,6 +7983,7 @@ Producers = []
 BirthRate = 4.0
 Biome = NodePath("..")
 AreaName = &"Abazan, City of Gold"
+TileMaps = []
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/Abazan"]
 polygon = PackedVector2Array(-3372, 889, -856, 2204, 1490, 315, 1419, -920, 99, -1362)
@@ -8071,7 +8051,7 @@ shape = SubResource("SegmentShape2D_x3q2i")
 position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
 
-[node name="SafeSands" type="Area2D" parent="Biomes"]
+[node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 4
 position = Vector2(-30975, 27410)
 collision_layer = 19
@@ -8081,8 +8061,9 @@ script = ExtResource("37_n2t61")
 CurrentWeather = 6
 WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
+TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome")]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps")]
 position = Vector2(-56, 59)
 collision_layer = 19
 collision_mask = 18
@@ -8103,6 +8084,7 @@ SocietyScale = Dictionary[int, float]({
 TaxationRate = 60.0
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
+TileMaps = []
 
 [node name="UnderCity" type="TileMapLayer" parent="Biomes/SafeSands/Galakas"]
 tile_set = SubResource("TileSet_tikye")
@@ -8786,7 +8768,7 @@ tile_set = SubResource("TileSet_1r2vu")
 visible = false
 polygon = PackedVector2Array(-4967, -4958, -3862, 457, -211, 788, 5768, 288, 5843, -5969)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(723, -2864)
 input_pickable = false
 script = ExtResource("25_qxdx5")
@@ -8796,6 +8778,7 @@ TradeRoutes = []
 Producers = []
 Biome = NodePath("..")
 AreaName = &"Feohenni"
+TileMaps = []
 
 [node name="FoodProducer" type="Area2D" parent="Biomes/SafeSands/Feohenni" node_paths=PackedStringArray("Route")]
 position = Vector2(-15416, -14100)
@@ -8815,23 +8798,25 @@ autostart = true
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers") groups=["Archive", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
 Producers = []
 AreaName = &"Latan"
+TileMaps = []
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Latan"]
 position = Vector2(-28043, -1759)
 polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers") groups=["Archive", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
 Producers = []
 AreaName = &"Kingdom of Sortior"
+TileMaps = []
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Sortior"]
 position = Vector2(11446, -12611)
@@ -8901,12 +8886,11 @@ polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 6
 
 [node name="Factions" type="Node" parent="."]
 
-[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("Leader", "MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
+[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
 position = Vector2(-30014, 25051)
 script = ExtResource("31_x3q2i")
 FactionName = &"Guns \'n\' Grenades"
 PrimaryAlignment = 7
-Leader = NodePath("../../Thinkers/Tarane Massava")
 MemberList = []
 Money = 540000.0
 RenownScore = 500
@@ -8982,9 +8966,6 @@ navigation_polygon = ExtResource("33_3bhl6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roads/TheGreatRoundRoad/ProcessArea"]
 polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
-
-[node name="FamilyTrees" type="Node" parent="."]
-process_mode = 4
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 script = ExtResource("6_i8ckm")
