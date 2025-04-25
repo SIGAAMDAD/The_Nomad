@@ -89,6 +89,11 @@ namespace Renown.Thinkers {
 				Wage = DefaultWages[ Type ];
 			}
 		}
+
+		public virtual void OnPlayerEnteredArea() {
+		}
+		public virtual void OnPlayerExitedArea() {
+		}
 		public virtual void Process() {
 		}
 		public virtual void ProcessAnimations() {

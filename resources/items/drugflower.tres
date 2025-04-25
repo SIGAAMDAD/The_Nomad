@@ -1,0 +1,13 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://w275sde2hivv"]
+
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_y46ag"]
+
+[resource]
+id = "ITEM_DRUGFLOWER"
+max_stack = 4096
+name = "Drugflower"
+weight = 0.9
+properties = {
+"value": 15.0
+}
+categories = Array[ItemCategory]([ExtResource("1_y46ag")])

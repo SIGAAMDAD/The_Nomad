@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
-using GDExtension.Wrappers;
-using System.Xml;
-using Renown.Thinkers;
+using System.Globalization;
 
 public partial class Player : Entity {
 	public enum Hands : byte {
@@ -415,12 +413,11 @@ public partial class Player : Entity {
 				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		SyncObject.Write( GlobalPosition.X );
-		SyncObject.Write( GlobalPosition.Y );
+		SyncObject.Write( GlobalPosition );
 		SyncObject.Write( (byte)TorsoAnimationState );
-		SyncObject.Write( ArmLeft.Rotation );
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( ArmRight.Rotation );
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
@@ -737,7 +734,7 @@ public partial class Player : Entity {
 		IdleAnimation.Play( "loop" );
 	}
 	private void OnLegsAnimationLooped() {
-		if ( LinearVelocity != Godot.Vector2.Zero ) {
+		if ( Velocity != Godot.Vector2.Zero ) {
 			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			FootSteps.AddStep( GlobalPosition );
 			SetSoundLevel( 14.0f );
@@ -786,7 +783,7 @@ public partial class Player : Entity {
 		PlaySound( DashChannel, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ] );
 		DashLight.Show();
 		DashEffect.Emitting = true;
-		DashDirection = LinearVelocity;
+		DashDirection = Velocity;
 		HUD.GetDashOverlay().Show();
 
 		DashBurnout += 0.25f;
@@ -1295,6 +1292,22 @@ public partial class Player : Entity {
 		Health = 0.0f;
 		OnDeath( this );
 	}
+	private void CmdTeleport( string locationType, string locationId ) {
+		switch ( locationType ) {
+		case "campfire":
+			Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
+			for ( int i = 0; i < checkpoints.Count; i++ ) {
+				if ( checkpoints[i] is Checkpoint checkpoint && checkpoint != null && checkpoint.GetTitle() == locationId ) {
+					GlobalPosition = checkpoint.GlobalPosition;
+					return;
+				}
+			}
+			Console.PrintWarning( string.Format( "No such checkpoint \"{0}\"", locationId ) );
+			break;
+		case "settlement":
+			break;
+		};
+	}
 
 	private float LitValue = 0.0f;
 	private Texture2D LastSpriteTexture = null;
@@ -1476,7 +1489,8 @@ public partial class Player : Entity {
 //		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
-		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0 );
+		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
+		Console.AddCommand( "teleport", Callable.From<string, string>( CmdTeleport ), [ "", "" ], 2, "teleports the player to the specified location" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
@@ -1508,18 +1522,21 @@ public partial class Player : Entity {
 			speed += 400;
 		}
 
+		Godot.Vector2 velocity = Velocity;
+
 		InputVelocity = (Godot.Vector2)MoveAction.Get( "value_axis_2d" );
 		if ( InputVelocity != Godot.Vector2.Zero ) {
-			LinearVelocity = LinearVelocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
+			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
 		} else {
-			LinearVelocity = LinearVelocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
+			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
 		}
 
-		GlobalRotation = 0.0f;
-
-		if ( LinearVelocity != Godot.Vector2.Zero ) {
+		if ( velocity != Godot.Vector2.Zero ) {
 			IdleReset();
 		}
+
+		Velocity = velocity;
+		MoveAndSlide();
 
 		// cool down the jet engine if applicable
 		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
@@ -1530,9 +1547,6 @@ public partial class Player : Entity {
 		}
 
 		CheckStatus( (float)delta );
-		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			Rage -= 0.05f * (float)delta;
-		}
     }
 	
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
@@ -1585,21 +1599,26 @@ public partial class Player : Entity {
 			Rage += FrameDamage * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().Show();
+			HUD.GetRageBar().Value = Rage;
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f ) {
-			Health += 0.075f * delta;
-			Rage -= 0.5f * delta;
+			Health += 0.9f * delta;
+			Rage -= 2.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetHealthBar().Show();
+			HUD.GetHealthBar().SetHealth( Health );
+			HUD.GetRageBar().Value = Rage;
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
 		} else if ( Rage < 0.0f ) {
 			Rage = 0.0f;
+		}
+		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
+			Rage -= 10.0f * (float)delta;
+			HUD.GetRageBar().Value = Rage;
 		}
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
@@ -1625,8 +1644,8 @@ public partial class Player : Entity {
 
 		if ( SoundLevel > 0.0f ) {
 			SoundLevel -= 1.0f;
-			if ( SoundLevel < 0.0f ) {
-				SoundLevel = 0.0f;
+			if ( SoundLevel < 0.1f ) {
+				SoundLevel = 0.1f;
 			}
 		}
 		SoundArea.Radius = SoundLevel;
@@ -1659,7 +1678,7 @@ public partial class Player : Entity {
 			back.Animations.Show();
 		}
 
-		front.Show();
+		front.Animations.Show();
 
 		Animations.MoveChild( back.Animations, 0 );
 		Animations.MoveChild( front.Animations, 3 );

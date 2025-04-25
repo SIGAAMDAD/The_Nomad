@@ -4,8 +4,10 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h6v4o"]
 
-[node name="Thinker" type="RigidBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
+[node name="Thinker" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
 process_mode = 4
+collision_layer = 19
+collision_mask = 18
 script = ExtResource("1_nv4km")
 Relations = {}
 Debts = {}

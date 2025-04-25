@@ -1,0 +1,13 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://peem0o81pm62"]
+
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_3mapd"]
+
+[resource]
+id = "ITEM_FOOD"
+max_stack = 4096
+name = "Food"
+weight = 1.0
+properties = {
+"value": 3.5
+}
+categories = Array[ItemCategory]([ExtResource("1_3mapd")])

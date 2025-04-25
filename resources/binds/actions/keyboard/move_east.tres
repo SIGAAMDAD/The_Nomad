@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://bqnwolokb8nag"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_02xq3"]
+
+[resource]
+script = ExtResource("1_02xq3")
+name = &"move_east"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Move East"
+display_category = "Movement"
+metadata/_custom_type_script = "uid://gqfwq4lycerx"

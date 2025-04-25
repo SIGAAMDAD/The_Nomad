@@ -2,7 +2,6 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -114,6 +113,11 @@ public partial class SteamLobby : Node {
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
 		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
 		NodeCache.TryAdd( node.GetHashCode(), callbacks );
+	}
+	public void RemoveNetworkNode( NodePath node ) {
+		if ( NodeCache.ContainsKey( node.GetHashCode() ) ) {
+			NodeCache.Remove( node.GetHashCode() );
+		}
 	}
 	public Node GetNetworkNode( NodePath node ) {
 		return NodeCache[ node.GetHashCode() ].Node;

@@ -1,0 +1,13 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://c0cymjjvn2w4w"]
+
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_nlyj0"]
+
+[resource]
+id = "ITEM_GUNPOWDER"
+max_stack = 4096
+name = "Gunpowder"
+weight = 0.9
+properties = {
+"value": 12.0
+}
+categories = Array[ItemCategory]([ExtResource("1_nlyj0")])

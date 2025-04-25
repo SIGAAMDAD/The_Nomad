@@ -1,0 +1,13 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://5kyt2cm2wae0"]
+
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_pcp03"]
+
+[resource]
+id = "ITEM_WATER"
+max_stack = 4096
+name = "Water"
+weight = 4.5
+properties = {
+"value": 20.0
+}
+categories = Array[ItemCategory]([ExtResource("1_pcp03")])

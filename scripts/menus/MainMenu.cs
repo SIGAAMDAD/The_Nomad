@@ -161,6 +161,8 @@ public partial class MainMenu : Control {
 	}
 
 	public override void _Ready() {
+		PhysicsServer2D.SetActive( false );
+		
 		if ( SettingsData.GetDyslexiaMode() ) {
 			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
@@ -168,6 +170,9 @@ public partial class MainMenu : Control {
 		}
 
 		MultiplayerMapManager.Init();
+		ArchiveSystem.Instance.CheckSaveData();
+
+		ProcessMode = ProcessModeEnum.Always;
 
 		Button NewGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
 		NewGameButton.SetProcess( false );

@@ -29,9 +29,17 @@ public enum ShadowQuality : uint {
 	Count
 };
 
+public enum SaveMode : uint {
+	Checkpoint_And_Die,
+	Anytime
+};
+
 public partial class SettingsData : Control {
 	private Resource Default;
 
+	//
+	// video options
+	//
 	private static WindowMode WindowMode;
 	private static DisplayServer.VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
@@ -41,23 +49,36 @@ public partial class SettingsData : Control {
 	private static ShadowQuality SunShadowQuality;
 	private static bool ShowFPS;
 
+	//
+	// accessibility options
+	//
 	private static float HapticStrength;
 	private static bool HapticEnabled;
 	private static bool QuicktimeAutocomplete;
 	private static int ColorblindMode;
 	private static bool AutoAimEnabled;
 	private static bool DyslexiaMode;
-	
+	private static SaveMode SaveMode;
+
+	//
+	// audio options
+	//
 	private static bool EffectsOn;
 	private static float EffectsVolume;
 	private static bool MusicOn;
 	private static float MusicVolume;
 	private static bool MuteUnfocused;
 
+	//
+	// gameplay options
+	//
 	private static bool EquipWeaponOnPickup;
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
 
+	//
+	// network options
+	//
 	private static bool EnableNetworking;
 	private static bool FriendsOnlyNetworking;
 

@@ -1,6 +1,7 @@
 using Godot;
 
 public partial class MenuBackground : Control {
+	// TODO: change main menu based on game's save state
 	public override void _Ready() {
 		base._Ready();
 
@@ -12,13 +13,13 @@ public partial class MenuBackground : Control {
 		EmberEmitter.SetProcess( false );
 		EmberEmitter.SetProcessInternal( false );
 		extents = ( EmberEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents;
-		extents.X = windowSize.X;
+		extents.X = windowSize.X * 1.5f;
 		( EmberEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
 
 		GpuParticles2D SandEmitter = GetNode<GpuParticles2D>( "SandParticlesEmitter" );
 		SandEmitter.GlobalPosition = new Godot.Vector2( 0.0f, windowSize.Y );
 		extents = ( SandEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents;
-		extents.X = windowSize.X;
+		extents.X = windowSize.X * 1.5f;
 		( SandEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
 	}
 };

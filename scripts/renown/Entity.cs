@@ -9,7 +9,7 @@ using System.Collections.Generic;
 /// implements most common renown events
 /// </summary>
 namespace Renown {
-	public partial class Entity : RigidBody2D, Object {
+	public partial class Entity : CharacterBody2D, Object {
 		[ExportCategory("Base Stats")]
 		[Export]
 		protected float Health;

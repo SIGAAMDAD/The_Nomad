@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Godot;
 using Steamworks;
 
@@ -29,11 +30,20 @@ public partial class SettingsMenu : Control {
 
 	private Label RestartToActivateLabel;
 
+	private TabContainer TabContainer;
 	private TabBar ControlsTabBar;
 	private TabBar VideoTabBar;
 	private TabBar AudioTabBar;
 	private TabBar AccessibilityTabBar;
 	private TabBar NetworkTabBar;
+
+	public enum CategoryTabBar {
+		Video,
+		Audio,
+		Accessibility,
+		Network,
+		Controls
+	};
 
 	private void UpdateWindowScale() {
 		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
@@ -271,12 +281,12 @@ public partial class SettingsMenu : Control {
 		FriendsOnly.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		FriendsOnly.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
-		TabContainer TabContainer = GetNode<TabContainer>( "TabContainer" );
+		TabContainer = GetNode<TabContainer>( "TabContainer" );
 		TabContainer.Connect( "tab_clicked", Callable.From(
 				( int tab ) => {
 					OnButtonPressed();
-					switch ( tab ) {
-					case 0:
+					switch ( (CategoryTabBar)tab ) {
+					case CategoryTabBar.Video:
 						VideoTabBar.SetProcess( true );
 						VideoTabBar.SetProcessInternal( true );
 						VideoTabBar.ProcessMode = ProcessModeEnum.Always;
@@ -297,7 +307,7 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 						break;
-					case 1:
+					case CategoryTabBar.Audio:
 						VideoTabBar.SetProcess( false );
 						VideoTabBar.SetProcessInternal( false );
 						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -318,7 +328,7 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 						break;
-					case 2:
+					case CategoryTabBar.Accessibility:
 						VideoTabBar.SetProcess( false );
 						VideoTabBar.SetProcessInternal( false );
 						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -339,7 +349,7 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 						break;
-					case 3:
+					case CategoryTabBar.Controls:
 						VideoTabBar.SetProcess( false );
 						VideoTabBar.SetProcessInternal( false );
 						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -360,7 +370,7 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 						break;
-					case 4:
+					case CategoryTabBar.Network:
 						VideoTabBar.SetProcess( false );
 						VideoTabBar.SetProcessInternal( false );
 						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -431,5 +441,57 @@ public partial class SettingsMenu : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
+	}
+	public override void _UnhandledInput( InputEvent @event ) {
+		base._UnhandledInput( @event );
+
+		if ( Input.IsActionJustPressed( "menu_settings_next_category" ) ) {
+			switch ( (CategoryTabBar)TabContainer.CurrentTab ) {
+			case CategoryTabBar.Video:
+				AudioTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Audio );
+				break;
+			case CategoryTabBar.Audio:
+				AccessibilityTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Accessibility );
+				break;
+			case CategoryTabBar.Accessibility:
+				NetworkTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Network );
+				break;
+			case CategoryTabBar.Network:
+				ControlsTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Controls );
+				break;
+			case CategoryTabBar.Controls:
+				VideoTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Video );
+				break;
+			};
+		}
+		if ( Input.IsActionJustPressed( "menu_settings_prev_category" ) ) {
+			switch ( (CategoryTabBar)TabContainer.CurrentTab ) {
+			case CategoryTabBar.Video:
+				ControlsTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Controls );
+				break;
+			case CategoryTabBar.Audio:
+				VideoTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Video );
+				break;
+			case CategoryTabBar.Accessibility:
+				AudioTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Audio );
+				break;
+			case CategoryTabBar.Network:
+				AccessibilityTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Accessibility );
+				break;
+			case CategoryTabBar.Controls:
+				NetworkTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Network );
+				break;
+			};
+		}
 	}
 };

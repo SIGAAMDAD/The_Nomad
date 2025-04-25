@@ -53,15 +53,18 @@ public partial class TitleMenu : Control {
 			LobbyBrowser.SetProcess( false );
 			LobbyBrowser.SetProcessInternal( false );
 			LobbyBrowser.SetProcessUnhandledInput( false );
+			LobbyBrowser.ProcessMode = ProcessModeEnum.Disabled;
 			LobbyFactory.SetProcess( false );
 			LobbyFactory.SetProcessInternal( false );
 			LobbyFactory.SetProcessUnhandledInput( false );
+			LobbyFactory.ProcessMode = ProcessModeEnum.Disabled;
 			break;
 		case MenuState.Settings:
 			SettingsMenu.Hide();
 			SettingsMenu.SetProcess( false );
 			SettingsMenu.SetProcessInternal( true );
 			SettingsMenu.SetProcessUnhandledInput( true );
+			SettingsMenu.ProcessMode = ProcessModeEnum.Disabled;
 			break;
 		default:
 			GD.PushError( "Invalid menu state!" );
@@ -71,6 +74,7 @@ public partial class TitleMenu : Control {
 		MainMenu.SetProcess( true );
 		MainMenu.SetProcessInternal( true );
 		MainMenu.SetProcessUnhandledInput( true );
+		MainMenu.ProcessMode = ProcessModeEnum.Always;
 
 		ExitButton.Hide();
 		MainMenu.Show();
@@ -115,9 +119,11 @@ public partial class TitleMenu : Control {
 		State = MenuState.Multiplayer;
 	}
 	private void OnMainMenuSettingsMenu() {
-		MainMenu.SetProcessUnhandledInput( false );
-		SettingsMenu.SetProcessUnhandledInput( true );
 		SettingsMenu.ProcessMode = ProcessModeEnum.Always;
+		MainMenu.ProcessMode = ProcessModeEnum.Disabled;
+
+		MainMenu.SetProcessUnhandledInput( false );
+		SettingsMenu.SetProcess( true );
 
 		MainMenu.Hide();
 		SettingsMenu.Show();

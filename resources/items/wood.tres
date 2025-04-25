@@ -1,0 +1,13 @@
+[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://crpeqdg11pnud"]
+
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_nmid8"]
+
+[resource]
+id = "ITEM_WOOD"
+max_stack = 4096
+name = "Wood"
+weight = 1.9
+properties = {
+"value": 2.0
+}
+categories = Array[ItemCategory]([ExtResource("1_nmid8")])

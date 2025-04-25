@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="7_5t368"]
 [ext_resource type="PackedScene" uid="uid://bh3dqangoe8i2" path="res://scenes/interactables/action_tutorial.tscn" id="7_re8x6"]
 [ext_resource type="Texture2D" uid="uid://bwc7mgg7aylk" path="res://textures/env/food/09_baguette.png" id="8_gt7kp"]
+[ext_resource type="PackedScene" uid="uid://c381bhutop3yn" path="res://scenes/renown/thinker.tscn" id="8_uh3ev"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="8_wqmfy"]
 [ext_resource type="Texture2D" uid="uid://jecbsx1vr8ps" path="res://textures/env/food/20_bagel.png" id="9_fgsnb"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
@@ -27,7 +28,6 @@
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="13_mla2a"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
-[ext_resource type="PackedScene" uid="uid://dil6cvnitkb3b" path="res://scenes/mobs/bandits/bandit_grunt.tscn" id="15_i5qqy"]
 [ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="15_qx5q4"]
 [ext_resource type="Script" uid="uid://b5dpy3k5bcf4w" path="res://scripts/mobs/AIPatrolRoute.cs" id="16_i5qqy"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="16_qrdf2"]
@@ -7113,7 +7113,7 @@ process_mode = 4
 
 [node name="Ollavan" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
 script = ExtResource("58_qxuuj")
-CachedMembers = [NodePath("../../Thinkers/Pedric Ollavan"), NodePath("../../Thinkers/Gass Ollavan"), NodePath("../../Thinkers/Jaffon Ollavan")]
+CachedMembers = [null, null, null]
 Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House35")
 SocioEconomicStatus = 1
 IsPremade = true
@@ -7121,59 +7121,38 @@ IsPremade = true
 [node name="Thinkers" type="Node" parent="." groups=["Archive"]]
 script = ExtResource("44_1r2vu")
 
-[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87207, 53307)
-mass = 120.0
+[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+position = Vector2(-87336, 53038)
 IsPremade = true
-BotName = &"Dumbo"
 Occupation = 2
-Age = 20
 Family = NodePath("../../FamilyTrees/Ollavan")
+BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
 Direction = 2
-MovementSpeed = 150.0
-Health = 100.0
-RenownScore = 20
-Money = 200.0
-Traits = Array[int]([3, 1])
 Relations = {}
 Debts = {}
 Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 50
 
-[node name="Gass Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87323, 53041)
+[node name="Kasca Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+position = Vector2(-87194, 53292)
 IsPremade = true
-BotName = &"Wriggler"
 Occupation = 2
-Age = 21
 Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
+BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
 Direction = 2
-MovementSpeed = 150.0
-Health = 100.0
 Relations = {}
 Debts = {}
 Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
 
-[node name="Jaffon Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("15_i5qqy")]
-position = Vector2(-87041, 53312)
+[node name="Hafer Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+position = Vector2(-87049, 53295)
 IsPremade = true
-BotName = &"Kissy"
 Occupation = 2
-Age = 24
 Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Feohenni")
-Direction = 6
-MovementSpeed = 150.0
-Health = 100.0
+BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
+Direction = 2
 Relations = {}
 Debts = {}
 Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
-Faction = NodePath("../../Factions/RockyBastards")
-FactionImportance = 30
 
 [node name="Biomes" type="Node" parent="."]
 

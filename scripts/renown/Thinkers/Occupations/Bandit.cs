@@ -73,64 +73,120 @@ namespace Renown.Thinkers {
 
 				NodeCache = Worker.Location.GetNodeCache();
 
-				worker.HeadAnimations = new AnimatedSprite2D();
-				worker.HeadAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/head.tres" );
-				worker.CallDeferred( "add_child", worker.HeadAnimations );
+				GuardPosition = worker.GlobalPosition;
 
-				worker.ArmAnimations = new AnimatedSprite2D();
-				worker.ArmAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/arms.tres" );
-				worker.CallDeferred( "add_child", worker.ArmAnimations );
+				ProcessMode = ProcessModeEnum.Disabled;
+			}
 
-				worker.BodyAnimations = new AnimatedSprite2D();
-				worker.BodyAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/body.tres" );
-				worker.CallDeferred( "add_child", worker.BodyAnimations );
+			private void Cache() {
+				SightDetector = new Node2D();
+				Worker.CallDeferred( "add_child", SightDetector );
+				CallDeferred( "GenerateRaycasts" );
+
+				Worker.HeadAnimations = new AnimatedSprite2D();
+				Worker.HeadAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/head.tres" );
+				Worker.CallDeferred( "add_child", Worker.HeadAnimations );
+
+				Worker.ArmAnimations = new AnimatedSprite2D();
+				Worker.ArmAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/arms.tres" );
+				Worker.CallDeferred( "add_child", Worker.ArmAnimations );
+
+				Worker.BodyAnimations = new AnimatedSprite2D();
+				Worker.BodyAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/body.tres" );
+				Worker.CallDeferred( "add_child", Worker.BodyAnimations );
 
 				AimTimer = new Timer();
 				AimTimer.Name = "AimTimer";
 				AimTimer.WaitTime = 1.0f;
 				AimTimer.OneShot = true;
 				AimTimer.Connect( "timeout", Callable.From( OnAimTimerTimeout ) );
-				worker.CallDeferred( "add_child", AimTimer );
+				Worker.CallDeferred( "add_child", AimTimer );
 
 				LoseInterestTimer = new Timer();
 				LoseInterestTimer.WaitTime = LoseInterestTime;
 				LoseInterestTimer.OneShot = true;
 				LoseInterestTimer.Autostart = false;
 				LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
-				worker.CallDeferred( "add_child", LoseInterestTimer );
+				Worker.CallDeferred( "add_child", LoseInterestTimer );
 
 				ChangeInvestigateAngleTimer = new Timer();
 				ChangeInvestigateAngleTimer.OneShot = true;
 				ChangeInvestigateAngleTimer.WaitTime = 1.5f;
 				ChangeInvestigateAngleTimer.Autostart = false;
 				ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
-				worker.CallDeferred( "add_child", ChangeInvestigateAngleTimer );
+				Worker.CallDeferred( "add_child", ChangeInvestigateAngleTimer );
 
 				TargetMovedTimer = new Timer();
 				TargetMovedTimer.OneShot = true;
 				TargetMovedTimer.WaitTime = 10.0f;
-				worker.CallDeferred( "add_child", TargetMovedTimer );
+				Worker.CallDeferred( "add_child", TargetMovedTimer );
+
+				AttackTimer = new Timer();
+				AttackTimer.WaitTime = 1.5f;
+				AttackTimer.OneShot = true;
+				AttackTimer.Connect( "timeout", Callable.From( () => { Aiming = false; } ) );
+				Worker.CallDeferred( "add_child", AttackTimer );
 
 				DetectionMeter = new Line2D();
 				DetectionMeter.AddPoint( new Vector2( -25.0f, -19.0f ), 0 );
 				DetectionMeter.AddPoint( new Vector2( 4.0f, -19.0f ), 1 );
 				DetectionMeter.Width = 6.0f;
-				worker.CallDeferred( "add_child", DetectionMeter );
+				Worker.CallDeferred( "add_child", DetectionMeter );
 
 				AimLine = new RayCast2D();
 				AimLine.Name = "AimLine";
 				AimLine.TargetPosition = Vector2.Right * Range;
 				AimLine.CollisionMask = 2 | 5;
-				worker.ArmAnimations.CallDeferred( "add_child", AimLine );
+				Worker.ArmAnimations.CallDeferred( "add_child", AimLine );
 
-				GuardPosition = worker.GlobalPosition;
+				Worker.AudioChannel = new AudioStreamPlayer2D();
+				Worker.AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+				Worker.CallDeferred( "add_child", Worker.AudioChannel );
+			}
 
-				SightDetector = new Node2D();
-//				SightDetector.ProcessMode = ProcessModeEnum.Disabled;
-				worker.CallDeferred( "add_child", SightDetector );
-				CallDeferred( "GenerateRaycasts" );
+			public override void OnPlayerEnteredArea() {
+				Cache();
+			}
+			public override void OnPlayerExitedArea() {
+				Worker.CallDeferred( "remove_child", Worker.AudioChannel );
+				Worker.AudioChannel.CallDeferred( "queue_free" );
 
-				ProcessMode = ProcessModeEnum.Disabled;
+				Worker.Animations.CallDeferred( "remove_child", Worker.HeadAnimations );
+				Worker.HeadAnimations.CallDeferred( "queue_free" );
+
+				Worker.Animations.CallDeferred( "remove_child", Worker.ArmAnimations );
+				Worker.ArmAnimations.CallDeferred( "queue_free" );
+
+				Worker.Animations.CallDeferred( "remove_child", Worker.BodyAnimations );
+				Worker.BodyAnimations.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", LoseInterestTimer );
+				LoseInterestTimer.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", ChangeInvestigateAngleTimer );
+				ChangeInvestigateAngleTimer.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", TargetMovedTimer );
+				TargetMovedTimer.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", DetectionMeter );
+				DetectionMeter.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", AttackTimer );
+				AttackTimer.CallDeferred( "queue_free" );
+
+				Worker.CallDeferred( "remove_child", AimLine );
+				AimLine.CallDeferred( "queue_free" );
+
+				for ( int i = 0; i < SightLines.Length; i++ ) {
+					SightDetector.CallDeferred( "remove_child", SightLines[i] );
+					SightLines[i].QueueFree();
+					SightLines[i] = null;
+				}
+				SightLines = null;
+
+				Worker.CallDeferred( "remove_child", SightDetector );
+				SightDetector.CallDeferred( "queue_free" );
 			}
 
 			private void OnChangeInvestigateAngleTimerTimeout() {
@@ -388,10 +444,8 @@ namespace Renown.Thinkers {
 				};
 			}
 			public override void ProcessAnimations() {
-				if ( Target != null ) {
-					Worker.LookDir = Worker.GlobalPosition.DirectionTo( LastTargetPosition );
-					Worker.AimAngle = Mathf.Atan2( Worker.LookDir.Y, Worker.LookDir.X );
-					Worker.LookAngle = Worker.AimAngle;
+				if ( !Worker.Location.IsPlayerHere() || ( Worker.Flags & ThinkerFlags.Dead ) != 0 ) {
+					return;
 				}
 				/*
 				if ( Worker.Floor != null ) {
@@ -404,42 +458,48 @@ namespace Renown.Thinkers {
 //					Worker.Visible = true;
 				}
 				*/
-				if ( ( Worker.Flags & ThinkerFlags.Dead ) != 0 ) {
-					return;
+				
+				if ( Target != null ) {
+					Worker.LookDir = Worker.GlobalPosition.DirectionTo( LastTargetPosition );
+					Worker.AimAngle = Mathf.Atan2( Worker.LookDir.Y, Worker.LookDir.X );
+					Worker.LookAngle = Worker.AimAngle;
 				}
+				
+				Worker.ArmAnimations.SetDeferred( "global_rotation", Worker.AimAngle );
+				Worker.HeadAnimations.SetDeferred( "global_rotation", Worker.LookAngle );
 
-				Worker.ArmAnimations.GlobalRotation = Worker.AimAngle;
-				Worker.HeadAnimations.GlobalRotation = Worker.LookAngle;
-
-				if ( Worker.LookAngle < 225.0f ) {
-					Worker.HeadAnimations.FlipV = true;
-				} else if ( Worker.LookAngle > 135.0f ) {
-					Worker.HeadAnimations.FlipV = false;
+				if ( Worker.LookAngle > 225.0f ) {
+					Worker.HeadAnimations.SetDeferred( "flip_v", true );
+				} else if ( Worker.LookAngle < 135.0f ) {
+					Worker.HeadAnimations.SetDeferred( "flip_v", false );
 				}
-				if ( Worker.AimAngle < 225.0f ) {
-					Worker.ArmAnimations.FlipV = true;
-				} else if ( Worker.AimAngle > 135.0f ) {
-					Worker.ArmAnimations.FlipV = false;
+				if ( Worker.AimAngle > 225.0f ) {
+					Worker.ArmAnimations.SetDeferred( "flip_v", true );
+				} else if ( Worker.AimAngle < 135.0f ) {
+					Worker.ArmAnimations.SetDeferred( "flip_v", false );
 				}
 
 				if ( Worker.Velocity != Godot.Vector2.Zero ) {
-					Worker.BodyAnimations.Play( "move" );
-					Worker.ArmAnimations.Play( "move" );
-					Worker.HeadAnimations.Play( "move" );
+					Worker.BodyAnimations.CallDeferred( "play", "move" );
+					Worker.ArmAnimations.CallDeferred( "play", "move" );
+					Worker.HeadAnimations.CallDeferred( "play", "move" );
 				} else {
 					if ( Awareness == MobAwareness.Relaxed ) {
-						Worker.BodyAnimations.Play( "calm" );
-						Worker.ArmAnimations.Hide();
+						Worker.BodyAnimations.CallDeferred( "play", "calm" );
+						Worker.ArmAnimations.CallDeferred( "hide" );
 					} else {
-						Worker.ArmAnimations.Show();
-						Worker.HeadAnimations.Show();
-						Worker.BodyAnimations.Play( "idle" );
-						Worker.ArmAnimations.Play( "idle" );
-						Worker.HeadAnimations.Play( "idle" );
+						Worker.ArmAnimations.CallDeferred( "show" );
+						Worker.HeadAnimations.CallDeferred( "show" );
+						Worker.BodyAnimations.CallDeferred( "play", "idle" );
+						Worker.ArmAnimations.CallDeferred( "play", "idle" );
+						Worker.HeadAnimations.CallDeferred( "play", "idle" );
 					}
 				}
 			}
 			public override void Process() {
+				if ( !Worker.Location.IsPlayerHere() ) {
+					return;
+				}
 				CheckSight();
 
 				if ( Target != null ) {
@@ -448,7 +508,7 @@ namespace Renown.Thinkers {
 						ChangeInvestigateAngleTimer.Stop();
 					}
 				} else if ( PatrolRoute != null && Worker.GlobalPosition.DistanceTo( PatrolRoute.GetGlobalEndPosition() ) < 10.0f ) {
-					PatrolRoute = ( PatrolRoute as AIPatrolRoute ).GetNext();
+					PatrolRoute = PatrolRoute.GetNext();
 					SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
 				}
 				if ( Aiming ) {

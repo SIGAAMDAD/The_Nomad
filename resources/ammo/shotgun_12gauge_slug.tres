@@ -1,0 +1,31 @@
+[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://bsixsjgbyrcph"]
+
+[ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_u6pe4"]
+[ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="2_vsqy4"]
+[ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="3_b4xdb"]
+[ext_resource type="Texture2D" uid="uid://b3l3mwnbajnj3" path="res://textures/env/bullet_casings/gauge12_shell.png" id="4_dkrh3"]
+[ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="5_p1qws"]
+
+[sub_resource type="Curve" id="Curve_p7eh0"]
+_data = [Vector2(0.899263, 0.823234), 0.0, 0.0, 0, 0, Vector2(1, 0.135383), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[resource]
+id = "AMMO_12_GAUGE_SLUG"
+max_stack = 64
+name = "12 Gauge Slug"
+icon = ExtResource("3_b4xdb")
+weight = 2.5
+properties = {
+"casing_icon": ExtResource("4_dkrh3"),
+"damage": 120.0,
+"damage_falloff": SubResource("Curve_p7eh0"),
+"description": "12_GAUGE_SLUG_DESCRIPTION",
+"pickup_sfx": ExtResource("5_p1qws"),
+"range": 2450.0,
+"shotgun bullshit": 2,
+"stack_add_amount": 64,
+"type": 2,
+"velocity": 20.0
+}
+categories = Array[ItemCategory]([ExtResource("1_u6pe4"), ExtResource("2_vsqy4")])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=20 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -12,12 +12,9 @@
 [ext_resource type="Script" uid="uid://d3p5adrjo4883" path="res://addons/godot_gameplay_systems/camera_shake/nodes/camera_shake.gd" id="8_xdf2s"]
 [ext_resource type="PackedScene" uid="uid://cjy2h2wmmfkmc" path="res://scenes/heads_up_display.tscn" id="9_bfxfw"]
 [ext_resource type="SpriteFrames" uid="uid://1xowiqlfkdd1" path="res://resources/animations/player/idle.tres" id="10_0rnld"]
+[ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/effects/FootSteps.cs" id="16_srp4u"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
-[ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/player_system/Arm.cs" id="34_83yyn"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0rnld"]
-absorbent = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
 size = Vector2(16, 30)
@@ -31,7 +28,7 @@ radius = 153.118
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_srp4u"]
 
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "Relations", "Debts") groups=["Archive", "SceneRelevant"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "Relations", "Debts") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
 process_physics_priority = 4
 light_mask = 0
@@ -40,14 +37,6 @@ z_index = 3
 y_sort_enabled = true
 collision_layer = 19
 collision_mask = 22
-mass = 560.0
-physics_material_override = SubResource("PhysicsMaterial_0rnld")
-gravity_scale = 0.0
-lock_rotation = true
-freeze_mode = 1
-continuous_cd = 1
-linear_damp_mode = 1
-linear_damp = 0.5
 script = ExtResource("1_5fsym")
 Inventory = NodePath("Inventory")
 ArmLeft = NodePath("ArmLeft")
@@ -195,14 +184,13 @@ position = Vector2(-1.90735e-06, 5.33333)
 target_position = Vector2(740.047, 0)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
-current = true
 
-[node name="ArmLeft" type="Node2D" parent="." node_paths=PackedStringArray("Animations")]
-script = ExtResource("34_83yyn")
+[node name="ArmLeft" type="Node" parent="." node_paths=PackedStringArray("Animations")]
+script = ExtResource("12_0rnld")
 Animations = NodePath("../Animations/ArmsLeft")
 
-[node name="ArmRight" type="Node2D" parent="." node_paths=PackedStringArray("Animations")]
-script = ExtResource("34_83yyn")
+[node name="ArmRight" type="Node" parent="." node_paths=PackedStringArray("Animations")]
+script = ExtResource("12_0rnld")
 Animations = NodePath("../Animations/ArmsRight")
 
 [node name="IdleAnimationTimer" type="Timer" parent="."]

@@ -105,7 +105,16 @@ public partial class PauseMenu : Control {
 		} ) );
 
 		ProcessMode = ProcessModeEnum.Always;
+
+		Input.JoyConnectionChanged += OnJoyConnectionChanged;
 	}
+
+	private void OnJoyConnectionChanged( long device, bool connected ) {
+		if ( !connected ) {
+			CallDeferred( "Pause" );
+		}
+	}
+
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
 		

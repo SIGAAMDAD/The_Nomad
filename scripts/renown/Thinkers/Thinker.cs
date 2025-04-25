@@ -80,9 +80,6 @@ namespace Renown.Thinkers {
 		
 		private NodePath InitialPath;
 		
-		private Godot.Vector2 Velocity = Godot.Vector2.Zero;
-		private Area2D HitBox;
-		
 		[Export]
 		private bool IsPremade = false;
 		[Export]
@@ -216,6 +213,7 @@ namespace Renown.Thinkers {
 		private Occupation Job;
 		private SocietyRank SocietyRank;
 
+		private object LockObject = new object();
 		private System.Threading.Thread ThinkThread = null;
 		private bool Quit = false;
 		
@@ -238,11 +236,8 @@ namespace Renown.Thinkers {
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 
 		public override void Damage( Entity source, float nAmount ) {
-			if ( IsPremade ) {
-				base.Damage( source, nAmount );
-			} else {
-				Job.Damage( source, nAmount );
-			}
+			base.Damage( source, nAmount );
+			Job.Damage( source, nAmount );
 		}
 		
 		private void SendPacket() {
@@ -271,6 +266,12 @@ namespace Renown.Thinkers {
 
 			ProcessMode = ProcessModeEnum.Pausable;
 
+			Job.OnPlayerEnteredArea();
+
+			if ( SettingsData.GetNetworkingEnabled() ) {
+				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
+			}
+
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 //				AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
 			}
@@ -289,7 +290,13 @@ namespace Renown.Thinkers {
 				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 			}
 
+			Job.OnPlayerExitedArea();
+
 			Visible = false;
+
+			if ( SettingsData.GetNetworkingEnabled() ) {
+				SteamLobby.Instance.RemoveNetworkNode( GetPath() );
+			}
 
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 //				AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
@@ -543,16 +550,16 @@ namespace Renown.Thinkers {
 			}
 
 			base._Ready();
-			
-			HitBox = new Area2D();
-			AddChild( HitBox );
+
+			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
 			Animations = new Node2D();
+			Animations.Name = "Animations";
 			AddChild( Animations );
 
-			ProcessMode = ProcessModeEnum.Disabled;
-
 			NavAgent = new NavigationAgent2D();
+			NavAgent.Name = "NavAgent";
 			NavAgent.PathMaxDistance = 10000.0f;
 			NavAgent.AvoidanceEnabled = true;
 			NavAgent.Radius = 60.0f;
@@ -561,11 +568,6 @@ namespace Renown.Thinkers {
 			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 			AddChild( NavAgent );
-
-			AudioChannel = new AudioStreamPlayer2D();
-			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
-			AddChild( AudioChannel );
 
 			if ( !IsPremade ) {
 				WorldTimeManager.Instance.TimeTick += OnTimeTick;
@@ -582,29 +584,55 @@ namespace Renown.Thinkers {
 				InitialPath = GetPath();
 			}
 
-			GotoPosition = GlobalPosition;
-			
-			if ( SettingsData.GetNetworkingEnabled() ) {
-				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
-			}
-
-			ProcessMode = ProcessModeEnum.Disabled;
+			ProcessMode = ProcessModeEnum.Pausable;
 
 			Location.PlayerEntered += OnPlayerEnteredArea;
 			Location.PlayerExited += OnPlayerExitedArea;
 
 			ThinkThread = new System.Threading.Thread( () => {
 				while ( !Quit ) {
-					System.Threading.Thread.Sleep( ThreadSleep );
+//					System.Threading.Thread.Sleep( ThreadSleep );
 					if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 						continue;
+					}
+					lock ( LockObject ) {
+						System.Threading.Monitor.Wait( LockObject );
 					}
 					RenownProcess();
 				}
 			}, 512*1024 );
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
+			// determine starting state
+			if ( WorldTimeManager.Hour > WorkTimeEnd || WorldTimeManager.Hour < WorkTimeStart ) {
+				State = ThinkerState.Sleeping;
+				GlobalPosition = Home.GlobalPosition;
+			} else if ( WorldTimeManager.Hour > WorkTimeStart ) {
+				State = ThinkerState.Working;
+				if ( Job.GetWorkPlace() != null ) {
+					GlobalPosition = Job.GetWorkPlace().GlobalPosition;
+				} else {
+					GlobalPosition = Home.GlobalPosition;
+				}
+			}
+			GotoPosition = GlobalPosition;
+
 //			ThinkThread.Start();
+
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				break;
+			};
 
 			ActionFinished += () => {
 				if ( !ActionPlan.TryDequeue( out CurrentAction ) ) {
@@ -646,7 +674,10 @@ namespace Renown.Thinkers {
 			if ( thinker.LastEntertainmentDrainTime - WorldTimeManager.Hour >= 1 ) {
 				thinker.Requirements[ ThinkerRequirements.Entertainment ] -= 10;
 			}
-//			thinker.Job.Process();
+			if ( thinker.Occupation == OccupationType.Bandit && thinker.Location.IsPlayerHere() ) {
+				GD.Print( "Working..." );
+			}
+			thinker.Job.Process();
 			thinker.State = ThinkerState.Working;
 		}
 
@@ -670,14 +701,31 @@ namespace Renown.Thinkers {
 			MoveAlongPath();
 		}
 		public override void _Process( double delta ) {
-			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
 				return;
 			}
 
 			base._Process( delta );
 
+//			lock ( LockObject ) {
+//				System.Threading.Monitor.Pulse( LockObject );
+//			}
+			RenownProcess();
+		}
+
+		/// <summary>
+		/// Runs more specific and detailed interactions when the player is in the area.
+		/// </summary>
+		/// <param name="delta"></param>
+		private void Think( float delta ) {
+		}
+		
+		/// <summary>
+		/// Processes various relations, debts, etc. to run the renown system per entity.
+		/// expensive, but not animations and very little godot engine calls will be present.
+		/// </summary>
+		private void RenownProcess() {
 			Job.ProcessAnimations();
-			Job.Process();
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
@@ -704,36 +752,22 @@ namespace Renown.Thinkers {
 			}
 
 			if ( CurrentAction != ThinkerAction.None ) {
-				GD.Print( "Executing" );
 				Actions[ CurrentAction ].Invoke( this );
 			} else {
 				CreateActionPlan();
 			}
 		}
 
-		/// <summary>
-		/// Runs more specific and detailed interactions when the player is in the area.
-		/// </summary>
-		/// <param name="delta"></param>
-		private void Think( float delta ) {
-		}
-		
-		/// <summary>
-		/// Processes various relations, debts, etc. to run the renown system per entity.
-		/// expensive, but not animations and very little godot engine calls will be present.
-		/// </summary>
-		private void RenownProcess() {
-		}
-
 		private bool MoveAlongPath() {
 			if ( NavAgent.IsTargetReached() ) {
-//				Velocity = Godot.Vector2.Zero;
+				Velocity = Godot.Vector2.Zero;
 				return true;
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			LinearVelocity = LookDir * MovementSpeed;
+			Velocity = LookDir * MovementSpeed;
+			Position += Velocity * (float)GetPhysicsProcessDeltaTime();
 			return true;
 		}
 		private void SetNavigationTarget( Godot.Vector2 target ) {
@@ -840,9 +874,6 @@ namespace Renown.Thinkers {
 						Job = Thinkers.Occupation.Create( Occupation, this, Faction );
 					}
 				}
-				if ( Job == null ) {
-					GD.PushError( "Invalid JOB!" );
-				}
 				Job.SetWorkPlace( workplace );
 				Name = string.Format( "{0}{1}{2}{3}{4}", FirstName, Family.Name, BirthPlace.Name, Age, GetHashCode() );
 			} else {
@@ -937,8 +968,6 @@ namespace Renown.Thinkers {
 		public static Thinker Create( Settlement location, int specificAge ) {
 			// TODO: create outliers, special bots
 
-			return  null;
-
 			Thinker thinker = new Thinker();
 			thinker.Location = location;
 			thinker.BirthPlace = location;
@@ -967,9 +996,9 @@ namespace Renown.Thinkers {
 			GD.Print( "\t\tWisdom: " + thinker.Wisdom );
 			GD.Print( "\t\tConstitution: " + thinker.Constitution );
 
-			thinker.SetProcess( false );
-			thinker.SetPhysicsProcess( false );
-			thinker.ProcessMode = ProcessModeEnum.Disabled;
+			thinker.SetProcess( true );
+			thinker.SetPhysicsProcess( true );
+			thinker.ProcessMode = ProcessModeEnum.Pausable;
 			thinker.Visible = false;
 
 			ThinkerCache.AddThinker( thinker );
