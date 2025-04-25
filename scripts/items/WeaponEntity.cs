@@ -131,7 +131,7 @@ public partial class WeaponEntity : Node2D {
 	public delegate void UsedEventHandler( WeaponEntity source );
 
 	public NodePath GetInitialPath() => GetPath();
-	public void SetOwner( Player player ) =>_Owner = player;
+	public void SetOwner( Player player ) => _Owner = player;
 	public WeaponState GetWeaponState() => CurrentState;
 	public void SetWeaponState( WeaponState state ) => CurrentState = state;
     public AmmoStack GetReserve() => Reserve;
@@ -529,8 +529,9 @@ public partial class WeaponEntity : Node2D {
 		CurrentMuzzleFlash = MuzzleFlashes[
 			RandomFactory.Next( 0, MuzzleFlashes.Count - 1 )
 		];
+		CurrentMuzzleFlash.Reparent( _Owner );
 		CurrentMuzzleFlash.Show();
-		CurrentMuzzleFlash.Rotation = angle;
+		CurrentMuzzleFlash.GlobalRotation = angle;
 
 		MuzzleLight.Show();
 		
@@ -542,8 +543,8 @@ public partial class WeaponEntity : Node2D {
 		} else {
 			CurrentMuzzleFlash.Offset = new Godot.Vector2( 160, y );
 		}
-
 		CurrentMuzzleFlash.FlipH = _Owner.GetLeftArm().Animations.FlipH;
+
 		if ( MagType == MagazineType.Cycle ) {
 			// ejecting shells
 			SpawnShells();

@@ -95,6 +95,7 @@ namespace Renown.Thinkers {
 		public void AddThinker( Thinker thinker ) {
 			if ( Thinkers.Count == 0 ) {
 				Leader = thinker;
+				GD.Print( "Set leader to " + Leader );
 			}
 			Thinkers.Add( thinker );
 		}

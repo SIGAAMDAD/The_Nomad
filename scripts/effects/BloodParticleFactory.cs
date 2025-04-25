@@ -48,34 +48,40 @@ public partial class BloodParticleFactory : Node {
 
 		Transforms = new Transform2D[ MeshManager.Multimesh.InstanceCount ];
 	}
-	public static void Create( Vector2 from, Vector2 to ) {
+	
+	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
 		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, 1.0f / from.DistanceSquaredTo( to ) );
 
-		int instanceCount = Instance.MeshManager.Multimesh.VisibleInstanceCount;
+		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;
 
 		instanceCount += bloodAmount;
-		if ( instanceCount > Instance.MeshManager.Multimesh.InstanceCount ) {
+		if ( instanceCount > MeshManager.Multimesh.InstanceCount ) {
 			instanceCount = bloodAmount;
 			startIndex = 0;
 		}
 
-		if ( Instance.ReleaseTimer.IsStopped() ) {
-			Instance.ReleaseTimer.Start();
+		if ( ReleaseTimer.IsStopped() ) {
+			ReleaseTimer.Start();
 		}
-
-		if ( Instance.ReleaseTimer.IsStopped() ) {
-			Instance.ReleaseTimer.Start();
+		if ( ReleaseTimer.IsStopped() ) {
+			ReleaseTimer.Start();
 		}
 
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;
-			position.X += Instance.RandomFactory.RandfRange( -20.25f, 20.25f );
-			position.X += Instance.RandomFactory.RandfRange( -50.25f, 50.25f );
-			Instance.Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
-			Instance.MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Instance.Transforms[i] );
+			position.X += RandomFactory.RandfRange( -20.25f, 20.25f );
+			position.X += RandomFactory.RandfRange( -50.25f, 50.25f );
+			Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
+			MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Transforms[i] );
 		}
 
-		Instance.MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
+		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
+	}
+	public static void Create( Vector2 from, Vector2 to ) {
+		Instance.CreateBloodSplatter( from, to );
+	}
+	public static void CreateDeferred( Vector2 from, Vector2 to ) {
+		Instance.CallDeferred( "CreateBloodSplatter", from, to );
 	}
 };

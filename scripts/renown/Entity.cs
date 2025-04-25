@@ -106,9 +106,8 @@ namespace Renown {
 		}
 
 		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-			channel.SetDeferred( "stream", stream );
-			channel.SetDeferred( "volume_db", SettingsData.GetEffectsVolumeLinear() );
-			channel.CallDeferred( "play" );
+			channel.Stream = stream;
+			channel.Play();
 		}
 
 		public virtual void Damage( Entity source, float nAmount ) {
@@ -324,8 +323,7 @@ namespace Renown {
 
 			TraitCache = new HashSet<Trait>( Traits.Count );
 			for ( int i = 0; i < Traits.Count; i++ ) {
-	//			FIXME:
-	//			TraitCache.Add( new Trait(  ) );
+				TraitCache.Add( Trait.Create( Traits[i] ) );
 			}
 
 			if ( Relations != null ) {

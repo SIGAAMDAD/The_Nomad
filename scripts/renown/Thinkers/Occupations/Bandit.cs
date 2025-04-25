@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 using Renown.World;
 
@@ -27,6 +26,8 @@ namespace Renown.Thinkers {
 			private BarkType SequencedBark;
 
 			private bool CanSeeTarget = false;
+
+			private BanditGroup Squad;
 
 			private AINodeCache NodeCache;
 			private AIPatrolRoute PatrolRoute;
@@ -64,7 +65,6 @@ namespace Renown.Thinkers {
 
 				ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
 
-				worker.LookDir = Vector2.Right;
 				worker.LookAngle = Mathf.Atan2( worker.LookDir.Y, worker.LookDir.X );
 				worker.AimAngle = worker.LookAngle;
 
@@ -73,27 +73,46 @@ namespace Renown.Thinkers {
 
 				NodeCache = Worker.Location.GetNodeCache();
 
+				BarkChannel = new AudioStreamPlayer2D();
+				BarkChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+				BarkChannel.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
+				BarkChannel.ProcessMode = ProcessModeEnum.Pausable;
+				Worker.CallDeferred( "add_child", BarkChannel );
+
+				DetectionMeter = new Line2D();
+				DetectionMeter.AddPoint( new Vector2( -25.0f, -19.0f ), 0 );
+				DetectionMeter.AddPoint( new Vector2( 4.0f, -19.0f ), 1 );
+				DetectionMeter.Width = 6.0f;
+				Worker.CallDeferred( "add_child", DetectionMeter );
+
 				GuardPosition = worker.GlobalPosition;
+
+				Squad = GroupManager.GetGroup( GroupType.Bandit, worker.Faction, GuardPosition ) as BanditGroup;
+				Squad.AddThinker( Worker );
 
 				ProcessMode = ProcessModeEnum.Disabled;
 			}
 
 			private void Cache() {
-				SightDetector = new Node2D();
-				Worker.CallDeferred( "add_child", SightDetector );
-				CallDeferred( "GenerateRaycasts" );
-
 				Worker.HeadAnimations = new AnimatedSprite2D();
 				Worker.HeadAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/head.tres" );
-				Worker.CallDeferred( "add_child", Worker.HeadAnimations );
+				Worker.HeadAnimations.ZIndex = 4;
+				Worker.Animations.CallDeferred( "add_child", Worker.HeadAnimations );
 
 				Worker.ArmAnimations = new AnimatedSprite2D();
 				Worker.ArmAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/arms.tres" );
-				Worker.CallDeferred( "add_child", Worker.ArmAnimations );
+				Worker.ArmAnimations.ZIndex = 4;
+				Worker.Animations.CallDeferred( "add_child", Worker.ArmAnimations );
 
 				Worker.BodyAnimations = new AnimatedSprite2D();
 				Worker.BodyAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/body.tres" );
-				Worker.CallDeferred( "add_child", Worker.BodyAnimations );
+				Worker.BodyAnimations.Connect( "animation_finished", Callable.From( Worker.OnBodyAnimationFinished ) );
+				Worker.BodyAnimations.ZIndex = 4;
+				Worker.Animations.CallDeferred( "add_child", Worker.BodyAnimations );
+
+				SightDetector = new Node2D();
+				Worker.HeadAnimations.CallDeferred( "add_child", SightDetector );
+				CallDeferred( "GenerateRaycasts" );
 
 				AimTimer = new Timer();
 				AimTimer.Name = "AimTimer";
@@ -111,7 +130,7 @@ namespace Renown.Thinkers {
 
 				ChangeInvestigateAngleTimer = new Timer();
 				ChangeInvestigateAngleTimer.OneShot = true;
-				ChangeInvestigateAngleTimer.WaitTime = 1.5f;
+				ChangeInvestigateAngleTimer.WaitTime = 3.5f;
 				ChangeInvestigateAngleTimer.Autostart = false;
 				ChangeInvestigateAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigateAngleTimerTimeout ) );
 				Worker.CallDeferred( "add_child", ChangeInvestigateAngleTimer );
@@ -127,29 +146,25 @@ namespace Renown.Thinkers {
 				AttackTimer.Connect( "timeout", Callable.From( () => { Aiming = false; } ) );
 				Worker.CallDeferred( "add_child", AttackTimer );
 
-				DetectionMeter = new Line2D();
-				DetectionMeter.AddPoint( new Vector2( -25.0f, -19.0f ), 0 );
-				DetectionMeter.AddPoint( new Vector2( 4.0f, -19.0f ), 1 );
-				DetectionMeter.Width = 6.0f;
-				Worker.CallDeferred( "add_child", DetectionMeter );
-
 				AimLine = new RayCast2D();
 				AimLine.Name = "AimLine";
 				AimLine.TargetPosition = Vector2.Right * Range;
 				AimLine.CollisionMask = 2 | 5;
+				AimLine.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
 				Worker.ArmAnimations.CallDeferred( "add_child", AimLine );
 
-				Worker.AudioChannel = new AudioStreamPlayer2D();
-				Worker.AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-				Worker.CallDeferred( "add_child", Worker.AudioChannel );
+				Worker.AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+				BarkChannel.ProcessMode = ProcessModeEnum.Pausable;
 			}
 
 			public override void OnPlayerEnteredArea() {
 				Cache();
+				
+				SightDetector.ProcessMode = ProcessModeEnum.Pausable;
 			}
 			public override void OnPlayerExitedArea() {
-				Worker.CallDeferred( "remove_child", Worker.AudioChannel );
-				Worker.AudioChannel.CallDeferred( "queue_free" );
+				Worker.AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+				BarkChannel.ProcessMode = ProcessModeEnum.Disabled;
 
 				Worker.Animations.CallDeferred( "remove_child", Worker.HeadAnimations );
 				Worker.HeadAnimations.CallDeferred( "queue_free" );
@@ -168,9 +183,6 @@ namespace Renown.Thinkers {
 
 				Worker.CallDeferred( "remove_child", TargetMovedTimer );
 				TargetMovedTimer.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", DetectionMeter );
-				DetectionMeter.CallDeferred( "queue_free" );
 
 				Worker.CallDeferred( "remove_child", AttackTimer );
 				AttackTimer.CallDeferred( "queue_free" );
@@ -212,10 +224,10 @@ namespace Renown.Thinkers {
 				for ( int i = 0; i < rayCount; i++ ) {
 					RayCast2D ray = new RayCast2D();
 					float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-					ray.TargetPosition = Vector2.Right.Rotated( angle ) * MaxViewDistance;
-					ray.Enabled = true;
-					ray.CollisionMask = 2;
-					SightDetector.AddChild( ray );
+					ray.SetDeferred( "target_position", Vector2.Right.Rotated( angle ) * MaxViewDistance );
+					ray.SetDeferred( "enabled", true );
+					ray.SetDeferred( "collision_mask", 2 );
+					SightDetector.CallDeferred( "add_child", ray );
 					SightLines[i] = ray;
 				}
 			}
@@ -223,7 +235,7 @@ namespace Renown.Thinkers {
 				for ( int i = 0; i < SightLines.Length; i++ ) {
 					RayCast2D ray = SightLines[i];
 					float angle = AngleBetweenRays * ( i - SightLines.Length / 2.0f );
-					ray.TargetPosition = Vector2.Right.Rotated( angle ) * MaxViewDistance;
+					ray.SetDeferred( "target_position", Vector2.Right.Rotated( angle ) * MaxViewDistance );
 				}
 			}
 			private void SetDetectionColor() {
@@ -260,7 +272,7 @@ namespace Renown.Thinkers {
 
 				DetectionMeter.DefaultColor = DetectionColor;
 			}
-			public void Alert( Entity target ) {
+			public override void Alert( Entity target ) {
 				if ( ( Worker.Flags & ThinkerFlags.Dead ) != 0 ) {
 					return;
 				}
@@ -278,7 +290,7 @@ namespace Renown.Thinkers {
 					PatrolRoute = null;
 					Bark( BarkType.Confusion, BarkType.CheckItOut );
 				}
-				SetNavigationTarget( LastTargetPosition );
+				Worker.SetNavigationTarget( LastTargetPosition );
 				Fear += 20;
 				
 				// TODO: make everyone else suspicious
@@ -290,9 +302,15 @@ namespace Renown.Thinkers {
 			private void SetAlert( bool bRunning ) {
 				if ( Awareness != MobAwareness.Alert ) {
 					// increase alertness
-					MaxViewDistance += MaxViewDistance * 0.5f;
-					ViewAngleAmount += 30.0f;
-					RecalcSight();
+					MaxViewDistance += MaxViewDistance * 0.015f;
+					ViewAngleAmount += Mathf.DegToRad( 10.0f );
+
+					for ( int i = 0; i < SightLines.Length; i++ ) {
+						SightDetector.CallDeferred( "remove_child", SightLines[i] );
+						SightLines[i].CallDeferred( "queue_free" );
+					}
+
+					GenerateRaycasts();
 
 					Bark( BarkType.TargetSpotted );
 				}
@@ -301,6 +319,13 @@ namespace Renown.Thinkers {
 			private void SetSuspicious() {
 				if ( Awareness != MobAwareness.Suspicious ) {
 					Bark( BarkType.Confusion );
+					if ( !CanSeeTarget ) {
+						PatrolRoute = NodeCache.FindClosestRoute( Worker.GlobalPosition );
+						MobState = MobState.PatrolStart;
+					} else {
+						MobState = MobState.Investigating;
+						Worker.SetNavigationTarget( LastTargetPosition );
+					}
 				}
 				Awareness = MobAwareness.Suspicious;
 			}
@@ -368,19 +393,23 @@ namespace Renown.Thinkers {
 					// "CEASEFIRE!"
 				}
 
-				Awareness = MobAwareness.Alert;
-				float angle = RandomFloat( 0.0f, 360.0f );
-				Worker.HeadAnimations.GlobalRotation = angle;
-				Worker.HeadAnimations.GlobalRotation = angle;
-
-				LastTargetPosition = source.GlobalPosition;
-				PatrolRoute = null;
-
 				if ( Awareness == MobAwareness.Alert ) {
 
 				} else {
 					Bark( BarkType.Alert );
+					SetAlert( false );
 				}
+
+				float angle = RandomFloat( 0.0f, 360.0f );
+				Worker.HeadAnimations.GlobalRotation = angle;
+				Worker.HeadAnimations.GlobalRotation = angle;
+
+				Target = source;
+				LastTargetPosition = source.GlobalPosition;
+				PatrolRoute = null;
+
+				MobState = MobState.Attacking;
+				Worker.SetNavigationTarget( LastTargetPosition );
 			}
 
 			private void OnAimTimerTimeout() {
@@ -390,9 +419,13 @@ namespace Renown.Thinkers {
 					if ( AimLine.GetCollider() is Entity entity && entity == Target ) {
 						if ( entity.GetFaction() == Worker.Faction ) {
 							// TODO: dodge animation
+							if ( Fear >= 80 ) {
+								Worker.PlaySound( null, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
+							}
 							Bark( BarkType.OutOfTheWay );
 						} else {
 							// FIXME:
+							Worker.PlaySound( null, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_use.ogg" ) );
 							entity.Damage( Worker, 20.0f );
 						}
 					}
@@ -400,7 +433,7 @@ namespace Renown.Thinkers {
 			}
 
 			private void OnLoseInterestTimerTimeout() {
-//				MobState = MobState.Patrolling;
+				MobState = MobState.Patrolling;
 				Target = null;
 
 				if ( Fear > 80 ) {
@@ -410,10 +443,10 @@ namespace Renown.Thinkers {
 				PatrolRoute = NodeCache.FindClosestRoute( Worker.GlobalPosition );
 			
 				AIPatrolRoute route = PatrolRoute;
-//				if ( ( Worker.Squad as BanditGroup ).IsRouteOccupied( route ) ) {
-//					PatrolRoute = route.GetNext();
-//				}
-				SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+				if ( Squad.IsRouteOccupied( route ) ) {
+					PatrolRoute = route.GetNext();
+				}
+				Worker.SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 
 				// a little more on edge
 				Fear += 10;
@@ -435,7 +468,7 @@ namespace Renown.Thinkers {
 					Awareness = MobAwareness.Alert;
 					MobState = MobState.Investigating;
 
-					SetNavigationTarget( LastTargetPosition );
+					Worker.SetNavigationTarget( LastTargetPosition );
 					Bark( BarkType.Curse );
 					break;
 				case GroupEvent.Count:
@@ -458,13 +491,13 @@ namespace Renown.Thinkers {
 //					Worker.Visible = true;
 				}
 				*/
-				
+
 				if ( Target != null ) {
 					Worker.LookDir = Worker.GlobalPosition.DirectionTo( LastTargetPosition );
 					Worker.AimAngle = Mathf.Atan2( Worker.LookDir.Y, Worker.LookDir.X );
 					Worker.LookAngle = Worker.AimAngle;
 				}
-				
+
 				Worker.ArmAnimations.SetDeferred( "global_rotation", Worker.AimAngle );
 				Worker.HeadAnimations.SetDeferred( "global_rotation", Worker.LookAngle );
 
@@ -500,16 +533,19 @@ namespace Renown.Thinkers {
 				if ( !Worker.Location.IsPlayerHere() ) {
 					return;
 				}
+
 				CheckSight();
 
 				if ( Target != null ) {
 					if ( CanSeeTarget && Awareness == MobAwareness.Alert ) {
 						MobState = MobState.Attacking;
 						ChangeInvestigateAngleTimer.Stop();
+					} else {
+						MobState = MobState.Investigating;
 					}
 				} else if ( PatrolRoute != null && Worker.GlobalPosition.DistanceTo( PatrolRoute.GetGlobalEndPosition() ) < 10.0f ) {
 					PatrolRoute = PatrolRoute.GetNext();
-					SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+					Worker.SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
 				}
 				if ( Aiming ) {
 					Worker.StopMoving();
@@ -545,7 +581,7 @@ namespace Renown.Thinkers {
 						Worker.LookDir = Worker.GlobalPosition.DirectionTo( Target.GlobalPosition );
 						Worker.AimAngle = Mathf.Atan2( Worker.LookDir.Y, Worker.LookDir.X );
 						Worker.LookAngle = Worker.AimAngle;
-						AimLine.GlobalRotation = Worker.AimAngle;
+						AimLine.SetDeferred( "global_rotation", Worker.AimAngle );
 					}
 					if ( AimTimer.TimeLeft > 0.0f && !CanSeeTarget ) {
 						Bark( BarkType.TargetRunning );
@@ -559,11 +595,10 @@ namespace Renown.Thinkers {
 								Aiming = false;
 								AimTimer.Stop();
 								Bark( BarkType.OutOfTheWay );
-							} else if ( entity == Target ) {
-								Aiming = true;
-								Worker.BodyAnimations.Play( "attack" );
-								Worker.HeadAnimations.Play( "idle" );
-								Worker.ArmAnimations.Play( "attack" );
+							} else if ( entity == Target && AimTimer.IsStopped() ) {
+								Worker.BodyAnimations.CallDeferred( "play", "attack" );
+								Worker.HeadAnimations.CallDeferred( "play", "idle" );
+								Worker.ArmAnimations.CallDeferred( "play", "attack" );
 
 								AimTimer.Start();
 								Aiming = true;
@@ -577,13 +612,13 @@ namespace Renown.Thinkers {
 					if ( Worker.GlobalPosition.DistanceTo( Worker.GotoPosition ) < 10.0f ) {
 						NextRoute = PatrolRoute.GetNext();
 						MobState = MobState.PatrolStart;
-						SetNavigationTarget( NextRoute.GetGlobalStartPosition() );
+						Worker.SetNavigationTarget( NextRoute.GetGlobalStartPosition() );
 					}
 					break;
 				case MobState.PatrolStart:
 					if ( Worker.GlobalPosition.DistanceTo( PatrolRoute.GetGlobalStartPosition() ) < 10.0f ) {
 						MobState = MobState.Patrolling;
-						SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
+						Worker.SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
 					}
 					break;
 				case MobState.Guarding:
@@ -606,7 +641,7 @@ namespace Renown.Thinkers {
 				case MobState.Patrolling:
 					PatrolRoute = NextRoute;
 					PatrolRoute ??= NodeCache.FindClosestRoute( Worker.GlobalPosition );
-					SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+					Worker.SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 					break;
 				default:
 					Worker.StopMoving();
@@ -686,13 +721,13 @@ namespace Renown.Thinkers {
 					}
 				}
 				if ( SightDetectionAmount >= SightDetectionTime * 0.5f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
-					Awareness = MobAwareness.Suspicious;
+					SetSuspicious();
 					MobState = MobState.Investigating;
-					SetNavigationTarget( LastTargetPosition );
+					Worker.SetNavigationTarget( LastTargetPosition );
 					if ( LoseInterestTimer.IsStopped() ) {
 						LoseInterestTimer.Start();
 					}
-				} else if ( SightDetectionAmount >= SightDetectionAmount * 0.90f ) {
+				} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
 					SetAlert( false );
 				}
 				if ( IsAlert() ) {

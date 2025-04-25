@@ -90,6 +90,8 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		public virtual void Alert( Entity source ) {
+		}
 		public virtual void OnPlayerEnteredArea() {
 		}
 		public virtual void OnPlayerExitedArea() {

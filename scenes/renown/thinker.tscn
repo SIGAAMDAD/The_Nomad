@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://b83akkws10guh" path="res://scripts/renown/Thinkers/Thinker.cs" id="1_nv4km"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h6v4o"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nv4km"]
+size = Vector2(16, 28)
 
 [node name="Thinker" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Thinkers"]]
 process_mode = 4
@@ -12,8 +13,6 @@ script = ExtResource("1_nv4km")
 Relations = {}
 Debts = {}
 
-[node name="Animations" type="Node2D" parent="."]
-
-[node name="BodyCollision" type="CollisionShape2D" parent="."]
-process_mode = 4
-shape = SubResource("RectangleShape2D_h6v4o")
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 2)
+shape = SubResource("RectangleShape2D_nv4km")

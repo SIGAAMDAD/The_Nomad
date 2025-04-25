@@ -7081,12 +7081,13 @@ script = ExtResource("1_re8x6")
 [node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
 script = ExtResource("11_re8x6")
 StartingYear = 89950
-StartingHour = 1.0
+StartingHour = 14.0
 Months = [NodePath("LongSummer"), NodePath("LongWinter")]
 WorldTimeOverlay = NodePath("../CanvasModulate")
 Gradient = ExtResource("2_re8x6")
 
 [node name="SunLight" type="DirectionalLight2D" parent="WorldTime"]
+visible = false
 rotation = -1.19904
 color = Color(1, 0, 0, 0.486275)
 shadow_enabled = true
@@ -7122,7 +7123,7 @@ IsPremade = true
 script = ExtResource("44_1r2vu")
 
 [node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
-position = Vector2(-87336, 53038)
+position = Vector2(-87308, 53042)
 IsPremade = true
 Occupation = 2
 Family = NodePath("../../FamilyTrees/Ollavan")
@@ -7146,6 +7147,7 @@ Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 [node name="Hafer Ollavan" parent="Thinkers" node_paths=PackedStringArray("Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
 position = Vector2(-87049, 53295)
 IsPremade = true
+BotName = &""
 Occupation = 2
 Family = NodePath("../../FamilyTrees/Ollavan")
 BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")

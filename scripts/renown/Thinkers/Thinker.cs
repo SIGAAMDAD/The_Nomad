@@ -236,6 +236,7 @@ namespace Renown.Thinkers {
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 
 		public override void Damage( Entity source, float nAmount ) {
+			BloodParticleFactory.CreateDeferred( source.GlobalPosition, GlobalPosition );
 			base.Damage( source, nAmount );
 			Job.Damage( source, nAmount );
 		}
@@ -263,6 +264,7 @@ namespace Renown.Thinkers {
 
 			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA );
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
+			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
 			ProcessMode = ProcessModeEnum.Pausable;
 
@@ -277,10 +279,11 @@ namespace Renown.Thinkers {
 			}
 		}
 		private void OnPlayerExitedArea() {
-			SetProcess( false );
-			SetPhysicsProcess( false );
+//			SetProcess( false );
+//			SetPhysicsProcess( false );
 
-			ProcessMode = ProcessModeEnum.Disabled;
+//			ProcessMode = ProcessModeEnum.Disabled;
+			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS_AWAY;
 
 			if ( Location.GetBiome().IsPlayerHere() ) {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
@@ -318,6 +321,12 @@ namespace Renown.Thinkers {
 
 			Location.PlayerEntered += OnPlayerEnteredArea;
 			Location.PlayerExited += OnPlayerExitedArea;
+		}
+
+		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+			channel ??= AudioChannel;
+			channel.SetDeferred( "stream", stream );
+			channel.CallDeferred( "play" );
 		}
 
 		public override StringName GetObjectName() => Name;
@@ -558,6 +567,12 @@ namespace Renown.Thinkers {
 			Animations.Name = "Animations";
 			AddChild( Animations );
 
+			AudioChannel = new AudioStreamPlayer2D();
+			AudioChannel.Name = "AudioChannel";
+			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			AddChild( AudioChannel );
+
 			NavAgent = new NavigationAgent2D();
 			NavAgent.Name = "NavAgent";
 			NavAgent.PathMaxDistance = 10000.0f;
@@ -565,7 +580,7 @@ namespace Renown.Thinkers {
 			NavAgent.Radius = 60.0f;
 			NavAgent.MaxNeighbors = 20;
 			NavAgent.MaxSpeed = 200.0f;
-			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
+			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 			AddChild( NavAgent );
 
@@ -604,15 +619,17 @@ namespace Renown.Thinkers {
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
 			// determine starting state
-			if ( WorldTimeManager.Hour > WorkTimeEnd || WorldTimeManager.Hour < WorkTimeStart ) {
-				State = ThinkerState.Sleeping;
-				GlobalPosition = Home.GlobalPosition;
-			} else if ( WorldTimeManager.Hour > WorkTimeStart ) {
-				State = ThinkerState.Working;
-				if ( Job.GetWorkPlace() != null ) {
-					GlobalPosition = Job.GetWorkPlace().GlobalPosition;
-				} else {
+			if ( !IsPremade ) {
+				if ( WorldTimeManager.Hour > WorkTimeEnd || WorldTimeManager.Hour < WorkTimeStart ) {
+					State = ThinkerState.Sleeping;
 					GlobalPosition = Home.GlobalPosition;
+				} else if ( WorldTimeManager.Hour > WorkTimeStart ) {
+					State = ThinkerState.Working;
+					if ( Job.GetWorkPlace() != null ) {
+						GlobalPosition = Job.GetWorkPlace().GlobalPosition;
+					} else {
+						GlobalPosition = Home.GlobalPosition;
+					}
 				}
 			}
 			GotoPosition = GlobalPosition;
@@ -639,6 +656,10 @@ namespace Renown.Thinkers {
 					CurrentAction = ThinkerAction.None;
 				}
 			};
+
+			if ( IsPremade && ArchiveSystem.Instance.IsLoaded() ) {
+				Load();
+			}
 		}
 
 		private static void MoveToPoint( Thinker thinker ) {
@@ -666,16 +687,13 @@ namespace Renown.Thinkers {
 			thinker.State = ThinkerState.Sleeping;
 		}
 		private static void Work( Thinker thinker ) {
-			if ( WorldTimeManager.Hour > thinker.WorkTimeEnd ) {
+			if ( WorldTimeManager.Hour > thinker.WorkTimeEnd || WorldTimeManager.Hour < thinker.WorkTimeStart ) {
 				thinker.EmitSignalActionFinished();
 				thinker.State = ThinkerState.Sleeping;
 				return; // go back home
 			}
 			if ( thinker.LastEntertainmentDrainTime - WorldTimeManager.Hour >= 1 ) {
 				thinker.Requirements[ ThinkerRequirements.Entertainment ] -= 10;
-			}
-			if ( thinker.Occupation == OccupationType.Bandit && thinker.Location.IsPlayerHere() ) {
-				GD.Print( "Working..." );
 			}
 			thinker.Job.Process();
 			thinker.State = ThinkerState.Working;
@@ -729,10 +747,13 @@ namespace Renown.Thinkers {
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
-				return;
+//				return;
 			}
 
+			Work( this );
+
 			// evaluate which action has the highest priority, used as an override
+			/*
 			ThinkerRequirements focus = ThinkerRequirements.Count;
 			float highest = float.MinValue;
 			foreach( var state in Requirements ) {
@@ -750,14 +771,19 @@ namespace Renown.Thinkers {
 				CreateActionPlan();
 				return;
 			}
+			*/
 
-			if ( CurrentAction != ThinkerAction.None ) {
-				Actions[ CurrentAction ].Invoke( this );
-			} else {
-				CreateActionPlan();
-			}
+//			if ( CurrentAction != ThinkerAction.None ) {
+//				Actions[ CurrentAction ].Invoke( this );
+//			} else {
+//				CreateActionPlan();
+//			}
 		}
 
+		// loud sound
+		public void Alert( Entity source ) {
+			Job.Alert( source );
+		}
 		private bool MoveAlongPath() {
 			if ( NavAgent.IsTargetReached() ) {
 				Velocity = Godot.Vector2.Zero;
@@ -767,14 +793,13 @@ namespace Renown.Thinkers {
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			Velocity = LookDir * MovementSpeed;
-			Position += Velocity * (float)GetPhysicsProcessDeltaTime();
+			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 			return true;
 		}
 		private void SetNavigationTarget( Godot.Vector2 target ) {
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
-			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
 
 			Job.SetNavigationTarget( target );
 		}
@@ -782,7 +807,6 @@ namespace Renown.Thinkers {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
 			Velocity = Godot.Vector2.Zero;
-			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
 
 			Job.OnTargetReached();
 		}
@@ -835,6 +859,12 @@ namespace Renown.Thinkers {
 				FirstName = NameGenerator.GenerateName();
 				Family = ThinkerCache.GetFamily( Location as Settlement );
 				BotName = string.Format( "{0} {1}", FirstName, Family.Name );
+			} else {
+				BotName = Name;
+
+				string name = BotName.ToString();
+				int endIndex = name.IndexOf( ' ' );
+				FirstName = name[ ..endIndex ];
 			}
 
 			SocietyRank = Family.GetSocietyRank();
@@ -883,12 +913,13 @@ namespace Renown.Thinkers {
 			Home = Family.GetHome();
 			Family.AddMember( this );
 
+			WorkTimeStart = 7;
+			WorkTimeEnd = 20;
+
 			switch ( SocietyRank ) {
 			case SocietyRank.Lower:
 				CostOfLiving = 800.0f;
 				Money = new RandomNumberGenerator().RandfRange( 200, 1000 );
-				WorkTimeStart = 7;
-				WorkTimeEnd = 20;
 				break;
 			case SocietyRank.Middle:
 				CostOfLiving = 16000.0f;

@@ -117,16 +117,10 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
 			NoteBook = GetNode<Notebook>( "NotebookContainer" );
-			NoteBook.SetProcess( false );
-			NoteBook.SetProcessInternal( false );
+			NoteBook.ProcessMode = ProcessModeEnum.Disabled;
 
 			HealthBar = GetNode<HealthBar>( "MainHUD/HealthBar" );
-			HealthBar.SetProcess( false );
-			HealthBar.SetProcessInternal( false );
-
 			RageBar = GetNode<RageBar>( "MainHUD/RageBar" );
-			RageBar.SetProcess( false );
-			RageBar.SetProcessInternal( false );
 
 			AnnouncementContainer = GetNode<MarginContainer>( "MainHUD/AnnouncementLabel" );
 			AnnouncementContainer.SetProcess( false );
@@ -513,11 +507,13 @@ namespace PlayerSystem {
 		public void OnShowInventory() {
 			if ( NoteBook.Visible ) {
 				NoteBook.Visible = false;
+				NoteBook.ProcessMode = ProcessModeEnum.Disabled;
 				GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Ignore;
 				return;
 			}
 			GetNode<Control>( "MainHUD" ).MouseFilter = Control.MouseFilterEnum.Stop;
 
+			NoteBook.ProcessMode = ProcessModeEnum.Pausable;
 			NoteBook.Visible = true;
 			NoteBook.OnShowInventory();
 		}

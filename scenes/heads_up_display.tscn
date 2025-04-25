@@ -987,6 +987,7 @@ horizontal_alignment = 1
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
+visible = false
 custom_minimum_size = Vector2(0, 180)
 anchors_preset = 12
 anchor_top = 1.0

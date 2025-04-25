@@ -163,6 +163,7 @@ namespace Renown.World {
 			Year = StartingYear;
 			Month = StartingMonth;
 			Day = StartingDay;
+			Hour = (uint)StartingHour;
 
 			for ( int i = 0; i < Months.Length; i++ ) {
 				TotalDaysInYear += Months[i].GetDayCount();

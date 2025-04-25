@@ -58,9 +58,9 @@ namespace Renown.World {
 			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DEntered ) );
 			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DExited ) );
 
-			ProcessMode = ProcessModeEnum.Pausable;
-			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
+//			ProcessMode = ProcessModeEnum.Pausable;
+//			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+//			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
 			}

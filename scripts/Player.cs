@@ -245,39 +245,39 @@ public partial class Player : Entity {
 		using ( var writer = new SaveSystem.SaveSectionWriter( "Player" ) ) {
 			int stackIndex;
 
-			writer.SaveFloat( "health", Health );
-			writer.SaveFloat( "rage", Rage );
-			writer.SaveInt( "hellbreaks", Hellbreaks );
-			writer.SaveInt( "current_weapon", CurrentWeapon );
-			writer.SaveUInt( "hands_used", (uint)HandsUsed );
+			writer.SaveFloat( "Health", Health );
+			writer.SaveFloat( "Rage", Rage );
+			writer.SaveInt( "Hellbreaks", Hellbreaks );
+			writer.SaveInt( "CurrentWeapon", CurrentWeapon );
+			writer.SaveUInt( "HandsUsed", (uint)HandsUsed );
 
 			writer.SaveVector2( "position", GlobalPosition );
 
-			writer.SaveInt( "arm_left_slot", ArmLeft.GetSlot() );
-			writer.SaveInt( "arm_right_slot", ArmRight.GetSlot() );
+			writer.SaveInt( "ArmLeftSlot", ArmLeft.GetSlot() );
+			writer.SaveInt( "ArmRightSlot", ArmRight.GetSlot() );
 
-			writer.SaveInt( "ammo_stacks_count", AmmoStacks.Count );
+			writer.SaveInt( "AmmoStacksCount", AmmoStacks.Count );
 			stackIndex = 0;
 			foreach ( var stack in AmmoStacks ) {
 				// TODO: FIXME!
-				writer.SaveInt( "ammo_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
-				writer.SaveString( "ammo_stacks_type_" + stackIndex.ToString(), (string)stack.Value.AmmoType.Get( "id" ) );
+				writer.SaveInt( string.Format( "AmmoStacksAmount{0}", stackIndex ), stack.Value.Amount );
+				writer.SaveString( string.Format( "AmmoStacksType{0}", stackIndex ), (string)stack.Value.AmmoType.Get( "id" ) );
 				stackIndex++;
 			}
 
-			writer.SaveInt( "weapon_stacks_count", WeaponsStack.Count );
+			writer.SaveInt( "WeaponStacksCount", WeaponsStack.Count );
 			stackIndex = 0;
 			foreach ( var stack in WeaponsStack ) {
-				writer.SaveString( "weapon_stacks_path_" + stackIndex.ToString(), stack.Value.GetInitialPath() );
+				writer.SaveString( string.Format( "WeaponStacksPath{0}", stackIndex ), stack.Value.GetInitialPath() );
 				if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-					writer.SaveInt( "weapon_stacks_bullet_count_" + stackIndex.ToString(), stack.Value.GetBulletCount() );
+					writer.SaveInt( string.Format( "WeaponStacksBulletCount{0}", stackIndex ), stack.Value.GetBulletCount() );
 				}
 				stackIndex++;
 			}
 
-			writer.SaveInt( "max_weapon_slots", MAX_WEAPON_SLOTS );
+			writer.SaveInt( "MaxWeaponSlots", MAX_WEAPON_SLOTS );
 			for ( int i = 0; i < WeaponSlots.Length; i++ ) {
-				writer.SaveBool( "weapon_slot_used_" + i.ToString(), WeaponSlots[i].IsUsed() );
+				writer.SaveBool( string.Format( "WeaponSlotUsed{0}", i ), WeaponSlots[i].IsUsed() );
 				if ( WeaponSlots[i].IsUsed() ) {
 					NodePath weaponId = "";
 					foreach ( var stack in WeaponsStack ) {
@@ -286,32 +286,33 @@ public partial class Player : Entity {
 							break;
 						}
 					}
-					writer.SaveString( "weapon_slot_hash_" + i.ToString(), weaponId );
-					writer.SaveUInt( "weapon_slot_mode_" + i.ToString(), (uint)WeaponSlots[i].GetMode() );
+					writer.SaveString( string.Format( "WeaponSlotHash{0}", i ), weaponId );
+					writer.SaveUInt( string.Format( "WeaponSlotMode{0}", i ), (uint)WeaponSlots[i].GetMode() );
 				}
 			}
 
 			writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
 			stackIndex = 0;
 			foreach ( var stack in ConsumableStacks ) {
-				writer.SaveInt( "consumable_stacks_amount_" + stackIndex.ToString(), stack.Value.Amount );
-				writer.SaveString( "consumable_stacks_type_" + stackIndex.ToString(), (string)stack.Value.ItemType.Get( "id" ) );
+				writer.SaveInt( string.Format( "ConsumableStacksAmount{0}", stackIndex ), stack.Value.Amount );
+				writer.SaveString( string.Format( "ConsumableStacksType{0}", stackIndex ), (string)stack.Value.ItemType.Get( "id" ) );
+				stackIndex++;
 			}
 		}
 	}
 	public override void Load() {
 		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
-		Health = reader.LoadFloat( "health" );
-		Rage = reader.LoadFloat( "rage" );
-		Hellbreaks = reader.LoadInt( "hellbreaks" );
-		CurrentWeapon = reader.LoadInt( "current_weapon" );
-		HandsUsed = (Hands)reader.LoadUInt( "hands_used" );
+		Health = reader.LoadFloat( "Health" );
+		Rage = reader.LoadFloat( "Rage" );
+		Hellbreaks = reader.LoadInt( "Hellbreaks" );
+		CurrentWeapon = reader.LoadInt( "CurrentWeapon" );
+		HandsUsed = (Hands)reader.LoadUInt( "HandsUsed" );
 
-		GlobalPosition = reader.LoadVector2( "position" );
+		GlobalPosition = reader.LoadVector2( "Position" );
 
-		ArmLeft.SetWeapon( reader.LoadInt( "arm_left_slot" ) );
-		ArmRight.SetWeapon( reader.LoadInt( "arm_right_slot" ) );
+		ArmLeft.SetWeapon( reader.LoadInt( "ArmLeftSlot" ) );
+		ArmRight.SetWeapon( reader.LoadInt( "ArmRightSlot" ) );
 		switch ( HandsUsed ) {
 		case Hands.Left:
 			LastUsedArm = ArmLeft;
@@ -323,34 +324,34 @@ public partial class Player : Entity {
 		};
 
 		AmmoStacks.Clear();
-		int numAmmoStacks = reader.LoadInt( "ammo_stacks_count" );
+		int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
 		for ( int i = 0; i < numAmmoStacks; i++ ) {
 			AmmoStack stack = new AmmoStack();
-			stack.Amount = reader.LoadInt( "ammo_stacks_amount_" + i.ToString() );
-			string id = reader.LoadString( "ammo_stacks_type_" + i.ToString() );
+			stack.Amount = reader.LoadInt( string.Format( "AmmoStacksAmount{0}", i ) );
+			string id = reader.LoadString( string.Format( "AmmoStacksType{0}", i ) );
 			stack.AmmoType = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
 			AmmoStacks.Add( id.GetHashCode(), stack );
 		}
 
 		WeaponsStack.Clear();
-		int numWeapons = reader.LoadInt( "weapon_stacks_count" );
+		int numWeapons = reader.LoadInt( "WeaponStacksCount" );
 		for ( int i = 0; i < numWeapons; i++ ) {
-			CallDeferred( "LoadWeapon", reader.LoadString( "weapon_stacks_path_" + i.ToString() ), reader.LoadInt( "weapon_stacks_bullet_count_" + i.ToString() ) );
+			CallDeferred( "LoadWeapon", reader.LoadString( string.Format( "WeaponStacksPath{0}", i ) ), reader.LoadInt( string.Format( "WeaponStacksBulletCount{0}", i ) ) );
 		}
 
-		int maxSlots = reader.LoadInt( "max_weapon_slots" );
+		int maxSlots = reader.LoadInt( "MaxWeaponSlots" );
 		for ( int i = 0; i < maxSlots; i++ ) {
-			if ( reader.LoadBoolean( "weapon_slot_used_" + i.ToString() ) ) {
-				CallDeferred( "InitWeaponSlot", i, reader.LoadString( "weapon_slot_hash_" + i.ToString() ), reader.LoadUInt( "weapon_slot_mode_" + i.ToString() ) );
+			if ( reader.LoadBoolean( string.Format( "WeaponSlotUsed{0}", i ) ) ) {
+				CallDeferred( "InitWeaponSlot", i, reader.LoadString( string.Format( "WeaponSlotHash{0}", i ) ), reader.LoadUInt( string.Format( "WeaponSlotMode{0}", i ) ) );
 			}
 		}
 
 		ConsumableStacks.Clear();
-		int numConsumableStacks = reader.LoadInt( "consumable_stacks_count" );
+		int numConsumableStacks = reader.LoadInt( "ConsumableStacksCount" );
 		for ( int i = 0; i < numConsumableStacks; i++ ) {
 			ConsumableStack stack = new ConsumableStack();
-			stack.Amount = reader.LoadInt( "consumable_stacks_amount_" + i.ToString() );
-			string id = reader.LoadString( "consumable_stacks_type_" + i.ToString() );
+			stack.Amount = reader.LoadInt( string.Format( "ConsumableStacksAmount{0}", i ) );
+			string id = reader.LoadString( string.Format( "ConsumableStacksType{0}", i ) );
 			stack.ItemType = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
 			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
@@ -428,7 +429,7 @@ public partial class Player : Entity {
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
-//			( mob.GetOccupation() ).Alert( this );
+			mob.Alert( mob );
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -671,16 +672,19 @@ public partial class Player : Entity {
 
 		Health -= nAmount;
 		Rage += nAmount;
-
-		BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
-
-		if ( Health <= 0.0f ) {
-			OnDeath( attacker );
-		} else {
-			PlaySound( AudioChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+		if ( Rage > 100.0f ) {
+			Rage = 100.0f;
 		}
 
-		EmitSignalDamaged( attacker, this, nAmount );
+		BloodParticleFactory.CreateDeferred( attacker.GlobalPosition, GlobalPosition );
+
+		if ( Health <= 0.0f ) {
+			CallDeferred( "OnDeath", attacker );
+		} else {
+			CallDeferred( "PlaySound", AudioChannel, ResourceCache.PlayerPainSfx[ RandomFactory.Next( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+		}
+
+		CallDeferred( "emit_signal", "Damaged", attacker, this, nAmount );
 	}
 
 	public void BlockInput( bool bBlocked ) {
@@ -1599,17 +1603,17 @@ public partial class Player : Entity {
 			Rage += FrameDamage * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().Value = Rage;
+			HUD.GetRageBar().Rage = Rage;
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f ) {
-			Health += 0.9f * delta;
-			Rage -= 2.0f * delta;
+			Health += 5.0f * delta;
+			Rage -= 10.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
 			HUD.GetHealthBar().SetHealth( Health );
-			HUD.GetRageBar().Value = Rage;
+			HUD.GetRageBar().Rage = Rage;
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
@@ -1617,8 +1621,8 @@ public partial class Player : Entity {
 			Rage = 0.0f;
 		}
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			Rage -= 10.0f * (float)delta;
-			HUD.GetRageBar().Value = Rage;
+			Rage -= 20.0f * (float)delta;
+			HUD.GetRageBar().Rage = Rage;
 		}
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]

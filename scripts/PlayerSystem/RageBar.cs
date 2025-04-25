@@ -6,8 +6,9 @@ namespace PlayerSystem {
 
 		public float Rage {
 			set {
-				ShowTimer.Start();
 				ProcessMode = ProcessModeEnum.Pausable;
+				Show();
+				ShowTimer.Start();
 				Value = value;
 			}
 		}
@@ -16,7 +17,16 @@ namespace PlayerSystem {
 			MaxValue = nRage;
 			Value = nRage;
 
-			ShowTimer = ;
+			ShowTimer = new Timer();
+			ShowTimer.OneShot = true;
+			ShowTimer.WaitTime = 3.5f;
+			ShowTimer.Connect( "timeout", Callable.From(
+				() => {
+					Hide();
+					ProcessMode = ProcessModeEnum.Disabled;
+				}
+			) );
+			AddChild( ShowTimer );
 		}
 	};
 };
