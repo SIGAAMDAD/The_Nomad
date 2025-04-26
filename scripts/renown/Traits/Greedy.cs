@@ -6,8 +6,8 @@ namespace Renown.Traits {
 		public override string GetTraitName() => "Greedy";
 		public override TraitType GetTraitType() => TraitType.Greedy;
 
-		public override sbyte GetFearBias() => 0;
-		public override sbyte GetTrustBias() => -20;
+		public static sbyte GetFearBias() => 0;
+		public static sbyte GetTrustBias() => -20;
 
 		public override bool Conflicts( Trait other ) {
 			return false;

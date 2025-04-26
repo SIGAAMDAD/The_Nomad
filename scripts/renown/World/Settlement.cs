@@ -277,7 +277,7 @@ namespace Renown.World {
 
 			Citizens = new HashSet<Thinker>( MaxPopulation );
 
-			ProcessMode = ProcessModeEnum.Disabled;
+			ProcessMode = ProcessModeEnum.Pausable;
 
 			if ( !IsInGroup( "Settlements" ) ) {
 				AddToGroup( "Settlements" );

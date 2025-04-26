@@ -29,9 +29,9 @@ namespace Renown {
 			{
 				OccupationType.Bandit,
 				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 50 },
-					{ SocietyRank.Middle, 28 },
-					{ SocietyRank.Upper, 2 }
+					{ SocietyRank.Lower, 0 },
+					{ SocietyRank.Middle, 0 },
+					{ SocietyRank.Upper, 0 }
 				}
 			},
 			{

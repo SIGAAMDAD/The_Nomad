@@ -8044,7 +8044,7 @@ WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
 TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps")]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(-56, 59)
 collision_layer = 19
 collision_mask = 18
@@ -8720,7 +8720,6 @@ tile_map_data = PackedByteArray("AAD1/9P/BgDPABsAAAD1/9T/BgDPABwAAAD1/9X/BgDPAB0
 tile_set = ExtResource("39_ybss6")
 
 [node name="OutskirtsWall" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "InteriorLayers")]
-visible = false
 script = ExtResource("38_ybss6")
 Floor = NodePath("TileMapLayer")
 InteriorLayers = []
@@ -8746,7 +8745,6 @@ tile_map_data = PackedByteArray("AADr//3/AAAOAAYAAADr//7/AAAOAAcAAADr////AAAOAAg
 tile_set = SubResource("TileSet_1r2vu")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Galakas"]
-visible = false
 polygon = PackedVector2Array(-4967, -4958, -3862, 457, -211, 788, 5768, 288, 5843, -5969)
 
 [node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]

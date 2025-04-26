@@ -213,13 +213,6 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		byte handsUsed = packet.ReadByte();
 	}
-	public void Damage( CharacterBody2D attacker, float nAmount ) {
-		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
-		PacketWriter.Write( (byte)SteamLobby.MessageType.ClientData );
-		PacketWriter.Write( nAmount );
-		
-		SteamLobby.Instance.SendTargetPacket( OwnerId, Packet );
-	}
 	private void OnLegAnimationFinished() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
 			MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];

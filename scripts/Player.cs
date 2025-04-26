@@ -1297,6 +1297,7 @@ public partial class Player : Entity {
 		OnDeath( this );
 	}
 	private void CmdTeleport( string locationType, string locationId ) {
+		Console.PrintLine( string.Format( "Teleporing player to {0}...", locationId ) );
 		switch ( locationType ) {
 		case "campfire":
 			Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
@@ -1361,6 +1362,16 @@ public partial class Player : Entity {
 		base._Ready();
 
 		ScreenSize = DisplayServer.WindowGetSize();
+
+		// don't allow keybind input when we're in the console
+		Control GDConsole = (Control)GetNode( "/root/GDConsole" ).Get( "control" );
+		GDConsole.VisibilityChanged += () => {
+			if ( ( (Control)GetNode( "/root/GDConsole" ).Get( "control" ) ).Visible ) {
+				Flags |= PlayerFlags.BlockedInput;
+			} else {
+				Flags &= ~PlayerFlags.BlockedInput;
+			}
+		};
 
 		StartingPosition = GlobalPosition;
 

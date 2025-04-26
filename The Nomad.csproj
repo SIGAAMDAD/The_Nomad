@@ -7,11 +7,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" Version="1.90.0"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.3"/>
-    <PackageReference Include="Serilog" Version="2.12.0"/>
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-    <PackageReference Include="Steamworks.NET" Version="2024.8.0"/>
+    <PackageReference Include="Doxygen" Version="1.8.9.1" />
+    <PackageReference Include="ImGui.NET" Version="1.90.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.3" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Steamworks.NET" Version="2024.8.0" />
   </ItemGroup>
 </Project>

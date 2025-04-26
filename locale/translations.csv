@@ -86,3 +86,6 @@ LETTER_TO_THE_BOSS_BANDIT_HIDEOUT,"[i]Hey, boss, sent Hickey and Longboy to Gala
 INVENTORY_BUTTON,BACKPACK
 CONTRACTS_BUTTON,CONTRACTS
 RECENT_EVENTS_BUTTON,NOTES
+
+PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME,Too Fucking Angry To Die
+PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION,"Become literally too angry to die... When you die, if you have any rage, you lose all of it and get full health back."

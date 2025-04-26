@@ -270,7 +270,7 @@ namespace Renown.Thinkers {
 					break;
 				};
 
-				DetectionMeter.DefaultColor = DetectionColor;
+				DetectionMeter.SetDeferred( "default_color", DetectionColor );
 			}
 			public override void Alert( Entity target ) {
 				if ( ( Worker.Flags & ThinkerFlags.Dead ) != 0 ) {
@@ -437,7 +437,7 @@ namespace Renown.Thinkers {
 				Target = null;
 
 				if ( Fear > 80 ) {
-					Bark( BarkType.NeedBackup );
+					Bark( BarkType.Curse, BarkType.Quiet );
 				}
 				// once we've lost the target for a long period of time, resume patrol routes with a little more suspicion
 				PatrolRoute = NodeCache.FindClosestRoute( Worker.GlobalPosition );
@@ -449,7 +449,11 @@ namespace Renown.Thinkers {
 				Worker.SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
 
 				// a little more on edge
-				Fear += 10;
+				if ( Target.HasTrait( TraitType.Cruel ) ) {
+					Fear += Renown.Traits.Cruel.GetFearBias();
+				} else {
+					Fear += 4;
+				}
 			}
 			private void OnTargetMoveTimerTimeout() {
 				// "target's pinned!"

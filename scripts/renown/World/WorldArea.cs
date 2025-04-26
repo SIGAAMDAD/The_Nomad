@@ -42,6 +42,7 @@ namespace Renown.World {
 			}
 			PlayerStatus = true;
 			EmitSignalPlayerEntered();
+			GD.Print( "Player entered area " + AreaName );
 		}
 		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 			Player player = body as Player;

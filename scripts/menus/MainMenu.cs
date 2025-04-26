@@ -8,6 +8,7 @@ public partial class MainMenu : Control {
 		Multiplayer,
 		Settings,
 		Mods,
+		Credits,
 		Quit,
 
 		Count
@@ -38,6 +39,8 @@ public partial class MainMenu : Control {
 	public delegate void ModsMenuEventHandler();
 	[Signal]
 	public delegate void CoopMenuEventHandler();
+	[Signal]
+	public delegate void CreditsMenuEventHandler();
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
 
@@ -229,6 +232,16 @@ public partial class MainMenu : Control {
 		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
 		ModsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
 		ModsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
+
+		Button CreditsButton = GetNode<Button>( "VBoxContainer/CreditsButton" );
+		CreditsButton.SetProcess( false );
+		CreditsButton.SetProcessInternal( false );
+		CreditsButton.SetProcessUnhandledInput( false );
+		CreditsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
+		CreditsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
+		CreditsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
+		CreditsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
+		CreditsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
 		ExitButton.SetProcess( false );

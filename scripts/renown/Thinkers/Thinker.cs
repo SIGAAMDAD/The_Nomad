@@ -4,6 +4,7 @@ using Renown.World;
 using Renown.World.Buildings;
 using Renown.Thinkers.Occupations;
 using System;
+using System.Linq.Expressions;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -266,9 +267,9 @@ namespace Renown.Thinkers {
 			ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
-			ProcessMode = ProcessModeEnum.Pausable;
-
 			Job.OnPlayerEnteredArea();
+
+			Visible = true;
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
@@ -507,9 +508,15 @@ namespace Renown.Thinkers {
 				}
 				break; }
 			case ThinkerRequirements.Energy:
-				SetNavigationTarget( Home.GlobalPosition );
-				ActionPlan.Enqueue( ThinkerAction.MovingToPoint );
-				ActionPlan.Enqueue( ThinkerAction.Sleep );
+				if ( Home == null ) {
+					
+				}
+				else {
+					GD.Print( "heading home..." );
+					SetNavigationTarget( Home.GlobalPosition );
+					ActionPlan.Enqueue( ThinkerAction.MovingToPoint );
+					ActionPlan.Enqueue( ThinkerAction.Sleep );
+				}
 				break;
 			case ThinkerRequirements.Water:
 				break;
@@ -725,35 +732,9 @@ namespace Renown.Thinkers {
 
 			base._Process( delta );
 
-//			lock ( LockObject ) {
-//				System.Threading.Monitor.Pulse( LockObject );
-//			}
 			RenownProcess();
-		}
-
-		/// <summary>
-		/// Runs more specific and detailed interactions when the player is in the area.
-		/// </summary>
-		/// <param name="delta"></param>
-		private void Think( float delta ) {
-		}
-		
-		/// <summary>
-		/// Processes various relations, debts, etc. to run the renown system per entity.
-		/// expensive, but not animations and very little godot engine calls will be present.
-		/// </summary>
-		private void RenownProcess() {
-			Job.ProcessAnimations();
-			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-
-			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
-//				return;
-			}
-
-			Work( this );
 
 			// evaluate which action has the highest priority, used as an override
-			/*
 			ThinkerRequirements focus = ThinkerRequirements.Count;
 			float highest = float.MinValue;
 			foreach( var state in Requirements ) {
@@ -771,13 +752,35 @@ namespace Renown.Thinkers {
 				CreateActionPlan();
 				return;
 			}
-			*/
 
-//			if ( CurrentAction != ThinkerAction.None ) {
-//				Actions[ CurrentAction ].Invoke( this );
-//			} else {
-//				CreateActionPlan();
-//			}
+			if ( CurrentAction != ThinkerAction.None ) {
+				Actions[ CurrentAction ].Invoke( this );
+			} else {
+				CreateActionPlan();
+			}
+		}
+
+		private void CheckContracts() {
+			foreach ( var relation in RelationCache ) {
+				if ( GetRelationStatus( relation.Key ) > RelationStatus.Dislikes ) {
+					// we've got a grudge
+					
+				}
+			}
+		}
+
+		/// <summary>
+		/// Processes various relations, debts, etc. to run the renown system per entity.
+		/// expensive, but not animations and very little godot engine calls will be present.
+		/// </summary>
+		private void RenownProcess() {
+			Job.ProcessAnimations();
+			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
+
+			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
+				return;
+			}
+			CheckContracts();
 		}
 
 		// loud sound

@@ -41,10 +41,7 @@ namespace Renown {
 
 		public abstract string GetTraitName();
 		public abstract TraitType GetTraitType();
-
-		public abstract sbyte GetFearBias();
-		public abstract sbyte GetTrustBias();
-
+		
 		public abstract bool Conflicts( Trait other );
 		public abstract bool Conflicts( TraitType other );
 		public abstract bool Agrees( Trait other );

@@ -6,8 +6,8 @@ namespace Renown.Traits {
 		public override string GetTraitName() => "WarCriminal";
 		public override TraitType GetTraitType() => TraitType.WarCriminal;
 
-		public override sbyte GetFearBias() => 80;
-		public override sbyte GetTrustBias() => -50;
+		public static sbyte GetFearBias() => 80;
+		public static sbyte GetTrustBias() => -50;
 
 		public override bool Conflicts( Trait other ) {
 			if ( other.GetTraitType() == TraitType.Honorable || other.GetTraitType() == TraitType.Merciful ) {

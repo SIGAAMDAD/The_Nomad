@@ -3,9 +3,20 @@ using System.Collections.Generic;
 using Renown.World;
 
 public enum ContractType {
+	/// <summary>
+	/// fixed-price bounty, most usual target is a politician
+	/// </summary>
 	Assassination,
+
 	Kidnapping,
 	Extortion,
+	
+	/// <summary>
+	/// an assassination but more for less important entities, this
+	/// can include the player.
+	/// 
+	/// the price of a bounty can and most likely will increase over time
+	/// </summary>
 	Bounty,
 	
 	Count
@@ -31,7 +42,12 @@ namespace Renown {
 		// not readonly to allow extensions
 		protected WorldTimestamp DueDate;
 		
-		protected uint Pay = 0;
+		/// <summary>
+		/// the total amount of money the mercenary can get out of the deal.
+		/// this value can change with the value of the target, like a bounty
+		/// for instance.
+		/// </summary>
+		protected float TotalPay = 0.0f;
 		
 		/// <summary>
 		/// the designated place where the merc can operate in.
@@ -41,14 +57,72 @@ namespace Renown {
 		private WorldArea CollateralArea;
 		
 		public Contract( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
-			uint basePay, WorldArea area, Object contractor, Faction guild )
+			float basePay, WorldArea area, Object contractor, Faction guild )
 		{
+			Title = name;
+			Flags = flags;
 			Contractor = contractor;
 			Guild = guild;
+			TotalPay = basePay;
+			CollateralArea = area;
+
+			GD.Print( string.Format( "Contract {0} created, [type:{1}] [flags:[2]], [contractor:{3}], [guild:{4}], [basePay:{5}]", name, type, flags, contractor, guild, basePay ) );
+		}
+
+		/// <summary>
+		/// calculates the cost of a generic contract with the given values,
+		/// doesn't however take into account how the pay might change over time
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <param name="type"></param>
+		/// <param name="duedate"></param>
+		/// <param name="area"></param>
+		/// <returns></returns>
+		public static float CalculateCost( ContractFlags flags, ContractType type, WorldTimestamp duedate, WorldArea area, Object target = null ) {
+			float cost;
+			
+			switch ( type ) {
+			case ContractType.Assassination: {
+				cost = 160.0f;
+				if ( target is Entity entity && entity != null ) {
+					cost *= entity.GetRenownScore();
+				} else {
+					Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Assassination, but target {0} isn't an entity", target ) );
+				}
+				break; }
+			case ContractType.Bounty: {
+				if ( target is Entity entity && entity != null ) {
+					cost = entity.GetRenownScore();
+				} else {
+					Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Bounty, but target {0} isn't an entity", target ) );
+					return 0.0f;
+				}
+				break; }
+			default:
+				Console.PrintError( string.Format( "Contract.CalculateCost: invalid contract type {0}", type ) );
+				return 0.0f;
+			};
+
+			//
+			// calculate flags
+			//
+			if ( ( flags & ContractFlags.Clean ) != 0 ) {
+				cost += 2000.0f;
+			}
+			if ( ( flags & ContractFlags.Massacre ) != 0 ) {
+				// a lot of cleanup
+				cost += 1000.0f;
+			}
+			if ( ( flags & ContractFlags.Ghost ) != 0 ) {
+				cost += 2500.0f;
+			} else if ( ( flags & ContractFlags.Silent ) != 0 ) {
+				cost += 3500.0f;
+			}
+
+			return cost;
 		}
 
 		public virtual void Save() {
-
 		}
 		public virtual void Load() {
 		}

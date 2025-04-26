@@ -45,7 +45,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_btkcq"]
 radius = 21.0238
 
-[node name="Checkpoint" type="Area2D" groups=["Archive"]]
+[node name="Checkpoint" type="Area2D" groups=["Archive", "Checkpoints"]]
 process_priority = -1
 process_physics_priority = -4
 script = ExtResource("1_ihm5l")
