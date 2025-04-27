@@ -25,6 +25,18 @@ public partial class SteamLobby : Node {
 		Count
 	};
 
+	public class NetworkNode {
+		public readonly Node Node;
+		public readonly Action Send;
+		public readonly Action<System.IO.BinaryReader> Receive;
+
+		public NetworkNode( Node node, Action send, Action<System.IO.BinaryReader> receive ) {
+			Node = node;
+			Send = send;
+			Receive = receive;
+		}
+	};
+
 	private static SteamLobby _Instance;
 	public static SteamLobby Instance => _Instance;
 	
@@ -70,6 +82,10 @@ public partial class SteamLobby : Node {
 	private CSteamID ThisSteamID = CSteamID.Nil;
 	private int ThisSteamIDIndex = 0;
 
+	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
+	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
+	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
+
 	[Signal]
 	public delegate void ChatMessageReceivedEventHandler( ulong senderSteamId, string message );
 	[Signal]
@@ -85,22 +101,9 @@ public partial class SteamLobby : Node {
 	[Signal]
 	public delegate void StartGameEventHandler();
 
-	public class NetworkNode {
-		public readonly Node Node;
-		public readonly Action Send;
-		public readonly Action<System.IO.BinaryReader> Receive;
-
-		public NetworkNode( Node node, Action send, Action<System.IO.BinaryReader> receive ) {
-			Node = node;
-			Send = send;
-			Receive = receive;
-		}
-	};
-
-	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
-	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
-	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
-
+	public NetworkPlayer GetPlayer( CSteamID userId ) {
+		return PlayerCache[ userId.ToString() ].Node as NetworkPlayer;
+	}
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
 		PlayerCache.TryAdd( userId.ToString(), callbacks );
@@ -530,7 +533,7 @@ public partial class SteamLobby : Node {
 
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 		
-		CachedPacket = new byte[ 1024 ];
+		CachedPacket = new byte[ 8192 ];
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
@@ -540,9 +543,10 @@ public partial class SteamLobby : Node {
 		SetPhysicsProcess( false );
 		SetProcessInternal( false );
 		SetPhysicsProcessInternal( false );
-		
+
 		ThisSteamID = SteamManager.GetSteamID();
 	}
+
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 

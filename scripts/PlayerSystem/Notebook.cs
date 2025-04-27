@@ -15,9 +15,9 @@ namespace PlayerSystem {
 		private Label ItemEffect;
 
 		private VBoxContainer StackList;
-		private TabBar Inventory;
+		private TabBar Backpack;
 
-		private readonly Godot.Vector2 InventoryItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+		private readonly Godot.Vector2 BackpackItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
 
 		private HBoxContainer ContractClonerContainer;
 		private VBoxContainer ContractList;
@@ -39,39 +39,39 @@ namespace PlayerSystem {
 
 			_Owner = GetParent<HeadsUpDisplay>().GetPlayerOwner();
 
-			Inventory = GetNode<TabBar>( "TabContainer/Inventory" );
-			Inventory.SetProcess( false );
-			Inventory.SetProcessInternal( false );
+			Backpack = GetNode<TabBar>( "TabContainer/Backpack" );
+			Backpack.SetProcess( false );
+			Backpack.SetProcessInternal( false );
 
-			StackList = Inventory.GetNode<VBoxContainer>( "MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner" );
+			StackList = Backpack.GetNode<VBoxContainer>( "MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner" );
 			StackList.SetProcess( false );
 			StackList.SetProcessInternal( false );
 
-			ItemName = Inventory.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
+			ItemName = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
 			ItemName.SetProcess( false );
 			ItemName.SetProcessInternal( false );
 
-			ItemType = Inventory.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
+			ItemType = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
 			ItemType.SetProcess( false );
 			ItemType.SetProcessInternal( false );
 
-			ItemCount = Inventory.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
+			ItemCount = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
 			ItemCount.SetProcess( false );
 			ItemCount.SetProcessInternal( false );
 
-			ItemStackMax = Inventory.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
+			ItemStackMax = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
 			ItemStackMax.SetProcess( false );
 			ItemStackMax.SetProcessInternal( false );
 
-			ItemIcon = Inventory.GetNode<TextureRect>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
+			ItemIcon = Backpack.GetNode<TextureRect>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
 			ItemIcon.SetProcess( false );
 			ItemIcon.SetProcessInternal( false );
 
-			ItemDescription = Inventory.GetNode<RichTextLabel>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
+			ItemDescription = Backpack.GetNode<RichTextLabel>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
 			ItemDescription.SetProcess( false );
 			ItemDescription.SetProcessInternal( false );
 
-			ItemEffect = Inventory.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
+			ItemEffect = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
 			ItemEffect.SetProcess( false );
 			ItemEffect.SetProcessInternal( false );
 
@@ -115,8 +115,8 @@ namespace PlayerSystem {
 			return 0;
 		}
 
-		public void OnShowInventory() {
-			Inventory.Visible = true;
+		public void OnShowBackpack() {
+			Backpack.Visible = true;
 
 			foreach ( var child in StackList.GetChildren() ) {
 				foreach ( var image in child.GetChildren() ) {
@@ -133,18 +133,18 @@ namespace PlayerSystem {
 			StackList.AddChild( row );
 
 			foreach ( var stack in _Owner.GetAmmoStacks() ) {
-				row = AddAmmoStackToInventory( row, stack.Value );
+				row = AddAmmoStackToBackpack( row, stack.Value );
 			}
 			foreach ( var stack in _Owner.GetWeaponStack() ) {
-				row = AddWeaponToInventory( row, stack.Value );
+				row = AddWeaponToBackpack( row, stack.Value );
 			}
 //			foreach ( var stack in _Owner.GetInventory().Stacks ) {
-//				row = AddItemToInventory( row, stack );
+//				row = AddItemToBackpack( row, stack );
 //			}
 
-			Inventory.Visible = true;
+			Backpack.Visible = true;
 		}
-		private void OnInventoryItemSelected( InputEvent guiEvent, TextureRect item ) {
+		private void OnBackpackItemSelected( InputEvent guiEvent, TextureRect item ) {
 			if ( !item.HasMeta( "item_id" ) || guiEvent is not InputEventMouseButton ) {
 				return;
 			} else if ( ( (InputEventMouseButton)guiEvent ).ButtonIndex != MouseButton.Left ) {
@@ -185,7 +185,7 @@ namespace PlayerSystem {
 			ItemStackMax.Text = ( (int)itemType.Get( "max_stack" ) ).ToString();
 		}
 
-		private HBoxContainer AddItemToInventory( HBoxContainer row, Resource stack ) {
+		private HBoxContainer AddItemToBackpack( HBoxContainer row, Resource stack ) {
 			if ( row.GetChildCount() == 4 ) {
 				row = new HBoxContainer();
 				StackList.AddChild( row );
@@ -194,15 +194,15 @@ namespace PlayerSystem {
 			TextureRect item = new TextureRect();
 			row.AddChild( item );
 
-			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnInventoryItemSelected( inputEvent, item ); } ) );
+			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
 			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)stack.Get( "item_id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
+			item.CustomMinimumSize = BackpackItemMinimumSize;
 			item.SetMeta( "item_id", (string)stack.Get( "item_id" ) );
 
 			return row;
 		}
-		private HBoxContainer AddAmmoStackToInventory( HBoxContainer row, AmmoStack stack ) {
+		private HBoxContainer AddAmmoStackToBackpack( HBoxContainer row, AmmoStack stack ) {
 			if ( row.GetChildCount() == 4 ) {
 				row = new HBoxContainer();
 				StackList.AddChild( row );
@@ -211,15 +211,15 @@ namespace PlayerSystem {
 			TextureRect item = new TextureRect();
 			row.AddChild( item );
 
-			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnInventoryItemSelected( inputEvent, item ); } ) );
+			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
 			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)stack.AmmoType.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
+			item.CustomMinimumSize = BackpackItemMinimumSize;
 			item.SetMeta( "item_id", (string)stack.AmmoType.Get( "id" ) );
 
 			return row;
 		}
-		private HBoxContainer AddWeaponToInventory( HBoxContainer row, WeaponEntity weapon ) {
+		private HBoxContainer AddWeaponToBackpack( HBoxContainer row, WeaponEntity weapon ) {
 			if ( row.GetChildCount() == 4 ) {
 				row = new HBoxContainer();
 				StackList.AddChild( row );
@@ -229,10 +229,10 @@ namespace PlayerSystem {
 			row.AddChild( item );
 			row.Show();
 
-			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnInventoryItemSelected( inputEvent, item ); } ) );
+			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
 			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)weapon.Data.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
-			item.CustomMinimumSize = InventoryItemMinimumSize;
+			item.CustomMinimumSize = BackpackItemMinimumSize;
 			item.SetMeta( "item_id", (string)weapon.Data.Get( "id" ) );
 			item.Show();
 

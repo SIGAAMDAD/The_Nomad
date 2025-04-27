@@ -46,6 +46,7 @@ public static class MultiplayerMapManager {
 
 		MapCache = new System.Collections.Generic.Dictionary<string, MapData>();
 		for ( int i = 0; i < mapList.Count; i++ ) {
+			Console.PrintLine( string.Format( "...found map {0}", mapList[i] ) );
 			Resource map = ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace );
 			if ( map != null ) {
 				MapCache.Add( (string)map.Get( "_name" ), new MapData( map ) );

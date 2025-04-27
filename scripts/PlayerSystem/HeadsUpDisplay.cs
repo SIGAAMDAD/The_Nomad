@@ -515,7 +515,7 @@ namespace PlayerSystem {
 
 			NoteBook.ProcessMode = ProcessModeEnum.Pausable;
 			NoteBook.Visible = true;
-			NoteBook.OnShowInventory();
+			NoteBook.OnShowBackpack();
 		}
     };
 };

@@ -40,7 +40,7 @@ public partial class MultiplayerData : Node2D {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
 			}
-			Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
+			NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
 			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
 			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
@@ -63,7 +63,7 @@ public partial class MultiplayerData : Node2D {
 			return;
 		}
 		
-		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
+		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
 		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
 		player.Set( "MultiplayerId", (ulong)userId );
 		player.Call( "SetOwnerId", (ulong)userId );

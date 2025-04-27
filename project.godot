@@ -89,6 +89,10 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="The Nomad"
 
+[editor]
+
+export/convert_text_resources_to_binary=false
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/BugReporter/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/questify/plugin.cfg")
@@ -230,7 +234,7 @@ general/add_quests_to_pot_generation=true
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
-driver/threads/thread_model=2
+driver/threads/thread_model=0
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true

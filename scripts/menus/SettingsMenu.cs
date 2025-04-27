@@ -116,16 +116,14 @@ public partial class SettingsMenu : Control {
 		case (int)WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.BorderlessFullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		};
 
-//		UpdateWindowScale();
+		UpdateWindowScale();
 	}
 	private void OnSaveSettingsButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;

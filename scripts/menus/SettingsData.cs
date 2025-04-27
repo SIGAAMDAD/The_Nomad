@@ -168,6 +168,87 @@ public partial class SettingsData : Control {
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
 	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
 
+	private void UpdateWindowScale() {
+		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
+		Godot.Vector2I windowSize = GetWindow().GetSizeWithDecorations();
+		GetWindow().SetImePosition( centerScreen - windowSize / 2 );
+	}
+	private void ApplyVideoSettings() {
+		switch ( VSyncMode ) {
+		case DisplayServer.VSyncMode.Disabled:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Disabled );
+			break;
+		case DisplayServer.VSyncMode.Adaptive:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Adaptive );
+			break;
+		case DisplayServer.VSyncMode.Enabled:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
+			break;
+		};
+
+		Rid viewport = GetTree().Root.GetViewportRid();
+		switch ( AntiAliasing ) {
+		case AntiAliasing.None:
+			RenderingServer.ViewportSetUseTaa( viewport, false );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
+			break;
+		case AntiAliasing.FXAA:
+			RenderingServer.ViewportSetUseTaa( viewport, false );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
+			break;
+		case AntiAliasing.MSAA_2x:
+			RenderingServer.ViewportSetUseTaa( viewport, false );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa2X );
+			break;
+		case AntiAliasing.MSAA_4x:
+			RenderingServer.ViewportSetUseTaa( viewport, false );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa4X );
+			break;
+		case AntiAliasing.MSAA_8x:
+			RenderingServer.ViewportSetUseTaa( viewport, false );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa8X );
+			break;
+		case AntiAliasing.TAA:
+			RenderingServer.ViewportSetUseTaa( viewport, true );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
+			break;
+		case AntiAliasing.FXAA_and_TAA:
+			RenderingServer.ViewportSetUseTaa( viewport, true );
+			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
+			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
+			break;
+		};
+
+		switch ( WindowMode ) {
+		case WindowMode.Windowed:
+			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
+			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			break;
+		case WindowMode.BorderlessWindowed:
+			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
+			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			break;
+		case WindowMode.Fullscreen:
+			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
+			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
+			break;
+		case WindowMode.BorderlessFullscreen:
+			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
+			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
+			break;
+		};
+
+//		UpdateWindowScale();
+	}
+
 	private static void LoadAudioSettings( IDictionary<string, string> config ) {
 		EffectsOn = Convert.ToBoolean( config[ "Audio:SFXEnabled" ] );
 		SetEffectsVolume( (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] ) );
@@ -254,6 +335,8 @@ public partial class SettingsData : Control {
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
+
+		Instance.ApplyVideoSettings();
 	}
 	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Video]" );

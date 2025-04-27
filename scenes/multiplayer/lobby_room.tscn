@@ -70,14 +70,9 @@ size_flags_horizontal = 4
 text = "CLONER PLAYER"
 
 [node name="KickButton" type="Button" parent="MarginContainer/PlayerList/ClonerContainer"]
-modulate = Color(1, 1, 0, 1)
-layout_mode = 2
-text = "KICK"
-
-[node name="BanButton" type="Button" parent="MarginContainer/PlayerList/ClonerContainer"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-text = "BAN"
+text = "KICK_BUTTON"
 
 [node name="StartGameButton" type="Button" parent="."]
 layout_mode = 1

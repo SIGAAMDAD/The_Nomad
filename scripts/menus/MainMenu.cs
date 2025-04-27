@@ -268,6 +268,7 @@ public partial class MainMenu : Control {
 				MultiplayerButton,
 				SettingsButton,
 				ModsButton,
+				CreditsButton,
 				ExitButton
 			];
 			OnButtonFocused( 0 );
@@ -278,6 +279,7 @@ public partial class MainMenu : Control {
 				MultiplayerButton,
 				SettingsButton,
 				ModsButton,
+				CreditsButton,
 				ExitButton
 			];
 			OnButtonFocused( 0 );

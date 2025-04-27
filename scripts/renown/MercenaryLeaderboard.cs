@@ -1,3 +1,4 @@
+using Godot;
 using Multiplayer;
 using Steamworks;
 using System;
@@ -41,7 +42,13 @@ namespace Renown {
 		private static CallResult<LeaderboardScoresDownloaded_t> OnLeaderboardScoresDownloaded;
 		
 		private static void OnFindLeaderboard( LeaderboardFindResult_t pCallback, bool bIOFailure ) {
+			if ( pCallback.m_bLeaderboardFound == 0 ) {
+				Console.PrintError( "[STEAM] Error finding leaderboard!" );
+				return;
+			}
 			hLeaderboard = pCallback.m_hSteamLeaderboard;
+
+			FetchLeaderboardData();
 		}
 		private static void OnScoreUploaded( LeaderboardScoreUploaded_t pCallback, bool bIOFailure ) {
 			if ( pCallback.m_bSuccess == 0 ) {
@@ -64,24 +71,27 @@ namespace Renown {
 		}
 		
 		private static void FetchLeaderboardData() {
+			Console.PrintLine( "Found leaderboard." );
+
 			LeaderboardEntryCount = SteamUserStats.GetLeaderboardEntryCount( hLeaderboard );
 			
-			LeaderboardData.Clear();
 			LeaderboardData = new Dictionary<int, LeaderboardEntry>( LeaderboardEntryCount );
-			
+
+			Console.PrintLine( string.Format( "Downloading {0} results...", LeaderboardEntryCount ) );
+
 			SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, LeaderboardEntryCount );
 			OnLeaderboardScoresDownloaded.Set( handle );
 		}
 		
 		public static void Init() {
+			Console.PrintLine( "Initializing Global Mercenary Leaderboard..." );
+
 			OnLeaderboardFindResult = CallResult<LeaderboardFindResult_t>.Create( OnFindLeaderboard );
 			OnLeaderboardScoreUploaded = CallResult<LeaderboardScoreUploaded_t>.Create( OnScoreUploaded );
 			OnLeaderboardScoresDownloaded = CallResult<LeaderboardScoresDownloaded_t>.Create( OnScoreDownloaded );
-			
-			SteamAPICall_t handle = SteamUserStats.FindLeaderboard( "Global Mercenary Leaderboard" );
+
+			SteamAPICall_t handle = SteamUserStats.FindLeaderboard( "GlobalScoreboard" );
 			OnLeaderboardFindResult.Set( handle );
-			
-			FetchLeaderboardData();
 		}
 
 		/// <summary>

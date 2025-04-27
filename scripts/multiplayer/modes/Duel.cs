@@ -13,16 +13,16 @@ namespace Multiplayer.Modes {
 		private Node2D Player2Spawn;
 		private DuelOverlay Overlay;
 
-		private NetworkWriter SyncObject = new NetworkWriter( 16 );
+		private NetworkWriter SyncObject = new NetworkWriter( 20 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
-			ThisPlayer.BlockInput( true );
+			ThisPlayer.BlockInput( false );
 		}
 		public void OnRoundEnd() {
 			GD.Print( "Beginning new dueling round..." );
 
-			ThisPlayer.BlockInput( true );
+			ThisPlayer?.BlockInput( true );
 
 			if ( RoundIndex >= MaxRounds ) {
 				EmitSignal( "ShowScoreboard" );
@@ -64,10 +64,24 @@ namespace Multiplayer.Modes {
 		}
 
 		public override void SpawnPlayer( Renown.Entity player ) {
-			ThisPlayer = player as Player;
-			if ( ThisPlayer != null ) {
-				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-				ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+			if ( SteamLobby.Instance.IsOwner() ) {
+				if ( player is NetworkPlayer node && node != null ) {
+					node.GlobalPosition = Player2Spawn.GlobalPosition;
+					node.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+				} else if ( player is Player owner && owner != null ) {
+					ThisPlayer = owner;
+					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
+					ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+				}
+			} else {
+				if ( player is NetworkPlayer node && node != null ) {
+					node.GlobalPosition = Player1Spawn.GlobalPosition;
+					node.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+				} else if ( player is Player owner && owner != null ) {
+					ThisPlayer = owner;
+					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
+					ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+				}
 			}
 		}
 

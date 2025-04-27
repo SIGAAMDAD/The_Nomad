@@ -97,7 +97,10 @@ public class ResourceCache {
 		Console.PrintLine( "Loading sound effects..." );
 
 		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
-		GlobalEconomy.Init();
+
+		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+			GlobalEconomy.Init();
+		}
 
 		SceneLoadThread?.Start();
 

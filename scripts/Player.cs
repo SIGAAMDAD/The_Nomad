@@ -80,7 +80,6 @@ public partial class Player : Entity {
 	private const float JUMP_VELOCITY = -400.0f;
 
 	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
-	private readonly Godot.Vector2 JumpkitSparksOffset = new Godot.Vector2( 255.0f, 0.0f );
 
 	private static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
@@ -132,7 +131,6 @@ public partial class Player : Entity {
 	private GpuParticles2D SlideEffect;
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
-	private AnimatedSprite2D JumpkitSparks;
 
 	private PackedScene BloodSplatter;
 
@@ -188,7 +186,7 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
+	private NetworkWriter SyncObject = new NetworkWriter( 4096 );
 
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
 	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
@@ -196,6 +194,7 @@ public partial class Player : Entity {
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
+	private int ComboCounter = 0;
 	private float ArmAngle = 0.0f;
 	private float DashBurnout = 0.0f;
 	private int InputDevice = 0;
@@ -400,14 +399,52 @@ public partial class Player : Entity {
 	}
 #endregion
 
-	public void SendPacket() {
+	private void ReceivePacket( System.IO.BinaryReader reader ) {
+		PlayerUpdateType type = (PlayerUpdateType)reader.ReadByte();
+		switch ( type ) {
+		case PlayerUpdateType.Damage: {
+			switch ( (PlayerDamageSource)reader.ReadByte() ) {
+			case PlayerDamageSource.Player:
+				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)reader.ReadUInt64() ), (float)reader.ReadDouble() );
+				break;
+			case PlayerDamageSource.NPC:
+				break;
+			case PlayerDamageSource.Environment:
+				break;
+			};
+			break; }
+		case PlayerUpdateType.SetSpawn: {
+			Godot.Vector2 position;
+			position.X = (float)reader.ReadDouble();
+			position.Y = (float)reader.ReadDouble();
+			GlobalPosition = position;
+			break; }
+		case PlayerUpdateType.Count:
+		default:
+			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
+			break;
+		};
+	}
+	private void SendPacket() {
 		if ( !SettingsData.GetNetworkingEnabled() ) {
 			return;
 		}
 
+		if ( Velocity != Godot.Vector2.Zero ) {
+			LeftArmAnimationState = PlayerAnimationState.Running;
+			RightArmAnimationState = PlayerAnimationState.Running;
+			TorsoAnimationState = PlayerAnimationState.Running;
+			LegAnimationState = PlayerAnimationState.Running;
+		} else {
+			LeftArmAnimationState = PlayerAnimationState.Idle;
+			RightArmAnimationState = PlayerAnimationState.Idle;
+			TorsoAnimationState = PlayerAnimationState.Idle;
+			LegAnimationState = PlayerAnimationState.Idle;
+		}
+
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (sbyte)CurrentWeapon );
-		if ( CurrentWeapon != -1 ) {
+		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
 			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
@@ -415,10 +452,8 @@ public partial class Player : Entity {
 			}
 		}
 		SyncObject.Write( GlobalPosition );
-		SyncObject.Write( (byte)TorsoAnimationState );
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
+		SyncObject.Write( ArmAngle );
 		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
@@ -603,7 +638,6 @@ public partial class Player : Entity {
 		WalkEffect.QueueFree();
 		DashEffect.QueueFree();
 		SlideEffect.QueueFree();
-		JumpkitSparks.QueueFree();
 
 		IdleTimer.QueueFree();
 		IdleAnimation.QueueFree();
@@ -669,6 +703,8 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
+
+		ComboCounter = 0;
 
 		Health -= nAmount;
 		Rage += nAmount;
@@ -749,13 +785,6 @@ public partial class Player : Entity {
 		DashLight.Hide();
 		DashEffect.Emitting = false;
 		Flags &= ~PlayerFlags.Dashing;
-		if ( LegAnimation.FlipH ) {
-			JumpkitSparks.FlipH = false;
-			JumpkitSparks.Offset = JumpkitSparksOffset;
-		} else {
-			JumpkitSparks.FlipH = false;
-			JumpkitSparks.Offset = Godot.Vector2.Zero;
-		}
 		DashCooldownTime.Start();
 	}
 	private void OnSlideTimeout() {
@@ -826,6 +855,7 @@ public partial class Player : Entity {
 		if ( WeaponSlots[ slot ].IsUsed() ) {
 			float soundLevel;
 			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
+			ComboCounter++;
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );
 		}
@@ -1484,10 +1514,6 @@ public partial class Player : Entity {
 		DashLight.SetProcess( false );
 		DashLight.SetProcessInternal( false );
 
-		JumpkitSparks = GetNode<AnimatedSprite2D>( "Animations/JumpkitSparks" );
-		JumpkitSparks.SetProcess( false );
-		JumpkitSparks.SetProcessInternal( false );
-
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
 		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
@@ -1509,7 +1535,7 @@ public partial class Player : Entity {
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
-				new SteamLobby.NetworkNode( this, SendPacket, null ) );
+				new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 		}
 
 		ProcessMode = ProcessModeEnum.Pausable;
@@ -1535,6 +1561,7 @@ public partial class Player : Entity {
 		}
 		if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
 			speed += 400;
+			LeftArmAnimationState = PlayerAnimationState.Sliding;
 		}
 
 		Godot.Vector2 velocity = Velocity;
@@ -1611,7 +1638,8 @@ public partial class Player : Entity {
 			}
 		}
 		if ( FrameDamage > 0.0f ) {
-			Rage += FrameDamage * delta;
+			// the more attacks we chain together without taking a hit, the more rage we get
+			Rage += FrameDamage * ComboCounter * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
 			HUD.GetRageBar().Rage = Rage;

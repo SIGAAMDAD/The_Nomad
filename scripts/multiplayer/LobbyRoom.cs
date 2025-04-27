@@ -5,9 +5,13 @@ using System.Threading;
 using System.Collections.Generic;
 
 public partial class LobbyRoom : Control {
+	public static LobbyRoom Instance;
+
 	private VBoxContainer PlayerList;
 	private Button StartGameButton;
 	private Button ExitLobbyButton;
+
+	private HBoxContainer CurrentFocus = null;
 	
 	private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -15,14 +19,32 @@ public partial class LobbyRoom : Control {
 	private Thread LoadThread;
 	private PackedScene LoadedLevel;
 	
-	private AudioStreamPlayer UIChannel;
+	public AudioStreamPlayer UIChannel;
 
 	private HBoxContainer ClonerContainer;
 	
 	private Dictionary<CSteamID, bool> StartGameVotes = null;
 
+	private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
+	private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
+
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
+
+	public void FocusPlayer( HBoxContainer focus ) {
+		if ( CurrentFocus != focus ) {
+			UnfocusPlayer( CurrentFocus );
+		}
+		( focus.GetChild( 0 ) as Label ).Modulate = FocusColor;
+		( focus.GetChild( 1 ) as Button ).Show();
+		CurrentFocus = focus;
+	}
+	public void UnfocusPlayer( HBoxContainer focus ) {
+		( focus.GetChild( 0 ) as Label ).Modulate = DefaultColor;
+		( focus.GetChild( 1 ) as Button).Hide();
+	}
+	public void KickPlayer( CSteamID steamId ) {
+	}
 
 	private void VoteStart( CSteamID senderId ) {
 		if ( !SteamLobby.Instance.IsOwner() ) {
@@ -119,7 +141,8 @@ public partial class LobbyRoom : Control {
 		container.SetProcess( false );
 		container.SetProcessInternal( false );
 		container.Show();
-		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
+		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		( container.GetChild( 1 ) as Button ).Hide();
 		PlayerList.AddChild( container );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
@@ -131,7 +154,7 @@ public partial class LobbyRoom : Control {
 		}
 
 		string username = SteamFriends.GetFriendPersonaName( userId );
-		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+		for ( int i = 1; i < PlayerList.GetChildCount(); i++ ) {
 			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
@@ -166,7 +189,7 @@ public partial class LobbyRoom : Control {
 	}
 
 	private bool PlayerIsInQueue( CSteamID userId ) {
-		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+		for ( int i = 1; i < PlayerList.GetChildCount(); i++ ) {
 			string username = SteamFriends.GetFriendPersonaName( userId );
 			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
@@ -185,6 +208,9 @@ public partial class LobbyRoom : Control {
 	}
 	private void OnButtonUnfocused( Button self ) {
 		self.Modulate = Unselected;
+	}
+
+	private void PlayerKicked( CSteamID senderId ) {
 	}
 
 	public override void _Ready() {
@@ -235,6 +261,7 @@ public partial class LobbyRoom : Control {
 		
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
 		
 		// add ourself
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
@@ -242,9 +269,8 @@ public partial class LobbyRoom : Control {
 		container.SetProcessInternal( false );
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		( container.GetChild( 1 ) as Button ).Hide();
 		PlayerList.AddChild( container );
-
-		PlayerList.AddChild( new HSeparator() );
 
 		SteamLobby.Instance.GetLobbyMembers();
 
@@ -258,7 +284,8 @@ public partial class LobbyRoom : Control {
 			container.SetProcess( false );
 			container.SetProcessInternal( false );
 			container.Show();
-			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
+			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+			( container.GetChild( 1 ) as Button ).Hide();
 			PlayerList.AddChild( container );
 
 			if ( i < SteamLobby.Instance.LobbyMemberCount - 1 ) {

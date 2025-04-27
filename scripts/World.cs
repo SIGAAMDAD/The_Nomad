@@ -76,6 +76,8 @@ public partial class World : Node2D {
 			}
 		}
 
+		MercenaryLeaderboard.Init();
+
 		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
 
 		Console.PrintLine( "...Finished loading game" );
@@ -208,7 +210,7 @@ public partial class World : Node2D {
 				break;
 			};
 
-			process.PriorityClass = ProcessPriorityClass.High;
+			process.PriorityClass = ProcessPriorityClass.AboveNormal;
 		}
 	}
 };

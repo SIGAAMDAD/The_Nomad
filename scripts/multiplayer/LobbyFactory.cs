@@ -22,19 +22,19 @@ public partial class LobbyFactory : Control {
 
 		GameModeList.Clear();
 		if ( data.ModeBloodbath ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Bloodbath ] );
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Bloodbath ], (int)Mode.GameMode.Bloodbath );
 		}
 		if ( data.ModeTeamBrawl ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.TeamBrawl ] );
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.TeamBrawl ], (int)Mode.GameMode.TeamBrawl );
 		}
 		if ( data.ModeCaptureTheFlag ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.CaptureTheFlag ] );
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.CaptureTheFlag ], (int)Mode.GameMode.CaptureTheFlag );
 		}
 		if ( data.ModeKingOfTheHill ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.KingOfTheHill ] );
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.KingOfTheHill ], (int)Mode.GameMode.KingOfTheHill );
 		}
 		if ( data.ModeDuel ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ] );
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ], (int)Mode.GameMode.Duel );
 		}
 		GameModeList.Selected = 0;
 	}
@@ -83,7 +83,7 @@ public partial class LobbyFactory : Control {
 		SteamLobby.Instance.SetLobbyName( LobbyName.Text );
 		SteamLobby.Instance.SetMaxMembers( (int)MaxPlayers.Value );
 		SteamLobby.Instance.SetMap( MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name );
-		SteamLobby.Instance.SetGameMode( (uint)GameModeList.Selected );
+		SteamLobby.Instance.SetGameMode( (uint)GameModeList.GetItemId( GameModeList.Selected ) );
 		SteamLobby.Instance.SetHostStatus( true );
 		GameConfiguration.GameMode = GameMode.Multiplayer;
 

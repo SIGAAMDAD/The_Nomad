@@ -223,8 +223,6 @@ public partial class WeaponEntity : Node2D {
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		AddChild( AudioChannel );
 
-		Icon = (Texture2D)Data.Get( "icon" );
-
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
 		Firemode = (FireMode)(uint)properties[ "firemode" ];
@@ -349,12 +347,15 @@ public partial class WeaponEntity : Node2D {
 			AddToGroup( "Archive" );
 		}
 
+		if ( Data == null ) {
+			Console.PrintError( "Cannot initialize WeaponEntity without a valid ItemDefinition (null)" );
+			return;
+		}
+
+		Icon = (Texture2D)Data.Get( "icon" );
+
 		if ( _Owner != null ) {
 			InitProperties();
-
-			return;
-		} else if ( Data == null ) {
-			Console.PrintError( "Cannot initialize WeaponEntity without a valid ItemDefinition (null)" );
 			return;
 		}
 
@@ -562,9 +563,14 @@ public partial class WeaponEntity : Node2D {
 		PlaySound( UseFirearmSfx );
 		
 		float damage = (float)properties[ "damage" ];
+		float frameDamage = damage;
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
 			if ( collision is Entity entity && entity != null ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
+				if ( distance > 80.0f ) {
+					// out of bleed range, no healing
+					frameDamage = 0.0f;
+				}
 				distance /= soundLevel;
 				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
 
@@ -576,7 +582,7 @@ public partial class WeaponEntity : Node2D {
 
 		EmitSignalUsed( this );
 
-		return 0.0f;
+		return frameDamage;
 	}
 	public float Use( Properties weaponMode, out float soundLevel, bool held = false ) {
 		soundLevel = 0.0f;

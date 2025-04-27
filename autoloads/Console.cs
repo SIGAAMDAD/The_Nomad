@@ -16,13 +16,13 @@ public partial class Console : Node {
 		Instance.CallDeferred( "remove_command", name );
 	}
 	public static void PrintLine( string text ) {
-		Instance.CallDeferred( "print_line", text );
+		Instance.CallDeferred( "print_line", text, true );
 	}
 	public static void PrintError( string text ) {
-		Instance.CallDeferred( "print_error", text );
+		Instance.CallDeferred( "print_error", text, true );
 	}
 	public static void PrintWarning( string text ) {
-		Instance.CallDeferred( "print_warning", text );
+		Instance.CallDeferred( "print_warning", text, true );
 	}
 };
 

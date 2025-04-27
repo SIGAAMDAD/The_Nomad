@@ -53,11 +53,10 @@ public partial class TitleMenu : Control {
 			LobbyBrowser.SetProcess( false );
 			LobbyBrowser.SetProcessInternal( false );
 			LobbyBrowser.SetProcessUnhandledInput( false );
-			LobbyBrowser.ProcessMode = ProcessModeEnum.Disabled;
 			LobbyFactory.SetProcess( false );
 			LobbyFactory.SetProcessInternal( false );
 			LobbyFactory.SetProcessUnhandledInput( false );
-			LobbyFactory.ProcessMode = ProcessModeEnum.Disabled;
+			MultiplayerMenu.ProcessMode = ProcessModeEnum.Disabled;
 			break;
 		case MenuState.Settings:
 			SettingsMenu.Hide();
