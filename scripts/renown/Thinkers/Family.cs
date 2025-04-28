@@ -312,21 +312,13 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		public static Family Create( Settlement location ) {
-			Random random = new Random();
-			SocietyRank rank;
-			for ( rank = SocietyRank.Lower; rank < SocietyRank.Upper; rank++ ) {
-				if ( location.GetPercentageOfSocietyRank( rank ) < location.GetSocietyRankMaxPercentage( rank ) ) {
-					break;
-				}
-			}
-
-			Family family = new Family( random, rank );
+		public static Family Create( Settlement location, SocietyRank rank ) {
+			Family family = new Family( new Random(), rank );
 
 			family.FamilyName = NameGenerator.GenerateLastName();
 			family.Name = string.Format( "{0}{1}", family.FamilyName, family.GetHashCode() );
 
-			location.AssignHouse( family );
+//			location.AssignHouse( family );
 			location.AddFamily( family );
 
 			GD.Print( "Family " + family.Name + " Generated:" );

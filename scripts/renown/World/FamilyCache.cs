@@ -65,13 +65,14 @@ namespace Renown.World {
 			}
 			return null;
 		}
-		public static Family GetFamily( Settlement settlement ) {
+		public static Family GetFamily( Settlement settlement, SocietyRank rank ) {
 			foreach ( var family in Instance.Families ) {
 				if ( family.Value.CanAddMember() ) {
 					return family.Value;
 				}
 			}
-			Family instance = Family.Create( settlement );
+
+			Family instance = Family.Create( settlement, rank );
 			Instance.Families.Add( instance.GetHashCode(), instance );
 			Instance.GetTree().Root.GetNode( "World/FamilyTrees" ).CallDeferred( "add_child", instance );
 			System.Threading.Interlocked.Increment( ref FamilyCount );

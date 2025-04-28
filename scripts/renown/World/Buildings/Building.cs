@@ -1,5 +1,4 @@
 using Godot;
-using Renown.Thinkers;
 
 namespace Renown.World.Buildings {
 	public enum BuildingType : uint {
@@ -28,8 +27,6 @@ namespace Renown.World.Buildings {
 		[Export]
 		protected BuildingState State;
 		[Export]
-		protected OccupationType LaborType;
-		[Export]
 		protected Settlement Location;
 
 		public int MaxLaborers;
@@ -38,9 +35,6 @@ namespace Renown.World.Buildings {
 
 		public BuildingType GetBuildingType() => Type;
 		public BuildingState GetState() => State;
-
-		public OccupationType GetLaborCategory() => LaborType;
-		public void SetLaborCategory( OccupationType type ) => LaborType = type;
 		
 		public bool IsHouse() => Type == BuildingType.House;
 		public bool IsBlacksmith() => Type == BuildingType.Blacksmith;

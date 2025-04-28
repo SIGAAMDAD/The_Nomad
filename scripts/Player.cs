@@ -464,7 +464,6 @@ public partial class Player : Entity {
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
-			mob.Alert( mob );
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -854,7 +853,9 @@ public partial class Player : Entity {
 		}
 		if ( WeaponSlots[ slot ].IsUsed() ) {
 			float soundLevel;
-			FrameDamage += WeaponSlots[ slot ].GetWeapon().Use( WeaponSlots[ slot ].GetWeapon().GetLastUsedMode(), out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
+			WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
+			weapon.SetAttackAngle( ArmAngle );
+			FrameDamage += weapon.Use( weapon.GetLastUsedMode(), out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			ComboCounter++;
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );
@@ -1759,7 +1760,7 @@ public partial class Player : Entity {
 
 		LastUsedArm = ArmRight;
 	}
-	public void PickupWeapon( WeaponEntity weapon ) {
+	public override void PickupWeapon( WeaponEntity weapon ) {
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			if ( !WeaponSlots[i].IsUsed() ) {
 				WeaponSlots[i].SetWeapon( weapon );

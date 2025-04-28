@@ -73,7 +73,7 @@ public partial class WeaponEntity : Node2D {
 	// c# integrated properties so that we aren't reaching into the engine api
 	// every time we want a constant
 	private Texture2D Icon;
-	private int MagazineSize;
+	private int MagazineSize = 0;
 	private AmmoType Ammunition = AmmoType.Light;
 	private MagazineType MagType = MagazineType.Invalid;
 	private FireMode Firemode = FireMode.Invalid;
@@ -83,22 +83,25 @@ public partial class WeaponEntity : Node2D {
 	private SpriteFrames BluntFramesRight;
 	private SpriteFrames BladedFramesLeft;
 	private SpriteFrames BladedFramesRight;
-	private float BladedRange;
-	private float BluntRange;
-	private float BladedDamage;
-	private float BluntDamage;
+	private float BladedRange = 0.0f;
+	private float BluntRange = 0.0f;
+	private float BladedDamage = 0.0f;
+	private float BluntDamage = 0.0f;
 	private AudioStream UseFirearmSfx;
 	private AudioStream UseBladedSfx;
 	private AudioStream UseBluntSfx;
 	private AudioStream ReloadSfx;
-	private float UseTime;
-	private float ReloadTime;
+	private float UseTime = 0.0f;
+	private float ReloadTime = 0.0f;
+	private float Weight = 0.0f;
+
+	private float AttackAngle = 0.0f;
 
 	private NodePath InitialPath;
 
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
-	private Player _Owner;
+	private Entity _Owner;
 	private Sprite2D IconSprite;
 
 	private Timer MuzzleFlashTimer;
@@ -130,6 +133,9 @@ public partial class WeaponEntity : Node2D {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
+	public float GetWeight() => Weight;
+	public float GetReloadTime() => ReloadTime;
+	public float GetUseTime() => UseTime;
 	public NodePath GetInitialPath() => InitialPath;
 	public void SetOwner( Player player ) => _Owner = player;
 	public WeaponState GetWeaponState() => CurrentState;
@@ -146,7 +152,10 @@ public partial class WeaponEntity : Node2D {
 
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
+	
+	public WeaponState GetCurrentState() => CurrentState;
 
+	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
 
 	private void PlaySound( AudioStream stream ) {
@@ -163,19 +172,19 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
-		if ( _Owner != null || body is not Player ) {
-			return;
+		if ( body is Entity entity && entity != null ) {
+			IconSprite?.QueueFree();
+
+			ReleasePickupArea();
+
+			_Owner = entity;
+			CallDeferred( "reparent", _Owner );
+			GlobalPosition = _Owner.GlobalPosition;
+			SetUseMode( DefaultMode );
+			InitProperties();
+
+			entity.PickupWeapon( this );
 		}
-		IconSprite?.QueueFree();
-
-		ReleasePickupArea();
-
-		_Owner = (Player)body;
-		CallDeferred( "reparent", _Owner );
-		GlobalPosition = _Owner.GlobalPosition;
-		SetUseMode( DefaultMode );
-		InitProperties();
-		_Owner.PickupWeapon( this );
 	}
 	private void OnMuzzleFlashTimerTimeout() {
 		if ( Firemode == FireMode.Automatic ) {
@@ -229,6 +238,7 @@ public partial class WeaponEntity : Node2D {
 		MagType = (MagazineType)(uint)properties[ "magazine_type" ];
 		MagazineSize = (int)properties[ "magsize" ];
 		Ammunition = (AmmoType)(uint)properties[ "ammo_type" ];
+		Weight = (float)properties[ "weight" ];
 
 		if ( (bool)properties[ "is_onehanded" ] ) {
 			PropertyBits |= Properties.IsOneHanded;
@@ -457,11 +467,13 @@ public partial class WeaponEntity : Node2D {
 			return false;
 		}
 
-		if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
-			_Owner.SetLastUsedArm( _Owner.GetWeaponHand( this ) );
-			
-			// I can't think of a single gun that doesn't take both hands to reload
-			_Owner.SetHandsUsed( Player.Hands.Both ); 
+		if ( _Owner is Player player && player != null ) {
+			if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
+				player.SetLastUsedArm( player.GetWeaponHand( this ) );
+
+				// I can't think of a single gun that doesn't take both hands to reload
+				player.SetHandsUsed( Player.Hands.Both ); 
+			}
 		}
 
 		if ( MagType == MagazineType.Breech && Ammo != null ) {
@@ -516,19 +528,18 @@ public partial class WeaponEntity : Node2D {
 		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 		// NOTE: correction, they WILL work like that eventually
 
-		float angle = _Owner.GetArmAngle();
-
 		CurrentMuzzleFlash = MuzzleFlashes[
 			RandomFactory.Next( 0, MuzzleFlashes.Count - 1 )
 		];
-		CurrentMuzzleFlash.Reparent( _Owner );
-		CurrentMuzzleFlash.Show();
-		CurrentMuzzleFlash.GlobalRotation = angle;
+//		CurrentMuzzleFlash.Reparent( _Owner );
+//		CurrentMuzzleFlash.Show();
+		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
 
 		MuzzleLight.Show();
 		
 		MuzzleFlashTimer.Start();
 
+		/*
 		float y = CurrentMuzzleFlash.Offset.Y;
 		if ( _Owner.GetLeftArm().Animations.FlipH ) {
 			CurrentMuzzleFlash.Offset = new Godot.Vector2( -160, y );
@@ -536,6 +547,7 @@ public partial class WeaponEntity : Node2D {
 			CurrentMuzzleFlash.Offset = new Godot.Vector2( 160, y );
 		}
 		CurrentMuzzleFlash.FlipH = _Owner.GetLeftArm().Animations.FlipH;
+		*/
 
 		if ( MagType == MagazineType.Cycle ) {
 			// ejecting shells
@@ -616,18 +628,16 @@ public partial class WeaponEntity : Node2D {
 		WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
 
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );
-		if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
-			if ( _Owner.GetLastUsedArm() == _Owner.GetLeftArm() ) {
-				_Owner.SetHandsUsed( Player.Hands.Left );
-			} else if ( _Owner.GetLastUsedArm() == _Owner.GetRightArm() ) {
-				_Owner.SetHandsUsed( Player.Hands.Right );
+		if ( _Owner is Player player && player != null ) {
+			if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
+				if ( player.GetLastUsedArm() == player.GetLeftArm() ) {
+					player.SetHandsUsed( Player.Hands.Left );
+				} else if ( player.GetLastUsedArm() == player.GetRightArm() ) {
+					player.SetHandsUsed( Player.Hands.Right );
+				}
 			}
 		}
 		CurrentState = WeaponState.Idle;
 		EmitSignalReloaded( this );
-	}
-
-	public WeaponState GetCurrentState() {
-		return CurrentState;
 	}
 };

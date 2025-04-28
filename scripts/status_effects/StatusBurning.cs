@@ -1,19 +1,16 @@
 using Godot;
-using System;
+using Renown;
 
 public partial class StatusBurning : StatusEffect {
-	private CharacterBody2D _Owner;
+	private Entity _Owner;
 
-	public StatusBurning( CharacterBody2D owner ) {
+	public StatusBurning( Entity owner ) {
 		_Owner = owner;
 	}
 
-	public override StatusEffectType GetEffectType() {
-		return StatusEffectType.Burning;
-	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		_Owner.Call( "Damage", 0.25f * (float)delta );
+		_Owner.Damage( null, 0.25f * (float)delta );
 	}
 };

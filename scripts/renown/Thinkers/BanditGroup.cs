@@ -7,13 +7,13 @@ namespace Renown.Thinkers {
 		{ }
 
 		public bool IsRouteOccupied( AIPatrolRoute route ) {
-			for ( int i = 0; i < Thinkers.Count; i++ ) {
-				if ( Thinkers[i] is Thinker mob && mob != null
-					&& ( mob.GetOccupation() as Thinker.Bandit ).GetPatrolRoute() == route )
-				{
-					return true;
-				}
-			}
+//			for ( int i = 0; i < Thinkers.Count; i++ ) {
+//				if ( Thinkers[i] is Thinker mob && mob != null
+//					&& ().GetPatrolRoute() == route )
+//				{
+//					return true;
+//				}
+//			}
 			return false;
 		}
 

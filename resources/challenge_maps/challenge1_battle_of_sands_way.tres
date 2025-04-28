@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dmsmguqm5xvff"]
+
+[ext_resource type="Script" uid="uid://dqkhu48wrja27" path="res://scripts/ChallengeMode/ChallengeMap.cs" id="1_0omcm"]
+
+[resource]
+script = ExtResource("1_0omcm")
+Name = &"CHALLENGE1_NAME"
+Description = &"CHALLENGE1_DESCRIPTION"
+MapName = &"battle_of_sands_way"
+Objective = &"CHALLENGE1_OBJECTIVE"
+QuestResource = null

@@ -7,7 +7,7 @@ namespace Renown.World {
 //		private static List<long> Threads = new List<long>();
 
 		private static void CreateThinker( Settlement location, int specificAge ) {
-			location.AddThinker( Thinker.Create( location, specificAge ) );
+//			location.AddThinker( Thinker.Create( location, specificAge ) );
 		}
 		public static void QueueThinker( Settlement location, int specificAge = -1 ) {
 			CreateThinker( location, specificAge );

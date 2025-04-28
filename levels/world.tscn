@@ -1,4 +1,4 @@
-[gd_scene load_steps=131 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=132 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -18,6 +18,7 @@
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="8_wqmfy"]
 [ext_resource type="Texture2D" uid="uid://jecbsx1vr8ps" path="res://textures/env/food/20_bagel.png" id="9_fgsnb"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
+[ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="9_q0seo"]
 [ext_resource type="Texture2D" uid="uid://b7ke3wj171lc6" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="10_3bhl6"]
 [ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="10_oxfhy"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
@@ -57,9 +58,9 @@
 [ext_resource type="Script" uid="uid://bxvargqmrd2aq" path="res://scripts/renown/Biome.cs" id="37_n2t61"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
 [ext_resource type="TileSet" uid="uid://cbjpm3df4cd0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
-[ext_resource type="Script" uid="uid://cg3unpmkqeo6f" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
+[ext_resource type="Script" uid="uid://dxoatt023r08b" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
 [ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
-[ext_resource type="Script" uid="uid://c1abw17p525cp" path="res://scripts/renown/World/Buildings/BuildingResourceProducer.cs" id="45_uh3ev"]
+[ext_resource type="Script" uid="uid://bvkaw30hb60x" path="res://scripts/renown/World/Buildings/BuildingResourceProducer.cs" id="45_uh3ev"]
 [ext_resource type="Script" uid="uid://cjys0gcmej7e2" path="res://scripts/renown/World/Marketplace.cs" id="46_woxng"]
 [ext_resource type="Script" uid="uid://2vcoap7j1gor" path="res://scripts/renown/World/MarketplaceSlot.cs" id="47_uh3ev"]
 [ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
@@ -7112,45 +7113,53 @@ Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House2")
 SocioEconomicStatus = 1
 IsPremade = true
 
-[node name="Thinkers" type="Node" parent="." groups=["Archive"]]
+[node name="Thinkers" type="Node" parent="." groups=["Archive", "Cities"]]
 script = ExtResource("44_1r2vu")
 
-[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
 position = Vector2(-87308, 53042)
+script = ExtResource("9_q0seo")
+ViewAngleAmount = 0.0
+LoseInterestTime = 0.0
+SightDetectionTime = 0.0
+SightDetectionSpeed = 0.0
+MaxViewDistance = 0.0
+DefaultWeapon = null
+DefaultAmmo = null
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House2")
-Occupation = 2
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 2
 Relations = {}
 Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
 
-[node name="Kasca Ollavan" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+[node name="Kasca Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
 position = Vector2(-87194, 53292)
+script = ExtResource("9_q0seo")
+ViewAngleAmount = 0.0
+LoseInterestTime = 0.0
+SightDetectionTime = 0.0
+SightDetectionSpeed = 0.0
+MaxViewDistance = 0.0
+DefaultWeapon = null
+DefaultAmmo = null
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House2")
-Occupation = 2
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 2
 Relations = {}
 Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
 
-[node name="Hafer Ollavan" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Location") instance=ExtResource("8_uh3ev")]
+[node name="Hafer Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
 position = Vector2(-87049, 53295)
+script = ExtResource("9_q0seo")
+ViewAngleAmount = 0.0
+LoseInterestTime = 0.0
+SightDetectionTime = 0.0
+SightDetectionSpeed = 0.0
+MaxViewDistance = 0.0
+DefaultWeapon = null
+DefaultAmmo = null
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House2")
-BotName = &""
-Occupation = 2
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 2
 Relations = {}
 Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
+Faction = NodePath("../../Factions/RockyBastards")
 
 [node name="Biomes" type="Node" parent="."]
 
@@ -7951,7 +7960,7 @@ shape = SubResource("RectangleShape2D_aebnb")
 position = Vector2(-16, 105)
 polygon = PackedVector2Array(-550, -428, -703, 132, -343, 559, 734, 665, 1025, -301, 375, -538)
 
-[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Settlements"]]
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
 position = Vector2(45472, -4116)
 script = ExtResource("25_qxdx5")
 Markets = []
@@ -8040,7 +8049,7 @@ WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
 TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(-56, 59)
 collision_layer = 19
 collision_mask = 18
@@ -8635,7 +8644,6 @@ script = ExtResource("45_uh3ev")
 ProduceType = 4
 ReplenishRate = 100.0
 Type = 3
-LaborType = 1
 Location = NodePath("../..")
 
 [node name="MainMarketplace" type="Area2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("TradingSpaces")]
@@ -8734,7 +8742,7 @@ autostart = true
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
@@ -8746,7 +8754,7 @@ TileMaps = []
 position = Vector2(-28043, -1759)
 polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []

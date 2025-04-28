@@ -24,6 +24,8 @@ namespace Renown.World.Buildings {
 		private float ItemGeneration = 0.0f;
 		private int Storage = 0;
 
+		private int WorkerCounter = 0;
+
 		public int GetStorage() => Storage;
 		public float GetPriority() => ReplenishRate;
 
@@ -48,15 +50,9 @@ namespace Renown.World.Buildings {
 			}
 			if ( hour - LastReplenishTime >= ReplenishInterval ) {
 				// TODO: send enforcers/mercs to make them work harder
-				int activeWorkers = 0;
-				for ( int i = 0; i < Workers.Count; i++ ) {
-					if ( Workers[i].GetState() == ThinkerState.Working ) {
-						activeWorkers++;
-					}
-				}
 				if ( Storage < MaxStorage ) {
-					int addAmount = (int)( ReplenishRate * activeWorkers );
-					Storage += (int)( ReplenishRate * activeWorkers );
+					int addAmount = (int)( ReplenishRate * WorkerCounter );
+					Storage += (int)( ReplenishRate * WorkerCounter );
 					GD.Print( "Replenished resource producer: " + addAmount );
 				}
 				LastReplenishTime = hour;

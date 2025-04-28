@@ -34,7 +34,7 @@ CREDITS_BUTTON,CREDITS
 EXTRAS_BUTTON,EXTRA MODES
 EXTRAS_MODE,EXTRAS
 
-COOP_BUTTON,SPLIT SCREEN MULTIPLAYER
+COOP_BUTTON,SPLITSCREEN
 MULTIPLAYER_BUTTON,MULTIPLAYER
 CHALLENGE_MODE_BUTTON,CHALLENGE MODE
 
@@ -95,3 +95,14 @@ RECENT_EVENTS_BUTTON,NOTES
 
 PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME,Too Fucking Angry To Die
 PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION,"Become literally too angry to die... When you die, if you have at least a quarter filled rage bar, you lose all of it and get full health back."
+
+CHALLENGE0_NAME,"The Golden Gate Massacre"
+CHALLENGE0_DESCRIPTION,"As the Galakan miltia grew weary and their forces dwindled, the Golden Gates, once a proud display of power and wealth, has become a crumbling mess overtaken by the Sortorian military."
+CHALLENGE0_OBJECTIVE,"Reach the watchtower at the far right end of the map and eliminate all enemies in the way in the shortest time possible."
+
+CHALLENGE1_NAME,"The Battle of Sand's Way"
+CHALLENGE1_DESCRIPTION,""
+
+CHALLENGE2_NAME,"Hellbreaker"
+CHALLENGE2_DESCRIPTION,"Slice past hoards of demons and devils as you claw your way through the pits of hell itself."
+CHALLENGE2_OBJECTIVE,"Kill all enemies that stand between you and each layer's door, descend to the bottom to face the Goddess of Death."

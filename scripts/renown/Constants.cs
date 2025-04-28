@@ -7,68 +7,6 @@ namespace Renown {
 	public static class Constants {
 		public static readonly float DAMAGE_VELOCITY = 420.0f;
 
-		public static readonly int JobChance_MercenaryGovernment = 60;
-
-		// initial jobs
-		public static readonly Dictionary<OccupationType, Dictionary<SocietyRank, int>> JobChances_SocioEconomicStatus = new Dictionary<OccupationType, Dictionary<SocietyRank, int>>{
-			{
-				OccupationType.None,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 72 },
-					{ SocietyRank.Middle, 28 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
-				OccupationType.Industry,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 90 },
-					{ SocietyRank.Middle, 20 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
-				OccupationType.Blacksmith,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 30 },
-					{ SocietyRank.Middle, 70 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
-				OccupationType.Gunsmith,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 30 },
-					{ SocietyRank.Middle, 70 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
-				OccupationType.Mercenary,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 44 },
-					{ SocietyRank.Middle, 50 },
-					{ SocietyRank.Upper, 6 }
-				}
-			},
-			{
-				OccupationType.Merchant,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 10 },
-					{ SocietyRank.Middle, 60 },
-					{ SocietyRank.Upper, 20 }
-				}
-			},
-			{
-				OccupationType.Politician,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 0 },
-					{ SocietyRank.Middle, 10 },
-					{ SocietyRank.Upper, 90 }
-				}
-			},
-		};
-
 		public static readonly Dictionary<ResourceType, Resource> RawResources = new Dictionary<ResourceType, Resource>{
 			{ ResourceType.Metal, ResourceLoader.Load( "res://resources/items/metal.tres" ) },
 			{ ResourceType.Wood, ResourceLoader.Load( "res://resources/items/wood.tres" ) },

@@ -34,7 +34,7 @@ public static class MultiplayerMapManager {
 				fileName = dir.GetNext();
 			}
 		} else {
-			GD.PushError( "An error occurred when trying to access path \"" + path + "\"" );
+			Console.PrintError( string.Format( "An error occurred when trying to access path \"{0}\"", path ) );
 		}
 	}
 

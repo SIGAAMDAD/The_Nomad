@@ -60,12 +60,6 @@ namespace Renown.World {
 			settlement.RequestedMoney -= OnSettlementRequestedFunds;
 		}
 		
-		public override void PayWorker( float nIncomeTax, float nAmount, Thinker thinker ) {
-			base.PayWorker( nIncomeTax, nAmount, thinker );
-			EconomyStats.IncomeTaxTotal += nIncomeTax;
-			EconomyStats.WagesPaidTotal += nAmount;
-		}
-
 		private void OnManageMoney() {
 			if ( WorldTimeManager.Day - LastCollectedTime < 7 ) {
 				return;
@@ -104,7 +98,7 @@ namespace Renown.World {
 				GD.Print( "\t\tNet Change: " + change );
 			}
 
-			GD.Print( "\tCurrent Funds: " + Money );
+			GD.Print( "\t\tCurrent Funds: " + Money );
 
 			EconomyStats.LastTotalIncrease = EconomyStats.TotalIncrease;
 			EconomyStats.LastTotalLost = EconomyStats.TotalLost;

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cxef0dey1t674"]
+
+[ext_resource type="Script" uid="uid://dqkhu48wrja27" path="res://scripts/ChallengeMode/ChallengeMap.cs" id="1_a1d2c"]
+
+[resource]
+script = ExtResource("1_a1d2c")
+Name = &"CHALLENGE0_NAME"
+Description = &"CHALLENGE0_DESCRIPTION"
+MapName = &"golden_gate_massacre"
+Objective = &"CHALLENGE0_OBJECTIVE"
+QuestResource = null

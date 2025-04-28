@@ -29,29 +29,4 @@ namespace Renown.Thinkers {
 	
 		Count
 	};
-	public enum MobState : sbyte {
-		Invalid = -1,
-		Guarding, // guarding a node
-	
-		// moving along a patrol link chain
-		PatrolStart,
-		Patrolling,
-	
-		Attacking,
-	
-		Scared, // Fear > 80
-		Investigating, // investigating a position
-
-		Count
-	};	
-	public enum DirType {
-		North,
-		NorthEast,
-		East,
-		SouthEast,
-		South,
-		SouthWest,
-		West,
-		NorthWest
-	};
 };

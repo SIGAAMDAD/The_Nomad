@@ -55,6 +55,7 @@ namespace Renown.Thinkers {
 
 		public NodePath GetHash() => GetPath();
 		public StringName GetObjectName() => Name;
+		public int GetMemberCount() => Thinkers.Count;
 
 		public float GetMoney() => 0.0f;
 		public void DecreaseMoney( float nAmount ) {
