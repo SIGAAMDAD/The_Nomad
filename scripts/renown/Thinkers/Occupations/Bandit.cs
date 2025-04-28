@@ -87,28 +87,16 @@ namespace Renown.Thinkers {
 
 				GuardPosition = worker.GlobalPosition;
 
-				Squad = GroupManager.GetGroup( GroupType.Bandit, worker.Faction, GuardPosition ) as BanditGroup;
-				Squad.AddThinker( Worker );
+				Worker.Animations = ResourceLoader.Load<PackedScene>( "res://resources/animations/thinkers/bandit/animations.tscn" ).Instantiate<Node2D>();
 
-				ProcessMode = ProcessModeEnum.Disabled;
-			}
+				Worker.HeadAnimations = Worker.Animations.GetNode<AnimatedSprite2D>( "HeadAnimations" );
+				Worker.ArmAnimations = Worker.Animations.GetNode<AnimatedSprite2D>( "ArmAnimations" );
 
-			private void Cache() {
-				Worker.HeadAnimations = new AnimatedSprite2D();
-				Worker.HeadAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/head.tres" );
-				Worker.HeadAnimations.ZIndex = 4;
-				Worker.Animations.CallDeferred( "add_child", Worker.HeadAnimations );
-
-				Worker.ArmAnimations = new AnimatedSprite2D();
-				Worker.ArmAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/arms.tres" );
-				Worker.ArmAnimations.ZIndex = 4;
-				Worker.Animations.CallDeferred( "add_child", Worker.ArmAnimations );
-
-				Worker.BodyAnimations = new AnimatedSprite2D();
-				Worker.BodyAnimations.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/thinkers/bandit/body.tres" );
+				Worker.BodyAnimations = Worker.Animations.GetNode<AnimatedSprite2D>( "BodyAnimations" );
 				Worker.BodyAnimations.Connect( "animation_finished", Callable.From( Worker.OnBodyAnimationFinished ) );
-				Worker.BodyAnimations.ZIndex = 4;
-				Worker.Animations.CallDeferred( "add_child", Worker.BodyAnimations );
+
+				Worker.Animations.ZIndex = 4;
+				Worker.CallDeferred( "add_child", Worker.Animations );
 
 				SightDetector = new Node2D();
 				Worker.HeadAnimations.CallDeferred( "add_child", SightDetector );
@@ -153,52 +141,23 @@ namespace Renown.Thinkers {
 				AimLine.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
 				Worker.ArmAnimations.CallDeferred( "add_child", AimLine );
 
-				Worker.AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
-				BarkChannel.ProcessMode = ProcessModeEnum.Pausable;
+				Squad = GroupManager.GetGroup( GroupType.Bandit, worker.Faction, GuardPosition ) as BanditGroup;
+				Squad.AddThinker( Worker );
+
+				ProcessMode = ProcessModeEnum.Disabled;
 			}
 
 			public override void OnPlayerEnteredArea() {
-				Cache();
-				
+				Worker.Animations.ProcessMode = ProcessModeEnum.Pausable;
+				Worker.AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+				BarkChannel.ProcessMode = ProcessModeEnum.Pausable;
 				SightDetector.ProcessMode = ProcessModeEnum.Pausable;
 			}
 			public override void OnPlayerExitedArea() {
+				Worker.Animations.ProcessMode = ProcessModeEnum.Disabled;
 				Worker.AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
 				BarkChannel.ProcessMode = ProcessModeEnum.Disabled;
-
-				Worker.Animations.CallDeferred( "remove_child", Worker.HeadAnimations );
-				Worker.HeadAnimations.CallDeferred( "queue_free" );
-
-				Worker.Animations.CallDeferred( "remove_child", Worker.ArmAnimations );
-				Worker.ArmAnimations.CallDeferred( "queue_free" );
-
-				Worker.Animations.CallDeferred( "remove_child", Worker.BodyAnimations );
-				Worker.BodyAnimations.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", LoseInterestTimer );
-				LoseInterestTimer.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", ChangeInvestigateAngleTimer );
-				ChangeInvestigateAngleTimer.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", TargetMovedTimer );
-				TargetMovedTimer.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", AttackTimer );
-				AttackTimer.CallDeferred( "queue_free" );
-
-				Worker.CallDeferred( "remove_child", AimLine );
-				AimLine.CallDeferred( "queue_free" );
-
-				for ( int i = 0; i < SightLines.Length; i++ ) {
-					SightDetector.CallDeferred( "remove_child", SightLines[i] );
-					SightLines[i].QueueFree();
-					SightLines[i] = null;
-				}
-				SightLines = null;
-
-				Worker.CallDeferred( "remove_child", SightDetector );
-				SightDetector.CallDeferred( "queue_free" );
+				SightDetector.ProcessMode = ProcessModeEnum.Disabled;
 			}
 
 			private void OnChangeInvestigateAngleTimerTimeout() {
@@ -434,7 +393,6 @@ namespace Renown.Thinkers {
 
 			private void OnLoseInterestTimerTimeout() {
 				MobState = MobState.Patrolling;
-				Target = null;
 
 				if ( Fear > 80 ) {
 					Bark( BarkType.Curse, BarkType.Quiet );
@@ -451,9 +409,16 @@ namespace Renown.Thinkers {
 				// a little more on edge
 				if ( Target.HasTrait( TraitType.Cruel ) ) {
 					Fear += Renown.Traits.Cruel.GetFearBias();
+				} else if ( Target.HasTrait( TraitType.Merciful ) ) {
+					Fear += Renown.Traits.Merciful.GetFearBias();
 				} else {
 					Fear += 4;
 				}
+				if ( Fear < 0 ) {
+					Fear = 0;
+				}
+
+				Target = null;
 			}
 			private void OnTargetMoveTimerTimeout() {
 				// "target's pinned!"
@@ -592,22 +557,24 @@ namespace Renown.Thinkers {
 						Aiming = false;
 						AimTimer.Stop();
 					}
-					if ( AimLine.GetCollider() is Entity entity && entity != null ) {
+					if ( !Aiming && CanSeeTarget ) {
 						Worker.StopMoving();
+
+						Worker.BodyAnimations.CallDeferred( "play", "attack" );
+						Worker.HeadAnimations.CallDeferred( "play", "idle" );
+						Worker.ArmAnimations.CallDeferred( "play", "attack" );
+
+						AimTimer.Start();
+						Aiming = true;
+
+						Worker.PlaySound( Worker.AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_reload.ogg" ) );
+					}
+					if ( Aiming && AimLine.GetCollider() is Entity entity && entity != null ) {
 						if ( entity.GetHealth() > 0.0f ) {
 							if ( Aiming && entity.GetFaction() == Worker.Faction ) {
 								Aiming = false;
 								AimTimer.Stop();
 								Bark( BarkType.OutOfTheWay );
-							} else if ( entity == Target && AimTimer.IsStopped() ) {
-								Worker.BodyAnimations.CallDeferred( "play", "attack" );
-								Worker.HeadAnimations.CallDeferred( "play", "idle" );
-								Worker.ArmAnimations.CallDeferred( "play", "attack" );
-
-								AimTimer.Start();
-								Aiming = true;
-
-								Worker.PlaySound( Worker.AudioChannel, ResourceCache.GetSound( "res://sounds/weapons/desert_rifle_reload.ogg" ) );
 							}
 						}
 					}
@@ -657,10 +624,10 @@ namespace Renown.Thinkers {
 					if ( Fear >= 60 ) {
 						ChangeInvestigateAngleTimer.WaitTime = 0.6f;
 					}
-					ChangeInvestigateAngleTimer.Start();
+					ChangeInvestigateAngleTimer.CallDeferred( "start" );
 				}
 				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.Start();
+					LoseInterestTimer.CallDeferred( "start" );
 				}
 				if ( Target != null && CanSeeTarget ) {
 					MobState = MobState.Attacking;

@@ -1,11 +1,11 @@
+using System.Xml;
 using Godot;
 
 public partial class TitleMenu : Control {
 	public enum MenuState {
 		Main,
 		Campaign,
-		Coop,
-		Multiplayer,
+		Extras,
 		Settings,
 		Help,
 		Mods
@@ -14,6 +14,7 @@ public partial class TitleMenu : Control {
 	private AudioStreamPlayer UIChannel;
 	private AudioStreamPlayer MusicTheme;
 
+	private ExtrasMenu ExtrasMenu;
 	private CoopMenu CoopMenu;
 	private MultiplayerMenu MultiplayerMenu;
 	private SettingsMenu SettingsMenu;
@@ -32,21 +33,11 @@ public partial class TitleMenu : Control {
 		UIChannel.Play();
 
 		switch ( State ) {
-		/*
-		case MenuState.Campaign:
-			CampaignMenu.Hide();
-			CampaignMenu.SetProcess( false );
-			CampaignMenu.SetProcessInternal( false );
-			CampaignMenu.SetProcessUnhandledInput( false );
-			break;
-			*/
-		case MenuState.Coop:
+		case MenuState.Extras:
 			CoopMenu.Hide();
 			CoopMenu.SetProcess( false );
 			CoopMenu.SetProcessInternal( false );
-			CoopMenu.ProcessMode = ProcessModeEnum.Disabled;
-			break;
-		case MenuState.Multiplayer:
+
 			MultiplayerMenu.Hide();
 			LobbyBrowser.Hide();
 			LobbyFactory.Hide();
@@ -56,8 +47,20 @@ public partial class TitleMenu : Control {
 			LobbyFactory.SetProcess( false );
 			LobbyFactory.SetProcessInternal( false );
 			LobbyFactory.SetProcessUnhandledInput( false );
-			MultiplayerMenu.ProcessMode = ProcessModeEnum.Disabled;
+
+			ExtrasMenu.Hide();
+			ExtrasMenu.SetProcess( false );
+			ExtrasMenu.SetProcessInternal( false );
+			ExtrasMenu.ProcessMode = ProcessModeEnum.Disabled;
 			break;
+		/*
+		case MenuState.Campaign:
+			CampaignMenu.Hide();
+			CampaignMenu.SetProcess( false );
+			CampaignMenu.SetProcessInternal( false );
+			CampaignMenu.SetProcessUnhandledInput( false );
+			break;
+			*/
 		case MenuState.Settings:
 			SettingsMenu.Hide();
 			SettingsMenu.SetProcess( false );
@@ -66,7 +69,7 @@ public partial class TitleMenu : Control {
 			SettingsMenu.ProcessMode = ProcessModeEnum.Disabled;
 			break;
 		default:
-			GD.PushError( "Invalid menu state!" );
+			Console.PrintError( "Invalid menu state!" );
 			break;
 		};
 
@@ -94,28 +97,15 @@ public partial class TitleMenu : Control {
 		State = MenuState.Campaign;
 	}
 	*/
-	private void OnMainMenuCoopMenu() {
+	private void OnMainMenuExtrasMenu() {
 		MainMenu.SetProcessUnhandledInput( false );
-		CoopMenu.SetProcessUnhandledInput( true );
-		CoopMenu.ProcessMode = ProcessModeEnum.Always;
+		ExtrasMenu.ProcessMode = ProcessModeEnum.Always;
 
 		MainMenu.Hide();
-		CoopMenu.Show();
+		ExtrasMenu.Show();
+		ExtrasMenu.Reset();
 		ExitButton.Show();
-		State = MenuState.Coop;
-	}
-	private void OnMainMenuMultiplayerMenu() {
-		MainMenu.SetProcessUnhandledInput( false );
-		LobbyBrowser.SetProcessUnhandledInput( true );
-		MultiplayerMenu.ProcessMode = ProcessModeEnum.Always;
-
-		LobbyBrowser.ResetBrowser();
-
-		MainMenu.Hide();
-		MultiplayerMenu.Show();
-		ExitButton.Show();
-		LobbyBrowser.Show();
-		State = MenuState.Multiplayer;
+		State = MenuState.Extras;
 	}
 	private void OnMainMenuSettingsMenu() {
 		SettingsMenu.ProcessMode = ProcessModeEnum.Always;
@@ -141,21 +131,26 @@ public partial class TitleMenu : Control {
 		MainMenu.SetProcess( true );
 		MainMenu.SetProcessInternal( true );
 		MainMenu.SetProcessUnhandledInput( true );
-		MainMenu.Connect( "CoopMenu", Callable.From( OnMainMenuCoopMenu ) );
+		MainMenu.Connect( "ExtrasMenu", Callable.From( OnMainMenuExtrasMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
-		MainMenu.Connect( "MultiplayerMenu", Callable.From( OnMainMenuMultiplayerMenu ) );
 
-		CoopMenu = GetNode<CoopMenu>( "CoopMenu" );
+		ExtrasMenu = GetNode<ExtrasMenu>( "ExtrasMenu" );
+		ExtrasMenu.SetProcess( false );
+		ExtrasMenu.SetProcessInternal( false );
+		ExtrasMenu.SetProcessUnhandledInput( false );
+		ExtrasMenu.ProcessMode = ProcessModeEnum.Inherit;
+
+		CoopMenu = GetNode<CoopMenu>( "ExtrasMenu/CoopMenu" );
 		CoopMenu.SetProcess( false );
 		CoopMenu.SetProcessInternal( false );
 		CoopMenu.SetProcessUnhandledInput( false );
-		CoopMenu.ProcessMode = ProcessModeEnum.Disabled;
+		CoopMenu.ProcessMode = ProcessModeEnum.Inherit;
 
-		MultiplayerMenu = GetNode<MultiplayerMenu>( "MultiplayerMenu" );
+		MultiplayerMenu = GetNode<MultiplayerMenu>( "ExtrasMenu/MultiplayerMenu" );
 		MultiplayerMenu.SetProcess( false );
 		MultiplayerMenu.SetProcessInternal( false );
 		MultiplayerMenu.SetProcessUnhandledInput( false );
-		MultiplayerMenu.ProcessMode = ProcessModeEnum.Disabled;
+		MultiplayerMenu.ProcessMode = ProcessModeEnum.Inherit;
 
 		SettingsMenu = GetNode<SettingsMenu>( "SettingsMenu" );
 		SettingsMenu.SetProcess( false );
@@ -166,12 +161,12 @@ public partial class TitleMenu : Control {
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
-		LobbyBrowser = GetNode<LobbyBrowser>( "MultiplayerMenu/LobbyBrowser" );
+		LobbyBrowser = GetNode<LobbyBrowser>( "ExtrasMenu/MultiplayerMenu/LobbyBrowser" );
 		LobbyBrowser.SetProcess( false );
 		LobbyBrowser.SetProcessInternal( false );
 		LobbyBrowser.SetProcessUnhandledInput( false );
 
-		LobbyFactory = GetNode<LobbyFactory>( "MultiplayerMenu/LobbyFactory" );
+		LobbyFactory = GetNode<LobbyFactory>( "ExtrasMenu/MultiplayerMenu/LobbyFactory" );
 		LobbyFactory.SetProcess( false );
 		LobbyFactory.SetProcessInternal( false );
 		LobbyFactory.SetProcessUnhandledInput( false );

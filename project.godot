@@ -35,7 +35,7 @@ version="0.7"
 config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="uid://b6hb01wurydo7"
-config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://desertbkgd_icon.png"
@@ -50,7 +50,7 @@ driver/driver="Alsa"
 [autoload]
 
 GDConsole="*res://addons/console/console.gd"
-Console="*res://autoloads/Console.cs"
+Console="*res://addons/console/Console.cs"
 SettingsData="*res://scripts/menus/SettingsData.cs"
 SteamManager="*res://autoloads/Steam/SteamManager.cs"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"

@@ -232,28 +232,28 @@ namespace Renown.World {
 	#endregion
 
 		public virtual void Save() {
-			int counter;
-			SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( GetPath() );
+			using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
+				int counter;
 
-			writer.SaveUInt( nameof( PrimaryAlignment ), (uint)PrimaryAlignment );
-			writer.SaveString( nameof( Leader ), Leader != null ? Leader.GetPath() : "nil" );
-			
-			counter = 0;
-			writer.SaveInt( "DebtCount", DebtCache.Count );
-			foreach ( var debt in DebtCache ) {
-				writer.SaveString( string.Format( "DebtNode{0}", counter ), debt.Key.GetHash() );
-				writer.SaveFloat( string.Format( "DebtValue{0}", counter ), debt.Value );
-				counter++;
+				writer.SaveUInt( nameof( PrimaryAlignment ), (uint)PrimaryAlignment );
+				writer.SaveString( nameof( Leader ), Leader != null ? Leader.GetPath() : "nil" );
+
+				counter = 0;
+				writer.SaveInt( "DebtCount", DebtCache.Count );
+				foreach ( var debt in DebtCache ) {
+					writer.SaveString( string.Format( "DebtNode{0}", counter ), debt.Key.GetHash() );
+					writer.SaveFloat( string.Format( "DebtValue{0}", counter ), debt.Value );
+					counter++;
+				}
+
+				counter = 0;
+				writer.SaveInt( "RelationCount", RelationCache.Count );
+				foreach ( var relation in RelationCache ) {
+					writer.SaveString( string.Format( "RelationNode{0}", counter ), relation.Key.GetHash() );
+					writer.SaveFloat( string.Format( "RelationValue{0}", counter ), relation.Value );
+					counter++;
+				}
 			}
-			
-			counter = 0;
-			writer.SaveInt( "RelationCount", RelationCache.Count );
-			foreach ( var relation in RelationCache ) {
-				writer.SaveString( string.Format( "DebtNode{0}", counter ), relation.Key.GetHash() );
-				writer.SaveFloat( string.Format( "DebtValue{0}", counter ), relation.Value );
-				counter++;
-			}
-			writer.Flush();
 		}
 		public virtual void Load() {
 			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );
@@ -263,10 +263,20 @@ namespace Renown.World {
 				return;
 			}
 
-			PrimaryAlignment = (AIAlignment)reader.LoadUInt( "Alignment" );
+			PrimaryAlignment = (AIAlignment)reader.LoadUInt( nameof( PrimaryAlignment ) );
 //			Leader = (Thinker)GetTree().CurrentScene.GetNode( reader.LoadString( "leader" ) );
 			
 			int debtCount = reader.LoadInt( "DebtCount" );
+			DebtCache = new Dictionary<Object, float>( debtCount );
+			for ( int i = 0; i < debtCount; i++ ) {
+				DebtCache.Add( (Object)GetNode( reader.LoadString( string.Format( "DebtNode{0}", i ) ) ), reader.LoadFloat( string.Format( "DebtValue{0}", i ) ) );
+			}
+
+			int relationCount = reader.LoadInt( "RelationCount" );
+			RelationCache = new Dictionary<Object, float>( relationCount );
+			for ( int i = 0; i < relationCount; i++ ) {
+				RelationCache.Add( (Object)GetNode( reader.LoadString( string.Format( "RelationNode{0}", i ) ) ), reader.LoadFloat( string.Format( "RelationValue{0}", i ) ) );
+			}
 		}
 		
 		/*
@@ -337,13 +347,8 @@ namespace Renown.World {
 		}
 		*/
 
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			Quit = true;
-		}
-		public override void _Ready() {
-			base._Ready();
+		public override void _EnterTree() {
+			base._EnterTree();
 			
 			if ( !IsInGroup( "Factions" ) ) {
 				AddToGroup( "Factions" );
@@ -376,28 +381,6 @@ namespace Renown.World {
 
 			// this isn't an entity
 			ProcessMode = ProcessModeEnum.Disabled;
-
-			Location.PlayerEntered += () => {
-				ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_IN_AREA;
-				Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_AREA;
-
-				ThinkThread.Priority = Importance;
-			};
-			Location.PlayerExited += () => {
-				if ( Location.GetBiome().IsPlayerHere() ) {
-					ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_IN_BIOME;
-					Importance = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
-				} else {
-					ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_AWAY;
-					Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
-				}
-
-				ThinkThread.Priority = Importance;
-			};
-
-			ThinkThread = new System.Threading.Thread( RenownProcess, 512*1024 );
-			ThinkThread.Priority = Importance;
-//			ThinkThread.Start();
 		}
 		
 		protected bool CreateDebt( float nAmount ) {

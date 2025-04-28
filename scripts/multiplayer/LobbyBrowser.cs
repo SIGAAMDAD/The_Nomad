@@ -1,31 +1,106 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 using Multiplayer;
 using Steamworks;
 
 public partial class LobbyBrowser : Control {
-	private class LobbyData {
+	private partial class LobbyData : Button {
 		private CSteamID LobbyId;
-		private Button Button;
+
+		public System.Threading.Thread LoaderThread;
+
+		public Mode.GameMode GameMode = Mode.GameMode.Bloodbath;
+		public GameMode GameType = global::GameMode.Multiplayer;
+		public int MaxMembers = 0;
+		public int NumMembers = 0;
+		public string MapName = "";
+		public string LobbyName = "";
+
+		public Range LoadingIcon;
+
+		[Signal]
+		public delegate void FinishedLoadingEventHandler();
 
 		public LobbyData( CSteamID lobbyId ) {
 			LobbyId = lobbyId;
 
-			Button = new Button();
-			Button.Size = new Godot.Vector2( 240, 20 );
-			Button.CustomMinimumSize = Button.Size;
-			Button.Pressed += () => { OnLobbySelected( lobbyId ); };
+			Size = new Godot.Vector2( 240, 20 );
+			CustomMinimumSize = Size;
+			Pressed += () => { OnLobbySelected( lobbyId ); };
 
-			Refresh();
+			LoadingIcon = ClonerSpinner.Duplicate() as Range;
+
+			LoaderThread = new System.Threading.Thread( () => {
+				while ( LobbyName.Length == 0 ) {
+					System.Threading.Thread.Sleep( 500 );
+					LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+				}
+
+				bool valid = false;
+
+				while ( !valid ) {
+					System.Threading.Thread.Sleep( 500 );
+					string gameMode = SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" );
+					if ( gameMode.Length == 0 ) {
+						continue;
+					}
+					switch ( (Mode.GameMode)System.Convert.ToUInt32( gameMode ) ) {
+					case Mode.GameMode.Bloodbath:
+					case Mode.GameMode.TeamBrawl:
+					case Mode.GameMode.CaptureTheFlag:
+					case Mode.GameMode.KingOfTheHill:
+					case Mode.GameMode.Duel:
+					case Mode.GameMode.Blitz:
+					case Mode.GameMode.BountyHuntPVE:
+					case Mode.GameMode.BountyHuntPVP:
+					case Mode.GameMode.ExtractionPVE:
+					case Mode.GameMode.ExtractionPVP:
+						break;
+					default:
+						continue;
+					};
+				}
+				while ( !valid ) {
+					System.Threading.Thread.Sleep( 500 );
+					switch ( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) ) {
+					case "Online":
+						GameType = global::GameMode.Online;
+						break;
+					case "Multiplayer":
+						GameType = global::GameMode.Multiplayer;
+						break;
+					default:
+						continue;
+					};
+				}
+				while ( !valid ) {
+					System.Threading.Thread.Sleep( 500 );
+					MapName = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
+					if ( MultiplayerMapManager.MapCache.ContainsKey( MapName ) ) {
+						break;
+					}
+				}
+
+				CallDeferred( "emit_signal", "FinishedLoading" );
+			} );
+
+			LoadMetadata();
 		}
-
-		public bool Refresh() {
-			if ( SteamMatchmaking.GetNumLobbyMembers( LobbyId ) == 0 ) {
-				return false; // inactive
+		
+		private void LoadMetadata() {
+			if ( LoaderThread.IsAlive ) {
+				return;
 			}
 
-			Button.Text = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+			LoadingIcon.Show();
+			LoaderThread.Start();
+		}
+		public bool Refresh() {
+			LoadMetadata();
+			if ( LoaderThread.IsAlive ) {
+				return false;
+			}
+			LoadingIcon.Hide();
 			return true;
 		}
 		public int GetMaxMembers() {
@@ -35,32 +110,19 @@ public partial class LobbyBrowser : Control {
 			return SteamMatchmaking.GetNumLobbyMembers( LobbyId );
 		}
 		public GameMode GetGameType() {
-			string gameType = SteamMatchmaking.GetLobbyData( LobbyId, "gametype" );
-			switch ( gameType ) {
-			case "Online":
-				return GameMode.Online;
-			case "Multiplayer":
-				return GameMode.Multiplayer;
-			default:
-				break;
-			};
-			GD.PushError( "[STEAM] Lobby " + LobbyId.ToString() + " doens't have a valid gametype: " + gameType );
-			return GameMode.SinglePlayer;
+			return GameType;
 		}
 		public Mode.GameMode GetGameMode() {
-			return (Mode.GameMode)Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
+			return GameMode;
 		}
 		public string GetMapName() {
-			return SteamMatchmaking.GetLobbyData( LobbyId, "map" );
+			return MapName;
 		}
 		public string GetMapFileName() {
-			return MultiplayerMapManager.MapCache[ SteamMatchmaking.GetLobbyData( LobbyId, "map" ) ].FileName;
+			return MultiplayerMapManager.MapCache[ MapName ].FileName;
 		}
-		public string GetName() {
-			return SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-		}
-		public Button GetButton() {
-			return Button;
+		public string GetLobbyName() {
+			return LobbyName;
 		}
 	};
 
@@ -99,6 +161,8 @@ public partial class LobbyBrowser : Control {
 	private System.Threading.Thread LoadThread = null;
 	private PackedScene LoadedWorld = null;
 	private string LoadedScenePath = "";
+
+	private static Range ClonerSpinner;
 
 	public static LobbyBrowser Instance;
 
@@ -197,8 +261,8 @@ public partial class LobbyBrowser : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+//		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+//		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		Hide();
 
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
@@ -231,8 +295,11 @@ public partial class LobbyBrowser : Control {
 		};
 	}
 
+	private void OnLobbyDataFinishedLoading( LobbyData lobby ) {
+		lobby.FinishedLoading -= () => { OnLobbyDataFinishedLoading( lobby ); };
+	}
 	private void GetLobbyList() {
-		GD.Print( "Building lobby list..." );
+		Console.PrintLine( "Building lobby list..." );
 
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
@@ -241,14 +308,19 @@ public partial class LobbyBrowser : Control {
 				// just refresh the cached data
 				if ( !LobbyList[ lobbyList[i] ].Refresh() ) {
 					// doesn't exist anymore
-					LobbyTable.CallDeferred( "remove_child", LobbyList[ lobbyList[i] ].GetButton() );
+					LobbyTable.CallDeferred( "remove_child", LobbyList[ lobbyList[i] ] );
 					LobbyList.Remove( lobbyList[i] );
 				}
 				continue;
 			}
 			LobbyData data = new LobbyData( lobbyList[i] );
 			LobbyList.Add( lobbyList[i], data );
-			LobbyTable.CallDeferred( "add_child", data.GetButton() );
+			if ( data.Refresh() ) {
+				LobbyTable.CallDeferred( "add_child", data );
+			} else {
+				data.FinishedLoading += () => { OnLobbyDataFinishedLoading( data ); };
+				LobbyTable.CallDeferred( "add_child", data );
+			}
 		}
 
 		if ( MatchmakingThread.IsAlive ) {
@@ -258,7 +330,7 @@ public partial class LobbyBrowser : Control {
 		}
 	}
 	private void OnRefreshButtonPressed() {
-		GD.Print( "Refreshing lobbies..." );
+		Console.PrintLine( "Refreshing lobbies..." );
 		SteamLobby.Instance.OpenLobbyList();
 		GetLobbyList();
 	}
@@ -391,6 +463,8 @@ public partial class LobbyBrowser : Control {
 		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
+		ClonerSpinner = GetNode<Range>( "LobbyList/Lobbies/ClonerSpinner" );
+
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
 		LobbyManager.SetProcess( false );
 		LobbyManager.SetProcessInternal( false );
@@ -409,7 +483,7 @@ public partial class LobbyBrowser : Control {
 		SteamLobby.Instance.LobbyJoined += OnLobbyJoined;
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
-		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
+		UIChannel = GetNode<AudioStreamPlayer>( "../../../UIChannel" );
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
 

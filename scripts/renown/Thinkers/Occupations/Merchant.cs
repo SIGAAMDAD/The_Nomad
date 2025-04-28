@@ -28,8 +28,8 @@ namespace Renown.Thinkers.Occupations {
 				count++;
 			}
 		}
-		public override void Load( SaveSystem.SaveSectionReader reader, string key ) {
-			base.Load( reader, key );
+		public override void Load( Thinker source, SaveSystem.SaveSectionReader reader, string key ) {
+			base.Load( source, reader, key );
 
 			int inventorySize = reader.LoadInt( key + "InventorySize" );
 			Inventory = new Dictionary<Resource, int>( inventorySize );

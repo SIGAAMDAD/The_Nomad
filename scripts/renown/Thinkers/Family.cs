@@ -40,7 +40,11 @@ namespace Renown.Thinkers {
 				"ava",
 				"iki",
 				"za",
-				"oma"
+				"oma",
+				"oso",
+				"ava",
+				"assa",
+				"isse"
 			];
 			private static readonly string[] LastNameScramble_End = [
 				"kol",
@@ -55,10 +59,12 @@ namespace Renown.Thinkers {
 				"it",
 				"in",
 				"ik",
+				"ir",
+				"io",
 				"at",
 				"ap",
 				"an",
-				"ak"
+				"ak",
 			];
 
 			private static string NameScramble( string[] begin, string[] middle, string[] end ) {
@@ -76,6 +82,7 @@ namespace Renown.Thinkers {
 
 		private int MaxMembers = 0;
 		private int MemberCount = 0;
+		private StringName FamilyName;
 
 		[Export]
 		private Godot.Collections.Array<Thinker> CachedMembers = null;
@@ -191,6 +198,8 @@ namespace Renown.Thinkers {
 		public int GetMaxMembers() => MaxMembers;
 		public bool CanAddMember() => MemberCount < MaxMembers;
 
+		public StringName GetFamilyName() => FamilyName;
+
 		public void SetHome( BuildingHouse house ) => Home = house;
 		public BuildingHouse GetHome() => Home;
 
@@ -213,28 +222,46 @@ namespace Renown.Thinkers {
 		public void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
 			string key = string.Format( "Family{0}", nIndex );
 
-			Name = reader.LoadString( nameof( Name ) );
-			SocioEconomicStatus = (SocietyRank)reader.LoadUInt( nameof( SocioEconomicStatus ) );
+			if ( !IsPremade ) {
+				FamilyName = reader.LoadString( key + nameof( FamilyName ) );
+				SocioEconomicStatus = (SocietyRank)reader.LoadUInt( key + nameof( SocioEconomicStatus ) );
+				Home = GetTree().Root.GetNode<BuildingHouse>( reader.LoadString( key + nameof( Home ) ) );
+			}
+
+			MaxStrength = reader.LoadInt( key + nameof( MaxStrength ) );
+			MaxDexterity = reader.LoadInt( key + nameof( MaxDexterity ) );
+			MaxIntelligence = reader.LoadInt( key + nameof( MaxIntelligence ) );
+			MaxWisdom = reader.LoadInt( key + nameof( MaxWisdom ) );
+			MaxConstitution = reader.LoadInt( key + nameof( MaxConstitution ) );
+			MaxCharisma = reader.LoadInt( key + nameof( MaxCharisma ) );
+
+			StrengthBonus = reader.LoadInt( key + nameof( StrengthBonus ) );
+			DexterityBonus = reader.LoadInt( key + nameof( DexterityBonus ) );
+			IntelligenceBonus = reader.LoadInt( key + nameof( IntelligenceBonus ) );
+			WisdomBonus = reader.LoadInt( key + nameof( WisdomBonus ) );
+			ConstitutionBonus = reader.LoadInt( key + nameof( ConstitutionBonus )  );
+			CharismaBonus = reader.LoadInt( key + nameof( CharismaBonus ) );
 		}
 		public void Save( SaveSystem.SaveSectionWriter writer, int nIndex ) {
 			string key = string.Format( "Family{0}", nIndex );
 
-			writer.SaveString( nameof( Name ), Name );
-			writer.SaveUInt( nameof( SocioEconomicStatus ), (uint)SocioEconomicStatus );
+			writer.SaveString( key + nameof( FamilyName ), FamilyName );
+			writer.SaveUInt( key + nameof( SocioEconomicStatus ), (uint)SocioEconomicStatus );
+			writer.SaveString( key + nameof( Home ), Home.GetPath() );
 
-			writer.SaveInt( nameof( MaxStrength ), MaxStrength );
-			writer.SaveInt( nameof( MaxDexterity ), MaxDexterity );
-			writer.SaveInt( nameof( MaxIntelligence ), MaxIntelligence );
-			writer.SaveInt( nameof( MaxWisdom ), MaxWisdom );
-			writer.SaveInt( nameof( MaxConstitution ), MaxConstitution );
-			writer.SaveInt( nameof( MaxCharisma ), MaxCharisma );
+			writer.SaveInt( key + nameof( MaxStrength ), MaxStrength );
+			writer.SaveInt( key + nameof( MaxDexterity ), MaxDexterity );
+			writer.SaveInt( key + nameof( MaxIntelligence ), MaxIntelligence );
+			writer.SaveInt( key + nameof( MaxWisdom ), MaxWisdom );
+			writer.SaveInt( key + nameof( MaxConstitution ), MaxConstitution );
+			writer.SaveInt( key + nameof( MaxCharisma ), MaxCharisma );
 
-			writer.SaveInt( nameof( StrengthBonus ), StrengthBonus );
-			writer.SaveInt( nameof( DexterityBonus ), DexterityBonus );
-			writer.SaveInt( nameof( IntelligenceBonus ), IntelligenceBonus );
-			writer.SaveInt( nameof( WisdomBonus ), WisdomBonus );
-			writer.SaveInt( nameof( ConstitutionBonus ), ConstitutionBonus );
-			writer.SaveInt( nameof( CharismaBonus ), CharismaBonus );
+			writer.SaveInt( key + nameof( StrengthBonus ), StrengthBonus );
+			writer.SaveInt( key + nameof( DexterityBonus ), DexterityBonus );
+			writer.SaveInt( key + nameof( IntelligenceBonus ), IntelligenceBonus );
+			writer.SaveInt( key + nameof( WisdomBonus ), WisdomBonus );
+			writer.SaveInt( key + nameof( ConstitutionBonus ), ConstitutionBonus );
+			writer.SaveInt( key + nameof( CharismaBonus ), CharismaBonus );
 		}
 
 		public override void _Ready() {
@@ -247,6 +274,8 @@ namespace Renown.Thinkers {
 			}
 
 			if ( IsPremade ) {
+				FamilyName = Name;
+
 				Random random = new Random();
 				MaxStrength = random.Next( 12, 18 );
 				MaxDexterity = random.Next( 12, 18 );
@@ -294,7 +323,8 @@ namespace Renown.Thinkers {
 
 			Family family = new Family( random, rank );
 
-			family.Name = NameGenerator.GenerateLastName();
+			family.FamilyName = NameGenerator.GenerateLastName();
+			family.Name = string.Format( "{0}{1}", family.FamilyName, family.GetHashCode() );
 
 			location.AssignHouse( family );
 			location.AddFamily( family );
@@ -303,8 +333,6 @@ namespace Renown.Thinkers {
 			GD.Print( "\tSocioEconomicStatus: " + family.SocioEconomicStatus );
 			GD.Print( "\tMaxMembers: " + family.MaxMembers );
 			GD.Print( "\tHome: " + family.Home.GetPath() );
-
-			location.GetNode( "/root/World/FamilyTrees" ).CallDeferred( "add_child", family );
 
 			return family;
 		}

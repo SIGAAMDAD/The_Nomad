@@ -9,9 +9,9 @@ namespace Renown.Thinkers {
 
 		Industry,
 
-		Bandit,
 		Mercenary,
 		Count,
+		Bandit,
 		MercenaryMaster,
 		Doctor,
 
@@ -67,12 +67,16 @@ namespace Renown.Thinkers {
 			EmitSignalRequestedRaise( nAmount );
 		}
 
+		private void SetCompanyDeferred( Thinker source, string company ) {
+			SetCompany( (Faction)( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().Root.GetNode( company ) );
+		}
+
 		public virtual void Damage( Entity source, float nAmount ) {
 		}
-		public virtual void Load( SaveSystem.SaveSectionReader reader, string key ) {
+		public virtual void Load( Thinker source, SaveSystem.SaveSectionReader reader, string key ) {
 			Type = (OccupationType)reader.LoadUInt( key + "JobType" );
 			Wage = reader.LoadFloat( key + "JobWage" );
-			CallDeferred( "SetCompany", GetTree().Root.GetNode( reader.LoadString( key + "JobCompany" ) ) );
+			CallDeferred( "SetCompanyDeferred", source, reader.LoadString( key + "JobCompany" ) );
 		}
 		public virtual void Save( SaveSystem.SaveSectionWriter writer, string key ) {
 			writer.SaveUInt( key + "JobType", (uint)Type );

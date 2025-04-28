@@ -299,34 +299,6 @@ namespace PlayerSystem {
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
 		}
-        public override void _ExitTree() {
-            base._ExitTree();
-
-			HealthBar.QueueFree();
-			RageBar.QueueFree();
-
-			ReflexOverlay.QueueFree();
-			DashOverlay.QueueFree();
-
-			SaveTimer.QueueFree();
-			SaveSpinner.QueueFree();
-
-			WeaponStatus.QueueFree();
-			WeaponModeBladed.QueueFree();
-			WeaponModeBlunt.QueueFree();
-			WeaponModeFirearm.QueueFree();
-			WeaponStatusFirearm.QueueFree();
-			WeaponStatusMelee.QueueFree();
-			WeaponStatusMeleeIcon.QueueFree();
-			WeaponStatusFirearmIcon.QueueFree();
-			WeaponStatusBulletCount.QueueFree();
-			WeaponStatusBulletReserve.QueueFree();
-
-			BossHealthBar.QueueFree();
-
-			QueueFree();
-        }
-
 		private void OnWeaponReloaded( WeaponEntity source ) {
 			WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
 			WeaponStatusBulletReserve.Text = source.GetReserve() != null ? source.GetReserve().Amount.ToString() : "0";
@@ -344,9 +316,11 @@ namespace PlayerSystem {
 
 			if ( weapon == null ) {
 				WeaponStatus.Hide();
+				WeaponStatus.ProcessMode = ProcessModeEnum.Disabled;
 				return;
 			} else {
 				WeaponStatus.Show();
+				WeaponStatus.ProcessMode = ProcessModeEnum.Pausable;
 			}
 
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {

@@ -104,8 +104,7 @@ func _enter_tree() -> void:
 	control.visible = false
 	process_mode = PROCESS_MODE_ALWAYS
 
-
-func _exit_tree() -> void:
+func save_history() -> void:
 	var console_history_file := FileAccess.open("user://console_history.txt", FileAccess.WRITE)
 	if (console_history_file):
 		var write_index := 0
@@ -114,7 +113,6 @@ func _exit_tree() -> void:
 			if (write_index >= start_write_index):
 				console_history_file.store_line(line)
 			write_index += 1
-
 
 func _ready() -> void:
 	add_command("quit", quit, 0, 0, "Quits the game.")
@@ -385,6 +383,8 @@ func on_text_entered(new_text : String) -> void:
 				arguments.append("")
 
 			console_command.function.callv(arguments)
+
+			save_history()
 		else:
 			console_unknown_command.emit(text_command)
 			print_error("Command not found.")

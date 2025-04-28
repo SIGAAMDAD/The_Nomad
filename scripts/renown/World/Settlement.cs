@@ -283,7 +283,7 @@ namespace Renown.World {
 				AddToGroup( "Settlements" );
 			}
 			if ( !ArchiveSystem.Instance.IsLoaded() ) {
-				OnGenerateThinkers();
+				CallDeferred( "OnGenerateThinkers" );
 			}
 		}
 

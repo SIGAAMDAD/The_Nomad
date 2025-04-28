@@ -74,25 +74,23 @@ namespace Renown.World {
 				RedSunLight.Energy = 1.0f;
 			}
 			if ( PastMinute != minute ) {
-				if ( minute == 60 ) {
-					if ( Hour >= 24 ) {
-						Day++;
-						if ( Day >= Months[ Month ].GetDayCount() ) {
-							Day = 0;
-							Month++;
-							EmitSignalNewMonth();
-							if ( Month >= Months.Length ) {
-								Month = 0;
-								Year++;
-								EmitSignalNewYear();
-							}
+				if ( Hour >= 24 ) {
+					Day++;
+					if ( Day >= Months[ Month ].GetDayCount() ) {
+						Day = 0;
+						Month++;
+						EmitSignalNewMonth();
+						if ( Month >= Months.Length ) {
+							Month = 0;
+							Year++;
+							EmitSignalNewYear();
 						}
-						Hour = 0;
-					} else if ( Hour >= 20 ) {
-						EmitSignalNightTimeStart();
-					} else if ( Hour >= 7 ) {
-						EmitSignalDayTimeStart();
 					}
+					Hour = 0;
+				} else if ( Hour >= 20 ) {
+					EmitSignalNightTimeStart();
+				} else if ( Hour >= 7 ) {
+					EmitSignalDayTimeStart();
 				}
 				EmitSignalTimeTick( Day, Hour, minute );
 				PastMinute = minute;
@@ -199,17 +197,16 @@ namespace Renown.World {
 				IsHostWorld = true;
 			}
 
-			float scale = 0.0f;
 			Console.AddCommand(
 				name: "set_time_scale",
 				fn: Callable.From(
-					( float arg ) => {
+					( string arg ) => {
 						GD.Print( "Setting world time scale to " + arg );
-						InGameSpeed = arg;
+						InGameSpeed = (float)Convert.ToDouble( arg );
 					}
 				),
-				args: [ scale ],
-				required: 1
+				args: [ "" ],
+				requiredArgs: 1
 			);
 		}
 		public override void _Process( double delta ) {

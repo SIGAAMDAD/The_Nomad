@@ -1,7 +1,6 @@
 using Godot;
 using System.Linq;
 using Multiplayer;
-using System.Diagnostics;
 
 public partial class CoopMenu : Control {
 	private OptionButton MapList;
@@ -121,7 +120,7 @@ public partial class CoopMenu : Control {
 
 		GameModeList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/GameModeContainer/GameModeOptionButton" );
 
-		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
+		UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
 
 		Button StartButton = GetNode<Button>( "StartButton" );
 		StartButton.Connect( "pressed", Callable.From( OnStartButtonPressed ) );

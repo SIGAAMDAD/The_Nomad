@@ -250,7 +250,7 @@ public partial class Player : Entity {
 			writer.SaveInt( "CurrentWeapon", CurrentWeapon );
 			writer.SaveUInt( "HandsUsed", (uint)HandsUsed );
 
-			writer.SaveVector2( "position", GlobalPosition );
+			writer.SaveVector2( "Position", GlobalPosition );
 
 			writer.SaveInt( "ArmLeftSlot", ArmLeft.GetSlot() );
 			writer.SaveInt( "ArmRightSlot", ArmRight.GetSlot() );
@@ -267,7 +267,7 @@ public partial class Player : Entity {
 			writer.SaveInt( "WeaponStacksCount", WeaponsStack.Count );
 			stackIndex = 0;
 			foreach ( var stack in WeaponsStack ) {
-				writer.SaveString( string.Format( "WeaponStacksPath{0}", stackIndex ), stack.Value.GetInitialPath() );
+				writer.SaveString( string.Format( "WeaponStacksPath{0}", stackIndex ), (string)stack.Value.GetInitialPath() );
 				if ( ( stack.Value.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 					writer.SaveInt( string.Format( "WeaponStacksBulletCount{0}", stackIndex ), stack.Value.GetBulletCount() );
 				}
@@ -290,7 +290,7 @@ public partial class Player : Entity {
 				}
 			}
 
-			writer.SaveInt( "consumable_stacks_count", ConsumableStacks.Count );
+			writer.SaveInt( "ConsumableStacksCount", ConsumableStacks.Count );
 			stackIndex = 0;
 			foreach ( var stack in ConsumableStacks ) {
 				writer.SaveInt( string.Format( "ConsumableStacksAmount{0}", stackIndex ), stack.Value.Amount );
@@ -360,15 +360,15 @@ public partial class Player : Entity {
 
 	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
 		WeaponEntity weapon = WeaponsStack[ path.GetHashCode() ];
+		GD.Print( "Set weapon slot " + nSlot + " to object " + weapon );
 		weapon.SetEquippedState( true );
 		WeaponSlots[ nSlot ].SetWeapon( weapon );
 		WeaponSlots[ nSlot ].SetMode( (WeaponEntity.Properties)mode );
 	}
-	private void LoadWeapon( NodePath path, int bulletCount ) {
-		WeaponEntity weapon = GetNode<WeaponEntity>( path );
+	private void LoadWeapon( NodePath nodePath, int bulletCount ) {
+		WeaponEntity weapon = GetNode<WeaponEntity>( nodePath );
 
 		weapon.SetOwner( this );
-		WeaponsStack.Add( path.GetHashCode(), weapon );
 		weapon.OverrideRayCast( AimRayCast );
 
 		if ( ( weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -443,12 +443,12 @@ public partial class Player : Entity {
 		}
 
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
-		SyncObject.Write( (sbyte)CurrentWeapon );
-		if ( CurrentWeapon != WeaponSlot.INVALID ) {
-			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
-			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
-			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
-				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+		SyncObject.Write( (sbyte)LastUsedArm.GetSlot() );
+		if ( LastUsedArm.GetSlot() != WeaponSlot.INVALID ) {
+			SyncObject.Write( (uint)WeaponSlots[ LastUsedArm.GetSlot() ].GetMode() );
+			SyncObject.Write( WeaponSlots[ LastUsedArm.GetSlot() ].IsUsed() );
+			if ( WeaponSlots[ LastUsedArm.GetSlot() ].IsUsed() ) {
+				SyncObject.Write( (string)WeaponSlots[ LastUsedArm.GetSlot() ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
 		SyncObject.Write( GlobalPosition );
@@ -523,7 +523,7 @@ public partial class Player : Entity {
 
 			ArmAngle = GetLocalMousePosition().Angle();
 			AimLine.GlobalRotation = ArmAngle;
-			AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( ArmAngle ) ) * AimLine.Points[1].X;
+			AimRayCast.TargetPosition = AimLine.Points[1];
 			if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
 				FlipSpriteRight();
 			} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
@@ -706,10 +706,10 @@ public partial class Player : Entity {
 
 		ComboCounter = 0;
 
-		Health -= nAmount;
-		Rage += nAmount;
+		System.Threading.Interlocked.Exchange( ref Health, Health - nAmount );
+		System.Threading.Interlocked.Exchange( ref Rage, Rage + nAmount );
 		if ( Rage > 100.0f ) {
-			Rage = 100.0f;
+			System.Threading.Interlocked.Exchange( ref Rage, 100.0f );
 		}
 
 		BloodParticleFactory.CreateDeferred( attacker.GlobalPosition, GlobalPosition );
@@ -972,7 +972,7 @@ public partial class Player : Entity {
 		LastUsedArm.SetWeapon( CurrentWeapon );
 	}
 	private void OnBulletTime() {
-		if ( IsInputBlocked() ) {
+		if ( IsInputBlocked() || Rage <= 0.0f ) {
 			return;
 		}
 
@@ -1326,22 +1326,17 @@ public partial class Player : Entity {
 		Health = 0.0f;
 		OnDeath( this );
 	}
-	private void CmdTeleport( string locationType, string locationId ) {
+	private void CmdTeleport( string locationId ) {
 		Console.PrintLine( string.Format( "Teleporing player to {0}...", locationId ) );
-		switch ( locationType ) {
-		case "campfire":
-			Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
-			for ( int i = 0; i < checkpoints.Count; i++ ) {
-				if ( checkpoints[i] is Checkpoint checkpoint && checkpoint != null && checkpoint.GetTitle() == locationId ) {
-					GlobalPosition = checkpoint.GlobalPosition;
-					return;
-				}
+
+		Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
+		for ( int i = 0; i < checkpoints.Count; i++ ) {
+			if ( checkpoints[i] is Checkpoint checkpoint && checkpoint != null && checkpoint.Name == locationId ) {
+				GlobalPosition = checkpoint.GlobalPosition;
+				return;
 			}
-			Console.PrintWarning( string.Format( "No such checkpoint \"{0}\"", locationId ) );
-			break;
-		case "settlement":
-			break;
-		};
+		}
+		Console.PrintWarning( string.Format( "No such checkpoint \"{0}\"", locationId ) );
 	}
 
 	private float LitValue = 0.0f;
@@ -1394,9 +1389,8 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 
 		// don't allow keybind input when we're in the console
-		Control GDConsole = (Control)GetNode( "/root/GDConsole" ).Get( "control" );
-		GDConsole.VisibilityChanged += () => {
-			if ( ( (Control)GetNode( "/root/GDConsole" ).Get( "control" ) ).Visible ) {
+		Console.Control.VisibilityChanged += () => {
+			if ( Console.Control.Visible ) {
 				Flags |= PlayerFlags.BlockedInput;
 			} else {
 				Flags &= ~PlayerFlags.BlockedInput;
@@ -1531,7 +1525,7 @@ public partial class Player : Entity {
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
 		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
-		Console.AddCommand( "teleport", Callable.From<string, string>( CmdTeleport ), [ "", "" ], 2, "teleports the player to the specified location" );
+		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), [ "" ], 1, "teleports the player to the specified location" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
@@ -1654,14 +1648,15 @@ public partial class Player : Entity {
 			HUD.GetHealthBar().SetHealth( Health );
 			HUD.GetRageBar().Rage = Rage;
 		}
+		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
+			Rage -= 20.0f * (float)delta;
+			HUD.GetRageBar().Rage = Rage;
+		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
 		} else if ( Rage < 0.0f ) {
 			Rage = 0.0f;
-		}
-		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			Rage -= 20.0f * (float)delta;
-			HUD.GetRageBar().Rage = Rage;
+			Flags &= ~PlayerFlags.BulletTime;
 		}
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]

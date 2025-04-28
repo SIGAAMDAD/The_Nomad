@@ -3,8 +3,8 @@
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_1rrme"]
 [ext_resource type="Texture2D" uid="uid://b5pu6adjnbqft" path="res://textures/env/iconw_psmg.dds" id="1_iya4p"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_tnmqm"]
-[ext_resource type="SpriteFrames" uid="uid://cjwquib2eavft" path="res://resources/animations/plasma_smg_firearm_left.tres" id="4_v6eh2"]
-[ext_resource type="SpriteFrames" uid="uid://dssja0dusu0hq" path="res://resources/animations/plasma_smg_firearm_right.tres" id="5_m7dsw"]
+[ext_resource type="SpriteFrames" uid="uid://cjwquib2eavft" path="res://resources/animations/weapons/plasma_smg_firearm_left.tres" id="4_v6eh2"]
+[ext_resource type="SpriteFrames" uid="uid://dssja0dusu0hq" path="res://resources/animations/weapons/plasma_smg_firearm_right.tres" id="5_m7dsw"]
 [ext_resource type="AudioStream" uid="uid://b2lccyx8ujfqg" path="res://sounds/weapons/plasma_smg_rld.ogg" id="6_mb2o0"]
 [ext_resource type="AudioStream" uid="uid://dx66fipd1tsv0" path="res://sounds/weapons/plasma_smg_use.ogg" id="7_ej1km"]
 

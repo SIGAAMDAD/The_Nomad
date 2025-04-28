@@ -26,6 +26,7 @@ namespace Renown.World {
 
 		public override void Save() {
 			base.Save();
+			/*
 
 			using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() + "_Government" ) ) {
 				writer.SaveUInt( nameof( LastCollectedTime ), LastCollectedTime );
@@ -35,13 +36,16 @@ namespace Renown.World {
 					writer.SaveString( string.Format( "Territory{0}Hash", i ), TerritoryList[i].GetPath() );
 				}
 			}
+			*/
 		}
 		public override void Load() {
 			base.Load();
 
+			/*
 			using ( var reader = ArchiveSystem.GetSection( GetPath() + "_Government" ) ) {
 				LastCollectedTime = reader.LoadUInt( nameof( LastCollectedTime ) );
 			}
+			*/
 		}
 
 		private void OnSettlementRequestedFunds( Settlement settlement, float nAmount ) {

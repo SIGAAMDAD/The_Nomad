@@ -4,8 +4,7 @@ using Godot;
 public partial class MainMenu : Control {
 	private enum IndexedButton : int {
 		Story,
-		Coop,
-		Multiplayer,
+		Extras,
 		Settings,
 		Mods,
 		Credits,
@@ -20,8 +19,6 @@ public partial class MainMenu : Control {
 	private int ButtonIndex = 0;
 	private bool Loaded = false;
 
-	private Button CoopButton;
-
 	private PackedScene LoadedWorld;
 	private Thread LoadThread;
 
@@ -34,11 +31,9 @@ public partial class MainMenu : Control {
 	[Signal]
 	public delegate void HelpMenuEventHandler();
 	[Signal]
-	public delegate void MultiplayerMenuEventHandler();
+	public delegate void ExtrasMenuEventHandler();
 	[Signal]
 	public delegate void ModsMenuEventHandler();
-	[Signal]
-	public delegate void CoopMenuEventHandler();
 	[Signal]
 	public delegate void CreditsMenuEventHandler();
 	[Signal]
@@ -126,27 +121,34 @@ public partial class MainMenu : Control {
 		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
-	private void OnCoopButtonPressed() {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
-		EmitSignalCoopMenu();
-	}
 	private void OnSettingsButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 		EmitSignalSettingsMenu();
 	}
 	private void OnModsButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 		EmitSignalModsMenu();
 	}
-	private void OnMultiplayerButtonPressed() {
+	private void OnExtrasButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
-		EmitSignalMultiplayerMenu();
+		EmitSignalExtrasMenu();
 	}
 	private void OnQuitGameButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 		GetTree().Quit();
@@ -197,23 +199,14 @@ public partial class MainMenu : Control {
 		ContinueGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
 		ContinueGameButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
 
-		CoopButton = GetNode<Button>( "VBoxContainer/CoopButton" );
-		CoopButton.SetProcess( false );
-		CoopButton.SetProcessInternal( false );
-		CoopButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Coop ); } ) );
-		CoopButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Coop ); } ) );
-		CoopButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Coop ); } ) );
-		CoopButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Coop ); } ) );
-		CoopButton.Connect( "pressed", Callable.From( OnCoopButtonPressed ) );
-
-		Button MultiplayerButton = GetNode<Button>( "VBoxContainer/MultiplayerButton" );
-		MultiplayerButton.SetProcess( false );
-		MultiplayerButton.SetProcessInternal( false );
-		MultiplayerButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Multiplayer ); } ) );
-		MultiplayerButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Multiplayer ); } ) );
-		MultiplayerButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Multiplayer ); } ) );
-		MultiplayerButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Multiplayer ); } ) );
-		MultiplayerButton.Connect( "pressed", Callable.From( OnMultiplayerButtonPressed ) );
+		Button ExtrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
+		ExtrasButton.SetProcess( false );
+		ExtrasButton.SetProcessInternal( false );
+		ExtrasButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
+		ExtrasButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Extras ); } ) );
+		ExtrasButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
+		ExtrasButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Extras ); } ) );
+		ExtrasButton.Connect( "pressed", Callable.From( OnExtrasButtonPressed ) );
 
 		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
 		SettingsButton.SetProcess( false );
@@ -264,8 +257,7 @@ public partial class MainMenu : Control {
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			ButtonList = [
 				ContinueGameButton,
-				CoopButton,
-				MultiplayerButton,
+				ExtrasButton,
 				SettingsButton,
 				ModsButton,
 				CreditsButton,
@@ -275,8 +267,7 @@ public partial class MainMenu : Control {
 		} else {
 			ButtonList = [
 				NewGameButton,
-				CoopButton,
-				MultiplayerButton,
+				ExtrasButton,
 				SettingsButton,
 				ModsButton,
 				CreditsButton,

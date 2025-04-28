@@ -58,6 +58,9 @@ namespace Renown.World {
 
 		private static void UpdatePrices() {
 			foreach ( var item in CommodityData ) {
+				if ( item.Value.Buys == 0 ) {
+					continue;
+				}
 				float variance = ( item.Value.Buys / item.Value.Sells ) * (float)Math.Clamp( ( item.Value.Buys / item.Value.Sells ) * ( 1 + Inflation ), item.Value.Min, item.Value.Max );
 				variance = 1.0f + variance;
 

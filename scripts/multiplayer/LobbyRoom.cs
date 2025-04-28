@@ -154,7 +154,7 @@ public partial class LobbyRoom : Control {
 		}
 
 		string username = SteamFriends.GetFriendPersonaName( userId );
-		for ( int i = 1; i < PlayerList.GetChildCount(); i++ ) {
+		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
@@ -189,7 +189,7 @@ public partial class LobbyRoom : Control {
 	}
 
 	private bool PlayerIsInQueue( CSteamID userId ) {
-		for ( int i = 1; i < PlayerList.GetChildCount(); i++ ) {
+		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			string username = SteamFriends.GetFriendPersonaName( userId );
 			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();

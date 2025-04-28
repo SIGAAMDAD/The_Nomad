@@ -2,7 +2,7 @@
 
 [ext_resource type="ItemCategory" uid="uid://cfwgn6hyfktxx" path="res://resources/weapons/categories/sidearm_category.tres" id="1_gyptk"]
 [ext_resource type="Texture2D" uid="uid://dyruak14a8cgp" path="res://textures/spritesheets/iconw_baller.png" id="1_nxwng"]
-[ext_resource type="SpriteFrames" uid="uid://5ljyypo5nb3l" path="res://resources/animations/baller_firearm_right.tres" id="2_f1bax"]
+[ext_resource type="SpriteFrames" uid="uid://5ljyypo5nb3l" path="res://resources/animations/weapons/baller_firearm_right.tres" id="2_f1bax"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_qefw3"]
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_rtiu6"]
 [ext_resource type="AudioStream" uid="uid://d36ysh63o3oj4" path="res://sounds/weapons/baller_reload.ogg" id="4_wry6g"]

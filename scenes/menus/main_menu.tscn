@@ -74,15 +74,9 @@ layout_mode = 2
 text = "NEW_GAME"
 flat = true
 
-[node name="CoopButton" type="Button" parent="VBoxContainer"]
-visible = false
+[node name="ExtrasButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "COOP_BUTTON"
-flat = true
-
-[node name="MultiplayerButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "MULTIPLAYER_BUTTON"
+text = "EXTRAS_BUTTON"
 flat = true
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]

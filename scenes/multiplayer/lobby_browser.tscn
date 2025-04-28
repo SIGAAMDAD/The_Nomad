@@ -18,6 +18,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_avp8t")
+metadata/_edit_use_anchors_ = true
 
 [node name="MenuTitle" type="Label" parent="."]
 layout_mode = 1
@@ -32,7 +33,7 @@ text = "LOBBY BROWSER"
 metadata/_edit_use_anchors_ = true
 
 [node name="FilterLabel" type="Label" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_left = 486.0
 offset_top = 2.0
 offset_right = 598.0
@@ -89,7 +90,7 @@ text = "Local World"
 
 [node name="LobbyListBackground" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.345098)
-layout_mode = 2
+layout_mode = 0
 offset_left = 14.0
 offset_top = 28.0
 offset_right = 444.0
@@ -115,6 +116,66 @@ draw_focus_border = true
 
 [node name="Lobbies" type="VBoxContainer" parent="LobbyList"]
 layout_mode = 2
+
+[node name="ClonerSpinner" type="Range" parent="LobbyList/Lobbies"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 2
+auto_translate_mode = 0
+editor_description = ""
+visible = false
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(1, 1, 1, 1)
+show_behind_parent = false
+top_level = false
+clip_children = 0
+light_mask = 1
+visibility_layer = 1
+z_index = 0
+z_as_relative = true
+y_sort_enabled = false
+texture_filter = 0
+texture_repeat = 0
+material = null
+use_parent_material = false
+clip_contents = true
+custom_minimum_size = Vector2(16, 16)
+layout_direction = 0
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+size_flags_stretch_ratio = 1.0
+localize_numeral_system = true
+tooltip_text = ""
+tooltip_auto_translate_mode = 0
+focus_neighbor_left = NodePath("")
+focus_neighbor_top = NodePath("")
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("")
+focus_next = NodePath("")
+focus_previous = NodePath("")
+focus_mode = 0
+mouse_filter = 0
+mouse_force_pass_scroll_events = true
+mouse_default_cursor_shape = 0
+theme = null
+theme_type_variation = &""
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 0.0
+exp_edit = false
+rounded = false
+allow_greater = false
+allow_lesser = false
+script = ExtResource("4_oe0bc")
+border_width = 0.132
+spin_fill_percent = 0.319
+spin_revolution_per_second = 2.0
 
 [node name="LobbyMetadataContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -214,7 +275,7 @@ use_parent_material = false
 clip_contents = true
 custom_minimum_size = Vector2(16, 16)
 layout_direction = 0
-layout_mode = 2
+layout_mode = 0
 anchors_preset = 0
 anchor_left = 0.0
 anchor_top = 0.0

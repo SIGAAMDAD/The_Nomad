@@ -5,10 +5,11 @@ using Renown.World;
 
 namespace Renown {
 	public static class Constants {
-		public static readonly int THREAD_GROUP_BIOMES = 0;
 		public static readonly float DAMAGE_VELOCITY = 420.0f;
 
 		public static readonly int JobChance_MercenaryGovernment = 60;
+
+		// initial jobs
 		public static readonly Dictionary<OccupationType, Dictionary<SocietyRank, int>> JobChances_SocioEconomicStatus = new Dictionary<OccupationType, Dictionary<SocietyRank, int>>{
 			{
 				OccupationType.None,
@@ -23,14 +24,6 @@ namespace Renown {
 				new Dictionary<SocietyRank, int>{
 					{ SocietyRank.Lower, 90 },
 					{ SocietyRank.Middle, 20 },
-					{ SocietyRank.Upper, 0 }
-				}
-			},
-			{
-				OccupationType.Bandit,
-				new Dictionary<SocietyRank, int>{
-					{ SocietyRank.Lower, 0 },
-					{ SocietyRank.Middle, 0 },
 					{ SocietyRank.Upper, 0 }
 				}
 			},
@@ -85,6 +78,7 @@ namespace Renown {
 			{ ResourceType.Water, ResourceLoader.Load( "res://resources/items/water.tres" ) }
 		};
 
+		public static readonly int THREAD_GROUP_BIOMES = 0;
 		public static readonly int THREAD_GROUP_THINKERS = 1;
 		public static readonly int THREAD_GROUP_FACTIONS = 2;
 		public static readonly int THREAD_GROUP_THINKERS_AWAY = 3;

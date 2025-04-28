@@ -307,8 +307,10 @@ namespace Renown.Thinkers {
 			}
 		}
 		public override void SetLocation( WorldArea location ) {
-			Location.PlayerEntered -= OnPlayerEnteredArea;
-			Location.PlayerExited -= OnPlayerExitedArea;
+			if ( Location != null ) {
+				Location.PlayerEntered -= OnPlayerEnteredArea;
+				Location.PlayerExited -= OnPlayerExitedArea;
+			}
 			
 			if ( location == null ) {
 				Location = null;
@@ -340,7 +342,7 @@ namespace Renown.Thinkers {
 			if ( IsPremade ) {
 				writer.SaveString( key + nameof( InitialPath ), InitialPath );
 			} else {
-				writer.SaveString( key + nameof( Family ), Family.GetPath() );
+				writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
 			}
 
 			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
@@ -355,9 +357,11 @@ namespace Renown.Thinkers {
 			writer.SaveInt( key + nameof( Intelligence ), Intelligence );
 			writer.SaveInt( key + nameof( Constitution ), Constitution );
 
+			writer.SaveUInt( key + nameof( Occupation ), (uint)Occupation );
+
+			writer.SaveString( key + nameof( Location ), Location.GetPath() );
 			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
-			writer.SaveString( key + nameof( Location ), Location.Name );
 			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
 
 			Job.Save( writer, key );
@@ -390,6 +394,9 @@ namespace Renown.Thinkers {
 				count++;
 			}
 		}
+		private void SetLocationDeferred( string locationId ) {
+			Location = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetNode<WorldArea>( locationId );
+		}
 		public void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
 			string key = "Thinker" + nIndex;
 
@@ -399,9 +406,11 @@ namespace Renown.Thinkers {
 			BotName = reader.LoadString( key + nameof( BotName ) );
 
 			if ( !IsPremade ) {
-				Family = GetTree().Root.GetNode<Family>( reader.LoadString( key + nameof( Family ) ) );
+				Family = FamilyCache.GetFamily( reader.LoadString( key + nameof( Family ) ) );
+				Home = Family.GetHome();
 			}
 
+			CallDeferred( "SetLocationDeferred", reader.LoadString( key + nameof( Location ) ) );
 			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
 			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
 			HasMetPlayer = reader.LoadBoolean( key + nameof( HasMetPlayer ) );
@@ -412,7 +421,10 @@ namespace Renown.Thinkers {
 			Intelligence = reader.LoadInt( key + nameof( Intelligence ) );
 			Constitution = reader.LoadInt( key + nameof( Constitution ) );
 
-			Job.Load( reader, key );
+			Occupation = (OccupationType)reader.LoadUInt( key + nameof( Occupation ) );
+
+			Job = Thinkers.Occupation.Create( Occupation, this, null );
+			Job.Load( this, reader, key );
 
 			int relationCount = reader.LoadInt( key + "RelationCount" );
 			RelationCache = new Dictionary<Object, float>( relationCount );
@@ -442,14 +454,16 @@ namespace Renown.Thinkers {
 		public void StopMoving() {
 			Velocity = Godot.Vector2.Zero;
 			GotoPosition = GlobalPosition;
-			BodyAnimations.Play( "idle" );
 
-			HeadAnimations?.Play( "idle" );
-			ArmAnimations?.Play( "idle" );
+			if ( Visible ) {
+				BodyAnimations.CallDeferred( "play", "idle" );
+				HeadAnimations?.CallDeferred( "play", "idle" );
+				ArmAnimations?.CallDeferred( "play", "idle" );
+			}
 		}
 
 		private void SetAnimationsColor( Color color ) {
-			Animations.Modulate = color;
+			Animations?.SetDeferred( "modulate", color );
 		}
 
 		private void OnScreenEnter() {
@@ -496,10 +510,31 @@ namespace Renown.Thinkers {
 			*/
 		}
 
+		private void FindHighestRequirement() {
+			// evaluate which action has the highest priority, used as an override
+			ThinkerRequirements focus = ThinkerRequirements.Count;
+			float highest = float.MinValue;
+			foreach( var state in Requirements ) {
+				float priorityScore = state.Value * PriorityMultiplier[ state.Key ];
+				if ( priorityScore > highest ) {
+					highest = priorityScore;
+					focus = state.Key;
+				}
+			}
+			if ( highest > CurrentPriority ) {
+				CurrentPriority = highest;
+				CurrentFocus = focus;
+				ActionPlan.Clear();
+
+				CreateActionPlan();
+				return;
+			}
+		}
 		private void CreateActionPlan() {
 			switch ( CurrentFocus ) {
 			case ThinkerRequirements.Food: {
 				if ( Location is Settlement settlement && settlement != null ) {
+					Requirements[ ThinkerRequirements.Food ] += 50;
 				} else {
 					// we're fucked... kind of
 					SetNavigationTarget( Settlement.Cache.FindNearest( PhysicsPosition ).GlobalPosition );
@@ -567,12 +602,14 @@ namespace Renown.Thinkers {
 
 			base._Ready();
 
+			if ( !IsPremade ) {
+				Sprite2D texture = new Sprite2D();
+				texture.Texture = ResourceLoader.Load<Texture2D>( "res://icon.svg" );
+				AddChild( texture );
+			}
+
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
-
-			Animations = new Node2D();
-			Animations.Name = "Animations";
-			AddChild( Animations );
 
 			AudioChannel = new AudioStreamPlayer2D();
 			AudioChannel.Name = "AudioChannel";
@@ -607,9 +644,6 @@ namespace Renown.Thinkers {
 			}
 
 			ProcessMode = ProcessModeEnum.Pausable;
-
-			Location.PlayerEntered += OnPlayerEnteredArea;
-			Location.PlayerExited += OnPlayerExitedArea;
 
 			ThinkThread = new System.Threading.Thread( () => {
 				while ( !Quit ) {
@@ -720,9 +754,6 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
-			if ( Location.IsPlayerHere() ) {
-				GlobalRotation = 0.0f;
-			}
 			MoveAlongPath();
 		}
 		public override void _Process( double delta ) {
@@ -734,24 +765,7 @@ namespace Renown.Thinkers {
 
 			RenownProcess();
 
-			// evaluate which action has the highest priority, used as an override
-			ThinkerRequirements focus = ThinkerRequirements.Count;
-			float highest = float.MinValue;
-			foreach( var state in Requirements ) {
-				float priorityScore = state.Value * PriorityMultiplier[ state.Key ];
-				if ( priorityScore > highest ) {
-					highest = priorityScore;
-					focus = state.Key;
-				}
-			}
-			if ( highest > CurrentPriority ) {
-				CurrentPriority = highest;
-				CurrentFocus = focus;
-				ActionPlan.Clear();
-
-				CreateActionPlan();
-				return;
-			}
+			FindHighestRequirement();
 
 			if ( CurrentAction != ThinkerAction.None ) {
 				Actions[ CurrentAction ].Invoke( this );
@@ -764,7 +778,7 @@ namespace Renown.Thinkers {
 			foreach ( var relation in RelationCache ) {
 				if ( GetRelationStatus( relation.Key ) > RelationStatus.Dislikes ) {
 					// we've got a grudge
-					
+
 				}
 			}
 		}
@@ -860,7 +874,7 @@ namespace Renown.Thinkers {
 			if ( !IsPremade ) {
 				Age = specificAge == -1 ? Random.Next( 0, 70 ) : specificAge;
 				FirstName = NameGenerator.GenerateName();
-				Family = ThinkerCache.GetFamily( Location as Settlement );
+				Family = FamilyCache.GetFamily( Location as Settlement );
 				BotName = string.Format( "{0} {1}", FirstName, Family.Name );
 			} else {
 				BotName = Name;

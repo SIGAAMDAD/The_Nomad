@@ -130,7 +130,7 @@ public partial class WeaponEntity : Node2D {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
-	public NodePath GetInitialPath() => GetPath();
+	public NodePath GetInitialPath() => InitialPath;
 	public void SetOwner( Player player ) => _Owner = player;
 	public WeaponState GetWeaponState() => CurrentState;
 	public void SetWeaponState( WeaponState state ) => CurrentState = state;
@@ -405,9 +405,6 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	public void Save() {
-		if ( Data == null ) {
-			return;
-		}
 		using ( var writer = new SaveSystem.SaveSectionWriter( InitialPath ) ) {
 			writer.SaveBool( "HasOwner", _Owner != null );
 			if ( _Owner != null ) {
@@ -416,17 +413,11 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 	public void Load() {
-		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( InitialPath );
-
-		// save file compatibility
-		if ( reader == null ) {
-			return;
-		}
-
-		if ( reader.LoadBoolean( "HasOwner" ) ) {
-			_Owner = GetNode<Player>( reader.LoadString( "Owner" ) );
-			
-			CallDeferred( "reparent", _Owner );
+		using ( var reader = ArchiveSystem.GetSection( InitialPath ) ) {
+			if ( reader.LoadBoolean( "HasOwner" ) ) {
+				CharacterBody2D owner = GetTree().Root.GetNode<CharacterBody2D>( reader.LoadString( "Owner" ) );
+				CallDeferred( "OnBodyShapeEntered", owner.GetRid(), owner, 0, 0 );
+			}
 		}
 	}
 

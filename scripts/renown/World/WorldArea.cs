@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Renown.Thinkers;
 
 namespace Renown.World {
 	public partial class WorldArea : Area2D {
@@ -36,13 +37,13 @@ namespace Renown.World {
 		public Biome GetBiome() => Biome;
 
 		private void OnProcessAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			Player player = body as Player;
-			if ( player == null ) {
-				return;
+			if ( body is Entity entity && entity != null ) {
+				entity.SetLocation( this );
+				if ( entity is Player player && player != null ) {
+					PlayerStatus = true;
+					EmitSignalPlayerEntered();
+				}
 			}
-			PlayerStatus = true;
-			EmitSignalPlayerEntered();
-			GD.Print( "Player entered area " + AreaName );
 		}
 		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 			Player player = body as Player;

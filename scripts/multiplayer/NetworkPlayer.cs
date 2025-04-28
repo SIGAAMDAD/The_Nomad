@@ -81,7 +81,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)packet.ReadDouble();
 		position.Y = (float)packet.ReadDouble();
-		SetDeferred( "global_position", position );
+		GlobalPosition = position;
 
 		float ArmAngle = (float)packet.ReadDouble();
 
@@ -91,25 +91,24 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
-			LeftArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Idle:
-			LeftArmAnimation.SetDeferred( "sprite_frames", DefaultLeftArmSpriteFrames );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "idle" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			LeftArmAnimation.SetDeferred( "sprite_frames", DefaultLeftArmSpriteFrames );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "run" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
-			LeftArmAnimation.SetDeferred( "sprite_frames", DefaultLeftArmSpriteFrames );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "idle" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.WeaponUse: {
+			LeftArmAnimation.Show();
+			
 			string property = "";
 			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				property = "firearm_frames_left";
@@ -119,22 +118,21 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_left";
 			}
 			
-			LeftArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "use" );
+			LeftArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			LeftArmAnimation.Play( "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
-			LeftArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "reload" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			LeftArmAnimation.Play( "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
-			LeftArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
-			LeftArmAnimation.CallDeferred( "show" );
-			LeftArmAnimation.CallDeferred( "play", "empty" );
+			LeftArmAnimation.Show();
+			LeftArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			LeftArmAnimation.Play( "empty" );
 			break;
 		};
 		
@@ -144,25 +142,24 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
-			RightArmAnimation.CallDeferred( "hide" );
+//			RightArmAnimation.Hide();
 			break;
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Idle:
-			RightArmAnimation.SetDeferred( "sprite_frames", DefaultRightArmSpriteFrames );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "idle" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			RightArmAnimation.SetDeferred( "sprite_frames", DefaultRightArmSpriteFrames );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "run" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.WeaponIdle:
-			RightArmAnimation.SetDeferred( "sprite_frames", DefaultRightArmSpriteFrames );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "idle" );
+			RightArmAnimation.Show();
+			RightArmAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.WeaponUse: {
+			RightArmAnimation.Show();
+			
 			string property = "";
 			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				property = "firearm_frames_right";
@@ -172,22 +169,21 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_right";
 			}
 			
-			RightArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "use" );
+			RightArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			RightArmAnimation.Play( "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
-			RightArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ] );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "reload" );
+			RightArmAnimation.Show();
+			RightArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
+			RightArmAnimation.Play( "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
-			RightArmAnimation.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ] );
-			RightArmAnimation.CallDeferred( "show" );
-			RightArmAnimation.CallDeferred( "play", "empty" );
+			RightArmAnimation.Show();
+			RightArmAnimation.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
+			RightArmAnimation.Play( "empty" );
 			break;
 		};
 
@@ -200,16 +196,16 @@ public partial class NetworkPlayer : Renown.Entity {
 			LegAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.Idle:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "idle" );
+			LegAnimation.Show();
+			LegAnimation.Play( "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "run" );
+			LegAnimation.Show();
+			LegAnimation.Play( "run" );
 			break;
 		case PlayerAnimationState.Sliding:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "slide" );
+			LegAnimation.Show();
+			LegAnimation.Play( "slide" );
 			break;
 		};
 		
@@ -217,22 +213,22 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
-			TorsoAnimation.CallDeferred( "show" );
-			TorsoAnimation.CallDeferred( "play", "default" );
+			TorsoAnimation.Show();
+			TorsoAnimation.Play( "default" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "start" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
+			IdleAnimation.Play( "start" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "loop" );
+			TorsoAnimation.Hide();
+			IdleAnimation.Show();
+			IdleAnimation.Play( "loop" );
 			break;
 		case PlayerAnimationState.Dead:
-			TorsoAnimation.CallDeferred( "show" );
-			TorsoAnimation.CallDeferred( "play", "dead" );
+			TorsoAnimation.Show();
+			TorsoAnimation.Play( "dead" );
 			break;
 		};
 
