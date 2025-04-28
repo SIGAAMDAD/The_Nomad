@@ -1,0 +1,111 @@
+[gd_scene load_steps=11 format=3 uid="uid://cpes4nu5fw8lg"]
+
+[ext_resource type="SpriteFrames" uid="uid://c2jibvnbe8avt" path="res://resources/animations/thinkers/bandit/body.tres" id="1_kds6j"]
+[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="2_0xqt3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohua8"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w2v4m"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_djhnt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ohua8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w2v4m")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnc44"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q3nyr"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sse78"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02k6i"]
+atlas = ExtResource("2_0xqt3")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2r3fa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnc44")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q3nyr")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sse78")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_02k6i")
+}],
+"loop": true,
+"name": &"move",
+"speed": 7.0
+}]
+
+[node name="Animations" type="Node2D"]
+z_index = 5
+
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_kds6j")
+animation = &"calm"
+autoplay = "calm"
+
+[node name="SmokeEmitter" type="CPUParticles2D" parent="BodyAnimations"]
+position = Vector2(11, -6)
+emitting = false
+amount = 50
+lifetime = 2.0
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 4.0
+gravity = Vector2(0, -50)
+angle_min = -4.5
+angle_max = 65.1
+
+[node name="HeadAnimations" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(-1, -6)
+sprite_frames = SubResource("SpriteFrames_djhnt")
+animation = &"move"
+autoplay = "idle"
+
+[node name="ArmAnimations" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, -4)
+sprite_frames = SubResource("SpriteFrames_2r3fa")
+animation = &"idle"
+autoplay = "idle"
