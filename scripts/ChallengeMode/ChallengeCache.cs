@@ -47,7 +47,7 @@ namespace ChallengeMode {
 		private static Dictionary<int, LeaderboardEntry> LeaderboardData = new Dictionary<int, LeaderboardEntry>();
 		private static SteamLeaderboardEntries_t LeaderboardEntries;	
 
-		private static Dictionary<StringName, SteamLeaderboard_t> Leaderboards;
+		private static Dictionary<StringName, SteamLeaderboard_t> Leaderboards = new Dictionary<StringName, SteamLeaderboard_t>();
 		private static CallResult<LeaderboardFindResult_t> OnLeaderboardFindResult;
 		private static CallResult<LeaderboardScoresDownloaded_t> OnLeaderboardScoresDownloaded;
 		private static CallResult<LeaderboardScoreUploaded_t> OnLeaderboardScoreUploaded;
@@ -63,13 +63,19 @@ namespace ChallengeMode {
 		public static void SetCurrentMap( int nCurrentMap ) => CurrentMap = nCurrentMap;
 
 		public static void FetchLeaderboardData( int nMapIndex ) {
+			SteamAPICall_t handle;
+			if ( !Leaderboards.ContainsKey( string.Format( "Challenge{0}", nMapIndex ) ) ) {
+				handle = SteamUserStats.FindLeaderboard( string.Format( "Challenge{0}", nMapIndex ) );
+				OnLeaderboardFindResult.Set( handle );
+				return;
+			}
 			SteamLeaderboard_t hLeaderboard = Leaderboards[ string.Format( "Challenge{0}", nMapIndex ) ];
 
 			Console.PrintLine( string.Format( "...Found leaderboard {0}", SteamUserStats.GetLeaderboardName( hLeaderboard ) ) );
 
 			int entryCount = SteamUserStats.GetLeaderboardEntryCount( hLeaderboard );
 
-			SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, entryCount );
+			handle = SteamUserStats.DownloadLeaderboardEntries( hLeaderboard, ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal, 0, entryCount );
 			OnLeaderboardScoresDownloaded.Set( handle );
 		}
 
@@ -78,6 +84,7 @@ namespace ChallengeMode {
 				Console.PrintError( "[STEAM] Error finding leaderboard!" );
 				return;
 			}
+			Console.PrintLine( string.Format( "[STEAM] Successfully found leaderboard {0}", SteamUserStats.GetLeaderboardName( pCallback.m_hSteamLeaderboard ) ) );
 			Leaderboards.Add( SteamUserStats.GetLeaderboardName( pCallback.m_hSteamLeaderboard ), pCallback.m_hSteamLeaderboard );
 		}
 		private static void OnScoreUploaded( LeaderboardScoreUploaded_t pCallback, bool bIOFailure ) {
@@ -166,12 +173,17 @@ namespace ChallengeMode {
 			SaveScores();
 		}
 		public static void GetScore( int MapIndex, out int Score, out int TimeMinutes, out int TimeSeconds, out int TimeMilliseconds ) {
-			ChallengeScore score = Scores[ MapList[ MapIndex ] ];
-
-			Score = score.Score;
-			TimeMinutes = score.TimeMilliseconds;
-			TimeSeconds = score.TimeSeconds;
-			TimeMilliseconds = score.TimeMilliseconds;
+			if ( Scores.TryGetValue( MapList[ MapIndex ], out ChallengeScore score ) ) {
+				Score = score.Score;
+				TimeMinutes = score.TimeMilliseconds;
+				TimeSeconds = score.TimeSeconds;
+				TimeMilliseconds = score.TimeMilliseconds;
+			} else {
+				Score = 0;
+				TimeMinutes = 0;
+				TimeSeconds = 0;
+				TimeMilliseconds = 0;
+			}
 
 			FetchLeaderboardData( MapIndex );
 		}
@@ -227,8 +239,6 @@ namespace ChallengeMode {
 				} else {
 					Console.PrintError( string.Format( "Error loading challenge map {0}!", mapList[i] ) );
 				}
-				SteamAPICall_t handle = SteamUserStats.FindLeaderboard( string.Format( "Challenge{0}", i ) );
-				OnLeaderboardFindResult.Set( handle );
 			}
 
 			Console.PrintLine( "Loading challenge mode scores..." );

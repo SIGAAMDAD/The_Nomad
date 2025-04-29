@@ -1,0 +1,165 @@
+[gd_scene load_steps=10 format=3 uid="uid://dqebkeyfqu46q"]
+
+[ext_resource type="Script" uid="uid://bfaok2nqpcm24" path="res://scripts/menus/ExtrasMenu.cs" id="1_56yqt"]
+
+[sub_resource type="SystemFont" id="SystemFont_wymqu"]
+
+[sub_resource type="SystemFont" id="SystemFont_1ry13"]
+
+[sub_resource type="SystemFont" id="SystemFont_ko5ec"]
+
+[sub_resource type="SystemFont" id="SystemFont_i4ggt"]
+
+[sub_resource type="SystemFont" id="SystemFont_ox5gw"]
+
+[sub_resource type="SystemFont" id="SystemFont_clvrn"]
+
+[sub_resource type="SystemFont" id="SystemFont_e0peb"]
+
+[sub_resource type="SystemFont" id="SystemFont_m1w8s"]
+
+[node name="ExtrasMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_56yqt")
+metadata/_edit_use_anchors_ = true
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TitleLabel" type="Label" parent="MainContainer"]
+layout_mode = 2
+text = "EXTRAS_MODE"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="HSeparator" type="HSeparator" parent="MainContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MainContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="CoopButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "COOP_BUTTON"
+flat = true
+
+[node name="MultiplayerButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "MULTIPLAYER_BUTTON"
+flat = true
+
+[node name="ChallengeModeButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "CHALLENGE_MODE_BUTTON"
+flat = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/HSplitContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ChallengeModeOptions" type="VScrollBar" parent="MainContainer/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/HSplitContainer/HBoxContainer/ChallengeModeOptions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_right = 392.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="CoopOptions" type="VScrollBar" parent="MainContainer/HSplitContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/HSplitContainer/HBoxContainer/CoopOptions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_right = 392.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="DuelButton" type="Button" parent="MainContainer/HSplitContainer/HBoxContainer/CoopOptions/VBoxContainer"]
+layout_mode = 2
+text = "Duel"
+
+[node name="BloodbathButton" type="Button" parent="MainContainer/HSplitContainer/HBoxContainer/CoopOptions/VBoxContainer"]
+layout_mode = 2
+text = "Bloodbath"
+
+[node name="HSeparator2" type="HSeparator" parent="MainContainer"]
+layout_mode = 2
+
+[node name="ChallengeInfoContainer" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="MainContainer/ChallengeInfoContainer"]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_wymqu")
+autowrap_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="MainContainer/ChallengeInfoContainer"]
+layout_mode = 2
+
+[node name="ObjectiveLabel" type="RichTextLabel" parent="MainContainer/ChallengeInfoContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_1ry13")
+theme_override_fonts/mono_font = SubResource("SystemFont_ko5ec")
+theme_override_fonts/italics_font = SubResource("SystemFont_i4ggt")
+theme_override_fonts/bold_italics_font = SubResource("SystemFont_ox5gw")
+theme_override_fonts/bold_font = SubResource("SystemFont_clvrn")
+bbcode_enabled = true
+fit_content = true
+
+[node name="HSeparator2" type="HSeparator" parent="MainContainer/ChallengeInfoContainer"]
+layout_mode = 2
+
+[node name="ScoreContainer" type="HBoxContainer" parent="MainContainer/ChallengeInfoContainer"]
+layout_mode = 2
+
+[node name="BestTimeLabel" type="Label" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+custom_minimum_size = Vector2(314, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_e0peb")
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+layout_mode = 2
+
+[node name="ScoreLabel" type="Label" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+custom_minimum_size = Vector2(314, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_m1w8s")
+
+[node name="StartButton" type="Button" parent="MainContainer/ChallengeInfoContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "START"

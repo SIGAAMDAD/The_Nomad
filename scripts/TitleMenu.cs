@@ -37,10 +37,14 @@ public partial class TitleMenu : Control {
 		case MenuState.Extras:
 			index = ExtrasMenu.GetIndex();
 			RemoveChild( ExtrasMenu );
+			ExtrasMenu.QueueFree();
+			ExtrasMenu = null;
 			break;
 		case MenuState.Settings:
 			index = SettingsMenu.GetIndex();
 			RemoveChild( SettingsMenu );
+			SettingsMenu.QueueFree();
+			SettingsMenu = null;
 			break;
 		default:
 			Console.PrintError( "Invalid menu state!" );

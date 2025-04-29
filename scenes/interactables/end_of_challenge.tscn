@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c0ekbr7fqxj4v"]
+
+[ext_resource type="Texture2D" uid="uid://crpyi5goxf4ar" path="res://textures/tilesets/galakas.png" id="1_f16uo"]
+[ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/interactables/EndOfChallenge.cs" id="1_qwuqe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p3nh6"]
+size = Vector2(34, 37)
+
+[node name="EndOfChallenge" type="Area2D"]
+script = ExtResource("1_qwuqe")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_f16uo")
+hframes = 16
+vframes = 16
+frame = 50
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_p3nh6")

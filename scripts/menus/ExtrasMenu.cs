@@ -63,8 +63,6 @@ public partial class ExtrasMenu : Control {
 		MultiplayerButton.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 		ChallengeModeButton.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 
-		MultiplayerMenu?.GetNode<LobbyBrowser>( "LobbyBrowser" ).ResetBrowser();
-
 		OptionsScroll.Hide();
 		ChallengeModeOptions.Hide();
 		ChallengeModeData.Hide();
@@ -143,7 +141,7 @@ public partial class ExtrasMenu : Control {
 		OptionsScroll = GetNode<HBoxContainer>( "MainContainer/HSplitContainer/HBoxContainer" );
 
 		ChallengeModeOptions = GetNode<VScrollBar>( "MainContainer/HSplitContainer/HBoxContainer/ChallengeModeOptions" );
-		if ( ChallengeModeOptions.GetChildCount() == 0 ) {
+		if ( ChallengeModeOptions.GetChild( 0 ).GetChildCount() == 0 ) {
 			for ( int i = 0; i < ChallengeCache.MapList.Count; i++ ) {
 				Button button = new Button();
 				button.Text = TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", i ) );
@@ -169,5 +167,7 @@ public partial class ExtrasMenu : Control {
 		CoopOptions = GetNode<VScrollBar>( "MainContainer/HSplitContainer/HBoxContainer/CoopOptions" );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
+
+		Reset();
 	}
 };

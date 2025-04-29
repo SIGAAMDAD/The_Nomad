@@ -1,0 +1,50 @@
+[gd_scene load_steps=9 format=3 uid="uid://be1vwktiohav7"]
+
+[ext_resource type="Script" uid="uid://c40m2asrycxeo" path="res://scripts/effects/Fire.cs" id="1_08243"]
+[ext_resource type="AudioStream" uid="uid://byxwvbp5h01jr" path="res://sounds/env/fire.ogg" id="1_rt0mn"]
+
+[sub_resource type="Gradient" id="Gradient_08243"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lv8hs"]
+gradient = SubResource("Gradient_08243")
+width = 1
+
+[sub_resource type="Gradient" id="Gradient_0obw5"]
+offsets = PackedFloat32Array(0, 0.214112, 0.525547, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.672767, 0, 1, 1, 0.756863, 0, 1, 0.138473, 0.163737, 0.204157, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_08243"]
+gradient = SubResource("Gradient_0obw5")
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0obw5"]
+gradient = SubResource("Gradient_0obw5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6q518"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 26.5
+gravity = Vector3(0, -30, 0)
+color_ramp = SubResource("GradientTexture1D_0obw5")
+color_initial_ramp = SubResource("GradientTexture1D_08243")
+
+[node name="Fire" type="GPUParticles2D"]
+scale = Vector2(0.980649, 0.989291)
+amount = 2000
+texture = SubResource("GradientTexture1D_lv8hs")
+lifetime = 2.5
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_6q518")
+script = ExtResource("1_08243")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("1_rt0mn")
+autoplay = true
+playback_type = 1
+parameters/looping = true
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(-1.01973, -47.0033)
+scale = Vector2(3.16117, 7.63173)
