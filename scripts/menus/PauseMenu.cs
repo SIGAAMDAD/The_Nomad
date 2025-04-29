@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Godot;
 
 public partial class PauseMenu : Control {
@@ -19,11 +17,13 @@ public partial class PauseMenu : Control {
 				GetTree().Paused = false;
 			}
 			Engine.TimeScale = 1.0f;
+			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
 		} else {
 			Show();
 			if ( !( SteamLobby.Instance.LobbyMemberCount <= 1 ) ) {
 				GetTree().Paused = true;
 			}
+			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 			Engine.TimeScale = 0.0f;
 		}
 		GameConfiguration.Paused = !GameConfiguration.Paused;

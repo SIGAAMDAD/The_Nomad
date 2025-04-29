@@ -1,4 +1,3 @@
-using System.Xml;
 using Godot;
 
 public partial class TitleMenu : Control {
@@ -15,8 +14,6 @@ public partial class TitleMenu : Control {
 	private AudioStreamPlayer MusicTheme;
 
 	private ExtrasMenu ExtrasMenu;
-	private CoopMenu CoopMenu;
-	private MultiplayerMenu MultiplayerMenu;
 	private SettingsMenu SettingsMenu;
 	private MainMenu MainMenu;
 	private Button ExitButton;
@@ -26,102 +23,69 @@ public partial class TitleMenu : Control {
 
 	private AudioStream LoopingTheme;
 
+	private Control CurrentMenu;
+
 	private MenuState State = MenuState.Main;
 
     private void OnExitButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
+		int index = 0;
+
 		switch ( State ) {
 		case MenuState.Extras:
-			CoopMenu.Hide();
-			CoopMenu.SetProcess( false );
-			CoopMenu.SetProcessInternal( false );
-
-			MultiplayerMenu.Hide();
-			LobbyBrowser.Hide();
-			LobbyFactory.Hide();
-			LobbyBrowser.SetProcess( false );
-			LobbyBrowser.SetProcessInternal( false );
-			LobbyBrowser.SetProcessUnhandledInput( false );
-			LobbyFactory.SetProcess( false );
-			LobbyFactory.SetProcessInternal( false );
-			LobbyFactory.SetProcessUnhandledInput( false );
-
-			ExtrasMenu.Hide();
-			ExtrasMenu.SetProcess( false );
-			ExtrasMenu.SetProcessInternal( false );
-			ExtrasMenu.ProcessMode = ProcessModeEnum.Disabled;
+			index = ExtrasMenu.GetIndex();
+			RemoveChild( ExtrasMenu );
 			break;
-		/*
-		case MenuState.Campaign:
-			CampaignMenu.Hide();
-			CampaignMenu.SetProcess( false );
-			CampaignMenu.SetProcessInternal( false );
-			CampaignMenu.SetProcessUnhandledInput( false );
-			break;
-			*/
 		case MenuState.Settings:
-			SettingsMenu.Hide();
-			SettingsMenu.SetProcess( false );
-			SettingsMenu.SetProcessInternal( true );
-			SettingsMenu.SetProcessUnhandledInput( true );
-			SettingsMenu.ProcessMode = ProcessModeEnum.Disabled;
+			index = SettingsMenu.GetIndex();
+			RemoveChild( SettingsMenu );
 			break;
 		default:
 			Console.PrintError( "Invalid menu state!" );
 			break;
 		};
 
-		MainMenu.SetProcess( true );
-		MainMenu.SetProcessInternal( true );
-		MainMenu.SetProcessUnhandledInput( true );
-		MainMenu.ProcessMode = ProcessModeEnum.Always;
+		AddChild( MainMenu );
+		MoveChild( MainMenu, index );
 
 		ExitButton.Hide();
 		MainMenu.Show();
 		State = MenuState.Main;
 	}
-	/*
-	private void OnMainMenuCampaignMenu() {
-		MainMenu.SetProcess( false );
-		MainMenu.SetProcessInternal( false );
-		MainMenu.SetProcessUnhandledInput( false );
-		CampaignMenu.SetProcess( true );
-		CampaignMenu.SetProcessInternal( true );
-		CampaignMenu.SetProcessUnhandledInput( true );
-
-		MainMenu.Hide();
-		CampaignMenu.Show();
-		ExitButton.Show();
-		State = MenuState.Campaign;
-	}
-	*/
 	private void OnMainMenuExtrasMenu() {
-		MainMenu.SetProcessUnhandledInput( false );
-		ExtrasMenu.ProcessMode = ProcessModeEnum.Always;
+		ExtrasMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
 
-		MainMenu.Hide();
-		ExtrasMenu.Show();
-		ExtrasMenu.Reset();
+		int index = MainMenu.GetIndex();
+		RemoveChild( MainMenu );
+		AddChild( ExtrasMenu );
+		MoveChild( ExtrasMenu, index );
+
 		ExitButton.Show();
 		State = MenuState.Extras;
 	}
 	private void OnMainMenuSettingsMenu() {
-		SettingsMenu.ProcessMode = ProcessModeEnum.Always;
-		MainMenu.ProcessMode = ProcessModeEnum.Disabled;
+		SettingsMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
 
-		MainMenu.SetProcessUnhandledInput( false );
-		SettingsMenu.SetProcess( true );
+		int index = MainMenu.GetIndex();
+		RemoveChild( MainMenu );
+		AddChild( SettingsMenu );
+		MoveChild( SettingsMenu, index );
 
-		MainMenu.Hide();
-		SettingsMenu.Show();
 		ExitButton.Show();
 		State = MenuState.Settings;
 	}
 
+	private void ReleaseAll() {
+		ExtrasMenu?.Free();
+		SettingsMenu?.Free();
+	}
+
 	public override void _Ready() {
 		PhysicsServer2D.SetActive( false );
+
+		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 
 		Control Background = GetNode<Control>( "MenuBackground" );
 		Background.SetProcess( false );
@@ -133,43 +97,10 @@ public partial class TitleMenu : Control {
 		MainMenu.SetProcessUnhandledInput( true );
 		MainMenu.Connect( "ExtrasMenu", Callable.From( OnMainMenuExtrasMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
-
-		ExtrasMenu = GetNode<ExtrasMenu>( "ExtrasMenu" );
-		ExtrasMenu.SetProcess( false );
-		ExtrasMenu.SetProcessInternal( false );
-		ExtrasMenu.SetProcessUnhandledInput( false );
-		ExtrasMenu.ProcessMode = ProcessModeEnum.Inherit;
-
-		CoopMenu = GetNode<CoopMenu>( "ExtrasMenu/CoopMenu" );
-		CoopMenu.SetProcess( false );
-		CoopMenu.SetProcessInternal( false );
-		CoopMenu.SetProcessUnhandledInput( false );
-		CoopMenu.ProcessMode = ProcessModeEnum.Inherit;
-
-		MultiplayerMenu = GetNode<MultiplayerMenu>( "ExtrasMenu/MultiplayerMenu" );
-		MultiplayerMenu.SetProcess( false );
-		MultiplayerMenu.SetProcessInternal( false );
-		MultiplayerMenu.SetProcessUnhandledInput( false );
-		MultiplayerMenu.ProcessMode = ProcessModeEnum.Inherit;
-
-		SettingsMenu = GetNode<SettingsMenu>( "SettingsMenu" );
-		SettingsMenu.SetProcess( false );
-		SettingsMenu.SetProcessInternal( false );
-		SettingsMenu.SetProcessUnhandledInput( false );
-		SettingsMenu.ProcessMode = ProcessModeEnum.Disabled;
+		MainMenu.BeginGame += ReleaseAll;
 
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
-
-		LobbyBrowser = GetNode<LobbyBrowser>( "ExtrasMenu/MultiplayerMenu/LobbyBrowser" );
-		LobbyBrowser.SetProcess( false );
-		LobbyBrowser.SetProcessInternal( false );
-		LobbyBrowser.SetProcessUnhandledInput( false );
-
-		LobbyFactory = GetNode<LobbyFactory>( "ExtrasMenu/MultiplayerMenu/LobbyFactory" );
-		LobbyFactory.SetProcess( false );
-		LobbyFactory.SetProcessInternal( false );
-		LobbyFactory.SetProcessUnhandledInput( false );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.SetProcess( false );

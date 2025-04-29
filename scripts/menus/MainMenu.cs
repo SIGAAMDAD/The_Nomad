@@ -27,6 +27,8 @@ public partial class MainMenu : Control {
 	private static Tween AudioFade;
 
 	[Signal]
+	public delegate void BeginGameEventHandler();
+	[Signal]
 	public delegate void SettingsMenuEventHandler();
 	[Signal]
 	public delegate void HelpMenuEventHandler();
@@ -91,6 +93,8 @@ public partial class MainMenu : Control {
 			return;
 		}
 		Loaded = true;
+
+		EmitSignalBeginGame();
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 
@@ -107,6 +111,8 @@ public partial class MainMenu : Control {
 			return;
 		}
 		Loaded = true;
+
+		EmitSignalBeginGame();
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
@@ -118,7 +124,6 @@ public partial class MainMenu : Control {
 		UIChannel.Play();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
 	}
 
 	private void OnSettingsButtonPressed() {
@@ -179,29 +184,20 @@ public partial class MainMenu : Control {
 
 		ProcessMode = ProcessModeEnum.Always;
 
-		Button NewGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
-		NewGameButton.SetProcess( false );
-		NewGameButton.SetProcessInternal( false );
-		NewGameButton.Visible = !ArchiveSystem.Instance.IsLoaded();
-		NewGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		NewGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		NewGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		NewGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		NewGameButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
-		
-		Button ContinueGameButton = GetNode<Button>( "VBoxContainer/ContinueGameButton" );
-		ContinueGameButton.SetProcess( false );
-		ContinueGameButton.SetProcessInternal( false );
-		ContinueGameButton.Visible = ArchiveSystem.Instance.IsLoaded();
-		ContinueGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		ContinueGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		ContinueGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		ContinueGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		ContinueGameButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
+		Button StoryModeButton = GetNode<Button>( "VBoxContainer/StoryModeButton" );
+		StoryModeButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		StoryModeButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		StoryModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
+		StoryModeButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
+		if ( !ArchiveSystem.Instance.IsLoaded() ) {
+			StoryModeButton.Text = TranslationServer.Translate( "NEW_GAME" );
+			StoryModeButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
+		} else {
+			StoryModeButton.Text = TranslationServer.Translate( "CONTINUE_GAME" );
+			StoryModeButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
+		}
 
 		Button ExtrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
-		ExtrasButton.SetProcess( false );
-		ExtrasButton.SetProcessInternal( false );
 		ExtrasButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
 		ExtrasButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Extras ); } ) );
 		ExtrasButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
@@ -209,8 +205,6 @@ public partial class MainMenu : Control {
 		ExtrasButton.Connect( "pressed", Callable.From( OnExtrasButtonPressed ) );
 
 		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
-		SettingsButton.SetProcess( false );
-		SettingsButton.SetProcessInternal( false );
 		SettingsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
 		SettingsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Settings ); } ) );
 		SettingsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
@@ -218,8 +212,6 @@ public partial class MainMenu : Control {
 		SettingsButton.Connect( "pressed", Callable.From( OnSettingsButtonPressed ) );
 
 		Button ModsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
-		ModsButton.SetProcess( false );
-		ModsButton.SetProcessInternal( false );
 		ModsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
 		ModsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
 		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
@@ -227,9 +219,6 @@ public partial class MainMenu : Control {
 		ModsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
 
 		Button CreditsButton = GetNode<Button>( "VBoxContainer/CreditsButton" );
-		CreditsButton.SetProcess( false );
-		CreditsButton.SetProcessInternal( false );
-		CreditsButton.SetProcessUnhandledInput( false );
 		CreditsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
@@ -237,8 +226,6 @@ public partial class MainMenu : Control {
 		CreditsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
-		ExitButton.SetProcess( false );
-		ExitButton.SetProcessInternal( false );
 		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
 		ExitButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Quit ); } ) );
 		ExitButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
@@ -246,35 +233,19 @@ public partial class MainMenu : Control {
 		ExitButton.Connect( "pressed", Callable.From( OnQuitGameButtonPressed ) );
 
 		Label AppVersion = GetNode<Label>( "AppVersion" );
-		AppVersion.SetProcess( false );
-		AppVersion.SetProcessInternal( false );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
+		AppVersion.ProcessMode = ProcessModeEnum.Disabled;
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
-		UIChannel.SetProcess( false );
-		UIChannel.SetProcessInternal( false );
 
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
-			ButtonList = [
-				ContinueGameButton,
-				ExtrasButton,
-				SettingsButton,
-				ModsButton,
-				CreditsButton,
-				ExitButton
-			];
-			OnButtonFocused( 0 );
-		} else {
-			ButtonList = [
-				NewGameButton,
-				ExtrasButton,
-				SettingsButton,
-				ModsButton,
-				CreditsButton,
-				ExitButton
-			];
-			OnButtonFocused( 0 );
-		}
+		ButtonList = [
+			StoryModeButton,
+			ExtrasButton,
+			SettingsButton,
+			ModsButton,
+			CreditsButton,
+			ExitButton
+		];
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

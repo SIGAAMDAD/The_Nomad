@@ -10,13 +10,12 @@ using System;
 public partial class World : Node2D {
 	private Node2D Hellbreaker = null;
 
-	private Control PauseMenu = null;
+	private PauseMenu PauseMenu = null;
 	private PackedScene PlayerScene = null;
 
 	[Export]
 	public Node2D LevelData = null;
 
-	private bool Loaded = false;
 	private Thread ResourceLoadThread;
 	private Thread SceneLoadThread;
 
@@ -154,12 +153,14 @@ public partial class World : Node2D {
 		}
 	}
 	public override void _Ready() {
+		base._Ready();
+
 		GetTree().CurrentScene = this;
 		
 		Players = new Dictionary<CSteamID, Renown.Entity>();
 
 		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
-		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
+		PauseMenu = GetNode<PauseMenu>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
@@ -183,8 +184,6 @@ public partial class World : Node2D {
 			Faction.Cache.Load();
 			Settlement.Cache.Load();
 			WorldArea.Cache.Load();
-
-//			ThinkerFactory.WaitForFinished();
 		} );
 
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );

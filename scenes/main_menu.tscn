@@ -1,12 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6hb01wurydo7"]
+[gd_scene load_steps=7 format=3 uid="uid://b6hb01wurydo7"]
 
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_tbmy8"]
 [ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="2_v43k5"]
-[ext_resource type="PackedScene" uid="uid://udm1pfg83jk1" path="res://scenes/menus/campaign_menu_old.tscn" id="3_66f1w"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
-[ext_resource type="PackedScene" uid="uid://dqebkeyfqu46q" path="res://scenes/menus/extras_menu.tscn" id="4_jk1qb"]
-[ext_resource type="PackedScene" uid="uid://dot7q6fxsd0g0" path="res://scenes/menus/settings_menu.tscn" id="4_y3mln"]
 [ext_resource type="AudioStream" uid="uid://b6jcyfb1jdyj8" path="res://music/ui/menu_intro.ogg" id="7_oa1go"]
 [ext_resource type="PackedScene" uid="uid://d1lincyw81i1f" path="res://scenes/menus/bug_reporter.tscn" id="10_5dd4i"]
 
@@ -25,23 +22,6 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 
 [node name="MainMenu" parent="." instance=ExtResource("2_v43k5")]
-layout_mode = 1
-mouse_filter = 1
-
-[node name="ExtrasMenu" parent="." instance=ExtResource("4_jk1qb")]
-process_mode = 4
-visible = false
-layout_mode = 1
-
-[node name="CampaignMenu" parent="." instance=ExtResource("3_66f1w")]
-process_mode = 4
-visible = false
-layout_mode = 1
-mouse_filter = 1
-
-[node name="SettingsMenu" parent="." instance=ExtResource("4_y3mln")]
-process_mode = 4
-visible = false
 layout_mode = 1
 mouse_filter = 1
 

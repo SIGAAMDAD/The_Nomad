@@ -57,19 +57,7 @@ grow_vertical = 2
 scale = Vector2(0.802407, 0.878239)
 metadata/_edit_use_anchors_ = true
 
-[node name="ContinueGameButton" type="Button" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-text = "CONTINUE_GAME"
-flat = true
-
-[node name="LoadGameButton" type="Button" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "LOAD_GAME"
-
-[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+[node name="StoryModeButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "NEW_GAME"
 flat = true

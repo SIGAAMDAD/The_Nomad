@@ -76,25 +76,26 @@ public partial class ArchiveSystem : Node {
 		DirAccess.MakeDirRecursiveAbsolute( SaveDirectory );
 
 		string path = ProjectSettings.GlobalizePath( SaveDirectory + "GameData.ngd" );
-		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-		SaveWriter = new System.IO.BinaryWriter( stream );
+		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Create ) ) {
+			using ( SaveWriter = new System.IO.BinaryWriter( stream ) ) {
+				SaveWriter.Write( MAGIC );
+				SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
 
-		SaveWriter.Write( MAGIC );
-		SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
+				SectionCount = 0;
+				SaveWriter.Write( SectionCount );
 
-		SectionCount = 0;
-		SaveWriter.Write( SectionCount );
+				for ( int i = 0; i < nodes.Count; i++ ) {
+					nodes[i].Call( "Save" );
+				}
 
-		for ( int i = 0; i < nodes.Count; i++ ) {
-			nodes[i].Call( "Save" );
+				stream.Seek( 0, System.IO.SeekOrigin.Begin );
+				SaveWriter.Write( MAGIC );
+				SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
+				SaveWriter.Write( SectionCount );
+				SaveWriter.Flush();
+				SaveWriter.Close();
+			}
 		}
-
-		stream.Seek( 0, System.IO.SeekOrigin.Begin );
-		SaveWriter.Write( MAGIC );
-		SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
-		SaveWriter.Write( SectionCount );
-		SaveWriter.Flush();
-		SaveWriter.Close();
 	}
 
 	public static void SaveGame( Image screenshot, uint memoryIndex ) {
@@ -109,31 +110,32 @@ public partial class ArchiveSystem : Node {
 	}
 	public static void LoadGame() {
 		string path = ProjectSettings.GlobalizePath( Instance.SaveDirectory + "GameData.ngd" );
-		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
-		SaveReader = new System.IO.BinaryReader( stream );
+		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Open ) ) {
+			using ( SaveReader = new System.IO.BinaryReader( stream ) ) {
+				ulong magic = SaveReader.ReadUInt64();
+				if ( magic != MAGIC ) {
+					Console.PrintError( "Save data has invalid magic in header!" );
+					Instance.Loaded = false;
+					return;
+				}
 
-		ulong magic = SaveReader.ReadUInt64();
-		if ( magic != MAGIC ) {
-			Console.PrintError( "Save data has invalid magic in header!" );
-			Instance.Loaded = false;
-			return;
+				string version = SaveReader.ReadString();
+				// TODO: version compatibility conversion
+
+				Instance.Loaded = true;
+
+				int sectionCount = SaveReader.ReadInt32();
+
+				for ( int i = 0; i < sectionCount; i++ ) {
+					string name = SaveReader.ReadString();
+					GD.Print( "Loading save section \"" + name + "\"..." );
+					SectionCache.TryAdd( name, new SaveSectionReader() );
+					GD.Print( "...Done" );
+				}
+
+				SaveReader.Close();
+			}
 		}
-
-		string version = SaveReader.ReadString();
-		// TODO: version compatibility conversion
-
-		Instance.Loaded = true;
-
-		int sectionCount = SaveReader.ReadInt32();
-
-		for ( int i = 0; i < sectionCount; i++ ) {
-			string name = SaveReader.ReadString();
-			GD.Print( "Loading save section \"" + name + "\"..." );
-			SectionCache.TryAdd( name, new SaveSectionReader() );
-			GD.Print( "...Done" );
-		}
-
-		SaveReader.Close();
 	}
 	public static void Clear() {
 		SectionCache.Clear();

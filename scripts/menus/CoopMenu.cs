@@ -92,8 +92,6 @@ public partial class CoopMenu : Control {
 		UIChannel.Play();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-		GameConfiguration.GameDifficulty = GameDifficulty.Intended;
-
 		/*
 		TODO: split screen with online
 		string name = LobbyName.Text;
