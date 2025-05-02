@@ -16,7 +16,7 @@ public partial class FootSteps : Node {
 		MeshManager.Multimesh.Mesh = new QuadMesh();
 		MeshManager.Multimesh.VisibleInstanceCount = 0;
 		MeshManager.Multimesh.InstanceCount = MaxSteps;
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 6, -3.0f );
+		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 12.0f, -6.0f );
 		AddChild( MeshManager );
 	}
 	private void CheckCapacity() {

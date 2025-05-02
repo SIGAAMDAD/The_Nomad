@@ -61,6 +61,8 @@ public partial class AmmoEntity : Node2D {
 		shape.Shape = circle;
 
 		PickupArea = new Area2D();
+		PickupArea.CollisionLayer = 13;
+		PickupArea.CollisionMask = 13;
 		PickupArea.Name = "PickupArea";
 		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnPickupArea2DBodyShapeEntered ) );
 		PickupArea.AddChild( shape );

@@ -22,7 +22,7 @@
 [ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/interactables/EndOfChallenge.cs" id="17_dfvfy"]
 [ext_resource type="Script" uid="uid://bhr7st282gelu" path="res://scripts/AdaptiveMusicManager.cs" id="20_vyd4a"]
 [ext_resource type="AudioStream" uid="uid://qm6mipucu6g8" path="res://music/challenges/challenge0_combat.ogg" id="21_hwkqx"]
-[ext_resource type="AudioStream" uid="uid://d4ixbt1vsatks" path="res://music/combat/level00_ambience.ogg" id="22_hwkqx"]
+[ext_resource type="AudioStream" uid="uid://dnh70pb67upio" path="res://music/challenges/challenge0_calm.ogg" id="23_dfvfy"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_8pujq"]
 vertices = PackedVector2Array(857, -492, 848, -464, 848, -643, 176, -588, -16, -604, -93.5234, -687.492, 1187.16, -687.008, 736, -642, 3894.18, -421.148, 3953.3, -420.227, 3886.04, -278.328, 265, -561, 208, -548, 208, -573, 590, -364, 481, -364, 496, -495, 654, -394, 643, -367, 176, -527, 198, -528, 192, -399, 1219, -658, 1217.12, -687, 3889.18, -686, 3558.09, -143.406, 721, -417, 720, -433, 858, -433, -1421.9, -687.992, -110.062, -687.5, -112, -643, -1414.08, 180.992, 863, -438, 863, -449, 913, -448, 176, -573, 912, -506, 912, -492, 913, -464, 1008, -464, -16, -589, 3555.09, 177, 188, -320, 512, -320, 736, -475, 720, -474, -17, -544, 175, -543, 3884.15, -163.406, 514, -336, 590, -336, 996, -508, 1121, -636, 690, -368, 687, -442, 1152, -649, 656, -336, 672, -411, 643, -336)
@@ -212,4 +212,4 @@ script = ExtResource("16_gogx0")
 [node name="AdaptiveSoundtrack" type="Node" parent="."]
 script = ExtResource("20_vyd4a")
 CombatMusicStream = ExtResource("21_hwkqx")
-CalmMusicStream = ExtResource("22_hwkqx")
+CalmMusicStream = ExtResource("23_dfvfy")

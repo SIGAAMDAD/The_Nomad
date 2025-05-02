@@ -1,4 +1,5 @@
 using Godot;
+using Renown;
 
 public partial class StatusEffect : Node2D {
 	[Export]
@@ -6,10 +7,14 @@ public partial class StatusEffect : Node2D {
 
 	protected Timer EffectTimer;
 	protected AudioStreamPlayer2D AudioChannel;
+	protected Entity Victim;
 
 	[Signal]
 	public delegate void TimeoutEventHandler();
 
+	public virtual void SetVictim( Entity owner ) {
+		Victim = owner;
+	}
 	public virtual void ResetTimer() {
 		EffectTimer.Start();
 	}

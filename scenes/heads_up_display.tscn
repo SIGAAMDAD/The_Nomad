@@ -341,9 +341,9 @@ script = null
 [node name="HealthBar" parent="MainHUD" instance=ExtResource("2_bd8b1")]
 visible = false
 z_index = 3
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = -0.0203125
 anchor_bottom = 0.0
 offset_left = 8.0
 offset_top = 7.0

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -15,13 +16,13 @@ namespace Renown.Thinkers {
 		private bool CanSeeTarget = false;
 		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
 
-		private Curve BlowupDamageCurve;
-
 		private bool Enraged = false;
 		private Entity Target = null;
 
+		private Curve BlowupDamageCurve;
 		private Area2D BlowupArea = null;
 		private Timer BlowupTimer = null;
+		private HashSet<Entity> BlowupEntities = null;
 
 		private AnimatedSprite2D ArmAnimations;
 		private AnimatedSprite2D HeadAnimations;
@@ -31,14 +32,33 @@ namespace Renown.Thinkers {
 		private Tween AngleTween;
 		private Tween ChangeInvestigationAngleTween;
 
+		private void OnBlowupAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null && !BlowupEntities.Contains( entity ) ) {
+				BlowupEntities.Add( entity );
+			}
+		}
+		private void OnBlowupAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null ) {
+				BlowupEntities.Remove( entity );
+			}
+		}
+
 		// TODO: make the "valid target" thing for the grunt a lot looser
 		private bool IsValidTarget( GodotObject target ) => target is Entity entity && entity != null && entity.GetFaction() != Faction;
 
 		private void SetAlert() {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
 			// NOTE: this sound might be a little bit annoying to the sane mind
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_alert.ogg" ) );
 			Awareness = MobAwareness.Alert;
 			SetNavigationTarget( LastTargetPosition );
+		}
+
+		public void OnHeadShot( Entity source ) {
+			OnDie( source, this );
 		}
 
 		private void OnDie( Entity source, Entity target ) {
@@ -51,8 +71,10 @@ namespace Renown.Thinkers {
 			Target = source;
 
 			if ( !Enraged && Health < Health * 0.25f ) {
+				Enraged = true;
 				BlowupArea.SetDeferred( "monitoring", true );
 				BlowupArea.GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+				BlowupTimer.Start();
 				PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_scream.ogg" ) );
 			}
 		}
@@ -63,20 +85,27 @@ namespace Renown.Thinkers {
 			}
 
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
-			Damage( this, 1000.0f );
 
 			Godot.Collections.Array<Node2D> entities = BlowupArea.GetOverlappingBodies();
+			GD.Print( "Blowing up " + entities.Count );
 			for ( int i = 0; i < entities.Count; i++ ) {
 				if ( entities[i] == this ) {
 					continue;
 				}
 				if ( entities[i] is Entity entity && entity != null ) {
-					entity.Damage( this, BlowupDamage * BlowupDamageCurve.SampleBaked( entity.GlobalPosition.DistanceTo( GlobalPosition ) ) );
+					float damage = BlowupDamage * BlowupDamageCurve.SampleBaked( entity.GlobalPosition.DistanceTo( GlobalPosition ) );
+					entity.Damage( this, damage );
+					if ( entity is Player player && player != null ) {
+						player.ShakeCamera( damage );
+					}
 					if ( entity.GetHealth() > 0.0f ) {
-						entity.AddStatusEffect( new StatusBurning( entity ) );
+						entity.AddStatusEffect( "status_burning" );
 					}
 				}
 			}
+
+			Health = 0.0f;
+			OnDie( this, this );
 		}
 
 		public override void _Ready() {
@@ -101,6 +130,7 @@ namespace Renown.Thinkers {
 
 			Area2D HeadHitbox = GetNode<Area2D>( "Animations/HeadAnimations/HeadHitbox" );
 			HeadHitbox.SetMeta( "IsHeadHitbox", true );
+			HeadHitbox.SetMeta( "Owner", this );
 		}
 
 		protected override void Think() {

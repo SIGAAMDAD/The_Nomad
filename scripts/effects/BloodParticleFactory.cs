@@ -48,11 +48,7 @@ public partial class BloodParticleFactory : Node2D {
 	}
 	
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		float scale = 1.0f / from.DistanceSquaredTo( to );
-		if ( scale < 0.0f ) {
-			scale = 0.0f;
-		}
-		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, scale );
+		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, Mathf.Clamp( 1.0f / from.DistanceSquaredTo( to ), 0.0f, 1.0f ) );
 
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;

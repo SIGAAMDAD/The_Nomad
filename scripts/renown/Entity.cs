@@ -35,7 +35,7 @@ namespace Renown {
 		[Export]
 		protected int FactionImportance;
 
-		protected HashSet<StatusEffect> StatusEffects = new HashSet<StatusEffect>();
+		protected Dictionary<string, StatusEffect> StatusEffects = new Dictionary<string, StatusEffect>();
 
 		protected HashSet<Trait> TraitCache = null;
 		protected Dictionary<Object, float> RelationCache = null;
@@ -107,15 +107,17 @@ namespace Renown {
 		public virtual void Load() {
 		}
 
-		public virtual void AddStatusEffect( StatusEffect effect ) {
-			if ( StatusEffects.TryGetValue( effect, out StatusEffect data ) ) {
+		public virtual void AddStatusEffect( string effectName ) {
+			if ( StatusEffects.TryGetValue( effectName, out StatusEffect data ) ) {
 				data.ResetTimer();
 				return;
 			}
-			StatusEffects.Add( effect );
+			StatusEffect effect = ResourceCache.GetScene( "res://scenes/status_effects/" + effectName + ".tscn" ).Instantiate<StatusEffect>();
+			effect.SetVictim( this );
+			StatusEffects.Add( effectName, effect );
 			effect.Timeout += () => {
 				CallDeferred( "remove_child", effect );
-				StatusEffects.Remove( effect );
+				StatusEffects.Remove( effectName );
 			};
 			CallDeferred( "add_child", effect );
 		}

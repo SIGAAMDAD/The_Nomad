@@ -161,6 +161,14 @@ public partial class Player : Entity {
 	[Export]
 	private HeadsUpDisplay HUD;
 
+	[ExportCategory("Camera Shake")]
+	[Export]
+	private float RandomStrength = 36.0f;
+	[Export]
+	private float ShakeFade = 5.0f;
+
+	private float ShakeStrength = 0.0f;
+
 	private static bool TutorialCompleted = false;
 
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
@@ -168,6 +176,8 @@ public partial class Player : Entity {
 	private float Rage = 60.0f;
 	private PlayerFlags Flags = 0;
 	private int CurrentWeapon = 0;
+
+	private Camera2D Viewpoint;
 
 	// multiplayer data
 	public CSteamID MultiplayerId = CSteamID.Nil;
@@ -230,6 +240,10 @@ public partial class Player : Entity {
 
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
+	}
+
+	private float RandomFloat( float min, float max ) {
+		return (float)( min + RandomFactory.NextDouble() * ( min - max ) );
 	}
 
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
@@ -545,6 +559,9 @@ public partial class Player : Entity {
 	public Arm GetRightArm() => ArmRight;
 	public int GetCurrentWeapon() => CurrentWeapon;
 
+	public void ShakeCamera( float nAmount ) {
+	}
+
 	private void IdleReset() {
 		IdleTimer.Start();
 		IdleAnimation.Hide();
@@ -626,7 +643,9 @@ public partial class Player : Entity {
 			System.Threading.Interlocked.Exchange( ref Rage, 100.0f );
 		}
 
-		BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
+		if ( attacker != null ) {
+			BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
+		}
 
 		if ( Health <= 0.0f ) {
 			CallDeferred( "OnDeath", attacker );
@@ -1454,6 +1473,8 @@ public partial class Player : Entity {
 		SwitchToGamepad = ResourceLoader.Load( "res://resources/binds/actions/keyboard/switch_to_gamepad.tres" );
 		SwitchToKeyboard = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_to_keyboard.tres" );
 
+		Viewpoint = GetNode<Camera2D>( "Camera2D" );
+
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
@@ -1705,6 +1726,11 @@ public partial class Player : Entity {
 
 		if ( !IdleAnimation.IsPlaying() ) {
 			TorsoAnimationState = PlayerAnimationState.Idle;
+		}
+
+		if ( ShakeStrength > 0.0f ) {
+			ShakeStrength = Mathf.Lerp( ShakeStrength, 0.0f, ShakeFade * (float)delta );
+			Viewpoint.Offset = new Vector2( RandomFloat( -ShakeStrength, ShakeStrength ), RandomFloat( -ShakeStrength, ShakeStrength ) );
 		}
 
 		base._Process( delta );

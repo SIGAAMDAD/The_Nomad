@@ -625,6 +625,10 @@ public partial class WeaponEntity : Node2D {
 				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
 
 				entity.Damage( _Owner, damage );
+			} else if ( collision is Area2D hitbox && hitbox != null && ( hitbox.CollisionMask & 9 ) != 0 ) {
+				if ( (bool)hitbox.GetMeta( "IsHeadHitbox" ) ) {
+					( (Node)hitbox.GetMeta( "Owner" ) ).Call( "OnHeadHit", _Owner );
+				}
 			} else {
 				frameDamage = 0.0f;
 				DebrisFactory.Create( RayCast.GetCollisionPoint() );
