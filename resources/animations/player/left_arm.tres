@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://ca1bx07bc3p25"]
 
-[ext_resource type="Texture2D" uid="uid://d3njgk76f1i25" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.png" id="1_srqll"]
+[ext_resource type="Texture2D" uid="uid://b060c1x36h7ol" path="res://resources/texture_mappings/player/the_wanderer/left_arms.tres" id="1_srqll"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3hygu"]
 atlas = ExtResource("1_srqll")

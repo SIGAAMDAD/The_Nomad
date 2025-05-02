@@ -31,9 +31,6 @@ public partial class PauseMenu : Control {
 	private void OnConfirmExitConfirmed() {
 		GameConfiguration.Paused = false;
 
-		SteamLobby.Instance.SetPhysicsProcess( false );
-		SteamLobby.Instance.SetPhysicsProcessInternal( false );
-
 		if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
 			ArchiveSystem.SaveGame( null, 0 );
 		}
@@ -64,9 +61,6 @@ public partial class PauseMenu : Control {
 
 		ConfirmQuitDlg = GetNode<ConfirmationDialog>( "ConfirmQuit" );
 		ConfirmQuitDlg.Connect( "confirmed", Callable.From( () => {
-			SteamLobby.Instance.SetPhysicsProcess( false );
-			SteamLobby.Instance.SetPhysicsProcessInternal( false );
-
 			if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
 				ArchiveSystem.SaveGame( null, 0 );
 			}

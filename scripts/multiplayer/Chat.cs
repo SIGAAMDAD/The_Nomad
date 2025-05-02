@@ -36,10 +36,9 @@ namespace Multiplayer {
 		private void OnChatMessageReceived( ulong senderId, string message ) {
 			string username = SteamFriends.GetFriendPersonaName( (CSteamID)senderId );
 			
-			RecentText.Clear();
 			RecentText.Text = message;
-
-			FullText.AppendText( "[" + username + "] " + message + "\n" );
+			
+			FullText.AppendText( string.Format( "[{0}] {1}\n", username, message ) );
 		}
         public override void _Ready() {
 			base._Ready();
@@ -47,7 +46,7 @@ namespace Multiplayer {
 			ExpandedContainer = GetNode<MarginContainer>( "Expanded" );
 			MinimizedContainer = GetNode<MarginContainer>( "Minimized" );
 			FullText = GetNode<RichTextLabel>( "Expanded/RichTextLabel" );
-			RecentText = GetNode<RichTextLabel>( "Mimimized/RichTextLabel" );
+			RecentText = GetNode<RichTextLabel>( "Minimized/RichTextLabel" );
 			Message = GetNode<LineEdit>( "LineEdit" );
 
 			SteamLobby.Instance.Connect( "ChatMessageReceived", Callable.From<ulong, string>( OnChatMessageReceived ) );

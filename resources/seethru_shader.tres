@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://clfno1a10f1w3"]
+
+[ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="1_kss15"]
+
+[resource]
+shader = ExtResource("1_kss15")
+shader_parameter/alpha_blend = false

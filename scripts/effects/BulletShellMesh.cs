@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class BulletShellMesh : Node {
+public partial class BulletShellMesh : Node2D {
 	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 64 );
 	private MultiMeshInstance2D Cloner;
 	private RandomNumberGenerator Random = new RandomNumberGenerator();

@@ -41,6 +41,7 @@ namespace Renown.Thinkers {
 		private Timer LoseInterestTimer;
 		private Timer ChangeInvestigationAngleTimer;
 		private Tween ChangeLookAngleTweener;
+		private Timer TargetMovedTimer;
 
 		private WeaponEntity Weapon;
 		private AmmoEntity Ammo;
@@ -54,12 +55,34 @@ namespace Renown.Thinkers {
 		private RayCast2D[] SightLines = null;
 		private Tween MeleeTween;
 
+		private Entity Target;
+
 		private Line2D DetectionMeter;
 
 		private AnimatedSprite2D HeadAnimations;
 		private AnimatedSprite2D ArmAnimations;
 
-		private int Fear = 0;
+		// if we have fear, move slower
+		private float SpeedDegrade = 1.0f;
+
+		private int Fear {
+			get => Fear;
+			set {
+				if ( Fear >= 100 ) {
+					SpeedDegrade = 0.0f;
+					ChangeInvestigationAngleTimer.WaitTime = 0.5f;
+				} else if ( Fear >= 80 ) {
+					SpeedDegrade = 0.25f;
+					ChangeInvestigationAngleTimer.WaitTime = 0.90f;
+				} else if ( Fear >= 60 ) {
+					SpeedDegrade = 0.5f;
+					ChangeInvestigationAngleTimer.WaitTime = 1.2f;
+				} else {
+					SpeedDegrade = 1.0f;
+					ChangeInvestigationAngleTimer.WaitTime = 2.0;
+				}
+			}
+		}
 
 		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -75,6 +98,9 @@ namespace Renown.Thinkers {
 		private float RandomFloat( float min, float max ) {
 			return (float)( min + Random.NextDouble() * ( min - max ) );
 		}
+
+		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
+		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
 		public override void SetLocation( WorldArea location ) {
 			base.SetLocation( location );
@@ -241,6 +267,12 @@ namespace Renown.Thinkers {
 			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
 			AddChild( ChangeInvestigationAngleTimer );
 
+			TargetMovedTimer = new Timer();
+			TargetMovedTimer.WaitTime = 5.0f;
+			TargetMovedTimer.OneShot = true;
+			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
+			AddChild( TargetMovedTimer );
+
 			MeleeTween = CreateTween();
 			ChangeLookAngleTweener = CreateTween();
 
@@ -297,11 +329,37 @@ namespace Renown.Thinkers {
 			CheckSight();
 
 			switch ( CurrentState ) {
+			case State.Investigating:
+				if ( !CanSeeTarget ) {
+					if ( ChangeInvestigationAngleTimer.IsStopped() ) {
+						ChangeInvestigationAngleTimer.CallDeferred( "start" );
+					}
+				}
+				break;
 			case State.Attacking:
+				if ( !CanSeeTarget ) {
+
+				}
 				break;
 			case State.Guarding:
+				if ( Awareness > MobAwareness.Relaxed ) {
+					CurrentState = State.Investigating;
+				}
 				break;
 			};
+		}
+
+		protected override bool MoveAlongPath() {
+			if ( NavAgent.IsTargetReached() ) {
+				Velocity = Godot.Vector2.Zero;
+				return true;
+			}
+			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
+			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			Velocity = LookDir * ( MovementSpeed * SpeedDegrade );
+			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+			return true;
 		}
 
 		private void CheckSight() {
@@ -325,8 +383,46 @@ namespace Renown.Thinkers {
 				case MobAwareness.Suspicious:
 					SetSuspicious();
 					break;
+				case MobAwareness.Alert:
+					SetAlert();
+					break;
 				};
+				SetDetectionColor();
+				CanSeeTarget = false;
+				return;
 			}
+
+			if ( sightTarget.GetHealth() <= 0.0f ) {
+				return;
+			}
+
+			Target = sightTarget;
+			LastTargetPosition = Target.GlobalPosition;
+			CanSeeTarget = true;
+
+			if ( Awareness >= MobAwareness.Suspicious ) {
+				// if we're already suspicious, then detection rate increases as we're more alert
+				SightDetectionAmount += SightDetectionSpeed * 2.0f * (float)GetProcessDeltaTime();
+			} else {
+				SightDetectionAmount += SightDetectionSpeed * (float)GetProcessDeltaTime();
+			}
+
+			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
+				SetSuspicious();
+				CurrentState = State.Investigating;
+				SetNavigationTarget( LastTargetPosition );
+				if ( LoseInterestTimer.IsStopped() ) {
+					LoseInterestTimer.Start();
+				}
+			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
+				SetAlert();
+			}
+			if ( IsAlert() ) {
+				SetAlert();
+			} else if ( IsSuspicious() ) {
+				SetSuspicious();
+			}
+			SetDetectionColor();
 		}
 
 		protected override void InitRenownStats() {

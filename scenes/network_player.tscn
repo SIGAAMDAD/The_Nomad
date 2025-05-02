@@ -23,7 +23,7 @@ animation = &"run"
 sprite_frames = ExtResource("2_hc1dv")
 animation = &"run"
 autoplay = "idle"
-frame_progress = 0.910111
+frame_progress = 0.658112
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_27uls")

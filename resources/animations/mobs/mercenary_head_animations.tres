@@ -1,0 +1,44 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://dxkya6uuslw2n"]
+
+[ext_resource type="Texture2D" uid="uid://u0wogsfnphi1" path="res://textures/spritesheets/mercenary.png" id="1_umjcl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cqbta"]
+atlas = ExtResource("1_umjcl")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yu0mp"]
+atlas = ExtResource("1_umjcl")
+region = Rect2(32, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ysmaa"]
+atlas = ExtResource("1_umjcl")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_umjcl"]
+atlas = ExtResource("1_umjcl")
+region = Rect2(0, 160, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cqbta")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yu0mp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ysmaa")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_umjcl")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]

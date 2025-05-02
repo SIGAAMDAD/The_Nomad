@@ -1,0 +1,30 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://bdaj84nfa7cbv"]
+
+[ext_resource type="Texture2D" uid="uid://dk7l62a8o3055" path="res://textures/spritesheets/mobs/zurguts/zurgut_grunt.png" id="1_s2inu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2inu"]
+atlas = ExtResource("1_s2inu")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcg7e"]
+atlas = ExtResource("1_s2inu")
+region = Rect2(224, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2inu")
+}],
+"loop": false,
+"name": &"attack_ready",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hcg7e")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

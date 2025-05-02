@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using Godot;
 using PlayerSystem;
 using Renown;
 using Renown.Thinkers;
 using Steamworks;
 
-public enum PlayerAnimationState : uint {
+public enum PlayerAnimationState : byte {
 	Idle,
 	Sliding,
 	Running,
@@ -16,8 +15,13 @@ public enum PlayerAnimationState : uint {
 	WeaponUse,
 	WeaponReload,
 	WeaponEmpty,
+
 	TrueIdleStart,
 	TrueIdleLoop,
+
+	CheckpointDrinking,
+	CheckpointExit,
+	CheckpointIdle,
 	
 	Count
 };
@@ -42,6 +46,7 @@ public enum PlayerDamageSource : byte {
 
 public partial class NetworkPlayer : Renown.Entity {
 	private NetworkWriter SyncObject = new NetworkWriter( 24 );
+	private NetworkReader SyncReader = new NetworkReader();
 
 	private Random RandomFactory = null;
 	
@@ -56,6 +61,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private int NodeHash;
 
 	private AudioStreamPlayer2D MoveChannel;
+
+	private WeaponEntity.Properties WeaponUseMode = WeaponEntity.Properties.None;
 	
 	private AnimatedSprite2D IdleAnimation;
 	private AnimatedSprite2D TorsoAnimation;
@@ -67,172 +74,102 @@ public partial class NetworkPlayer : Renown.Entity {
 	private SpriteFrames DefaultRightArmSpriteFrames;
 
 	private PlayerAnimationState LegAnimationState;
+	private PlayerAnimationState LeftArmAnimationState;
+	private PlayerAnimationState RightArmAnimationState;
+	private PlayerAnimationState TorsoAnimationState;
+
+	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
+		if ( animator.Animation == animation && animator.IsPlaying() ) {
+			return;
+		}
+		animator.CallDeferred( "play", animation );
+	}
 	
 	// TODO: find some way of sending values back to the client
 	
 	public void Update( System.IO.BinaryReader packet ) {
-		WeaponEntity.Properties mode = WeaponEntity.Properties.None;
-		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
-			mode = (WeaponEntity.Properties)packet.ReadUInt32();
+		SyncReader.BeginRead( packet );
+
+		if ( SyncReader.ReadSByte() != WeaponSlot.INVALID ) {
+			WeaponUseMode = (WeaponEntity.Properties)SyncReader.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
-				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", packet.ReadString() );
+				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncReader.ReadString() );
 			}
+		} else {
+			WeaponUseMode = WeaponEntity.Properties.None;
 		}
-		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadDouble();
-		position.Y = (float)packet.ReadDouble();
-		GlobalPosition = position;
+		Velocity = SyncReader.ReadVector2();
 
-		float ArmAngle = (float)packet.ReadDouble();
+		LeftArmAnimation.SetDeferred( "global_rotation", SyncReader.ReadFloat() );
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)SyncReader.ReadByte(), DefaultLeftArmSpriteFrames );
 
-		LeftArmAnimation.GlobalRotation = ArmAngle;
-		switch ( (PlayerAnimationState)packet.ReadByte() ) {
-		case PlayerAnimationState.Hide:
-		case PlayerAnimationState.TrueIdleStart:
-		case PlayerAnimationState.TrueIdleLoop:
-		case PlayerAnimationState.Dead:
-			LeftArmAnimation.Hide();
-			break;
-		case PlayerAnimationState.Sliding:
-		case PlayerAnimationState.Idle:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.Play( "idle" );
-			break;
-		case PlayerAnimationState.Running:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.Play( "run" );
-			break;
-		case PlayerAnimationState.WeaponIdle:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.Play( "idle" );
-			break;
-		case PlayerAnimationState.WeaponUse: {
-			LeftArmAnimation.Show();
-			
-			string property = "";
-			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				property = "firearm_frames_left";
-			} else if ( ( mode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
-				property = "blunt_frames_left";
-			} else if ( ( mode & WeaponEntity.Properties.IsBladed ) != 0 ) {
-				property = "bladed_frames_left";
-			}
-			
-			LeftArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			LeftArmAnimation.Play( "use" );
-			break; }
-		case PlayerAnimationState.WeaponReload:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
-			LeftArmAnimation.Play( "reload" );
-			break;
-		case PlayerAnimationState.WeaponEmpty:
-			LeftArmAnimation.Show();
-			LeftArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
-			LeftArmAnimation.Play( "empty" );
-			break;
-		};
-		
-		RightArmAnimation.GlobalRotation = ArmAngle;
-		switch ( (PlayerAnimationState)packet.ReadByte() ) {
-		case PlayerAnimationState.Hide:
-		case PlayerAnimationState.TrueIdleStart:
-		case PlayerAnimationState.TrueIdleLoop:
-		case PlayerAnimationState.Dead:
-//			RightArmAnimation.Hide();
-			break;
-		case PlayerAnimationState.Sliding:
-		case PlayerAnimationState.Idle:
-			RightArmAnimation.Show();
-			RightArmAnimation.Play( "idle" );
-			break;
-		case PlayerAnimationState.Running:
-			RightArmAnimation.Show();
-			RightArmAnimation.Play( "run" );
-			break;
-		case PlayerAnimationState.WeaponIdle:
-			RightArmAnimation.Show();
-			RightArmAnimation.Play( "idle" );
-			break;
-		case PlayerAnimationState.WeaponUse: {
-			RightArmAnimation.Show();
-			
-			string property = "";
-			if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				property = "firearm_frames_right";
-			} else if ( ( mode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
-				property = "blunt_frames_right";
-			} else if ( ( mode & WeaponEntity.Properties.IsBladed ) != 0 ) {
-				property = "bladed_frames_right";
-			}
-			
-			RightArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			RightArmAnimation.Play( "use" );
-			break; }
-		case PlayerAnimationState.WeaponReload:
-			RightArmAnimation.Show();
-			RightArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
-			RightArmAnimation.Play( "reload" );
-			break;
-		case PlayerAnimationState.WeaponEmpty:
-			RightArmAnimation.Show();
-			RightArmAnimation.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
-			RightArmAnimation.Play( "empty" );
-			break;
-		};
+		RightArmAnimation.SetDeferred( "global_rotation", SyncReader.ReadFloat() );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)SyncReader.ReadByte(), DefaultRightArmSpriteFrames );
 
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		LegAnimationState = (PlayerAnimationState)SyncReader.ReadByte();
+		TorsoAnimationState = (PlayerAnimationState)SyncReader.ReadByte();
+
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
 		case PlayerAnimationState.TrueIdleLoop:
 		case PlayerAnimationState.Dead:
+		case PlayerAnimationState.CheckpointDrinking:
+		case PlayerAnimationState.CheckpointExit:
+		case PlayerAnimationState.CheckpointIdle:
 			LegAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.Idle:
-			LegAnimation.Show();
-			LegAnimation.Play( "idle" );
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			LegAnimation.Show();
-			LegAnimation.Play( "run" );
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "run" );
 			break;
 		case PlayerAnimationState.Sliding:
-			LegAnimation.Show();
-			LegAnimation.Play( "slide" );
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "slide" );
 			break;
 		};
 		
-		switch ( (PlayerAnimationState)packet.ReadByte() ) {
+		switch ( TorsoAnimationState ) {
+		case PlayerAnimationState.CheckpointDrinking:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
+			break;
+		case PlayerAnimationState.CheckpointExit:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
+			break;
+		case PlayerAnimationState.CheckpointIdle:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
+			break;
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
-			TorsoAnimation.Show();
-			TorsoAnimation.Play( "default" );
+			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( "play", "default" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.Hide();
-			IdleAnimation.Show();
-			IdleAnimation.Play( "start" );
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "start" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.Hide();
-			IdleAnimation.Show();
-			IdleAnimation.Play( "loop" );
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "loop" );
 			break;
 		case PlayerAnimationState.Dead:
-			TorsoAnimation.Show();
-			TorsoAnimation.Play( "dead" );
+			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
 		};
-
-		byte handsUsed = packet.ReadByte();
 	}
 	public override void Damage( Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
@@ -245,7 +182,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			SyncObject.Write( thinker.GetHashCode() );
 		}
 		SyncObject.Write( nAmount );
-		SyncObject.Sync();
+		SyncObject.Sync( OwnerId );
 	}
 	private void OnLegAnimationLooped() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
@@ -257,10 +194,6 @@ public partial class NetworkPlayer : Renown.Entity {
 	public override void _Ready() {
 		base._Ready();
 
-		GD.Print( "Initializing network_player..." );
-
-		CurrentWeapon = null;
-		
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Torso" );
 
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
@@ -279,9 +212,80 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
 
-		ProcessMode = ProcessModeEnum.Disabled;
-
 		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
+	}
+
+	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {
+		switch ( state ) {
+		case PlayerAnimationState.Hide:
+		case PlayerAnimationState.TrueIdleStart:
+		case PlayerAnimationState.TrueIdleLoop:
+		case PlayerAnimationState.Dead:
+		case PlayerAnimationState.CheckpointDrinking:
+		case PlayerAnimationState.CheckpointExit:
+		case PlayerAnimationState.CheckpointIdle:
+			arm.SpriteFrames = defaultFrames;
+			arm.CallDeferred( "hide" );
+			break;
+		case PlayerAnimationState.Sliding:
+		case PlayerAnimationState.Idle:
+			arm.SpriteFrames = defaultFrames;
+			arm.CallDeferred( "play", "idle" );
+			break;
+		case PlayerAnimationState.Running:
+			arm.SpriteFrames = defaultFrames;
+			arm.CallDeferred( "play", "run" );
+			break;
+		case PlayerAnimationState.WeaponIdle: {
+			string property = "";
+			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				property = "firearm_frames_left";
+			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
+				property = "blunt_frames_left";
+			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
+				property = "bladed_frames_left";
+			}
+			
+			arm.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			arm.CallDeferred( "play", "idle" );
+			break; }
+		case PlayerAnimationState.WeaponUse: {
+			arm.CallDeferred( "show" );
+			
+			string property = "";
+			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				property = "firearm_frames_left";
+			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
+				property = "blunt_frames_left";
+			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
+				property = "bladed_frames_left";
+			}
+			
+			arm.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			arm.CallDeferred( "play", "use" );
+			break; }
+		case PlayerAnimationState.WeaponReload:
+			arm.CallDeferred( "show" );
+			arm.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			arm.CallDeferred( "play", "reload" );
+			break;
+		case PlayerAnimationState.WeaponEmpty:
+			arm.CallDeferred( "show" );
+			arm.SpriteFrames =
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			arm.CallDeferred( "play", "empty" );
+			break;
+		};
+	}
+	public override void _PhysicsProcess( double delta ) {
+		base._PhysicsProcess( delta );
+		
+		if ( Velocity != Godot.Vector2.Zero ) {
+			MoveAndSlide();
+		}
 	}
 
 	public void SetOwnerId( ulong steamId ) {

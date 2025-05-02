@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class AINodeCache : Node {
+public partial class AINodeCache : Node2D {
 	[Export]
 	private Node2D[] CoverCache;
 	[Export]

@@ -1,6 +1,7 @@
-[gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://d01vxfpudal7u"]
+[gd_resource type="ItemDefinition" load_steps=3 format=3 uid="uid://d01vxfpudal7u"]
 
 [ext_resource type="Texture2D" uid="uid://uxkebd6eqafw" path="res://textures/env/iconw_katana.png" id="1_7etuh"]
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_inhdw"]
 
 [resource]
 id = "WEAPON_MELEE_KATANA"
@@ -10,3 +11,21 @@ name = "Katana"
 icon = ExtResource("1_7etuh")
 weight = 9.5
 size = Vector2i(4, 1)
+properties = {
+"bladed_damage": 120.0,
+"bladed_frames_left": &"katana_bladed_left.tres",
+"bladed_frames_right": &"katana_bladed_right.tres",
+"bladed_range": 10.0,
+"default_is_bladed": true,
+"default_is_blunt": false,
+"default_is_firearm": false,
+"default_is_onehanded": true,
+"default_is_twohanded": false,
+"is_bladed": true,
+"is_blunt": false,
+"is_firearm": false,
+"is_onehanded": true,
+"is_twohanded": true,
+"use_bladed": &"katana_swing.ogg"
+}
+categories = Array[ItemCategory]([ExtResource("1_inhdw")])

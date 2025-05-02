@@ -12,11 +12,6 @@ namespace ChallengeMode {
 			get;
 			private set;
 		}
-		[Export]
-		public StringName QuestResource {
-			get;
-			private set;
-		}
 
 		[Signal]
 		public delegate void FinishedLoadingEventHandler();
@@ -24,12 +19,21 @@ namespace ChallengeMode {
 		private System.Threading.Thread LoadThread;
 		private PackedScene MapData;
 		private Resource Quest;
+		private System.Action<PackedScene, Resource> FinishedLoadingDelegate;
 
-		public void Load() {
+		private void OnFinishedLoading() {
+			LoadThread.Join();
+
+			FinishedLoading -= OnFinishedLoading;
+			FinishedLoadingDelegate( MapData, Quest );
+		}
+		public void Load( System.Action<PackedScene, Resource> finishedLoading ) {
+			FinishedLoading += OnFinishedLoading;
+			FinishedLoadingDelegate = finishedLoading;
 			LoadThread = new System.Threading.Thread( () => {
 				string dir = string.Format( "res://resources/challenge_maps/" );
-				MapData = ResourceLoader.Load<PackedScene>( "res://resources/challenge_maps/map_" + MapName );
-				Quest = ResourceLoader.Load( "res://resources/challenge_maps/objectives/challenge" + ChallengeIndex + ".tres" );
+				MapData = ResourceLoader.Load<PackedScene>( dir + "map_" + MapName + ".tscn" );
+				Quest = ResourceLoader.Load( dir + "objectives/challenge" + ChallengeIndex + ".tres" );
 				CallDeferred( "emit_signal", "FinishedLoading" );
 			} );
 			LoadThread.Start();

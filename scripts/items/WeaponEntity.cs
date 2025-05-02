@@ -69,6 +69,8 @@ public partial class WeaponEntity : Node2D {
 	public Resource Data;
 
 	private Random RandomFactory;
+
+	private StringName ResourcePath = "";
 	
 	// c# integrated properties so that we aren't reaching into the engine api
 	// every time we want a constant
@@ -76,7 +78,7 @@ public partial class WeaponEntity : Node2D {
 	private int MagazineSize = 0;
 	private AmmoType Ammunition = AmmoType.Light;
 	private MagazineType MagType = MagazineType.Invalid;
-	private FireMode Firemode = FireMode.Invalid;
+	private FireMode Firemode = FireMode.Single;
 	private SpriteFrames FirearmFramesLeft;
 	private SpriteFrames FirearmFramesRight;
 	private SpriteFrames BluntFramesLeft;
@@ -96,6 +98,7 @@ public partial class WeaponEntity : Node2D {
 	private float Weight = 0.0f;
 
 	private float AttackAngle = 0.0f;
+	private float LastWeaponAngle = 0.0f;
 
 	private NodePath InitialPath;
 
@@ -133,11 +136,13 @@ public partial class WeaponEntity : Node2D {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
+	public void SetResourcePath( StringName path ) => ResourcePath = path;
+
 	public float GetWeight() => Weight;
 	public float GetReloadTime() => ReloadTime;
 	public float GetUseTime() => UseTime;
 	public NodePath GetInitialPath() => InitialPath;
-	public void SetOwner( Player player ) => _Owner = player;
+	public void SetOwner( Entity owner ) => _Owner = owner;
 	public WeaponState GetWeaponState() => CurrentState;
 	public void SetWeaponState( WeaponState state ) => CurrentState = state;
     public AmmoStack GetReserve() => Reserve;
@@ -152,18 +157,25 @@ public partial class WeaponEntity : Node2D {
 
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
-	
+
+	public bool IsBladed() => ( LastUsedMode & Properties.IsBladed ) != 0;
+	public bool IsBlunt() => ( LastUsedMode & Properties.IsBlunt ) != 0;
+	public bool IsFirearm() => ( LastUsedMode & Properties.IsFirearm ) != 0;
+
 	public WeaponState GetCurrentState() => CurrentState;
 
 	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
 
 	private void PlaySound( AudioStream stream ) {
-		AudioChannel.Stream = stream;
-		AudioChannel.Play();
+		AudioChannel.SetDeferred( "stream", stream );
+		AudioChannel.CallDeferred( "play" );
 	}
 
 	private void ReleasePickupArea() {
+		if ( PickupArea == null ) {
+			return;
+		}
 		PickupArea.GetChild( 0 ).CallDeferred( "queue_free" );
 		PickupArea.CallDeferred( "remove_child", PickupArea.GetChild( 0 ) );
 
@@ -171,6 +183,19 @@ public partial class WeaponEntity : Node2D {
 		CallDeferred( "remove_child", PickupArea );
 	}
 
+	public void TriggerPickup( Entity owner ) {
+		IconSprite?.QueueFree();
+
+		ReleasePickupArea();
+
+		_Owner = owner;
+		CallDeferred( "reparent", _Owner );
+		GlobalPosition = _Owner.GlobalPosition;
+		SetUseMode( DefaultMode );
+		InitProperties();
+
+		owner.PickupWeapon( this );
+	}
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			IconSprite?.QueueFree();
@@ -189,12 +214,12 @@ public partial class WeaponEntity : Node2D {
 	private void OnMuzzleFlashTimerTimeout() {
 		if ( Firemode == FireMode.Automatic ) {
 			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
-				MuzzleFlashes[i].Hide();
+				MuzzleFlashes[i].CallDeferred( "hide" );
 			}
 		} else {
-			CurrentMuzzleFlash.Hide();
+			CurrentMuzzleFlash.CallDeferred( "hide" );
 		}
-		MuzzleLight.Hide();
+		MuzzleLight.CallDeferred( "hide" );
 	}
 
 	private void CreatePickupBounds() {
@@ -222,8 +247,6 @@ public partial class WeaponEntity : Node2D {
 
 		WeaponTimer = new Timer();
 		WeaponTimer.Name = "WeaponTimer";
-		WeaponTimer.SetProcess( false );
-		WeaponTimer.SetProcessInternal( false );
 		WeaponTimer.OneShot = true;
 		AddChild( WeaponTimer );
 
@@ -233,12 +256,7 @@ public partial class WeaponEntity : Node2D {
 		AddChild( AudioChannel );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
-
-		Firemode = (FireMode)(uint)properties[ "firemode" ];
-		MagType = (MagazineType)(uint)properties[ "magazine_type" ];
-		MagazineSize = (int)properties[ "magsize" ];
-		Ammunition = (AmmoType)(uint)properties[ "ammo_type" ];
-		Weight = (float)properties[ "weight" ];
+		Weight = (float)Data.Get( "weight" );
 
 		if ( (bool)properties[ "is_onehanded" ] ) {
 			PropertyBits |= Properties.IsOneHanded;
@@ -250,24 +268,40 @@ public partial class WeaponEntity : Node2D {
 			PropertyBits |= Properties.IsBladed;
 			BladedDamage = (float)properties[ "bladed_damage" ];
 			BladedRange = (float)properties[ "bladed_range" ];
-			BladedFramesLeft = (SpriteFrames)properties[ "bladed_frames_left" ];
-			BladedFramesRight = (SpriteFrames)properties[ "bladed_frames_right" ];
 
-			UseBladedSfx = (AudioStream)properties[ "use_bladed" ];
+			BladedFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_left" ] );
+			BladedFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_right" ] );
+
+			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + ResourcePath + (StringName)properties[ "use_bladed" ] );
+
+			if ( RayCast == null ) {
+				RayCast = new RayCast2D();
+				RayCast.Name = "RayCast";
+				RayCast.Enabled = true;
+				RayCast.TargetPosition = Godot.Vector2.Zero;
+				AddChild( RayCast );
+			}
 		}
 		if ( (bool)properties[ "is_blunt" ] ) {
 			PropertyBits |= Properties.IsBlunt;
 			BluntDamage = (float)properties[ "blunt_damage" ];
 			BluntRange = (float)properties[ "blunt_range" ];
-			BluntFramesLeft = (SpriteFrames)properties[ "blunt_frames_left" ];
-			BluntFramesRight = (SpriteFrames)properties[ "blunt_frames_right" ];
 
-			UseBluntSfx = (AudioStream)properties[ "use_blunt" ];
+			BluntFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_left" ] );
+			BluntFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_right" ] );
+
+			UseBluntSfx = ResourceCache.GetSound( "res://sounds/player/melee.wav" );
 		}
 		if ( (bool)properties[ "is_firearm" ] ) {
 			PropertyBits |= Properties.IsFirearm;
-			FirearmFramesLeft = (SpriteFrames)properties[ "firearm_frames_left" ];
-			FirearmFramesRight = (SpriteFrames)properties[ "firearm_frames_right" ];
+
+			FirearmFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_left" ] );
+			FirearmFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_right" ] );
+
+			Firemode = (FireMode)(uint)properties[ "firemode" ];
+			MagType = (MagazineType)(uint)properties[ "magazine_type" ];
+			MagazineSize = (int)properties[ "magsize" ];
+			Ammunition = (AmmoType)(uint)properties[ "ammo_type" ];
 
 			// only allocate muzzle flash sprites if we actually need them
 			MuzzleFlashes = new System.Collections.Generic.List<Sprite2D>();
@@ -304,7 +338,7 @@ public partial class WeaponEntity : Node2D {
 			MuzzleLight.Hide();
 			AddChild( MuzzleLight );
 
-			ReloadSfx = (AudioStream)properties[ "reload_sfx" ];
+			ReloadSfx = ResourceCache.GetSound( "res://sounds/" + ResourcePath + (StringName)properties[ "reload_sfx" ] );
 			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
 
 			if ( RayCast == null ) {
@@ -364,6 +398,10 @@ public partial class WeaponEntity : Node2D {
 
 		Icon = (Texture2D)Data.Get( "icon" );
 
+		if ( ResourcePath.IsEmpty ) {
+			ResourcePath = "player/";
+		}
+
 		if ( _Owner != null ) {
 			InitProperties();
 			return;
@@ -385,12 +423,6 @@ public partial class WeaponEntity : Node2D {
 
 		if ( _Owner == null ) {
 			return;
-		}
-
-		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-//			if ( _Owner is Renown.Thinker thinker && thinker != null ) {
-//				RayCast.GlobalRotation = _Owner.GetArmAngle();
-//			}
 		}
 	}
 
@@ -432,7 +464,22 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private float UseBladed() {
-		return  0.0f;
+		float angle = AttackAngle;
+		
+		RayCast.TargetPosition = Godot.Vector2.Right * BladedRange;
+
+		if ( angle != LastWeaponAngle ) {
+			// swung
+			float damage = BladedRange / Mathf.DegToRad( ( Mathf.RadToDeg( angle ) - Mathf.RadToDeg( LastWeaponAngle ) + 360.0f ) % 360.0f );
+			if ( RayCast.GetCollider() is Entity entity && entity != null && entity != _Owner ) {
+				entity.Damage( _Owner, damage );
+			}
+
+			PlaySound( ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
+			LastWeaponAngle = angle;
+		}
+
+		return 0.0f;
 	}
 	private float UseBlunt() {
 		return 0.0f;
@@ -483,9 +530,9 @@ public partial class WeaponEntity : Node2D {
 			}
 		}
 
-		WeaponTimer.WaitTime = ReloadTime;
+		WeaponTimer.SetDeferred( "wait_time", ReloadTime );
 		WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
-		WeaponTimer.Start();
+		WeaponTimer.CallDeferred( "start" );
 
 		CurrentState = WeaponState.Reload;
 		PlaySound( ReloadSfx );
@@ -535,7 +582,7 @@ public partial class WeaponEntity : Node2D {
 //		CurrentMuzzleFlash.Show();
 		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
 
-		MuzzleLight.Show();
+		MuzzleLight.CallDeferred( "show" );
 		
 		MuzzleFlashTimer.Start();
 
@@ -568,9 +615,9 @@ public partial class WeaponEntity : Node2D {
 		float damage = (float)properties[ "damage" ];
 		float frameDamage = damage;
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is Entity entity && entity != null ) {
+			if ( collision is Entity entity && entity != null && entity != _Owner ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-				if ( distance > 80.0f ) {
+				if ( distance > 20.0f ) {
 					// out of bleed range, no healing
 					frameDamage = 0.0f;
 				}
@@ -579,6 +626,7 @@ public partial class WeaponEntity : Node2D {
 
 				entity.Damage( _Owner, damage );
 			} else {
+				frameDamage = 0.0f;
 				DebrisFactory.Create( RayCast.GetCollisionPoint() );
 			}
 		}
@@ -586,6 +634,26 @@ public partial class WeaponEntity : Node2D {
 		EmitSignalUsed( this );
 
 		return frameDamage;
+	}
+	public void UseDeferred( Properties weaponMode ) {
+		if ( Engine.TimeScale == 0.0f ) {
+			return;
+		}
+		switch ( CurrentState ) {
+		case WeaponState.Use:
+		case WeaponState.Reload:
+			return; // can't use it when it's being used
+		};
+
+		SetUseMode( weaponMode );
+
+		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
+			UseFirearm( out _, false );
+		} else if ( ( LastUsedMode & Properties.IsBlunt ) != 0 ) {
+			UseBlunt();
+		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {
+			UseBladed();
+		}
 	}
 	public float Use( Properties weaponMode, out float soundLevel, bool held = false ) {
 		soundLevel = 0.0f;

@@ -67,20 +67,20 @@ size_flags_horizontal = 4
 text = "MULTIPLAYER_BUTTON"
 flat = true
 
-[node name="ChallengeModeButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
+[node name="StoryModeButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-text = "CHALLENGE_MODE_BUTTON"
+text = "STORY_MODE_BUTTON"
 flat = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/HSplitContainer"]
 visible = false
 layout_mode = 2
 
-[node name="ChallengeModeOptions" type="VScrollBar" parent="MainContainer/HSplitContainer/HBoxContainer"]
+[node name="StoryModeOptions" type="VScrollBar" parent="MainContainer/HSplitContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/HSplitContainer/HBoxContainer/ChallengeModeOptions"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/HSplitContainer/HBoxContainer/StoryModeOptions"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -117,19 +117,20 @@ text = "Bloodbath"
 [node name="HSeparator2" type="HSeparator" parent="MainContainer"]
 layout_mode = 2
 
-[node name="ChallengeInfoContainer" type="VBoxContainer" parent="MainContainer"]
+[node name="StoryInfoContainer" type="VBoxContainer" parent="MainContainer"]
+visible = false
 layout_mode = 2
 
-[node name="DescriptionLabel" type="Label" parent="MainContainer/ChallengeInfoContainer"]
+[node name="DescriptionLabel" type="Label" parent="MainContainer/StoryInfoContainer"]
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_wymqu")
 autowrap_mode = 3
 
-[node name="HSeparator" type="HSeparator" parent="MainContainer/ChallengeInfoContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 
-[node name="ObjectiveLabel" type="RichTextLabel" parent="MainContainer/ChallengeInfoContainer"]
+[node name="ObjectiveLabel" type="RichTextLabel" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 theme_override_fonts/normal_font = SubResource("SystemFont_1ry13")
 theme_override_fonts/mono_font = SubResource("SystemFont_ko5ec")
@@ -139,27 +140,27 @@ theme_override_fonts/bold_font = SubResource("SystemFont_clvrn")
 bbcode_enabled = true
 fit_content = true
 
-[node name="HSeparator2" type="HSeparator" parent="MainContainer/ChallengeInfoContainer"]
+[node name="HSeparator2" type="HSeparator" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 
-[node name="ScoreContainer" type="HBoxContainer" parent="MainContainer/ChallengeInfoContainer"]
+[node name="ScoreContainer" type="HBoxContainer" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 
-[node name="BestTimeLabel" type="Label" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+[node name="BestTimeLabel" type="Label" parent="MainContainer/StoryInfoContainer/ScoreContainer"]
 custom_minimum_size = Vector2(314, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_e0peb")
 horizontal_alignment = 2
 
-[node name="VSeparator" type="VSeparator" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+[node name="VSeparator" type="VSeparator" parent="MainContainer/StoryInfoContainer/ScoreContainer"]
 layout_mode = 2
 
-[node name="ScoreLabel" type="Label" parent="MainContainer/ChallengeInfoContainer/ScoreContainer"]
+[node name="ScoreLabel" type="Label" parent="MainContainer/StoryInfoContainer/ScoreContainer"]
 custom_minimum_size = Vector2(314, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_m1w8s")
 
-[node name="StartButton" type="Button" parent="MainContainer/ChallengeInfoContainer"]
+[node name="StartButton" type="Button" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 text = "START"

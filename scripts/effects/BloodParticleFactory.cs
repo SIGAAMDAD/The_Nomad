@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class BloodParticleFactory : Node {
+public partial class BloodParticleFactory : Node2D {
 	private Timer ReleaseTimer = null;
 	private Transform2D[] Transforms = null;
 	private MultiMeshInstance2D MeshManager = null;
@@ -35,22 +35,24 @@ public partial class BloodParticleFactory : Node {
 		MeshManager = new MultiMeshInstance2D();
 		MeshManager.Multimesh = new MultiMesh();
 		MeshManager.Multimesh.Mesh = new QuadMesh();
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 4.0f, -4.0f );
+		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 16.0f, -16.0f );
 		MeshManager.Texture = ResourceCache.GetTexture( "res://textures/blood1.png" );
 		MeshManager.ZIndex = 3;
-		MeshManager.SetProcess( false );
-		MeshManager.SetProcessInternal( false );
 		AddChild( MeshManager );
 
 		// cache a shitload
-		MeshManager.Multimesh.InstanceCount = 2048;
+		MeshManager.Multimesh.InstanceCount = 4096;
 		MeshManager.Multimesh.VisibleInstanceCount = 0;
 
 		Transforms = new Transform2D[ MeshManager.Multimesh.InstanceCount ];
 	}
 	
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, 1.0f / from.DistanceSquaredTo( to ) );
+		float scale = 1.0f / from.DistanceSquaredTo( to );
+		if ( scale < 0.0f ) {
+			scale = 0.0f;
+		}
+		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, scale );
 
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;

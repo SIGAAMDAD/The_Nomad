@@ -67,7 +67,7 @@ namespace Multiplayer.Overlays {
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
-			CountdownLabel.Update();
+//			CountdownLabel.Update();
 		}
 	};
 };

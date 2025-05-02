@@ -4,8 +4,6 @@
 
 [resource]
 script = ExtResource("1_a1d2c")
-Name = &"CHALLENGE0_NAME"
-Description = &"CHALLENGE0_DESCRIPTION"
+ChallengeIndex = 0
 MapName = &"golden_gate_massacre"
-Objective = &"CHALLENGE0_OBJECTIVE"
-QuestResource = null
+QuestResource = &"challenge0.tres"

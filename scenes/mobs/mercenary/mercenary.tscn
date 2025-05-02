@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://dtmpn24mt61j0"]
+
+[ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
+[ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
+[ext_resource type="SpriteFrames" uid="uid://bghffidjv2c7s" path="res://resources/animations/mobs/mercenary_arm_animations.tres" id="3_yrnty"]
+[ext_resource type="SpriteFrames" uid="uid://dq5w8gujhurx" path="res://resources/animations/mobs/mercenary_body_animations.tres" id="4_u1d28"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jglyl"]
+
+[node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+z_index = 5
+collision_layer = 19
+collision_mask = 18
+script = ExtResource("1_wewif")
+ViewAngleAmount = 45.0
+LoseInterestTime = 10.0
+SightDetectionTime = 3.0
+SightDetectionSpeed = 1.0
+MaxViewDistance = 250.0
+Relations = {}
+Debts = {}
+
+[node name="Animations" type="Node2D" parent="."]
+
+[node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(0, -7)
+sprite_frames = ExtResource("2_61sma")
+animation = &"move"
+
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
+sprite_frames = ExtResource("4_u1d28")
+animation = &"die_high"
+
+[node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
+sprite_frames = ExtResource("3_yrnty")
+animation = &"move"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_jglyl")
+
+[node name="DetectionMeter" type="Line2D" parent="."]
+visible = false
+position = Vector2(11, -3)
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0

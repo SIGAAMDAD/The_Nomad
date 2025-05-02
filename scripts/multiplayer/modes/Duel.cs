@@ -89,7 +89,6 @@ namespace Multiplayer.Modes {
 			SyncObject.Write( Player1Score );
 			SyncObject.Write( Player2Score );
 			SyncObject.Write( RoundIndex );
-			SyncObject.Write( Overlay.GetRemainingTime() );
 			SyncObject.Sync();
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
@@ -99,7 +98,6 @@ namespace Multiplayer.Modes {
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
-			Overlay.SetRemainingTime( (float)reader.ReadDouble() );
 		}
 
 		public override void _Ready() {

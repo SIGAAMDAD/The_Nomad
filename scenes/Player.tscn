@@ -1,7 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=22 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
+[ext_resource type="Shader" uid="uid://5vii1onibvl0" path="res://shaders/dynamic_shadow.gdshader" id="2_srp4u"]
 [ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="3_p7iby"]
 [ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="4_0rnld"]
 [ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="4_d2uw3"]
@@ -15,6 +16,11 @@
 [ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/effects/FootSteps.cs" id="16_srp4u"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jfpux"]
+shader = ExtResource("2_srp4u")
+shader_parameter/shadow_offset = Vector2(10, 10)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.3)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
 size = Vector2(16, 30)
@@ -49,6 +55,7 @@ Debts = {}
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 3
+material = SubResource("ShaderMaterial_jfpux")
 
 [node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
 process_thread_group = 1
@@ -124,7 +131,7 @@ process_thread_messages = 0
 visible = false
 y_sort_enabled = true
 sprite_frames = ExtResource("10_0rnld")
-animation = &"loop"
+animation = &"checkpoint_idle"
 
 [node name="DashEffect" parent="Animations" instance=ExtResource("4_d2uw3")]
 process_thread_group = 1
@@ -139,7 +146,7 @@ position = Vector2(-1, -1)
 shape = SubResource("RectangleShape2D_0rnld")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(0.75, 0.75)
 process_callback = 0
 position_smoothing_enabled = true
 drag_vertical_enabled = true
@@ -180,7 +187,7 @@ process_mode = 1
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 2
-position = Vector2(-1.90735e-06, 5.33333)
+position = Vector2(24.6682, 5.33333)
 target_position = Vector2(740.047, 0)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]

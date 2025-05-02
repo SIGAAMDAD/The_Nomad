@@ -1,0 +1,70 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://bghffidjv2c7s"]
+
+[ext_resource type="Texture2D" uid="uid://u0wogsfnphi1" path="res://textures/spritesheets/mercenary.png" id="1_4a4cc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3mwv1"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gp7yl"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(128, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gc2gx"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(160, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbsyc"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tn7co"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tobrk"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(64, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxb4u"]
+atlas = ExtResource("1_4a4cc")
+region = Rect2(0, 128, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3mwv1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gp7yl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gc2gx")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lbsyc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tn7co")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tobrk")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pxb4u")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]

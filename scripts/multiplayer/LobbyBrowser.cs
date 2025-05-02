@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Multiplayer;
@@ -38,12 +39,14 @@ public partial class LobbyBrowser : Control {
 		}
 		
 		private void LoadMetadata() {
-			LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-			if ( LobbyName.Length == 0 ) {
-				Text = "LOADING...";
-			} else {
-				Text = LobbyName;
+			int Ping = 0;
+			try {
+				Ping = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "ping" ) );
+			} catch ( Exception ) {
 			}
+
+			LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
+			Text = string.Format( "{0) ({1}ms)", LobbyName, Ping );
 
 			string gameMode = SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" );
 			if ( gameMode.IsValidInt() ) {
@@ -88,6 +91,9 @@ public partial class LobbyBrowser : Control {
 		public string GetLobbyName() {
 			return LobbyName;
 		}
+		public CSteamID GetLobbyID() {
+			return LobbyId;
+		}
 	};
 
 	private static Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
@@ -117,6 +123,8 @@ public partial class LobbyBrowser : Control {
 	private static CheckBox ShowFullServers;
 	private static CheckBox GameFilter_LocalWorld;
 
+	private static Timer RefreshTimer;
+
 	private static int MatchmakingPhase = 0;
 
 	private static System.Threading.Thread MatchmakingThread = null;
@@ -125,8 +133,6 @@ public partial class LobbyBrowser : Control {
 	private System.Threading.Thread LoadThread = null;
 	private PackedScene LoadedWorld = null;
 	private string LoadedScenePath = "";
-
-	private static Range ClonerSpinner;
 
 	public static LobbyBrowser Instance;
 
@@ -200,7 +206,8 @@ public partial class LobbyBrowser : Control {
 
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			Hide();
-			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 		}
 	}
 
@@ -232,9 +239,6 @@ public partial class LobbyBrowser : Control {
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-		Hide();
 
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
 		SteamLobby.Instance.JoinLobby( lobbyId );
@@ -267,20 +271,10 @@ public partial class LobbyBrowser : Control {
 	}
 
 	private void GetLobbyList() {
-		Console.PrintLine( "Building lobby list..." );
-
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
+		LobbyList.Clear();
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
-			if ( LobbyList.ContainsKey( lobbyList[i] ) ) {
-				// just refresh the cached data
-				if ( !LobbyList[ lobbyList[i] ].Refresh() ) {
-					// doesn't exist anymore
-					LobbyTable.CallDeferred( "remove_child", LobbyList[ lobbyList[i] ] );
-					LobbyList.Remove( lobbyList[i] );
-				}
-				continue;
-			}
 			LobbyData data = new LobbyData( lobbyList[i] );
 			LobbyList.Add( lobbyList[i], data );
 			LobbyTable.CallDeferred( "add_child", data );
@@ -293,7 +287,6 @@ public partial class LobbyBrowser : Control {
 		}
 	}
 	private void OnRefreshButtonPressed() {
-		Console.PrintLine( "Refreshing lobbies..." );
 		SteamLobby.Instance.OpenLobbyList();
 		GetLobbyList();
 	}
@@ -353,7 +346,7 @@ public partial class LobbyBrowser : Control {
 		HostGame.Show();
 		Matchmake.Show();
 	}
-
+	
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -426,8 +419,6 @@ public partial class LobbyBrowser : Control {
 		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
-		ClonerSpinner = GetNode<Range>( "LobbyList/Lobbies/ClonerSpinner" );
-
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
 		LobbyManager.SetProcess( false );
 		LobbyManager.SetProcessInternal( false );
@@ -442,6 +433,14 @@ public partial class LobbyBrowser : Control {
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
+
+		Timer RefreshTimer = new Timer();
+		RefreshTimer.Name = "RefreshTimer";
+		RefreshTimer.WaitTime = 0.5f;
+		RefreshTimer.OneShot = false;
+		RefreshTimer.Autostart = true;
+		RefreshTimer.Connect( "timeout", Callable.From( OnRefreshButtonPressed ) );
+		AddChild( RefreshTimer );
 
 		SteamLobby.Instance.LobbyJoined += OnLobbyJoined;
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );

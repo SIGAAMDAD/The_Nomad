@@ -1,11 +1,9 @@
-[gd_resource type="ItemDefinition" load_steps=9 format=3 uid="uid://druoc8lqhmj03"]
+[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://druoc8lqhmj03"]
 
 [ext_resource type="ItemCategory" uid="uid://cfwgn6hyfktxx" path="res://resources/weapons/categories/sidearm_category.tres" id="1_gyptk"]
 [ext_resource type="Texture2D" uid="uid://dyruak14a8cgp" path="res://textures/spritesheets/iconw_baller.png" id="1_nxwng"]
-[ext_resource type="SpriteFrames" uid="uid://5ljyypo5nb3l" path="res://resources/animations/weapons/baller_firearm_right.tres" id="2_f1bax"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_qefw3"]
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_rtiu6"]
-[ext_resource type="AudioStream" uid="uid://d36ysh63o3oj4" path="res://sounds/weapons/baller_reload.ogg" id="4_wry6g"]
 [ext_resource type="AudioStream" uid="uid://b483j3gv22a2n" path="res://sounds/player/melee.wav" id="5_316jg"]
 [ext_resource type="AudioStream" uid="uid://tk54tphbo4b3" path="res://sounds/weapons/SMGFIRE.ogg" id="6_hdb51"]
 
@@ -20,8 +18,8 @@ size = Vector2i(2, 1)
 properties = {
 "ammo_type": 1,
 "blunt_damage": 12.5,
-"blunt_frames_left": ExtResource("2_f1bax"),
-"blunt_frames_right": ExtResource("2_f1bax"),
+"blunt_frames_left": &"baller_blunt_left.tres",
+"blunt_frames_right": &"baller_blunt_right.tres",
 "blunt_range": 20.5,
 "default_is_bladed": false,
 "default_is_blunt": false,
@@ -29,8 +27,8 @@ properties = {
 "default_is_onehanded": true,
 "default_is_twohanded": false,
 "description": "BALLER_DESCRIPTION",
-"firearm_frames_left": ExtResource("2_f1bax"),
-"firearm_frames_right": ExtResource("2_f1bax"),
+"firearm_frames_left": &"baller_firearm_left.tres",
+"firearm_frames_right": &"baller_firearm_right.tres",
 "firemode": 0,
 "is_bladed": false,
 "is_blunt": false,
@@ -40,7 +38,7 @@ properties = {
 "magazine_type": 1,
 "magsize": 10,
 "pickup_sfx": ExtResource("3_rtiu6"),
-"reload_sfx": ExtResource("4_wry6g"),
+"reload_sfx": &"baller_reload.ogg",
 "reload_time": 1.1,
 "use_blunt": ExtResource("5_316jg"),
 "use_firearm": ExtResource("6_hdb51"),

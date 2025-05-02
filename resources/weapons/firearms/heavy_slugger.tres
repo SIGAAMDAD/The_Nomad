@@ -1,0 +1,37 @@
+[gd_resource type="ItemDefinition" load_steps=5 format=3 uid="uid://ri3l0anmy3oj"]
+
+[ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="1_1seen"]
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="2_d4q7u"]
+[ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="3_qbuyo"]
+[ext_resource type="AudioStream" uid="uid://di0pupbuvpw6f" path="res://sounds/player/heavy_slugger_use.ogg" id="4_d4q7u"]
+
+[resource]
+id = "WEAPON_FIREARM_HEAVY_SLUGGER"
+can_stack = false
+max_stack = 1
+name = "Heavy Slugger"
+weight = 14.6
+properties = {
+"ammo_type": 2,
+"default_is_bladed": false,
+"default_is_blunt": false,
+"default_is_firearm": true,
+"default_is_onehanded": false,
+"default_is_twohanded": true,
+"description": "HEAVY_SLUGGER_DESCRIPTION",
+"firearm_frames_left": &"heavy_slugger_firearm_left.tres",
+"firearm_frames_right": &"heavy_slugger_firearm_right.tres",
+"firemode": 0,
+"is_bladed": false,
+"is_blunt": false,
+"is_firearm": true,
+"is_onehanded": false,
+"is_twohanded": true,
+"magazine_type": 1,
+"magsize": 8,
+"reload_sfx": &"heavy_slugger_reload.ogg",
+"reload_time": 2.6,
+"use_firearm": ExtResource("4_d4q7u"),
+"use_time": 0.8
+}
+categories = Array[ItemCategory]([ExtResource("1_1seen"), ExtResource("2_d4q7u"), ExtResource("3_qbuyo")])

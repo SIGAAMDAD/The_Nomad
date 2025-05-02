@@ -16,6 +16,7 @@ public class NetworkWriter {
 		Writer.Write( (double)value.X );
 		Writer.Write( (double)value.Y );
 	}
+	public void Write( ulong value ) => Writer.Write( value );
 	public void Write( uint value ) => Writer.Write( value );
 	public void Write( float value ) => Writer.Write( (double)value );
 	public void Write( byte value ) => Writer.Write( value );

@@ -1,0 +1,6 @@
+[gd_resource type="CanvasTexture" load_steps=2 format=3 uid="uid://b060c1x36h7ol"]
+
+[ext_resource type="Texture2D" uid="uid://d3njgk76f1i25" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.png" id="1_uk2b6"]
+
+[resource]
+diffuse_texture = ExtResource("1_uk2b6")

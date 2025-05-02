@@ -98,7 +98,7 @@ public class ResourceCache {
 
 		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
 
-		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+		if ( GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 			GlobalEconomy.Init();
 		}
 

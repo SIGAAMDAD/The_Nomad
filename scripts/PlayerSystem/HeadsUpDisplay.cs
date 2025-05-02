@@ -1,3 +1,5 @@
+using System;
+using DialogueManagerRuntime;
 using Godot;
 using Renown;
 using Renown.World;
@@ -48,6 +50,9 @@ namespace PlayerSystem {
 		private Callable OnYesPressed;
 		private Callable OnNoPressed;
 
+		private TextureRect LeftArmIndicator;
+		private TextureRect RightArmIndicator;
+
 		private TextureRect ReflexOverlay;
 		private TextureRect DashOverlay;
 
@@ -76,6 +81,8 @@ namespace PlayerSystem {
 		private Label WorldTimeHour;
 		private Label WorldTimeMinute;
 
+		private RichTextLabel DialogueLabel;
+
 		public HealthBar GetHealthBar() => HealthBar;
 		public RageBar GetRageBar() => RageBar;
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
@@ -83,6 +90,7 @@ namespace PlayerSystem {
 		
 		public Player GetPlayerOwner() => _Owner;
 		private void SaveStart() {
+			SaveSpinner.SetProcess( true );
 			SaveSpinner.Show();
 		}
 		private void SaveEnd() {
@@ -90,6 +98,7 @@ namespace PlayerSystem {
 		}
 		private void OnSaveTimerTimeout() {
 			SaveSpinner.Hide();
+			SaveSpinner.SetProcess( false );
 		}
 		private void OnAnnouncementFadeOutTweenFinished() {
 			FadeOutTween.Disconnect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
@@ -104,8 +113,24 @@ namespace PlayerSystem {
 			WorldTimeMinute.Text = minute.ToString();
 		}
 
+		public void SetDialogue( Resource DialogueData ) {
+
+		}
+		public void StartThoughtBubble( string text ) {
+			Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
+			DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
+		}
+
+		private void OnDialogueEnded( Resource dialogueResource ) {
+		}
+		private void OnDialogueStarted( Resource dialogueResource ) {
+		}
+
 		public override void _Ready() {
 			base._Ready();
+
+			DialogueManager.DialogueStarted += OnDialogueStarted;
+			DialogueManager.DialogueEnded += OnDialogueEnded;
 
 			if ( GameConfiguration.GameMode != GameMode.Multiplayer
 				&& GetTree().CurrentScene.Name == "World" )
@@ -115,6 +140,8 @@ namespace PlayerSystem {
 
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
+
+			DialogueLabel = GetNode<RichTextLabel>( "DialogueLabel" );
 
 			NoteBook = GetNode<Notebook>( "NotebookContainer" );
 			NoteBook.ProcessMode = ProcessModeEnum.Disabled;
@@ -184,44 +211,47 @@ namespace PlayerSystem {
 			SaveSpinner = GetNode<Control>( "MainHUD/SaveSpinner/SaveSpinner" );
 			SaveSpinner.SetProcess( false );
 
+			LeftArmIndicator = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/ArmUsage/LeftArmIndicator" );
+			RightArmIndicator = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/ArmUsage/RightArmIndicator" );
+
 			WeaponData = null;
 			WeaponStatus = GetNode<TextureRect>( "MainHUD/WeaponStatus" );
 			WeaponStatus.SetProcess( false );
 			WeaponStatus.SetProcessInternal( false );
 
-			WeaponModeBladed = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
+			WeaponModeBladed = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
 			WeaponModeBladed.SetProcess( false );
 			WeaponModeBladed.SetProcessInternal( false );
 
-			WeaponModeBlunt = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
+			WeaponModeBlunt = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
 			WeaponModeBlunt.SetProcess( false );
 			WeaponModeBlunt.SetProcessInternal( false );
 
-			WeaponModeFirearm = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
+			WeaponModeFirearm = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
 			WeaponModeFirearm.SetProcess( false );
 			WeaponModeFirearm.SetProcessInternal( false );
 
-			WeaponStatusFirearm = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus" );
+			WeaponStatusFirearm = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus" );
 			WeaponStatusFirearm.SetProcess( false );
 			WeaponStatusFirearm.SetProcessInternal( false );
 
-			WeaponStatusMelee = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus" );
+			WeaponStatusMelee = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus" );
 			WeaponStatusMelee.SetProcess( false );
 			WeaponStatusMelee.SetProcessInternal( false );
 
-			WeaponStatusMeleeIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
+			WeaponStatusMeleeIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
 			WeaponStatusMeleeIcon.SetProcess( false );
 			WeaponStatusMeleeIcon.SetProcessInternal( false );
 
-			WeaponStatusFirearmIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
+			WeaponStatusFirearmIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
 			WeaponStatusFirearmIcon.SetProcess( false );
 			WeaponStatusFirearmIcon.SetProcessInternal( false );
 
-			WeaponStatusBulletCount = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
+			WeaponStatusBulletCount = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
 			WeaponStatusBulletCount.SetProcess( false );
 			WeaponStatusBulletCount.SetProcessInternal( false );
 
-			WeaponStatusBulletReserve = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
+			WeaponStatusBulletReserve = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
 			WeaponStatusBulletReserve.SetProcess( false );
 			WeaponStatusBulletReserve.SetProcessInternal( false );
 
@@ -299,6 +329,7 @@ namespace PlayerSystem {
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
 		}
+
 		private void OnWeaponReloaded( WeaponEntity source ) {
 			WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
 			WeaponStatusBulletReserve.Text = source.GetReserve() != null ? source.GetReserve().Amount.ToString() : "0";
@@ -362,9 +393,13 @@ namespace PlayerSystem {
 
 			WarpLocationsContainer.Show();
 		}
+
+		public Checkpoint GetCurrentCheckpoint() => CurrentCheckpoint;
 		private void OnRestHereButtonPressed() {
 			_Owner.SetHealth( 100.0f );
 			_Owner.SetRage( 100.0f );
+
+			_Owner.RestAtCampfire();
 
 			ArchiveSystem.SaveGame( null, 0 );
 		}

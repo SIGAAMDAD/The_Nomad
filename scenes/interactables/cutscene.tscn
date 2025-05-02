@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmt36v2g56rb2"]
+
+[ext_resource type="Script" uid="uid://c2dp0d4hk0o63" path="res://scripts/interactables/Cutscenes/Cutscene.cs" id="1_fd1lk"]
+
+[node name="Cutscene" type="Node2D" node_paths=PackedStringArray("Sequences")]
+script = ExtResource("1_fd1lk")
+Sequences = []

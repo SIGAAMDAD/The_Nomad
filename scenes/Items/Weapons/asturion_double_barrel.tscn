@@ -1,3 +1,9 @@
-[gd_scene format=3 uid="uid://dcth7f1e33whn"]
+[gd_scene load_steps=2 format=3 uid="uid://dcth7f1e33whn"]
 
-[node name="AsturionDoubleBarrel" type="Node2D"]
+[ext_resource type="SpriteFrames" uid="uid://c6ssesyn8pesr" path="res://resources/animations/player/asturion_double_barrel_firearm_left.tres" id="1_iobio"]
+
+[node name="Animations" type="Node2D"]
+
+[node name="FirearmFrames" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_iobio")
+animation = &"use"

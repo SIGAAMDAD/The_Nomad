@@ -9,17 +9,18 @@ using System.Collections.Generic;
 namespace Renown {
 	public class MercenaryLeaderboard {
 		public class LeaderboardEntry {
-			public readonly ContractType Type;
+//			public readonly ContractType Type;
 			public readonly CSteamID UserId = CSteamID.Nil;
-			public readonly int TimeCompletedMinutes = 0;
-			public readonly int TimeCompletedSeconds = 0;
-			public readonly int TimeCompletedMilliseconds = 0;
-			public readonly int Score = 0;
+//			public readonly int TimeCompletedMinutes = 0;
+//			public readonly int TimeCompletedSeconds = 0;
+//			public readonly int TimeCompletedMilliseconds = 0;
+			public readonly int Bounty = 0;
 			
 			public LeaderboardEntry( LeaderboardEntry_t entry, int[] details ) {
 				UserId = entry.m_steamIDUser;
-				Score = entry.m_nScore;
+				Bounty = entry.m_nScore;
 				
+				/*
 				if ( details.Length != 4 ) {
 					Console.PrintError( "[STEAM] Invalid leaderboard entry data!" );
 					return;
@@ -29,6 +30,7 @@ namespace Renown {
 				TimeCompletedMinutes = details[1];
 				TimeCompletedSeconds = details[2];
 				TimeCompletedMilliseconds = details[3];
+				*/
 			}
 		};
 		
@@ -121,7 +123,14 @@ namespace Renown {
 			for ( int i = 0; i < LeaderboardData.Count; i++ ) {
 				entries.Add( LeaderboardData[i] );
 			}
+			entries.Sort();
 			return entries;
+		}
+
+		/// <summary>
+		/// allows the local player to "invade" the top mercenary's world and collect the bounty on their head
+		/// </summary>
+		public static void StartBountyHunt() {
 		}
 	};
 };

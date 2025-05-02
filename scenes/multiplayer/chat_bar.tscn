@@ -17,6 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_321tg")
+metadata/_edit_use_anchors_ = true
 
 [node name="Expanded" type="MarginContainer" parent="."]
 visible = false

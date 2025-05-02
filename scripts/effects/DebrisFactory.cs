@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public partial class DebrisFactory : Node {
+public partial class DebrisFactory : Node2D {
 	private Timer ReleaseTimer = null;
 	private Vector2[] Speeds = null;
 	private Transform2D[] Transforms = null;

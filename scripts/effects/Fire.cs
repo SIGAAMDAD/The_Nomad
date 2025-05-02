@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class Fire : CpuParticles2D {
+public partial class Fire : GpuParticles2D {
 	public override void _Ready() {
 		base._Ready();
 

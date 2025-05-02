@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d14tdl6ni8oqu"]
+[gd_scene load_steps=8 format=3 uid="uid://d14tdl6ni8oqu"]
 
 [ext_resource type="Shader" uid="uid://dsx3hbrjlx05o" path="res://shaders/highlight.gdshader" id="1_6wvny"]
 [ext_resource type="Script" uid="uid://caqm4xcrg55jk" path="res://scripts/items/AmmoEntity.cs" id="2_fbroq"]
@@ -27,22 +27,11 @@ shader_parameter/highlight_strength = 4.0
 shader_parameter/color_mode_toggle = false
 shader_parameter/is_horizontal = true
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_oo816"]
-radius = 7.0
-
 [node name="AmmoBase" type="Node2D"]
 material = SubResource("ShaderMaterial_cjprp")
 script = ExtResource("2_fbroq")
 
 [node name="Icon" type="Sprite2D" parent="."]
 use_parent_material = true
-
-[node name="PickupArea2D" type="Area2D" parent="."]
-process_mode = 3
-collision_layer = 19
-collision_mask = 18
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea2D"]
-shape = SubResource("CircleShape2D_oo816")
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

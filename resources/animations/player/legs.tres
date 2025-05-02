@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=12 format=3 uid="uid://bcx8d0n23krkx"]
 
-[ext_resource type="Texture2D" uid="uid://bq8svfby6wgdg" path="res://textures/spritesheets/skins/the_wanderer/raio_legs.png" id="1_kg84c"]
+[ext_resource type="Texture2D" uid="uid://t18xtkjqg4ca" path="res://resources/texture_mappings/player/the_wanderer/legs.tres" id="1_kg84c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eag8l"]
 atlas = ExtResource("1_kg84c")
@@ -16,15 +16,15 @@ region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wttpu"]
 atlas = ExtResource("1_kg84c")
-region = Rect2(96, 0, 32, 32)
+region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e0tek"]
 atlas = ExtResource("1_kg84c")
-region = Rect2(128, 0, 32, 32)
+region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kh675"]
 atlas = ExtResource("1_kg84c")
-region = Rect2(160, 0, 32, 32)
+region = Rect2(128, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1otfq"]
 atlas = ExtResource("1_kg84c")

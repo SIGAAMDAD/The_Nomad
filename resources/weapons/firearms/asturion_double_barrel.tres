@@ -1,15 +1,10 @@
-[gd_resource type="ItemDefinition" load_steps=12 format=3 uid="uid://dqt26pjfyn6tf"]
+[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://dqt26pjfyn6tf"]
 
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_8gr3y"]
 [ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="1_dmupm"]
 [ext_resource type="Texture2D" uid="uid://cy2pqyhfle1tn" path="res://textures/env/iconw_adb.dds" id="1_lavl7"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_egotk"]
-[ext_resource type="SpriteFrames" uid="uid://b2tojbx2ygf2m" path="res://resources/animations/weapons/asturion_double_barrel_blunt_left.tres" id="2_rr3y7"]
-[ext_resource type="SpriteFrames" uid="uid://5ate4k65twpv" path="res://resources/animations/weapons/asturion_doubel_barrel_blunt_right.tres" id="3_mny2h"]
-[ext_resource type="SpriteFrames" uid="uid://c6ssesyn8pesr" path="res://resources/animations/weapons/asturion_double_barrel_firearm_left.tres" id="4_nwhao"]
-[ext_resource type="SpriteFrames" uid="uid://bsjb26piko6ur" path="res://resources/animations/weapons/asturion_double_barrel_firearm_right.tres" id="5_1lbng"]
 [ext_resource type="AudioStream" uid="uid://dprvwok2l6lca" path="res://sounds/weapons/adb_reload.ogg" id="6_as3ki"]
-[ext_resource type="AudioStream" uid="uid://b483j3gv22a2n" path="res://sounds/player/melee.wav" id="7_t5gr8"]
 [ext_resource type="AudioStream" uid="uid://hsepbrdlpwdd" path="res://sounds/weapons/SGFIRE3.ogg" id="8_5smrx"]
 
 [resource]
@@ -22,8 +17,8 @@ weight = 15.0
 properties = {
 "ammo_type": 2,
 "blunt_damage": 20.5,
-"blunt_frames_left": ExtResource("2_rr3y7"),
-"blunt_frames_right": ExtResource("3_mny2h"),
+"blunt_frames_left": &"asturion_double_barrel_blunt_left.tres",
+"blunt_frames_right": &"asturion_double_barrel_blunt_right.tres",
 "blunt_range": 40.0,
 "default_is_bladed": false,
 "default_is_blunt": false,
@@ -31,8 +26,8 @@ properties = {
 "default_is_onehanded": false,
 "default_is_twohanded": true,
 "description": "ASTURION_DOUBLE_BARREL_DESCRIPTION",
-"firearm_frames_left": ExtResource("4_nwhao"),
-"firearm_frames_right": ExtResource("5_1lbng"),
+"firearm_frames_left": &"asturion_double_barrel_firearm_left.tres",
+"firearm_frames_right": &"asturion_double_barrel_firearm_right.tres",
 "firemode": 1,
 "is_bladed": false,
 "is_blunt": true,
@@ -42,9 +37,8 @@ properties = {
 "magazine_type": 0,
 "magsize": 2,
 "pickup_sfx": ExtResource("6_as3ki"),
-"reload_sfx": ExtResource("6_as3ki"),
+"reload_sfx": &"adb_reload.ogg",
 "reload_time": 0.75,
-"use_blunt": ExtResource("7_t5gr8"),
 "use_firearm": ExtResource("8_5smrx"),
 "use_time": 0.5
 }

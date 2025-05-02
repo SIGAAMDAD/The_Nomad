@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=15 format=3 uid="uid://cxyjjcx0hh0tn"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_6jm5o"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_bg1ch"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_mkxww"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="4_c3ta0"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="5_4a3cr"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="5_bg1ch"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="6_7gink"]
+
+[sub_resource type="Resource" id="Resource_bg1ch"]
+script = ExtResource("2_bg1ch")
+name = "The Golden Gate Massacre"
+description = ""
+id = "5_LkRvrthE"
+optional = false
+graph_editor_position = Vector2(440, 140)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_mkxww"]
+script = ExtResource("3_mkxww")
+description = "Eliminate all enemies"
+id = "OWxmdN1_lJ"
+optional = false
+graph_editor_position = Vector2(1060, 120)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_c3ta0"]
+script = ExtResource("1_6jm5o")
+from = SubResource("Resource_bg1ch")
+to = SubResource("Resource_mkxww")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_4a3cr"]
+script = ExtResource("4_c3ta0")
+id = "8JcZDCTEYc"
+optional = false
+graph_editor_position = Vector2(1760, 140)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_7gink"]
+script = ExtResource("1_6jm5o")
+from = SubResource("Resource_mkxww")
+to = SubResource("Resource_4a3cr")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_06hii"]
+script = ExtResource("5_bg1ch")
+type = "State"
+key = "AllEnemiesDead"
+id = "ktEWrQuYb9"
+optional = false
+graph_editor_position = Vector2(340, 820)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_c46ve"]
+script = ExtResource("1_6jm5o")
+from = SubResource("Resource_06hii")
+to = SubResource("Resource_mkxww")
+edge_type = 1
+
+[resource]
+script = ExtResource("6_7gink")
+nodes = Array[ExtResource("5_4a3cr")]([SubResource("Resource_mkxww"), SubResource("Resource_4a3cr"), SubResource("Resource_06hii"), SubResource("Resource_bg1ch")])
+edges = Array[ExtResource("1_6jm5o")]([SubResource("Resource_c3ta0"), SubResource("Resource_7gink"), SubResource("Resource_c46ve")])

@@ -141,7 +141,7 @@ public partial class LobbyRoom : Control {
 		container.SetProcess( false );
 		container.SetProcessInternal( false );
 		container.Show();
-		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
 		( container.GetChild( 1 ) as Button ).Hide();
 		PlayerList.AddChild( container );
 	}
@@ -217,8 +217,6 @@ public partial class LobbyRoom : Control {
 		base._Ready();
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
-		
-		SteamLobby.Instance.SetPhysicsProcess( true );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
@@ -249,6 +247,7 @@ public partial class LobbyRoom : Control {
 		ClonerContainer.SetProcessInternal( false );
 		
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
+		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		UIChannel.SetProcess( false );
 		UIChannel.SetProcessInternal( false );
 
@@ -262,8 +261,7 @@ public partial class LobbyRoom : Control {
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
-		
-		// add ourself
+
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.SetProcess( false );
 		container.SetProcessInternal( false );
@@ -275,22 +273,16 @@ public partial class LobbyRoom : Control {
 		SteamLobby.Instance.GetLobbyMembers();
 
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] )
-				|| SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() )
-			{
+			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] ) ) {
 				continue;
 			}
 			container = ClonerContainer.Duplicate() as HBoxContainer;
 			container.SetProcess( false );
 			container.SetProcessInternal( false );
 			container.Show();
-			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
 			( container.GetChild( 1 ) as Button ).Hide();
 			PlayerList.AddChild( container );
-
-			if ( i < SteamLobby.Instance.LobbyMemberCount - 1 ) {
-				PlayerList.AddChild( new HSeparator() );
-			}
 		}
 	}
 };

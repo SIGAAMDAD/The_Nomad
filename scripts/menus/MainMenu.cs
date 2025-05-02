@@ -113,8 +113,6 @@ public partial class MainMenu : Control {
 		Loaded = true;
 
 		EmitSignalBeginGame();
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );

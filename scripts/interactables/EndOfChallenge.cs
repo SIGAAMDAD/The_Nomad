@@ -1,11 +1,14 @@
 using Godot;
 
 public partial class EndOfChallenge : InteractionItem {
+	[Signal]
+	public delegate void TriggeredEventHandler();
+
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
 			return;
 		}
-
+		EmitSignalTriggered();
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {

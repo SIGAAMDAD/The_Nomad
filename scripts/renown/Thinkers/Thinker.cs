@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Renown.World;
 using Renown.World.Buildings;
 using System;
+using ChallengeMode;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -101,7 +102,7 @@ namespace Renown.Thinkers {
 		[Export]
 		protected bool HasMetPlayer = false;
 		[Export]
-		protected float MovementSpeed = 40.0f;
+		protected float MovementSpeed = 80.0f;
 
 		protected Node2D Animations;
 
@@ -123,8 +124,6 @@ namespace Renown.Thinkers {
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
-		
-		protected uint LastPayDay = 0;
 
 		// networking
 		protected NetworkWriter SyncObject = null;
@@ -140,7 +139,7 @@ namespace Renown.Thinkers {
 		protected System.Threading.Thread ThinkThread = null;
 		protected bool Quit = false;
 		
-		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_AWAY;
+		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
 
 		[Signal]
 		public delegate void HaveChildEventHandler( Thinker parent );
@@ -155,6 +154,9 @@ namespace Renown.Thinkers {
 		public Building GetHome() => Home;
 		
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
+
+		public virtual void Alert( Entity source ) {
+		}
 
 		public override void Damage( Entity source, float nAmount ) {
 			BloodParticleFactory.CreateDeferred( source.GlobalPosition, GlobalPosition );
@@ -248,11 +250,7 @@ namespace Renown.Thinkers {
 			int count;
 
 			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
-			if ( IsPremade ) {
-				writer.SaveString( key + nameof( InitialPath ), InitialPath );
-			} else {
-				writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
-			}
+//			writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
 
 			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
 			writer.SaveFloat( key + nameof( Health ), Health );
@@ -266,7 +264,7 @@ namespace Renown.Thinkers {
 			writer.SaveInt( key + nameof( Intelligence ), Intelligence );
 			writer.SaveInt( key + nameof( Constitution ), Constitution );
 
-			writer.SaveString( key + nameof( Location ), Location.GetPath() );
+//			writer.SaveString( key + nameof( Location ), Location.GetPath() );
 			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
 			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
@@ -383,28 +381,31 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		private void OnDie( Entity source, Entity target ) {
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				if ( IsInGroup( "Enemies" ) ) {
+					RemoveFromGroup( "Enemies" );
+					ChallengeLevel.SetObjectiveState( "AllEnemiesDead", GetTree().GetNodesInGroup( "Enemies" ).Count == 0 );
+				}
+			}
+		}
+
 		public override void _ExitTree() {
 			base._ExitTree();
 
 			Quit = true;
 		}
 		public override void _Ready() {
-			if ( Initialized ) {
-				return;
-			}
-			Initialized = true;
+			base._Ready();
 
-			if ( IsPremade ) {
+			// TODO: make renown system operate in some challenge modes
+			if ( IsPremade && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 				InitRenownStats();
 			}
 
-			base._Ready();
+			Die += OnDie;
 
-			if ( !IsPremade ) {
-				Sprite2D texture = new Sprite2D();
-				texture.Texture = ResourceLoader.Load<Texture2D>( "res://icon.svg" );
-				AddChild( texture );
-			}
+			BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
 
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
@@ -473,7 +474,7 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
-			MoveAlongPath();
+			CallDeferred( "MoveAlongPath" );
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
@@ -481,6 +482,13 @@ namespace Renown.Thinkers {
 			}
 
 			base._Process( delta );
+
+			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
+			ProcessAnimations();
+
+			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
+				return;
+			}
 
 			RenownProcess();
 			Think();
@@ -508,12 +516,6 @@ namespace Renown.Thinkers {
 			CheckContracts();
 		}
 		protected virtual void Think() {
-			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-			ProcessAnimations();
-
-			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
-				return;
-			}
 		}
 		/// <summary>
 		/// sets the current frame's animations based on thinker subclass
@@ -521,9 +523,6 @@ namespace Renown.Thinkers {
 		protected virtual void ProcessAnimations() {
 		}
 
-		// loud sound
-		protected virtual void Alert( Entity source ) {
-		}
 		protected virtual bool MoveAlongPath() {
 			if ( NavAgent.IsTargetReached() ) {
 				Velocity = Godot.Vector2.Zero;
@@ -561,6 +560,12 @@ namespace Renown.Thinkers {
 		}
 
 		protected void InitBaseStats() {
+			if ( !IsPremade ) {
+				Godot.Collections.Array<Node> locations = GetTree().GetNodesInGroup( "Settlements" );
+				BirthPlace = locations[ Random.Next( 0, locations.Count - 1 ) ] as Settlement;
+				Family = FamilyCache.GetFamily( BirthPlace, SocietyRank.Middle );
+			}
+
 			Strength = Random.Next( 3, Family.MaxStrength ) + Family.StrengthBonus;
 			Dexterity = Random.Next( 3, Family.MaxDexterity ) + Family.DexterityBonus;
 			Intelligence = Random.Next( 3, Family.MaxIntelligence ) + Family.IntelligenceBonus;

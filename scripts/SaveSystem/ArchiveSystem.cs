@@ -92,8 +92,8 @@ public partial class ArchiveSystem : Node {
 				SaveWriter.Write( MAGIC );
 				SaveWriter.Write( (string)ProjectSettings.GetSetting( "application/config/version" ) );
 				SaveWriter.Write( SectionCount );
+
 				SaveWriter.Flush();
-				SaveWriter.Close();
 			}
 		}
 	}
@@ -208,7 +208,7 @@ public partial class ArchiveSystem : Node {
 	}
 
 	public void CheckSaveData() {
-		Loaded = DirAccess.DirExistsAbsolute( "user://SaveData/" );
+		Loaded = FileAccess.FileExists( "user://SaveData/GameData.ngd" );
 		SaveDirectory = "user://SaveData/";
 	}
 };

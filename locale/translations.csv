@@ -36,7 +36,7 @@ EXTRAS_MODE,EXTRAS
 
 COOP_BUTTON,SPLITSCREEN
 MULTIPLAYER_BUTTON,MULTIPLAYER
-CHALLENGE_MODE_BUTTON,CHALLENGE MODE
+STORY_MODE_BUTTON,STORY LEVELS
 
 KICK_BUTTON,EXCOMMUNICATE
 START_MULTIPLAYER_GAME,TO VICTORY!
@@ -98,11 +98,14 @@ PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION,"Become literally too angry to die... 
 
 CHALLENGE0_NAME,"The Golden Gate Massacre"
 CHALLENGE0_DESCRIPTION,"As the Galakan miltia grew weary and their forces dwindled, the Golden Gates, once a proud display of power and wealth, has become a crumbling mess overtaken by the Sortorian military."
-CHALLENGE0_OBJECTIVE,"Reach the watchtower at the far right end of the map and eliminate all enemies in the way in the shortest time possible."
+CHALLENGE0_OBJECTIVE,"Kill all enemies to exit the city in the shortest time possible."
 
 CHALLENGE1_NAME,"The Battle of Sand's Way"
 CHALLENGE1_DESCRIPTION,""
 
 CHALLENGE2_NAME,"Hellbreaker"
 CHALLENGE2_DESCRIPTION,"Slice past hoards of demons and devils as you claw your way through the pits of hell itself."
-CHALLENGE2_OBJECTIVE,"Kill all enemies that stand between you and each layer's door, descend to the bottom to face the Goddess of Death."
+CHALLENGE2_OBJECTIVE,"Activate all 3 obelisks at the edges of the map to escape from hell."
+
+CHALLENGE3_NAME,"In The Dark of the Night"
+CHALLENGE3_DESCRIPTION,""

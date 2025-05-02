@@ -2,6 +2,10 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Multiplayer;
+using System.Net.NetworkInformation;
+using Renown.Thinkers;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -21,7 +25,7 @@ public partial class SteamLobby : Node {
 
 		// world data, node paths that will never change
 		GameData,
-		
+
 		Count
 	};
 
@@ -35,6 +39,12 @@ public partial class SteamLobby : Node {
 			Send = send;
 			Receive = receive;
 		}
+	};
+
+	private class PingData {
+		public Action<CSteamID, int> Callback;
+		public Stopwatch Timer = new Stopwatch();
+		public CSteamID LobbyId;
 	};
 
 	private static SteamLobby _Instance;
@@ -85,6 +95,8 @@ public partial class SteamLobby : Node {
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
+
+	private Dictionary<CSteamID, PingData> PingList = new Dictionary<CSteamID, PingData>();
 
 	[Signal]
 	public delegate void ChatMessageReceivedEventHandler( ulong senderSteamId, string message );
@@ -509,9 +521,20 @@ public partial class SteamLobby : Node {
 		Console.PrintError( "[STEAM] Server failed to respond" );
 	}
 
+	private void OnPingResponse( gameserveritem_t hRequest ) {
+	}
+	private void OnPingFailedToRespond() {
+	}
+
 	public float GetPing() {
 		SteamNetworkPingLocation_t hPingLocation = new SteamNetworkPingLocation_t();
 		return SteamNetworkingUtils.GetLocalPingLocation( out hPingLocation );
+	}
+
+	public new void SetPhysicsProcess( bool bPhysicsProcess ) {
+		base.SetPhysicsProcess( bPhysicsProcess );
+
+		GetNode<Chat>( "/root/ChatBar" ).Visible = bPhysicsProcess;
 	}
 
 	public override void _EnterTree() {
@@ -532,6 +555,7 @@ public partial class SteamLobby : Node {
 		OnLobbyMatchListCallResult = CallResult<LobbyMatchList_t>.Create( OnLobbyMatchList );
 
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
+		PingResponse = new ISteamMatchmakingPingResponse( OnPingResponse, OnPingFailedToRespond );
 		
 		CachedPacket = new byte[ 8192 ];
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
@@ -539,15 +563,19 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		SetProcess( false );
-		SetPhysicsProcess( false );
-		SetProcessInternal( false );
-		SetPhysicsProcessInternal( false );
+		SetPhysicsProcess( true );
 
 		ThisSteamID = SteamManager.GetSteamID();
 	}
+
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
+
+		if ( IsHost ) {
+			Ping pingClass = new Ping();
+			PingReply reply = pingClass.Send( "google.com", 7500 );
+			SteamMatchmaking.SetLobbyData( LobbyId, "ping", reply.RoundtripTime.ToString() );
+		}
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();

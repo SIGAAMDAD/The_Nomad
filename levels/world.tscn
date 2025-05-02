@@ -1,4 +1,4 @@
-[gd_scene load_steps=132 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=130 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Texture2D" uid="uid://hsg8pq7hkpwg" path="res://levels/world_gradient.tres" id="2_re8x6"]
@@ -14,18 +14,16 @@
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="7_5t368"]
 [ext_resource type="PackedScene" uid="uid://bh3dqangoe8i2" path="res://scenes/interactables/action_tutorial.tscn" id="7_re8x6"]
 [ext_resource type="Texture2D" uid="uid://bwc7mgg7aylk" path="res://textures/env/food/09_baguette.png" id="8_gt7kp"]
-[ext_resource type="PackedScene" uid="uid://c381bhutop3yn" path="res://scenes/renown/thinker.tscn" id="8_uh3ev"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="8_wqmfy"]
 [ext_resource type="Texture2D" uid="uid://jecbsx1vr8ps" path="res://textures/env/food/20_bagel.png" id="9_fgsnb"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
-[ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="9_q0seo"]
 [ext_resource type="Texture2D" uid="uid://b7ke3wj171lc6" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="10_3bhl6"]
 [ext_resource type="Resource" uid="uid://c5cqw8g2ryleb" path="res://resources/binds/actions/keyboard/parry.tres" id="10_oxfhy"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
 [ext_resource type="Script" uid="uid://duyo2hg7flovm" path="res://scripts/renown/World/WorldTimeManager.cs" id="11_re8x6"]
 [ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="11_x3q2i"]
 [ext_resource type="Texture2D" uid="uid://bq70gpo8kknwv" path="res://textures/tilesets/desert/decor_2.png" id="12_cyobr"]
-[ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
+[ext_resource type="Texture2D" uid="uid://ctt4plo6h01xg" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="13_mla2a"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
@@ -7071,16 +7069,17 @@ sources/0 = SubResource("TileSetAtlasSource_ho3mn")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t368"]
 size = Vector2(552, 305)
 
-[sub_resource type="QuadMesh" id="QuadMesh_3mxq2"]
+[sub_resource type="QuadMesh" id="QuadMesh_uh3ev"]
 size = Vector2(5, -2)
 
 [sub_resource type="MultiMesh" id="MultiMesh_ktfth"]
-mesh = SubResource("QuadMesh_3mxq2")
+mesh = SubResource("QuadMesh_uh3ev")
 
 [node name="World" type="Node2D"]
+scale = Vector2(2, 2)
 script = ExtResource("1_re8x6")
 
-[node name="WorldTime" type="Node" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
+[node name="WorldTime" type="Node2D" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
 script = ExtResource("11_re8x6")
 StartingYear = 89950
 StartingHour = 14.0
@@ -7108,60 +7107,15 @@ script = ExtResource("48_qxuuj")
 
 [node name="Ollavan" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
 script = ExtResource("58_qxuuj")
-CachedMembers = [NodePath("../../Thinkers/Pedric Ollavan"), NodePath("../../Thinkers/Kasca Ollavan"), NodePath("../../Thinkers/Hafer Ollavan")]
+CachedMembers = [null, null, null]
 Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House2")
 SocioEconomicStatus = 1
 IsPremade = true
 
-[node name="Thinkers" type="Node" parent="." groups=["Archive", "Cities"]]
+[node name="Thinkers" type="Node2D" parent="." groups=["Archive", "Cities"]]
 script = ExtResource("44_1r2vu")
 
-[node name="Pedric Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
-position = Vector2(-87308, 53042)
-script = ExtResource("9_q0seo")
-ViewAngleAmount = 0.0
-LoseInterestTime = 0.0
-SightDetectionTime = 0.0
-SightDetectionSpeed = 0.0
-MaxViewDistance = 0.0
-DefaultWeapon = null
-DefaultAmmo = null
-IsPremade = true
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-
-[node name="Kasca Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
-position = Vector2(-87194, 53292)
-script = ExtResource("9_q0seo")
-ViewAngleAmount = 0.0
-LoseInterestTime = 0.0
-SightDetectionTime = 0.0
-SightDetectionSpeed = 0.0
-MaxViewDistance = 0.0
-DefaultWeapon = null
-DefaultAmmo = null
-IsPremade = true
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-
-[node name="Hafer Ollavan" parent="Thinkers" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("8_uh3ev")]
-position = Vector2(-87049, 53295)
-script = ExtResource("9_q0seo")
-ViewAngleAmount = 0.0
-LoseInterestTime = 0.0
-SightDetectionTime = 0.0
-SightDetectionSpeed = 0.0
-MaxViewDistance = 0.0
-DefaultWeapon = null
-DefaultAmmo = null
-IsPremade = true
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
-
-[node name="Biomes" type="Node" parent="."]
+[node name="Biomes" type="Node2D" parent="."]
 
 [node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 position = Vector2(-88192, 52992)
@@ -7259,13 +7213,12 @@ vertices = PackedVector2Array(-308, 162, -267, 162, -265, 207, 486, 199, 488, 26
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
-[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome", "NodeCache", "TileMaps") groups=["Archive", "Locations"]]
+[node name="RockyBastardsCamp" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Biome", "TileMaps") groups=["Archive", "Locations"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("5_cyobr")
 Biome = NodePath("..")
 AreaName = &"Rocky Bastards Camp"
-NodeCache = NodePath("OpposingForce/NodeCache")
 TileMaps = []
 
 [node name="RockyBastardsTileMapLayer" type="TileMapLayer" parent="Biomes/SaltWastes/RockyBastardsCamp"]
@@ -7631,7 +7584,7 @@ position = Vector2(156, -16)
 start_position = Vector2(811, 330)
 end_position = Vector2(1002, 325)
 
-[node name="NodeCache" type="Node" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
+[node name="NodeCache" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
 process_mode = 4
 script = ExtResource("15_qx5q4")
 CoverCache = [NodePath("CoverNode"), NodePath("CoverNode2"), NodePath("CoverNode3"), NodePath("CoverNode4")]
@@ -8766,7 +8719,7 @@ TileMaps = []
 position = Vector2(11446, -12611)
 polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922, 11197, -1999)
 
-[node name="Checkpoints" type="Node" parent="Biomes/SafeSands"]
+[node name="Checkpoints" type="Node2D" parent="Biomes/SafeSands"]
 
 [node name="Checkpoint_GalakasOutskirts" parent="Biomes/SafeSands/Checkpoints" instance=ExtResource("24_vg7yo")]
 position = Vector2(-30433, 27874)
@@ -8828,12 +8781,12 @@ visible = false
 modulate = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 62858, 44093, 87178, -26946, 89969)
 
-[node name="Network" type="Node" parent="."]
+[node name="Network" type="Node2D" parent="."]
 
-[node name="Players" type="Node" parent="Network"]
+[node name="Players" type="Node2D" parent="Network"]
 
 [node name="Player0" parent="Network/Players" node_paths=PackedStringArray("Relations", "Debts") instance=ExtResource("5_712nc")]
-position = Vector2(-88720, 53124)
+position = Vector2(-85579, 51693)
 Relations = {}
 Debts = {}
 
@@ -8881,7 +8834,7 @@ Debts = {}
 Relations = {}
 Location = NodePath("../../Biomes/SafeSands")
 
-[node name="Roads" type="Node" parent="."]
+[node name="Roads" type="Node2D" parent="."]
 process_mode = 4
 
 [node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
@@ -8923,7 +8876,7 @@ polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 script = ExtResource("6_i8ckm")
 
-[node name="Tutorials" type="Node" parent="."]
+[node name="Tutorials" type="Node2D" parent="."]
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-88566, 53079)
@@ -8952,15 +8905,15 @@ TutorialString = "Go ahead, take a breather at the campfire, you'll need it"
 [node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("13_mla2a")]
 visible = false
 
-[node name="BulletShellMesh" type="Node" parent="."]
+[node name="BulletShellMesh" type="Node2D" parent="."]
 script = ExtResource("54_3mxq2")
 
 [node name="Cloner" type="MultiMeshInstance2D" parent="BulletShellMesh"]
 visible = false
 multimesh = SubResource("MultiMesh_ktfth")
 
-[node name="DebrisMesh" type="Node" parent="."]
+[node name="DebrisMesh" type="Node2D" parent="."]
 script = ExtResource("55_ktfth")
 
-[node name="BloodParticleMesh" type="Node" parent="."]
+[node name="BloodParticleMesh" type="Node2D" parent="."]
 script = ExtResource("61_ybss6")
