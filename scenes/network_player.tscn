@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://622yixjqyqmq"]
 
-[ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="1_27uls"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/player/torso.tres" id="1_27uls"]
 [ext_resource type="Script" uid="uid://b35dx7vwc2186" path="res://scripts/multiplayer/NetworkPlayer.cs" id="1_hquwp"]
-[ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="2_hc1dv"]
-[ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="3_rhx3x"]
-[ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="4_hquwp"]
-[ext_resource type="SpriteFrames" uid="uid://1xowiqlfkdd1" path="res://resources/animations/player/idle.tres" id="5_rhx3x"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/player/legs.tres" id="2_hc1dv"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/player/right_arm.tres" id="3_rhx3x"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/player/left_arm.tres" id="4_hquwp"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/player/idle.tres" id="5_rhx3x"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_s8stb"]
 radius = 7.0

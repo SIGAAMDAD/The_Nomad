@@ -1,3 +1,4 @@
+using DialogueManagerRuntime;
 using Godot;
 
 public partial class HellbreakerExit : Node2D {
@@ -10,19 +11,29 @@ public partial class HellbreakerExit : Node2D {
 		if ( body is not Player ) {
 			return;
 		}
-		ExitSound.Play();
-		DefaultAnimation.Hide();
-		UseAnimation.Show();
-		UseAnimation.Play( "use" );
+		switch ( DefaultAnimation.Animation ) {
+		case "idle":
+			ExitSound.Play();
+			DefaultAnimation.Hide();
+			UseAnimation.Show();
+			UseAnimation.Play( "use" );
+			break;
+		case "dead":
+			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
+			break;
+		};
 	}
 	private void OnUseAnimationFinished() {
 		UseAnimation.Hide();
 		DefaultAnimation.Show();
 		DefaultAnimation.Play( "dead" );
-		Area.QueueFree();
 	}
 
 	public override void _Ready() {
+		base._Ready();
+
+		AddToGroup( "HellbreakerExits" );
+
 		ExitSound = GetNode<AudioStreamPlayer2D>( "ExitSound" );
 		ExitSound.GlobalPosition = GlobalPosition;
 

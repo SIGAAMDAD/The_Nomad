@@ -132,7 +132,7 @@ process_thread_messages = 0
 visible = false
 y_sort_enabled = true
 sprite_frames = ExtResource("10_0rnld")
-animation = &"checkpoint_idle"
+animation = &"checkpoint_warp"
 
 [node name="DashEffect" parent="Animations" instance=ExtResource("4_d2uw3")]
 process_thread_group = 1
@@ -191,6 +191,7 @@ process_thread_messages = 2
 position = Vector2(-3.8147e-06, 5.33333)
 target_position = Vector2(740.047, 0)
 collision_mask = 257
+collide_with_areas = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 

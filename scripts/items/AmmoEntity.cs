@@ -52,6 +52,7 @@ public partial class AmmoEntity : Node2D {
 		IconSprite.Name = "Icon";
 		IconSprite.Texture = (Texture2D)Data.Get( "icon" );
 		IconSprite.ProcessMode = ProcessModeEnum.Disabled;
+		IconSprite.UseParentMaterial = true;
 		AddChild( IconSprite );
 
 		CircleShape2D circle = new CircleShape2D();

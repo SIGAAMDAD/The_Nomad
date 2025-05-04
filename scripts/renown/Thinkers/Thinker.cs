@@ -203,10 +203,8 @@ namespace Renown.Thinkers {
 
 			if ( Location.GetBiome().IsPlayerHere() ) {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
-				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_IN_BIOME;
 			} else {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
-				ThinkThread.Priority = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 			}
 
 			Visible = false;
@@ -250,7 +248,7 @@ namespace Renown.Thinkers {
 			int count;
 
 			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
-//			writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
+			writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
 
 			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
 			writer.SaveFloat( key + nameof( Health ), Health );
@@ -264,7 +262,6 @@ namespace Renown.Thinkers {
 			writer.SaveInt( key + nameof( Intelligence ), Intelligence );
 			writer.SaveInt( key + nameof( Constitution ), Constitution );
 
-//			writer.SaveString( key + nameof( Location ), Location.GetPath() );
 			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
 			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
@@ -313,7 +310,6 @@ namespace Renown.Thinkers {
 				Home = Family.GetHome();
 			}
 
-			CallDeferred( "SetLocationDeferred", reader.LoadString( key + nameof( Location ) ) );
 			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
 			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
 			HasMetPlayer = reader.LoadBoolean( key + nameof( HasMetPlayer ) );
@@ -399,12 +395,13 @@ namespace Renown.Thinkers {
 			base._Ready();
 
 			// TODO: make renown system operate in some challenge modes
-			if ( IsPremade && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
+			if ( GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 				InitRenownStats();
 			}
 
 			Die += OnDie;
 
+			Animations = GetNode<Node2D>( "Animations" );
 			BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
 
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
@@ -456,7 +453,7 @@ namespace Renown.Thinkers {
 				break;
 			};
 
-			if ( IsPremade && ArchiveSystem.Instance.IsLoaded() ) {
+			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			}
 		}

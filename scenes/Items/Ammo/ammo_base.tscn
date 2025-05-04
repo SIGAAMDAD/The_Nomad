@@ -31,7 +31,4 @@ shader_parameter/is_horizontal = true
 material = SubResource("ShaderMaterial_cjprp")
 script = ExtResource("2_fbroq")
 
-[node name="Icon" type="Sprite2D" parent="."]
-use_parent_material = true
-
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

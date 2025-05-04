@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Renown.World;
 
@@ -11,18 +12,12 @@ namespace Renown.Thinkers {
 			Count
 		};
 
-		private static readonly float AngleBetweenRays = Mathf.DegToRad( 4.0f );
-
-		[Export]
-		private float ViewAngleAmount = 0.0f;
 		[Export]
 		private float LoseInterestTime = 0.0f;
 		[Export]
 		private float SightDetectionTime = 0.0f;
 		[Export]
 		private float SightDetectionSpeed = 0.0f;
-		[Export]
-		private float MaxViewDistance = 0.0f;
 		[Export]
 		private Resource DefaultWeapon;
 		[Export]
@@ -40,6 +35,9 @@ namespace Renown.Thinkers {
 		private RayCast2D AimLine;
 		private bool Aiming = false;
 
+//		private HashSet<Entity> SightTargets = new HashSet<Entity>();
+		private Entity SightTarget = null;
+
 		private Timer LoseInterestTimer;
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
@@ -54,7 +52,7 @@ namespace Renown.Thinkers {
 
 		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
 		private bool CanSeeTarget = false;
-		private RayCast2D[] SightLines = null;
+		private Area2D SightArea;
 		private Tween MeleeTween;
 
 		private Entity Target;
@@ -75,6 +73,19 @@ namespace Renown.Thinkers {
 		private BarkType SequencedBark = BarkType.Count;
 
 		private AIPatrolRoute PatrolRoute;
+
+		private void OnSightDetectionAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null && IsValidTarget( entity ) ) {
+				SightTarget = entity;
+//				SightTargets.Add( entity );	
+			}
+		}
+		private void OnSightDetectionAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null && entity == SightTarget ) {
+				SightTarget = null;
+//				SightTargets.Remove( entity );
+			}
+		}
 
 		public AIPatrolRoute GetPatrolRoute() {
 			return PatrolRoute;
@@ -142,16 +153,6 @@ namespace Renown.Thinkers {
 		}
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
-				// increase alertness
-				MaxViewDistance += MaxViewDistance * 0.015f;
-				ViewAngleAmount += Mathf.DegToRad( 15.0f );
-
-				for ( int i = 0; i < SightLines.Length; i++ ) {
-					HeadAnimations.CallDeferred( "remove_child", SightLines[i] );
-					SightLines[i].CallDeferred( "queue_free" );
-				}
-
-				GenerateRayCasts();
 			}
 			Bark( BarkType.TargetSpotted );
 			Awareness = MobAwareness.Alert;
@@ -222,19 +223,6 @@ namespace Renown.Thinkers {
 
 			PlaySound( BarkChannel, GetBarkResource( bark ) );
 		}
-		private void GenerateRayCasts() {
-			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new RayCast2D[ rayCount ];
-			for ( int i = 0; i < rayCount; i++ ) {
-				RayCast2D ray = new RayCast2D();
-				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-				ray.SetDeferred( "target_position", Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance );
-				ray.SetDeferred( "enabled", true );
-				ray.SetDeferred( "collision_mask", 2 );
-				HeadAnimations.CallDeferred( "add_child", ray );
-				SightLines[i] = ray;
-			}
-		}
 		private void SetDetectionColor() {
 			if ( SightDetectionAmount > SightDetectionTime ) {
 				SightDetectionAmount = SightDetectionTime;
@@ -284,6 +272,10 @@ namespace Renown.Thinkers {
 			SetFear( Fear + 10 );
 		}
 
+		public void OnHeadHit( Entity source ) {
+			Damage( source, Health );
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -291,10 +283,16 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 			}
 
-			ViewAngleAmount = Mathf.DegToRad( ViewAngleAmount );
+			Area2D SightDetectionArea = GetNode<Area2D>( "SightDetectionArea" );
+			SightDetectionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DEntered ) );
+			SightDetectionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DExited ) );
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
+
+			Area2D HeadHitbox = HeadAnimations.GetNode<Area2D>( "HeadHitbox" );
+			HeadHitbox.SetMeta( "IsHeadHitbox", true );
+			HeadHitbox.SetMeta( "Owner", this );
 
 			CurrentState = State.Guarding;
 
@@ -369,8 +367,6 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.OneShot = true;
 			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
 			AddChild( TargetMovedTimer );
-
-			GenerateRayCasts();
 		}
 
 		private void OnAimTimerTimeout() {
@@ -518,7 +514,7 @@ namespace Renown.Thinkers {
 				}
 				Godot.Vector2 position1 = Target.GlobalPosition;
 				Godot.Vector2 position2 = GlobalPosition;
-				if ( GlobalPosition.DistanceTo( Target.GlobalPosition ) > MaxViewDistance * 0.75f ) {
+				if ( GlobalPosition.DistanceTo( Target.GlobalPosition ) > 30.0f ) {
 					float interp = 0.50f;
 					SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
 				}
@@ -568,13 +564,7 @@ namespace Renown.Thinkers {
 		}
 
 		private void CheckSight() {
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-					break;
-				}
-			}
+			Entity sightTarget = SightTarget;
 
 			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
 				// out of sight, but we got something
@@ -634,6 +624,8 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void InitRenownStats() {
+			InitBaseStats();
+
 			if ( !IsPremade ) {
 				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Cities" );
 				Family = FamilyCache.GetFamily( nodes[ Random.Next( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)Random.Next( 0, (int)SocietyRank.Count ) );
@@ -641,8 +633,6 @@ namespace Renown.Thinkers {
 				BotName = string.Format( "{0} {1}", FirstName, Family.GetFamilyName() );
 				Name = string.Format( "{0}{1}{2}", this, FirstName, Family.GetFamilyName() );
 			}
-
-			InitBaseStats();
 
 			GD.Print( "Generated Mercenary " + this + ":" );
 			GD.Print( "\t[Renown Data]:" );

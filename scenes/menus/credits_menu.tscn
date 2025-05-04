@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0uokuyefmfll"]
+
+[ext_resource type="Script" uid="uid://blrqlmymutkp" path="res://scripts/menus/CreditsMenu.cs" id="1_due5w"]
+[ext_resource type="Texture2D" uid="uid://jpkv484wkl3d" path="res://textures/dialogue_manager_3_logo.svg" id="2_d74go"]
+[ext_resource type="Texture2D" uid="uid://djng7v71noogl" path="res://textures/questify_logo.png" id="3_325oc"]
+[ext_resource type="Texture2D" uid="uid://buw17gmevnwo8" path="res://textures/guide_logo.png" id="4_wywfy"]
+
+[node name="CreditsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_due5w")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "CREDITS_MENU"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="MusicLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Most of the music by Karl Casey @ White Bat Audio"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="DialogueManagerContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/DialogueManagerContainer"]
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_d74go")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/DialogueManagerContainer"]
+layout_mode = 2
+text = "Dialogue Manager 3 (Nathan Hoad)"
+
+[node name="QuestifyContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/QuestifyContainer"]
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_325oc")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/QuestifyContainer"]
+layout_mode = 2
+text = "Questify (The Walruzz)"
+
+[node name="GUIDEContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/GUIDEContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_wywfy")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/GUIDEContainer"]
+layout_mode = 2
+text = "G.U.I.D.E (godotneers)"

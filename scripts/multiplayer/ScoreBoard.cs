@@ -2,8 +2,8 @@ using Godot;
 using Steamworks;
 
 namespace Multiplayer {
-	public partial class ScoreBoard : Control {
-		public void SetDuelData( uint round0Winner, uint round1Winner, uint round2Winner, CSteamID thisPlayer, CSteamID otherPlayer ) {
+	public partial class ScoreBoard : CanvasLayer {
+		public void SetDuelData( int round0Winner, int round1Winner, int round2Winner, CSteamID thisPlayer, CSteamID otherPlayer ) {
 			Label ThisPlayerName = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Name" );
 			Label ThisPlayerRound0 = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Round0" );
 			Label ThisPlayerRound1 = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Round1" );
@@ -33,6 +33,9 @@ namespace Multiplayer {
 			} else if ( round1Winner == 1 ) {
 				ThisPlayerRound1.Text = "0";
 				OtherPlayerRound1.Text = "1";
+			} else {
+				ThisPlayerRound1.Text = "/";
+				OtherPlayerRound1.Text = "/";
 			}
 			if ( round2Winner == 0 ) {
 				ThisPlayerRound2.Text = "1";
@@ -40,6 +43,9 @@ namespace Multiplayer {
 			} else if ( round2Winner == 1 ) {
 				ThisPlayerRound2.Text = "0";
 				OtherPlayerRound2.Text = "1";
+			} else {
+				ThisPlayerRound2.Text = "/";
+				OtherPlayerRound2.Text = "/";
 			}
 		}
 	};

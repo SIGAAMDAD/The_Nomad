@@ -181,11 +181,14 @@ public partial class WeaponEntity : Node2D {
 
 		PickupArea.CallDeferred( "queue_free" );
 		CallDeferred( "remove_child", PickupArea );
+
+		PickupArea = null;
 	}
 
 	public void TriggerPickup( Entity owner ) {
 		IconSprite?.QueueFree();
-
+		IconSprite = null;
+		
 		ReleasePickupArea();
 
 		_Owner = owner;
@@ -199,6 +202,7 @@ public partial class WeaponEntity : Node2D {
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			IconSprite?.QueueFree();
+			IconSprite = null;
 
 			ReleasePickupArea();
 
@@ -412,9 +416,8 @@ public partial class WeaponEntity : Node2D {
 		if ( _Owner == null ) {
 			IconSprite = new Sprite2D();
 			IconSprite.Name = "IconSprite";
-			IconSprite.SetProcess( false );
-			IconSprite.SetProcessInternal( false );
 			IconSprite.Texture = Icon;
+			IconSprite.UseParentMaterial = true;
 			AddChild( IconSprite );
 		}
 	}
@@ -530,12 +533,16 @@ public partial class WeaponEntity : Node2D {
 			}
 		}
 
-		WeaponTimer.SetDeferred( "wait_time", ReloadTime );
-		WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
-		WeaponTimer.CallDeferred( "start" );
+		if ( ResourceCache.Initialized ) {
+			WeaponTimer.SetDeferred( "wait_time", ReloadTime );
+			WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+			WeaponTimer.CallDeferred( "start" );
 
-		CurrentState = WeaponState.Reload;
-		PlaySound( ReloadSfx );
+			CurrentState = WeaponState.Reload;
+			PlaySound( ReloadSfx );
+		} else {
+			OnReloadTimeTimeout();
+		}
 
 		return true;
 	}
@@ -625,7 +632,7 @@ public partial class WeaponEntity : Node2D {
 				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
 
 				entity.Damage( _Owner, damage );
-			} else if ( collision is Area2D hitbox && hitbox != null && ( hitbox.CollisionMask & 9 ) != 0 ) {
+			} else if ( collision is Area2D hitbox && hitbox != null && ( hitbox.CollisionLayer & 9 ) != 0 ) {
 				if ( (bool)hitbox.GetMeta( "IsHeadHitbox" ) ) {
 					( (Node)hitbox.GetMeta( "Owner" ) ).Call( "OnHeadHit", _Owner );
 				}
@@ -697,7 +704,9 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnReloadTimeTimeout() {
-		WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+		if ( ResourceCache.Initialized ) {
+			WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+		}
 
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );
 		if ( _Owner is Player player && player != null ) {

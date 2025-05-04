@@ -4,15 +4,18 @@ using System.Diagnostics;
 using System.Threading;
 using ChallengeMode;
 using Godot;
+using Renown;
 using Renown.Thinkers;
 
 // TODO: allow multiplayer with challenge modes?
 
-public partial class ChallengeLevel : Node2D {
+public partial class ChallengeLevel : LevelData {
 	private enum ScoreBonus {
 		None		= 0x0000,
 		NoDamage	= 0x0001,
 		NoDeaths	= 0x0002,
+
+		All			= NoDamage | NoDeaths,
 
 		Count
 	};
@@ -22,6 +25,10 @@ public partial class ChallengeLevel : Node2D {
 	[Export]
 	private int MinTimeSeconds = 0;
 	[Export]
+	private Node2D Hellbreaker;
+	[Export]
+	private Node2D Level;
+	[Export]
 	private Godot.Collections.Dictionary<string, Variant> State;
 
 	private static Dictionary<string, object> ObjectivesState;
@@ -29,16 +36,26 @@ public partial class ChallengeLevel : Node2D {
 
 	private bool QuestCompleted = false;
 
-	private Thread ResourceLoadThread;
-	private Player ThisPlayer;
 	private Stopwatch Timer;
 
 	private int TotalScore = 0;
 	private int MaxCombo = 0;
-	private ScoreBonus ExtraFlags = ScoreBonus.None;
+	private ScoreBonus BonusFlags = ScoreBonus.All;
 
-	[Signal]
-	public delegate void ResourcesLoadingFinishedEventHandler();
+	private void OnPlayerDie( Entity source, Entity target ) {
+		BonusFlags &= ~ScoreBonus.NoDeaths;
+
+		Hellbreaker.Show();
+		Hellbreaker.ProcessMode = ProcessModeEnum.Pausable;
+
+		Level.Show();
+		Level.ProcessMode = ProcessModeEnum.Disabled;
+		
+		AddChild( Hellbreaker );
+	}
+	private void OnPlayerDamaged( Entity source, Entity target, float nAmount ) {
+		BonusFlags &= ~ScoreBonus.NoDamage;
+	}
 
 	public static void SetObjectiveState( string key, object value ) {
 		if ( !ObjectivesState.ContainsKey( key ) ) {
@@ -91,7 +108,7 @@ public partial class ChallengeLevel : Node2D {
 		TotalScore += nAmount * MaxCombo;
 	}
 
-	private void OnResourcesFinishedLoading() {
+	protected override void OnResourcesFinishedLoading() {
 		ResourceLoadThread.Join();
 
 		ResourceCache.Initialized = true;
@@ -208,26 +225,14 @@ public partial class ChallengeLevel : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		GetTree().CurrentScene = this;
-
-		ThisPlayer = GetNode<Player>( "Players/Player0" );
-
-		if ( Input.GetConnectedJoypads().Count > 0 ) {
-			ThisPlayer.SetupSplitScreen( 0 );
-		}
-
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, null ); } );
 		ResourceLoadThread.Start();
 
-		ResourcesLoadingFinished += OnResourcesFinishedLoading;
-
-		PhysicsServer2D.SetActive( true );
+		ThisPlayer.Die += OnPlayerDie;
+		ThisPlayer.Damaged += OnPlayerDamaged;
 
 		EndOfChallenge end = GetNode<EndOfChallenge>( "EndOfChallenge" );
 		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );
-
-		SetProcess( false );
-		SetProcessInternal( false );
 
 		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
 		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
@@ -242,22 +247,6 @@ public partial class ChallengeLevel : Node2D {
 		Enemies = new Godot.Collections.Array<Thinker>();
 		for ( int i = 0; i < nodes.Count; i++ ) {
 			Enemies.Add( nodes[i] as Thinker );
-		}
-
-		//
-		// force the game to run at the highest priority possible
-		//
-		using ( Process process = Process.GetCurrentProcess() ) {
-			process.PriorityBoostEnabled = true;
-
-			switch ( OS.GetName() ) {
-			case "Linux":
-			case "Windows":
-				process.ProcessorAffinity = System.Environment.ProcessorCount;
-				break;
-			};
-
-			process.PriorityClass = ProcessPriorityClass.AboveNormal;
 		}
 	}
 };

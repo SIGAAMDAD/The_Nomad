@@ -4,4 +4,4 @@
 
 [node name="Cutscene" type="Node2D" node_paths=PackedStringArray("Sequences")]
 script = ExtResource("1_fd1lk")
-Sequences = []
+Sequences = [null]

@@ -1,0 +1,11 @@
+~ start_thoughts
+You: I've been here before...
+You: Eagle's Peak.
+You: I think I'm on a contract right now.
+You: It's down there, off this cliff, to the east.
+You: I've gotta get down there somehow.
+=> END
+
+~ hellbreaker_exit_used
+You: Shit, this one's already used
+=> END

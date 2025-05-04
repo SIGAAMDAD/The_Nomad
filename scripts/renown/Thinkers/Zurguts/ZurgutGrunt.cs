@@ -16,13 +16,18 @@ namespace Renown.Thinkers {
 		private bool CanSeeTarget = false;
 		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
 
+		//private HashSet<Entity> SightTargets = new HashSet<Entity>();
+		private Entity SightTarget = null;
+
 		private bool Enraged = false;
 		private Entity Target = null;
 
 		private Curve BlowupDamageCurve;
 		private Area2D BlowupArea = null;
 		private Timer BlowupTimer = null;
-		private HashSet<Entity> BlowupEntities = null;
+
+		private StringName MoveAnimation = "move";
+		private StringName IdleAnimation = "idle";
 
 		private AnimatedSprite2D ArmAnimations;
 		private AnimatedSprite2D HeadAnimations;
@@ -32,14 +37,16 @@ namespace Renown.Thinkers {
 		private Tween AngleTween;
 		private Tween ChangeInvestigationAngleTween;
 
-		private void OnBlowupAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is Entity entity && entity != null && !BlowupEntities.Contains( entity ) ) {
-				BlowupEntities.Add( entity );
+		private void OnSightDetectionAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null && IsValidTarget( entity ) ) {
+				SightTarget = entity;
+//				SightTargets.Add( entity );	
 			}
 		}
-		private void OnBlowupAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is Entity entity && entity != null ) {
-				BlowupEntities.Remove( entity );
+		private void OnSightDetectionAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+			if ( body is Entity entity && entity != null && entity == SightTarget ) {
+				SightTarget = null;
+//				SightTargets.Remove( entity );
 			}
 		}
 
@@ -57,16 +64,43 @@ namespace Renown.Thinkers {
 			SetNavigationTarget( LastTargetPosition );
 		}
 
-		public void OnHeadShot( Entity source ) {
-			OnDie( source, this );
+		public void OnHeadHit( Entity source ) {
+			BlowupArea.SetDeferred( "monitoring", true );
+			BlowupArea.GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+			CallDeferred( "OnBlowupTimerTimeout" );
 		}
 
 		private void OnDie( Entity source, Entity target ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
+			Flags |= ThinkerFlags.Dead;
+
+			Health = 0.0f;
+
+			HeadAnimations.Hide();
+			ArmAnimations.Hide();
+			BodyAnimations.Show();
+			BodyAnimations.Play( "dead" );
+			
 			Enraged = false;
 			BlowupTimer.Stop();
 		}
 		public override void Damage( Entity source, float nAmount ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
 			base.Damage( source, nAmount );
+
+			if ( Health < Health * 0.20f ) {
+				MoveAnimation = "move_fatal";
+				IdleAnimation = "idle_fatal";
+			} else if ( Health < Health * 0.60f ) {
+				MoveAnimation = "move_wounded";
+				IdleAnimation = "idle_wounded";
+			}
 
 			Target = source;
 
@@ -87,7 +121,6 @@ namespace Renown.Thinkers {
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
 
 			Godot.Collections.Array<Node2D> entities = BlowupArea.GetOverlappingBodies();
-			GD.Print( "Blowing up " + entities.Count );
 			for ( int i = 0; i < entities.Count; i++ ) {
 				if ( entities[i] == this ) {
 					continue;
@@ -115,6 +148,10 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 			}
 
+			Area2D SightDetectionArea = GetNode<Area2D>( "SightDetectionArea" );
+			SightDetectionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DEntered ) );
+			SightDetectionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DExited ) );
+
 			Die += OnDie;
 
 			BlowupArea = GetNode<Area2D>( "BlowupArea" );
@@ -133,6 +170,57 @@ namespace Renown.Thinkers {
 			HeadHitbox.SetMeta( "Owner", this );
 		}
 
+		protected override void ProcessAnimations() {
+			if ( !Visible || ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+
+			if ( Target != null ) {
+				if ( CanSeeTarget ) {
+					LastTargetPosition = Target.GlobalPosition;
+				}
+				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+				LookAngle = AimAngle;
+			}
+
+			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
+			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
+
+			if ( Velocity.X < 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", true );
+			} else if ( Velocity.X > 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", false );
+			}
+
+			if ( LookAngle > 225.0f ) {
+				HeadAnimations.SetDeferred( "flip_v", true );
+			} else if ( LookAngle < 135.0f ) {
+				HeadAnimations.SetDeferred( "flip_v", false );
+			}
+
+			if ( AimAngle > 225.0f ) {
+				ArmAnimations.SetDeferred( "flip_v", true );
+			} else if ( AimAngle < 135.0f ) {
+				ArmAnimations.SetDeferred( "flip_v", false );
+			}
+
+			if ( Velocity != Godot.Vector2.Zero ) {
+				HeadAnimations.CallDeferred( "play", MoveAnimation );
+				BodyAnimations.CallDeferred( "play", MoveAnimation );
+			} else {
+//				if ( Awareness == MobAwareness.Relaxed ) {
+//					BodyAnimations.CallDeferred( "play", "calm" );
+//					HeadAnimations.CallDeferred( "hide" );
+//					ArmAnimations.CallDeferred( "hide" );
+//				} else {
+					ArmAnimations.CallDeferred( "show" );
+					HeadAnimations.CallDeferred( "show" );
+					BodyAnimations.CallDeferred( "play", IdleAnimation );
+					HeadAnimations.CallDeferred( "play", IdleAnimation );
+//				}
+			}
+		}
 		protected override void Think() {
 			if ( Enraged ) {
 				return;
@@ -140,13 +228,7 @@ namespace Renown.Thinkers {
 		}
 
 		private void CheckSight() {
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-					break;
-				}
-			}
+			Entity sightTarget = SightTarget;
 
 			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
 				// out of sight, but we got something

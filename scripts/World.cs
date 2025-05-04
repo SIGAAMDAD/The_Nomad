@@ -7,47 +7,122 @@ using Renown;
 using System.Diagnostics;
 using System;
 
-public partial class World : Node2D {
-	private Node2D Hellbreaker = null;
-
-	private PauseMenu PauseMenu = null;
-	private PackedScene PlayerScene = null;
-
+public partial class World : LevelData {
 	[Export]
-	public Node2D LevelData = null;
+	private Resource MainQuest;
+	[Export]
+	private Godot.Collections.Dictionary<string, Variant> State;
 
-	private Thread ResourceLoadThread;
-	private Thread SceneLoadThread;
+	private static Dictionary<string, object> ObjectivesState;
 
-	private Player ThisPlayer;
-	private Dictionary<CSteamID, Renown.Entity> Players = null;	
-	private Node PlayerList = null;
-
-	[Signal]
-	public delegate void ResourcesLoadingFinishedEventHandler();
-	[Signal]
-	public delegate void RenownInitFinishedEventHandler();
-
-	public void ToggleHellbreaker() {
-		LevelData.Hide();
-		LevelData.SetProcess( false );
-		LevelData.SetProcessInput( false );
-		LevelData.SetProcessInternal( false );
-		LevelData.SetPhysicsProcess( false );
-		LevelData.SetProcessUnhandledInput( false );
-
-		Hellbreaker = ResourceLoader.Load<PackedScene>( "res://levels/hellbreaker" ).Instantiate<Node2D>();
-		Hellbreaker.Show();
-		Hellbreaker.SetProcess( true );
-		Hellbreaker.SetProcessInput( true );
-		Hellbreaker.SetProcessInternal( true );
-		Hellbreaker.SetPhysicsProcess( true );
-		Hellbreaker.SetProcessUnhandledInput( true );
-		
-		AddChild( Hellbreaker );
+	public static void SetObjectiveState( string key, object value ) {
+		if ( !ObjectivesState.ContainsKey( key ) ) {
+			Console.PrintError( string.Format( "World.SetObjectiveState: invalid ObjectiveState key \"{0}\"", key ) );
+			return;
+		}
+		ObjectivesState[ key ] = value;
 	}
 
-	private void OnResourcesFinishedLoading() {
+	private void OnConditionQueryRequested( string queryType, string key, Variant value, Resource requester ) {
+		switch ( queryType ) {
+		case "State":
+			if ( ObjectivesState.TryGetValue( key, out object compare ) ) {
+				if ( compare is bool boolValue ) {
+					Questify.SetConditionCompleted( requester, boolValue == value.AsBool() );
+				} else if ( compare is float floatValue ) {
+					int index = queryType.Find( ':' );
+					if ( index != -1 ) {
+						string op = queryType.Substring( index + 1 );
+						switch ( op ) {
+						case "eq":
+						case "==":
+							Questify.SetConditionCompleted( requester, floatValue == value.AsDouble() );
+							break;
+						case "neq":
+						case "!=":
+						case "!eq":
+						case "ne":
+							Questify.SetConditionCompleted( requester, floatValue != value.AsDouble() );
+							break;
+						case "lt":
+						case "<":
+							Questify.SetConditionCompleted( requester, floatValue < value.AsDouble() );
+							break;
+						case "lte":
+						case "<=":
+							Questify.SetConditionCompleted( requester, floatValue <= value.AsDouble() );
+							break;
+						case "gt":
+						case ">":
+							Questify.SetConditionCompleted( requester, floatValue > value.AsDouble() );
+							break;
+						case "gte":
+						case ">=":
+							Questify.SetConditionCompleted( requester, floatValue >= value.AsDouble() );
+							break;
+						default:
+							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
+							break;
+						};
+					} else {
+						Questify.SetConditionCompleted( requester, floatValue == value.AsDouble() );
+					}
+				} else if ( compare is int intValue ) {
+					int index = queryType.Find( ':' );
+					if ( index != -1 ) {
+						string op = queryType.Substring( index + 1 );
+						switch ( op ) {
+						case "eq":
+						case "==":
+							Questify.SetConditionCompleted( requester, intValue == value.AsInt32() );
+							break;
+						case "neq":
+						case "!=":
+						case "!eq":
+						case "ne":
+							Questify.SetConditionCompleted( requester, intValue != value.AsInt32() );
+							break;
+						case "lt":
+						case "<":
+							Questify.SetConditionCompleted( requester, intValue < value.AsInt32() );
+							break;
+						case "lte":
+						case "<=":
+							Questify.SetConditionCompleted( requester, intValue <= value.AsInt32() );
+							break;
+						case "gt":
+						case ">":
+							Questify.SetConditionCompleted( requester, intValue > value.AsInt32() );
+							break;
+						case "gte":
+						case ">=":
+							Questify.SetConditionCompleted( requester, intValue >= value.AsInt32() );
+							break;
+						default:
+							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
+							break;
+						};
+					} else {
+						Questify.SetConditionCompleted( requester, intValue == value.AsInt32() );
+					}
+				} else if ( compare is string stringValue ) {
+					Questify.SetConditionCompleted( requester, stringValue == value.AsString() );
+				} else if ( compare is Vector2 vectorValue ) {
+					Questify.SetConditionCompleted( requester, vectorValue == value.AsVector2() );
+				}
+			}
+			break;
+		default:
+			Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid QueryType {0}", queryType ) );
+			break;
+		};
+	}
+	private void OnConditionObjectiveCompleted( Resource questResource, Resource questObjective ) {
+	}
+	private void OnQuestCompleted( Resource questResource ) {
+	}
+
+	protected override void OnResourcesFinishedLoading() {
 		SetProcess( true );
 
 		SceneLoadThread.Join();
@@ -100,77 +175,17 @@ public partial class World : Node2D {
 		}
 		player.GlobalPosition = warpPoint.GlobalPosition;
 	}
-	private void OnPlayerJoined( ulong steamId ) {
-		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
-
-		SteamLobby.Instance.GetLobbyMembers();
-
-		CSteamID userId = (CSteamID)steamId;
-		if ( Players.ContainsKey( userId ) ) {
-			return;
-		}
-		
-		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
-		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
-		player.Set( "MultiplayerId", (ulong)userId );
-		player.Call( "SetOwnerId", (ulong)userId );
-		player.GlobalPosition = new Godot.Vector2( -88720.0f, 53124.0f );
-		SpawnPlayer( (NetworkPlayer)player );
-		Players.Add( userId, player );
-		PlayerList.AddChild( player );
+	protected override void OnPlayerJoined( ulong steamId ) {
+		base.OnPlayerJoined( steamId );
+		SpawnPlayer( Players[ (CSteamID)steamId ] as NetworkPlayer );
 	}
-	private void OnPlayerLeft( ulong steamId ) {
-		SteamLobby.Instance.GetLobbyMembers();
-
-		CSteamID userId = (CSteamID)steamId;
-		if ( userId == SteamUser.GetSteamID() ) {
-			return;
-		}
-		
-		Console.PrintLine(
-			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerUsername )
-		);
-		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
-		Players[ userId ].QueueFree();
-		Players.Remove( userId );
-		SteamLobby.Instance.RemovePlayer( userId );
+	protected override void OnPlayerLeft( ulong steamId ) {
+		base.OnPlayerLeft( steamId );
 	}
 
-	public override void _ExitTree() {
-		Players.Clear();
-		PlayerList.QueueFree();
-
-		Faction.Cache.ClearCache();
-		Settlement.Cache.ClearCache();
-		WorldArea.Cache.ClearCache();
-
-		Faction.Cache = null;
-		Settlement.Cache = null;
-		WorldArea.Cache = null;
-
-		if ( Hellbreaker != null ) {
-			Hellbreaker.QueueFree();
-		}
-	}
 	public override void _Ready() {
 		base._Ready();
 
-		GetTree().CurrentScene = this;
-		
-		Players = new Dictionary<CSteamID, Renown.Entity>();
-
-		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
-		PauseMenu = GetNode<PauseMenu>( "CanvasLayer/PauseMenu" );
-		PlayerList = GetNode<Node>( "Network/Players" );
-
-		if ( Input.GetConnectedJoypads().Count > 0 ) {
-			ThisPlayer.SetupSplitScreen( 0 );
-		}
-
-		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
-		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
-		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
-		
 		SceneLoadThread = new Thread( () => {
 			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
 			Faction.Cache = new DataCache<Faction>( this, "Factions" );
@@ -189,27 +204,9 @@ public partial class World : Node2D {
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
-		ResourcesLoadingFinished += OnResourcesFinishedLoading;
-
-		PhysicsServer2D.SetActive( true );
-
-		SetProcess( false );
-		SetProcessInternal( false );
-
-		//
-		// force the game to run at the highest priority possible
-		//
-		using ( Process process = Process.GetCurrentProcess() ) {
-			process.PriorityBoostEnabled = true;
-
-			switch ( OS.GetName() ) {
-			case "Linux":
-			case "Windows":
-				process.ProcessorAffinity = System.Environment.ProcessorCount;
-				break;
-			};
-
-			process.PriorityClass = ProcessPriorityClass.AboveNormal;
-		}
+		Questify.StartQuest( Questify.Instantiate( MainQuest ) );
+		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
+		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
+		Questify.ConnectQuestCompleted( OnQuestCompleted );
 	}
 };

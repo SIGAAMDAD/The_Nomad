@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmyvcno3h47xb"]
+[gd_scene load_steps=5 format=3 uid="uid://cmyvcno3h47xb"]
 
 [ext_resource type="Script" uid="uid://djysi7ci800xg" path="res://scripts/interactables/MechanicTutorial.cs" id="1_egxh8"]
 [ext_resource type="Texture2D" uid="uid://b4jdovv5ktxb5" path="res://textures/tilesets/desert/decor_3.png" id="2_7v8s2"]
@@ -9,16 +9,11 @@ light_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k2ei4"]
 size = Vector2(91.5, 67)
 
-[sub_resource type="Gradient" id="Gradient_bsglu"]
-offsets = PackedFloat32Array(0.00347222)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_uguxp"]
-gradient = SubResource("Gradient_bsglu")
-
 [node name="MechanicTutorial" type="Area2D"]
 z_index = 5
 material = SubResource("CanvasItemMaterial_egxh8")
+collision_layer = 16
+collision_mask = 16
 input_pickable = false
 script = ExtResource("1_egxh8")
 
@@ -32,25 +27,6 @@ texture = ExtResource("2_7v8s2")
 
 [node name="InteractBody" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_k2ei4")
-
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-use_parent_material = true
-offset_left = -128.0
-offset_top = -51.0
-offset_right = 128.0
-offset_bottom = -26.0
-texture = SubResource("GradientTexture1D_uguxp")
-
-[node name="Label" type="Label" parent="."]
-visible = false
-use_parent_material = true
-offset_left = -130.0
-offset_top = -60.0
-offset_right = 130.0
-offset_bottom = -20.0
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 position = Vector2(-0.5, -0.999999)

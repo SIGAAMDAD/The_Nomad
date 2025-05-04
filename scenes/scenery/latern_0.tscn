@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://couodamo5txu5"]
 
-[ext_resource type="SpriteFrames" uid="uid://bibry04hvbsdb" path="res://resources/animations/latern_0.tres" id="1_ltroq"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/latern_0.tres" id="1_ltroq"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_ltroq"]
 [ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_17b07"]
 

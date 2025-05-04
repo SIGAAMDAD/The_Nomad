@@ -75,10 +75,10 @@ public partial class Player : Entity {
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
-	private const float ACCEL = 1900.0f;
-	private const float FRICTION = 2400.0f;
-	private const float MAX_SPEED = 540.0f;
-	private const float JUMP_VELOCITY = -400.0f;
+	public static readonly float ACCEL = 1900.0f;
+	public static readonly float FRICTION = 1400.0f;
+	public static readonly float MAX_SPEED = 540.0f;
+	public static readonly float JUMP_VELOCITY = -400.0f;
 
 	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
 
@@ -136,8 +136,6 @@ public partial class Player : Entity {
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
 
-	private PackedScene BloodSplatter;
-
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
 	private AnimatedSprite2D TorsoAnimation;
@@ -161,6 +159,10 @@ public partial class Player : Entity {
 	[Export]
 	private HeadsUpDisplay HUD;
 
+	[ExportCategory("Start")]
+	[Export]
+	private PlayerFlags Flags = 0;
+
 	[ExportCategory("Camera Shake")]
 	[Export]
 	private float RandomStrength = 36.0f;
@@ -174,7 +176,6 @@ public partial class Player : Entity {
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
 	private float Rage = 60.0f;
-	private PlayerFlags Flags = 0;
 	private int CurrentWeapon = 0;
 
 	private Camera2D Viewpoint;
@@ -1580,8 +1581,6 @@ public partial class Player : Entity {
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
-		} else if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
-			ThoughtBubble( "You: Huh...\nYou: Eagle's Peak...\nYou: I've been here before." );
 		}
 	}
 

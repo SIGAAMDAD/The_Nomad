@@ -60,14 +60,11 @@ namespace Multiplayer.Overlays {
 			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
 			Player2Score.SetProcess( false );
 			Player2Score.SetProcessInternal( false );
-
-			SetProcess( false );
-			SetProcessInternal( false );
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
-//			CountdownLabel.Update();
+			CountdownLabel.Update();
 		}
 	};
 };

@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://dil6cvnitkb3b"]
 
 [ext_resource type="Script" uid="uid://b83akkws10guh" path="res://scripts/renown/Thinkers/Thinker.cs" id="1_5wxvn"]
-[ext_resource type="SpriteFrames" uid="uid://c2jibvnbe8avt" path="res://resources/animations/thinkers/bandit/body.tres" id="2_5wxvn"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/thinkers/bandit/body.tres" id="2_5wxvn"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="2_q3nyr"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_gnc44"]

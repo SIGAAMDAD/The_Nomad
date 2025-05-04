@@ -1,5 +1,6 @@
 using Godot;
 using Multiplayer.Overlays;
+using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
@@ -12,20 +13,30 @@ namespace Multiplayer.Modes {
 		private Node2D Player1Spawn;
 		private Node2D Player2Spawn;
 		private DuelOverlay Overlay;
+		private ScoreBoard ScoreBoard;
+
+		private int[] Score = new int[ 3 ];
 
 		private NetworkWriter SyncObject = new NetworkWriter( 20 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
 			ThisPlayer.BlockInput( false );
+
+			ScoreBoard.Hide();
 		}
 		public void OnRoundEnd() {
 			GD.Print( "Beginning new dueling round..." );
 
+			if ( ThisPlayer == null || OtherPlayer == null ) {
+				return;
+			}
+
 			ThisPlayer?.BlockInput( true );
 
 			if ( RoundIndex >= MaxRounds ) {
-				EmitSignal( "ShowScoreboard" );
+				ScoreBoard.SetDuelData( Score[0], Score[1], Score[2], ThisPlayer.MultiplayerId, OtherPlayer.MultiplayerId );
+//				EmitSignal( "ShowScoreboard" );
 				return;
 			}
 
@@ -49,8 +60,10 @@ namespace Multiplayer.Modes {
 
 			if ( attacker == ThisPlayer ) {
 				Player1Score++;
+				Score[ RoundIndex ] = 0;
 			} else if ( attacker == OtherPlayer ) {
 				Player2Score++;
+				Score[ RoundIndex ] = 1;
 			}
 			if ( Player2Score > Player1Score ) {
 				Announcer.LostLead();
@@ -115,6 +128,8 @@ namespace Multiplayer.Modes {
 			Player2Spawn = GetNode<Node2D>( "Player2Spawn" );
 			Player2Spawn.SetProcess( false );
 			Player2Spawn.SetProcessInternal( false );
+
+			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
 
 			if ( SteamLobby.Instance.IsOwner() ) {
 				Overlay.BeginNewRound();

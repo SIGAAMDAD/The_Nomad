@@ -19,6 +19,9 @@ public partial class ItemPickup : InteractionItem {
 		switch ( name ) {
 		case "Weapon":
 			WeaponEntity weapon = new WeaponEntity();
+			weapon.Name = "Weapon";
+			weapon.Data = Data;
+			weapon.SetResourcePath( "player/" );
 			weapon.SetOwner( player );
 			break;
 		case "Ammo":
