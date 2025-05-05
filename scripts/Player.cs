@@ -133,6 +133,8 @@ public partial class Player : Entity {
 
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
+
+	private Area2D DashFlameArea;
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
 
@@ -238,6 +240,12 @@ public partial class Player : Entity {
 	public delegate void SwitchedWeaponModeEventHandler( WeaponEntity weapon, WeaponEntity.Properties useMode );
 	[Signal]
 	public delegate void SwitchHandUsedEventHandler( Hands hands );
+
+	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		if ( body is Entity entity && entity != null ) {
+			entity.AddStatusEffect( "status_burning" );
+		}
+	}
 
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
@@ -781,6 +789,7 @@ public partial class Player : Entity {
 		HUD.GetDashOverlay().Hide();
 		DashLight.Hide();
 		DashEffect.Emitting = false;
+		DashFlameArea.Monitoring = false;
 		Flags &= ~PlayerFlags.Dashing;
 		DashCooldownTime.Start();
 	}
@@ -803,8 +812,15 @@ public partial class Player : Entity {
 
 			// extension of recharge time
 			DashCooldownTime.WaitTime = 2.50f;
+
+			Damage( this, 20.0f );
+			AddStatusEffect( "status_burning" );
+			ShakeCamera( 50.0f );
+
 			return;
 		}
+
+		DashFlameArea.Monitoring = true;
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
@@ -1481,6 +1497,10 @@ public partial class Player : Entity {
 
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+
+		DashFlameArea = GetNode<Area2D>( "Animations/DashEffect/FlameArea" );
+		DashFlameArea.Monitoring = false;
+		DashFlameArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
 
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();

@@ -25,7 +25,7 @@ namespace Multiplayer.Overlays {
 			SetProcess( true );
 			CountdownLabel.Visible = true;
 			CountdownLabel.StartCountdown();
-			EmitSignal( "RoundEnd" );
+			EmitSignalRoundEnd();
 		}
 		public void BeginNewRound() => NewRound();
 		public void RestartRound() => NewRound();
@@ -37,7 +37,7 @@ namespace Multiplayer.Overlays {
 			SetProcess( false );
 
 			CountdownLabel.Visible = false;
-			EmitSignal( "RoundStart" );
+			EmitSignalRoundStart();
 
 			MatchTimeLabel.SetMatchTime( 60.0f, Callable.From( OnDuelTimerTimeout ) );
 		}
@@ -46,11 +46,9 @@ namespace Multiplayer.Overlays {
 			base._Ready();
 
 			MatchTimeLabel = GetNode<MatchTimeLabel>( "MarginContainer/VBoxContainer/MatchTimeLabel" );
-			MatchTimeLabel.SetProcessInternal( false );
 			MatchTimeLabel.SetMatchTime( 60.0f, Callable.From( OnDuelTimerTimeout ) );
 
 			CountdownLabel = GetNode<Countdown>( "MarginContainer/CountdownLabel" );
-			CountdownLabel.SetProcessInternal( false );
 			CountdownLabel.Connect( "CountdownTimeout", Callable.From( OnCountdownTimerTimeout ) );
 
 			Player1Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
@@ -60,6 +58,8 @@ namespace Multiplayer.Overlays {
 			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
 			Player2Score.SetProcess( false );
 			Player2Score.SetProcessInternal( false );
+
+			SetProcess( true );
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );

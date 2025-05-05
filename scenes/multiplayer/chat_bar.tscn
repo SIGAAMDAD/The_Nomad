@@ -10,6 +10,8 @@ colors = PackedColorArray(0.2, 0.2, 0.2, 0.321569)
 gradient = SubResource("Gradient_atfp8")
 
 [node name="Chat" type="Control"]
+visible = false
+z_index = 10
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,6 +50,7 @@ offset_top = -72.0
 offset_right = 40.0
 offset_bottom = -32.0
 grow_vertical = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="Minimized"]
 layout_mode = 2
@@ -68,3 +71,5 @@ grow_vertical = 0
 theme_override_colors/selection_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 10
 placeholder_text = "Press '/' to begin typing"
+editable = false
+metadata/_edit_use_anchors_ = true

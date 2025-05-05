@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=25 format=3 uid="uid://cbjpm3df4cd0w"]
+[gd_resource type="TileSet" load_steps=25 format=3 uid="uid://t3xj6bangr0w"]
 
 [ext_resource type="Texture2D" uid="uid://djx06ufendnvf" path="res://textures/tilesets/galakas_city.png" id="1_twqgk"]
 [ext_resource type="Texture2D" uid="uid://nuhd7q5vew8l" path="res://textures/tilesets/galakas/Outside_D.png" id="2_swasy"]

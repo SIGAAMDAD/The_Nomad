@@ -22,10 +22,6 @@ public partial class MatchTimeLabel : Label {
 		SetProcessInternal( false );
 	}
 	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
-			return;
-		}
-
 		base._Process( delta );
 
 		Text = Timer.TimeLeft.ToString( "F2" );

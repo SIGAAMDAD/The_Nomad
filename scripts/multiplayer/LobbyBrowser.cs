@@ -41,14 +41,8 @@ public partial class LobbyBrowser : Control {
 		}
 		
 		private void LoadMetadata() {
-			int Ping = 0;
-			try {
-				Ping = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "ping" ) );
-			} catch ( Exception ) {
-			}
-
 			LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-			Text = LobbyName + " (" + Ping.ToString() + "ms)";
+			Text = LobbyName;
 
 			string gameMode = SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" );
 			if ( gameMode.IsValidInt() ) {

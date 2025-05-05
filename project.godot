@@ -50,7 +50,6 @@ driver/driver="Alsa"
 [autoload]
 
 Console="*res://addons/console/Console.cs"
-ChatBar="res://scenes/multiplayer/chat_bar.tscn"
 SettingsData="*res://scripts/menus/SettingsData.cs"
 SteamManager="*res://autoloads/Steam/SteamManager.cs"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"

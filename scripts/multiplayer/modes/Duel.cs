@@ -117,7 +117,6 @@ namespace Multiplayer.Modes {
 			base._Ready();
 			
 			Overlay = GetNode<DuelOverlay>( "Overlay" );
-			Overlay.SetProcessInternal( false );
 			Overlay.Connect( "RoundEnd", Callable.From( OnRoundEnd ) );
 			Overlay.Connect( "RoundStart", Callable.From( OnNewRoundStart ) );
 
