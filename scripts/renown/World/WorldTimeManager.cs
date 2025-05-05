@@ -197,6 +197,7 @@ namespace Renown.World {
 				IsHostWorld = true;
 			}
 
+			/*
 			Console.AddCommand(
 				name: "set_time_scale",
 				fn: Callable.From(
@@ -208,6 +209,7 @@ namespace Renown.World {
 				args: [ "" ],
 				requiredArgs: 1
 			);
+			*/
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );

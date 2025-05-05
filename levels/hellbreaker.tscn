@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=4 uid="uid://ktied7n30xfd"]
 
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="1_lh0ly"]
-[ext_resource type="Texture2D" uid="uid://cegpm8ib1ojsj" path="res://icon.svg" id="1_vvh7t"]
+[ext_resource type="Texture2D" uid="uid://bm7v8kwu2x8f2" path="res://icon.svg" id="1_vvh7t"]
 [ext_resource type="TileSet" uid="uid://dvnhum31uka27" path="res://resources/hell.tres" id="2_b54h6"]
 [ext_resource type="Texture2D" uid="uid://bpcso8xfjvgq4" path="res://textures/env/lava.png" id="2_d04io"]
 [ext_resource type="AudioStream" uid="uid://hn4i7ygb6s5p" path="res://sounds/env/lava.ogg" id="3_s277d"]

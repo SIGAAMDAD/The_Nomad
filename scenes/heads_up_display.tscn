@@ -343,6 +343,7 @@ visible = false
 z_index = 3
 layout_mode = 1
 anchors_preset = -1
+anchor_left = -0.0203125
 anchor_right = -0.0203125
 anchor_bottom = 0.0
 offset_left = 8.0

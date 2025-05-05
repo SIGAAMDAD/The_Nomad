@@ -1418,6 +1418,7 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 
 		// don't allow keybind input when we're in the console
+		/*
 		Console.Control.VisibilityChanged += () => {
 			if ( Console.Control.Visible ) {
 				Flags |= PlayerFlags.BlockedInput;
@@ -1425,6 +1426,7 @@ public partial class Player : Entity {
 				Flags &= ~PlayerFlags.BlockedInput;
 			}
 		};
+		*/
 
 		StartingPosition = GlobalPosition;
 
@@ -1568,8 +1570,8 @@ public partial class Player : Entity {
 //		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
-		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
-		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), [ "" ], 1, "teleports the player to the specified location" );
+//		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
+//		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), [ "" ], 1, "teleports the player to the specified location" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
