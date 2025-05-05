@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://bijdnkr1j8l83"]
+[gd_scene load_steps=28 format=4 uid="uid://bijdnkr1j8l83"]
 
 [ext_resource type="TileSet" uid="uid://t3xj6bangr0w" path="res://resources/tilesets/galakas_midcity.tres" id="1_6tmyd"]
 [ext_resource type="Script" uid="uid://d2fx88eq3v2e2" path="res://scripts/ChallengeLevel.cs" id="1_pjfkh"]
@@ -8,17 +8,16 @@
 [ext_resource type="PackedScene" uid="uid://dtmpn24mt61j0" path="res://scenes/mobs/mercenary/mercenary.tscn" id="3_mjixj"]
 [ext_resource type="Texture2D" uid="uid://bvv2v7m78dge7" path="res://textures/bg.dds" id="3_pjfkh"]
 [ext_resource type="ItemDefinition" uid="uid://ri3l0anmy3oj" path="res://resources/weapons/firearms/heavy_slugger.tres" id="4_p30cw"]
+[ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="5_dfvfy"]
 [ext_resource type="ItemDefinition" uid="uid://bsixsjgbyrcph" path="res://resources/ammo/shotgun_12gauge_slug.tres" id="5_twykm"]
+[ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="6_nfjvn"]
 [ext_resource type="PackedScene" uid="uid://be1vwktiohav7" path="res://scenes/effects/fire.tscn" id="7_8pujq"]
 [ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="7_15qyk"]
 [ext_resource type="Script" uid="uid://bu363ida80wcv" path="res://scripts/SeeThruWall.cs" id="8_8pujq"]
 [ext_resource type="Script" uid="uid://b5dpy3k5bcf4w" path="res://scripts/mobs/AIPatrolRoute.cs" id="8_p30cw"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="13_gogx0"]
-[ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="14_2j5tp"]
 [ext_resource type="ItemDefinition" uid="uid://d01vxfpudal7u" path="res://resources/weapons/melee/katana.tres" id="14_vn67b"]
-[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="15_npp24"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="15_vn67b"]
-[ext_resource type="Script" uid="uid://cwj2dumw6cwqn" path="res://scripts/effects/BloodParticleFactory.cs" id="16_gogx0"]
 [ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/interactables/EndOfChallenge.cs" id="17_dfvfy"]
 [ext_resource type="Script" uid="uid://bhr7st282gelu" path="res://scripts/AdaptiveMusicManager.cs" id="20_vyd4a"]
 [ext_resource type="AudioStream" uid="uid://qm6mipucu6g8" path="res://music/challenges/challenge0_combat.ogg" id="21_hwkqx"]
@@ -38,12 +37,6 @@ size = Vector2(114, 132)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5guhu"]
 size = Vector2(46, 112)
-
-[sub_resource type="QuadMesh" id="QuadMesh_3mxq2"]
-size = Vector2(5, -2)
-
-[sub_resource type="MultiMesh" id="MultiMesh_vn67b"]
-mesh = SubResource("QuadMesh_3mxq2")
 
 [node name="ChallengeLevel" type="Node2D" node_paths=PackedStringArray("Hellbreaker", "Level", "ThisPlayer", "PlayerList")]
 scale = Vector2(2.5, 2.5)
@@ -99,11 +92,11 @@ Relations = {}
 Debts = {}
 
 [node name="Mercenary2" parent="Level/NavigationRegion2D/OpposingForce" node_paths=PackedStringArray("NodeCache", "Relations", "Debts") instance=ExtResource("3_mjixj")]
-position = Vector2(22.4, -652.4)
-DefaultWeapon = ExtResource("4_p30cw")
-DefaultAmmo = ExtResource("5_twykm")
+position = Vector2(27.2, -646.4)
+scale = Vector2(1, 1)
+DefaultWeapon = ExtResource("5_dfvfy")
+DefaultAmmo = ExtResource("6_nfjvn")
 NodeCache = NodePath("../../NodeCache")
-MovementSpeed = 40.0
 Health = 100.0
 Relations = {}
 Debts = {}
@@ -117,7 +110,7 @@ Debts = {}
 [node name="NodeCache" type="Node2D" parent="Level/NavigationRegion2D" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
 script = ExtResource("7_15qyk")
 CoverCache = []
-PatrolRoutes = [NodePath("NavigationLink2D"), NodePath(""), NodePath("")]
+PatrolRoutes = [NodePath("NavigationLink2D"), NodePath("NavigationLink2D2"), NodePath("NavigationLink2D3")]
 
 [node name="NavigationLink2D" type="NavigationLink2D" parent="Level/NavigationRegion2D/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
 position = Vector2(59.2, -636.4)
@@ -224,19 +217,6 @@ script = ExtResource("17_dfvfy")
 [node name="InteractBody" type="CollisionShape2D" parent="Level/EndOfChallenge"]
 position = Vector2(13, -5)
 shape = SubResource("RectangleShape2D_5guhu")
-
-[node name="BulletShellMesh" type="Node2D" parent="Level"]
-script = ExtResource("14_2j5tp")
-
-[node name="Cloner" type="MultiMeshInstance2D" parent="Level/BulletShellMesh"]
-visible = false
-multimesh = SubResource("MultiMesh_vn67b")
-
-[node name="DebrisMesh" type="Node2D" parent="Level"]
-script = ExtResource("15_npp24")
-
-[node name="BloodParticleMesh" type="Node2D" parent="Level"]
-script = ExtResource("16_gogx0")
 
 [node name="Hellbreaker" parent="." instance=ExtResource("21_nfjvn")]
 visible = false

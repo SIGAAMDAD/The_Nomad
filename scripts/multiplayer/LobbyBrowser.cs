@@ -266,6 +266,12 @@ public partial class LobbyBrowser : Control {
 		};
 	}
 
+	private bool CanShow( CSteamID lobbyId ) {
+		if ( SteamMatchmaking.GetLobbyMemberLimit( lobbyId ) == SteamMatchmaking.GetNumLobbyMembers( lobbyId ) ) {
+			return ShowFullServers.ButtonPressed;
+		}
+		return true;
+	}
 	private void GetLobbyList() {
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 

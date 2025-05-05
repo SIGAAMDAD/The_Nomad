@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Renown.World;
@@ -87,6 +88,17 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		public override void Alert( Entity source ) {
+			LastTargetPosition = source.GlobalPosition;
+			Awareness = MobAwareness.Alert;
+			Bark( BarkType.Confusion );
+
+			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+			SetNavigationTarget( LastTargetPosition );
+
+			CurrentState = State.Investigating;
+		}
+
 		public AIPatrolRoute GetPatrolRoute() {
 			return PatrolRoute;
 		}
@@ -144,7 +156,7 @@ namespace Renown.Thinkers {
 					// start patrolling near the last known position
 					PatrolRoute = NodeCache.FindClosestRoute( LastTargetPosition );
 				} else {
-					SetNavigationTarget( LastTargetPosition );
+//					SetNavigationTarget( LastTargetPosition );
 				}
 			}
 			Awareness = MobAwareness.Suspicious;
@@ -154,6 +166,7 @@ namespace Renown.Thinkers {
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
 			}
+			Target = SightTarget;
 			Bark( BarkType.TargetSpotted );
 			Awareness = MobAwareness.Alert;
 		}
@@ -283,16 +296,15 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 			}
 
-			Area2D SightDetectionArea = GetNode<Area2D>( "SightDetectionArea" );
+			Area2D SightDetectionArea = GetNode<Area2D>( "Animations/HeadAnimations/SightDetectionArea" );
 			SightDetectionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DEntered ) );
 			SightDetectionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DExited ) );
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 
-			Area2D HeadHitbox = HeadAnimations.GetNode<Area2D>( "HeadHitbox" );
-			HeadHitbox.SetMeta( "IsHeadHitbox", true );
-			HeadHitbox.SetMeta( "Owner", this );
+			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
+			HeadHitbox.Hit += OnHeadHit;
 
 			CurrentState = State.Guarding;
 
@@ -352,7 +364,7 @@ namespace Renown.Thinkers {
 			Weapon.TriggerPickup( this );
 			Weapon.OverrideRayCast( AimLine );
 			Weapon.SetReserve( AmmoStack );
-			Weapon.SetAmmo( DefaultAmmo );
+			Weapon.SetAmmo( Ammo );
 
 			ChangeInvestigationAngleTimer = new Timer();
 			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
@@ -416,14 +428,8 @@ namespace Renown.Thinkers {
 				ArmAnimations.SetDeferred( "sprite_frames", Weapon.GetFramesRight() );
 			}
 
-			if ( Target != null ) {
-				if ( CanSeeTarget ) {
-					LastTargetPosition = Target.GlobalPosition;
-				}
-				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-				LookAngle = AimAngle;
-			}
+			AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			LookAngle = AimAngle;
 
 			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
 			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
@@ -514,7 +520,7 @@ namespace Renown.Thinkers {
 				}
 				Godot.Vector2 position1 = Target.GlobalPosition;
 				Godot.Vector2 position2 = GlobalPosition;
-				if ( GlobalPosition.DistanceTo( Target.GlobalPosition ) > 30.0f ) {
+				if ( GlobalPosition.DistanceTo( Target.GlobalPosition ) > 1500.0f ) {
 					float interp = 0.50f;
 					SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
 				}
@@ -564,38 +570,29 @@ namespace Renown.Thinkers {
 		}
 
 		private void CheckSight() {
-			Entity sightTarget = SightTarget;
-
-			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
-				// out of sight, but we got something
-				switch ( Awareness ) {
-				case MobAwareness.Relaxed:
-					SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-					if ( SightDetectionAmount < 0.0f ) {
-						SightDetectionAmount = 0.0f;
-					}
-					break;
-				case MobAwareness.Suspicious:
-					SetSuspicious();
-					break;
-				case MobAwareness.Alert:
-					SetAlert();
-					break;
-				};
+			if ( SightTarget == null ) {
+				if ( SightDetectionAmount > 0.0f ) {
+					// out of sight, but we got something
+					switch ( Awareness ) {
+					case MobAwareness.Relaxed:
+						SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
+						if ( SightDetectionAmount < 0.0f ) {
+							SightDetectionAmount = 0.0f;
+						}
+						break;
+					case MobAwareness.Suspicious:
+						SetSuspicious();
+						break;
+					case MobAwareness.Alert:
+						SetAlert();
+						break;
+					};
+				}
 				SetDetectionColor();
 				CanSeeTarget = false;
 				return;
 			}
 
-			Target = sightTarget;
-			if ( Target == null ) {
-				return;
-			} else if ( Target.GetHealth() <= 0.0f ) {
-				Target = null;
-				return;
-			}
-
-			LastTargetPosition = Target.GlobalPosition;
 			CanSeeTarget = true;
 
 			if ( Awareness >= MobAwareness.Suspicious ) {

@@ -70,6 +70,7 @@ public partial class LevelData : Node2D {
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;
 
 		PauseMenu = ResourceLoader.Load<PackedScene>( "res://scenes/menus/pause_menu.tscn" ).Instantiate<PauseMenu>();
+		PauseMenu.Hide();
 		PauseMenu.Name = "PauseMenu";
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		AddChild( PauseMenu );
@@ -83,6 +84,18 @@ public partial class LevelData : Node2D {
 
 		SetProcess( false );
 		SetProcessInternal( false );
+
+		ExplosionFactory explosionFactory = new ExplosionFactory();
+		AddChild( explosionFactory );
+
+		BloodParticleFactory bloodFactory = new BloodParticleFactory();
+		AddChild( bloodFactory );
+
+		DebrisFactory debrisFactory = new DebrisFactory();
+		AddChild( debrisFactory );
+
+		BulletShellMesh bulletShellMesh = new BulletShellMesh();
+		AddChild( bulletShellMesh );
 
 		//
 		// force the game to run at the highest priority possible

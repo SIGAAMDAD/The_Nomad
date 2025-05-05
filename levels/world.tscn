@@ -1,4 +1,4 @@
-[gd_scene load_steps=133 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=128 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://d03p2337dl1kq" path="res://resources/quests/main_quest.tres" id="2_gb70t"]
@@ -54,7 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://cdrlq1g2trjlq" path="res://textures/env/dirt.dds" id="34_hc03g"]
 [ext_resource type="Script" uid="uid://bxvargqmrd2aq" path="res://scripts/renown/Biome.cs" id="37_n2t61"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
-[ext_resource type="TileSet" uid="uid://cbjpm3df4cd0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
+[ext_resource type="TileSet" uid="uid://t3xj6bangr0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
 [ext_resource type="Script" uid="uid://dxoatt023r08b" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
 [ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
 [ext_resource type="Script" uid="uid://bvkaw30hb60x" path="res://scripts/renown/World/Buildings/BuildingResourceProducer.cs" id="45_uh3ev"]
@@ -62,10 +62,7 @@
 [ext_resource type="Script" uid="uid://2vcoap7j1gor" path="res://scripts/renown/World/MarketplaceSlot.cs" id="47_uh3ev"]
 [ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
 [ext_resource type="Script" uid="uid://cgkfsg74djic7" path="res://scripts/renown/World/FamilyCache.cs" id="48_qxuuj"]
-[ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="54_3mxq2"]
-[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="55_ktfth"]
 [ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/Family.cs" id="58_qxuuj"]
-[ext_resource type="Script" uid="uid://cwj2dumw6cwqn" path="res://scripts/effects/BloodParticleFactory.cs" id="61_ybss6"]
 [ext_resource type="Resource" uid="uid://rtr1r3ter3ko" path="res://resources/binds/actions/keyboard/melee.tres" id="65_gb70t"]
 [ext_resource type="PackedScene" uid="uid://dmt36v2g56rb2" path="res://scenes/interactables/cutscene.tscn" id="68_q0seo"]
 [ext_resource type="Script" uid="uid://bwwd2pdkul1bk" path="res://scripts/interactables/Cutscenes/CutsceneDialogue.cs" id="69_gb70t"]
@@ -7072,12 +7069,6 @@ sources/0 = SubResource("TileSetAtlasSource_ho3mn")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t368"]
 size = Vector2(552, 305)
 
-[sub_resource type="QuadMesh" id="QuadMesh_uh3ev"]
-size = Vector2(5, -2)
-
-[sub_resource type="MultiMesh" id="MultiMesh_ktfth"]
-mesh = SubResource("QuadMesh_uh3ev")
-
 [node name="World" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
 scale = Vector2(2, 2)
 script = ExtResource("1_re8x6")
@@ -8949,16 +8940,3 @@ TutorialString = " Walk over glowing items to pick them up"
 
 [node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("13_mla2a")]
 visible = false
-
-[node name="BulletShellMesh" type="Node2D" parent="."]
-script = ExtResource("54_3mxq2")
-
-[node name="Cloner" type="MultiMeshInstance2D" parent="BulletShellMesh"]
-visible = false
-multimesh = SubResource("MultiMesh_ktfth")
-
-[node name="DebrisMesh" type="Node2D" parent="."]
-script = ExtResource("55_ktfth")
-
-[node name="BloodParticleMesh" type="Node2D" parent="."]
-script = ExtResource("61_ybss6")

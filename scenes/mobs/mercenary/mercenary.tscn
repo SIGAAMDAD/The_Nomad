@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dtmpn24mt61j0"]
+[gd_scene load_steps=10 format=3 uid="uid://dtmpn24mt61j0"]
 
 [ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
 [ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
 [ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow.gdshader" id="2_yrnty"]
 [ext_resource type="SpriteFrames" uid="uid://bghffidjv2c7s" path="res://resources/animations/mobs/mercenary_arm_animations.tres" id="3_yrnty"]
+[ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="4_jglyl"]
 [ext_resource type="SpriteFrames" uid="uid://dq5w8gujhurx" path="res://resources/animations/mobs/mercenary_body_animations.tres" id="4_u1d28"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yrnty"]
@@ -38,10 +39,19 @@ animation = &"move"
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations"]
 collision_layer = 257
 collision_mask = 257
+script = ExtResource("4_jglyl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadAnimations/HeadHitbox"]
 position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_yrnty")
+
+[node name="SightDetectionArea" type="Area2D" parent="Animations/HeadAnimations"]
+position = Vector2(0, 7)
+collision_layer = 18
+collision_mask = 18
+
+[node name="SightPolygon" type="CollisionPolygon2D" parent="Animations/HeadAnimations/SightDetectionArea"]
+polygon = PackedVector2Array(12, -10, 20, -21, 161, -36, 161, 22, 19, 2)
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")
@@ -59,10 +69,3 @@ shape = SubResource("RectangleShape2D_jglyl")
 position = Vector2(11, -3)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
-
-[node name="SightDetectionArea" type="Area2D" parent="."]
-collision_layer = 18
-collision_mask = 18
-
-[node name="SightPolygon" type="CollisionPolygon2D" parent="SightDetectionArea"]
-polygon = PackedVector2Array(12, -10, 20, -21, 161, -36, 161, 22, 19, 2)

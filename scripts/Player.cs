@@ -221,7 +221,7 @@ public partial class Player : Entity {
 	private float FrameDamage = 0.0f;
 	private int Hellbreaks = 0;
 	private bool SplitScreen = false;
-	private float SoundLevel = 0.0f;
+	private float SoundLevel = 0.1f;
 	private Godot.Vector2 DashDirection = Godot.Vector2.Zero;
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
@@ -360,8 +360,10 @@ public partial class Player : Entity {
 			AmmoStack stack = new AmmoStack();
 			stack.Amount = reader.LoadInt( string.Format( "AmmoStacksAmount{0}", i ) );
 			string id = reader.LoadString( string.Format( "AmmoStacksType{0}", i ) );
-			stack.AmmoType = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
+			stack.AmmoType = new AmmoEntity();
+			stack.AmmoType.Data = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
 			AmmoStacks.Add( id.GetHashCode(), stack );
+			CallDeferred( "add_child", stack.AmmoType );
 		}
 
 		WeaponsStack.Clear();
@@ -475,7 +477,7 @@ public partial class Player : Entity {
 				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		SyncObject.Write( Velocity );
+		SyncObject.Write( GlobalPosition );
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
@@ -569,6 +571,7 @@ public partial class Player : Entity {
 	public int GetCurrentWeapon() => CurrentWeapon;
 
 	public void ShakeCamera( float nAmount ) {
+		ShakeStrength += nAmount;
 	}
 
 	private void IdleReset() {
@@ -782,7 +785,7 @@ public partial class Player : Entity {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			FootSteps.AddStep( GlobalPosition );
-			SetSoundLevel( 14.0f );
+			SetSoundLevel( 24.0f );
 		}
 	}
 	private void OnDashTimeTimeout() {
@@ -1757,9 +1760,9 @@ public partial class Player : Entity {
 
 		base._Process( delta );
 
-		if ( SoundLevel > 0.0f ) {
-			SoundLevel -= 1.0f;
-			if ( SoundLevel < 0.1f ) {
+		if ( SoundLevel > 0.1f ) {
+			SoundLevel -= 1024.0f * (float)delta;
+			if ( SoundLevel < 0.0f ) {
 				SoundLevel = 0.1f;
 			}
 		}
@@ -1809,7 +1812,7 @@ public partial class Player : Entity {
 		bool found = false;
 		
 		foreach ( var it in AmmoStacks ) {
-			if ( ammo.Data == it.Value.AmmoType ) {
+			if ( ammo == it.Value.AmmoType ) {
 				found = true;
 				stack = it.Value;
 				break;
@@ -1830,7 +1833,7 @@ public partial class Player : Entity {
 				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
 			{
 				slot.GetWeapon().SetReserve( stack );
-				slot.GetWeapon().SetAmmo( ammo.Data );
+				slot.GetWeapon().SetAmmo( ammo );
 			}
 		}
 
@@ -1855,7 +1858,7 @@ public partial class Player : Entity {
 
 		AmmoStack stack = null;
 		foreach ( var ammo in AmmoStacks ) {
-			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
+			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Data.Get( "properties" ) )[ "type" ] ==
 				(int)weapon.GetAmmoType() )
 			{
 				stack = ammo.Value;

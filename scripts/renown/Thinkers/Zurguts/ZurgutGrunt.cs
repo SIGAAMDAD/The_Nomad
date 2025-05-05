@@ -165,9 +165,8 @@ namespace Renown.Thinkers {
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 
-			Area2D HeadHitbox = GetNode<Area2D>( "Animations/HeadAnimations/HeadHitbox" );
-			HeadHitbox.SetMeta( "IsHeadHitbox", true );
-			HeadHitbox.SetMeta( "Owner", this );
+			Hitbox HeadHitbox = GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" );
+			HeadHitbox.Hit += OnHeadHit;
 		}
 
 		protected override void ProcessAnimations() {

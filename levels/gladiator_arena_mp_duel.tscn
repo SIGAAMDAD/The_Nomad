@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=4 uid="uid://gsxci7b6en7c"]
+[gd_scene load_steps=19 format=4 uid="uid://gsxci7b6en7c"]
 
 [ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_7mv7g"]
 [ext_resource type="Script" uid="uid://bm2ij7e6lo88x" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
@@ -16,9 +16,6 @@
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="10_7odc2"]
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="11_eoimc"]
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="12_jpp1x"]
-[ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="17_7odc2"]
-[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="18_eoimc"]
-[ext_resource type="Script" uid="uid://cwj2dumw6cwqn" path="res://scripts/effects/BloodParticleFactory.cs" id="19_jpp1x"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jr0op"]
 texture = ExtResource("2_r1lm7")
@@ -972,12 +969,6 @@ physics_layer_0/collision_layer = 3
 physics_layer_0/collision_mask = 3
 sources/0 = SubResource("TileSetAtlasSource_jr0op")
 
-[sub_resource type="QuadMesh" id="QuadMesh_3mxq2"]
-size = Vector2(5, -2)
-
-[sub_resource type="MultiMesh" id="MultiMesh_82u64"]
-mesh = SubResource("QuadMesh_3mxq2")
-
 [node name="World" type="Node2D"]
 scale = Vector2(2, 2)
 script = ExtResource("1_7mv7g")
@@ -1047,16 +1038,3 @@ script = ExtResource("7_py8m6")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Announcer"]
 playback_type = 1
-
-[node name="BulletShellMesh" type="Node2D" parent="."]
-script = ExtResource("17_7odc2")
-
-[node name="Cloner" type="MultiMeshInstance2D" parent="BulletShellMesh"]
-visible = false
-multimesh = SubResource("MultiMesh_82u64")
-
-[node name="DebrisMesh" type="Node2D" parent="."]
-script = ExtResource("18_eoimc")
-
-[node name="BloodParticleMesh" type="Node2D" parent="."]
-script = ExtResource("19_jpp1x")

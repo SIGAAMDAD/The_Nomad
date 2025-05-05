@@ -103,6 +103,8 @@ public partial class ExtrasMenu : Control {
 		Questify.ToggleUpdatePolling( true );
 		ChallengeCache.SetQuestData( Questify.Instantiate( quest ) );
 
+		GameConfiguration.GameMode = GameMode.ChallengeMode;
+
 		QueueFree();
 		GetTree().ChangeSceneToPacked( mapData );
 	}
@@ -115,7 +117,7 @@ public partial class ExtrasMenu : Control {
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
-
+		
 		ChallengeCache.SetCurrentMap( SelectedMapIndex );
 		ChallengeCache.MapList[ SelectedMapIndex ].Load( OnStoryModeMapFinishedLoading );
 	}
@@ -130,8 +132,6 @@ public partial class ExtrasMenu : Control {
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
 		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
-
-		GameConfiguration.GameMode = GameMode.ChallengeMode;
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();

@@ -531,8 +531,8 @@ public partial class Console : Control {
 		if ( !IsInstanceValid( RichLabel ) ) {
 			Instance.CallDeferred( MethodName.PrintLine, text, true );
 		} else {
-			RichLabel.AppendText( text );
-			RichLabel.AppendText( "\n" );
+			RichLabel.CallDeferred( "append_text", text );
+			RichLabel.CallDeferred( "append_text", "\n" );
 			GD.Print( text );
 		}
 	}

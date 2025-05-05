@@ -99,7 +99,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
-		Velocity = SyncReader.ReadVector2();
+		GlobalPosition = SyncReader.ReadVector2();
 
 		LeftArmAnimation.SetDeferred( "global_rotation", SyncReader.ReadFloat() );
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)SyncReader.ReadByte(), DefaultLeftArmSpriteFrames );
@@ -281,14 +281,6 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		};
 	}
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-		
-		if ( Velocity != Godot.Vector2.Zero ) {
-			MoveAndSlide();
-		}
-	}
-
 	public void SetOwnerId( ulong steamId ) {
 		OwnerId = (CSteamID)steamId;
 	}

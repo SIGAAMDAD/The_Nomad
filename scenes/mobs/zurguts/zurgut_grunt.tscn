@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://37cqdj7riyua"]
+[gd_scene load_steps=12 format=3 uid="uid://37cqdj7riyua"]
 
 [ext_resource type="Script" uid="uid://dydrhh3q6femv" path="res://scripts/renown/Thinkers/Zurguts/ZurgutGrunt.cs" id="1_nk00t"]
 [ext_resource type="SpriteFrames" uid="uid://cqwnbdnsg2c77" path="res://resources/animations/mobs/zurgut_grunt_body_animations.tres" id="1_wp8ts"]
 [ext_resource type="SpriteFrames" uid="uid://bdaj84nfa7cbv" path="res://resources/animations/mobs/zurgut_grunt_arm_animations.tres" id="2_3sp4e"]
 [ext_resource type="SpriteFrames" uid="uid://bvnv6kt8tsb3u" path="res://resources/animations/mobs/zurgut_grunt_head_animations.tres" id="3_w4y21"]
 [ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow.gdshader" id="4_85eyo"]
+[ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="6_g7vll"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_85eyo"]
 shader = ExtResource("4_85eyo")
@@ -55,6 +56,7 @@ animation = &"idle"
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations"]
 collision_layer = 257
 collision_mask = 257
+script = ExtResource("6_g7vll")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadAnimations/HeadHitbox"]
 position = Vector2(-0.5, 1)

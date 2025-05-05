@@ -231,7 +231,7 @@ public partial class ChallengeLevel : LevelData {
 		ThisPlayer.Die += OnPlayerDie;
 		ThisPlayer.Damaged += OnPlayerDamaged;
 
-		EndOfChallenge end = GetNode<EndOfChallenge>( "EndOfChallenge" );
+		EndOfChallenge end = GetNode<EndOfChallenge>( "Level/EndOfChallenge" );
 		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );
 
 		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );

@@ -102,7 +102,7 @@ namespace Renown.Thinkers {
 		[Export]
 		protected bool HasMetPlayer = false;
 		[Export]
-		protected float MovementSpeed = 80.0f;
+		protected float MovementSpeed = 200.0f;
 
 		protected Node2D Animations;
 
@@ -471,7 +471,7 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
-			CallDeferred( "MoveAlongPath" );
+			MoveAlongPath();
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {

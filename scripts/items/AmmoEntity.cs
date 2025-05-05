@@ -23,7 +23,6 @@ public partial class AmmoEntity : Node2D {
 	[Export]
 	public Resource Data = null;
 
-	private ExtraEffects Flags;
 	private static readonly Dictionary<string, ExtraEffects> ExtraFlags = new Dictionary<string, ExtraEffects>{
 		{ "Incendiary", ExtraEffects.Incendiary },
 		{ "IonicCharge", ExtraEffects.IonicCharge },
@@ -37,12 +36,22 @@ public partial class AmmoEntity : Node2D {
 
 	private AudioStream PickupSfx;
 	private float Damage;
+	private float Range;
 	private AmmoType AmmoType;
+	private ExtraEffects Flags;
+	private Curve DamageFalloff;
+
+	private int PelletCount;
+	private ShotgunBullshit ShotFlags;
 
 	public AudioStream GetPickupSound() => PickupSfx;
 	public AmmoType GetAmmoType() => AmmoType;
 	public float GetDamage() => Damage;
+	public float GetRange() => Range;
 	public ExtraEffects GetEffects() => Flags;
+	public int GetPelletCount() => PelletCount;
+	public ShotgunBullshit GetShotgunBullshit() => ShotFlags;
+	public float GetDamageFalloff( float distance ) => DamageFalloff.SampleBaked( distance );
 
 	private void OnPickupArea2DBodyShapeEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player player ) {
@@ -97,8 +106,15 @@ public partial class AmmoEntity : Node2D {
 			}
 		}
 
+		DamageFalloff = (Curve)properties[ "damage_falloff" ];
 		PickupSfx = (AudioStream)properties[ "pickup_sfx" ];
 		Damage = (float)properties[ "damage" ];
-		AmmoType = (AmmoType)(uint)properties[ "type" ];
+		Range = (float)properties[ "range" ];
+		AmmoType = (AmmoType)(int)properties[ "type" ];
+
+		if ( AmmoType == AmmoType.Pellets ) {
+			ShotFlags = (ShotgunBullshit)(int)properties[ "shotgun_bullshit" ];
+			PelletCount = (int)properties[ "pellet_count" ];
+		}
 	}
 };

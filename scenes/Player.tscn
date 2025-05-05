@@ -146,6 +146,8 @@ position = Vector2(1, 4)
 one_shot = false
 
 [node name="FlameArea" type="Area2D" parent="Animations/DashEffect"]
+collision_layer = 32
+collision_mask = 32
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/DashEffect/FlameArea"]
