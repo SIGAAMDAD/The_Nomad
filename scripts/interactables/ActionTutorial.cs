@@ -9,6 +9,8 @@ public partial class ActionTutorial : InteractionItem {
 	[Export]
 	private Resource Action;
 
+	private Resource DialogueResource;
+
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
 			return;

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4pa7a1ljf22"]
+
+[ext_resource type="Script" uid="uid://22nfs6438m5d" path="res://scripts/interactables/CutsceneTrigger.cs" id="1_odhqj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_be0o1"]
+size = Vector2(79, 69)
+
+[node name="CutsceneTrigger" type="Area2D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_odhqj")
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_be0o1")

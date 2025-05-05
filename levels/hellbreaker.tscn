@@ -1,5 +1,6 @@
-[gd_scene load_steps=17 format=4 uid="uid://ktied7n30xfd"]
+[gd_scene load_steps=18 format=4 uid="uid://ktied7n30xfd"]
 
+[ext_resource type="Script" uid="uid://38uj04j3sp07" path="res://scripts/Hellbreaker.cs" id="1_h6w0p"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="1_lh0ly"]
 [ext_resource type="Texture2D" uid="uid://bm7v8kwu2x8f2" path="res://icon.svg" id="1_vvh7t"]
 [ext_resource type="TileSet" uid="uid://dvnhum31uka27" path="res://resources/hell.tres" id="2_b54h6"]
@@ -52,7 +53,8 @@ shader_parameter/spin_texture = ExtResource("6_ndd47")
 shader_parameter/clockwise = true
 shader_parameter/speed = 1.485
 
-[node name="Hellbreaker" type="Node2D"]
+[node name="Hellbreaker" type="Node2D" groups=["HellbreakerExits"]]
+script = ExtResource("1_h6w0p")
 
 [node name="LavaLake" type="Sprite2D" parent="."]
 texture_filter = 1

@@ -39,7 +39,7 @@ turbulence_noise_speed_random = 0.45
 script = ExtResource("1_reuod")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-amount = 400
+amount = 1200
 texture = SubResource("GradientTexture1D_1hkjd")
 lifetime = 0.5
 fixed_fps = 0

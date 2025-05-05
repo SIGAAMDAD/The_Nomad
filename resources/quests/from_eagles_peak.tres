@@ -1,134 +1,120 @@
-[gd_resource type="Resource" script_class="QuestResource" load_steps=27 format=3 uid="uid://b2xg2fa752xmy"]
+[gd_resource type="Resource" script_class="QuestResource" load_steps=24 format=3 uid="uid://b2xg2fa752xmy"]
 
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_condition.gd" id="5_03jnm"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
-[ext_resource type="Script" path="res://addons/questify/scripts/model/quest_node.gd" id="8_mqchu"]
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_dkeq6"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_vo3f4"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_bnshu"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_qpe8b"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="5_jw3f3"]
+[ext_resource type="Script" uid="uid://2hx4gocf36hm" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="6_0k53v"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="7_v7t5f"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="8_mqchu"]
 
-[sub_resource type="Resource" id="Resource_epp5k"]
+[sub_resource type="Resource" id="Resource_7bd1j"]
 script = ExtResource("2_vo3f4")
 name = "From Eagle's Peak"
-description = "You've tracked the noble and sex trafficker, Kirosla, to his estate on the far reaAddObjectiveches of the Salt Wastes. Take him out."
+description = "You've tracked the noble and sex trafficker, Kirosla, to his estate on the far reaches of the Salt Wastes. Take him out."
 id = "Fh2ovROsKX"
 optional = false
 graph_editor_position = Vector2(40, -60)
-graph_editor_size = Vector2(580, 610)
+graph_editor_size = Vector2(580, 626)
 
-[sub_resource type="Resource" id="Resource_hmp3r"]
+[sub_resource type="Resource" id="Resource_mqchu"]
 script = ExtResource("3_qpe8b")
 description = "Kill Kirosla"
 id = "-QlXsQUtlZ"
 optional = false
-graph_editor_position = Vector2(700, 40)
-graph_editor_size = Vector2(480, 620)
+graph_editor_position = Vector2(720, -80)
+graph_editor_size = Vector2(480, 660)
 
-[sub_resource type="Resource" id="Resource_lrcwu"]
+[sub_resource type="Resource" id="Resource_puh1j"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_epp5k")
-to = SubResource("Resource_hmp3r")
+from = SubResource("Resource_7bd1j")
+to = SubResource("Resource_mqchu")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_fdq6b"]
-script = ExtResource("7_v7t5f")
-type = "variable"
-key = "slaves_freed"
-id = "f4m-pcODy_"
-optional = false
-graph_editor_position = Vector2(1080, 820)
-graph_editor_size = Vector2(377, 413)
-metadata/value = true
-
-[sub_resource type="Resource" id="Resource_wnoll"]
-script = ExtResource("5_03jnm")
-id = "I5VeBgUO8y"
-optional = false
-graph_editor_position = Vector2(1700, 820)
-graph_editor_size = Vector2(207, 94)
-
-[sub_resource type="Resource" id="Resource_faa86"]
-script = ExtResource("1_dkeq6")
-from = SubResource("Resource_fdq6b")
-to = SubResource("Resource_wnoll")
-edge_type = 0
-
-[sub_resource type="Resource" id="Resource_h8iw0"]
-script = ExtResource("3_qpe8b")
-description = "Adopt Niran per her mother's final request"
-id = "4rxVQtorqc"
-optional = true
-graph_editor_position = Vector2(2040, 300)
-graph_editor_size = Vector2(468, 607)
-
-[sub_resource type="Resource" id="Resource_kg38d"]
-script = ExtResource("1_dkeq6")
-from = SubResource("Resource_wnoll")
-to = SubResource("Resource_h8iw0")
-edge_type = 1
-
-[sub_resource type="Resource" id="Resource_oys41"]
+[sub_resource type="Resource" id="Resource_bd8a6"]
 script = ExtResource("3_qpe8b")
 description = "Free the slaves"
 id = "cLLG97rijW"
 optional = true
-graph_editor_position = Vector2(1280, 140)
-graph_editor_size = Vector2(480, 607)
+graph_editor_position = Vector2(1340, 60)
+graph_editor_size = Vector2(480, 660)
 
-[sub_resource type="Resource" id="Resource_3jkw6"]
+[sub_resource type="Resource" id="Resource_qf01u"]
+script = ExtResource("3_qpe8b")
+description = "Adopt Niran per her mother's final request"
+id = "4rxVQtorqc"
+optional = true
+graph_editor_position = Vector2(2040, 60)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_h8b1b"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_oys41")
-to = SubResource("Resource_h8iw0")
+from = SubResource("Resource_bd8a6")
+to = SubResource("Resource_qf01u")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_c26bm"]
+[sub_resource type="Resource" id="Resource_js7d2"]
 script = ExtResource("6_0k53v")
 id = "zrGg4Icd2d"
 optional = false
-graph_editor_position = Vector2(2240, -340)
-graph_editor_size = Vector2(207, 94)
+graph_editor_position = Vector2(2360, -340)
+graph_editor_size = Vector2(207, 97)
 
-[sub_resource type="Resource" id="Resource_faed7"]
+[sub_resource type="Resource" id="Resource_53iho"]
 script = ExtResource("5_jw3f3")
 id = "b2LxSFTn2m"
 optional = false
-graph_editor_position = Vector2(2660, -340)
-graph_editor_size = Vector2(141, 94)
+graph_editor_position = Vector2(2800, -340)
+graph_editor_size = Vector2(141, 97)
 
-[sub_resource type="Resource" id="Resource_c8ugc"]
+[sub_resource type="Resource" id="Resource_4sbq6"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_c26bm")
-to = SubResource("Resource_faed7")
+from = SubResource("Resource_js7d2")
+to = SubResource("Resource_53iho")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_jplk6"]
+[sub_resource type="Resource" id="Resource_fpf5n"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_hmp3r")
-to = SubResource("Resource_oys41")
+from = SubResource("Resource_mqchu")
+to = SubResource("Resource_bd8a6")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_je23p"]
+[sub_resource type="Resource" id="Resource_l1kdf"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_oys41")
-to = SubResource("Resource_c26bm")
+from = SubResource("Resource_bd8a6")
+to = SubResource("Resource_js7d2")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_3wecu"]
+[sub_resource type="Resource" id="Resource_dwqeq"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_hmp3r")
-to = SubResource("Resource_c26bm")
+from = SubResource("Resource_mqchu")
+to = SubResource("Resource_js7d2")
 edge_type = 0
 
-[sub_resource type="Resource" id="Resource_rysbf"]
+[sub_resource type="Resource" id="Resource_bp6k1"]
 script = ExtResource("1_dkeq6")
-from = SubResource("Resource_h8iw0")
-to = SubResource("Resource_c26bm")
+from = SubResource("Resource_qf01u")
+to = SubResource("Resource_js7d2")
 edge_type = 0
+
+[sub_resource type="Resource" id="Resource_mhj5x"]
+script = ExtResource("7_v7t5f")
+type = "State"
+key = "SlavesFreed"
+id = "f4m-pcODy_"
+optional = false
+graph_editor_position = Vector2(1440, 740)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_08rv8"]
+script = ExtResource("1_dkeq6")
+from = SubResource("Resource_mhj5x")
+to = SubResource("Resource_qf01u")
+edge_type = 1
 
 [resource]
 script = ExtResource("3_bnshu")
-nodes = Array[ExtResource("8_mqchu")]([SubResource("Resource_wnoll"), SubResource("Resource_c26bm"), SubResource("Resource_faed7"), SubResource("Resource_epp5k"), SubResource("Resource_h8iw0"), SubResource("Resource_fdq6b"), SubResource("Resource_oys41"), SubResource("Resource_hmp3r")])
-edges = Array[ExtResource("1_dkeq6")]([SubResource("Resource_lrcwu"), SubResource("Resource_faa86"), SubResource("Resource_kg38d"), SubResource("Resource_3jkw6"), SubResource("Resource_c8ugc"), SubResource("Resource_jplk6"), SubResource("Resource_je23p"), SubResource("Resource_3wecu"), SubResource("Resource_rysbf")])
+nodes = Array[ExtResource("8_mqchu")]([SubResource("Resource_7bd1j"), SubResource("Resource_mqchu"), SubResource("Resource_bd8a6"), SubResource("Resource_mhj5x"), SubResource("Resource_js7d2"), SubResource("Resource_53iho"), SubResource("Resource_qf01u")])
+edges = Array[ExtResource("1_dkeq6")]([SubResource("Resource_puh1j"), SubResource("Resource_h8b1b"), SubResource("Resource_4sbq6"), SubResource("Resource_fpf5n"), SubResource("Resource_l1kdf"), SubResource("Resource_dwqeq"), SubResource("Resource_bp6k1"), SubResource("Resource_08rv8")])

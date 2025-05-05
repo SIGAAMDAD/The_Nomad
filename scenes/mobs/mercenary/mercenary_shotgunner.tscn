@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://6cnqoj2bp0r3"]
 
-[ext_resource type="Script" uid="uid://brgni4r6q2ofv" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
-[ext_resource type="SpriteFrames" uid="uid://bbd1gljxn4cqk" path="res://resources/animations/mobs/merc_shotgunner.tres" id="3_jv7p5"]
+[ext_resource type="Script" path="res://scripts/mobs/mercenary/MercenaryShotgunner.cs" id="1_skhq2"]
+[ext_resource type="SpriteFrames" path="res://resources/animations/mobs/merc_shotgunner.tres" id="3_jv7p5"]
 [ext_resource type="Texture2D" uid="uid://vsg3ur164atb" path="res://textures/dirlight.dds" id="4_i3ew1"]
 [ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="4_pt2do"]
 

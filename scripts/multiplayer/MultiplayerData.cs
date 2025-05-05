@@ -101,13 +101,8 @@ public partial class MultiplayerData : Node2D {
 		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
 		PlayerList = GetNode<Node>( "Network/Players" );
 
-		Control Scoreboard = GetNode<Control>( "Scoreboard" );
-		Scoreboard.SetProcess( false );
-		Scoreboard.SetProcessInternal( false );
-
 		ModeData = GetNode<Mode>( "ModeData" );
-		ModeData.Connect( "ShowScoreboard", Callable.From( Scoreboard.Show ) );
-		
+
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );

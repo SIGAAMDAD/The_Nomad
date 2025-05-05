@@ -1,0 +1,17 @@
+[gd_resource type="Recipe" load_steps=4 format=3 uid="uid://c3abe2nplwp2v"]
+
+[ext_resource type="CraftStationType" uid="uid://cmtu16e3xcq4p" path="res://resources/crafting_station.tres" id="1_pilpv"]
+
+[sub_resource type="ItemStack" id="ItemStack_pilpv"]
+item_id = "ITEM_GUNPOWDER"
+amount = 24
+
+[sub_resource type="ItemStack" id="ItemStack_dtwbm"]
+item_id = "AMMO_12_GAUGE_SLUG"
+amount = 12
+
+[resource]
+products = Array[ItemStack]([SubResource("ItemStack_dtwbm")])
+time_to_craft = 8.0
+station = ExtResource("1_pilpv")
+ingredients = Array[ItemStack]([SubResource("ItemStack_pilpv")])

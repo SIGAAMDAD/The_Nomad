@@ -4,7 +4,7 @@
 
 [resource]
 id = "ITEM_FOOD"
-max_stack = 4096
+max_stack = 100
 name = "Food"
 weight = 1.0
 properties = {

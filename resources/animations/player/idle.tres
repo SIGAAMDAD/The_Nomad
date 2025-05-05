@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=34 format=3 uid="uid://1xowiqlfkdd1"]
+[gd_resource type="SpriteFrames" load_steps=36 format=3 uid="uid://1xowiqlfkdd1"]
 
 [ext_resource type="Texture2D" uid="uid://dx2laa44hg1rf" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.png" id="1_wwoi8"]
 
@@ -61,6 +61,14 @@ region = Rect2(0, 128, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_5ny1p"]
 atlas = ExtResource("1_wwoi8")
 region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fd73w"]
+atlas = ExtResource("1_wwoi8")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aniin"]
+atlas = ExtResource("1_wwoi8")
+region = Rect2(96, 160, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hamc7"]
 atlas = ExtResource("1_wwoi8")
@@ -191,6 +199,17 @@ animations = [{
 "loop": true,
 "name": &"checkpoint_idle",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fd73w")
+}, {
+"duration": 10.0,
+"texture": SubResource("AtlasTexture_aniin")
+}],
+"loop": false,
+"name": &"checkpoint_warp",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 3.0,

@@ -8,6 +8,12 @@ public enum CutsceneSequenceType : uint {
 };
 
 public partial class CutsceneSequence : Node2D {
-	[Export]
-	private CutsceneSequenceType Type;
+	[Signal]
+	public delegate void EndEventHandler();
+
+	public virtual CutsceneSequenceType GetSequenceType() {
+		return CutsceneSequenceType.Count;
+	}
+	public virtual void Start() {
+	}
 };

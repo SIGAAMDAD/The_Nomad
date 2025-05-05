@@ -15,6 +15,6 @@ public partial class Countdown : Label {
 		base._Ready();
 
 		Timer = GetNode<Timer>( "Timer" );
-		Timer.Connect( "timeout", Callable.From( () => { EmitSignal( "CountdownTimeout" ); } ) );
+		Timer.Connect( "timeout", Callable.From( () => { EmitSignalCountdownTimeout(); } ) );
 	}
 };

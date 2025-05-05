@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Multiplayer;
 using Steamworks;
@@ -15,6 +16,7 @@ public partial class LobbyBrowser : Control {
 
 		public LobbyData( CSteamID lobbyId ) {
 			LobbyId = lobbyId;
+			Name = LobbyId.ToString();
 
 			Size = new Godot.Vector2( 240, 20 );
 			CustomMinimumSize = Size;
@@ -39,14 +41,8 @@ public partial class LobbyBrowser : Control {
 		}
 		
 		private void LoadMetadata() {
-			int Ping = 0;
-			try {
-				Ping = Convert.ToInt32( SteamMatchmaking.GetLobbyData( LobbyId, "ping" ) );
-			} catch ( Exception ) {
-			}
-
 			LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
-			Text = string.Format( "{0) ({1}ms)", LobbyName, Ping );
+			Text = LobbyName;
 
 			string gameMode = SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" );
 			if ( gameMode.IsValidInt() ) {
@@ -270,11 +266,23 @@ public partial class LobbyBrowser : Control {
 		};
 	}
 
+	private bool CanShow( CSteamID lobbyId ) {
+		if ( SteamMatchmaking.GetLobbyMemberLimit( lobbyId ) == SteamMatchmaking.GetNumLobbyMembers( lobbyId ) ) {
+			return ShowFullServers.ButtonPressed;
+		}
+		return true;
+	}
 	private void GetLobbyList() {
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
-		LobbyList.Clear();
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
+			for ( int j = 0; j < LobbyTable.GetChildCount(); j++ ) {
+				if ( LobbyList.TryGetValue( lobbyList[i], out LobbyData lobby ) ) {
+					LobbyTable.RemoveChild( lobby );
+					LobbyList.Remove( lobbyList[i] );
+					lobby.QueueFree();
+				}
+			}
 			LobbyData data = new LobbyData( lobbyList[i] );
 			LobbyList.Add( lobbyList[i], data );
 			LobbyTable.CallDeferred( "add_child", data );

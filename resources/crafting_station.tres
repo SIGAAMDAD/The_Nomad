@@ -1,3 +1,5 @@
 [gd_resource type="CraftStationType" format=3 uid="uid://cmtu16e3xcq4p"]
 
 [resource]
+id = "CRAFT_STATION_WORKBENCH"
+name = "Workbench"

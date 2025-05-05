@@ -21,9 +21,10 @@ properties = {
 "damage": 120.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_SLUG_DESCRIPTION",
+"pellet_count": 1,
 "pickup_sfx": ExtResource("5_p1qws"),
 "range": 2450.0,
-"shotgun bullshit": 2,
+"shotgun_bullshit": 2,
 "stack_add_amount": 64,
 "type": 2,
 "velocity": 20.0

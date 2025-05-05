@@ -199,15 +199,15 @@ namespace Renown.World {
 
 			/*
 			Console.AddCommand(
-				name: "set_time_scale",
-				fn: Callable.From(
+				commandName: "set_time_scale",
+				function: Callable.From(
 					( string arg ) => {
 						GD.Print( "Setting world time scale to " + arg );
 						InGameSpeed = (float)Convert.ToDouble( arg );
 					}
 				),
-				args: [ "" ],
-				requiredArgs: 1
+				arguments: [ "" ],
+				required: 1
 			);
 			*/
 		}

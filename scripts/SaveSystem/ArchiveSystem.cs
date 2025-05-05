@@ -66,7 +66,7 @@ public partial class ArchiveSystem : Node {
 	public delegate void LoadGameEndEventHandler();
 
 	public bool IsLoaded() {
-		return Loaded && GameConfiguration.GameMode != GameMode.Multiplayer;
+		return Loaded && GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode;
 	}
 	public string GetSaveDirectory() {
 		return SaveDirectory;

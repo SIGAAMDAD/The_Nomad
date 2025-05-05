@@ -75,10 +75,10 @@ public partial class Player : Entity {
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
-	private const float ACCEL = 1900.0f;
-	private const float FRICTION = 2400.0f;
-	private const float MAX_SPEED = 540.0f;
-	private const float JUMP_VELOCITY = -400.0f;
+	public static readonly float ACCEL = 1900.0f;
+	public static readonly float FRICTION = 1400.0f;
+	public static readonly float MAX_SPEED = 540.0f;
+	public static readonly float JUMP_VELOCITY = -400.0f;
 
 	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
 
@@ -133,10 +133,10 @@ public partial class Player : Entity {
 
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
+
+	private Area2D DashFlameArea;
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
-
-	private PackedScene BloodSplatter;
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
@@ -161,6 +161,10 @@ public partial class Player : Entity {
 	[Export]
 	private HeadsUpDisplay HUD;
 
+	[ExportCategory("Start")]
+	[Export]
+	private PlayerFlags Flags = 0;
+
 	[ExportCategory("Camera Shake")]
 	[Export]
 	private float RandomStrength = 36.0f;
@@ -174,7 +178,6 @@ public partial class Player : Entity {
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
 	private float Rage = 60.0f;
-	private PlayerFlags Flags = 0;
 	private int CurrentWeapon = 0;
 
 	private Camera2D Viewpoint;
@@ -218,7 +221,7 @@ public partial class Player : Entity {
 	private float FrameDamage = 0.0f;
 	private int Hellbreaks = 0;
 	private bool SplitScreen = false;
-	private float SoundLevel = 0.0f;
+	private float SoundLevel = 0.1f;
 	private Godot.Vector2 DashDirection = Godot.Vector2.Zero;
 	private Godot.Vector2 InputVelocity = Godot.Vector2.Zero;
 	private Godot.Vector2 LastMousePosition = Godot.Vector2.Zero;
@@ -237,6 +240,12 @@ public partial class Player : Entity {
 	public delegate void SwitchedWeaponModeEventHandler( WeaponEntity weapon, WeaponEntity.Properties useMode );
 	[Signal]
 	public delegate void SwitchHandUsedEventHandler( Hands hands );
+
+	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		if ( body is Entity entity && entity != null ) {
+			entity.AddStatusEffect( "status_burning" );
+		}
+	}
 
 	public static bool IsTutorialActive() {
 		return !TutorialCompleted;
@@ -351,8 +360,10 @@ public partial class Player : Entity {
 			AmmoStack stack = new AmmoStack();
 			stack.Amount = reader.LoadInt( string.Format( "AmmoStacksAmount{0}", i ) );
 			string id = reader.LoadString( string.Format( "AmmoStacksType{0}", i ) );
-			stack.AmmoType = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
+			stack.AmmoType = new AmmoEntity();
+			stack.AmmoType.Data = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
 			AmmoStacks.Add( id.GetHashCode(), stack );
+			CallDeferred( "add_child", stack.AmmoType );
 		}
 
 		WeaponsStack.Clear();
@@ -466,7 +477,7 @@ public partial class Player : Entity {
 				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		SyncObject.Write( Velocity );
+		SyncObject.Write( GlobalPosition );
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
@@ -560,6 +571,7 @@ public partial class Player : Entity {
 	public int GetCurrentWeapon() => CurrentWeapon;
 
 	public void ShakeCamera( float nAmount ) {
+		ShakeStrength += nAmount;
 	}
 
 	private void IdleReset() {
@@ -635,6 +647,9 @@ public partial class Player : Entity {
 			return; // iframes
 		}
 
+		if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+			ChallengeLevel.EndCombo( ComboCounter );
+		}
 		ComboCounter = 0;
 
 		System.Threading.Interlocked.Exchange( ref Health, Health - nAmount );
@@ -770,13 +785,14 @@ public partial class Player : Entity {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			FootSteps.AddStep( GlobalPosition );
-			SetSoundLevel( 14.0f );
+			SetSoundLevel( 24.0f );
 		}
 	}
 	private void OnDashTimeTimeout() {
 		HUD.GetDashOverlay().Hide();
 		DashLight.Hide();
 		DashEffect.Emitting = false;
+		DashFlameArea.Monitoring = false;
 		Flags &= ~PlayerFlags.Dashing;
 		DashCooldownTime.Start();
 	}
@@ -799,8 +815,15 @@ public partial class Player : Entity {
 
 			// extension of recharge time
 			DashCooldownTime.WaitTime = 2.50f;
+
+			Damage( this, 20.0f );
+			AddStatusEffect( "status_burning" );
+			ShakeCamera( 50.0f );
+
 			return;
 		}
+
+		DashFlameArea.Monitoring = true;
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
@@ -1480,6 +1503,10 @@ public partial class Player : Entity {
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
+		DashFlameArea = GetNode<Area2D>( "Animations/DashEffect/FlameArea" );
+		DashFlameArea.Monitoring = false;
+		DashFlameArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
+
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
@@ -1582,8 +1609,6 @@ public partial class Player : Entity {
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
-		} else if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
-			ThoughtBubble( "You: Huh...\nYou: Eagle's Peak...\nYou: I've been here before." );
 		}
 	}
 
@@ -1737,9 +1762,9 @@ public partial class Player : Entity {
 
 		base._Process( delta );
 
-		if ( SoundLevel > 0.0f ) {
-			SoundLevel -= 1.0f;
-			if ( SoundLevel < 0.1f ) {
+		if ( SoundLevel > 0.1f ) {
+			SoundLevel -= 1024.0f * (float)delta;
+			if ( SoundLevel < 0.0f ) {
 				SoundLevel = 0.1f;
 			}
 		}
@@ -1789,7 +1814,7 @@ public partial class Player : Entity {
 		bool found = false;
 		
 		foreach ( var it in AmmoStacks ) {
-			if ( ammo.Data == it.Value.AmmoType ) {
+			if ( ammo == it.Value.AmmoType ) {
 				found = true;
 				stack = it.Value;
 				break;
@@ -1810,7 +1835,7 @@ public partial class Player : Entity {
 				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
 			{
 				slot.GetWeapon().SetReserve( stack );
-				slot.GetWeapon().SetAmmo( ammo.Data );
+				slot.GetWeapon().SetAmmo( ammo );
 			}
 		}
 
@@ -1835,7 +1860,7 @@ public partial class Player : Entity {
 
 		AmmoStack stack = null;
 		foreach ( var ammo in AmmoStacks ) {
-			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
+			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Data.Get( "properties" ) )[ "type" ] ==
 				(int)weapon.GetAmmoType() )
 			{
 				stack = ammo.Value;

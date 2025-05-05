@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Multiplayer;
 using System.Net.NetworkInformation;
-using Renown.Thinkers;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -41,17 +40,13 @@ public partial class SteamLobby : Node {
 		}
 	};
 
-	private class PingData {
-		public Action<CSteamID, int> Callback;
-		public Stopwatch Timer = new Stopwatch();
-		public CSteamID LobbyId;
-	};
-
 	private static SteamLobby _Instance;
 	public static SteamLobby Instance => _Instance;
 	
 	private const uint PACKET_READ_LIMIT = 32;
 	public static readonly int MAX_LOBBY_MEMBERS = 16;
+
+	private Chat ChatBar;
 	
 	private Callback<LobbyEnter_t> LobbyEnter;
 	private Callback<LobbyChatMsg_t> LobbyChatMsg;
@@ -96,8 +91,6 @@ public partial class SteamLobby : Node {
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
 
-	private Dictionary<CSteamID, PingData> PingList = new Dictionary<CSteamID, PingData>();
-
 	[Signal]
 	public delegate void ChatMessageReceivedEventHandler( ulong senderSteamId, string message );
 	[Signal]
@@ -117,7 +110,7 @@ public partial class SteamLobby : Node {
 		return PlayerCache[ userId.ToString() ].Node as NetworkPlayer;
 	}
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
-		GD.Print( "Added player with hash " + userId.ToString() + " to network sync cache." );
+		Console.PrintLine( "Added player with hash " + userId.ToString() + " to network sync cache." );
 		PlayerCache.TryAdd( userId.ToString(), callbacks );
 		PlayerList.Add( callbacks );
 	}
@@ -126,7 +119,7 @@ public partial class SteamLobby : Node {
 		PlayerCache.Remove( userId.ToString() );
 	}
 	public void AddNetworkNode( NodePath node, NetworkNode callbacks ) {
-		GD.Print( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
+		Console.PrintLine( "Added node with hash " + node.GetHashCode() + " to network sync cache." );
 		NodeCache.TryAdd( node.GetHashCode(), callbacks );
 	}
 	public void RemoveNetworkNode( NodePath node ) {
@@ -264,6 +257,7 @@ public partial class SteamLobby : Node {
 
 	public void CreateLobby() {
 		if ( LobbyId.IsValid() ) {
+			Console.PrintError( string.Format( "SteamLobby.CreateLobby: LobbyId {0} isn't valid!", LobbyId.ToString() ) );
 			return;
 		}
 		IsHost = true;
@@ -287,6 +281,9 @@ public partial class SteamLobby : Node {
 	}
 	public void JoinLobby( CSteamID lobbyId ) {
 		SteamMatchmaking.JoinLobby( lobbyId );
+
+		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+		GetTree().Root.AddChild( ChatBar );
 	}
 	public void LeaveLobby() {
 		if ( !LobbyId.IsValid() ) {
@@ -314,6 +311,9 @@ public partial class SteamLobby : Node {
 		PlayerCache.Clear();
 
 		EmitSignal( "ClientLeftLobby", (ulong)SteamUser.GetSteamID() );
+
+		GetTree().Root.RemoveChild( ChatBar );
+		ChatBar.QueueFree();
 	}
 
 	/*
@@ -351,13 +351,11 @@ public partial class SteamLobby : Node {
 	}
 
 	private void ReadP2Packet() {
-		uint packetSize;
-		if ( !SteamNetworking.IsP2PPacketAvailable( out packetSize ) ) {
+		if ( !SteamNetworking.IsP2PPacketAvailable( out uint packetSize ) ) {
 			return;
 		}
 
-		CSteamID senderId;
-		SteamNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out senderId );
+		SteamNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out CSteamID senderId );
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
 		switch ( (MessageType)PacketReader.ReadByte() ) {
@@ -370,7 +368,7 @@ public partial class SteamLobby : Node {
 			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
 			break;
 		case MessageType.Handshake:
-			GD.Print( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
+			Console.PrintLine( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
 			break;
 		case MessageType.ServerCommand: {
 			ServerCommandType nCommandType = (ServerCommandType)PacketReader.ReadUInt32();
@@ -424,12 +422,15 @@ public partial class SteamLobby : Node {
 		};
 
 		// more for debugging...
-		GD.Print( "Sending p2p handshake..." );
+		Console.PrintLine( "Sending p2p handshake..." );
 		
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 		
 		LobbyBrowser.Instance.OnLobbyJoined( (ulong)LobbyId );
+
+		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+		GetTree().Root.AddChild( ChatBar );
 	}
 
 	private void OnLobbyJoined( LobbyEnter_t pCallback ) {
@@ -460,12 +461,15 @@ public partial class SteamLobby : Node {
 			break;
 		};
 
-		GD.Print( "Sending p2p handshake..." );
+		Console.PrintLine( "Sending p2p handshake..." );
 
 		GetLobbyMembers();
 		MakeP2PHandkshake();
 
 		LobbyBrowser.Instance.OnLobbyJoined( (ulong)LobbyId );
+
+		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+		GetTree().Root.AddChild( ChatBar );
 	}
 
 	/*
@@ -483,7 +487,7 @@ public partial class SteamLobby : Node {
 
 	private void OnP2PSessionRequest( P2PSessionRequest_t pCallback ) {
 		string requester = SteamFriends.GetFriendPersonaName( pCallback.m_steamIDRemote );
-		GD.Print( "[STEAM] " + requester + " sent a P2P session request" );
+		Console.PrintLine( "[STEAM] " + requester + " sent a P2P session request" );
 		SteamNetworking.AcceptP2PSessionWithUser( pCallback.m_steamIDRemote );
 	}
 	/*
@@ -531,10 +535,16 @@ public partial class SteamLobby : Node {
 		return SteamNetworkingUtils.GetLocalPingLocation( out hPingLocation );
 	}
 
-	public new void SetPhysicsProcess( bool bPhysicsProcess ) {
-		base.SetPhysicsProcess( bPhysicsProcess );
-
-		GetNode<Chat>( "/root/ChatBar" ).Visible = bPhysicsProcess;
+	private void CmdLobbyInfo( string arg ) {
+		Console.PrintLine( "[STEAM LOBBY METADATA]" );
+		Console.PrintLine( string.Format( "Name: {0}", LobbyName ) );
+		Console.PrintLine( string.Format( "MaxMembers: {0}", LobbyMaxMembers ) );
+		Console.PrintLine( string.Format( "MemberCount: {0}", LobbyMemberCount ) );
+		Console.PrintLine( string.Format( "LobbyId: {0}", LobbyId.ToString() ) );
+		Console.PrintLine( string.Format( "GameMode: {0}", LobbyGameMode ) );
+		Console.PrintLine( string.Format( "Map: {0}", LobbyMap ) );
+		Console.PrintLine( string.Format( "IsValid: {0}", LobbyId.IsValid() ) );
+		Console.PrintLine( string.Format( "IsLobby: {0}", LobbyId.IsLobby() ) );
 	}
 
 	public override void _EnterTree() {
@@ -565,17 +575,13 @@ public partial class SteamLobby : Node {
 
 		SetPhysicsProcess( true );
 
+		Console.AddCommand( "lobby_info", Callable.From<string>( CmdLobbyInfo ), [], 0, "prints lobby information." );
+
 		ThisSteamID = SteamManager.GetSteamID();
 	}
 
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
-
-		if ( IsHost ) {
-			Ping pingClass = new Ping();
-			PingReply reply = pingClass.Send( "google.com", 7500 );
-			SteamMatchmaking.SetLobbyData( LobbyId, "ping", reply.RoundtripTime.ToString() );
-		}
 
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();

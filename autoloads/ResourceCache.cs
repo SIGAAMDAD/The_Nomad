@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DialogueManagerRuntime;
 using Godot;
 using Renown.World;
 
@@ -62,12 +63,29 @@ public class ResourceCache {
 	public static Resource KeyboardInputMappings;
 	public static Resource GamepadInputMappings;
 
+	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 1024 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 1024 );
 	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 1024 );
 	private static ConcurrentDictionary<string, PackedScene> SceneCache = new ConcurrentDictionary<string, PackedScene>( 1024, 1024 );
 
 	public static bool Initialized = false;
 
+	public static Resource CreateDialogue( string key, string text ) {
+		if ( DialogueCache.TryGetValue( key, out Resource value ) ) {
+			return value;
+		}
+		value = DialogueManager.CreateResourceFromText( text );
+		DialogueCache.TryAdd( key, value );
+		return value;
+	}
+	public static Resource GetDialogue( string key ) {
+		if ( DialogueCache.TryGetValue( key, out Resource value ) ) {
+			return value;
+		}
+		value = ResourceLoader.Load( key );
+		DialogueCache.TryAdd( key, value );
+		return value;
+	}
 	public static AudioStream GetSound( string key ) {
 		if ( AudioCache.TryGetValue( key, out AudioStream value ) ) {
 			return value;

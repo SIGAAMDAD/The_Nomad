@@ -1,13 +1,13 @@
 using Godot;
 
 public partial class AmmoStack : Node {
-	public Resource AmmoType;
+	public AmmoEntity AmmoType;
 
 	public int Amount = 0;
 	public string ItemId;
 
 	public void SetType( AmmoEntity ammo ) {
-		AmmoType = ammo.Data;
+		AmmoType = ammo;
 		ItemId = (string)AmmoType.Get( "id" );
 	}
 	public void AddItems( int nItems ) {

@@ -11,7 +11,11 @@ public partial class BulletShellMesh : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		Cloner = GetNode<MultiMeshInstance2D>( "Cloner" );
+		Cloner = new MultiMeshInstance2D();
+		Cloner.Multimesh = new MultiMesh();
+		Cloner.Multimesh.Mesh = new QuadMesh();
+		( Cloner.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 5.0f, -2.0f );
+		AddChild( Cloner );
 
 		Instance = this;
 	}

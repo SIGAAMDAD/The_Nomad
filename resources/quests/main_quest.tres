@@ -1,0 +1,210 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=36 format=3 uid="uid://d03p2337dl1kq"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_n3bbe"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_4sheh"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_pwlrx"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_8ul5d"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_3241f"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="4_jv4lf"]
+[ext_resource type="Script" uid="uid://2hx4gocf36hm" path="res://addons/questify/scripts/model/quest_any_previous.gd" id="5_3241f"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="5_m47c3"]
+
+[sub_resource type="Resource" id="Resource_3241f"]
+script = ExtResource("2_pwlrx")
+name = "Main QuestSubscribe"
+description = ""
+id = "5O-WfU3ODA"
+optional = false
+graph_editor_position = Vector2(-1740, -1080)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_jv4lf"]
+script = ExtResource("3_3241f")
+description = "Eliminate Kirosla"
+id = "h6FBXcV_4z"
+optional = false
+graph_editor_position = Vector2(-1260, -1100)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_m47c3"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_3241f")
+to = SubResource("Resource_jv4lf")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_f21o7"]
+script = ExtResource("5_m47c3")
+type = "State"
+key = "BountyTargetIsDead"
+id = "Xbi0T2C3Co"
+optional = false
+graph_editor_position = Vector2(-1820, -380)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_s7tsp"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_f21o7")
+to = SubResource("Resource_jv4lf")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_p7cre"]
+script = ExtResource("5_m47c3")
+type = "State"
+key = "CaptivesFreed"
+id = "1PLexuifOC"
+optional = false
+graph_editor_position = Vector2(-1220, -380)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_iht87"]
+script = ExtResource("3_3241f")
+description = "Free the slaves"
+id = "TGqX0TYOfB"
+optional = true
+graph_editor_position = Vector2(-660, -600)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_i7ltn"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_p7cre")
+to = SubResource("Resource_iht87")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_gafep"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_jv4lf")
+to = SubResource("Resource_iht87")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_ogmos"]
+script = ExtResource("3_3241f")
+description = "Care for Niran, as per her mother's final dying wish"
+id = "ajwe-Jr9PR"
+optional = true
+graph_editor_position = Vector2(80, -380)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_i1ekd"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_iht87")
+to = SubResource("Resource_ogmos")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_wwdyq"]
+script = ExtResource("5_m47c3")
+type = "State"
+key = "MelioraFound"
+id = "di_ltI6NAP"
+optional = false
+graph_editor_position = Vector2(-20, -1940)
+graph_editor_size = Vector2(377, 432)
+metadata/value = 3
+
+[sub_resource type="Resource" id="Resource_4gyyd"]
+script = ExtResource("3_3241f")
+description = "Find the Meliora"
+id = "tktlDwKPm0"
+optional = false
+graph_editor_position = Vector2(1180, -2020)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_0kdgq"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_wwdyq")
+to = SubResource("Resource_4gyyd")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_7ktp8"]
+script = ExtResource("5_3241f")
+id = "XwhL7YxH10"
+optional = false
+graph_editor_position = Vector2(620, -1540)
+graph_editor_size = Vector2(207, 97)
+
+[sub_resource type="Resource" id="Resource_arfvn"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_7ktp8")
+to = SubResource("Resource_4gyyd")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_3ysu5"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_jv4lf")
+to = SubResource("Resource_7ktp8")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_dj8bu"]
+script = ExtResource("3_3241f")
+description = "Deliver the bounty to the Guns 'n' Grenades Mercenary Master in the Guild Hall at Galakas"
+id = "a5dd2eSp9i"
+optional = false
+graph_editor_position = Vector2(1160, -1100)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_0i11e"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_dj8bu")
+to = SubResource("Resource_7ktp8")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_oiy41"]
+script = ExtResource("4_jv4lf")
+id = "BDL66ADD7t"
+optional = false
+graph_editor_position = Vector2(2060, -2000)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_umnjh"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_4gyyd")
+to = SubResource("Resource_oiy41")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_hp5dj"]
+script = ExtResource("3_3241f")
+description = "Collect proof of bounty"
+id = "p_LLv9ma40"
+optional = true
+graph_editor_position = Vector2(0, -1100)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_ju5rw"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_jv4lf")
+to = SubResource("Resource_hp5dj")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_5kdr7"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_hp5dj")
+to = SubResource("Resource_dj8bu")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_jqdno"]
+script = ExtResource("5_m47c3")
+type = "State"
+key = "HasBountyProof"
+id = "JsFZeFs-lS"
+optional = false
+graph_editor_position = Vector2(-680, -1560)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_uvq2v"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_jqdno")
+to = SubResource("Resource_hp5dj")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_hekmp"]
+script = ExtResource("1_n3bbe")
+from = SubResource("Resource_jqdno")
+to = SubResource("Resource_dj8bu")
+edge_type = 1
+
+[resource]
+script = ExtResource("3_8ul5d")
+nodes = Array[ExtResource("2_4sheh")]([SubResource("Resource_f21o7"), SubResource("Resource_3241f"), SubResource("Resource_p7cre"), SubResource("Resource_ogmos"), SubResource("Resource_iht87"), SubResource("Resource_jv4lf"), SubResource("Resource_wwdyq"), SubResource("Resource_oiy41"), SubResource("Resource_hp5dj"), SubResource("Resource_jqdno"), SubResource("Resource_dj8bu"), SubResource("Resource_4gyyd"), SubResource("Resource_7ktp8")])
+edges = Array[ExtResource("1_n3bbe")]([SubResource("Resource_m47c3"), SubResource("Resource_s7tsp"), SubResource("Resource_i7ltn"), SubResource("Resource_gafep"), SubResource("Resource_i1ekd"), SubResource("Resource_0kdgq"), SubResource("Resource_arfvn"), SubResource("Resource_3ysu5"), SubResource("Resource_0i11e"), SubResource("Resource_umnjh"), SubResource("Resource_ju5rw"), SubResource("Resource_5kdr7"), SubResource("Resource_uvq2v"), SubResource("Resource_hekmp")])

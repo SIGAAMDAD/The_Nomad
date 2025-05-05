@@ -43,7 +43,7 @@ namespace ChallengeMode {
 		private static CallResult<LeaderboardScoresDownloaded_t> OnLeaderboardScoresDownloaded;
 		private static CallResult<LeaderboardScoreUploaded_t> OnLeaderboardScoreUploaded;
 
-		public static Dictionary<ChallengeMap, ChallengeScore> Scores =  new Dictionary<ChallengeMap, ChallengeScore>();
+		public static Dictionary<ChallengeMap, ChallengeScore> Scores = null;
 		public static List<ChallengeMap> MapList = null;
 
 		private static int CurrentMap = 0;
@@ -244,6 +244,7 @@ namespace ChallengeMode {
 			mapList.Sort();
 
 			MapList = new List<ChallengeMap>( mapList.Count );
+			Scores = new Dictionary<ChallengeMap, ChallengeScore>( mapList.Count );
 			for ( int i = 0; i < mapList.Count; i++ ) {
 				Console.PrintLine( string.Format( "...found map {0}", mapList[i] ) );
 				Resource map = ResourceLoader.Load( mapList[i], "", ResourceLoader.CacheMode.Replace );

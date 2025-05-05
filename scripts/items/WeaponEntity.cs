@@ -111,7 +111,7 @@ public partial class WeaponEntity : Node2D {
 	private PointLight2D MuzzleLight;
 	private RayCast2D RayCast;
 	private AmmoStack Reserve;
-	private Resource Ammo;
+	private AmmoEntity Ammo;
 	private System.Collections.Generic.List<Sprite2D> MuzzleFlashes;
 	private Sprite2D CurrentMuzzleFlash;
 	private int BulletsLeft = 0;
@@ -172,6 +172,10 @@ public partial class WeaponEntity : Node2D {
 		AudioChannel.CallDeferred( "play" );
 	}
 
+	private float RandomFloat( float min, float max ) {
+		return (float)( min + RandomFactory.NextDouble() * ( min - max ) );
+	}
+
 	private void ReleasePickupArea() {
 		if ( PickupArea == null ) {
 			return;
@@ -181,11 +185,14 @@ public partial class WeaponEntity : Node2D {
 
 		PickupArea.CallDeferred( "queue_free" );
 		CallDeferred( "remove_child", PickupArea );
+
+		PickupArea = null;
 	}
 
 	public void TriggerPickup( Entity owner ) {
 		IconSprite?.QueueFree();
-
+		IconSprite = null;
+		
 		ReleasePickupArea();
 
 		_Owner = owner;
@@ -199,6 +206,7 @@ public partial class WeaponEntity : Node2D {
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			IconSprite?.QueueFree();
+			IconSprite = null;
 
 			ReleasePickupArea();
 
@@ -412,9 +420,8 @@ public partial class WeaponEntity : Node2D {
 		if ( _Owner == null ) {
 			IconSprite = new Sprite2D();
 			IconSprite.Name = "IconSprite";
-			IconSprite.SetProcess( false );
-			IconSprite.SetProcessInternal( false );
 			IconSprite.Texture = Icon;
+			IconSprite.UseParentMaterial = true;
 			AddChild( IconSprite );
 		}
 	}
@@ -485,7 +492,7 @@ public partial class WeaponEntity : Node2D {
 		return 0.0f;
 	}
 
-	public void SetAmmo( Resource ammo ) {
+	public void SetAmmo( AmmoEntity ammo ) {
 		Ammo = ammo;
 	}
 	public void SetReserve( AmmoStack stack ) {
@@ -497,7 +504,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void SpawnShells() {
-		BulletShellMesh.AddShell( _Owner, Ammo );
+		BulletShellMesh.AddShell( _Owner, Ammo.Data );
 	}
 
 	private bool Reload() {
@@ -530,16 +537,44 @@ public partial class WeaponEntity : Node2D {
 			}
 		}
 
-		WeaponTimer.SetDeferred( "wait_time", ReloadTime );
-		WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
-		WeaponTimer.CallDeferred( "start" );
+		if ( ResourceCache.Initialized ) {
+			WeaponTimer.SetDeferred( "wait_time", ReloadTime );
+			WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+			WeaponTimer.CallDeferred( "start" );
 
-		CurrentState = WeaponState.Reload;
-		PlaySound( ReloadSfx );
+			CurrentState = WeaponState.Reload;
+			PlaySound( ReloadSfx );
+		} else {
+			OnReloadTimeTimeout();
+		}
 
 		return true;
 	}
 
+	private GodotObject CheckBulletHit( ref float frameDamage ) {
+		float damage = Ammo.GetDamage();
+		frameDamage += damage;
+		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
+			GD.Print( "hit object " + collision );
+			if ( collision is Entity entity && entity != null ) {
+				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
+				if ( distance > 20.0f ) {
+					// out of bleed range, no healing
+					frameDamage -= damage;
+				}
+				distance /= Ammo.GetRange();
+				damage *= Ammo.GetDamageFalloff( distance );
+				entity.Damage( _Owner, damage );
+			} else if ( collision is Hitbox hitbox && hitbox != null ) {
+				hitbox.OnHit( _Owner );
+			} else {
+				frameDamage -= damage;
+				DebrisFactory.Create( RayCast.GetCollisionPoint() );
+			}
+			return collision;
+		}
+		return null;
+	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
 		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
@@ -601,37 +636,39 @@ public partial class WeaponEntity : Node2D {
 			SpawnShells();
 		}
 
-		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Ammo.Get( "properties" );
-
-		soundLevel = (float)properties[ "range" ];
-//		RayCast.GlobalPosition = _Owner.GlobalPosition;
-//		RayCast.CollideWithAreas = true;
-//		RayCast.CollideWithBodies = true;
-//		RayCast.CollisionMask = 2 | 5;
 		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
-
 		PlaySound( UseFirearmSfx );
-		
-		float damage = (float)properties[ "damage" ];
-		float frameDamage = damage;
-		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is Entity entity && entity != null && entity != _Owner ) {
-				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-				if ( distance > 20.0f ) {
-					// out of bleed range, no healing
-					frameDamage = 0.0f;
-				}
-				distance /= soundLevel;
-				damage *= ( (Curve)properties[ "damage_falloff" ] ).SampleBaked( distance );
+		float frameDamage = 0.0f;
 
-				entity.Damage( _Owner, damage );
-			} else if ( collision is Area2D hitbox && hitbox != null && ( hitbox.CollisionMask & 9 ) != 0 ) {
-				if ( (bool)hitbox.GetMeta( "IsHeadHitbox" ) ) {
-					( (Node)hitbox.GetMeta( "Owner" ) ).Call( "OnHeadHit", _Owner );
+		soundLevel = Ammo.GetRange();
+		if ( Ammo.GetAmmoType() == AmmoType.Pellets ) {
+			if ( Ammo.GetShotgunBullshit() != AmmoEntity.ShotgunBullshit.Slug ) {
+				for ( int i = 0; i < Ammo.GetPelletCount(); i++ ) {
+					// TODO: implement spread mechanics
+					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 25.0f ) ) ) * soundLevel;
+					CheckBulletHit( ref frameDamage );
 				}
 			} else {
-				frameDamage = 0.0f;
-				DebrisFactory.Create( RayCast.GetCollisionPoint() );
+				CheckBulletHit( ref frameDamage );
+			}
+		} else {
+			GodotObject collision = CheckBulletHit( ref frameDamage );
+			if ( collision != null ) {
+				switch ( Ammo.GetEffects() ) {
+				case AmmoEntity.ExtraEffects.Incendiary: {
+					if ( collision is Entity entity && entity != null ) {
+						entity.AddStatusEffect( "status_burning" );
+					}
+					break; }
+				case AmmoEntity.ExtraEffects.Explosive: {
+					if ( collision is Node2D node && node != null ) {
+						ExplosionFactory.AddExplosion( node.GlobalPosition );
+						if ( node is Entity entity && entity != null ) {
+							entity.AddStatusEffect( "status_burning" );
+						}
+					}
+					break; }
+				};
 			}
 		}
 
@@ -697,7 +734,9 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnReloadTimeTimeout() {
-		WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+		if ( ResourceCache.Initialized ) {
+			WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+		}
 
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );
 		if ( _Owner is Player player && player != null ) {

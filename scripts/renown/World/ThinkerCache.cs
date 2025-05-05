@@ -22,12 +22,7 @@ namespace Renown.World {
 
 					bool premade = reader.LoadBoolean( key + "IsPremade" );
 
-					Thinker thinker;
-					if ( premade ) {
-						thinker = GetTree().Root.GetNode<Thinker>( reader.LoadString( key + "InitialPath" ) );
-					} else {
-						thinker = new Thinker();
-					}
+					Thinker thinker = new Thinker();
 					thinker.Load( reader, i );
 
 					if ( !premade ) {
