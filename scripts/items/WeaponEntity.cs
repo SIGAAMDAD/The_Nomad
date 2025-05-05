@@ -672,6 +672,8 @@ public partial class WeaponEntity : Node2D {
 			}
 		}
 
+		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
+
 		EmitSignalUsed( this );
 
 		return frameDamage;

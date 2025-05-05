@@ -20,7 +20,7 @@ size = Vector2(12, 18)
 [node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 z_index = 5
 collision_layer = 19
-collision_mask = 18
+collision_mask = 19
 script = ExtResource("1_wewif")
 LoseInterestTime = 10.0
 SightDetectionTime = 3.0
@@ -44,14 +44,6 @@ script = ExtResource("4_jglyl")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadAnimations/HeadHitbox"]
 position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_yrnty")
-
-[node name="SightDetectionArea" type="Area2D" parent="Animations/HeadAnimations"]
-position = Vector2(0, 7)
-collision_layer = 18
-collision_mask = 18
-
-[node name="SightPolygon" type="CollisionPolygon2D" parent="Animations/HeadAnimations/SightDetectionArea"]
-polygon = PackedVector2Array(12, -10, 20, -21, 161, -36, 161, 22, 19, 2)
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")

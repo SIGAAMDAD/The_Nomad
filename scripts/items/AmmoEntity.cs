@@ -76,27 +76,28 @@ public partial class AmmoEntity : Node2D {
 			return;
 		}
 
-		IconSprite = new Sprite2D();
-		IconSprite.Name = "Icon";
-		IconSprite.Texture = (Texture2D)Data.Get( "icon" );
-		IconSprite.ProcessMode = ProcessModeEnum.Disabled;
-		IconSprite.UseParentMaterial = true;
-		AddChild( IconSprite );
+		if ( IsInsideTree() ) {
+			IconSprite = new Sprite2D();
+			IconSprite.Name = "Icon";
+			IconSprite.Texture = (Texture2D)Data.Get( "icon" );
+			IconSprite.ProcessMode = ProcessModeEnum.Disabled;
+			IconSprite.UseParentMaterial = true;
+			AddChild( IconSprite );
 
-		CircleShape2D circle = new CircleShape2D();
-		circle.Radius = 7.0f;
+			CircleShape2D circle = new CircleShape2D();
+			circle.Radius = 7.0f;
 
-		CollisionShape2D shape = new CollisionShape2D();
-		shape.Shape = circle;
+			CollisionShape2D shape = new CollisionShape2D();
+			shape.Shape = circle;
 
-		PickupArea = new Area2D();
-		PickupArea.CollisionLayer = 13;
-		PickupArea.CollisionMask = 13;
-		PickupArea.Name = "PickupArea";
-		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnPickupArea2DBodyShapeEntered ) );
-		PickupArea.AddChild( shape );
-		AddChild( PickupArea );
-
+			PickupArea = new Area2D();
+			PickupArea.CollisionLayer = 13;
+			PickupArea.CollisionMask = 13;
+			PickupArea.Name = "PickupArea";
+			PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnPickupArea2DBodyShapeEntered ) );
+			PickupArea.AddChild( shape );
+			AddChild( PickupArea );
+		}
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
 		if ( properties.ContainsKey( "properties" ) ) {
