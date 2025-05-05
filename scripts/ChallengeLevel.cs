@@ -38,8 +38,8 @@ public partial class ChallengeLevel : LevelData {
 
 	private Stopwatch Timer;
 
-	private int TotalScore = 0;
-	private int MaxCombo = 0;
+	private static int TotalScore = 0;
+	private static int MaxCombo = 0;
 	private ScoreBonus BonusFlags = ScoreBonus.All;
 
 	private void OnPlayerDie( Entity source, Entity target ) {
@@ -99,12 +99,12 @@ public partial class ChallengeLevel : LevelData {
 
 		GetTree().CallDeferred( "change_scene_to_file", "res://scenes/main_menu.tscn" );
 	}
-	public void EndCombo( int nScore ) {
+	public static void EndCombo( int nScore ) {
 		if ( nScore > MaxCombo ) {
 			MaxCombo = nScore;
 		}
 	}
-	public void IncreaseScore( int nAmount ) {
+	public static void IncreaseScore( int nAmount ) {
 		TotalScore += nAmount * MaxCombo;
 	}
 

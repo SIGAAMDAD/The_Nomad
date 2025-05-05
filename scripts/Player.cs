@@ -636,6 +636,9 @@ public partial class Player : Entity {
 			return; // iframes
 		}
 
+		if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+			ChallengeLevel.EndCombo( ComboCounter );
+		}
 		ComboCounter = 0;
 
 		System.Threading.Interlocked.Exchange( ref Health, Health - nAmount );
