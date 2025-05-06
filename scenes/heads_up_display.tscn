@@ -205,6 +205,7 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
+page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false

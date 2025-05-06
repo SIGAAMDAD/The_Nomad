@@ -551,11 +551,10 @@ public partial class WeaponEntity : Node2D {
 		return true;
 	}
 
-	private GodotObject CheckBulletHit( ref float frameDamage ) {
+	private void CheckBulletHit( ref float frameDamage ) {
 		float damage = Ammo.GetDamage();
 		frameDamage += damage;
 		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			GD.Print( "hit object " + collision );
 			if ( collision is Entity entity && entity != null ) {
 				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
 				if ( distance > 20.0f ) {
@@ -565,15 +564,31 @@ public partial class WeaponEntity : Node2D {
 				distance /= Ammo.GetRange();
 				damage *= Ammo.GetDamageFalloff( distance );
 				entity.Damage( _Owner, damage );
+				switch ( Ammo.GetEffects() ) {
+				case AmmoEntity.ExtraEffects.Incendiary: {
+					entity.AddStatusEffect( "status_burning" );
+					break; }
+				case AmmoEntity.ExtraEffects.Explosive: {
+					ExplosionFactory.AddExplosion( entity.GlobalPosition );
+					entity.AddStatusEffect( "status_burning" );
+					break; }
+				};
 			} else if ( collision is Hitbox hitbox && hitbox != null ) {
 				hitbox.OnHit( _Owner );
+				switch ( Ammo.GetEffects() ) {
+				case AmmoEntity.ExtraEffects.Incendiary: {
+					( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
+					break; }
+				case AmmoEntity.ExtraEffects.Explosive: {
+					ExplosionFactory.AddExplosion( hitbox.GlobalPosition );
+					( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
+					break; }
+				};
 			} else {
 				frameDamage -= damage;
 				DebrisFactory.Create( RayCast.GetCollisionPoint() );
 			}
-			return collision;
 		}
-		return null;
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
@@ -645,31 +660,14 @@ public partial class WeaponEntity : Node2D {
 			if ( Ammo.GetShotgunBullshit() != AmmoEntity.ShotgunBullshit.Slug ) {
 				for ( int i = 0; i < Ammo.GetPelletCount(); i++ ) {
 					// TODO: implement spread mechanics
-					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 25.0f ) ) ) * soundLevel;
+					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 35.0f ) ) ) * soundLevel;
 					CheckBulletHit( ref frameDamage );
 				}
 			} else {
 				CheckBulletHit( ref frameDamage );
 			}
 		} else {
-			GodotObject collision = CheckBulletHit( ref frameDamage );
-			if ( collision != null ) {
-				switch ( Ammo.GetEffects() ) {
-				case AmmoEntity.ExtraEffects.Incendiary: {
-					if ( collision is Entity entity && entity != null ) {
-						entity.AddStatusEffect( "status_burning" );
-					}
-					break; }
-				case AmmoEntity.ExtraEffects.Explosive: {
-					if ( collision is Node2D node && node != null ) {
-						ExplosionFactory.AddExplosion( node.GlobalPosition );
-						if ( node is Entity entity && entity != null ) {
-							entity.AddStatusEffect( "status_burning" );
-						}
-					}
-					break; }
-				};
-			}
+			CheckBulletHit( ref frameDamage );
 		}
 
 		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;

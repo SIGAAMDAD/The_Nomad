@@ -1,0 +1,83 @@
+[gd_scene load_steps=12 format=3 uid="uid://dg3cfr08fb0eb"]
+
+[ext_resource type="SpriteFrames" uid="uid://csqicniagrs8e" path="res://resources/animations/mobs/gatling_gunner_body_animations.tres" id="1_bdxl8"]
+[ext_resource type="Script" uid="uid://0hubq32d7xjl" path="res://scripts/renown/Thinkers/Mercenary/GatlingGunner.cs" id="1_cv8bp"]
+[ext_resource type="SpriteFrames" uid="uid://bxuirhpn3gfoi" path="res://resources/animations/mobs/gatling_gunner_head_animations.tres" id="2_cv8bp"]
+[ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="3_jfitb"]
+[ext_resource type="Shader" uid="uid://ckxkr8gqv25dk" path="res://shaders/visor_glow_red.gdshader" id="4_jfitb"]
+[ext_resource type="SpriteFrames" uid="uid://mpldvge2xkxl" path="res://resources/animations/mobs/gatling_gunner_arm_animations.tres" id="4_qh73h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bdxl8"]
+size = Vector2(4, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cv8bp"]
+radius = 72.0069
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qh73h"]
+shader = ExtResource("4_jfitb")
+shader_parameter/glow_color = Color(1, 0, 0, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ip21c"]
+size = Vector2(11, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jm5gq"]
+size = Vector2(13, 17)
+
+[node name="MercenaryGatlingGunner" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+script = ExtResource("1_cv8bp")
+LoseInterestTime = 6.0
+SightDetectionTime = 4.0
+SightDetectionSpeed = 0.25
+Health = 250.0
+Relations = {}
+Debts = {}
+
+[node name="Animations" type="Node2D" parent="."]
+
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(0, -7)
+sprite_frames = ExtResource("1_bdxl8")
+animation = &"idle"
+
+[node name="BackpackHitbox" type="Area2D" parent="Animations/BodyAnimations" node_paths=PackedStringArray("Parent")]
+script = ExtResource("3_jfitb")
+Parent = NodePath("../../..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/BodyAnimations/BackpackHitbox"]
+position = Vector2(-7, 0)
+shape = SubResource("RectangleShape2D_bdxl8")
+
+[node name="BlowupArea" type="Area2D" parent="Animations/BodyAnimations"]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/BodyAnimations/BlowupArea"]
+shape = SubResource("CircleShape2D_cv8bp")
+disabled = true
+
+[node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
+material = SubResource("ShaderMaterial_qh73h")
+position = Vector2(1, -16)
+sprite_frames = ExtResource("2_cv8bp")
+animation = &"idle"
+
+[node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
+script = ExtResource("3_jfitb")
+Parent = NodePath("../../..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadAnimations/HeadHitbox"]
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_ip21c")
+
+[node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
+position = Vector2(1, -2)
+sprite_frames = ExtResource("4_qh73h")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -1.5)
+shape = SubResource("RectangleShape2D_jm5gq")
+
+[node name="DetectionMeter" type="Line2D" parent="."]
+position = Vector2(11, -8)
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
 [ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
-[ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow.gdshader" id="2_yrnty"]
+[ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow_blue.gdshader" id="2_yrnty"]
 [ext_resource type="SpriteFrames" uid="uid://bghffidjv2c7s" path="res://resources/animations/mobs/mercenary_arm_animations.tres" id="3_yrnty"]
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="4_jglyl"]
 [ext_resource type="SpriteFrames" uid="uid://dq5w8gujhurx" path="res://resources/animations/mobs/mercenary_body_animations.tres" id="4_u1d28"]
@@ -15,16 +15,16 @@ shader_parameter/glow_color = Color(0, 0.133333, 0.541176, 1)
 size = Vector2(11, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jglyl"]
-size = Vector2(12, 18)
+size = Vector2(19, 18)
 
 [node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 z_index = 5
-collision_layer = 19
-collision_mask = 19
+collision_layer = 155
+collision_mask = 155
 script = ExtResource("1_wewif")
 LoseInterestTime = 10.0
-SightDetectionTime = 3.0
-SightDetectionSpeed = 1.0
+SightDetectionTime = 4.0
+SightDetectionSpeed = 0.25
 Relations = {}
 Debts = {}
 
@@ -36,10 +36,9 @@ position = Vector2(0, -7)
 sprite_frames = ExtResource("2_61sma")
 animation = &"move"
 
-[node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations"]
-collision_layer = 257
-collision_mask = 257
+[node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
 script = ExtResource("4_jglyl")
+Parent = NodePath("../../..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadAnimations/HeadHitbox"]
 position = Vector2(0.5, -1)
@@ -47,14 +46,14 @@ shape = SubResource("RectangleShape2D_yrnty")
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")
-animation = &"idle"
+animation = &"die_low"
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_yrnty")
 animation = &"move"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 6)
+position = Vector2(-0.5, 6)
 shape = SubResource("RectangleShape2D_jglyl")
 
 [node name="DetectionMeter" type="Line2D" parent="."]

@@ -89,13 +89,14 @@ public partial class AdaptiveMusicManager : Node {
 		CombatPlayer.Set( "parameters/looping", true );
 		AddChild( CombatPlayer );
 
-		CalmPlayer.Play();
+	//	CalmPlayer.Play();
 	}
 
 	public override void _Process( double delta ) {
 		if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
 			return;
 		}
+		return;
 
 		if ( Player.InCombat && CurrentAudio != CombatMusicStream ) {
 			TransitionTo( CalmPlayer, CombatPlayer );

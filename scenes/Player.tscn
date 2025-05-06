@@ -186,7 +186,6 @@ wait_time = 0.8
 one_shot = true
 
 [node name="AimAssist" type="Node2D" parent="."]
-process_mode = 4
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 position = Vector2(9.53674e-07, -2)
@@ -199,10 +198,10 @@ width_curve = SubResource("Curve_0rnld")
 process_mode = 1
 process_thread_group = 1
 process_thread_group_order = 0
-process_thread_messages = 2
+process_thread_messages = 0
 position = Vector2(-3.8147e-06, 5.33333)
 target_position = Vector2(740.047, 0)
-collision_mask = 257
+collision_mask = 393
 collide_with_areas = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]

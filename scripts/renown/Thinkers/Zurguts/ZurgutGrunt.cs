@@ -1,10 +1,23 @@
-using System.Collections.Generic;
 using Godot;
 
 namespace Renown.Thinkers {
 	public partial class ZurgutGrunt : Thinker {
-		private static readonly float BlowupDamage = 80.0f;
+		private enum State : uint {
+			Idle,
+			Attacking,
+			Hunting,
 
+			Count
+		};
+
+		private static readonly float BlowupDamage = 120.0f;
+
+		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
+		private static readonly float ViewAngleAmount = Mathf.DegToRad( 90.0f );
+		private static readonly float MaxViewDistance = 220.0f;
+
+		[Export]
+		private float LoseInterestTime = 0.0f;
 		[Export]
 		private float SightDetectionTime = 5.0f;
 		[Export]
@@ -18,6 +31,8 @@ namespace Renown.Thinkers {
 
 		//private HashSet<Entity> SightTargets = new HashSet<Entity>();
 		private Entity SightTarget = null;
+
+		private State CurrentState = State.Idle;
 
 		private bool Enraged = false;
 		private Entity Target = null;
@@ -37,16 +52,17 @@ namespace Renown.Thinkers {
 		private Tween AngleTween;
 		private Tween ChangeInvestigationAngleTween;
 
-		private void OnSightDetectionAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is Entity entity && entity != null && IsValidTarget( entity ) ) {
-				SightTarget = entity;
-//				SightTargets.Add( entity );	
-			}
-		}
-		private void OnSightDetectionAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-			if ( body is Entity entity && entity != null && entity == SightTarget ) {
-				SightTarget = null;
-//				SightTargets.Remove( entity );
+		private void GenerateRayCasts() {
+			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
+			SightLines = new RayCast2D[ rayCount ];
+			for ( int i = 0; i < rayCount; i++ ) {
+				RayCast2D ray = new RayCast2D();
+				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
+				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
+				ray.Enabled = true;
+				ray.CollisionMask = 2;
+				SightLines[i] = ray;
+				HeadAnimations.AddChild( ray );
 			}
 		}
 
@@ -148,10 +164,6 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 			}
 
-			Area2D SightDetectionArea = GetNode<Area2D>( "SightDetectionArea" );
-			SightDetectionArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DEntered ) );
-			SightDetectionArea.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnSightDetectionAreaShape2DExited ) );
-
 			Die += OnDie;
 
 			BlowupArea = GetNode<Area2D>( "BlowupArea" );
@@ -165,8 +177,10 @@ namespace Renown.Thinkers {
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 
-			Hitbox HeadHitbox = GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" );
+			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
+
+			GenerateRayCasts();
 		}
 
 		protected override void ProcessAnimations() {
@@ -221,13 +235,32 @@ namespace Renown.Thinkers {
 			}
 		}
 		protected override void Think() {
+			CheckSight();
+
 			if ( Enraged ) {
 				return;
 			}
+
+			switch ( CurrentState ) {
+			case State.Attacking:
+			case State.Hunting:
+				break;
+			case State.Idle:
+				break;
+			};
 		}
 
 		private void CheckSight() {
-			Entity sightTarget = SightTarget;
+			/*
+			Entity sightTarget = null;
+			for ( int i = 0; i < SightLines.Length; i++ ) {
+				sightTarget = SightLines[i].GetCollider() as Entity;
+				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
+					break;
+				} else {
+					sightTarget = null;
+				}
+			}
 
 			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
 				// out of sight, but we got something
@@ -238,14 +271,52 @@ namespace Renown.Thinkers {
 						SightDetectionAmount = 0.0f;
 					}
 					break;
+				case MobAwareness.Suspicious:
+					SetSuspicious();
+					break;
+				case MobAwareness.Alert:
+					SetAlert();
+					break;
 				};
+				SetDetectionColor();
 				CanSeeTarget = false;
 				return;
 			}
 
-			Target = sightTarget;
-			LastTargetPosition = Target.GlobalPosition;
-			CanSeeTarget = true;
+			if ( sightTarget != null ) {
+				if ( sightTarget.GetHealth() <= 0.0f ) {
+					// dead?
+				} else {
+					SightTarget = sightTarget;
+					LastTargetPosition = sightTarget.GlobalPosition;
+					CanSeeTarget = true;
+
+					if ( Awareness >= MobAwareness.Suspicious ) {
+						// if we're already suspicious, then detection rate increases as we're more alert
+						SightDetectionAmount += SightDetectionSpeed * 2.0f;
+					} else {
+						SightDetectionAmount += SightDetectionSpeed;
+					}
+				}
+			}
+
+			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
+				SetSuspicious();
+				CurrentState = State.Investigating;
+				SetNavigationTarget( LastTargetPosition );
+				if ( LoseInterestTimer.IsStopped() ) {
+					LoseInterestTimer.Start();
+				}
+			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
+				SetAlert();
+			}
+			if ( IsAlert() ) {
+				SetAlert();
+			} else if ( IsSuspicious() ) {
+				SetSuspicious();
+			}
+			SetDetectionColor();
+			*/
 		}
 
 		private void SwingHammer() {

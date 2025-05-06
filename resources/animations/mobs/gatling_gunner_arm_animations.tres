@@ -1,0 +1,49 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://mpldvge2xkxl"]
+
+[ext_resource type="Texture2D" uid="uid://ch2fk44yclw8n" path="res://textures/spritesheets/mercenary_gatling_gunner.png" id="1_waha5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6owe"]
+atlas = ExtResource("1_waha5")
+region = Rect2(64, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3w04y"]
+atlas = ExtResource("1_waha5")
+region = Rect2(128, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qt50r"]
+atlas = ExtResource("1_waha5")
+region = Rect2(192, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uwm8i"]
+atlas = ExtResource("1_waha5")
+region = Rect2(0, 32, 64, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i6owe")
+}],
+"loop": false,
+"name": &"aim",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3w04y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qt50r")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uwm8i")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

@@ -456,6 +456,8 @@ namespace Renown.Thinkers {
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			}
+
+			SetMeta( "Faction", Faction );
 		}
         public override void _PhysicsProcess( double delta ) {
 			if ( Health <= 0.0f ) {
@@ -471,7 +473,7 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
-			MoveAlongPath();
+			CallDeferred( "MoveAlongPath" );
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {

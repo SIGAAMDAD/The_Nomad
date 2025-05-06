@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
+using Renown.Thinkers;
+using Renown.World;
 
 public partial class Player : Entity {
 	public enum Hands : byte {
@@ -652,7 +654,7 @@ public partial class Player : Entity {
 		}
 		ComboCounter = 0;
 
-		System.Threading.Interlocked.Exchange( ref Health, Health - nAmount );
+		System.Threading.Interlocked.Exchange( ref Health, Health - ( nAmount * 0.75f ) );
 		System.Threading.Interlocked.Exchange( ref Rage, Rage + nAmount );
 		if ( Rage > 100.0f ) {
 			System.Threading.Interlocked.Exchange( ref Rage, 100.0f );
@@ -874,6 +876,7 @@ public partial class Player : Entity {
 			if ( weapon.IsBladed() && ( Flags & PlayerFlags.UsingMelee ) == 0 ) {
 				Flags |= PlayerFlags.UsingMelee;
 			}
+			AimRayCast.CollisionMask = 1 | 8 | 9;
 			FrameDamage += weapon.Use( weapon.GetLastUsedMode(), out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			ComboCounter++;
 			Flags |= PlayerFlags.UsingWeapon;
@@ -1616,7 +1619,9 @@ public partial class Player : Entity {
 		base._PhysicsProcess( delta );
 
 		AimRayCast.ForceRaycastUpdate();
-		if ( AimRayCast.GetCollider() is Entity entity && entity != null && entity.GetFaction() != Faction ) {
+		if ( AimRayCast.GetCollider() is GodotObject entity && entity.HasMeta( "Faction" ) && (Faction)entity.GetMeta( "Faction" ) != Faction ) {
+			AimLine.DefaultColor = AimingAtTarget;
+		} else if ( AimRayCast.GetCollider() is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else {
 			AimLine.DefaultColor = AimingAtNull;

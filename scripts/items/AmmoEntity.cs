@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Godot;
-using Steamworks;
 
 public partial class AmmoEntity : Node2D {
 	public enum ExtraEffects : uint {
