@@ -1,8 +1,11 @@
 using Godot;
+using Renown.World;
 
 public partial class Checkpoint : InteractionItem {
 	[Export]
-	private StringName Title;
+	private string Title;
+	[Export]
+	private WorldArea Location;
 
 	private PointLight2D Light;
 	private AnimatedSprite2D Bonfire;
@@ -13,6 +16,8 @@ public partial class Checkpoint : InteractionItem {
 	private Texture2D Icon;
 
 	private bool Activated = false;
+
+	public WorldArea GetLocation() => Location;
 
 	public bool GetActivated() => Activated;
 	public void Activate() {
@@ -37,7 +42,7 @@ public partial class Checkpoint : InteractionItem {
 		} ) );
 		AudioChannel.Play();
 	}
-	public StringName GetTitle() => Title;
+	public string GetTitle() => Title;
 
 	private void OnScreenEnter() {
 		ProcessMode = ProcessModeEnum.Pausable;
@@ -53,19 +58,19 @@ public partial class Checkpoint : InteractionItem {
 	}
 
 	public void Save() {
-		SaveSystem.SaveSectionWriter writer = new SaveSystem.SaveSectionWriter( Name );
-		writer.SaveBool( "activated", Activated );
-		writer.Flush();
+		using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
+			writer.SaveBool( nameof( Activated ), Activated );
+		}
 	}
 	public void Load() {
-		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( Name  );
+		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );
 
 		// save file compatibility
 		if ( reader == null ) {
 			return;
 		}
 
-		Activated = reader.LoadBoolean( "activated" );
+		Activated = reader.LoadBoolean( nameof( Activated ) );
 
 		if ( Activated ) {
 			Light.Show();

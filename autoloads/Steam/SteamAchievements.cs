@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Steamworks;
 
@@ -75,17 +76,21 @@ public partial class SteamAchievements : Node {
 		Forever_Alone_Forever_Forlorn,
 		One_In_A_Million,
 		Touch_Grass,
+		And_So_It_Begins,
+		Not_Like_Us,
+		John_Wick_Mode,
+		The_Man_The_Myth_The_Legend,
 		
 		Count
 	};
 
 	public class SteamAchievement {
-		private AchievementID Id;
-		private string IdString;
-		private string Name;
+		private readonly AchievementID Id;
+		private readonly string IdString;
+		private readonly string Name;
+		private readonly object MaxValue = null;
 		private bool Achieved = false;
 		private object Value = null;
-		private object MaxValue = null;
 
 		public SteamAchievement( AchievementID id, string name ) {
 			Id = id;
@@ -114,20 +119,24 @@ public partial class SteamAchievements : Node {
 			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 
-		public object GetValue() {
-			return Value;
+		public object GetValue() => Value;
+		public object GetMaxValue() => MaxValue;
+		public string GetName() => Name;
+		public string GetIdString() => IdString;
+		public void SetAchieved( bool bAchieved ) => Achieved = bAchieved;
+		public void SetFloatValue( float value ) {
+			if ( Value is float floatValue ) {
+				Value = value;
+				return;
+			}
+			Console.PrintError( string.Format( "[STEAM] Attempted to set achievement statistic data for {0} to invalid data type (float)", Name ) );
 		}
-		public object GetMaxValue() {
-			return MaxValue;
-		}
-		public string GetName() {
-			return Name;
-		}
-		public string GetIdString() {
-			return IdString;
-		}
-		public void SetAchieved( bool bAchieved ) {
-			Achieved = bAchieved;
+		public void SetIntValue( int value ) {
+			if ( Value is int floatValue ) {
+				Value = value;
+				return;
+			}
+			Console.PrintError( string.Format( "[STEAM] Attempted to set achievement statistic data for {0} to invalid data type (int)", Name ) );
 		}
     };
 
@@ -177,14 +186,20 @@ public partial class SteamAchievements : Node {
 			return;
 		}
 
+		int count = 0;
 		foreach ( var achievement in AchievementTable ) {
-			bool bAchieved;
-			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bAchieved ) ) {
+			if ( !SteamUserStats.GetAchievement( achievement.Value.GetIdString(), out bool bAchieved ) ) {
 				Console.PrintError( string.Format( "[STEAM] Error getting achievement data for {0}", achievement.Value.GetIdString() ) );
 				continue;
 			}
+			if ( bAchieved ) {
+				count++;
+			}
 			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
 			AchievementTable[ achievement.Key ].SetAchieved( bAchieved );
+		}
+		if ( count == AchievementTable.Count ) {
+			ActivateAchievement( "ACH_THE_MAN_THE_MYTH_THE_LEGEND" );
 		}
 	}
 	private void OnUserStatsReceived( UserStatsReceived_t pCallback ) {
@@ -197,7 +212,7 @@ public partial class SteamAchievements : Node {
 			return;
 		}
 
-		GD.Print( "Got local player statistics & achievements." );
+		Console.PrintLine( "Got local player statistics & achievements." );
 		SteamStatsReceived = true;
 	}
 	private void OnUserStatsStored( UserStatsStored_t pCallback ) {
@@ -207,37 +222,46 @@ public partial class SteamAchievements : Node {
 		if ( pCallback.m_nGameID != (ulong)SteamManager.GetAppID() ) {
 			Console.PrintError( "[STEAM] Incorrect AppID!" );
 		}
+		Console.PrintLine( "[STEAM] Stored steam stats." );
 	}
 
 	public static void SetAchievementProgress( string id, string statName, int nValue ) {
-		if ( !AchievementTable.ContainsKey( id ) ) {
+		if ( !AchievementTable.TryGetValue( id, out SteamAchievement achievement ) ) {
 			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
-		SteamUserStats.SetStat( statName, nValue );
+		achievement.SetIntValue( nValue );
+		if ( !SteamUserStats.SetStat( statName, nValue ) ) {
+			Console.PrintError( string.Format( "[STEAM] Error setting statistic \"{0}\" for achievement {0}!", statName, id ) );
+			return;
+		}
 		while ( !SteamUserStats.StoreStats() ) {
 			Console.PrintError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
 	public static void SetAchievementProgress( string id, string statName, float nValue ) {
-		if ( !AchievementTable.ContainsKey( id ) ) {
+		if ( !AchievementTable.TryGetValue( id, out SteamAchievement achievement ) ) {
 			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
-		SteamUserStats.SetStat( statName, nValue );
+		achievement.SetFloatValue( nValue );
+		if ( !SteamUserStats.SetStat( statName, nValue ) ) {
+			Console.PrintError( string.Format( "[STEAM] Error setting statistic \"{0}\" for achievement {0}!", statName, id ) );
+			return;
+		}
 		while ( !SteamUserStats.StoreStats() ) {
 			Console.PrintError( "[STEAM] Steam couldn't store stats!" );
 		}
 	}
 	public static void ActivateAchievement( string id ) {
-		if ( !AchievementTable.ContainsKey( id ) ) {
+		if ( !AchievementTable.TryGetValue( id, out SteamAchievement achievement ) ) {
 			Console.PrintError( string.Format( "[STEAM] Achievement {0} doesn't exist!", id ) );
 			return;
 		}
 
-		AchievementTable[ id ].SetAchieved( true );
+		achievement.SetAchieved( true );
 
 		if ( !SteamUserStats.SetAchievement( id ) ) {
 			Console.PrintError( "[STEAM] Error activating achievement!" );

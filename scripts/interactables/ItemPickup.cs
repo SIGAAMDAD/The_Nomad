@@ -1,3 +1,4 @@
+using GDExtension.Wrappers;
 using Godot;
 
 public partial class ItemPickup : InteractionItem {
@@ -20,7 +21,7 @@ public partial class ItemPickup : InteractionItem {
 		case "Weapon":
 			WeaponEntity weapon = new WeaponEntity();
 			weapon.Name = "Weapon";
-			weapon.Data = Data;
+			weapon.Data = Data as ItemDefinition;
 			weapon.SetResourcePath( "player/" );
 			weapon.SetOwner( player );
 			break;

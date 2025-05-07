@@ -295,7 +295,7 @@ public partial class Player : Entity {
 			foreach ( var stack in AmmoStacks ) {
 				// TODO: FIXME!
 				writer.SaveInt( string.Format( "AmmoStacksAmount{0}", stackIndex ), stack.Value.Amount );
-				writer.SaveString( string.Format( "AmmoStacksType{0}", stackIndex ), (string)stack.Value.AmmoType.Get( "id" ) );
+				writer.SaveString( string.Format( "AmmoStacksType{0}", stackIndex ), (string)stack.Value.AmmoType.Data.Get( "id" ) );
 				stackIndex++;
 			}
 
@@ -396,7 +396,7 @@ public partial class Player : Entity {
 	}
 
 	public void ThoughtBubble( string text ) {
-		HUD.StartThoughtBubble( text );
+		HeadsUpDisplay.StartThoughtBubble( text );
 	}
 
 	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
@@ -1255,14 +1255,7 @@ public partial class Player : Entity {
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
 
-		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
-			CheckpointDrinkTimer.Stop();
-			CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
-			IdleAnimation.Play( "checkpoint_exit" );
-			if ( !IdleAnimation.IsConnected( "animation_finished", Callable.From( OnCheckpointExitEnd ) ) ) {
-				IdleAnimation.Connect( "animation_finished", Callable.From( OnCheckpointExitEnd ) );
-			}
-		} else if ( Health <= 0.0f ) {
+		if ( Health <= 0.0f ) {
 			// dead
 			SetHealth( 100.0f );
 			SetRage( 0.0f );
@@ -1728,8 +1721,8 @@ public partial class Player : Entity {
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f && Rage > 0.0f ) {
-			Health += 5.0f * delta;
-			Rage -= 15.0f * delta;
+			Health += 4.0f * ComboCounter * delta;
+			Rage -= 20.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;

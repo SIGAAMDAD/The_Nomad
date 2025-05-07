@@ -3,6 +3,8 @@ using Renown.World;
 
 public partial class TileMapFloor : Node2D {
 	[Export]
+	private StringName AreaName;
+	[Export]
 	private TileMapLayer Floor;
 	[Export]
 	private TileMapLayer Decor;
@@ -32,6 +34,7 @@ public partial class TileMapFloor : Node2D {
 
 	private bool IsPlayerHere = false;
 
+	public StringName GetAreaName() => AreaName;
 	public bool IsInside() => !IsExterior;
 	public bool GetPlayerStatus() => IsPlayerHere;
 	public TileMapFloor GetUpper() => UpperLayer;
@@ -48,7 +51,9 @@ public partial class TileMapFloor : Node2D {
 
 		body.CallDeferred( "SetTileMapFloorLevel", Level );
 
-		( Floor.Material as ShaderMaterial )?.SetShaderParameter( "alpha_blend", false );
+		if ( Floor != null ) {
+			( Floor.Material as ShaderMaterial )?.SetShaderParameter( "alpha_blend", false );
+		}
 		if ( UpperLayer != null ) {
 			if ( IsExterior && !UpperLayer.IsPlayerHere ) {
 				UpperLayer.CallDeferred( "hide" );
@@ -96,7 +101,9 @@ public partial class TileMapFloor : Node2D {
 		if ( UpperLayer != null && !IsPlayerHere ) {
 			UpperLayer.CallDeferred( "hide" );
 		} else if ( UpperLayer != null && !UpperLayer.IsExterior ) {
-			( Floor.Material as ShaderMaterial )?.SetDeferred( "shader_parameter/alpha_blend", true );
+			if ( Floor != null ) {
+				( Floor.Material as ShaderMaterial )?.SetDeferred( "shader_parameter/alpha_blend", true );
+			}
 		} else if ( IsExterior && UpperLayer != null ) {
 			for ( int i = 0; i < InteriorLayers.Length; i++ ) {
 				InteriorLayers[i].CallDeferred( "hide" );

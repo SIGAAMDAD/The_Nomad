@@ -94,6 +94,15 @@ namespace Renown.Thinkers {
 			NodeCache = location.GetNodeCache();
 		}
 
+		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
+				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) )
+			{
+				return;
+			}
+			base.PlaySound( channel, stream );
+		}
+
 		public override void Damage( Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;

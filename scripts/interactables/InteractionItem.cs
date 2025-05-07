@@ -5,6 +5,7 @@ public enum InteractionType {
 	TreasureChest,
 	Tutorial,
 	Note,
+	Door,
 
 	EaglesPeak,
 

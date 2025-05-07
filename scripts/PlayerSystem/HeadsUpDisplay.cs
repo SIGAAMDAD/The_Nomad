@@ -1,4 +1,3 @@
-using System;
 using DialogueManagerRuntime;
 using Godot;
 using Renown;
@@ -6,6 +5,8 @@ using Renown.World;
 
 namespace PlayerSystem {
 	public partial class HeadsUpDisplay : CanvasLayer {
+		private static readonly float RageUsedOnWarp = 20.0f;
+
 		[Export]
 		private Player _Owner;
 
@@ -26,6 +27,7 @@ namespace PlayerSystem {
 		private MarginContainer CheckpointInteractor;
 		private MarginContainer JumpInteractor;
 		private MarginContainer CurrentInteractor;
+		private MarginContainer DoorInteractor;
 
 		// checkpoint interaction
 		private Button SaveGameButton;
@@ -34,8 +36,9 @@ namespace PlayerSystem {
 		private Button RestHereButton;
 		private Button WarpButton;
 		private Label CheckpointNameLabel;
-		private HBoxContainer WarpCloner;
-		private VScrollBar WarpLocationsContainer;
+		private WarpPoint WarpCloner;
+		private VScrollBar WarpLocationsScroll;
+		private VBoxContainer WarpLocationsContainer;
 		private Button ActiveCheckpointButton;
 		private VBoxContainer InactiveContainter;
 		private VBoxContainer CheckpointMainContainer;
@@ -113,10 +116,7 @@ namespace PlayerSystem {
 			WorldTimeMinute.Text = minute.ToString();
 		}
 
-		public void SetDialogue( Resource DialogueData ) {
-
-		}
-		public void StartThoughtBubble( string text ) {
+		public static void StartThoughtBubble( string text ) {
 			Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
 			DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
 		}
@@ -124,6 +124,11 @@ namespace PlayerSystem {
 		private void OnDialogueEnded( Resource dialogueResource ) {
 		}
 		private void OnDialogueStarted( Resource dialogueResource ) {
+		}
+
+		private void OnOpenDoorButtonPressed() {
+			if ( InteractionData is Door door && door != null ) {
+			}
 		}
 
 		public override void _Ready() {
@@ -216,44 +221,15 @@ namespace PlayerSystem {
 
 			WeaponData = null;
 			WeaponStatus = GetNode<TextureRect>( "MainHUD/WeaponStatus" );
-			WeaponStatus.SetProcess( false );
-			WeaponStatus.SetProcessInternal( false );
-
 			WeaponModeBladed = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBladed" );
-			WeaponModeBladed.SetProcess( false );
-			WeaponModeBladed.SetProcessInternal( false );
-
 			WeaponModeBlunt = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusBlunt" );
-			WeaponModeBlunt.SetProcess( false );
-			WeaponModeBlunt.SetProcessInternal( false );
-
 			WeaponModeFirearm = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer/StatusFirearm" );
-			WeaponModeFirearm.SetProcess( false );
-			WeaponModeFirearm.SetProcessInternal( false );
-
 			WeaponStatusFirearm = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus" );
-			WeaponStatusFirearm.SetProcess( false );
-			WeaponStatusFirearm.SetProcessInternal( false );
-
 			WeaponStatusMelee = GetNode<VBoxContainer>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus" );
-			WeaponStatusMelee.SetProcess( false );
-			WeaponStatusMelee.SetProcessInternal( false );
-
 			WeaponStatusMeleeIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus/WeaponIcon" );
-			WeaponStatusMeleeIcon.SetProcess( false );
-			WeaponStatusMeleeIcon.SetProcessInternal( false );
-
 			WeaponStatusFirearmIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
-			WeaponStatusFirearmIcon.SetProcess( false );
-			WeaponStatusFirearmIcon.SetProcessInternal( false );
-
 			WeaponStatusBulletCount = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
-			WeaponStatusBulletCount.SetProcess( false );
-			WeaponStatusBulletCount.SetProcessInternal( false );
-
 			WeaponStatusBulletReserve = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
-			WeaponStatusBulletReserve.SetProcess( false );
-			WeaponStatusBulletReserve.SetProcessInternal( false );
 
 			SaveGameButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/SaveProgressButton" );
 //			SaveGameButton.Connect( "pressed", Callable.From( OnSaveGameButtonPressed ) );
@@ -267,7 +243,7 @@ namespace PlayerSystem {
 			WarpButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/WarpButton" );
 			WarpButton.Connect( "pressed", Callable.From( OnWarpButtonPressed ) );
 
-			WarpCloner = GetNode<HBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner" );
+			WarpCloner = GetNode<WarpPoint>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner" );
 			CheckpointNameLabel = GetNode<Label>( "CheckpointContainer/VBoxContainer/CheckpointNameLabel" );
 
 			ActiveCheckpointButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer/Button" );
@@ -282,28 +258,19 @@ namespace PlayerSystem {
 			InactiveContainter = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer" );
 			CheckpointMainContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer" );
 			SavedGamesContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer" );
-			WarpLocationsContainer = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
+			WarpLocationsScroll = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
+			WarpLocationsContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer" );
 
 			JumpInteractor = GetNode<MarginContainer>( "JumpContainer" );
-			JumpInteractor.SetProcess( false );
-			JumpInteractor.SetProcessInternal( false );
-
 			JumpViewImage = GetNode<TextureRect>( "JumpContainer/ViewImage" );
-			JumpViewImage.SetProcess( false );
-			JumpViewImage.SetProcessInternal( false );
-
 			JumpYesButton = GetNode<Button>( "JumpContainer/JumpQueryContainer/VBoxContainer/YesButton" );
-			JumpYesButton.SetProcess( false );
-			JumpYesButton.SetProcessInternal( false );
-			
 			JumpNoButton = GetNode<Button>( "JumpContainer/JumpQueryContainer/VBoxContainer/NoButton" );
-			JumpNoButton.SetProcess( false );
-			JumpNoButton.SetProcessInternal( false );
-
 			JumpMusic = GetNode<AudioStreamPlayer>( "JumpContainer/Theme" );
-			JumpMusic.SetProcess( false );
-			JumpMusic.SetProcessInternal( false );
 			JumpMusic.Set( "parameters/looping", true );
+
+			DoorInteractor = GetNode<MarginContainer>( "DoorContainer" );
+			Button OpenButton = GetNode<Button>( "DoorContainer/MarginContainer/OpenButton" );
+			OpenButton.Connect( "pressed", Callable.From( OnOpenDoorButtonPressed ) );
 
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
@@ -373,13 +340,50 @@ namespace PlayerSystem {
 			WeaponData.Used += OnWeaponUsed;
 		}
 
+		private void OnWarpToCheckpoint( WarpPoint warpPoint ) {
+			// TODO: confirmation screen
+
+			if ( _Owner.GetRage() - RageUsedOnWarp < 0.0f ) {
+				StartThoughtBubble( "You: Shit, don't have enough mana." );
+				return;
+			} else if ( (Checkpoint)warpPoint.GetMeta( "Checkpoint" ) == CurrentCheckpoint ) {
+				StartThoughtBubble( "You: I'm already here..." );
+				return;
+			}
+
+			// TODO: play warp animation
+			_Owner.SetRage( _Owner.GetRage() - RageUsedOnWarp );
+
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+			_Owner.GlobalPosition = ( (Checkpoint)warpPoint.GetMeta( "Checkpoint" ) ).GlobalPosition;
+		}
+		private void LoadWarpPoints() {
+			Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
+			for ( int i = 0; i < checkpoints.Count; i++ ) {
+				Checkpoint checkpoint = checkpoints[i] as Checkpoint;
+				if ( !checkpoint.GetActivated() ) {
+					continue;
+				}
+
+				WarpPoint warpPoint = WarpCloner.Duplicate() as WarpPoint;
+				WarpLocationsContainer.AddChild( warpPoint );
+				warpPoint.ConfirmButton.Text = checkpoint.GetTitle();
+				warpPoint.ConfirmButton.Connect( "pressed", Callable.From( () => { OnWarpToCheckpoint( warpPoint ); } ) );
+				warpPoint.BiomeLabel.Text = checkpoint.GetLocation().GetBiome().GetAreaName();
+				warpPoint.SetMeta( "Checkpoint", checkpoint );
+				warpPoint.Show();
+			}
+		}
+
 		private void OnWarpButtonPressed() {
 			CheckpointMainContainer.Hide();
 
-			for ( int i = 0; i < WarpLocationsContainer.GetChildCount(); i++ ) {
-				WarpLocationsContainer.GetChild( i ).QueueFree();
-				WarpLocationsContainer.RemoveChild( WarpLocationsContainer.GetChild( i ) );
+			for ( int i = 1; i < WarpLocationsContainer.GetChildCount(); i++ ) {
+				WarpLocationsContainer.CallDeferred( "remove_child", WarpLocationsContainer.GetChild( i ) );
+				WarpLocationsContainer.GetChild( i ).CallDeferred( "queue_free" );
 			}
+
+			CallDeferred( "LoadWarpPoints" );
 			/*
 			List<Player.WarpPoint> warpList = _Owner.GetWarpPoints();
 			for ( int i = 0; i < warpList.Count; i++ ) {
@@ -391,7 +395,7 @@ namespace PlayerSystem {
 			}
 			*/
 
-			WarpLocationsContainer.Show();
+			WarpLocationsScroll.CallDeferred( "show" );
 		}
 
 		public Checkpoint GetCurrentCheckpoint() => CurrentCheckpoint;
@@ -446,6 +450,9 @@ namespace PlayerSystem {
 				CurrentCheckpoint = (Checkpoint)item;
 				CurrentInteractor = CheckpointInteractor;
 				break;
+			case InteractionType.Door:
+				CurrentInteractor = DoorInteractor;
+				break;
 			case InteractionType.EaglesPeak:
 				CurrentInteractor = JumpInteractor;
 				break;
@@ -484,7 +491,7 @@ namespace PlayerSystem {
 		public void HideInteraction() {
 			if ( CurrentInteractor == CheckpointInteractor ) {
 				CheckpointMainContainer.Show();
-				WarpLocationsContainer.Hide();
+				WarpLocationsScroll.Hide();
 				SavedGamesContainer.Hide();
 			} else if ( CurrentInteractor == JumpInteractor ) {
 				Tween AudioTween = CreateTween();

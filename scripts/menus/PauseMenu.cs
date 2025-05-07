@@ -11,22 +11,17 @@ public partial class PauseMenu : Control {
 	public delegate void LeaveLobbyEventHandler();
 
 	private void Pause() {
-		if ( GameConfiguration.Paused ) {
-			Hide();
-			if ( !( SteamLobby.Instance.LobbyMemberCount <= 1 ) ) {
-				GetTree().Paused = false;
-			}
+		if ( GetTree().Paused ) {
 			Engine.TimeScale = 1.0f;
 			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
 		} else {
-			Show();
-			if ( !( SteamLobby.Instance.LobbyMemberCount <= 1 ) ) {
-				GetTree().Paused = true;
-			}
 			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 			Engine.TimeScale = 0.0f;
 		}
-		GameConfiguration.Paused = !GameConfiguration.Paused;
+		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+			GetTree().Paused = !GetTree().Paused;
+		}
+		Visible = !Visible;
 	}
 	private void OnConfirmExitConfirmed() {
 		GameConfiguration.Paused = false;
@@ -102,17 +97,16 @@ public partial class PauseMenu : Control {
 
 		Input.JoyConnectionChanged += OnJoyConnectionChanged;
 	}
+	public override void _UnhandledInput( InputEvent @event ) {
+		base._UnhandledInput( @event );
 
-	private void OnJoyConnectionChanged( long device, bool connected ) {
-		if ( !connected ) {
+		if ( Input.IsActionJustReleased( "ui_exit" ) ) {
 			CallDeferred( "Pause" );
 		}
 	}
 
-	public override void _UnhandledInput( InputEvent @event ) {
-		base._UnhandledInput( @event );
-		
-		if ( @event.IsActionPressed( "ui_exit" ) ) {
+	private void OnJoyConnectionChanged( long device, bool connected ) {
+		if ( !connected ) {
 			CallDeferred( "Pause" );
 		}
 	}
