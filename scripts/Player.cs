@@ -31,6 +31,7 @@ public partial class Player : Entity {
 		Inventory		= 0x00010000,
 		Resting			= 0x00020000,
 		UsingMelee		= 0x00040000,
+		Parrying		= 0x00080000,
 	};
 
 	public enum AnimationState : byte {
@@ -425,7 +426,7 @@ public partial class Player : Entity {
 
 		AmmoStack stack = null;
 		foreach ( var it in AmmoStacks ) {
-			if ( (int)( (Godot.Collections.Dictionary)it.Value.AmmoType.Get( "properties" ) )[ "type" ] ==
+			if ( (int)( (Godot.Collections.Dictionary)it.Value.AmmoType.Data.Get( "properties" ) )[ "type" ] ==
 				(int)weapon.GetAmmoType() )
 			{
 				stack = it.Value;
@@ -901,7 +902,7 @@ public partial class Player : Entity {
 			return;
 		}
 
-		int index = CurrentWeapon <= 0 ? MAX_WEAPON_SLOTS - 1 : CurrentWeapon - 1;
+		int index = CurrentWeapon < 0 ? MAX_WEAPON_SLOTS - 1 : CurrentWeapon - 1;
 		while ( index != -1 ) {
 			if ( WeaponSlots[ index ].IsUsed() ) {
 				break;
@@ -913,30 +914,29 @@ public partial class Player : Entity {
 			index = -1;
 		}
 
+		Arm otherArm;
+		if ( LastUsedArm == ArmLeft ) {
+			otherArm = ArmRight;
+			HandsUsed = Hands.Left;
+		} else if ( LastUsedArm == ArmRight ) {
+			otherArm = ArmLeft;
+			HandsUsed = Hands.Right;
+		} else {
+			GD.PushError( "OnNextWeapon: invalid LastUsedArm" );
+			LastUsedArm = ArmRight;
+			return;
+		}
+
 		// adjust arm state
 		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon;
-			Arm otherArm;
-
-			if ( LastUsedArm == ArmLeft ) {
-				otherArm = ArmRight;
-				HandsUsed = Hands.Left;
-			} else if ( LastUsedArm == ArmRight ) {
-				otherArm = ArmLeft;
-				HandsUsed = Hands.Right;
-			} else {
-				GD.PushError( "OnNextWeapon: invalid LastUsedArm" );
-				LastUsedArm = ArmRight;
-				return;
-			}
-
-			weapon = WeaponSlots[ index ].GetWeapon();
+			WeaponEntity weapon = WeaponSlots[ index ].GetWeapon();
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
 				otherArm.SetWeapon( WeaponSlot.INVALID );
 				HandsUsed = Hands.Both;
 			}
 
 			EmitSignalSwitchedWeapon( weapon );
+			WeaponSlots[ index ].SetMode( WeaponSlots[ index ].GetWeapon().GetLastUsedMode() );
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
@@ -962,30 +962,29 @@ public partial class Player : Entity {
 			index = -1;
 		}
 
+		Arm otherArm;
+		if ( LastUsedArm == ArmLeft ) {
+			otherArm = ArmRight;
+			HandsUsed = Hands.Left;
+		} else if ( LastUsedArm == ArmRight ) {
+			otherArm = ArmLeft;
+			HandsUsed = Hands.Right;
+		} else {
+			GD.PushError( "OnNextWeapon: invalid LastUsedArm" );
+			LastUsedArm = ArmRight;
+			return;
+		}
+
 		// adjust arm state
 		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon;
-			Arm otherArm;
-
-			if ( LastUsedArm == ArmLeft ) {
-				otherArm = ArmRight;
-				HandsUsed = Hands.Left;
-			} else if ( LastUsedArm == ArmRight ) {
-				otherArm = ArmLeft;
-				HandsUsed = Hands.Right;
-			} else {
-				GD.PushError( "OnNextWeapon: invalid LastUsedArm" );
-				LastUsedArm = ArmRight;
-				return;
-			}
-
-			weapon = WeaponSlots[ index ].GetWeapon();
+			WeaponEntity weapon = WeaponSlots[ index ].GetWeapon();
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
 				otherArm.SetWeapon( WeaponSlot.INVALID );
 				HandsUsed = Hands.Both;
 			}
 
 			EmitSignalSwitchedWeapon( weapon );
+			WeaponSlots[ index ].SetMode( WeaponSlots[ index ].GetWeapon().GetLastUsedMode() );
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
@@ -1003,6 +1002,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
+			AudioChannel.Connect( "finished", Callable.From( OnSlowMoSfxFinished ) );
 			PlaySound( AudioChannel, ResourceCache.SlowMoBeginSfx );
 
 			Flags |= PlayerFlags.BulletTime;
@@ -1198,14 +1198,20 @@ public partial class Player : Entity {
 	private void OnStoppedUsingWeapon() {
 		Flags &= ~( PlayerFlags.UsingWeapon | PlayerFlags.UsingMelee );
 	}
+
+	private void OnMeleeFinished() {
+		ArmLeft.Animations.AnimationFinished -= OnMeleeFinished;
+		Flags &= ~( PlayerFlags.Parrying | PlayerFlags.BlockedInput );
+	}
 	private void OnMelee() {
 		if ( IsInputBlocked() ) {
 			return;
 		}
 
 		// force the player to commit to the parry
-		Flags |= PlayerFlags.BlockedInput;
-		ArmLeft.Animations.SetDeferred( "sprite_frames", DefaultLeftArmAnimations );
+		Flags |= PlayerFlags.BlockedInput | PlayerFlags.Parrying;
+		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
+		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
 		ArmLeft.Animations.CallDeferred( "play", "melee" );
 		PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
 	}
@@ -1286,10 +1292,10 @@ public partial class Player : Entity {
 	}
 
 	private void OnSlowMoSfxFinished() {
-//		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
-//			// only start lagging audio playback after the slowmo begin finishes
-//			AudioServer.PlaybackSpeedScale = 0.50f;
-//		}
+		// only start lagging audio playback after the slowmo begin finishes
+		AudioServer.PlaybackSpeedScale = 0.50f;
+
+		AudioChannel.Disconnect( "finished", Callable.From( OnSlowMoSfxFinished ) );
 	}
 
 	public void LoadGamepadBinds() {
@@ -1444,7 +1450,6 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 
 		// don't allow keybind input when we're in the console
-		/*
 		Console.Control.VisibilityChanged += () => {
 			if ( Console.Control.Visible ) {
 				Flags |= PlayerFlags.BlockedInput;
@@ -1452,7 +1457,6 @@ public partial class Player : Entity {
 				Flags &= ~PlayerFlags.BlockedInput;
 			}
 		};
-		*/
 
 		StartingPosition = GlobalPosition;
 
@@ -1534,6 +1538,8 @@ public partial class Player : Entity {
 		}
 //		}
 
+		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
+
 		DashTime = GetNode<Timer>( "Timers/DashTime" );
 		DashTime.SetProcess( false );
 		DashTime.SetProcessInternal( false );
@@ -1600,8 +1606,8 @@ public partial class Player : Entity {
 //		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 //		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
 
-//		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
-//		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), [ "" ], 1, "teleports the player to the specified location" );
+		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
+		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), new[]{ "checkpoint" }, 1, "teleports the player to the specified location" );
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
@@ -1721,9 +1727,9 @@ public partial class Player : Entity {
 			HUD.GetRageBar().Rage = Rage;
 		}
 		FrameDamage = 0.0f;
-		if ( Health < 100.0f ) {
+		if ( Health < 100.0f && Rage > 0.0f ) {
 			Health += 5.0f * delta;
-			Rage -= 10.0f * delta;
+			Rage -= 15.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
@@ -1808,8 +1814,10 @@ public partial class Player : Entity {
 		Animations.MoveChild( back.Animations, 0 );
 		Animations.MoveChild( front.Animations, 3 );
 
-		CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
-		CalcArmAnimation( ArmRight, out RightArmAnimationState );
+		if ( ( Flags & PlayerFlags.Parrying ) == 0 ) {
+			CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
+			CalcArmAnimation( ArmRight, out RightArmAnimationState );
+		}
 	}
 
 	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalSwitchedWeaponMode( source, useMode );

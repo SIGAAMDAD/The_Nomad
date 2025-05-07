@@ -74,9 +74,9 @@ public partial class TileMapFloor : Node2D {
 
 		LowerLayer?.Floor.SetDeferred( "collision_enabled", false );
 
-		Floor.SetDeferred( "collision_enabled", true );
-		FloorBounds?.SetDeferred( "collision_layer", 1 | 2 );
-		FloorBounds?.SetDeferred( "collision_mask", 1 );
+//		Floor.SetDeferred( "collision_enabled", true );
+//		FloorBounds?.SetDeferred( "collision_layer", 1 | 2 );
+//		FloorBounds?.SetDeferred( "collision_mask", 1 );
 		IsPlayerHere = true;
 	}
 	private void OnArea2DBodyShapeExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -97,7 +97,7 @@ public partial class TileMapFloor : Node2D {
 			UpperLayer.CallDeferred( "hide" );
 		} else if ( UpperLayer != null && !UpperLayer.IsExterior ) {
 			( Floor.Material as ShaderMaterial )?.SetDeferred( "shader_parameter/alpha_blend", true );
-		} else if ( IsExterior && UpperLayer != null && UpperLayer.IsPlayerHere ) {
+		} else if ( IsExterior && UpperLayer != null ) {
 			for ( int i = 0; i < InteriorLayers.Length; i++ ) {
 				InteriorLayers[i].CallDeferred( "hide" );
 			}
@@ -108,17 +108,17 @@ public partial class TileMapFloor : Node2D {
 			}
 		}
 
-		Floor.SetDeferred( "collision_enabled", false );
-		FloorBounds?.SetDeferred( "collision_layer", 0 );
-		FloorBounds?.SetDeferred( "collision_mask", 0 );
+//		Floor.SetDeferred( "collision_enabled", false );
+//		FloorBounds?.SetDeferred( "collision_layer", 0 );
+//		FloorBounds?.SetDeferred( "collision_mask", 0 );
 		IsPlayerHere = false;
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
-		Area.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeEntered ) );
-		Area.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeExited ) );
+		Area?.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeEntered ) );
+		Area?.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeExited ) );
 
 		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 		ProcessThreadGroupOrder = 4;

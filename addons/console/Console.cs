@@ -340,7 +340,7 @@ public partial class Console : Control {
 				// calc is a special command that needs special treatment
 				if ( textCommand == "calc" ) {
 					var expression = string.Join( "", arguments );
-					consoleCommand.Function.Call( expression );
+					consoleCommand.Function.Delegate.DynamicInvoke( expression );
 					SaveHistory();
 					return;
 				}
@@ -356,7 +356,7 @@ public partial class Console : Control {
 				var finalArgs = arguments.Concat( Enumerable.Repeat( "", consoleCommand.Arguments.Length - arguments.Length ) ).ToArray();
 
 				try {
-					consoleCommand.Function.Call( finalArgs );
+					consoleCommand.Function.Delegate.DynamicInvoke( finalArgs );
 					SaveHistory();
 				} catch ( Exception ex ) {
 					PrintError( $"Error executing command: {ex.Message}" );
@@ -391,7 +391,7 @@ public partial class Console : Control {
 				continue;
 			}
 
-			if ( c == '"' ) {
+			if ( c == '\"' ) {
 				inQuotes = !inQuotes;
 				continue;
 			}

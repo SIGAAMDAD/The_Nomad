@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://bijdnkr1j8l83"]
+[gd_scene load_steps=36 format=4 uid="uid://bijdnkr1j8l83"]
 
 [ext_resource type="TileSet" uid="uid://t3xj6bangr0w" path="res://resources/tilesets/galakas_midcity.tres" id="1_6tmyd"]
 [ext_resource type="Script" uid="uid://d2fx88eq3v2e2" path="res://scripts/ChallengeLevel.cs" id="1_pjfkh"]
@@ -37,6 +37,21 @@ size = Vector2(304, 130)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mjixj"]
 size = Vector2(114, 132)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uetsr"]
+size = Vector2(125.8, 38.3)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xmj1g"]
+size = Vector2(76.7999, 33.1999)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghvpb"]
+size = Vector2(62.4, 34.4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jv714"]
+size = Vector2(142.4, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6pf2m"]
+size = Vector2(145, 123.2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5guhu"]
 size = Vector2(46, 112)
@@ -111,17 +126,16 @@ Relations = {}
 Debts = {}
 Faction = NodePath("../../../KingdomOfSortior")
 
-[node name="MercenaryGatlingGunner" parent="Level/NavigationRegion2D" node_paths=PackedStringArray("NodeCache", "Relations", "Debts") instance=ExtResource("7_uetsr")]
+[node name="MercenaryGatlingGunner" parent="Level/NavigationRegion2D" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Faction") instance=ExtResource("7_uetsr")]
 position = Vector2(420.8, -155.6)
-scale = Vector2(1, 1)
 NodeCache = NodePath("../NodeCache")
 Direction = 2
 Relations = {}
 Debts = {}
+Faction = NodePath("../../../KingdomOfSortior")
 
 [node name="ZurgutGrunt" parent="Level/NavigationRegion2D" node_paths=PackedStringArray("Relations", "Debts", "Faction") instance=ExtResource("3_5guhu")]
 position = Vector2(592, -410)
-Health = 100.0
 Relations = {}
 Debts = {}
 Faction = NodePath("../../../KingdomOfSortior")
@@ -229,6 +243,46 @@ polygon = PackedVector2Array(192, -399, 208, -536, 208, -573, 176, -573, 176, -5
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/MapBounds"]
 position = Vector2(560, 93.2)
 polygon = PackedVector2Array(-112.8, 50.8, -111.6, -31.6, 288, -33.2, 293.6, 8.39999, 381.6, 8.8, 382.4, 52)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-733.6, -560.8)
+shape = SubResource("RectangleShape2D_uetsr")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-754.8, -335.6)
+shape = SubResource("RectangleShape2D_uetsr")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-548, -561.2)
+shape = SubResource("RectangleShape2D_xmj1g")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-307.6, -577.6)
+shape = SubResource("RectangleShape2D_xmj1g")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-467.6, -273.6)
+shape = SubResource("RectangleShape2D_xmj1g")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-248, -220.8)
+shape = SubResource("RectangleShape2D_ghvpb")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(-87.2, -204.8)
+shape = SubResource("RectangleShape2D_ghvpb")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(8.8, -172.8)
+shape = SubResource("RectangleShape2D_ghvpb")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(320.8, -165.2)
+shape = SubResource("RectangleShape2D_jv714")
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="Level/MapBounds"]
+position = Vector2(968.1, -254.8)
+shape = SubResource("RectangleShape2D_6pf2m")
 
 [node name="EndOfChallenge" type="Area2D" parent="Level"]
 position = Vector2(-1414, -293)

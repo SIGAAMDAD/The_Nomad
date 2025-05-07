@@ -5,7 +5,6 @@ namespace Renown.Thinkers {
 		private enum State : uint {
 			Idle,
 			Attacking,
-			Hunting,
 
 			Count
 		};
@@ -37,9 +36,13 @@ namespace Renown.Thinkers {
 		private bool Enraged = false;
 		private Entity Target = null;
 
+		private Line2D DetectionMeter;
+
 		private Curve BlowupDamageCurve;
 		private Area2D BlowupArea = null;
 		private Timer BlowupTimer = null;
+
+		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		private StringName MoveAnimation = "move";
 		private StringName IdleAnimation = "idle";
@@ -49,8 +52,48 @@ namespace Renown.Thinkers {
 
 		private float SightDetectionAmount = 0.0f;
 
+		private CollisionShape2D HammerShape;
+		private Area2D AreaOfEffect;
+		private Timer AttackTimer;
 		private Tween AngleTween;
 		private Tween ChangeInvestigationAngleTween;
+
+		private float RandomFloat( float min, float max ) {
+			return (float)( min + Random.NextDouble() * ( min - max ) );
+		}
+
+		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
+		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
+
+		private void SetDetectionColor() {
+			if ( SightDetectionAmount > SightDetectionTime ) {
+				SightDetectionAmount = SightDetectionTime;
+			}
+			switch ( Awareness ) {
+			case MobAwareness.Relaxed:
+				if ( SightDetectionAmount == 0.0f ) {
+					DetectionColor.R = 1.0f;
+					DetectionColor.G = 1.0f;
+					DetectionColor.B = 1.0f;
+				} else {
+					DetectionColor.R = 0.0f;
+					DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+					DetectionColor.B = 1.0f;
+				}
+				break;
+			case MobAwareness.Suspicious:
+				DetectionColor.R = 0.0f;
+				DetectionColor.G = 0.0f;
+				DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+				break;
+			case MobAwareness.Alert:
+				DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+				DetectionColor.G = 0.0f;
+				DetectionColor.B = 0.0f;
+				break;
+			};
+			DetectionMeter.SetDeferred( "default_color", DetectionColor );
+		}
 
 		private void GenerateRayCasts() {
 			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
@@ -74,10 +117,15 @@ namespace Renown.Thinkers {
 				return;
 			}
 
+			if ( Awareness == MobAwareness.Alert ) {
+				SetNavigationTarget( LastTargetPosition );
+				return;
+			}
+
 			// NOTE: this sound might be a little bit annoying to the sane mind
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_alert.ogg" ) );
 			Awareness = MobAwareness.Alert;
-			SetNavigationTarget( LastTargetPosition );
+//			SetNavigationTarget( LastTargetPosition );
 		}
 
 		public void OnHeadHit( Entity source ) {
@@ -109,6 +157,13 @@ namespace Renown.Thinkers {
 			}
 
 			base.Damage( source, nAmount );
+
+			if ( Health <= 0.0f ) {
+				ArmAnimations.Hide();
+				HeadAnimations.Hide();
+				BodyAnimations.Play( "dead" );
+				return;
+			}
 
 			if ( Health < Health * 0.20f ) {
 				MoveAnimation = "move_fatal";
@@ -157,6 +212,34 @@ namespace Renown.Thinkers {
 			OnDie( this, this );
 		}
 
+		private void OnHammerSwingFinished() {
+			PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/env/explosion.ogg" ) );
+			
+			Godot.Collections.Array<Node2D> nodes = AreaOfEffect.GetOverlappingBodies();
+			for ( int i = 0; i < nodes.Count; i++ ) {
+				if ( nodes[i] is Entity entity && entity != null ) {
+					if ( entity == this ) {
+						continue;
+					}
+					float damage = 40.0f;
+					if ( entity is Player player && player != null && player.GetTorsoAnimation().FlipH == BodyAnimations.FlipH ) {
+						// one-shot if we're hitting from behind
+//						damage = 1000.0f;
+					}
+					entity.CallDeferred( "Damage", this, damage );
+				}
+			}
+
+			AreaOfEffect.SetDeferred( "monitoring", false );
+			HammerShape.SetDeferred( "disabled", true );
+			ArmAnimations.CallDeferred( "play", "idle" );
+		}
+
+		private void OnAreaOfEffectShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		}
+		private void OnAreaOfEffectShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -166,6 +249,25 @@ namespace Renown.Thinkers {
 
 			Die += OnDie;
 
+			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
+
+			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
+
+			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
+			
+			AreaOfEffect = GetNode<Area2D>( "AreaOfEffect" );
+			AreaOfEffect.Monitoring = false;
+
+			HammerShape = GetNode<CollisionShape2D>( "AreaOfEffect/CollisionShape2D" );
+			HammerShape.Disabled = true;
+//			AreaOfEffect.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DEntered ) );
+//			AreaOfEffect.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DExited ) );
+
+			AttackTimer = new Timer();
+			AttackTimer.OneShot = true;
+			AttackTimer.WaitTime = 2.0f;
+			AddChild( AttackTimer );
+
 			BlowupArea = GetNode<Area2D>( "BlowupArea" );
 			BlowupArea.Monitoring = false;
 
@@ -173,9 +275,6 @@ namespace Renown.Thinkers {
 			BlowupTimer.Connect( "timeout", Callable.From( OnBlowupTimerTimeout ) );
 
 			BlowupDamageCurve = ResourceLoader.Load<Curve>( "res://resources/zurgut_grunt_blowup_damage_curve.tres" );
-
-			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
-			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 
 			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
@@ -243,15 +342,38 @@ namespace Renown.Thinkers {
 
 			switch ( CurrentState ) {
 			case State.Attacking:
-			case State.Hunting:
+				if ( GlobalPosition.DistanceTo( LastTargetPosition ) < 80.0f && AttackTimer.IsStopped() ) {
+					ArmAnimations.CallDeferred( "play", "attack" );
+					AttackTimer.CallDeferred( "start" );
+					StopMoving();
+					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
+					CallDeferred( "SwingHammer" );
+				} else {
+					SetNavigationTarget( LastTargetPosition );
+				}
 				break;
 			case State.Idle:
 				break;
 			};
 		}
 
+		protected override bool MoveAlongPath() {
+			if ( NavAgent.IsTargetReached() ) {
+				Velocity = Godot.Vector2.Zero;
+				return true;
+			}
+			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
+			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			Velocity = LookDir * MovementSpeed;
+			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+			return true;
+		}
 		private void CheckSight() {
-			/*
+			if ( Awareness == MobAwareness.Alert ) {
+				return;
+			}
+
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
 				sightTarget = SightLines[i].GetCollider() as Entity;
@@ -271,9 +393,6 @@ namespace Renown.Thinkers {
 						SightDetectionAmount = 0.0f;
 					}
 					break;
-				case MobAwareness.Suspicious:
-					SetSuspicious();
-					break;
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
@@ -287,41 +406,34 @@ namespace Renown.Thinkers {
 				if ( sightTarget.GetHealth() <= 0.0f ) {
 					// dead?
 				} else {
-					SightTarget = sightTarget;
+					Target = sightTarget;
 					LastTargetPosition = sightTarget.GlobalPosition;
 					CanSeeTarget = true;
 
-					if ( Awareness >= MobAwareness.Suspicious ) {
-						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += SightDetectionSpeed * 2.0f;
-					} else {
-						SightDetectionAmount += SightDetectionSpeed;
-					}
+					SightDetectionAmount += SightDetectionSpeed * 2.0f;
 				}
 			}
 
-			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
-				SetSuspicious();
-				CurrentState = State.Investigating;
-				SetNavigationTarget( LastTargetPosition );
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.Start();
-				}
+			if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
+				SetAlert();
+				CurrentState = State.Attacking;
+//				SetNavigationTarget( LastTargetPosition );
 			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
 				SetAlert();
 			}
 			if ( IsAlert() ) {
 				SetAlert();
-			} else if ( IsSuspicious() ) {
-				SetSuspicious();
 			}
 			SetDetectionColor();
-			*/
 		}
 
 		private void SwingHammer() {
 			AngleTween = CreateTween();
-			AngleTween.TweenProperty( ArmAnimations, "global_rotation", 80.0f, 2.5f );
+			AreaOfEffect.Monitoring = true;
+			HammerShape.Disabled = false;
+			ArmAnimations.GlobalRotationDegrees = 0.0f;
+			AngleTween.TweenProperty( ArmAnimations, "global_rotation_degrees", 180.0f, 1.5f );
+			AngleTween.Connect( "finished", Callable.From( OnHammerSwingFinished ) );
 		}
 	};
 };

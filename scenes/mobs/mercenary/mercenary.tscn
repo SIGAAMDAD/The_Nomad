@@ -37,6 +37,8 @@ sprite_frames = ExtResource("2_61sma")
 animation = &"move"
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
+collision_layer = 257
+collision_mask = 257
 script = ExtResource("4_jglyl")
 Parent = NodePath("../../..")
 
@@ -46,7 +48,8 @@ shape = SubResource("RectangleShape2D_yrnty")
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")
-animation = &"die_low"
+animation = &"idle"
+frame_progress = 0.847706
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_yrnty")
@@ -57,6 +60,6 @@ position = Vector2(-0.5, 6)
 shape = SubResource("RectangleShape2D_jglyl")
 
 [node name="DetectionMeter" type="Line2D" parent="."]
-position = Vector2(11, -3)
+position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0

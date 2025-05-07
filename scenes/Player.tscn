@@ -68,7 +68,7 @@ process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 sprite_frames = ExtResource("2_p7iby")
-animation = &"idle"
+animation = &"melee"
 autoplay = "idle"
 
 [node name="Legs" type="AnimatedSprite2D" parent="Animations"]

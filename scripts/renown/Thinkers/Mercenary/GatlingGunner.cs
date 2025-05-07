@@ -116,7 +116,7 @@ namespace Renown.Thinkers {
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
 //				if ( BodyAnimations.Animation != "die_high" ) {
-					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
 					BodyAnimations.CallDeferred( "play", "die" );
 //				}
 
@@ -232,24 +232,26 @@ namespace Renown.Thinkers {
 		}
 
 		private void OnRevTimerTimeout() {
-			if ( Revved ) {
-				Revved = false;
-			} else {
-				Revved = true;
-			}
+			Revved = !Revved;
 		}
 		private void OnLoseInterestTimerTimeout() {
-			GunChannel.Stop();
-			GunChannel.Set( "parameters/looping", false );
+			GunChannel.CallDeferred( "stop" );
+			GunChannel.SetDeferred( "parameters/looping", false );
 
-			AudioChannel.Stop();
-			AudioChannel.Set( "parameters/looping", false );
+			AudioChannel.CallDeferred( "stop" );
+			AudioChannel.SetDeferred( "parameters/looping", false );
 
-			PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
-			if ( Revved ) {
-				PlaySound( GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_revdown.ogg" ) );
+			ArmAnimations.CallDeferred( "play", "idle" );
+
+			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
+			if ( Shooting || Revved ) {
+				CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_revdown.ogg" ) );
 				RevTimer.CallDeferred( "start" );
 			}
+			Shooting = false;
+			Revved = false;
+
+			CurrentState = State.Investigating;
 		}
 
 		public override void _Ready() {
@@ -359,7 +361,7 @@ namespace Renown.Thinkers {
 			const int numShots = 10;
 			
 			for ( int i = 0; i < numShots; i++ ) {
-				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 35.0f ) ) ) * 1024.0f;
+				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 60.0f ) ) ) * 1024.0f;
 				AimLine.ForceRaycastUpdate();
 
 				GodotObject collision = AimLine.GetCollider();
@@ -410,12 +412,12 @@ namespace Renown.Thinkers {
 					AudioChannel.SetDeferred( "parameters/looping", false );
 					Shooting = true;
 					ArmAnimations.CallDeferred( "play", "aim" );
+
+					LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+					AimAngle = LookAngle;
 				} else if ( Revved && Shooting ) {
 					if ( ArmAnimations.Animation != "attack" ) {
-						LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-						LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-						AimAngle = LookAngle;
-
 						CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_shooting.ogg" ) );
 						GunChannel.SetDeferred( "parameters/looping", true );
 						CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", Random.Next( 0, 7 ) ) ) );
