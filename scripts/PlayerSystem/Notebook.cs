@@ -4,6 +4,17 @@ using Renown;
 
 namespace PlayerSystem {
 	public partial class Notebook : MarginContainer {
+		private enum TabSelect {
+			Backpack,
+			Contracts,
+			RecentEvents,
+			Equipment,
+
+			Count
+		};
+
+		private readonly Godot.Vector2 BackpackItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
+
 		private Player _Owner;
 
 		private Label ItemName;
@@ -17,75 +28,76 @@ namespace PlayerSystem {
 		private VBoxContainer StackList;
 		private TabBar Backpack;
 
-		private readonly Godot.Vector2 BackpackItemMinimumSize = new Godot.Vector2( 64.0f, 64.0f );
-
 		private HBoxContainer ContractClonerContainer;
 		private VBoxContainer ContractList;
 
-		public override void _ExitTree() {
-			base._ExitTree();
+		private TabBar Equipment;
 
-			ItemName.QueueFree();
-			ItemType.QueueFree();
-			ItemCount.QueueFree();
-			ItemStackMax.QueueFree();
-			ItemIcon.QueueFree();
-			ItemDescription.QueueFree();
-			ItemEffect.QueueFree();
-			StackList.QueueFree();
+		private TextureRect PrimaryWeapon;
+		private TextureRect HeavyPrimaryWeapon;
+		private TextureRect SidearmWeapon;
+		private TextureRect HeavySidearmWeapon;
+
+		private void InitEquipment() {
+			if ( _Owner.GetPrimaryWeapon().GetWeapon() != null ) {
+				PrimaryWeapon.Texture = _Owner.GetPrimaryWeapon().GetWeapon().GetIcon();
+			}
+			if ( _Owner.GetHeavyPrimaryWeapon().GetWeapon() != null ) {
+				HeavyPrimaryWeapon.Texture = _Owner.GetHeavyPrimaryWeapon().GetWeapon().GetIcon();
+			}
+			if ( _Owner.GetSidearmWeapon().GetWeapon() != null ) {
+				SidearmWeapon.Texture = _Owner.GetSidearmWeapon().GetWeapon().GetIcon();
+			}
+			if ( _Owner.GetHeavySidearmWeapon().GetWeapon() != null ) {
+				HeavySidearmWeapon.Texture = _Owner.GetHeavySidearmWeapon().GetWeapon().GetIcon();
+			}
 		}
+
 		public override void _Ready() {
 			base._Ready();
 
 			_Owner = GetParent<HeadsUpDisplay>().GetPlayerOwner();
 
+			TabContainer TabContainer = GetNode<TabContainer>( "TabContainer" );
+			TabContainer.Connect( "tab_clicked", Callable.From(
+				( int tab ) => {
+					switch ( (TabSelect)tab ) {
+					case TabSelect.Backpack:
+						break;
+					case TabSelect.Contracts:
+						break;
+					case TabSelect.RecentEvents:
+						break;
+					case TabSelect.Equipment:
+						InitEquipment();
+						break;
+					};
+				}
+			) );
+
+			Equipment = GetNode<TabBar>( "TabContainer/Equipment" );
+
+			PrimaryWeapon = Equipment.GetNode<TextureRect>( "MarginContainer/VBoxContainer/PrimaryWeaponsContainer/PrimaryIcon" );
+			HeavyPrimaryWeapon = Equipment.GetNode<TextureRect>( "MarginContainer/VBoxContainer/PrimaryWeaponsContainer/HeavyPrimaryIcon" );
+
+			SidearmWeapon = Equipment.GetNode<TextureRect>( "MarginContainer/VBoxContainer/SidearmWeaponsContainer/SidearmIcon" );
+			HeavySidearmWeapon = Equipment.GetNode<TextureRect>( "MarginContainer/VBoxContainer/SidearmWeaponsContainer/HeavySidearmIcon" );
+
 			Backpack = GetNode<TabBar>( "TabContainer/Backpack" );
-			Backpack.SetProcess( false );
-			Backpack.SetProcessInternal( false );
 
 			StackList = Backpack.GetNode<VBoxContainer>( "MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner" );
-			StackList.SetProcess( false );
-			StackList.SetProcessInternal( false );
-
 			ItemName = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/NameLabel" );
-			ItemName.SetProcess( false );
-			ItemName.SetProcessInternal( false );
-
 			ItemType = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer/Label" );
-			ItemType.SetProcess( false );
-			ItemType.SetProcessInternal( false );
-
 			ItemCount = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/CountLabel" );
-			ItemCount.SetProcess( false );
-			ItemCount.SetProcessInternal( false );
-
 			ItemStackMax = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer/MaxLabel" );
-			ItemStackMax.SetProcess( false );
-			ItemStackMax.SetProcessInternal( false );
-
 			ItemIcon = Backpack.GetNode<TextureRect>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/Icon" );
-			ItemIcon.SetProcess( false );
-			ItemIcon.SetProcessInternal( false );
-
 			ItemDescription = Backpack.GetNode<RichTextLabel>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
-			ItemDescription.SetProcess( false );
-			ItemDescription.SetProcessInternal( false );
-
 			ItemEffect = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
-			ItemEffect.SetProcess( false );
-			ItemEffect.SetProcessInternal( false );
 
 			TabBar Contracts = GetNode<TabBar>( "TabContainer/Contracts" );
-			Contracts.SetProcess( false );
-			Contracts.SetProcessInternal( false );
 
 			ContractClonerContainer = Contracts.GetNode<HBoxContainer>( "MarginContainer/VBoxContainer//VScrollBar/ContractList/ClonerContainer" );
-			ContractClonerContainer.SetProcess( false );
-			ContractClonerContainer.SetProcessInternal( false );
-
 			ContractList = Contracts.GetNode<VBoxContainer>( "MarginContainer/VBoxContainer/VScrollBar/ContractList" );
-			ContractList.SetProcess( false );
-			ContractList.SetProcessInternal( false );
 		}
 
 		public void AddContract( Contract contract ) {
@@ -99,7 +111,7 @@ namespace PlayerSystem {
 		private int GetAmmoCount( string id ) {
 			Dictionary<int, AmmoStack> stacks = _Owner.GetAmmoStacks();
 			foreach ( var stack in stacks ) {
-				if ( (string)stack.Value.AmmoType.Get( "id" ) == id ) {
+				if ( (string)stack.Value.AmmoType.Data.Get( "id" ) == id ) {
 					return stack.Value.Amount;
 				}
 			}
@@ -172,15 +184,17 @@ namespace PlayerSystem {
 
 			ItemName.Text = (string)itemType.Get( "name" );
 			ItemIcon.Texture = (Texture2D)itemType.Get( "icon" );
-			ItemType.Text = (string)categories[0].Get( "name" );
+			ItemType.Text = (string)categories[1].Get( "name" );
 
-			string category = (string)categories[0].Get( "name" );
-			if ( category == "Misc" ) {
+			string category = (string)categories[1].Get( "id" );
+			if ( category == "ITEM_CATEGORY_MISC" ) {
 				ItemCount.Text = string.Format( "{0}/", GetItemCount( (string)itemType.Get( "id" ) ).ToString() );
-			} else if ( category == "Ammo" ) {
+			} else if ( category == "ITEM_CATEGORY_AMMO" ) {
 				ItemCount.Text = string.Format( "{0}/", GetAmmoCount( (string)itemType.Get( "id" ) ).ToString() );
-			} else if ( category == "Weapon" ) {
+			} else if ( category == "ITEM_CATEGORY_WEAPON" ) {
 				ItemCount.Text = "1/";
+			} else {
+				Console.PrintWarning( string.Format( "Notebook.OnBackpackItemSelected: invalid backpack item category \"{0}\"", category ) );
 			}
 			ItemStackMax.Text = ( (int)itemType.Get( "max_stack" ) ).ToString();
 		}
@@ -212,10 +226,10 @@ namespace PlayerSystem {
 			row.AddChild( item );
 
 			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)stack.AmmoType.Get( "id" ) ) ).Get( "icon" );
+			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)stack.AmmoType.Data.Get( "id" ) ) ).Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
 			item.CustomMinimumSize = BackpackItemMinimumSize;
-			item.SetMeta( "item_id", (string)stack.AmmoType.Get( "id" ) );
+			item.SetMeta( "item_id", (string)stack.AmmoType.Data.Get( "id" ) );
 
 			return row;
 		}

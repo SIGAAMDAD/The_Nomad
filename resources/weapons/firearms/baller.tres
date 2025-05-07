@@ -1,7 +1,8 @@
-[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://druoc8lqhmj03"]
+[gd_resource type="ItemDefinition" load_steps=8 format=3 uid="uid://druoc8lqhmj03"]
 
 [ext_resource type="ItemCategory" uid="uid://cfwgn6hyfktxx" path="res://resources/weapons/categories/sidearm_category.tres" id="1_gyptk"]
 [ext_resource type="Texture2D" uid="uid://dyruak14a8cgp" path="res://textures/spritesheets/iconw_baller.png" id="1_nxwng"]
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="2_ncyog"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_qefw3"]
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_rtiu6"]
 [ext_resource type="AudioStream" uid="uid://b483j3gv22a2n" path="res://sounds/player/melee.wav" id="5_316jg"]
@@ -44,4 +45,4 @@ properties = {
 "use_firearm": ExtResource("6_hdb51"),
 "use_time": 0.2
 }
-categories = Array[ItemCategory]([ExtResource("1_gyptk"), ExtResource("2_qefw3")])
+categories = Array[ItemCategory]([ExtResource("1_gyptk"), ExtResource("2_ncyog"), ExtResource("2_qefw3")])

@@ -1,5 +1,6 @@
-[gd_resource type="ItemDefinition" load_steps=5 format=3 uid="uid://clxmuasul3bij"]
+[gd_resource type="ItemDefinition" load_steps=6 format=3 uid="uid://clxmuasul3bij"]
 
+[ext_resource type="ItemCategory" uid="uid://ctsrk0oxdnm5t" path="res://resources/weapons/categories/slugs_category.tres" id="1_ix8mf"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="1_jebx1"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_v2et3"]
 [ext_resource type="AudioStream" uid="uid://cguh3yruypu3j" path="res://sounds/weapons/DSCASIN3.ogg" id="2_rr3sm"]
@@ -19,4 +20,4 @@ properties = {
 "stack_add_amount": 48,
 "type": 1
 }
-categories = Array[ItemCategory]([ExtResource("1_v2et3")])
+categories = Array[ItemCategory]([ExtResource("1_ix8mf"), ExtResource("1_v2et3")])

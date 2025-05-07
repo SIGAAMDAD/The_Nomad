@@ -34,4 +34,4 @@ properties = {
 "use_firearm": ExtResource("4_d4q7u"),
 "use_time": 0.8
 }
-categories = Array[ItemCategory]([ExtResource("1_1seen"), ExtResource("2_d4q7u"), ExtResource("3_qbuyo")])
+categories = Array[ItemCategory]([ExtResource("3_qbuyo"), ExtResource("2_d4q7u"), ExtResource("1_1seen")])

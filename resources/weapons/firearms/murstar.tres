@@ -1,5 +1,6 @@
-[gd_resource type="ItemDefinition" load_steps=4 format=3 uid="uid://w4hagigx2s0c"]
+[gd_resource type="ItemDefinition" load_steps=5 format=3 uid="uid://w4hagigx2s0c"]
 
+[ext_resource type="ItemCategory" uid="uid://cfwgn6hyfktxx" path="res://resources/weapons/categories/sidearm_category.tres" id="1_681sd"]
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_srs2j"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_681sd"]
 [ext_resource type="Texture2D" uid="uid://d0ietamfx4ufm" path="res://textures/env/iconw_murstar.dds" id="3_qn5c0"]
@@ -21,4 +22,4 @@ properties = {
 "magazine_type": 1,
 "magsize": 7
 }
-categories = Array[ItemCategory]([ExtResource("1_srs2j"), ExtResource("2_681sd")])
+categories = Array[ItemCategory]([ExtResource("1_681sd"), ExtResource("1_srs2j"), ExtResource("2_681sd")])

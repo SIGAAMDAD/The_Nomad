@@ -5,8 +5,15 @@ using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
-using Renown.Thinkers;
 using Renown.World;
+using GDExtension.Wrappers;
+
+public enum WeaponSlotIndex : int {
+	Primary,
+	HeavyPrimary,
+	Sidearm,
+	HeavySidearm
+};
 
 public partial class Player : Entity {
 	public enum Hands : byte {
@@ -504,6 +511,11 @@ public partial class Player : Entity {
 	public AnimatedSprite2D GetLegsAnimation() => LegAnimation;
 	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
 	public AnimatedSprite2D GetRightArmAnimation() => ArmRight.Animations;
+
+	public WeaponSlot GetPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Primary ];
+	public WeaponSlot GetHeavyPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ];
+	public WeaponSlot GetSidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Sidearm ];
+	public WeaponSlot GetHeavySidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ];
 
 	public Resource GetCurrentMappingContext() => CurrentMappingContext;
 	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
@@ -1848,14 +1860,34 @@ public partial class Player : Entity {
 		LastUsedArm = ArmRight;
 	}
 	public override void PickupWeapon( WeaponEntity weapon ) {
-		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			if ( !WeaponSlots[i].IsUsed() ) {
-				WeaponSlots[i].SetWeapon( weapon );
-				CurrentWeapon = i;
-				break;
+		int index = WeaponSlot.INVALID;
+
+		Godot.Collections.Array<Resource> categories = (Godot.Collections.Array<Resource>)weapon.Data.Get( "categories" );
+		
+		// first item category is ALWAYS equipment position
+		switch ( (string)categories[0].Get( "id" ) ) {
+		case "WEAPON_CATEGORY_PRIMARY":
+			index = (int)WeaponSlotIndex.Primary;
+			break;
+		case "WEAPON_CATEGORY_HEAVY_PRIMARY":
+			index = (int)WeaponSlotIndex.HeavyPrimary;
+			break;
+		case "WEAPON_CATEGORY_SIDEARM":
+			index = (int)WeaponSlotIndex.Sidearm;
+			break;
+		case "WEAPON_CATEGORY_HEAVY_SIDEARM":
+			index = (int)WeaponSlotIndex.HeavySidearm;
+			break;
+		};
+		if ( index == WeaponSlot.INVALID ) {
+			Console.PrintError( string.Format( "Player.PickupWeapon: weapon {0} has invalid equipment category", (string)weapon.Data.Get( "id" ) ) );
+		} else {
+			if ( !WeaponSlots[ index ].IsUsed() ) {
+				WeaponSlots[ index ].SetWeapon( weapon );
+				CurrentWeapon = index;
 			}
 		}
-		
+
 		WeaponsStack.Add( weapon.GetInitialPath().GetHashCode(), weapon );
 
 		TorsoAnimation.FlipH = false;
