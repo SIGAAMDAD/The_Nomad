@@ -535,7 +535,7 @@ public partial class SteamLobby : Node {
 		return SteamNetworkingUtils.GetLocalPingLocation( out hPingLocation );
 	}
 
-	private void CmdLobbyInfo( string arg ) {
+	private void CmdLobbyInfo() {
 		Console.PrintLine( "[STEAM LOBBY METADATA]" );
 		Console.PrintLine( string.Format( "Name: {0}", LobbyName ) );
 		Console.PrintLine( string.Format( "MaxMembers: {0}", LobbyMaxMembers ) );
@@ -575,7 +575,7 @@ public partial class SteamLobby : Node {
 
 		SetPhysicsProcess( true );
 
-		Console.AddCommand( "lobby_info", Callable.From<string>( CmdLobbyInfo ), [], 0, "prints lobby information." );
+		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
 		ThisSteamID = SteamManager.GetSteamID();
 	}

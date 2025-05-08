@@ -38,6 +38,9 @@ namespace Renown.Thinkers {
 
 		private State CurrentState;
 
+		private Godot.Vector2 StartPosition;
+		private float StartHealth;
+
 		// combat variables
 		private Timer AimTimer;
 		private Timer AttackTimer;
@@ -318,12 +321,26 @@ namespace Renown.Thinkers {
 			Damage( source, Health );
 		}
 
+		private void OnRestartCheckpoint() {
+			SetDeferred( "global_position", StartPosition );
+			CurrentState = State.Guarding;
+			Awareness = MobAwareness.Relaxed;
+			Health = StartHealth;
+			Flags = 0;
+			SightDetectionAmount = 0.0f;
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				AddToGroup( "Enemies" );
+
+				LevelData.Instance.PlayerRespawn += OnRestartCheckpoint;
 			}
+
+			StartPosition = GlobalPosition;
+			StartHealth = Health;
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );

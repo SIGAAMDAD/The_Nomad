@@ -7,6 +7,9 @@ public partial class HellbreakerExit : Node2D {
 	private AnimatedSprite2D DefaultAnimation;
 	private Area2D Area;
 
+	[Signal]
+	public delegate void UsedEventHandler( HellbreakerExit exit );
+
 	private void OnArea2DBodyShapeEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is not Player ) {
 			return;
@@ -17,6 +20,8 @@ public partial class HellbreakerExit : Node2D {
 			DefaultAnimation.Hide();
 			UseAnimation.Show();
 			UseAnimation.Play( "use" );
+
+			EmitSignalUsed( this );
 			break;
 		case "dead":
 			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
@@ -27,6 +32,9 @@ public partial class HellbreakerExit : Node2D {
 		UseAnimation.Hide();
 		DefaultAnimation.Show();
 		DefaultAnimation.Play( "dead" );
+	}
+	public bool IsUsed() {
+		return DefaultAnimation.Animation != "dead";
 	}
 
 	public override void _Ready() {

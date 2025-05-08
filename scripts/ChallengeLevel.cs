@@ -25,7 +25,7 @@ public partial class ChallengeLevel : LevelData {
 	[Export]
 	private int MinTimeSeconds = 0;
 	[Export]
-	private Node2D Hellbreaker;
+	private Hellbreaker Hellbreaker;
 	[Export]
 	private Node2D Level;
 	[Export]
@@ -42,16 +42,31 @@ public partial class ChallengeLevel : LevelData {
 	private static int MaxCombo = 0;
 	private ScoreBonus BonusFlags = ScoreBonus.All;
 
+	private void OnHellbreakerTransitionFinished() {
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) );
+		Hellbreaker.Start( ThisPlayer );
+	}
+
 	private void OnPlayerDie( Entity source, Entity target ) {
+		if ( Hellbreaker.Activate( ThisPlayer ) ) {
+			Level.Hide();
+			Level.ProcessMode = ProcessModeEnum.Disabled;
+
+			Godot.Collections.Array<Node> enemies = GetTree().GetNodesInGroup( "Enemies" );
+			for ( int i = 0; i < enemies.Count; i++ ) {
+				enemies[i].ProcessMode = ProcessModeEnum.Disabled;
+			}
+
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+			Hellbreaker.ProcessMode = ProcessModeEnum.Pausable;
+
+			Console.PrintLine( "Beginning hellbreaker..." );
+			return;
+		}
+
+		EmitSignalPlayerRespawn();
 		BonusFlags &= ~ScoreBonus.NoDeaths;
-
-		Hellbreaker.Show();
-		Hellbreaker.ProcessMode = ProcessModeEnum.Pausable;
-
-		Level.Show();
-		Level.ProcessMode = ProcessModeEnum.Disabled;
-		
-		AddChild( Hellbreaker );
 	}
 	private void OnPlayerDamaged( Entity source, Entity target, float nAmount ) {
 		BonusFlags &= ~ScoreBonus.NoDamage;

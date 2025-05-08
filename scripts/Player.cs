@@ -15,6 +15,8 @@ public enum WeaponSlotIndex : int {
 	HeavySidearm
 };
 
+// TODO: dash i-frames duration and speed should decrease if we spam it
+
 public partial class Player : Entity {
 	public enum Hands : byte {
 		Left,
@@ -160,6 +162,7 @@ public partial class Player : Entity {
 
 	private Timer DashTime;
 	private Timer SlideTime;
+	private Timer DashBurnoutCooldownTimer;
 	private Timer DashCooldownTime;
 
 	[Export]
@@ -227,6 +230,7 @@ public partial class Player : Entity {
 	private int ComboCounter = 0;
 	private float ArmAngle = 0.0f;
 	private float DashBurnout = 0.0f;
+	private float DashTimer = 0.0f;
 	private int InputDevice = 0;
 	private float FrameDamage = 0.0f;
 	private int Hellbreaks = 0;
@@ -732,7 +736,12 @@ public partial class Player : Entity {
 		SetProcessUnhandledInput( false );
 
 		Flags &= ~PlayerFlags.Resting;
-
+	}
+	public void LeaveCampfire() {
+		CheckpointDrinkTimer.Stop();
+		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
+		IdleAnimation.Play( "checkpoint_exit" );
+		IdleAnimation.Connect( "animation_finished", Callable.From( OnCheckpointExitEnd ) );
 	}
 	public void RestAtCampfire() {
 		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
@@ -811,6 +820,14 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.Dashing;
 		DashCooldownTime.Start();
 	}
+	private void OnDashBurnoutCooldownTimerTimeout() {
+		DashBurnout = 0.0f;
+		DashTimer = 0.6f;
+
+		DashTime.WaitTime = DashTimer;
+
+		PlaySound( DashChannel, ResourceCache.GetSound( "res://sounds/player/dash_chargeup.ogg" ) );
+	}
 	private void OnSlideTimeout() {
 		SlideEffect.Emitting = false;
 		Flags &= ~PlayerFlags.Sliding;
@@ -818,7 +835,7 @@ public partial class Player : Entity {
 
 	private bool IsInputBlocked( bool bIsInventory = false ) => ( Flags & PlayerFlags.BlockedInput ) != 0 || ( !bIsInventory && ( Flags & PlayerFlags.Inventory ) != 0 );
 	private void OnDash() {
-		if ( IsInputBlocked() ) {
+		if ( IsInputBlocked() || DashBurnoutCooldownTimer.TimeLeft > 0.0f ) {
 			return;
 		}
 
@@ -826,10 +843,7 @@ public partial class Player : Entity {
 		if ( DashBurnout >= 1.0f ) {
 			PlaySound( AudioChannel, ResourceCache.DashExplosion );
 
-			DashBurnout = 0.0f;
-
-			// extension of recharge time
-			DashCooldownTime.WaitTime = 2.50f;
+			DashBurnoutCooldownTimer.Start();
 
 			Damage( this, 20.0f );
 			AddStatusEffect( "status_burning" );
@@ -842,6 +856,7 @@ public partial class Player : Entity {
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
+		DashTime.WaitTime = DashTimer;
 		DashTime.Start();
 		DashChannel.PitchScale = 1.0f + DashBurnout;
 		PlaySound( DashChannel, ResourceCache.DashSfx[ RandomFactory.Next( 0, ResourceCache.DashSfx.Length - 1 ) ] );
@@ -851,6 +866,7 @@ public partial class Player : Entity {
 		HUD.GetDashOverlay().Show();
 
 		DashBurnout += 0.25f;
+		DashTimer -= 0.10f;
 		DashCooldownTime.WaitTime = 0.80f;
 		DashCooldownTime.Start();
 	}
@@ -1546,13 +1562,13 @@ public partial class Player : Entity {
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );
-		DashTime.SetProcess( false );
-		DashTime.SetProcessInternal( false );
+		DashTimer = (float)DashTime.WaitTime;
 		DashTime.Connect( "timeout", Callable.From( OnDashTimeTimeout ) );
 
+		DashBurnoutCooldownTimer = GetNode<Timer>( "Timers/DashBurnoutCooldownTimer" );
+		DashBurnoutCooldownTimer.Connect( "timeout", Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
+
 		IdleTimer = GetNode<Timer>( "IdleAnimationTimer" );
-		IdleTimer.SetProcess( false );
-		IdleTimer.SetProcessInternal( false );
 		IdleTimer.Connect( "timeout", Callable.From( OnIdleAnimationTimerTimeout ) );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Animations/Idle" );
@@ -1588,7 +1604,7 @@ public partial class Player : Entity {
 
 		CheckpointDrinkTimer = new Timer();
 		CheckpointDrinkTimer.Name = "CheckpointDrinkTimer";
-		CheckpointDrinkTimer.WaitTime = 2.5f;
+		CheckpointDrinkTimer.WaitTime = 10.5f;
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
 		CheckpointDrinkTimer.Connect( "timeout", Callable.From( () => {
 			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
@@ -1785,6 +1801,10 @@ public partial class Player : Entity {
 			}
 		}
 		SoundArea.Radius = SoundLevel;
+
+		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
+			return;
+		}
 
 		GetArmAngle();
 

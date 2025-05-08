@@ -47,7 +47,6 @@ public enum PlayerDamageSource : byte {
 
 public partial class NetworkPlayer : Renown.Entity {
 	private NetworkWriter SyncObject = new NetworkWriter( 24 );
-	private NetworkReader SyncReader = new NetworkReader();
 
 	private Random RandomFactory = null;
 	
@@ -89,26 +88,27 @@ public partial class NetworkPlayer : Renown.Entity {
 	// TODO: find some way of sending values back to the client
 	
 	public void Update( System.IO.BinaryReader packet ) {
-		SyncReader.BeginRead( packet );
-
-		if ( SyncReader.ReadSByte() != WeaponSlot.INVALID ) {
-			WeaponUseMode = (WeaponEntity.Properties)SyncReader.ReadUInt32();
+		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
+			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
-				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncReader.ReadString() );
+				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", packet.ReadString() );
 			}
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
-		GlobalPosition = SyncReader.ReadVector2();
+		Godot.Vector2 position = Godot.Vector2.Zero;
+		position.X = (float)packet.ReadDouble();
+		position.Y = (float)packet.ReadDouble();
+		GlobalPosition = position;
 
-		LeftArmAnimation.SetDeferred( "global_rotation", SyncReader.ReadFloat() );
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)SyncReader.ReadByte(), DefaultLeftArmSpriteFrames );
+		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
 
-		RightArmAnimation.SetDeferred( "global_rotation", SyncReader.ReadFloat() );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)SyncReader.ReadByte(), DefaultRightArmSpriteFrames );
+		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
 
-		LegAnimationState = (PlayerAnimationState)SyncReader.ReadByte();
-		TorsoAnimationState = (PlayerAnimationState)SyncReader.ReadByte();
+		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
 
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:

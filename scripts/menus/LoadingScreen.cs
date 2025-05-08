@@ -3,9 +3,10 @@ using Godot;
 
 public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
-	private Label ProgressLabel;
 	private MenuBackground Background;
-	private Range Spinner;
+//	private Range Spinner;
+	private TextureRect ProgressBar;
+	private Tween ProgressTween;
 	private bool FadingOut = false;
 	private string PrevTip = "";
 	private Timer ImageChange;
@@ -74,14 +75,16 @@ public partial class LoadingScreen : CanvasLayer {
 		TimeLoading.Stop();
 
 		ImageChange.Stop();
-		Spinner.SetProcess( false );
+//		Spinner.SetProcess( false );
+
+		ProgressTween.Stop();
 	}
 	public void FadeOut() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnFadeOutFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 	public void FadeIn() {
-		Spinner.SetProcess( true );
+//		Spinner.SetProcess( true );
 
 		TimeLoading.Start();
 
@@ -89,6 +92,15 @@ public partial class LoadingScreen : CanvasLayer {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		ImageChange.Start();
+
+		ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
+
+		ProgressTween = CreateTween();
+		ProgressTween.TweenProperty( ProgressBar.Material, "shader_parameter/progress", 1.0f, 4.0f );
+		ProgressTween.SetLoops( 1000 );
+		ProgressTween.LoopFinished += ( loopCount ) => {
+			ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
+		};
 		OnImageChangeTimeout();
 	}
 
@@ -96,21 +108,21 @@ public partial class LoadingScreen : CanvasLayer {
 		base._Ready();
 
 		ImageChange = GetNode<Timer>( "ImageChange" );
-		ImageChange.SetProcess( false );
-		ImageChange.SetProcessInternal( false );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
 		Background = GetNode<MenuBackground>( "MenuBackground" );
 
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
-		TipLabel.SetProcess( false );
-		TipLabel.SetProcessInternal( false );
 		TipLabel.Show();
 
+		ProgressBar = GetNode<TextureRect>( "Tips/ProgressBar" );
+
+	/*
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );
 		Spinner.SetProcessInternal( false );
 		Spinner.Show();
+	*/
 
 		SetProcess( false );
 		SetProcessInternal( false );

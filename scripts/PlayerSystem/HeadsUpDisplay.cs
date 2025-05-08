@@ -5,8 +5,6 @@ using Renown.World;
 
 namespace PlayerSystem {
 	public partial class HeadsUpDisplay : CanvasLayer {
-		private static readonly float RageUsedOnWarp = 20.0f;
-
 		[Export]
 		private Player _Owner;
 
@@ -23,27 +21,10 @@ namespace PlayerSystem {
 		private Label AnnouncementText;
 		private Timer AnnouncementTimer;
 
-		private Checkpoint CurrentCheckpoint;
-		private MarginContainer CheckpointInteractor;
+		private CheckpointInteractor CheckpointInteractor;
 		private MarginContainer JumpInteractor;
 		private MarginContainer CurrentInteractor;
 		private MarginContainer DoorInteractor;
-
-		// checkpoint interaction
-		private Button SaveGameButton;
-		private Button LoadGameButton;
-		private Button OpenStorageButton;
-		private Button RestHereButton;
-		private Button WarpButton;
-		private Label CheckpointNameLabel;
-		private WarpPoint WarpCloner;
-		private VScrollBar WarpLocationsScroll;
-		private VBoxContainer WarpLocationsContainer;
-		private Button ActiveCheckpointButton;
-		private VBoxContainer InactiveContainter;
-		private VBoxContainer CheckpointMainContainer;
-		private VBoxContainer SavedGamesContainer;
-		private HBoxContainer MemoryCloner;
 
 		// eagles peak interaction
 		private Button JumpYesButton;
@@ -131,6 +112,8 @@ namespace PlayerSystem {
 			}
 		}
 
+		public Checkpoint GetCurrentCheckpoint() => CheckpointInteractor.GetCurrentCheckpoint();
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -175,7 +158,7 @@ namespace PlayerSystem {
 				FadeOutTween.Connect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
 			} ) );
 
-			CheckpointInteractor = GetNode<MarginContainer>( "CheckpointContainer" );
+			CheckpointInteractor = GetNode<CheckpointInteractor>( "CheckpointContainer" );
 			CheckpointInteractor.SetProcess( false );
 			CheckpointInteractor.SetProcessInternal( false );
 
@@ -230,36 +213,6 @@ namespace PlayerSystem {
 			WeaponStatusFirearmIcon = GetNode<TextureRect>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/WeaponIcon" );
 			WeaponStatusBulletCount = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel" );
 			WeaponStatusBulletReserve = GetNode<Label>( "MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel" );
-
-			SaveGameButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/SaveProgressButton" );
-//			SaveGameButton.Connect( "pressed", Callable.From( OnSaveGameButtonPressed ) );
-
-			LoadGameButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/LoadProgressButton" );
-//			LoadGameButton.Connect( "pressed", Callable.From( OnLoadGameButtonPressed ) );
-
-			RestHereButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/RestHereButton" );
-			RestHereButton.Connect( "pressed", Callable.From( OnRestHereButtonPressed ) );
-
-			WarpButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/WarpButton" );
-			WarpButton.Connect( "pressed", Callable.From( OnWarpButtonPressed ) );
-
-			WarpCloner = GetNode<WarpPoint>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner" );
-			CheckpointNameLabel = GetNode<Label>( "CheckpointContainer/VBoxContainer/CheckpointNameLabel" );
-
-			ActiveCheckpointButton = GetNode<Button>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer/Button" );
-			ActiveCheckpointButton.SetProcess( false );
-			ActiveCheckpointButton.SetProcessInternal( false );
-			ActiveCheckpointButton.Connect( "pressed", Callable.From( () => {
-				CurrentCheckpoint.Activate();
-				ShowAnnouncement( "ACQUIRED_MEMORY" );
-			} ) );
-
-			MemoryCloner = GetNode<HBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner" );
-			InactiveContainter = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer" );
-			CheckpointMainContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/MainContainer" );
-			SavedGamesContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer" );
-			WarpLocationsScroll = GetNode<VScrollBar>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar" );
-			WarpLocationsContainer = GetNode<VBoxContainer>( "CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer" );
 
 			JumpInteractor = GetNode<MarginContainer>( "JumpContainer" );
 			JumpViewImage = GetNode<TextureRect>( "JumpContainer/ViewImage" );
@@ -340,74 +293,6 @@ namespace PlayerSystem {
 			WeaponData.Used += OnWeaponUsed;
 		}
 
-		private void OnWarpToCheckpoint( WarpPoint warpPoint ) {
-			// TODO: confirmation screen
-
-			if ( _Owner.GetRage() - RageUsedOnWarp < 0.0f ) {
-				StartThoughtBubble( "You: Shit, don't have enough mana." );
-				return;
-			} else if ( (Checkpoint)warpPoint.GetMeta( "Checkpoint" ) == CurrentCheckpoint ) {
-				StartThoughtBubble( "You: I'm already here..." );
-				return;
-			}
-
-			// TODO: play warp animation
-			_Owner.SetRage( _Owner.GetRage() - RageUsedOnWarp );
-
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-			_Owner.GlobalPosition = ( (Checkpoint)warpPoint.GetMeta( "Checkpoint" ) ).GlobalPosition;
-		}
-		private void LoadWarpPoints() {
-			Godot.Collections.Array<Node> checkpoints = GetTree().GetNodesInGroup( "Checkpoints" );
-			for ( int i = 0; i < checkpoints.Count; i++ ) {
-				Checkpoint checkpoint = checkpoints[i] as Checkpoint;
-				if ( !checkpoint.GetActivated() ) {
-					continue;
-				}
-
-				WarpPoint warpPoint = WarpCloner.Duplicate() as WarpPoint;
-				WarpLocationsContainer.AddChild( warpPoint );
-				warpPoint.ConfirmButton.Text = checkpoint.GetTitle();
-				warpPoint.ConfirmButton.Connect( "pressed", Callable.From( () => { OnWarpToCheckpoint( warpPoint ); } ) );
-				warpPoint.BiomeLabel.Text = checkpoint.GetLocation().GetBiome().GetAreaName();
-				warpPoint.SetMeta( "Checkpoint", checkpoint );
-				warpPoint.Show();
-			}
-		}
-
-		private void OnWarpButtonPressed() {
-			CheckpointMainContainer.Hide();
-
-			for ( int i = 1; i < WarpLocationsContainer.GetChildCount(); i++ ) {
-				WarpLocationsContainer.CallDeferred( "remove_child", WarpLocationsContainer.GetChild( i ) );
-				WarpLocationsContainer.GetChild( i ).CallDeferred( "queue_free" );
-			}
-
-			CallDeferred( "LoadWarpPoints" );
-			/*
-			List<Player.WarpPoint> warpList = _Owner.GetWarpPoints();
-			for ( int i = 0; i < warpList.Count; i++ ) {
-				HBoxContainer warpPoint = new HBoxContainer();
-				( (TextureRect)warpPoint.GetChild( 0 ) ).Texture = warpList[i].GetIcon();
-				( (Button)warpPoint.GetChild( 1 ) ).Text = warpList[i].GetLocation().GetTitle();
-				( (Label)warpPoint.GetChild( 2 ) ).Text = "N/A";
-				WarpLocationsContainer.AddChild( warpPoint );
-			}
-			*/
-
-			WarpLocationsScroll.CallDeferred( "show" );
-		}
-
-		public Checkpoint GetCurrentCheckpoint() => CurrentCheckpoint;
-		private void OnRestHereButtonPressed() {
-			_Owner.SetHealth( 100.0f );
-			_Owner.SetRage( 100.0f );
-
-			_Owner.RestAtCampfire();
-
-			ArchiveSystem.SaveGame( null, 0 );
-		}
-
 		/*
 		private void OnSaveGameButtonPressed() {
 //			Hide();
@@ -447,7 +332,7 @@ namespace PlayerSystem {
 		public void ShowInteraction( InteractionItem item ) {
 			switch ( item.GetInteractionType() ) {
 			case InteractionType.Checkpoint:
-				CurrentCheckpoint = (Checkpoint)item;
+				CheckpointInteractor.BeginInteraction( item );
 				CurrentInteractor = CheckpointInteractor;
 				break;
 			case InteractionType.Door:
@@ -464,16 +349,7 @@ namespace PlayerSystem {
 				return;
 			}
 			
-			if ( CurrentInteractor == CheckpointInteractor ) {
-				CheckpointNameLabel.Text = CurrentCheckpoint.GetTitle();
-				if ( CurrentCheckpoint.GetActivated() ) {
-					InactiveContainter.Hide();
-					CheckpointMainContainer.Show();
-				} else {
-					InactiveContainter.Show();
-					CheckpointMainContainer.Hide();
-				}
-			} else if ( CurrentInteractor == JumpInteractor ) {
+			if ( CurrentInteractor == JumpInteractor ) {
 				EaglesPeak data = (EaglesPeak)item;
 
 				OnYesPressed = Callable.From( data.OnYesButtonPressed );
@@ -490,9 +366,7 @@ namespace PlayerSystem {
 		}
 		public void HideInteraction() {
 			if ( CurrentInteractor == CheckpointInteractor ) {
-				CheckpointMainContainer.Show();
-				WarpLocationsScroll.Hide();
-				SavedGamesContainer.Hide();
+				CheckpointInteractor.EndInteraction();
 			} else if ( CurrentInteractor == JumpInteractor ) {
 				Tween AudioTween = CreateTween();
 				AudioTween.TweenProperty( JumpMusic, "volume_db", -20.0f, 1.5f );

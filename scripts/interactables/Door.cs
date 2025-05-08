@@ -1,4 +1,5 @@
 using Godot;
+using PlayerSystem;
 
 public enum DoorState : byte {
 	Locked,
@@ -15,12 +16,31 @@ public partial class Door : InteractionItem {
 	[Export]
 	private DoorState State;
 
+	private bool UserHasKey( Player user ) {
+		Godot.Collections.Array<Resource> stacks = (Godot.Collections.Array<Resource>)user.GetInventory().Get( "stacks" );
+		for ( int i = 0; i < stacks.Count; i++ ) {
+			if ( (string)stacks[i].Get( "item_id" ) == (string)Key.Get( "id" ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public DoorState GetState() => State;
 	public bool UseDoor( Player user ) {
 		switch ( State ) {
-		case DoorState.Locked: {
-			Godot.Collections.Array<Resource> stacks = (Godot.Collections.Array<Resource>)user.GetInventory().Get( "stacks" );
-			break; }
+		case DoorState.Locked:
+			if ( !UserHasKey( user ) ) {
+				HeadsUpDisplay.StartThoughtBubble( "You don't have the required key" );
+				return false;
+			}
+			State = DoorState.Unlocked;
+			return true;
+		case DoorState.Unlocked:
+			return true;
+		default:
+			Console.PrintError( "Door.UseDoor: invalid door state!" );
+			break;
 		};
 		return false;
 	}

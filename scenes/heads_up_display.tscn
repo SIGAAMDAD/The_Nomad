@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=46 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
 [ext_resource type="Script" uid="uid://dqu07i6qx5kvd" path="res://scripts/PlayerSystem/Notebook.cs" id="18_xstx4"]
 [ext_resource type="Script" uid="uid://cp2m32c4dosqq" path="res://scripts/PlayerSystem/WarpPoint.cs" id="23_0ed87"]
+[ext_resource type="Script" uid="uid://df58eq7qyt2ih" path="res://scripts/PlayerSystem/CheckpointInteractor.cs" id="23_nyije"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="24_ot7dw"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
@@ -473,6 +474,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("18_xstx4")
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="NotebookContainer"]
 layout_mode = 2
@@ -898,6 +900,7 @@ offset_top = 42.0
 offset_right = 256.0
 grow_vertical = 2
 mouse_filter = 0
+script = ExtResource("23_nyije")
 metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="CheckpointContainer"]
@@ -917,14 +920,14 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 
 [node name="InactiveContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+visible = false
 layout_mode = 2
 
-[node name="Button" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer"]
+[node name="ActivateButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer"]
 layout_mode = 2
 text = "ACTIVATE_CAMPFIRE"
 
 [node name="MainContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -947,9 +950,23 @@ text = "OPEN_STORAGE"
 layout_mode = 2
 text = "REST_HERE"
 
-[node name="WarpButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
+[node name="RestingContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="LeaveButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
+layout_mode = 2
+text = "GET_UP"
+
+[node name="WarpButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
 layout_mode = 2
 text = "WARP_TO_CHECKPOINT"
+
+[node name="ReflectButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
+layout_mode = 2
+text = "REFLECT_BUTTON"
 
 [node name="SavedGamesContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
 visible = false
@@ -965,43 +982,53 @@ layout_mode = 2
 [node name="DateTimeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner"]
 layout_mode = 2
 
-[node name="VScrollBar" type="VScrollBar" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+[node name="WarpLocations" type="VScrollBar" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
 visible = false
 layout_mode = 2
 
-[node name="WarpLocationsContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar"]
+[node name="WarpLocationsContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.25
-anchor_right = 2.75
-offset_right = 236.0
-offset_bottom = 428.0
+anchor_right = 57.375
+anchor_bottom = 43.0
+offset_right = -3.05176e-05
+offset_bottom = -3.05176e-05
 metadata/_edit_use_anchors_ = true
 
-[node name="Cloner" type="HBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer"]
+[node name="Cloner" type="HBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("23_0ed87")
 
-[node name="Icon" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+[node name="Icon" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer/Cloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_horizontal = 0
 stretch_mode = 3
 
-[node name="ConfirmButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+[node name="ConfirmButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer/Cloner"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "NAME"
 
-[node name="BiomeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/VScrollBar/WarpLocationsContainer/Cloner"]
+[node name="BiomeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer/Cloner"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "BIOME"
+
+[node name="BackButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/WarpLocations"]
+layout_mode = 2
+offset_left = -4.0
+offset_top = 355.0
+offset_right = 463.0
+offset_bottom = 394.0
+text = "BACK"
+metadata/_edit_use_anchors_ = true
 
 [node name="DoorContainer" type="MarginContainer" parent="."]
 visible = false

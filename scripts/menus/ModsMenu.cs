@@ -3,6 +3,9 @@ using Godot;
 
 public partial class ModsMenu : Control {
 	private Dictionary<StringName, ModMetadata> ModList;
+	private AudioStreamPlayer ThemeChannel;
+
+	private HBoxContainer Cloner;
 
 	private List<string> GetModList( string directory ) {
 		List<string> modList = new List<string>();
@@ -29,13 +32,26 @@ public partial class ModsMenu : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		List<string> modList = GetModList( "user://mods" );
+		Cloner = GetNode<HBoxContainer>( "MarginContainer/VScrollBar/Cloner" );
+
+		ThemeChannel = GetNode<AudioStreamPlayer>( "Theme" );
+
+		Console.PrintLine( "Loading mods..." );
+
+		List<string> modList = GetModList( "user://Mods" );
 		modList.Sort();
 
 		ModList = new Dictionary<StringName, ModMetadata>( modList.Count );
 		for ( int i = 0; i < modList.Count; i++ ) {
 			ModMetadata mod = ResourceLoader.Load<ModMetadata>( modList[i] );
+			mod.Load();
 			ModList.Add( mod.Name, mod );
+
+			HBoxContainer container = Cloner.Duplicate() as HBoxContainer;
+			( container.GetChild( 0 ) as RichTextLabel ).ParseBbcode( mod.Name );
+			( container.GetChild( 1 ) as Label ).Text = mod.Version;
+			container.Show();
+
 			Console.PrintLine( string.Format( "...loaded mod {0}", mod.Name ) );
 		}
 	}

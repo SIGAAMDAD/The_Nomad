@@ -89,13 +89,14 @@ texture = ExtResource("6_ndd47")
 [node name="Exits" type="Node2D" parent="."]
 
 [node name="HellbreakerExit" parent="Exits" instance=ExtResource("8_hecgn")]
-position = Vector2(-2263, 265)
+position = Vector2(-1574, 469)
 
 [node name="HellbreakerExit2" parent="Exits" instance=ExtResource("8_hecgn")]
-position = Vector2(792, -1028)
+position = Vector2(743, -645)
 
 [node name="HellbreakerExit3" parent="Exits" instance=ExtResource("8_hecgn")]
-position = Vector2(-1257, -1148)
+position = Vector2(-981, -548)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("9_nbbwv")
+parameters/looping = true

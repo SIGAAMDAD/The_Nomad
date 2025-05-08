@@ -4,6 +4,11 @@ using Godot;
 
 public partial class ModMetadata : Resource {
 	[Export]
+	public string Version {
+		get;
+		private set;
+	}
+	[Export]
 	public StringName Name {
 		get;
 		private set;
@@ -28,5 +33,7 @@ public partial class ModMetadata : Resource {
 		}
 
 		bool bSuccess = ProjectSettings.LoadResourcePack( PckPath );
+		if ( !bSuccess ) {
+		}
 	}
 };
