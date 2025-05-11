@@ -32,6 +32,8 @@ namespace Renown.Thinkers {
 
 		private State CurrentState;
 
+		private Godot.Vector2 StartPosition = Godot.Vector2.Zero;
+
 		// combat variables
 		private Timer RevTimer;
 		private RayCast2D AimLine;
@@ -54,6 +56,8 @@ namespace Renown.Thinkers {
 		private Entity Target;
 
 		private Line2D DetectionMeter;
+
+		private bool HitHead = false;
 
 		private AnimatedSprite2D HeadAnimations;
 		private AnimatedSprite2D ArmAnimations;
@@ -104,7 +108,7 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Damage( Entity source, float nAmount ) {
-			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 || !HitHead ) {
 				return;
 			}
 
@@ -120,16 +124,19 @@ namespace Renown.Thinkers {
 				AudioChannel.Stop();
 				AudioChannel.Set( "parameters/looping", false );
 
+				Velocity = Godot.Vector2.Zero;
+				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
 //				if ( BodyAnimations.Animation != "die_high" ) {
-					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+//					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
 					BodyAnimations.CallDeferred( "play", "die" );
 //				}
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", true );
 				return;
 			}
 
@@ -216,6 +223,7 @@ namespace Renown.Thinkers {
 		public void OnHeadHit( Entity source ) {
 //			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
 //			BodyAnimations.Play( "die_high" );
+			HitHead = true;
 			Damage( source, Health );
 		}
 		public void OnBackpackHit( Entity source ) {
@@ -229,15 +237,27 @@ namespace Renown.Thinkers {
 			Area2D BlowupArea = BodyAnimations.GetNode<Area2D>( "BlowupArea" );
 			Godot.Collections.Array<Node2D> nodes = BlowupArea.GetOverlappingBodies();
 
-			ExplosionFactory.AddExplosion( GlobalPosition );
-			for ( int i = 0; i < nodes.Count; i++ ) {
-				if ( nodes[i] is Entity entity && entity != null ) {
-					entity.Damage( this, ExplosionDamage );
-					entity.AddStatusEffect( "status_burning" );
-				}
-			}
+			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
+			explosion.Damage = ExplosionDamage;
+			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
+			AddChild( explosion );
 
-			Damage( this, Health );
+			base.Damage( this, Health );
+			DetectionMeter.CallDeferred( "hide" );
+				
+			GunChannel.Stop();
+			GunChannel.Set( "parameters/looping", false );
+
+			AudioChannel.Stop();
+			AudioChannel.Set( "parameters/looping", false );
+
+			GotoPosition = Godot.Vector2.Zero;
+			Flags |= ThinkerFlags.Dead;
+			HeadAnimations.Hide();
+			ArmAnimations.Hide();
+			BodyAnimations.CallDeferred( "play", "die" );
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 		}
 
 		private void OnRevTimerTimeout() {
@@ -263,14 +283,30 @@ namespace Renown.Thinkers {
 			CurrentState = State.Investigating;
 		}
 
+		private void OnPlayerRestart() {
+			GlobalPosition = StartPosition;
+
+			DetectionMeter.CallDeferred( "show" );
+			ArmAnimations.CallDeferred( "show" );
+			HeadAnimations.CallDeferred( "show" );
+
+			Flags &= ~ThinkerFlags.Dead;
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				AddToGroup( "Enemies" );
+
+				LevelData.Instance.PlayerRespawn += OnPlayerRestart;
 			}
 
 			GunChannel = new AudioStreamPlayer2D();
+			GunChannel.Name = "GunChannel";
 			GunChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			AddChild( GunChannel );
 
@@ -287,9 +323,6 @@ namespace Renown.Thinkers {
 			BackpackHitbox.Hit += OnBackpackHit;
 
 			CurrentState = State.Guarding;
-
-			Squad = GroupManager.GetGroup( GroupType.Military, Faction, GlobalPosition );
-			Squad.AddThinker( this );
 
 			NodeCache ??= Location.GetNodeCache();
 
@@ -320,6 +353,8 @@ namespace Renown.Thinkers {
 			ChangeInvestigationAngleTimer.WaitTime = 1.0f;
 			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
 			AddChild( ChangeInvestigationAngleTimer );
+
+			StartPosition = GlobalPosition;
 
 			GenerateRayCasts();
 		}
@@ -367,7 +402,7 @@ namespace Renown.Thinkers {
 			}
 		}
 		private void CalcShots() {
-			const int numShots = 10;
+			const int numShots = 24;
 			
 			for ( int i = 0; i < numShots; i++ ) {
 				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 60.0f ) ) ) * 1024.0f;
@@ -422,6 +457,8 @@ namespace Renown.Thinkers {
 					Shooting = true;
 					ArmAnimations.CallDeferred( "play", "aim" );
 
+					SetNavigationTarget( LastTargetPosition );
+
 					LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 					AimAngle = LookAngle;
@@ -452,15 +489,14 @@ namespace Renown.Thinkers {
 		}
 
 		protected override bool MoveAlongPath() {
-			if ( NavAgent.IsTargetReached() ) {
-				Velocity = Godot.Vector2.Zero;
-				return true;
+			float movespeed = MovementSpeed;
+			if ( Shooting ) {
+				MovementSpeed = 50.0f;
+			} else {
+				MovementSpeed = movespeed;
 			}
-			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
-			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			Velocity = LookDir * ( MovementSpeed * SpeedDegrade );
-			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+			base.MoveAlongPath();
+			MovementSpeed = movespeed;
 			return true;
 		}
 

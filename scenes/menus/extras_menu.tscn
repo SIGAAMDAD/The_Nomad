@@ -118,7 +118,9 @@ text = "Bloodbath"
 layout_mode = 2
 
 [node name="StoryInfoContainer" type="VBoxContainer" parent="MainContainer"]
-visible = false
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="MainContainer/StoryInfoContainer"]
 layout_mode = 2
 
 [node name="DescriptionLabel" type="Label" parent="MainContainer/StoryInfoContainer"]
@@ -164,3 +166,52 @@ theme_override_fonts/font = SubResource("SystemFont_m1w8s")
 layout_mode = 2
 size_flags_vertical = 4
 text = "START"
+
+[node name="LeaderboardScroll" type="VScrollBar" parent="MainContainer/StoryInfoContainer"]
+layout_mode = 2
+
+[node name="Leaderboard" type="VBoxContainer" parent="MainContainer/StoryInfoContainer/LeaderboardScroll"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.375
+anchor_top = 0.125
+anchor_right = 79.375
+anchor_bottom = 12.625
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard"]
+visible = false
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "NAME"
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2
+
+[node name="ScoreLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="TimeMinutesLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2
+text = ":"
+
+[node name="TimeSecondsLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2
+text = "."
+
+[node name="TimeMillisecondsLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
+layout_mode = 2

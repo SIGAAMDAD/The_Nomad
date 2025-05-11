@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using DialogueManagerRuntime;
 using Godot;
 
@@ -22,6 +23,8 @@ public partial class HellbreakerExit : Node2D {
 			UseAnimation.Play( "use" );
 
 			EmitSignalUsed( this );
+
+			RemoveFromGroup( "HellbreakerExits" );
 			break;
 		case "dead":
 			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
@@ -34,7 +37,10 @@ public partial class HellbreakerExit : Node2D {
 		DefaultAnimation.Play( "dead" );
 	}
 	public bool IsUsed() {
-		return DefaultAnimation.Animation != "dead";
+		return DefaultAnimation.Animation == "dead";
+	}
+	public void Reset() {
+		DefaultAnimation.Play( "idle" );
 	}
 
 	public override void _Ready() {

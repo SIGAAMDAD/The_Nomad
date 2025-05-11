@@ -48,7 +48,7 @@ public enum PlayerDamageSource : byte {
 public partial class NetworkPlayer : Renown.Entity {
 	private NetworkWriter SyncObject = new NetworkWriter( 24 );
 
-	private Random RandomFactory = null;
+	private Random RandomFactory = new Random();
 	
 	public string MultiplayerUsername;
 	public CSteamID MultiplayerId;
@@ -60,7 +60,13 @@ public partial class NetworkPlayer : Renown.Entity {
 	private CSteamID OwnerId;
 	private int NodeHash;
 
+	private GpuParticles2D WalkEffect;
+	private GpuParticles2D DashEffect;
+	private GpuParticles2D SlideEffect;
+	private PointLight2D DashLight;
+
 	private AudioStreamPlayer2D MoveChannel;
+	private AudioStreamPlayer2D DashChannel;
 
 	private WeaponEntity.Properties WeaponUseMode = WeaponEntity.Properties.None;
 	
@@ -91,7 +97,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
-				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", packet.ReadString() );
+				string weaponId = packet.ReadString(); 
+				Console.PrintLine( "NetworkPlayer is using weapon " + weaponId );
+				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
 			}
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
@@ -123,10 +131,15 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Idle:
 			LegAnimation.CallDeferred( "show" );
 			LegAnimation.CallDeferred( "play", "idle" );
+
+			WalkEffect.SetDeferred( "emitting", false );
+			SlideEffect.SetDeferred( "emitting", false );
 			break;
 		case PlayerAnimationState.Running:
 			LegAnimation.CallDeferred( "show" );
 			LegAnimation.CallDeferred( "play", "run" );
+
+			WalkEffect.SetDeferred( "emitting", true );
 			break;
 		case PlayerAnimationState.Sliding:
 			LegAnimation.CallDeferred( "show" );
@@ -171,6 +184,28 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
 		};
+
+		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
+		float armAngle = 0.0f;
+		if ( armAngle >= ( Player.ScreenSize.X / 2.0f ) ) {
+			TorsoAnimation.SetDeferred( "flip_h", false );
+			LegAnimation.SetDeferred( "flip_h", false );
+			LeftArmAnimation.SetDeferred( "flip_v", false );
+			RightArmAnimation.SetDeferred( "flip_v", false );
+		} else if ( armAngle <= ( Player.ScreenSize.X / 2.0f ) ) {
+			TorsoAnimation.SetDeferred( "flip_h", true );
+			LegAnimation.SetDeferred( "flip_h", true );
+			LeftArmAnimation.SetDeferred( "flip_v", true );
+			RightArmAnimation.SetDeferred( "flip_v", true );
+		}
+
+		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
+
+		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
+		DashEffect.SetDeferred( "emitting", isDashing );
+		DashLight.SetDeferred( "visible", isDashing );
+
+		SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 	}
 	public override void Damage( Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
@@ -206,10 +241,16 @@ public partial class NetworkPlayer : Renown.Entity {
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegAnimationLooped ) );
 
+		WalkEffect = GetNode<GpuParticles2D>( "DustPuff" );
+		SlideEffect = GetNode<GpuParticles2D>( "SlidePuff" );
+		DashEffect = GetNode<GpuParticles2D>( "DashEffect" );
+		DashLight = GetNode<PointLight2D>( "DashEffect/PointLight2D" );
+
+		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
+		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+
 		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
 		MoveChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		MoveChannel.SetProcess( false );
-		MoveChannel.SetProcessInternal( false );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
 
@@ -225,16 +266,16 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.CheckpointDrinking:
 		case PlayerAnimationState.CheckpointExit:
 		case PlayerAnimationState.CheckpointIdle:
-			arm.SpriteFrames = defaultFrames;
+			arm.SetDeferred( "sprite_frames", defaultFrames );
 			arm.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Idle:
-			arm.SpriteFrames = defaultFrames;
+			arm.SetDeferred( "sprite_frames", defaultFrames );
 			arm.CallDeferred( "play", "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			arm.SpriteFrames = defaultFrames;
+			arm.SetDeferred( "sprite_frames", defaultFrames );
 			arm.CallDeferred( "play", "run" );
 			break;
 		case PlayerAnimationState.WeaponIdle: {
@@ -247,8 +288,8 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_left";
 			}
 			
-			arm.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			arm.SetDeferred( "sprite_frames",
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
 			arm.CallDeferred( "play", "idle" );
 			break; }
 		case PlayerAnimationState.WeaponUse: {
@@ -263,20 +304,20 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_left";
 			}
 			
-			arm.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			arm.SetDeferred( "sprite_frames",
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
 			arm.CallDeferred( "play", "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
 			arm.CallDeferred( "show" );
-			arm.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			arm.SetDeferred( "sprite_frames",
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
 			arm.CallDeferred( "play", "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
 			arm.CallDeferred( "show" );
-			arm.SpriteFrames =
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+			arm.SetDeferred( "sprite_frames",
+				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
 			arm.CallDeferred( "play", "empty" );
 			break;
 		};

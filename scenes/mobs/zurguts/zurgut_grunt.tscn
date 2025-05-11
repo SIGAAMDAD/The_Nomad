@@ -25,9 +25,10 @@ size = Vector2(7, 4)
 size = Vector2(19.5, 13)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nk00t"]
-radius = 126.004
+radius = 126.0
 
 [node name="ZurgutGrunt" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+z_index = 6
 collision_layer = 155
 collision_mask = 155
 script = ExtResource("1_nk00t")

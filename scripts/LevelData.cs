@@ -102,11 +102,15 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
+	public override void _EnterTree() {
+		base._EnterTree();
+
+		Instance = this;
+	}
 	public override void _Ready() {
 		base._Ready();
 
 		GetTree().CurrentScene = this;
-		Instance = this;
 
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			ThisPlayer.SetupSplitScreen( 0 );
@@ -130,17 +134,21 @@ public partial class LevelData : Node2D {
 		SetProcess( false );
 		SetProcessInternal( false );
 
-		ExplosionFactory explosionFactory = new ExplosionFactory();
-		AddChild( explosionFactory );
-
 		BloodParticleFactory bloodFactory = new BloodParticleFactory();
+		bloodFactory.Name = "BloodParticleFactory";
 		AddChild( bloodFactory );
 
 		DebrisFactory debrisFactory = new DebrisFactory();
+		debrisFactory.Name = "DebrisFactory";
 		AddChild( debrisFactory );
 
 		BulletShellMesh bulletShellMesh = new BulletShellMesh();
+		bulletShellMesh.Name = "BulletShellMesh";
 		AddChild( bulletShellMesh );
+
+		BulletMesh bulletMesh = new BulletMesh();
+		bulletMesh.Name = "BulletMesh";
+		AddChild( bulletMesh );
 
 		//
 		// force the game to run at the highest priority possible

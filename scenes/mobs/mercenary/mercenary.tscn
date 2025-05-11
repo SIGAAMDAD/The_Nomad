@@ -18,13 +18,14 @@ size = Vector2(11, 10)
 size = Vector2(19, 18)
 
 [node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
-z_index = 5
+z_index = 7
 collision_layer = 155
 collision_mask = 155
 script = ExtResource("1_wewif")
 LoseInterestTime = 10.0
-SightDetectionTime = 4.0
+SightDetectionTime = 8.0
 SightDetectionSpeed = 0.25
+Health = 100.0
 Relations = {}
 Debts = {}
 
@@ -37,8 +38,8 @@ sprite_frames = ExtResource("2_61sma")
 animation = &"move"
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
-collision_layer = 257
-collision_mask = 257
+collision_layer = 256
+collision_mask = 256
 script = ExtResource("4_jglyl")
 Parent = NodePath("../../..")
 

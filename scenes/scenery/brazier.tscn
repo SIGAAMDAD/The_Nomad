@@ -67,4 +67,5 @@ animations = [{
 
 [node name="Brazier" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_j2ksa")
+autoplay = "default"
 frame_progress = 0.256442

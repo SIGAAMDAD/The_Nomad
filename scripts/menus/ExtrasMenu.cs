@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ChallengeMode;
 using Godot;
 using Steamworks;
@@ -23,6 +25,10 @@ public partial class ExtrasMenu : Control {
 	private int SelectedMapIndex = -1;
 
 	private Tween AudioFade;
+
+	private VBoxContainer Leaderboard;
+	private HBoxContainer LeaderboardData;
+	private List<HBoxContainer> LeaderboardEntries;
 
 	private AudioStreamPlayer UIChannel;
 	private Color FocusedColor = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
@@ -76,6 +82,24 @@ public partial class ExtrasMenu : Control {
 		MainContainer.Show();
 	}
 
+	private void FetchLevelLeaderboardStats( Dictionary<int, ChallengeCache.LeaderboardEntry> entries ) {
+		Console.PrintLine( string.Format( "Found {0} entries in leaderboard.", entries.Count ) );
+
+		for ( int i = 0; i < LeaderboardEntries.Count; i++ ) {
+			Leaderboard.RemoveChild( LeaderboardEntries[i] );
+		}
+		LeaderboardEntries.Clear();
+
+		foreach ( var entry in entries ) {
+			GD.Print( "adding entry" );
+			HBoxContainer container = LeaderboardData.Duplicate() as HBoxContainer;
+			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( entry.Value.UserID );
+			( container.GetChild( 2 ) as Label ).Text = entry.Value.Score.ToString();
+			container.Show();
+			LeaderboardEntries.Add( container );
+			Leaderboard.AddChild( container );
+		}
+	}
 	private void OnStoryModeMapSelected( Button button ) {
 		SelectedMapIndex = (int)button.GetMeta( "MapIndex" );
 
@@ -83,7 +107,7 @@ public partial class ExtrasMenu : Control {
 		RichTextLabel ObjectiveLabel = StoryModeData.GetNode<RichTextLabel>( "ObjectiveLabel" );
 
 		int score, minutes, seconds, milliseconds;
-		ChallengeCache.GetScore( SelectedMapIndex, out score, out minutes, out seconds, out milliseconds );
+		ChallengeCache.GetScore( SelectedMapIndex, out score, out minutes, out seconds, out milliseconds, new System.Action<Dictionary<int, ChallengeCache.LeaderboardEntry>>( FetchLevelLeaderboardStats ) );
 
 		Label BestTimeLabel = StoryModeData.GetNode<Label>( "ScoreContainer/BestTimeLabel" );
 		BestTimeLabel.Text = string.Format( "{0}:{1}.{2}", minutes, seconds, milliseconds );
@@ -100,8 +124,8 @@ public partial class ExtrasMenu : Control {
 	}
 
 	private void OnStoryModeMapFinishedLoading( PackedScene mapData, Resource quest ) {
-		Questify.ToggleUpdatePolling( true );
-		ChallengeCache.SetQuestData( Questify.Instantiate( quest ) );
+		Resource questData = Questify.Instantiate( quest );
+		ChallengeCache.SetQuestData( questData );
 
 		GameConfiguration.GameMode = GameMode.ChallengeMode;
 
@@ -197,6 +221,10 @@ public partial class ExtrasMenu : Control {
 		}
 
 		StoryModeData = GetNode<VBoxContainer>( "MainContainer/StoryInfoContainer" );
+
+		LeaderboardData = StoryModeData.GetNode<HBoxContainer>( "LeaderboardScroll/Leaderboard/HBoxContainer" );
+		Leaderboard = StoryModeData.GetNode<VBoxContainer>( "LeaderboardScroll/Leaderboard" );
+		LeaderboardEntries = new List<HBoxContainer>();
 
 		Button StartChallengeButton = StoryModeData.GetNode<Button>( "StartButton" );
 		StartChallengeButton.Connect( "mouse_entered", Callable.From( () => { OnElementFocused( StartChallengeButton ); } ) );

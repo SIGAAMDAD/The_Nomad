@@ -35,7 +35,7 @@ public partial class BloodParticleFactory : Node2D {
 		MeshManager = new MultiMeshInstance2D();
 		MeshManager.Multimesh = new MultiMesh();
 		MeshManager.Multimesh.Mesh = new QuadMesh();
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 16.0f, -16.0f );
+		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 4.0f, -4.0f );
 		MeshManager.Texture = ResourceCache.GetTexture( "res://textures/blood1.png" );
 		MeshManager.ZIndex = 3;
 		AddChild( MeshManager );

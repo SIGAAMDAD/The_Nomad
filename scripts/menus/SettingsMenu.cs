@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
 using Godot;
-using Steamworks;
 
 public partial class SettingsMenu : Control {
 	private OptionButton VSync;
@@ -11,6 +9,7 @@ public partial class SettingsMenu : Control {
 	private OptionButton SunShadowQuality;
 	private CheckBox SunLightEnabled;
 	private CheckBox ShowFPS;
+	private CheckBox ShowBlood;
 
 	private CheckBox EffectsOn;
 	private HSlider EffectsVolume;
@@ -135,6 +134,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
 		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
 		SettingsData.SetShowFPS( ShowFPS.ButtonPressed );
+//		SettingsData.SetShowBlood( ShowBlood.ButtonPressed );
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -428,8 +428,6 @@ public partial class SettingsMenu : Control {
 
 		NetworkingEnabled.ButtonPressed = SettingsData.GetNetworkingEnabled();
 		FriendsOnly.ButtonPressed = SettingsData.GetFriendsOnlyNetworking();
-
-		ApplyVideoSettings();
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
 		SaveSettingsButton.Connect( "focus_entered", Callable.From( OnButtonFocused ) );

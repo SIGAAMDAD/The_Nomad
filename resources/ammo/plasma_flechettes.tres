@@ -22,8 +22,9 @@ properties = {
 "damage_falloff": SubResource("Curve_orkxq"),
 "description": "PLASMA_FLECHETTES_DESCRIPTION",
 "pickup_sfx": ExtResource("3_e2ki1"),
-"range": 680.0,
+"range": 1125.0,
 "stack_add_amount": 200,
-"type": 0
+"type": 0,
+"velocity": 350.0
 }
 categories = Array[ItemCategory]([ExtResource("1_e2ki1"), ExtResource("1_rx2al")])

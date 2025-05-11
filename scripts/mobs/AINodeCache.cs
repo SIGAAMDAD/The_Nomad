@@ -10,18 +10,18 @@ public partial class AINodeCache : Node2D {
 		Node2D node = CoverCache[0];
 		float bestDistance = float.MaxValue;
 
-		RayCast2D sightLineCheck = new RayCast2D();
-		sightLineCheck.TargetPosition = target;
+//		RayCast2D sightLineCheck = new RayCast2D();
+//		sightLineCheck.TargetPosition = target;
 
 		for ( int i = 0; i < CoverCache.Length; ++i ) {
 			Godot.Vector2 from = CoverCache[i].GlobalPosition;
 			float dist = from.DistanceTo( position );
 
-			sightLineCheck.GlobalPosition = from;
+//			sightLineCheck.GlobalPosition = from;
 			if ( dist < bestDistance ) {
-				if ( sightLineCheck.GetCollider() is TileMapLayer ) {
-					continue; // a wall's in the way
-				}
+//				if ( sightLineCheck.GetCollider() is TileMapLayer ) {
+//					continue; // a wall's in the way
+//				}
 				node = CoverCache[i];
 				bestDistance = dist;
 			}

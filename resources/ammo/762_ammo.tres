@@ -6,9 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bp513nsbaeyb3" path="res://textures/env/bullet_casings/rifle_shell.png" id="2_i4m1o"]
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="4_qnvb1"]
 
-[sub_resource type="Curve" id="Curve_lhqhs"]
-_limits = [0.0, 2.0, 0.0, 1.4875]
-_data = [Vector2(0, 2), 0.0, 0.0, 1, 0, Vector2(0.846016, 2), 0.0, 0.0, 0, 0, Vector2(1.4875, 1.10943), 0.0905662, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_qnvb1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.78421, 0.909434), 0.0, 0.0, 0, 0, Vector2(1, 0.65283), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [resource]
@@ -19,10 +18,11 @@ icon = ExtResource("1_a8w8a")
 properties = {
 "casing_icon": ExtResource("2_i4m1o"),
 "damage": 80.0,
-"damage_falloff": SubResource("Curve_lhqhs"),
+"damage_falloff": SubResource("Curve_qnvb1"),
 "pickup_sfx": ExtResource("4_qnvb1"),
-"range": 1200.0,
-"stack_add_amount": 60,
-"type": 1
+"range": 1220.0,
+"stack_add_amount": 40,
+"type": 1,
+"velocity": 500.0
 }
 categories = Array[ItemCategory]([ExtResource("1_qnvb1"), ExtResource("1_lhqhs")])

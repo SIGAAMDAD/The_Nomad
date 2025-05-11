@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=94 format=3 uid="uid://cva672a3bp3sm"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=99 format=3 uid="uid://cva672a3bp3sm"]
 
 [ext_resource type="Script" uid="uid://bd74abvyklro7" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
 [ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="2_84yx1"]
@@ -28,6 +28,7 @@
 [ext_resource type="Resource" uid="uid://c0lrkr84jnart" path="res://resources/binds/actions/keyboard/screenshot.tres" id="26_gg66h"]
 [ext_resource type="Resource" uid="uid://rtr1r3ter3ko" path="res://resources/binds/actions/keyboard/melee.tres" id="26_n1237"]
 [ext_resource type="Resource" uid="uid://cnrehmcydxla6" path="res://resources/binds/actions/keyboard/use_both_hands.tres" id="27_n1237"]
+[ext_resource type="Resource" uid="uid://dgrdfneoajdxw" path="res://resources/binds/actions/keyboard/reload.tres" id="28_17381"]
 
 [sub_resource type="Resource" id="Resource_oiqfq"]
 script = ExtResource("4_3aewh")
@@ -466,7 +467,35 @@ script = ExtResource("1_7co6v")
 action = ExtResource("27_n1237")
 input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_ictln")])
 
+[sub_resource type="Resource" id="Resource_07w1j"]
+script = ExtResource("4_3aewh")
+key = 82
+shift = false
+control = false
+alt = false
+meta = false
+allow_additional_modifiers = true
+
+[sub_resource type="Resource" id="Resource_gxyad"]
+script = ExtResource("14_cvawn")
+actuation_threshold = 0.5
+
+[sub_resource type="Resource" id="Resource_xv607"]
+script = ExtResource("3_w7imu")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
+input = SubResource("Resource_07w1j")
+modifiers = Array[ExtResource("5_jakow")]([])
+triggers = Array[ExtResource("9_ydc30")]([SubResource("Resource_gxyad")])
+
+[sub_resource type="Resource" id="Resource_ywfch"]
+script = ExtResource("1_7co6v")
+action = ExtResource("28_17381")
+input_mappings = Array[ExtResource("3_w7imu")]([SubResource("Resource_xv607")])
+
 [resource]
 script = ExtResource("25_f1bav")
 display_name = ""
-mappings = Array[ExtResource("1_7co6v")]([SubResource("Resource_11we5"), SubResource("Resource_jm1cg"), SubResource("Resource_tnm07"), SubResource("Resource_ynhi6"), SubResource("Resource_6a6oq"), SubResource("Resource_m36dn"), SubResource("Resource_i0kou"), SubResource("Resource_7aj8t"), SubResource("Resource_5ybme"), SubResource("Resource_1x71k"), SubResource("Resource_17381"), SubResource("Resource_6rhtn"), SubResource("Resource_cfctu"), SubResource("Resource_l1y4e")])
+mappings = Array[ExtResource("1_7co6v")]([SubResource("Resource_11we5"), SubResource("Resource_jm1cg"), SubResource("Resource_tnm07"), SubResource("Resource_ynhi6"), SubResource("Resource_6a6oq"), SubResource("Resource_m36dn"), SubResource("Resource_i0kou"), SubResource("Resource_7aj8t"), SubResource("Resource_5ybme"), SubResource("Resource_1x71k"), SubResource("Resource_17381"), SubResource("Resource_6rhtn"), SubResource("Resource_cfctu"), SubResource("Resource_l1y4e"), SubResource("Resource_ywfch")])

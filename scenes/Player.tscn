@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=24 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -32,6 +32,9 @@ size = Vector2(16, 30)
 _data = [Vector2(0, 0.738211), 0.0, 0.0, 0, 0, Vector2(1, 0.237828), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_61ith"]
+size = Vector2(49, 38)
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
 
@@ -42,7 +45,7 @@ process_priority = 4
 process_physics_priority = 4
 light_mask = 0
 visibility_layer = 2
-z_index = 3
+z_index = 6
 y_sort_enabled = true
 collision_layer = 4114
 collision_mask = 4118
@@ -197,6 +200,19 @@ scale = Vector2(0.324304, 0.375)
 points = PackedVector2Array(0, 5.615, 718.462, 5.33333)
 width = 9.615
 width_curve = SubResource("Curve_0rnld")
+
+[node name="ParryArea" type="Area2D" parent="AimAssist/AimLine"]
+position = Vector2(-2.94068e-06, 5.33333)
+scale = Vector2(3.08353, 2.66667)
+collision_layer = 4607
+collision_mask = 4607
+monitoring = false
+metadata/ParryBox = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AimAssist/AimLine/ParryArea"]
+position = Vector2(32, -5)
+shape = SubResource("RectangleShape2D_61ith")
+disabled = true
 
 [node name="RayCast2D" type="RayCast2D" parent="AimAssist/AimLine"]
 process_mode = 1

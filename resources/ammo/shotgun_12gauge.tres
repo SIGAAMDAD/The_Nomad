@@ -18,16 +18,16 @@ icon = ExtResource("3_p7eh0")
 weight = 2.25
 properties = {
 "casing_icon": ExtResource("4_yxm4u"),
-"damage": 120.0,
+"damage": 35.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_DESCRIPTION",
-"effects": PackedStringArray("Explosive"),
+"effects": PackedStringArray(),
 "pellet_count": 8,
 "pickup_sfx": ExtResource("5_trkfk"),
-"range": 2450.0,
+"range": 900.0,
 "shotgun_bullshit": 0,
-"stack_add_amount": 64,
+"stack_add_amount": 24,
 "type": 2,
-"velocity": 80.0
+"velocity": 540.0
 }
 categories = Array[ItemCategory]([ExtResource("2_7i3sj"), ExtResource("1_p7eh0")])

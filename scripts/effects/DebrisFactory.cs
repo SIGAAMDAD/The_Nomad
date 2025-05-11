@@ -45,6 +45,8 @@ public partial class DebrisFactory : Node2D {
 		MeshManager.SetProcessInternal( false );
 		AddChild( MeshManager );
 
+		ZIndex = 9;
+
 		// cache a shitload
 		MeshManager.Multimesh.InstanceCount = 8192;
 		MeshManager.Multimesh.VisibleInstanceCount = 0;

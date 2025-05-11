@@ -346,6 +346,7 @@ namespace Renown.Thinkers {
 		}
 
 		public virtual void StopMoving() {
+			NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
 			Velocity = Godot.Vector2.Zero;
 			GotoPosition = GlobalPosition;
 
@@ -377,11 +378,12 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		private void OnDie( Entity source, Entity target ) {
+		protected virtual void OnDie( Entity source, Entity target ) {
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				if ( IsInGroup( "Enemies" ) ) {
 					RemoveFromGroup( "Enemies" );
-					ChallengeLevel.SetObjectiveState( "AllEnemiesDead", GetTree().GetNodesInGroup( "Enemies" ).Count == 0 );
+					ChallengeLevel.SetObjectiveState( "EnemyKillCount", (int)ChallengeLevel.GetObjectiveState( "EnemyKillCount" ) + 1 );
+					ChallengeLevel.SetObjectiveState( "AllEnemiesDead", GetTree().GetNodesInGroup( "Enemies" ).Count < 1 );
 				}
 			}
 		}
@@ -404,6 +406,7 @@ namespace Renown.Thinkers {
 			Animations = GetNode<Node2D>( "Animations" );
 			BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
 
+			ProcessMode = ProcessModeEnum.Inherit;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
@@ -417,10 +420,19 @@ namespace Renown.Thinkers {
 			NavAgent.Name = "NavAgent";
 			NavAgent.PathMaxDistance = 10000.0f;
 			NavAgent.AvoidanceEnabled = true;
-			NavAgent.Radius = 60.0f;
+			NavAgent.AvoidanceLayers = 1;
+			NavAgent.AvoidanceMask = 1;
+			NavAgent.NeighborDistance = 1024.0f;
+			NavAgent.Radius = 50.0f;
 			NavAgent.MaxNeighbors = 20;
-			NavAgent.MaxSpeed = 200.0f;
+			NavAgent.MaxSpeed = MovementSpeed;
+			NavAgent.TimeHorizonAgents = 2.0f;
+			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+			NavAgent.Connect( "velocity_computed", Callable.From<Godot.Vector2>( ( safeVelocity ) => {
+				Velocity = safeVelocity;
+				CallDeferred( "MoveAlongPath" );
+			} ) );
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
 			AddChild( NavAgent );
 
@@ -452,6 +464,8 @@ namespace Renown.Thinkers {
 				LookDir = Godot.Vector2.Left;
 				break;
 			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
@@ -466,6 +480,8 @@ namespace Renown.Thinkers {
 
 			base._PhysicsProcess( delta );
 
+			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
+
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
 				if ( Velocity == Godot.Vector2.Zero ) {
 					Flags &= ~ThinkerFlags.Pushed;
@@ -473,7 +489,6 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
-			CallDeferred( "MoveAlongPath" );
 		}
 		public override void _Process( double delta ) {
 			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
@@ -523,14 +538,13 @@ namespace Renown.Thinkers {
 		}
 
 		protected virtual bool MoveAlongPath() {
-			if ( NavAgent.IsTargetReached() ) {
+			if ( NavAgent.IsTargetReached() || ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				Velocity = Godot.Vector2.Zero;
 				return true;
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			Velocity = LookDir * MovementSpeed;
 			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 			return true;
 		}

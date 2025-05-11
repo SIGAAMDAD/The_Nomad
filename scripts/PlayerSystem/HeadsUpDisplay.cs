@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DialogueManagerRuntime;
 using Godot;
 using Renown;
@@ -67,6 +68,8 @@ namespace PlayerSystem {
 
 		private RichTextLabel DialogueLabel;
 
+		private Dictionary<string, StatusIcon> StatusIcons;
+
 		public HealthBar GetHealthBar() => HealthBar;
 		public RageBar GetRageBar() => RageBar;
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
@@ -116,6 +119,12 @@ namespace PlayerSystem {
 
 		public override void _Ready() {
 			base._Ready();
+
+			StatusIcons = new Dictionary<string, StatusIcon>{
+				{ "status_burning", GetNode<StatusIcon>( "MainHUD/HBoxContainer/BurningStatusIcon" ) },
+				{ "status_freezing", GetNode<StatusIcon>( "MainHUD/HBoxContainer/FreezingStatusIcon" ) },
+				{ "status_poisoned", GetNode<StatusIcon>( "MainHUD/HBoxContainer/PoisonedStatusIcon" ) },
+			};
 
 			DialogueManager.DialogueStarted += OnDialogueStarted;
 			DialogueManager.DialogueEnded += OnDialogueEnded;
@@ -248,6 +257,10 @@ namespace PlayerSystem {
 
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
+		}
+
+		public void AddStatusEffect( string effectName ) {
+
 		}
 
 		private void OnWeaponReloaded( WeaponEntity source ) {

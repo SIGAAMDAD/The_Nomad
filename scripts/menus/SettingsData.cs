@@ -48,6 +48,7 @@ public partial class SettingsData : Control {
 	private static bool SunLightEnabled;
 	private static ShadowQuality SunShadowQuality;
 	private static bool ShowFPS;
+	private static bool ShowBlood;
 
 	//
 	// accessibility options
@@ -75,6 +76,7 @@ public partial class SettingsData : Control {
 	private static bool EquipWeaponOnPickup;
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
+	private static bool CleanAudio;
 
 	//
 	// network options
@@ -128,6 +130,10 @@ public partial class SettingsData : Control {
 		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ShowFPS ? ProcessModeEnum.Always : ProcessModeEnum.Disabled;
 		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = ShowFPS;
 	}
+	public static bool GetShowBlood() => ShowBlood;
+	public static void SetShowBlood( bool bShowBlood ) {
+		ShowBlood = bShowBlood;
+	}
 
 	public static bool GetEffectsOn() => EffectsOn;
 	public static void SetEffectsOn( bool bEffectsOn ) {
@@ -167,6 +173,10 @@ public partial class SettingsData : Control {
 
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
 	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
+	public static bool GetHellbreakerEnabled() => HellbreakerEnabled;
+	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
+	public static bool GetCleanAudio() => CleanAudio;
+	public static bool SetCleanAudio( bool bCleanAudio ) => CleanAudio = bCleanAudio;
 
 	private void UpdateWindowScale() {
 		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
@@ -246,7 +256,7 @@ public partial class SettingsData : Control {
 			break;
 		};
 
-//		UpdateWindowScale();
+		UpdateWindowScale();
 	}
 
 	private static void LoadAudioSettings( IDictionary<string, string> config ) {
@@ -335,6 +345,7 @@ public partial class SettingsData : Control {
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
+		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ] );
 
 		Instance.ApplyVideoSettings();
 	}
@@ -349,6 +360,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "SunShadowQuality={0}", SunShadowQuality ) );
 		writer.WriteLine( string.Format( "SunLight={0}", SunLightEnabled ) );
 		writer.WriteLine( string.Format( "ShowFPS={0}", ShowFPS.ToString() ) );
+		writer.WriteLine( string.Format( "ShowBlood={0}", ShowBlood.ToString() ) );
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
@@ -373,12 +385,14 @@ public partial class SettingsData : Control {
 		EquipWeaponOnPickup = Convert.ToBoolean( config[ "Gameplay:EquipWeaponOnPickup" ] );
 		HellbreakerEnabled = Convert.ToBoolean( config[ "Gameplay:HellbreakerEnabled" ] );
 		HellbreakerRevanents = Convert.ToBoolean( config[ "Gameplay:HellbreakerRevanents" ] );
+		CleanAudio = Convert.ToBoolean( config[ "Gameplay:CleanAudio" ] );
 	}
 	private static void SaveGameplaySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Gameplay]" );
 		writer.WriteLine( string.Format( "EquipWeaponOnPickup={0}", EquipWeaponOnPickup.ToString() ) );
 		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", HellbreakerEnabled.ToString() ) );
 		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", HellbreakerRevanents.ToString() ) );
+		writer.WriteLine( string.Format( "CleanAudio={0}", CleanAudio.ToString() ) );
 		writer.WriteLine();
 	}
 	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
@@ -403,6 +417,7 @@ public partial class SettingsData : Control {
 		SunShadowQuality = (ShadowQuality)(uint)Default.Get( "_sun_shadow_quality" );
 		SunLightEnabled = (bool)Default.Get( "_sun_light_enabled" );
 		SetShowFPS( (bool)Default.Get( "_show_fps" ) );
+		ShowBlood = (bool)Default.Get( "_show_blood" );
 
 		HapticStrength = (float)Default.Get( "_haptic_strength" );
 		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
@@ -420,6 +435,7 @@ public partial class SettingsData : Control {
 		EquipWeaponOnPickup = (bool)Default.Get( "_equip_weapon_on_pickup" );
 		HellbreakerEnabled = (bool)Default.Get( "_hellbreaker" );
 		HellbreakerRevanents = (bool)Default.Get( "_hellbreaker_revanents" );
+		CleanAudio = (bool)Default.Get( "_clean_audio" );
 
 		EnableNetworking = (bool)Default.Get( "_networking_enabled" );
 		FriendsOnlyNetworking = (bool)Default.Get( "_friends_only" );
@@ -448,6 +464,7 @@ public partial class SettingsData : Control {
 			stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
 		} catch ( System.IO.FileNotFoundException ) {
 			Console.PrintLine( "...settings file doesn't exist, using defaults" );
+			ApplyVideoSettings();
 			return;
 		}
 

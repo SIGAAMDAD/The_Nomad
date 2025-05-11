@@ -194,6 +194,7 @@ animations = [{
 size = Vector2(85, 210.5)
 
 [node name="HellbreakerExit" type="Node2D"]
+z_index = 1
 script = ExtResource("1_2gepy")
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -228,7 +229,8 @@ frame_progress = 1.0
 [node name="Idle" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 sprite_frames = SubResource("SpriteFrames_av63q")
-animation = &"dead"
+animation = &"idle"
+autoplay = "idle"
 
 [node name="ExitSound" type="AudioStreamPlayer2D" parent="."]
 

@@ -227,9 +227,9 @@ gdscript_utilities/print_internal_messages=true
 
 [questify]
 
-general/update_polling=false
 general/update_interval=1.5
 general/add_quests_to_pot_generation=false
+general/update_polling=true
 
 [rendering]
 

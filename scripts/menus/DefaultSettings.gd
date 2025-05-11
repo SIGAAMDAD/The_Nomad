@@ -33,6 +33,7 @@ enum SunShadowQuality {
 @export var _sun_light_enabled:bool = true
 @export var _sun_shadow_quality:SunShadowQuality = SunShadowQuality.NoFilter
 @export var _show_fps:bool = false
+@export var _show_blood:bool = true
 
 # audio
 @export var _sound_effects_on:bool = true
@@ -52,8 +53,9 @@ enum SunShadowQuality {
 # gameplay
 @export var _equip_weapon_on_pickup:bool = true
 @export var _draw_aim_line:bool = false
-@export var _hellbreaker:bool = true
+@export var _hellbreaker:bool = false
 @export var _hellbreaker_revanents:bool = false
+@export var _clean_audio:bool = false
 
 @export var _networking_enabled:bool = true
 @export var _friends_only:bool = false

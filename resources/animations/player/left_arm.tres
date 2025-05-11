@@ -29,7 +29,7 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 10.0,
+"duration": 6.0,
 "texture": SubResource("AtlasTexture_8bir6")
 }],
 "loop": false,

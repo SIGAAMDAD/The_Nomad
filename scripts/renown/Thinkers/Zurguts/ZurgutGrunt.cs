@@ -1,3 +1,4 @@
+using System.Numerics;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -134,7 +135,8 @@ namespace Renown.Thinkers {
 			CallDeferred( "OnBlowupTimerTimeout" );
 		}
 
-		private void OnDie( Entity source, Entity target ) {
+		protected override void OnDie( Entity source, Entity target ) {
+			base.OnDie( source, target );
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
@@ -191,31 +193,21 @@ namespace Renown.Thinkers {
 
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
 
-			Godot.Collections.Array<Node2D> entities = BlowupArea.GetOverlappingBodies();
-			for ( int i = 0; i < entities.Count; i++ ) {
-				if ( entities[i] == this ) {
-					continue;
-				}
-				if ( entities[i] is Entity entity && entity != null ) {
-					float damage = BlowupDamage * BlowupDamageCurve.SampleBaked( entity.GlobalPosition.DistanceTo( GlobalPosition ) );
-					entity.Damage( this, damage );
-					if ( entity is Player player && player != null ) {
-						player.ShakeCamera( damage );
-					}
-					if ( entity.GetHealth() > 0.0f ) {
-						entity.AddStatusEffect( "status_burning" );
-					}
-				}
-			}
+			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
+//			float size = ( BlowupArea.GetChild<CollisionShape2D>( 0 ).Shape as CircleShape2D ).Radius;
+			explosion.Scale = new Godot.Vector2( 2.5f, 2.5f );
+			explosion.Damage = BlowupDamage;
+			explosion.DamageCurve = BlowupDamageCurve;
+			AddChild( explosion );
 
 			Health = 0.0f;
 			OnDie( this, this );
 		}
 
 		private void OnHammerSwingFinished() {
-			PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/env/explosion.ogg" ) );
-			
 			Godot.Collections.Array<Node2D> nodes = AreaOfEffect.GetOverlappingBodies();
+
+			AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			for ( int i = 0; i < nodes.Count; i++ ) {
 				if ( nodes[i] is Entity entity && entity != null ) {
 					if ( entity == this ) {
@@ -223,8 +215,8 @@ namespace Renown.Thinkers {
 					}
 					float damage = 40.0f;
 					if ( entity is Player player && player != null && player.GetTorsoAnimation().FlipH == BodyAnimations.FlipH ) {
-						// one-shot if we're hitting from behind
-//						damage = 1000.0f;
+						// one-shot if we're hitting from behind... BACKSHOTS!
+						damage = 1000.0f;
 					}
 					entity.CallDeferred( "Damage", this, damage );
 				}

@@ -8,9 +8,13 @@ public partial class StatusEffect : Node2D {
 	protected Timer EffectTimer;
 	protected AudioStreamPlayer2D AudioChannel;
 	protected Entity Victim;
+	protected Texture2D Icon;
 
 	[Signal]
 	public delegate void TimeoutEventHandler();
+
+	public Texture2D GetIcon() => Icon;
+	public float GetDuration() => Duration;
 
 	public virtual void SetVictim( Entity owner ) {
 		Victim = owner;

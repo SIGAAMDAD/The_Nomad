@@ -14,10 +14,11 @@ icon = ExtResource("1_jebx1")
 weight = 1.15
 properties = {
 "casing_icon": ExtResource("3_76vip"),
-"damage": 12.25,
+"damage": 80.0,
 "pickup_sfx": ExtResource("2_rr3sm"),
-"range": 400.1,
+"range": 620.0,
 "stack_add_amount": 48,
-"type": 1
+"type": 1,
+"velocity": 300.0
 }
 categories = Array[ItemCategory]([ExtResource("1_ix8mf"), ExtResource("1_v2et3")])

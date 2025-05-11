@@ -36,6 +36,7 @@ public partial class AmmoEntity : Node2D {
 	private AudioStream PickupSfx;
 	private float Damage;
 	private float Range;
+	private float Velocity;
 	private AmmoType AmmoType;
 	private ExtraEffects Flags;
 	private Curve DamageFalloff;
@@ -47,6 +48,7 @@ public partial class AmmoEntity : Node2D {
 	public AmmoType GetAmmoType() => AmmoType;
 	public float GetDamage() => Damage;
 	public float GetRange() => Range;
+	public float GetVelocity() => Velocity;
 	public ExtraEffects GetEffects() => Flags;
 	public int GetPelletCount() => PelletCount;
 	public ShotgunBullshit GetShotgunBullshit() => ShotFlags;
@@ -99,7 +101,7 @@ public partial class AmmoEntity : Node2D {
 		}
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 
-		if ( properties.ContainsKey( "properties" ) ) {
+		if ( properties.ContainsKey( "effects" ) ) {
 			Godot.Collections.Array<string> effects = (Godot.Collections.Array<string>)properties[ "effects" ];
 			for ( int i = 0; i < effects.Count; i++ ) {
 				Flags |= ExtraFlags[ effects[i] ];
@@ -110,6 +112,7 @@ public partial class AmmoEntity : Node2D {
 		PickupSfx = (AudioStream)properties[ "pickup_sfx" ];
 		Damage = (float)properties[ "damage" ];
 		Range = (float)properties[ "range" ];
+		Velocity = (float)properties[ "velocity" ];
 		AmmoType = (AmmoType)(int)properties[ "type" ];
 
 		if ( AmmoType == AmmoType.Pellets ) {

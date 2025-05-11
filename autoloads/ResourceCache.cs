@@ -82,7 +82,7 @@ public class ResourceCache {
 		if ( DialogueCache.TryGetValue( key, out Resource value ) ) {
 			return value;
 		}
-		value = ResourceLoader.Load( key );
+		value = ResourceLoader.Load( "res://resources/dialogue/" + key + ".dialogue" );
 		DialogueCache.TryAdd( key, value );
 		return value;
 	}

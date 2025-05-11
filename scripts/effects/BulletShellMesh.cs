@@ -1,4 +1,5 @@
 using Godot;
+using Renown;
 using System.Collections.Generic;
 
 public partial class BulletShellMesh : Node2D {
@@ -45,8 +46,8 @@ public partial class BulletShellMesh : Node2D {
 		Instance.RemoveChild( timer );
 		timer.QueueFree();
 	}
-	public static void AddShell( Renown.Entity from, Resource ammo ) {
-		if ( !Instance.Meshes.TryGetValue( ammo, out MultiMeshInstance2D instance ) ) {
+	private void AddShellInternal( Entity from, Resource ammo ) {
+		if ( !Meshes.TryGetValue( ammo, out MultiMeshInstance2D instance ) ) {
 			instance = Instance.AddMesh( ammo );
 		}
 		if ( instance.Multimesh.VisibleInstanceCount >= 4096 ) {
@@ -61,5 +62,11 @@ public partial class BulletShellMesh : Node2D {
 		timer.Connect( "timeout", Callable.From( () => { OnTimerTimeout( timer, from, ammo ); } ) );
 		Instance.AddChild( timer );
 		timer.Start();
+	}
+	public static void AddShellDeferred( Entity from, Resource ammo ) {
+		Instance.CallDeferred( "AddShellInternal", from, ammo );
+	}
+	public static void AddShell( Entity from, Resource ammo ) {
+		Instance.AddShellInternal( from, ammo );
 	}
 };

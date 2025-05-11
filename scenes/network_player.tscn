@@ -1,14 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://622yixjqyqmq"]
+[gd_scene load_steps=11 format=3 uid="uid://622yixjqyqmq"]
 
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/torso.tres" id="1_27uls"]
+[ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="1_27uls"]
 [ext_resource type="Script" uid="uid://b35dx7vwc2186" path="res://scripts/multiplayer/NetworkPlayer.cs" id="1_hquwp"]
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/legs.tres" id="2_hc1dv"]
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/right_arm.tres" id="3_rhx3x"]
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/left_arm.tres" id="4_hquwp"]
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/idle.tres" id="5_rhx3x"]
+[ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="2_hc1dv"]
+[ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="3_rhx3x"]
+[ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="4_hquwp"]
+[ext_resource type="SpriteFrames" uid="uid://1xowiqlfkdd1" path="res://resources/animations/player/idle.tres" id="5_rhx3x"]
+[ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="7_kfj5c"]
+[ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="8_5lknd"]
+[ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="9_se7li"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_s8stb"]
-radius = 7.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
+size = Vector2(16, 30)
 
 [node name="NetworkPlayer" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 script = ExtResource("1_hquwp")
@@ -16,19 +19,22 @@ Relations = {}
 Debts = {}
 
 [node name="LeftArm" type="AnimatedSprite2D" parent="."]
+position = Vector2(2, 1)
 sprite_frames = ExtResource("4_hquwp")
-animation = &"run"
+animation = &"idle"
 
 [node name="Legs" type="AnimatedSprite2D" parent="."]
+position = Vector2(2, 0)
 sprite_frames = ExtResource("2_hc1dv")
-animation = &"run"
+animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.658112
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
+position = Vector2(2, 0)
 sprite_frames = ExtResource("1_27uls")
 
 [node name="RightArm" type="AnimatedSprite2D" parent="."]
+position = Vector2(2, 0)
 sprite_frames = ExtResource("3_rhx3x")
 animation = &"idle"
 
@@ -37,8 +43,33 @@ visible = false
 sprite_frames = ExtResource("5_rhx3x")
 animation = &"loop"
 
+[node name="SlidePuff" parent="." instance=ExtResource("7_kfj5c")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+y_sort_enabled = true
+position = Vector2(-7, 13)
+emitting = false
+
+[node name="DustPuff" parent="." instance=ExtResource("8_5lknd")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+y_sort_enabled = true
+position = Vector2(-9.53674e-07, 14)
+rotation = 1.73779
+emitting = false
+
+[node name="DashEffect" parent="." instance=ExtResource("9_se7li")]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+y_sort_enabled = true
+position = Vector2(1, 4)
+one_shot = false
+
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 1)
-shape = SubResource("CircleShape2D_s8stb")
+shape = SubResource("RectangleShape2D_0rnld")
 
 [node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]

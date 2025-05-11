@@ -24,6 +24,8 @@ size = Vector2(11, 11)
 size = Vector2(13, 17)
 
 [node name="MercenaryGatlingGunner" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+collision_layer = 154
+collision_mask = 154
 script = ExtResource("1_cv8bp")
 LoseInterestTime = 6.0
 SightDetectionTime = 4.0

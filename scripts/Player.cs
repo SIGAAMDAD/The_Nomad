@@ -93,8 +93,12 @@ public partial class Player : Entity {
 	public static readonly float JUMP_VELOCITY = -400.0f;
 
 	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+	private RandomNumberGenerator CameraShakeSeed = new RandomNumberGenerator();
 
-	private static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
+	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
+
+	private Area2D ParryArea;
+	private CollisionShape2D ParryBox;
 
 	private Resource CurrentMappingContext;
 
@@ -184,7 +188,7 @@ public partial class Player : Entity {
 	[Export]
 	private float ShakeFade = 5.0f;
 
-	private float ShakeStrength = 0.0f;
+	private static float ShakeStrength = 0.0f;
 
 	private static bool TutorialCompleted = false;
 
@@ -216,6 +220,7 @@ public partial class Player : Entity {
 
 	private AudioStreamPlayer2D AudioChannel;
 	private AudioStreamPlayer2D DashChannel;
+	private AudioStreamPlayer2D MiscChannel;
 
 	private FootSteps FootSteps;
 
@@ -259,6 +264,12 @@ public partial class Player : Entity {
 		if ( body is Entity entity && entity != null ) {
 			entity.AddStatusEffect( "status_burning" );
 		}
+	}
+
+	public override void AddStatusEffect( string effectName ) {
+		base.AddStatusEffect( effectName );
+
+		HUD.AddStatusEffect( effectName );
 	}
 
 	public static bool IsTutorialActive() {
@@ -571,6 +582,9 @@ public partial class Player : Entity {
 	public float GetSoundLevel() => SoundLevel;
 	public void SetHealth( float nHealth ) {
 		Health = nHealth;
+		if ( Health > 100.0f ) {
+			Health = 100.0f;
+		}
 		HUD.GetHealthBar().SetHealth( Health );
 	}
 	public float GetRage() => Rage;
@@ -589,7 +603,7 @@ public partial class Player : Entity {
 	public Arm GetRightArm() => ArmRight;
 	public int GetCurrentWeapon() => CurrentWeapon;
 
-	public void ShakeCamera( float nAmount ) {
+	public static void ShakeCamera( float nAmount ) {
 		ShakeStrength += nAmount;
 	}
 
@@ -644,27 +658,28 @@ public partial class Player : Entity {
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
-		LegAnimation.Hide();
-		ArmLeft.Animations.Hide();
-		ArmRight.Animations.Hide();
-
-		TorsoAnimation.Play( "death" );
-
+		
 		PlaySound( AudioChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+		if ( Hellbreaker.CanActivate() && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+			return;
+		} else {
+			BlockInput( true );
+			LegAnimation.Hide();
+			ArmLeft.Animations.Hide();
+			ArmRight.Animations.Hide();
 
-		SetProcessUnhandledInput( true );
-		SetProcess( false );
+			TorsoAnimation.Play( "death" );
 
-		//
-		// respawn
-		//
-		Respawn();
+			SetProcessUnhandledInput( true );
+			SetProcess( false );
+		}
 	}
 
 	public override void Damage( Entity attacker, float nAmount ) {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
+		ShakeCamera( nAmount );
 
 		if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 			ChallengeLevel.EndCombo( ComboCounter );
@@ -672,7 +687,7 @@ public partial class Player : Entity {
 		ComboCounter = 0;
 
 		System.Threading.Interlocked.Exchange( ref Health, Health - ( nAmount * 0.75f ) );
-		System.Threading.Interlocked.Exchange( ref Rage, Rage + nAmount );
+		System.Threading.Interlocked.Exchange( ref Rage, Rage + ( nAmount * 0.01f ) );
 		if ( Rage > 100.0f ) {
 			System.Threading.Interlocked.Exchange( ref Rage, 100.0f );
 		}
@@ -688,6 +703,31 @@ public partial class Player : Entity {
 		}
 
 		CallDeferred( "emit_signal", "Damaged", attacker, this, nAmount );
+	}
+
+	public void OnParry( Bullet from, float damage ) {
+		float distance = from.GlobalPosition.DistanceTo( from.GlobalPosition ) * 0.5f;
+		
+		// we punch the bullet or object so hard it creates a shrapnel cloud
+		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( ArmAngle ) * distance;
+		if ( AimRayCast.GetCollider() is GodotObject collision && collision != null ) {
+			if ( collision is Entity entity && entity != null ) {
+				entity.Damage( this, damage * 0.5f );
+				entity.AddStatusEffect( "status_burning" );
+			}
+		}
+	}
+	public void OnParry( RayCast2D from, float damage ) {
+		float distance = from.GlobalPosition.DistanceTo( from.TargetPosition ) * 0.5f;
+		
+		// we punch the bullet or object so hard it creates a shrapnel cloud
+		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( ArmAngle ) * distance;
+		if ( AimRayCast.GetCollider() is GodotObject collision && collision != null ) {
+			if ( collision is Entity entity && entity != null ) {
+				entity.Damage( this, damage * 0.5f );
+				entity.AddStatusEffect( "status_burning" );
+			}
+		}
 	}
 
 	public void BlockInput( bool bBlocked ) {
@@ -843,6 +883,10 @@ public partial class Player : Entity {
 		if ( DashBurnout >= 1.0f ) {
 			PlaySound( AudioChannel, ResourceCache.DashExplosion );
 
+			AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+
+			Flags &= ~PlayerFlags.Dashing;
+
 			DashBurnoutCooldownTimer.Start();
 
 			Damage( this, 20.0f );
@@ -866,7 +910,9 @@ public partial class Player : Entity {
 		HUD.GetDashOverlay().Show();
 
 		DashBurnout += 0.25f;
-		DashTimer -= 0.10f;
+		if ( DashTimer >= 0.10f ) {
+			DashTimer -= 0.05f;	
+		}
 		DashCooldownTime.WaitTime = 0.80f;
 		DashCooldownTime.Start();
 	}
@@ -968,7 +1014,7 @@ public partial class Player : Entity {
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-		PlaySound( AudioChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -1016,7 +1062,7 @@ public partial class Player : Entity {
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-		PlaySound( AudioChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
 
 		CurrentWeapon = index;
 		LastUsedArm.SetWeapon( CurrentWeapon );
@@ -1030,8 +1076,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			AudioChannel.Connect( "finished", Callable.From( OnSlowMoSfxFinished ) );
-			PlaySound( AudioChannel, ResourceCache.SlowMoBeginSfx );
+			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
 
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -1230,18 +1275,26 @@ public partial class Player : Entity {
 	private void OnMeleeFinished() {
 		ArmLeft.Animations.AnimationFinished -= OnMeleeFinished;
 		Flags &= ~( PlayerFlags.Parrying | PlayerFlags.BlockedInput );
+
+		ParryArea.SetDeferred( "monitoring", false );
+		ParryBox.SetDeferred( "disabled", true );
 	}
 	private void OnMelee() {
 		if ( IsInputBlocked() ) {
 			return;
 		}
 
+		HandsUsed = Hands.Right;
+		
+		ParryArea.SetDeferred( "monitoring", true );
+		ParryBox.SetDeferred( "disabled", false );
+
 		// force the player to commit to the parry
 		Flags |= PlayerFlags.BlockedInput | PlayerFlags.Parrying;
 		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
 		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
 		ArmLeft.Animations.CallDeferred( "play", "melee" );
-		PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
+		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
 	}
 
 	public void SwitchInputMode( Resource InputContext ) {
@@ -1313,10 +1366,10 @@ public partial class Player : Entity {
 	}
 
 	private void OnSlowMoSfxFinished() {
-		// only start lagging audio playback after the slowmo begin finishes
-		AudioServer.PlaybackSpeedScale = 0.50f;
-
-		AudioChannel.Disconnect( "finished", Callable.From( OnSlowMoSfxFinished ) );
+		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
+			// only start lagging audio playback after the slowmo begin finishes
+			AudioServer.PlaybackSpeedScale = 0.50f;
+		}
 	}
 
 	public void LoadGamepadBinds() {
@@ -1401,7 +1454,7 @@ public partial class Player : Entity {
 		HUD.GetReflexOverlay().Hide();
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
-		PlaySound( AudioChannel, ResourceCache.SlowMoEndSfx );
+		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
 	}
 
 	private void CmdSuicide() {
@@ -1531,6 +1584,10 @@ public partial class Player : Entity {
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
+		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
+		MiscChannel.Connect( "finished", Callable.From( OnSlowMoSfxFinished ) );
+		MiscChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+
 		DashFlameArea = GetNode<Area2D>( "Animations/DashEffect/FlameArea" );
 		DashFlameArea.Monitoring = false;
 		DashFlameArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
@@ -1540,6 +1597,9 @@ public partial class Player : Entity {
 
 		CollisionShape2D SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
 		SoundArea = SoundBounds.Shape as CircleShape2D;
+
+		ParryArea = GetNode<Area2D>( "AimAssist/AimLine/ParryArea" );
+		ParryBox = ParryArea.GetNode<CollisionShape2D>( "CollisionShape2D" );
 
 		Area2D Area = GetNode<Area2D>( "SoundArea" );
 		Area.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
@@ -1572,31 +1632,18 @@ public partial class Player : Entity {
 		IdleTimer.Connect( "timeout", Callable.From( OnIdleAnimationTimerTimeout ) );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Animations/Idle" );
-		IdleAnimation.SetProcess( false );
 		IdleAnimation.Connect( "animation_finished", Callable.From( OnIdleAnimationAnimationFinished ) );
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
-		LegAnimation.SetProcess( false );
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegsAnimationLooped ) );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
 		Animations = GetNode( "Animations" );
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
-		WalkEffect.SetProcess( false );
-		WalkEffect.SetProcessInternal( false );
-
 		SlideEffect = GetNode<GpuParticles2D>( "Animations/SlidePuff" );
-		SlideEffect.SetProcess( false );
-		SlideEffect.SetProcessInternal( false );
-
 		DashEffect = GetNode<GpuParticles2D>( "Animations/DashEffect" );
-		DashEffect.SetProcess( false );
-		DashEffect.SetProcessInternal( false );
-
 		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
-		DashLight.SetProcess( false );
-		DashLight.SetProcessInternal( false );
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
@@ -1654,6 +1701,19 @@ public partial class Player : Entity {
 			AimLine.DefaultColor = AimingAtNull;
 		}
 
+		// cool down the jet engine if applicable
+		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
+			DashBurnout -= 0.10f;
+			if ( DashBurnout < 0.0f ) {
+				DashBurnout = 0.0f;
+			}
+		}
+		CheckStatus( (float)delta );
+
+		if ( IsInputBlocked() ) {
+			return;
+		}
+
 		float speed = MAX_SPEED;
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			speed += 1800;
@@ -1682,16 +1742,6 @@ public partial class Player : Entity {
 
 		Velocity = velocity;
 		MoveAndSlide();
-
-		// cool down the jet engine if applicable
-		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
-			DashBurnout -= 0.10f;
-			if ( DashBurnout < 0.0f ) {
-				DashBurnout = 0.0f;
-			}
-		}
-
-		CheckStatus( (float)delta );
     }
 	
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
@@ -1742,15 +1792,15 @@ public partial class Player : Entity {
 		}
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
-			Rage += FrameDamage * ComboCounter * delta;
+			Rage += FrameDamage * 0.5f * ComboCounter * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
 			HUD.GetRageBar().Rage = Rage;
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f && Rage > 0.0f ) {
-			Health += 4.0f * ComboCounter * delta;
-			Rage -= 20.0f * delta;
+			Health += 2.0f * delta;
+			Rage -= 10.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
@@ -1770,6 +1820,8 @@ public partial class Player : Entity {
 	}
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public override void _Process( double delta ) {
+		base._Process( delta );
+
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
 				LegAnimation.Play( "run" );
@@ -1789,10 +1841,8 @@ public partial class Player : Entity {
 
 		if ( ShakeStrength > 0.0f ) {
 			ShakeStrength = Mathf.Lerp( ShakeStrength, 0.0f, ShakeFade * (float)delta );
-			Viewpoint.Offset = new Vector2( RandomFloat( -ShakeStrength, ShakeStrength ), RandomFloat( -ShakeStrength, ShakeStrength ) );
+			Viewpoint.Offset = new Vector2( CameraShakeSeed.RandfRange( -ShakeStrength, ShakeStrength ), CameraShakeSeed.RandfRange( -ShakeStrength, ShakeStrength ) );
 		}
-
-		base._Process( delta );
 
 		if ( SoundLevel > 0.1f ) {
 			SoundLevel -= 1024.0f * (float)delta;
@@ -1865,7 +1915,7 @@ public partial class Player : Entity {
 		}
 		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
 
-		PlaySound( AudioChannel, ammo.GetPickupSound() );
+		PlaySound( MiscChannel, ammo.GetPickupSound() );
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[i];

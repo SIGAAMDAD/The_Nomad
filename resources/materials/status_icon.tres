@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bpjvsrt52hstd"]
+
+[ext_resource type="Shader" uid="uid://da5a8qpguseao" path="res://shaders/cooldown.gdshader" id="1_14g7d"]
+
+[resource]
+shader = ExtResource("1_14g7d")
+shader_parameter/cooldown_progress = 0.0
+shader_parameter/use_transparency = true
+shader_parameter/transparency_alpha = 0.5

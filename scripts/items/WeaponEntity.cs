@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GDExtension.Wrappers;
 using Godot;
 using Renown;
+using Renown.Thinkers;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -114,9 +115,11 @@ public partial class WeaponEntity : Node2D {
 	private RayCast2D RayCast;
 	private AmmoStack Reserve;
 	private AmmoEntity Ammo;
-	private System.Collections.Generic.List<Sprite2D> MuzzleFlashes;
+	private List<Sprite2D> MuzzleFlashes;
 	private Sprite2D CurrentMuzzleFlash;
 	private int BulletsLeft = 0;
+
+	private uint CollisionMask;
 
 	private WeaponState CurrentState = WeaponState.Idle;
 
@@ -159,6 +162,9 @@ public partial class WeaponEntity : Node2D {
 
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
+
+	public void SetCollisionMask( uint mask ) => CollisionMask = mask;
+	public uint GetCollisiionMask() => CollisionMask;
 
 	public bool IsBladed() => ( LastUsedMode & Properties.IsBladed ) != 0;
 	public bool IsBlunt() => ( LastUsedMode & Properties.IsBlunt ) != 0;
@@ -217,6 +223,8 @@ public partial class WeaponEntity : Node2D {
 			GlobalPosition = _Owner.GlobalPosition;
 			SetUseMode( DefaultMode );
 			InitProperties();
+
+			Material = null;
 
 			entity.PickupWeapon( this );
 		}
@@ -422,16 +430,9 @@ public partial class WeaponEntity : Node2D {
 		if ( _Owner == null ) {
 			IconSprite = new Sprite2D();
 			IconSprite.Name = "IconSprite";
+			IconSprite.Material = ResourceLoader.Load<Material>( "res://resources/materials/item_pickup.tres" );
 			IconSprite.Texture = Icon;
-			IconSprite.UseParentMaterial = true;
 			AddChild( IconSprite );
-		}
-	}
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-
-		if ( _Owner == null ) {
-			return;
 		}
 	}
 
@@ -506,7 +507,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void SpawnShells() {
-		BulletShellMesh.AddShell( _Owner, Ammo.Data );
+		BulletShellMesh.AddShellDeferred( _Owner, Ammo.Data );
 	}
 
 	private bool Reload() {
@@ -555,42 +556,64 @@ public partial class WeaponEntity : Node2D {
 
 	private void CheckBulletHit( ref float frameDamage ) {
 		float damage = Ammo.GetDamage();
-		frameDamage += damage;
-		if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is Entity entity && entity != null ) {
-				float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-				if ( distance > 20.0f ) {
-					// out of bleed range, no healing
+		/*
+		if ( GetParent<Entity>() is Thinker ) {
+			Bullet bullet = ResourceCache.GetScene( "res://scenes/Items/bullet.tscn" ).Instantiate<Bullet>();
+			bullet.AmmoType = Ammo;
+			bullet.Direction = GlobalPosition.DirectionTo( RayCast.GetCollisionPoint() );
+			bullet.CollisionLayer = RayCast.CollisionMask;
+			bullet.CollisionMask = RayCast.CollisionMask;
+			AddChild( bullet );
+			BulletMesh.AddBullet( bullet );
+		}
+		else {
+			*/
+			frameDamage += damage;
+			if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
+				if ( collision is Entity entity && entity != null && entity != _Owner ) {
+					float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
+					if ( distance > 20.0f ) {
+						// out of bleed range, no healing
+						frameDamage -= damage;
+					}
+					distance /= Ammo.GetRange();
+					damage *= Ammo.GetDamageFalloff( distance );
+					entity.Damage( _Owner, damage );
+
+					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+					if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
+						entity.AddStatusEffect( "status_burning" );
+					} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+						entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+					}
+				} else if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
+					float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition );
+					distance /= Ammo.GetRange();
+					damage *= Ammo.GetDamageFalloff( distance );
+					parryBox.GetParent<Player>().OnParry( RayCast, damage );
+				} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
+					Entity owner = (Entity)hitbox.GetMeta( "Owner" );
+					hitbox.OnHit( _Owner );
+					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+					if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
+						( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
+					} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+						owner.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+					}
+				} else {
 					frameDamage -= damage;
+					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+					if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+						Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
+						explosion.GlobalPosition = RayCast.GetCollisionPoint();
+						collision.CallDeferred( "add_child", explosion );
+					}
+					DebrisFactory.Create( RayCast.GetCollisionPoint() );
 				}
-				distance /= Ammo.GetRange();
-				damage *= Ammo.GetDamageFalloff( distance );
-				entity.Damage( _Owner, damage );
-				switch ( Ammo.GetEffects() ) {
-				case AmmoEntity.ExtraEffects.Incendiary: {
-					entity.AddStatusEffect( "status_burning" );
-					break; }
-				case AmmoEntity.ExtraEffects.Explosive: {
-					ExplosionFactory.AddExplosion( entity.GlobalPosition );
-					entity.AddStatusEffect( "status_burning" );
-					break; }
-				};
-			} else if ( collision is Hitbox hitbox && hitbox != null ) {
-				hitbox.OnHit( _Owner );
-				switch ( Ammo.GetEffects() ) {
-				case AmmoEntity.ExtraEffects.Incendiary: {
-					( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
-					break; }
-				case AmmoEntity.ExtraEffects.Explosive: {
-					ExplosionFactory.AddExplosion( hitbox.GlobalPosition );
-					( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
-					break; }
-				};
 			} else {
 				frameDamage -= damage;
-				DebrisFactory.Create( RayCast.GetCollisionPoint() );
 			}
-		}
+//		}
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
