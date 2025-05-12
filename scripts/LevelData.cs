@@ -65,6 +65,10 @@ public partial class LevelData : Node2D {
 	public delegate void ResourcesLoadingFinishedEventHandler();
 	[Signal]
 	public delegate void PlayerRespawnEventHandler();
+	[Signal]
+	public delegate void HellbreakerBeginEventHandler();
+	[Signal]
+	public delegate void HellbreakerFinishedEventHandler();
 
 	protected virtual void OnResourcesFinishedLoading() {
 	}

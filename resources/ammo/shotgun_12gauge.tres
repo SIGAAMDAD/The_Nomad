@@ -24,9 +24,9 @@ properties = {
 "effects": PackedStringArray(),
 "pellet_count": 8,
 "pickup_sfx": ExtResource("5_trkfk"),
-"range": 900.0,
+"range": 800.0,
 "shotgun_bullshit": 0,
-"stack_add_amount": 24,
+"stack_add_amount": 48,
 "type": 2,
 "velocity": 540.0
 }

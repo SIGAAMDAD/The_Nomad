@@ -23,9 +23,9 @@ properties = {
 "description": "12_GAUGE_SLUG_DESCRIPTION",
 "pellet_count": 1,
 "pickup_sfx": ExtResource("5_p1qws"),
-"range": 1080.0,
+"range": 735.0,
 "shotgun_bullshit": 2,
-"stack_add_amount": 24,
+"stack_add_amount": 48,
 "type": 2,
 "velocity": 450.0
 }

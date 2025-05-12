@@ -29,6 +29,7 @@ public partial class ExtrasMenu : Control {
 	private VBoxContainer Leaderboard;
 	private HBoxContainer LeaderboardData;
 	private List<HBoxContainer> LeaderboardEntries;
+	private Label FetchingLeaderboard;
 
 	private AudioStreamPlayer UIChannel;
 	private Color FocusedColor = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
@@ -82,19 +83,26 @@ public partial class ExtrasMenu : Control {
 		MainContainer.Show();
 	}
 
-	private void FetchLevelLeaderboardStats( Dictionary<int, ChallengeCache.LeaderboardEntry> entries ) {
-		Console.PrintLine( string.Format( "Found {0} entries in leaderboard.", entries.Count ) );
-
+	private void ClearLeaderboard() {
 		for ( int i = 0; i < LeaderboardEntries.Count; i++ ) {
 			Leaderboard.RemoveChild( LeaderboardEntries[i] );
 		}
 		LeaderboardEntries.Clear();
+	}
+	private void FetchLevelLeaderboardStats( Dictionary<int, ChallengeCache.LeaderboardEntry> entries ) {
+		Console.PrintLine( string.Format( "Found {0} entries in leaderboard.", entries.Count ) );
+
+		FetchingLeaderboard.Hide();
+		StoryModeData.GetNode<VScrollBar>( "LeaderboardScroll" ).Show();
 
 		foreach ( var entry in entries ) {
 			GD.Print( "adding entry" );
 			HBoxContainer container = LeaderboardData.Duplicate() as HBoxContainer;
-			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( entry.Value.UserID );
-			( container.GetChild( 2 ) as Label ).Text = entry.Value.Score.ToString();
+			container.GetNode<Label>( "NameLabel" ).Text = SteamFriends.GetFriendPersonaName( entry.Value.UserID );
+			container.GetNode<Label>( "ScoreLabel" ).Text = entry.Value.Score.ToString();
+			container.GetNode<Label>( "TimeMinutesLabel" ).Text = entry.Value.TimeCompletedMinutes.ToString();
+			container.GetNode<Label>( "TimeSecondsLabel" ).Text = entry.Value.TimeCompletedSeconds.ToString();
+			container.GetNode<Label>( "TimeMillisecondsLabel" ).Text = entry.Value.TimeCompletedMillseconds.ToString();
 			container.Show();
 			LeaderboardEntries.Add( container );
 			Leaderboard.AddChild( container );
@@ -106,8 +114,11 @@ public partial class ExtrasMenu : Control {
 		Label DescriptionLabel = StoryModeData.GetNode<Label>( "DescriptionLabel" );
 		RichTextLabel ObjectiveLabel = StoryModeData.GetNode<RichTextLabel>( "ObjectiveLabel" );
 
-		int score, minutes, seconds, milliseconds;
-		ChallengeCache.GetScore( SelectedMapIndex, out score, out minutes, out seconds, out milliseconds, new System.Action<Dictionary<int, ChallengeCache.LeaderboardEntry>>( FetchLevelLeaderboardStats ) );
+		ClearLeaderboard();
+
+		FetchingLeaderboard.Show();
+		StoryModeData.GetNode<VScrollBar>( "LeaderboardScroll" ).Show();
+		ChallengeCache.GetScore( SelectedMapIndex, out int score, out int minutes, out int seconds, out int milliseconds, new System.Action<Dictionary<int, ChallengeCache.LeaderboardEntry>>( FetchLevelLeaderboardStats ) );
 
 		Label BestTimeLabel = StoryModeData.GetNode<Label>( "ScoreContainer/BestTimeLabel" );
 		BestTimeLabel.Text = string.Format( "{0}:{1}.{2}", minutes, seconds, milliseconds );
@@ -222,6 +233,7 @@ public partial class ExtrasMenu : Control {
 
 		StoryModeData = GetNode<VBoxContainer>( "MainContainer/StoryInfoContainer" );
 
+		FetchingLeaderboard  = StoryModeData.GetNode<Label>( "FetchingLabel" );
 		LeaderboardData = StoryModeData.GetNode<HBoxContainer>( "LeaderboardScroll/Leaderboard/HBoxContainer" );
 		Leaderboard = StoryModeData.GetNode<VBoxContainer>( "LeaderboardScroll/Leaderboard" );
 		LeaderboardEntries = new List<HBoxContainer>();

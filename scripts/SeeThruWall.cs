@@ -33,6 +33,9 @@ public partial class SeeThruWall : Area2D {
 		FloorMap.Material = InternalShader;
 		DecorMap.Material = InternalShader;
 
+		CollisionLayer = 1 | 2;
+		CollisionMask = 1 | 2;
+
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaBodyShape2DExited ) );
 	}

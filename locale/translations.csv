@@ -89,10 +89,12 @@ ASTURION_DOUBLE_BARREL_DESCRIPTION,"[p]Crafted by the legendary blacksmith, Astu
 ASTURION_8SHOT_DESCRIPTION,""
 DESERT_CARBINE_DESCRIPTION,"[p]A shortened version of the desert rifle, but slightly more dangerous due to it being a sawed-off variant of the weapon.[/p][p]\n[/p][p]Most usually found in the possession of bandits.[/p]"
 DESERT_RIFLE_DESCRIPTION,"[p]A deep desert hunting rifle designed mainly for massive beasts/ The single-shot breech loaded design of this firearm coupled with the large .50 BMG bullets makes the weapon impractical for anything other than sports. Most usually handcrafted and highly personalized.[/p][p]\n[/p][p]Used primarily by the Dazaki Nomad Clan for Sand Wyrm hunting.[/p]"
-BALLER_DESCRIPTION,"[p]A favored sidearm of many mercenaries and even wealthier citizens as a means of self-defense (in most cases).[/p]\n[p]The baller found its unique usage when someone managed to jam whatever they could find into the sidearm, making it especially formidable because one can never know what was coming out of the barrel.[/p][p]\n[/p][char=0022][i]How did you even get that in there? Buddy, that's bigger than the barrel, that ain't gonna WORK—[char=0022][p][indent]- Some Guy, Somewhere[/indent][/p][/i]"
-MURSTAR_DESCRIPTION,"[p]Originally the unique sidearm of Havlic Murstar, a notorious gunslinger. Shortly following his death, the weapon was mass produced by Latanian Blacksmiths[/p][p]\n[/p][p]Special engravings on the original's grip suggest a much more interesting life of the owner[/p][p]\n[/p][p][char=0022][i]There's only two things you can trust in this life, my dearest sir. Your gun and your knife.[char=0022][/p][p][indent]- Havlic Murstar[/indent][/i][/p]"
+BALLER_DESCRIPTION,"[p]A favored sidearm of many mercenaries and even wealthier citizens as a means of self-defense (in most cases).[/p]\n[p]The baller found its unique usage when someone managed to jam whatever they could find into the sidearm, making it especially formidable because one can never know what was coming out of the barrel.[/p][p]\n[/p][i][char=0022]How did you even get that in there? Buddy, that's bigger than the barrel, that ain't gonna WORK—[char=0022][p][indent]- Some Guy, Somewhere[/indent][/p][/i]"
+MURSTAR_DESCRIPTION,"[p]Originally the unique sidearm of Havlic Murstar, a notorious gunslinger. Shortly following his death, the weapon was mass produced by Latanian Blacksmiths[/p][p]\n[/p][p]Special engravings on the original's grip suggest a much more interesting life of the owner[/p][p]\n[/p][p][i][char=0022]There's only two things you can trust in this life, my dearest sir. Your gun and your knife.[char=0022][/p][p][indent]- Havlic Murstar[/indent][/i][/p]"
 PLASMA_SMG_DESCRIPTION,"[p]A very common weapon used by ranchers, farmers, and hired guns alike. The Plasma SMG is known for being both cheap, but also highly effective.[/p][p]\n[/p][p]It is, however, considered by many to be a warcrime because of its chemically enhanced ammunition burning the skin of its victims.[/p][p]\n[/p][p][i][char=0022]I fear not the person who uses a gun, but the person who knows the gun.[char=0022][/p][p][indent]- Raio[/indent][/i][/p]"
+HEAVY_SLUGGER_DESCRIPTION,"[p]Pump action shotgun commonly used by mercenaries, this thing is especially dangerous as you will never know what's in the shot. Hits like a truck but kicks like a horse.[/p][p]\n[/p][p][i][char=0022]You think you know creative cruelty until you discover the many wonders of shotguns.[char=0022][/p][p][indent]- Raio[/indent][/i]"
 
+12_GAUGE_DESCRIPTION,"A handful of heavy-hitting medium range pellets to put a hole in almost anything. Be careful with that blast radius though."
 12_GAUGE_SLUG_DESCRIPTION,"Heavy hitting, reliable, light-weight, and most importantly, cheap. A mercenary's favorite kind of metal rain."
 556_AMMO_DESCRIPTION,"Lightweight and best used with AR's. Heavy hitting and snappy in close-quarters, but quick damage falloff at range."
 762_AMMO_DESCRIPTION,"Heavy hitting with good range, but heavy and a bit inaccurate. Best used for sniper rifles and DMR's."
@@ -112,7 +114,8 @@ CHALLENGE0_DESCRIPTION,"As the Galakan miltia grew weary and their forces dwindl
 CHALLENGE0_OBJECTIVE,"Kill all enemies to exit the city in the shortest time possible."
 
 CHALLENGE1_NAME,"The Battle of Sand's Way"
-CHALLENGE1_DESCRIPTION,""
+CHALLENGE1_DESCRIPTION,"WIP!"
+CHALLENGE1_OBJECTIVE,"WIP!"
 
 CHALLENGE2_NAME,"Hellbreaker"
 CHALLENGE2_DESCRIPTION,"Slice past hoards of demons and devils as you claw your way through the pits of hell itself."

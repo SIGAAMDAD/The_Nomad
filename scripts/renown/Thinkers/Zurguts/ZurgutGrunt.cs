@@ -1,4 +1,4 @@
-using System.Numerics;
+using ChallengeMode;
 using Godot;
 
 namespace Renown.Thinkers {
@@ -15,6 +15,8 @@ namespace Renown.Thinkers {
 		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 90.0f );
 		private static readonly float MaxViewDistance = 220.0f;
+
+		private static readonly int ChallengeMode_Score = 60;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
@@ -40,7 +42,6 @@ namespace Renown.Thinkers {
 		private Line2D DetectionMeter;
 
 		private Curve BlowupDamageCurve;
-		private Area2D BlowupArea = null;
 		private Timer BlowupTimer = null;
 
 		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -58,6 +59,8 @@ namespace Renown.Thinkers {
 		private Timer AttackTimer;
 		private Tween AngleTween;
 		private Tween ChangeInvestigationAngleTween;
+
+		private bool HitHead = false;
 
 		private float RandomFloat( float min, float max ) {
 			return (float)( min + Random.NextDouble() * ( min - max ) );
@@ -130,15 +133,24 @@ namespace Renown.Thinkers {
 		}
 
 		public void OnHeadHit( Entity source ) {
-			BlowupArea.SetDeferred( "monitoring", true );
-			BlowupArea.GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
 			CallDeferred( "OnBlowupTimerTimeout" );
+			HitHead = true;
 		}
 
 		protected override void OnDie( Entity source, Entity target ) {
 			base.OnDie( source, target );
+
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
+			}
+
+			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				if ( HitHead ) {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+				} else {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+				}
 			}
 
 			Flags |= ThinkerFlags.Dead;
@@ -179,8 +191,6 @@ namespace Renown.Thinkers {
 
 			if ( !Enraged && Health < Health * 0.25f ) {
 				Enraged = true;
-				BlowupArea.SetDeferred( "monitoring", true );
-				BlowupArea.GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
 				BlowupTimer.Start();
 				PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_scream.ogg" ) );
 			}
@@ -194,8 +204,7 @@ namespace Renown.Thinkers {
 			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
 
 			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
-//			float size = ( BlowupArea.GetChild<CollisionShape2D>( 0 ).Shape as CircleShape2D ).Radius;
-			explosion.Scale = new Godot.Vector2( 2.5f, 2.5f );
+			explosion.Radius = 126.0f;
 			explosion.Damage = BlowupDamage;
 			explosion.DamageCurve = BlowupDamageCurve;
 			AddChild( explosion );
@@ -260,9 +269,6 @@ namespace Renown.Thinkers {
 			AttackTimer.WaitTime = 2.0f;
 			AddChild( AttackTimer );
 
-			BlowupArea = GetNode<Area2D>( "BlowupArea" );
-			BlowupArea.Monitoring = false;
-
 			BlowupTimer = GetNode<Timer>( "BlowupTimer" );
 			BlowupTimer.Connect( "timeout", Callable.From( OnBlowupTimerTimeout ) );
 
@@ -272,6 +278,23 @@ namespace Renown.Thinkers {
 			HeadHitbox.Hit += OnHeadHit;
 
 			GenerateRayCasts();
+
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 		}
 
 		protected override void ProcessAnimations() {

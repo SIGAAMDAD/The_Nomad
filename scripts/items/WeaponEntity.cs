@@ -100,6 +100,8 @@ public partial class WeaponEntity : Node2D {
 	private float ReloadTime = 0.0f;
 	private float Weight = 0.0f;
 
+	private float CurrentRecoil = 0;
+
 	private float AttackAngle = 0.0f;
 	private float LastWeaponAngle = 0.0f;
 
@@ -579,6 +581,10 @@ public partial class WeaponEntity : Node2D {
 					distance /= Ammo.GetRange();
 					damage *= Ammo.GetDamageFalloff( distance );
 					entity.Damage( _Owner, damage );
+
+					if ( _Owner is Player ) {
+						Player.ComboCounter++;
+					}
 
 					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
 					if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {

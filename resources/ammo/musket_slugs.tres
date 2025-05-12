@@ -16,8 +16,8 @@ properties = {
 "casing_icon": ExtResource("3_76vip"),
 "damage": 80.0,
 "pickup_sfx": ExtResource("2_rr3sm"),
-"range": 620.0,
-"stack_add_amount": 48,
+"range": 420.0,
+"stack_add_amount": 128,
 "type": 1,
 "velocity": 300.0
 }

@@ -4,6 +4,7 @@ using Renown;
 public partial class Explosion : Node2D {
 	private Area2D BlowupArea;
 
+	public float Radius = 80.0f;
 	public float Damage = 30.0f;
 	public Curve DamageCurve = null;
 	public AmmoEntity.ExtraEffects Effects = 0;
@@ -18,31 +19,12 @@ public partial class Explosion : Node2D {
 		
 		ZIndex = 8;
 
-		for ( int i = 0; i < (int)Scale.Length(); i++ ) {
-			DebrisFactory.Create( GlobalPosition );
-		}
-
 		AudioStreamPlayer2D AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioStreamPlayer2D" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		AudioChannel.Connect( "finished", Callable.From( OnFinished ) );
 
-		CircleShape2D CircleShape = new CircleShape2D();
-		if ( Scale.Length() == 1.0f ) {
-			CircleShape.Radius = 30.0f;
-		} else {
-			CircleShape.Radius = Scale.Length();
-		}
-
-		CollisionShape2D Collision = new CollisionShape2D();
-		Collision.Name = "Collision";
-		Collision.Shape = CircleShape;
-
-		BlowupArea = new Area2D();
-		BlowupArea.Name = "BlowupArea";
-		BlowupArea.CollisionLayer = 1 | 2 | 5 | 8 | 9;
-		BlowupArea.CollisionMask = 1 | 2 | 5 | 8 | 9;
-		BlowupArea.AddChild( Collision );
-		AddChild( BlowupArea );
+		BlowupArea = GetNode<Area2D>( "Area2D" );
+		( BlowupArea.GetChild<CollisionShape2D>( 0 ).Shape as CircleShape2D ).Radius = Radius;
 
 		CallDeferred( "CalcDamage" );
 
@@ -53,6 +35,11 @@ public partial class Explosion : Node2D {
 
 	private void CalcDamage() {
 		Godot.Collections.Array<Node2D> entities = BlowupArea.GetOverlappingBodies();
+
+		for ( int i = 0; i < (int)Scale.Length(); i++ ) {
+			DebrisFactory.Create( GlobalPosition );
+		}
+
 		for ( int i = 0; i < entities.Count; i++ ) {
 			if ( entities[i] is Entity entity && entity != null ) {
 				float damage = Damage * ( DamageCurve != null ? DamageCurve.SampleBaked( entity.GlobalPosition.DistanceTo( GlobalPosition ) ) : 1.0f );

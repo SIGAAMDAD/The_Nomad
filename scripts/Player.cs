@@ -168,6 +168,8 @@ public partial class Player : Entity {
 	private Timer SlideTime;
 	private Timer DashBurnoutCooldownTimer;
 	private Timer DashCooldownTime;
+	
+	private GroundMaterialType GroundType;
 
 	[Export]
 	private Node Inventory;
@@ -232,7 +234,7 @@ public partial class Player : Entity {
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
-	private int ComboCounter = 0;
+	public static int ComboCounter = 0;
 	private float ArmAngle = 0.0f;
 	private float DashBurnout = 0.0f;
 	private float DashTimer = 0.0f;
@@ -599,6 +601,10 @@ public partial class Player : Entity {
 	public WeaponSlot[] GetSlots() => WeaponSlots;
 	public void SetSlots( WeaponSlot[] slots ) => WeaponSlots = slots;
 
+	public void SetGroundMaterial( GroundMaterialType nType ) {
+		GroundType = nType;
+	}
+
 	public Arm GetLeftArm() => ArmLeft;
 	public Arm GetRightArm() => ArmRight;
 	public int GetCurrentWeapon() => CurrentWeapon;
@@ -736,6 +742,7 @@ public partial class Player : Entity {
 		} else {
 			Flags &= ~PlayerFlags.BlockedInput;
 		}
+		Velocity = Godot.Vector2.Zero;
 	}
 
 	private void OnCheckpointRestBegin() {
@@ -847,7 +854,19 @@ public partial class Player : Entity {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+			AudioStream stream = null;
+			switch ( GroundType ) {
+			case GroundMaterialType.Stone:
+			case GroundMaterialType.Sand:
+				stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
+				break;
+			case GroundMaterialType.Water:
+				stream = ResourceCache.MoveWaterSfx[ RandomFactory.Next( 0, ResourceCache.MoveWaterSfx.Length - 1 ) ];
+				break;
+			case GroundMaterialType.Wood:
+				break;
+			};
+			PlaySound( AudioChannel, stream );
 			FootSteps.AddStep( GlobalPosition );
 			SetSoundLevel( 24.0f );
 		}
@@ -953,7 +972,6 @@ public partial class Player : Entity {
 			}
 			AimRayCast.CollisionMask = 1 | 8 | 9;
 			FrameDamage += weapon.Use( weapon.GetLastUsedMode(), out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
-			ComboCounter++;
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );
 		}
@@ -1677,7 +1695,7 @@ public partial class Player : Entity {
 		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
 		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), new[]{ "checkpoint" }, 1, "teleports the player to the specified location" );
 
-		if ( SettingsData.GetNetworkingEnabled() ) {
+		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
 				new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
 		}

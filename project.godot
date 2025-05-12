@@ -204,6 +204,7 @@ locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialog
 2d_physics/layer_8="Player Raycast"
 2d_physics/layer_9="Special Hitboxes"
 2d_physics/layer_13="Pickup Collision"
+2d_physics/layer_17="Footsteps"
 
 [navigation]
 

@@ -21,7 +21,7 @@ properties = {
 "damage_falloff": SubResource("Curve_qnvb1"),
 "pickup_sfx": ExtResource("4_qnvb1"),
 "range": 1220.0,
-"stack_add_amount": 40,
+"stack_add_amount": 24,
 "type": 1,
 "velocity": 500.0
 }

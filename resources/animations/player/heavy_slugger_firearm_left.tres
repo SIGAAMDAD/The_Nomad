@@ -1,6 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3 uid="uid://1n37ccqerlyh"]
+[gd_resource type="SpriteFrames" load_steps=14 format=3 uid="uid://1n37ccqerlyh"]
 
 [ext_resource type="Texture2D" uid="uid://ctws7iw3rvdcj" path="res://textures/spritesheets/weapon_heavy_slugger.png" id="1_buach"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_itt47"]
+atlas = ExtResource("1_buach")
+region = Rect2(0, 64, 64, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_buach"]
 atlas = ExtResource("1_buach")
@@ -48,6 +52,14 @@ region = Rect2(0, 64, 64, 32)
 
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_itt47")
+}],
+"loop": true,
+"name": &"empty",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_buach")

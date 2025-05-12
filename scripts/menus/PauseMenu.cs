@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PauseMenu : Control {
+public partial class PauseMenu : CanvasLayer {
 	private ConfirmationDialog ConfirmExitDlg;
 	private ConfirmationDialog ConfirmQuitDlg;
 	private ColorRect ConfirmDlgOverlay;

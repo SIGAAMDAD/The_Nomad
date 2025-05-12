@@ -1,4 +1,5 @@
 using System;
+using ChallengeMode;
 using Godot;
 using Renown.World;
 
@@ -18,6 +19,8 @@ namespace Renown.Thinkers {
 		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 60.0f );
 		private static readonly float MaxViewDistance = 220.0f;
+
+		private static readonly int ChallengeMode_Score = 50;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
@@ -108,12 +111,14 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Damage( Entity source, float nAmount ) {
-			if ( ( Flags & ThinkerFlags.Dead ) != 0 || !HitHead ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 
-			base.Damage( source, nAmount );
-			PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+			if ( HitHead ) {
+				base.Damage( source, nAmount );
+				PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+			}
 
 			if ( Health <= 0.0f ) {
 				DetectionMeter.CallDeferred( "hide" );
@@ -128,8 +133,8 @@ namespace Renown.Thinkers {
 				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
-				HeadAnimations.Hide();
-				ArmAnimations.Hide();
+				HeadAnimations.CallDeferred( "hide" );
+				ArmAnimations.CallDeferred( "hide" );
 //				if ( BodyAnimations.Animation != "die_high" ) {
 //					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
 					BodyAnimations.CallDeferred( "play", "die" );
@@ -137,6 +142,8 @@ namespace Renown.Thinkers {
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", true );
+				SetDeferred( "collision_layer", 0 );
+				SetDeferred( "collision_mask", 0 );
 				return;
 			}
 
@@ -227,24 +234,19 @@ namespace Renown.Thinkers {
 			Damage( source, Health );
 		}
 		public void OnBackpackHit( Entity source ) {
-			Area2D BlowupArea = BodyAnimations.GetNode<Area2D>( "BlowupArea" );
-			BlowupArea.SetDeferred( "monitoring", true );
-			BlowupArea.GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
 			CallDeferred( "BlowupBackpack" );
 		}
 
 		private void BlowupBackpack() {
-			Area2D BlowupArea = BodyAnimations.GetNode<Area2D>( "BlowupArea" );
-			Godot.Collections.Array<Node2D> nodes = BlowupArea.GetOverlappingBodies();
-
 			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
+			explosion.Radius = 72.0f;
 			explosion.Damage = ExplosionDamage;
 			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
 			AddChild( explosion );
 
 			base.Damage( this, Health );
 			DetectionMeter.CallDeferred( "hide" );
-				
+			
 			GunChannel.Stop();
 			GunChannel.Set( "parameters/looping", false );
 
@@ -290,10 +292,26 @@ namespace Renown.Thinkers {
 			ArmAnimations.CallDeferred( "show" );
 			HeadAnimations.CallDeferred( "show" );
 
+			SetDeferred( "collision_layer", 1 | 2 | 4 | 5 | 8 );
+			SetDeferred( "collision_mask", 1 | 2 | 4 | 5 | 8 );
+
 			Flags &= ~ThinkerFlags.Dead;
 
 			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
 			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+		}
+
+		protected override void OnDie( Entity source, Entity target ) {
+			base.OnDie( source, target );
+			
+			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				if ( HitHead ) {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+				} else {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+				}
+			}
 		}
 
 		public override void _Ready() {
@@ -357,6 +375,23 @@ namespace Renown.Thinkers {
 			StartPosition = GlobalPosition;
 
 			GenerateRayCasts();
+
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 		}
 
 		protected override void ProcessAnimations() {

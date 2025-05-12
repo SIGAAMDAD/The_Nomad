@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dqebkeyfqu46q"]
+[gd_scene load_steps=17 format=3 uid="uid://dqebkeyfqu46q"]
 
 [ext_resource type="Script" uid="uid://bfaok2nqpcm24" path="res://scripts/menus/ExtrasMenu.cs" id="1_56yqt"]
 
@@ -17,6 +17,20 @@
 [sub_resource type="SystemFont" id="SystemFont_e0peb"]
 
 [sub_resource type="SystemFont" id="SystemFont_m1w8s"]
+
+[sub_resource type="SystemFont" id="SystemFont_56yqt"]
+
+[sub_resource type="SystemFont" id="SystemFont_nxd36"]
+
+[sub_resource type="SystemFont" id="SystemFont_fs4jf"]
+
+[sub_resource type="SystemFont" id="SystemFont_3fm14"]
+
+[sub_resource type="SystemFont" id="SystemFont_nkwyo"]
+
+[sub_resource type="SystemFont" id="SystemFont_qlisj"]
+
+[sub_resource type="SystemFont" id="SystemFont_4lhkp"]
 
 [node name="ExtrasMenu" type="Control"]
 layout_mode = 3
@@ -167,7 +181,14 @@ layout_mode = 2
 size_flags_vertical = 4
 text = "START"
 
+[node name="FetchingLabel" type="Label" parent="MainContainer/StoryInfoContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "FETCHING LEADERBOARD DATA..."
+
 [node name="LeaderboardScroll" type="VScrollBar" parent="MainContainer/StoryInfoContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Leaderboard" type="VBoxContainer" parent="MainContainer/StoryInfoContainer/LeaderboardScroll"]
@@ -188,8 +209,9 @@ visible = false
 layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(304, 0)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_56yqt")
 text = "NAME"
 
 [node name="VSeparator" type="VSeparator" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
@@ -198,20 +220,26 @@ layout_mode = 2
 [node name="ScoreLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_nxd36")
 
 [node name="TimeMinutesLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_fs4jf")
 
 [node name="Label" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_3fm14")
 text = ":"
 
 [node name="TimeSecondsLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_nkwyo")
 
 [node name="Label2" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_qlisj")
 text = "."
 
 [node name="TimeMillisecondsLabel" type="Label" parent="MainContainer/StoryInfoContainer/LeaderboardScroll/Leaderboard/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_4lhkp")

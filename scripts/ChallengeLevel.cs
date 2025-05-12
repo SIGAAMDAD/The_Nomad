@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-using System.Threading;
 using ChallengeMode;
 using Godot;
 using Renown;
@@ -11,7 +8,7 @@ using Renown.Thinkers;
 // TODO: allow multiplayer with challenge modes?
 
 public partial class ChallengeLevel : LevelData {
-	private enum ScoreBonus {
+	public enum ScoreBonus {
 		None		= 0x0000,
 		NoDamage	= 0x0001,
 		NoDeaths	= 0x0002,
@@ -39,9 +36,14 @@ public partial class ChallengeLevel : LevelData {
 
 	private Stopwatch Timer;
 
+	// extra flags
+	public static int DeathCounter = 0;
+	public static int TotalEnemies = 0;
+	public static int HeadshotCounter = 0;
+	public static ScoreBonus BonusFlags = ScoreBonus.All;
+
 	private static int TotalScore = 0;
 	private static int MaxCombo = 0;
-	private ScoreBonus BonusFlags = ScoreBonus.All;
 
 	private void OnHellbreakerExitFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnHellbreakerExitFinished ) );
@@ -60,11 +62,15 @@ public partial class ChallengeLevel : LevelData {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnHellbreakerExitFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		Hellbreaker.SetDeferred( "process_mode", (uint)ProcessModeEnum.Disabled );
+
+		EmitSignalHellbreakerFinished();
 	}
 
 	private void OnHellbreakerTransitionFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) );
 		Hellbreaker.Start( ThisPlayer );
+
+		EmitSignalHellbreakerBegin();
 	}
 	private void OnPlayerDie( Entity source, Entity target ) {
 		if ( Hellbreaker.Activate( ThisPlayer ) ) {
@@ -82,6 +88,8 @@ public partial class ChallengeLevel : LevelData {
 			Console.PrintLine( "Beginning hellbreaker..." );
 			return;
 		}
+
+		DeathCounter++;
 
 		EmitSignalPlayerRespawn();
 		BonusFlags &= ~ScoreBonus.NoDeaths;
@@ -110,6 +118,8 @@ public partial class ChallengeLevel : LevelData {
 
 		Timer.Stop();
 
+		EndCombo( Player.ComboCounter );
+
 		//
 		// calculate total score
 		//
@@ -133,18 +143,34 @@ public partial class ChallengeLevel : LevelData {
 				TotalScore += leftOver * 10;
 			}
 		}
+		if ( DeathCounter == 0 ) {
+			// no deaths
+			TotalScore += 1000;
+		}
+		if ( ( BonusFlags & ScoreBonus.NoDamage ) != 0 ) {
+			// no damage
+			TotalScore += 10000;
+		}
+		if ( DeathCounter == 0 && ( BonusFlags & ScoreBonus.NoDamage ) != 0 && HeadshotCounter == TotalEnemies ) {
+			// legend
+			TotalScore += 10000;
+		}
+
+		ThisPlayer.BlockInput( true );
 
 		ChallengeCache.UpdateScore( ChallengeCache.GetCurrentLeaderboard(), ChallengeCache.GetCurrentMap(), TotalScore, minutes, seconds, milliseconds );
-
-		GetTree().CallDeferred( "change_scene_to_file", "res://scenes/main_menu.tscn" );
+		
+		ChallengeModeScore ScoreOverlay = ResourceCache.GetScene( "res://scenes/menus/challenge_mode_score.tscn" ).Instantiate<ChallengeModeScore>();
+		AddChild( ScoreOverlay );
+		ScoreOverlay.SetScores( TotalScore, MaxCombo, minutes, seconds, milliseconds );
 	}
-	public static void EndCombo( int nScore ) {
-		if ( nScore > MaxCombo ) {
-			MaxCombo = nScore;
+	public static void EndCombo( int nCurrentCombo ) {
+		if ( nCurrentCombo > MaxCombo ) {
+			System.Threading.Interlocked.Exchange( ref MaxCombo, nCurrentCombo );
 		}
 	}
 	public static void IncreaseScore( int nAmount ) {
-		TotalScore += nAmount * MaxCombo;
+		System.Threading.Interlocked.Add( ref TotalScore, nAmount );
 	}
 
 	protected override void OnResourcesFinishedLoading() {
@@ -268,7 +294,7 @@ public partial class ChallengeLevel : LevelData {
 	public override void _Ready() {
 		base._Ready();
 
-		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, null ); } );
+		ResourceLoadThread = new System.Threading.Thread( () => { ResourceCache.Cache( this, null ); } );
 		ResourceLoadThread.Start();
 
 		ThisPlayer.Die += OnPlayerDie;
@@ -289,10 +315,6 @@ public partial class ChallengeLevel : LevelData {
 			ObjectivesState.Add( state.Key, state.Value );
 		}
 
-		Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Enemies" );
-		Enemies = new Godot.Collections.Array<Thinker>();
-		for ( int i = 0; i < nodes.Count; i++ ) {
-			Enemies.Add( nodes[i] as Thinker );
-		}
+		TotalEnemies = GetTree().GetNodeCountInGroup( "Enemies" );
 	}
 };

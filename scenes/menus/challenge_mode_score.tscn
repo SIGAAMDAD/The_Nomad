@@ -1,0 +1,138 @@
+[gd_scene load_steps=3 format=3 uid="uid://bli5iqfemx6f2"]
+
+[ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="1_4fya5"]
+[ext_resource type="Script" uid="uid://boaybm4djbl3x" path="res://scripts/menus/ChallengeModeScore.cs" id="1_bvs76"]
+
+[node name="ChallengeModeScore" type="CanvasLayer"]
+script = ExtResource("1_bvs76")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.929167
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("1_4fya5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MapNameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TotalScoreContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TotalScoreContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "TOTAL SCORE"
+
+[node name="TotalScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/TotalScoreContainer"]
+layout_mode = 2
+
+[node name="HighestComboContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HighestComboContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "HIGHEST COMBO"
+
+[node name="HighestComboLabel" type="Label" parent="MarginContainer/VBoxContainer/HighestComboContainer"]
+layout_mode = 2
+
+[node name="DeathCounterContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DeathCounterContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "DEATHS"
+
+[node name="DeathCounterLabel" type="Label" parent="MarginContainer/VBoxContainer/DeathCounterContainer"]
+layout_mode = 2
+
+[node name="TimeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "TIME"
+
+[node name="TimeMinutesLabel" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+layout_mode = 2
+text = ":"
+
+[node name="TimeSecondsLabel" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+layout_mode = 2
+text = "."
+
+[node name="TimeMillisecondsLabel" type="Label" parent="MarginContainer/VBoxContainer/TimeContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ExtrasContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/ExtrasContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "BONUS"
+
+[node name="NoDeathsLabel" type="Label" parent="MarginContainer/VBoxContainer/ExtrasContainer"]
+visible = false
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+text = "- NO DEATHS (+1000)"
+
+[node name="NoDamageLabel" type="Label" parent="MarginContainer/VBoxContainer/ExtrasContainer"]
+visible = false
+modulate = Color(0, 1, 1, 1)
+layout_mode = 2
+text = "- NO DAMAGE (+10000)"
+
+[node name="FlawlessLabel" type="Label" parent="MarginContainer/VBoxContainer/ExtrasContainer"]
+visible = false
+modulate = Color(1, 1, 0, 1)
+layout_mode = 2
+text = "- FLAWLESS"
+
+[node name="LegendLabel" type="Label" parent="MarginContainer/VBoxContainer/ExtrasContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "- LEGEND (+10000)"
+
+[node name="ExitButton" type="Button" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "EXFILTRATE"
+metadata/_edit_use_anchors_ = true

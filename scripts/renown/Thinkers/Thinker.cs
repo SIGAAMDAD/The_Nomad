@@ -119,8 +119,8 @@ namespace Renown.Thinkers {
 		// memory
 		protected bool TargetReached = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		protected float LookAngle = 0.0f;
-		protected float AimAngle = 0.0f;
+		protected float LookAngle;
+		protected float AimAngle;
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
@@ -450,23 +450,6 @@ namespace Renown.Thinkers {
 			ProcessMode = ProcessModeEnum.Pausable;
 			GotoPosition = GlobalPosition;
 
-			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				break;
-			};
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			AimAngle = LookAngle;
-
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			}
@@ -544,7 +527,7 @@ namespace Renown.Thinkers {
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+//			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 			return true;
 		}

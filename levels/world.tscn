@@ -1,4 +1,4 @@
-[gd_scene load_steps=130 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=129 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://d03p2337dl1kq" path="res://resources/quests/main_quest.tres" id="2_gb70t"]
@@ -27,7 +27,6 @@
 [ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="11_x3q2i"]
 [ext_resource type="Texture2D" uid="uid://bq70gpo8kknwv" path="res://textures/tilesets/desert/decor_2.png" id="12_cyobr"]
 [ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
-[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="13_mla2a"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
 [ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="15_qx5q4"]
@@ -9327,8 +9326,3 @@ TutorialString = "Rest the at the campfire, you'll need it"
 [node name="PickupTutorial" parent="Tutorials" instance=ExtResource("11_54i5j")]
 position = Vector2(-84922, 53238.5)
 TutorialString = " Walk over glowing items to pick them up"
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("13_mla2a")]
-visible = false

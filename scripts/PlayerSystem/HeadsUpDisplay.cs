@@ -70,6 +70,8 @@ namespace PlayerSystem {
 
 		private Dictionary<string, StatusIcon> StatusIcons;
 
+		private Control HellbreakerOverlay;
+
 		public HealthBar GetHealthBar() => HealthBar;
 		public RageBar GetRageBar() => RageBar;
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
@@ -168,37 +170,19 @@ namespace PlayerSystem {
 			} ) );
 
 			CheckpointInteractor = GetNode<CheckpointInteractor>( "CheckpointContainer" );
-			CheckpointInteractor.SetProcess( false );
-			CheckpointInteractor.SetProcessInternal( false );
 
 			ReflexOverlay = GetNode<TextureRect>( "MainHUD/Overlays/ReflexModeOverlay" );
-			ReflexOverlay.SetProcess( false );
-			ReflexOverlay.SetProcessInternal( false );
-
 			DashOverlay = GetNode<TextureRect>( "MainHUD/Overlays/DashOverlay" );
-			DashOverlay.SetProcess( false );
-			DashOverlay.SetProcessInternal( false );
-			DashOverlay.SetPhysicsProcess( false );
+
+			HellbreakerOverlay = GetNode<Control>( "MainHUD/HellbreakerOverlay" );
+			LevelData.Instance.HellbreakerBegin += HellbreakerOverlay.Show;
+			LevelData.Instance.HellbreakerFinished += HellbreakerOverlay.Hide;
 
 			WorldTimeYear = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/YearLabel" );
-			WorldTimeYear.SetProcess( false );
-			WorldTimeYear.SetProcessInternal( false );
-
 			WorldTimeMonth = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/MonthLabel" );
-			WorldTimeMonth.SetProcess( false );
-			WorldTimeMonth.SetProcessInternal( false );
-
 			WorldTimeDay = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/DayLabel" );
-			WorldTimeDay.SetProcess( false );
-			WorldTimeDay.SetProcessInternal( false );
-
 			WorldTimeHour = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/HourLabel" );
-			WorldTimeHour.SetProcess( false );
-			WorldTimeHour.SetProcessInternal( false );
-
 			WorldTimeMinute = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/MinuteLabel" );
-			WorldTimeMinute.SetProcess( false );
-			WorldTimeMinute.SetProcessInternal( false );
 
 			SaveTimer = GetNode<Timer>( "MainHUD/SaveSpinner/SaveTimer" );
 			SaveTimer.SetProcess( false );

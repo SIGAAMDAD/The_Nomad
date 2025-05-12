@@ -112,12 +112,12 @@ namespace Renown.Thinkers {
 			}
 
 			if ( Hellbreaker.Active ) {
-				if ( AttackTimer.IsStopped() && Target.GlobalPosition.DistanceTo( GlobalPosition ) < 120.0f ) {
+				if ( AttackTimer.IsStopped() && Target.GlobalPosition.DistanceTo( GlobalPosition ) < 80.0f ) {
 					SetDeferred( "velocity", Godot.Vector2.Zero );
 
 					AttackTimer.CallDeferred( "start" );
 					BodyAnimations.CallDeferred( "play", "attack" );
-				} else if ( Target.GlobalPosition.DistanceTo( GlobalPosition ) > 120.0f ) {
+				} else if ( Target.GlobalPosition.DistanceTo( GlobalPosition ) > 80.0f ) {
 					SetNavigationTarget( Target.GlobalPosition );
 				}
 			}

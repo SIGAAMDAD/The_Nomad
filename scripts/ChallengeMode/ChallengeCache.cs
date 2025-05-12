@@ -12,9 +12,13 @@ namespace ChallengeMode {
 			public readonly int TimeCompletedMillseconds = 0;
 			public readonly CSteamID UserID = CSteamID.Nil;
 
-			public LeaderboardEntry( LeaderboardEntry_t entry ) {
+			public LeaderboardEntry( LeaderboardEntry_t entry, int[] details ) {
 				UserID = entry.m_steamIDUser;
 				Score = entry.m_nScore;
+
+				TimeCompletedMinutes = details[0];
+				TimeCompletedSeconds = details[1];
+				TimeCompletedMillseconds = details[2];
 			}
 		};
 		public struct ChallengeScore {
@@ -49,6 +53,8 @@ namespace ChallengeMode {
 		public static Dictionary<ChallengeMap, ChallengeScore> Scores = null;
 		public static List<ChallengeMap> MapList = null;
 
+		public static readonly int ScoreMultiplier_HeadShot = 3;
+
 		private static int CurrentMap = 0;
 		private static Resource ActiveQuest = null;
 
@@ -64,7 +70,7 @@ namespace ChallengeMode {
 		public static void FetchLeaderboardData( int nMapIndex ) {
 			SteamAPICall_t handle;
 			if ( !Leaderboards.ContainsKey( string.Format( "Challenge{0}", nMapIndex ) ) ) {
-				handle = SteamUserStats.FindLeaderboard( string.Format( "Challenge{0}", nMapIndex ) );
+				handle = SteamUserStats.FindOrCreateLeaderboard( string.Format( "Challenge{0}", nMapIndex ), ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending, ELeaderboardDisplayType.k_ELeaderboardDisplayTypeNumeric );
 				OnLeaderboardFindResult.Set( handle );
 				return;
 			}
@@ -95,15 +101,17 @@ namespace ChallengeMode {
 		private static void OnScoreDownloaded( LeaderboardScoresDownloaded_t pCallback, bool bIOFailure ) {
 			Console.PrintLine( "Downloading scores..." );
 
+			int[] details = new int[3];
+
 			LeaderboardEntries = pCallback.m_hSteamLeaderboardEntries;
 
 			LeaderboardData.Clear();
 			for ( int i = 0; i < pCallback.m_cEntryCount; i++ ) {
-				if ( !SteamUserStats.GetDownloadedLeaderboardEntry( LeaderboardEntries, i, out LeaderboardEntry_t entry, null, 0 ) ) {
+				if ( !SteamUserStats.GetDownloadedLeaderboardEntry( LeaderboardEntries, i, out LeaderboardEntry_t entry, details, details.Length ) ) {
 					Console.PrintError( "[STEAM] Error fetching downloaded leaderboard entry!" );
 					continue;
 				}
-				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardEntry( entry ) );
+				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardEntry( entry, details ) );
 			}
 
 			ScoresDownloadedCallback?.Invoke( LeaderboardData );
@@ -136,14 +144,13 @@ namespace ChallengeMode {
 				}
 				using ( var writer = new System.IO.BinaryWriter( stream ) ) {
 					writer.Write( Scores.Count );
-					for ( int i = 0; i < Scores.Count; i++ ) {
-						ChallengeScore score = Scores.ElementAt( i ).Value;
-						writer.Write( score.MapIndex );
-						writer.Write( score.Score );
-						writer.Write( score.TimeMinutes );
-						writer.Write( score.TimeSeconds );
-						writer.Write( score.TimeMilliseconds );
-						Console.PrintLine( string.Format( "Saving score for {0}, {1}:{2}.{3}...", score.MapIndex, score.TimeMinutes, score.TimeSeconds, score.TimeMilliseconds ) );
+					foreach ( var score in Scores ) {
+						writer.Write( score.Value.MapIndex );
+						writer.Write( score.Value.Score );
+						writer.Write( score.Value.TimeMinutes );
+						writer.Write( score.Value.TimeSeconds );
+						writer.Write( score.Value.TimeMilliseconds );
+						Console.PrintLine( string.Format( "Saving score for {0}, {1}:{2}.{3}...", score.Value.MapIndex, score.Value.TimeMinutes, score.Value.TimeSeconds, score.Value.TimeMilliseconds ) );
 					}
 					writer.Flush();
 				}
@@ -160,40 +167,22 @@ namespace ChallengeMode {
 				if ( Score > score.Score ) {
 					score.Score = Score;
 				}
-
-				if ( score.TimeMinutes == 0 ) {
-					score.TimeMinutes = TimeMinutes;
-				} else if ( TimeMinutes <= score.TimeMinutes ) {
+				if ( TimeMinutes < score.TimeMinutes ) {
 					score.TimeMinutes = TimeMinutes;
 				}
-				
-				if ( score.TimeSeconds == 0 ) {
-					score.TimeSeconds = TimeSeconds;
-				} else if ( TimeSeconds <= score.TimeSeconds ) {
+				if ( TimeSeconds < score.TimeSeconds ) {
 					score.TimeSeconds = TimeSeconds;
 				}
-
-				if ( score.TimeMilliseconds == 0 ) {
-					score.TimeMilliseconds = TimeMilliseconds;
-				} else if ( TimeMilliseconds <= score.TimeMilliseconds ) {
+				if ( TimeMilliseconds < score.TimeMilliseconds ) {
 					score.TimeMilliseconds = TimeMilliseconds;
 				}
 			} else {
 				score = new ChallengeScore();
+				score.Score = Score;
 				score.TimeMinutes = TimeMinutes;
 				score.TimeSeconds = TimeSeconds;
 				score.TimeMilliseconds = TimeMilliseconds;
 				Scores.Add( MapList[ MapIndex ], score );
-			}
-
-			Console.PrintLine( string.Format( "Saving score for {0}, {1}:{2}.{3}...", MapList[ MapIndex ].MapName, score.TimeMinutes, score.TimeSeconds, score.TimeMilliseconds ) );
-
-			SaveScores();
-
-			if ( MapList[ MapIndex ].MapName == "golden_gate_massacre" ) {
-				if ( TimeMinutes < 5 ) {
-					SteamAchievements.ActivateAchievement( "ACH_A_LEGEND_IS_BORN" );
-				}
 			}
 
 			SteamUserStats.UploadLeaderboardScore(
@@ -203,6 +192,16 @@ namespace ChallengeMode {
 				[ TimeMinutes, TimeSeconds, TimeMilliseconds ],
 				3
 			);
+
+			Console.PrintLine( string.Format( "Saving score for {0}, {1} {2}:{3}.{4}...", MapList[ MapIndex ].MapName, score.Score, score.TimeMinutes, score.TimeSeconds, score.TimeMilliseconds ) );
+
+			SaveScores();
+
+			if ( MapList[ MapIndex ].MapName == "golden_gate_massacre" ) {
+				if ( TimeMinutes < 5 ) {
+					SteamAchievements.ActivateAchievement( "ACH_A_LEGEND_IS_BORN" );
+				}
+			}
 
 			//
 			// check achievements
@@ -218,21 +217,21 @@ namespace ChallengeMode {
 			}
 		}
 		public static void GetScore( int MapIndex, out int Score, out int TimeMinutes, out int TimeSeconds, out int TimeMilliseconds, System.Action<Dictionary<int, LeaderboardEntry>> callback ) {
+			ScoresDownloadedCallback = callback;
+			FetchLeaderboardData( MapIndex );
+
 			if ( Scores.TryGetValue( MapList[ MapIndex ], out ChallengeScore score ) ) {
 				Console.PrintLine( string.Format( "Loading map scores for {0}...", MapIndex ) );
 				Score = score.Score;
-				TimeMinutes = score.TimeMilliseconds;
+				TimeMinutes = score.TimeMinutes;
 				TimeSeconds = score.TimeSeconds;
 				TimeMilliseconds = score.TimeMilliseconds;
 			} else {
-				Score = 0;
 				TimeMinutes = 0;
 				TimeSeconds = 0;
 				TimeMilliseconds = 0;
+				Score = 0;
 			}
-			ScoresDownloadedCallback = callback;
-
-			FetchLeaderboardData( MapIndex );
 		}
 		private static void LoadScores() {
 			string path = ProjectSettings.GlobalizePath( "user://SaveData/ChallengeData.dat" );
@@ -255,11 +254,12 @@ namespace ChallengeMode {
 				int count = reader.ReadInt32();
 				for ( int i = 0; i < count; i++ ) {
 					ChallengeScore score = new ChallengeScore();
+					score.MapIndex = reader.ReadInt32();
 					score.Score = reader.ReadInt32();
 					score.TimeMinutes = reader.ReadInt32();
 					score.TimeSeconds = reader.ReadInt32();
 					score.TimeMilliseconds = reader.ReadInt32();
-					Scores.Add( MapList[i], score );
+					Scores.Add( MapList[ score.MapIndex ], score );
 
 					Console.PrintLine( string.Format( "...Loaded score for {0}, {1}:{2}.{3}", i, score.TimeMinutes, score.TimeSeconds, score.TimeMilliseconds ) );
 				}

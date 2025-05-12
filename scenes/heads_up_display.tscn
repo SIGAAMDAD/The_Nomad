@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=57 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -31,7 +31,6 @@
 [ext_resource type="Texture2D" uid="uid://bqfw0k541lg8o" path="res://textures/hud/ARBLS4.png" id="18_aelwk"]
 [ext_resource type="Script" uid="uid://dqu07i6qx5kvd" path="res://scripts/PlayerSystem/Notebook.cs" id="18_xstx4"]
 [ext_resource type="Texture2D" uid="uid://dyl5frpt4hy16" path="res://textures/hud/ARBLS5.png" id="19_xw6ac"]
-[ext_resource type="Shader" uid="uid://iflsk5g1xocx" path="res://shaders/blood_overlay.gdshader" id="20_vg31i"]
 [ext_resource type="Script" uid="uid://cp2m32c4dosqq" path="res://scripts/PlayerSystem/WarpPoint.cs" id="23_0ed87"]
 [ext_resource type="Script" uid="uid://df58eq7qyt2ih" path="res://scripts/PlayerSystem/CheckpointInteractor.cs" id="23_nyije"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="24_ot7dw"]
@@ -113,21 +112,34 @@ colors = PackedColorArray(0.61009, 1.56425e-06, 1.44392e-07, 0.533333)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ycpyq"]
 gradient = SubResource("Gradient_sa4mc")
 
-[sub_resource type="Gradient" id="Gradient_vg31i"]
-colors = PackedColorArray(0.486275, 0, 0, 1, 1, 0.996078, 1, 0.807843)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8n186"]
-gradient = SubResource("Gradient_vg31i")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8n186"]
-shader = ExtResource("20_vg31i")
-shader_parameter/iChannel0 = SubResource("GradientTexture1D_8n186")
-shader_parameter/frequency = -0.3
-shader_parameter/size = 0.024
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ot7dw"]
 shader = ExtResource("14_poeto")
 shader_parameter/alpha = 1.0
+
+[sub_resource type="Gradient" id="Gradient_rhrir"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(128.498, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_v24h6"]
+gradient = SubResource("Gradient_rhrir")
+width = 1
+height = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vg31i"]
+lifetime_randomness = 0.75
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(80, 1, 0)
+angular_velocity_min = -8.00002
+angular_velocity_max = 7.99998
+gravity = Vector3(0, -16, 0)
+linear_accel_min = -20.0
+linear_accel_max = 20.0
+radial_accel_min = -14.0
+radial_accel_max = 14.0
+tangential_accel_min = -16.0
+tangential_accel_max = 16.0
+color = Color(4.75, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5p2fr"]
 resource_local_to_scene = true
@@ -228,6 +240,7 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
+page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false
@@ -432,36 +445,33 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Blood0" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("15_8n186")
 
 [node name="TextureRect" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("16_dt7fv")
 
 [node name="TextureRect2" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("17_jak0u")
 
 [node name="TextureRect3" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("18_aelwk")
 
 [node name="TextureRect4" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("19_xw6ac")
 
 [node name="TextureRect5" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="MainHUD/Overlays"]
-material = SubResource("ShaderMaterial_8n186")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="WorldTimeContainer" type="MarginContainer" parent="MainHUD"]
 custom_minimum_size = Vector2(80, 80)
@@ -565,6 +575,43 @@ texture = ExtResource("17_xstx4")
 expand_mode = 2
 script = ExtResource("18_a6h4m")
 metadata/_edit_use_anchors_ = true
+
+[node name="HellbreakerOverlay" type="Control" parent="MainHUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TitleLabel" type="Label" parent="MainHUD/HellbreakerOverlay"]
+modulate = Color(2, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "HELLBREAKER
+FIND AN OBELISK"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="EmberParticlesEmitter" type="GPUParticles2D" parent="MainHUD/HellbreakerOverlay/TitleLabel"]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
+position = Vector2(318, 50)
+amount = 200
+texture = SubResource("GradientTexture2D_v24h6")
+lifetime = 5.0
+speed_scale = 4.55
+randomness = 0.25
+fixed_fps = 0
+visibility_rect = Rect2(0, 0, 100, 150)
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_vg31i")
 
 [node name="NotebookContainer" type="MarginContainer" parent="."]
 visible = false

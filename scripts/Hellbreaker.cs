@@ -120,9 +120,11 @@ public partial class Hellbreaker : Node2D {
 		Show();
 		ProcessMode = ProcessModeEnum.Pausable;
 
+		Theme.CallDeferred( "play" );
+		Theme.SetDeferred( "parameters/looping", true );
+
 		MusicTween = CreateTween();
 		MusicTween.CallDeferred( "tween_property", Theme, "volume_db", SettingsData.GetMusicVolumeLinear(), 4.5f );
-		Theme.CallDeferred( "play" );
 
 		DeathPosition = player.GlobalPosition;
 		player.SetDeferred( "global_position", Spawn.GlobalPosition );
@@ -173,6 +175,8 @@ public partial class Hellbreaker : Node2D {
 		base._Ready();
 
 		Theme = GetNode<AudioStreamPlayer>( "Music" );
+		Theme.VolumeDb = SettingsData.GetMusicVolumeLinear();
+
 		Spawn = GetNode<Sprite2D>( "Spawn" );
 
 		Exits = new List<HellbreakerExit>();

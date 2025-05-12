@@ -47,8 +47,8 @@ light_mask = 0
 visibility_layer = 2
 z_index = 6
 y_sort_enabled = true
-collision_layer = 4114
-collision_mask = 4118
+collision_layer = 69650
+collision_mask = 69654
 script = ExtResource("1_5fsym")
 Inventory = NodePath("Inventory")
 ArmLeft = NodePath("ArmLeft")
@@ -221,7 +221,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 position = Vector2(-3.8147e-06, 5.33333)
 target_position = Vector2(740.047, 0)
-collision_mask = 393
+collision_mask = 392
 collide_with_areas = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]

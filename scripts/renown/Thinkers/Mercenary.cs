@@ -1,4 +1,5 @@
 using System;
+using ChallengeMode;
 using GDExtension.Wrappers;
 using Godot;
 using Renown.World;
@@ -16,6 +17,8 @@ namespace Renown.Thinkers {
 		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 80.0f );
 		private static readonly float MaxViewDistance = 180.0f;
+
+		private static readonly int ChallengeMode_Score = 40;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
@@ -168,6 +171,8 @@ namespace Renown.Thinkers {
 				}
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				SetDeferred( "collision_layer", 0 );
+				SetDeferred( "collision_mask", 0 );
 				return;
 			}
 
@@ -179,7 +184,7 @@ namespace Renown.Thinkers {
 			if ( Awareness == MobAwareness.Alert ) {
 
 			} else {
-				Bark( BarkType.Alert );
+//				Bark( BarkType.Alert );
 				SetAlert();
 			}
 
@@ -348,6 +353,24 @@ namespace Renown.Thinkers {
 			Health = StartHealth;
 			Flags = 0;
 			SightDetectionAmount = 0.0f;
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+
+			SetDeferred( "collision_layer", 1 | 2 | 4 | 5 | 8 );
+			SetDeferred( "collision_mask", 1 | 2 | 4 | 5 | 8 );
+		}
+
+		protected override void OnDie( Entity source, Entity target ) {
+			base.OnDie( source, target );
+
+			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				if ( BodyAnimations.Animation == "die_high" ) {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+				} else if ( BodyAnimations.Animation == "die_low" ) {
+					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+				}
+			}
 		}
 
 		public override void _Ready() {
@@ -448,7 +471,25 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.OneShot = true;
 			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
 			AddChild( TargetMovedTimer );
-			
+		
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				BodyAnimations.FlipH = true;
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+
 			GenerateRayCasts();
 		}
 
@@ -502,15 +543,15 @@ namespace Renown.Thinkers {
 				BodyAnimations.SetDeferred( "flip_h", false );
 			}
 
-			if ( LookAngle > 225.0f ) {
+			if ( LookAngle > 89.0f ) {
 				HeadAnimations.SetDeferred( "flip_v", true );
-			} else if ( LookAngle < 135.0f ) {
+			} else if ( LookAngle < 90.0f ) {
 				HeadAnimations.SetDeferred( "flip_v", false );
 			}
 
-			if ( AimAngle > 225.0f ) {
+			if ( AimAngle > 89.0f ) {
 				ArmAnimations.SetDeferred( "flip_v", true );
-			} else if ( AimAngle < 135.0f ) {
+			} else if ( AimAngle < 90.0f ) {
 				ArmAnimations.SetDeferred( "flip_v", false );
 			}
 

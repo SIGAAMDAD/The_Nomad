@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://37cqdj7riyua"]
+[gd_scene load_steps=12 format=3 uid="uid://37cqdj7riyua"]
 
 [ext_resource type="Script" uid="uid://dydrhh3q6femv" path="res://scripts/renown/Thinkers/Zurguts/ZurgutGrunt.cs" id="1_nk00t"]
 [ext_resource type="SpriteFrames" uid="uid://cqwnbdnsg2c77" path="res://resources/animations/mobs/zurgut_grunt_body_animations.tres" id="1_wp8ts"]
@@ -24,13 +24,10 @@ size = Vector2(7, 4)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n7ydy"]
 size = Vector2(19.5, 13)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_nk00t"]
-radius = 126.0
-
 [node name="ZurgutGrunt" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 z_index = 6
-collision_layer = 155
-collision_mask = 155
+collision_layer = 187
+collision_mask = 187
 script = ExtResource("1_nk00t")
 MovementSpeed = 400.0
 Health = 70.0
@@ -83,15 +80,6 @@ shape = SubResource("RectangleShape2D_nk00t")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1.25, 6.5)
 shape = SubResource("RectangleShape2D_n7ydy")
-
-[node name="BlowupArea" type="Area2D" parent="."]
-collision_layer = 19
-collision_mask = 19
-monitoring = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BlowupArea"]
-shape = SubResource("CircleShape2D_nk00t")
-disabled = true
 
 [node name="BlowupTimer" type="Timer" parent="."]
 wait_time = 2.0

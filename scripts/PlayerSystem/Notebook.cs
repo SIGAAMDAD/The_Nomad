@@ -163,7 +163,13 @@ namespace PlayerSystem {
 				return;
 			}
 
-			Resource itemType = (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)item.GetMeta( "item_id" ) );
+			string itemId = (string)item.GetMeta( "item_id" );
+			Resource itemType = (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", itemId );
+			if ( itemType == null ) {
+				Console.PrintError( string.Format( "Notebook.OnBackpackItemSelected: invalid item_id \"{0}\"", itemId ) );
+				return;
+			}
+
 			Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)itemType.Get( "properties" );
 			if ( properties.ContainsKey( "description" ) ) {
 				ItemDescription.Show();
@@ -226,7 +232,7 @@ namespace PlayerSystem {
 			row.AddChild( item );
 
 			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)stack.AmmoType.Data.Get( "id" ) ) ).Get( "icon" );
+			item.Texture = (Texture2D)stack.AmmoType.Data.Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
 			item.CustomMinimumSize = BackpackItemMinimumSize;
 			item.SetMeta( "item_id", (string)stack.AmmoType.Data.Get( "id" ) );
@@ -244,7 +250,7 @@ namespace PlayerSystem {
 			row.Show();
 
 			item.Connect( "gui_input", Callable.From<InputEvent>( ( inputEvent ) => { OnBackpackItemSelected( inputEvent, item ); } ) );
-			item.Texture = (Texture2D)( (Resource)( (Resource)_Owner.GetInventory().Get( "database" ) ).Call( "get_item", (string)weapon.Data.Get( "id" ) ) ).Get( "icon" );
+			item.Texture = (Texture2D)weapon.Data.Get( "icon" );
 			item.StretchMode = TextureRect.StretchModeEnum.KeepCentered;
 			item.CustomMinimumSize = BackpackItemMinimumSize;
 			item.SetMeta( "item_id", (string)weapon.Data.Get( "id" ) );

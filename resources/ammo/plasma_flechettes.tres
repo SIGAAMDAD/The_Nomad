@@ -22,8 +22,8 @@ properties = {
 "damage_falloff": SubResource("Curve_orkxq"),
 "description": "PLASMA_FLECHETTES_DESCRIPTION",
 "pickup_sfx": ExtResource("3_e2ki1"),
-"range": 1125.0,
-"stack_add_amount": 200,
+"range": 650.0,
+"stack_add_amount": 240,
 "type": 0,
 "velocity": 350.0
 }
