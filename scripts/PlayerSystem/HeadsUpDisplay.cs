@@ -58,6 +58,9 @@ namespace PlayerSystem {
 
 		private InteractionItem InteractionData;
 
+		private Button OpenDoorButton;
+		private Button UseDoorButton;
+
 		private Control BossHealthBar;
 
 		private Label WorldTimeYear;
@@ -114,7 +117,30 @@ namespace PlayerSystem {
 
 		private void OnOpenDoorButtonPressed() {
 			if ( InteractionData is Door door && door != null ) {
+				bool open = door.UseDoor( _Owner, out string message );
+				StartThoughtBubble( "Message: " + message );
+				if ( open ) {
+					OpenDoorButton.Hide();
+					UseDoorButton.Show();
+				} else {
+					_Owner.PlaySound( null, ResourceCache.GetSound( "res://sounds/env/try_open_door.ogg" ) );
+				}
 			}
+		}
+
+		private void OnUseDoorTransitionFinished() {
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnUseDoorTransitionFinished ) );
+
+			_Owner.GlobalPosition = ( InteractionData as Door ).GetDestination().GlobalPosition;
+			_Owner.BlockInput( false );
+		}
+		private void OnUseDoorButtonPressed() {
+			_Owner.BlockInput( true );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnUseDoorTransitionFinished ) );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+			_Owner.PlaySound( null, ResourceCache.GetSound( "res://sounds/env/open_door_" + new RandomNumberGenerator().RandiRange( 0, 2 ) + ".ogg" ) );
+
+			DoorInteractor.Hide();
 		}
 
 		public Checkpoint GetCurrentCheckpoint() => CheckpointInteractor.GetCurrentCheckpoint();
@@ -149,20 +175,9 @@ namespace PlayerSystem {
 			RageBar = GetNode<RageBar>( "MainHUD/RageBar" );
 
 			AnnouncementContainer = GetNode<MarginContainer>( "MainHUD/AnnouncementLabel" );
-			AnnouncementContainer.SetProcess( false );
-			AnnouncementContainer.SetProcessInternal( false );
-
 			AnnouncementBackground = GetNode<TextureRect>( "MainHUD/AnnouncementLabel/TextureRect" );
-			AnnouncementBackground.SetProcess( false );
-			AnnouncementBackground.SetProcessInternal( false );
-
 			AnnouncementText = GetNode<Label>( "MainHUD/AnnouncementLabel/TextureRect/Label" );
-			AnnouncementText.SetProcess( false );
-			AnnouncementText.SetProcessInternal( false );
-
 			AnnouncementTimer = GetNode<Timer>( "MainHUD/AnnouncementLabel/Timer" );
-			AnnouncementTimer.SetProcess( false );
-			AnnouncementTimer.SetProcessInternal( false );
 			AnnouncementTimer.Connect( "timeout", Callable.From( () => {
 				FadeOutTween = CreateTween();
 				FadeOutTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.0f, 2.5f );
@@ -215,8 +230,12 @@ namespace PlayerSystem {
 			JumpMusic.Set( "parameters/looping", true );
 
 			DoorInteractor = GetNode<MarginContainer>( "DoorContainer" );
-			Button OpenButton = GetNode<Button>( "DoorContainer/MarginContainer/OpenButton" );
-			OpenButton.Connect( "pressed", Callable.From( OnOpenDoorButtonPressed ) );
+
+			OpenDoorButton = GetNode<Button>( "DoorContainer/MarginContainer/OpenButton" );
+			OpenDoorButton.Connect( "pressed", Callable.From( OnOpenDoorButtonPressed ) );
+
+			UseDoorButton = GetNode<Button>( "DoorContainer/MarginContainer/UseButton" );
+			UseDoorButton.Connect( "pressed", Callable.From( OnUseDoorButtonPressed ) );
 
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
@@ -244,7 +263,8 @@ namespace PlayerSystem {
 		}
 
 		public void AddStatusEffect( string effectName ) {
-
+			StatusIcons[ effectName ].Show();
+			StatusIcons[ effectName ].Material.Set( "shader_parameter/progress", 1.0f );
 		}
 
 		private void OnWeaponReloaded( WeaponEntity source ) {
@@ -345,6 +365,8 @@ namespace PlayerSystem {
 			} else {
 				return;
 			}
+
+			InteractionData = item;
 			
 			if ( CurrentInteractor == JumpInteractor ) {
 				EaglesPeak data = (EaglesPeak)item;
@@ -359,6 +381,17 @@ namespace PlayerSystem {
 				JumpMusic.Stream = data.GetMusic();
 
 				JumpMusic.Play();
+			} else if ( CurrentInteractor == DoorInteractor ) {
+				switch ( ( item as Door ).GetState() ) {
+				case DoorState.Locked:
+					OpenDoorButton.Show();
+					UseDoorButton.Hide();
+					break;
+				case DoorState.Unlocked:
+					OpenDoorButton.Hide();
+					UseDoorButton.Show();
+					break;
+				};
 			}
 		}
 		public void HideInteraction() {

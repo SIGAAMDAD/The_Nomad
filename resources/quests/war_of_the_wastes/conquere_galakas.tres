@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=12 format=3 uid="uid://bfxj7dieddh0o"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_e2nav"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_1jglh"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_axoi6"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_4lvus"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_twuuo"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="4_kofkd"]
+
+[sub_resource type="Resource" id="Resource_1jglh"]
+script = ExtResource("2_1jglh")
+name = ""
+description = ""
+id = "pwtkaeh-XL"
+optional = false
+graph_editor_position = Vector2(-1305.15, 49.6191)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_twuuo"]
+script = ExtResource("3_twuuo")
+description = ""
+id = "AteVWnK1K8"
+optional = false
+graph_editor_position = Vector2(-720, 40)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_kofkd"]
+script = ExtResource("1_e2nav")
+from = SubResource("Resource_1jglh")
+to = SubResource("Resource_twuuo")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_1j187"]
+script = ExtResource("4_kofkd")
+id = "lxYW-tieWw"
+optional = false
+graph_editor_position = Vector2(80, 60)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_pqe6a"]
+script = ExtResource("1_e2nav")
+from = SubResource("Resource_twuuo")
+to = SubResource("Resource_1j187")
+edge_type = 0
+
+[resource]
+script = ExtResource("3_4lvus")
+nodes = Array[ExtResource("2_axoi6")]([SubResource("Resource_1jglh"), SubResource("Resource_twuuo"), SubResource("Resource_1j187")])
+edges = Array[ExtResource("1_e2nav")]([SubResource("Resource_kofkd"), SubResource("Resource_pqe6a")])

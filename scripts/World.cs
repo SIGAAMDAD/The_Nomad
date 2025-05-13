@@ -4,111 +4,115 @@ using Steamworks;
 using Godot;
 using Renown.World;
 using Renown;
-using System.Diagnostics;
 using System;
 
 public partial class World : LevelData {
 	[Export]
-	private Resource MainQuest;
+	private Resource CurrentQuest;
 	[Export]
 	private Godot.Collections.Dictionary<string, Variant> State;
 
-	private static Dictionary<string, object> ObjectivesState;
+	private static Godot.Collections.Dictionary<string, Variant> ObjectivesState;
+	private static Resource QuestState;
 
-	public static void SetObjectiveState( string key, object value ) {
+	public static Godot.Variant GetObjectiveState( string key ) {
+		return ObjectivesState[ key ];
+	}
+	public static void SetObjectiveState( string key, Godot.Variant value ) {
 		if ( !ObjectivesState.ContainsKey( key ) ) {
-			Console.PrintError( string.Format( "World.SetObjectiveState: invalid ObjectiveState key \"{0}\"", key ) );
+			Console.PrintError( string.Format( "ChallengeLevel.SetObjectiveState: invalid ObjectiveState key \"{0}\"", key ) );
 			return;
 		}
+		Console.PrintLine( string.Format( "Set objective state \"{0}\" to {1}", key, value.ToString() ) );
 		ObjectivesState[ key ] = value;
 	}
 
 	private void OnConditionQueryRequested( string queryType, string key, Variant value, Resource requester ) {
 		switch ( queryType ) {
 		case "State":
-			if ( ObjectivesState.TryGetValue( key, out object compare ) ) {
-				if ( compare is bool boolValue ) {
-					Questify.SetConditionCompleted( requester, boolValue == value.AsBool() );
-				} else if ( compare is float floatValue ) {
+			if ( ObjectivesState.TryGetValue( key, out Godot.Variant compare ) ) {
+				if ( compare.VariantType == Variant.Type.Bool ) {
+					Questify.SetConditionCompleted( requester, compare.AsBool() == value.AsBool() );
+				} else if ( compare.VariantType == Variant.Type.Float ) {
 					int index = queryType.Find( ':' );
 					if ( index != -1 ) {
 						string op = queryType.Substring( index + 1 );
 						switch ( op ) {
 						case "eq":
 						case "==":
-							Questify.SetConditionCompleted( requester, floatValue == value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() == value.AsDouble() );
 							break;
 						case "neq":
 						case "!=":
 						case "!eq":
 						case "ne":
-							Questify.SetConditionCompleted( requester, floatValue != value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() != value.AsDouble() );
 							break;
 						case "lt":
 						case "<":
-							Questify.SetConditionCompleted( requester, floatValue < value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() < value.AsDouble() );
 							break;
 						case "lte":
 						case "<=":
-							Questify.SetConditionCompleted( requester, floatValue <= value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() <= value.AsDouble() );
 							break;
 						case "gt":
 						case ">":
-							Questify.SetConditionCompleted( requester, floatValue > value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() > value.AsDouble() );
 							break;
 						case "gte":
 						case ">=":
-							Questify.SetConditionCompleted( requester, floatValue >= value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsDouble() >= value.AsDouble() );
 							break;
 						default:
 							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
 							break;
 						};
 					} else {
-						Questify.SetConditionCompleted( requester, floatValue == value.AsDouble() );
+						Questify.SetConditionCompleted( requester, compare.AsDouble() == value.AsDouble() );
 					}
-				} else if ( compare is int intValue ) {
+				} else if ( compare.VariantType == Variant.Type.Int ) {
 					int index = queryType.Find( ':' );
 					if ( index != -1 ) {
 						string op = queryType.Substring( index + 1 );
 						switch ( op ) {
 						case "eq":
 						case "==":
-							Questify.SetConditionCompleted( requester, intValue == value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() == value.AsInt32() );
 							break;
 						case "neq":
 						case "!=":
 						case "!eq":
 						case "ne":
-							Questify.SetConditionCompleted( requester, intValue != value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() != value.AsInt32() );
 							break;
 						case "lt":
 						case "<":
-							Questify.SetConditionCompleted( requester, intValue < value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() < value.AsInt32() );
 							break;
 						case "lte":
 						case "<=":
-							Questify.SetConditionCompleted( requester, intValue <= value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() <= value.AsInt32() );
 							break;
 						case "gt":
 						case ">":
-							Questify.SetConditionCompleted( requester, intValue > value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() > value.AsInt32() );
 							break;
 						case "gte":
 						case ">=":
-							Questify.SetConditionCompleted( requester, intValue >= value.AsInt32() );
+							Questify.SetConditionCompleted( requester, compare.AsInt32() >= value.AsInt32() );
 							break;
 						default:
 							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
 							break;
 						};
 					} else {
-						Questify.SetConditionCompleted( requester, intValue == value.AsInt32() );
+						Questify.SetConditionCompleted( requester, compare.AsInt32() == value.AsInt32() );
 					}
-				} else if ( compare is string stringValue ) {
-					Questify.SetConditionCompleted( requester, stringValue == value.AsString() );
-				} else if ( compare is Vector2 vectorValue ) {
-					Questify.SetConditionCompleted( requester, vectorValue == value.AsVector2() );
+				} else if ( compare.VariantType == Variant.Type.String ) {
+					Questify.SetConditionCompleted( requester, compare.AsString() == value.AsString() );
+				} else if ( compare.VariantType == Variant.Type.Vector2 ) {
+					Questify.SetConditionCompleted( requester, compare.AsVector2() == value.AsVector2() );
 				}
 			}
 			break;
@@ -119,7 +123,11 @@ public partial class World : LevelData {
 	}
 	private void OnConditionObjectiveCompleted( Resource questResource, Resource questObjective ) {
 	}
+	private void OnQuestObjectiveAdded( Resource questResource, Resource questObjective ) {
+		Console.PrintLine( "Added quest objective..." );
+	}
 	private void OnQuestCompleted( Resource questResource ) {
+		Console.PrintLine( "Finished quest..." );
 	}
 
 	protected override void OnResourcesFinishedLoading() {
@@ -183,6 +191,20 @@ public partial class World : LevelData {
 		base.OnPlayerLeft( steamId );
 	}
 
+	private void Load() {
+		using ( var reader = ArchiveSystem.GetSection( "WorldState" ) ) {
+			if ( reader == null ) {
+				return;
+			}
+			Questify.Deserialize( reader.LoadArray( "QuestState" ) );
+		}
+	}
+	public void Save() {
+		using ( var writer = new SaveSystem.SaveSectionWriter( "WorldState" ) ) {
+			writer.SaveArray( "QuestState", Questify.Serialize() );
+		}
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -204,9 +226,24 @@ public partial class World : LevelData {
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
-		Questify.StartQuest( Questify.Instantiate( MainQuest ) );
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			Load();
+		}
+
+		QuestState = Questify.Instantiate( CurrentQuest );
+
+		Questify.ToggleUpdatePolling( true );
 		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
 		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
+		Questify.ConnectQuestObjectiveAdded( OnQuestObjectiveAdded );
 		Questify.ConnectQuestCompleted( OnQuestCompleted );
+		Questify.StartQuest( QuestState );
+
+//		AddToGroup( "Archive" );
+
+		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
+		foreach ( var state in State ) {
+			ObjectivesState.Add( state.Key, state.Value );
+		}
 	}
 };

@@ -13,9 +13,6 @@ public partial class Hitbox : Area2D {
 	public override void _Ready() {
 		base._Ready();
 
-		CollisionLayer = 1 | 9;
-		CollisionMask = 1 | 9;
-
 		SetMeta( "Owner", Parent );
 	}
 };

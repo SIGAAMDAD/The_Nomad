@@ -1,0 +1,49 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://dt3nr18ulah26"]
+
+[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_085ut"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxpc6"]
+atlas = ExtResource("1_085ut")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ey1o4"]
+atlas = ExtResource("1_085ut")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxa0e"]
+atlas = ExtResource("1_085ut")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kshcm"]
+atlas = ExtResource("1_085ut")
+region = Rect2(0, 128, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kxpc6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ey1o4")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kxa0e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kshcm")
+}],
+"loop": false,
+"name": &"use_weapon",
+"speed": 3.0
+}]

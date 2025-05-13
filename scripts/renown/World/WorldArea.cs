@@ -36,7 +36,7 @@ namespace Renown.World {
 		public bool IsPlayerHere() => PlayerStatus;
 		public Biome GetBiome() => Biome;
 
-		private void OnProcessAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		private void OnProcessAreaBody2DEntered( Node2D body ) {
 			if ( body is Entity entity && entity != null ) {
 				entity.SetLocation( this );
 				if ( entity is Player player && player != null ) {
@@ -45,7 +45,7 @@ namespace Renown.World {
 				}
 			}
 		}
-		private void OnProcessAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		private void OnProcessAreaBody2DExited( Node2D body ) {
 			Player player = body as Player;
 			if ( player == null ) {
 				return;
@@ -57,8 +57,8 @@ namespace Renown.World {
 		public override void _Ready() {	
 			base._Ready();
 
-			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DEntered ) );
-			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnProcessAreaBodyShape2DExited ) );
+			Connect( "body_entered", Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
+			Connect( "body_exited", Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
 
 //			ProcessMode = ProcessModeEnum.Pausable;
 //			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;

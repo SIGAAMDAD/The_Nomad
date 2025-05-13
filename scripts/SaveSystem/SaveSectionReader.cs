@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using Microsoft.VisualBasic;
 
 namespace SaveSystem {
 	public class SaveSectionReader : IDisposable {
@@ -69,6 +70,32 @@ namespace SaveSystem {
 						value.Add( reader.ReadString() );
 					}
 					Value = value;
+					break; }
+				case FieldType.Array: {
+					int count = reader.ReadInt32();
+					Godot.Collections.Array value = new Godot.Collections.Array();
+					for ( int i = 0; i < count; i++ ) {
+						switch ( (Godot.Variant.Type)reader.ReadUInt32() ) {
+						case Godot.Variant.Type.Bool:
+							value.Add( reader.ReadBoolean() );
+							break;
+						case Godot.Variant.Type.Int:
+							value.Add( reader.ReadInt32() );
+							break;
+						case Godot.Variant.Type.Float:
+							value.Add( (float)reader.ReadDouble() );
+							break;
+						case Godot.Variant.Type.Vector2: {
+							Godot.Vector2 v = Godot.Vector2.Zero;
+							v.X = (float)reader.ReadDouble();
+							v.Y = (float)reader.ReadDouble();
+							value.Add( v );
+							break; }
+						case Godot.Variant.Type.String:
+							value.Add( reader.ReadString() );
+							break;
+						};
+					}
 					break; }
 				default:
 					Console.PrintError( "Unknown save field type " + Type.ToString() + " found in save file!" );
@@ -218,6 +245,16 @@ namespace SaveSystem {
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new List<string>();
+		}
+		public Godot.Collections.Array LoadArray( string name ) {
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
+				if ( field.GetFieldType() != FieldType.Array ) {
+					return new Godot.Collections.Array();
+				}
+				return (Godot.Collections.Array)field.GetValue();
+			}
+			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
+			return new Godot.Collections.Array();
 		}
 	};
 };

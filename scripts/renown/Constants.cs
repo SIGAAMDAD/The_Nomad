@@ -34,7 +34,7 @@ namespace Renown {
 		public static readonly System.Threading.ThreadPriority THREAD_IMPORTANCE_PLAYER_AWAY = System.Threading.ThreadPriority.Lowest;
 
 		// change this if you want some other starting contract
-		public static readonly StringName StartingQuestPath = "res://resources/quests/kirosla_contract.tres";
+		public static readonly StringName StartingQuestPath = "res://resources/quests/war_of_the_wastes/from_eagles_peak.tres";
 		public static readonly ContractFlags StartingQuestFlags = ContractFlags.None;
 		public static readonly Dictionary<string, bool> StartingQuestState = new Dictionary<string, bool>{
 			{ "TargetAlive", true }

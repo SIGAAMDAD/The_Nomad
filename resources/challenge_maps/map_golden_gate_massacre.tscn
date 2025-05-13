@@ -151,6 +151,8 @@ State = Dictionary[String, Variant]({
 "AllEnemiesDead": false,
 "EnemyKillCount": 0
 })
+EndOfQuestDialogue = "There we go, the exit's back the way I came along the road to the West.\\nYou: Reinforcements are on the way."
+StartQuestDialogue = "I've gotta kill the battalion of bastards, then get the hell out of here."
 ThisPlayer = NodePath("Players/Player0")
 PlayerList = NodePath("Players")
 
@@ -253,55 +255,47 @@ carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D18" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(454.8, -586.8)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(-22.8, 10.4, 22, 11.6, 22.4, -18.4, -23.2, -18)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D19" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(358.4, -556)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(-22.8, 10.4, 22, 11.6, 22.4, -18.4, -23.2, -18)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D20" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(326.4, -636.4)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(-22.8, 12.4, 22, 11.6, 22.4, -18.4, -23.2, -18)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D21" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(263.6, -636.8)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(-22.8, 12.4, 22, 11.6, 22.4, -18.4, -23.2, -18)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D22" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(566.8, -635.6)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(-22.8, 12.4, 22, 11.6, 22.4, -18.4, -23.2, -18)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D23" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(132.8, -667.2, 219.6, -666, 221.2, -624.8, 134, -624.4)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D24" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(382.8, 112.4)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(128, -666.8, 223.2, -666.8, 224.4, -625.2, 127.2, -624.4)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="NavigationObstacle2D25" type="NavigationObstacle2D" parent="Level/NavigationRegion2D"]
 position = Vector2(480, 33.2)
-scale = Vector2(1, 1)
 vertices = PackedVector2Array(132.8, -667.2, 219.6, -666, 221.2, -624.8, 134, -624.4)
 affect_navigation_mesh = true
 carve_navigation_mesh = true
@@ -416,7 +410,6 @@ Faction = NodePath("../../../../KingdomOfSortior")
 
 [node name="Encounter4" type="Node2D" parent="Level/NavigationRegion2D"]
 position = Vector2(450.8, -595.6)
-scale = Vector2(1, 1)
 
 [node name="Mercenary" parent="Level/NavigationRegion2D/Encounter4" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Faction") instance=ExtResource("3_mjixj")]
 position = Vector2(162, 157.2)
@@ -447,7 +440,6 @@ Faction = NodePath("../../../../KingdomOfSortior")
 
 [node name="Mercenary3" parent="Level/NavigationRegion2D/Encounter4" node_paths=PackedStringArray("NodeCache", "Relations", "Debts", "Faction") instance=ExtResource("3_mjixj")]
 position = Vector2(-46, 49.6)
-scale = Vector2(1, 1)
 DefaultWeapon = ExtResource("7_xmj1g")
 DefaultAmmo = ExtResource("8_ghvpb")
 NodeCache = NodePath("../../NodeCache")
@@ -497,8 +489,6 @@ texture = ExtResource("3_pjfkh")
 polygon = PackedVector2Array(-109, -689, -99, -661, -21, -584, 208, -544, 478, -364, 658, -360, 725, -457, 736, -473, 871, -466, 1007, -503, 1135, -618, 1215, -689)
 
 [node name="Area2D" type="Area2D" parent="Level/SandPolygon"]
-collision_layer = 65536
-collision_mask = 65536
 script = ExtResource("15_wodma")
 Type = 1
 
@@ -511,8 +501,6 @@ texture = ExtResource("2_h3e5h")
 polygon = PackedVector2Array(131, -131, 268, -128, 351.974, -134.274, 371, -154, 385, -156, 402, -140, 442, -141, 520, -224, 575, -341, 655, -364, 630, -196, 715, -192, 753, -206, 770, -205, 776, -193, 792, -183, 816, -187, 831, -199, 844, -198, 861, -185, 1434, -163, 2140, -141, 2640, -342, 3253, -365, 3724, -376, 3741, -336, 3258, -318, 2644, -277, 2097, -54, 1489, -91, 1223.6, -116, 1213.6, -115.6, 1205.6, -112.4, 1200.4, -107.6, 1196.8, -102.8, 1196.8, -98.4, 1197.2, -93.2, 1208.4, -33.2, 1211.2, 38.8, 1169.6, 38, 1163.6, -61.6, 1158.8, -72.4, 1152.8, -82, 1141.2, -88.4, 1067, -117, 913, -153, 707, -145, 606, -159, 524, -143, 465, -118, 447, -98, 406, -109, 380, -119, 371, -110, 326, -112, 304, -106, 265, -109, 185, -105, 146, -83, 98, -48, 16, -56, -26, -78, -177.2, -82.4, -201.2, 61.6, -274.8, 144, -375.2, 169.6, -591.2, 162.8, -641.2, 148, -661.2, 102.8, -587.2, 104, -550.8, 133.2, -413.6, 131.6, -286.8, 102.4, -228.8, -10.8, -210.4, -100.4, -274.046, -134.883, -292, -139, -322, -151, -436.8, -170.8, -603.2, -228, -634.4, -199.2, -652.4, -106.4, -711.2, -106.4, -711.6, -201.2, -734.8, -236.4, -874, -232, -1063, -280, -1023.6, -123.6, -1014, -102.4, -1083.6, -98.8, -1080, -157.2, -1133.82, -264.642, -1312, -226, -1418, -244, -1816, -71, -1865, -534, -1483, -371, -1308, -323, -1113, -329, -1094, -352, -1052, -354, -1017, -334, -857, -306, -808.952, -305.279, -787, -318, -768, -318, -762, -307, -738.722, -306.113, -729, -319, -713, -319, -701, -304, -657, -303, -446, -229, -369, -304, -337, -368, -315, -475, -340, -490, -497, -471, -655, -466, -739, -476, -783, -504, -787, -544, -698, -543, -636, -514, -567, -516, -561, -546, -535, -546, -522, -525, -507, -512, -354, -534, -334, -561, -282, -561, -265, -473, -279, -347, -385, -207, -353, -187, -257, -175, -240, -206, -224, -206, -203, -175, -109, -161, -80, -191, -66, -192, -64, -157, -11, -142, 16, -159, 30, -160, 37, -138, 71, -136, 94, -149, 120, -170, 150, -179, 173, -171, 215, -125, 166, -129, 172, -154, 141, -164, 120, -148)
 
 [node name="Area2D" type="Area2D" parent="Level/RoadPolygon"]
-collision_layer = 65536
-collision_mask = 65536
 script = ExtResource("15_wodma")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/RoadPolygon/Area2D"]
@@ -525,8 +513,6 @@ texture = ExtResource("17_6pf2m")
 polygon = PackedVector2Array(1326, -689.2, 1323.2, -592.4, 1370.4, -585.2, 1372, -527.6, 1423.2, -528, 1428, -543.2, 1440.4, -541.6, 1444.4, -585.6, 1490.8, -589.6, 1490, -687.6)
 
 [node name="Area2D" type="Area2D" parent="Level/Water"]
-collision_layer = 65536
-collision_mask = 65536
 script = ExtResource("15_wodma")
 Type = 3
 
@@ -558,31 +544,24 @@ Data = ExtResource("7_xmj1g")
 
 [node name="RifleAmmo" parent="Level/Scenery" instance=ExtResource("15_vn67b")]
 position = Vector2(-477.6, 127.2)
-Data = ExtResource("8_ghvpb")
 
 [node name="ShotgunSlugs" parent="Level/Scenery" instance=ExtResource("15_vn67b")]
 position = Vector2(-896.8, -290.8)
-Data = ExtResource("17_ps1f5")
 
 [node name="ShotgunSlugs2" parent="Level/Scenery" instance=ExtResource("15_vn67b")]
 position = Vector2(1054, -481.6)
-Data = ExtResource("17_ps1f5")
 
 [node name="ShotgunSlugs3" parent="Level/Scenery" instance=ExtResource("15_vn67b")]
 position = Vector2(-241.2, -479.6)
-Data = ExtResource("17_ps1f5")
 
 [node name="HealthPack" parent="Level/Scenery" instance=ExtResource("24_nnov3")]
 position = Vector2(-140, 64)
-scale = Vector2(1, 1)
 
 [node name="HealthPack2" parent="Level/Scenery" instance=ExtResource("24_nnov3")]
 position = Vector2(872.8, -134.4)
-scale = Vector2(1, 1)
 
 [node name="HealthPack3" parent="Level/Scenery" instance=ExtResource("24_nnov3")]
 position = Vector2(522, -489.2)
-scale = Vector2(1, 1)
 
 [node name="SeeThru" type="Node2D" parent="Level"]
 
@@ -650,67 +629,55 @@ shape = SubResource("RectangleShape2D_sp7pl")
 
 [node name="CollisionShape2D15" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(938.2, 374.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_agwpa")
 
 [node name="CollisionShape2D16" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(-423.6, 382.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D17" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(-23.2, -290)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D18" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(41.2, -289.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D19" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(73.6, -209.2)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D20" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(169.2, -240.8)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D21" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(280.4, -290)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D22" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(248.8, -178)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D23" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(296.4, -178)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_1rikf")
 
 [node name="CollisionShape2D24" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(-108.6, -287.4)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_co4g7")
 
 [node name="CollisionShape2D25" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(371.6, -255.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_co4g7")
 
 [node name="CollisionShape2D26" type="CollisionShape2D" parent="Level/SeeThru/Area2D"]
 position = Vector2(-604.8, 305.6)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_co4g7")
 
 [node name="MapBounds" type="StaticBody2D" parent="Level"]
-collision_layer = 19
-collision_mask = 19
+collision_layer = 12
+collision_mask = 12
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Level/MapBounds"]
 polygon = PackedVector2Array(3905, -432, 3967, -432, 3968, -927, -1488, -927, -1487, 512, 3635, 507, 3636, -61, 4010, -65, 4004, -260, 3908, -265, 3919, -143, 3568, -130, 3566, 189, 2539.2, 193.2, 2546, -744.8, 1678.8, -240, 1664, 186, -1424, 193, -1424, -719, 1343.2, -718.8, 1344, -687.6, 1470.4, -690.8, 1468.8, -719.2, 1616, -716.4, 1616.8, -239.6, 1678.8, -240, 1685.27, -723.088, 3900, -726)
@@ -805,17 +772,14 @@ shape = SubResource("RectangleShape2D_ps1f5")
 
 [node name="CollisionShape2D13" type="CollisionShape2D" parent="Level/MapBounds"]
 position = Vector2(-318.4, -52.9)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_wodma")
 
 [node name="CollisionShape2D16" type="CollisionShape2D" parent="Level/MapBounds"]
 position = Vector2(177.6, -644.4)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_wodma")
 
 [node name="CollisionShape2D17" type="CollisionShape2D" parent="Level/MapBounds"]
 position = Vector2(657.2, -612.4)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_wodma")
 
 [node name="CollisionShape2D12" type="CollisionShape2D" parent="Level/MapBounds"]
@@ -831,9 +795,9 @@ position = Vector2(1224.2, 87.6)
 shape = SubResource("RectangleShape2D_1n7nq")
 
 [node name="EndOfChallenge" type="Area2D" parent="Level"]
-position = Vector2(-1414, -293)
-collision_layer = 18
-collision_mask = 18
+position = Vector2(-1406, -288.8)
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("17_dfvfy")
 
 [node name="InteractBody" type="CollisionShape2D" parent="Level/EndOfChallenge"]

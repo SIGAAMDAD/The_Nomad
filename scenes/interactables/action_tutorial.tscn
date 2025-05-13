@@ -21,8 +21,8 @@ light_mask = 512
 visibility_layer = 512
 z_index = 5
 material = SubResource("CanvasItemMaterial_fy36v")
-collision_layer = 4
-collision_mask = 4
+collision_layer = 2
+collision_mask = 2
 input_pickable = false
 script = ExtResource("1_fy36v")
 

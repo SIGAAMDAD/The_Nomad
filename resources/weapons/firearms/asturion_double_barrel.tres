@@ -28,7 +28,7 @@ properties = {
 "description": "ASTURION_DOUBLE_BARREL_DESCRIPTION",
 "firearm_frames_left": &"asturion_double_barrel_firearm_left.tres",
 "firearm_frames_right": &"asturion_double_barrel_firearm_right.tres",
-"firemode": 1,
+"firemode": 0,
 "is_bladed": false,
 "is_blunt": true,
 "is_firearm": true,

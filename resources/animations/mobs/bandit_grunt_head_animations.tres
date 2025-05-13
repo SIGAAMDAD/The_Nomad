@@ -1,0 +1,30 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://dkqmricfe235j"]
+
+[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_b2ed4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0a0rg"]
+atlas = ExtResource("1_b2ed4")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b2ed4"]
+atlas = ExtResource("1_b2ed4")
+region = Rect2(0, 160, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0a0rg")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b2ed4")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]

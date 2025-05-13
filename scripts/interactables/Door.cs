@@ -15,6 +15,17 @@ public partial class Door : InteractionItem {
 	private Resource Key;
 	[Export]
 	private DoorState State;
+	[Export]
+	private Sprite2D Closed;
+	[Export]
+	private Sprite2D Open;
+	[Export]
+	private Node Area;
+	[Export]
+	private Node2D Destination;
+
+	public Node2D GetDestination() => Destination;
+	public Node GetArea() => Area;
 
 	private bool UserHasKey( Player user ) {
 		Godot.Collections.Array<Resource> stacks = (Godot.Collections.Array<Resource>)user.GetInventory().Get( "stacks" );
@@ -27,14 +38,18 @@ public partial class Door : InteractionItem {
 	}
 
 	public DoorState GetState() => State;
-	public bool UseDoor( Player user ) {
+	public bool UseDoor( Player user, out string message ) {
+		message = "";
 		switch ( State ) {
 		case DoorState.Locked:
 			if ( !UserHasKey( user ) ) {
-				HeadsUpDisplay.StartThoughtBubble( "You don't have the required key" );
+				message = "You don't have the required key";
 				return false;
 			}
+			message = string.Format( "Used key {0}", Key.Get( "name" ) );
 			State = DoorState.Unlocked;
+			Closed?.Hide();
+			Open?.Show();
 			return true;
 		case DoorState.Unlocked:
 			return true;
@@ -66,13 +81,24 @@ public partial class Door : InteractionItem {
 	}
 	private void Load() {
 		using ( var reader = ArchiveSystem.GetSection( GetPath() ) ) {
+			if ( reader == null ) {
+				return;
+			}
 			State = (DoorState)reader.LoadByte( nameof( State ) );
+			switch ( State ) {
+			case DoorState.Locked:
+				Open?.Hide();
+				Closed?.Show();
+				break;
+			case DoorState.Unlocked:
+				Open?.Show();
+				Closed?.Hide();
+				break;
+			};
 		}
 	}
 
 	public override void _Ready() {
-		AddChild( InteractBody );
-
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 

@@ -121,8 +121,6 @@ public partial class WeaponEntity : Node2D {
 	private Sprite2D CurrentMuzzleFlash;
 	private int BulletsLeft = 0;
 
-	private uint CollisionMask;
-
 	private WeaponState CurrentState = WeaponState.Idle;
 
 	private AudioStreamPlayer2D AudioChannel;
@@ -164,9 +162,6 @@ public partial class WeaponEntity : Node2D {
 
 	public SpriteFrames GetFramesLeft() => AnimationsLeft;
 	public SpriteFrames GetFramesRight() => AnimationsRight;
-
-	public void SetCollisionMask( uint mask ) => CollisionMask = mask;
-	public uint GetCollisiionMask() => CollisionMask;
 
 	public bool IsBladed() => ( LastUsedMode & Properties.IsBladed ) != 0;
 	public bool IsBlunt() => ( LastUsedMode & Properties.IsBlunt ) != 0;
@@ -250,8 +245,8 @@ public partial class WeaponEntity : Node2D {
 		collision.Shape = circle;
 
 		PickupArea = new Area2D();
-		PickupArea.CollisionLayer = 1 | 2 | 5;
-		PickupArea.CollisionMask = 2 | 5;
+		PickupArea.CollisionLayer = (uint)PhysicsLayer.InteractionAreas;
+		PickupArea.CollisionMask = (uint)PhysicsLayer.InteractionAreas;
 		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnBodyShapeEntered ) );
 		PickupArea.AddChild( collision );
 
@@ -468,6 +463,9 @@ public partial class WeaponEntity : Node2D {
 	}
 	public void Load() {
 		using ( var reader = ArchiveSystem.GetSection( InitialPath ) ) {
+			if ( reader == null ) {
+				return;
+			}
 			if ( reader.LoadBoolean( "HasOwner" ) ) {
 				CharacterBody2D owner = GetTree().Root.GetNode<CharacterBody2D>( reader.LoadString( "Owner" ) );
 				CallDeferred( "OnBodyShapeEntered", owner.GetRid(), owner, 0, 0 );

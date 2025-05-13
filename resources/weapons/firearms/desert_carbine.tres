@@ -1,0 +1,39 @@
+[gd_resource type="ItemDefinition" load_steps=6 format=3 uid="uid://dxq2jno5ih2yt"]
+
+[ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="1_f66vh"]
+[ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="2_sqm4l"]
+[ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="3_8xhx6"]
+[ext_resource type="Texture2D" uid="uid://w1sb6ttc6xdv" path="res://textures/env/iconw_desert_rifle.png" id="4_gojwi"]
+[ext_resource type="AudioStream" uid="uid://c78b7qaxp2s48" path="res://sounds/weapons/desert_rifle_use.ogg" id="5_qpv8t"]
+
+[resource]
+id = "WEAPON_FIREARM_DESERT_RIFLE"
+can_stack = false
+max_stack = 1
+name = "Desert Rifle"
+icon = ExtResource("4_gojwi")
+weight = 12.5
+properties = {
+"ammo_type": 1,
+"default_is_bladed": false,
+"default_is_blunt": false,
+"default_is_firearm": true,
+"default_is_onehanded": false,
+"default_is_twohanded": true,
+"description": "DESERT_RIFLE_DESCRIPTION",
+"firearm_frames_left": &"desert_rifle_firearm_left.tres",
+"firearm_frames_right": &"desert_rifle_firearm_right.tres",
+"firemode": 0,
+"is_bladed": false,
+"is_blunt": false,
+"is_firearm": true,
+"is_onehanded": false,
+"is_twohanded": true,
+"magazine_type": 0,
+"magsize": 1,
+"reload_sfx": &"desert_rifle_reload.ogg",
+"reload_time": 1.2,
+"use_firearm": ExtResource("5_qpv8t"),
+"use_time": 0.9
+}
+categories = Array[ItemCategory]([ExtResource("1_f66vh"), ExtResource("2_sqm4l"), ExtResource("3_8xhx6")])

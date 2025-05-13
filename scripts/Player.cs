@@ -228,6 +228,8 @@ public partial class Player : Entity {
 
 	private NetworkWriter SyncObject = new NetworkWriter( 4096 );
 
+	private TileMapFloor Floor;
+
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
 	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
 	private Dictionary<int, AmmoStack> AmmoStacks = new Dictionary<int, AmmoStack>();
@@ -419,6 +421,9 @@ public partial class Player : Entity {
 		CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
 	}
 
+	public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
+	public TileMapFloor GetTileMapFloor() => Floor;
+
 	public void ThoughtBubble( string text ) {
 		HeadsUpDisplay.StartThoughtBubble( text );
 	}
@@ -518,7 +523,9 @@ public partial class Player : Entity {
 	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
-			mob.Alert( this );
+			if ( mob.GetTileMapFloor() == Floor ) {
+				mob.Alert( this );
+			}
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -666,7 +673,7 @@ public partial class Player : Entity {
 		EmitSignalDie( attacker, this );
 		
 		PlaySound( AudioChannel, ResourceCache.PlayerDieSfx[ RandomFactory.Next( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
-		if ( Hellbreaker.CanActivate() && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+		if ( GameConfiguration.GameMode == GameMode.ChallengeMode && SettingsData.GetHellbreakerEnabled() && Hellbreaker.CanActivate() ) {
 			return;
 		} else {
 			BlockInput( true );
@@ -970,7 +977,7 @@ public partial class Player : Entity {
 			if ( weapon.IsBladed() && ( Flags & PlayerFlags.UsingMelee ) == 0 ) {
 				Flags |= PlayerFlags.UsingMelee;
 			}
-			AimRayCast.CollisionMask = 1 | 8 | 9;
+			AimRayCast.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes );
 			FrameDamage += weapon.Use( weapon.GetLastUsedMode(), out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );

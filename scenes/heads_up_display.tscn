@@ -240,7 +240,6 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
-page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false
@@ -528,6 +527,7 @@ layout_mode = 2
 texture = ExtResource("15_ot7dw")
 
 [node name="Label" type="Label" parent="MainHUD/AnnouncementLabel/TextureRect"]
+use_parent_material = true
 layout_mode = 0
 offset_top = 48.0
 offset_right = 640.0
@@ -535,7 +535,7 @@ offset_bottom = 71.0
 horizontal_alignment = 1
 
 [node name="Timer" type="Timer" parent="MainHUD/AnnouncementLabel"]
-wait_time = 5.0
+wait_time = 2.5
 one_shot = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainHUD"]
@@ -589,8 +589,10 @@ metadata/_edit_use_anchors_ = true
 [node name="TitleLabel" type="Label" parent="MainHUD/HellbreakerOverlay"]
 modulate = Color(2, 0, 0, 1)
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = 0.133333
 anchor_right = 1.0
+anchor_bottom = 0.1875
 offset_bottom = 23.0
 grow_horizontal = 2
 text = "HELLBREAKER
@@ -1201,6 +1203,11 @@ theme_override_constants/margin_right = 10
 [node name="OpenButton" type="Button" parent="DoorContainer/MarginContainer"]
 layout_mode = 2
 text = "OPEN_DOOR"
+
+[node name="UseButton" type="Button" parent="DoorContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+text = "USE_DOOR"
 
 [node name="JumpContainer" type="MarginContainer" parent="."]
 visible = false

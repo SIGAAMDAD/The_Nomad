@@ -1,4 +1,4 @@
-[gd_resource type="InventoryDatabase" load_steps=18 format=3 uid="uid://clhvh7ktysxhx"]
+[gd_resource type="InventoryDatabase" load_steps=19 format=3 uid="uid://clhvh7ktysxhx"]
 
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="1_ipyfw"]
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="2_e1fjv"]
@@ -17,6 +17,7 @@
 [ext_resource type="ItemDefinition" uid="uid://c0cymjjvn2w4w" path="res://resources/items/gunpowder.tres" id="15_ykb72"]
 [ext_resource type="ItemDefinition" uid="uid://w275sde2hivv" path="res://resources/items/drugflower.tres" id="16_uf0br"]
 [ext_resource type="ItemDefinition" uid="uid://5kyt2cm2wae0" path="res://resources/items/water.tres" id="17_lkvuq"]
+[ext_resource type="ItemDefinition" uid="uid://dxq2jno5ih2yt" path="res://resources/weapons/firearms/desert_carbine.tres" id="18_5sc1t"]
 
 [resource]
-items = Array[ItemDefinition]([ExtResource("1_ipyfw"), ExtResource("2_k10k0"), ExtResource("3_gpkdr"), ExtResource("4_garsa"), ExtResource("4_34pe8"), ExtResource("5_iqfuk"), ExtResource("4_1djen"), ExtResource("2_e1fjv"), ExtResource("6_hreys"), ExtResource("7_2y7i3"), ExtResource("8_w67u1"), ExtResource("12_ng3yj"), ExtResource("13_5sc1t"), ExtResource("14_r58cu"), ExtResource("15_ykb72"), ExtResource("16_uf0br"), ExtResource("17_lkvuq")])
+items = Array[ItemDefinition]([ExtResource("1_ipyfw"), ExtResource("2_k10k0"), ExtResource("3_gpkdr"), ExtResource("4_garsa"), ExtResource("4_34pe8"), ExtResource("5_iqfuk"), ExtResource("4_1djen"), ExtResource("2_e1fjv"), ExtResource("6_hreys"), ExtResource("7_2y7i3"), ExtResource("8_w67u1"), ExtResource("12_ng3yj"), ExtResource("13_5sc1t"), ExtResource("14_r58cu"), ExtResource("15_ykb72"), ExtResource("16_uf0br"), ExtResource("17_lkvuq"), ExtResource("18_5sc1t")])

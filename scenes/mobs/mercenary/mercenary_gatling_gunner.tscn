@@ -25,8 +25,8 @@ size = Vector2(13, 17)
 
 [node name="MercenaryGatlingGunner" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 z_index = 7
-collision_layer = 187
-collision_mask = 187
+collision_layer = 12
+collision_mask = 12
 script = ExtResource("1_cv8bp")
 LoseInterestTime = 6.0
 SightDetectionTime = 4.0
@@ -43,8 +43,8 @@ sprite_frames = ExtResource("1_bdxl8")
 animation = &"idle"
 
 [node name="BackpackHitbox" type="Area2D" parent="Animations/BodyAnimations" node_paths=PackedStringArray("Parent")]
-collision_layer = 408
-collision_mask = 408
+collision_layer = 16
+collision_mask = 16
 script = ExtResource("3_jfitb")
 Parent = NodePath("../../..")
 
@@ -53,8 +53,8 @@ position = Vector2(-7, 0)
 shape = SubResource("RectangleShape2D_bdxl8")
 
 [node name="BlowupArea" type="Area2D" parent="Animations/BodyAnimations"]
-collision_layer = 0
-collision_mask = 0
+collision_layer = 12
+collision_mask = 12
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/BodyAnimations/BlowupArea"]
@@ -67,6 +67,8 @@ sprite_frames = ExtResource("2_cv8bp")
 animation = &"idle"
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
+collision_layer = 16
+collision_mask = 16
 script = ExtResource("3_jfitb")
 Parent = NodePath("../../..")
 

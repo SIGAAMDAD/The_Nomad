@@ -15,6 +15,7 @@ namespace SaveSystem {
 		FloatList,
 		StringList,
 		Vector2,
+		Array,
 
 		Count
 	};

@@ -292,8 +292,8 @@ namespace Renown.Thinkers {
 			ArmAnimations.CallDeferred( "show" );
 			HeadAnimations.CallDeferred( "show" );
 
-			SetDeferred( "collision_layer", 1 | 2 | 4 | 5 | 8 );
-			SetDeferred( "collision_mask", 1 | 2 | 4 | 5 | 8 );
+			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
+			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity ) );
 
 			Flags &= ~ThinkerFlags.Dead;
 
@@ -354,7 +354,7 @@ namespace Renown.Thinkers {
 			AimLine.TargetPosition = Godot.Vector2.Right;
 			AimLine.CollideWithAreas = true;
 			AimLine.CollideWithBodies = true;
-			AimLine.CollisionMask = 2 | 5 | 9;
+			AimLine.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpecialHitboxes | PhysicsLayer.SpriteEntity );
 			ArmAnimations.AddChild( AimLine );
 
 			LoseInterestTimer = new Timer();

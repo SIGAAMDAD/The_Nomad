@@ -1,4 +1,5 @@
 using System;
+using System.Security.AccessControl;
 
 namespace SaveSystem {
 	public class SaveSectionWriter : IDisposable {
@@ -137,6 +138,32 @@ namespace SaveSystem {
 				ArchiveSystem.SaveWriter.Write( value[i] );
 			}
 			FieldCount++;
+		}
+		public void SaveArray( string name, Godot.Collections.Array value ) {
+			ArchiveSystem.SaveWriter.Write( name );
+			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Array );
+			ArchiveSystem.SaveWriter.Write( value.Count );
+			for ( int i = 0; i < value.Count; i++ ) {
+				ArchiveSystem.SaveWriter.Write( (uint)value[i].VariantType );
+				switch ( value[i].VariantType ) {
+				case Godot.Variant.Type.Bool:
+					ArchiveSystem.SaveWriter.Write( value[i].AsBool() );
+					break;
+				case Godot.Variant.Type.Int:
+					ArchiveSystem.SaveWriter.Write( value[i].AsInt32() );
+					break;
+				case Godot.Variant.Type.Float:
+					ArchiveSystem.SaveWriter.Write( value[i].AsDouble() );
+					break;
+				case Godot.Variant.Type.String:
+					ArchiveSystem.SaveWriter.Write( value[i].AsString() );
+					break;
+				case Godot.Variant.Type.Vector2:
+					ArchiveSystem.SaveWriter.Write( value[i].AsVector2().X );
+					ArchiveSystem.SaveWriter.Write( value[i].AsVector2().Y );
+					break;
+				};
+			}
 		}
 	};
 };

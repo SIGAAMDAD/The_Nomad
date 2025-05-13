@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=15 format=3 uid="uid://colqhilpuxlqa"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_fdab1"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="2_2qjvf"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_sq6eg"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="3_2wm2g"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_3qfo7"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="4_tqrt2"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="5_1jj1d"]
+
+[sub_resource type="Resource" id="Resource_2qjvf"]
+script = ExtResource("2_2qjvf")
+description = "Find the Meliora"
+id = "1MSiUOh_9e"
+optional = false
+graph_editor_position = Vector2(-60, -340)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_2wm2g"]
+script = ExtResource("3_2wm2g")
+id = "Cvwv3yoypk"
+optional = false
+graph_editor_position = Vector2(580, -320)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_tqrt2"]
+script = ExtResource("1_fdab1")
+from = SubResource("Resource_2qjvf")
+to = SubResource("Resource_2wm2g")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_1jj1d"]
+script = ExtResource("4_tqrt2")
+name = "Find Your Peace"
+description = ""
+id = "G9bMerzDTY"
+optional = false
+graph_editor_position = Vector2(-880, -320)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_wtkg7"]
+script = ExtResource("1_fdab1")
+from = SubResource("Resource_1jj1d")
+to = SubResource("Resource_2qjvf")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_1nxlm"]
+script = ExtResource("5_1jj1d")
+type = "State"
+key = "MelioraFound"
+id = "BqxaGp30fZ"
+optional = false
+graph_editor_position = Vector2(-540, -160)
+graph_editor_size = Vector2(377, 432)
+metadata/value = 3
+
+[sub_resource type="Resource" id="Resource_yjexw"]
+script = ExtResource("1_fdab1")
+from = SubResource("Resource_1nxlm")
+to = SubResource("Resource_2qjvf")
+edge_type = 1
+
+[resource]
+script = ExtResource("3_3qfo7")
+nodes = Array[ExtResource("2_sq6eg")]([SubResource("Resource_1jj1d"), SubResource("Resource_2qjvf"), SubResource("Resource_2wm2g"), SubResource("Resource_1nxlm")])
+edges = Array[ExtResource("1_fdab1")]([SubResource("Resource_tqrt2"), SubResource("Resource_wtkg7"), SubResource("Resource_yjexw")])

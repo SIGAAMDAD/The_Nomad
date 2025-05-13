@@ -126,8 +126,8 @@ polygon = PackedVector2Array(-2010, -1516, 1510, -1884, 1020, -511, 980, -450, 9
 
 [node name="Spawn0" type="Area2D" parent="Spawners"]
 position = Vector2(-1056, 145)
-collision_layer = 18
-collision_mask = 18
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("7_c1utn")
 ImpCount = 80
 
@@ -136,8 +136,8 @@ shape = SubResource("CircleShape2D_hsx40")
 
 [node name="Spawn1" type="Area2D" parent="Spawners"]
 position = Vector2(-544, 577)
-collision_layer = 18
-collision_mask = 18
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("7_c1utn")
 ImpCount = 80
 
@@ -146,8 +146,8 @@ shape = SubResource("CircleShape2D_c1utn")
 
 [node name="Spawn2" type="Area2D" parent="Spawners"]
 position = Vector2(-97, 65)
-collision_layer = 18
-collision_mask = 18
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("7_c1utn")
 ImpCount = 80
 
@@ -156,8 +156,8 @@ shape = SubResource("CircleShape2D_rxkw4")
 
 [node name="Spawn3" type="Area2D" parent="Spawners"]
 position = Vector2(-496, -367)
-collision_layer = 18
-collision_mask = 18
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("7_c1utn")
 ImpCount = 80
 
@@ -166,8 +166,8 @@ shape = SubResource("CircleShape2D_n6cc6")
 
 [node name="Spawn4" type="Area2D" parent="Spawners"]
 position = Vector2(320, -496)
-collision_layer = 18
-collision_mask = 18
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("7_c1utn")
 ImpCount = 80
 

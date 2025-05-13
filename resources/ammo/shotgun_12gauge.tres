@@ -7,8 +7,8 @@
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="5_trkfk"]
 
 [sub_resource type="Curve" id="Curve_p7eh0"]
-_data = [Vector2(0.899263, 0.823234), 0.0, 0.0, 0, 0, Vector2(1, 0.135383), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.899263, 0.823234), 0.0, 0.0, 0, 0, Vector2(1, 0.135383), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [resource]
 id = "AMMO_12_GAUGE"
@@ -18,13 +18,13 @@ icon = ExtResource("3_p7eh0")
 weight = 2.25
 properties = {
 "casing_icon": ExtResource("4_yxm4u"),
-"damage": 35.0,
+"damage": 18.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_DESCRIPTION",
 "effects": PackedStringArray(),
 "pellet_count": 8,
 "pickup_sfx": ExtResource("5_trkfk"),
-"range": 800.0,
+"range": 1800.0,
 "shotgun_bullshit": 0,
 "stack_add_amount": 48,
 "type": 2,

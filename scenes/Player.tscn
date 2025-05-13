@@ -47,8 +47,8 @@ light_mask = 0
 visibility_layer = 2
 z_index = 6
 y_sort_enabled = true
-collision_layer = 69650
-collision_mask = 69654
+collision_layer = 42
+collision_mask = 42
 script = ExtResource("1_5fsym")
 Inventory = NodePath("Inventory")
 ArmLeft = NodePath("ArmLeft")
@@ -149,8 +149,8 @@ position = Vector2(1, 4)
 one_shot = false
 
 [node name="FlameArea" type="Area2D" parent="Animations/DashEffect"]
-collision_layer = 32
-collision_mask = 32
+collision_layer = 0
+collision_mask = 0
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/DashEffect/FlameArea"]
@@ -204,8 +204,8 @@ width_curve = SubResource("Curve_0rnld")
 [node name="ParryArea" type="Area2D" parent="AimAssist/AimLine"]
 position = Vector2(-2.94068e-06, 5.33333)
 scale = Vector2(3.08353, 2.66667)
-collision_layer = 4607
-collision_mask = 4607
+collision_layer = 0
+collision_mask = 0
 monitoring = false
 metadata/ParryBox = true
 
@@ -221,10 +221,11 @@ process_thread_group_order = 0
 process_thread_messages = 0
 position = Vector2(-3.8147e-06, 5.33333)
 target_position = Vector2(740.047, 0)
-collision_mask = 392
+collision_mask = 28
 collide_with_areas = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
+current = true
 
 [node name="ArmLeft" type="Node" parent="." node_paths=PackedStringArray("Animations")]
 script = ExtResource("12_0rnld")
@@ -266,7 +267,8 @@ database = ExtResource("21_kgn6m")
 script = ExtResource("16_srp4u")
 
 [node name="SoundArea" type="Area2D" parent="."]
-collision_layer = 64
+collision_layer = 28
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoundArea"]
 shape = SubResource("CircleShape2D_srp4u")

@@ -40,15 +40,16 @@ public partial class TileMapFloor : Node2D {
 	public TileMapFloor GetUpper() => UpperLayer;
 	public TileMapFloor GetLower() => LowerLayer;
 
-	private void OnArea2DBodyShapeEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+	private void OnArea2DBodyEntered( Node2D body ) {
 		if ( body is not Player ) {
 			if ( body is NetworkPlayer ) {
 			} else if ( body is Renown.Thinkers.Thinker ) {
-				( body as Renown.Thinkers.Thinker ).SetTileMapFloor( this );
+				body.CallDeferred( "SetTileMapFloor", this );
 			}
 			return;
 		}
 
+		body.CallDeferred( "SetTileMapFloor", this );
 		body.CallDeferred( "SetTileMapFloorLevel", Level );
 
 		if ( Floor != null ) {
@@ -73,6 +74,8 @@ public partial class TileMapFloor : Node2D {
 			for ( int i = 0; i < InteriorLayers.Length; i++ ) {
 				InteriorLayers[i].CallDeferred( "hide" );
 			}
+		} else {
+			SetDeferred( "process_mode", (long)ProcessModeEnum.Pausable );
 		}
 
 		CallDeferred( "show" );
@@ -84,7 +87,7 @@ public partial class TileMapFloor : Node2D {
 //		FloorBounds?.SetDeferred( "collision_mask", 1 );
 		IsPlayerHere = true;
 	}
-	private void OnArea2DBodyShapeExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+	private void OnArea2DBodyExited( Node2D body ) {
 		if ( body is not Player ) {
 			if ( body is NetworkPlayer ) {
 
@@ -94,8 +97,11 @@ public partial class TileMapFloor : Node2D {
 			return;
 		}
 
+		( body as Player ).SetTileMapFloor( null );
+
 		if ( !IsExterior && UpperLayer == null ) {
 			CallDeferred( "hide" );
+			SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled );
 		}
 
 		if ( UpperLayer != null && !IsPlayerHere ) {
@@ -124,9 +130,12 @@ public partial class TileMapFloor : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		Area?.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeEntered ) );
-		Area?.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnArea2DBodyShapeExited ) );
+		Area?.Connect( "body_entered", Callable.From<Node2D>( OnArea2DBodyEntered ) );
+		Area?.Connect( "body_exited", Callable.From<Node2D>( OnArea2DBodyExited ) );
 
+		if ( !IsExterior ) {
+			ProcessMode = ProcessModeEnum.Disabled;
+		}
 		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 		ProcessThreadGroupOrder = 4;
 

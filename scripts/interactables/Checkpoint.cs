@@ -119,16 +119,8 @@ public partial class Checkpoint : InteractionItem {
 		notifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
 
 		Light = GetNode<PointLight2D>( "PointLight2D" );
-		Light.SetProcess( false );
-		Light.SetProcessInternal( false );
-
 		Bonfire = GetNode<AnimatedSprite2D>( "Bonfire" );
-		Bonfire.SetProcess( false );
-		Bonfire.SetProcessInternal( false );
-
 		Unlit = GetNode<Sprite2D>( "Unlit" );
-		Unlit.SetProcess( false );
-		Unlit.SetProcessInternal( false );
 
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );

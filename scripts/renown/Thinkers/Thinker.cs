@@ -154,6 +154,7 @@ namespace Renown.Thinkers {
 		public Building GetHome() => Home;
 		
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
+		public TileMapFloor GetTileMapFloor() => Floor;
 
 		public virtual void Alert( Entity source ) {
 		}

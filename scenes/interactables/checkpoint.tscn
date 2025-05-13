@@ -48,8 +48,8 @@ radius = 58.4209
 [node name="Checkpoint" type="Area2D" groups=["Archive", "Checkpoints"]]
 process_priority = -1
 process_physics_priority = -4
-collision_layer = 16
-collision_mask = 0
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_ihm5l")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]

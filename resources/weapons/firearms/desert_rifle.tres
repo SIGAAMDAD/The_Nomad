@@ -7,10 +7,10 @@
 [ext_resource type="AudioStream" uid="uid://c78b7qaxp2s48" path="res://sounds/weapons/desert_rifle_use.ogg" id="4_ps35i"]
 
 [resource]
-id = "WEAPON_FIREARM_DESERT_RIFLE"
+id = "WEAPON_FIREARM_DESERT_CARBINE"
 can_stack = false
 max_stack = 1
-name = "Desert Rifle"
+name = "Desert Carbine"
 icon = ExtResource("3_ps35i")
 weight = 12.5
 properties = {
@@ -20,7 +20,7 @@ properties = {
 "default_is_firearm": true,
 "default_is_onehanded": false,
 "default_is_twohanded": true,
-"description": "DESERT_RIFLE_DESCRIPTION",
+"description": "DESERT_CARBINE_DESCRIPTION",
 "firearm_frames_left": &"desert_rifle_firearm_left.tres",
 "firearm_frames_right": &"desert_rifle_firearm_right.tres",
 "firemode": 0,

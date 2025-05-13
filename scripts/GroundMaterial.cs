@@ -27,9 +27,6 @@ public partial class GroundMaterial : Area2D {
 	public override void _Ready() {
 		base._Ready();
 
-		CollisionLayer = 17;
-		CollisionMask = 17;
-
 		Connect( "body_entered", Callable.From<Node2D>( OnBodyEntered ) );
 		Connect( "body_exited", Callable.From<Node2D>( OnBodyExited ) );
 	}

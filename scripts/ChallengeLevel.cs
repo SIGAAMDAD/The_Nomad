@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using ChallengeMode;
 using Godot;
+using PlayerSystem;
 using Renown;
 using Renown.Thinkers;
 
@@ -28,6 +29,10 @@ public partial class ChallengeLevel : LevelData {
 	private Node2D Level;
 	[Export]
 	private Godot.Collections.Dictionary<string, Variant> State;
+	[Export]
+	private string EndOfQuestDialogue;
+	[Export]
+	private string StartQuestDialogue;
 
 	private static Godot.Collections.Dictionary<string, Variant> ObjectivesState;
 	public static Godot.Collections.Array<Thinker> Enemies;
@@ -289,6 +294,8 @@ public partial class ChallengeLevel : LevelData {
 	private void OnQuestCompleted( Resource questResource ) {
 		Console.PrintLine( "Finished quest..." );
 		QuestCompleted = true;
+
+		HeadsUpDisplay.StartThoughtBubble( "You: " + EndOfQuestDialogue );
 	}
 
 	public override void _Ready() {
@@ -299,6 +306,8 @@ public partial class ChallengeLevel : LevelData {
 
 		ThisPlayer.Die += OnPlayerDie;
 		ThisPlayer.Damaged += OnPlayerDamaged;
+
+		HeadsUpDisplay.StartThoughtBubble( "You: " + StartQuestDialogue );
 
 		EndOfChallenge end = GetNode<EndOfChallenge>( "Level/EndOfChallenge" );
 		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );

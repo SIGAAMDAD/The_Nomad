@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="5_p1qws"]
 
 [sub_resource type="Curve" id="Curve_p7eh0"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.750943), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.554717), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [resource]
@@ -18,12 +18,12 @@ icon = ExtResource("3_b4xdb")
 weight = 2.5
 properties = {
 "casing_icon": ExtResource("4_dkrh3"),
-"damage": 50.0,
+"damage": 78.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_SLUG_DESCRIPTION",
 "pellet_count": 1,
 "pickup_sfx": ExtResource("5_p1qws"),
-"range": 735.0,
+"range": 1735.0,
 "shotgun_bullshit": 2,
 "stack_add_amount": 48,
 "type": 2,

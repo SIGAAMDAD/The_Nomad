@@ -95,7 +95,7 @@ namespace Renown.Thinkers {
 				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
 				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
 				ray.Enabled = true;
-				ray.CollisionMask = 2;
+				ray.CollisionMask = (uint)PhysicsLayer.Player;
 				SightLines[i] = ray;
 				HeadAnimations.AddChild( ray );
 			}
@@ -333,9 +333,10 @@ namespace Renown.Thinkers {
 				Bark( BarkType.Curse, BarkType.Quiet );
 			}
 
-			PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
-
-			SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+			if ( NodeCache != null ) {
+				PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
+				SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
+			}
 
 			SetFear( Fear + 10 );
 		}
@@ -356,8 +357,8 @@ namespace Renown.Thinkers {
 
 			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
 
-			SetDeferred( "collision_layer", 1 | 2 | 4 | 5 | 8 );
-			SetDeferred( "collision_mask", 1 | 2 | 4 | 5 | 8 );
+			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
+			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity) );
 		}
 
 		protected override void OnDie( Entity source, Entity target ) {
@@ -410,7 +411,7 @@ namespace Renown.Thinkers {
 			AimLine.TargetPosition = Godot.Vector2.Right;
 			AimLine.CollideWithAreas = true;
 			AimLine.CollideWithBodies = true;
-			AimLine.CollisionMask = 2 | 5;
+			AimLine.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
 			AimLine.HitFromInside = false;
 			ArmAnimations.AddChild( AimLine );
 
@@ -624,7 +625,7 @@ namespace Renown.Thinkers {
 					SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
 				} else {
 					if ( ( Aiming && AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) || !Aiming ) {
-						LookDir = GlobalPosition.DirectionTo( Target.GlobalPosition );
+						LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 						AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 						LookAngle = AimAngle;
 					}

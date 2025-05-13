@@ -257,6 +257,8 @@ namespace Renown.Thinkers {
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 			
 			AreaOfEffect = GetNode<Area2D>( "AreaOfEffect" );
+			AreaOfEffect.CollisionLayer = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
+			AreaOfEffect.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
 			AreaOfEffect.Monitoring = false;
 
 			HammerShape = GetNode<CollisionShape2D>( "AreaOfEffect/CollisionShape2D" );
