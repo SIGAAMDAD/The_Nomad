@@ -182,6 +182,9 @@ namespace Renown.Thinkers {
 		}
 
 		protected virtual void OnPlayerEnteredArea() {
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				return;
+			}
 			SetProcess( true );
 			SetPhysicsProcess( true );
 
@@ -200,6 +203,9 @@ namespace Renown.Thinkers {
 			}
 		}
 		protected void OnPlayerExitedArea() {
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				return;
+			}
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS_AWAY;
 
 			if ( Location.GetBiome().IsPlayerHere() ) {

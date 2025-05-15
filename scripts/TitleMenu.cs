@@ -136,4 +136,4 @@ public partial class TitleMenu : Control {
 		MusicTheme.SetProcessInternal( false );
 		MusicTheme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
 	}
-}
+};

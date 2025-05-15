@@ -45,6 +45,7 @@ public partial class ChallengeLevel : LevelData {
 	public static int DeathCounter = 0;
 	public static int TotalEnemies = 0;
 	public static int HeadshotCounter = 0;
+	public static int HellbreakCounter = 0;
 	public static ScoreBonus BonusFlags = ScoreBonus.All;
 
 	private static int TotalScore = 0;
@@ -69,6 +70,8 @@ public partial class ChallengeLevel : LevelData {
 		Hellbreaker.SetDeferred( "process_mode", (uint)ProcessModeEnum.Disabled );
 
 		EmitSignalHellbreakerFinished();
+
+		HellbreakCounter++;
 	}
 
 	private void OnHellbreakerTransitionFinished() {
@@ -129,12 +132,11 @@ public partial class ChallengeLevel : LevelData {
 		// calculate total score
 		//
 		TotalScore += MaxCombo * 10;
+		TotalScore += HellbreakCounter * 5;
 
-		int minutes = (int)Timer.Elapsed.TotalMinutes;
-		int seconds = (int)Timer.Elapsed.TotalSeconds;
 		int milliseconds = (int)Timer.Elapsed.TotalMilliseconds;
-
-		Console.PrintLine( string.Format( "Completed ChallengeMap in {0}:{1}.{2}", minutes, seconds, milliseconds ) );
+		int seconds = (int)( milliseconds / 1000.0f );
+		int minutes = (int)( seconds / 60.0f );
 
 		if ( MinTimeMinutes != 0 ) {
 			int leftOver = MinTimeMinutes - minutes;

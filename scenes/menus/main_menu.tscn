@@ -111,7 +111,9 @@ metadata/_edit_use_anchors_ = true
 script = ExtResource("4_imvie")
 time_limit_mode = true
 timer = NodePath("Timer")
+reset_mode = 1
+controller_mode = true
 metadata/_custom_type_script = "uid://cduis24lfk66b"
 
 [node name="Timer" type="Timer" parent="KonamiCode"]
-wait_time = 5.0
+wait_time = 10.0

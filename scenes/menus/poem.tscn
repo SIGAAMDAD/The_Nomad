@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwvr3x7oln763"]
+[gd_scene load_steps=12 format=3 uid="uid://bwvr3x7oln763"]
 
 [ext_resource type="Script" uid="uid://dr403vxmggvbn" path="res://scripts/menus/Poem.cs" id="1_amyrm"]
 [ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="2_amyrm"]
@@ -10,6 +10,20 @@ colors = PackedColorArray(0, 0, 0, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_x1yfw"]
 gradient = SubResource("Gradient_bo6ix")
 
+[sub_resource type="SystemFont" id="SystemFont_amyrm"]
+
+[sub_resource type="SystemFont" id="SystemFont_0o1gq"]
+
+[sub_resource type="SystemFont" id="SystemFont_q4i3p"]
+
+[sub_resource type="SystemFont" id="SystemFont_uwy73"]
+
+[sub_resource type="SystemFont" id="SystemFont_kr8sd"]
+
+[sub_resource type="SystemFont" id="SystemFont_ti3e6"]
+
+[sub_resource type="SystemFont" id="SystemFont_nmwqt"]
+
 [node name="Poem" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -18,6 +32,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_amyrm")
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -27,24 +42,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_x1yfw")
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -240.0
-offset_right = 262.0
-offset_bottom = 240.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 10
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_amyrm")
 text = "It is the 91st millennium,
 All that was once known is lost.
 The machine of man betrayed its own makers."
@@ -58,6 +70,7 @@ autostart = true
 [node name="Label2" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_0o1gq")
 text = "The Great Eye that Saw fell,
 With the Hand that Weaves taking its place."
 horizontal_alignment = 1
@@ -69,6 +82,7 @@ one_shot = true
 [node name="Label3" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_q4i3p")
 text = "There is now no peace,
 That time has passed.
 Nothing is left but rubble and ruin,
@@ -82,6 +96,7 @@ one_shot = true
 [node name="Label4" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_uwy73")
 text = "Once a haven, now a wasteland.
 The Earth has lost the will to live."
 horizontal_alignment = 1
@@ -93,6 +108,7 @@ one_shot = true
 [node name="Label5" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_kr8sd")
 text = "We gaze at the dunes,
 Wondering: how did we get here?
 Why were we so short-sighted?
@@ -106,12 +122,14 @@ one_shot = true
 [node name="AuthorName" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_ti3e6")
 text = "- Razal the Open-Minded, from \"Poems of Valden\""
 horizontal_alignment = 1
 
 [node name="PressEnter" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_nmwqt")
 text = "PRESS ENTER TO CONTINUE"
 horizontal_alignment = 1
 

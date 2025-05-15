@@ -6,7 +6,6 @@ using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
 using Renown.World;
-using GDExtension.Wrappers;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -170,6 +169,10 @@ public partial class Player : Entity {
 	private Timer DashCooldownTime;
 	
 	private GroundMaterialType GroundType;
+	
+	// how much blood we're covered in
+	private float BloodAmount = 0.0f;
+	private Timer BloodDropTimer;
 
 	[Export]
 	private Node Inventory;
@@ -263,6 +266,8 @@ public partial class Player : Entity {
 	public delegate void SwitchedWeaponModeEventHandler( WeaponEntity weapon, WeaponEntity.Properties useMode );
 	[Signal]
 	public delegate void SwitchHandUsedEventHandler( Hands hands );
+	[Signal]
+	public delegate void UsedWeaponEventHandler( WeaponEntity source );
 
 	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
@@ -285,6 +290,8 @@ public partial class Player : Entity {
 	}
 
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
+	public int GetTileMapFloorLevel() => TileMapLevel;
+
 	public void SetSoundLevel( float nSoundLevel ) {
 		if ( nSoundLevel > SoundLevel ) {
 			SoundLevel = nSoundLevel;
@@ -531,6 +538,33 @@ public partial class Player : Entity {
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 	}
 
+	private void IncreaseBlood( float nAmount ) {
+		if ( !SettingsData.GetShowBlood() ) {
+			return;
+		}
+		BloodAmount += nAmount;
+		TorsoAnimation.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		LegAnimation.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		ArmLeft.Animations.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		ArmRight.Animations.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		BloodDropTimer.Start();
+	}
+	private void OnBloodDropTimerTimeout() {
+		if ( !SettingsData.GetShowBlood() ) {
+			return;
+		}
+		BloodAmount -= 0.01f;
+		TorsoAnimation.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		LegAnimation.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		ArmLeft.Animations.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		ArmRight.Animations.Material.Set( "shader_parameter/blood_coef", BloodAmount );
+		
+		if ( BloodAmount < 0.0f ) {
+			BloodAmount = 0.0f;
+			BloodDropTimer.Stop();
+		}
+	}
+
 	public AnimatedSprite2D GetTorsoAnimation() => TorsoAnimation;
 	public AnimatedSprite2D GetLegsAnimation() => LegAnimation;
 	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
@@ -649,7 +683,7 @@ public partial class Player : Entity {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		if ( ( GameConfiguration.GameMode == GameMode.Online && SteamLobby.Instance.IsOwner() ) || GameConfiguration.GameMode == GameMode.SinglePlayer ) {
-			ArchiveSystem.SaveGame( null, 0 );
+			ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
 		}
 	}
 
@@ -972,13 +1006,18 @@ public partial class Player : Entity {
 			return; // nothing equipped
 		}
 		if ( WeaponSlots[ slot ].IsUsed() ) {
-			WeaponEntity weapon = WeaponSlots[slot].GetWeapon();
+			WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
 			weapon.SetAttackAngle( ArmAngle );
 			if ( weapon.IsBladed() && ( Flags & PlayerFlags.UsingMelee ) == 0 ) {
 				Flags |= PlayerFlags.UsingMelee;
 			}
-			AimRayCast.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes );
+
+			EmitSignalUsedWeapon( weapon );
+//			AimRayCast.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes );
 			FrameDamage += weapon.Use( weapon.GetLastUsedMode(), out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
+			if ( FrameDamage > 0.0f ) {
+				IncreaseBlood( FrameDamage * 0.0001f );
+			}
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );
 		}
@@ -1709,6 +1748,19 @@ public partial class Player : Entity {
 
 		ProcessMode = ProcessModeEnum.Pausable;
 
+//		if ( SettingsData.GetShowBlood() ) {
+			BloodDropTimer = new Timer();
+			BloodDropTimer.Name = "BloodDropTimer";
+			BloodDropTimer.WaitTime = 10.0f;
+			BloodDropTimer.Connect( "timeout", Callable.From( OnBloodDropTimerTimeout ) );
+			AddChild( BloodDropTimer );
+//		} else {
+		TorsoAnimation.Material = ResourceLoader.Load<Material>( "res://resources/materials/covered_in_blood.tres" );
+		LegAnimation.Material = ResourceLoader.Load<Material>( "res://resources/materials/covered_in_blood.tres" );
+		ArmLeft.Animations.Material = ResourceLoader.Load<Material>( "res://resources/materials/covered_in_blood.tres" );
+		ArmRight.Animations.Material = ResourceLoader.Load<Material>( "res://resources/materials/covered_in_blood.tres" );
+//		}
+
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
 		}
@@ -1717,7 +1769,7 @@ public partial class Player : Entity {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
-		AimRayCast.ForceRaycastUpdate();
+//		AimRayCast.ForceRaycastUpdate();
 		if ( AimRayCast.GetCollider() is GodotObject entity && entity.HasMeta( "Faction" ) && (Faction)entity.GetMeta( "Faction" ) != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else if ( AimRayCast.GetCollider() is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
@@ -1729,6 +1781,7 @@ public partial class Player : Entity {
 		// cool down the jet engine if applicable
 		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
 			DashBurnout -= 0.10f;
+			DashTimer += 0.05f;
 			if ( DashBurnout < 0.0f ) {
 				DashBurnout = 0.0f;
 			}
@@ -1824,7 +1877,7 @@ public partial class Player : Entity {
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f && Rage > 0.0f ) {
-			Health += 2.0f * delta;
+			Health += 3.0f * delta;
 			Rage -= 10.0f * delta;
 			// mana conversion ratio to health is extremely inefficient
 
@@ -1927,7 +1980,7 @@ public partial class Player : Entity {
 		bool found = false;
 		
 		foreach ( var it in AmmoStacks ) {
-			if ( ammo == it.Value.AmmoType ) {
+			if ( (string)ammo.Data.Get( "id" ) == (string)it.Value.AmmoType.Data.Get( "id" ) ) {
 				found = true;
 				stack = it.Value;
 				break;
@@ -1959,21 +2012,24 @@ public partial class Player : Entity {
 
 		Godot.Collections.Array<Resource> categories = (Godot.Collections.Array<Resource>)weapon.Data.Get( "categories" );
 		
-		// first item category is ALWAYS equipment position
-		switch ( (string)categories[0].Get( "id" ) ) {
-		case "WEAPON_CATEGORY_PRIMARY":
-			index = (int)WeaponSlotIndex.Primary;
-			break;
-		case "WEAPON_CATEGORY_HEAVY_PRIMARY":
-			index = (int)WeaponSlotIndex.HeavyPrimary;
-			break;
-		case "WEAPON_CATEGORY_SIDEARM":
-			index = (int)WeaponSlotIndex.Sidearm;
-			break;
-		case "WEAPON_CATEGORY_HEAVY_SIDEARM":
-			index = (int)WeaponSlotIndex.HeavySidearm;
-			break;
-		};
+		for ( int i = 0; i < categories.Count; i++ ) {
+			switch ( (string)categories[i].Get( "id" ) ) {
+			case "WEAPON_CATEGORY_PRIMARY":
+				index = (int)WeaponSlotIndex.Primary;
+				break;
+			case "WEAPON_CATEGORY_HEAVY_PRIMARY":
+				index = (int)WeaponSlotIndex.HeavyPrimary;
+				break;
+			case "WEAPON_CATEGORY_SIDEARM":
+				index = (int)WeaponSlotIndex.Sidearm;
+				break;
+			case "WEAPON_CATEGORY_HEAVY_SIDEARM":
+				index = (int)WeaponSlotIndex.HeavySidearm;
+				break;
+			default:
+				break;
+			};
+		}
 		if ( index == WeaponSlot.INVALID ) {
 			Console.PrintError( string.Format( "Player.PickupWeapon: weapon {0} has invalid equipment category", (string)weapon.Data.Get( "id" ) ) );
 		} else {

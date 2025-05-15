@@ -25,10 +25,8 @@ public partial class BloodParticleFactory : Node2D {
 		Instance = this;
 
 		ReleaseTimer = new Timer();
-		ReleaseTimer.WaitTime = 5.0f;
+		ReleaseTimer.WaitTime = 32.0f;
 		ReleaseTimer.OneShot = true;
-		ReleaseTimer.SetProcess( false );
-		ReleaseTimer.SetProcessInternal( false );
 		ReleaseTimer.Connect( "timeout", Callable.From( OnReleaseTimerTimeout ) );
 		AddChild( ReleaseTimer );
 		
@@ -37,7 +35,7 @@ public partial class BloodParticleFactory : Node2D {
 		MeshManager.Multimesh.Mesh = new QuadMesh();
 		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 4.0f, -4.0f );
 		MeshManager.Texture = ResourceCache.GetTexture( "res://textures/blood1.png" );
-		MeshManager.ZIndex = 3;
+		MeshManager.ZIndex = 6;
 		AddChild( MeshManager );
 
 		// cache a shitload
@@ -48,7 +46,7 @@ public partial class BloodParticleFactory : Node2D {
 	}
 	
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		int bloodAmount = (int)Mathf.Lerp( 24.0f, 128.0f, Mathf.Clamp( 1.0f / from.DistanceSquaredTo( to ), 0.0f, 1.0f ) );
+		int bloodAmount = 32;
 
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount;
 		int startIndex = instanceCount;
@@ -59,12 +57,7 @@ public partial class BloodParticleFactory : Node2D {
 			startIndex = 0;
 		}
 
-		if ( ReleaseTimer.IsStopped() ) {
-			ReleaseTimer.Start();
-		}
-		if ( ReleaseTimer.IsStopped() ) {
-			ReleaseTimer.Start();
-		}
+		ReleaseTimer.Start();
 
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;

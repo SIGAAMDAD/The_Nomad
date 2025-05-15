@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=19 format=3 uid="uid://hvxaope63nbh"]
+[gd_resource type="SpriteFrames" load_steps=21 format=3 uid="uid://hvxaope63nbh"]
 
 [ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_wmbyd"]
 
@@ -35,6 +35,14 @@ atlas = ExtResource("1_wmbyd")
 region = Rect2(0, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cva8u"]
+atlas = ExtResource("1_wmbyd")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7n2py"]
+atlas = ExtResource("1_wmbyd")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8p784"]
 atlas = ExtResource("1_wmbyd")
 region = Rect2(32, 64, 32, 32)
 
@@ -84,13 +92,13 @@ animations = [{
 "speed": 0.5
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_wmbyd")
 }, {
-"duration": 1.0,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_gllxp")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": SubResource("AtlasTexture_iv3gt")
 }, {
 "duration": 1.0,
@@ -110,12 +118,18 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_cva8u")
 }, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_7n2py")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_8p784")
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jvrld")
 }],
 "loop": false,
 "name": &"die_low",
-"speed": 5.0
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,

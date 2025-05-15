@@ -36,6 +36,9 @@ namespace Renown.Thinkers {
 		private State CurrentState;
 
 		private Godot.Vector2 StartPosition = Godot.Vector2.Zero;
+		private float StartHealth = 0.0f;
+
+		private bool HitHead = false;
 
 		// combat variables
 		private Timer RevTimer;
@@ -59,8 +62,6 @@ namespace Renown.Thinkers {
 		private Entity Target;
 
 		private Line2D DetectionMeter;
-
-		private bool HitHead = false;
 
 		private AnimatedSprite2D HeadAnimations;
 		private AnimatedSprite2D ArmAnimations;
@@ -115,10 +116,8 @@ namespace Renown.Thinkers {
 				return;
 			}
 
-			if ( HitHead ) {
-				base.Damage( source, nAmount );
-				PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
-			}
+			base.Damage( source, nAmount );
+			PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			if ( Health <= 0.0f ) {
 				DetectionMeter.CallDeferred( "hide" );
@@ -230,6 +229,9 @@ namespace Renown.Thinkers {
 		public void OnHeadHit( Entity source ) {
 //			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
 //			BodyAnimations.Play( "die_high" );
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
 			HitHead = true;
 			Damage( source, Health );
 		}
@@ -238,6 +240,9 @@ namespace Renown.Thinkers {
 		}
 
 		private void BlowupBackpack() {
+			GetNode<CollisionShape2D>( "Animations/BodyAnimations/BlowupArea/CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<Area2D>( "Animations/BodyAnimations/BlowupArea" ).SetDeferred( "monitoring", true );
+
 			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = 72.0f;
 			explosion.Damage = ExplosionDamage;
@@ -287,13 +292,19 @@ namespace Renown.Thinkers {
 
 		private void OnPlayerRestart() {
 			GlobalPosition = StartPosition;
+			Health = StartHealth;
 
 			DetectionMeter.CallDeferred( "show" );
 			ArmAnimations.CallDeferred( "show" );
 			HeadAnimations.CallDeferred( "show" );
 
-			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
-			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity ) );
+			NavAgent.AvoidanceEnabled = true;
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+
+			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
 
 			Flags &= ~ThinkerFlags.Dead;
 
@@ -303,6 +314,11 @@ namespace Renown.Thinkers {
 
 		protected override void OnDie( Entity source, Entity target ) {
 			base.OnDie( source, target );
+
+			NavAgent.AvoidanceEnabled = false;
+
+			SetDeferred( "collision_layer", (uint)PhysicsLayer.None );
+			SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
 			
 			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				if ( HitHead ) {
@@ -373,8 +389,11 @@ namespace Renown.Thinkers {
 			AddChild( ChangeInvestigationAngleTimer );
 
 			StartPosition = GlobalPosition;
+			StartHealth = Health;
 
-			GenerateRayCasts();
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
+			}
 
 			switch ( Direction ) {
 			case DirType.North:
@@ -392,6 +411,8 @@ namespace Renown.Thinkers {
 			};
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
+
+			GenerateRayCasts();
 		}
 
 		protected override void ProcessAnimations() {
@@ -526,7 +547,7 @@ namespace Renown.Thinkers {
 		protected override bool MoveAlongPath() {
 			float movespeed = MovementSpeed;
 			if ( Shooting ) {
-				MovementSpeed = 50.0f;
+				MovementSpeed = 100.0f;
 			} else {
 				MovementSpeed = movespeed;
 			}

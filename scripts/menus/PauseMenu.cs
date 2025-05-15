@@ -27,7 +27,7 @@ public partial class PauseMenu : CanvasLayer {
 		GameConfiguration.Paused = false;
 
 		if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
-			ArchiveSystem.SaveGame( null, 0 );
+			ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
 		}
 
 		GetTree().Paused = false;
@@ -57,7 +57,7 @@ public partial class PauseMenu : CanvasLayer {
 		ConfirmQuitDlg = GetNode<ConfirmationDialog>( "ConfirmQuit" );
 		ConfirmQuitDlg.Connect( "confirmed", Callable.From( () => {
 			if ( GameConfiguration.GameMode == GameMode.SinglePlayer || GameConfiguration.GameMode == GameMode.Online ) {
-				ArchiveSystem.SaveGame( null, 0 );
+				ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
 			}
 
 			ConfirmDlgOverlay.Hide();

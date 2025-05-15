@@ -133,6 +133,9 @@ namespace Renown.Thinkers {
 		}
 
 		public void OnHeadHit( Entity source ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
 			CallDeferred( "OnBlowupTimerTimeout" );
 			HitHead = true;
 		}
@@ -156,6 +159,8 @@ namespace Renown.Thinkers {
 			Flags |= ThinkerFlags.Dead;
 
 			Health = 0.0f;
+
+			DetectionMeter.CallDeferred( "hide" );
 
 			HeadAnimations.Hide();
 			ArmAnimations.Hide();
@@ -214,31 +219,16 @@ namespace Renown.Thinkers {
 		}
 
 		private void OnHammerSwingFinished() {
-			Godot.Collections.Array<Node2D> nodes = AreaOfEffect.GetOverlappingBodies();
-
-			AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-			for ( int i = 0; i < nodes.Count; i++ ) {
-				if ( nodes[i] is Entity entity && entity != null ) {
-					if ( entity == this ) {
-						continue;
-					}
-					float damage = 40.0f;
-					if ( entity is Player player && player != null && player.GetTorsoAnimation().FlipH == BodyAnimations.FlipH ) {
-						// one-shot if we're hitting from behind... BACKSHOTS!
-						damage = 1000.0f;
-					}
-					entity.CallDeferred( "Damage", this, damage );
-				}
-			}
+			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
+			explosion.Radius = ( HammerShape.Shape as CircleShape2D ).Radius;
+			explosion.Damage = BlowupDamage;
+			explosion.DamageCurve = BlowupDamageCurve;
+			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
+			AddChild( explosion );
 
 			AreaOfEffect.SetDeferred( "monitoring", false );
 			HammerShape.SetDeferred( "disabled", true );
 			ArmAnimations.CallDeferred( "play", "idle" );
-		}
-
-		private void OnAreaOfEffectShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		}
-		private void OnAreaOfEffectShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		}
 
 		public override void _Ready() {
@@ -279,7 +269,9 @@ namespace Renown.Thinkers {
 			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
 
-			GenerateRayCasts();
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
+			}
 
 			switch ( Direction ) {
 			case DirType.North:
@@ -297,6 +289,8 @@ namespace Renown.Thinkers {
 			};
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
+
+			GenerateRayCasts();
 		}
 
 		protected override void ProcessAnimations() {

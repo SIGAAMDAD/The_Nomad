@@ -24,15 +24,15 @@ public partial class BugReporter : Control {
 		
 	}
 
-	private void ReloadConfig() {
-		ConfigFile config = new ConfigFile();
-		Error err = config.Load( ConfigPath );
+    private void ReloadConfig() {
+        ConfigFile config = new ConfigFile();
+        Error err = config.Load( ConfigPath );
 	}
 
-	public override void _Ready() {
-		base._Ready();
-		
-		Button SubmitButton = GetNode<Button>( "MarginContainer/VBoxContainer/SubmitButton" );
-		SubmitButton.Connect( "pressed", Callable.From( OnSubmitButtonPressed ) );
+    public override void _Ready() {
+        base._Ready();
+
+        Button SubmitButton = GetNode<Button>( "MarginContainer/VBoxContainer/SubmitButton" );
+        SubmitButton.Connect( "pressed", Callable.From( OnSubmitButtonPressed ) );
 	}
 };

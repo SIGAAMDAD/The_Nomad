@@ -7,7 +7,7 @@ namespace PlayerSystem {
 		public float Rage {
 			set {
 				ProcessMode = ProcessModeEnum.Pausable;
-				Show();
+				Modulate = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 				ShowTimer.Start();
 				Value = value;
 			}
@@ -18,12 +18,14 @@ namespace PlayerSystem {
 			Value = nRage;
 
 			ShowTimer = new Timer();
+			ShowTimer.Name = "ShowTimer";
 			ShowTimer.OneShot = true;
-			ShowTimer.WaitTime = 3.5f;
+			ShowTimer.WaitTime = 4.5f;
 			ShowTimer.Connect( "timeout", Callable.From(
 				() => {
-					Hide();
-					ProcessMode = ProcessModeEnum.Disabled;
+					Tween Tweener = CreateTween();
+					Tweener.TweenProperty( this, "modulate", new Color( 0.0f, 0.0f, 0.0f, 0.0f ), 1.0f );
+					Tweener.Connect( "finished", Callable.From( () => { ProcessMode = ProcessModeEnum.Disabled; } ) );
 				}
 			) );
 			AddChild( ShowTimer );

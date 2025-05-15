@@ -93,6 +93,8 @@ public partial class SettingsData : Control {
 	private static Godot.Collections.Array<RefCounted> RemappableItems;
 	private static RefCounted MappingFormatter;
 
+	private static int LastSaveSlot = 0;
+
 	public static SettingsData Instance = null;
 
 	[Signal]
@@ -177,6 +179,9 @@ public partial class SettingsData : Control {
 	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
 	public static bool GetCleanAudio() => CleanAudio;
 	public static bool SetCleanAudio( bool bCleanAudio ) => CleanAudio = bCleanAudio;
+
+	public static int GetSaveSlot() => LastSaveSlot;
+	public static void SetSaveSlot( int nSlot ) => LastSaveSlot = nSlot;
 
 	private void UpdateWindowScale() {
 		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
@@ -475,6 +480,10 @@ public partial class SettingsData : Control {
 		LoadGameplaySettings( iniData );
 		LoadNetworkingSettings( iniData );
 
+		LastSaveSlot = Convert.ToInt32( iniData[ "Internal:LastSaveSlot" ] );
+
+		ApplyVideoSettings();
+
 		Console.PrintLine( "...Finished applying settings" );
 	}
 
@@ -490,6 +499,10 @@ public partial class SettingsData : Control {
 		SaveAccessibilitySettings( writer );
 		SaveGameplaySettings( writer );
 		SaveNetworkingSettings( writer );
+
+		writer.WriteLine( string.Format( "[Internal]" ) );
+		writer.WriteLine( string.Format( "LastSaveSlot={0}", LastSaveSlot ) );
+
 		writer.Flush();
 
 		ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );

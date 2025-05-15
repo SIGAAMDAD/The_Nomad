@@ -36,6 +36,7 @@ config/name="The Nomad"
 config/version="1.2.0"
 run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+run/max_fps=60
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://desertbkgd_icon.png"
@@ -63,6 +64,7 @@ TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
 BugReportingForm="*res://scenes/menus/bug_reporter.tscn"
 FpsCounter="*res://scenes/fps_counter.tscn"
+DialogueGlobals="*res://autoloads/DialogueGlobals.cs"
 
 [debug]
 
@@ -72,6 +74,7 @@ file_logging/enable_file_logging=true
 
 editor/wrap_long_lines=true
 runtime/advanced/uses_dotnet=true
+runtime/warn_about_method_property_or_signal_name_conflicts=true
 
 [display]
 
@@ -192,7 +195,7 @@ menu_settings_prev_category={
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/translations.en.translation")
-locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue")
+locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue", "res://resources/dialogue/mercenary.dialogue")
 
 [layer_names]
 
@@ -210,11 +213,10 @@ pathfinding/max_threads=8192
 [physics]
 
 2d/run_on_separate_thread=true
-common/physics_ticks_per_second=8
-common/max_physics_steps_per_frame=1
+common/physics_ticks_per_second=30
 common/physics_jitter_fix=0.0
 2d/physics_engine="Rapier2D"
-2d/solver/solver_iterations=1
+2d/solver/solver_iterations=6
 2d/solver/contact_recycle_radius=8.0
 common/physics_interpolation=true
 common/enable_object_picking=false
@@ -226,7 +228,7 @@ gdscript_utilities/print_internal_messages=true
 [questify]
 
 general/update_interval=1.5
-general/add_quests_to_pot_generation=false
+general/add_quests_to_pot_generation=true
 general/update_polling=true
 
 [rendering]

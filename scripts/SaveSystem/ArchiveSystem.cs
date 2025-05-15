@@ -15,7 +15,12 @@ namespace SaveSystem {
 		FloatList,
 		StringList,
 		Vector2,
+
+		ByteArray,
+
+		// internal godot types
 		Array,
+		Dictionary,
 
 		Count
 	};
@@ -73,10 +78,10 @@ public partial class ArchiveSystem : Node {
 		return SaveDirectory;
 	}
 
-	private void Save( Image screenshot, Godot.Collections.Array<Node> nodes, uint memoryIndex ) {
+	private void Save( Godot.Collections.Array<Node> nodes, int nSlot ) {
 		DirAccess.MakeDirRecursiveAbsolute( SaveDirectory );
 
-		string path = ProjectSettings.GlobalizePath( SaveDirectory + "GameData.ngd" );
+		string path = ProjectSettings.GlobalizePath( string.Format( "{0}GameData_{1}.ngd", SaveDirectory, nSlot ) );
 		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Create ) ) {
 			using ( SaveWriter = new System.IO.BinaryWriter( stream ) ) {
 				SaveWriter.Write( MAGIC );
@@ -99,18 +104,27 @@ public partial class ArchiveSystem : Node {
 		}
 	}
 
-	public static void SaveGame( Image screenshot, uint memoryIndex ) {
+	public static void CreateSlot() {
+		Instance.Loaded = false;
+	}
+	public static bool SlotExists( int nSlot ) {
+		return FileAccess.FileExists( "user://SaveData/GameData_" + nSlot.ToString() + ".ngd" );
+	}
+	public static void DeleteSave( int nSlot ) {
+		DirAccess.RemoveAbsolute( "user://SaveData/GameData_" + nSlot.ToString() + ".ngd" );
+	}
+	public static void SaveGame( int nSlot ) {
 		Instance.EmitSignal( "SaveGameBegin" );
 
 		Godot.Collections.Array<Node> nodes = Instance.GetTree().GetNodesInGroup( "Archive" );
-		Instance.Save( screenshot, nodes, memoryIndex );
+		Instance.Save( nodes, nSlot );
 
-		SteamManager.SaveCloudFile( "SaveData/GameData.ngd" );
+		SteamManager.SaveCloudFile( "SaveData/GameData_" + nSlot.ToString() + ".ngd" );
 		
 		Instance.EmitSignal( "SaveGameEnd" );
 	}
-	public static void LoadGame() {
-		string path = ProjectSettings.GlobalizePath( Instance.SaveDirectory + "GameData.ngd" );
+	public static void LoadGame( int nSlot ) {
+		string path = ProjectSettings.GlobalizePath( Instance.SaveDirectory + "GameData_" + nSlot.ToString() + ".ngd" );
 		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Open ) ) {
 			using ( SaveReader = new System.IO.BinaryReader( stream ) ) {
 				ulong magic = SaveReader.ReadUInt64();
@@ -180,7 +194,7 @@ public partial class ArchiveSystem : Node {
 		if ( SectionCache.ContainsKey( name ) ) {
 			return SectionCache[ name ];
 		}
-		GD.PushError( "Failed to find save section \"" + name + "\"!" );
+		Console.PrintError( string.Format( "Failed to find save section \"{0}\"!", name ) );
 		return null;
 	}
 
@@ -209,7 +223,7 @@ public partial class ArchiveSystem : Node {
 	}
 
 	public void CheckSaveData() {
-		Loaded = FileAccess.FileExists( "user://SaveData/GameData.ngd" );
+		Loaded = FileAccess.FileExists( "user://SaveData/GameData_" + SettingsData.GetSaveSlot().ToString() + ".ngd" );
 		SaveDirectory = "user://SaveData/";
 	}
 };

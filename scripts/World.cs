@@ -1,10 +1,10 @@
 using System.Threading;
-using System.Collections.Generic;
 using Steamworks;
 using Godot;
 using Renown.World;
 using Renown;
 using System;
+using System.Data.SqlTypes;
 
 public partial class World : LevelData {
 	[Export]
@@ -196,12 +196,71 @@ public partial class World : LevelData {
 			if ( reader == null ) {
 				return;
 			}
-			Questify.Deserialize( reader.LoadArray( "QuestState" ) );
+			/*
+			string currentQuest = reader.LoadString( "CurrentQuest" );
+			CurrentQuest = ResourceLoader.Load( currentQuest );
+			QuestState = Questify.Instantiate( CurrentQuest );
+			Questify.StartQuest( QuestState );
+			*/
+
+//			RefCounted serializer = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/quest_serializer.gd" ).New();
+//			serializer.Call( "deserialize", reader.LoadByteArray( "QuestState" ) );
+			Questify.Deserialize( GD.BytesToVarWithObjects( new Span<byte>( reader.LoadByteArray( "QuestState" ) ) ).AsGodotArray() );
+
+			int count = reader.LoadInt( "StateCount" );
+			ObjectivesState.Clear();
+			foreach ( var state in State ) {
+				switch ( state.Value.VariantType ) {
+				case Godot.Variant.Type.Int:
+					ObjectivesState.Add( state.Key, reader.LoadInt( string.Format( "State_{0}", state.Key ) ) );
+					break;
+				case Godot.Variant.Type.Float:
+					ObjectivesState.Add( state.Key, reader.LoadFloat( string.Format( "State_{0}", state.Key ) ) );
+					break;
+				case Godot.Variant.Type.Bool:
+					ObjectivesState.Add( state.Key, reader.LoadBoolean( string.Format( "State_{0}", state.Key ) ) );
+					break;
+				case Godot.Variant.Type.String:
+					ObjectivesState.Add( state.Key, reader.LoadString( string.Format( "State_{0}", state.Key ) ) );
+					break;
+				};
+			}
 		}
 	}
 	public void Save() {
 		using ( var writer = new SaveSystem.SaveSectionWriter( "WorldState" ) ) {
-			writer.SaveArray( "QuestState", Questify.Serialize() );
+			/*
+			Godot.Collections.Array<Resource> quests = Questify.GetQuests();
+
+			writer.SaveInt( "QuestCount", quests.Count );
+			for ( int i = 0; i < quests.Count; i++ ) {
+				Godot.Collections.Dictionary data = (Godot.Collections.Dictionary)quests[i].Call( "serialize" );
+				writer.SaveString( string.Format( "QuestPath{0}", i ), Questify.GetResourcePath( quests[i] ) );
+				writer.SaveString( string.Format( "QuestState{0}", i ), Godot.Json.Stringify( data ) );
+			}
+			writer.SaveString( "CurrentQuest", Questify.GetResourcePath( QuestState ) );
+			*/
+
+//			RefCounted serializer = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/quest_serializer.gd" ).New();
+			writer.SaveByteArray( "QuestState", GD.VarToBytesWithObjects( Questify.Serialize() ) );
+
+			writer.SaveInt( "StateCount", ObjectivesState.Count );
+			foreach ( var state in ObjectivesState ) {
+				switch ( state.Value.VariantType ) {
+				case Godot.Variant.Type.Int:
+					writer.SaveInt( string.Format( "State_{0}", state.Key ), (int)state.Value );
+					break;
+				case Godot.Variant.Type.Float:
+					writer.SaveFloat( string.Format( "State_{0}", state.Key ), (float)state.Value );
+					break;
+				case Godot.Variant.Type.Bool:
+					writer.SaveBool( string.Format( "State_{0}", state.Key ), (bool)state.Value );
+					break;
+				case Godot.Variant.Type.String:
+					writer.SaveString( string.Format( "State_{0}", state.Key ), (string)state.Value );
+					break;
+				};
+			}
 		}
 	}
 
@@ -226,24 +285,23 @@ public partial class World : LevelData {
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
+		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
+		} else {
+			foreach ( var state in State ) {
+				ObjectivesState.Add( state.Key, state.Value );
+			}
 		}
-
-		QuestState = Questify.Instantiate( CurrentQuest );
 
 		Questify.ToggleUpdatePolling( true );
 		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
 		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
 		Questify.ConnectQuestObjectiveAdded( OnQuestObjectiveAdded );
 		Questify.ConnectQuestCompleted( OnQuestCompleted );
+		QuestState = Questify.Instantiate( CurrentQuest );
 		Questify.StartQuest( QuestState );
 
-//		AddToGroup( "Archive" );
-
-		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
-		foreach ( var state in State ) {
-			ObjectivesState.Add( state.Key, state.Value );
-		}
+		AddToGroup( "Archive" );
 	}
 };

@@ -9,7 +9,7 @@ namespace PlayerSystem {
 		public void SetHealth( float health ) {
 			ProcessMode = ProcessModeEnum.Pausable;
 
-			Show();
+			Modulate = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 			ShowTimer.Start();
 
 			float prevHealth = (float)Value;
@@ -23,8 +23,6 @@ namespace PlayerSystem {
 
 		public void Init( float nHealth ) {
 			DamageBar = GetNode<ProgressBar>( "DamageBar" );
-			DamageBar.SetProcess( false );
-			DamageBar.SetProcessInternal( false );
 
 			MaxValue = nHealth;
 			Value = nHealth;
@@ -34,23 +32,22 @@ namespace PlayerSystem {
 			ProcessMode = ProcessModeEnum.Disabled;
 
 			ShowTimer = new Timer();
+			ShowTimer.Name = "ShowTimer";
 			ShowTimer.OneShot = true;
-			ShowTimer.WaitTime = 3.5f;
+			ShowTimer.WaitTime = 8.5f;
 			ShowTimer.Connect( "timeout", Callable.From(
 				() => {
-					Hide();
-					ProcessMode = ProcessModeEnum.Disabled;
+					Tween Tweener = CreateTween();
+					Tweener.TweenProperty( this, "modulate", new Color( 0.0f, 0.0f, 0.0f, 0.0f ), 1.0f );
+					Tweener.Connect( "finished", Callable.From( () => { ProcessMode = ProcessModeEnum.Disabled; } ) );
 				}
 			) );
 			AddChild( ShowTimer );
 
 			DamageTimer = GetNode<Timer>( "Timer" );
-			DamageTimer.SetProcess( false );
-			DamageTimer.SetProcessInternal( false );
 			DamageTimer.Connect( "timeout", Callable.From(
 				() => {
 					DamageBar.Value = Value;
-
 				}
 			) );
 		}

@@ -52,6 +52,7 @@ public partial class TileMapFloor : Node2D {
 		body.CallDeferred( "SetTileMapFloor", this );
 		body.CallDeferred( "SetTileMapFloorLevel", Level );
 
+
 		if ( Floor != null ) {
 			( Floor.Material as ShaderMaterial )?.SetShaderParameter( "alpha_blend", false );
 		}
@@ -80,11 +81,9 @@ public partial class TileMapFloor : Node2D {
 
 		CallDeferred( "show" );
 
-		LowerLayer?.Floor.SetDeferred( "collision_enabled", false );
+//		FloorBounds?.SetDeferred( "collision_layer", (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity ) );
+//		FloorBounds?.SetDeferred( "collision_mask", (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity ) );
 
-//		Floor.SetDeferred( "collision_enabled", true );
-//		FloorBounds?.SetDeferred( "collision_layer", 1 | 2 );
-//		FloorBounds?.SetDeferred( "collision_mask", 1 );
 		IsPlayerHere = true;
 	}
 	private void OnArea2DBodyExited( Node2D body ) {
@@ -101,7 +100,6 @@ public partial class TileMapFloor : Node2D {
 
 		if ( !IsExterior && UpperLayer == null ) {
 			CallDeferred( "hide" );
-			SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled );
 		}
 
 		if ( UpperLayer != null && !IsPlayerHere ) {
@@ -121,25 +119,22 @@ public partial class TileMapFloor : Node2D {
 			}
 		}
 
-//		Floor.SetDeferred( "collision_enabled", false );
-//		FloorBounds?.SetDeferred( "collision_layer", 0 );
-//		FloorBounds?.SetDeferred( "collision_mask", 0 );
+//		FloorBounds?.SetDeferred( "collision_layer", (uint)PhysicsLayer.None );
+//		FloorBounds?.SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
 		IsPlayerHere = false;
 	}
 
-	public override void _Ready() {
+	public override void _Ready()
+	{
 		base._Ready();
 
-		Area?.Connect( "body_entered", Callable.From<Node2D>( OnArea2DBodyEntered ) );
-		Area?.Connect( "body_exited", Callable.From<Node2D>( OnArea2DBodyExited ) );
+		Area?.Connect("body_entered", Callable.From<Node2D>(OnArea2DBodyEntered));
+		Area?.Connect("body_exited", Callable.From<Node2D>(OnArea2DBodyExited));
 
-		if ( !IsExterior ) {
-			ProcessMode = ProcessModeEnum.Disabled;
-		}
 		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 		ProcessThreadGroupOrder = 4;
 
-		SetProcess( false );
-		SetProcessInternal( false );
+		SetProcess(false);
+		SetProcessInternal(false);
 	}
 };

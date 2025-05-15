@@ -1,13 +1,77 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using Microsoft.VisualBasic;
 
 namespace SaveSystem {
 	public class SaveSectionReader : IDisposable {
 		private class SaveField {
 			private FieldType Type;
 			private object Value;
+
+			private Godot.Collections.Dictionary LoadDictionaryInternal( System.IO.BinaryReader reader ) {
+				int count = reader.ReadInt32();
+				Godot.Collections.Dictionary data = new Godot.Collections.Dictionary();
+
+				for ( int i = 0; i < count; i++ ) {
+					var key = (Variant.Type)reader.ReadUInt32() switch {
+						Variant.Type.Int => (Variant)reader.ReadInt32(),
+						Variant.Type.Float => (Variant)(float)reader.ReadDouble(),
+						Variant.Type.Bool => (Variant)reader.ReadBoolean(),
+						Variant.Type.String => (Variant)reader.ReadString(),
+						Variant.Type.StringName => (Variant)reader.ReadString(),
+						Variant.Type.Array => (Variant)LoadArrayInternal( reader ),
+						Variant.Type.Dictionary => (Variant)LoadDictionaryInternal( reader ),
+						_ => new Variant(),
+					};
+
+					var value = (Variant.Type)reader.ReadUInt32() switch {
+						Variant.Type.Int => (Variant)reader.ReadInt32(),
+						Variant.Type.Float => (Variant)(float)reader.ReadDouble(),
+						Variant.Type.Bool => (Variant)reader.ReadBoolean(),
+						Variant.Type.String => (Variant)reader.ReadString(),
+						Variant.Type.StringName => (Variant)reader.ReadString(),
+						Variant.Type.Array => (Variant)LoadArrayInternal( reader ),
+						Variant.Type.Dictionary => (Variant)LoadDictionaryInternal( reader ),
+						_ => new Variant(),
+					};
+
+					data.TryAdd( key, value );
+				}
+
+				return data;
+			}
+			private Godot.Collections.Array LoadArrayInternal( System.IO.BinaryReader reader ) {
+				int count = reader.ReadInt32();
+				Godot.Collections.Array value = new Godot.Collections.Array();
+
+				for ( int i = 0; i < count; i++ ) {
+					switch ( (Variant.Type)reader.ReadUInt32() ) {
+					case Variant.Type.Int:
+						value.Add( reader.ReadInt32() );
+						break;
+					case Variant.Type.Float:
+						value.Add( (float)reader.ReadDouble() );
+						break;
+					case Variant.Type.Bool:
+						value.Add( reader.ReadBoolean() );
+						break;
+					case Variant.Type.String:
+						value.Add( reader.ReadString() );
+						break;
+					case Variant.Type.StringName:
+						value.Add( reader.ReadString() );
+						break;
+					case Variant.Type.Array:
+						value.Add( LoadArrayInternal( reader ) );
+						break;
+					case Variant.Type.Dictionary:
+						value.Add( LoadDictionaryInternal( reader ) );
+						break;
+					};
+				}
+
+				return value;
+			}
 
 			public SaveField( System.IO.BinaryReader reader ) {
 				Type = (FieldType)reader.ReadUInt32();
@@ -33,6 +97,10 @@ namespace SaveSystem {
 				case FieldType.String:
 					Value = reader.ReadString();
 					break;
+				case FieldType.ByteArray: {
+					int count = reader.ReadInt32();
+					Value = reader.ReadBytes( count );
+					break; }
 				case FieldType.Vector2: {
 					Godot.Vector2 value = new Godot.Vector2( 0.0f, 0.0f );
 					value.X = (float)reader.ReadDouble();
@@ -71,32 +139,12 @@ namespace SaveSystem {
 					}
 					Value = value;
 					break; }
-				case FieldType.Array: {
-					int count = reader.ReadInt32();
-					Godot.Collections.Array value = new Godot.Collections.Array();
-					for ( int i = 0; i < count; i++ ) {
-						switch ( (Godot.Variant.Type)reader.ReadUInt32() ) {
-						case Godot.Variant.Type.Bool:
-							value.Add( reader.ReadBoolean() );
-							break;
-						case Godot.Variant.Type.Int:
-							value.Add( reader.ReadInt32() );
-							break;
-						case Godot.Variant.Type.Float:
-							value.Add( (float)reader.ReadDouble() );
-							break;
-						case Godot.Variant.Type.Vector2: {
-							Godot.Vector2 v = Godot.Vector2.Zero;
-							v.X = (float)reader.ReadDouble();
-							v.Y = (float)reader.ReadDouble();
-							value.Add( v );
-							break; }
-						case Godot.Variant.Type.String:
-							value.Add( reader.ReadString() );
-							break;
-						};
-					}
-					break; }
+				case FieldType.Array:
+					Value = LoadArrayInternal( reader );
+					break;
+				case FieldType.Dictionary:
+					Value = LoadDictionaryInternal( reader );
+					break;
 				default:
 					Console.PrintError( "Unknown save field type " + Type.ToString() + " found in save file!" );
 					break;
@@ -117,7 +165,7 @@ namespace SaveSystem {
 
 			for ( int i = 0; i < fieldCount; i++ ) {
 				string name = ArchiveSystem.SaveReader.ReadString();
-				FieldList.Add( name, new SaveField( ArchiveSystem.SaveReader ) );
+				FieldList.TryAdd( name, new SaveField( ArchiveSystem.SaveReader ) );
 				Console.PrintLine( string.Format( "...loaded field \"{0}\"", name ) );
 			}
 		}
@@ -255,6 +303,16 @@ namespace SaveSystem {
 			}
 			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
 			return new Godot.Collections.Array();
+		}
+		public byte[] LoadByteArray( string name ) {
+			if ( FieldList.TryGetValue( name, out SaveField field ) ) {
+				if ( field.GetFieldType() != FieldType.ByteArray ) {
+					return [];
+				}
+				return (byte[])field.GetValue();
+			}
+			Console.PrintError( string.Format( "...couldn't find save field {0}", name ) );
+			return [];
 		}
 	};
 };

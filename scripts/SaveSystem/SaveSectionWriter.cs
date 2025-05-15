@@ -1,5 +1,5 @@
 using System;
-using System.Security.AccessControl;
+using System.ComponentModel;
 
 namespace SaveSystem {
 	public class SaveSectionWriter : IDisposable {
@@ -139,6 +139,111 @@ namespace SaveSystem {
 			}
 			FieldCount++;
 		}
+
+		private void SaveDictionaryInternal( Godot.Collections.Dictionary value ) {
+			ArchiveSystem.SaveWriter.Write( value.Count );
+			foreach ( var it in value ) {
+				ArchiveSystem.SaveWriter.Write( (uint)it.Key.VariantType );
+				switch ( it.Key.VariantType ) {
+				case Godot.Variant.Type.Bool:
+					ArchiveSystem.SaveWriter.Write( it.Key.AsBool() );
+					break;
+				case Godot.Variant.Type.Int:
+					ArchiveSystem.SaveWriter.Write( it.Key.AsInt32() );
+					break;
+				case Godot.Variant.Type.Float:
+					ArchiveSystem.SaveWriter.Write( it.Key.AsDouble() );
+					break;
+				case Godot.Variant.Type.String:
+					ArchiveSystem.SaveWriter.Write( it.Key.AsString() );
+					break;
+				case Godot.Variant.Type.StringName:
+					ArchiveSystem.SaveWriter.Write( it.Key.AsStringName() );
+					break;
+				case Godot.Variant.Type.Vector2:
+					ArchiveSystem.SaveWriter.Write( (double)it.Key.AsVector2().X );
+					ArchiveSystem.SaveWriter.Write( (double)it.Key.AsVector2().Y );
+					break;
+				case Godot.Variant.Type.Array:
+					SaveArrayInternal( it.Key.AsGodotArray() );
+					break;
+				case Godot.Variant.Type.Dictionary:
+					SaveDictionaryInternal( it.Key.AsGodotDictionary() );
+					break;
+				default:
+					Console.PrintError( string.Format( "SaveSectionWriter.SaveDictionaryInternal: unknown Godot.VariantType (key) {0}", it.Key.VariantType ) );
+					break;
+				};
+
+				ArchiveSystem.SaveWriter.Write( (uint)it.Value.VariantType );
+				switch ( it.Value.VariantType ) {
+				case Godot.Variant.Type.Bool:
+					ArchiveSystem.SaveWriter.Write( it.Value.AsBool() );
+					break;
+				case Godot.Variant.Type.Int:
+					ArchiveSystem.SaveWriter.Write( it.Value.AsInt32() );
+					break;
+				case Godot.Variant.Type.Float:
+					ArchiveSystem.SaveWriter.Write( it.Value.AsDouble() );
+					break;
+				case Godot.Variant.Type.String:
+					ArchiveSystem.SaveWriter.Write( it.Value.AsString() );
+					break;
+				case Godot.Variant.Type.StringName:
+					ArchiveSystem.SaveWriter.Write( it.Value.AsStringName() );
+					break;
+				case Godot.Variant.Type.Vector2:
+					ArchiveSystem.SaveWriter.Write( (double)it.Value.AsVector2().X );
+					ArchiveSystem.SaveWriter.Write( (double)it.Value.AsVector2().Y );
+					break;
+				case Godot.Variant.Type.Array:
+					SaveArrayInternal( it.Value.AsGodotArray() );
+					break;
+				case Godot.Variant.Type.Dictionary:
+					SaveDictionaryInternal( it.Value.AsGodotDictionary() );
+					break;
+				default:
+					Console.PrintError( string.Format( "SaveSectionWriter.SaveDictionaryInternal: unknown Godot.VariantType (value) {0}", it.Value.VariantType ) );
+					break;
+				};
+			}
+		}
+		private void SaveArrayInternal( Godot.Collections.Array value ) {
+			ArchiveSystem.SaveWriter.Write( value.Count );
+			for ( int i = 0; i < value.Count; i++ ) {
+				ArchiveSystem.SaveWriter.Write( (uint)value[i].VariantType );
+				switch ( value[i].VariantType ) {
+				case Godot.Variant.Type.Bool:
+					ArchiveSystem.SaveWriter.Write( value[i].AsBool() );
+					break;
+				case Godot.Variant.Type.Int:
+					ArchiveSystem.SaveWriter.Write( value[i].AsInt32() );
+					break;
+				case Godot.Variant.Type.Float:
+					ArchiveSystem.SaveWriter.Write( value[i].AsDouble() );
+					break;
+				case Godot.Variant.Type.String:
+					ArchiveSystem.SaveWriter.Write( value[i].AsString() );
+					break;
+				case Godot.Variant.Type.StringName:
+					ArchiveSystem.SaveWriter.Write( value[i].AsStringName() );
+					break;
+				case Godot.Variant.Type.Vector2:
+					ArchiveSystem.SaveWriter.Write( (double)value[i].AsVector2().X );
+					ArchiveSystem.SaveWriter.Write( (double)value[i].AsVector2().Y );
+					break;
+				case Godot.Variant.Type.Array:
+					SaveArrayInternal( value[i].AsGodotArray() );
+					break;
+				case Godot.Variant.Type.Dictionary:
+					SaveDictionaryInternal( value[i].AsGodotDictionary() );
+					break;
+				default:
+					Console.PrintError( string.Format( "SaveSectionWriter.SaveArrayInternal: unknown Godot.VariantType {0}", value[i].VariantType ) );
+					break;
+				};
+			}
+		}
 		public void SaveArray( string name, Godot.Collections.Array value ) {
 			ArchiveSystem.SaveWriter.Write( name );
 			ArchiveSystem.SaveWriter.Write( (uint)FieldType.Array );
@@ -158,12 +263,32 @@ namespace SaveSystem {
 				case Godot.Variant.Type.String:
 					ArchiveSystem.SaveWriter.Write( value[i].AsString() );
 					break;
+				case Godot.Variant.Type.StringName:
+					ArchiveSystem.SaveWriter.Write( value[i].AsStringName() );
+					break;
 				case Godot.Variant.Type.Vector2:
-					ArchiveSystem.SaveWriter.Write( value[i].AsVector2().X );
-					ArchiveSystem.SaveWriter.Write( value[i].AsVector2().Y );
+					ArchiveSystem.SaveWriter.Write( (double)value[i].AsVector2().X );
+					ArchiveSystem.SaveWriter.Write( (double)value[i].AsVector2().Y );
+					break;
+				case Godot.Variant.Type.Array:
+					SaveArrayInternal( value[i].AsGodotArray() );
+					break;
+				case Godot.Variant.Type.Dictionary:
+					SaveDictionaryInternal( value[i].AsGodotDictionary() );
+					break;
+				default:
+					Console.PrintError( string.Format( "SaveSectionWriter.SaveArray: unknown Godot.VariantType {0}", value[i].VariantType ) );
 					break;
 				};
 			}
+			FieldCount++;
+		}
+		public void SaveByteArray( string name, byte[] value ) {
+			ArchiveSystem.SaveWriter.Write( name );
+			ArchiveSystem.SaveWriter.Write( (uint)FieldType.ByteArray );
+			ArchiveSystem.SaveWriter.Write( value.Length );
+			ArchiveSystem.SaveWriter.Write( value );
+			FieldCount++;
 		}
 	};
 };

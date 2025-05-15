@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DialogueManagerRuntime;
 using Godot;
@@ -8,6 +9,9 @@ namespace PlayerSystem {
 	public partial class HeadsUpDisplay : CanvasLayer {
 		[Export]
 		private Player _Owner;
+
+		private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+		private static readonly Color HiddenColor = new Color( 0.0f, 0.0f, 0.0f, 0.0f );
 
 		private Notebook NoteBook;
 
@@ -44,6 +48,7 @@ namespace PlayerSystem {
 		private Timer SaveTimer;
 		private Control SaveSpinner;
 
+		private Timer WeaponStatusTimer;
 		private WeaponEntity WeaponData;
 		private TextureRect WeaponStatus;
 		private TextureRect WeaponModeBladed;
@@ -69,7 +74,7 @@ namespace PlayerSystem {
 		private Label WorldTimeHour;
 		private Label WorldTimeMinute;
 
-		private RichTextLabel DialogueLabel;
+		private static System.Action<int> DialogueCallback;
 
 		private Dictionary<string, StatusIcon> StatusIcons;
 
@@ -109,10 +114,17 @@ namespace PlayerSystem {
 			Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
 			DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
 		}
+		public static void StartDialogue( Resource dialogueResource, string key, System.Action<int> callback ) {
+			DialogueManager.ShowDialogueBalloon( dialogueResource, key );
+			DialogueCallback = callback;
+		}
 
 		private void OnDialogueEnded( Resource dialogueResource ) {
 		}
 		private void OnDialogueStarted( Resource dialogueResource ) {
+		}
+		private void OnMutated( Godot.Collections.Dictionary mutation ) {
+			DialogueCallback?.DynamicInvoke( DialogueGlobals.Instance.PlayerChoice );
 		}
 
 		private void OnOpenDoorButtonPressed() {
@@ -156,6 +168,7 @@ namespace PlayerSystem {
 
 			DialogueManager.DialogueStarted += OnDialogueStarted;
 			DialogueManager.DialogueEnded += OnDialogueEnded;
+			DialogueManager.Mutated += OnMutated;
 
 			if ( GameConfiguration.GameMode != GameMode.Multiplayer
 				&& GetTree().CurrentScene.Name == "World" )
@@ -166,7 +179,7 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
-			DialogueLabel = GetNode<RichTextLabel>( "DialogueLabel" );
+//			DialogueLabel = GetNode<RichTextLabel>( "DialogueLabel" );
 
 			NoteBook = GetNode<Notebook>( "NotebookContainer" );
 			NoteBook.ProcessMode = ProcessModeEnum.Disabled;
@@ -239,22 +252,33 @@ namespace PlayerSystem {
 
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
+			WeaponStatusTimer = new Timer();
+			WeaponStatusTimer.WaitTime = 10.5f;
+			WeaponStatusTimer.OneShot = true;
+			WeaponStatusTimer.Connect( "timeout", Callable.From( () => {
+				Tween Tweener = CreateTween();
+				Tweener.TweenProperty( WeaponStatus, "modulate", HiddenColor, 1.0f );
+			} ) );
+			AddChild( WeaponStatusTimer );
+
 			_Owner.Damaged += ( Entity source, Entity target, float nAmount ) => { HealthBar.SetHealth( target.GetHealth() ); };
 			_Owner.SwitchedWeapon += SetWeapon;
+			_Owner.UsedWeapon += OnWeaponUsed;
 			_Owner.SwitchedWeaponMode += ( WeaponEntity source, WeaponEntity.Properties useMode ) => {
-				WeaponModeBladed.Material.Set( "shader_parameter/status_active",
-					( source.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0 );
-				WeaponModeBlunt.Material.Set( "shader_parameter/status_active",
-					( source.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0 );
+				WeaponStatus.Modulate = DefaultColor;
+				WeaponStatusTimer.Start();
+
+				WeaponModeBladed.Visible = ( source.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0;
+				WeaponModeBlunt.Visible = ( source.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0;
 				
 				if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", true );
+					WeaponModeFirearm.Show();
 					WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
 					if ( source.GetReserve() != null ) {
 						WeaponStatusBulletReserve.Text = source.GetReserve().Amount.ToString();
 					}
 				} else {
-					WeaponModeFirearm.Material.Set( "shader_parameter/status_active", false );
+					WeaponModeFirearm.Hide();
 				}
 			};
 
@@ -268,10 +292,16 @@ namespace PlayerSystem {
 		}
 
 		private void OnWeaponReloaded( WeaponEntity source ) {
+			WeaponStatus.Modulate = DefaultColor;
+			WeaponStatusTimer.Start();
+
 			WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
 			WeaponStatusBulletReserve.Text = source.GetReserve() != null ? source.GetReserve().Amount.ToString() : "0";
 		}
 		private void OnWeaponUsed( WeaponEntity source ) {
+			WeaponStatus.Modulate = DefaultColor;
+			WeaponStatusTimer.Start();
+			
 			if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
 			}
@@ -283,13 +313,15 @@ namespace PlayerSystem {
 			}
 
 			if ( weapon == null ) {
-				WeaponStatus.Hide();
+				WeaponStatus.Modulate = HiddenColor;
 				WeaponStatus.ProcessMode = ProcessModeEnum.Disabled;
 				return;
 			} else {
-				WeaponStatus.Show();
 				WeaponStatus.ProcessMode = ProcessModeEnum.Pausable;
 			}
+
+			WeaponStatus.Modulate = DefaultColor;
+			WeaponStatusTimer.Start();
 
 			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				WeaponStatusFirearm.Show();
@@ -366,6 +398,8 @@ namespace PlayerSystem {
 				return;
 			}
 
+			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ), Input.CursorShape.Arrow );
+
 			InteractionData = item;
 			
 			if ( CurrentInteractor == JumpInteractor ) {
@@ -407,6 +441,8 @@ namespace PlayerSystem {
 			}
 			CurrentInteractor?.Hide();
 			CurrentInteractor = null;
+
+			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CursorShape.Arrow );
 		}
 
 		public void ShowAnnouncement( string text ) {

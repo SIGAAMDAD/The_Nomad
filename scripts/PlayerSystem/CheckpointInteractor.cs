@@ -193,7 +193,7 @@ namespace PlayerSystem {
 			CheckpointMainContainer.Hide();
 			RestingContainer.Show();
 
-			ArchiveSystem.SaveGame( null, 0 );
+			ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
 		}
 	};
 };

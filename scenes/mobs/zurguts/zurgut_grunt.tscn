@@ -35,13 +35,11 @@ Relations = {}
 Debts = {}
 
 [node name="AreaOfEffect" type="Area2D" parent="."]
-position = Vector2(-6, 19)
 collision_layer = 12
 collision_mask = 12
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AreaOfEffect"]
-position = Vector2(6, -6.5)
 shape = SubResource("CircleShape2D_g7vll")
 disabled = true
 

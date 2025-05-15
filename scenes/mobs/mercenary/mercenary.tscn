@@ -15,7 +15,7 @@ shader_parameter/glow_color = Color(0, 0.133333, 0.541176, 1)
 size = Vector2(11, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jglyl"]
-size = Vector2(19, 18)
+size = Vector2(22, 20)
 
 [node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
 z_index = 7
@@ -24,7 +24,7 @@ collision_mask = 12
 script = ExtResource("1_wewif")
 LoseInterestTime = 10.0
 SightDetectionTime = 8.0
-SightDetectionSpeed = 0.25
+SightDetectionSpeed = 2.0
 MovementSpeed = 190.0
 Health = 100.0
 Relations = {}
@@ -39,8 +39,8 @@ sprite_frames = ExtResource("2_61sma")
 animation = &"move"
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
-collision_layer = 20
-collision_mask = 20
+collision_layer = 16
+collision_mask = 16
 script = ExtResource("4_jglyl")
 Parent = NodePath("../../..")
 
@@ -50,14 +50,14 @@ shape = SubResource("RectangleShape2D_yrnty")
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")
-animation = &"move"
+animation = &"idle"
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_yrnty")
 animation = &"move"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 6)
+position = Vector2(0, 7)
 shape = SubResource("RectangleShape2D_jglyl")
 
 [node name="DetectionMeter" type="Line2D" parent="."]

@@ -80,8 +80,11 @@ namespace Renown.Thinkers {
 			}
 		};
 
+		[Export]
 		private int MaxMembers = 0;
+		[Export]
 		private int MemberCount = 0;
+		[Export]
 		private StringName FamilyName;
 
 		[Export]

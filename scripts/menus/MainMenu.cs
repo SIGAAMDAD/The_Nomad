@@ -40,19 +40,21 @@ public partial class MainMenu : Control {
 	public delegate void CreditsMenuEventHandler();
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
+	[Signal]
+	public delegate void KonamiCodeSuccessEventHandler();
 
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 		AudioFade.Finished -= OnAudioFadeFinished;
 	}
 	private void OnBeginGameFinished() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From(  OnBeginGameFinished ) );
 		QueueFree();
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 	}
 
 	private void OnContinueGameFinished() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From(  OnContinueGameFinished ) );
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
@@ -82,7 +84,7 @@ public partial class MainMenu : Control {
 			GetTree().ChangeSceneToPacked( LoadedWorld );
 		};
 		LoadThread = new Thread( () => {
-			ArchiveSystem.LoadGame();
+			ArchiveSystem.LoadGame( SettingsData.GetSaveSlot() );
 			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
 			CallDeferred( "emit_signal", "FinishedLoading" );
 		} );
@@ -99,12 +101,12 @@ public partial class MainMenu : Control {
 		UIChannel.Play();
 
 		Hide();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From(  OnContinueGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+		AudioFade.Connect( "finished", Callable.From(  OnAudioFadeFinished ) );
 	}
 	private void OnNewGameButtonPressed() {
 		if ( Loaded ) {
@@ -112,15 +114,21 @@ public partial class MainMenu : Control {
 		}
 		Loaded = true;
 
+		int SlotIndex = 0;
+		while ( ArchiveSystem.SlotExists( SlotIndex ) ) {
+			SlotIndex++;
+		}
+		SettingsData.SetSaveSlot( SlotIndex );
+
 		EmitSignalBeginGame();
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+		AudioFade.Connect( "finished", Callable.From(  OnAudioFadeFinished ) );
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From(  OnBeginGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 
@@ -170,8 +178,8 @@ public partial class MainMenu : Control {
 
 	public override void _Ready() {
 		PhysicsServer2D.SetActive( false );
-		
-		if ( SettingsData.GetDyslexiaMode() ) {
+
+		if (SettingsData.GetDyslexiaMode() ) {
 			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			Theme = AccessibilityManager.DefaultTheme;
@@ -221,7 +229,7 @@ public partial class MainMenu : Control {
 		CreditsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
+		CreditsButton.Connect( "pressed", Callable.From( OnModsButtonPressed));
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
 		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
@@ -244,6 +252,9 @@ public partial class MainMenu : Control {
 			CreditsButton,
 			ExitButton
 		];
+
+		Node KonamiCode = GetNode( "KonamiCode" );
+		KonamiCode.Connect( "success", Callable.From( EmitSignalKonamiCodeSuccess ) );
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

@@ -51,7 +51,7 @@ shape = SubResource("RectangleShape2D_sv13l")
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_q3nyr")
-animation = &"idle"
+animation = &"die_low"
 autoplay = "calm"
 
 [node name="SmokeEmitter" type="CPUParticles2D" parent="Animations/BodyAnimations"]

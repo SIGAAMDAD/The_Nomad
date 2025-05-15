@@ -88,7 +88,7 @@ namespace Renown.Thinkers {
 				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
 				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
 				ray.Enabled = true;
-				ray.CollisionMask = (uint)PhysicsLayer.Player;
+				ray.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
 				SightLines[i] = ray;
 				HeadAnimations.AddChild( ray );
 			}
@@ -160,6 +160,7 @@ namespace Renown.Thinkers {
 				ArmAnimations.Hide();
 				if ( BodyAnimations.Animation != "die_high" ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					BodyAnimations.SetDeferred( "process_mode", (long)ProcessModeEnum.Pausable );
 					BodyAnimations.CallDeferred( "play", "die_low" );
 				}
 

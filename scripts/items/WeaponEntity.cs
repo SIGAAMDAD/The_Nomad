@@ -572,7 +572,7 @@ public partial class WeaponEntity : Node2D {
 			if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
 				if ( collision is Entity entity && entity != null && entity != _Owner ) {
 					float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-					if ( distance > 20.0f ) {
+					if ( distance > 80.0f ) {
 						// out of bleed range, no healing
 						frameDamage -= damage;
 					}

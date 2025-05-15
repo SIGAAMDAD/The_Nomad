@@ -21,10 +21,10 @@ bg_color = Color(1, 1, 1, 1)
 
 [node name="HealthBar" type="ProgressBar"]
 z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_right = 8.009
 anchor_bottom = 1.0
-offset_right = 4486.0
+offset_right = 0.239258
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_dj7nm")
@@ -49,7 +49,7 @@ show_percentage = false
 metadata/_edit_use_anchors_ = true
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.4
+wait_time = 1.5
 one_shot = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -18,7 +18,7 @@ icon = ExtResource("3_p7eh0")
 weight = 2.25
 properties = {
 "casing_icon": ExtResource("4_yxm4u"),
-"damage": 18.0,
+"damage": 14.0,
 "damage_falloff": SubResource("Curve_p7eh0"),
 "description": "12_GAUGE_DESCRIPTION",
 "effects": PackedStringArray(),

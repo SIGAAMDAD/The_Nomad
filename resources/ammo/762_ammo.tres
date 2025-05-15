@@ -17,7 +17,7 @@ name = "7.62mm"
 icon = ExtResource("1_a8w8a")
 properties = {
 "casing_icon": ExtResource("2_i4m1o"),
-"damage": 80.0,
+"damage": 60.0,
 "damage_falloff": SubResource("Curve_qnvb1"),
 "pickup_sfx": ExtResource("4_qnvb1"),
 "range": 2220.0,
