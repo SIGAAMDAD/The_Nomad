@@ -64,3 +64,10 @@ shape = SubResource("RectangleShape2D_jglyl")
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
+
+[node name="AttackMeter" type="Line2D" parent="."]
+visible = false
+modulate = Color(0, 1, 0, 1)
+position = Vector2(11, 0)
+points = PackedVector2Array(-25, -19, 4, -19)
+width = 6.0

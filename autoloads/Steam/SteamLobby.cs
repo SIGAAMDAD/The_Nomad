@@ -350,11 +350,7 @@ public partial class SteamLobby : Node {
 		}
 	}
 
-	private void ReadP2Packet() {
-		if ( !SteamNetworking.IsP2PPacketAvailable( out uint packetSize ) ) {
-			return;
-		}
-
+	private void ReadP2Packet( uint packetSize ) {
 		SteamNetworking.ReadP2PPacket( CachedPacket, packetSize, out packetSize, out CSteamID senderId );
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 
@@ -383,7 +379,7 @@ public partial class SteamLobby : Node {
 		}
 
 		if ( SteamNetworking.IsP2PPacketAvailable( out uint packetSize ) ) {
-			ReadP2Packet();
+			ReadP2Packet( packetSize );
 			ReadPackets( readCount + 1 );
 		}
 	}

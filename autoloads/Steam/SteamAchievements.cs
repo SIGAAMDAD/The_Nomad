@@ -80,6 +80,7 @@ public partial class SteamAchievements : Node {
 		Not_Like_Us,
 		John_Wick_Mode,
 		The_Man_The_Myth_The_Legend,
+		DNA_Of_The_Soul,
 		
 		Count
 	};

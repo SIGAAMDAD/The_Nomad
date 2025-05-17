@@ -55,7 +55,7 @@ public partial class LevelData : Node2D {
 	];
 
 	[Export]
-	protected Player ThisPlayer;
+	public Player ThisPlayer;
 	[Export]
 	protected Node PlayerList = null;
 

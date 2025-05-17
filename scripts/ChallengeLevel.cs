@@ -53,17 +53,14 @@ public partial class ChallengeLevel : LevelData {
 
 	private void OnHellbreakerExitFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnHellbreakerExitFinished ) );
+
+		Hellbreaker.Active = false;
 		
 		Hellbreaker.Hide();
 		Level.Show();
 	}
 	public void ExitHellbreaker() {
 		Level.ProcessMode = ProcessModeEnum.Pausable;
-
-		Godot.Collections.Array<Node> entities = GetTree().GetNodesInGroup( "Enemies" );
-		for ( int i = 0; i < entities.Count; i++ ) {
-			entities[i].ProcessMode = ProcessModeEnum.Pausable;
-		}
 
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnHellbreakerExitFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
@@ -80,26 +77,43 @@ public partial class ChallengeLevel : LevelData {
 
 		EmitSignalHellbreakerBegin();
 	}
+	private void OnPlayerRespawnTransitionFinished() {
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnPlayerRespawnTransitionFinished ) );
+
+		if ( Hellbreaker.Active ) {
+			EmitSignalHellbreakerFinished();
+
+			Hellbreaker.ProcessMode = ProcessModeEnum.Disabled;
+			Hellbreaker.Hide();
+
+			Level.ProcessMode = ProcessModeEnum.Pausable;
+			Level.Show();
+		}
+
+		EmitSignalPlayerRespawn();
+	}
 	private void OnPlayerDie( Entity source, Entity target ) {
-		if ( Hellbreaker.Activate( ThisPlayer ) ) {
+		if ( !Hellbreaker.Active && Hellbreaker.Activate( ThisPlayer ) ) {
 			Level.CallDeferred( "hide" );
 			Level.SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled );
 
-			Godot.Collections.Array<Node> entities = GetTree().GetNodesInGroup( "Enemies" );
-			for ( int i = 0; i < entities.Count; i++ ) {
-				entities[i].ProcessMode = ProcessModeEnum.Disabled;
+			if ( !GetNode<CanvasLayer>( "/root/TransitionScreen" ).IsConnected( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) ) ) {
+				GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) );
+				GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+				
+				Console.PrintLine( "Beginning hellbreaker..." );
 			}
+			return;
+		}
 
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnHellbreakerTransitionFinished ) );
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-
-			Console.PrintLine( "Beginning hellbreaker..." );
+		if ( GetNode<CanvasLayer>( "/root/TransitionScreen" ).IsConnected( "transition_finished", Callable.From( OnPlayerRespawnTransitionFinished ) ) ) {
 			return;
 		}
 
 		DeathCounter++;
 
-		EmitSignalPlayerRespawn();
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnPlayerRespawnTransitionFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		BonusFlags &= ~ScoreBonus.NoDeaths;
 	}
 	private void OnPlayerDamaged( Entity source, Entity target, float nAmount ) {
@@ -134,9 +148,9 @@ public partial class ChallengeLevel : LevelData {
 		TotalScore += MaxCombo * 10;
 		TotalScore += HellbreakCounter * 5;
 
-		int milliseconds = (int)Timer.Elapsed.TotalMilliseconds;
-		int seconds = (int)( milliseconds / 1000.0f );
-		int minutes = (int)( seconds / 60.0f );
+		int milliseconds = Timer.Elapsed.Milliseconds;
+		int seconds = Timer.Elapsed.Seconds;
+		int minutes = Timer.Elapsed.Minutes;
 
 		if ( MinTimeMinutes != 0 ) {
 			int leftOver = MinTimeMinutes - minutes;
@@ -169,7 +183,12 @@ public partial class ChallengeLevel : LevelData {
 		
 		ChallengeModeScore ScoreOverlay = ResourceCache.GetScene( "res://scenes/menus/challenge_mode_score.tscn" ).Instantiate<ChallengeModeScore>();
 		AddChild( ScoreOverlay );
-		ScoreOverlay.SetScores( TotalScore, MaxCombo, minutes, seconds, milliseconds );
+		ScoreOverlay.SetScores(
+			new ScoreData(
+				TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", ChallengeCache.GetCurrentMap() ) ),
+				TotalScore, MaxCombo, minutes, seconds, milliseconds, TotalEnemies, DeathCounter, BonusFlags
+			)
+		);
 	}
 	public static void EndCombo( int nCurrentCombo ) {
 		if ( nCurrentCombo > MaxCombo ) {

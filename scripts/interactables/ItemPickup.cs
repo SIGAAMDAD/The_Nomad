@@ -4,7 +4,7 @@ public partial class ItemPickup : InteractionItem {
 	[Export]
 	public Resource Data;
 
-	private Sprite2D Icon;
+	protected Sprite2D Icon;
 
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		// TODO: auto-pickup toggle?
@@ -13,7 +13,7 @@ public partial class ItemPickup : InteractionItem {
 
 			bool done = false;
 			for ( int i = 0; i < Categories.Count; i++ ) {
-				string name = (string)Categories[i].Get( "name" );
+				string name = (string)Categories[ i ].Get( "name" );
 				switch ( name ) {
 				case "Weapon":
 					WeaponEntity weapon = new WeaponEntity();
@@ -33,7 +33,8 @@ public partial class ItemPickup : InteractionItem {
 					player.PickupAmmo( ammo );
 					done = true;
 					break;
-				};
+				}
+				;
 			}
 
 			if ( done ) {
@@ -61,7 +62,7 @@ public partial class ItemPickup : InteractionItem {
 		}
 	}
 
-	private void CreateSprite() {
+	protected void CreateSprite() {
 		Icon = new Sprite2D();
 		Icon.Name = "Icon";
 		Icon.Texture = (Texture2D)Data.Get( "icon" );

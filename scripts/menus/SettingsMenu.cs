@@ -134,7 +134,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
 		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
 		SettingsData.SetShowFPS( ShowFPS.ButtonPressed );
-//		SettingsData.SetShowBlood( ShowBlood.ButtonPressed );
+		SettingsData.SetShowBlood( ShowBlood.ButtonPressed );
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -214,6 +214,12 @@ public partial class SettingsMenu : Control {
 		ShowFPS.SetProcessInternal( false );
 		ShowFPS.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		ShowFPS.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		ShowBlood = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowBloodButton/ShowBloodCheckBox" );
+		ShowBlood.SetProcess( false );
+		ShowBlood.SetProcessInternal( false );
+		ShowBlood.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		ShowBlood.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		EffectsOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/EffectsOnButton/EffectsOnCheckBox" );
 		EffectsOn.SetProcess( false );
@@ -414,6 +420,7 @@ public partial class SettingsMenu : Control {
 		SunLightEnabled.ButtonPressed = SettingsData.GetSunLightEnabled();
 		SunShadowQuality.Selected = (int)SettingsData.GetSunShadowQuality();
 		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();
+		ShowBlood.ButtonPressed = SettingsData.GetShowBlood();
 
 		EffectsOn.ButtonPressed = SettingsData.GetEffectsOn();
 		EffectsVolume.Value = SettingsData.GetEffectsVolume();

@@ -41,6 +41,9 @@ namespace Renown.Thinkers {
 
 		private Line2D DetectionMeter;
 
+		private float StartHealth = 0.0f;
+		private Godot.Vector2 StartPosition = Godot.Vector2.Zero;
+
 		private Curve BlowupDamageCurve;
 		private Timer BlowupTimer = null;
 
@@ -147,12 +150,21 @@ namespace Renown.Thinkers {
 				return;
 			}
 
-			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
-				if ( HitHead ) {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
-					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
-				} else {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+			if ( source is Player ) {
+				if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+					if ( BodyAnimations.Animation == "die_high" ) {
+						ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+					} else if ( BodyAnimations.Animation == "die_low" ) {
+						ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+					}
+				} else if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
+					if ( BodyAnimations.Animation == "die_high" ) {
+						JohnWickMode.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+					} else if ( BodyAnimations.Animation == "die_low" ) {
+						JohnWickMode.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+					}
 				}
 			}
 
@@ -181,6 +193,25 @@ namespace Renown.Thinkers {
 				ArmAnimations.Hide();
 				HeadAnimations.Hide();
 				BodyAnimations.Play( "dead" );
+
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				SetDeferred( "collision_layer", 0 );
+				SetDeferred( "collision_mask", 0 );
+
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( "monitoring", false );
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+
+				DetectionMeter.CallDeferred( "hide" );
+
+				Velocity = Godot.Vector2.Zero;
+				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
+				
+				GotoPosition = Godot.Vector2.Zero;
+				Flags |= ThinkerFlags.Dead;
+				HeadAnimations.Hide();
+				ArmAnimations.Hide();
+				CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+				BodyAnimations.CallDeferred( "play", "dead" );
 				return;
 			}
 
@@ -231,21 +262,83 @@ namespace Renown.Thinkers {
 			ArmAnimations.CallDeferred( "play", "idle" );
 		}
 
+		private void OnPlayerRespawn() {
+			GlobalPosition = StartPosition;
+			Health = StartHealth;
+
+			DetectionMeter.CallDeferred( "show" );
+			ArmAnimations.CallDeferred( "show" );
+			HeadAnimations.CallDeferred( "show" );
+
+			NavAgent.AvoidanceEnabled = true;
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+
+			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+
+			Flags &= ~ThinkerFlags.Dead;
+
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+
+			Target = null;
+			SightTarget = null;
+
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				BodyAnimations.FlipH = true;
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+		}
+		private void OnHellbreakerBegin() {
+			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
+
+			ProcessMode = ProcessModeEnum.Disabled;
+		}
+		private void OnHellbreakerFinished() {
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+
+			ProcessMode = ProcessModeEnum.Pausable;
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				AddToGroup( "Enemies" );
+
+				LevelData.Instance.PlayerRespawn += OnPlayerRespawn;
+				LevelData.Instance.HellbreakerBegin += OnHellbreakerBegin;
+				LevelData.Instance.HellbreakerFinished += OnHellbreakerFinished;
 			}
 
 			Die += OnDie;
+
+			StartHealth = Health;
+			StartPosition = GlobalPosition;
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
-			
+
 			AreaOfEffect = GetNode<Area2D>( "AreaOfEffect" );
 			AreaOfEffect.CollisionLayer = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
 			AreaOfEffect.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
@@ -253,8 +346,8 @@ namespace Renown.Thinkers {
 
 			HammerShape = GetNode<CollisionShape2D>( "AreaOfEffect/CollisionShape2D" );
 			HammerShape.Disabled = true;
-//			AreaOfEffect.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DEntered ) );
-//			AreaOfEffect.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DExited ) );
+			//			AreaOfEffect.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DEntered ) );
+			//			AreaOfEffect.Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnAreaOfEffectShape2DExited ) );
 
 			AttackTimer = new Timer();
 			AttackTimer.OneShot = true;
@@ -286,7 +379,8 @@ namespace Renown.Thinkers {
 			case DirType.West:
 				LookDir = Godot.Vector2.Left;
 				break;
-			};
+			}
+			;
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 

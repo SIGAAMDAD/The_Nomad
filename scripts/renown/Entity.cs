@@ -1,7 +1,5 @@
-using GDExtension.Wrappers;
 using Godot;
 using Renown.World;
-using Renown.World.Settlements;
 using System.Collections.Generic;
 
 /// <summary>
@@ -107,6 +105,12 @@ namespace Renown {
 		public virtual void Load() {
 		}
 
+		public virtual void ClearStatusEffects() {
+			foreach ( var effect in StatusEffects ) {
+				effect.Value.Stop();
+			}
+			StatusEffects.Clear();
+		}
 		public virtual void AddStatusEffect( string effectName ) {
 			if ( StatusEffects.TryGetValue( effectName, out StatusEffect data ) ) {
 				data.ResetTimer();
@@ -340,6 +344,10 @@ namespace Renown {
 
 		public override void _Ready() {
 			base._Ready();
+
+			if ( LevelData.Instance != null ) {
+				LevelData.Instance.PlayerRespawn += ClearStatusEffects;
+			}
 
 			TraitCache = new HashSet<Trait>( Traits.Count );
 			for ( int i = 0; i < Traits.Count; i++ ) {

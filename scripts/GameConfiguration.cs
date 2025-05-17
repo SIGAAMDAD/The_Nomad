@@ -19,10 +19,13 @@ public enum GameMode {
 	LocalCoop4,
 	Multiplayer,
 	ChallengeMode,
+	JohnWick,
 };
 
 public partial class GameConfiguration : Node {
 	public static Node LoadedLevel = null;
+
+	public static bool MemeMode = false;
 
 	public static bool Paused = false;
 	public static GameDifficulty GameDifficulty = GameDifficulty.Normal;

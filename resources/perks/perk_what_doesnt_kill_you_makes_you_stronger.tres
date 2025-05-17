@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dkq36a8t4ph6q"]
+
+[ext_resource type="Script" uid="uid://cahru52c0ag64" path="res://scripts/PlayerSystem/Perks/WhatDoesntKillYouMakesYouStronger.cs" id="1_pvrvj"]
+
+[resource]
+script = ExtResource("1_pvrvj")
+Name = &"PERK_WHAT_DOESNT_KILL_YOU_MAKES_YOU_STRONGER_NAME"
+Description = &"PERK_WHAT_DOESNT_KILL_YOU_MAKES_YOU_STRONGER_DESCRIPTION"

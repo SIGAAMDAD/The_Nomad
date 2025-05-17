@@ -160,7 +160,7 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Damage( Entity source, float nAmount ) {
-			BloodParticleFactory.CreateDeferred( source.GlobalPosition, GlobalPosition );
+			BloodParticleFactory.CreateDeferred( source != null ? source.GlobalPosition : Godot.Vector2.Zero, GlobalPosition );
 			base.Damage( source, nAmount );
 		}
 		
@@ -404,7 +404,7 @@ namespace Renown.Thinkers {
 			base._Ready();
 
 			// TODO: make renown system operate in some challenge modes
-			if ( GameConfiguration.GameMode != GameMode.ChallengeMode ) {
+			if ( GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {
 				InitRenownStats();
 			}
 
@@ -430,8 +430,12 @@ namespace Renown.Thinkers {
 			NavAgent.AvoidanceLayers = 1;
 			NavAgent.AvoidanceMask = 1;
 			NavAgent.NeighborDistance = 1024.0f;
-			NavAgent.Radius = 50.0f;
-			NavAgent.MaxNeighbors = 20;
+			if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
+				NavAgent.Radius = 30.0f;
+			} else {
+				NavAgent.Radius = 80.0f;
+			}
+			NavAgent.MaxNeighbors = 30;
 			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.TimeHorizonAgents = 2.0f;
 			NavAgent.MaxSpeed = MovementSpeed;

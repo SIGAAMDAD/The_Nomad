@@ -1,4 +1,5 @@
 using Godot;
+using System.Diagnostics;
 
 namespace Renown.Thinkers {
 	public partial class Imp : Thinker {
@@ -49,8 +50,24 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		private void OnHellbreakerFinished() {
+			ProcessMode = ProcessModeEnum.Disabled;
+			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
+			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+		}
+		private void OnHellbreakerBegin() {
+			ProcessMode = ProcessModeEnum.Pausable;
+			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+		}
+
 		public override void _Ready() {
 			base._Ready();
+
+			if ( Hellbreaker.Active ) {
+				LevelData.Instance.HellbreakerFinished += OnHellbreakerFinished;
+				LevelData.Instance.HellbreakerBegin += OnHellbreakerBegin;
+			}
 
 			AttackTimer = new Timer();
 			AttackTimer.Name = "AttackTimer";
@@ -117,7 +134,7 @@ namespace Renown.Thinkers {
 
 					AttackTimer.CallDeferred( "start" );
 					BodyAnimations.CallDeferred( "play", "attack" );
-				} else if ( Target.GlobalPosition.DistanceTo( GlobalPosition ) > 80.0f ) {
+				} else if ( Target.GlobalPosition.DistanceTo( GlobalPosition ) > 40.0f ) {
 					SetNavigationTarget( Target.GlobalPosition );
 				}
 			}

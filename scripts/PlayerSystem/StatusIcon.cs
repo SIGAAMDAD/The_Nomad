@@ -7,6 +7,8 @@ namespace PlayerSystem {
 		public override void _Ready() {
 			base._Ready();
 
+			LevelData.Instance.ThisPlayer.Die += ( source, target ) => { SetProcess( false ); Hide(); };
+
 			Material = ResourceLoader.Load<Material>( "res://resources/materials/status_icon.tres" );
 			Material.Set( "shader_parameter/progress", 1.0f );
 			SetProcess( false );
@@ -20,10 +22,14 @@ namespace PlayerSystem {
 			SetProcess( true );
 			StatusEffect = effect;
 			Texture = StatusEffect.GetIcon();
+
+			StatusEffect.Timeout += Stop;
 		}
 		public void Stop() {
 			Hide();
 			SetProcess( false );
+
+			StatusEffect.Timeout -= Stop;
 		}
 	};
 };

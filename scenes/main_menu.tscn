@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_tbmy8"]
-[ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="2_v43k5"]
+[ext_resource type="PackedScene" uid="uid://dk1u48g6wdrtg" path="res://scenes/menus/demo_menu.tscn" id="3_rtw2f"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
 [ext_resource type="AudioStream" uid="uid://b6jcyfb1jdyj8" path="res://music/ui/menu_intro.ogg" id="7_oa1go"]
-[ext_resource type="PackedScene" uid="uid://d1lincyw81i1f" path="res://scenes/menus/bug_reporter.tscn" id="10_5dd4i"]
+[ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="7_tbmy8"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -21,9 +21,8 @@ metadata/_edit_use_anchors_ = true
 [node name="MenuBackground" parent="." instance=ExtResource("2_tbmy8")]
 layout_mode = 1
 
-[node name="MainMenu" parent="." instance=ExtResource("2_v43k5")]
+[node name="DemoMenu" parent="." instance=ExtResource("3_rtw2f")]
 layout_mode = 1
-mouse_filter = 1
 
 [node name="ExitButton" type="Button" parent="."]
 visible = false
@@ -48,7 +47,16 @@ playback_type = 1
 [node name="UIChannel" type="AudioStreamPlayer" parent="."]
 playback_type = 1
 
-[node name="BugReporter" parent="." instance=ExtResource("10_5dd4i")]
-layout_mode = 1
+[node name="KonamiCode" type="Node" parent="." node_paths=PackedStringArray("timer")]
+process_mode = 3
+script = ExtResource("7_tbmy8")
+time_limit_mode = true
+timer = NodePath("Timer")
+reset_mode = 1
+metadata/_custom_type_script = "uid://cduis24lfk66b"
+
+[node name="Timer" type="Timer" parent="KonamiCode"]
+wait_time = 10.0
+one_shot = true
 
 [connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

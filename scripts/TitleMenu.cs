@@ -7,6 +7,7 @@ public partial class TitleMenu : Control {
 		Extras,
 		Settings,
 		Help,
+		Credits,
 		Mods
 	};
 
@@ -15,7 +16,9 @@ public partial class TitleMenu : Control {
 
 	private ExtrasMenu ExtrasMenu;
 	private SettingsMenu SettingsMenu;
-	private MainMenu MainMenu;
+	private DemoMenu DemoMenu;
+//	private MainMenu MainMenu;
+	private CreditsMenu CreditsMenu;
 	private Button ExitButton;
 
 	private LobbyBrowser LobbyBrowser;
@@ -46,23 +49,34 @@ public partial class TitleMenu : Control {
 			SettingsMenu.QueueFree();
 			SettingsMenu = null;
 			break;
+		case MenuState.Credits:
+			index = CreditsMenu.GetIndex();
+			RemoveChild( CreditsMenu );
+			CreditsMenu.QueueFree();
+			CreditsMenu = null;
+			break;
 		default:
 			Console.PrintError( "Invalid menu state!" );
 			break;
 		};
 
-		AddChild( MainMenu );
-		MoveChild( MainMenu, index );
+		//AddChild( MainMenu );
+		//MoveChild( MainMenu, index );
+		AddChild( DemoMenu );
+		MoveChild( DemoMenu, index );
 
 		ExitButton.Hide();
-		MainMenu.Show();
+		//MainMenu.Show();
+		DemoMenu.Show();
 		State = MenuState.Main;
 	}
 	private void OnMainMenuExtrasMenu() {
 		ExtrasMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
 
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
+		//int index = MainMenu.GetIndex();
+		//RemoveChild( MainMenu );
+		int index = DemoMenu.GetIndex();
+		RemoveChild( DemoMenu );
 		AddChild( ExtrasMenu );
 		MoveChild( ExtrasMenu, index );
 
@@ -72,18 +86,41 @@ public partial class TitleMenu : Control {
 	private void OnMainMenuSettingsMenu() {
 		SettingsMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
 
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
+		//int index = MainMenu.GetIndex();
+		//RemoveChild( MainMenu );
+		int index = DemoMenu.GetIndex();
+		RemoveChild( DemoMenu );
 		AddChild( SettingsMenu );
 		MoveChild( SettingsMenu, index );
 
 		ExitButton.Show();
 		State = MenuState.Settings;
 	}
+	private void OnMainMenuCreditsMenu() {
+		CreditsMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/credits_menu.tscn" ).Instantiate<CreditsMenu>();
+
+		//int index = MainMenu.GetIndex();
+		//RemoveChild( MainMenu );
+		int index = DemoMenu.GetIndex();
+		RemoveChild( DemoMenu );
+		AddChild( CreditsMenu );
+		MoveChild( CreditsMenu, index );
+
+		ExitButton.Show();
+		State = MenuState.Credits;
+	}
 
 	private void ReleaseAll() {
 		ExtrasMenu?.Free();
 		SettingsMenu?.Free();
+	}
+
+	private void OnKonamiCodeActivated() {
+		Console.PrintLine( "========== Meme Mode Activated ==========" );
+		GameConfiguration.MemeMode = true;
+		UIChannel.Stream = ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" );
+		UIChannel.Play();
+		SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
 	}
 
 	public override void _Ready() {
@@ -95,13 +132,27 @@ public partial class TitleMenu : Control {
 		Background.SetProcess( false );
 		Background.SetProcessInternal( false );
 
+		Node KonamiCode = GetNode( "KonamiCode" );
+		KonamiCode.Connect( "success", Callable.From( OnKonamiCodeActivated ) );
+
+		DemoMenu = GetNode<DemoMenu>( "DemoMenu" );
+		DemoMenu.SetProcess( true );
+		DemoMenu.SetProcessInternal( true );
+		DemoMenu.SetProcessUnhandledInput( true );
+		DemoMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
+		DemoMenu.Connect( "CreditsMenu", Callable.From( OnMainMenuCreditsMenu ) );
+		DemoMenu.BeginGame += ReleaseAll;
+
+		/*
 		MainMenu = GetNode<MainMenu>( "MainMenu" );
 		MainMenu.SetProcess( true );
 		MainMenu.SetProcessInternal( true );
 		MainMenu.SetProcessUnhandledInput( true );
 		MainMenu.Connect( "ExtrasMenu", Callable.From( OnMainMenuExtrasMenu ) );
 		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
+		MainMenu.Connect( "CreditsMenu", Callable.From( OnMainMenuCreditsMenu ) );
 		MainMenu.BeginGame += ReleaseAll;
+		*/
 
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );

@@ -20,7 +20,7 @@ properties = {
 "pickup_sfx": ExtResource("3_6bkxp"),
 "range": 1950.0,
 "stack_add_amount": 48,
-"type": 1,
+"type": 0,
 "velocity": 480
 }
 categories = Array[ItemCategory]([ExtResource("1_g51x3"), ExtResource("2_6bkxp")])

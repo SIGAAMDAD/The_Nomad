@@ -10005,7 +10005,6 @@ FactionImportance = 20
 [node name="Biomes" type="Node2D" parent="."]
 
 [node name="GlobalNavMesh" type="NavigationRegion2D" parent="Biomes"]
-visible = false
 position = Vector2(-88036, 52976)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 

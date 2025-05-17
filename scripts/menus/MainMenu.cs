@@ -40,8 +40,6 @@ public partial class MainMenu : Control {
 	public delegate void CreditsMenuEventHandler();
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
-	[Signal]
-	public delegate void KonamiCodeSuccessEventHandler();
 
 	private void OnAudioFadeFinished() {
 		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
@@ -156,6 +154,14 @@ public partial class MainMenu : Control {
 		UIChannel.Play();
 		EmitSignalExtrasMenu();
 	}
+	private void OnCreditsButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+		EmitSignalCreditsMenu();
+	}
 	private void OnQuitGameButtonPressed() {
 		if ( Loaded ) {
 			return;
@@ -229,7 +235,7 @@ public partial class MainMenu : Control {
 		CreditsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
 		CreditsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "pressed", Callable.From( OnModsButtonPressed));
+		CreditsButton.Connect( "pressed", Callable.From( OnCreditsButtonPressed ) );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
 		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
@@ -252,9 +258,6 @@ public partial class MainMenu : Control {
 			CreditsButton,
 			ExitButton
 		];
-
-		Node KonamiCode = GetNode( "KonamiCode" );
-		KonamiCode.Connect( "success", Callable.From( EmitSignalKonamiCodeSuccess ) );
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

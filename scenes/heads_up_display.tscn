@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=56 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
 [ext_resource type="Texture2D" uid="uid://brybtxxdfifq4" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
+[ext_resource type="Shader" uid="uid://cdp55flm7nhn8" path="res://shaders/parry_overlay.gdshader" id="11_vfeoh"]
 [ext_resource type="Texture2D" uid="uid://cp1jwldw8j5s4" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
 [ext_resource type="Texture2D" uid="uid://chkfktbcvttj1" path="res://textures/hud/status_blunt.dds" id="12_wjj4q"]
 [ext_resource type="Shader" uid="uid://bd74grhuc8kqh" path="res://shaders/ui_fade.gdshader" id="14_poeto"]
@@ -41,6 +42,16 @@ colors = PackedColorArray(0, 0, 0, 0.52549)
 gradient = SubResource("Gradient_ot7dw")
 width = 16
 height = 16
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4iujc"]
+shader = ExtResource("11_vfeoh")
+
+[sub_resource type="Gradient" id="Gradient_vfeoh"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4iujc"]
+gradient = SubResource("Gradient_vfeoh")
 
 [sub_resource type="Gradient" id="Gradient_p6ak3"]
 
@@ -401,7 +412,8 @@ offset_top = 21.0
 offset_right = 296.0
 offset_bottom = 36.0
 
-[node name="Overlays" type="Node" parent="MainHUD"]
+[node name="Overlays" type="CanvasLayer" parent="MainHUD"]
+metadata/_edit_use_anchors_ = true
 
 [node name="ReflexModeOverlay" type="TextureRect" parent="MainHUD/Overlays"]
 visible = false
@@ -412,6 +424,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_b27l1")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ParryOverlay" type="TextureRect" parent="MainHUD/Overlays"]
+visible = false
+texture_filter = 1
+material = SubResource("ShaderMaterial_4iujc")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_4iujc")
 expand_mode = 2
 metadata/_edit_use_anchors_ = true
 
@@ -539,7 +564,7 @@ horizontal_alignment = 1
 wait_time = 2.5
 one_shot = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainHUD"]
+[node name="StatusContainer" type="HBoxContainer" parent="MainHUD"]
 layout_mode = 0
 offset_left = 3.0
 offset_top = 40.0
@@ -547,7 +572,7 @@ offset_right = 43.0
 offset_bottom = 80.0
 metadata/_edit_use_anchors_ = true
 
-[node name="BurningStatusIcon" type="TextureRect" parent="MainHUD/HBoxContainer"]
+[node name="BurningStatusIcon" type="TextureRect" parent="MainHUD/StatusContainer"]
 visible = false
 material = ExtResource("16_bnlc1")
 custom_minimum_size = Vector2(36, 36)
@@ -557,7 +582,7 @@ expand_mode = 2
 script = ExtResource("18_a6h4m")
 metadata/_edit_use_anchors_ = true
 
-[node name="FreezingStatusIcon" type="TextureRect" parent="MainHUD/HBoxContainer"]
+[node name="FreezingStatusIcon" type="TextureRect" parent="MainHUD/StatusContainer"]
 visible = false
 material = ExtResource("16_bnlc1")
 custom_minimum_size = Vector2(36, 36)
@@ -567,7 +592,7 @@ expand_mode = 2
 script = ExtResource("18_a6h4m")
 metadata/_edit_use_anchors_ = true
 
-[node name="PoisonedStatusIcon" type="TextureRect" parent="MainHUD/HBoxContainer"]
+[node name="PoisonedStatusIcon" type="TextureRect" parent="MainHUD/StatusContainer"]
 visible = false
 material = ExtResource("16_bnlc1")
 custom_minimum_size = Vector2(36, 36)
@@ -615,6 +640,20 @@ fixed_fps = 0
 visibility_rect = Rect2(0, 0, 100, 150)
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_vg31i")
+
+[node name="LocationLabel" type="Label" parent="MainHUD"]
+modulate = Color(0, 0, 0, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.659813
+anchor_top = 0.941583
+anchor_right = 0.99375
+anchor_bottom = 0.989583
+offset_left = -0.279999
+offset_top = 0.039978
+grow_horizontal = 0
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="NotebookContainer" type="MarginContainer" parent="."]
 visible = false

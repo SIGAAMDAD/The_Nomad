@@ -9,6 +9,7 @@ shader = ExtResource("2_pe2qk")
 shader_parameter/amount = 2.758
 
 [node name="PauseMenu" type="CanvasLayer"]
+layer = 5
 script = ExtResource("1_gsnt3")
 metadata/_edit_use_anchors_ = true
 
@@ -78,6 +79,7 @@ position = Vector2i(220, 180)
 size = Vector2i(200, 158)
 dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
 dialog_autowrap = true
+cancel_button_text = "Nah"
 
 [node name="ConfirmQuit" type="ConfirmationDialog" parent="."]
 title = "Quit Game?"
@@ -85,3 +87,4 @@ position = Vector2i(220, 180)
 size = Vector2i(200, 158)
 dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
 dialog_autowrap = true
+cancel_button_text = "Nah"

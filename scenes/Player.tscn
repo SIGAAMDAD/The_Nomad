@@ -1,15 +1,15 @@
-[gd_scene load_steps=28 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=26 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
 [ext_resource type="Shader" uid="uid://5vii1onibvl0" path="res://shaders/dynamic_shadow.gdshader" id="2_srp4u"]
+[ext_resource type="Material" uid="uid://cmbb45exggw3d" path="res://resources/materials/covered_in_blood.tres" id="3_jfpux"]
 [ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="3_p7iby"]
 [ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="4_0rnld"]
 [ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="4_d2uw3"]
 [ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="5_0rnld"]
 [ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="5_a260p"]
 [ext_resource type="PackedScene" uid="uid://bmotkc0p4v2ta" path="res://scenes/effects/spark_effect.tscn" id="5_c3w3j"]
-[ext_resource type="Shader" uid="uid://cmchhosyvyvwc" path="res://shaders/blood.gdshader" id="5_jfpux"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="7_l33ml"]
 [ext_resource type="Script" uid="uid://d3p5adrjo4883" path="res://addons/godot_gameplay_systems/camera_shake/nodes/camera_shake.gd" id="8_xdf2s"]
 [ext_resource type="PackedScene" uid="uid://cjy2h2wmmfkmc" path="res://scenes/heads_up_display.tscn" id="9_bfxfw"]
@@ -23,24 +23,6 @@ shader = ExtResource("2_srp4u")
 shader_parameter/shadow_offset = Vector2(10, 10)
 shader_parameter/shadow_color = Color(0, 0, 0, 0)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_61ith"]
-noise_type = 0
-frequency = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ebwui"]
-generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 1.0
-as_normal_map = true
-bump_strength = 255.5
-noise = SubResource("FastNoiseLite_61ith")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_sfy4j"]
-shader = ExtResource("5_jfpux")
-shader_parameter/noise = SubResource("NoiseTexture2D_ebwui")
-shader_parameter/blood_coef = 0.0
-shader_parameter/color = Color(1, 0, 0.0117647, 1)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_srp4u"]
 size = Vector2(50, 28)
 
@@ -53,6 +35,9 @@ point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_61ith"]
 size = Vector2(49, 38)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jfpux"]
+size = Vector2(412.515, 218.667)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0s7ty"]
 radius = 153.118
@@ -89,7 +74,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
-material = SubResource("ShaderMaterial_sfy4j")
+material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("2_p7iby")
 animation = &"melee"
 autoplay = "idle"
@@ -100,7 +85,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
-material = SubResource("ShaderMaterial_sfy4j")
+material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("3_p7iby")
 animation = &"idle"
 autoplay = "idle"
@@ -111,7 +96,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
-material = SubResource("ShaderMaterial_sfy4j")
+material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("4_0rnld")
 autoplay = "default"
 
@@ -121,7 +106,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
-material = SubResource("ShaderMaterial_sfy4j")
+material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("5_0rnld")
 animation = &"idle"
 autoplay = "idle"
@@ -160,6 +145,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 visible = false
 y_sort_enabled = true
+material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("10_0rnld")
 animation = &"checkpoint_warp"
 
@@ -227,8 +213,8 @@ width_curve = SubResource("Curve_0rnld")
 [node name="ParryArea" type="Area2D" parent="AimAssist/AimLine"]
 position = Vector2(-2.94068e-06, 5.33333)
 scale = Vector2(3.08353, 2.66667)
-collision_layer = 0
-collision_mask = 0
+collision_layer = 28
+collision_mask = 28
 monitoring = false
 metadata/ParryBox = true
 
@@ -246,6 +232,17 @@ position = Vector2(-3.8147e-06, 5.33333)
 target_position = Vector2(740.047, 0)
 collision_mask = 28
 collide_with_areas = true
+
+[node name="ParryDamageArea" type="Area2D" parent="AimAssist/AimLine"]
+position = Vector2(98.6728, -8)
+collision_layer = 28
+collision_mask = 28
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AimAssist/AimLine/ParryDamageArea"]
+position = Vector2(145.264, 13.3333)
+shape = SubResource("RectangleShape2D_jfpux")
+disabled = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true

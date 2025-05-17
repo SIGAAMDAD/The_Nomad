@@ -4,7 +4,7 @@ using Renown;
 public partial class StatusEffect : Node2D {
 	[Export]
 	protected float Duration = 0.0f;
-
+	
 	protected Timer EffectTimer;
 	protected AudioStreamPlayer2D AudioChannel;
 	protected Entity Victim;
@@ -24,6 +24,10 @@ public partial class StatusEffect : Node2D {
 	}
 	public virtual float GetTimeLeft() {
 		return (float)EffectTimer.TimeLeft;
+	}
+	public virtual void Stop() {
+		SetProcess( false );
+		QueueFree();
 	}
 
 	public override void _Ready() {

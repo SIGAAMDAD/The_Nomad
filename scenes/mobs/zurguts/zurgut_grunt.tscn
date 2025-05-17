@@ -48,7 +48,7 @@ disabled = true
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 position = Vector2(0, -3)
 sprite_frames = ExtResource("1_wp8ts")
-animation = &"move"
+animation = &"dead"
 autoplay = "idle"
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]

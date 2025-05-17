@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DialogueManagerRuntime;
 using Godot;
@@ -12,6 +11,8 @@ namespace PlayerSystem {
 
 		private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		private static readonly Color HiddenColor = new Color( 0.0f, 0.0f, 0.0f, 0.0f );
+		private static readonly Color ArmUsedColor = new Color( 0.0f, 0.0f, 1.0f, 1.0f );
+		private static readonly Color ArmUnusedColor = new Color( 0.20f, 0.20f, 0.20f, 1.0f );
 
 		private Notebook NoteBook;
 
@@ -44,6 +45,7 @@ namespace PlayerSystem {
 
 		private TextureRect ReflexOverlay;
 		private TextureRect DashOverlay;
+		private TextureRect ParryOverlay;
 
 		private Timer SaveTimer;
 		private Control SaveSpinner;
@@ -74,6 +76,9 @@ namespace PlayerSystem {
 		private Label WorldTimeHour;
 		private Label WorldTimeMinute;
 
+		private Label LocationLabel;
+		private Timer LocationStatusTimer;
+
 		private static System.Action<int> DialogueCallback;
 
 		private Dictionary<string, StatusIcon> StatusIcons;
@@ -82,9 +87,11 @@ namespace PlayerSystem {
 
 		public HealthBar GetHealthBar() => HealthBar;
 		public RageBar GetRageBar() => RageBar;
+
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
 		public TextureRect GetDashOverlay() => DashOverlay;
-		
+		public TextureRect GetParryOverlay() => ParryOverlay;
+	
 		public Player GetPlayerOwner() => _Owner;
 		private void SaveStart() {
 			SaveSpinner.SetProcess( true );
@@ -161,18 +168,24 @@ namespace PlayerSystem {
 			base._Ready();
 
 			StatusIcons = new Dictionary<string, StatusIcon>{
-				{ "status_burning", GetNode<StatusIcon>( "MainHUD/HBoxContainer/BurningStatusIcon" ) },
-				{ "status_freezing", GetNode<StatusIcon>( "MainHUD/HBoxContainer/FreezingStatusIcon" ) },
-				{ "status_poisoned", GetNode<StatusIcon>( "MainHUD/HBoxContainer/PoisonedStatusIcon" ) },
+				{ "status_burning", GetNode<StatusIcon>( "MainHUD/StatusContainer/BurningStatusIcon" ) },
+				{ "status_freezing", GetNode<StatusIcon>( "MainHUD/StatusContainer/FreezingStatusIcon" ) },
+				{ "status_poisoned", GetNode<StatusIcon>( "MainHUD/StatusContainer/PoisonedStatusIcon" ) },
 			};
 
 			DialogueManager.DialogueStarted += OnDialogueStarted;
 			DialogueManager.DialogueEnded += OnDialogueEnded;
 			DialogueManager.Mutated += OnMutated;
 
+			LevelData.Instance.PlayerRespawn += () => {
+				foreach ( var icon in StatusIcons ) {
+					icon.Value.SetProcess( false );
+					icon.Value.Hide();
+				}
+			};
+
 			if ( GameConfiguration.GameMode != GameMode.Multiplayer
-				&& GetTree().CurrentScene.Name == "World" )
-			{
+				&& GetTree().CurrentScene.Name == "World" ) {
 				WorldTimeManager.Instance.TimeTick += OnWorldTimeTick;
 			}
 
@@ -201,10 +214,13 @@ namespace PlayerSystem {
 
 			ReflexOverlay = GetNode<TextureRect>( "MainHUD/Overlays/ReflexModeOverlay" );
 			DashOverlay = GetNode<TextureRect>( "MainHUD/Overlays/DashOverlay" );
+			ParryOverlay = GetNode<TextureRect>( "MainHUD/Overlays/ParryOverlay" );
 
-			HellbreakerOverlay = GetNode<Control>( "MainHUD/HellbreakerOverlay" );
-			LevelData.Instance.HellbreakerBegin += HellbreakerOverlay.Show;
-			LevelData.Instance.HellbreakerFinished += HellbreakerOverlay.Hide;
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				HellbreakerOverlay = GetNode<Control>( "MainHUD/HellbreakerOverlay" );
+				LevelData.Instance.HellbreakerBegin += HellbreakerOverlay.Show;
+				LevelData.Instance.HellbreakerFinished += HellbreakerOverlay.Hide;
+			}
 
 			WorldTimeYear = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/YearLabel" );
 			WorldTimeMonth = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/MonthLabel" );
@@ -253,6 +269,7 @@ namespace PlayerSystem {
 			BossHealthBar = GetNode<Control>( "MainHUD/BossHealthBar" );
 
 			WeaponStatusTimer = new Timer();
+			WeaponStatusTimer.Name = "WeaponStatusTimer";
 			WeaponStatusTimer.WaitTime = 10.5f;
 			WeaponStatusTimer.OneShot = true;
 			WeaponStatusTimer.Connect( "timeout", Callable.From( () => {
@@ -261,10 +278,34 @@ namespace PlayerSystem {
 			} ) );
 			AddChild( WeaponStatusTimer );
 
+			LocationLabel = GetNode<Label>( "MainHUD/LocationLabel" );
+			LocationLabel.Theme = AccessibilityManager.DefaultTheme;
+
+			LocationStatusTimer = new Timer();
+			LocationStatusTimer.Name = "LocationStatusTimer";
+			LocationStatusTimer.WaitTime = 5.90f;
+			LocationStatusTimer.OneShot = true;
+			LocationStatusTimer.Connect( "timeout", Callable.From( () => {
+				Tween Tweener = CreateTween();
+				Tweener.TweenProperty( LocationLabel, "modulate", HiddenColor, 1.25f );
+			} ) );
+			AddChild( LocationStatusTimer );
+
+			_Owner.LocationChanged += ( WorldArea location ) => {
+				LocationLabel.Text = location.GetAreaName();
+
+				Tween Tweener = CreateTween();
+				Tweener.TweenProperty( LocationLabel, "modulate", DefaultColor, 1.5f );
+				Tweener.Connect( "finished", Callable.From( () => { LocationStatusTimer.Start(); } ) );
+			};
 			_Owner.Damaged += ( Entity source, Entity target, float nAmount ) => { HealthBar.SetHealth( target.GetHealth() ); };
 			_Owner.SwitchedWeapon += SetWeapon;
 			_Owner.UsedWeapon += OnWeaponUsed;
-			_Owner.SwitchedWeaponMode += ( WeaponEntity source, WeaponEntity.Properties useMode ) => {
+			_Owner.WeaponStatusUpdated += ( WeaponEntity source, WeaponEntity.Properties useMode ) => {
+				if ( source != WeaponData ) {
+					return;
+				}
+
 				WeaponStatus.Modulate = DefaultColor;
 				WeaponStatusTimer.Start();
 
@@ -281,14 +322,38 @@ namespace PlayerSystem {
 					WeaponModeFirearm.Hide();
 				}
 			};
+			_Owner.HandsStatusUpdated += ( Player.Hands handsUsed ) => {
+				WeaponStatus.Modulate = DefaultColor;
+				WeaponStatusTimer.Start();
+				
+				switch ( handsUsed ) {
+				case Player.Hands.Left:
+					LeftArmIndicator.Modulate = ArmUsedColor;
+					RightArmIndicator.Modulate = ArmUnusedColor;
+					break;
+				case Player.Hands.Right:
+					LeftArmIndicator.Modulate = ArmUnusedColor;
+					RightArmIndicator.Modulate = ArmUsedColor;
+					break;
+				case Player.Hands.Both:
+					LeftArmIndicator.Modulate = ArmUsedColor;
+					RightArmIndicator.Modulate = ArmUsedColor;
+					break;
+				};
+			};
 
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
 		}
 
-		public void AddStatusEffect( string effectName ) {
-			StatusIcons[ effectName ].Show();
-			StatusIcons[ effectName ].Material.Set( "shader_parameter/progress", 1.0f );
+		public void AddStatusEffect( string effectName, StatusEffect effect ) {
+			/*
+			if ( StatusIcons.TryGetValue( effectName, out StatusIcon icon ) ) {
+				icon.Show();
+				icon.Start( effect );
+				icon.Material.Set( "shader_parameter/progress", 1.0f );
+			}
+			*/
 		}
 
 		private void OnWeaponReloaded( WeaponEntity source ) {

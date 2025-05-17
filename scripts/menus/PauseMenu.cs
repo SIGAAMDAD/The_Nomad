@@ -8,6 +8,9 @@ public partial class PauseMenu : CanvasLayer {
 	private PackedScene MainMenu;
 
 	[Signal]
+	public delegate void GamePausedEventHandler();
+
+	[Signal]
 	public delegate void LeaveLobbyEventHandler();
 
 	private void Pause() {
@@ -22,6 +25,7 @@ public partial class PauseMenu : CanvasLayer {
 			GetTree().Paused = !GetTree().Paused;
 		}
 		Visible = !Visible;
+		EmitSignalGamePaused();
 	}
 	private void OnConfirmExitConfirmed() {
 		GameConfiguration.Paused = false;
@@ -69,31 +73,40 @@ public partial class PauseMenu : CanvasLayer {
 		} ) );
 
 		ConfirmDlgOverlay = GetNode<ColorRect>( "ColorRect2" );
-		ConfirmDlgOverlay.SetProcess( false );
-		ConfirmDlgOverlay.SetProcessInternal( false );
 
 		Button ResumeButton = GetNode<Button>( "MarginContainer/VBoxContainer/ResumeButton" );
-		ResumeButton.SetProcess( false );
-		ResumeButton.SetProcessInternal( false );
 		ResumeButton.Connect( "pressed", Callable.From( Pause ) );
 
 		Button ExitToMainMenuButton = GetNode<Button>( "MarginContainer/VBoxContainer/ExitToMainMenuButton" );
-		ExitToMainMenuButton.SetProcess( false );
-		ExitToMainMenuButton.SetProcessInternal( false );
 		ExitToMainMenuButton.Connect( "pressed", Callable.From( () => {
 			ConfirmExitDlg.Show();
 			ConfirmDlgOverlay.Show();
 		} ) );
 
 		Button ExitGameButton = GetNode<Button>( "MarginContainer/VBoxContainer/ExitGameButton" );
-		ExitGameButton.SetProcess( false );
-		ExitGameButton.SetProcessInternal( false );
 		ExitGameButton.Connect( "pressed", Callable.From( () => {
 			ConfirmQuitDlg.Show();
 			ConfirmDlgOverlay.Show();
 		} ) );
 
 		ProcessMode = ProcessModeEnum.Always;
+
+		switch ( GameConfiguration.GameMode ) {
+		case GameMode.SinglePlayer:
+		case GameMode.Online:
+		case GameMode.JohnWick:
+		case GameMode.ChallengeMode:
+		case GameMode.LocalCoop2:
+		case GameMode.LocalCoop3:
+		case GameMode.LocalCoop4:
+			ConfirmExitDlg.Set( "dialogue_text", "Are you sure you want to quit?" );
+			ConfirmQuitDlg.Set( "dialogue_text", "Are you sure you want to quit?" );
+			break;
+		case GameMode.Multiplayer:
+			ConfirmExitDlg.Set( "dialogue_text", "Are you sure?" );
+			ConfirmQuitDlg.Set( "dialogue_text", "Are you sure?" );
+			break;
+		};
 
 		Input.JoyConnectionChanged += OnJoyConnectionChanged;
 	}

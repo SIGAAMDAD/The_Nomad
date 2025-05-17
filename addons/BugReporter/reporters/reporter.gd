@@ -34,6 +34,10 @@ var _cfg : ConfigFile
 
 @onready var _webhook : WebhookBuilder = $WebhookBuilder
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	if Input.is_action_just_released( "report_bug" ):
+		visible = !visible
+		get_tree().root.move_child( self, get_tree().root.get_child_count() - 1 )
 
 func _ready():
 	_reload_cfg()

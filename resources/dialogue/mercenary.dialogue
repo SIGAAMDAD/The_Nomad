@@ -1,0 +1,9 @@
+~ beg_for_life
+{{DialogueGlobals.BotName}}: No, please, please! Don't kill me!
+- No
+	set DialogueGlobals.PlayerChoice = 0
+=> END
+
+~ reason
+{{DialogueGlobals.BotName}}: I only did this for the money!
+=> END

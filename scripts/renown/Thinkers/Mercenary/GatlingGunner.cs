@@ -14,7 +14,7 @@ namespace Renown.Thinkers {
 		};
 
 		private static readonly float ExplosionDamage = 80.0f;
-		private static readonly float BulletDamage = 1.5f;
+		private static readonly float BulletDamage = 3.5f;
 
 		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 60.0f );
@@ -310,6 +310,27 @@ namespace Renown.Thinkers {
 
 			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
 			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+
+			Target = null;
+			SightTarget = null;
+
+			switch ( Direction ) {
+			case DirType.North:
+				LookDir = Godot.Vector2.Up;
+				break;
+			case DirType.East:
+				LookDir = Godot.Vector2.Right;
+				break;
+			case DirType.South:
+				LookDir = Godot.Vector2.Down;
+				break;
+			case DirType.West:
+				LookDir = Godot.Vector2.Left;
+				BodyAnimations.FlipH = true;
+				break;
+			};
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 		}
 
 		protected override void OnDie( Entity source, Entity target ) {
@@ -320,14 +341,37 @@ namespace Renown.Thinkers {
 			SetDeferred( "collision_layer", (uint)PhysicsLayer.None );
 			SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
 			
-			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
-				if ( HitHead ) {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
-					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
-				} else {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+			if ( source is Player ) {
+				if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+					if ( BodyAnimations.Animation == "die_high" ) {
+						ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+					} else if ( BodyAnimations.Animation == "die_low" ) {
+						ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+					}
+				} else if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
+					JohnWickMode.AddKill();
+					if ( BodyAnimations.Animation == "die_high" ) {
+						JohnWickMode.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
+						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+					} else if ( BodyAnimations.Animation == "die_low" ) {
+						JohnWickMode.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+					}
 				}
 			}
+		}
+		
+		private void OnHellbreakerBegin() {
+			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
+			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
+
+			ProcessMode = ProcessModeEnum.Disabled;
+		}
+		private void OnHellbreakerFinished() {
+			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
+
+			ProcessMode = ProcessModeEnum.Pausable;
 		}
 
 		public override void _Ready() {
@@ -337,6 +381,8 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 
 				LevelData.Instance.PlayerRespawn += OnPlayerRestart;
+				LevelData.Instance.HellbreakerBegin += OnHellbreakerBegin;
+				LevelData.Instance.HellbreakerFinished += OnHellbreakerFinished;
 			}
 
 			GunChannel = new AudioStreamPlayer2D();
@@ -347,7 +393,7 @@ namespace Renown.Thinkers {
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
 
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
-//			ArmAnimations.AnimationFinished += OnArmAnimationFinished;
+			//			ArmAnimations.AnimationFinished += OnArmAnimationFinished;
 
 			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
@@ -358,7 +404,9 @@ namespace Renown.Thinkers {
 
 			CurrentState = State.Guarding;
 
-			NodeCache ??= Location.GetNodeCache();
+			if ( GameConfiguration.GameMode != GameMode.JohnWick ) {
+				NodeCache ??= Location.GetNodeCache();
+			}
 
 			RevTimer = new Timer();
 			RevTimer.WaitTime = 2.5f;
@@ -413,6 +461,12 @@ namespace Renown.Thinkers {
 			AimAngle = LookAngle;
 
 			GenerateRayCasts();
+
+			if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
+				Target = LevelData.Instance.ThisPlayer;
+				Awareness = MobAwareness.Alert;
+				SightDetectionAmount = SightDetectionTime;
+			}
 		}
 
 		protected override void ProcessAnimations() {
@@ -445,16 +499,16 @@ namespace Renown.Thinkers {
 				HeadAnimations.CallDeferred( "play", "move" );
 				BodyAnimations.CallDeferred( "play", "move" );
 			} else {
-//				if ( Awareness == MobAwareness.Relaxed ) {
-//					BodyAnimations.CallDeferred( "play", "calm" );
-//					HeadAnimations.CallDeferred( "hide" );
-//					ArmAnimations.CallDeferred( "hide" );
-//				} else {
-					ArmAnimations.CallDeferred( "show" );
-					HeadAnimations.CallDeferred( "show" );
-					BodyAnimations.CallDeferred( "play", "idle" );
-					HeadAnimations.CallDeferred( "play", "idle" );
-//				}
+				//				if ( Awareness == MobAwareness.Relaxed ) {
+				//					BodyAnimations.CallDeferred( "play", "calm" );
+				//					HeadAnimations.CallDeferred( "hide" );
+				//					ArmAnimations.CallDeferred( "hide" );
+				//				} else {
+				ArmAnimations.CallDeferred( "show" );
+				HeadAnimations.CallDeferred( "show" );
+				BodyAnimations.CallDeferred( "play", "idle" );
+				HeadAnimations.CallDeferred( "play", "idle" );
+				//				}
 			}
 		}
 		private void CalcShots() {

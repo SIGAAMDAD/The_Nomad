@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform vec3 glow_color : source_color;
+uniform vec4 glow_color : source_color;
 
 void fragment() {
 	vec4 color = texture( TEXTURE, UV );

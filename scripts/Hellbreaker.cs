@@ -21,8 +21,11 @@ public partial class Hellbreaker : Node2D {
 	private void SpawnDemons() {
 	}
 	public static bool CanActivate() {
+		if ( Active ) {
+			return false;
+		}
 		for ( int i = 0; i < Exits.Count; i++ ) {
-			if ( !Exits[i].IsUsed() ) {
+			if ( !Exits[ i ].IsUsed() ) {
 				return true;
 			}
 		}
@@ -49,6 +52,17 @@ public partial class Hellbreaker : Node2D {
 		}
 
 		return false;
+	}
+
+	private void OnPlayerRespawn() {
+		for ( int i = 0; i < Exits.Count; i++ ) {
+			Exits[i].Reset();
+		}
+
+		Godot.Collections.Array<Node> spawns = GetTree().GetNodesInGroup( "HellbreakerSpawns" );
+		for ( int i = 0; i < spawns.Count; i++ ) {
+			spawns[i].Call( "Reset" );
+		}
 	}
 
 	private void OnHellbreakerExitUsed( HellbreakerExit exit ) {
@@ -107,7 +121,7 @@ public partial class Hellbreaker : Node2D {
 		Active = false;
 
 		for ( int i = 0; i < Spawners.Length; i++ ) {
-			Spawners[i].Call( "Clear" );
+			Spawners[ i ].Call( "Clear" );
 		}
 
 		GetParent<ChallengeLevel>().ExitHellbreaker();
@@ -173,6 +187,8 @@ public partial class Hellbreaker : Node2D {
 
 	public override void _Ready() {
 		base._Ready();
+
+		LevelData.Instance.PlayerRespawn += OnPlayerRespawn;
 
 		Theme = GetNode<AudioStreamPlayer>( "Music" );
 		Theme.VolumeDb = SettingsData.GetMusicVolumeLinear();

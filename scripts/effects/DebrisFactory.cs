@@ -61,7 +61,7 @@ public partial class DebrisFactory : Node2D {
 		}
 	}
 	public override void _Process( double delta ) {
-		if ( MeshManager.Multimesh.VisibleInstanceCount == 0 || ( Engine.GetProcessFrames() % 120 ) != 0 ) {
+		if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
 			return;
 		}
 

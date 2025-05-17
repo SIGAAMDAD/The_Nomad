@@ -8,7 +8,7 @@ root = true
 
 # Indentation and spacing
 indent_size = 4
-indent_style = space
+indent_style = tab
 tab_width = 4
 
 # New line preferences
@@ -144,7 +144,7 @@ csharp_style_allow_embedded_statements_on_same_line_experimental = true
 #### C# Formatting Rules ####
 
 # New line preferences
-csharp_new_line_before_catch = true
+csharp_new_line_before_catch = false
 csharp_new_line_before_else = false
 csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_anonymous_types = true
@@ -158,7 +158,7 @@ csharp_indent_braces = false
 csharp_indent_case_contents = true
 csharp_indent_case_contents_when_block = true
 csharp_indent_labels = one_less_than_current
-csharp_indent_switch_labels = true
+csharp_indent_switch_labels = false
 
 # Space preferences
 csharp_space_after_cast = false
@@ -181,7 +181,7 @@ csharp_space_between_method_call_parameter_list_parentheses = true
 csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
 csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = true
-csharp_space_between_parentheses = true
+csharp_space_between_parentheses = control_flow_statements, expressions
 csharp_space_between_square_brackets = true
 
 # Wrapping preferences

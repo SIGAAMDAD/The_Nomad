@@ -22,7 +22,7 @@ properties = {
 "pickup_sfx": ExtResource("4_qnvb1"),
 "range": 2220.0,
 "stack_add_amount": 24,
-"type": 1,
+"type": 0,
 "velocity": 500.0
 }
 categories = Array[ItemCategory]([ExtResource("1_qnvb1"), ExtResource("1_lhqhs")])

@@ -1,6 +1,33 @@
 using ChallengeMode;
 using Godot;
 
+public struct ScoreData {
+	public string MapName;
+	public int TotalScore;
+	public int MaxCombo;
+	public int TimeMinutes;
+	public int TimeSeconds;
+	public int TimeMilliseconds;
+	public int TotalEnemies;
+	public int TotalDeaths;
+	public ChallengeLevel.ScoreBonus BonusFlags;
+
+	public ScoreData( string MapName, int TotalScore, int MaxCombo, int TimeMinutes, int TimeSeconds, int TimeMilliseconds, int TotalEnemies,
+		int TotalDeaths,
+		ChallengeLevel.ScoreBonus BonusFlags )
+	{
+		this.MapName = MapName;
+		this.TotalScore = TotalScore;
+		this.MaxCombo = MaxCombo;
+		this.TimeMinutes = TimeMinutes;
+		this.TimeSeconds = TimeSeconds;
+		this.TimeMilliseconds = TimeMilliseconds;
+		this.TotalEnemies = TotalEnemies;
+		this.TotalDeaths = TotalDeaths;
+		this.BonusFlags = BonusFlags;
+	}
+};
+
 public partial class ChallengeModeScore : CanvasLayer {
 	private Label MapNameLabel;
 	private Label TotalScoreLabel;
@@ -15,7 +42,7 @@ public partial class ChallengeModeScore : CanvasLayer {
 	private Label NoDamageLabel;
 	private Label FlawlessLabel;
 	private Label LegendLabel;
-	
+
 	private Button ExitButton;
 
 	private void OnExitButtonPressed() {
@@ -36,30 +63,30 @@ public partial class ChallengeModeScore : CanvasLayer {
 		TimeSecondsLabel = GetNode<Label>( "MarginContainer/VBoxContainer/TimeContainer/TimeSecondsLabel" );
 		TimeMillisecondsLabel = GetNode<Label>( "MarginContainer/VBoxContainer/TimeContainer/TimeMillisecondsLabel" );
 
-		NoDeathsLabel = GetNode<Label>( "MarginContainer/VBoxContainer/ExtrasContainer/NoDeathsLabel" );	
-		NoDamageLabel = GetNode<Label>( "MarginContainer/VBoxContainer/ExtrasContainer/NoDamageLabel" );	
-		
+		NoDeathsLabel = GetNode<Label>( "MarginContainer/VBoxContainer/ExtrasContainer/NoDeathsLabel" );
+		NoDamageLabel = GetNode<Label>( "MarginContainer/VBoxContainer/ExtrasContainer/NoDamageLabel" );
+
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 	}
-	public void SetScores( int TotalScore, int MaxCombo, int TimeMinutes, int TimeSeconds, int TimeMilliseconds ) {
-		MapNameLabel.Text = TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", ChallengeCache.GetCurrentMap() ) );
+	public void SetScores( ScoreData score ) {
+		MapNameLabel.Text = score.MapName;
 
-		TotalScoreLabel.Text = TotalScore.ToString();
-		HighestComboLabel.Text = MaxCombo.ToString();
+		TotalScoreLabel.Text = score.TotalScore.ToString();
+		HighestComboLabel.Text = score.MaxCombo.ToString();
 
-		TimeMinutesLabel.Text = TimeMinutes.ToString();
-		TimeSecondsLabel.Text = TimeSeconds.ToString();
-		TimeMillisecondsLabel.Text = TimeMilliseconds.ToString();
+		TimeMinutesLabel.Text = score.TimeMinutes.ToString();
+		TimeSecondsLabel.Text = score.TimeSeconds.ToString();
+		TimeMillisecondsLabel.Text = score.TimeMilliseconds.ToString();
 
-		if ( ( ChallengeLevel.BonusFlags & ChallengeLevel.ScoreBonus.NoDeaths ) != 0 ) {
+		if ( ( score.BonusFlags & ChallengeLevel.ScoreBonus.NoDeaths ) != 0 ) {
 			DeathCounterLabel.Hide();
 			NoDeathsLabel.Show();
 		} else {
-			DeathCounterLabel.Text = ChallengeLevel.DeathCounter.ToString();
+			DeathCounterLabel.Text = score.TotalDeaths.ToString();
 		}
 
-		if ( ( ChallengeLevel.BonusFlags & ChallengeLevel.ScoreBonus.NoDamage ) != 0 ) {
+		if ( ( score.BonusFlags & ChallengeLevel.ScoreBonus.NoDamage ) != 0 ) {
 			NoDamageLabel.Show();
 		}
 

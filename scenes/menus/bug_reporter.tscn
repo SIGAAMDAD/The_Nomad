@@ -6,11 +6,14 @@
 
 [node name="BugReporter" type="PanelContainer" node_paths=PackedStringArray("_message_text", "_mail_line_edit", "_options", "_screenshot_check", "_screenshot", "_analytics_button", "_send_button", "_text_limit")]
 visible = false
+top_level = true
+z_index = 20
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
 script = ExtResource("3_1ehp8")
 _message_text = NodePath("MarginContainer/VBoxContainer/DescriptionTextEdit")
 _mail_line_edit = NodePath("MarginContainer/VBoxContainer/EmailContainer/TextEdit")
@@ -29,6 +32,7 @@ metadata/_custom_type_script = "uid://diwpjr5f33lde"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+mouse_filter = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -128,6 +132,7 @@ horizontal_alignment = 2
 layout_mode = 2
 
 [node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="SubmitButton" type="Button" parent="MarginContainer/VBoxContainer"]

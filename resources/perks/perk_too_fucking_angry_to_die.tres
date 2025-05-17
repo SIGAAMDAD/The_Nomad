@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://xwg1xuip7of6"]
+
+[ext_resource type="Script" uid="uid://ch8msnscvsb1s" path="res://scripts/PlayerSystem/Perks/TooFuckingAngryToDie.cs" id="1_vim3l"]
+
+[resource]
+script = ExtResource("1_vim3l")
+Name = &"PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME"
+Description = &"PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION"

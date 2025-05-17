@@ -3,17 +3,17 @@ shader_type canvas_item;
 // uniform name and type: purpose = default value
 uniform vec4 color : source_color = vec4(0.639, 0.643, 0.435, 0.459);
 uniform float angle = -0.5;
-uniform float position = -0.5; 
-uniform float starting_point = 5.0; 
+uniform float position = -0.5;
+uniform float starting_point = 5.0;
 uniform float movement_speed = 1.0;
 uniform float ray_seperation : hint_range(0.0, 1.0) = 1.0;
-uniform float ray_spread_horizontal : hint_range(-1.0, 1.0) = -1.0; 
-uniform float ray_spread_vertical : hint_range(0.0, 1.0) = 1.0; 
-uniform float ray_1_density = 20.0; 
+uniform float ray_spread_horizontal : hint_range(-1.0, 1.0) = -1.0;
+uniform float ray_spread_vertical : hint_range(0.0, 1.0) = 1.0;
+uniform float ray_1_density = 20.0;
 uniform float ray_2_density = 80.0;
 uniform float ray_1_intensity : hint_range(0.0, 1.0) = 0.5;
-uniform float ray_2_intensity : hint_range(0.0, 1.0) = 0.5; 
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap; 
+uniform float ray_2_intensity : hint_range(0.0, 1.0) = 0.5;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 // Ray angle calculation
 mat2 angle_rays(float _angle) {
@@ -39,7 +39,7 @@ float noise (in vec2 uv) {
 void fragment() {
 	// Apply ray rotation and space positioning
 	vec2 ray_positioning = (angle_rays(angle) * (UV - position))  / ((UV.y + ray_seperation) - (UV.y * ray_seperation));
-	// Animate the ray 
+	// Animate the ray
 	vec2 ray_1 = vec2(ray_positioning.x * ray_1_density + sin(TIME * 0.1 * movement_speed) * (ray_1_density * 0.2) + starting_point, 1.0);
 	vec2 ray_2 = vec2(ray_positioning.x * ray_2_density + sin(TIME * 0.2 * movement_speed) * (ray_1_density * 0.2) + starting_point, 1.0);
 	// Ensure rays don't extend certain bounds

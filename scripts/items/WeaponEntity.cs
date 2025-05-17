@@ -542,7 +542,9 @@ public partial class WeaponEntity : Node2D {
 
 		if ( ResourceCache.Initialized ) {
 			WeaponTimer.SetDeferred( "wait_time", ReloadTime );
-			WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+			if ( !WeaponTimer.IsConnected( "timeout", Callable.From( OnReloadTimeTimeout ) ) ) {
+				WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+			}
 			WeaponTimer.CallDeferred( "start" );
 
 			CurrentState = WeaponState.Reload;
@@ -570,9 +572,14 @@ public partial class WeaponEntity : Node2D {
 			*/
 			frameDamage += damage;
 			if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-				if ( collision is Entity entity && entity != null && entity != _Owner ) {
+				if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
+					float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition );
+					distance /= Ammo.GetRange();
+					damage *= Ammo.GetDamageFalloff( distance );
+					( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( RayCast, damage );
+				} else if ( collision is Entity entity && entity != null && entity != _Owner ) {
 					float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-					if ( distance > 80.0f ) {
+					if ( distance > 120.0f ) {
 						// out of bleed range, no healing
 						frameDamage -= damage;
 					}
@@ -590,11 +597,6 @@ public partial class WeaponEntity : Node2D {
 					} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 						entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 					}
-				} else if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
-					float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition );
-					distance /= Ammo.GetRange();
-					damage *= Ammo.GetDamageFalloff( distance );
-					parryBox.GetParent<Player>().OnParry( RayCast, damage );
 				} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
 					Entity owner = (Entity)hitbox.GetMeta( "Owner" );
 					hitbox.OnHit( _Owner );

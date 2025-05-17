@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://ba1debi5qxy5p"]
+[gd_scene load_steps=3 format=3 uid="uid://ba1debi5qxy5p"]
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
 [ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
-[ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="4_imvie"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -43,11 +42,11 @@ metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.348958
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 0.421875
 offset_left = -160.0
 offset_top = 36.5
 offset_right = 248.0
@@ -59,7 +58,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="StoryModeButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "NEW_GAME"
+text = "STORY_MODE_BUTTON"
 flat = true
 
 [node name="ExtrasButton" type="Button" parent="VBoxContainer"]
@@ -95,25 +94,14 @@ flat = true
 [node name="Logo" type="TextureRect" parent="."]
 process_mode = 4
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -210.0
-offset_top = 120.0
-offset_right = 248.0
-offset_bottom = 192.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 110.0
+offset_top = 76.0
+offset_right = -72.0
+offset_bottom = -332.0
 grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
 metadata/_edit_use_anchors_ = true
-
-[node name="KonamiCode" type="Node" parent="." node_paths=PackedStringArray("timer")]
-script = ExtResource("4_imvie")
-time_limit_mode = true
-timer = NodePath("Timer")
-reset_mode = 1
-controller_mode = true
-metadata/_custom_type_script = "uid://cduis24lfk66b"
-
-[node name="Timer" type="Timer" parent="KonamiCode"]
-wait_time = 10.0

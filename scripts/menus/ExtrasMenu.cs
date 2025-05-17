@@ -96,7 +96,6 @@ public partial class ExtrasMenu : Control {
 		StoryModeData.GetNode<VScrollBar>( "LeaderboardScroll" ).Show();
 
 		foreach ( var entry in entries ) {
-			GD.Print( "adding entry" );
 			HBoxContainer container = LeaderboardData.Duplicate() as HBoxContainer;
 			container.GetNode<Label>( "NameLabel" ).Text = SteamFriends.GetFriendPersonaName( entry.Value.UserID );
 			container.GetNode<Label>( "ScoreLabel" ).Text = entry.Value.Score.ToString();
