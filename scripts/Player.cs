@@ -568,7 +568,7 @@ public partial class Player : Entity {
 		if ( !SettingsData.GetShowBlood() ) {
 			return;
 		}
-		BloodAmount -= 0.1f;
+		BloodAmount -= 0.001f;
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 
 		if ( BloodAmount < 0.0f ) {
@@ -708,7 +708,8 @@ public partial class Player : Entity {
 			BeginInteraction( LastCheckpoint );
 		}
 
-		Flags &= ~( PlayerFlags.Dashing | PlayerFlags.BlockedInput );
+		Flags &= ~( PlayerFlags.Dashing );
+		BlockInput( false );
 
 		Health = 100.0f;
 		Rage = 60.0f;
@@ -743,17 +744,7 @@ public partial class Player : Entity {
 
 		// make sure we're not calling this over and over
 		Flags |= PlayerFlags.Dashing;
-		//		Flags &= ~PlayerFlags.BlockedInput;
-
-		if ( GameConfiguration.GameMode == GameMode.ChallengeMode || GameConfiguration.GameMode == GameMode.Multiplayer ) {
-			// reset the inventory if we're in multiplayer mode or challenge mode
-			for ( int i = 0; i < WeaponSlots.Length; i++ ) {
-				WeaponSlots[ i ] = null;
-			}
-			WeaponsStack.Clear();
-			AmmoStacks.Clear();
-			ConsumableStacks.Clear();
-		}
+		BlockInput( true );
 
 		LegAnimation.Hide();
 		ArmLeft.Animations.Hide();
@@ -856,8 +847,10 @@ public partial class Player : Entity {
 	public void BlockInput( bool bBlocked ) {
 		if ( bBlocked ) {
 			Flags |= PlayerFlags.BlockedInput;
+			Console.PrintLine( "Blocking input" );
 		} else {
 			Flags &= ~PlayerFlags.BlockedInput;
+			Console.PrintLine( "Unblocking input" );
 		}
 		Velocity = Godot.Vector2.Zero;
 	}
@@ -896,7 +889,7 @@ public partial class Player : Entity {
 		IdleAnimation.FlipH = false;
 		IdleAnimation.Hide();
 		IdleAnimation.Disconnect( "animation_finished", Callable.From( OnCheckpointExitEnd ) );
-		Flags &= ~PlayerFlags.BlockedInput;
+		BlockInput( false );
 		SetProcessUnhandledInput( false );
 
 		Flags &= ~PlayerFlags.Resting;
@@ -1421,7 +1414,8 @@ public partial class Player : Entity {
 
 	private void OnMeleeFinished() {
 		ArmLeft.Animations.AnimationFinished -= OnMeleeFinished;
-		Flags &= ~( PlayerFlags.Parrying | PlayerFlags.BlockedInput );
+		Flags &= ~( PlayerFlags.Parrying );
+		BlockInput( false );
 
 		ParryDamageArea.SetDeferred( "monitoring", false );
 		ParryDamageBox.SetDeferred( "disabled", true );
@@ -1443,7 +1437,8 @@ public partial class Player : Entity {
 		ParryDamageBox.SetDeferred( "disabled", false );
 
 		// force the player to commit to the parry
-		Flags |= PlayerFlags.BlockedInput | PlayerFlags.Parrying;
+		Flags |= PlayerFlags.Parrying;
+		BlockInput( true );
 		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
 		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
 		ArmLeft.Animations.CallDeferred( "play", "melee" );
@@ -1696,11 +1691,7 @@ public partial class Player : Entity {
 
 		// don't allow keybind input when we're in the console
 		Console.Control.VisibilityChanged += () => {
-			if ( Console.Control.Visible ) {
-				Flags |= PlayerFlags.BlockedInput;
-			} else {
-				Flags &= ~PlayerFlags.BlockedInput;
-			}
+			BlockInput( Console.Control.Visible );
 		};
 
 		StartingPosition = GlobalPosition;
@@ -1863,7 +1854,7 @@ public partial class Player : Entity {
 		if ( SettingsData.GetShowBlood() ) {
 			BloodDropTimer = new Timer();
 			BloodDropTimer.Name = "BloodDropTimer";
-			BloodDropTimer.WaitTime = 10.0f;
+			BloodDropTimer.WaitTime = 30.0f;
 			BloodDropTimer.Connect( "timeout", Callable.From( OnBloodDropTimerTimeout ) );
 			AddChild( BloodDropTimer );
 

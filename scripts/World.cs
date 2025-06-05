@@ -4,7 +4,6 @@ using Godot;
 using Renown.World;
 using Renown;
 using System;
-using System.Data.SqlTypes;
 
 public partial class World : LevelData {
 	[Export]

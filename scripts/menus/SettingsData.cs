@@ -3,37 +3,6 @@ using Godot;
 using System.Collections.Generic;
 using System;
 
-public enum WindowMode : uint {
-	Windowed,
-	BorderlessWindowed,
-	Fullscreen,
-	BorderlessFullscreen
-};
-
-public enum AntiAliasing : uint {
-	None,
-	FXAA,
-	MSAA_2x,
-	MSAA_4x,
-	MSAA_8x,
-	TAA,
-	FXAA_and_TAA
-};
-
-public enum ShadowQuality : uint {
-	Off,
-	NoFilter,
-	Low,
-	High,
-
-	Count
-};
-
-public enum SaveMode : uint {
-	Checkpoint_And_Die,
-	Anytime
-};
-
 public partial class SettingsData : Control {
 	private Resource Default;
 
@@ -41,7 +10,7 @@ public partial class SettingsData : Control {
 	// video options
 	//
 	private static WindowMode WindowMode;
-	private static DisplayServer.VSyncMode VSyncMode;
+	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
 	private static int MaxFps;
 	private static bool BloomEnabled;
@@ -116,8 +85,8 @@ public partial class SettingsData : Control {
 	
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
-	public static DisplayServer.VSyncMode GetVSync() => VSyncMode;
-	public static void SetVSync( DisplayServer.VSyncMode vsync ) => VSyncMode = vsync;
+	public static VSyncMode GetVSync() => VSyncMode;
+	public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
 	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
 	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
 	public static bool GetBloomEnabled() => BloomEnabled;
@@ -190,16 +159,36 @@ public partial class SettingsData : Control {
 	}
 	private void ApplyVideoSettings() {
 		switch ( VSyncMode ) {
-		case DisplayServer.VSyncMode.Disabled:
-			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Disabled );
-			break;
-		case DisplayServer.VSyncMode.Adaptive:
-			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Adaptive );
-			break;
-		case DisplayServer.VSyncMode.Enabled:
+		case VSyncMode.On:
 			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
 			break;
-		};
+		case VSyncMode.Off:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Disabled );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
+			break;
+		case VSyncMode.Adaptive:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Adaptive );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
+			break;
+		case VSyncMode.TripleBuffered:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Mailbox );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				3
+			);
+			break;
+		}
+		;
 
 		Rid viewport = GetTree().Root.GetViewportRid();
 		switch ( AntiAliasing ) {
@@ -480,7 +469,9 @@ public partial class SettingsData : Control {
 		LoadGameplaySettings( iniData );
 		LoadNetworkingSettings( iniData );
 
-		LastSaveSlot = Convert.ToInt32( iniData[ "Internal:LastSaveSlot" ] );
+		if ( iniData.TryGetValue( "Internal:LastSaveSlot", out string value ) ) {
+			LastSaveSlot = Convert.ToInt32( value );
+		}
 
 		ApplyVideoSettings();
 

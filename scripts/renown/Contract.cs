@@ -61,6 +61,7 @@ namespace Renown {
 		{
 			Title = name;
 			Flags = flags;
+			DueDate = duedate;
 			Contractor = contractor;
 			Guild = guild;
 			TotalPay = basePay;

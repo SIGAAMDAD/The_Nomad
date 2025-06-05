@@ -1,4 +1,5 @@
 using Godot;
+using System.Diagnostics;
 
 public partial class PauseMenu : CanvasLayer {
 	private ConfirmationDialog ConfirmExitDlg;
@@ -6,6 +7,8 @@ public partial class PauseMenu : CanvasLayer {
 	private ColorRect ConfirmDlgOverlay;
 
 	private PackedScene MainMenu;
+
+	private AudioStreamPlayer UIChannel;
 
 	[Signal]
 	public delegate void GamePausedEventHandler();
@@ -17,9 +20,15 @@ public partial class PauseMenu : CanvasLayer {
 		if ( GetTree().Paused ) {
 			Engine.TimeScale = 1.0f;
 			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
+			UIChannel.ProcessMode = ProcessModeEnum.Always;
+			UIChannel.Stream = ResourceCache.GetSound( "res://sounds/ui/resume_game.ogg" );
+			UIChannel.Play();
 		} else {
 			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 			Engine.TimeScale = 0.0f;
+			UIChannel.ProcessMode = ProcessModeEnum.Always;
+			UIChannel.Stream = ResourceCache.GetSound( "res://sounds/ui/pause_game.ogg" );
+			UIChannel.Play();
 		}
 		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			GetTree().Paused = !GetTree().Paused;
@@ -107,6 +116,9 @@ public partial class PauseMenu : CanvasLayer {
 			ConfirmQuitDlg.Set( "dialogue_text", "Are you sure?" );
 			break;
 		};
+
+		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
+		UIChannel.Connect( "finished", Callable.From( () => { UIChannel.SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled ); } ) );
 
 		Input.JoyConnectionChanged += OnJoyConnectionChanged;
 	}

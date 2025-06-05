@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d3bsthlqjvp8y"]
 
 [ext_resource type="Texture2D" uid="uid://danectyh0qhe0" path="res://textures/env/icon_health.dds" id="1_6tcba"]
-[ext_resource type="Script" uid="uid://dayuahcu2t8ri" path="res://scripts/interactables/HealthPack.cs" id="1_wuldw"]
+[ext_resource type="Script" uid="uid://dayuahcu2t8ri" path="res://scripts/Interactables/HealthPack.cs" id="1_wuldw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2gp15"]
 size = Vector2(28, 21)

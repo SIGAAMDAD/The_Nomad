@@ -87,7 +87,7 @@ namespace Renown.World {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
 			
-			// TODO: have the current season have an impact on the weathere
+			// TODO: have the current season have an impact on the weather
 			for ( int i = 0; i < WeatherChances.Count; i++ ) {
 				float other = WeatherChances[ weather ];
 				if ( other > chance ) {
@@ -111,8 +111,6 @@ namespace Renown.World {
 			};
 			
 			WeatherChangeTimer = new Timer();
-			WeatherChangeTimer.SetProcess( false );
-			WeatherChangeTimer.SetProcessInternal( false );
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );

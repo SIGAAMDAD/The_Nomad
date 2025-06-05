@@ -4,12 +4,14 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>TheNomad</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Doxygen" Version="1.8.9.1" />
+    <PackageReference Include="gdUnit4.api" Version="5.0.0-rc" />
+    <PackageReference Include="gdUnit4.test.adapter" Version="2.0.0" />
     <PackageReference Include="ImGui.NET" Version="1.90.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />

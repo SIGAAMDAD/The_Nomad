@@ -1,10 +1,11 @@
-[gd_scene load_steps=56 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=60 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
 [ext_resource type="Texture2D" uid="uid://cmhkbjyqs1vb3" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
 [ext_resource type="Texture2D" uid="uid://bty200almbul3" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
+[ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="4_4iujc"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
@@ -42,6 +43,18 @@ colors = PackedColorArray(0, 0, 0, 0.52549)
 gradient = SubResource("Gradient_ot7dw")
 width = 16
 height = 16
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v24h6"]
+shader = ExtResource("4_4iujc")
+shader_parameter/status_icon = ExtResource("10_2rlhc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vg31i"]
+shader = ExtResource("4_4iujc")
+shader_parameter/status_icon = ExtResource("12_wjj4q")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8n186"]
+shader = ExtResource("4_4iujc")
+shader_parameter/status_icon = ExtResource("12_obapo")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4iujc"]
 shader = ExtResource("11_vfeoh")
@@ -235,6 +248,7 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
+page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false
@@ -316,26 +330,25 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="StatusContainer" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-use_parent_material = true
 layout_mode = 2
 size_flags_vertical = 4
 
 [node name="StatusBladed" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer"]
-use_parent_material = true
+material = SubResource("ShaderMaterial_v24h6")
 layout_mode = 2
 texture = ExtResource("10_2rlhc")
 stretch_mode = 3
 
 [node name="StatusBlunt" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer"]
 visible = false
-use_parent_material = true
+material = SubResource("ShaderMaterial_vg31i")
 layout_mode = 2
 texture = ExtResource("12_wjj4q")
 stretch_mode = 3
 
 [node name="StatusFirearm" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/StatusContainer"]
 visible = false
-use_parent_material = true
+material = SubResource("ShaderMaterial_8n186")
 layout_mode = 2
 texture = ExtResource("12_obapo")
 stretch_mode = 3
@@ -554,11 +567,14 @@ layout_mode = 2
 texture = ExtResource("15_ot7dw")
 
 [node name="Label" type="Label" parent="MainHUD/AnnouncementLabel/TextureRect"]
-layout_mode = 0
-offset_top = 48.0
-offset_right = 640.0
-offset_bottom = 71.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.592
+offset_bottom = -0.0400009
 horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Timer" type="Timer" parent="MainHUD/AnnouncementLabel"]
 wait_time = 2.5

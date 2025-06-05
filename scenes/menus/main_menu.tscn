@@ -43,17 +43,16 @@ metadata/_edit_use_anchors_ = true
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.348958
-anchor_right = 0.5
-anchor_bottom = 0.421875
-offset_left = -160.0
-offset_top = 36.5
-offset_right = 248.0
-offset_bottom = 207.5
+anchor_left = 0.241
+anchor_top = 0.471
+anchor_right = 0.751
+anchor_bottom = 0.829
+offset_left = 0.199997
+offset_top = 0.274994
+offset_right = 0.199951
+offset_bottom = 0.225159
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.802407, 0.878239)
 metadata/_edit_use_anchors_ = true
 
 [node name="StoryModeButton" type="Button" parent="VBoxContainer"]
@@ -96,7 +95,7 @@ process_mode = 4
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.848333
 offset_left = 110.0
 offset_top = 76.0
 offset_right = -72.0

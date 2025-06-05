@@ -106,6 +106,14 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
+	private void ApplyShadowQuality( Godot.Collections.Array<Node> children ) {
+		for ( int i = 0; i < children.Count; i++ ) {
+			if ( children[ i ] is PointLight2D light && light != null ) {
+				light.ShadowFilter = ;
+			}
+		}
+	}
+
 	public override void _EnterTree() {
 		base._EnterTree();
 
@@ -121,6 +129,7 @@ public partial class LevelData : Node2D {
 		}
 
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;
+		PlayerRespawn += () => { ThisPlayer.BlockInput( false ); };
 
 		PauseMenu = ResourceLoader.Load<PackedScene>( "res://scenes/menus/pause_menu.tscn" ).Instantiate<PauseMenu>();
 		PauseMenu.Hide();
@@ -132,6 +141,8 @@ public partial class LevelData : Node2D {
 			SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 			SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		}
+
+		ApplyShadowQuality( GetChildren() );
 
 		PhysicsServer2D.SetActive( true );
 

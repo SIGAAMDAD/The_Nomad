@@ -110,6 +110,11 @@ public partial class ChallengeLevel : LevelData {
 			return;
 		}
 
+		ObjectivesState.Clear();
+		foreach ( var state in State ) {
+			ObjectivesState.Add( state.Key, state.Value );
+		}
+
 		DeathCounter++;
 
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnPlayerRespawnTransitionFinished ) );

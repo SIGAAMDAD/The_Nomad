@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://dqebkeyfqu46q"]
+[gd_scene load_steps=18 format=3 uid="uid://dqebkeyfqu46q"]
 
 [ext_resource type="Script" uid="uid://bfaok2nqpcm24" path="res://scripts/menus/ExtrasMenu.cs" id="1_56yqt"]
+[ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="2_nxd36"]
 
 [sub_resource type="SystemFont" id="SystemFont_wymqu"]
 
@@ -74,18 +75,24 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "COOP_BUTTON"
 flat = true
+script = ExtResource("2_nxd36")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="MultiplayerButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "MULTIPLAYER_BUTTON"
 flat = true
+script = ExtResource("2_nxd36")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="StoryModeButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "STORY_MODE_BUTTON"
 flat = true
+script = ExtResource("2_nxd36")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/HSplitContainer"]
 visible = false

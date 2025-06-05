@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://co7rmsfdbg4m0"]
 
-[ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/interactables/Checkpoint.cs" id="1_ihm5l"]
+[ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/Interactables/Checkpoint.cs" id="1_ihm5l"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
 [ext_resource type="Texture2D" uid="uid://cbb2k4po12iuy" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_bcsha"]

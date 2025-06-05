@@ -1,4 +1,3 @@
-using System.Threading;
 using Godot;
 
 public partial class MainMenu : Control {
@@ -13,21 +12,18 @@ public partial class MainMenu : Control {
 		Count
 	};
 
-	private static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	private static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+	public static Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+	public static Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+	public static bool Loaded = false;
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
-	private bool Loaded = false;
-
-	private PackedScene LoadedWorld;
-	private Thread LoadThread;
 
 	private AudioStreamPlayer UIChannel;
 
 	private static Tween AudioFade;
 
 	[Signal]
-	public delegate void BeginGameEventHandler();
+	public delegate void StoryMenuEventHandler();
 	[Signal]
 	public delegate void SettingsMenuEventHandler();
 	[Signal]
@@ -38,19 +34,23 @@ public partial class MainMenu : Control {
 	public delegate void ModsMenuEventHandler();
 	[Signal]
 	public delegate void CreditsMenuEventHandler();
-	[Signal]
-	public delegate void FinishedLoadingEventHandler();
 
-	private void OnAudioFadeFinished() {
-		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
+	private static void OnAudioFadeFinished() {
+		( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
 		AudioFade.Finished -= OnAudioFadeFinished;
 	}
+	public static void FadeAudio() {
+		AudioFade = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().Root.CreateTween();
+		AudioFade.TweenProperty( ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+	}
+
+	/*
 	private void OnBeginGameFinished() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From(  OnBeginGameFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 		QueueFree();
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 	}
-
 	private void OnContinueGameFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From(  OnContinueGameFinished ) );
 
@@ -66,7 +66,7 @@ public partial class MainMenu : Control {
 
 			SteamLobby.Instance.SetMaxMembers( 4 );
 			string name = SteamManager.GetSteamName();
-			if ( name[ name.Length - 1 ] == 's' ) {
+			if ( name[ name.Length - 1  ] == 's' ) {
 				SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
 			} else {
 				SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
@@ -104,7 +104,7 @@ public partial class MainMenu : Control {
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-		AudioFade.Connect( "finished", Callable.From(  OnAudioFadeFinished ) );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 	}
 	private void OnNewGameButtonPressed() {
 		if ( Loaded ) {
@@ -122,14 +122,23 @@ public partial class MainMenu : Control {
 
 		AudioFade = GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From(  OnAudioFadeFinished ) );
+		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From(  OnBeginGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
+	*/
 
+	private void OnStoryModeButtonPressed() {
+		if ( Loaded ) {
+			return;
+		}
+		UIChannel.Stream = UISfxManager.ButtonPressed;
+		UIChannel.Play();
+		EmitSignalStoryMenu();
+	}
 	private void OnSettingsButtonPressed() {
 		if ( Loaded ) {
 			return;
@@ -201,13 +210,7 @@ public partial class MainMenu : Control {
 		StoryModeButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
 		StoryModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
 		StoryModeButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		if ( !ArchiveSystem.Instance.IsLoaded() ) {
-			StoryModeButton.Text = TranslationServer.Translate( "NEW_GAME" );
-			StoryModeButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
-		} else {
-			StoryModeButton.Text = TranslationServer.Translate( "CONTINUE_GAME" );
-			StoryModeButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
-		}
+		StoryModeButton.Connect( "pressed", Callable.From( OnStoryModeButtonPressed ) );
 
 		Button ExtrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
 		ExtrasButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );

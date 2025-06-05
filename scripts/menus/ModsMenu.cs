@@ -15,7 +15,7 @@ public partial class ModsMenu : Control {
 			dir.ListDirBegin();
 			string fileName = dir.GetNext();
 			while ( fileName.Length > 0 ) {
-				if ( fileName.GetExtension() != ".mod" ) {
+				if ( fileName.GetExtension() != "mod" ) {
 					fileName = dir.GetNext();
 					continue;
 				}

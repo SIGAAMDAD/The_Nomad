@@ -23,7 +23,7 @@
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="15_wodma"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="16_jv714"]
 [ext_resource type="Texture2D" uid="uid://bm7v8kwu2x8f2" path="res://icon.svg" id="17_6pf2m"]
-[ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/interactables/EndOfChallenge.cs" id="17_dfvfy"]
+[ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/Interactables/EndOfChallenge.cs" id="17_dfvfy"]
 [ext_resource type="ItemDefinition" uid="uid://bovippiuwxm1n" path="res://resources/ammo/shotgun_12gauge.tres" id="17_ps1f5"]
 [ext_resource type="Script" uid="uid://bhr7st282gelu" path="res://scripts/AdaptiveMusicManager.cs" id="20_vyd4a"]
 [ext_resource type="AudioStream" uid="uid://qm6mipucu6g8" path="res://music/challenges/challenge0_combat.ogg" id="21_hwkqx"]

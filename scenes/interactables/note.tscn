@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://xfmxnk8t2c6a"]
 
-[ext_resource type="Script" uid="uid://xacqm4385a1x" path="res://scripts/interactables/Note.cs" id="1_ky75s"]
+[ext_resource type="Script" uid="uid://xacqm4385a1x" path="res://scripts/Interactables/Note.cs" id="1_ky75s"]
 [ext_resource type="Texture2D" uid="uid://dybvhm63tfm43" path="res://textures/env/note.dds" id="1_xcj5r"]
 [ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="3_dvtdo"]
 

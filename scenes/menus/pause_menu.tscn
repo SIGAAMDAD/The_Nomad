@@ -1,14 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=6 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
 [ext_resource type="Shader" uid="uid://cf3fehel7f2df" path="res://shaders/pause_menu.gdshader" id="2_pe2qk"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
+[ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_2wrho"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5wyai"]
 shader = ExtResource("2_pe2qk")
 shader_parameter/amount = 2.758
 
 [node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
 layer = 5
 script = ExtResource("1_gsnt3")
 metadata/_edit_use_anchors_ = true
@@ -38,28 +40,37 @@ theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "PAUSED TALE"
 
 [node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
+process_mode = 2
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "RESUME_BUTTON"
 alignment = 0
+script = ExtResource("4_2wrho")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="HelpMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "HELP_BUTTON"
 alignment = 0
+script = ExtResource("4_2wrho")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_TO_MAIN_MENU_BUTTON"
 alignment = 0
+script = ExtResource("4_2wrho")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ExitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_GAME_BUTTON"
 alignment = 0
+script = ExtResource("4_2wrho")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 visible = false
@@ -88,3 +99,6 @@ size = Vector2i(200, 158)
 dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
 dialog_autowrap = true
 cancel_button_text = "Nah"
+
+[node name="UIChannel" type="AudioStreamPlayer" parent="."]
+process_mode = 4
