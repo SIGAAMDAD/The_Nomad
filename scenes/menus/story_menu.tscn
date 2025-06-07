@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3gmdmqeluldc"]
+
+[ext_resource type="Script" uid="uid://cbukpoh16e4g7" path="res://scripts/menus/StoryMenu.cs" id="1_y3ttr"]
+[ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="2_3fasx"]
+
+[node name="StoryMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y3ttr")
+metadata/_edit_use_anchors_ = true
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.035
+anchor_right = 1.0
+anchor_bottom = 0.073
+offset_bottom = 0.199999
+grow_horizontal = 2
+size_flags_horizontal = 4
+text = "STORY_MENU_TITLE"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="MainContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+anchor_left = 0.037
+anchor_top = 0.123
+anchor_right = 0.962
+anchor_bottom = 0.95
+offset_left = 0.4
+offset_top = 0.199997
+offset_right = 0.399963
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionsContainer" type="VBoxContainer" parent="MainContainer"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="ContinueGameButton" type="Button" parent="MainContainer/OptionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "CONTINUE_GAME_BUTTON"
+flat = true
+script = ExtResource("2_3fasx")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
+
+[node name="LoadGameButton" type="Button" parent="MainContainer/OptionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "LOAD_GAME_BUTTON"
+flat = true
+script = ExtResource("2_3fasx")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
+
+[node name="SaveSlotsContainer" type="VBoxContainer" parent="MainContainer/OptionsContainer/LoadGameButton"]
+visible = false
+layout_mode = 2
+anchor_left = 0.135593
+anchor_right = 0.135593
+offset_top = 35.0
+offset_right = 320.0
+offset_bottom = 35.0
+metadata/_edit_use_anchors_ = true
+
+[node name="NewGameButton" type="Button" parent="MainContainer/OptionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "NEW_GAME_BUTTON"
+flat = true
+script = ExtResource("2_3fasx")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
+
+[node name="SaveDataContainer" type="VBoxContainer" parent="MainContainer"]
+visible = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MainContainer/SaveDataContainer"]
+layout_mode = 2
+expand_mode = 2
+stretch_mode = 3
+
+[node name="LocationLabel" type="Label" parent="MainContainer/SaveDataContainer"]
+layout_mode = 2
+
+[node name="TimeLabel" type="Label" parent="MainContainer/SaveDataContainer"]
+layout_mode = 2

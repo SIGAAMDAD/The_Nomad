@@ -1,0 +1,102 @@
+[gd_scene load_steps=3 format=3 uid="uid://dk1u48g6wdrtg"]
+
+[ext_resource type="Script" uid="uid://bntamr5f526w0" path="res://scripts/menus/DemoMenu.cs" id="1_cyu1s"]
+[ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="2_s4yrq"]
+
+[node name="DemoMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cyu1s")
+metadata/_edit_use_anchors_ = true
+
+[node name="AppVersion" type="Label" parent="."]
+process_mode = 4
+texture_filter = 1
+layout_mode = 1
+offset_left = 16.0
+offset_top = 24.0
+offset_right = 74.0
+offset_bottom = 48.0
+scale = Vector2(0.75, 0.75)
+text = "AppVer "
+metadata/_edit_use_anchors_ = true
+
+[node name="CopyrightLabel" type="Label" parent="."]
+process_mode = 4
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+text = " Copyright © 2025 GDR Games"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = 36.5
+offset_right = 248.0
+offset_bottom = 207.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.802407, 0.878239)
+metadata/_edit_use_anchors_ = true
+
+[node name="StartGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "START_GAME_BUTTON"
+flat = true
+
+[node name="JohnWickButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "JOHN_WICK_BUTTON"
+flat = true
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "SETTINGS_BUTTON"
+flat = true
+
+[node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "HELP_BUTTON"
+
+[node name="CreditsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "CREDITS_BUTTON"
+flat = true
+
+[node name="QuitGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "QUIT_BUTTON"
+flat = true
+
+[node name="Logo" type="TextureRect" parent="."]
+process_mode = 4
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_top = 120.0
+offset_right = 248.0
+offset_bottom = 192.0
+grow_horizontal = 2
+scale = Vector2(0.916999, 1.5557)
+texture = ExtResource("2_s4yrq")
+metadata/_edit_use_anchors_ = true

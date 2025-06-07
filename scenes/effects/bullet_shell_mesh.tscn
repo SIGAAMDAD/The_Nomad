@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgxelfr6mbhgp"]
+
+[ext_resource type="Script" uid="uid://3i2q42gpba7l" path="res://scripts/effects/BulletShellMesh.cs" id="1_jbawe"]
+
+[node name="BulletShellMesh" type="Node"]
+script = ExtResource("1_jbawe")
