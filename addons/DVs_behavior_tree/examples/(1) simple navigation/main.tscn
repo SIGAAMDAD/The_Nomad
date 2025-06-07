@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv8db1cilo4dv"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/main.gd" id="1_83hh0"]
+[ext_resource type="PackedScene" uid="uid://c557vjvtb2h4w" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/agent.tscn" id="2_y7uu2"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_83hh0")
+
+[node name="ReadMe" type="Node" parent="."]
+editor_description = "Each agent has 3 states:
+- Dodge other agents.
+- Follow mouse cursor if nearby.
+- Wander randomly.
+
+These states are ordered by importance so following the mouse takes precedence over wandering randomly and dodging other agents takes precedence over both other states. A prioritized state will interrupt less important states if needed.
+
+Left click to add more agents."
+
+[node name="Agent" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(100, 100)
+
+[node name="Agent2" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(1180, 100)
+
+[node name="Agent3" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(640, 360)
+
+[node name="Agent4" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(100, 620)
+
+[node name="Agent5" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(1180, 620)
