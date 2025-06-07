@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" uid="uid://cler8horyctq4" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
-[ext_resource type="Texture2D" uid="uid://bm7v8kwu2x8f2" path="res://icon.svg" id="17_xstx4"]
+[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="17_xstx4"]
 [ext_resource type="Script" uid="uid://cvcxs2q7qe1s5" path="res://scripts/PlayerSystem/StatusIcon.cs" id="18_a6h4m"]
 [ext_resource type="Texture2D" uid="uid://bqfw0k541lg8o" path="res://textures/hud/ARBLS4.png" id="18_aelwk"]
 [ext_resource type="Script" uid="uid://dqu07i6qx5kvd" path="res://scripts/PlayerSystem/Notebook.cs" id="18_xstx4"]
@@ -248,7 +248,6 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
-page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false
@@ -708,19 +707,25 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 480)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 
 [node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Cloner" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar"]
-layout_mode = 0
-offset_right = 260.0
-offset_bottom = 368.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.25
+anchor_top = 0.00625
+anchor_right = 45.0
+anchor_bottom = 1.00625
+metadata/_edit_use_anchors_ = true
 
 [node name="ItemStackCloner" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner"]
 visible = false
@@ -752,6 +757,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="ItemInfo" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
@@ -966,6 +972,29 @@ text = "9mm"
 [node name="CountLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
 layout_mode = 2
 text = "1"
+
+[node name="HSeparator" type="HSeparator" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackpackDataContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EncumbranceContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer"]
+layout_mode = 2
+
+[node name="EncumbranceLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "BACKPACK_ENCUMBRANCE"
+
+[node name="AmountLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+layout_mode = 2
+
+[node name="OverweightLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="Contracts" type="TabBar" parent="NotebookContainer/TabContainer"]
 visible = false

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://db8cg3y512y8m"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_bv1hx"]
+
+[resource]
+script = ExtResource("1_bv1hx")
+name = &"arm_angle_player3"
+action_value_type = 2
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Arm Angle Player 4"
+display_category = "Utility"

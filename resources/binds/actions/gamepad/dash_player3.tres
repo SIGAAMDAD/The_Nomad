@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://7jpggdtn4wmd"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_ueaip"]
+
+[resource]
+script = ExtResource("1_ueaip")
+name = &"dash_player3"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Dash Player 4"
+display_category = "Movement"

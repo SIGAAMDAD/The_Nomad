@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://bhss0y5bw2u63"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_mhpua"]
+
+[resource]
+script = ExtResource("1_mhpua")
+name = &"move_player3"
+action_value_type = 2
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Move Player 4"
+display_category = "Movement"

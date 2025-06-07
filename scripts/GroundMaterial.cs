@@ -19,9 +19,6 @@ public partial class GroundMaterial : Area2D {
 		}
 	}
 	private void OnBodyExited( Node2D body ) {
-		if ( body is Player player && player != null ) {
-			player.SetGroundMaterial( GroundMaterialType.Sand );
-		}
 	}
 
 	public override void _Ready() {
@@ -29,5 +26,7 @@ public partial class GroundMaterial : Area2D {
 
 		Connect( "body_entered", Callable.From<Node2D>( OnBodyEntered ) );
 		Connect( "body_exited", Callable.From<Node2D>( OnBodyExited ) );
+//		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, bodyShapeIndex, localShapeIndex ) => { OnBodyEntered( body ); } ) );
+//		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, bodyShapeIndex, localShapeIndex ) => { OnBodyExited( body ); } ) );
 	}
 };

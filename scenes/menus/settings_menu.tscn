@@ -30,16 +30,16 @@ subpixel_positioning = 0
 [sub_resource type="SystemFont" id="SystemFont_hg0fu"]
 subpixel_positioning = 0
 
-[sub_resource type="SystemFont" id="SystemFont_udegp"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_pt7eq"]
-subpixel_positioning = 0
-
 [sub_resource type="SystemFont" id="SystemFont_fd2q8"]
 subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_rxdtf"]
+subpixel_positioning = 0
+
+[sub_resource type="SystemFont" id="SystemFont_udegp"]
+subpixel_positioning = 0
+
+[sub_resource type="SystemFont" id="SystemFont_pt7eq"]
 subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
@@ -95,15 +95,13 @@ metadata/_tab_index = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Video"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -293.0
-offset_top = -127.0
-offset_right = 287.0
-offset_bottom = 128.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 97.0
+offset_top = 124.0
+offset_right = -103.0
+offset_bottom = -123.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
@@ -139,6 +137,71 @@ popup/item_2/text = "VSYNC_ON"
 popup/item_2/id = 2
 popup/item_3/text = "VSYNC_TRIPLE_BUFFERED"
 popup/item_3/id = 3
+
+[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_fd2q8")
+text = "WINDOW_MODE"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+layout_mode = 2
+
+[node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_rxdtf")
+alignment = 1
+selected = 0
+item_count = 4
+popup/item_0/text = "WINDOWED"
+popup/item_0/id = 0
+popup/item_1/text = "BORDLERSS WINDOWED"
+popup/item_1/id = 1
+popup/item_2/text = "FULLSCREEN"
+popup/item_2/id = 2
+popup/item_3/text = "BORDERLESS FULLSCREEN"
+popup/item_3/id = 3
+
+[node name="MaxFpsList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+
+[node name="MaxFpsLabel" type="Label" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "MAX_FPS"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
+layout_mode = 2
+
+[node name="MaxFpsOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
+modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(280, 0)
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 3
+item_count = 7
+popup/item_0/text = "UNLIMITED"
+popup/item_0/id = 0
+popup/item_1/text = "30"
+popup/item_1/id = 1
+popup/item_2/text = "45"
+popup/item_2/id = 2
+popup/item_3/text = "60"
+popup/item_3/id = 3
+popup/item_4/text = "90"
+popup/item_4/id = 4
+popup/item_5/text = "125"
+popup/item_5/id = 5
+popup/item_6/text = "225"
+popup/item_6/id = 6
 
 [node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
@@ -178,20 +241,20 @@ popup/item_5/id = 5
 popup/item_6/text = "FXAA+TAA"
 popup/item_6/id = 6
 
-[node name="ShadowQuality" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+[node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="ShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowQuality"]
+[node name="ShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "SUNLIGHT_SHADOW_QUALITY"
 horizontal_alignment = 2
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowQuality"]
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
 layout_mode = 2
 
-[node name="ShadowQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ShadowQuality"]
+[node name="ShadowQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 selected = 1
@@ -203,36 +266,6 @@ popup/item_1/id = 3
 popup/item_2/text = "MEDIUM"
 popup/item_2/id = 2
 popup/item_3/text = "HIGH"
-popup/item_3/id = 3
-
-[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_fd2q8")
-text = "WINDOW_MODE"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-layout_mode = 2
-
-[node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_rxdtf")
-alignment = 1
-selected = 0
-item_count = 4
-popup/item_0/text = "WINDOWED"
-popup/item_0/id = 0
-popup/item_1/text = "BORDLERSS WINDOWED"
-popup/item_1/id = 1
-popup/item_2/text = "FULLSCREEN"
-popup/item_2/id = 2
-popup/item_3/text = "BORDERLESS FULLSCREEN"
 popup/item_3/id = 3
 
 [node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
@@ -353,15 +386,13 @@ metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -290.0
-offset_top = -67.0
-offset_right = 290.0
-offset_bottom = 67.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 184.0
+offset_right = -100.0
+offset_bottom = -184.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -402,7 +433,6 @@ custom_minimum_size = Vector2(280, 0)
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
-tick_count = 10
 ticks_on_borders = true
 
 [node name="MusicOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
@@ -441,7 +471,6 @@ layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
-tick_count = 10
 ticks_on_borders = true
 
 [node name="MuteOnUnfocusedButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
@@ -467,15 +496,13 @@ metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -276.0
-offset_top = -53.5
-offset_right = 276.0
-offset_bottom = 53.5
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 114.0
+offset_top = 197.5
+offset_right = -114.0
+offset_bottom = -197.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -563,15 +590,13 @@ metadata/_tab_index = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Gameplay"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -276.0
-offset_top = -53.5
-offset_right = 276.0
-offset_bottom = 53.5
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 114.0
+offset_top = 197.5
+offset_right = -114.0
+offset_bottom = -197.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -600,15 +625,13 @@ metadata/_tab_index = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Network"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -148.0
-offset_top = -26.0
-offset_right = 148.0
-offset_bottom = 26.0
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 242.0
+offset_top = 225.0
+offset_right = -242.0
+offset_bottom = -225.0
 grow_horizontal = 2
 grow_vertical = 2
 

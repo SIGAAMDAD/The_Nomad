@@ -106,12 +106,34 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
-	private void ApplyShadowQuality( Godot.Collections.Array<Node> children ) {
-		for ( int i = 0; i < children.Count; i++ ) {
-			if ( children[ i ] is PointLight2D light && light != null ) {
-				light.ShadowFilter = ;
+	public void ApplyShadowQuality() {
+		static void nodeIterator( Godot.Collections.Array<Node> children ) {
+			for ( int i = 0; i < children.Count; i++ ) {
+				nodeIterator( children[ i ].GetChildren() );
+
+				if ( children[ i ] is PointLight2D light && light != null ) {
+					switch ( SettingsData.GetShadowQuality() ) {
+					case ShadowQuality.Off:
+						light.SetDeferred( "shadow_enabled", false );
+						break;
+					case ShadowQuality.NoFilter:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.None );
+						break;
+					case ShadowQuality.Low:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf5 );
+						break;
+					case ShadowQuality.High:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
+						break;
+					}
+					;
+				}
 			}
 		}
+		nodeIterator( GetChildren() );
 	}
 
 	public override void _EnterTree() {
@@ -131,39 +153,21 @@ public partial class LevelData : Node2D {
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;
 		PlayerRespawn += () => { ThisPlayer.BlockInput( false ); };
 
-		PauseMenu = ResourceLoader.Load<PackedScene>( "res://scenes/menus/pause_menu.tscn" ).Instantiate<PauseMenu>();
-		PauseMenu.Hide();
-		PauseMenu.Name = "PauseMenu";
-		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
-		AddChild( PauseMenu );
-
 		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 			SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 			SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		}
 
-		ApplyShadowQuality( GetChildren() );
-
 		PhysicsServer2D.SetActive( true );
 
 		SetProcess( false );
 		SetProcessInternal( false );
-
-		BloodParticleFactory bloodFactory = new BloodParticleFactory();
-		bloodFactory.Name = "BloodParticleFactory";
-		AddChild( bloodFactory );
-
-		DebrisFactory debrisFactory = new DebrisFactory();
-		debrisFactory.Name = "DebrisFactory";
-		AddChild( debrisFactory );
-
-		BulletShellMesh bulletShellMesh = new BulletShellMesh();
-		bulletShellMesh.Name = "BulletShellMesh";
-		AddChild( bulletShellMesh );
-
-		BulletMesh bulletMesh = new BulletMesh();
-		bulletMesh.Name = "BulletMesh";
-		AddChild( bulletMesh );
+		
+		PauseMenu = ResourceLoader.Load<PackedScene>( "res://scenes/menus/pause_menu.tscn" ).Instantiate<PauseMenu>();
+		PauseMenu.Hide();
+		PauseMenu.Name = "PauseMenu";
+		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		AddChild( PauseMenu );
 
 		//
 		// force the game to run at the highest priority possible
@@ -177,7 +181,8 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				};
+				}
+				;
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

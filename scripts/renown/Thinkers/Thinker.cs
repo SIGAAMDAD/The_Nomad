@@ -37,7 +37,7 @@ namespace Renown.Thinkers {
 	public partial class Thinker : Entity {
 		protected Random Random = new Random();
 
-		protected AnimatedSprite2D BodyAnimations;
+		public AnimatedSprite2D BodyAnimations;
 
 		[Export]
 		protected TileMapFloor Floor;
@@ -60,8 +60,13 @@ namespace Renown.Thinkers {
 		protected Sex Sex;
 
 		protected StringName FirstName;
+		
+		[Export]
+		public Node AnimationStateMachine;
+		[Export]
+		public Node BehaviourTree;
 
-		[ExportCategory("Start")]
+		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;
 		
@@ -102,12 +107,18 @@ namespace Renown.Thinkers {
 		[Export]
 		protected bool HasMetPlayer = false;
 		[Export]
-		protected float MovementSpeed = 200.0f;
+		public float MovementSpeed {
+			get;
+			protected set;
+		} = 200.0f;
 
 		protected Node2D Animations;
 
-		protected NavigationAgent2D NavAgent;
-		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
+		public NavigationAgent2D NavAgent;
+		public Godot.Vector2 LookDir {
+			get;
+			protected set;
+		} = Godot.Vector2.Zero;
 
 		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
 
@@ -117,10 +128,19 @@ namespace Renown.Thinkers {
 		protected bool Initialized = false;
 
 		// memory
-		protected bool TargetReached = false;
+		public bool TargetReached {
+			get;
+			protected set;
+		} = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		protected float LookAngle;
-		protected float AimAngle;
+		public float LookAngle {
+			get;
+			protected set;
+		}
+		public float AimAngle {
+			get;
+			protected set;
+		}
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
@@ -474,7 +494,7 @@ namespace Renown.Thinkers {
 
 			base._PhysicsProcess( delta );
 
-			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
+			//NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
 				if ( Velocity == Godot.Vector2.Zero ) {
@@ -492,7 +512,7 @@ namespace Renown.Thinkers {
 			base._Process( delta );
 
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-			ProcessAnimations();
+//			ProcessAnimations();
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
 				return;
@@ -546,11 +566,13 @@ namespace Renown.Thinkers {
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
+			AnimationStateMachine.Call( "fire_event", "start_moving" );
 		}
 		protected virtual void OnTargetReached() {
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
 			Velocity = Godot.Vector2.Zero;
+			AnimationStateMachine.Call( "fire_event", "stop_moving" );
 		}
 		
 		public void GenerateRelations() {

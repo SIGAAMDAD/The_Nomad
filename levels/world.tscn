@@ -1,4 +1,4 @@
-[gd_scene load_steps=171 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=175 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -71,10 +71,14 @@
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="51_82deo"]
 [ext_resource type="Texture2D" uid="uid://cjvgtfs3fg4v8" path="res://textures/env/brick_floor.dds" id="52_m0bm8"]
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="53_m0bm8"]
+[ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="53_mem04"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="54_mem04"]
 [ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/Family.cs" id="58_qxuuj"]
 [ext_resource type="Resource" uid="uid://rtr1r3ter3ko" path="res://resources/binds/actions/keyboard/melee.tres" id="65_gb70t"]
+[ext_resource type="PackedScene" uid="uid://c4ki5do2fhwcy" path="res://scenes/effects/blood_particle_factory.tscn" id="66_23017"]
+[ext_resource type="PackedScene" uid="uid://cgxelfr6mbhgp" path="res://scenes/effects/bullet_shell_mesh.tscn" id="67_0t2pq"]
 [ext_resource type="PackedScene" uid="uid://dmt36v2g56rb2" path="res://scenes/interactables/cutscene.tscn" id="68_q0seo"]
+[ext_resource type="PackedScene" uid="uid://eo4nbjxrlwru" path="res://scenes/effects/debris_factory.tscn" id="68_xehab"]
 [ext_resource type="Script" uid="uid://bwwd2pdkul1bk" path="res://scripts/Interactables/Cutscenes/CutsceneDialogue.cs" id="69_gb70t"]
 [ext_resource type="Resource" uid="uid://3b8i6s836yoo" path="res://resources/dialogue/player.dialogue" id="70_gb70t"]
 [ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="72_dx3bq"]
@@ -9862,7 +9866,6 @@ ThisPlayer = NodePath("Network/Players/Player0")
 PlayerList = NodePath("Network/Players")
 
 [node name="WorldTime" type="Node2D" parent="." node_paths=PackedStringArray("Months", "WorldTimeOverlay")]
-visible = false
 script = ExtResource("11_re8x6")
 StartingYear = 89950
 StartingHour = 14.0
@@ -9871,7 +9874,6 @@ WorldTimeOverlay = NodePath("../CanvasModulate")
 Gradient = ExtResource("2_re8x6")
 
 [node name="SunLight" type="DirectionalLight2D" parent="WorldTime"]
-visible = false
 rotation = -1.19904
 color = Color(1, 0, 0, 0.486275)
 range_item_cull_mask = 2
@@ -10693,8 +10695,10 @@ region_rect = Rect2(911.997, 144.172, 48.2336, 48.4277)
 position = Vector2(3468, 699)
 
 [node name="Area2D" type="Area2D" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer0"]
-collision_layer = 2
-collision_mask = 2
+collision_layer = 34
+collision_mask = 34
+script = ExtResource("53_mem04")
+Type = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer0/Area2D"]
 position = Vector2(3048, 688.5)
@@ -10780,6 +10784,7 @@ position = Vector2(3312, 640)
 shape = SubResource("SegmentShape2D_in4b8")
 
 [node name="FirstFloorLayer1" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Decor", "Area", "FloorBounds", "ParentLocation", "UpperLayer", "LowerLayer") instance=ExtResource("21_qrdf2")]
+visible = false
 z_index = 3
 position = Vector2(929, -26)
 Floor = NodePath("FirstFloorLevelLayer1")
@@ -10834,8 +10839,10 @@ z_index = 1
 position = Vector2(4130, 733)
 
 [node name="Area2D" type="Area2D" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1"]
-collision_layer = 2
-collision_mask = 2
+collision_layer = 34
+collision_mask = 34
+script = ExtResource("53_mem04")
+Type = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1/Area2D"]
 position = Vector2(-3933, -636)
@@ -11062,10 +11069,6 @@ shadow_enabled = true
 texture = ExtResource("51_82deo")
 texture_scale = 4.5
 
-[node name="Road" type="Polygon2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior/TileMapLayer"]
-texture = ExtResource("52_m0bm8")
-polygon = PackedVector2Array(2946.5, 894.5, 3100.5, 894, 3078.5, 909, 3069.5, 916.5, 3062, 929.5, 3054.5, 967, 3048.5, 1137.5, 3051.5, 1170, 3431.5, 1267.5, 2632, 1261.5, 2958, 1168, 2968.5, 1140, 2967, 1099.5, 2972.5, 964, 2969.5, 929, 2960.5, 915.5)
-
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior"]
 occluder = SubResource("OccluderPolygon2D_cyobr")
 occluder_light_mask = 3
@@ -11088,6 +11091,34 @@ polygon = PackedVector2Array(-44, 205, -369, 197.5, -369, -90.5, 1247.5, -90, 12
 
 [node name="DoorDestination" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate/Exterior"]
 position = Vector2(-13, 260)
+
+[node name="WoodWalkarea" type="Area2D" parent="Biomes/SaltWastes/KiroslaEstate"]
+collision_layer = 32
+collision_mask = 32
+monitoring = false
+monitorable = false
+priority = 1
+script = ExtResource("53_mem04")
+Type = 2
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate/WoodWalkarea"]
+position = Vector2(477.25, 62.25)
+build_mode = 1
+polygon = PackedVector2Array(-806.25, -141.25, 804.75, -141.25, 806.75, 141.75, -378.25, 143.75, -380.75, 171.25, -531.75, 172.25, -533.25, 140.25, -806.75, 141.25)
+
+[node name="StoneWalkway" type="Area2D" parent="Biomes/SaltWastes/KiroslaEstate"]
+position = Vector2(-3003, -658)
+collision_layer = 32
+collision_mask = 32
+priority = 2
+script = ExtResource("53_mem04")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate/StoneWalkway"]
+polygon = PackedVector2Array(2946.5, 894.5, 3100.5, 894, 3078.5, 909, 3069.5, 916.5, 3062, 929.5, 3054.5, 967, 3048.5, 1137.5, 3051.5, 1170, 3431.5, 1267.5, 2632, 1261.5, 2958, 1168, 2968.5, 1140, 2972.5, 964, 2969.5, 929, 2960.5, 915.5)
+
+[node name="Road" type="Polygon2D" parent="Biomes/SaltWastes/KiroslaEstate/StoneWalkway"]
+texture = ExtResource("52_m0bm8")
+polygon = PackedVector2Array(2946, 894, 3100.5, 894, 3078.5, 909, 3069.5, 916.5, 3062, 929.5, 3054.5, 967, 3048.5, 1137.5, 3051.5, 1170, 3431.5, 1267.5, 2632, 1261.5, 2958, 1168, 2968.5, 1140, 2967, 1099.5, 2972.5, 964, 2969.5, 929, 2960.5, 915.5)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/KiroslaEstate"]
 position = Vector2(-16, 105)
@@ -11166,6 +11197,23 @@ shape = SubResource("SegmentShape2D_x3q2i")
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="Biomes/SaltWastes/WorldRestrictions/StaticBody2D"]
 position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
+
+[node name="SandFloor" type="Area2D" parent="Biomes/SaltWastes"]
+collision_layer = 32
+collision_mask = 32
+priority = 1
+script = ExtResource("53_mem04")
+Type = 1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
+position = Vector2(-1, 58.5)
+polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342, 3383, -91, 3383, 197, 3655, 197, 3657, 227, 3680.5, 262, 3683.5, 297, 3679.5, 473, 3669, 501, 3343, 594.5, 4142.5, 600.5, 3762.5, 503, 3759.5, 470.5, 3765.5, 300, 3773, 262.5, 3780.5, 249.5, 3789.5, 242, 3811.5, 227, 3815, 197, 4999, 197, 4999, -91, 3383, -91, -1453, 1342)
+
+[node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(-1, 57)
+polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342)
+disabled = true
 
 [node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 4
@@ -12004,6 +12052,51 @@ visible = false
 modulate = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 62858, 44093, 87178, -26946, 89969)
 
+[node name="BloodParticleFactory" parent="." instance=ExtResource("66_23017")]
+
+[node name="BulletShellMesh" parent="." instance=ExtResource("67_0t2pq")]
+
+[node name="DebrisFactory" parent="." instance=ExtResource("68_xehab")]
+
+[node name="Roads" type="Node2D" parent="."]
+process_mode = 4
+
+[node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
+position = Vector2(-59167, 40013)
+script = ExtResource("6_54i5j")
+Links = []
+EntryNodes = {}
+
+[node name="Polygon2D" type="Polygon2D" parent="Roads/TheOldRoad"]
+texture = ExtResource("34_hc03g")
+polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29603, 12750, -29431, 12712, -29318, 12718, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15351, -4888, 15417, -4770, 15629, -4390, 16042, -3974, 16757, -3826, 17362, -3584, 17793, -3142, 18718, -2630, 18792, -2731, 17867, -3222, 17433, -3653, 16792, -3930, 16128, -4103, 15720, -4482, 15502, -4854, 15422.5, -5025.95, 15941, -5869, 17722, -7660, 19992, -8147, 24905, -10458, 25978, -11346, 27411, -12212, 27971, -12365, 28364.5, -12547, 27939.5, -12547, 27911, -12408, 27358, -12273, 25922, -11412, 24786, -10557, 23048, -9701, 22567, -10453, 22416, -10927, 21779, -11136, 21784, -11097, 22379, -10882, 22522, -10427, 22893, -9647, 19967, -8282)
+
+[node name="ProcessArea" type="Area2D" parent="Roads/TheOldRoad"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roads/TheOldRoad/ProcessArea"]
+polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29603, 12750, -29431, 12712, -29318, 12718, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15351, -4888, 15417, -4770, 15629, -4390, 16042, -3974, 16757, -3826, 17362, -3584, 17793, -3142, 18718, -2630, 18792, -2731, 17867, -3222, 17433, -3653, 16792, -3930, 16128, -4103, 15720, -4482, 15502, -4854, 15422.5, -5025.95, 15941, -5869, 17722, -7660, 19992, -8147, 24905, -10458, 25978, -11346, 27411, -12212, 27971, -12365, 28361.5, -12547, 27940, -12547, 27911, -12408, 27358, -12273, 25922, -11412, 24786, -10557, 23048, -9701, 22567, -10453, 22416, -10927, 21779, -11136, 21784, -11097, 22379, -10882, 22522, -10427, 22893, -9647, 19967, -8282)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Roads/TheOldRoad"]
+navigation_polygon = ExtResource("6_oxfhy")
+
+[node name="TheGreatRoundRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
+position = Vector2(-72614, 35220)
+script = ExtResource("6_54i5j")
+Links = []
+EntryNodes = {}
+
+[node name="Polygon2D" type="Polygon2D" parent="Roads/TheGreatRoundRoad"]
+texture = ExtResource("32_fgsnb")
+polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Roads/TheGreatRoundRoad"]
+navigation_polygon = ExtResource("33_3bhl6")
+
+[node name="ProcessArea" type="Area2D" parent="Roads/TheGreatRoundRoad"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roads/TheGreatRoundRoad/ProcessArea"]
+polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
+
 [node name="Network" type="Node2D" parent="."]
 
 [node name="Players" type="Node2D" parent="Network"]
@@ -12056,45 +12149,6 @@ RenownScore = 5000
 Debts = {}
 Relations = {}
 Location = NodePath("../../Biomes/SafeSands")
-
-[node name="Roads" type="Node2D" parent="."]
-process_mode = 4
-
-[node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
-position = Vector2(-59167, 40013)
-script = ExtResource("6_54i5j")
-Links = []
-EntryNodes = {}
-
-[node name="Polygon2D" type="Polygon2D" parent="Roads/TheOldRoad"]
-texture = ExtResource("34_hc03g")
-polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29603, 12750, -29431, 12712, -29318, 12718, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15351, -4888, 15417, -4770, 15629, -4390, 16042, -3974, 16757, -3826, 17362, -3584, 17793, -3142, 18718, -2630, 18792, -2731, 17867, -3222, 17433, -3653, 16792, -3930, 16128, -4103, 15720, -4482, 15502, -4854, 15422.5, -5025.95, 15941, -5869, 17722, -7660, 19992, -8147, 24905, -10458, 25978, -11346, 27411, -12212, 27971, -12365, 28364.5, -12547, 27939.5, -12547, 27911, -12408, 27358, -12273, 25922, -11412, 24786, -10557, 23048, -9701, 22567, -10453, 22416, -10927, 21779, -11136, 21784, -11097, 22379, -10882, 22522, -10427, 22893, -9647, 19967, -8282)
-
-[node name="ProcessArea" type="Area2D" parent="Roads/TheOldRoad"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roads/TheOldRoad/ProcessArea"]
-polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29603, 12750, -29431, 12712, -29318, 12718, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15351, -4888, 15417, -4770, 15629, -4390, 16042, -3974, 16757, -3826, 17362, -3584, 17793, -3142, 18718, -2630, 18792, -2731, 17867, -3222, 17433, -3653, 16792, -3930, 16128, -4103, 15720, -4482, 15502, -4854, 15422.5, -5025.95, 15941, -5869, 17722, -7660, 19992, -8147, 24905, -10458, 25978, -11346, 27411, -12212, 27971, -12365, 28361.5, -12547, 27940, -12547, 27911, -12408, 27358, -12273, 25922, -11412, 24786, -10557, 23048, -9701, 22567, -10453, 22416, -10927, 21779, -11136, 21784, -11097, 22379, -10882, 22522, -10427, 22893, -9647, 19967, -8282)
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Roads/TheOldRoad"]
-navigation_polygon = ExtResource("6_oxfhy")
-
-[node name="TheGreatRoundRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
-position = Vector2(-72614, 35220)
-script = ExtResource("6_54i5j")
-Links = []
-EntryNodes = {}
-
-[node name="Polygon2D" type="Polygon2D" parent="Roads/TheGreatRoundRoad"]
-texture = ExtResource("32_fgsnb")
-polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Roads/TheGreatRoundRoad"]
-navigation_polygon = ExtResource("33_3bhl6")
-
-[node name="ProcessArea" type="Area2D" parent="Roads/TheGreatRoundRoad"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roads/TheGreatRoundRoad/ProcessArea"]
-polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 script = ExtResource("6_i8ckm")

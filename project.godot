@@ -41,7 +41,6 @@ boot_splash/show_image=false
 config/icon="uid://ct4mipmq61o84"
 config/windows_native_icon="res://desertbkgd_icon.ico"
 boot_splash/minimum_display_time=1500
-run/vsync/frame_queue_size=2
 run/icon="res://desertbkgd_icon.png"
 
 [audio]
@@ -59,7 +58,6 @@ SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
 ArchiveSystem="*res://scripts/SaveSystem/ArchiveSystem.cs"
 GUIDE="*res://addons/guide/guide.gd"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
-GlobalWorldEnvironment="res://scenes/world_environment.tscn"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
@@ -98,7 +96,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg")
 
 [global_group]
 
@@ -196,7 +194,7 @@ menu_settings_prev_category={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://locale/translations.en.translation")
+locale/translations=PackedStringArray("res://locale/translations-en.en.translation", "res://locale/translations-es.es.translation")
 locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue", "res://resources/dialogue/mercenary.dialogue")
 
 [layer_names]
@@ -242,13 +240,13 @@ rendering_device/vulkan/max_descriptors_per_pool=128
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 gl_compatibility/nvidia_disable_threaded_optimization=false
-driver/threads/thread_model=0
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
 2d/shadow_atlas/size=1024
+2d/batching/uniform_set_cache_size=8192
 gl_compatibility/item_buffer_size=1024
 reflections/sky_reflections/fast_filter_high_quality=true
 shading/overrides/force_vertex_shading=true

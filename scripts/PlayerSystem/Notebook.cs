@@ -25,6 +25,9 @@ namespace PlayerSystem {
 		private RichTextLabel ItemDescription;
 		private Label ItemEffect;
 
+		private Label EncumbranceAmountLabel;
+		private Label OverweightLabel;
+
 		private VBoxContainer StackList;
 		private TabBar Backpack;
 
@@ -94,8 +97,10 @@ namespace PlayerSystem {
 			ItemDescription = Backpack.GetNode<RichTextLabel>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DescriptionLabel" );
 			ItemEffect = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer/Label2" );
 
-			TabBar Contracts = GetNode<TabBar>( "TabContainer/Contracts" );
+			EncumbranceAmountLabel = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer/AmountLabel" );
+			OverweightLabel = Backpack.GetNode<Label>( "MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer/OverweightLabel" );
 
+			TabBar Contracts = GetNode<TabBar>( "TabContainer/Contracts" );
 			ContractClonerContainer = Contracts.GetNode<HBoxContainer>( "MarginContainer/VBoxContainer//VScrollBar/ContractList/ClonerContainer" );
 			ContractList = Contracts.GetNode<VBoxContainer>( "MarginContainer/VBoxContainer/VScrollBar/ContractList" );
 		}
@@ -144,15 +149,25 @@ namespace PlayerSystem {
 			HBoxContainer row = new HBoxContainer();
 			StackList.AddChild( row );
 
+			float weight = 0.0f;
 			foreach ( var stack in _Owner.GetAmmoStacks() ) {
 				row = AddAmmoStackToBackpack( row, stack.Value );
+				weight += (float)stack.Value.AmmoType.Data.Get( "weight" ) * stack.Value.Amount;
 			}
 			foreach ( var stack in _Owner.GetWeaponStack() ) {
 				row = AddWeaponToBackpack( row, stack.Value );
+				weight += (float)stack.Value.GetWeight();
 			}
-//			foreach ( var stack in _Owner.GetInventory().Stacks ) {
-//				row = AddItemToBackpack( row, stack );
-//			}
+			//			foreach ( var stack in _Owner.GetInventory().Stacks ) {
+			//				row = AddItemToBackpack( row, stack );
+			//			}
+
+			EncumbranceAmountLabel.Text = string.Format( "{0}/{1}", weight, 0.0f );
+			if ( false ) {
+				OverweightLabel.Show();
+			} else {
+				OverweightLabel.Hide();
+			}
 
 			Backpack.Visible = true;
 		}
@@ -190,18 +205,36 @@ namespace PlayerSystem {
 
 			ItemName.Text = (string)itemType.Get( "name" );
 			ItemIcon.Texture = (Texture2D)itemType.Get( "icon" );
-			ItemType.Text = (string)categories[1].Get( "name" );
 
-			string category = (string)categories[1].Get( "id" );
-			if ( category == "ITEM_CATEGORY_MISC" ) {
-				ItemCount.Text = string.Format( "{0}/", GetItemCount( (string)itemType.Get( "id" ) ).ToString() );
-			} else if ( category == "ITEM_CATEGORY_AMMO" ) {
-				ItemCount.Text = string.Format( "{0}/", GetAmmoCount( (string)itemType.Get( "id" ) ).ToString() );
-			} else if ( category == "ITEM_CATEGORY_WEAPON" ) {
-				ItemCount.Text = "1/";
-			} else {
+			string category = "(null)";
+			bool found = false;
+			for ( int i = 0; i < categories.Count; i++ ) {
+				category = (string)categories[ i ].Get( "id" );
+				switch ( category ) {
+				case "ITEM_CATEGORY_MISC":
+					ItemCount.Text = string.Format( "{0}/", GetItemCount( (string)itemType.Get( "id" ) ).ToString() );
+					found = true;
+					break;
+				case "ITEM_CATEGORY_AMMO":
+					ItemCount.Text = string.Format( "{0}/", GetAmmoCount( (string)itemType.Get( "id" ) ).ToString() );
+					found = true;
+					break;
+				case "ITEM_CATEGORY_WEAPON":
+					ItemCount.Text = "1/";
+					found = true;
+					break;
+				default:
+					category = "(null)";
+					break;
+				};
+				if ( found ) {
+					break;
+				}
+			}
+			if ( !found ) {
 				Console.PrintWarning( string.Format( "Notebook.OnBackpackItemSelected: invalid backpack item category \"{0}\"", category ) );
 			}
+			ItemType.Text = (string)categories[1].Get( "name" );
 			ItemStackMax.Text = ( (int)itemType.Get( "max_stack" ) ).ToString();
 		}
 

@@ -1,12 +1,12 @@
 using Godot;
 
-public partial class BloodParticleFactory : Node2D {
+public partial class BloodParticleFactory : Node {
 	private Timer ReleaseTimer = null;
-	private Transform2D[] Transforms = null;
 	private MultiMeshInstance2D MeshManager = null;
 	private RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
 
 	private static BloodParticleFactory Instance = null;
+	private static readonly int BloodInstanceMax = 256;
 
 	private void OnReleaseTimerTimeout() {
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
@@ -29,45 +29,41 @@ public partial class BloodParticleFactory : Node2D {
 		ReleaseTimer.OneShot = true;
 		ReleaseTimer.Connect( "timeout", Callable.From( OnReleaseTimerTimeout ) );
 		AddChild( ReleaseTimer );
-		
+
 		MeshManager = new MultiMeshInstance2D();
 		MeshManager.Multimesh = new MultiMesh();
 		MeshManager.Multimesh.Mesh = new QuadMesh();
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 4.0f, -4.0f );
 		MeshManager.Texture = ResourceCache.GetTexture( "res://textures/blood1.png" );
-		MeshManager.ZIndex = 6;
+		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 8.0f, -8.0f );
+		MeshManager.ZIndex = 10;
 		AddChild( MeshManager );
 
 		// cache a shitload
-		MeshManager.Multimesh.InstanceCount = 4096;
+		MeshManager.Multimesh.InstanceCount = BloodInstanceMax;
 		MeshManager.Multimesh.VisibleInstanceCount = 0;
 
-		Transforms = new Transform2D[ MeshManager.Multimesh.InstanceCount ];
+		// clean up on respawn
+		LevelData.Instance.PlayerRespawn += () => {
+			MeshManager.Multimesh.VisibleInstanceCount = 0;
+		};
 	}
-	
+
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		int bloodAmount = 32;
+		int bloodAmount = 16;
 
-		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount;
-		int startIndex = instanceCount;
-
-		instanceCount += bloodAmount;
-		if ( instanceCount > MeshManager.Multimesh.InstanceCount ) {
-			instanceCount = bloodAmount;
-			startIndex = 0;
+		if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
+			MeshManager.Multimesh.VisibleInstanceCount = 0;
 		}
 
 		ReleaseTimer.Start();
 
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;
-			position.X += RandomFactory.RandfRange( -20.25f, 20.25f );
-			position.X += RandomFactory.RandfRange( -50.25f, 50.25f );
-			Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
-			MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Transforms[i] );
+			position.Y += RandomFactory.RandfRange( -120.25f, 120.25f );
+			position.X += RandomFactory.RandfRange( -150.25f, 150.25f );
+			MeshManager.Multimesh.VisibleInstanceCount++;
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
 		}
-
-		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
 	}
 	public static void Create( Vector2 from, Vector2 to ) {
 		Instance.CreateBloodSplatter( from, to );

@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System;
 
 public partial class SettingsData : Control {
-	private Resource Default;
+	private DefaultSettings Default;
 
 	//
 	// video options
 	//
 	private static WindowMode WindowMode;
+	private static ShadowQuality ShadowQuality;
 	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
 	private static int MaxFps;
@@ -85,6 +86,13 @@ public partial class SettingsData : Control {
 	
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
+	public static int GetMaxFps() => MaxFps;
+	public static void SetMaxFps( int nMaxFps ) {
+		MaxFps = nMaxFps;
+		Engine.MaxFps = MaxFps;
+	}
+	public static ShadowQuality GetShadowQuality() => ShadowQuality;
+	public static void SetShadowQuality( ShadowQuality quality ) => ShadowQuality = quality;
 	public static VSyncMode GetVSync() => VSyncMode;
 	public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
 	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
@@ -187,8 +195,9 @@ public partial class SettingsData : Control {
 				3
 			);
 			break;
-		}
-		;
+		};
+
+		Engine.MaxFps = MaxFps;
 
 		Rid viewport = GetTree().Root.GetViewportRid();
 		switch ( AntiAliasing ) {
@@ -233,12 +242,12 @@ public partial class SettingsData : Control {
 		case WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
 			break;
 		case WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
 			break;
 		case WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
@@ -287,7 +296,7 @@ public partial class SettingsData : Control {
 			break;
 		};
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
-//		ShadowQuality = (RenderingServer.ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
+		ShadowQuality = (ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
 		switch ( config[ "Video:AntiAliasing" ] ) {
 		case "None":
 			AntiAliasing = AntiAliasing.None;
@@ -327,13 +336,16 @@ public partial class SettingsData : Control {
 		};
 		switch ( config[ "Video:VSync" ] ) {
 		case "Disabled":
-			VSyncMode = DisplayServer.VSyncMode.Disabled;
+			VSyncMode = VSyncMode.Off;
 			break;
 		case "Adaptive":
-			VSyncMode = DisplayServer.VSyncMode.Adaptive;
+			VSyncMode = VSyncMode.Adaptive;
 			break;
 		case "Enabled":
-			VSyncMode = DisplayServer.VSyncMode.Enabled;
+			VSyncMode = VSyncMode.On;
+			break;
+		case "TripleBuffered":
+			VSyncMode = VSyncMode.TripleBuffered;
 			break;
 		};
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
@@ -347,7 +359,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( "[Video]" );
 		writer.WriteLine( string.Format( "WindowMode={0}", WindowMode ) );
 		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
-//		writer.WriteLine( string.Format( "ShadowQuality={0}", ShadowQuality ) );
+		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", AntiAliasing ) );
 		writer.WriteLine( string.Format( "VSync={0}", VSyncMode ) );
 		writer.WriteLine( string.Format( "Bloom={0}", BloomEnabled.ToString() ) );
@@ -401,38 +413,38 @@ public partial class SettingsData : Control {
 	}
 
 	private void GetDefaultConfig() {
-		Default = ResourceLoader.Load( "res://resources/DefaultSettings.tres" );
+		Default = ResourceLoader.Load<DefaultSettings>( "res://resources/DefaultSettings.tres" );
 
-		WindowMode = (WindowMode)(uint)Default.Get( "_window_mode" );
-		VSyncMode = (DisplayServer.VSyncMode)(uint)Default.Get( "_vsync_mode" );
-		AntiAliasing = (AntiAliasing)(uint)Default.Get( "_anti_aliasing" );
-		MaxFps = (int)Default.Get( "_max_fps" );
-		BloomEnabled = (bool)Default.Get( "_bloom_enabled" );
-		SunShadowQuality = (ShadowQuality)(uint)Default.Get( "_sun_shadow_quality" );
-		SunLightEnabled = (bool)Default.Get( "_sun_light_enabled" );
-		SetShowFPS( (bool)Default.Get( "_show_fps" ) );
-		ShowBlood = (bool)Default.Get( "_show_blood" );
+		WindowMode = Default.WindowMode;
+		VSyncMode = Default.Vsync;
+		AntiAliasing = Default.AntiAliasing;
+		MaxFps = Default.MaxFps;
+		BloomEnabled = Default.BloomEnabled;
+		SunShadowQuality = Default.SunShadowQuality;
+		SunLightEnabled = Default.SunLightEnabled;
+		SetShowFPS( Default.ShowFps );
+		ShowBlood = Default.ShowBlood;
 
-		HapticStrength = (float)Default.Get( "_haptic_strength" );
-		HapticEnabled = (bool)Default.Get( "_haptic_feedback" );
-		QuicktimeAutocomplete = (bool)Default.Get( "_quicktime_autocomplete" );
-		ColorblindMode = (int)Default.Get( "_colorblind_mode" );
-		AutoAimEnabled = (bool)Default.Get( "_autoaim" );
-		DyslexiaMode = (bool)Default.Get( "_dyslexia_mode" );
+		HapticStrength = Default.HapticStrength;
+		HapticEnabled = Default.HapticFeedback;
+		QuicktimeAutocomplete = Default.QuicktimeAutocomplete;
+		ColorblindMode = Default.ColorblindMode;
+		AutoAimEnabled = Default.AutoAim;
+		DyslexiaMode = Default.DyslexiaMode;
 
-		EffectsOn = (bool)Default.Get( "_sound_effects_on" );
-		SetEffectsVolume( (float)Default.Get( "_sound_effects_volume" ) );
-		MusicOn = (bool)Default.Get( "_music_on" );
-		SetMusicVolume( (float)Default.Get( "_music_volume" ) );
-		MuteUnfocused = (bool)Default.Get( "_mute_unfocused" );
+		EffectsOn = Default.SoundEffectsOn;
+		SetEffectsVolume( Default.SoundEffectsVolume );
+		MusicOn = Default.MusicOn;
+		SetMusicVolume( Default.MusicVolume );
+		MuteUnfocused = Default.MuteUnfocused;
 
-		EquipWeaponOnPickup = (bool)Default.Get( "_equip_weapon_on_pickup" );
-		HellbreakerEnabled = (bool)Default.Get( "_hellbreaker" );
-		HellbreakerRevanents = (bool)Default.Get( "_hellbreaker_revanents" );
-		CleanAudio = (bool)Default.Get( "_clean_audio" );
+		EquipWeaponOnPickup = Default.EquipWeaponOnPickup;
+		HellbreakerEnabled = Default.Hellbreaker;
+		HellbreakerRevanents = Default.HellbreakerRevanents;
+		CleanAudio = Default.CleanAudio;
 
-		EnableNetworking = (bool)Default.Get( "_networking_enabled" );
-		FriendsOnlyNetworking = (bool)Default.Get( "_friends_only" );
+		EnableNetworking = Default.NetworkingEnabled;
+		FriendsOnlyNetworking = Default.FriendsOnly;
 	}
 
 	public override void _Ready() {

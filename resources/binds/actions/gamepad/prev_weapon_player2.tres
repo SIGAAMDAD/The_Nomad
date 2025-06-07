@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://7mfrf12lem52"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_c6d7g"]
+
+[resource]
+script = ExtResource("1_c6d7g")
+name = &"prev_weapon_player0"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Previous Weapon Player 2"
+display_category = "Combat"

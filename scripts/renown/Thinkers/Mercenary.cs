@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using ChallengeMode;
 using Godot;
 using PlayerSystem;
@@ -7,7 +6,7 @@ using Renown.World;
 
 namespace Renown.Thinkers {
 	public partial class Mercenary : Thinker {
-		private enum State : uint {
+		public enum State : uint {
 			Guarding,
 			Attacking,
 			Investigating,
@@ -24,7 +23,10 @@ namespace Renown.Thinkers {
 		[Export]
 		private float LoseInterestTime = 0.0f;
 		[Export]
-		private float SightDetectionTime = 0.0f;
+		public float SightDetectionTime {
+			get;
+			private set;
+		} = 0.0f;
 		[Export]
 		private float SightDetectionSpeed = 0.0f;
 		[Export]
@@ -40,11 +42,21 @@ namespace Renown.Thinkers {
 		[Export]
 		private string MercenaryReason;
 
-		private float SightDetectionAmount = 0.0f;
+		public float SightDetectionAmount {
+			get;
+			private set;
+		} = 0.0f;
 
 		private Hitbox HeadHitbox;
+		public bool HitHead {
+			get;
+			private set;
+		} = false;
 
-		private State CurrentState;
+		public State CurrentState {
+			get;
+			private set;
+		}
 
 		private Godot.Vector2 StartPosition;
 		private float StartHealth;
@@ -53,7 +65,10 @@ namespace Renown.Thinkers {
 		private Timer AimTimer;
 		private Timer AttackTimer;
 		private RayCast2D AimLine;
-		private bool Aiming = false;
+		public bool Aiming {
+			get;
+			private set;
+		} = false;
 		private Line2D AttackMeter;
 		private float AttackMeterProgress = 0.0f;
 		private Godot.Vector2 AttackMeterFull;
@@ -66,7 +81,10 @@ namespace Renown.Thinkers {
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
-		private WeaponEntity Weapon;
+		public WeaponEntity Weapon {
+			get;
+			private set;
+		}
 		private AmmoEntity Ammo;
 		private AmmoStack AmmoStack;
 
@@ -83,13 +101,16 @@ namespace Renown.Thinkers {
 
 		private Line2D DetectionMeter;
 
-		private AnimatedSprite2D HeadAnimations;
-		private AnimatedSprite2D ArmAnimations;
+		public AnimatedSprite2D HeadAnimations;
+		public AnimatedSprite2D ArmAnimations;
 
 		// if we have fear, move slower
 		private float SpeedDegrade = 1.0f;
 
-		private int Fear = 0;
+		public int Fear {
+			get;
+			private set;
+		} = 0;
 
 		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -187,8 +208,12 @@ namespace Renown.Thinkers {
 
 			base.Damage( source, nAmount );
 			PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+			
+			BloodParticleFactory.Create( Godot.Vector2.Zero, GlobalPosition );
 
 			if ( Health <= 0.0f ) {
+				AnimationStateMachine.CallDeferred( "fire_event", "die" );
+
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				SetDeferred( "collision_layer", 0 );
 				SetDeferred( "collision_mask", 0 );
@@ -203,14 +228,13 @@ namespace Renown.Thinkers {
 
 				Velocity = Godot.Vector2.Zero;
 				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
-				
+
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
-				if ( BodyAnimations.Animation != "die_high" ) {
+				if ( HitHead ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
-					BodyAnimations.CallDeferred( "play", "die_low" );
 					BodyAnimations.Connect( "animation_finished", Callable.From( OnDeathAnimationFinished ) );
 				}
 				return;
@@ -271,17 +295,26 @@ namespace Renown.Thinkers {
 			Fear = nAmount;
 			if ( Fear >= 100 ) {
 				SpeedDegrade = 0.0f;
-				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
+//				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
 			} else if ( Fear >= 80 ) {
 				SpeedDegrade = 0.25f;
-				ChangeInvestigationAngleTimer.WaitTime = 0.90f;
+//				ChangeInvestigationAngleTimer.WaitTime = 0.90f;
 			} else if ( Fear >= 60 ) {
 				SpeedDegrade = 0.5f;
-				ChangeInvestigationAngleTimer.WaitTime = 1.2f;
+//				ChangeInvestigationAngleTimer.WaitTime = 1.2f;
 			} else {
 				SpeedDegrade = 1.0f;
-				ChangeInvestigationAngleTimer.WaitTime = 2.0;
+//				ChangeInvestigationAngleTimer.WaitTime = 2.0;
 			}
+		}
+
+		public void LookAtTarget() {
+			if ( SightTarget == null ) {
+				return;
+			}
+			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 		}
 
 		private bool IsValidTarget( Entity target ) => target is Player;
@@ -368,7 +401,7 @@ namespace Renown.Thinkers {
 			float angle = RandomFloat( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
-			ChangeInvestigationAngleTimer.CallDeferred( "start" );
+//			ChangeInvestigationAngleTimer.CallDeferred( "start" );
 		}
 		private void OnLoseInterestTimerTimeout() {
 			CurrentState = State.Investigating;
@@ -389,8 +422,9 @@ namespace Renown.Thinkers {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
+			HitHead = true;
 			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
-			BodyAnimations.Play( "die_high" );
+//			BodyAnimations.Play( "die_high" );
 			Damage( source, Health );
 		}
 
@@ -569,12 +603,12 @@ namespace Renown.Thinkers {
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
 
-			ChangeInvestigationAngleTimer = new Timer();
-			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
-			ChangeInvestigationAngleTimer.OneShot = true;
-			ChangeInvestigationAngleTimer.WaitTime = 2.5f;
-			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
-			AddChild( ChangeInvestigationAngleTimer );
+			//			ChangeInvestigationAngleTimer = new Timer();
+			//			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
+			//			ChangeInvestigationAngleTimer.OneShot = true;
+			//			ChangeInvestigationAngleTimer.WaitTime = 2.5f;
+			//			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
+			//			AddChild( ChangeInvestigationAngleTimer );
 
 			TargetMovedTimer = new Timer();
 			TargetMovedTimer.Name = "TargetMovedTimer";
@@ -612,6 +646,8 @@ namespace Renown.Thinkers {
 				Awareness = MobAwareness.Alert;
 				SightDetectionAmount = SightDetectionTime;
 			}
+
+			AnimationStateMachine.Call( "start" );
 		}
 
 		private void OnAimTimerTimeout() {
@@ -655,11 +691,7 @@ namespace Renown.Thinkers {
 				ArmAnimations.SetDeferred( "sprite_frames", Weapon.GetFramesRight() );
 			}
 
-			if ( SightTarget != null ) {
-				LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
-				LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-				AimAngle = LookAngle;
-			}
+			LookAtTarget();
 			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
 			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
 
@@ -707,6 +739,7 @@ namespace Renown.Thinkers {
 			AttackMeter.Points[ 1 ].X = AttackMeterProgress;
 		}
 		protected override void Think() {
+			return;
 			if ( !Visible ) {
 				return;
 			}
@@ -719,7 +752,7 @@ namespace Renown.Thinkers {
 				}
 				if ( CanSeeTarget ) {
 					CurrentState = State.Attacking;
-					ChangeInvestigationAngleTimer.Stop();
+//					ChangeInvestigationAngleTimer.Stop();
 				} else {
 					//					CurrentState = State.Investigating;
 				}
@@ -738,9 +771,9 @@ namespace Renown.Thinkers {
 
 			switch ( CurrentState ) {
 			case State.Investigating:
-				if ( ChangeInvestigationAngleTimer.IsStopped() ) {
-					ChangeInvestigationAngleTimer.CallDeferred( "start" );
-				}
+//				if ( ChangeInvestigationAngleTimer.IsStopped() ) {
+//					ChangeInvestigationAngleTimer.CallDeferred( "start" );
+//				}
 				if ( LoseInterestTimer.IsStopped() ) {
 					LoseInterestTimer.CallDeferred( "start" );
 				}
@@ -806,7 +839,7 @@ namespace Renown.Thinkers {
 			;
 		}
 
-		private void CheckSight() {
+		public void CheckSight() {
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
 				sightTarget = SightLines[i].GetCollider() as Entity;

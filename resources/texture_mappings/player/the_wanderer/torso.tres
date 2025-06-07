@@ -1,13 +1,9 @@
-[gd_resource type="CanvasTexture" load_steps=4 format=3 uid="uid://dwv26twr7cv3"]
+[gd_resource type="CanvasTexture" load_steps=2 format=3 uid="uid://dwv26twr7cv3"]
 
 [ext_resource type="Texture2D" uid="uid://dx2laa44hg1rf" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.png" id="1_a12vf"]
-[ext_resource type="Texture2D" uid="uid://cbg8y63nuayqu" path="res://textures/spritesheets/skins/the_wanderer/torso_n.png" id="2_72wb7"]
-[ext_resource type="Texture2D" uid="uid://cew03nuu75ark" path="res://textures/spritesheets/skins/the_wanderer/torso_s.png" id="3_3j62d"]
 
 [resource]
 diffuse_texture = ExtResource("1_a12vf")
-normal_texture = ExtResource("2_72wb7")
-specular_texture = ExtResource("3_3j62d")
 specular_color = Color(1, 0.478431, 0, 1)
 specular_shininess = 0.0
 texture_filter = 1

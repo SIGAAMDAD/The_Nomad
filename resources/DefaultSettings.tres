@@ -1,28 +1,33 @@
-[gd_resource type="Resource" script_class="DefaultSettings" load_steps=2 format=3 uid="uid://mwh4cmivwf82"]
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://mwh4cmivwf82"]
 
-[ext_resource type="Script" uid="uid://bg0iue50alxns" path="res://scripts/menus/DefaultSettings.gd" id="1_n2pd2"]
+[ext_resource type="Script" uid="uid://bkp5u7cahs6y0" path="res://scripts/menus/DefaultSettings.cs" id="1_3221b"]
 
 [resource]
-script = ExtResource("1_n2pd2")
-_window_mode = 2
-_vsync = 0
-_antialasing = 1
-_shadow_quality = 0
-_bloom_enabled = true
-_sound_effects_on = true
-_sound_effects_volume = 50.0
-_music_on = true
-_music_volume = 50.0
-_mute_unfocused = true
-_haptic_feedback = true
-_haptic_strength = 50
-_quicktime_autocomplete = false
-_autoaim = false
-_colorblind_mode = 0
-_dyslexia_mode = false
-_equip_weapon_on_pickup = true
-_draw_aim_line = true
-_hellbreaker = true
-_hellbreaker_revanents = false
-_networking_enabled = true
-_friends_only = false
+script = ExtResource("1_3221b")
+WindowMode = 2
+Vsync = 0
+AntiAliasing = 0
+ShadowQuality = 0
+BloomEnabled = true
+SunLightEnabled = true
+SunShadowQuality = 1
+ShowFps = false
+ShowBlood = true
+SoundEffectsOn = true
+SoundEffectsVolume = 50.0
+MusicOn = true
+MusicVolume = 50.0
+MuteUnfocused = true
+HapticFeedback = true
+HapticStrength = 50
+QuicktimeAutocomplete = false
+AutoAim = false
+ColorblindMode = 0
+DyslexiaMode = false
+EquipWeaponOnPickup = true
+DrawAimLine = true
+Hellbreaker = false
+HellbreakerRevanents = false
+CleanAudio = false
+NetworkingEnabled = true
+FriendsOnly = false

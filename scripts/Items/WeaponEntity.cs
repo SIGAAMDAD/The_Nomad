@@ -284,8 +284,8 @@ public partial class WeaponEntity : Node2D {
 			BladedDamage = (float)properties[ "bladed_damage" ];
 			BladedRange = (float)properties[ "bladed_range" ];
 
-			BladedFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_left" ] );
-			BladedFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_right" ] );
+			BladedFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_left" ] );
+			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_right" ] );
 
 			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + ResourcePath + (StringName)properties[ "use_bladed" ] );
 
@@ -302,16 +302,16 @@ public partial class WeaponEntity : Node2D {
 			BluntDamage = (float)properties[ "blunt_damage" ];
 			BluntRange = (float)properties[ "blunt_range" ];
 
-			BluntFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_left" ] );
-			BluntFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_right" ] );
+			BluntFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_left" ] );
+			BluntFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_right" ] );
 
 			UseBluntSfx = ResourceCache.GetSound( "res://sounds/player/melee.wav" );
 		}
 		if ( (bool)properties[ "is_firearm" ] ) {
 			PropertyBits |= Properties.IsFirearm;
 
-			FirearmFramesLeft = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_left" ] );
-			FirearmFramesRight = ResourceLoader.Load<SpriteFrames>( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_right" ] );
+			FirearmFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_left" ] );
+			FirearmFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_right" ] );
 
 			Firemode = (FireMode)(uint)properties[ "firemode" ];
 			MagType = (MagazineType)(uint)properties[ "magazine_type" ];

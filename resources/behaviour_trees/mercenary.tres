@@ -1,0 +1,31 @@
+[gd_resource type="BehaviorTree" load_steps=8 format=3 uid="uid://bpcohiea8g60b"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_v4mhn"]
+
+[sub_resource type="BTWait" id="BTWait_jbewa"]
+duration = 1.5
+custom_name = "Change Look Angle"
+
+[sub_resource type="BBNode" id="BBNode_v4mhn"]
+saved_value = NodePath("Animations/HeadAnimations2")
+resource_name = "Animations/HeadAnimations2"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_l2cdd"]
+animation_player = SubResource("BBNode_v4mhn")
+animation_name = &"idle"
+
+[sub_resource type="BBNode" id="BBNode_yinpm"]
+saved_value = NodePath(".")
+resource_name = "."
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_jbewa"]
+node = SubResource("BBNode_yinpm")
+method = &"ChangeInvestigationAngle"
+
+[sub_resource type="BTSequence" id="BTSequence_grakg"]
+custom_name = "Investigate"
+children = [SubResource("BTWait_jbewa"), SubResource("BTPlayAnimation_l2cdd"), SubResource("BTCallMethod_jbewa")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_v4mhn")
+root_task = SubResource("BTSequence_grakg")

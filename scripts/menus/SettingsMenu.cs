@@ -7,6 +7,7 @@ public partial class SettingsMenu : Control {
 	private OptionButton AntiAliasingOption;
 	private OptionButton ShadowQuality;
 	private OptionButton SunShadowQuality;
+	private OptionButton MaxFps;
 	private CheckBox SunLightEnabled;
 	private CheckBox ShowFPS;
 	private CheckBox ShowBlood;
@@ -53,12 +54,57 @@ public partial class SettingsMenu : Control {
 		switch ( VSync.Selected ) {
 		case 0:
 			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Disabled );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
 			break;
 		case 1:
 			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Adaptive );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
 			break;
 		case 2:
 			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				2
+			);
+			break;
+		case 3:
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Mailbox );
+			ProjectSettings.SetSetting(
+				"rendering/rendering_device/vsync/swapchain_image_count",
+				3
+			);
+			break;
+		};
+
+		switch ( MaxFps.Selected ) {
+		case 0:
+			Engine.MaxFps = 0;
+			break;
+		case 1:
+			Engine.MaxFps = 30;
+			break;
+		case 2:
+			Engine.MaxFps = 45;
+			break;
+		case 3:
+			Engine.MaxFps = 60;
+			break;
+		case 4:
+			Engine.MaxFps = 90;
+			break;
+		case 5:
+			Engine.MaxFps = 125;
+			break;
+		case 6:
+			Engine.MaxFps = 225;
+			break;
+		case 7:
 			break;
 		};
 
@@ -105,12 +151,12 @@ public partial class SettingsMenu : Control {
 		case (int)WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
 			break;
 		case (int)WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
 			break;
 		case (int)WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
@@ -128,13 +174,39 @@ public partial class SettingsMenu : Control {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
-		SettingsData.SetVSync( (DisplayServer.VSyncMode)VSync.Selected );
+		SettingsData.SetVSync( (VSyncMode)VSync.Selected );
+		SettingsData.SetShadowQuality( (ShadowQuality)ShadowQuality.Selected );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Selected );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Selected );
 		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
 		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
 		SettingsData.SetShowFPS( ShowFPS.ButtonPressed );
 		SettingsData.SetShowBlood( ShowBlood.ButtonPressed );
+		switch ( MaxFps.Selected ) {
+		case 0:
+			SettingsData.SetMaxFps( 0 );
+			break;
+		case 1:
+			SettingsData.SetMaxFps( 30 );
+			break;
+		case 2:
+			SettingsData.SetMaxFps( 45 );
+			break;
+		case 3:
+			SettingsData.SetMaxFps( 60 );
+			break;
+		case 4:
+			SettingsData.SetMaxFps( 90 );
+			break;
+		case 5:
+			SettingsData.SetMaxFps( 125 );
+			break;
+		case 6:
+			SettingsData.SetMaxFps( 225 );
+			break;
+		case 7:
+			break;
+		};
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -169,91 +241,68 @@ public partial class SettingsMenu : Control {
 		base._Ready();
 
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
-		VSync.SetProcess( false );
-		VSync.SetProcessInternal( false );
 		VSync.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		VSync.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		VSync.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		WindowModeOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/WindowModeList/WindowModeOptionButton" );
-		WindowModeOption.SetProcess( false );
-		WindowModeOption.SetProcessInternal( false );
 		WindowModeOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		WindowModeOption.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		WindowModeOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
+		MaxFps = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/MaxFpsList/MaxFpsOptionButton" );
+		MaxFps.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		MaxFps.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		MaxFps.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
 		AntiAliasingOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/AntiAliasingList/AntiAliasingOptionButton" );
-		AntiAliasingOption.SetProcess( false );
-		AntiAliasingOption.SetProcessInternal( false );
 		AntiAliasingOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		AntiAliasingOption.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		AntiAliasingOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		ShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ShadowQualityList/ShadowQualityOptionButton" );
-		ShadowQuality.SetProcess( false );
-		ShadowQuality.SetProcessInternal( false );
 		ShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		ShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		SunShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/SunShadowQualityList/SunShadowQualityOptionButton" );
-		SunShadowQuality.SetProcess( false );
-		SunShadowQuality.SetProcessInternal( false );
 		SunShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		SunShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
 		SunShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		SunLightEnabled = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/SunLightEnabledButton/SunLightEnabledCheckBox" );
-		SunLightEnabled.SetProcess( false );
-		SunLightEnabled.SetProcessInternal( false );
 		SunLightEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		SunLightEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		ShowFPS = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowFPSButton/ShowFPSCheckBox" );
-		ShowFPS.SetProcess( false );
-		ShowFPS.SetProcessInternal( false );
 		ShowFPS.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		ShowFPS.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		ShowBlood = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowBloodButton/ShowBloodCheckBox" );
-		ShowBlood.SetProcess( false );
-		ShowBlood.SetProcessInternal( false );
 		ShowBlood.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		ShowBlood.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		EffectsOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/EffectsOnButton/EffectsOnCheckBox" );
-		EffectsOn.SetProcess( false );
-		EffectsOn.SetProcessInternal( false );
 		EffectsOn.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		EffectsOn.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		EffectsVolume = GetNode<HSlider>( "TabContainer/Audio/VBoxContainer/EffectsVolumeSlider/EffectsVolumeHSlider" );
-		EffectsVolume.SetProcess( false );
-		EffectsVolume.SetProcessInternal( false );
 		EffectsVolume.Connect( "changed", Callable.From( OnButtonPressed ) );
 		EffectsVolume.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MusicOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/MusicOnButton/MusicOnCheckBox" );
-		MusicOn.SetProcess( false );
-		MusicOn.SetProcessInternal( false );
 		MusicOn.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		MusicOn.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MusicVolume = GetNode<HSlider>( "TabContainer/Audio/VBoxContainer/MusicVolumeSlider/MusicVolumeHSlider" );
-		MusicVolume.SetProcess( false );
-		MusicVolume.SetProcessInternal( false );
 		MusicVolume.Connect( "changed", Callable.From( OnButtonPressed ) );
 		MusicVolume.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MuteUnfocused = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton/MuteOnUnfocusedCheckBox" );
-		MuteUnfocused.SetProcess( false );
-		MuteUnfocused.SetProcessInternal( false );
 		MuteUnfocused.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		MuteUnfocused.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		HapticEnabled = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton/HapticFeedbackCheckbox" );
-		HapticEnabled.SetProcess( false );
-		HapticEnabled.SetProcessInternal( false );
 		HapticEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		HapticEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		
@@ -262,26 +311,18 @@ public partial class SettingsMenu : Control {
 		HapticStrength.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		AutoAimEnabled = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/AutoAimButton/AutoAimCheckbox" );
-		AutoAimEnabled.SetProcess( false );
-		AutoAimEnabled.SetProcessInternal( false );
 		AutoAimEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		AutoAimEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		DyslexiaMode = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton/DyslexiaCheckbox" );
-		DyslexiaMode.SetProcess( false );
-		DyslexiaMode.SetProcessInternal( false );
 		DyslexiaMode.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		DyslexiaMode.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		NetworkingEnabled = GetNode<CheckBox>( "TabContainer/Network/VBoxContainer/EnableNetworkingButton/EnableNetworkingCheckbox" );
-		NetworkingEnabled.SetProcess( false );
-		NetworkingEnabled.SetProcessInternal( false );
 		NetworkingEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		NetworkingEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		FriendsOnly = GetNode<CheckBox>( "TabContainer/Network/VBoxContainer/FriendsOnlyButton/FriendsOnlyCheckbox" );
-		FriendsOnly.SetProcess( false );
-		FriendsOnly.SetProcessInternal( false );
 		FriendsOnly.Connect( "pressed", Callable.From( OnButtonPressed ) );
 		FriendsOnly.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
@@ -417,6 +458,35 @@ public partial class SettingsMenu : Control {
 		VSync.Selected = (int)SettingsData.GetVSync();
 		WindowModeOption.Selected = (int)SettingsData.GetWindowMode();
 		AntiAliasingOption.Selected = (int)SettingsData.GetAntiAliasing();
+		ShadowQuality.Selected = (int)SettingsData.GetShadowQuality();
+		switch ( SettingsData.GetMaxFps() ) {
+		case 0:
+			MaxFps.Selected = 0;
+			break;
+		case 30:
+			MaxFps.Selected = 1;
+			break;
+		case 45:
+			MaxFps.Selected = 2;
+			break;
+		case 60:
+			MaxFps.Selected = 3;
+			break;
+		case 90:
+			MaxFps.Selected = 4;
+			break;
+		case 125:
+			MaxFps.Selected = 5;
+			break;
+		case 225:
+			MaxFps.Selected = 6;
+			break;
+		default: // custom, dev setting, or someone's fucking with the .ini file
+			Console.PrintLine( "Custom FPS set." );
+			MaxFps.AddItem( "CUSTOM", 7 );
+			MaxFps.Selected = 7;
+			break;
+		};
 		SunLightEnabled.ButtonPressed = SettingsData.GetSunLightEnabled();
 		SunShadowQuality.Selected = (int)SettingsData.GetSunShadowQuality();
 		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();

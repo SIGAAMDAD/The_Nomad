@@ -25,22 +25,23 @@ public partial class Player : Entity {
 	};
 
 	public enum PlayerFlags : uint {
-		Sliding = 0x00000001,
-		Crouching = 0x00000002,
-		BulletTime = 0x00000004,
-		Dashing = 0x00000008,
-		DemonRage = 0x00000010,
-		UsedMana = 0x00000020,
-		DemonSight = 0x00000040,
-		OnHorse = 0x00000080,
-		IdleAnimation = 0x00001000,
-		Checkpoint = 0x00002000,
-		BlockedInput = 0x00004000,
-		UsingWeapon = 0x00008000,
-		Inventory = 0x00010000,
-		Resting = 0x00020000,
-		UsingMelee = 0x00040000,
-		Parrying = 0x00080000,
+		Sliding			= 0x00000001,
+		Crouching		= 0x00000002,
+		BulletTime		= 0x00000004,
+		Dashing			= 0x00000008,
+		DemonRage		= 0x00000010,
+		UsedMana		= 0x00000020,
+		DemonSight		= 0x00000040,
+		OnHorse			= 0x00000080,
+		IdleAnimation	= 0x00000100,
+		Checkpoint		= 0x00000200,
+		BlockedInput	= 0x00000400,
+		UsingWeapon		= 0x00000800,
+		Inventory		= 0x00001000,
+		Resting			= 0x00002000,
+		UsingMelee		= 0x00004000,
+		Parrying		= 0x00008000,
+		Encumbured		= 0x00010000,
 	};
 
 	public enum AnimationState : byte {
@@ -69,7 +70,7 @@ public partial class Player : Entity {
 		}
 	};
 
-	private readonly WeaponEntity.Properties[] WeaponModeList = [
+	private static readonly WeaponEntity.Properties[] WeaponModeList = [
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsFirearm,
@@ -87,12 +88,12 @@ public partial class Player : Entity {
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
-	public static readonly float ACCEL = 1900.0f;
+	public static readonly float ACCEL = 1600.0f;
 	public static readonly float FRICTION = 1400.0f;
-	public static readonly float MAX_SPEED = 540.0f;
+	public static readonly float MAX_SPEED = 440.0f;
 	public static readonly float JUMP_VELOCITY = -400.0f;
 
-	private Random RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
+	public Random RandomFactory { get; private set; } = new Random( DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second );
 	private RandomNumberGenerator CameraShakeSeed = new RandomNumberGenerator();
 
 	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
@@ -101,6 +102,16 @@ public partial class Player : Entity {
 	private CollisionShape2D ParryBox;
 	private Area2D ParryDamageArea;
 	private CollisionShape2D ParryDamageBox;
+
+	/// <summary>
+	/// The maximum amount of weight the player is currently allowed to carry
+	/// </summary>
+	private float MaximumInventoryWeight = 500.0f;
+
+	/// <summary>
+	/// The current total weight of inventory items
+	/// </summary>
+	private float TotalInventoryWeight = 0.0f;
 
 	private Resource CurrentMappingContext;
 
@@ -121,32 +132,8 @@ public partial class Player : Entity {
 	private Resource UseBothHandsAction;
 	public readonly Resource InteractionAction;
 
-	private Resource MoveActionGamepad;
-	private Resource DashActionGamepad;
-	private Resource SlideActionGamepad;
-	private Resource MeleeActionGamepad;
-	private Resource UseWeaponActionGamepad;
-	private Resource SwitchWeaponModeActionGamepad;
-	private Resource NextWeaponActionGamepad;
-	private Resource PrevWeaponActionGamepad;
-	private Resource OpenInventoryActionGamepad;
-	private Resource BulletTimeActionGamepad;
-	private Resource ArmAngleActionGamepad;
-	private Resource UseBothHandsActionsGamepad;
 	public readonly Resource InteractionActionGamepad;
 
-	private Resource MoveActionKeyboard;
-	private Resource DashActionKeyboard;
-	private Resource SlideActionKeyboard;
-	private Resource MeleeActionKeyboard;
-	private Resource UseWeaponActionKeyboard;
-	private Resource SwitchWeaponModeActionKeyboard;
-	private Resource NextWeaponActionKeyboard;
-	private Resource PrevWeaponActionKeyboard;
-	private Resource OpenInventoryActionKeyboard;
-	private Resource BulletTimeActionKeyboard;
-	private Resource ArmAngleActionKeyboard;
-	private Resource UseBothHandsActionsKeyboard;
 	public readonly Resource InteractionActionKeyboard;
 
 	private GpuParticles2D WalkEffect;
@@ -171,7 +158,10 @@ public partial class Player : Entity {
 	private Timer DashBurnoutCooldownTimer;
 	private Timer DashCooldownTime;
 
-	private GroundMaterialType GroundType;
+	public GroundMaterialType GroundType {
+		get;
+		private set;
+	}
 
 	// how much blood we're covered in
 	private float BloodAmount = 0.0f;
@@ -310,14 +300,18 @@ public partial class Player : Entity {
 		}
 	}
 
-	/*
-	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-		channel ??= MiscChannel;
-		channel.Stream = stream;
-		channel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
-		channel.Play();
+	private void IncreaseInventoryWeight( float nAmount ) {
+		TotalInventoryWeight += nAmount;
+		if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.80f ) {
+			Flags |= PlayerFlags.Encumbured;
+		}
 	}
-	*/
+	private void DecreaseInventoryWeight( float nAmount ) {
+		TotalInventoryWeight -= nAmount;
+		if ( TotalInventoryWeight < MaximumInventoryWeight * 0.80f ) {
+			Flags &= ~PlayerFlags.Encumbured;
+		}
+	}
 
 	#region Load & Save
 	public override void Save() {
@@ -907,6 +901,10 @@ public partial class Player : Entity {
 
 		IdleTimer.Stop();
 
+		// clean all the blood off us
+		BloodAmount = 0.0f;
+		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
+
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnCheckpointRestBegin ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
@@ -964,20 +962,7 @@ public partial class Player : Entity {
 	}
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			AudioStream stream = null;
-			switch ( GroundType ) {
-			case GroundMaterialType.Stone:
-			case GroundMaterialType.Sand:
-				stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
-				break;
-			case GroundMaterialType.Water:
-				stream = ResourceCache.MoveWaterSfx[ RandomFactory.Next( 0, ResourceCache.MoveWaterSfx.Length - 1 ) ];
-				break;
-			case GroundMaterialType.Wood:
-				break;
-			};
-			PlaySound( AudioChannel, stream );
-			FootSteps.AddStep( GlobalPosition );
+			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
 			SetSoundLevel( 24.0f );
 		}
 	}
@@ -1344,8 +1329,7 @@ public partial class Player : Entity {
 		default:
 			slot = WeaponSlots[ CurrentWeapon ];
 			break;
-		}
-		;
+		};
 
 		WeaponEntity.Properties mode = slot.GetMode();
 		WeaponEntity weapon = slot.GetWeapon();
@@ -1451,31 +1435,33 @@ public partial class Player : Entity {
 		Console.PrintLine( "Remapping input..." );
 
 		if ( GameConfiguration.GameMode == GameMode.LocalCoop2 ) {
-			LoadGamepadBinds();
+			ConnectGamepadBinds();
+		} else {
+			ConnectKeyboardBinds();
 		}
 
 		if ( InputContext == ResourceCache.KeyboardInputMappings ) {
-			MoveAction = MoveActionKeyboard;
-			DashAction = DashActionKeyboard;
-			SlideAction = SlideActionKeyboard;
-			BulletTimeAction = BulletTimeActionKeyboard;
-			PrevWeaponAction = PrevWeaponActionKeyboard;
-			NextWeaponAction = NextWeaponActionKeyboard;
-			SwitchWeaponModeAction = SwitchWeaponModeActionKeyboard;
-			OpenInventoryAction = OpenInventoryActionKeyboard;
-			UseWeaponAction = UseWeaponActionKeyboard;
+			MoveAction = ResourceCache.MoveActionKeyboard;
+			DashAction = ResourceCache.DashActionKeyboard;
+			SlideAction = ResourceCache.SlideActionKeyboard;
+			BulletTimeAction = ResourceCache.BulletTimeActionKeyboard;
+			PrevWeaponAction = ResourceCache.PrevWeaponActionKeyboard;
+			NextWeaponAction = ResourceCache.NextWeaponActionKeyboard;
+			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionKeyboard;
+			OpenInventoryAction = ResourceCache.OpenInventoryActionKeyboard;
+			UseWeaponAction = ResourceCache.UseWeaponActionKeyboard;
 
 			CurrentMappingContext = ResourceCache.KeyboardInputMappings;
 		} else {
-			MoveAction = MoveActionGamepad;
-			DashAction = DashActionGamepad;
-			SlideAction = SlideActionGamepad;
-			BulletTimeAction = BulletTimeActionGamepad;
-			PrevWeaponAction = PrevWeaponActionGamepad;
-			NextWeaponAction = NextWeaponActionGamepad;
-			SwitchWeaponModeAction = SwitchWeaponModeActionGamepad;
-			OpenInventoryAction = OpenInventoryActionGamepad;
-			UseWeaponAction = UseWeaponActionGamepad;
+			MoveAction = ResourceCache.MoveActionGamepad[ InputDevice ];
+			DashAction = ResourceCache.DashActionGamepad[ InputDevice ];
+			SlideAction = ResourceCache.SlideActionGamepad[ InputDevice ];
+			BulletTimeAction = ResourceCache.BulletTimeActionGamepad[ InputDevice ];
+			PrevWeaponAction = ResourceCache.PrevWeaponActionGamepad[ InputDevice ];
+			NextWeaponAction = ResourceCache.NextWeaponActionGamepad[ InputDevice ];
+			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ];
+			OpenInventoryAction = ResourceCache.OpenInventoryActionGamepad[ InputDevice ];
+			UseWeaponAction = ResourceCache.UseWeaponActionGamepad[ InputDevice ];
 
 			CurrentMappingContext = ResourceCache.GamepadInputMappings;
 		}
@@ -1533,56 +1519,30 @@ public partial class Player : Entity {
 		}
 	}
 
-	public void LoadGamepadBinds() {
-		MoveActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/move_player" + InputDevice.ToString() + ".tres" );
-		DashActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/dash_player" + InputDevice.ToString() + ".tres" );
-		SlideActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/slide_player" + InputDevice.ToString() + ".tres" );
-		UseWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_weapon_player" + InputDevice.ToString() + ".tres" );
-		NextWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/next_weapon_player" + InputDevice.ToString() + ".tres" );
-		PrevWeaponActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/prev_weapon_player" + InputDevice.ToString() + ".tres" );
-		SwitchWeaponModeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player" + InputDevice.ToString() + ".tres" );
-		BulletTimeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player" + InputDevice.ToString() + ".tres" );
-		OpenInventoryActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/open_inventory_player" + InputDevice.ToString() + ".tres" );
-		ArmAngleActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/arm_angle_player" + InputDevice.ToString() + ".tres" );
-		MeleeActionGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/melee_player" + InputDevice.ToString() + ".tres" );
-		//		UseBothHandsActionsGamepad = ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player" + InputDevice.ToString() + ".tres" );
-
-		MeleeActionGamepad.Connect( "triggered", Callable.From( OnMelee ) );
-		SwitchWeaponModeActionGamepad.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
-		BulletTimeActionGamepad.Connect( "triggered", Callable.From( OnBulletTime ) );
-		NextWeaponActionGamepad.Connect( "triggered", Callable.From( OnNextWeapon ) );
-		PrevWeaponActionGamepad.Connect( "triggered", Callable.From( OnPrevWeapon ) );
-		DashActionGamepad.Connect( "triggered", Callable.From( OnDash ) );
-		SlideActionGamepad.Connect( "triggered", Callable.From( OnSlide ) );
-		UseWeaponActionGamepad.Connect( "triggered", Callable.From( OnUseWeapon ) );
-		UseWeaponActionGamepad.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		OpenInventoryActionGamepad.Connect( "triggered", Callable.From( OnToggleInventory ) );
+	public void ConnectGamepadBinds() {
+		ResourceCache.MeleeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMelee ) );
+//		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		ResourceCache.BulletTimeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnBulletTime ) );
+		ResourceCache.NextWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnNextWeapon ) );
+		ResourceCache.PrevWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnPrevWeapon ) );
+		ResourceCache.DashActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnDash ) );
+		ResourceCache.SlideActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnSlide ) );
+		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseWeapon ) );
+		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
+		ResourceCache.OpenInventoryActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
-	private void LoadKeyboardBinds() {
-		MoveActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/move.tres" );
-		DashActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/dash.tres" );
-		SlideActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/slide.tres" );
-		UseWeaponActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_weapon.tres" );
-		NextWeaponActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/next_weapon.tres" );
-		PrevWeaponActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/prev_weapon.tres" );
-		SwitchWeaponModeActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/switch_weapon_mode.tres" );
-		BulletTimeActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/bullet_time.tres" );
-		OpenInventoryActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/open_inventory.tres" );
-		ArmAngleActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
-		MeleeActionKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/melee.tres" );
-		UseBothHandsActionsKeyboard = ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
-
-		UseBothHandsActionsKeyboard.Connect( "triggered", Callable.From( OnUseBothHands ) );
-		MeleeActionKeyboard.Connect( "triggered", Callable.From( OnMelee ) );
-		SwitchWeaponModeActionKeyboard.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
-		BulletTimeActionKeyboard.Connect( "triggered", Callable.From( OnBulletTime ) );
-		NextWeaponActionKeyboard.Connect( "triggered", Callable.From( OnNextWeapon ) );
-		PrevWeaponActionKeyboard.Connect( "triggered", Callable.From( OnPrevWeapon ) );
-		DashActionKeyboard.Connect( "triggered", Callable.From( OnDash ) );
-		SlideActionKeyboard.Connect( "triggered", Callable.From( OnSlide ) );
-		UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
-		UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
+	private void ConnectKeyboardBinds() {
+		ResourceCache.UseBothHandsActionsKeyboard.Connect( "triggered", Callable.From( OnUseBothHands ) );
+		ResourceCache.MeleeActionKeyboard.Connect( "triggered", Callable.From( OnMelee ) );
+		ResourceCache.SwitchWeaponModeActionKeyboard.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		ResourceCache.BulletTimeActionKeyboard.Connect( "triggered", Callable.From( OnBulletTime ) );
+		ResourceCache.NextWeaponActionKeyboard.Connect( "triggered", Callable.From( OnNextWeapon ) );
+		ResourceCache.PrevWeaponActionKeyboard.Connect( "triggered", Callable.From( OnPrevWeapon ) );
+		ResourceCache.DashActionKeyboard.Connect( "triggered", Callable.From( OnDash ) );
+		ResourceCache.SlideActionKeyboard.Connect( "triggered", Callable.From( OnSlide ) );
+		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
+		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
+		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 	private void LoadSfx() {
 		/*
@@ -1708,8 +1668,8 @@ public partial class Player : Entity {
 		Rage = 60.0f;
 
 		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
-			LoadKeyboardBinds();
-			LoadGamepadBinds();
+			ResourceCache.LoadKeyboardBinds();
+			ResourceCache.LoadGamepadBinds();
 		}
 		LoadSfx();
 
@@ -1732,8 +1692,7 @@ public partial class Player : Entity {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
 
-		ResourceCache.KeyboardInputMappings = ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
-		ResourceCache.GamepadInputMappings = ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
+		ResourceCache.LoadBinds();
 
 		//
 		// initialize input context
@@ -1874,7 +1833,6 @@ public partial class Player : Entity {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
-		//		AimRayCast.ForceRaycastUpdate();
 		if ( AimRayCast.GetCollider() is GodotObject entity && entity.HasMeta( "Faction" ) && (Faction)entity.GetMeta( "Faction" ) != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else if ( AimRayCast.GetCollider() is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
@@ -1893,11 +1851,16 @@ public partial class Player : Entity {
 		}
 		CheckStatus( (float)delta );
 
-		if ( IsInputBlocked() ) {
+		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
 			return;
 		}
 
 		float speed = MAX_SPEED;
+		// encumbured
+		if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
+
+		}
+
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			speed += 1800;
 		}
@@ -2157,6 +2120,7 @@ public partial class Player : Entity {
 		}
 
 		WeaponsStack.Add( weapon.GetInitialPath().GetHashCode(), weapon );
+		TotalInventoryWeight += weapon.GetWeight();
 
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;

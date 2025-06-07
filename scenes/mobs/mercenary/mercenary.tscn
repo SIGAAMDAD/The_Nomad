@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dtmpn24mt61j0"]
+[gd_scene load_steps=22 format=3 uid="uid://dtmpn24mt61j0"]
 
 [ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
 [ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
@@ -6,6 +6,17 @@
 [ext_resource type="SpriteFrames" uid="uid://bghffidjv2c7s" path="res://resources/animations/mobs/mercenary_arm_animations.tres" id="3_yrnty"]
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="4_jglyl"]
 [ext_resource type="SpriteFrames" uid="uid://dq5w8gujhurx" path="res://resources/animations/mobs/mercenary_body_animations.tres" id="4_u1d28"]
+[ext_resource type="Script" uid="uid://d11c6gwrjou0w" path="res://addons/behaviour_toolkit/behaviour_tree/bt_root.gd" id="7_wk705"]
+[ext_resource type="Script" uid="uid://csq05x4oq8uf3" path="res://addons/behaviour_toolkit/blackboard.gd" id="8_1xiam"]
+[ext_resource type="Script" uid="uid://b0bqn8gtyevqu" path="res://addons/behaviour_toolkit/finite_state_machine/fsm.gd" id="9_okbbo"]
+[ext_resource type="Script" uid="uid://dpr2xa1e5hy8u" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_sequence.gd" id="10_gw2o5"]
+[ext_resource type="Script" uid="uid://buvb8uppbyosm" path="res://addons/behaviour_toolkit/behaviour_tree/leaves/leaf_wait.gd" id="10_wk705"]
+[ext_resource type="Script" uid="uid://1h0braq41vwb" path="res://addons/behaviour_toolkit/finite_state_machine/fsm_transition.gd" id="11_1xiam"]
+[ext_resource type="Script" uid="uid://b26n4e0kvlmwa" path="res://scripts/renown/Thinkers/Behaviours/sight_check.gd" id="12_yc8le"]
+[ext_resource type="Script" uid="uid://dstmrjfx8r618" path="res://scripts/renown/Thinkers/Behaviours/move_to_disturbance.gd" id="13_gw2o5"]
+[ext_resource type="Script" uid="uid://cemy3w6ak053y" path="res://scripts/renown/Thinkers/Behaviours/look_around.gd" id="13_vo8ur"]
+[ext_resource type="Script" uid="uid://crgq2opfxk1ng" path="res://scripts/renown/Thinkers/Behaviours/mercenary_animator.gd" id="17_vo8ur"]
+[ext_resource type="Script" uid="uid://dyh6qrmrhuck5" path="res://scripts/renown/Thinkers/Behaviours/dead_animation.gd" id="18_yc8le"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yrnty"]
 shader = ExtResource("2_yrnty")
@@ -17,7 +28,12 @@ size = Vector2(11, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jglyl"]
 size = Vector2(22, 20)
 
-[node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+[sub_resource type="Resource" id="Resource_1xiam"]
+script = ExtResource("8_1xiam")
+content = {}
+metadata/_custom_type_script = "uid://csq05x4oq8uf3"
+
+[node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("AnimationStateMachine", "BehaviourTree", "Relations", "Debts")]
 z_index = 7
 collision_layer = 12
 collision_mask = 12
@@ -25,6 +41,8 @@ script = ExtResource("1_wewif")
 LoseInterestTime = 10.0
 SightDetectionTime = 8.0
 SightDetectionSpeed = 2.0
+AnimationStateMachine = NodePath("AnimationStateMachine")
+BehaviourTree = NodePath("Behaviour")
 MovementSpeed = 190.0
 Health = 100.0
 Relations = {}
@@ -36,7 +54,7 @@ Debts = {}
 material = SubResource("ShaderMaterial_yrnty")
 position = Vector2(0, -7)
 sprite_frames = ExtResource("2_61sma")
-animation = &"move"
+animation = &"idle"
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
 collision_layer = 16
@@ -71,3 +89,92 @@ modulate = Color(0, 1, 0, 1)
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
+
+[node name="Behaviour" type="Node" parent="." node_paths=PackedStringArray("actor")]
+script = ExtResource("7_wk705")
+autostart = true
+actor = NodePath("..")
+blackboard = SubResource("Resource_1xiam")
+metadata/_custom_type_script = "uid://d11c6gwrjou0w"
+
+[node name="BTSelector" type="Node" parent="Behaviour"]
+script = ExtResource("10_gw2o5")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="CanSeeTarget" type="Node" parent="Behaviour/BTSelector"]
+script = ExtResource("12_yc8le")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="InvestigateDisturbance" type="Node" parent="Behaviour/BTSelector"]
+script = ExtResource("10_gw2o5")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="MoveToDisturbance" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance"]
+script = ExtResource("13_gw2o5")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="LookAround" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance"]
+script = ExtResource("10_gw2o5")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="LookAround" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance/LookAround"]
+script = ExtResource("13_vo8ur")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="StareTimer" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance/LookAround"]
+script = ExtResource("10_wk705")
+wait_time = 1.5
+metadata/_custom_type_script = "uid://buvb8uppbyosm"
+
+[node name="EliminateThreats" type="Node" parent="Behaviour/BTSelector"]
+script = ExtResource("10_gw2o5")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="AnimationStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state", "actor")]
+script = ExtResource("9_okbbo")
+process_type = 0
+initial_state = NodePath("Idle")
+actor = NodePath("..")
+metadata/_custom_type_script = "uid://b0bqn8gtyevqu"
+
+[node name="Idle" type="Node" parent="AnimationStateMachine"]
+script = ExtResource("17_vo8ur")
+_animation = &"idle"
+metadata/_custom_type_script = "uid://k5p6yghm7nrm"
+
+[node name="OnStartMoving" type="Node" parent="AnimationStateMachine/Idle" node_paths=PackedStringArray("next_state")]
+script = ExtResource("11_1xiam")
+next_state = NodePath("../../Moving")
+use_event = true
+event = "start_moving"
+metadata/_custom_type_script = "uid://1h0braq41vwb"
+
+[node name="OnDeath" type="Node" parent="AnimationStateMachine/Idle" node_paths=PackedStringArray("next_state")]
+script = ExtResource("11_1xiam")
+next_state = NodePath("../../Dead")
+use_event = true
+event = "die"
+metadata/_custom_type_script = "uid://1h0braq41vwb"
+
+[node name="Moving" type="Node" parent="AnimationStateMachine"]
+script = ExtResource("17_vo8ur")
+_animation = &"move"
+metadata/_custom_type_script = "uid://k5p6yghm7nrm"
+
+[node name="OnStopMoving" type="Node" parent="AnimationStateMachine/Moving" node_paths=PackedStringArray("next_state")]
+script = ExtResource("11_1xiam")
+next_state = NodePath("../../Idle")
+use_event = true
+event = "stop_moving"
+metadata/_custom_type_script = "uid://1h0braq41vwb"
+
+[node name="OnDeath" type="Node" parent="AnimationStateMachine/Moving" node_paths=PackedStringArray("next_state")]
+script = ExtResource("11_1xiam")
+next_state = NodePath("../../Dead")
+use_event = true
+event = "die"
+metadata/_custom_type_script = "uid://1h0braq41vwb"
+
+[node name="Dead" type="Node" parent="AnimationStateMachine"]
+script = ExtResource("18_yc8le")
+metadata/_custom_type_script = "uid://k5p6yghm7nrm"

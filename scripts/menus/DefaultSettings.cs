@@ -49,13 +49,15 @@ public partial class DefaultSettings : Resource {
 	[Export]
 	public AntiAliasing AntiAliasing { get; private set; } = AntiAliasing.None;
 	[Export]
-	public RenderingServer.ShadowQuality ShadowQuality { get; private set; } = RenderingServer.ShadowQuality.Hard;
+	public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.NoFilter;
+	[Export]
+	public int MaxFps { get; private set; } = 60;
 	[Export]
 	public bool BloomEnabled { get; private set; } = true;
 	[Export]
 	public bool SunLightEnabled { get; private set; } = true;
 	[Export]
-	public ShadowQuality SunShadowQuality { get; private set; } = global::ShadowQuality.NoFilter;
+	public ShadowQuality SunShadowQuality { get; private set; } = ShadowQuality.NoFilter;
 	[Export]
 	public bool ShowFps { get; private set; } = false;
 	[Export]

@@ -196,6 +196,9 @@ one_shot = true
 [node name="AimAssist" type="Node2D" parent="."]
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
+modulate = Color(2, 2, 2, 1)
+light_mask = 1024
+visibility_layer = 1024
 position = Vector2(9.53674e-07, -2)
 scale = Vector2(0.324304, 0.375)
 points = PackedVector2Array(0, 5.615, 718.462, 5.33333)
