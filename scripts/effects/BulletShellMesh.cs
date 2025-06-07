@@ -1,7 +1,6 @@
 using Godot;
 using Renown;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 public partial class BulletShellMesh : Node {
 	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 64 );
