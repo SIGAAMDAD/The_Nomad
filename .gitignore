@@ -1,0 +1,11 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+*.import
+*.exe
+*.pck
+*.apk
+*.apk.idsig
+*.zip
+*.x86_64
+formatting_guide.txt

@@ -1,6 +1,7 @@
 using Godot;
 using Renown;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 public partial class BulletShellMesh : Node {
 	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 64 );
@@ -40,8 +41,9 @@ public partial class BulletShellMesh : Node {
 		AudioStreamPlayer2D player = new AudioStreamPlayer2D();
 		player.Stream = stream;
 		player.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		player.Connect( "finished", Callable.From( player.Free ) );
-		from.PlaySound( null, stream );
+		player.Connect( "finished", Callable.From( () => { from.RemoveChild( player ); player.Free(); } ) );
+		from.AddChild( player );
+		player.Play();
 		Instance.RemoveChild( timer );
 		timer.Free();
 	}
