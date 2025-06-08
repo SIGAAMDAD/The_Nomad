@@ -35,14 +35,9 @@ public partial class MainMenu : Control {
 	[Signal]
 	public delegate void CreditsMenuEventHandler();
 
-	private static void OnAudioFadeFinished() {
-		( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
-		AudioFade.Finished -= OnAudioFadeFinished;
-	}
 	public static void FadeAudio() {
 		AudioFade = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().Root.CreateTween();
 		AudioFade.TweenProperty( ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 	}
 
 	/*

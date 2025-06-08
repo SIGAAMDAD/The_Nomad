@@ -40,11 +40,11 @@ public partial class BulletShellMesh : Node {
 		AudioStreamPlayer2D player = new AudioStreamPlayer2D();
 		player.Stream = stream;
 		player.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		player.Connect( "finished", Callable.From( () => { from.RemoveChild( player ); player.Free(); } ) );
+		player.Connect( "finished", Callable.From( () => { from.RemoveChild( player ); player.QueueFree(); } ) );
 		from.AddChild( player );
 		player.Play();
 		Instance.RemoveChild( timer );
-		timer.Free();
+		timer.QueueFree();
 	}
 	private void AddShellInternal( Entity from, Resource ammo ) {
 		if ( !Meshes.TryGetValue( ammo, out MultiMeshInstance2D instance ) ) {
