@@ -1,3 +1,46 @@
-[gd_scene format=3 uid="uid://bfstyil2pbo43"]
+[gd_scene load_steps=7 format=3 uid="uid://bfstyil2pbo43"]
+
+[ext_resource type="Script" uid="uid://cyjhc8ilk03dq" path="res://scripts/StatusEffects/StatusFreezing.cs" id="1_kqjmn"]
+
+[sub_resource type="Gradient" id="Gradient_gx4eq"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.579861)
+colors = PackedColorArray(1, 1, 1, 1, 0.614745, 0.614745, 0.614745, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_kqjmn"]
+gradient = SubResource("Gradient_gx4eq")
+width = 1
+
+[sub_resource type="Gradient" id="Gradient_kqjmn"]
+colors = PackedColorArray(1, 1, 1, 1, 0.4, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yl4o4"]
+gradient = SubResource("Gradient_kqjmn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yl4o4"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 24.14
+angle_min = -50.0
+angle_max = 50.0
+angular_velocity_min = -50.0
+angular_velocity_max = 50.0
+gravity = Vector3(0, -128, 0)
+color_ramp = SubResource("GradientTexture1D_yl4o4")
+turbulence_noise_speed_random = 0.45
 
 [node name="StatusFreezing" type="Node2D"]
+script = ExtResource("1_kqjmn")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 1200
+texture = SubResource("GradientTexture1D_kqjmn")
+lifetime = 0.5
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_yl4o4")
+
+[node name="EffectTimer" type="Timer" parent="."]
+wait_time = 4.0
+one_shot = true
+autostart = true

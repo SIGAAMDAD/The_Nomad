@@ -32,7 +32,7 @@ namespace Renown.Thinkers {
 
 		}
 
-		public override void Damage( Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}

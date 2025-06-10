@@ -90,19 +90,16 @@ namespace Renown.Thinkers {
 		public override void Alert( Entity source ) {
 			return; // deaf, but they have a mix track playing inside that helmet
 		}
-		private float RandomFloat( float min, float max ) {
-			return (float)( min + Random.NextDouble() * ( min - max ) );
-		}
 
 		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
 		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
-		public override void SetLocation( WorldArea location ) {
+		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
 			NodeCache = location.GetNodeCache();
 		}
 
-		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
 				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) )
 			{
@@ -111,13 +108,13 @@ namespace Renown.Thinkers {
 			base.PlaySound( channel, stream );
 		}
 
-		public override void Damage( Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 
 			base.Damage( source, nAmount );
-			PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			if ( Health <= 0.0f ) {
 				DetectionMeter.CallDeferred( "hide" );
@@ -141,8 +138,6 @@ namespace Renown.Thinkers {
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", true );
-				SetDeferred( "collision_layer", 0 );
-				SetDeferred( "collision_mask", 0 );
 				return;
 			}
 
@@ -152,7 +147,7 @@ namespace Renown.Thinkers {
 				SetAlert();
 			}
 
-			float angle = RandomFloat( 0, 360.0f );
+			float angle = RNJesus.FloatRange( 0, 360.0f );
 			HeadAnimations.GlobalRotation = angle;
 			ArmAnimations.GlobalRotation = angle;
 
@@ -220,7 +215,7 @@ namespace Renown.Thinkers {
 			DetectionMeter.SetDeferred( "default_color", DetectionColor );
 		}
 		private void OnChangeInvestigationAngleTimerTimeout() {
-			float angle = RandomFloat( 0, 360.0f );
+			float angle = RNJesus.FloatRange( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
 			ChangeInvestigationAngleTimer.CallDeferred( "start" );
@@ -240,7 +235,6 @@ namespace Renown.Thinkers {
 		}
 
 		private void BlowupBackpack() {
-			GetNode<CollisionShape2D>( "Animations/BodyAnimations/BlowupArea/CollisionShape2D" ).SetDeferred( "disabled", false );
 			GetNode<Area2D>( "Animations/BodyAnimations/BlowupArea" ).SetDeferred( "monitoring", true );
 
 			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
@@ -301,15 +295,14 @@ namespace Renown.Thinkers {
 			NavAgent.AvoidanceEnabled = true;
 
 			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( "monitoring", true );
 
 			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
 			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
 
 			Flags &= ~ThinkerFlags.Dead;
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+			Awareness = MobAwareness.Suspicious;
 
 			Target = null;
 			SightTarget = null;
@@ -515,7 +508,7 @@ namespace Renown.Thinkers {
 			const int numShots = 24;
 			
 			for ( int i = 0; i < numShots; i++ ) {
-				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 60.0f ) ) ) * 1024.0f;
+				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 60.0f ) ) ) * 1024.0f;
 				AimLine.ForceRaycastUpdate();
 
 				GodotObject collision = AimLine.GetCollider();
@@ -576,7 +569,7 @@ namespace Renown.Thinkers {
 					if ( ArmAnimations.Animation != "attack" ) {
 						CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_shooting.ogg" ) );
 						GunChannel.SetDeferred( "parameters/looping", true );
-						CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", Random.Next( 0, 7 ) ) ) );
+						CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", RNJesus.IntRange( 0, 7 ) ) ) );
 						AudioChannel.SetDeferred( "parameters/looping", true );
 					}
 					ArmAnimations.CallDeferred( "play", "attack" );
@@ -679,7 +672,7 @@ namespace Renown.Thinkers {
 
 			if ( !IsPremade ) {
 				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Cities" );
-				Family = FamilyCache.GetFamily( nodes[ Random.Next( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)Random.Next( 0, (int)SocietyRank.Count ) );
+				Family = FamilyCache.GetFamily( nodes[ RNJesus.IntRange( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)RNJesus.IntRange( 0, (int)SocietyRank.Count ) );
 				FirstName = NameGenerator.GenerateName();
 				BotName = string.Format( "{0} {1}", FirstName, Family.GetFamilyName() );
 				Name = string.Format( "{0}{1}{2}", this, FirstName, Family.GetFamilyName() );

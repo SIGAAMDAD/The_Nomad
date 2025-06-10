@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://b1uiev8cwfse4"
 path="res://.godot/imported/kirosla.dialogue-d54d9906c59220c73dc654e9b62e0f10.tres"

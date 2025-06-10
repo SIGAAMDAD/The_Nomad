@@ -29,6 +29,9 @@ public partial class StatusEffect : Node2D {
 		SetProcess( false );
 		QueueFree();
 	}
+	protected virtual void OnEffectTimerTimeout() {
+		EmitSignalTimeout();
+	}
 
 	public override void _Ready() {
 		base._Ready();
@@ -38,6 +41,6 @@ public partial class StatusEffect : Node2D {
 
 		EffectTimer = GetNode<Timer>( "EffectTimer" );
 		EffectTimer.Autostart = true;
-		EffectTimer.Connect( "timeout", Callable.From( EmitSignalTimeout ) );
+		EffectTimer.Connect( "timeout", Callable.From( OnEffectTimerTimeout ) );
 	}
 };

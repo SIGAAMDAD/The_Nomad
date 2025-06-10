@@ -1,5 +1,8 @@
 # Godot 4+ specific ignores
+.vs/
 .godot/
+*.bin
+*.x64
 /android/
 *.import
 *.exe

@@ -9,7 +9,7 @@ public partial class StatusBurning : StatusEffect {
 		DamageTimer = new Timer();
 		DamageTimer.WaitTime = 1.0f;
 		DamageTimer.Autostart = true;
-		DamageTimer.Connect( "timeout", Callable.From( () => { Victim.Damage( null, 15.0f * (float)GetProcessDeltaTime() ); } ) );
+		DamageTimer.Connect( "timeout", Callable.From( () => Victim.Damage( null, 15.0f * (float)GetProcessDeltaTime() ) ) );
 		AddChild( DamageTimer );
 	}
 };

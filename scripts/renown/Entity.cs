@@ -1,5 +1,6 @@
 using Godot;
 using Renown.World;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -36,8 +37,8 @@ namespace Renown {
 		protected Dictionary<string, StatusEffect> StatusEffects = new Dictionary<string, StatusEffect>();
 
 		protected HashSet<Trait> TraitCache = null;
-		protected Dictionary<Object, float> RelationCache = null;
-		protected Dictionary<Object, float> DebtCache = null;
+		protected HashSet<RenownValue> RelationCache = null;
+		protected HashSet<RenownValue> DebtCache = null;
 
 		protected List<LightData> LightSources = new List<LightData>();
 		protected float LightAmount = 0.0f;
@@ -90,12 +91,12 @@ namespace Renown {
 		public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
 
 		public WorldArea GetLocation() => Location;
-		public virtual void SetLocation( WorldArea location ) => Location = location;
+		public virtual void SetLocation( in WorldArea location ) => Location = location;
 
-		public virtual void AddLightSource( LightData lightSource ) {
+		public virtual void AddLightSource( in LightData lightSource ) {
 			LightSources.Add( lightSource );
 		}
-		public virtual void RemoveLightSource( LightData lightSource ) {
+		public virtual void RemoveLightSource( in LightData lightSource ) {
 			LightSources.Remove( lightSource );
 		}
 		public float GetLightAmount() => LightAmount;
@@ -126,15 +127,15 @@ namespace Renown {
 			CallDeferred( "add_child", effect );
 		}
 
-		public virtual void PickupWeapon( WeaponEntity weapon ) {
+		public virtual void PickupWeapon( in WeaponEntity weapon ) {
 		}
 
-		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		public virtual void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 			channel.Stream = stream;
 			channel.Play();
 		}
 
-		public virtual void Damage( Entity source, float nAmount ) {
+		public virtual void Damage( in Entity source, float nAmount ) {
 			EmitSignalDamaged( source, this, nAmount );
 			Health -= nAmount;
 
@@ -260,7 +261,10 @@ namespace Renown {
 		}
 
 		public virtual void DetermineRelationStatus( Object other ) {
-			float score = RelationCache[ other ];
+			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue value ) ) {
+				return;
+			}
+			float score = value.Value;
 			int renownScore = other.GetRenownScore();
 
 			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
@@ -284,10 +288,10 @@ namespace Renown {
 			}
 			*/
 
-			RelationCache[ other ] = score;
+			value.Value = score;
 		}
 		public virtual void Meet( Object other ) {
-			RelationCache.Add( other, 0.0f );
+			RelationCache.Add( new RenownValue( other ) );
 
 			if ( other is Entity entity && entity != null ) { 
 				EmitSignalMeetEntity( entity, this );
@@ -299,28 +303,26 @@ namespace Renown {
 				Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
 			}
 		}
-		public bool HasRelation( Object other ) => RelationCache.ContainsKey( other );
+		public bool HasRelation( Object other ) => RelationCache.Contains( new RenownValue( other ) );
 		public virtual void RelationIncrease( Object other, float nAmount ) {
-			if ( !RelationCache.TryGetValue( other, out float score ) ) {
+			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 				Meet( other );
 			}
-			score += nAmount;
+			score.Value += nAmount;
 			EmitSignalIncreaseRelation( other as Node, this, nAmount );
-			RelationCache[ other ] = score;
 
-			GD.Print( "Relation between " + this + " and " + other + " increased by " + nAmount );
+			Console.PrintLine( string.Format( "Relation between {0} and {1} increased by {2}", this, other, nAmount ) );
 		}
 		public virtual void RelationDecrease( Object other, float nAmount ) {
-			if ( !RelationCache.TryGetValue( other, out float score ) ) {
+			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 				Meet( other );
 			}
-			score -= nAmount;
+			score.Value -= nAmount;
 			EmitSignalDecreaseRelation( other as Node, this, nAmount );
-			RelationCache[ other ] = score;
 
-			GD.Print( "Relation between " + this + " and " + other + " decreased by " + nAmount );
+			Console.PrintLine( string.Format( "Relation between {0} and {1} decreased by {2}", this, other, nAmount ) );
 		}
-		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( other, out float score ) ? score : 0.0f;
+		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ? score.Value : 0.0f;
 		public RelationStatus GetRelationStatus( Object other ) {
 			float score = GetRelationScore( other );
 			
@@ -355,33 +357,33 @@ namespace Renown {
 			}
 
 			if ( Relations != null ) {
-				RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
+				RelationCache = new HashSet<RenownValue>( Relations != null ? Relations.Count : 0 );
 				foreach ( var relation in Relations ) {
 					if ( relation.Key is Faction faction && faction != null ) {
-						RelationCache.Add( faction, relation.Value );
+						RelationCache.Add( new RenownValue( faction, relation.Value ) );
 					} else if ( relation.Key is Entity entity && entity != null ) {
-						RelationCache.Add( entity, relation.Value );
+						RelationCache.Add( new RenownValue( entity, relation.Value ) );
 					} else {
 						Console.PrintError( string.Format( "Entity._Ready: relation key {0} isn't a renown object!", relation.Key != null ? relation.Key.GetPath() : "nil" ) );
 					}
 				}
 			} else {
-				RelationCache = new Dictionary<Object, float>();
+				RelationCache = new HashSet<RenownValue>();
 			}
 
 			if ( Debts != null ) {
-				DebtCache = new Dictionary<Object, float>( Debts != null ? Debts.Count : 0 );
+				DebtCache = new HashSet<RenownValue>( Debts != null ? Debts.Count : 0 );
 				foreach ( var debt in Debts ) {
 					if ( debt.Key is Faction faction && faction != null ) {
-						DebtCache.Add( faction, debt.Value );
+						DebtCache.Add( new RenownValue( faction, debt.Value ) );
 					} else if ( debt.Key is Entity entity && entity != null ) {
-						DebtCache.Add( entity, debt.Value );
+						DebtCache.Add( new RenownValue( entity, debt.Value ) );
 					} else {
 						Console.PrintError( string.Format( "Entity._Ready: debt key {0} isn't a renown object!", debt.Key != null ? debt.Key.GetPath() : "nil" ) );
 					}
 				}
 			} else {
-				DebtCache = new Dictionary<Object, float>();
+				DebtCache = new HashSet<RenownValue>();
 			}
 		}
 		public override void _Process( double delta ) {

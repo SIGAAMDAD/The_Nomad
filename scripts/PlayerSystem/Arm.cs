@@ -7,7 +7,7 @@ namespace PlayerSystem {
 		public Player Parent;
 
 		private SpriteFrames DefaultAnimation;
-		private int Slot = -1;
+		public int Slot = WeaponSlot.INVALID;
 
 		public bool Flip = false;
 
@@ -18,19 +18,12 @@ namespace PlayerSystem {
 			DefaultAnimation = Animations.SpriteFrames;
         }
 
-		public void SetWeapon( int slot ) {
-			Slot = slot;
-		}
-		public int GetSlot() {
-			return Slot;
-		}
-
 		public SpriteFrames GetAnimationSet() {
 			if ( Slot != WeaponSlot.INVALID ) {
 				WeaponEntity weapon = Parent.GetSlot( Slot ).GetWeapon();
 				if ( weapon != null ) {
 //					WeaponEntity.Properties mode = weapon.GetLastUsedMode();
-					return Flip ? weapon.GetFramesLeft() : weapon.GetFramesRight();
+					return Flip ? weapon.AnimationsLeft : weapon.AnimationsRight;
 					/*
 					if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 						return Flip ? weapon.GetFirearmFramesLeft() : weapon.GetFirearmFramesRight();

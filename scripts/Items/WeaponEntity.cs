@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
-using GDExtension.Wrappers;
+using System.ComponentModel;
 using Godot;
 using Renown;
-using Renown.Thinkers;
+using SimdLinq;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -71,17 +70,25 @@ public partial class WeaponEntity : Node2D {
 	[Export]
 	public Resource Data;
 
-	private Random RandomFactory;
-
-	private StringName ResourcePath = "";
-	
 	// c# integrated properties so that we aren't reaching into the engine api
 	// every time we want a constant
-	private Texture2D Icon;
+	public Texture2D Icon {
+		get;
+		private set;
+	}
 	private int MagazineSize = 0;
-	private AmmoType Ammunition = AmmoType.Light;
-	private MagazineType MagType = MagazineType.Invalid;
-	private FireMode Firemode = FireMode.Single;
+	public AmmoType Ammunition {
+		get;
+		private set;
+	} = AmmoType.Light;
+	public MagazineType MagType {
+		get;
+		private set;
+	} = MagazineType.Invalid;
+	public FireMode Firemode {
+		get;
+		private set;
+	} = FireMode.Single;
 	private SpriteFrames FirearmFramesLeft;
 	private SpriteFrames FirearmFramesRight;
 	private SpriteFrames BluntFramesLeft;
@@ -96,43 +103,91 @@ public partial class WeaponEntity : Node2D {
 	private AudioStream UseBladedSfx;
 	private AudioStream UseBluntSfx;
 	private AudioStream ReloadSfx;
-	private float UseTime = 0.0f;
-	private float ReloadTime = 0.0f;
-	private float Weight = 0.0f;
+	public float UseTime {
+		get;
+		private set;
+	} = 0.0f;
+	public float ReloadTime {
+		get;
+		private set;
+	} = 0.0f;
+	public float Weight {
+		get;
+		private set;
+	} = 0.0f;
 
-	private float CurrentRecoil = 0;
+	/// <summary>
+	/// The more you use a weapon, the nastier it gets. If you don't clean it,
+	/// it has the potential to jam or the degrade in quality
+	/// </summary>
+	public float Dirtiness {
+		get;
+		private set;
+	} = 0.0f;
+
+	private float CurrentRecoil = 0.0f;
 
 	private float AttackAngle = 0.0f;
 	private float LastWeaponAngle = 0.0f;
 
-	private NodePath InitialPath;
+	public NodePath InitialPath {
+		get;
+		private set;
+	}
 
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
-	private Entity _Owner;
+	public Entity _Owner;
 	private Sprite2D IconSprite;
 
 	private Timer MuzzleFlashTimer;
 	private PointLight2D MuzzleLight;
 	private RayCast2D RayCast;
-	private AmmoStack Reserve;
-	private AmmoEntity Ammo;
+	public AmmoStack Reserve {
+		get;
+		private set;
+	}
+	public AmmoEntity Ammo {
+		get;
+		private set;
+	}
 	private List<Sprite2D> MuzzleFlashes;
 	private Sprite2D CurrentMuzzleFlash;
-	private int BulletsLeft = 0;
+	public int BulletsLeft {
+		get;
+		private set;
+	} = 0;
 
-	private WeaponState CurrentState = WeaponState.Idle;
+	public WeaponState CurrentState {
+		get;
+		private set;
+	} = WeaponState.Idle;
 
 	private AudioStreamPlayer2D AudioChannel;
 
-	private SpriteFrames AnimationsLeft;
-	private SpriteFrames AnimationsRight;
+	public SpriteFrames AnimationsLeft {
+		get;
+		private set;
+	}
+	public SpriteFrames AnimationsRight {
+		get;
+		private set;
+	}
 
 	private Area2D PickupArea;
 
-	private Properties PropertyBits = Properties.None;
-	private Properties DefaultMode = Properties.None;
-	private Properties LastUsedMode = Properties.None;
+	public Properties PropertyBits {
+		get;
+		private set;
+	} = Properties.None;
+	public Properties DefaultMode {
+		get;
+		private set;
+	} = Properties.None;
+	public Properties LastUsedMode {
+		get;
+		private set;
+	} = Properties.None;
 
 	[Signal]
 	public delegate void ModeChangedEventHandler( WeaponEntity source, Properties useMode );
@@ -141,33 +196,9 @@ public partial class WeaponEntity : Node2D {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
-	public void SetResourcePath( StringName path ) => ResourcePath = path;
-
-	public float GetWeight() => Weight;
-	public float GetReloadTime() => ReloadTime;
-	public float GetUseTime() => UseTime;
-	public NodePath GetInitialPath() => InitialPath;
-	public void SetOwner( Entity owner ) => _Owner = owner;
-	public WeaponState GetWeaponState() => CurrentState;
-	public void SetWeaponState( WeaponState state ) => CurrentState = state;
-    public AmmoStack GetReserve() => Reserve;
-	public int GetBulletCount() => BulletsLeft;
-	public void SetBulletCount( int nBullets ) => BulletsLeft = nBullets;
-	public Texture2D GetIcon() => Icon;
-	public Properties GetLastUsedMode() => LastUsedMode;
-	public AmmoType GetAmmoType() => Ammunition;
-
-	public Properties GetProperties() => PropertyBits;
-	public Properties GetDefaultMode() => DefaultMode;
-
-	public SpriteFrames GetFramesLeft() => AnimationsLeft;
-	public SpriteFrames GetFramesRight() => AnimationsRight;
-
 	public bool IsBladed() => ( LastUsedMode & Properties.IsBladed ) != 0;
 	public bool IsBlunt() => ( LastUsedMode & Properties.IsBlunt ) != 0;
 	public bool IsFirearm() => ( LastUsedMode & Properties.IsFirearm ) != 0;
-
-	public WeaponState GetCurrentState() => CurrentState;
 
 	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
@@ -175,10 +206,6 @@ public partial class WeaponEntity : Node2D {
 	private void PlaySound( AudioStream stream ) {
 		AudioChannel.SetDeferred( "stream", stream );
 		AudioChannel.CallDeferred( "play" );
-	}
-
-	private float RandomFloat( float min, float max ) {
-		return (float)( min + RandomFactory.NextDouble() * ( min - max ) );
 	}
 
 	private void ReleasePickupArea() {
@@ -273,6 +300,8 @@ public partial class WeaponEntity : Node2D {
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 		Weight = (float)Data.Get( "weight" );
 
+		string resourcePath = _Owner is Player ? "player/" : "";
+
 		if ( (bool)properties[ "is_onehanded" ] ) {
 			PropertyBits |= Properties.IsOneHanded;
 		}
@@ -284,10 +313,10 @@ public partial class WeaponEntity : Node2D {
 			BladedDamage = (float)properties[ "bladed_damage" ];
 			BladedRange = (float)properties[ "bladed_range" ];
 
-			BladedFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_left" ] );
-			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "bladed_frames_right" ] );
+			BladedFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_left" ] );
+			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_right" ] );
 
-			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + ResourcePath + (StringName)properties[ "use_bladed" ] );
+			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "use_bladed" ] );
 
 			if ( RayCast == null ) {
 				RayCast = new RayCast2D();
@@ -302,16 +331,16 @@ public partial class WeaponEntity : Node2D {
 			BluntDamage = (float)properties[ "blunt_damage" ];
 			BluntRange = (float)properties[ "blunt_range" ];
 
-			BluntFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_left" ] );
-			BluntFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "blunt_frames_right" ] );
+			BluntFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "blunt_frames_left" ] );
+			BluntFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "blunt_frames_right" ] );
 
 			UseBluntSfx = ResourceCache.GetSound( "res://sounds/player/melee.wav" );
 		}
 		if ( (bool)properties[ "is_firearm" ] ) {
 			PropertyBits |= Properties.IsFirearm;
 
-			FirearmFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_left" ] );
-			FirearmFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + ResourcePath + (StringName)properties[ "firearm_frames_right" ] );
+			FirearmFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "firearm_frames_left" ] );
+			FirearmFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "firearm_frames_right" ] );
 
 			Firemode = (FireMode)(uint)properties[ "firemode" ];
 			MagType = (MagazineType)(uint)properties[ "magazine_type" ];
@@ -320,7 +349,6 @@ public partial class WeaponEntity : Node2D {
 
 			// only allocate muzzle flash sprites if we actually need them
 			MuzzleFlashes = new System.Collections.Generic.List<Sprite2D>();
-			RandomFactory = new Random( System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day );
 
 			for ( int i = 0;; i++ ) {
 				if ( !FileAccess.FileExists( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" ) ) {
@@ -353,7 +381,7 @@ public partial class WeaponEntity : Node2D {
 			MuzzleLight.Hide();
 			AddChild( MuzzleLight );
 
-			ReloadSfx = ResourceCache.GetSound( "res://sounds/" + ResourcePath + (StringName)properties[ "reload_sfx" ] );
+			ReloadSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "reload_sfx" ] );
 			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
 
 			if ( RayCast == null ) {
@@ -413,10 +441,6 @@ public partial class WeaponEntity : Node2D {
 
 		Icon = (Texture2D)Data.Get( "icon" );
 
-		if ( ResourcePath.IsEmpty ) {
-			ResourcePath = "player/";
-		}
-
 		if ( _Owner != null ) {
 			InitProperties();
 			return;
@@ -455,6 +479,7 @@ public partial class WeaponEntity : Node2D {
 
 	public void Save() {
 		using ( var writer = new SaveSystem.SaveSectionWriter( InitialPath ) ) {
+			writer.SaveFloat( "Dirtiness", Dirtiness );
 			writer.SaveBool( "HasOwner", _Owner != null );
 			if ( _Owner != null ) {
 				writer.SaveString( "Owner", _Owner.GetPath() );
@@ -466,6 +491,7 @@ public partial class WeaponEntity : Node2D {
 			if ( reader == null ) {
 				return;
 			}
+			Dirtiness = reader.LoadFloat( "Dirtiness" );
 			if ( reader.LoadBoolean( "HasOwner" ) ) {
 				CharacterBody2D owner = GetTree().Root.GetNode<CharacterBody2D>( reader.LoadString( "Owner" ) );
 				CallDeferred( "OnBodyShapeEntered", owner.GetRid(), owner, 0, 0 );
@@ -473,9 +499,23 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 
+	public void OwnerLoad( int bulletCount ) {
+		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
+			int nBulletCount = bulletCount ;
+			if ( nBulletCount == 0 ) {
+				CurrentState = WeaponState.Reload;
+			} else {
+				CurrentState = WeaponState.Idle;
+			}
+			BulletsLeft = nBulletCount;
+		} else {
+			CurrentState = WeaponEntity.WeaponState.Idle;
+		}
+	}
+
 	private float UseBladed() {
 		float angle = AttackAngle;
-		
+
 		RayCast.TargetPosition = Godot.Vector2.Right * BladedRange;
 
 		if ( angle != LastWeaponAngle ) {
@@ -558,68 +598,47 @@ public partial class WeaponEntity : Node2D {
 
 	private void CheckBulletHit( ref float frameDamage ) {
 		float damage = Ammo.GetDamage();
-		/*
-		if ( GetParent<Entity>() is Thinker ) {
-			Bullet bullet = ResourceCache.GetScene( "res://scenes/Items/bullet.tscn" ).Instantiate<Bullet>();
-			bullet.AmmoType = Ammo;
-			bullet.Direction = GlobalPosition.DirectionTo( RayCast.GetCollisionPoint() );
-			bullet.CollisionLayer = RayCast.CollisionMask;
-			bullet.CollisionMask = RayCast.CollisionMask;
-			AddChild( bullet );
-			BulletMesh.AddBullet( bullet );
-		}
-		else {
-			*/
-			frameDamage += damage;
-			if ( RayCast.GetCollider() is GodotObject collision && collision != null ) {
-				if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
-					float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition );
-					distance /= Ammo.GetRange();
-					damage *= Ammo.GetDamageFalloff( distance );
-					( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( RayCast, damage );
-				} else if ( collision is Entity entity && entity != null && entity != _Owner ) {
-					float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition );
-					if ( distance > 120.0f ) {
-						// out of bleed range, no healing
-						frameDamage -= damage;
-					}
-					distance /= Ammo.GetRange();
-					damage *= Ammo.GetDamageFalloff( distance );
-					entity.Damage( _Owner, damage );
+		frameDamage += damage;
 
-					if ( _Owner is Player ) {
-						Player.ComboCounter++;
-					}
-
-					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
-					if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
-						entity.AddStatusEffect( "status_burning" );
-					} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-						entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-					}
-				} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
-					Entity owner = (Entity)hitbox.GetMeta( "Owner" );
-					hitbox.OnHit( _Owner );
-					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
-					if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
-						( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
-					} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-						owner.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-					}
-				} else {
-					frameDamage -= damage;
-					AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
-					if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-						Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
-						explosion.GlobalPosition = RayCast.GetCollisionPoint();
-						collision.CallDeferred( "add_child", explosion );
-					}
-					DebrisFactory.Create( RayCast.GetCollisionPoint() );
-				}
-			} else {
+		GodotObject collision = RayCast.GetCollider();
+		if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
+			float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition ) / Ammo.GetRange();
+			damage *= Ammo.GetDamageFalloff( distance );
+			( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( RayCast, damage );
+		} else if ( collision is Entity entity && entity != null && entity != _Owner ) {
+			float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition ) / Ammo.GetRange();
+			if ( distance > 120.0f ) {
+				// out of bleed range, no healing
 				frameDamage -= damage;
 			}
-//		}
+			damage *= Ammo.GetDamageFalloff( distance );
+			entity.Damage( _Owner, damage );
+
+			AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
+				entity.AddStatusEffect( "status_burning" );
+			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+				entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+			}
+		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
+			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
+			hitbox.OnHit( _Owner );
+			AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
+				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
+			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+				owner.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+			}
+		} else {
+			frameDamage -= damage;
+			AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
+			if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
+				Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
+				explosion.GlobalPosition = RayCast.GetCollisionPoint();
+				collision.CallDeferred( "add_child", explosion );
+			}
+			DebrisFactory.Create( RayCast.GetCollisionPoint() );
+		}
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
@@ -628,7 +647,19 @@ public partial class WeaponEntity : Node2D {
 			return 0.0f;
 		}
 
+		bool canFire = true;
 		if ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && held ) {
+			canFire = false;
+		} else {
+			// check for jams
+			if ( Dirtiness > 90.0f && RNJesus.IntRange( 0, 9 ) > 5 ) {
+				canFire = false;
+			} else if ( Dirtiness > 80.0f && RNJesus.IntRange( 0, 19 ) > 13 ) {
+				canFire = false;
+			}
+		}
+
+		if ( !canFire ) {
 			return 0.0f;
 		}
 
@@ -656,12 +687,12 @@ public partial class WeaponEntity : Node2D {
 		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 		// NOTE: correction, they WILL work like that eventually
 
-		CurrentMuzzleFlash = MuzzleFlashes[
-			RandomFactory.Next( 0, MuzzleFlashes.Count - 1 )
-		];
+//		CurrentMuzzleFlash = MuzzleFlashes[
+//			RNJesus.IntRange( 0, MuzzleFlashes.Count - 1 )
+//		];
 //		CurrentMuzzleFlash.Reparent( _Owner );
 //		CurrentMuzzleFlash.Show();
-		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
+//		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
 
 		MuzzleLight.CallDeferred( "show" );
 		
@@ -691,7 +722,7 @@ public partial class WeaponEntity : Node2D {
 			if ( Ammo.GetShotgunBullshit() != AmmoEntity.ShotgunBullshit.Slug ) {
 				for ( int i = 0; i < Ammo.GetPelletCount(); i++ ) {
 					// TODO: implement spread mechanics
-					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RandomFloat( 0.0f, 35.0f ) ) ) * soundLevel;
+					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 35.0f ) ) ) * soundLevel;
 					CheckBulletHit( ref frameDamage );
 				}
 			} else {

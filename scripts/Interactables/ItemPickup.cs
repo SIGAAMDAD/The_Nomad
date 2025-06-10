@@ -19,7 +19,6 @@ public partial class ItemPickup : InteractionItem {
 					WeaponEntity weapon = new WeaponEntity();
 					weapon.Name = "Weapon" + weapon;
 					weapon.Data = Data;
-					weapon.SetResourcePath( "player/" );
 					weapon.SetOwner( player );
 					weapon._Ready();
 					weapon.TriggerPickup( player );

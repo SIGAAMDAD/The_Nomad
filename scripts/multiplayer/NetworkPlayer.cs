@@ -207,7 +207,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 	}
-	public override void Damage( Entity source, float nAmount ) {
+	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {

@@ -309,14 +309,14 @@ namespace PlayerSystem {
 				WeaponStatus.Modulate = DefaultColor;
 				WeaponStatusTimer.Start();
 
-				WeaponModeBladed.Visible = ( source.GetLastUsedMode() & WeaponEntity.Properties.IsBladed ) != 0;
-				WeaponModeBlunt.Visible = ( source.GetLastUsedMode() & WeaponEntity.Properties.IsBlunt ) != 0;
+				WeaponModeBladed.Visible = ( source.LastUsedMode & WeaponEntity.Properties.IsBladed ) != 0;
+				WeaponModeBlunt.Visible = ( source.LastUsedMode & WeaponEntity.Properties.IsBlunt ) != 0;
 				
-				if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				if ( ( source.LastUsedMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 					WeaponModeFirearm.Show();
-					WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
-					if ( source.GetReserve() != null ) {
-						WeaponStatusBulletReserve.Text = source.GetReserve().Amount.ToString();
+					WeaponStatusBulletCount.Text = source.BulletsLeft.ToString();
+					if ( source.Reserve != null ) {
+						WeaponStatusBulletReserve.Text = source.Reserve.Amount.ToString();
 					}
 				} else {
 					WeaponModeFirearm.Hide();
@@ -360,15 +360,15 @@ namespace PlayerSystem {
 			WeaponStatus.Modulate = DefaultColor;
 			WeaponStatusTimer.Start();
 
-			WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
-			WeaponStatusBulletReserve.Text = source.GetReserve() != null ? source.GetReserve().Amount.ToString() : "0";
+			WeaponStatusBulletCount.Text = source.BulletsLeft.ToString();
+			WeaponStatusBulletReserve.Text = source.Reserve != null ? source.Reserve.Amount.ToString() : "0";
 		}
 		private void OnWeaponUsed( WeaponEntity source ) {
 			WeaponStatus.Modulate = DefaultColor;
 			WeaponStatusTimer.Start();
 			
-			if ( ( source.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				WeaponStatusBulletCount.Text = source.GetBulletCount().ToString();
+			if ( ( source.LastUsedMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+				WeaponStatusBulletCount.Text = source.BulletsLeft.ToString();
 			}
 		}
 		private void SetWeapon( WeaponEntity weapon ) {
@@ -388,18 +388,18 @@ namespace PlayerSystem {
 			WeaponStatus.Modulate = DefaultColor;
 			WeaponStatusTimer.Start();
 
-			if ( ( weapon.GetLastUsedMode() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				WeaponStatusFirearm.Show();
 				WeaponStatusMelee.Hide();
 
-				WeaponStatusFirearmIcon.Texture = weapon.GetIcon();
+				WeaponStatusFirearmIcon.Texture = weapon.Icon;
 
-				WeaponStatusBulletCount.Text = weapon.GetBulletCount().ToString();
-				WeaponStatusBulletReserve.Text = weapon.GetReserve() != null ? weapon.GetReserve().Amount.ToString() : "0";
+				WeaponStatusBulletCount.Text = weapon.BulletsLeft.ToString();
+				WeaponStatusBulletReserve.Text = weapon.Reserve != null ? weapon.Reserve.Amount.ToString() : "0";
 			} else {
 				WeaponStatusFirearm.Hide();
 				WeaponStatusMelee.Show();
-				WeaponStatusMeleeIcon.Texture = weapon.GetIcon();
+				WeaponStatusMeleeIcon.Texture = weapon.Icon;
 			}
 			
 			WeaponData = weapon;

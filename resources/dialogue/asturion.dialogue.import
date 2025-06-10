@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://bra887cq3crrn"
 path="res://.godot/imported/asturion.dialogue-269281f2585e462b76a702bd04bdf240.tres"

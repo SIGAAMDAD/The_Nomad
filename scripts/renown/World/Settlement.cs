@@ -14,8 +14,6 @@ namespace Renown.World {
 		Count,
 	};
 	public partial class Settlement : WorldArea {
-		public static DataCache<Settlement> Cache = null;
-
 		[Export]
 		private SettlementType Type;
 		[Export]

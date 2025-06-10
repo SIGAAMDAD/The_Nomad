@@ -31,7 +31,7 @@ public partial class TitleMenu : Control {
 
 	private MenuState State = MenuState.Main;
 
-    private void OnExitButtonPressed() {
+	private void OnExitButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 

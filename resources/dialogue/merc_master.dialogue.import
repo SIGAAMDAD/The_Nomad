@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://dg3pishctgqw1"
 path="res://.godot/imported/merc_master.dialogue-f6c699192bf94c7d846792f14c2757b6.tres"

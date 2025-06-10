@@ -35,8 +35,6 @@ namespace Renown.Thinkers {
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : Entity {
-		protected Random Random = new Random();
-
 		public AnimatedSprite2D BodyAnimations;
 
 		[Export]
@@ -179,7 +177,7 @@ namespace Renown.Thinkers {
 		public virtual void Alert( Entity source ) {
 		}
 
-		public override void Damage( Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float nAmount ) {
 			BloodParticleFactory.CreateDeferred( source != null ? source.GlobalPosition : Godot.Vector2.Zero, GlobalPosition );
 			base.Damage( source, nAmount );
 		}
@@ -245,7 +243,7 @@ namespace Renown.Thinkers {
 				Animations.ProcessMode = ProcessModeEnum.Disabled;
 			}
 		}
-		public override void SetLocation( WorldArea location ) {
+		public override void SetLocation( in WorldArea location ) {
 			if ( Location != null ) {
 				Location.PlayerEntered -= OnPlayerEnteredArea;
 				Location.PlayerExited -= OnPlayerExitedArea;
@@ -262,10 +260,14 @@ namespace Renown.Thinkers {
 			Location.PlayerExited += OnPlayerExitedArea;
 		}
 
-		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-			channel ??= AudioChannel;
-			channel.SetDeferred( "stream", stream );
-			channel.CallDeferred( "play" );
+		public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+			if ( channel == null ) {
+				AudioChannel.SetDeferred( "stream", stream );
+				AudioChannel.CallDeferred( "play" );
+			} else {
+				channel.SetDeferred( "stream", stream );
+				channel.CallDeferred( "play" );
+			}
 		}
 
 		public override StringName GetObjectName() => Name;
@@ -296,12 +298,12 @@ namespace Renown.Thinkers {
 			writer.SaveInt( key + "RelationCount", RelationCache.Count );
 			count = 0;
 			foreach ( var relation in RelationCache ) {
-				if ( relation.Key is Entity entity && entity != null ) {
+				if ( relation.Object is Entity entity && entity != null ) {
 					writer.SaveBool( string.Format( "{0}RelationIsEntity{1}", key, count ), true );
 				} else {
 					writer.SaveBool( string.Format( "{0}RelationIsEntity{1}", key, count ), false );
 				}
-				writer.SaveString( string.Format( "{0}RelationNode{1}", key, count ), relation.Key.GetObjectName() );
+				writer.SaveString( string.Format( "{0}RelationNode{1}", key, count ), relation.Object.GetObjectName() );
 				writer.SaveFloat( string.Format( "{0}RelationValue{1}", key, count ), relation.Value );
 				count++;
 			}
@@ -309,7 +311,7 @@ namespace Renown.Thinkers {
 			writer.SaveInt( key + "DebtCount", DebtCache.Count );
 			count = 0;
 			foreach ( var debt in DebtCache ) {
-				writer.SaveString( string.Format( "{0}DebtNode{1}", key, count ), debt.Key.GetObjectName() );
+				writer.SaveString( string.Format( "{0}DebtNode{1}", key, count ), debt.Object.GetObjectName() );
 				writer.SaveFloat( string.Format( "{0}DebtValue{1}", key, count ), debt.Value );
 				count++;
 			}
@@ -348,21 +350,21 @@ namespace Renown.Thinkers {
 			Constitution = reader.LoadInt( key + nameof( Constitution ) );
 
 			int relationCount = reader.LoadInt( key + "RelationCount" );
-			RelationCache = new Dictionary<Object, float>( relationCount );
+			RelationCache = new HashSet<RenownValue>( relationCount );
 			for ( int i = 0; i < relationCount; i++ ) {
-				RelationCache.Add(
+				RelationCache.Add( new RenownValue(
 					(Object)GetTree().Root.GetNode( reader.LoadString( string.Format( "{0}RelationNode{1}", key, i ) ) ),
 					reader.LoadFloat( string.Format( "{0}RelationValue{1}", key, i ) )
-				);
+				) );
 			}
 
 			int debtCount = reader.LoadInt( key + "DebtCount" );
-			DebtCache = new Dictionary<Object, float>( debtCount );
+			DebtCache = new HashSet<RenownValue>( debtCount );
 			for ( int i = 0; i < debtCount; i++ ) {
-				DebtCache.Add(
+				DebtCache.Add( new RenownValue(
 					(Object)GetTree().Root.GetNode( reader.LoadString( string.Format( "{0}DebtNode{1}", key, i ) ) ),
 					reader.LoadFloat( string.Format( "{0}DebtValue{1}", key, i ) )
-				);
+				) );
 			}
 
 			int traitCount = reader.LoadInt( key + "TraitCount" );
@@ -401,7 +403,7 @@ namespace Renown.Thinkers {
 
 		protected void OnBodyAnimationFinished() {
 			if ( BodyAnimations.Animation == "move" ) {
-				PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ Random.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+				PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RNJesus.IntRange( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
 			}
 		}
 
@@ -524,7 +526,7 @@ namespace Renown.Thinkers {
 
 		protected void CheckContracts() {
 			foreach ( var relation in RelationCache ) {
-				if ( GetRelationStatus( relation.Key ) > RelationStatus.Dislikes ) {
+				if ( GetRelationStatus( relation.Object ) > RelationStatus.Dislikes ) {
 					// we've got a grudge
 
 				}
@@ -591,16 +593,16 @@ namespace Renown.Thinkers {
 		protected void InitBaseStats() {
 			if ( !IsPremade ) {
 				Godot.Collections.Array<Node> locations = GetTree().GetNodesInGroup( "Settlements" );
-				BirthPlace = locations[ Random.Next( 0, locations.Count - 1 ) ] as Settlement;
+				BirthPlace = locations[ RNJesus.IntRange( 0, locations.Count - 1 ) ] as Settlement;
 				Family = FamilyCache.GetFamily( BirthPlace, SocietyRank.Middle );
 			}
 
-			Strength = Random.Next( 3, Family.MaxStrength ) + Family.StrengthBonus;
-			Dexterity = Random.Next( 3, Family.MaxDexterity ) + Family.DexterityBonus;
-			Intelligence = Random.Next( 3, Family.MaxIntelligence ) + Family.IntelligenceBonus;
-			Wisdom = Random.Next( 3, Family.MaxWisdom ) + Family.WisdomBonus;
-			Constitution = Random.Next( 3, Family.MaxConstitution ) + Family.ConstitutionBonus;
-			Charisma = Random.Next( 3, Family.MaxCharisma ) + Family.CharismaBonus;
+			Strength = RNJesus.IntRange( 3, Family.MaxStrength ) + Family.StrengthBonus;
+			Dexterity = RNJesus.IntRange( 3, Family.MaxDexterity ) + Family.DexterityBonus;
+			Intelligence = RNJesus.IntRange( 3, Family.MaxIntelligence ) + Family.IntelligenceBonus;
+			Wisdom = RNJesus.IntRange( 3, Family.MaxWisdom ) + Family.WisdomBonus;
+			Constitution = RNJesus.IntRange( 3, Family.MaxConstitution ) + Family.ConstitutionBonus;
+			Charisma = RNJesus.IntRange( 3, Family.MaxCharisma ) + Family.CharismaBonus;
 
 			MovementSpeed += Dexterity * 10.0f;
 			if ( Strength > 12 ) {
@@ -643,7 +645,7 @@ namespace Renown.Thinkers {
 
 			// TODO: make regional name generation a thing
 			private static string NameScramble( string[] begin, string[] end ) {
-				return string.Format( "{0}{1}", begin[ random.Next( 0, begin.Length - 1 ) ], end[ random.Next( 0, end.Length - 1 ) ] );
+				return string.Format( "{0}{1}", begin[ RNJesus.IntRange( 0, begin.Length - 1 ) ], end[ RNJesus.IntRange( 0, end.Length - 1 ) ] );
 			}
 			public static string GenerateName() {
 				return NameScramble( FirstNameScramble_Begin, FirstNameScramble_End );

@@ -65,10 +65,6 @@ namespace Renown.Thinkers {
 
 		private bool HitHead = false;
 
-		private float RandomFloat( float min, float max ) {
-			return (float)( min + Random.NextDouble() * ( min - max ) );
-		}
-
 		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
 		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
@@ -182,7 +178,7 @@ namespace Renown.Thinkers {
 			Enraged = false;
 			BlowupTimer.Stop();
 		}
-		public override void Damage( Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}

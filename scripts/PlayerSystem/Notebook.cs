@@ -43,16 +43,16 @@ namespace PlayerSystem {
 
 		private void InitEquipment() {
 			if ( _Owner.GetPrimaryWeapon().GetWeapon() != null ) {
-				PrimaryWeapon.Texture = _Owner.GetPrimaryWeapon().GetWeapon().GetIcon();
+				PrimaryWeapon.Texture = _Owner.GetPrimaryWeapon().GetWeapon().Icon;
 			}
 			if ( _Owner.GetHeavyPrimaryWeapon().GetWeapon() != null ) {
-				HeavyPrimaryWeapon.Texture = _Owner.GetHeavyPrimaryWeapon().GetWeapon().GetIcon();
+				HeavyPrimaryWeapon.Texture = _Owner.GetHeavyPrimaryWeapon().GetWeapon().Icon;
 			}
 			if ( _Owner.GetSidearmWeapon().GetWeapon() != null ) {
-				SidearmWeapon.Texture = _Owner.GetSidearmWeapon().GetWeapon().GetIcon();
+				SidearmWeapon.Texture = _Owner.GetSidearmWeapon().GetWeapon().Icon;
 			}
 			if ( _Owner.GetHeavySidearmWeapon().GetWeapon() != null ) {
-				HeavySidearmWeapon.Texture = _Owner.GetHeavySidearmWeapon().GetWeapon().GetIcon();
+				HeavySidearmWeapon.Texture = _Owner.GetHeavySidearmWeapon().GetWeapon().Icon;
 			}
 		}
 
@@ -156,14 +156,14 @@ namespace PlayerSystem {
 			}
 			foreach ( var stack in _Owner.GetWeaponStack() ) {
 				row = AddWeaponToBackpack( row, stack.Value );
-				weight += (float)stack.Value.GetWeight();
+				weight += (float)stack.Value.Weight;
 			}
 			//			foreach ( var stack in _Owner.GetInventory().Stacks ) {
 			//				row = AddItemToBackpack( row, stack );
 			//			}
 
 			EncumbranceAmountLabel.Text = string.Format( "{0}/{1}", weight, 0.0f );
-			if ( false ) {
+			if ( ( _Owner.GetFlags() & Player.PlayerFlags.Encumbured ) != 0 ) {
 				OverweightLabel.Show();
 			} else {
 				OverweightLabel.Hide();

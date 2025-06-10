@@ -105,17 +105,12 @@ namespace Renown.Thinkers {
 			CurrentState = State.Investigating;
 		}
 
-		public Godot.Vector2 GetInvestigationPosition() {
-			return LastTargetPosition;
-		}
-		private float RandomFloat( float min, float max ) {
-			return (float)( min + Random.NextDouble() * ( min - max ) );
-		}
+		public Godot.Vector2 GetInvestigationPosition() => LastTargetPosition;
 
 		public override void AddStatusEffect( string effectName ) {
 			base.AddStatusEffect( effectName );
 
-			if ( Target is Player && Fear >= 80 ) {
+			if ( Target is Player && Fear >= 80 && effectName == "status_burning" ) {
 				SteamAchievements.ActivateAchievement( "ACH_DANCE_DANCE_DANCE" );
 			}
 		}
@@ -123,12 +118,12 @@ namespace Renown.Thinkers {
 		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
 		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
-		public override void SetLocation( WorldArea location ) {
+		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
 			NodeCache = location.GetNodeCache();
 		}
 
-		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+		public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
 				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) )
 			{
@@ -137,13 +132,13 @@ namespace Renown.Thinkers {
 			base.PlaySound( channel, stream );
 		}
 
-		public override void Damage( Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 
 			base.Damage( source, nAmount );
-			PlaySound( AudioChannel, ResourceCache.Pain[ Random.Next( 0, ResourceCache.Pain.Length - 1 ) ] );
+			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			AimTimer.Stop();
 			Aiming = false;
@@ -165,8 +160,6 @@ namespace Renown.Thinkers {
 				}
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
-				SetDeferred( "collision_layer", 0 );
-				SetDeferred( "collision_mask", 0 );
 				return;
 			}
 
@@ -182,7 +175,7 @@ namespace Renown.Thinkers {
 				SetAlert();
 			}
 
-			float angle = RandomFloat( 0, 360.0f );
+			float angle = RNJesus.FloatRange( 0, 360.0f );
 			HeadAnimations.GlobalRotation = angle;
 			ArmAnimations.GlobalRotation = angle;
 
@@ -225,37 +218,37 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		private bool IsValidTarget( Entity target ) => target is Player;
+		private bool IsValidTarget( in Entity target ) => target is Player;
 		private AudioStream GetBarkResource( BarkType bark ) {
 			switch ( bark ) {
 			case BarkType.ManDown:
-				return ResourceCache.ManDown[ Random.Next( 0, ResourceCache.ManDown.Length - 1 ) ];
+				return ResourceCache.ManDown[ RNJesus.IntRange( 0, ResourceCache.ManDown.Length - 1 ) ];
 			case BarkType.MenDown2:
 				return ResourceCache.ManDown2;
 			case BarkType.MenDown3:
 				return ResourceCache.ManDown3;
 			case BarkType.TargetSpotted:
-				return ResourceCache.TargetSpotted[ Random.Next( 0, ResourceCache.TargetSpotted.Length - 1 ) ];
+				return ResourceCache.TargetSpotted[ RNJesus.IntRange( 0, ResourceCache.TargetSpotted.Length - 1 ) ];
 			case BarkType.TargetPinned:
-				return ResourceCache.TargetPinned[ Random.Next( 0, ResourceCache.TargetPinned.Length - 1 ) ];
+				return ResourceCache.TargetPinned[ RNJesus.IntRange( 0, ResourceCache.TargetPinned.Length - 1 ) ];
 			case BarkType.TargetRunning:
-				return ResourceCache.TargetRunning[ Random.Next( 0, ResourceCache.TargetRunning.Length - 1 ) ];
+				return ResourceCache.TargetRunning[ RNJesus.IntRange( 0, ResourceCache.TargetRunning.Length - 1 ) ];
 			case BarkType.Confusion:
-				return ResourceCache.Confusion[ Random.Next( 0, ResourceCache.Confusion.Length - 1 ) ];
+				return ResourceCache.Confusion[ RNJesus.IntRange( 0, ResourceCache.Confusion.Length - 1 ) ];
 			case BarkType.Alert:
-				return ResourceCache.Alert[ Random.Next( 0, ResourceCache.Alert.Length - 1 ) ];
+				return ResourceCache.Alert[ RNJesus.IntRange( 0, ResourceCache.Alert.Length - 1 ) ];
 			case BarkType.OutOfTheWay:
-				return ResourceCache.OutOfTheWay[ Random.Next( 0, ResourceCache.OutOfTheWay.Length - 1 ) ];
+				return ResourceCache.OutOfTheWay[ RNJesus.IntRange( 0, ResourceCache.OutOfTheWay.Length - 1 ) ];
 			case BarkType.NeedBackup:
-				return ResourceCache.NeedBackup[ Random.Next( 0, ResourceCache.NeedBackup.Length - 1 ) ];
+				return ResourceCache.NeedBackup[ RNJesus.IntRange( 0, ResourceCache.NeedBackup.Length - 1 ) ];
 			case BarkType.SquadWiped:
 				return ResourceCache.SquadWiped;
 			case BarkType.Curse:
-				return ResourceCache.Curse[ Random.Next( 0, ResourceCache.Curse.Length - 1 ) ];
+				return ResourceCache.Curse[ RNJesus.IntRange( 0, ResourceCache.Curse.Length - 1 ) ];
 			case BarkType.CheckItOut:
-				return ResourceCache.CheckItOut[ Random.Next( 0, ResourceCache.CheckItOut.Length - 1 ) ];
+				return ResourceCache.CheckItOut[ RNJesus.IntRange( 0, ResourceCache.CheckItOut.Length - 1 ) ];
 			case BarkType.Quiet:
-				return ResourceCache.Quiet[ Random.Next( 0, ResourceCache.Quiet.Length - 1 ) ];
+				return ResourceCache.Quiet[ RNJesus.IntRange( 0, ResourceCache.Quiet.Length - 1 ) ];
 			case BarkType.Unstoppable:
 				return ResourceCache.Unstoppable;
 			case BarkType.Count:
@@ -306,7 +299,7 @@ namespace Renown.Thinkers {
 			DetectionMeter.SetDeferred( "default_color", DetectionColor );
 		}
 		private void OnChangeInvestigationAngleTimerTimeout() {
-			float angle = RandomFloat( 0, 360.0f );
+			float angle = RNJesus.FloatRange( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
 			ChangeInvestigationAngleTimer.CallDeferred( "start" );
@@ -419,7 +412,6 @@ namespace Renown.Thinkers {
 			Weapon = new WeaponEntity();
 			Weapon.Name = "Weapon";
 			Weapon.Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" );
-			Weapon.SetResourcePath( "mobs/mercenary/" );
 
 			Ammo = new AmmoEntity();
 			Ammo.Name = "Ammo";
@@ -487,13 +479,13 @@ namespace Renown.Thinkers {
 			Weapon.CallDeferred( "SetUseMode", (uint)WeaponEntity.Properties.TwoHandedFirearm );
 			Weapon.CallDeferred( "UseDeferred", (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}
-		public override void PickupWeapon( WeaponEntity weapon ) {
+		public override void PickupWeapon( in WeaponEntity weapon ) {
 			// TODO: evaluate if we actually want it
 			Weapon = weapon;
 
-			if ( ( Weapon.GetProperties() & WeaponEntity.Properties.IsFirearm ) != 0 ) {
+			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
-				AttackTimer.SetDeferred( "wait_time", Weapon.GetUseTime() );
+				AttackTimer.SetDeferred( "wait_time", Weapon.UseTime );
 			//	AimTimer.SetDeferred( "wait_time", Weapon.GetReloadTime() );
 				AimLine.SetDeferred( "target_position", Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
 			}
@@ -501,7 +493,7 @@ namespace Renown.Thinkers {
 
 		private void AttackMelee() {
 			MeleeTween = CreateTween();
-			MeleeTween.CallDeferred( "tween_property", ArmAnimations, "global_rotation", 0.0f, Weapon.GetWeight() );
+			MeleeTween.CallDeferred( "tween_property", ArmAnimations, "global_rotation", 0.0f, Weapon.Weight );
 		}
 
 		protected override void ProcessAnimations() {
@@ -698,7 +690,7 @@ namespace Renown.Thinkers {
 
 			if ( !IsPremade ) {
 				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Cities" );
-				Family = FamilyCache.GetFamily( nodes[ Random.Next( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)Random.Next( 0, (int)SocietyRank.Count ) );
+				Family = FamilyCache.GetFamily( nodes[ RNJesus.IntRange( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)RNJesus.IntRange( 0, (int)SocietyRank.Count ) );
 				FirstName = NameGenerator.GenerateName();
 				BotName = string.Format( "{0} {1}", FirstName, Family.GetFamilyName() );
 				Name = string.Format( "{0}{1}{2}", this, FirstName, Family.GetFamilyName() );
