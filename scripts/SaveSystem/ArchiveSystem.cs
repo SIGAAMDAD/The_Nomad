@@ -43,6 +43,8 @@ public partial class ArchiveSystem : Node {
 	public static System.IO.BinaryReader SaveReader = null;
 	public static System.IO.BinaryWriter SaveWriter = null;
 
+	private static readonly object LockObject = new object();
+
 	/*
 	* A memory is less of an extra save file.
 	* To put it simply, its a temporary save file that the player can create,
@@ -91,9 +93,7 @@ public partial class ArchiveSystem : Node {
 				SectionCount = 0;
 				SaveWriter.Write( SectionCount );
 
-				for ( int i = 0; i < nodes.Count; i++ ) {
-					nodes[i].Call( "Save" );
-				}
+				System.Threading.Tasks.Parallel.ForEach( nodes, ( source, body ) => { source.Call( "Save" ); } );
 
 				stream.Seek( 0, System.IO.SeekOrigin.Begin );
 				SaveWriter.Write( MAGIC );
@@ -192,10 +192,10 @@ public partial class ArchiveSystem : Node {
 	public static void SaveBoolean( bool value ) => SaveWriter.Write( value );
 
 	public static SaveSectionReader GetSection( string name ) {
-		if ( SectionCache.ContainsKey( name ) ) {
-			return SectionCache[ name ];
+		if ( SectionCache.TryGetValue( name, out SaveSectionReader value ) ) {
+			return value;
 		}
-		Console.PrintError( string.Format( "Failed to find save section \"{0}\"!", name ) );
+		Console.PrintError( string.Format( "ArchiveSystem.GetSection: Failed to find save section \"{0}\"!", name ) );
 		return null;
 	}
 

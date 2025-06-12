@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -51,6 +52,8 @@ public partial class StoryMenu : Control {
 		} else {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
+
+		World.LoadTime = Stopwatch.StartNew();
 
 		FinishedLoading += () => {
 			LoadThread.Join();

@@ -21,7 +21,7 @@ namespace Renown.World {
 			return null;
 		}
 		
-		public void PerformTrade( Entity seller, Entity buyer, Resource itemData, uint nAmount ) {
+		public void PerformTrade( in Entity seller, in Entity buyer, in Resource itemData, uint nAmount ) {
 			// start with a base value
 			float price = (float)( (Godot.Collections.Dictionary)itemData.Get( "properties" ) )[ "value" ];
 

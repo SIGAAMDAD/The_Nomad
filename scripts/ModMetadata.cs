@@ -29,11 +29,14 @@ public partial class ModMetadata : Resource {
 	public void Load() {
 		try {
 			Assembly = Assembly.LoadFile( DllPath );
-		} catch ( Exception ) {
+		} catch ( Exception e ) {
+			Console.PrintError( string.Format( "ModMetadata.Load: couldn't load mod assembly .dll \"{0}\"!", DllPath ) );
+			Console.PrintError( string.Format( "StackDump: {0}", e.StackTrace ) );
 		}
 
 		bool bSuccess = ProjectSettings.LoadResourcePack( PckPath );
 		if ( !bSuccess ) {
+			Console.PrintError( string.Format( "ModMetadata.Load: couldn't load mod resource pack \"{0}\"!", PckPath ) );
 		}
 	}
 };

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Runtime.CompilerServices;
 using Godot;
 using Renown.Thinkers;
 using Renown.World.Buildings;
@@ -14,6 +12,8 @@ namespace Renown.World {
 		Count,
 	};
 	public partial class Settlement : WorldArea {
+		public static DataCache<Settlement> Cache = null;
+
 		[Export]
 		private SettlementType Type;
 		[Export]
@@ -28,6 +28,8 @@ namespace Renown.World {
 		private BuildingResourceProducer[] Producers;
 		[Export]
 		private float BirthRate = 0.0f;
+		[Export]
+		private float TaxationRate = 30.75f;
 
 		/// <summary>
 		/// the statistics regarding the socioeconomic makeup of the settlement.
@@ -48,9 +50,6 @@ namespace Renown.World {
 
 		private System.Threading.Thread ThinkThread = null;
 		private bool Quit = false;
-
-		[Export]
-		private float TaxationRate = 30.75f;
 
 		private int Population = 0;
 		private int MaxPopulation = 0;
@@ -98,6 +97,7 @@ namespace Renown.World {
 				//
 
 				writer.SaveInt( nameof( Population ), Population );
+				writer.SaveFloat( nameof( BirthRate ), BirthRate );
 
 				//
 				// save economy state
@@ -107,14 +107,14 @@ namespace Renown.World {
 		public override void Load() {
 			base.Load();
 
-			SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( GetPath() );
+			using ( var reader = ArchiveSystem.GetSection( GetPath() ) ) {
+				// save file compatibility
+				if ( reader == null ) {
+					return;
+				}
 
-			// save file compatibility
-			if ( reader == null ) {
-				return;
+				BirthRate = reader.LoadFloat( "BirthRate" );
 			}
-
-			BirthRate = reader.LoadFloat( "BirthRate" );
 		}
 
 		public void OnGenerateThinkers() {
@@ -139,38 +139,6 @@ namespace Renown.World {
 			}
 		}
 
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			Quit = true;
-		}
-		public override void _Ready() {
-			base._Ready();
-
-			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Buildings" );
-			MaxPopulation = 0;
-			for ( int i = 0; i < nodes.Count; i++ ) {
-				Building building = nodes[i] as Building;
-				if ( building.GetLocation() == this ) {
-					if ( building.GetBuildingType() == BuildingType.House ) {
-						MaxPopulation += ( building as BuildingHouse ).MaxPeople;
-					}
-					BuildingList.Add( building );
-				}
-			}
-
-			Politicians = new HashSet<Politician>();
-
-			ProcessMode = ProcessModeEnum.Pausable;
-
-			if ( !IsInGroup( "Settlements" ) ) {
-				AddToGroup( "Settlements" );
-			}
-			if ( !ArchiveSystem.Instance.IsLoaded() ) {
-				CallDeferred( "OnGenerateThinkers" );
-			}
-		}
-
 		private void DecreaseMoney( float nAmount ) {
 			Treasury -= nAmount;
 
@@ -190,6 +158,38 @@ namespace Renown.World {
 		private void Think() {
 			while ( !Quit ) {
 				System.Threading.Thread.Sleep( ThreadSleep );
+			}
+		}
+
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			Quit = true;
+		}
+		public override void _Ready() {
+			base._Ready();
+
+			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Buildings" );
+			MaxPopulation = 0;
+			for ( int i = 0; i < nodes.Count; i++ ) {
+				Building building = nodes[ i ] as Building;
+				if ( building.GetLocation() == this ) {
+					if ( building.GetBuildingType() == BuildingType.House ) {
+						MaxPopulation += ( building as BuildingHouse ).MaxPeople;
+					}
+					BuildingList.Add( building );
+				}
+			}
+
+			Politicians = new HashSet<Politician>();
+
+			ProcessMode = ProcessModeEnum.Pausable;
+
+			if ( !IsInGroup( "Settlements" ) ) {
+				AddToGroup( "Settlements" );
+			}
+			if ( !ArchiveSystem.Instance.IsLoaded() ) {
+				CallDeferred( "OnGenerateThinkers" );
 			}
 		}
 	};

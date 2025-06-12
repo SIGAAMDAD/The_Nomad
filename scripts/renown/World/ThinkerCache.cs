@@ -4,11 +4,10 @@ using Renown.Thinkers;
 
 namespace Renown.World {
 	public partial class ThinkerCache : Node {
-		private Dictionary<int, Thinker> Thinkers = null;
-
 		public static int ThinkerCount = 0;
-
 		private static ThinkerCache Instance = null;
+
+		private Dictionary<int, Thinker> Thinkers = null;
 
 		public void Load() {
 			using ( var reader = ArchiveSystem.GetSection( "ThinkerCache" ) ) {
@@ -17,8 +16,6 @@ namespace Renown.World {
 
 				for ( int i = 0; i < cacheSize; i++ ) {
 					string key = string.Format( "Thinker{0}", i );
-
-					GD.Print( "Loading thinker " + key + "..." );
 
 					bool premade = reader.LoadBoolean( key + "IsPremade" );
 
@@ -42,6 +39,12 @@ namespace Renown.World {
 				}
 			}
 		}
+		
+		public static void AddThinker( Thinker thinker ) {
+			Instance.Thinkers.TryAdd( thinker.GetHashCode(), thinker );
+			Instance.CallDeferred( "add_child", thinker );
+			System.Threading.Interlocked.Increment( ref ThinkerCount );
+		}
 
 		public override void _Ready() {
 			base._Ready();
@@ -56,19 +59,13 @@ namespace Renown.World {
 				Load();
 			} else {
 				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Thinkers" );
-				
+
 				Thinkers = new Dictionary<int, Thinker>( nodes.Count );
 				for ( int i = 0; i < nodes.Count; i++ ) {
-					Thinker thinker = nodes[i] as Thinker;
+					Thinker thinker = nodes[ i ] as Thinker;
 					Thinkers.Add( thinker.GetHashCode(), thinker );
 				}
 			}
-		}
-
-		public static void AddThinker( Thinker thinker ) {
-			Instance.Thinkers.TryAdd( thinker.GetHashCode(), thinker );
-			Instance.CallDeferred( "add_child", thinker );
-			System.Threading.Interlocked.Increment( ref ThinkerCount );
 		}
 	};
 };

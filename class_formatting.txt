@@ -1,0 +1,7 @@
+1. Static Properties
+2. Exported Properties
+3. Properties
+4. Signals
+5. Constructor/Destructor
+6. Methods
+7. Godot Overrides

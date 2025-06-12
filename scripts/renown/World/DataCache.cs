@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Godot;
 
 namespace Renown.World {
@@ -39,9 +40,7 @@ namespace Renown.World {
 			Cache.Clear();
 		}
 		public void Load() {
-			foreach ( var entry in Cache ) {
-				entry.Value.Call( "Load" );
-			}
+			Parallel.ForEach( Cache, ( source ) => source.Value.Call( "Load" ) );
 		}
 		public T FindNearest( Godot.Vector2 position ) {
 			T best = null;

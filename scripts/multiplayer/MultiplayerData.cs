@@ -84,7 +84,7 @@ public partial class MultiplayerData : Node2D {
 		ModeData.OnPlayerLeft( Players[ userId ] );
 		
 		Console.PrintLine(
-			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerUsername )
+			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username )
 		);
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();

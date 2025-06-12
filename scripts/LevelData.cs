@@ -83,8 +83,7 @@ public partial class LevelData : Node2D {
 		}
 		
 		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
-		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
-		player.Set( "MultiplayerId", (ulong)userId );
+		( player as NetworkPlayer ).MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( userId );
 		player.Call( "SetOwnerId", (ulong)userId );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
@@ -98,7 +97,7 @@ public partial class LevelData : Node2D {
 		}
 		
 		Console.PrintLine(
-			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerUsername )
+			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username )
 		);
 		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
 		Players[ userId ].QueueFree();
@@ -181,8 +180,7 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				}
-				;
+				};
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

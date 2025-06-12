@@ -1,7 +1,39 @@
-public class FreeFlow {
+using Godot;
+
+public enum KillType : uint {
+	Bodyshot,
+	Headshot,
+	Burning,
+	Execution,
+
+	Count
+};
+
+public partial class FreeFlow : Node {
+	private static int KillCounter = 0;
 	private static int ComboCounter = 0;
 	private static int MaxCombo = 0;
+	private static int HeadshotCounter = 0;
+	private static Timer BurnoutTimer;
 
+	[Signal]
+	public delegate void ComboFinishedEventHandler( int nCombo );
+	[Signal]
+	public delegate void NewHighestComboEventHandler( int nCombo );
+	[Signal]
+	public delegate void KillAddedEventHandler( KillType nType );
+
+	public static void AddKill( KillType nType ) {
+		switch ( nType ) {
+		case KillType.Bodyshot:
+			break;
+		case KillType.Headshot:
+			HeadshotCounter++;
+			break;
+		}
+		;
+		KillCounter++;
+	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		ComboCounter += nAmount;
 		if ( ComboCounter > MaxCombo ) {
@@ -12,6 +44,18 @@ public class FreeFlow {
 		ComboCounter = 0;
 	}
 
-	public static int CurrentCombo() => ComboCounter;
-	public static int HighestCombo() => MaxCombo;
+	public static int GetCurrentCombo() => ComboCounter;
+	public static int GetHighestCombo() => MaxCombo;
+	public static int GetKillCounter() => KillCounter;
+
+	public override void _Ready() {
+		base._Ready();
+
+		BurnoutTimer = new Timer();
+		BurnoutTimer.Name = "FreeFlowComboBurnoutTimer";
+		BurnoutTimer.WaitTime = 3.5f;
+		BurnoutTimer.OneShot = true;
+		BurnoutTimer.Connect( "finished", Callable.From( EndCombo ) );
+		AddChild( BurnoutTimer );
+	}
 };

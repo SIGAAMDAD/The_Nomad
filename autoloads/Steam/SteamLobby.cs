@@ -128,41 +128,25 @@ public partial class SteamLobby : Node {
 		}
 	}
 	public Node GetNetworkNode( NodePath node ) {
-		return NodeCache[ node.GetHashCode() ].Node;
+		if ( NodeCache.TryGetValue( node.GetHashCode(), out NetworkNode value ) ) {
+			return value.Node;
+		}
+		Console.PrintError( string.Format( "SteamLobby.GetNetworkNode: invalid network node {0}!", node.GetHashCode() ) );
+		return null;
 	}
 
 	public CSteamID GetHost() => LobbyOwnerId;
-	public CSteamID GetLobbyID() {
-		return LobbyId;
-	}
-	public bool IsOwner() {
-		return IsHost;
-	}
-	public uint GetGameMode() {
-		return LobbyGameMode;
-	}
-	public string GetMap() {
-		return SteamMatchmaking.GetLobbyData( LobbyId, "map" );
-	}
-	public List<CSteamID> GetLobbyList() {
-		return LobbyList;
-	}
+	public CSteamID GetLobbyID() => LobbyId;
+	public bool IsOwner() => IsHost;
+	public uint GetGameMode() => LobbyGameMode;
+	public string GetMap() => SteamMatchmaking.GetLobbyData( LobbyId, "map" );
+	public List<CSteamID> GetLobbyList() => LobbyList;
 
-	public void SetLobbyName( string name ) {
-		LobbyName = name;
-	}
-	public void SetMaxMembers( int nMaxMembers ) {
-		LobbyMaxMembers = nMaxMembers;
-	}
-	public void SetGameMode( uint nGameMode ) {
-		LobbyGameMode = nGameMode;
-	}
-	public void SetMap( string mapname ) {
-		LobbyMap = mapname;
-	}
-	public void SetHostStatus( bool bHost ) {
-		IsHost = bHost;
-	}
+	public void SetLobbyName( string name ) => LobbyName = name;
+	public void SetMaxMembers( int nMaxMembers ) => LobbyMaxMembers = nMaxMembers;
+	public void SetGameMode( uint nGameMode ) => LobbyGameMode = nGameMode;
+	public void SetMap( string mapname ) => LobbyMap = mapname;
+	public void SetHostStatus( bool bHost ) => IsHost = bHost;
 
 	private void ChatUpdate( string status ) {
 		Console.PrintLine( "status" );
@@ -230,7 +214,7 @@ public partial class SteamLobby : Node {
 		EmitSignal( "LobbyListUpdated" );
 	}
 	private void MakeP2PHandkshake() {
-		SendP2PPacket( new byte[]{ (byte)MessageType.Handshake } );
+		SendP2PPacket( [ (byte)MessageType.Handshake ] );
 	}
 	public void GetLobbyMembers() {
 		LobbyMemberCount = SteamMatchmaking.GetNumLobbyMembers( LobbyId );

@@ -35,7 +35,7 @@ namespace Multiplayer.Modes {
 			ThisPlayer?.BlockInput( true );
 
 			if ( RoundIndex >= MaxRounds ) {
-				ScoreBoard.SetDuelData( Score[0], Score[1], Score[2], ThisPlayer.MultiplayerId, OtherPlayer.MultiplayerId );
+				ScoreBoard.SetDuelData( Score[0], Score[1], Score[2], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
 //				EmitSignal( "ShowScoreboard" );
 				return;
 			}

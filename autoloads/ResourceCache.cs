@@ -243,7 +243,7 @@ public class ResourceCache {
 		GamepadInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
 	}
 
-	public static void Cache( Node world, System.Threading.Thread SceneLoadThread ) {
+	public static void Cache( Node world, Thread SceneLoadThread ) {
 		Console.PrintLine( "Loading sound effects..." );
 
 		SceneLoadThread?.Start();
@@ -272,7 +272,8 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21212.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21213.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Quiet = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_0.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_1.mp3" ),
@@ -280,28 +281,32 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_3.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/quiet_cmd_4.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				TargetPinned = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21161.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21162.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21163.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21186.mp3" )
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				TargetRunning = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21156.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21157.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21159.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21160.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Ceasefire = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_0.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_2.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_3.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/ceasefire_cmd_4.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				OutOfTheWay = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21376.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21377.mp3" ),
@@ -309,13 +314,15 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/get_down_cmd_0.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/get_down_cmd_1.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Curse = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21009.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21010.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21011.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Alert = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21164.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21170.mp3" ),
@@ -327,14 +334,16 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21034.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21026.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				CheckItOut = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21100.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21172.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21175.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/search_area_cmd_0.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Confusion = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21164.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21165.mp3" ),
@@ -343,23 +352,27 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21170.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21171.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				HeavyDead = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/14859.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/14860.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/14861.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				ManDown = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21348.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21359.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				ManDown2 = ResourceLoader.Load<AudioStream>( "res://sounds/barks/man_down_2_callout_0.mp3" );
 				ManDown2 = ResourceLoader.Load<AudioStream>( "res://sounds/barks/men_down_3_callout_0.mp3" );
 				Deaf = ResourceLoader.Load<AudioStream>( "res://sounds/barks/deaf_callout.mp3" );
 				SquadWiped = ResourceLoader.Load<AudioStream>( "res://sounds/barks/squad_wiped_callout_0.mp3" );
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Pain = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304a.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21304c.mp3" ),
@@ -382,7 +395,8 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21308a.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21308b.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				NeedBackup = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21193.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21194.mp3" ),
@@ -390,39 +404,34 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21196.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21197.mp3" ),
 				];
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				Help = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21189.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21190.mp3" ),
 				];
-
 				RepeatPlease = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/14865.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/14866.mp3" ),
 				];
-
 				BulletShell = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/bullet_shell_0.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/bullet_shell_1.ogg" ),
 				];
-
 				ShotgunShell = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/shotgun_shell_0.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/shotgun_shell_1.ogg" ),
 				];
-
 				Fire = ResourceLoader.Load<AudioStream>( "res://sounds/env/fire.ogg" );
-
 				ChangeWeaponSfx = ResourceLoader.Load<AudioStream>( "res://sounds/player/change_weapon.ogg" );
-
 				NoAmmoSfx = ResourceLoader.Load<AudioStream>( "res://sounds/weapons/noammo.wav" );
-
+			} ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => {
 				PlayerPainSfx = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain0.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain1.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain2.ogg" ),
 				];
-
 				PlayerDieSfx = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/death1.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/death2.ogg" ),
@@ -490,9 +499,7 @@ public class ResourceCache {
 		SceneLoadThread?.Join();
 
 		for ( int i = 0; i < WorkerThreads.Length; i++ ) {
-			while ( !WorkerThreadPool.IsTaskCompleted( WorkerThreads[ i ] ) ) {
-				Thread.Sleep( 100 );
-			}
+			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ i ] );
 		}
 
 		if ( GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {

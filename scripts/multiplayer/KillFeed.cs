@@ -14,14 +14,14 @@ public partial class KillFeed : Control {
 		HBoxContainer data = (HBoxContainer)Cloner.Duplicate();
 
 		data.Show();
-		( (Label)data.GetChild( 0 ) ).Text = target.MultiplayerUsername;
+		( (Label)data.GetChild( 0 ) ).Text = target.MultiplayerData.Username;
 		if ( weaponIcon != null ) {
 			( (TextureRect)data.GetChild( 1 ) ).Texture = weaponIcon;
 		}
 		if ( source == null ) {
 			( (Label)data.GetChild( 2 ) ).Hide();
 		} else {
-			( (Label)data.GetChild( 2 ) ).Text = source.MultiplayerUsername;
+			( (Label)data.GetChild( 2 ) ).Text = source.MultiplayerData.Username;
 		}
 		( (Timer)data.GetChild( 3 ) ).Connect( "timeout", Callable.From<HBoxContainer>( ( data ) => { Feed.RemoveChild( data ); data.QueueFree(); } ) );
 	}

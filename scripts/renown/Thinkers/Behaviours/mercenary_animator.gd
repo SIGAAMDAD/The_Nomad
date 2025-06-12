@@ -16,9 +16,9 @@ func _on_update( _delta: float, actor: Node, _blackboard: Blackboard ) -> void:
 	actor.ArmAnimations.global_rotation = actor.AimAngle
 	
 	if actor.BodyAnimations.flip_h:
-		actor.ArmAnimations.sprite_frames = actor.Weapon.GetFramesLeft()
+		actor.ArmAnimations.sprite_frames = actor.Weapon.AnimationsLeft
 	else:
-		actor.ArmAnimations.sprite_frames = actor.Weapon.GetFramesRight()
+		actor.ArmAnimations.sprite_frames = actor.Weapon.AnimationsRight
 	
 	if actor.velocity.x < 0.0:
 		actor.BodyAnimations.flip_h = true

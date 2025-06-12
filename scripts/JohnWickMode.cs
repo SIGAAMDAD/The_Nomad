@@ -9,9 +9,6 @@ public partial class JohnWickMode : LevelData {
 	private static JohnWickMode Mode;
 
 	private static int TotalScore = 0;
-	private static int MaxCombo = 0;
-
-	private static int KillCounter = 0;
 
 	private Label BountyValueLabel;
 	private Label KillCountLabel;
@@ -31,12 +28,12 @@ public partial class JohnWickMode : LevelData {
 	private void OnPlayerDie( Entity source, Entity target ) {
 		Timer.Stop();
 
-		EndCombo( Player.ComboCounter );
+		FreeFlow.EndCombo();
 
 		//
 		// calculate total score
 		//
-		TotalScore += MaxCombo * 10;
+		TotalScore += FreeFlow.GetHighestCombo() * 10;
 
 		int milliseconds = Timer.Elapsed.Milliseconds;
 		int seconds = Timer.Elapsed.Seconds;
@@ -50,20 +47,14 @@ public partial class JohnWickMode : LevelData {
 		ScoreOverlay.SetScores(
 			new ScoreData(
 				"In Da Club",
-				TotalScore, MaxCombo, minutes, seconds, milliseconds, KillCounter,
+				TotalScore, FreeFlow.GetHighestCombo(), minutes, seconds, milliseconds, FreeFlow.GetKillCounter(),
 				1, ChallengeLevel.ScoreBonus.None
 			)
 		);
 	}
 
-	public static void EndCombo( int nCurrentCombo ) {
-		if ( nCurrentCombo > MaxCombo ) {
-			System.Threading.Interlocked.Exchange( ref MaxCombo, nCurrentCombo );
-		}
-	}
 	public static void AddKill() {
-		KillCounter++;
-		Mode.KillCountLabel.Text = "KILL COUNT: " + KillCounter.ToString();
+//		Mode.KillCountLabel.Text = "KILL COUNT: " + KillCounter.ToString();
 	}
 	public static void IncreaseScore( int nAmount ) {
 		System.Threading.Interlocked.Add( ref TotalScore, nAmount );
@@ -135,8 +126,7 @@ public partial class JohnWickMode : LevelData {
 			break;
 		default:
 			break;
-		}
-		;
+		};
 
 		TimeLabel.Text = string.Format( "{0}:{1}.{2}", Timer.Elapsed.Minutes, Timer.Elapsed.Seconds, Timer.Elapsed.Milliseconds );
 	}

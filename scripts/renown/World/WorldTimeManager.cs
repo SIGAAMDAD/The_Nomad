@@ -2,23 +2,21 @@ using Godot;
 
 namespace Renown.World {
 	public partial class WorldTimeManager : Node {
-		[Export]
-		private uint StartingYear = 89949;
-		[Export]
-		private uint StartingMonth = 1;
-		[Export]
-		private uint StartingDay = 21;
-		[Export]
-		private float StartingHour = 12.0f;
-
-		[Export]
-		private Month[] Months;
-
 		public static uint Year = 0;
 		public static uint Month = 0;
 		public static uint Day = 0;
 		public static uint Hour = 0;
 		public static WorldTimeManager Instance;
+
+		private float Time = 0.0f;
+		private float PastMinute = -1.0f;
+
+		private NetworkWriter SyncObject = null;
+		private bool IsHostWorld = false;
+
+		private const uint MinutesPerDay = 2440;
+		private const uint MinutesPerHour = 60;
+		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
 
 		private int TotalDaysInYear = 0;
 
@@ -32,15 +30,16 @@ namespace Renown.World {
 		[Export]
 		private float InGameSpeed = 1.0f;
 
-		private float Time = 0.0f;
-		private float PastMinute = -1.0f;
-
-		private NetworkWriter SyncObject = null;
-		private bool IsHostWorld = false;
-
-		private const uint MinutesPerDay = 2440;
-		private const uint MinutesPerHour = 60;
-		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
+		[Export]
+		private uint StartingYear = 89949;
+		[Export]
+		private uint StartingMonth = 1;
+		[Export]
+		private uint StartingDay = 21;
+		[Export]
+		private float StartingHour = 12.0f;
+		[Export]
+		private Month[] Months;
 
 		[Signal]
 		public delegate void TimeTickEventHandler( uint day, uint hour, uint minute );
@@ -222,15 +221,20 @@ namespace Renown.World {
 			}
 		}
 	};
-	public class WorldTimestamp {
-		private uint SavedYear = 0;
-		private uint SavedMonth = 0;
-		private uint SavedDay = 0;
+	public readonly struct WorldTimestamp {
+		private readonly uint SavedYear = 0;
+		private readonly uint SavedMonth = 0;
+		private readonly uint SavedDay = 0;
 		
 		public WorldTimestamp() {
 			SavedYear = WorldTimeManager.Year;
 			SavedMonth = WorldTimeManager.Month;
 			SavedDay = WorldTimeManager.Day;
+		}
+		public WorldTimestamp( uint Year, uint Month, uint Day ) {
+			SavedYear = Year;
+			SavedMonth = Month;
+			SavedDay = Day;
 		}
 		public WorldTimestamp( WorldTimestamp other ) {
 			SavedYear = other.SavedYear;

@@ -4,12 +4,16 @@ using Godot;
 using Renown.World;
 using Renown;
 using System;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 public partial class World : LevelData {
 	[Export]
 	private Resource CurrentQuest;
 	[Export]
 	private Godot.Collections.Dictionary<string, Variant> State;
+
+	public static Stopwatch LoadTime;
 
 	private static Godot.Collections.Dictionary<string, Variant> ObjectivesState;
 	private static Resource QuestState;
@@ -161,6 +165,9 @@ public partial class World : LevelData {
 
 		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
 
+		LoadTime.Stop();
+		Console.PrintLine( "Game loaded in " + LoadTime.Elapsed.Microseconds + " microseconds." );
+
 		Console.PrintLine( "...Finished loading game" );
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
@@ -195,15 +202,6 @@ public partial class World : LevelData {
 			if ( reader == null ) {
 				return;
 			}
-			/*
-			string currentQuest = reader.LoadString( "CurrentQuest" );
-			CurrentQuest = ResourceLoader.Load( currentQuest );
-			QuestState = Questify.Instantiate( CurrentQuest );
-			Questify.StartQuest( QuestState );
-			*/
-
-//			RefCounted serializer = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/quest_serializer.gd" ).New();
-//			serializer.Call( "deserialize", reader.LoadByteArray( "QuestState" ) );
 			Questify.Deserialize( GD.BytesToVarWithObjects( new Span<byte>( reader.LoadByteArray( "QuestState" ) ) ).AsGodotArray() );
 
 			int count = reader.LoadInt( "StateCount" );
@@ -228,19 +226,6 @@ public partial class World : LevelData {
 	}
 	public void Save() {
 		using ( var writer = new SaveSystem.SaveSectionWriter( "WorldState" ) ) {
-			/*
-			Godot.Collections.Array<Resource> quests = Questify.GetQuests();
-
-			writer.SaveInt( "QuestCount", quests.Count );
-			for ( int i = 0; i < quests.Count; i++ ) {
-				Godot.Collections.Dictionary data = (Godot.Collections.Dictionary)quests[i].Call( "serialize" );
-				writer.SaveString( string.Format( "QuestPath{0}", i ), Questify.GetResourcePath( quests[i] ) );
-				writer.SaveString( string.Format( "QuestState{0}", i ), Godot.Json.Stringify( data ) );
-			}
-			writer.SaveString( "CurrentQuest", Questify.GetResourcePath( QuestState ) );
-			*/
-
-//			RefCounted serializer = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/quest_serializer.gd" ).New();
 			writer.SaveByteArray( "QuestState", GD.VarToBytesWithObjects( Questify.Serialize() ) );
 
 			writer.SaveInt( "StateCount", ObjectivesState.Count );
@@ -267,18 +252,30 @@ public partial class World : LevelData {
 		base._Ready();
 
 		SceneLoadThread = new Thread( () => {
-			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-			Faction.Cache = new DataCache<Faction>( this, "Factions" );
-			Settlement.Cache = new DataCache<Settlement>( this, "Settlements" );
-			WorldArea.Cache = new DataCache<WorldArea>( this, "Locations" );
+			long[] initTasks = [
+				WorkerThreadPool.AddTask( Callable.From( () => { PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" ); } ) ),
+				WorkerThreadPool.AddTask( Callable.From( () => { Faction.Cache = new DataCache<Faction>( this, "Factions" ); } ) ),
+				WorkerThreadPool.AddTask( Callable.From( () => { Settlement.Cache = new DataCache<Settlement>( this, "Settlements" ); } ) ),
+				WorkerThreadPool.AddTask( Callable.From( () => { WorldArea.Cache = new DataCache<WorldArea>( this, "Locations" ); } ) )
+			];
+
+			for ( int i = 0; i < initTasks.Length; i++ ) {
+				WorkerThreadPool.WaitForTaskCompletion( initTasks[ i ] );
+			}
 
 			if ( !ArchiveSystem.Instance.IsLoaded() ) {
 				return;
 			}
 
-			Faction.Cache.Load();
-			Settlement.Cache.Load();
-			WorldArea.Cache.Load();
+			long[] loadTasks = [
+				WorkerThreadPool.AddTask( Callable.From( () => Faction.Cache.Load() ) ),
+				WorkerThreadPool.AddTask( Callable.From( () => Settlement.Cache.Load() ) ),
+				WorkerThreadPool.AddTask( Callable.From( () => WorldArea.Cache.Load() ) )
+			];
+
+			for ( int i = 0; i < loadTasks.Length; i++ ) {
+				WorkerThreadPool.WaitForTaskCompletion( loadTasks[ i ] );
+			}
 		} );
 
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );

@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://pkk3u737olsq"]
 
-[ext_resource type="Script" uid="uid://bqs6unm21g0bx" path="res://scripts/status_effects/StatusBurning.cs" id="1_reuod"]
+[ext_resource type="Script" uid="uid://bqs6unm21g0bx" path="res://scripts/StatusEffects/StatusBurning.cs" id="1_reuod"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_h27da"]
-[ext_resource type="AudioStream" uid="uid://byxwvbp5h01jr" path="res://sounds/env/fire.ogg" id="3_h27da"]
+[ext_resource type="AudioStream" uid="uid://enun3yf20h6w" path="res://sounds/env/fire.ogg" id="3_h27da"]
 
 [sub_resource type="Gradient" id="Gradient_gx4eq"]
 interpolation_mode = 2

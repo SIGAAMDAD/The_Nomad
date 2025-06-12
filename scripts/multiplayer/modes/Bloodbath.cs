@@ -17,9 +17,9 @@ namespace Multiplayer.Modes {
 
 		private void OnPlayerScore( Entity source, Entity target ) {
 			if ( source is Player player && player != null ) {
-				Scores[ player.MultiplayerId ]++;
+				Scores[ player.MultiplayerData.Id ]++;
 			} else if ( source is NetworkPlayer networkNode && networkNode != null ) {
-				Scores[ networkNode.MultiplayerId ]++;
+				Scores[ networkNode.MultiplayerData.Id ]++;
 			}
 			SendPacket();
 		}

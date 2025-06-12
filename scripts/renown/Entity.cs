@@ -43,7 +43,7 @@ namespace Renown {
 		protected List<LightData> LightSources = new List<LightData>();
 		protected float LightAmount = 0.0f;
 
-		protected System.Threading.Mutex Lock = new System.Threading.Mutex();
+		protected readonly object Lock = new object();
 
 		[Signal]
 		public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
@@ -93,12 +93,8 @@ namespace Renown {
 		public WorldArea GetLocation() => Location;
 		public virtual void SetLocation( in WorldArea location ) => Location = location;
 
-		public virtual void AddLightSource( in LightData lightSource ) {
-			LightSources.Add( lightSource );
-		}
-		public virtual void RemoveLightSource( in LightData lightSource ) {
-			LightSources.Remove( lightSource );
-		}
+		public virtual void AddLightSource( in LightData lightSource ) => LightSources.Add( lightSource );
+		public virtual void RemoveLightSource( in LightData lightSource ) => LightSources.Remove( lightSource );
 		public float GetLightAmount() => LightAmount;
 
 		public virtual void Save() {

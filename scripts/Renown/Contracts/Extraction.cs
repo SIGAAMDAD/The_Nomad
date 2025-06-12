@@ -2,8 +2,7 @@ using Renown.Thinkers;
 using Renown.World;
 
 namespace Renown.Contracts {
-
-	public readonly struct AssassinationData {
+	public readonly struct ExtractionData {
 		public readonly Thinker Target;
 		public readonly string Name;
 		public readonly WorldTimestamp DueDate;
@@ -14,7 +13,7 @@ namespace Renown.Contracts {
 		public readonly Object Contractor;
 		public readonly Faction Guild;
 
-		public AssassinationData( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
+		public ExtractionData( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
 			float basePay, WorldArea area, Object contractor, Faction guild, Thinker Target )
 		{
 			Name = name;
@@ -29,10 +28,10 @@ namespace Renown.Contracts {
 		}
 	};
 
-	public partial class Assassination : Contract {
-		private readonly AssassinationData Data;
+	public partial class Extraction : Contract {
+		private readonly ExtractionData Data;
 
-		public Assassination( in AssassinationData data )
+		public Extraction( in ExtractionData data )
 			: base(
 				name: data.Name,
 				duedate: data.DueDate,
@@ -44,11 +43,6 @@ namespace Renown.Contracts {
 				guild: data.Guild,
 				totalPay: null
 			)
-		{
-			Data.Target.Die += OnTargetDie;
-		}
-
-		private void OnTargetDie( Entity source, Entity target ) {
-		}
+		{ }
 	};
 };

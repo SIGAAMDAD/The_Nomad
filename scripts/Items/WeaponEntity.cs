@@ -687,12 +687,12 @@ public partial class WeaponEntity : Node2D {
 		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 		// NOTE: correction, they WILL work like that eventually
 
-//		CurrentMuzzleFlash = MuzzleFlashes[
-//			RNJesus.IntRange( 0, MuzzleFlashes.Count - 1 )
-//		];
-//		CurrentMuzzleFlash.Reparent( _Owner );
-//		CurrentMuzzleFlash.Show();
-//		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
+		CurrentMuzzleFlash = MuzzleFlashes[
+			RNJesus.IntRange( 0, MuzzleFlashes.Count - 1 )
+		];
+		CurrentMuzzleFlash.Reparent( _Owner );
+		CurrentMuzzleFlash.Show();
+		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
 
 		MuzzleLight.CallDeferred( "show" );
 		

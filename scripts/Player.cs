@@ -202,20 +202,10 @@ public partial class Player : Entity {
 
 	private Camera2D Viewpoint;
 
+	//
 	// multiplayer data
-	public CSteamID MultiplayerId {
-		get;
-		private set;
-	} = CSteamID.Nil;
-	public string MultiplayerUsername {
-		get;
-		private set;
-	} = "UNKNOWN";
-	public uint MultiplayerKills = 0;
-	public uint MultiplayerDeaths = 0;
-	public uint MultiplayerFlagCaptures = 0;
-	public uint MultiplayerFlagReturns = 0;
-	public float MultiplayerHilltime = 0.0f;
+	//
+	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
 	// aim reticle
 	private Line2D AimLine = null;
@@ -456,7 +446,6 @@ public partial class Player : Entity {
 
 	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
 		WeaponEntity weapon = WeaponsStack[ path.GetHashCode() ];
-		GD.Print( "Set weapon slot " + nSlot + " to object " + weapon );
 		weapon.SetEquippedState( true );
 		WeaponSlots[ nSlot ].SetWeapon( weapon );
 		WeaponSlots[ nSlot ].SetMode( (WeaponEntity.Properties)mode );
@@ -464,7 +453,7 @@ public partial class Player : Entity {
 	private void LoadWeapon( NodePath nodePath, int bulletCount ) {
 		WeaponEntity weapon = GetNode<WeaponEntity>( nodePath );
 
-		weapon.SetOwner( this );
+		weapon._Owner = this;
 		weapon.OverrideRayCast( AimRayCast );
 
 		weapon.OwnerLoad( bulletCount );

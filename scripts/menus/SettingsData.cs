@@ -494,23 +494,23 @@ public partial class SettingsData : Control {
 		Console.PrintLine( "Saving configuration data..." );
 
 		string path = ProjectSettings.GlobalizePath( "user://settings.ini" );
-		System.IO.FileStream stream = new System.IO.FileStream( path, System.IO.FileMode.Create );
-		System.IO.StreamWriter writer = new System.IO.StreamWriter( stream );
 
-		SaveVideoSettings( writer );
-		SaveAudioSettings( writer );
-		SaveAccessibilitySettings( writer );
-		SaveGameplaySettings( writer );
-		SaveNetworkingSettings( writer );
+		DirAccess.RemoveAbsolute( path );
+		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Create ) ) {
+			using ( var writer = new System.IO.StreamWriter( stream ) ) {
+				SaveVideoSettings( writer );
+				SaveAudioSettings( writer );
+				SaveAccessibilitySettings( writer );
+				SaveGameplaySettings( writer );
+				SaveNetworkingSettings( writer );
 
-		writer.WriteLine( string.Format( "[Internal]" ) );
-		writer.WriteLine( string.Format( "LastSaveSlot={0}", LastSaveSlot ) );
+				writer.WriteLine( string.Format( "[Internal]" ) );
+				writer.WriteLine( string.Format( "LastSaveSlot={0}", LastSaveSlot ) );
 
-		writer.Flush();
+				writer.Flush();
 
-		ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );
-
-		SteamManager.SaveCloudFile( "settings.ini" );
-		SteamManager.SaveCloudFile( "input_context.tres" );
+				ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );
+			}
+		}
 	}
 };

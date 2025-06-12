@@ -48,12 +48,9 @@ public enum PlayerDamageSource : byte {
 public partial class NetworkPlayer : Renown.Entity {
 	private NetworkWriter SyncObject = new NetworkWriter( 24 );
 
-	private Random RandomFactory = new Random();
-	
-	public string MultiplayerUsername;
-	public CSteamID MultiplayerId;
-	public ulong MultiplayerKills;
-	public ulong MultiplayerDeaths;
+	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
+
+	private GroundMaterialType GroundType;
 	
 	private Resource Database;
 	private Resource CurrentWeapon;
@@ -83,6 +80,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private PlayerAnimationState LeftArmAnimationState;
 	private PlayerAnimationState RightArmAnimationState;
 	private PlayerAnimationState TorsoAnimationState;
+
+	private FootSteps FootSteps;
 
 	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
 		if ( animator.Animation == animation && animator.IsPlaying() ) {
@@ -212,7 +211,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.Player );
-			SyncObject.Write( (ulong)player.MultiplayerId );
+			SyncObject.Write( (ulong)player.MultiplayerData.Id );
 		} else if ( source is Thinker thinker && thinker != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.NPC );
 			SyncObject.Write( thinker.GetHashCode() );
@@ -222,8 +221,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	}
 	private void OnLegAnimationLooped() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
-			MoveChannel.Stream = ResourceCache.MoveGravelSfx[ RandomFactory.Next( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ];
-			MoveChannel.Play();
+			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
 		}
 	}
 	
@@ -253,6 +251,8 @@ public partial class NetworkPlayer : Renown.Entity {
 		MoveChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
+
+		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
 		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
 	}

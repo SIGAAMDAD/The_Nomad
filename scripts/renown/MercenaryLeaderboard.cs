@@ -8,29 +8,15 @@ using System.Collections.Generic;
 
 namespace Renown {
 	public class MercenaryLeaderboard {
-		public class LeaderboardEntry {
-//			public readonly ContractType Type;
+		public readonly struct LeaderboardEntry {
 			public readonly CSteamID UserId = CSteamID.Nil;
-//			public readonly int TimeCompletedMinutes = 0;
-//			public readonly int TimeCompletedSeconds = 0;
-//			public readonly int TimeCompletedMilliseconds = 0;
 			public readonly int Bounty = 0;
-			
-			public LeaderboardEntry( LeaderboardEntry_t entry, int[] details ) {
-				UserId = entry.m_steamIDUser;
-				Bounty = entry.m_nScore;
-				
-				/*
-				if ( details.Length != 4 ) {
-					Console.PrintError( "[STEAM] Invalid leaderboard entry data!" );
-					return;
-				}
-				
-				Type = (ContractType)details[0];
-				TimeCompletedMinutes = details[1];
-				TimeCompletedSeconds = details[2];
-				TimeCompletedMilliseconds = details[3];
-				*/
+			public readonly int Ranking = 0;
+
+			public LeaderboardEntry( LeaderboardEntry_t hEntry, int[] szDetails ) {
+				UserId = hEntry.m_steamIDUser;
+				Bounty = hEntry.m_nScore;
+				Ranking = hEntry.m_nGlobalRank;
 			}
 		};
 		
@@ -59,16 +45,15 @@ namespace Renown {
 			}
 		}
 		private static void OnScoreDownloaded( LeaderboardScoresDownloaded_t pCallback, bool bIOFailure ) {
-			int[] details = new int[4];
+			int[] details = new int[ 4 ];
 			LeaderboardEntries = pCallback.m_hSteamLeaderboardEntries;
 			
 			for ( int i = 0; i < pCallback.m_cEntryCount; i++ ) {
-				LeaderboardEntry_t entry;
-				if ( !SteamUserStats.GetDownloadedLeaderboardEntry( LeaderboardEntries, i, out entry, details, details.Length ) ) {
+				if ( !SteamUserStats.GetDownloadedLeaderboardEntry( LeaderboardEntries, i, out LeaderboardEntry_t hEntry, details, details.Length ) ) {
 					Console.PrintError( "[STEAM] Error fetching downloaded leaderboard entry!" );
 					continue;
 				}
-				LeaderboardData.Add( entry.m_nGlobalRank, new LeaderboardEntry( entry, details ) );
+				LeaderboardData.Add( hEntry.m_nGlobalRank, new LeaderboardEntry( hEntry, details ) );
 			}
 		}
 		
@@ -76,7 +61,6 @@ namespace Renown {
 			Console.PrintLine( "Found leaderboard." );
 
 			LeaderboardEntryCount = SteamUserStats.GetLeaderboardEntryCount( hLeaderboard );
-			
 			LeaderboardData = new Dictionary<int, LeaderboardEntry>( LeaderboardEntryCount );
 
 			Console.PrintLine( string.Format( "Downloading {0} results...", LeaderboardEntryCount ) );
