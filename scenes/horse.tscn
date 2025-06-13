@@ -1,13 +1,9 @@
-[gd_scene load_steps=44 format=3 uid="uid://dwjed6glehgms"]
+[gd_scene load_steps=40 format=3 uid="uid://dwjed6glehgms"]
 
-[ext_resource type="Script" uid="uid://brcp373pn1ul6" path="res://scripts/horse.gd" id="1_mtmp3"]
-[ext_resource type="Texture2D" uid="uid://bkgkkpfup1bv5" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_kmv21"]
-[ext_resource type="Texture2D" uid="uid://0necjor8land" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_MountOn.png" id="3_8v83q"]
-[ext_resource type="AudioStream" uid="uid://cgg281fvm2jxi" path="res://sounds/env/gallop_gravel.ogg" id="4_myqu0"]
-[ext_resource type="AudioStream" uid="uid://b0nt3qrn5v6ns" path="res://sounds/env/horse_snort_0.ogg" id="5_a3ckg"]
-[ext_resource type="AudioStream" uid="uid://bf81lh3qb6k36" path="res://sounds/env/horse_snort_1.ogg" id="6_y8iqk"]
-[ext_resource type="AudioStream" uid="uid://ct8w4t1ubnucs" path="res://sounds/env/horse_snort_2.ogg" id="7_jtemc"]
-[ext_resource type="AudioStream" uid="uid://b5wdy8q17hw0y" path="res://sounds/env/mount_horse.ogg" id="8_siyp1"]
+[ext_resource type="Script" uid="uid://c2od3loql5ld4" path="res://scripts/PlayerSystem/Horse.cs" id="1_5mwg8"]
+[ext_resource type="Texture2D" uid="uid://dbi2e7mpcd3ew" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_kmv21"]
+[ext_resource type="Texture2D" uid="uid://bh3nlaklu3xji" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_MountOn.png" id="3_8v83q"]
+[ext_resource type="AudioStream" uid="uid://do7eaxibq5ga6" path="res://sounds/env/mount_horse.ogg" id="8_siyp1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_03rgt"]
 atlas = ExtResource("2_kmv21")
@@ -268,13 +264,11 @@ radius = 30.5041
 size = Vector2(10, 5)
 
 [node name="Horse" type="CharacterBody2D"]
-z_index = -1
-position = Vector2(0, 3)
-script = ExtResource("1_mtmp3")
+z_index = 7
+script = ExtResource("1_5mwg8")
+metadata/_edit_horizontal_guides_ = [97.0]
 
-[node name="Animations" type="Node2D" parent="."]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Animations"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_6fokt")
 animation = &"stop"
 autoplay = "idle"
@@ -290,26 +284,7 @@ disabled = true
 position = Vector2(2, 5)
 shape = SubResource("RectangleShape2D_yy67i")
 
-[node name="Gallop" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_myqu0")
-volume_db = 16.0
-
-[node name="Snorting0" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("5_a3ckg")
-volume_db = 10.0
-
-[node name="Snorting1" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("6_y8iqk")
-volume_db = 10.0
-
-[node name="Snorting2" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("7_jtemc")
-
-[node name="Mount" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioChannel" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_siyp1")
 
-[connection signal="body_shape_entered" from="MountArea" to="." method="_on_mount_area_body_shape_entered"]
-[connection signal="finished" from="Gallop" to="." method="_on_gallop_finished"]
-[connection signal="finished" from="Snorting0" to="." method="_on_snort_finished"]
-[connection signal="finished" from="Snorting1" to="." method="_on_snort_finished"]
-[connection signal="finished" from="Snorting2" to="." method="_on_snort_finished"]
+[node name="SnortChannel" type="AudioStreamPlayer2D" parent="."]

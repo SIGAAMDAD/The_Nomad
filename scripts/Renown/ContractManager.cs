@@ -38,27 +38,28 @@ namespace Renown {
 
 				int count = reader.LoadInt( "Count" );
 				Cache.EnsureCapacity( count );
-				for ( int i = 0; i < Cache.Count; i++ ) {
+
+				System.Threading.Tasks.Parallel.For( 0, count, ( index ) => {
 					WorldTimestamp duedate = new WorldTimestamp(
-						Year: reader.LoadUInt( string.Format( "ContractDueDateYear{0}", i ) ),
-						Month: reader.LoadUInt( string.Format( "ContractDueDateMonth{0}", i ) ),
-						Day: reader.LoadUInt( string.Format( "ContractDueDateDay{0}", i ) )
+						Year: reader.LoadUInt( string.Format( "ContractDueDateYear{0}", index ) ),
+						Month: reader.LoadUInt( string.Format( "ContractDueDateMonth{0}", index ) ),
+						Day: reader.LoadUInt( string.Format( "ContractDueDateDay{0}", index ) )
 					);
 
 					Cache.Add(
 						new Contract(
-							name: reader.LoadString( string.Format( "ContractName{0}", i ) ),
+							name: reader.LoadString( string.Format( "ContractName{0}", index ) ),
 							duedate: duedate,
-							flags: (ContractFlags)reader.LoadUInt( string.Format( "ContractFlags{0}", i ) ),
-							type: (ContractType)reader.LoadUInt( string.Format( "ContractType{0}", i ) ),
-							basePay: reader.LoadFloat( string.Format( "ContractBasePay{0}", i ) ),
-							totalPay: reader.LoadFloat( string.Format( "ContractTotalPay{0}", i ) ),
-							area: WorldArea.Cache.SearchCache( reader.LoadString( string.Format( "ContractArea{0}", i ) ) ),
-							contractor: ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetNode<Object>( reader.LoadString( string.Format( "ContractContractor{0}", i ) ) ),
-							guild: Faction.Cache.SearchCache( reader.LoadString( string.Format( "ContractGuild{0}", i ) ) )
+							flags: (ContractFlags)reader.LoadUInt( string.Format( "ContractFlags{0}", index ) ),
+							type: (ContractType)reader.LoadUInt( string.Format( "ContractType{0}", index ) ),
+							basePay: reader.LoadFloat( string.Format( "ContractBasePay{0}", index ) ),
+							totalPay: reader.LoadFloat( string.Format( "ContractTotalPay{0}", index ) ),
+							area: WorldArea.Cache.SearchCache( reader.LoadString( string.Format( "ContractArea{0}", index ) ) ),
+							contractor: ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetNode<Object>( reader.LoadString( string.Format( "ContractContractor{0}", index ) ) ),
+							guild: Faction.Cache.SearchCache( reader.LoadString( string.Format( "ContractGuild{0}", index ) ) )
 						)
 					);
-				}
+				} );
 			}
 		}
 	};

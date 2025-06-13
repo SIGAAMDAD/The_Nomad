@@ -115,6 +115,9 @@ namespace Renown {
 		/// allows the local player to "invade" the top mercenary's world and collect the bounty on their head
 		/// </summary>
 		public static void StartBountyHunt() {
+			LeaderboardEntry topDog = LeaderboardData[ 0 ];
+
+			// INVASION!
 		}
 	};
 };

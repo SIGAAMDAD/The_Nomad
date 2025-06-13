@@ -1,0 +1,7 @@
+~ meet_neutral
+if DialogueGlobals.GetPlayer().GetRenownScore() < 80:
+	{{DialogueGlobals.Entity.FirstName}}: And who are you?
+else:
+	if DialogueGlobals.GetPlayer().HasTrait( "cruel" ):
+		{{DialogueGlobals.Entity.FirstName}}: 
+=> END

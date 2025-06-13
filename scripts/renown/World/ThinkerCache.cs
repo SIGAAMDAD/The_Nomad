@@ -14,18 +14,18 @@ namespace Renown.World {
 				int cacheSize = reader.LoadInt( "ThinkerCacheSize" );
 				Thinkers = new Dictionary<int, Thinker>( cacheSize );
 
-				for ( int i = 0; i < cacheSize; i++ ) {
-					string key = string.Format( "Thinker{0}", i );
+				System.Threading.Tasks.Parallel.For( 0, cacheSize, ( index ) => {
+					string key = string.Format( "Thinker{0}", index );
 
 					bool premade = reader.LoadBoolean( key + "IsPremade" );
 
 					Thinker thinker = new Thinker();
-					thinker.Load( reader, i );
+					thinker.Load( reader, index );
 
 					if ( !premade ) {
 						AddThinker( thinker );
 					}
-				}
+				} );
 			}
 		}
 		public void Save() {

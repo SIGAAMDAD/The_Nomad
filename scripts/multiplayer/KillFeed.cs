@@ -1,13 +1,18 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class KillFeed : Control {
 	private VBoxContainer Feed;
 	private HBoxContainer Cloner;
 
+	private Queue<HBoxContainer> KillQueue;
+
 	public override void _Ready() {
 		Feed = GetNode<VBoxContainer>( "MarginContainer/VBoxContainer" );
 		Cloner = GetNode<HBoxContainer>( "MarginContainer/HBoxContainer" );
+
+		KillQueue = new Queue<HBoxContainer>( 4 );
 	}
 
 	public void Push( Player source, Texture2D weaponIcon, Player target ) {

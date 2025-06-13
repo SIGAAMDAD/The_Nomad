@@ -209,6 +209,14 @@ namespace Renown {
 		/// returns true if the entity has the given trait
 		/// </summary>
 		public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
+		public bool HasTrait( string trait ) {
+			foreach ( var it in TraitCache ) {
+				if ( it.GetTraitName() == trait ) {
+					return true;
+				}
+			}
+			return false;
+		}
 		public bool HasTrait( TraitType trait ) {
 			foreach ( var it in TraitCache ) {
 				if ( it.GetTraitType() == trait ) {

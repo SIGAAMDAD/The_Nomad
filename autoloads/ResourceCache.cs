@@ -1,7 +1,28 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+===========================================================================
+*/
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using DialogueManagerRuntime;
 using Godot;
 using Renown.World;
@@ -96,7 +117,8 @@ public class ResourceCache {
 	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 256 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 256 );
 	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 256 );
-	private static ConcurrentDictionary<string, PackedScene> SceneCache = new ConcurrentDictionary<string, PackedScene>( 1024, 256 );
+	private static ConcurrentDictionary<StringName, PackedScene> SceneCache = new ConcurrentDictionary<StringName, PackedScene>( 1024, 256 );
+	private static ConcurrentDictionary<StringName, Resource> ResourceList = new ConcurrentDictionary<StringName, Resource>( 1024, 256 );
 	private static Dictionary<string, SpriteFrames> SpriteFramesCache = new Dictionary<string, SpriteFrames>( 256 );
 
 	public static bool Initialized = false;
@@ -147,6 +169,14 @@ public class ResourceCache {
 		}
 		value = ResourceLoader.Load<PackedScene>( key );
 		SceneCache.TryAdd( key, value );
+		return value;
+	}
+	public static Resource GetResource( string key ) {
+		if ( ResourceList.TryGetValue( key, out Resource value ) ) {
+			return value;
+		}
+		value = ResourceLoader.Load( key );
+		ResourceList.TryAdd( key, value );
 		return value;
 	}
 
@@ -427,47 +457,37 @@ public class ResourceCache {
 				NoAmmoSfx = ResourceLoader.Load<AudioStream>( "res://sounds/weapons/noammo.wav" );
 			} ) ),
 			WorkerThreadPool.AddTask( Callable.From( () => {
-				PlayerPainSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain0.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/pain2.ogg" ),
-				];
-				PlayerDieSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/death1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/death2.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/death3.ogg" ),
-				];
+				PlayerPainSfx = new AudioStream[ 3 ];
+				PlayerDieSfx = new AudioStream[ 3 ];
+				PlayerDeathSfx = new AudioStream[ 3 ];
 
-				PlayerDeathSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_0.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_2.wav" ),
-				];
+				MoveGravelSfx = new AudioStream[ 4 ];
+				MoveSandSfx = new AudioStream[ 4 ];
+				MoveStoneSfx = new AudioStream[ 4 ];
+				MoveWoodSfx = new AudioStream[ 4 ];
 
-				MoveGravelSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0.wav" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel1.wav" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel2.wav" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel3.wav" ),
-				];
-				MoveSandSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_0.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_2.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_3.ogg" ),
-				];
-				MoveStoneSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_stone_0.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_stone_1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_stone_2.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_stone_3.ogg" ),
-				];
-				MoveWoodSfx = [
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_wood_0.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_wood_1.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_wood_2.ogg" ),
-					ResourceLoader.Load<AudioStream>( "res://sounds/env/move_wood_3.ogg" ),
-				];
+				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
+					PlayerPainSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/pain" + index.ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
+					PlayerDieSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/die" + ( index + 1 ).ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
+					PlayerDeathSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_" + index.ToString() + ".ogg" );
+				} );
+
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					MoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel0" + index.ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					MoveSandSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_sand_" + index.ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					MoveStoneSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_stone_" + index.ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					MoveWoodSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_wood_" + index.ToString() + ".ogg" );
+				} );
 				MoveWaterSfx = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater0.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater1.ogg" ),

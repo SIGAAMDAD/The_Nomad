@@ -4,6 +4,7 @@ using Renown.World;
 using Renown.World.Buildings;
 using System;
 using ChallengeMode;
+using DialogueManagerRuntime;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -31,17 +32,24 @@ namespace Renown.Thinkers {
 
 		Count
 	};
+
+	public enum DialogueType : uint {
+		Friendly,
+		Catious,
+		Hostile,
+
+		Count
+	};
 	
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : Entity {
-		public AnimatedSprite2D BodyAnimations;
-
 		[Export]
 		protected TileMapFloor Floor;
-		
-		protected NodePath InitialPath;
-		
+
+		[Export]
+		protected Resource DialogueResource;
+
 		[Export]
 		protected bool IsPremade = false;
 		[Export]
@@ -57,8 +65,9 @@ namespace Renown.Thinkers {
 		[Export]
 		protected Sex Sex;
 
+		[Export]
 		protected StringName FirstName;
-		
+
 		[Export]
 		public Node AnimationStateMachine;
 		[Export]
@@ -67,32 +76,33 @@ namespace Renown.Thinkers {
 		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;
-		
-		[ExportCategory("Stats")]
-		
+
+		[ExportCategory( "Stats" )]
+
 		/// <summary>
 		/// physical power
 		/// </summary>
 		[Export]
 		protected int Strength;
-		
+
 		/// <summary>
 		/// manuverability, reflexes
 		/// </summary>
+		[Export]
 		protected int Dexterity;
-		
+
 		/// <summary>
 		/// quantity of data, not how to use it
 		/// </summary>
 		[Export]
 		protected int Intelligence;
-		
+
 		/// <summary>
 		/// resistances to poisons, illnesses, etc. overall health
 		/// </summary>
 		[Export]
 		protected int Constitution;
-		
+
 		/// <summary>
 		/// "common sense"
 		/// </summary>
@@ -101,7 +111,7 @@ namespace Renown.Thinkers {
 
 		[Export]
 		protected int Charisma;
-		
+
 		[Export]
 		protected bool HasMetPlayer = false;
 		[Export]
@@ -112,11 +122,16 @@ namespace Renown.Thinkers {
 
 		protected Node2D Animations;
 
-		public NavigationAgent2D NavAgent;
+		public NavigationAgent2D NavAgent {
+			get;
+			private set;
+		}
 		public Godot.Vector2 LookDir {
 			get;
 			protected set;
 		} = Godot.Vector2.Zero;
+
+		protected NodePath InitialPath;
 
 		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
 
@@ -146,6 +161,11 @@ namespace Renown.Thinkers {
 		// networking
 		protected NetworkWriter SyncObject = null;
 
+		public AnimatedSprite2D BodyAnimations {
+			get;
+			private set;
+		}
+
 		protected AudioStreamPlayer2D AudioChannel;
 
 		protected VisibleOnScreenNotifier2D VisibilityNotifier;
@@ -156,7 +176,7 @@ namespace Renown.Thinkers {
 		protected object LockObject = new object();
 		protected System.Threading.Thread ThinkThread = null;
 		protected bool Quit = false;
-		
+
 		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
 
 		[Signal]
@@ -170,9 +190,31 @@ namespace Renown.Thinkers {
 
 		public void SetHome( Building building ) => Home = building;
 		public Building GetHome() => Home;
-		
+
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 		public TileMapFloor GetTileMapFloor() => Floor;
+
+		public virtual void MeetPlayer() {
+			switch ( GetRelationStatus( LevelData.Instance.ThisPlayer ) ) {
+			case RelationStatus.Neutral:
+				if ( HasMetPlayer ) {
+					DialogueManager.ShowDialogueBalloon( DialogueResource, "meet_neutral" );
+				} else {
+					DialogueManager.ShowDialogueBalloon( DialogueResource, "talk_neutral" );
+				}
+				break;
+			case RelationStatus.Friends:
+				if ( HasMetPlayer ) {
+					DialogueManager.ShowDialogueBalloon( DialogueResource, "meet_friendly" );
+				} else {
+					DialogueManager.ShowDialogueBalloon( DialogueResource, "talk_friendly" );
+				}
+				break;
+			case RelationStatus.GoodFriends:
+				break;
+			}
+			;
+		}
 
 		public virtual void Alert( Entity source ) {
 		}
@@ -181,17 +223,17 @@ namespace Renown.Thinkers {
 			BloodParticleFactory.CreateDeferred( source != null ? source.GlobalPosition : Godot.Vector2.Zero, GlobalPosition );
 			base.Damage( source, nAmount );
 		}
-		
+
 		protected void SendPacket() {
 			if ( !OnScreen ) {
 				return;
 			}
 
-//			SyncObject.Write( GlobalPosition );
-//			SyncObject.Write( BodyAnimations.Animation );
-//			SyncObject.Write( HeadAnimations != null );
-//			SyncObject.Write( ArmAnimations != null );
-//			SyncObject.Sync();
+			//			SyncObject.Write( GlobalPosition );
+			//			SyncObject.Write( BodyAnimations.Animation );
+			//			SyncObject.Write( HeadAnimations != null );
+			//			SyncObject.Write( ArmAnimations != null );
+			//			SyncObject.Sync();
 		}
 
 		public void Notify( GroupEvent nEventType, Thinker source ) {
@@ -248,7 +290,7 @@ namespace Renown.Thinkers {
 				Location.PlayerEntered -= OnPlayerEnteredArea;
 				Location.PlayerExited -= OnPlayerExitedArea;
 			}
-			
+
 			if ( location == null ) {
 				Location = null;
 				return;
@@ -489,7 +531,7 @@ namespace Renown.Thinkers {
 
 			SetMeta( "Faction", Faction );
 		}
-        public override void _PhysicsProcess( double delta ) {
+		public override void _PhysicsProcess( double delta ) {
 			if ( Health <= 0.0f ) {
 				return;
 			}
@@ -514,7 +556,7 @@ namespace Renown.Thinkers {
 			base._Process( delta );
 
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-//			ProcessAnimations();
+			//			ProcessAnimations();
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
 				return;
@@ -560,7 +602,7 @@ namespace Renown.Thinkers {
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
-//			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			//			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 			return true;
 		}
@@ -576,12 +618,12 @@ namespace Renown.Thinkers {
 			Velocity = Godot.Vector2.Zero;
 			AnimationStateMachine.Call( "fire_event", "stop_moving" );
 		}
-		
+
 		public void GenerateRelations() {
 			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Thinkers" );
 
 			for ( int i = 0; i < nodes.Count; i++ ) {
-				Thinker thinker = nodes[i] as Thinker;
+				Thinker thinker = nodes[ i ] as Thinker;
 
 				float meetChance = 0.0f;
 				if ( thinker.GetLocation() == Location ) {

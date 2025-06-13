@@ -119,7 +119,7 @@ namespace Renown.Thinkers {
 
 #region Dialogue
 		private void BegForLife() {
-			DialogueGlobals.Instance.BotName = BotName;
+			DialogueGlobals.Get().BotName = BotName;
 
 			HeadsUpDisplay.StartDialogue( Dialogue, "beg_for_life", new Action<int>( ( choice ) => {
 				switch ( choice ) {

@@ -96,6 +96,25 @@ public partial class Player : Entity {
 
 	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
+	[Export]
+	private Node Inventory;
+	[Export]
+	private Arm ArmLeft;
+	[Export]
+	private Arm ArmRight;
+	[Export]
+	private HeadsUpDisplay HUD;
+
+	[ExportCategory( "Start" )]
+	[Export]
+	private PlayerFlags Flags = 0;
+
+	[ExportCategory( "Camera Shake" )]
+	[Export]
+	private float RandomStrength = 36.0f;
+	[Export]
+	private float ShakeFade = 5.0f;
+
 	private Area2D ParryArea;
 	private CollisionShape2D ParryBox;
 	private Area2D ParryDamageArea;
@@ -172,25 +191,6 @@ public partial class Player : Entity {
 	private Timer BloodDropTimer;
 	private ShaderMaterial BloodMaterial;
 
-	[Export]
-	private Node Inventory;
-	[Export]
-	private Arm ArmLeft;
-	[Export]
-	private Arm ArmRight;
-	[Export]
-	private HeadsUpDisplay HUD;
-
-	[ExportCategory( "Start" )]
-	[Export]
-	private PlayerFlags Flags = 0;
-
-	[ExportCategory( "Camera Shake" )]
-	[Export]
-	private float RandomStrength = 36.0f;
-	[Export]
-	private float ShakeFade = 5.0f;
-
 	private static float ShakeStrength = 0.0f;
 
 	private static bool TutorialCompleted = false;
@@ -253,6 +253,9 @@ public partial class Player : Entity {
 	private Checkpoint LastCheckpoint;
 
 	private int TileMapLevel = 0;
+
+	private WorldArea Waypoint;
+	private List<Resource> Quests;
 
 	[Signal]
 	public delegate void SwitchedWeaponEventHandler( WeaponEntity weapon );

@@ -1,4 +1,5 @@
 using Godot;
+using Renown.Thinkers;
 
 public partial class DialogueGlobals : Node {
 	/// <summary>
@@ -13,7 +14,14 @@ public partial class DialogueGlobals : Node {
 	[Export]
 	public int PlayerChoice = 0;
 
-	public static DialogueGlobals Instance;
+	[Export]
+	public Thinker Entity;
+
+	private static DialogueGlobals Instance;
+
+	public static Player GetPlayer() => LevelData.Instance.ThisPlayer;
+
+	public static DialogueGlobals Get() => Instance;
 
 	public override void _EnterTree() {
 		base._EnterTree();
