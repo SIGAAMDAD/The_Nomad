@@ -477,16 +477,16 @@ public class ResourceCache {
 				} );
 
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
-					MoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel0" + index.ToString() + ".ogg" );
+					MoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0" + index.ToString() + ".ogg" );
 				} );
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
-					MoveSandSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_sand_" + index.ToString() + ".ogg" );
+					MoveSandSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_" + index.ToString() + ".ogg" );
 				} );
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
-					MoveStoneSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_stone_" + index.ToString() + ".ogg" );
+					MoveStoneSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/move_stone_" + index.ToString() + ".ogg" );
 				} );
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
-					MoveWoodSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_wood_" + index.ToString() + ".ogg" );
+					MoveWoodSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/move_wood_" + index.ToString() + ".ogg" );
 				} );
 				MoveWaterSfx = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater0.ogg" ),
