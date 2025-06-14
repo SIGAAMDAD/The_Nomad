@@ -16,7 +16,7 @@ public partial class MultiplayerData : LevelData {
 	protected override void OnResourcesFinishedLoading() {
 		SetProcess( true );
 
-		SceneLoadThread.Join();
+		SceneLoadThread?.Join();
 		ResourceLoadThread.Join();
 
 		ResourceCache.Initialized = true;
