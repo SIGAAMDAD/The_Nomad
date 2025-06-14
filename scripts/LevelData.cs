@@ -105,7 +105,7 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
-	public void ApplyShadowQuality() {
+	public virtual void ApplyShadowQuality() {
 		static void nodeIterator( Godot.Collections.Array<Node> children ) {
 			for ( int i = 0; i < children.Count; i++ ) {
 				nodeIterator( children[ i ].GetChildren() );
@@ -127,8 +127,7 @@ public partial class LevelData : Node2D {
 						light.SetDeferred( "shadow_enabled", true );
 						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
 						break;
-					}
-					;
+					};
 				}
 			}
 		}

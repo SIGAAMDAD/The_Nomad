@@ -470,9 +470,9 @@ public class ResourceCache {
 					PlayerPainSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/pain" + index.ToString() + ".ogg" );
 				} );
 				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
-					PlayerDieSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/die" + ( index + 1 ).ToString() + ".ogg" );
+					PlayerDieSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/death" + ( index + 1 ).ToString() + ".ogg" );
 				} );
-				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
+				System.Threading.Tasks.Parallel.For( 0, 2, ( index ) => {
 					PlayerDeathSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/dying_" + index.ToString() + ".ogg" );
 				} );
 

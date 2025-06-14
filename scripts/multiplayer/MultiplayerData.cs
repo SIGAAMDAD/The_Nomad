@@ -4,28 +4,16 @@ using Godot;
 using Multiplayer;
 using Steamworks;
 
-public partial class MultiplayerData : Node2D {
-	private Control PauseMenu = null;
-	private PackedScene PlayerScene = null;
-
+public partial class MultiplayerData : LevelData {
 	private Mode ModeData = null;
 
 	private bool Loaded = false;
-	private Thread ResourceLoadThread = null;
-	private Thread SceneLoadThread = null;
-
-	private Player ThisPlayer = null;
-	private Dictionary<CSteamID, Renown.Entity> Players = null;
-	private Node PlayerList = null;
-
-	[Signal]
-	public delegate void ResourcesLoadingFinishedEventHandler();
 
 	public Mode.GameMode GetMode() {
 		return ModeData.GetMode();
 	}
 
-	private void OnResourcesFinishedLoading() {
+	protected override void OnResourcesFinishedLoading() {
 		SetProcess( true );
 
 		SceneLoadThread.Join();
@@ -53,7 +41,7 @@ public partial class MultiplayerData : Node2D {
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
-	private void OnPlayerJoined( ulong steamId ) {
+	protected override void OnPlayerJoined( ulong steamId ) {
 		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
 
 		SteamLobby.Instance.GetLobbyMembers();
@@ -73,7 +61,7 @@ public partial class MultiplayerData : Node2D {
 		ModeData.OnPlayerJoined( player );
 		ModeData.SpawnPlayer( player );
 	}
-	private void OnPlayerLeft( ulong steamId ) {
+	protected override void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
 
 		CSteamID userId = (CSteamID)steamId;
@@ -90,6 +78,35 @@ public partial class MultiplayerData : Node2D {
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
 		SteamLobby.Instance.RemovePlayer( userId );
+	}
+	
+	public override void ApplyShadowQuality() {
+		static void nodeIterator( Godot.Collections.Array<Node> children ) {
+			for ( int i = 0; i < children.Count; i++ ) {
+				nodeIterator( children[ i ].GetChildren() );
+
+				if ( children[ i ] is PointLight2D light && light != null ) {
+					switch ( SettingsData.GetShadowQuality() ) {
+					case ShadowQuality.Off:
+						light.SetDeferred( "shadow_enabled", false );
+						break;
+					case ShadowQuality.NoFilter:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.None );
+						break;
+					case ShadowQuality.Low:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf5 );
+						break;
+					case ShadowQuality.High:
+						light.SetDeferred( "shadow_enabled", true );
+						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
+						break;
+					};
+				}
+			}
+		}
+		nodeIterator( GetChildren() );
 	}
 	
 	public override void _Ready() {
@@ -111,15 +128,15 @@ public partial class MultiplayerData : Node2D {
 
 		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[ i ] ) || SteamLobby.Instance.LobbyMembers[ i ] == SteamUser.GetSteamID() ) {
 				continue;
 			}
 			Renown.Entity player = PlayerScene.Instantiate<NetworkPlayer>();
-			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] ) );
+			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
+			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
 			ModeData.SpawnPlayer( player );
-			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+			Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );
 			PlayerList.AddChild( player );
 		}
 	}
