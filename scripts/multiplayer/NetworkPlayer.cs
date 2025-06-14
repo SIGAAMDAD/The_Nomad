@@ -93,6 +93,11 @@ public partial class NetworkPlayer : Renown.Entity {
 	// TODO: find some way of sending values back to the client
 	
 	public void Update( System.IO.BinaryReader packet ) {
+		Godot.Vector2 position = Godot.Vector2.Zero;
+		position.X = (float)packet.ReadDouble();
+		position.Y = (float)packet.ReadDouble();
+		GlobalPosition = position;
+
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
@@ -103,11 +108,6 @@ public partial class NetworkPlayer : Renown.Entity {
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
-
-		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadDouble();
-		position.Y = (float)packet.ReadDouble();
-		GlobalPosition = position;
 
 		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
