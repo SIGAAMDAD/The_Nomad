@@ -103,6 +103,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
+
+		bool flip = packet.ReadBoolean();
+
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)packet.ReadDouble();
 		position.Y = (float)packet.ReadDouble();
@@ -185,18 +188,11 @@ public partial class NetworkPlayer : Renown.Entity {
 		};
 
 		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
-		float armAngle = 0.0f;
-		if ( armAngle >= ( Player.ScreenSize.X / 2.0f ) ) {
-			TorsoAnimation.SetDeferred( "flip_h", false );
-			LegAnimation.SetDeferred( "flip_h", false );
-			LeftArmAnimation.SetDeferred( "flip_v", false );
-			RightArmAnimation.SetDeferred( "flip_v", false );
-		} else if ( armAngle <= ( Player.ScreenSize.X / 2.0f ) ) {
-			TorsoAnimation.SetDeferred( "flip_h", true );
-			LegAnimation.SetDeferred( "flip_h", true );
-			LeftArmAnimation.SetDeferred( "flip_v", true );
-			RightArmAnimation.SetDeferred( "flip_v", true );
-		}
+
+		TorsoAnimation.SetDeferred( "flip_h", flip );
+		LegAnimation.SetDeferred( "flip_h", flip );
+		LeftArmAnimation.SetDeferred( "flip_v", flip );
+		RightArmAnimation.SetDeferred( "flip_v", flip );
 
 		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
 

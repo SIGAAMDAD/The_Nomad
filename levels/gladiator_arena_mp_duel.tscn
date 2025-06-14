@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://gsxci7b6en7c"]
+[gd_scene load_steps=19 format=4 uid="uid://gsxci7b6en7c"]
 
 [ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_7mv7g"]
 [ext_resource type="Script" uid="uid://bm2ij7e6lo88x" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
@@ -14,6 +14,7 @@
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="10_7odc2"]
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="11_eoimc"]
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="12_jpp1x"]
+[ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="13_mf4ic"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jr0op"]
 texture = ExtResource("2_r1lm7")
@@ -967,6 +968,9 @@ physics_layer_0/collision_layer = 3
 physics_layer_0/collision_mask = 3
 sources/0 = SubResource("TileSetAtlasSource_jr0op")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_abtrs"]
+size = Vector2(836.5, 437.5)
+
 [node name="World" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
 scale = Vector2(2, 2)
 script = ExtResource("1_7mv7g")
@@ -1018,6 +1022,16 @@ Data = ExtResource("11_eoimc")
 [node name="DesertRifle" parent="Map/Pickups" instance=ExtResource("6_8dqdc")]
 position = Vector2(391, 181)
 Data = ExtResource("12_jpp1x")
+
+[node name="Area2D" type="Area2D" parent="Map"]
+collision_layer = 32
+collision_mask = 32
+script = ExtResource("13_mf4ic")
+Type = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Area2D"]
+position = Vector2(408.25, 208.75)
+shape = SubResource("RectangleShape2D_abtrs")
 
 [node name="Network" type="Node2D" parent="."]
 
