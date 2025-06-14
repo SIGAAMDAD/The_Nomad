@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://622yixjqyqmq"]
+[gd_scene load_steps=12 format=3 uid="uid://622yixjqyqmq"]
 
 [ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="1_27uls"]
 [ext_resource type="Script" uid="uid://b35dx7vwc2186" path="res://scripts/multiplayer/NetworkPlayer.cs" id="1_hquwp"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="7_kfj5c"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="8_5lknd"]
 [ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="9_se7li"]
+[ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/effects/FootSteps.cs" id="10_pr72v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
 size = Vector2(16, 30)
@@ -75,3 +76,8 @@ position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_0rnld")
 
 [node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
+
+[node name="DashChannel" type="AudioStreamPlayer2D" parent="."]
+
+[node name="FootSteps" type="Node" parent="."]
+script = ExtResource("10_pr72v")
