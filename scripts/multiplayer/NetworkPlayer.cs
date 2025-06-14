@@ -110,13 +110,13 @@ public partial class NetworkPlayer : Renown.Entity {
 		SetDeferred( "global_position", position );
 
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadUInt32(), DefaultLeftArmSpriteFrames );
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
 
 		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadUInt32(), DefaultRightArmSpriteFrames );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
 
-		LegAnimationState = (PlayerAnimationState)packet.ReadUInt32();
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadUInt32();
+		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
 
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
@@ -185,9 +185,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		};
 
-		Player.Hands handsUsed = (Player.Hands)packet.ReadUInt32();
+		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
 
-		bool flip = Convert.ToBoolean( packet.ReadUInt32() );
+		bool flip = packet.ReadBoolean();
 
 		TorsoAnimation.SetDeferred( "flip_h", flip );
 		LegAnimation.SetDeferred( "flip_h", flip );

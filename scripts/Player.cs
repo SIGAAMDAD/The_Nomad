@@ -539,13 +539,13 @@ public partial class Player : Entity {
 		}
 		SyncObject.Write( GlobalPosition );
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
-		SyncObject.Write( (uint)LeftArmAnimationState );
+		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
-		SyncObject.Write( (uint)RightArmAnimationState );
-		SyncObject.Write( (uint)LegAnimationState );
-		SyncObject.Write( (uint)TorsoAnimationState );
-		SyncObject.Write( (uint)HandsUsed );
-		SyncObject.Write( Convert.ToUInt32( TorsoAnimation.FlipH ) );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
+		SyncObject.Write( (byte)HandsUsed );
+		SyncObject.Write( TorsoAnimation.FlipH );
 		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
 	}
@@ -2005,6 +2005,8 @@ public partial class Player : Entity {
 			}
 		}
 		SoundArea.Radius = SoundLevel;
+
+		SendPacket();
 
 		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
 			return;
