@@ -537,7 +537,7 @@ public partial class Player : Entity {
 				SyncObject.Write( Packet.WeaponId );
 			}
 		}
-		SyncObject.Write( Packet.Flip );
+		SyncObject.Write( TorsoAnimation.FlipH );
 		SyncObject.Write( Packet.Position );
 		SyncObject.Write( Packet.LeftRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
