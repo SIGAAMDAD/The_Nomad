@@ -477,7 +477,7 @@ public class ResourceCache {
 				} );
 
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
-					MoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel0" + index.ToString() + ".ogg" );
+					MoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/moveGravel" + index.ToString() + ".ogg" );
 				} );
 				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
 					MoveSandSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/env/move_sand_" + index.ToString() + ".ogg" );
