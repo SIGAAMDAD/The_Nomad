@@ -2,9 +2,8 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Multiplayer;
-using System.Net.NetworkInformation;
+using System.Threading;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -86,6 +85,9 @@ public partial class SteamLobby : Node {
 	
 	private CSteamID ThisSteamID = CSteamID.Nil;
 	private int ThisSteamIDIndex = 0;
+
+	private Thread NetworkThread;
+	private int Done = 0;
 
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
@@ -553,23 +555,32 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		SetPhysicsProcess( true );
+		NetworkThread = new Thread( NetworkProcess );
+		NetworkThread.Start();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
 		ThisSteamID = SteamManager.GetSteamID();
 	}
+	public override void _ExitTree() {
+		base._ExitTree();
 
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
+		Interlocked.Increment( ref Done );
+	}
 
-		foreach ( var node in NodeCache ) {
-			node.Value.Send?.Invoke();
+	private void NetworkProcess() {
+		while ( Done != 1 ) {
+			if ( !IsPhysicsProcessing() ) {
+				continue;
+			}
+			Thread.Sleep( 250 );
+
+			foreach ( var node in NodeCache ) {
+				node.Value?.Send();
+			}
+			foreach ( var player in PlayerCache ) {
+				player.Value?.Send();
+			}
 		}
-		foreach ( var player in PlayerCache ) {
-			player.Value.Send?.Invoke();
-		}
-
-		ReadPackets();
 	}
 };
