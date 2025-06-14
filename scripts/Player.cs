@@ -1831,6 +1831,8 @@ public partial class Player : Entity {
 		}
 		CheckStatus( (float)delta );
 
+		PrepPacket();
+
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
 			return;
 		}
