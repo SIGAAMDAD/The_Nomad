@@ -252,13 +252,19 @@ public partial class LobbyRoom : Control {
 			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
 		}
 
+		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+		container.Show();
+		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		( container.GetChild( 1 ) as Button ).Hide();
+		PlayerList.AddChild( container );
+
 		SteamLobby.Instance.GetLobbyMembers();
 
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] ) ) {
 				continue;
 			}
-			HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+			container = ClonerContainer.Duplicate() as HBoxContainer;
 			container.Show();
 			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
 			( container.GetChild( 1 ) as Button ).Hide();
