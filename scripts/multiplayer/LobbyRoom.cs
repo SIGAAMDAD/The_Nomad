@@ -72,10 +72,10 @@ public partial class LobbyRoom : Control {
 		GetTree().ChangeSceneToPacked( LoadedLevel );
 	}
 	private void LoadGame() {
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
+		UIChannel.CallDeferred( "stream", UISfxManager.BeginGame );
+		UIChannel.CallDeferred( "play" );
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
 
 		string modeName;
 		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
@@ -98,7 +98,7 @@ public partial class LobbyRoom : Control {
 			return;
 		};
 
-		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		CallDeferred( "connect", "FinishedLoading", Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
 			LoadedLevel = ResourceLoader.Load<PackedScene>( "res://levels/" +
 				MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName
@@ -138,8 +138,6 @@ public partial class LobbyRoom : Control {
 		CSteamID userId = (CSteamID)steamId;
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
-		container.SetProcess( false );
-		container.SetProcessInternal( false );
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
 		( container.GetChild( 1 ) as Button ).Hide();
@@ -221,12 +219,8 @@ public partial class LobbyRoom : Control {
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
 		PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
-		PlayerList.SetProcess( false );
-		PlayerList.SetProcessInternal( false );
 
 		StartGameButton = GetNode<Button>( "StartGameButton" );
-		StartGameButton.SetProcess( false );
-		StartGameButton.SetProcessInternal( false );
 		StartGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
@@ -234,8 +228,6 @@ public partial class LobbyRoom : Control {
 		StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
 
 		ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
-		ExitLobbyButton.SetProcess( false );
-		ExitLobbyButton.SetProcessInternal( false );
 		ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
 		ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
 		ExitLobbyButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
@@ -243,13 +235,9 @@ public partial class LobbyRoom : Control {
 		ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
 
 		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
-		ClonerContainer.SetProcess( false );
-		ClonerContainer.SetProcessInternal( false );
 		
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		UIChannel.SetProcess( false );
-		UIChannel.SetProcessInternal( false );
 
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
@@ -263,8 +251,6 @@ public partial class LobbyRoom : Control {
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
-		container.SetProcess( false );
-		container.SetProcessInternal( false );
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
 		( container.GetChild( 1 ) as Button ).Hide();
@@ -277,8 +263,6 @@ public partial class LobbyRoom : Control {
 				continue;
 			}
 			container = ClonerContainer.Duplicate() as HBoxContainer;
-			container.SetProcess( false );
-			container.SetProcessInternal( false );
 			container.Show();
 			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
 			( container.GetChild( 1 ) as Button ).Hide();

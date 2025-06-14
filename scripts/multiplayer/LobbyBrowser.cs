@@ -358,86 +358,50 @@ public partial class LobbyBrowser : Control {
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		HostGame.SetProcess( false );
-		HostGame.SetProcessInternal( false );
 		HostGame.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		HostGame.Connect( "pressed", Callable.From( OnHostGameButtonPressed ) );
 
 		RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
 		RefreshLobbies.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		RefreshLobbies.SetProcess( false );
-		RefreshLobbies.SetProcessInternal( false );
 		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
 		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		Matchmake.SetProcess( false );
-		Matchmake.SetProcessInternal( false );
 		Matchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		Matchmake.Connect( "pressed", Callable.From( OnMatchmakeButtonPressed ) );
 
 		CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
 		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		CancelMatchmake.SetProcess( false );
-		CancelMatchmake.SetProcessInternal( false );
 		CancelMatchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
 
 		MatchmakingLabel = GetNode<Label>( "MatchMakingLabel" );
 		MatchmakingLabel.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		MatchmakingLabel.SetProcess( false );
-		MatchmakingLabel.SetProcessInternal( false );
 
 		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
 		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
 		
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
-		LobbyTable.SetProcess( false );
-		LobbyTable.SetProcessInternal( false );
 
 		Label MapName = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/MapNameLabel" );
-		MapName.SetProcess( false );
-		MapName.SetProcessInternal( false );
-
 		MapNameLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/Label" );
-		MapNameLabel.SetProcess( false );
-		MapNameLabel.SetProcessInternal( false );
 
 		Label PlayerCount = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/PlayerCountLabel" );
-		PlayerCount.SetProcess( false );
-		PlayerCount.SetProcessInternal( false );
-
 		PlayerCountLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/Label" );
-		PlayerCountLabel.SetProcess( false );
-		PlayerCountLabel.SetProcessInternal( false );
 
 		Label GameMode = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/GameModeLabel" );
-		GameMode.SetProcess( false );
-		GameMode.SetProcessInternal( false );
-
 		GameModeLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/Label" );
-		GameModeLabel.SetProcess( false );
-		GameModeLabel.SetProcessInternal( false );
 
 		Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
-		JoinButton.SetProcess( false );
-		JoinButton.SetProcessInternal( false );
 		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
-		LobbyManager.SetProcess( false );
-		LobbyManager.SetProcessInternal( false );
-
 		JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
-		JoinGame.SetProcess( false );
-		JoinGame.SetProcessInternal( false );
 
 		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
-		ShowFullServers.SetProcess( false );
-		ShowFullServers.SetProcessInternal( false );
 		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
@@ -454,8 +418,6 @@ public partial class LobbyBrowser : Control {
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../../UIChannel" );
-		UIChannel.SetProcess( false );
-		UIChannel.SetProcessInternal( false );
 
 		Instance = this;
 	}
