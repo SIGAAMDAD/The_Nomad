@@ -529,7 +529,9 @@ public partial class Player : Entity {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
-		
+
+		SyncObject.Write( TorsoAnimation.FlipH );
+
 		SyncObject.Write( GlobalPosition );
 
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
@@ -548,7 +550,6 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 		SyncObject.Write( (byte)HandsUsed );
-		SyncObject.Write( TorsoAnimation.FlipH );
 		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
 	}

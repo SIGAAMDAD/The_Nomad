@@ -93,6 +93,13 @@ public partial class NetworkPlayer : Renown.Entity {
 	// TODO: find some way of sending values back to the client
 	
 	public void Update( System.IO.BinaryReader packet ) {
+		bool flip = packet.ReadBoolean();
+
+		TorsoAnimation.SetDeferred( "flip_h", flip );
+		LegAnimation.SetDeferred( "flip_h", flip );
+		LeftArmAnimation.SetDeferred( "flip_v", flip );
+		RightArmAnimation.SetDeferred( "flip_v", flip );
+
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)packet.ReadDouble();
 		position.Y = (float)packet.ReadDouble();
@@ -186,13 +193,6 @@ public partial class NetworkPlayer : Renown.Entity {
 		};
 
 		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
-
-		bool flip = packet.ReadBoolean();
-
-		TorsoAnimation.SetDeferred( "flip_h", flip );
-		LegAnimation.SetDeferred( "flip_h", flip );
-		LeftArmAnimation.SetDeferred( "flip_v", flip );
-		RightArmAnimation.SetDeferred( "flip_v", flip );
 
 		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
 
