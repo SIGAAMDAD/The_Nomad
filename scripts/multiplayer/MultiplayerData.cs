@@ -121,7 +121,6 @@ public partial class MultiplayerData : LevelData {
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
 
-		/*
 		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[ i ] ) || SteamLobby.Instance.LobbyMembers[ i ] == SteamUser.GetSteamID() ) {
@@ -135,6 +134,5 @@ public partial class MultiplayerData : LevelData {
 			Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );
 			PlayerList.AddChild( player );
 		}
-		*/
 	}
 };
