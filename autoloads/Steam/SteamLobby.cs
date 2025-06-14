@@ -576,10 +576,10 @@ public partial class SteamLobby : Node {
 			Thread.Sleep( 250 );
 
 			foreach ( var node in NodeCache ) {
-				node.Value?.Send();
+				node.Value.Node.CallDeferred( "Send" );
 			}
 			foreach ( var player in PlayerCache ) {
-				player.Value?.Send();
+				player.Value.Node.CallDeferred( "Send" );
 			}
 		}
 	}
