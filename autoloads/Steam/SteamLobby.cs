@@ -86,6 +86,8 @@ public partial class SteamLobby : Node {
 	private CSteamID ThisSteamID = CSteamID.Nil;
 	private int ThisSteamIDIndex = 0;
 
+	private Thread NetworkThread;
+
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
@@ -550,6 +552,24 @@ public partial class SteamLobby : Node {
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
+		NetworkThread = new Thread( () => {
+			while ( true ) {
+				if ( !IsPhysicsProcessing() ) {
+					continue;
+				}
+				Thread.Sleep( 100 );
+
+				foreach ( var node in NodeCache ) {
+					node.Value.Send?.Invoke();
+				}
+				foreach ( var player in PlayerCache ) {
+					player.Value.Send?.Invoke();
+				}
+
+				ReadAllPackets();
+			}
+		} );
+
 		OpenLobbyList();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
@@ -557,7 +577,8 @@ public partial class SteamLobby : Node {
 		ThisSteamID = SteamManager.GetSteamID();
 	}
 
-	public override void _PhysicsProcess( double delta ) {
+	/*
+	public override void _Process( double delta ) {
 		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
 			return;
 		}
@@ -571,4 +592,5 @@ public partial class SteamLobby : Node {
 
 		ReadAllPackets();
 	}
+	*/
 };
