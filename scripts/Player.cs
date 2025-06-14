@@ -2006,8 +2006,6 @@ public partial class Player : Entity {
 		}
 		SoundArea.Radius = SoundLevel;
 
-		SendPacket();
-
 		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
 			return;
 		}
