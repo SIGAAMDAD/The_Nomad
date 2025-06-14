@@ -557,6 +557,7 @@ public partial class SteamLobby : Node {
 
 		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 		ProcessThreadGroupOrder = 6;
+		SetProcess( true );
 
 		OpenLobbyList();
 
