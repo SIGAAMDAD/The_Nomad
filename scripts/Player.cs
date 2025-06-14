@@ -245,7 +245,7 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 4096 );
+	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
 
 	private TileMapFloor Floor;
 
@@ -526,7 +526,7 @@ public partial class Player : Entity {
 	}
 	private void SendPacket() {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
-//			return;
+			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( CurrentWeapon );
