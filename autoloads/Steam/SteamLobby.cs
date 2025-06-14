@@ -551,7 +551,7 @@ public partial class SteamLobby : Node {
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 		PingResponse = new ISteamMatchmakingPingResponse( OnPingResponse, OnPingFailedToRespond );
 
-		CachedPacket = new byte[ 8192 ];
+		CachedPacket = new byte[ 2048 ];
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
