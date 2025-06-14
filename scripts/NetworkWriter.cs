@@ -13,8 +13,8 @@ public class NetworkWriter {
 	}
 
 	public void Write( Godot.Vector2 value ) {
-		Writer.Write( (double)value.X );
-		Writer.Write( (double)value.Y );
+		Writer.Write( value.X );
+		Writer.Write( value.Y );
 	}
 	public void Write( ulong value ) => Writer.Write( value );
 	public void Write( uint value ) => Writer.Write( value );

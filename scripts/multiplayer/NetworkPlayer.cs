@@ -105,12 +105,10 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		double x = packet.ReadDouble();
-		double y = packet.ReadDouble();
-		position.X = (float)x;
-		position.Y = (float)y;
+		position.X = packet.ReadSingle();
+		position.Y = packet.ReadSingle();
 		GlobalPosition = position;
-		GD.Print( "GlobalPosition: " + x + ", " + y );
+		GD.Print( "GlobalPosition: " + position );
 
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
