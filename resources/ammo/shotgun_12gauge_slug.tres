@@ -3,8 +3,8 @@
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_u6pe4"]
 [ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="2_vsqy4"]
 [ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="3_b4xdb"]
-[ext_resource type="Texture2D" uid="uid://dgd2vctbwjfvx" path="res://textures/env/bullet_casings/gauge12_shell.png" id="4_dkrh3"]
-[ext_resource type="AudioStream" uid="uid://bfkfv1lpn4p8n" path="res://sounds/weapons/SHELPK2.wav" id="5_p1qws"]
+[ext_resource type="Texture2D" uid="uid://b3l3mwnbajnj3" path="res://textures/env/bullet_casings/gauge12_shell.png" id="4_dkrh3"]
+[ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="5_p1qws"]
 
 [sub_resource type="Curve" id="Curve_p7eh0"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.554717), 0.0, 0.0, 0, 0]

@@ -1,18 +1,14 @@
-[gd_scene load_steps=19 format=4 uid="uid://gsxci7b6en7c"]
+[gd_scene load_steps=15 format=4 uid="uid://gsxci7b6en7c"]
 
 [ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_7mv7g"]
 [ext_resource type="Script" uid="uid://bm2ij7e6lo88x" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
 [ext_resource type="Texture2D" uid="uid://fcgjjs6rvr0a" path="res://textures/tilesets/DesertTilemap16x16.dds" id="2_r1lm7"]
-[ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="3_mn27o"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_r1lm7"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_8f5vp"]
 [ext_resource type="PackedScene" uid="uid://g5kjq1b8iven" path="res://scenes/multiplayer/modes/overlays/duel_overlay.tscn" id="5_jr0op"]
-[ext_resource type="ItemDefinition" uid="uid://bsixsjgbyrcph" path="res://resources/ammo/shotgun_12gauge_slug.tres" id="6_abtrs"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="6_ec3iq"]
 [ext_resource type="PackedScene" uid="uid://dev51gj4hyfmq" path="res://scenes/multiplayer/scoreboard.tscn" id="6_ume2v"]
 [ext_resource type="Script" uid="uid://s0fwanyja5qk" path="res://scripts/multiplayer/Announcer.cs" id="7_py8m6"]
-[ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="7_y124t"]
-[ext_resource type="ItemDefinition" uid="uid://gm6rna0vx71" path="res://resources/ammo/762_ammo.tres" id="8_rxt01"]
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="10_7odc2"]
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="11_eoimc"]
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="12_jpp1x"]
@@ -997,15 +993,12 @@ tile_set = SubResource("TileSet_py8m6")
 
 [node name="ShotgunAmmo" parent="Map/Pickups" instance=ExtResource("5_8f5vp")]
 position = Vector2(429, 78)
-Data = ExtResource("6_abtrs")
 
 [node name="PlasmaAmmo" parent="Map/Pickups" instance=ExtResource("5_8f5vp")]
 position = Vector2(411, 307)
-Data = ExtResource("7_y124t")
 
 [node name="762Ammo" parent="Map/Pickups" instance=ExtResource("5_8f5vp")]
 position = Vector2(426, 178)
-Data = ExtResource("8_rxt01")
 
 [node name="Shotgun" parent="Map/Pickups" instance=ExtResource("6_ec3iq")]
 position = Vector2(392, 77)
@@ -1027,11 +1020,6 @@ Data = ExtResource("12_jpp1x")
 position = Vector2(-166, 227)
 Relations = {}
 Debts = {}
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("3_mn27o")]
-visible = false
 
 [node name="Announcer" type="Node" parent="."]
 script = ExtResource("7_py8m6")

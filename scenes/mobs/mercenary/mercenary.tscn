@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://dtmpn24mt61j0"]
 
-[ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/Renown/Thinkers/Mercenary.cs" id="1_wewif"]
+[ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
 [ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
 [ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow_blue.gdshader" id="2_yrnty"]
 [ext_resource type="SpriteFrames" uid="uid://bghffidjv2c7s" path="res://resources/animations/mobs/mercenary_arm_animations.tres" id="3_yrnty"]
@@ -12,11 +12,11 @@
 [ext_resource type="Script" uid="uid://dpr2xa1e5hy8u" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_sequence.gd" id="10_gw2o5"]
 [ext_resource type="Script" uid="uid://buvb8uppbyosm" path="res://addons/behaviour_toolkit/behaviour_tree/leaves/leaf_wait.gd" id="10_wk705"]
 [ext_resource type="Script" uid="uid://1h0braq41vwb" path="res://addons/behaviour_toolkit/finite_state_machine/fsm_transition.gd" id="11_1xiam"]
-[ext_resource type="Script" uid="uid://b26n4e0kvlmwa" path="res://scripts/Renown/Thinkers/Behaviours/sight_check.gd" id="12_yc8le"]
-[ext_resource type="Script" uid="uid://dstmrjfx8r618" path="res://scripts/Renown/Thinkers/Behaviours/move_to_disturbance.gd" id="13_gw2o5"]
-[ext_resource type="Script" uid="uid://cemy3w6ak053y" path="res://scripts/Renown/Thinkers/Behaviours/look_around.gd" id="13_vo8ur"]
-[ext_resource type="Script" uid="uid://crgq2opfxk1ng" path="res://scripts/Renown/Thinkers/Behaviours/mercenary_animator.gd" id="17_vo8ur"]
-[ext_resource type="Script" uid="uid://dyh6qrmrhuck5" path="res://scripts/Renown/Thinkers/Behaviours/dead_animation.gd" id="18_yc8le"]
+[ext_resource type="Script" uid="uid://b26n4e0kvlmwa" path="res://scripts/renown/Thinkers/Behaviours/sight_check.gd" id="12_yc8le"]
+[ext_resource type="Script" uid="uid://dstmrjfx8r618" path="res://scripts/renown/Thinkers/Behaviours/move_to_disturbance.gd" id="13_gw2o5"]
+[ext_resource type="Script" uid="uid://cemy3w6ak053y" path="res://scripts/renown/Thinkers/Behaviours/look_around.gd" id="13_vo8ur"]
+[ext_resource type="Script" uid="uid://crgq2opfxk1ng" path="res://scripts/renown/Thinkers/Behaviours/mercenary_animator.gd" id="17_vo8ur"]
+[ext_resource type="Script" uid="uid://dyh6qrmrhuck5" path="res://scripts/renown/Thinkers/Behaviours/dead_animation.gd" id="18_yc8le"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yrnty"]
 shader = ExtResource("2_yrnty")

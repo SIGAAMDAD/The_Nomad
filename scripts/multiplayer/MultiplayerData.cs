@@ -93,29 +93,23 @@ public partial class MultiplayerData : Node2D {
 	}
 	
 	public override void _Ready() {
-		GetTree().CurrentScene = this;
+		base._Ready();
 
 		Players = new Dictionary<CSteamID, Renown.Entity>();
-		
-		ThisPlayer = GetNode<Player>( "Network/Players/Player0" );
-		PauseMenu = GetNode<Control>( "CanvasLayer/PauseMenu" );
-		PlayerList = GetNode<Node>( "Network/Players" );
+
+		SceneLoadThread = new Thread( () => {
+			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
+		} );
 
 		ModeData = GetNode<Mode>( "ModeData" );
 
-		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
-		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
-		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
-
-		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-		ResourceCache.Cache( this, null );
-
-		ResourceCache.Initialized = true;
+		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
+		ResourceLoadThread.Start();
 
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
 
-		GD.Print( "Adding " + SteamLobby.Instance.LobbyMemberCount + " members." );
+		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
@@ -128,12 +122,5 @@ public partial class MultiplayerData : Node2D {
 			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
 			PlayerList.AddChild( player );
 		}
-
-		Console.PrintLine( "...Finished loading game" );
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-
-		PhysicsServer2D.SetActive( true );
-
-		SetProcessInternal( false );
 	}
 };
