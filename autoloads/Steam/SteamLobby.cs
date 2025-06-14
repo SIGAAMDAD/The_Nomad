@@ -566,7 +566,7 @@ public partial class SteamLobby : Node {
 					player.Value.Send?.Invoke();
 				}
 
-				ReadAllPackets();
+				CallDeferred( "SendAllPackets" );
 			}
 		} );
 		NetworkThread.Start();
