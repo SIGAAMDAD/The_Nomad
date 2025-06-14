@@ -509,6 +509,7 @@ public partial class Player : Entity {
 		SyncObject.Sync();
 	}
 	private void PrepPacket() {
+		SyncObject.Reset();
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
