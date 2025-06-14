@@ -538,10 +538,10 @@ public partial class Player : Entity {
 			}
 		}
 		SyncObject.Write( TorsoAnimation.FlipH );
-		SyncObject.Write( Packet.Position );
-		SyncObject.Write( Packet.LeftRotation );
+		SyncObject.Write( GlobalPosition );
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( Packet.RightRotation );
+		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
@@ -1975,7 +1975,7 @@ public partial class Player : Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		CreatePacket();
+		SendPacket();
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
