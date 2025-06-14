@@ -104,11 +104,11 @@ public partial class NetworkPlayer : Renown.Entity {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
 
-		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadDouble();
-		position.Y = (float)packet.ReadDouble();
-		GlobalPosition = position;
-		GD.Print( "GlobalPosition: " + position );
+		Godot.Vector2 velocity = Godot.Vector2.Zero;
+		velocity.X = (float)packet.ReadDouble();
+		velocity.Y = (float)packet.ReadDouble();
+		Velocity = velocity;
+		MoveAndCollide( velocity );
 
 		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
