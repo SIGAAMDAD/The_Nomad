@@ -27,7 +27,7 @@ public partial class SteamLobby : Node {
 		Count
 	};
 
-	public class NetworkNode {
+	public readonly struct NetworkNode {
 		public readonly Node Node;
 		public readonly Action Send;
 		public readonly Action<System.IO.BinaryReader> Receive;
@@ -576,10 +576,14 @@ public partial class SteamLobby : Node {
 			Thread.Sleep( 250 );
 
 			foreach ( var node in NodeCache ) {
-				node.Value?.Send();
+				if ( node.Value.Node.HasMethod( "Send" ) ) {
+					node.Value.Node.Call( "Send" );
+				}
 			}
 			foreach ( var player in PlayerCache ) {
-				player.Value?.Send();
+				if ( player.Value.Node.HasMethod( "Send" ) ) {
+					player.Value.Node.Call( "Send" );
+				}
 			}
 
 			CallDeferred( "ReadAllPackets" );
