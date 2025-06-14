@@ -323,7 +323,7 @@ public partial class SteamLobby : Node {
 	public void SendTargetPacket( CSteamID target, byte[] data ) {
 		int channel = 0;
 		
-		SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliableNoDelay, channel );
+		SteamNetworking.SendP2PPacket( target, data, (uint)data.Length, EP2PSend.k_EP2PSendUnreliable, channel );
 	}
 	public void SendP2PPacket( byte[] data ) {
 		int channel = 0;
@@ -331,7 +331,7 @@ public partial class SteamLobby : Node {
 		for ( int i = 0; i < LobbyMemberCount; i++ ) {
 			if ( i != ThisSteamIDIndex ) {
 				SteamNetworking.SendP2PPacket( LobbyMembers[ i ], data, (uint)data.Length,
-					EP2PSend.k_EP2PSendUnreliableNoDelay, channel
+					EP2PSend.k_EP2PSendUnreliable, channel
 				);
 			}
 		}
