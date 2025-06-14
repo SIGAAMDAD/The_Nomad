@@ -104,8 +104,6 @@ public partial class NetworkPlayer : Renown.Entity {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
 
-		bool flip = packet.ReadBoolean();
-
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)packet.ReadDouble();
 		position.Y = (float)packet.ReadDouble();
@@ -188,6 +186,8 @@ public partial class NetworkPlayer : Renown.Entity {
 		};
 
 		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
+
+		bool flip = packet.ReadBoolean();
 
 		TorsoAnimation.SetDeferred( "flip_h", flip );
 		LegAnimation.SetDeferred( "flip_h", flip );
