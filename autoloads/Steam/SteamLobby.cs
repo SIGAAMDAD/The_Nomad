@@ -569,6 +569,7 @@ public partial class SteamLobby : Node {
 				ReadAllPackets();
 			}
 		} );
+		NetworkThread.Start();
 
 		OpenLobbyList();
 
