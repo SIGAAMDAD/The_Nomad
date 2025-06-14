@@ -80,20 +80,20 @@ namespace Multiplayer.Modes {
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
-					node.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+					node.Die += OnPlayerScore;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-					ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+					ThisPlayer.Die += OnPlayerScore;
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
-					node.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+					node.Die += OnPlayerScore;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
-					ThisPlayer.Connect( "Die", Callable.From<Renown.Entity, Renown.Entity>( OnPlayerScore ) );
+					ThisPlayer.Die += OnPlayerScore;
 				}
 			}
 		}
