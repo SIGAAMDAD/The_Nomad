@@ -571,7 +571,7 @@ public partial class SteamLobby : Node {
 			node.Value.Send?.Invoke();
 		}
 		foreach ( var player in PlayerCache ) {
-			player.Value.Send?.Invoke();
+//			player.Value.Send?.Invoke();
 		}
 
 		ReadAllPackets();
