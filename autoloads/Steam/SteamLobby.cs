@@ -554,10 +554,22 @@ public partial class SteamLobby : Node {
 		CachedPacket = new byte[ 2048 ];
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
-
-//		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-//		ProcessThreadGroupOrder = 6;
 		SetPhysicsProcess( true );
+		SetProcess( true );
+
+		NetworkThread = new Thread( () => {
+			while ( true ) {
+				Thread.Sleep( 150 );
+				foreach ( var node in NodeCache ) {
+					node.Value.Send?.Invoke();
+				}
+				foreach ( var player in PlayerCache ) {
+				//	player.Value.Send?.Invoke();
+				}
+				ReadAllPackets();
+			}
+		} );
+		NetworkThread.Start();
 
 		OpenLobbyList();
 
@@ -566,14 +578,20 @@ public partial class SteamLobby : Node {
 		ThisSteamID = SteamManager.GetSteamID();
 	}
 
-	public override void _PhysicsProcess( double delta ) {
+	public override void _Process( double delta ) {
+		return;
+		if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {
+			return;
+		}
 		foreach ( var node in NodeCache ) {
 			node.Value.Send?.Invoke();
 		}
 		foreach ( var player in PlayerCache ) {
-//			player.Value.Send?.Invoke();
+			player.Value.Send?.Invoke();
 		}
-
+	}
+	public override void _PhysicsProcess( double delta ) {
+		return;
 		ReadAllPackets();
 	}
 };

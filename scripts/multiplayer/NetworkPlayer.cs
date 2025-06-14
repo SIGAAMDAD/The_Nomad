@@ -62,7 +62,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	private GpuParticles2D SlideEffect;
 	private PointLight2D DashLight;
 
-	private AudioStreamPlayer2D MoveChannel;
+	private AudioStreamPlayer2D AudioChannel;
 	private AudioStreamPlayer2D DashChannel;
 
 	private WeaponEntity.Properties WeaponUseMode = WeaponEntity.Properties.None;
@@ -89,8 +89,12 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 		animator.CallDeferred( "play", animation );
 	}
-	
+
 	// TODO: find some way of sending values back to the client
+
+	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+		base.PlaySound( channel == null ? AudioChannel : channel, stream );
+	}
 	
 	public void Update( System.IO.BinaryReader packet ) {
 		bool flip = packet.ReadBoolean();
@@ -119,6 +123,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
 
 		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
+		if ( isDashing && !DashChannel.Playing ) {
+			CallDeferred( "PlaySound", DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
+		}
 		DashEffect.SetDeferred( "emitting", isDashing );
 		DashLight.SetDeferred( "visible", isDashing );
 
@@ -162,8 +169,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			LegAnimation.CallDeferred( "show" );
 			LegAnimation.CallDeferred( "play", "slide" );
 			break;
-		};
-		
+		}
+		;
+
 		switch ( TorsoAnimationState ) {
 		case PlayerAnimationState.CheckpointDrinking:
 			TorsoAnimation.CallDeferred( "hide" );
@@ -185,6 +193,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Running:
 			TorsoAnimation.CallDeferred( "show" );
 			TorsoAnimation.CallDeferred( "play", "default" );
+			IdleAnimation.Hide();
 			break;
 		case PlayerAnimationState.TrueIdleStart:
 			TorsoAnimation.CallDeferred( "hide" );
@@ -243,8 +252,8 @@ public partial class NetworkPlayer : Renown.Entity {
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
-		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
-		MoveChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
+		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Idle" );
 

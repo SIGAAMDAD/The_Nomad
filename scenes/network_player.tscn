@@ -75,7 +75,7 @@ one_shot = false
 position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_0rnld")
 
-[node name="MoveChannel" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioChannel" type="AudioStreamPlayer2D" parent="."]
 
 [node name="DashChannel" type="AudioStreamPlayer2D" parent="."]
 
