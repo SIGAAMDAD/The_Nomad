@@ -101,12 +101,28 @@ public partial class NetworkPlayer : Renown.Entity {
 		RightArmAnimation.SetDeferred( "flip_v", flip );
 
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadDouble();
-		position.Y = (float)packet.ReadDouble();
+		position.X = packet.ReadSingle();
+		position.Y = packet.ReadSingle();
 		GlobalPosition = position;
 
 		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
 		RightArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
+
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
+
+		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+
+		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
+
+		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
+
+		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
+		DashEffect.SetDeferred( "emitting", isDashing );
+		DashLight.SetDeferred( "visible", isDashing );
+
+		SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
@@ -118,12 +134,6 @@ public partial class NetworkPlayer : Renown.Entity {
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
-
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
-
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
 
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
@@ -191,16 +201,6 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
 		};
-
-		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
-
-		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
-
-		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
-		DashEffect.SetDeferred( "emitting", isDashing );
-		DashLight.SetDeferred( "visible", isDashing );
-
-		SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );

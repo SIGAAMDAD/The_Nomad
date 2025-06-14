@@ -537,6 +537,15 @@ public partial class Player : Entity {
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
+
+		SyncObject.Write( (byte)HandsUsed );
+		
+		SyncObject.Write( (uint)Flags );
+
 		SyncObject.Write( CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
@@ -545,12 +554,6 @@ public partial class Player : Entity {
 				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
-		SyncObject.Write( (byte)LegAnimationState );
-		SyncObject.Write( (byte)TorsoAnimationState );
-		SyncObject.Write( (byte)HandsUsed );
-		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
 	}
 
