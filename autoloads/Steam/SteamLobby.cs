@@ -344,11 +344,11 @@ public partial class SteamLobby : Node {
 		switch ( (MessageType)PacketReader.ReadByte() ) {
 		case MessageType.ClientData: {
 			if ( PlayerCache.TryGetValue( senderId.ToString(), out NetworkNode node ) ) {
-				node.Receive.DynamicInvoke( PacketReader );
+				node.Receive( PacketReader );
 			}
 			break; }
 		case MessageType.GameData:
-			NodeCache[ PacketReader.ReadInt32() ].Receive.DynamicInvoke( PacketReader );
+			NodeCache[ PacketReader.ReadInt32() ].Receive( PacketReader );
 			break;
 		case MessageType.Handshake:
 			Console.PrintLine( SteamFriends.GetFriendPersonaName( senderId ) + " sent a handshake packet." );
