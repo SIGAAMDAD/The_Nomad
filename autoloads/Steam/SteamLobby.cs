@@ -571,18 +571,18 @@ public partial class SteamLobby : Node {
 	private void NetworkProcess() {
 		while ( Done != 1 ) {
 			if ( !IsPhysicsProcessing() ) {
-				continue;
+//				continue;
 			}
 			Thread.Sleep( 250 );
 
 			foreach ( var node in NodeCache ) {
 				if ( node.Value.Node.HasMethod( "Send" ) ) {
-					node.Value.Node.Call( "Send" );
+					node.Value.Node.CallDeferred( "Send" );
 				}
 			}
 			foreach ( var player in PlayerCache ) {
 				if ( player.Value.Node.HasMethod( "Send" ) ) {
-					player.Value.Node.Call( "Send" );
+					player.Value.Node.CallDeferred( "Send" );
 				}
 			}
 
