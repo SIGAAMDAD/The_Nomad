@@ -21,9 +21,6 @@ public partial class MultiplayerData : LevelData {
 
 		ResourceCache.Initialized = true;
 
-		ModeData.OnPlayerJoined( ThisPlayer );
-		ModeData.SpawnPlayer( ThisPlayer );
-
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
 				continue;
@@ -123,8 +120,8 @@ public partial class MultiplayerData : LevelData {
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
-//		ModeData.OnPlayerJoined( ThisPlayer );
-//		ModeData.SpawnPlayer( ThisPlayer );
+		ModeData.OnPlayerJoined( ThisPlayer );
+		ModeData.SpawnPlayer( ThisPlayer );
 
 		/*
 		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
