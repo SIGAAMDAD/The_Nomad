@@ -555,7 +555,6 @@ public partial class SteamLobby : Node {
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
-		ProcessMode = ProcessModeEnum.Always;
 //		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 //		ProcessThreadGroupOrder = 6;
 		SetPhysicsProcess( true );
