@@ -108,14 +108,11 @@ public partial class MultiplayerData : LevelData {
 		base._Ready();
 
 		Players = new Dictionary<CSteamID, Renown.Entity>();
-
-		SceneLoadThread = new Thread( () => {
-			PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
-		} );
+		PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" );
 
 		ModeData = GetNode<Mode>( "ModeData" );
 
-		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
+		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, null ); } );
 		ResourceLoadThread.Start();
 
 		ModeData.OnPlayerJoined( ThisPlayer );
