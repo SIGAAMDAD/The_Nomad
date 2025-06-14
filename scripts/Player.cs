@@ -8,6 +8,7 @@ using Renown;
 using Renown.World;
 using SimdLinq;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -80,6 +81,25 @@ public partial class Player : Entity {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsBlunt,
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
 	];
+
+	private struct NetworkPacket {
+		public sbyte CurrentWeapon;
+		public uint WeaponMode;
+		public bool WeaponUsed;
+		public string WeaponId;
+		public Vector2 Position;
+		public bool Flip;
+		public float LeftRotation;
+		public byte LeftState;
+		public float RightRotation;
+		public byte RightState;
+		public byte LegState;
+		public byte TorsoState;
+		public byte HandsUsed;
+		public uint Flags;
+	};
+
+	private NetworkPacket Packet = new NetworkPacket();
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -509,25 +529,31 @@ public partial class Player : Entity {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
-		SyncObject.Write( (sbyte)CurrentWeapon );
+		SyncObject.Write( CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
 			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
-				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+				SyncObject.Write( Packet.WeaponId );
 			}
 		}
-		SyncObject.Write( TorsoAnimation.FlipH );
-		SyncObject.Write( GlobalPosition );
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
+		SyncObject.Write( Packet.Flip );
+		SyncObject.Write( Packet.Position );
+		SyncObject.Write( Packet.LeftRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( ArmRight.Animations.GlobalRotation );
+		SyncObject.Write( Packet.RightRotation );
 		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 		SyncObject.Write( (byte)HandsUsed );
 		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
+	}
+	private void CreatePacket() {
+		Packet.Flip = TorsoAnimation.FlipH;
+		Packet.Position = GlobalPosition;
+		Packet.LeftRotation = ArmLeft.Animations.GlobalRotation;
+		Packet.RightRotation = ArmRight.Animations.GlobalRotation;
 	}
 
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -1949,7 +1975,7 @@ public partial class Player : Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		PhysicsPosition = GlobalPosition;
+		CreatePacket();
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
