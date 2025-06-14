@@ -187,11 +187,12 @@ public partial class LobbyRoom : Control {
 	}
 
 	private bool PlayerIsInQueue( CSteamID userId ) {
+		if ( userId == SteamManager.GetSteamID() ) {
+			return true;
+		}
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			string username = SteamFriends.GetFriendPersonaName( userId );
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username
-				&& username != SteamManager.GetSteamName() )
-			{
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
 				return true;
