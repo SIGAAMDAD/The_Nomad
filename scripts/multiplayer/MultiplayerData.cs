@@ -26,8 +26,7 @@ public partial class MultiplayerData : LevelData {
 				continue;
 			}
 			NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
-			player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-			player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			ModeData.SpawnPlayer( player );
 			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
@@ -49,8 +48,7 @@ public partial class MultiplayerData : LevelData {
 		}
 		
 		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
-		player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( userId ) );
-		player.Set( "MultiplayerId", (ulong)userId );
+		player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( userId );
 		player.Call( "SetOwnerId", (ulong)userId );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
