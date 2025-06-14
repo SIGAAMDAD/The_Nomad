@@ -419,6 +419,8 @@ public partial class LobbyBrowser : Control {
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../../UIChannel" );
 
+		SteamLobby.Instance.SetPhysicsProcess( true );
+
 		Instance = this;
 	}
 };

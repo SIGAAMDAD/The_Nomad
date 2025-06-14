@@ -189,7 +189,9 @@ public partial class LobbyRoom : Control {
 	private bool PlayerIsInQueue( CSteamID userId ) {
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			string username = SteamFriends.GetFriendPersonaName( userId );
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username
+				&& username != SteamManager.GetSteamName() )
+			{
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
 				return true;
@@ -242,10 +244,6 @@ public partial class LobbyRoom : Control {
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 		
-		if ( SteamLobby.Instance.IsOwner() ) {
-			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
-		}
-		
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
@@ -255,6 +253,10 @@ public partial class LobbyRoom : Control {
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
 		( container.GetChild( 1 ) as Button ).Hide();
 		PlayerList.AddChild( container );
+
+		if ( SteamLobby.Instance.IsOwner() ) {
+			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
+		}
 
 		SteamLobby.Instance.GetLobbyMembers();
 

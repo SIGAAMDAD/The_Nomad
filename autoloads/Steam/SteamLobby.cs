@@ -586,7 +586,7 @@ public partial class SteamLobby : Node {
 				}
 			}
 
-			CallDeferred( "ReadAllPackets" );
+			ReadAllPackets();
 		}
 	}
 };

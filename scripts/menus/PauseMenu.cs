@@ -46,6 +46,8 @@ public partial class PauseMenu : CanvasLayer {
 		GetTree().Paused = false;
 		Engine.TimeScale = 1.0f;
 		ArchiveSystem.Clear();
+		
+		SteamLobby.Instance.SetPhysicsProcess( false );
 
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer
 			|| GameConfiguration.GameMode == GameMode.Online )
