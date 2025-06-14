@@ -537,7 +537,6 @@ public partial class Player : Entity {
 				SyncObject.Write( Packet.WeaponId );
 			}
 		}
-		SyncObject.Write( TorsoAnimation.FlipH );
 		SyncObject.Write( GlobalPosition );
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
@@ -546,6 +545,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 		SyncObject.Write( (byte)HandsUsed );
+		SyncObject.Write( TorsoAnimation.FlipH );
 		SyncObject.Write( (uint)Flags );
 		SyncObject.Sync();
 	}

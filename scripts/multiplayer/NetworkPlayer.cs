@@ -96,7 +96,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
-				string weaponId = packet.ReadString(); 
+				string weaponId = packet.ReadString();
 				Console.PrintLine( "NetworkPlayer is using weapon " + weaponId );
 				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
 			}
