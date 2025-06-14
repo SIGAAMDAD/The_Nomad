@@ -86,9 +86,6 @@ public partial class SteamLobby : Node {
 	private CSteamID ThisSteamID = CSteamID.Nil;
 	private int ThisSteamIDIndex = 0;
 
-	private Thread NetworkThread;
-	private int Done = 0;
-
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private List<NetworkNode> PlayerList = new List<NetworkNode>( MAX_LOBBY_MEMBERS );
@@ -555,38 +552,27 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		NetworkThread = new Thread( NetworkProcess );
-		NetworkThread.Start();
-
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
 		ThisSteamID = SteamManager.GetSteamID();
 	}
-	public override void _ExitTree() {
-		base._ExitTree();
 
-		Interlocked.Increment( ref Done );
-	}
-
-	private void NetworkProcess() {
-		while ( Done != 1 ) {
-			if ( !IsPhysicsProcessing() ) {
-//				continue;
-			}
-			Thread.Sleep( 250 );
-
-			foreach ( var node in NodeCache ) {
-				if ( node.Value.Node.HasMethod( "Send" ) ) {
-					node.Value.Node.Call( "Send" );
-				}
-			}
-			foreach ( var player in PlayerCache ) {
-				if ( player.Value.Node.HasMethod( "Send" ) ) {
-					player.Value.Node.Call( "Send" );
-				}
-			}
-
-			CallDeferred( "ReadAllPackets" );
+	public override void _PhysicsProcess( double delta ) {
+		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+			return;
 		}
+
+		foreach ( var node in NodeCache ) {
+			if ( node.Value.Node.HasMethod( "Send" ) ) {
+				node.Value.Node.Call( "Send" );
+			}
+		}
+		foreach ( var player in PlayerCache ) {
+			if ( player.Value.Node.HasMethod( "Send" ) ) {
+				player.Value.Node.Call( "Send" );
+			}
+		}
+
+		ReadAllPackets();
 	}
 };
