@@ -581,6 +581,8 @@ public partial class SteamLobby : Node {
 			foreach ( var player in PlayerCache ) {
 				player.Value.Node.CallDeferred( "Send" );
 			}
+
+			ReadAllPackets();
 		}
 	}
 };
