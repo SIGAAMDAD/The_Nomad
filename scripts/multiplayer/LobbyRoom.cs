@@ -72,10 +72,10 @@ public partial class LobbyRoom : Control {
 		GetTree().ChangeSceneToPacked( LoadedLevel );
 	}
 	private void LoadGame() {
-		UIChannel.CallDeferred( "stream", UISfxManager.BeginGame );
-		UIChannel.CallDeferred( "play" );
+		UIChannel.Stream = UISfxManager.BeginGame;
+		UIChannel.Play();
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
 		string modeName;
 		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
