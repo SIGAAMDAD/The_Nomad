@@ -582,7 +582,7 @@ public partial class SteamLobby : Node {
 				player.Value?.Send();
 			}
 
-			ReadAllPackets();
+			CallDeferred( "ReadAllPackets" );
 		}
 	}
 };
