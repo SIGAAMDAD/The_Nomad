@@ -506,7 +506,9 @@ public partial class Player : Entity {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			return;
 		}
-
+		SyncObject.Sync();
+	}
+	private void PrepPacket() {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
@@ -526,7 +528,6 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)TorsoAnimationState );
 		SyncObject.Write( (byte)HandsUsed );
 		SyncObject.Write( (uint)Flags );
-		SyncObject.Sync();
 	}
 
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

@@ -123,8 +123,8 @@ public partial class MultiplayerData : LevelData {
 		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
 		ResourceLoadThread.Start();
 
-		ModeData.OnPlayerJoined( ThisPlayer );
-		ModeData.SpawnPlayer( ThisPlayer );
+//		ModeData.OnPlayerJoined( ThisPlayer );
+//		ModeData.SpawnPlayer( ThisPlayer );
 
 		/*
 		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
