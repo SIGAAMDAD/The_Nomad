@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Renown;
 
 public partial class FootSteps : Node {
 	private static readonly int MaxSteps = 24;
@@ -52,6 +53,6 @@ public partial class FootSteps : Node {
 			GroundMaterialType.Wood => ResourceCache.MoveWoodSfx[ RNJesus.IntRange( 0, ResourceCache.MoveWoodSfx.Length - 1 ) ],
 			_ => ResourceCache.MoveGravelSfx[ RNJesus.IntRange( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ],
 		};
-		GetParent<Player>().PlaySound( null, stream );
+		GetParent<Entity>().PlaySound( null, stream );
 	}
 };
