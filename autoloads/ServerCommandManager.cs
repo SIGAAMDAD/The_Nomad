@@ -47,6 +47,6 @@ public class ServerCommandManager {
 		CommandCache[ (int)nType ] = callback;
 	}
 	public static void ExecuteCommand( CSteamID senderId, ServerCommandType nType ) {
-		CommandCache[ (int)nType ]?.Invoke( senderId );
+		CommandCache[ (int)nType ]?.DynamicInvoke( senderId );
 	}
 };
