@@ -107,16 +107,16 @@ public partial class NetworkPlayer : Renown.Entity {
 		Godot.Vector2 position = Godot.Vector2.Zero;
 		position.X = (float)packet.ReadDouble();
 		position.Y = (float)packet.ReadDouble();
-		SetDeferred( "global_position", GlobalPosition );
+		SetDeferred( "global_position", position );
 
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadUInt32(), DefaultLeftArmSpriteFrames );
 
 		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadDouble() );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadUInt32(), DefaultRightArmSpriteFrames );
 
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+		LegAnimationState = (PlayerAnimationState)packet.ReadUInt32();
+		TorsoAnimationState = (PlayerAnimationState)packet.ReadUInt32();
 
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
@@ -185,9 +185,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		};
 
-		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
+		Player.Hands handsUsed = (Player.Hands)packet.ReadUInt32();
 
-		bool flip = packet.ReadBoolean();
+		bool flip = Convert.ToBoolean( packet.ReadUInt32() );
 
 		TorsoAnimation.SetDeferred( "flip_h", flip );
 		LegAnimation.SetDeferred( "flip_h", flip );
