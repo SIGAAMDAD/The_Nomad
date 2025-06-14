@@ -105,8 +105,8 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = packet.ReadSingle();
-		position.Y = packet.ReadSingle();
+		position.X = (uint)packet.ReadSingle();
+		position.Y = (uint)packet.ReadSingle();
 		GlobalPosition = position;
 		GD.Print( "GlobalPosition: " + position );
 
