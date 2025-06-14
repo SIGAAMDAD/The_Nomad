@@ -577,12 +577,12 @@ public partial class SteamLobby : Node {
 
 			foreach ( var node in NodeCache ) {
 				if ( node.Value.Node.HasMethod( "Send" ) ) {
-					node.Value.Node.CallDeferred( "Send" );
+					node.Value.Node.Call( "Send" );
 				}
 			}
 			foreach ( var player in PlayerCache ) {
 				if ( player.Value.Node.HasMethod( "Send" ) ) {
-					player.Value.Node.CallDeferred( "Send" );
+					player.Value.Node.Call( "Send" );
 				}
 			}
 

@@ -25,7 +25,6 @@ public class NetworkWriter {
 	public void Write( string value ) => Writer.Write( value );
 	public void Write( bool value ) => Writer.Write( value );
 
-	public void Reset() => Stream.Seek( 0, SeekOrigin.Begin );
 	public void Sync( CSteamID target ) {
 		// send the packet
 		SteamLobby.Instance.SendTargetPacket( target, Packet );

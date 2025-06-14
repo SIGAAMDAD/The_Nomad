@@ -166,6 +166,8 @@ public partial class Player : Entity {
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
 
+	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
+
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
 	private AnimatedSprite2D TorsoAnimation;
@@ -506,10 +508,6 @@ public partial class Player : Entity {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			return;
 		}
-		SyncObject.Sync();
-	}
-	private void PrepPacket() {
-		SyncObject.Reset();
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
@@ -520,7 +518,7 @@ public partial class Player : Entity {
 			}
 		}
 		SyncObject.Write( TorsoAnimation.FlipH );
-		SyncObject.Write( GlobalPosition );
+		SyncObject.Write( PhysicsPosition );
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
@@ -529,6 +527,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)TorsoAnimationState );
 		SyncObject.Write( (byte)HandsUsed );
 		SyncObject.Write( (uint)Flags );
+		SyncObject.Sync();
 	}
 
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -1832,8 +1831,6 @@ public partial class Player : Entity {
 		}
 		CheckStatus( (float)delta );
 
-		PrepPacket();
-
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
 			return;
 		}
@@ -1951,6 +1948,8 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
 	public override void _Process( double delta ) {
 		base._Process( delta );
+
+		PhysicsPosition = GlobalPosition;
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
