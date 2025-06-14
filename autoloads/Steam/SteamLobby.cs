@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using Multiplayer;
 using System.Threading;
+using Serilog.Formatting.Display;
+using System.Net.Http.Headers;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -535,6 +537,7 @@ public partial class SteamLobby : Node {
 		}
 		_Instance = this;
 	}
+
     public override void _Ready() {
 		LobbyEnter = Callback<LobbyEnter_t>.Create( OnLobbyJoined );
 		LobbyChatMsg = Callback<LobbyChatMsg_t>.Create( OnLobbyMessage );
@@ -547,28 +550,13 @@ public partial class SteamLobby : Node {
 
 		ServerListResponse = new ISteamMatchmakingServerListResponse( OnServerResponded, OnServerFailedToRespond, OnRefreshComplete );
 		PingResponse = new ISteamMatchmakingPingResponse( OnPingResponse, OnPingFailedToRespond );
-		
+
 		CachedPacket = new byte[ 8192 ];
 		PacketStream = new System.IO.MemoryStream( CachedPacket );
 		PacketReader = new System.IO.BinaryReader( PacketStream );
 
-		NetworkThread = new Thread( () => {
-			while ( true ) {
-				if ( !IsPhysicsProcessing() ) {
-					continue;
-				}
-				Thread.Sleep( 100 );
-
-				foreach ( var node in NodeCache ) {
-					node.Value.Send?.Invoke();
-				}
-				foreach ( var player in PlayerCache ) {
-					player.Value.Send?.Invoke();
-				}
-				CallDeferred( "ReadAllPackets" );
-			}
-		} );
-		NetworkThread.Start();
+		ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+		ProcessThreadGroupOrder = 6;
 
 		OpenLobbyList();
 
@@ -577,9 +565,8 @@ public partial class SteamLobby : Node {
 		ThisSteamID = SteamManager.GetSteamID();
 	}
 
-	/*
 	public override void _Process( double delta ) {
-		if ( ( Engine.GetProcessFrames() % 20 ) != 0 ) {
+		if ( ( Engine.GetProcessFrames() % 10 ) != 0 ) {
 			return;
 		}
 
@@ -592,5 +579,4 @@ public partial class SteamLobby : Node {
 
 		ReadAllPackets();
 	}
-	*/
 };
