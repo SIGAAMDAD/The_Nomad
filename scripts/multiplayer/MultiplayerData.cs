@@ -29,6 +29,7 @@ public partial class MultiplayerData : LevelData {
 			player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[i] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
 			ModeData.SpawnPlayer( player );
+			ModeData.OnPlayerJoined( player );
 			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
 			PlayerList.AddChild( player );
 		}
@@ -126,6 +127,7 @@ public partial class MultiplayerData : LevelData {
 			Renown.Entity player = PlayerScene.Instantiate<NetworkPlayer>();
 			( player as NetworkPlayer ).MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[ i ] );
 			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
+			ModeData.OnPlayerJoined( player );
 			ModeData.SpawnPlayer( player );
 			Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );
 			PlayerList.AddChild( player );

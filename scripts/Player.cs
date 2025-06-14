@@ -526,7 +526,7 @@ public partial class Player : Entity {
 	}
 	private void SendPacket() {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
-			return;
+//			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( CurrentWeapon );
