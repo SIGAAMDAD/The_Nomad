@@ -98,6 +98,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		position.Y = (float)packet.ReadDouble();
 		GlobalPosition = position;
 
+		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
+		RightArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
+
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
@@ -109,10 +112,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
 
-		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
-
-		RightArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
 		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
 
 		LegAnimationState = (PlayerAnimationState)packet.ReadByte();

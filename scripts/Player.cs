@@ -529,7 +529,12 @@ public partial class Player : Entity {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		
 		SyncObject.Write( GlobalPosition );
+
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
+		SyncObject.Write( ArmRight.Animations.GlobalRotation );
+
 		SyncObject.Write( CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
@@ -538,9 +543,7 @@ public partial class Player : Entity {
 				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			}
 		}
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
