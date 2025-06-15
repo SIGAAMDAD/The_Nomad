@@ -1009,11 +1009,11 @@ public partial class SteamLobby : Node {
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
 				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
 			},
-//			new SteamNetworkingConfigValue_t {
-//				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
-//				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-//				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
-//			}
+			new SteamNetworkingConfigValue_t {
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+			}
 		};
 		ListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 0, options.Length, options );
 		if ( ListenSocket == HSteamListenSocket.Invalid ) {
