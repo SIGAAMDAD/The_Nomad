@@ -10,6 +10,7 @@ colors = PackedColorArray(0.2, 0.2, 0.2, 0.321569)
 gradient = SubResource("Gradient_atfp8")
 
 [node name="Chat" type="Control"]
+top_level = true
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
