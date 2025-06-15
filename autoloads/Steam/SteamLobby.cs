@@ -1449,6 +1449,13 @@ public partial class SteamLobby : Node {
 						PollIncomingMessages();
 
 						CallDeferred( "HandleIncomingMessages" );
+
+						foreach ( var node in NodeCache.Values ) {
+							node.Send?.Invoke();
+						}
+						foreach ( var player in PlayerCache.Values ) {
+							player.Send?.Invoke();
+						}
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
@@ -1466,6 +1473,7 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 
+	/*
 	public override void _Process( double delta ) {
 		lock ( NetworkLock ) {
 			// Send updates
@@ -1477,6 +1485,7 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
+	*/
 
 	public override void _Notification( int what ) {
 		base._Notification( what );
@@ -1767,7 +1776,7 @@ public partial class SteamLobby : Node {
 	}
 
 	private void PollIncomingMessages() {
-		IntPtr[] messages = new IntPtr[ 32 ];
+		IntPtr[] messages = new IntPtr[ PACKET_READ_LIMIT ];
 
 		// Create copies to avoid locking during processing
 		List<HSteamNetConnection> activeConnections = new List<HSteamNetConnection>();
@@ -1782,7 +1791,7 @@ public partial class SteamLobby : Node {
 		foreach ( var conn in activeConnections ) {
 			try {
 				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( conn, messages, messages.Length );
-				if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} messages" );
+//				if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} messages" );
 
 				for ( int i = 0; i < count; i++ ) {
 					try {
@@ -1792,7 +1801,7 @@ public partial class SteamLobby : Node {
 						);
 
 						byte[] data = new byte[ message.m_cbSize ];
-						Marshal.Copy( message.m_pData, data, 0, (int)message.m_cbSize );
+						Marshal.Copy( message.m_pData, data, 0, message.m_cbSize );
 
 						CSteamID sender = message.m_identityPeer.GetSteamID();
 						ProcessIncomingMessage( data, sender );

@@ -530,12 +530,12 @@ public partial class Player : Entity {
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 
-		SyncObject.Write( TorsoAnimation.FlipH );
+		SyncObject.Write( Packet.Flip );
 
-		SyncObject.Write( GlobalPosition );
+		SyncObject.Write( Packet.Position );
 
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
-		SyncObject.Write( ArmRight.Animations.GlobalRotation );
+		SyncObject.Write( Packet.LeftRotation );
+		SyncObject.Write( Packet.RightRotation );
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( (byte)RightArmAnimationState );
@@ -543,7 +543,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)TorsoAnimationState );
 
 		SyncObject.Write( (byte)HandsUsed );
-		
+
 		SyncObject.Write( (uint)Flags );
 
 		SyncObject.Write( CurrentWeapon );
@@ -555,6 +555,12 @@ public partial class Player : Entity {
 			}
 		}
 		SyncObject.Sync();
+	}
+	private void CreatePacket() {
+		Packet.Flip = TorsoAnimation.FlipH;
+		Packet.Position = GlobalPosition;
+		Packet.LeftRotation = ArmLeft.Animations.GlobalRotation;
+		Packet.RightRotation = ArmRight.Animations.GlobalRotation;
 	}
 
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -1978,6 +1984,7 @@ public partial class Player : Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
+		CreatePacket();
 //		SendPacket();
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
