@@ -1189,7 +1189,7 @@ public partial class SteamLobby : Node {
 
 
 		NetworkThread = new System.Threading.Thread(() => {
-			while (System.Threading.Interlocked.CompareExchange(ref NetworkRunning, 0, 0) == 0) {
+			while (System.Threading.Interlocked.Equals( NetworkRunning, 0 ) == true) {
 				lock (NetworkLock) {
 					PollIncomingMessages();
 				}
