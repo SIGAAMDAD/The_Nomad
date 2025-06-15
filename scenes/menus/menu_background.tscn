@@ -97,6 +97,7 @@ metadata/_edit_use_anchors_ = true
 process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
+modulate = Color(3, 1, 1, 1)
 position = Vector2(400, 600)
 amount = 1000
 texture = SubResource("GradientTexture2D_6lvap")

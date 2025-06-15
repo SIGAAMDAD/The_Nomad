@@ -92,9 +92,11 @@ flat = true
 
 [node name="Logo" type="TextureRect" parent="."]
 process_mode = 4
+modulate = Color(1.15, 1.5, 1, 1)
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
+anchor_left = 0.01125
+anchor_right = 1.01125
 anchor_bottom = 0.848333
 offset_left = 110.0
 offset_top = 76.0

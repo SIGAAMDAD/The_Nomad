@@ -1,3 +1,21 @@
 ~ meet_friendly
+Asturion: Oh, Raio!
+Asturion: How've you been doing?
+- Getting by
+	Asturion: Good to hear => talk_friendly
+- Making ends meet
+	Asturion: not bad
+- Absolutely shit
+- [i]Shrug your shoulders[/i]
+=> END
 
+~ talk_friendly
+Asturion: So, what do you need on this fine day?
+- I need something forged
+	Asturion: Alrighty then... => forge
+=> END
+
+~ forge
+Asturion: What do you need forged?
+- A weapon
 => END

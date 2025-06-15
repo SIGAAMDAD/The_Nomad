@@ -79,8 +79,11 @@ public partial class SteamAchievements : Node {
 		And_So_It_Begins,
 		Not_Like_Us,
 		John_Wick_Mode,
-		The_Man_The_Myth_The_Legend,
+		The_Nomad,
 		DNA_Of_The_Soul,
+		Mercenary_Of_Many_Skills,
+		Master_Of_The_Wastes,
+		Sands_of_Time,
 		
 		Count
 	};
@@ -196,7 +199,7 @@ public partial class SteamAchievements : Node {
 			if ( bAchieved ) {
 				count++;
 			}
-			GD.Print( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
+			Console.PrintLine( "Got achievement data for " + achievement.Value.GetIdString() + ", status: " + bAchieved.ToString() );
 			AchievementTable[ achievement.Key ].SetAchieved( bAchieved );
 		}
 		if ( count == AchievementTable.Count ) {
