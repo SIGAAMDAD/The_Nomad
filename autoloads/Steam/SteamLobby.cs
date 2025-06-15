@@ -1004,11 +1004,11 @@ public partial class SteamLobby : Node {
 		}
 
 		SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[] {
-//			new SteamNetworkingConfigValue_t {
-//				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
-//				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-//				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
-//			},
+			new SteamNetworkingConfigValue_t {
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+			},
 //			new SteamNetworkingConfigValue_t {
 //				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
 //				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
@@ -1190,8 +1190,9 @@ public partial class SteamLobby : Node {
 
 		NetworkThread = new System.Threading.Thread(() => {
 			while (System.Threading.Interlocked.Equals( NetworkRunning, 0 ) == true) {
-				lock (NetworkLock) {
+				lock ( NetworkLock ) {
 					PollIncomingMessages();
+					HandleIncomingMessages();
 				}
 				System.Threading.Thread.Sleep(15);
 			}
@@ -1210,7 +1211,7 @@ public partial class SteamLobby : Node {
 		lock ( NetworkLock ) {
 //			PollIncomingMessages();
 
-			HandleIncomingMessages();
+//			HandleIncomingMessages();
 
 			// Send updates
 			foreach ( var node in NodeCache.Values ) {
