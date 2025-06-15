@@ -1447,12 +1447,13 @@ public partial class SteamLobby : Node {
 				lock ( NetworkLock ) {
 					try {
 						PollIncomingMessages();
-						HandleIncomingMessages();
+
+						CallDeferred( "HandleIncomingMessages" );
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
 				}
-				Thread.Sleep( 15 );
+				Thread.Sleep( 80 );
 			}
 		} );
 		NetworkThread.Start();
