@@ -1467,7 +1467,7 @@ public partial class SteamLobby : Node {
 	public override void _Process( double delta ) {
 		lock ( NetworkLock ) {
 			HandleIncomingMessages();
-			
+
 			// Send updates
 			foreach ( var node in NodeCache.Values ) {
 				node.Send?.Invoke();
@@ -1700,7 +1700,7 @@ public partial class SteamLobby : Node {
 					conn,
 					CachedWritePacket,
 					(uint)data.Length,
-					Constants.k_nSteamNetworkingSend_UseCurrentThread,
+					Constants.k_nSteamNetworkingSend_ReliableNoNagle,
 					out long _
 				);
 
