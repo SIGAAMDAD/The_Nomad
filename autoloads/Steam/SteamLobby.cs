@@ -1700,7 +1700,7 @@ public partial class SteamLobby : Node {
 					conn,
 					CachedWritePacket,
 					(uint)data.Length,
-					Constants.k_nSteamNetworkingSend_Reliable,
+					Constants.k_nSteamNetworkingSend_UnreliableNoDelay,
 					out long _
 				);
 
