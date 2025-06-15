@@ -1004,16 +1004,16 @@ public partial class SteamLobby : Node {
 		}
 
 		SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[] {
-			new SteamNetworkingConfigValue_t {
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
-			},
-			new SteamNetworkingConfigValue_t {
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
-			}
+//			new SteamNetworkingConfigValue_t {
+//				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
+//				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+//				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+//			},
+//			new SteamNetworkingConfigValue_t {
+//				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
+//				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+//				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+//			}
 		};
 		ListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 0, options.Length, options );
 		if ( ListenSocket == HSteamListenSocket.Invalid ) {
@@ -1188,15 +1188,15 @@ public partial class SteamLobby : Node {
 		);
 
 
-//		NetworkThread = new System.Threading.Thread(() => {
-//			while (System.Threading.Interlocked.Equals(NetworkRunning, 0) == true) {
-//				lock (NetworkLock) {
-//					PollIncomingMessages();
-//				}
-//				System.Threading.Thread.Sleep(15);
-//			}
-//		});
-//		NetworkThread.Start();
+		NetworkThread = new System.Threading.Thread(() => {
+			while (System.Threading.Interlocked.CompareExchange(ref NetworkRunning, 0, 0) == 0) {
+				lock (NetworkLock) {
+					PollIncomingMessages();
+				}
+				System.Threading.Thread.Sleep(15);
+			}
+		});
+		NetworkThread.Start();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
@@ -1208,7 +1208,7 @@ public partial class SteamLobby : Node {
 			return;
 		}
 		lock ( NetworkLock ) {
-			PollIncomingMessages();
+//			PollIncomingMessages();
 
 			HandleIncomingMessages();
 
