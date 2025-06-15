@@ -1182,6 +1182,7 @@ public partial class SteamLobby : Node {
 
 		SteamNetworkingIdentity localIdentity = new SteamNetworkingIdentity();
 		localIdentity.SetSteamID( SteamUser.GetSteamID() );
+		localIdentity.SetLocalHost();
 		SteamNetworkingSockets.ResetIdentity( ref localIdentity );
 
 		SteamNetworkingUtils.SetDebugOutputFunction(
