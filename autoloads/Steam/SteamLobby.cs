@@ -557,20 +557,6 @@ public partial class SteamLobby : Node {
 		SetPhysicsProcess( true );
 		SetProcess( true );
 
-		NetworkThread = new Thread( () => {
-			while ( true ) {
-				Thread.Sleep( 150 );
-				foreach ( var node in NodeCache ) {
-					node.Value.Send?.Invoke();
-				}
-				foreach ( var player in PlayerCache ) {
-				//	player.Value.Send?.Invoke();
-				}
-				ReadAllPackets();
-			}
-		} );
-		NetworkThread.Start();
-
 		OpenLobbyList();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
@@ -579,7 +565,6 @@ public partial class SteamLobby : Node {
 	}
 
 	public override void _Process( double delta ) {
-		return;
 		if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {
 			return;
 		}
@@ -591,7 +576,6 @@ public partial class SteamLobby : Node {
 		}
 	}
 	public override void _PhysicsProcess( double delta ) {
-		return;
 		ReadAllPackets();
 	}
 };

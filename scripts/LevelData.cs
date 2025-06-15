@@ -167,6 +167,15 @@ public partial class LevelData : Node2D {
 		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		AddChild( PauseMenu );
 
+		DebrisFactory debrisFactory = ResourceCache.GetScene( "res://scenes/effects/debris_factory.tscn" ).Instantiate<DebrisFactory>();
+		AddChild( debrisFactory );
+
+		BulletShellMesh bulletShellMesh = ResourceCache.GetScene( "res://scenes/effects/bullet_shell_mesh.tscn" ).Instantiate<BulletShellMesh>();
+		AddChild( bulletShellMesh );
+
+		BloodParticleFactory bloodParticleFactory = ResourceCache.GetScene( "res://scenes/effects/blood_particle_factory.tscn" ).Instantiate<BloodParticleFactory>();
+		AddChild( bloodParticleFactory );
+
 		//
 		// force the game to run at the highest priority possible
 		//
@@ -179,7 +188,8 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				};
+				}
+				;
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}
