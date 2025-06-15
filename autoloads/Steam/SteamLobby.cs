@@ -1449,13 +1449,6 @@ public partial class SteamLobby : Node {
 						PollIncomingMessages();
 
 						CallDeferred( "HandleIncomingMessages" );
-
-						foreach ( var node in NodeCache.Values ) {
-							node.Send?.Invoke();
-						}
-						foreach ( var player in PlayerCache.Values ) {
-							player.Send?.Invoke();
-						}
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
@@ -1709,7 +1702,7 @@ public partial class SteamLobby : Node {
 					conn,
 					CachedWritePacket,
 					(uint)data.Length,
-					Constants.k_nSteamNetworkingSend_Unreliable,
+					Constants.k_nSteamNetworkingSend_UseCurrentThread,
 					out long _
 				);
 
@@ -1788,9 +1781,9 @@ public partial class SteamLobby : Node {
 		}
 
 		// Process active connections
-		foreach ( var conn in activeConnections ) {
+		for ( int c = 0; c < activeConnections.Count; c++ ) {
 			try {
-				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( conn, messages, messages.Length );
+				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( activeConnections[ c ], messages, messages.Length );
 //				if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} messages" );
 
 				for ( int i = 0; i < count; i++ ) {
@@ -1816,9 +1809,9 @@ public partial class SteamLobby : Node {
 		}
 
 		// Process pending connections
-		foreach ( var conn in pendingConns ) {
+		for ( int c = 0; c < pendingConns.Count; c++ ) {
 			try {
-				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( conn, messages, messages.Length );
+				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( pendingConns[ c ], messages, messages.Length );
 				if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} pending messages" );
 
 				for ( int i = 0; i < count; i++ ) {

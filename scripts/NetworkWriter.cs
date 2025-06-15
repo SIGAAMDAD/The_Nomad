@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Steamworks;
 
@@ -13,12 +14,12 @@ public class NetworkWriter {
 	}
 
 	public void Write( Godot.Vector2 value ) {
-		Writer.Write( value.X );
-		Writer.Write( value.Y );
+		Writer.Write( (Half)value.X );
+		Writer.Write( (Half)value.Y );
 	}
 	public void Write( ulong value ) => Writer.Write( value );
 	public void Write( uint value ) => Writer.Write( value );
-	public void Write( float value ) => Writer.Write( value );
+	public void Write( float value ) => Writer.Write( (Half)value );
 	public void Write( byte value ) => Writer.Write( value );
 	public void Write( sbyte value ) => Writer.Write( value );
 	public void Write( int value ) => Writer.Write( value );

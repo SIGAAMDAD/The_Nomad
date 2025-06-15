@@ -530,12 +530,12 @@ public partial class Player : Entity {
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 
-		SyncObject.Write( Packet.Flip );
+		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.Write( Packet.Position );
+		SyncObject.Write( GlobalPosition );
 
-		SyncObject.Write( Packet.LeftRotation );
-		SyncObject.Write( Packet.RightRotation );
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
+		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( (byte)RightArmAnimationState );
@@ -546,7 +546,7 @@ public partial class Player : Entity {
 
 		SyncObject.Write( (uint)Flags );
 
-		SyncObject.Write( CurrentWeapon );
+		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
@@ -1984,8 +1984,7 @@ public partial class Player : Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		CreatePacket();
-//		SendPacket();
+		SendPacket();
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {

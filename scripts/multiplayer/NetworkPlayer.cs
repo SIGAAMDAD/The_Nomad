@@ -105,12 +105,12 @@ public partial class NetworkPlayer : Renown.Entity {
 		RightArmAnimation.SetDeferred( "flip_v", flip );
 
 		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = packet.ReadSingle();
-		position.Y = packet.ReadSingle();
+		position.X = (float)packet.ReadHalf();
+		position.Y = (float)packet.ReadHalf();
 		GlobalPosition = position;
 
-		LeftArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
-		RightArmAnimation.SetDeferred( "global_rotation", packet.ReadSingle() );
+		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
+		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 
 		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
 		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
