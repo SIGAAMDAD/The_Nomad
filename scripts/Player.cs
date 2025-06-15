@@ -1835,6 +1835,8 @@ public partial class Player : Entity {
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
 		}
+
+		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
 	}
 
 	public override void _PhysicsProcess( double delta ) {

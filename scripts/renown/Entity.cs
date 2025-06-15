@@ -118,6 +118,7 @@ namespace Renown {
 			StatusEffects.Add( effectName, effect );
 			effect.Timeout += () => {
 				CallDeferred( "remove_child", effect );
+				effect.CallDeferred( "queue_free" );
 				StatusEffects.Remove( effectName );
 			};
 			CallDeferred( "add_child", effect );
@@ -141,9 +142,7 @@ namespace Renown {
 		}
 
 		public float GetHealth() => Health;
-
 		public NodePath GetHash() => GetPath();
-
 		public virtual StringName GetObjectName() => "Entity";
 
 		public virtual float GetMoney() => Money;
