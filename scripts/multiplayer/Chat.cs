@@ -39,7 +39,8 @@ namespace Multiplayer {
 		}
 		private void OnChatMessageReceived( ulong senderId, string message ) {
 			string username = SteamFriends.GetFriendPersonaName( (CSteamID)senderId );
-			
+
+			Console.PrintLine( string.Format( "Received chat message \"{0}\" from {1}", message, username ) );
 			RecentText.Text = message;
 			
 			FullText.AppendText( string.Format( "[{0}] {1}\n", username, message ) );
