@@ -1180,6 +1180,10 @@ public partial class SteamLobby : Node {
 		ESteamNetworkingAvailability status = SteamNetworkingUtils.GetRelayNetworkStatus( out SteamRelayNetworkStatus_t relayStatus );
 		Console.PrintLine( string.Format( "[STEAM] Relay network status: {0}", relayStatus.ToString() ) );
 
+		SteamNetworkingIdentity localIdentity = new SteamNetworkingIdentity();
+		localIdentity.SetSteamID( SteamUser.GetSteamID() );
+		SteamNetworkingSockets.ResetIdentity( ref localIdentity );
+
 		SteamNetworkingUtils.SetDebugOutputFunction(
 			ESteamNetworkingSocketsDebugOutputType.k_ESteamNetworkingSocketsDebugOutputType_Verbose,
 			( type, message ) => {
@@ -1192,7 +1196,6 @@ public partial class SteamLobby : Node {
 			while (System.Threading.Interlocked.Equals( NetworkRunning, 0 ) == true) {
 				lock ( NetworkLock ) {
 					PollIncomingMessages();
-					HandleIncomingMessages();
 				}
 				System.Threading.Thread.Sleep(15);
 			}
@@ -1211,7 +1214,7 @@ public partial class SteamLobby : Node {
 		lock ( NetworkLock ) {
 //			PollIncomingMessages();
 
-//			HandleIncomingMessages();
+			HandleIncomingMessages();
 
 			// Send updates
 			foreach ( var node in NodeCache.Values ) {
