@@ -1451,7 +1451,7 @@ public partial class SteamLobby : Node {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
 				}
-				Thread.Sleep( 80 );
+				Thread.Sleep( 10 );
 			}
 		} );
 		NetworkThread.Start();
@@ -1513,6 +1513,9 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( "Initializing SteamLobby..." );
 		SteamAPICall_t handle = SteamMatchmaking.CreateLobby( lobbyType, LobbyMaxMembers );
 		OnLobbyCreatedCallResult.Set( handle );
+
+		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+		GetTree().Root.AddChild( ChatBar );
 	}
 
 	public void JoinLobby( CSteamID lobbyId ) {
@@ -1590,7 +1593,9 @@ public partial class SteamLobby : Node {
 
 	private void ConnectToLobbyMembers() {
 		for ( int i = 0; i < LobbyMemberCount; i++ ) {
-			if ( LobbyMembers[ i ] == ThisSteamID ) continue;
+			if ( LobbyMembers[ i ] == ThisSteamID ) {
+				continue;
+			}
 
 			lock ( ConnectionLock ) {
 				// Skip if already connected or connecting
@@ -1660,8 +1665,7 @@ public partial class SteamLobby : Node {
 				}
 
 				// Send handshake to new connection
-				byte[] handshake = new byte[ 1 ] { (byte)MessageType.Handshake };
-				SendTargetPacket( remoteId, handshake );
+				SendTargetPacket( remoteId, [ (byte)MessageType.Handshake ] );
 				break;
 
 			case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
@@ -1694,13 +1698,13 @@ public partial class SteamLobby : Node {
 	public void SendTargetPacket( CSteamID target, byte[] data ) {
 		lock ( ConnectionLock ) {
 			if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
-//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
+				//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
 				Marshal.Copy( data, 0, CachedWritePacket, data.Length );
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
 					CachedWritePacket,
 					(uint)data.Length,
-					Constants.k_nSteamNetworkingSend_UnreliableNoDelay,
+					Constants.k_nSteamNetworkingSend_Unreliable,
 					out long _
 				);
 
@@ -1722,6 +1726,7 @@ public partial class SteamLobby : Node {
 	}
 
 	private void ProcessIncomingMessage( byte[] data, CSteamID sender ) {
+		/*
 		using ( var stream = new System.IO.MemoryStream( data ) ) {
 			using ( var reader = new System.IO.BinaryReader( stream ) ) {
 				MessageType type = (MessageType)reader.ReadByte();
@@ -1732,6 +1737,13 @@ public partial class SteamLobby : Node {
 				} );
 			}
 		}
+		*/
+		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
+		MessageQueue.Enqueue( new IncomingMessage {
+			Sender = sender,
+			Data = data,
+			Type = (MessageType)PacketReader.ReadByte()
+		} );
 	}
 
 	private void HandleIncomingMessages() {
@@ -1791,11 +1803,10 @@ public partial class SteamLobby : Node {
 							typeof( SteamNetworkingMessage_t )
 						);
 
-						byte[] data = new byte[ message.m_cbSize ];
-						Marshal.Copy( message.m_pData, data, 0, message.m_cbSize );
+						Marshal.Copy( message.m_pData, CachedPacket, 0, message.m_cbSize );
 
 						CSteamID sender = message.m_identityPeer.GetSteamID();
-						ProcessIncomingMessage( data, sender );
+						ProcessIncomingMessage( CachedPacket, sender );
 					}
 					finally {
 						SteamNetworkingMessage_t.Release( messages[ i ] );
@@ -1810,7 +1821,7 @@ public partial class SteamLobby : Node {
 		for ( int c = 0; c < pendingConns.Count; c++ ) {
 			try {
 				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( pendingConns[ c ], messages, messages.Length );
-				if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} pending messages" );
+	//			if ( count > 0 ) Console.PrintLine( $"[STEAM] Received {count} pending messages" );
 
 				for ( int i = 0; i < count; i++ ) {
 					try {
@@ -1819,11 +1830,10 @@ public partial class SteamLobby : Node {
 							typeof( SteamNetworkingMessage_t )
 						);
 
-						byte[] data = new byte[ message.m_cbSize ];
-						Marshal.Copy( message.m_pData, data, 0, (int)message.m_cbSize );
+						Marshal.Copy( message.m_pData, CachedPacket, 0, message.m_cbSize );
 
 						CSteamID sender = message.m_identityPeer.GetSteamID();
-						ProcessIncomingMessage( data, sender );
+						ProcessIncomingMessage( CachedPacket, sender );
 					}
 					finally {
 						SteamNetworkingMessage_t.Release( messages[ i ] );
@@ -1958,8 +1968,7 @@ public partial class SteamLobby : Node {
 	}
 
 	private void MakeP2PHandshake() {
-		byte[] data = new byte[ 1 ] { (byte)MessageType.Handshake };
-		SendP2PPacket( data );
+		SendP2PPacket( [ (byte)MessageType.Handshake ] );
 	}
 
 	private void ChatUpdate( string status ) {

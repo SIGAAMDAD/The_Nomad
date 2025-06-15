@@ -16,6 +16,7 @@ namespace Multiplayer {
 				if ( key.GetKeycodeWithModifiers() == Key.Slash ) {
 					if ( Message.Editable ) {
 						Message.Editable = false;
+						Message.Clear();
 						ExpandedContainer.Hide();
 						MinimizedContainer.Show();
 						Message.Size = new Godot.Vector2( 140, 31 );
@@ -26,11 +27,13 @@ namespace Multiplayer {
 						MinimizedContainer.Hide();
 						Message.Size = new Godot.Vector2( 290, 31 );
 					}
-			 	} else if ( key.GetKeycodeWithModifiers() == Key.Enter ) {
+				} else if ( key.GetKeycodeWithModifiers() == Key.Enter ) {
 					Message.Editable = false;
 					Message.Size = new Godot.Vector2( 140, 31 );
 					SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
 					Message.Clear();
+					MinimizedContainer.Show();
+					ExpandedContainer.Hide();
 				}
 			}
 		}
@@ -43,6 +46,8 @@ namespace Multiplayer {
 		}
         public override void _Ready() {
 			base._Ready();
+
+			Name = "ChatBar";
 
 			ExpandedContainer = GetNode<MarginContainer>( "Expanded" );
 			MinimizedContainer = GetNode<MarginContainer>( "Minimized" );
