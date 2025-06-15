@@ -1915,16 +1915,14 @@ public partial class SteamLobby : Node {
 
 	private void OnLobbyChatMsg( LobbyChatMsg_t pCallback ) {
 		byte[] szBuffer = new byte[ 1024 ];
-		CSteamID senderId;
-		EChatEntryType entryType;
 
 		int ret = SteamMatchmaking.GetLobbyChatEntry(
 			(CSteamID)pCallback.m_ulSteamIDLobby,
 			(int)pCallback.m_iChatID,
-			out senderId,
+			out CSteamID senderId,
 			szBuffer,
 			szBuffer.Length,
-			out entryType
+			out EChatEntryType entryType
 		);
 
 		if ( entryType == EChatEntryType.k_EChatEntryTypeChatMsg ) {

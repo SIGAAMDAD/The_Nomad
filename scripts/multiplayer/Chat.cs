@@ -12,29 +12,28 @@ namespace Multiplayer {
 		public override void _UnhandledInput( InputEvent @event ) {
 			base._UnhandledInput( @event );
 
-			if ( @event is InputEventKey key && key != null && key.IsPressed() ) {
-				if ( key.GetKeycodeWithModifiers() == Key.Slash ) {
-					if ( Message.Editable ) {
-						Message.Editable = false;
-						Message.Clear();
-						ExpandedContainer.Hide();
-						MinimizedContainer.Show();
-						Message.Size = new Godot.Vector2( 140, 31 );
-					} else {
-						Message.Editable = true;
-						Message.GrabFocus();
-						ExpandedContainer.Show();
-						MinimizedContainer.Hide();
-						Message.Size = new Godot.Vector2( 290, 31 );
-					}
-				} else if ( key.GetKeycodeWithModifiers() == Key.Enter ) {
+			if ( Input.IsActionJustReleased( "chat_open" ) ) {
+				if ( Message.Editable ) {
 					Message.Editable = false;
-					Message.Size = new Godot.Vector2( 140, 31 );
-					SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
 					Message.Clear();
-					MinimizedContainer.Show();
 					ExpandedContainer.Hide();
+					MinimizedContainer.Show();
+					Message.Size = new Godot.Vector2( 140, 31 );
+				} else {
+					Message.Editable = true;
+					Message.GrabFocus();
+					ExpandedContainer.Show();
+					MinimizedContainer.Hide();
+					Message.Size = new Godot.Vector2( 290, 31 );
 				}
+			}
+			if ( Input.IsActionJustReleased( "chat_send" ) ) {
+				Message.Editable = false;
+				Message.Size = new Godot.Vector2( 140, 31 );
+				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
+				Message.Clear();
+				MinimizedContainer.Show();
+				ExpandedContainer.Hide();
 			}
 		}
 		private void OnChatMessageReceived( ulong senderId, string message ) {
