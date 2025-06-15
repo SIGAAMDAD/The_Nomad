@@ -1340,6 +1340,7 @@ public partial class SteamLobby : Node {
 	private string LobbyFilterMap;
 	private string LobbyFilterGameMode;
 
+	private IntPtr CachedWritePacket;
 	private byte[] CachedPacket = null;
 	private System.IO.MemoryStream PacketStream = null;
 	private System.IO.BinaryReader PacketReader = null;
@@ -1427,6 +1428,8 @@ public partial class SteamLobby : Node {
 		OnLobbyCreatedCallResult = CallResult<LobbyCreated_t>.Create( OnLobbyCreated );
 		OnLobbyEnterCallResult = CallResult<LobbyEnter_t>.Create( OnLobbyJoined );
 		OnLobbyMatchListCallResult = CallResult<LobbyMatchList_t>.Create( OnLobbyMatchList );
+
+		CachedWritePacket = Marshal.AllocHGlobal( 2048 );
 
 		// Initialize packet buffers
 		CachedPacket = new byte[ 2048 ];
@@ -1691,16 +1694,15 @@ public partial class SteamLobby : Node {
 	public void SendTargetPacket( CSteamID target, byte[] data ) {
 		lock ( ConnectionLock ) {
 			if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
-				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
-				Marshal.Copy( data, 0, ptr, data.Length );
+//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
+				Marshal.Copy( data, 0, CachedWritePacket, data.Length );
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
-					ptr,
+					CachedWritePacket,
 					(uint)data.Length,
-					Constants.k_nSteamNetworkingSend_Reliable,
+					Constants.k_nSteamNetworkingSend_Unreliable,
 					out long _
 				);
-				Marshal.FreeHGlobal( ptr );
 
 				if ( res != EResult.k_EResultOK ) {
 					Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
