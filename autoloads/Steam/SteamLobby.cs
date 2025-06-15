@@ -1287,7 +1287,7 @@ private void ConnectToLobbyMembers() {
 				System.Threading.Thread.Sleep(15);
 			}
 		});
-		NetworkThread.Start();
+//		NetworkThread.Start();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
@@ -1299,7 +1299,7 @@ private void ConnectToLobbyMembers() {
 			return;
 		}
 		lock ( NetworkLock ) {
-//			PollIncomingMessages();
+			PollIncomingMessages();
 
 			HandleIncomingMessages();
 
