@@ -579,6 +579,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Multiplayer;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -998,8 +999,23 @@ public partial class SteamLobby : Node {
 	}
 
 	private void CreateListenSocket() {
-		SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[ 0 ];
-		ListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 0, 0, options );
+		if ( ListenSocket != HSteamListenSocket.Invalid ) {
+			SteamNetworkingSockets.CloseListenSocket( ListenSocket );
+		}
+
+		SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[] {
+			new SteamNetworkingConfigValue_t {
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+			},
+			new SteamNetworkingConfigValue_t {
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+			}
+		};
+		ListenSocket = SteamNetworkingSockets.CreateListenSocketP2P( 0, options.Length, options );
 		if ( ListenSocket == HSteamListenSocket.Invalid ) {
 			Console.PrintError( "[STEAM] Failed to create listen socket" );
 		} else {
@@ -1159,15 +1175,28 @@ public partial class SteamLobby : Node {
 
 		OpenLobbyList();
 
-		NetworkThread = new System.Threading.Thread(() => {
-			while (System.Threading.Interlocked.Equals(NetworkRunning, 0) == true) {
-				lock (NetworkLock) {
-					PollIncomingMessages();
-				}
-				System.Threading.Thread.Sleep(15);
+		SteamNetworkingUtils.InitRelayNetworkAccess();
+
+		ESteamNetworkingAvailability status = SteamNetworkingUtils.GetRelayNetworkStatus( out SteamRelayNetworkStatus_t relayStatus );
+		Console.PrintLine( string.Format( "[STEAM] Relay network status: {0}", relayStatus.ToString() ) );
+
+		SteamNetworkingUtils.SetDebugOutputFunction(
+			ESteamNetworkingSocketsDebugOutputType.k_ESteamNetworkingSocketsDebugOutputType_Verbose,
+			( type, message ) => {
+				Console.PrintLine( string.Format( "[STEAM NET] {0}:{1}", type, message ) );
 			}
-		});
-		NetworkThread.Start();
+		);
+
+
+//		NetworkThread = new System.Threading.Thread(() => {
+//			while (System.Threading.Interlocked.Equals(NetworkRunning, 0) == true) {
+//				lock (NetworkLock) {
+//					PollIncomingMessages();
+//				}
+//				System.Threading.Thread.Sleep(15);
+//			}
+//		});
+//		NetworkThread.Start();
 
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
 
@@ -1179,6 +1208,8 @@ public partial class SteamLobby : Node {
 			return;
 		}
 		lock ( NetworkLock ) {
+			PollIncomingMessages();
+
 			HandleIncomingMessages();
 
 			// Send updates
