@@ -1447,8 +1447,6 @@ public partial class SteamLobby : Node {
 				lock ( NetworkLock ) {
 					try {
 						PollIncomingMessages();
-
-						CallDeferred( "HandleIncomingMessages" );
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
@@ -1466,9 +1464,10 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 
-	/*
 	public override void _Process( double delta ) {
 		lock ( NetworkLock ) {
+			HandleIncomingMessages();
+			
 			// Send updates
 			foreach ( var node in NodeCache.Values ) {
 				node.Send?.Invoke();
@@ -1478,7 +1477,6 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
-	*/
 
 	public override void _Notification( int what ) {
 		base._Notification( what );

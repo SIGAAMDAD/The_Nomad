@@ -1984,8 +1984,6 @@ public partial class Player : Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		SendPacket();
-
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
 				LegAnimation.Play( "run" );
