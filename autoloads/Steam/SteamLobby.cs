@@ -959,6 +959,7 @@ public partial class SteamLobby : Node {
 		}
 	}
 
+	/*
 	private void OnConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t status ) {
 		switch ( status.m_info.m_eState ) {
 		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
@@ -997,6 +998,90 @@ public partial class SteamLobby : Node {
 			break;
 		}
 	}
+	*/
+	private void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t status) {
+    Console.PrintLine($"[STEAM CONNECTION] Status changed: {status.m_info.m_eState}");
+    
+    try {
+        CSteamID remoteId = status.m_info.m_identityRemote.GetSteamID();
+        string remoteName = SteamFriends.GetFriendPersonaName(remoteId);
+        Console.PrintLine($"[STEAM CONNECTION] Remote: {remoteName} ({remoteId})");
+
+        switch (status.m_info.m_eState) {
+            case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
+                Console.PrintLine($"[STEAM] Connection request from {remoteName}");
+                
+                // Only accept if this is an incoming connection request
+                if (!PendingConnections.ContainsKey(remoteId)) {
+                    if (SteamNetworkingSockets.AcceptConnection(status.m_hConn) == EResult.k_EResultOK) {
+                        Console.PrintLine("[STEAM] Accepted incoming connection");
+                    } else {
+                        Console.PrintError("[STEAM] Failed to accept incoming connection");
+                        SteamNetworkingSockets.CloseConnection(status.m_hConn, 0, "Connection accept failed", false);
+                    }
+                } else {
+                    Console.PrintLine("[STEAM] Ignoring outgoing connection request (we initiated it)");
+                }
+                break;
+
+            case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_FindingRoute:
+                Console.PrintLine($"[STEAM] Finding route to {remoteName}");
+                break;
+
+            case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+                Console.PrintLine($"[STEAM] Connected to {remoteName}");
+                
+                lock (NetworkLock) {
+                    Connections[remoteId] = status.m_hConn;
+                    ConnectionToSteamID[status.m_hConn] = remoteId;
+                    PendingConnections.Remove(remoteId);
+                }
+                
+                // Send handshake to new connection
+                byte[] handshake = new byte[1] { (byte)MessageType.Handshake };
+                SendTargetPacket(remoteId, handshake);
+                break;
+
+            // ... rest of the cases ...
+        }
+    }
+    catch (Exception e) {
+        Console.PrintError($"[STEAM] Error in connection callback: {e.Message}");
+    }
+}
+
+private void ConnectToLobbyMembers() {
+    for (int i = 0; i < LobbyMemberCount; i++) {
+        if (LobbyMembers[i] == ThisSteamID) continue;
+
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID(LobbyMembers[i]);
+
+        SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[] {
+            new SteamNetworkingConfigValue_t {
+                m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_TimeoutInitial,
+                m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+                m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 10000 } // 10 seconds
+            },
+            new SteamNetworkingConfigValue_t {
+                m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SymmetricConnect,
+                m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+                m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 } // Enable symmetric connections
+            }
+        };
+
+        HSteamNetConnection conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, options.Length, options);
+        
+        if (conn != HSteamNetConnection.Invalid) {
+            lock (NetworkLock) {
+                PendingConnections[LobbyMembers[i]] = conn;
+            }
+            Console.PrintLine($"[STEAM] Connecting to {SteamFriends.GetFriendPersonaName(LobbyMembers[i])}");
+        } else {
+            Console.PrintError($"[STEAM] Failed to create connection to {SteamFriends.GetFriendPersonaName(LobbyMembers[i])}");
+        }
+    }
+}
 
 	private void CreateListenSocket() {
 		if ( ListenSocket != HSteamListenSocket.Invalid ) {
@@ -1023,6 +1108,7 @@ public partial class SteamLobby : Node {
 		}
 	}
 
+	/*
 	private void ConnectToLobbyMembers() {
 		for ( int i = 0; i < LobbyMemberCount; i++ ) {
 			if ( LobbyMembers[ i ] == ThisSteamID ) continue;
@@ -1041,6 +1127,7 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
+	*/
 
 	private void PollIncomingMessages() {
 		IntPtr[] messages = new IntPtr[ 32 ];
@@ -1182,7 +1269,6 @@ public partial class SteamLobby : Node {
 
 		SteamNetworkingIdentity localIdentity = new SteamNetworkingIdentity();
 		localIdentity.SetSteamID( SteamUser.GetSteamID() );
-		localIdentity.SetLocalHost();
 		SteamNetworkingSockets.ResetIdentity( ref localIdentity );
 
 		SteamNetworkingUtils.SetDebugOutputFunction(
