@@ -1103,8 +1103,6 @@ public partial class SteamLobby : Node {
 				lock ( NetworkLock ) {
 					try {
 						PollIncomingMessages();
-
-						SendBatches();
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
@@ -1135,6 +1133,8 @@ public partial class SteamLobby : Node {
 			foreach ( var player in PlayerCache.Values ) {
 				player.Send?.Invoke();
 			}
+
+			SendBatches();
 		}
 	}
 
