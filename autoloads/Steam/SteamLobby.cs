@@ -588,7 +588,7 @@ public partial class SteamLobby : Node {
 	private void HandleIncomingMessages() {
 		while ( MessageQueue.Count > 0 ) {
 			var msg = MessageQueue.Dequeue();
-			using ( var stream = new System.IO.MemoryStream( msg.Data ) ) {
+			using ( var stream = new System.IO.MemoryStream( SteamLobbySecurity.ProcessIncomingMessage( msg.Data, msg.Sender ) ) ) {
 				using ( var reader = new System.IO.BinaryReader( stream ) ) {
 					reader.ReadByte(); // Skip type byte
 					switch ( msg.Type ) {
@@ -611,18 +611,6 @@ public partial class SteamLobby : Node {
 						Console.PrintLine( $"Received server command: {nCommandType}" );
 						ServerCommandManager.ExecuteCommand( msg.Sender, nCommandType );
 						break;
-					case MessageType.ChatMessage_PlayerOnly: {
-						int messageLength = reader.ReadInt32();
-
-						EmitSignalChatMessageReceived(
-							(ulong)msg.Sender,
-							Convert.ToString( SteamLobbySecurity.ProcessIncomingMessage( DecompressText( reader.ReadBytes( messageLength ) ), msg.Sender ) ),
-							(int)ChatMessageType.PlayerOnly
-						);
-						break; }
-					case MessageType.ChatMessage_TeamOnly: {
-						int messageType = reader.ReadInt32();
-						break; }
 					};
 				}
 			}
