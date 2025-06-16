@@ -34,7 +34,7 @@ public class NetworkWriter {
 		// rewind
 		Stream.Seek( 0, SeekOrigin.Begin );
 	}
-	public void Sync() {
+	public void Sync( int nSendType = Constants.k_nSteamNetworkingSend_Reliable ) {
 		// send the packet
 		SteamLobby.Instance.SendP2PPacket( Packet );
 

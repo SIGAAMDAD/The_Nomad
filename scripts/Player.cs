@@ -584,7 +584,7 @@ public partial class Player : Entity {
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( CreateBytePacket() );
-		SyncObject.Sync();
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 		/*
 
 		SyncObject.Write( TorsoAnimation.FlipH );
