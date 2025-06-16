@@ -531,7 +531,7 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
-		if ( WeaponSlots[ CurrentWeapon ] != null ) {
+		if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
 			SyncObject.Write( true );
 			SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
 			SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
