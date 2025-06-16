@@ -110,8 +110,8 @@ public partial class SteamLobby : Node {
 					state.MessageCount = 0;
 					state.LastResetTime = DateTime.UtcNow.TimeOfDay.TotalSeconds;
 				}
-				if ( ++state.MessageCount > 500 ) {
-					return null; // 500 msg/sec limit
+				if ( ++state.MessageCount > 750 ) {
+					return null; // 750 msg/sec limit
 				}
 
 				// sanity checks
@@ -566,32 +566,25 @@ public partial class SteamLobby : Node {
 	}
 
 	private void ProcessIncomingMessage( byte[] data, CSteamID sender ) {
-		/*
+		byte[] processed = SteamLobbySecurity.ProcessIncomingMessage( data, sender );
+		if ( processed == null ) {
+			return;
+		}
 		using ( var stream = new System.IO.MemoryStream( data ) ) {
 			using ( var reader = new System.IO.BinaryReader( stream ) ) {
 				MessageType type = (MessageType)reader.ReadByte();
 				MessageQueue.Enqueue( new IncomingMessage {
 					Sender = sender,
-					Data = data,
+					Data = processed,
 					Type = type
 				} );
 			}
 		}
-		*/
-		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
-		MessageQueue.Enqueue( new IncomingMessage {
-			Sender = sender,
-			Data = SteamLobbySecurity.ProcessIncomingMessage( data, sender ),
-			Type = (MessageType)PacketReader.ReadByte()
-		} );
 	}
 
 	private void HandleIncomingMessages() {
 		while ( MessageQueue.Count > 0 ) {
 			var msg = MessageQueue.Dequeue();
-			if ( msg.Data == null ) {
-				continue;
-			}
 			using ( var stream = new System.IO.MemoryStream( msg.Data ) ) {
 				using ( var reader = new System.IO.BinaryReader( stream ) ) {
 					reader.ReadByte(); // Skip type byte
@@ -615,8 +608,7 @@ public partial class SteamLobby : Node {
 						Console.PrintLine( $"Received server command: {nCommandType}" );
 						ServerCommandManager.ExecuteCommand( msg.Sender, nCommandType );
 						break;
-					}
-					;
+					};
 				}
 			}
 		}
