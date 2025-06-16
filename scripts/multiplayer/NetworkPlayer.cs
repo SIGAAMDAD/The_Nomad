@@ -95,7 +95,19 @@ public partial class NetworkPlayer : Renown.Entity {
 	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
-	
+
+	private Godot.Vector2 ReadPosition( System.IO.BinaryReader packet ) {
+		const float PRECISION = 0.01f;
+		const float MAX_VALUE = 1000.0f;
+
+		ushort x = BitConverter.ToUInt16( packet.ReadBytes( 2 ) );
+		ushort y = BitConverter.ToUInt16( packet.ReadBytes( 2 ) );
+
+		return new Godot.Vector2(
+			x * PRECISION - MAX_VALUE,
+			y * PRECISION - MAX_VALUE
+		);
+	}
 	public void Update( System.IO.BinaryReader packet ) {
 		bool flip = packet.ReadBoolean();
 
@@ -104,10 +116,10 @@ public partial class NetworkPlayer : Renown.Entity {
 		LeftArmAnimation.SetDeferred( "flip_v", flip );
 		RightArmAnimation.SetDeferred( "flip_v", flip );
 
-		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadHalf();
-		position.Y = (float)packet.ReadHalf();
-		GlobalPosition = position;
+//		Godot.Vector2 position = Godot.Vector2.Zero;
+//		position.X = (float)packet.ReadHalf();
+//		position.Y = (float)packet.ReadHalf();
+		GlobalPosition = ReadPosition( packet );
 
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
@@ -209,7 +221,8 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( "show" );
 			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
-		};
+		}
+		;
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );

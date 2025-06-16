@@ -532,7 +532,7 @@ public partial class Player : Entity {
 
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.Write( GlobalPosition );
+		SyncObject.WritePosition( GlobalPosition );
 
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );

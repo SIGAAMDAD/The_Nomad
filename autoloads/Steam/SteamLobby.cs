@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Multiplayer;
-using Iced.Intel;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using Castle.Core.Logging;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {

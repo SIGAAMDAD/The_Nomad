@@ -13,6 +13,18 @@ public class NetworkWriter {
 		Writer = new BinaryWriter( Stream );
 	}
 
+	public void WritePosition( Godot.Vector2 value ) {
+		const float PRECISION = 0.01f; // 1cm precision
+		const float MAX_VALUE = 1000.0f;
+
+		ushort x = (ushort)( ( value.X + MAX_VALUE ) / PRECISION );
+		ushort y = (ushort)( ( value.Y + MAX_VALUE ) / PRECISION );
+
+		byte[] data = new byte[ 4 ];
+		Buffer.BlockCopy( BitConverter.GetBytes( x ), 0, data, 0, 2 );
+		Buffer.BlockCopy( BitConverter.GetBytes( y ), 0, data, 2, 2 );
+		Writer.Write( data );
+	}
 	public void Write( Godot.Vector2 value ) {
 		Writer.Write( (Half)value.X );
 		Writer.Write( (Half)value.Y );

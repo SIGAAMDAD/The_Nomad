@@ -138,7 +138,10 @@ namespace Multiplayer.Modes {
 			Overlay.Connect( "RoundStart", Callable.From( OnNewRoundStart ) );
 
 			Player1Spawn = GetNode<Node2D>( "Player1Spawn" );
+			Player1Spawn.SetMeta( "Player", Godot.Variant.From( 0 ) );
+
 			Player2Spawn = GetNode<Node2D>( "Player2Spawn" );
+			Player2Spawn.SetMeta( "Player", Godot.Variant.From( 0 ) );
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
 
