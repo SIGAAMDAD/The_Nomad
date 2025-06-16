@@ -514,8 +514,8 @@ public partial class Player : Entity {
 	}
 
 	private void WriteVector2Delta( System.IO.BinaryWriter writer ) {
-		writer.Write( GlobalPosition.X );
-		writer.Write( GlobalPosition.Y );
+		writer.Write( (Half)GlobalPosition.X );
+		writer.Write( (Half)GlobalPosition.Y );
 	}
 	private byte[] CreateBytePacket() {
 		byte[] buffer = SteamLobby.GetBuffer( 128 );
@@ -525,13 +525,7 @@ public partial class Player : Entity {
 
 		writer.Write( TorsoAnimation.FlipH );
 
-		if ( GlobalPosition != LastNetworkPosition ) {
-			writer.Write( true );
-			WriteVector2Delta( writer );
-			LastNetworkPosition = GlobalPosition;
-		} else {
-			writer.Write( false );
-		}
+		WriteVector2Delta( writer );
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			writer.Write( true );
@@ -584,7 +578,7 @@ public partial class Player : Entity {
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( CreateBytePacket() );
-		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
 		/*
 
 		SyncObject.Write( TorsoAnimation.FlipH );
