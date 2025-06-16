@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Multiplayer;
+using System.Threading.Tasks.Dataflow;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -222,6 +223,12 @@ public partial class SteamLobby : Node {
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private HashSet<NetworkNode> PlayerList = new HashSet<NetworkNode>( MAX_LOBBY_MEMBERS );
+
+	//
+	// message batching
+	//
+	private Dictionary<CSteamID, System.IO.MemoryStream> Batches = new Dictionary<CSteamID, System.IO.MemoryStream>( MAX_LOBBY_MEMBERS );
+	private readonly object BatchLock = new object();
 
 	[Signal]
 	public delegate void ChatMessageReceivedEventHandler( ulong senderSteamId, string message, int flags = 0 );
@@ -537,7 +544,28 @@ public partial class SteamLobby : Node {
 		}
 	}
 
-	public void SendTargetPacket( CSteamID target, byte[] data ) {
+	public void SendMessage( CSteamID target, byte[] data ) {
+		lock ( BatchLock ) {
+			if ( !Batches.TryGetValue( target, out var stream ) ) {
+				stream = new System.IO.MemoryStream( 2048 );
+				Batches.Add( target, stream );
+			}
+
+			stream.Write( BitConverter.GetBytes( data.Length ), 0, 4 );
+			stream.Write( data, 0, data.Length );
+		}
+	}
+	private void SendBatches() {
+		lock ( BatchLock ) {
+			foreach ( var batch in Batches ) {
+				if ( batch.Value.Length > 0 ) {
+					SendTargetPacket( batch.Key, batch.Value.ToArray(), Constants.k_nSteamNetworkingSend_UnreliableNoNagle );
+					batch.Value.SetLength( 0 );
+				}
+			}
+		}
+	}
+	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable ) {
 		lock ( ConnectionLock ) {
 			if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
 				//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
@@ -548,7 +576,7 @@ public partial class SteamLobby : Node {
 					conn,
 					CachedWritePacket,
 					(uint)secured.Length,
-					Constants.k_nSteamNetworkingSend_Reliable,
+					sendType,
 					out long _
 				);
 
@@ -563,7 +591,7 @@ public partial class SteamLobby : Node {
 		lock ( ConnectionLock ) {
 			foreach ( var pair in Connections ) {
 				if ( pair.Key != ThisSteamID ) {
-					SendTargetPacket( pair.Key, data );
+					SendMessage( pair.Key, data );
 				}
 			}
 		}
@@ -1075,11 +1103,13 @@ public partial class SteamLobby : Node {
 				lock ( NetworkLock ) {
 					try {
 						PollIncomingMessages();
+
+						SendBatches();
 					} catch ( Exception e ) {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
 				}
-				System.Threading.Thread.Sleep( 10 );
+				System.Threading.Thread.Sleep( 80 );
 			}
 		} );
 		NetworkThread.Start();

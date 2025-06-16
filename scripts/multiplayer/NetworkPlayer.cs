@@ -100,8 +100,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		const float PRECISION = 0.01f;
 		const float MAX_VALUE = 1000.0f;
 
-		ushort x = BitConverter.ToUInt16( packet.ReadBytes( 2 ) );
-		ushort y = BitConverter.ToUInt16( packet.ReadBytes( 2 ) );
+		byte[] data = packet.ReadBytes( 4 );
+		ushort x = BitConverter.ToUInt16( data, 0 );
+		ushort y = BitConverter.ToUInt16( data, 2 );
 
 		return new Godot.Vector2(
 			x * PRECISION - MAX_VALUE,

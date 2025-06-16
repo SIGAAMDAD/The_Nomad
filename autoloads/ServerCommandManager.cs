@@ -13,7 +13,7 @@ public enum ServerCommandType : uint {
 
 	VoteKickResponse_Yes,
 	VoteKickResponse_No,
-	
+
 	VoteKickResult,
 
 	KickPlayer,
