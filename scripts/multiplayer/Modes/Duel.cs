@@ -26,9 +26,11 @@ namespace Multiplayer.Modes {
 			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
 				Player1Spawn.SetMeta( "Player", OtherPlayer );
 				Player2Spawn.SetMeta( "Player", ThisPlayer );
+				ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
 			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == OtherPlayer ) {
 				Player2Spawn.SetMeta( "Player", OtherPlayer );
 				Player1Spawn.SetMeta( "Player", ThisPlayer );
+				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 			ThisPlayer.BlockInput( false );
 

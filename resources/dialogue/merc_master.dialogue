@@ -1,24 +1,25 @@
-~ start
+~ talk_hostile
+Mercenary Master: Fuck off...
+=> END
+
+~ talk_friendly
 Mercenary Master: A new day for a new job, ain't it?
 - Show me the list
-	Mercenary Master: Of course... => END
-- Show me the highest paying jobs
-	Mercenary Master: Of course... => list_high_pay_jobs
-- Show me the lowest paying jobs
-	Mercenary Master: Of course... => list_low_pay_jobs
+	Mercenary Master: Of course... => show_list
+- Just give me something
+	Mercenary Master: My pleasure... => find_contract
 - Show me the leaderboards
 	Mercenary Master: Oh, competing eh? => show_leaderboard
 - Later... => END
 => END
 
+~ find_contract
+=> END
+
+~ show_list
+do DialogueGlobals.MercMaster.ShowContractList()
+=> END
+
 ~ show_leaderboard
-#	do GameState.
-=> END
-
-~ list_high_pay_jobs
-	do GameState.job_filter = MercenaryMaster.JobFilter.HighPaying
-=> END
-
-~ list_low_pay_jobs
-	do GameState.job_filter = MercenaryMaster.JobFilter.LowPaying
+do DialogueGlobals.MercMaster.ShowMercenaryLeaderboard()
 => END

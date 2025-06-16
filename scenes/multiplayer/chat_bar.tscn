@@ -9,22 +9,13 @@ colors = PackedColorArray(0.2, 0.2, 0.2, 0.321569)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_gbe2k"]
 gradient = SubResource("Gradient_atfp8")
 
-[node name="Chat" type="Control"]
-top_level = true
-z_index = 10
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Chat" type="CanvasLayer"]
 script = ExtResource("1_321tg")
 metadata/_edit_use_anchors_ = true
 
 [node name="Expanded" type="MarginContainer" parent="."]
 visible = false
 custom_minimum_size = Vector2(290, 280)
-layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -42,7 +33,6 @@ layout_mode = 2
 
 [node name="Minimized" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(290, 60)
-layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -60,7 +50,6 @@ texture = SubResource("GradientTexture1D_gbe2k")
 layout_mode = 2
 
 [node name="LineEdit" type="LineEdit" parent="."]
-layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0

@@ -551,7 +551,7 @@ public partial class Player : Entity {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
 			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
-				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+				SyncObject.Write( ( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ).GetHashCode() );
 			}
 		}
 		SyncObject.Sync();

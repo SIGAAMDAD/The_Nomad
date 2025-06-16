@@ -8,6 +8,9 @@ public partial class DialogueGlobals : Node {
 	[Export]
 	public StringName BotName;
 
+	[Export]
+	public MercenaryMaster MercMaster;
+
 	/// <summary>
 	/// the player's choice
 	/// </summary>

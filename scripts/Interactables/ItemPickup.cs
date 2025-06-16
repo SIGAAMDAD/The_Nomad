@@ -19,8 +19,8 @@ public partial class ItemPickup : InteractionItem {
 					WeaponEntity weapon = new WeaponEntity();
 					weapon.Name = "Weapon" + weapon;
 					weapon.Data = Data;
-					weapon.SetOwner( player );
-					player.AddChild( player );
+					weapon._Owner = player;
+					player.AddChild( weapon );
 					weapon.TriggerPickup( player );
 					done = true;
 					break;
@@ -32,8 +32,7 @@ public partial class ItemPickup : InteractionItem {
 					player.PickupAmmo( ammo );
 					done = true;
 					break;
-				}
-				;
+				};
 			}
 
 			if ( done ) {

@@ -28,6 +28,8 @@ namespace Renown {
 		private static CallResult<LeaderboardFindResult_t> OnLeaderboardFindResult;
 		private static CallResult<LeaderboardScoreUploaded_t> OnLeaderboardScoreUploaded;
 		private static CallResult<LeaderboardScoresDownloaded_t> OnLeaderboardScoresDownloaded;
+
+		public static Dictionary<int, LeaderboardEntry> GetEntries() => LeaderboardData;
 		
 		private static void OnFindLeaderboard( LeaderboardFindResult_t pCallback, bool bIOFailure ) {
 			if ( pCallback.m_bLeaderboardFound == 0 ) {
@@ -84,6 +86,10 @@ namespace Renown {
 		/// the score with all the bonuses should be calculated before calling this
 		/// </summary>
 		public static void UploadData( ContractType nType, int TimeMinutes, int TimeSeconds, int TimeMilliseconds, int nScore ) {
+			if ( !SteamAPI.IsSteamRunning() ) {
+				return;
+			}
+
 			Console.PrintLine( "[STEAM] Uploading local statistics to global leaderboards..." );
 			
 			int[] details = [
