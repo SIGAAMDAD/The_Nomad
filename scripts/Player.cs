@@ -521,13 +521,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		if ( GlobalPosition != LastNetworkPosition ) {
-			LastNetworkPosition = GlobalPosition;
-			SyncObject.Write( true );
-			SyncObject.Write( LastNetworkPosition );
-		} else {
-			SyncObject.Write( false );
-		}
+		SyncObject.Write( GlobalPosition );
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			SyncObject.Write( true );
