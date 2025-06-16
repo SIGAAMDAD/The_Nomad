@@ -74,15 +74,31 @@ modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 text = "KICK_BUTTON"
 
+[node name="VoteLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.722
+anchor_top = 0.888
+anchor_right = 0.996
+anchor_bottom = 0.94
+offset_left = 0.399963
+offset_top = 0.199951
+offset_right = 0.199951
+offset_bottom = -6.10352e-05
+grow_horizontal = 0
+grow_vertical = 0
+horizontal_alignment = 2
+metadata/_edit_use_anchors_ = true
+
 [node name="StartGameButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = -1
+anchor_left = 0.721
+anchor_top = 0.948
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -105.0
-offset_top = -31.0
+offset_left = 118.2
+offset_top = 0.199951
 grow_horizontal = 0
 grow_vertical = 0
 text = "START_MULTIPLAYER_GAME"
@@ -90,11 +106,13 @@ metadata/_edit_use_anchors_ = true
 
 [node name="ExitLobbyButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = -1
+anchor_left = 0.585
+anchor_top = 0.948
+anchor_right = 0.7095
 anchor_bottom = 1.0
-offset_top = -31.0
-offset_right = 44.0
+offset_top = 0.199951
+offset_right = 0.399963
 grow_vertical = 0
 text = "EXIT_LOBBY"
 metadata/_edit_use_anchors_ = true

@@ -71,5 +71,4 @@ grow_vertical = 0
 theme_override_colors/selection_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 10
 placeholder_text = "Press '/' to begin typing"
-editable = false
 metadata/_edit_use_anchors_ = true

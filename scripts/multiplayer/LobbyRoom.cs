@@ -18,6 +18,8 @@ public partial class LobbyRoom : Control {
 
 	private Thread LoadThread;
 	private PackedScene LoadedLevel;
+
+	private Label VoteLabel;
 	
 	public AudioStreamPlayer UIChannel;
 
@@ -214,6 +216,11 @@ public partial class LobbyRoom : Control {
 	private void PlayerKicked( CSteamID senderId ) {
 	}
 
+	private void OnVoteKickResponseYes( CSteamID senderId ) {
+	}
+	private void OnVoteKickResponseNo( CSteamID senderId ) {
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -237,17 +244,21 @@ public partial class LobbyRoom : Control {
 		ExitLobbyButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
 		ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
 
+		VoteLabel = GetNode<Label>( "VoteLabel" );
+
 		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
-		
+
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
-		
+
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseYes );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseNo );
 
 		if ( SteamLobby.Instance.IsOwner() ) {
 			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
@@ -262,12 +273,12 @@ public partial class LobbyRoom : Control {
 		SteamLobby.Instance.GetLobbyMembers();
 
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[i] ) ) {
+			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
 				continue;
 			}
 			container = ClonerContainer.Duplicate() as HBoxContainer;
 			container.Show();
-			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] );
+			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
 			( container.GetChild( 1 ) as Button ).Hide();
 			PlayerList.AddChild( container );
 		}

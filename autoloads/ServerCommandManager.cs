@@ -3,11 +3,22 @@ using Steamworks;
 
 public enum ServerCommandType : uint {
 	StartGame,
-
+	
+	// to start the game
 	VoteStart,
 	CancelVote,
 
+	StartVoteKick,
+	VoteKickRequest,
+
+	VoteKickResponse_Yes,
+	VoteKickResponse_No,
+	
+	VoteKickResult,
+
 	KickPlayer,
+
+	OwnershipChanged,
 
 	Count
 };

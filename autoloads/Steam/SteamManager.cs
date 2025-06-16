@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using Steamworks;
-using System.Threading;
 
 [GlobalClass]
 public partial class SteamManager : Node {
-	private static ulong VIP_ID = 76561199403850315;
+	public static CSteamID VIP_ID = (CSteamID)76561199403850315;
 
 	private static List<string> DlcList = null;
 
@@ -152,7 +151,7 @@ public partial class SteamManager : Node {
 		stream.Seek( 0, System.IO.SeekOrigin.Begin );
 
 		byte[] buffer = new byte[ length ];
-		stream.Read( buffer );
+		stream.ReadExactly( buffer );
 
 		Console.PrintLine( string.Format( "Saving file \"{0}\" to SteamCloud...", path ) );
 		SteamRemoteStorage.FileWrite( path, buffer, buffer.Length );

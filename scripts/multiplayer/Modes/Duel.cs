@@ -1,5 +1,6 @@
 using Godot;
 using Multiplayer.Overlays;
+using Renown;
 using Steamworks;
 
 namespace Multiplayer.Modes {
@@ -21,6 +22,14 @@ namespace Multiplayer.Modes {
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
+
+			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
+				Player1Spawn.SetMeta( "Player", OtherPlayer );
+				Player2Spawn.SetMeta( "Player", ThisPlayer );
+			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == OtherPlayer ) {
+				Player2Spawn.SetMeta( "Player", OtherPlayer );
+				Player1Spawn.SetMeta( "Player", ThisPlayer );
+			}
 			ThisPlayer.BlockInput( false );
 
 			ScoreBoard.Hide();
@@ -121,12 +130,7 @@ namespace Multiplayer.Modes {
 			Overlay.Connect( "RoundStart", Callable.From( OnNewRoundStart ) );
 
 			Player1Spawn = GetNode<Node2D>( "Player1Spawn" );
-			Player1Spawn.SetProcess( false );
-			Player1Spawn.SetProcessInternal( false );
-
 			Player2Spawn = GetNode<Node2D>( "Player2Spawn" );
-			Player2Spawn.SetProcess( false );
-			Player2Spawn.SetProcessInternal( false );
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
 
