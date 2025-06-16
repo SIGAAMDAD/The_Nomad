@@ -40,7 +40,7 @@ public class NetworkWriter {
 
 	public void Sync( CSteamID target ) {
 		// send the packet
-		SteamLobby.Instance.SendMessage( target, Packet );
+		SteamLobby.Instance.SendTargetPacket( target, Packet );
 
 		// rewind
 		Stream.Seek( 0, SeekOrigin.Begin );
