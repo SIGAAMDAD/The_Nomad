@@ -284,7 +284,7 @@ public partial class LobbyBrowser : Control {
 				}
 			}
 			LobbyData data = new LobbyData( lobbyList[i] );
-			LobbyList.Add( lobbyList[i], data );
+			LobbyList.TryAdd( lobbyList[i], data );
 			LobbyTable.CallDeferred( "add_child", data );
 		}
 

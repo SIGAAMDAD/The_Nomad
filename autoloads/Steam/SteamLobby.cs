@@ -113,8 +113,8 @@ public partial class SteamLobby : Node {
 					state.MessageCount = 0;
 					state.LastResetTime = DateTime.UtcNow.TimeOfDay.TotalSeconds;
 				}
-				if ( ++state.MessageCount > 500 ) {
-					return null; // 500 msg/sec limit
+				if ( ++state.MessageCount > 750 ) {
+					return null; // 750 msg/sec limit
 				}
 
 				return secured;
