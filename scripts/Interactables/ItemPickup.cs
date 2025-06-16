@@ -20,7 +20,7 @@ public partial class ItemPickup : InteractionItem {
 					weapon.Name = "Weapon" + weapon;
 					weapon.Data = Data;
 					weapon.SetOwner( player );
-					weapon._Ready();
+					player.AddChild( player );
 					weapon.TriggerPickup( player );
 					done = true;
 					break;

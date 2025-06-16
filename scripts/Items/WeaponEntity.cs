@@ -130,10 +130,7 @@ public partial class WeaponEntity : Node2D {
 	private float AttackAngle = 0.0f;
 	private float LastWeaponAngle = 0.0f;
 
-	public NodePath InitialPath {
-		get;
-		private set;
-	}
+	public NodePath InitialPath;
 
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
@@ -425,7 +422,9 @@ public partial class WeaponEntity : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		InitialPath = GetPath();
+		if ( IsInsideTree() ) {
+			InitialPath = GetPath();
+		}
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
 		}
