@@ -513,9 +513,9 @@ public partial class Player : Entity {
 		};
 	}
 
-	private void WriteVector2Delta( System.IO.BinaryWriter writer, Godot.Vector2 last, Godot.Vector2 current ) {
-		writer.Write( (ushort)( ( current.X - last.X ) * 100 ) );
-		writer.Write( (ushort)( ( current.Y - last.Y ) * 100 ) );
+	private void WriteVector2Delta( System.IO.BinaryWriter writer ) {
+		writer.Write( (Half)GlobalPosition.X );
+		writer.Write( (Half)GlobalPosition.Y );
 	}
 	private byte[] CreateBytePacket() {
 		byte[] buffer = SteamLobby.GetBuffer( 128 );
@@ -527,7 +527,8 @@ public partial class Player : Entity {
 
 		if ( GlobalPosition != LastNetworkPosition ) {
 			writer.Write( true );
-			WriteVector2Delta( writer, LastNetworkPosition, GlobalPosition );
+			WriteVector2Delta( writer );
+			LastNetworkPosition = GlobalPosition;
 		} else {
 			writer.Write( false );
 		}
