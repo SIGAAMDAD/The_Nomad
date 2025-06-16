@@ -523,7 +523,10 @@ public partial class Player : Entity {
 
 		if ( GlobalPosition != LastNetworkPosition ) {
 			LastNetworkPosition = GlobalPosition;
+			SyncObject.Write( true );
 			SyncObject.Write( LastNetworkPosition );
+		} else {
+			SyncObject.Write( false );
 		}
 
 		if ( (uint)Flags != LastNetworkFlags ) {
