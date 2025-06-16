@@ -514,8 +514,8 @@ public partial class Player : Entity {
 	}
 
 	private void WriteVector2Delta( System.IO.BinaryWriter writer ) {
-		writer.Write( (Half)GlobalPosition.X );
-		writer.Write( (Half)GlobalPosition.Y );
+		writer.Write( GlobalPosition.X );
+		writer.Write( GlobalPosition.Y );
 	}
 	private byte[] CreateBytePacket() {
 		byte[] buffer = SteamLobby.GetBuffer( 128 );

@@ -167,6 +167,19 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		GlobalPosition = ReadVector2Delta( packet );
 
+		if ( packet.ReadBoolean() ) {
+			Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
+
+			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
+			if ( isDashing && !DashChannel.Playing ) {
+				CallDeferred( "PlaySound", DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
+			}
+			DashEffect.SetDeferred( "emitting", isDashing );
+			DashLight.SetDeferred( "visible", isDashing );
+
+			SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
+		}
+
 		byte changedAnimations = packet.ReadByte();
 		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
 			LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
