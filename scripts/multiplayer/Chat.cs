@@ -11,9 +11,9 @@ namespace Multiplayer {
 		private RichTextLabel RecentText;
 		private LineEdit Message;
 
-		private void HandleChatCommand( string text ) {
-			if ( !text.StartsWith( "/" ) ) {
-				return;
+		private bool HandleChatCommand( string text ) {
+			if ( !text.StartsWith( "\\" ) ) {
+				return false;
 			}
 
 			string[] parts = text[ 1.. ].Split( ' ' );
@@ -36,7 +36,7 @@ namespace Multiplayer {
 				}
 				if ( message == null ) {
 					Console.PrintError( string.Format( "Invalid player \"{0}\" for sendto:player command", player ) );
-					return;
+					return false;
 				}
 				byte[] data = SteamLobby.SteamLobbySecurity.SecureOutgoingMessage( SteamLobby.CompressText( message ), targetId );
 				byte[] packet = new byte[ 1 + data.Length ];
@@ -47,6 +47,7 @@ namespace Multiplayer {
 				SteamLobby.Instance.SendTargetPacket( targetId, packet );
 				break;
 			};
+			return true;
 		}
 
 		public override void _UnhandledInput( InputEvent @event ) {
@@ -67,7 +68,6 @@ namespace Multiplayer {
 				}
 			}
 			if ( Input.IsActionJustReleased( "chat_send" ) ) {
-				HandleChatCommand( Message.Text );
 				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
 				Message.Clear();
 				Message.ReleaseFocus();

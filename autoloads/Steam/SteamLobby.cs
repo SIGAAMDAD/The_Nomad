@@ -537,7 +537,7 @@ public partial class SteamLobby : Node {
 			if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
 				//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
 				byte[] secured = SteamLobbySecurity.SecureOutgoingMessage( data, target );
-				Marshal.Copy( data, 0, CachedWritePacket, secured.Length );
+				Marshal.Copy( secured, 0, CachedWritePacket, secured.Length );
 
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
