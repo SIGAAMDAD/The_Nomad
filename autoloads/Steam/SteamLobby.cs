@@ -80,6 +80,8 @@ public partial class SteamLobby : Node {
 				if ( !SecurityStates.TryGetValue( target, out var state ) ) {
 					SecurityStates.Add( target, new ConnectionSecurity() );
 				}
+				return data;
+				/*
 
 				var header = new SecurityHeader {
 					Version = 1,
@@ -97,6 +99,7 @@ public partial class SteamLobby : Node {
 					}
 				}
 				return secured;
+				*/
 			}
 		}
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
@@ -114,7 +117,10 @@ public partial class SteamLobby : Node {
 					return null; // 750 msg/sec limit
 				}
 
+				return secured;
+
 				// sanity checks
+				/*
 				if ( secured.Length < 7 ) {
 					return null;
 				}
@@ -137,6 +143,7 @@ public partial class SteamLobby : Node {
 				byte[] data = new byte[ secured.Length - 7 ];
 				Buffer.BlockCopy( secured, 7, data, 0, data.Length );
 				return data;
+				*/
 			}
 		}
 	};
