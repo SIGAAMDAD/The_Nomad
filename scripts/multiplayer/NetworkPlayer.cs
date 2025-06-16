@@ -84,6 +84,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private PlayerAnimationState RightArmAnimationState;
 	private PlayerAnimationState TorsoAnimationState;
 
+	private bool LastFlipState;
+
 	private FootSteps FootSteps;
 
 	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
@@ -155,11 +157,13 @@ public partial class NetworkPlayer : Renown.Entity {
 		*/
 
 		bool flip = packet.ReadBoolean();
-
-		TorsoAnimation.SetDeferred( "flip_h", flip );
-		LegAnimation.SetDeferred( "flip_h", flip );
-		LeftArmAnimation.SetDeferred( "flip_v", flip );
-		RightArmAnimation.SetDeferred( "flip_v", flip );
+		if ( flip != LastFlipState ) {
+			TorsoAnimation.SetDeferred( "flip_h", flip );
+			LegAnimation.SetDeferred( "flip_h", flip );
+			LeftArmAnimation.SetDeferred( "flip_v", flip );
+			RightArmAnimation.SetDeferred( "flip_v", flip );
+			LastFlipState = flip;
+		}
 
 		if ( packet.ReadBoolean() ) {
 			GlobalPosition = ReadVector2Delta( packet );
