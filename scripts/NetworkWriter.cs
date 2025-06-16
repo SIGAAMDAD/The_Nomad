@@ -14,8 +14,8 @@ public class NetworkWriter {
 	}
 
 	public void Write( Godot.Vector2 value ) {
-		Writer.Write( (Half)value.X );
-		Writer.Write( (Half)value.Y );
+		Writer.Write( value.X );
+		Writer.Write( value.Y );
 	}
 	public void Write( ulong value ) => Writer.Write( value );
 	public void Write( uint value ) => Writer.Write( value );

@@ -103,8 +103,8 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	private Godot.Vector2 ReadVector2Delta( System.IO.BinaryReader packet ) {
 		return new Godot.Vector2(
-			(float)packet.ReadHalf(),
-			(float)packet.ReadHalf()
+			packet.ReadSingle(),
+			packet.ReadSingle()
 		);
 	}
 	public void Update( System.IO.BinaryReader packet ) {
