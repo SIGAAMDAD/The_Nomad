@@ -1,5 +1,7 @@
 using System;
+using System.Data.SqlTypes;
 using System.Reflection;
+using System.Xml.Linq;
 using Godot;
 using PlayerSystem;
 using Renown;
@@ -76,6 +78,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	private SpriteFrames DefaultLeftArmSpriteFrames;
 	private SpriteFrames DefaultRightArmSpriteFrames;
 
+	private byte[] AnimationState = 0;
 	private PlayerAnimationState LegAnimationState;
 	private PlayerAnimationState LeftArmAnimationState;
 	private PlayerAnimationState RightArmAnimationState;
@@ -117,19 +120,21 @@ public partial class NetworkPlayer : Renown.Entity {
 		LeftArmAnimation.SetDeferred( "flip_v", flip );
 		RightArmAnimation.SetDeferred( "flip_v", flip );
 
-//		Godot.Vector2 position = Godot.Vector2.Zero;
-//		position.X = (float)packet.ReadHalf();
-//		position.Y = (float)packet.ReadHalf();
-		GlobalPosition = ReadPosition( packet );
+		Godot.Vector2 position = Godot.Vector2.Zero;
+		position.X = (float)packet.ReadHalf();
+		position.Y = (float)packet.ReadHalf();
+		GlobalPosition = position;
 
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
+		byte[] animationBytes = SteamLobby.StateCompressor.DecompressState( GetHashCode(), packet.ReadBytes( 4 ), AnimationState );
 
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)animationBytes[ 0 ], DefaultLeftArmSpriteFrames );
+		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)animationBytes[ 1 ], DefaultRightArmSpriteFrames );
+
+		LegAnimationState = (PlayerAnimationState)animationBytes[ 2 ];
+		TorsoAnimationState = (PlayerAnimationState)animationBytes[ 3 ];
 
 		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
 

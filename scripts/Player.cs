@@ -532,16 +532,19 @@ public partial class Player : Entity {
 
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.WritePosition( GlobalPosition );
+		SyncObject.Write( GlobalPosition );
 
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
-		SyncObject.Write( (byte)LegAnimationState );
-		SyncObject.Write( (byte)TorsoAnimationState );
+		uint AnimationState = (uint)(
+			( (byte)LeftArmAnimationState & 0xff ) |
+			( ( (byte)RightArmAnimationState >> 8 ) & 0xff ) |
+			( ( (byte)LegAnimationState >> 16 ) & 0xff ) |
+			( ( (byte)TorsoAnimationState >> 24 ) & 0xff )
+		);
 
+		SyncObject.Write( SteamLobby.StateCompressor.CompressState( GetHashCode(), BitConverter.GetBytes( AnimationState ) ) );
 		SyncObject.Write( (byte)HandsUsed );
 
 		SyncObject.Write( (uint)Flags );

@@ -14,7 +14,7 @@ public class NetworkWriter {
 	}
 
 	public void WritePosition( Godot.Vector2 value ) {
-		const float PRECISION = 0.00000000001f; // 1cm precision
+		const float PRECISION = 0.01f; // 1cm precision
 		const float MAX_VALUE = 10000.0f;
 
 		ushort x = (ushort)( ( value.X + MAX_VALUE ) / PRECISION );
@@ -37,6 +37,7 @@ public class NetworkWriter {
 	public void Write( int value ) => Writer.Write( value );
 	public void Write( string value ) => Writer.Write( value );
 	public void Write( bool value ) => Writer.Write( value );
+	public void Write( byte[] value ) => Writer.Write( value );
 
 	public void Sync( CSteamID target ) {
 		// send the packet

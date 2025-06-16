@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Multiplayer;
 using System.Threading.Tasks.Dataflow;
+using System.Linq;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -44,6 +45,25 @@ public partial class SteamLobby : Node {
 			Node = node;
 			Send = send;
 			Receive = receive;
+		}
+	};
+
+	public class StateCompressor {
+		private static Dictionary<int, byte[]> LastSentState = new Dictionary<int, byte[]>();
+
+		public static byte[] CompressState( int nEntityId, byte[] currentState ) {
+			if ( !LastSentState.TryGetValue( nEntityId, out byte[] lastState ) || !lastState.SequenceEqual( currentState ) ) {
+				LastSentState.Add( nEntityId, currentState );
+				return currentState; // full state
+			}
+			return [ 0x00 ];
+		}
+		public static byte[] DecompressState( int nEntityId, byte[] compressed, byte[] lastKnownState ) {
+			if ( compressed.Length == 1 && compressed[ 0 ] == 0x00 ) {
+				return lastKnownState; // no change
+			}
+			// something changed
+			return compressed;
 		}
 	};
 
