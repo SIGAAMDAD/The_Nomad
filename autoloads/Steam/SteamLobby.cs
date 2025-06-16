@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Multiplayer;
 using Iced.Intel;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -249,6 +250,8 @@ public partial class SteamLobby : Node {
 		public MessageType Type;
 	};
 	private Queue<IncomingMessage> MessageQueue = new Queue<IncomingMessage>();
+
+	public static Dictionary<CSteamID, HSteamNetConnection> GetConnections() => Instance.Connections;
 
 	private static void CopyTo( System.IO.Stream src, System.IO.Stream dest ) {
 		byte[] bytes = new byte[ 2048 ];
@@ -1036,6 +1039,9 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
+	private void CmdNetworkingProfile() {
+		GetTree().Root.GetNode<NetworkingMonitor>( "NetworkingMonitor" ).Visible = !GetTree().Root.GetNode<NetworkingMonitor>( "NetworkingMonitor" ).Visible;
+	}
 
 	public override void _EnterTree() {
 		base._EnterTree();
@@ -1091,6 +1097,7 @@ public partial class SteamLobby : Node {
 
 		// Add console command
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
+		Console.AddCommand( "network_prof", Callable.From( CmdNetworkingProfile ), Array.Empty<string>(), 0, "prints SteamNetworkingSockets performance information." );
 		Console.AddCommand( "kick_player", Callable.From<string>( CmdKickPlayer ), [ "username" ], 1, "kicks a player." );
 		Console.AddCommand( "transfer_ownership", Callable.From<string>( CmdTransferOwnership ), [ "username" ], 1, "transfers lobby ownership to specified player." );
 
