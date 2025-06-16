@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Multiplayer;
 using System.Threading.Tasks.Dataflow;
 using System.Linq;
+using System.Collections.Concurrent;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -45,25 +46,6 @@ public partial class SteamLobby : Node {
 			Node = node;
 			Send = send;
 			Receive = receive;
-		}
-	};
-
-	public class StateCompressor {
-		private static Dictionary<int, byte[]> LastSentState = new Dictionary<int, byte[]>();
-
-		public static byte[] CompressState( int nEntityId, byte[] currentState ) {
-			if ( !LastSentState.TryGetValue( nEntityId, out byte[] lastState ) || !lastState.SequenceEqual( currentState ) ) {
-				LastSentState.TryAdd( nEntityId, currentState );
-				return currentState; // full state
-			}
-			return [ 0x00 ];
-		}
-		public static byte[] DecompressState( int nEntityId, byte[] compressed, byte[] lastKnownState ) {
-			if ( compressed.Length == 1 && compressed[ 0 ] == 0x00 ) {
-				return lastKnownState; // no change
-			}
-			// something changed
-			return compressed;
 		}
 	};
 
@@ -244,6 +226,9 @@ public partial class SteamLobby : Node {
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private HashSet<NetworkNode> PlayerList = new HashSet<NetworkNode>( MAX_LOBBY_MEMBERS );
 
+	private static ConcurrentBag<byte[]> BufferPool = new ConcurrentBag<byte[]>();
+	private IntPtr[] MessagePool = new IntPtr[ MAX_LOBBY_MEMBERS ];
+
 	//
 	// message batching
 	//
@@ -284,6 +269,22 @@ public partial class SteamLobby : Node {
 	private Queue<IncomingMessage> MessageQueue = new Queue<IncomingMessage>();
 
 	public static Dictionary<CSteamID, HSteamNetConnection> GetConnections() => Instance.Connections;
+
+	public static byte[] GetBuffer( int nSize ) {
+		foreach ( var buf in BufferPool ) {
+			if ( buf.Length >= nSize ) {
+				BufferPool.TryTake( out byte[] output );
+				return output;
+			}
+		}
+		return new byte[ nSize ];
+	}
+	public static void ReleaseBuffer( byte[] buffer ) {
+		if ( buffer.Length > 4096 ) {
+			return; // don't pool large buffers
+		}
+		BufferPool.Add( buffer );
+	}
 
 	private static void CopyTo( System.IO.Stream src, System.IO.Stream dest ) {
 		byte[] bytes = new byte[ 2048 ];

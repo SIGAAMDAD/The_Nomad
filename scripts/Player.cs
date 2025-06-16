@@ -82,24 +82,12 @@ public partial class Player : Entity {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
 	];
 
-	private struct NetworkPacket {
-		public sbyte CurrentWeapon;
-		public uint WeaponMode;
-		public bool WeaponUsed;
-		public string WeaponId;
-		public Vector2 Position;
-		public bool Flip;
-		public float LeftRotation;
-		public byte LeftState;
-		public float RightRotation;
-		public byte RightState;
-		public byte LegState;
-		public byte TorsoState;
-		public byte HandsUsed;
-		public uint Flags;
-	};
-
-	private NetworkPacket Packet = new NetworkPacket();
+	private Godot.Vector2 LastNetworkPosition = Godot.Vector2.Zero;
+	private PlayerAnimationState LastLeftArmAnimationState;
+	private PlayerAnimationState LastRightArmAnimationState;
+	private PlayerAnimationState LastLegArmAnimationState;
+	private PlayerAnimationState LastTorsoArmAnimationState;
+	private uint LastNetworkFlags = 0;
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -524,11 +512,79 @@ public partial class Player : Entity {
 			break;
 		};
 	}
+
+	private void WriteVector2Delta( System.IO.BinaryWriter writer, Godot.Vector2 last, Godot.Vector2 current ) {
+		writer.Write( (ushort)( ( current.X - last.X ) * 100 ) );
+		writer.Write( (ushort)( ( current.Y - last.Y ) * 100 ) );
+	}
+	private byte[] CreateBytePacket() {
+		byte[] buffer = SteamLobby.GetBuffer( 128 );
+
+		using var stream = new System.IO.MemoryStream( buffer );
+		using var writer = new System.IO.BinaryWriter( stream );
+
+		writer.Write( TorsoAnimation.FlipH );
+
+		if ( GlobalPosition != LastNetworkPosition ) {
+			writer.Write( true );
+			WriteVector2Delta( writer, LastNetworkPosition, GlobalPosition );
+		} else {
+			writer.Write( false );
+		}
+
+		if ( (uint)Flags != LastNetworkFlags ) {
+			writer.Write( true );
+			writer.Write( (uint)Flags );
+			LastNetworkFlags = (uint)Flags;
+		} else {
+			writer.Write( false );
+		}
+
+		writer.Write( (Half)ArmLeft.Animations.GlobalRotation );
+		writer.Write( (Half)ArmRight.Animations.GlobalRotation );
+
+		byte changedFlags = 0;
+		if ( LeftArmAnimationState != LastLeftArmAnimationState ) {
+			changedFlags |= 0b00000001;
+			LastLeftArmAnimationState = LeftArmAnimationState;
+		}
+		if ( RightArmAnimationState != LastRightArmAnimationState ) {
+			changedFlags |= 0b00000010;
+			LastRightArmAnimationState = RightArmAnimationState;
+		}
+		if ( LegAnimationState != LastLegArmAnimationState ) {
+			changedFlags |= 0b00000100;
+			LastLegArmAnimationState = LegAnimationState;
+		}
+		if ( TorsoAnimationState != LastTorsoArmAnimationState ) {
+			changedFlags |= 0b00001000;
+			LastTorsoArmAnimationState = TorsoAnimationState;
+		}
+		writer.Write( changedFlags );
+
+		if ( ( changedFlags & 0b00000001 ) != 0 ) {
+			writer.Write( (byte)LeftArmAnimationState );
+		}
+		if ( ( changedFlags & 0b00000010 ) != 0 ) {
+			writer.Write( (byte)RightArmAnimationState );
+		}
+		if ( ( changedFlags & 0b00000100 ) != 0 ) {
+			writer.Write( (byte)LegAnimationState );
+		}
+		if ( ( changedFlags & 0b00001000 ) != 0 ) {
+			writer.Write( (byte)TorsoAnimationState );
+		}
+
+		return buffer;
+	}
 	private void SendPacket() {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( CreateBytePacket() );
+		SyncObject.Sync();
+		/*
 
 		SyncObject.Write( TorsoAnimation.FlipH );
 
@@ -544,8 +600,6 @@ public partial class Player : Entity {
 
 		SyncObject.Write( (byte)HandsUsed );
 
-		SyncObject.Write( (uint)Flags );
-
 		SyncObject.Write( (sbyte)CurrentWeapon );
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
 			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
@@ -555,8 +609,9 @@ public partial class Player : Entity {
 			}
 		}
 		SyncObject.Sync();
+		*/
 	}
-	
+
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
 			if ( mob.GetTileMapFloor() == Floor ) {

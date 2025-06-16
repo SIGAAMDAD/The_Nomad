@@ -3,6 +3,7 @@ using System.Data.SqlTypes;
 using System.Reflection;
 using System.Xml.Linq;
 using Godot;
+using Microsoft.Diagnostics.Tracing.Parsers.AspNet;
 using PlayerSystem;
 using Renown;
 using Renown.Thinkers;
@@ -98,20 +99,14 @@ public partial class NetworkPlayer : Renown.Entity {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
 
-	private Godot.Vector2 ReadPosition( System.IO.BinaryReader packet ) {
-		const float PRECISION = 0.00000000001f; // 1cm precision
-		const float MAX_VALUE = 10000.0f;
-
-		byte[] data = packet.ReadBytes( 4 );
-		ushort x = BitConverter.ToUInt16( data, 0 );
-		ushort y = BitConverter.ToUInt16( data, 2 );
-
+	private Godot.Vector2 ReadVector2Delta( System.IO.BinaryReader packet ) {
 		return new Godot.Vector2(
-			x * PRECISION - MAX_VALUE,
-			y * PRECISION - MAX_VALUE
+			GlobalPosition.X + ( packet.ReadUInt16() / 100.0f ),
+			GlobalPosition.Y + ( packet.ReadUInt16() / 100.0f )
 		);
 	}
 	public void Update( System.IO.BinaryReader packet ) {
+		/*
 		bool flip = packet.ReadBoolean();
 
 		TorsoAnimation.SetDeferred( "flip_h", flip );
@@ -135,7 +130,9 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
 
-		Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
+		// flags
+
+		Player.PlayerFlags flags = (Player.PlayerFlags)SteamLobby.StateCompressor.DecompressState( GetHashCode(),  );
 
 		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 		if ( isDashing && !DashChannel.Playing ) {
@@ -149,83 +146,106 @@ public partial class NetworkPlayer : Renown.Entity {
 		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
 			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
 			if ( packet.ReadBoolean() ) {
-				string weaponId = packet.ReadString();
-				Console.PrintLine( "NetworkPlayer is using weapon " + weaponId );
+				int weaponHash = ;
 				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
 			}
 		} else {
 			WeaponUseMode = WeaponEntity.Properties.None;
 		}
+		*/
 
-		switch ( LegAnimationState ) {
-		case PlayerAnimationState.Hide:
-		case PlayerAnimationState.TrueIdleStart:
-		case PlayerAnimationState.TrueIdleLoop:
-		case PlayerAnimationState.Dead:
-		case PlayerAnimationState.CheckpointDrinking:
-		case PlayerAnimationState.CheckpointExit:
-		case PlayerAnimationState.CheckpointIdle:
-			LegAnimation.CallDeferred( "hide" );
-			break;
-		case PlayerAnimationState.Idle:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "idle" );
+		bool flip = packet.ReadBoolean();
+		
+		TorsoAnimation.SetDeferred( "flip_h", flip );
+		LegAnimation.SetDeferred( "flip_h", flip );
+		LeftArmAnimation.SetDeferred( "flip_v", flip );
+		RightArmAnimation.SetDeferred( "flip_v", flip );
 
-			WalkEffect.SetDeferred( "emitting", false );
-			SlideEffect.SetDeferred( "emitting", false );
-			break;
-		case PlayerAnimationState.Running:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "run" );
-
-			WalkEffect.SetDeferred( "emitting", true );
-			break;
-		case PlayerAnimationState.Sliding:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "slide" );
-			break;
+		if ( packet.ReadBoolean() ) {
+			GlobalPosition = ReadVector2Delta( packet );
 		}
-		;
 
-		switch ( TorsoAnimationState ) {
-		case PlayerAnimationState.CheckpointDrinking:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
-			break;
-		case PlayerAnimationState.CheckpointExit:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
-			break;
-		case PlayerAnimationState.CheckpointIdle:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
-			break;
-		case PlayerAnimationState.Idle:
-		case PlayerAnimationState.Sliding:
-		case PlayerAnimationState.Running:
-			TorsoAnimation.CallDeferred( "show" );
-			TorsoAnimation.CallDeferred( "play", "default" );
-			IdleAnimation.Hide();
-			break;
-		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "start" );
-			break;
-		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
-			IdleAnimation.CallDeferred( "play", "loop" );
-			break;
-		case PlayerAnimationState.Dead:
-			TorsoAnimation.CallDeferred( "show" );
-			TorsoAnimation.CallDeferred( "play", "dead" );
-			break;
+		byte changedAnimations = packet.ReadByte();
+		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
+			LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+			SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
 		}
-		;
+		if ( ( changedAnimations & 0b00000010 ) != 0 ) {
+			RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+			SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
+		}
+		if ( ( changedAnimations & 0b00000100 ) != 0 ) {
+			LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+			switch ( LegAnimationState ) {
+			case PlayerAnimationState.Hide:
+			case PlayerAnimationState.TrueIdleStart:
+			case PlayerAnimationState.TrueIdleLoop:
+			case PlayerAnimationState.Dead:
+			case PlayerAnimationState.CheckpointDrinking:
+			case PlayerAnimationState.CheckpointExit:
+			case PlayerAnimationState.CheckpointIdle:
+				LegAnimation.CallDeferred( "hide" );
+				break;
+			case PlayerAnimationState.Idle:
+				LegAnimation.CallDeferred( "show" );
+				LegAnimation.CallDeferred( "play", "idle" );
+
+				WalkEffect.SetDeferred( "emitting", false );
+				SlideEffect.SetDeferred( "emitting", false );
+				break;
+			case PlayerAnimationState.Running:
+				LegAnimation.CallDeferred( "show" );
+				LegAnimation.CallDeferred( "play", "run" );
+
+				WalkEffect.SetDeferred( "emitting", true );
+				break;
+			case PlayerAnimationState.Sliding:
+				LegAnimation.CallDeferred( "show" );
+				LegAnimation.CallDeferred( "play", "slide" );
+				break;
+			};
+		}
+		if ( ( changedAnimations & 0b00001000 ) != 0 ) {
+			TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+			switch ( TorsoAnimationState ) {
+			case PlayerAnimationState.CheckpointDrinking:
+				TorsoAnimation.CallDeferred( "hide" );
+				IdleAnimation.CallDeferred( "show" );
+				IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
+				break;
+			case PlayerAnimationState.CheckpointExit:
+				TorsoAnimation.CallDeferred( "hide" );
+				IdleAnimation.CallDeferred( "show" );
+				IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
+				break;
+			case PlayerAnimationState.CheckpointIdle:
+				TorsoAnimation.CallDeferred( "hide" );
+				IdleAnimation.CallDeferred( "show" );
+				IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
+				break;
+			case PlayerAnimationState.Idle:
+			case PlayerAnimationState.Sliding:
+			case PlayerAnimationState.Running:
+				TorsoAnimation.CallDeferred( "show" );
+				TorsoAnimation.CallDeferred( "play", "default" );
+				IdleAnimation.Hide();
+				break;
+			case PlayerAnimationState.TrueIdleStart:
+				TorsoAnimation.CallDeferred( "hide" );
+				IdleAnimation.CallDeferred( "show" );
+				IdleAnimation.CallDeferred( "play", "start" );
+				break;
+			case PlayerAnimationState.TrueIdleLoop:
+				TorsoAnimation.CallDeferred( "hide" );
+				IdleAnimation.CallDeferred( "show" );
+				IdleAnimation.CallDeferred( "play", "loop" );
+				break;
+			case PlayerAnimationState.Dead:
+				TorsoAnimation.CallDeferred( "show" );
+				TorsoAnimation.CallDeferred( "play", "dead" );
+				break;
+			};
+		}
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
