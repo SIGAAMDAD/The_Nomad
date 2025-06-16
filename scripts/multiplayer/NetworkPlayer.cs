@@ -97,7 +97,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	}
 
 	private Godot.Vector2 ReadPosition( System.IO.BinaryReader packet ) {
-		const float PRECISION = 0.0000001f;
+		const float PRECISION = 0.00000000001f; // 1cm precision
 		const float MAX_VALUE = 10000.0f;
 
 		byte[] data = packet.ReadBytes( 4 );
