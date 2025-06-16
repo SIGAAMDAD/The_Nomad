@@ -518,7 +518,7 @@ public partial class Player : Entity {
 		writer.Write( GlobalPosition.Y );
 	}
 	private byte[] CreateBytePacket() {
-		byte[] buffer = SteamLobby.GetBuffer( 128 );
+		byte[] buffer = SteamLobby.GetBuffer( 256 );
 
 		using var stream = new System.IO.MemoryStream( buffer );
 		using var writer = new System.IO.BinaryWriter( stream );

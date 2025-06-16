@@ -180,6 +180,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 		}
 
+		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
+		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
+
 		byte changedAnimations = packet.ReadByte();
 		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
 			LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
