@@ -531,6 +531,14 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
+		if ( CurrentWeapon != WeaponSlot.INVALID ) {
+			SyncObject.Write( true );
+			SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+			SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
+		} else {
+			SyncObject.Write( false );
+		}
+
 		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
 			SyncObject.Write( true );
 			LastNetworkAimAngle = AimLine.GlobalRotation;

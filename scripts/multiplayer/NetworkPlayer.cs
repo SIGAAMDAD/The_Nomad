@@ -181,6 +181,12 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 
 		if ( packet.ReadBoolean() ) {
+			string weaponId = packet.ReadString();
+			WeaponUseMode = (WeaponEntity.Properties)packet.Read7BitEncodedInt();
+			CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
+		}
+
+		if ( packet.ReadBoolean() ) {
 			float angle = (float)packet.ReadHalf();
 			LeftArmAnimation.SetDeferred( "global_rotation", angle );
 			RightArmAnimation.SetDeferred( "global_rotation", angle );
@@ -217,7 +223,8 @@ public partial class NetworkPlayer : Renown.Entity {
 			LegAnimation.CallDeferred( "show" );
 			LegAnimation.CallDeferred( "play", "slide" );
 			break;
-		};
+		}
+		;
 
 		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
 		switch ( TorsoAnimationState ) {

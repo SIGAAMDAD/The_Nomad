@@ -7,6 +7,7 @@ using Multiplayer;
 using System.Threading.Tasks.Dataflow;
 using System.Linq;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -207,8 +208,6 @@ public partial class SteamLobby : Node {
 
 	private IntPtr CachedWritePacket;
 	private byte[] CachedPacket = null;
-	private System.IO.MemoryStream PacketStream = null;
-	private System.IO.BinaryReader PacketReader = null;
 
 	private CSteamID ThisSteamID = CSteamID.Nil;
 	private int ThisSteamIDIndex = 0;
@@ -1105,8 +1104,6 @@ public partial class SteamLobby : Node {
 
 		// Initialize packet buffers
 		CachedPacket = new byte[ 2048 ];
-		PacketStream = new System.IO.MemoryStream( CachedPacket );
-		PacketReader = new System.IO.BinaryReader( PacketStream );
 		SetPhysicsProcess( true );
 		SetProcess( true );
 
