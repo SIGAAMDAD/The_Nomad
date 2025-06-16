@@ -14,7 +14,7 @@ public class NetworkWriter {
 	}
 
 	public void WritePosition( Godot.Vector2 value ) {
-		const float PRECISION = 0.01f; // 1cm precision
+		const float PRECISION = 0.0000001f; // 1cm precision
 		const float MAX_VALUE = 1000.0f;
 
 		ushort x = (ushort)( ( value.X + MAX_VALUE ) / PRECISION );
