@@ -427,12 +427,12 @@ public partial class SteamLobby : Node {
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendBufferSize,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 32 * 1024 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 64 * 1024 }
 			},
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_RecvBufferSize,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 32 * 1024 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 64 * 1024 }
 			},
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_NagleTime,
@@ -611,7 +611,7 @@ public partial class SteamLobby : Node {
 		lock ( ConnectionLock ) {
 			foreach ( var pair in Connections ) {
 				if ( pair.Key != ThisSteamID ) {
-					SendTargetPacket( pair.Key, data );
+					SendMessage( pair.Key, data );
 				}
 			}
 		}

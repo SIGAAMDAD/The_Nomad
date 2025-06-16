@@ -537,14 +537,11 @@ public partial class Player : Entity {
 		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
 		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 
-		uint AnimationState = (uint)(
-			( (byte)LeftArmAnimationState & 0xff ) |
-			( ( (byte)RightArmAnimationState >> 8 ) & 0xff ) |
-			( ( (byte)LegAnimationState >> 16 ) & 0xff ) |
-			( ( (byte)TorsoAnimationState >> 24 ) & 0xff )
-		);
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
 
-		SyncObject.Write( SteamLobby.StateCompressor.CompressState( GetHashCode(), BitConverter.GetBytes( AnimationState ) ) );
 		SyncObject.Write( (byte)HandsUsed );
 
 		SyncObject.Write( (uint)Flags );
@@ -559,13 +556,7 @@ public partial class Player : Entity {
 		}
 		SyncObject.Sync();
 	}
-	private void CreatePacket() {
-		Packet.Flip = TorsoAnimation.FlipH;
-		Packet.Position = GlobalPosition;
-		Packet.LeftRotation = ArmLeft.Animations.GlobalRotation;
-		Packet.RightRotation = ArmRight.Animations.GlobalRotation;
-	}
-
+	
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
 			if ( mob.GetTileMapFloor() == Floor ) {
