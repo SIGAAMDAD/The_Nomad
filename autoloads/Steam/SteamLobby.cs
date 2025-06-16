@@ -53,7 +53,7 @@ public partial class SteamLobby : Node {
 
 		public static byte[] CompressState( int nEntityId, byte[] currentState ) {
 			if ( !LastSentState.TryGetValue( nEntityId, out byte[] lastState ) || !lastState.SequenceEqual( currentState ) ) {
-				LastSentState.Add( nEntityId, currentState );
+				LastSentState.TryAdd( nEntityId, currentState );
 				return currentState; // full state
 			}
 			return [ 0x00 ];
