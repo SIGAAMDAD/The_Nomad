@@ -8,6 +8,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO.Pipes;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -1125,10 +1126,10 @@ public partial class SteamLobby : Node {
 						Console.PrintError( $"[NETWORK THREAD] Error: {e.Message}" );
 					}
 				}
-				System.Threading.Thread.Sleep( 40 );
+				System.Threading.Thread.Sleep( 20 );
 			}
 		} );
-		NetworkThread.Start();
+		//		NetworkThread.Start();
 
 		// Add console command
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
@@ -1142,6 +1143,8 @@ public partial class SteamLobby : Node {
 	}
 	public override void _Process( double delta ) {
 		lock ( NetworkLock ) {
+			PollIncomingMessages();
+
 			HandleIncomingMessages();
 
 			// Send updates
@@ -1151,7 +1154,6 @@ public partial class SteamLobby : Node {
 			foreach ( var player in PlayerCache.Values ) {
 				player.Send?.Invoke();
 			}
-
 			SendBatches();
 		}
 	}
