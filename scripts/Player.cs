@@ -525,36 +525,25 @@ public partial class Player : Entity {
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			SyncObject.Write( true );
-			SyncObject.Write( (uint)Flags );
+			SyncObject.WritePackedInt( (int)Flags );
 			LastNetworkFlags = (uint)Flags;
 		} else {
 			SyncObject.Write( false );
 		}
 
-		byte changedAnimations = 0;
 		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
-			changedAnimations |= 0b00000001;
-			LastNetworkAimAngle = AimLine.GlobalRotation;
+			SyncObject.Write( true );
+			float angle = (float)( LastNetworkAimAngle % ( 2.0f * Math.PI ) );
+			if ( angle < 0.0f ) {
+				angle += 2.0f * (float)Math.PI;
+			}
+			SyncObject.Write( (byte)( angle / ( 2.0f * Math.PI ) * 255.0f ) );
+		} else {
+			SyncObject.Write( false );
 		}
-		if ( LastLeftArmAnimationState != LeftArmAnimationState ) {
-			changedAnimations |= 0b00000010;
-			LastLeftArmAnimationState = LeftArmAnimationState;
-		}
-		if ( LastRightArmAnimationState != RightArmAnimationState ) {
-			changedAnimations |= 0b00000100;
-			LastRightArmAnimationState = RightArmAnimationState;
-		}
-		SyncObject.Write( changedAnimations );
 
-		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
-			SyncObject.Write( LastNetworkAimAngle );
-		}
-		if ( ( changedAnimations & 0b00000010 ) != 0 ) {
-			SyncObject.Write( (byte)LeftArmAnimationState );
-		}
-		if ( ( changedAnimations & 0b00000100 ) != 0 ) {
-			SyncObject.Write( (byte)RightArmAnimationState );
-		}
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 

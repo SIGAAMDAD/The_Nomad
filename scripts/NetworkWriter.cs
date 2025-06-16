@@ -26,6 +26,7 @@ public class NetworkWriter {
 	public void Write( string value ) => Writer.Write( value );
 	public void Write( bool value ) => Writer.Write( value );
 	public void Write( byte[] value ) => Writer.Write( value );
+	public void WritePackedInt( int value ) => Writer.Write7BitEncodedInt( value );
 
 	public void Sync( CSteamID target ) {
 		// send the packet

@@ -168,7 +168,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		GlobalPosition = ReadVector2Delta( packet );
 
 		if ( packet.ReadBoolean() ) {
-			Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
+			Player.PlayerFlags flags = (Player.PlayerFlags)packet.Read7BitEncodedInt();
 
 			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 			if ( isDashing && !DashChannel.Playing ) {
@@ -180,21 +180,16 @@ public partial class NetworkPlayer : Renown.Entity {
 			SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 		}
 
-		byte animationFlags = packet.ReadByte();
+		if ( packet.ReadBoolean() ) {
+			float angle = ( packet.ReadByte() / 255.0f ) * 2.0f * (float)Math.PI;
+			LeftArmAnimation.SetDeferred( "global_rotation", angle );
+			RightArmAnimation.SetDeferred( "global_rotation", angle );
+		}
+		LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
 
-		if ( ( animationFlags & 0b00000001 ) != 0 ) {
-			float rotation = (float)packet.ReadHalf();
-			LeftArmAnimation.SetDeferred( "global_rotation", rotation );
-			RightArmAnimation.SetDeferred( "global_rotation", rotation );
-		}
-		if ( ( animationFlags & 0b00000010 ) != 0 ) {
-			LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
-			SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
-		}
-		if ( ( animationFlags & 0b00000100 ) != 0 ) {
-			RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
-			SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
-		}
+		RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
 
 		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
 		switch ( LegAnimationState ) {
