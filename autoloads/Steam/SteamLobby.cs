@@ -579,7 +579,7 @@ public partial class SteamLobby : Node {
 		lock ( BatchLock ) {
 			foreach ( var batch in Batches ) {
 				if ( batch.Value.Length > 0 ) {
-					SendTargetPacket( batch.Key, batch.Value.ToArray(), Constants.k_nSteamNetworkingSend_UnreliableNoNagle );
+					SendTargetPacket( batch.Key, batch.Value.ToArray(), Constants.k_nSteamNetworkingSend_Unreliable );
 					batch.Value.SetLength( 0 );
 				}
 			}
