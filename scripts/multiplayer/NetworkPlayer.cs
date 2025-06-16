@@ -181,7 +181,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 
 		if ( packet.ReadBoolean() ) {
-			float angle = ( packet.ReadByte() / 255.0f ) * 2.0f * (float)Math.PI;
+			float angle = (float)packet.ReadHalf();
 			LeftArmAnimation.SetDeferred( "global_rotation", angle );
 			RightArmAnimation.SetDeferred( "global_rotation", angle );
 		}

@@ -533,11 +533,8 @@ public partial class Player : Entity {
 
 		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
 			SyncObject.Write( true );
-			float angle = (float)( LastNetworkAimAngle % ( 2.0f * Math.PI ) );
-			if ( angle < 0.0f ) {
-				angle += 2.0f * (float)Math.PI;
-			}
-			SyncObject.Write( (byte)( angle / ( 2.0f * Math.PI ) * 255.0f ) );
+			LastNetworkAimAngle = AimLine.GlobalRotation;
+			SyncObject.Write( LastNetworkAimAngle );
 		} else {
 			SyncObject.Write( false );
 		}
