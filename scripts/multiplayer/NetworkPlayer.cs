@@ -103,8 +103,8 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	private Godot.Vector2 ReadVector2Delta( System.IO.BinaryReader packet ) {
 		return new Godot.Vector2(
-			packet.ReadSingle(),
-			packet.ReadSingle()
+			(float)packet.ReadHalf(),
+			(float)packet.ReadHalf()
 		);
 	}
 	public void Update( System.IO.BinaryReader packet ) {
@@ -165,9 +165,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			LastFlipState = flip;
 		}
 
-		if ( packet.ReadBoolean() ) {
-			GlobalPosition = ReadVector2Delta( packet );
-		}
+		GlobalPosition = ReadVector2Delta( packet );
 
 		if ( packet.ReadBoolean() ) {
 			Player.PlayerFlags flags = (Player.PlayerFlags)packet.ReadUInt32();
