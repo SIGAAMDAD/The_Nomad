@@ -542,7 +542,7 @@ public partial class SteamLobby : Node {
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
 					CachedWritePacket,
-					(uint)data.Length,
+					(uint)secured.Length,
 					Constants.k_nSteamNetworkingSend_Reliable,
 					out long _
 				);
@@ -580,7 +580,7 @@ public partial class SteamLobby : Node {
 		PacketStream.Seek( 0, System.IO.SeekOrigin.Begin );
 		MessageQueue.Enqueue( new IncomingMessage {
 			Sender = sender,
-			Data = data,
+			Data = SteamLobbySecurity.ProcessIncomingMessage( data, sender ),
 			Type = (MessageType)PacketReader.ReadByte()
 		} );
 	}
@@ -588,7 +588,7 @@ public partial class SteamLobby : Node {
 	private void HandleIncomingMessages() {
 		while ( MessageQueue.Count > 0 ) {
 			var msg = MessageQueue.Dequeue();
-			using ( var stream = new System.IO.MemoryStream( SteamLobbySecurity.ProcessIncomingMessage( msg.Data, msg.Sender ) ) ) {
+			using ( var stream = new System.IO.MemoryStream( msg.Data ) ) {
 				using ( var reader = new System.IO.BinaryReader( stream ) ) {
 					reader.ReadByte(); // Skip type byte
 					switch ( msg.Type ) {
