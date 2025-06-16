@@ -538,37 +538,10 @@ public partial class Player : Entity {
 		writer.Write( (Half)ArmLeft.Animations.GlobalRotation );
 		writer.Write( (Half)ArmRight.Animations.GlobalRotation );
 
-		byte changedFlags = 0;
-		if ( LeftArmAnimationState != LastLeftArmAnimationState ) {
-			changedFlags |= 0b00000001;
-			LastLeftArmAnimationState = LeftArmAnimationState;
-		}
-		if ( RightArmAnimationState != LastRightArmAnimationState ) {
-			changedFlags |= 0b00000010;
-			LastRightArmAnimationState = RightArmAnimationState;
-		}
-		if ( LegAnimationState != LastLegArmAnimationState ) {
-			changedFlags |= 0b00000100;
-			LastLegArmAnimationState = LegAnimationState;
-		}
-		if ( TorsoAnimationState != LastTorsoArmAnimationState ) {
-			changedFlags |= 0b00001000;
-			LastTorsoArmAnimationState = TorsoAnimationState;
-		}
-		writer.Write( changedFlags );
-
-		if ( ( changedFlags & 0b00000001 ) != 0 ) {
-			writer.Write( (byte)LeftArmAnimationState );
-		}
-		if ( ( changedFlags & 0b00000010 ) != 0 ) {
-			writer.Write( (byte)RightArmAnimationState );
-		}
-		if ( ( changedFlags & 0b00000100 ) != 0 ) {
-			writer.Write( (byte)LegAnimationState );
-		}
-		if ( ( changedFlags & 0b00001000 ) != 0 ) {
-			writer.Write( (byte)TorsoAnimationState );
-		}
+		writer.Write( (byte)LeftArmAnimationState );
+		writer.Write( (byte)RightArmAnimationState );
+		writer.Write( (byte)LegAnimationState );
+		writer.Write( (byte)TorsoAnimationState );
 
 		return buffer;
 	}

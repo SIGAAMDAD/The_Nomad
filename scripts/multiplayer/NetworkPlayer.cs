@@ -183,87 +183,79 @@ public partial class NetworkPlayer : Renown.Entity {
 		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
 
-		byte changedAnimations = packet.ReadByte();
-		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
-			LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
-			SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
-		}
-		if ( ( changedAnimations & 0b00000010 ) != 0 ) {
-			RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
-			SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
-		}
-		if ( ( changedAnimations & 0b00000100 ) != 0 ) {
-			LegAnimationState = (PlayerAnimationState)packet.ReadByte();
-			switch ( LegAnimationState ) {
-			case PlayerAnimationState.Hide:
-			case PlayerAnimationState.TrueIdleStart:
-			case PlayerAnimationState.TrueIdleLoop:
-			case PlayerAnimationState.Dead:
-			case PlayerAnimationState.CheckpointDrinking:
-			case PlayerAnimationState.CheckpointExit:
-			case PlayerAnimationState.CheckpointIdle:
-				LegAnimation.CallDeferred( "hide" );
-				break;
-			case PlayerAnimationState.Idle:
-				LegAnimation.CallDeferred( "show" );
-				LegAnimation.CallDeferred( "play", "idle" );
+		LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
 
-				WalkEffect.SetDeferred( "emitting", false );
-				SlideEffect.SetDeferred( "emitting", false );
-				break;
-			case PlayerAnimationState.Running:
-				LegAnimation.CallDeferred( "show" );
-				LegAnimation.CallDeferred( "play", "run" );
+		RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
 
-				WalkEffect.SetDeferred( "emitting", true );
-				break;
-			case PlayerAnimationState.Sliding:
-				LegAnimation.CallDeferred( "show" );
-				LegAnimation.CallDeferred( "play", "slide" );
-				break;
-			};
-		}
-		if ( ( changedAnimations & 0b00001000 ) != 0 ) {
-			TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
-			switch ( TorsoAnimationState ) {
-			case PlayerAnimationState.CheckpointDrinking:
-				TorsoAnimation.CallDeferred( "hide" );
-				IdleAnimation.CallDeferred( "show" );
-				IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
-				break;
-			case PlayerAnimationState.CheckpointExit:
-				TorsoAnimation.CallDeferred( "hide" );
-				IdleAnimation.CallDeferred( "show" );
-				IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
-				break;
-			case PlayerAnimationState.CheckpointIdle:
-				TorsoAnimation.CallDeferred( "hide" );
-				IdleAnimation.CallDeferred( "show" );
-				IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
-				break;
-			case PlayerAnimationState.Idle:
-			case PlayerAnimationState.Sliding:
-			case PlayerAnimationState.Running:
-				TorsoAnimation.CallDeferred( "show" );
-				TorsoAnimation.CallDeferred( "play", "default" );
-				IdleAnimation.Hide();
-				break;
-			case PlayerAnimationState.TrueIdleStart:
-				TorsoAnimation.CallDeferred( "hide" );
-				IdleAnimation.CallDeferred( "show" );
-				IdleAnimation.CallDeferred( "play", "start" );
-				break;
-			case PlayerAnimationState.TrueIdleLoop:
-				TorsoAnimation.CallDeferred( "hide" );
-				IdleAnimation.CallDeferred( "show" );
-				IdleAnimation.CallDeferred( "play", "loop" );
-				break;
-			case PlayerAnimationState.Dead:
-				TorsoAnimation.CallDeferred( "show" );
-				TorsoAnimation.CallDeferred( "play", "dead" );
-				break;
-			};
-		}
+		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		switch ( LegAnimationState ) {
+		case PlayerAnimationState.Hide:
+		case PlayerAnimationState.TrueIdleStart:
+		case PlayerAnimationState.TrueIdleLoop:
+		case PlayerAnimationState.Dead:
+		case PlayerAnimationState.CheckpointDrinking:
+		case PlayerAnimationState.CheckpointExit:
+		case PlayerAnimationState.CheckpointIdle:
+			LegAnimation.CallDeferred( "hide" );
+			break;
+		case PlayerAnimationState.Idle:
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "idle" );
+			WalkEffect.SetDeferred( "emitting", false );
+			SlideEffect.SetDeferred( "emitting", false );
+			break;
+		case PlayerAnimationState.Running:
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "run" );
+			WalkEffect.SetDeferred( "emitting", true );
+			break;
+		case PlayerAnimationState.Sliding:
+			LegAnimation.CallDeferred( "show" );
+			LegAnimation.CallDeferred( "play", "slide" );
+			break;
+		};
+
+		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+		switch ( TorsoAnimationState ) {
+		case PlayerAnimationState.CheckpointDrinking:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
+			break;
+		case PlayerAnimationState.CheckpointExit:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
+			break;
+		case PlayerAnimationState.CheckpointIdle:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
+			break;
+		case PlayerAnimationState.Idle:
+		case PlayerAnimationState.Sliding:
+		case PlayerAnimationState.Running:
+			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( "play", "default" );
+			IdleAnimation.Hide();
+			break;
+		case PlayerAnimationState.TrueIdleStart:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "start" );
+			break;
+		case PlayerAnimationState.TrueIdleLoop:
+			TorsoAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( "show" );
+			IdleAnimation.CallDeferred( "play", "loop" );
+			break;
+		case PlayerAnimationState.Dead:
+			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( "play", "dead" );
+			break;
+		};
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
