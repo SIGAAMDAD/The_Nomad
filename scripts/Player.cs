@@ -87,6 +87,7 @@ public partial class Player : Entity {
 	private PlayerAnimationState LastRightArmAnimationState;
 	private PlayerAnimationState LastLegArmAnimationState;
 	private PlayerAnimationState LastTorsoArmAnimationState;
+	private float LastNetworkAimAngle = 0.0f;
 	private uint LastNetworkFlags = 0;
 
 	private static readonly float PunchRange = 40.0f;
@@ -520,7 +521,10 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.Write( GlobalPosition );
+		if ( GlobalPosition != LastNetworkPosition ) {
+			LastNetworkPosition = GlobalPosition;
+			SyncObject.Write( LastNetworkPosition );
+		}
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			SyncObject.Write( true );
@@ -529,11 +533,31 @@ public partial class Player : Entity {
 		} else {
 			SyncObject.Write( false );
 		}
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
-		SyncObject.Write( ArmRight.Animations.GlobalRotation );
 
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
+		byte changedAnimations = 0;
+		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
+			changedAnimations |= 0b00000001;
+			LastNetworkAimAngle = AimLine.GlobalRotation;
+		}
+		if ( LastLeftArmAnimationState != LeftArmAnimationState ) {
+			changedAnimations |= 0b00000010;
+			LastLeftArmAnimationState = LeftArmAnimationState;
+		}
+		if ( LastRightArmAnimationState != RightArmAnimationState ) {
+			changedAnimations |= 0b00000100;
+			LastRightArmAnimationState = RightArmAnimationState;
+		}
+		SyncObject.Write( changedAnimations );
+
+		if ( ( changedAnimations & 0b00000001 ) != 0 ) {
+			SyncObject.Write( LastNetworkAimAngle );
+		}
+		if ( ( changedAnimations & 0b00000010 ) != 0 ) {
+			SyncObject.Write( (byte)LeftArmAnimationState );
+		}
+		if ( ( changedAnimations & 0b00000100 ) != 0 ) {
+			SyncObject.Write( (byte)RightArmAnimationState );
+		}
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 
