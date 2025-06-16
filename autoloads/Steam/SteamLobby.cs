@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Multiplayer;
 using Iced.Intel;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Castle.Core.Logging;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -588,6 +589,9 @@ public partial class SteamLobby : Node {
 	private void HandleIncomingMessages() {
 		while ( MessageQueue.Count > 0 ) {
 			var msg = MessageQueue.Dequeue();
+			if ( msg.Data == null ) {
+				continue;
+			}
 			using ( var stream = new System.IO.MemoryStream( msg.Data ) ) {
 				using ( var reader = new System.IO.BinaryReader( stream ) ) {
 					reader.ReadByte(); // Skip type byte
@@ -611,7 +615,8 @@ public partial class SteamLobby : Node {
 						Console.PrintLine( $"Received server command: {nCommandType}" );
 						ServerCommandManager.ExecuteCommand( msg.Sender, nCommandType );
 						break;
-					};
+					}
+					;
 				}
 			}
 		}
