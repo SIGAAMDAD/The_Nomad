@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=4 uid="uid://gsxci7b6en7c"]
 
 [ext_resource type="Script" uid="uid://cgpkjjl0hmgx3" path="res://scripts/multiplayer/MultiplayerData.cs" id="1_7mv7g"]
-[ext_resource type="Script" uid="uid://bm2ij7e6lo88x" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
+[ext_resource type="Script" path="res://scripts/multiplayer/modes/Duel.cs" id="2_mn27o"]
 [ext_resource type="Texture2D" uid="uid://fcgjjs6rvr0a" path="res://textures/tilesets/DesertTilemap16x16.dds" id="2_r1lm7"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="3_r1lm7"]
 [ext_resource type="PackedScene" uid="uid://g5kjq1b8iven" path="res://scenes/multiplayer/modes/overlays/duel_overlay.tscn" id="5_jr0op"]

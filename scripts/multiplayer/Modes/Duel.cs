@@ -86,25 +86,31 @@ namespace Multiplayer.Modes {
 		}
 
 		public override void SpawnPlayer( Renown.Entity player ) {
+			Node2D spawn = null;
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
 					node.Die += OnPlayerScore;
+					spawn = Player2Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 					ThisPlayer.Die += OnPlayerScore;
+					spawn = Player1Spawn;
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
 					node.Die += OnPlayerScore;
+					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
 					ThisPlayer.Die += OnPlayerScore;
+					spawn = Player2Spawn;
 				}
 			}
+			spawn.SetMeta( "Player", player );
 		}
 
 		private void SendPacket() {

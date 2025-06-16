@@ -4,18 +4,22 @@ Asturion: How've you been doing?
 - Getting by
 	Asturion: Good to hear => talk_friendly
 - Making ends meet
-	Asturion: not bad
+	Asturion: not bad => talk_friendly
 - Absolutely shit
+	Asturion: not suprising => talk_friendly
 - [i]Shrug your shoulders[/i]
+	Asturion: Ah... => talk_friendly
 => END
 
 ~ talk_friendly
 Asturion: So, what do you need on this fine day?
 - I need something forged
 	Asturion: Alrighty then... => forge
+- Whats the latest gossip?
 => END
 
 ~ forge
 Asturion: What do you need forged?
 - A weapon
+- Some armor
 => END
