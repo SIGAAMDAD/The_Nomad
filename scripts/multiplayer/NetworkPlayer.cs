@@ -78,7 +78,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	private SpriteFrames DefaultLeftArmSpriteFrames;
 	private SpriteFrames DefaultRightArmSpriteFrames;
 
-	private byte[] AnimationState = 0;
+	private byte[] AnimationState;
 	private PlayerAnimationState LegAnimationState;
 	private PlayerAnimationState LeftArmAnimationState;
 	private PlayerAnimationState RightArmAnimationState;
