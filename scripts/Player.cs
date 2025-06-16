@@ -513,44 +513,30 @@ public partial class Player : Entity {
 		};
 	}
 
-	private void WriteVector2Delta( System.IO.BinaryWriter writer ) {
-		writer.Write( GlobalPosition.X );
-		writer.Write( GlobalPosition.Y );
-	}
-	private byte[] CreateBytePacket() {
-		byte[] buffer = SteamLobby.GetBuffer( 256 );
-
-		using var stream = new System.IO.MemoryStream( buffer );
-		using var writer = new System.IO.BinaryWriter( stream );
-
-		writer.Write( TorsoAnimation.FlipH );
-
-		WriteVector2Delta( writer );
-
-		if ( (uint)Flags != LastNetworkFlags ) {
-			writer.Write( true );
-			writer.Write( (uint)Flags );
-			LastNetworkFlags = (uint)Flags;
-		} else {
-			writer.Write( false );
-		}
-
-		writer.Write( (Half)ArmLeft.Animations.GlobalRotation );
-		writer.Write( (Half)ArmRight.Animations.GlobalRotation );
-
-		writer.Write( (byte)LeftArmAnimationState );
-		writer.Write( (byte)RightArmAnimationState );
-		writer.Write( (byte)LegAnimationState );
-		writer.Write( (byte)TorsoAnimationState );
-
-		return buffer;
-	}
 	private void SendPacket() {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
-		SyncObject.Write( CreateBytePacket() );
+		SyncObject.Write( TorsoAnimation.FlipH );
+
+		SyncObject.Write( GlobalPosition );
+
+		if ( (uint)Flags != LastNetworkFlags ) {
+			SyncObject.Write( true );
+			SyncObject.Write( (uint)Flags );
+			LastNetworkFlags = (uint)Flags;
+		} else {
+			SyncObject.Write( false );
+		}
+		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
+		SyncObject.Write( ArmRight.Animations.GlobalRotation );
+
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
+
 		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
 		/*
 
