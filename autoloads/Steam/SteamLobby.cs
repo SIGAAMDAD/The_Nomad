@@ -611,7 +611,7 @@ public partial class SteamLobby : Node {
 		lock ( ConnectionLock ) {
 			foreach ( var pair in Connections ) {
 				if ( pair.Key != ThisSteamID ) {
-					SendMessage( pair.Key, data );
+					SendTargetPacket( pair.Key, data );
 				}
 			}
 		}
