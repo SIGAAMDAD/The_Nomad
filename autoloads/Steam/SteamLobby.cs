@@ -1117,7 +1117,6 @@ public partial class SteamLobby : Node {
 		// Start network thread
 		NetworkRunning = 1;
 		NetworkThread = new System.Threading.Thread( NetworkThreadProcess ) {
-			IsBackground = true
 		};
 		NetworkThread.Start();
 
