@@ -10,6 +10,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Castle.Core.Smtp;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -1131,7 +1132,13 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 	private void NetworkThreadProcess() {
-		while ( NetworkRunning == 1 ) {
+		const int FRAME_LIMIT = 60;
+		const double FRAME_TIME_MS = 1000.0f / FRAME_LIMIT;
+		Stopwatch frameTimer = new Stopwatch();
+
+		while ( System.Threading.Interlocked.CompareExchange( ref NetworkRunning, 0, 0 ) == 0 ) {
+			frameTimer.Restart();
+
 			try {
 				PollIncomingMessages();
 				HandleIncomingMessages();
@@ -1140,6 +1147,12 @@ public partial class SteamLobby : Node {
 				System.Threading.Thread.Sleep( 40 );
 			} catch ( Exception e ) {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
+			}
+
+			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
+			double sleepTime = FRAME_TIME_MS - elapsed;
+			if ( sleepTime > 0.0f ) {
+				System.Threading.Thread.Sleep( (int)sleepTime );
 			}
 		}
 	}
