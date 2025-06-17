@@ -525,21 +525,21 @@ public partial class SteamLobby : Node {
 				Console.PrintLine( $"[STEAM] Incoming connection request from {remoteName}" );
 
 				// Only accept if this is an incoming connection (we didn't initiate it)
-				bool isOutgoing = false;
-				lock ( ConnectionLock ) {
-					isOutgoing = PendingConnections.ContainsKey( remoteId );
-				}
+//				bool isOutgoing = false;
+//				lock ( ConnectionLock ) {
+//					isOutgoing = PendingConnections.ContainsKey( remoteId );
+//				}
 
-				if ( !isOutgoing ) {
-					if ( SteamNetworkingSockets.AcceptConnection( status.m_hConn ) == EResult.k_EResultOK ) {
-						Console.PrintLine( "[STEAM] Accepted incoming connection" );
-					} else {
-						Console.PrintError( "[STEAM] Failed to accept incoming connection" );
-						SteamNetworkingSockets.CloseConnection( status.m_hConn, 0, "Connection accept failed", false );
-					}
+//				if ( !isOutgoing ) {
+				if ( SteamNetworkingSockets.AcceptConnection( status.m_hConn ) == EResult.k_EResultOK ) {
+					Console.PrintLine( "[STEAM] Accepted incoming connection" );
 				} else {
-					Console.PrintLine( "[STEAM] Ignoring outgoing connection request (we initiated it)" );
+					Console.PrintError( "[STEAM] Failed to accept incoming connection" );
+					SteamNetworkingSockets.CloseConnection( status.m_hConn, 0, "Connection accept failed", false );
 				}
+//				} else {
+//					Console.PrintLine( "[STEAM] Ignoring outgoing connection request (we initiated it)" );
+//				}
 				break;
 
 			case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:

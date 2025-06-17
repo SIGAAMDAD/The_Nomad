@@ -147,27 +147,6 @@ public partial class LobbyBrowser : Control {
 
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
-	private void OnTransitionFinished() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
-
-		if ( LoadedScenePath == "res://scenes/multiplayer/lobby_room.tscn" ) {
-			// loading a multiplayer game instead a co-op world
-			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-			Console.PrintLine( "...Finished loading game" );
-
-			QueueFree();
-			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
-			return;
-		}
-
-		Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
-
-		LoadThread = new System.Threading.Thread( () => {
-			LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
-			CallDeferred( "emit_signal", "FinishedLoading" );
-		} );
-		LoadThread.Start();
-	}
 	public void OnLobbyJoined( ulong lobbyId ) {
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
@@ -201,8 +180,24 @@ public partial class LobbyBrowser : Control {
 		};
 
 		if ( !SteamLobby.Instance.IsOwner() ) {
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+
+			if ( LoadedScenePath == "res://scenes/multiplayer/lobby_room.tscn" ) {
+				// loading a multiplayer game instead a co-op world
+				GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+				Console.PrintLine( "...Finished loading game" );
+
+				GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
+				return;
+			}
+
+			Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
+
+			LoadThread = new System.Threading.Thread( () => {
+				LoadedWorld = ResourceLoader.Load<PackedScene>( LoadedScenePath );
+				CallDeferred( "emit_signal", "FinishedLoading" );
+			} );
+			LoadThread.Start();
 		}
 	}
 
