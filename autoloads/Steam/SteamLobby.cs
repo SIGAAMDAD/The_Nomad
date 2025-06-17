@@ -663,7 +663,7 @@ public partial class SteamLobby : Node {
 			Pool.Return( data );
 		}
 	}
-	private void ProcessgameData( ulong senderId, int length, byte[] data ) {
+	private void ProcessGameData( ulong senderId, int length, byte[] data ) {
 		PacketStream.SetLength( 0 );
 		PacketStream.Write( data, 0, length );
 		PacketStream.Position = 1; // skip type byte
