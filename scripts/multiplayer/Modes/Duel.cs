@@ -91,9 +91,9 @@ namespace Multiplayer.Modes {
 			Node2D spawn = null;
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
-					node.GlobalPosition = Player2Spawn.GlobalPosition;
+					node.GlobalPosition = Player1Spawn.GlobalPosition;
 					node.Die += OnPlayerScore;
-					spawn = Player2Spawn;
+					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
@@ -102,9 +102,9 @@ namespace Multiplayer.Modes {
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
-					node.GlobalPosition = Player1Spawn.GlobalPosition;
+					node.GlobalPosition = Player2Spawn.GlobalPosition;
 					node.Die += OnPlayerScore;
-					spawn = Player1Spawn;
+					spawn = Player2Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
@@ -116,15 +116,15 @@ namespace Multiplayer.Modes {
 		}
 
 		private void SendPacket() {
-			SyncObject.Write( Player1Score );
-			SyncObject.Write( Player2Score );
-			SyncObject.Write( RoundIndex );
+			SyncObject.Write( (sbyte)Player1Score );
+			SyncObject.Write( (sbyte)Player2Score );
+			SyncObject.Write( (sbyte)RoundIndex );
 			SyncObject.Sync();
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
-			Player1Score = reader.ReadInt32();
-			Player2Score = reader.ReadInt32();
-			RoundIndex = reader.ReadInt32();
+			Player1Score = reader.ReadSByte();
+			Player2Score = reader.ReadSByte();
+			RoundIndex = reader.ReadSByte();
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
