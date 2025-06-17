@@ -710,7 +710,7 @@ public partial class SteamLobby : Node {
 						);
 
 						int bytesToCopy = Math.Min( message.m_cbSize, receivedBuffer.Length );
-						Marshal.Copy( message.m_cbSize, receivedBuffer, 0, bytesToCopy );
+						Marshal.Copy( message.m_pData, receivedBuffer, 0, bytesToCopy );
 
 						CSteamID sender = message.m_identityPeer.GetSteamID();
 						ProcessIncomingMessage( receivedBuffer, sender );
