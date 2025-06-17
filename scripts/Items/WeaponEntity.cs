@@ -225,7 +225,12 @@ public partial class WeaponEntity : Node2D {
 		ReleasePickupArea();
 
 		_Owner = owner;
-		CallDeferred( "reparent", _Owner );
+		if ( IsInsideTree() ) {
+			CallDeferred( "reparent", _Owner );
+		} else {
+			// most likely a multiplayer weapon spawn
+			_Owner.CallDeferred( "add_child", this );
+		}
 		GlobalPosition = _Owner.GlobalPosition;
 		SetUseMode( DefaultMode );
 		InitProperties();
