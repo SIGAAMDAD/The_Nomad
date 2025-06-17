@@ -168,29 +168,23 @@ public partial class LobbyBrowser : Control {
 		}
 		*/
 
+		if ( SteamLobby.Instance.IsOwner() ) {
+			return;
+		}
+
 		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
 		case "Multiplayer": {
 			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
+			
+			// loading a multiplayer game instead a co-op world
+			Console.PrintLine( "...Finished loading game" );
+
+			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
 			break; }
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
-			break;
-		};
-
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
-
-			if ( LoadedScenePath == "res://scenes/multiplayer/lobby_room.tscn" ) {
-				// loading a multiplayer game instead a co-op world
-				GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-				Console.PrintLine( "...Finished loading game" );
-
-				GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
-				return;
-			}
-
 			Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
 
 			LoadThread = new System.Threading.Thread( () => {
@@ -198,7 +192,8 @@ public partial class LobbyBrowser : Control {
 				CallDeferred( "emit_signal", "FinishedLoading" );
 			} );
 			LoadThread.Start();
-		}
+			break;
+		};
 	}
 
 	private void MatchmakingLoop() {
