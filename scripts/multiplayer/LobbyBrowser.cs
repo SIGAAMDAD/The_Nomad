@@ -277,7 +277,9 @@ public partial class LobbyBrowser : Control {
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
 			for ( int j = 0; j < LobbyTable.GetChildCount(); j++ ) {
 				if ( LobbyList.TryGetValue( lobbyList[i], out LobbyData lobby ) ) {
-					LobbyTable.RemoveChild( lobby );
+					if ( LobbyTable.FindChild( lobby.Name ) != null ) {
+						LobbyTable.RemoveChild( lobby );
+					}
 					LobbyList.Remove( lobbyList[i] );
 					lobby.QueueFree();
 				}

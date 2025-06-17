@@ -8,8 +8,6 @@ public partial class ExtrasMenu : Control {
 	private VScrollBar CoopOptions;
 
 	private MultiplayerMenu MultiplayerMenu;
-	private LobbyBrowser LobbyBrowser;
-	private LobbyFactory LobbyFactory;
 
 	private HBoxContainer OptionsScroll;
 
