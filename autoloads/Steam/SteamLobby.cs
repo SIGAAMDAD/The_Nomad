@@ -718,7 +718,6 @@ public partial class SteamLobby : Node {
 	private void HandleIncomingMessages() {
 		int processed = 0;
 		while ( MessageQueue.TryDequeue( out IncomingMessage msg ) && ++processed < 90 ) {
-			GD.Print( "Handling packet " + msg.Type );
 			HandleIncomingMessage( msg );
 		}
 	}
