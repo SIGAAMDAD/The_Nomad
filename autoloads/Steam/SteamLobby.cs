@@ -9,6 +9,7 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO.Pipes;
+using GDExtension.Wrappers;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -48,6 +49,30 @@ public partial class SteamLobby : Node {
 			Node = node;
 			Send = send;
 			Receive = receive;
+		}
+	};
+
+	private class BufferPool {
+		private readonly ConcurrentBag<byte[]> Pool = new ConcurrentBag<byte[]>();
+		private readonly int BufferSize;
+		private readonly int MaxBuffers;
+
+		public BufferPool( int nBufferSize = 1024, int nMaxBuffers = 128 ) {
+			BufferSize = nBufferSize;
+			MaxBuffers = nMaxBuffers;
+		}
+
+		public byte[] Rent() {
+			if ( Pool.TryTake( out byte[] buffer ) ) {
+				return buffer;
+			}
+			return new byte[ BufferSize ];
+		}
+		public void Return( byte[] buffer ) {
+			if ( buffer != null && buffer.Length == BufferSize && Pool.Count < MaxBuffers ) {
+				Array.Clear( buffer, 0, buffer.Length );
+				Pool.Add( buffer );
+			}
 		}
 	};
 
@@ -226,7 +251,7 @@ public partial class SteamLobby : Node {
 	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
 	private HashSet<NetworkNode> PlayerList = new HashSet<NetworkNode>( MAX_LOBBY_MEMBERS );
 
-	private static ConcurrentBag<byte[]> BufferPool = new ConcurrentBag<byte[]>();
+	private BufferPool Pool = new BufferPool();
 	private IntPtr[] MessagePool = new IntPtr[ PACKET_READ_LIMIT ];
 
 	//
@@ -269,22 +294,6 @@ public partial class SteamLobby : Node {
 	private Queue<IncomingMessage> MessageQueue = new Queue<IncomingMessage>();
 
 	public static Dictionary<CSteamID, HSteamNetConnection> GetConnections() => Instance.Connections;
-
-	public static byte[] GetBuffer( int nSize ) {
-		foreach ( var buf in BufferPool ) {
-			if ( buf.Length >= nSize ) {
-				BufferPool.TryTake( out byte[] output );
-				return output;
-			}
-		}
-		return new byte[ nSize ];
-	}
-	public static void ReleaseBuffer( byte[] buffer ) {
-		if ( buffer.Length > 4096 ) {
-			return; // don't pool large buffers
-		}
-		BufferPool.Add( buffer );
-	}
 
 	private static void CopyTo( System.IO.Stream src, System.IO.Stream dest ) {
 		byte[] bytes = new byte[ 2048 ];
@@ -587,24 +596,31 @@ public partial class SteamLobby : Node {
 		}
 	}
 	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable ) {
-		lock ( ConnectionLock ) {
-			if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
-				//				IntPtr ptr = Marshal.AllocHGlobal( data.Length );
+		if ( Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
+			byte[] buffer = Pool.Rent();
+
+			try {
 				byte[] secured = SteamLobbySecurity.SecureOutgoingMessage( data, target );
+				int bytesToCopy = Math.Min( secured.Length, buffer.Length );
+				Buffer.BlockCopy( secured, 0, buffer, 0, bytesToCopy );
 
-				Marshal.Copy( secured, 0, CachedWritePacket, secured.Length );
-
-				EResult res = SteamNetworkingSockets.SendMessageToConnection(
-					conn,
-					CachedWritePacket,
-					(uint)secured.Length,
-					sendType,
-					out long _
-				);
-
-				if ( res != EResult.k_EResultOK ) {
-					Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
+				unsafe {
+					fixed ( byte* pBuffer = buffer ) {
+						EResult res = SteamNetworkingSockets.SendMessageToConnection(
+							conn,
+							(IntPtr)pBuffer,
+							(uint)bytesToCopy,
+							sendType,
+							out long _
+						);
+						if ( res != EResult.k_EResultOK ) {
+							Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
+						}
+					}
 				}
+			}
+			finally {
+				Pool.Return( buffer );
 			}
 		}
 	}
@@ -624,6 +640,16 @@ public partial class SteamLobby : Node {
 		if ( processed == null ) {
 			return;
 		}
+		byte[] queueBuffer = Pool.Rent();
+		int copyLength = Math.Min( processed.Length, queueBuffer.Length );
+		Buffer.BlockCopy( processed, 0, queueBuffer, 0, copyLength );
+
+		MessageQueue.Enqueue( new IncomingMessage {
+			Sender = sender,
+			Data = queueBuffer,
+			Type = (MessageType)queueBuffer[0]
+		} );
+		/*
 		using ( var stream = new System.IO.MemoryStream( data ) ) {
 			using ( var reader = new System.IO.BinaryReader( stream ) ) {
 				MessageType type = (MessageType)reader.ReadByte();
@@ -634,41 +660,71 @@ public partial class SteamLobby : Node {
 				} );
 			}
 		}
+		*/
 	}
 
 	private void HandleIncomingMessages() {
 		while ( MessageQueue.Count > 0 ) {
 			var msg = MessageQueue.Dequeue();
-			using ( var stream = new System.IO.MemoryStream( msg.Data ) ) {
-				using ( var reader = new System.IO.BinaryReader( stream ) ) {
-					reader.ReadByte(); // Skip type byte
-					switch ( msg.Type ) {
-					case MessageType.ClientData:
-						if ( PlayerCache.TryGetValue( msg.Sender.ToString(), out NetworkNode node ) ) {
-							node.Receive( reader );
-						}
-						break;
-					case MessageType.GameData:
-						int hash = reader.ReadInt32();
-						if ( NodeCache.TryGetValue( hash, out NetworkNode gameNode ) ) {
-							gameNode.Receive( reader );
-						}
-						break;
-					case MessageType.Handshake:
-						Console.PrintLine( $"{SteamFriends.GetFriendPersonaName( msg.Sender )} sent a handshake packet." );
-						break;
-					case MessageType.ServerCommand:
-						ServerCommandType nCommandType = (ServerCommandType)reader.ReadUInt32();
-						Console.PrintLine( $"Received server command: {nCommandType}" );
-						ServerCommandManager.ExecuteCommand( msg.Sender, nCommandType );
-						break;
-					};
-				}
+			using ( var stream = new System.IO.MemoryStream( msg.Data ) )
+			using ( var reader = new System.IO.BinaryReader( stream ) ) {
+				reader.ReadByte(); // Skip type byte
+				switch ( msg.Type ) {
+				case MessageType.ClientData:
+					if ( PlayerCache.TryGetValue( msg.Sender.ToString(), out NetworkNode node ) ) {
+						node.Receive( reader );
+					}
+					break;
+				case MessageType.GameData:
+					int hash = reader.ReadInt32();
+					if ( NodeCache.TryGetValue( hash, out NetworkNode gameNode ) ) {
+						gameNode.Receive( reader );
+					}
+					break;
+				case MessageType.Handshake:
+					Console.PrintLine( $"{SteamFriends.GetFriendPersonaName( msg.Sender )} sent a handshake packet." );
+					break;
+				case MessageType.ServerCommand:
+					ServerCommandType nCommandType = (ServerCommandType)reader.ReadUInt32();
+					Console.PrintLine( $"Received server command: {nCommandType}" );
+					ServerCommandManager.ExecuteCommand( msg.Sender, nCommandType );
+					break;
+				};
 			}
 		}
 	}
 
 	private void PollIncomingMessages() {
+		byte[] receivedBuffer = Pool.Rent();
+
+		try {
+			IntPtr[] messages = new IntPtr[ PACKET_READ_LIMIT ];
+
+			foreach ( var conn in Connections.Values.Concat( PendingConnections.Values ) ) {
+				int count = SteamNetworkingSockets.ReceiveMessagesOnConnection( conn, messages, messages.Length );
+				for ( int i = 0; i < count; i++ ) {
+					try {
+						SteamNetworkingMessage_t message = (SteamNetworkingMessage_t)Marshal.PtrToStructure(
+							messages[ i ],
+							typeof( SteamNetworkingMessage_t )
+						);
+
+						int bytesToCopy = Math.Min( message.m_cbSize, receivedBuffer.Length );
+						Marshal.Copy( message.m_cbSize, receivedBuffer, 0, bytesToCopy );
+
+						CSteamID sender = message.m_identityPeer.GetSteamID();
+						ProcessIncomingMessage( receivedBuffer, sender );
+					}
+					finally {
+						SteamNetworkingMessage_t.Release( messages[ i ] );
+					}
+				}
+			}
+		}
+		finally {
+			Pool.Return( receivedBuffer );
+		}
+		/*
 		// Create copies to avoid locking during processing
 		List<HSteamNetConnection> activeConnections = new List<HSteamNetConnection>();
 		List<HSteamNetConnection> pendingConns = new List<HSteamNetConnection>();
@@ -735,6 +791,7 @@ public partial class SteamLobby : Node {
 
 		// Run SteamNetworkingSockets callbacks
 		SteamNetworkingSockets.RunCallbacks();
+		*/
 	}
 
 	#region Steam Callbacks
@@ -1141,20 +1198,18 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 	public override void _Process( double delta ) {
-		lock ( NetworkLock ) {
-			PollIncomingMessages();
+		PollIncomingMessages();
 
-			HandleIncomingMessages();
+		HandleIncomingMessages();
 
-			// Send updates
-			foreach ( var node in NodeCache.Values ) {
-				node.Send?.Invoke();
-			}
-			foreach ( var player in PlayerCache.Values ) {
-				player.Send?.Invoke();
-			}
-			SendBatches();
+		// Send updates
+		foreach ( var node in NodeCache.Values ) {
+			node.Send?.Invoke();
 		}
+		foreach ( var player in PlayerCache.Values ) {
+			player.Send?.Invoke();
+		}
+		SendBatches();
 	}
 
 	public override void _Notification( int what ) {
