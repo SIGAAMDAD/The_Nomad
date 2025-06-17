@@ -177,8 +177,9 @@ public partial class LobbyBrowser : Control {
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
 		case "Multiplayer": {
 			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
-			
+
 			// loading a multiplayer game instead a co-op world
+			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 			Console.PrintLine( "...Finished loading game" );
 
 			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
