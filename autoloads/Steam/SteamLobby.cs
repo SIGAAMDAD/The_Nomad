@@ -712,7 +712,7 @@ public partial class SteamLobby : Node {
 	}
 	private void HandleIncomingMessages() {
 		int processed = 0;
-		while ( MessageQueue.TryDequeue( out IncomingMessage msg ) && ++processed < 80 ) {
+		while ( MessageQueue.TryDequeue( out IncomingMessage msg ) ) {
 			HandleIncomingMessage( msg );
 		}
 	}
@@ -912,13 +912,9 @@ public partial class SteamLobby : Node {
 	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
 		Console.PrintLine( $"Added player with hash {userId} to network sync cache." );
 		PlayerCache.TryAdd( userId.ToString(), callbacks );
-		PlayerList.Add( callbacks );
 	}
 
 	public void RemovePlayer( CSteamID userId ) {
-		if ( PlayerList.Contains( PlayerCache[ userId.ToString() ] ) ) {
-			PlayerList.Remove( PlayerCache[ userId.ToString() ] );
-		}
 		PlayerCache.Remove( userId.ToString() );
 	}
 
@@ -1131,12 +1127,12 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 	private void NetworkThreadProcess() {
-		const int FRAME_LIMIT = 60;
-		const double FRAME_TIME_MS = 1000.0f / FRAME_LIMIT;
-		Stopwatch frameTimer = new Stopwatch();
+		//		const int FRAME_LIMIT = 90;
+		//		const double FRAME_TIME_MS = 1000.0f / FRAME_LIMIT;
+		//		Stopwatch frameTimer = new Stopwatch();
 
-		while ( System.Threading.Interlocked.CompareExchange( ref NetworkRunning, 0, 0 ) == 0 ) {
-			frameTimer.Restart();
+		while ( NetworkRunning == 1 ) {
+			//			frameTimer.Restart();
 
 			try {
 				lock ( NetworkLock ) {
@@ -1149,11 +1145,13 @@ public partial class SteamLobby : Node {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}
 
-			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
-			double sleepTime = FRAME_TIME_MS - elapsed;
-			if ( sleepTime > 0.0f ) {
-				System.Threading.Thread.Sleep( (int)sleepTime );
-			}
+			System.Threading.Thread.Sleep( 20 );
+
+//			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
+//			double sleepTime = FRAME_TIME_MS - elapsed;
+//			if ( sleepTime > 0.0f ) {
+//				System.Threading.Thread.Sleep( (int)sleepTime );
+//			}
 		}
 	}
 

@@ -169,6 +169,8 @@ public partial class LobbyBrowser : Control {
 		LoadThread.Start();
 	}
 	public void OnLobbyJoined( ulong lobbyId ) {
+		Hide();
+		
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -188,7 +190,7 @@ public partial class LobbyBrowser : Control {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
 		*/
-		
+
 		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
 
 		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
@@ -201,7 +203,6 @@ public partial class LobbyBrowser : Control {
 		};
 
 		if ( !SteamLobby.Instance.IsOwner() ) {
-			Hide();
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 		}
