@@ -141,8 +141,8 @@ public partial class SteamLobby : Node {
 					state.MessageCount = 0;
 					state.LastResetTime = DateTime.UtcNow.TimeOfDay.TotalSeconds;
 				}
-				if ( ++state.MessageCount > 350 ) {
-					return null; // 350 msg/sec limit
+				if ( ++state.MessageCount > 500 ) {
+					return null; // 500 msg/sec limit
 				}
 
 				return secured;
@@ -1137,7 +1137,7 @@ public partial class SteamLobby : Node {
 				HandleIncomingMessages();
 
 				SteamNetworkingSockets.RunCallbacks();
-				System.Threading.Thread.Sleep( 20 );
+				System.Threading.Thread.Sleep( 40 );
 			} catch ( Exception e ) {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}

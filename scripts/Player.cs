@@ -552,7 +552,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)LegAnimationState );
 		SyncObject.Write( (byte)TorsoAnimationState );
 
-		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
 		/*
 
 		SyncObject.Write( TorsoAnimation.FlipH );
