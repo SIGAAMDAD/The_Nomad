@@ -23,15 +23,6 @@ namespace Multiplayer.Modes {
 		private void OnNewRoundStart() {
 			Announcer.Fight();
 
-			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
-				Player1Spawn.SetMeta( "Player", OtherPlayer );
-				Player2Spawn.SetMeta( "Player", ThisPlayer );
-				ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
-			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == ThisPlayer ) {
-				Player2Spawn.SetMeta( "Player", OtherPlayer );
-				Player1Spawn.SetMeta( "Player", ThisPlayer );
-				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-			}
 			ThisPlayer.BlockInput( false );
 
 			ScoreBoard.Hide();
@@ -44,10 +35,20 @@ namespace Multiplayer.Modes {
 			}
 
 			ThisPlayer?.BlockInput( true );
+			
+			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
+				Player1Spawn.SetMeta( "Player", OtherPlayer );
+				Player2Spawn.SetMeta( "Player", ThisPlayer );
+				ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
+			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == ThisPlayer ) {
+				Player2Spawn.SetMeta( "Player", OtherPlayer );
+				Player1Spawn.SetMeta( "Player", ThisPlayer );
+				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
+			}
 
 			if ( RoundIndex >= MaxRounds ) {
-				ScoreBoard.SetDuelData( Score[0], Score[1], Score[2], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
-//				EmitSignal( "ShowScoreboard" );
+				ScoreBoard.SetDuelData( Score[ 0 ], Score[ 1 ], Score[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
+				//				EmitSignal( "ShowScoreboard" );
 				return;
 			}
 
