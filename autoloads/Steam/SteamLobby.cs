@@ -1144,7 +1144,6 @@ public partial class SteamLobby : Node {
 				HandleIncomingMessages();
 
 				SteamNetworkingSockets.RunCallbacks();
-				System.Threading.Thread.Sleep( 40 );
 			} catch ( Exception e ) {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}

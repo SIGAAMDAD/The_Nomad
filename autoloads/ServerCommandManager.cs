@@ -51,7 +51,7 @@ public class ServerCommandManager {
 		];
 
 		Console.PrintLine( string.Format( "Sending targeted server command [id:{0}]: {1}...", targetId.ToString(), nType.ToString() ) );
-		SteamLobby.Instance.SendTargetPacket( targetId, packet );
+		SteamLobby.Instance.SendTargetPacket( targetId, packet, Constants.k_nSteamNetworkingSend_Reliable );
 	}
 
 	public static void RegisterCommandCallback( ServerCommandType nType, Action<CSteamID> callback ) {
