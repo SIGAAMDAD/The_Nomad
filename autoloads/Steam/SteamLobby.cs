@@ -132,7 +132,8 @@ public partial class SteamLobby : Node {
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
 			lock ( Lock ) {
 				if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
-					SecurityStates.Add( senderId, new ConnectionSecurity() );
+					state = new ConnectionSecurity();
+					SecurityStates.Add( senderId, state );
 				}
 
 				// rate limiting

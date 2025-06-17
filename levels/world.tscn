@@ -9852,7 +9852,7 @@ sources/0 = SubResource("TileSetAtlasSource_ho3mn")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t368"]
 size = Vector2(552, 305)
 
-[node name="World" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
+[node name="World2" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
 scale = Vector2(2, 2)
 script = ExtResource("1_re8x6")
 CurrentQuest = ExtResource("2_qxuuj")
