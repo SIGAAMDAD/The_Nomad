@@ -717,7 +717,7 @@ public partial class SteamLobby : Node {
 	}
 	private void HandleIncomingMessages() {
 		int processed = 0;
-		while ( MessageQueue.TryDequeue( out IncomingMessage msg ) ) {
+		while ( MessageQueue.TryDequeue( out IncomingMessage msg ) && ++processed < 90 ) {
 			GD.Print( "Handling packet " + msg.Type );
 			HandleIncomingMessage( msg );
 		}
@@ -1119,6 +1119,7 @@ public partial class SteamLobby : Node {
 		// Start network thread
 		NetworkRunning = 1;
 		NetworkThread = new System.Threading.Thread( NetworkThreadProcess ) {
+			Priority = System.Threading.ThreadPriority.Highest
 		};
 		NetworkThread.Start();
 
@@ -1133,12 +1134,12 @@ public partial class SteamLobby : Node {
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
 	}
 	private void NetworkThreadProcess() {
-		//		const int FRAME_LIMIT = 90;
-		//		const double FRAME_TIME_MS = 1000.0f / FRAME_LIMIT;
-		//		Stopwatch frameTimer = new Stopwatch();
+		const int FRAME_LIMIT = 60;
+		const double FRAME_TIME_MS = 1000.0f / FRAME_LIMIT;
+		Stopwatch frameTimer = new Stopwatch();
 
 		while ( NetworkRunning == 1 ) {
-			//			frameTimer.Restart();
+			frameTimer.Restart();
 
 			try {
 				lock ( NetworkLock ) {
@@ -1151,13 +1152,13 @@ public partial class SteamLobby : Node {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}
 
-			System.Threading.Thread.Sleep( 20 );
+//			System.Threading.Thread.Sleep( 20 );
 
-//			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
-//			double sleepTime = FRAME_TIME_MS - elapsed;
-//			if ( sleepTime > 0.0f ) {
-//				System.Threading.Thread.Sleep( (int)sleepTime );
-//			}
+			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
+			double sleepTime = FRAME_TIME_MS - elapsed;
+			if ( sleepTime > 0.0f ) {
+				System.Threading.Thread.Sleep( (int)sleepTime );
+			}
 		}
 	}
 
