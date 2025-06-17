@@ -1139,10 +1139,12 @@ public partial class SteamLobby : Node {
 			frameTimer.Restart();
 
 			try {
-				PollIncomingMessages();
-				HandleIncomingMessages();
+				lock ( NetworkLock ) {
+					PollIncomingMessages();
+					HandleIncomingMessages();
 
-				SteamNetworkingSockets.RunCallbacks();
+					SteamNetworkingSockets.RunCallbacks();
+				}
 			} catch ( Exception e ) {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}
