@@ -465,7 +465,7 @@ public partial class SteamLobby : Node {
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SymmetricConnect,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 0 }
 			}
 		};
 
