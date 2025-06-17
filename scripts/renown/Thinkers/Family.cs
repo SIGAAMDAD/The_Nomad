@@ -228,7 +228,6 @@ namespace Renown.Thinkers {
 			if ( !IsPremade ) {
 				FamilyName = reader.LoadString( key + nameof( FamilyName ) );
 				SocioEconomicStatus = (SocietyRank)reader.LoadUInt( key + nameof( SocioEconomicStatus ) );
-				Home = GetTree().Root.GetNode<BuildingHouse>( reader.LoadString( key + nameof( Home ) ) );
 			}
 
 			MaxStrength = reader.LoadInt( key + nameof( MaxStrength ) );
@@ -250,7 +249,6 @@ namespace Renown.Thinkers {
 
 			writer.SaveString( key + nameof( FamilyName ), FamilyName );
 			writer.SaveUInt( key + nameof( SocioEconomicStatus ), (uint)SocioEconomicStatus );
-			writer.SaveString( key + nameof( Home ), Home.GetPath() );
 
 			writer.SaveInt( key + nameof( MaxStrength ), MaxStrength );
 			writer.SaveInt( key + nameof( MaxDexterity ), MaxDexterity );

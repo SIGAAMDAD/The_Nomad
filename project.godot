@@ -36,7 +36,6 @@ config/name="The Nomad"
 config/version="2.0.0"
 run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
-run/low_processor_mode=true
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="uid://ct4mipmq61o84"
