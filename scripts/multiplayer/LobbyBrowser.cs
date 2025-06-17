@@ -169,8 +169,6 @@ public partial class LobbyBrowser : Control {
 		LoadThread.Start();
 	}
 	public void OnLobbyJoined( ulong lobbyId ) {
-		Hide();
-		
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
