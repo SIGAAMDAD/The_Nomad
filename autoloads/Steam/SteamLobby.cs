@@ -25,7 +25,6 @@ public partial class SteamLobby : Node {
 		ChatMessage_PlayerOnly,
 		ChatMessage_FriendsOnly,
 
-		PingUpdate,
 		VoiceChat,
 
 		EncryptionKey,
@@ -739,9 +738,6 @@ public partial class SteamLobby : Node {
 			break;
 		case MessageType.VoiceChat:
 			SteamVoiceChat.Instance.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
-			break;
-		case MessageType.PingUpdate:
-			LobbyRoom.Instance.CallDeferred( "ReceivePing", (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.Handshake:
 			break;

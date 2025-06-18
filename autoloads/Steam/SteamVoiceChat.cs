@@ -131,6 +131,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		VoiceActivity = max > VoiceActivity ? max : Mathf.Max( VoiceActivity - VoiceDecayRate * (float)GetProcessDeltaTime(), 0.0f );
 
 		if ( VoiceActivity > VoiceThreshold ) {
+			GD.Print( "Sending" );
 			SendVoiceData();
 		}
 	}
