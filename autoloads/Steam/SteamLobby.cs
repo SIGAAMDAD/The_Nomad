@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Castle.Core.Smtp;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.IO.Compression;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -107,7 +108,13 @@ public partial class SteamLobby : Node {
 			if ( !SecurityStates.TryGetValue( target, out var state ) ) {
 				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
-			return data;
+
+			using StreamPeerGZip gzip = new StreamPeerGZip();
+			gzip.StartCompression();
+			gzip.PutData( data );
+			gzip.Finish();
+
+			return GD.VarToBytes( gzip.GetData( gzip.GetAvailableBytes() ) );
 			/*
 
 			var header = new SecurityHeader {
@@ -143,7 +150,12 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
-			return secured;
+			using StreamPeerGZip stream = new StreamPeerGZip();
+			stream.StartDecompression();
+			stream.PutData( secured );
+			stream.Finish();
+
+			return GD.VarToBytes( stream.GetData( stream.GetAvailableBytes() ) );
 
 			// sanity checks
 			/*
