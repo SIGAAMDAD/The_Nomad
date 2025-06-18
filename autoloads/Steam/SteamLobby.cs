@@ -109,12 +109,7 @@ public partial class SteamLobby : Node {
 				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
 
-			using StreamPeerGZip gzip = new StreamPeerGZip();
-			gzip.StartCompression();
-			gzip.PutData( data );
-			gzip.Finish();
-
-			return GD.VarToBytes( gzip.GetData( gzip.GetAvailableBytes() ) );
+			return data;
 			/*
 
 			var header = new SecurityHeader {
@@ -150,12 +145,7 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
-			using StreamPeerGZip stream = new StreamPeerGZip();
-			stream.StartDecompression();
-			stream.PutData( secured );
-			stream.Finish();
-
-			return GD.VarToBytes( stream.GetData( stream.GetAvailableBytes() ) );
+			return secured;
 
 			// sanity checks
 			/*
