@@ -741,7 +741,7 @@ public partial class SteamLobby : Node {
 			SteamVoiceChat.Instance.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.PingUpdate:
-			LobbyRoom.ReceivePing( (ulong)msg.Sender, msg.Data );
+			LobbyRoom.Instance.CallDeferred( "ReceivePing", (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.Handshake:
 			break;

@@ -342,7 +342,7 @@ public partial class LobbyRoom : Control {
 			}
 		}
 	}
-	public static void ReceivePing( ulong senderId, byte[] data ) {
+	public void ReceivePing( ulong senderId, byte[] data ) {
 		int ping = BitConverter.ToInt32( data );
 
 		for ( int i = 0; i < Instance.PlayerList.GetChildCount(); i++ ) {
