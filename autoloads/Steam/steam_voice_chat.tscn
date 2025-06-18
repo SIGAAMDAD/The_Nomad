@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://biblhagretjw5"]
+
+[ext_resource type="Script" uid="uid://bxw4iwmty8ybk" path="res://autoloads/Steam/SteamVoiceChat.cs" id="1_pp3r2"]
+[ext_resource type="Texture2D" uid="uid://d18f0snn8v5c" path="res://textures/voice_active_icon.png" id="2_c5fhs"]
+
+[node name="SteamVoiceChat" type="CanvasLayer"]
+script = ExtResource("1_pp3r2")
+
+[node name="ActiveVoicesStack" type="VBoxContainer" parent="."]
+anchors_preset = -1
+anchor_top = 0.117
+anchor_right = 0.22475
+anchor_bottom = 0.602
+offset_top = -0.200005
+offset_right = 0.199997
+offset_bottom = -0.200012
+metadata/_edit_use_anchors_ = true
+
+[node name="Cloner" type="HBoxContainer" parent="ActiveVoicesStack"]
+visible = false
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="ActiveVoicesStack/Cloner"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_c5fhs")
+expand_mode = 2
+
+[node name="Username" type="Label" parent="ActiveVoicesStack/Cloner"]
+layout_mode = 2
+text = "jjkjljkllkljlk"
