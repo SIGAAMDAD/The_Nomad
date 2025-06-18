@@ -1,12 +1,19 @@
+using System;
 using System.Collections.Generic;
+using Godot;
 using Renown;
 using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Bloodbath : Mode {
 		private Dictionary<CSteamID, int> Scores = new Dictionary<CSteamID, int>();
+		private Dictionary<CSteamID, int> ServerScores = new Dictionary<CSteamID, int>();
 		private List<CSteamID> Scoreboard = new List<CSteamID>();
 		private Player ThisPlayer;
+
+		private int MaxScore = 15;
+
+		private Node2D[] Spawns;
 
 		private NetworkWriter SyncObject = new NetworkWriter( ( sizeof( ulong ) + sizeof( int ) ) * SteamLobby.MAX_LOBBY_MEMBERS );
 
@@ -16,32 +23,48 @@ namespace Multiplayer.Modes {
 		}
 
 		private void OnPlayerScore( Entity source, Entity target ) {
+			int score = 0;
 			if ( source is Player player && player != null ) {
-				Scores[ player.MultiplayerData.Id ]++;
+				score = Scores[ player.MultiplayerData.Id ]++;
 			} else if ( source is NetworkPlayer networkNode && networkNode != null ) {
-				Scores[ networkNode.MultiplayerData.Id ]++;
+				score = Scores[ networkNode.MultiplayerData.Id ]++;
+			}
+			if ( score >= MaxScore ) {
+
 			}
 			SendPacket();
 		}
 
 		public override void SpawnPlayer(Entity player) {
-			base.SpawnPlayer(player);
+			base.SpawnPlayer( player );
 		}
 
 		private void SendPacket() {
+			byte changedBits = 0;
+			int index = 0;
+			foreach ( var score in Scores ) {
+				// TODO: delta compression
+				if ( score.Value != ServerScores[ score.Key ] ) {
+					changedBits |= (byte)index;
+				}
+				index++;
+			}
+			SyncObject.Write( changedBits );
 			foreach ( var score in Scores ) {
 				SyncObject.Write( (ulong)score.Key );
-				SyncObject.Write( score.Value );
+				SyncObject.WritePackedInt( score.Value );
 			}
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
 			for ( int i = 0; i < Scores.Count; i++ ) {
-				Scores[ (CSteamID)reader.ReadUInt64() ] = reader.ReadInt32();
+				Scores[ (CSteamID)reader.ReadUInt64() ] = reader.Read7BitEncodedInt();
 			}
 		}
 
 		public override void _Ready() {
 		    base._Ready();
+
+			MaxScore = Convert.ToInt32( SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "RequiredScore" ) );
 
 			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 		}

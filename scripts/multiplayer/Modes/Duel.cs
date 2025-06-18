@@ -1,7 +1,6 @@
 using Godot;
 using Multiplayer.Overlays;
 using Renown;
-using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
