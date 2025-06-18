@@ -6,12 +6,7 @@ using System.Runtime.InteropServices;
 using Multiplayer;
 using System.Linq;
 using System.Collections.Concurrent;
-using System.Reflection;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Castle.Core.Smtp;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.IO.Compression;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -29,6 +24,8 @@ public partial class SteamLobby : Node {
 		ChatMessage_TeamOnly,
 		ChatMessage_PlayerOnly,
 		ChatMessage_FriendsOnly,
+
+		VoiceChat,
 
 		EncryptionKey,
 
@@ -109,7 +106,12 @@ public partial class SteamLobby : Node {
 				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
 
-			return data;
+			using var compressedStream = new System.IO.MemoryStream();
+			using var zipStream = new System.IO.Compression.DeflateStream( compressedStream, System.IO.Compression.CompressionLevel.Fastest );
+
+			zipStream.Write( data, 0, data.Length );
+
+			return compressedStream.ToArray();
 			/*
 
 			var header = new SecurityHeader {
@@ -145,7 +147,13 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
-			return secured;
+			using var compressedStream = new System.IO.MemoryStream( secured );
+			using var decompressedStream = new System.IO.MemoryStream();
+			using var zipStream = new System.IO.Compression.DeflateStream( compressedStream, System.IO.Compression.CompressionMode.Decompress );
+
+			zipStream.CopyTo( decompressedStream );
+
+			return decompressedStream.ToArray();
 
 			// sanity checks
 			/*
@@ -708,13 +716,15 @@ public partial class SteamLobby : Node {
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
+		case MessageType.VoiceChat:
+			SteamVoiceChat.Instance.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
+			break;
 		case MessageType.Handshake:
 			break;
 		case MessageType.ServerCommand:
 			CallDeferred( "ProcessServerCommand", (ulong)msg.Sender, msg.Data );
 			break;
-		}
-		;
+		};
 	}
 	private void HandleIncomingMessages() {
 		int processed = 0;

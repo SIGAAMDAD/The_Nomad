@@ -47,6 +47,7 @@ run/icon="res://desertbkgd_icon.png"
 
 general/default_playback_type.web=0
 driver/driver="Alsa"
+driver/enable_input=true
 
 [autoload]
 

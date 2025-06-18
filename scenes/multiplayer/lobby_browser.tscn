@@ -342,16 +342,16 @@ text = "JOIN_GAME"
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.6875
+anchor_left = 0.58125
 anchor_top = 0.933333
-anchor_right = 0.6875
+anchor_right = 0.58125
 anchor_bottom = 0.933333
 offset_right = 250.0
 offset_bottom = 40.0
 metadata/_edit_use_anchors_ = true
 
 [node name="JoiningLobbyLabel" type="Label" parent="JoiningLobbyContainer"]
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(310, 0)
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
