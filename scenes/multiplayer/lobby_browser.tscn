@@ -338,19 +338,24 @@ custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "JOIN_GAME"
 
-[node name="JoiningLobbyLabel" type="Label" parent="."]
+[node name="JoiningLobbyContainer" type="HBoxContainer" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5475
-anchor_top = 0.926667
-anchor_right = 0.925
-anchor_bottom = 0.992
-offset_right = -6.10352e-05
-offset_bottom = -0.200012
+anchor_left = 0.6875
+anchor_top = 0.933333
+anchor_right = 0.6875
+anchor_bottom = 0.933333
+offset_right = 250.0
+offset_bottom = 40.0
 metadata/_edit_use_anchors_ = true
 
-[node name="JoiningLobbySpinner" type="Range" parent="."]
+[node name="JoiningLobbyLabel" type="Label" parent="JoiningLobbyContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="JoiningLobbySpinner" type="Range" parent="JoiningLobbyContainer"]
 _import_path = NodePath("")
 unique_name_in_owner = false
 process_mode = 0
@@ -360,7 +365,7 @@ process_thread_group = 0
 physics_interpolation_mode = 2
 auto_translate_mode = 0
 editor_description = ""
-visible = false
+visible = true
 modulate = Color(1, 1, 1, 1)
 self_modulate = Color(1, 1, 1, 1)
 show_behind_parent = false
@@ -378,23 +383,9 @@ use_parent_material = false
 clip_contents = true
 custom_minimum_size = Vector2(16, 16)
 layout_direction = 0
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.94625
-anchor_top = 0.925
-anchor_right = 0.94625
-anchor_bottom = 0.925
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 40.0
-offset_bottom = 40.0
-grow_horizontal = 1
-grow_vertical = 1
-rotation = 0.0
-scale = Vector2(1, 1)
-pivot_offset = Vector2(0, 0)
-size_flags_horizontal = 1
-size_flags_vertical = 1
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 size_flags_stretch_ratio = 1.0
 localize_numeral_system = true
 tooltip_text = ""

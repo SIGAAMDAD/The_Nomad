@@ -398,8 +398,8 @@ public partial class LobbyBrowser : Control {
 		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
-		JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyLabel" );
-		JoiningLobbySpinner = GetNode<Range>( "JoiningLobbySpinner" );
+		JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyContainer/JoiningLobbyLabel" );
+		JoiningLobbySpinner = GetNode<Range>( "JoiningLobbyContainer/JoiningLobbySpinner" );
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
 		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
