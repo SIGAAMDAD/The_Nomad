@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Steamworks;
 using System;
-using Microsoft.Win32.SafeHandles;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private const int SAMPLE_RATE = 16000;
@@ -12,17 +11,9 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private const float COMPRESSION_SCALE = 32767.0f;
 	private const float DECOMPRESSION_SCALE = 1.0f / 32768.0f;
 
-	private AudioEffectRecord RecordEffect;
-	private AudioStreamPlayer RecordPlayer;
-	private int RecordBusIndex;
+	private AudioEffectCapture CaptureEffect;
+	private int CaptureBusIndex;
 	private float[] CaptureBuffer = new float[ FRAME_SIZE * 2 ];
-
-	private double LastCaptureTime = 0.0f;
-	private const double CaptureInvterval = 0.03f;
-
-	//	private AudioEffectCapture CaptureEffect;
-	//	private int CaptureBusIndex;
-	//	private float[] CaptureBuffer = new float[ FRAME_SIZE * 2 ];
 
 	private AudioStreamPlayer AudioPlayer;
 	private AudioStreamGeneratorPlayback Playback;
@@ -42,8 +33,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private Dictionary<CSteamID, HBoxContainer> VoiceActiveIcons = new Dictionary<CSteamID, HBoxContainer>();
 	private Dictionary<CSteamID, float> MemberVoiceActivity = new Dictionary<CSteamID, float>();
 
-	private List<Godot.Vector2> Framebuffer = new List<Godot.Vector2>();
-
 	public static SteamVoiceChat Instance;
 
 	public float GetVoiceActivity() => VoiceActivity;
@@ -62,23 +51,14 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		RecordBusIndex = AudioServer.BusCount;
-		AudioServer.AddBus( RecordBusIndex );
-		AudioServer.SetBusName( RecordBusIndex, "VoiceCapture" );
-		AudioServer.SetBusMute( RecordBusIndex, false );
+		CaptureBusIndex = AudioServer.BusCount;
+		AudioServer.AddBus( CaptureBusIndex );
+		AudioServer.SetBusName( CaptureBusIndex, "VoiceCapture" );
+		AudioServer.SetBusMute( CaptureBusIndex, false );
 
-		RecordEffect = new AudioEffectRecord();
-		AudioServer.AddBusEffect( RecordBusIndex, RecordEffect );
-		AudioServer.SetBusEffectEnabled( RecordBusIndex, 0, true );
-
-		var Silence = new AudioStreamGenerator();
-		Silence.MixRate = SAMPLE_RATE;
-
-		RecordPlayer = new AudioStreamPlayer();
-		AddChild( RecordPlayer );
-		RecordPlayer.Bus = "VoiceCapture";
-		RecordPlayer.Stream = Silence;
-		RecordPlayer.Play();
+		CaptureEffect = new AudioEffectCapture();
+		AudioServer.AddBusEffect( CaptureBusIndex, CaptureEffect );
+		AudioServer.SetBusEffectEnabled( CaptureBusIndex, 0, true );
 
 		HBoxContainer cloner = GetNode<HBoxContainer>( "ActiveVoicesStack/Cloner" );
 		SteamLobby.Instance.ClientJoinedLobby += ( ulong steamId ) => {
@@ -111,33 +91,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		}
 
 		CaptureVoice();
-		PlaybackAudio();
-	}
-
-	private void PlaybackAudio() {
-		if ( Playback == null || AudioQueue.Count == 0 ) {
-			return;
-		}
-
-		int available = Playback.GetFramesAvailable();
-		if ( available <= 0 ) {
-			return;
-		}
-
-		Godot.Vector2[] buffer = new Godot.Vector2[ available ];
-		int count = Math.Min( available, AudioQueue.Count );
-
-		lock ( AudioQueue ) {
-			for ( int i = 0; i < count; i++ ) {
-				buffer[ i ] = AudioQueue.Dequeue();
-			}
-		}
-
-		for ( int i = count; i < available; i++ ) {
-			buffer[ i ] = Godot.Vector2.Zero;
-		}
-
-		Playback.PushBuffer( buffer );
 	}
 
 	public bool IsVoiceActive( CSteamID userId ) {
@@ -154,112 +107,34 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	private void CaptureVoice() {
-		if ( !RecordEffect.IsRecordingActive() ) {
+		if ( AudioServer.IsBusMute( CaptureBusIndex ) ) {
 			return;
 		}
 
-		double currentTime = Time.GetTicksMsec() / 1000.0f;
-		if ( currentTime - LastCaptureTime < CaptureInvterval ) {
+		int available = CaptureEffect.GetFramesAvailable();
+		if ( available < FRAME_SIZE ) {
 			return;
 		}
 
-		AudioStreamWav recording = RecordEffect.GetRecording();
-		if ( recording == null || recording.GetLength() == 0 ) {
-			return;
-		}
+		Godot.Vector2[] frames = CaptureEffect.GetBuffer( FRAME_SIZE );
+		float max = 0.0f;
 
-		if ( recording.GetLength() <= 44 ) {
-			return;
-		}
-		int sampleCount = (int)( recording.GetLength() - 44 ) / 4;
-		Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
-
-		fixed ( byte* dataPtr = recording.Data ) {
-			short* pcmPtr = (short*)( dataPtr + 44 );
-
-			for ( int i = 0; i < sampleCount; i++ ) {
-				short left = *pcmPtr++;
-				short right = *pcmPtr++;
-
-				frames[ i ] = new Godot.Vector2(
-					left / COMPRESSION_SCALE,
-					right / COMPRESSION_SCALE
-				);
+		for ( int i = 0; i < FRAME_SIZE; i++ ) {
+			CaptureBuffer[ i * 2 ] = frames[ i ].X;
+			CaptureBuffer[ i * 2 + 1 ] = frames[ i ].Y;
+			float amplitude = ( Mathf.Abs( frames[ i ].X ) + Mathf.Abs( frames[ i ].Y ) ) / 2.0f;
+			if ( amplitude > max ) {
+				max = amplitude;
 			}
 		}
 
-		Framebuffer.AddRange( frames );
+		VoiceActivity = max > VoiceActivity ? max : Mathf.Max( VoiceActivity - VoiceDecayRate * (float)GetProcessDeltaTime(), 0.0f );
 
-		if ( Framebuffer.Count >= FRAME_SIZE ) {
-			SendVoiceData( Framebuffer.GetRange( 0, FRAME_SIZE ).ToArray() );
-		}
-
-
-		/*
-						LastCaptureTime = currentTime;
-
-						RecordEffect.SetRecordingActive( false );
-						RecordEffect.SetRecordingActive( true );
-
-						VoiceActivity = max > VoiceActivity ? max : Mathf.Max( VoiceActivity - VoiceDecayRate * (float)GetProcessDeltaTime(), 0.0f );
-						GD.Print( "Activity: " + VoiceActivity );
-
-						if ( VoiceActivity > VoiceThreshold ) {
-							GD.Print( "Sending" );
-							SendVoiceData();
-						}
-					*/
+//		if ( VoiceActivity > VoiceThreshold ) {
+			GD.Print( "Sending" );
+			SendVoiceData();
+//		}
 	}
-
-	private void SendVoiceData( Godot.Vector2[] frames ) {
-		byte[] pcmData = new byte[ FRAME_SIZE * 4 ]; // 16-bit stereo = 4 bytes per frame
-
-		unsafe {
-			fixed ( byte* dataPtr = pcmData ) {
-				short* pcmPtr = (short*)dataPtr;
-
-				for ( int i = 0; i < FRAME_SIZE; i++ ) {
-					*pcmPtr++ = (short)( frames[ i ].X * COMPRESSION_SCALE );
-					*pcmPtr++ = (short)( frames[ i ].Y * COMPRESSION_SCALE );
-				}
-			}
-		}
-
-		SteamLobby.Instance.SendP2PPacket( pcmData, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
-	}
-
-	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
-		GD.Print( "Got voice data" );
-		if ( data.Length == FRAME_SIZE * 4 ) {
-			GD.Print( "processing voice data" );
-			Godot.Vector2[] frames = new Godot.Vector2[ FRAME_SIZE ];
-
-			unsafe {
-				fixed ( byte* dataPtr = data ) {
-					short* pcmPtr = (short*)dataPtr;
-
-					for ( int i = 0; i < FRAME_SIZE; i++ ) {
-						short left = *pcmPtr++;
-						short right = *pcmPtr++;
-
-						frames[ i ] = new Godot.Vector2(
-							left * DECOMPRESSION_SCALE,
-							right * DECOMPRESSION_SCALE
-						);
-					}
-				}
-			}
-
-			// Add to playback queue
-			lock ( AudioQueue ) {
-				foreach ( var frame in frames ) {
-					AudioQueue.Enqueue( frame );
-				}
-			}
-		}
-	}
-
-	/*
 
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		if ( data.Length == FRAME_SIZE * 4 ) {
@@ -269,9 +144,9 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
 	private void ProcessAudioPacket( ulong senderId, byte[] data ) {
-		fixed ( byte* src = data )
-		fixed ( float* dst = PlaybackBuffer ) {
-			short* pcm = (short*)src;
+		fixed ( byte *src = data )
+		fixed ( float *dst = PlaybackBuffer ) {
+			short *pcm = (short *)src;
 			Span<int> tmp = stackalloc int[ VECTOR_FLOAT_COUNT ];
 
 			for ( int i = 0; i < data.Length / 2; i += VECTOR_FLOAT_COUNT ) {
@@ -322,9 +197,9 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
 	private void SendVoiceData() {
 		byte[] pcmData = new byte[ FRAME_SIZE * 4 ];
-		fixed ( float* src = CaptureBuffer )
-		fixed ( byte* dst = pcmData ) {
-			short* pcm = (short*)dst;
+		fixed ( float *src = CaptureBuffer )
+		fixed ( byte *dst = pcmData ) {
+			short *pcm = (short *)dst;
 
 			for ( int i = 0; i < CaptureBuffer.Length; i += VECTOR_FLOAT_COUNT ) {
 				Vector<float> sampleVec = new Vector<float>( new System.ReadOnlySpan<byte>( src + i, VECTOR_FLOAT_COUNT ) );
@@ -341,7 +216,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		SteamLobby.Instance.SendP2PPacket( pcmData, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 	}
-	*/
 };
 
 /*
