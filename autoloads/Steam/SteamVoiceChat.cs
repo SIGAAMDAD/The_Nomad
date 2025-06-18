@@ -303,12 +303,17 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		SteamLobby.Instance.SendP2PPacket( buffer, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 #else
 		if ( CaptureEffect.CanGetBuffer( 512 ) ) {
-			Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
+			using var stream = new System.IO.MemoryStream( Packet );
+			using var writer = new System.IO.BinaryWriter( stream );
 
-			Vector<byte> buffer = new Vector<byte>( GD.VarToBytes( CaptureEffect.GetBuffer( 512 ) ) );
-			buffer.CopyTo( Packet, 1 );
-
-			SteamLobby.Instance.SendP2PPacket( Packet );
+			writer.Write( (byte)SteamLobby.MessageType.VoiceChat );
+			Godot.Vector2[] frames = CaptureEffect.GetBuffer( 512 );
+			writer.Write( frames.Length );
+			for ( int i = 0; i < frames.Length; i++ ) {
+				writer.Write( frames[ i ].X );
+				writer.Write( frames[ i ].Y );
+			}
+			SteamLobby.Instance.SendP2PPacket( Packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 		}
 #endif
 	}
@@ -337,13 +342,28 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	private static void PlayAudio( byte[] data, int length ) {
-		int sampleCount = length / 2;
-		Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
 
-		for ( int i = 0; i < sampleCount; i++ ) {
-			short rawSample = (short)( data[ i * 2 ] | ( data[ i * 2 + 1 ] ) << 8 );
-			float sample = rawSample / 32768.0f;
-			frames[ i ] = new Godot.Vector2( sample, sample );
+		/*
+				int sampleCount = length / 2;
+				Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
+
+				for ( int i = 0; i < sampleCount; i++ ) {
+					short rawSample = (short)( buffer[ i * 2 ] | ( buffer[ i * 2 + 1 ] ) << 8 );
+					float sample = rawSample / 32768.0f;
+					frames[ i ] = new Godot.Vector2( sample, sample );
+				}
+		*/
+		using var stream = new System.IO.MemoryStream( data );
+		using var reader = new System.IO.BinaryReader( stream );
+		reader.ReadByte();
+
+		int numFrames = reader.ReadInt32();
+		Godot.Vector2[] frames = new Godot.Vector2[ numFrames ];
+		for ( int i = 0; i < frames.Length; i++ ) {
+			frames[ i ] = new Godot.Vector2(
+				reader.ReadSingle(),
+				reader.ReadSingle()
+			);
 		}
 
 		Playback.PushBuffer( frames );
