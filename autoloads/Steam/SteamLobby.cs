@@ -624,7 +624,7 @@ public partial class SteamLobby : Node {
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
 					(IntPtr)pBuffer,
-					(uint)data.Length,
+					(uint)buffer.Length,
 					sendType,
 					out long _
 				);
