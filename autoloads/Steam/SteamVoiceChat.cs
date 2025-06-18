@@ -71,7 +71,7 @@ public unsafe partial class SteamVoiceChat : Node {
 		}
 
 		int available = CaptureEffect.GetFramesAvailable();
-		if ( available < FRAME_SIZE ) {
+		if ( available < 0 ) {
 			return;
 		}
 
