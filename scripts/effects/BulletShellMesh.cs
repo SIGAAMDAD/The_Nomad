@@ -8,13 +8,14 @@ public partial class BulletShellMesh : Node {
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 256 );
+	private NetworkWriter SyncObject = new NetworkWriter( 128 );
 
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (string)ammo.Get( "id" ) );
 		SyncObject.Write( position );
+		SyncObject.Sync();
 	}
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
 		string ammoId = packet.ReadString();

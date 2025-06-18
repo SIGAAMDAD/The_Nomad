@@ -45,6 +45,7 @@ public partial class BloodParticleFactory : Node {
 		for ( int i = 0; i < count; i++ ) {
 			SyncObject.Write( positions[ i ].Origin );
 		}
+		SyncObject.Sync();
 	}
 
 	public override void _Ready() {

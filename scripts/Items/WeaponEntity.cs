@@ -432,6 +432,7 @@ public partial class WeaponEntity : Node2D {
 		if ( CurrentState == WeaponState.Use ) {
 			SyncObject.Write( held );
 		}
+		SyncObject.Sync();
 	}
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
 		CurrentState = (WeaponState)packet.ReadByte();
