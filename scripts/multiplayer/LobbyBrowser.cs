@@ -346,6 +346,7 @@ public partial class LobbyBrowser : Control {
 		}
 	}
 	private void OnRefreshButtonPressed() {
+		SteamLobby.Instance.OpenLobbyList();
 		GetLobbyList();
 	}
 	private void OnHostGameButtonPressed() {
