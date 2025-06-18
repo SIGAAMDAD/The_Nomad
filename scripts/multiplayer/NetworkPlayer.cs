@@ -331,7 +331,9 @@ public partial class NetworkPlayer : Renown.Entity {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, CurrentSpeed * (float)delta );
+		float effectiveFactor = 1.0f - Mathf.Pow( 1.0f - 0.06f, (float)delta * 60.0f );
+		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, effectiveFactor );
+//		GlobalPosition = GlobalPosition * ( 1.0f - 0.08f ) + NetworkPosition * 0.08f;
 	}
 
 	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {
