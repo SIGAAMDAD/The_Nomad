@@ -2148,7 +2148,7 @@ public partial class Player : Entity {
 			CurrentWeapon = index;
 		}
 
-		WeaponsStack.Add( weapon.InitialPath.GetHashCode(), weapon );
+		WeaponsStack.Add( weapon.GetHashCode(), weapon );
 		TotalInventoryWeight += weapon.Weight;
 
 		TorsoAnimation.FlipH = false;
