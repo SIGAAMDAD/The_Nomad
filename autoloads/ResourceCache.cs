@@ -287,9 +287,6 @@ public class ResourceCache {
 		long[] WorkerThreads = [
 			WorkerThreadPool.AddTask( Callable.From( () => { world.CallDeferred( "ApplyShadowQuality" ); } ) ),
 			WorkerThreadPool.AddTask( Callable.From( () => {
-				ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
-			} ) ),
-			WorkerThreadPool.AddTask( Callable.From( () => {
 				TargetSpotted = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21199.mp3" ),
@@ -522,12 +519,11 @@ public class ResourceCache {
 
 		Light = ResourceLoader.Load<Texture2D>( "res://textures/point_light.dds" );
 
+		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
+
 		SceneLoadThread?.Join();
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
-			// wait for the ItemDatabase to finish loading
-			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ 1 ] );
-
 			Godot.Collections.Array<Resource> items = (Godot.Collections.Array<Resource>)ItemDatabase.Get( "items" );
 			NetworkCache = new Dictionary<int, Resource>( items.Count );
 			for ( int i = 0; i < items.Count; i++ ) {
