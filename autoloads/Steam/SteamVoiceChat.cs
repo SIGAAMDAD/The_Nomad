@@ -240,6 +240,9 @@ public partial class SteamVoiceChat : CanvasLayer {
 
 	public static SteamVoiceChat Instance;
 
+	public bool IsVoiceActive( CSteamID steamID ) => false;
+	public float GetVoiceActivity( CSteamID steamID ) => 0.0f;
+
 	public override void _Ready() {
 		base._Ready();
 
