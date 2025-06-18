@@ -355,7 +355,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		*/
 		using var stream = new System.IO.MemoryStream( data );
 		using var reader = new System.IO.BinaryReader( stream );
-		reader.ReadByte();
 
 		int numFrames = reader.ReadInt32();
 		Godot.Vector2[] frames = new Godot.Vector2[ numFrames ];
