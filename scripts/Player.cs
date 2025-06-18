@@ -209,7 +209,7 @@ public partial class Player : Entity {
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
 	private float Rage = 60.0f;
-	private int CurrentWeapon = 0;
+	private int CurrentWeapon = WeaponSlot.INVALID;
 
 	private Camera2D Viewpoint;
 
@@ -531,21 +531,25 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
-		if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
-			SyncObject.Write( true );
-			SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
-			SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
-		} else {
+		if ( CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
+		} else {
+			if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
+				SyncObject.Write( true );
+				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+				SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
+			} else {
+				SyncObject.Write( false );
+			}
 		}
 
 		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
-			SyncObject.Write( true );
-			LastNetworkAimAngle = AimLine.GlobalRotation;
-			SyncObject.Write( LastNetworkAimAngle );
-		} else {
-			SyncObject.Write( false );
-		}
+				SyncObject.Write( true );
+				LastNetworkAimAngle = AimLine.GlobalRotation;
+				SyncObject.Write( LastNetworkAimAngle );
+			} else {
+				SyncObject.Write( false );
+			}
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( (byte)RightArmAnimationState );
@@ -1139,7 +1143,7 @@ public partial class Player : Entity {
 		}
 
 		if ( index == MAX_WEAPON_SLOTS || !WeaponSlots[ index ].IsUsed() ) {
-			index = -1;
+			index = WeaponSlot.INVALID;
 		}
 
 		Arm otherArm;
