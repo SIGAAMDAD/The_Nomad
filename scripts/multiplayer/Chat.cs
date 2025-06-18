@@ -76,7 +76,7 @@ namespace Multiplayer {
 				Message.Size = new Godot.Vector2( 140, 31 );
 			}
 		}
-		private void OnChatMessageReceived( ulong senderId, string message ) {
+		private void OnChatMessageReceived( ulong senderId, string message, int messageType ) {
 			string fullMessage = string.Format( "[{0}] {1}\n", SteamFriends.GetFriendPersonaName( (CSteamID)senderId ), message );
 			RecentText.Text = fullMessage;
 			FullText.AppendText( fullMessage );
@@ -92,7 +92,7 @@ namespace Multiplayer {
 			RecentText = GetNode<RichTextLabel>( "Minimized/RichTextLabel" );
 			Message = GetNode<LineEdit>( "LineEdit" );
 
-			SteamLobby.Instance.Connect( "ChatMessageReceived", Callable.From<ulong, string>( OnChatMessageReceived ) );
+			SteamLobby.Instance.Connect( "ChatMessageReceived", Callable.From<ulong, string, int>( OnChatMessageReceived ) );
 		}
     };
 };
