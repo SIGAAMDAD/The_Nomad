@@ -1147,7 +1147,7 @@ public partial class Player : Entity {
 			index--;
 		}
 
-		if ( index == MAX_WEAPON_SLOTS || !WeaponSlots[ index ].IsUsed() ) {
+		if ( index == -1 || !WeaponSlots[ index ].IsUsed() ) {
 			index = WeaponSlot.INVALID;
 		}
 
