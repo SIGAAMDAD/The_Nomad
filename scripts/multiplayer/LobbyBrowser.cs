@@ -278,7 +278,7 @@ public partial class LobbyBrowser : Control {
 		JoinGame.Hide();
 
 		JoiningLobbyContainer.Show();
-		JoiningLobbyLabel.Text = "CONNECTING TO LOBBY...";
+		JoiningLobbyLabel.Text = "CONNECTING...";
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();

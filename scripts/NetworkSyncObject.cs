@@ -10,7 +10,7 @@ public class NetworkSyncObject {
 	private readonly BinaryWriter Writer = null;
 	private BinaryReader Reader = null;
 
-	private static readonly float GRID_STEP = 24.0f;
+	private static readonly float GRID_STEP = 16.0f;
 
 	public NetworkSyncObject( int nPacketSize ) {
 		Packet = new byte[ nPacketSize ];
@@ -22,9 +22,9 @@ public class NetworkSyncObject {
 	public void BeginRead( BinaryReader reader ) => Reader = reader;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Godot.Vector2 ReadVector2() {
-		short packed = Reader.ReadInt16();
-		sbyte x = (sbyte)( packed >> 8 );
-		sbyte y = (sbyte)( packed & 0xFF );
+		int packed = Reader.ReadInt32();
+		short x = (short)( packed >> 16 );
+		short y = (short)( packed & 0xFF );
 
 		Godot.Vector2I value = new Godot.Vector2I( x, y );
 
@@ -63,10 +63,10 @@ public class NetworkSyncObject {
 			(int)Mathf.Round( value.Y / GRID_STEP )
 		);
 
-		sbyte x = (sbyte)Mathf.Clamp( position.X, -128, 127 );
-		sbyte y = (sbyte)Mathf.Clamp( position.Y, -128, 127 );
+		short x = (short)Mathf.Clamp( position.X, -short.MaxValue, short.MaxValue - 1 );
+		short y = (short)Mathf.Clamp( position.Y, -short.MaxValue, short.MaxValue - 1 );
 
-		Writer.Write( (short)( ( x << 8 ) | ( y & 0xFF ) ) );
+		Writer.Write( (int)( ( x << 16 ) | ( y & 0xFF ) ) );
 	}
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void Write( ulong value ) => Writer.Write( value );
