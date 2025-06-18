@@ -106,11 +106,7 @@ public partial class SteamLobby : Node {
 				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
 
-			using var compressedStream = new System.IO.MemoryStream();
-			using var gzipStream = new System.IO.Compression.GZipStream( compressedStream, System.IO.Compression.CompressionMode.Compress, true );
-			gzipStream.Write( data, 0, data.Length );
-
-			return compressedStream.ToArray();
+			return data;
 
 			/*
 			using var compressedStream = new System.IO.MemoryStream();
@@ -155,15 +151,6 @@ public partial class SteamLobby : Node {
 				return null; // 250 msg/sec limit
 			}
 
-			using var input = new System.IO.MemoryStream( secured );
-			using var gzip = new System.IO.Compression.GZipStream( input, System.IO.Compression.CompressionMode.Decompress );
-
-			Instance.PacketStream.SetLength( 0 );
-
-			byte[] data = Instance.Pool.Rent();
-			gzip.CopyTo( Instance.PacketStream );
-			Buffer.BlockCopy( Instance.PacketStream.ToArray(), 0, data, 0, (int)Instance.PacketStream.Length );
-
 			/*
 			using var compressedStream = new System.IO.MemoryStream( secured );
 			using var decompressedStream = new System.IO.MemoryStream( 1024 );
@@ -173,7 +160,7 @@ public partial class SteamLobby : Node {
 
 			return decompressedStream.ToArray();
 			*/
-			return data;
+			return secured;
 
 			// sanity checks
 			/*
