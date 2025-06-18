@@ -889,8 +889,7 @@ public partial class SteamLobby : Node {
 				TransferLobbyOwnership();
 			}
 			break;
-		}
-		;
+		};
 	}
 	#endregion
 

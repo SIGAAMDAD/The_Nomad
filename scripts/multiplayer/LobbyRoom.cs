@@ -301,13 +301,26 @@ public partial class LobbyRoom : Control {
 
 		SteamLobby.Instance.SendP2PPacket( [ (byte)SteamLobby.MessageType.Handshake ], Constants.k_nSteamNetworkingSend_Reliable );
 
+		SteamNetConnectionRealTimeStatus_t status = new SteamNetConnectionRealTimeStatus_t();
+		SteamNetConnectionRealTimeLaneStatus_t laneStatus = new SteamNetConnectionRealTimeLaneStatus_t();
+
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
 
 			{
 				Label pingLabel = container.GetChild<Label>( 2 );
 
-				int ping = SteamLobby.Instance.GetMemberPing( SteamLobby.Instance.LobbyMembers[ i ] );
+				if ( !SteamLobby.GetConnections().TryGetValue( SteamLobby.Instance.LobbyMembers[ i ], out HSteamNetConnection conn ) ) {
+					continue;	
+				}
+
+				int ping;
+				if ( SteamNetworkingSockets.GetConnectionRealTimeStatus( conn, ref status, 0, ref laneStatus ) == EResult.k_EResultOK ) {
+					ping = status.m_nPing;
+				} else {
+					ping = int.MaxValue;
+				}
+
 				if ( ping < 60 ) {
 					pingLabel.Modulate = GoodPing;
 				} else if ( ping < 100 ) {
