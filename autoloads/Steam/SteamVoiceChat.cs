@@ -229,7 +229,9 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
+		GD.Print( "Got voice data" );
 		if ( data.Length == FRAME_SIZE * 4 ) {
+			GD.Print( "processing voice data" );
 			Godot.Vector2[] frames = new Godot.Vector2[ FRAME_SIZE ];
 
 			unsafe {
