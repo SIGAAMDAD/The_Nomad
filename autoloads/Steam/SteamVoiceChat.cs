@@ -67,7 +67,7 @@ public unsafe partial class SteamVoiceChat : Node {
 
 	private void CaptureVoice() {
 		if ( AudioServer.IsBusMute( CaptureBusIndex ) ) {
-			return;
+//			return;
 		}
 
 		int available = CaptureEffect.GetFramesAvailable();
