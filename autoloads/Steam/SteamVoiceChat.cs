@@ -238,8 +238,12 @@ public partial class SteamVoiceChat : CanvasLayer {
 	private const float VoiceThreshold = 0.05f;
 	private const float VoiceDecayRate = 0.1f;
 
+	public static SteamVoiceChat Instance;
+
 	public override void _Ready() {
 		base._Ready();
+
+		Instance = this;
 
 		var AudioPlayer = new AudioStreamPlayer();
 		AddChild( AudioPlayer );
@@ -331,7 +335,7 @@ public partial class SteamVoiceChat : CanvasLayer {
 		}
 #endif
 	}
-	public static void ProcessIncomingVoice( ulong senderId, byte[] data ) {
+	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 #if USE_STEAM_AUDIO
 		byte[] decompressed = new byte[ 8192 ];
 		EVoiceResult result = SteamUser.DecompressVoice(
