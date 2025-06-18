@@ -252,9 +252,8 @@ public partial class LobbyBrowser : Control {
 
 		JoinGame.Hide();
 
-		JoiningLobbyLabel.Show();
+		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Show();
 		JoiningLobbyLabel.Text = "CONNECTING TO LOBBY...";
-		JoiningLobbySpinner.Show();
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
@@ -266,8 +265,7 @@ public partial class LobbyBrowser : Control {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
-		JoiningLobbyLabel.Hide();
-		JoiningLobbySpinner.Hide();
+		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Hide();
 
 		LobbyData lobby = LobbyList[ lobbyId ];
 		lobby.Refresh();
@@ -346,10 +344,9 @@ public partial class LobbyBrowser : Control {
 		if ( MatchmakingLabel.Visible ) {
 			return; // matchmaking, can't join game
 		}
-		JoiningLobbyLabel.Show();
 
+		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Show();
 		JoiningLobbySpinner.Set( "status", 1 );
-		JoiningLobbySpinner.Show();
 		OnJoinGame( SelectedLobby );
 	}
 
