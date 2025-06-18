@@ -254,23 +254,13 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Packet = new byte[ 8192 ];
 
-#if USE_STEAM_AUDIO
 		SteamUser.StartVoiceRecording();
-#else
-		AudioStreamPlayer Input = GetNode<AudioStreamPlayer>( "Input" );
-		Input.Stream = new AudioStreamMicrophone();
-		Input.Play();
-
-		CaptureBusIndex = AudioServer.GetBusIndex( "Microphone" );
-		CaptureEffect = (AudioEffectCapture)AudioServer.GetBusEffect( CaptureBusIndex, 0 );
-#endif
+		SteamFriends.SetInGameVoiceSpeaking( SteamManager.GetSteamID(), true );
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
 
-#if USE_STEAM_AUDIO
 		SteamUser.StopVoiceRecording();
-#endif
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
@@ -279,91 +269,28 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	private void CaptureVoice() {
-#if USE_STEAM_AUDIO
-		EVoiceResult eResult;
-
-		eResult = SteamUser.GetAvailableVoice( out uint compressedSize );
-		if ( eResult != EVoiceResult.k_EVoiceResultOK ) {
-//			Console.PrintError( string.Format( "[STEAM] Error recording voice: {0}", eResult ) );
-			return;
-		}
-
-		byte[] buffer = new byte[ compressedSize ];
-
-		eResult = SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten );
-		if ( eResult != EVoiceResult.k_EVoiceResultOK ) {
-			Console.PrintError( string.Format( "[STEAM] Error getting voice data: {0}", eResult ) );
-			return;
-		}
-
-		Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
-		Buffer.BlockCopy( buffer, 0, Packet, 1, (int)bytesWritten );
-
-		GD.Print( "SENDING VOICE" );
-		SteamLobby.Instance.SendP2PPacket( buffer, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
-#else
-		if ( CaptureEffect.CanGetBuffer( 512 ) ) {
-			using var stream = new System.IO.MemoryStream( Packet );
-			using var writer = new System.IO.BinaryWriter( stream );
-
-			writer.Write( (byte)SteamLobby.MessageType.VoiceChat );
-			Godot.Vector2[] frames = CaptureEffect.GetBuffer( 512 );
-			writer.Write( frames.Length );
-			for ( int i = 0; i < frames.Length; i++ ) {
-				writer.Write( frames[ i ].X );
-				writer.Write( frames[ i ].Y );
+		EVoiceResult result = SteamUser.GetAvailableVoice( out uint compressedSize );
+		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
+			byte[] buffer = new byte[ compressedSize ];
+			if ( SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
+				Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
+				Buffer.BlockCopy( buffer, 0, Packet, 1, (int)bytesWritten );
+				SteamLobby.Instance.SendP2PPacket( Packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 			}
-			SteamLobby.Instance.SendP2PPacket( Packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 		}
-#endif
 	}
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
-#if USE_STEAM_AUDIO
 		byte[] buffer = new byte[ data.Length - 1 ];
 		Buffer.BlockCopy( data, 1, buffer, 0, buffer.Length );
-		byte[] decompressed = new byte[ 8192 ];
-		EVoiceResult result = SteamUser.DecompressVoice(
-			buffer,
-			(uint)buffer.Length,
-			decompressed,
-			(uint)decompressed.Length,
-			out uint decompressedLength,
-			SAMPLE_RATE
-		);
+		byte[] output = new byte[ 8192 ];
 
-		GD.Print( "GOT AUDIO" );
-
-		if ( result == EVoiceResult.k_EVoiceResultOK && decompressedLength > 0 ) {
-			PlayAudio( decompressed, decompressedLength );
+		if ( SteamUser.DecompressVoice( buffer, (uint)buffer.Length, output, (uint)output.Length, out uint bytesWritten, SAMPLE_RATE ) == EVoiceResult.k_EVoiceResultOK && bytesWritten > 0 ) {
+			for ( int i = 0; i < Math.Min( Playback.GetFramesAvailable() * 2, bytesWritten ); i++ ) {
+				int rawValue = output[ i ] | ( output[ i + 1 ] << 8 );
+				rawValue = ( rawValue + 32768 ) & 0xffff;
+				float amplitude = ( rawValue - 32768 ) / 32768.0f;
+				Playback.PushFrame( new Godot.Vector2( amplitude, amplitude ) );
+			}
 		}
-#else
-		PlayAudio( data, data.Length );
-#endif
-	}
-
-	private static void PlayAudio( byte[] data, int length ) {
-
-		/*
-				int sampleCount = length / 2;
-				Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
-
-				for ( int i = 0; i < sampleCount; i++ ) {
-					short rawSample = (short)( buffer[ i * 2 ] | ( buffer[ i * 2 + 1 ] ) << 8 );
-					float sample = rawSample / 32768.0f;
-					frames[ i ] = new Godot.Vector2( sample, sample );
-				}
-		*/
-		using var stream = new System.IO.MemoryStream( data );
-		using var reader = new System.IO.BinaryReader( stream );
-
-		float[] buffer = new float[ data.Length - 1 / 4 ];
-		Buffer.BlockCopy( data, 1, buffer, 0, data.Length - 1 );
-
-		Godot.Vector2[] frames = new Godot.Vector2[ buffer.Length / 2 ];
-		for ( int i = 0; i < frames.Length; i++ ) {
-			frames[ i ] = new Godot.Vector2( buffer[ i * 2 ], data[ i * 2 + 1 ] );
-		}
-
-		Playback.PushBuffer( frames );
 	}
 };
