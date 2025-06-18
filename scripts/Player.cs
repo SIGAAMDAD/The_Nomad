@@ -1138,7 +1138,7 @@ public partial class Player : Entity {
 			index--;
 		}
 
-		if ( index == MAX_WEAPON_SLOTS ) {
+		if ( index == MAX_WEAPON_SLOTS || !WeaponSlots[ index ].IsUsed() ) {
 			index = -1;
 		}
 
@@ -1188,7 +1188,7 @@ public partial class Player : Entity {
 			index++;
 		}
 
-		if ( index == MAX_WEAPON_SLOTS ) {
+		if ( index == MAX_WEAPON_SLOTS || !WeaponSlots[ index ].IsUsed() ) {
 			index = -1;
 		}
 
