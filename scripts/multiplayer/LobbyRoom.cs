@@ -325,6 +325,8 @@ public partial class LobbyRoom : Control {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
+		SendPing();
+
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
 			CSteamID lobbyMember = SteamMatchmaking.GetLobbyMemberByIndex( SteamLobby.Instance.GetLobbyID(), i );
