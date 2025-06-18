@@ -112,6 +112,8 @@ public partial class LobbyBrowser : Control {
 	private static Label JoiningLobbyLabel;
 	private static Range JoiningLobbySpinner;
 
+	private static HBoxContainer JoiningLobbyContainer;
+
 	private static Control MatchmakingSpinner;
 	private static Label MatchmakingLabel;
 	private static Timer MatchmakingTimer;
@@ -252,7 +254,7 @@ public partial class LobbyBrowser : Control {
 
 		JoinGame.Hide();
 
-		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Show();
+		JoiningLobbyContainer.Show();
 		JoiningLobbyLabel.Text = "CONNECTING TO LOBBY...";
 
 		UIChannel.Stream = UISfxManager.BeginGame;
@@ -265,7 +267,7 @@ public partial class LobbyBrowser : Control {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 
-		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Hide();
+		JoiningLobbyContainer.Hide();
 
 		LobbyData lobby = LobbyList[ lobbyId ];
 		lobby.Refresh();
@@ -345,7 +347,7 @@ public partial class LobbyBrowser : Control {
 			return; // matchmaking, can't join game
 		}
 
-		GetNode<HBoxContainer>( "JoiningLobbyContainer" ).Show();
+		JoiningLobbyContainer.Show();
 		JoiningLobbySpinner.Set( "status", 1 );
 		OnJoinGame( SelectedLobby );
 	}
@@ -395,6 +397,7 @@ public partial class LobbyBrowser : Control {
 		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
+		JoiningLobbyContainer = GetNode<HBoxContainer>( "JoiningLobbyContainer" );
 		JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyContainer/JoiningLobbyLabel" );
 		JoiningLobbySpinner = GetNode<Range>( "JoiningLobbyContainer/JoiningLobbySpinner" );
 
