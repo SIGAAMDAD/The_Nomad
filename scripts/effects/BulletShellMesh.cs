@@ -8,10 +8,40 @@ public partial class BulletShellMesh : Node {
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
+	private NetworkWriter SyncObject = new NetworkWriter( 128 );
+
+	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
+		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+		SyncObject.Write( GetPath().GetHashCode() );
+		SyncObject.Write( (string)ammo.Get( "id" ) );
+		SyncObject.Write( position );
+	}
+	private void ReceivePacket( System.IO.BinaryReader packet ) {
+		string ammoId = packet.ReadString();
+		Godot.Vector2 position = new Godot.Vector2(
+			(float)packet.ReadHalf(),
+			(float)packet.ReadHalf()
+		);
+
+		Resource ammo = (Resource)ResourceCache.ItemDatabase.Call( "get_item", ammoId );
+
+		if ( !Meshes.TryGetValue( ammo, out MultiMeshInstance2D instance ) ) {
+			instance = Instance.AddMesh( ammo );
+		}
+		if ( instance.Multimesh.VisibleInstanceCount >= BulletShellInstanceMax ) {
+			instance.Multimesh.VisibleInstanceCount = 0;
+		}
+		
+		instance.Multimesh.VisibleInstanceCount++;
+		instance.Multimesh.SetInstanceTransform2D( instance.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
+	}
 
 	public override void _Ready() {
 		base._Ready();
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+		}
 
 		Instance = this;
 	}
@@ -55,7 +85,9 @@ public partial class BulletShellMesh : Node {
 			instance.Multimesh.VisibleInstanceCount = 0;
 		}
 		instance.Multimesh.VisibleInstanceCount++;
+
 		instance.Multimesh.SetInstanceTransform2D( instance.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, from.GlobalPosition ) );
+		SendUpdate( from.GlobalPosition, ammo );
 
 		Timer timer = new Timer();
 		timer.WaitTime = 0.15f;

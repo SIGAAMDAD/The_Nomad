@@ -40,6 +40,7 @@ public partial class BloodParticleFactory : Node {
 	}
 	private void NetworkSync( int offset, int count, Span<Transform2D> positions ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)count );
 		for ( int i = 0; i < count; i++ ) {
 			SyncObject.Write( positions[ i ].Origin );

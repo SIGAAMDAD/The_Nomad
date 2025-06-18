@@ -544,12 +544,12 @@ public partial class Player : Entity {
 		}
 
 		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
-				SyncObject.Write( true );
-				LastNetworkAimAngle = AimLine.GlobalRotation;
-				SyncObject.Write( LastNetworkAimAngle );
-			} else {
-				SyncObject.Write( false );
-			}
+			SyncObject.Write( true );
+			LastNetworkAimAngle = AimLine.GlobalRotation;
+			SyncObject.Write( LastNetworkAimAngle );
+		} else {
+			SyncObject.Write( false );
+		}
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( (byte)RightArmAnimationState );
