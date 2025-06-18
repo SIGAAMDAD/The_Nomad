@@ -299,6 +299,8 @@ public partial class LobbyRoom : Control {
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
+		SteamLobby.Instance.SendP2PPacket( [ (byte)SteamLobby.MessageType.Handshake ], Constants.k_nSteamNetworkingSend_Reliable );
+
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
 
