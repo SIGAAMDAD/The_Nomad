@@ -75,6 +75,8 @@ public unsafe partial class SteamVoiceChat : Node {
 			return;
 		}
 
+		GD.Print( "GOT AUDIO!" );
+
 		Godot.Vector2[] frames = CaptureEffect.GetBuffer( FRAME_SIZE );
 		float max = 0.0f;
 

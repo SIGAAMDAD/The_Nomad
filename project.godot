@@ -67,6 +67,7 @@ FpsCounter="*res://scenes/fps_counter.tscn"
 DialogueGlobals="*res://autoloads/DialogueGlobals.cs"
 GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
 NetworkingMonitor="*res://scenes/multiplayer/networking_monitor.tscn"
+SteamVoiceChat="*res://autoloads/Steam/SteamVoiceChat.cs"
 
 [debug]
 
