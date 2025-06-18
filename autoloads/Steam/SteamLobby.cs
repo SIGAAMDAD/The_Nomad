@@ -25,6 +25,7 @@ public partial class SteamLobby : Node {
 		ChatMessage_PlayerOnly,
 		ChatMessage_FriendsOnly,
 
+		PingUpdate,
 		VoiceChat,
 
 		EncryptionKey,
@@ -311,6 +312,20 @@ public partial class SteamLobby : Node {
 	};
 	private Queue<IncomingMessage> MessageQueue = new Queue<IncomingMessage>();
 
+	public static HSteamNetConnection FindConnection( CSteamID steamID ) {
+		if ( Instance.Connections.TryGetValue( steamID, out HSteamNetConnection hConnection ) ) {
+			return hConnection;
+		}
+		if ( Instance.PendingConnections.TryGetValue( steamID, out hConnection ) ) {
+			return hConnection;
+		}
+		foreach ( var user in Instance.ConnectionToSteamID ) {
+			if ( user.Value == steamID ) {
+				return user.Key;
+			}
+		}
+		return HSteamNetConnection.Invalid;
+	}
 	public static Dictionary<CSteamID, HSteamNetConnection> GetConnections() => Instance.Connections;
 
 	private static void CopyTo( System.IO.Stream src, System.IO.Stream dest ) {
@@ -724,6 +739,9 @@ public partial class SteamLobby : Node {
 			break;
 		case MessageType.VoiceChat:
 			SteamVoiceChat.Instance.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
+			break;
+		case MessageType.PingUpdate:
+			LobbyRoom.ReceivePing( (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.Handshake:
 			break;

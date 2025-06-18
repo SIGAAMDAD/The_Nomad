@@ -295,31 +295,57 @@ public partial class LobbyRoom : Control {
 				PlayerList.AddChild( container );
 			}
 		}
+
+		Instance = this;
+	}
+
+	private void SendPing() {
+		SteamNetConnectionRealTimeStatus_t status = new SteamNetConnectionRealTimeStatus_t();
+		SteamNetConnectionRealTimeLaneStatus_t laneStatus = new SteamNetConnectionRealTimeLaneStatus_t();
+
+		int ping = 0;
+		foreach ( var conn in SteamLobby.GetConnections() ) {
+			if ( SteamNetworkingSockets.GetConnectionRealTimeStatus( conn.Value, ref status, 0, ref laneStatus ) == EResult.k_EResultOK ) {
+				ping = status.m_nPing;
+				break;
+			} else {
+				ping = int.MaxValue;
+			}
+		}
+
+		byte[] packet = [
+			(byte)SteamLobby.MessageType.PingUpdate,
+			(byte)( ping & 0xff ),
+			(byte)( ( ping >> 8 ) & 0xff ),
+			(byte)( ( ping >> 16 ) & 0xff ),
+			(byte)( ( ping >> 24 ) & 0xff )
+		];
+		SteamLobby.Instance.SendP2PPacket( packet, Constants.k_nSteamNetworkingSend_Reliable );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
-		SteamLobby.Instance.SendP2PPacket( [ (byte)SteamLobby.MessageType.Handshake ], Constants.k_nSteamNetworkingSend_Reliable );
-
-		SteamNetConnectionRealTimeStatus_t status = new SteamNetConnectionRealTimeStatus_t();
-		SteamNetConnectionRealTimeLaneStatus_t laneStatus = new SteamNetConnectionRealTimeLaneStatus_t();
-
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
+			CSteamID lobbyMember = SteamMatchmaking.GetLobbyMemberByIndex( SteamLobby.Instance.GetLobbyID(), i );
 
 			{
-				Label pingLabel = container.GetChild<Label>( 2 );
+				container.GetChild<TextureRect>( 0 ).Material.Set(
+					"shader_parameter/active",
+					SteamVoiceChat.Instance.IsVoiceActive( lobbyMember )
+				);
+				container.GetChild<ProgressBar>( 1 ).Value = SteamVoiceChat.Instance.GetVoiceActivity(
+					lobbyMember
+				);
+			}
+		}
+	}
+	public static void ReceivePing( ulong senderId, byte[] data ) {
+		int ping = BitConverter.ToInt32( data );
 
-				if ( !SteamLobby.GetConnections().TryGetValue( SteamLobby.Instance.LobbyMembers[ i ], out HSteamNetConnection conn ) ) {
-					continue;	
-				}
-
-				int ping;
-				if ( SteamNetworkingSockets.GetConnectionRealTimeStatus( conn, ref status, 0, ref laneStatus ) == EResult.k_EResultOK ) {
-					ping = status.m_nPing;
-				} else {
-					ping = int.MaxValue;
-				}
+		for ( int i = 0; i < Instance.PlayerList.GetChildCount(); i++ ) {
+			if ( senderId == (ulong)SteamLobby.Instance.LobbyMembers[ i ] ) {
+				Label pingLabel = Instance.PlayerList.GetChild( i ).GetChild( 2 ) as Label;
 
 				if ( ping < 60 ) {
 					pingLabel.Modulate = GoodPing;
@@ -329,15 +355,6 @@ public partial class LobbyRoom : Control {
 					pingLabel.Modulate = BadPing;
 				}
 				pingLabel.Text = string.Format( "{0}ms", ping );
-			}
-			{
-				container.GetChild<TextureRect>( 0 ).Material.Set(
-					"shader_parameter/active",
-					SteamVoiceChat.Instance.IsVoiceActive( SteamLobby.Instance.LobbyMembers[ i ] )
-				);
-				container.GetChild<ProgressBar>( 1 ).Value = SteamVoiceChat.Instance.GetVoiceActivity(
-					SteamLobby.Instance.LobbyMembers[ i ]
-				);
 			}
 		}
 	}
