@@ -264,10 +264,6 @@ public partial class LobbyRoom : Control {
 			OnPlayerJoined( (ulong)senderId );
 		} );
 
-		if ( SteamLobby.Instance.IsOwner() ) {
-			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
-		}
-
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.Show();
 		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
@@ -276,17 +272,19 @@ public partial class LobbyRoom : Control {
 
 		SteamLobby.Instance.GetLobbyMembers();
 
-		/*
-		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
-				continue;
+		if ( SteamLobby.Instance.IsOwner() ) {
+			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
+		} else {
+			for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+				if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
+					continue;
+				}
+				container = ClonerContainer.Duplicate() as HBoxContainer;
+				container.Show();
+				( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
+				( container.GetChild( 1 ) as Button ).Hide();
+				PlayerList.AddChild( container );
 			}
-			container = ClonerContainer.Duplicate() as HBoxContainer;
-			container.Show();
-			( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
-			( container.GetChild( 1 ) as Button ).Hide();
-			PlayerList.AddChild( container );
 		}
-		*/
 	}
 };

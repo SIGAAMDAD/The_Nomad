@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using Godot;
 using Renown;
-using SimdLinq;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -185,6 +183,8 @@ public partial class WeaponEntity : Node2D {
 		get;
 		private set;
 	} = Properties.None;
+
+	private NetworkWriter SyncObject = new NetworkWriter( 24 );
 
 	[Signal]
 	public delegate void ModeChangedEventHandler( WeaponEntity source, Properties useMode );
@@ -424,6 +424,23 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 
+	private void NetworkSync( bool held = false ) {
+		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+		SyncObject.Write( (byte)CurrentState );
+		SyncObject.WritePackedInt( (int)LastUsedMode );
+		if ( CurrentState == WeaponState.Use ) {
+			SyncObject.Write( held );
+		}
+	}
+	private void ReceivePacket( System.IO.BinaryReader packet ) {
+		CurrentState = (WeaponState)packet.ReadByte();
+		LastUsedMode = (Properties)packet.Read7BitEncodedInt();
+
+		if ( CurrentState == WeaponState.Use ) {
+			Use( LastUsedMode, out _, packet.ReadBoolean() );
+		}
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -448,6 +465,10 @@ public partial class WeaponEntity : Node2D {
 		if ( _Owner != null ) {
 			InitProperties();
 			return;
+		}
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 		}
 
 		CreatePickupBounds();
@@ -782,6 +803,8 @@ public partial class WeaponEntity : Node2D {
 		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {
 			return UseBladed();
 		}
+
+		NetworkSync( held );
 
 		return 0.0f;
 	}

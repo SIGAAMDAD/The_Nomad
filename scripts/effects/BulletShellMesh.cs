@@ -4,10 +4,11 @@ using System.Collections.Generic;
 
 public partial class BulletShellMesh : Node {
 	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 64 );
-	private RandomNumberGenerator Random = new RandomNumberGenerator();
 
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
+
+	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
 
 	public override void _Ready() {
 		base._Ready();
@@ -31,9 +32,9 @@ public partial class BulletShellMesh : Node {
 	}
 	private static void OnTimerTimeout( Timer timer, Entity from, Resource ammo ) {
 		AudioStream stream = (AmmoType)(uint)( (Godot.Collections.Dictionary)ammo.Get( "properties" ) )[ "type" ] switch {
-			AmmoType.Light => ResourceCache.BulletShell[ Instance.Random.RandiRange( 0, ResourceCache.BulletShell.Length - 1 ) ],
-			AmmoType.Heavy => ResourceCache.BulletShell[ Instance.Random.RandiRange( 0, ResourceCache.BulletShell.Length - 1 ) ],
-			AmmoType.Pellets => ResourceCache.ShotgunShell[ Instance.Random.RandiRange( 0, ResourceCache.ShotgunShell.Length - 1 ) ],
+			AmmoType.Light => ResourceCache.BulletShell[ RNJesus.IntRange( 0, ResourceCache.BulletShell.Length - 1 ) ],
+			AmmoType.Heavy => ResourceCache.BulletShell[ RNJesus.IntRange( 0, ResourceCache.BulletShell.Length - 1 ) ],
+			AmmoType.Pellets => ResourceCache.ShotgunShell[ RNJesus.IntRange( 0, ResourceCache.ShotgunShell.Length - 1 ) ],
 			_ => null
 		};
 

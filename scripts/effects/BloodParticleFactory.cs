@@ -1,12 +1,15 @@
 using Godot;
+using System;
+using System.Diagnostics;
 
 public partial class BloodParticleFactory : Node {
 	private Timer ReleaseTimer = null;
 	private MultiMeshInstance2D MeshManager = null;
-	private RandomNumberGenerator RandomFactory = new RandomNumberGenerator();
 
 	private static BloodParticleFactory Instance = null;
 	private static readonly int BloodInstanceMax = 256;
+
+	private NetworkWriter SyncObject = new NetworkWriter( 2048 );
 
 	private void OnReleaseTimerTimeout() {
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
@@ -16,6 +19,30 @@ public partial class BloodParticleFactory : Node {
 		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
 		if ( Instance.MeshManager.Multimesh.VisibleInstanceCount > 0 ) {
 			ReleaseTimer.Start();
+		}
+	}
+
+	private void ReceivePacket( System.IO.BinaryReader packet ) {
+		ReleaseTimer.Start();
+
+		if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
+			MeshManager.Multimesh.VisibleInstanceCount = 0;
+		}
+
+		int count = packet.ReadByte();
+		for ( int i = 0; i < count; i++ ) {
+			Godot.Vector2 position = new Godot.Vector2(
+				(float)packet.ReadHalf(),
+				(float)packet.ReadHalf()
+			);
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
+		}
+	}
+	private void NetworkSync( int offset, int count, Span<Transform2D> positions ) {
+		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+		SyncObject.Write( (byte)count );
+		for ( int i = 0; i < count; i++ ) {
+			SyncObject.Write( positions[ i ].Origin );
 		}
 	}
 
@@ -45,7 +72,12 @@ public partial class BloodParticleFactory : Node {
 		// clean up on respawn
 		LevelData.Instance.PlayerRespawn += () => {
 			MeshManager.Multimesh.VisibleInstanceCount = 0;
+			ReleaseTimer.Stop();
 		};
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+		}
 	}
 
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
@@ -57,13 +89,20 @@ public partial class BloodParticleFactory : Node {
 
 		ReleaseTimer.Start();
 
+		int start = MeshManager.Multimesh.VisibleInstanceCount;
+
+		Span<Transform2D> positions = stackalloc Transform2D[ bloodAmount ];
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;
-			position.Y += RandomFactory.RandfRange( -120.25f, 120.25f );
-			position.X += RandomFactory.RandfRange( -150.25f, 150.25f );
+			position.Y += RNJesus.FloatRange( -120.25f, 120.25f );
+			position.X += RNJesus.FloatRange( -150.25f, 150.25f );
 			MeshManager.Multimesh.VisibleInstanceCount++;
-			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
+
+			positions[ i ] = new Transform2D( 0.0f, position );
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, positions[ i ] );
 		}
+
+		NetworkSync( start, bloodAmount, positions );
 	}
 	public static void Create( Vector2 from, Vector2 to ) {
 		Instance.CreateBloodSplatter( from, to );
