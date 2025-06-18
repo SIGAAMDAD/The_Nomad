@@ -114,6 +114,12 @@ public class ResourceCache {
 	public static Resource KeyboardInputMappings { get; private set; }
 	public static Resource GamepadInputMappings { get; private set; }
 
+	/// <summary>
+	/// a cache designed specifically for the purposes of reducing bandwidth usage by sending over
+	/// compressed integer hashes for resource usage
+	/// </summary>
+	public static Dictionary<int, Resource> NetworkCache = null;
+
 	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 256 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 256 );
 	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 256 );
@@ -517,6 +523,17 @@ public class ResourceCache {
 		Light = ResourceLoader.Load<Texture2D>( "res://textures/point_light.dds" );
 
 		SceneLoadThread?.Join();
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			// wait for the ItemDatabase to finish loading
+			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ 1 ] );
+
+			Godot.Collections.Array<Resource> items = (Godot.Collections.Array<Resource>)ItemDatabase.Get( "items" );
+			NetworkCache = new Dictionary<int, Resource>( items.Count );
+			for ( int i = 0; i < items.Count; i++ ) {
+				NetworkCache.Add( ( (string)items[i].Get( "id" ) ).GetHashCode(), items[i] );
+			}
+		}
 
 		for ( int i = 0; i < WorkerThreads.Length; i++ ) {
 			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ i ] );

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Godot;
 using Steamworks;
 
 public class NetworkWriter {
@@ -13,6 +14,18 @@ public class NetworkWriter {
 		Writer = new BinaryWriter( Stream );
 	}
 
+	public void WritePosition( Godot.Vector2 value ) {
+		const float GRID_STEP = 16.0f;
+		Godot.Vector2I position = new Godot.Vector2I(
+			(int)Mathf.Round( value.X / GRID_STEP ),
+			(int)Mathf.Round( value.Y / GRID_STEP )
+		);
+
+		sbyte x = (sbyte)Mathf.Clamp( position.X, -128, 127 );
+		sbyte y = (sbyte)Mathf.Clamp( position.Y, -128, 127 );
+
+		Writer.Write( (short)( ( x << 8 ) | ( y & 0xFF ) ) );
+	}
 	public void Write( Godot.Vector2 value ) {
 		Writer.Write( (Half)value.X );
 		Writer.Write( (Half)value.Y );

@@ -426,7 +426,7 @@ public partial class WeaponEntity : Node2D {
 
 	private void NetworkSync( bool held = false ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
-		SyncObject.Write( GetPath().GetHashCode() );
+		SyncObject.WritePackedInt( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)CurrentState );
 		SyncObject.WritePackedInt( (int)LastUsedMode );
 		if ( CurrentState == WeaponState.Use ) {

@@ -12,19 +12,21 @@ public partial class BulletShellMesh : Node {
 
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
-		SyncObject.Write( GetPath().GetHashCode() );
-		SyncObject.Write( (string)ammo.Get( "id" ) );
+		SyncObject.WritePackedInt( GetPath().GetHashCode() );
+		SyncObject.Write( ( (string)ammo.Get( "id" ) ).GetHashCode() );
 		SyncObject.Write( position );
 		SyncObject.Sync();
 	}
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
-		string ammoId = packet.ReadString();
+		int ammoId = packet.ReadInt32();
 		Godot.Vector2 position = new Godot.Vector2(
 			(float)packet.ReadHalf(),
 			(float)packet.ReadHalf()
 		);
 
-		Resource ammo = (Resource)ResourceCache.ItemDatabase.Call( "get_item", ammoId );
+		if ( !ResourceCache.NetworkCache.TryGetValue( ammoId, out Resource ammo ) ) {
+			return;
+		}
 
 		if ( !Meshes.TryGetValue( ammo, out MultiMeshInstance2D instance ) ) {
 			instance = Instance.AddMesh( ammo );

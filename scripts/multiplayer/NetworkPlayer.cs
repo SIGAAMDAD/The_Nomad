@@ -96,9 +96,16 @@ public partial class NetworkPlayer : Renown.Entity {
 	}
 
 	private Godot.Vector2 ReadVector2Delta( System.IO.BinaryReader packet ) {
+		short packed = packet.ReadInt16();
+		sbyte x = (sbyte)( packed >> 8 );
+		sbyte y = (sbyte)( packed & 0xFF );
+
+		Godot.Vector2I value = new Godot.Vector2I( x, y );
+
+		const float GRID_STEP = 16.0f;
 		return new Godot.Vector2(
-			(float)packet.ReadHalf(),
-			(float)packet.ReadHalf()
+			value.X * GRID_STEP,
+			value.Y * GRID_STEP
 		);
 	}
 	public void Update( System.IO.BinaryReader packet ) {
