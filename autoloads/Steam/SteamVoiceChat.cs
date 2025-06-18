@@ -122,7 +122,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		for ( int i = 0; i < FRAME_SIZE; i++ ) {
 			CaptureBuffer[ i * 2 ] = frames[ i ].X;
 			CaptureBuffer[ i * 2 + 1 ] = frames[ i ].Y;
-			float amplitude = ( Mathf.Abs( frames[ i ].X ) + Mathf.Abs( frames[ i ].Y ) ) / 2.0f;
+			float amplitude = ( Mathf.Abs( frames[ i ].X ) + Mathf.Abs( frames[ i ].Y ) );
 			if ( amplitude > max ) {
 				max = amplitude;
 			}
