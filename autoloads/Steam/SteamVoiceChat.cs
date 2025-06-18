@@ -290,18 +290,26 @@ public partial class SteamVoiceChat : CanvasLayer {
 
 	private void CaptureVoice() {
 #if USE_STEAM_AUDIO
-		if ( SteamUser.GetAvailableVoice( out uint compressedSize ) != EVoiceResult.k_EVoiceResultOK ) {
+		EVoiceResult eResult;
 
+		eResult = SteamUser.GetAvailableVoice( out uint compressedSize );
+		if ( eResult != EVoiceResult.k_EVoiceResultOK ) {
+			Console.PrintError( string.Format( "[STEAM] Error recording voice: {0}", eResult ) );
+			return;
 		}
 
 		byte[] buffer = new byte[ compressedSize ];
-		if ( SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten ) != EVoiceResult.k_EVoiceResultOK ) {
+
+		eResult = SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten );
+		if ( eResult != EVoiceResult.k_EVoiceResultOK ) {
+			Console.PrintError( string.Format( "[STEAM] Error getting voice data: {0}", eResult ) );
 			return;
 		}
 
 		Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
 		Buffer.BlockCopy( buffer, 0, Packet, 1, (int)bytesWritten );
 
+		GD.Print( "SENDING VOICE" );
 		SteamLobby.Instance.SendP2PPacket( buffer, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 #else
 		if ( AudioServer.IsBusMute( CaptureBusIndex ) ) {
