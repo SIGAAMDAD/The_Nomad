@@ -1,3 +1,4 @@
+/*
 using Godot;
 using System.Numerics;
 using System.Collections.Generic;
@@ -217,13 +218,15 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		SteamLobby.Instance.SendP2PPacket( pcmData, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 	}
 };
+*/
 
-/*
+#define USE_STEAM_AUDIO
+
 using Godot;
 using Steamworks;
 using System;
 
-public partial class SteamVoiceChat : Node {
+public partial class SteamVoiceChat : CanvasLayer {
 	private static AudioStreamGeneratorPlayback Playback;
 	private static readonly uint SAMPLE_RATE = 48000;
 
@@ -379,4 +382,3 @@ public partial class SteamVoiceChat : Node {
 		Playback.PushBuffer( frames );
 	}
 };
-*/
