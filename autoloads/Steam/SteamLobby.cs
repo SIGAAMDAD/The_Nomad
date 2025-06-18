@@ -282,6 +282,8 @@ public partial class SteamLobby : Node {
 	public delegate void VoteKickStatusEventHandler( ulong target, int yesVotes, int noVotes, float timeRemaining );
 	[Signal]
 	public delegate void VoteKickResultEventHandler( ulong target, bool result );
+	[Signal]
+	public delegate void LobbyConnectionStatusChangedEventHandler( int state );
 
 	// Message processing
 	private struct IncomingMessage {
@@ -357,8 +359,6 @@ public partial class SteamLobby : Node {
 
 	public void JoinLobby( CSteamID lobbyId ) {
 		SteamMatchmaking.JoinLobby( lobbyId );
-		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
-		GetTree().Root.AddChild( ChatBar );
 	}
 
 	public void LeaveLobby() {
@@ -415,7 +415,7 @@ public partial class SteamLobby : Node {
 
 		EmitSignalClientLeftLobby( (ulong)SteamUser.GetSteamID() );
 
-		if ( ChatBar != null && ChatBar.IsInsideTree() ) {
+		if ( ChatBar != null ) {
 			GetTree().Root.RemoveChild( ChatBar );
 			ChatBar.QueueFree();
 		}
@@ -573,7 +573,8 @@ public partial class SteamLobby : Node {
 			default:
 				Console.PrintLine( $"[STEAM] Unhandled connection state: {status.m_info.m_eState}" );
 				break;
-			}
+			};
+			EmitSignalLobbyConnectionStatusChanged( (int)status.m_info.m_eState );
 		} catch ( Exception e ) {
 			Console.PrintError( $"[STEAM] Error in connection callback: {e.Message}" );
 		}
@@ -798,12 +799,14 @@ public partial class SteamLobby : Node {
 			LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 			Console.PrintLine( $"Lobby map: {LobbyMap}" );
 			break;
-		}
-		;
+		};
 
 		GetLobbyMembers();
 		ConnectToLobbyMembers();
 		EmitSignalLobbyJoined( (ulong)LobbyId );
+
+		ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+		GetTree().Root.AddChild( ChatBar );
 	}
 
 	private void OnLobbyChatMsg( LobbyChatMsg_t pCallback ) {

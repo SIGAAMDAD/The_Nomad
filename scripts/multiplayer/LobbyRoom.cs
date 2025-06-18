@@ -3,6 +3,7 @@ using Steamworks;
 using Multiplayer;
 using System.Threading;
 using System.Collections.Generic;
+using ImGuiGodot.Internal;
 
 public partial class LobbyRoom : Control {
 	public static LobbyRoom Instance;

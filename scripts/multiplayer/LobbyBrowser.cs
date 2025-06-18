@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -110,6 +109,9 @@ public partial class LobbyBrowser : Control {
 	private static Label PlayerCountLabel;
 	private static Label GameModeLabel;
 
+	private static Label JoiningLobbyLabel;
+	private static Range JoiningLobbySpinner;
+
 	private static Control MatchmakingSpinner;
 	private static Label MatchmakingLabel;
 	private static Timer MatchmakingTimer;
@@ -147,7 +149,7 @@ public partial class LobbyBrowser : Control {
 
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
-	public void OnLobbyJoined( ulong lobbyId ) {
+	public void OnLobbyConnected() {
 		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -172,18 +174,20 @@ public partial class LobbyBrowser : Control {
 			return;
 		}
 
-		Console.PrintLine( string.Format( "Loading game [{0}]...", SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) );
+		string gameType = SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "gametype" );
+		Console.PrintLine( string.Format( "Loading game [{0}]...", gameType ) );
 
-		switch ( SteamMatchmaking.GetLobbyData( (CSteamID)lobbyId, "gametype" ) ) {
+		switch ( gameType ) {
 		case "Multiplayer": {
-			LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
+				LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 
-			// loading a multiplayer game instead a co-op world
-			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
-			Console.PrintLine( "...Finished loading game" );
+				// loading a multiplayer game instead a co-op world
+				GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+				Console.PrintLine( "...Finished loading game" );
 
-			GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
-			break; }
+				GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
+				break;
+			}
 		case "Online":
 			LoadedScenePath = "res://levels/world.tscn";
 			Connect( "FinishedLoading", Callable.From( OnFinishedLoading ) );
@@ -195,11 +199,38 @@ public partial class LobbyBrowser : Control {
 			LoadThread.Start();
 			break;
 		};
+		System.GC.KeepAlive( this );
+	}
+	private void OnLobbyJoined( ulong lobbyId ) {
+	}
+
+	private void OnConnectionStatusChanged( int status ) {
+		switch ( (ESteamNetworkingConnectionState)status ) {
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+			Tween AudioFade = GetTree().Root.CreateTween();
+			AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
+			AudioFade.Connect( "finished", Callable.From( () => { GetTree().CurrentScene.GetNode( "Theme" ).Call( "stop" ); } ) );
+
+			JoiningLobbyLabel.Text = "JOINED";
+			JoiningLobbySpinner.Set( "status", 3 );
+			OnLobbyConnected();
+			break;
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_FindingRoute:
+			JoiningLobbyLabel.Text = "CONNECTING TO LOBBY...";
+			break;
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Dead:
+		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
+			JoiningLobbyLabel.Text = "FAILED TO CONNECT.";
+			JoiningLobbySpinner.Set( "status", 5 );
+			break;
+		};
 	}
 
 	private void MatchmakingLoop() {
 		// apply filters
-//		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
+		//		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
 
 		while ( MatchmakingPhase < 4 ) {
 			lock ( MatchmakingLobbyListReady ) {
@@ -212,16 +243,18 @@ public partial class LobbyBrowser : Control {
 		Console.PrintLine( "...no open contracts found" );
 	}
 	private void OnJoinGame( CSteamID lobbyId ) {
-//		Tween AudioFade = GetTree().Root.CreateTween();
-//		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-//		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
-
 		LobbyData data = LobbyList[ lobbyId ];
-		
+
 		// sanity check
 		if ( !data.IsValid() ) {
 			return;
 		}
+
+		JoinGame.Hide();
+
+		JoiningLobbyLabel.Show();
+		JoiningLobbyLabel.Text = "CONNECTING TO LOBBY...";
+		JoiningLobbySpinner.Show();
 
 		UIChannel.Stream = UISfxManager.BeginGame;
 		UIChannel.Play();
@@ -232,6 +265,9 @@ public partial class LobbyBrowser : Control {
 	private static void OnLobbySelected( CSteamID lobbyId ) {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
+
+		JoiningLobbyLabel.Hide();
+		JoiningLobbySpinner.Hide();
 
 		LobbyData lobby = LobbyList[ lobbyId ];
 		lobby.Refresh();
@@ -310,6 +346,10 @@ public partial class LobbyBrowser : Control {
 		if ( MatchmakingLabel.Visible ) {
 			return; // matchmaking, can't join game
 		}
+		JoiningLobbyLabel.Show();
+
+		JoiningLobbySpinner.Set( "status", 1 );
+		JoiningLobbySpinner.Show();
 		OnJoinGame( SelectedLobby );
 	}
 
@@ -357,6 +397,9 @@ public partial class LobbyBrowser : Control {
 		RefreshLobbies.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
+
+		JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyLabel" );
+		JoiningLobbySpinner = GetNode<Range>( "JoiningLobbySpinner" );
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
 		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -406,7 +449,8 @@ public partial class LobbyBrowser : Control {
 		RefreshTimer.Connect( "timeout", Callable.From( OnRefreshButtonPressed ) );
 		AddChild( RefreshTimer );
 
-		SteamLobby.Instance.LobbyJoined += OnLobbyJoined;
+		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
+		SteamLobby.Instance.Connect( "LobbyConnectionStatusChanged", Callable.From<int>( OnConnectionStatusChanged ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../../../UIChannel" );
