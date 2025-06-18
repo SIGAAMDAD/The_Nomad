@@ -343,7 +343,7 @@ public partial class LobbyRoom : Control {
 		}
 	}
 	public void ReceivePing( ulong senderId, byte[] data ) {
-		int ping = BitConverter.ToInt32( data );
+		int ping = BitConverter.ToInt32( data, 1 );
 
 		for ( int i = 0; i < Instance.PlayerList.GetChildCount(); i++ ) {
 			if ( senderId == (ulong)SteamLobby.Instance.LobbyMembers[ i ] ) {
