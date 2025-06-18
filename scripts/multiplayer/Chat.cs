@@ -11,6 +11,8 @@ namespace Multiplayer {
 		private RichTextLabel RecentText;
 		private LineEdit Message;
 
+		private const string PLACEHOLDER = "PRESS '/' TO BEGIN TYPING";
+
 		private bool HandleChatCommand( string text ) {
 			if ( !text.StartsWith( "\\" ) ) {
 				return false;
@@ -46,7 +48,8 @@ namespace Multiplayer {
 
 				SteamLobby.Instance.SendTargetPacket( targetId, packet );
 				break;
-			};
+			}
+			;
 			return true;
 		}
 
@@ -56,12 +59,14 @@ namespace Multiplayer {
 			if ( Input.IsActionJustPressed( "chat_open" ) ) {
 				if ( Message.HasFocus() ) {
 					Message.Clear();
+					Message.PlaceholderText = "";
 					Message.ReleaseFocus();
 					ExpandedContainer.Hide();
 					MinimizedContainer.Show();
 					Message.Size = new Godot.Vector2( 140, 31 );
 				} else {
 					Message.GrabFocus();
+					Message.PlaceholderText = PLACEHOLDER;
 					ExpandedContainer.Show();
 					MinimizedContainer.Hide();
 					Message.Size = new Godot.Vector2( 290, 31 );
@@ -70,6 +75,7 @@ namespace Multiplayer {
 			if ( Input.IsActionJustReleased( "chat_send" ) ) {
 				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
 				Message.Clear();
+				Message.PlaceholderText = PLACEHOLDER;
 				Message.ReleaseFocus();
 				ExpandedContainer.Hide();
 				MinimizedContainer.Show();
