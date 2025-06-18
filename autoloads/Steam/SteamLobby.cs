@@ -896,7 +896,7 @@ public partial class SteamLobby : Node {
 
 	#region Utility Methods
 	public int GetMemberPing( CSteamID userID ) {
-		if ( !Connections.TryGetValue( userID, out HSteamNetConnection conn ) ) {
+		if ( !Connections.TryGetValue( userID, out HSteamNetConnection conn ) && !PendingConnections.TryGetValue( userID, out conn ) ) {
 			return int.MaxValue;
 		}
 
