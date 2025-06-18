@@ -27,8 +27,8 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private static readonly Vector<float> ClampMax = new Vector<float>( 1.0f );
 
 	private float VoiceActivity = 0.0f;
-	private const float VoiceThreshold = 0.05f;
-	private const float VoiceDecayRate = 0.1f;
+	private const float VoiceThreshold = 0.005f;
+	private const float VoiceDecayRate = 0.01f;
 
 	private Dictionary<CSteamID, HBoxContainer> VoiceActiveIcons = new Dictionary<CSteamID, HBoxContainer>();
 	private Dictionary<CSteamID, float> MemberVoiceActivity = new Dictionary<CSteamID, float>();
