@@ -220,13 +220,12 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 };
 */
 
-#define USE_STEAM_AUDIO
-
 using Godot;
 using Steamworks;
 using System;
+using System.Numerics;
 
-public partial class SteamVoiceChat : CanvasLayer {
+public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private static AudioStreamGeneratorPlayback Playback;
 	private static readonly uint SAMPLE_RATE = 48000;
 
@@ -248,32 +247,22 @@ public partial class SteamVoiceChat : CanvasLayer {
 
 		Instance = this;
 
-		var AudioPlayer = new AudioStreamPlayer();
-		AddChild( AudioPlayer );
-
-		var Generator = new AudioStreamGenerator();
-		Generator.MixRate = SAMPLE_RATE;
-		Generator.BufferLength = 0.1f; // small buffer for low latency
-
-		AudioPlayer.Stream = Generator;
+		AudioStreamPlayer AudioPlayer = GetNode<AudioStreamPlayer>( "Output" );
 		AudioPlayer.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		AudioPlayer.Play();
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		Packet = new byte[ 8192 ];
+		Packet = new byte[ 1 + ( sizeof( float ) * 2 * 512 ) ];
 
 #if USE_STEAM_AUDIO
 		SteamUser.StartVoiceRecording();
 #else
-		CaptureBusIndex = AudioServer.BusCount;
-		AudioServer.AddBus( CaptureBusIndex );
-		AudioServer.SetBusName( CaptureBusIndex, "Voice" );
-		AudioServer.SetBusSend( CaptureBusIndex, "Master" );
+		AudioStreamPlayer Input = GetNode<AudioStreamPlayer>( "Input" );
+		Input.Stream = new AudioStreamMicrophone();
+		Input.Play();
 
-		CaptureEffect = new AudioEffectCapture();
-		AudioServer.AddBusEffect( CaptureBusIndex, CaptureEffect );
-		AudioServer.SetBusEffectEnabled( CaptureBusIndex, 0, true );
+		CaptureBusIndex = AudioServer.GetBusIndex( "Microphone" );
+		CaptureEffect = (AudioEffectCapture)AudioServer.GetBusEffect( CaptureBusIndex, 0 );
 #endif
 	}
 	public override void _ExitTree() {
@@ -313,37 +302,13 @@ public partial class SteamVoiceChat : CanvasLayer {
 		GD.Print( "SENDING VOICE" );
 		SteamLobby.Instance.SendP2PPacket( buffer, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 #else
-		if ( AudioServer.IsBusMute( CaptureBusIndex ) ) {
-			return;
-		}
+		if ( CaptureEffect.CanGetBuffer( 512 ) ) {
+			Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
 
-		int available = CaptureEffect.GetFramesAvailable();
-		if ( available <= 0 ) {
-			return;
-		}
+			Vector<byte> buffer = new Vector<byte>( GD.VarToBytes( CaptureEffect.GetBuffer( 512 ) ) );
+			buffer.CopyTo( Packet, 1 );
 
-		Godot.Vector2[] frames = CaptureEffect.GetBuffer( available );
-		float maxAmplitude = 0.0f;
-
-		for ( int i = 0; i < frames.Length; i++ ) {
-			float amplitude = ( Mathf.Abs( frames[ i ].X ) + Mathf.Abs( frames[ i ].Y ) ) / 2.0f;
-			if ( amplitude > maxAmplitude ) {
-				maxAmplitude = amplitude;
-			}
-		}
-
-		VoiceActivity = maxAmplitude > VoiceActivity ? maxAmplitude : Mathf.Max( VoiceActivity - VoiceDecayRate * (float)GetProcessDeltaTime(), 0 );
-
-		if ( VoiceActivity > VoiceThreshold ) {
-			byte[] data = new byte[ frames.Length * 4 ]; // 4 bytes per frame, 2 channels 16-bit
-			for ( int i = 0; i < frames.Length; i++ ) {
-				short left = (short)( frames[ i ].X * short.MaxValue );
-				short right = (short)( frames[ i ].Y * short.MaxValue );
-
-				BitConverter.GetBytes( left ).CopyTo( data, i * 4 );
-				BitConverter.GetBytes( right ).CopyTo( data, i * 4 + 2 );
-			}
-			SteamLobby.Instance.SendP2PPacket( data, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
+			SteamLobby.Instance.SendP2PPacket( Packet );
 		}
 #endif
 	}
@@ -367,30 +332,12 @@ public partial class SteamVoiceChat : CanvasLayer {
 			PlayAudio( decompressed, decompressedLength );
 		}
 #else
-		int available = Playback.GetFramesAvailable();
-		if ( available <= 0 ) {
-			return;
-		}
-
-		Godot.Vector2[] frames = new Godot.Vector2[ data.Length / 4 ];
-		for ( int i = 0; i < frames.Length; i++ ) {
-			if ( i > available ) {
-				break;
-			}
-			short left = BitConverter.ToInt16( data, i * 4 );
-			short right = BitConverter.ToInt16( data, i * 4 + 2 );
-
-			frames[ i ] = new Godot.Vector2(
-				left / (float)short.MaxValue,
-				right / (float)short.MaxValue
-			);
-		}
-		Playback.PushBuffer( frames );
+		PlayAudio( data, data.Length );
 #endif
 	}
 
-	private static void PlayAudio( byte[] data, uint length ) {
-		int sampleCount = (int)length / 2;
+	private static void PlayAudio( byte[] data, int length ) {
+		int sampleCount = length / 2;
 		Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
 
 		for ( int i = 0; i < sampleCount; i++ ) {

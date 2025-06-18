@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://biblhagretjw5"]
+[gd_scene load_steps=4 format=3 uid="uid://d0bycfsppapc"]
 
 [ext_resource type="Script" uid="uid://bxw4iwmty8ybk" path="res://autoloads/Steam/SteamVoiceChat.cs" id="1_pp3r2"]
-[ext_resource type="Texture2D" uid="uid://d18f0snn8v5c" path="res://textures/voice_active_icon.png" id="2_c5fhs"]
+[ext_resource type="Texture2D" uid="uid://c25lfxflc8qkt" path="res://textures/voice_active_icon.png" id="2_c5fhs"]
+
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_c5fhs"]
+buffer_length = 2.5
 
 [node name="SteamVoiceChat" type="CanvasLayer"]
 script = ExtResource("1_pp3r2")
@@ -29,3 +32,10 @@ expand_mode = 2
 [node name="Username" type="Label" parent="ActiveVoicesStack/Cloner"]
 layout_mode = 2
 text = "jjkjljkllkljlk"
+
+[node name="Input" type="AudioStreamPlayer" parent="."]
+bus = &"Microphone"
+
+[node name="Output" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamGenerator_c5fhs")
+autoplay = true

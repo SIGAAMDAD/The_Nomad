@@ -1,4 +1,7 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://dr10eqc2uecxa"]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://dr10eqc2uecxa"]
+
+[sub_resource type="AudioEffectRecord" id="AudioEffectRecord_j3pel"]
+resource_name = "Record"
 
 [resource]
 bus/0/volume_db = 6.02
@@ -8,3 +11,11 @@ bus/1/mute = false
 bus/1/bypass_fx = false
 bus/1/volume_db = 0.0
 bus/1/send = &""
+bus/2/name = &"Microphone"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = 0.0
+bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectRecord_j3pel")
+bus/2/effect/0/enabled = true
