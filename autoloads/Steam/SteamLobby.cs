@@ -148,7 +148,7 @@ public partial class SteamLobby : Node {
 			}
 
 			using var compressedStream = new System.IO.MemoryStream( secured );
-			using var decompressedStream = new System.IO.MemoryStream();
+			using var decompressedStream = new System.IO.MemoryStream( 1024 );
 			using var zipStream = new System.IO.Compression.DeflateStream( compressedStream, System.IO.Compression.CompressionMode.Decompress );
 
 			zipStream.CopyTo( decompressedStream );
