@@ -252,7 +252,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		Packet = new byte[ 1 + ( sizeof( float ) * 2 * 512 ) ];
+		Packet = new byte[ 8192 ];
 
 #if USE_STEAM_AUDIO
 		SteamUser.StartVoiceRecording();
