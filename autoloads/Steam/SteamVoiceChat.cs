@@ -94,10 +94,16 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	public bool IsVoiceActive( CSteamID userId ) {
-		return VoiceActiveIcons[ userId ].Visible;
+		if ( !VoiceActiveIcons.TryGetValue( userId, out HBoxContainer value ) ) {
+			return false;
+		}
+		return value.Visible;
 	}
 	public float GetVoiceActivity( CSteamID userId ) {
-		return MemberVoiceActivity[ userId ];
+		if ( !MemberVoiceActivity.TryGetValue( userId, out float value ) ) {
+			return 0.0f;
+		}
+		return value;
 	}
 
 	private void CaptureVoice() {
