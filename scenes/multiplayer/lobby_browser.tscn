@@ -317,6 +317,7 @@ layout_mode = 2
 text = "CANCEL_MATCHMAKE"
 
 [node name="ControlBar2" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -333,7 +334,6 @@ scale = Vector2(0.75, 0.75)
 theme_override_constants/separation = 24
 
 [node name="JoinButton" type="Button" parent="ControlBar2"]
-visible = false
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "JOIN_GAME"
