@@ -17,7 +17,7 @@ namespace Multiplayer.Modes {
 
 		private int[] Score = new int[ 3 ];
 
-		private NetworkWriter SyncObject = new NetworkWriter( 20 );
+		private NetworkWriter SyncObject = new NetworkWriter( 3 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
@@ -45,8 +45,11 @@ namespace Multiplayer.Modes {
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 
+			RoundIndex++;
+
 			if ( RoundIndex >= MaxRounds ) {
 				ScoreBoard.SetDuelData( Score[ 0 ], Score[ 1 ], Score[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
+				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
 				//				EmitSignal( "ShowScoreboard" );
 				return;
 			}
@@ -54,13 +57,10 @@ namespace Multiplayer.Modes {
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
-			RoundIndex++;
 			
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
 			Overlay.BeginNewRound();
-
-			SendPacket();
 		}
 
 		private void OnPlayerScore( Renown.Entity attacker, Renown.Entity target ) {
@@ -84,6 +84,8 @@ namespace Multiplayer.Modes {
 				Announcer.TakenLead();
 			}
 
+			SendPacket();
+
 			OnNewRoundStart();
 		}
 
@@ -92,26 +94,23 @@ namespace Multiplayer.Modes {
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
-					node.Die += OnPlayerScore;
 					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-					ThisPlayer.Die += OnPlayerScore;
 					spawn = Player1Spawn;
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
-					node.Die += OnPlayerScore;
 					spawn = Player2Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
-					ThisPlayer.Die += OnPlayerScore;
 					spawn = Player2Spawn;
 				}
 			}
+			player.Die += OnPlayerScore;
 			spawn.SetMeta( "Player", player );
 		}
 
@@ -128,6 +127,14 @@ namespace Multiplayer.Modes {
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
+
+			if ( Player2Score > Player1Score ) {
+				Announcer.LostLead();
+			} else if ( Player2Score == Player1Score ) {
+				Announcer.TiedLead();
+			} else if ( Player2Score < Player1Score ) {
+				Announcer.TakenLead();
+			}
 		}
 
 		public override void _Ready() {

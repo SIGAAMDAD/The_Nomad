@@ -166,7 +166,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 			if ( isDashing && !DashChannel.Playing ) {
-				CallDeferred( "PlaySound", DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
+				PlaySound( DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
 			}
 			DashEffect.SetDeferred( "emitting", isDashing );
 			DashLight.SetDeferred( "visible", isDashing );
@@ -334,44 +334,57 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		case PlayerAnimationState.WeaponIdle: {
 			string property = "";
+			string append = arm == LeftArmAnimation ? "left" : arm == RightArmAnimation ? "right" : "";
 			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				property = "firearm_frames_left";
+					property = "firearm_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
-				property = "blunt_frames_left";
+				property = "blunt_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
-				property = "bladed_frames_left";
+				property = "bladed_frames_" + append;
 			}
 			
 			arm.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
+				ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] ) );
 			arm.CallDeferred( "play", "idle" );
 			break; }
 		case PlayerAnimationState.WeaponUse: {
 			arm.CallDeferred( "show" );
-			
+
 			string property = "";
+			string append = arm == LeftArmAnimation ? "left" : arm == RightArmAnimation ? "right" : "";
 			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				property = "firearm_frames_left";
+				property = "firearm_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
-				property = "blunt_frames_left";
+				property = "blunt_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
-				property = "bladed_frames_left";
+				property = "bladed_frames_" + append;
 			}
 			
 			arm.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] );
+				ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ] ) );
 			arm.CallDeferred( "play", "use" );
 			break; }
 		case PlayerAnimationState.WeaponReload:
 			arm.CallDeferred( "show" );
-			arm.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
+
+			if ( arm == LeftArmAnimation ) {
+				arm.SetDeferred( "sprite_frames",
+					ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] ) );
+			} else if ( arm == RightArmAnimation ) {
+				arm.SetDeferred( "sprite_frames",
+					ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ] ) );
+			}
 			arm.CallDeferred( "play", "reload" );
 			break;
 		case PlayerAnimationState.WeaponEmpty:
 			arm.CallDeferred( "show" );
-			arm.SetDeferred( "sprite_frames",
-				(SpriteFrames)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] );
+			if ( arm == LeftArmAnimation ) {
+				arm.SetDeferred( "sprite_frames",
+					ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ] ) );
+			} else if ( arm == RightArmAnimation ) {
+				arm.SetDeferred( "sprite_frames",
+					ResourceCache.GetSpriteFrames( (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ] ) );
+			}
 			arm.CallDeferred( "play", "empty" );
 			break;
 		};
