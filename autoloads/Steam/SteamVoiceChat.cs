@@ -275,8 +275,8 @@ public partial class SteamVoiceChat : CanvasLayer {
 		AudioServer.SetBusEffectEnabled( CaptureBusIndex, 0, true );
 #endif
 	}
-	public override void _EnterTree() {
-		base._EnterTree();
+	public override void _ExitTree() {
+		base._ExitTree();
 
 #if USE_STEAM_AUDIO
 		SteamUser.StopVoiceRecording();
