@@ -8,7 +8,7 @@ public partial class BulletShellMesh : Node {
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 128 );
+	private NetworkWriter SyncObject = new NetworkWriter( 256 );
 
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
@@ -31,7 +31,7 @@ public partial class BulletShellMesh : Node {
 		if ( instance.Multimesh.VisibleInstanceCount >= BulletShellInstanceMax ) {
 			instance.Multimesh.VisibleInstanceCount = 0;
 		}
-		
+
 		instance.Multimesh.VisibleInstanceCount++;
 		instance.Multimesh.SetInstanceTransform2D( instance.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
 	}
