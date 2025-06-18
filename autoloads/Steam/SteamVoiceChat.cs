@@ -256,6 +256,7 @@ public partial class SteamVoiceChat : CanvasLayer {
 		Generator.BufferLength = 0.1f; // small buffer for low latency
 
 		AudioPlayer.Stream = Generator;
+		AudioPlayer.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 		AudioPlayer.Play();
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
@@ -357,6 +358,8 @@ public partial class SteamVoiceChat : CanvasLayer {
 			out uint decompressedLength,
 			SAMPLE_RATE
 		);
+
+		GD.Print( "GOT AUDIO" );
 
 		if ( result == EVoiceResult.k_EVoiceResultOK && decompressedLength > 0 ) {
 			PlayAudio( decompressed, decompressedLength );
