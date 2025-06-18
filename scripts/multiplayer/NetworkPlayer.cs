@@ -48,6 +48,9 @@ public partial class NetworkPlayer : Renown.Entity {
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
 	private GroundMaterialType GroundType;
+
+	private Godot.Vector2 NetworkPosition;
+	private float CurrentSpeed = 0.0f;
 	
 	private Resource Database;
 	private Resource CurrentWeapon;
@@ -154,20 +157,26 @@ public partial class NetworkPlayer : Renown.Entity {
 			RightArmAnimation.SetDeferred( "flip_v", flip );
 			LastFlipState = flip;
 		}
-
-		GlobalPosition = SyncObject.ReadVector2();
+		
+		NetworkPosition = SyncObject.ReadVector2();
+		CurrentSpeed = Player.MAX_SPEED;
 
 		if ( SyncObject.ReadBoolean() ) {
 			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadPackedInt();
 
 			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 			if ( isDashing && !DashChannel.Playing ) {
+				CurrentSpeed += 1000.0f;
 				PlaySound( DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
 			}
 			DashEffect.SetDeferred( "emitting", isDashing );
 			DashLight.SetDeferred( "visible", isDashing );
 
-			SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
+			bool isSliding = ( flags & Player.PlayerFlags.Sliding ) != 0;
+			SlideEffect.SetDeferred( "emitting", isSliding );
+			if ( isSliding ) {
+				CurrentSpeed += 400;
+			}
 		}
 
 		if ( SyncObject.ReadBoolean() ) {
@@ -213,8 +222,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			LegAnimation.CallDeferred( "show" );
 			LegAnimation.CallDeferred( "play", "slide" );
 			break;
-		}
-		;
+		};
 
 		TorsoAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		switch ( TorsoAnimationState ) {
@@ -232,30 +240,41 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( "hide" );
 			IdleAnimation.CallDeferred( "show" );
 			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
+
+			LeftArmAnimation.CallDeferred( "hide" );
+			RightArmAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
 			TorsoAnimation.CallDeferred( "show" );
 			TorsoAnimation.CallDeferred( "play", "default" );
-			IdleAnimation.Hide();
+			IdleAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
 			TorsoAnimation.CallDeferred( "hide" );
 			IdleAnimation.CallDeferred( "show" );
 			IdleAnimation.CallDeferred( "play", "start" );
+
+			LeftArmAnimation.CallDeferred( "hide" );
+			RightArmAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
 			TorsoAnimation.CallDeferred( "hide" );
 			IdleAnimation.CallDeferred( "show" );
 			IdleAnimation.CallDeferred( "play", "loop" );
+
+			LeftArmAnimation.CallDeferred( "hide" );
+			RightArmAnimation.CallDeferred( "hide" );
 			break;
 		case PlayerAnimationState.Dead:
 			TorsoAnimation.CallDeferred( "show" );
 			TorsoAnimation.CallDeferred( "play", "dead" );
+
+			LeftArmAnimation.CallDeferred( "hide" );
+			RightArmAnimation.CallDeferred( "hide" );
 			break;
-		}
-		;
+		};
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
@@ -273,6 +292,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private void OnLegAnimationLooped() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
 			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
+
+			WalkEffect.Emitting = true;
 		}
 	}
 	
@@ -307,6 +328,11 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
 	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, CurrentSpeed * (float)delta );
+	}
 
 	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {
 		switch ( state ) {
@@ -333,21 +359,18 @@ public partial class NetworkPlayer : Renown.Entity {
 			string property = "";
 			string append = arm == LeftArmAnimation ? "left" : arm == RightArmAnimation ? "right" : "";
 			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-					property = "firearm_frames_" + append;
+				property = "firearm_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
 				property = "blunt_frames_" + append;
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
 				property = "bladed_frames_" + append;
 			}
-
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "idle" );
+			arm.CallDeferred( "show" );
 			break; }
 		case PlayerAnimationState.WeaponUse: {
-			arm.CallDeferred( "show" );
-
 			string property = "";
 			string append = arm == LeftArmAnimation ? "left" : arm == RightArmAnimation ? "right" : "";
 			if ( ( WeaponUseMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
@@ -357,15 +380,12 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
 				property = "bladed_frames_" + append;
 			}
-
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "use" );
+			arm.CallDeferred( "show" );
 			break; }
 		case PlayerAnimationState.WeaponReload: {
-			arm.CallDeferred( "show" );
-
 			string path = "";
 			if ( arm == LeftArmAnimation ) {
 				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
@@ -374,10 +394,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			}
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "reload" );
+			arm.CallDeferred( "show" );
 			break; }
 		case PlayerAnimationState.WeaponEmpty: {
-			arm.CallDeferred( "show" );
-
 			string path = "";
 			if ( arm == LeftArmAnimation ) {
 				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
@@ -386,6 +405,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			}
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "empty" );
+			arm.CallDeferred( "show" );
 			break; }
 		};
 	}
