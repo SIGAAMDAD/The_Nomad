@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Steamworks;
 using System;
 
-public unsafe partial class SteamVoiceChat : Node {
+public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private const int SAMPLE_RATE = 16000;
 	private const int FRAME_SIZE = 480;
 	private const float COMPRESSION_SCALE = 32767.0f;
@@ -29,6 +29,9 @@ public unsafe partial class SteamVoiceChat : Node {
 	private float VoiceActivity = 0.0f;
 	private const float VoiceThreshold = 0.05f;
 	private const float VoiceDecayRate = 0.1f;
+
+	private Dictionary<CSteamID, HBoxContainer> VoiceActiveIcons = new Dictionary<CSteamID, HBoxContainer>();
+	private Dictionary<CSteamID, float> MemberVoiceActivity = new Dictionary<CSteamID, float>();
 
 	public static SteamVoiceChat Instance;
 
@@ -57,12 +60,44 @@ public unsafe partial class SteamVoiceChat : Node {
 		AudioServer.AddBusEffect( CaptureBusIndex, CaptureEffect );
 		AudioServer.SetBusEffectEnabled( CaptureBusIndex, 0, true );
 
+		HBoxContainer cloner = GetNode<HBoxContainer>( "ActiveVoicesStack/Cloner" );
+		SteamLobby.Instance.ClientJoinedLobby += ( ulong steamId ) => {
+			HBoxContainer container = cloner.Duplicate() as HBoxContainer;
+			( container.GetChild( 1 ) as Label ).Text = SteamFriends.GetFriendPersonaName( (CSteamID)steamId );
+			GetNode<VBoxContainer>( "ActiveVoicesStack" ).AddChild( container );
+			VoiceActiveIcons.TryAdd( (CSteamID)steamId, container );
+		};
+		SteamLobby.Instance.ClientLeftLobby += ( ulong steamId ) => {
+			if ( VoiceActiveIcons.TryGetValue( (CSteamID)steamId, out HBoxContainer value ) ) {
+				GetNode<VBoxContainer>( "ActiveVoicesStack" ).RemoveChild( value );
+				VoiceActiveIcons.Remove( (CSteamID)steamId );
+			}
+		};
+
+		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+			HBoxContainer container = cloner.Duplicate() as HBoxContainer;
+			( container.GetChild( 1 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
+			GetNode<VBoxContainer>( "ActiveVoicesStack" ).AddChild( container );
+			VoiceActiveIcons.TryAdd( SteamLobby.Instance.LobbyMembers[ i ], container );
+		}
+
 		Instance = this;
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
+		foreach ( var voiceIcon in VoiceActiveIcons ) {
+			voiceIcon.Value.Hide();
+		}
+
 		CaptureVoice();
+	}
+
+	public bool IsVoiceActive( CSteamID userId ) {
+		return VoiceActiveIcons[ userId ].Visible;
+	}
+	public float GetVoiceActivity( CSteamID userId ) {
+		return MemberVoiceActivity[ userId ];
 	}
 
 	private void CaptureVoice() {
@@ -71,11 +106,9 @@ public unsafe partial class SteamVoiceChat : Node {
 		}
 
 		int available = CaptureEffect.GetFramesAvailable();
-		if ( available <= FRAME_SIZE ) {
+		if ( available < FRAME_SIZE ) {
 			return;
 		}
-
-		GD.Print( "GOT AUDIO!" );
 
 		Godot.Vector2[] frames = CaptureEffect.GetBuffer( FRAME_SIZE );
 		float max = 0.0f;
@@ -98,11 +131,12 @@ public unsafe partial class SteamVoiceChat : Node {
 
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		if ( data.Length == FRAME_SIZE * 4 ) {
-			ProcessAudioPacket( data );
+			ProcessAudioPacket( senderId, data );
+			VoiceActiveIcons[ (CSteamID)senderId ].Show();
 		}
 	}
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
-	private void ProcessAudioPacket( byte[] data ) {
+	private void ProcessAudioPacket( ulong senderId, byte[] data ) {
 		fixed ( byte *src = data )
 		fixed ( float *dst = PlaybackBuffer ) {
 			short *pcm = (short *)src;
@@ -132,12 +166,21 @@ public unsafe partial class SteamVoiceChat : Node {
 
 		Godot.Vector2[] buffer = new Godot.Vector2[ available ];
 		int count = Math.Min( available, AudioQueue.Count );
+		float max = 0.0f;
 
 		lock ( AudioQueue ) {
 			for ( int i = 0; i < count; i++ ) {
 				buffer[ i ] = AudioQueue.Dequeue();
+				float amplitude = ( Mathf.Abs( buffer[ i ].X ) + Mathf.Abs( buffer[ i ].Y ) ) / 2.0f;
+				if ( amplitude > max ) {
+					max = amplitude;
+				}
 			}
 		}
+		float activity = MemberVoiceActivity[ (CSteamID)senderId ];
+		activity = max > activity ? max : Mathf.Max( activity - VoiceDecayRate * (float)GetProcessDeltaTime(), 0.0f );
+		MemberVoiceActivity[ (CSteamID)senderId ] = activity;
+
 		for ( int i = count; i < available; i++ ) {
 			buffer[ i ] = Godot.Vector2.Zero;
 		}

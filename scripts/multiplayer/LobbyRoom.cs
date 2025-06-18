@@ -3,17 +3,21 @@ using Steamworks;
 using Multiplayer;
 using System.Threading;
 using System.Collections.Generic;
-using ImGuiGodot.Internal;
+using System;
 
 public partial class LobbyRoom : Control {
 	public static LobbyRoom Instance;
+
+	private static readonly Color GoodPing = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
+	private static readonly Color DecentPing = new Color( 1.0f, 1.0f, 0.0f, 1.0f );
+	private static readonly Color BadPing = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 
 	private VBoxContainer PlayerList;
 	private Button StartGameButton;
 	private Button ExitLobbyButton;
 
 	private HBoxContainer CurrentFocus = null;
-	
+
 	private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -21,11 +25,11 @@ public partial class LobbyRoom : Control {
 	private PackedScene LoadedLevel;
 
 	private Label VoteLabel;
-	
+
 	public AudioStreamPlayer UIChannel;
 
 	private HBoxContainer ClonerContainer;
-	
+
 	private Dictionary<CSteamID, bool> StartGameVotes = null;
 
 	private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
@@ -44,7 +48,7 @@ public partial class LobbyRoom : Control {
 	}
 	public void UnfocusPlayer( HBoxContainer focus ) {
 		( focus.GetChild( 0 ) as Label ).Modulate = DefaultColor;
-		( focus.GetChild( 1 ) as Button).Hide();
+		( focus.GetChild( 1 ) as Button ).Hide();
 	}
 	public void KickPlayer( CSteamID steamId ) {
 	}
@@ -69,7 +73,7 @@ public partial class LobbyRoom : Control {
 			StartGameVotes[ senderId ] = false;
 		}
 	}
-	
+
 	private void OnFinishedLoading() {
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedLevel );
@@ -78,6 +82,7 @@ public partial class LobbyRoom : Control {
 		UIChannel.SetDeferred( "stream", UISfxManager.BeginGame );
 		UIChannel.CallDeferred( "play" );
 
+		GetNode<CanvasLayer>( "/root/SteamVoiceChat" ).Show();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
 
 		string modeName;
@@ -99,7 +104,8 @@ public partial class LobbyRoom : Control {
 			break;
 		default:
 			return;
-		};
+		}
+		;
 
 		CallDeferred( "connect", "FinishedLoading", Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
@@ -111,24 +117,24 @@ public partial class LobbyRoom : Control {
 		} );
 		LoadThread.Start();
 	}
-	
+
 	private void OnStartGameButtonPressed() {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			// if we're not the host, send a vote to start command
 			ServerCommandManager.SendCommand( ServerCommandType.VoteStart );
 			return;
 		}
-		
+
 		LoadGame();
-		
+
 		ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 	}
 	private void OnExitLobbyButtonPressed() {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
-		
+
 		SteamLobby.Instance.LeaveLobby();
-		
+
 		Hide();
 		GetTree().ChangeSceneToPacked( ResourceCache.GetScene( "res://scenes/main_menu.tscn" ) );
 	}
@@ -142,8 +148,8 @@ public partial class LobbyRoom : Control {
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.Show();
-		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
-		( container.GetChild( 1 ) as Button ).Hide();
+		( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
+		( container.GetChild( 4 ) as Button ).Hide();
 		PlayerList.AddChild( container );
 	}
 	private void OnPlayerLeft( ulong steamId ) {
@@ -156,13 +162,13 @@ public partial class LobbyRoom : Control {
 
 		string username = SteamFriends.GetFriendPersonaName( userId );
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
 				break;
 			}
 		}
-		
+
 		Console.PrintLine( string.Format( "{0} has faded away...", username ) );
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
@@ -175,10 +181,10 @@ public partial class LobbyRoom : Control {
 		if ( !SteamLobby.Instance.IsOwner() ) {
 			return;
 		}
-		
+
 		int numStartVotes = 0;
 		int requiredVotes = SteamLobby.Instance.LobbyMemberCount / 2;
-		 
+
 		foreach ( var vote in StartGameVotes ) {
 			if ( vote.Value ) {
 				numStartVotes++;
@@ -195,7 +201,7 @@ public partial class LobbyRoom : Control {
 		}
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
 			string username = SteamFriends.GetFriendPersonaName( userId );
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 0 ) as Label ).Text == username ) {
+			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
 				PlayerList.GetChild( i ).QueueFree();
 				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
 				return true;
@@ -203,11 +209,11 @@ public partial class LobbyRoom : Control {
 		}
 		return false;
 	}
-	
+
 	private void OnButtonFocused( Button self ) {
 		UIChannel.Stream = UISfxManager.ButtonFocused;
 		UIChannel.Play();
-		
+
 		self.Modulate = Selected;
 	}
 	private void OnButtonUnfocused( Button self ) {
@@ -225,6 +231,9 @@ public partial class LobbyRoom : Control {
 	public override void _Ready() {
 		base._Ready();
 
+		GetTree().CurrentScene = this;
+
+		GetNode<CanvasLayer>( "/root/SteamVoiceChat" ).Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
@@ -252,7 +261,7 @@ public partial class LobbyRoom : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
-//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
+		//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
@@ -266,8 +275,8 @@ public partial class LobbyRoom : Control {
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.Show();
-		( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
-		( container.GetChild( 1 ) as Button ).Hide();
+		( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+		( container.GetChild( 4 ) as Button ).Hide();
 		PlayerList.AddChild( container );
 
 		SteamLobby.Instance.GetLobbyMembers();
@@ -281,9 +290,39 @@ public partial class LobbyRoom : Control {
 				}
 				container = ClonerContainer.Duplicate() as HBoxContainer;
 				container.Show();
-				( container.GetChild( 0 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
-				( container.GetChild( 1 ) as Button ).Hide();
+				( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
+				( container.GetChild( 4 ) as Button ).Hide();
 				PlayerList.AddChild( container );
+			}
+		}
+	}
+	public override void _Process( double delta ) {
+		base._Process( delta );
+
+		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
+
+			{
+				Label pingLabel = container.GetChild<Label>( 2 );
+
+				int ping = SteamLobby.Instance.GetMemberPing( SteamLobby.Instance.LobbyMembers[ i ] );
+				if ( ping < 60 ) {
+					pingLabel.Modulate = GoodPing;
+				} else if ( ping < 100 ) {
+					pingLabel.Modulate = DecentPing;
+				} else if ( ping >= 100 ) {
+					pingLabel.Modulate = BadPing;
+				}
+				pingLabel.Text = string.Format( "{0}ms", ping );
+			}
+			{
+				container.GetChild<TextureRect>( 0 ).Material.Set(
+					"shader_parameter/active",
+					SteamVoiceChat.Instance.IsVoiceActive( SteamLobby.Instance.LobbyMembers[ i ] )
+				);
+				container.GetChild<ProgressBar>( 1 ).Value = SteamVoiceChat.Instance.GetVoiceActivity(
+					SteamLobby.Instance.LobbyMembers[ i ]
+				);
 			}
 		}
 	}
