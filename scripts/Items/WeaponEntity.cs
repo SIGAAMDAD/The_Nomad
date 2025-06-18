@@ -184,7 +184,7 @@ public partial class WeaponEntity : Node2D {
 		private set;
 	} = Properties.None;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 24 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 24 );
 
 	[Signal]
 	public delegate void ModeChangedEventHandler( WeaponEntity source, Properties useMode );
@@ -426,20 +426,21 @@ public partial class WeaponEntity : Node2D {
 
 	private void NetworkSync( bool held = false ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
-		SyncObject.WritePackedInt( GetPath().GetHashCode() );
+		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)CurrentState );
-		SyncObject.WritePackedInt( (int)LastUsedMode );
+		SyncObject.Write( (uint)LastUsedMode );
 		if ( CurrentState == WeaponState.Use ) {
 			SyncObject.Write( held );
 		}
 		SyncObject.Sync();
 	}
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
-		CurrentState = (WeaponState)packet.ReadByte();
-		LastUsedMode = (Properties)packet.Read7BitEncodedInt();
+		SyncObject.BeginRead( packet );
+		CurrentState = (WeaponState)SyncObject.ReadByte();
+		LastUsedMode = (Properties)SyncObject.ReadUInt32();
 
 		if ( CurrentState == WeaponState.Use ) {
-			Use( LastUsedMode, out _, packet.ReadBoolean() );
+			Use( LastUsedMode, out _, SyncObject.ReadBoolean() );
 		}
 	}
 

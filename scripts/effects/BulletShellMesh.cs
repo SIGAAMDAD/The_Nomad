@@ -8,21 +8,19 @@ public partial class BulletShellMesh : Node {
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 128 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 128 );
 
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
-		SyncObject.WritePackedInt( GetPath().GetHashCode() );
+		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( ( (string)ammo.Get( "id" ) ).GetHashCode() );
 		SyncObject.Write( position );
 		SyncObject.Sync();
 	}
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
-		int ammoId = packet.ReadInt32();
-		Godot.Vector2 position = new Godot.Vector2(
-			(float)packet.ReadHalf(),
-			(float)packet.ReadHalf()
-		);
+		SyncObject.BeginRead( packet );
+
+		int ammoId = SyncObject.ReadInt32();
 
 		if ( !ResourceCache.NetworkCache.TryGetValue( ammoId, out Resource ammo ) ) {
 			return;
@@ -36,7 +34,7 @@ public partial class BulletShellMesh : Node {
 		}
 
 		instance.Multimesh.VisibleInstanceCount++;
-		instance.Multimesh.SetInstanceTransform2D( instance.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
+		instance.Multimesh.SetInstanceTransform2D( instance.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, SyncObject.ReadVector2() ) );
 	}
 
 	public override void _Ready() {

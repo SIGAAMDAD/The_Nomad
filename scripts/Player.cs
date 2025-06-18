@@ -89,6 +89,7 @@ public partial class Player : Entity {
 	private PlayerAnimationState LastTorsoArmAnimationState;
 	private float LastNetworkAimAngle = 0.0f;
 	private uint LastNetworkFlags = 0;
+	private float LastNetworkBloodAmount = 0.0f;
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -234,7 +235,7 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 1024 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1024 );
 
 	private TileMapFloor Floor;
 
@@ -488,24 +489,20 @@ public partial class Player : Entity {
 	#endregion
 
 	private void ReceivePacket( System.IO.BinaryReader reader ) {
-		PlayerUpdateType type = (PlayerUpdateType)reader.ReadByte();
+		SyncObject.BeginRead( reader );
+
+		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-			switch ( (PlayerDamageSource)reader.ReadByte() ) {
+			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
 			case PlayerDamageSource.Player:
-				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)reader.ReadUInt64() ), (float)reader.ReadDouble() );
+				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)SyncObject.ReadUInt64() ), SyncObject.ReadFloat() );
 				break;
 			case PlayerDamageSource.NPC:
 				break;
 			case PlayerDamageSource.Environment:
 				break;
 			};
-			break; }
-		case PlayerUpdateType.SetSpawn: {
-				Godot.Vector2 position;
-				position.X = (float)reader.ReadDouble();
-				position.Y = (float)reader.ReadDouble();
-				GlobalPosition = position;
 			break; }
 		case PlayerUpdateType.Count:
 		default:
@@ -521,7 +518,7 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.WritePosition( GlobalPosition );
+		SyncObject.Write( GlobalPosition );
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			SyncObject.Write( true );
@@ -536,7 +533,7 @@ public partial class Player : Entity {
 		} else {
 			if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
 				SyncObject.Write( true );
-				SyncObject.Write( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) );
+				SyncObject.Write( ( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ).GetHashCode() );
 				SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
 			} else {
 				SyncObject.Write( false );
@@ -547,6 +544,14 @@ public partial class Player : Entity {
 			SyncObject.Write( true );
 			LastNetworkAimAngle = AimLine.GlobalRotation;
 			SyncObject.Write( LastNetworkAimAngle );
+		} else {
+			SyncObject.Write( false );
+		}
+
+		if ( LastNetworkBloodAmount != BloodAmount ) {
+			SyncObject.Write( true );
+			SyncObject.Write( BloodAmount );
+			LastNetworkBloodAmount = BloodAmount;
 		} else {
 			SyncObject.Write( false );
 		}

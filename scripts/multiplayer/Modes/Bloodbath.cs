@@ -15,7 +15,7 @@ namespace Multiplayer.Modes {
 
 		private Node2D[] Spawns;
 
-		private NetworkWriter SyncObject = new NetworkWriter( ( sizeof( ulong ) + sizeof( int ) ) * SteamLobby.MAX_LOBBY_MEMBERS );
+		private NetworkSyncObject SyncObject = new NetworkSyncObject( ( sizeof( ulong ) + sizeof( int ) ) * SteamLobby.MAX_LOBBY_MEMBERS );
 
 		private void OnGameStart() {
 			Announcer.Fight();
@@ -56,8 +56,9 @@ namespace Multiplayer.Modes {
 			}
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
+			SyncObject.BeginRead( reader );
 			for ( int i = 0; i < Scores.Count; i++ ) {
-				Scores[ (CSteamID)reader.ReadUInt64() ] = reader.Read7BitEncodedInt();
+				Scores[ (CSteamID)SyncObject.ReadUInt64() ] = SyncObject.ReadPackedInt();
 			}
 		}
 

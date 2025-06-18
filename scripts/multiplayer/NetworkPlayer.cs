@@ -43,7 +43,7 @@ public enum PlayerDamageSource : byte {
 };
 
 public partial class NetworkPlayer : Renown.Entity {
-	private NetworkWriter SyncObject = new NetworkWriter( 24 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 24 );
 
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
@@ -94,20 +94,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
-
-	private Godot.Vector2 ReadVector2Delta( System.IO.BinaryReader packet ) {
-		short packed = packet.ReadInt16();
-		sbyte x = (sbyte)( packed >> 8 );
-		sbyte y = (sbyte)( packed & 0xFF );
-
-		Godot.Vector2I value = new Godot.Vector2I( x, y );
-
-		const float GRID_STEP = 16.0f;
-		return new Godot.Vector2(
-			value.X * GRID_STEP,
-			value.Y * GRID_STEP
-		);
-	}
+	
 	public void Update( System.IO.BinaryReader packet ) {
 		/*
 		bool flip = packet.ReadBoolean();
@@ -157,7 +144,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 		*/
 
-		bool flip = packet.ReadBoolean();
+		SyncObject.BeginRead( packet );
+
+		bool flip = SyncObject.ReadBoolean();
 		if ( flip != LastFlipState ) {
 			TorsoAnimation.SetDeferred( "flip_h", flip );
 			LegAnimation.SetDeferred( "flip_h", flip );
@@ -166,10 +155,10 @@ public partial class NetworkPlayer : Renown.Entity {
 			LastFlipState = flip;
 		}
 
-		GlobalPosition = ReadVector2Delta( packet );
+		GlobalPosition = SyncObject.ReadVector2();
 
-		if ( packet.ReadBoolean() ) {
-			Player.PlayerFlags flags = (Player.PlayerFlags)packet.Read7BitEncodedInt();
+		if ( SyncObject.ReadBoolean() ) {
+			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadPackedInt();
 
 			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 			if ( isDashing && !DashChannel.Playing ) {
@@ -181,24 +170,24 @@ public partial class NetworkPlayer : Renown.Entity {
 			SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
 		}
 
-		if ( packet.ReadBoolean() ) {
-			string weaponId = packet.ReadString();
-			WeaponUseMode = (WeaponEntity.Properties)packet.Read7BitEncodedInt();
-			CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
+		if ( SyncObject.ReadBoolean() ) {
+			int weaponId = SyncObject.ReadInt32();
+			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadPackedInt();
+			CurrentWeapon = ResourceCache.NetworkCache[ weaponId ];
 		}
 
-		if ( packet.ReadBoolean() ) {
-			float angle = (float)packet.ReadHalf();
+		if ( SyncObject.ReadBoolean() ) {
+			float angle = SyncObject.ReadFloat();
 			LeftArmAnimation.SetDeferred( "global_rotation", angle );
 			RightArmAnimation.SetDeferred( "global_rotation", angle );
 		}
-		LeftArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		LeftArmAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
 
-		RightArmAnimationState = (PlayerAnimationState)packet.ReadByte();
+		RightArmAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		SetArmAnimationState( RightArmAnimation, RightArmAnimationState, DefaultRightArmSpriteFrames );
 
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
+		LegAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		switch ( LegAnimationState ) {
 		case PlayerAnimationState.Hide:
 		case PlayerAnimationState.TrueIdleStart:
@@ -227,7 +216,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 		;
 
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
+		TorsoAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		switch ( TorsoAnimationState ) {
 		case PlayerAnimationState.CheckpointDrinking:
 			TorsoAnimation.CallDeferred( "hide" );
@@ -265,7 +254,8 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( "show" );
 			TorsoAnimation.CallDeferred( "play", "dead" );
 			break;
-		};
+		}
+		;
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );

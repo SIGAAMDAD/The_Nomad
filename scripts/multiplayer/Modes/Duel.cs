@@ -17,7 +17,7 @@ namespace Multiplayer.Modes {
 
 		private int[] Score = new int[ 3 ];
 
-		private NetworkWriter SyncObject = new NetworkWriter( 3 );
+		private NetworkSyncObject SyncObject = new NetworkSyncObject( 3 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
@@ -121,9 +121,11 @@ namespace Multiplayer.Modes {
 			SyncObject.Sync();
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
-			Player1Score = reader.ReadSByte();
-			Player2Score = reader.ReadSByte();
-			RoundIndex = reader.ReadSByte();
+			SyncObject.BeginRead( reader );
+
+			Player1Score = SyncObject.ReadSByte();
+			Player2Score = SyncObject.ReadSByte();
+			RoundIndex = SyncObject.ReadSByte();
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );

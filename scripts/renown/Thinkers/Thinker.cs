@@ -159,7 +159,7 @@ namespace Renown.Thinkers {
 		protected Color DemonEyeColor;
 
 		// networking
-		protected NetworkWriter SyncObject = null;
+		protected NetworkSyncObject SyncObject = null;
 
 		public AnimatedSprite2D BodyAnimations {
 			get;

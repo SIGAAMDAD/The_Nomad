@@ -9,7 +9,7 @@ public partial class BloodParticleFactory : Node {
 	private static BloodParticleFactory Instance = null;
 	private static readonly int BloodInstanceMax = 256;
 
-	private NetworkWriter SyncObject = new NetworkWriter( 2048 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 2048 );
 
 	private void OnReleaseTimerTimeout() {
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
@@ -23,24 +23,22 @@ public partial class BloodParticleFactory : Node {
 	}
 
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
+		SyncObject.BeginRead( packet );
+
 		ReleaseTimer.Start();
 
 		if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
 			MeshManager.Multimesh.VisibleInstanceCount = 0;
 		}
 
-		int count = packet.ReadByte();
+		int count = SyncObject.ReadByte();
 		for ( int i = 0; i < count; i++ ) {
-			Godot.Vector2 position = new Godot.Vector2(
-				(float)packet.ReadHalf(),
-				(float)packet.ReadHalf()
-			);
-			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, position ) );
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, SyncObject.ReadVector2() ) );
 		}
 	}
 	private void NetworkSync( int offset, int count, Span<Transform2D> positions ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
-		SyncObject.WritePackedInt( GetPath().GetHashCode() );
+		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)count );
 		for ( int i = 0; i < count; i++ ) {
 			SyncObject.Write( positions[ i ].Origin );

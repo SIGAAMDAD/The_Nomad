@@ -8,10 +8,16 @@ namespace Renown.World {
 		public static uint Hour = 0;
 		public static WorldTimeManager Instance;
 
+		private static uint NetworkYear = 0;
+		private static uint NetworkMonth = 0;
+		private static uint NetworkDay = 0;
+		private static uint NetworkHour = 0;
+		private static float NetworkTime = 0.0f;
+
 		private float Time = 0.0f;
 		private float PastMinute = -1.0f;
 
-		private NetworkWriter SyncObject = null;
+		private NetworkSyncObject SyncObject = null;
 		private bool IsHostWorld = false;
 
 		private const uint MinutesPerDay = 2440;
@@ -95,17 +101,69 @@ namespace Renown.World {
 		}
 
 		private void SendPacket() {
-			SyncObject.Write( Year );
-			SyncObject.Write( Month );
-			SyncObject.Write( Day );
-			SyncObject.Write( Time );
+			SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+			SyncObject.Write( GetPath().GetHashCode() );
+
+			byte changedBits = 0;
+			if ( Year != NetworkYear ) {
+				changedBits |= 0b00000001;
+				NetworkYear = Year;
+			}
+			if ( Month != NetworkMonth ) {
+				changedBits |= 0b00000010;
+				NetworkMonth = Month;
+			}
+			if ( Day != NetworkDay ) {
+				changedBits |= 0b00000100;
+				NetworkDay = Day;
+			}
+			if ( Hour != NetworkHour ) {
+				changedBits |= 0b00001000;
+				NetworkHour = Hour;
+			}
+			if ( Time != NetworkTime ) {
+				changedBits |= 0b00010000;
+				NetworkTime = Time;
+			}
+
+			SyncObject.Write( changedBits );
+			if ( ( changedBits & 0b00000001 ) != 0 ) {
+				SyncObject.Write( Year );
+			}
+			if ( ( changedBits & 0b00000010 ) != 0 ) {
+				SyncObject.Write( (ushort)Month );
+			}
+			if ( ( changedBits & 0b00000100 ) != 0 ) {
+				SyncObject.Write( (ushort)Day );
+			}
+			if ( ( changedBits & 0b00001000 ) != 0 ) {
+				SyncObject.Write( (ushort)Hour );
+			}
+			if ( ( changedBits & 0b00010000 ) != 0 ) {
+				SyncObject.Write( Time );
+			}
 			SyncObject.Sync();
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
-			Year = reader.ReadUInt32();
-			Month = reader.ReadUInt32();
-			Day = reader.ReadUInt32();
-			Time = (float)reader.ReadDouble();
+			SyncObject.BeginRead( reader );
+
+			byte changedBits = SyncObject.ReadByte();
+			if ( ( changedBits & 0b00000001 ) != 0 ) {
+				Year = SyncObject.ReadUInt32();
+			}
+			if ( ( changedBits & 0b00000010 ) != 0 ) {
+				Month = SyncObject.ReadUInt16();
+			}
+			if ( ( changedBits & 0b00000100 ) != 0 ) {
+				Day = SyncObject.ReadUInt16();
+			}
+			if ( ( changedBits & 0b00001000 ) != 0 ) {
+				Hour = SyncObject.ReadUInt16();
+				WorldTimeOverlay.Color = Gradient.Gradient.Sample( Mathf.Lerp( 0.0f, Gradient.Width, 1.0f / Hour ) );
+			}
+			if ( ( changedBits & 0b00010000 ) != 0 ) {
+				Time = SyncObject.ReadFloat();
+			}
 		}
 
 		public static float GetGameSpeed() => Instance.InGameSpeed;
@@ -181,7 +239,7 @@ namespace Renown.World {
 			SetPhysicsProcessInternal( false );
 
 			if ( SettingsData.GetNetworkingEnabled() ) {
-				SyncObject = new NetworkWriter( sizeof( uint ) * 3 + sizeof( double ) );
+				SyncObject = new NetworkSyncObject( sizeof( uint ) * 3 + sizeof( float ) );
 				if ( SteamLobby.Instance.IsOwner() ) {
 					// we're running the host's world
 					SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
