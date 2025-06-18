@@ -10,7 +10,7 @@ public class NetworkSyncObject {
 	private readonly BinaryWriter Writer = null;
 	private BinaryReader Reader = null;
 
-	private static readonly float GRID_STEP = 64.0f;
+	private static readonly float GRID_STEP = 16.0f;
 
 	public NetworkSyncObject( int nPacketSize ) {
 		Packet = new byte[ nPacketSize ];
