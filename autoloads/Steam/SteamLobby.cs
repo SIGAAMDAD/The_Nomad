@@ -104,76 +104,72 @@ public partial class SteamLobby : Node {
 		}
 
 		public static byte[] SecureOutgoingMessage( byte[] data, CSteamID target ) {
-			lock ( Lock ) {
-				if ( !SecurityStates.TryGetValue( target, out var state ) ) {
-					SecurityStates.Add( target, new ConnectionSecurity() );
-				}
-				return data;
-				/*
-
-				var header = new SecurityHeader {
-					Version = 1,
-					Sequence = ++state.LastOutSeq,
-					Timestamp = SteamUtils.GetServerRealTime()
-				};
-
-				byte[] secured = new byte[ 7 + data.Length ];
-				using ( var stream = new System.IO.MemoryStream( secured ) ) {
-					using ( var writer = new System.IO.BinaryWriter( stream ) ) {
-						writer.Write( header.Version );
-						writer.Write( header.Sequence );
-						writer.Write( header.Timestamp );
-						writer.Write( data );
-					}
-				}
-				return secured;
-				*/
+			if ( !SecurityStates.TryGetValue( target, out var state ) ) {
+				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
+			return data;
+			/*
+
+			var header = new SecurityHeader {
+				Version = 1,
+				Sequence = ++state.LastOutSeq,
+				Timestamp = SteamUtils.GetServerRealTime()
+			};
+
+			byte[] secured = new byte[ 7 + data.Length ];
+			using ( var stream = new System.IO.MemoryStream( secured ) ) {
+				using ( var writer = new System.IO.BinaryWriter( stream ) ) {
+					writer.Write( header.Version );
+					writer.Write( header.Sequence );
+					writer.Write( header.Timestamp );
+					writer.Write( data );
+				}
+			}
+			return secured;
+			*/
 		}
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
-			lock ( Lock ) {
-				if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
-					state = new ConnectionSecurity();
-					SecurityStates.Add( senderId, state );
-				}
-
-				// rate limiting
-				if ( DateTime.UtcNow.TimeOfDay.TotalSeconds - state.LastResetTime > 1.0f ) {
-					state.MessageCount = 0;
-					state.LastResetTime = DateTime.UtcNow.TimeOfDay.TotalSeconds;
-				}
-				if ( ++state.MessageCount > 500 ) {
-					return null; // 500 msg/sec limit
-				}
-
-				return secured;
-
-				// sanity checks
-				/*
-				if ( secured.Length < 7 ) {
-					return null;
-				}
-				var header = new SecurityHeader {
-					Version = secured[ 0 ],
-					Sequence = BitConverter.ToUInt16( secured, 1 ),
-					Timestamp = BitConverter.ToUInt32( secured, 3 )
-				};
-
-				if ( header.Sequence <= state.LastInSeq && state.LastInSeq - header.Sequence < 50 ) {
-					return null;
-				}
-				state.LastInSeq = header.Sequence;
-
-				uint currentTime = SteamUtils.GetServerRealTime();
-				if ( Math.Abs( (long)currentTime - header.Timestamp ) > 120 ) {
-					return null;
-				}
-
-				byte[] data = new byte[ secured.Length - 7 ];
-				Buffer.BlockCopy( secured, 7, data, 0, data.Length );
-				return data;
-				*/
+			if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
+				state = new ConnectionSecurity();
+				SecurityStates.Add( senderId, state );
 			}
+
+			// rate limiting
+			if ( DateTime.UtcNow.TimeOfDay.TotalSeconds - state.LastResetTime > 1.0f ) {
+				state.MessageCount = 0;
+				state.LastResetTime = DateTime.UtcNow.TimeOfDay.TotalSeconds;
+			}
+			if ( ++state.MessageCount > 500 ) {
+				return null; // 500 msg/sec limit
+			}
+
+			return secured;
+
+			// sanity checks
+			/*
+			if ( secured.Length < 7 ) {
+				return null;
+			}
+			var header = new SecurityHeader {
+				Version = secured[ 0 ],
+				Sequence = BitConverter.ToUInt16( secured, 1 ),
+				Timestamp = BitConverter.ToUInt32( secured, 3 )
+			};
+
+			if ( header.Sequence <= state.LastInSeq && state.LastInSeq - header.Sequence < 50 ) {
+				return null;
+			}
+			state.LastInSeq = header.Sequence;
+
+			uint currentTime = SteamUtils.GetServerRealTime();
+			if ( Math.Abs( (long)currentTime - header.Timestamp ) > 120 ) {
+				return null;
+			}
+
+			byte[] data = new byte[ secured.Length - 7 ];
+			Buffer.BlockCopy( secured, 7, data, 0, data.Length );
+			return data;
+			*/
 		}
 	};
 
@@ -348,7 +344,8 @@ public partial class SteamLobby : Node {
 		case Visibility.FriendsOnly:
 			lobbyType = ELobbyType.k_ELobbyTypeFriendsOnly;
 			break;
-		};
+		}
+		;
 
 		Console.PrintLine( "Initializing SteamLobby..." );
 		SteamAPICall_t handle = SteamMatchmaking.CreateLobby( lobbyType, LobbyMaxMembers );
@@ -610,7 +607,7 @@ public partial class SteamLobby : Node {
 
 		unsafe {
 			byte[] buffer = SteamLobbySecurity.SecureOutgoingMessage( data, target );
-			fixed ( byte *pBuffer = buffer ) {
+			fixed ( byte* pBuffer = buffer ) {
 				EResult res = SteamNetworkingSockets.SendMessageToConnection(
 					conn,
 					(IntPtr)pBuffer,
@@ -649,7 +646,7 @@ public partial class SteamLobby : Node {
 			Sender = sender,
 			Data = buffer,
 			Length = copyLength,
-			Type = (MessageType)buffer[0]
+			Type = (MessageType)buffer[ 0 ]
 		} );
 	}
 
@@ -713,7 +710,8 @@ public partial class SteamLobby : Node {
 		case MessageType.ServerCommand:
 			CallDeferred( "ProcessServerCommand", (ulong)msg.Sender, msg.Data );
 			break;
-		};
+		}
+		;
 	}
 	private void HandleIncomingMessages() {
 		int processed = 0;
@@ -800,7 +798,8 @@ public partial class SteamLobby : Node {
 			LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 			Console.PrintLine( $"Lobby map: {LobbyMap}" );
 			break;
-		};
+		}
+		;
 
 		GetLobbyMembers();
 		ConnectToLobbyMembers();
@@ -1151,7 +1150,7 @@ public partial class SteamLobby : Node {
 				Console.PrintError( string.Format( "[STEAM] Networking thread exception: {0}", e.Message ) );
 			}
 
-//			System.Threading.Thread.Sleep( 20 );
+			//			System.Threading.Thread.Sleep( 20 );
 
 			double elapsed = frameTimer.Elapsed.TotalMilliseconds;
 			double sleepTime = FRAME_TIME_MS - elapsed;
@@ -1177,7 +1176,7 @@ public partial class SteamLobby : Node {
 
 		if ( what == NotificationWMCloseRequest ) {
 			System.Threading.Interlocked.Exchange( ref NetworkRunning, 1 );
-			
+
 			LeaveLobby();
 
 			foreach ( var conn in Connections.Values ) {
