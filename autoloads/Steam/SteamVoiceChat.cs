@@ -295,7 +295,7 @@ public partial class SteamVoiceChat : CanvasLayer {
 
 		eResult = SteamUser.GetAvailableVoice( out uint compressedSize );
 		if ( eResult != EVoiceResult.k_EVoiceResultOK ) {
-			Console.PrintError( string.Format( "[STEAM] Error recording voice: {0}", eResult ) );
+//			Console.PrintError( string.Format( "[STEAM] Error recording voice: {0}", eResult ) );
 			return;
 		}
 
@@ -349,10 +349,12 @@ public partial class SteamVoiceChat : CanvasLayer {
 	}
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 #if USE_STEAM_AUDIO
+		byte[] buffer = new byte[ data.Length - 1 ];
+		Buffer.BlockCopy( data, 1, buffer, 0, buffer.Length );
 		byte[] decompressed = new byte[ 8192 ];
 		EVoiceResult result = SteamUser.DecompressVoice(
-			data,
-			(uint)data.Length,
+			buffer,
+			(uint)buffer.Length,
 			decompressed,
 			(uint)decompressed.Length,
 			out uint decompressedLength,
