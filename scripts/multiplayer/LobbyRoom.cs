@@ -300,9 +300,6 @@ public partial class LobbyRoom : Control {
 		base._Process( delta );
 
 		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
-			if ( !SteamLobby.Instance.LobbyMembers[ i ].IsValid() ) {
-				continue;
-			}
 			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
 
 			{
