@@ -106,12 +106,16 @@ public partial class SteamLobby : Node {
 				SecurityStates.Add( target, new ConnectionSecurity() );
 			}
 
+			return data;
+
+			/*
 			using var compressedStream = new System.IO.MemoryStream();
 			using var zipStream = new System.IO.Compression.DeflateStream( compressedStream, System.IO.Compression.CompressionLevel.Fastest );
 
 			zipStream.Write( data, 0, data.Length );
 
 			return compressedStream.ToArray();
+			*/
 			/*
 
 			var header = new SecurityHeader {
@@ -147,6 +151,7 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
+			/*
 			using var compressedStream = new System.IO.MemoryStream( secured );
 			using var decompressedStream = new System.IO.MemoryStream( 1024 );
 			using var zipStream = new System.IO.Compression.DeflateStream( compressedStream, System.IO.Compression.CompressionMode.Decompress );
@@ -154,6 +159,8 @@ public partial class SteamLobby : Node {
 			zipStream.CopyTo( decompressedStream );
 
 			return decompressedStream.ToArray();
+			*/
+			return secured;
 
 			// sanity checks
 			/*
