@@ -222,6 +222,8 @@ public partial class LobbyBrowser : Control {
 			LoadThread.Start();
 			break;
 		};
+
+		ServerCommandManager.SendCommand( ServerCommandType.ConnectedToLobby );
 		System.GC.KeepAlive( this );
 	}
 	private void OnLobbyJoined( ulong lobbyId ) {

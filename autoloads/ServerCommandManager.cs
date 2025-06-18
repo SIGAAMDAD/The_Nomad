@@ -5,6 +5,8 @@ public enum ServerCommandType : uint {
 	StartGame,
 	EndGame,
 	
+	ConnectedToLobby,
+	
 	// to start the game
 	VoteStart,
 	CancelVote,

@@ -102,8 +102,6 @@ namespace PlayerSystem {
 		private Label LocationLabel;
 		private Timer LocationStatusTimer;
 
-		private ProgressBar VoiceVolume;
-
 		private static System.Action<int> DialogueCallback;
 
 		private Dictionary<string, StatusIcon> StatusIcons;
@@ -247,8 +245,6 @@ namespace PlayerSystem {
 				LevelData.Instance.HellbreakerFinished += HellbreakerOverlay.Hide;
 			}
 
-			VoiceVolume = GetNode<ProgressBar>( "MainHUD/VoiceVolume" );
-
 			WorldTimeYear = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/YearLabel" );
 			WorldTimeMonth = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer/MonthLabel" );
 			WorldTimeDay = GetNode<Label>( "MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/DayLabel" );
@@ -372,14 +368,6 @@ namespace PlayerSystem {
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
 		}
-
-		public override void _Process( double delta ) {
-			base._Process( delta );
-
-			VoiceVolume.Value = SteamVoiceChat.Instance.GetVoiceActivity();
-			VoiceVolume.AllowGreater = true;
-		}
-
 		public void AddStatusEffect( string effectName, StatusEffect effect ) {
 			/*
 			if ( StatusIcons.TryGetValue( effectName, out StatusIcon icon ) ) {

@@ -252,7 +252,7 @@ public partial class LobbyRoom : Control {
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
 		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
-		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
+//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
 
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
@@ -260,6 +260,9 @@ public partial class LobbyRoom : Control {
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseYes );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseNo );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.ConnectedToLobby, ( senderId ) => {
+			OnPlayerJoined( (ulong)senderId );
+		} );
 
 		if ( SteamLobby.Instance.IsOwner() ) {
 			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
@@ -273,6 +276,7 @@ public partial class LobbyRoom : Control {
 
 		SteamLobby.Instance.GetLobbyMembers();
 
+		/*
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
 				continue;
@@ -283,5 +287,6 @@ public partial class LobbyRoom : Control {
 			( container.GetChild( 1 ) as Button ).Hide();
 			PlayerList.AddChild( container );
 		}
+		*/
 	}
 };
