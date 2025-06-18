@@ -896,10 +896,14 @@ public partial class SteamLobby : Node {
 
 	#region Utility Methods
 	public int GetMemberPing( CSteamID userID ) {
+		if ( !Connections.TryGetValue( userID, out HSteamNetConnection conn ) ) {
+			return int.MaxValue;
+		}
+
 		SteamNetConnectionRealTimeStatus_t status = new SteamNetConnectionRealTimeStatus_t();
 		SteamNetConnectionRealTimeLaneStatus_t laneStatus = new SteamNetConnectionRealTimeLaneStatus_t();
 
-		if ( SteamNetworkingSockets.GetConnectionRealTimeStatus( Connections[ userID ], ref status, 0, ref laneStatus ) != EResult.k_EResultOK ) {
+		if ( SteamNetworkingSockets.GetConnectionRealTimeStatus( conn, ref status, 0, ref laneStatus ) != EResult.k_EResultOK ) {
 			Console.PrintError( string.Format( "[STEAM] Error getting connection real-time status from user {0}", userID ) );
 			return int.MaxValue;
 		}
