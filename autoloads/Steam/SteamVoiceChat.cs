@@ -51,7 +51,7 @@ public unsafe partial class SteamVoiceChat : Node {
 		CaptureBusIndex = AudioServer.BusCount;
 		AudioServer.AddBus( CaptureBusIndex );
 		AudioServer.SetBusName( CaptureBusIndex, "VoiceCapture" );
-		AudioServer.SetBusMute( CaptureBusIndex, true );
+		AudioServer.SetBusMute( CaptureBusIndex, false );
 
 		CaptureEffect = new AudioEffectCapture();
 		AudioServer.AddBusEffect( CaptureBusIndex, CaptureEffect );
@@ -67,11 +67,11 @@ public unsafe partial class SteamVoiceChat : Node {
 
 	private void CaptureVoice() {
 		if ( AudioServer.IsBusMute( CaptureBusIndex ) ) {
-//			return;
+			return;
 		}
 
 		int available = CaptureEffect.GetFramesAvailable();
-		if ( available < 0 ) {
+		if ( available <= FRAME_SIZE ) {
 			return;
 		}
 
