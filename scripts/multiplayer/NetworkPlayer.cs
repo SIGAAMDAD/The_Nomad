@@ -234,13 +234,16 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		};
 	}
-	public override void Damage( in Entity source, float nAmount ) {
+	private void SendDamagePacket( Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ServerSync );
-		SyncObject.Write( SteamLobby.Instance.GetMemberIndex( OwnerId ) );
+//		SyncObject.Write( SteamLobby.Instance.GetMemberIndex( OwnerId ) );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		SyncObject.Write( (byte)PlayerDamageSource.Player );
 		SyncObject.Write( nAmount );
-		SyncObject.Sync();
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
+	}
+	public override void Damage( in Entity source, float nAmount ) {
+		SendDamagePacket( source, nAmount );
 	}
 	private void OnLegAnimationLooped() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
