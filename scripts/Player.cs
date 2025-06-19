@@ -499,7 +499,7 @@ public partial class Player : Entity {
 				GD.Print( "Received Damage Packet" );
 				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
 				case PlayerDamageSource.Player:
-					NetworkPlayer player = SteamLobby.Instance.GetPlayer( (CSteamID)Convert.ToUInt64( SyncObject.ReadString() ) );
+					NetworkPlayer player = SteamLobby.Instance.GetPlayer( (CSteamID)SyncObject.ReadUInt64() );
 					float damage = SyncObject.ReadFloat();
 					Damage( player, damage );
 					break;
@@ -1702,6 +1702,9 @@ public partial class Player : Entity {
 		base._Ready();
 
 		ScreenSize = DisplayServer.WindowGetSize();
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamManager.GetSteamID() );
+		}
 
 		LevelData.Instance.PlayerRespawn += Respawn;
 

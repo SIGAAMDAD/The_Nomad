@@ -27,7 +27,7 @@ public partial class MultiplayerData : LevelData {
 			}
 			NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
 			player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[i] );
-			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
+			player.SetOwnerId( SteamLobby.Instance.LobbyMembers[ i ] );
 			ModeData.SpawnPlayer( player );
 			ModeData.OnPlayerJoined( player );
 			Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
