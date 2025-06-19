@@ -54,14 +54,14 @@ namespace Multiplayer.Modes {
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 
-			RoundIndex++;
-
-			if ( RoundIndex >= MaxRounds ) {
-				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
-				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
-				//				EmitSignal( "ShowScoreboard" );
-				return;
-			}
+//			RoundIndex++;
+//
+//			if ( RoundIndex >= MaxRounds ) {
+//				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
+//				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
+//				//				EmitSignal( "ShowScoreboard" );
+//				return;
+//			}
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
@@ -105,8 +105,8 @@ namespace Multiplayer.Modes {
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
 					OtherPlayer = node;
-					node.GlobalPosition = Player1Spawn.GlobalPosition;
-					spawn = Player1Spawn;
+					node.GlobalPosition = Player2Spawn.GlobalPosition;
+					spawn = Player2Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
@@ -115,15 +115,16 @@ namespace Multiplayer.Modes {
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
 					OtherPlayer = node;
-					node.GlobalPosition = Player2Spawn.GlobalPosition;
-					spawn = Player2Spawn;
+					node.GlobalPosition = Player1Spawn.GlobalPosition;
+					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
-					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
-					spawn = Player2Spawn;
+					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
+					spawn = Player1Spawn;
 				}
 			}
 			player.Die += OnPlayerScore;
+			GD.Print( "Set player " + player + " to spawn " + spawn );
 			spawn.SetMeta( "Player", player );
 		}
 
