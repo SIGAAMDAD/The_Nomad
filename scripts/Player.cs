@@ -544,12 +544,6 @@ public partial class Player : Entity {
 		} else {
 			SyncObject.Write( false );
 		}
-
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
-		SyncObject.Write( (byte)LegAnimationState );
-		SyncObject.Write( (byte)TorsoAnimationState );
-
 		if ( CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
 			SyncObject.Write( false );
@@ -572,6 +566,11 @@ public partial class Player : Entity {
 				}
 			}
 		}
+
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
 
 		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
 		/*
