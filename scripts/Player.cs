@@ -523,7 +523,7 @@ public partial class Player : Entity {
 
 		if ( (uint)Flags != LastNetworkFlags ) {
 			SyncObject.Write( true );
-			SyncObject.WritePackedInt( (int)Flags );
+			SyncObject.Write( (uint)Flags );
 			LastNetworkFlags = (uint)Flags;
 		} else {
 			SyncObject.Write( false );
@@ -535,7 +535,7 @@ public partial class Player : Entity {
 			if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
 				SyncObject.Write( true );
 				SyncObject.Write( ResourceCache.HashItemID( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ) );
-				SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
+				SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
 			} else {
 				SyncObject.Write( false );
 			}

@@ -162,7 +162,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		CurrentSpeed = Player.MAX_SPEED;
 
 		if ( SyncObject.ReadBoolean() ) {
-			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadPackedInt();
+			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadUInt32();
 
 			bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
 			if ( isDashing && !DashChannel.Playing ) {
@@ -181,7 +181,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		if ( SyncObject.ReadBoolean() ) {
 			int weaponId = SyncObject.ReadInt32();
-			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadPackedInt();
+			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
 			CurrentWeapon = ResourceCache.NetworkCache[ weaponId ];
 		}
 
