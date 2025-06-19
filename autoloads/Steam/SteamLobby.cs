@@ -683,7 +683,8 @@ public partial class SteamLobby : Node {
 			PacketStream.Write( data, 0, length );
 			PacketStream.Position = 1; // skip type byte
 
-//			CSteamID userId = GetMemberAt( PacketReader.ReadInt32() );
+			//			CSteamID userId = GetMemberAt( PacketReader.ReadInt32() );
+			GD.Print( "Got server sync" );
 			if ( (CSteamID)senderId == ThisSteamID ) {
 				PlayerCache[ ThisSteamID.ToString() ].Receive( senderId, PacketReader );
 			}
