@@ -826,7 +826,7 @@ public partial class WeaponEntity : Node2D {
 	}
 
 	private void OnReloadTimeTimeout() {
-		if ( ResourceCache.Initialized ) {
+		if ( ResourceCache.Initialized && WeaponTimer.IsConnected( "timeout", Callable.From( OnReloadTimeTimeout ) ) ) {
 			WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
 		}
 
