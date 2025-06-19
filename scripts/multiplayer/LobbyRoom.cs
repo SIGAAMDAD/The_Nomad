@@ -232,7 +232,6 @@ public partial class LobbyRoom : Control {
 
 		GetTree().CurrentScene = this;
 
-		GetNode<CanvasLayer>( "/root/SteamVoiceChat" ).Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
