@@ -328,6 +328,18 @@ public partial class SteamLobby : Node {
 		SteamMatchmaking.JoinLobby( lobbyId );
 	}
 
+	public int GetMemberIndex( CSteamID memberId ) {
+		for ( int i = 0; i < LobbyMemberCount; i++ ) {
+			if ( LobbyMembers[ i ] == memberId ) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public CSteamID GetMemberAt( int nIndex ) {
+		return LobbyMembers[ nIndex ];
+	}
+
 	public void LeaveLobby() {
 		if ( !LobbyId.IsValid() ) {
 			return;
