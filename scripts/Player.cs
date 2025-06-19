@@ -235,7 +235,7 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1024 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 2048 );
 
 	private TileMapFloor Floor;
 
