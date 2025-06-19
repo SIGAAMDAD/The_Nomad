@@ -533,7 +533,6 @@ public class ResourceCache {
 
 		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
 
-
 		SceneLoadThread?.Join();
 
 		for ( int i = 0; i < WorkerThreads.Length; i++ ) {

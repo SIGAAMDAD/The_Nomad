@@ -89,7 +89,7 @@ public partial class Player : Entity {
 	private uint LastNetworkFlags = 0;
 	private float LastNetworkBloodAmount = 0.0f;
 	private WeaponEntity.Properties LastNetworkUseMode = WeaponEntity.Properties.None;
-	private ulong LastNetworkWeaponRID = 0;
+	private string LastNetworkWeaponID = "";
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -544,26 +544,25 @@ public partial class Player : Entity {
 		} else {
 			SyncObject.Write( false );
 		}
+
 		if ( CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
 			SyncObject.Write( false );
 		} else {
 			WeaponEntity weapon = WeaponSlots[ CurrentWeapon ].GetWeapon();
-			if ( weapon == null ) {
-				SyncObject.Write( false );
-				SyncObject.Write( false );
+			if ( LastNetworkWeaponID != (string)weapon.Data.Get( "id" ) ) {
+				SyncObject.Write( true );
+				SyncObject.Write( (string)weapon.Data.Get( "id" ) );
+				LastNetworkWeaponID = (string)weapon.Data.Get( "id" );
 			} else {
-				ulong RID = weapon.Data.GetRid().Id;
-				if ( RID != LastNetworkWeaponRID ) {
-					SyncObject.Write( true );
-					SyncObject.Write( (string)weapon.Data.Get( "id" ) );
-					LastNetworkWeaponRID = RID;
-				}
-				if ( weapon.LastUsedMode != LastNetworkUseMode ) {
-					SyncObject.Write( true );
-					SyncObject.Write( (uint)weapon.LastUsedMode );
-					LastNetworkUseMode = weapon.LastUsedMode;
-				}
+				SyncObject.Write( false );
+			}
+			if ( LastNetworkUseMode != weapon.LastUsedMode ) {
+				SyncObject.Write( true );
+				SyncObject.Write( (uint)weapon.LastUsedMode );
+				LastNetworkUseMode = weapon.LastUsedMode;
+			} else {
+				SyncObject.Write( false );
 			}
 		}
 
