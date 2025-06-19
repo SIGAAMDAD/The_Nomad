@@ -807,7 +807,7 @@ public partial class WeaponEntity : Node2D {
 			return UseBladed();
 		}
 
-		NetworkSync( held );
+///		NetworkSync( held );
 
 		return 0.0f;
 	}
