@@ -93,6 +93,7 @@ namespace Multiplayer.Modes {
 			Node2D spawn = null;
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
+					OtherPlayer = node;
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
 					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
@@ -102,6 +103,7 @@ namespace Multiplayer.Modes {
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
+					OtherPlayer = node;
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
 					spawn = Player2Spawn;
 				} else if ( player is Player owner && owner != null ) {
