@@ -55,6 +55,18 @@ public partial class SteamLobby : Node {
 		}
 	};
 
+	public readonly struct PlayerNetworkNode {
+		public readonly Node Node;
+		public readonly Action Send;
+		public readonly Action<ulong, System.IO.BinaryReader> Receive;
+
+		public PlayerNetworkNode( Node node, Action send, Action<ulong, System.IO.BinaryReader> receive ) {
+			Node = node;
+			Send = send;
+			Receive = receive;
+		}
+	};
+
 	private class BufferPool {
 		private readonly ConcurrentBag<byte[]> Pool = new ConcurrentBag<byte[]>();
 		private readonly int BufferSize;
@@ -200,7 +212,7 @@ public partial class SteamLobby : Node {
 	private static readonly float VOTE_KICK_COOLDOWN = 300.0f;
 
 	private Dictionary<int, NetworkNode> NodeCache = new Dictionary<int, NetworkNode>();
-	private Dictionary<string, NetworkNode> PlayerCache = new Dictionary<string, NetworkNode>();
+	private Dictionary<string, PlayerNetworkNode> PlayerCache = new Dictionary<string, PlayerNetworkNode>();
 	private HashSet<NetworkNode> PlayerList = new HashSet<NetworkNode>( MAX_LOBBY_MEMBERS );
 
 	private BufferPool Pool = new BufferPool();
@@ -656,16 +668,16 @@ public partial class SteamLobby : Node {
 			PacketStream.Write( data, 0, length );
 			PacketStream.Position = 1; // skip type byte
 
-			if ( !PlayerCache.TryGetValue( senderId.ToString(), out NetworkNode node ) ) {
+			if ( !PlayerCache.TryGetValue( senderId.ToString(), out PlayerNetworkNode node ) ) {
 				return;
 			}
-			node.Receive( PacketReader );
+			node.Receive( senderId, PacketReader );
 		}
 		finally {
 			Pool.Return( data );
 		}
 	}
-	private void ProcessServerSync( int length, byte[] data ) {
+	private void ProcessServerSync( ulong senderId, int length, byte[] data ) {
 		try {
 			PacketStream.SetLength( 0 );
 			PacketStream.Write( data, 0, length );
@@ -673,7 +685,7 @@ public partial class SteamLobby : Node {
 
 			CSteamID userId = GetMemberAt( PacketReader.ReadInt32() );
 			if ( userId == ThisSteamID ) {
-				PlayerCache[ ThisSteamID.ToString() ].Receive( PacketReader );
+				PlayerCache[ ThisSteamID.ToString() ].Receive( senderId, PacketReader );
 			}
 		}
 		finally {
@@ -965,7 +977,7 @@ public partial class SteamLobby : Node {
 		return PlayerCache[ userId.ToString() ].Node as NetworkPlayer;
 	}
 
-	public void AddPlayer( CSteamID userId, NetworkNode callbacks ) {
+	public void AddPlayer( CSteamID userId, PlayerNetworkNode callbacks ) {
 		Console.PrintLine( $"Added player with hash {userId} to network sync cache." );
 		PlayerCache.TryAdd( userId.ToString(), callbacks );
 	}

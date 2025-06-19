@@ -490,17 +490,16 @@ public partial class Player : Entity {
 	}
 	#endregion
 
-	private void ReceivePacket( System.IO.BinaryReader reader ) {
+	private void ReceivePacket( ulong senderId, System.IO.BinaryReader reader ) {
 		SyncObject.BeginRead( reader );
 
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-				GD.Print( "Received Damage Packet" );
 				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
 				case PlayerDamageSource.Player:
 					float damage = SyncObject.ReadFloat();
-					Damage( null, damage );
+					Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
 					break;
 				case PlayerDamageSource.NPC:
 					break;
@@ -1862,7 +1861,7 @@ public partial class Player : Entity {
 
 		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
-				new SteamLobby.NetworkNode( this, SendPacket, ReceivePacket ) );
+				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
 		}
 
 		ProcessMode = ProcessModeEnum.Pausable;
