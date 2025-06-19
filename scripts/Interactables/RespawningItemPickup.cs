@@ -6,6 +6,8 @@ public partial class RespawningItemPickup : ItemPickup {
 
 	private Timer RespawnTimer;
 
+	private NetworkSyncObject SyncObject;
+
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		// TODO: auto-pickup toggle?
 		if ( body is Player player && player != null ) {
@@ -40,12 +42,33 @@ public partial class RespawningItemPickup : ItemPickup {
 				InteractArea.SetDeferred( "disabled", true );
 				RespawnTimer.Start();
 			}
+
+			ServerSync();
 		}
 	}
 
 	private void OnRespawnTimerTimeout() {
 		Icon.Show();
 		InteractArea.SetDeferred( "disabled", false );
+	}
+
+	private void ServerSync() {
+		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+		SyncObject.Write( GetPath().GetHashCode() );
+		SyncObject.Write( Icon.Visible );
+		SyncObject.ServerSync();
+	}
+	private void ClientSync( System.IO.BinaryReader packet ) {
+		SyncObject.BeginRead( packet );
+
+		if ( SyncObject.ReadBoolean() ) {
+			Icon.Show();
+			InteractArea.SetDeferred( "disabled", false );
+		} else {
+			Icon.Hide();
+			InteractArea.SetDeferred( "disabled", true );
+			RespawnTimer.Start();
+		}
 	}
 
 	public override void _Ready() {
@@ -63,5 +86,10 @@ public partial class RespawningItemPickup : ItemPickup {
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, ServerSync, ClientSync ) );
+			SyncObject = new NetworkSyncObject( 24 );
+		}
 	}
 };

@@ -9,6 +9,7 @@ namespace Multiplayer.PlayerData {
 		public int Kills = 0;
 		public int Deaths = 0;
 		public float HillTime = 0.0f;
+		public int Score = 0;
 
 		public MultiplayerMetadata( CSteamID Id ) {
 			this.Id = Id;

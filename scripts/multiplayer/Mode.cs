@@ -9,7 +9,7 @@ namespace Multiplayer {
 			TeamBrawl,
 			CaptureTheFlag,
 			KingOfTheHill,
-	
+
 			// merc modes
 			Duel,
 			Blitz,
@@ -46,6 +46,7 @@ namespace Multiplayer {
 		}
 		public virtual void SpawnPlayer( Renown.Entity player ) {
 		}
+		public virtual bool HasTeams() => false;
 
 		public GameMode GetMode() => Type;
 		public void SetMode( GameMode mode ) => Type = mode;

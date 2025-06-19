@@ -1,16 +1,10 @@
 using Godot;
-using System;
 
 public partial class Spawner : Node2D {
 	[Export]
-	public Timer SpawnTime;
-	[Export]
-	public Resource Item;
+	private Timer SpawnTime;
 
-	private void OnSpawnTimeTimeout() {
-	}
-
-	public override void _Ready() {
-		SpawnTime.Connect( "timeout", Callable.From( OnSpawnTimeTimeout ) );
-	}
+	public void Reset() => SpawnTime.Stop();
+	public bool IsUsed() => SpawnTime.TimeLeft > 0.0f;
+	public void Use() => SpawnTime.Start();
 }

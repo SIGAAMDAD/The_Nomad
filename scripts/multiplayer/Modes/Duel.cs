@@ -26,6 +26,12 @@ namespace Multiplayer.Modes {
 
 			ScoreBoard.Hide();
 		}
+		private void SendSpawnCommand( Node2D spawn ) {
+			SyncObject.Write( (byte)SteamLobby.MessageType.ServerSync );
+			SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( OtherPlayer.MultiplayerData.Id ) );
+			SyncObject.Write( (byte)PlayerUpdateType.SetSpawn );
+			SyncObject.Write( spawn.GlobalPosition );
+		}
 		public void OnRoundEnd() {
 			if ( ThisPlayer == null || OtherPlayer == null ) {
 				return;
@@ -34,14 +40,17 @@ namespace Multiplayer.Modes {
 			GD.Print( "Beginning new dueling round..." );
 
 			ThisPlayer?.BlockInput( true );
-			
+
+			Node2D otherSpawn = null;
 			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
 				Player1Spawn.SetMeta( "Player", OtherPlayer );
 				Player2Spawn.SetMeta( "Player", ThisPlayer );
+				otherSpawn = Player1Spawn;
 				ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
 			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == ThisPlayer ) {
 				Player2Spawn.SetMeta( "Player", OtherPlayer );
 				Player1Spawn.SetMeta( "Player", ThisPlayer );
+				otherSpawn = Player2Spawn;
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 
@@ -62,6 +71,8 @@ namespace Multiplayer.Modes {
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
+
+			SendSpawnCommand( otherSpawn );
 		}
 
 		private void OnPlayerScore( Entity attacker, Entity target ) {

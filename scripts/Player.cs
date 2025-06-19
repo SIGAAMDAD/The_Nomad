@@ -500,18 +500,21 @@ public partial class Player : Entity {
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
-				case PlayerDamageSource.Player:
-					float damage = SyncObject.ReadFloat();
-					Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
-					break;
-				case PlayerDamageSource.NPC:
-					break;
-				case PlayerDamageSource.Environment:
-					break;
-				};
+			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
+			case PlayerDamageSource.Player:
+				float damage = SyncObject.ReadFloat();
+				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
 				break;
-			}
+			case PlayerDamageSource.NPC:
+				break;
+			case PlayerDamageSource.Environment:
+				break;
+			};
+			break; }
+		case PlayerUpdateType.SetSpawn:
+			// only ever called in team modes
+			GlobalPosition = SyncObject.ReadVector2();
+			break;
 		case PlayerUpdateType.Count:
 		default:
 			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
