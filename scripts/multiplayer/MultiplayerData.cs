@@ -50,7 +50,7 @@ public partial class MultiplayerData : LevelData {
 		
 		NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
 		player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( userId );
-		player.Call( "SetOwnerId", (ulong)userId );
+		player.SetOwnerId( userId );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
 
@@ -124,9 +124,9 @@ public partial class MultiplayerData : LevelData {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[ i ] ) || SteamLobby.Instance.LobbyMembers[ i ] == SteamUser.GetSteamID() ) {
 				continue;
 			}
-			Renown.Entity player = PlayerScene.Instantiate<NetworkPlayer>();
-			( player as NetworkPlayer ).MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[ i ] );
-			player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
+			NetworkPlayer player = PlayerScene.Instantiate<NetworkPlayer>();
+			player.MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamLobby.Instance.LobbyMembers[ i ] );
+			player.SetOwnerId( SteamLobby.Instance.LobbyMembers[ i ] );
 			ModeData.OnPlayerJoined( player );
 			ModeData.SpawnPlayer( player );
 			Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );

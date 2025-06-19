@@ -369,7 +369,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			break; }
 		};
 	}
-	public void SetOwnerId( ulong steamId ) {
-		OwnerId = (CSteamID)steamId;
+	public void SetOwnerId( CSteamID steamId ) {
+		OwnerId = steamId;
 	}
 };

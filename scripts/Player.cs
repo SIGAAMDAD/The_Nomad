@@ -452,7 +452,9 @@ public partial class Player : Entity {
 		CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
 	}
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public TileMapFloor GetTileMapFloor() => Floor;
 
 	public void ThoughtBubble( string text ) {

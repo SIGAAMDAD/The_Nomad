@@ -566,6 +566,7 @@ public partial class SteamLobby : Node {
 	}
 	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable, int channel = 0 ) {
 		if ( !Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
+			Console.PrintError( string.Format( "SendTargetPacket: not a valid connection id {0}", target ) );
 			return;
 		}
 
