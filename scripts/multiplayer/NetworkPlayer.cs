@@ -236,7 +236,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		GD.Print( "Sending Damage Packet" );
-		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( (byte)SteamLobby.MessageType.ServerSync );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.Player );

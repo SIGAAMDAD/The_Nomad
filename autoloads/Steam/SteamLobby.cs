@@ -7,6 +7,7 @@ using Multiplayer;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -18,7 +19,8 @@ public partial class SteamLobby : Node {
 	public enum MessageType : byte {
 		Handshake,
 		ServerCommand,
-		ClientData,
+		ClientData, // client to server
+		ServerSync, // server to client
 		GameData,
 
 		ChatMessage_TeamOnly,
@@ -615,16 +617,27 @@ public partial class SteamLobby : Node {
 	}
 
 	private void ProcessClientData( ulong senderId, int length, byte[] data ) {
-		PacketStream.SetLength( 0 );
-		PacketStream.Write( data, 0, length );
-		PacketStream.Position = 1; // skip type byte
-
-		if ( !PlayerCache.TryGetValue( senderId.ToString(), out NetworkNode node ) ) {
-			return;
-		}
-
 		try {
+			PacketStream.SetLength( 0 );
+			PacketStream.Write( data, 0, length );
+			PacketStream.Position = 1; // skip type byte
+
+			if ( !PlayerCache.TryGetValue( senderId.ToString(), out NetworkNode node ) ) {
+				return;
+			}
 			node.Receive( PacketReader );
+		}
+		finally {
+			Pool.Return( data );
+		}
+	}
+	private void ProcessServerSync( int length, byte[] data ) {
+		try {
+			PacketStream.SetLength( 0 );
+			PacketStream.Write( data, 0, length );
+			PacketStream.Position = 1; // skip type byte
+
+			PlayerCache[ ThisSteamID.ToString() ].Receive( PacketReader );
 		}
 		finally {
 			Pool.Return( data );
@@ -665,6 +678,9 @@ public partial class SteamLobby : Node {
 		switch ( msg.Type ) {
 		case MessageType.ClientData:
 			CallDeferred( "ProcessClientData", (ulong)msg.Sender, msg.Length, msg.Data );
+			break;
+		case MessageType.ServerSync:
+			CallDeferred( "ProcessServerSync", msg.Length, msg.Data );
 			break;
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
