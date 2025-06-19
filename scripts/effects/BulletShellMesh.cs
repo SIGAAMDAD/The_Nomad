@@ -20,9 +20,9 @@ public partial class BulletShellMesh : Node {
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
 		SyncObject.BeginRead( packet );
 
-		int ammoId = SyncObject.ReadInt32();
+		ulong ammoRID = SyncObject.ReadUInt64();
 
-		if ( !ResourceCache.NetworkCache.TryGetValue( ammoId, out Resource ammo ) ) {
+		if ( !ResourceCache.NetworkCache.TryGetValue( ammoRID, out Resource ammo ) ) {
 			return;
 		}
 

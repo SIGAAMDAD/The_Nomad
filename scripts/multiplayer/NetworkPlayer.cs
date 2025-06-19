@@ -118,7 +118,8 @@ public partial class NetworkPlayer : Renown.Entity {
 		if ( !SyncObject.ReadBoolean() ) {
 			return;
 		}
-		CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
+		CurrentWeapon = ResourceCache.NetworkCache[ SyncObject.ReadUInt64() ];
+//		CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
 	}
 	private void CheckArmAngleChange() {
 		if ( !SyncObject.ReadBoolean() ) {

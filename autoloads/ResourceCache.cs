@@ -114,6 +114,12 @@ public class ResourceCache {
 	public static Resource KeyboardInputMappings { get; private set; }
 	public static Resource GamepadInputMappings { get; private set; }
 
+	/// <summary>
+	/// a cache designed specifically for the purposes of reducing bandwidth usage by sending over
+	/// compressed integer hashes for resource usage
+	/// </summary>
+	public static Dictionary<ulong, Resource> NetworkCache = null;
+
 	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 256 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 256 );
 	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 256 );
@@ -124,7 +130,7 @@ public class ResourceCache {
 	public static bool Initialized = false;
 
 	// from https://stackoverflow.com/questions/5154970/how-do-i-create-a-hashcode-in-net-c-for-a-string-that-is-safe-to-store-in-a
-	public static int HashItemID( string str ) {
+	private static int HashItemID( string str ) {
 		unchecked {
 			int hash1 = 5381;
 			int hash2 = hash1;
@@ -535,6 +541,16 @@ public class ResourceCache {
 
 
 		SceneLoadThread?.Join();
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			Godot.Collections.Array<Resource> items = (Godot.Collections.Array<Resource>)ItemDatabase.Get( "items" );
+			NetworkCache = new Dictionary<ulong, Resource>( items.Count );
+			for ( int i = 0; i < items.Count; i++ ) {
+				string id = (string)items[ i ].Get( "id" );
+				ulong hash = items[ i ].GetRid().Id;
+				NetworkCache.Add( hash, items[ i ] );
+			}
+		}
 
 		for ( int i = 0; i < WorkerThreads.Length; i++ ) {
 			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ i ] );
