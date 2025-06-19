@@ -1187,4 +1187,3 @@ public partial class SteamLobby : Node {
 		}
 	}
 };
-*/
