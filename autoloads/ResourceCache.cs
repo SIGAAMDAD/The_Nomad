@@ -130,7 +130,7 @@ public class ResourceCache {
 	public static bool Initialized = false;
 
 	// from https://stackoverflow.com/questions/5154970/how-do-i-create-a-hashcode-in-net-c-for-a-string-that-is-safe-to-store-in-a
-	private static int HashItemID( string str ) {
+	public static int HashItemID( string str ) {
 		unchecked {
 			int hash1 = 5381;
 			int hash2 = hash1;

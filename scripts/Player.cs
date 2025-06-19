@@ -534,7 +534,7 @@ public partial class Player : Entity {
 		} else {
 			if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
 				SyncObject.Write( true );
-				SyncObject.Write( ( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ).GetHashCode() );
+				SyncObject.Write( ResourceCache.HashItemID( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ) );
 				SyncObject.WritePackedInt( (int)WeaponSlots[ CurrentWeapon ].GetMode() );
 			} else {
 				SyncObject.Write( false );
