@@ -119,8 +119,8 @@ namespace Multiplayer.Modes {
 					spawn = Player1Spawn;
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
-					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
-					spawn = Player1Spawn;
+					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
+					spawn = Player2Spawn;
 				}
 			}
 			player.Die += OnPlayerScore;
