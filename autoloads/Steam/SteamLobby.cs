@@ -701,7 +701,7 @@ public partial class SteamLobby : Node {
 
 		try {
 			ServerCommandType nCommandType = (ServerCommandType)PacketReader.ReadByte();
-			Console.PrintLine( string.Format( "Received ServerCommand {0} from user {0}", senderId, nCommandType ) );
+			Console.PrintLine( string.Format( "Received ServerCommand {0} from user {1}", nCommandType, senderId ) );
 			ServerCommandManager.ExecuteCommand( (CSteamID)senderId, nCommandType );
 		}
 		finally {

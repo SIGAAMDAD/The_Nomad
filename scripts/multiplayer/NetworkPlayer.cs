@@ -239,7 +239,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.Player );
-			SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( player.MultiplayerData.Id ) );
+			SyncObject.Write( player.MultiplayerData.Id.ToString() );
 			GD.Print( "Sending Damage Packet from " + player.MultiplayerData.Id );
 		} else if ( source is Thinker thinker && thinker != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.NPC );
