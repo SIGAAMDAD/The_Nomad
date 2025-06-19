@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bpfc5v0d1nj7y"]
 
-[ext_resource type="Texture2D" uid="uid://b6bivg4sb3kjp" path="res://textures/campfire.jpg" id="1_json8"]
+[ext_resource type="Texture2D" uid="uid://dcsf2b8w6qig8" path="res://textures/campfire.jpg" id="1_json8"]
 [ext_resource type="Script" uid="uid://co23b5hn3wg44" path="res://scripts/menus/ModsMenu.cs" id="1_ovwk4"]
 [ext_resource type="AudioStream" uid="uid://pr48quw1q4i8" path="res://music/ui/campfire.ogg" id="3_tpc5b"]
 

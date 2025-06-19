@@ -296,22 +296,4 @@ public partial class LobbyRoom : Control {
 
 		Instance = this;
 	}
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
-			HBoxContainer container = PlayerList.GetChild<HBoxContainer>( i );
-			CSteamID lobbyMember = SteamMatchmaking.GetLobbyMemberByIndex( SteamLobby.Instance.GetLobbyID(), i );
-
-			{
-				container.GetChild<TextureRect>( 0 ).Material.Set(
-					"shader_parameter/active",
-					SteamVoiceChat.Instance.IsVoiceActive( lobbyMember )
-				);
-				container.GetChild<ProgressBar>( 1 ).Value = SteamVoiceChat.Instance.GetVoiceActivity(
-					lobbyMember
-				);
-			}
-		}
-	}
 };

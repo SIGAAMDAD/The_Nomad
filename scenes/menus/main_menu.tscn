@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ba1debi5qxy5p"]
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
-[ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
+[ext_resource type="Texture2D" uid="uid://b6o7fqufmwq10" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3

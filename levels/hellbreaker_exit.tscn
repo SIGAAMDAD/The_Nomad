@@ -1,9 +1,9 @@
 [gd_scene load_steps=33 format=3 uid="uid://dp6wsnsw5y2nh"]
 
 [ext_resource type="Script" uid="uid://blyv8wx5m4nlt" path="res://scripts/levels/HellbreakerExit.cs" id="1_2gepy"]
-[ext_resource type="Texture2D" uid="uid://1sh5fx0et1uv" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="2_catxn"]
+[ext_resource type="Texture2D" uid="uid://da8keknq2laxc" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="2_catxn"]
 [ext_resource type="Texture2D" uid="uid://cjvgtfs3fg4v8" path="res://textures/env/brick_floor.dds" id="2_sb831"]
-[ext_resource type="Texture2D" uid="uid://dxue0nobfcw65" path="res://textures/env/hellbreaker/Obelisk.png" id="3_tslpf"]
+[ext_resource type="Texture2D" uid="uid://dt7d7uidsxcat" path="res://textures/env/hellbreaker/Obelisk.png" id="3_tslpf"]
 [ext_resource type="PackedScene" uid="uid://cf4olomtbkg5o" path="res://scenes/scenery/brazier.tscn" id="6_3qvcn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vo0l8"]

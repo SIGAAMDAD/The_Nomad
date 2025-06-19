@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://xl67ba23dfln"]
 
-[ext_resource type="Texture2D" uid="uid://bbdw7ar7633qb" path="res://textures/tilesets/furniture/three_candle.png" id="1_2to4m"]
+[ext_resource type="Texture2D" uid="uid://ddqnsmv7jslk1" path="res://textures/tilesets/furniture/three_candle.png" id="1_2to4m"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_i781o"]
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="3_63q3g"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="3_63q3g"]
 
 [node name="Node2D" type="Node2D"]
 

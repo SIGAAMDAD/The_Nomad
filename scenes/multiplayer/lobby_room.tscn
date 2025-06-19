@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bqykmjcgqyyi0" path="res://scripts/multiplayer/LobbyRoom.cs" id="1_c6vvr"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_c6vvr"]
-[ext_resource type="Texture2D" uid="uid://d18f0snn8v5c" path="res://textures/voice_active_icon.png" id="3_1fsi7"]
+[ext_resource type="Texture2D" uid="uid://cl1nnyh35wgfq" path="res://textures/voice_active_icon.png" id="3_1fsi7"]
 [ext_resource type="Shader" uid="uid://du76i4bwa6uvp" path="res://shaders/voice_icon_active.gdshader" id="3_p6rb3"]
 
 [sub_resource type="Gradient" id="Gradient_neljt"]
