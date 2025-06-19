@@ -235,7 +235,7 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 2048 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1024 );
 
 	private TileMapFloor Floor;
 
@@ -529,6 +529,27 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
+		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
+			SyncObject.Write( true );
+			LastNetworkAimAngle = AimLine.GlobalRotation;
+			SyncObject.Write( LastNetworkAimAngle );
+		} else {
+			SyncObject.Write( false );
+		}
+
+		if ( LastNetworkBloodAmount != BloodAmount ) {
+			SyncObject.Write( true );
+			SyncObject.Write( BloodAmount );
+			LastNetworkBloodAmount = BloodAmount;
+		} else {
+			SyncObject.Write( false );
+		}
+
+		SyncObject.Write( (byte)LeftArmAnimationState );
+		SyncObject.Write( (byte)RightArmAnimationState );
+		SyncObject.Write( (byte)LegAnimationState );
+		SyncObject.Write( (byte)TorsoAnimationState );
+
 		if ( CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
 			SyncObject.Write( false );
@@ -552,28 +573,7 @@ public partial class Player : Entity {
 			}
 		}
 
-		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
-			SyncObject.Write( true );
-			LastNetworkAimAngle = AimLine.GlobalRotation;
-			SyncObject.Write( LastNetworkAimAngle );
-		} else {
-			SyncObject.Write( false );
-		}
-
-		if ( LastNetworkBloodAmount != BloodAmount ) {
-			SyncObject.Write( true );
-			SyncObject.Write( BloodAmount );
-			LastNetworkBloodAmount = BloodAmount;
-		} else {
-			SyncObject.Write( false );
-		}
-
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
-		SyncObject.Write( (byte)LegAnimationState );
-		SyncObject.Write( (byte)TorsoAnimationState );
-
-		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
 		/*
 
 		SyncObject.Write( TorsoAnimation.FlipH );

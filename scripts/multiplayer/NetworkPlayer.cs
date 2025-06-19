@@ -133,12 +133,6 @@ public partial class NetworkPlayer : Renown.Entity {
 		}
 
 		if ( SyncObject.ReadBoolean() ) {
-			CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
-		}
-		if ( SyncObject.ReadBoolean() ) {
-			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
-		}
-		if ( SyncObject.ReadBoolean() ) {
 			float angle = SyncObject.ReadFloat();
 			LeftArmAnimation.SetDeferred( "global_rotation", angle );
 			RightArmAnimation.SetDeferred( "global_rotation", angle );
@@ -232,6 +226,13 @@ public partial class NetworkPlayer : Renown.Entity {
 			RightArmAnimation.CallDeferred( "hide" );
 			break;
 		};
+		
+		if ( SyncObject.ReadBoolean() ) {
+			CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
+		}
+		if ( SyncObject.ReadBoolean() ) {
+			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
+		}
 	}
 	public override void Damage( in Entity source, float nAmount ) {
 		GD.Print( "Sending Damage Packet" );
