@@ -236,7 +236,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	}
 	private void SendDamagePacket( Entity source, float nAmount ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ServerSync );
-//		SyncObject.Write( SteamLobby.Instance.GetMemberIndex( OwnerId ) );
+		SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( OwnerId ) );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		SyncObject.Write( (byte)PlayerDamageSource.Player );
 		SyncObject.Write( nAmount );
