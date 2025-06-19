@@ -677,6 +677,7 @@ grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="EmoteMenu" type="Control" parent="MainHUD"]
+process_mode = 4
 visible = false
 layout_mode = 1
 anchors_preset = 15
