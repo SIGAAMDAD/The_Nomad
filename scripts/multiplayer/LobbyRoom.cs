@@ -82,7 +82,6 @@ public partial class LobbyRoom : Control {
 		UIChannel.SetDeferred( "stream", UISfxManager.BeginGame );
 		UIChannel.CallDeferred( "play" );
 
-		GetNode<CanvasLayer>( "/root/SteamVoiceChat" ).Show();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
 
 		string modeName;
