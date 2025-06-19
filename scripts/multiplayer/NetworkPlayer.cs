@@ -277,6 +277,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		};
 	}
 	public override void Damage( in Entity source, float nAmount ) {
+		GD.Print( "Sending Damage Packet" );
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
@@ -333,7 +334,6 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		float effectiveFactor = 1.0f - Mathf.Pow( 1.0f - 0.06f, (float)delta * 60.0f );
 		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, effectiveFactor );
-//		GlobalPosition = GlobalPosition * ( 1.0f - 0.08f ) + NetworkPosition * 0.08f;
 	}
 
 	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {
@@ -394,9 +394,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( arm == RightArmAnimation ) {
 				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
 			}
-			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
-			arm.CallDeferred( "play", "reload" );
-			arm.CallDeferred( "show" );
+			arm.SpriteFrames = ResourceCache.GetSpriteFrames( path );
+			arm.Play( "reload" );
+			arm.Show();
 			break; }
 		case PlayerAnimationState.WeaponEmpty: {
 			string path = "";

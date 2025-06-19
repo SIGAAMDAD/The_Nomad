@@ -56,7 +56,7 @@ public partial class SteamLobby : Node {
 		private readonly int BufferSize;
 		private readonly int MaxBuffers;
 
-		public BufferPool( int nBufferSize = 24 * 1024, int nMaxBuffers = 128 ) {
+		public BufferPool( int nBufferSize = 1024, int nMaxBuffers = 128 ) {
 			BufferSize = nBufferSize;
 			MaxBuffers = nMaxBuffers;
 		}
@@ -763,7 +763,26 @@ public partial class SteamLobby : Node {
 				try {
 					SteamNetworkingMessage_t message = Marshal.PtrToStructure<SteamNetworkingMessage_t>( messages[ i ] );
 					int bytesToCopy = message.m_cbSize;
-					Marshal.Copy( message.m_pData, tempBuffer, 0, bytesToCopy );
+
+					if ( System.Numerics.Vector.IsHardwareAccelerated && bytesToCopy >= System.Numerics.Vector<byte>.Count ) {
+						int vectorSize = System.Numerics.Vector<byte>.Count;
+						int offset = 0;
+						unsafe {
+							byte* src = (byte*)message.m_pData;
+							fixed ( byte* dst = tempBuffer ) {
+								while ( offset <= bytesToCopy - vectorSize ) {
+									System.Numerics.Vector<byte> vector = System.Numerics.Vector.Load( src + offset );
+									System.Numerics.Vector.Store( vector, dst + offset );
+									offset += vectorSize;
+								}
+							}
+							for ( int j = offset; j < bytesToCopy; j++ ) {
+								tempBuffer[ j ] = src[ j ];
+							}
+						}
+					} else {
+						Marshal.Copy( message.m_pData, tempBuffer, 0, bytesToCopy );
+					}
 					ProcessIncomingMessage( tempBuffer, bytesToCopy, message.m_identityPeer.GetSteamID() );
 				}
 				finally {

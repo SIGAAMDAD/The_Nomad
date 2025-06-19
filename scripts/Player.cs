@@ -494,16 +494,17 @@ public partial class Player : Entity {
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
-			case PlayerDamageSource.Player:
-				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)SyncObject.ReadUInt64() ), SyncObject.ReadFloat() );
+				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
+				case PlayerDamageSource.Player:
+					Damage( SteamLobby.Instance.GetPlayer( (CSteamID)SyncObject.ReadUInt64() ), SyncObject.ReadFloat() );
+					break;
+				case PlayerDamageSource.NPC:
+					break;
+				case PlayerDamageSource.Environment:
+					break;
+				};
 				break;
-			case PlayerDamageSource.NPC:
-				break;
-			case PlayerDamageSource.Environment:
-				break;
-			};
-			break; }
+			}
 		case PlayerUpdateType.Count:
 		default:
 			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
