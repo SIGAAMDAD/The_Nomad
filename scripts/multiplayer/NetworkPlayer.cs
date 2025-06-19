@@ -95,7 +95,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	// TODO: find some way of sending values back to the client
 
-	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
 

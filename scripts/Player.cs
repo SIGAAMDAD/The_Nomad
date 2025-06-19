@@ -743,7 +743,7 @@ public partial class Player : Entity {
 		ArmLeft.Animations.Show();
 	}
 
-	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 		if ( channel == null ) {
 			AudioChannel.Stream = stream;
 			AudioChannel.Play();

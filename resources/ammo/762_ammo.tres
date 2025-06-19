@@ -25,4 +25,4 @@ properties = {
 "type": 0,
 "velocity": 500.0
 }
-categories = Array[ItemCategory]([ExtResource("1_lhqhs"), ExtResource("2_qnvb1")])
+categories = Array[ItemCategory]([ExtResource("2_qnvb1"), ExtResource("1_lhqhs")])

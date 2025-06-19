@@ -302,7 +302,7 @@ namespace Renown.Thinkers {
 			Location.PlayerExited += OnPlayerExitedArea;
 		}
 
-		public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			if ( channel == null ) {
 				AudioChannel.SetDeferred( "stream", stream );
 				AudioChannel.CallDeferred( "play" );

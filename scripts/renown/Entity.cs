@@ -127,7 +127,7 @@ namespace Renown {
 		public virtual void PickupWeapon( in WeaponEntity weapon ) {
 		}
 
-		public virtual void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
+		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			channel.Stream = stream;
 			channel.Play();
 		}
