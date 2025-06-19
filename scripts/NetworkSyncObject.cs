@@ -90,9 +90,9 @@ public class NetworkSyncObject {
 	public void WritePackedInt( int value ) => Writer.Write7BitEncodedInt( value );
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void Sync( CSteamID target ) {
+	public void Sync( CSteamID target, bool safe = false ) {
 		// send the packet
-		SteamLobby.Instance.SendTargetPacket( target, Packet, Constants.k_nSteamNetworkingSend_Reliable );
+		SteamLobby.Instance.SendTargetPacket( target, Packet, Constants.k_nSteamNetworkingSend_Reliable, safe );
 
 		// rewind
 		Stream.Seek( 0, SeekOrigin.Begin );

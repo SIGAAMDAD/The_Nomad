@@ -43,7 +43,7 @@ public enum PlayerDamageSource : byte {
 };
 
 public partial class NetworkPlayer : Renown.Entity {
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 24 );
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 128 );
 
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
@@ -239,7 +239,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.Player );
-			SyncObject.Write( (ulong)player.MultiplayerData.Id );
+			SyncObject.Write( player.MultiplayerData.Id.ToString() );
 			GD.Print( "Sending Damage Packet from " + player.MultiplayerData.Id );
 		} else if ( source is Thinker thinker && thinker != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.NPC );

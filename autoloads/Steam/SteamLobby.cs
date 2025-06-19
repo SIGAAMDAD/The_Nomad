@@ -8,6 +8,8 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
+using Moq;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -560,30 +562,50 @@ public partial class SteamLobby : Node {
 		lock ( BatchLock ) {
 			foreach ( var batch in Batches ) {
 				if ( batch.Value.Length > 0 ) {
-					SendTargetPacket( batch.Key, batch.Value.ToArray(), Constants.k_nSteamNetworkingSend_Unreliable );
+					SendTargetPacket( batch.Key, batch.Value.ToArray(), Constants.k_nSteamNetworkingSend_Unreliable, false, 0 );
 					batch.Value.SetLength( 0 );
 				}
 			}
 		}
 	}
-	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable, int channel = 0 ) {
+	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable, bool safe = false, int channel = 0 ) {
 		if ( !Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
 			Console.PrintError( string.Format( "SendTargetPacket: not a valid connection id {0}", target ) );
 			return;
 		}
 
-		unsafe {
-			byte[] buffer = SteamLobbySecurity.SecureOutgoingMessage( data, target );
-			fixed ( byte* pBuffer = buffer ) {
-				EResult res = SteamNetworkingSockets.SendMessageToConnection(
-					conn,
-					(IntPtr)pBuffer,
-					(uint)buffer.Length,
-					sendType,
-					out long _
-				);
-				if ( res != EResult.k_EResultOK ) {
-					Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
+		if ( safe ) {
+			byte[] tmp = SteamLobbySecurity.SecureOutgoingMessage( data, target );
+			IntPtr buffer = Marshal.AllocHGlobal( tmp.Length );
+			Marshal.Copy( tmp, 0, buffer, tmp.Length );
+
+			EResult res = SteamNetworkingSockets.SendMessageToConnection(
+				conn,
+				buffer,
+				(uint)tmp.Length,
+				sendType,
+				out long _
+			);
+
+			Marshal.FreeHGlobal( buffer );
+
+			if ( res != EResult.k_EResultOK ) {
+				Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
+			}
+		} else {
+			unsafe {
+				byte[] buffer = SteamLobbySecurity.SecureOutgoingMessage( data, target );
+				fixed ( byte* pBuffer = buffer ) {
+					EResult res = SteamNetworkingSockets.SendMessageToConnection(
+						conn,
+						(IntPtr)pBuffer,
+						(uint)buffer.Length,
+						sendType,
+						out long _
+					);
+					if ( res != EResult.k_EResultOK ) {
+						Console.PrintError( $"[STEAM] Error sending message to {target}: {res}" );
+					}
 				}
 			}
 		}
@@ -593,7 +615,7 @@ public partial class SteamLobby : Node {
 		lock ( ConnectionLock ) {
 			foreach ( var pair in Connections ) {
 				if ( pair.Key != ThisSteamID ) {
-					SendTargetPacket( pair.Key, data, nSendType, channel );
+					SendTargetPacket( pair.Key, data, nSendType, false, channel );
 				}
 			}
 		}
@@ -901,6 +923,7 @@ public partial class SteamLobby : Node {
 			if ( LobbyMembers[ i ] == ThisSteamID ) {
 				ThisSteamIDIndex = i;
 			}
+			Console.PrintLine( string.Format( "[STEAM] LobbyMember ID {0} at index {1}", LobbyMembers[ i ], i ) );
 		}
 	}
 
