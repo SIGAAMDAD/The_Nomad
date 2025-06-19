@@ -530,7 +530,6 @@ public class ResourceCache {
 			for ( int i = 0; i < items.Count; i++ ) {
 				string id = (string)items[i].Get( "id" );
 				int hash = id.GetHashCode();
-				Console.PrintLine( string.Format( "NetworkCache Item added with ID {0} and HashCode {1}", id, hash ) );
 				NetworkCache.Add( hash, items[i] );
 			}
 		}

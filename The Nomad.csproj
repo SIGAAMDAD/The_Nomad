@@ -4,6 +4,7 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>TheNomad</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseRandomizedStringHashAlgorithm>enabled=0</UseRandomizedStringHashAlgorithm>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.1" />
