@@ -6,9 +6,7 @@ using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
 using Renown.World;
-using SimdLinq;
 using System.Diagnostics;
-using System.Security.Cryptography;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -91,7 +89,7 @@ public partial class Player : Entity {
 	private uint LastNetworkFlags = 0;
 	private float LastNetworkBloodAmount = 0.0f;
 	private WeaponEntity.Properties LastNetworkUseMode = WeaponEntity.Properties.None;
-	private int LastNetworkWeaponId = 0;
+	private ulong LastNetworkWeaponRID = 0;
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -540,11 +538,11 @@ public partial class Player : Entity {
 				SyncObject.Write( false );
 				SyncObject.Write( false );
 			} else {
-				int hashCode = weapon.Data.Get( "id" ).GetHashCode();
-				if ( hashCode != LastNetworkWeaponId ) {
+				ulong RID = weapon.Data.GetRid().Id;
+				if ( RID != LastNetworkWeaponRID ) {
 					SyncObject.Write( true );
-					SyncObject.Write( (string)weapon.Data.Get( "id" ) );
-					LastNetworkWeaponId = hashCode;
+					SyncObject.Write( RID );
+					LastNetworkWeaponRID = RID;
 				}
 				if ( weapon.LastUsedMode != LastNetworkUseMode ) {
 					SyncObject.Write( true );

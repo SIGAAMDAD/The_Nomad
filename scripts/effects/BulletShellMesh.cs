@@ -13,7 +13,7 @@ public partial class BulletShellMesh : Node {
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
-		SyncObject.Write( ( (string)ammo.Get( "id" ) ).GetHashCode() );
+		SyncObject.Write( ammo.GetRid().Id );
 		SyncObject.Write( position );
 		SyncObject.Sync();
 	}
