@@ -15,6 +15,7 @@ bump_strength = 255.5
 noise = SubResource("FastNoiseLite_61ith")
 
 [resource]
+resource_local_to_scene = true
 shader = ExtResource("1_2vt0n")
 shader_parameter/noise = SubResource("NoiseTexture2D_ebwui")
 shader_parameter/blood_coef = 0.0

@@ -1887,9 +1887,10 @@ public partial class Player : Entity {
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
-		if ( AimRayCast.GetCollider() is GodotObject entity && entity.HasMeta( "Faction" ) && (Faction)entity.GetMeta( "Faction" ) != Faction ) {
+		GodotObject collision = AimRayCast.GetCollider();
+		if ( collision != null && collision.HasMeta( "Faction" ) && (Faction)collision.GetMeta( "Faction" ) != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
-		} else if ( AimRayCast.GetCollider() is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
+		} else if ( collision is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else {
 			AimLine.DefaultColor = AimingAtNull;

@@ -52,7 +52,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private Godot.Vector2 NetworkPosition;
 	private float CurrentSpeed = 0.0f;
 
-	private Resource Database;
+	private ShaderMaterial BloodShader;
+
 	private Resource CurrentWeapon;
 	private CSteamID OwnerId;
 	private int NodeHash;
@@ -98,7 +99,9 @@ public partial class NetworkPlayer : Renown.Entity {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
 
-	private void CheckFlipChange() {
+	public void Update( System.IO.BinaryReader packet ) {
+		SyncObject.BeginRead( packet );
+
 		bool flip = SyncObject.ReadBoolean();
 		if ( flip != LastFlipState ) {
 			TorsoAnimation.SetDeferred( "flip_h", flip );
@@ -107,28 +110,10 @@ public partial class NetworkPlayer : Renown.Entity {
 			RightArmAnimation.SetDeferred( "flip_v", flip );
 			LastFlipState = flip;
 		}
-	}
-	private void CheckWeaponModeChange() {
-		if ( !SyncObject.ReadBoolean() ) {
-			return;
-		}
-		WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
-	}
-	private void CheckWeaponChange() {
-		if ( !SyncObject.ReadBoolean() ) {
-			return;
-		}
-		CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
-	}
-	private void CheckArmAngleChange() {
-		if ( !SyncObject.ReadBoolean() ) {
-			return;
-		}
-		float angle = SyncObject.ReadFloat();
-		LeftArmAnimation.SetDeferred( "global_rotation", angle );
-		RightArmAnimation.SetDeferred( "global_rotation", angle );
-	}
-	private void CheckFlagsChange() {
+
+		NetworkPosition = SyncObject.ReadVector2();
+		CurrentSpeed = Player.MAX_SPEED;
+
 		if ( SyncObject.ReadBoolean() ) {
 			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadUInt32();
 
@@ -146,20 +131,21 @@ public partial class NetworkPlayer : Renown.Entity {
 				CurrentSpeed += 400;
 			}
 		}
-	}
 
-	public void Update( System.IO.BinaryReader packet ) {
-		SyncObject.BeginRead( packet );
-
-		CheckFlipChange();
-
-		NetworkPosition = SyncObject.ReadVector2();
-		CurrentSpeed = Player.MAX_SPEED;
-
-		CheckFlagsChange();
-		CheckWeaponChange();
-		CheckWeaponModeChange();
-		CheckArmAngleChange();
+		if ( SyncObject.ReadBoolean() ) {
+			CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
+		}
+		if ( SyncObject.ReadBoolean() ) {
+			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
+		}
+		if ( SyncObject.ReadBoolean() ) {
+			float angle = SyncObject.ReadFloat();
+			LeftArmAnimation.SetDeferred( "global_rotation", angle );
+			RightArmAnimation.SetDeferred( "global_rotation", angle );
+		}
+		if ( SyncObject.ReadBoolean() ) {
+			float bloodAmount = SyncObject.ReadFloat();
+		}
 
 		LeftArmAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
