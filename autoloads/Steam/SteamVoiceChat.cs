@@ -281,7 +281,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		}
 	}
 
-	private byte[] output = new byte[ 24 * 1024 ];
+	private byte[] output = new byte[ 24 * 1024 * 1024 ];
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		byte[] buffer = new byte[ data.Length - 1 ];
 		Buffer.BlockCopy( data, 1, buffer, 0, buffer.Length );
@@ -290,7 +290,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 			SteamUser.GetVoiceOptimalSampleRate() );
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
 			GD.Print( "DECODING!" );
-			for ( int i = 0; i < Math.Min( Playback.GetFramesAvailable() * 2, int.MaxValue ); i++ ) {
+			for ( int i = 0; i < Playback.GetFramesAvailable(); i++ ) {
 				int rawValue = output[ i ] | ( output[ i + 1 ] << 8 );
 				rawValue = ( rawValue + 32768 ) & 0xffff;
 				float amplitude = ( rawValue - 32768 ) / 32768.0f;
