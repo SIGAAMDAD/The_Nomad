@@ -28,7 +28,7 @@ using Godot;
 using Renown.World;
 
 public class ResourceCache {
-#region Mob Sound Effects
+	#region Mob Sound Effects
 	public static AudioStream[] TargetSpotted { get; private set; }
 	public static AudioStream[] HeavyDead { get; private set; }
 	public static AudioStream[] Ceasefire { get; private set; }
@@ -49,10 +49,10 @@ public class ResourceCache {
 	public static AudioStream SquadWiped { get; private set; }
 	public static AudioStream[] NeedBackup { get; private set; }
 	public static AudioStream Unstoppable { get; private set; }
-	
+
 	public static AudioStream[] Help { get; private set; }
 	public static AudioStream[] RepeatPlease { get; private set; }
-#endregion
+	#endregion
 
 	public static AudioStream NoAmmoSfx { get; private set; }
 
@@ -68,7 +68,7 @@ public class ResourceCache {
 	public static AudioStream ActivatedCheckpointSfx { get; private set; }
 	public static AudioStream CampfireAmbienceSfx { get; private set; }
 
-#region Player Sound Effects
+	#region Player Sound Effects
 	public static AudioStream LeapOfFaithSfx { get; private set; }
 	public static AudioStream ChangeWeaponSfx { get; private set; }
 	public static AudioStream[] PlayerPainSfx { get; private set; }
@@ -79,7 +79,7 @@ public class ResourceCache {
 	public static AudioStream DashExplosion { get; private set; }
 	public static AudioStream SlowMoBeginSfx { get; private set; }
 	public static AudioStream SlowMoEndSfx { get; private set; }
-#endregion
+	#endregion
 
 	public static Texture2D Light { get; private set; }
 
@@ -128,6 +128,24 @@ public class ResourceCache {
 	private static Dictionary<string, SpriteFrames> SpriteFramesCache = new Dictionary<string, SpriteFrames>( 256 );
 
 	public static bool Initialized = false;
+
+	// from https://stackoverflow.com/questions/5154970/how-do-i-create-a-hashcode-in-net-c-for-a-string-that-is-safe-to-store-in-a
+	private static int HashItemID( string str ) {
+		unchecked {
+			int hash1 = 5381;
+			int hash2 = hash1;
+
+			for ( int i = 0; i < str.Length && str[ i ] != '\0'; i += 2 ) {
+				hash1 = ( ( hash1 << 5 ) + hash1 ) ^ str[ i ];
+				if ( i == str.Length - 1 || str[ i + 1 ] == '\0' ) {
+					break;
+				}
+				hash2 = ( ( hash2 << 5 ) + hash2 ) ^ str[ i + 1 ];
+			}
+
+			return hash1 + ( hash2 * 1566083941 );
+		}
+	}
 
 	public static SpriteFrames GetSpriteFrames( string key ) {
 		if ( SpriteFramesCache.TryGetValue( key, out SpriteFrames value ) ) {
@@ -528,9 +546,9 @@ public class ResourceCache {
 			Godot.Collections.Array<Resource> items = (Godot.Collections.Array<Resource>)ItemDatabase.Get( "items" );
 			NetworkCache = new Dictionary<int, Resource>( items.Count );
 			for ( int i = 0; i < items.Count; i++ ) {
-				string id = (string)items[i].Get( "id" );
-				int hash = id.GetHashCode();
-				NetworkCache.Add( hash, items[i] );
+				string id = (string)items[ i ].Get( "id" );
+				int hash = HashItemID( id );
+				NetworkCache.Add( hash, items[ i ] );
 			}
 		}
 
