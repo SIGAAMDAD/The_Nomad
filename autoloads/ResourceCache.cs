@@ -521,13 +521,17 @@ public class ResourceCache {
 
 		ItemDatabase = ResourceLoader.Load( "res://resources/ItemDatabase.tres" );
 
+
 		SceneLoadThread?.Join();
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			Godot.Collections.Array<Resource> items = (Godot.Collections.Array<Resource>)ItemDatabase.Get( "items" );
 			NetworkCache = new Dictionary<int, Resource>( items.Count );
 			for ( int i = 0; i < items.Count; i++ ) {
-				NetworkCache.Add( ( (string)items[i].Get( "id" ) ).GetHashCode(), items[i] );
+				string id = (string)items[i].Get( "id" );
+				int hash = id.GetHashCode();
+				Console.PrintLine( string.Format( "NetworkCache Item added with ID {0} and HashCode {1}", id, hash ) );
+				NetworkCache.Add( hash, items[i] );
 			}
 		}
 
