@@ -671,7 +671,10 @@ public partial class SteamLobby : Node {
 			PacketStream.Write( data, 0, length );
 			PacketStream.Position = 1; // skip type byte
 
-			PlayerCache[ ThisSteamID.ToString() ].Receive( PacketReader );
+			CSteamID userId = GetMemberAt( PacketReader.ReadInt32() );
+			if ( userId == ThisSteamID ) {
+				PlayerCache[ ThisSteamID.ToString() ].Receive( PacketReader );
+			}
 		}
 		finally {
 			Pool.Return( data );
@@ -718,9 +721,6 @@ public partial class SteamLobby : Node {
 			break;
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
-			break;
-		case MessageType.VoiceChat:
-			SteamVoiceChat.Instance.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.Handshake:
 			break;

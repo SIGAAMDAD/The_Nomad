@@ -499,9 +499,8 @@ public partial class Player : Entity {
 				GD.Print( "Received Damage Packet" );
 				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
 				case PlayerDamageSource.Player:
-					NetworkPlayer player = SteamLobby.Instance.GetPlayer( (CSteamID)Convert.ToUInt64( SyncObject.ReadString() ) );
 					float damage = SyncObject.ReadFloat();
-					Damage( player, damage );
+					Damage( null, damage );
 					break;
 				case PlayerDamageSource.NPC:
 					break;
