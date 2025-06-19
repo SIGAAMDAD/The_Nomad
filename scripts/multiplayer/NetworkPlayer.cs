@@ -240,7 +240,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		if ( source is Player player && player != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.Player );
-			SyncObject.Write( (ulong)player.MultiplayerData.Id );
+			SyncObject.Write( player.MultiplayerData.Id.ToString() );
 		} else if ( source is Thinker thinker && thinker != null ) {
 			SyncObject.Write( (byte)PlayerDamageSource.NPC );
 			SyncObject.Write( thinker.GetHashCode() );
