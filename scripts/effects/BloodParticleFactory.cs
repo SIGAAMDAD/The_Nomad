@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Diagnostics;
 
 public partial class BloodParticleFactory : Node {
 	private Timer ReleaseTimer = null;
@@ -9,7 +8,8 @@ public partial class BloodParticleFactory : Node {
 	private static BloodParticleFactory Instance = null;
 	private static readonly int BloodInstanceMax = 256;
 
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 2048 );
+	private Transform2D[] TempBuffer = new Transform2D[ 16 ];
+	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1 + ( sizeof( float ) * 2 * 16 ) );
 
 	private void OnReleaseTimerTimeout() {
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
@@ -33,15 +33,16 @@ public partial class BloodParticleFactory : Node {
 
 		int count = SyncObject.ReadByte();
 		for ( int i = 0; i < count; i++ ) {
+			MeshManager.Multimesh.VisibleInstanceCount++;
 			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, SyncObject.ReadVector2() ) );
 		}
 	}
-	private void NetworkSync( int offset, int count, Span<Transform2D> positions ) {
+	private void NetworkSync( int offset ) {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
-		SyncObject.Write( (byte)count );
-		for ( int i = 0; i < count; i++ ) {
-			SyncObject.Write( positions[ i ].Origin );
+		SyncObject.Write( (byte)TempBuffer.Length );
+		for ( int i = 0; i < TempBuffer.Length; i++ ) {
+			SyncObject.Write( TempBuffer[ i ].Origin );
 		}
 		SyncObject.Sync();
 	}
@@ -91,18 +92,17 @@ public partial class BloodParticleFactory : Node {
 
 		int start = MeshManager.Multimesh.VisibleInstanceCount;
 
-		Span<Transform2D> positions = stackalloc Transform2D[ bloodAmount ];
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;
 			position.Y += RNJesus.FloatRange( -120.25f, 120.25f );
 			position.X += RNJesus.FloatRange( -150.25f, 150.25f );
 			MeshManager.Multimesh.VisibleInstanceCount++;
 
-			positions[ i ] = new Transform2D( 0.0f, position );
-			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, positions[ i ] );
+			TempBuffer[ i ] = new Transform2D( 0.0f, position );
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, TempBuffer[ i ] );
 		}
 
-		NetworkSync( start, bloodAmount, positions );
+		NetworkSync( start );
 	}
 	public static void Create( Vector2 from, Vector2 to ) {
 		Instance.CreateBloodSplatter( from, to );
