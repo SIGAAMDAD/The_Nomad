@@ -54,13 +54,14 @@ namespace Multiplayer.Modes {
 				return;
 			}
 
+			Overlay.SetPlayer1Score( Player1Score );
+			Overlay.SetPlayer2Score( Player2Score );
+
+			Overlay.BeginNewRound();
+
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
-			
-			Overlay.SetPlayer1Score( Player1Score );
-			Overlay.SetPlayer2Score( Player2Score );
-			Overlay.BeginNewRound();
 		}
 
 		private void OnPlayerScore( Entity attacker, Entity target ) {
