@@ -834,7 +834,7 @@ public partial class Player : Entity {
 		}
 
 		if ( attacker != null ) {
-			BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
+//			BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
 		}
 
 		if ( Health <= 0.0f ) {

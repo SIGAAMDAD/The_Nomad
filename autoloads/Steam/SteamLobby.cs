@@ -683,10 +683,10 @@ public partial class SteamLobby : Node {
 			PacketStream.Write( data, 0, length );
 			PacketStream.Position = 1; // skip type byte
 
-//			CSteamID userId = GetMemberAt( PacketReader.ReadByte() );
-//			if ( userId == ThisSteamID ) {
-//				PlayerCache[ ThisSteamID.ToString() ].Receive( senderId, PacketReader );
-//			}
+			CSteamID userId = GetMemberAt( PacketReader.ReadByte() );
+			if ( userId == ThisSteamID ) {
+				PlayerCache[ ThisSteamID.ToString() ].Receive( senderId, PacketReader );
+			}
 		}
 		finally {
 			Pool.Return( data );
