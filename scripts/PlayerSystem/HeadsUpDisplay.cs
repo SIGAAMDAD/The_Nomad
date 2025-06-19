@@ -20,7 +20,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-using System;
 using System.Collections.Generic;
 using DialogueManagerRuntime;
 using Godot;
@@ -44,6 +43,8 @@ namespace PlayerSystem {
 
 		private HealthBar HealthBar;
 		private RageBar RageBar;
+
+		private Control EmoteMenu;
 
 		private MarginContainer AnnouncementContainer;
 		private TextureRect AnnouncementBackground;
@@ -108,13 +109,16 @@ namespace PlayerSystem {
 
 		private Control HellbreakerOverlay;
 
+		[Signal]
+		public delegate void EmoteTriggeredEventHandler( Texture2D emote );
+
 		public HealthBar GetHealthBar() => HealthBar;
 		public RageBar GetRageBar() => RageBar;
 
 		public TextureRect GetReflexOverlay() => ReflexOverlay;
 		public TextureRect GetDashOverlay() => DashOverlay;
 		public TextureRect GetParryOverlay() => ParryOverlay;
-	
+
 		public Player GetPlayerOwner() => _Owner;
 		private void SaveStart() {
 			SaveSpinner.SetProcess( true );
@@ -215,8 +219,6 @@ namespace PlayerSystem {
 			ArchiveSystem.Instance.Connect( "SaveGameBegin", Callable.From( SaveStart ) );
 			ArchiveSystem.Instance.Connect( "SaveGameEnd", Callable.From( SaveEnd ) );
 
-//			DialogueLabel = GetNode<RichTextLabel>( "DialogueLabel" );
-
 			NoteBook = GetNode<Notebook>( "NotebookContainer" );
 			NoteBook.ProcessMode = ProcessModeEnum.Disabled;
 
@@ -231,6 +233,22 @@ namespace PlayerSystem {
 				FadeOutTween = CreateTween();
 				FadeOutTween.TweenProperty( AnnouncementBackground.Material, "shader_parameter/alpha", 0.0f, 2.5f );
 				FadeOutTween.Connect( "finished", Callable.From( OnAnnouncementFadeOutTweenFinished ) );
+			} ) );
+
+			EmoteMenu = GetNode<Control>( "MainHUD/EmoteMenu" );
+			EmoteMenu.Connect( "selection_canceled", Callable.From( () => {
+				EmoteMenu.SetProcessInput( false );
+				EmoteMenu.Hide();
+				EmoteMenu.ProcessMode = ProcessModeEnum.Disabled;
+			} ) );
+			EmoteMenu.Connect( "slot_selected", Callable.From<Control, int>( ( slot, index ) => {
+				EmoteMenu.SetProcessInput( false );
+				EmoteMenu.Hide();
+				EmoteMenu.ProcessMode = ProcessModeEnum.Disabled;
+
+				if ( index != -2 ) {
+					EmitSignalEmoteTriggered( ( slot as TextureRect ).Texture );
+				}
 			} ) );
 
 			CheckpointInteractor = GetNode<CheckpointInteractor>( "CheckpointContainer" );
@@ -334,7 +352,7 @@ namespace PlayerSystem {
 
 				WeaponModeBladed.Visible = ( source.LastUsedMode & WeaponEntity.Properties.IsBladed ) != 0;
 				WeaponModeBlunt.Visible = ( source.LastUsedMode & WeaponEntity.Properties.IsBlunt ) != 0;
-				
+
 				if ( ( source.LastUsedMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 					WeaponModeFirearm.Show();
 					WeaponStatusBulletCount.Text = source.BulletsLeft.ToString();
@@ -348,7 +366,7 @@ namespace PlayerSystem {
 			_Owner.HandsStatusUpdated += ( Player.Hands handsUsed ) => {
 				WeaponStatus.Modulate = DefaultColor;
 				WeaponStatusTimer.Start();
-				
+
 				switch ( handsUsed ) {
 				case Player.Hands.Left:
 					LeftArmIndicator.Modulate = ArmUsedColor;
@@ -362,7 +380,8 @@ namespace PlayerSystem {
 					LeftArmIndicator.Modulate = ArmUsedColor;
 					RightArmIndicator.Modulate = ArmUsedColor;
 					break;
-				};
+				}
+				;
 			};
 
 			HealthBar.Init( 100.0f );
@@ -388,7 +407,7 @@ namespace PlayerSystem {
 		private void OnWeaponUsed( WeaponEntity source ) {
 			WeaponStatus.Modulate = DefaultColor;
 			WeaponStatusTimer.Start();
-			
+
 			if ( ( source.LastUsedMode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				WeaponStatusBulletCount.Text = source.BulletsLeft.ToString();
 			}
@@ -423,7 +442,7 @@ namespace PlayerSystem {
 				WeaponStatusMelee.Show();
 				WeaponStatusMeleeIcon.Texture = weapon.Icon;
 			}
-			
+
 			WeaponData = weapon;
 			WeaponData.Reloaded += OnWeaponReloaded;
 			WeaponData.Used += OnWeaponUsed;
@@ -477,8 +496,9 @@ namespace PlayerSystem {
 			case InteractionType.EaglesPeak:
 				CurrentInteractor = JumpInteractor;
 				break;
-			};
-			
+			}
+			;
+
 			if ( CurrentInteractor != null ) {
 				CurrentInteractor.Show();
 			} else {
@@ -488,7 +508,7 @@ namespace PlayerSystem {
 			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ), Input.CursorShape.Arrow );
 
 			InteractionData = item;
-			
+
 			if ( CurrentInteractor == JumpInteractor ) {
 				EaglesPeak data = (EaglesPeak)item;
 
@@ -512,7 +532,8 @@ namespace PlayerSystem {
 					OpenDoorButton.Hide();
 					UseDoorButton.Show();
 					break;
-				};
+				}
+				;
 			}
 		}
 		public void HideInteraction() {
@@ -559,6 +580,21 @@ namespace PlayerSystem {
 			NoteBook.ProcessMode = ProcessModeEnum.Pausable;
 			NoteBook.Visible = true;
 			NoteBook.OnShowBackpack();
+		}
+
+		public override void _UnhandledInput( InputEvent @event ) {
+			base._UnhandledInput( @event );
+
+			if ( Input.IsActionJustPressed( "open_emote_menu" ) ) {
+				EmoteMenu.Show();
+				EmoteMenu.SetProcessInput( true );
+				EmoteMenu.ProcessMode = ProcessModeEnum.Always;
+			}
+			if ( Input.IsActionJustReleased( "open_emote_menu" ) ) {
+				EmoteMenu.SetProcessInput( false );
+				EmoteMenu.Hide();
+				EmoteMenu.ProcessMode = ProcessModeEnum.Disabled; ;
+			}
 		}
     };
 };

@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=66 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -34,6 +34,12 @@
 [ext_resource type="Texture2D" uid="uid://46hkvj8a86ti" path="res://textures/hud/ARBLS5.png" id="19_xw6ac"]
 [ext_resource type="Script" uid="uid://cp2m32c4dosqq" path="res://scripts/PlayerSystem/WarpPoint.cs" id="23_0ed87"]
 [ext_resource type="Script" uid="uid://df58eq7qyt2ih" path="res://scripts/PlayerSystem/CheckpointInteractor.cs" id="23_nyije"]
+[ext_resource type="Script" uid="uid://bu7gdjadtgg4m" path="res://addons/advanced_radial_menu/radial_menu_class.gd" id="25_v24h6"]
+[ext_resource type="Texture2D" uid="uid://dw7ibgc8n6uhf" path="res://textures/emote_tpose.png" id="26_vg31i"]
+[ext_resource type="Texture2D" uid="uid://chb8pkqmb4h6v" path="res://textures/emote_flex.png" id="27_aelwk"]
+[ext_resource type="Texture2D" uid="uid://dmnu5c28dq4e" path="res://textures/emote_praisethesun.png" id="28_xw6ac"]
+[ext_resource type="Texture2D" uid="uid://dm30q4vnh2cly" path="res://textures/emote_surprised.png" id="29_kwx6t"]
+[ext_resource type="Texture2D" uid="uid://3q4l73y6mcqp" path="res://textures/emote_pointing.png" id="30_dg2ec"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
 offsets = PackedFloat32Array(0)
@@ -669,6 +675,79 @@ offset_top = 0.039978
 grow_horizontal = 0
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
+
+[node name="EmoteMenu" type="Control" parent="MainHUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("25_v24h6")
+select_action_name = "emote"
+controller_enabled = true
+color = Color(0, 0, 0, 0.301961)
+arc_start_angle = 3.53581
+children_size = 128
+hover_color = Color(1, 0, 1, 0.2)
+metadata/_custom_type_script = "uid://bu7gdjadtgg4m"
+metadata/_edit_use_anchors_ = true
+
+[node name="TPose" type="TextureRect" parent="MainHUD/EmoteMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.551
+anchor_top = 0.000864207
+anchor_right = 0.817
+anchor_bottom = 0.269
+offset_left = 20.9861
+offset_top = 62.3518
+offset_right = -63.814
+offset_bottom = 29.4704
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("26_vg31i")
+expand_mode = 2
+
+[node name="Flex" type="TextureRect" parent="MainHUD/EmoteMenu"]
+layout_mode = 0
+offset_left = 210.214
+offset_top = 62.8704
+offset_right = 338.214
+offset_bottom = 190.87
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("27_aelwk")
+expand_mode = 2
+
+[node name="PraiseTheSun" type="TextureRect" parent="MainHUD/EmoteMenu"]
+layout_mode = 0
+offset_left = 132.474
+offset_top = 302.13
+offset_right = 260.474
+offset_bottom = 430.13
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("28_xw6ac")
+expand_mode = 2
+
+[node name="Surprised" type="TextureRect" parent="MainHUD/EmoteMenu"]
+layout_mode = 0
+offset_left = 336.0
+offset_top = 450.0
+offset_right = 464.0
+offset_bottom = 578.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("29_kwx6t")
+expand_mode = 2
+
+[node name="Point" type="TextureRect" parent="MainHUD/EmoteMenu"]
+layout_mode = 0
+offset_left = 539.526
+offset_top = 302.13
+offset_right = 667.526
+offset_bottom = 430.13
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("30_dg2ec")
+expand_mode = 2
 
 [node name="NotebookContainer" type="MarginContainer" parent="."]
 visible = false

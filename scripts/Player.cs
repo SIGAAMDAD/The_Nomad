@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Renown;
 using Renown.World;
 using System.Diagnostics;
+using System.Net.Security;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -25,23 +26,24 @@ public partial class Player : Entity {
 	};
 
 	public enum PlayerFlags : uint {
-		Sliding			= 0x00000001,
-		Crouching		= 0x00000002,
-		BulletTime		= 0x00000004,
-		Dashing			= 0x00000008,
-		DemonRage		= 0x00000010,
-		UsedMana		= 0x00000020,
-		DemonSight		= 0x00000040,
-		OnHorse			= 0x00000080,
-		IdleAnimation	= 0x00000100,
-		Checkpoint		= 0x00000200,
-		BlockedInput	= 0x00000400,
-		UsingWeapon		= 0x00000800,
-		Inventory		= 0x00001000,
-		Resting			= 0x00002000,
-		UsingMelee		= 0x00004000,
-		Parrying		= 0x00008000,
-		Encumbured		= 0x00010000,
+		Sliding = 0x00000001,
+		Crouching = 0x00000002,
+		BulletTime = 0x00000004,
+		Dashing = 0x00000008,
+		DemonRage = 0x00000010,
+		UsedMana = 0x00000020,
+		DemonSight = 0x00000040,
+		OnHorse = 0x00000080,
+		IdleAnimation = 0x00000100,
+		Checkpoint = 0x00000200,
+		BlockedInput = 0x00000400,
+		UsingWeapon = 0x00000800,
+		Inventory = 0x00001000,
+		Resting = 0x00002000,
+		UsingMelee = 0x00004000,
+		Parrying = 0x00008000,
+		Encumbured = 0x00010000,
+		Emoting = 0x00020000,
 	};
 
 	public enum AnimationState : byte {
@@ -206,6 +208,8 @@ public partial class Player : Entity {
 	private static float ShakeStrength = 0.0f;
 
 	private static bool TutorialCompleted = false;
+
+	private Texture2D CurrentEmote;
 
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
@@ -1371,19 +1375,19 @@ public partial class Player : Entity {
 
 		switch ( HandsUsed ) {
 		case Hands.Left: {
-			int index = ArmLeft.Slot;
-			if ( index == WeaponSlot.INVALID ) {
-				return;
-			}
-			slot = WeaponSlots[ index ];
-			break; }
+				int index = ArmLeft.Slot;
+				if ( index == WeaponSlot.INVALID ) {
+					return;
+				}
+				slot = WeaponSlots[ index ];
+				break; }
 		case Hands.Right: {
-			int index = ArmRight.Slot;
-			if ( index == WeaponSlot.INVALID ) {
-				return;
-			}
-			slot = WeaponSlots[ index ];
-			break; }
+				int index = ArmRight.Slot;
+				if ( index == WeaponSlot.INVALID ) {
+					return;
+				}
+				slot = WeaponSlots[ index ];
+				break; }
 		case Hands.Both:
 		default:
 			slot = WeaponSlots[ CurrentWeapon ];
@@ -1522,6 +1526,24 @@ public partial class Player : Entity {
 
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
+
+		if ( ( Flags & PlayerFlags.Emoting ) != 0 ) {
+			Flags &= ~PlayerFlags.Emoting;
+
+			ArmLeft.Animations.Show();
+			ArmRight.Animations.Show();
+			TorsoAnimation.Show();
+			LegAnimation.Show();
+
+			CurrentEmote = null;
+
+			// remove the emote sprite
+			RemoveChild( GetChild( GetChildCount() - 1 ) );
+
+			if ( Health > 0.0f ) {
+				SetProcessUnhandledInput( false );
+			}
+		}
 
 		switch ( GameConfiguration.GameMode ) {
 		case GameMode.SinglePlayer:
@@ -1741,6 +1763,25 @@ public partial class Player : Entity {
 
 			HUD.Show();
 		} ) );
+
+		HUD.EmoteTriggered += ( emote ) => {
+			Flags &= ~( PlayerFlags.Checkpoint | PlayerFlags.IdleAnimation | PlayerFlags.Resting );
+			Flags |= PlayerFlags.Emoting;
+			CurrentEmote = emote;
+
+			SetProcessUnhandledInput( true );
+
+			Sprite2D EmoteSprite = new Sprite2D();
+			EmoteSprite.Name = "Emote";
+			EmoteSprite.Texture = emote;
+			AddChild( EmoteSprite );
+
+			IdleAnimation.Hide();
+			ArmLeft.Animations.Hide();
+			ArmRight.Animations.Hide();
+			TorsoAnimation.Hide();
+			LegAnimation.Hide();
+		};
 
 		SetProcessUnhandledInput( false );
 
