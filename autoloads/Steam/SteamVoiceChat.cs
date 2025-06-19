@@ -252,7 +252,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		Packet = new byte[ 8192 ];
+		Packet = new byte[ 24 * 1024 * 1024 ];
 
 		SteamUser.StartVoiceRecording();
 		SteamFriends.SetInGameVoiceSpeaking( SteamManager.GetSteamID(), true );
@@ -273,25 +273,30 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
 			byte[] buffer = new byte[ compressedSize ];
 			if ( SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
-				GD.Print( "SENDING" );
 				Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
 				Buffer.BlockCopy( buffer, 0, Packet, 1, (int)bytesWritten );
 				SteamLobby.Instance.SendP2PPacket( Packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 			}
 		}
 	}
+
+	private byte[] output = new byte[ 24 * 1024 * 1024 ];
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		byte[] buffer = new byte[ data.Length - 1 ];
 		Buffer.BlockCopy( data, 1, buffer, 0, buffer.Length );
-		byte[] output = new byte[ 8192 ];
 
-		if ( SteamUser.DecompressVoice( buffer, (uint)buffer.Length, output, (uint)output.Length, out uint bytesWritten, SAMPLE_RATE ) == EVoiceResult.k_EVoiceResultOK && bytesWritten > 0 ) {
-			for ( int i = 0; i < Math.Min( Playback.GetFramesAvailable() * 2, bytesWritten ); i++ ) {
+		EVoiceResult result = SteamUser.DecompressVoice( buffer, (uint)buffer.Length, output, (uint)output.Length, out uint bytesWritten,
+			SteamUser.GetVoiceOptimalSampleRate() );
+		if ( result == EVoiceResult.k_EVoiceResultOK ) {
+			GD.Print( "DECODING!" );
+			for ( int i = 0; i < Math.Min( Playback.GetFramesAvailable() * 2, int.MaxValue ); i++ ) {
 				int rawValue = output[ i ] | ( output[ i + 1 ] << 8 );
 				rawValue = ( rawValue + 32768 ) & 0xffff;
 				float amplitude = ( rawValue - 32768 ) / 32768.0f;
 				Playback.PushFrame( new Godot.Vector2( amplitude, amplitude ) );
 			}
+		} else {
+			Console.PrintError( string.Format( "[STEAM] Error decompressing voice audio packet: {0}", result ) );
 		}
 	}
 };

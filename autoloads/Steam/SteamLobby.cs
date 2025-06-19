@@ -631,7 +631,7 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
-	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable ) {
+	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable, int channel = 0 ) {
 		if ( !Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
 			return;
 		}
@@ -653,11 +653,11 @@ public partial class SteamLobby : Node {
 		}
 	}
 
-	public void SendP2PPacket( byte[] data, int nSendType = Constants.k_nSteamNetworkingSend_Reliable ) {
+	public void SendP2PPacket( byte[] data, int nSendType = Constants.k_nSteamNetworkingSend_Reliable, int channel = 0 ) {
 		lock ( ConnectionLock ) {
 			foreach ( var pair in Connections ) {
 				if ( pair.Key != ThisSteamID ) {
-					SendTargetPacket( pair.Key, data, nSendType );
+					SendTargetPacket( pair.Key, data, nSendType, channel );
 				}
 			}
 		}
