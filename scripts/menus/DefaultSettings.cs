@@ -106,6 +106,8 @@ public partial class DefaultSettings : Resource {
 	public bool HellbreakerRevanents { get; private set; } = false;
 	[Export]
 	public bool CleanAudio { get; private set; } = false;
+	[Export]
+	public bool ExpertUI { get; private set; } = false;
 
 	[Export]
 	public bool NetworkingEnabled { get; private set; } = true;
