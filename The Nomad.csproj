@@ -11,6 +11,7 @@
     <PackageReference Include="gdUnit4.api" Version="5.0.0-rc" />
     <PackageReference Include="gdUnit4.test.adapter" Version="2.0.0" />
     <PackageReference Include="ImGui.NET" Version="1.90.0" />
+    <PackageReference Include="lz4net" Version="1.0.3.93" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MountainGoap" Version="1.1.1" />
@@ -21,5 +22,6 @@
     <PackageReference Include="Steamworks.NET" Version="2024.8.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.Net.Ping" Version="4.3.0" />
+    <PackageReference Include="ValveSockets-CSharp" Version="1.2.0" />
   </ItemGroup>
 </Project>
