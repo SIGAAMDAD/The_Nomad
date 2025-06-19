@@ -729,7 +729,7 @@ public partial class SteamLobby : Node {
 			CallDeferred( "ProcessClientData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.ServerSync:
-			CallDeferred( "ProcessServerSync", msg.Length, msg.Data );
+			CallDeferred( "ProcessServerSync", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
