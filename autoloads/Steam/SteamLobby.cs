@@ -102,12 +102,7 @@ public partial class SteamLobby : Node {
 		}
 
 		public static byte[] SecureOutgoingMessage( byte[] data, CSteamID target ) {
-			using var input = new System.IO.MemoryStream( data );
-			using var output = new System.IO.MemoryStream();
-			LZ4.LZ4Stream stream = new LZ4.LZ4Stream( input, System.IO.Compression.CompressionMode.Compress );
-			stream.CopyTo( output );
-
-			return output.ToArray();
+			return data;
 		}
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
 			if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
@@ -124,16 +119,7 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
-			using var input = new System.IO.MemoryStream( secured );
-			using var output = new System.IO.MemoryStream();
-			byte[] outputBuffer = Instance.Pool.Rent();
-			using var stream = new LZ4.LZ4Stream( input, System.IO.Compression.CompressionMode.Decompress );
-			stream.CopyTo( output );
-			Instance.Pool.Return( secured );
-
-			Buffer.BlockCopy( output.ToArray(), 0, outputBuffer, 0, (int)output.Length );
-
-			return outputBuffer;
+			return secured;
 		}
 	};
 
@@ -1201,3 +1187,4 @@ public partial class SteamLobby : Node {
 		}
 	}
 };
+*/
