@@ -90,6 +90,8 @@ public partial class Player : Entity {
 	private float LastNetworkAimAngle = 0.0f;
 	private uint LastNetworkFlags = 0;
 	private float LastNetworkBloodAmount = 0.0f;
+	private WeaponEntity.Properties LastNetworkUseMode = WeaponEntity.Properties.None;
+	private int LastNetworkWeaponId = 0;
 
 	private static readonly float PunchRange = 40.0f;
 	private static readonly int MAX_WEAPON_SLOTS = 4;
@@ -531,13 +533,24 @@ public partial class Player : Entity {
 
 		if ( CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
+			SyncObject.Write( false );
 		} else {
-			if ( WeaponSlots[ CurrentWeapon ].GetWeapon() != null ) {
-				SyncObject.Write( true );
-				SyncObject.Write( ResourceCache.HashItemID( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ) );
-				SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
-			} else {
+			WeaponEntity weapon = WeaponSlots[ CurrentWeapon ].GetWeapon();
+			if ( weapon == null ) {
 				SyncObject.Write( false );
+				SyncObject.Write( false );
+			} else {
+				int hashCode = weapon.Data.Get( "id" ).GetHashCode();
+				if ( hashCode != LastNetworkWeaponId ) {
+					SyncObject.Write( true );
+					SyncObject.Write( (string)weapon.Data.Get( "id" ) );
+					LastNetworkWeaponId = hashCode;
+				}
+				if ( weapon.LastUsedMode != LastNetworkUseMode ) {
+					SyncObject.Write( true );
+					SyncObject.Write( (uint)weapon.LastUsedMode );
+					LastNetworkUseMode = weapon.LastUsedMode;
+				}
 			}
 		}
 

@@ -51,7 +51,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	private Godot.Vector2 NetworkPosition;
 	private float CurrentSpeed = 0.0f;
-	
+
 	private Resource Database;
 	private Resource CurrentWeapon;
 	private CSteamID OwnerId;
@@ -66,7 +66,7 @@ public partial class NetworkPlayer : Renown.Entity {
 	private AudioStreamPlayer2D DashChannel;
 
 	private WeaponEntity.Properties WeaponUseMode = WeaponEntity.Properties.None;
-	
+
 	private AnimatedSprite2D IdleAnimation;
 	private AnimatedSprite2D TorsoAnimation;
 	private AnimatedSprite2D LeftArmAnimation;
@@ -97,58 +97,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	public override void PlaySound( in AudioStreamPlayer2D channel, in AudioStream stream ) {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
-	
-	public void Update( System.IO.BinaryReader packet ) {
-		/*
-		bool flip = packet.ReadBoolean();
 
-		TorsoAnimation.SetDeferred( "flip_h", flip );
-		LegAnimation.SetDeferred( "flip_h", flip );
-		LeftArmAnimation.SetDeferred( "flip_v", flip );
-		RightArmAnimation.SetDeferred( "flip_v", flip );
-
-		Godot.Vector2 position = Godot.Vector2.Zero;
-		position.X = (float)packet.ReadHalf();
-		position.Y = (float)packet.ReadHalf();
-		GlobalPosition = position;
-
-		LeftArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
-		RightArmAnimation.SetDeferred( "global_rotation", (float)packet.ReadHalf() );
-
-		SetArmAnimationState( LeftArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultLeftArmSpriteFrames );
-		SetArmAnimationState( RightArmAnimation, (PlayerAnimationState)packet.ReadByte(), DefaultRightArmSpriteFrames );
-
-		LegAnimationState = (PlayerAnimationState)packet.ReadByte();
-		TorsoAnimationState = (PlayerAnimationState)packet.ReadByte();
-
-		Player.Hands handsUsed = (Player.Hands)packet.ReadByte();
-
-		// flags
-
-		Player.PlayerFlags flags = (Player.PlayerFlags)SteamLobby.StateCompressor.DecompressState( GetHashCode(),  );
-
-		bool isDashing = ( flags & Player.PlayerFlags.Dashing ) != 0;
-		if ( isDashing && !DashChannel.Playing ) {
-			CallDeferred( "PlaySound", DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
-		}
-		DashEffect.SetDeferred( "emitting", isDashing );
-		DashLight.SetDeferred( "visible", isDashing );
-
-		SlideEffect.SetDeferred( "emitting", ( flags & Player.PlayerFlags.Sliding ) != 0 );
-
-		if ( packet.ReadSByte() != WeaponSlot.INVALID ) {
-			WeaponUseMode = (WeaponEntity.Properties)packet.ReadUInt32();
-			if ( packet.ReadBoolean() ) {
-				int weaponHash = ;
-				CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", weaponId );
-			}
-		} else {
-			WeaponUseMode = WeaponEntity.Properties.None;
-		}
-		*/
-
-		SyncObject.BeginRead( packet );
-
+	private void CheckFlipChange() {
 		bool flip = SyncObject.ReadBoolean();
 		if ( flip != LastFlipState ) {
 			TorsoAnimation.SetDeferred( "flip_h", flip );
@@ -157,10 +107,28 @@ public partial class NetworkPlayer : Renown.Entity {
 			RightArmAnimation.SetDeferred( "flip_v", flip );
 			LastFlipState = flip;
 		}
-		
-		NetworkPosition = SyncObject.ReadVector2();
-		CurrentSpeed = Player.MAX_SPEED;
-
+	}
+	private void CheckWeaponModeChange() {
+		if ( !SyncObject.ReadBoolean() ) {
+			return;
+		}
+		WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
+	}
+	private void CheckWeaponChange() {
+		if ( !SyncObject.ReadBoolean() ) {
+			return;
+		}
+		CurrentWeapon = (Resource)ResourceCache.ItemDatabase.Call( "get_item", SyncObject.ReadString() );
+	}
+	private void CheckArmAngleChange() {
+		if ( !SyncObject.ReadBoolean() ) {
+			return;
+		}
+		float angle = SyncObject.ReadFloat();
+		LeftArmAnimation.SetDeferred( "global_rotation", angle );
+		RightArmAnimation.SetDeferred( "global_rotation", angle );
+	}
+	private void CheckFlagsChange() {
 		if ( SyncObject.ReadBoolean() ) {
 			Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadUInt32();
 
@@ -178,18 +146,21 @@ public partial class NetworkPlayer : Renown.Entity {
 				CurrentSpeed += 400;
 			}
 		}
+	}
 
-		if ( SyncObject.ReadBoolean() ) {
-			int weaponId = SyncObject.ReadInt32();
-			WeaponUseMode = (WeaponEntity.Properties)SyncObject.ReadUInt32();
-			CurrentWeapon = ResourceCache.NetworkCache[ weaponId ];
-		}
+	public void Update( System.IO.BinaryReader packet ) {
+		SyncObject.BeginRead( packet );
 
-		if ( SyncObject.ReadBoolean() ) {
-			float angle = SyncObject.ReadFloat();
-			LeftArmAnimation.SetDeferred( "global_rotation", angle );
-			RightArmAnimation.SetDeferred( "global_rotation", angle );
-		}
+		CheckFlipChange();
+
+		NetworkPosition = SyncObject.ReadVector2();
+		CurrentSpeed = Player.MAX_SPEED;
+
+		CheckFlagsChange();
+		CheckWeaponChange();
+		CheckWeaponModeChange();
+		CheckArmAngleChange();
+
 		LeftArmAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		SetArmAnimationState( LeftArmAnimation, LeftArmAnimationState, DefaultLeftArmSpriteFrames );
 
