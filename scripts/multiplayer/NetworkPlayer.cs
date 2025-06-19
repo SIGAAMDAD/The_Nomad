@@ -99,7 +99,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );
 	}
 
-	public void Update( System.IO.BinaryReader packet ) {
+	public void Update( ulong senderId, System.IO.BinaryReader packet ) {
 		SyncObject.BeginRead( packet );
 
 		bool flip = SyncObject.ReadBoolean();
@@ -279,7 +279,7 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
-		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.NetworkNode( this, null, Update ) );
+		SteamLobby.Instance.AddPlayer( OwnerId, new SteamLobby.PlayerNetworkNode( this, null, Update ) );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
