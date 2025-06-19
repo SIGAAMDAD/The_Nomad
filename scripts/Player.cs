@@ -541,7 +541,7 @@ public partial class Player : Entity {
 				ulong RID = weapon.Data.GetRid().Id;
 				if ( RID != LastNetworkWeaponRID ) {
 					SyncObject.Write( true );
-					SyncObject.Write( RID );
+					SyncObject.Write( (string)weapon.Data.Get( "id" ) );
 					LastNetworkWeaponRID = RID;
 				}
 				if ( weapon.LastUsedMode != LastNetworkUseMode ) {
