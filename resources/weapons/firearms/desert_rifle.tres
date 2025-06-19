@@ -3,7 +3,7 @@
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_mfk3d"]
 [ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="1_ps35i"]
 [ext_resource type="ItemCategory" uid="uid://d2yy562ewd4q1" path="res://resources/weapons/categories/firearm_category.tres" id="2_lu4vt"]
-[ext_resource type="Texture2D" uid="uid://w1sb6ttc6xdv" path="res://textures/env/iconw_desert_rifle.png" id="3_ps35i"]
+[ext_resource type="Texture2D" uid="uid://bhdkd07vv76e8" path="res://textures/env/iconw_desert_rifle.png" id="3_ps35i"]
 [ext_resource type="AudioStream" uid="uid://c78b7qaxp2s48" path="res://sounds/weapons/desert_rifle_use.ogg" id="4_ps35i"]
 
 [resource]

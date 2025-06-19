@@ -4,10 +4,7 @@ using Renown;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
-		private int Player1Score = 0;
-		private int Player2Score = 0;
-		private int MaxRounds = 2; // NOTE: this may be adjustable in the future
-		private int RoundIndex = 0;
+		private const int MaxRounds = 3; // NOTE: this may be adjustable in the future
 		private Player ThisPlayer = null;
 		private NetworkPlayer OtherPlayer = null;
 		private Node2D Player1Spawn;
@@ -15,9 +12,12 @@ namespace Multiplayer.Modes {
 		private DuelOverlay Overlay;
 		private ScoreBoard ScoreBoard;
 
-		private int[] Score = new int[ 3 ];
+		private byte Player1Score = 0;
+		private byte Player2Score = 0;
+		private byte RoundIndex = 0;
+		private byte[] Scores = new byte[ MaxRounds ];
 
-		private NetworkSyncObject SyncObject = new NetworkSyncObject( 3 );
+		private NetworkSyncObject SyncObject = new NetworkSyncObject( 6 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
@@ -27,11 +27,11 @@ namespace Multiplayer.Modes {
 			ScoreBoard.Hide();
 		}
 		public void OnRoundEnd() {
-			GD.Print( "Beginning new dueling round..." );
-
 			if ( ThisPlayer == null || OtherPlayer == null ) {
 				return;
 			}
+
+			GD.Print( "Beginning new dueling round..." );
 
 			ThisPlayer?.BlockInput( true );
 			
@@ -48,7 +48,7 @@ namespace Multiplayer.Modes {
 			RoundIndex++;
 
 			if ( RoundIndex >= MaxRounds ) {
-				ScoreBoard.SetDuelData( Score[ 0 ], Score[ 1 ], Score[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
+				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
 				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
 				//				EmitSignal( "ShowScoreboard" );
 				return;
@@ -63,19 +63,18 @@ namespace Multiplayer.Modes {
 			Overlay.BeginNewRound();
 		}
 
-		private void OnPlayerScore( Renown.Entity attacker, Renown.Entity target ) {
-//			attacker.Set( "MultiplayerKills", (int)attacker.Get( "MultiplayerKills" ) + 1 );
-//			target.Set( "MultiplayerDeaths", (int)target.Get( "MultiplayerDeaths" ) + 1 );
+		private void OnPlayerScore( Entity attacker, Entity target ) {
+			//			attacker.Set( "MultiplayerKills", (int)attacker.Get( "MultiplayerKills" ) + 1 );
+			//			target.Set( "MultiplayerDeaths", (int)target.Get( "MultiplayerDeaths" ) + 1 );
 
-//			SteamUserStats.StoreStats();
+			//			SteamUserStats.StoreStats();
 
 			if ( attacker == ThisPlayer ) {
 				Player1Score++;
-				Score[ RoundIndex ] = 0;
 			} else if ( attacker == OtherPlayer ) {
 				Player2Score++;
-				Score[ RoundIndex ] = 1;
 			}
+
 			if ( Player2Score > Player1Score ) {
 				Announcer.LostLead();
 			} else if ( Player2Score == Player1Score ) {
@@ -89,7 +88,7 @@ namespace Multiplayer.Modes {
 			OnNewRoundStart();
 		}
 
-		public override void SpawnPlayer( Renown.Entity player ) {
+		public override void SpawnPlayer( Entity player ) {
 			Node2D spawn = null;
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
@@ -117,17 +116,28 @@ namespace Multiplayer.Modes {
 		}
 
 		private void SendPacket() {
-			SyncObject.Write( (sbyte)Player1Score );
-			SyncObject.Write( (sbyte)Player2Score );
-			SyncObject.Write( (sbyte)RoundIndex );
+			SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+			SyncObject.Write( GetPath().GetHashCode() );
+			SyncObject.Write( Player1Score );
+			SyncObject.Write( Player2Score );
+			SyncObject.Write( RoundIndex );
+
+			for ( int i = 0; i < Scores.Length; i++ ) {
+				SyncObject.Write( Scores[ i ] );
+			}
+
 			SyncObject.Sync();
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
 			SyncObject.BeginRead( reader );
 
-			Player1Score = SyncObject.ReadSByte();
-			Player2Score = SyncObject.ReadSByte();
-			RoundIndex = SyncObject.ReadSByte();
+			Player1Score = SyncObject.ReadByte();
+			Player2Score = SyncObject.ReadByte();
+			RoundIndex = SyncObject.ReadByte();
+
+			for ( int i = 0; i < Scores.Length; i++ ) {
+				Scores[ i ] = SyncObject.ReadByte();
+			}
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );

@@ -1,6 +1,6 @@
 [gd_resource type="ItemDefinition" load_steps=3 format=3 uid="uid://d01vxfpudal7u"]
 
-[ext_resource type="Texture2D" uid="uid://uxkebd6eqafw" path="res://textures/env/iconw_katana.png" id="1_7etuh"]
+[ext_resource type="Texture2D" uid="uid://ba8j8tbhj1o6k" path="res://textures/env/iconw_katana.png" id="1_7etuh"]
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="1_inhdw"]
 
 [resource]

@@ -1,8 +1,8 @@
 [gd_resource type="TileSet" load_steps=7 format=3 uid="uid://dvnhum31uka27"]
 
-[ext_resource type="Texture2D" uid="uid://bcsktl1r20xlj" path="res://textures/tilesets/hellbreaker.jpg" id="1_5adad"]
-[ext_resource type="Texture2D" uid="uid://d3ixqwtlbxp8i" path="res://textures/tilesets/ashlands_tileset.png" id="2_57k6i"]
-[ext_resource type="Texture2D" uid="uid://8susb8s1oufd" path="res://textures/tilesets/hell/freelavatileset-Sheet.png" id="3_kttaq"]
+[ext_resource type="Texture2D" uid="uid://vi7isk4ca88n" path="res://textures/tilesets/hellbreaker.jpg" id="1_5adad"]
+[ext_resource type="Texture2D" uid="uid://cd20y2vwabfl7" path="res://textures/tilesets/ashlands_tileset.png" id="2_57k6i"]
+[ext_resource type="Texture2D" uid="uid://dtyrl25cvekpj" path="res://textures/tilesets/hell/freelavatileset-Sheet.png" id="3_kttaq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_44wlt"]
 texture = ExtResource("1_5adad")

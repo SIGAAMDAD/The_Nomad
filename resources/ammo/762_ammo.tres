@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="1_a8w8a"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_lhqhs"]
 [ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="1_qnvb1"]
-[ext_resource type="Texture2D" uid="uid://bp513nsbaeyb3" path="res://textures/env/bullet_casings/rifle_shell.png" id="2_i4m1o"]
+[ext_resource type="Texture2D" uid="uid://do4v3ki34jgbj" path="res://textures/env/bullet_casings/rifle_shell.png" id="2_i4m1o"]
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="4_qnvb1"]
 
 [sub_resource type="Curve" id="Curve_qnvb1"]

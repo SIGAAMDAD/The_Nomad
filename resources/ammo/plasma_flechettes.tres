@@ -1,9 +1,9 @@
 [gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://bbg71vw5lg4u1"]
 
-[ext_resource type="Texture2D" uid="uid://b7j6bikja8o4m" path="res://textures/env/icona_plasma.png" id="1_46ycc"]
+[ext_resource type="Texture2D" uid="uid://cwwtq7g3uh083" path="res://textures/env/icona_plasma.png" id="1_46ycc"]
 [ext_resource type="ItemCategory" uid="uid://ctsrk0oxdnm5t" path="res://resources/weapons/categories/slugs_category.tres" id="1_e2ki1"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_rx2al"]
-[ext_resource type="Texture2D" uid="uid://dllybiri2t01u" path="res://textures/env/bullet_casings/plasma_shell.png" id="2_rx2al"]
+[ext_resource type="Texture2D" uid="uid://dqx5sesuapv1r" path="res://textures/env/bullet_casings/plasma_shell.png" id="2_rx2al"]
 [ext_resource type="AudioStream" uid="uid://nyw07k822c5s" path="res://sounds/weapons/RELO2.ogg" id="3_e2ki1"]
 
 [sub_resource type="Curve" id="Curve_orkxq"]

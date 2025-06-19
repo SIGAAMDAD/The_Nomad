@@ -1,8 +1,8 @@
 [gd_resource type="TileSet" load_steps=14 format=3 uid="uid://l3b780v0d6p4"]
 
-[ext_resource type="Texture2D" uid="uid://dx0j1h81kkid8" path="res://textures/tilesets/kirosla_estate.png" id="1_1jwus"]
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="2_awt23"]
-[ext_resource type="Texture2D" uid="uid://1k2g1b8lsoyl" path="res://textures/tilesets/galakas/interior.png" id="3_bdaau"]
+[ext_resource type="Texture2D" uid="uid://pubd5h3pth35" path="res://textures/tilesets/kirosla_estate.png" id="1_1jwus"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="2_awt23"]
+[ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="3_bdaau"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bdaau"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)

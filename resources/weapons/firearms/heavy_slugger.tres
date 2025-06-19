@@ -4,7 +4,7 @@
 [ext_resource type="ItemCategory" uid="uid://druyvv487hku" path="res://resources/weapons/categories/weapon_category.tres" id="2_d4q7u"]
 [ext_resource type="ItemCategory" uid="uid://wnl7i8f154lr" path="res://resources/weapons/categories/primary_category.tres" id="3_qbuyo"]
 [ext_resource type="AudioStream" uid="uid://di0pupbuvpw6f" path="res://sounds/player/heavy_slugger_use.ogg" id="4_d4q7u"]
-[ext_resource type="Texture2D" uid="uid://chwd0kdx7mjo8" path="res://textures/env/icona_heavy_slugger.png" id="4_qbuyo"]
+[ext_resource type="Texture2D" uid="uid://57qoe18bwgfx" path="res://textures/env/icona_heavy_slugger.png" id="4_qbuyo"]
 
 [resource]
 id = "WEAPON_FIREARM_HEAVY_SLUGGER"
