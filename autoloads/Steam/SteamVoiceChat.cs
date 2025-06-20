@@ -8,10 +8,13 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private static AudioStreamGeneratorPlayback Playback;
 	private static readonly uint SAMPLE_RATE = 48000;
 
-	private byte[] Packet;
-	private byte[] RecordBuffer;
+	private byte[] Packet = new byte[ 1024 ];
+	private byte[] RecordBuffer = new byte[ 768 ];
 	private int CaptureBusIndex = 0;
 	private AudioEffectCapture CaptureEffect;
+
+	private byte[] output = new byte[ 44100 ];
+	private byte[] DecodeBuffer = new byte[ 1024 ];
 
 	private float VoiceActivity = 0.0f;
 	private const float VoiceThreshold = 0.05f;
@@ -32,9 +35,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		Packet = new byte[ 24 * 1024 ];
-		RecordBuffer = new byte[ 24 * 1024 ];
-
 		SteamUser.StartVoiceRecording();
 		SteamFriends.SetInGameVoiceSpeaking( SteamManager.GetSteamID(), true );
 	}
@@ -52,24 +52,19 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private void CaptureVoice() {
 		EVoiceResult result = SteamUser.GetAvailableVoice( out uint compressedSize );
 		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
-			byte[] packet = new byte[ compressedSize + sizeof( uint ) + 1 ];
-			GD.Print( "PacketSize: " + packet.Length );
 			if ( SteamUser.GetVoice( true, RecordBuffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
-				packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
-				packet[ 1 ] = (byte)( bytesWritten & 0xff );
-				packet[ 2 ] = (byte)( ( bytesWritten >> 8 ) & 0xff );
-				packet[ 3 ] = (byte)( ( bytesWritten >> 16 ) & 0xff );
-				packet[ 4 ] = (byte)( ( bytesWritten >> 24 ) & 0xff );
+				Packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
+				Packet[ 1 ] = (byte)( bytesWritten & 0xff );
+				Packet[ 2 ] = (byte)( ( bytesWritten >> 8 ) & 0xff );
+				Packet[ 3 ] = (byte)( ( bytesWritten >> 16 ) & 0xff );
+				Packet[ 4 ] = (byte)( ( bytesWritten >> 24 ) & 0xff );
 
-				Buffer.BlockCopy( RecordBuffer, 0, packet, 5, (int)bytesWritten );
+				Buffer.BlockCopy( RecordBuffer, 0, Packet, 5, (int)bytesWritten );
 
-				SteamLobby.Instance.SendP2PPacket( packet, Constants.k_nSteamNetworkingSend_Unreliable );
+				SteamLobby.Instance.SendP2PPacket( Packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 			}
 		}
 	}
-
-	private byte[] output = new byte[ 44100 ];
-	private byte[] DecodeBuffer = new byte[ 64 * 1024 ];
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		uint bytesWritten = BitConverter.ToUInt32( data, 1 );
 		Buffer.BlockCopy( data, 5, DecodeBuffer, 0, (int)bytesWritten );
