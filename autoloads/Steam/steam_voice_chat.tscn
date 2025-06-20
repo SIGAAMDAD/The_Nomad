@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://cl1nnyh35wgfq" path="res://textures/voice_active_icon.png" id="2_c5fhs"]
 
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_c5fhs"]
-buffer_length = 1.5
 
 [node name="SteamVoiceChat" type="CanvasLayer"]
 script = ExtResource("1_pp3r2")

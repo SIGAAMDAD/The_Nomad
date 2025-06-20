@@ -223,6 +223,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 using Godot;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
@@ -278,18 +279,21 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		}
 	}
 
-	private byte[] output = new byte[ 24 * 1024 ];
+	private byte[] output = new byte[ 2 * 1024 * 1024 ];
 	public void ProcessIncomingVoice( ulong senderId, byte[] data, uint bytesWritten ) {
 		EVoiceResult result = SteamUser.DecompressVoice( data, bytesWritten, output, (uint)output.Length, out uint written,
-			22050 );
+			44100 );
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
 			GD.Print( "DECODING!" );
-			for ( int i = 0; i < Playback.GetFramesAvailable(); i++ ) {
-				int rawValue = output[ i ] | ( output[ i + 1 ] << 8 );
+			Godot.Vector2[] frames = new Godot.Vector2[ written / 2 ];
+			for ( int i = 0; i < frames.Length; i++ ) {
+				int rawValue = output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 );
 				rawValue = ( rawValue + 32768 ) & 0xffff;
 				float amplitude = ( rawValue - 32768 ) / 32768.0f;
-				Playback.PushFrame( new Godot.Vector2( amplitude, amplitude ) );
+//				float amplitude = rawValue / 32768.0f;
+				frames[ i ] = new Godot.Vector2( amplitude, amplitude );
 			}
+			Playback.PushBuffer( frames );
 		} else {
 			Console.PrintError( string.Format( "[STEAM] Error decompressing voice audio packet: {0}", result ) );
 		}
