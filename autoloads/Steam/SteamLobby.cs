@@ -745,12 +745,9 @@ public partial class SteamLobby : Node {
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
-		case MessageType.VoiceChat: {
-			byte[] buffer = new byte[ msg.Length - 1 - sizeof( uint ) ];
-			uint bytesWritten = BitConverter.ToUInt32( msg.Data, 1 );
-			Buffer.BlockCopy( msg.Data, 5, buffer, 0, buffer.Length );
-			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, buffer, bytesWritten );
-			break; }
+		case MessageType.VoiceChat:
+			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, msg.Data );
+			break;
 		case MessageType.Handshake:
 			break;
 		case MessageType.ServerCommand:
