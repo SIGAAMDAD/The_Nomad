@@ -8,6 +8,8 @@ using Renown;
 using Renown.World;
 using System.Diagnostics;
 using System.Net.Security;
+using PlayerSystem.Perks;
+using System.Text;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -44,6 +46,7 @@ public partial class Player : Entity {
 		Parrying = 0x00008000,
 		Encumbured = 0x00010000,
 		Emoting = 0x00020000,
+		Sober = 0x00040000,
 	};
 
 	public enum AnimationState : byte {
@@ -82,6 +85,22 @@ public partial class Player : Entity {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
 	];
 
+	private static readonly float PunchRange = 40.0f;
+	private static readonly int MAX_WEAPON_SLOTS = 4;
+	private static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+	private static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
+
+	public static bool InCombat = false;
+	public static int NumTargets = 0;
+
+	public static readonly int MAX_PERKS = 3;
+	public static readonly float ACCEL = 1600.0f;
+	public static readonly float FRICTION = 1400.0f;
+	public static readonly float MAX_SPEED = 440.0f;
+	public static readonly float JUMP_VELOCITY = -400.0f;
+
+	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
+
 	private Godot.Vector2 LastNetworkPosition = Godot.Vector2.Zero;
 	private PlayerAnimationState LastLeftArmAnimationState;
 	private PlayerAnimationState LastRightArmAnimationState;
@@ -92,21 +111,6 @@ public partial class Player : Entity {
 	private float LastNetworkBloodAmount = 0.0f;
 	private WeaponEntity.Properties LastNetworkUseMode = WeaponEntity.Properties.None;
 	private string LastNetworkWeaponID = "";
-
-	private static readonly float PunchRange = 40.0f;
-	private static readonly int MAX_WEAPON_SLOTS = 4;
-	private static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	private static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
-
-	public static bool InCombat = false;
-	public static int NumTargets = 0;
-
-	public static readonly float ACCEL = 1600.0f;
-	public static readonly float FRICTION = 1400.0f;
-	public static readonly float MAX_SPEED = 440.0f;
-	public static readonly float JUMP_VELOCITY = -400.0f;
-
-	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
 	[Export]
 	private Node Inventory;
@@ -213,7 +217,6 @@ public partial class Player : Entity {
 
 	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
 
-	private float Rage = 60.0f;
 	private int CurrentWeapon = WeaponSlot.INVALID;
 
 	private Camera2D Viewpoint;
@@ -223,7 +226,9 @@ public partial class Player : Entity {
 	//
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
+	//
 	// aim reticle
+	//
 	private Line2D AimLine = null;
 	private RayCast2D AimRayCast = null;
 
@@ -236,20 +241,31 @@ public partial class Player : Entity {
 	private AudioStreamPlayer2D AudioChannel;
 	private AudioStreamPlayer2D DashChannel;
 	private AudioStreamPlayer2D MiscChannel;
+	private AudioStreamPlayer2D VoiceChannel;
+
+	//
+	// for the phantoms
+	//
+	private AudioStreamPlayer WhisperChannel;
+	private Timer WhisperTimer;
 
 	private FootSteps FootSteps;
 
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1024 );
+	private NetworkSyncObject SyncObject;
 
 	private TileMapFloor Floor;
 
 	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
 	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
 	private Dictionary<int, AmmoStack> AmmoStacks = new Dictionary<int, AmmoStack>();
+	private HashSet<Perk> UnlockedPerks;
+	private HashSet<Rune> UnlockedRunes;
+
+	private float Rage = 60.0f;
+	private float Sanity = 60.0f;
 
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
-	public static int ComboCounter = 0;
 	private float ArmAngle = 0.0f;
 	private float DashBurnout = 0.0f;
 	private float DashTimer = 0.0f;
@@ -582,32 +598,6 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)TorsoAnimationState );
 
 		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
-		/*
-
-		SyncObject.Write( TorsoAnimation.FlipH );
-
-		SyncObject.Write( GlobalPosition );
-
-		SyncObject.Write( ArmLeft.Animations.GlobalRotation );
-		SyncObject.Write( ArmRight.Animations.GlobalRotation );
-
-		SyncObject.Write( (byte)LeftArmAnimationState );
-		SyncObject.Write( (byte)RightArmAnimationState );
-		SyncObject.Write( (byte)LegAnimationState );
-		SyncObject.Write( (byte)TorsoAnimationState );
-
-		SyncObject.Write( (byte)HandsUsed );
-
-		SyncObject.Write( (sbyte)CurrentWeapon );
-		if ( CurrentWeapon != WeaponSlot.INVALID ) {
-			SyncObject.Write( (uint)WeaponSlots[ CurrentWeapon ].GetMode() );
-			SyncObject.Write( WeaponSlots[ CurrentWeapon ].IsUsed() );
-			if ( WeaponSlots[ CurrentWeapon ].IsUsed() ) {
-				SyncObject.Write( ( (string)WeaponSlots[ CurrentWeapon ].GetWeapon().Data.Get( "id" ) ).GetHashCode() );
-			}
-		}
-		SyncObject.Sync();
-		*/
 	}
 
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -624,15 +614,27 @@ public partial class Player : Entity {
 		if ( !SettingsData.GetShowBlood() ) {
 			return;
 		}
-		BloodAmount += nAmount;
-		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
-		BloodDropTimer.Start();
+		
+		// cover us with more blood if we're sober
+		if ( ( Flags & PlayerFlags.Sober ) == 0 ) {
+			BloodAmount += nAmount * 0.25f;
+			BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
+			BloodDropTimer.Start();
+		} else {
+			BloodAmount += nAmount;
+			BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
+			BloodDropTimer.Start();
+		}
 	}
 	private void OnBloodDropTimerTimeout() {
 		if ( !SettingsData.GetShowBlood() ) {
 			return;
 		}
-		BloodAmount -= 0.001f;
+		if ( ( Flags & PlayerFlags.Sober ) == 0 ) {
+			BloodAmount -= 0.01f;
+		} else {
+			BloodAmount -= 0.001f;
+		}
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 
 		if ( BloodAmount < 0.0f ) {
@@ -1135,7 +1137,7 @@ public partial class Player : Entity {
 			FrameDamage += weapon.Use( weapon.LastUsedMode, out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			if ( FrameDamage > 0.0f ) {
 				IncreaseBlood( FrameDamage * 0.0001f );
-				ComboCounter++;
+				FreeFlow.IncreaseCombo();
 			}
 			Flags |= PlayerFlags.UsingWeapon;
 			SetSoundLevel( soundLevel );
@@ -1726,6 +1728,11 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamManager.GetSteamID() );
+
+			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
+				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
+		} else {
+			WhisperChannel = new AudioStreamPlayer();
 		}
 
 		LevelData.Instance.PlayerRespawn += Respawn;
@@ -1747,6 +1754,7 @@ public partial class Player : Entity {
 
 		Health = 100.0f;
 		Rage = 60.0f;
+		Sanity = 60.0f;
 
 		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
 			ResourceCache.LoadKeyboardBinds();
@@ -1903,11 +1911,6 @@ public partial class Player : Entity {
 		Console.AddCommand( "suicide", Callable.From( CmdSuicide ), null, 0, "it's in the name" );
 		Console.AddCommand( "teleport", Callable.From<string>( CmdTeleport ), new[] { "checkpoint" }, 1, "teleports the player to the specified location" );
 
-		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
-			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
-				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
-		}
-
 		ProcessMode = ProcessModeEnum.Pausable;
 
 		if ( SettingsData.GetShowBlood() ) {
@@ -2042,7 +2045,7 @@ public partial class Player : Entity {
 		}
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
-			Rage += FrameDamage * ComboCounter * delta;
+			Rage += FrameDamage * FreeFlow.GetCurrentCombo() * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
 			HUD.GetRageBar().Rage = Rage;

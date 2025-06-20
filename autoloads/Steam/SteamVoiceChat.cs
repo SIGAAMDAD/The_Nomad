@@ -3,6 +3,9 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics;
+using PlayerSystem;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private static AudioStreamGeneratorPlayback Playback;
@@ -65,23 +68,121 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 			}
 		}
 	}
-	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
+
+	public unsafe void ProcessIncomingVoice( ulong senderId, byte[] data ) {
 		uint bytesWritten = BitConverter.ToUInt32( data, 1 );
 		Buffer.BlockCopy( data, 5, DecodeBuffer, 0, (int)bytesWritten );
 
-		EVoiceResult result = SteamUser.DecompressVoice( DecodeBuffer, bytesWritten, output, (uint)output.Length, out uint written,
-			44100 );
+		EVoiceResult result = SteamUser.DecompressVoice(
+			DecodeBuffer, bytesWritten, output, (uint)output.Length,
+			out uint written, 44100
+		);
+
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
-			Godot.Vector2[] frames = new Godot.Vector2[ written / 2 ];
-			for ( int i = 0; i < frames.Length; i++ ) {
-				int rawValue = output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 );
-				rawValue = ( rawValue + 32768 ) & 0xffff;
-				float amplitude = ( rawValue - 32768 ) / 32768.0f;
-				frames[ i ] = new Godot.Vector2( amplitude, amplitude );
+			int sampleCount = (int)written / 2;
+			Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
+
+			fixed ( byte* outputPtr = output )
+			fixed ( Godot.Vector2* framesPtr = frames ) {
+				if ( Avx2.IsSupported && sampleCount >= 16 ) {
+					Vector256<float> scaleVec = Vector256.Create( 1.0f / 32768.0f );
+					Vector256<int> signMask = Vector256.Create( unchecked((int)0xFFFF0000) );
+
+					// Process 16 samples per iteration
+					int i = 0;
+					for ( ; i <= sampleCount - 16; i += 16 ) {
+						// Load 32 bytes (16 shorts)
+						Vector256<short> shorts = Avx.LoadVector256( (short*)( outputPtr + i * 2 ) );
+
+						// Convert to two Vector256<int> (low and high)
+						Vector256<int> intsLow = Avx2.ConvertToVector256Int32( shorts.GetLower() );
+						Vector256<int> intsHigh = Avx2.ConvertToVector256Int32( shorts.GetUpper() );
+
+						// Handle sign extension manually
+						intsLow = Avx2.Or( intsLow, signMask );
+						intsHigh = Avx2.Or( intsHigh, signMask );
+
+						// Convert to float and scale
+						Vector256<float> floatsLow = Avx.ConvertToVector256Single( intsLow );
+						Vector256<float> floatsHigh = Avx.ConvertToVector256Single( intsHigh );
+						floatsLow = Avx.Multiply( floatsLow, scaleVec );
+						floatsHigh = Avx.Multiply( floatsHigh, scaleVec );
+
+						// Interleave and store as Vector2
+						Vector256<float> interleavedLow = Avx.UnpackLow( floatsLow, floatsLow );
+						Vector256<float> interleavedHigh = Avx.UnpackHigh( floatsLow, floatsLow );
+						Avx.Store( (float*)( framesPtr + i ), interleavedLow );
+						Avx.Store( (float*)( framesPtr + i + 4 ), interleavedHigh );
+
+						Vector256<float> interleavedLow2 = Avx.UnpackLow( floatsHigh, floatsHigh );
+						Vector256<float> interleavedHigh2 = Avx.UnpackHigh( floatsHigh, floatsHigh );
+						Avx.Store( (float*)( framesPtr + i + 8 ), interleavedLow2 );
+						Avx.Store( (float*)( framesPtr + i + 12 ), interleavedHigh2 );
+					}
+
+					// Process remaining samples with scalar fallback
+					for ( ; i < sampleCount; i++ ) {
+						short s = (short)( output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 ) );
+						float amp = s * ( 1.0f / 32768.0f );
+						framesPtr[ i ] = new Godot.Vector2( amp, amp );
+					}
+				} else if ( Sse3.IsSupported && sampleCount >= 8 ) {
+					// SSE3 optimization for 8 samples per iteration
+					Vector128<float> scaleVec = Vector128.Create( 1.0f / 32768.0f );
+					int i = 0;
+
+					for ( ; i <= sampleCount - 8; i += 8 ) {
+						// Load 16 bytes (8 samples) directly from memory
+						Vector128<short> samples = Sse2.LoadVector128( (short*)( outputPtr + i * 2 ) );
+
+						// Convert to 32-bit integers in two batches
+						Vector128<int> ints1 = Sse41.ConvertToVector128Int32( samples );
+						Vector128<int> ints2 = Sse41.ConvertToVector128Int32( Sse2.ShiftRightLogical128BitLane( samples, 8 ) );
+
+						// Convert to floats
+						Vector128<float> floats1 = Sse2.ConvertToVector128Single( ints1 );
+						Vector128<float> floats2 = Sse2.ConvertToVector128Single( ints2 );
+
+						// Apply scaling
+						floats1 = Sse.Multiply( floats1, scaleVec );
+						floats2 = Sse.Multiply( floats2, scaleVec );
+
+						// Create stereo pairs using efficient shuffling
+						Vector128<float> stereo1 = Sse.Shuffle( floats1, floats1, 0x00 ); // [a, a, b, b]
+						Vector128<float> stereo2 = Sse.Shuffle( floats1, floats1, 0x55 ); // [c, c, d, d]
+						Vector128<float> stereo3 = Sse.Shuffle( floats2, floats2, 0x00 ); // [e, e, f, f]
+						Vector128<float> stereo4 = Sse.Shuffle( floats2, floats2, 0x55 ); // [g, g, h, h]
+
+						// Store results as interleaved stereo frames
+						Sse.StoreLow( (float*)( framesPtr + i ), stereo1 );
+						Sse.StoreHigh( (float*)( framesPtr + i + 2 ), stereo1 );
+						Sse.StoreLow( (float*)( framesPtr + i + 4 ), stereo2 );
+						Sse.StoreHigh( (float*)( framesPtr + i + 6 ), stereo2 );
+						Sse.StoreLow( (float*)( framesPtr + i + 8 ), stereo3 );
+						Sse.StoreHigh( (float*)( framesPtr + i + 10 ), stereo3 );
+						Sse.StoreLow( (float*)( framesPtr + i + 12 ), stereo4 );
+						Sse.StoreHigh( (float*)( framesPtr + i + 14 ), stereo4 );
+					}
+
+					// Process remaining samples
+					for ( ; i < sampleCount; i++ ) {
+						short s = (short)( output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 ) );
+						float amp = s * ( 1.0f / 32768.0f );
+						frames[ i ] = new Godot.Vector2( amp, amp );
+					}
+				} else {
+					// scalar fallback when no SIMD support
+					for ( int i = 0; i < sampleCount; i++ ) {
+						short s = (short)( output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 ) );
+						float amp = s * ( 1.0f / 32768.0f );
+						frames[ i ] = new Godot.Vector2( amp, amp );
+					}
+				}
 			}
+
 			Playback.PushBuffer( frames );
 		} else {
-			Console.PrintError( string.Format( "[STEAM] Error decompressing voice audio packet: {0}", result ) );
+			Console.PrintError( $"[STEAM] Error decompressing voice audio packet: {result}" );
 		}
 	}
 };

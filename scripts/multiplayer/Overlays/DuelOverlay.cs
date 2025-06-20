@@ -20,8 +20,11 @@ namespace Multiplayer.Overlays {
 		public void SetRemainingTime( float time ) => CountdownLabel.SetTimeLeft( time );
 		public float GetRemainingTime() => CountdownLabel.GetTimeLeft();
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private void NewRound() {
+			if ( !SteamLobby.Instance.IsOwner() ) {
+				return;
+			}
 			SetProcess( true );
 			CountdownLabel.Visible = true;
 			CountdownLabel.StartCountdown();

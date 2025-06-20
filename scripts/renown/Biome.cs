@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace Renown.World {
 	public enum WeatherType : uint {
@@ -76,12 +77,12 @@ namespace Renown.World {
 		private float WeatherChangeInterval = 0.0f;
 		
 		private Timer WeatherChangeTimer;
-		private System.Collections.Generic.Dictionary<WeatherType, float> WeatherChances;
+		private Dictionary<WeatherType, float> WeatherChances;
 		
 		[Signal]
-		public delegate void AgentEnteredAreaEventHandler( CharacterBody2D agent );
+		public delegate void AgentEnteredAreaEventHandler( Entity agent );
 		[Signal]
-		public delegate void AgentExitedAreaEventHandler( CharacterBody2D agent );
+		public delegate void AgentExitedAreaEventHandler( Entity agent );
 
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
@@ -99,7 +100,7 @@ namespace Renown.World {
 		}
 		
 		public override void _Ready() {
-			WeatherChances = new System.Collections.Generic.Dictionary<WeatherType, float>{
+			WeatherChances = new Dictionary<WeatherType, float>{
 				{ WeatherType.Clear, WeatherChanceClear },
 				{ WeatherType.Humid, WeatherChanceHumid },
 				{ WeatherType.Snowing, WeatherChanceSnowing },
@@ -111,6 +112,7 @@ namespace Renown.World {
 			};
 			
 			WeatherChangeTimer = new Timer();
+			WeatherChangeTimer.Name = "WeatherChangeTimer";
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );

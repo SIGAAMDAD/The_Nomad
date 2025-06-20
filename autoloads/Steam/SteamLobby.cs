@@ -432,6 +432,11 @@ public partial class SteamLobby : Node {
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
 				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 64 * 1024 }
 			},
+			new SteamNetworkingConfigValue_t{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendRateMin,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 64000 }
+			},
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_RecvBufferSize,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
@@ -455,7 +460,7 @@ public partial class SteamLobby : Node {
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SymmetricConnect,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 0 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1 }
 			}
 		};
 

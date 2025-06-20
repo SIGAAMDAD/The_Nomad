@@ -7,6 +7,19 @@ namespace PlayerSystem {
 		private AnimatedSprite2D LeftArm;
 		private AnimatedSprite2D RightArm;
 
+		private NetworkSyncObject SyncObject;
+
+		private void ServerSync() {
+			SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
+			SyncObject.Write( GetPath().GetHashCode() );
+
+			switch ( LeftArm.Animation ) {
+			case "idle":
+				SyncObject.Write( (byte)PlayerAnimationState.Idle );
+				break;
+			};
+		}
+
 		public AfterImage() {
 			LeftArm = new AnimatedSprite2D();
 			CallDeferred( "add_child", LeftArm );
@@ -19,6 +32,11 @@ namespace PlayerSystem {
 
 			Legs = new AnimatedSprite2D();
 			CallDeferred( "add_child", Legs );
+
+			if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+				SyncObject = new NetworkSyncObject( 24 );
+				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, ServerSync, null ) );
+			}
 		}
 		public void Update( Player player ) {
 			if ( player == null ) {

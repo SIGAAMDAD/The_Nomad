@@ -1,67 +1,33 @@
 shader_type canvas_item;
 
-#define iResolution 1.0/SCREEN_PIXEL_SIZE
-#define iTime TIME
-#define fragColor COLOR
+// Blood splotch settings
+uniform sampler2D noise_tex;
+uniform float blood_speed = 0.5;
+uniform float blood_intensity = 0.8;
+uniform vec4 blood_color : source_color = vec4(0.5, 0, 0, 1);
+uniform float blood_scale = 3.0;
 
-uniform sampler2D iChannel0;
-uniform float frequency : hint_range(-10.0, 4.0, 0.1) = 0.0;
-uniform float size : hint_range(0.001, 0.05, 0.001) = 0.015;
+// Vignette settings
+uniform float vignette_intensity = 0.7;
+uniform vec4 vignette_color : source_color = vec4(0.8, 0, 0, 1);
+uniform float vignette_size = 0.7;
 
-// Author: Élie Michel
-// License: CC BY 3.0
-// July 2017
+void fragment() {
+    vec2 uv = UV;
 
-vec2 rand(vec2 c){
-    mat2 m = mat2(vec2(12.9898,.16180),vec2(78.233,.31415));
-	return fract(sin(m * c) * vec2(43758.5453, 14142.1));
-}
+    // Blood splotches (flowing downward)
+    vec2 blood_uv = uv * blood_scale;
+    blood_uv.y += TIME * blood_speed;
+    float noise = texture(noise_tex, blood_uv).r;
+    float blood = smoothstep(0.4, 0.6, noise) * blood_intensity;
 
-vec2 noise(vec2 p){
-	vec2 co = floor(p);
-	vec2 mu = fract(p);
-	mu = 3.*mu*mu-2.*mu*mu*mu;
-	vec2 a = rand((co+vec2(0.,0.)));
-	vec2 b = rand((co+vec2(1.,0.)));
-	vec2 c = rand((co+vec2(0.,1.)));
-	vec2 d = rand((co+vec2(1.,1.)));
-	return mix(mix(a, b, mu.x), mix(c, d, mu.x), mu.y);
-}
+    // Vignette (red border)
+    float dist = distance(uv, vec2(0.5));
+    float vignette = smoothstep(vignette_size, 1.0, dist) * vignette_intensity;
 
-void fragment()
-{
-	vec2 u = UV,
-         v = UV * 0.1,
-         n = noise(v*200.); // Displacement
+    // Combine effects
+    vec4 final_color = blood_color * blood;
+    final_color += vignette_color * vignette * (1.0 - blood);
 
-    fragColor = textureLod(iChannel0, u, 2.5);
-
-    // Loop through the different inverse sizes of drops
-    for (float r = 4. ; r > frequency ; r--) {
-        vec2 x = iResolution.xy * r * size,  // Number of potential drops (in a grid)
-             p = 6.28 * u * x + (n - .5) * 2.,
-             s = sin(p);
-
-        // Current drop properties. Coordinates are rounded to ensure a
-        // consistent value among the fragment of a given drop.
-        //vec4 d = texture(iChannel1, round(u * x - 0.25) / x);
-        vec2 v = round(u * x - 0.25) / x;
-        vec4 d = vec4(noise(v*200.), noise(v));
-
-        // Drop shape and fading
-        float t = (s.x+s.y) * max(0., 1. - fract(iTime * (d.b + .1) + d.g) * 2.);;
-
-        // d.r -> only x% of drops are kept on, with x depending on the size of drops
-        if (d.r < (5.-r)*.08 && t > .5) {
-            // Drop normal
-            vec3 v = normalize(-vec3(cos(p), mix(.2, 2., t-.5)));
-             //fragColor = vec4(v * 0.5 + 0.5, 1.0);  // show normals
-
-            // Poor man's refraction (no visual need to do more)
-            fragColor = texture(iChannel0, u - v.xy * .3);
-        }
-    }
-
-    // Debug noise function
-    //f = vec4(n, 0.0, 1.0);
+    COLOR = final_color;
 }

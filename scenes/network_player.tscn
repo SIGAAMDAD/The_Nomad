@@ -87,3 +87,5 @@ shape = SubResource("RectangleShape2D_0rnld")
 
 [node name="FootSteps" type="Node" parent="."]
 script = ExtResource("10_pr72v")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
