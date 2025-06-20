@@ -66,6 +66,7 @@ BugReportingForm="*res://scenes/menus/bug_reporter.tscn"
 FpsCounter="*res://scenes/fps_counter.tscn"
 DialogueGlobals="*res://autoloads/DialogueGlobals.cs"
 GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
+SteamVoiceChat="*res://autoloads/Steam/steam_voice_chat.tscn"
 NetworkingMonitor="*res://scenes/multiplayer/networking_monitor.tscn"
 
 [debug]

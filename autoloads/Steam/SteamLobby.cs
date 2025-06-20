@@ -179,6 +179,8 @@ public partial class SteamLobby : Node {
 	private CSteamID LobbyOwnerId = CSteamID.Nil;
 	private bool IsHost = false;
 
+	private Node VoiceChat;
+
 	// Connection management
 	private Dictionary<CSteamID, HSteamNetConnection> Connections = new Dictionary<CSteamID, HSteamNetConnection>();
 	private Dictionary<CSteamID, HSteamNetConnection> PendingConnections = new Dictionary<CSteamID, HSteamNetConnection>();
@@ -592,6 +594,13 @@ public partial class SteamLobby : Node {
 			}
 		}
 	}
+
+	public static void SendVoicePacket( byte[] data ) {
+		List<byte> Packet = new List<byte>( 1 + data.Length );
+		Packet[ 0 ] = (byte)MessageType.VoiceChat;
+		Packet.AddRange( new ReadOnlySpan<byte>( data ) );
+		Instance.SendP2PPacket( Packet.ToArray(), Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
+	}
 	public void SendTargetPacket( CSteamID target, byte[] data, int sendType = Constants.k_nSteamNetworkingSend_Reliable, bool safe = false, int channel = 0 ) {
 		if ( !Connections.TryGetValue( target, out HSteamNetConnection conn ) ) {
 			Console.PrintError( string.Format( "SendTargetPacket: not a valid connection id {0}", target ) );
@@ -734,6 +743,11 @@ public partial class SteamLobby : Node {
 		case MessageType.GameData:
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
+		case MessageType.VoiceChat: {
+			byte[] buffer = new byte[ msg.Length - 1 ];
+			Buffer.BlockCopy( msg.Data, 1, buffer, 0, buffer.Length );
+			VoiceChat.Call( "process_incoming_voice", (int)(ulong)msg.Sender, (Godot.Collections.Dictionary)GD.BytesToVar( buffer ) );
+			break; }
 		case MessageType.Handshake:
 			break;
 		case MessageType.ServerCommand:
@@ -1184,6 +1198,8 @@ public partial class SteamLobby : Node {
 			Priority = System.Threading.ThreadPriority.Highest
 		};
 		NetworkThread.Start();
+
+		VoiceChat = GetNode( "/root/SteamVoiceChat" );
 
 		// Add console command
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );
