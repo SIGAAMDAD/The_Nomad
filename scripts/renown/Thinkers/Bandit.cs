@@ -337,12 +337,13 @@ namespace Renown.Thinkers {
 		protected override void OnDie( Entity source, Entity target ) {
 			base.OnDie( source, target );
 
-			if ( source is Player && GameConfiguration.GameMode == GameMode.ChallengeMode ) {
-				if ( BodyAnimations.Animation == "die_high" ) {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
-					System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
-				} else if ( BodyAnimations.Animation == "die_low" ) {
-					ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+			if ( source is Player ) {
+				if ( GameConfiguration.GameMode == GameMode.ChallengeMode || GameConfiguration.GameMode == GameMode.JohnWick ) {
+					if ( BodyAnimations.Animation == "die_high" ) {
+						FreeFlow.AddKill( KillType.Headshot, ChallengeMode_Score );
+					} else if ( BodyAnimations.Animation == "die_low" ) {
+						FreeFlow.AddKill( KillType.Bodyshot, ChallengeMode_Score );
+					}
 				}
 			}
 		}

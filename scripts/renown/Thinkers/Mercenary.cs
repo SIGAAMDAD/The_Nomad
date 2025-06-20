@@ -472,20 +472,11 @@ namespace Renown.Thinkers {
 			SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
 
 			if ( source is Player ) {
-				if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				if ( GameConfiguration.GameMode == GameMode.ChallengeMode || GameConfiguration.GameMode == GameMode.JohnWick ) {
 					if ( BodyAnimations.Animation == "die_high" ) {
-						ChallengeLevel.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
-						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
+						FreeFlow.AddKill( KillType.Headshot, ChallengeMode_Score );
 					} else if ( BodyAnimations.Animation == "die_low" ) {
-						ChallengeLevel.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
-					}
-				} else if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
-					JohnWickMode.AddKill();
-					if ( BodyAnimations.Animation == "die_high" ) {
-						JohnWickMode.IncreaseScore( ChallengeMode_Score * ChallengeCache.ScoreMultiplier_HeadShot * Player.ComboCounter );
-						System.Threading.Interlocked.Increment( ref ChallengeLevel.HeadshotCounter );
-					} else if ( BodyAnimations.Animation == "die_low" ) {
-						JohnWickMode.IncreaseScore( ChallengeMode_Score * Player.ComboCounter );
+						FreeFlow.AddKill( KillType.Bodyshot, ChallengeMode_Score );
 					}
 				}
 			}

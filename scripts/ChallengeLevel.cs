@@ -48,9 +48,6 @@ public partial class ChallengeLevel : LevelData {
 	public static int HellbreakCounter = 0;
 	public static ScoreBonus BonusFlags = ScoreBonus.All;
 
-	private static int TotalScore = 0;
-	private static int MaxCombo = 0;
-
 	private void OnHellbreakerExitFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnHellbreakerExitFinished ) );
 
@@ -145,13 +142,10 @@ public partial class ChallengeLevel : LevelData {
 
 		Timer.Stop();
 
-		EndCombo( Player.ComboCounter );
-
 		//
 		// calculate total score
 		//
-		TotalScore += MaxCombo * 10;
-		TotalScore += HellbreakCounter * 5;
+		FreeFlow.CalculateEncounterScore();
 
 		int milliseconds = Timer.Elapsed.Milliseconds;
 		int seconds = Timer.Elapsed.Seconds;
@@ -160,48 +154,40 @@ public partial class ChallengeLevel : LevelData {
 		if ( MinTimeMinutes != 0 ) {
 			int leftOver = MinTimeMinutes - minutes;
 			if ( leftOver > 0 ) {
-				TotalScore += leftOver * 100;
+				FreeFlow.IncreaseTotalScore( leftOver * 100 );
 			}
 		}
 		if ( MinTimeSeconds != 0 ) {
 			int leftOver = MinTimeSeconds - seconds;
 			if ( leftOver > 0 ) {
-				TotalScore += leftOver * 10;
+				FreeFlow.IncreaseCombo( leftOver * 10 );
 			}
 		}
 		if ( DeathCounter == 0 ) {
 			// no deaths
-			TotalScore += 1000;
+			FreeFlow.IncreaseTotalScore( 1000 );
 		}
 		if ( ( BonusFlags & ScoreBonus.NoDamage ) != 0 ) {
 			// no damage
-			TotalScore += 10000;
+			FreeFlow.IncreaseTotalScore( 10000 );
 		}
 		if ( DeathCounter == 0 && ( BonusFlags & ScoreBonus.NoDamage ) != 0 && HeadshotCounter == TotalEnemies ) {
 			// legend
-			TotalScore += 10000;
+			FreeFlow.IncreaseTotalScore( 10000 );
 		}
 
 		ThisPlayer.BlockInput( true );
 
-		ChallengeCache.UpdateScore( ChallengeCache.GetCurrentLeaderboard(), ChallengeCache.GetCurrentMap(), TotalScore, minutes, seconds, milliseconds );
+		ChallengeCache.UpdateScore( ChallengeCache.GetCurrentLeaderboard(), ChallengeCache.GetCurrentMap(), FreeFlow.GetTotalScore(), minutes, seconds, milliseconds );
 		
 		ChallengeModeScore ScoreOverlay = ResourceCache.GetScene( "res://scenes/menus/challenge_mode_score.tscn" ).Instantiate<ChallengeModeScore>();
 		AddChild( ScoreOverlay );
 		ScoreOverlay.SetScores(
 			new ScoreData(
 				TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", ChallengeCache.GetCurrentMap() ) ),
-				TotalScore, MaxCombo, minutes, seconds, milliseconds, TotalEnemies, DeathCounter, BonusFlags
+				FreeFlow.GetTotalScore(), FreeFlow.GetHighestCombo(), minutes, seconds, milliseconds, TotalEnemies, DeathCounter, BonusFlags
 			)
 		);
-	}
-	public static void EndCombo( int nCurrentCombo ) {
-		if ( nCurrentCombo > MaxCombo ) {
-			System.Threading.Interlocked.Exchange( ref MaxCombo, nCurrentCombo );
-		}
-	}
-	public static void IncreaseScore( int nAmount ) {
-		System.Threading.Interlocked.Add( ref TotalScore, nAmount );
 	}
 
 	protected override void OnResourcesFinishedLoading() {

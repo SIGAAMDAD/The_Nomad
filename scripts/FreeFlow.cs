@@ -15,6 +15,8 @@ public partial class FreeFlow : Node {
 	private static int MaxCombo = 0;
 	private static int HeadshotCounter = 0;
 	private static Timer BurnoutTimer;
+	private static int TotalScore = 0;
+	private static int HellbreakCounter = 0;
 
 	[Signal]
 	public delegate void ComboFinishedEventHandler( int nCombo );
@@ -23,16 +25,16 @@ public partial class FreeFlow : Node {
 	[Signal]
 	public delegate void KillAddedEventHandler( KillType nType );
 
-	public static void AddKill( KillType nType ) {
+	public static void AddKill( KillType nType, int nScore ) {
 		switch ( nType ) {
 		case KillType.Bodyshot:
 			break;
 		case KillType.Headshot:
 			HeadshotCounter++;
 			break;
-		}
-		;
+		};
 		KillCounter++;
+		TotalScore += nScore;
 	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		ComboCounter += nAmount;
@@ -47,6 +49,15 @@ public partial class FreeFlow : Node {
 	public static int GetCurrentCombo() => ComboCounter;
 	public static int GetHighestCombo() => MaxCombo;
 	public static int GetKillCounter() => KillCounter;
+	public static int GetTotalScore() => TotalScore;
+
+	public static void IncreaseTotalScore( int nAmount ) {
+		TotalScore += nAmount;
+	}
+	public static void CalculateEncounterScore() {
+		TotalScore += MaxCombo * 10;
+		TotalScore += HellbreakCounter * 5;
+	}
 
 	public override void _Ready() {
 		base._Ready();
