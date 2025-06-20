@@ -6,6 +6,8 @@ using System.Numerics;
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 using PlayerSystem;
+using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private static AudioStreamGeneratorPlayback Playback;
@@ -84,6 +86,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 			fixed ( byte* outputPtr = output )
 			fixed ( Godot.Vector2* framesPtr = frames ) {
+				/*
 				if ( Avx2.IsSupported && sampleCount >= 16 ) {
 					Vector256<float> scaleVec = Vector256.Create( 1.0f / 32768.0f );
 					Vector256<int> signMask = Vector256.Create( unchecked((int)0xFFFF0000) );
@@ -92,32 +95,45 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 					int i = 0;
 					for ( ; i <= sampleCount - 16; i += 16 ) {
 						// Load 32 bytes (16 shorts)
-						Vector256<short> shorts = Avx.LoadVector256( (short*)( outputPtr + i * 2 ) );
+						Vector256<short> rawShorts = Avx.LoadVector256( (short*)( outputPtr + i * 2 ) );
 
 						// Convert to two Vector256<int> (low and high)
-						Vector256<int> intsLow = Avx2.ConvertToVector256Int32( shorts.GetLower() );
-						Vector256<int> intsHigh = Avx2.ConvertToVector256Int32( shorts.GetUpper() );
+						Vector256<int> intsLow = Avx2.ConvertToVector256Int32( rawShorts.GetLower() );
+						Vector256<int> intsHigh = Avx2.ConvertToVector256Int32( rawShorts.GetUpper() );
 
-						// Handle sign extension manually
-						intsLow = Avx2.Or( intsLow, signMask );
-						intsHigh = Avx2.Or( intsHigh, signMask );
-
-						// Convert to float and scale
+						// Convert to float
 						Vector256<float> floatsLow = Avx.ConvertToVector256Single( intsLow );
 						Vector256<float> floatsHigh = Avx.ConvertToVector256Single( intsHigh );
+
+						// Apply scaling
 						floatsLow = Avx.Multiply( floatsLow, scaleVec );
 						floatsHigh = Avx.Multiply( floatsHigh, scaleVec );
 
-						// Interleave and store as Vector2
-						Vector256<float> interleavedLow = Avx.UnpackLow( floatsLow, floatsLow );
-						Vector256<float> interleavedHigh = Avx.UnpackHigh( floatsLow, floatsLow );
-						Avx.Store( (float*)( framesPtr + i ), interleavedLow );
-						Avx.Store( (float*)( framesPtr + i + 4 ), interleavedHigh );
+						// Duplicate samples for stereo
+						Vector256<float> stereoLow1 = Avx.Permute2x128( floatsLow, floatsLow, 0x00 );
+						Vector256<float> stereoLow2 = Avx.Permute2x128( floatsLow, floatsLow, 0x11 );
+						Vector256<float> stereoHigh1 = Avx.Permute2x128( floatsHigh, floatsHigh, 0x00 );
+						Vector256<float> stereoHigh2 = Avx.Permute2x128( floatsHigh, floatsHigh, 0x11 );
 
-						Vector256<float> interleavedLow2 = Avx.UnpackLow( floatsHigh, floatsHigh );
-						Vector256<float> interleavedHigh2 = Avx.UnpackHigh( floatsHigh, floatsHigh );
-						Avx.Store( (float*)( framesPtr + i + 8 ), interleavedLow2 );
-						Avx.Store( (float*)( framesPtr + i + 12 ), interleavedHigh2 );
+						// Interleave for stereo channels
+						Vector256<float> interleaved1 = Avx.UnpackLow( stereoLow1, stereoLow1 );
+						Vector256<float> interleaved2 = Avx.UnpackHigh( stereoLow1, stereoLow1 );
+						Vector256<float> interleaved3 = Avx.UnpackLow( stereoLow2, stereoLow2 );
+						Vector256<float> interleaved4 = Avx.UnpackHigh( stereoLow2, stereoLow2 );
+						Vector256<float> interleaved5 = Avx.UnpackLow( stereoHigh1, stereoHigh1 );
+						Vector256<float> interleaved6 = Avx.UnpackHigh( stereoHigh1, stereoHigh1 );
+						Vector256<float> interleaved7 = Avx.UnpackLow( stereoHigh2, stereoHigh2 );
+						Vector256<float> interleaved8 = Avx.UnpackHigh( stereoHigh2, stereoHigh2 );
+
+						// Store results
+						Avx.Store( (float*)( framesPtr + i ), interleaved1 );
+						Avx.Store( (float*)( framesPtr + i + 4 ), interleaved2 );
+						Avx.Store( (float*)( framesPtr + i + 8 ), interleaved3 );
+						Avx.Store( (float*)( framesPtr + i + 12 ), interleaved4 );
+						Avx.Store( (float*)( framesPtr + i + 16 ), interleaved5 );
+						Avx.Store( (float*)( framesPtr + i + 20 ), interleaved6 );
+						Avx.Store( (float*)( framesPtr + i + 24 ), interleaved7 );
+						Avx.Store( (float*)( framesPtr + i + 28 ), interleaved8 );
 					}
 
 					// Process remaining samples with scalar fallback
@@ -170,7 +186,9 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 						float amp = s * ( 1.0f / 32768.0f );
 						frames[ i ] = new Godot.Vector2( amp, amp );
 					}
-				} else {
+				} else
+					*/
+				{
 					// scalar fallback when no SIMD support
 					for ( int i = 0; i < sampleCount; i++ ) {
 						short s = (short)( output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 ) );
