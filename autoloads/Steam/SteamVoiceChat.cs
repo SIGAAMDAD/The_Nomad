@@ -53,6 +53,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		EVoiceResult result = SteamUser.GetAvailableVoice( out uint compressedSize );
 		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
 			byte[] packet = new byte[ compressedSize + sizeof( uint ) + 1 ];
+			GD.Print( "PacketSize: " + packet.Length );
 			if ( SteamUser.GetVoice( true, RecordBuffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
 				packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
 				packet[ 1 ] = (byte)( bytesWritten & 0xff );
@@ -62,7 +63,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 				Buffer.BlockCopy( RecordBuffer, 0, packet, 5, (int)bytesWritten );
 
-				SteamLobby.Instance.SendP2PPacket( packet, Constants.k_nSteamNetworkingSend_Reliable );
+				SteamLobby.Instance.SendP2PPacket( packet, Constants.k_nSteamNetworkingSend_Unreliable );
 			}
 		}
 	}
