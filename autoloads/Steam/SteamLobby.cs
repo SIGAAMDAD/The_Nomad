@@ -597,7 +597,7 @@ public partial class SteamLobby : Node {
 
 	public static void SendVoicePacket( byte[] data ) {
 		List<byte> Packet = new List<byte>( 1 + data.Length );
-		Packet[ 0 ] = (byte)MessageType.VoiceChat;
+		Packet.Add( (byte)MessageType.VoiceChat );
 		Packet.AddRange( new ReadOnlySpan<byte>( data ) );
 		Instance.SendP2PPacket( Packet.ToArray(), Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 	}
@@ -727,7 +727,7 @@ public partial class SteamLobby : Node {
 			ServerCommandType nCommandType = (ServerCommandType)PacketReader.ReadByte();
 			Console.PrintLine( string.Format( "Received ServerCommand {0} from user {1}", nCommandType, senderId ) );
 			ServerCommandManager.ExecuteCommand( (CSteamID)senderId, nCommandType );
-		}
+		} 
 		finally {
 			Pool.Return( data );
 		}
