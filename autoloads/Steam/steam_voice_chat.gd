@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var _network_buffer: PackedByteArray = PackedByteArray()
 
 func _ready() -> void:
+	Steam.steamInit( 3512240, true )
 	Steam.startVoiceRecording()
 	
 	_network_playback = $Output.get_stream_playback()
@@ -16,6 +17,8 @@ func _process( _delta: float ) -> void:
 
 func check_for_voice() -> void:
 	var available_voice:Dictionary = Steam.getAvailableVoice()
+	if !available_voice.has( "result" ):
+		return
 	if available_voice[ "result" ] == Steam.VOICE_RESULT_OK && available_voice[ "buffer" ] > 0:
 		var voice_data:Dictionary = Steam.getVoice()
 		if voice_data[ "result" ] == Steam.VOICE_RESULT_OK:

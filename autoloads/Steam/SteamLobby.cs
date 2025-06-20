@@ -746,7 +746,7 @@ public partial class SteamLobby : Node {
 		case MessageType.VoiceChat: {
 			byte[] buffer = new byte[ msg.Length - 1 ];
 			Buffer.BlockCopy( msg.Data, 1, buffer, 0, buffer.Length );
-			VoiceChat.Call( "process_incoming_voice", (int)(ulong)msg.Sender, (Godot.Collections.Dictionary)GD.BytesToVar( buffer ) );
+			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, buffer );
 			break; }
 		case MessageType.Handshake:
 			break;

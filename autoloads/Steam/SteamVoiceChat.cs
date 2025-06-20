@@ -273,20 +273,14 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
 			byte[] buffer = new byte[ compressedSize ];
 			if ( SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
-				byte[] packet = new byte[ 1 + bytesWritten ];
-				packet[ 0 ] = (byte)SteamLobby.MessageType.VoiceChat;
-				Buffer.BlockCopy( buffer, 0, packet, 1, (int)bytesWritten );
-				SteamLobby.Instance.SendP2PPacket( packet, Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
+				SteamLobby.SendVoicePacket( buffer );
 			}
 		}
 	}
 
-	private byte[] output = new byte[ 24 * 1024 * 1024 ];
+	private byte[] output = new byte[ 24 * 1024 ];
 	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
-		byte[] buffer = new byte[ data.Length - 1 ];
-		Buffer.BlockCopy( data, 1, buffer, 0, buffer.Length );
-
-		EVoiceResult result = SteamUser.DecompressVoice( buffer, (uint)buffer.Length, output, (uint)output.Length, out uint bytesWritten,
+		EVoiceResult result = SteamUser.DecompressVoice( data, (uint)data.Length, output, (uint)output.Length, out uint bytesWritten,
 			SteamUser.GetVoiceOptimalSampleRate() );
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
 			GD.Print( "DECODING!" );
