@@ -273,15 +273,15 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		if ( result == EVoiceResult.k_EVoiceResultOK && compressedSize > 0 ) {
 			byte[] buffer = new byte[ compressedSize ];
 			if ( SteamUser.GetVoice( true, buffer, compressedSize, out uint bytesWritten ) == EVoiceResult.k_EVoiceResultOK ) {
-				SteamLobby.SendVoicePacket( buffer );
+				SteamLobby.SendVoicePacket( buffer, bytesWritten );
 			}
 		}
 	}
 
 	private byte[] output = new byte[ 24 * 1024 ];
-	public void ProcessIncomingVoice( ulong senderId, byte[] data ) {
-		EVoiceResult result = SteamUser.DecompressVoice( data, (uint)data.Length, output, (uint)output.Length, out uint bytesWritten,
-			SteamUser.GetVoiceOptimalSampleRate() );
+	public void ProcessIncomingVoice( ulong senderId, byte[] data, uint bytesWritten ) {
+		EVoiceResult result = SteamUser.DecompressVoice( data, bytesWritten, output, (uint)output.Length, out uint written,
+			22050 );
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
 			GD.Print( "DECODING!" );
 			for ( int i = 0; i < Playback.GetFramesAvailable(); i++ ) {

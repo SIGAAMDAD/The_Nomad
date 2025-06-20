@@ -595,9 +595,11 @@ public partial class SteamLobby : Node {
 		}
 	}
 
-	public static void SendVoicePacket( byte[] data ) {
-		List<byte> Packet = new List<byte>( 1 + data.Length );
-		Packet.Add( (byte)MessageType.VoiceChat );
+	public static void SendVoicePacket( byte[] data, uint bytesWritten ) {
+		List<byte> Packet = new List<byte>( 1 + data.Length ) {
+			(byte)MessageType.VoiceChat
+		};
+		Packet.AddRange( BitConverter.GetBytes( bytesWritten ) );
 		Packet.AddRange( new ReadOnlySpan<byte>( data ) );
 		Instance.SendP2PPacket( Packet.ToArray(), Constants.k_nSteamNetworkingSend_UnreliableNoDelay );
 	}
@@ -744,9 +746,10 @@ public partial class SteamLobby : Node {
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.VoiceChat: {
-			byte[] buffer = new byte[ msg.Length - 1 ];
-			Buffer.BlockCopy( msg.Data, 1, buffer, 0, buffer.Length );
-			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, buffer );
+			byte[] buffer = new byte[ msg.Length - 1 - sizeof( uint ) ];
+			uint bytesWritten = BitConverter.ToUInt32( msg.Data, 1 );
+			Buffer.BlockCopy( msg.Data, 5, buffer, 0, buffer.Length );
+			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, buffer, bytesWritten );
 			break; }
 		case MessageType.Handshake:
 			break;
