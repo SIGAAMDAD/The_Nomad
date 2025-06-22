@@ -1,7 +1,6 @@
 using Godot;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 public partial class StoryMenu : Control {
@@ -21,6 +20,8 @@ public partial class StoryMenu : Control {
 	private Thread LoadThread;
 
 	private VBoxContainer SlotsContainer;
+
+	private ConfirmationDialog TutorialsPopup;
 
 	[Signal]
 	public delegate void BeginGameEventHandler();
@@ -119,14 +120,7 @@ public partial class StoryMenu : Control {
 		}
 		SettingsData.SetSaveSlot( SlotIndex );
 
-		EmitSignalBeginGame();
-
-		MainMenu.FadeAudio();
-
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+		TutorialsPopup.Show();
 	}
 
 	private List<string> GetSaveSlotList( string directory ) {
@@ -225,6 +219,32 @@ public partial class StoryMenu : Control {
 		NewGameButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
 
 		SlotsContainer = GetNode<VBoxContainer>( "MainContainer/OptionsContainer/LoadGameButton/SaveSlotsContainer" );
+
+		TutorialsPopup = GetNode<ConfirmationDialog>( "TutorialsPopup" );
+		TutorialsPopup.Canceled += () => {
+			SettingsData.SetTutorialsEnabled( false );
+
+			EmitSignalBeginGame();
+
+			MainMenu.FadeAudio();
+
+			UIChannel.Stream = UISfxManager.BeginGame;
+			UIChannel.Play();
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+		};
+		TutorialsPopup.Confirmed += () => {
+			SettingsData.SetTutorialsEnabled( true );
+
+			EmitSignalBeginGame();
+
+			MainMenu.FadeAudio();
+
+			UIChannel.Stream = UISfxManager.BeginGame;
+			UIChannel.Play();
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+		};
 
 		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 	}

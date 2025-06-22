@@ -4,7 +4,8 @@ public enum WindowMode : uint {
 	Windowed,
 	BorderlessWindowed,
 	Fullscreen,
-	BorderlessFullscreen
+	BorderlessFullscreen,
+	ExclusiveFullscreen
 };
 
 public enum AntiAliasing : uint {
@@ -92,6 +93,8 @@ public partial class DefaultSettings : Resource {
 	public int ColorblindMode { get; private set; } = 0;
 	[Export]
 	public bool DyslexiaMode { get; private set; } = false;
+	[Export]
+	public bool EnableTutorials { get; private set; } = false;
 
 	//
 	// gameplay

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=4 format=3 uid="uid://b30yciypqnopl"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_41pfg"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_pcry6"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_ro57f"]
+
+[resource]
+script = ExtResource("3_ro57f")
+nodes = Array[ExtResource("2_pcry6")]([])
+edges = Array[ExtResource("1_41pfg")]([])
+metadata/_custom_type_script = "uid://bhqxygnm6kw4n"

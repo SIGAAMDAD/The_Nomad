@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DialogueManagerRuntime;
 using Godot;
 using Renown;
@@ -102,6 +103,9 @@ namespace PlayerSystem {
 
 		private Label LocationLabel;
 		private Timer LocationStatusTimer;
+
+		private Label ObjectiveLabel;
+		private Timer ObjectiveStatusTimer;
 
 		private static System.Action<int> DialogueCallback;
 
@@ -190,6 +194,12 @@ namespace PlayerSystem {
 		}
 
 		public Checkpoint GetCurrentCheckpoint() => CheckpointInteractor.GetCurrentCheckpoint();
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private void FadeUIElement( Control element, float duration ) {
+			Tween tween = CreateTween();
+			tween.TweenProperty( element, "modulate", HiddenColor, duration );
+		}
 
 		public override void _Ready() {
 			base._Ready();
@@ -313,10 +323,7 @@ namespace PlayerSystem {
 			WeaponStatusTimer.Name = "WeaponStatusTimer";
 			WeaponStatusTimer.WaitTime = 10.5f;
 			WeaponStatusTimer.OneShot = true;
-			WeaponStatusTimer.Connect( "timeout", Callable.From( () => {
-				Tween Tweener = CreateTween();
-				Tweener.TweenProperty( WeaponStatus, "modulate", HiddenColor, 1.0f );
-			} ) );
+			WeaponStatusTimer.Connect( "timeout", Callable.From( () => FadeUIElement( WeaponStatus, 1.0f ) ) );
 			AddChild( WeaponStatusTimer );
 
 			LocationLabel = GetNode<Label>( "MainHUD/LocationLabel" );
@@ -326,11 +333,18 @@ namespace PlayerSystem {
 			LocationStatusTimer.Name = "LocationStatusTimer";
 			LocationStatusTimer.WaitTime = 5.90f;
 			LocationStatusTimer.OneShot = true;
-			LocationStatusTimer.Connect( "timeout", Callable.From( () => {
-				Tween Tweener = CreateTween();
-				Tweener.TweenProperty( LocationLabel, "modulate", HiddenColor, 1.25f );
-			} ) );
+			LocationStatusTimer.Connect( "timeout", Callable.From( () => FadeUIElement( LocationLabel, 1.5f ) ) );
 			AddChild( LocationStatusTimer );
+
+			ObjectiveLabel = GetNode<Label>( "MainHUD/ObjectiveLabel" );
+			ObjectiveLabel.Theme = AccessibilityManager.DefaultTheme;
+
+			ObjectiveStatusTimer = new Timer();
+			ObjectiveStatusTimer.Name = "ObjectiveStatusTimer";
+			ObjectiveStatusTimer.WaitTime = 5.90f;
+			ObjectiveStatusTimer.OneShot = true;
+			ObjectiveStatusTimer.Connect( "timeout", Callable.From( () => FadeUIElement( ObjectiveLabel, 1.5f ) ) );
+			AddChild( ObjectiveStatusTimer );
 
 			_Owner.LocationChanged += ( WorldArea location ) => {
 				LocationLabel.Text = location.GetAreaName();

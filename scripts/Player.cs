@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using Renown;
 using Renown.World;
 using System.Diagnostics;
-using System.Net.Security;
 using PlayerSystem.Perks;
 using System.Text;
 
@@ -101,16 +100,26 @@ public partial class Player : Entity {
 
 	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
-	private Godot.Vector2 LastNetworkPosition = Godot.Vector2.Zero;
-	private PlayerAnimationState LastLeftArmAnimationState;
-	private PlayerAnimationState LastRightArmAnimationState;
-	private PlayerAnimationState LastLegArmAnimationState;
-	private PlayerAnimationState LastTorsoArmAnimationState;
-	private float LastNetworkAimAngle = 0.0f;
-	private uint LastNetworkFlags = 0;
-	private float LastNetworkBloodAmount = 0.0f;
-	private WeaponEntity.Properties LastNetworkUseMode = WeaponEntity.Properties.None;
-	private string LastNetworkWeaponID = "";
+	//
+	// networking
+	//
+	private struct NetworkState {
+		public float LastNetworkAimAngle;
+		public float LastNetworkBloodAmount;
+		public uint LastNetworkFlags;
+		public WeaponEntity.Properties LastNetworkUseMode;
+		public string LastNetworkWeaponID;
+
+		public NetworkState() {
+			LastNetworkAimAngle = 0.0f;
+			LastNetworkBloodAmount = 0.0f;
+			LastNetworkFlags = 0;
+			LastNetworkUseMode = WeaponEntity.Properties.None;
+			LastNetworkWeaponID = "";
+		}
+	};
+
+	private NetworkState LastSyncState;
 
 	[Export]
 	private Node Inventory;
@@ -186,12 +195,20 @@ public partial class Player : Entity {
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
-	private AnimatedSprite2D TorsoAnimation;
-	private AnimatedSprite2D LegAnimation;
-	private AnimatedSprite2D IdleAnimation;
+	public AnimatedSprite2D TorsoAnimation {
+		get;
+		private set;
+	}
+	public AnimatedSprite2D LegAnimation {
+		get;
+		private set;
+	}
+	public AnimatedSprite2D IdleAnimation {
+		get;
+		private set;
+	}
 
 	private Timer IdleTimer;
-
 	private Timer CheckpointDrinkTimer;
 
 	private Timer DashTime;
@@ -287,7 +304,6 @@ public partial class Player : Entity {
 	private int TileMapLevel = 0;
 
 	private WorldArea Waypoint;
-	private List<Resource> Quests;
 
 	[Signal]
 	public delegate void SwitchedWeaponEventHandler( WeaponEntity weapon );
@@ -547,26 +563,26 @@ public partial class Player : Entity {
 
 		SyncObject.Write( GlobalPosition );
 
-		if ( (uint)Flags != LastNetworkFlags ) {
+		if ( (uint)Flags != LastSyncState.LastNetworkFlags ) {
 			SyncObject.Write( true );
 			SyncObject.Write( (uint)Flags );
-			LastNetworkFlags = (uint)Flags;
+			LastSyncState.LastNetworkFlags = (uint)Flags;
 		} else {
 			SyncObject.Write( false );
 		}
 
-		if ( LastNetworkAimAngle != AimLine.GlobalRotation ) {
+		if ( LastSyncState.LastNetworkAimAngle != AimLine.GlobalRotation ) {
 			SyncObject.Write( true );
-			LastNetworkAimAngle = AimLine.GlobalRotation;
-			SyncObject.Write( LastNetworkAimAngle );
+			LastSyncState.LastNetworkAimAngle = AimLine.GlobalRotation;
+			SyncObject.Write( LastSyncState.LastNetworkAimAngle );
 		} else {
 			SyncObject.Write( false );
 		}
 
-		if ( LastNetworkBloodAmount != BloodAmount ) {
+		if ( LastSyncState.LastNetworkBloodAmount != BloodAmount ) {
 			SyncObject.Write( true );
 			SyncObject.Write( BloodAmount );
-			LastNetworkBloodAmount = BloodAmount;
+			LastSyncState.LastNetworkBloodAmount = BloodAmount;
 		} else {
 			SyncObject.Write( false );
 		}
@@ -576,17 +592,17 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		} else {
 			WeaponEntity weapon = WeaponSlots[ CurrentWeapon ].GetWeapon();
-			if ( LastNetworkWeaponID != (string)weapon.Data.Get( "id" ) ) {
+			if ( LastSyncState.LastNetworkWeaponID != (string)weapon.Data.Get( "id" ) ) {
 				SyncObject.Write( true );
 				SyncObject.Write( (string)weapon.Data.Get( "id" ) );
-				LastNetworkWeaponID = (string)weapon.Data.Get( "id" );
+				LastSyncState.LastNetworkWeaponID = (string)weapon.Data.Get( "id" );
 			} else {
 				SyncObject.Write( false );
 			}
-			if ( LastNetworkUseMode != weapon.LastUsedMode ) {
+			if ( LastSyncState.LastNetworkUseMode != weapon.LastUsedMode ) {
 				SyncObject.Write( true );
 				SyncObject.Write( (uint)weapon.LastUsedMode );
-				LastNetworkUseMode = weapon.LastUsedMode;
+				LastSyncState.LastNetworkUseMode = weapon.LastUsedMode;
 			} else {
 				SyncObject.Write( false );
 			}
@@ -630,6 +646,8 @@ public partial class Player : Entity {
 		if ( !SettingsData.GetShowBlood() ) {
 			return;
 		}
+
+		// release more blood if we're high
 		if ( ( Flags & PlayerFlags.Sober ) == 0 ) {
 			BloodAmount -= 0.01f;
 		} else {
@@ -656,15 +674,33 @@ public partial class Player : Entity {
 	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
 	public AnimatedSprite2D GetRightArmAnimation() => ArmRight.Animations;
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void SetPrimaryWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.Primary ].SetWeapon( weapon );
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void SetHeavyPrimaryWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ].SetWeapon( weapon );
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void SetSidearmWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.Sidearm ].SetWeapon( weapon );
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void SetHeavySidearmWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ].SetWeapon( weapon );
+
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Primary ];
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetHeavyPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ];
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetSidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Sidearm ];
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetHeavySidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ];
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Resource GetCurrentMappingContext() => CurrentMappingContext;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Dictionary<int, WeaponEntity> GetWeaponStack() => WeaponsStack;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Node GetInventory() => Inventory;
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
 		if ( ArmLeft.Slot != WeaponSlot.INVALID && WeaponSlots[ ArmLeft.Slot ].GetWeapon() == weapon ) {
@@ -674,7 +710,9 @@ public partial class Player : Entity {
 		}
 		return null;
 	}
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Godot.Vector2 GetInputVelocity() => InputVelocity;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
 	public float GetArmAngle() {
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
@@ -1231,7 +1269,7 @@ public partial class Player : Entity {
 			otherArm = ArmLeft;
 			HandsUsed = Hands.Right;
 		} else {
-			GD.PushError( "OnNextWeapon: invalid LastUsedArm" );
+			Console.PrintError( "OnNextWeapon: invalid LastUsedArm" );
 			LastUsedArm = ArmRight;
 			return;
 		}
@@ -1328,16 +1366,10 @@ public partial class Player : Entity {
 
 		// check if the destination hand has something in it, if true, then swap
 		if ( dst.Slot != WeaponSlot.INVALID ) {
-			int tmp = dst.Slot;
-
-			dst.Slot = src.Slot;
-			src.Slot = tmp;
+			(src.Slot, dst.Slot) = (dst.Slot, src.Slot);
 		} else {
 			// if we have nothing in the destination hand, then just clear the source hand
-			int tmp = src.Slot;
-
-			src.Slot = WeaponSlot.INVALID;
-			dst.Slot = tmp;
+			(src.Slot, dst.Slot) = (WeaponSlot.INVALID, src.Slot);
 		}
 		EmitSignalWeaponStatusUpdated( srcWeapon, srcWeapon.LastUsedMode );
 	}
@@ -1728,6 +1760,8 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamManager.GetSteamID() );
+			SyncObject = new NetworkSyncObject( 1024 );
+			LastSyncState = new NetworkState();
 
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
 				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
@@ -2154,7 +2188,7 @@ public partial class Player : Entity {
 
 	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalWeaponStatusUpdated( source, useMode );
 
-	public void PickupAmmo( in AmmoEntity ammo ) {
+	public void PickupAmmo( in AmmoEntity ammo, int nAmount = -1 ) {
 		AmmoStack stack = null;
 		bool found = false;
 
@@ -2172,7 +2206,7 @@ public partial class Player : Entity {
 			stack.SetType( ammo );
 			AmmoStacks.Add( ( (string)ammo.Data.Get( "id" ) ).GetHashCode(), stack );
 		}
-		stack.AddItems( (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] );
+		stack.AddItems( nAmount == -1 ? (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] : nAmount );
 
 		PlaySound( MiscChannel, ammo.GetPickupSound() );
 

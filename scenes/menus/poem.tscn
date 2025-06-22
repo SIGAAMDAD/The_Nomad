@@ -55,6 +55,7 @@ theme_override_constants/separation = 10
 metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_amyrm")
 text = "It is the 91st millennium,
@@ -68,7 +69,7 @@ one_shot = true
 autostart = true
 
 [node name="Label2" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_0o1gq")
 text = "The Great Eye that Saw fell,
@@ -80,7 +81,7 @@ wait_time = 3.0
 one_shot = true
 
 [node name="Label3" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_q4i3p")
 text = "There is now no peace,
@@ -94,7 +95,7 @@ wait_time = 3.0
 one_shot = true
 
 [node name="Label4" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_uwy73")
 text = "Once a haven, now a wasteland.
@@ -106,7 +107,7 @@ wait_time = 3.0
 one_shot = true
 
 [node name="Label5" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_kr8sd")
 text = "We gaze at the dunes,
@@ -120,14 +121,14 @@ wait_time = 3.5
 one_shot = true
 
 [node name="AuthorName" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_ti3e6")
 text = "- Razal the Open-Minded, from \"Poems of Valden\""
 horizontal_alignment = 1
 
 [node name="PressEnter" type="Label" parent="VBoxContainer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_nmwqt")
 text = "PRESS ENTER TO CONTINUE"

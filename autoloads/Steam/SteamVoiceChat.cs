@@ -10,25 +10,69 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
-	private static AudioStreamGeneratorPlayback Playback;
-	private static readonly uint SAMPLE_RATE = 48000;
+	private class UserVoice {
+		public float Volume = 0.0f;
+		public bool Active = false;
+		public bool Muted {
+			get => Muted; 
+			set {
+				if ( value ) {
+					Active = false;
+					Volume = 0.0f;
+				}
+			}
+		}
 
-	private byte[] Packet = new byte[ 1024 ];
-	private byte[] RecordBuffer = new byte[ 768 ];
+		public UserVoice() {
+		}
+	};
+
+	private static AudioStreamGeneratorPlayback Playback;
+	private static readonly uint SAMPLE_RATE = 44100;
+	private static bool RecordingVoice = false;
+
+	private byte[] Packet = new byte[ 1056 ];
+	private byte[] RecordBuffer = new byte[ 1024 ];
 	private int CaptureBusIndex = 0;
 	private AudioEffectCapture CaptureEffect;
 
-	private byte[] output = new byte[ 44100 ];
+	private byte[] Output = new byte[ 44100 ];
 	private byte[] DecodeBuffer = new byte[ 1024 ];
+	private Godot.Vector2[] Frames = new Godot.Vector2[ 44100 ];
 
-	private float VoiceActivity = 0.0f;
 	private const float VoiceThreshold = 0.05f;
 	private const float VoiceDecayRate = 0.1f;
 
+	private Dictionary<ulong, UserVoice> VoiceActivity;
+
 	public static SteamVoiceChat Instance;
 
-	public bool IsVoiceActive( CSteamID steamID ) => false;
-	public float GetVoiceActivity( CSteamID steamID ) => 0.0f;
+	public bool IsVoiceActive( CSteamID steamID ) {
+		if ( !VoiceActivity.TryGetValue( (ulong)steamID, out UserVoice voice ) ) {
+			return false;
+		}
+		return voice.Active;
+	}
+	public float GetVoiceActivity( CSteamID steamID ) {
+		if ( !VoiceActivity.TryGetValue( (ulong)steamID, out UserVoice voice ) ) {
+			return 0.0f;
+		}
+		return voice.Volume;
+	}
+	public void MuteUser( CSteamID steamID ) {
+		if ( !VoiceActivity.TryGetValue( (ulong)steamID, out UserVoice voice ) ) {
+			Console.PrintError( string.Format( "SteamVoiceChat.MuteUser: invalid userID {0}", steamID ) );
+			return;
+		}
+		voice.Muted = true;
+	}
+	public void UnmuteUser( CSteamID steamID ) {
+		if ( !VoiceActivity.TryGetValue( (ulong)steamID, out UserVoice voice ) ) {
+			Console.PrintError( string.Format( "SteamVoiceChat.UnmuteUser: invalid userID {0}", steamID ) );
+			return;
+		}
+		voice.Muted = false;
+	}
 
 	public override void _Ready() {
 		base._Ready();
@@ -40,17 +84,48 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		Playback = (AudioStreamGeneratorPlayback)AudioPlayer.GetStreamPlayback();
 
-		SteamUser.StartVoiceRecording();
-		SteamFriends.SetInGameVoiceSpeaking( SteamManager.GetSteamID(), true );
+		VoiceActivity = new Dictionary<ulong, UserVoice>();
+
+		SteamLobby.Instance.ClientJoinedLobby += ( steamId ) => {
+			if ( steamId == (ulong)SteamManager.GetSteamID() ) {
+				SteamUser.StartVoiceRecording();
+				RecordingVoice = true;
+				ProcessMode = ProcessModeEnum.Always;
+			}
+		};
+		SteamLobby.Instance.ClientLeftLobby += ( steamId ) => {
+			if ( steamId == (ulong)SteamManager.GetSteamID() ) {
+				VoiceActivity.Clear();
+
+				SteamUser.StopVoiceRecording();
+				RecordingVoice = false;
+				ProcessMode = ProcessModeEnum.Disabled;
+			}
+		};
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		SteamUser.StopVoiceRecording();
+		if ( RecordingVoice ) {
+			SteamUser.StopVoiceRecording();
+		}
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
+		foreach ( var user in VoiceActivity ) {
+			if ( user.Value.Muted ) {
+				continue;
+			}
+			if ( user.Value.Volume > 0.0f ) {
+				user.Value.Volume -= VoiceDecayRate * (float)delta;
+				if ( user.Value.Volume < 0.0f ) {
+					user.Value.Volume = 0.0f;
+				}
+			}
+			user.Value.Active = false;
+		}
+		
 		CaptureVoice();
 	}
 
@@ -72,20 +147,30 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	}
 
 	public unsafe void ProcessIncomingVoice( ulong senderId, byte[] data ) {
+		if ( !VoiceActivity.TryGetValue( senderId, out UserVoice voice ) ) {
+			voice = new UserVoice();
+			VoiceActivity.Add( senderId, voice );
+		}
+		if ( voice.Muted ) {
+			return; // don't bother with decoding
+		}
+
 		uint bytesWritten = BitConverter.ToUInt32( data, 1 );
 		Buffer.BlockCopy( data, 5, DecodeBuffer, 0, (int)bytesWritten );
 
 		EVoiceResult result = SteamUser.DecompressVoice(
-			DecodeBuffer, bytesWritten, output, (uint)output.Length,
+			DecodeBuffer, bytesWritten, Output, (uint)Output.Length,
 			out uint written, 44100
 		);
 
 		if ( result == EVoiceResult.k_EVoiceResultOK ) {
 			int sampleCount = (int)written / 2;
-			Godot.Vector2[] frames = new Godot.Vector2[ sampleCount ];
+			float highestAmplitude = 0.0f;
 
-			fixed ( byte* outputPtr = output )
-			fixed ( Godot.Vector2* framesPtr = frames ) {
+			voice.Active = true;
+
+			fixed ( byte* outputPtr = Output )
+			fixed ( Godot.Vector2* framesPtr = Frames ) {
 				/*
 				if ( Avx2.IsSupported && sampleCount >= 16 ) {
 					Vector256<float> scaleVec = Vector256.Create( 1.0f / 32768.0f );
@@ -191,14 +276,22 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 				{
 					// scalar fallback when no SIMD support
 					for ( int i = 0; i < sampleCount; i++ ) {
-						short s = (short)( output[ i * 2 ] | ( output[ i * 2 + 1 ] << 8 ) );
+						short s = (short)( Output[ i * 2 ] | ( Output[ i * 2 + 1 ] << 8 ) );
 						float amp = s * ( 1.0f / 32768.0f );
-						frames[ i ] = new Godot.Vector2( amp, amp );
+						Frames[ i ].X = amp;
+						Frames[ i ].Y = amp;
+
+						if ( amp > highestAmplitude ) {
+							highestAmplitude = amp;
+						}
+					}
+					if ( highestAmplitude > voice.Volume ) {
+						voice.Volume = highestAmplitude;
 					}
 				}
 			}
 
-			Playback.PushBuffer( frames );
+			Playback.CallDeferred( "PushBuffer", Frames );
 		} else {
 			Console.PrintError( $"[STEAM] Error decompressing voice audio packet: {result}" );
 		}

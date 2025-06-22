@@ -150,8 +150,6 @@ public partial class TitleMenu : Control {
 		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 
 		Control Background = GetNode<Control>( "MenuBackground" );
-		Background.SetProcess( false );
-		Background.SetProcessInternal( false );
 
 		Node KonamiCode = GetNode( "KonamiCode" );
 		KonamiCode.Connect( "success", Callable.From( OnKonamiCodeActivated ) );
@@ -179,16 +177,14 @@ public partial class TitleMenu : Control {
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
 		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
-		UIChannel.SetProcess( false );
-		UIChannel.SetProcessInternal( false );
 		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
 		MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear();
 		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
 
-		SettingsData.Instance.MusicVolumeChanged += () => { MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear(); };
-		SettingsData.Instance.EffectsVolumeChanged += () => { UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear(); };
+		SettingsData.Instance.SettingsChanged += () => { MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear(); };
+		SettingsData.Instance.SettingsChanged += () => { UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear(); };
 
 		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
 
@@ -204,8 +200,6 @@ public partial class TitleMenu : Control {
 		MusicTheme.Stream = LoopingTheme;
 		MusicTheme.Play();
 		MusicTheme.Set( "parameters/looping", true );
-		MusicTheme.SetProcess( false );
-		MusicTheme.SetProcessInternal( false );
 		MusicTheme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
 	}
 };

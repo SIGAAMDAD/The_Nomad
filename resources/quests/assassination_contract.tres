@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestResource" load_steps=40 format=3 uid="uid://ejahlkgwonf"]
+[gd_resource type="Resource" script_class="QuestResource" load_steps=40 format=3 uid="uid://byow7bm1b6w4t"]
 
 [ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_7uinf"]
 [ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="1_fkndo"]
@@ -192,12 +192,13 @@ edge_type = 0
 
 [sub_resource type="Resource" id="Resource_fd7oi"]
 script = ExtResource("2_ke33g")
-type = "Value"
+type = "Int"
 key = "EnemiesRemaining"
 id = "tkc8EVu4vx"
 optional = false
 graph_editor_position = Vector2(2220, 3180)
 graph_editor_size = Vector2(377, 432)
+metadata/value = false
 
 [sub_resource type="Resource" id="Resource_45wtc"]
 script = ExtResource("1_7uinf")
@@ -207,12 +208,13 @@ edge_type = 1
 
 [sub_resource type="Resource" id="Resource_syjvf"]
 script = ExtResource("2_ke33g")
-type = "ValueUInt32"
+type = "Int"
 key = "TimesAlerted"
 id = "YjEdt8w1wR"
 optional = false
 graph_editor_position = Vector2(2200, 2460)
 graph_editor_size = Vector2(377, 432)
+metadata/value = false
 
 [sub_resource type="Resource" id="Resource_g731x"]
 script = ExtResource("1_7uinf")
@@ -222,12 +224,13 @@ edge_type = 1
 
 [sub_resource type="Resource" id="Resource_53ryq"]
 script = ExtResource("2_ke33g")
-type = "ValueUInt32"
+type = "Int"
 key = "TimesSpotted"
 id = "SsYiHDavt1"
 optional = false
 graph_editor_position = Vector2(2180, 1700)
 graph_editor_size = Vector2(377, 432)
+metadata/value = false
 
 [sub_resource type="Resource" id="Resource_3mgqu"]
 script = ExtResource("1_7uinf")
@@ -237,5 +240,5 @@ edge_type = 1
 
 [resource]
 script = ExtResource("1_fkndo")
-nodes = Array[ExtResource("2_ddxwy")]([SubResource("Resource_7nkgf"), SubResource("Resource_1bdcd"), SubResource("Resource_oohfd"), SubResource("Resource_56eiv"), SubResource("Resource_2j4bf"), SubResource("Resource_247sa"), SubResource("Resource_mgcle"), SubResource("Resource_ke33g"), SubResource("Resource_1j013"), SubResource("Resource_7uinf"), SubResource("Resource_dus0l"), SubResource("Resource_fd7oi"), SubResource("Resource_srx1e"), SubResource("Resource_syjvf"), SubResource("Resource_53ryq"), SubResource("Resource_wye7v")])
+nodes = Array[ExtResource("2_ddxwy")]([SubResource("Resource_7nkgf"), SubResource("Resource_1bdcd"), SubResource("Resource_oohfd"), SubResource("Resource_56eiv"), SubResource("Resource_2j4bf"), SubResource("Resource_247sa"), SubResource("Resource_mgcle"), SubResource("Resource_ke33g"), SubResource("Resource_1j013"), SubResource("Resource_7uinf"), SubResource("Resource_dus0l"), SubResource("Resource_srx1e"), SubResource("Resource_syjvf"), SubResource("Resource_53ryq"), SubResource("Resource_wye7v"), SubResource("Resource_fd7oi")])
 edges = Array[ExtResource("1_7uinf")]([SubResource("Resource_i71lq"), SubResource("Resource_8tayr"), SubResource("Resource_6x1s3"), SubResource("Resource_vu471"), SubResource("Resource_w80rh"), SubResource("Resource_cveo3"), SubResource("Resource_st4l1"), SubResource("Resource_3o75v"), SubResource("Resource_e67fo"), SubResource("Resource_ncnu2"), SubResource("Resource_vqbum"), SubResource("Resource_3ms2v"), SubResource("Resource_45wtc"), SubResource("Resource_g731x"), SubResource("Resource_3mgqu")])

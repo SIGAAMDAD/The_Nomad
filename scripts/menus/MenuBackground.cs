@@ -3,19 +3,16 @@ using Godot;
 public partial class MenuBackground : Control {
 	// TODO: change main menu based on game's save state
 	private void OnScreenSizeChanged() {
-		Godot.Vector3 extents;
 		Godot.Vector2I windowSize = DisplayServer.WindowGetSize();
-
-		extents.X = windowSize.X;
-		extents.Y = 0.0f;
-		extents.Z = 0.0f;
+		Godot.Vector3 extents = new Godot.Vector3( windowSize.X / 2.0f, 0.0f, 0.0f );
+		Godot.Vector2 position = new Godot.Vector2( extents.X, windowSize.Y );
 
 		GpuParticles2D EmberEmitter = GetNode<GpuParticles2D>( "EmberParticlesEmitter" );
-		EmberEmitter.GlobalPosition = new Godot.Vector2( 0.0f, windowSize.Y );
+		EmberEmitter.GlobalPosition = position;
 		( EmberEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
 
 		GpuParticles2D SandEmitter = GetNode<GpuParticles2D>( "SandParticlesEmitter" );
-		SandEmitter.GlobalPosition = new Godot.Vector2( 0.0f, windowSize.Y );
+		SandEmitter.GlobalPosition = position;
 		( SandEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
 	}
 
@@ -23,5 +20,19 @@ public partial class MenuBackground : Control {
 		base._Ready();
 
 		GetTree().Root.SizeChanged += OnScreenSizeChanged;
+
+		/*
+		Godot.Vector2I windowSize = DisplayServer.WindowGetSize();
+		Godot.Vector3 extents = new Godot.Vector3( windowSize.X / 2.0f, 0.0f, 0.0f );
+		Godot.Vector2 position = new Godot.Vector2( extents.X, windowSize.Y );
+
+		GpuParticles2D EmberEmitter = GetNode<GpuParticles2D>( "EmberParticlesEmitter" );
+		EmberEmitter.GlobalPosition = position;
+		( EmberEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
+
+		GpuParticles2D SandEmitter = GetNode<GpuParticles2D>( "SandParticlesEmitter" );
+		SandEmitter.GlobalPosition = position;
+		( SandEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
+		*/
 	}
 };

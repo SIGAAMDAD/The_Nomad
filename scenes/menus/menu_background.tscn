@@ -1,14 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://bc6bj5sw3gvf8"]
+[gd_scene load_steps=10 format=3 uid="uid://bc6bj5sw3gvf8"]
 
 [ext_resource type="Script" uid="uid://dmgkt5ycualg6" path="res://scripts/menus/MenuBackground.cs" id="1_6lvap"]
-
-[sub_resource type="Gradient" id="Gradient_imvie"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0.0389953, 0.0202454, 0.010053, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5lchc"]
-gradient = SubResource("Gradient_imvie")
-width = 24
 
 [sub_resource type="Gradient" id="Gradient_6lvap"]
 offsets = PackedFloat32Array(1)
@@ -23,7 +15,7 @@ height = 1
 lifetime_randomness = 0.75
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(400, 1, 0)
+emission_box_extents = Vector3(320, 1, 0)
 angular_velocity_min = -8.00002
 angular_velocity_max = 7.99998
 gravity = Vector3(0, -16, 0)
@@ -56,7 +48,7 @@ width = 32
 lifetime_randomness = 0.75
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(400, 1, 0)
+emission_box_extents = Vector3(320, 1, 0)
 angular_velocity_min = -8.00002
 angular_velocity_max = 7.99998
 gravity = Vector3(0, -16, 0)
@@ -82,23 +74,12 @@ mouse_filter = 2
 script = ExtResource("1_6lvap")
 metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="."]
-process_mode = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture1D_5lchc")
-metadata/_edit_use_anchors_ = true
-
 [node name="EmberParticlesEmitter" type="GPUParticles2D" parent="."]
 process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 modulate = Color(3, 1, 1, 1)
-position = Vector2(400, 600)
+position = Vector2(320, 480)
 amount = 1000
 texture = SubResource("GradientTexture2D_6lvap")
 lifetime = 5.0
@@ -111,7 +92,7 @@ process_material = SubResource("ParticleProcessMaterial_rhrir")
 process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
-position = Vector2(400, 600)
+position = Vector2(320, 480)
 amount = 180
 texture = SubResource("GradientTexture2D_u1nnk")
 lifetime = 10.0

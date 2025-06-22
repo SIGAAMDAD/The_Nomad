@@ -3,6 +3,8 @@ using Godot;
 public partial class ItemPickup : InteractionItem {
 	[Export]
 	public Resource Data;
+	[Export]
+	public int Amount = -1;
 
 	protected Sprite2D Icon;
 
@@ -27,7 +29,7 @@ public partial class ItemPickup : InteractionItem {
 					ammo.Name = "Ammo" + ammo;
 					ammo.Data = Data;
 					ammo._Ready();
-					player.PickupAmmo( ammo );
+					player.PickupAmmo( ammo, Amount );
 					done = true;
 					break;
 				};
@@ -77,6 +79,5 @@ public partial class ItemPickup : InteractionItem {
 		AddToGroup( "Archive" );
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
-		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 	}
 };

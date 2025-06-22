@@ -7,9 +7,6 @@ using Multiplayer;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
-using Moq;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -179,7 +176,7 @@ public partial class SteamLobby : Node {
 	private CSteamID LobbyOwnerId = CSteamID.Nil;
 	private bool IsHost = false;
 
-	private Node VoiceChat;
+	private SteamVoiceChat VoiceChat;
 
 	// Connection management
 	private Dictionary<CSteamID, HSteamNetConnection> Connections = new Dictionary<CSteamID, HSteamNetConnection>();
@@ -751,7 +748,7 @@ public partial class SteamLobby : Node {
 			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.VoiceChat:
-			VoiceChat.Call( "ProcessIncomingVoice", (int)(ulong)msg.Sender, msg.Data );
+			VoiceChat.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
 			break;
 		case MessageType.Handshake:
 			break;
@@ -1204,7 +1201,7 @@ public partial class SteamLobby : Node {
 		};
 		NetworkThread.Start();
 
-		VoiceChat = GetNode( "/root/SteamVoiceChat" );
+		VoiceChat = GetNode<SteamVoiceChat>( "/root/SteamVoiceChat" );
 
 		// Add console command
 		Console.AddCommand( "lobby_info", Callable.From( CmdLobbyInfo ), Array.Empty<string>(), 0, "prints lobby information." );

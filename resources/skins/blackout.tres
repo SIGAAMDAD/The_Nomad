@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bdhin38q6yb0r"]
+
+[ext_resource type="Shader" uid="uid://un02hb8yw5u6" path="res://resources/skins/blackout.gdshader" id="1_vypak"]
+
+[resource]
+shader = ExtResource("1_vypak")

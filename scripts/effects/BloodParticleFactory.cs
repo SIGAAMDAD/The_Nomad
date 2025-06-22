@@ -9,7 +9,7 @@ public partial class BloodParticleFactory : Node {
 	private static readonly int BloodInstanceMax = 256;
 
 	private Transform2D[] TempBuffer = new Transform2D[ 16 ];
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 1 + ( sizeof( float ) * 2 * 16 ) );
+	private NetworkSyncObject SyncObject;
 
 	private void OnReleaseTimerTimeout() {
 		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 24;
@@ -38,6 +38,10 @@ public partial class BloodParticleFactory : Node {
 		}
 	}
 	private void NetworkSync( int offset ) {
+		if ( SyncObject == null ) {
+			return;
+		}
+
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)TempBuffer.Length );
@@ -63,7 +67,7 @@ public partial class BloodParticleFactory : Node {
 		MeshManager.Multimesh.Mesh = new QuadMesh();
 		MeshManager.Texture = ResourceCache.GetTexture( "res://textures/blood1.png" );
 		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 8.0f, -8.0f );
-		MeshManager.ZIndex = 10;
+		MeshManager.ZIndex = 5;
 		AddChild( MeshManager );
 
 		// cache a shitload
@@ -78,6 +82,7 @@ public partial class BloodParticleFactory : Node {
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+			SyncObject = new NetworkSyncObject( 1 + ( sizeof( float ) * 2 * 16 ) );
 		}
 	}
 
@@ -94,8 +99,8 @@ public partial class BloodParticleFactory : Node {
 
 		for ( int i = 0; i < bloodAmount; i++ ) {
 			Godot.Vector2 position = to;
-			position.Y += RNJesus.FloatRange( -120.25f, 120.25f );
-			position.X += RNJesus.FloatRange( -150.25f, 150.25f );
+			position.Y += RNJesus.IntRange( -90, 90 );
+			position.X += RNJesus.IntRange( -140, 140 );
 			MeshManager.Multimesh.VisibleInstanceCount++;
 
 			TempBuffer[ i ] = new Transform2D( 0.0f, position );

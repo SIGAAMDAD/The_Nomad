@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dfcnpofuxrbf"]
 
-[ext_resource type="Texture2D" uid="uid://dskr6ets2j4c5" path="res://textures/blood1.png" id="2_bllt4"]
+[ext_resource type="Texture2D" uid="uid://cghyld6b56od8" path="res://textures/blood1.png" id="2_bllt4"]
 
 [sub_resource type="Gradient" id="Gradient_d8u1l"]
 colors = PackedColorArray(1, 0.142952, 0.101453, 1, 0.557335, 1.16717e-06, 9.62615e-08, 1)
@@ -19,7 +19,7 @@ color_ramp = SubResource("GradientTexture1D_8dmu3")
 
 [node name="BloodSplatter" type="GPUParticles2D"]
 emitting = false
-amount = 10
+amount = 20
 texture = ExtResource("2_bllt4")
 one_shot = true
 explosiveness = 0.9
@@ -28,6 +28,6 @@ draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_n5ep1")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.3
+wait_time = 0.6
 one_shot = true
 autostart = true

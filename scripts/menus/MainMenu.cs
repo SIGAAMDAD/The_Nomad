@@ -211,7 +211,7 @@ public partial class MainMenu : Control {
 	public override void _Ready() {
 		PhysicsServer2D.SetActive( false );
 
-		if (SettingsData.GetDyslexiaMode() ) {
+		if ( SettingsData.GetDyslexiaMode() ) {
 			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			Theme = AccessibilityManager.DefaultTheme;

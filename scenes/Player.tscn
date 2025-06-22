@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=24 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="4_d2uw3"]
 [ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="5_0rnld"]
 [ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="5_a260p"]
-[ext_resource type="PackedScene" uid="uid://bmotkc0p4v2ta" path="res://scenes/effects/spark_effect.tscn" id="5_c3w3j"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="7_l33ml"]
 [ext_resource type="PackedScene" uid="uid://cjy2h2wmmfkmc" path="res://scenes/heads_up_display.tscn" id="9_bfxfw"]
 [ext_resource type="SpriteFrames" uid="uid://1xowiqlfkdd1" path="res://resources/animations/player/idle.tres" id="10_0rnld"]
@@ -117,17 +116,6 @@ process_thread_messages = 0
 y_sort_enabled = true
 position = Vector2(-7, 13)
 emitting = false
-
-[node name="JumpkitSparks" parent="Animations" instance=ExtResource("5_c3w3j")]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 0
-visible = false
-y_sort_enabled = true
-position = Vector2(-12, 6)
-scale = Vector2(0.106667, 0.0841667)
-frame_progress = 0.0
-flip_h = true
 
 [node name="DustPuff" parent="Animations" instance=ExtResource("7_l33ml")]
 process_thread_group = 1

@@ -10,12 +10,11 @@ public partial class MultiplayerMenu : Control {
 	}
 
 	public override void _Ready() {
-		LobbyBrowser = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/lobby_browser.tscn" ).Instantiate<LobbyBrowser>();
-		AddChild( LobbyBrowser );
+		LobbyBrowser = GetNode<LobbyBrowser>( "LobbyBrowser" );
 		LobbyBrowser.Show();
 		LobbyBrowser.Connect( "OnHostGame", Callable.From( OnLobbyBrowserHostGamePressed ) );
 
-		LobbyFactory = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/lobby_factory.tscn" ).Instantiate<LobbyFactory>();
+		LobbyFactory = GetNode<LobbyFactory>( "LobbyFactory" );
 		AddChild( LobbyFactory );
 		LobbyFactory.Hide();
 	}

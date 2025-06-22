@@ -2,45 +2,45 @@
 
 [ext_resource type="Script" uid="uid://emxy8fo7uu0j" path="res://scripts/PlayerSystem/HeadsUpDisplay.cs" id="1_nyije"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
-[ext_resource type="Texture2D" uid="uid://bp3geuugm7acv" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
+[ext_resource type="Texture2D" uid="uid://bqr4cm8a2b816" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
-[ext_resource type="Texture2D" uid="uid://dfue6xsecgmow" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
+[ext_resource type="Texture2D" uid="uid://cci46631gyer8" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="4_4iujc"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
-[ext_resource type="Texture2D" uid="uid://d4k877anp5jfl" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
+[ext_resource type="Texture2D" uid="uid://cupt3xylkb4lf" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
 [ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
-[ext_resource type="Texture2D" uid="uid://bjkdfsajgy7uv" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
+[ext_resource type="FontFile" uid="uid://bk3i170p7rft3" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
+[ext_resource type="Texture2D" uid="uid://duo0ejiq3ofo1" path="res://textures/hud/status_blunt.png" id="11_0t58g"]
 [ext_resource type="Shader" uid="uid://cdp55flm7nhn8" path="res://shaders/parry_overlay.gdshader" id="11_vfeoh"]
 [ext_resource type="Texture2D" uid="uid://cp1jwldw8j5s4" path="res://textures/hud/status_firearm.dds" id="12_obapo"]
 [ext_resource type="Texture2D" uid="uid://chkfktbcvttj1" path="res://textures/hud/status_blunt.dds" id="12_wjj4q"]
 [ext_resource type="Shader" uid="uid://bd74grhuc8kqh" path="res://shaders/ui_fade.gdshader" id="14_poeto"]
-[ext_resource type="Texture2D" uid="uid://d2esowsn1q073" path="res://textures/hud/ARBLS1.png" id="15_8n186"]
+[ext_resource type="Texture2D" uid="uid://cg1ouktor12hb" path="res://textures/hud/ARBLS1.png" id="15_8n186"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="15_dwpkh"]
-[ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="15_eelai"]
+[ext_resource type="Texture2D" uid="uid://bwg6jakjxt1nm" path="res://textures/hud/status_bladed.png" id="15_eelai"]
 [ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="15_ot7dw"]
 [ext_resource type="Shader" uid="uid://iflsk5g1xocx" path="res://shaders/blood_overlay.gdshader" id="15_xw6ac"]
 [ext_resource type="Material" uid="uid://bpjvsrt52hstd" path="res://resources/materials/status_icon.tres" id="16_bnlc1"]
-[ext_resource type="Texture2D" uid="uid://d0tn8o06khar2" path="res://textures/hud/ARBLS3.png" id="16_dt7fv"]
-[ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
+[ext_resource type="Texture2D" uid="uid://cjgs8gqrg02la" path="res://textures/hud/ARBLS3.png" id="16_dt7fv"]
+[ext_resource type="Texture2D" uid="uid://c3xj8u148gbl7" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
-[ext_resource type="Texture2D" uid="uid://05bob0nsii0e" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
+[ext_resource type="Texture2D" uid="uid://cjg5dkcjv76f2" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
-[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="17_xstx4"]
+[ext_resource type="Texture2D" uid="uid://cshjbl566y872" path="res://icon.svg" id="17_xstx4"]
 [ext_resource type="Script" uid="uid://cvcxs2q7qe1s5" path="res://scripts/PlayerSystem/StatusIcon.cs" id="18_a6h4m"]
-[ext_resource type="Texture2D" uid="uid://b8wludg53chyq" path="res://textures/hud/ARBLS4.png" id="18_aelwk"]
+[ext_resource type="Texture2D" uid="uid://c2p3s5kebes0c" path="res://textures/hud/ARBLS4.png" id="18_aelwk"]
 [ext_resource type="Script" uid="uid://dqu07i6qx5kvd" path="res://scripts/PlayerSystem/Notebook.cs" id="18_xstx4"]
-[ext_resource type="Texture2D" uid="uid://46hkvj8a86ti" path="res://textures/hud/ARBLS5.png" id="19_xw6ac"]
+[ext_resource type="Texture2D" uid="uid://xpgyj1xfqqjy" path="res://textures/hud/ARBLS5.png" id="19_xw6ac"]
 [ext_resource type="Script" uid="uid://cp2m32c4dosqq" path="res://scripts/PlayerSystem/WarpPoint.cs" id="23_0ed87"]
 [ext_resource type="Script" uid="uid://df58eq7qyt2ih" path="res://scripts/PlayerSystem/CheckpointInteractor.cs" id="23_nyije"]
 [ext_resource type="Script" uid="uid://bu7gdjadtgg4m" path="res://addons/advanced_radial_menu/radial_menu_class.gd" id="25_v24h6"]
-[ext_resource type="Texture2D" uid="uid://dw7ibgc8n6uhf" path="res://textures/emote_tpose.png" id="26_vg31i"]
-[ext_resource type="Texture2D" uid="uid://chb8pkqmb4h6v" path="res://textures/emote_flex.png" id="27_aelwk"]
-[ext_resource type="Texture2D" uid="uid://dmnu5c28dq4e" path="res://textures/emote_praisethesun.png" id="28_xw6ac"]
-[ext_resource type="Texture2D" uid="uid://dm30q4vnh2cly" path="res://textures/emote_surprised.png" id="29_kwx6t"]
-[ext_resource type="Texture2D" uid="uid://3q4l73y6mcqp" path="res://textures/emote_pointing.png" id="30_dg2ec"]
+[ext_resource type="Texture2D" uid="uid://cpot7mrrrughe" path="res://textures/emote_tpose.png" id="26_vg31i"]
+[ext_resource type="Texture2D" uid="uid://dg45cvxiwtq1r" path="res://textures/emote_flex.png" id="27_aelwk"]
+[ext_resource type="Texture2D" uid="uid://b2esfoxlrux2w" path="res://textures/emote_praisethesun.png" id="28_xw6ac"]
+[ext_resource type="Texture2D" uid="uid://cub6tmo7megwe" path="res://textures/emote_surprised.png" id="29_kwx6t"]
+[ext_resource type="Texture2D" uid="uid://rekhfky6enpd" path="res://textures/emote_pointing.png" id="30_dg2ec"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
 offsets = PackedFloat32Array(0)
@@ -698,6 +698,15 @@ grow_horizontal = 0
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
+[node name="ObjectiveLabel" type="Label" parent="MainHUD"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.05
+anchor_bottom = 0.038
+offset_bottom = 0.199999
+metadata/_edit_use_anchors_ = true
+
 [node name="EmoteMenu" type="Control" parent="MainHUD"]
 process_mode = 4
 visible = false
@@ -871,7 +880,6 @@ layout_mode = 2
 [node name="NameLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Asturion Double-Barrel"
 
 [node name="MetaData" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -884,7 +892,6 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
 layout_mode = 2
-text = "Weapon"
 
 [node name="NoHeldContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
@@ -903,6 +910,7 @@ text = "0/"
 
 [node name="MaxLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
 layout_mode = 2
+text = "0"
 horizontal_alignment = 2
 
 [node name="Icon" type="TextureRect" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
@@ -921,7 +929,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 text = "Item Effect(s)"
 
-[node name="Label2" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+[node name="Label2" type="RichTextLabel" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
 layout_mode = 2
 
 [node name="WeaponStatusContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
@@ -938,23 +946,25 @@ stretch_mode = 3
 
 [node name="DamageLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 layout_mode = 2
+text = "N/A"
 
 [node name="RangeLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 layout_mode = 2
 
-[node name="BluntDamage" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+[node name="BluntInfo" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="TextureRect" type="TextureRect" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 texture = ExtResource("11_0t58g")
 stretch_mode = 3
 
-[node name="DamageLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="DamageLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
 layout_mode = 2
+text = "N/A"
 
-[node name="RangeLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntDamage"]
+[node name="RangeLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
 layout_mode = 2
 
 [node name="AmmoLoaded" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
@@ -966,9 +976,8 @@ layout_mode = 2
 texture = ExtResource("16_qxnsc")
 stretch_mode = 3
 
-[node name="DamageLabel" type="Label" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+[node name="AmmoIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
 layout_mode = 2
-text = "N/A"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
 layout_mode = 2
@@ -983,7 +992,10 @@ layout_mode = 2
 custom_minimum_size = Vector2(340, 120)
 layout_mode = 2
 bbcode_enabled = true
-scroll_following = true
+
+[node name="DropStackButton" type="Button" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+text = "DROP_ITEM_STACK"
 
 [node name="StackList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
 visible = false
@@ -1176,10 +1188,53 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Recent Events" type="TabBar" parent="NotebookContainer/TabContainer"]
+[node name="Journal" type="TabBar" parent="NotebookContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer"]
+layout_mode = 2
+
+[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/QuestListContainer"]
+layout_mode = 2
+
+[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/QuestListContainer/VScrollBar"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+anchor_left = 1.125
+anchor_right = 48.625
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_right = -3.05176e-05
+offset_bottom = 1.0
+metadata/_edit_use_anchors_ = true
+
+[node name="ActiveQuestContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="QuestNameLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestObjectiveLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
 
 [node name="Equipment" type="TabBar" parent="NotebookContainer/TabContainer"]
 visible = false
@@ -1199,33 +1254,66 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer"]
+[node name="LoadoutScreen" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer"]
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer"]
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
 layout_mode = 2
 
-[node name="PrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer/PrimaryWeaponsContainer"]
+[node name="PrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Primary Weapon"
 
-[node name="HeavyPrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer/PrimaryWeaponsContainer"]
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Heavy Primary"
 
-[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer"]
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
 layout_mode = 2
 
-[node name="SidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer/SidearmWeaponsContainer"]
+[node name="SidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 
-[node name="HeavySidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/VBoxContainer/SidearmWeaponsContainer"]
+[node name="HeavySidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
+
+[node name="SelectionScreen" type="MarginContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 520)
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="WeaponList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 97.5
+anchor_bottom = 0.5
+offset_left = 14.0
+offset_right = -6.10352e-05
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar/WeaponList"]
+layout_mode = 2
+
+[node name="GoBackButton" type="Button" parent="NotebookContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "BACK"
 
 [node name="CheckpointContainer" type="MarginContainer" parent="."]
 visible = false

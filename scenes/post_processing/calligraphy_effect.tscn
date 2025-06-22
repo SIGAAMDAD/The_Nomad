@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://db1qlbdcxvrul"]
+
+[ext_resource type="Shader" uid="uid://cjxc7tg4n5um7" path="res://shaders/post_processing/brush_effect.gdshader" id="1_cx53a"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sjcw8"]
+noise_type = 3
+frequency = 0.0242
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j4bhy"]
+noise = SubResource("FastNoiseLite_sjcw8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qpv00"]
+shader = ExtResource("1_cx53a")
+shader_parameter/outline_size = 1.0
+shader_parameter/outline_color = Color(0.08, 0.05, 0.03, 1)
+shader_parameter/brush_scale = 8.0
+shader_parameter/interior_ink_variation = 0.3
+shader_parameter/brush_texture = SubResource("NoiseTexture2D_j4bhy")
+
+[node name="CalligraphyEffect" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_qpv00")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

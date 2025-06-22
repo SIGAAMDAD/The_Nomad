@@ -1,8 +1,9 @@
 using Godot;
+using System.Diagnostics;
 
 public partial class Poem : Control {
-	[Signal]
-	public delegate void FinishedLoadingEventHandler();
+	private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+	private static readonly Color HiddenColor = new Color( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	private bool Loading = false;
 
@@ -14,6 +15,9 @@ public partial class Poem : Control {
 
 	private PackedScene LoadedWorld = null;
 	private System.Threading.Thread LoadThread = null;
+
+	[Signal]
+	public delegate void FinishedLoadingEventHandler();
 	
 	private void OnTimerTimeout() {
 		AdvanceTimer();
@@ -22,13 +26,13 @@ public partial class Poem : Control {
 	private void OnFinishedLoading() {
 		FinishedLoading -= OnFinishedLoading;
 
-//		ProjectSettings.SetSetting( "application/run/low_processor_mode", true );
-
 		LoadThread.Join();
 		GetTree().ChangeSceneToPacked( LoadedWorld );
 	}
 	private void OnTransitionFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
+
+		World.LoadTime = Stopwatch.StartNew();
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
@@ -62,11 +66,7 @@ public partial class Poem : Control {
 	}
 
 	public override void _Ready() {
-		if ( SettingsData.GetDyslexiaMode() ) {
-			Theme = AccessibilityManager.DyslexiaTheme;
-		} else {
-			Theme = AccessibilityManager.DefaultTheme;
-		}
+		Theme = AccessibilityManager.DefaultTheme;
 
 		base._Ready();
 
@@ -114,11 +114,15 @@ public partial class Poem : Control {
 
 		CurrentTimer++;
 		if ( CurrentTimer < Timers.Length ) {
-			Labels[ CurrentTimer ].Show();
-			Timers[ CurrentTimer ].Start();
 			if ( CurrentTimer == Timers.Length - 1 ) {
-				Author.Show();
-				PressEnter.Show();
+				Tween FadeTween = CreateTween();
+				FadeTween.TweenProperty( Author, "modulate", DefaultColor, 1.5f );
+				FadeTween.TweenProperty( PressEnter, "modulate", DefaultColor, 0.9f );
+			} else {
+				Tween FadeTween = CreateTween();
+				FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
+
+				Timers[ CurrentTimer ].Start();
 			}
 		}
 	}

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration.Ini;
 using Godot;
 using System.Collections.Generic;
 using System;
+using Microsoft.Diagnostics.Tracing;
 
 public partial class SettingsData : Control {
 	private DefaultSettings Default;
@@ -29,6 +30,7 @@ public partial class SettingsData : Control {
 	private static int ColorblindMode;
 	private static bool AutoAimEnabled;
 	private static bool DyslexiaMode;
+	private static bool EnableTutorials;
 	private static SaveMode SaveMode;
 
 	//
@@ -68,13 +70,7 @@ public partial class SettingsData : Control {
 	public static SettingsData Instance = null;
 
 	[Signal]
-	public delegate void EffectsToggledEventHandler();
-	[Signal]
-	public delegate void EffectsVolumeChangedEventHandler();
-	[Signal]
-	public delegate void MusicToggledEventHandler();
-	[Signal]
-	public delegate void MusicVolumeChangedEventHandler();
+	public delegate void SettingsChangedEventHandler();
 
 	public static RefCounted GetRemapper() => Remapper;
 	public static RefCounted GetMappingFormatter() => MappingFormatter;
@@ -83,7 +79,7 @@ public partial class SettingsData : Control {
 	public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
 	public static bool GetFriendsOnlyNetworking() => FriendsOnlyNetworking;
 	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) => FriendsOnlyNetworking = bFriendsOnlyNetworking;
-	
+
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
 	public static int GetMaxFps() => MaxFps;
@@ -110,33 +106,23 @@ public partial class SettingsData : Control {
 		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = ShowFPS;
 	}
 	public static bool GetShowBlood() => ShowBlood;
-	public static void SetShowBlood( bool bShowBlood ) {
-		ShowBlood = bShowBlood;
-	}
+	public static void SetShowBlood( bool bShowBlood ) => ShowBlood = bShowBlood;
 
 	public static bool GetEffectsOn() => EffectsOn;
-	public static void SetEffectsOn( bool bEffectsOn ) {
-		EffectsOn = bEffectsOn;
-		Instance.EmitSignalEffectsToggled();
-	}
+	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
 	public static float GetEffectsVolume() => EffectsVolume;
 	public static float GetEffectsVolumeLinear() => EffectsVolumeDb_Flat;
 	public static void SetEffectsVolume( float fEffectsVolume ) {
 		EffectsVolume = fEffectsVolume;
 		EffectsVolumeDb_Flat = Mathf.LinearToDb( EffectsVolume * 0.01f );
-		Instance.EmitSignalEffectsVolumeChanged();
 	}
 	public static bool GetMusicOn() => MusicOn;
-	public static void SetMusicOn( bool bMusicOn ) {
-		MusicOn = bMusicOn;
-		Instance.EmitSignalMusicToggled();
-	}
+	public static void SetMusicOn( bool bMusicOn ) => MusicOn = bMusicOn;
 	public static float GetMusicVolume() => MusicVolume;
 	public static float GetMusicVolumeLinear() => MusicVolumeDb_Flat;
 	public static void SetMusicVolume( float fMusicVolume ) {
 		MusicVolume = fMusicVolume;
 		MusicVolumeDb_Flat = Mathf.LinearToDb( MusicVolume * 0.01f );
-		Instance.EmitSignalMusicVolumeChanged();
 	}
 	public static bool GetMuteUnfocused() => MuteUnfocused;
 	public static void SetMuteUnfocused( bool bMuteUnfocused ) => MuteUnfocused = bMuteUnfocused;
@@ -147,6 +133,8 @@ public partial class SettingsData : Control {
 	public static void SetHapticStrength( float fHapticStrength ) => HapticStrength = fHapticStrength;
 	public static bool GetAutoAimEnabled() => AutoAimEnabled;
 	public static void SetAutoAimEnabled( bool bAutoAimEnabled ) => AutoAimEnabled = bAutoAimEnabled;
+	public static bool GetTutorialsEnabled() => EnableTutorials;
+	public static void SetTutorialsEnabled( bool bTutorialsEnabled ) => EnableTutorials = bTutorialsEnabled;
 	public static bool GetDyslexiaMode() => DyslexiaMode;
 	public static void SetDyslexiaMode( bool bDyslexiaMode ) => DyslexiaMode = bDyslexiaMode;
 
@@ -155,7 +143,7 @@ public partial class SettingsData : Control {
 	public static bool GetHellbreakerEnabled() => HellbreakerEnabled;
 	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
 	public static bool GetCleanAudio() => CleanAudio;
-	public static bool SetCleanAudio( bool bCleanAudio ) => CleanAudio = bCleanAudio;
+	public static void SetCleanAudio( bool bCleanAudio ) => CleanAudio = bCleanAudio;
 
 	public static int GetSaveSlot() => LastSaveSlot;
 	public static void SetSaveSlot( int nSlot ) => LastSaveSlot = nSlot;
@@ -195,7 +183,8 @@ public partial class SettingsData : Control {
 				3
 			);
 			break;
-		};
+		}
+		;
 
 		Engine.MaxFps = MaxFps;
 
@@ -236,18 +225,19 @@ public partial class SettingsData : Control {
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
-		};
+		}
+		;
 
 		switch ( WindowMode ) {
 		case WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 800, 600 ) );
+			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
@@ -257,7 +247,12 @@ public partial class SettingsData : Control {
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
 			break;
-		};
+		case WindowMode.ExclusiveFullscreen:
+			DisplayServer.WindowSetMode( DisplayServer.WindowMode.ExclusiveFullscreen );
+			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
+			break;
+		}
+		;
 
 		UpdateWindowScale();
 	}
@@ -290,11 +285,15 @@ public partial class SettingsData : Control {
 		case "BorderlessFullscreen":
 			WindowMode = WindowMode.BorderlessFullscreen;
 			break;
+		case "ExclusiveFullscreen":
+			WindowMode = WindowMode.ExclusiveFullscreen;
+			break;
 		default:
 			Console.PrintError( "Unknown window mode \"" + config[ "Video:WindowMode" ] + " defaulting to fullscreen." );
 			WindowMode = WindowMode.Fullscreen;
 			break;
-		};
+		}
+		;
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
 		ShadowQuality = (ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
 		switch ( config[ "Video:AntiAliasing" ] ) {
@@ -319,7 +318,8 @@ public partial class SettingsData : Control {
 		case "FXAA_and_TAA":
 			AntiAliasing = AntiAliasing.FXAA_and_TAA;
 			break;
-		};
+		}
+		;
 		switch ( config[ "Video:SunShadowQuality" ] ) {
 		case "None":
 			SunShadowQuality = ShadowQuality.Off;
@@ -333,7 +333,8 @@ public partial class SettingsData : Control {
 		case "High":
 			SunShadowQuality = ShadowQuality.High;
 			break;
-		};
+		}
+		;
 		switch ( config[ "Video:VSync" ] ) {
 		case "Disabled":
 			VSyncMode = VSyncMode.Off;
@@ -347,7 +348,8 @@ public partial class SettingsData : Control {
 		case "TripleBuffered":
 			VSyncMode = VSyncMode.TripleBuffered;
 			break;
-		};
+		}
+		;
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
@@ -376,6 +378,7 @@ public partial class SettingsData : Control {
 		AutoAimEnabled = Convert.ToBoolean( config[ "Accessibility:AutoAimEnabled" ] );
 		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ] );
 		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ] );
+		EnableTutorials = Convert.ToBoolean( config[ "Accessibility:TutorialsEnabled" ] );
 	}
 	private static void SaveAccessibilitySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Accessibility]" );
@@ -385,6 +388,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "AutoAimEnabled={0}", AutoAimEnabled.ToString() ) );
 		writer.WriteLine( string.Format( "DyslexiaMode={0}", DyslexiaMode.ToString() ) );
 		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", QuicktimeAutocomplete.ToString() ) );
+		writer.WriteLine( string.Format( "TutorialsEnabled={0}", EnableTutorials ) );
 		writer.WriteLine();
 	}
 	private static void LoadGameplaySettings( IDictionary<string, string> config ) {
@@ -431,6 +435,7 @@ public partial class SettingsData : Control {
 		ColorblindMode = Default.ColorblindMode;
 		AutoAimEnabled = Default.AutoAim;
 		DyslexiaMode = Default.DyslexiaMode;
+		EnableTutorials = Default.EnableTutorials;
 
 		EffectsOn = Default.SoundEffectsOn;
 		SetEffectsVolume( Default.SoundEffectsVolume );
@@ -475,11 +480,16 @@ public partial class SettingsData : Control {
 		}
 
 		IDictionary<string, string> iniData = IniStreamConfigurationProvider.Read( stream );
-		LoadVideoSettings( iniData );
-		LoadAudioSettings( iniData );
-		LoadAccessibilitySettings( iniData );
-		LoadGameplaySettings( iniData );
-		LoadNetworkingSettings( iniData );
+		try {
+			LoadVideoSettings( iniData );
+			LoadAudioSettings( iniData );
+			LoadAccessibilitySettings( iniData );
+			LoadGameplaySettings( iniData );
+			LoadNetworkingSettings( iniData );
+		} catch ( Exception e ) {
+			Console.PrintWarning( string.Format( "Exception while loading settings {0}, using defaults.", e.Message ) );
+			GetDefaultConfig();
+		}
 
 		if ( iniData.TryGetValue( "Internal:LastSaveSlot", out string value ) ) {
 			LastSaveSlot = Convert.ToInt32( value );
@@ -512,5 +522,7 @@ public partial class SettingsData : Control {
 				ResourceSaver.Save( RemappingConfig, "user://input_context.tres" );
 			}
 		}
+
+		Instance.EmitSignalSettingsChanged();
 	}
 };

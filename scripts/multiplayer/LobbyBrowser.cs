@@ -40,7 +40,7 @@ public partial class LobbyBrowser : Control {
 
 			Size = new Godot.Vector2( 240, 20 );
 			CustomMinimumSize = Size;
-			Pressed += () => { OnLobbySelected( lobbyId ); };
+			Pressed += () => Instance.OnLobbySelected( lobbyId );
 
 			LoadMetadata();
 		}
@@ -112,44 +112,44 @@ public partial class LobbyBrowser : Control {
 		}
 	};
 
-	private static Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
-	private static Dictionary<int, bool> MapFilterList = new Dictionary<int, bool>();
+	private Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
+	private Dictionary<int, bool> MapFilterList = new Dictionary<int, bool>();
 
-	private static Button HostGame;
-	private static Button RefreshLobbies;
-	private static Button Matchmake;
-	private static Button CancelMatchmake;
-	private static AudioStreamPlayer UIChannel;
+	private Button HostGame;
+	private Button RefreshLobbies;
+	private Button Matchmake;
+	private Button CancelMatchmake;
+	private AudioStreamPlayer UIChannel;
 
-	private static HBoxContainer JoinGame;
-	private static HBoxContainer LobbyManager;
+	private HBoxContainer JoinGame;
+	private HBoxContainer LobbyManager;
 
-	private static CSteamID SelectedLobby = CSteamID.Nil;
+	private CSteamID SelectedLobby = CSteamID.Nil;
 
-	private static Label MapNameLabel;
-	private static Label PlayerCountLabel;
-	private static Label GameModeLabel;
+	private Label MapNameLabel;
+	private Label PlayerCountLabel;
+	private Label GameModeLabel;
 
-	private static Label JoiningLobbyLabel;
-	private static Range JoiningLobbySpinner;
+	private Label JoiningLobbyLabel;
+	private Range JoiningLobbySpinner;
 
-	private static HBoxContainer JoiningLobbyContainer;
+	private HBoxContainer JoiningLobbyContainer;
 
-	private static Control MatchmakingSpinner;
-	private static Label MatchmakingLabel;
-	private static Timer MatchmakingTimer;
+	private Control MatchmakingSpinner;
+	private Label MatchmakingLabel;
+	private Timer MatchmakingTimer;
 
-	private static VBoxContainer LobbyTable;
+	private VBoxContainer LobbyTable;
 
-	private static CheckBox ShowFullServers;
-	private static CheckBox GameFilter_LocalWorld;
+	private CheckBox ShowFullServers;
+	private CheckBox GameFilter_LocalWorld;
 
-	private static Timer RefreshTimer;
+	private Timer RefreshTimer;
 
-	private static int MatchmakingPhase = 0;
+	private int MatchmakingPhase = 0;
 
-	private static System.Threading.Thread MatchmakingThread = null;
-	private static object MatchmakingLobbyListReady = new object();
+	private System.Threading.Thread MatchmakingThread = null;
+	private object MatchmakingLobbyListReady = new object();
 
 	private System.Threading.Thread LoadThread = null;
 	private PackedScene LoadedWorld = null;
@@ -226,7 +226,7 @@ public partial class LobbyBrowser : Control {
 		ServerCommandManager.SendCommand( ServerCommandType.ConnectedToLobby );
 		System.GC.KeepAlive( this );
 	}
-	private void OnLobbyJoined( ulong lobbyId ) {
+	private static void OnLobbyJoined( ulong lobbyId ) {
 	}
 
 	private void OnConnectionStatusChanged( int status ) {
@@ -286,7 +286,7 @@ public partial class LobbyBrowser : Control {
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
-	private static void OnLobbySelected( CSteamID lobbyId ) {
+	private void OnLobbySelected( CSteamID lobbyId ) {
 		UIChannel.Stream = UISfxManager.ButtonPressed;
 		UIChannel.Play();
 

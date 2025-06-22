@@ -8,9 +8,12 @@ public partial class BulletShellMesh : Node {
 	private static BulletShellMesh Instance = null;
 	private static readonly int BulletShellInstanceMax = 256;
 
-	private NetworkSyncObject SyncObject = new NetworkSyncObject( 256 );
+	private NetworkSyncObject SyncObject;
 
 	private void SendUpdate( Godot.Vector2 position, Resource ammo ) {
+		if ( SyncObject == null ) {
+			return;
+		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (string)ammo.Get( "id" ) );
@@ -38,6 +41,7 @@ public partial class BulletShellMesh : Node {
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+			SyncObject = new NetworkSyncObject( 256 );
 		}
 
 		Instance = this;
@@ -50,7 +54,7 @@ public partial class BulletShellMesh : Node {
 		meshInstance.Texture = (Texture2D)( (Godot.Collections.Dictionary)ammo.Get( "properties" ) )[ "casing_icon" ];
 		meshInstance.Multimesh.InstanceCount = BulletShellInstanceMax;
 		meshInstance.Multimesh.VisibleInstanceCount = 0;
-		meshInstance.ZIndex = 10;
+		meshInstance.ZIndex = 5;
 		meshInstance.Show();
 		AddChild( meshInstance );
 		Meshes.Add( ammo, meshInstance );

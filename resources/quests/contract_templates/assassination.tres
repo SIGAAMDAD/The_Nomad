@@ -1,0 +1,241 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=40 format=3 uid="uid://ejahlkgwonf"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_ief0k"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_8ncjx"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="2_61bm1"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_1ivdw"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_5utet"]
+[ext_resource type="Script" uid="uid://do8usipgxxcl2" path="res://addons/questify/scripts/model/quest_conditional_branch.gd" id="4_w4msc"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="5_848yy"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="6_lhud6"]
+
+[sub_resource type="Resource" id="Resource_7uinf"]
+script = ExtResource("2_61bm1")
+type = "State"
+key = "TargetAlive"
+id = "N_9UKnBbkM"
+optional = false
+graph_editor_position = Vector2(2600, 320)
+graph_editor_size = Vector2(377, 432)
+metadata/value = false
+
+[sub_resource type="Resource" id="Resource_ke33g"]
+script = ExtResource("3_5utet")
+description = "Kill the target"
+id = "Ep048FzovA"
+optional = false
+graph_editor_position = Vector2(3740, 200)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_i71lq"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_7uinf")
+to = SubResource("Resource_ke33g")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_1bdcd"]
+script = ExtResource("2_61bm1")
+type = "ContractFlags"
+key = "Silent"
+id = "5XdeD0Mwt7"
+optional = false
+graph_editor_position = Vector2(1280, 2300)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_oohfd"]
+script = ExtResource("4_w4msc")
+id = "M6pjYTQmiP"
+optional = false
+graph_editor_position = Vector2(2320, 2240)
+graph_editor_size = Vector2(244, 151)
+
+[sub_resource type="Resource" id="Resource_8tayr"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_1bdcd")
+to = SubResource("Resource_oohfd")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_mgcle"]
+script = ExtResource("5_848yy")
+name = "Assassination Contract"
+description = "Kill the target and complete the optional objectives for maximum bounty"
+id = "DkehrKi_aH"
+optional = false
+graph_editor_position = Vector2(1200, 220)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_6x1s3"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_mgcle")
+to = SubResource("Resource_oohfd")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_srx1e"]
+script = ExtResource("3_5utet")
+description = "(Silent) Don't be seen or heard"
+id = "W0RuDp926M"
+optional = true
+graph_editor_position = Vector2(3040, 2220)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_vu471"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_oohfd")
+to = SubResource("Resource_srx1e")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_247sa"]
+script = ExtResource("2_61bm1")
+type = "ContractFlags"
+key = "Ghost"
+id = "EHqlSGjDj7"
+optional = false
+graph_editor_position = Vector2(1280, 1560)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_7nkgf"]
+script = ExtResource("4_w4msc")
+id = "AizzabWiqK"
+optional = false
+graph_editor_position = Vector2(2300, 1500)
+graph_editor_size = Vector2(244, 151)
+
+[sub_resource type="Resource" id="Resource_w80rh"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_247sa")
+to = SubResource("Resource_7nkgf")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_cveo3"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_mgcle")
+to = SubResource("Resource_7nkgf")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_wye7v"]
+script = ExtResource("3_5utet")
+description = "(Ghost) Don't be seen"
+id = "61yNP1KlNZ"
+optional = true
+graph_editor_position = Vector2(3040, 1480)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_st4l1"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_7nkgf")
+to = SubResource("Resource_wye7v")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_2j4bf"]
+script = ExtResource("2_61bm1")
+type = "ContractFlags"
+key = "Massacre"
+id = "xQIMeaVj7t"
+optional = false
+graph_editor_position = Vector2(1280, 3020)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_56eiv"]
+script = ExtResource("4_w4msc")
+id = "dNK6k9QSKE"
+optional = false
+graph_editor_position = Vector2(2340, 2960)
+graph_editor_size = Vector2(244, 151)
+
+[sub_resource type="Resource" id="Resource_3o75v"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_2j4bf")
+to = SubResource("Resource_56eiv")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_e67fo"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_mgcle")
+to = SubResource("Resource_56eiv")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_dus0l"]
+script = ExtResource("3_5utet")
+description = "Kill everyone"
+id = "SPnTZnzWAb"
+optional = true
+graph_editor_position = Vector2(3040, 2940)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_ncnu2"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_56eiv")
+to = SubResource("Resource_dus0l")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_1j013"]
+script = ExtResource("6_lhud6")
+id = "3-JhDgk6Uo"
+optional = false
+graph_editor_position = Vector2(4380, 220)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_vqbum"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_ke33g")
+to = SubResource("Resource_1j013")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_3ms2v"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_mgcle")
+to = SubResource("Resource_ke33g")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_fd7oi"]
+script = ExtResource("2_61bm1")
+type = "Value"
+key = "EnemiesRemaining"
+id = "tkc8EVu4vx"
+optional = false
+graph_editor_position = Vector2(2220, 3180)
+graph_editor_size = Vector2(377, 432)
+
+[sub_resource type="Resource" id="Resource_45wtc"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_fd7oi")
+to = SubResource("Resource_dus0l")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_syjvf"]
+script = ExtResource("2_61bm1")
+type = "ValueUInt32"
+key = "TimesAlerted"
+id = "YjEdt8w1wR"
+optional = false
+graph_editor_position = Vector2(2200, 2460)
+graph_editor_size = Vector2(377, 432)
+
+[sub_resource type="Resource" id="Resource_g731x"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_syjvf")
+to = SubResource("Resource_srx1e")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_53ryq"]
+script = ExtResource("2_61bm1")
+type = "ValueUInt32"
+key = "TimesSpotted"
+id = "SsYiHDavt1"
+optional = false
+graph_editor_position = Vector2(2180, 1700)
+graph_editor_size = Vector2(377, 432)
+
+[sub_resource type="Resource" id="Resource_3mgqu"]
+script = ExtResource("1_ief0k")
+from = SubResource("Resource_53ryq")
+to = SubResource("Resource_wye7v")
+edge_type = 1
+
+[resource]
+script = ExtResource("3_1ivdw")
+nodes = Array[ExtResource("2_8ncjx")]([SubResource("Resource_7nkgf"), SubResource("Resource_1bdcd"), SubResource("Resource_oohfd"), SubResource("Resource_56eiv"), SubResource("Resource_2j4bf"), SubResource("Resource_247sa"), SubResource("Resource_mgcle"), SubResource("Resource_ke33g"), SubResource("Resource_1j013"), SubResource("Resource_7uinf"), SubResource("Resource_dus0l"), SubResource("Resource_fd7oi"), SubResource("Resource_srx1e"), SubResource("Resource_syjvf"), SubResource("Resource_53ryq"), SubResource("Resource_wye7v")])
+edges = Array[ExtResource("1_ief0k")]([SubResource("Resource_i71lq"), SubResource("Resource_8tayr"), SubResource("Resource_6x1s3"), SubResource("Resource_vu471"), SubResource("Resource_w80rh"), SubResource("Resource_cveo3"), SubResource("Resource_st4l1"), SubResource("Resource_3o75v"), SubResource("Resource_e67fo"), SubResource("Resource_ncnu2"), SubResource("Resource_vqbum"), SubResource("Resource_3ms2v"), SubResource("Resource_45wtc"), SubResource("Resource_g731x"), SubResource("Resource_3mgqu")])

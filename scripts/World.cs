@@ -247,6 +247,14 @@ public partial class World : LevelData {
 		}
 	}
 
+	private void DisableTutorials() {
+		Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Tutorial" );
+		for ( int i = 0; i < nodes.Count; i++ ) {
+			( nodes[ i ] as InteractionItem ).Hide();
+			( nodes[ i ] as InteractionItem ).ProcessMode = ProcessModeEnum.Disabled;
+		}
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -277,8 +285,12 @@ public partial class World : LevelData {
 			}
 		} );
 
-		ResourceLoadThread = new Thread( () => { ResourceCache.Cache( this, SceneLoadThread ); } );
+		ResourceLoadThread = new Thread( () => ResourceCache.Cache( this, SceneLoadThread ) );
 		ResourceLoadThread.Start();
+
+		if ( !SettingsData.GetTutorialsEnabled() ) {
+			DisableTutorials();
+		}
 
 		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
@@ -290,10 +302,6 @@ public partial class World : LevelData {
 		}
 
 		Questify.ToggleUpdatePolling( true );
-		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
-		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
-		Questify.ConnectQuestObjectiveAdded( OnQuestObjectiveAdded );
-		Questify.ConnectQuestCompleted( OnQuestCompleted );
 		QuestState = Questify.Instantiate( CurrentQuest );
 		Questify.StartQuest( QuestState );
 

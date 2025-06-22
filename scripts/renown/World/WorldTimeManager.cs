@@ -242,10 +242,10 @@ namespace Renown.World {
 				SyncObject = new NetworkSyncObject( sizeof( uint ) * 3 + sizeof( float ) );
 				if ( SteamLobby.Instance.IsOwner() ) {
 					// we're running the host's world
-					SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
+	//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
 					IsHostWorld = true;
 				} else {
-					SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+	//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 					SetProcess( false );
 				}
 			} else {

@@ -24,48 +24,69 @@ using Godot;
 using System.Collections.Generic;
 
 namespace Renown {
-	public class QuestState {
+	public partial class QuestState : Node {
 		private static Dictionary<string, int> ValueIntCache = null;
 		private static Dictionary<string, float> ValueFloatCache = null;
 		private static Dictionary<string, bool> StateCache = null;
 		private static Dictionary<string, bool> ContractFlagsCache = null;
 
+		private static QuestState Instance;
+
+		[Signal]
+		public delegate void QuestCompletedEventHandler( Resource questResource );
+		[Signal]
+		public delegate void QuestStartedEventHandler( Resource questResource );
+		[Signal]
+		public delegate void QuestObjectiveCompletedEventHandler( Resource questResource, Resource objective );
+
 		private static void OnConditionQueryRequested( string type, string key, Variant value, Resource requester ) {
 			switch ( type ) {
-			case "ContractFlags": {
-				if ( !ContractFlagsCache.TryGetValue( key, out bool state ) ) {
-					return;
-				}
-				Questify.SetConditionCompleted( requester, state == value.AsBool() );
-				break; }
 			case "State": {
 				if ( !StateCache.TryGetValue( key, out bool state ) ) {
+					Console.PrintError( string.Format( "QuestState.OnConditionQueryRequested: no such StateVar {0}!", key ) );
 					return;
 				}
 				Questify.SetConditionCompleted( requester, state == value.AsBool() );
 				break; }
-			case "ValueInt": {
+			case "ContractFlags": {
+				if ( !ContractFlagsCache.TryGetValue( key, out bool state ) ) {
+					Console.PrintError( string.Format( "QuestState.OnConditionQueryRequested: no such ContractFlag {0}!", key ) );
+					return;
+				}
+				Questify.SetConditionCompleted( requester, state == value.AsBool() );
+				break; }
+			case "Int": {
 				if ( !ValueIntCache.TryGetValue( key, out int state ) ) {
+					Console.PrintError( string.Format( "QuestState.OnConditionQueryRequested: no such IntState {0}!", key ) );
 					return;
 				}
 				Questify.SetConditionCompleted( requester, state == value.AsInt32() );
 				break; }
-			case "ValueFloat": {
+			case "Float": {
 				if ( !ValueFloatCache.TryGetValue( key, out float state ) ) {
+					Console.PrintError( string.Format( "QuestState.OnConditionQueryRequested: no such FloatState {0}!", key ) );
 					return;
 				}
 				Questify.SetConditionCompleted( requester, state == value.AsDouble() );
 				break; }
+			default:
+				Console.PrintError( string.Format( "QuestState.OnConditionQueryRequested: invalid condition type {0}", type ) );
+				break;
 			};
 		}
 		private static void OnQuestCompleted( Resource quest ) {
+			Instance.EmitSignalQuestCompleted( quest );
 		}
 		private static void OnQuestObjectiveCompleted( Resource quest, Resource objective ) {
+			Instance.EmitSignalQuestObjectiveCompleted( quest, objective );
+		}
+		private static void OnQuestStarted( Resource quest ) {
+			Instance.EmitSignalQuestStarted( quest );
 		}
 
 		public static void StartContract( Resource quest, ContractFlags flags, Dictionary<string, bool> state ) {
 			ContractFlagsCache?.Clear();
-			ContractFlagsCache =  new Dictionary<string, bool>{
+			ContractFlagsCache = new Dictionary<string, bool>{
 				{ "Massacre", ( flags & ContractFlags.Massacre ) != 0 },
 				{ "Silent", ( flags & ContractFlags.Silent ) != 0 },
 				{ "Ghost", ( flags & ContractFlags.Ghost ) != 0 },
@@ -84,14 +105,24 @@ namespace Renown {
 			};
 
 			ValueFloatCache?.Clear();
-			ValueFloatCache = new Dictionary<string, float>{
+			ValueFloatCache = new Dictionary<string, float> {
 			};
 
 			Resource contract = Questify.Instantiate( quest );
+			Questify.StartQuest( contract );
+		}
+
+		public override void _Ready() {
+			base._Ready();
+
+			Console.PrintLine( "Initializing QuestState..." );
+
+			Instance = this;
+
 			Questify.ConnectConditionQueryRequested( new System.Action<string, string, Variant, Resource>( OnConditionQueryRequested ) );
 			Questify.ConnectQuestCompleted( new System.Action<Resource>( OnQuestCompleted ) );
 			Questify.ConnectQuestObjectiveCompleted( new System.Action<Resource, Resource>( OnQuestObjectiveCompleted ) );
-			Questify.StartQuest( contract );
+			Questify.ConnectQuestStarted( new System.Action<Resource>( OnQuestStarted ) );
 		}
 	};
 };
