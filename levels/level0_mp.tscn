@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c7hlaoisnc31n" path="res://scenes/multiplayer/spawn_point.tscn" id="2_ojsgc"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level0.tscn" id="4_3rxy4"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_eybvd"]
-[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="6_j2b06"]
+[ext_resource type="ItemDefinition" uid="uid://bovippiuwxm1n" path="res://resources/ammo/shotgun_12gauge.tres" id="6_j2b06"]
 
 [sub_resource type="Resource" id="Resource_1mi0g"]
 metadata/__load_path__ = "res://scripts/multiplayer/data.gd"

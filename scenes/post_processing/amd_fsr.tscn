@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://beat3s5vhalvu" path="res://shaders/post_processing/amd_fsr_upscale_pass.gdshader" id="1_3a6tt"]
 [ext_resource type="Shader" uid="uid://cvtlxcmg51p3b" path="res://shaders/post_processing/amd_fsr_sharpen.gdshader" id="2_720jf"]
-[ext_resource type="Texture2D" uid="uid://bm7v8kwu2x8f2" path="res://icon.svg" id="2_g7in7"]
+[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="2_g7in7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_720jf"]
 shader = ExtResource("1_3a6tt")

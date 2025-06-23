@@ -1,15 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://uei7yka6gloe"]
+[gd_scene load_steps=15 format=3 uid="uid://uei7yka6gloe"]
 
 [ext_resource type="Script" uid="uid://c6m56prls5p7o" path="res://scripts/SinglePlayer.cs" id="1_ato02"]
 [ext_resource type="PackedScene" uid="uid://dy3x8fkn247sb" path="res://levels/level0.tscn" id="2_kiad1"]
 [ext_resource type="PackedScene" uid="uid://brtukmd1ep2ci" path="res://scenes/Items/Weapons/weapon_base.tscn" id="3_nxiwu"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="4_b8e24"]
 [ext_resource type="PackedScene" uid="uid://d14tdl6ni8oqu" path="res://scenes/Items/Ammo/ammo_base.tscn" id="5_swbre"]
-[ext_resource type="ItemDefinition" uid="uid://5cw6j8k2dvv" path="res://resources/ammo/shotgun_12gauge.tres" id="6_diy6u"]
+[ext_resource type="ItemDefinition" uid="uid://bovippiuwxm1n" path="res://resources/ammo/shotgun_12gauge.tres" id="6_diy6u"]
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="7_mewpc"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/interactables/checkpoint.tscn" id="8_fb31w"]
 [ext_resource type="PackedScene" uid="uid://dl5ck2whlo4x2" path="res://scenes/level_end.tscn" id="9_ctbrj"]
-[ext_resource type="PackedScene" uid="uid://6cnqoj2bp0r3" path="res://scenes/mobs/mercenary/mercenary_shotgunner.tscn" id="10_upqec"]
 [ext_resource type="PackedScene" uid="uid://dc17uyypxry83" path="res://scenes/Player.tscn" id="11_itcay"]
 [ext_resource type="PackedScene" uid="uid://de5ahm2yawr1u" path="res://scenes/menus/pause_menu.tscn" id="12_mrrwr"]
 
@@ -17,6 +16,12 @@
 vertices = PackedVector2Array(1442.63, 146, 1693.08, 146, 1696.92, 596.203, 1075.24, 675.883, 837.672, -107, 1402.55, -77.4219, 551.07, 583.438, 492.469, 72.5703, 667.219, -107)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 0, 3, 6, 7, 8)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(663, -117, 838, -117, 1411, -87, 1451, 136, 1703, 136, 1707, 605, 1075, 686, 542, 592, 482, 69)])
+
+[sub_resource type="Resource" id="Resource_ehtmu"]
+metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
+
+[sub_resource type="Resource" id="Resource_ato02"]
+metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
 
 [node name="SinglePlayer" type="Node2D" node_paths=PackedStringArray("Player1")]
 script = ExtResource("1_ato02")
@@ -72,12 +77,12 @@ position = Vector2(1922, 17)
 position = Vector2(156, -16)
 navigation_polygon = SubResource("NavigationPolygon_dm7o4")
 
-[node name="Guard0" parent="Level/OpposingForce/NavigationRegion2D" instance=ExtResource("10_upqec")]
+[node name="Guard0" parent="Level/OpposingForce/NavigationRegion2D"]
 position = Vector2(824, 325)
 Direction = 2
 ThinkInterval = 0.4
 
-[node name="MercenaryShotgunner" parent="Level/OpposingForce/NavigationRegion2D" instance=ExtResource("10_upqec")]
+[node name="MercenaryShotgunner" parent="Level/OpposingForce/NavigationRegion2D"]
 position = Vector2(1093, 179)
 
 [node name="Network" type="Node" parent="."]

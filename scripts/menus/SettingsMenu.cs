@@ -3,6 +3,7 @@ using Godot;
 public partial class SettingsMenu : Control {
 	private OptionButton VSync;
 	private HSlider ImageSharpening;
+	private OptionButton ResolutionOption;
 	private OptionButton WindowModeOption;
 	private OptionButton AntiAliasingOption;
 	private OptionButton ShadowQuality;
@@ -108,6 +109,29 @@ public partial class SettingsMenu : Control {
 			break;
 		};
 
+		Godot.Vector2I windowSize = Godot.Vector2I.Zero;
+		switch ( (Resolution)ResolutionOption.Selected ) {
+		case Resolution.Res_640x480:
+			windowSize = new Godot.Vector2I( 640, 480 );
+			break;
+		case Resolution.Res_800x600:
+			windowSize = new Godot.Vector2I( 800, 600 );
+			break;
+		case Resolution.Res_1280x768:
+			windowSize = new Godot.Vector2I( 1280, 768 );
+			break;
+		case Resolution.Res_1920x1080:
+			windowSize = new Godot.Vector2I( 1920, 1080 );
+			break;
+		case Resolution.Res_1600x900:
+			windowSize = new Godot.Vector2I( 1600, 900 );
+			break;
+		default:
+			windowSize = new Godot.Vector2I( 640, 480 );
+			break;
+		};
+		DisplayServer.WindowSetSize( windowSize );
+
 		Rid viewport = GetTree().Root.GetViewportRid();
 		switch ( (AntiAliasing)AntiAliasingOption.Selected ) {
 		case AntiAliasing.None:
@@ -151,12 +175,10 @@ public partial class SettingsMenu : Control {
 		case (int)WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case (int)WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
@@ -181,6 +203,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetVSync( (VSyncMode)VSync.Selected );
 		SettingsData.SetShadowQuality( (ShadowQuality)ShadowQuality.Selected );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Selected );
+		SettingsData.SetResolution( (Resolution)ResolutionOption.Selected );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Selected );
 		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
 		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
@@ -246,32 +269,37 @@ public partial class SettingsMenu : Control {
 
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
 		VSync.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		VSync.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		VSync.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		VSync.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		WindowModeOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/WindowModeList/WindowModeOptionButton" );
 		WindowModeOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		WindowModeOption.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		WindowModeOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		WindowModeOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+
+		ResolutionOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ResolutionList/ResolutionOptionButton" );
+		ResolutionOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
+		ResolutionOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
+		ResolutionOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		MaxFps = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/MaxFpsList/MaxFpsOptionButton" );
 		MaxFps.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		MaxFps.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		MaxFps.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		MaxFps.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		AntiAliasingOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/AntiAliasingList/AntiAliasingOptionButton" );
 		AntiAliasingOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		AntiAliasingOption.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		AntiAliasingOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		AntiAliasingOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		ShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ShadowQualityList/ShadowQualityOptionButton" );
 		ShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		ShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		SunShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/SunShadowQualityList/SunShadowQualityOptionButton" );
 		SunShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		SunShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => { OnButtonPressed(); } ) );
+		SunShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
 		SunShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
 
 		SunLightEnabled = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/SunLightEnabledButton/SunLightEnabledCheckBox" );
@@ -461,6 +489,7 @@ public partial class SettingsMenu : Control {
 
 		VSync.Selected = (int)SettingsData.GetVSync();
 		WindowModeOption.Selected = (int)SettingsData.GetWindowMode();
+		ResolutionOption.Selected = (int)SettingsData.GetResolution();
 		AntiAliasingOption.Selected = (int)SettingsData.GetAntiAliasing();
 		ShadowQuality.Selected = (int)SettingsData.GetShadowQuality();
 		switch ( SettingsData.GetMaxFps() ) {

@@ -1,32 +1,42 @@
-[gd_scene load_steps=40 format=4 uid="uid://b16ex50idp6s1"]
+[gd_scene load_steps=42 format=4 uid="uid://b16ex50idp6s1"]
 
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="1_5w8g6"]
-[ext_resource type="Script" uid="uid://f5142yd5qopg" path="res://scripts/levels/SaltWastes.cs" id="1_ayvqd"]
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="2_pnosp"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="2_pnosp"]
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="3_cls3k"]
-[ext_resource type="Texture2D" uid="uid://bwc7mgg7aylk" path="res://textures/env/food/09_baguette.png" id="4_jeorn"]
-[ext_resource type="Texture2D" uid="uid://jecbsx1vr8ps" path="res://textures/env/food/20_bagel.png" id="5_eqbbu"]
-[ext_resource type="Texture2D" uid="uid://b7ke3wj171lc6" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="6_6d7qd"]
+[ext_resource type="Texture2D" uid="uid://dfeq3b1lm8oly" path="res://textures/env/food/09_baguette.png" id="4_jeorn"]
+[ext_resource type="Texture2D" uid="uid://5kc8kyqtjoiq" path="res://textures/env/food/20_bagel.png" id="5_eqbbu"]
+[ext_resource type="Texture2D" uid="uid://lwkuylf3c2tc" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="6_6d7qd"]
 [ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="7_8ewd7"]
-[ext_resource type="Texture2D" uid="uid://bq70gpo8kknwv" path="res://textures/tilesets/desert/decor_2.png" id="8_itvej"]
-[ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="9_85mog"]
-[ext_resource type="Texture2D" uid="uid://d1sx0hqsp6ucx" path="res://textures/tilesets/DesertTilemap16x16.png" id="11_5w8g6"]
-[ext_resource type="PackedScene" uid="uid://6cnqoj2bp0r3" path="res://scenes/mobs/mercenary/mercenary_shotgunner.tscn" id="11_sayq2"]
+[ext_resource type="Texture2D" uid="uid://dtpgs65atmr85" path="res://textures/tilesets/desert/decor_2.png" id="8_itvej"]
+[ext_resource type="Texture2D" uid="uid://ctt4plo6h01xg" path="res://textures/tilesets/desert/environment.dds" id="9_85mog"]
+[ext_resource type="Texture2D" uid="uid://ci2tj22namfbs" path="res://textures/tilesets/DesertTilemap16x16.png" id="11_5w8g6"]
 [ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="12_8ewd7"]
 [ext_resource type="PackedScene" uid="uid://co7rmsfdbg4m0" path="res://scenes/interactables/checkpoint.tscn" id="12_27st8"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="13_8ewd7"]
 [ext_resource type="Script" uid="uid://b5dpy3k5bcf4w" path="res://scripts/mobs/AIPatrolRoute.cs" id="13_itvej"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="14_itvej"]
 [ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="15_85mog"]
-[ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/interactables/EaglesPeak.cs" id="15_ayvqd"]
+[ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/Interactables/EaglesPeak.cs" id="15_ayvqd"]
 [ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="16_ayvqd"]
 [ext_resource type="Script" uid="uid://lrbjwfc0uid0" path="res://scripts/complex_tilemap.gd" id="16_sayq2"]
+
+[sub_resource type="Resource" id="Resource_itvej"]
+metadata/__load_path__ = "res://scripts/levels/SaltWastes.cs"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfcq3"]
 size = Vector2(16, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hjey5"]
 size = Vector2(26.1224, 21.3119)
+
+[sub_resource type="Resource" id="Resource_85mog"]
+metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
+
+[sub_resource type="Resource" id="Resource_ayvqd"]
+metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
+
+[sub_resource type="Resource" id="Resource_sayq2"]
+metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
 vertices = PackedVector2Array(1456, 301, 1531, 301, 1438, 302, 1547, 300, 1622, 300, 945, 107, 1007, 42, 1010, 250, 944, 239, 1698.75, 227.195, 1715.73, 495, 1619, 260, 1204, 233, 1547, 260, 1074, 249, 1075, 176, 1079, 178, 1651, 495, 692, 460, 692.891, 603.547, 689.852, 602.977, 1402.52, -77.4219, 1419.2, 18.0469, 1087, 24, 837.672, -107, 1010, 281, 1011, 379, 807, 352, 1298, 483, 1300, 502, 1222, 503, 1363, 262, 1363, 302, 1345, 301, 1342, 261, 1093, 505, 1125, 504, 1126, 569, 1094, 569, 1540, 466, 1542, 530, 1431, 532, 1430, 500, 1222, 631, 950, 634, 950, 617, 1157, 408, 868, 411, 868, 379, 886, 618, 885, 572, 1158, 569, 646.742, 603.766, 645, 492, 1096, 179, 1096, 170, 1131, 170, 708, 380, 708, 460, 1653, 594, 1608, 595, 1605, 466, 1528, 261, 1456, 261, 580, 492, 580.617, 604.984, 535.211, 605.82, 492.328, 72.7109, 1435, 262, 1270, 261, 1205, 377, 1270, 301, 557, 89, 559, 202, 541, 203, 1415, 500, 1414, 485, 657, 353, 544, 304, 655, 307, 1086, 39, 857, 107, 667.219, -107, 1137, 184, 1138, 279, 858, 239, 804, 86)
@@ -5797,7 +5807,7 @@ shader = ExtResource("15_85mog")
 shader_parameter/alpha_blend = false
 
 [node name="SaltWastes" type="Node2D"]
-script = ExtResource("1_ayvqd")
+script = SubResource("Resource_itvej")
 
 [node name="RockyBastardsCamp" type="Node2D" parent="."]
 
@@ -6134,15 +6144,15 @@ position = Vector2(156, -16)
 start_position = Vector2(811, 330)
 end_position = Vector2(1002, 325)
 
-[node name="Guard0" parent="RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("PatrolRoute") instance=ExtResource("11_sayq2")]
+[node name="Guard0" parent="RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("PatrolRoute")]
 position = Vector2(980, 309)
 Direction = 2
 PatrolRoute = NodePath("../PatrolRoute")
 
-[node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+[node name="MercenaryShotgunner" parent="RockyBastardsCamp/OpposingForce"]
 position = Vector2(1249, 163)
 
-[node name="MercenaryShotgunner2" parent="RockyBastardsCamp/OpposingForce" instance=ExtResource("11_sayq2")]
+[node name="MercenaryShotgunner2" parent="RockyBastardsCamp/OpposingForce"]
 position = Vector2(817, 58)
 Direction = 2
 Job = 2

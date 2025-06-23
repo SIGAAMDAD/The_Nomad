@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dfcnpofuxrbf"]
 
-[ext_resource type="Texture2D" uid="uid://cghyld6b56od8" path="res://textures/blood1.png" id="2_bllt4"]
+[ext_resource type="Texture2D" uid="uid://bcujiue8lvo4g" path="res://textures/blood1.png" id="2_bllt4"]
 
 [sub_resource type="Gradient" id="Gradient_d8u1l"]
 colors = PackedColorArray(1, 0.142952, 0.101453, 1, 0.557335, 1.16717e-06, 9.62615e-08, 1)

@@ -1,12 +1,12 @@
-[gd_scene load_steps=24 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=23 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
-[ext_resource type="Shader" uid="uid://5vii1onibvl0" path="res://shaders/dynamic_shadow.gdshader" id="2_srp4u"]
 [ext_resource type="Material" uid="uid://cmbb45exggw3d" path="res://resources/materials/covered_in_blood.tres" id="3_jfpux"]
 [ext_resource type="SpriteFrames" uid="uid://bcx8d0n23krkx" path="res://resources/animations/player/legs.tres" id="3_p7iby"]
 [ext_resource type="SpriteFrames" uid="uid://t4ad26gwxx7" path="res://resources/animations/player/torso.tres" id="4_0rnld"]
 [ext_resource type="PackedScene" uid="uid://b2htdmaimgeg2" path="res://scenes/effects/dash_effect.tscn" id="4_d2uw3"]
+[ext_resource type="Material" uid="uid://bi6svvxvdmsv" path="res://resources/materials/dynamic_sprite_shadow.tres" id="4_srp4u"]
 [ext_resource type="SpriteFrames" uid="uid://12c7ot5ow8dr" path="res://resources/animations/player/right_arm.tres" id="5_0rnld"]
 [ext_resource type="PackedScene" uid="uid://cg4lyuifg8f7i" path="res://scenes/effects/slide_puff.tscn" id="5_a260p"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://scenes/effects/dust_puff.tscn" id="7_l33ml"]
@@ -15,11 +15,6 @@
 [ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/effects/FootSteps.cs" id="16_srp4u"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jfpux"]
-shader = ExtResource("2_srp4u")
-shader_parameter/shadow_offset = Vector2(10, 10)
-shader_parameter/shadow_color = Color(0, 0, 0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_srp4u"]
 size = Vector2(50, 28)
@@ -63,19 +58,7 @@ Debts = {}
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 3
-material = SubResource("ShaderMaterial_jfpux")
 position = Vector2(-1, 0)
-
-[node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 0
-light_mask = 3
-y_sort_enabled = true
-material = ExtResource("3_jfpux")
-sprite_frames = ExtResource("2_p7iby")
-animation = &"melee"
-autoplay = "idle"
 
 [node name="Legs" type="AnimatedSprite2D" parent="Animations"]
 process_thread_group = 1
@@ -85,6 +68,17 @@ light_mask = 3
 y_sort_enabled = true
 material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("3_p7iby")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+light_mask = 3
+y_sort_enabled = true
+material = ExtResource("3_jfpux")
+sprite_frames = ExtResource("2_p7iby")
 animation = &"idle"
 autoplay = "idle"
 
@@ -105,6 +99,59 @@ process_thread_messages = 0
 light_mask = 3
 y_sort_enabled = true
 material = ExtResource("3_jfpux")
+sprite_frames = ExtResource("5_0rnld")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Shadows" type="Node2D" parent="Animations"]
+z_index = -1
+y_sort_enabled = true
+position = Vector2(3, 14)
+
+[node name="ArmsLeftShadow" type="AnimatedSprite2D" parent="Animations/Shadows"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+light_mask = 3
+y_sort_enabled = true
+material = ExtResource("4_srp4u")
+position = Vector2(0, -16)
+sprite_frames = ExtResource("2_p7iby")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="LegsShadow" type="AnimatedSprite2D" parent="Animations/Shadows"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+light_mask = 3
+y_sort_enabled = true
+material = ExtResource("4_srp4u")
+position = Vector2(0, -16)
+sprite_frames = ExtResource("3_p7iby")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="TorsoShadow" type="AnimatedSprite2D" parent="Animations/Shadows"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+light_mask = 3
+y_sort_enabled = true
+material = ExtResource("4_srp4u")
+position = Vector2(0, -16)
+sprite_frames = ExtResource("4_0rnld")
+animation = &"death"
+autoplay = "default"
+
+[node name="ArmsRightShadow" type="AnimatedSprite2D" parent="Animations/Shadows"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
+light_mask = 3
+y_sort_enabled = true
+material = ExtResource("4_srp4u")
+position = Vector2(-4.76837e-07, -16)
 sprite_frames = ExtResource("5_0rnld")
 animation = &"idle"
 autoplay = "idle"

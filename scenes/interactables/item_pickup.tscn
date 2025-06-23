@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ctokiarvjvf14"]
 
-[ext_resource type="Script" uid="uid://cfshsdahkefhj" path="res://scripts/interactables/ItemPickup.cs" id="1_s6oxg"]
+[ext_resource type="Script" uid="uid://cfshsdahkefhj" path="res://scripts/Interactables/ItemPickup.cs" id="1_s6oxg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_s6oxg"]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://uex081jo6q6q"]
 
-[ext_resource type="Script" path="res://addons/BugReporter/reporters/subnautica_like.gd" id="1_d52g4"]
+[ext_resource type="Script" uid="uid://j4f1yvb0bw4x" path="res://addons/BugReporter/reporters/subnautica_like.gd" id="1_d52g4"]
 [ext_resource type="PackedScene" uid="uid://dmn75l8pt7i8t" path="res://addons/BugReporter/webhook_builder/webhook_builder.tscn" id="2_s2027"]
 
 [node name="SubnauticaLike" type="PanelContainer"]

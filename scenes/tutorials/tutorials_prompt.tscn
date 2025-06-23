@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://cilqaqllre0do"]
 
-[ext_resource type="Script" uid="uid://dtb1rf8j4e1fk" path="res://scripts/tutorials/tutorials_prompt.gd" id="1_egxul"]
+[sub_resource type="Resource" id="Resource_cp36j"]
+metadata/__load_path__ = "res://scripts/tutorials/tutorials_prompt.gd"
 
 [node name="TutorialsPrompt" type="ConfirmationDialog"]
-script = ExtResource("1_egxul")
+script = SubResource("Resource_cp36j")

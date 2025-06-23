@@ -1,12 +1,12 @@
 [gd_scene load_steps=16 format=3 uid="uid://cf4olomtbkg5o"]
 
-[ext_resource type="Texture2D" uid="uid://owfylim23eoy" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch1.png" id="1_kdeok"]
-[ext_resource type="Texture2D" uid="uid://cqvl80gmmeaoa" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch2.png" id="2_mqf4h"]
-[ext_resource type="Texture2D" uid="uid://c8bawxkww2qbf" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch3.png" id="3_v5x0m"]
-[ext_resource type="Texture2D" uid="uid://b0uq3r6qmwih0" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch4.png" id="4_ww57j"]
-[ext_resource type="Texture2D" uid="uid://bkr7s5u5px2m1" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch5.png" id="5_rccwo"]
-[ext_resource type="Texture2D" uid="uid://ckhxb7jhdrx6v" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch6.png" id="6_mxqof"]
-[ext_resource type="Texture2D" uid="uid://uavkhapghe61" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch7.png" id="7_unke7"]
+[ext_resource type="Texture2D" uid="uid://csuec84brdabs" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch1.png" id="1_kdeok"]
+[ext_resource type="Texture2D" uid="uid://b5jxgaw55x6pq" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch2.png" id="2_mqf4h"]
+[ext_resource type="Texture2D" uid="uid://dnvb3doghlq3p" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch3.png" id="3_v5x0m"]
+[ext_resource type="Texture2D" uid="uid://cysmtaphakjkk" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch4.png" id="4_ww57j"]
+[ext_resource type="Texture2D" uid="uid://cgoeql23t33ov" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch5.png" id="5_rccwo"]
+[ext_resource type="Texture2D" uid="uid://dl4hytk2hg3d6" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch6.png" id="6_mxqof"]
+[ext_resource type="Texture2D" uid="uid://biyyj7c403uep" path="res://textures/tilesets/hell/PROPS ( With Animations )/Torch ( No Light )/torch7.png" id="7_unke7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rjmc4"]
 atlas = ExtResource("1_kdeok")

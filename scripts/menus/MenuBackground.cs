@@ -3,7 +3,7 @@ using Godot;
 public partial class MenuBackground : Control {
 	// TODO: change main menu based on game's save state
 	private void OnScreenSizeChanged() {
-		Godot.Vector2I windowSize = DisplayServer.WindowGetSize();
+		Godot.Vector2 windowSize = GetViewportRect().Size;
 		Godot.Vector3 extents = new Godot.Vector3( windowSize.X / 2.0f, 0.0f, 0.0f );
 		Godot.Vector2 position = new Godot.Vector2( extents.X, windowSize.Y );
 
@@ -19,10 +19,11 @@ public partial class MenuBackground : Control {
 	public override void _Ready() {
 		base._Ready();
 
-		GetTree().Root.SizeChanged += OnScreenSizeChanged;
+		Console.PrintLine( "Initializing menu background..." );
 
-		/*
-		Godot.Vector2I windowSize = DisplayServer.WindowGetSize();
+		GetViewport().SizeChanged += OnScreenSizeChanged;
+
+		Godot.Vector2 windowSize = GetViewportRect().Size;
 		Godot.Vector3 extents = new Godot.Vector3( windowSize.X / 2.0f, 0.0f, 0.0f );
 		Godot.Vector2 position = new Godot.Vector2( extents.X, windowSize.Y );
 
@@ -33,6 +34,5 @@ public partial class MenuBackground : Control {
 		GpuParticles2D SandEmitter = GetNode<GpuParticles2D>( "SandParticlesEmitter" );
 		SandEmitter.GlobalPosition = position;
 		( SandEmitter.ProcessMaterial as ParticleProcessMaterial ).EmissionBoxExtents = extents;
-		*/
 	}
 };

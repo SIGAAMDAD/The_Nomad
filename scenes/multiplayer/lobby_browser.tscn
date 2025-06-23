@@ -4,16 +4,22 @@
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
 
 [sub_resource type="SystemFont" id="SystemFont_6w1h4"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_4xbuo"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_lib35"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_lf2jg"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_veyfh"]
+subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_rk0b5"]
+subpixel_positioning = 0
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
 offsets = PackedFloat32Array(0)

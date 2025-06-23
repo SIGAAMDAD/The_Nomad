@@ -6,4 +6,3 @@
 script = ExtResource("1_a1d2c")
 ChallengeIndex = 0
 MapName = &"golden_gate_massacre"
-QuestResource = &"challenge0.tres"

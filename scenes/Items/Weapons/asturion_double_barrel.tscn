@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dcth7f1e33whn"]
 
-[ext_resource type="SpriteFrames" path="res://resources/animations/player/asturion_double_barrel_firearm_left.tres" id="1_iobio"]
+[ext_resource type="SpriteFrames" uid="uid://c6ssesyn8pesr" path="res://resources/animations/player/asturion_double_barrel_firearm_left.tres" id="1_iobio"]
 
 [node name="Animations" type="Node2D"]
 

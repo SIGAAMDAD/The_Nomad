@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c4470gr006edi" path="res://scripts/multiplayer/KillFeed.cs" id="1_r3bck"]
 [ext_resource type="Shader" uid="uid://0kkb5ijw582s" path="res://shaders/kill_feed.gdshader" id="2_8n8rs"]
-[ext_resource type="Texture2D" uid="uid://dly7oefyuwnvl" path="res://textures/env/iconw_adb.png" id="3_gy488"]
+[ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="3_gy488"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0vi3g"]
 shader = ExtResource("2_8n8rs")

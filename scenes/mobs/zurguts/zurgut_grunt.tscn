@@ -4,7 +4,7 @@
 [ext_resource type="SpriteFrames" uid="uid://cqwnbdnsg2c77" path="res://resources/animations/mobs/zurgut_grunt_body_animations.tres" id="1_wp8ts"]
 [ext_resource type="SpriteFrames" uid="uid://bdaj84nfa7cbv" path="res://resources/animations/mobs/zurgut_grunt_arm_animations.tres" id="2_3sp4e"]
 [ext_resource type="SpriteFrames" uid="uid://bvnv6kt8tsb3u" path="res://resources/animations/mobs/zurgut_grunt_head_animations.tres" id="3_w4y21"]
-[ext_resource type="Shader" uid="uid://bnpck43i3rc32" path="res://shaders/visor_glow_blue.gdshader" id="4_85eyo"]
+[ext_resource type="Shader" uid="uid://ci77l6g215lyf" path="res://shaders/visor_glow_blue.gdshader" id="4_85eyo"]
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="6_g7vll"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g7vll"]

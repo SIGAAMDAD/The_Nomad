@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://d0uokuyefmfll"]
 
 [ext_resource type="Script" uid="uid://blrqlmymutkp" path="res://scripts/menus/CreditsMenu.cs" id="1_due5w"]
-[ext_resource type="Texture2D" uid="uid://jpkv484wkl3d" path="res://textures/dialogue_manager_3_logo.svg" id="2_d74go"]
-[ext_resource type="Texture2D" uid="uid://djng7v71noogl" path="res://textures/questify_logo.png" id="3_325oc"]
-[ext_resource type="Texture2D" uid="uid://buw17gmevnwo8" path="res://textures/guide_logo.png" id="4_wywfy"]
+[ext_resource type="Texture2D" uid="uid://c5k6ay8nwfx0b" path="res://textures/dialogue_manager_3_logo.svg" id="2_d74go"]
+[ext_resource type="Texture2D" uid="uid://datj0l6rsp8i" path="res://textures/questify_logo.png" id="3_325oc"]
+[ext_resource type="Texture2D" uid="uid://hgd5emxu5pf2" path="res://textures/guide_logo.png" id="4_wywfy"]
 
 [node name="CreditsMenu" type="Control"]
 layout_mode = 3

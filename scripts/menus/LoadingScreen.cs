@@ -25,7 +25,7 @@ using Godot;
 
 public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
-	private MenuBackground Background;
+	private Control Background;
 //	private Range Spinner;
 	private TextureRect ProgressBar;
 	private Tween ProgressTween;
@@ -132,7 +132,7 @@ public partial class LoadingScreen : CanvasLayer {
 		ImageChange = GetNode<Timer>( "ImageChange" );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
-		Background = GetNode<MenuBackground>( "MenuBackground" );
+		Background = GetNode<Control>( "MenuBackground" );
 
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
 		TipLabel.Show();

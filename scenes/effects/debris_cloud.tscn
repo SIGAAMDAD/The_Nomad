@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://d2ogg1ard0bw3" path="res://shaders/fog.gdshader" id="1_enlju"]
 [ext_resource type="Script" uid="uid://bgausqeoxl361" path="res://scripts/effects/DebrisCloud.cs" id="2_xuwca"]
-[ext_resource type="Texture2D" uid="uid://ljktk0500ktm" path="res://textures/env/dustcloud.png" id="3_y7jq5"]
+[ext_resource type="Texture2D" uid="uid://db1nu0v7su33o" path="res://textures/env/dustcloud.png" id="3_y7jq5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m18su"]
 shader = ExtResource("1_enlju")

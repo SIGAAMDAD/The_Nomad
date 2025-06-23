@@ -149,7 +149,7 @@ public partial class TitleMenu : Control {
 
 		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 
-		Control Background = GetNode<Control>( "MenuBackground" );
+		AddChild( ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>() );
 
 		Node KonamiCode = GetNode( "KonamiCode" );
 		KonamiCode.Connect( "success", Callable.From( OnKonamiCodeActivated ) );

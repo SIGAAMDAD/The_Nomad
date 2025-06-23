@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://cmbb45exggw3d"]
 
-[ext_resource type="Shader" uid="uid://cmchhosyvyvwc" path="res://shaders/blood.gdshader" id="1_2vt0n"]
+[ext_resource type="Shader" uid="uid://bpetqwkng2qj8" path="res://shaders/blood.gdshader" id="1_2vt0n"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_61ith"]
 noise_type = 0

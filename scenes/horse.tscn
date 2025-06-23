@@ -1,9 +1,9 @@
 [gd_scene load_steps=40 format=3 uid="uid://dwjed6glehgms"]
 
-[ext_resource type="Script" uid="uid://c2od3loql5ld4" path="res://scripts/PlayerSystem/Horse.cs" id="1_5mwg8"]
-[ext_resource type="Texture2D" uid="uid://dbi2e7mpcd3ew" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_kmv21"]
-[ext_resource type="Texture2D" uid="uid://bh3nlaklu3xji" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_MountOn.png" id="3_8v83q"]
-[ext_resource type="AudioStream" uid="uid://do7eaxibq5ga6" path="res://sounds/env/mount_horse.ogg" id="8_siyp1"]
+[ext_resource type="Script" uid="uid://dcyngkodcbg78" path="res://scripts/PlayerSystem/Horse.cs" id="1_5mwg8"]
+[ext_resource type="Texture2D" uid="uid://lfstkwlb532q" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_kmv21"]
+[ext_resource type="Texture2D" uid="uid://d1prqdrqwugqm" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_MountOn.png" id="3_8v83q"]
+[ext_resource type="AudioStream" uid="uid://b5wdy8q17hw0y" path="res://sounds/env/mount_horse.ogg" id="8_siyp1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_03rgt"]
 atlas = ExtResource("2_kmv21")

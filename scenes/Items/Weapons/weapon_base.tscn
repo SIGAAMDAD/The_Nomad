@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://brtukmd1ep2ci"]
 
-[ext_resource type="Script" uid="uid://chj3e6vvwp28f" path="res://scripts/items/WeaponEntity.cs" id="2_g8mpd"]
+[ext_resource type="Script" uid="uid://chj3e6vvwp28f" path="res://scripts/Items/WeaponEntity.cs" id="2_g8mpd"]
 
 [node name="WeaponBase" type="Node2D" groups=["Archive"]]
 process_mode = 3

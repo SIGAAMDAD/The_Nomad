@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://bc6bj5sw3gvf8"]
 
-[ext_resource type="Script" uid="uid://dmgkt5ycualg6" path="res://scripts/menus/MenuBackground.cs" id="1_6lvap"]
+[ext_resource type="Script" uid="uid://wjwtn0scjjxm" path="res://scripts/menus/menu_background.gd" id="1_6lvap"]
 
 [sub_resource type="Gradient" id="Gradient_6lvap"]
 offsets = PackedFloat32Array(1)
@@ -16,9 +16,9 @@ lifetime_randomness = 0.75
 particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(320, 1, 0)
-angular_velocity_min = -8.00002
-angular_velocity_max = 7.99998
-gravity = Vector3(0, -16, 0)
+angular_velocity_min = -4.00002
+angular_velocity_max = 3.99998
+gravity = Vector3(0, -9, 0)
 linear_accel_min = -20.0
 linear_accel_max = 20.0
 radial_accel_min = -14.0
@@ -51,7 +51,7 @@ emission_shape = 3
 emission_box_extents = Vector3(320, 1, 0)
 angular_velocity_min = -8.00002
 angular_velocity_max = 7.99998
-gravity = Vector3(0, -16, 0)
+gravity = Vector3(0, -12, 0)
 linear_accel_min = -20.0
 linear_accel_max = 20.0
 radial_accel_min = -16.0
@@ -72,7 +72,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_6lvap")
-metadata/_edit_use_anchors_ = true
 
 [node name="EmberParticlesEmitter" type="GPUParticles2D" parent="."]
 process_thread_group = 2

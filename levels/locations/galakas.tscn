@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=4 uid="uid://drc6baetesnqd"]
 
-[ext_resource type="Texture2D" uid="uid://crpyi5goxf4ar" path="res://textures/tilesets/galakas.png" id="1_1fb1p"]
-[ext_resource type="Texture2D" uid="uid://1k2g1b8lsoyl" path="res://textures/tilesets/galakas/interior.png" id="1_tikye"]
+[ext_resource type="Texture2D" uid="uid://b4g2lwpsvw75u" path="res://textures/tilesets/galakas.png" id="1_1fb1p"]
+[ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="1_tikye"]
 
 [sub_resource type="TileSet" id="TileSet_tikye"]
 

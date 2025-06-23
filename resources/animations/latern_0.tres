@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=45 format=3 uid="uid://bibry04hvbsdb"]
 
-[ext_resource type="Texture2D" uid="uid://chjdfap4ijhh8" path="res://textures/tilesets/Pixel Art Lantern Pack/Lantern 1/Bronze/Lantern 1 - Beonze and Orange.png" id="1_e0f0v"]
+[ext_resource type="Texture2D" uid="uid://coqds3557ycwv" path="res://textures/tilesets/Pixel Art Lantern Pack/Lantern 1/Bronze/Lantern 1 - Beonze and Orange.png" id="1_e0f0v"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bkn53"]
 atlas = ExtResource("1_e0f0v")

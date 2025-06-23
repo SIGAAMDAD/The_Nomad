@@ -1,7 +1,6 @@
-[gd_scene load_steps=26 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=25 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
-[ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_mcc4n"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
@@ -64,9 +63,6 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_mcc4n")
 metadata/_edit_use_anchors_ = true
-
-[node name="MenuBackground" parent="." instance=ExtResource("2_mcc4n")]
-layout_mode = 1
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
@@ -138,6 +134,37 @@ popup/item_2/id = 2
 popup/item_3/text = "VSYNC_TRIPLE_BUFFERED"
 popup/item_3/id = 3
 
+[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "RESOLUTION"
+horizontal_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+layout_mode = 2
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(280, 0)
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 5
+popup/item_0/text = "640x480"
+popup/item_0/id = 0
+popup/item_1/text = "800x600"
+popup/item_1/id = 1
+popup/item_2/text = "1280x768"
+popup/item_2/id = 2
+popup/item_3/text = "1920x1080"
+popup/item_3/id = 3
+popup/item_4/text = "1600x900"
+popup/item_4/id = 4
+
 [node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
@@ -158,7 +185,7 @@ layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_rxdtf")
 alignment = 1
 selected = 0
-item_count = 4
+item_count = 5
 popup/item_0/text = "WINDOWED"
 popup/item_0/id = 0
 popup/item_1/text = "BORDLERSS WINDOWED"
@@ -167,6 +194,8 @@ popup/item_2/text = "FULLSCREEN"
 popup/item_2/id = 2
 popup/item_3/text = "BORDERLESS FULLSCREEN"
 popup/item_3/id = 3
+popup/item_4/text = "EXCLUSIVE FULLSCREEN"
+popup/item_4/id = 4
 
 [node name="MaxFpsList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
@@ -248,7 +277,7 @@ size_flags_horizontal = 0
 [node name="ShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "SUNLIGHT_SHADOW_QUALITY"
+text = "SHADOW_QUALITY"
 horizontal_alignment = 2
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
@@ -267,37 +296,6 @@ popup/item_2/text = "MEDIUM"
 popup/item_2/id = 2
 popup/item_3/text = "HIGH"
 popup/item_3/id = 3
-
-[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="ResolutionLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-text = "RESOLUTION"
-
-[node name="ResolutionOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_ybwfc")
-alignment = 1
-selected = 0
-item_count = 7
-popup/item_0/text = "640x480"
-popup/item_0/id = 0
-popup/item_1/text = "800x600"
-popup/item_1/id = 1
-popup/item_2/text = "1280x720"
-popup/item_2/id = 2
-popup/item_3/text = "1600x1050"
-popup/item_3/id = 3
-popup/item_4/text = "1600x1200"
-popup/item_4/id = 4
-popup/item_5/text = "1920x1080"
-popup/item_5/id = 5
-popup/item_6/text = "2048x1152"
-popup/item_6/id = 6
 
 [node name="SunLightEnabledButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
@@ -457,7 +455,6 @@ layout_mode = 2
 [node name="MusicVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-size_flags_horizontal = 4
 text = "MUSIC_VOLUME"
 horizontal_alignment = 2
 
@@ -466,11 +463,10 @@ layout_mode = 2
 
 [node name="MusicVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
 modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(308, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_direction = 2
 layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
+size_flags_horizontal = 3
 ticks_on_borders = true
 
 [node name="MuteOnUnfocusedButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]

@@ -4,8 +4,5 @@
 
 [resource]
 script = ExtResource("1_0omcm")
-Name = &"CHALLENGE1_NAME"
-Description = &"CHALLENGE1_DESCRIPTION"
+ChallengeIndex = 0
 MapName = &"battle_of_sands_way"
-Objective = &"CHALLENGE1_OBJECTIVE"
-QuestResource = null

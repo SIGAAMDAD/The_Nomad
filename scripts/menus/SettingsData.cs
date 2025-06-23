@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration.Ini;
 using Godot;
 using System.Collections.Generic;
 using System;
-using Microsoft.Diagnostics.Tracing;
 
 public partial class SettingsData : Control {
 	private DefaultSettings Default;
@@ -11,6 +10,7 @@ public partial class SettingsData : Control {
 	// video options
 	//
 	private static WindowMode WindowMode;
+	private static Resolution Resolution;
 	private static ShadowQuality ShadowQuality;
 	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
@@ -82,6 +82,8 @@ public partial class SettingsData : Control {
 
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
+	public static Resolution GetResolution() => Resolution;
+	public static void SetResolution( Resolution resolution ) => Resolution = resolution;
 	public static int GetMaxFps() => MaxFps;
 	public static void SetMaxFps( int nMaxFps ) {
 		MaxFps = nMaxFps;
@@ -183,8 +185,30 @@ public partial class SettingsData : Control {
 				3
 			);
 			break;
-		}
-		;
+		};
+
+		Godot.Vector2I windowSize = Godot.Vector2I.Zero;
+		switch ( Resolution ) {
+		case Resolution.Res_640x480:
+			windowSize = new Godot.Vector2I( 640, 480 );
+			break;
+		case Resolution.Res_800x600:
+			windowSize = new Godot.Vector2I( 800, 600 );
+			break;
+		case Resolution.Res_1280x768:
+			windowSize = new Godot.Vector2I( 1280, 768 );
+			break;
+		case Resolution.Res_1920x1080:
+			windowSize = new Godot.Vector2I( 1920, 1080 );
+			break;
+		case Resolution.Res_1600x900:
+			windowSize = new Godot.Vector2I( 1600, 900 );
+			break;
+		default:
+			windowSize = new Godot.Vector2I( 640, 480 );
+			break;
+		};
+		GetWindow().Size = windowSize;
 
 		Engine.MaxFps = MaxFps;
 
@@ -225,19 +249,16 @@ public partial class SettingsData : Control {
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
-		}
-		;
+		};
 
 		switch ( WindowMode ) {
 		case WindowMode.Windowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, false );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case WindowMode.BorderlessWindowed:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Windowed );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
-			DisplayServer.WindowSetSize( new Godot.Vector2I( 640, 480 ) );
 			break;
 		case WindowMode.Fullscreen:
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.Fullscreen );
@@ -251,8 +272,7 @@ public partial class SettingsData : Control {
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.ExclusiveFullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
 			break;
-		}
-		;
+		};
 
 		UpdateWindowScale();
 	}
@@ -292,8 +312,24 @@ public partial class SettingsData : Control {
 			Console.PrintError( "Unknown window mode \"" + config[ "Video:WindowMode" ] + " defaulting to fullscreen." );
 			WindowMode = WindowMode.Fullscreen;
 			break;
-		}
-		;
+		};
+		switch ( config[ "Video:Resolution" ] ) {
+		case "Res_640x480":
+			Resolution = Resolution.Res_640x480;
+			break;
+		case "Res_800x600":
+			Resolution = Resolution.Res_800x600;
+			break;
+		case "Res_1280x768":
+			Resolution = Resolution.Res_1280x768;
+			break;
+		case "Res_1920x1080":
+			Resolution = Resolution.Res_1920x1080;
+			break;
+		case "Res_1600x900":
+			Resolution = Resolution.Res_1600x900;
+			break;
+		};
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
 		ShadowQuality = (ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
 		switch ( config[ "Video:AntiAliasing" ] ) {
@@ -318,8 +354,7 @@ public partial class SettingsData : Control {
 		case "FXAA_and_TAA":
 			AntiAliasing = AntiAliasing.FXAA_and_TAA;
 			break;
-		}
-		;
+		};
 		switch ( config[ "Video:SunShadowQuality" ] ) {
 		case "None":
 			SunShadowQuality = ShadowQuality.Off;
@@ -333,8 +368,7 @@ public partial class SettingsData : Control {
 		case "High":
 			SunShadowQuality = ShadowQuality.High;
 			break;
-		}
-		;
+		};
 		switch ( config[ "Video:VSync" ] ) {
 		case "Disabled":
 			VSyncMode = VSyncMode.Off;
@@ -348,8 +382,7 @@ public partial class SettingsData : Control {
 		case "TripleBuffered":
 			VSyncMode = VSyncMode.TripleBuffered;
 			break;
-		}
-		;
+		};
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
 		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
@@ -360,6 +393,7 @@ public partial class SettingsData : Control {
 	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Video]" );
 		writer.WriteLine( string.Format( "WindowMode={0}", WindowMode ) );
+		writer.WriteLine( string.Format( "Resolution={0}", Resolution ) );
 		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", AntiAliasing ) );
@@ -420,6 +454,7 @@ public partial class SettingsData : Control {
 		Default = ResourceLoader.Load<DefaultSettings>( "res://resources/DefaultSettings.tres" );
 
 		WindowMode = Default.WindowMode;
+		Resolution = Default.Resolution;
 		VSyncMode = Default.Vsync;
 		AntiAliasing = Default.AntiAliasing;
 		MaxFps = Default.MaxFps;

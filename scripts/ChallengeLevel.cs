@@ -136,7 +136,6 @@ public partial class ChallengeLevel : LevelData {
 
 	private void OnEndOfChallengeReached() {
 		if ( !QuestCompleted ) {
-			ThisPlayer.ThoughtBubble( "You: I need to finish what I started..." );
 			return;
 		}
 

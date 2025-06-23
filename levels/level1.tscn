@@ -1,12 +1,14 @@
 [gd_scene load_steps=11 format=4 uid="uid://b3i7rvpundukw"]
 
-[ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_dll6n"]
-[ext_resource type="Script" uid="uid://j4b5xpuyvxkf" path="res://scripts/levels/from_eagles_peak.gd" id="1_ogrm1"]
+[ext_resource type="Texture2D" uid="uid://hl27th00p43e" path="res://textures/bg.png" id="1_dll6n"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="2_q1lvc"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="4_jbyux"]
 [ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="4_oupxb"]
 [ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="5_g7jqm"]
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="7_kxijb"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="7_kxijb"]
+
+[sub_resource type="Resource" id="Resource_pdpul"]
+metadata/__load_path__ = "res://scripts/levels/from_eagles_peak.gd"
 
 [sub_resource type="Gradient" id="Gradient_8hd6v"]
 offsets = PackedFloat32Array(0)
@@ -20,7 +22,7 @@ shader = ExtResource("5_g7jqm")
 shader_parameter/alpha_blend = false
 
 [node name="FromEaglesPeak" type="Node2D"]
-script = ExtResource("1_ogrm1")
+script = SubResource("Resource_pdpul")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 z_index = -2

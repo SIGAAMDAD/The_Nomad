@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://6txfgg00boom"]
 
-[ext_resource type="Texture2D" uid="uid://cy0wcmq53hail" path="res://addons/RadialMenu/icons/InterpLinear.svg" id="1"]
+[ext_resource type="Texture2D" uid="uid://wk8tm1lnhnvp" path="res://addons/RadialMenu/icons/InterpLinear.svg" id="1"]
 
 [resource]
 RadialMenu/colors/Background = Color(0.12549, 0.12549, 0.12549, 0.901961)

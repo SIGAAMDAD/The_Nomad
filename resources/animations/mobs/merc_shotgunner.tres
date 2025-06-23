@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=21 format=3 uid="uid://bbd1gljxn4cqk"]
 
-[ext_resource type="Texture2D" uid="uid://wnxamcagqwep" path="res://textures/spritesheets/merc_shotgunner.png" id="1_1og1x"]
-[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="1_bbxhc"]
+[ext_resource type="Texture2D" uid="uid://b1wvq84n362f4" path="res://textures/spritesheets/merc_shotgunner.png" id="1_1og1x"]
+[ext_resource type="Texture2D" uid="uid://b5deywvyopw0w" path="res://textures/spritesheets/bandit_grunt.png" id="1_bbxhc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hr5c1"]
 atlas = ExtResource("1_bbxhc")

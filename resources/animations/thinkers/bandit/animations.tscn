@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://cpes4nu5fw8lg"]
 
 [ext_resource type="SpriteFrames" uid="uid://c2jibvnbe8avt" path="res://resources/animations/thinkers/bandit/body.tres" id="1_kds6j"]
-[ext_resource type="Texture2D" uid="uid://bnrgw2eft34ov" path="res://textures/spritesheets/bandit_grunt.png" id="2_0xqt3"]
+[ext_resource type="Texture2D" uid="uid://b5deywvyopw0w" path="res://textures/spritesheets/bandit_grunt.png" id="2_0xqt3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ohua8"]
 atlas = ExtResource("2_0xqt3")

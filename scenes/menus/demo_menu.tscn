@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dk1u48g6wdrtg"]
 
 [ext_resource type="Script" uid="uid://bntamr5f526w0" path="res://scripts/menus/DemoMenu.cs" id="1_cyu1s"]
-[ext_resource type="Texture2D" uid="uid://c22eus3bhh364" path="res://textures/TheNomadLogo.png" id="2_s4yrq"]
+[ext_resource type="Texture2D" uid="uid://b6o7fqufmwq10" path="res://textures/TheNomadLogo.png" id="2_s4yrq"]
 
 [node name="DemoMenu" type="Control"]
 layout_mode = 3

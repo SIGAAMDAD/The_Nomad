@@ -1,9 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://b7bc5y8xsmbqd"]
 
-[ext_resource type="Script" uid="uid://brj54fm1rsxnp" path="res://scripts/menus/DifficultySelect.cs" id="1_mg70y"]
-[ext_resource type="Texture2D" uid="uid://hnq7r65v0tk1" path="res://textures/playBackground.jpg" id="1_n4bea"]
+[ext_resource type="Texture2D" uid="uid://mehhl7ep8hm4" path="res://textures/playBackground.jpg" id="1_n4bea"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_ofj78"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="3_i342y"]
+
+[sub_resource type="Resource" id="Resource_wmmgw"]
+metadata/__load_path__ = "res://scripts/menus/DifficultySelect.cs"
 
 [node name="DifficultySelect" type="Control"]
 layout_mode = 3
@@ -12,7 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_mg70y")
+script = SubResource("Resource_wmmgw")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false

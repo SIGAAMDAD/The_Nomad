@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bi6svvxvdmsv"]
+
+[ext_resource type="Shader" uid="uid://5vii1onibvl0" path="res://shaders/dynamic_shadow.gdshader" id="1_eyjq4"]
+
+[resource]
+shader = ExtResource("1_eyjq4")
+shader_parameter/shadow_offset = Vector2(10, 10)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.556863)
+shader_parameter/rotation = 0.0

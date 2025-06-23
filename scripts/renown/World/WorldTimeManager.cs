@@ -27,7 +27,10 @@ namespace Renown.World {
 		private int TotalDaysInYear = 0;
 
 		// not a superman reference
-		private DirectionalLight2D RedSunLight;
+		public DirectionalLight2D RedSunLight {
+			get;
+			private set;
+		}
 
 		[Export]
 		private CanvasModulate WorldTimeOverlay;

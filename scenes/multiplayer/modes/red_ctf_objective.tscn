@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://dltpcgmmbjx2x" path="res://shaders/hell_spawner.gdshader" id="1_37p5r"]
 [ext_resource type="Texture2D" uid="uid://bt38ybdi27a40" path="res://textures/env/flag_red.dds" id="1_jg74i"]
-[ext_resource type="Texture2D" uid="uid://bk1rjc0us4lpd" path="res://textures/env/pentagram.png" id="2_wvmko"]
+[ext_resource type="Texture2D" uid="uid://6e0gm6dnaob8" path="res://textures/env/pentagram.png" id="2_wvmko"]
 
 [sub_resource type="Gradient" id="Gradient_ysgkx"]
 offsets = PackedFloat32Array(0)

@@ -1,7 +1,4 @@
-using Godot;
-using Multiplayer;
 using Steamworks;
-using System;
 using System.Collections.Generic;
 
 // NOTE: implement bounty hunt mechanic for top merc
@@ -120,10 +117,21 @@ namespace Renown {
 		/// <summary>
 		/// allows the local player to "invade" the top mercenary's world and collect the bounty on their head
 		/// </summary>
-		public static void StartBountyHunt() {
-			LeaderboardEntry topDog = LeaderboardData[ 0 ];
+		public static void StartBountyHunt( CSteamID targetId ) {
+			LeaderboardEntry target;
+			bool bFound = false;
 
-			// INVASION!
+			foreach ( var entry in LeaderboardData ) {
+				if ( entry.Value.UserId == targetId ) {
+					target = entry.Value;
+					bFound = true;
+					break;
+				}
+			}
+			if ( !bFound ) {
+				Console.PrintWarning( string.Format( "StartBountyHunt: no leaderboard entry for player ID {0}", targetId ) );
+				return;
+			}
 		}
 	};
 };

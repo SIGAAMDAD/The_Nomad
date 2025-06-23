@@ -41,7 +41,7 @@ public partial class WeaponEntity : Node2D {
 
 		SpawnsObject		= 0b10000000,
 
-		None				= 0b00000000 // here simply for the hell of it
+		None				= 0b00000000
 	};
 
 	public enum WeaponState : int {

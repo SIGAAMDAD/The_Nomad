@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_wnhip"]
 [ext_resource type="Texture2D" uid="uid://pl4dl1kfgt0s" path="res://addons/DVs_behavior_tree/icons/node.svg" id="1_yrehj"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/components/graph_node.gd" id="2_x26pp"]
+[ext_resource type="Script" uid="uid://b7h6k12slwot6" path="res://addons/DVs_behavior_tree/debug/components/graph_node.gd" id="2_x26pp"]
 [ext_resource type="Texture2D" uid="uid://dhknf644cxxog" path="res://addons/DVs_behavior_tree/icons/composite_attachment.svg" id="4_biey8"]
 [ext_resource type="Texture2D" uid="uid://xpbm4i3uc45e" path="res://addons/DVs_behavior_tree/icons/debugger/blackboard.svg" id="5_guht6"]
 [ext_resource type="Texture2D" uid="uid://cb05fmxsvb8sy" path="res://addons/DVs_behavior_tree/icons/debugger/force_tick.svg" id="6_o6k03"]

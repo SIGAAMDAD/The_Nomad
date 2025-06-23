@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://kj01gcilldxr"]
 
-[ext_resource type="Texture2D" uid="uid://tehj1nov7a2q" path="res://textures/spritesheets/mobs/demons/imp.png" id="1_puvod"]
+[ext_resource type="Texture2D" uid="uid://qdpeyy6jgw7y" path="res://textures/spritesheets/mobs/demons/imp.png" id="1_puvod"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vftcq"]
 atlas = ExtResource("1_puvod")

@@ -8,6 +8,14 @@ public enum WindowMode : uint {
 	ExclusiveFullscreen
 };
 
+public enum Resolution : uint {
+	Res_640x480,
+	Res_800x600,
+	Res_1280x768,
+	Res_1920x1080,
+	Res_1600x900
+};
+
 public enum AntiAliasing : uint {
 	None,
 	FXAA,
@@ -45,6 +53,8 @@ public partial class DefaultSettings : Resource {
 	//
 	[Export]
 	public WindowMode WindowMode { get; private set; } = WindowMode.Fullscreen;
+	[Export]
+	public Resolution Resolution { get; private set; } = Resolution.Res_640x480;
 	[Export]
 	public VSyncMode Vsync { get; private set; } = VSyncMode.Off;
 	[Export]

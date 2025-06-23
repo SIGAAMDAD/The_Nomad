@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bv8db1cilo4dv"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/main.gd" id="1_83hh0"]
+[ext_resource type="Script" uid="uid://cwmthjgev3b45" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/main.gd" id="1_83hh0"]
 [ext_resource type="PackedScene" uid="uid://c557vjvtb2h4w" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/agent.tscn" id="2_y7uu2"]
 
 [node name="Main" type="Node2D"]

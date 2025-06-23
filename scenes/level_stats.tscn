@@ -1,6 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://btsyky24ywhwn"]
 
-[ext_resource type="Script" uid="uid://bh4shqpvplpsg" path="res://scripts/end_of_level.gd" id="1_sk8k0"]
+[sub_resource type="Resource" id="Resource_0isyk"]
+metadata/__load_path__ = "res://scripts/end_of_level.gd"
 
 [sub_resource type="Gradient" id="Gradient_amkjb"]
 offsets = PackedFloat32Array(0)
@@ -16,7 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_sk8k0")
+script = SubResource("Resource_0isyk")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1

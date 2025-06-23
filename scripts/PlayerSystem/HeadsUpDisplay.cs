@@ -394,21 +394,18 @@ namespace PlayerSystem {
 					LeftArmIndicator.Modulate = ArmUsedColor;
 					RightArmIndicator.Modulate = ArmUsedColor;
 					break;
-				}
-				;
+				};
 			};
 
 			HealthBar.Init( 100.0f );
 			RageBar.Init( 60.0f );
 		}
 		public void AddStatusEffect( string effectName, StatusEffect effect ) {
-			/*
 			if ( StatusIcons.TryGetValue( effectName, out StatusIcon icon ) ) {
 				icon.Show();
 				icon.Start( effect );
 				icon.Material.Set( "shader_parameter/progress", 1.0f );
 			}
-			*/
 		}
 
 		private void OnWeaponReloaded( WeaponEntity source ) {
@@ -461,37 +458,6 @@ namespace PlayerSystem {
 			WeaponData.Reloaded += OnWeaponReloaded;
 			WeaponData.Used += OnWeaponUsed;
 		}
-
-		/*
-		private void OnSaveGameButtonPressed() {
-//			Hide();
-//			RenderingServer.ForceDraw();
-			ArchiveSystem.SaveGame( GetViewport().GetTexture().GetImage(), 0 );
-//			Show();
-		}
-		private void OnLoadGameButtonPressed() {
-			CheckpointMainContainer.Hide();
-
-			SaveSystem.Slot slot = ArchiveSystem.GetSlot();
-			System.Collections.Generic.List<SaveSystem.Slot.MemoryMetadata> memoryList = slot.GetMemoryList();
-			for ( int i = 0; i < SavedGamesContainer.GetChildCount(); i++ ) {
-				SavedGamesContainer.GetChild( i ).QueueFree();
-				SavedGamesContainer.RemoveChild( SavedGamesContainer.GetChild( i ) );
-			}
-
-			for ( int i = 0; i < memoryList.Count; i++ ) {
-				HBoxContainer memory = new HBoxContainer();
-				Texture2D texture = ResourceLoader.Load<Texture2D>( slot.GetPath() + "/Memories/Screenshot_" + slot.GetCurrentMemory() + ".png" );
-
-				( (TextureRect)memory.GetChild( 0 ) ).Texture = texture;
-				( (Label)memory.GetChild( 0 ) ).Text = memoryList[i].Month.ToString() + " " + memoryList[i].Day.ToString() + ", " + memoryList[i].Year.ToString();
-
-				SavedGamesContainer.AddChild( memory );
-			}
-
-			SavedGamesContainer.Show();
-		}
-		*/
 
 		private void OnJumpAudioTweenFadeOutFinished() {
 			JumpMusic.Stop();
@@ -607,7 +573,7 @@ namespace PlayerSystem {
 			if ( Input.IsActionJustReleased( "open_emote_menu" ) ) {
 				EmoteMenu.SetProcessInput( false );
 				EmoteMenu.Hide();
-				EmoteMenu.ProcessMode = ProcessModeEnum.Disabled; ;
+				EmoteMenu.ProcessMode = ProcessModeEnum.Disabled;
 			}
 		}
     };

@@ -25,7 +25,7 @@
 [ext_resource type="Resource" uid="uid://cf8pywaxrtwrt" path="res://resources/binds/actions/keyboard/arm_angle.tres" id="24_kek1g"]
 [ext_resource type="Script" uid="uid://c3a8aj86g23bg" path="res://addons/guide/guide_mapping_context.gd" id="25_f1bav"]
 [ext_resource type="Script" uid="uid://dl8khjhqkmnxq" path="res://addons/guide/inputs/guide_input_mouse_axis_2d.gd" id="25_gg66h"]
-[ext_resource type="Resource" uid="uid://c0lrkr84jnart" path="res://resources/binds/actions/keyboard/screenshot.tres" id="26_gg66h"]
+[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/screenshot.tres" id="26_gg66h"]
 [ext_resource type="Resource" uid="uid://rtr1r3ter3ko" path="res://resources/binds/actions/keyboard/melee.tres" id="26_n1237"]
 [ext_resource type="Resource" uid="uid://cnrehmcydxla6" path="res://resources/binds/actions/keyboard/use_both_hands.tres" id="27_n1237"]
 [ext_resource type="Resource" uid="uid://dgrdfneoajdxw" path="res://resources/binds/actions/keyboard/reload.tres" id="28_17381"]

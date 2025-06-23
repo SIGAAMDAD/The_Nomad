@@ -9,6 +9,7 @@ using Renown.World;
 using System.Diagnostics;
 using PlayerSystem.Perks;
 using System.Text;
+using DialogueManagerRuntime;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -207,6 +208,12 @@ public partial class Player : Entity {
 		get;
 		private set;
 	}
+
+	private Node2D Shadows;
+	private AnimatedSprite2D LeftArmShadowAnimation;
+	private AnimatedSprite2D RightArmShadowAnimation;
+	private AnimatedSprite2D TorsoShadowAnimation;
+	private AnimatedSprite2D LegShadowAnimation;
 
 	private Timer IdleTimer;
 	private Timer CheckpointDrinkTimer;
@@ -493,8 +500,9 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public TileMapFloor GetTileMapFloor() => Floor;
 
-	public void ThoughtBubble( string text ) {
-		HeadsUpDisplay.StartThoughtBubble( text );
+	public static void ThoughtBubble( string text ) {
+		Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
+		DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
 	}
 
 	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
@@ -1027,7 +1035,7 @@ public partial class Player : Entity {
 	}
 	public void BeginInteraction( InteractionItem item ) {
 		HUD.ShowInteraction( item );
-
+		
 		switch ( item.GetInteractionType() ) {
 		case InteractionType.Checkpoint:
 			Flags |= PlayerFlags.Checkpoint;
@@ -1751,9 +1759,23 @@ public partial class Player : Entity {
 		}
 	}
 
-	private void OnScreenSizeChanged() {
-		ScreenSize = DisplayServer.WindowGetSize();
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	private void OnScreenSizeChanged() => ScreenSize = DisplayServer.WindowGetSize();
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	private void OnShadowAnimationSpriteSync( AnimatedSprite2D baseAnimation, AnimatedSprite2D shadowAnimation ) {
+		shadowAnimation.Animation = baseAnimation.Animation;
+		shadowAnimation.SpriteFrames = baseAnimation.SpriteFrames;
+		shadowAnimation.Frame = baseAnimation.Frame;
+		shadowAnimation.FrameProgress = baseAnimation.FrameProgress;
 	}
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	private void OnShadowAnimationFrameSync( AnimatedSprite2D baseAnimation, AnimatedSprite2D shadowAnimation ) {
+		shadowAnimation.Animation = baseAnimation.Animation;
+		shadowAnimation.SpriteFrames = baseAnimation.SpriteFrames;
+		shadowAnimation.Frame = baseAnimation.Frame;
+		shadowAnimation.FrameProgress = baseAnimation.FrameProgress;
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
@@ -1809,6 +1831,7 @@ public partial class Player : Entity {
 			HUD.Show();
 		} ) );
 
+		/*
 		HUD.EmoteTriggered += ( emote ) => {
 			Flags &= ~( PlayerFlags.Checkpoint | PlayerFlags.IdleAnimation | PlayerFlags.Resting );
 			Flags |= PlayerFlags.Emoting;
@@ -1827,6 +1850,7 @@ public partial class Player : Entity {
 			TorsoAnimation.Hide();
 			LegAnimation.Hide();
 		};
+		*/
 
 		SetProcessUnhandledInput( false );
 
@@ -1903,9 +1927,26 @@ public partial class Player : Entity {
 		IdleAnimation.Connect( "animation_finished", Callable.From( OnIdleAnimationAnimationFinished ) );
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
+		LegAnimation.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( LegAnimation, LegShadowAnimation ) ) );
+		LegAnimation.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( LegAnimation, LegShadowAnimation ) ) );
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegsAnimationLooped ) );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
+		TorsoAnimation.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( TorsoAnimation, TorsoShadowAnimation ) ) );
+		TorsoAnimation.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( TorsoAnimation, TorsoShadowAnimation ) ) );
+
+		ArmLeft.Animations.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
+		ArmLeft.Animations.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
+
+		ArmRight.Animations.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
+		ArmRight.Animations.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
+
+		Shadows = GetNode<Node2D>( "Animations/Shadows" );
+		TorsoShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/TorsoShadow" );
+		LegShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/LegsShadow" );
+		LeftArmShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/ArmsLeftShadow" );
+		RightArmShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/ArmsRightShadow" );
+
 		Animations = GetNode( "Animations" );
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
@@ -2082,7 +2123,7 @@ public partial class Player : Entity {
 			Rage += FrameDamage * FreeFlow.GetCurrentCombo() * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().Rage = Rage;
+			HUD.GetRageBar().Value = Rage;
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f && Rage > 0.0f ) {
@@ -2092,11 +2133,11 @@ public partial class Player : Entity {
 
 			Flags |= PlayerFlags.UsedMana;
 			HUD.GetHealthBar().SetHealth( Health );
-			HUD.GetRageBar().Rage = Rage;
+			HUD.GetRageBar().Value = Rage;
 		}
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			Rage -= 20.0f * delta;
-			HUD.GetRageBar().Rage = Rage;
+			HUD.GetRageBar().Value = Rage;
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
@@ -2124,6 +2165,43 @@ public partial class Player : Entity {
 
 		if ( !IdleAnimation.IsPlaying() ) {
 			TorsoAnimationState = PlayerAnimationState.Idle;
+		}
+
+		{ // synchronize shadow
+
+			// TODO: quality adjustment for this?
+			float rotation = GlobalPosition.DirectionTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition ).Angle();
+
+			LeftArmShadowAnimation.GlobalRotation = rotation + ArmLeft.Animations.GlobalRotation;
+			RightArmShadowAnimation.GlobalRotation = rotation + ArmRight.Animations.GlobalRotation;
+
+			bool flip = TorsoAnimation.FlipH;
+			TorsoShadowAnimation.FlipH = flip;
+			LegShadowAnimation.FlipH = flip;
+			LeftArmShadowAnimation.FlipV = flip;
+			RightArmShadowAnimation.FlipV = flip;
+
+			Shadows.GlobalRotation = rotation;
+
+			LeftArmShadowAnimation.Show();
+			RightArmShadowAnimation.Show();
+
+			AnimatedSprite2D backShadow = flip ? RightArmShadowAnimation : LeftArmShadowAnimation;
+			AnimatedSprite2D frontShadow = flip ? LeftArmShadowAnimation : RightArmShadowAnimation;
+
+			if ( HandsUsed == Hands.Both ) {
+				if ( TorsoAnimation.FlipH ) {
+					(frontShadow, backShadow) = (backShadow, frontShadow);
+				} else {
+					frontShadow = LastUsedArm == ArmLeft ? LeftArmShadowAnimation : RightArmShadowAnimation;
+				}
+			}
+			backShadow.Visible = HandsUsed != Hands.Both;
+
+			frontShadow.Show();
+
+			Shadows.MoveChild( backShadow, 0 );
+			Shadows.MoveChild( frontShadow, 3 );
 		}
 
 		if ( Health < 30.0f ) {

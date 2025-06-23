@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=4 uid="uid://b7epc3bfovjo1"]
 
-[ext_resource type="Texture2D" uid="uid://c8ikygajfqm1" path="res://textures/bg.png" id="1_emi2t"]
+[ext_resource type="Texture2D" uid="uid://hl27th00p43e" path="res://textures/bg.png" id="1_emi2t"]
 [ext_resource type="TileSet" uid="uid://bc3ibjxdy8r4" path="res://resources/galakas.tres" id="2_htada"]
 [ext_resource type="PackedScene" uid="uid://bp5h62f63d8j3" path="res://scenes/scenery/under_ground_entrance.tscn" id="3_6gbma"]
 

@@ -53,10 +53,7 @@ namespace PlayerSystem {
 
 			ProcessMode = ProcessModeEnum.Disabled;
 
-			ShowTimer = new Timer();
-			ShowTimer.Name = "ShowTimer";
-			ShowTimer.OneShot = true;
-			ShowTimer.WaitTime = 8.5f;
+			ShowTimer = GetNode<Timer>( "ShowTimer" );
 			ShowTimer.Connect( "timeout", Callable.From(
 				() => {
 					Tween Tweener = CreateTween();
@@ -64,9 +61,8 @@ namespace PlayerSystem {
 					Tweener.Connect( "finished", Callable.From( () => { ProcessMode = ProcessModeEnum.Disabled; } ) );
 				}
 			) );
-			AddChild( ShowTimer );
 
-			DamageTimer = GetNode<Timer>( "Timer" );
+			DamageTimer = GetNode<Timer>( "DamageTimer" );
 			DamageTimer.Connect( "timeout", Callable.From(
 				() => {
 					DamageBar.Value = Value;

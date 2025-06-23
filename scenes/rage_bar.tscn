@@ -17,3 +17,7 @@ value = 60.0
 show_percentage = false
 script = ExtResource("1_e2p8t")
 metadata/_edit_use_anchors_ = true
+
+[node name="ShowTimer" type="Timer" parent="."]
+wait_time = 4.5
+one_shot = true

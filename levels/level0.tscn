@@ -2,14 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://bvv2v7m78dge7" path="res://textures/bg.dds" id="1_f811g"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="5_b6lsn"]
-[ext_resource type="Texture2D" uid="uid://bwc7mgg7aylk" path="res://textures/env/food/09_baguette.png" id="8_b6lsn"]
-[ext_resource type="Texture2D" uid="uid://jecbsx1vr8ps" path="res://textures/env/food/20_bagel.png" id="9_fh3a0"]
-[ext_resource type="Texture2D" uid="uid://bq70gpo8kknwv" path="res://textures/tilesets/desert/decor_2.png" id="9_mll6j"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="5_b6lsn"]
+[ext_resource type="Texture2D" uid="uid://dfeq3b1lm8oly" path="res://textures/env/food/09_baguette.png" id="8_b6lsn"]
+[ext_resource type="Texture2D" uid="uid://5kc8kyqtjoiq" path="res://textures/env/food/20_bagel.png" id="9_fh3a0"]
+[ext_resource type="Texture2D" uid="uid://dtpgs65atmr85" path="res://textures/tilesets/desert/decor_2.png" id="9_mll6j"]
 [ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="9_ocq04"]
-[ext_resource type="Texture2D" path="res://textures/tilesets/desert/environment.dds" id="10_ocq04"]
+[ext_resource type="Texture2D" uid="uid://ctt4plo6h01xg" path="res://textures/tilesets/desert/environment.dds" id="10_ocq04"]
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="11_b6lsn"]
-[ext_resource type="Texture2D" uid="uid://b7ke3wj171lc6" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="11_fh3a0"]
+[ext_resource type="Texture2D" uid="uid://lwkuylf3c2tc" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="11_fh3a0"]
 
 [sub_resource type="Shader" id="Shader_36qmk"]
 code = "shader_type spatial;

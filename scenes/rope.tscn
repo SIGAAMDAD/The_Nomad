@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dstm6ve4dpuvp"]
 
-[ext_resource type="Texture2D" uid="uid://da4ssa4n22jh6" path="res://icon.svg" id="1_ghbyf"]
+[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="1_ghbyf"]
 [ext_resource type="PackedScene" uid="uid://c856mds1mvq1c" path="res://scenes/rope_segment.tscn" id="2_vlfmi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l37dg"]

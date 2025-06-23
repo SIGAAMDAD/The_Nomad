@@ -1,11 +1,11 @@
 [gd_scene load_steps=36 format=3 uid="uid://c3udfjopruo4d"]
 
 [ext_resource type="Script" uid="uid://b5nh727d3jkma" path="res://scripts/renown/Thinkers/Spitter.cs" id="1_s42ix"]
-[ext_resource type="Texture2D" uid="uid://b7qcxkbkfg15j" path="res://textures/spritesheets/mobs/demons/ATTACK.png" id="2_cvgak"]
-[ext_resource type="Texture2D" uid="uid://dydlop4upgec8" path="res://textures/spritesheets/mobs/demons/IDLE.png" id="2_eduff"]
-[ext_resource type="Texture2D" uid="uid://dcgpmkt6jesad" path="res://textures/spritesheets/mobs/demons/DEATH.png" id="3_wyvnv"]
-[ext_resource type="Texture2D" uid="uid://dqqmd5togqpa" path="res://textures/spritesheets/mobs/demons/HURT.png" id="5_fikea"]
-[ext_resource type="Texture2D" uid="uid://dce81ih0dn1hp" path="res://textures/spritesheets/mobs/demons/FLYING.png" id="6_a6jac"]
+[ext_resource type="Texture2D" uid="uid://bdvf5no2csgq4" path="res://textures/spritesheets/mobs/demons/ATTACK.png" id="2_cvgak"]
+[ext_resource type="Texture2D" uid="uid://dk7skyrdea7h7" path="res://textures/spritesheets/mobs/demons/IDLE.png" id="2_eduff"]
+[ext_resource type="Texture2D" uid="uid://dt85uaglt2px1" path="res://textures/spritesheets/mobs/demons/DEATH.png" id="3_wyvnv"]
+[ext_resource type="Texture2D" uid="uid://dplcll0ox5l0x" path="res://textures/spritesheets/mobs/demons/HURT.png" id="5_fikea"]
+[ext_resource type="Texture2D" uid="uid://be24ixm8ml5p0" path="res://textures/spritesheets/mobs/demons/FLYING.png" id="6_a6jac"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yumbf"]
 atlas = ExtResource("2_cvgak")

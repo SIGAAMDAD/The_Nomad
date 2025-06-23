@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ydsshybuc61o"]
 
-[ext_resource type="Texture2D" uid="uid://cgihvo151u48y" path="res://textures/tilesets/furniture.png" id="1_5lvv7"]
+[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="1_5lvv7"]
 [ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="2_l75wd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5lvv7"]

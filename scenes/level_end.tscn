@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://dl5ck2whlo4x2"]
 
 [ext_resource type="Script" uid="uid://d11d458tsr7v0" path="res://scripts/levels/LevelEndArea.cs" id="1_kex23"]
-[ext_resource type="Texture2D" uid="uid://bkgkkpfup1bv5" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_mk80d"]
+[ext_resource type="Texture2D" uid="uid://lfstkwlb532q" path="res://textures/spritesheets/Horse I/Horse Black/64x64_Atlas_Horse_Base.png" id="2_mk80d"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c6ty6"]
 atlas = ExtResource("2_mk80d")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cur8nem7iswfk"]
 
-[ext_resource type="Texture2D" uid="uid://c48k7ro1f3ep0" path="res://textures/env/flame_barrel_1.png" id="1_xrqh8"]
-[ext_resource type="Texture2D" uid="uid://c2b2qsrmdb6c1" path="res://textures/env/flame_barrel_2.png" id="2_whf1l"]
+[ext_resource type="Texture2D" uid="uid://byj2pwuiunx77" path="res://textures/env/flame_barrel_1.png" id="1_xrqh8"]
+[ext_resource type="Texture2D" uid="uid://djlpq0ag3wxcl" path="res://textures/env/flame_barrel_2.png" id="2_whf1l"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="3_khv3g"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_evtba"]

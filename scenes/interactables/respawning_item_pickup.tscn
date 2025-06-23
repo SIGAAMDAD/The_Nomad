@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dorhsobmavxjj"]
 
-[ext_resource type="Script" uid="uid://dg02tbnvy4dxd" path="res://scripts/interactables/RespawningItemPickup.cs" id="1_kagqv"]
+[ext_resource type="Script" uid="uid://dg02tbnvy4dxd" path="res://scripts/Interactables/RespawningItemPickup.cs" id="1_kagqv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oqpns"]
 

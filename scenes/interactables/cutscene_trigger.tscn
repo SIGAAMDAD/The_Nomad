@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c4pa7a1ljf22"]
 
-[ext_resource type="Script" uid="uid://22nfs6438m5d" path="res://scripts/interactables/CutsceneTrigger.cs" id="1_odhqj"]
+[ext_resource type="Script" uid="uid://22nfs6438m5d" path="res://scripts/Interactables/CutsceneTrigger.cs" id="1_odhqj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_be0o1"]
 size = Vector2(79, 69)

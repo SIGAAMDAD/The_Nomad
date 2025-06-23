@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d14tdl6ni8oqu"]
 
 [ext_resource type="Material" uid="uid://cmfkvn8e0njwi" path="res://resources/materials/item_pickup.tres" id="1_fvs72"]
-[ext_resource type="Script" uid="uid://caqm4xcrg55jk" path="res://scripts/items/AmmoEntity.cs" id="2_fbroq"]
+[ext_resource type="Script" uid="uid://caqm4xcrg55jk" path="res://scripts/Items/AmmoEntity.cs" id="2_fbroq"]
 
 [node name="AmmoBase" type="Node2D"]
 material = ExtResource("1_fvs72")

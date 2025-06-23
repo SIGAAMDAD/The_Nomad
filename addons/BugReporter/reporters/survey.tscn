@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cmilcjm6ovwex"]
 
-[ext_resource type="Script" path="res://addons/BugReporter/reporters/survey.gd" id="1_etdgk"]
+[ext_resource type="Script" uid="uid://oufx4pwtfwe6" path="res://addons/BugReporter/reporters/survey.gd" id="1_etdgk"]
 [ext_resource type="PackedScene" uid="uid://dmn75l8pt7i8t" path="res://addons/BugReporter/webhook_builder/webhook_builder.tscn" id="2_30afw"]
 
 [node name="survey" type="Window"]

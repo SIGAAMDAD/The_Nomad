@@ -114,16 +114,14 @@ public partial class Poem : Control {
 
 		CurrentTimer++;
 		if ( CurrentTimer < Timers.Length ) {
-			if ( CurrentTimer == Timers.Length - 1 ) {
-				Tween FadeTween = CreateTween();
-				FadeTween.TweenProperty( Author, "modulate", DefaultColor, 1.5f );
-				FadeTween.TweenProperty( PressEnter, "modulate", DefaultColor, 0.9f );
-			} else {
-				Tween FadeTween = CreateTween();
-				FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
+			Tween FadeTween = CreateTween();
+			FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
 
-				Timers[ CurrentTimer ].Start();
-			}
+			Timers[ CurrentTimer ].Start();
+		} else {
+			Tween FadeTween = CreateTween();
+			FadeTween.TweenProperty( Author, "modulate", DefaultColor, 1.5f );
+			FadeTween.TweenProperty( PressEnter, "modulate", DefaultColor, 0.9f );
 		}
 	}
 };

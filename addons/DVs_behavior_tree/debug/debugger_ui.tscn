@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://b3gqqjhsbh8cq"]
 
 [ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_fc1cr"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/debugger_ui.gd" id="2_2bslt"]
+[ext_resource type="Script" uid="uid://cn7dl8imnavv0" path="res://addons/DVs_behavior_tree/debug/debugger_ui.gd" id="2_2bslt"]
 [ext_resource type="Texture2D" uid="uid://ctm2s86c6624a" path="res://addons/DVs_behavior_tree/icons/debugger/center_view.svg" id="3_ofwat"]
 [ext_resource type="Texture2D" uid="uid://xpbm4i3uc45e" path="res://addons/DVs_behavior_tree/icons/debugger/blackboard.svg" id="3_tp11h"]
 [ext_resource type="Texture2D" uid="uid://blie66vwrsciu" path="res://addons/DVs_behavior_tree/icons/debugger/sort.svg" id="3_uybli"]
