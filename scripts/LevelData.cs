@@ -110,28 +110,41 @@ public partial class LevelData : Node2D {
 			for ( int i = 0; i < children.Count; i++ ) {
 				nodeIterator( children[ i ].GetChildren() );
 
-				if ( children[ i ] is PointLight2D light && light != null ) {
-					switch ( SettingsData.GetShadowQuality() ) {
-					case ShadowQuality.Off:
-						light.SetDeferred( "shadow_enabled", false );
-						break;
-					case ShadowQuality.NoFilter:
-						light.SetDeferred( "shadow_enabled", true );
+				if ( children[ i ] is Light2D light && light != null ) {
+					light.SetDeferred( "shadow_enabled", true );
+					switch ( SettingsData.GetShadowFilterQuality() ) {
+					case ShadowFilterQuality.Off:
 						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.None );
+						light.SetDeferred( "shadow_filter_smooth", 0.0f );
 						break;
-					case ShadowQuality.Low:
-						light.SetDeferred( "shadow_enabled", true );
+					case ShadowFilterQuality.Low:
 						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf5 );
+						light.SetDeferred( "shadow_filter_smooth", 0.10f );
 						break;
-					case ShadowQuality.High:
-						light.SetDeferred( "shadow_enabled", true );
+					case ShadowFilterQuality.High:
 						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
+						light.SetDeferred( "shadow_filter_smooth", 0.10f );
 						break;
 					};
 				}
 			}
 		}
 		nodeIterator( GetChildren() );
+		
+		switch ( SettingsData.GetShadowQuality() ) {
+		case ShadowQuality.Low:
+			RenderingServer.CanvasSetShadowTextureSize( 256 );
+			break;
+		case ShadowQuality.Medium:
+			RenderingServer.CanvasSetShadowTextureSize( 1024 );
+			break;
+		case ShadowQuality.High:
+			RenderingServer.CanvasSetShadowTextureSize( 2048 );
+			break;
+		case ShadowQuality.Ultra:
+			RenderingServer.CanvasSetShadowTextureSize( 8192 );
+			break;
+		};
 	}
 
 	public override void _EnterTree() {
@@ -188,8 +201,7 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				}
-				;
+				};
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

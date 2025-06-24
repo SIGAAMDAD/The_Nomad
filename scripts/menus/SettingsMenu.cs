@@ -7,9 +7,8 @@ public partial class SettingsMenu : Control {
 	private OptionButton WindowModeOption;
 	private OptionButton AntiAliasingOption;
 	private OptionButton ShadowQuality;
-	private OptionButton SunShadowQuality;
+	private OptionButton ShadowFilterQuality;
 	private OptionButton MaxFps;
-	private CheckBox SunLightEnabled;
 	private CheckBox ShowFPS;
 	private CheckBox ShowBlood;
 
@@ -26,8 +25,6 @@ public partial class SettingsMenu : Control {
 
 	private CheckBox NetworkingEnabled;
 	private CheckBox FriendsOnly;
-
-	private AudioStreamPlayer UIChannel;
 
 	private Label RestartToActivateLabel;
 
@@ -197,16 +194,14 @@ public partial class SettingsMenu : Control {
 		UpdateWindowScale();
 	}
 	private void OnSaveSettingsButtonPressed() {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		SettingsData.SetVSync( (VSyncMode)VSync.Selected );
 		SettingsData.SetShadowQuality( (ShadowQuality)ShadowQuality.Selected );
+		SettingsData.SetShadowFilterQuality( (ShadowFilterQuality)ShadowFilterQuality.Selected );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Selected );
 		SettingsData.SetResolution( (Resolution)ResolutionOption.Selected );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Selected );
-		SettingsData.SetSunLightEnabled( SunLightEnabled.ButtonPressed );
-		SettingsData.SetSunShadowQuality( (ShadowQuality)SunShadowQuality.Selected );
 		SettingsData.SetShowFPS( ShowFPS.ButtonPressed );
 		SettingsData.SetShowBlood( ShowBlood.ButtonPressed );
 		switch ( MaxFps.Selected ) {
@@ -254,114 +249,101 @@ public partial class SettingsMenu : Control {
 		SettingsData.Save();
 	}
 
-	private void OnButtonFocused() {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
-	}
-	private void OnButtonPressed() {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
-	}
-
 	// TODO: make this more controller friendly
 	public override void _Ready() {
 		base._Ready();
 
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
-		VSync.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		VSync.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		VSync.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		VSync.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		VSync.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		VSync.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		WindowModeOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/WindowModeList/WindowModeOptionButton" );
-		WindowModeOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		WindowModeOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		WindowModeOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		WindowModeOption.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		WindowModeOption.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		WindowModeOption.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		ResolutionOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ResolutionList/ResolutionOptionButton" );
-		ResolutionOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		ResolutionOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		ResolutionOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ResolutionOption.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ResolutionOption.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		ResolutionOption.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MaxFps = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/MaxFpsList/MaxFpsOptionButton" );
-		MaxFps.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		MaxFps.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		MaxFps.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		MaxFps.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		MaxFps.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		MaxFps.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		AntiAliasingOption = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/AntiAliasingList/AntiAliasingOptionButton" );
-		AntiAliasingOption.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		AntiAliasingOption.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		AntiAliasingOption.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		AntiAliasingOption.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		AntiAliasingOption.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		AntiAliasingOption.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		ShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ShadowQualityList/ShadowQualityOptionButton" );
-		ShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		ShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ShadowQuality.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		ShadowQuality.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
-		SunShadowQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/SunShadowQualityList/SunShadowQualityOptionButton" );
-		SunShadowQuality.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		SunShadowQuality.Connect( "item_selected", Callable.From( ( int index ) => OnButtonPressed() ) );
-		SunShadowQuality.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
-
-		SunLightEnabled = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/SunLightEnabledButton/SunLightEnabledCheckBox" );
-		SunLightEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		SunLightEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ShadowFilterQuality = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/ShadowFilterQualityList/ShadowFilterQualityOptionButton" );
+		ShadowFilterQuality.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ShadowFilterQuality.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );
+		ShadowFilterQuality.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		ShowFPS = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowFPSButton/ShowFPSCheckBox" );
-		ShowFPS.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		ShowFPS.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ShowFPS.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ShowFPS.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		ShowBlood = GetNode<CheckBox>( "TabContainer/Video/VBoxContainer/ShowBloodButton/ShowBloodCheckBox" );
-		ShowBlood.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		ShowBlood.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ShowBlood.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ShowBlood.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		EffectsOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/EffectsOnButton/EffectsOnCheckBox" );
-		EffectsOn.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		EffectsOn.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		EffectsOn.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		EffectsOn.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		EffectsVolume = GetNode<HSlider>( "TabContainer/Audio/VBoxContainer/EffectsVolumeSlider/EffectsVolumeHSlider" );
-		EffectsVolume.Connect( "changed", Callable.From( OnButtonPressed ) );
-		EffectsVolume.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		EffectsVolume.Connect( "changed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		EffectsVolume.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MusicOn = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/MusicOnButton/MusicOnCheckBox" );
-		MusicOn.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		MusicOn.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		MusicOn.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		MusicOn.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MusicVolume = GetNode<HSlider>( "TabContainer/Audio/VBoxContainer/MusicVolumeSlider/MusicVolumeHSlider" );
-		MusicVolume.Connect( "changed", Callable.From( OnButtonPressed ) );
-		MusicVolume.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		MusicVolume.Connect( "changed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		MusicVolume.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MuteUnfocused = GetNode<CheckBox>( "TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton/MuteOnUnfocusedCheckBox" );
-		MuteUnfocused.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		MuteUnfocused.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		MuteUnfocused.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		MuteUnfocused.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		HapticEnabled = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton/HapticFeedbackCheckbox" );
-		HapticEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		HapticEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		HapticEnabled.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		HapticEnabled.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		
 		HapticStrength = GetNode<HSlider>( "TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider/HapticStrengthSlider" );
-		HapticStrength.Connect( "changed", Callable.From( OnButtonPressed ) );
-		HapticStrength.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		HapticStrength.Connect( "changed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		HapticStrength.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		AutoAimEnabled = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/AutoAimButton/AutoAimCheckbox" );
-		AutoAimEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		AutoAimEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		AutoAimEnabled.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		AutoAimEnabled.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		DyslexiaMode = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton/DyslexiaCheckbox" );
-		DyslexiaMode.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		DyslexiaMode.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		DyslexiaMode.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		DyslexiaMode.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		NetworkingEnabled = GetNode<CheckBox>( "TabContainer/Network/VBoxContainer/EnableNetworkingButton/EnableNetworkingCheckbox" );
-		NetworkingEnabled.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		NetworkingEnabled.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		NetworkingEnabled.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		NetworkingEnabled.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		FriendsOnly = GetNode<CheckBox>( "TabContainer/Network/VBoxContainer/FriendsOnlyButton/FriendsOnlyCheckbox" );
-		FriendsOnly.Connect( "pressed", Callable.From( OnButtonPressed ) );
-		FriendsOnly.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		FriendsOnly.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		FriendsOnly.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		TabContainer = GetNode<TabContainer>( "TabContainer" );
 		TabContainer.Connect( "tab_clicked", Callable.From(
 				( int tab ) => {
-					OnButtonPressed();
+					UIAudioManager.OnButtonPressed();
 					switch ( (CategoryTabBar)tab ) {
 					case CategoryTabBar.Video:
 						VideoTabBar.SetProcess( true );
@@ -520,8 +502,7 @@ public partial class SettingsMenu : Control {
 			MaxFps.Selected = 7;
 			break;
 		};
-		SunLightEnabled.ButtonPressed = SettingsData.GetSunLightEnabled();
-		SunShadowQuality.Selected = (int)SettingsData.GetSunShadowQuality();
+		ShadowFilterQuality.Selected = (int)SettingsData.GetShadowFilterQuality();
 		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();
 		ShowBlood.ButtonPressed = SettingsData.GetShowBlood();
 
@@ -540,13 +521,9 @@ public partial class SettingsMenu : Control {
 		FriendsOnly.ButtonPressed = SettingsData.GetFriendsOnlyNetworking();
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
-		SaveSettingsButton.Connect( "focus_entered", Callable.From( OnButtonFocused ) );
-		SaveSettingsButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		SaveSettingsButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		SaveSettingsButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		SaveSettingsButton.Connect( "pressed", Callable.From( OnSaveSettingsButtonPressed ) );
-
-		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
-		UIChannel.SetProcess( false );
-		UIChannel.SetProcessInternal( false );
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

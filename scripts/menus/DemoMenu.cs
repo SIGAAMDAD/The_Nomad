@@ -1,3 +1,4 @@
+#if DEMO
 using System.Threading;
 using ChallengeMode;
 using Godot;
@@ -21,10 +22,6 @@ public partial class DemoMenu : Control {
 
 	private PackedScene LoadedWorld;
 	private Thread LoadThread;
-
-	private AudioStreamPlayer UIChannel;
-
-	private static Tween AudioFade;
 
 	[Signal]
 	public delegate void BeginGameEventHandler();
@@ -247,3 +244,4 @@ public partial class DemoMenu : Control {
 		}
 	}
 };
+#endif

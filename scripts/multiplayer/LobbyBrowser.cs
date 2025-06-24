@@ -119,7 +119,6 @@ public partial class LobbyBrowser : Control {
 	private Button RefreshLobbies;
 	private Button Matchmake;
 	private Button CancelMatchmake;
-	private AudioStreamPlayer UIChannel;
 
 	private HBoxContainer JoinGame;
 	private HBoxContainer LobbyManager;
@@ -280,15 +279,13 @@ public partial class LobbyBrowser : Control {
 		JoiningLobbyContainer.Show();
 		JoiningLobbyLabel.Text = "CONNECTING...";
 
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
+		UIAudioManager.OnActivate();
 
 		Console.PrintLine( string.Format( "Joining lobby {0}...", lobbyId.ToString() ) );
 		SteamLobby.Instance.JoinLobby( lobbyId );
 	}
 	private void OnLobbySelected( CSteamID lobbyId ) {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		JoiningLobbyContainer.Hide();
 
@@ -375,11 +372,6 @@ public partial class LobbyBrowser : Control {
 		OnJoinGame( SelectedLobby );
 	}
 
-	private void OnButtonFocused() {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
-	}
-
 	private void OnMatchmakingLabelTimerTimeout() {
 		string text = MatchmakingLabel.Text;
 
@@ -412,12 +404,12 @@ public partial class LobbyBrowser : Control {
     public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		HostGame.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		HostGame.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		HostGame.Connect( "pressed", Callable.From( OnHostGameButtonPressed ) );
 
 		RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
 		RefreshLobbies.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		RefreshLobbies.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		RefreshLobbies.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
 
 		JoiningLobbyContainer = GetNode<HBoxContainer>( "JoiningLobbyContainer" );
@@ -426,12 +418,12 @@ public partial class LobbyBrowser : Control {
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
 		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		Matchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		Matchmake.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		Matchmake.Connect( "pressed", Callable.From( OnMatchmakeButtonPressed ) );
 
 		CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
 		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		CancelMatchmake.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		CancelMatchmake.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
 
@@ -453,14 +445,14 @@ public partial class LobbyBrowser : Control {
 		GameModeLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/Label" );
 
 		Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
-		JoinButton.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		JoinButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
 
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
 		JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
 
 		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
-		ShowFullServers.Connect( "mouse_entered", Callable.From( OnButtonFocused ) );
+		ShowFullServers.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
@@ -475,8 +467,6 @@ public partial class LobbyBrowser : Control {
 		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
 		SteamLobby.Instance.Connect( "LobbyConnectionStatusChanged", Callable.From<int>( OnConnectionStatusChanged ) );
 		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
-
-		UIChannel = GetNode<AudioStreamPlayer>( "../../../UIChannel" );
 
 		SteamLobby.Instance.SetPhysicsProcess( true );
 

@@ -9874,7 +9874,7 @@ StartingHour = 14.0
 Months = []
 
 [node name="SunLight" type="DirectionalLight2D" parent="WorldTime"]
-rotation = 1.02625
+rotation = 1.50971
 color = Color(1, 0, 0, 0.486275)
 range_item_cull_mask = 2
 shadow_enabled = true

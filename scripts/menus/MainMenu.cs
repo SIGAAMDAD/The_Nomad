@@ -40,10 +40,6 @@ public partial class MainMenu : Control {
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
 
-	private AudioStreamPlayer UIChannel;
-
-	private static Tween AudioFade;
-
 	[Signal]
 	public delegate void StoryMenuEventHandler();
 	[Signal]
@@ -56,11 +52,6 @@ public partial class MainMenu : Control {
 	public delegate void ModsMenuEventHandler();
 	[Signal]
 	public delegate void CreditsMenuEventHandler();
-
-	public static void FadeAudio() {
-		AudioFade = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 2.5f );
-	}
 
 	/*
 	private void OnBeginGameFinished() {
@@ -152,54 +143,47 @@ public partial class MainMenu : Control {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		EmitSignalStoryMenu();
 	}
 	private void OnSettingsButtonPressed() {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		EmitSignalSettingsMenu();
 	}
 	private void OnModsButtonPressed() {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		EmitSignalModsMenu();
 	}
 	private void OnExtrasButtonPressed() {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		EmitSignalExtrasMenu();
 	}
 	private void OnCreditsButtonPressed() {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		EmitSignalCreditsMenu();
 	}
 	private void OnQuitGameButtonPressed() {
 		if ( Loaded ) {
 			return;
 		}
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 		GetTree().Quit();
 	}
 
 	private void OnButtonFocused( int nButtonIndex ) {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
+		UIAudioManager.OnButtonFocused();
 
 		ButtonIndex = nButtonIndex;
 		ButtonList[ ButtonIndex ].Modulate = Selected;
@@ -216,6 +200,8 @@ public partial class MainMenu : Control {
 		} else {
 			Theme = AccessibilityManager.DefaultTheme;
 		}
+
+		UIAudioManager.PlayTheme();
 
 		MultiplayerMapManager.Init();
 		ArchiveSystem.Instance.CheckSaveData();
@@ -267,8 +253,6 @@ public partial class MainMenu : Control {
 		Label AppVersion = GetNode<Label>( "AppVersion" );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
 		AppVersion.ProcessMode = ProcessModeEnum.Disabled;
-
-		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 
 		ButtonList = [
 			StoryModeButton,

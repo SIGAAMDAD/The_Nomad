@@ -13,6 +13,13 @@ func _on_viewport_size_changed() -> void:
 	_sand_emitter.global_position = _position
 	( _sand_emitter.process_material as ParticleProcessMaterial ).emission_box_extents = _extents
 
+	if SettingsData.GetWindowMode() < 2:
+		# windowed 
+		$WorldEnvironment.environment.glow_intensity = 0.05
+	else:
+		# fullscreen mode, make it brighter
+		$WorldEnvironment.environment.glow_intensity = 0.02
+
 func _ready() -> void:
 	get_viewport().size_changed.connect( _on_viewport_size_changed )
 	

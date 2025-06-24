@@ -14,8 +14,6 @@ public partial class StoryMenu : Control {
 	private Button LoadGameButton;
 	private Button NewGameButton;
 
-	private AudioStreamPlayer UIChannel;
-
 	private PackedScene LoadedWorld;
 	private Thread LoadThread;
 
@@ -32,7 +30,7 @@ public partial class StoryMenu : Control {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 
 		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		Console.PrintLine( "Loading game..." );
 
@@ -74,14 +72,14 @@ public partial class StoryMenu : Control {
 		MainMenu.Loaded = true;
 
 		EmitSignalBeginGame();
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
+
+		UIAudioManager.OnActivate();
 
 		Hide();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
-		MainMenu.FadeAudio();
+		UIAudioManager.FadeMusic();
 	}
 
 	private void OnSaveSlotButtonPressed( Button SaveSlot ) {
@@ -91,8 +89,8 @@ public partial class StoryMenu : Control {
 		MainMenu.Loaded = true;
 
 		EmitSignalBeginGame();
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
+
+		UIAudioManager.OnActivate();
 
 		SettingsData.SetSaveSlot( (int)SaveSlot.GetMeta( "index" ) );
 
@@ -100,7 +98,7 @@ public partial class StoryMenu : Control {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
-		MainMenu.FadeAudio();
+		UIAudioManager.FadeMusic();
 	}
 
 	private void OnBeginGameFinished() {
@@ -173,8 +171,7 @@ public partial class StoryMenu : Control {
 	}
 
 	private void OnButtonFocused( Button button ) {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
+		UIAudioManager.OnButtonFocused();
 
 		button.Modulate = MainMenu.Selected;
 	}
@@ -226,10 +223,8 @@ public partial class StoryMenu : Control {
 
 			EmitSignalBeginGame();
 
-			MainMenu.FadeAudio();
+			UIAudioManager.OnActivate();
 
-			UIChannel.Stream = UISfxManager.BeginGame;
-			UIChannel.Play();
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		};
@@ -238,14 +233,10 @@ public partial class StoryMenu : Control {
 
 			EmitSignalBeginGame();
 
-			MainMenu.FadeAudio();
-
-			UIChannel.Stream = UISfxManager.BeginGame;
-			UIChannel.Play();
+			UIAudioManager.OnActivate();
+			
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		};
-
-		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 	}
 };

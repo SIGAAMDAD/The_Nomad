@@ -743,6 +743,41 @@ public partial class Player : Entity {
 			ArmAngle = GetLocalMousePosition().Angle();
 			AimLine.GlobalRotation = ArmAngle;
 			AimRayCast.TargetPosition = AimLine.Points[ 1 ];
+
+			// TODO: quality adjustment for this?
+			float rotation = GlobalPosition.AngleTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition );
+
+			LeftArmShadowAnimation.GlobalRotation = rotation + ArmLeft.Animations.GlobalRotation;
+			RightArmShadowAnimation.GlobalRotation = rotation + ArmRight.Animations.GlobalRotation;
+
+			bool flip = TorsoAnimation.FlipH;
+			TorsoShadowAnimation.FlipH = flip;
+			LegShadowAnimation.FlipH = flip;
+			LeftArmShadowAnimation.FlipV = flip;
+			RightArmShadowAnimation.FlipV = flip;
+
+			Shadows.GlobalRotation = rotation;
+
+			LeftArmShadowAnimation.Show();
+			RightArmShadowAnimation.Show();
+
+			AnimatedSprite2D backShadow = flip ? RightArmShadowAnimation : LeftArmShadowAnimation;
+			AnimatedSprite2D frontShadow = flip ? LeftArmShadowAnimation : RightArmShadowAnimation;
+
+			if ( HandsUsed == Hands.Both ) {
+				if ( TorsoAnimation.FlipH ) {
+					(frontShadow, backShadow) = (backShadow, frontShadow);
+				} else {
+					frontShadow = LastUsedArm == ArmLeft ? LeftArmShadowAnimation : RightArmShadowAnimation;
+				}
+			}
+			backShadow.Visible = HandsUsed != Hands.Both;
+
+			frontShadow.Show();
+
+			Shadows.MoveChild( backShadow, 0 );
+			Shadows.MoveChild( frontShadow, 3 );
+
 			if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
 				FlipSpriteRight();
 			} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
@@ -2165,43 +2200,6 @@ public partial class Player : Entity {
 
 		if ( !IdleAnimation.IsPlaying() ) {
 			TorsoAnimationState = PlayerAnimationState.Idle;
-		}
-
-		{ // synchronize shadow
-
-			// TODO: quality adjustment for this?
-			float rotation = GlobalPosition.DirectionTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition ).Angle();
-
-			LeftArmShadowAnimation.GlobalRotation = rotation + ArmLeft.Animations.GlobalRotation;
-			RightArmShadowAnimation.GlobalRotation = rotation + ArmRight.Animations.GlobalRotation;
-
-			bool flip = TorsoAnimation.FlipH;
-			TorsoShadowAnimation.FlipH = flip;
-			LegShadowAnimation.FlipH = flip;
-			LeftArmShadowAnimation.FlipV = flip;
-			RightArmShadowAnimation.FlipV = flip;
-
-			Shadows.GlobalRotation = rotation;
-
-			LeftArmShadowAnimation.Show();
-			RightArmShadowAnimation.Show();
-
-			AnimatedSprite2D backShadow = flip ? RightArmShadowAnimation : LeftArmShadowAnimation;
-			AnimatedSprite2D frontShadow = flip ? LeftArmShadowAnimation : RightArmShadowAnimation;
-
-			if ( HandsUsed == Hands.Both ) {
-				if ( TorsoAnimation.FlipH ) {
-					(frontShadow, backShadow) = (backShadow, frontShadow);
-				} else {
-					frontShadow = LastUsedArm == ArmLeft ? LeftArmShadowAnimation : RightArmShadowAnimation;
-				}
-			}
-			backShadow.Visible = HandsUsed != Hands.Both;
-
-			frontShadow.Show();
-
-			Shadows.MoveChild( backShadow, 0 );
-			Shadows.MoveChild( frontShadow, 3 );
 		}
 
 		if ( Health < 30.0f ) {

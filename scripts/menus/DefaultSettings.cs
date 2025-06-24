@@ -16,6 +16,14 @@ public enum Resolution : uint {
 	Res_1600x900
 };
 
+public enum AspectRatio : uint {
+	Aspect_Automatic,
+	Aspect_4_3,
+	Aspect_16_10,
+	Aspect_16_9,
+	Aspect_21_9
+};
+
 public enum AntiAliasing : uint {
 	None,
 	FXAA,
@@ -27,12 +35,16 @@ public enum AntiAliasing : uint {
 };
 
 public enum ShadowQuality : uint {
-	Off,
-	NoFilter,
 	Low,
+	Medium,
 	High,
+	Ultra
+};
 
-	Count
+public enum ShadowFilterQuality : uint {
+	Off,
+	Low,
+	High
 };
 
 public enum VSyncMode : uint {
@@ -40,6 +52,16 @@ public enum VSyncMode : uint {
 	Adaptive,
 	On,
 	TripleBuffered
+};
+
+public enum DRSPreset : uint {
+	UltraPerformance,
+	Performance,
+	Balanced,
+	Quality,
+	UltraQuality,
+
+	Dynamic // trying to hit a target framerate
 };
 
 public enum SaveMode : uint {
@@ -56,19 +78,23 @@ public partial class DefaultSettings : Resource {
 	[Export]
 	public Resolution Resolution { get; private set; } = Resolution.Res_640x480;
 	[Export]
+	public AspectRatio AspectRatio { get; private set; } = AspectRatio.Aspect_Automatic;
+	[Export]
+	public DRSPreset DRSPreset { get; private set; } = DRSPreset.Balanced;
+	[Export]
+	public int DRSTargetFrames { get; private set; } = 60;
+	[Export]
 	public VSyncMode Vsync { get; private set; } = VSyncMode.Off;
 	[Export]
 	public AntiAliasing AntiAliasing { get; private set; } = AntiAliasing.None;
 	[Export]
-	public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.NoFilter;
+	public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.Medium;
+	[Export]
+	public ShadowFilterQuality ShadowFilterQuality { get; private set; } = ShadowFilterQuality.Low;
 	[Export]
 	public int MaxFps { get; private set; } = 60;
 	[Export]
 	public bool BloomEnabled { get; private set; } = true;
-	[Export]
-	public bool SunLightEnabled { get; private set; } = true;
-	[Export]
-	public ShadowQuality SunShadowQuality { get; private set; } = ShadowQuality.NoFilter;
 	[Export]
 	public bool ShowFps { get; private set; } = false;
 	[Export]
@@ -105,6 +131,8 @@ public partial class DefaultSettings : Resource {
 	public bool DyslexiaMode { get; private set; } = false;
 	[Export]
 	public bool EnableTutorials { get; private set; } = false;
+	[Export]
+	public float UIScale { get; private set; } = 1.0f;
 
 	//
 	// gameplay
@@ -121,7 +149,12 @@ public partial class DefaultSettings : Resource {
 	public bool CleanAudio { get; private set; } = false;
 	[Export]
 	public bool ExpertUI { get; private set; } = false;
+	[Export]
+	public bool StopGameOnFocusLost { get; private set; } = true;
 
+	//
+	// networking
+	//
 	[Export]
 	public bool NetworkingEnabled { get; private set; } = true;
 	[Export]

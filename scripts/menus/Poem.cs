@@ -32,10 +32,12 @@ public partial class Poem : Control {
 	private void OnTransitionFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
 
-		World.LoadTime = Stopwatch.StartNew();
-
 		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
+
+		UIAudioManager.FadeMusic();
+
+		World.LoadTime = Stopwatch.StartNew();
 
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
@@ -89,7 +91,8 @@ public partial class Poem : Control {
 			Timers[i].Connect( "timeout", Callable.From( OnTimerTimeout ) );
 		}
 
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		Tween FadeTween = CreateTween();
+		FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
 
 		Author = GetNode<Label>( "VBoxContainer/AuthorName" );
 		PressEnter = GetNode<Label>( "VBoxContainer/PressEnter" );
@@ -108,6 +111,7 @@ public partial class Poem : Control {
 		}
 		if ( CurrentTimer >= Labels.Length ) {
 			Loading = true;
+			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 			return;
 		}

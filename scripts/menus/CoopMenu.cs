@@ -13,15 +13,8 @@ public partial class CoopMenu : Control {
 
 	private bool Loaded = false;
 
-	private static Tween AudioFade;
-
 	[Signal]
 	public delegate void FinishedLoadingEventHandler();
-
-	private void OnAudioFadeFinished() {
-		GetTree().CurrentScene.GetNode<AudioStreamPlayer>( "Theme" ).Stop();
-		AudioFade.Finished -= OnAudioFadeFinished;
-	}
 
 	private void OnMapSelectionChanged( int nSelected ) {
 		MultiplayerMapManager.MapData data = MultiplayerMapManager.MapCache.Values.ElementAt( nSelected );
@@ -53,7 +46,7 @@ public partial class CoopMenu : Control {
 	}
 	private void OnTransitionFinished() {
 		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		Console.PrintLine( "Loading game..." );
 
@@ -81,15 +74,9 @@ public partial class CoopMenu : Control {
 			return;
 		}
 		Loaded = true;
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
 
-		AudioFade = GetTree().Root.CreateTween();
-		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
+		UIAudioManager.OnActivate();
 
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		/*

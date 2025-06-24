@@ -20,8 +20,7 @@ public partial class PlayerData : HBoxContainer {
 			NameLabel.Connect( "gui_input", Callable.From<InputEvent>( ( @event ) => {
 				if ( @event is InputEventMouseButton mouseButton && mouseButton != null ) {
 					if ( mouseButton.ButtonIndex == MouseButton.Left ) {
-						LobbyRoom.Instance.UIChannel.Stream = UISfxManager.ButtonPressed;
-						LobbyRoom.Instance.UIChannel.Play();
+						UIAudioManager.OnButtonPressed();
 						LobbyRoom.Instance.FocusPlayer( this );
 					}
 				}

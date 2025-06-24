@@ -42,6 +42,7 @@ config/icon="uid://ct4mipmq61o84"
 config/windows_native_icon="res://desertbkgd_icon.ico"
 boot_splash/minimum_display_time=1500
 run/icon="res://desertbkgd_icon.png"
+config/shadow_atlas/size=1024
 
 [audio]
 
@@ -58,17 +59,17 @@ SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
 SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
 ArchiveSystem="*res://scripts/SaveSystem/ArchiveSystem.cs"
 GUIDE="*res://addons/guide/guide.gd"
-LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
 BugReportingForm="*res://scenes/menus/bug_reporter.tscn"
 FpsCounter="*res://scenes/fps_counter.tscn"
 DialogueGlobals="*res://autoloads/DialogueGlobals.cs"
-GlobalWorldEnvironment="*res://scenes/world_environment.tscn"
 SteamVoiceChat="*res://autoloads/Steam/steam_voice_chat.tscn"
 NetworkingMonitor="*res://scenes/multiplayer/networking_monitor.tscn"
 acGlobalPool="*res://addons/anti-cheating/ac_node.gd"
+UiAudioManager="*res://autoloads/UIAudioManager.cs"
+LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 
 [debug]
 

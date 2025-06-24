@@ -35,7 +35,7 @@ public partial class MultiplayerData : LevelData {
 		}
 
 		Console.PrintLine( "...Finished loading game" );
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeOut" );
 	}
 
 	protected override void OnPlayerJoined( ulong steamId ) {
@@ -74,35 +74,6 @@ public partial class MultiplayerData : LevelData {
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
 		SteamLobby.Instance.RemovePlayer( userId );
-	}
-	
-	public override void ApplyShadowQuality() {
-		static void nodeIterator( Godot.Collections.Array<Node> children ) {
-			for ( int i = 0; i < children.Count; i++ ) {
-				nodeIterator( children[ i ].GetChildren() );
-
-				if ( children[ i ] is PointLight2D light && light != null ) {
-					switch ( SettingsData.GetShadowQuality() ) {
-					case ShadowQuality.Off:
-						light.SetDeferred( "shadow_enabled", false );
-						break;
-					case ShadowQuality.NoFilter:
-						light.SetDeferred( "shadow_enabled", true );
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.None );
-						break;
-					case ShadowQuality.Low:
-						light.SetDeferred( "shadow_enabled", true );
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf5 );
-						break;
-					case ShadowQuality.High:
-						light.SetDeferred( "shadow_enabled", true );
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
-						break;
-					};
-				}
-			}
-		}
-		nodeIterator( GetChildren() );
 	}
 
 	public override void _Ready() {

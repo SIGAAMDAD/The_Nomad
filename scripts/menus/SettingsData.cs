@@ -10,14 +10,16 @@ public partial class SettingsData : Control {
 	// video options
 	//
 	private static WindowMode WindowMode;
+	private static DRSPreset DRSPreset;
+	private static AspectRatio AspectRatio;
 	private static Resolution Resolution;
 	private static ShadowQuality ShadowQuality;
+	private static ShadowFilterQuality ShadowFilterQuality;
 	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
 	private static int MaxFps;
+	private static int DRSTargetFrames;
 	private static bool BloomEnabled;
-	private static bool SunLightEnabled;
-	private static ShadowQuality SunShadowQuality;
 	private static bool ShowFPS;
 	private static bool ShowBlood;
 
@@ -82,6 +84,10 @@ public partial class SettingsData : Control {
 
 	public static WindowMode GetWindowMode() => WindowMode;
 	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
+	public static DRSPreset GetDRSPreset() => DRSPreset;
+	public static void SetDRSPreset( DRSPreset preset ) => DRSPreset = preset;
+	public static int GetDRSTargetFrames() => DRSTargetFrames;
+	public static void SetDRSTargetFrames( int nFrames ) => DRSTargetFrames = nFrames;
 	public static Resolution GetResolution() => Resolution;
 	public static void SetResolution( Resolution resolution ) => Resolution = resolution;
 	public static int GetMaxFps() => MaxFps;
@@ -91,16 +97,14 @@ public partial class SettingsData : Control {
 	}
 	public static ShadowQuality GetShadowQuality() => ShadowQuality;
 	public static void SetShadowQuality( ShadowQuality quality ) => ShadowQuality = quality;
+	public static ShadowFilterQuality GetShadowFilterQuality() => ShadowFilterQuality;
+	public static void SetShadowFilterQuality( ShadowFilterQuality quality ) => ShadowFilterQuality = quality;
 	public static VSyncMode GetVSync() => VSyncMode;
 	public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
 	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
 	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
 	public static bool GetBloomEnabled() => BloomEnabled;
 	public static void SetBloomEnabled( bool bBloomEnabled ) => BloomEnabled = bBloomEnabled;
-	public static bool GetSunLightEnabled() => SunLightEnabled;
-	public static void SetSunLightEnabled( bool bSunLightEnabled ) => SunLightEnabled = bSunLightEnabled;
-	public static ShadowQuality GetSunShadowQuality() => SunShadowQuality;
-	public static void SetSunShadowQuality( ShadowQuality sunShadowQuality ) => SunShadowQuality = sunShadowQuality;
 	public static bool GetShowFPS() => ShowFPS;
 	public static void SetShowFPS( bool bShowFPS ) {
 		ShowFPS = bShowFPS;
@@ -186,6 +190,12 @@ public partial class SettingsData : Control {
 			);
 			break;
 		};
+
+//		switch ( AspectRatio ) {
+//		case AspectRatio.Aspect_Automatic:
+//			ProjectSettings.SetSetting( "display/window/stretch/scale",  );
+//			break;
+//		};
 
 		Godot.Vector2I windowSize = Godot.Vector2I.Zero;
 		switch ( Resolution ) {
@@ -330,61 +340,29 @@ public partial class SettingsData : Control {
 			Resolution = Resolution.Res_1600x900;
 			break;
 		};
+		switch ( config[ "Video:AspectRatio" ] ) {
+		case "Aspect_Automatic":
+			AspectRatio = AspectRatio.Aspect_Automatic;
+			break;
+		case "Aspect_4_3":
+			AspectRatio = AspectRatio.Aspect_4_3;
+			break;
+		case "Aspect_16_10":
+			AspectRatio = AspectRatio.Aspect_16_10;
+			break;
+		case "Aspect_16_9":
+			AspectRatio = AspectRatio.Aspect_16_9;
+			break;
+		case "Aspect_21_9":
+			AspectRatio = AspectRatio.Aspect_21_9;
+			break;
+		};
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
-		ShadowQuality = (ShadowQuality)Convert.ToInt64( config[ "Video:ShadowQuality" ] );
-		switch ( config[ "Video:AntiAliasing" ] ) {
-		case "None":
-			AntiAliasing = AntiAliasing.None;
-			break;
-		case "FXAA":
-			AntiAliasing = AntiAliasing.FXAA;
-			break;
-		case "MSAA_2x":
-			AntiAliasing = AntiAliasing.MSAA_2x;
-			break;
-		case "MSAA_4x":
-			AntiAliasing = AntiAliasing.MSAA_4x;
-			break;
-		case "MSAA_8x":
-			AntiAliasing = AntiAliasing.MSAA_8x;
-			break;
-		case "TAA":
-			AntiAliasing = AntiAliasing.TAA;
-			break;
-		case "FXAA_and_TAA":
-			AntiAliasing = AntiAliasing.FXAA_and_TAA;
-			break;
-		};
-		switch ( config[ "Video:SunShadowQuality" ] ) {
-		case "None":
-			SunShadowQuality = ShadowQuality.Off;
-			break;
-		case "NoFilter":
-			SunShadowQuality = ShadowQuality.NoFilter;
-			break;
-		case "Low":
-			SunShadowQuality = ShadowQuality.Low;
-			break;
-		case "High":
-			SunShadowQuality = ShadowQuality.High;
-			break;
-		};
-		switch ( config[ "Video:VSync" ] ) {
-		case "Disabled":
-			VSyncMode = VSyncMode.Off;
-			break;
-		case "Adaptive":
-			VSyncMode = VSyncMode.Adaptive;
-			break;
-		case "Enabled":
-			VSyncMode = VSyncMode.On;
-			break;
-		case "TripleBuffered":
-			VSyncMode = VSyncMode.TripleBuffered;
-			break;
-		};
+		ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
+		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
+		AntiAliasing = (AntiAliasing)Convert.ToUInt32( config[ "Video:AntiAliasing" ] );
+		VSyncMode = (VSyncMode)Convert.ToUInt32( config[ "Video:VSync" ] );
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
-		SunLightEnabled = Convert.ToBoolean( config[ "Video:SunLight" ] );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
 		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ] );
 
@@ -394,15 +372,15 @@ public partial class SettingsData : Control {
 		writer.WriteLine( "[Video]" );
 		writer.WriteLine( string.Format( "WindowMode={0}", WindowMode ) );
 		writer.WriteLine( string.Format( "Resolution={0}", Resolution ) );
+		writer.WriteLine( string.Format( "AspectRatio={0}", AspectRatio ) );
 		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
-		writer.WriteLine( string.Format( "AntiAliasing={0}", AntiAliasing ) );
-		writer.WriteLine( string.Format( "VSync={0}", VSyncMode ) );
-		writer.WriteLine( string.Format( "Bloom={0}", BloomEnabled.ToString() ) );
-		writer.WriteLine( string.Format( "SunShadowQuality={0}", SunShadowQuality ) );
-		writer.WriteLine( string.Format( "SunLight={0}", SunLightEnabled ) );
-		writer.WriteLine( string.Format( "ShowFPS={0}", ShowFPS.ToString() ) );
-		writer.WriteLine( string.Format( "ShowBlood={0}", ShowBlood.ToString() ) );
+		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
+		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
+		writer.WriteLine( string.Format( "VSync={0}", (int)VSyncMode ) );
+		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToUInt32( BloomEnabled ) ) );
+		writer.WriteLine( string.Format( "ShowFPS={0}", Convert.ToUInt32( ShowFPS ) ) );
+		writer.WriteLine( string.Format( "ShowBlood={0}", Convert.ToUInt32( ShowBlood ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
@@ -454,13 +432,12 @@ public partial class SettingsData : Control {
 		Default = ResourceLoader.Load<DefaultSettings>( "res://resources/DefaultSettings.tres" );
 
 		WindowMode = Default.WindowMode;
+		AspectRatio = Default.AspectRatio;
 		Resolution = Default.Resolution;
 		VSyncMode = Default.Vsync;
 		AntiAliasing = Default.AntiAliasing;
 		MaxFps = Default.MaxFps;
 		BloomEnabled = Default.BloomEnabled;
-		SunShadowQuality = Default.SunShadowQuality;
-		SunLightEnabled = Default.SunLightEnabled;
 		SetShowFPS( Default.ShowFps );
 		ShowBlood = Default.ShowBlood;
 

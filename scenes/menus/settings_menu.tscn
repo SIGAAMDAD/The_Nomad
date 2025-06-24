@@ -288,58 +288,39 @@ modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 selected = 1
 item_count = 4
-popup/item_0/text = "OFF"
+popup/item_0/text = "LOW"
 popup/item_0/id = 0
-popup/item_1/text = "LOW"
-popup/item_1/id = 3
-popup/item_2/text = "MEDIUM"
+popup/item_1/text = "MEDIUM"
+popup/item_1/id = 1
+popup/item_2/text = "HIGH"
 popup/item_2/id = 2
-popup/item_3/text = "HIGH"
+popup/item_3/text = "ULTRA"
 popup/item_3/id = 3
 
-[node name="SunLightEnabledButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+[node name="ShadowFilterQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="SunLightEnabledLabel" type="Label" parent="TabContainer/Video/VBoxContainer/SunLightEnabledButton"]
+[node name="ShadowFilterQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "SUNLIGHT_ENABLED"
+text = "SHADOW_FILTER_QUALITY"
 horizontal_alignment = 2
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/SunLightEnabledButton"]
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
 layout_mode = 2
 
-[node name="SunLightEnabledCheckBox" type="CheckBox" parent="TabContainer/Video/VBoxContainer/SunLightEnabledButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-
-[node name="SunShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="SunShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/SunShadowQualityList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SUNLIGHT_SHADOW_QUALITY"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/SunShadowQualityList"]
-layout_mode = 2
-
-[node name="SunShadowQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/SunShadowQualityList"]
+[node name="ShadowFilterQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 selected = 1
-item_count = 4
+item_count = 3
 popup/item_0/text = "OFF"
 popup/item_0/id = 0
 popup/item_1/text = "LOW"
-popup/item_1/id = 3
-popup/item_2/text = "MEDIUM"
+popup/item_1/id = 1
+popup/item_2/text = "HIGH"
 popup/item_2/id = 2
-popup/item_3/text = "HIGH"
-popup/item_3/id = 3
 
 [node name="ShowFPSButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
 layout_mode = 2
@@ -470,6 +451,7 @@ size_flags_horizontal = 3
 ticks_on_borders = true
 
 [node name="MuteOnUnfocusedButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="MuteOnUnfocusedButton" type="Label" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
@@ -538,7 +520,6 @@ custom_minimum_size = Vector2(280, 0)
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 3
-tick_count = 10
 ticks_on_borders = true
 
 [node name="AutoAimButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]

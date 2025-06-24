@@ -188,32 +188,7 @@ namespace Renown.World {
 			base._Ready();
 
 			RedSunLight = GetNode<DirectionalLight2D>( "SunLight" );
-			if ( SettingsData.GetSunLightEnabled() ) {
-				switch ( SettingsData.GetSunShadowQuality() ) {
-				case ShadowQuality.Off:
-					RedSunLight.ShadowEnabled = false;
-					break;
-				case ShadowQuality.NoFilter:
-					RedSunLight.ShadowEnabled = true;
-					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.None;
-					break;
-				case ShadowQuality.Low:
-					RedSunLight.ShadowEnabled = true;
-					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.Pcf5;
-					break;
-				case ShadowQuality.High:
-					RedSunLight.ShadowEnabled = true;
-					RedSunLight.ShadowFilter = Light2D.ShadowFilterEnum.Pcf13;
-					break;
-				};
-				RedSunLight.GlobalRotation = Mathf.DegToRad( Mathf.Lerp( 0.0f, 360.0f, 1.0f / StartingHour ) );
-				RedSunLight.ProcessMode = ProcessModeEnum.Inherit;
-				RedSunLight.Show();
-			} else {
-				RedSunLight.ProcessMode = ProcessModeEnum.Disabled;
-				RedSunLight.Hide();
-				CallDeferred( "remove_child", RedSunLight );
-			}
+			RedSunLight.GlobalRotation = Mathf.DegToRad( Mathf.Lerp( 0.0f, 360.0f, 1.0f / StartingHour ) );
 			Time = InGameToRealMinuteDuration * StartingHour * MinutesPerHour;
 
 			Year = StartingYear;

@@ -27,7 +27,6 @@ public partial class ExtrasMenu : Control {
 	private List<HBoxContainer> LeaderboardEntries;
 	private Label FetchingLeaderboard;
 
-	private AudioStreamPlayer UIChannel;
 	private Color FocusedColor = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	private Color UnfocusedColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -36,8 +35,7 @@ public partial class ExtrasMenu : Control {
 //		MultiplayerButton.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
 //		StoryModeButton.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
 
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		StoryModeData.Hide();
 	}
@@ -48,8 +46,7 @@ public partial class ExtrasMenu : Control {
 
 		SteamLobby.Instance.SetPhysicsProcess( true );
 
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		AddChild( MultiplayerMenu );
 		MultiplayerMenu.Show();
@@ -59,8 +56,7 @@ public partial class ExtrasMenu : Control {
 		MultiplayerButton.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
 		StoryModeButton.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
 
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		OptionsScroll.Show();
 		StoryModeOptions.Show();
@@ -163,15 +159,14 @@ public partial class ExtrasMenu : Control {
 		AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
 		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
 
-		UIChannel.Stream = UISfxManager.BeginGame;
-		UIChannel.Play();
+		UIAudioManager.OnActivate();
+
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnStoryModeFadeFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 
 	private void OnElementFocused( Control element ) {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
+		UIAudioManager.OnButtonFocused();
 
 		element.Modulate = FocusedColor;
 	}
@@ -241,8 +236,6 @@ public partial class ExtrasMenu : Control {
 		StartChallengeButton.Connect( "pressed", Callable.From( OnStartChallengeButtonPressed ) );
 
 		CoopOptions = GetNode<VScrollBar>( "MainContainer/HSplitContainer/HBoxContainer/CoopOptions" );
-
-		UIChannel = GetNode<AudioStreamPlayer>( "../UIChannel" );
 
 		Reset();
 	}

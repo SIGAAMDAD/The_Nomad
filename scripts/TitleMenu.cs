@@ -11,9 +11,6 @@ public partial class TitleMenu : Control {
 		Mods
 	};
 
-	private AudioStreamPlayer UIChannel;
-	private AudioStreamPlayer MusicTheme;
-
 	private ExtrasMenu ExtrasMenu;
 	private SettingsMenu SettingsMenu;
 	private StoryMenu StoryMenu;
@@ -25,15 +22,12 @@ public partial class TitleMenu : Control {
 	private LobbyBrowser LobbyBrowser;
 	private LobbyFactory LobbyFactory;
 
-	private AudioStream LoopingTheme;
-
 	private Control CurrentMenu;
 
 	private MenuState State = MenuState.Main;
 
 	private void OnExitButtonPressed() {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		int index = 0;
 
@@ -139,8 +133,7 @@ public partial class TitleMenu : Control {
 	private void OnKonamiCodeActivated() {
 		Console.PrintLine( "========== Meme Mode Activated ==========" );
 		GameConfiguration.MemeMode = true;
-		UIChannel.Stream = ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" );
-		UIChannel.Play();
+		UIAudioManager.PlayCustomSound( ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" ) );
 		SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
 	}
 
@@ -174,32 +167,13 @@ public partial class TitleMenu : Control {
 		MainMenu.Connect( "CreditsMenu", Callable.From( OnMainMenuCreditsMenu ) );
 
 		ExitButton = GetNode<Button>( "ExitButton" );
+		ExitButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		ExitButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
-
-		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
-		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-
-		MusicTheme = GetNode<AudioStreamPlayer>( "Theme" );
-		MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear();
-		MusicTheme.Connect( "finished", Callable.From( OnThemeIntroFinished ) );
-
-		SettingsData.Instance.SettingsChanged += () => { MusicTheme.VolumeDb = SettingsData.GetMusicVolumeLinear(); };
-		SettingsData.Instance.SettingsChanged += () => { UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear(); };
-
-		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
 
 		GetTree().CurrentScene = this;
 
 		SetProcess( false );
 		SetProcessInternal( false );
-	}
-
-	private void OnThemeIntroFinished() {
-		Console.PrintLine( "Menu intro theme finished, moving to loop..." );
-
-		MusicTheme.Stream = LoopingTheme;
-		MusicTheme.Play();
-		MusicTheme.Set( "parameters/looping", true );
-		MusicTheme.Disconnect( "finished", Callable.From( OnThemeIntroFinished ) );
 	}
 };

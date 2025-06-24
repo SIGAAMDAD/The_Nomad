@@ -26,9 +26,9 @@ using Godot;
 public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
 	private Control Background;
-//	private Range Spinner;
-	private TextureRect ProgressBar;
-	private Tween ProgressTween;
+	private Range Spinner;
+//	private TextureRect ProgressBar;
+//	private Tween ProgressTween;
 	private bool FadingOut = false;
 	private string PrevTip = "";
 	private Timer ImageChange;
@@ -37,7 +37,8 @@ public partial class LoadingScreen : CanvasLayer {
 
 	private readonly string[] Tips = [
 		"You can parry anything that's flashing green, including blades, bullets, etc.",
-//		"Dashing into an enemy will send them flying",
+		//		"Dashing into an enemy will send them flying",
+		"You can dodge almost anything by dashing, don't blow yourself up though...",
 		"Just parry the bullet dude!",
 		"Different enemies require different tactics. No more brainless shooting!",
 		"You're a one ton hunk of muscle and metal, use that to your advantage",
@@ -63,7 +64,7 @@ public partial class LoadingScreen : CanvasLayer {
 	];
 
 	private void OnImageChangeTimeout() {
-		if ( TimeLoading.Elapsed.Seconds >= 40 ) {
+		if ( TimeLoading.Elapsed.Seconds >= 15 ) {
 			// break the 4th wall if we've been sitting here
 			if ( random.Next( 0, 100 ) >= 60 ) {
 				TipLabel.Text = "It's lonely in this loading screen, ain't it?";
@@ -91,38 +92,41 @@ public partial class LoadingScreen : CanvasLayer {
 	}
 
 	private void OnFadeOutFinished() {
-		Hide();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnFadeOutFinished ) );
+		ProcessMode = ProcessModeEnum.Disabled;
 
 		TimeLoading.Stop();
 
-		ImageChange.Stop();
-//		Spinner.SetProcess( false );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnFadeOutFinished ) );
+		Hide();
 
-		ProgressTween.Stop();
+		ImageChange.Stop();
+		Spinner.SetProcess( false );
+
+//		ProgressTween.Stop();
 	}
 	public void FadeOut() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnFadeOutFinished ) );
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 	}
 	public void FadeIn() {
-//		Spinner.SetProcess( true );
+		Spinner.SetProcess( true );
 
-		TimeLoading.Start();
+		TimeLoading.Restart();
 
 		Show();
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		ImageChange.Start();
 
+		/*
 		ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
 
 		ProgressTween = CreateTween();
 		ProgressTween.TweenProperty( ProgressBar.Material, "shader_parameter/progress", 1.0f, 4.0f );
-		ProgressTween.SetLoops( 1000 );
+		ProgressTween.SetLoops( 2048 );
 		ProgressTween.LoopFinished += ( loopCount ) => {
 			ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
 		};
+		*/
 		OnImageChangeTimeout();
 	}
 
@@ -137,14 +141,16 @@ public partial class LoadingScreen : CanvasLayer {
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
 		TipLabel.Show();
 
-		ProgressBar = GetNode<TextureRect>( "Tips/ProgressBar" );
+		//	ProgressBar = GetNode<TextureRect>( "Tips/ProgressBar" );
+	
+	VisibilityChanged += () => {
+		GD.Print( "CHANGED" );
+	};
 
-	/*
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );
 		Spinner.SetProcessInternal( false );
 		Spinner.Show();
-	*/
 
 		SetProcess( false );
 		SetProcessInternal( false );

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=13 format=3 uid="uid://ceidjyb2qv8xs"]
 
 [ext_resource type="Script" uid="uid://c8eph374f4si" path="res://scripts/menus/LoadingScreen.cs" id="1_gwdd4"]
 [ext_resource type="PackedScene" uid="uid://bc6bj5sw3gvf8" path="res://scenes/menus/menu_background.tscn" id="2_u6do7"]
@@ -6,12 +6,22 @@
 [ext_resource type="Shader" uid="uid://boc7n0cb3jcay" path="res://shaders/dynamic_progress_bar.gdshader" id="4_thh8i"]
 [ext_resource type="Texture2D" uid="uid://deakbgku7e3t2" path="res://textures/loading_logo.png" id="5_thh8i"]
 
+[sub_resource type="Gradient" id="Gradient_thh8i"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_q6361"]
+gradient = SubResource("Gradient_thh8i")
+width = 1
+
 [sub_resource type="Gradient" id="Gradient_7krkx"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0.0901961, 0.0901961, 0.0901961, 0.709804)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_u6do7"]
 gradient = SubResource("Gradient_7krkx")
+width = 1
+height = 1
 
 [sub_resource type="Gradient" id="Gradient_q6361"]
 colors = PackedColorArray(1, 0, 0, 1, 1, 0.541176, 0, 1)
@@ -39,30 +49,49 @@ shader_parameter/particle_scale_randomness = 0.5
 shader_parameter/particle_amount = 20
 
 [node name="LoadingScreen" type="CanvasLayer"]
-layer = 10
 visible = false
 script = ExtResource("1_gwdd4")
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_q6361")
+metadata/_edit_use_anchors_ = true
 
 [node name="MenuBackground" parent="." instance=ExtResource("2_u6do7")]
+top_level = true
+z_index = 10
+y_sort_enabled = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="ImageChange" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true
 
 [node name="Tips" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(0, 100)
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.823
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -16.0
+offset_top = -0.0400085
 grow_horizontal = 2
 grow_vertical = 0
-metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="Tips"]
 layout_mode = 2
 texture = SubResource("GradientTexture2D_u6do7")
+expand_mode = 2
 
 [node name="TipLabel" type="Label" parent="Tips"]
 layout_mode = 2
@@ -78,7 +107,7 @@ process_thread_group = 0
 physics_interpolation_mode = 2
 auto_translate_mode = 0
 editor_description = ""
-visible = false
+visible = true
 modulate = Color(1, 1, 1, 1)
 self_modulate = Color(1, 1, 1, 1)
 show_behind_parent = false
@@ -127,6 +156,7 @@ script = ExtResource("3_7krkx")
 metadata/_custom_type_script = "uid://bjlqnmhmtp0yj"
 
 [node name="ProgressBar" type="TextureRect" parent="Tips"]
+visible = false
 material = SubResource("ShaderMaterial_3vglh")
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2

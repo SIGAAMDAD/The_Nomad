@@ -248,7 +248,7 @@ public partial class World : LevelData {
 	}
 
 	private void DisableTutorials() {
-		Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Tutorial" );
+		Godot.Collections.Array<Node> nodes = GetNode( "/root/World/Tutorials" ).GetChildren();
 		for ( int i = 0; i < nodes.Count; i++ ) {
 			( nodes[ i ] as InteractionItem ).Hide();
 			( nodes[ i ] as InteractionItem ).ProcessMode = ProcessModeEnum.Disabled;

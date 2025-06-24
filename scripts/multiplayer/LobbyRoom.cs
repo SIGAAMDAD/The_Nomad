@@ -26,8 +26,6 @@ public partial class LobbyRoom : Control {
 
 	private Label VoteLabel;
 
-	public AudioStreamPlayer UIChannel;
-
 	private HBoxContainer ClonerContainer;
 
 	private Dictionary<CSteamID, bool> StartGameVotes = null;
@@ -79,8 +77,7 @@ public partial class LobbyRoom : Control {
 		GetTree().ChangeSceneToPacked( LoadedLevel );
 	}
 	private void LoadGame() {
-		UIChannel.SetDeferred( "stream", UISfxManager.BeginGame );
-		UIChannel.CallDeferred( "play" );
+		UIAudioManager.OnActivate();
 
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
 
@@ -129,8 +126,7 @@ public partial class LobbyRoom : Control {
 		ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 	}
 	private void OnExitLobbyButtonPressed() {
-		UIChannel.Stream = UISfxManager.ButtonPressed;
-		UIChannel.Play();
+		UIAudioManager.OnButtonPressed();
 
 		SteamLobby.Instance.LeaveLobby();
 
@@ -210,8 +206,7 @@ public partial class LobbyRoom : Control {
 	}
 
 	private void OnButtonFocused( Button self ) {
-		UIChannel.Stream = UISfxManager.ButtonFocused;
-		UIChannel.Play();
+		UIAudioManager.OnButtonFocused();
 
 		self.Modulate = Selected;
 	}
@@ -255,9 +250,6 @@ public partial class LobbyRoom : Control {
 		VoteLabel = GetNode<Label>( "VoteLabel" );
 
 		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
-
-		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
-		UIChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
