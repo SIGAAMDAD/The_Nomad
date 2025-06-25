@@ -133,7 +133,6 @@ public partial class WeaponEntity : Node2D {
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
 	public Entity _Owner;
-	private Sprite2D IconSprite;
 
 	private Timer MuzzleFlashTimer;
 	private PointLight2D MuzzleLight;
@@ -169,8 +168,6 @@ public partial class WeaponEntity : Node2D {
 		private set;
 	}
 
-	private Area2D PickupArea;
-
 	public Properties PropertyBits {
 		get;
 		private set;
@@ -205,25 +202,23 @@ public partial class WeaponEntity : Node2D {
 		AudioChannel.CallDeferred( "play" );
 	}
 
-	private void ReleasePickupArea() {
-		if ( PickupArea == null ) {
-			return;
-		}
-		PickupArea.GetChild( 0 ).CallDeferred( "queue_free" );
-		PickupArea.CallDeferred( "remove_child", PickupArea.GetChild( 0 ) );
+	public void Drop() {
+		UsedItemPickup pickup = ResourceCache.GetScene( "res://scenes/interactables/used_item_pickup.tscn" ).Instantiate<UsedItemPickup>();
 
-		PickupArea.CallDeferred( "queue_free" );
-		CallDeferred( "remove_child", PickupArea );
+		pickup.Entity = this;
+		ItemNodeCache.AddNode( pickup );
 
-		PickupArea = null;
+		// unlink from the owner
+		Reserve = null;
+
+		pickup.GlobalPosition = _Owner.GlobalPosition;
+		pickup.AdjustPosition();
+		GetTree().CurrentScene.AddChild( pickup );
+
+		_Owner.CallDeferred( "remove_child", this );
+		_Owner = null;
 	}
-
 	public void TriggerPickup( Entity owner ) {
-		IconSprite?.QueueFree();
-		IconSprite = null;
-		
-		ReleasePickupArea();
-
 		_Owner = owner;
 		if ( IsInsideTree() ) {
 			CallDeferred( "reparent", _Owner );
@@ -239,11 +234,6 @@ public partial class WeaponEntity : Node2D {
 	}
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
-			IconSprite?.QueueFree();
-			IconSprite = null;
-
-			ReleasePickupArea();
-
 			_Owner = entity;
 			CallDeferred( "reparent", _Owner );
 			GlobalPosition = _Owner.GlobalPosition;
@@ -264,22 +254,6 @@ public partial class WeaponEntity : Node2D {
 			CurrentMuzzleFlash.CallDeferred( "hide" );
 		}
 		MuzzleLight.CallDeferred( "hide" );
-	}
-
-	private void CreatePickupBounds() {
-		CircleShape2D circle = new CircleShape2D();
-		circle.Radius = 7.0f;
-
-		CollisionShape2D collision = new CollisionShape2D();
-		collision.Shape = circle;
-
-		PickupArea = new Area2D();
-		PickupArea.CollisionLayer = (uint)PhysicsLayer.InteractionAreas;
-		PickupArea.CollisionMask = (uint)PhysicsLayer.InteractionAreas;
-		PickupArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnBodyShapeEntered ) );
-		PickupArea.AddChild( collision );
-
-		AddChild( PickupArea );
 	}
 
 	private void InitProperties() {
@@ -473,16 +447,6 @@ public partial class WeaponEntity : Node2D {
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 //			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 		}
-
-		CreatePickupBounds();
-
-		if ( _Owner == null ) {
-			IconSprite = new Sprite2D();
-			IconSprite.Name = "IconSprite";
-			IconSprite.Material = ResourceLoader.Load<Material>( "res://resources/materials/item_pickup.tres" );
-			IconSprite.Texture = Icon;
-			AddChild( IconSprite );
-		}
 	}
 
     public void SetUseMode( Properties weaponMode ) {
@@ -505,7 +469,14 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 
-	public void Save() {
+	public void Save( SaveSystem.SaveSectionWriter cacheWriter = null, int index = 0 ) {
+		if ( cacheWriter != null ) {
+			cacheWriter.SaveFloat( string.Format( "WeaponDirtiness{0}", index ), Dirtiness );
+			cacheWriter.SaveString( string.Format( "WeaponId{0}", index ), (string)Data.Get( "id" ) );
+			cacheWriter.SaveInt( string.Format( "WeaponBulletsLeft{0}", index ), BulletsLeft );
+
+			return;
+		}
 		using ( var writer = new SaveSystem.SaveSectionWriter( InitialPath ) ) {
 			writer.SaveFloat( "Dirtiness", Dirtiness );
 			writer.SaveBool( "HasOwner", _Owner != null );
@@ -514,7 +485,15 @@ public partial class WeaponEntity : Node2D {
 			}
 		}
 	}
-	public void Load() {
+	public void Load( SaveSystem.SaveSectionReader cacheReader = null, int index = 0 ) {
+		if ( cacheReader != null ) {
+			Dirtiness = cacheReader.LoadFloat( string.Format( "WeaponDirtiness{0}", index ) );
+			Data = (Resource)ResourceCache.ItemDatabase.Call( "get_item", cacheReader.LoadString( string.Format( "WeaponId{0}", index ) ) );
+			BulletsLeft = cacheReader.LoadInt( string.Format( "WeaponBulletsLeft{0}", index ) );
+
+			return;
+		}
+
 		using ( var reader = ArchiveSystem.GetSection( InitialPath ) ) {
 			if ( reader == null ) {
 				return;

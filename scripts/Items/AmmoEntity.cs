@@ -50,6 +50,8 @@ public partial class AmmoEntity : Node2D {
 	public ShotgunBullshit GetShotgunBullshit() => ShotFlags;
 	public float GetDamageFalloff( float distance ) => DamageFalloff.SampleBaked( distance );
 
+	public void Load( SaveSystem.SaveSectionReader reader, int index ) {
+	}
 	public override void _Ready() {
 		if ( Data == null ) {
 			Console.PrintError( "Cannot initialize AmmoEntity without a valid ammo AmmoBase" );
@@ -62,7 +64,7 @@ public partial class AmmoEntity : Node2D {
 		if ( properties.ContainsKey( "effects" ) ) {
 			Godot.Collections.Array<string> effects = (Godot.Collections.Array<string>)properties[ "effects" ];
 			for ( int i = 0; i < effects.Count; i++ ) {
-				Flags |= ExtraFlags[ effects[i] ];
+				Flags |= ExtraFlags[ effects[ i ] ];
 			}
 		}
 

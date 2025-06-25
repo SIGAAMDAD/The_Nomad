@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
+/*
 using Godot;
 
 namespace PlayerSystem {
@@ -69,15 +70,7 @@ namespace PlayerSystem {
 			base._Ready();
 
 			_Owner = GetParent<HeadsUpDisplay>().GetPlayerOwner();
-
-		/*
-			SaveGameButton = GetNode<Button>( "VBoxContainer/MarginContainer/MainContainer/SaveProgressButton" );
-			SaveGameButton.Connect( "pressed", Callable.From( OnSaveGameButtonPressed ) );
-
-			LoadGameButton = GetNode<Button>( "VBoxContainer/MarginContainer/MainContainer/LoadProgressButton" );
-			LoadGameButton.Connect( "pressed", Callable.From( OnLoadGameButtonPressed ) );
-		*/
-
+			
 			WarpCloner = GetNode<WarpPoint>( "VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer/Cloner" );
 			CheckpointNameLabel = GetNode<Label>( "VBoxContainer/CheckpointNameLabel" );
 
@@ -191,16 +184,6 @@ namespace PlayerSystem {
 			}
 
 			CallDeferred( "LoadWarpPoints" );
-			/*
-			List<Player.WarpPoint> warpList = _Owner.GetWarpPoints();
-			for ( int i = 0; i < warpList.Count; i++ ) {
-				HBoxContainer warpPoint = new HBoxContainer();
-				( (TextureRect)warpPoint.GetChild( 0 ) ).Texture = warpList[i].GetIcon();
-				( (Button)warpPoint.GetChild( 1 ) ).Text = warpList[i].GetLocation().GetTitle();
-				( (Label)warpPoint.GetChild( 2 ) ).Text = "N/A";
-				WarpLocationsContainer.AddChild( warpPoint );
-			}
-			*/
 
 			WarpLocationsScroll.CallDeferred( "show" );
 		}
@@ -219,3 +202,4 @@ namespace PlayerSystem {
 		}
 	};
 };
+*/

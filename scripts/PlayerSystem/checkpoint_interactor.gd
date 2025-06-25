@@ -23,7 +23,7 @@ var _current_checkpoint: Area2D
 
 @onready var _inactive_container: VBoxContainer = $VBoxContainer/MarginContainer/InactiveContainer
 @onready var _checkpoint_maincontainer: VBoxContainer = $VBoxContainer/MarginContainer/MainContainer
-@onready var _resting_container: VBoxContainer = $VBoxContainer/MarginContainer/RestingContaine
+@onready var _resting_container: VBoxContainer = $VBoxContainer/MarginContainer/RestingContainer
 
 func _on_activate_button_pressed() -> void:
 	pass
@@ -55,6 +55,9 @@ func load_warp_points() -> void:
 		_warp_point._biome_label.text = checkpoints[ i ].GetLocation().GetBiome().GetAreaName()
 		_warp_point.set_meta( "Checkpoint", checkpoints[ i ] )
 		_warp_point.show()
+
+func _on_open_storage_button_pressed() -> void:
+	pass
 
 func _on_warp_button_pressed() -> void:
 	_checkpoint_maincontainer.hide()

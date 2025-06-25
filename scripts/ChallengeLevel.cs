@@ -306,7 +306,7 @@ public partial class ChallengeLevel : LevelData {
 		Console.PrintLine( "Finished quest..." );
 		QuestCompleted = true;
 
-		HeadsUpDisplay.StartThoughtBubble( "You: " + EndOfQuestDialogue );
+		Player.StartThoughtBubble( "You: " + EndOfQuestDialogue );
 	}
 
 	public override void _Ready() {
@@ -318,7 +318,7 @@ public partial class ChallengeLevel : LevelData {
 		ThisPlayer.Die += OnPlayerDie;
 		ThisPlayer.Damaged += OnPlayerDamaged;
 
-		HeadsUpDisplay.StartThoughtBubble( "You: " + StartQuestDialogue );
+		Player.StartThoughtBubble( "You: " + StartQuestDialogue );
 
 		EndOfChallenge end = GetNode<EndOfChallenge>( "Level/EndOfChallenge" );
 		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );

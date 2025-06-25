@@ -121,7 +121,7 @@ namespace Renown.Thinkers {
 		private void BegForLife() {
 			DialogueGlobals.Get().BotName = BotName;
 
-			HeadsUpDisplay.StartDialogue( Dialogue, "beg_for_life", new Action<int>( ( choice ) => {
+			Player.StartDialogue( Dialogue, "beg_for_life", new Action<int>( ( choice ) => {
 				switch ( choice ) {
 				case 0:
 					break;

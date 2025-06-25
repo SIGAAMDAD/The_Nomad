@@ -289,11 +289,11 @@ Animations = NodePath("../Animations/ArmsRight")
 wait_time = 30.0
 one_shot = true
 
-[node name="HeadsUpDisplay" parent="." node_paths=PackedStringArray("_Owner") instance=ExtResource("9_bfxfw")]
+[node name="HeadsUpDisplay" parent="." node_paths=PackedStringArray("_owner") instance=ExtResource("9_bfxfw")]
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
-_Owner = NodePath("..")
+_owner = NodePath("..")
 
 [node name="MultiplayerBulletTime" type="Node2D" parent="."]
 visible = false

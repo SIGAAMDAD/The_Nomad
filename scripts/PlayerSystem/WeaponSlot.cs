@@ -19,9 +19,10 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+using Godot;
 
 namespace PlayerSystem {
-	public class WeaponSlot {
+	public partial class WeaponSlot : GodotObject {
 		public static int INVALID = -1;
 
 		private WeaponEntity Weapon = null;

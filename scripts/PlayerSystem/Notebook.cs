@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
+/*
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -310,7 +311,7 @@ namespace PlayerSystem {
 			}
 			foreach ( var stack in (Godot.Collections.Array<Resource>)_Owner.GetInventory().Get( "stacks" ) ) {
 				// FIXME: this is hideous
-				Resource itemResource = (Resource)ResourceCache.ItemDatabase.Call( "item_id", (string)stack.Get( "item_id" ) );
+				Resource itemResource = (Resource)ResourceCache.ItemDatabase.Call( "get_item", (string)stack.Get( "item_id" ) );
 				row = AddItemToBackpack( row, itemResource );
 				weight += (float)itemResource.Get( "weight" ) * (int)stack.Get( "amount" );
 			}
@@ -455,7 +456,7 @@ namespace PlayerSystem {
 				};
 			}
 			if ( !found ) {
-				Console.PrintError( string.Format( "Notebook.OnBackpackItemSelected: invalid item category \"{0}\"", (string)categories[ category ].Get( "id" ) ) );
+				Console.PrintError( string.Format( "Notebook.AddItem: invalid item category \"{0}\"", (string)categories[ category ].Get( "id" ) ) );
 				return;
 			}
 
@@ -500,3 +501,4 @@ namespace PlayerSystem {
 		}
 	};
 };
+*/

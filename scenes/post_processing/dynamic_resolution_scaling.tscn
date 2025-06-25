@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://d20ytne22irsw"]
+
+[ext_resource type="Script" uid="uid://cuhv03tjygtv0" path="res://scripts/post_processing/DynamicResolutionScaling.cs" id="1_vi2ah"]
+
+[node name="DynamicResolutionScaling" type="SubViewportContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vi2ah")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(640, 480)

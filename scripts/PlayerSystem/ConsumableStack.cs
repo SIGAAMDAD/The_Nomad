@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 using Godot;
 
 namespace PlayerSystem {
-	public struct ConsumableStack {
+	public partial class ConsumableStack : GodotObject {
 		public Resource ItemType = null;
 		public int Amount = 0;
 		public string ItemId = "";

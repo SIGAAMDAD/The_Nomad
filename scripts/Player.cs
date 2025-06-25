@@ -15,7 +15,8 @@ public enum WeaponSlotIndex : int {
 	Primary,
 	HeavyPrimary,
 	Sidearm,
-	HeavySidearm
+	HeavySidearm,
+	Count
 };
 
 // TODO: dash i-frames duration and speed should decrease if we spam it
@@ -129,7 +130,7 @@ public partial class Player : Entity {
 	[Export]
 	private Arm ArmRight;
 	[Export]
-	private HeadsUpDisplay HUD;
+	private CanvasLayer HUD;
 
 	[ExportCategory( "Start" )]
 	[Export]
@@ -162,6 +163,8 @@ public partial class Player : Entity {
 		private set;
 	} = 0.0f;
 
+	private Dictionary<Resource, int> Storage = new Dictionary<Resource, int>();
+
 	private Resource CurrentMappingContext;
 
 	private Resource SwitchToKeyboard;
@@ -179,6 +182,7 @@ public partial class Player : Entity {
 	private Resource BulletTimeAction;
 	private Resource ArmAngleAction;
 	private Resource UseBothHandsAction;
+	private Resource AimAngleAction;
 	public readonly Resource InteractionAction;
 
 	public readonly Resource InteractionActionGamepad;
@@ -193,6 +197,8 @@ public partial class Player : Entity {
 	private PointLight2D DashLight;
 
 	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
+
+	private Checkpoint CurrentCheckpoint;
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
@@ -239,9 +245,8 @@ public partial class Player : Entity {
 
 	private Texture2D CurrentEmote;
 
-	private WeaponSlot[] WeaponSlots = new WeaponSlot[ MAX_WEAPON_SLOTS ];
-
-	private int CurrentWeapon = WeaponSlot.INVALID;
+	public WeaponSlot[] WeaponSlots { get; private set; } = new WeaponSlot[ MAX_WEAPON_SLOTS ];
+	public int CurrentWeapon { get; private set; } = WeaponSlot.INVALID;
 
 	private Camera2D Viewpoint;
 
@@ -279,9 +284,9 @@ public partial class Player : Entity {
 
 	private TileMapFloor Floor;
 
-	private Dictionary<int, WeaponEntity> WeaponsStack = new Dictionary<int, WeaponEntity>();
-	private Dictionary<int, ConsumableStack> ConsumableStacks = new Dictionary<int, ConsumableStack>();
-	private Dictionary<int, AmmoStack> AmmoStacks = new Dictionary<int, AmmoStack>();
+	private Godot.Collections.Dictionary<int, WeaponEntity> WeaponsStack = new Godot.Collections.Dictionary<int, WeaponEntity>();
+	private Godot.Collections.Dictionary<int, ConsumableStack> ConsumableStacks = new Godot.Collections.Dictionary<int, ConsumableStack>();
+	private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
 	private HashSet<Perk> UnlockedPerks;
 	private HashSet<Rune> UnlockedRunes;
 
@@ -309,8 +314,9 @@ public partial class Player : Entity {
 	private Checkpoint LastCheckpoint;
 
 	private int TileMapLevel = 0;
+	private static Action<int> DialogueCallback;
 
-	private WorldArea Waypoint;
+	private Node2D Waypoint;
 
 	[Signal]
 	public delegate void SwitchedWeaponEventHandler( WeaponEntity weapon );
@@ -329,6 +335,32 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void WeaponStatusUpdatedEventHandler( WeaponEntity source, WeaponEntity.Properties useMode );
 
+	//
+	// HUD related signals
+	//
+	[Signal]
+	public delegate void RageChangedEventHandler( float nRage );
+	[Signal]
+	public delegate void HealthChangedEventHandler( float nHealth );
+	[Signal]
+	public delegate void StatusEffectTriggeredEventHandler( string effectName, StatusEffect effect );
+	[Signal]
+	public delegate void ParrySuccessEventHandler();
+	[Signal]
+	public delegate void HideInteractionEventHandler();
+	[Signal]
+	public delegate void ShowInteractionEventHandler( InteractionItem item );
+	[Signal]
+	public delegate void DashStartEventHandler();
+	[Signal]
+	public delegate void DashEndEventHandler();
+	[Signal]
+	public delegate void BulletTimeStartEventHandler();
+	[Signal]
+	public delegate void BulletTimeEndEventHandler();
+	[Signal]
+	public delegate void InventoryToggledEventHandler();
+
 	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			entity.AddStatusEffect( "status_burning" );
@@ -338,7 +370,24 @@ public partial class Player : Entity {
 	public override void AddStatusEffect( string effectName ) {
 		base.AddStatusEffect( effectName );
 
-		HUD.AddStatusEffect( effectName, StatusEffects[ effectName ] );
+		EmitSignalStatusEffectTriggered( effectName, StatusEffects[ effectName ] );
+	}
+
+	public static void StartThoughtBubble( string text ) {
+		Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
+		DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
+	}
+	public static void StartDialogue( Resource dialogueResource, string key, System.Action<int> callback ) {
+		DialogueManager.ShowDialogueBalloon( dialogueResource, key );
+		DialogueCallback = callback;
+	}
+
+	private void OnDialogueEnded( Resource dialogueResource ) {
+	}
+	private void OnDialogueStarted( Resource dialogueResource ) {
+	}
+	private void OnMutated( Godot.Collections.Dictionary mutation ) {
+		DialogueCallback?.DynamicInvoke( DialogueGlobals.Get().PlayerChoice );
 	}
 
 	public static bool IsTutorialActive() {
@@ -455,7 +504,8 @@ public partial class Player : Entity {
 		case Hands.Both:
 			LastUsedArm = ArmRight;
 			break;
-		};
+		}
+		;
 
 		AmmoStacks.Clear();
 		int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
@@ -540,17 +590,19 @@ public partial class Player : Entity {
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
-			case PlayerDamageSource.Player:
-				float damage = SyncObject.ReadFloat();
-				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
+				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
+				case PlayerDamageSource.Player:
+					float damage = SyncObject.ReadFloat();
+					Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
+					break;
+				case PlayerDamageSource.NPC:
+					break;
+				case PlayerDamageSource.Environment:
+					break;
+				}
+				;
 				break;
-			case PlayerDamageSource.NPC:
-				break;
-			case PlayerDamageSource.Environment:
-				break;
-			};
-			break; }
+			}
 		case PlayerUpdateType.SetSpawn:
 			// only ever called in team modes
 			GlobalPosition = SyncObject.ReadVector2();
@@ -559,7 +611,8 @@ public partial class Player : Entity {
 		default:
 			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
 			break;
-		};
+		}
+		;
 	}
 
 	private void SendPacket() {
@@ -638,7 +691,7 @@ public partial class Player : Entity {
 		if ( !SettingsData.GetShowBlood() ) {
 			return;
 		}
-		
+
 		// cover us with more blood if we're sober
 		if ( ( Flags & PlayerFlags.Sober ) == 0 ) {
 			BloodAmount += nAmount * 0.25f;
@@ -705,9 +758,9 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Dictionary<int, WeaponEntity> GetWeaponStack() => WeaponsStack;
+	public Godot.Collections.Dictionary<int, WeaponEntity> GetWeaponStack() => WeaponsStack;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
+	public Godot.Collections.Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Node GetInventory() => Inventory;
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
@@ -795,12 +848,12 @@ public partial class Player : Entity {
 		if ( Health > 100.0f ) {
 			Health = 100.0f;
 		}
-		HUD.GetHealthBar().SetHealth( Health );
+		EmitSignalHealthChanged( Health );
 	}
 	public float GetRage() => Rage;
 	public void SetRage( float nRage ) {
 		Rage = nRage;
-		HUD.GetRageBar().Value = Rage;
+		EmitSignalRageChanged( Rage );
 	}
 	public PlayerFlags GetFlags() => Flags;
 	public void SetFlags( PlayerFlags flags ) => Flags = flags;
@@ -873,8 +926,8 @@ public partial class Player : Entity {
 		ArmLeft.Animations.Show();
 		ArmRight.Animations.Show();
 
-		HUD.GetHealthBar().SetHealth( Health );
-		HUD.GetRageBar().Value = Rage;
+		SetHealth( Health );
+		SetRage( Rage );
 
 		if ( ( GameConfiguration.GameMode == GameMode.Online && SteamLobby.Instance.IsOwner() ) || GameConfiguration.GameMode == GameMode.SinglePlayer ) {
 			ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
@@ -957,7 +1010,7 @@ public partial class Player : Entity {
 
 		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/env/RICOCHE2.wav" ) );
 
-		HUD.GetParryOverlay().Show();
+		EmitSignalParrySuccess();
 
 		// we punch the bullet or object so hard it creates a shrapnel cloud
 		Godot.Collections.Array<Node2D> entities = ParryDamageArea.GetOverlappingBodies();
@@ -976,6 +1029,8 @@ public partial class Player : Entity {
 
 		Rage -= 35.0f;
 
+		EmitSignalRageChanged( Rage );
+
 		// create a freeze frame
 		float timeScale = (float)Engine.TimeScale;
 		Engine.TimeScale = 0.25f;
@@ -983,7 +1038,8 @@ public partial class Player : Entity {
 			Engine.TimeScale = timeScale;
 
 			ParryDamageArea.SetDeferred( "monitoring", false );
-			HUD.GetParryOverlay().Hide();
+
+			HUD.CallDeferred( "EndParry" );
 		} ) );
 	}
 
@@ -1010,7 +1066,7 @@ public partial class Player : Entity {
 		IdleAnimation.Show();
 		IdleAnimation.Play( "checkpoint_idle" );
 
-		Vector2 direction = GlobalPosition.DirectionTo( HUD.GetCurrentCheckpoint().GlobalPosition );
+		Vector2 direction = GlobalPosition.DirectionTo( CurrentCheckpoint.GlobalPosition );
 		if ( direction.X < 0.0f ) {
 			IdleAnimation.FlipH = true;
 		} else {
@@ -1064,19 +1120,20 @@ public partial class Player : Entity {
 	}
 
 	public void EndInteraction() {
-		HUD.HideInteraction();
+		EmitSignalHideInteraction();
 
 		Flags &= ~PlayerFlags.Checkpoint;
 	}
 	public void BeginInteraction( InteractionItem item ) {
-		HUD.ShowInteraction( item );
-		
+		EmitSignalShowInteraction( item );
+
 		switch ( item.GetInteractionType() ) {
 		case InteractionType.Checkpoint:
 			Flags |= PlayerFlags.Checkpoint;
 			LastCheckpoint = item as Checkpoint;
 			break;
-		};
+		}
+		;
 	}
 
 	private void OnIdleAnimationTimerTimeout() {
@@ -1116,7 +1173,7 @@ public partial class Player : Entity {
 		}
 	}
 	private void OnDashTimeTimeout() {
-		HUD.GetDashOverlay().Hide();
+		EmitSignalDashEnd();
 		DashLight.Hide();
 		DashEffect.Emitting = false;
 		DashFlameArea.Monitoring = false;
@@ -1170,7 +1227,8 @@ public partial class Player : Entity {
 		DashLight.Show();
 		DashEffect.Emitting = true;
 		DashDirection = Velocity;
-		HUD.GetDashOverlay().Show();
+
+		EmitSignalDashStart();
 
 		DashBurnout += 0.25f;
 		if ( DashTimer >= 0.10f ) {
@@ -1343,6 +1401,8 @@ public partial class Player : Entity {
 		}
 
 		IdleReset();
+		EmitSignalBulletTimeStart();
+
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
@@ -1362,7 +1422,7 @@ public partial class Player : Entity {
 		} else {
 			Flags &= ~PlayerFlags.Inventory;
 		}
-		HUD.OnShowInventory();
+		EmitSignalInventoryToggled();
 	}
 	private void OnUseBothHands() {
 		if ( IsInputBlocked() ) {
@@ -1392,7 +1452,8 @@ public partial class Player : Entity {
 			src = LastUsedArm;
 			dst = src;
 			break;
-		};
+		}
+		;
 
 		if ( src.Slot == WeaponSlot.INVALID ) {
 			// nothing in the source hand, deny
@@ -1437,7 +1498,8 @@ public partial class Player : Entity {
 			Console.PrintError( "SwitchWeaponHand: invalid hand, setting to default of right" );
 			HandsUsed = Hands.Right;
 			break;
-		};
+		}
+		;
 		if ( LastUsedArm.Slot != WeaponSlot.INVALID ) {
 			EquipSlot( LastUsedArm.Slot );
 		}
@@ -1460,19 +1522,22 @@ public partial class Player : Entity {
 					return;
 				}
 				slot = WeaponSlots[ index ];
-				break; }
+				break;
+			}
 		case Hands.Right: {
 				int index = ArmRight.Slot;
 				if ( index == WeaponSlot.INVALID ) {
 					return;
 				}
 				slot = WeaponSlots[ index ];
-				break; }
+				break;
+			}
 		case Hands.Both:
 		default:
 			slot = WeaponSlots[ CurrentWeapon ];
 			break;
-		};
+		}
+		;
 
 		WeaponEntity.Properties mode = slot.GetMode();
 		WeaponEntity weapon = slot.GetWeapon();
@@ -1637,7 +1702,8 @@ public partial class Player : Entity {
 			return;
 		case GameMode.Multiplayer:
 			break;
-		};
+		}
+		;
 		if ( Health <= 0.0f ) {
 			// dead
 			SetHealth( 100.0f );
@@ -1674,9 +1740,17 @@ public partial class Player : Entity {
 		}
 	}
 
+	private void OnMove() {
+		if ( IsInputBlocked() ) {
+			return;
+		}
+
+		InputVelocity = (Godot.Vector2)MoveAction.Get( "value_axis_2d" );
+	}
+
 	public void ConnectGamepadBinds() {
 		ResourceCache.MeleeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMelee ) );
-//		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		//		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
 		ResourceCache.BulletTimeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnBulletTime ) );
 		ResourceCache.NextWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnNextWeapon ) );
 		ResourceCache.PrevWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnPrevWeapon ) );
@@ -1687,7 +1761,9 @@ public partial class Player : Entity {
 		ResourceCache.OpenInventoryActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnToggleInventory ) );
 	}
 	private void ConnectKeyboardBinds() {
-		ResourceCache.UseBothHandsActionsKeyboard.Connect( "triggered", Callable.From( OnUseBothHands ) );
+		ResourceCache.MoveActionKeyboard.Connect( "triggered", Callable.From( OnMove ) );
+		ResourceCache.MoveActionKeyboard.Connect( "completed", Callable.From( OnMove ) );
+		ResourceCache.UseBothHandsActionKeyboard.Connect( "triggered", Callable.From( OnUseBothHands ) );
 		ResourceCache.MeleeActionKeyboard.Connect( "triggered", Callable.From( OnMelee ) );
 		ResourceCache.SwitchWeaponModeActionKeyboard.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
 		ResourceCache.BulletTimeActionKeyboard.Connect( "triggered", Callable.From( OnBulletTime ) );
@@ -1698,6 +1774,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
+		ResourceCache.AimAngleActionKeyboard.Connect( "triggered", Callable.From( GetArmAngle ) );
 	}
 	private void LoadSfx() {
 		/*
@@ -1730,10 +1807,11 @@ public partial class Player : Entity {
 			return;
 		}
 		Flags &= ~PlayerFlags.BulletTime;
-		HUD.GetReflexOverlay().Hide();
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
 		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
+
+		EmitSignalBulletTimeEnd();
 	}
 
 	private void CmdSuicide() {
@@ -1813,6 +1891,10 @@ public partial class Player : Entity {
 
 	public override void _Ready() {
 		base._Ready();
+
+		DialogueManager.DialogueStarted += OnDialogueStarted;
+		DialogueManager.DialogueEnded += OnDialogueEnded;
+		DialogueManager.Mutated += OnMutated;
 
 		ScreenSize = DisplayServer.WindowGetSize();
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
@@ -2071,29 +2153,31 @@ public partial class Player : Entity {
 			return;
 		}
 
-		float speed = MAX_SPEED;
-		// encumbured
-		if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
-
-		}
-
-		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-			speed += 1800;
-		}
-		if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-			speed += 400;
-			LeftArmAnimationState = PlayerAnimationState.Sliding;
-		}
-
 		Godot.Vector2 velocity = Velocity;
+		if ( InputVelocity == Godot.Vector2.Zero && velocity == Godot.Vector2.Zero ) {
+			return;
+		}
 
-		InputVelocity = (Godot.Vector2)MoveAction.Get( "value_axis_2d" );
 		if ( InputVelocity != Godot.Vector2.Zero ) {
-			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
+			float speed = MAX_SPEED;
+			// encumbured
+			if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
+
+			}
+
+			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
+				speed += 1800;
+			}
+			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
+				speed += 400;
+				LeftArmAnimationState = PlayerAnimationState.Sliding;
+			}
+
+			velocity = velocity.MoveToward( InputVelocity * speed, (float)GetPhysicsProcessDeltaTime() * ACCEL );
 			TorsoAnimationState = PlayerAnimationState.Running;
 			LegAnimationState = PlayerAnimationState.Running;
 		} else {
-			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
+			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)GetPhysicsProcessDeltaTime() * FRICTION );
 			TorsoAnimationState = PlayerAnimationState.Idle;
 			LegAnimationState = PlayerAnimationState.Idle;
 		}
@@ -2137,7 +2221,8 @@ public partial class Player : Entity {
 				animationName = "empty";
 				animState = PlayerAnimationState.WeaponEmpty;
 				break;
-			};
+			}
+			;
 
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
 				if ( ( arm == ArmLeft && !arm.Animations.FlipH )
@@ -2153,32 +2238,37 @@ public partial class Player : Entity {
 			if ( ( Flags & PlayerFlags.UsedMana ) != 0 ) {
 			}
 		}
+
+		bool changed = false;
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
 			Rage += FrameDamage * FreeFlow.GetCurrentCombo() * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetRageBar().Value = Rage;
+			changed = true;
 		}
 		FrameDamage = 0.0f;
 		if ( Health < 100.0f && Rage > 0.0f ) {
 			Health += 3.0f * delta;
 			Rage -= 10.0f * delta;
+			changed = true;
 			// mana conversion ratio to health is extremely inefficient
 
 			Flags |= PlayerFlags.UsedMana;
-			HUD.GetHealthBar().SetHealth( Health );
-			HUD.GetRageBar().Value = Rage;
+			EmitSignalHealthChanged( Health );
 		}
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			Rage -= 20.0f * delta;
-			HUD.GetRageBar().Value = Rage;
+			changed = true;
 		}
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
 		} else if ( Rage < 0.0f ) {
 			Rage = 0.0f;
 			ExitBulletTime();
+		}
+		if ( changed ) {
+			EmitSignalRageChanged( Rage );
 		}
 	}
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
@@ -2226,7 +2316,7 @@ public partial class Player : Entity {
 			return;
 		}
 
-		GetArmAngle();
+		//		GetArmAngle();
 
 		ArmLeft.Animations.Show();
 		ArmRight.Animations.Show();
@@ -2244,7 +2334,7 @@ public partial class Player : Entity {
 
 		if ( HandsUsed == Hands.Both ) {
 			if ( TorsoAnimation.FlipH ) {
-				( front, back ) = ( back, front );
+				(front, back) = (back, front);
 			} else {
 				front = LastUsedArm;
 			}
@@ -2279,8 +2369,11 @@ public partial class Player : Entity {
 		}
 		if ( !found ) {
 			stack = new AmmoStack();
+
+			int hashCode = ( (string)ammo.Data.Get( "id" ) ).GetHashCode();
 			stack.SetType( ammo );
-			AmmoStacks.Add( ( (string)ammo.Data.Get( "id" ) ).GetHashCode(), stack );
+			stack.SetMeta( "hash", hashCode );
+			AmmoStacks.Add( hashCode, stack );
 		}
 		stack.AddItems( nAmount == -1 ? (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] : nAmount );
 
@@ -2289,8 +2382,7 @@ public partial class Player : Entity {
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[ i ];
 			if ( slot.IsUsed() && (int)slot.GetWeapon().Ammunition
-				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] )
-			{
+				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] ) {
 				slot.GetWeapon().SetReserve( stack );
 				slot.GetWeapon().SetAmmo( ammo );
 				if ( LastUsedArm.Slot == i ) {
@@ -2331,7 +2423,9 @@ public partial class Player : Entity {
 			CurrentWeapon = index;
 		}
 
-		WeaponsStack.Add( weapon.GetHashCode(), weapon );
+		int hashCode = weapon.GetHashCode();
+		weapon.SetMeta( "hash", hashCode );
+		WeaponsStack.Add( hashCode, weapon );
 		TotalInventoryWeight += weapon.Weight;
 
 		TorsoAnimation.FlipH = false;
@@ -2385,5 +2479,40 @@ public partial class Player : Entity {
 			EmitSignalSwitchedWeapon( weapon );
 			EmitSignalHandsStatusUpdated( HandsUsed );
 		}
+	}
+
+	public void DropWeapon( int hashCode ) {
+		if ( !WeaponsStack.TryGetValue( hashCode, out WeaponEntity weapon ) ) {
+			Console.PrintError( string.Format( "Player.DropWeapon: invalid hash id {0}", hashCode ) );
+			return;
+		}
+
+		WeaponsStack.Remove( hashCode );
+		weapon.Drop();
+
+		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
+			if ( WeaponSlots[ i ].GetWeapon() == weapon ) {
+				if ( i == CurrentWeapon ) {
+					CurrentWeapon = WeaponSlot.INVALID;
+					EmitSignalWeaponStatusUpdated( null, WeaponEntity.Properties.None );
+
+					if ( ArmLeft.Slot == i ) {
+						ArmLeft.Slot = CurrentWeapon;
+					}
+					if ( ArmRight.Slot == i ) {
+						ArmRight.Slot = CurrentWeapon;
+					}
+				}
+				WeaponSlots[ i ].SetWeapon( null );
+			}
+		}
+	}
+	public void DropAmmo( int hashCode ) {
+		if ( !AmmoStacks.TryGetValue( hashCode, out AmmoStack stack ) ) {
+			Console.PrintError( string.Format( "Player.DropAmmo: invalid hash id {0}", hashCode ) );
+			return;
+		}
+
+		AmmoStacks.Remove( hashCode );
 	}
 };

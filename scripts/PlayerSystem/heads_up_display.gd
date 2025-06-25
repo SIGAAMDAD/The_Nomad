@@ -56,7 +56,7 @@ var _weapon_status_timer: Timer = Timer.new()
 @onready var _weapon_status_firearm: VBoxContainer = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus
 @onready var _weapon_status_melee: VBoxContainer = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus
 @onready var _weapon_status_melee_icon: TextureRect = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus/WeaponIcon
-@onready var _weapon_status_firearm_icon: TextureRect = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FirearmStatus/WeaponIcon
+@onready var _weapon_status_firearm_icon: TextureRect = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/WeaponIcon
 @onready var _weapon_status_bullet_count: Label = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletCountLabel
 @onready var _weapon_status_bullet_reserve: Label = $MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer/BulletReserveLabel
 
@@ -140,9 +140,6 @@ func GetRageBar() -> ProgressBar:
 func GetParryOverlay() -> TextureRect:
 	return _parry_overlay
 
-func GetPlayerOwner() -> CharacterBody2D:
-	return _owner
-
 func SetRage( rage: float ) -> void:
 	_ragebar.value = rage
 
@@ -187,6 +184,11 @@ func _on_hands_status_updated( handsUsed: int ) -> void:
 			_right_arm_indicator.modulate = _arm_used_color
 
 func _on_weapon_status_updated( source: Node, properties: int ) -> void:
+	if source == null:
+		_weapon_data = null
+		
+		_weapon_status.modulate = _hidden_color
+		return
 	if source != _weapon_data:
 		return
 	
@@ -270,25 +272,41 @@ func _on_switched_weapon( weapon: Node ) -> void:
 	_weapon_data.connect( "Reloaded", _on_weapon_reloaded )
 	_weapon_data.connect( "Used", _on_weapon_used )
 
+func EndParry() -> void:
+	_parry_overlay.hide()
+
 func _ready() -> void:
 	_weapon_status_timer.name = "WeaponStatusTimer"
 	_weapon_status_timer.wait_time = 5.90
 	_weapon_status_timer.one_shot = true
 	_weapon_status_timer.process_mode = PROCESS_MODE_DISABLED
 	_weapon_status_timer.connect( "timeout", func(): _fade_ui_element( _weapon_status, 1.5, _weapon_status_timer ) )
+	add_child( _weapon_status_timer )
 	
 	_location_status_timer.name = "LocationStatusTimer"
 	_location_status_timer.wait_time = 5.90
 	_location_status_timer.one_shot = true
 	_location_status_timer.process_mode = PROCESS_MODE_DISABLED
 	_location_status_timer.connect( "timeout", func(): _fade_ui_element( _location_label, 2.5, _location_status_timer ) )
+	add_child( _location_status_timer )
 	
 	_objective_status_timer.name = "ObjectiveStatusTimer"
 	_objective_status_timer.wait_time = 5.90
 	_objective_status_timer.one_shot = true
 	_objective_status_timer.process_mode = PROCESS_MODE_DISABLED
 	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
+	add_child( _objective_status_timer )
 	
+	_owner.connect( "DashStart", func(): _dash_overlay.show() )
+	_owner.connect( "DashEnd", func(): _dash_overlay.hide() )
+	_owner.connect( "BulletTimeStart", func(): _reflex_overlay.show() )
+	_owner.connect( "BulletTimeEnd", func(): _reflex_overlay.hide() )
+	_owner.connect( "HideInteraction", func(): HideInteraction() )
+	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
+	_owner.connect( "InventoryToggled", func(): OnShowInventory() )
+	_owner.connect( "ParrySuccess", func(): _parry_overlay.show() )
+	_owner.connect( "HealthChanged", func( health: float ): _healthbar.SetHealth( health ) )
+	_owner.connect( "RageChanged", func( rage: float ): _ragebar.Rage = rage )
 	_owner.connect( "LocationChanged", _on_location_changed )
 	_owner.connect( "Damaged", func( source: CharacterBody2D, target: CharacterBody2D, amount: float ): _healthbar.SetHealth( target.GetHealth() ) )
 	_owner.connect( "SwitchedWeapon", _on_switched_weapon )
@@ -306,7 +324,7 @@ func OnShowInventory() -> void:
 	
 	_notebook.process_mode = PROCESS_MODE_PAUSABLE
 	_notebook.visible = true
-	_notebook.OnShowBackpack()
+	_notebook.on_show_backpack()
 
 func ShowInteraction( item: Area2D ) -> void:
 	match item.GetInteractionType():

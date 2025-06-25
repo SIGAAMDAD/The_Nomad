@@ -109,7 +109,8 @@ public class ResourceCache {
 	public static Resource OpenInventoryActionKeyboard { get; private set; }
 	public static Resource BulletTimeActionKeyboard { get; private set; }
 	public static Resource ArmAngleActionKeyboard { get; private set; }
-	public static Resource UseBothHandsActionsKeyboard { get; private set; }
+	public static Resource UseBothHandsActionKeyboard { get; private set; }
+	public static Resource AimAngleActionKeyboard { get; private set; }
 
 	public static Resource KeyboardInputMappings { get; private set; }
 	public static Resource GamepadInputMappings { get; private set; }
@@ -284,7 +285,8 @@ public class ResourceCache {
 		OpenInventoryActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/open_inventory.tres" );
 		ArmAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
 		MeleeActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/melee.tres" );
-		UseBothHandsActionsKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
+		UseBothHandsActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
+		AimAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
 	}
 	public static void LoadBinds() {
 		KeyboardInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );

@@ -1,4 +1,4 @@
-[gd_scene load_steps=175 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=176 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -82,6 +82,7 @@
 [ext_resource type="Script" uid="uid://bwwd2pdkul1bk" path="res://scripts/Interactables/Cutscenes/CutsceneDialogue.cs" id="69_gb70t"]
 [ext_resource type="Resource" uid="uid://3b8i6s836yoo" path="res://resources/dialogue/player.dialogue" id="70_gb70t"]
 [ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="72_dx3bq"]
+[ext_resource type="Script" uid="uid://qke64tuibbb7" path="res://scripts/Interactables/ItemNodeCache.cs" id="83_0t2pq"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
 vertices = PackedVector2Array(1456, 301, 1531, 301, 1438, 302, 1547, 300, 1622, 300, 3597, 266, 3642, 266, 3557, 267, 3816, 164, 4014, 165, 3884, 167, 3256, 251, 3511, 251, 3200, 258, 2717, -1305, 34279.6, -9217.75, 3620, 134, 3619, 166, -667.406, -16155.2, 2684.84, -1425, 2597, -1512.84, -20.9688, -2240.68, 2477, -1545, 2357, -1512.84, 945, 107, 1004, 36, 1009, 255, 944, 239, 524.844, -27, 441.844, -109.992, 805, -108, 2684.84, -1185, 29740.7, 8170.7, 1717, 236, 1619, 260, 1207, 234, 1547, 260, 2269.16, -1425, 1812, 495, 1651, 495, 805, -91, 4011, 251, 3484.93, 2518.39, 77, 93, 106.484, 203.039, -265, 207, -267, 162, -288.602, 162, 1298, 483, 1300, 502, 1222, 503, 1363, 262, 1363, 302, 1345, 301, 1342, 261, 90, 438, 110, 436, 111, 457, 91, 505, 555.117, 85.9922, 814, 84, 3400, 135, 3614, 171, 3557, 264, 580.711, 621.281, 518, 622, 519, 523, 580, 492, 1033, -99, 1035, -18, 1093, 505, 1125, 504, 1126, 569, 1094, 569, 1140, -72, 1421, -76, 1421, 13, 1139, -21, 1085, 18, 1540, 466, 1542, 530, 1431, 532, 1430, 500, 1222, 631, 950, 634, 950, 617, 1157, 408, 868, 411, 868, 379, 4009, 171, 4010, 248, 3640, 249, 3884, 171, 2597, -1097.16, 886, 618, 885, 572, 1158, 569, 692, 460, 693, 620, 647, 620, 645, 492, 346, 450, 346, 374, 471, 374, 473, 502, 708, 380, 708, 460, 1653, 594, 1608, 595, 1605, 466, 3514, 249, 3258, 248, 3258, 226, 1075, 253, 1077, 174, 1128, 175, 1134, 277, 1007, 277, 3353, 218, 3353, 171, 3507, 170, 1528, 261, 1456, 261, -286, 399, -10, 399, -8, 506, 1435, 262, 1270, 261, 1209, 381, 1270, 301, 3515, 263, 3515, 251, 3639, 264, 3598, 263, 3512, 266, 483, 523, 480, 616, 61, 623, 539, 308, 651, 309, 653, 357, 1085, 31, 857, 107, 815, 352, 858, 239, 522, 262, 488, 261, 487.648, 250.188, 524.844, 213, 3815, 170, 3643, 251, 3167.84, 378, 3080, 465.844, 2960, 498, 1415, 500, 1414, 485, 1005, 383, 3620, 77, 3400, 77, 3271, 218, 3312, 218, 3313, 227, 3256, 217, 3167.84, 138, 3264, 201, 555.125, 99.9766, 556, 194, 533, 198, 525, 498, 3322, 227, 3324, 218, 2477, -1065, -319, 434.93, -377.219, 957.57, 109.156, -27, 2840, 465.844, 3349, 164, 1954, -337, 441.727, -110.109, 437, -114.844, 3504, 166, 3080, 50.1562, 2960, 18, 2840, 50.1562, 2752.16, 138, 2357, -1097.16, 105, 682, 957, 680, 1679, 680, 1958, 495, 2752.16, 378, 2720, 258, 2269.16, -1185, 2237, -1305, 317, -147, 197, -114.844)
@@ -10540,11 +10541,11 @@ hframes = 16
 vframes = 16
 frame = 96
 
-[node name="ShotgunPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("18_ktfth")]
-position = Vector2(-15.6078, 11.3394)
+[node name="ShotgunPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("35_qxuuj")]
 Data = ExtResource("19_vg7yo")
+Amount = 0
 
-[node name="ItemPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("35_qxuuj")]
+[node name="AmmoPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("35_qxuuj")]
 position = Vector2(-44.5868, 11.0391)
 Data = ExtResource("19_ybss6")
 
@@ -12183,6 +12184,5 @@ Action = ExtResource("72_dx3bq")
 position = Vector2(-84860.5, 53342)
 TutorialString = "That blue bar represents your rage, don't let it run out, otherwise... You're fucked."
 
-[node name="PostProcessing" type="Node" parent="."]
-
-[node name="SSAO" type="CanvasLayer" parent="PostProcessing"]
+[node name="ItemNodeCache" type="Node" parent="."]
+script = ExtResource("83_0t2pq")
