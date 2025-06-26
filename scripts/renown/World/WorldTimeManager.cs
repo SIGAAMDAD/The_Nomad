@@ -184,7 +184,7 @@ namespace Renown.World {
 
 			Instance = null;
 		}
-        public override void _Ready() {
+		public override void _Ready() {
 			base._Ready();
 
 			RedSunLight = GetNode<DirectionalLight2D>( "SunLight" );
@@ -197,7 +197,7 @@ namespace Renown.World {
 			Hour = (uint)StartingHour;
 
 			for ( int i = 0; i < Months.Length; i++ ) {
-				TotalDaysInYear += Months[i].GetDayCount();
+				TotalDaysInYear += Months[ i ].GetDayCount();
 			}
 
 			NewYear += () => {
@@ -216,19 +216,23 @@ namespace Renown.World {
 			SetPhysicsProcess( false );
 			SetPhysicsProcessInternal( false );
 
+			/*
 			if ( SettingsData.GetNetworkingEnabled() ) {
 				SyncObject = new NetworkSyncObject( sizeof( uint ) * 3 + sizeof( float ) );
 				if ( SteamLobby.Instance.IsOwner() ) {
 					// we're running the host's world
-	//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
+					//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
 					IsHostWorld = true;
 				} else {
-	//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+					//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 					SetProcess( false );
 				}
 			} else {
 				IsHostWorld = true;
 			}
+			*/
+			IsHostWorld = true;
+			SetProcess( true );
 
 			/*
 			Console.AddCommand(

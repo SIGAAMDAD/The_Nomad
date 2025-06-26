@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using Godot;
+using Renown.World;
 using SaveSystem;
+using Steamworks;
 
 namespace SaveSystem {
 	public enum FieldType : uint {
@@ -54,7 +56,7 @@ public partial class ArchiveSystem : Node {
 
 	private const ulong MAGIC = 0xffead4546B727449;
 
-	private string SaveDirectory;
+	private static readonly string SaveDirectory = "user://SaveData/";
 	private uint CurrentMemory = 0;
 
 	private bool Loaded = false;
@@ -113,7 +115,9 @@ public partial class ArchiveSystem : Node {
 				SectionCount = 0;
 				SaveWriter.Write( SectionCount );
 
-				System.Threading.Tasks.Parallel.ForEach( nodes, ( source, body ) => { source.Call( "Save" ); } );
+				for ( int i = 0; i < nodes.Count; i++ ) {
+					nodes[ i ].Call( "Save" );
+				}
 
 				stream.Seek( 0, System.IO.SeekOrigin.Begin );
 				SaveWriter.Write( MAGIC );
@@ -133,6 +137,8 @@ public partial class ArchiveSystem : Node {
 	}
 	public static void DeleteSave( int nSlot ) {
 		DirAccess.RemoveAbsolute( "user://SaveData/GameData_" + nSlot.ToString() + ".ngd" );
+
+		SteamRemoteStorage.FileDelete( "SaveData/GameData_" + nSlot.ToString() + ".ngd" );
 	}
 	public static void SaveGame( int nSlot ) {
 		Instance.EmitSignal( "SaveGameBegin" );
@@ -145,7 +151,7 @@ public partial class ArchiveSystem : Node {
 		Instance.EmitSignal( "SaveGameEnd" );
 	}
 	public static void LoadGame( int nSlot ) {
-		string path = ProjectSettings.GlobalizePath( Instance.SaveDirectory + "GameData_" + nSlot.ToString() + ".ngd" );
+		string path = ProjectSettings.GlobalizePath( SaveDirectory + "GameData_" + nSlot.ToString() + ".ngd" );
 		using ( var stream = new System.IO.FileStream( path, System.IO.FileMode.Open ) ) {
 			using ( SaveReader = new System.IO.BinaryReader( stream ) ) {
 				ulong magic = SaveReader.ReadUInt64();
@@ -245,6 +251,5 @@ public partial class ArchiveSystem : Node {
 
 	public void CheckSaveData() {
 		Loaded = FileAccess.FileExists( "user://SaveData/GameData_" + SettingsData.GetSaveSlot().ToString() + ".ngd" );
-		SaveDirectory = "user://SaveData/";
 	}
 };

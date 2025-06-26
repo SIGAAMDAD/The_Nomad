@@ -417,10 +417,9 @@ namespace Renown.Thinkers {
 			Ammo = new AmmoEntity();
 			Ammo.Name = "Ammo";
 			Ammo.Data = ResourceLoader.Load( "res://resources/ammo/556_ammo.tres" );
-			Ammo._Ready();
+			AddChild( Ammo );
 
 			AmmoStack = new AmmoStack();
-			AmmoStack.Name = "InventoryStack";
 			AmmoStack.SetType( Ammo );
 			AmmoStack.Amount = (int)Ammo.Data.Get( "max_stack" );
 

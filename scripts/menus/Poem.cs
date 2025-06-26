@@ -39,6 +39,7 @@ public partial class Poem : Control {
 
 		World.LoadTime = Stopwatch.StartNew();
 
+		/*
 		if ( SettingsData.GetNetworkingEnabled() ) {
 			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
 
@@ -56,6 +57,9 @@ public partial class Poem : Control {
 		} else {
 			GameConfiguration.GameMode = GameMode.SinglePlayer;
 		}
+		*/
+
+		GameConfiguration.GameMode = GameMode.SinglePlayer;
 
 		Console.PrintLine( "Loading game..." );
 

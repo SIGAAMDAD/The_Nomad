@@ -139,51 +139,19 @@ public partial class MainMenu : Control {
 	}
 	*/
 
-	private void OnStoryModeButtonPressed() {
+	private void OnButtonPressed( System.Action signalCallback ) {
 		if ( Loaded ) {
 			return;
 		}
 		UIAudioManager.OnButtonPressed();
-		EmitSignalStoryMenu();
+		signalCallback();
 	}
-	private void OnSettingsButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		UIAudioManager.OnButtonPressed();
-		EmitSignalSettingsMenu();
-	}
-	private void OnModsButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		UIAudioManager.OnButtonPressed();
-		EmitSignalModsMenu();
-	}
-	private void OnExtrasButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		UIAudioManager.OnButtonPressed();
-		EmitSignalExtrasMenu();
-	}
-	private void OnCreditsButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		UIAudioManager.OnButtonPressed();
-		EmitSignalCreditsMenu();
-	}
-	private void OnQuitGameButtonPressed() {
-		if ( Loaded ) {
-			return;
-		}
-		UIAudioManager.OnButtonPressed();
-		GetTree().Quit();
-	}
-
 	private void OnButtonFocused( int nButtonIndex ) {
 		UIAudioManager.OnButtonFocused();
+
+		if ( ButtonIndex != nButtonIndex ) {
+			OnButtonUnfocused( ButtonIndex );
+		}
 
 		ButtonIndex = nButtonIndex;
 		ButtonList[ ButtonIndex ].Modulate = Selected;
@@ -202,6 +170,7 @@ public partial class MainMenu : Control {
 		}
 
 		UIAudioManager.PlayTheme();
+		Loaded = false;
 
 		MultiplayerMapManager.Init();
 		ArchiveSystem.Instance.CheckSaveData();
@@ -209,46 +178,46 @@ public partial class MainMenu : Control {
 		ProcessMode = ProcessModeEnum.Always;
 
 		Button StoryModeButton = GetNode<Button>( "VBoxContainer/StoryModeButton" );
-		StoryModeButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		StoryModeButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		StoryModeButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( 0 ); } ) );
-		StoryModeButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( 0 ); } ) );
-		StoryModeButton.Connect( "pressed", Callable.From( OnStoryModeButtonPressed ) );
+		StoryModeButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( 0 ) ) );
+		StoryModeButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( 0 ) ) );
+		StoryModeButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( 0 ) ) );
+		StoryModeButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( 0 ) ) );
+		StoryModeButton.Connect( "pressed", Callable.From( () => OnButtonPressed( EmitSignalStoryMenu ) ) );
 
 		Button ExtrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
-		ExtrasButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
-		ExtrasButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Extras ); } ) );
-		ExtrasButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Extras ); } ) );
-		ExtrasButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Extras ); } ) );
-		ExtrasButton.Connect( "pressed", Callable.From( OnExtrasButtonPressed ) );
+		ExtrasButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
+		ExtrasButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Extras ) ) );
+		ExtrasButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
+		ExtrasButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Extras ) ) );
+		ExtrasButton.Connect( "pressed", Callable.From( () => OnButtonPressed( EmitSignalExtrasMenu ) ) );
 
 		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
-		SettingsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
-		SettingsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Settings ); } ) );
-		SettingsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Settings ); } ) );
-		SettingsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Settings ); } ) );
-		SettingsButton.Connect( "pressed", Callable.From( OnSettingsButtonPressed ) );
+		SettingsButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
+		SettingsButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Settings ) ) );
+		SettingsButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
+		SettingsButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Settings ) ) );
+		SettingsButton.Connect( "pressed", Callable.From( () => OnButtonPressed( EmitSignalSettingsMenu ) ) );
 
 		Button ModsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
-		ModsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
-		ModsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
-		ModsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Mods ); } ) );
-		ModsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Mods ); } ) );
-		ModsButton.Connect( "pressed", Callable.From( OnModsButtonPressed ) );
+		ModsButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
+		ModsButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Mods ) ) );
+		ModsButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
+		ModsButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Mods ) ) );
+		ModsButton.Connect( "pressed", Callable.From( () => OnButtonPressed( EmitSignalModsMenu ) ) );
 
 		Button CreditsButton = GetNode<Button>( "VBoxContainer/CreditsButton" );
-		CreditsButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Credits ); } ) );
-		CreditsButton.Connect( "pressed", Callable.From( OnCreditsButtonPressed ) );
+		CreditsButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
+		CreditsButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Credits ) ) );
+		CreditsButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
+		CreditsButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Credits ) ) );
+		CreditsButton.Connect( "pressed", Callable.From( () => OnButtonPressed( EmitSignalCreditsMenu ) ) );
 
 		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
-		ExitButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
-		ExitButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Quit ); } ) );
-		ExitButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( (int)IndexedButton.Quit ); } ) );
-		ExitButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( (int)IndexedButton.Quit ); } ) );
-		ExitButton.Connect( "pressed", Callable.From( OnQuitGameButtonPressed ) );
+		ExitButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
+		ExitButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Quit ) ) );
+		ExitButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
+		ExitButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( (int)IndexedButton.Quit ) ) );
+		ExitButton.Connect( "pressed", Callable.From( () => OnButtonPressed( () => GetTree().Quit() ) ) );
 
 		Label AppVersion = GetNode<Label>( "AppVersion" );
 		AppVersion.Text = "App Version " + (string)ProjectSettings.GetSetting( "application/config/version" );
@@ -262,6 +231,8 @@ public partial class MainMenu : Control {
 			CreditsButton,
 			ExitButton
 		];
+
+		StoryModeButton.Modulate = Selected;
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );

@@ -1,81 +1,76 @@
 class_name CheckpointInteractor extends MarginContainer
 
-class WarpPoint extends HBoxContainer:
-	var _icon: TextureRect
-	var _confirm_button: Button
-	var _biome_label: Label
-	
-	func _ready() -> void:
-		_icon = get_node( "Icon" )
-		_confirm_button = get_node( "ConfirmButton" )
-		_biome_label = get_node( "BiomeLabel" )
-
-const _rage_used_on_warp = 20.0
-
 var _owner: CharacterBody2D
-var _current_checkpoint: Area2D
+var _active_callback: Callable
 
+@onready var _activate_button: Button = $VBoxContainer/MarginContainer/InactiveContainer/ActivateButton
 @onready var _checkpoint_name_label: Label = $VBoxContainer/CheckpointNameLabel
-
-@onready var _warp_locations_scroll: VScrollBar = $VBoxContainer/MarginContainer/WarpLocations
-@onready var _warp_locations_container: VBoxContainer = $VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer
-@onready var _warp_cloner: HBoxContainer = $VBoxContainer/MarginContainer/WarpLocations/WarpLocationsContainer/Cloner
+@onready var _main_interactor: VBoxContainer = $VBoxContainer
 
 @onready var _inactive_container: VBoxContainer = $VBoxContainer/MarginContainer/InactiveContainer
 @onready var _checkpoint_maincontainer: VBoxContainer = $VBoxContainer/MarginContainer/MainContainer
 @onready var _resting_container: VBoxContainer = $VBoxContainer/MarginContainer/RestingContainer
 
-func _on_activate_button_pressed() -> void:
-	pass
+@onready var _warp_container: MarginContainer = $"../WarpContainer"
+
+func _on_activate_button_pressed( checkpoint: Area2D ) -> void:
+	UiAudioManager.OnButtonPressed()
+	
+	checkpoint.Activate()
+	get_parent().ShowAnnouncment( "ACQUIRED_MEMORY" )
+	
+	_inactive_container.hide()
+	_checkpoint_maincontainer.show()
 
 func _on_leave_button_pressed() -> void:
+	UiAudioManager.OnButtonPressed()
+	
 	hide()
 	
 	_owner.LeaveCampfire()
 	
 	_checkpoint_maincontainer.show()
-	_warp_locations_container.hide()
+	_warp_container.hide()
 	_resting_container.hide()
 
-func _on_warp_to_checkpoint( warpPoint: WarpPoint ) -> void:
-	pass
-#	if _owner.GetRage() - _rage_used_on_warp < 0.0:
-#		HeadsUpDisplay.start_thought_bubble(  )
-
-func load_warp_points() -> void:
-	var checkpoints: Array[Node] = get_tree().get_nodes_in_group( "Checkpoints" )
-	for i: int in range( 0, checkpoints.size() ):
-		if !checkpoints[ i ].GetActivated():
-			continue
-		
-		var _warp_point: WarpPoint = _warp_cloner.duplicate() as HBoxContainer
-		_warp_locations_container.add_child( _warp_point )
-		_warp_point._confirm_button.text = checkpoints[ i ].GetTitle()
-		_warp_point._confirm_button.connect( "pressed", func(): _on_warp_to_checkpoint( _warp_point ) )
-		_warp_point._biome_label.text = checkpoints[ i ].GetLocation().GetBiome().GetAreaName()
-		_warp_point.set_meta( "Checkpoint", checkpoints[ i ] )
-		_warp_point.show()
-
 func _on_open_storage_button_pressed() -> void:
-	pass
+	UiAudioManager.OnButtonPressed()
+	
+	hide()
+	$"../StorageContainer".show()
+
+func _on_rest_here_button_pressed() -> void:
+	UiAudioManager.OnButtonPressed()
+	
+	_owner.SetHealth( 100.0 )
+	_owner.SetRage( 100.0 )
+	_owner.RestAtCampfire()
+	
+	_checkpoint_maincontainer.hide()
+	_resting_container.show()
+	
+	ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() )
 
 func _on_warp_button_pressed() -> void:
+	UiAudioManager.OnButtonPressed()
+	
 	_checkpoint_maincontainer.hide()
 	_resting_container.hide()
 	
-	for i: int in range( 1, _warp_locations_container.get_child_count() ):
-		_warp_locations_container.call_deferred( "remove_child", _warp_locations_container.get_child( i ) )
-		_warp_locations_container.get_child( i ).call_deferred( "queue_free" )
-	
-	call_deferred( "load_warp_points" )
-	
-	_warp_locations_scroll.call_deferred( "show" )
+	_warp_container.show()
+	hide()
 
 func BeginInteraction( item: Area2D ) -> void:
-	_current_checkpoint = item
+	var _current_checkpoint: Area2D = item
 	if _current_checkpoint == null:
 		Console.PrintError( "CheckpointInteractor.BeginInteraction: invalid checkpoint!" )
 		return
+	
+	if _active_callback:
+		_activate_button.disconnect( "pressed", _active_callback )
+	
+	_active_callback = func(): _on_activate_button_pressed( _current_checkpoint )
+	_activate_button.connect( "pressed", _active_callback )
 	
 	_checkpoint_name_label.text = _current_checkpoint.GetTitle()
 	if _current_checkpoint.GetActivated():
@@ -87,3 +82,8 @@ func BeginInteraction( item: Area2D ) -> void:
 
 func EndInteraction() -> void:
 	pass
+
+func _ready() -> void:
+	_owner = get_parent()._owner
+	
+	_main_interactor.connect( "visibility_changed", func(): get_node( "../StorageContainer" ).visible = !_main_interactor.visible )

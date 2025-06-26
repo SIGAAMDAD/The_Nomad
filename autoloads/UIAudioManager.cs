@@ -1,5 +1,4 @@
 using Godot;
-using Steamworks;
 
 public partial class UIAudioManager : Node {
 	private static AudioStreamPlayer UISfxStream;
@@ -63,7 +62,9 @@ public partial class UIAudioManager : Node {
 	public static void PlayTheme() {
 		UIMusicStream.VolumeDb = SettingsData.GetMusicVolumeLinear();
 		UIMusicStream.Stream = IntroTheme;
-		UIMusicStream.Connect( "finished", Callable.From( OnMenuIntroThemeFinished ) );
+		if ( !UIMusicStream.IsConnected( "finished", Callable.From( OnMenuIntroThemeFinished ) ) ) {
+			UIMusicStream.Connect( "finished", Callable.From( OnMenuIntroThemeFinished ) );
+		}
 		UIMusicStream.Play();
 	}
 	private static void OnAudioFadeFinished() {

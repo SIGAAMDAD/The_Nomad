@@ -16,7 +16,7 @@ var _fadein_tween: Tween
 
 @onready var _emote_menu: Control = $MainHUD/EmoteMenu
 
-@onready var _announcment_container: MarginContainer = $MainHUD/AnnouncementLabel
+@onready var _announcement_container: MarginContainer = $MainHUD/AnnouncementLabel
 @onready var _announcement_background: TextureRect = $MainHUD/AnnouncementLabel/TextureRect
 @onready var _announcement_text: Label = $MainHUD/AnnouncementLabel/TextureRect/Label
 @onready var _announcement_timer: Timer = $MainHUD/AnnouncementLabel/Timer
@@ -207,8 +207,8 @@ func _on_weapon_status_updated( source: Node, properties: int ) -> void:
 		_weapon_mode_firearm.hide()
 
 func _on_announcement_timer_timeout() -> void:
-	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.0, 2.5 )
-	create_tween().tween_property( _announcement_text, "modulate", _hidden_color, 2.5 )
+	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.0, 1.0 )
+	create_tween().tween_property( _announcement_text, "modulate", _hidden_color, 1.0 )
 
 func _fade_ui_element( element: Control, duration: float, timer: Timer ) -> void:
 	create_tween().tween_property( element, "modulate", _hidden_color, duration )
@@ -363,17 +363,17 @@ func HideInteraction() -> void:
 	Input.set_custom_mouse_cursor( load( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CURSOR_ARROW )
 
 func ShowAnnouncment( text: String ) -> void:
-	_announcment_container.show()
+	_announcement_container.show()
 	
 	_announcement_timer.start()
 	
-	_announcement_background.materal.set( "shader_parameter/alpha", 0.0 )
+	_announcement_background.material.set( "shader_parameter/alpha", 0.0 )
 	_announcement_text.text = text
 	
 	_announcement_timer.start()
 	
-	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.90, 2.5 )
-	create_tween().tween_property( _announcement_text, "modulate", 1.0, 2.5 )
+	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.90, 0.90 )
+	create_tween().tween_property( _announcement_text, "modulate", Color( 1.0, 1.0, 1.0, 1.0 ), 0.90 )
 
 func IsNotebookOpen() -> bool:
 	return _notebook.visible

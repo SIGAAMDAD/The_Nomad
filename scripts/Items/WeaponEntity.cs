@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using Castle.Core.Logging;
 using Godot;
+using Newtonsoft.Json.Serialization;
+using PlayerSystem;
 using Renown;
 
 public enum AmmoType : uint {
@@ -128,8 +131,6 @@ public partial class WeaponEntity : Node2D {
 	private float AttackAngle = 0.0f;
 	private float LastWeaponAngle = 0.0f;
 
-	public NodePath InitialPath;
-
 	private AnimatedSprite2D Animations;
 	private Timer WeaponTimer;
 	public Entity _Owner;
@@ -206,7 +207,6 @@ public partial class WeaponEntity : Node2D {
 		UsedItemPickup pickup = ResourceCache.GetScene( "res://scenes/interactables/used_item_pickup.tscn" ).Instantiate<UsedItemPickup>();
 
 		pickup.Entity = this;
-		ItemNodeCache.AddNode( pickup );
 
 		// unlink from the owner
 		Reserve = null;
@@ -421,25 +421,22 @@ public partial class WeaponEntity : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
-		if ( IsInsideTree() ) {
-			InitialPath = GetPath();
-		}
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
-			Load();
-		}
-
 		if ( !IsInGroup( "Archive" ) ) {
 			AddToGroup( "Archive" );
 		}
 
-		if ( Data == null ) {
+		if ( !ArchiveSystem.Instance.IsLoaded() && Data == null ) {
 			Console.PrintError( "Cannot initialize WeaponEntity without a valid ItemDefinition (null)" );
+			QueueFree();
+			return;
+		}
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			return;
 		}
 
 		Icon = (Texture2D)Data.Get( "icon" );
 
-		if ( _Owner != null ) {
+		if ( _Owner != null && Data != null ) {
 			InitProperties();
 			return;
 		}
@@ -469,46 +466,47 @@ public partial class WeaponEntity : Node2D {
 		}
 	}
 
-	public void Save( SaveSystem.SaveSectionWriter cacheWriter = null, int index = 0 ) {
-		if ( cacheWriter != null ) {
-			cacheWriter.SaveFloat( string.Format( "WeaponDirtiness{0}", index ), Dirtiness );
-			cacheWriter.SaveString( string.Format( "WeaponId{0}", index ), (string)Data.Get( "id" ) );
-			cacheWriter.SaveInt( string.Format( "WeaponBulletsLeft{0}", index ), BulletsLeft );
+	public void Save() {
+		using var writer = new SaveSystem.SaveSectionWriter( GetPath() );
 
-			return;
+		writer.SaveString( "Id", (string)Data.Get( "id" ) );
+		writer.SaveBool( "HasAmmo", Ammo != null );
+		if ( Ammo != null ) {
+			writer.SaveString( "Ammo", Ammo.GetPath() );
 		}
-		using ( var writer = new SaveSystem.SaveSectionWriter( InitialPath ) ) {
-			writer.SaveFloat( "Dirtiness", Dirtiness );
-			writer.SaveBool( "HasOwner", _Owner != null );
-			if ( _Owner != null ) {
-				writer.SaveString( "Owner", _Owner.GetPath() );
+
+		if ( _Owner is Player player && player != null ) {
+			bool equipped = false;
+			for ( int i = 0; i < Player.MAX_WEAPON_SLOTS; i++ ) {
+				if ( this == player.WeaponSlots[ i ].GetWeapon() ) {
+					writer.SaveInt( "Slot", i );
+					equipped = true;
+					break;
+				}
 			}
+			writer.SaveBool( "Equipped", equipped );
 		}
+		writer.SaveInt( "BulletsLeft", BulletsLeft );
 	}
-	public void Load( SaveSystem.SaveSectionReader cacheReader = null, int index = 0 ) {
-		if ( cacheReader != null ) {
-			Dirtiness = cacheReader.LoadFloat( string.Format( "WeaponDirtiness{0}", index ) );
-			Data = (Resource)ResourceCache.ItemDatabase.Call( "get_item", cacheReader.LoadString( string.Format( "WeaponId{0}", index ) ) );
-			BulletsLeft = cacheReader.LoadInt( string.Format( "WeaponBulletsLeft{0}", index ) );
+	public void Load( NodePath path ) {
+		using var reader = ArchiveSystem.GetSection( path );
 
-			return;
+		CallDeferred( "SetData", reader.LoadString( "Id" ) );
+		CallDeferred( "InitProperties" );
+		if ( _Owner is Player player && player != null ) {
+			int slot = WeaponSlot.INVALID;
+			if ( reader.LoadBoolean( "Equipped" ) ) {
+				slot = reader.LoadInt( "Slot" );
+			}
+			string ammo = null;
+			if ( reader.LoadBoolean( "HasAmmo" ) ) {
+				ammo = reader.LoadString( "Ammo" );
+			}
+			player.LoadWeapon( this, ammo, slot );
 		}
 
-		using ( var reader = ArchiveSystem.GetSection( InitialPath ) ) {
-			if ( reader == null ) {
-				return;
-			}
-			Dirtiness = reader.LoadFloat( "Dirtiness" );
-			if ( reader.LoadBoolean( "HasOwner" ) ) {
-				CharacterBody2D owner = GetTree().Root.GetNode<CharacterBody2D>( reader.LoadString( "Owner" ) );
-				CallDeferred( "OnBodyShapeEntered", owner.GetRid(), owner, 0, 0 );
-			}
-		}
-	}
-
-	public void OwnerLoad( int bulletCount ) {
+		int nBulletCount = reader.LoadInt( "BulletsLeft" );
 		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
-			int nBulletCount = bulletCount ;
 			if ( nBulletCount == 0 ) {
 				CurrentState = WeaponState.Reload;
 			} else {
@@ -518,6 +516,9 @@ public partial class WeaponEntity : Node2D {
 		} else {
 			CurrentState = WeaponEntity.WeaponState.Idle;
 		}
+	}
+	private void SetData( string id ) {
+		Data = (Resource)ResourceCache.ItemDatabase.Call( "get_item", id );
 	}
 
 	private float UseBladed() {

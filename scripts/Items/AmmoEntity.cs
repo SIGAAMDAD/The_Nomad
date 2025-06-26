@@ -50,14 +50,59 @@ public partial class AmmoEntity : Node2D {
 	public ShotgunBullshit GetShotgunBullshit() => ShotFlags;
 	public float GetDamageFalloff( float distance ) => DamageFalloff.SampleBaked( distance );
 
-	public void Load( SaveSystem.SaveSectionReader reader, int index ) {
+	public void Save() {
+		using var writer = new SaveSystem.SaveSectionWriter( GetPath() );
+
+		GD.Print( "Saving ammo data to " + GetPath() );
+
+		writer.SaveString( "Id", (string)Data.Get( "id" ) );
+		writer.SaveFloat( "Damage", Damage );
+		writer.SaveFloat( "Range", Range );
+		writer.SaveFloat( "Velocity", Velocity );
+		writer.SaveUInt( "Type", (uint)AmmoType );
+		writer.SaveUInt( "Flags", (uint)Flags );
+		writer.SaveInt( "PelletCount", PelletCount );
+		writer.SaveUInt( "ShotgunBullshit", (uint)ShotFlags );
 	}
-	public override void _Ready() {
+	public void Load( NodePath path ) {
+		using var reader = ArchiveSystem.GetSection( path );
+
+		GD.Print( "Loading ammo data from " + path );
+
+		CallDeferred( "SetData", reader.LoadString( "Id" ) );
+		Damage = reader.LoadFloat( "Damage" );
+		Range = reader.LoadFloat( "Range" );
+		Velocity = reader.LoadFloat( "Velocity" );
+		AmmoType = (AmmoType)reader.LoadUInt( "Type" );
+		Flags = (ExtraEffects)reader.LoadUInt( "Flags" );
+		PelletCount = reader.LoadInt( "PelletCount" );
+		ShotFlags = (ShotgunBullshit)reader.LoadUInt( "ShotgunBullshit" );
+	}
+	private void SetData( string id ) {
+		Data = (Resource)ResourceCache.ItemDatabase.Call( "get_item", id );
 		if ( Data == null ) {
-			Console.PrintError( "Cannot initialize AmmoEntity without a valid ammo AmmoBase" );
+			Console.PrintError( "Cannot initialize AmmoEntity without a valid ItemDefinition (id = " + id + ")" );
 			QueueFree();
 			return;
 		}
+		DamageFalloff = (Curve)( (Godot.Collections.Dictionary)Data.Get( "properties" ) )[ "damage_falloff" ];
+	}
+
+	// for generic calls
+	public void Load() {
+	}
+
+	public override void _Ready() {
+		if ( !ArchiveSystem.Instance.IsLoaded() && Data == null ) {
+			Console.PrintError( "Cannot initialize AmmoEntity without a valid ItemDefinition" );
+			QueueFree();
+			return;
+		}
+
+		if ( ArchiveSystem.Instance.IsLoaded() ) {
+			return;
+		}
+		AddToGroup( "Archive" );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 

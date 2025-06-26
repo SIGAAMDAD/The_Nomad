@@ -142,10 +142,6 @@ public partial class LoadingScreen : CanvasLayer {
 		TipLabel.Show();
 
 		//	ProgressBar = GetNode<TextureRect>( "Tips/ProgressBar" );
-	
-	VisibilityChanged += () => {
-		GD.Print( "CHANGED" );
-	};
 
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );

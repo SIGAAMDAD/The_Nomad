@@ -1,12 +1,9 @@
 using Godot;
-using System.Diagnostics;
 
 public partial class PauseMenu : CanvasLayer {
 	private ConfirmationDialog ConfirmExitDlg;
 	private ConfirmationDialog ConfirmQuitDlg;
 	private ColorRect ConfirmDlgOverlay;
-
-	private PackedScene MainMenu;
 
 	private AudioStreamPlayer UIChannel;
 
@@ -54,13 +51,11 @@ public partial class PauseMenu : CanvasLayer {
 		{
 			EmitSignalLeaveLobby();
 		}
-		GetTree().ChangeSceneToPacked( MainMenu );
+		GetTree().ChangeSceneToFile( "res://scenes/main_menu.tscn" );
 	}
 
 	public override void _Ready() {
 		base._Ready();
-
-		MainMenu = ResourceLoader.Load<PackedScene>( "res://scenes/main_menu.tscn" );
 
 		ConfirmExitDlg = GetNode<ConfirmationDialog>( "ConfirmExit" );
 		ConfirmExitDlg.Connect( "confirmed", Callable.From( OnConfirmExitConfirmed ) );

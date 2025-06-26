@@ -541,9 +541,9 @@ public class ResourceCache {
 			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ i ] );
 		}
 
-		if ( GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {
-			GlobalEconomy.Init();
-		}
+//		if ( GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {
+//			GlobalEconomy.Init();
+//		}
 
 		world.CallDeferred( "emit_signal", "ResourcesLoadingFinished" );
 	}

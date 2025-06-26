@@ -86,10 +86,10 @@ public partial class Player : Entity {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
 	];
 
-	private static readonly float PunchRange = 40.0f;
-	private static readonly int MAX_WEAPON_SLOTS = 4;
-	private static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	private static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
+	public static readonly float PunchRange = 40.0f;
+	public static readonly int MAX_WEAPON_SLOTS = 4;
+	public static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+	public static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
 
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
@@ -197,8 +197,6 @@ public partial class Player : Entity {
 	private PointLight2D DashLight;
 
 	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
-
-	private Checkpoint CurrentCheckpoint;
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
@@ -381,6 +379,9 @@ public partial class Player : Entity {
 		DialogueManager.ShowDialogueBalloon( dialogueResource, key );
 		DialogueCallback = callback;
 	}
+	public void ThoughtBubble( string text ) {
+		StartThoughtBubble( text );
+	}
 
 	private void OnDialogueEnded( Resource dialogueResource ) {
 	}
@@ -418,13 +419,6 @@ public partial class Player : Entity {
 
 	#region Load & Save
 	public override void Save() {
-		using ( var writer = new SaveSystem.SaveSectionWriter( "SaveState" ) ) {
-			writer.SaveString( "Location", Location.GetAreaName() );
-			writer.SaveUInt( "TimeYear", WorldTimeManager.Year );
-			writer.SaveUInt( "TimeMonth", WorldTimeManager.Month );
-			writer.SaveUInt( "TimeDay", WorldTimeManager.Day );
-		}
-
 		using ( var writer = new SaveSystem.SaveSectionWriter( "Player" ) ) {
 			int stackIndex;
 
@@ -442,36 +436,16 @@ public partial class Player : Entity {
 			writer.SaveInt( "AmmoStacksCount", AmmoStacks.Count );
 			stackIndex = 0;
 			foreach ( var stack in AmmoStacks ) {
-				// TODO: FIXME!
-				writer.SaveInt( string.Format( "AmmoStacksAmount{0}", stackIndex ), stack.Value.Amount );
-				writer.SaveString( string.Format( "AmmoStacksType{0}", stackIndex ), (string)stack.Value.AmmoType.Data.Get( "id" ) );
+				writer.SaveInt( string.Format( "AmmoStackAmount{0}", stackIndex ), stack.Value.Amount );
+				writer.SaveString( string.Format( "AmmoStackNode{0}", stackIndex ), (string)stack.Value.AmmoType.GetPath() );
 				stackIndex++;
 			}
 
 			writer.SaveInt( "WeaponStacksCount", WeaponsStack.Count );
 			stackIndex = 0;
 			foreach ( var stack in WeaponsStack ) {
-				writer.SaveString( string.Format( "WeaponStacksPath{0}", stackIndex ), (string)stack.Value.InitialPath );
-				if ( ( stack.Value.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-					writer.SaveInt( string.Format( "WeaponStacksBulletCount{0}", stackIndex ), stack.Value.BulletsLeft );
-				}
+				writer.SaveString( string.Format( "WeaponStackNode{0}", stackIndex ), stack.Value.GetPath() );
 				stackIndex++;
-			}
-
-			writer.SaveInt( "MaxWeaponSlots", MAX_WEAPON_SLOTS );
-			for ( int i = 0; i < WeaponSlots.Length; i++ ) {
-				writer.SaveBool( string.Format( "WeaponSlotUsed{0}", i ), WeaponSlots[ i ].IsUsed() );
-				if ( WeaponSlots[ i ].IsUsed() ) {
-					NodePath weaponId = "";
-					foreach ( var stack in WeaponsStack ) {
-						if ( stack.Value == WeaponSlots[ i ].GetWeapon() ) {
-							weaponId = stack.Value.InitialPath;
-							break;
-						}
-					}
-					writer.SaveString( string.Format( "WeaponSlotHash{0}", i ), weaponId );
-					writer.SaveUInt( string.Format( "WeaponSlotMode{0}", i ), (uint)WeaponSlots[ i ].GetMode() );
-				}
 			}
 
 			writer.SaveInt( "ConsumableStacksCount", ConsumableStacks.Count );
@@ -484,7 +458,7 @@ public partial class Player : Entity {
 		}
 	}
 	public override void Load() {
-		SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
+		using SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
 		Health = reader.LoadFloat( "Health" );
 		Rage = reader.LoadFloat( "Rage" );
@@ -504,32 +478,30 @@ public partial class Player : Entity {
 		case Hands.Both:
 			LastUsedArm = ArmRight;
 			break;
-		}
-		;
+		};
 
 		AmmoStacks.Clear();
 		int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
 		for ( int i = 0; i < numAmmoStacks; i++ ) {
 			AmmoStack stack = new AmmoStack();
-			stack.Amount = reader.LoadInt( string.Format( "AmmoStacksAmount{0}", i ) );
-			string id = reader.LoadString( string.Format( "AmmoStacksType{0}", i ) );
+			stack.Amount = reader.LoadInt( string.Format( "AmmoStackAmount{0}", i ) );
 			stack.AmmoType = new AmmoEntity();
-			stack.AmmoType.Data = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
-			AmmoStacks.Add( id.GetHashCode(), stack );
-			CallDeferred( "add_child", stack.AmmoType );
+
+			string path = reader.LoadString( string.Format( "AmmoStackNode{0}", i ) );
+			stack.AmmoType.Load( path );
+			AddChild( stack.AmmoType );
+
+			AmmoStacks.Add( path.GetHashCode(), stack );
 		}
 
 		WeaponsStack.Clear();
 		int numWeapons = reader.LoadInt( "WeaponStacksCount" );
 		for ( int i = 0; i < numWeapons; i++ ) {
-			CallDeferred( "LoadWeapon", reader.LoadString( string.Format( "WeaponStacksPath{0}", i ) ), reader.LoadInt( string.Format( "WeaponStacksBulletCount{0}", i ) ) );
-		}
-
-		int maxSlots = reader.LoadInt( "MaxWeaponSlots" );
-		for ( int i = 0; i < maxSlots; i++ ) {
-			if ( reader.LoadBoolean( string.Format( "WeaponSlotUsed{0}", i ) ) ) {
-				CallDeferred( "InitWeaponSlot", i, reader.LoadString( string.Format( "WeaponSlotHash{0}", i ) ), reader.LoadUInt( string.Format( "WeaponSlotMode{0}", i ) ) );
-			}
+			WeaponEntity weapon = new WeaponEntity();
+			weapon._Owner = this;
+			weapon.Load( reader.LoadString( string.Format( "WeaponStackNode{0}", i ) ) );
+			AddChild( weapon );
+			WeaponsStack.Add( weapon.GetPath().GetHashCode(), weapon );
 		}
 
 		ConsumableStacks.Clear();
@@ -542,7 +514,9 @@ public partial class Player : Entity {
 			ConsumableStacks.Add( id.GetHashCode(), stack );
 		}
 
-		CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
+		if ( CurrentWeapon != WeaponSlot.INVALID ) {
+			CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
+		}
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -550,36 +524,31 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public TileMapFloor GetTileMapFloor() => Floor;
 
-	public static void ThoughtBubble( string text ) {
-		Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
-		DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
-	}
+	public Checkpoint GetCurrentCheckpoint() => LastCheckpoint;
 
-	private void InitWeaponSlot( int nSlot, NodePath path, uint mode ) {
-		WeaponEntity weapon = WeaponsStack[ path.GetHashCode() ];
-		weapon.SetEquippedState( true );
-		WeaponSlots[ nSlot ].SetWeapon( weapon );
-		WeaponSlots[ nSlot ].SetMode( (WeaponEntity.Properties)mode );
-	}
-	private void LoadWeapon( NodePath nodePath, int bulletCount ) {
-		WeaponEntity weapon = GetNode<WeaponEntity>( nodePath );
-
+	public void LoadWeapon( WeaponEntity weapon, string ammo, int slot ) {
 		weapon._Owner = this;
 		weapon.OverrideRayCast( AimRayCast );
 
-		weapon.OwnerLoad( bulletCount );
-
-		AmmoStack stack = null;
-		foreach ( var it in AmmoStacks ) {
-			if ( (int)( (Godot.Collections.Dictionary)it.Value.AmmoType.Data.Get( "properties" ) )[ "type" ] ==
-				(int)weapon.Ammunition ) {
-				stack = it.Value;
-				break;
-			}
+		if ( slot != WeaponSlot.INVALID ) {
+			weapon.SetEquippedState( true );
+			WeaponSlots[ slot ].SetWeapon( weapon );
 		}
-		if ( stack != null ) {
-			weapon.SetReserve( stack );
-			weapon.SetAmmo( stack.AmmoType );
+
+		if ( ammo != null ) {
+			AmmoStack stack = null;
+			foreach ( var it in AmmoStacks ) {
+				if ( it.Key == ammo.GetHashCode() ) {
+					stack = it.Value;
+					break;
+				}
+			}
+			if ( stack != null ) {
+				weapon.CallDeferred( "SetReserve", stack );
+				weapon.CallDeferred( "SetAmmo", stack.AmmoType );
+			} else {
+				// TODO: error
+			}
 		}
 	}
 	#endregion
@@ -1066,12 +1035,7 @@ public partial class Player : Entity {
 		IdleAnimation.Show();
 		IdleAnimation.Play( "checkpoint_idle" );
 
-		Vector2 direction = GlobalPosition.DirectionTo( CurrentCheckpoint.GlobalPosition );
-		if ( direction.X < 0.0f ) {
-			IdleAnimation.FlipH = true;
-		} else {
-			IdleAnimation.FlipH = false;
-		}
+		IdleAnimation.FlipH = GlobalPosition.DirectionTo( LastCheckpoint.GlobalPosition ).X < 0.0f;
 
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnCheckpointRestBegin ) );
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Pausable;
@@ -1093,6 +1057,8 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.Resting;
 	}
 	public void LeaveCampfire() {
+		AimLine.Show();
+
 		CheckpointDrinkTimer.Stop();
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
 		IdleAnimation.Play( "checkpoint_exit" );
@@ -1105,6 +1071,8 @@ public partial class Player : Entity {
 		Debug.Assert( ( Flags & PlayerFlags.Resting ) == 0 );
 
 		IdleTimer.Stop();
+
+		AimLine.Hide();
 
 		// clean all the blood off us
 		BloodAmount = 0.0f;
@@ -1132,8 +1100,7 @@ public partial class Player : Entity {
 			Flags |= PlayerFlags.Checkpoint;
 			LastCheckpoint = item as Checkpoint;
 			break;
-		}
-		;
+		};
 	}
 
 	private void OnIdleAnimationTimerTimeout() {
@@ -1668,6 +1635,18 @@ public partial class Player : Entity {
 			CurrentMappingContext = ResourceCache.GamepadInputMappings;
 		}
 	}
+	public override void _ExitTree() {
+		base._ExitTree();
+		
+		GetNode( "/root/GUIDE" ).Call( "disable_mapping_context", CurrentMappingContext );
+	}
+
+	private void OnRespawnTransitionFinished() {
+		GetNode( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
+
+		GlobalPosition = LastCheckpoint.GlobalPosition;
+		BeginInteraction( LastCheckpoint );
+	}
 
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
@@ -1702,9 +1681,11 @@ public partial class Player : Entity {
 			return;
 		case GameMode.Multiplayer:
 			break;
-		}
-		;
+		};
 		if ( Health <= 0.0f ) {
+			GetNode( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
+			GetNode( "/root/TransitionScreen" ).Call( "transition" );
+
 			// dead
 			SetHealth( 100.0f );
 			SetRage( 0.0f );
@@ -2354,7 +2335,7 @@ public partial class Player : Entity {
 
 	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalWeaponStatusUpdated( source, useMode );
 
-	public void PickupAmmo( in AmmoEntity ammo, int nAmount = -1 ) {
+	public void PickupAmmo( AmmoEntity ammo, int nAmount = -1 ) {
 		AmmoStack stack = null;
 		bool found = false;
 
@@ -2370,7 +2351,7 @@ public partial class Player : Entity {
 		if ( !found ) {
 			stack = new AmmoStack();
 
-			int hashCode = ( (string)ammo.Data.Get( "id" ) ).GetHashCode();
+			int hashCode = ammo.GetPath().GetHashCode();
 			stack.SetType( ammo );
 			stack.SetMeta( "hash", hashCode );
 			AmmoStacks.Add( hashCode, stack );
@@ -2423,7 +2404,7 @@ public partial class Player : Entity {
 			CurrentWeapon = index;
 		}
 
-		int hashCode = weapon.GetHashCode();
+		int hashCode = weapon.GetPath().GetHashCode();
 		weapon.SetMeta( "hash", hashCode );
 		WeaponsStack.Add( hashCode, weapon );
 		TotalInventoryWeight += weapon.Weight;

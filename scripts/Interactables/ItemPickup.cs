@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class ItemPickup : InteractionItem {
 	[Export]
@@ -22,6 +21,7 @@ public partial class ItemPickup : InteractionItem {
 					WeaponEntity weapon = new WeaponEntity();
 					weapon.Name = "Weapon" + weapon;
 					weapon.Data = Data;
+					player.AddChild( weapon );
 					weapon.TriggerPickup( player );
 					done = true;
 					break;
@@ -29,7 +29,7 @@ public partial class ItemPickup : InteractionItem {
 					AmmoEntity ammo = new AmmoEntity();
 					ammo.Name = "Ammo" + ammo;
 					ammo.Data = Data;
-					ammo._Ready();
+					player.AddChild( ammo );
 					player.PickupAmmo( ammo, Amount );
 					done = true;
 					break;
@@ -52,6 +52,9 @@ public partial class ItemPickup : InteractionItem {
 			}
 			if ( !reader.LoadBoolean( "Used" ) ) {
 				CreateSprite();
+			} else {
+				RemoveFromGroup( "Archive" );
+				QueueFree();
 			}
 		}
 	}
@@ -72,13 +75,14 @@ public partial class ItemPickup : InteractionItem {
 	public override void _Ready() {
 		base._Ready();
 
+		AddToGroup( "Archive" );
+
+		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
 		} else {
 			CreateSprite();
 		}
-		AddToGroup( "Archive" );
-
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 	}
 };
