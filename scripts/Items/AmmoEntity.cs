@@ -99,10 +99,11 @@ public partial class AmmoEntity : Node2D {
 			return;
 		}
 
+		AddToGroup( "Archive" );
+
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			return;
 		}
-		AddToGroup( "Archive" );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 

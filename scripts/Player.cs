@@ -437,7 +437,7 @@ public partial class Player : Entity {
 			stackIndex = 0;
 			foreach ( var stack in AmmoStacks ) {
 				writer.SaveInt( string.Format( "AmmoStackAmount{0}", stackIndex ), stack.Value.Amount );
-				writer.SaveString( string.Format( "AmmoStackNode{0}", stackIndex ), (string)stack.Value.AmmoType.GetPath() );
+				writer.SaveString( string.Format( "AmmoStackNode{0}", stackIndex ), stack.Value.AmmoType.GetPath() );
 				stackIndex++;
 			}
 
