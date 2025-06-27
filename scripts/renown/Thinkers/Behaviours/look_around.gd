@@ -19,5 +19,5 @@ func tick( _delta: float, actor: Node, _blackboard: Blackboard ) -> BTStatus:
 	if actor.IsAlert() || actor.IsSuspicious():
 		return BTStatus.SUCCESS
 	
-	actor.call( "OnChangeInvestigationAngleTimerTimeout" )
+	actor.OnChangeInvestigationAngleTimerTimeout()
 	return BTStatus.RUNNING

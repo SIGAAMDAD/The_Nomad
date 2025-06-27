@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dtmpn24mt61j0"]
+[gd_scene load_steps=23 format=3 uid="uid://dtmpn24mt61j0"]
 
 [ext_resource type="Script" uid="uid://3wiih7l8o5gn" path="res://scripts/renown/Thinkers/Mercenary.cs" id="1_wewif"]
 [ext_resource type="SpriteFrames" uid="uid://dxkya6uuslw2n" path="res://resources/animations/mobs/mercenary_head_animations.tres" id="2_61sma"]
@@ -29,6 +29,11 @@ size = Vector2(11, 10)
 size = Vector2(22, 20)
 
 [sub_resource type="Resource" id="Resource_1xiam"]
+script = ExtResource("8_1xiam")
+content = {}
+metadata/_custom_type_script = "uid://csq05x4oq8uf3"
+
+[sub_resource type="Resource" id="Resource_gw2o5"]
 script = ExtResource("8_1xiam")
 content = {}
 metadata/_custom_type_script = "uid://csq05x4oq8uf3"
@@ -68,7 +73,7 @@ shape = SubResource("RectangleShape2D_yrnty")
 
 [node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("4_u1d28")
-animation = &"idle"
+animation = &"die_low"
 
 [node name="ArmAnimations" type="AnimatedSprite2D" parent="Animations"]
 sprite_frames = ExtResource("3_yrnty")
@@ -93,6 +98,7 @@ width = 6.0
 [node name="Behaviour" type="Node" parent="." node_paths=PackedStringArray("actor")]
 script = ExtResource("7_wk705")
 autostart = true
+process_type = 0
 actor = NodePath("..")
 blackboard = SubResource("Resource_1xiam")
 metadata/_custom_type_script = "uid://d11c6gwrjou0w"
@@ -135,6 +141,7 @@ script = ExtResource("9_okbbo")
 process_type = 0
 initial_state = NodePath("Idle")
 actor = NodePath("..")
+blackboard = SubResource("Resource_gw2o5")
 metadata/_custom_type_script = "uid://b0bqn8gtyevqu"
 
 [node name="Idle" type="Node" parent="AnimationStateMachine"]

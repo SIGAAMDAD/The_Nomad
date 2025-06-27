@@ -18,8 +18,6 @@ public partial class ActionTutorial : InteractionItem {
 
 		Player player = (Player)body;
 
-		Text.ParseBbcode( "Press " + AccessibilityManager.GetBindString( player.GetCurrentMappingContext(), Action ) + " to " + TutorialString );
-
 		Text.Show();
 		Background.Show();
 
@@ -46,6 +44,8 @@ public partial class ActionTutorial : InteractionItem {
 
 		Text = GetNode<RichTextLabel>( "RichTextLabel" );
 		Background = GetNode<TextureRect>( "TextureRect" );
+
+		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( "Press " + AccessibilityManager.GetBindString( Action ) + " to " + TutorialString );
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );

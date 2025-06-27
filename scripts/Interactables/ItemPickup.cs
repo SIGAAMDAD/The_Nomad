@@ -44,6 +44,10 @@ public partial class ItemPickup : InteractionItem {
 			}
 		}
 	}
+	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+		if ( body is Player player && player != null ) {
+		}
+	}
 
 	private void Load() {
 		using ( var reader = ArchiveSystem.GetSection( GetPath() ) ) {
@@ -78,6 +82,7 @@ public partial class ItemPickup : InteractionItem {
 		AddToGroup( "Archive" );
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();

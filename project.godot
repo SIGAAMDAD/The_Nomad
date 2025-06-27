@@ -70,6 +70,7 @@ NetworkingMonitor="*res://scenes/multiplayer/networking_monitor.tscn"
 acGlobalPool="*res://addons/anti-cheating/ac_node.gd"
 UiAudioManager="*res://autoloads/UIAudioManager.cs"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
+AccessibilityManager="*res://autoloads/AccessibilityManager.cs"
 
 [debug]
 

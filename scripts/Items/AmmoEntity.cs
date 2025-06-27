@@ -101,7 +101,7 @@ public partial class AmmoEntity : Node2D {
 
 		AddToGroup( "Archive" );
 
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
+		if ( ArchiveSystem.Instance.IsLoaded() && Data == null ) {
 			return;
 		}
 

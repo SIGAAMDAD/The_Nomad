@@ -288,16 +288,16 @@ public partial class SettingsData : Control {
 	}
 
 	private static void LoadAudioSettings( IDictionary<string, string> config ) {
-		EffectsOn = Convert.ToBoolean( config[ "Audio:SFXEnabled" ] );
+		EffectsOn = Convert.ToBoolean( config[ "Audio:SFXEnabled" ].ToInt() );
 		SetEffectsVolume( (float)Convert.ToDouble( config[ "Audio:SFXVolume" ] ) );
-		MusicOn = Convert.ToBoolean( config[ "Audio:MusicEnabled" ] );
+		MusicOn = Convert.ToBoolean( config[ "Audio:MusicEnabled" ].ToInt() );
 		SetMusicVolume( (float)Convert.ToDouble( config[ "Audio:MusicVolume" ] ) );
 	}
 	private static void SaveAudioSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Audio]" );
-		writer.WriteLine( string.Format( "SFXEnabled={0}", EffectsOn.ToString() ) );
+		writer.WriteLine( string.Format( "SFXEnabled={0}", Convert.ToInt32( EffectsOn ) ) );
 		writer.WriteLine( string.Format( "SFXVolume={0}", EffectsVolume ) );
-		writer.WriteLine( string.Format( "MusicEnabled={0}", MusicOn.ToString() ) );
+		writer.WriteLine( string.Format( "MusicEnabled={0}", Convert.ToInt32( MusicOn ) ) );
 		writer.WriteLine( string.Format( "MusicVolume={0}", MusicVolume ) );
 		writer.WriteLine();
 	}
@@ -362,9 +362,9 @@ public partial class SettingsData : Control {
 		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
 		AntiAliasing = (AntiAliasing)Convert.ToUInt32( config[ "Video:AntiAliasing" ] );
 		VSyncMode = (VSyncMode)Convert.ToUInt32( config[ "Video:VSync" ] );
-		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ] );
-		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ] );
-		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ] );
+		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ].ToInt() );
+		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ].ToInt() );
+		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ].ToInt() );
 
 		Instance.ApplyVideoSettings();
 	}
@@ -378,53 +378,53 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
 		writer.WriteLine( string.Format( "VSync={0}", (int)VSyncMode ) );
-		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToUInt32( BloomEnabled ) ) );
-		writer.WriteLine( string.Format( "ShowFPS={0}", Convert.ToUInt32( ShowFPS ) ) );
-		writer.WriteLine( string.Format( "ShowBlood={0}", Convert.ToUInt32( ShowBlood ) ) );
+		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToInt32( BloomEnabled ) ) );
+		writer.WriteLine( string.Format( "ShowFPS={0}", Convert.ToInt32( ShowFPS ) ) );
+		writer.WriteLine( string.Format( "ShowBlood={0}", Convert.ToInt32( ShowBlood ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
 		ColorblindMode = Convert.ToInt32( config[ "Accessibility:ColorblindMode" ] );
-		HapticStrength = (float)Convert.ToDouble( config[ "Accessibility:HapticStrength" ] );
-		HapticEnabled = Convert.ToBoolean( config[ "Accessibility:HapticEnabled" ] );
-		AutoAimEnabled = Convert.ToBoolean( config[ "Accessibility:AutoAimEnabled" ] );
-		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ] );
-		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ] );
-		EnableTutorials = Convert.ToBoolean( config[ "Accessibility:TutorialsEnabled" ] );
+		HapticStrength = Convert.ToSingle( config[ "Accessibility:HapticStrength" ] );
+		HapticEnabled = Convert.ToBoolean( config[ "Accessibility:HapticEnabled" ].ToInt() );
+		AutoAimEnabled = Convert.ToBoolean( config[ "Accessibility:AutoAimEnabled" ].ToInt() );
+		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ].ToInt() );
+		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ].ToInt() );
+		EnableTutorials = Convert.ToBoolean( config[ "Accessibility:TutorialsEnabled" ].ToInt() );
 	}
 	private static void SaveAccessibilitySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Accessibility]" );
 		writer.WriteLine( string.Format( "ColorblindMode={0}", ColorblindMode ) );
 		writer.WriteLine( string.Format( "HapticStrength={0}", HapticStrength ) );
-		writer.WriteLine( string.Format( "HapticEnabled={0}", HapticEnabled.ToString() ) );
-		writer.WriteLine( string.Format( "AutoAimEnabled={0}", AutoAimEnabled.ToString() ) );
-		writer.WriteLine( string.Format( "DyslexiaMode={0}", DyslexiaMode.ToString() ) );
-		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", QuicktimeAutocomplete.ToString() ) );
-		writer.WriteLine( string.Format( "TutorialsEnabled={0}", EnableTutorials ) );
+		writer.WriteLine( string.Format( "HapticEnabled={0}", Convert.ToInt32( HapticEnabled ) ) );
+		writer.WriteLine( string.Format( "AutoAimEnabled={0}", Convert.ToInt32( AutoAimEnabled ) ) );
+		writer.WriteLine( string.Format( "DyslexiaMode={0}", Convert.ToInt32( DyslexiaMode ) ) );
+		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", Convert.ToInt32( QuicktimeAutocomplete ) ) );
+		writer.WriteLine( string.Format( "TutorialsEnabled={0}", Convert.ToInt32( EnableTutorials ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadGameplaySettings( IDictionary<string, string> config ) {
-		EquipWeaponOnPickup = Convert.ToBoolean( config[ "Gameplay:EquipWeaponOnPickup" ] );
-		HellbreakerEnabled = Convert.ToBoolean( config[ "Gameplay:HellbreakerEnabled" ] );
-		HellbreakerRevanents = Convert.ToBoolean( config[ "Gameplay:HellbreakerRevanents" ] );
-		CleanAudio = Convert.ToBoolean( config[ "Gameplay:CleanAudio" ] );
+		EquipWeaponOnPickup = Convert.ToBoolean( config[ "Gameplay:EquipWeaponOnPickup" ].ToInt() );
+		HellbreakerEnabled = Convert.ToBoolean( config[ "Gameplay:HellbreakerEnabled" ].ToInt() );
+		HellbreakerRevanents = Convert.ToBoolean( config[ "Gameplay:HellbreakerRevanents" ].ToInt() );
+		CleanAudio = Convert.ToBoolean( config[ "Gameplay:CleanAudio" ].ToInt() );
 	}
 	private static void SaveGameplaySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Gameplay]" );
-		writer.WriteLine( string.Format( "EquipWeaponOnPickup={0}", EquipWeaponOnPickup.ToString() ) );
-		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", HellbreakerEnabled.ToString() ) );
-		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", HellbreakerRevanents.ToString() ) );
-		writer.WriteLine( string.Format( "CleanAudio={0}", CleanAudio.ToString() ) );
+		writer.WriteLine( string.Format( "EquipWeaponOnPickup={0}", Convert.ToInt32( EquipWeaponOnPickup ) ) );
+		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", Convert.ToInt32( HellbreakerEnabled ) ) );
+		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", Convert.ToInt32( HellbreakerRevanents ) ) );
+		writer.WriteLine( string.Format( "CleanAudio={0}", Convert.ToInt32( CleanAudio ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
-		EnableNetworking = Convert.ToBoolean( config[ "Networking:EnableNetworking" ] );
-		FriendsOnlyNetworking = Convert.ToBoolean( config[ "Networking:FriendsOnlyNetworking" ] );
+		EnableNetworking = Convert.ToBoolean( config[ "Networking:EnableNetworking" ].ToInt() );
+		FriendsOnlyNetworking = Convert.ToBoolean( config[ "Networking:FriendsOnlyNetworking" ].ToInt() );
 	}
 	private static void SaveNetworkingSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Networking]" );
-		writer.WriteLine( string.Format( "EnableNetworking={0}", EnableNetworking.ToString() ) );
-		writer.WriteLine( string.Format( "FriendsOnlyNetworking={0}", FriendsOnlyNetworking.ToString() ) );
+		writer.WriteLine( string.Format( "EnableNetworking={0}", Convert.ToInt32( EnableNetworking ) ) );
+		writer.WriteLine( string.Format( "FriendsOnlyNetworking={0}", Convert.ToInt32( FriendsOnlyNetworking ) ) );
 		writer.WriteLine();
 	}
 

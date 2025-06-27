@@ -332,6 +332,10 @@ public partial class Player : Entity {
 	public delegate void HandsStatusUpdatedEventHandler( Hands handsUsed );
 	[Signal]
 	public delegate void WeaponStatusUpdatedEventHandler( WeaponEntity source, WeaponEntity.Properties useMode );
+	[Signal]
+	public delegate void InputMappingContextChangedEventHandler();
+	[Signal]
+	public delegate void InteractionEventHandler();
 
 	//
 	// HUD related signals
@@ -1634,6 +1638,8 @@ public partial class Player : Entity {
 
 			CurrentMappingContext = ResourceCache.GamepadInputMappings;
 		}
+
+		EmitSignalInputMappingContextChanged();
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
@@ -1873,6 +1879,8 @@ public partial class Player : Entity {
 	public override void _Ready() {
 		base._Ready();
 
+		AccessibilityManager.LoadBinds();
+
 		DialogueManager.DialogueStarted += OnDialogueStarted;
 		DialogueManager.DialogueEnded += OnDialogueEnded;
 		DialogueManager.Mutated += OnMutated;
@@ -1955,8 +1963,6 @@ public partial class Player : Entity {
 		if ( !Renown.Constants.StartingQuestPath.IsEmpty && GetTree().CurrentScene.Name == "World" ) {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
-
-		ResourceCache.LoadBinds();
 
 		//
 		// initialize input context

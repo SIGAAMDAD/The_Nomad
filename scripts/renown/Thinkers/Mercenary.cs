@@ -101,9 +101,6 @@ namespace Renown.Thinkers {
 
 		private Line2D DetectionMeter;
 
-		public AnimatedSprite2D HeadAnimations;
-		public AnimatedSprite2D ArmAnimations;
-
 		// if we have fear, move slower
 		private float SpeedDegrade = 1.0f;
 
@@ -205,8 +202,6 @@ namespace Renown.Thinkers {
 			BloodParticleFactory.Create( Godot.Vector2.Zero, GlobalPosition );
 
 			if ( Health <= 0.0f ) {
-				AnimationStateMachine.CallDeferred( "fire_event", "die" );
-
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				SetDeferred( "collision_layer", 0 );
 				SetDeferred( "collision_mask", 0 );
@@ -226,9 +221,8 @@ namespace Renown.Thinkers {
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
-				if ( HitHead ) {
+				if ( !HitHead ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
-					BodyAnimations.Connect( "animation_finished", Callable.From( OnDeathAnimationFinished ) );
 				}
 				return;
 			}
@@ -394,7 +388,7 @@ namespace Renown.Thinkers {
 			float angle = RNJesus.FloatRange( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
-//			ChangeInvestigationAngleTimer.CallDeferred( "start" );
+			ChangeInvestigationAngleTimer.CallDeferred( "start" );
 		}
 		private void OnLoseInterestTimerTimeout() {
 			CurrentState = State.Investigating;
@@ -417,7 +411,6 @@ namespace Renown.Thinkers {
 			}
 			HitHead = true;
 			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
-//			BodyAnimations.Play( "die_high" );
 			Damage( source, Health );
 		}
 
@@ -507,9 +500,6 @@ namespace Renown.Thinkers {
 
 			StartPosition = GlobalPosition;
 			StartHealth = Health;
-
-			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
-			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 
 			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
@@ -628,8 +618,6 @@ namespace Renown.Thinkers {
 				Awareness = MobAwareness.Alert;
 				SightDetectionAmount = SightDetectionTime;
 			}
-
-			AnimationStateMachine.Call( "start" );
 		}
 
 		private void OnAimTimerTimeout() {
@@ -721,7 +709,6 @@ namespace Renown.Thinkers {
 			AttackMeter.Points[ 1 ].X = AttackMeterProgress;
 		}
 		protected override void Think() {
-			return;
 			if ( !Visible ) {
 				return;
 			}
@@ -734,7 +721,7 @@ namespace Renown.Thinkers {
 				}
 				if ( CanSeeTarget ) {
 					CurrentState = State.Attacking;
-//					ChangeInvestigationAngleTimer.Stop();
+					ChangeInvestigationAngleTimer.Stop();
 				} else {
 					//					CurrentState = State.Investigating;
 				}
@@ -751,23 +738,18 @@ namespace Renown.Thinkers {
 				}
 			}
 
-			switch ( CurrentState ) {
-			case State.Investigating:
-//				if ( ChangeInvestigationAngleTimer.IsStopped() ) {
-//					ChangeInvestigationAngleTimer.CallDeferred( "start" );
-//				}
+			if ( CurrentState == State.Investigating ) {
 				if ( LoseInterestTimer.IsStopped() ) {
 					LoseInterestTimer.CallDeferred( "start" );
 				}
 				if ( Target != null && CanSeeTarget ) {
 					CurrentState = State.Attacking;
 				}
-
 				if ( Fear > 80 && CanSeeTarget ) {
 					Bark( BarkType.Curse );
 				}
-				break;
-			case State.Attacking:
+
+			} else if ( CurrentState == State.Attacking ) {
 				Godot.Vector2 position1 = LastTargetPosition;
 				Godot.Vector2 position2 = GlobalPosition;
 
@@ -775,8 +757,7 @@ namespace Renown.Thinkers {
 					CallDeferred( "UpdateAttackMeter" );
 				}
 
-				if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 1024.0f ) {
-					//					Bark( BarkType.TargetRunning );
+				if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 528.0f ) {
 					Aiming = false;
 					CurrentState = State.Investigating;
 					AimTimer.CallDeferred( "stop" );
@@ -800,8 +781,15 @@ namespace Renown.Thinkers {
 						Aiming = true;
 					}
 				}
-				if ( Aiming && AimLine.GetCollider() is GodotObject collision && collision != null ) {
-					if ( collision is Entity entity && entity != null && entity.GetHealth() > 0.0f && entity.GetFaction() == Faction ) {
+				if (
+					Aiming &&
+					AimLine.GetCollider() is GodotObject collision && collision != null
+				) {
+					if (
+						collision is Entity entity && entity != null &&
+						entity.GetHealth() > 0.0f &&
+						entity.GetFaction() == Faction
+					) {
 						Bark( BarkType.OutOfTheWay );
 						SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
 
@@ -811,14 +799,12 @@ namespace Renown.Thinkers {
 						Aiming = false;
 					}
 				}
-				break;
-			case State.Guarding:
+
+			} else if ( CurrentState == State.Guarding ) {
 				if ( Awareness > MobAwareness.Relaxed ) {
 					CurrentState = State.Investigating;
 				}
-				break;
 			}
-			;
 		}
 
 		public void CheckSight() {

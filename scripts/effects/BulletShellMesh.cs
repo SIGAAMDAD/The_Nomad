@@ -72,7 +72,7 @@ public partial class BulletShellMesh : Node {
 		AudioStreamPlayer2D player = new AudioStreamPlayer2D();
 		player.Stream = stream;
 		player.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		player.Connect( "finished", Callable.From( () => { from.RemoveChild( player ); player.QueueFree(); } ) );
+		player.Connect( "finished", Callable.From( () => { from.CallDeferred( "remove_child", player ); player.CallDeferred( "queue_free" ); } ) );
 		from.AddChild( player );
 		player.Play();
 		Instance.RemoveChild( timer );

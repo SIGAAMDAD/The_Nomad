@@ -5,6 +5,7 @@ using Renown.World.Buildings;
 using System;
 using ChallengeMode;
 using DialogueManagerRuntime;
+using PlayerSystem.ArmAttachments;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -40,7 +41,7 @@ namespace Renown.Thinkers {
 
 		Count
 	};
-	
+
 	// most thinkers except for politicians will most likely never get the chance nor the funds
 	// to hire a personal mercenary
 	public partial class Thinker : Entity {
@@ -122,14 +123,8 @@ namespace Renown.Thinkers {
 
 		protected Node2D Animations;
 
-		public NavigationAgent2D NavAgent {
-			get;
-			private set;
-		}
-		public Godot.Vector2 LookDir {
-			get;
-			protected set;
-		} = Godot.Vector2.Zero;
+		public NavigationAgent2D NavAgent { get; private set; }
+		public Godot.Vector2 LookDir { get; protected set; } = Godot.Vector2.Zero;
 
 		protected NodePath InitialPath;
 
@@ -141,19 +136,10 @@ namespace Renown.Thinkers {
 		protected bool Initialized = false;
 
 		// memory
-		public bool TargetReached {
-			get;
-			protected set;
-		} = false;
+		public bool TargetReached { get; protected set; } = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		public float LookAngle {
-			get;
-			protected set;
-		}
-		public float AimAngle {
-			get;
-			protected set;
-		}
+		public float LookAngle { get; protected set; }
+		public float AimAngle { get; protected set;  }
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
@@ -161,10 +147,9 @@ namespace Renown.Thinkers {
 		// networking
 		protected NetworkSyncObject SyncObject = null;
 
-		public AnimatedSprite2D BodyAnimations {
-			get;
-			private set;
-		}
+		public AnimatedSprite2D BodyAnimations { get; protected set; }
+		public AnimatedSprite2D ArmAnimations { get; protected set; }
+		public AnimatedSprite2D HeadAnimations { get; protected set; }
 
 		protected AudioStreamPlayer2D AudioChannel;
 
@@ -212,8 +197,7 @@ namespace Renown.Thinkers {
 				break;
 			case RelationStatus.GoodFriends:
 				break;
-			}
-			;
+			};
 		}
 
 		public virtual void Alert( Entity source ) {
@@ -253,7 +237,7 @@ namespace Renown.Thinkers {
 
 			Visible = true;
 
-			if ( SettingsData.GetNetworkingEnabled() ) {
+			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
 			}
 
@@ -276,7 +260,7 @@ namespace Renown.Thinkers {
 
 			Visible = false;
 
-			if ( SettingsData.GetNetworkingEnabled() ) {
+			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.RemoveNetworkNode( GetPath() );
 			}
 
@@ -420,10 +404,6 @@ namespace Renown.Thinkers {
 			NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
 			Velocity = Godot.Vector2.Zero;
 			GotoPosition = GlobalPosition;
-
-			if ( Visible ) {
-				BodyAnimations.CallDeferred( "play", "idle" );
-			}
 		}
 
 		protected void SetAnimationsColor( Color color ) {
@@ -475,9 +455,20 @@ namespace Renown.Thinkers {
 			Die += OnDie;
 
 			Animations = GetNode<Node2D>( "Animations" );
-			BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
 
-			ProcessMode = ProcessModeEnum.Inherit;
+			BodyAnimations = GetNode<AnimatedSprite2D>( "Animations/BodyAnimations" );
+			BodyAnimations.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
+
+			if ( Animations.FindChild( "ArmAnimations" ) != null ) {
+				ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
+				ArmAnimations.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
+			}
+			if ( Animations.FindChild( "HeadAnimations" ) != null ) {
+				HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
+				HeadAnimations.ProcessThreadGroup = ProcessThreadGroupEnum.MainThread;
+			}
+
+			ProcessMode = ProcessModeEnum.Pausable;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
@@ -530,6 +521,8 @@ namespace Renown.Thinkers {
 			}
 
 			SetMeta( "Faction", Faction );
+
+			AnimationStateMachine.Call( "start" );
 		}
 		public override void _PhysicsProcess( double delta ) {
 			if ( Health <= 0.0f ) {
@@ -538,7 +531,7 @@ namespace Renown.Thinkers {
 
 			base._PhysicsProcess( delta );
 
-			//NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
+//			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
 				if ( Velocity == Godot.Vector2.Zero ) {
@@ -556,7 +549,6 @@ namespace Renown.Thinkers {
 			base._Process( delta );
 
 			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-			//			ProcessAnimations();
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
 				return;
@@ -602,21 +594,27 @@ namespace Renown.Thinkers {
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
-			//			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+
 			return true;
 		}
 		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
 			NavAgent.TargetPosition = target;
 			TargetReached = false;
 			GotoPosition = target;
+
 			AnimationStateMachine.Call( "fire_event", "start_moving" );
 		}
 		protected virtual void OnTargetReached() {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
 			TargetReached = true;
 			GotoPosition = GlobalPosition;
 			Velocity = Godot.Vector2.Zero;
-			AnimationStateMachine.Call( "fire_event", "stop_moving" );
 		}
 
 		public void GenerateRelations() {

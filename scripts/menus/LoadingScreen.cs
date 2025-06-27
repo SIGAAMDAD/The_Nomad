@@ -27,17 +27,13 @@ public partial class LoadingScreen : CanvasLayer {
 	private Label TipLabel;
 	private Control Background;
 	private Range Spinner;
-//	private TextureRect ProgressBar;
-//	private Tween ProgressTween;
-	private bool FadingOut = false;
 	private string PrevTip = "";
 	private Timer ImageChange;
-	private System.Random random = new System.Random();
 	private Stopwatch TimeLoading = new Stopwatch();
 
 	private readonly string[] Tips = [
-		"You can parry anything that's flashing green, including blades, bullets, etc.",
-		//		"Dashing into an enemy will send them flying",
+		"You can parry anything that's flashed green, including blades, bullets, etc.",
+		//		"Dashing into an enemy will send them flying", // not true unless we're using RigidBody2D instead of CharacterBody2D
 		"You can dodge almost anything by dashing, don't blow yourself up though...",
 		"Just parry the bullet dude!",
 		"Different enemies require different tactics. No more brainless shooting!",
@@ -55,7 +51,7 @@ public partial class LoadingScreen : CanvasLayer {
 		"This game won't baby you, so stop acting like a child",
 		"You can slice bullets in half, just make sure whatever's behind you can take the hit",
 		"You are literally too angry to die",
-		"Stop hiding behind cover like a little coward",
+		"Stop hiding behind cover like a little coward", // i would put "bitch" here, but I don't want issues
 		"Don't blame the game for your skill issue",
 		"Slamming into enemies will hurt them...",
 		"Fear the fighter, not the weapon",
@@ -66,12 +62,12 @@ public partial class LoadingScreen : CanvasLayer {
 	private void OnImageChangeTimeout() {
 		if ( TimeLoading.Elapsed.Seconds >= 15 ) {
 			// break the 4th wall if we've been sitting here
-			if ( random.Next( 0, 100 ) >= 60 ) {
+			if ( RNJesus.IntRange( 0, 100 ) >= 60 ) {
 				TipLabel.Text = "It's lonely in this loading screen, ain't it?";
 				return;
 			}
 		}
-		int tipIndex = random.Next( 0, Tips.Length - 1 );
+		int tipIndex = RNJesus.IntRange( 0, Tips.Length - 1 );
 		if ( Tips[ tipIndex ] == TipLabel.Text ) {
 			if ( tipIndex == Tips.Length - 1 ) {
 				tipIndex = 0;
@@ -93,7 +89,6 @@ public partial class LoadingScreen : CanvasLayer {
 
 	private void OnFadeOutFinished() {
 		ProcessMode = ProcessModeEnum.Disabled;
-
 		TimeLoading.Stop();
 
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnFadeOutFinished ) );
@@ -101,8 +96,6 @@ public partial class LoadingScreen : CanvasLayer {
 
 		ImageChange.Stop();
 		Spinner.SetProcess( false );
-
-//		ProgressTween.Stop();
 	}
 	public void FadeOut() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnFadeOutFinished ) );
@@ -110,23 +103,13 @@ public partial class LoadingScreen : CanvasLayer {
 	}
 	public void FadeIn() {
 		Spinner.SetProcess( true );
-
 		TimeLoading.Restart();
+		ProcessMode = ProcessModeEnum.Always;
 
 		Show();
 
 		ImageChange.Start();
 
-		/*
-		ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
-
-		ProgressTween = CreateTween();
-		ProgressTween.TweenProperty( ProgressBar.Material, "shader_parameter/progress", 1.0f, 4.0f );
-		ProgressTween.SetLoops( 2048 );
-		ProgressTween.LoopFinished += ( loopCount ) => {
-			ProgressBar.Material.Set( "shader_parameter/progress", 0.0f );
-		};
-		*/
 		OnImageChangeTimeout();
 	}
 
@@ -136,12 +119,12 @@ public partial class LoadingScreen : CanvasLayer {
 		ImageChange = GetNode<Timer>( "ImageChange" );
 		ImageChange.Connect( "timeout", Callable.From( OnImageChangeTimeout ) );
 
-		Background = GetNode<Control>( "MenuBackground" );
+		Background =  ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>();
+		Background.ZIndex = 3;
+		AddChild( Background );
 
 		TipLabel = GetNode<Label>( "Tips/TipLabel" );
 		TipLabel.Show();
-
-		//	ProgressBar = GetNode<TextureRect>( "Tips/ProgressBar" );
 
 		Spinner = GetNode<Range>( "Tips/Spinner" );
 		Spinner.SetProcess( false );

@@ -13,3 +13,10 @@ script = ExtResource("1_s6oxg")
 
 [node name="InteractBody" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_s6oxg")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -14.0
+offset_top = -23.0
+offset_right = 14.0
+offset_bottom = -14.0
+metadata/_edit_use_anchors_ = true

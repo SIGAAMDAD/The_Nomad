@@ -112,8 +112,8 @@ public class ResourceCache {
 	public static Resource UseBothHandsActionKeyboard { get; private set; }
 	public static Resource AimAngleActionKeyboard { get; private set; }
 
-	public static Resource KeyboardInputMappings { get; private set; }
-	public static Resource GamepadInputMappings { get; private set; }
+	public static Resource KeyboardInputMappings;
+	public static Resource GamepadInputMappings;
 
 	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 256 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 256 );
@@ -287,10 +287,6 @@ public class ResourceCache {
 		MeleeActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/melee.tres" );
 		UseBothHandsActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
 		AimAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
-	}
-	public static void LoadBinds() {
-		KeyboardInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
-		GamepadInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
 	}
 
 	public static void Cache( Node world, Thread SceneLoadThread ) {

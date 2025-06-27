@@ -4,11 +4,14 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 	private int TargetFrameRate = 0;
 	private DRSPreset Preset = DRSPreset.Balanced;
 
-//	private int UltraPerformance_MinFrames;
-//	private int Performance_MinFrames;
-//	private int Balanced_MinFrames;
+	//	private int UltraPerformance_MinFrames;
+	//	private int Performance_MinFrames;
+	//	private int Balanced_MinFrames;
 
 	private int MinFrames;
+	private System.Action ProcessCallback;
+
+	private int[] PrevFrameData = new int[ 30 ];
 
 	private void OnSettingsChanged() {
 		int MaxFps = SettingsData.GetMaxFps();
@@ -59,5 +62,28 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );
+
+		PrevFrameData[ Engine.GetFramesDrawn() % PrevFrameData.Length ] = (int)Engine.GetFramesPerSecond();
+
+		// average it out so that we aren't constantly going from high-low
+		int average = 0;
+		for ( int i = 0; i < PrevFrameData.Length; i++ ) {
+			average += PrevFrameData[ i ];
+		}
+		average /= PrevFrameData.Length;
+
+		if ( Preset == DRSPreset.Dynamic ) {
+			if ( average < MinFrames ) {
+
+			} else if ( average > TargetFrameRate ) {
+				int amount = TargetFrameRate - average;
+
+				if ( amount > TargetFrameRate / 2 ) {
+					// we're hitting twice the target frame rate, we can upscale
+				}
+			}
+		} else {
+
+		}
 	}
 };

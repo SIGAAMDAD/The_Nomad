@@ -19,7 +19,6 @@ func tick(_delta: float, _actor: Node, _blackboard: Blackboard):
 	if timer.time_left > 0.0:
 		if timer.is_stopped():
 			timer.start()
-		print( "timer running" )
 		return BTStatus.RUNNING
 	else:
 		return BTStatus.SUCCESS

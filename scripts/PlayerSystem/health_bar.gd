@@ -15,7 +15,7 @@ func SetHealth( health: float ) -> void:
 	if value <= _prev_health:
 		_damage_timer.start()
 	else:
-		_damage_timer.value = value
+		_damage_bar.value = value
 
 func init( health: float ) -> void:
 	max_value = health

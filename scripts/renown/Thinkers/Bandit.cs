@@ -32,6 +32,11 @@ namespace Renown.Thinkers {
 
 		private Hitbox HeadHitbox;
 
+		public bool HitHead {
+			get;
+			private set;
+		}
+
 		private State CurrentState;
 
 		private Godot.Vector2 StartPosition;
@@ -43,7 +48,6 @@ namespace Renown.Thinkers {
 		private RayCast2D AimLine;
 		private bool Aiming = false;
 
-//		private HashSet<Entity> SightTargets = new HashSet<Entity>();
 		private Entity SightTarget = null;
 
 		private Timer LoseInterestTimer;
@@ -66,9 +70,6 @@ namespace Renown.Thinkers {
 		private Entity Target;
 
 		private Line2D DetectionMeter;
-
-		private AnimatedSprite2D HeadAnimations;
-		private AnimatedSprite2D ArmAnimations;
 
 		// if we have fear, move slower
 		private float SpeedDegrade = 1.0f;
@@ -144,34 +145,40 @@ namespace Renown.Thinkers {
 			Aiming = false;
 
 			if ( Health <= 0.0f ) {
+				AnimationStateMachine.Call( "fire_event", "die" );
+
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				SetDeferred( "collision_layer", 0 );
+				SetDeferred( "collision_mask", 0 );
+
+				HeadHitbox.SetDeferred( "monitoring", false );
+				HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+
 				DetectionMeter.CallDeferred( "hide" );
+
+				AimTimer.Stop();
+				Aiming = false;
 
 				Velocity = Godot.Vector2.Zero;
 				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
-				
+
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
-				HeadAnimations.Hide();
-				ArmAnimations.Hide();
-				if ( BodyAnimations.Animation != "die_high" ) {
+				if ( !HitHead ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
-					BodyAnimations.SetDeferred( "process_mode", (long)ProcessModeEnum.Pausable );
-					BodyAnimations.CallDeferred( "play", "die_low" );
 				}
-
-				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				return;
 			}
 
 			if ( source.GetFaction() == Faction ) {
 				// "CEASEFIRE!"
-//				Bark( BarkType.Ceasefire );
+				//				Bark( BarkType.Ceasefire );
 			}
 
 			if ( Awareness == MobAwareness.Alert ) {
 
 			} else {
-//				Bark( BarkType.Alert );
+				//				Bark( BarkType.Alert );
 				SetAlert();
 			}
 
@@ -315,8 +322,11 @@ namespace Renown.Thinkers {
 		}
 
 		public void OnHeadHit( Entity source ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
+				return;
+			}
+			HitHead = true;
 			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
-			BodyAnimations.Play( "die_high" );
 			Damage( source, Health );
 		}
 
@@ -360,18 +370,15 @@ namespace Renown.Thinkers {
 			StartPosition = GlobalPosition;
 			StartHealth = Health;
 
-			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
-			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
-
 			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
 
 			CurrentState = State.Guarding;
 
-			Squad = GroupManager.GetGroup( GroupType.Military, Faction, GlobalPosition );
+			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
 
-//			NodeCache ??= Location.GetNodeCache();
+			//			NodeCache ??= Location.GetNodeCache();
 
 			LoseInterestTimer = new Timer();
 			LoseInterestTimer.Name = "LoseInterestTimer";
@@ -444,7 +451,7 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.OneShot = true;
 			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
 			AddChild( TargetMovedTimer );
-		
+
 			switch ( Direction ) {
 			case DirType.North:
 				LookDir = Godot.Vector2.Up;
@@ -496,50 +503,8 @@ namespace Renown.Thinkers {
 			MeleeTween.CallDeferred( "tween_property", ArmAnimations, "global_rotation", 0.0f, Weapon.Weight );
 		}
 
-		protected override void ProcessAnimations() {
-			if ( !Visible || ( Flags & ThinkerFlags.Dead ) != 0 ) {
-				return;
-			}
-
-			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
-
-			if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
-			} else if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
-			}
-
-			if ( LookAngle > 89.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", true );
-			} else if ( LookAngle < 90.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( AimAngle > 89.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", true );
-			} else if ( AimAngle < 90.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( Velocity != Godot.Vector2.Zero ) {
-				HeadAnimations.CallDeferred( "play", "move" );
-				BodyAnimations.CallDeferred( "play", "move" );
-			} else {
-//				if ( Awareness == MobAwareness.Relaxed ) {
-//					BodyAnimations.CallDeferred( "play", "calm" );
-//					HeadAnimations.CallDeferred( "hide" );
-//					ArmAnimations.CallDeferred( "hide" );
-//				} else {
-					ArmAnimations.CallDeferred( "show" );
-					HeadAnimations.CallDeferred( "show" );
-					BodyAnimations.CallDeferred( "play", "idle" );
-					HeadAnimations.CallDeferred( "play", "idle" );
-//				}
-			}
-		}
-
 		protected override void Think() {
+			return;
 			if ( !Visible ) {
 				return;
 			}
@@ -617,11 +582,20 @@ namespace Renown.Thinkers {
 				break;
 			};
 		}
+		
+		public void LookAtTarget() {
+			if ( SightTarget == null ) {
+				return;
+			}
+			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+		}
 
 		private void CheckSight() {
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
+				sightTarget = SightLines[ i ].GetCollider() as Entity;
 				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
 					break;
 				} else {
@@ -644,7 +618,8 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				};
+				}
+				;
 				SetDetectionColor();
 				CanSeeTarget = false;
 				return;
