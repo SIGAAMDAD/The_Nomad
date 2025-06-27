@@ -139,7 +139,7 @@ namespace Renown.Thinkers {
 		public bool TargetReached { get; protected set; } = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
 		public float LookAngle { get; protected set; }
-		public float AimAngle { get; protected set;  }
+		public float AimAngle { get; protected set; }
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
@@ -521,8 +521,6 @@ namespace Renown.Thinkers {
 			}
 
 			SetMeta( "Faction", Faction );
-
-			AnimationStateMachine.Call( "start" );
 		}
 		public override void _PhysicsProcess( double delta ) {
 			if ( Health <= 0.0f ) {
@@ -531,7 +529,7 @@ namespace Renown.Thinkers {
 
 			base._PhysicsProcess( delta );
 
-//			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
+			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
 				if ( Velocity == Godot.Vector2.Zero ) {
@@ -542,6 +540,8 @@ namespace Renown.Thinkers {
 			}
 		}
 		public override void _Process( double delta ) {
+			ProcessAnimations();
+
 			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
 				return;
 			}
@@ -585,6 +585,52 @@ namespace Renown.Thinkers {
 		/// sets the current frame's animations based on thinker subclass
 		/// </summary>
 		protected virtual void ProcessAnimations() {
+			if ( !Visible ) {
+				return;
+			}
+
+			if ( HeadAnimations != null ) {
+				float angle = Mathf.RadToDeg( LookAngle );
+				if ( angle < -50.0f ) {
+					angle = 230.0f;
+				} else if ( angle > 230.0f ) {
+					angle = -50.0f;
+				}
+				if ( angle > 50.0f ) {
+					if ( angle < 130.0f ) {
+						angle += 80.0f;
+					}
+					HeadAnimations.SetDeferred( "flip_v", true );
+				} else if ( angle < 130.0f ) {
+					if ( angle > 50.0f ) {
+						angle -= 80.0f;
+					}
+					HeadAnimations.SetDeferred( "flip_v", false );
+				}
+				LookAngle = Mathf.DegToRad( angle );
+				HeadAnimations.SetDeferred( "global_rotation", LookAngle );
+			}
+			if ( ArmAnimations != null ) {
+				float angle = Mathf.RadToDeg( AimAngle );
+				if ( angle < -50.0f ) {
+					angle = 230.0f;
+				} else if ( angle > 230.0f ) {
+					angle = -50.0f;
+				}
+				if ( angle > 50.0f ) {
+					if ( angle < 130.0f ) {
+						angle += 80.0f;
+					}
+					ArmAnimations.SetDeferred( "flip_v", true );
+				} else if ( angle < 130.0f ) {
+					if ( angle > 50.0f ) {
+						angle -= 80.0f;
+					}
+					ArmAnimations.SetDeferred( "flip_v", false );
+				}
+				AimAngle = Mathf.DegToRad( angle );
+				ArmAnimations.SetDeferred( "global_rotation", AimAngle );
+			}
 		}
 
 		protected virtual bool MoveAlongPath() {
@@ -606,7 +652,9 @@ namespace Renown.Thinkers {
 			TargetReached = false;
 			GotoPosition = target;
 
-			AnimationStateMachine.Call( "fire_event", "start_moving" );
+			BodyAnimations.CallDeferred( "play", "move" );
+			ArmAnimations?.CallDeferred( "play", "move" );
+			HeadAnimations?.CallDeferred( "play", "move" );
 		}
 		protected virtual void OnTargetReached() {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {

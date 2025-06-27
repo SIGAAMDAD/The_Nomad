@@ -1,5 +1,6 @@
 using System;
 using ChallengeMode;
+using GdUnit4;
 using Godot;
 using Renown.World;
 
@@ -47,6 +48,10 @@ namespace Renown.Thinkers {
 		private Timer AttackTimer;
 		private RayCast2D AimLine;
 		private bool Aiming = false;
+		private Line2D AttackMeter;
+		private float AttackMeterProgress = 0.0f;
+		private Godot.Vector2 AttackMeterFull;
+		private Godot.Vector2 AttackMeterDone;
 
 		private Entity SightTarget = null;
 
@@ -62,12 +67,12 @@ namespace Renown.Thinkers {
 
 		private AudioStreamPlayer2D BarkChannel;
 
-		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
+		public Godot.Vector2 LastTargetPosition { get; private set; } = Godot.Vector2.Zero;
 		private RayCast2D[] SightLines = null;
 		private bool CanSeeTarget = false;
 		private Tween MeleeTween;
 
-		private Entity Target;
+		public Entity Target { get; private set;  }
 
 		private Line2D DetectionMeter;
 
@@ -145,8 +150,6 @@ namespace Renown.Thinkers {
 			Aiming = false;
 
 			if ( Health <= 0.0f ) {
-				AnimationStateMachine.Call( "fire_event", "die" );
-
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
 				SetDeferred( "collision_layer", 0 );
 				SetDeferred( "collision_mask", 0 );
@@ -164,8 +167,12 @@ namespace Renown.Thinkers {
 
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
+
+				HeadAnimations.CallDeferred( "hide" );
+				ArmAnimations.CallDeferred( "hide" );
 				if ( !HitHead ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					BodyAnimations.CallDeferred( "play", "die_low" );
 				}
 				return;
 			}
@@ -327,6 +334,7 @@ namespace Renown.Thinkers {
 			}
 			HitHead = true;
 			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+			BodyAnimations.CallDeferred( "play", "die_high" );
 			Damage( source, Health );
 		}
 
@@ -342,6 +350,14 @@ namespace Renown.Thinkers {
 
 			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
 			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity) );
+		}
+		private void ResetAttackMeter() {
+			AttackMeterProgress = AttackMeterFull.X;
+			AttackMeter.Points[ 1 ] = AttackMeterFull;
+			AttackMeter.Show();
+		}
+		private void UpdateAttackMeter() {
+			AttackMeter.Points[ 1 ].X = AttackMeterProgress;
 		}
 
 		protected override void OnDie( Entity source, Entity target ) {
@@ -386,6 +402,11 @@ namespace Renown.Thinkers {
 			LoseInterestTimer.OneShot = true;
 			LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
 			AddChild( LoseInterestTimer );
+
+			AttackMeter = GetNode<Line2D>( "AttackMeter" );
+			AttackMeterDone = AttackMeter.Points[ 0 ];
+			AttackMeter.Points[ 1 ] = AttackMeterFull;
+			AttackMeterProgress = AttackMeterFull.X;
 
 			AimLine = new RayCast2D();
 			AimLine.Name = "AimLine";
@@ -493,7 +514,6 @@ namespace Renown.Thinkers {
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
 				AttackTimer.SetDeferred( "wait_time", Weapon.UseTime );
-			//	AimTimer.SetDeferred( "wait_time", Weapon.GetReloadTime() );
 				AimLine.SetDeferred( "target_position", Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
 			}
 		}
@@ -503,84 +523,102 @@ namespace Renown.Thinkers {
 			MeleeTween.CallDeferred( "tween_property", ArmAnimations, "global_rotation", 0.0f, Weapon.Weight );
 		}
 
+		protected override void ProcessAnimations() {
+			if ( SightTarget != null ) {
+				LookAtTarget();
+			}
+
+			base.ProcessAnimations();
+		}
 		protected override void Think() {
-			return;
 			if ( !Visible ) {
 				return;
 			}
 
 			CheckSight();
 
-			if ( Target != null ) {
-				if ( Target is Player ) {
-					Player.InCombat = true;
-				}
-				if ( CanSeeTarget && Awareness == MobAwareness.Alert ) {
-					CurrentState = State.Attacking;
-					ChangeInvestigationAngleTimer.Stop();
-				} else {
-//					CurrentState = State.Investigating;
+			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
+				if ( ( player.GetFlags() & Player.PlayerFlags.Parrying ) != 0 ) {
+					// shoot early
+					AimTimer.Stop();
+					OnAimTimerTimeout();
 				}
 			}
 
-			switch ( CurrentState ) {
-			case State.Investigating:
-				if ( ChangeInvestigationAngleTimer.IsStopped() ) {
-					ChangeInvestigationAngleTimer.CallDeferred( "start" );
-				}
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.CallDeferred( "start" );
-				}
-				if ( Target != null && CanSeeTarget ) {
-					CurrentState = State.Attacking;
-				}
+			// do we have a target?
+			if ( Awareness > MobAwareness.Relaxed ) {
 
-				if ( Fear > 60 && CanSeeTarget ) {
-					Bark( BarkType.Curse );
-				}
-				break;
-			case State.Attacking:
-				if ( Fear > 80 ) {
-					// paralyzed by fear
-					break;
-				}
-				Godot.Vector2 position1 = LastTargetPosition;
-				Godot.Vector2 position2 = GlobalPosition;
+				LookAtTarget();
 
-				if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 1024.0f ) {
-//					Bark( BarkType.TargetRunning );
-					Aiming = false;
-					CurrentState = State.Investigating;
-					AimTimer.Stop();
+				// can we see the target?
+				if ( CanSeeTarget ) {
 
-					const float interp = 0.5f;
-					SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
-				} else {
-					if ( ( Aiming && AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) || !Aiming ) {
-						LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-						AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-						LookAngle = AimAngle;
+					// are we in range?
+					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 528.0f ) {
+						// if not, stop aiming and move in closer
+						Aiming = false;
+						AimTimer.CallDeferred( "stop" );
+
+						const float interp = 0.5f;
+						Godot.Vector2 position1 = GlobalPosition;
+						Godot.Vector2 position2 = LastTargetPosition;
+						SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
+
+						// cycle
+						return;
 					}
-					if ( !Aiming ) {
-						AimTimer.Start();
+
+					// are we about to shoot?
+					if ( Aiming ) {
+						CallDeferred( "UpdateAttackMeter" );
+
+						// allow adjustments until we have 15% time left
+						if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) {
+							LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+							AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+							LookAngle = AimAngle;
+						}
+					} else {
+						// if not, start
+						CallDeferred( "ResetAttackMeter" );
+
+						Tween Tweener = CreateTween();
+						Tweener.CallDeferred( "tween_property", this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
+						Tweener.CallDeferred( "connect", "finished", Callable.From( AttackMeter.Hide ) );
+
+						AimTimer.CallDeferred( "start" );
 						Aiming = true;
 					}
-				}
-				if ( Aiming && AimLine.GetCollider() is GodotObject collision && collision != null ) {
-					if ( collision is Entity entity && entity != null && entity.GetHealth() > 0.0f && entity.GetFaction() == Faction ) {
-						Bark( BarkType.OutOfTheWay );
-						SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
-						AimTimer.Stop();
-						Aiming = false;
+
+				} else {
+					// are we at the last known position?
+					if ( GotoPosition == LastTargetPosition ) {
+						// start the lose interest timer
+						if ( LoseInterestTimer.IsStopped() ) {
+							LoseInterestTimer.CallDeferred( "start" );
+						} else if ( LoseInterestTimer.TimeLeft == 0.0f ) {
+							// if we have lost interest, go back to starting position
+							Awareness = MobAwareness.Suspicious;
+							SetNavigationTarget( StartPosition );
+							CurrentState = State.Guarding;
+						}
+
+						// cycle
+						return;
+					}
+
+					// investigate the last known position
+					if ( CurrentState != State.Investigating ) {
+						Awareness = MobAwareness.Suspicious;
+						SetNavigationTarget( LastTargetPosition );
+						CurrentState = State.Investigating;
+						ChangeInvestigationAngleTimer.CallDeferred( "start" );
+
+						// cycle
+						return;
 					}
 				}
-				break;
-			case State.Guarding:
-				if ( Awareness > MobAwareness.Relaxed ) {
-					CurrentState = State.Investigating;
-				}
-				break;
-			};
+			}
 		}
 		
 		public void LookAtTarget() {

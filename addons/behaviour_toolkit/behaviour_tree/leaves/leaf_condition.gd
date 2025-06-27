@@ -19,6 +19,7 @@ enum ConditionValue {
 	INT,
 	FLOAT,
 	BOOL,
+	NODE
 }
 
 
@@ -71,6 +72,7 @@ const DEFAULT_CUSTOM_SCRIPT = "# Custom Condition\nstatic func is_valid(_actor: 
 @export var condition_value_float: float
 ## The bool value to compare to.
 @export var condition_value_bool: bool
+@export var condition_value_object: Node
 
 @export_category("Target")
 ## The target node to query. If set to ACTOR, the actor will be queried.
@@ -85,7 +87,7 @@ const DEFAULT_CUSTOM_SCRIPT = "# Custom Condition\nstatic func is_valid(_actor: 
 		update_configuration_warnings()
 
 
-func tick(delta: float, actor: Node, _blackboard: Blackboard):
+func tick(delta: float, actor: Node, _blackboard: Blackboard) -> BTStatus:
 	var target: Node
 	match target_type:
 		ConditionTarget.ACTOR:
@@ -112,6 +114,8 @@ func tick(delta: float, actor: Node, _blackboard: Blackboard):
 			value = condition_value_float
 		ConditionValue.BOOL:
 			value = condition_value_bool
+		ConditionValue.NODE:
+			value = condition_value_object
 
 	var property_value = target.get(condition_property)
 

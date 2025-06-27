@@ -5,9 +5,9 @@ class_name LeafWait extends BTLeaf
 ## SUCCESS.
 
 
-@export var wait_time:float = 10.0
+@export var wait_time: float = 10.0
 
-var timer:Timer = Timer.new()
+var timer: Timer = Timer.new()
 
 func _ready() -> void:
 	timer.name = "leaf_timer"
@@ -15,7 +15,7 @@ func _ready() -> void:
 	timer.one_shot = true
 	add_child( timer )
 
-func tick(_delta: float, _actor: Node, _blackboard: Blackboard):
+func tick(_delta: float, _actor: Node, _blackboard: Blackboard) -> BTStatus:
 	if timer.time_left > 0.0:
 		if timer.is_stopped():
 			timer.start()

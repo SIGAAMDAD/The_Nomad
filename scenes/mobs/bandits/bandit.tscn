@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dil6cvnitkb3b"]
+[gd_scene load_steps=16 format=3 uid="uid://dil6cvnitkb3b"]
 
 [ext_resource type="Shader" uid="uid://ci77l6g215lyf" path="res://shaders/visor_glow_blue.gdshader" id="1_q3nyr"]
 [ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="1_sse78"]
@@ -6,17 +6,11 @@
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="3_02k6i"]
 [ext_resource type="SpriteFrames" uid="uid://hvxaope63nbh" path="res://resources/animations/mobs/bandit_grunt_body_animations.tres" id="4_q3nyr"]
 [ext_resource type="SpriteFrames" uid="uid://dt3nr18ulah26" path="res://resources/animations/mobs/bandit_grunt_arm_animations.tres" id="5_q3nyr"]
-[ext_resource type="Script" uid="uid://d11c6gwrjou0w" path="res://addons/behaviour_toolkit/behaviour_tree/bt_root.gd" id="7_yadcl"]
 [ext_resource type="Script" uid="uid://b0bqn8gtyevqu" path="res://addons/behaviour_toolkit/finite_state_machine/fsm.gd" id="8_2sbjv"]
-[ext_resource type="Script" uid="uid://dpr2xa1e5hy8u" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_sequence.gd" id="8_p2hl0"]
 [ext_resource type="Script" uid="uid://csq05x4oq8uf3" path="res://addons/behaviour_toolkit/blackboard.gd" id="9_p2hl0"]
 [ext_resource type="Script" uid="uid://crgq2opfxk1ng" path="res://scripts/renown/Thinkers/Behaviours/mercenary_animator.gd" id="10_i3org"]
-[ext_resource type="Script" uid="uid://b26n4e0kvlmwa" path="res://scripts/renown/Thinkers/Behaviours/sight_check.gd" id="10_q4sce"]
-[ext_resource type="Script" uid="uid://dstmrjfx8r618" path="res://scripts/renown/Thinkers/Behaviours/move_to_disturbance.gd" id="11_n8qdm"]
 [ext_resource type="Script" uid="uid://1h0braq41vwb" path="res://addons/behaviour_toolkit/finite_state_machine/fsm_transition.gd" id="11_n1021"]
-[ext_resource type="Script" uid="uid://cemy3w6ak053y" path="res://scripts/renown/Thinkers/Behaviours/look_around.gd" id="12_dwmjk"]
 [ext_resource type="Script" uid="uid://dyh6qrmrhuck5" path="res://scripts/renown/Thinkers/Behaviours/dead_animation.gd" id="12_q4sce"]
-[ext_resource type="Script" uid="uid://buvb8uppbyosm" path="res://addons/behaviour_toolkit/behaviour_tree/leaves/leaf_wait.gd" id="13_f0g6a"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lqbnx"]
 shader = ExtResource("1_q3nyr")
@@ -27,11 +21,6 @@ size = Vector2(11, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnc44"]
 size = Vector2(18, 21)
-
-[sub_resource type="Resource" id="Resource_2sbjv"]
-script = ExtResource("9_p2hl0")
-content = {}
-metadata/_custom_type_script = "uid://csq05x4oq8uf3"
 
 [sub_resource type="Resource" id="Resource_q4sce"]
 script = ExtResource("9_p2hl0")
@@ -47,7 +36,7 @@ LoseInterestTime = 10.0
 SightDetectionTime = 15.0
 SightDetectionSpeed = 0.75
 AnimationStateMachine = NodePath("AnimationStateMachine")
-BehaviourTree = NodePath("Behaviour")
+BehaviourTree = NodePath("")
 MovementSpeed = 50.0
 Health = 80.0
 Relations = {}
@@ -59,9 +48,11 @@ process_mode = 1
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 material = SubResource("ShaderMaterial_lqbnx")
 position = Vector2(0, -7)
+rotation = 4.04916
 sprite_frames = ExtResource("2_q3nyr")
 animation = &"idle"
 autoplay = "idle"
+flip_v = true
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
 collision_layer = 16
@@ -115,48 +106,6 @@ modulate = Color(0, 1, 0, 1)
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
-
-[node name="Behaviour" type="Node" parent="." node_paths=PackedStringArray("actor")]
-script = ExtResource("7_yadcl")
-autostart = true
-process_type = 0
-actor = NodePath("..")
-blackboard = SubResource("Resource_2sbjv")
-verbose = true
-metadata/_custom_type_script = "uid://d11c6gwrjou0w"
-
-[node name="BTSelector" type="Node" parent="Behaviour"]
-script = ExtResource("8_p2hl0")
-metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
-
-[node name="CanSeeTarget" type="Node" parent="Behaviour/BTSelector"]
-script = ExtResource("10_q4sce")
-metadata/_custom_type_script = "uid://c584shlo6w6it"
-
-[node name="InvestigateDisturbance" type="Node" parent="Behaviour/BTSelector"]
-script = ExtResource("8_p2hl0")
-metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
-
-[node name="MoveToDisturbance" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance"]
-script = ExtResource("11_n8qdm")
-metadata/_custom_type_script = "uid://c584shlo6w6it"
-
-[node name="LookAround" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance"]
-script = ExtResource("8_p2hl0")
-metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
-
-[node name="LookAround" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance/LookAround"]
-script = ExtResource("12_dwmjk")
-metadata/_custom_type_script = "uid://c584shlo6w6it"
-
-[node name="StareTimer" type="Node" parent="Behaviour/BTSelector/InvestigateDisturbance/LookAround"]
-script = ExtResource("13_f0g6a")
-wait_time = 1.5
-metadata/_custom_type_script = "uid://buvb8uppbyosm"
-
-[node name="EliminateThreats" type="Node" parent="Behaviour/BTSelector"]
-script = ExtResource("8_p2hl0")
-metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
 
 [node name="AnimationStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state", "actor")]
 script = ExtResource("8_2sbjv")
