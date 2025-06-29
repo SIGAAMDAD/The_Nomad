@@ -628,6 +628,8 @@ public partial class WeaponEntity : Node2D {
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
+		} else if ( collision is Grenade grenade && grenade != null ) {
+			grenade.OnBlowup();
 		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
 			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
 			hitbox.OnHit( _Owner );

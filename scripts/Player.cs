@@ -91,6 +91,13 @@ public partial class Player : Entity {
 	public static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 	public static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
 
+	//
+	// constants that can be modified by runes, perks, etc.
+	//
+	public static readonly float BaseFastTravelRageCost = 20.0f;
+	public static readonly float BaseFastTravelSanityCost = 0.0f;
+	public static readonly float BaseEnemyDetectionSpeed = 1.0f;
+
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
@@ -183,11 +190,7 @@ public partial class Player : Entity {
 	private Resource ArmAngleAction;
 	private Resource UseBothHandsAction;
 	private Resource AimAngleAction;
-	public readonly Resource InteractionAction;
-
-	public readonly Resource InteractionActionGamepad;
-
-	public readonly Resource InteractionActionKeyboard;
+	private Resource InteractAction;
 
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
@@ -1623,6 +1626,7 @@ public partial class Player : Entity {
 			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionKeyboard;
 			OpenInventoryAction = ResourceCache.OpenInventoryActionKeyboard;
 			UseWeaponAction = ResourceCache.UseWeaponActionKeyboard;
+			InteractAction = ResourceCache.InteractActionKeyboard;
 
 			CurrentMappingContext = ResourceCache.KeyboardInputMappings;
 		} else {
@@ -1762,6 +1766,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
 		ResourceCache.AimAngleActionKeyboard.Connect( "triggered", Callable.From( GetArmAngle ) );
+		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
 	private void LoadSfx() {
 		/*
@@ -1878,6 +1883,10 @@ public partial class Player : Entity {
 
 	public override void _Ready() {
 		base._Ready();
+
+		SetMeta( "FastTravelSanityCost", BaseFastTravelSanityCost );
+		SetMeta( "FastTravelRageCost", BaseFastTravelRageCost );
+		SetMeta( "EnemyDetectionSpeed", BaseEnemyDetectionSpeed );
 
 		AccessibilityManager.LoadBinds();
 

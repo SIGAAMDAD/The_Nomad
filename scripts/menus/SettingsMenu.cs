@@ -1,4 +1,5 @@
 using Godot;
+using Steamworks;
 
 public partial class SettingsMenu : Control {
 	private OptionButton VSync;
@@ -249,6 +250,14 @@ public partial class SettingsMenu : Control {
 		SettingsData.Save();
 	}
 
+	private void OnSyncToSteamButtonPressed() {
+		Console.PrintLine( "Synchronizing settings to SteamCloud..." );
+		SteamManager.SaveCloudFile( "user://settings.ini" );
+	}
+	private void OnRemoveSteamSyncButtonPressed() {
+		SteamRemoteStorage.FileDelete( "settings.ini" );
+	}
+
 	// TODO: make this more controller friendly
 	public override void _Ready() {
 		base._Ready();
@@ -319,7 +328,7 @@ public partial class SettingsMenu : Control {
 		HapticEnabled = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton/HapticFeedbackCheckbox" );
 		HapticEnabled.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
 		HapticEnabled.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		
+
 		HapticStrength = GetNode<HSlider>( "TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider/HapticStrengthSlider" );
 		HapticStrength.Connect( "changed", Callable.From( UIAudioManager.OnButtonPressed ) );
 		HapticStrength.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
@@ -450,7 +459,8 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( true );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Always;
 						break;
-					};
+					}
+					;
 				}
 			)
 		);
@@ -501,7 +511,8 @@ public partial class SettingsMenu : Control {
 			MaxFps.AddItem( "CUSTOM", 7 );
 			MaxFps.Selected = 7;
 			break;
-		};
+		}
+		;
 		ShadowFilterQuality.Selected = (int)SettingsData.GetShadowFilterQuality();
 		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();
 		ShowBlood.ButtonPressed = SettingsData.GetShowBlood();
@@ -519,6 +530,18 @@ public partial class SettingsMenu : Control {
 
 		NetworkingEnabled.ButtonPressed = SettingsData.GetNetworkingEnabled();
 		FriendsOnly.ButtonPressed = SettingsData.GetFriendsOnlyNetworking();
+
+		/*
+		Button RemoveSteamSyncButton = GetNode<Button>( "RemoveSteamSyncButton" );
+		RemoveSteamSyncButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		RemoveSteamSyncButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		RemoveSteamSyncButton.Connect( "pressed", Callable.From( OnRemoveSteamSyncButtonPressed ) );
+
+		Button SyncToSteamButton = GetNode<Button>( "SyncToSteamButton" );
+		SyncToSteamButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		SyncToSteamButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		SyncToSteamButton.Connect( "pressed", Callable.From( OnSyncToSteamButtonPressed ) );
+		*/
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
 		SaveSettingsButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );

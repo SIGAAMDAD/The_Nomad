@@ -8,40 +8,45 @@ public partial class ItemPickup : InteractionItem {
 
 	protected Sprite2D Icon;
 
+	private void OnPickupItem( Player player ) {
+		Godot.Collections.Array<Resource> Categories = (Godot.Collections.Array<Resource>)Data.Get( "categories" );
+
+		bool done = false;
+		for ( int i = 0; i < Categories.Count; i++ ) {
+			string name = (string)Categories[ i ].Get( "name" );
+			switch ( name ) {
+			case "Weapon":
+				WeaponEntity weapon = new WeaponEntity();
+				weapon.Name = "Weapon" + weapon;
+				weapon.Data = Data;
+				player.AddChild( weapon );
+				weapon.TriggerPickup( player );
+				done = true;
+				break;
+			case "Ammo":
+				AmmoEntity ammo = new AmmoEntity();
+				ammo.Name = "Ammo" + ammo;
+				ammo.Data = Data;
+				player.AddChild( ammo );
+				player.PickupAmmo( ammo, Amount );
+				done = true;
+				break;
+			};
+		}
+
+		if ( done ) {
+			Icon?.QueueFree();
+			Icon = null;
+
+			InteractArea.CallDeferred( "queue_free" );
+		}
+	}
+
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		// TODO: auto-pickup toggle?
 		if ( body is Player player && player != null ) {
-			Godot.Collections.Array<Resource> Categories = (Godot.Collections.Array<Resource>)Data.Get( "categories" );
-
-			bool done = false;
-			for ( int i = 0; i < Categories.Count; i++ ) {
-				string name = (string)Categories[ i ].Get( "name" );
-				switch ( name ) {
-				case "Weapon":
-					WeaponEntity weapon = new WeaponEntity();
-					weapon.Name = "Weapon" + weapon;
-					weapon.Data = Data;
-					player.AddChild( weapon );
-					weapon.TriggerPickup( player );
-					done = true;
-					break;
-				case "Ammo":
-					AmmoEntity ammo = new AmmoEntity();
-					ammo.Name = "Ammo" + ammo;
-					ammo.Data = Data;
-					player.AddChild( ammo );
-					player.PickupAmmo( ammo, Amount );
-					done = true;
-					break;
-				};
-			}
-
-			if ( done ) {
-				Icon?.QueueFree();
-				Icon = null;
-
-				InteractArea.CallDeferred( "queue_free" );
-			}
+			player.Interaction += () => OnPickupItem( player );
+			player.EmitSignal( "ShowInteraction", this );
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

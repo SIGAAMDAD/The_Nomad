@@ -554,7 +554,7 @@ namespace Renown.Thinkers {
 				if ( CanSeeTarget ) {
 
 					// are we in range?
-					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 528.0f ) {
+					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 1024.0f ) {
 						// if not, stop aiming and move in closer
 						Aiming = false;
 						AimTimer.CallDeferred( "stop" );
@@ -577,6 +577,8 @@ namespace Renown.Thinkers {
 							LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 							AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 							LookAngle = AimAngle;
+
+							CallDeferred( "StopMoving" );
 						}
 					} else {
 						// if not, start
@@ -588,6 +590,8 @@ namespace Renown.Thinkers {
 
 						AimTimer.CallDeferred( "start" );
 						Aiming = true;
+
+						CallDeferred( "StopMoving" );
 					}
 
 				} else {

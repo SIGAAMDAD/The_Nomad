@@ -68,12 +68,7 @@ namespace Renown.Thinkers {
 
 		[Export]
 		protected StringName FirstName;
-
-		[Export]
-		public Node AnimationStateMachine;
-		[Export]
-		public Node BehaviourTree;
-
+		
 		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;

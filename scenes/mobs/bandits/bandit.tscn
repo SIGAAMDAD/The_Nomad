@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dil6cvnitkb3b"]
+[gd_scene load_steps=10 format=3 uid="uid://dil6cvnitkb3b"]
 
 [ext_resource type="Shader" uid="uid://ci77l6g215lyf" path="res://shaders/visor_glow_blue.gdshader" id="1_q3nyr"]
 [ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="1_sse78"]
@@ -6,11 +6,6 @@
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="3_02k6i"]
 [ext_resource type="SpriteFrames" uid="uid://hvxaope63nbh" path="res://resources/animations/mobs/bandit_grunt_body_animations.tres" id="4_q3nyr"]
 [ext_resource type="SpriteFrames" uid="uid://dt3nr18ulah26" path="res://resources/animations/mobs/bandit_grunt_arm_animations.tres" id="5_q3nyr"]
-[ext_resource type="Script" uid="uid://b0bqn8gtyevqu" path="res://addons/behaviour_toolkit/finite_state_machine/fsm.gd" id="8_2sbjv"]
-[ext_resource type="Script" uid="uid://csq05x4oq8uf3" path="res://addons/behaviour_toolkit/blackboard.gd" id="9_p2hl0"]
-[ext_resource type="Script" uid="uid://crgq2opfxk1ng" path="res://scripts/renown/Thinkers/Behaviours/mercenary_animator.gd" id="10_i3org"]
-[ext_resource type="Script" uid="uid://1h0braq41vwb" path="res://addons/behaviour_toolkit/finite_state_machine/fsm_transition.gd" id="11_n1021"]
-[ext_resource type="Script" uid="uid://dyh6qrmrhuck5" path="res://scripts/renown/Thinkers/Behaviours/dead_animation.gd" id="12_q4sce"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lqbnx"]
 shader = ExtResource("1_q3nyr")
@@ -22,11 +17,6 @@ size = Vector2(11, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnc44"]
 size = Vector2(18, 21)
 
-[sub_resource type="Resource" id="Resource_q4sce"]
-script = ExtResource("9_p2hl0")
-content = {}
-metadata/_custom_type_script = "uid://csq05x4oq8uf3"
-
 [node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("AnimationStateMachine", "BehaviourTree", "Relations", "Debts") groups=["Archive", "Thinkers"]]
 z_index = 6
 collision_layer = 12
@@ -35,7 +25,7 @@ script = ExtResource("1_sse78")
 LoseInterestTime = 10.0
 SightDetectionTime = 15.0
 SightDetectionSpeed = 0.75
-AnimationStateMachine = NodePath("AnimationStateMachine")
+AnimationStateMachine = NodePath("")
 BehaviourTree = NodePath("")
 MovementSpeed = 50.0
 Health = 80.0
@@ -48,11 +38,9 @@ process_mode = 1
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 material = SubResource("ShaderMaterial_lqbnx")
 position = Vector2(0, -7)
-rotation = 4.04916
 sprite_frames = ExtResource("2_q3nyr")
 animation = &"idle"
 autoplay = "idle"
-flip_v = true
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
 collision_layer = 16
@@ -106,54 +94,3 @@ modulate = Color(0, 1, 0, 1)
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
-
-[node name="AnimationStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state", "actor")]
-script = ExtResource("8_2sbjv")
-process_type = 0
-initial_state = NodePath("Idle")
-actor = NodePath("..")
-blackboard = SubResource("Resource_q4sce")
-verbose = true
-metadata/_custom_type_script = "uid://b0bqn8gtyevqu"
-
-[node name="Idle" type="Node" parent="AnimationStateMachine"]
-script = ExtResource("10_i3org")
-_animation = &"idle"
-metadata/_custom_type_script = "uid://k5p6yghm7nrm"
-
-[node name="OnStartMoving" type="Node" parent="AnimationStateMachine/Idle" node_paths=PackedStringArray("next_state")]
-script = ExtResource("11_n1021")
-next_state = NodePath("../../Moving")
-use_event = true
-event = "start_moving"
-metadata/_custom_type_script = "uid://1h0braq41vwb"
-
-[node name="OnDeath" type="Node" parent="AnimationStateMachine/Idle" node_paths=PackedStringArray("next_state")]
-script = ExtResource("11_n1021")
-next_state = NodePath("../../Dead")
-use_event = true
-event = "die"
-metadata/_custom_type_script = "uid://1h0braq41vwb"
-
-[node name="Moving" type="Node" parent="AnimationStateMachine"]
-script = ExtResource("10_i3org")
-_animation = &"move"
-metadata/_custom_type_script = "uid://k5p6yghm7nrm"
-
-[node name="OnStopMoving" type="Node" parent="AnimationStateMachine/Moving" node_paths=PackedStringArray("next_state")]
-script = ExtResource("11_n1021")
-next_state = NodePath("../../Idle")
-use_event = true
-event = "stop_moving"
-metadata/_custom_type_script = "uid://1h0braq41vwb"
-
-[node name="OnDeath" type="Node" parent="AnimationStateMachine/Moving" node_paths=PackedStringArray("next_state")]
-script = ExtResource("11_n1021")
-next_state = NodePath("../../Idle")
-use_event = true
-event = "die"
-metadata/_custom_type_script = "uid://1h0braq41vwb"
-
-[node name="Dead" type="Node" parent="AnimationStateMachine"]
-script = ExtResource("12_q4sce")
-metadata/_custom_type_script = "uid://k5p6yghm7nrm"

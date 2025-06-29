@@ -3,17 +3,11 @@ using Godot;
 namespace PlayerSystem.Runes {
 	public abstract partial class Rune : Resource {
 		[Export]
-		public StringName Name {
-			get;
-			private set;
-		}
+		public StringName Name { get; private set; }
 		[Export]
-		public Texture2D Icon {
-			get;
-			private set;
-		}
+		public Texture2D Icon { get; private set; }
 
-		private Player Owner;
+		protected Player Owner;
 
 		public abstract void Connect( Player user );
 		public abstract void Activate();

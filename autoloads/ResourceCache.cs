@@ -111,6 +111,7 @@ public class ResourceCache {
 	public static Resource ArmAngleActionKeyboard { get; private set; }
 	public static Resource UseBothHandsActionKeyboard { get; private set; }
 	public static Resource AimAngleActionKeyboard { get; private set; }
+	public static Resource InteractActionKeyboard { get; private set; }
 
 	public static Resource KeyboardInputMappings;
 	public static Resource GamepadInputMappings;
@@ -287,6 +288,7 @@ public class ResourceCache {
 		MeleeActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/melee.tres" );
 		UseBothHandsActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
 		AimAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
+		InteractActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/interact.tres" );
 	}
 
 	public static void Cache( Node world, Thread SceneLoadThread ) {

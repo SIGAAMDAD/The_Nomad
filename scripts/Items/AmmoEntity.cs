@@ -115,6 +115,8 @@ public partial class AmmoEntity : Node2D {
 		}
 
 		DamageFalloff = (Curve)properties[ "damage_falloff" ];
+		DamageFalloff.Bake();
+		
 		PickupSfx = (AudioStream)properties[ "pickup_sfx" ];
 		Damage = (float)properties[ "damage" ];
 		Range = (float)properties[ "range" ];
