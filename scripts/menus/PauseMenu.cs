@@ -123,13 +123,11 @@ public partial class PauseMenu : CanvasLayer {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustReleased( "ui_exit" ) ) {
-			CallDeferred( "Pause" );
+			CallDeferred( MethodName.Pause );
 		}
 	}
 
 	private void OnJoyConnectionChanged( long device, bool connected ) {
-		if ( !connected ) {
-			CallDeferred( "Pause" );
-		}
+		CallDeferred( MethodName.Pause );
 	}
 };

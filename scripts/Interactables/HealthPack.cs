@@ -6,14 +6,14 @@ public partial class HealthPack : InteractionItem {
 			player.SetHealth( player.GetHealth() + 40.0f );
 			player.PlaySound( null, ResourceCache.GetSound( "res://sounds/env/StimPack_Activate1.ogg" ) );
 
-			CallDeferred( "hide" );
-			SetDeferred( "monitoring", false );
+			CallDeferred( MethodName.Hide );
+			SetDeferred( PropertyName.Monitoring, false );
 		}
 	}
 
 	private void OnPlayerRestart() {
-		CallDeferred( "show" );
-		SetDeferred( "monitoring", true );
+		CallDeferred( MethodName.Show );
+		SetDeferred( PropertyName.Monitoring, true );
 	}
 
 	public override void _Ready() {
@@ -21,6 +21,6 @@ public partial class HealthPack : InteractionItem {
 
 		LevelData.Instance.PlayerRespawn += OnPlayerRestart;
 
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 	}
 };

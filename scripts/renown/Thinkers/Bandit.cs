@@ -150,14 +150,14 @@ namespace Renown.Thinkers {
 			Aiming = false;
 
 			if ( Health <= 0.0f ) {
-				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
-				SetDeferred( "collision_layer", 0 );
-				SetDeferred( "collision_mask", 0 );
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
+				SetDeferred( PropertyName.CollisionLayer, 0 );
+				SetDeferred( PropertyName.CollisionMask, 0 );
 
-				HeadHitbox.SetDeferred( "monitoring", false );
-				HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				HeadHitbox.SetDeferred( Area2D.PropertyName.Monitoring, false );
+				HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 
-				DetectionMeter.CallDeferred( "hide" );
+				DetectionMeter.CallDeferred( MethodName.Hide );
 
 				AimTimer.Stop();
 				Aiming = false;
@@ -168,11 +168,11 @@ namespace Renown.Thinkers {
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
 
-				HeadAnimations.CallDeferred( "hide" );
-				ArmAnimations.CallDeferred( "hide" );
+				HeadAnimations.CallDeferred( MethodName.Hide );
+				ArmAnimations.CallDeferred( MethodName.Hide );
 				if ( !HitHead ) {
-					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
-					BodyAnimations.CallDeferred( "play", "die_low" );
+					CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die_low" );
 				}
 				return;
 			}
@@ -310,13 +310,13 @@ namespace Renown.Thinkers {
 				DetectionColor.B = 0.0f;
 				break;
 			};
-			DetectionMeter.SetDeferred( "default_color", DetectionColor );
+			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnChangeInvestigationAngleTimerTimeout() {
 			float angle = RNJesus.FloatRange( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
-			ChangeInvestigationAngleTimer.CallDeferred( "start" );
+			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 		}
 		private void OnLoseInterestTimerTimeout() {
 			CurrentState = State.Investigating;
@@ -333,23 +333,23 @@ namespace Renown.Thinkers {
 				return;
 			}
 			HitHead = true;
-			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
-			BodyAnimations.CallDeferred( "play", "die_high" );
+			CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+			BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die_high" );
 			Damage( source, Health );
 		}
 
 		private void OnRestartCheckpoint() {
-			SetDeferred( "global_position", StartPosition );
+			SetDeferred( PropertyName.GlobalPosition, StartPosition );
 			CurrentState = State.Guarding;
 			Awareness = MobAwareness.Relaxed;
 			Health = StartHealth;
 			Flags = 0;
 			SightDetectionAmount = 0.0f;
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
 
-			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
-			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity) );
+			SetDeferred( PropertyName.CollisionLayer, (uint)( PhysicsLayer.SpriteEntity ) );
+			SetDeferred( PropertyName.CollisionMask, (uint)( PhysicsLayer.SpriteEntity) );
 		}
 		private void ResetAttackMeter() {
 			AttackMeterProgress = AttackMeterFull.X;
@@ -400,7 +400,7 @@ namespace Renown.Thinkers {
 			LoseInterestTimer.Name = "LoseInterestTimer";
 			LoseInterestTimer.WaitTime = LoseInterestTime;
 			LoseInterestTimer.OneShot = true;
-			LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
+			LoseInterestTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnLoseInterestTimerTimeout ) );
 			AddChild( LoseInterestTimer );
 
 			AttackMeter = GetNode<Line2D>( "AttackMeter" );
@@ -420,7 +420,7 @@ namespace Renown.Thinkers {
 			AttackTimer = new Timer();
 			AttackTimer.Name = "AttackTimer";
 			AttackTimer.OneShot = true;
-			AttackTimer.Connect( "timeout", Callable.From( () => { Aiming = false; } ) );
+			AttackTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => { Aiming = false; } ) );
 			AddChild( AttackTimer );
 
 			AimTimer = new Timer();
@@ -463,14 +463,14 @@ namespace Renown.Thinkers {
 			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
 			ChangeInvestigationAngleTimer.OneShot = true;
 			ChangeInvestigationAngleTimer.WaitTime = 1.0f;
-			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
+			ChangeInvestigationAngleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
 			AddChild( ChangeInvestigationAngleTimer );
 
 			TargetMovedTimer = new Timer();
 			TargetMovedTimer.Name = "TargetMovedTimer";
 			TargetMovedTimer.WaitTime = 5.0f;
 			TargetMovedTimer.OneShot = true;
-			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
+			TargetMovedTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
 			AddChild( TargetMovedTimer );
 
 			switch ( Direction ) {
@@ -504,8 +504,8 @@ namespace Renown.Thinkers {
 			}
 
 			AttackTimer.Start();
-			Weapon.CallDeferred( "SetUseMode", (uint)WeaponEntity.Properties.TwoHandedFirearm );
-			Weapon.CallDeferred( "UseDeferred", (uint)WeaponEntity.Properties.TwoHandedFirearm );
+			Weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+			Weapon.CallDeferred( WeaponEntity.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}
 		public override void PickupWeapon( in WeaponEntity weapon ) {
 			// TODO: evaluate if we actually want it
@@ -513,14 +513,14 @@ namespace Renown.Thinkers {
 
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
-				AttackTimer.SetDeferred( "wait_time", Weapon.UseTime );
-				AimLine.SetDeferred( "target_position", Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
+				AttackTimer.SetDeferred( Timer.PropertyName.WaitTime, Weapon.UseTime );
+				AimLine.SetDeferred( RayCast2D.PropertyName.TargetPosition, Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
 			}
 		}
 
 		private void AttackMelee() {
 			MeleeTween = CreateTween();
-			MeleeTween.CallDeferred( "tween_property", ArmAnimations, "global_rotation", 0.0f, Weapon.Weight );
+			MeleeTween.CallDeferred( Tween.MethodName.TweenProperty, ArmAnimations, PropertyName.GlobalRotation, 0.0f, Weapon.Weight );
 		}
 
 		protected override void ProcessAnimations() {
@@ -557,7 +557,7 @@ namespace Renown.Thinkers {
 					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
 						// if not, stop aiming and move in closer
 						Aiming = false;
-						AimTimer.CallDeferred( "stop" );
+						AimTimer.CallDeferred( Timer.MethodName.Stop );
 
 						const float interp = 0.5f;
 						Godot.Vector2 position1 = GlobalPosition;
@@ -570,7 +570,7 @@ namespace Renown.Thinkers {
 
 					// are we about to shoot?
 					if ( Aiming ) {
-						CallDeferred( "UpdateAttackMeter" );
+						CallDeferred( MethodName.UpdateAttackMeter );
 
 						// allow adjustments until we have 15% time left
 						if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) {
@@ -578,20 +578,20 @@ namespace Renown.Thinkers {
 							AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 							LookAngle = AimAngle;
 
-							CallDeferred( "StopMoving" );
+							CallDeferred( MethodName.StopMoving );
 						}
 					} else {
 						// if not, start
-						CallDeferred( "ResetAttackMeter" );
+						CallDeferred( MethodName.ResetAttackMeter );
 
 						Tween Tweener = CreateTween();
-						Tweener.CallDeferred( "tween_property", this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
-						Tweener.CallDeferred( "connect", "finished", Callable.From( AttackMeter.Hide ) );
+						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, PropertyName.AttackMeterProgress, AttackMeterDone.X, AimTimer.WaitTime );
+						Tweener.CallDeferred( Tween.MethodName.Connect, Tween.SignalName.Finished, Callable.From( AttackMeter.Hide ) );
 
-						AimTimer.CallDeferred( "start" );
+						AimTimer.CallDeferred( Timer.MethodName.Start );
 						Aiming = true;
 
-						CallDeferred( "StopMoving" );
+						CallDeferred( MethodName.StopMoving );
 					}
 
 				} else {
@@ -599,7 +599,7 @@ namespace Renown.Thinkers {
 					if ( GotoPosition == LastTargetPosition ) {
 						// start the lose interest timer
 						if ( LoseInterestTimer.IsStopped() ) {
-							LoseInterestTimer.CallDeferred( "start" );
+							LoseInterestTimer.CallDeferred( Timer.MethodName.Start );
 						} else if ( LoseInterestTimer.TimeLeft == 0.0f ) {
 							// if we have lost interest, go back to starting position
 							Awareness = MobAwareness.Suspicious;
@@ -616,7 +616,7 @@ namespace Renown.Thinkers {
 						Awareness = MobAwareness.Suspicious;
 						SetNavigationTarget( LastTargetPosition );
 						CurrentState = State.Investigating;
-						ChangeInvestigationAngleTimer.CallDeferred( "start" );
+						ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 
 						// cycle
 						return;
@@ -660,8 +660,7 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				}
-				;
+				};
 				SetDetectionColor();
 				CanSeeTarget = false;
 				return;

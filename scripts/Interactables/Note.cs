@@ -10,7 +10,7 @@ public partial class Note : InteractionItem {
 	private RichTextLabel Text;
 
 	private void OnInteraction( Player player ) {
-		player.Disconnect( "Interaction", Callback );
+		player.Disconnect( Player.SignalName.Interaction, Callback );
 		player.AddToJournal( this );
 
 		DialogueManager.ShowDialogueBalloon( DialogueResource );
@@ -19,15 +19,15 @@ public partial class Note : InteractionItem {
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Player player && player != null ) {
 			Callback = Callable.From( () => OnInteraction( player ) );
-			player.Connect( "Interaction", Callback );
+			player.Connect( Player.SignalName.Interaction, Callback );
 			Text.Show();
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Player player && player != null ) {
 			Text.Hide();
-			if ( player.IsConnected( "Interaction", Callback ) ) {
-				player.Disconnect( "Interaction", Callback );
+			if ( player.IsConnected( Player.SignalName.Interaction, Callback ) ) {
+				player.Disconnect( Player.SignalName.Interaction, Callback );
 			}
 		}
 	}
@@ -42,8 +42,8 @@ public partial class Note : InteractionItem {
 		Text = GetNode<RichTextLabel>( "RichTextLabel" );
 		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( AccessibilityManager.GetBindString( LevelData.Instance.ThisPlayer.InteractAction ) );
 
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
-		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
 		DialogueResource = DialogueManager.CreateResourceFromText( "~ start\nNote: " + TranslationServer.Translate( TextId ) );
 	}

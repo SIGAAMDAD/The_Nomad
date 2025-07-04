@@ -739,13 +739,13 @@ public partial class SteamLobby : Node {
 	private void HandleIncomingMessage( IncomingMessage msg ) {
 		switch ( msg.Type ) {
 		case MessageType.ClientData:
-			CallDeferred( "ProcessClientData", (ulong)msg.Sender, msg.Length, msg.Data );
+			CallDeferred( MethodName.ProcessClientData, (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.ServerSync:
-			CallDeferred( "ProcessServerSync", (ulong)msg.Sender, msg.Length, msg.Data );
+			CallDeferred( MethodName.ProcessServerSync, (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.GameData:
-			CallDeferred( "ProcessGameData", (ulong)msg.Sender, msg.Length, msg.Data );
+			CallDeferred( MethodName.ProcessGameData, (ulong)msg.Sender, msg.Length, msg.Data );
 			break;
 		case MessageType.VoiceChat:
 			VoiceChat.ProcessIncomingVoice( (ulong)msg.Sender, msg.Data );
@@ -753,7 +753,7 @@ public partial class SteamLobby : Node {
 		case MessageType.Handshake:
 			break;
 		case MessageType.ServerCommand:
-			CallDeferred( "ProcessServerCommand", (ulong)msg.Sender, msg.Data );
+			CallDeferred( MethodName.ProcessServerCommand, (ulong)msg.Sender, msg.Data );
 			break;
 		};
 	}

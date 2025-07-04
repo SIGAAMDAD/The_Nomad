@@ -46,7 +46,7 @@ public partial class ItemPickup : InteractionItem {
 		}
 
 		Text.Hide();
-		player.Disconnect( "Interaction", Callback );
+		player.Disconnect( Player.SignalName.Interaction, Callback );
 	}
 
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -54,15 +54,15 @@ public partial class ItemPickup : InteractionItem {
 		if ( body is Player player && player != null ) {
 			Callback = Callable.From( () => OnPickupItem( player ) );
 			Text.Show();
-			player.Connect( "Interaction", Callback );
-			player.EmitSignal( "ShowInteraction", this );
+			player.Connect( Player.SignalName.Interaction, Callback );
+			player.EmitSignal( Player.SignalName.ShowInteraction, this );
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Player player && player != null ) {
 			Text.Hide();
-			if ( player.IsConnected( "Interaction", Callback ) ) {
-				player.Disconnect( "Interaction", Callback );
+			if ( player.IsConnected( Player.SignalName.Interaction, Callback ) ) {
+				player.Disconnect( Player.SignalName.Interaction, Callback );
 			}
 		}
 	}
@@ -102,8 +102,8 @@ public partial class ItemPickup : InteractionItem {
 
 		AddToGroup( "Archive" );
 
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
-		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();

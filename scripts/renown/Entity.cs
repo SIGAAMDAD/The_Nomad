@@ -117,11 +117,11 @@ namespace Renown {
 			effect.SetVictim( this );
 			StatusEffects.Add( effectName, effect );
 			effect.Timeout += () => {
-				CallDeferred( "remove_child", effect );
-				effect.CallDeferred( "queue_free" );
+				CallDeferred( MethodName.RemoveChild, effect );
+				effect.CallDeferred( MethodName.QueueFree );
 				StatusEffects.Remove( effectName );
 			};
-			CallDeferred( "add_child", effect );
+			CallDeferred( MethodName.AddChild, effect );
 		}
 
 		public virtual void PickupWeapon( in WeaponEntity weapon ) {

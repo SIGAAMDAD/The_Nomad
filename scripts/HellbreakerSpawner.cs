@@ -21,8 +21,8 @@ public partial class HellbreakerSpawner : Area2D {
 				AddChild( imp );
 			}
 
-			SetDeferred( "monitoring", false );
-			GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", true );
+			SetDeferred( PropertyName.Monitoring, false );
+			GetChild<CollisionShape2D>( 0 ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 		}
 	}
 	public void Clear() {

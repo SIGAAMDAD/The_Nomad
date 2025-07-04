@@ -66,7 +66,7 @@ public partial class Poem : Control {
 		FinishedLoading += OnFinishedLoading;
 		LoadThread = new System.Threading.Thread( () => {
 			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
-			CallDeferred( "emit_signal", "FinishedLoading" );
+			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
 		} );
 		LoadThread.Start();
 	}
@@ -105,7 +105,7 @@ public partial class Poem : Control {
 		base._Process( delta );
 
 		if ( Input.IsActionJustPressed( "ui_advance" ) ) {
-			CallDeferred( "AdvanceTimer" );
+			CallDeferred( MethodName.AdvanceTimer );
 		}
 	}
 

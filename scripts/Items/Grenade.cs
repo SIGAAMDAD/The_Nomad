@@ -37,10 +37,10 @@ public partial class Grenade : CharacterBody2D {
 		}
 	}
 	public void OnBlowup() {
-		ExplosionArea.SetDeferred( "monitoring", true );
+		ExplosionArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 
 		// could this "technically" give players a single frame to escape the blast radius?
-		CallDeferred( "CalclulateAreaDamage" );
+		CallDeferred( MethodName.CalculateAreaDamage );
 	}
 	public void Use( in Entity user, float throwAngle, float velocity = 72.0f ) {
 		User = user;
@@ -92,7 +92,7 @@ public partial class Grenade : CharacterBody2D {
 			Timer timer = new Timer();
 			timer.WaitTime = properties[ "delay" ].AsSingle();
 			timer.OneShot = true;
-			timer.Connect( "timeout", Callable.From( OnBlowup ) );
+			timer.Connect( Timer.SignalName.Timeout, Callable.From( OnBlowup ) );
 			AddChild( timer );
 		} else if ( Type == DetonationType.Trigger ) {
 			//

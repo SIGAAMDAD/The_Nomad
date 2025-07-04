@@ -10,8 +10,8 @@ public partial class Explosion : Node2D {
 	public AmmoEntity.ExtraEffects Effects = 0;
 
 	private void OnFinished() {
-		GetParent().CallDeferred( "remove_child", this );
-		CallDeferred( "queue_free" );
+		GetParent().CallDeferred( MethodName.RemoveChild, this );
+		CallDeferred( MethodName.QueueFree );
 	}
 
 	public override void _Ready() {
@@ -21,12 +21,12 @@ public partial class Explosion : Node2D {
 
 		AudioStreamPlayer2D AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioStreamPlayer2D" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		AudioChannel.Connect( "finished", Callable.From( OnFinished ) );
+		AudioChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnFinished ) );
 
 		BlowupArea = GetNode<Area2D>( "Area2D" );
 		( BlowupArea.GetChild<CollisionShape2D>( 0 ).Shape as CircleShape2D ).Radius = Radius;
 
-		CallDeferred( "CalcDamage" );
+		CallDeferred( MethodName.CalcDamage );
 
 		float distance = GlobalPosition.DistanceTo( GetViewport().GetCamera2D().GlobalPosition );
 		if ( distance < 128.0f ) {

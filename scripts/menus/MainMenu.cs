@@ -238,26 +238,26 @@ public partial class MainMenu : Control {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
 			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {
 				ButtonIndex++;
 			}
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
 		}
 		else if ( Input.IsActionJustPressed( "ui_up" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
 			if ( ButtonIndex == 0 ) {
 				ButtonIndex = ButtonList.Length - 1;
 			} else {
 				ButtonIndex--;
 			}
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
 		}
 		else if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
-			ButtonList[ ButtonIndex ].CallDeferred( "emit_signal", "pressed" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
+			ButtonList[ ButtonIndex ].CallDeferred( MethodName.EmitSignal, Button.SignalName.Pressed );
 		}
 	}
 };

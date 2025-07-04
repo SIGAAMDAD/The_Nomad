@@ -72,7 +72,7 @@ public partial class StoryMenu : Control {
 		LoadThread = new Thread( () => {
 			ArchiveSystem.LoadGame( SettingsData.GetSaveSlot() );
 			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
-			CallDeferred( "emit_signal", "FinishedLoading" );
+			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
 		} );
 		LoadThread.Start();
 	}
@@ -159,7 +159,7 @@ public partial class StoryMenu : Control {
 
 		// clear out the children first
 		for ( int i = 0; i < SlotsContainer.GetChildCount(); i++ ) {
-			SlotsContainer.GetChild( i ).CallDeferred( "queue_free" );
+			SlotsContainer.GetChild( i ).CallDeferred( MethodName.QueueFree );
 			SlotsContainer.RemoveChild( SlotsContainer.GetChild( i ) );
 		}
 
@@ -170,11 +170,11 @@ public partial class StoryMenu : Control {
 			Button label = new Button();
 
 			label.Text = saveSlots[ i ];
-			label.Connect( "focus_entered", Callable.From( () => OnButtonFocused( label ) ) );
-			label.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( label ) ) );
-			label.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( label ) ) );
-			label.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( label ) ) );
-			label.Connect( "pressed", Callable.From( () => OnSaveSlotButtonPressed( label ) ) );
+			label.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( label ) ) );
+			label.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( label ) ) );
+			label.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( label ) ) );
+			label.Connect( Button.SignalName.MouseExited, Callable.From( () => OnButtonUnfocused( label ) ) );
+			label.Connect( Button.SignalName.rPressed, Callable.From( () => OnSaveSlotButtonPressed( label ) ) );
 			label.SetMeta( "index", i );
 			label.Show();
 			SlotsContainer.AddChild( label );
@@ -236,17 +236,17 @@ public partial class StoryMenu : Control {
 		DeleteSaveConfirm.Connect( "confirmed", Callable.From( OnDeleteSaveButtonPressed ) );
 
 		DeleteSaveButton = GetNode<Button>( "DeleteSaveButton" );
-		DeleteSaveButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( DeleteSaveButton ) ) );
-		DeleteSaveButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( DeleteSaveButton ) ) );
-		DeleteSaveButton.Connect( "pressed", Callable.From( DeleteSaveConfirm.Show ) );
+		DeleteSaveButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( DeleteSaveButton ) ) );
+		DeleteSaveButton.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( DeleteSaveButton ) ) );
+		DeleteSaveButton.Connect( Button.SignalName.Pressed, Callable.From( DeleteSaveConfirm.Show ) );
 
 		ContinueGameButton = GetNode<Button>( "MainContainer/OptionsContainer/ContinueGameButton" );
 		if ( bHasSaveData ) {
-			ContinueGameButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( ContinueGameButton ) ) );
-			ContinueGameButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( ContinueGameButton ) ) );
-			ContinueGameButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( ContinueGameButton ) ) );
-			ContinueGameButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( ContinueGameButton ) ) );
-			ContinueGameButton.Connect( "pressed", Callable.From( OnContinueGameButtonPressed ) );
+			ContinueGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( ContinueGameButton ) ) );
+			ContinueGameButton.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( ContinueGameButton ) ) );
+			ContinueGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( ContinueGameButton ) ) );
+			ContinueGameButton.Connect( Button.SignalName.MouseExited, Callable.From( () => OnButtonUnfocused( ContinueGameButton ) ) );
+			ContinueGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnContinueGameButtonPressed ) );
 		} else {
 			ContinueGameButton.Modulate = new Color( 0.60f, 0.60f, 0.60f, 1.0f );
 		}
@@ -254,22 +254,22 @@ public partial class StoryMenu : Control {
 
 		LoadGameButton = GetNode<Button>( "MainContainer/OptionsContainer/LoadGameButton" );
 		if ( bHasSaveData ) {
-			LoadGameButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( LoadGameButton ) ) );
-			LoadGameButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( LoadGameButton ) ) );
-			LoadGameButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( LoadGameButton ) ) );
-			LoadGameButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( LoadGameButton ) ) );
-			LoadGameButton.Connect( "pressed", Callable.From( OnLoadGameButtonPresed ) );
+			LoadGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( LoadGameButton ) ) );
+			LoadGameButton.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( LoadGameButton ) ) );
+			LoadGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( LoadGameButton ) ) );
+			LoadGameButton.Connect( Button.SignalName.MouseExited, Callable.From( () => OnButtonUnfocused( LoadGameButton ) ) );
+			LoadGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnLoadGameButtonPresed ) );
 		} else {
 			LoadGameButton.Modulate = new Color( 0.60f, 0.60f, 0.60f, 1.0f );
 		}
 		LoadGameButton.SetMeta( "index", 1 );
 
 		NewGameButton = GetNode<Button>( "MainContainer/OptionsContainer/NewGameButton" );
-		NewGameButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( NewGameButton ) ) );
-		NewGameButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( NewGameButton ) ) );
-		NewGameButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( NewGameButton ) ) );
-		NewGameButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( NewGameButton ) ) );
-		NewGameButton.Connect( "pressed", Callable.From( OnNewGameButtonPressed ) );
+		NewGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( NewGameButton ) ) );
+		NewGameButton.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( NewGameButton ) ) );
+		NewGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( NewGameButton ) ) );
+		NewGameButton.Connect( Button.SignalName.MouseExited, Callable.From( () => OnButtonUnfocused( NewGameButton ) ) );
+		NewGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnNewGameButtonPressed ) );
 		NewGameButton.SetMeta( "index", 2 );
 
 		SlotsContainer = GetNode<VBoxContainer>( "MainContainer/OptionsContainer/SaveSlotsContainer" );
@@ -308,24 +308,24 @@ public partial class StoryMenu : Control {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustPressed( "ui_down" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
 			if ( ButtonIndex == ButtonList.Length - 1 ) {
 				ButtonIndex = 0;
 			} else {
 				ButtonIndex++;
 			}
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
 		} else if ( Input.IsActionJustPressed( "ui_up" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_exited" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
 			if ( ButtonIndex == 0 ) {
 				ButtonIndex = ButtonList.Length - 1;
 			} else {
 				ButtonIndex--;
 			}
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
 		} else if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
-			ButtonList[ ButtonIndex ].EmitSignal( "focus_entered" );
-			ButtonList[ ButtonIndex ].CallDeferred( "emit_signal", "pressed" );
+			ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
+			ButtonList[ ButtonIndex ].CallDeferred( Button.MethodName.EmitSignal, Button.SignalName.Pressed );
 		}
 	}
 };

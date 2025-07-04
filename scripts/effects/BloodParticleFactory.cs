@@ -113,6 +113,6 @@ public partial class BloodParticleFactory : Node {
 		Instance.CreateBloodSplatter( from, to );
 	}
 	public static void CreateDeferred( Vector2 from, Vector2 to ) {
-		Instance.CallDeferred( "CreateBloodSplatter", from, to );
+		Instance.CallDeferred( MethodName.CreateBloodSplatter, from, to );
 	}
 };

@@ -24,7 +24,7 @@ public partial class Bullet : Area2D {
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				entity.AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-				entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+				entity.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
 		} else if ( body is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
 			float distance = GetParent<WeaponEntity>().GetParent<Entity>().GlobalPosition.DistanceTo( parryBox.GlobalPosition );
@@ -38,18 +38,18 @@ public partial class Bullet : Area2D {
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-				owner.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+				owner.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
 		} else {
 			AmmoEntity.ExtraEffects effects = AmmoType.GetEffects();
 			if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
 				explosion.GlobalPosition = GlobalPosition;
-				body.CallDeferred( "add_child", explosion );
+				body.CallDeferred( MethodName.AddChild, explosion );
 			}
 			DebrisFactory.Create( GlobalPosition );
 		}
-		CallDeferred( "queue_free" );
+		CallDeferred( MethodName.QueueFree );
 	}
 
 	public override void _Ready() {

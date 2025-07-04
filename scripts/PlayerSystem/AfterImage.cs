@@ -44,16 +44,16 @@ namespace PlayerSystem {
 
 		public AfterImage() {
 			LeftArm = new AnimatedSprite2D();
-			CallDeferred( "add_child", LeftArm );
+			CallDeferred( MethodName.AddChild, LeftArm );
 
 			RightArm = new AnimatedSprite2D();
-			CallDeferred( "add_child", RightArm );
+			CallDeferred( MethodName.AddChild, RightArm );
 
 			Torso = new AnimatedSprite2D();
-			CallDeferred( "add_child", Torso );
+			CallDeferred( MethodName.AddChild, Torso );
 
 			Legs = new AnimatedSprite2D();
-			CallDeferred( "add_child", Legs );
+			CallDeferred( MethodName.AddChild, Legs );
 
 			if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SyncObject = new NetworkSyncObject( 24 );

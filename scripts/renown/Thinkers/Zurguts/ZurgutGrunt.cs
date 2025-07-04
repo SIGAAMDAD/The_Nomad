@@ -95,7 +95,7 @@ namespace Renown.Thinkers {
 				DetectionColor.B = 0.0f;
 				break;
 			};
-			DetectionMeter.SetDeferred( "default_color", DetectionColor );
+			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 
 		private void GenerateRayCasts() {
@@ -135,7 +135,7 @@ namespace Renown.Thinkers {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
-			CallDeferred( "OnBlowupTimerTimeout" );
+			CallDeferred( MethodName.OnBlowupTimerTimeout );
 			HitHead = true;
 		}
 
@@ -160,7 +160,7 @@ namespace Renown.Thinkers {
 
 			Health = 0.0f;
 
-			DetectionMeter.CallDeferred( "hide" );
+			DetectionMeter.CallDeferred( MethodName.Hide );
 
 			HeadAnimations.Hide();
 			ArmAnimations.Hide();
@@ -182,7 +182,7 @@ namespace Renown.Thinkers {
 				HeadAnimations.Hide();
 				BodyAnimations.Play( "dead" );
 
-				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 				SetDeferred( "collision_layer", 0 );
 				SetDeferred( "collision_mask", 0 );
 

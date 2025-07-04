@@ -283,11 +283,11 @@ namespace Renown.Thinkers {
 
 		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			if ( channel == null ) {
-				AudioChannel.SetDeferred( "stream", stream );
-				AudioChannel.CallDeferred( "play" );
+				AudioChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, stream );
+				AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			} else {
-				channel.SetDeferred( "stream", stream );
-				channel.CallDeferred( "play" );
+				channel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, stream );
+				channel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			}
 		}
 
@@ -652,9 +652,9 @@ namespace Renown.Thinkers {
 			TargetReached = false;
 			GotoPosition = target;
 
-			BodyAnimations.CallDeferred( "play", "move" );
-			ArmAnimations?.CallDeferred( "play", "move" );
-			HeadAnimations?.CallDeferred( "play", "move" );
+			BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "move" );
+			ArmAnimations?.CallDeferred( AnimatedSprite2D.MethodName.Play, "move" );
+			HeadAnimations?.CallDeferred( AnimatedSprite2D.MethodName.Play, "move" );
 		}
 		protected virtual void OnTargetReached() {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {

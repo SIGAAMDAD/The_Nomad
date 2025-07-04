@@ -2,9 +2,8 @@ using Godot;
 using System.Collections.Generic;
 
 public partial class BulletMesh : Node2D {
-	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 64 );
+	private Dictionary<Resource, MultiMeshInstance2D> Meshes = new Dictionary<Resource, MultiMeshInstance2D>( 256 );
 	private MultiMeshInstance2D Cloner;
-	private RandomNumberGenerator Random = new RandomNumberGenerator();
 
 	private static BulletMesh Instance = null;
 
@@ -49,7 +48,7 @@ public partial class BulletMesh : Node2D {
 		return instanceId;
 	}
 	public static void AddBulletDeferred( Bullet bullet ) {
-		Instance.CallDeferred( "AddBulletInternal", bullet );
+		Instance.CallDeferred( MethodName.AddBulletInternal, bullet );
 	}
 	public static int AddBullet( Bullet bullet ) {
 		return Instance.AddBulletInternal( bullet );

@@ -53,8 +53,6 @@ public partial class AmmoEntity : Node2D {
 	public void Save() {
 		using var writer = new SaveSystem.SaveSectionWriter( GetPath() );
 
-		GD.Print( "Saving ammo data to " + GetPath() );
-
 		writer.SaveString( "Id", (string)Data.Get( "id" ) );
 		writer.SaveFloat( "Damage", Damage );
 		writer.SaveFloat( "Range", Range );
@@ -67,9 +65,7 @@ public partial class AmmoEntity : Node2D {
 	public void Load( NodePath path ) {
 		using var reader = ArchiveSystem.GetSection( path );
 
-		GD.Print( "Loading ammo data from " + path );
-
-		CallDeferred( "SetData", reader.LoadString( "Id" ) );
+		CallDeferred( MethodName.SetData, reader.LoadString( "Id" ) );
 		Damage = reader.LoadFloat( "Damage" );
 		Range = reader.LoadFloat( "Range" );
 		Velocity = reader.LoadFloat( "Velocity" );
