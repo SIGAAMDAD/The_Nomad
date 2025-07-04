@@ -163,74 +163,74 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.CheckpointDrinking:
 		case PlayerAnimationState.CheckpointExit:
 		case PlayerAnimationState.CheckpointIdle:
-			LegAnimation.CallDeferred( "hide" );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Idle:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "idle" );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 			WalkEffect.SetDeferred( "emitting", false );
 			SlideEffect.SetDeferred( "emitting", false );
 			break;
 		case PlayerAnimationState.Running:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "run" );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "run" );
 			WalkEffect.SetDeferred( "emitting", true );
 			break;
 		case PlayerAnimationState.Sliding:
-			LegAnimation.CallDeferred( "show" );
-			LegAnimation.CallDeferred( "play", "slide" );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "slide" );
 			break;
 		};
 
 		TorsoAnimationState = (PlayerAnimationState)SyncObject.ReadByte();
 		switch ( TorsoAnimationState ) {
 		case PlayerAnimationState.CheckpointDrinking:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
 			break;
 		case PlayerAnimationState.CheckpointExit:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
 			break;
 		case PlayerAnimationState.CheckpointIdle:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
 
-			LeftArmAnimation.CallDeferred( "hide" );
-			RightArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Idle:
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
-			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			TorsoAnimation.CallDeferred( "play", "default" );
-			IdleAnimation.CallDeferred( "hide" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			IdleAnimation.CallDeferred( "play", "start" );
 
-			LeftArmAnimation.CallDeferred( "hide" );
-			RightArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.TrueIdleLoop:
-			TorsoAnimation.CallDeferred( "hide" );
-			IdleAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			IdleAnimation.CallDeferred( "play", "loop" );
 
-			LeftArmAnimation.CallDeferred( "hide" );
-			RightArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Dead:
-			TorsoAnimation.CallDeferred( "show" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			TorsoAnimation.CallDeferred( "play", "dead" );
 
-			LeftArmAnimation.CallDeferred( "hide" );
-			RightArmAnimation.CallDeferred( "hide" );
+			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		};
 	}
@@ -301,7 +301,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.CheckpointExit:
 		case PlayerAnimationState.CheckpointIdle:
 			arm.SetDeferred( "sprite_frames", defaultFrames );
-			arm.CallDeferred( "hide" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Idle:
@@ -325,7 +325,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "idle" );
-			arm.CallDeferred( "show" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponUse: {
 			string property = "";
@@ -340,7 +340,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "use" );
-			arm.CallDeferred( "show" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponReload: {
 			string path = "";
@@ -362,7 +362,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			}
 			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( "play", "empty" );
-			arm.CallDeferred( "show" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		};
 	}

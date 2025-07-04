@@ -102,13 +102,26 @@ namespace Renown.Thinkers {
 
 		public override void Alert( Entity source ) {
 			LastTargetPosition = source.GlobalPosition;
-			SightDetectionAmount = SightDetectionTime;
-			Awareness = MobAwareness.Alert;
-			Bark( BarkType.Confusion );
+
+			SightDetectionAmount = Mathf.Lerp( SightDetectionAmount, SightDetectionTime, 1.0f / GlobalPosition.DistanceTo( source.GlobalPosition ) );
+			LookDir = GlobalPosition.DirectionTo( source.GlobalPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+
+			ChangeInvestigationAngleTimer.CallDeferred( "start" );
+
+			if ( IsAlert() ) {
+				SetAlert();
+			} else if ( IsSuspicious() ) {
+				SetSuspicious();
+			} else {
+				Bark( BarkType.Confusion );
+			}
 
 			SetNavigationTarget( LastTargetPosition );
-
 			CurrentState = State.Investigating;
+
+			Fear += 5;
 		}
 
 		public Godot.Vector2 GetInvestigationPosition() => LastTargetPosition;
@@ -150,10 +163,6 @@ namespace Renown.Thinkers {
 			Aiming = false;
 
 			if ( Health <= 0.0f ) {
-				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
-				SetDeferred( PropertyName.CollisionLayer, 0 );
-				SetDeferred( PropertyName.CollisionMask, 0 );
-
 				HeadHitbox.SetDeferred( Area2D.PropertyName.Monitoring, false );
 				HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 
@@ -185,7 +194,6 @@ namespace Renown.Thinkers {
 			if ( Awareness == MobAwareness.Alert ) {
 
 			} else {
-				//				Bark( BarkType.Alert );
 				SetAlert();
 			}
 
@@ -209,8 +217,8 @@ namespace Renown.Thinkers {
 			if ( Awareness != MobAwareness.Alert ) {
 //				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
 			}
+			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Stop );
 			Target = SightTarget;
-			SetNavigationTarget( LastTargetPosition );
 			Bark( BarkType.TargetSpotted );
 			Awareness = MobAwareness.Alert;
 		}
@@ -313,9 +321,14 @@ namespace Renown.Thinkers {
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnChangeInvestigationAngleTimerTimeout() {
-			float angle = RNJesus.FloatRange( 0, 360.0f );
-			LookAngle = angle;
-			AimAngle = angle;
+			float angle;
+			if ( RNJesus.IntRange( 0, 99 ) > 50 ) {
+				angle = RNJesus.FloatRange( -50.0f, 50.0f );
+			} else {
+				angle = RNJesus.FloatRange( 130.0f, 230.0f );
+			}
+			LookAngle = Mathf.DegToRad( angle );
+			AimAngle = Mathf.DegToRad( angle );
 			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 		}
 		private void OnLoseInterestTimerTimeout() {
@@ -345,11 +358,6 @@ namespace Renown.Thinkers {
 			Health = StartHealth;
 			Flags = 0;
 			SightDetectionAmount = 0.0f;
-
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
-
-			SetDeferred( PropertyName.CollisionLayer, (uint)( PhysicsLayer.SpriteEntity ) );
-			SetDeferred( PropertyName.CollisionMask, (uint)( PhysicsLayer.SpriteEntity) );
 		}
 		private void ResetAttackMeter() {
 			AttackMeterProgress = AttackMeterFull.X;
@@ -436,7 +444,6 @@ namespace Renown.Thinkers {
 			AddChild( BarkChannel );
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
-			DetectionMeter.Hide();
 
 			Weapon = new WeaponEntity();
 			Weapon.Name = "Weapon";
@@ -524,10 +531,7 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void ProcessAnimations() {
-			if ( SightTarget != null ) {
-				LookAtTarget();
-			}
-
+			LookAtTarget();
 			base.ProcessAnimations();
 		}
 		protected override void Think() {
@@ -585,7 +589,7 @@ namespace Renown.Thinkers {
 						CallDeferred( MethodName.ResetAttackMeter );
 
 						Tween Tweener = CreateTween();
-						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, PropertyName.AttackMeterProgress, AttackMeterDone.X, AimTimer.WaitTime );
+						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
 						Tweener.CallDeferred( Tween.MethodName.Connect, Tween.SignalName.Finished, Callable.From( AttackMeter.Hide ) );
 
 						AimTimer.CallDeferred( Timer.MethodName.Start );
@@ -624,12 +628,12 @@ namespace Renown.Thinkers {
 				}
 			}
 		}
-		
+
 		public void LookAtTarget() {
-			if ( SightTarget == null ) {
+			if ( SightTarget == null || ChangeInvestigationAngleTimer.TimeLeft > 0.0f ) {
 				return;
 			}
-			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
+			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 		}
@@ -644,6 +648,17 @@ namespace Renown.Thinkers {
 					sightTarget = null;
 				}
 			}
+			
+			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f && sightTarget == null ) {
+				SetSuspicious();
+				CurrentState = State.Investigating;
+				SetNavigationTarget( LastTargetPosition );
+				if ( LoseInterestTimer.IsStopped() ) {
+					LoseInterestTimer.Start();
+				}
+			}
+
+			CanSeeTarget = sightTarget != null;
 
 			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
 				// out of sight, but we got something
@@ -662,37 +677,31 @@ namespace Renown.Thinkers {
 					break;
 				};
 				SetDetectionColor();
-				CanSeeTarget = false;
 				return;
 			}
 
 			if ( sightTarget != null ) {
-				if ( sightTarget.GetHealth() <= 0.0f ) {
-					// dead?
+				if ( sightTarget.GetHealth() <= 0.0f && sightTarget.GetFaction() == Faction ) {
+					Bark( BarkType.ManDown );
+
+					Awareness = MobAwareness.Alert;
+					ChangeInvestigationAngleTimer.Start();
 				} else {
 					SightTarget = sightTarget;
 					LastTargetPosition = sightTarget.GlobalPosition;
 					CanSeeTarget = true;
 
+					LookAtTarget();
+
 					if ( Awareness >= MobAwareness.Suspicious ) {
 						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += SightDetectionSpeed * 2.0f;
+						SightDetectionAmount += SightDetectionSpeed * 2.0f * (float)GetProcessDeltaTime();
 					} else {
-						SightDetectionAmount += SightDetectionSpeed;
+						SightDetectionAmount += SightDetectionSpeed * (float)GetProcessDeltaTime();
 					}
 				}
 			}
 
-			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
-				SetSuspicious();
-				CurrentState = State.Investigating;
-				SetNavigationTarget( LastTargetPosition );
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.Start();
-				}
-			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
-				SetAlert();
-			}
 			if ( IsAlert() ) {
 				SetAlert();
 			} else if ( IsSuspicious() ) {

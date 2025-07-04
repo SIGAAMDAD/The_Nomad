@@ -43,6 +43,7 @@ public partial class ItemPickup : InteractionItem {
 			Icon = null;
 
 			SetDeferred( PropertyName.Monitorable, false );
+			GetChild<CollisionShape2D>( 0 ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 		}
 
 		Text.Hide();

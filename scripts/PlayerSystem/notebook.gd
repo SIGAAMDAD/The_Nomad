@@ -61,14 +61,14 @@ var _owner: CharacterBody2D
 @onready var _encumbrance_amount_label: Label = $TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer/AmountLabel
 @onready var _overweight_label: Label = $TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer/OverweightLabel
 
-@onready var _quest_name: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/QuestNameLabel
-@onready var _quest_objective: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/QuestObjectiveLabel
-@onready var _quest_type: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/QuestTypeLabel
-@onready var _contract_data: VBoxContainer = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData
-@onready var _contract_employer: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData/ContractEmployer
-@onready var _contract_pay: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData/ContractPay
-@onready var _contract_guild: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData/ContractGuild
-@onready var _quest_description: Label = $TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/QuestDescription
+@onready var _quest_name: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/QuestNameLabel"
+@onready var _quest_objective: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/QuestObjectiveLabel"
+@onready var _quest_type: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/QuestTypeLabel"
+@onready var _contract_data: VBoxContainer = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"
+@onready var _contract_employer: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData/ContractEmployer"
+@onready var _contract_pay: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData/ContractPay"
+@onready var _contract_guild: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData/ContractGuild"
+@onready var _quest_description: Label = $"TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/QuestDescription"
 
 @onready var _weapon_list: VBoxContainer = $TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar/WeaponList
 @onready var _primary_weapon: TextureRect = $TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer/PrimaryIcon

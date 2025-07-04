@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=133 format=3 uid="uid://buu7tetuw71sy"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=130 format=3 uid="uid://buu7tetuw71sy"]
 
 [ext_resource type="Script" uid="uid://cpplm41b5bt6m" path="res://addons/guide/guide_action_mapping.gd" id="1_nfumt"]
 [ext_resource type="Resource" uid="uid://dn3f2andido2j" path="res://resources/binds/actions/gamepad/move_player0.tres" id="2_ip6yk"]
@@ -213,16 +213,16 @@ script = ExtResource("1_nfumt")
 action = ExtResource("10_4afpc")
 input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_rhawb")])
 
-[sub_resource type="Resource" id="Resource_cgy7m"]
-script = ExtResource("15_0fge7")
-axis = 2
+[sub_resource type="Resource" id="Resource_u35xh"]
+script = ExtResource("4_arrar")
+x = 2
+y = 3
 joy_index = 0
 
-[sub_resource type="Resource" id="Resource_8hn8v"]
-script = ExtResource("8_m31ub")
-hold_treshold = 1.0
-is_one_shot = false
-actuation_threshold = 0.5
+[sub_resource type="Resource" id="Resource_kxx36"]
+script = ExtResource("6_q4mtt")
+lower_threshold = 0.2
+upper_threshold = 1.0
 
 [sub_resource type="Resource" id="Resource_1d3s3"]
 script = ExtResource("3_q8p04")
@@ -230,35 +230,14 @@ override_action_settings = false
 is_remappable = false
 display_name = ""
 display_category = ""
-input = SubResource("Resource_cgy7m")
-modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_8hn8v")])
-
-[sub_resource type="Resource" id="Resource_oftly"]
-script = ExtResource("15_0fge7")
-axis = 3
-joy_index = 0
-
-[sub_resource type="Resource" id="Resource_btvgn"]
-script = ExtResource("8_m31ub")
-hold_treshold = 1.0
-is_one_shot = false
-actuation_threshold = 0.5
-
-[sub_resource type="Resource" id="Resource_h541c"]
-script = ExtResource("3_q8p04")
-override_action_settings = false
-is_remappable = false
-display_name = ""
-display_category = ""
-input = SubResource("Resource_oftly")
-modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_btvgn")])
+input = SubResource("Resource_u35xh")
+modifiers = Array[ExtResource("5_an8na")]([SubResource("Resource_kxx36")])
+triggers = Array[ExtResource("7_7mvoh")]([])
 
 [sub_resource type="Resource" id="Resource_ggko0"]
 script = ExtResource("1_nfumt")
 action = ExtResource("14_xky1p")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_1d3s3"), SubResource("Resource_h541c")])
+input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_1d3s3")])
 
 [sub_resource type="Resource" id="Resource_juc2d"]
 script = ExtResource("10_54cv3")

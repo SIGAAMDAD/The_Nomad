@@ -6,6 +6,7 @@ using System;
 using ChallengeMode;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
+using Microsoft.Diagnostics.Tracing.Stacks.Formats;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -480,18 +481,14 @@ namespace Renown.Thinkers {
 			NavAgent.AvoidanceLayers = 1;
 			NavAgent.AvoidanceMask = 1;
 			NavAgent.NeighborDistance = 1024.0f;
-			if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
-				NavAgent.Radius = 30.0f;
-			} else {
-				NavAgent.Radius = 80.0f;
-			}
-			NavAgent.MaxNeighbors = 30;
+			NavAgent.Radius = 20.0f;
+			NavAgent.MaxNeighbors = 1024;
 			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.TimeHorizonAgents = 2.0f;
 			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
 			NavAgent.Connect( "velocity_computed", Callable.From<Godot.Vector2>( ( safeVelocity ) => {
-				Velocity = safeVelocity;
+				Velocity = safeVelocity;// * (float)GetPhysicsProcessDeltaTime();
 				CallDeferred( "MoveAlongPath" );
 			} ) );
 			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
@@ -580,7 +577,7 @@ namespace Renown.Thinkers {
 		/// sets the current frame's animations based on thinker subclass
 		/// </summary>
 		protected virtual void ProcessAnimations() {
-			if ( !Visible ) {
+			if ( !Visible || ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 
@@ -595,15 +592,15 @@ namespace Renown.Thinkers {
 					if ( angle < 130.0f ) {
 						angle += 80.0f;
 					}
-					HeadAnimations.SetDeferred( "flip_v", true );
+					HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
 				} else if ( angle < 130.0f ) {
 					if ( angle > 50.0f ) {
 						angle -= 80.0f;
 					}
-					HeadAnimations.SetDeferred( "flip_v", false );
+					HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
 				}
 				LookAngle = Mathf.DegToRad( angle );
-				HeadAnimations.SetDeferred( "global_rotation", LookAngle );
+				HeadAnimations.SetDeferred( PropertyName.GlobalRotation, LookAngle );
 			}
 			if ( ArmAnimations != null ) {
 				float angle = Mathf.RadToDeg( AimAngle );
@@ -616,20 +613,26 @@ namespace Renown.Thinkers {
 					if ( angle < 130.0f ) {
 						angle += 80.0f;
 					}
-					ArmAnimations.SetDeferred( "flip_v", true );
+					ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
 				} else if ( angle < 130.0f ) {
 					if ( angle > 50.0f ) {
 						angle -= 80.0f;
 					}
-					ArmAnimations.SetDeferred( "flip_v", false );
+					ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
 				}
 				AimAngle = Mathf.DegToRad( angle );
-				ArmAnimations.SetDeferred( "global_rotation", AimAngle );
+				ArmAnimations.SetDeferred( PropertyName.GlobalRotation, AimAngle );
 			}
-			if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
-			} else if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
+			if ( Velocity == Godot.Vector2.Zero ) {
+				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
+				ArmAnimations?.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
+				HeadAnimations?.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
+			} else {
+				if ( Velocity.X < 0.0f ) {
+					BodyAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, true );
+				} else if ( Velocity.X > 0.0f ) {
+					BodyAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, false );
+				}
 			}
 		}
 
@@ -640,7 +643,8 @@ namespace Renown.Thinkers {
 			}
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
-			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+			MoveAndSlide();
+//			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 
 			return true;
 		}

@@ -5,7 +5,8 @@ public partial class AccessibilityManager : Node {
 	public static Theme DyslexiaTheme;
 	public static Theme DefaultTheme;
 
-	private static Dictionary<Resource, Dictionary<Resource, string>> InputMappings;
+	private static Dictionary<Resource, string> KeyboardInputMappings;
+	private static Dictionary<Resource, string> GamepadInputMappings;
 
 	static AccessibilityManager() {
 		DyslexiaTheme = ResourceLoader.Load<Theme>( "res://resources/dyslexia.tres" );
@@ -45,7 +46,7 @@ public partial class AccessibilityManager : Node {
 		ResourceCache.LoadKeyboardBinds();
 		ResourceCache.LoadGamepadBinds();
 
-		Dictionary<Resource, string> keyboardMappings = new Dictionary<Resource, string> {
+		KeyboardInputMappings = new Dictionary<Resource, string> {
 			{ ResourceCache.MoveActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.MoveActionKeyboard ) },
 			{ ResourceCache.DashActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.DashActionKeyboard ) },
 			{ ResourceCache.SlideActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.SlideActionKeyboard ) },
@@ -59,24 +60,19 @@ public partial class AccessibilityManager : Node {
 			{ ResourceCache.InteractActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.InteractActionKeyboard ) },
 		};
 
-		Dictionary<Resource, string> gamepadMappings = new Dictionary<Resource, string>();
+		GamepadInputMappings = new Dictionary<Resource, string>();
 		for ( int i = 0; i < 1; i++ ) {
-			gamepadMappings.Add( ResourceCache.MoveActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MoveActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.DashActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.DashActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.SlideActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.SlideActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.UseWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.UseWeaponActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.ArmAngleActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.ArmAngleActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.MeleeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MeleeActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.BulletTimeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.BulletTimeActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.NextWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.NextWeaponActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.PrevWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.PrevWeaponActionGamepad[ i ] ) );
-			gamepadMappings.Add( ResourceCache.OpenInventoryActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.OpenInventoryActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.MoveActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MoveActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.DashActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.DashActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.SlideActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.SlideActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.UseWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.UseWeaponActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.ArmAngleActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.ArmAngleActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.MeleeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MeleeActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.BulletTimeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.BulletTimeActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.NextWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.NextWeaponActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.PrevWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.PrevWeaponActionGamepad[ i ] ) );
+			GamepadInputMappings.Add( ResourceCache.OpenInventoryActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.OpenInventoryActionGamepad[ i ] ) );
 		}
-
-		InputMappings = new Dictionary<Resource, Dictionary<Resource, string>>() {
-			{ ResourceCache.KeyboardInputMappings, keyboardMappings },
-			{ ResourceCache.GamepadInputMappings, gamepadMappings }
-		};
 	}
 	private static string LoadBindString( Resource mappingContext, Resource action ) {
 		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)SettingsData.GetRemapper().Call( "get_remappable_items", mappingContext, "", action );
@@ -95,14 +91,12 @@ public partial class AccessibilityManager : Node {
 		return Input.GetJoyVibrationStrength( nDevice ) > Godot.Vector2.Zero;
 	}
 	public static string GetBindString( Resource action ) {
-		if ( InputMappings.TryGetValue( LevelData.Instance.ThisPlayer.GetCurrentMappingContext(), out Dictionary<Resource, string> value ) ) {
-			if ( value.TryGetValue( action, out string bind ) ) {
-				return bind;
-			}
-			Console.PrintError( string.Format( "AccessibilityManager.GetBindString: invalid GUIDEAction {0}", action.ResourcePath ) );
-			return null;
+		if ( KeyboardInputMappings.TryGetValue( action, out string bind ) ) {
+			return bind;
+		} else if ( GamepadInputMappings.TryGetValue( action, out bind ) ) {
+			return bind;
 		}
-		Console.PrintError( string.Format( "AccessibilityManager.GetBindString: invalid GUIDMappingContext {0}", LevelData.Instance.ThisPlayer.GetCurrentMappingContext().ResourcePath ) );
+		Console.PrintError( string.Format( "AccessibilityManager.GetBindString: invalid GUIDEAction {0}", action.ResourcePath ) );
 		return null;
 	}
 };

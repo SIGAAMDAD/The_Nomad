@@ -73,9 +73,6 @@ var _weapon_status_timer: Timer = Timer.new()
 @onready var _world_time_hour: Label = $MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/HourLabel
 @onready var _world_time_minute: Label = $MainHUD/WorldTimeContainer/VBoxContainer/HBoxContainer2/MinuteLabel
 
-@onready var _interact_prompt: RichTextLabel = $MainHUD/InteractPrompt
-var _interact_resource = preload( "res://resources/binds/actions/keyboard/interact.tres" )
-
 @onready var _location_label: Label = $MainHUD/LocationLabel
 var _location_status_timer:Timer = Timer.new()
 
@@ -309,7 +306,6 @@ func _ready() -> void:
 	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
 	add_child( _objective_status_timer )
 	
-	_owner.connect( "Interaction", func(): _interact_prompt.parse_bbcode( AccessibilityManager.GetBindString( _interact_resource ) ) )
 	_owner.connect( "DashStart", func(): _dash_overlay.show() )
 	_owner.connect( "DashEnd", func(): _dash_overlay.hide() )
 	_owner.connect( "BulletTimeStart", func(): _reflex_overlay.show() )

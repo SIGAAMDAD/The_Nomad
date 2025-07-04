@@ -101,10 +101,6 @@ public partial class Player : Entity {
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
-	public static readonly StringName @AnimationName_Idle = "idle";
-	public static readonly StringName @AnimationName_Move = "move";
-	public static readonly StringName @AnimationName_CheckpointIdle = "checkpoint_idle";
-
 	public static readonly int MAX_RUNES = 3;
 	public static readonly int MAX_PERKS = 5;
 	public static readonly float ACCEL = 1600.0f;
@@ -493,7 +489,8 @@ public partial class Player : Entity {
 		case Hands.Both:
 			LastUsedArm = ArmRight;
 			break;
-		};
+		}
+		;
 
 		AmmoStacks.Clear();
 		int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
@@ -759,69 +756,62 @@ public partial class Player : Entity {
 	public Godot.Vector2 GetInputVelocity() => InputVelocity;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
-	public float GetArmAngle() {
-		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
-			return 0.0f;
-		}
-		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
-			Godot.Vector2 mousePosition;
 
-			if ( (int)SettingsData.GetWindowMode() >= 2 ) {
-				mousePosition = DisplayServer.MouseGetPosition();
+	private void SyncShadow() {
+		// TODO: quality adjustment for this?
+		float rotation = GlobalPosition.AngleTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition );
+
+		LeftArmShadowAnimation.GlobalRotation = rotation + ArmLeft.Animations.GlobalRotation;
+		RightArmShadowAnimation.GlobalRotation = rotation + ArmRight.Animations.GlobalRotation;
+
+		bool flip = TorsoAnimation.FlipH;
+		TorsoShadowAnimation.FlipH = flip;
+		LegShadowAnimation.FlipH = flip;
+		LeftArmShadowAnimation.FlipV = flip;
+		RightArmShadowAnimation.FlipV = flip;
+
+		Shadows.GlobalRotation = rotation;
+
+		LeftArmShadowAnimation.Show();
+		RightArmShadowAnimation.Show();
+
+		AnimatedSprite2D backShadow = flip ? RightArmShadowAnimation : LeftArmShadowAnimation;
+		AnimatedSprite2D frontShadow = flip ? LeftArmShadowAnimation : RightArmShadowAnimation;
+
+		if ( HandsUsed == Hands.Both ) {
+			if ( TorsoAnimation.FlipH ) {
+				(frontShadow, backShadow) = (backShadow, frontShadow);
 			} else {
-				mousePosition = GetViewport().GetMousePosition();
-			}
-
-			if ( LastMousePosition != mousePosition ) {
-				LastMousePosition = mousePosition;
-				IdleReset();
-			}
-
-			ArmAngle = GetLocalMousePosition().Angle();
-			AimLine.GlobalRotation = ArmAngle;
-			AimRayCast.TargetPosition = AimLine.Points[ 1 ];
-
-			// TODO: quality adjustment for this?
-			float rotation = GlobalPosition.AngleTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition );
-
-			LeftArmShadowAnimation.GlobalRotation = rotation + ArmLeft.Animations.GlobalRotation;
-			RightArmShadowAnimation.GlobalRotation = rotation + ArmRight.Animations.GlobalRotation;
-
-			bool flip = TorsoAnimation.FlipH;
-			TorsoShadowAnimation.FlipH = flip;
-			LegShadowAnimation.FlipH = flip;
-			LeftArmShadowAnimation.FlipV = flip;
-			RightArmShadowAnimation.FlipV = flip;
-
-			Shadows.GlobalRotation = rotation;
-
-			LeftArmShadowAnimation.Show();
-			RightArmShadowAnimation.Show();
-
-			AnimatedSprite2D backShadow = flip ? RightArmShadowAnimation : LeftArmShadowAnimation;
-			AnimatedSprite2D frontShadow = flip ? LeftArmShadowAnimation : RightArmShadowAnimation;
-
-			if ( HandsUsed == Hands.Both ) {
-				if ( TorsoAnimation.FlipH ) {
-					(frontShadow, backShadow) = (backShadow, frontShadow);
-				} else {
-					frontShadow = LastUsedArm == ArmLeft ? LeftArmShadowAnimation : RightArmShadowAnimation;
-				}
-			}
-			backShadow.Visible = HandsUsed != Hands.Both;
-
-			frontShadow.Show();
-
-			Shadows.MoveChild( backShadow, 0 );
-			Shadows.MoveChild( frontShadow, 3 );
-
-			if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
-				FlipSpriteRight();
-			} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
-				FlipSpriteLeft();
+				frontShadow = LastUsedArm == ArmLeft ? LeftArmShadowAnimation : RightArmShadowAnimation;
 			}
 		}
-		return ArmAngle;
+		backShadow.Visible = HandsUsed != Hands.Both;
+
+		frontShadow.Show();
+
+		Shadows.MoveChild( backShadow, 0 );
+		Shadows.MoveChild( frontShadow, 3 );
+	}
+	private void GetArmAngle() {
+		Godot.Vector2 mousePosition;
+
+		if ( (int)SettingsData.GetWindowMode() >= 2 ) {
+			mousePosition = DisplayServer.MouseGetPosition();
+		} else {
+			mousePosition = GetViewport().GetMousePosition();
+		}
+
+		if ( LastMousePosition != mousePosition ) {
+			LastMousePosition = mousePosition;
+			IdleReset();
+		}
+
+		ArmAngle = GetLocalMousePosition().Angle();
+		if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
+			FlipSpriteRight();
+		} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
+			FlipSpriteLeft();
+		}
 	}
 	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
 	public Arm GetLastUsedArm() => LastUsedArm;
@@ -1115,7 +1105,8 @@ public partial class Player : Entity {
 			Flags |= PlayerFlags.Checkpoint;
 			LastCheckpoint = item as Checkpoint;
 			break;
-		};
+		}
+		;
 	}
 
 	private void OnIdleAnimationTimerTimeout() {
@@ -1272,10 +1263,15 @@ public partial class Player : Entity {
 		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
 			GetArmAngle();
 		} else {
-			ArmAngle = ArmAngleAction.Get( "value_axis_1d" ).AsSingle();
+			GD.Print( "ArmAngle: " + ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle() );
+			ArmAngle = ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle();
 		}
 		AimLine.GlobalRotation = ArmAngle;
-		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[ 1 ].X;
+		AimRayCast.TargetPosition = AimLine.Points[ 1 ];
+
+		SyncShadow();
+
+//		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[ 1 ].X;
 	}
 	private void OnPrevWeapon() {
 		if ( IsInputBlocked() ) {
@@ -1518,8 +1514,7 @@ public partial class Player : Entity {
 		default:
 			slot = WeaponSlots[ CurrentWeapon ];
 			break;
-		}
-		;
+		};
 
 		WeaponEntity.Properties mode = slot.GetMode();
 		WeaponEntity weapon = slot.GetWeapon();
@@ -1645,7 +1640,7 @@ public partial class Player : Entity {
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
-		
+
 		GetNode( "/root/GUIDE" ).Call( "disable_mapping_context", CurrentMappingContext );
 	}
 
@@ -1689,7 +1684,8 @@ public partial class Player : Entity {
 			return;
 		case GameMode.Multiplayer:
 			break;
-		};
+		}
+		;
 		if ( Health <= 0.0f ) {
 			GetNode( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
 			GetNode( "/root/TransitionScreen" ).Call( "transition" );
@@ -1740,7 +1736,7 @@ public partial class Player : Entity {
 	public void ConnectGamepadBinds() {
 		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMove ) );
 		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnMove ) );
-//		ResourceCache.UseBothHandsActionsGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseBothHands ) );
+		//		ResourceCache.UseBothHandsActionsGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseBothHands ) );
 		ResourceCache.MeleeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMelee ) );
 		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
 		ResourceCache.BulletTimeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnBulletTime ) );
@@ -1767,7 +1763,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
-		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( GetArmAngle ) );
+		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( OnArmAngleChanged ) );
 		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
 	private void LoadSfx() {
@@ -2021,7 +2017,7 @@ public partial class Player : Entity {
 		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
 			SwitchInputMode( ResourceCache.KeyboardInputMappings );
 		}
-		
+
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );
@@ -2408,7 +2404,8 @@ public partial class Player : Entity {
 				break;
 			default:
 				break;
-			};
+			}
+			;
 		}
 		if ( index == WeaponSlot.INVALID ) {
 			Console.PrintError( string.Format( "Player.PickupWeapon: weapon {0} has invalid equipment category", (string)weapon.Data.Get( "id" ) ) );

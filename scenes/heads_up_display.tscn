@@ -761,24 +761,8 @@ pivot_offset = Vector2(64, 64)
 texture = ExtResource("30_dg2ec")
 expand_mode = 2
 
-[node name="InteractPrompt" type="RichTextLabel" parent="MainHUD"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.273
-anchor_top = 0.94
-anchor_right = 0.727
-anchor_bottom = 1.0
-offset_left = 0.279999
-offset_top = -0.200012
-offset_right = -0.280029
-grow_horizontal = 2
-grow_vertical = 0
-bbcode_enabled = true
-horizontal_alignment = 1
-metadata/_edit_use_anchors_ = true
-
 [node name="NotebookContainer" type="MarginContainer" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1128,27 +1112,23 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer"]
+[node name="TabContainer" type="TabContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer"]
 layout_mode = 2
+current_tab = 0
 
-[node name="Tree" type="Tree" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+[node name="Quest Log" type="HBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
-
-[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree"]
-custom_minimum_size = Vector2(320, 0)
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -312.0
-grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree/QuestListContainer"]
+[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/QuestListContainer"]
 layout_mode = 2
 
-[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree/QuestListContainer/VScrollBar"]
+[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/QuestListContainer/VScrollBar"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 anchor_left = 1.125
@@ -1158,42 +1138,105 @@ offset_top = 1.0
 offset_bottom = -0.163025
 metadata/_edit_use_anchors_ = true
 
-[node name="VSeparator" type="VSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
 layout_mode = 2
 
-[node name="ActiveQuestContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+[node name="ActiveQuestContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="QuestNameLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="QuestNameLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="QuestObjectiveLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="QuestObjectiveLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="QuestTypeLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="QuestTypeLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="ContractData" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="ContractData" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData"]
+[node name="HSeparator2" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="ContractPay" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData"]
+[node name="ContractPay" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="ContractGuild" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData"]
+[node name="ContractGuild" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="ContractEmployer" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer/ContractData"]
+[node name="ContractEmployer" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="HSeparator" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="QuestDescription" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/ActiveQuestContainer"]
+[node name="QuestDescription" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 220)
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Notes" type="HBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/QuestListContainer"]
+layout_mode = 2
+
+[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/QuestListContainer/VScrollBar"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+anchor_left = 1.125
+anchor_right = 38.625
+anchor_bottom = 0.987
+offset_top = 1.0
+offset_bottom = -0.163025
+metadata/_edit_use_anchors_ = true
+
+[node name="VSeparator" type="VSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+layout_mode = 2
+
+[node name="ActiveQuestContainer" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QuestNameLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestObjectiveLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestTypeLabel" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="ContractData" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractPay" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractGuild" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractEmployer" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="QuestDescription" type="Label" parent="NotebookContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
 custom_minimum_size = Vector2(300, 220)
 layout_mode = 2
 autowrap_mode = 3

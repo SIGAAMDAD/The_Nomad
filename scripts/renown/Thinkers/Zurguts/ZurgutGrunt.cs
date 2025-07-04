@@ -52,9 +52,6 @@ namespace Renown.Thinkers {
 		private StringName MoveAnimation = "move";
 		private StringName IdleAnimation = "idle";
 
-		private AnimatedSprite2D ArmAnimations;
-		private AnimatedSprite2D HeadAnimations;
-
 		private float SightDetectionAmount = 0.0f;
 
 		private CollisionShape2D HammerShape;
@@ -183,11 +180,11 @@ namespace Renown.Thinkers {
 				BodyAnimations.Play( "dead" );
 
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
-				SetDeferred( "collision_layer", 0 );
-				SetDeferred( "collision_mask", 0 );
+				SetDeferred( PropertyName.CollisionLayer, 0 );
+				SetDeferred( PropertyName.CollisionMask, 0 );
 
-				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( "monitoring", false );
-				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( Area2D.PropertyName.Monitoring, false );
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 
 				DetectionMeter.CallDeferred( "hide" );
 
@@ -198,8 +195,8 @@ namespace Renown.Thinkers {
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
-				CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
-				BodyAnimations.CallDeferred( "play", "dead" );
+				CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "dead" );
 				return;
 			}
 
@@ -245,31 +242,31 @@ namespace Renown.Thinkers {
 			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
 			AddChild( explosion );
 
-			AreaOfEffect.SetDeferred( "monitoring", false );
-			HammerShape.SetDeferred( "disabled", true );
-			ArmAnimations.CallDeferred( "play", "idle" );
+			AreaOfEffect.SetDeferred( Area2D.PropertyName.Monitoring, false );
+			HammerShape.SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
+			ArmAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 		}
 
 		private void OnPlayerRespawn() {
 			GlobalPosition = StartPosition;
 			Health = StartHealth;
 
-			DetectionMeter.CallDeferred( "show" );
-			ArmAnimations.CallDeferred( "show" );
-			HeadAnimations.CallDeferred( "show" );
+			DetectionMeter.CallDeferred( MethodName.Show );
+			ArmAnimations.CallDeferred( MethodName.Show );
+			HeadAnimations.CallDeferred( MethodName.Show );
 
 			NavAgent.AvoidanceEnabled = true;
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
 
-			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
-			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( PropertyName.CollisionLayer, (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( PropertyName.CollisionMask, (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
 
 			Flags &= ~ThinkerFlags.Dead;
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", false );
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
 
 			Target = null;
 			SightTarget = null;
@@ -343,7 +340,7 @@ namespace Renown.Thinkers {
 			AddChild( AttackTimer );
 
 			BlowupTimer = GetNode<Timer>( "BlowupTimer" );
-			BlowupTimer.Connect( "timeout", Callable.From( OnBlowupTimerTimeout ) );
+			BlowupTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnBlowupTimerTimeout ) );
 
 			BlowupDamageCurve = ResourceLoader.Load<Curve>( "res://resources/zurgut_grunt_blowup_damage_curve.tres" );
 
@@ -367,8 +364,7 @@ namespace Renown.Thinkers {
 			case DirType.West:
 				LookDir = Godot.Vector2.Left;
 				break;
-			}
-			;
+			};
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
@@ -376,55 +372,10 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void ProcessAnimations() {
-			if ( !Visible || ( Flags & ThinkerFlags.Dead ) != 0 ) {
-				return;
+			if ( SightTarget != null ) {
+				LookAtTarget();
 			}
-
-			if ( Target != null ) {
-				if ( CanSeeTarget ) {
-					LastTargetPosition = Target.GlobalPosition;
-				}
-				LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-				AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-				LookAngle = AimAngle;
-			}
-
-			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
-
-			if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
-			} else if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
-			}
-
-			if ( LookAngle > 225.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", true );
-			} else if ( LookAngle < 135.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( AimAngle > 225.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", true );
-			} else if ( AimAngle < 135.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( Velocity != Godot.Vector2.Zero ) {
-				HeadAnimations.CallDeferred( "play", MoveAnimation );
-				BodyAnimations.CallDeferred( "play", MoveAnimation );
-			} else {
-//				if ( Awareness == MobAwareness.Relaxed ) {
-//					BodyAnimations.CallDeferred( "play", "calm" );
-//					HeadAnimations.CallDeferred( "hide" );
-//					ArmAnimations.CallDeferred( "hide" );
-//				} else {
-					ArmAnimations.CallDeferred( "show" );
-					HeadAnimations.CallDeferred( "show" );
-					BodyAnimations.CallDeferred( "play", IdleAnimation );
-					HeadAnimations.CallDeferred( "play", IdleAnimation );
-//				}
-			}
+			base.ProcessAnimations();
 		}
 		protected override void Think() {
 			CheckSight();
@@ -449,18 +400,14 @@ namespace Renown.Thinkers {
 				break;
 			};
 		}
-
-		protected override bool MoveAlongPath() {
-			if ( NavAgent.IsTargetReached() ) {
-				Velocity = Godot.Vector2.Zero;
-				return true;
+		
+		public void LookAtTarget() {
+			if ( SightTarget == null ) {
+				return;
 			}
-			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
-			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
+			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			Velocity = LookDir * MovementSpeed;
-			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
-			return true;
+			AimAngle = LookAngle;
 		}
 		private void CheckSight() {
 			if ( Awareness == MobAwareness.Alert ) {
@@ -469,7 +416,7 @@ namespace Renown.Thinkers {
 
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
+				sightTarget = SightLines[ i ].GetCollider() as Entity;
 				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
 					break;
 				} else {
@@ -489,7 +436,8 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				};
+				}
+				;
 				SetDetectionColor();
 				CanSeeTarget = false;
 				return;
@@ -510,7 +458,7 @@ namespace Renown.Thinkers {
 			if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
 				SetAlert();
 				CurrentState = State.Attacking;
-//				SetNavigationTarget( LastTargetPosition );
+				//				SetNavigationTarget( LastTargetPosition );
 			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
 				SetAlert();
 			}

@@ -174,7 +174,7 @@ public partial class StoryMenu : Control {
 			label.Connect( Button.SignalName.FocusExited, Callable.From( () => OnButtonUnfocused( label ) ) );
 			label.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( label ) ) );
 			label.Connect( Button.SignalName.MouseExited, Callable.From( () => OnButtonUnfocused( label ) ) );
-			label.Connect( Button.SignalName.rPressed, Callable.From( () => OnSaveSlotButtonPressed( label ) ) );
+			label.Connect( Button.SignalName.Pressed, Callable.From( () => OnSaveSlotButtonPressed( label ) ) );
 			label.SetMeta( "index", i );
 			label.Show();
 			SlotsContainer.AddChild( label );
