@@ -138,6 +138,8 @@ public partial class TitleMenu : Control {
 	}
 
 	public override void _Ready() {
+		base._Ready();
+
 		PhysicsServer2D.SetActive( false );
 
 		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );

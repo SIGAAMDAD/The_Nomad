@@ -1,16 +1,21 @@
-[gd_scene load_steps=25 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=30 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
+[ext_resource type="Resource" uid="uid://ct8fhvbwjfr3i" path="res://resources/binds/actions/keyboard/move_north.tres" id="3_l0eij"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
+[ext_resource type="Resource" uid="uid://i86jw4vdkcoh" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
+[ext_resource type="Resource" uid="uid://cevetawunpiw4" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
-[ext_resource type="Script" uid="uid://gkdjwf0q6g1d" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
-[ext_resource type="Script" uid="uid://dr5oxtww2bofb" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
+[ext_resource type="Script" uid="uid://db27ccgomq455" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
+[ext_resource type="Resource" uid="uid://61hxxqe5yeqk" path="res://resources/binds/actions/keyboard/move_west.tres" id="6_rxdtf"]
+[ext_resource type="Script" uid="uid://ccvqqvfooyvn0" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
-[ext_resource type="Script" uid="uid://btihawvdn0ykd" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
+[ext_resource type="Script" uid="uid://cw71o87tvdx3q" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
 [ext_resource type="Resource" uid="uid://b3wjmxhtiwox5" path="res://resources/binds/actions/keyboard/open_inventory.tres" id="7_l0eij"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="8_muhwa"]
 [ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="9_rrg86"]
+[ext_resource type="Resource" uid="uid://bsstc7pudt16e" path="res://resources/binds/actions/keyboard/interact.tres" id="10_fd2q8"]
 [ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
 [ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="11_l0eij"]
 
@@ -653,20 +658,6 @@ layout_mode = 2
 mouse_filter = 2
 metadata/_tab_index = 5
 
-[node name="KeyBindsLabel" type="Label" parent="TabContainer/Controls"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -144.0
-offset_right = 144.0
-offset_bottom = 36.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 36
-text = "KEYBINDS"
-horizontal_alignment = 1
-
 [node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
 layout_mode = 1
 anchors_preset = 15
@@ -675,7 +666,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-current_tab = 1
+current_tab = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Movement" type="TabBar" parent="TabContainer/Controls/TabContainer"]
 visible = false
@@ -695,6 +687,34 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 32
 
+[node name="MoveNorthBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Move North"
+_action_name = &"move_north"
+_display_category = &"Movement"
+_action = ExtResource("3_l0eij")
+
+[node name="MoveEastBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Move East"
+_action_name = &"move_east"
+_display_category = &"Movement"
+_action = ExtResource("4_pt7eq")
+
+[node name="MoveSouthBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Move South"
+_action_name = &"move_south"
+_display_category = &"Movement"
+_action = ExtResource("5_fd2q8")
+
+[node name="MoveWestBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Move West"
+_action_name = &"move_west"
+_display_category = &"Movement"
+_action = ExtResource("6_rxdtf")
+
 [node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
 _action_label = &"Dash"
@@ -710,21 +730,18 @@ _display_category = &"movement"
 _action = ExtResource("6_uhm1t")
 
 [node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Utility"]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 40.0
-offset_right = 221.0
-offset_bottom = 568.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+theme_override_constants/separation = 32
 
 [node name="OpenInventoryBind" parent="TabContainer/Controls/TabContainer/Utility/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
@@ -733,8 +750,14 @@ _action_name = &"open_inventory"
 _display_category = &"utility"
 _action = ExtResource("7_l0eij")
 
+[node name="InteractBind" parent="TabContainer/Controls/TabContainer/Utility/VBoxContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+_action_label = &"Interact"
+_action_name = &"interact"
+_display_category = &"Utility"
+_action = ExtResource("10_fd2q8")
+
 [node name="Combat" type="TabBar" parent="TabContainer/Controls/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -743,12 +766,11 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 32
+metadata/_edit_use_anchors_ = true
 
 [node name="UseWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
 layout_mode = 2
@@ -800,5 +822,35 @@ metadata/_edit_use_anchors_ = true
 unique_name_in_owner = true
 script = ExtResource("5_gmmd7")
 abort_detection_on = Array[ExtResource("6_u2rrl")]([SubResource("Resource_qxrc6")])
+
+[node name="PrevMenuButton" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0861875
+anchor_top = 0.0336667
+anchor_right = 0.136
+anchor_bottom = 0.1
+offset_left = -0.160001
+offset_top = -0.160001
+offset_right = -0.0400085
+expand_mode = 2
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="NextMenuButton" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.864312
+anchor_top = 0.0336667
+anchor_right = 0.914125
+anchor_bottom = 0.1
+offset_left = -0.159973
+offset_top = -0.160001
+offset_right = -0.0400391
+expand_mode = 2
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="SaveSettingsButton" to="." method="_on_save_settings_button_pressed"]

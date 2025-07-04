@@ -58,7 +58,6 @@ SteamManager="*res://autoloads/Steam/SteamManager.cs"
 SteamAchievements="*res://autoloads/Steam/SteamAchievements.cs"
 SteamLobby="*res://autoloads/Steam/SteamLobby.cs"
 ArchiveSystem="*res://scripts/SaveSystem/ArchiveSystem.cs"
-GUIDE="*res://addons/guide/guide.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 TransitionScreen="*res://scenes/menus/transition_screen.tscn"
 Questify="*res://addons/questify/quest_manager.gd"
@@ -71,6 +70,7 @@ acGlobalPool="*res://addons/anti-cheating/ac_node.gd"
 UiAudioManager="*res://autoloads/UIAudioManager.cs"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 AccessibilityManager="*res://autoloads/AccessibilityManager.cs"
+GUIDE="*res://addons/guide/guide.gd"
 
 [debug]
 
@@ -124,7 +124,6 @@ ui_exit={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":4,"pressure":0.0,"pressed":true,"script":null)
-, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
 ui_enter={
@@ -190,12 +189,12 @@ console_autocomplete={
 }
 menu_settings_next_category={
 "deadzone": 0.2,
-"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":10,"pressure":0.0,"pressed":true,"script":null)
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":5,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
 menu_settings_prev_category={
 "deadzone": 0.2,
-"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":9,"pressure":0.0,"pressed":true,"script":null)
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
 open_emote_menu={

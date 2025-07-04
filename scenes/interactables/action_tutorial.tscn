@@ -9,12 +9,12 @@ light_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bsglu"]
 size = Vector2(91.5, 67)
 
-[sub_resource type="Gradient" id="Gradient_qw384"]
+[sub_resource type="Gradient" id="Gradient_fy36v"]
 offsets = PackedFloat32Array(0.00347222)
 colors = PackedColorArray(0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_41gtw"]
-gradient = SubResource("Gradient_qw384")
+gradient = SubResource("Gradient_fy36v")
 
 [node name="ActionTutorial" type="Area2D"]
 light_mask = 512
@@ -39,7 +39,6 @@ texture = ExtResource("2_ur08t")
 shape = SubResource("RectangleShape2D_bsglu")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-visible = false
 light_mask = 512
 visibility_layer = 512
 z_index = 5
@@ -51,10 +50,9 @@ offset_bottom = -26.0
 texture = SubResource("GradientTexture1D_41gtw")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
-visible = false
 light_mask = 512
 visibility_layer = 512
-z_index = 5
+z_index = 6
 use_parent_material = true
 offset_left = -128.0
 offset_top = -87.0

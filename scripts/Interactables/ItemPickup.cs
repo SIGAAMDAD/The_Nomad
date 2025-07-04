@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections;
 
 public partial class ItemPickup : InteractionItem {
 	[Export]
@@ -7,6 +8,9 @@ public partial class ItemPickup : InteractionItem {
 	public int Amount = -1;
 
 	protected Sprite2D Icon;
+
+	private RichTextLabel Text;
+	private Callable Callback;
 
 	private void OnPickupItem( Player player ) {
 		Godot.Collections.Array<Resource> Categories = (Godot.Collections.Array<Resource>)Data.Get( "categories" );
@@ -38,19 +42,28 @@ public partial class ItemPickup : InteractionItem {
 			Icon?.QueueFree();
 			Icon = null;
 
-			InteractArea.CallDeferred( "queue_free" );
+			SetDeferred( PropertyName.Monitorable, false );
 		}
+
+		Text.Hide();
+		player.Disconnect( "Interaction", Callback );
 	}
 
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		// TODO: auto-pickup toggle?
 		if ( body is Player player && player != null ) {
-			player.Interaction += () => OnPickupItem( player );
+			Callback = Callable.From( () => OnPickupItem( player ) );
+			Text.Show();
+			player.Connect( "Interaction", Callback );
 			player.EmitSignal( "ShowInteraction", this );
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Player player && player != null ) {
+			Text.Hide();
+			if ( player.IsConnected( "Interaction", Callback ) ) {
+				player.Disconnect( "Interaction", Callback );
+			}
 		}
 	}
 
@@ -83,6 +96,9 @@ public partial class ItemPickup : InteractionItem {
 
 	public override void _Ready() {
 		base._Ready();
+
+		Text = GetNode<RichTextLabel>( "RichTextLabel" );
+		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( AccessibilityManager.GetBindString( LevelData.Instance.ThisPlayer.InteractAction ) );
 
 		AddToGroup( "Archive" );
 

@@ -34,12 +34,14 @@ public partial class SettingsMenu : Control {
 	private TabBar VideoTabBar;
 	private TabBar AudioTabBar;
 	private TabBar AccessibilityTabBar;
+	private TabBar GameplayTabBar;
 	private TabBar NetworkTabBar;
 
 	public enum CategoryTabBar {
 		Video,
 		Audio,
 		Accessibility,
+		Gameplay,
 		Network,
 		Controls
 	};
@@ -79,7 +81,8 @@ public partial class SettingsMenu : Control {
 				3
 			);
 			break;
-		};
+		}
+		;
 
 		switch ( MaxFps.Selected ) {
 		case 0:
@@ -105,7 +108,8 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		};
+		}
+		;
 
 		Godot.Vector2I windowSize = Godot.Vector2I.Zero;
 		switch ( (Resolution)ResolutionOption.Selected ) {
@@ -127,7 +131,8 @@ public partial class SettingsMenu : Control {
 		default:
 			windowSize = new Godot.Vector2I( 640, 480 );
 			break;
-		};
+		}
+		;
 		DisplayServer.WindowSetSize( windowSize );
 
 		Rid viewport = GetTree().Root.GetViewportRid();
@@ -167,7 +172,8 @@ public partial class SettingsMenu : Control {
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
-		};
+		}
+		;
 
 		switch ( WindowModeOption.Selected ) {
 		case (int)WindowMode.Windowed:
@@ -190,7 +196,8 @@ public partial class SettingsMenu : Control {
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.ExclusiveFullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
 			break;
-		};
+		}
+		;
 
 		UpdateWindowScale();
 	}
@@ -229,7 +236,8 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		};
+		}
+		;
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -261,6 +269,14 @@ public partial class SettingsMenu : Control {
 	// TODO: make this more controller friendly
 	public override void _Ready() {
 		base._Ready();
+
+		SetProcess( true );
+
+		TextureRect PrevMenuButton = GetNode<TextureRect>( "PrevMenuButton" );
+		PrevMenuButton.Texture = AccessibilityManager.GetPrevMenuButtonTexture();
+
+		TextureRect NextMenuButton = GetNode<TextureRect>( "NextMenuButton" );
+		NextMenuButton.Texture = AccessibilityManager.GetNextMenuButtonTexture();
 
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
 		VSync.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
@@ -367,6 +383,10 @@ public partial class SettingsMenu : Control {
 						AccessibilityTabBar.SetProcessInternal( false );
 						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
+						GameplayTabBar.SetProcess( false );
+						GameplayTabBar.SetProcessInternal( false );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
 						ControlsTabBar.SetProcess( false );
 						ControlsTabBar.SetProcessInternal( false );
 						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -387,6 +407,10 @@ public partial class SettingsMenu : Control {
 						AccessibilityTabBar.SetProcess( false );
 						AccessibilityTabBar.SetProcessInternal( false );
 						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						GameplayTabBar.SetProcess( false );
+						GameplayTabBar.SetProcessInternal( false );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 						ControlsTabBar.SetProcess( false );
 						ControlsTabBar.SetProcessInternal( false );
@@ -409,6 +433,35 @@ public partial class SettingsMenu : Control {
 						AccessibilityTabBar.SetProcessInternal( true );
 						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Always;
 
+						GameplayTabBar.SetProcess( false );
+						GameplayTabBar.SetProcessInternal( false );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						ControlsTabBar.SetProcess( false );
+						ControlsTabBar.SetProcessInternal( false );
+						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						NetworkTabBar.SetProcess( false );
+						NetworkTabBar.SetProcessInternal( false );
+						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+						break;
+					case CategoryTabBar.Gameplay:
+						VideoTabBar.SetProcess( false );
+						VideoTabBar.SetProcessInternal( false );
+						VideoTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AudioTabBar.SetProcess( false );
+						AudioTabBar.SetProcessInternal( false );
+						AudioTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						AccessibilityTabBar.SetProcess( false );
+						AccessibilityTabBar.SetProcessInternal( false );
+						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						GameplayTabBar.SetProcess( true );
+						GameplayTabBar.SetProcessInternal( true );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Always;
+
 						ControlsTabBar.SetProcess( false );
 						ControlsTabBar.SetProcessInternal( false );
 						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -429,6 +482,10 @@ public partial class SettingsMenu : Control {
 						AccessibilityTabBar.SetProcess( false );
 						AccessibilityTabBar.SetProcessInternal( false );
 						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						GameplayTabBar.SetProcess( false );
+						GameplayTabBar.SetProcessInternal( false );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 						ControlsTabBar.SetProcess( true );
 						ControlsTabBar.SetProcessInternal( true );
@@ -451,6 +508,10 @@ public partial class SettingsMenu : Control {
 						AccessibilityTabBar.SetProcessInternal( false );
 						AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
+						GameplayTabBar.SetProcess( false );
+						GameplayTabBar.SetProcessInternal( false );
+						GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
 						ControlsTabBar.SetProcess( false );
 						ControlsTabBar.SetProcessInternal( false );
 						ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -459,8 +520,7 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcessInternal( true );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Always;
 						break;
-					}
-					;
+					};
 				}
 			)
 		);
@@ -472,6 +532,8 @@ public partial class SettingsMenu : Control {
 
 		AccessibilityTabBar = GetNode<TabBar>( "TabContainer/Accessibility" );
 		AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+		GameplayTabBar = GetNode<TabBar>( "TabContainer/Gameplay" );
 
 		ControlsTabBar = GetNode<TabBar>( "TabContainer/Controls" );
 		ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -549,8 +611,6 @@ public partial class SettingsMenu : Control {
 		SaveSettingsButton.Connect( "pressed", Callable.From( OnSaveSettingsButtonPressed ) );
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
-		base._UnhandledInput( @event );
-
 		if ( Input.IsActionJustPressed( "menu_settings_next_category" ) ) {
 			switch ( (CategoryTabBar)TabContainer.CurrentTab ) {
 			case CategoryTabBar.Video:
@@ -562,6 +622,10 @@ public partial class SettingsMenu : Control {
 				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Accessibility );
 				break;
 			case CategoryTabBar.Accessibility:
+				GameplayTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Gameplay );
+				break;
+			case CategoryTabBar.Gameplay:
 				NetworkTabBar.Show();
 				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Network );
 				break;
@@ -589,9 +653,13 @@ public partial class SettingsMenu : Control {
 				AudioTabBar.Show();
 				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Audio );
 				break;
-			case CategoryTabBar.Network:
+			case CategoryTabBar.Gameplay:
 				AccessibilityTabBar.Show();
 				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Accessibility );
+				break;
+			case CategoryTabBar.Network:
+				GameplayTabBar.Show();
+				TabContainer.EmitSignal( "tab_clicked", (int)CategoryTabBar.Gameplay );
 				break;
 			case CategoryTabBar.Controls:
 				NetworkTabBar.Show();

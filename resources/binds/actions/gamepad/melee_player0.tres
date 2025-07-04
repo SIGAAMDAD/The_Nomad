@@ -9,6 +9,6 @@ action_value_type = 0
 block_lower_priority_actions = true
 emit_as_godot_actions = false
 is_remappable = true
-display_name = "Melee"
+display_name = "Melee Player 1"
 display_category = "Combat"
 metadata/_custom_type_script = "uid://gqfwq4lycerx"

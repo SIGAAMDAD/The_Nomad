@@ -10,13 +10,13 @@ public partial class Incendiary : Grenade {
 		explosion.DamageCurve = (Curve)ResourceCache.GetResource( "res://resources/damage_curves/explosions/incendiary.tres" );
 		AddChild( explosion );
 
-		CallDeferred( "queue_free" );
+		CallDeferred( MethodName.QueueFree );
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
 		Timer = GetNode<Timer>( "Timer" );
-		Timer.Connect( "finished", Callable.From( OnTimerTimeout ) );
+		Timer.Connect( Timer.SignalName.Timeout, Callable.From( OnTimerTimeout ) );
 	}
 };

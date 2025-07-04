@@ -554,7 +554,7 @@ namespace Renown.Thinkers {
 				if ( CanSeeTarget ) {
 
 					// are we in range?
-					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 1024.0f ) {
+					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
 						// if not, stop aiming and move in closer
 						Aiming = false;
 						AimTimer.CallDeferred( "stop" );

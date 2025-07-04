@@ -538,7 +538,13 @@ public partial class Console : Control {
 	}
 
 	public static void PrintError( string text ) {
-		PrintLine( $"[color=light_coral]   ERROR:[/color] {text}" );
+		if ( !IsInstanceValid( RichLabel ) ) {
+			Instance.CallDeferred( MethodName.PrintLine, $"[color=light_coral]   ERROR:[/color] {text}", true );
+		} else {
+			RichLabel.CallDeferred( "append_text", $"[color=light_coral]   ERROR:[/color] {text}" );
+			RichLabel.CallDeferred( "append_text", "\n" );
+			GD.PushError( text );
+		}
 	}
 
 	public static void PrintDebug( string text ) {
@@ -546,6 +552,12 @@ public partial class Console : Control {
 	}
 
 	public static void PrintWarning( string text ) {
-		PrintLine( $"[color=gold]   WARNING:[/color] {text}" );
+		if ( !IsInstanceValid( RichLabel ) ) {
+			Instance.CallDeferred( MethodName.PrintLine, $"[color=gold]   WARNING:[/color] {text}", true );
+		} else {
+			RichLabel.CallDeferred( "append_text", $"[color=gold]   WARNING:[/color] {text}" );
+			RichLabel.CallDeferred( "append_text", "\n" );
+			GD.PushWarning( text );
+		}
 	}
 };

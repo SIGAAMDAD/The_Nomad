@@ -244,8 +244,10 @@ func _on_weapon_used( source: Node ) -> void:
 
 func _on_switched_weapon( weapon: Node ) -> void:
 	if _weapon_data != weapon && _weapon_data != null:
-		_weapon_data.disconnect( "Reloaded", _on_weapon_reloaded )
-		_weapon_data.disconnect( "Used", _on_weapon_used )
+		if _weapon_data.is_connected( "Reloaded", _on_weapon_reloaded ):
+			_weapon_data.disconnect( "Reloaded", _on_weapon_reloaded )
+		if _weapon_data.is_connected( "Used", _on_weapon_used ):
+			_weapon_data.disconnect( "Used", _on_weapon_used )
 	
 	if weapon == null:
 		_weapon_status.modulate = _hidden_color
@@ -274,6 +276,13 @@ func _on_switched_weapon( weapon: Node ) -> void:
 	_weapon_data = weapon
 	_weapon_data.connect( "Reloaded", _on_weapon_reloaded )
 	_weapon_data.connect( "Used", _on_weapon_used )
+
+func _on_health_changed( health: float ) -> void:
+	_healthbar.SetHealth( health )
+	
+	get_node( "MainHUD/Overlays/InjuredOverlay/MediumHealth" ).visible = health < 60.0
+	get_node( "MainHUD/Overlays/InjuredOverlay/LowHealth" ).visible = health < 30.0
+	get_node( "MainHUD/Overlays/InjuredOverlay/CriticalHealth" ).visible = health < 15.0
 
 func EndParry() -> void:
 	_parry_overlay.hide()
@@ -309,7 +318,7 @@ func _ready() -> void:
 	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
 	_owner.connect( "InventoryToggled", func(): OnShowInventory() )
 	_owner.connect( "ParrySuccess", func(): _parry_overlay.show() )
-	_owner.connect( "HealthChanged", func( health: float ): _healthbar.SetHealth( health ) )
+	_owner.connect( "HealthChanged", _on_health_changed )
 	_owner.connect( "RageChanged", func( rage: float ): _ragebar.Rage = rage )
 	_owner.connect( "LocationChanged", _on_location_changed )
 	_owner.connect( "Damaged", func( source: CharacterBody2D, target: CharacterBody2D, amount: float ): _healthbar.SetHealth( target.GetHealth() ) )

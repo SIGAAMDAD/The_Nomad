@@ -21,6 +21,7 @@ extends GUIDEIconRenderer
 @export var start:Texture2D
 @export var misc1:Texture2D
 @export var back:Texture2D
+@export var touch_pad:Texture2D
 
 
 @onready var _a_button:TextureRect = %AButton
@@ -46,9 +47,11 @@ extends GUIDEIconRenderer
 @onready var _up_down:Control = %UpDown
 @onready var _controls:Control = %Controls
 @onready var _directions:Control = %Directions
+@onready var _touch_pad:TextureRect = %TouchPad
 
 
 func _ready():
+	super()
 	_a_button.texture = a_button 
 	_b_button.texture = b_button 
 	_x_button.texture = x_button 
@@ -68,6 +71,7 @@ func _ready():
 	_start.texture = start 
 	_misc1.texture = misc1 
 	_back.texture = back 
+	_touch_pad.texture = touch_pad
 
 func supports(input:GUIDEInput) -> bool:
 	var joy_name = GUIDEInputFormatter._joy_name_for_input(input)
@@ -153,6 +157,8 @@ func render(input:GUIDEInput) -> void:
 				_back.visible = true
 			JOY_BUTTON_MISC1:
 				_misc1.visible = true
+			JOY_BUTTON_TOUCHPAD:
+				_touch_pad.visible = true
 					
 	call("queue_sort")		
 				 								

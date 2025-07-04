@@ -10,4 +10,4 @@ block_lower_priority_actions = true
 emit_as_godot_actions = false
 is_remappable = false
 display_name = "Reflex Mode Player 1"
-display_category = ""
+display_category = "Combat"

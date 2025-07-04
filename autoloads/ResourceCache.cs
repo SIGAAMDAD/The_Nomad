@@ -97,6 +97,10 @@ public class ResourceCache {
 	public static Resource[] BulletTimeActionGamepad { get; private set; }
 	public static Resource[] ArmAngleActionGamepad { get; private set; }
 	public static Resource[] UseBothHandsActionsGamepad { get; private set; }
+	public static Resource[] InteractActionGamepad { get; private set; }
+
+	// controller exclusive binds
+	public static Resource[] OpenWeaponModeMenu { get; private set; }
 
 	public static Resource MoveActionKeyboard { get; private set; }
 	public static Resource DashActionKeyboard { get; private set; }
@@ -110,7 +114,6 @@ public class ResourceCache {
 	public static Resource BulletTimeActionKeyboard { get; private set; }
 	public static Resource ArmAngleActionKeyboard { get; private set; }
 	public static Resource UseBothHandsActionKeyboard { get; private set; }
-	public static Resource AimAngleActionKeyboard { get; private set; }
 	public static Resource InteractActionKeyboard { get; private set; }
 
 	public static Resource KeyboardInputMappings;
@@ -237,12 +240,12 @@ public class ResourceCache {
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/prev_weapon_player2.tres" ),
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/prev_weapon_player3.tres" )
 		];
-		//		SwitchWeaponModeActionGamepad = [
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player0.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player1.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player2.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player3.tres" )
-		//		];
+		SwitchWeaponModeActionGamepad = [
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player0.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player1.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player2.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_weapon_mode_player3.tres" )
+		];
 		BulletTimeActionGamepad ??= [
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player0.tres" ),
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/bullet_time_player1.tres" ),
@@ -267,12 +270,18 @@ public class ResourceCache {
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/melee_player2.tres" ),
 			ResourceLoader.Load( "res://resources/binds/actions/gamepad/melee_player3.tres" )
 		];
-		//		UseBothHandsActionsGamepad = [
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player0.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player1.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player2.tres" ),
-		//			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player3.tres" )
-		//		];
+		UseBothHandsActionsGamepad ??= [
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player0.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player1.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player2.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/use_both_hands_player3.tres" )
+		];
+		InteractActionGamepad ??= [
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/interact_player0.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/interact_player1.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/interact_player2.tres" ),
+			ResourceLoader.Load( "res://resources/binds/actions/gamepad/interact_player3.tres" )
+		];
 	}
 	public static void LoadKeyboardBinds() {
 		MoveActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/move.tres" );
@@ -287,7 +296,7 @@ public class ResourceCache {
 		ArmAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
 		MeleeActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/melee.tres" );
 		UseBothHandsActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
-		AimAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
+		ArmAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
 		InteractActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/interact.tres" );
 	}
 

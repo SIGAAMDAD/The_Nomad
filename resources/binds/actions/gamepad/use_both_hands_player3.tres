@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://ca0s3w3lvmekx"]
+
+[ext_resource type="Script" uid="uid://gqfwq4lycerx" path="res://addons/guide/guide_action.gd" id="1_jc4sk"]
+
+[resource]
+script = ExtResource("1_jc4sk")
+name = &"use_both_hands_player3"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Use Both Hands Player 4"
+display_category = "Combat"
+metadata/_custom_type_script = "uid://gqfwq4lycerx"

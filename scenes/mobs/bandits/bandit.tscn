@@ -17,7 +17,7 @@ size = Vector2(11, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnc44"]
 size = Vector2(18, 21)
 
-[node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("AnimationStateMachine", "BehaviourTree", "Relations", "Debts") groups=["Archive", "Thinkers"]]
+[node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Archive", "Thinkers"]]
 z_index = 6
 collision_layer = 12
 collision_mask = 12
@@ -25,9 +25,7 @@ script = ExtResource("1_sse78")
 LoseInterestTime = 10.0
 SightDetectionTime = 15.0
 SightDetectionSpeed = 0.75
-AnimationStateMachine = NodePath("")
-BehaviourTree = NodePath("")
-MovementSpeed = 50.0
+MovementSpeed = 120.0
 Health = 80.0
 Relations = {}
 Debts = {}

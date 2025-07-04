@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=71 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://b3cos6eshcvnp" path="res://scripts/PlayerSystem/heads_up_display.gd" id="1_xw6ac"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -39,6 +39,7 @@
 [ext_resource type="Texture2D" uid="uid://dm30q4vnh2cly" path="res://textures/emote_surprised.png" id="29_kwx6t"]
 [ext_resource type="Texture2D" uid="uid://3q4l73y6mcqp" path="res://textures/emote_pointing.png" id="30_dg2ec"]
 [ext_resource type="Script" uid="uid://bx1abfyqnndu" path="res://scripts/PlayerSystem/notebook.gd" id="32_xw6ac"]
+[ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="39_dg2ec"]
 [ext_resource type="Script" uid="uid://b5rntv1ygu3xf" path="res://scripts/PlayerSystem/checkpoint_interactor.gd" id="39_kwx6t"]
 [ext_resource type="Script" uid="uid://boo38fnhr5awi" path="res://scripts/PlayerSystem/UserInterface/storage_container.gd" id="40_xw6ac"]
 [ext_resource type="Script" uid="uid://bomm36bff65ti" path="res://scripts/PlayerSystem/UserInterface/warp_container.gd" id="41_kwx6t"]
@@ -493,7 +494,6 @@ grow_vertical = 2
 texture = SubResource("GradientTexture2D_ycpyq")
 
 [node name="InjuredOverlay" type="MarginContainer" parent="MainHUD/Overlays"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -502,18 +502,21 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="LowHealth" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 texture_repeat = 2
 material = SubResource("ShaderMaterial_aelwk")
 layout_mode = 2
 texture = ExtResource("15_8n186")
 
 [node name="CriticalHealth" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 texture_repeat = 2
 material = SubResource("ShaderMaterial_xw6ac")
 layout_mode = 2
 texture = ExtResource("17_jak0u")
 
 [node name="MediumHealth" type="TextureRect" parent="MainHUD/Overlays/InjuredOverlay"]
+visible = false
 layout_mode = 2
 texture = ExtResource("22_dg2ec")
 expand_mode = 2
@@ -776,7 +779,6 @@ horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="NotebookContainer" type="MarginContainer" parent="."]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1129,15 +1131,24 @@ metadata/_edit_use_anchors_ = true
 [node name="HBoxContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer"]
 layout_mode = 2
 
-[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
+[node name="Tree" type="Tree" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
+
+[node name="QuestListContainer" type="MarginContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -312.0
+grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/QuestListContainer"]
+[node name="VScrollBar" type="VScrollBar" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree/QuestListContainer"]
 layout_mode = 2
 
-[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/QuestListContainer/VScrollBar"]
+[node name="QuestList" type="VBoxContainer" parent="NotebookContainer/TabContainer/Journal/MarginContainer/HBoxContainer/Tree/QuestListContainer/VScrollBar"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 anchor_left = 1.125
@@ -1265,6 +1276,55 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 8
 text = "BACK"
+
+[node name="Background" type="MarginContainer" parent="NotebookContainer/TabContainer/Equipment"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="LoadoutScreen" type="VBoxContainer" parent="NotebookContainer/TabContainer/Equipment/Background"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+
+[node name="PrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Primary Weapon"
+texture = ExtResource("39_dg2ec")
+expand_mode = 2
+
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Heavy Primary"
+texture = ExtResource("39_dg2ec")
+expand_mode = 2
+
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+
+[node name="SidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("39_dg2ec")
+expand_mode = 2
+
+[node name="HeavySidearmIcon" type="TextureRect" parent="NotebookContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("39_dg2ec")
+expand_mode = 2
 
 [node name="CheckpointContainer" type="MarginContainer" parent="."]
 visible = false

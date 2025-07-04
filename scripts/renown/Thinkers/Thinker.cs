@@ -626,6 +626,11 @@ namespace Renown.Thinkers {
 				AimAngle = Mathf.DegToRad( angle );
 				ArmAnimations.SetDeferred( "global_rotation", AimAngle );
 			}
+			if ( Velocity.X < 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", true );
+			} else if ( Velocity.X > 0.0f ) {
+				BodyAnimations.SetDeferred( "flip_h", false );
+			}
 		}
 
 		protected virtual bool MoveAlongPath() {

@@ -7,6 +7,7 @@ extends MarginContainer
 
 
 func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	GUIDE.input_mappings_changed.connect(_update_priorities)
 	_update_priorities()
 
@@ -54,7 +55,7 @@ func _process(delta):
 	_cleanup(_actions, index)
 	
 	index = 0
-	for input in GUIDE._active_inputs:
+	for input in GUIDE._active_inputs.values():
 		var input_label = _formatter.input_as_text(input, false)	
 		var input_value:String = str(input._value)
 

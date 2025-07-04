@@ -1,12 +1,12 @@
 using System;
 using ChallengeMode;
+using GdUnit4;
 using Godot;
-using PlayerSystem;
 using Renown.World;
 
 namespace Renown.Thinkers {
 	public partial class Mercenary : Thinker {
-		public enum State : uint {
+		private enum State : uint {
 			Guarding,
 			Attacking,
 			Investigating,
@@ -18,45 +18,31 @@ namespace Renown.Thinkers {
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 80.0f );
 		private static readonly float MaxViewDistance = 180.0f;
 
-		private static readonly int ChallengeMode_Score = 40;
+		private static readonly int ChallengeMode_Score = 10;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
 		[Export]
-		public float SightDetectionTime {
-			get;
-			private set;
-		} = 0.0f;
+		private float SightDetectionTime = 0.0f;
 		[Export]
 		private float SightDetectionSpeed = 0.0f;
+		[Export]
+		private AINodeCache NodeCache;
 		[Export]
 		public Resource DefaultWeapon;
 		[Export]
 		public Resource DefaultAmmo;
-		[Export]
-		private AINodeCache NodeCache;
-		[Export]
-		private AIPatrolRoute PatrolRoute;
-		[Export]
-		private Resource Dialogue = ResourceLoader.Load( "res://resources/dialogue/mercenary.dialogue" );
-		[Export]
-		private string MercenaryReason;
 
-		public float SightDetectionAmount {
-			get;
-			private set;
-		} = 0.0f;
+		private float SightDetectionAmount = 0.0f;
 
 		private Hitbox HeadHitbox;
+
 		public bool HitHead {
 			get;
 			private set;
-		} = false;
-
-		public State CurrentState {
-			get;
-			private set;
 		}
+
+		private State CurrentState;
 
 		private Godot.Vector2 StartPosition;
 		private float StartHealth;
@@ -65,26 +51,19 @@ namespace Renown.Thinkers {
 		private Timer AimTimer;
 		private Timer AttackTimer;
 		private RayCast2D AimLine;
-		public bool Aiming {
-			get;
-			private set;
-		} = false;
+		private bool Aiming = false;
 		private Line2D AttackMeter;
 		private float AttackMeterProgress = 0.0f;
 		private Godot.Vector2 AttackMeterFull;
 		private Godot.Vector2 AttackMeterDone;
 
-//		private HashSet<Entity> SightTargets = new HashSet<Entity>();
 		private Entity SightTarget = null;
 
 		private Timer LoseInterestTimer;
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
-		public WeaponEntity Weapon {
-			get;
-			private set;
-		}
+		private WeaponEntity Weapon;
 		private AmmoEntity Ammo;
 		private AmmoStack AmmoStack;
 
@@ -92,40 +71,24 @@ namespace Renown.Thinkers {
 
 		private AudioStreamPlayer2D BarkChannel;
 
-		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
+		public Godot.Vector2 LastTargetPosition { get; private set; } = Godot.Vector2.Zero;
 		private RayCast2D[] SightLines = null;
 		private bool CanSeeTarget = false;
 		private Tween MeleeTween;
 
-		private Entity Target;
+		public Entity Target { get; private set;  }
 
 		private Line2D DetectionMeter;
 
 		// if we have fear, move slower
 		private float SpeedDegrade = 1.0f;
 
-		public int Fear {
-			get;
-			private set;
-		} = 0;
+		private int Fear = 0;
 
 		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		private BarkType LastBark = BarkType.Count;
 		private BarkType SequencedBark = BarkType.Count;
-
-#region Dialogue
-		private void BegForLife() {
-			DialogueGlobals.Get().BotName = BotName;
-
-			Player.StartDialogue( Dialogue, "beg_for_life", new Action<int>( ( choice ) => {
-				switch ( choice ) {
-				case 0:
-					break;
-				};
-			} ) );
-		}
-#endregion
 
 		private void GenerateRayCasts() {
 			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
@@ -142,16 +105,10 @@ namespace Renown.Thinkers {
 		}
 
 		public override void Alert( Entity source ) {
-//			Bark( BarkType.Confusion );
 			LastTargetPosition = source.GlobalPosition;
-			SightDetectionAmount = SightDetectionTime * 0.75f;
-
-			Awareness = MobAwareness.Suspicious;
-			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-			
-			float angle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			HeadAnimations.GlobalRotation = angle;
-			ArmAnimations.GlobalRotation = angle;
+			SightDetectionAmount = SightDetectionTime;
+			Awareness = MobAwareness.Alert;
+			Bark( BarkType.Confusion );
 
 			SetNavigationTarget( LastTargetPosition );
 
@@ -159,12 +116,11 @@ namespace Renown.Thinkers {
 		}
 
 		public Godot.Vector2 GetInvestigationPosition() => LastTargetPosition;
-		public AIPatrolRoute GetPatrolRoute() => PatrolRoute;
 
 		public override void AddStatusEffect( string effectName ) {
 			base.AddStatusEffect( effectName );
 
-			if ( Target is Player && Fear >= 80 ) {
+			if ( Target is Player && Fear >= 80 && effectName == "status_burning" ) {
 				SteamAchievements.ActivateAchievement( "ACH_DANCE_DANCE_DANCE" );
 			}
 		}
@@ -186,11 +142,6 @@ namespace Renown.Thinkers {
 			base.PlaySound( channel, stream );
 		}
 
-		private void OnDeathAnimationFinished() {
-			int finalFrame = BodyAnimations.SpriteFrames.GetFrameCount( BodyAnimations.Animation ) - 1;
-			BodyAnimations.SpriteFrames.SetFrame( BodyAnimations.Animation, finalFrame, BodyAnimations.SpriteFrames.GetFrameTexture( BodyAnimations.Animation, finalFrame ) );
-		}
-
 		public override void Damage( in Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
@@ -198,8 +149,9 @@ namespace Renown.Thinkers {
 
 			base.Damage( source, nAmount );
 			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
-			
-			BloodParticleFactory.Create( Godot.Vector2.Zero, GlobalPosition );
+
+			AimTimer.Stop();
+			Aiming = false;
 
 			if ( Health <= 0.0f ) {
 				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
@@ -219,62 +171,51 @@ namespace Renown.Thinkers {
 
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
-				HeadAnimations.Hide();
-				ArmAnimations.Hide();
+
+				HeadAnimations.CallDeferred( "hide" );
+				ArmAnimations.CallDeferred( "hide" );
 				if ( !HitHead ) {
 					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					BodyAnimations.CallDeferred( "play", "die_low" );
 				}
 				return;
 			}
 
-			if ( Fear > 80 ) {
-//				BegForLife();
-				return;
+			if ( source.GetFaction() == Faction ) {
+				// "CEASEFIRE!"
+				//				Bark( BarkType.Ceasefire );
 			}
 
-			if ( source != null ) {
-				if ( source.GetFaction() == Faction ) {
-					// "CEASEFIRE!"
-					//				Bark( BarkType.Ceasefire );
-				}
+			if ( Awareness == MobAwareness.Alert ) {
 
-				LookDir = GlobalPosition.DirectionTo( source.GlobalPosition );
-				float angle = Mathf.Atan2( LookDir.Y, LookDir.X );
-				HeadAnimations.GlobalRotation = angle;
-				ArmAnimations.GlobalRotation = angle;
-
-				Target = source;
-				LastTargetPosition = source.GlobalPosition;
-				PatrolRoute = null;
-				Awareness = MobAwareness.Alert;
-
-				CurrentState = State.Attacking;
-				SetNavigationTarget( LastTargetPosition );
+			} else {
+				//				Bark( BarkType.Alert );
+				SetAlert();
 			}
+
+			float angle = RNJesus.FloatRange( 0, 360.0f );
+			HeadAnimations.GlobalRotation = angle;
+			ArmAnimations.GlobalRotation = angle;
+
+			Target = source;
+			LastTargetPosition = source.GlobalPosition;
+
+			CurrentState = State.Attacking;
+			SetNavigationTarget( LastTargetPosition );
 		}
 
 		private void SetSuspicious() {
-			if ( Awareness != MobAwareness.Suspicious ) {
-				if ( !CanSeeTarget ) {
-					// start patrolling near the last known position
-					PatrolRoute = NodeCache.FindClosestRoute( LastTargetPosition );
-				} else {
-					//					SetNavigationTarget( LastTargetPosition );
-				}
-				Bark( BarkType.Confusion, Squad.GetMemberCount() > 0 ? BarkType.CheckItOut : BarkType.Count );
-			}
 			Awareness = MobAwareness.Suspicious;
 			CurrentState = State.Investigating;
+			Bark( BarkType.Confusion, Squad.GetMemberCount() > 0 ? BarkType.CheckItOut : BarkType.Count );
 		}
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
-				//				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
-				Bark( BarkType.TargetSpotted );
+//				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
 			}
-			if ( GameConfiguration.GameMode != GameMode.JohnWick ) {
-				Target = SightTarget;
-			}
+			Target = SightTarget;
 			SetNavigationTarget( LastTargetPosition );
+			Bark( BarkType.TargetSpotted );
 			Awareness = MobAwareness.Alert;
 		}
 
@@ -282,29 +223,20 @@ namespace Renown.Thinkers {
 			Fear = nAmount;
 			if ( Fear >= 100 ) {
 				SpeedDegrade = 0.0f;
-//				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
+				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
 			} else if ( Fear >= 80 ) {
 				SpeedDegrade = 0.25f;
-//				ChangeInvestigationAngleTimer.WaitTime = 0.90f;
+				ChangeInvestigationAngleTimer.WaitTime = 0.90f;
 			} else if ( Fear >= 60 ) {
 				SpeedDegrade = 0.5f;
-//				ChangeInvestigationAngleTimer.WaitTime = 1.2f;
+				ChangeInvestigationAngleTimer.WaitTime = 1.2f;
 			} else {
 				SpeedDegrade = 1.0f;
-//				ChangeInvestigationAngleTimer.WaitTime = 2.0;
+				ChangeInvestigationAngleTimer.WaitTime = 2.0;
 			}
 		}
 
-		public void LookAtTarget() {
-			if ( SightTarget == null ) {
-				return;
-			}
-			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			AimAngle = LookAngle;
-		}
-
-		private bool IsValidTarget( Entity target ) => target is Player;
+		private bool IsValidTarget( in Entity target ) => target is Player;
 		private AudioStream GetBarkResource( BarkType bark ) {
 			switch ( bark ) {
 			case BarkType.ManDown:
@@ -393,16 +325,11 @@ namespace Renown.Thinkers {
 		private void OnLoseInterestTimerTimeout() {
 			CurrentState = State.Investigating;
 
-			if ( Fear > 80 ) {
+			if ( Fear > 60 ) {
 				Bark( BarkType.Curse, BarkType.Quiet );
 			}
 
-			if ( NodeCache != null ) {
-				PatrolRoute = NodeCache.FindClosestRoute( GlobalPosition );
-				SetNavigationTarget( PatrolRoute.GetGlobalStartPosition() );
-			}
-
-			SetFear( Fear + 10 );
+			SetFear( Fear + 20 );
 		}
 
 		public void OnHeadHit( Entity source ) {
@@ -411,6 +338,7 @@ namespace Renown.Thinkers {
 			}
 			HitHead = true;
 			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+			BodyAnimations.CallDeferred( "play", "die_high" );
 			Damage( source, Health );
 		}
 
@@ -422,47 +350,22 @@ namespace Renown.Thinkers {
 			Flags = 0;
 			SightDetectionAmount = 0.0f;
 
-			NavAgent.AvoidanceEnabled = true;
-
-			Flags &= ~ThinkerFlags.Dead;
-
 			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
 
-			HeadHitbox.SetDeferred( "monitoring", true );
-			HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-
-			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
-			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
-
-			Target = null;
-			SightTarget = null;
-
-			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				BodyAnimations.FlipH = true;
-				break;
-			};
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			AimAngle = LookAngle;
+			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity ) );
+			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity) );
+		}
+		private void ResetAttackMeter() {
+			AttackMeterProgress = AttackMeterFull.X;
+			AttackMeter.Points[ 1 ] = AttackMeterFull;
+			AttackMeter.Show();
+		}
+		private void UpdateAttackMeter() {
+			AttackMeter.Points[ 1 ].X = AttackMeterProgress;
 		}
 
 		protected override void OnDie( Entity source, Entity target ) {
 			base.OnDie( source, target );
-
-			NavAgent.AvoidanceEnabled = false;
-
-			SetDeferred( "collision_layer", (uint)PhysicsLayer.None );
-			SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
 
 			if ( source is Player ) {
 				if ( GameConfiguration.GameMode == GameMode.ChallengeMode || GameConfiguration.GameMode == GameMode.JohnWick ) {
@@ -474,18 +377,6 @@ namespace Renown.Thinkers {
 				}
 			}
 		}
-		private void OnHellbreakerBegin() {
-			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
-			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
-
-			ProcessMode = ProcessModeEnum.Disabled;
-		}
-		private void OnHellbreakerFinished() {
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
-			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
-
-			ProcessMode = ProcessModeEnum.Pausable;
-		}
 
 		public override void _Ready() {
 			base._Ready();
@@ -494,8 +385,6 @@ namespace Renown.Thinkers {
 				AddToGroup( "Enemies" );
 
 				LevelData.Instance.PlayerRespawn += OnRestartCheckpoint;
-				LevelData.Instance.HellbreakerBegin += OnHellbreakerBegin;
-				LevelData.Instance.HellbreakerFinished += OnHellbreakerFinished;
 			}
 
 			StartPosition = GlobalPosition;
@@ -506,12 +395,10 @@ namespace Renown.Thinkers {
 
 			CurrentState = State.Guarding;
 
-			Squad = GroupManager.GetGroup( GroupType.Military, Faction, GlobalPosition );
+			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
 
-			if ( GameConfiguration.GameMode != GameMode.JohnWick ) {
-				NodeCache ??= Location.GetNodeCache();
-			}
+			//			NodeCache ??= Location.GetNodeCache();
 
 			LoseInterestTimer = new Timer();
 			LoseInterestTimer.Name = "LoseInterestTimer";
@@ -553,6 +440,7 @@ namespace Renown.Thinkers {
 			AddChild( BarkChannel );
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
+			DetectionMeter.Hide();
 
 			Weapon = new WeaponEntity();
 			Weapon.Name = "Weapon";
@@ -575,12 +463,12 @@ namespace Renown.Thinkers {
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
 
-			//			ChangeInvestigationAngleTimer = new Timer();
-			//			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
-			//			ChangeInvestigationAngleTimer.OneShot = true;
-			//			ChangeInvestigationAngleTimer.WaitTime = 2.5f;
-			//			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
-			//			AddChild( ChangeInvestigationAngleTimer );
+			ChangeInvestigationAngleTimer = new Timer();
+			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
+			ChangeInvestigationAngleTimer.OneShot = true;
+			ChangeInvestigationAngleTimer.WaitTime = 1.0f;
+			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
+			AddChild( ChangeInvestigationAngleTimer );
 
 			TargetMovedTimer = new Timer();
 			TargetMovedTimer.Name = "TargetMovedTimer";
@@ -588,10 +476,6 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.OneShot = true;
 			TargetMovedTimer.Connect( "timeout", Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
 			AddChild( TargetMovedTimer );
-
-			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
-				ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
-			}
 
 			switch ( Direction ) {
 			case DirType.North:
@@ -612,12 +496,6 @@ namespace Renown.Thinkers {
 			AimAngle = LookAngle;
 
 			GenerateRayCasts();
-
-			if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
-				Target = LevelData.Instance.ThisPlayer;
-				Awareness = MobAwareness.Alert;
-				SightDetectionAmount = SightDetectionTime;
-			}
 		}
 
 		private void OnAimTimerTimeout() {
@@ -640,7 +518,6 @@ namespace Renown.Thinkers {
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
 				AttackTimer.SetDeferred( "wait_time", Weapon.UseTime );
-			//	AimTimer.SetDeferred( "wait_time", Weapon.GetReloadTime() );
 				AimLine.SetDeferred( "target_position", Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
 			}
 		}
@@ -651,62 +528,11 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void ProcessAnimations() {
-			if ( !Visible || ( Flags & ThinkerFlags.Dead ) != 0 ) {
-				return;
+			if ( SightTarget != null ) {
+				LookAtTarget();
 			}
 
-			if ( BodyAnimations.FlipH ) {
-				ArmAnimations.SetDeferred( "sprite_frames", Weapon.AnimationsLeft );
-			} else {
-				ArmAnimations.SetDeferred( "sprite_frames", Weapon.AnimationsRight );
-			}
-
-			LookAtTarget();
-			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
-
-			if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
-			} else if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
-			}
-
-			if ( LookAngle > 89.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", true );
-			} else if ( LookAngle < 90.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( AimAngle > 89.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", true );
-			} else if ( AimAngle < 90.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", false );
-			}
-
-			if ( Velocity != Godot.Vector2.Zero ) {
-				HeadAnimations.CallDeferred( "play", "move" );
-				BodyAnimations.CallDeferred( "play", "move" );
-			} else {
-//				if ( Awareness == MobAwareness.Relaxed ) {
-//					BodyAnimations.CallDeferred( "play", "calm" );
-//					HeadAnimations.CallDeferred( "hide" );
-//					ArmAnimations.CallDeferred( "hide" );
-//				} else {
-					ArmAnimations.CallDeferred( "show" );
-					HeadAnimations.CallDeferred( "show" );
-					BodyAnimations.CallDeferred( "play", "idle" );
-					HeadAnimations.CallDeferred( "play", "idle" );
-//				}
-			}
-		}
-
-		private void ResetAttackMeter() {
-			AttackMeterProgress = AttackMeterFull.X;
-			AttackMeter.Points[ 1 ] = AttackMeterFull;
-			AttackMeter.Show();
-		}
-		private void UpdateAttackMeter() {
-			AttackMeter.Points[ 1 ].X = AttackMeterProgress;
+			base.ProcessAnimations();
 		}
 		protected override void Think() {
 			if ( !Visible ) {
@@ -714,21 +540,6 @@ namespace Renown.Thinkers {
 			}
 
 			CheckSight();
-
-			if ( Target != null ) {
-				if ( Target is Player ) {
-					Player.InCombat = true;
-				}
-				if ( CanSeeTarget ) {
-					CurrentState = State.Attacking;
-					ChangeInvestigationAngleTimer.Stop();
-				} else {
-					//					CurrentState = State.Investigating;
-				}
-			} else if ( PatrolRoute != null && GlobalPosition.DistanceTo( PatrolRoute.GetGlobalEndPosition() ) < 10.0f ) {
-				PatrolRoute = PatrolRoute.GetNext();
-				SetNavigationTarget( PatrolRoute.GetGlobalEndPosition() );
-			}
 
 			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
 				if ( ( player.GetFlags() & Player.PlayerFlags.Parrying ) != 0 ) {
@@ -738,39 +549,43 @@ namespace Renown.Thinkers {
 				}
 			}
 
-			if ( CurrentState == State.Investigating ) {
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.CallDeferred( "start" );
-				}
-				if ( Target != null && CanSeeTarget ) {
-					CurrentState = State.Attacking;
-				}
-				if ( Fear > 80 && CanSeeTarget ) {
-					Bark( BarkType.Curse );
-				}
+			// do we have a target?
+			if ( Awareness > MobAwareness.Relaxed ) {
 
-			} else if ( CurrentState == State.Attacking ) {
-				Godot.Vector2 position1 = LastTargetPosition;
-				Godot.Vector2 position2 = GlobalPosition;
+				LookAtTarget();
 
-				if ( !AimTimer.IsStopped() ) {
-					CallDeferred( "UpdateAttackMeter" );
-				}
+				// can we see the target?
+				if ( CanSeeTarget ) {
 
-				if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 528.0f ) {
-					Aiming = false;
-					CurrentState = State.Investigating;
-					AimTimer.CallDeferred( "stop" );
+					// are we in range?
+					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
+						// if not, stop aiming and move in closer
+						Aiming = false;
+						AimTimer.CallDeferred( "stop" );
 
-					const float interp = 0.5f;
-					SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
-				} else {
-					if ( ( Aiming && AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) || !Aiming ) {
-						LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-						AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-						LookAngle = AimAngle;
+						const float interp = 0.5f;
+						Godot.Vector2 position1 = GlobalPosition;
+						Godot.Vector2 position2 = LastTargetPosition;
+						SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
+
+						// cycle
+						return;
 					}
-					if ( !Aiming ) {
+
+					// are we about to shoot?
+					if ( Aiming ) {
+						CallDeferred( "UpdateAttackMeter" );
+
+						// allow adjustments until we have 15% time left
+						if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) {
+							LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+							AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+							LookAngle = AimAngle;
+
+							CallDeferred( "StopMoving" );
+						}
+					} else {
+						// if not, start
 						CallDeferred( "ResetAttackMeter" );
 
 						Tween Tweener = CreateTween();
@@ -779,38 +594,54 @@ namespace Renown.Thinkers {
 
 						AimTimer.CallDeferred( "start" );
 						Aiming = true;
+
+						CallDeferred( "StopMoving" );
 					}
-				}
-				if (
-					Aiming &&
-					AimLine.GetCollider() is GodotObject collision && collision != null
-				) {
-					if (
-						collision is Entity entity && entity != null &&
-						entity.GetHealth() > 0.0f &&
-						entity.GetFaction() == Faction
-					) {
-						Bark( BarkType.OutOfTheWay );
-						SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
 
-						AttackMeter.CallDeferred( "hide" );
+				} else {
+					// are we at the last known position?
+					if ( GotoPosition == LastTargetPosition ) {
+						// start the lose interest timer
+						if ( LoseInterestTimer.IsStopped() ) {
+							LoseInterestTimer.CallDeferred( "start" );
+						} else if ( LoseInterestTimer.TimeLeft == 0.0f ) {
+							// if we have lost interest, go back to starting position
+							Awareness = MobAwareness.Suspicious;
+							SetNavigationTarget( StartPosition );
+							CurrentState = State.Guarding;
+						}
 
-						AimTimer.CallDeferred( "stop" );
-						Aiming = false;
+						// cycle
+						return;
 					}
-				}
 
-			} else if ( CurrentState == State.Guarding ) {
-				if ( Awareness > MobAwareness.Relaxed ) {
-					CurrentState = State.Investigating;
+					// investigate the last known position
+					if ( CurrentState != State.Investigating ) {
+						Awareness = MobAwareness.Suspicious;
+						SetNavigationTarget( LastTargetPosition );
+						CurrentState = State.Investigating;
+						ChangeInvestigationAngleTimer.CallDeferred( "start" );
+
+						// cycle
+						return;
+					}
 				}
 			}
 		}
+		
+		public void LookAtTarget() {
+			if ( SightTarget == null ) {
+				return;
+			}
+			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
+		}
 
-		public void CheckSight() {
+		private void CheckSight() {
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
+				sightTarget = SightLines[ i ].GetCollider() as Entity;
 				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
 					break;
 				} else {
@@ -833,7 +664,8 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				};
+				}
+				;
 				SetDetectionColor();
 				CanSeeTarget = false;
 				return;

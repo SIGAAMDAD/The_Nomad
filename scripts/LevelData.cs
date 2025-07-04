@@ -99,7 +99,7 @@ public partial class LevelData : Node2D {
 		Console.PrintLine(
 			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username )
 		);
-		PlayerList.CallDeferred( "remove_child", Players[ userId ] );
+		PlayerList.CallDeferred( Node.MethodName.RemoveChild, Players[ userId ] );
 		Players[ userId ].QueueFree();
 		Players.Remove( userId );
 		SteamLobby.Instance.RemovePlayer( userId );

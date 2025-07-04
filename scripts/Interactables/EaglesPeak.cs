@@ -45,8 +45,7 @@ public partial class EaglesPeak : InteractionItem {
 		Interactor.BeginInteraction( this );
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		Player player = body as Player;
-		if ( player == null ) {
+		if ( body is not Player player ) {
 			return;
 		}
 		player.EndInteraction();

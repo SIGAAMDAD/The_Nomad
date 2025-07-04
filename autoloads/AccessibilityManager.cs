@@ -12,9 +12,35 @@ public partial class AccessibilityManager : Node {
 		DefaultTheme = ResourceLoader.Load<Theme>( "res://resources/default.tres" );
 	}
 
+	public static Texture2D GetPrevMenuButtonTexture() {
+		string name = Input.GetJoyName( 0 );
+		switch ( name ) {
+		case "XBox":
+			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_lb.png" );
+		case "PS4":
+		case "PS5":
+		case "PlayStation":
+			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_l1_alternative.png" );
+		};
+		return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_lb.png" );
+	}
+
+	public static Texture2D GetNextMenuButtonTexture() {
+		string name = Input.GetJoyName( 0 );
+		switch ( name ) {
+		case "XBox":
+			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_rb.png" );
+		case "PS4":
+		case "PS5":
+		case "PlayStation":
+			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_r1_alternative.png" );
+		};
+		return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_rb.png" );
+	}
+
 	public static void LoadBinds() {
-		ResourceCache.KeyboardInputMappings = ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
-		ResourceCache.GamepadInputMappings = ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
+		ResourceCache.KeyboardInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
+		ResourceCache.GamepadInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
 
 		ResourceCache.LoadKeyboardBinds();
 		ResourceCache.LoadGamepadBinds();
@@ -24,21 +50,39 @@ public partial class AccessibilityManager : Node {
 			{ ResourceCache.DashActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.DashActionKeyboard ) },
 			{ ResourceCache.SlideActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.SlideActionKeyboard ) },
 			{ ResourceCache.UseWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.UseWeaponActionKeyboard ) },
-			{ ResourceCache.AimAngleActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.AimAngleActionKeyboard ) },
+			{ ResourceCache.ArmAngleActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.ArmAngleActionKeyboard ) },
 			{ ResourceCache.MeleeActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.MeleeActionKeyboard ) },
 			{ ResourceCache.BulletTimeActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.BulletTimeActionKeyboard ) },
 			{ ResourceCache.NextWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.NextWeaponActionKeyboard ) },
 			{ ResourceCache.PrevWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.PrevWeaponActionKeyboard ) },
 			{ ResourceCache.OpenInventoryActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.OpenInventoryActionKeyboard ) },
+			{ ResourceCache.InteractActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.InteractActionKeyboard ) },
 		};
 
+		Dictionary<Resource, string> gamepadMappings = new Dictionary<Resource, string>();
+		for ( int i = 0; i < 1; i++ ) {
+			gamepadMappings.Add( ResourceCache.MoveActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MoveActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.DashActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.DashActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.SlideActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.SlideActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.UseWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.UseWeaponActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.ArmAngleActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.ArmAngleActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.MeleeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MeleeActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.BulletTimeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.BulletTimeActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.NextWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.NextWeaponActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.PrevWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.PrevWeaponActionGamepad[ i ] ) );
+			gamepadMappings.Add( ResourceCache.OpenInventoryActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.OpenInventoryActionGamepad[ i ] ) );
+		}
+
 		InputMappings = new Dictionary<Resource, Dictionary<Resource, string>>() {
-			{ ResourceCache.KeyboardInputMappings, keyboardMappings }
-//			{ ResourceCache.GamepadInputMappings, gamepadMappings }
+			{ ResourceCache.KeyboardInputMappings, keyboardMappings },
+			{ ResourceCache.GamepadInputMappings, gamepadMappings }
 		};
 	}
 	private static string LoadBindString( Resource mappingContext, Resource action ) {
 		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)SettingsData.GetRemapper().Call( "get_remappable_items", mappingContext, "", action );
+		if ( items.Count == 0 ) {
+			return null;
+		}
 		Resource input = (Resource)SettingsData.GetRemapper().Call( "get_bound_input_or_null", items[ 0 ] );
 		return input == null ? "[color=red]UNBOUND[/color]" : (string)SettingsData.GetMappingFormatter().Call( "input_as_richtext_async", input );
 	}

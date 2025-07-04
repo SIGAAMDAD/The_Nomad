@@ -14,9 +14,14 @@ script = ExtResource("1_s6oxg")
 [node name="InteractBody" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_s6oxg")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-offset_left = -14.0
-offset_top = -23.0
-offset_right = 14.0
-offset_bottom = -14.0
-metadata/_edit_use_anchors_ = true
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = -56.0
+offset_right = 20.0
+offset_bottom = -16.0
+bbcode_enabled = true
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(0, -1)
+scale = Vector2(2.75, 1.6)

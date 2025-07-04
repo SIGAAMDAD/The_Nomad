@@ -101,7 +101,12 @@ public partial class Player : Entity {
 	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
-	public static readonly int MAX_PERKS = 3;
+	public static readonly StringName @AnimationName_Idle = "idle";
+	public static readonly StringName @AnimationName_Move = "move";
+	public static readonly StringName @AnimationName_CheckpointIdle = "checkpoint_idle";
+
+	public static readonly int MAX_RUNES = 3;
+	public static readonly int MAX_PERKS = 5;
 	public static readonly float ACCEL = 1600.0f;
 	public static readonly float FRICTION = 1400.0f;
 	public static readonly float MAX_SPEED = 440.0f;
@@ -177,20 +182,20 @@ public partial class Player : Entity {
 	private Resource SwitchToKeyboard;
 	private Resource SwitchToGamepad;
 
-	private Resource MoveAction;
-	private Resource DashAction;
-	private Resource SlideAction;
-	private Resource MeleeAction;
-	private Resource UseWeaponAction;
-	private Resource SwitchWeaponModeAction;
-	private Resource NextWeaponAction;
-	private Resource PrevWeaponAction;
-	private Resource OpenInventoryAction;
-	private Resource BulletTimeAction;
-	private Resource ArmAngleAction;
-	private Resource UseBothHandsAction;
-	private Resource AimAngleAction;
-	private Resource InteractAction;
+	public Resource MoveAction;
+	public Resource DashAction { get; private set; }
+	public Resource SlideAction { get; private set; }
+	public Resource MeleeAction { get; private set; }
+	public Resource UseWeaponAction { get; private set; }
+	public Resource SwitchWeaponModeAction { get; private set; }
+	public Resource NextWeaponAction { get; private set; }
+	public Resource PrevWeaponAction { get; private set; }
+	public Resource OpenInventoryAction { get; private set; }
+	public Resource BulletTimeAction { get; private set; }
+	public Resource ArmAngleAction { get; private set; }
+	public Resource UseBothHandsAction { get; private set; }
+	public Resource AimAngleAction { get; private set; }
+	public Resource InteractAction { get; private set; }
 
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
@@ -288,8 +293,9 @@ public partial class Player : Entity {
 	private Godot.Collections.Dictionary<int, WeaponEntity> WeaponsStack = new Godot.Collections.Dictionary<int, WeaponEntity>();
 	private Godot.Collections.Dictionary<int, ConsumableStack> ConsumableStacks = new Godot.Collections.Dictionary<int, ConsumableStack>();
 	private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
-	private HashSet<Perk> UnlockedPerks;
+	private HashSet<Perk> UnlockedBoons;
 	private HashSet<Rune> UnlockedRunes;
+	private Godot.Collections.Dictionary<string, string> JournalCache = new Godot.Collections.Dictionary<string, string>();
 
 	private float Rage = 60.0f;
 	private float Sanity = 60.0f;
@@ -404,6 +410,8 @@ public partial class Player : Entity {
 
 	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
 	public int GetTileMapFloorLevel() => TileMapLevel;
+
+	public void AddToJournal( Note note ) => JournalCache.TryAdd( TranslationServer.Translate( note.TextId + "_TITLE" ), TranslationServer.Translate( note.TextId ) );
 
 	public void SetSoundLevel( float nSoundLevel ) {
 		if ( nSoundLevel > SoundLevel ) {
@@ -522,7 +530,7 @@ public partial class Player : Entity {
 		}
 
 		if ( CurrentWeapon != WeaponSlot.INVALID ) {
-			CallDeferred( "emit_signal", "SwitchedWeapon", WeaponSlots[ CurrentWeapon ].GetWeapon() );
+			CallDeferred( MethodName.EmitSignal, SignalName.SwitchedWeapon, WeaponSlots[ CurrentWeapon ].GetWeapon() );
 		}
 	}
 
@@ -551,8 +559,8 @@ public partial class Player : Entity {
 				}
 			}
 			if ( stack != null ) {
-				weapon.CallDeferred( "SetReserve", stack );
-				weapon.CallDeferred( "SetAmmo", stack.AmmoType );
+				weapon.CallDeferred( WeaponEntity.MethodName.SetReserve, stack );
+				weapon.CallDeferred( WeaponEntity.MethodName.SetAmmo, stack.AmmoType );
 			} else {
 				// TODO: error
 			}
@@ -957,12 +965,12 @@ public partial class Player : Entity {
 		}
 
 		if ( Health <= 0.0f ) {
-			CallDeferred( "OnDeath", attacker );
+			CallDeferred( MethodName.OnDeath, attacker );
 		} else {
-			CallDeferred( "PlaySound", AudioChannel, ResourceCache.PlayerPainSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+			CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.PlayerPainSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
 		}
 
-		CallDeferred( "emit_signal", "Damaged", attacker, this, nAmount );
+		CallDeferred( MethodName.EmitSignal, SignalName.Damaged, attacker, this, nAmount );
 	}
 
 	public void OnParry( Bullet from, float damage ) {
@@ -1013,7 +1021,7 @@ public partial class Player : Entity {
 		ToSignal( GetTree().CreateTimer( 0.30f, false, false, true ), SceneTreeTimer.SignalName.Timeout ).OnCompleted( new Action( () => {
 			Engine.TimeScale = timeScale;
 
-			ParryDamageArea.SetDeferred( "monitoring", false );
+			ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
 
 			HUD.CallDeferred( "EndParry" );
 		} ) );
@@ -1057,7 +1065,7 @@ public partial class Player : Entity {
 		IdleTimer.Start();
 		IdleAnimation.FlipH = false;
 		IdleAnimation.Hide();
-		IdleAnimation.Disconnect( "animation_finished", Callable.From( OnCheckpointExitEnd ) );
+		IdleAnimation.Disconnect( AnimatedSprite2D.SignalName.AnimationFinished, Callable.From( OnCheckpointExitEnd ) );
 		BlockInput( false );
 		SetProcessUnhandledInput( false );
 
@@ -1069,7 +1077,7 @@ public partial class Player : Entity {
 		CheckpointDrinkTimer.Stop();
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
 		IdleAnimation.Play( "checkpoint_exit" );
-		IdleAnimation.Connect( "animation_finished", Callable.From( OnCheckpointExitEnd ) );
+		IdleAnimation.Connect( AnimatedSprite2D.SignalName.AnimationFinished, Callable.From( OnCheckpointExitEnd ) );
 	}
 	public void RestAtCampfire() {
 		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
@@ -1264,7 +1272,7 @@ public partial class Player : Entity {
 		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
 			GetArmAngle();
 		} else {
-			ArmAngle = (float)ArmAngleAction.Get( "value_axis_1d" );
+			ArmAngle = ArmAngleAction.Get( "value_axis_1d" ).AsSingle();
 		}
 		AimLine.GlobalRotation = ArmAngle;
 		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[ 1 ].X;
@@ -1583,8 +1591,8 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.Parrying;
 		BlockInput( false );
 
-		ParryDamageArea.SetDeferred( "monitoring", false );
-		ParryArea.SetDeferred( "monitoring", false );
+		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
+		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
 	}
 	private void OnMelee() {
 		if ( IsInputBlocked() ) {
@@ -1593,28 +1601,22 @@ public partial class Player : Entity {
 
 		HandsUsed = Hands.Right;
 
-		ParryArea.SetDeferred( "monitoring", true );
-		ParryDamageArea.SetDeferred( "monitoring", true );
+		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
+		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 
 		// force the player to commit to the parry
 		Flags |= PlayerFlags.Parrying;
 		BlockInput( true );
 		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
 		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
-		ArmLeft.Animations.CallDeferred( "play", "melee" );
+		ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee" );
 		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
 	}
 
 	public void SwitchInputMode( Resource InputContext ) {
-		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext );
+		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext, true );
 
-		Console.PrintLine( "Remapping input..." );
-
-		if ( GameConfiguration.GameMode == GameMode.LocalCoop2 ) {
-			ConnectGamepadBinds();
-		} else {
-			ConnectKeyboardBinds();
-		}
+		CurrentMappingContext = InputContext;
 
 		if ( InputContext == ResourceCache.KeyboardInputMappings ) {
 			MoveAction = ResourceCache.MoveActionKeyboard;
@@ -1627,8 +1629,6 @@ public partial class Player : Entity {
 			OpenInventoryAction = ResourceCache.OpenInventoryActionKeyboard;
 			UseWeaponAction = ResourceCache.UseWeaponActionKeyboard;
 			InteractAction = ResourceCache.InteractActionKeyboard;
-
-			CurrentMappingContext = ResourceCache.KeyboardInputMappings;
 		} else {
 			MoveAction = ResourceCache.MoveActionGamepad[ InputDevice ];
 			DashAction = ResourceCache.DashActionGamepad[ InputDevice ];
@@ -1639,8 +1639,6 @@ public partial class Player : Entity {
 			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ];
 			OpenInventoryAction = ResourceCache.OpenInventoryActionGamepad[ InputDevice ];
 			UseWeaponAction = ResourceCache.UseWeaponActionGamepad[ InputDevice ];
-
-			CurrentMappingContext = ResourceCache.GamepadInputMappings;
 		}
 
 		EmitSignalInputMappingContextChanged();
@@ -1736,12 +1734,15 @@ public partial class Player : Entity {
 			return;
 		}
 
-		InputVelocity = (Godot.Vector2)MoveAction.Get( "value_axis_2d" );
+		InputVelocity = MoveAction.Get( "value_axis_2d" ).AsVector2();
 	}
 
 	public void ConnectGamepadBinds() {
+		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMove ) );
+		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnMove ) );
+//		ResourceCache.UseBothHandsActionsGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseBothHands ) );
 		ResourceCache.MeleeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMelee ) );
-		//		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
+		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
 		ResourceCache.BulletTimeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnBulletTime ) );
 		ResourceCache.NextWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnNextWeapon ) );
 		ResourceCache.PrevWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnPrevWeapon ) );
@@ -1750,6 +1751,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.OpenInventoryActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnToggleInventory ) );
+		ResourceCache.InteractActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
 	private void ConnectKeyboardBinds() {
 		ResourceCache.MoveActionKeyboard.Connect( "triggered", Callable.From( OnMove ) );
@@ -1765,7 +1767,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
-		ResourceCache.AimAngleActionKeyboard.Connect( "triggered", Callable.From( GetArmAngle ) );
+		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( GetArmAngle ) );
 		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
 	private void LoadSfx() {
@@ -1973,6 +1975,9 @@ public partial class Player : Entity {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
 
+		ConnectGamepadBinds();
+		ConnectKeyboardBinds();
+
 		//
 		// initialize input context
 		//
@@ -1985,12 +1990,12 @@ public partial class Player : Entity {
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
-		MiscChannel.Connect( "finished", Callable.From( OnSlowMoSfxFinished ) );
+		MiscChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnSlowMoSfxFinished ) );
 		MiscChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		DashFlameArea = GetNode<Area2D>( "Animations/DashEffect/FlameArea" );
 		DashFlameArea.Monitoring = false;
-		DashFlameArea.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
+		DashFlameArea.Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
 
 		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
 		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
@@ -2007,52 +2012,45 @@ public partial class Player : Entity {
 		ParryDamageBox = GetNode<CollisionShape2D>( "AimAssist/AimLine/ParryDamageArea/CollisionShape2D" );
 
 		Area2D Area = GetNode<Area2D>( "SoundArea" );
-		Area.Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
+		Area.Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
 
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
 
-		//		SwitchToGamepad.Connect( "triggered", Callable.From<Resource>( SwitchInputMode ) );
-		//		SwitchToKeyboard.Connect( "triggered", Callable.From<Resource>( SwitchInputMode ) );
-		//		SwitchToKeyboard.Connect( "triggered", Callable.From( () => { SwitchInputMode( KeyboardInputMappings ); } ) );
-		//		SwitchToGamepad.Connect( "triggered", Callable.From( () => { SwitchInputMode( GamepadInputMappings ); } ) );
-
-		//		if ( Input.GetConnectedJoypads().Count > 0 ) {
-		//			SwitchInputMode( GamepadInputMappings );
-		//		} else {
+		SwitchToKeyboard.Connect( "triggered", Callable.From( () => { SwitchInputMode( ResourceCache.KeyboardInputMappings ); } ) );
+		SwitchToGamepad.Connect( "triggered", Callable.From( () => { SwitchInputMode( ResourceCache.GamepadInputMappings ); } ) );
 		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
 			SwitchInputMode( ResourceCache.KeyboardInputMappings );
 		}
-		//		}
-
+		
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
 		DashTime = GetNode<Timer>( "Timers/DashTime" );
 		DashTimer = (float)DashTime.WaitTime;
-		DashTime.Connect( "timeout", Callable.From( OnDashTimeTimeout ) );
+		DashTime.Connect( Timer.SignalName.Timeout, Callable.From( OnDashTimeTimeout ) );
 
 		DashBurnoutCooldownTimer = GetNode<Timer>( "Timers/DashBurnoutCooldownTimer" );
-		DashBurnoutCooldownTimer.Connect( "timeout", Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
+		DashBurnoutCooldownTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
 
 		IdleTimer = GetNode<Timer>( "IdleAnimationTimer" );
-		IdleTimer.Connect( "timeout", Callable.From( OnIdleAnimationTimerTimeout ) );
+		IdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnIdleAnimationTimerTimeout ) );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Animations/Idle" );
-		IdleAnimation.Connect( "animation_finished", Callable.From( OnIdleAnimationAnimationFinished ) );
+		IdleAnimation.Connect( AnimatedSprite2D.SignalName.AnimationFinished, Callable.From( OnIdleAnimationAnimationFinished ) );
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
-		LegAnimation.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( LegAnimation, LegShadowAnimation ) ) );
-		LegAnimation.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( LegAnimation, LegShadowAnimation ) ) );
-		LegAnimation.Connect( "animation_looped", Callable.From( OnLegsAnimationLooped ) );
+		LegAnimation.Connect( AnimatedSprite2D.SignalName.FrameChanged, Callable.From( () => OnShadowAnimationFrameSync( LegAnimation, LegShadowAnimation ) ) );
+		LegAnimation.Connect( AnimatedSprite2D.SignalName.SpriteFramesChanged, Callable.From( () => OnShadowAnimationSpriteSync( LegAnimation, LegShadowAnimation ) ) );
+		LegAnimation.Connect( AnimatedSprite2D.SignalName.AnimationLooped, Callable.From( OnLegsAnimationLooped ) );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
-		TorsoAnimation.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( TorsoAnimation, TorsoShadowAnimation ) ) );
-		TorsoAnimation.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( TorsoAnimation, TorsoShadowAnimation ) ) );
+		TorsoAnimation.Connect( AnimatedSprite2D.SignalName.FrameChanged, Callable.From( () => OnShadowAnimationFrameSync( TorsoAnimation, TorsoShadowAnimation ) ) );
+		TorsoAnimation.Connect( AnimatedSprite2D.SignalName.SpriteFramesChanged, Callable.From( () => OnShadowAnimationSpriteSync( TorsoAnimation, TorsoShadowAnimation ) ) );
 
-		ArmLeft.Animations.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
-		ArmLeft.Animations.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
+		ArmLeft.Animations.Connect( AnimatedSprite2D.SignalName.FrameChanged, Callable.From( () => OnShadowAnimationFrameSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
+		ArmLeft.Animations.Connect( AnimatedSprite2D.SignalName.SpriteFramesChanged, Callable.From( () => OnShadowAnimationSpriteSync( ArmLeft.Animations, LeftArmShadowAnimation ) ) );
 
-		ArmRight.Animations.Connect( "frame_changed", Callable.From( () => OnShadowAnimationFrameSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
-		ArmRight.Animations.Connect( "sprite_frames_changed", Callable.From( () => OnShadowAnimationSpriteSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
+		ArmRight.Animations.Connect( AnimatedSprite2D.SignalName.FrameChanged, Callable.From( () => OnShadowAnimationFrameSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
+		ArmRight.Animations.Connect( AnimatedSprite2D.SignalName.SpriteFramesChanged, Callable.From( () => OnShadowAnimationSpriteSync( ArmRight.Animations, RightArmShadowAnimation ) ) );
 
 		Shadows = GetNode<Node2D>( "Animations/Shadows" );
 		TorsoShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/TorsoShadow" );
@@ -2068,15 +2066,15 @@ public partial class Player : Entity {
 		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
-		SlideTime.Connect( "timeout", Callable.From( OnSlideTimeout ) );
+		SlideTime.Connect( Timer.SignalName.Timeout, Callable.From( OnSlideTimeout ) );
 		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
 
 		CheckpointDrinkTimer = new Timer();
 		CheckpointDrinkTimer.Name = "CheckpointDrinkTimer";
 		CheckpointDrinkTimer.WaitTime = 10.5f;
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
-		CheckpointDrinkTimer.Connect( "timeout", Callable.From( () => {
-			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
+		CheckpointDrinkTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_drink" );
 			TorsoAnimationState = PlayerAnimationState.CheckpointDrinking;
 			LegAnimationState = PlayerAnimationState.CheckpointDrinking;
 			LeftArmAnimationState = PlayerAnimationState.CheckpointDrinking;

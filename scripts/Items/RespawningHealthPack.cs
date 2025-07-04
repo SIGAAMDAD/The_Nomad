@@ -8,9 +8,9 @@ public partial class RespawningHealthPack : InteractionItem {
 			player.SetHealth( player.GetHealth() + 40.0f );
 			player.PlaySound( null, ResourceCache.GetSound( "res://sounds/env/StimPack_Activate1.ogg" ) );
 
-			CallDeferred( "hide" );
-			SetDeferred( "monitoring", false );
-			InteractArea.SetDeferred( "disabled", true );
+			CallDeferred( MethodName.Hide );
+			SetDeferred( PropertyName.Monitoring, false );
+			InteractArea.SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 
 			RespawnTimer.Start();
 		}
@@ -25,7 +25,7 @@ public partial class RespawningHealthPack : InteractionItem {
 		base._Ready();
 
 		RespawnTimer = GetNode<Timer>( "Timer" );
-		RespawnTimer.Connect( "timeout", Callable.From( OnRespawn ) );
+		RespawnTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnRespawn ) );
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 	}

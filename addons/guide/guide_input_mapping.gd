@@ -71,6 +71,10 @@ extends Resource
 		triggers = value
 		emit_changed()
 
+## Hint for how long the input must remain actuated (in seconds) before the mapping triggers.
+## If the mapping has no hold trigger it will be -1. If it has multiple hold triggers
+## the shortest hold time will be used.
+var _trigger_hold_threshold:float = -1.0
 
 var _state:GUIDETrigger.GUIDETriggerState = GUIDETrigger.GUIDETriggerState.NONE
 var _value:Vector3 = Vector3.ZERO
@@ -82,11 +86,14 @@ var _explicit_count:int = 0
 ## Called when the mapping is started to be used by GUIDE. Calculates 
 ## the number of implicit and explicit triggers so we don't need to do this
 ## per frame. Also creates a default trigger when none is set.
-func _initialize() -> void :
+## finally initializes the _last_value of all triggers to the current
+## state of the input.
+func _initialize(value_type:GUIDEAction.GUIDEActionValueType) -> void :
 	_trigger_list.clear()
 	
 	_implicit_count = 0
 	_explicit_count = 0
+	_trigger_hold_threshold = -1.0
 	
 	if triggers.is_empty():
 		# make a default trigger and use that
@@ -95,6 +102,13 @@ func _initialize() -> void :
 		_explicit_count = 1
 		_trigger_list.append(default_trigger)
 		return
+		
+	# Collect the current input value
+	var input_value:Vector3 = input._value if input != null else Vector3.ZERO
+	
+	# Run it through all modifiers
+	for modifier:GUIDEModifier in modifiers:
+		input_value = modifier._modify_input(input_value, 0, value_type)		
 	
 	for trigger in triggers:
 		match trigger._get_trigger_type():
@@ -103,6 +117,19 @@ func _initialize() -> void :
 			GUIDETrigger.GUIDETriggerType.IMPLICIT:
 				_implicit_count += 1
 		_trigger_list.append(trigger)
+		
+		# collect the hold threshold for hinting the UI about how long
+		# the input must be held down. This is only relevant for hold triggers
+		if trigger is GUIDETriggerHold:
+			if _trigger_hold_threshold == -1:
+				_trigger_hold_threshold = trigger.hold_treshold
+			else:
+				_trigger_hold_threshold = min(_trigger_hold_threshold, trigger.hold_treshold)
+		
+		# initialize the last value, so that e.g. the "pressed" trigger
+		# will not immediately trigger when the key was already 
+		# pressed when the trigger came to life.
+		trigger._last_value = input_value
 		
 
 func _update_state(delta:float, value_type:GUIDEAction.GUIDEActionValueType):

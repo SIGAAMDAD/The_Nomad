@@ -1,14 +1,18 @@
+/*
 using Steamworks;
 using Godot;
-using System.Text;
+using System.Collections.Generic;
 
 public partial class SteamInput : Node {
 	private static int InputDeviceCount;
 	private static InputHandle_t[] InputHandles;
 
+	private static Node GUIDE;
+
 	private static InputActionSetHandle_t MenuActionSet;
 	private static InputAnalogActionHandle_t MenuUpAnalogAction;
 	private static InputAnalogActionHandle_t MenuDownAnalogAction;
+	private static InputAnalogActionHandle_t MoveAction;
 
 	private static Callback<SteamInputDeviceConnected_t> SteamInputDeviceConnected;
 	private static Callback<SteamInputDeviceDisconnected_t> SteamInputDeviceDisconnected;
@@ -44,7 +48,8 @@ public partial class SteamInput : Node {
 		case ESteamInputType.k_ESteamInputType_SteamDeckController:
 			deviceType = "SteamDeck Controller";
 			break;
-		};
+		}
+		;
 
 		Steamworks.SteamInput.ActivateActionSet( InputHandles[ InputDeviceCount ], MenuActionSet );
 
@@ -63,7 +68,7 @@ public partial class SteamInput : Node {
 	public override void _Ready() {
 		base._Ready();
 
-		bool bInitialized = Steamworks.SteamInput.Init( false ); 
+		bool bInitialized = Steamworks.SteamInput.Init( false );
 		InputHandles = new InputHandle_t[ 4 ];
 
 		if ( bInitialized ) {
@@ -82,25 +87,44 @@ public partial class SteamInput : Node {
 
 		MenuUpAnalogAction = Steamworks.SteamInput.GetAnalogActionHandle( "MenuUp" );
 		MenuDownAnalogAction = Steamworks.SteamInput.GetAnalogActionHandle( "MenuDown" );
+		MoveAction = Steamworks.SteamInput.GetAnalogActionHandle( "Move" );
+
+		GUIDE = GetNode( "/root/GUIDE" );
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
 
 		Steamworks.SteamInput.Shutdown();
 	}
+
 	public override void _Process( double delta ) {
 		base._Process( delta );
 
 		InputAnalogActionData_t actionData = Steamworks.SteamInput.GetAnalogActionData( InputHandles[ 0 ], MenuUpAnalogAction );
-			if ( actionData.bActive == 1 ) {
-				GD.Print( "ACTIVE!" );
-			}
+		if ( actionData.bActive == 1 ) {
+			GD.Print( "ACTIVE!" );
+		}
 
 		switch ( GetTree().CurrentScene.Name ) {
 		case "MainMenu":
 			break;
 		default:
 			break;
-		};
+		}
+		;
+	}
+
+	private InputEvent BuildInputEvent( Vector2 value ) {
+		InputEventJoypadMotion joypadMotion = new InputEventJoypadMotion();
+		joypadMotion.AxisValue ;
+	}
+	private void MapSteamInput( InputHandle_t controller ) {
+		InputAnalogActionData_t moveData = Steamworks.SteamInput.GetAnalogActionData( controller, MoveAction );
+		if ( moveData.bActive == 1 ) {
+			Vector2 moveVector = new Vector2( moveData.x, moveData.y );
+			moveData.eMode = EInputSourceMode.k_EInputSourceMode_Joystck
+			GUIDE.Call( "inject_input",  );
+		}
 	}
 };
+*/
