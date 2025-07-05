@@ -1,6 +1,3 @@
-using System;
-using ChallengeMode;
-using GdUnit4;
 using Godot;
 using Renown.World;
 
@@ -33,10 +30,7 @@ namespace Renown.Thinkers {
 
 		private Hitbox HeadHitbox;
 
-		public bool HitHead {
-			get;
-			private set;
-		}
+		public bool HitHead { get; private set; }
 
 		private State CurrentState;
 
@@ -53,9 +47,10 @@ namespace Renown.Thinkers {
 		private Godot.Vector2 AttackMeterFull;
 		private Godot.Vector2 AttackMeterDone;
 
-		private Entity SightTarget = null;
+		public Entity SightTarget { get; private set; } = null;
 
 		private Timer LoseInterestTimer;
+		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
 		private WeaponEntity Weapon;
@@ -68,10 +63,10 @@ namespace Renown.Thinkers {
 
 		public Godot.Vector2 LastTargetPosition { get; private set; } = Godot.Vector2.Zero;
 		private RayCast2D[] SightLines = null;
-		private bool CanSeeTarget = false;
+		public bool CanSeeTarget { get; private set; } = false;
 		private Tween MeleeTween;
 
-		public Entity Target { get; private set;  }
+		public Entity Target { get; private set; }
 
 		private Line2D DetectionMeter;
 
@@ -94,7 +89,7 @@ namespace Renown.Thinkers {
 				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
 				ray.Enabled = true;
 				ray.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
-				SightLines[i] = ray;
+				SightLines[ i ] = ray;
 				HeadAnimations.AddChild( ray );
 			}
 		}
@@ -118,7 +113,7 @@ namespace Renown.Thinkers {
 			SetNavigationTarget( LastTargetPosition );
 			CurrentState = State.Investigating;
 
-			Fear += 5;
+			SetFear( Fear + 10 );
 		}
 
 		public Godot.Vector2 GetInvestigationPosition() => LastTargetPosition;
@@ -141,8 +136,7 @@ namespace Renown.Thinkers {
 
 		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
-				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) )
-			{
+				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) ) {
 				return;
 			}
 			base.PlaySound( channel, stream );
@@ -214,7 +208,7 @@ namespace Renown.Thinkers {
 		}
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
-//				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
+				//				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
 			}
 			Target = SightTarget;
 			Bark( BarkType.TargetSpotted );
@@ -234,7 +228,6 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		private bool IsValidTarget( in Entity target ) => target is Player;
 		private AudioStream GetBarkResource( BarkType bark ) {
 			switch ( bark ) {
 			case BarkType.ManDown:
@@ -270,7 +263,8 @@ namespace Renown.Thinkers {
 			case BarkType.Count:
 			default:
 				break;
-			};
+			}
+			;
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
@@ -311,11 +305,15 @@ namespace Renown.Thinkers {
 				DetectionColor.G = 0.0f;
 				DetectionColor.B = 0.0f;
 				break;
-			};
+			}
+			;
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnLoseInterestTimerTimeout() {
-			CurrentState = State.Investigating;
+			// if we have lost interest, go back to starting position
+			Awareness = MobAwareness.Suspicious;
+			SetNavigationTarget( StartPosition );
+			CurrentState = State.Guarding;
 
 			if ( Fear > 60 ) {
 				Bark( BarkType.Curse, BarkType.Quiet );
@@ -395,6 +393,25 @@ namespace Renown.Thinkers {
 			LoseInterestTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnLoseInterestTimerTimeout ) );
 			AddChild( LoseInterestTimer );
 
+			ChangeInvestigationAngleTimer = new Timer();
+			ChangeInvestigationAngleTimer.Name = nameof( ChangeInvestigationAngleTimer );
+			ChangeInvestigationAngleTimer.WaitTime = 2.0f;
+			ChangeInvestigationAngleTimer.OneShot = true;
+			ChangeInvestigationAngleTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
+				float angle;
+				if ( RNJesus.IntRange( 0, 99 ) > 49 ) {
+					angle = RNJesus.FloatRange( -80.0f, 80.0f );
+				} else {
+					angle = RNJesus.FloatRange( 100.0f, 260.0f );
+				}
+				angle = Mathf.DegToRad( angle );
+				LookAngle = angle;
+				AimAngle = angle;
+				if ( !CanSeeTarget && CurrentState == State.Investigating ) {
+					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
+				}
+			} ) );
+
 			AttackMeter = GetNode<Line2D>( "AttackMeter" );
 			AttackMeterDone = AttackMeter.Points[ 0 ];
 			AttackMeter.Points[ 1 ] = AttackMeterFull;
@@ -471,7 +488,8 @@ namespace Renown.Thinkers {
 				LookDir = Godot.Vector2.Left;
 				BodyAnimations.FlipH = true;
 				break;
-			};
+			}
+			;
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
@@ -508,123 +526,136 @@ namespace Renown.Thinkers {
 		}
 
 		protected override void ProcessAnimations() {
-			LookAtTarget();
 			base.ProcessAnimations();
 		}
 		protected override void Think() {
-			if ( !Visible ) {
+			CheckSight();
+
+			if ( Awareness == MobAwareness.Relaxed ) {
 				return;
 			}
 
-			CheckSight();
-
-			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
-				if ( ( player.GetFlags() & Player.PlayerFlags.Parrying ) != 0 ) {
-					// shoot early
-					AimTimer.Stop();
-					OnAimTimerTimeout();
-				}
-			}
-
 			// do we have a target?
-			if ( Awareness > MobAwareness.Relaxed ) {
+			LookAtTarget();
 
-				LookAtTarget();
+			CheckParry();
 
-				// can we see the target?
-				if ( CanSeeTarget ) {
+			// can we see the target?
+			if ( CanSeeTarget ) {
 
-					// are we in range?
-					if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
-						// if not, stop aiming and move in closer
-						Aiming = false;
-						AimTimer.CallDeferred( Timer.MethodName.Stop );
+				CheckAttack();
 
-						const float interp = 0.5f;
-						Godot.Vector2 position1 = GlobalPosition;
-						Godot.Vector2 position2 = LastTargetPosition;
-						SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
+			} else {
 
-						// cycle
-						return;
-					}
-
-					// are we about to shoot?
-					if ( Aiming ) {
-						CallDeferred( MethodName.UpdateAttackMeter );
-
-						// allow adjustments until we have 15% time left
-						if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) {
-							LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-							AimAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-							LookAngle = AimAngle;
-
-							CallDeferred( MethodName.StopMoving );
-						}
-					} else {
-						// if not, start
-						CallDeferred( MethodName.ResetAttackMeter );
-
-						Tween Tweener = CreateTween();
-						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
-						Tweener.CallDeferred( Tween.MethodName.Connect, Tween.SignalName.Finished, Callable.From( AttackMeter.Hide ) );
-
-						AimTimer.CallDeferred( Timer.MethodName.Start );
-						Aiming = true;
-
-						CallDeferred( MethodName.StopMoving );
-					}
-
-				} else {
+				if ( CurrentState == State.Investigating ) {
 					// are we at the last known position?
-					if ( GotoPosition == LastTargetPosition ) {
+					if ( GlobalPosition == LastTargetPosition ) {
+
 						// start the lose interest timer
 						if ( LoseInterestTimer.IsStopped() ) {
 							LoseInterestTimer.CallDeferred( Timer.MethodName.Start );
-						} else if ( LoseInterestTimer.TimeLeft == 0.0f ) {
-							// if we have lost interest, go back to starting position
-							Awareness = MobAwareness.Suspicious;
-							SetNavigationTarget( StartPosition );
-							CurrentState = State.Guarding;
+						}
+						if ( ChangeInvestigationAngleTimer.IsStopped() ) {
+							ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 						}
 
 						// cycle
 						return;
-					}
-
-					// investigate the last known position
-					if ( CurrentState != State.Investigating ) {
-						Awareness = MobAwareness.Suspicious;
+					} else {
 						SetNavigationTarget( LastTargetPosition );
-						CurrentState = State.Investigating;
-
-						// cycle
-						return;
 					}
+				}
+
+				// investigate the last known position
+				if ( CurrentState != State.Investigating ) {
+					Awareness = MobAwareness.Suspicious;
+					SetNavigationTarget( LastTargetPosition );
+					CurrentState = State.Investigating;
+
+					// cycle
+					return;
 				}
 			}
 		}
 
 		public void LookAtTarget() {
-			if ( SightTarget == null ) {
-				return;
+			Godot.Vector2 position = LastTargetPosition;
+			if ( CanSeeTarget ) {
+				ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Stop );
+				position = SightTarget.GlobalPosition;
 			}
-			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+			LookDir = GlobalPosition.DirectionTo( position );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 		}
 
-		private void CheckSight() {
+		private void CheckParry() {
+			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
+				if ( ( player.GetFlags() & Player.PlayerFlags.Parrying ) != 0 ) {
+
+					// shoot early
+					AimTimer.Stop();
+					OnAimTimerTimeout();
+				}
+			}
+		}
+
+		private void CheckAttack() {
+			// are we in range?
+			if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
+
+				LookAtTarget();
+
+				// if not, stop aiming and move in closer
+				Aiming = false;
+				AimTimer.CallDeferred( Timer.MethodName.Stop );
+
+				const float interp = 0.5f;
+				Godot.Vector2 position1 = GlobalPosition;
+				Godot.Vector2 position2 = LastTargetPosition;
+				SetNavigationTarget( new Godot.Vector2( position1.X * ( 1 - interp ) + position2.X * interp, position1.Y * ( 1 - interp ) + position2.Y * interp ) );
+
+				// cycle
+				return;
+			}
+
+			// are we about to shoot?
+			if ( Aiming ) {
+				CallDeferred( MethodName.UpdateAttackMeter );
+
+				// allow adjustments until we have 15% time left
+				if ( AimTimer.TimeLeft > AimTimer.WaitTime * 0.15f ) {
+					LookAtTarget();
+
+					CallDeferred( MethodName.StopMoving );
+				}
+			} else {
+
+				// if not, start
+				CallDeferred( MethodName.ResetAttackMeter );
+
+				Tween Tweener = CreateTween();
+				Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
+				Tweener.CallDeferred( Tween.MethodName.Connect, Tween.SignalName.Finished, Callable.From( AttackMeter.Hide ) );
+
+				AimTimer.CallDeferred( Timer.MethodName.Start );
+				Aiming = true;
+
+				CallDeferred( MethodName.StopMoving );
+			}
+		}
+
+		public void CheckSight() {
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
 				sightTarget = SightLines[ i ].GetCollider() as Entity;
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
+				if ( sightTarget != null ) {
 					break;
 				} else {
 					sightTarget = null;
 				}
 			}
-			
+
 			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f && sightTarget == null ) {
 				SetSuspicious();
 				CurrentState = State.Investigating;
@@ -651,7 +682,8 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				};
+				}
+				;
 				SetDetectionColor();
 				return;
 			}
@@ -661,12 +693,14 @@ namespace Renown.Thinkers {
 					Bark( BarkType.ManDown );
 
 					Awareness = MobAwareness.Alert;
-				} else {
+				} else if ( sightTarget.GetFaction() != Faction ) {
 					SightTarget = sightTarget;
 					LastTargetPosition = sightTarget.GlobalPosition;
 					CanSeeTarget = true;
 
-					LookAtTarget();
+					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
+					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+					AimAngle = LookAngle;
 
 					if ( Awareness >= MobAwareness.Suspicious ) {
 						// if we're already suspicious, then detection rate increases as we're more alert

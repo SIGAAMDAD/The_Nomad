@@ -17,6 +17,11 @@ var _toolkit_ui = preload("res://addons/behaviour_toolkit/ui/toolkit_ui.tscn")
 func _enter_tree():
 	_ui_canvas = _toolkit_ui.instantiate()
 	_ui_spatial = _toolkit_ui.instantiate()
+	
+	add_custom_type( "BehaviourToolkit", "Node", preload( "behaviour_toolkit.gd" ), preload( "res://addons/behaviour_toolkit/icons/Gear.svg" ) )
+	add_custom_type( "BTBehaviour", "BehaviourToolkit", preload( "behaviour_tree/bt_behaviour.gd" ), preload( "res://addons/behaviour_toolkit/icons/BTBehaviour.svg" ) )
+	add_custom_type( "BTComposite", "BTBehaviour", preload( "behaviour_tree/bt_composite.gd" ), preload( "res://addons/behaviour_toolkit/icons/BTComposite.svg" ) )
+	add_custom_type( "BTSelector", "BTComposite", preload( "behaviour_tree/composites/bt_selector.gd" ), preload( "res://addons/behaviour_toolkit/icons/BTCompositeSelector.svg" ) )
 
 	add_control_to_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_SIDE_LEFT,_ui_canvas)
 	_ui_canvas.visible = false

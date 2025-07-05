@@ -698,7 +698,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("25_v24h6")
 select_action_name = "emote"
-controller_enabled = true
 color = Color(0, 0, 0, 0.301961)
 arc_start_angle = 3.53581
 children_size = 128

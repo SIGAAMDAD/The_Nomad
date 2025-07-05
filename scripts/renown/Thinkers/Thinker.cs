@@ -7,6 +7,7 @@ using ChallengeMode;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using Microsoft.Diagnostics.Tracing.Stacks.Formats;
+using System.Management;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -69,6 +70,9 @@ namespace Renown.Thinkers {
 
 		[Export]
 		protected StringName FirstName;
+
+		[Export]
+		protected Node BehaviourTree;
 		
 		[ExportCategory( "Start" )]
 		[Export]
@@ -112,10 +116,7 @@ namespace Renown.Thinkers {
 		[Export]
 		protected bool HasMetPlayer = false;
 		[Export]
-		public float MovementSpeed {
-			get;
-			protected set;
-		} = 200.0f;
+		public float MovementSpeed { get; protected set; } = 200.0f;
 
 		protected Node2D Animations;
 
@@ -134,8 +135,8 @@ namespace Renown.Thinkers {
 		// memory
 		public bool TargetReached { get; protected set; } = false;
 		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		public float LookAngle { get; protected set; }
-		public float AimAngle { get; protected set; }
+		public float LookAngle = 0.0f;
+		public float AimAngle = 0.0f;
 
 		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 		protected Color DemonEyeColor;
@@ -228,7 +229,7 @@ namespace Renown.Thinkers {
 			SetProcess( true );
 			SetPhysicsProcess( true );
 
-			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_FACTION_PLAYER_IN_AREA );
+			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA );
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
 			Visible = true;
@@ -484,6 +485,7 @@ namespace Renown.Thinkers {
 			NavAgent.Radius = 20.0f;
 			NavAgent.MaxNeighbors = 1024;
 			NavAgent.MaxSpeed = MovementSpeed;
+			NavAgent.PathPostprocessing = NavigationPathQueryParameters2D.PathPostProcessing.Edgecentered;
 			NavAgent.TimeHorizonAgents = 2.0f;
 			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
@@ -534,7 +536,7 @@ namespace Renown.Thinkers {
 		public override void _Process( double delta ) {
 			ProcessAnimations();
 
-			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
+			if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {
 				return;
 			}
 
@@ -573,6 +575,27 @@ namespace Renown.Thinkers {
 		}
 		protected virtual void Think() {
 		}
+
+		private static float CalcAngle( float animationAngle, AnimatedSprite2D animation ) {
+			float angle = Mathf.RadToDeg( animationAngle );
+			if ( angle < -80.0f ) {
+				angle = 260.0f;
+			} else if ( angle > 260.0f ) {
+				angle = -80.0f;
+			} else if ( angle > 80.0f && angle < 100.0f ) {
+				angle -= 20.0f;
+			} else if ( angle < 100.0f && angle > 80.0f ) {
+				angle += 20.0f;
+			}
+			if ( angle > 80.0f ) {
+				animation.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
+			} else if ( angle < 100.0f ) {
+				animation.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
+			}
+			animationAngle = Mathf.DegToRad( angle );
+			animation.SetDeferred( PropertyName.GlobalRotation, animationAngle );
+			return animationAngle;
+		}
 		/// <summary>
 		/// sets the current frame's animations based on thinker subclass
 		/// </summary>
@@ -582,46 +605,10 @@ namespace Renown.Thinkers {
 			}
 
 			if ( HeadAnimations != null ) {
-				float angle = Mathf.RadToDeg( LookAngle );
-				if ( angle < -50.0f ) {
-					angle = 230.0f;
-				} else if ( angle > 230.0f ) {
-					angle = -50.0f;
-				}
-				if ( angle > 50.0f ) {
-					if ( angle < 130.0f ) {
-						angle += 80.0f;
-					}
-					HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
-				} else if ( angle < 130.0f ) {
-					if ( angle > 50.0f ) {
-						angle -= 80.0f;
-					}
-					HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
-				}
-				LookAngle = Mathf.DegToRad( angle );
-				HeadAnimations.SetDeferred( PropertyName.GlobalRotation, LookAngle );
+				LookAngle = CalcAngle( LookAngle, HeadAnimations );
 			}
 			if ( ArmAnimations != null ) {
-				float angle = Mathf.RadToDeg( AimAngle );
-				if ( angle < -50.0f ) {
-					angle = 230.0f;
-				} else if ( angle > 230.0f ) {
-					angle = -50.0f;
-				}
-				if ( angle > 50.0f ) {
-					if ( angle < 130.0f ) {
-						angle += 80.0f;
-					}
-					ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
-				} else if ( angle < 130.0f ) {
-					if ( angle > 50.0f ) {
-						angle -= 80.0f;
-					}
-					ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
-				}
-				AimAngle = Mathf.DegToRad( angle );
-				ArmAnimations.SetDeferred( PropertyName.GlobalRotation, AimAngle );
+				AimAngle = CalcAngle( AimAngle, ArmAnimations );
 			}
 			if ( Velocity == Godot.Vector2.Zero ) {
 				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );

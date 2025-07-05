@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dil6cvnitkb3b"]
+[gd_scene load_steps=22 format=3 uid="uid://dil6cvnitkb3b"]
 
 [ext_resource type="Shader" uid="uid://ci77l6g215lyf" path="res://shaders/visor_glow_blue.gdshader" id="1_q3nyr"]
 [ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="1_sse78"]
@@ -8,7 +8,15 @@
 [ext_resource type="SpriteFrames" uid="uid://dt3nr18ulah26" path="res://resources/animations/mobs/bandit_grunt_arm_animations.tres" id="5_q3nyr"]
 [ext_resource type="Script" uid="uid://d11c6gwrjou0w" path="res://addons/behaviour_toolkit/behaviour_tree/bt_root.gd" id="7_2b6m4"]
 [ext_resource type="Script" uid="uid://csq05x4oq8uf3" path="res://addons/behaviour_toolkit/blackboard.gd" id="8_agrwk"]
+[ext_resource type="Script" uid="uid://8rcyavsdmew5" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_selector.gd" id="9_2b6m4"]
 [ext_resource type="Script" uid="uid://dpr2xa1e5hy8u" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_sequence.gd" id="9_rj0kc"]
+[ext_resource type="Script" uid="uid://uvffj6edmq73" path="res://scripts/renown/Thinkers/Behaviours/is_relaxed.gd" id="11_2sbjv"]
+[ext_resource type="Script" uid="uid://b26n4e0kvlmwa" path="res://scripts/renown/Thinkers/Behaviours/sight_check.gd" id="11_rj0kc"]
+[ext_resource type="Script" uid="uid://dstmrjfx8r618" path="res://scripts/renown/Thinkers/Behaviours/move_to_disturbance.gd" id="12_yadcl"]
+[ext_resource type="Script" uid="uid://bl25rod6blkxk" path="res://scripts/renown/Thinkers/Behaviours/is_suspicious.gd" id="13_n1021"]
+[ext_resource type="Script" uid="uid://bts0yymqfnj5o" path="res://addons/behaviour_toolkit/behaviour_tree/decorators/decorator_repeat.gd" id="15_q4sce"]
+[ext_resource type="Script" uid="uid://c81txbqu41pa" path="res://scripts/renown/Thinkers/Behaviours/change_investigation_angle.gd" id="16_n1021"]
+[ext_resource type="Script" uid="uid://buvb8uppbyosm" path="res://addons/behaviour_toolkit/behaviour_tree/leaves/leaf_wait.gd" id="17_q4sce"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lqbnx"]
 shader = ExtResource("1_q3nyr")
@@ -25,7 +33,7 @@ script = ExtResource("8_agrwk")
 content = {}
 metadata/_custom_type_script = "uid://csq05x4oq8uf3"
 
-[node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Archive", "Thinkers"]]
+[node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("BehaviourTree", "Relations", "Debts") groups=["Archive", "Thinkers"]]
 z_index = 6
 collision_layer = 12
 collision_mask = 12
@@ -33,6 +41,7 @@ script = ExtResource("1_sse78")
 LoseInterestTime = 10.0
 SightDetectionTime = 15.0
 SightDetectionSpeed = 1600.0
+BehaviourTree = NodePath("BTRoot")
 MovementSpeed = 120.0
 Health = 80.0
 Relations = {}
@@ -106,8 +115,56 @@ script = ExtResource("7_2b6m4")
 process_type = 0
 actor = NodePath("..")
 blackboard = SubResource("Resource_yadcl")
+verbose = true
 metadata/_custom_type_script = "uid://d11c6gwrjou0w"
 
-[node name="BTSequence" type="Node" parent="BTRoot"]
+[node name="Select" type="Node" parent="BTRoot"]
+script = ExtResource("9_2b6m4")
+metadata/_custom_type_script = "uid://8rcyavsdmew5"
+
+[node name="Relaxed" type="Node" parent="BTRoot/Select"]
 script = ExtResource("9_rj0kc")
 metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="IsRelaxed" type="Node" parent="BTRoot/Select/Relaxed"]
+script = ExtResource("11_2sbjv")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="CanSeeThreat" type="Node" parent="BTRoot/Select/Relaxed"]
+script = ExtResource("11_rj0kc")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="Suspicious" type="Node" parent="BTRoot/Select"]
+script = ExtResource("9_rj0kc")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="IsSuspicious" type="Node" parent="BTRoot/Select/Suspicious"]
+script = ExtResource("13_n1021")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="CanSeeThreat" type="Node" parent="BTRoot/Select/Suspicious"]
+script = ExtResource("11_rj0kc")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="MoveToThreatLocation" type="Node" parent="BTRoot/Select/Suspicious"]
+script = ExtResource("12_yadcl")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="LookAround" type="Node" parent="BTRoot/Select/Suspicious"]
+script = ExtResource("9_rj0kc")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"
+
+[node name="LookAround" type="Node" parent="BTRoot/Select/Suspicious/LookAround"]
+script = ExtResource("15_q4sce")
+repetition = 2
+on_limit = 0
+metadata/_custom_type_script = "uid://bts0yymqfnj5o"
+
+[node name="ChangeInvestigationAngle" type="Node" parent="BTRoot/Select/Suspicious/LookAround/LookAround"]
+script = ExtResource("16_n1021")
+metadata/_custom_type_script = "uid://c584shlo6w6it"
+
+[node name="LeafWait" type="Node" parent="BTRoot/Select/Suspicious/LookAround"]
+script = ExtResource("17_q4sce")
+wait_time = 1.25
+metadata/_custom_type_script = "uid://buvb8uppbyosm"
