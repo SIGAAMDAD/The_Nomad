@@ -39,16 +39,17 @@ namespace Renown.World {
 				if ( entity is Player player && player != null ) {
 					PlayerStatus = true;
 					EmitSignalPlayerEntered();
+					SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
 				}
 			}
 		}
 		private void OnProcessAreaBody2DExited( Node2D body ) {
-			Player player = body as Player;
-			if ( player == null ) {
+			if ( body is not Player player ) {
 				return;
 			}
 			PlayerStatus = false;
 			EmitSignalPlayerExited();
+			SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 		}
 
 		public override void _Ready() {	

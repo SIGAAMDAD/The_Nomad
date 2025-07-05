@@ -335,6 +335,10 @@ func OnShowInventory() -> void:
 	_notebook.visible = true
 	_notebook.on_show_backpack()
 
+func _on_jump_audio_tween_fade_out_finished() -> void:
+	_jump_music.stop()
+	_jump_music.volume_db = 0.0
+
 func ShowInteraction( item: Area2D ) -> void:
 	match item.GetInteractionType():
 		InteractionType.Checkpoint:
@@ -342,6 +346,8 @@ func ShowInteraction( item: Area2D ) -> void:
 			_current_interactor = _checkpoint_interactor
 		InteractionType.Door:
 			_current_interactor = _door_interactor
+		InteractionType.EaglesPeak:
+			_current_interactor = _jump_interactor
 	
 	if _current_interactor != null:
 		_current_interactor.show()
@@ -360,10 +366,28 @@ func ShowInteraction( item: Area2D ) -> void:
 			DoorState.Unlocked:
 				_open_door_button.hide()
 				_use_door_button.show()
+	elif _current_interactor == _jump_interactor:
+		_on_yes_pressed = item.OnYesButtonPressed
+		_on_no_pressed = item.OnNoButtonPressed
+		
+		_jump_yes_button.connect( "pressed", _on_yes_pressed )
+		_jump_no_button.connect( "pressed", _on_no_pressed )
+		
+		_jump_view_image.texture = item.GetViewImage()
+		_jump_music.stream = item.GetMusic()
+		
+		_jump_music.play()
 
 func HideInteraction() -> void:
 	if _current_interactor == _checkpoint_interactor:
 		_checkpoint_interactor.EndInteraction()
+	elif _current_interactor == _jump_interactor:
+		var _audio_tween: Tween = create_tween()
+		_audio_tween.tween_property( _jump_music, "volume_db", -20.0, 1.5 )
+		_audio_tween.connect( "finished", _on_jump_audio_tween_fade_out_finished )
+		
+		_jump_yes_button.disconnect( "pressed", _on_yes_pressed )
+		_jump_no_button.disconnect( "pressed", _on_no_pressed )
 	
 	if _current_interactor != null:
 		_current_interactor.hide()

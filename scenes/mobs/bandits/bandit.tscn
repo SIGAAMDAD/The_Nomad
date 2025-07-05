@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dil6cvnitkb3b"]
+[gd_scene load_steps=14 format=3 uid="uid://dil6cvnitkb3b"]
 
 [ext_resource type="Shader" uid="uid://ci77l6g215lyf" path="res://shaders/visor_glow_blue.gdshader" id="1_q3nyr"]
 [ext_resource type="Script" uid="uid://cg547d4tqtl3s" path="res://scripts/renown/Thinkers/Bandit.cs" id="1_sse78"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" uid="uid://ya6g5a1ll81k" path="res://scripts/Hitbox.cs" id="3_02k6i"]
 [ext_resource type="SpriteFrames" uid="uid://hvxaope63nbh" path="res://resources/animations/mobs/bandit_grunt_body_animations.tres" id="4_q3nyr"]
 [ext_resource type="SpriteFrames" uid="uid://dt3nr18ulah26" path="res://resources/animations/mobs/bandit_grunt_arm_animations.tres" id="5_q3nyr"]
+[ext_resource type="Script" uid="uid://d11c6gwrjou0w" path="res://addons/behaviour_toolkit/behaviour_tree/bt_root.gd" id="7_2b6m4"]
+[ext_resource type="Script" uid="uid://csq05x4oq8uf3" path="res://addons/behaviour_toolkit/blackboard.gd" id="8_agrwk"]
+[ext_resource type="Script" uid="uid://dpr2xa1e5hy8u" path="res://addons/behaviour_toolkit/behaviour_tree/composites/bt_sequence.gd" id="9_rj0kc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lqbnx"]
 shader = ExtResource("1_q3nyr")
@@ -17,6 +20,11 @@ size = Vector2(11, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnc44"]
 size = Vector2(18, 21)
 
+[sub_resource type="Resource" id="Resource_yadcl"]
+script = ExtResource("8_agrwk")
+content = {}
+metadata/_custom_type_script = "uid://csq05x4oq8uf3"
+
 [node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts") groups=["Archive", "Thinkers"]]
 z_index = 6
 collision_layer = 12
@@ -24,7 +32,7 @@ collision_mask = 12
 script = ExtResource("1_sse78")
 LoseInterestTime = 10.0
 SightDetectionTime = 15.0
-SightDetectionSpeed = 1000.0
+SightDetectionSpeed = 1600.0
 MovementSpeed = 120.0
 Health = 80.0
 Relations = {}
@@ -92,3 +100,14 @@ modulate = Color(0, 1, 0, 1)
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
+
+[node name="BTRoot" type="Node" parent="." node_paths=PackedStringArray("actor")]
+script = ExtResource("7_2b6m4")
+process_type = 0
+actor = NodePath("..")
+blackboard = SubResource("Resource_yadcl")
+metadata/_custom_type_script = "uid://d11c6gwrjou0w"
+
+[node name="BTSequence" type="Node" parent="BTRoot"]
+script = ExtResource("9_rj0kc")
+metadata/_custom_type_script = "uid://dpr2xa1e5hy8u"

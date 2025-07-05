@@ -1,38 +1,36 @@
 using Godot;
 
 public partial class ActionTutorial : InteractionItem {
-	private RichTextLabel Text;
-	private TextureRect Background;
-
 	[Export]
 	private string TutorialString;
 	[Export]
 	private Resource Action;
 
+	private RichTextLabel Text;
 	private Resource DialogueResource;
+	private Callable Callback;
+
+	private void OnInteract( Player player ) {
+		Text.Hide();
+		Player.StartThoughtBubble( "Press " + AccessibilityManager.GetBindString( Action ) + " to " + TutorialString );
+		player.Disconnect( Player.SignalName.Interaction, Callback );
+	}
 
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is not Player ) {
-			return;
+		if ( body is Player player && player != null ) {
+			Callback = Callable.From( () => OnInteract( player ) );
+			Text.Show();
+			player.Connect( Player.SignalName.Interaction, Callback );
+			player.EmitSignal( Player.SignalName.ShowInteraction, this );
 		}
-
-		Player player = (Player)body;
-
-		Text.Show();
-		Background.Show();
-
-		player.BeginInteraction( this );
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is not Player ) {
-			return;
+		if ( body is Player player && player != null ) {
+			Text.Hide();
+			if ( player.IsConnected( Player.SignalName.Interaction, Callback ) ) {
+				player.Disconnect( Player.SignalName.Interaction, Callback );
+			}
 		}
-
-		Text.Hide();
-		Background.Hide();
-
-		Player player = (Player)body;
-		player.EndInteraction();
 	}
 
 	public override InteractionType GetInteractionType() {
@@ -43,11 +41,9 @@ public partial class ActionTutorial : InteractionItem {
 		base._Ready();
 
 		Text = GetNode<RichTextLabel>( "RichTextLabel" );
-		Background = GetNode<TextureRect>( "TextureRect" );
+		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( AccessibilityManager.GetBindString( LevelData.Instance.ThisPlayer.InteractAction ) );
 
-		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( "Press " + AccessibilityManager.GetBindString( Action ) + " to " + TutorialString );
-
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
-		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 	}
 };

@@ -1,4 +1,4 @@
-[gd_scene load_steps=180 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=181 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -217,6 +217,9 @@ _surfaces = [{
 "vertex_count": 9,
 "vertex_data": PackedByteArray("AACQQAAAEMEAANBAAADgwAAA8EAAAODAAADQQAAAgL8AANBAAADgQAAA0MAAAOBAAADwwAAA4EAAAPDAAABAwAAAkEAAACDB")
 }]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_mem04"]
+polygon = PackedVector2Array(-95.75, 28.375, 98.875, 24.3125, 102.031, 106.734, -95.75, 108.094)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_hc03g"]
 polygon = PackedVector2Array(-720.219, -32.4688, -720.055, -48.4688, -320.297, -48.3242, -319.469, -32.3125, -336.461, -32.4922, -335.789, -0.480469, -383.758, 0.0234375, -383.75, 95.0352, -302.812, 96.8711, -303.641, 79.8633, -271.664, 80.1914, -271.672, -15.8164, -95.7734, -15.9961, -96.6016, 64.0039, -80.6172, 64.1719, -79.9453, 96.1797, -63.9531, 96.3477, -64.125, 112.348, 32.8203, 112.352, 32.4766, -47.668, 128.414, -47.6758, 128.578, -63.6758, 176.555, -64.1797, 176.883, -95.1797, 368.758, -95.1875, 367.938, -112.199, 815.656, -111.559, 815.492, -95.5586, 1039.36, -96.2422, 1039.52, -15.2305, 1136.46, -15.2266, 1136.95, -63.2266, 1197.92, -63.5938, 1197.8, -51.5938, 1218.78, -51.375, 1218.91, -64.375, 1423.79, -64.2539, 1423.8, 31.7578, 1087.99, 32.2773, 1087.84, 47.2773, 1007.88, 48.4492, 1007.73, 255.465, 1072.69, 256.141, 1073.4, 187.145, 1133.38, 185.766, 1135.34, 286.793, 1007.4, 287.465, 1008.4, 384.484, 1200.27, 384.477, 1200.78, 239.469, 1713.46, 239.781, 1713.63, 126.77, 1455.79, 127.098, 1456.09, -95.9219, 1568.02, -95.7617, 1567.88, 15.25, 1519.9, 15.75, 1520.23, 80.7617, 1649.16, 80.0977, 1648.98, -95.9219, 1711.94, -95.2695, 1711.44, -337.301, 1688.45, -337.539, 1688.95, -385.535, 1625, -386.199, 1625.66, -450.199, 1658.62, -448.855, 1658.12, -496.867, 1705.1, -497.383, 1707.1, -594.371, 1771.04, -591.707, 1771.05, -688.719, 1804.02, -688.375, 1804.86, -769.375, 1884.79, -767.547, 1886.43, -926.547, 2078.3, -925.559, 2077.46, -940.57, 2110.43, -940.227, 2110.6, -956.223, 2159.58, -956.719, 2157.74, -972.738, 2174.73, -972.562, 2175.41, -1037.56, 2287.31, -1035.4, 2286.48, -1051.41, 2302.47, -1051.25, 2303.63, -1067.23, 2318.62, -1067.08, 2318.78, -1083.08, 2334.77, -1082.91, 2336.09, -1113.91, 2351.09, -1114.75, 2352.26, -1227.75, 2400.22, -1226.25, 2400.43, -1246.25, 2416.41, -1246.09, 2417.03, -1306.09, 2400.05, -1306.26, 2337.09, -1306.91, 2337.26, -1322.91, 2369.23, -1322.58, 2369.4, -1338.58, 2481.32, -1337.42, 2481.49, -1353.42, 2737.3, -1350.77, 2737.13, -1334.77, 2753.12, -1334.61, 2752.79, -1302.61, 2736.8, -1302.77, 2736.84, -1208.76, 2815.75, -1205.95, 2817.41, -1269.93, 2816, -1325.95, 2818.56, -1477.95, 2802.58, -1478.11, 2802.74, -1494.11, 2786.75, -1494.27, 2786.92, -1510.27, 2738.96, -1510.77, 2738.79, -1494.77, 2674.84, -1495.43, 2675.01, -1511.43, 2611.05, -1512.1, 2611.22, -1528.1, 2579.24, -1528.43, 2579.41, -1544.43, 2419.52, -1546.09, 2419.35, -1530.09, -319.984, -368.355, -320.625, -113.336, -833.484, -96.6484, -832.977, 47.375, -895.938, 47.7188, -896.109, 63.7188, -912.102, 63.5547, -912.266, 79.5547, -929.258, 80.3789, -930.328, 183.379, -929.047, 543.426, -929.07, 545.426, -896.445, 578.77, -381.75, 578.102, 285.711, 687.031, 1662.55, 620.289, 1999.31, 429.758, 2573.77, -1000.43, 2333.95, -1002.91, 2333.29, -938.918, 2317.3, -939.086, 2316.47, -859.086, 2268.51, -859.582, 2268.01, -811.582, 2204.05, -812.246, 2204.22, -828.246, 2172.24, -828.574, 2171.59, -764.574, 2155.59, -764.742, 2154.93, -700.742, 2011.03, -702.234, 2010.87, -686.234, 1994.88, -686.398, 1994.22, -622.398, 1978.23, -622.562, 1977.56, -558.562, 1945.59, -558.895, 1944.92, -494.895, 1896.96, -495.391, 1896.63, -463.391, 1848.66, -463.891, 1848, -399.891, 1800.04, -400.387, 1799.88, -384.387, 1751.91, -385.883, 1751.4, -335.887, 1744.41, -335.961, 1743.92, -95.9414, 1791.89, -96.4414, 1792.06, -16.4336, 1808.05, -16.2656, 1809.59, 511.801, 1647.7, 511.125, 1648.69, 608.145, 1601.71, 608.66, 1600.03, 480.629, 1536.08, 479.965, 1536.43, 542.977, 1424.49, 543.816, 1424.83, 511.816, 1408.84, 511.648, 1407.99, 496.641, 1296.08, 495.48, 1295.91, 511.48, 1215.95, 511.652, 1215.62, 640.66, 943.781, 640.844, 943.961, 623.844, 879.992, 624.18, 879.484, 577.172, 1088.35, 577.336, 1088.02, 513.324, 1120, 512.656, 1120.33, 577.668, 1152.3, 578, 1151.98, 416.977, 864.156, 416.996, 864.484, 384.996, 704.586, 384.34, 703.758, 464.34, 687.773, 464.172, 688.125, 623.191, 640.076, 623.554, 640.469, 495.688, 575.516, 495.012, 576.18, 624.035, 512.227, 623.371, 512.211, 528.359, 480.234, 528.027, 481.25, 623.051, 48.5, 624.566, 48.0078, 575.555, 33.0156, 575.398, 32.3359, 544.391, 16.3516, 544.223, 16.5234, 528.223, -351.242, 527.414, -351.75, 479.402, -383.727, 479.07, -384.719, 575.07, -895.414, 575.777, -895.25, 559.777, -912.234, 559.602, -912.062, 543.602, -928.055, 543.438, -927.922, 144.398, -911.938, 144.566, -911.773, 128.566, -895.766, 127.73, -895.602, 111.73, -831.648, 112.395, -832.156, -31.625)
@@ -15633,18 +15636,18 @@ DayCount = 286
 
 [node name="Cutscene" type="Node" parent="."]
 
-[node name="StartingCutscene" parent="Cutscene" node_paths=PackedStringArray("Sequences") instance=ExtResource("68_q0seo")]
+[node name="StartingThoughtBubble" parent="Cutscene" node_paths=PackedStringArray("Sequences") instance=ExtResource("68_q0seo")]
 position = Vector2(690, 3095)
 scale = Vector2(2, 2)
 Sequences = [NodePath("ThoughtBubbleSequence0")]
 
-[node name="ThoughtBubbleSequence0" type="Node2D" parent="Cutscene/StartingCutscene"]
+[node name="ThoughtBubbleSequence0" type="Node2D" parent="Cutscene/StartingThoughtBubble"]
 script = ExtResource("69_gb70t")
 DialogueResource = ExtResource("70_gb70t")
 Starting = &"start_thoughts"
 
-[node name="CutsceneTrigger" parent="Cutscene/StartingCutscene" node_paths=PackedStringArray("Cutscene") instance=ExtResource("9_gb70t")]
-position = Vector2(-85561.5, 51702)
+[node name="CutsceneTrigger" parent="Cutscene/StartingThoughtBubble" node_paths=PackedStringArray("Cutscene") instance=ExtResource("9_gb70t")]
+position = Vector2(-86094, 50374.5)
 Cutscene = NodePath("..")
 OneShot = true
 
@@ -16075,7 +16078,10 @@ position = Vector2(-0.830884, 0.569986)
 scale = Vector2(2.07092, 1.4587)
 
 [node name="LightStump3" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
-position = Vector2(1153, 224.999)
+position = Vector2(1153.5, 119.499)
+
+[node name="LightStump5" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
+position = Vector2(490, 104.999)
 
 [node name="LightStump4" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
 position = Vector2(1597, 363.999)
@@ -16157,8 +16163,6 @@ hframes = 19
 vframes = 19
 frame = 303
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Pissbucket"]
-
 [node name="Tent" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
 z_index = 4
 position = Vector2(1461, 240.999)
@@ -16168,6 +16172,9 @@ texture = ExtResource("12_cyobr")
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent"]
 position = Vector2(-5.78633, -5.92422)
 scale = Vector2(15.7326, 14.3702)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent"]
+occluder = SubResource("OccluderPolygon2D_mem04")
 
 [node name="Tent2" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
 z_index = 4
@@ -16180,6 +16187,9 @@ position = Vector2(12.5533, -13.5103)
 scale = Vector2(15.7326, 14.3702)
 enable_node_path = NodePath("../../Tent")
 
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent2"]
+occluder = SubResource("OccluderPolygon2D_mem04")
+
 [node name="Tent3" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
 z_index = 4
 position = Vector2(1648, 241.999)
@@ -16191,6 +16201,9 @@ position = Vector2(28.2486, -10.808)
 scale = Vector2(15.7326, 14.3702)
 enable_node_path = NodePath("../../Tent")
 
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent3"]
+occluder = SubResource("OccluderPolygon2D_mem04")
+
 [node name="Tent4" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
 z_index = 4
 position = Vector2(1738, 239.999)
@@ -16201,6 +16214,9 @@ texture = ExtResource("12_cyobr")
 position = Vector2(18.8311, -10.808)
 scale = Vector2(15.7326, 14.3702)
 enable_node_path = NodePath("../../Tent")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent4"]
+occluder = SubResource("OccluderPolygon2D_mem04")
 
 [node name="Environment" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer"]
 z_index = 4

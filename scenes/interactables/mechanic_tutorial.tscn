@@ -28,6 +28,14 @@ texture = ExtResource("2_7v8s2")
 [node name="InteractBody" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_k2ei4")
 
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = -56.0
+offset_right = 20.0
+offset_bottom = -16.0
+bbcode_enabled = true
+
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 position = Vector2(-0.5, -0.999999)
 scale = Vector2(1.35, 1.4)

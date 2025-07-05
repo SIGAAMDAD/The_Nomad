@@ -56,7 +56,6 @@ namespace Renown.Thinkers {
 		private Entity SightTarget = null;
 
 		private Timer LoseInterestTimer;
-		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
 		private WeaponEntity Weapon;
@@ -107,8 +106,6 @@ namespace Renown.Thinkers {
 			LookDir = GlobalPosition.DirectionTo( source.GlobalPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
-
-			ChangeInvestigationAngleTimer.CallDeferred( "start" );
 
 			if ( IsAlert() ) {
 				SetAlert();
@@ -163,6 +160,8 @@ namespace Renown.Thinkers {
 			Aiming = false;
 
 			if ( Health <= 0.0f ) {
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
+
 				HeadHitbox.SetDeferred( Area2D.PropertyName.Monitoring, false );
 				HeadHitbox.GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 
@@ -217,7 +216,6 @@ namespace Renown.Thinkers {
 			if ( Awareness != MobAwareness.Alert ) {
 //				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
 			}
-			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Stop );
 			Target = SightTarget;
 			Bark( BarkType.TargetSpotted );
 			Awareness = MobAwareness.Alert;
@@ -227,16 +225,12 @@ namespace Renown.Thinkers {
 			Fear = nAmount;
 			if ( Fear >= 100 ) {
 				SpeedDegrade = 0.0f;
-				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
 			} else if ( Fear >= 80 ) {
 				SpeedDegrade = 0.25f;
-				ChangeInvestigationAngleTimer.WaitTime = 0.90f;
 			} else if ( Fear >= 60 ) {
 				SpeedDegrade = 0.5f;
-				ChangeInvestigationAngleTimer.WaitTime = 1.2f;
 			} else {
 				SpeedDegrade = 1.0f;
-				ChangeInvestigationAngleTimer.WaitTime = 2.0;
 			}
 		}
 
@@ -320,17 +314,6 @@ namespace Renown.Thinkers {
 			};
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
-		private void OnChangeInvestigationAngleTimerTimeout() {
-			float angle;
-			if ( RNJesus.IntRange( 0, 99 ) > 50 ) {
-				angle = RNJesus.FloatRange( -50.0f, 50.0f );
-			} else {
-				angle = RNJesus.FloatRange( 130.0f, 230.0f );
-			}
-			LookAngle = Mathf.DegToRad( angle );
-			AimAngle = Mathf.DegToRad( angle );
-			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
-		}
 		private void OnLoseInterestTimerTimeout() {
 			CurrentState = State.Investigating;
 
@@ -358,6 +341,7 @@ namespace Renown.Thinkers {
 			Health = StartHealth;
 			Flags = 0;
 			SightDetectionAmount = 0.0f;
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
 		}
 		private void ResetAttackMeter() {
 			AttackMeterProgress = AttackMeterFull.X;
@@ -465,13 +449,6 @@ namespace Renown.Thinkers {
 			Weapon.SetOwner( this );
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
-
-			ChangeInvestigationAngleTimer = new Timer();
-			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
-			ChangeInvestigationAngleTimer.OneShot = true;
-			ChangeInvestigationAngleTimer.WaitTime = 1.0f;
-			ChangeInvestigationAngleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
-			AddChild( ChangeInvestigationAngleTimer );
 
 			TargetMovedTimer = new Timer();
 			TargetMovedTimer.Name = "TargetMovedTimer";
@@ -620,7 +597,6 @@ namespace Renown.Thinkers {
 						Awareness = MobAwareness.Suspicious;
 						SetNavigationTarget( LastTargetPosition );
 						CurrentState = State.Investigating;
-						ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 
 						// cycle
 						return;
@@ -630,7 +606,7 @@ namespace Renown.Thinkers {
 		}
 
 		public void LookAtTarget() {
-			if ( SightTarget == null || ChangeInvestigationAngleTimer.TimeLeft > 0.0f ) {
+			if ( SightTarget == null ) {
 				return;
 			}
 			LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
@@ -685,7 +661,6 @@ namespace Renown.Thinkers {
 					Bark( BarkType.ManDown );
 
 					Awareness = MobAwareness.Alert;
-					ChangeInvestigationAngleTimer.Start();
 				} else {
 					SightTarget = sightTarget;
 					LastTargetPosition = sightTarget.GlobalPosition;
