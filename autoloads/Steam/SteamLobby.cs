@@ -115,7 +115,16 @@ public partial class SteamLobby : Node {
 		}
 
 		public static byte[] SecureOutgoingMessage( byte[] data, CSteamID target ) {
-			return data;
+			if ( data == null || data.Length == 0 ) {
+				return Array.Empty<byte>();
+			}
+
+			using var output = new System.IO.MemoryStream();
+			using var compressor = new System.IO.Compression.DeflateStream( output, System.IO.Compression.CompressionLevel.SmallestSize );
+
+			compressor.Write( data, 0, data.Length );
+
+			return output.ToArray();
 		}
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
 			if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
@@ -132,7 +141,13 @@ public partial class SteamLobby : Node {
 				return null; // 500 msg/sec limit
 			}
 
-			return secured;
+			using var input = new System.IO.MemoryStream( secured );
+			using var decompressor = new System.IO.Compression.DeflateStream( input, System.IO.Compression.CompressionMode.Decompress );
+			using var output = new System.IO.MemoryStream();
+
+			decompressor.CopyTo( output );
+
+			return output.ToArray();
 		}
 	};
 
