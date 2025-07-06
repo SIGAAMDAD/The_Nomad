@@ -116,7 +116,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			LastFlipState = flip;
 		}
 
-		NetworkPosition = SyncObject.ReadVector2();
+		NetworkPosition = new Godot.Vector2( SyncObject.ReadFloat(), SyncObject.ReadFloat() );
 		CurrentSpeed = Player.MAX_SPEED;
 
 		if ( SyncObject.ReadBoolean() ) {
@@ -178,13 +178,13 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Idle:
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
-			WalkEffect.SetDeferred( "emitting", false );
-			SlideEffect.SetDeferred( "emitting", false );
+			WalkEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, false );
+			SlideEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, false );
 			break;
 		case PlayerAnimationState.Running:
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "run" );
-			WalkEffect.SetDeferred( "emitting", true );
+			WalkEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, true );
 			break;
 		case PlayerAnimationState.Sliding:
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
@@ -302,7 +302,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		base._Process( delta );
 
 		float effectiveFactor = 1.0f - Mathf.Pow( 1.0f - 0.06f, (float)delta * 60.0f );
-		Velocity = Velocity.Lerp( NetworkPosition, effectiveFactor );
+		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, effectiveFactor );
 	}
 
 	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {

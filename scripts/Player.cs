@@ -605,7 +605,8 @@ public partial class Player : Entity {
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( TorsoAnimation.FlipH );
 
-		SyncObject.Write( Velocity );
+		SyncObject.Write( GlobalPosition.X );
+		SyncObject.Write( GlobalPosition.Y );
 
 		if ( (uint)Flags != LastSyncState.LastNetworkFlags ) {
 			SyncObject.Write( true );
