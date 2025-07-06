@@ -15,7 +15,6 @@ public partial class MultiplayerMenu : Control {
 		LobbyBrowser.Connect( "OnHostGame", Callable.From( OnLobbyBrowserHostGamePressed ) );
 
 		LobbyFactory = GetNode<LobbyFactory>( "LobbyFactory" );
-		AddChild( LobbyFactory );
 		LobbyFactory.Hide();
 	}
 }
