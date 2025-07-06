@@ -92,8 +92,8 @@ public partial class LobbyFactory : Control {
 		Console.PrintLine( string.Format( "Starting game [map: {0}, gamemode: {1}]...", MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name, GameModeList.Selected ) );
 
 		Hide();
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
-		GetTree().ChangeSceneToPacked( ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/lobby_room.tscn" ) );
+		GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
 	}
 };

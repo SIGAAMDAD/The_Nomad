@@ -79,7 +79,7 @@ public partial class LobbyRoom : Control {
 	private void LoadGame() {
 		UIAudioManager.OnActivate();
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).CallDeferred( "FadeOut" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 
 		string modeName;
 		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
@@ -100,16 +100,15 @@ public partial class LobbyRoom : Control {
 			break;
 		default:
 			return;
-		}
-		;
+		};
 
-		CallDeferred( "connect", "FinishedLoading", Callable.From( OnFinishedLoading ) );
+		CallDeferred( MethodName.Connect, SignalName.FinishedLoading, Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
 			LoadedLevel = ResourceLoader.Load<PackedScene>( "res://levels/" +
 				MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName
 				+ "_mp_" + modeName + ".tscn"
 			);
-			CallDeferred( "emit_signal", "FinishedLoading" );
+			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
 		} );
 		LoadThread.Start();
 	}
@@ -227,7 +226,7 @@ public partial class LobbyRoom : Control {
 
 		GetTree().CurrentScene = this;
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
