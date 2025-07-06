@@ -346,6 +346,8 @@ public partial class Player : Entity {
 	// HUD related signals
 	//
 	[Signal]
+	public delegate void DashBurnoutChangedEventHandler( float nDashBurnout );
+	[Signal]
 	public delegate void RageChangedEventHandler( float nRage );
 	[Signal]
 	public delegate void HealthChangedEventHandler( float nHealth );
@@ -1155,7 +1157,7 @@ public partial class Player : Entity {
 	}
 	private void OnDashBurnoutCooldownTimerTimeout() {
 		DashBurnout = 0.0f;
-		DashTimer = 0.6f;
+		DashTimer = 0.3f;
 
 		DashTime.WaitTime = DashTimer;
 
@@ -1186,6 +1188,8 @@ public partial class Player : Entity {
 			AddStatusEffect( "status_burning" );
 			ShakeCamera( 50.0f );
 
+			EmitSignalDashBurnoutChanged( 0.0f );
+
 			return;
 		}
 
@@ -1209,6 +1213,8 @@ public partial class Player : Entity {
 		}
 		DashCooldownTime.WaitTime = 0.80f;
 		DashCooldownTime.Start();
+
+		EmitSignalDashBurnoutChanged( DashBurnout );
 	}
 	private void OnSlide() {
 		if ( IsInputBlocked() || ( Flags & PlayerFlags.Dashing ) != 0 ) {
@@ -2136,6 +2142,7 @@ public partial class Player : Entity {
 			if ( DashBurnout < 0.0f ) {
 				DashBurnout = 0.0f;
 			}
+			EmitSignalDashBurnoutChanged( DashBurnout );
 		}
 		CheckStatus( (float)delta );
 

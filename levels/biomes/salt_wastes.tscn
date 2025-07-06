@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=4 uid="uid://b16ex50idp6s1"]
+[gd_scene load_steps=39 format=4 uid="uid://b16ex50idp6s1"]
 
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="1_5w8g6"]
 [ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="2_pnosp"]
@@ -28,15 +28,6 @@ size = Vector2(16, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hjey5"]
 size = Vector2(26.1224, 21.3119)
-
-[sub_resource type="Resource" id="Resource_85mog"]
-metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
-
-[sub_resource type="Resource" id="Resource_ayvqd"]
-metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
-
-[sub_resource type="Resource" id="Resource_sayq2"]
-metadata/__load_path__ = "res://scenes/mobs/mercenary/mercenary_shotgunner.tscn"
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_521i4"]
 vertices = PackedVector2Array(1456, 301, 1531, 301, 1438, 302, 1547, 300, 1622, 300, 945, 107, 1007, 42, 1010, 250, 944, 239, 1698.75, 227.195, 1715.73, 495, 1619, 260, 1204, 233, 1547, 260, 1074, 249, 1075, 176, 1079, 178, 1651, 495, 692, 460, 692.891, 603.547, 689.852, 602.977, 1402.52, -77.4219, 1419.2, 18.0469, 1087, 24, 837.672, -107, 1010, 281, 1011, 379, 807, 352, 1298, 483, 1300, 502, 1222, 503, 1363, 262, 1363, 302, 1345, 301, 1342, 261, 1093, 505, 1125, 504, 1126, 569, 1094, 569, 1540, 466, 1542, 530, 1431, 532, 1430, 500, 1222, 631, 950, 634, 950, 617, 1157, 408, 868, 411, 868, 379, 886, 618, 885, 572, 1158, 569, 646.742, 603.766, 645, 492, 1096, 179, 1096, 170, 1131, 170, 708, 380, 708, 460, 1653, 594, 1608, 595, 1605, 466, 1528, 261, 1456, 261, 580, 492, 580.617, 604.984, 535.211, 605.82, 492.328, 72.7109, 1435, 262, 1270, 261, 1205, 377, 1270, 301, 557, 89, 559, 202, 541, 203, 1415, 500, 1414, 485, 657, 353, 544, 304, 655, 307, 1086, 39, 857, 107, 667.219, -107, 1137, 184, 1138, 279, 858, 239, 804, 86)

@@ -30,6 +30,8 @@ namespace Renown.Thinkers {
 
 		private Hitbox HeadHitbox;
 
+		private Formations.Formation Formation;
+
 		public bool HitHead { get; private set; }
 
 		private State CurrentState;
@@ -580,7 +582,7 @@ namespace Renown.Thinkers {
 
 		public void LookAtTarget() {
 			Godot.Vector2 position = LastTargetPosition;
-			if ( CanSeeTarget ) {
+			if ( CanSeeTarget && SightTarget != null ) {
 				ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Stop );
 				position = SightTarget.GlobalPosition;
 			}

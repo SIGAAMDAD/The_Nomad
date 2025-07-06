@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://du4x7ng6ntuk4"]
 
-[ext_resource type="Script" path="res://addons/guide/editor/action_slot/action_slot.gd" id="1_w5nxd"]
-[ext_resource type="Script" path="res://addons/guide/editor/action_slot/action_slot_line_edit.gd" id="2_ram7b"]
+[ext_resource type="Script" uid="uid://ysrbdsqui5cn" path="res://addons/guide/editor/action_slot/action_slot.gd" id="1_w5nxd"]
+[ext_resource type="Script" uid="uid://b12uq0dpsgj7u" path="res://addons/guide/editor/action_slot/action_slot_line_edit.gd" id="2_ram7b"]
 
 [node name="ActionSlot" type="HBoxContainer"]
 offset_right = 40.0

@@ -248,12 +248,12 @@ public partial class WeaponEntity : Node2D {
 	private void OnMuzzleFlashTimerTimeout() {
 		if ( Firemode == FireMode.Automatic ) {
 			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
-				MuzzleFlashes[i].CallDeferred( "hide" );
+				MuzzleFlashes[i].CallDeferred( MethodName.Hide );
 			}
 		} else {
-			CurrentMuzzleFlash.CallDeferred( "hide" );
+			CurrentMuzzleFlash.CallDeferred( MethodName.Hide );
 		}
-		MuzzleLight.CallDeferred( "hide" );
+		MuzzleLight.CallDeferred( MethodName.Hide );
 	}
 
 	private void InitProperties() {
@@ -589,11 +589,11 @@ public partial class WeaponEntity : Node2D {
 		}
 
 		if ( ResourceCache.Initialized ) {
-			WeaponTimer.SetDeferred( "wait_time", ReloadTime );
-			if ( !WeaponTimer.IsConnected( "timeout", Callable.From( OnReloadTimeTimeout ) ) ) {
-				WeaponTimer.Connect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+			WeaponTimer.SetDeferred( Timer.PropertyName.WaitTime, ReloadTime );
+			if ( !WeaponTimer.IsConnected( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) ) ) {
+				WeaponTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) );
 			}
-			WeaponTimer.CallDeferred( "start" );
+			WeaponTimer.CallDeferred( Timer.MethodName.Start );
 
 			CurrentState = WeaponState.Reload;
 			PlaySound( ReloadSfx );
@@ -626,7 +626,7 @@ public partial class WeaponEntity : Node2D {
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				entity.AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-				entity.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+				entity.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
 		} else if ( collision is Grenade grenade && grenade != null ) {
 			grenade.OnBlowup();
@@ -637,7 +637,7 @@ public partial class WeaponEntity : Node2D {
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
-				owner.CallDeferred( "add_child", ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+				owner.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
 		} else {
 			frameDamage -= damage;
@@ -645,7 +645,7 @@ public partial class WeaponEntity : Node2D {
 			if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
 				explosion.GlobalPosition = RayCast.GetCollisionPoint();
-				collision.CallDeferred( "add_child", explosion );
+				collision.CallDeferred( MethodName.AddChild, explosion );
 			}
 			DebrisFactory.Create( RayCast.GetCollisionPoint() );
 		}
@@ -690,7 +690,7 @@ public partial class WeaponEntity : Node2D {
 
 		CurrentState = WeaponState.Use;
 		WeaponTimer.WaitTime = UseTime;
-		WeaponTimer.Connect( "timeout", Callable.From( OnUseTimeTimeout ) );
+		WeaponTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnUseTimeTimeout ) );
 		WeaponTimer.Start();
 
 		// bullets work like those in Halo 3.
@@ -704,7 +704,7 @@ public partial class WeaponEntity : Node2D {
 		CurrentMuzzleFlash.Show();
 		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
 
-		MuzzleLight.CallDeferred( "show" );
+		MuzzleLight.CallDeferred( MethodName.Show );
 		
 		MuzzleFlashTimer.Start();
 
@@ -744,8 +744,6 @@ public partial class WeaponEntity : Node2D {
 
 		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
 
-		EmitSignalUsed( this );
-
 		return frameDamage;
 	}
 	public void UseDeferred( Properties weaponMode ) {
@@ -756,7 +754,8 @@ public partial class WeaponEntity : Node2D {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return; // can't use it when it's being used
-		};
+		}
+		;
 
 		SetUseMode( weaponMode );
 
@@ -767,9 +766,13 @@ public partial class WeaponEntity : Node2D {
 		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {
 			UseBladed();
 		}
+		
+		EmitSignalUsed( this );
 	}
 	public float Use( Properties weaponMode, out float soundLevel, bool held = false ) {
 		soundLevel = 0.0f;
+		EmitSignalUsed( this );
+		
 		if ( Engine.TimeScale == 0.0f ) {
 			return 0.0f;
 		}

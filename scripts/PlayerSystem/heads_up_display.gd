@@ -13,6 +13,7 @@ var _fadein_tween: Tween
 @onready var _notebook: Notebook = $NotebookContainer
 @onready var _healthbar: HealthBar = $MainHUD/HealthBar
 @onready var _ragebar: RageBar = $MainHUD/RageBar
+@onready var _dash_status: DashStatus = $MainHUD/DashStatus
 
 @onready var _emote_menu: Control = $MainHUD/EmoteMenu
 
@@ -170,7 +171,6 @@ func _on_use_door_button_pressed() -> void:
 
 func _on_hands_status_updated( handsUsed: int ) -> void:
 	_weapon_status.modulate = _default_color
-	_weapon_status_timer.start()
 	
 	match handsUsed:
 		HandsUsed.Left:
@@ -193,7 +193,6 @@ func _on_weapon_status_updated( source: Node, properties: int ) -> void:
 		return
 	
 	_weapon_status.modulate = _default_color
-	_weapon_status_timer.start()
 	
 	_weapon_mode_bladed.visible = source.LastUsedMode & WeaponProperties.IsBladed
 	_weapon_mode_blunt.visible = source.LastUsedMode & WeaponProperties.IsBlunt
@@ -223,18 +222,14 @@ func _on_location_changed( location: Area2D ) -> void:
 	_tweener.tween_property( _location_label, "modulate", _default_color, 1.5 )
 	_tweener.connect( "finished", func(): _location_status_timer.start() )
 
-func _on_weapon_reloaded( source: Node) -> void:
+func _on_weapon_reloaded( source: Node ) -> void:
 	_weapon_status.modulate = _default_color
-	_weapon_status_timer.process_mode = PROCESS_MODE_PAUSABLE
-	_weapon_status_timer.start()
 	
 	_weapon_status_bullet_count.text = var_to_str( source.BulletsLeft )
 	_weapon_status_bullet_reserve.text = var_to_str( source.Reserve.Amount ) if source.Reserve != null else "0"
 
 func _on_weapon_used( source: Node ) -> void:
 	_weapon_status.modulate = _default_color
-	_weapon_status_timer.process_mode = PROCESS_MODE_PAUSABLE
-	_weapon_status_timer.start()
 	
 	if source.LastUsedMode & WeaponProperties.IsFirearm:
 		_weapon_status_bullet_count.text = var_to_str( source.BulletsLeft )
@@ -254,8 +249,6 @@ func _on_switched_weapon( weapon: Node ) -> void:
 		_weapon_status.process_mode = PROCESS_MODE_PAUSABLE
 	
 	_weapon_status.modulate = _default_color
-	_weapon_status_timer.process_mode = PROCESS_MODE_PAUSABLE
-	_weapon_status_timer.start()
 	
 	if weapon.LastUsedMode & WeaponProperties.IsFirearm:
 		_weapon_status_firearm.show()
@@ -306,14 +299,15 @@ func _ready() -> void:
 	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
 	add_child( _objective_status_timer )
 	
-	_owner.connect( "DashStart", func(): _dash_overlay.show() )
-	_owner.connect( "DashEnd", func(): _dash_overlay.hide() )
-	_owner.connect( "BulletTimeStart", func(): _reflex_overlay.show() )
-	_owner.connect( "BulletTimeEnd", func(): _reflex_overlay.hide() )
-	_owner.connect( "HideInteraction", func(): HideInteraction() )
+	_owner.connect( "DashStart", _dash_overlay.show )
+	_owner.connect( "DashEnd", _dash_overlay.hide )
+	_owner.connect( "BulletTimeStart", _reflex_overlay.show )
+	_owner.connect( "BulletTimeEnd", _reflex_overlay.hide )
+	_owner.connect( "HideInteraction", HideInteraction )
 	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
-	_owner.connect( "InventoryToggled", func(): OnShowInventory() )
-	_owner.connect( "ParrySuccess", func(): _parry_overlay.show() )
+	_owner.connect( "InventoryToggled", OnShowInventory )
+	_owner.connect( "ParrySuccess", _parry_overlay.show )
+	_owner.connect( "DashBurnoutChanged", func( burnout: float ): _dash_status.DashBurnout = burnout )
 	_owner.connect( "HealthChanged", _on_health_changed )
 	_owner.connect( "RageChanged", func( rage: float ): _ragebar.Rage = rage )
 	_owner.connect( "LocationChanged", _on_location_changed )

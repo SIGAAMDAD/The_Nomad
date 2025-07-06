@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6nl2n0k6rm34"]
+
+[ext_resource type="Script" uid="uid://bfuk037ydf30r" path="res://scripts/renown/Thinkers/Formations/FormationDefensiveFlank.cs" id="1_ap4l5"]
+
+[node name="FormationDefensiveFlank" type="Node2D"]
+script = ExtResource("1_ap4l5")
+
+[node name="Leader" type="Node2D" parent="."]
+position = Vector2(43, 0)
+
+[node name="Positions" type="Node" parent="."]
+
+[node name="Flank" type="Node2D" parent="Positions"]

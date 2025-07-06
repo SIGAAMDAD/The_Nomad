@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://bc871ykd373uu"]
+
+[ext_resource type="Script" uid="uid://c4ofv3svm84au" path="res://scripts/PlayerSystem/UserInterface/dash_status.gd" id="1_8yg5y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3p0l"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p06e3"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+anti_aliasing = false
+
+[node name="DashStatus" type="ProgressBar"]
+anchors_preset = -1
+anchor_right = 0.208
+anchor_bottom = 0.012
+offset_right = -0.119995
+offset_bottom = 0.24
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_e3p0l")
+theme_override_styles/fill = SubResource("StyleBoxFlat_p06e3")
+max_value = 1.0
+show_percentage = false
+script = ExtResource("1_8yg5y")
+metadata/_edit_use_anchors_ = true
+
+[node name="ShowTimer" type="Timer" parent="."]
+wait_time = 4.5
+one_shot = true
+
+[connection signal="timeout" from="ShowTimer" to="." method="_on_show_timer_timeout"]

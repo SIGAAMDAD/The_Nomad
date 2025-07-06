@@ -605,7 +605,8 @@ namespace Renown.Thinkers {
 			}
 
 			if ( HeadAnimations != null ) {
-				LookAngle = CalcAngle( LookAngle, HeadAnimations );
+				HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, Mathf.RadToDeg( LookAngle ) > 90.0f );
+				HeadAnimations.SetDeferred( PropertyName.GlobalRotation, LookAngle );
 			}
 			if ( ArmAnimations != null ) {
 				AimAngle = CalcAngle( AimAngle, ArmAnimations );

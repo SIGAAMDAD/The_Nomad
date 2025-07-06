@@ -42,7 +42,6 @@ config/icon="uid://ct4mipmq61o84"
 config/windows_native_icon="res://desertbkgd_icon.ico"
 boot_splash/minimum_display_time=1500
 run/icon="res://desertbkgd_icon.png"
-config/shadow_atlas/size=1024
 
 [audio]
 
@@ -71,6 +70,7 @@ UiAudioManager="*res://autoloads/UIAudioManager.cs"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 AccessibilityManager="*res://autoloads/AccessibilityManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
+CameraControl="*res://addons/smartcamera2D/CameraControl.gd"
 
 [debug]
 
@@ -103,7 +103,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg", "res://addons/smartcamera2D/plugin.cfg", "res://addons/strategy_cam/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg")
 
 [global_group]
 
@@ -281,3 +281,5 @@ textures/light_projectors/filter=0
 limits/global_shader_variables/buffer_size=8192
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 2d/snap/snap_2d_vertices_to_pixel=true
+environment/shadow_atlas/size=1024
+environment/bg_color=Color(0, 0, 0, 1)

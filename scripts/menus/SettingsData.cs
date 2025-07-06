@@ -34,6 +34,7 @@ public partial class SettingsData : Control {
 	private static bool DyslexiaMode;
 	private static bool EnableTutorials;
 	private static SaveMode SaveMode;
+	private static float UIScale;
 
 	//
 	// audio options
@@ -51,6 +52,7 @@ public partial class SettingsData : Control {
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
 	private static bool CleanAudio;
+	private static bool ExpertUI;
 
 	//
 	// network options
@@ -143,6 +145,8 @@ public partial class SettingsData : Control {
 	public static void SetTutorialsEnabled( bool bTutorialsEnabled ) => EnableTutorials = bTutorialsEnabled;
 	public static bool GetDyslexiaMode() => DyslexiaMode;
 	public static void SetDyslexiaMode( bool bDyslexiaMode ) => DyslexiaMode = bDyslexiaMode;
+	public static float GetUIScale() => UIScale;
+	public static void SetUIScale( float nScale ) => UIScale = nScale;
 
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
 	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
@@ -150,6 +154,8 @@ public partial class SettingsData : Control {
 	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
 	public static bool GetCleanAudio() => CleanAudio;
 	public static void SetCleanAudio( bool bCleanAudio ) => CleanAudio = bCleanAudio;
+	public static bool GetExpertUI() => ExpertUI;
+	public static void SetExpertUI( bool bExpertUI ) => ExpertUI = bExpertUI;
 
 	public static int GetSaveSlot() => LastSaveSlot;
 	public static void SetSaveSlot( int nSlot ) => LastSaveSlot = nSlot;
