@@ -1275,7 +1275,9 @@ public partial class Player : Entity {
 		AimLine.GlobalRotation = ArmAngle;
 		AimRayCast.TargetPosition = AimLine.Points[ 1 ];
 
-		SyncShadow();
+		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+			SyncShadow();
+		}
 
 //		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[ 1 ].X;
 	}

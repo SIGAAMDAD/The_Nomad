@@ -74,6 +74,11 @@ public partial class NetworkPlayer : Renown.Entity {
 	private AnimatedSprite2D RightArmAnimation;
 	private AnimatedSprite2D LegAnimation;
 
+	private ShaderMaterial TorsoBloodShader;
+	private ShaderMaterial LeftArmBloodShader;
+	private ShaderMaterial RightArmBloodShader;
+	private ShaderMaterial LegBloodShader;
+
 	private SpriteFrames DefaultLeftArmSpriteFrames;
 	private SpriteFrames DefaultRightArmSpriteFrames;
 
@@ -90,7 +95,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		if ( animator.Animation == animation && animator.IsPlaying() ) {
 			return;
 		}
-		animator.CallDeferred( "play", animation );
+		animator.CallDeferred( AnimatedSprite2D.MethodName.Play, animation );
 	}
 
 	// TODO: find some way of sending values back to the client
@@ -104,10 +109,10 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		bool flip = SyncObject.ReadBoolean();
 		if ( flip != LastFlipState ) {
-			TorsoAnimation.SetDeferred( "flip_h", flip );
-			LegAnimation.SetDeferred( "flip_h", flip );
-			LeftArmAnimation.SetDeferred( "flip_v", flip );
-			RightArmAnimation.SetDeferred( "flip_v", flip );
+			TorsoAnimation.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, flip );
+			LegAnimation.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, flip );
+			LeftArmAnimation.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, flip );
+			RightArmAnimation.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, flip );
 			LastFlipState = flip;
 		}
 
@@ -122,11 +127,11 @@ public partial class NetworkPlayer : Renown.Entity {
 				CurrentSpeed += 1000.0f;
 				PlaySound( DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
 			}
-			DashEffect.SetDeferred( "emitting", isDashing );
-			DashLight.SetDeferred( "visible", isDashing );
+			DashEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, isDashing );
+			DashLight.SetDeferred( Light2D.PropertyName.Visible, isDashing );
 
 			bool isSliding = ( flags & Player.PlayerFlags.Sliding ) != 0;
-			SlideEffect.SetDeferred( "emitting", isSliding );
+			SlideEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, isSliding );
 			if ( isSliding ) {
 				CurrentSpeed += 400;
 			}
@@ -134,11 +139,16 @@ public partial class NetworkPlayer : Renown.Entity {
 
 		if ( SyncObject.ReadBoolean() ) {
 			float angle = SyncObject.ReadFloat();
-			LeftArmAnimation.SetDeferred( "global_rotation", angle );
-			RightArmAnimation.SetDeferred( "global_rotation", angle );
+			LeftArmAnimation.SetDeferred( AnimatedSprite2D.PropertyName.GlobalRotation, angle );
+			RightArmAnimation.SetDeferred( AnimatedSprite2D.PropertyName.GlobalRotation, angle );
 		}
 		if ( SyncObject.ReadBoolean() ) {
 			float bloodAmount = SyncObject.ReadFloat();
+
+			TorsoBloodShader.SetShaderParameter( "blood_coef", bloodAmount );
+			LeftArmBloodShader.SetShaderParameter( "blood_coef", bloodAmount );
+			RightArmBloodShader.SetShaderParameter( "blood_coef", bloodAmount );
+			LegBloodShader.SetShaderParameter( "blood_coef", bloodAmount );
 		}
 		if ( SyncObject.ReadBoolean() ) {
 			string weaponId = SyncObject.ReadString();
@@ -187,17 +197,17 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.CheckpointDrinking:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			IdleAnimation.CallDeferred( "play", "checkpoint_drink" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_drink" );
 			break;
 		case PlayerAnimationState.CheckpointExit:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			IdleAnimation.CallDeferred( "play", "checkpoint_exit" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_exit" );
 			break;
 		case PlayerAnimationState.CheckpointIdle:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			IdleAnimation.CallDeferred( "play", "checkpoint_idle" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_idle" );
 
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
@@ -206,13 +216,13 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Running:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			TorsoAnimation.CallDeferred( "play", "default" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "default" );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.TrueIdleStart:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			IdleAnimation.CallDeferred( "play", "start" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "start" );
 
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
@@ -220,14 +230,14 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.TrueIdleLoop:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			IdleAnimation.CallDeferred( "play", "loop" );
+			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "loop" );
 
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Dead:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			TorsoAnimation.CallDeferred( "play", "dead" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "dead" );
 
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
@@ -257,15 +267,19 @@ public partial class NetworkPlayer : Renown.Entity {
 		base._Ready();
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Torso" );
+		TorsoBloodShader = TorsoAnimation.Material as ShaderMaterial;
 
 		LeftArmAnimation = GetNode<AnimatedSprite2D>( "LeftArm" );
 		DefaultLeftArmSpriteFrames = LeftArmAnimation.SpriteFrames;
+		LeftArmBloodShader = LeftArmAnimation.Material as ShaderMaterial;
 
 		RightArmAnimation = GetNode<AnimatedSprite2D>( "RightArm" );
 		DefaultRightArmSpriteFrames = RightArmAnimation.SpriteFrames;
+		RightArmBloodShader = RightArmAnimation.Material as ShaderMaterial;
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Legs" );
 		LegAnimation.Connect( "animation_looped", Callable.From( OnLegAnimationLooped ) );
+		LegBloodShader = LegAnimation.Material as ShaderMaterial;
 
 		WalkEffect = GetNode<GpuParticles2D>( "DustPuff" );
 		SlideEffect = GetNode<GpuParticles2D>( "SlidePuff" );
@@ -288,7 +302,7 @@ public partial class NetworkPlayer : Renown.Entity {
 		base._Process( delta );
 
 		float effectiveFactor = 1.0f - Mathf.Pow( 1.0f - 0.06f, (float)delta * 60.0f );
-		GlobalPosition = GlobalPosition.Lerp( NetworkPosition, effectiveFactor );
+		Velocity = Velocity.Lerp( NetworkPosition, effectiveFactor );
 	}
 
 	private void SetArmAnimationState( AnimatedSprite2D arm, PlayerAnimationState state, SpriteFrames defaultFrames ) {
@@ -300,17 +314,17 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.CheckpointDrinking:
 		case PlayerAnimationState.CheckpointExit:
 		case PlayerAnimationState.CheckpointIdle:
-			arm.SetDeferred( "sprite_frames", defaultFrames );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, defaultFrames );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		case PlayerAnimationState.Sliding:
 		case PlayerAnimationState.Idle:
-			arm.SetDeferred( "sprite_frames", defaultFrames );
-			arm.CallDeferred( "play", "idle" );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, defaultFrames );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 			break;
 		case PlayerAnimationState.Running:
-			arm.SetDeferred( "sprite_frames", defaultFrames );
-			arm.CallDeferred( "play", "run" );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, defaultFrames );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "run" );
 			break;
 		case PlayerAnimationState.WeaponIdle: {
 			string property = "";
@@ -323,8 +337,8 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_" + append;
 			}
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
-			arm.CallDeferred( "play", "idle" );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponUse: {
@@ -338,8 +352,8 @@ public partial class NetworkPlayer : Renown.Entity {
 				property = "bladed_frames_" + append;
 			}
 			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
-			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
-			arm.CallDeferred( "play", "use" );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "use" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponReload: {
@@ -349,9 +363,9 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( arm == RightArmAnimation ) {
 				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
 			}
-			arm.SpriteFrames = ResourceCache.GetSpriteFrames( path );
-			arm.Play( "reload" );
-			arm.Show();
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "reload" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponEmpty: {
 			string path = "";
@@ -360,8 +374,8 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( arm == RightArmAnimation ) {
 				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
 			}
-			arm.SetDeferred( "sprite_frames", ResourceCache.GetSpriteFrames( path ) );
-			arm.CallDeferred( "play", "empty" );
+			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "empty" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		};
