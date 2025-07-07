@@ -35,6 +35,9 @@ namespace Multiplayer.Modes {
 		public override void SpawnPlayer( Entity player ) {
 		}
 
+		public override bool HasTeams() => true;
+		public override GameMode GetMode() => GameMode.CaptureTheFlag;
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -45,7 +48,7 @@ namespace Multiplayer.Modes {
 			Godot.Collections.Array<Node> spawns = GetTree().GetNodesInGroup( "Spawns" );
 			Spawns = new List<Spawner>( spawns.Count );
 			for ( int i = 0; i < spawns.Count; i++ ) {
-				Spawns.Add( spawns[i] as Spawner );
+				Spawns.Add( spawns[ i ] as Spawner );
 			}
 
 			Flag RedFlag = GetNode<Flag>( "ModeData/RedFlag" );
