@@ -58,13 +58,12 @@ public partial class PauseMenu : CanvasLayer {
 
 				if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
 					GetTree().Paused = paused;
+					Engine.TimeScale = paused ? 0.0f : 1.0f;
 				}
 				if ( paused ) {
-					Engine.TimeScale = 0.0f;
 					Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
 					EmitSignalGamePaused();
 				} else {
-					Engine.TimeScale = 1.0f;
 					Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
 				}
 			}

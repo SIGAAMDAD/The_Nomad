@@ -48,8 +48,7 @@ namespace Multiplayer {
 
 				SteamLobby.Instance.SendTargetPacket( targetId, packet );
 				break;
-			}
-			;
+			};
 			return true;
 		}
 
@@ -86,6 +85,11 @@ namespace Multiplayer {
 			string fullMessage = string.Format( "[{0}] {1}\n", SteamFriends.GetFriendPersonaName( (CSteamID)senderId ), message );
 			RecentText.Text = fullMessage;
 			FullText.AppendText( fullMessage );
+		}
+
+		private void OnPlayerJoined() {
+		}
+		private void OnPlayerLeft() {
 		}
         public override void _Ready() {
 			base._Ready();
