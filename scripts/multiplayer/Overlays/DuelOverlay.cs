@@ -3,7 +3,7 @@ using Godot;
 
 namespace Multiplayer.Overlays {
 	public partial class DuelOverlay : CanvasLayer {
-		private MatchTimeLabel MatchTimeLabel;
+		public MatchTimeLabel MatchTimeLabel;
 
 		private Label Player1Score;
 		private Label Player2Score;
@@ -39,7 +39,7 @@ namespace Multiplayer.Overlays {
 			CountdownLabel.Visible = false;
 			EmitSignalRoundStart();
 
-			MatchTimeLabel.SetMatchTime( 60.0f, Callable.From( OnDuelTimerTimeout ) );
+			MatchTimeLabel.Start();
 		}
 
 		public override void _Ready() {
@@ -51,15 +51,12 @@ namespace Multiplayer.Overlays {
 			CountdownLabel = GetNode<Countdown>( "MarginContainer/CountdownLabel" );
 			CountdownLabel.Connect( "CountdownTimeout", Callable.From( OnCountdownTimerTimeout ) );
 
-			Player1Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
-			Player1Score.SetProcess( false );
-			Player1Score.SetProcessInternal( false );
-
-			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
-			Player2Score.SetProcess( false );
-			Player2Score.SetProcessInternal( false );
-
 			SetProcess( true );
+			CountdownLabel.Visible = true;
+			CountdownLabel.StartCountdown();
+
+			Player1Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
+			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );

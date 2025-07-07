@@ -2,10 +2,11 @@ using Godot;
 using Multiplayer.Overlays;
 using Renown;
 using Steamworks;
+using System.Collections.Generic;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
-		private const int MaxRounds = 3; // NOTE: this may be adjustable in the future
+		private int MaxRounds = 3; // NOTE: this may be adjustable in the future
 		private Player ThisPlayer = null;
 		private NetworkPlayer OtherPlayer = null;
 		private Node2D Player1Spawn;
@@ -16,9 +17,14 @@ namespace Multiplayer.Modes {
 		private byte Player1Score = 0;
 		private byte Player2Score = 0;
 		private byte RoundIndex = 0;
-		private byte[] Scores = new byte[ MaxRounds ];
+		private byte[] Scores = null;
 
 		private NetworkSyncObject SyncObject = new NetworkSyncObject( 16 );
+
+		public readonly static Dictionary<string, object> DefaultOptions = new Dictionary<string, object> {
+			{ "MaxRounds", 3 },
+			{ "RoundTime", 60.0f }
+		};
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
@@ -32,37 +38,35 @@ namespace Multiplayer.Modes {
 			SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( OtherPlayer.MultiplayerData.Id ) );
 			SyncObject.Write( (byte)PlayerUpdateType.SetSpawn );
 			SyncObject.Write( spawn.GlobalPosition );
+			SyncObject.Sync();
 		}
 		public void OnRoundEnd() {
 			if ( ThisPlayer == null || OtherPlayer == null ) {
 				return;
 			}
 
-			GD.Print( "Beginning new dueling round..." );
-
 			ThisPlayer?.BlockInput( true );
 
-			Node2D otherSpawn = null;
-			if ( (Entity)Player1Spawn.GetMeta( "Player" ) == ThisPlayer ) {
+			Node2D otherSpawn = Player2Spawn;
+			if ( Player1Spawn.GetMeta( "Player" ).AsGodotObject() is Player player && player != null ) {
 				Player1Spawn.SetMeta( "Player", OtherPlayer );
 				Player2Spawn.SetMeta( "Player", ThisPlayer );
 				otherSpawn = Player1Spawn;
 				ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
-			} else if ( (Entity)Player2Spawn.GetMeta( "Player" ) == ThisPlayer ) {
-				Player2Spawn.SetMeta( "Player", OtherPlayer );
+			} else {
 				Player1Spawn.SetMeta( "Player", ThisPlayer );
+				Player2Spawn.SetMeta( "Player", OtherPlayer );
 				otherSpawn = Player2Spawn;
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 
-//			RoundIndex++;
-//
-//			if ( RoundIndex >= MaxRounds ) {
-//				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
-//				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
-//				//				EmitSignal( "ShowScoreboard" );
-//				return;
-//			}
+			if ( RoundIndex++ >= MaxRounds ) {
+				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
+				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
+				EmitSignalShowScoreboard();
+				EmitSignalEndGame();
+				return;
+			}
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
@@ -82,8 +86,10 @@ namespace Multiplayer.Modes {
 
 			if ( attacker == ThisPlayer ) {
 				Player1Score++;
+				Scores[ RoundIndex ] = 0;
 			} else if ( attacker == OtherPlayer ) {
 				Player2Score++;
+				Scores[ RoundIndex ] = 1;
 			}
 
 			if ( Player2Score > Player1Score ) {
@@ -99,7 +105,7 @@ namespace Multiplayer.Modes {
 			OnNewRoundStart();
 		}
 
-		public override void SpawnPlayer( Entity player ) {
+		private Node2D SetPlayerSpawn( Entity player ) {
 			Node2D spawn = null;
 			if ( SteamLobby.Instance.IsOwner() ) {
 				if ( player is NetworkPlayer node && node != null ) {
@@ -129,8 +135,13 @@ namespace Multiplayer.Modes {
 					spawn = Player2Spawn;
 				}
 			}
-			player.Die += OnPlayerScore;
 			spawn.SetMeta( "Player", player );
+			return spawn;
+		}
+
+		public override void SpawnPlayer( Entity player ) {
+			SetPlayerSpawn( player );
+			player.Die += OnPlayerScore;
 		}
 
 		private void SendPacket() {
@@ -169,9 +180,16 @@ namespace Multiplayer.Modes {
 			}
 		}
 
+		public override void OnPlayerJoined( Entity player ) {
+		}
+		public override void OnPlayerLeft( Entity player ) {
+		}
+		public override bool HasTeams() => false;
+		public override GameMode GetMode() => GameMode.Duel;
+
 		public override void _Ready() {
 			base._Ready();
-			
+
 			Overlay = GetNode<DuelOverlay>( "Overlay" );
 			Overlay.Connect( "RoundEnd", Callable.From( OnRoundEnd ) );
 			Overlay.Connect( "RoundStart", Callable.From( OnNewRoundStart ) );
@@ -183,6 +201,8 @@ namespace Multiplayer.Modes {
 			Player2Spawn.SetMeta( "Player", Godot.Variant.From( 0 ) );
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
+
+			MaxRounds = (int)Options[ "MaxRounds" ];
 
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );

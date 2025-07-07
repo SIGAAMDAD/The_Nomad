@@ -12,8 +12,8 @@ public partial class MatchTimeLabel : Label {
 		if ( !Timer.IsConnected( "timeout", callback ) ) {
 			Timer.Connect( "timeout", callback );
 		}
-		Timer.Start();
 	}
+	public void Start() => Timer.Start();
 
 	public override void _Ready() {
 		base._Ready();

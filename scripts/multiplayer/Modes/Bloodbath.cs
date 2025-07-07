@@ -35,8 +35,7 @@ namespace Multiplayer.Modes {
 			SendPacket();
 		}
 
-		public override void SpawnPlayer(Entity player) {
-			base.SpawnPlayer( player );
+		public override void SpawnPlayer( Entity player ) {
 		}
 
 		private void SendPacket() {
@@ -62,8 +61,16 @@ namespace Multiplayer.Modes {
 			}
 		}
 
+		public override void OnPlayerJoined( Entity player ) {
+		}
+		public override void OnPlayerLeft( Entity player ) {
+		}
+
+		public override bool HasTeams() => false;
+		public override GameMode GetMode() => GameMode.Bloodbath;
+
 		public override void _Ready() {
-		    base._Ready();
+			base._Ready();
 
 			MaxScore = Convert.ToInt32( SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "RequiredScore" ) );
 

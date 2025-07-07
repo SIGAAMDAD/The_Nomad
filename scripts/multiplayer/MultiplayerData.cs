@@ -90,6 +90,10 @@ public partial class MultiplayerData : LevelData {
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
 
+		ModeData.Connect( Mode.SignalName.EndGame, Callable.From( SteamLobby.Instance.LeaveLobby ) );
+
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.EndGame, ( senderId ) => SteamLobby.Instance.LeaveLobby() );
+
 		Console.PrintLine( string.Format( "Adding {0} members...", SteamLobby.Instance.LobbyMemberCount ) );
 		for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
 			if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[ i ] ) || SteamLobby.Instance.LobbyMembers[ i ] == SteamUser.GetSteamID() ) {

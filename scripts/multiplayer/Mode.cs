@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 
 namespace Multiplayer {
-	public partial class Mode : Node2D {
+	public abstract partial class Mode : Node2D {
 		public enum GameMode {
 			// classic modes
 			Bloodbath,
@@ -22,6 +22,7 @@ namespace Multiplayer {
 		};
 
 		protected GameMode Type;
+		protected Dictionary<string, object> Options;
 
 		public static readonly Dictionary<GameMode, string> ModeNames = new Dictionary<GameMode, string>{
 			{ GameMode.Bloodbath, "Bloodbath" },
@@ -39,16 +40,13 @@ namespace Multiplayer {
 
 		[Signal]
 		public delegate void ShowScoreboardEventHandler();
+		[Signal]
+		public delegate void EndGameEventHandler();
 
-		public virtual void OnPlayerJoined( Renown.Entity player ) {
-		}
-		public virtual void OnPlayerLeft( Renown.Entity player ) {
-		}
-		public virtual void SpawnPlayer( Renown.Entity player ) {
-		}
-		public virtual bool HasTeams() => false;
-
-		public GameMode GetMode() => Type;
-		public void SetMode( GameMode mode ) => Type = mode;
+		public abstract void OnPlayerJoined( Renown.Entity player );
+		public abstract void OnPlayerLeft( Renown.Entity player );
+		public abstract void SpawnPlayer( Renown.Entity player );
+		public abstract bool HasTeams();
+		public abstract GameMode GetMode();
 	};
 };
