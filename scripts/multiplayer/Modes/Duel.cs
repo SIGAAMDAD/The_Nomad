@@ -202,7 +202,7 @@ namespace Multiplayer.Modes {
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
 
-			MaxRounds = (int)Options[ "MaxRounds" ];
+//			MaxRounds = (int)Options[ "MaxRounds" ];
 
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
