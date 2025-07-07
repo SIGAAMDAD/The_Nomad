@@ -18,7 +18,7 @@ namespace Multiplayer.Modes {
 		private byte RoundIndex = 0;
 		private byte[] Scores = new byte[ MaxRounds ];
 
-		private NetworkSyncObject SyncObject = new NetworkSyncObject( 6 );
+		private NetworkSyncObject SyncObject = new NetworkSyncObject( 16 );
 
 		private void OnNewRoundStart() {
 			Announcer.Fight();
@@ -120,7 +120,7 @@ namespace Multiplayer.Modes {
 					OtherPlayer = node;
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
 					spawn = Player1Spawn;
-					
+
 					// begin the match only when the other player joins
 					Overlay.BeginNewRound();
 				} else if ( player is Player owner && owner != null ) {

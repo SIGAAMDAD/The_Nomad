@@ -30,6 +30,8 @@ public partial class LobbyRoom : Control {
 
 	private Dictionary<CSteamID, bool> StartGameVotes = null;
 
+	private Callable PlayerLeaveCallback;
+
 	private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
 	private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
 
@@ -100,7 +102,8 @@ public partial class LobbyRoom : Control {
 			break;
 		default:
 			return;
-		};
+		}
+		;
 
 		CallDeferred( MethodName.Connect, SignalName.FinishedLoading, Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
@@ -251,16 +254,15 @@ public partial class LobbyRoom : Control {
 		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
 
 		//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
-		SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+		PlayerLeaveCallback = Callable.From<ulong>( OnPlayerLeft );
+		SteamLobby.Instance.Connect( "ClientLeftLobby", PlayerLeaveCallback );
 
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseYes );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseNo );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.ConnectedToLobby, ( senderId ) => {
-			OnPlayerJoined( (ulong)senderId );
-		} );
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.ConnectedToLobby, ( senderId ) => OnPlayerJoined( (ulong)senderId ) );
 
 		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
 		container.Show();
@@ -286,5 +288,10 @@ public partial class LobbyRoom : Control {
 		}
 
 		Instance = this;
+	}
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		SteamLobby.Instance.Disconnect( "ClientLeftLobby", PlayerLeaveCallback );
 	}
 };

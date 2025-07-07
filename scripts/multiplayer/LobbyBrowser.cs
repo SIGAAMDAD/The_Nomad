@@ -59,7 +59,7 @@ public partial class LobbyBrowser : Control {
 			}
 			return true;
 		}
-		
+
 		private void LoadMetadata() {
 			LobbyName = SteamMatchmaking.GetLobbyData( LobbyId, "name" );
 			Text = LobbyName;
@@ -79,7 +79,8 @@ public partial class LobbyBrowser : Control {
 				break;
 			default:
 				break;
-			};
+			}
+			;
 			MapName = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 		}
 		public bool Refresh() {
@@ -114,6 +115,10 @@ public partial class LobbyBrowser : Control {
 
 	private Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
 	private Dictionary<int, bool> MapFilterList = new Dictionary<int, bool>();
+
+	private Callable LobbyJoinedCallback;
+	private Callable LobbyConnectionStatusChangedCallback;
+	private Callable LobbyListUpdatedCallback;
 
 	private Button HostGame;
 	private Button RefreshLobbies;
@@ -165,7 +170,7 @@ public partial class LobbyBrowser : Control {
 
 	private void OnFinishedLoading() {
 		LoadThread.Join();
-		
+
 		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
 		Console.PrintLine( "...Finished loading game" );
 
@@ -204,7 +209,7 @@ public partial class LobbyBrowser : Control {
 				LoadedScenePath = "res://scenes/multiplayer/lobby_room.tscn";
 
 				// loading a multiplayer game instead a co-op world
-				GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+				GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
 				Console.PrintLine( "...Finished loading game" );
 
 				GetTree().ChangeSceneToFile( "res://scenes/multiplayer/lobby_room.tscn" );
@@ -220,7 +225,8 @@ public partial class LobbyBrowser : Control {
 			} );
 			LoadThread.Start();
 			break;
-		};
+		}
+		;
 
 		ServerCommandManager.SendCommand( ServerCommandType.ConnectedToLobby );
 		System.GC.KeepAlive( this );
@@ -247,7 +253,8 @@ public partial class LobbyBrowser : Control {
 			JoiningLobbyLabel.Text = "FAILED TO CONNECT";
 			JoiningLobbySpinner.Set( "status", 5 );
 			break;
-		};
+		}
+		;
 	}
 
 	private void MatchmakingLoop() {
@@ -302,12 +309,14 @@ public partial class LobbyBrowser : Control {
 			MapNameLabel.Text = "The Fever Dream";
 			break;
 		case GameMode.Multiplayer: {
-			Mode.GameMode mode = lobby.GetGameMode();
-			GameModeLabel.Text = Mode.ModeNames[ mode ];
+				Mode.GameMode mode = lobby.GetGameMode();
+				GameModeLabel.Text = Mode.ModeNames[ mode ];
 
-			MapNameLabel.Text = lobby.GetMapName();
-			break; }
-		};
+				MapNameLabel.Text = lobby.GetMapName();
+				break;
+			}
+		}
+		;
 	}
 
 	private bool CanShow( CSteamID lobbyId ) {
@@ -321,16 +330,16 @@ public partial class LobbyBrowser : Control {
 
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
 			for ( int j = 0; j < LobbyTable.GetChildCount(); j++ ) {
-				if ( LobbyList.TryGetValue( lobbyList[i], out LobbyData lobby ) ) {
+				if ( LobbyList.TryGetValue( lobbyList[ i ], out LobbyData lobby ) ) {
 					if ( LobbyTable.FindChild( lobby.Name ) != null ) {
 						LobbyTable.RemoveChild( lobby );
 					}
-					LobbyList.Remove( lobbyList[i] );
+					LobbyList.Remove( lobbyList[ i ] );
 					lobby.QueueFree();
 				}
 			}
-			LobbyData data = new LobbyData( lobbyList[i] );
-			LobbyList.TryAdd( lobbyList[i], data );
+			LobbyData data = new LobbyData( lobbyList[ i ] );
+			LobbyList.TryAdd( lobbyList[ i ], data );
 			LobbyTable.CallDeferred( "add_child", data );
 		}
 
@@ -398,8 +407,8 @@ public partial class LobbyBrowser : Control {
 		HostGame.Show();
 		Matchmake.Show();
 	}
-	
-    public override void _Ready() {
+
+	public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 		HostGame.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
@@ -430,7 +439,7 @@ public partial class LobbyBrowser : Control {
 
 		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
 		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
-		
+
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
 
 		Label MapName = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/MapNameLabel" );
@@ -462,12 +471,23 @@ public partial class LobbyBrowser : Control {
 		RefreshTimer.Connect( "timeout", Callable.From( OnRefreshButtonPressed ) );
 		AddChild( RefreshTimer );
 
-		SteamLobby.Instance.Connect( "LobbyJoined", Callable.From<ulong>( OnLobbyJoined ) );
-		SteamLobby.Instance.Connect( "LobbyConnectionStatusChanged", Callable.From<int>( OnConnectionStatusChanged ) );
-		SteamLobby.Instance.Connect( "LobbyListUpdated", Callable.From( GetLobbyList ) );
+		LobbyJoinedCallback = Callable.From<ulong>( OnLobbyJoined );
+		LobbyConnectionStatusChangedCallback = Callable.From<int>( OnConnectionStatusChanged );
+		LobbyListUpdatedCallback = Callable.From( GetLobbyList );
+
+		SteamLobby.Instance.Connect( "LobbyJoined", LobbyJoinedCallback );
+		SteamLobby.Instance.Connect( "LobbyConnectionStatusChanged", LobbyConnectionStatusChangedCallback );
+		SteamLobby.Instance.Connect( "LobbyListUpdated", LobbyListUpdatedCallback );
 
 		SteamLobby.Instance.SetPhysicsProcess( true );
 
 		Instance = this;
+	}
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		SteamLobby.Instance.Disconnect( "LobbyJoined", LobbyJoinedCallback );
+		SteamLobby.Instance.Disconnect( "LobbyConnectionStatusChanged", LobbyConnectionStatusChangedCallback );
+		SteamLobby.Instance.Disconnect( "LobbyListUpdated", LobbyListUpdatedCallback );
 	}
 };
