@@ -1,5 +1,6 @@
 using Godot;
 using Steamworks;
+using System.Net.NetworkInformation;
 
 public partial class SettingsMenu : Control {
 	private OptionButton VSync;
@@ -23,6 +24,9 @@ public partial class SettingsMenu : Control {
 	private HSlider HapticStrength;
 	private CheckBox AutoAimEnabled;
 	private CheckBox DyslexiaMode;
+
+	private CheckBox ExpertUI;
+	private CheckBox EnableTutorials;
 
 	private CheckBox NetworkingEnabled;
 	private CheckBox FriendsOnly;
@@ -81,8 +85,7 @@ public partial class SettingsMenu : Control {
 				3
 			);
 			break;
-		}
-		;
+		};
 
 		switch ( MaxFps.Selected ) {
 		case 0:
@@ -108,8 +111,7 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		}
-		;
+		};
 
 		Godot.Vector2I windowSize = Godot.Vector2I.Zero;
 		switch ( (Resolution)ResolutionOption.Selected ) {
@@ -131,8 +133,7 @@ public partial class SettingsMenu : Control {
 		default:
 			windowSize = new Godot.Vector2I( 640, 480 );
 			break;
-		}
-		;
+		};
 		DisplayServer.WindowSetSize( windowSize );
 
 		Rid viewport = GetTree().Root.GetViewportRid();
@@ -172,8 +173,7 @@ public partial class SettingsMenu : Control {
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
-		}
-		;
+		};
 
 		switch ( WindowModeOption.Selected ) {
 		case (int)WindowMode.Windowed:
@@ -196,8 +196,7 @@ public partial class SettingsMenu : Control {
 			DisplayServer.WindowSetMode( DisplayServer.WindowMode.ExclusiveFullscreen );
 			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, true );
 			break;
-		}
-		;
+		};
 
 		UpdateWindowScale();
 	}
@@ -236,8 +235,7 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		}
-		;
+		};
 
 		SettingsData.SetEffectsOn( EffectsOn.ButtonPressed );
 		SettingsData.SetEffectsVolume( (float)EffectsVolume.Value );
@@ -249,6 +247,9 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetHapticStrength( (float)HapticStrength.Value );
 		SettingsData.SetAutoAimEnabled( AutoAimEnabled.ButtonPressed );
 		SettingsData.SetDyslexiaMode( DyslexiaMode.ButtonPressed );
+
+		SettingsData.SetTutorialsEnabled( EnableTutorials.ButtonPressed );
+		SettingsData.SetExpertUI( ExpertUI.ButtonPressed );
 
 		SettingsData.SetNetworkingEnabled( NetworkingEnabled.ButtonPressed );
 		SettingsData.SetFriendsOnlyNetworking( FriendsOnly.ButtonPressed );
@@ -356,6 +357,14 @@ public partial class SettingsMenu : Control {
 		DyslexiaMode = GetNode<CheckBox>( "TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton/DyslexiaCheckbox" );
 		DyslexiaMode.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
 		DyslexiaMode.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+
+		EnableTutorials = GetNode<CheckBox>( "TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton/EnableTutorialsCheckbox" );
+		EnableTutorials.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		EnableTutorials.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+
+		ExpertUI = GetNode<CheckBox>( "TabContainer/Gameplay/VBoxContainer/ExpertUIButton/ExpertUICheckbox" );
+		ExpertUI.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
+		ExpertUI.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		NetworkingEnabled = GetNode<CheckBox>( "TabContainer/Network/VBoxContainer/EnableNetworkingButton/EnableNetworkingCheckbox" );
 		NetworkingEnabled.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
@@ -573,8 +582,7 @@ public partial class SettingsMenu : Control {
 			MaxFps.AddItem( "CUSTOM", 7 );
 			MaxFps.Selected = 7;
 			break;
-		}
-		;
+		};
 		ShadowFilterQuality.Selected = (int)SettingsData.GetShadowFilterQuality();
 		ShowFPS.ButtonPressed = SettingsData.GetShowFPS();
 		ShowBlood.ButtonPressed = SettingsData.GetShowBlood();
@@ -589,6 +597,9 @@ public partial class SettingsMenu : Control {
 		HapticStrength.Value = SettingsData.GetHapticStrength();
 		AutoAimEnabled.ButtonPressed = SettingsData.GetAutoAimEnabled();
 		DyslexiaMode.ButtonPressed = SettingsData.GetDyslexiaMode();
+
+		EnableTutorials.ButtonPressed = SettingsData.GetTutorialsEnabled();
+		ExpertUI.ButtonPressed = SettingsData.GetExpertUI();
 
 		NetworkingEnabled.ButtonPressed = SettingsData.GetNetworkingEnabled();
 		FriendsOnly.ButtonPressed = SettingsData.GetFriendsOnlyNetworking();

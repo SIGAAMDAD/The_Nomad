@@ -4,6 +4,9 @@ public partial class MatchTimeLabel : Label {
 	private Timer Timer;
 
 	public void SetMatchTime( double time, Callable callback ) {
+		if ( !SteamLobby.Instance.IsOwner() ) {
+			return;
+		}
 		Timer.WaitTime = time;
 		Timer.OneShot = true;
 		if ( !Timer.IsConnected( "timeout", callback ) ) {
@@ -16,10 +19,14 @@ public partial class MatchTimeLabel : Label {
 		base._Ready();
 
 		Timer = GetNode<Timer>( "Timer" );
-		Timer.SetProcess( false );
-		Timer.SetProcessInternal( false );
+		if ( SteamLobby.Instance.IsOwner() ) {
+			SetProcess( true );
+		} else {
+			RemoveChild( Timer );
+			Timer.QueueFree();
 
-		SetProcessInternal( false );
+			SetProcess( false );
+		}
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );

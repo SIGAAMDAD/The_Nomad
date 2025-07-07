@@ -4,6 +4,8 @@ using Steamworks;
 public enum ServerCommandType : uint {
 	StartGame,
 	EndGame,
+
+	StartCountdown,
 	
 	ConnectedToLobby,
 	

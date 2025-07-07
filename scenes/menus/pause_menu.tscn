@@ -1,13 +1,31 @@
-[gd_scene load_steps=6 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=17 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
-[ext_resource type="Shader" uid="uid://cf3fehel7f2df" path="res://shaders/pause_menu.gdshader" id="2_pe2qk"]
+[ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
+[ext_resource type="Script" uid="uid://ydv0jh21g8l7" path="res://scripts/PlayerSystem/UserInterface/backpack.gd" id="2_opdvj"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
+[ext_resource type="Texture2D" uid="uid://bjkdfsajgy7uv" path="res://textures/hud/status_blunt.png" id="3_opdvj"]
 [ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_2wrho"]
+[ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="4_pf6lc"]
+[ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="5_j7gms"]
+[ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="6_oey0u"]
+[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
+[ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="8_opdvj"]
+[ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
+[ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
+[ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="15_w5beu"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5wyai"]
-shader = ExtResource("2_pe2qk")
-shader_parameter/amount = 2.758
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1onjl"]
+resource_local_to_scene = true
+shader = ExtResource("5_j7gms")
+shader_parameter/is_selected = false
+shader_parameter/icon = ExtResource("6_oey0u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h4mgr"]
+resource_local_to_scene = true
+shader = ExtResource("5_j7gms")
+shader_parameter/is_selected = false
+shader_parameter/icon = ExtResource("7_sy5ew")
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 3
@@ -15,8 +33,7 @@ layer = 5
 script = ExtResource("1_gsnt3")
 metadata/_edit_use_anchors_ = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_5wyai")
+[node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,81 +41,668 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1.5, 1.5)
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("15_w5beu")
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer"]
+layout_mode = 2
+current_tab = 0
+
+[node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
+layout_mode = 2
+script = ExtResource("2_opdvj")
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Cloner" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.25
+anchor_top = 0.00625
+anchor_right = 45.0
+anchor_bottom = 1.00625
+metadata/_edit_use_anchors_ = true
+
+[node name="ItemStackCloner" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner"]
+visible = false
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect3" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="TextureRect4" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/VScrollBar/Cloner/ItemStackCloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="MenuTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="ItemInfo" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_rkc7u")
-text = "PAUSED TALE"
+size_flags_horizontal = 3
 
-[node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+
+[node name="MetaData" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="TypeContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
+layout_mode = 2
+
+[node name="NoHeldContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "No. Held"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
+layout_mode = 2
+
+[node name="CountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+layout_mode = 2
+text = "0/"
+
+[node name="MaxLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer"]
+custom_minimum_size = Vector2(90, 64)
+layout_mode = 2
+stretch_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="EffectContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+text = "Item Effect(s)"
+
+[node name="Label2" type="RichTextLabel" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
+layout_mode = 2
+
+[node name="WeaponStatusContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="BladedInfo" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("2_dqjbd")
+stretch_mode = 3
+
+[node name="DamageLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+layout_mode = 2
+text = "N/A"
+
+[node name="RangeLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
+layout_mode = 2
+
+[node name="BluntInfo" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("3_opdvj")
+stretch_mode = 3
+
+[node name="DamageLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
+layout_mode = 2
+text = "N/A"
+
+[node name="RangeLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
+layout_mode = 2
+
+[node name="AmmoLoaded" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("4_pf6lc")
+stretch_mode = 3
+
+[node name="AmmoIcon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/AmmoLoaded"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer"]
+layout_mode = 2
+
+[node name="AmmoStatusContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+custom_minimum_size = Vector2(340, 120)
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="DropStackButton" type="Button" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+visible = false
+layout_mode = 2
+text = "DROP_ITEM_STACK"
+
+[node name="StackList" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="CategoryList" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 64
+
+[node name="WeaponIcon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
+material = SubResource("ShaderMaterial_1onjl")
+layout_mode = 2
+texture = ExtResource("6_oey0u")
+
+[node name="WeaponList" type="VScrollBar" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon"]
+layout_mode = 0
+offset_left = -170.0
+offset_top = 72.0
+offset_right = -162.0
+offset_bottom = 80.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList"]
+visible = false
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 0
+offset_left = 170.0
+offset_top = -40.0
+offset_right = 535.0
+offset_bottom = 24.0
+theme_override_constants/separation = 24
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("6_oey0u")
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Asturion Double-Barrel"
+
+[node name="CountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/WeaponIcon/WeaponList/HBoxContainer"]
+layout_mode = 2
+text = "1"
+
+[node name="AmmoIcon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
+visible = false
+material = SubResource("ShaderMaterial_h4mgr")
+layout_mode = 2
+texture = ExtResource("7_sy5ew")
+
+[node name="AmmoList" type="VScrollBar" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon"]
+layout_mode = 0
+offset_left = -266.0
+offset_top = 72.0
+offset_right = -258.0
+offset_bottom = 80.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Cloner" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList"]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 432.0
+offset_bottom = 64.0
+theme_override_constants/separation = 24
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_constants/separation = 48
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("7_sy5ew")
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "9mm"
+
+[node name="CountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/StackList/CategoryList/AmmoIcon/AmmoList/Cloner/HBoxContainer"]
+layout_mode = 2
+text = "1"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackpackDataContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EncumbranceContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer"]
+layout_mode = 2
+
+[node name="EncumbranceLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "BACKPACK_ENCUMBRANCE"
+
+[node name="AmountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+layout_mode = 2
+
+[node name="OverweightLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "[TOO_MUCH_ENCUMBRANCE]"
+
+[node name="Journal" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("9_pf6lc")
+metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.002
+anchor_top = 0.004
+anchor_right = 0.994
+anchor_bottom = 1.00445
+offset_left = -0.28
+offset_top = 0.204
+offset_right = -0.160034
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer"]
+layout_mode = 2
+current_tab = 0
+
+[node name="Quest Log" type="HBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="QuestListContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/QuestListContainer"]
+layout_mode = 2
+
+[node name="QuestList" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/QuestListContainer/VScrollBar"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+anchor_left = 1.125
+anchor_right = 38.625
+anchor_bottom = 0.987
+offset_top = 1.0
+offset_bottom = -0.163025
+metadata/_edit_use_anchors_ = true
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
+layout_mode = 2
+
+[node name="ActiveQuestContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QuestNameLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestObjectiveLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestTypeLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="ContractData" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractGuild" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractEmployer" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 220)
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Notes" type="HBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="QuestListContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/QuestListContainer"]
+layout_mode = 2
+
+[node name="QuestList" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/QuestListContainer/VScrollBar"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+anchor_left = 1.125
+anchor_right = 38.625
+anchor_bottom = 0.987
+offset_top = 1.0
+offset_bottom = -0.163025
+metadata/_edit_use_anchors_ = true
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+layout_mode = 2
+
+[node name="ActiveQuestContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QuestNameLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestObjectiveLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="QuestTypeLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="ContractData" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractGuild" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="ContractEmployer" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+custom_minimum_size = Vector2(300, 220)
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Equipment" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("10_j7gms")
+metadata/_tab_index = 2
+
+[node name="Background" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="LoadoutScreen" type="VBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+
+[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Primary Weapon"
+texture = ExtResource("8_opdvj")
+expand_mode = 2
+
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Heavy Primary"
+texture = ExtResource("8_opdvj")
+expand_mode = 2
+
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+
+[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("8_opdvj")
+expand_mode = 2
+
+[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+texture = ExtResource("8_opdvj")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="LoadoutScreen" type="VBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+layout_mode = 2
+
+[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Primary Weapon"
+stretch_mode = 6
+
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+tooltip_text = "Heavy Primary"
+stretch_mode = 6
+
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+layout_mode = 2
+
+[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+stretch_mode = 6
+
+[node name="SelectionScreen" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/SelectionScreen"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="WeaponList" type="VBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 97.5
+anchor_bottom = 0.5
+offset_left = 14.0
+offset_right = -6.10352e-05
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoBackButton" type="Button" parent="MarginContainer/TabContainer/Equipment/MarginContainer/SelectionScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "BACK"
+
+[node name="Options" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Options"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -196.0
+offset_top = -64.0
+offset_right = 196.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+
+[node name="ResumeButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 process_mode = 2
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "RESUME_BUTTON"
-alignment = 0
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
-[node name="HelpMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="HelpMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "HELP_BUTTON"
-alignment = 0
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
-[node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_TO_MAIN_MENU_BUTTON"
-alignment = 0
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
-[node name="ExitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="ExitGameButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_GAME_BUTTON"
-alignment = 0
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
-[node name="ColorRect2" type="ColorRect" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_5wyai")
-use_parent_material = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.784314)
-metadata/_edit_use_anchors_ = true
-
 [node name="ConfirmExit" type="ConfirmationDialog" parent="."]
 title = "Warning!"
-position = Vector2i(220, 180)
+initial_position = 2
 size = Vector2i(200, 158)
-dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
+dialog_text = "Are you sure you want to quit?"
 dialog_autowrap = true
 cancel_button_text = "Nah"
 
 [node name="ConfirmQuit" type="ConfirmationDialog" parent="."]
 title = "Quit Game?"
-position = Vector2i(220, 180)
+initial_position = 2
 size = Vector2i(200, 158)
-dialog_text = "All progress since the last checkpoint will be lost, are you sure you want to quit?"
+dialog_text = "Are you sure you want to quit?"
 dialog_autowrap = true
 cancel_button_text = "Nah"
-
-[node name="UIChannel" type="AudioStreamPlayer" parent="."]
-process_mode = 4

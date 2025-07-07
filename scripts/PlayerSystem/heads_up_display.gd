@@ -10,7 +10,6 @@ const _arm_unused_color: Color = Color( 0.20, 0.20, 0.20, 1.0 )
 var _fadeout_tween: Tween
 var _fadein_tween: Tween
 
-@onready var _notebook: Notebook = $NotebookContainer
 @onready var _healthbar: HealthBar = $MainHUD/HealthBar
 @onready var _ragebar: RageBar = $MainHUD/RageBar
 @onready var _dash_status: DashStatus = $MainHUD/DashStatus
@@ -305,7 +304,6 @@ func _ready() -> void:
 	_owner.connect( "BulletTimeEnd", _reflex_overlay.hide )
 	_owner.connect( "HideInteraction", HideInteraction )
 	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
-	_owner.connect( "InventoryToggled", OnShowInventory )
 	_owner.connect( "ParrySuccess", _parry_overlay.show )
 	_owner.connect( "DashBurnoutChanged", func( burnout: float ): _dash_status.DashBurnout = burnout )
 	_owner.connect( "HealthChanged", _on_health_changed )
@@ -315,19 +313,6 @@ func _ready() -> void:
 	_owner.connect( "SwitchedWeapon", _on_switched_weapon )
 	_owner.connect( "HandsStatusUpdated", _on_hands_status_updated )
 	_owner.connect( "WeaponStatusUpdated", _on_weapon_status_updated )
-
-func OnShowInventory() -> void:
-	if _notebook.visible:
-		_notebook.visible = false
-		_notebook.process_mode = PROCESS_MODE_DISABLED
-		$MainHUD.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		return
-	
-	$MainHUD.mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	_notebook.process_mode = PROCESS_MODE_PAUSABLE
-	_notebook.visible = true
-	_notebook.on_show_backpack()
 
 func _on_jump_audio_tween_fade_out_finished() -> void:
 	_jump_music.stop()
@@ -401,9 +386,6 @@ func ShowAnnouncment( text: String ) -> void:
 	
 	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.90, 0.90 )
 	create_tween().tween_property( _announcement_text, "modulate", Color( 1.0, 1.0, 1.0, 1.0 ), 0.90 )
-
-func IsNotebookOpen() -> bool:
-	return _notebook.visible
 
 func _unhandled_input( event: InputEvent ) -> void:
 	if Input.is_action_just_pressed( "open_emote_menu" ):

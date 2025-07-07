@@ -1,11 +1,13 @@
 using Godot;
+using Moq;
 
 public partial class PauseMenu : CanvasLayer {
 	private ConfirmationDialog ConfirmExitDlg;
 	private ConfirmationDialog ConfirmQuitDlg;
-	private ColorRect ConfirmDlgOverlay;
 
 	private AudioStreamPlayer UIChannel;
+
+	private TabContainer TabContainer;
 
 	[Signal]
 	public delegate void GamePausedEventHandler();
@@ -13,26 +15,13 @@ public partial class PauseMenu : CanvasLayer {
 	[Signal]
 	public delegate void LeaveLobbyEventHandler();
 
-	private void Pause() {
-		if ( GetTree().Paused ) {
-			Engine.TimeScale = 1.0f;
-			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
-			UIChannel.ProcessMode = ProcessModeEnum.Always;
-			UIChannel.Stream = ResourceCache.GetSound( "res://sounds/ui/resume_game.ogg" );
-			UIChannel.Play();
-		} else {
-			Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
-			Engine.TimeScale = 0.0f;
-			UIChannel.ProcessMode = ProcessModeEnum.Always;
-			UIChannel.Stream = ResourceCache.GetSound( "res://sounds/ui/pause_game.ogg" );
-			UIChannel.Play();
-		}
-		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
-			GetTree().Paused = !GetTree().Paused;
-		}
-		Visible = !Visible;
-		EmitSignalGamePaused();
-	}
+	private enum TabSelect {
+		Backpack,
+		Journal,
+		Equipment,
+		Options
+	};
+	
 	private void OnConfirmExitConfirmed() {
 		GameConfiguration.Paused = false;
 
@@ -43,26 +32,43 @@ public partial class PauseMenu : CanvasLayer {
 		GetTree().Paused = false;
 		Engine.TimeScale = 1.0f;
 		ArchiveSystem.Clear();
-		
+
 		SteamLobby.Instance.SetPhysicsProcess( false );
 
-		if ( GameConfiguration.GameMode == GameMode.Multiplayer
-			|| GameConfiguration.GameMode == GameMode.Online )
-		{
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer || GameConfiguration.GameMode == GameMode.Online ) {
 			EmitSignalLeaveLobby();
 		}
 		GetTree().ChangeSceneToFile( "res://scenes/main_menu.tscn" );
 	}
+
+	private void OnToggled() => Visible = !Visible;
 
 	public override void _Ready() {
 		base._Ready();
 
 		ConfirmExitDlg = GetNode<ConfirmationDialog>( "ConfirmExit" );
 		ConfirmExitDlg.Connect( "confirmed", Callable.From( OnConfirmExitConfirmed ) );
-		ConfirmExitDlg.Connect( "canceled", Callable.From( () => {
-			ConfirmExitDlg.Hide();
-			ConfirmDlgOverlay.Hide();
-		} ) );
+		ConfirmExitDlg.Connect( "canceled", Callable.From( ConfirmExitDlg.Hide ) );
+
+		TabContainer = GetNode<TabContainer>( "MarginContainer/TabContainer" );
+		TabContainer.Connect( "tab_clicked", Callable.From<int>(
+			( selected ) => {
+				UIAudioManager.OnButtonPressed();
+				bool paused = selected == (int)TabSelect.Options;
+
+				if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
+					GetTree().Paused = paused;
+				}
+				if ( paused ) {
+					Engine.TimeScale = 0.0f;
+					Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
+					EmitSignalGamePaused();
+				} else {
+					Engine.TimeScale = 1.0f;
+					Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
+				}
+			}
+		) );
 
 		ConfirmQuitDlg = GetNode<ConfirmationDialog>( "ConfirmQuit" );
 		ConfirmQuitDlg.Connect( "confirmed", Callable.From( () => {
@@ -70,30 +76,18 @@ public partial class PauseMenu : CanvasLayer {
 				ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
 			}
 
-			ConfirmDlgOverlay.Hide();
 			GetTree().Quit();
 		} ) );
-		ConfirmQuitDlg.Connect( "canceled", Callable.From( () => {
-			ConfirmQuitDlg.Hide();
-			ConfirmDlgOverlay.Hide();
-		} ) );
+		ConfirmQuitDlg.Connect( "canceled", Callable.From( ConfirmQuitDlg.Hide ) );
 
-		ConfirmDlgOverlay = GetNode<ColorRect>( "ColorRect2" );
+		Button ResumeButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ResumeButton" );
+		ResumeButton.Connect( "pressed", Callable.From( OnToggled ) );
 
-		Button ResumeButton = GetNode<Button>( "MarginContainer/VBoxContainer/ResumeButton" );
-		ResumeButton.Connect( "pressed", Callable.From( Pause ) );
+		Button ExitToMainMenuButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ExitToMainMenuButton" );
+		ExitToMainMenuButton.Connect( "pressed", Callable.From( ConfirmExitDlg.Show ) );
 
-		Button ExitToMainMenuButton = GetNode<Button>( "MarginContainer/VBoxContainer/ExitToMainMenuButton" );
-		ExitToMainMenuButton.Connect( "pressed", Callable.From( () => {
-			ConfirmExitDlg.Show();
-			ConfirmDlgOverlay.Show();
-		} ) );
-
-		Button ExitGameButton = GetNode<Button>( "MarginContainer/VBoxContainer/ExitGameButton" );
-		ExitGameButton.Connect( "pressed", Callable.From( () => {
-			ConfirmQuitDlg.Show();
-			ConfirmDlgOverlay.Show();
-		} ) );
+		Button ExitGameButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ExitGameButton" );
+		ExitGameButton.Connect( "pressed", Callable.From( ConfirmQuitDlg.Show ) );
 
 		ProcessMode = ProcessModeEnum.Always;
 
@@ -114,20 +108,17 @@ public partial class PauseMenu : CanvasLayer {
 			break;
 		};
 
-		UIChannel = GetNode<AudioStreamPlayer>( "UIChannel" );
-		UIChannel.Connect( "finished", Callable.From( () => { UIChannel.SetDeferred( "process_mode", (long)ProcessModeEnum.Disabled ); } ) );
-
 		Input.JoyConnectionChanged += OnJoyConnectionChanged;
 	}
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
 
 		if ( Input.IsActionJustReleased( "ui_exit" ) ) {
-			CallDeferred( MethodName.Pause );
+			CallDeferred( MethodName.OnToggled );
 		}
 	}
 
 	private void OnJoyConnectionChanged( long device, bool connected ) {
-		CallDeferred( MethodName.Pause );
+		TabContainer.CallDeferred( MethodName.EmitSignal, TabContainer.SignalName.TabSelected, (int)TabSelect.Options );
 	}
 };

@@ -1,6 +1,7 @@
 using Godot;
 using Multiplayer.Overlays;
 using Renown;
+using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
@@ -65,7 +66,7 @@ namespace Multiplayer.Modes {
 
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
-			
+
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
@@ -105,16 +106,23 @@ namespace Multiplayer.Modes {
 					OtherPlayer = node;
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
 					spawn = Player2Spawn;
+
+					// begin the match only when the other player joins
+					Overlay.BeginNewRound();
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 					spawn = Player1Spawn;
+					SteamLobby.PlayersReady.Add( owner.MultiplayerData.Id, true );
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
 					OtherPlayer = node;
 					node.GlobalPosition = Player1Spawn.GlobalPosition;
 					spawn = Player1Spawn;
+					
+					// begin the match only when the other player joins
+					Overlay.BeginNewRound();
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
@@ -122,7 +130,6 @@ namespace Multiplayer.Modes {
 				}
 			}
 			player.Die += OnPlayerScore;
-			GD.Print( "Set player " + player + " to spawn " + spawn );
 			spawn.SetMeta( "Player", player );
 		}
 
@@ -177,9 +184,7 @@ namespace Multiplayer.Modes {
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
 
-			if ( SteamLobby.Instance.IsOwner() ) {
-				Overlay.BeginNewRound();
-			} else {
+			if ( !SteamLobby.Instance.IsOwner() ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 			}
 		}

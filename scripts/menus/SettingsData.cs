@@ -32,7 +32,6 @@ public partial class SettingsData : Control {
 	private static int ColorblindMode;
 	private static bool AutoAimEnabled;
 	private static bool DyslexiaMode;
-	private static bool EnableTutorials;
 	private static SaveMode SaveMode;
 	private static float UIScale;
 
@@ -52,6 +51,7 @@ public partial class SettingsData : Control {
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
 	private static bool CleanAudio;
+	private static bool EnableTutorials;
 	private static bool ExpertUI;
 
 	//
@@ -421,6 +421,8 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", Convert.ToInt32( HellbreakerEnabled ) ) );
 		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", Convert.ToInt32( HellbreakerRevanents ) ) );
 		writer.WriteLine( string.Format( "CleanAudio={0}", Convert.ToInt32( CleanAudio ) ) );
+		writer.WriteLine( string.Format( "EnableTutorials={0}", Convert.ToInt32( EnableTutorials ) ) );
+		writer.WriteLine( string.Format( "ExpertUI={0}", Convert.ToInt32( ExpertUI ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
@@ -454,6 +456,7 @@ public partial class SettingsData : Control {
 		AutoAimEnabled = Default.AutoAim;
 		DyslexiaMode = Default.DyslexiaMode;
 		EnableTutorials = Default.EnableTutorials;
+		ExpertUI = Default.ExpertUI;
 
 		EffectsOn = Default.SoundEffectsOn;
 		SetEffectsVolume( Default.SoundEffectsVolume );

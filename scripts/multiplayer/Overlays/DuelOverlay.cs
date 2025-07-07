@@ -22,9 +22,6 @@ namespace Multiplayer.Overlays {
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private void NewRound() {
-			if ( !SteamLobby.Instance.IsOwner() ) {
-				return;
-			}
 			SetProcess( true );
 			CountdownLabel.Visible = true;
 			CountdownLabel.StartCountdown();

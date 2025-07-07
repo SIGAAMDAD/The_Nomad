@@ -217,6 +217,8 @@ public partial class SteamLobby : Node {
 	private BufferPool Pool = new BufferPool();
 	private IntPtr[] MessagePool = new IntPtr[ PACKET_READ_LIMIT ];
 
+	public static Dictionary<CSteamID, bool> PlayersReady = new Dictionary<CSteamID, bool>( MAX_LOBBY_MEMBERS );
+
 	//
 	// message batching
 	//
@@ -355,6 +357,8 @@ public partial class SteamLobby : Node {
 		if ( !LobbyId.IsValid() ) {
 			return;
 		}
+
+		PlayersReady.Clear();
 
 		Console.PrintLine( $"Leaving lobby {LobbyId}..." );
 
@@ -821,6 +825,8 @@ public partial class SteamLobby : Node {
 		SteamMatchmaking.SetLobbyData( LobbyId, "map", LobbyMap );
 		SteamMatchmaking.SetLobbyData( LobbyId, "gamemode", LobbyGameMode.ToString() );
 		SteamMatchmaking.SetLobbyMemberLimit( LobbyId, LobbyMaxMembers );
+
+		PlayersReady.EnsureCapacity( MAX_LOBBY_MEMBERS );
 
 		Console.PrintLine( $"Created lobby [{LobbyId}] Name: {LobbyName}, MaxMembers: {LobbyMaxMembers}, GameType: {GameConfiguration.GameMode}" );
 		CreateListenSocket();

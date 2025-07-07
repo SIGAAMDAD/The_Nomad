@@ -2,6 +2,8 @@ using Godot;
 using Renown;
 using Renown.Thinkers;
 using Steamworks;
+using System.Collections.Generic;
+using System.Text;
 
 public enum PlayerAnimationState : byte {
 	Idle,
@@ -90,6 +92,8 @@ public partial class NetworkPlayer : Renown.Entity {
 	private bool LastFlipState;
 
 	private FootSteps FootSteps;
+
+	private static Dictionary<string, string> WeaponResourcePaths = new Dictionary<string, string>();
 
 	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
 		if ( animator.Animation == animation && animator.IsPlaying() ) {
@@ -321,10 +325,12 @@ public partial class NetworkPlayer : Renown.Entity {
 		case PlayerAnimationState.Idle:
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, defaultFrames );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break;
 		case PlayerAnimationState.Running:
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, defaultFrames );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "run" );
+			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break;
 		case PlayerAnimationState.WeaponIdle: {
 			string property = "";
@@ -336,7 +342,10 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
 				property = "bladed_frames_" + append;
 			}
-			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			if ( !WeaponResourcePaths.TryGetValue( property, out string path ) ) {
+				path = "resources/animations/player/" + CurrentWeapon.Get( "properties" ).AsGodotDictionary()[ property ].AsString();
+				WeaponResourcePaths.Add( property, path );
+			}
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
@@ -351,28 +360,39 @@ public partial class NetworkPlayer : Renown.Entity {
 			} else if ( ( WeaponUseMode & WeaponEntity.Properties.IsBladed ) != 0 ) {
 				property = "bladed_frames_" + append;
 			}
-			string path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ property ];
+			if ( !WeaponResourcePaths.TryGetValue( property, out string path ) ) {
+				path = "resources/animations/player/" + CurrentWeapon.Get( "properties" ).AsGodotDictionary()[ property ].AsString();
+				WeaponResourcePaths.Add( property, path );
+			}
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "use" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponReload: {
-			string path = "";
+			string property = "";
 			if ( arm == LeftArmAnimation ) {
-				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+				property = "firearm_frames_left";
 			} else if ( arm == RightArmAnimation ) {
-				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
+				property = "firearm_frames_right";
+			}
+			if ( !WeaponResourcePaths.TryGetValue( property, out string path ) ) {
+				path = "resources/animations/player/" + CurrentWeapon.Get( "properties" ).AsGodotDictionary()[ "firearm_frames_left" ].AsString();
+				WeaponResourcePaths.Add( property, path );
 			}
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "reload" );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			break; }
 		case PlayerAnimationState.WeaponEmpty: {
-			string path = "";
+			string property = "";
 			if ( arm == LeftArmAnimation ) {
-				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_left" ];
+				property = "firearm_frames_left";
 			} else if ( arm == RightArmAnimation ) {
-				path = "resources/animations/player/" + (string)( (Godot.Collections.Dictionary)CurrentWeapon.Get( "properties" ) )[ "firearm_frames_right" ];
+				property = "firearm_frames_right";
+			}
+			if ( !WeaponResourcePaths.TryGetValue( property, out string path ) ) {
+				path = "resources/animations/player/" + CurrentWeapon.Get( "properties" ).AsGodotDictionary()[ "firearm_frames_left" ].AsString();
+				WeaponResourcePaths.Add( property, path );
 			}
 			arm.SetDeferred( AnimatedSprite2D.PropertyName.SpriteFrames, ResourceCache.GetSpriteFrames( path ) );
 			arm.CallDeferred( AnimatedSprite2D.MethodName.Play, "empty" );

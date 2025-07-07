@@ -10,6 +10,7 @@ using System.Diagnostics;
 using PlayerSystem.Perks;
 using System.Text;
 using DialogueManagerRuntime;
+using Microsoft.VisualStudio.TestPlatform.TestExecutor;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -367,8 +368,6 @@ public partial class Player : Entity {
 	public delegate void BulletTimeStartEventHandler();
 	[Signal]
 	public delegate void BulletTimeEndEventHandler();
-	[Signal]
-	public delegate void InventoryToggledEventHandler();
 
 	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
@@ -594,8 +593,7 @@ public partial class Player : Entity {
 		default:
 			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
 			break;
-		}
-		;
+		};
 	}
 
 	private void SendPacket() {
@@ -742,7 +740,7 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Godot.Collections.Dictionary<int, WeaponEntity> GetWeaponStack() => WeaponsStack;
+	public Godot.Collections.Dictionary<int, WeaponEntity> GetWeaponsStack() => WeaponsStack;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Godot.Collections.Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -1399,18 +1397,6 @@ public partial class Player : Entity {
 			Engine.TimeScale = 0.40f;
 		}
 	}
-	private void OnToggleInventory() {
-		if ( IsInputBlocked( true ) ) {
-			return;
-		}
-
-		if ( ( Flags & PlayerFlags.Inventory ) == 0 ) {
-			Flags |= PlayerFlags.Inventory;
-		} else {
-			Flags &= ~PlayerFlags.Inventory;
-		}
-		EmitSignalInventoryToggled();
-	}
 	private void OnUseBothHands() {
 		if ( IsInputBlocked() ) {
 			return;
@@ -1755,7 +1741,6 @@ public partial class Player : Entity {
 		ResourceCache.SlideActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnSlide ) );
 		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		ResourceCache.OpenInventoryActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnToggleInventory ) );
 		ResourceCache.InteractActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
 	private void ConnectKeyboardBinds() {
@@ -1771,7 +1756,6 @@ public partial class Player : Entity {
 		ResourceCache.SlideActionKeyboard.Connect( "triggered", Callable.From( OnSlide ) );
 		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		ResourceCache.OpenInventoryActionKeyboard.Connect( "triggered", Callable.From( OnToggleInventory ) );
 		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( OnArmAngleChanged ) );
 		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
 	}
@@ -1946,8 +1930,10 @@ public partial class Player : Entity {
 
 			RenderingServer.ForceDraw();
 			DirAccess.MakeDirRecursiveAbsolute( "user://screenshots" );
+
+			DateTime Now = DateTime.Now;
 			GetViewport().GetTexture().GetImage().SavePng(
-				string.Format( "user://screenshots/screenshot{0}.png", DateTime.Now )
+				string.Format( "user://screenshots/screenshot{0}{1}{2}_{3}{4}{5}.png", Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, Now.Second )
 			);
 
 			HUD.Show();

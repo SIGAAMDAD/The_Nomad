@@ -231,9 +231,7 @@ public partial class LobbyBrowser : Control {
 	private void OnConnectionStatusChanged( int status ) {
 		switch ( (ESteamNetworkingConnectionState)status ) {
 		case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
-			Tween AudioFade = GetTree().Root.CreateTween();
-			AudioFade.TweenProperty( GetTree().CurrentScene.GetNode( "Theme" ), "volume_db", -20.0f, 1.5f );
-			AudioFade.Connect( "finished", Callable.From( () => { GetTree().CurrentScene.GetNode( "Theme" ).Call( "stop" ); } ) );
+			UIAudioManager.FadeMusic();
 
 			JoiningLobbyLabel.Text = "JOINED";
 			JoiningLobbySpinner.Set( "status", 3 );

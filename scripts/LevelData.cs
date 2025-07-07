@@ -155,6 +155,8 @@ public partial class LevelData : Node2D {
 	public override void _Ready() {
 		base._Ready();
 
+		Name = "LevelData";
+
 		GetTree().CurrentScene = this;
 
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
