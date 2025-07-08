@@ -953,8 +953,8 @@ public partial class Player : Entity {
 		BloodAmount = 0.0f;
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 
-		Health = 100.0f;
-		Rage = 60.0f;
+		SetHealth( 100.0f );
+		SetRage( 60.0f );
 
 		WeaponsStack.Clear();
 		AmmoStacks.Clear();
