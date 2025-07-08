@@ -121,8 +121,9 @@ namespace Multiplayer.Modes {
 							System.Threading.Thread.Sleep( 50 );
 						}
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
+						CallDeferred( MethodName.JoinWaitThread );
 					} );
-					CallDeferred( MethodName.JoinWaitThread );
+					WaitThread.Start();
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
@@ -142,6 +143,7 @@ namespace Multiplayer.Modes {
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
 						CallDeferred( MethodName.JoinWaitThread );
 					} );
+					WaitThread.Start();
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
