@@ -100,7 +100,29 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	public void SetGroundMaterial( GroundMaterialType nType ) => GroundType = nType;
 
-	// TODO: find some way of sending values back to the client
+	public void MultiplayerReset() {
+		IdleAnimation.Hide();
+
+		TorsoAnimation.Play( "default" );
+
+		LegAnimation.Play( "idle" );
+		LegAnimation.Show();
+
+		LeftArmAnimation.SpriteFrames = DefaultLeftArmSpriteFrames;
+		LeftArmAnimation.Play( "idle" );
+		LeftArmAnimation.Show();
+
+		RightArmAnimation.SpriteFrames = DefaultRightArmSpriteFrames;
+		RightArmAnimation.Play( "idle" );
+		RightArmAnimation.Show();
+
+		CurrentWeapon = null;
+
+		TorsoBloodShader.SetShaderParameter( "blood_coef", 0.0f );
+		LegBloodShader.SetShaderParameter( "blood_coef", 0.0f );
+		LeftArmBloodShader.SetShaderParameter( "blood_coef", 0.0f );
+		RightArmBloodShader.SetShaderParameter( "blood_coef", 0.0f );
+	}
 
 	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 		base.PlaySound( channel == null ? AudioChannel : channel, stream );

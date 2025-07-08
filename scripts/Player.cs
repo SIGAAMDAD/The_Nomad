@@ -920,6 +920,19 @@ public partial class Player : Entity {
 	private void OnPlayerMultiplayerRespawn() {
 		TorsoAnimation.AnimationFinished -= OnPlayerMultiplayerRespawn;
 
+		MultiplayerReset();
+
+		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( (byte)PlayerUpdateType.Death );
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
+
+		BlockInput( false );
+
+		SetProcess( true );
+
+		Flags &= ~PlayerFlags.Dashing;
+	}
+	public void MultiplayerReset() {
 		TorsoAnimation.Play( "default" );
 
 		LegAnimation.Play( "idle" );
@@ -943,20 +956,14 @@ public partial class Player : Entity {
 		Health = 100.0f;
 		Rage = 60.0f;
 
+		WeaponsStack.Clear();
+		AmmoStacks.Clear();
+		ConsumableStacks.Clear();
+
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlots[ i ].SetWeapon( null );
 			WeaponSlots[ i ].SetMode( WeaponEntity.Properties.None );
 		}
-
-		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
-		SyncObject.Write( (byte)PlayerUpdateType.Death );
-		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
-
-		BlockInput( false );
-
-		SetProcess( true );
-
-		Flags &= ~PlayerFlags.Dashing;
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );

@@ -62,6 +62,9 @@ namespace Multiplayer.Modes {
 				ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 			}
 
+			ThisPlayer.MultiplayerReset();
+			OtherPlayer.MultiplayerReset();
+
 			if ( RoundIndex++ >= MaxRounds ) {
 				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
 				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
