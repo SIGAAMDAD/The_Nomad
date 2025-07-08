@@ -19,14 +19,7 @@ public partial class MatchTimeLabel : Label {
 		base._Ready();
 
 		Timer = GetNode<Timer>( "Timer" );
-		if ( SteamLobby.Instance.IsOwner() ) {
-			SetProcess( true );
-		} else {
-			RemoveChild( Timer );
-			Timer.QueueFree();
-
-			SetProcess( false );
-		}
+		SetProcess( true );
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );

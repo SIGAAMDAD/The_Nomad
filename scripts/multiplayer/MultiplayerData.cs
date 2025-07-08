@@ -107,5 +107,7 @@ public partial class MultiplayerData : LevelData {
 			Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );
 			PlayerList.AddChild( player );
 		}
+
+		ServerCommandManager.SendCommand( ServerCommandType.PlayerReady );
 	}
 };

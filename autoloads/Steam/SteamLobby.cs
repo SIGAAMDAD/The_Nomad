@@ -217,7 +217,7 @@ public partial class SteamLobby : Node {
 	private BufferPool Pool = new BufferPool();
 	private IntPtr[] MessagePool = new IntPtr[ PACKET_READ_LIMIT ];
 
-	public static Dictionary<CSteamID, bool> PlayersReady = new Dictionary<CSteamID, bool>( MAX_LOBBY_MEMBERS );
+	private static Dictionary<CSteamID, bool> PlayersReady = new Dictionary<CSteamID, bool>( MAX_LOBBY_MEMBERS );
 
 	//
 	// message batching
@@ -260,6 +260,15 @@ public partial class SteamLobby : Node {
 		public MessageType Type;
 	};
 	private Queue<IncomingMessage> MessageQueue = new Queue<IncomingMessage>();
+
+	public static bool AllPlayersReady() {
+		foreach ( var player in PlayersReady ) {
+			if ( !player.Value ) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public static HSteamNetConnection FindConnection( CSteamID steamID ) {
 		if ( Instance.Connections.TryGetValue( steamID, out HSteamNetConnection hConnection ) ) {
@@ -827,6 +836,7 @@ public partial class SteamLobby : Node {
 		SteamMatchmaking.SetLobbyMemberLimit( LobbyId, LobbyMaxMembers );
 
 		PlayersReady.EnsureCapacity( MAX_LOBBY_MEMBERS );
+		PlayersReady.TryAdd( ThisSteamID, true );
 
 		Console.PrintLine( $"Created lobby [{LobbyId}] Name: {LobbyName}, MaxMembers: {LobbyMaxMembers}, GameType: {GameConfiguration.GameMode}" );
 		CreateListenSocket();
@@ -1218,6 +1228,8 @@ public partial class SteamLobby : Node {
 		// Set local Steam ID
 		ThisSteamID = SteamManager.GetSteamID();
 		Console.PrintLine( $"[STEAM] Local Steam ID: {ThisSteamID}" );
+
+		ServerCommandManager.RegisterCommandCallback( ServerCommandType.PlayerReady, ( senderId ) => { PlayersReady[ senderId ] = true; } );
 	}
 	private void NetworkThreadProcess() {
 		const int FRAME_LIMIT = 60;

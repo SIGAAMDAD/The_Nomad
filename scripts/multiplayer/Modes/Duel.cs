@@ -19,6 +19,8 @@ namespace Multiplayer.Modes {
 		private byte RoundIndex = 0;
 		private byte[] Scores = new byte[ 3 ];
 
+		private System.Threading.Thread WaitThread;
+
 		private NetworkSyncObject SyncObject = new NetworkSyncObject( 16 );
 
 		public readonly static Dictionary<string, object> DefaultOptions = new Dictionary<string, object> {
@@ -114,12 +116,17 @@ namespace Multiplayer.Modes {
 					spawn = Player2Spawn;
 
 					// begin the match only when the other player joins
-					Overlay.BeginNewRound();
+					WaitThread = new System.Threading.Thread( () => {
+						while ( !SteamLobby.AllPlayersReady() ) {
+							System.Threading.Thread.Sleep( 50 );
+						}
+						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
+					} );
+					CallDeferred( MethodName.JoinWaitThread );
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player1Spawn.GlobalPosition;
 					spawn = Player1Spawn;
-					SteamLobby.PlayersReady.Add( owner.MultiplayerData.Id, true );
 				}
 			} else {
 				if ( player is NetworkPlayer node && node != null ) {
@@ -128,7 +135,13 @@ namespace Multiplayer.Modes {
 					spawn = Player1Spawn;
 
 					// begin the match only when the other player joins
-					Overlay.BeginNewRound();
+					WaitThread = new System.Threading.Thread( () => {
+						while ( !SteamLobby.AllPlayersReady() ) {
+							System.Threading.Thread.Sleep( 50 );
+						}
+						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
+						CallDeferred( MethodName.JoinWaitThread );
+					} );
 				} else if ( player is Player owner && owner != null ) {
 					ThisPlayer = owner;
 					ThisPlayer.GlobalPosition = Player2Spawn.GlobalPosition;
@@ -138,6 +151,8 @@ namespace Multiplayer.Modes {
 			spawn.SetMeta( "Player", player );
 			return spawn;
 		}
+
+		private void JoinWaitThread() => WaitThread.Join();
 
 		public override void SpawnPlayer( Entity player ) {
 			SetPlayerSpawn( player );

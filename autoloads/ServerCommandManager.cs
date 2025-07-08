@@ -8,6 +8,8 @@ public enum ServerCommandType : uint {
 	StartCountdown,
 	
 	ConnectedToLobby,
+
+	PlayerReady,
 	
 	// to start the game
 	VoteStart,
