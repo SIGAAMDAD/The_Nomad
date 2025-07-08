@@ -104,7 +104,7 @@ namespace Multiplayer.Modes {
 
 			SendPacket();
 
-			OnNewRoundStart();
+			OnRoundEnd();
 		}
 
 		private Node2D SetPlayerSpawn( Entity player ) {
