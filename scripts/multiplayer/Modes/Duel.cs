@@ -107,6 +107,8 @@ namespace Multiplayer.Modes {
 
 			SendPacket();
 
+			Overlay.MatchTimeLabel.Start();
+
 			OnRoundEnd();
 		}
 
