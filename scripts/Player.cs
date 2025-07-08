@@ -605,6 +605,7 @@ public partial class Player : Entity {
 			return;
 		}
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( (byte)PlayerUpdateType.Update );
 		SyncObject.Write( TorsoAnimation.FlipH );
 
 		SyncObject.Write( GlobalPosition.X );
@@ -924,6 +925,30 @@ public partial class Player : Entity {
 		LegAnimation.Show();
 		ArmLeft.Animations.Show();
 		ArmRight.Animations.Show();
+
+		ArmLeft.Slot = WeaponSlot.INVALID;
+		ArmRight.Slot = WeaponSlot.INVALID;
+		HandsUsed = Hands.Right;
+
+		BloodAmount = 0.0f;
+		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
+
+		Health = 100.0f;
+		Rage = 60.0f;
+
+		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
+			WeaponSlots[ i ].SetWeapon( null );
+			WeaponSlots[ i ].SetMode( WeaponEntity.Properties.None );
+		}
+
+		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
+		SyncObject.Write( (byte)PlayerUpdateType.Death );
+
+		BlockInput( false );
+
+		SetProcess( true );
+
+		Flags &= ~PlayerFlags.Dashing;
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
@@ -948,9 +973,9 @@ public partial class Player : Entity {
 		TorsoAnimation.Play( "death" );
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			TorsoAnimation.AnimationFinished += OnPlayerMultiplayerRespawn;
+		} else {
+			SetProcessUnhandledInput( true );
 		}
-
-		SetProcessUnhandledInput( true );
 		SetProcess( false );
 	}
 
@@ -2260,8 +2285,7 @@ public partial class Player : Entity {
 
 		if ( arm.Slot == WeaponSlot.INVALID ) {
 			arm.Animations.Play( InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
-			animState = InputVelocity != Godot.Vector2.Zero ? PlayerAnimationState.Running :
-				PlayerAnimationState.Idle;
+			animState = InputVelocity != Godot.Vector2.Zero ? PlayerAnimationState.Running : PlayerAnimationState.Idle;
 		} else {
 			WeaponEntity weapon = WeaponSlots[ arm.Slot ].GetWeapon();
 			string animationName;

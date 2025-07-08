@@ -1,9 +1,7 @@
 using Godot;
 using Renown;
-using Renown.Thinkers;
 using Steamworks;
 using System.Collections.Generic;
-using System.Text;
 
 public enum PlayerAnimationState : byte {
 	Idle,
@@ -30,8 +28,13 @@ public enum PlayerAnimationState : byte {
 /// sent to a Player on another machine, most usually a damage sync
 /// </summary>
 public enum PlayerUpdateType : byte {
+	// server-to-client
 	Damage,
 	SetSpawn,
+
+	// client-to-server
+	Death,
+	Update,
 
 	Count
 };
@@ -97,13 +100,6 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	public void SetGroundMaterial( GroundMaterialType nType ) => GroundType = nType;
 
-	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
-		if ( animator.Animation == animation && animator.IsPlaying() ) {
-			return;
-		}
-		animator.CallDeferred( AnimatedSprite2D.MethodName.Play, animation );
-	}
-
 	// TODO: find some way of sending values back to the client
 
 	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
@@ -112,6 +108,19 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	public void Update( ulong senderId, System.IO.BinaryReader packet ) {
 		SyncObject.BeginRead( packet );
+
+		PlayerUpdateType updateType = (PlayerUpdateType)SyncObject.ReadByte();
+		switch ( updateType ) {
+		case PlayerUpdateType.Death:
+			EmitSignalDie( null, this );
+			PlaySound( null, ResourceCache.PlayerDieSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+			return;
+		case PlayerUpdateType.Update:
+			break;
+		default:
+			Console.PrintLine( string.Format( "NetworkPlayer.Update: invalid PlayerUpdateType {0}", updateType ) );
+			return;
+		};
 
 		bool flip = SyncObject.ReadBoolean();
 		if ( flip != LastFlipState ) {
@@ -245,21 +254,21 @@ public partial class NetworkPlayer : Renown.Entity {
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "dead" );
 
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			RightArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			break;
 		};
 	}
-	private void SendDamagePacket( Entity source, float nAmount ) {
+	public override void Damage( in Entity source, float nAmount ) {
+		PlaySound( null, ResourceCache.PlayerPainSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+
 		SyncObject.Write( (byte)SteamLobby.MessageType.ServerSync );
 		SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( OwnerId ) );
 		SyncObject.Write( (byte)PlayerUpdateType.Damage );
 		SyncObject.Write( (byte)PlayerDamageSource.Player );
 		SyncObject.Write( nAmount );
 		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
-	}
-	public override void Damage( in Entity source, float nAmount ) {
-		SendDamagePacket( source, nAmount );
 	}
 	private void OnLegAnimationLooped() {
 		if ( LegAnimationState == PlayerAnimationState.Running ) {
