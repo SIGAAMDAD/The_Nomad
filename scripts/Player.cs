@@ -139,6 +139,8 @@ public partial class Player : Entity {
 	private Arm ArmRight;
 	[Export]
 	private CanvasLayer HUD;
+	[Export]
+	private Checkpoint StartingCheckpoint;
 
 	[ExportCategory( "Start" )]
 	[Export]
@@ -291,7 +293,8 @@ public partial class Player : Entity {
 	private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
 	private HashSet<Perk> UnlockedBoons;
 	private HashSet<Rune> UnlockedRunes;
-	private Godot.Collections.Dictionary<string, string> JournalCache = new Godot.Collections.Dictionary<string, string>();
+	private HashSet<WorldArea> DiscoveredAreas;
+	private Godot.Collections.Dictionary<string, string> JournalCache;
 
 	private float Rage = 60.0f;
 	private float Sanity = 60.0f;
@@ -707,6 +710,9 @@ public partial class Player : Entity {
 
 	public override void SetLocation( in WorldArea location ) {
 		if ( location != Location ) {
+			if ( !DiscoveredAreas.Contains( location ) ) {
+				DiscoveredAreas.Add( location );
+			}
 			EmitSignalLocationChanged( location );
 		}
 
@@ -1194,9 +1200,11 @@ public partial class Player : Entity {
 
 			DashBurnoutCooldownTimer.Start();
 
-			Damage( this, 20.0f );
+			Damage( this, 30.0f );
 			AddStatusEffect( "status_burning" );
 			ShakeCamera( 50.0f );
+
+			SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
 
 			EmitSignalDashBurnoutChanged( 0.0f );
 
@@ -1690,8 +1698,7 @@ public partial class Player : Entity {
 			return;
 		case GameMode.Multiplayer:
 			break;
-		}
-		;
+		};
 		if ( Health <= 0.0f ) {
 			GetNode( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
 			GetNode( "/root/TransitionScreen" ).Call( "transition" );
@@ -1905,6 +1912,11 @@ public partial class Player : Entity {
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
 				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
 		} else {
+			UnlockedBoons = new HashSet<Perk>();
+			UnlockedRunes = new HashSet<Rune>();
+			DiscoveredAreas = new HashSet<WorldArea>();
+			JournalCache = new Godot.Collections.Dictionary<string, string>();
+
 			WhisperChannel = new AudioStreamPlayer();
 		}
 
@@ -2103,15 +2115,48 @@ public partial class Player : Entity {
 		}
 		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUSHIDO", out achievement ) && !achievement.GetAchieved() ) {
 			EarnTrait += ( Node self, Trait trait ) => {
-				
+				if ( trait.GetTraitType() == TraitType.Honorable ) {
+					SteamAchievements.ActivateAchievement( "ACH_BUSHIDO" );
+				}
 			};
 		}
-
-			GetTree().Root.GetNode( "/root/acGlobalPool" ).Call( "assimilate",
-				new Godot.Collections.Dictionary<string, Variant> {
-				{ "ParryCounter", ResourceLoader.Load<GDScript>( "res://addons/anti-cheating/int_value.gd" ).New( 0 ) },
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_HEARTLESS", out achievement ) && !achievement.GetAchieved() ) {
+			EarnTrait += ( Node self, Trait trait ) => {
+				if ( trait.GetTraitType() == TraitType.Cruel ) {
+					SteamAchievements.ActivateAchievement( "ACH_HEARTLESS" );
 				}
-			);
+			};
+		}
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_MAXIMUS_THE_MERCIFUL", out achievement ) && !achievement.GetAchieved() ) {
+			EarnTrait += ( Node self, Trait trait ) => {
+				if ( trait.GetTraitType() == TraitType.Merciful ) {
+					SteamAchievements.ActivateAchievement( "ACH_MAXIMUS_THE_MERCIFUL" );
+				}
+			};
+		}
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_WORSE_THAN_DEATH", out achievement ) && !achievement.GetAchieved() ) {
+			EarnTrait += ( Node self, Trait trait ) => {
+				if ( trait.GetTraitType() == TraitType.WarCriminal ) {
+					SteamAchievements.ActivateAchievement( "ACH_WORSE_THAN_DEATH" );
+				}
+			};
+		}
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_RIGHT_BACK_AT_U", out achievement ) && !achievement.GetAchieved() ) {
+			ParrySuccess += () => SteamAchievements.ActivateAchievement( "ACH_RIGHT_BACK_AT_U" );
+		}
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_MASTER_OF_THE_WASTES", out achievement ) && !achievement.GetAchieved() ) {
+			LocationChanged += ( WorldArea location ) => {
+				int count = 0;
+				foreach ( var area in WorldArea.Cache.Cache ) {
+					if ( DiscoveredAreas.Contains( area.Value ) ) {
+						count++;
+					}
+				}
+				if ( count == WorldArea.Cache.Cache.Count ) {
+					SteamAchievements.ActivateAchievement( "ACH_MASTER_OF_THE_WASTEST" );
+				}
+			};
+		}
 
 		//		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 		//		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();
@@ -2238,8 +2283,7 @@ public partial class Player : Entity {
 				animationName = "empty";
 				animState = PlayerAnimationState.WeaponEmpty;
 				break;
-			}
-			;
+			};
 
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
 				if ( ( arm == ArmLeft && !arm.Animations.FlipH )
