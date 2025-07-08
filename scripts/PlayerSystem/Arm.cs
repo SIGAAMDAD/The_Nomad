@@ -28,7 +28,7 @@ namespace PlayerSystem {
 		public AnimatedSprite2D Animations;
 		public Player Parent;
 
-		private SpriteFrames DefaultAnimation;
+		public SpriteFrames DefaultAnimation { get; private set; }
 		public int Slot = WeaponSlot.INVALID;
 
 		public bool Flip = false;

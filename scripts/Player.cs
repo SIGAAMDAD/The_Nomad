@@ -923,7 +923,11 @@ public partial class Player : Entity {
 		TorsoAnimation.Play( "idle" );
 
 		LegAnimation.Show();
+
+		ArmLeft.Animations.SpriteFrames = ArmLeft.DefaultAnimation;
 		ArmLeft.Animations.Show();
+
+		ArmRight.Animations.SpriteFrames = ArmRight.DefaultAnimation;
 		ArmRight.Animations.Show();
 
 		ArmLeft.Slot = WeaponSlot.INVALID;

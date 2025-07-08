@@ -53,10 +53,6 @@ namespace Multiplayer.Overlays {
 			CountdownLabel = GetNode<Countdown>( "MarginContainer/CountdownLabel" );
 			CountdownLabel.Connect( "CountdownTimeout", Callable.From( OnCountdownTimerTimeout ) );
 
-			SetProcess( true );
-			CountdownLabel.Visible = true;
-			CountdownLabel.StartCountdown();
-
 			Player1Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
 			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
 		}

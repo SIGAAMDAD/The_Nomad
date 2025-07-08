@@ -8,3 +8,4 @@ offset_bottom = 23.0
 script = ExtResource("1_h73nv")
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
