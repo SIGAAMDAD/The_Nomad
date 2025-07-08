@@ -950,6 +950,8 @@ public partial class Player : Entity {
 		ArmRight.Slot = WeaponSlot.INVALID;
 		HandsUsed = Hands.Right;
 
+		CurrentWeapon = WeaponSlot.INVALID;
+
 		BloodAmount = 0.0f;
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 
@@ -964,6 +966,8 @@ public partial class Player : Entity {
 			WeaponSlots[ i ].SetWeapon( null );
 			WeaponSlots[ i ].SetMode( WeaponEntity.Properties.None );
 		}
+
+		BlockInput( false );
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
@@ -1535,8 +1539,7 @@ public partial class Player : Entity {
 			Console.PrintError( "SwitchWeaponHand: invalid hand, setting to default of right" );
 			HandsUsed = Hands.Right;
 			break;
-		}
-		;
+		};
 		if ( LastUsedArm.Slot != WeaponSlot.INVALID ) {
 			EquipSlot( LastUsedArm.Slot );
 		}
