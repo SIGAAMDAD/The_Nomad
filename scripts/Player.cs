@@ -920,14 +920,17 @@ public partial class Player : Entity {
 	private void OnPlayerMultiplayerRespawn() {
 		TorsoAnimation.AnimationFinished -= OnPlayerMultiplayerRespawn;
 
-		TorsoAnimation.Play( "idle" );
+		TorsoAnimation.Play( "default" );
 
+		LegAnimation.Play( "idle" );
 		LegAnimation.Show();
 
 		ArmLeft.Animations.SpriteFrames = ArmLeft.DefaultAnimation;
+		ArmLeft.Animations.Play( "idle" );
 		ArmLeft.Animations.Show();
 
 		ArmRight.Animations.SpriteFrames = ArmRight.DefaultAnimation;
+		ArmRight.Animations.Play( "idle" );
 		ArmRight.Animations.Show();
 
 		ArmLeft.Slot = WeaponSlot.INVALID;
@@ -947,6 +950,7 @@ public partial class Player : Entity {
 
 		SyncObject.Write( (byte)SteamLobby.MessageType.ClientData );
 		SyncObject.Write( (byte)PlayerUpdateType.Death );
+		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Reliable );
 
 		BlockInput( false );
 
@@ -973,6 +977,11 @@ public partial class Player : Entity {
 		ArmRight.Animations.Hide();
 
 		Velocity = Godot.Vector2.Zero;
+
+		TorsoAnimationState = PlayerAnimationState.Dead;
+		LegAnimationState = PlayerAnimationState.Dead;
+		RightArmAnimationState = PlayerAnimationState.Dead;
+		LeftArmAnimationState = PlayerAnimationState.Dead;
 
 		TorsoAnimation.Play( "death" );
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {

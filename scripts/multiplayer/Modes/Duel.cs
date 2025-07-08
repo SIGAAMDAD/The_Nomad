@@ -40,7 +40,7 @@ namespace Multiplayer.Modes {
 			SyncObject.Write( (byte)SteamLobby.Instance.GetMemberIndex( OtherPlayer.MultiplayerData.Id ) );
 			SyncObject.Write( (byte)PlayerUpdateType.SetSpawn );
 			SyncObject.Write( spawn.GlobalPosition );
-			SyncObject.Sync();
+			SyncObject.Sync(); 
 		}
 		public void OnRoundEnd() {
 			if ( ThisPlayer == null || OtherPlayer == null ) {

@@ -252,7 +252,7 @@ public partial class NetworkPlayer : Renown.Entity {
 			break;
 		case PlayerAnimationState.Dead:
 			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );
-			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "dead" );
+			TorsoAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "death" );
 
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
 			LeftArmAnimation.CallDeferred( AnimatedSprite2D.MethodName.Hide );
