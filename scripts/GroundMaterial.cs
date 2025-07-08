@@ -16,6 +16,8 @@ public partial class GroundMaterial : Area2D {
 	private void OnBodyEntered( Node2D body ) {
 		if ( body is Player player && player != null ) {
 			player.SetGroundMaterial( Type );
+		} else if ( body is NetworkPlayer node && node != null ) {
+			node.SetGroundMaterial( Type );
 		}
 	}
 	private void OnBodyExited( Node2D body ) {

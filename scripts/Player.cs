@@ -10,7 +10,6 @@ using System.Diagnostics;
 using PlayerSystem.Perks;
 using System.Text;
 using DialogueManagerRuntime;
-using Microsoft.VisualStudio.TestPlatform.TestExecutor;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -319,6 +318,8 @@ public partial class Player : Entity {
 
 	private int TileMapLevel = 0;
 	private static Action<int> DialogueCallback;
+
+	private Dictionary<string, object> AchievementData;
 
 	private Node2D Waypoint;
 
@@ -909,6 +910,15 @@ public partial class Player : Entity {
 		}
 	}
 
+	private void OnPlayerMultiplayerRespawn() {
+		TorsoAnimation.AnimationFinished -= OnPlayerMultiplayerRespawn;
+
+		TorsoAnimation.Play( "idle" );
+
+		LegAnimation.Show();
+		ArmLeft.Animations.Show();
+		ArmRight.Animations.Show();
+	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
 
@@ -930,11 +940,12 @@ public partial class Player : Entity {
 		Velocity = Godot.Vector2.Zero;
 
 		TorsoAnimation.Play( "death" );
+		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			TorsoAnimation.AnimationFinished += OnPlayerMultiplayerRespawn;
+		}
 
 		SetProcessUnhandledInput( true );
 		SetProcess( false );
-
-		EmitSignalDie( attacker, this );
 	}
 
 	public override void Damage( in Entity attacker, float nAmount ) {
@@ -2081,6 +2092,26 @@ public partial class Player : Entity {
 		LastUsedArm = ArmRight;
 
 		GetTree().Root.SizeChanged += OnScreenSizeChanged;
+
+		SteamAchievements.SteamAchievement achievement;
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUILDING_THE_LEGEND", out achievement ) && !achievement.GetAchieved() ) {
+			IncreaseRenown += ( Node self, int amount ) => {
+				if ( amount >= 200 ) {
+					SteamAchievements.ActivateAchievement( "ACH_BUIDLING_THE_LEGEND" );
+				}
+			};
+		}
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUSHIDO", out achievement ) && !achievement.GetAchieved() ) {
+			EarnTrait += ( Node self, Trait trait ) => {
+				
+			};
+		}
+
+			GetTree().Root.GetNode( "/root/acGlobalPool" ).Call( "assimilate",
+				new Godot.Collections.Dictionary<string, Variant> {
+				{ "ParryCounter", ResourceLoader.Load<GDScript>( "res://addons/anti-cheating/int_value.gd" ).New( 0 ) },
+				}
+			);
 
 		//		RenderingServer.FramePostDraw += () => OnViewportFramePostDraw();
 		//		RenderingServer.FramePreDraw += () => OnViewportFramePreDraw();

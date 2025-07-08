@@ -83,15 +83,21 @@ namespace Multiplayer {
 		}
 		private void OnChatMessageReceived( ulong senderId, string message, int messageType ) {
 			string fullMessage = string.Format( "[{0}] {1}\n", SteamFriends.GetFriendPersonaName( (CSteamID)senderId ), message );
-			RecentText.Text = fullMessage;
+			RecentText.ParseBbcode( fullMessage );
 			FullText.AppendText( fullMessage );
 		}
 
-		private void OnPlayerJoined() {
+		private void OnPlayerJoined( ulong steamId ) {
+			string message = string.Format( "[color=cyan]{0} has joined the lobby[/color]", SteamFriends.GetFriendPersonaName( (CSteamID)steamId ) );
+			RecentText.ParseBbcode( message );
+			FullText.AppendText( message );
 		}
-		private void OnPlayerLeft() {
+		private void OnPlayerLeft( ulong steamId ) {
+			string message = string.Format( "[color=cyan]{0} has left the lobby[/color]", SteamFriends.GetFriendPersonaName( (CSteamID)steamId ) );
+			RecentText.ParseBbcode( message );
+			FullText.AppendText( message );
 		}
-        public override void _Ready() {
+		public override void _Ready() {
 			base._Ready();
 
 			Name = "ChatBar";
@@ -103,6 +109,8 @@ namespace Multiplayer {
 			Message = GetNode<LineEdit>( "LineEdit" );
 
 			SteamLobby.Instance.Connect( "ChatMessageReceived", Callable.From<ulong, string, int>( OnChatMessageReceived ) );
+			SteamLobby.Instance.ClientJoinedLobby += OnPlayerJoined;
+			SteamLobby.Instance.ClientLeftLobby += OnPlayerLeft;
 		}
     };
 };

@@ -17,7 +17,7 @@ namespace Multiplayer.Modes {
 		private byte Player1Score = 0;
 		private byte Player2Score = 0;
 		private byte RoundIndex = 0;
-		private byte[] Scores = null;
+		private byte[] Scores = new byte[ 3 ];
 
 		private NetworkSyncObject SyncObject = new NetworkSyncObject( 16 );
 

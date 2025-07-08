@@ -95,6 +95,8 @@ public partial class NetworkPlayer : Renown.Entity {
 
 	private static Dictionary<string, string> WeaponResourcePaths = new Dictionary<string, string>();
 
+	public void SetGroundMaterial( GroundMaterialType nType ) => GroundType = nType;
+
 	private void PlayAnimation( AnimatedSprite2D animator, string animation ) {
 		if ( animator.Animation == animation && animator.IsPlaying() ) {
 			return;

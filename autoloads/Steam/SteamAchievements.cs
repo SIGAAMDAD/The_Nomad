@@ -88,7 +88,7 @@ public partial class SteamAchievements : Node {
 		Count
 	};
 
-	public class SteamAchievement {
+	public struct SteamAchievement {
 		private readonly AchievementID Id;
 		private readonly string IdString;
 		private readonly string Name;
@@ -123,10 +123,11 @@ public partial class SteamAchievements : Node {
 			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 
-		public object GetValue() => Value;
-		public object GetMaxValue() => MaxValue;
-		public string GetName() => Name;
-		public string GetIdString() => IdString;
+		public readonly object GetValue() => Value;
+		public readonly object GetMaxValue() => MaxValue;
+		public readonly string GetName() => Name;
+		public readonly string GetIdString() => IdString;
+		public readonly bool GetAchieved() => Achieved;
 		public void SetAchieved( bool bAchieved ) => Achieved = bAchieved;
 		public void SetFloatValue( float value ) {
 			if ( Value is float floatValue ) {
@@ -150,7 +151,7 @@ public partial class SteamAchievements : Node {
 
 	private CallResult<UserStatsReceived_t> UserStatsReceivedCallResult;
 	
-	private static System.Collections.Generic.Dictionary<string, SteamAchievement> AchievementTable;
+	public static System.Collections.Generic.Dictionary<string, SteamAchievement> AchievementTable;
 	private bool SteamStatsReceived = false;
 
 	public override void _Ready() {
