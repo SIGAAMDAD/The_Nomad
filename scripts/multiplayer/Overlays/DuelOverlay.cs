@@ -26,6 +26,8 @@ namespace Multiplayer.Overlays {
 			CountdownLabel.Visible = true;
 			CountdownLabel.StartCountdown();
 			EmitSignalRoundEnd();
+
+			Console.PrintLine( "New dueling round started." );
 		}
 		public void BeginNewRound() => NewRound();
 		public void RestartRound() => NewRound();
