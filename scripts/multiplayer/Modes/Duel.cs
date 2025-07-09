@@ -76,8 +76,6 @@ namespace Multiplayer.Modes {
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
 
-			Overlay.BeginNewRound();
-
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
@@ -108,6 +106,8 @@ namespace Multiplayer.Modes {
 			}
 
 			SendPacket();
+
+			Overlay.BeginNewRound();
 
 			OnRoundEnd();
 		}
