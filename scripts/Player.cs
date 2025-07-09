@@ -2102,6 +2102,7 @@ public partial class Player : Entity {
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
 		LegAnimation.Connect( AnimatedSprite2D.SignalName.AnimationLooped, Callable.From( OnLegsAnimationLooped ) );
 
+
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
 
 		Shadows = GetNode<Node2D>( "Animations/Shadows" );
