@@ -460,12 +460,12 @@ public partial class SteamLobby : Node {
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_TimeoutInitial,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 10000 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 100000 }
 			},
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_TimeoutConnected,
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 10000 }
+				m_val = new SteamNetworkingConfigValue_t.OptionValue { m_int32 = 1000000 }
 			},
 			new SteamNetworkingConfigValue_t {
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SymmetricConnect,
