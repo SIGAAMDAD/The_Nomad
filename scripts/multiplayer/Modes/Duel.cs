@@ -123,6 +123,7 @@ namespace Multiplayer.Modes {
 					// begin the match only when the other player joins
 					WaitThread = new System.Threading.Thread( () => {
 						while ( !SteamLobby.AllPlayersReady() ) {
+							Console.PrintLine( "Synchronizing players..." );
 							System.Threading.Thread.Sleep( 50 );
 						}
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
@@ -143,6 +144,7 @@ namespace Multiplayer.Modes {
 					// begin the match only when the other player joins
 					WaitThread = new System.Threading.Thread( () => {
 						while ( !SteamLobby.AllPlayersReady() ) {
+							Console.PrintLine( "Synchronizing players..." );
 							System.Threading.Thread.Sleep( 50 );
 						}
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
