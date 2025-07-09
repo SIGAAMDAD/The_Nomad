@@ -76,6 +76,8 @@ namespace Multiplayer.Modes {
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
 
+			Overlay.BeginNewRound();
+
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
 			}
@@ -107,8 +109,6 @@ namespace Multiplayer.Modes {
 
 			SendPacket();
 
-			Overlay.MatchTimeLabel.Start();
-
 			OnRoundEnd();
 		}
 
@@ -126,6 +126,7 @@ namespace Multiplayer.Modes {
 							Console.PrintLine( "Synchronizing players..." );
 							System.Threading.Thread.Sleep( 50 );
 						}
+						Console.PrintLine( "Players synched." );
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
 						CallDeferred( MethodName.JoinWaitThread );
 					} );
@@ -147,6 +148,7 @@ namespace Multiplayer.Modes {
 							Console.PrintLine( "Synchronizing players..." );
 							System.Threading.Thread.Sleep( 50 );
 						}
+						Console.PrintLine( "Players synched." );
 						Overlay.CallDeferred( DuelOverlay.MethodName.BeginNewRound );
 						CallDeferred( MethodName.JoinWaitThread );
 					} );
