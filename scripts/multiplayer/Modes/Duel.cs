@@ -68,8 +68,7 @@ namespace Multiplayer.Modes {
 			Overlay.SetPlayer1Score( Player1Score );
 			Overlay.SetPlayer2Score( Player2Score );
 
-			RoundIndex++;
-			if ( RoundIndex >= MaxRounds ) {
+			if ( RoundIndex++ >= MaxRounds ) {
 				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
 				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
 				EmitSignalShowScoreboard();
@@ -109,8 +108,6 @@ namespace Multiplayer.Modes {
 			SendPacket();
 
 			Overlay.BeginNewRound();
-
-			OnRoundEnd();
 		}
 
 		private Node2D SetPlayerSpawn( Entity player ) {
