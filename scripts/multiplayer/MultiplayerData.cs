@@ -90,7 +90,13 @@ public partial class MultiplayerData : LevelData {
 		ModeData.OnPlayerJoined( ThisPlayer );
 		ModeData.SpawnPlayer( ThisPlayer );
 
-		ModeData.Connect( Mode.SignalName.EndGame, Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		ModeData.Connect( Mode.SignalName.EndGame, Callable.From( () => {
+		if ( SteamLobby.Instance.IsOwner() ) {
+				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
+			}
+			SteamLobby.Instance.LeaveLobby();
+			GetTree().ChangeSceneToFile( "res://scenes/main_menu.tscn" );
+		} ) );
 
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.EndGame, ( senderId ) => SteamLobby.Instance.LeaveLobby() );
 

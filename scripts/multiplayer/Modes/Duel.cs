@@ -49,7 +49,7 @@ namespace Multiplayer.Modes {
 
 			ThisPlayer?.BlockInput( true );
 
-			Node2D otherSpawn = Player2Spawn;
+			Node2D otherSpawn;
 			if ( Player1Spawn.GetMeta( "Player" ).AsGodotObject() is Player player && player != null ) {
 				Player1Spawn.SetMeta( "Player", OtherPlayer );
 				Player2Spawn.SetMeta( "Player", ThisPlayer );
@@ -70,9 +70,7 @@ namespace Multiplayer.Modes {
 
 			if ( RoundIndex++ >= MaxRounds ) {
 				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
-				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
 				EmitSignalShowScoreboard();
-				EmitSignalEndGame();
 				return;
 			}
 
@@ -225,6 +223,7 @@ namespace Multiplayer.Modes {
 			Player2Spawn.SetMeta( "Player", Godot.Variant.From( 0 ) );
 
 			ScoreBoard = GetNode<ScoreBoard>( "Scoreboard" );
+			ScoreBoard.Connect( ScoreBoard.SignalName.LeaveGame, Callable.From( EmitSignalEndGame ) );
 
 //			MaxRounds = (int)Options[ "MaxRounds" ];
 

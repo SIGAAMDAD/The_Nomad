@@ -3,7 +3,12 @@ using Steamworks;
 
 namespace Multiplayer {
 	public partial class ScoreBoard : CanvasLayer {
+		[Signal]
+		public delegate void LeaveGameEventHandler();
+
 		public void SetDuelData( int round0Winner, int round1Winner, int round2Winner, CSteamID thisPlayer, CSteamID otherPlayer ) {
+			Show();
+
 			Label ThisPlayerName = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Name" );
 			Label ThisPlayerRound0 = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Round0" );
 			Label ThisPlayerRound1 = GetNode<Label>( "MarginContainer/PlayerList/DuelData/ThisPlayerContainer/Round1" );
@@ -47,6 +52,13 @@ namespace Multiplayer {
 				ThisPlayerRound2.Text = "/";
 				OtherPlayerRound2.Text = "/";
 			}
+		}
+
+		public override void _Ready() {
+			base._Ready();
+
+			Button LeaveButton = GetNode<Button>( "MarginContainer/LeaveButton" );
+			LeaveButton.Connect( Button.SignalName.Pressed, Callable.From( EmitSignalLeaveGame ) );
 		}
 	};
 };
