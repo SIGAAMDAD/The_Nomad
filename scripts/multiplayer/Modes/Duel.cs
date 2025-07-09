@@ -108,8 +108,10 @@ namespace Multiplayer.Modes {
 
 			SendPacket();
 
-			Overlay.BeginNewRound();
-
+			WaitThread.Start();
+			while ( WaitThread.IsAlive ) {
+				continue;
+			}
 			OnRoundEnd();
 		}
 
