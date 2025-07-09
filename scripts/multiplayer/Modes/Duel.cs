@@ -65,6 +65,9 @@ namespace Multiplayer.Modes {
 			ThisPlayer.MultiplayerReset();
 			OtherPlayer.MultiplayerReset();
 
+			Overlay.SetPlayer1Score( Player1Score );
+			Overlay.SetPlayer2Score( Player2Score );
+
 			if ( RoundIndex++ >= MaxRounds ) {
 				ScoreBoard.SetDuelData( Scores[ 0 ], Scores[ 1 ], Scores[ 2 ], ThisPlayer.MultiplayerData.Id, OtherPlayer.MultiplayerData.Id );
 				ServerCommandManager.SendCommand( ServerCommandType.EndGame );
@@ -72,9 +75,6 @@ namespace Multiplayer.Modes {
 				EmitSignalEndGame();
 				return;
 			}
-
-			Overlay.SetPlayer1Score( Player1Score );
-			Overlay.SetPlayer2Score( Player2Score );
 
 			if ( !SteamLobby.Instance.IsOwner() ) {
 				return;
