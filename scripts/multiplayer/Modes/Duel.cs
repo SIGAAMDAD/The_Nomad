@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Multiplayer.Modes {
 	public partial class Duel : Mode {
+		public static readonly int MinPlayers = 1;
+		public static readonly int MaxPlayers = 2;
+
 		private int MaxRounds = 3; // NOTE: this may be adjustable in the future
 		private Player ThisPlayer = null;
 		private NetworkPlayer OtherPlayer = null;

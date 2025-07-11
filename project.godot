@@ -102,7 +102,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg", "res://addons/tattomoosa.spinner/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
 
 [global_group]
 
@@ -230,9 +230,9 @@ pathfinding/max_threads=8192
 
 2d/run_on_separate_thread=true
 common/physics_ticks_per_second=30
-common/physics_jitter_fix=0.0
+common/physics_jitter_fix=100.0
 2d/physics_engine="Rapier2D"
-2d/solver/solver_iterations=5
+2d/solver/solver_iterations=8
 2d/solver/contact_recycle_radius=8.0
 common/physics_interpolation=true
 common/enable_object_picking=false

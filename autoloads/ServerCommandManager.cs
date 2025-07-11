@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Steamworks;
 
 public enum ServerCommandType : uint {
@@ -6,11 +7,11 @@ public enum ServerCommandType : uint {
 	EndGame,
 
 	StartCountdown,
-	
+
 	ConnectedToLobby,
 
 	PlayerReady,
-	
+
 	// to start the game
 	VoteStart,
 	CancelVote,
@@ -28,10 +29,13 @@ public enum ServerCommandType : uint {
 	OwnershipChanged,
 
 	Count
+	
+	// anything beyond here is reserved for ModeCommands
 };
 
 public class ServerCommandManager {
 	private static Action<CSteamID>[] CommandCache = new Action<CSteamID>[ (int)ServerCommandType.Count ];
+	private static Dictionary<string, Action<CSteamID>> ModeCommands = new Dictionary<string, Action<CSteamID>>();
 
 	public static void SendCommand( ServerCommandType nType ) {
 		uint command = (uint)nType;
@@ -59,6 +63,15 @@ public class ServerCommandManager {
 
 		Console.PrintLine( string.Format( "Sending targeted server command [id:{0}]: {1}...", targetId.ToString(), nType.ToString() ) );
 		SteamLobby.Instance.SendTargetPacket( targetId, packet, Constants.k_nSteamNetworkingSend_Reliable );
+	}
+
+	public static void ClearModeCommandCache() {
+		ModeCommands.Clear();
+		Console.PrintLine( "Cleared mode command cache." );
+	}
+	public static void RegisterCommandType( string name, Action<CSteamID> callback ) {
+		ModeCommands.TryAdd( name, callback );
+		Console.PrintLine( string.Format( "ServerCommandManager.RegisterCommandType: created new mode command {0}", name ) );
 	}
 
 	public static void RegisterCommandCallback( ServerCommandType nType, Action<CSteamID> callback ) {

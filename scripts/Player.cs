@@ -1172,8 +1172,7 @@ public partial class Player : Entity {
 			Flags |= PlayerFlags.Checkpoint;
 			LastCheckpoint = item as Checkpoint;
 			break;
-		}
-		;
+		};
 	}
 
 	private void OnIdleAnimationTimerTimeout() {

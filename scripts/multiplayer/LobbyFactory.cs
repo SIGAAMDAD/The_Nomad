@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Multiplayer;
+using Multiplayer.Modes;
 using System.Threading;
 using System.Linq;
 
@@ -37,6 +38,24 @@ public partial class LobbyFactory : Control {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ], (int)Mode.GameMode.Duel );
 		}
 		GameModeList.Selected = 0;
+	}
+	private void OnGameModeSelectionChanged( int nSelected ) {
+		switch ( (Mode.GameMode)nSelected ) {
+		case Mode.GameMode.Bloodbath:
+			MaxPlayers.MinValue = Bloodbath.MinPlayers;
+			MaxPlayers.MaxValue = Bloodbath.MaxPlayers;
+			break;
+		case Mode.GameMode.TeamBrawl:
+			break;
+		case Mode.GameMode.CaptureTheFlag:
+			break;
+		case Mode.GameMode.KingOfTheHill:
+			break;
+		case Mode.GameMode.Duel:
+			MaxPlayers.MinValue = Duel.MinPlayers;
+			MaxPlayers.MaxValue = Duel.MaxPlayers;
+			break;
+		};
 	}
 
 	public override void _Ready() {

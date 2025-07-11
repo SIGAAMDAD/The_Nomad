@@ -6,6 +6,9 @@ using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Bloodbath : Mode {
+		public static readonly int MinPlayers = 1;
+		public static readonly int MaxPlayers = 16;
+
 		private Dictionary<CSteamID, int> Scores = new Dictionary<CSteamID, int>();
 		private Dictionary<CSteamID, int> ServerScores = new Dictionary<CSteamID, int>();
 		private List<CSteamID> Scoreboard = new List<CSteamID>();
@@ -29,10 +32,12 @@ namespace Multiplayer.Modes {
 			} else if ( source is NetworkPlayer networkNode && networkNode != null ) {
 				score = Scores[ networkNode.MultiplayerData.Id ]++;
 			}
-			if ( score >= MaxScore ) {
-
-			}
 			SendPacket();
+			if ( score >= MaxScore ) {
+				EmitSignalEndGame();
+				EmitSignalShowScoreboard();
+				return;
+			}
 		}
 
 		public override void SpawnPlayer( Entity player ) {

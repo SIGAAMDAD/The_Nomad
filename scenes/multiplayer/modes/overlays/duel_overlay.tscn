@@ -41,6 +41,7 @@ size_flags_vertical = 8
 alignment = 1
 
 [node name="Player1ScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+modulate = Color(0, 1, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "0"
@@ -50,5 +51,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="Player2ScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 text = "0"

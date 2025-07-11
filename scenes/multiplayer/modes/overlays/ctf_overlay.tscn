@@ -1,43 +1,89 @@
-[gd_scene format=3 uid="uid://bnkthei3bm0aq"]
+[gd_scene load_steps=8 format=3 uid="uid://bnkthei3bm0aq"]
+
+[ext_resource type="Script" uid="uid://c2qcs1dm7hnag" path="res://scripts/multiplayer/Overlays/CaptureTheFlagOverlay.cs" id="1_8nyr5"]
+[ext_resource type="PackedScene" uid="uid://dfbq2o0ts0kaj" path="res://scenes/multiplayer/match_time_label.tscn" id="2_mp1jm"]
+[ext_resource type="Texture2D" uid="uid://d04ricj13upv8" path="res://textures/kenney_input-prompts/Flairs/Default/flair_arrow_long.png" id="3_h2nai"]
+[ext_resource type="Shader" uid="uid://boc7n0cb3jcay" path="res://shaders/dynamic_progress_bar.gdshader" id="3_j3uqj"]
+
+[sub_resource type="Gradient" id="Gradient_j3uqj"]
+offsets = PackedFloat32Array(0, 0.425926, 0.714286, 1)
+colors = PackedColorArray(1, 0.490196, 0, 1, 1, 0.474634, 0, 1, 1, 0.0590559, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_73ubm"]
+gradient = SubResource("Gradient_j3uqj")
+width = 24
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_73ubm"]
+shader = ExtResource("3_j3uqj")
+shader_parameter/progress = 1.0
+shader_parameter/background_color = Color(0.501961, 0.501961, 0.501961, 0)
+shader_parameter/color_gradient = SubResource("GradientTexture1D_73ubm")
+shader_parameter/mask_texture = ExtResource("3_h2nai")
+shader_parameter/wave_amplitude = 0.02
+shader_parameter/wave_frequency = 0.0
+shader_parameter/wave_speed = 0.0
+shader_parameter/particle_speed = 0.05
+shader_parameter/particle_lifetime = 3.0
+shader_parameter/particle_softness = 0.01
+shader_parameter/particle_spacing = 0.1
+shader_parameter/particle_offset = Vector2(0, 0)
+shader_parameter/particle_start_scale = Vector2(0.02, 0.02)
+shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
+shader_parameter/particle_scale_randomness = 0.5
+shader_parameter/particle_amount = 20
 
 [node name="CtfOverlay" type="CanvasLayer"]
+script = ExtResource("1_8nyr5")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-anchors_preset = 10
+anchors_preset = -1
+anchor_top = 0.917
 anchor_right = 1.0
-offset_bottom = 40.0
+anchor_bottom = 1.0
+offset_top = -0.160034
 grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TheirFlagReturnProgress" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+material = SubResource("ShaderMaterial_73ubm")
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_h2nai")
+
+[node name="OurFlagPointer" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_h2nai")
+
+[node name="MatchTimeLabel" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_mp1jm")]
 layout_mode = 2
 
 [node name="ScoreContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 40)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 0
+size_flags_vertical = 8
 alignment = 1
 
-[node name="Team_1_Point0Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+[node name="OurTeamScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+modulate = Color(0, 1, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 4
-stretch_mode = 3
-
-[node name="Team_1_Point1Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/ScoreContainer"]
-layout_mode = 2
-stretch_mode = 3
+text = "0"
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/ScoreContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="Team_2_Point0Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+[node name="TheirTeamScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
+modulate = Color(1, 0, 0, 1)
 layout_mode = 2
-stretch_mode = 3
-
-[node name="Team_2_Point1Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/ScoreContainer"]
-layout_mode = 2
-stretch_mode = 3
-
-[node name="MatchTimer" type="Timer" parent="MarginContainer/VBoxContainer"]
-wait_time = 300.0
-one_shot = true
+text = "0"

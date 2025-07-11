@@ -35,26 +35,24 @@ namespace Renown.World {
 
 		private void OnProcessAreaBody2DEntered( Node2D body ) {
 			if ( body is Entity entity && entity != null ) {
-				entity.SetLocation( this );
 				if ( entity is Player player && player != null ) {
 					PlayerStatus = true;
 					EmitSignalPlayerEntered();
 					SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
 				}
+				entity.SetLocation( this );
 			}
 		}
 		private void OnProcessAreaBody2DExited( Node2D body ) {
-			if ( body is not Player player ) {
-				return;
+			if ( !GetOverlappingBodies().Contains( LevelData.Instance.ThisPlayer ) ) {
+				PlayerStatus = false;
+				EmitSignalPlayerExited();
+				SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 			}
-			PlayerStatus = false;
-			EmitSignalPlayerExited();
-			SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 		}
 
 		public override void _Ready() {	
 			base._Ready();
-
 			
 			Connect( "body_entered", Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
 			Connect( "body_exited", Callable.From<Node2D>( OnProcessAreaBody2DExited ) );

@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://ccn5dc6ofsed7"]
+[gd_scene load_steps=10 format=3 uid="uid://ccn5dc6ofsed7"]
 
+[ext_resource type="Script" uid="uid://eq4u2v1h502o" path="res://scripts/multiplayer/Objectives/Flag.cs" id="1_8b375"]
 [ext_resource type="Shader" uid="uid://dltpcgmmbjx2x" path="res://shaders/hell_spawner.gdshader" id="1_k8wng"]
 [ext_resource type="Texture2D" uid="uid://3t4unym3xtii" path="res://textures/env/flag_blue.dds" id="1_ycmhk"]
 [ext_resource type="Texture2D" uid="uid://6e0gm6dnaob8" path="res://textures/env/pentagram.png" id="2_8b375"]
@@ -35,6 +36,9 @@ shader_parameter/speed = 1.485
 size = Vector2(31, 47)
 
 [node name="BlueCtfObjective" type="Node2D"]
+light_mask = 2
+visibility_layer = 2
+script = ExtResource("1_8b375")
 
 [node name="FlashyThing" type="Sprite2D" parent="."]
 texture_repeat = 1

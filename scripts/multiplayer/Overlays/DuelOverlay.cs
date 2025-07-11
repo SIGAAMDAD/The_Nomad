@@ -5,8 +5,8 @@ namespace Multiplayer.Overlays {
 	public partial class DuelOverlay : CanvasLayer {
 		public MatchTimeLabel MatchTimeLabel;
 
-		private Label Player1Score;
-		private Label Player2Score;
+		private Label OurScore;
+		private Label TheirScore;
 
 		private Countdown CountdownLabel;
 
@@ -15,8 +15,20 @@ namespace Multiplayer.Overlays {
 		[Signal]
 		public delegate void RoundEndEventHandler();
 
-		public void SetPlayer1Score( int nScore ) => Player1Score.Text = nScore.ToString();
-		public void SetPlayer2Score( int nScore ) => Player2Score.Text = nScore.ToString();
+		public void SetPlayer1Score( int nScore ) {
+			if ( SteamLobby.Instance.IsOwner() ) {
+				OurScore.Text = nScore.ToString();
+			} else {
+				TheirScore.Text = nScore.ToString();
+			}
+		}
+		public void SetPlayer2Score( int nScore ) {
+			if ( SteamLobby.Instance.IsOwner() ) {
+				TheirScore.Text = nScore.ToString();
+			} else {
+				OurScore.Text = nScore.ToString();
+			}
+		}
 		public void SetRemainingTime( float time ) => CountdownLabel.SetTimeLeft( time );
 		public float GetRemainingTime() => CountdownLabel.GetTimeLeft();
 
@@ -49,10 +61,10 @@ namespace Multiplayer.Overlays {
 			MatchTimeLabel.SetMatchTime( 60.0f, Callable.From( OnDuelTimerTimeout ) );
 
 			CountdownLabel = GetNode<Countdown>( "MarginContainer/CountdownLabel" );
-			CountdownLabel.Connect( "CountdownTimeout", Callable.From( OnCountdownTimerTimeout ) );
+			CountdownLabel.Connect( Countdown.SignalName.CountdownTimeout, Callable.From( OnCountdownTimerTimeout ) );
 
-			Player1Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
-			Player2Score = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
+			OurScore = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player1ScoreLabel" );
+			TheirScore = GetNode<Label>( "MarginContainer/VBoxContainer/ScoreContainer/Player2ScoreLabel" );
 		}
 		public override void _Process( double delta ) {
 			base._Process( delta );

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Godot;
 using Multiplayer;
 using Steamworks;
@@ -79,38 +80,29 @@ public partial class LobbyBrowser : Control {
 				break;
 			default:
 				break;
-			}
-			;
+			};
 			MapName = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 		}
 		public bool Refresh() {
 			LoadMetadata();
 			return true;
 		}
-		public int GetMaxMembers() {
-			return SteamMatchmaking.GetLobbyMemberLimit( LobbyId );
-		}
-		public int GetNumMembers() {
-			return SteamMatchmaking.GetNumLobbyMembers( LobbyId );
-		}
-		public GameMode GetGameType() {
-			return GameType;
-		}
-		public Mode.GameMode GetGameMode() {
-			return GameMode;
-		}
-		public string GetMapName() {
-			return MapName;
-		}
-		public string GetMapFileName() {
-			return MultiplayerMapManager.MapCache[ MapName ].FileName;
-		}
-		public string GetLobbyName() {
-			return LobbyName;
-		}
-		public CSteamID GetLobbyID() {
-			return LobbyId;
-		}
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public int GetMaxMembers() => SteamMatchmaking.GetLobbyMemberLimit( LobbyId );
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public int GetNumMembers() => SteamMatchmaking.GetNumLobbyMembers( LobbyId );
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public GameMode GetGameType() => GameType;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public Mode.GameMode GetGameMode() => GameMode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public string GetMapName() => MapName;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public string GetMapFileName() => MultiplayerMapManager.MapCache[ MapName ].FileName;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public string GetLobbyName() => LobbyName;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public CSteamID GetLobbyID() => LobbyId;
 	};
 
 	private Dictionary<CSteamID, LobbyData> LobbyList = new Dictionary<CSteamID, LobbyData>();
@@ -147,6 +139,11 @@ public partial class LobbyBrowser : Control {
 
 	private CheckBox ShowFullServers;
 	private CheckBox GameFilter_LocalWorld;
+	private CheckBox GameFilter_Bloodbath;
+	private CheckBox GameFilter_TeamBrawl;
+	private CheckBox GameFilter_KingOfTheHill;
+	private CheckBox GameFilter_CaptureTheFlag;
+	private CheckBox GameFilter_Duel;
 
 	private Timer RefreshTimer;
 
@@ -225,8 +222,7 @@ public partial class LobbyBrowser : Control {
 			} );
 			LoadThread.Start();
 			break;
-		}
-		;
+		};
 
 		ServerCommandManager.SendCommand( ServerCommandType.ConnectedToLobby );
 		System.GC.KeepAlive( this );
@@ -253,21 +249,19 @@ public partial class LobbyBrowser : Control {
 			JoiningLobbyLabel.Text = "FAILED TO CONNECT";
 			JoiningLobbySpinner.Set( "status", 5 );
 			break;
-		}
-		;
+		};
 	}
 
 	private void MatchmakingLoop() {
 		// apply filters
-		//		SteamMatchmaking.AddRequestLobbyListStringFilter( "map" )
+		SteamMatchmaking.AddRequestLobbyListStringFilter( "gametype", "", ELobbyComparison.k_ELobbyComparisonEqual );
 
 		while ( MatchmakingPhase < 4 ) {
 			lock ( MatchmakingLobbyListReady ) {
 				System.Threading.Monitor.Wait( MatchmakingLobbyListReady );
 			}
 
-			SteamMatchmaking.AddRequestLobbyListDistanceFilter( (ELobbyDistanceFilter)MatchmakingPhase );
-			SteamMatchmaking.RequestLobbyList();
+			MatchmakingPhase++;
 		}
 		Console.PrintLine( "...no open contracts found" );
 	}
@@ -315,20 +309,23 @@ public partial class LobbyBrowser : Control {
 				MapNameLabel.Text = lobby.GetMapName();
 				break;
 			}
-		}
-		;
+		};
 	}
 
-	private bool CanShow( CSteamID lobbyId ) {
-		if ( SteamMatchmaking.GetLobbyMemberLimit( lobbyId ) == SteamMatchmaking.GetNumLobbyMembers( lobbyId ) ) {
-			return ShowFullServers.ButtonPressed;
-		}
-		return true;
-	}
 	private void GetLobbyList() {
 		List<CSteamID> lobbyList = SteamLobby.Instance.GetLobbyList();
 
 		for ( int i = 0; i < lobbyList.Count; i++ ) {
+			//
+			// filter 'em
+			//
+			string gametype = SteamMatchmaking.GetLobbyData( lobbyList[ i ], "gamemode" );
+			int memberCount = SteamMatchmaking.GetNumLobbyMembers( lobbyList[ i ] );
+
+			if ( memberCount == SteamMatchmaking.GetLobbyMemberLimit( lobbyList[ i ] ) && !ShowFullServers.ButtonPressed ) {
+				continue;
+			}
+
 			for ( int j = 0; j < LobbyTable.GetChildCount(); j++ ) {
 				if ( LobbyList.TryGetValue( lobbyList[ i ], out LobbyData lobby ) ) {
 					if ( LobbyTable.FindChild( lobby.Name ) != null ) {
@@ -340,7 +337,7 @@ public partial class LobbyBrowser : Control {
 			}
 			LobbyData data = new LobbyData( lobbyList[ i ] );
 			LobbyList.TryAdd( lobbyList[ i ], data );
-			LobbyTable.CallDeferred( "add_child", data );
+			LobbyTable.CallDeferred( MethodName.AddChild, data );
 		}
 
 		if ( MatchmakingThread.IsAlive ) {
@@ -350,11 +347,25 @@ public partial class LobbyBrowser : Control {
 		}
 	}
 	private void OnRefreshButtonPressed() {
+		if ( GameFilter_Bloodbath.ButtonPressed ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", "Bloodbath", ELobbyComparison.k_ELobbyComparisonEqual );
+		}
+		if ( GameFilter_TeamBrawl.ButtonPressed ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", "TeamBrawl", ELobbyComparison.k_ELobbyComparisonEqual );
+		}
+		if ( GameFilter_CaptureTheFlag.ButtonPressed ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", "CaptureTheFlag", ELobbyComparison.k_ELobbyComparisonEqual );
+		}
+		if ( GameFilter_KingOfTheHill.ButtonPressed ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", "KingOfTheHill", ELobbyComparison.k_ELobbyComparisonEqual );
+		}
+		if ( GameFilter_Duel.ButtonPressed ) {
+			SteamMatchmaking.AddRequestLobbyListStringFilter( "gamemode", "Duel", ELobbyComparison.k_ELobbyComparisonEqual );
+		}
 		SteamLobby.Instance.OpenLobbyList();
-		GetLobbyList();
 	}
 	private void OnHostGameButtonPressed() {
-		EmitSignal( "OnHostGame" );
+		EmitSignalOnHostGame();
 	}
 	private void OnMatchmakeButtonPressed() {
 		MatchmakingSpinner.Show();
@@ -411,13 +422,15 @@ public partial class LobbyBrowser : Control {
 	public override void _Ready() {
 		HostGame = GetNode<Button>( "ControlBar/HostButton" );
 		HostGame.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		HostGame.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		HostGame.Connect( "pressed", Callable.From( OnHostGameButtonPressed ) );
+		HostGame.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		HostGame.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		HostGame.Connect( Button.SignalName.Pressed, Callable.From( OnHostGameButtonPressed ) );
 
 		RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
 		RefreshLobbies.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		RefreshLobbies.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		RefreshLobbies.Connect( "pressed", Callable.From( OnRefreshButtonPressed ) );
+		RefreshLobbies.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		RefreshLobbies.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		RefreshLobbies.Connect( Button.SignalName.Pressed, Callable.From( OnRefreshButtonPressed ) );
 
 		JoiningLobbyContainer = GetNode<HBoxContainer>( "JoiningLobbyContainer" );
 		JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyContainer/JoiningLobbyLabel" );
@@ -425,12 +438,15 @@ public partial class LobbyBrowser : Control {
 
 		Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
 		Matchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		Matchmake.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		Matchmake.Connect( "pressed", Callable.From( OnMatchmakeButtonPressed ) );
+		Matchmake.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		Matchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		Matchmake.Connect( Button.SignalName.Pressed, Callable.From( OnMatchmakeButtonPressed ) );
 
 		CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
 		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-		CancelMatchmake.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		CancelMatchmake.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		CancelMatchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		CancelMatchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
 
@@ -438,7 +454,7 @@ public partial class LobbyBrowser : Control {
 		MatchmakingLabel.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
 		MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
-		MatchmakingTimer.Connect( "timeout", Callable.From( OnMatchmakingLabelTimerTimeout ) );
+		MatchmakingTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMatchmakingLabelTimerTimeout ) );
 
 		LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
 
@@ -452,14 +468,16 @@ public partial class LobbyBrowser : Control {
 		GameModeLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/Label" );
 
 		Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
-		JoinButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		JoinButton.Connect( "pressed", Callable.From( OnJoinButtonPressed ) );
+		JoinButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		JoinButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		JoinButton.Connect( Button.SignalName.Pressed, Callable.From( OnJoinButtonPressed ) );
 
 		LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
 		JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
 
 		ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
-		ShowFullServers.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
+		ShowFullServers.Connect( CheckBox.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ShowFullServers.Connect( CheckBox.SignalName.Pressed, Callable.From( UIAudioManager.OnButtonPressed ) );
 
 		MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
@@ -468,26 +486,32 @@ public partial class LobbyBrowser : Control {
 		RefreshTimer.WaitTime = 0.5f;
 		RefreshTimer.OneShot = false;
 		RefreshTimer.Autostart = true;
-		RefreshTimer.Connect( "timeout", Callable.From( OnRefreshButtonPressed ) );
+		RefreshTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnRefreshButtonPressed ) );
 		AddChild( RefreshTimer );
 
 		LobbyJoinedCallback = Callable.From<ulong>( OnLobbyJoined );
 		LobbyConnectionStatusChangedCallback = Callable.From<int>( OnConnectionStatusChanged );
 		LobbyListUpdatedCallback = Callable.From( GetLobbyList );
 
-		SteamLobby.Instance.Connect( "LobbyJoined", LobbyJoinedCallback );
-		SteamLobby.Instance.Connect( "LobbyConnectionStatusChanged", LobbyConnectionStatusChangedCallback );
-		SteamLobby.Instance.Connect( "LobbyListUpdated", LobbyListUpdatedCallback );
+		SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyJoined, LobbyJoinedCallback );
+		SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyConnectionStatusChanged, LobbyConnectionStatusChangedCallback );
+		SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyListUpdated, LobbyListUpdatedCallback );
 
 		SteamLobby.Instance.SetPhysicsProcess( true );
+
+		GameFilter_Bloodbath = GetNode<CheckBox>( "FilterList/VBoxContainer/BloodbathCheckBox" );
+		GameFilter_TeamBrawl = GetNode<CheckBox>( "FilterList/VBoxContainer/TeamBrawlCheckBox" );
+		GameFilter_CaptureTheFlag = GetNode<CheckBox>( "FilterList/VBoxContainer/CaptureTheFlagCheckBox" );
+		GameFilter_KingOfTheHill = GetNode<CheckBox>( "FilterList/VBoxContainer/KingOfTheHillCheckBox" );
+		GameFilter_Duel = GetNode<CheckBox>( "FilterList/VBoxContainer/DuelCheckBox" );
 
 		Instance = this;
 	}
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		SteamLobby.Instance.Disconnect( "LobbyJoined", LobbyJoinedCallback );
-		SteamLobby.Instance.Disconnect( "LobbyConnectionStatusChanged", LobbyConnectionStatusChangedCallback );
-		SteamLobby.Instance.Disconnect( "LobbyListUpdated", LobbyListUpdatedCallback );
+		SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyJoined, LobbyJoinedCallback );
+		SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyConnectionStatusChanged, LobbyConnectionStatusChangedCallback );
+		SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyListUpdated, LobbyListUpdatedCallback );
 	}
 };

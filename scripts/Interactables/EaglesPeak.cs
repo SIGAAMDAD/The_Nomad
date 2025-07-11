@@ -17,19 +17,19 @@ public partial class EaglesPeak : InteractionItem {
 		RemoveChild( GetChild( GetChildCount() - 1 ) );
 	}
 	public void OnYesButtonPressed() {
+		/*
 		AudioStreamPlayer audio = new AudioStreamPlayer();
 		Interactor.AddChild( audio );
 		audio.Stream = ResourceCache.LeapOfFaithSfx;
-		audio.Connect( "finished", Callable.From( () => {
+		audio.Connect( AudioStreamPlayer.SignalName.Finished, Callable.From( () => {
 			Interactor.RemoveChild( audio );
 			audio.QueueFree();
 		} ) );
 		audio.Play();
+		*/
 
-		CanvasLayer transition = ResourceLoader.Load<PackedScene>( "res://scenes/menus/fade.tscn" ).Instantiate<CanvasLayer>();
-		AddChild( transition );
-		transition.Call( "transition" );
-		transition.Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
+		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 
 		Interactor.GlobalPosition = Destination.GlobalPosition;
 	}

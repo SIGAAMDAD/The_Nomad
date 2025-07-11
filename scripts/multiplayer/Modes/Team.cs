@@ -7,9 +7,13 @@ namespace Multiplayer.Modes {
 	public partial class Team : Node {
 		[Export]
 		private Spawner[] Spawns;
+		[Export]
+		private int Index;
 
 		private List<Entity> Members;
 		private NetworkSyncObject SyncObject = new NetworkSyncObject( 24 );
+
+		public int GetTeamIndex() => Index;
 
 		private void SendSpawnCommand( Entity player, Spawner spawn ) {
 			SyncObject.Write( (byte)SteamLobby.MessageType.ServerCommand );
