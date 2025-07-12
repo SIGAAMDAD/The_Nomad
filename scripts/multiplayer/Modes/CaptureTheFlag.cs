@@ -29,7 +29,7 @@ namespace Multiplayer.Modes {
 
 		private System.Threading.Thread WaitThread;
 
-		private List<int, System.Action> ;
+//		private List<int, System.Action> ;
 
 		private void OnFlagReturned( Flag flag, Entity source ) {
 		}

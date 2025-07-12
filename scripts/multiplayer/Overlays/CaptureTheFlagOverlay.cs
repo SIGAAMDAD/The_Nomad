@@ -1,5 +1,4 @@
 using Godot;
-using System.Text.RegularExpressions;
 
 namespace Multiplayer.Overlays {
 	public partial class CaptureTheFlagOverlay : CanvasLayer {
@@ -48,7 +47,7 @@ namespace Multiplayer.Overlays {
 			base._Ready();
 
 			MatchTimeLabel = GetNode<MatchTimeLabel>( "MarginContainer/VBoxContainer/MatchTimeLabel" );
-			MatchTimeLabel.SetMatchTime( 3000.0f, Callable.From( EmitSignalGameEnd ) );
+			MatchTimeLabel.SetMatchTime( 180.0f, Callable.From( EmitSignalGameEnd ) );
 
 			CountdownLabel = GetNode<Countdown>( "MarginContainer/CountdownLabel" );
 			CountdownLabel.Connect( Countdown.SignalName.CountdownTimeout, Callable.From( OnCountdownTimerTimeout ) );

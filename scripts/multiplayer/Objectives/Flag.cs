@@ -54,7 +54,7 @@ namespace Multiplayer.Objectives {
 					FlashyThing.Material.Set( "shader_parameter/highlight_strength", 0.0f );
 					entity.Die += OnCarrierDie;
 					if ( entity is Player player && player != null ) {
-						player.Die += 
+//						player.Die += 
 					} else if ( entity is NetworkPlayer node && node != null ) {
 						SendPickupPacket();
 					}

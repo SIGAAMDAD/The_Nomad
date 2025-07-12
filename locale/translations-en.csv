@@ -125,6 +125,9 @@ TOO_MUCH_ENCUMBRANCE,CARRYING TOO MUCH!
 PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME,Too Fucking Angry To Die
 PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION,"Become literally too angry to die... When you die, if you have at least a quarter filled rage bar, you lose all of it and get full health back."
 
+TOTEM_OF_REMEMBRANCE_NAME,"Totem of Remembrance"
+TOTEM_OF_REMEMBRANCE_DESCRIPTION,"Some memorobillia of Raio's fallen wife from a long time ago."
+
 CHALLENGE0_NAME,"The Golden Gate Massacre"
 CHALLENGE0_DESCRIPTION,"As the Galakan miltia grew weary and their forces dwindled, the Golden Gates, once a proud display of power and wealth, has become a crumbling mess overtaken by the Sortorian military."
 CHALLENGE0_OBJECTIVE,"Kill all enemies to exit the city in the shortest time possible."

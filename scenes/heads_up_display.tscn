@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=70 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://b3cos6eshcvnp" path="res://scripts/PlayerSystem/heads_up_display.gd" id="1_xw6ac"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -38,6 +38,7 @@
 [ext_resource type="Texture2D" uid="uid://dmnu5c28dq4e" path="res://textures/emote_praisethesun.png" id="28_xw6ac"]
 [ext_resource type="Texture2D" uid="uid://dm30q4vnh2cly" path="res://textures/emote_surprised.png" id="29_kwx6t"]
 [ext_resource type="Texture2D" uid="uid://3q4l73y6mcqp" path="res://textures/emote_pointing.png" id="30_dg2ec"]
+[ext_resource type="Script" uid="uid://38yi7opcv7qo" path="res://scripts/PlayerSystem/UserInterface/meliora.gd" id="33_kwx6t"]
 [ext_resource type="Script" uid="uid://b5rntv1ygu3xf" path="res://scripts/PlayerSystem/checkpoint_interactor.gd" id="39_kwx6t"]
 [ext_resource type="Script" uid="uid://boo38fnhr5awi" path="res://scripts/PlayerSystem/UserInterface/storage_container.gd" id="40_xw6ac"]
 [ext_resource type="Script" uid="uid://bomm36bff65ti" path="res://scripts/PlayerSystem/UserInterface/warp_container.gd" id="41_kwx6t"]
@@ -868,6 +869,11 @@ layout_mode = 2
 [node name="DateTimeLabel" type="Label" parent="CheckpointContainer/VBoxContainer/MarginContainer/SavedGamesContainer/Cloner"]
 layout_mode = 2
 
+[node name="MelioraContainer" type="MarginContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("33_kwx6t")
+
 [node name="StorageContainer" type="MarginContainer" parent="."]
 visible = false
 custom_minimum_size = Vector2(640, 0)
@@ -1264,6 +1270,7 @@ layout_mode = 2
 text = "USE_DOOR"
 
 [node name="JumpContainer" type="MarginContainer" parent="."]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

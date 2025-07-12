@@ -6,12 +6,19 @@ using Steamworks;
 
 namespace Multiplayer.Modes {
 	public partial class Bloodbath : Mode {
+		private struct Ranking {
+			public CSteamID Id = CSteamID.Nil;
+			public int Score = 0;
+
+			public Ranking() {
+			}
+		};
+
 		public static readonly int MinPlayers = 1;
 		public static readonly int MaxPlayers = 16;
 
-		private Dictionary<CSteamID, int> Scores = new Dictionary<CSteamID, int>();
-		private Dictionary<CSteamID, int> ServerScores = new Dictionary<CSteamID, int>();
-		private List<CSteamID> Scoreboard = new List<CSteamID>();
+		private Dictionary<CSteamID, int> Scoreboard = new Dictionary<CSteamID, int>( SteamLobby.MAX_LOBBY_MEMBERS );
+		private Dictionary<CSteamID, int> ServerScores = new Dictionary<CSteamID, int>( SteamLobby.MAX_LOBBY_MEMBERS );
 		private Player ThisPlayer;
 
 		private int MaxScore = 15;
@@ -28,9 +35,9 @@ namespace Multiplayer.Modes {
 		private void OnPlayerScore( Entity source, Entity target ) {
 			int score = 0;
 			if ( source is Player player && player != null ) {
-				score = Scores[ player.MultiplayerData.Id ]++;
+				score = Scoreboard[ player.MultiplayerData.Id ]++;
 			} else if ( source is NetworkPlayer networkNode && networkNode != null ) {
-				score = Scores[ networkNode.MultiplayerData.Id ]++;
+				score = Scoreboard[ networkNode.MultiplayerData.Id ]++;
 			}
 			SendPacket();
 			if ( score >= MaxScore ) {
@@ -41,34 +48,56 @@ namespace Multiplayer.Modes {
 		}
 
 		public override void SpawnPlayer( Entity player ) {
+			if ( !SteamLobby.Instance.IsOwner() ) {
+				return;
+			}
+			player.Die += OnPlayerScore;
 		}
 
 		private void SendPacket() {
-			byte changedBits = 0;
-			int index = 0;
-			foreach ( var score in Scores ) {
+			ushort changedBits = 0;
+			ushort index = 0;
+			foreach ( var score in Scoreboard ) {
 				// TODO: delta compression
 				if ( score.Value != ServerScores[ score.Key ] ) {
-					changedBits |= (byte)index;
+					changedBits |= index;
 				}
 				index++;
 			}
 			SyncObject.Write( changedBits );
-			foreach ( var score in Scores ) {
-				SyncObject.Write( (ulong)score.Key );
-				SyncObject.WritePackedInt( score.Value );
+			foreach ( var score in Scoreboard ) {
+				if ( score.Value != ServerScores[ score.Key ] ) {
+					SyncObject.Write( (ulong)score.Key );
+					SyncObject.WritePackedInt( score.Value );
+
+					ServerScores[ score.Key ] = score.Value;
+				}
 			}
 		}
 		private void ReceivePacket( System.IO.BinaryReader reader ) {
 			SyncObject.BeginRead( reader );
-			for ( int i = 0; i < Scores.Count; i++ ) {
-				Scores[ (CSteamID)SyncObject.ReadUInt64() ] = SyncObject.ReadPackedInt();
+
+			ushort changedBits = SyncObject.ReadUInt16();
+			for ( int i = 0; i < Scoreboard.Count; i++ ) {
+				if ( ( changedBits & (ushort)i ) != 0 ) {
+					Scoreboard[ (CSteamID)SyncObject.ReadUInt64() ] = SyncObject.ReadPackedInt();
+				}
 			}
 		}
 
 		public override void OnPlayerJoined( Entity player ) {
+			if ( player is Player self && self != null ) {
+				Scoreboard.TryAdd( self.MultiplayerData.Id, 0 );
+			} else if ( player is NetworkPlayer networkNode && networkNode != null ) {
+				Scoreboard.TryAdd( networkNode.MultiplayerData.Id, 0 );
+			}
 		}
 		public override void OnPlayerLeft( Entity player ) {
+			if ( player is Player self && self != null ) {
+				Scoreboard.Remove( self.MultiplayerData.Id );
+			} else if ( player is NetworkPlayer networkNode && networkNode != null ) {
+				Scoreboard.Remove( networkNode.MultiplayerData.Id );
+			}
 		}
 
 		public override bool HasTeams() => false;
@@ -77,9 +106,11 @@ namespace Multiplayer.Modes {
 		public override void _Ready() {
 			base._Ready();
 
-			MaxScore = Convert.ToInt32( SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "RequiredScore" ) );
+			//			MaxScore = Convert.ToInt32( SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "RequiredScore" ) );
 
-			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+			if ( !SteamLobby.Instance.IsOwner() ) {
+				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+			}
 		}
     };
 };

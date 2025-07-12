@@ -1,14 +1,15 @@
 using Godot;
 using System;
 using PlayerSystem;
+using PlayerSystem.Perks;
+using PlayerSystem.Runes;
+using PlayerSystem.Totems;
 using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
 using Renown;
 using Renown.World;
 using System.Diagnostics;
-using PlayerSystem.Perks;
-using System.Text;
 using DialogueManagerRuntime;
 
 public enum WeaponSlotIndex : int {
@@ -295,6 +296,7 @@ public partial class Player : Entity {
 	private HashSet<Rune> UnlockedRunes;
 	private HashSet<WorldArea> DiscoveredAreas;
 	private Godot.Collections.Dictionary<string, string> JournalCache;
+	public Totem Totem { get; private set; }
 
 	private float Rage = 60.0f;
 	private float Sanity = 60.0f;
@@ -672,6 +674,23 @@ public partial class Player : Entity {
 		}
 	}
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
+	}
+
+	public bool HasPerk( string name ) {
+		foreach ( var perk in UnlockedBoons ) {
+			if ( perk.Name == name ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public bool HasRune( string name ) {
+		foreach ( var rune in UnlockedRunes ) {
+			if ( rune.Name == name ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void IncreaseBlood( float nAmount ) {
