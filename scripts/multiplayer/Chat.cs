@@ -1,7 +1,10 @@
 using Godot;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Multiplayer {
 	public partial class Chat : CanvasLayer {
@@ -10,6 +13,53 @@ namespace Multiplayer {
 		private RichTextLabel FullText;
 		private RichTextLabel RecentText;
 		private LineEdit Message;
+
+		private static readonly HashSet<string> BlockedTerms = new HashSet<string>( StringComparer.OrdinalIgnoreCase ) {
+			"niger",
+			"gook",
+			"kike",
+			"spic",
+			"chink",
+
+			"cunt",
+			"bitch",
+			"slut",
+
+			"fagot",
+			"dyke",
+			"tranny"
+		};
+
+		private static string FilterText( string input ) {
+			if ( string.IsNullOrWhiteSpace( input ) ) {
+				return input;
+			}
+
+			return Regex.Replace( input, @"\S+", match => {
+				string token = match.Value;
+				string normalized = NormalizeToken( input );
+
+				return BlockedTerms.Contains( normalized ) ? new string( '*', token.Length ) : token;
+			} );
+		}
+		private static string NormalizeToken( string text ) {
+			string normalized = text.ToLowerInvariant();
+
+			normalized = Regex.Replace( normalized, @"[^a-z]", "" );
+
+			normalized = Regex.Replace( normalized, @"[1!]i", "1" );
+			normalized = Regex.Replace( normalized, @"[3]e", "b" );
+			normalized = Regex.Replace( normalized, @"[4]a", "h" );
+			normalized = Regex.Replace( normalized, @"[@]a", "o" );
+			normalized = Regex.Replace( normalized, @"[5]s", "s" );
+			normalized = Regex.Replace( normalized, @"[7]t", "t" );
+
+			normalized = Regex.Replace( normalized, @"(.)\1{2,}", "$1" );
+
+			normalized = Regex.Replace( normalized, "[aeiou]", "" );
+
+			return normalized;
+		}
 
 		private const string PLACEHOLDER = "PRESS '/' TO BEGIN TYPING";
 
@@ -72,7 +122,8 @@ namespace Multiplayer {
 				}
 			}
 			if ( Input.IsActionJustReleased( "chat_send" ) ) {
-				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), Message.Text.ToAsciiBuffer(), Message.Text.Length );
+				string messageText = FilterText( Message.Text );
+				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), messageText.ToAsciiBuffer(), Message.Text.Length );
 				Message.Clear();
 				Message.PlaceholderText = PLACEHOLDER;
 				Message.ReleaseFocus();

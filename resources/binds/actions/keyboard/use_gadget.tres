@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://cau5yafbqa0my"]
+
+[ext_resource type="Script" uid="uid://cluhc11vixkf1" path="res://addons/guide/guide_action.gd" id="1_grh7i"]
+
+[resource]
+script = ExtResource("1_grh7i")
+name = &"use_gadget"
+action_value_type = 0
+block_lower_priority_actions = true
+emit_as_godot_actions = false
+is_remappable = true
+display_name = "Use Arm Gadget"
+display_category = "Combat"
+metadata/_custom_type_script = "uid://cluhc11vixkf1"

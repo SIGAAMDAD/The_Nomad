@@ -865,7 +865,7 @@ sources/0 = SubResource("TileSetAtlasSource_jr0op")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_abtrs"]
 size = Vector2(836.5, 437.5)
 
-[node name="World" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
+[node name="World2" type="Node2D" node_paths=PackedStringArray("ThisPlayer", "PlayerList")]
 scale = Vector2(2, 2)
 script = ExtResource("1_7mv7g")
 ThisPlayer = NodePath("Network/Players/Player0")

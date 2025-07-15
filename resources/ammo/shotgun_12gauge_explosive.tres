@@ -2,7 +2,7 @@
 
 [ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="1_wjiem"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="2_whjk0"]
-[ext_resource type="Texture2D" uid="uid://cw22rofuj7w6a" path="res://textures/env/icona_shells.dds" id="3_taf84"]
+[ext_resource type="Texture2D" uid="uid://b1bw4ayfcg6jm" path="res://textures/env/icona_shells_explosive.png" id="3_wjiem"]
 [ext_resource type="Texture2D" uid="uid://bdla1otimlcqm" path="res://textures/env/bullet_casings/gauge12_shell.png" id="4_sxbu1"]
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="5_tpayr"]
 
@@ -14,7 +14,7 @@ point_count = 3
 id = "AMMO_12_GAUGE"
 max_stack = 64
 name = "12 Gauge"
-icon = ExtResource("3_taf84")
+icon = ExtResource("3_wjiem")
 weight = 2.25
 properties = {
 "casing_icon": ExtResource("4_sxbu1"),

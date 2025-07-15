@@ -159,4 +159,6 @@ public partial class DefaultSettings : Resource {
 	public bool NetworkingEnabled { get; private set; } = true;
 	[Export]
 	public bool FriendsOnly { get; private set; } = false;
+	[Export]
+	public bool CODLobbies { get; private set; } = false;
 };

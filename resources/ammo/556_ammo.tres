@@ -1,7 +1,8 @@
-[gd_resource type="ItemDefinition" load_steps=6 format=3 uid="uid://cnf43mfuhif3j"]
+[gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://cnf43mfuhif3j"]
 
 [ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="1_g51x3"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="2_6bkxp"]
+[ext_resource type="Texture2D" uid="uid://btfxh2nfg86u2" path="res://textures/env/icona_556.png" id="3_1afd6"]
 [ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="3_6bkxp"]
 [ext_resource type="Texture2D" uid="uid://do4v3ki34jgbj" path="res://textures/env/bullet_casings/rifle_shell.png" id="4_spnre"]
 
@@ -13,6 +14,7 @@ point_count = 2
 id = "AMMO_556"
 max_stack = 256
 name = "5.56mm"
+icon = ExtResource("3_1afd6")
 properties = {
 "casing_icon": ExtResource("4_spnre"),
 "damage": 70.5,

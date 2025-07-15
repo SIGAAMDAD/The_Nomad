@@ -586,7 +586,7 @@ namespace Renown.Thinkers {
 						CallDeferred( MethodName.ResetAttackMeter );
 
 						Tween Tweener = CreateTween();
-						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, PropertyName.AttackMeterProgress, AttackMeterDone.X, AimTimer.WaitTime );
+						Tweener.CallDeferred( Tween.MethodName.TweenProperty, this, "AttackMeterProgress", AttackMeterDone.X, AimTimer.WaitTime );
 						Tweener.CallDeferred( Tween.MethodName.Connect, Tween.SignalName.Finished, Callable.From( AttackMeter.Hide ) );
 
 						AimTimer.CallDeferred( Timer.MethodName.Start );

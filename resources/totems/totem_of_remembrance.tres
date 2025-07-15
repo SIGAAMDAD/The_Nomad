@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c4t5f7lfdsmux"]
+
+[ext_resource type="Script" uid="uid://djcrxbedf0rii" path="res://scripts/PlayerSystem/Totems/Totem.cs" id="1_vu6sd"]
+
+[resource]
+script = ExtResource("1_vu6sd")
+Name = &"TOTEM_OF_REMEMBRANCE_NAME"
+Description = &"TOTEM_OF_REMEMBRANCE_DESCRIPTION"

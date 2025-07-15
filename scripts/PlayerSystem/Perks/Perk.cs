@@ -5,9 +5,9 @@ namespace PlayerSystem.Perks {
 		[Export]
 		protected Texture2D Icon;
 		[Export]
-		public StringName Name { get; private set; }
+		public StringName Name { get; protected set; }
 		[Export]
-		public StringName Description { get; private set; }
+		public StringName Description { get; protected set; }
 		
 		protected Player User;
 

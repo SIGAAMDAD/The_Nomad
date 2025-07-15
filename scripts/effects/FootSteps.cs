@@ -48,7 +48,7 @@ public partial class FootSteps : Node {
 		Steps.Enqueue( transform );
 		AudioStream stream = GroundType switch {
 			GroundMaterialType.Stone => ResourceCache.MoveStoneSfx[ RNJesus.IntRange( 0, ResourceCache.MoveStoneSfx.Length - 1 ) ],
-			GroundMaterialType.Sand => ResourceCache.MoveSandSfx[ RNJesus.IntRange( 0, ResourceCache.MoveSandSfx.Length - 1 ) ],
+			GroundMaterialType.Sand => ResourceCache.PlayerMoveSandSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerMoveSandSfx.Length - 1 ) ],
 			GroundMaterialType.Water => ResourceCache.MoveWaterSfx[ RNJesus.IntRange( 0, ResourceCache.MoveWaterSfx.Length - 1 ) ],
 			GroundMaterialType.Wood => ResourceCache.MoveWoodSfx[ RNJesus.IntRange( 0, ResourceCache.MoveWoodSfx.Length - 1 ) ],
 			_ => ResourceCache.MoveGravelSfx[ RNJesus.IntRange( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ],

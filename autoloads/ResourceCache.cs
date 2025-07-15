@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Threading;
 using DialogueManagerRuntime;
 using Godot;
-using Renown.World;
 
 public class ResourceCache {
 	#region Mob Sound Effects
@@ -79,6 +78,12 @@ public class ResourceCache {
 	public static AudioStream DashExplosion { get; private set; }
 	public static AudioStream SlowMoBeginSfx { get; private set; }
 	public static AudioStream SlowMoEndSfx { get; private set; }
+
+	public static AudioStream[] PlayerMoveGravelSfx { get; private set; }
+	public static AudioStream[] PlayerMoveSandSfx { get; private set; }
+	public static AudioStream[] PlayerMoveStoneSfx { get; private set; }
+	public static AudioStream[] PlayerMoveWoodSfx { get; private set; }
+	public static AudioStream[] PlayerMoveWaterSfx { get; private set; }
 	#endregion
 
 	public static Texture2D Light { get; private set; }
@@ -98,6 +103,7 @@ public class ResourceCache {
 	public static Resource[] ArmAngleActionGamepad { get; private set; }
 	public static Resource[] UseBothHandsActionsGamepad { get; private set; }
 	public static Resource[] InteractActionGamepad { get; private set; }
+	public static Resource[] UseGadgetActionGamepad { get; private set; }
 
 	// controller exclusive binds
 	public static Resource[] OpenWeaponModeMenu { get; private set; }
@@ -115,15 +121,16 @@ public class ResourceCache {
 	public static Resource ArmAngleActionKeyboard { get; private set; }
 	public static Resource UseBothHandsActionKeyboard { get; private set; }
 	public static Resource InteractActionKeyboard { get; private set; }
+	public static Resource UseGadgetActionKeyboard { get; private set; }
 
 	public static Resource KeyboardInputMappings;
 	public static Resource GamepadInputMappings;
 
-	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 1024, 256 );
-	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 1024, 256 );
-	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 1024, 256 );
-	private static ConcurrentDictionary<StringName, PackedScene> SceneCache = new ConcurrentDictionary<StringName, PackedScene>( 1024, 256 );
-	private static ConcurrentDictionary<StringName, Resource> ResourceList = new ConcurrentDictionary<StringName, Resource>( 1024, 256 );
+	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 256, 256 );
+	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 256, 256 );
+	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 256, 256 );
+	private static ConcurrentDictionary<StringName, PackedScene> SceneCache = new ConcurrentDictionary<StringName, PackedScene>( 256, 256 );
+	private static ConcurrentDictionary<StringName, Resource> ResourceList = new ConcurrentDictionary<StringName, Resource>( 256, 256 );
 	private static Dictionary<string, SpriteFrames> SpriteFramesCache = new Dictionary<string, SpriteFrames>( 256 );
 
 	public static bool Initialized = false;
@@ -298,6 +305,7 @@ public class ResourceCache {
 		UseBothHandsActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_both_hands.tres" );
 		ArmAngleActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/arm_angle.tres" );
 		InteractActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/interact.tres" );
+		UseGadgetActionKeyboard ??= ResourceLoader.Load( "res://resources/binds/actions/keyboard/use_gadget.tres" );
 	}
 
 	public static void Cache( Node world, Thread SceneLoadThread ) {
@@ -306,7 +314,7 @@ public class ResourceCache {
 		SceneLoadThread?.Start();
 
 		long[] WorkerThreads = [
-			WorkerThreadPool.AddTask( Callable.From( () => { world.CallDeferred( "ApplyShadowQuality" ); } ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => { world.CallDeferred( LevelData.MethodName.ApplyShadowQuality ); } ) ),
 			WorkerThreadPool.AddTask( Callable.From( () => {
 				TargetSpotted = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),
@@ -490,6 +498,11 @@ public class ResourceCache {
 				MoveStoneSfx = new AudioStream[ 4 ];
 				MoveWoodSfx = new AudioStream[ 4 ];
 
+				PlayerMoveGravelSfx = new AudioStream[ 4 ];
+				PlayerMoveSandSfx = new AudioStream[ 4 ];
+				PlayerMoveWoodSfx = new AudioStream[ 4 ];
+				PlayerMoveStoneSfx = new AudioStream[ 4 ];
+
 				System.Threading.Tasks.Parallel.For( 0, 3, ( index ) => {
 					PlayerPainSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/pain" + index.ToString() + ".ogg" );
 				} );
@@ -516,6 +529,14 @@ public class ResourceCache {
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater0.ogg" ),
 					ResourceLoader.Load<AudioStream>( "res://sounds/env/moveWater1.ogg" ),
 				];
+
+				// bass-boosted movement sfx
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					PlayerMoveSandSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/move_sand_" + index.ToString() + ".ogg" );
+				} );
+				System.Threading.Tasks.Parallel.For( 0, 4, ( index ) => {
+					PlayerMoveGravelSfx[ index ] = ResourceLoader.Load<AudioStream>( "res://sounds/player/moveGravel" + index.ToString() + ".ogg" );
+				} );
 
 				DashSfx = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/player/jumpjet_burn_v2_m_01.wav" ),

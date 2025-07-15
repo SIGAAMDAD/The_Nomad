@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://w3nwgyanrgiq"]
+
+[ext_resource type="Script" uid="uid://cpdb4soxei0vx" path="res://scripts/PlayerSystem/ArmAttachments/GrapplingHook.cs" id="1_ysp55"]
+[ext_resource type="Texture2D" uid="uid://byxrbx0lkjc5n" path="res://textures/env/grapple_rope.dds" id="2_1l3v8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_whjqp"]
+radius = 7.0
+
+[node name="GrappleHook" type="Node2D"]
+script = ExtResource("1_ysp55")
+
+[node name="Rope" type="Line2D" parent="."]
+width = 4.0
+default_color = Color(0.85098, 0.847059, 0.839216, 1)
+texture = ExtResource("2_1l3v8")
+texture_mode = 1
+
+[node name="Hook" type="Area2D" parent="."]
+collision_layer = 12
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hook"]
+shape = SubResource("CircleShape2D_whjqp")
+
+[node name="CooldownTimer" type="Timer" parent="."]
+wait_time = 5.5
+one_shot = true

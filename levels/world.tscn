@@ -16321,7 +16321,6 @@ Prev = NodePath("../PatrolRoute2")
 Next = NodePath("../PatrolRoute0")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/RockyBastardsCamp"]
-build_mode = 1
 polygon = PackedVector2Array(-25, -229, -815, -126, -796, 660, 1997, 745, 2001, 126, 1508, -209)
 
 [node name="DeadBandit" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp"]
@@ -17074,13 +17073,11 @@ Type = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
 position = Vector2(-1, 58.5)
-build_mode = 1
 polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342, 3383, -91, 3383, 197, 3655, 197, 3657, 227, 3680.5, 262, 3683.5, 297, 3679.5, 473, 3669, 501, 3343, 594.5, 4142.5, 600.5, 3762.5, 503, 3759.5, 470.5, 3765.5, 300, 3773, 262.5, 3780.5, 249.5, 3789.5, 242, 3811.5, 227, 3815, 197, 4999, 197, 4999, -91, 3383, -91, -1453, 1342)
 
 [node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
 modulate = Color(0, 0, 0, 1)
 position = Vector2(-1, 57)
-build_mode = 1
 polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342)
 disabled = true
 

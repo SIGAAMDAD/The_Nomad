@@ -147,3 +147,6 @@ OPEN_DOOR,"OPEN DOOR"
 USE_DOOR,"USE DOOR"
 
 QUEST0_NOTEBOOK,"I've gotta take the mountain path and get to Kirosla's Estate to the East, then eliminate him for the bounty."
+
+SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_DIRECT,"Found a strange geezer ranting out bandit issues. Said he uses the name Murstar... I've heard that name somewhere."
+SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_RUMOR,"Heard there was an old gunslinger on the outskirts of Sortior causing issues for the bandit clans. Should I see what they're up to?"

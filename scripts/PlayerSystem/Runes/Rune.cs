@@ -3,9 +3,9 @@ using Godot;
 namespace PlayerSystem.Runes {
 	public abstract partial class Rune : Resource {
 		[Export]
-		public StringName Name { get; private set; }
+		public StringName Name { get; protected set; }
 		[Export]
-		public Texture2D Icon { get; private set; }
+		public Texture2D Icon { get; protected set; }
 
 		protected Player Owner;
 

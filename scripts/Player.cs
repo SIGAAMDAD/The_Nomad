@@ -11,6 +11,7 @@ using Renown;
 using Renown.World;
 using System.Diagnostics;
 using DialogueManagerRuntime;
+using PlayerSystem.ArmAttachments;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -142,6 +143,8 @@ public partial class Player : Entity {
 	private CanvasLayer HUD;
 	[Export]
 	private Checkpoint StartingCheckpoint;
+	[Export]
+	private ArmAttachment ArmAttachment;
 
 	[ExportCategory( "Start" )]
 	[Export]
@@ -730,9 +733,7 @@ public partial class Player : Entity {
 
 	public override void SetLocation( in WorldArea location ) {
 		if ( location != Location ) {
-			if ( !DiscoveredAreas.Contains( location ) ) {
-				DiscoveredAreas.Add( location );
-			}
+			DiscoveredAreas.Add( location );
 			EmitSignalLocationChanged( location );
 		}
 
@@ -820,7 +821,7 @@ public partial class Player : Entity {
 		Shadows.MoveChild( backShadow, 0 );
 		Shadows.MoveChild( frontShadow, 3 );
 	}
-	private void GetArmAngle() {
+	public float GetArmAngle() {
 		Godot.Vector2 mousePosition;
 
 		if ( (int)SettingsData.GetWindowMode() >= 2 ) {
@@ -840,7 +841,9 @@ public partial class Player : Entity {
 		} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
 			FlipSpriteLeft();
 		}
+		return ArmAngle;
 	}
+
 	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
 	public Arm GetLastUsedArm() => LastUsedArm;
 	public void SetLastUsedArm( in Arm arm ) => LastUsedArm = arm;
@@ -1811,6 +1814,12 @@ public partial class Player : Entity {
 
 		InputVelocity = MoveAction.Get( "value_axis_2d" ).AsVector2();
 	}
+	private void OnUseGadget() {
+		if ( IsInputBlocked() ) {
+			return;
+		}
+		ArmAttachment?.Use();
+	}
 
 	public void ConnectGamepadBinds() {
 		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMove ) );
@@ -1842,6 +1851,7 @@ public partial class Player : Entity {
 		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
 		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( OnArmAngleChanged ) );
 		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
+		ResourceCache.UseGadgetActionKeyboard.Connect( "triggered", Callable.From( OnUseGadget ) );
 	}
 	private void LoadSfx() {
 		/*
@@ -2145,6 +2155,8 @@ public partial class Player : Entity {
 			RightArmShadowAnimation = GetNode<AnimatedSprite2D>( "Animations/Shadows/ArmsRightShadow" );
 		}
 
+		Flags |= PlayerFlags.Sober;
+
 		Animations = GetNode( "Animations" );
 
 		WalkEffect = GetNode<GpuParticles2D>( "Animations/DustPuff" );
@@ -2256,6 +2268,8 @@ public partial class Player : Entity {
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();
+		} else {
+			Totem = (Totem)ResourceCache.GetResource( "res://resources/totems/totem_of_remembrance.tres" );
 		}
 
 		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
