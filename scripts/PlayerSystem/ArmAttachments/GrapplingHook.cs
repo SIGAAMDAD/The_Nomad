@@ -25,8 +25,6 @@ namespace PlayerSystem.ArmAttachments {
 		[Export]
 		private float Length = 800.0f;
 
-		private Player _Owner;
-
 		private Vector2 HookOffset = new Vector2( 0.0f, -12.0f );
 		private Line2D Rope;
 		private State Status;
@@ -35,7 +33,6 @@ namespace PlayerSystem.ArmAttachments {
 		private Area2D Latch;
 		private Vector2 HookPosition;
 		private float HookDistance = 0.0f;
-		private Timer CooldownTimer;
 
 		private Sprite2D HookSprite;
 		private PhysicsBody2D HookedObject;
