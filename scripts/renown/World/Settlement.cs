@@ -46,11 +46,11 @@ namespace Renown.World {
 		[Export]
 		private Road[] TradeRoutes;
 		[Export]
-		private BuildingResourceProducer[] Producers;
-		[Export]
 		private float BirthRate = 0.0f;
 		[Export]
 		private float TaxationRate = 30.75f;
+
+		private int PlayerRenownScore = 0;
 
 		/// <summary>
 		/// the statistics regarding the socioeconomic makeup of the settlement.
@@ -65,12 +65,6 @@ namespace Renown.World {
 		/// </summary>
 		[Export]
 		private Thinker MercenaryMaster;
-
-		private List<Family> FamilyList = new List<Family>();
-		private List<Building> BuildingList = new List<Building>();
-
-		private System.Threading.Thread ThinkThread = null;
-		private bool Quit = false;
 
 		private int Population = 0;
 		private int MaxPopulation = 0;
@@ -87,15 +81,9 @@ namespace Renown.World {
 		public Road[] GetTradeRoutes() => TradeRoutes;
 		public float GetBirthRate() => BirthRate;
 		public Marketplace[] GetMarketplaces() => Markets;
-		public List<Family> GetFamilies() => FamilyList;
 		public int GetPopulation() => Population;
 		public Government GetGovernment() => Government;
-		public List<Building> GetBuildings() => BuildingList;
 		public Thinker GetMercenaryMaster() => MercenaryMaster;
-
-		public void AddFamily( Family family ) {
-			FamilyList.Add( family );
-		}
 
 		public float GetSocietyRankMaxPercentage( SocietyRank rank ) {
 			return SocietyScale[ rank ];
@@ -176,31 +164,8 @@ namespace Renown.World {
 			return totalCollected;
 		}
 
-		private void Think() {
-			while ( !Quit ) {
-				System.Threading.Thread.Sleep( ThreadSleep );
-			}
-		}
-
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			Quit = true;
-		}
 		public override void _Ready() {
 			base._Ready();
-
-			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Buildings" );
-			MaxPopulation = 0;
-			for ( int i = 0; i < nodes.Count; i++ ) {
-				Building building = nodes[ i ] as Building;
-				if ( building.GetLocation() == this ) {
-					if ( building.GetBuildingType() == BuildingType.House ) {
-						MaxPopulation += ( building as BuildingHouse ).MaxPeople;
-					}
-					BuildingList.Add( building );
-				}
-			}
 
 			Politicians = new HashSet<Politician>();
 

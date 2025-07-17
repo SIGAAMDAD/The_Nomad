@@ -53,42 +53,6 @@ namespace Renown {
 		//
 		[Signal]
 		public delegate void DieEventHandler( Entity source, Entity target );
-		[Signal]
-		public delegate void JoinFactionEventHandler( Faction faction, Entity entity );
-		[Signal]
-		public delegate void LeaveFactionEventHandler( Faction faction, Entity entity );
-		[Signal]
-		public delegate void FactionPromotionEventHandler( Faction faction, Entity entity );
-		[Signal]
-		public delegate void FactionDemotionEventHandler( Faction faction, Entity entity );
-		[Signal]
-		public delegate void GainMoneyEventHandler( Node entity, float nAmount );
-		[Signal]
-		public delegate void LoseMoneyEventHandler( Node entity, float nAmount );
-	//	[Signal]
-	//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
-		[Signal]
-		public delegate void StartContractEventHandler( Contract contract, Entity entity );
-		[Signal]
-		public delegate void CompleteContractEventHandler( Contract contract, Entity entity );
-		[Signal]
-		public delegate void FailedContractEventHandler( Contract contract, Entity entity );
-		[Signal]
-		public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
-		[Signal]
-		public delegate void EarnTraitEventHandler( Node self, Trait trait );
-		[Signal]
-		public delegate void LoseTraitEventHandler( Node self, Trait trait );
-		[Signal]
-		public delegate void MeetEntityEventHandler( Entity other, Node self );
-		[Signal]
-		public delegate void MeetFactionEventHandler( Faction faction, Node self );
-		[Signal]
-		public delegate void IncreaseRelationEventHandler( Node other, Node self, float nAmount );
-		[Signal]
-		public delegate void DecreaseRelationEventHandler( Node other, Node self, float nAmount );
-		[Signal]
-		public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
 
 		public WorldArea GetLocation() => Location;
 		public virtual void SetLocation( in WorldArea location ) => Location = location;
@@ -145,123 +109,8 @@ namespace Renown {
 		public NodePath GetHash() => GetPath();
 		public virtual StringName GetObjectName() => "Entity";
 
-		public virtual float GetMoney() => Money;
-		public virtual void DecreaseMoney( float nAmount ) {
-			Money -= nAmount;
-			EmitSignalLoseMoney( this, nAmount );
-		}
-		public virtual void IncreaseMoney( float nAmount ) {
-			Money += nAmount;
-			EmitSignalGainMoney( this, nAmount );
-		}
-
-	//	public int GetWarCrimeCount() => WarCrimeCount;
-	//	public virtual void CommitWarCrime( WarCrimeType nType ) {
-	//		EmitSignal( "CommitWarCrime", this, nType );
-	//		WarCrimeCount++;
-	//	}
-
-		public HashSet<Trait> GetTraits() => TraitCache;
-
 		public Faction GetFaction() => Faction;
-		public virtual void SetFaction( Faction faction ) {
-			// sanity
-			if ( Faction == faction ) {
-				Console.PrintWarning( "Entity.SetFaction: same faction" );
-				return;
-			}
-			if ( faction != null ) {
-				EmitSignalJoinFaction( faction, this );
-			} else {
-				EmitSignalLeaveFaction( Faction, this );
-			}
-			Faction = faction;
-		}
-
 		public int GetFactionImportance() => FactionImportance;
-		public virtual void DecreaseFactionImportance( int nAmount ) {
-			// sanity
-			if ( Faction == null ) {
-				Console.PrintError( "Entity.DecreaseFactionImportance: no faction" );
-				return;
-			}
-			FactionImportance -= nAmount;
-			EmitSignalFactionDemotion( Faction, this );
-		}
-		public virtual void IncreaseFactionImportance( int nAmount ) {
-			// sanity
-			if ( Faction == null ) {
-				Console.PrintError( "Entity.IncreaseFactionImportance: no faction" );
-				return;
-			}
-			FactionImportance += nAmount;
-			EmitSignalFactionPromotion( Faction, this );
-		}
-
-		public int GetRenownScore() => RenownScore;
-		public void AddRenown( int nAmount ) {
-			RenownScore += nAmount;
-			EmitSignalIncreaseRenown( this, nAmount );
-		}
-
-		/// <summary>
-		/// returns true if the entity has the given trait
-		/// </summary>
-		public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
-		public bool HasTrait( string trait ) {
-			foreach ( var it in TraitCache ) {
-				if ( it.GetTraitName() == trait ) {
-					return true;
-				}
-			}
-			return false;
-		}
-		public bool HasTrait( TraitType trait ) {
-			foreach ( var it in TraitCache ) {
-				if ( it.GetTraitType() == trait ) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		/// <summary>
-		/// checks if the given trait conflicts with this entity's values
-		/// </summary>
-		public bool HasConflictingTrait( Trait other ) {
-			foreach ( var trait in TraitCache ) {
-				if ( trait.Conflicts( other ) ) {
-					return true;
-				}
-			}
-			return false;
-		}
-		public List<Trait> GetConflictingTraits( Trait other ) {
-			List<Trait> traits = new List<Trait>();
-			foreach ( var trait in TraitCache ) {
-				if ( trait.Conflicts( other ) ) {
-					traits.Add( trait );
-				}
-			}
-			return traits;
-		}
-		public List<Trait> GetAgreeableTraits( Trait other ) {
-			List<Trait> traits = new List<Trait>();
-			foreach ( var trait in TraitCache ) {
-				if ( trait.Agrees( other ) ) {
-					traits.Add( trait );
-				}
-			}
-			return traits;
-		}
-		public virtual void AddTrait( Trait trait ) {
-			EmitSignalEarnTrait( this, trait );
-			TraitCache.Add( trait );
-		}
-		public virtual void RemoveTrait( Trait trait ) {
-			EmitSignalLoseTrait( this, trait );
-			TraitCache.Remove( trait );
-		}
 
 		public virtual void DetermineRelationStatus( Object other ) {
 			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue value ) ) {
@@ -293,38 +142,7 @@ namespace Renown {
 
 			value.Value = score;
 		}
-		public virtual void Meet( Object other ) {
-			RelationCache.Add( new RenownValue( other ) );
-
-			if ( other is Entity entity && entity != null ) { 
-				EmitSignalMeetEntity( entity, this );
-			} else {
-				if ( other is Faction faction && faction != null ) {
-					EmitSignalMeetFaction( faction, this );
-					return;
-				}
-				Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
-			}
-		}
 		public bool HasRelation( Object other ) => RelationCache.Contains( new RenownValue( other ) );
-		public virtual void RelationIncrease( Object other, float nAmount ) {
-			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
-				Meet( other );
-			}
-			score.Value += nAmount;
-			EmitSignalIncreaseRelation( other as Node, this, nAmount );
-
-			Console.PrintLine( string.Format( "Relation between {0} and {1} increased by {2}", this, other, nAmount ) );
-		}
-		public virtual void RelationDecrease( Object other, float nAmount ) {
-			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
-				Meet( other );
-			}
-			score.Value -= nAmount;
-			EmitSignalDecreaseRelation( other as Node, this, nAmount );
-
-			Console.PrintLine( string.Format( "Relation between {0} and {1} decreased by {2}", this, other, nAmount ) );
-		}
 		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ? score.Value : 0.0f;
 		public RelationStatus GetRelationStatus( Object other ) {
 			float score = GetRelationScore( other );

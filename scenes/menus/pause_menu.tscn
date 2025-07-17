@@ -1,19 +1,23 @@
-[gd_scene load_steps=17 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=21 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
 [ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
 [ext_resource type="Script" uid="uid://ydv0jh21g8l7" path="res://scripts/PlayerSystem/UserInterface/backpack.gd" id="2_opdvj"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
 [ext_resource type="Texture2D" uid="uid://bjkdfsajgy7uv" path="res://textures/hud/status_blunt.png" id="3_opdvj"]
+[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="3_sy5ew"]
 [ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_2wrho"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="4_pf6lc"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="5_j7gms"]
+[ext_resource type="Texture2D" uid="uid://bbbkmp4c026nq" path="res://textures/env/divider.png" id="5_w5beu"]
 [ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="6_oey0u"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
 [ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="8_opdvj"]
 [ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
 [ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
 [ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="15_w5beu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w5beu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1onjl"]
 resource_local_to_scene = true
@@ -26,6 +30,8 @@ resource_local_to_scene = true
 shader = ExtResource("5_j7gms")
 shader_parameter/is_selected = false
 shader_parameter/icon = ExtResource("7_sy5ew")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ty7ml"]
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 3
@@ -42,14 +48,21 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+visible = false
 layout_mode = 2
 texture = ExtResource("15_w5beu")
 
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("3_sy5ew")
+
 [node name="TabContainer" type="TabContainer" parent="MarginContainer"]
 layout_mode = 2
-current_tab = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_w5beu")
+current_tab = 1
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 script = ExtResource("2_opdvj")
 metadata/_tab_index = 0
@@ -59,6 +72,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -5.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
@@ -113,6 +129,7 @@ layout_mode = 2
 stretch_mode = 3
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ScrollContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -120,7 +137,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="ItemInfo" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -131,14 +148,18 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
 [node name="MetaData" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="TypeContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
@@ -171,8 +192,12 @@ custom_minimum_size = Vector2(90, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="EffectContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
@@ -238,11 +263,15 @@ layout_mode = 2
 [node name="AmmoStatusContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="DescriptionLabel" type="RichTextLabel" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
-custom_minimum_size = Vector2(340, 120)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 bbcode_enabled = true
 
@@ -341,8 +370,12 @@ text = "9mm"
 layout_mode = 2
 text = "1"
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="BackpackDataContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -365,27 +398,28 @@ layout_mode = 2
 text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="Journal" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 script = ExtResource("9_pf6lc")
 metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.002
-anchor_top = 0.004
-anchor_right = 0.994
-anchor_bottom = 1.00445
-offset_left = -0.28
-offset_top = 0.204
-offset_right = -0.160034
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -302.0
+offset_top = -214.5
+offset_right = 302.0
+offset_bottom = 214.5
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="TabContainer" type="TabContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ty7ml")
 current_tab = 0
 
 [node name="Quest Log" type="HBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer"]
@@ -393,7 +427,7 @@ layout_mode = 2
 metadata/_tab_index = 0
 
 [node name="QuestListContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -411,11 +445,11 @@ offset_bottom = -0.163025
 metadata/_edit_use_anchors_ = true
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
+visible = false
 layout_mode = 2
 
 [node name="ActiveQuestContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log"]
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="QuestNameLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
@@ -442,11 +476,11 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 
 [node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
-custom_minimum_size = Vector2(300, 220)
+custom_minimum_size = Vector2(300, 180)
 layout_mode = 2
 autowrap_mode = 3
 
