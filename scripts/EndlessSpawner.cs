@@ -39,7 +39,7 @@ public partial class EndlessSpawner : Node2D {
 		for ( int i = 0; i < count; i++ ) {
 			if ( isGatling ) {
 				GatlingGunner mob = ResourceLoader.Load<PackedScene>( "res://scenes/mobs/mercenary/mercenary_gatling_gunner.tscn" ).Instantiate<GatlingGunner>();
-				mob.SetFaction( GetTree().CurrentScene.GetNode<Faction>( "EvilFaction" ) );
+//				mob.SetFaction( GetTree().CurrentScene.GetNode<Faction>( "EvilFaction" ) );
 				mob.Scale = new Vector2( 0.75f, 0.75f );
 				GetTree().CurrentScene.GetNode( "NavigationRegion2D" ).AddChild( mob );
 			} else {
@@ -47,7 +47,7 @@ public partial class EndlessSpawner : Node2D {
 				Mercenary mob = ResourceLoader.Load<PackedScene>( "res://scenes/mobs/mercenary/mercenary.tscn" ).Instantiate<Mercenary>();
 				mob.DefaultWeapon = weapon;
 				mob.DefaultAmmo = ammo;
-				mob.SetFaction( GetTree().CurrentScene.GetNode<Faction>( "EvilFaction" ) );
+//				mob.SetFaction( GetTree().CurrentScene.GetNode<Faction>( "EvilFaction" ) );
 				mob.Scale = new Vector2( 0.75f, 0.75f );
 				GetTree().CurrentScene.GetNode( "NavigationRegion2D" ).AddChild( mob );
 			}

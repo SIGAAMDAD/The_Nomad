@@ -100,7 +100,6 @@ public partial class Player : Entity {
 	public static readonly float BaseFastTravelSanityCost = 0.0f;
 	public static readonly float BaseEnemyDetectionSpeed = 1.0f;
 
-	public static bool InCombat = false;
 	public static int NumTargets = 0;
 
 	public static readonly int MAX_RUNES = 3;
@@ -132,6 +131,12 @@ public partial class Player : Entity {
 	};
 
 	private NetworkState LastSyncState;
+
+	private float Money = 0.0f;
+
+	private HashSet<Trait> TraitCache = null;
+	private HashSet<RenownValue> RelationCache = null;
+	private HashSet<RenownValue> DebtCache = null;
 
 	[Export]
 	private Node Inventory;
@@ -437,10 +442,10 @@ public partial class Player : Entity {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public HashSet<Trait> GetTraits() => TraitCache;
 
-	public virtual void SetFaction( Faction faction ) {
+	public void SetFaction( Faction faction ) {
 		// sanity
 		if ( Faction == faction ) {
-			Console.PrintWarning( "Entity.SetFaction: same faction" );
+			Console.PrintWarning( "Player.SetFaction: same faction" );
 			return;
 		}
 		if ( faction != null ) {
@@ -451,26 +456,26 @@ public partial class Player : Entity {
 		Faction = faction;
 	}
 
-	public virtual void DecreaseFactionImportance( int nAmount ) {
+	public void DecreaseFactionImportance( int nAmount ) {
 		// sanity
 		if ( Faction == null ) {
-			Console.PrintError( "Entity.DecreaseFactionImportance: no faction" );
+			Console.PrintError( "Player.DecreaseFactionImportance: no faction" );
 			return;
 		}
 		FactionImportance -= nAmount;
 		EmitSignalFactionDemotion( Faction, this );
 	}
-	public virtual void IncreaseFactionImportance( int nAmount ) {
+	public void IncreaseFactionImportance( int nAmount ) {
 		// sanity
 		if ( Faction == null ) {
-			Console.PrintError( "Entity.IncreaseFactionImportance: no faction" );
+			Console.PrintError( "Player.IncreaseFactionImportance: no faction" );
 			return;
 		}
 		FactionImportance += nAmount;
 		EmitSignalFactionPromotion( Faction, this );
 	}
 
-	public int GetRenownScore() => RenownScore;
+	public override int GetRenownScore() => RenownScore;
 	public void AddRenown( int nAmount ) {
 		RenownScore += nAmount;
 		EmitSignalIncreaseRenown( this, nAmount );

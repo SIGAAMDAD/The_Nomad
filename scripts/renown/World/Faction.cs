@@ -96,14 +96,6 @@ namespace Renown.World {
 
 		public StringName GetObjectName() => GetFactionName();
 
-		public virtual void PayWorker( float nIncomeTax, float nAmount, Thinker thinker ) {
-			Settlement settlement = thinker.GetLocation() as Settlement;
-			
-			settlement.GetGovernment().IncreaseMoney( nIncomeTax );
-			thinker.IncreaseMoney( nAmount );
-			DecreaseMoney( nAmount );
-		}
-
 		public float GetMoney() => Money;
 		public virtual void DecreaseMoney( float nAmount ) {
 			Money -= nAmount;
@@ -294,15 +286,15 @@ namespace Renown.World {
 			Messenger actor = new Messenger( this, destination, nType );
 		}
 		*/
-		public bool CanJoin( Entity member ) {
+		public bool CanJoin( Player member ) {
 			return true;
 		}
-		public void MemberJoin( Entity member ) {
-			member.Connect( "Die", Callable.From<Entity, Entity>( OnMemberDeath ) );
+		public void MemberJoin( Player member ) {
+			member.Die += OnMemberDeath;
 			member.SetFaction( this );
 		}
-		public void MemberLeave( Entity member ) {
-			member.Disconnect( "Die", Callable.From<Entity, Entity>( OnMemberDeath ) );
+		public void MemberLeave( Player member ) {
+			member.Die -= OnMemberDeath;
 			member.SetFaction( null );
 		}
 		

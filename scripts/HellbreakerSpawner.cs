@@ -16,7 +16,7 @@ public partial class HellbreakerSpawner : Area2D {
 	//		}
 			for ( int i = 0; i < ImpCount; i++ ) {
 				Imp imp = ResourceCache.GetScene( "res://scenes/mobs/demons/imp.tscn" ).Instantiate<Imp>();
-				imp.SetFaction( GetNode<Faction>( "../../HellFaction" ) );
+//				imp.SetFaction( GetNode<Faction>( "../../HellFaction" ) );
 				Hellbreaker.Demons.Add( imp );
 				AddChild( imp );
 			}

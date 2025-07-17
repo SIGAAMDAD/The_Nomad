@@ -6,12 +6,12 @@ public partial class LightData : PointLight2D {
 
 	private void OnLightAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Entity entity && entity != null ) {
-			entity.AddLightSource( this );
+//			entity.AddLightSource( this );
 		}
 	}
 	private void OnLightAreaBodyShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Entity entity && entity != null ) {
-			entity.RemoveLightSource( this );
+//			entity.RemoveLightSource( this );
 		}
 	}
 

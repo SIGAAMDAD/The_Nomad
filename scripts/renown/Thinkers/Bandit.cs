@@ -720,23 +720,5 @@ namespace Renown.Thinkers {
 			}
 			SetDetectionColor();
 		}
-
-		protected override void InitRenownStats() {
-			InitBaseStats();
-
-			if ( !IsPremade ) {
-				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Cities" );
-				Family = FamilyCache.GetFamily( nodes[ RNJesus.IntRange( 0, nodes.Count - 1 ) ] as Settlement, (SocietyRank)RNJesus.IntRange( 0, (int)SocietyRank.Count ) );
-				FirstName = NameGenerator.GenerateName();
-				BotName = string.Format( "{0} {1}", FirstName, Family.GetFamilyName() );
-				Name = string.Format( "{0}{1}{2}", this, FirstName, Family.GetFamilyName() );
-			}
-
-			GD.Print( "Generated Mercenary " + this + ":" );
-			GD.Print( "\t[Renown Data]:" );
-			GD.Print( "\t\tBotName: " + BotName );
-			GD.Print( "\t\tBirthPlace: " + BirthPlace.GetAreaName() );
-			GD.Print( "\t\tFamily: " + Family.GetFamilyName() );
-		}
 	};
 };

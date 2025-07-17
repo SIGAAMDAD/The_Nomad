@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Godot;
 using Renown.World;
 
@@ -10,6 +9,8 @@ namespace Renown {
 		public NodePath GetHash();
 
 		public StringName GetObjectName();
+
+		public int GetRenownScore();
 
 		public void DetermineRelationStatus( Object other );
 		public float GetRelationScore( Object other );

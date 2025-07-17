@@ -1,31 +1,15 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
-using Renown.World.Buildings;
-using System;
-using ChallengeMode;
 using DialogueManagerRuntime;
-using PlayerSystem.ArmAttachments;
-using Microsoft.Diagnostics.Tracing.Stacks.Formats;
-using System.Management;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
 		// physics slapped
-		Pushed		= 0x00000001,
-		
-		// ...duh
-		Dead		= 0x00000002,
-		
-		Intoxicated	= 0x00000004,
-		Pregnant	= 0x00000008,
-		Sterile		= 0x00000010,
-	};
-	public enum Sex : uint {
-		Male,
-		Female,
+		Pushed = 0x00000001,
 
-		Count
+		// ...duh
+		Dead = 0x00000002,
 	};
 	public enum DirType : uint {
 		North,
@@ -44,74 +28,21 @@ namespace Renown.Thinkers {
 		Count
 	};
 
-	// most thinkers except for politicians will most likely never get the chance nor the funds
-	// to hire a personal mercenary
 	public partial class Thinker : Entity {
 		[Export]
 		protected TileMapFloor Floor;
 
 		[Export]
-		protected Resource DialogueResource;
+		protected Resource DialogueResource = ResourceLoader.Load( "res://resources/dialogue/thinker.dialogue" );
 
 		[Export]
 		protected bool IsPremade = false;
-		[Export]
-		protected Building Home;
-		[Export]
-		protected StringName BotName;
-		[Export]
-		protected int Age = 0; // in years
-		[Export]
-		protected Family Family;
-		[Export]
-		protected Settlement BirthPlace = null;
-		[Export]
-		protected Sex Sex;
-
-		[Export]
-		protected StringName FirstName;
-
-		[Export]
-		protected Node BehaviourTree;
 		
 		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;
 
 		[ExportCategory( "Stats" )]
-
-		/// <summary>
-		/// physical power
-		/// </summary>
-		[Export]
-		protected int Strength;
-
-		/// <summary>
-		/// manuverability, reflexes
-		/// </summary>
-		[Export]
-		protected int Dexterity;
-
-		/// <summary>
-		/// quantity of data, not how to use it
-		/// </summary>
-		[Export]
-		protected int Intelligence;
-
-		/// <summary>
-		/// resistances to poisons, illnesses, etc. overall health
-		/// </summary>
-		[Export]
-		protected int Constitution;
-
-		/// <summary>
-		/// "common sense"
-		/// </summary>
-		[Export]
-		protected int Wisdom;
-
-		[Export]
-		protected int Charisma;
 
 		[Export]
 		protected bool HasMetPlayer = false;
@@ -120,8 +51,9 @@ namespace Renown.Thinkers {
 
 		protected Node2D Animations;
 
-		public NavigationAgent2D NavAgent { get; private set; }
-		public Godot.Vector2 LookDir { get; protected set; } = Godot.Vector2.Zero;
+		protected NavigationAgent2D NavAgent;
+		protected Rid NavAgentRID { get; private set; }
+		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 
 		protected NodePath InitialPath;
 
@@ -153,25 +85,7 @@ namespace Renown.Thinkers {
 		protected VisibleOnScreenNotifier2D VisibilityNotifier;
 		protected bool OnScreen = false;
 
-		protected SocietyRank SocietyRank;
-
-		protected object LockObject = new object();
-		protected System.Threading.Thread ThinkThread = null;
-		protected bool Quit = false;
-
 		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
-
-		[Signal]
-		public delegate void HaveChildEventHandler( Thinker parent );
-		[Signal]
-		protected delegate void ActionFinishedEventHandler();
-
-		public SocietyRank GetSocietyRank() => SocietyRank;
-		public int GetAge() => Age;
-		public StringName GetFirstName() => FirstName;
-
-		public void SetHome( Building building ) => Home = building;
-		public Building GetHome() => Home;
 
 		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
 		public TileMapFloor GetTileMapFloor() => Floor;
@@ -297,54 +211,15 @@ namespace Renown.Thinkers {
 
 		public void Save( SaveSystem.SaveSectionWriter writer, int nIndex ) {
 			string key = "Thinker" + nIndex;
-			int count;
 
 			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
-			writer.SaveString( key + nameof( Family ), Family.GetFamilyName() );
 
 			writer.SaveVector2( key + nameof( GlobalPosition ), GlobalPosition );
 			writer.SaveFloat( key + nameof( Health ), Health );
-			writer.SaveInt( key + nameof( Age ), Age );
-			writer.SaveString( key + nameof( BotName ), BotName );
-
-			// stats
-			writer.SaveInt( key + nameof( Strength ), Strength );
-			writer.SaveInt( key + nameof( Dexterity ), Dexterity );
-			writer.SaveInt( key + nameof( Wisdom ), Wisdom );
-			writer.SaveInt( key + nameof( Intelligence ), Intelligence );
-			writer.SaveInt( key + nameof( Constitution ), Constitution );
 
 			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
 			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
-
-			writer.SaveInt( key + "RelationCount", RelationCache.Count );
-			count = 0;
-			foreach ( var relation in RelationCache ) {
-				if ( relation.Object is Entity entity && entity != null ) {
-					writer.SaveBool( string.Format( "{0}RelationIsEntity{1}", key, count ), true );
-				} else {
-					writer.SaveBool( string.Format( "{0}RelationIsEntity{1}", key, count ), false );
-				}
-				writer.SaveString( string.Format( "{0}RelationNode{1}", key, count ), relation.Object.GetObjectName() );
-				writer.SaveFloat( string.Format( "{0}RelationValue{1}", key, count ), relation.Value );
-				count++;
-			}
-
-			writer.SaveInt( key + "DebtCount", DebtCache.Count );
-			count = 0;
-			foreach ( var debt in DebtCache ) {
-				writer.SaveString( string.Format( "{0}DebtNode{1}", key, count ), debt.Object.GetObjectName() );
-				writer.SaveFloat( string.Format( "{0}DebtValue{1}", key, count ), debt.Value );
-				count++;
-			}
-
-			writer.SaveInt( key + "TraitCount", TraitCache.Count );
-			count = 0;
-			foreach ( var trait in TraitCache ) {
-				writer.SaveUInt( string.Format( "{0}TraitType{1}", key, count ), (uint)trait.GetTraitType() );
-				count++;
-			}
 		}
 		protected void SetLocationDeferred( string locationId ) {
 			Location = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetNode<WorldArea>( locationId );
@@ -354,57 +229,20 @@ namespace Renown.Thinkers {
 
 			GlobalPosition = reader.LoadVector2( key + nameof( GlobalPosition ) );
 			Health = reader.LoadFloat( key + nameof( Health ) );
-			Age = reader.LoadInt( key + nameof( Age ) );
-			BotName = reader.LoadString( key + nameof( BotName ) );
-
-			if ( !IsPremade ) {
-				Family = FamilyCache.GetFamily( reader.LoadString( key + nameof( Family ) ) );
-				Home = Family.GetHome();
-			}
 
 			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
 			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
 			HasMetPlayer = reader.LoadBoolean( key + nameof( HasMetPlayer ) );
-
-			Strength = reader.LoadInt( key + nameof( Strength ) );
-			Dexterity = reader.LoadInt( key + nameof( Dexterity ) );
-			Wisdom = reader.LoadInt( key + nameof( Wisdom ) );
-			Intelligence = reader.LoadInt( key + nameof( Intelligence ) );
-			Constitution = reader.LoadInt( key + nameof( Constitution ) );
-
-			int relationCount = reader.LoadInt( key + "RelationCount" );
-			RelationCache = new HashSet<RenownValue>( relationCount );
-			for ( int i = 0; i < relationCount; i++ ) {
-				RelationCache.Add( new RenownValue(
-					(Object)GetTree().Root.GetNode( reader.LoadString( string.Format( "{0}RelationNode{1}", key, i ) ) ),
-					reader.LoadFloat( string.Format( "{0}RelationValue{1}", key, i ) )
-				) );
-			}
-
-			int debtCount = reader.LoadInt( key + "DebtCount" );
-			DebtCache = new HashSet<RenownValue>( debtCount );
-			for ( int i = 0; i < debtCount; i++ ) {
-				DebtCache.Add( new RenownValue(
-					(Object)GetTree().Root.GetNode( reader.LoadString( string.Format( "{0}DebtNode{1}", key, i ) ) ),
-					reader.LoadFloat( string.Format( "{0}DebtValue{1}", key, i ) )
-				) );
-			}
-
-			int traitCount = reader.LoadInt( key + "TraitCount" );
-			TraitCache = new HashSet<Trait>( traitCount );
-			for ( int i = 0; i < traitCount; i++ ) {
-				TraitCache.Add( Trait.Create( (TraitType)reader.LoadUInt( string.Format( "{0}TraitType{1}", key, i ) ) ) );
-			}
 		}
 
 		public virtual void StopMoving() {
-			NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
+			NavigationServer2D.AgentSetVelocityForced( NavAgentRID, Godot.Vector2.Zero );
 			Velocity = Godot.Vector2.Zero;
 			GotoPosition = GlobalPosition;
 		}
 
 		protected void SetAnimationsColor( Color color ) {
-			Animations?.SetDeferred( "modulate", color );
+			Animations?.SetDeferred( PropertyName.Modulate, color );
 		}
 
 		protected void OnScreenEnter() {
@@ -436,18 +274,8 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			Quit = true;
-		}
 		public override void _Ready() {
 			base._Ready();
-
-			// TODO: make renown system operate in some challenge modes
-			if ( GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {
-				InitRenownStats();
-			}
 
 			Die += OnDie;
 
@@ -489,12 +317,14 @@ namespace Renown.Thinkers {
 			NavAgent.TimeHorizonAgents = 2.0f;
 			NavAgent.MaxSpeed = MovementSpeed;
 			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
-			NavAgent.Connect( "velocity_computed", Callable.From<Godot.Vector2>( ( safeVelocity ) => {
+			NavAgent.Connect( NavigationAgent2D.SignalName.VelocityComputed, Callable.From<Godot.Vector2>( ( safeVelocity ) => {
 				Velocity = safeVelocity;// * (float)GetPhysicsProcessDeltaTime();
-				CallDeferred( "MoveAlongPath" );
+				CallDeferred( MethodName.MoveAlongPath );
 			} ) );
-			NavAgent.Connect( "target_reached", Callable.From( OnTargetReached ) );
+			NavAgent.Connect( NavigationAgent2D.SignalName.TargetReached, Callable.From( OnTargetReached ) );
 			AddChild( NavAgent );
+
+			NavAgentRID = NavAgent.GetRid();
 
 			/*
 			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
@@ -523,7 +353,7 @@ namespace Renown.Thinkers {
 
 			base._PhysicsProcess( delta );
 
-			NavigationServer2D.AgentSetVelocity( NavAgent.GetRid(), LookDir * MovementSpeed );
+			NavigationServer2D.AgentSetVelocity( NavAgentRID, LookDir * MovementSpeed );
 
 			if ( ( Flags & ThinkerFlags.Pushed ) != 0 ) {
 				if ( Velocity == Godot.Vector2.Zero ) {
@@ -548,31 +378,9 @@ namespace Renown.Thinkers {
 				return;
 			}
 
-			RenownProcess();
 			Think();
 		}
 
-		protected void CheckContracts() {
-			foreach ( var relation in RelationCache ) {
-				if ( GetRelationStatus( relation.Object ) > RelationStatus.Dislikes ) {
-					// we've got a grudge
-
-				}
-			}
-		}
-
-		/// <summary>
-		/// Processes various relations, debts, etc. to run the renown system per entity.
-		/// expensive, but not animations and very little godot engine calls will be present.
-		/// </summary>
-		protected void RenownProcess() {
-			SetAnimationsColor( GameConfiguration.DemonEyeActive ? DemonEyeColor : DefaultColor );
-
-			if ( ( Flags & ThinkerFlags.Pushed ) != 0 || Health <= 0.0f ) {
-				return;
-			}
-			CheckContracts();
-		}
 		protected virtual void Think() {
 		}
 
@@ -632,7 +440,7 @@ namespace Renown.Thinkers {
 			Godot.Vector2 nextPathPosition = NavAgent.GetNextPathPosition();
 			LookDir = GlobalPosition.DirectionTo( nextPathPosition );
 			MoveAndSlide();
-//			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
+			//			GlobalPosition += Velocity * (float)GetPhysicsProcessDeltaTime();
 
 			return true;
 		}
@@ -657,41 +465,7 @@ namespace Renown.Thinkers {
 			Velocity = Godot.Vector2.Zero;
 		}
 
-		public void GenerateRelations() {
-			Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Thinkers" );
-
-			for ( int i = 0; i < nodes.Count; i++ ) {
-				Thinker thinker = nodes[ i ] as Thinker;
-
-				float meetChance = 0.0f;
-				if ( thinker.GetLocation() == Location ) {
-					meetChance += 40.0f;
-				}
-			}
-		}
-
-		protected void InitBaseStats() {
-			if ( !IsPremade ) {
-				Godot.Collections.Array<Node> locations = GetTree().GetNodesInGroup( "Settlements" );
-				BirthPlace = locations[ RNJesus.IntRange( 0, locations.Count - 1 ) ] as Settlement;
-				Family = FamilyCache.GetFamily( BirthPlace, SocietyRank.Middle );
-			}
-
-			Strength = RNJesus.IntRange( 3, Family.MaxStrength ) + Family.StrengthBonus;
-			Dexterity = RNJesus.IntRange( 3, Family.MaxDexterity ) + Family.DexterityBonus;
-			Intelligence = RNJesus.IntRange( 3, Family.MaxIntelligence ) + Family.IntelligenceBonus;
-			Wisdom = RNJesus.IntRange( 3, Family.MaxWisdom ) + Family.WisdomBonus;
-			Constitution = RNJesus.IntRange( 3, Family.MaxConstitution ) + Family.ConstitutionBonus;
-			Charisma = RNJesus.IntRange( 3, Family.MaxCharisma ) + Family.CharismaBonus;
-
-			MovementSpeed += Dexterity * 10.0f;
-			if ( Strength > 12 ) {
-				Health += Strength * 2.0f + ( Constitution * 10.0f );
-			}
-		}
-		protected virtual void InitRenownStats() {
-		}
-
+		/*
 		protected class NameGenerator {
 			protected static System.Random random = new System.Random();
 
@@ -731,5 +505,6 @@ namespace Renown.Thinkers {
 				return NameScramble( FirstNameScramble_Begin, FirstNameScramble_End );
 			}
 		};
+		*/
 	};
 };

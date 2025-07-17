@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 using System.Collections.Generic;
 using Godot;
 using Renown.Thinkers;
-using Renown.World.Buildings;
 
 namespace Renown.World {
 	public enum SettlementType : uint {
@@ -53,13 +52,6 @@ namespace Renown.World {
 		private int PlayerRenownScore = 0;
 
 		/// <summary>
-		/// the statistics regarding the socioeconomic makeup of the settlement.
-		/// will change over time the economy evolves
-		/// </summary>
-		[Export]
-		private Godot.Collections.Dictionary<SocietyRank, float> SocietyScale;
-
-		/// <summary>
 		/// the one npc that doesn't use a renown thinker except for premade npcs.
 		/// there will only ever be one merc master per settlement
 		/// </summary>
@@ -84,13 +76,6 @@ namespace Renown.World {
 		public int GetPopulation() => Population;
 		public Government GetGovernment() => Government;
 		public Thinker GetMercenaryMaster() => MercenaryMaster;
-
-		public float GetSocietyRankMaxPercentage( SocietyRank rank ) {
-			return SocietyScale[ rank ];
-		}
-		public int GetNumberOfSocietyRank( SocietyRank rank ) {
-			return (int)( Population / SocietyScale[ rank ] );
-		}
 
 		public override void Save() {
 			base.Save();
@@ -126,28 +111,6 @@ namespace Renown.World {
 			}
 		}
 
-		public void OnGenerateThinkers() {
-			Godot.Collections.Array<Node> thinkers = GetTree().GetNodesInGroup( "Thinkers" );
-
-			Population = 0;
-			for ( int i = 0; i < thinkers.Count; i++ ) {
-				Thinker thinker = thinkers[i] as Thinker;
-				if ( thinker.GetLocation() == this ) {
-					Population++;
-				}
-			}
-			if ( Population >= MaxPopulation ) {
-				Console.PrintLine( "Maximum population already reached for settlement " + Name );
-				return;
-			}
-
-			int addPopulation = MaxPopulation;
-			Console.PrintLine( "Generating " + addPopulation.ToString() + " thinkers for " + AreaName + "..." );
-			for ( int i = 0; i < addPopulation; i++ ) {
-				ThinkerFactory.QueueThinker( this );
-			}
-		}
-
 		private void DecreaseMoney( float nAmount ) {
 			Treasury -= nAmount;
 
@@ -175,7 +138,6 @@ namespace Renown.World {
 				AddToGroup( "Settlements" );
 			}
 			if ( !ArchiveSystem.Instance.IsLoaded() ) {
-				CallDeferred( "OnGenerateThinkers" );
 			}
 		}
 	};
