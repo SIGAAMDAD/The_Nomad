@@ -1,3 +1,8 @@
+~ meet
+Mercenary Master: Ha! Haven't seen [i]your[/i] face 'round here for some time.
+Mercenary Master: You here for a contract
+=> END
+
 ~ talk_hostile
 Mercenary Master: Fuck off...
 => END

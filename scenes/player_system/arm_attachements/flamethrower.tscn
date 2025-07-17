@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://dyyemaamnbj4f"]
+
+[ext_resource type="Script" uid="uid://crwb2ovw8m1ht" path="res://scripts/PlayerSystem/ArmAttachments/Flamethrower.cs" id="1_a4ltg"]
+
+[sub_resource type="Gradient" id="Gradient_a4ltg"]
+offsets = PackedFloat32Array(0.00704225, 1)
+colors = PackedColorArray(1, 1, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ajslg"]
+gradient = SubResource("Gradient_a4ltg")
+width = 1
+
+[sub_resource type="Gradient" id="Gradient_ajslg"]
+offsets = PackedFloat32Array(0.477778, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.45098, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8s0gw"]
+gradient = SubResource("Gradient_ajslg")
+
+[sub_resource type="Curve" id="Curve_hbppd"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ffddq"]
+curve = SubResource("Curve_hbppd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8s0gw"]
+particle_flag_rotate_y = true
+particle_flag_disable_z = true
+gravity = Vector3(30, -24, 0)
+linear_accel_min = -9.23
+linear_accel_max = 20.51
+radial_accel_min = -16.42
+radial_accel_max = 32.03
+tangential_accel_min = 23.03
+tangential_accel_max = 28.45
+color_ramp = SubResource("GradientTexture1D_8s0gw")
+hue_variation_curve = SubResource("CurveTexture_ffddq")
+turbulence_influence_min = 0.371
+turbulence_influence_max = 0.792
+
+[node name="Flamethrower" type="Node2D"]
+script = ExtResource("1_a4ltg")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 12
+collision_mask = 12
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Area2D"]
+position = Vector2(0.450001, 0)
+scale = Vector2(0.700617, 1)
+polygon = PackedVector2Array(0, 0, 343.34, -40, 339.058, 20)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Area2D"]
+amount = 800
+texture = SubResource("GradientTexture1D_ajslg")
+lifetime = 3.0
+speed_scale = 2.5
+visibility_rect = Rect2(-0.999745, -59.7497, 472.949, 86.1545)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_8s0gw")
+
+[node name="CooldownTimer" type="Timer" parent="."]
+wait_time = 4.5
+one_shot = true
+
+[node name="UseTimer" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true

@@ -81,7 +81,7 @@ light_mask = 3
 y_sort_enabled = true
 material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("2_p7iby")
-animation = &"idle"
+animation = &"melee"
 autoplay = "idle"
 
 [node name="Torso" type="AnimatedSprite2D" parent="Animations"]
@@ -230,6 +230,7 @@ wait_time = 2.5
 one_shot = true
 
 [node name="AimAssist" type="Node2D" parent="."]
+visible = false
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 modulate = Color(2, 2, 2, 1)
@@ -279,10 +280,14 @@ disabled = true
 current = true
 
 [node name="GrappleHook" parent="." instance=ExtResource("13_srp4u")]
+position = Vector2(12, -2)
 
 [node name="ArmLeft" type="Node" parent="." node_paths=PackedStringArray("Animations")]
 script = ExtResource("12_0rnld")
 Animations = NodePath("../Animations/ArmsLeft")
+
+[node name="Launcher" type="Marker2D" parent="ArmLeft"]
+position = Vector2(12, -2)
 
 [node name="ArmRight" type="Node" parent="." node_paths=PackedStringArray("Animations")]
 script = ExtResource("12_0rnld")

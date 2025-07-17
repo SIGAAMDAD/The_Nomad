@@ -9,11 +9,11 @@
 
 [sub_resource type="Resource" id="Resource_7nyrk"]
 script = ExtResource("2_7nyrk")
-name = ""
+name = "No Rest for the Weary"
 description = ""
 id = "eHPF2tvYxR"
 optional = false
-graph_editor_position = Vector2(479.579, 426.493)
+graph_editor_position = Vector2(480, 340)
 graph_editor_size = Vector2(280, 626)
 
 [sub_resource type="Resource" id="Resource_svg3e"]
@@ -34,7 +34,7 @@ edge_type = 0
 script = ExtResource("4_ubdjk")
 id = "8Dc6rfzMlR"
 optional = false
-graph_editor_position = Vector2(1900, 400)
+graph_editor_position = Vector2(1960, 340)
 graph_editor_size = Vector2(141, 97)
 
 [sub_resource type="Resource" id="Resource_hg8mx"]
@@ -45,5 +45,5 @@ edge_type = 0
 
 [resource]
 script = ExtResource("3_jt0rk")
-nodes = Array[ExtResource("2_uaqwh")]([SubResource("Resource_7nyrk"), SubResource("Resource_rllx4"), SubResource("Resource_svg3e")])
+nodes = Array[ExtResource("2_uaqwh")]([SubResource("Resource_svg3e"), SubResource("Resource_7nyrk"), SubResource("Resource_rllx4")])
 edges = Array[ExtResource("1_vwp6o")]([SubResource("Resource_ubdjk"), SubResource("Resource_hg8mx")])
