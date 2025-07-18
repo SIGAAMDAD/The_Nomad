@@ -94,9 +94,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_umr50")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
 theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_70i7w")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
-current_tab = 0
+current_tab = 1
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("2_opdvj")
@@ -433,7 +434,6 @@ layout_mode = 2
 text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="Journal" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("9_pf6lc")
@@ -441,15 +441,15 @@ metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -302.0
-offset_top = -214.5
-offset_right = 302.0
-offset_bottom = 214.5
+anchors_preset = -1
+anchor_left = 0.053
+anchor_top = 0.031
+anchor_right = 0.937
+anchor_bottom = 0.902
+offset_left = 0.079998
+offset_top = -0.167001
+offset_right = 0.319946
+offset_bottom = -0.21402
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -500,8 +500,12 @@ layout_mode = 2
 [node name="ContractData" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
@@ -512,9 +516,12 @@ layout_mode = 2
 [node name="ContractEmployer" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
-custom_minimum_size = Vector2(280, 0)
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(280, 10)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
 custom_minimum_size = Vector2(300, 180)
@@ -527,7 +534,7 @@ layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="QuestListContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -545,11 +552,11 @@ offset_bottom = -0.163025
 metadata/_edit_use_anchors_ = true
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
+visible = false
 layout_mode = 2
 
 [node name="ActiveQuestContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes"]
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="QuestNameLabel" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
 layout_mode = 2
@@ -563,8 +570,12 @@ layout_mode = 2
 [node name="ContractData" type="VBoxContainer" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
 layout_mode = 2
@@ -575,12 +586,15 @@ layout_mode = 2
 [node name="ContractEmployer" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
-custom_minimum_size = Vector2(300, 0)
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(280, 10)
 layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
-custom_minimum_size = Vector2(300, 220)
+custom_minimum_size = Vector2(300, 180)
 layout_mode = 2
 autowrap_mode = 3
 
