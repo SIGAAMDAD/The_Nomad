@@ -1,36 +1,50 @@
-[gd_scene load_steps=4 format=3 uid="uid://bc871ykd373uu"]
+[gd_scene load_steps=8 format=3 uid="uid://bu2kkgbfiakwk"]
 
 [ext_resource type="Script" uid="uid://c4ofv3svm84au" path="res://scripts/PlayerSystem/UserInterface/dash_status.gd" id="1_8yg5y"]
+[ext_resource type="Shader" uid="uid://boc7n0cb3jcay" path="res://shaders/dynamic_progress_bar.gdshader" id="1_jbloo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3p0l"]
-bg_color = Color(0.145098, 0.145098, 0.145098, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-anti_aliasing = false
+[sub_resource type="Gradient" id="Gradient_xpp2s"]
+offsets = PackedFloat32Array(0, 0.465116, 1)
+colors = PackedColorArray(1, 0.8, 0, 1, 1, 0.489922, 0, 1, 1, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p06e3"]
-bg_color = Color(1, 0, 0, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.8, 0.8, 0.8, 0)
-anti_aliasing = false
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e2dct"]
+gradient = SubResource("Gradient_xpp2s")
 
-[node name="DashStatus" type="ProgressBar"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iveqe"]
+shader = ExtResource("1_jbloo")
+shader_parameter/progress = 1.0
+shader_parameter/background_color = Color(0, 0, 0, 1)
+shader_parameter/color_gradient = SubResource("GradientTexture1D_e2dct")
+shader_parameter/wave_amplitude = 0.003
+shader_parameter/wave_frequency = 3.0
+shader_parameter/wave_speed = 1.5
+shader_parameter/particle_speed = 0.05
+shader_parameter/particle_lifetime = 3.0
+shader_parameter/particle_softness = 0.01
+shader_parameter/particle_spacing = 0.1
+shader_parameter/particle_offset = Vector2(0, 0)
+shader_parameter/particle_start_scale = Vector2(0.02, 0.02)
+shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
+shader_parameter/particle_scale_randomness = 1.0
+shader_parameter/particle_amount = 40
+
+[sub_resource type="Gradient" id="Gradient_jbloo"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xpp2s"]
+gradient = SubResource("Gradient_jbloo")
+width = 1
+
+[node name="DashStatus" type="TextureRect"]
+material = SubResource("ShaderMaterial_iveqe")
 anchors_preset = -1
 anchor_right = 0.208
 anchor_bottom = 0.012
 offset_right = -0.119995
 offset_bottom = 0.24
 grow_vertical = 0
-theme_override_styles/background = SubResource("StyleBoxFlat_e3p0l")
-theme_override_styles/fill = SubResource("StyleBoxFlat_p06e3")
-max_value = 1.0
-show_percentage = false
+texture = SubResource("GradientTexture1D_xpp2s")
 script = ExtResource("1_8yg5y")
 metadata/_edit_use_anchors_ = true
 

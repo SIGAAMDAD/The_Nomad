@@ -102,8 +102,8 @@ public partial class Player : Entity {
 
 	public static int NumTargets = 0;
 
-	public static readonly int MAX_RUNES = 3;
-	public static readonly int MAX_PERKS = 5;
+	public static readonly int MAX_RUNES = 5;
+	public static readonly int MAX_PERKS = 1;
 	public static readonly float ACCEL = 1600.0f;
 	public static readonly float FRICTION = 1400.0f;
 	public static readonly float MAX_SPEED = 440.0f;
@@ -236,6 +236,8 @@ public partial class Player : Entity {
 
 	private Timer IdleTimer;
 	private Timer CheckpointDrinkTimer;
+
+	private Timer HealTimer;
 
 	private Timer DashTime;
 	private Timer SlideTime;

@@ -1,4 +1,5 @@
 using Godot;
+using System.Runtime.CompilerServices;
 
 public enum KillType : uint {
 	Bodyshot,
@@ -38,22 +39,28 @@ public partial class FreeFlow : Node {
 	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		ComboCounter += nAmount;
+	}
+	public static void EndCombo() {
 		if ( ComboCounter > MaxCombo ) {
 			MaxCombo = ComboCounter;
 		}
-	}
-	public static void EndCombo() {
 		ComboCounter = 0;
 	}
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static int GetCurrentCombo() => ComboCounter;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static int GetHighestCombo() => MaxCombo;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static int GetKillCounter() => KillCounter;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static int GetTotalScore() => TotalScore;
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void IncreaseTotalScore( int nAmount ) {
 		TotalScore += nAmount;
 	}
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void CalculateEncounterScore() {
 		TotalScore += MaxCombo * 10;
 		TotalScore += HellbreakCounter * 5;
@@ -66,7 +73,7 @@ public partial class FreeFlow : Node {
 		BurnoutTimer.Name = "FreeFlowComboBurnoutTimer";
 		BurnoutTimer.WaitTime = 3.5f;
 		BurnoutTimer.OneShot = true;
-		BurnoutTimer.Connect( "finished", Callable.From( EndCombo ) );
+		BurnoutTimer.Connect( Timer.SignalName.Timeout, Callable.From( EndCombo ) );
 		AddChild( BurnoutTimer );
 	}
 };
