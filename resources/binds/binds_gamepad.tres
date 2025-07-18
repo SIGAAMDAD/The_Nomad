@@ -58,13 +58,13 @@ is_remappable = false
 display_name = ""
 display_category = ""
 input = SubResource("Resource_vlkhi")
-modifiers = Array[ExtResource("5_an8na")]([SubResource("Resource_sccd1")])
+modifiers = [SubResource("Resource_sccd1")]
 triggers = Array[ExtResource("7_7mvoh")]([])
 
 [sub_resource type="Resource" id="Resource_64law"]
 script = ExtResource("1_nfumt")
 action = ExtResource("2_ip6yk")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_lbgj8")])
+input_mappings = [SubResource("Resource_lbgj8")]
 
 [sub_resource type="Resource" id="Resource_fs7r8"]
 script = ExtResource("10_54cv3")
@@ -84,7 +84,7 @@ triggers = Array[ExtResource("7_7mvoh")]([])
 [sub_resource type="Resource" id="Resource_7kqqj"]
 script = ExtResource("1_nfumt")
 action = ExtResource("8_xtpoe")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_6hpss")])
+input_mappings = [SubResource("Resource_6hpss")]
 
 [sub_resource type="Resource" id="Resource_paqe7"]
 script = ExtResource("10_54cv3")
@@ -104,7 +104,7 @@ triggers = Array[ExtResource("7_7mvoh")]([])
 [sub_resource type="Resource" id="Resource_xgijf"]
 script = ExtResource("1_nfumt")
 action = ExtResource("10_c5te4")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_cllgq")])
+input_mappings = [SubResource("Resource_cllgq")]
 
 [sub_resource type="Resource" id="Resource_7cbr1"]
 script = ExtResource("10_54cv3")
@@ -124,7 +124,7 @@ triggers = Array[ExtResource("7_7mvoh")]([])
 [sub_resource type="Resource" id="Resource_fygme"]
 script = ExtResource("1_nfumt")
 action = ExtResource("8_bn4qy")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_8q3wv")])
+input_mappings = [SubResource("Resource_8q3wv")]
 
 [sub_resource type="Resource" id="Resource_fccex"]
 script = ExtResource("10_54cv3")
@@ -143,12 +143,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_fccex")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_d3pup")])
+triggers = [SubResource("Resource_d3pup")]
 
 [sub_resource type="Resource" id="Resource_hria0"]
 script = ExtResource("1_nfumt")
 action = ExtResource("9_o6kt6")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_hdmja")])
+input_mappings = [SubResource("Resource_hdmja")]
 
 [sub_resource type="Resource" id="Resource_7dlj0"]
 script = ExtResource("10_54cv3")
@@ -167,12 +167,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_7dlj0")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_6boay")])
+triggers = [SubResource("Resource_6boay")]
 
 [sub_resource type="Resource" id="Resource_q77el"]
 script = ExtResource("1_nfumt")
 action = ExtResource("12_x3nk8")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_tdw0u")])
+input_mappings = [SubResource("Resource_tdw0u")]
 
 [sub_resource type="Resource" id="Resource_cy78y"]
 script = ExtResource("16_c5te4")
@@ -195,7 +195,7 @@ metadata/_custom_type_script = "uid://bufrausrg6455"
 [sub_resource type="Resource" id="Resource_380n5"]
 script = ExtResource("14_bn4qy")
 enable_debug_print = false
-steps = Array[ExtResource("15_xtpoe")]([SubResource("Resource_lah7w")])
+steps = [SubResource("Resource_lah7w")]
 cancellation_actions = Array[ExtResource("13_e0v06")]([])
 actuation_threshold = 0.5
 
@@ -206,12 +206,12 @@ is_remappable = false
 display_name = ""
 display_category = ""
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_380n5")])
+triggers = [SubResource("Resource_380n5")]
 
 [sub_resource type="Resource" id="Resource_6qotl"]
 script = ExtResource("1_nfumt")
 action = ExtResource("10_4afpc")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_rhawb")])
+input_mappings = [SubResource("Resource_rhawb")]
 
 [sub_resource type="Resource" id="Resource_u35xh"]
 script = ExtResource("4_arrar")
@@ -231,13 +231,13 @@ is_remappable = false
 display_name = ""
 display_category = ""
 input = SubResource("Resource_u35xh")
-modifiers = Array[ExtResource("5_an8na")]([SubResource("Resource_kxx36")])
+modifiers = [SubResource("Resource_kxx36")]
 triggers = Array[ExtResource("7_7mvoh")]([])
 
 [sub_resource type="Resource" id="Resource_ggko0"]
 script = ExtResource("1_nfumt")
 action = ExtResource("14_xky1p")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_1d3s3")])
+input_mappings = [SubResource("Resource_1d3s3")]
 
 [sub_resource type="Resource" id="Resource_juc2d"]
 script = ExtResource("10_54cv3")
@@ -256,12 +256,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_juc2d")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_6ydxt")])
+triggers = [SubResource("Resource_6ydxt")]
 
 [sub_resource type="Resource" id="Resource_3sii8"]
 script = ExtResource("1_nfumt")
 action = ExtResource("18_u50wb")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_8aors")])
+input_mappings = [SubResource("Resource_8aors")]
 
 [sub_resource type="Resource" id="Resource_mc1ch"]
 script = ExtResource("10_54cv3")
@@ -280,12 +280,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_mc1ch")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_isnt6")])
+triggers = [SubResource("Resource_isnt6")]
 
 [sub_resource type="Resource" id="Resource_pd8tu"]
 script = ExtResource("1_nfumt")
 action = ExtResource("19_t6tlw")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_e5sqg")])
+input_mappings = [SubResource("Resource_e5sqg")]
 
 [sub_resource type="Resource" id="Resource_loryr"]
 script = ExtResource("15_0fge7")
@@ -308,12 +308,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_loryr")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_jm801"), SubResource("Resource_4ayd4")])
+triggers = [SubResource("Resource_jm801"), SubResource("Resource_4ayd4")]
 
 [sub_resource type="Resource" id="Resource_udgsk"]
 script = ExtResource("1_nfumt")
 action = ExtResource("20_yq3bb")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_skivx")])
+input_mappings = [SubResource("Resource_skivx")]
 
 [sub_resource type="Resource" id="Resource_g44ox"]
 script = ExtResource("10_54cv3")
@@ -332,12 +332,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_g44ox")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_ehtea")])
+triggers = [SubResource("Resource_ehtea")]
 
 [sub_resource type="Resource" id="Resource_k828n"]
 script = ExtResource("1_nfumt")
 action = ExtResource("21_dkrdg")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_75jbx")])
+input_mappings = [SubResource("Resource_75jbx")]
 
 [sub_resource type="Resource" id="Resource_klyvw"]
 script = ExtResource("4_arrar")
@@ -357,13 +357,13 @@ is_remappable = false
 display_name = ""
 display_category = ""
 input = SubResource("Resource_klyvw")
-modifiers = Array[ExtResource("5_an8na")]([SubResource("Resource_ccx43")])
+modifiers = [SubResource("Resource_ccx43")]
 triggers = Array[ExtResource("7_7mvoh")]([])
 
 [sub_resource type="Resource" id="Resource_xvl8c"]
 script = ExtResource("1_nfumt")
 action = ExtResource("22_xvl8c")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_t4ked")])
+input_mappings = [SubResource("Resource_t4ked")]
 
 [sub_resource type="Resource" id="Resource_pm5fq"]
 script = ExtResource("15_0fge7")
@@ -382,12 +382,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_pm5fq")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_2l0fp")])
+triggers = [SubResource("Resource_2l0fp")]
 
 [sub_resource type="Resource" id="Resource_illkn"]
 script = ExtResource("1_nfumt")
 action = ExtResource("23_qsr6u")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_ch8bl")])
+input_mappings = [SubResource("Resource_ch8bl")]
 
 [sub_resource type="Resource" id="Resource_e0v06"]
 script = ExtResource("10_54cv3")
@@ -406,12 +406,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_e0v06")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_bn4qy")])
+triggers = [SubResource("Resource_bn4qy")]
 
 [sub_resource type="Resource" id="Resource_c5te4"]
 script = ExtResource("1_nfumt")
 action = ExtResource("24_dfshp")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_xtpoe")])
+input_mappings = [SubResource("Resource_xtpoe")]
 
 [sub_resource type="Resource" id="Resource_iypte"]
 script = ExtResource("10_54cv3")
@@ -430,12 +430,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_iypte")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_ap6h7")])
+triggers = [SubResource("Resource_ap6h7")]
 
 [sub_resource type="Resource" id="Resource_qsr6u"]
 script = ExtResource("1_nfumt")
 action = ExtResource("26_2l0fp")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_phcnb")])
+input_mappings = [SubResource("Resource_phcnb")]
 
 [sub_resource type="Resource" id="Resource_kl2l2"]
 script = ExtResource("15_0fge7")
@@ -456,7 +456,7 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_kl2l2")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_38w3t")])
+triggers = [SubResource("Resource_38w3t")]
 
 [sub_resource type="Resource" id="Resource_soakx"]
 script = ExtResource("15_0fge7")
@@ -477,12 +477,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_soakx")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_2f77k")])
+triggers = [SubResource("Resource_2f77k")]
 
 [sub_resource type="Resource" id="Resource_dfshp"]
 script = ExtResource("1_nfumt")
 action = ExtResource("27_ch8bl")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_wtq5d"), SubResource("Resource_macpa")])
+input_mappings = [SubResource("Resource_wtq5d"), SubResource("Resource_macpa")]
 
 [sub_resource type="Resource" id="Resource_hegyu"]
 script = ExtResource("10_54cv3")
@@ -501,12 +501,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_hegyu")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_1dsu0")])
+triggers = [SubResource("Resource_1dsu0")]
 
 [sub_resource type="Resource" id="Resource_j8lye"]
 script = ExtResource("1_nfumt")
 action = ExtResource("28_illkn")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_gurto")])
+input_mappings = [SubResource("Resource_gurto")]
 
 [sub_resource type="Resource" id="Resource_gf3bc"]
 script = ExtResource("10_54cv3")
@@ -525,12 +525,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_gf3bc")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_fbm1t")])
+triggers = [SubResource("Resource_fbm1t")]
 
 [sub_resource type="Resource" id="Resource_cd6fx"]
 script = ExtResource("1_nfumt")
 action = ExtResource("29_e0v06")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_t58xr")])
+input_mappings = [SubResource("Resource_t58xr")]
 
 [sub_resource type="Resource" id="Resource_gx4r8"]
 script = ExtResource("15_0fge7")
@@ -553,12 +553,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_gx4r8")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_fnes3"), SubResource("Resource_yc6xa")])
+triggers = [SubResource("Resource_fnes3"), SubResource("Resource_yc6xa")]
 
 [sub_resource type="Resource" id="Resource_7m1xq"]
 script = ExtResource("1_nfumt")
 action = ExtResource("30_bn4qy")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_bscmc")])
+input_mappings = [SubResource("Resource_bscmc")]
 
 [sub_resource type="Resource" id="Resource_d2l7n"]
 script = ExtResource("10_54cv3")
@@ -577,12 +577,12 @@ display_name = ""
 display_category = ""
 input = SubResource("Resource_d2l7n")
 modifiers = Array[ExtResource("5_an8na")]([])
-triggers = Array[ExtResource("7_7mvoh")]([SubResource("Resource_1upio")])
+triggers = [SubResource("Resource_1upio")]
 
 [sub_resource type="Resource" id="Resource_pud4q"]
 script = ExtResource("1_nfumt")
 action = ExtResource("31_xtpoe")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_0iydd")])
+input_mappings = [SubResource("Resource_0iydd")]
 
 [sub_resource type="Resource" id="Resource_scw7i"]
 script = ExtResource("17_d235s")
@@ -594,8 +594,6 @@ joy_axes = false
 minimum_joy_axis_actuation_strength = 0.2
 keyboard = true
 touch = false
-mouse = true
-joy = false
 
 [sub_resource type="Resource" id="Resource_l3l0r"]
 script = ExtResource("3_q8p04")
@@ -610,9 +608,9 @@ triggers = Array[ExtResource("7_7mvoh")]([])
 [sub_resource type="Resource" id="Resource_t4wje"]
 script = ExtResource("1_nfumt")
 action = ExtResource("16_ktjk3")
-input_mappings = Array[ExtResource("3_q8p04")]([SubResource("Resource_l3l0r")])
+input_mappings = [SubResource("Resource_l3l0r")]
 
 [resource]
 script = ExtResource("2_ix7vk")
 display_name = ""
-mappings = Array[ExtResource("1_nfumt")]([SubResource("Resource_64law"), SubResource("Resource_7kqqj"), SubResource("Resource_xgijf"), SubResource("Resource_fygme"), SubResource("Resource_hria0"), SubResource("Resource_q77el"), SubResource("Resource_6qotl"), SubResource("Resource_ggko0"), SubResource("Resource_3sii8"), SubResource("Resource_pd8tu"), SubResource("Resource_udgsk"), SubResource("Resource_k828n"), SubResource("Resource_xvl8c"), SubResource("Resource_illkn"), SubResource("Resource_c5te4"), SubResource("Resource_qsr6u"), SubResource("Resource_dfshp"), SubResource("Resource_j8lye"), SubResource("Resource_cd6fx"), SubResource("Resource_7m1xq"), SubResource("Resource_pud4q"), SubResource("Resource_t4wje")])
+mappings = [SubResource("Resource_64law"), SubResource("Resource_7kqqj"), SubResource("Resource_xgijf"), SubResource("Resource_fygme"), SubResource("Resource_hria0"), SubResource("Resource_q77el"), SubResource("Resource_6qotl"), SubResource("Resource_ggko0"), SubResource("Resource_3sii8"), SubResource("Resource_pd8tu"), SubResource("Resource_udgsk"), SubResource("Resource_k828n"), SubResource("Resource_xvl8c"), SubResource("Resource_illkn"), SubResource("Resource_c5te4"), SubResource("Resource_qsr6u"), SubResource("Resource_dfshp"), SubResource("Resource_j8lye"), SubResource("Resource_cd6fx"), SubResource("Resource_7m1xq"), SubResource("Resource_pud4q"), SubResource("Resource_t4wje")]

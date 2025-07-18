@@ -15,12 +15,10 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
 size = Vector2(16, 30)
 
-[node name="NetworkPlayer" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+[node name="NetworkPlayer" type="CharacterBody2D"]
 collision_layer = 44
 collision_mask = 44
 script = ExtResource("1_hquwp")
-Relations = {}
-Debts = {}
 
 [node name="LeftArm" type="AnimatedSprite2D" parent="."]
 material = ExtResource("2_ouogi")

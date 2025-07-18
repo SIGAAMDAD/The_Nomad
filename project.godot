@@ -102,7 +102,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/behaviour_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
 
 [global_group]
 
@@ -211,7 +211,7 @@ emote={
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/translations-en.en.translation", "res://locale/translations-es.es.translation")
-locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue", "res://resources/dialogue/mercenary.dialogue", "res://resources/dialogue/civilian.dialogue", "res://resources/quests/war_of_the_wastes/from_eagles_peak.tres", "res://resources/dialogue/teacher_swords.dialogue", "res://resources/quests/war_of_the_wastes/humanity.tres", "res://resources/quests/tales_from_a_lost_land/no_rest_for_the_weary.tres")
+locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue", "res://resources/dialogue/mercenary.dialogue", "res://resources/dialogue/civilian.dialogue", "res://resources/quests/war_of_the_wastes/from_eagles_peak.tres", "res://resources/dialogue/teacher_swords.dialogue", "res://resources/quests/war_of_the_wastes/humanity.tres", "res://resources/quests/tales_from_a_lost_land/no_rest_for_the_weary.tres", "res://resources/dialogue/thinker.dialogue")
 
 [layer_names]
 

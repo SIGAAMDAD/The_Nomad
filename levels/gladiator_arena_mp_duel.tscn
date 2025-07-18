@@ -954,6 +954,9 @@ polygon = PackedVector2Array(544, 253.5, 576, 253.5, 576, 258.5, 543.5, 258.5)
 
 [node name="Player0" parent="Network/Players" node_paths=PackedStringArray("Relations", "Debts") instance=ExtResource("3_r1lm7")]
 position = Vector2(-166, 227)
+Money = null
+WarCrimeCount = null
+Traits = null
 Relations = {}
 Debts = {}
 

@@ -16,13 +16,13 @@ void fragment() {
 	vec2 uv = UV;
 	float low_sanity = 1.0 - sanity;
 	vec4 color = texture( screen_texture, uv );
-	
+
 	float global_distortion = low_sanity * distortion_intensity;
 	vec2 distortion = vec2(
 		sin( TIME * 2.0 + uv.y * 20.0 ) * global_distortion,
 		cos( TIME * 1.5 + uv.x * 15.0 ) * global_distortion
 	);
-	
+
 	// biome-specific distortion
 	switch ( biome ) {
 	case 0: // bile swamps
@@ -57,7 +57,7 @@ void fragment() {
 		vec4 g = texture( screen_texture, uv );
 		vec4 b = texture( screen_texture, uv - offset );
 		COLOR = vec4( r.r, g.g, b.b, color.a );
-		
+
 		float glow = sin( TIME * 2.0 + uv.x * 5.0 ) * low_sanity * 0.3;
 		COLOR.r += glow * 0.5;
 		break;
@@ -70,11 +70,11 @@ void fragment() {
 	case 6: // frozen north
 		vec2 frost_uv = uv + ( texture( noise_texture, uv * 4.0 ).rg - 0.5 ) * low_sanity * frost_refraction;
 		vec4 frost_color = texture( screen_texture, frost_uv );
-		
+
 		float salt_noise = texture( noise_texture, uv * 2.0 ).r;
 		vec2 salt_shift = vec2( sin( TIME * 0.7 ) * salt_noise * low_sanity * 0.01, 0.0 );
 		COLOR = texture( screen_texture, frost_uv + salt_shift );
-		
+
 		COLOR.b = mix( COLOR.b, 1.0, low_sanity * 0.1 );
 		break;
 	default:

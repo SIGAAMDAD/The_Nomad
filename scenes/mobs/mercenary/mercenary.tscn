@@ -17,7 +17,7 @@ size = Vector2(11, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jglyl"]
 size = Vector2(22, 20)
 
-[node name="Mercenary" type="CharacterBody2D" node_paths=PackedStringArray("Relations", "Debts")]
+[node name="Mercenary" type="CharacterBody2D"]
 z_index = 7
 collision_layer = 12
 collision_mask = 12
@@ -27,8 +27,6 @@ SightDetectionTime = 8.0
 SightDetectionSpeed = 2.0
 MovementSpeed = 120.0
 Health = 100.0
-Relations = {}
-Debts = {}
 
 [node name="Animations" type="Node2D" parent="."]
 

@@ -38,7 +38,7 @@ radius = 153.118
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_srp4u"]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "ArmAttachment", "Relations", "Debts") groups=["Archive", "SceneRelevant"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "ArmAttachment") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
 process_physics_priority = 4
 light_mask = 0
@@ -53,8 +53,6 @@ ArmLeft = NodePath("ArmLeft")
 ArmRight = NodePath("ArmRight")
 HUD = NodePath("HeadsUpDisplay")
 ArmAttachment = NodePath("GrappleHook")
-Relations = {}
-Debts = {}
 
 [node name="Animations" type="Node2D" parent="."]
 process_thread_group = 1
@@ -230,7 +228,6 @@ wait_time = 2.5
 one_shot = true
 
 [node name="AimAssist" type="Node2D" parent="."]
-visible = false
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 modulate = Color(2, 2, 2, 1)

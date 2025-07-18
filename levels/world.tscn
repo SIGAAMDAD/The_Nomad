@@ -1,4 +1,4 @@
-[gd_scene load_steps=182 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=175 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -20,7 +20,6 @@
 [ext_resource type="Texture2D" uid="uid://5kc8kyqtjoiq" path="res://textures/env/food/20_bagel.png" id="9_fgsnb"]
 [ext_resource type="PackedScene" uid="uid://c4pa7a1ljf22" path="res://scenes/interactables/cutscene_trigger.tscn" id="9_gb70t"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
-[ext_resource type="ItemDefinition" uid="uid://ri3l0anmy3oj" path="res://resources/weapons/firearms/heavy_slugger.tres" id="9_q0seo"]
 [ext_resource type="Texture2D" uid="uid://lwkuylf3c2tc" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="10_3bhl6"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
 [ext_resource type="Script" uid="uid://duyo2hg7flovm" path="res://scripts/renown/World/WorldTimeManager.cs" id="11_re8x6"]
@@ -47,7 +46,6 @@
 [ext_resource type="Texture2D" uid="uid://pubd5h3pth35" path="res://textures/tilesets/kirosla_estate.png" id="25_cyobr"]
 [ext_resource type="Script" uid="uid://ckxrjpdanp73b" path="res://scripts/renown/World/Settlement.cs" id="25_qxdx5"]
 [ext_resource type="Texture2D" uid="uid://b4g2lwpsvw75u" path="res://textures/tilesets/galakas.png" id="26_x7eec"]
-[ext_resource type="Script" uid="uid://b2hrnfl66v3f1" path="res://scripts/renown/World/ResourceProducer.cs" id="28_5yiud"]
 [ext_resource type="Script" uid="uid://4e2off6748xr" path="res://scripts/renown/World/Faction.cs" id="31_x3q2i"]
 [ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="32_fgsnb"]
 [ext_resource type="NavigationPolygon" uid="uid://ca7bmv85ki84" path="res://resources/navmesh_cache/the_great_round_road_navmesh.tres" id="33_3bhl6"]
@@ -56,16 +54,13 @@
 [ext_resource type="Script" uid="uid://bxvargqmrd2aq" path="res://scripts/renown/Biome.cs" id="37_n2t61"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
 [ext_resource type="TileSet" uid="uid://t3xj6bangr0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
-[ext_resource type="Script" uid="uid://dxoatt023r08b" path="res://scripts/renown/World/Buildings/BuildingHouse.cs" id="40_ho3mn"]
 [ext_resource type="PackedScene" uid="uid://bt43s35a1thf4" path="res://scenes/interactables/door.tscn" id="43_qxuuj"]
 [ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
 [ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="44_dx3bq"]
 [ext_resource type="PackedScene" uid="uid://xl67ba23dfln" path="res://scenes/scenery/candle.tscn" id="45_2w2vy"]
-[ext_resource type="Script" uid="uid://bvkaw30hb60x" path="res://scripts/renown/World/Buildings/BuildingResourceProducer.cs" id="45_uh3ev"]
 [ext_resource type="Script" uid="uid://cjys0gcmej7e2" path="res://scripts/renown/World/Marketplace.cs" id="46_woxng"]
 [ext_resource type="Script" uid="uid://2vcoap7j1gor" path="res://scripts/renown/World/MarketplaceSlot.cs" id="47_uh3ev"]
 [ext_resource type="Script" uid="uid://cl875adt4mhw7" path="res://scripts/renown/World/Government.cs" id="48_7dl3v"]
-[ext_resource type="Script" uid="uid://cgkfsg74djic7" path="res://scripts/renown/World/FamilyCache.cs" id="48_qxuuj"]
 [ext_resource type="Script" uid="uid://34xbwo4s4c1u" path="res://scripts/SeeThruSprite.cs" id="49_mem04"]
 [ext_resource type="Texture2D" uid="uid://cko3nogsmg88m" path="res://textures/tilesets/tileset.dds" id="50_w1k0a"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="51_82deo"]
@@ -73,7 +68,6 @@
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="53_m0bm8"]
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="53_mem04"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="54_mem04"]
-[ext_resource type="Script" uid="uid://b2o0y82xbu5nx" path="res://scripts/renown/Thinkers/Family.cs" id="58_qxuuj"]
 [ext_resource type="Resource" uid="uid://rtr1r3ter3ko" path="res://resources/binds/actions/keyboard/melee.tres" id="65_gb70t"]
 [ext_resource type="PackedScene" uid="uid://dmt36v2g56rb2" path="res://scenes/interactables/cutscene.tscn" id="68_q0seo"]
 [ext_resource type="Script" uid="uid://bwwd2pdkul1bk" path="res://scripts/Interactables/Cutscenes/CutsceneDialogue.cs" id="69_gb70t"]
@@ -15579,9 +15573,6 @@ texture = ExtResource("26_x7eec")
 [sub_resource type="TileSet" id="TileSet_1r2vu"]
 sources/0 = SubResource("TileSetAtlasSource_ho3mn")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5t368"]
-size = Vector2(552, 305)
-
 [sub_resource type="Gradient" id="Gradient_23017"]
 offsets = PackedFloat32Array(0, 0.879902, 1)
 colors = PackedColorArray(0.945737, 0.796942, 7.70092e-07, 1, 0.665379, 0.501708, 2.5028e-05, 1, 0.422312, 0.25376, 3.36915e-07, 1)
@@ -15610,7 +15601,7 @@ State = Dictionary[String, Variant]({
 "KiroslaSlavesFreed": false,
 "MelioraFound": 0
 })
-ThisPlayer = NodePath("Network/Players/Player0")
+ThisPlayer = NodePath("Network/Players/Player")
 PlayerList = NodePath("Network/Players")
 
 [node name="WorldTime" type="Node2D" parent="." node_paths=PackedStringArray("WorldTimeOverlay", "Months")]
@@ -15636,155 +15627,25 @@ DayCount = 156
 script = ExtResource("4_cyobr")
 DayCount = 286
 
-[node name="Cutscene" type="Node" parent="."]
-
-[node name="StartingThoughtBubble" parent="Cutscene" node_paths=PackedStringArray("Sequences") instance=ExtResource("68_q0seo")]
-position = Vector2(690, 3095)
-scale = Vector2(2, 2)
-Sequences = [NodePath("ThoughtBubbleSequence0")]
-
-[node name="ThoughtBubbleSequence0" type="Node2D" parent="Cutscene/StartingThoughtBubble"]
-script = ExtResource("69_gb70t")
-DialogueResource = ExtResource("70_gb70t")
-Starting = &"start_thoughts"
-
-[node name="CutsceneTrigger" parent="Cutscene/StartingThoughtBubble" node_paths=PackedStringArray("Cutscene") instance=ExtResource("9_gb70t")]
-position = Vector2(-86094, 50374.5)
-Cutscene = NodePath("..")
-OneShot = true
-
-[node name="FamilyTrees" type="Node" parent="." groups=["Archive"]]
-process_mode = 4
-script = ExtResource("48_qxuuj")
-
-[node name="Ollavan" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
-script = ExtResource("58_qxuuj")
-CachedMembers = []
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House")
-SocioEconomicStatus = 1
-IsPremade = true
-
-[node name="Ferrres" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
-script = ExtResource("58_qxuuj")
-CachedMembers = []
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House4")
-SocioEconomicStatus = 1
-IsPremade = true
-
-[node name="Erron" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
-script = ExtResource("58_qxuuj")
-CachedMembers = []
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House11")
-SocioEconomicStatus = 1
-IsPremade = true
-
-[node name="Gajor" type="Node" parent="FamilyTrees" node_paths=PackedStringArray("CachedMembers", "Home")]
-script = ExtResource("58_qxuuj")
-CachedMembers = []
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House18")
-SocioEconomicStatus = 1
-IsPremade = true
-
 [node name="Thinkers" type="Node2D" parent="." groups=["Archive", "Cities"]]
 script = ExtResource("44_1r2vu")
 
-[node name="Mercenary" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Floor", "Home", "Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("8_dx3bq")]
-position = Vector2(-84610, 53354.5)
-NodeCache = NodePath("../../Biomes/SaltWastes/KiroslaEstate/NodeCache")
-DefaultWeapon = ExtResource("9_q0seo")
-DefaultAmmo = ExtResource("19_ybss6")
-Floor = NodePath("../../Biomes/SaltWastes/KiroslaEstate/Exterior")
-IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House")
-BotName = &"Kasca Ollavan"
-Age = 19
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 1
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/KiroslaEstate")
-Faction = NodePath("../../Factions/GunsAndGrenades")
-FactionImportance = 5
-
-[node name="Mercenary2" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Floor", "Home", "Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("8_dx3bq")]
-position = Vector2(-84177, 53273.5)
-NodeCache = NodePath("../../Biomes/SaltWastes/KiroslaEstate/NodeCache")
-DefaultWeapon = ExtResource("9_q0seo")
-DefaultAmmo = ExtResource("19_ybss6")
-Floor = NodePath("../../Biomes/SaltWastes/KiroslaEstate/Exterior")
-IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House11")
-BotName = &"Iggy Erron"
-Age = 32
-Family = NodePath("../../FamilyTrees/Erron")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 2
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/KiroslaEstate")
-Faction = NodePath("../../Factions/GunsAndGrenades")
-FactionImportance = 10
-
-[node name="Mercenary3" parent="Thinkers" node_paths=PackedStringArray("NodeCache", "Floor", "Home", "Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("8_dx3bq")]
-position = Vector2(-84238.5, 53273.5)
-NodeCache = NodePath("../../Biomes/SaltWastes/KiroslaEstate/NodeCache")
-DefaultWeapon = ExtResource("9_q0seo")
-DefaultAmmo = ExtResource("19_ybss6")
-Floor = NodePath("../../Biomes/SaltWastes/KiroslaEstate/Exterior")
-IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House11")
-BotName = &"Zallan Erron"
-Age = 29
-Family = NodePath("../../FamilyTrees/Erron")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
-Direction = 2
-Relations = {}
-Debts = {}
-Location = NodePath("../../Biomes/SaltWastes/KiroslaEstate")
-Faction = NodePath("../../Factions/GunsAndGrenades")
-FactionImportance = 10
-
-[node name="Bandit2" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("16_uh3ev")]
+[node name="Bandit2" parent="Thinkers" instance=ExtResource("16_uh3ev")]
 position = Vector2(-87283.5, 53032)
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House")
-BotName = &"Jacafo Ollavan"
-Age = 24
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
 Direction = 1
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
-[node name="Bandit3" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("16_uh3ev")]
+[node name="Bandit3" parent="Thinkers" instance=ExtResource("16_uh3ev")]
 position = Vector2(-86811.5, 53333)
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House")
-BotName = &"Jacafo Ollavan"
-Age = 24
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
 Direction = 2
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
-[node name="Bandit" parent="Thinkers" node_paths=PackedStringArray("Home", "Family", "BirthPlace", "Relations", "Debts", "Faction") instance=ExtResource("16_uh3ev")]
+[node name="Bandit" parent="Thinkers" instance=ExtResource("16_uh3ev")]
 position = Vector2(-87216, 53296)
 IsPremade = true
-Home = NodePath("../../Biomes/SafeSands/Galakas/MidCity/House")
-BotName = &"Gaser Ollavan"
-Age = 18
-Family = NodePath("../../FamilyTrees/Ollavan")
-BirthPlace = NodePath("../../Biomes/SafeSands/Galakas")
 Direction = 1
-Relations = {}
-Debts = {}
-Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 20
 
 [node name="Biomes" type="Node2D" parent="."]
@@ -16277,8 +16138,8 @@ end_position = Vector2(1002, 325)
 [node name="NodeCache" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
 process_mode = 4
 script = ExtResource("15_qx5q4")
-CoverCache = [NodePath("CoverNode"), NodePath("CoverNode2"), NodePath("CoverNode3"), NodePath("CoverNode4")]
-PatrolRoutes = [NodePath("PatrolRoute0"), NodePath("PatrolRoute1"), NodePath("PatrolRoute2"), NodePath("PatrolRoute3")]
+CoverCache = []
+PatrolRoutes = []
 
 [node name="CoverNode" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache"]
 position = Vector2(-87213, 53073)
@@ -16763,48 +16624,31 @@ Destination = NodePath("../../Exterior/DoorDestination")
 position = Vector2(5, -2.5)
 shape = SubResource("RectangleShape2D_q0seo")
 
-[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("NodeCache", "Floor", "Home", "Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("8_dx3bq")]
+[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("NodeCache", "Floor", "Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-1145, 194.5)
 NodeCache = NodePath("../../NodeCache")
 DefaultWeapon = ExtResource("17_ortr0")
 DefaultAmmo = ExtResource("18_dx3bq")
 Floor = NodePath("..")
 IsPremade = true
-Home = NodePath("../../../../SafeSands/Galakas/MidCity/House4")
-BotName = &"Kevoa Ferres"
-Age = 21
-Family = NodePath("../../../../../FamilyTrees/Ferrres")
-BirthPlace = NodePath("../../../../SafeSands/Galakas")
-Relations = {}
-Debts = {}
 Location = NodePath("../..")
-Faction = NodePath("../../../../../Factions/GunsAndGrenades")
 FactionImportance = 18
 
-[node name="Mercenary" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Floor", "Home", "Family", "BirthPlace", "Relations", "Debts", "Location", "Faction") instance=ExtResource("8_dx3bq")]
+[node name="Mercenary" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Floor", "Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-634.5, 156)
 DefaultWeapon = ExtResource("17_ortr0")
 DefaultAmmo = ExtResource("18_dx3bq")
 Floor = NodePath("..")
 IsPremade = true
-Home = NodePath("../../../../SafeSands/Galakas/MidCity/House18")
-BotName = &"Kolae Gajor"
-Age = 39
-Family = NodePath("../../../../../FamilyTrees/Gajor")
-BirthPlace = NodePath("../../../../SafeSands/Galakas")
 Direction = 3
-Relations = {}
-Debts = {}
 Location = NodePath("../..")
-Faction = NodePath("../../../../../Factions/GunsAndGrenades")
 FactionImportance = 5
 
-[node name="Exterior" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Area", "ParentLocation", "InteriorLayers", "UpperLayer") instance=ExtResource("21_qrdf2")]
+[node name="Exterior" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Area", "ParentLocation", "UpperLayer") instance=ExtResource("21_qrdf2")]
 position = Vector2(38, 8)
 Floor = NodePath("TileMapLayer")
 Area = NodePath("Area2D")
 ParentLocation = NodePath("..")
-InteriorLayers = [NodePath("../FirstFloorLayer0"), NodePath("../FirstFloorLayer1")]
 UpperLayer = NodePath("../FirstFloorLayer1")
 IsExterior = true
 
@@ -16994,7 +16838,7 @@ polygon = PackedVector2Array(-550, -428, -703, 132, -627.5, 714, 790, 730, 1410,
 [node name="NodeCache" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
 script = ExtResource("15_qx5q4")
 CoverCache = []
-PatrolRoutes = [NodePath("PatrolRoute0")]
+PatrolRoutes = []
 
 [node name="PatrolRoute0" type="NavigationLink2D" parent="Biomes/SaltWastes/KiroslaEstate/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
 position = Vector2(-130, 255.5)
@@ -17012,14 +16856,13 @@ Data = ExtResource("53_m0bm8")
 position = Vector2(429.5, 244)
 Data = ExtResource("54_mem04")
 
-[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
 position = Vector2(45472, -4116)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
-Producers = []
 BirthRate = 4.0
 Biome = NodePath("..")
 AreaName = &"Abazan, City of Gold"
@@ -17095,7 +16938,7 @@ WeatherChangeInterval = 6000.0
 AreaName = &"Safe Sands"
 TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(-56, 59)
 collision_layer = 12
 collision_mask = 12
@@ -17103,17 +16946,10 @@ input_pickable = false
 script = ExtResource("25_qxdx5")
 Type = 1
 Treasury = 50000.0
-Government = NodePath("../../../Factions/GalakanOligarchy")
 Markets = []
 TradeRoutes = []
-Producers = []
 BirthRate = 3.5
 TaxationRate = 60.0
-SocietyScale = Dictionary[int, float]({
-0: 50.0,
-1: 40.0,
-2: 10.0
-})
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
 TileMaps = []
@@ -17151,12 +16987,9 @@ position = Vector2(544, -480)
 tile_map_data = PackedByteArray("AAABAAYAAABCAFYAAAABAAcAAABCAFcAAAACAAYAAABDAFYAAAACAAcAAABDAFcAAAADAAYAAABEAFYAAAADAAcAAABEAFcAAAAEAAYAAABFAFYAAAAEAAcAAABFAFcAAAAAAAkAAABHAFQAAAAAAAoAAABHAFUAAAAAAAsAAABHAFYAAAABAAgAAABIAFMAAAABAAkAAABIAFQAAAABAAoAAABIAFUAAAAEAAgAAABKAFMAAAAEAAkAAABKAFQAAAAEAAoAAABKAFUAAAAFAAkAAABLAFQAAAAFAAoAAABLAFUAAAAFAAsAAABLAFYAAAACAAoAAABPAEkAAAADAAoAAABQAEkAAAACAAkAAABKAFQAAFADAAkAAABKAFQAAFACAAgAAABKAFQAAFADAAgAAABKAFQAAFDz////AgAZAAQAAADz//7/AgAZAAMAAAD0//7/AgAaAAMAAAD0////AgAaAAQAAAD1////AgAaAAQAAAD2////AgAaAAQAAAD3////AgAaAAQAAAD4////AgAaAAQAAAD5////AgAaAAQAAAD6////AgAaAAQAAAD7////AgAaAAQAAAD8////AgAaAAQAAAD9////AgAaAAQAAAD+////AgAaAAQAAAD/////AgAaAAQAAAAAAP//AgAaAAQAAAABAP//AgAaAAQAAAACAP//AgAaAAQAAAADAP//AgAaAAQAAAAEAP//AgAaAAQAAAAFAP//AgAaAAQAAAAGAP//AgAaAAQAAAAHAP//AgAaAAQAAAAIAP//AgAaAAQAAAAJAP//AgAaAAQAAAAKAP//AgAaAAQAAAALAP//AgAaAAQAAAAMAP//AgAaAAQAAAANAP//AgAaAAQAAAAOAP//AgAaAAQAAAAPAP//AgAaAAQAAAAQAP//AgAaAAQAAAARAP//AgAaAAQAAAASAP//AgAfAAQAAAASAP7/AgAfAAMAAAARAP7/AgAeAAMAAAARAP3/AgAeAAIAAAD1//7/AgAdAAMAAAD2//7/AgAdAAMAAAD3//7/AgAdAAMAAAD4//7/AgAdAAMAAAD5//7/AgAdAAMAAAD6//7/AgAdAAMAAAD7//7/AgAdAAMAAAD8//7/AgAdAAMAAAD9//7/AgAdAAMAAAD+//7/AgAdAAMAAAD///7/AgAdAAMAAAAAAP7/AgAdAAMAAAABAP7/AgAdAAMAAAACAP7/AgAdAAMAAAADAP7/AgAdAAMAAAAEAP7/AgAdAAMAAAAFAP7/AgAdAAMAAAAGAP7/AgAdAAMAAAAHAP7/AgAdAAMAAAAIAP7/AgAdAAMAAAAJAP7/AgAdAAMAAAAKAP7/AgAdAAMAAAALAP7/AgAdAAMAAAAMAP7/AgAdAAMAAAANAP7/AgAdAAMAAAAOAP7/AgAdAAMAAAAPAP7/AgAdAAMAAAAQAP7/AgAdAAMAAAD///3/AgAHABgAAAAAAP3/AgAHABgAAAABAP3/AgAHABgAAAACAP3/AgAHABgAAAADAP3/AgAHABgAAAAEAP3/AgAHABgAAAAFAP3/AgAHABgAAAAGAP3/AgAHABgAAAAHAP3/AgAHABgAAAAIAP3/AgAHABgAAAAJAP3/AgAHABgAAAAKAP3/AgAHABgAAAALAP3/AgAHABgAAAAMAP3/AgAHABgAAAANAP3/AgAHABgAAAAOAP3/AgAHABgAAAAPAP3/AgAHABgAAAAQAP3/AgAHABgAAAD0//3/AgAaAAIAAAD+//3/AgAHABgAAAD9//3/AgAHABgAAAD8//3/AgAHABgAAAD7//3/AgAHABgAAAD6//3/AgAHABgAAAD5//3/AgAHABgAAAD4//3/AgAHABgAAAD3//3/AgAHABgAAAD2//3/AgAHABgAAAD1//3/AgAHABgAAADz/wAAAgAHABgAAAD0/wAAAgAHABgAAAD1/wAAAgAHABgAAAD2/wAAAgAHABgAAAD3/wAAAgAHABgAAAD4/wAAAgAHABgAAAD5/wAAAgAHABgAAAD6/wAAAgAHABgAAAD7/wAAAgAHABgAAAD8/wAAAgAHABgAAAD9/wAAAgAHABgAAAD+/wAAAgAHABgAAAD//wAAAgAHABgAAAAAAAAAAgAHABgAAAABAAAAAgAHABgAAAACAAAAAgAHABgAAAADAAAAAgAHABgAAAAEAAAAAgAHABgAAAAFAAAAAgAHABgAAAAGAAAAAgAHABgAAAAHAAAAAgAHABgAAAAIAAAAAgAHABgAAAAJAAAAAgAHABgAAAAKAAAAAgAHABgAAAALAAAAAgAHABgAAAAMAAAAAgAHABgAAAANAAAAAgAHABgAAAAOAAAAAgAHABgAAAAPAAAAAgAHABgAAAAQAAAAAgAHABgAAAARAAAAAgAHABgAAAASAAAAAgAHABgAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-336.5, -206.5)
 scale = Vector2(-1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House"]
 scale = Vector2(0.4, 0.4)
@@ -17169,12 +17002,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House2" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House2" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-687.5, -150.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House2"]
 tile_map_data = PackedByteArray("AAD6/wAABgA7AWAAAAD7/wAABgA8AWAAAAD8/wAABgA7AWAAAAD6////BgA7AWAAAAD7////BgA8AWAAAAD8////BgA7AWAAAAD9/wAABgA8AWAAAAD9////BgA8AWAAAAD/////BgA7AWAAAAD//wAABgA8AWAAAAAAAP//BgA7AWAAAAABAP//BgA8AWAAAAAAAAAABgA7AWAAAAABAAAABgA8AWAAAAD6//7/BgA7AWAAAAD7//7/BgA8AWAAAAD8//7/BgA9AWAAAAD9//7/BgA7AWAAAAD+//7/BgA7AWAAAAD///7/BgA7AWAAAAAAAP7/BgA8AWAAAAABAP7/BgA9AWAAAAD6//3/BgA7AWAAAAD7//3/BgA8AWAAAAD8//3/BgA7AWAAAAD9//3/BgA8AWAAAAD+//3/BgA9AWAAAAD///3/BgA7AWAAAAAAAP3/BgA8AWAAAAABAP3/BgA9AWAAAAD+////BgBmAWAAAAD+/wAABgBmAWEAAAA=")
@@ -17186,12 +17016,9 @@ scale = Vector2(0.5, 0.5)
 tile_map_data = PackedByteArray("AADz/9z/AQAYAAcAAADz/93/AQAYAAgAAADz/97/AQAYAAkAAADz/9//AQAYAAoAAADz/+D/AQAYAAsAAADz/+H/AQAYAAwAAADz/+L/AQAYAA0AAADz/+P/AQAYAA4AAAD0/9v/AQAYAAcAAAD0/9z/AQAYAAgAAAD0/93/AQAYAAkAAAD0/97/AQAYAAoAAAD0/9//AQAYAAsAAAD0/+D/AQAYAAwAAAD0/+H/AQAYAA0AAAD0/+L/AQAYAA4AAAD1/+H/AQAsAAAAAGD1/+D/AQAtAAAAAGD1/9//AQAuAAAAAGD1/97/AQAsAAAAAGD2/+H/AQAsAAQAAHD2/+D/AQAtAAQAAHD2/9//AQAuAAQAAHD2/97/AQAsAAQAAHD3/+H/AQAsAAMAAHD3/+D/AQAtAAMAAHD3/9//AQAuAAMAAHD3/97/AQAsAAMAAHD4/+H/AQAsAAIAAHD4/+D/AQAtAAIAAHD4/9//AQAuAAIAAHD4/97/AQAsAAIAAHD5/+H/AQAsAAEAAHD5/+D/AQAtAAEAAHD5/9//AQAuAAEAAHD5/97/AQAsAAEAAHD6/+H/AQAsAAMAAHD6/+D/AQAtAAMAAHD6/9//AQAuAAMAAHD6/97/AQAvAAMAAHD1/93/AQAtAAAAAGD1/9z/AQAuAAAAAGD1/9v/AQAvAAAAAGD2/93/AQAtAAQAAHD2/9z/AQAuAAQAAHD2/9v/AQAvAAQAAHD3/93/AQAtAAMAAHD3/9z/AQAuAAMAAHD3/9v/AQAvAAMAAHD4/93/AQAtAAIAAHD4/9z/AQAuAAIAAHD4/9v/AQAvAAIAAHD5/93/AQAtAAEAAHD5/9z/AQAuAAEAAHD5/9v/AQAvAAEAAHD6/93/AQAtAAMAAHD6/9z/AQAuAAMAAHD6/9v/AQAvAAMAAHACANv/AQAsAAAAAFACANz/AQAtAAAAAFACAN3/AQAuAAAAAFACAN7/AQAsAAAAAFABANv/AQAsAAEAAFABANz/AQAtAAEAAFABAN3/AQAuAAEAAFABAN7/AQAsAAEAAFAAANv/AQAsAAIAAFAAANz/AQAtAAIAAFAAAN3/AQAuAAIAAFAAAN7/AQAsAAIAAFD//9v/AQAsAAMAAFD//9z/AQAtAAMAAFD//93/AQAuAAMAAFD//97/AQAsAAMAAFD+/9v/AQAsAAQAAFD+/9z/AQAtAAQAAFD+/93/AQAuAAQAAFD+/97/AQAsAAQAAFD9/9v/AQAsAAUAAFD9/9z/AQAtAAUAAFD9/93/AQAuAAUAAFD9/97/AQAsAAUAAFACAN//AQAtAAAAAFACAOD/AQAuAAAAAFACAOH/AQAvAAAAAFABAN//AQAtAAEAAFABAOD/AQAuAAEAAFABAOH/AQAvAAEAAFAAAN//AQAtAAIAAFAAAOD/AQAuAAIAAFAAAOH/AQAvAAIAAFD//9//AQAtAAMAAFD//+D/AQAuAAMAAFD//+H/AQAvAAMAAFD+/9//AQAtAAQAAFD+/+D/AQAuAAQAAFD+/+H/AQAvAAQAAFD9/9//AQAtAAUAAFD9/+D/AQAuAAUAAFD9/+H/AQAvAAUAAFD7/97/AQAvAAIAAHD7/93/AQAtAAIAAHD7/9z/AQAuAAIAAHD7/9v/AQAvAAIAAHD8/97/AQAvAAEAAHD8/93/AQAtAAEAAHD8/9z/AQAuAAEAAHD8/9v/AQAvAAEAAHD8/9//AQAuAAEAAHD8/+D/AQAtAAEAAHD8/+H/AQAsAAEAAHD7/9//AQAuAAIAAHD7/+D/AQAtAAIAAHD7/+H/AQAsAAIAAHADANv/AQAYAAcAABADANz/AQAYAAgAABADAN3/AQAYAAkAABADAN7/AQAYAAoAABADAN//AQAYAAsAABADAOD/AQAYAAwAABADAOH/AQAYAA0AABADAOL/AQAYAA4AABA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House3" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House3" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-902.5, -350.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House3"]
 scale = Vector2(0.4, 0.4)
@@ -17204,12 +17031,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("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")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House4" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House4" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-190, -581)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House4"]
 scale = Vector2(0.4, 0.4)
@@ -17222,11 +17046,8 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House5" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House5" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-192, -690)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House5"]
 scale = Vector2(0.4, 0.4)
@@ -17239,12 +17060,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House6" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House6" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-180, -464)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House6"]
 scale = Vector2(0.4, 0.4)
@@ -17257,12 +17075,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House7" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House7" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-159.5, -390)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House7"]
 scale = Vector2(0.4, 0.4)
@@ -17275,12 +17090,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("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")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House8" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House8" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-665, -473)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House8"]
 scale = Vector2(0.4, 0.4)
@@ -17293,12 +17105,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House9" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House9" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-820, -622.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House9"]
 scale = Vector2(0.4, 0.4)
@@ -17311,12 +17120,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD8/9//CwBKAAsAAAD8/+D/CwBKAAwAAAD8/+H/CwBKAA0AAAD8/+L/CwBKAA4AAAD9/9//CwBLAAsAAAD9/+D/CwBLAAwAAAD9/+H/CwBLAA0AAAD9/+L/CwBLAA4AAAD+/9//CwBMAAsAAAD+/+D/CwBMAAwAAAD+/+H/CwBMAA0AAAD+/+L/CwBMAA4AAAD//9//CwBNAAsAAAD//+D/CwBNAAwAAAD//+H/CwBNAA0AAAD//+L/CwBNAA4AAAAAAN//CwBOAAsAAAAAAOD/CwBOAAwAAAAAAOH/CwBOAA0AAAAAAOL/CwBOAA4AAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House10" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House10" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-620, -582)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House10"]
 scale = Vector2(0.4, 0.4)
@@ -17329,12 +17135,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House11" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House11" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-515, -470)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House11"]
 scale = Vector2(0.4, 0.4)
@@ -17347,12 +17150,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House12" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House12" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-689, -357)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House12"]
 scale = Vector2(0.4, 0.4)
@@ -17365,12 +17165,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House13" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House13" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(264, -570)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House13"]
 scale = Vector2(0.4, 0.4)
@@ -17383,12 +17180,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House14" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House14" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-939, -711)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House14"]
 scale = Vector2(0.4, 0.4)
@@ -17401,12 +17195,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House15" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House15" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-667, -736)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House15"]
 scale = Vector2(0.4, 0.4)
@@ -17419,12 +17210,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House16" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House16" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1376.5, -656.5)
 scale = Vector2(-1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House16"]
 scale = Vector2(0.4, 0.4)
@@ -17437,12 +17225,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House17" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House17" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1523.5, -487)
 scale = Vector2(-1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House17"]
 scale = Vector2(0.4, 0.4)
@@ -17455,12 +17240,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House18" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House18" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-342, -776)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House18"]
 scale = Vector2(0.4, 0.4)
@@ -17473,12 +17255,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House19" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House19" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(76, -742)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House19"]
 scale = Vector2(0.4, 0.4)
@@ -17491,11 +17270,8 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House20" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House20" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-137, -753)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House20"]
 scale = Vector2(0.4, 0.4)
@@ -17508,12 +17284,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House21" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House21" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1821, -214)
 scale = Vector2(-1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House21"]
 scale = Vector2(0.4, 0.4)
@@ -17526,12 +17299,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAADu/9//CwA8AAUAAADu/+D/CwA8AAYAAADu/+H/CwA8AAcAAADu/+L/CwA8AAgAAADv/9//CwA9AAUAAADv/+D/CwA9AAYAAADv/+H/CwA9AAcAAADv/+L/CwA9AAgAAADw/9//CwA+AAUAAADw/+D/CwA+AAYAAADw/+H/CwA+AAcAAADw/+L/CwA+AAgAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House22" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House22" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-916, -198.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House22"]
 scale = Vector2(0.4, 0.4)
@@ -17544,12 +17314,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAADy/+L/CwA/AAMAAADy/+P/CwA/AAQAAADy/+T/CwA/AAUAAADz/+H/CwBAAAIAAADz/+L/CwBAAAMAAADz/+P/CwBAAAQAAADz/+T/CwBAAAUAAAD0/+H/CwBBAAIAAAD0/+L/CwBBAAMAAAD0/+P/CwBBAAQAAAD0/+T/CwBBAAUAAAD1/+H/CwBCAAIAAAD1/+L/CwBCAAMAAAD1/+P/CwBCAAQAAAD1/+T/CwBCAAUAAAD2/+H/CwBDAAIAAAD2/+L/CwBDAAMAAAD2/+P/CwBDAAQAAAD2/+T/CwBDAAUAAAD3/+L/CwBEAAMAAAD3/+P/CwBEAAQAAAD3/+T/CwBEAAUAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House23" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House23" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1117, -484.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House23"]
 scale = Vector2(0.4, 0.4)
@@ -17562,12 +17329,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAACAOL/CwA8AAAAAAACAOP/CwA8AAEAAAACAOT/CwA8AAIAAAADAOL/CwA9AAAAAAADAOP/CwA9AAEAAAADAOT/CwA9AAIAAAAEAOL/CwA+AAAAAAAEAOP/CwA+AAEAAAAEAOT/CwA+AAIAAAD9/97/CwAnAAEAAAD9/9//CwAnAAIAAAD9/+D/CwAnAAMAAAD9/+H/CwAnAAQAAAD+/97/CwAoAAEAAAD+/9//CwAoAAIAAAD+/+D/CwAoAAMAAAD+/+H/CwAoAAQAAAD//97/CwApAAEAAAD//9//CwApAAIAAAD//+D/CwApAAMAAAD//+H/CwApAAQAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House24" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House24" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1420, -175)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House24"]
 scale = Vector2(0.4, 0.4)
@@ -17580,12 +17344,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD1/+D/CwAtAAcAAAD1/+H/CwAtAAgAAAD2/+D/CwAuAAcAAAD2/+H/CwAuAAgAAAD3/+D/CwAvAAcAAAD3/+H/CwAvAAgAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House25" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House25" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1128.5, -194)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House25"]
 scale = Vector2(0.4, 0.4)
@@ -17598,12 +17359,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD8/97/CwAqAAEAAAD8/9//CwAqAAIAAAD8/+D/CwAqAAMAAAD8/+H/CwAqAAQAAAD9/97/CwArAAEAAAD9/9//CwArAAIAAAD9/+D/CwArAAMAAAD9/+H/CwArAAQAAAD+/97/CwAsAAEAAAD+/9//CwAsAAIAAAD+/+D/CwAsAAMAAAD+/+H/CwAsAAQAAAD//97/CwAtAAEAAAD//9//CwAtAAIAAAD//+D/CwAtAAMAAAD//+H/CwAtAAQAAAAAAN7/CwAuAAEAAAAAAN//CwAuAAIAAAAAAOD/CwAuAAMAAAAAAOH/CwAuAAQAAAABAN7/CwAvAAEAAAABAN//CwAvAAIAAAABAOD/CwAvAAMAAAABAOH/CwAvAAQAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House26" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House26" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1753, -754)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House26"]
 scale = Vector2(0.4, 0.4)
@@ -17616,12 +17374,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAAFAN3/CwA8AAUAAAAFAN7/CwA8AAYAAAAFAN//CwA8AAcAAAAFAOD/CwA8AAgAAAAGAN3/CwA9AAUAAAAGAN7/CwA9AAYAAAAGAN//CwA9AAcAAAAGAOD/CwA9AAgAAAAHAN3/CwA+AAUAAAAHAN7/CwA+AAYAAAAHAN//CwA+AAcAAAAHAOD/CwA+AAgAAAD+/9//CwBKAAsAAAD+/+D/CwBKAAwAAAD+/+H/CwBKAA0AAAD+/+L/CwBKAA4AAAD//9//CwBLAAsAAAD//+D/CwBLAAwAAAD//+H/CwBLAA0AAAD//+L/CwBLAA4AAAAAAN//CwBMAAsAAAAAAOD/CwBMAAwAAAAAAOH/CwBMAA0AAAAAAOL/CwBMAA4AAAABAN//CwBNAAsAAAABAOD/CwBNAAwAAAABAOH/CwBNAA0AAAABAOL/CwBNAA4AAAACAN//CwBOAAsAAAACAOD/CwBOAAwAAAACAOH/CwBOAA0AAAACAOL/CwBOAA4AAAD9/9v/CwAeAAEAAAD9/9z/CwAeAAIAAAD9/93/CwAeAAMAAAD9/97/CwAeAAQAAAD+/9v/CwAfAAEAAAD+/9z/CwAfAAIAAAD+/93/CwAfAAMAAAD+/97/CwAfAAQAAAD//9v/CwAgAAEAAAD//9z/CwAgAAIAAAD//93/CwAgAAMAAAD//97/CwAgAAQAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House27" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House27" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1721.5, -513.5)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House27"]
 scale = Vector2(0.4, 0.4)
@@ -17634,12 +17389,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD8/9//CwBKAAsAAAD8/+D/CwBKAAwAAAD8/+H/CwBKAA0AAAD8/+L/CwBKAA4AAAD9/9//CwBLAAsAAAD9/+D/CwBLAAwAAAD9/+H/CwBLAA0AAAD9/+L/CwBLAA4AAAD+/9//CwBMAAsAAAD+/+D/CwBMAAwAAAD+/+H/CwBMAA0AAAD+/+L/CwBMAA4AAAD//9//CwBNAAsAAAD//+D/CwBNAAwAAAD//+H/CwBNAA0AAAD//+L/CwBNAA4AAAAAAN//CwBOAAsAAAAAAOD/CwBOAAwAAAAAAOH/CwBOAA0AAAAAAOL/CwBOAA4AAAACAOH/CwA5AAkAAAACAOL/CwA5AAoAAAACAOP/CwA5AAsAAAADAOH/CwA6AAkAAAADAOL/CwA6AAoAAAADAOP/CwA6AAsAAAAEAOH/CwA7AAkAAAAEAOL/CwA7AAoAAAAEAOP/CwA7AAsAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House28" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House28" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-557, -322.5)
 scale = Vector2(-1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House28"]
 scale = Vector2(0.4, 0.4)
@@ -17652,12 +17404,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD8/9//CwBKAAsAAAD8/+D/CwBKAAwAAAD8/+H/CwBKAA0AAAD8/+L/CwBKAA4AAAD9/9//CwBLAAsAAAD9/+D/CwBLAAwAAAD9/+H/CwBLAA0AAAD9/+L/CwBLAA4AAAD+/9//CwBMAAsAAAD+/+D/CwBMAAwAAAD+/+H/CwBMAA0AAAD+/+L/CwBMAA4AAAD//9//CwBNAAsAAAD//+D/CwBNAAwAAAD//+H/CwBNAA0AAAD//+L/CwBNAA4AAAAAAN//CwBOAAsAAAAAAOD/CwBOAAwAAAAAAOH/CwBOAA0AAAAAAOL/CwBOAA4AAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House29" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House29" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-1272.5, -345)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House29"]
 scale = Vector2(0.4, 0.4)
@@ -17670,12 +17419,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAD8/9//CwBKAAsAAAD8/+D/CwBKAAwAAAD8/+H/CwBKAA0AAAD8/+L/CwBKAA4AAAD9/9//CwBLAAsAAAD9/+D/CwBLAAwAAAD9/+H/CwBLAA0AAAD9/+L/CwBLAA4AAAD+/9//CwBMAAsAAAD+/+D/CwBMAAwAAAD+/+H/CwBMAA0AAAD+/+L/CwBMAA4AAAD//9//CwBNAAsAAAD//+D/CwBNAAwAAAD//+H/CwBNAA0AAAD//+L/CwBNAA4AAAAAAN//CwBOAAsAAAAAAOD/CwBOAAwAAAAAAOH/CwBOAA0AAAAAAOL/CwBOAA4AAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House30" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House30" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-474, -205)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House30"]
 scale = Vector2(0.4, 0.4)
@@ -17688,12 +17434,9 @@ scale = Vector2(0.4, 0.4)
 tile_map_data = PackedByteArray("AADx/9r/AQAsAAAAAADx/9v/AQAsAAEAAADx/9z/AQAsAAIAAADx/93/AQAsAAMAAADx/97/AQAsAAQAAADx/9//AQAsAAUAAADy/9r/AQAtAAAAAADy/9v/AQAtAAEAAADy/9z/AQAtAAIAAADy/93/AQAtAAMAAADy/97/AQAtAAQAAADy/9//AQAtAAUAAADz/9r/AQAuAAAAAADz/9v/AQAuAAEAAADz/9z/AQAuAAIAAADz/93/AQAuAAMAAADz/97/AQAuAAQAAADz/9//AQAuAAUAAAD0/9r/AQAvAAAAAAD0/9v/AQAvAAEAAAD0/9z/AQAvAAIAAAD0/93/AQAvAAMAAAD0/97/AQAvAAQAAAD0/9//AQAvAAUAAAD1/9r/AQAsAAAAAAD1/9v/AQAsAAEAAAD1/9z/AQAsAAIAAAD1/93/AQAsAAMAAAD1/97/AQAsAAQAAAD1/9//AQAsAAUAAAD2/9r/AQAsAAAAAAD2/9v/AQAsAAEAAAD2/9z/AQAsAAIAAAD2/93/AQAsAAMAAAD2/97/AQAsAAQAAAD2/9//AQAsAAUAAAD3/9r/AQAtAAAAAAD3/9v/AQAtAAEAAAD3/9z/AQAtAAIAAAD3/93/AQAtAAMAAAD3/97/AQAtAAQAAAD3/9//AQAtAAUAAAD4/9r/AQAuAAAAAAD4/9v/AQAuAAEAAAD4/9z/AQAuAAIAAAD4/93/AQAuAAMAAAD4/97/AQAuAAQAAAD4/9//AQAuAAUAAAD5/9r/AQAvAAAAAAD5/9v/AQAvAAEAAAD5/9z/AQAvAAIAAAD5/93/AQAvAAMAAAD5/97/AQAvAAQAAAD5/9//AQAvAAUAAAD+/9L/AQAfAAAAAAD+/9P/AQAfAAEAAAD+/9T/AQAfAAIAAAD+/9X/AQAfAAMAAAD+/9b/AQAfAAQAAAD+/9f/AQAfAAUAAAD+/9j/AQAfAAYAAAD9/9P/AQAeAAEAAAD9/9T/AQAeAAIAAAD9/9X/AQAeAAMAAAD9/9b/AQAeAAQAAAD9/9f/AQAeAAUAAAD9/9j/AQAeAAYAAAD9/9n/AQAeAAcAAAD9/9r/AQAeAAgAAAD8/9T/AQAdAAIAAAD8/9X/AQAdAAMAAAD8/9b/AQAdAAQAAAD8/9f/AQAdAAUAAAD8/9j/AQAdAAYAAAD8/9n/AQAdAAcAAAD8/9r/AQAdAAgAAAD8/9v/AQAdAAkAAAD+/9n/AQAfAAcAAAD7/9X/AQAZAAYAAAD7/9b/AQAZAAcAAAD7/9f/AQAZAAgAAAD7/9j/AQAZAAkAAAD7/9n/AQAZAAoAAAD7/9r/AQAZAAsAAAD7/9v/AQAZAAwAAAD7/9z/AQAZAA0AAAD6/9b/AQAYAAcAAAD6/9f/AQAYAAgAAAD6/9j/AQAYAAkAAAD6/9n/AQAYAAoAAAD6/9r/AQAYAAsAAAD6/9v/AQAYAAwAAAD6/9z/AQAYAA0AAAD6/93/AQAYAA4AAAD//9P/AQAZAAYAABD//9T/AQAZAAcAABD//9X/AQAZAAgAABD//9b/AQAZAAkAABD//9f/AQAZAAoAABD//9j/AQAZAAsAABD//9n/AQAZAAwAABD//9r/AQAZAA0AABAAANT/AQAZAAYAABAAANX/AQAZAAcAABAAANb/AQAZAAgAABAAANf/AQAZAAkAABAAANj/AQAZAAoAABAAANn/AQAZAAsAABAAANr/AQAZAAwAABAAANv/AQAZAA0AABABANX/AQAZAAYAABABANb/AQAZAAcAABABANf/AQAZAAgAABABANj/AQAZAAkAABABANn/AQAZAAoAABABANr/AQAZAAsAABABANv/AQAZAAwAABABANz/AQAZAA0AABACANb/AQAZAAYAABACANf/AQAZAAcAABACANj/AQAZAAgAABACANn/AQAZAAkAABACANr/AQAZAAoAABACANv/AQAZAAsAABACANz/AQAZAAwAABACAN3/AQAZAA0AABADANf/AQAZAAYAABADANj/AQAZAAcAABADANn/AQAZAAgAABADANr/AQAZAAkAABADANv/AQAZAAoAABADANz/AQAZAAsAABADAN3/AQAZAAwAABADAN7/AQAZAA0AABD5/9j/AQAYAAgAAAD5/9n/AQAYAAkAAAD5/9f/AQAYAAcAAAA=")
 tile_set = ExtResource("39_ybss6")
 
-[node name="House31" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="House31" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-263, -319)
 scale = Vector2(1.5, 1.5)
-script = ExtResource("40_ho3mn")
-Level = 2
-Location = NodePath("../..")
 
 [node name="Floor" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity/House31"]
 scale = Vector2(0.4, 0.4)
@@ -17726,13 +17469,8 @@ tile_set = ExtResource("39_ybss6")
 [node name="GunFactory" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 position = Vector2(624, -774)
 
-[node name="FoodPlant" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("Location") groups=["Buildings"]]
+[node name="FoodPlant" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity" groups=["Buildings"]]
 position = Vector2(-2703, -329)
-script = ExtResource("45_uh3ev")
-ProduceType = 4
-ReplenishRate = 100.0
-Type = 3
-Location = NodePath("../..")
 
 [node name="MainMarketplace" type="Area2D" parent="Biomes/SafeSands/Galakas/MidCity" node_paths=PackedStringArray("TradingSpaces")]
 position = Vector2(184, -317)
@@ -17791,7 +17529,7 @@ AreaName = &"Galakas Outskirts"
 Floor = NodePath("OutskirtsVillage")
 Area = NodePath("Area2D")
 ParentLocation = NodePath("..")
-InteriorLayers = [NodePath("../MidCity")]
+InteriorLayers = []
 UpperLayer = NodePath("../MidCity")
 IsExterior = true
 
@@ -17848,45 +17586,27 @@ collision_mask = 12
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Galakas/WallCollision"]
 polygon = PackedVector2Array(-2397.5, 40.5, -2242.5, 40, -2240.5, -86, -178, -71.5, 1963, -36, 1963, 40, 2117.5, 40.5, 2117.5, -518.5, 2083.5, -518.5, 2082.5, -1990.5, 2116.5, -1984.5, 2118, -2346, 1965, -2346, 1963.5, -118.5, -2240, -134.5, -2197, -1288.5, -2238.5, -1312, -2201.5, -1328.5, -2202, -1881, -2360.5, -1879, -2361.5, -1791.5, -2837, -1789, -2829, -3618.5, -2976.5, -3630, -2962, -1880, -2999, -1877.5, -2997.5, -1279.5, -2840, -1273.5, -2839, -1341.5, -2361.5, -1340, -2362.5, -520, -2398.5, -519)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Government", "Markets", "TradeRoutes", "Producers", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(723, -2864)
 collision_layer = 12
 collision_mask = 12
 input_pickable = false
 script = ExtResource("25_qxdx5")
-Government = NodePath("../../../Factions/GalakanOligarchy")
 Markets = []
 TradeRoutes = []
-Producers = []
 Biome = NodePath("..")
 AreaName = &"Feohenni"
 TileMaps = []
 
-[node name="FoodProducer" type="Area2D" parent="Biomes/SafeSands/Feohenni" node_paths=PackedStringArray("Route")]
-position = Vector2(-15416, -14100)
-script = ExtResource("28_5yiud")
-MaxStorage = 264
-Route = NodePath("../../../../Roads/TheGreatRoundRoad")
-
-[node name="InteractBody" type="CollisionShape2D" parent="Biomes/SafeSands/Feohenni/FoodProducer"]
-position = Vector2(209, 142.5)
-shape = SubResource("RectangleShape2D_5t368")
-
-[node name="ReplenishTimer" type="Timer" parent="Biomes/SafeSands/Feohenni/FoodProducer"]
-process_callback = 0
-wait_time = 2.5
-autostart = true
-
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
-Producers = []
 AreaName = &"Latan"
 TileMaps = []
 
@@ -17894,13 +17614,12 @@ TileMaps = []
 position = Vector2(-28043, -1759)
 polygon = PackedVector2Array(-3571, -1394, -307, -850, -2438, 1984, -3929, 565)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Producers", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
-Producers = []
 AreaName = &"Kingdom of Sortior"
 TileMaps = []
 
@@ -18012,14 +17731,12 @@ polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299
 
 [node name="Players" type="Node2D" parent="Network"]
 
-[node name="Player0" parent="Network/Players" node_paths=PackedStringArray("Relations", "Debts") instance=ExtResource("5_712nc")]
-position = Vector2(-88268.5, 53149.5)
-Relations = {}
-Debts = {}
+[node name="Player" parent="Network/Players" instance=ExtResource("5_712nc")]
+position = Vector2(-88275.5, 53167)
 
 [node name="Factions" type="Node" parent="."]
 
-[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
+[node name="GunsAndGrenades" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 position = Vector2(-30014, 25051)
 script = ExtResource("31_x3q2i")
 FactionName = &"Guns \'n\' Grenades"
@@ -18029,15 +17746,13 @@ Money = 540000.0
 RenownScore = 500
 Debts = {}
 Relations = {}
-Location = NodePath("../../Biomes/SafeSands/Galakas")
 
-[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations", "Location") groups=["Archive", "Factions"]]
+[node name="RockyBastards" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 script = ExtResource("31_x3q2i")
 FactionName = &"Rocky Bastards"
 MemberList = []
 Debts = {}
 Relations = {}
-Location = NodePath("../../Biomes/SaltWastes/RockyBastardsCamp")
 
 [node name="SwordsOfSortior" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 script = ExtResource("31_x3q2i")
@@ -18088,3 +17803,19 @@ Action = ExtResource("72_dx3bq")
 [node name="PostProcessing" type="Node" parent="."]
 
 [node name="Distortions" parent="PostProcessing" instance=ExtResource("80_6sjd4")]
+
+[node name="Cutscene" type="Node" parent="."]
+
+[node name="StartingThoughtBubble" parent="Cutscene" instance=ExtResource("68_q0seo")]
+position = Vector2(690, 3095)
+scale = Vector2(2, 2)
+
+[node name="ThoughtBubbleSequence0" type="Node2D" parent="Cutscene/StartingThoughtBubble"]
+script = ExtResource("69_gb70t")
+DialogueResource = ExtResource("70_gb70t")
+Starting = &"start_thoughts"
+
+[node name="CutsceneTrigger" parent="Cutscene/StartingThoughtBubble" node_paths=PackedStringArray("Cutscene") instance=ExtResource("9_gb70t")]
+position = Vector2(-86094, 50374.5)
+Cutscene = NodePath("..")
+OneShot = true

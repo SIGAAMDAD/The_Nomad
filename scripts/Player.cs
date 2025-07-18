@@ -134,9 +134,9 @@ public partial class Player : Entity {
 
 	private float Money = 0.0f;
 
-	private HashSet<Trait> TraitCache = null;
-	private HashSet<RenownValue> RelationCache = null;
-	private HashSet<RenownValue> DebtCache = null;
+	private HashSet<Trait> Traits = null;
+	private HashSet<RenownValue> Relations = null;
+	private HashSet<RenownValue> Debts = null;
 
 	[Export]
 	private Node Inventory;
@@ -440,7 +440,7 @@ public partial class Player : Entity {
 	//	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public HashSet<Trait> GetTraits() => TraitCache;
+	public HashSet<Trait> GetTraits() => Traits;
 
 	public void SetFaction( Faction faction ) {
 		// sanity
@@ -484,9 +484,9 @@ public partial class Player : Entity {
 	/// <summary>
 	/// returns true if the entity has the given trait
 	/// </summary>
-	public bool HasTrait( Trait trait ) => TraitCache.Contains( trait );
+	public bool HasTrait( Trait trait ) => Traits.Contains( trait );
 	public bool HasTrait( string trait ) {
-		foreach ( var it in TraitCache ) {
+		foreach ( var it in Traits ) {
 			if ( it.GetTraitName() == trait ) {
 				return true;
 			}
@@ -494,7 +494,7 @@ public partial class Player : Entity {
 		return false;
 	}
 	public bool HasTrait( TraitType trait ) {
-		foreach ( var it in TraitCache ) {
+		foreach ( var it in Traits ) {
 			if ( it.GetTraitType() == trait ) {
 				return true;
 			}
@@ -506,7 +506,7 @@ public partial class Player : Entity {
 	/// checks if the given trait conflicts with this entity's values
 	/// </summary>
 	public bool HasConflictingTrait( Trait other ) {
-		foreach ( var trait in TraitCache ) {
+		foreach ( var trait in Traits ) {
 			if ( trait.Conflicts( other ) ) {
 				return true;
 			}
@@ -515,7 +515,7 @@ public partial class Player : Entity {
 	}
 	public List<Trait> GetConflictingTraits( Trait other ) {
 		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in TraitCache ) {
+		foreach ( var trait in Traits ) {
 			if ( trait.Conflicts( other ) ) {
 				traits.Add( trait );
 			}
@@ -524,7 +524,7 @@ public partial class Player : Entity {
 	}
 	public List<Trait> GetAgreeableTraits( Trait other ) {
 		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in TraitCache ) {
+		foreach ( var trait in Traits ) {
 			if ( trait.Agrees( other ) ) {
 				traits.Add( trait );
 			}
@@ -533,15 +533,15 @@ public partial class Player : Entity {
 	}
 	public virtual void AddTrait( Trait trait ) {
 		EmitSignalEarnTrait( this, trait );
-		TraitCache.Add( trait );
+		Traits.Add( trait );
 	}
 	public virtual void RemoveTrait( Trait trait ) {
 		EmitSignalLoseTrait( this, trait );
-		TraitCache.Remove( trait );
+		Traits.Remove( trait );
 	}
 
 	public virtual void Meet( Renown.Object other ) {
-		RelationCache.Add( new RenownValue( other ) );
+		Relations.Add( new RenownValue( other ) );
 		if ( other is Entity entity && entity != null ) { 
 			EmitSignalMeetEntity( entity, this );
 		} else {
@@ -553,7 +553,7 @@ public partial class Player : Entity {
 		}
 	}
 	public virtual void RelationIncrease( Renown.Object other, float nAmount ) {
-		if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
+		if ( !Relations.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 			Meet( other );
 		}
 		score.Value += nAmount;
@@ -562,7 +562,7 @@ public partial class Player : Entity {
 		Console.PrintLine( string.Format( "Relation between {0} and {1} increased by {2}", this, other, nAmount ) );
 	}
 	public virtual void RelationDecrease( Renown.Object other, float nAmount ) {
-		if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
+		if ( !Relations.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 			Meet( other );
 		}
 		score.Value -= nAmount;
