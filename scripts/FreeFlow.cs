@@ -35,7 +35,8 @@ public partial class FreeFlow : CanvasLayer {
 		case KillType.Headshot:
 			Instance.HeadshotCounter++;
 			break;
-		};
+		}
+		;
 		Instance.KillCounter++;
 		Instance.TotalScore += nScore;
 		Instance.EmitSignalKillAdded( nType );

@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://c5ifktckwf67j"]
+[gd_scene load_steps=4 format=3 uid="uid://c5ifktckwf67j"]
 
 [ext_resource type="Script" uid="uid://c2fnmay7uqpic" path="res://scripts/FreeFlow.cs" id="1_b1i62"]
+[ext_resource type="Shader" uid="uid://ddchjgmot3lvm" path="res://shaders/berserk_mode_overlay.gdshader" id="2_h8cc4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pqbys"]
+shader = ExtResource("2_h8cc4")
+shader_parameter/vignette_intensity = 0.3
+shader_parameter/desaturation = 0.2
 
 [node name="FreeflowCounter" type="CanvasLayer"]
 script = ExtResource("1_b1i62")
@@ -17,4 +23,13 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="BerserkModeOverlay" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_pqbys")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 metadata/_edit_use_anchors_ = true

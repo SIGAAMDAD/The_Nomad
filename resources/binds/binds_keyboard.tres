@@ -35,7 +35,7 @@
 [ext_resource type="Resource" uid="uid://dgrdfneoajdxw" path="res://resources/binds/actions/keyboard/reload.tres" id="28_17381"]
 [ext_resource type="Resource" uid="uid://bsstc7pudt16e" path="res://resources/binds/actions/keyboard/interact.tres" id="29_jmu4i"]
 [ext_resource type="Resource" uid="uid://cau5yafbqa0my" path="res://resources/binds/actions/keyboard/use_gadget.tres" id="32_ks8u5"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/use_item.tres" id="35_6rhtn"]
+[ext_resource type="Resource" uid="uid://dbf0r6ka8ff1i" path="res://resources/binds/actions/keyboard/use_item.tres" id="35_6rhtn"]
 
 [sub_resource type="Resource" id="Resource_ii5yi"]
 script = ExtResource("4_3aewh")
