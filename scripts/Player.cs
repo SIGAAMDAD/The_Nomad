@@ -1493,7 +1493,7 @@ public partial class Player : Entity {
 		if ( DashTimer >= 0.10f ) {
 			DashTimer -= 0.05f;
 		}
-		DashCooldownTime.WaitTime = 0.80f;
+		DashCooldownTime.WaitTime = 1.50f;
 		DashCooldownTime.Start();
 
 		EmitSignalDashBurnoutChanged( DashBurnout );
@@ -2473,7 +2473,7 @@ public partial class Player : Entity {
 		base._PhysicsProcess( delta );
 
 		GodotObject collision = AimRayCast.GetCollider();
-		if ( collision != null && collision.HasMeta( "Faction" ) && (Faction)collision.GetMeta( "Faction" ) != Faction ) {
+		if ( collision is Entity entity && entity != null && entity.GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else if ( collision is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
@@ -2483,8 +2483,8 @@ public partial class Player : Entity {
 
 		// cool down the jet engine if applicable
 		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
-			DashBurnout -= 0.10f;
-			DashTimer += 0.05f;
+			DashBurnout -= 0.10f * (float)GetProcessDeltaTime();
+			DashTimer += 0.05f * (float)GetProcessDeltaTime();
 			if ( DashBurnout < 0.0f ) {
 				DashBurnout = 0.0f;
 			}

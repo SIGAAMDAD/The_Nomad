@@ -51,7 +51,7 @@ triggers = Array[ExtResource("6_clyd8")]([])
 [sub_resource type="Resource" id="Resource_30ovd"]
 script = ExtResource("1_5ggct")
 action = ExtResource("2_2xjxv")
-input_mappings = [SubResource("Resource_ahqwi"), SubResource("Resource_nqnea")]
+input_mappings = Array[ExtResource("3_j3bg8")]([SubResource("Resource_ahqwi"), SubResource("Resource_nqnea")])
 
 [sub_resource type="Resource" id="Resource_5mfre"]
 script = ExtResource("7_hu5jv")
@@ -71,7 +71,7 @@ triggers = Array[ExtResource("6_clyd8")]([])
 [sub_resource type="Resource" id="Resource_ultsa"]
 script = ExtResource("1_5ggct")
 action = ExtResource("8_a60jt")
-input_mappings = [SubResource("Resource_kjj47")]
+input_mappings = Array[ExtResource("3_j3bg8")]([SubResource("Resource_kjj47")])
 
 [sub_resource type="Resource" id="Resource_duxix"]
 script = ExtResource("10_jvo0r")
@@ -91,7 +91,7 @@ triggers = Array[ExtResource("6_clyd8")]([])
 [sub_resource type="Resource" id="Resource_q433d"]
 script = ExtResource("1_5ggct")
 action = ExtResource("9_jlfu4")
-input_mappings = [SubResource("Resource_fdg6o")]
+input_mappings = Array[ExtResource("3_j3bg8")]([SubResource("Resource_fdg6o")])
 
 [sub_resource type="Resource" id="Resource_384xu"]
 script = ExtResource("7_hu5jv")
@@ -111,7 +111,7 @@ triggers = Array[ExtResource("6_clyd8")]([])
 [sub_resource type="Resource" id="Resource_ua1e6"]
 script = ExtResource("1_5ggct")
 action = ExtResource("11_nb0dr")
-input_mappings = [SubResource("Resource_2fl7d")]
+input_mappings = Array[ExtResource("3_j3bg8")]([SubResource("Resource_2fl7d")])
 
 [sub_resource type="Resource" id="Resource_n83ab"]
 script = ExtResource("10_jvo0r")
@@ -131,10 +131,10 @@ triggers = Array[ExtResource("6_clyd8")]([])
 [sub_resource type="Resource" id="Resource_w5m08"]
 script = ExtResource("1_5ggct")
 action = ExtResource("12_vaife")
-input_mappings = [SubResource("Resource_8uiuo")]
+input_mappings = Array[ExtResource("3_j3bg8")]([SubResource("Resource_8uiuo")])
 
 [resource]
 script = ExtResource("2_vnu43")
 display_name = ""
-mappings = [SubResource("Resource_30ovd"), SubResource("Resource_ultsa"), SubResource("Resource_q433d"), SubResource("Resource_ua1e6"), SubResource("Resource_w5m08")]
+mappings = Array[ExtResource("1_5ggct")]([SubResource("Resource_30ovd"), SubResource("Resource_ultsa"), SubResource("Resource_q433d"), SubResource("Resource_ua1e6"), SubResource("Resource_w5m08")])
 metadata/_custom_type_script = "uid://c3a8aj86g23bg"

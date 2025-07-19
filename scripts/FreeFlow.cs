@@ -10,14 +10,16 @@ public enum KillType : uint {
 	Count
 };
 
-public partial class FreeFlow : Node {
-	private static int KillCounter = 0;
-	private static int ComboCounter = 0;
-	private static int MaxCombo = 0;
-	private static int HeadshotCounter = 0;
-	private static Timer BurnoutTimer;
-	private static int TotalScore = 0;
-	private static int HellbreakCounter = 0;
+public partial class FreeFlow : CanvasLayer {
+	private int KillCounter = 0;
+	private int ComboCounter = 0;
+	private int MaxCombo = 0;
+	private int HeadshotCounter = 0;
+	private int TotalScore = 0;
+	private int HellbreakCounter = 0;
+	private Timer BurnoutTimer;
+
+	private static FreeFlow Instance;
 
 	[Signal]
 	public delegate void ComboFinishedEventHandler( int nCombo );
@@ -31,49 +33,55 @@ public partial class FreeFlow : Node {
 		case KillType.Bodyshot:
 			break;
 		case KillType.Headshot:
-			HeadshotCounter++;
+			Instance.HeadshotCounter++;
 			break;
 		};
-		KillCounter++;
-		TotalScore += nScore;
+		Instance.KillCounter++;
+		Instance.TotalScore += nScore;
+		Instance.EmitSignalKillAdded( nType );
 	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
-		ComboCounter += nAmount;
+		Instance.ComboCounter += nAmount;
 	}
 	public static void EndCombo() {
-		if ( ComboCounter > MaxCombo ) {
-			MaxCombo = ComboCounter;
+		if ( Instance.ComboCounter > Instance.MaxCombo ) {
+			Instance.MaxCombo = Instance.ComboCounter;
 		}
-		ComboCounter = 0;
+		Instance.ComboCounter = 0;
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetCurrentCombo() => ComboCounter;
+	public static int GetCurrentCombo() => Instance.ComboCounter;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetHighestCombo() => MaxCombo;
+	public static int GetHighestCombo() => Instance.MaxCombo;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetKillCounter() => KillCounter;
+	public static int GetKillCounter() => Instance.KillCounter;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetTotalScore() => TotalScore;
+	public static int GetTotalScore() => Instance.TotalScore;
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void IncreaseTotalScore( int nAmount ) {
-		TotalScore += nAmount;
+		Instance.TotalScore += nAmount;
 	}
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void CalculateEncounterScore() {
-		TotalScore += MaxCombo * 10;
-		TotalScore += HellbreakCounter * 5;
+		Instance.TotalScore += Instance.MaxCombo * 10;
+		Instance.TotalScore += Instance.HellbreakCounter * 5;
+	}
+	public static void StartEncounter() {
+		Instance.TotalScore = 0;
+		Instance.MaxCombo = 0;
+		Instance.ComboCounter = 0;
+		Instance.KillCounter = 0;
+		Instance.HeadshotCounter = 0;
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
-		BurnoutTimer = new Timer();
-		BurnoutTimer.Name = "FreeFlowComboBurnoutTimer";
-		BurnoutTimer.WaitTime = 3.5f;
-		BurnoutTimer.OneShot = true;
+		BurnoutTimer = GetNode<Timer>( "BurnoutTimer" );
 		BurnoutTimer.Connect( Timer.SignalName.Timeout, Callable.From( EndCombo ) );
-		AddChild( BurnoutTimer );
+
+		Instance = this;
 	}
 };

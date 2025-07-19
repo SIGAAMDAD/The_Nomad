@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=129 format=3 uid="uid://cva672a3bp3sm"]
 
-[ext_resource type="Script" uid="uid://bd74abvyklro7" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
+[ext_resource type="Script" uid="uid://cpplm41b5bt6m" path="res://addons/guide/guide_action_mapping.gd" id="1_7co6v"]
 [ext_resource type="Resource" uid="uid://ct8fhvbwjfr3i" path="res://resources/binds/actions/keyboard/move_north.tres" id="2_0l3o2"]
 [ext_resource type="Resource" uid="uid://bo083gbnlc8rm" path="res://resources/binds/actions/keyboard/move.tres" id="2_84yx1"]
 [ext_resource type="Script" uid="uid://mtx1unc2aqn7" path="res://addons/guide/guide_input_mapping.gd" id="3_w7imu"]
@@ -13,7 +13,7 @@
 [ext_resource type="Resource" uid="uid://61hxxqe5yeqk" path="res://resources/binds/actions/keyboard/move_west.tres" id="9_v0imb"]
 [ext_resource type="Script" uid="uid://x74mnwgr08a7" path="res://addons/guide/triggers/guide_trigger.gd" id="9_ydc30"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="10_5tk0t"]
-[ext_resource type="Script" uid="uid://b2ngnul08oqpd" path="res://addons/guide/inputs/guide_input_action.gd" id="11_pe2cr"]
+[ext_resource type="Script" uid="uid://mc0mxjvhanrx" path="res://addons/guide/inputs/guide_input_action.gd" id="11_pe2cr"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="12_hjl5o"]
 [ext_resource type="Resource" uid="uid://d0n7i8dfjmem7" path="res://resources/binds/actions/keyboard/switch_weapon_mode.tres" id="13_uj0vk"]
 [ext_resource type="Script" uid="uid://b52rqq28tuqpg" path="res://addons/guide/triggers/guide_trigger_pressed.gd" id="14_cvawn"]
@@ -35,7 +35,7 @@
 [ext_resource type="Resource" uid="uid://dgrdfneoajdxw" path="res://resources/binds/actions/keyboard/reload.tres" id="28_17381"]
 [ext_resource type="Resource" uid="uid://bsstc7pudt16e" path="res://resources/binds/actions/keyboard/interact.tres" id="29_jmu4i"]
 [ext_resource type="Resource" uid="uid://cau5yafbqa0my" path="res://resources/binds/actions/keyboard/use_gadget.tres" id="32_ks8u5"]
-[ext_resource type="Resource" uid="uid://dbf0r6ka8ff1i" path="res://resources/binds/actions/keyboard/use_item.tres" id="35_6rhtn"]
+[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/use_item.tres" id="35_6rhtn"]
 
 [sub_resource type="Resource" id="Resource_ii5yi"]
 script = ExtResource("4_3aewh")
