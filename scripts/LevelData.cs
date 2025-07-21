@@ -15,11 +15,13 @@ public partial class LevelData : Node2D {
 	protected PackedScene PlayerScene = null;
 
 	protected static readonly string[] DeathQuotes = [
+		"\"Add a step forward to it.\"\nA Spartan mother to her son when he complained his sword was too short.",
+		"\"By Heracles! A man's valor is dead.\"\nArchidamus when he saw a catapult fire for the first time.",
 		"\"Pain leaves you as soon as it's done teaching you.\"\nBruce Lee",
 		"\"The difficult we do immediately. The impossible takes a little longer.\"\nCharles Alexandre de Calonne",
 		"\"I am not a product of my cicumstances, I am a product of my decisions.\"\nStephen Covey",
 		"\"No one is more hated than the ones who speak the truth.\"\nPlato",
-		"\"A person who has the same views of the world when they're 50 as thwne they are 30 has wasted 20 years of their life.\"\nMuhammad Ali",
+		"\"A person who has the same views of the world when they're 50 as when they are 30 has wasted 20 years of their life.\"\nMuhammad Ali",
 		"\"It's hard to be a person who never gives up.\"\nBabe Ruth",
 		"\"The most difficult thing is the decision to act, the rest is merely tenacity.\"\nAmelia Earhart",
 		"\"The happiness of your life depends upon the quality of your thoughts.\"\nMarcus Aurelius",

@@ -1,0 +1,11 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://bvwauet7ud4vi"]
+
+[resource]
+id = "ARMOR_BUCKET_OF_CLARITY"
+can_stack = false
+max_stack = 1
+name = "Bucket of Clarity"
+size = Vector2i(3, 3)
+properties = {
+"description": "ARMOR_DESCRIPTION_BUCKET_OF_CLARITY"
+}

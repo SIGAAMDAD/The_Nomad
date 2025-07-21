@@ -32,8 +32,10 @@ public partial class FreeFlow : CanvasLayer {
 	public delegate void KillAddedEventHandler( KillType nType );
 
 	private void ActivateBerserkerMode() {
+		_Owner.SetFlags( _Owner.GetFlags() | Player.PlayerFlags.Berserker );
 	}
 	private void DeactivateBerserkerMode() {
+		_Owner.SetFlags( _Owner.GetFlags() & ~Player.PlayerFlags.Berserker );
 	}
 
 	public static void AddKill( KillType nType, int nScore ) {
@@ -43,8 +45,7 @@ public partial class FreeFlow : CanvasLayer {
 		case KillType.Headshot:
 			Instance.HeadshotCounter++;
 			break;
-		}
-		;
+		};
 		Instance.KillCounter++;
 		Instance.TotalScore += nScore;
 		Instance.EmitSignalKillAdded( nType );
@@ -52,8 +53,7 @@ public partial class FreeFlow : CanvasLayer {
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		Instance.ComboCounter += nAmount;
 		if ( Instance.ComboCounter > 30 ) {
-			
-			Instance._Owner.SetFlags( Player.PlayerFlags.Berserker );
+			Instance.ActivateBerserkerMode();
 		}
 	}
 	public static void EndCombo() {
@@ -61,6 +61,9 @@ public partial class FreeFlow : CanvasLayer {
 			Instance.MaxCombo = Instance.ComboCounter;
 		}
 		Instance.ComboCounter = 0;
+		if ( ( Instance._Owner.GetFlags() & Player.PlayerFlags.Berserker ) != 0 ) {
+			Instance.DeactivateBerserkerMode();
+		}
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
