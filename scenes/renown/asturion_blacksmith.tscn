@@ -1,0 +1,108 @@
+[gd_scene load_steps=16 format=3 uid="uid://gwspkpk3wqrp"]
+
+[ext_resource type="Script" uid="uid://dn4qqy776fsl" path="res://scripts/PlayerSystem/Upgrades/Blacksmith.cs" id="1_rqt3x"]
+[ext_resource type="Texture2D" uid="uid://dao4yerl73mak" path="res://textures/spritesheets/asturion.png" id="2_5s3qw"]
+[ext_resource type="AudioStream" uid="uid://nwdcb3mt040s" path="res://sounds/env/forge_ambience.ogg" id="3_t6vhn"]
+[ext_resource type="Texture2D" uid="uid://bbbsfu2iqsl4r" path="res://textures/spritesheets/gfx/Sparks-Sheet.png" id="4_giqjx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rqt3x"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y48vm"]
+atlas = ExtResource("2_5s3qw")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t6vhn"]
+atlas = ExtResource("2_5s3qw")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_giqjx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y48vm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t6vhn")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p25xw"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(0, 0, 92, 97)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t3as5"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(92, 0, 92, 97)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v10ys"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(184, 0, 92, 97)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r65u0"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(0, 97, 92, 97)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0lc5q"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(92, 97, 92, 97)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uox27"]
+atlas = ExtResource("4_giqjx")
+region = Rect2(184, 97, 92, 97)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8nara"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p25xw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t3as5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v10ys")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r65u0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0lc5q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uox27")
+}],
+"loop": false,
+"name": &"default",
+"speed": 20.0
+}]
+
+[node name="AsturionBlacksmith" type="CharacterBody2D"]
+script = ExtResource("1_rqt3x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_rqt3x")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+process_mode = 4
+sprite_frames = SubResource("SpriteFrames_giqjx")
+animation = &"idle"
+frame_progress = 0.887296
+
+[node name="ForgeAmbience" type="AudioStreamPlayer2D" parent="AnimatedSprite2D"]
+position = Vector2(12, 6)
+stream = ExtResource("3_t6vhn")
+
+[node name="ForgeSparks" type="AnimatedSprite2D" parent="AnimatedSprite2D"]
+visible = false
+position = Vector2(22, -1)
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_8nara")
+frame = 5
+frame_progress = 1.0
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(0.500004, 21)
+scale = Vector2(8.75, 7.6)

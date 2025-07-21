@@ -1,6 +1,5 @@
 ~ meet
-Mercenary Master: Ha! Haven't seen [i]your[/i] face 'round here for some time.
-Mercenary Master: You here for a contract
+if DialogueGlobals.GetPlayer().
 => END
 
 ~ talk_hostile

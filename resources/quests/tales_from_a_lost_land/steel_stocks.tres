@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=12 format=3 uid="uid://cn1o0ai3yfgb"]
+
+[ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_hxf0l"]
+[ext_resource type="Script" uid="uid://b37aev4imc074" path="res://addons/questify/scripts/model/quest_node.gd" id="2_6qs58"]
+[ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_ihl0k"]
+[ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_0qc1i"]
+[ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_fe1hf"]
+[ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="4_mf5im"]
+
+[sub_resource type="Resource" id="Resource_ihl0k"]
+script = ExtResource("2_ihl0k")
+name = "Steel Stocks"
+description = ""
+id = "3w-tsLxjDn"
+optional = false
+graph_editor_position = Vector2(180, 220)
+graph_editor_size = Vector2(280, 626)
+
+[sub_resource type="Resource" id="Resource_0qc1i"]
+script = ExtResource("3_0qc1i")
+description = ""
+id = "vhaTHKX5eX"
+optional = false
+graph_editor_position = Vector2(720, 200)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_mf5im"]
+script = ExtResource("1_hxf0l")
+from = SubResource("Resource_ihl0k")
+to = SubResource("Resource_0qc1i")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_ejg88"]
+script = ExtResource("4_mf5im")
+id = "g6-Aj9oRRu"
+optional = false
+graph_editor_position = Vector2(1380, 220)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_60kcy"]
+script = ExtResource("1_hxf0l")
+from = SubResource("Resource_0qc1i")
+to = SubResource("Resource_ejg88")
+edge_type = 0
+
+[resource]
+script = ExtResource("3_fe1hf")
+nodes = Array[ExtResource("2_6qs58")]([SubResource("Resource_ejg88"), SubResource("Resource_0qc1i"), SubResource("Resource_ihl0k")])
+edges = Array[ExtResource("1_hxf0l")]([SubResource("Resource_mf5im"), SubResource("Resource_60kcy")])

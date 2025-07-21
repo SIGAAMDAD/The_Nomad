@@ -11,6 +11,9 @@ public enum KillType : uint {
 };
 
 public partial class FreeFlow : CanvasLayer {
+	[Export]
+	private Player _Owner;
+
 	private int KillCounter = 0;
 	private int ComboCounter = 0;
 	private int MaxCombo = 0;
@@ -28,6 +31,11 @@ public partial class FreeFlow : CanvasLayer {
 	[Signal]
 	public delegate void KillAddedEventHandler( KillType nType );
 
+	private void ActivateBerserkerMode() {
+	}
+	private void DeactivateBerserkerMode() {
+	}
+
 	public static void AddKill( KillType nType, int nScore ) {
 		switch ( nType ) {
 		case KillType.Bodyshot:
@@ -43,6 +51,10 @@ public partial class FreeFlow : CanvasLayer {
 	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		Instance.ComboCounter += nAmount;
+		if ( Instance.ComboCounter > 30 ) {
+			
+			Instance._Owner.SetFlags( Player.PlayerFlags.Berserker );
+		}
 	}
 	public static void EndCombo() {
 		if ( Instance.ComboCounter > Instance.MaxCombo ) {

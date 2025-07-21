@@ -50,6 +50,7 @@ public partial class Player : Entity {
 		Encumbured = 0x00010000,
 		Emoting = 0x00020000,
 		Sober = 0x00040000,
+		Berserker = 0x00080000,
 	};
 
 	public enum AnimationState : byte {
@@ -335,6 +336,8 @@ public partial class Player : Entity {
 	private static Action<int> DialogueCallback;
 
 	private Dictionary<string, object> AchievementData;
+
+	private Resource CurrentQuest;
 
 	private Node2D Waypoint;
 
