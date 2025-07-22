@@ -62,7 +62,7 @@ namespace Renown {
 			CallDeferred( MethodName.AddChild, effect );
 		}
 
-		public virtual void PickupWeapon( in WeaponEntity weapon ) {
+		public virtual void PickupWeapon( WeaponEntity weapon ) {
 		}
 
 		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {

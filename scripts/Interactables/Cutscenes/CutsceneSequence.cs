@@ -3,6 +3,7 @@ using Godot;
 public enum CutsceneSequenceType : uint {
 	Dialogue,
 	MoveToPosition,
+	CameraFocus,
 
 	Count
 };

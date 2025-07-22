@@ -511,7 +511,7 @@ namespace Renown.Thinkers {
 			Weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 			Weapon.CallDeferred( WeaponEntity.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}
-		public override void PickupWeapon( in WeaponEntity weapon ) {
+		public override void PickupWeapon( WeaponEntity weapon ) {
 			// TODO: evaluate if we actually want it
 			Weapon = weapon;
 

@@ -21,7 +21,7 @@ properties = {
 "damage_falloff": SubResource("Curve_fgkyf"),
 "pickup_sfx": ExtResource("3_pedk0"),
 "range": 1340.0,
-"stack_add_amount": 24,
+"stack_add_amount": 128,
 "type": 1,
 "velocity": 450.0
 }

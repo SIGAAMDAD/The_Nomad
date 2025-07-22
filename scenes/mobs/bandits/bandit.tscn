@@ -34,11 +34,9 @@ process_mode = 1
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 material = SubResource("ShaderMaterial_lqbnx")
 position = Vector2(0, -7)
-rotation = 3.831
 sprite_frames = ExtResource("2_q3nyr")
 animation = &"idle"
 autoplay = "idle"
-flip_v = true
 
 [node name="HeadHitbox" type="Area2D" parent="Animations/HeadAnimations" node_paths=PackedStringArray("Parent")]
 collision_layer = 16

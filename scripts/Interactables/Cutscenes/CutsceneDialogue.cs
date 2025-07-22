@@ -18,6 +18,6 @@ public partial class CutsceneDialogue : CutsceneSequence {
 	public override void Start() {
 		DialogueManager.DialogueEnded += OnDialogueEnded;
 
-		DialogueManager.ShowDialogueBalloon( DialogueResource, Starting );
+		DialogueManager.ShowDialogueBalloonScene( "res://scenes/interactables/Balloon.tscn", DialogueResource, Starting );
 	}
 };

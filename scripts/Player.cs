@@ -59,26 +59,6 @@ public partial class Player : Entity {
 		Melee
 	};
 
-	public class WarpPoint {
-		private Checkpoint Location;
-		private Renown.World.Biome Biome;
-		private Texture2D Icon;
-
-		public WarpPoint( Checkpoint checkpoint ) {
-			Location = checkpoint;
-		}
-
-		public Texture2D GetIcon() {
-			return Icon;
-		}
-		public Checkpoint GetLocation() {
-			return Location;
-		}
-		public Renown.World.Biome GetBiome() {
-			return Biome;
-		}
-	};
-
 	private static readonly WeaponEntity.Properties[] WeaponModeList = [
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
@@ -590,9 +570,11 @@ public partial class Player : Entity {
 
 	public static void StartThoughtBubble( string text ) {
 		Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
+		LevelData.Instance.ThisPlayer.Velocity = Godot.Vector2.Zero;
 		DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
 	}
 	public static void StartDialogue( Resource dialogueResource, string key, System.Action<int> callback ) {
+		LevelData.Instance.ThisPlayer.Velocity = Godot.Vector2.Zero;
 		DialogueManager.ShowDialogueBalloon( dialogueResource, key );
 		DialogueCallback = callback;
 	}
@@ -2435,7 +2417,7 @@ public partial class Player : Entity {
 					}
 				}
 				if ( count == WorldArea.Cache.Cache.Count ) {
-					SteamAchievements.ActivateAchievement( "ACH_MASTER_OF_THE_WASTEST" );
+					SteamAchievements.ActivateAchievement( "ACH_MASTER_OF_THE_WASTES" );
 				}
 			};
 		}
@@ -2735,7 +2717,7 @@ public partial class Player : Entity {
 			}
 		}
 	}
-	public override void PickupWeapon( in WeaponEntity weapon ) {
+	public override void PickupWeapon( WeaponEntity weapon ) {
 		int index = WeaponSlot.INVALID;
 
 		EmitSignalWeaponPickedUp( weapon );

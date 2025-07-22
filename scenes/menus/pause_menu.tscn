@@ -94,10 +94,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_umr50")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
 theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_70i7w")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
-current_tab = 1
+current_tab = 0
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("2_opdvj")
@@ -434,6 +433,7 @@ layout_mode = 2
 text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="Journal" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("9_pf6lc")

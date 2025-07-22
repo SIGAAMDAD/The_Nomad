@@ -7,55 +7,32 @@ public partial class Checkpoint : InteractionItem {
 	[Export]
 	private WorldArea Location;
 
-	private PointLight2D Light;
-	private AnimatedSprite2D Bonfire;
-	private Sprite2D Unlit;
-
+	private AnimatedSprite2D Animations;
+	private AnimatedSprite2D ActivateAnimation;
 	private AudioStreamPlayer2D AudioChannel;
 
-	private Texture2D Icon;
+	private Callable Callback;
+	private RichTextLabel Text;
 
 	private bool Activated = false;
 
 	public WorldArea GetLocation() => Location;
 
 	public bool GetActivated() => Activated;
-	public void Activate() {
+	public void Activate( Player player ) {
 		Activated = true;
+		Animations.Hide();
+		ActivateAnimation.Show();
+		ActivateAnimation.Play( "default" );
 
-		Bonfire.Show();
-		Light.Show();
+		player.BeginInteraction( this );
 
-		Unlit.Hide();
-		Unlit.QueueFree();
-
-		Bonfire.Play( "default" );
-
-		Tween BrightnessTween = CreateTween();
-		BrightnessTween.TweenProperty( Light, "energy", 1.75f, 2.5f );
-
-		AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/bonfire_create.ogg" );
-		AudioChannel.Connect( "finished", Callable.From( () => {
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
-			AudioChannel.Set( "parameters/looping", true );
-			AudioChannel.Play();
-		} ) );
-		AudioChannel.Play();
+		player.Disconnect( Player.SignalName.Interaction, Callback );
 	}
 	public string GetTitle() => Title;
 
-	private void OnScreenEnter() {
-		ProcessMode = ProcessModeEnum.Pausable;
-		if ( Activated ) {
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
-			AudioChannel.Set( "parameters/looping", true );
-			AudioChannel.Play();
-		}
-	}
-	private void OnScreenExit() {
-		ProcessMode = ProcessModeEnum.Disabled;
-		AudioChannel.Stop();
-	}
+	private void OnScreenEnter() => ProcessMode = ProcessModeEnum.Pausable;
+	private void OnScreenExit() => ProcessMode = ProcessModeEnum.Disabled;
 
 	public void Save() {
 		using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
@@ -73,36 +50,25 @@ public partial class Checkpoint : InteractionItem {
 		Activated = reader.LoadBoolean( nameof( Activated ) );
 
 		if ( Activated ) {
-			Light.Show();
-			Bonfire.Show();
-			Bonfire.Play( "default" );
-
-			Light.Energy = 1.75f;
-
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/campfire.ogg" );
-			AudioChannel.Set( "parameters/looping", true );
-			AudioChannel.Play();
-			
-			Unlit.Hide();
-			Unlit.QueueFree();
+			Animations.Play( "activated" );
 		}
 	}
 	
 	protected override void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is not Player ) {
-			return;
+		if ( body is Player player && player != null ) {
+			Callback = Callable.From( () => Activate( player ) );
+			Text.Show();
+			player.Connect( Player.SignalName.Interaction, Callback );
+			player.EmitSignal( Player.SignalName.ShowInteraction, this );
 		}
-
-		Player player = (Player)body;
-		player.BeginInteraction( this );
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is not Player ) {
-			return;
+		if ( body is Player player && player != null ) {
+			Text.Hide();
+			if ( player.IsConnected( Player.SignalName.Interaction, Callback ) ) {
+				player.Disconnect( Player.SignalName.Interaction, Callback );
+			}
 		}
-
-		Player player = (Player)body;
-		player.EndInteraction();
 	}
 	public override InteractionType GetInteractionType() {
 		return InteractionType.Checkpoint;
@@ -111,19 +77,24 @@ public partial class Checkpoint : InteractionItem {
     public override void _Ready() {
 		base._Ready();
 		
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
-		Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 
-		VisibleOnScreenNotifier2D notifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
-		notifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );
-		notifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
+		Animations = GetNode<AnimatedSprite2D>( "AnimatedSprite2D" );
 
-		Light = GetNode<PointLight2D>( "PointLight2D" );
-		Bonfire = GetNode<AnimatedSprite2D>( "Bonfire" );
-		Unlit = GetNode<Sprite2D>( "Unlit" );
+		ActivateAnimation = GetNode<AnimatedSprite2D>( "ActivateAnimation" );
+		ActivateAnimation.Connect( AnimatedSprite2D.SignalName.AnimationFinished, Callable.From( () => {
+			ActivateAnimation.Hide();
+			RemoveChild( ActivateAnimation );
+			ActivateAnimation.QueueFree();
+			Animations.Play( "activated" );
+			Animations.Show();
+		} ) );
 
-		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
-		AudioChannel.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+		Text = GetNode<RichTextLabel>( "RichTextLabel" );
+		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( AccessibilityManager.GetBindString( LevelData.Instance.ThisPlayer.InteractAction ) );
+
+		AddToGroup( "Archive" );
 
 		if ( ArchiveSystem.Instance.IsLoaded() ) {
 			Load();

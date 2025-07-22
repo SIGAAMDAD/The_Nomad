@@ -14,7 +14,7 @@ public partial class TitleMenu : Control {
 	private ExtrasMenu ExtrasMenu;
 	private SettingsMenu SettingsMenu;
 	private StoryMenu StoryMenu;
-//	private DemoMenu DemoMenu;
+	//	private DemoMenu DemoMenu;
 	private MainMenu MainMenu;
 	private CreditsMenu CreditsMenu;
 	private Button ExitButton;
@@ -23,6 +23,8 @@ public partial class TitleMenu : Control {
 	private LobbyFactory LobbyFactory;
 
 	private Control CurrentMenu;
+
+	private Timer MenuIdleTimer;
 
 	private MenuState State = MenuState.Main;
 
@@ -59,7 +61,8 @@ public partial class TitleMenu : Control {
 		default:
 			Console.PrintError( "Invalid menu state!" );
 			break;
-		};
+		}
+		;
 
 		AddChild( MainMenu );
 		MoveChild( MainMenu, index );
@@ -116,8 +119,8 @@ public partial class TitleMenu : Control {
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
-//		int index = DemoMenu.GetIndex();
-//		RemoveChild( DemoMenu );
+		//		int index = DemoMenu.GetIndex();
+		//		RemoveChild( DemoMenu );
 		AddChild( CreditsMenu );
 		MoveChild( CreditsMenu, index );
 
@@ -135,6 +138,9 @@ public partial class TitleMenu : Control {
 		GameConfiguration.MemeMode = true;
 		UIAudioManager.PlayCustomSound( ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" ) );
 		SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
+	}
+	private void OnMenuIdleTimerTimeout() {
+		
 	}
 
 	public override void _Ready() {
@@ -173,9 +179,20 @@ public partial class TitleMenu : Control {
 		ExitButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
 		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
 
+		MenuIdleTimer = new Timer();
+		MenuIdleTimer.OneShot = true;
+		MenuIdleTimer.Autostart = true;
+		MenuIdleTimer.WaitTime = 120.0f;
+		MenuIdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMenuIdleTimerTimeout ) );
+		AddChild( MenuIdleTimer );
+
 		GetTree().CurrentScene = this;
 
 		SetProcess( false );
 		SetProcessInternal( false );
+	}
+	public override void _UnhandledInput( InputEvent @event ) {
+		base._UnhandledInput( @event );
+		MenuIdleTimer.Start();
 	}
 };

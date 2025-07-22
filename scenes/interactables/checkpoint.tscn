@@ -1,6 +1,5 @@
-[gd_scene load_steps=13 format=3 uid="uid://co7rmsfdbg4m0"]
+[gd_scene load_steps=12 format=3 uid="uid://co7rmsfdbg4m0"]
 
-[ext_resource type="Script" uid="uid://qcvhh2a3lgiq" path="res://scripts/Interactables/Checkpoint.cs" id="1_ihm5l"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
 [ext_resource type="Texture2D" uid="uid://b2c2uo1akvpbx" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_bcsha"]
@@ -43,21 +42,19 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_btkcq"]
-radius = 58.4209
+radius = 44.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bcsha"]
-radius = 21.0
+radius = 17.0294
 
-[node name="Checkpoint" type="Area2D" groups=["Archive", "Checkpoints"]]
+[node name="Firelink" type="Area2D" groups=["Archive", "Checkpoints"]]
 process_priority = -1
 process_physics_priority = -4
 z_index = 1
 collision_layer = 2
 collision_mask = 2
-script = ExtResource("1_ihm5l")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-rotation = -2.45849e-05
 color = Color(0.9, 0.9, 0.9, 1)
 energy = 0.0
 shadow_enabled = true
@@ -78,26 +75,29 @@ scale = Vector2(0.2, 0.18)
 texture = ExtResource("4_7no74")
 
 [node name="InteractBody" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 4)
+position = Vector2(0, 11)
 shape = SubResource("CircleShape2D_btkcq")
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-position = Vector2(-1.5, -1.5)
-scale = Vector2(5.55, 4.15)
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(1.00002, 0.5)
+scale = Vector2(14.1, 11.65)
 
 [node name="AudioChannel" type="AudioStreamPlayer2D" parent="."]
 max_distance = 1500.0
 attenuation = 1.93187
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(0, 6)
 collision_layer = 12
 collision_mask = 12
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("CircleShape2D_bcsha")
 
-[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
-editor_description = "Mobs aren't allowed within roughly 240 feet of a checkpoint"
-radius = 240.0
-affect_navigation_mesh = true
-carve_navigation_mesh = true
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = -53.0
+offset_right = 20.0
+offset_bottom = -13.0
+bbcode_enabled = true

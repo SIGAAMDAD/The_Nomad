@@ -5,6 +5,7 @@ public enum PhysicsLayer : uint {
 	Player				= 0x00000004,
 	SpecialHitboxes		= 0x00000005,
 	Footsteps			= 0x00000006,
+	StaticGeometry		= 0x00000007,
 
 	Count
 };

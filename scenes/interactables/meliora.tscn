@@ -1,3 +1,225 @@
-[gd_scene format=3 uid="uid://cafcdhhm31dvf"]
+[gd_scene load_steps=29 format=3 uid="uid://cafcdhhm31dvf"]
 
-[node name="Meliora" type="Node2D"]
+[ext_resource type="Script" uid="uid://bgc6hlmckeah7" path="res://scripts/Interactables/Checkpoint.cs" id="1_coa62"]
+[ext_resource type="Texture2D" uid="uid://da8keknq2laxc" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="1_kjg72"]
+[ext_resource type="Texture2D" uid="uid://dt7d7uidsxcat" path="res://textures/env/hellbreaker/Obelisk.png" id="1_wu3ww"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kjg72"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(190, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_coa62"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(380, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q06bx"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(570, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xroy6"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(760, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u0whf"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(950, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kwqx8"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(1140, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jcmp7"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(1330, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wu3ww"]
+atlas = ExtResource("1_wu3ww")
+region = Rect2(1520, 0, 190, 240)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pjo70"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kjg72")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_coa62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q06bx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xroy6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u0whf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kwqx8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jcmp7")
+}],
+"loop": true,
+"name": &"activated",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wu3ww")
+}],
+"loop": true,
+"name": &"stale",
+"speed": 1.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjo70"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(2280, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ltsle"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(2090, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlppr"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(1900, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mojpi"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(1710, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5c223"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(1520, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lreul"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(1330, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u0fh7"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(1140, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78ksx"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(950, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34wpp"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(760, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phabl"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(570, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wqwki"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(380, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xtb0p"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(190, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_clk8j"]
+atlas = ExtResource("1_kjg72")
+region = Rect2(0, 0, 190, 380)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0fhoq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pjo70")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ltsle")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mlppr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mojpi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5c223")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lreul")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u0fh7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78ksx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_34wpp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phabl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wqwki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xtb0p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_clk8j")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coa62"]
+radius = 85.235
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_coa62"]
+size = Vector2(46, 52)
+
+[node name="Meliora" type="Area2D"]
+z_index = 10
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_coa62")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(3, 0)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_pjo70")
+animation = &"stale"
+autoplay = "stale"
+frame_progress = 0.52223
+
+[node name="ActivateAnimation" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(3, -35)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_0fhoq")
+frame = 12
+frame_progress = 1.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+bbcode_enabled = true
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+editor_description = "Mobs aren't allowed within roughly 240 feet of a checkpoint"
+radius = 250.0
+affect_navigation_mesh = true
+carve_navigation_mesh = true
+
+[node name="InteractBody" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_coa62")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 12
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(1, 29)
+shape = SubResource("RectangleShape2D_coa62")

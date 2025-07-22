@@ -2,7 +2,7 @@
 
 [sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_j3pel"]
 resource_name = "LowPassFilter"
-cutoff_hz = 2200.0
+cutoff_hz = 1000.0
 
 [sub_resource type="AudioEffectCapture" id="AudioEffectCapture_j3pel"]
 resource_name = "Capture"
@@ -10,7 +10,7 @@ resource_name = "Capture"
 [resource]
 bus/0/volume_db = 6.02
 bus/0/effect/0/effect = SubResource("AudioEffectLowPassFilter_j3pel")
-bus/0/effect/0/enabled = true
+bus/0/effect/0/enabled = false
 bus/1/name = &"AdaptiveMusicPlayer"
 bus/1/solo = false
 bus/1/mute = false
