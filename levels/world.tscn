@@ -15594,6 +15594,11 @@ scale = Vector2(2, 2)
 script = ExtResource("1_re8x6")
 CurrentQuest = ExtResource("2_qxuuj")
 State = Dictionary[String, Variant]({
+"AsturionQuestCount": 0,
+"AzaanAlive": false,
+"AzaanSpared": false,
+"GoppaAlive": false,
+"GoppaSpared": false,
 "KiroslaDead": false,
 "KiroslaExiled": false,
 "KiroslaSlavesFreed": false,

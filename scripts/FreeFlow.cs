@@ -95,6 +95,8 @@ public partial class FreeFlow : CanvasLayer {
 	public override void _Ready() {
 		base._Ready();
 
+		_Owner = GetParent<Player>();
+
 		BurnoutTimer = GetNode<Timer>( "BurnoutTimer" );
 		BurnoutTimer.Connect( Timer.SignalName.Timeout, Callable.From( EndCombo ) );
 

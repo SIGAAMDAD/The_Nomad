@@ -1,13 +1,12 @@
 [gd_resource type="ItemDefinition" load_steps=2 format=3 uid="uid://cp1xhm5arcw5e"]
 
-[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_nb14e"]
+[ext_resource type="ItemCategory" uid="uid://dgelt3vxdpht3" path="res://resources/items/raw_resource.tres" id="1_w0vi0"]
 
 [resource]
-id = "ITEM_METAL"
-max_stack = 4096
-name = "Metal"
-weight = 2.5
+id = "ITEM_SCRAP_METAL"
+max_stack = 100
+name = "Scrap Metal"
 properties = {
 "value": 4.5
 }
-categories = Array[ItemCategory]([ExtResource("1_nb14e")])
+categories = Array[ItemCategory]([ExtResource("1_w0vi0")])

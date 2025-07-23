@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=82 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://b3cos6eshcvnp" path="res://scripts/PlayerSystem/heads_up_display.gd" id="1_xw6ac"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -42,6 +42,9 @@
 [ext_resource type="Script" uid="uid://boo38fnhr5awi" path="res://scripts/PlayerSystem/UserInterface/storage_container.gd" id="40_xw6ac"]
 [ext_resource type="Script" uid="uid://dywd8fk8nlc4d" path="res://scripts/PlayerSystem/UserInterface/blacksmith_interactor.gd" id="41_dg2ec"]
 [ext_resource type="Script" uid="uid://bomm36bff65ti" path="res://scripts/PlayerSystem/UserInterface/warp_container.gd" id="41_kwx6t"]
+[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="42_7chf1"]
+[ext_resource type="Script" path="res://scripts/PlayerSystem/UserInterface/BlacksmithUpgrade.cs" id="42_dg2ec"]
+[ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="44_oiel5"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
 offsets = PackedFloat32Array(0)
@@ -185,6 +188,37 @@ colors = PackedColorArray(0.278431, 0.278431, 0.278431, 0.831373)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_poeto"]
 gradient = SubResource("Gradient_8yqco")
 width = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vil6o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ic8aw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s1366"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dfkq0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0f518"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 30
+border_width_right = 20
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 70
+corner_radius_top_right = 70
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_redfb"]
+
+[sub_resource type="Gradient" id="Gradient_w5beu"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ty7ml"]
+gradient = SubResource("Gradient_w5beu")
+width = 24
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1onjl"]
+texture = SubResource("GradientTexture1D_ty7ml")
+texture_margin_left = 10.0
 
 [node name="HeadsUpDisplay" type="CanvasLayer"]
 script = ExtResource("1_xw6ac")
@@ -1317,25 +1351,8 @@ text = "Yes"
 layout_mode = 2
 text = "No"
 
-[node name="BlacksmithUpgradeContainer" type="TabContainer" parent="."]
-visible = false
-anchors_preset = -1
-anchor_left = 0.062
-anchor_top = 0.083
-anchor_right = 0.937
-anchor_bottom = 0.917
-offset_left = 0.32
-offset_top = 0.159996
-offset_right = 0.319946
-offset_bottom = -0.160034
-current_tab = 0
-metadata/_edit_use_anchors_ = true
-
-[node name="Weaponry" type="TabBar" parent="BlacksmithUpgradeContainer"]
-layout_mode = 2
-metadata/_tab_index = 0
-
 [node name="BlacksmithContainer" type="MarginContainer" parent="."]
+visible = false
 anchors_preset = -1
 anchor_right = 0.4125
 anchor_bottom = 1.0
@@ -1374,6 +1391,106 @@ layout_mode = 2
 layout_mode = 2
 text = "LEAVE_INTERACTION"
 flat = true
+
+[node name="BlacksmithUpgradeContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="BlacksmithUpgradeContainer"]
+layout_mode = 2
+texture = ExtResource("42_7chf1")
+
+[node name="TabContainer" type="TabContainer" parent="BlacksmithUpgradeContainer"]
+layout_mode = 2
+theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_vil6o")
+theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_ic8aw")
+theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_s1366")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dfkq0")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
+theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_redfb")
+theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
+current_tab = 0
+
+[node name="Weapons" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VScrollBar" type="VScrollBar" parent="BlacksmithUpgradeContainer/TabContainer/Weapons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0483333
+anchor_top = 0.0191847
+anchor_right = 0.0613333
+anchor_bottom = 0.875192
+offset_right = 0.2
+offset_bottom = 0.0449829
+metadata/_edit_use_anchors_ = true
+
+[node name="WeaponList" type="VBoxContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.5
+anchor_top = 0.0112045
+anchor_right = 67.75
+anchor_bottom = 1.0028
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("42_dg2ec")
+metadata/_edit_use_anchors_ = true
+
+[node name="Cloner" type="HBoxContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("44_oiel5")
+expand_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Icon" type="TextureRect" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner/TextureRect"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+anchor_left = -0.014
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.00810373
+offset_right = 0.150269
+texture = ExtResource("16_nrav7")
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.375
+anchor_right = 65.5
+anchor_bottom = 1.003
+offset_bottom = -0.0710144
+metadata/_edit_use_anchors_ = true
+
+[node name="Dash Thruster" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Arm Attachments" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="DeathText" type="Label" parent="."]
 visible = false

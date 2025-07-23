@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using PlayerSystem;
@@ -9,7 +10,7 @@ public enum AmmoType : uint {
 	Pellets
 };
 
-public partial class WeaponEntity : Node2D {
+public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	public enum FireMode : int {
 		Single,
 		Burst,
@@ -114,6 +115,9 @@ public partial class WeaponEntity : Node2D {
 		get;
 		private set;
 	} = 0.0f;
+
+	public int Level { get; private set; } = 0;
+	public int MaxLevel { get; private set; } = 8;
 
 	/// <summary>
 	/// The more you use a weapon, the nastier it gets. If you don't clean it,
@@ -462,6 +466,15 @@ public partial class WeaponEntity : Node2D {
 		if ( ( cmp & LastUsedMode ) != 0 ) {
 			EmitSignalModeChanged( this, LastUsedMode );
 		}
+	}
+
+	public IReadOnlyDictionary<string, int> GetUpgradeCost() => Level switch {
+		0 => new Dictionary<string, int> { [ "Scrap Metal" ] = 1 },
+		_ => new Dictionary<string, int> { }
+	};
+
+	public void ApplyUpgrade() {
+		Level = Math.Min( Level + 1, MaxLevel );
 	}
 
 	public void Save() {

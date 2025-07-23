@@ -568,11 +568,7 @@ public class ResourceCache {
 		for ( int i = 0; i < WorkerThreads.Length; i++ ) {
 			WorkerThreadPool.WaitForTaskCompletion( WorkerThreads[ i ] );
 		}
-
-//		if ( GameConfiguration.GameMode != GameMode.Multiplayer && GameConfiguration.GameMode != GameMode.ChallengeMode && GameConfiguration.GameMode != GameMode.JohnWick ) {
-//			GlobalEconomy.Init();
-//		}
-
+		
 		world.CallDeferred( "emit_signal", "ResourcesLoadingFinished" );
 	}
 };

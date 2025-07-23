@@ -12,6 +12,8 @@ using Renown.World;
 using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
+using PlayerSystem.Upgrades;
+using System.Runtime.Intrinsics.X86;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -188,7 +190,6 @@ public partial class Player : Entity {
 	private GpuParticles2D WalkEffect;
 	private GpuParticles2D SlideEffect;
 
-	private Area2D DashFlameArea;
 	private GpuParticles2D DashEffect;
 	private PointLight2D DashLight;
 
@@ -220,10 +221,7 @@ public partial class Player : Entity {
 
 	private Timer HealTimer;
 
-	private Timer DashTime;
 	private Timer SlideTime;
-	private Timer DashBurnoutCooldownTimer;
-	private Timer DashCooldownTime;
 
 	public GroundMaterialType GroundType {
 		get;
@@ -292,11 +290,11 @@ public partial class Player : Entity {
 	private float Rage = 60.0f;
 	private float Sanity = 60.0f;
 
+	private DashKit DashKit;
+
 	private Hands HandsUsed = Hands.Right;
 	private Arm LastUsedArm;
 	private float ArmAngle = 0.0f;
-	private float DashBurnout = 0.0f;
-	private float DashTimer = 0.0f;
 	private int InputDevice = 0;
 	private float FrameDamage = 0.0f;
 	private int Hellbreaks = 0;
@@ -1412,21 +1410,11 @@ public partial class Player : Entity {
 			SetSoundLevel( 24.0f );
 		}
 	}
-	private void OnDashTimeTimeout() {
+	private void OnDashEnd() {
 		EmitSignalDashEnd();
 		DashLight.Hide();
 		DashEffect.Emitting = false;
-		DashFlameArea.Monitoring = false;
 		Flags &= ~PlayerFlags.Dashing;
-		DashCooldownTime.Start();
-	}
-	private void OnDashBurnoutCooldownTimerTimeout() {
-		DashBurnout = 0.0f;
-		DashTimer = 0.3f;
-
-		DashTime.WaitTime = DashTimer;
-
-		PlaySound( DashChannel, ResourceCache.GetSound( "res://sounds/player/dash_chargeup.ogg" ) );
 	}
 	private void OnSlideTimeout() {
 		SlideEffect.Emitting = false;
@@ -1434,54 +1422,30 @@ public partial class Player : Entity {
 	}
 
 	private bool IsInputBlocked( bool bIsInventory = false ) => ( Flags & PlayerFlags.BlockedInput ) != 0 || ( !bIsInventory && ( Flags & PlayerFlags.Inventory ) != 0 );
+
+	private void OnDashBurnout() {
+		Flags &= ~PlayerFlags.Dashing;
+		AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+		Damage( this, 30.0f );
+		AddStatusEffect( "status_burning" );
+		ShakeCamera( 50.0f );
+
+		SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
+	}
 	private void OnDash() {
-		if ( IsInputBlocked() || DashBurnoutCooldownTimer.TimeLeft > 0.0f ) {
+		if ( IsInputBlocked() || !DashKit.CanDash() ) {
 			return;
 		}
-
-		// TODO: upgradable dash burnout?
-		if ( DashBurnout >= 1.0f ) {
-			PlaySound( AudioChannel, ResourceCache.DashExplosion );
-
-			AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-
-			Flags &= ~PlayerFlags.Dashing;
-
-			DashBurnoutCooldownTimer.Start();
-
-			Damage( this, 30.0f );
-			AddStatusEffect( "status_burning" );
-			ShakeCamera( 50.0f );
-
-			SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
-
-			EmitSignalDashBurnoutChanged( 0.0f );
-
-			return;
-		}
-
-		DashFlameArea.Monitoring = true;
 
 		IdleReset();
 		Flags |= PlayerFlags.Dashing;
-		DashTime.WaitTime = DashTimer;
-		DashTime.Start();
-		DashChannel.PitchScale = 1.0f + DashBurnout;
-		PlaySound( DashChannel, ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ] );
-		DashLight.Show();
 		DashEffect.Emitting = true;
+		DashLight.Show();
 		DashDirection = Velocity;
 
+		DashKit.OnDash();
+
 		EmitSignalDashStart();
-
-		DashBurnout += 0.25f;
-		if ( DashTimer >= 0.10f ) {
-			DashTimer -= 0.05f;
-		}
-		DashCooldownTime.WaitTime = 1.50f;
-		DashCooldownTime.Start();
-
-		EmitSignalDashBurnoutChanged( DashBurnout );
 	}
 	private void OnSlide() {
 		if ( IsInputBlocked() || ( Flags & PlayerFlags.Dashing ) != 0 ) {
@@ -2247,6 +2211,12 @@ public partial class Player : Entity {
 		ConnectGamepadBinds();
 		ConnectKeyboardBinds();
 
+		DashKit = new DashKit();
+		DashKit.Connect( DashKit.SignalName.DashBurnedOut, Callable.From( OnDashBurnout ) );
+		DashKit.Connect( DashKit.SignalName.DashBurnoutChanged, Callable.From<float>( EmitSignalDashBurnoutChanged ) );
+		DashKit.Connect( DashKit.SignalName.DashEnd, Callable.From( OnDashEnd ) );
+		AddChild( DashKit );
+
 		//
 		// initialize input context
 		//
@@ -2261,13 +2231,6 @@ public partial class Player : Entity {
 		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
 		MiscChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnSlowMoSfxFinished ) );
 		MiscChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-
-		DashFlameArea = GetNode<Area2D>( "Animations/DashEffect/FlameArea" );
-		DashFlameArea.Monitoring = false;
-		DashFlameArea.Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnFlameAreaBodyShape2DEntered ) );
-
-		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
-		DashChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		CollisionShape2D SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
 		SoundArea = SoundBounds.Shape as CircleShape2D;
@@ -2292,13 +2255,6 @@ public partial class Player : Entity {
 		}
 
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
-
-		DashTime = GetNode<Timer>( "Timers/DashTime" );
-		DashTimer = (float)DashTime.WaitTime;
-		DashTime.Connect( Timer.SignalName.Timeout, Callable.From( OnDashTimeTimeout ) );
-
-		DashBurnoutCooldownTimer = GetNode<Timer>( "Timers/DashBurnoutCooldownTimer" );
-		DashBurnoutCooldownTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
 
 		IdleTimer = GetNode<Timer>( "IdleAnimationTimer" );
 		IdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnIdleAnimationTimerTimeout ) );
@@ -2345,7 +2301,6 @@ public partial class Player : Entity {
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
 		SlideTime.Connect( Timer.SignalName.Timeout, Callable.From( OnSlideTimeout ) );
-		DashCooldownTime = GetNode<Timer>( "Timers/DashCooldownTime" );
 
 		CheckpointDrinkTimer = new Timer();
 		CheckpointDrinkTimer.Name = "CheckpointDrinkTimer";
@@ -2466,15 +2421,6 @@ public partial class Player : Entity {
 			AimLine.DefaultColor = AimingAtNull;
 		}
 
-		// cool down the jet engine if applicable
-		if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
-			DashBurnout -= 0.10f * (float)GetProcessDeltaTime();
-			DashTimer += 0.05f * (float)GetProcessDeltaTime();
-			if ( DashBurnout < 0.0f ) {
-				DashBurnout = 0.0f;
-			}
-			EmitSignalDashBurnoutChanged( DashBurnout );
-		}
 		CheckStatus( (float)delta );
 
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
