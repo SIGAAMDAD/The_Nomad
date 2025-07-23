@@ -1448,6 +1448,7 @@ script = ExtResource("42_dg2ec")
 metadata/_edit_use_anchors_ = true
 
 [node name="Cloner" type="HBoxContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList"]
+visible = false
 layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
@@ -1474,6 +1475,7 @@ custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.375

@@ -10,14 +10,12 @@ namespace PlayerSystem {
 			} else if ( mouseButton.ButtonIndex != MouseButton.Left || !mouseButton.Pressed ) {
 				return;
 			}
-
-
 		}
 		private void OnFillData() {
 			Godot.Collections.Dictionary<int, WeaponEntity> weapons = LevelData.Instance.ThisPlayer.GetWeaponsStack();
 
 			foreach ( var weapon in weapons ) {
-				HBoxContainer container = new HBoxContainer();
+				HBoxContainer container = Cloner.Duplicate() as HBoxContainer;
 
 				{
 					TextureRect rect = container.GetChild( 0 ).GetChild( 0 ) as TextureRect;
