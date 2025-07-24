@@ -33,7 +33,10 @@ public partial class Bullet : Area2D {
 			parryBox.GetParent<Player>().OnParry( this, damage );
 		} else if ( body is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != GetParent<Entity>() ) {
 			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
-			hitbox.OnHit( GetParent<WeaponEntity>().GetParent<Entity>() );
+			float distance = GetParent<WeaponEntity>().GetParent<Entity>().GlobalPosition.DistanceTo( owner.GlobalPosition );
+			distance /= AmmoType.GetRange();
+			damage *= AmmoType.GetDamageFalloff( distance );
+			hitbox.OnHit( GetParent<WeaponEntity>().GetParent<Entity>(), damage );
 			AmmoEntity.ExtraEffects effects = AmmoType.GetEffects();
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );

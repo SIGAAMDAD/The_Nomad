@@ -20,5 +20,8 @@ public partial class TreasureChest : InteractionItem {
 
 	public override void _Ready() {
 		base._Ready();
+
+		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 	}
 };

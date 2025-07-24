@@ -643,7 +643,14 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			grenade.OnBlowup();
 		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
 			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
-			hitbox.OnHit( _Owner );
+			float distance = _Owner.GlobalPosition.DistanceTo( ( (Entity)hitbox.GetMeta( "Owner" ) ).GlobalPosition ) / Ammo.GetRange();
+			if ( distance > 120.0f ) {
+				// out of bleed range, no healing
+				frameDamage -= damage;
+			}
+			damage *= Ammo.GetDamageFalloff( distance );
+
+			hitbox.OnHit( _Owner, damage );
 			AmmoEntity.ExtraEffects effects = Ammo.GetEffects();
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );

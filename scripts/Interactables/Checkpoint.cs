@@ -76,10 +76,10 @@ public partial class Checkpoint : InteractionItem {
 
     public override void _Ready() {
 		base._Ready();
-		
+
 		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
-
+		
 		Animations = GetNode<AnimatedSprite2D>( "AnimatedSprite2D" );
 
 		ActivateAnimation = GetNode<AnimatedSprite2D>( "ActivateAnimation" );

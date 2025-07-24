@@ -24,12 +24,15 @@ size = Vector2(50, 28)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ebwui"]
 size = Vector2(14, 1.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
+size = Vector2(16, 30)
+
 [sub_resource type="Curve" id="Curve_0rnld"]
 _data = [Vector2(0, 0.738211), 0.0, 0.0, 0, 0, Vector2(1, 0.237828), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_61ith"]
-size = Vector2(49, 38)
+size = Vector2(69.4999, 38)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jfpux"]
 size = Vector2(412.515, 218.667)
@@ -38,9 +41,6 @@ size = Vector2(412.515, 218.667)
 radius = 153.118
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_srp4u"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0rnld"]
-size = Vector2(16, 30)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "ArmAttachment") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
@@ -83,7 +83,7 @@ light_mask = 3
 y_sort_enabled = true
 material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("2_p7iby")
-animation = &"melee"
+animation = &"melee_heavy"
 autoplay = "idle"
 
 [node name="Torso" type="AnimatedSprite2D" parent="Animations"]
@@ -207,6 +207,11 @@ shape = SubResource("RectangleShape2D_srp4u")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13.75)
 shape = SubResource("RectangleShape2D_ebwui")
+disabled = true
+
+[node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -1)
+shape = SubResource("RectangleShape2D_0rnld")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 process_callback = 0
@@ -231,20 +236,26 @@ one_shot = true
 wait_time = 2.5
 one_shot = true
 
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+current = true
+
+[node name="GrappleHook" parent="." instance=ExtResource("13_srp4u")]
+position = Vector2(12, -2)
+
 [node name="AimAssist" type="Node2D" parent="."]
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 modulate = Color(2, 2, 2, 1)
 light_mask = 1024
 visibility_layer = 1024
-position = Vector2(9.53674e-07, -2)
+position = Vector2(2.6226e-06, -2)
 scale = Vector2(0.324304, 0.375)
 points = PackedVector2Array(0, 5.615, 718.462, 5.33333)
 width = 9.615
 width_curve = SubResource("Curve_0rnld")
 
 [node name="ParryArea" type="Area2D" parent="AimAssist/AimLine"]
-position = Vector2(-2.94068e-06, 5.33333)
+position = Vector2(-21.5847, 5.33333)
 scale = Vector2(3.08353, 2.66667)
 collision_layer = 28
 collision_mask = 28
@@ -252,7 +263,7 @@ monitoring = false
 metadata/ParryBox = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AimAssist/AimLine/ParryArea"]
-position = Vector2(32, -5)
+position = Vector2(45.25, -5)
 shape = SubResource("RectangleShape2D_61ith")
 disabled = true
 
@@ -261,7 +272,7 @@ process_mode = 1
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
-position = Vector2(-3.8147e-06, 5.33333)
+position = Vector2(-5.72205e-06, 5.33333)
 target_position = Vector2(740.047, 0)
 collision_mask = 92
 collide_with_areas = true
@@ -273,15 +284,9 @@ collision_mask = 28
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AimAssist/AimLine/ParryDamageArea"]
-position = Vector2(145.264, 13.3333)
+position = Vector2(117.512, 13.3333)
 shape = SubResource("RectangleShape2D_jfpux")
 disabled = true
-
-[node name="AudioListener2D" type="AudioListener2D" parent="."]
-current = true
-
-[node name="GrappleHook" parent="." instance=ExtResource("13_srp4u")]
-position = Vector2(12, -2)
 
 [node name="ArmLeft" type="Node" parent="." node_paths=PackedStringArray("Animations")]
 script = ExtResource("12_0rnld")
@@ -333,11 +338,3 @@ collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoundArea"]
 shape = SubResource("CircleShape2D_srp4u")
-
-[node name="HitBox" type="Area2D" parent="."]
-collision_layer = 28
-collision_mask = 28
-
-[node name="TorsoCollision2D" type="CollisionShape2D" parent="HitBox"]
-position = Vector2(-1, -1)
-shape = SubResource("RectangleShape2D_0rnld")

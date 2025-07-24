@@ -1,7 +1,7 @@
 using Godot;
 
 namespace PlayerSystem {
-	public partial class BlacksmitWeaponhUpgrade : VBoxContainer {
+	public partial class BlacksmithWeaponUpgrade : VBoxContainer {
 		private HBoxContainer Cloner;
 
 		private void OnWeaponSelected( InputEvent @event ) {

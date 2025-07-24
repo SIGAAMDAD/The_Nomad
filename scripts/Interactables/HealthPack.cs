@@ -21,6 +21,9 @@ public partial class HealthPack : InteractionItem {
 
 		LevelData.Instance.PlayerRespawn += OnPlayerRestart;
 
+		Connect( SignalName.AreaShapeEntered, Callable.From<Rid, Area2D, int, int>( ( bodyRid, area, areaShapeIndex, localShapeIndex ) => OnInteractionAreaBody2DEntered( bodyRid, area, areaShapeIndex, localShapeIndex ) ) );
+		Connect( SignalName.AreaShapeExited, Callable.From<Rid, Area2D, int, int>( ( bodyRid, area, areaShapeIndex, localShapeIndex ) => OnInteractionAreaBody2DExited( bodyRid, area, areaShapeIndex, localShapeIndex ) ) );
 		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
+		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
 	}
 };

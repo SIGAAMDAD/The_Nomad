@@ -146,10 +146,12 @@ namespace Renown.Thinkers {
 			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA );
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
-			Visible = true;
-
 			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
+			}
+
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+				Visible = true;
 			}
 
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
@@ -169,7 +171,9 @@ namespace Renown.Thinkers {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
 			}
 
-			Visible = false;
+			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
+				Visible = false;
+			}
 
 			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.RemoveNetworkNode( GetPath() );
@@ -209,7 +213,7 @@ namespace Renown.Thinkers {
 
 		public override StringName GetObjectName() => Name;
 
-		public void Save( SaveSystem.SaveSectionWriter writer, int nIndex ) {
+		public virtual void Save( SaveSystem.SaveSectionWriter writer, int nIndex ) {
 			string key = "Thinker" + nIndex;
 
 			writer.SaveBool( key + nameof( IsPremade ), IsPremade );
@@ -221,10 +225,7 @@ namespace Renown.Thinkers {
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
 			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
 		}
-		protected void SetLocationDeferred( string locationId ) {
-			Location = ( (Node)Engine.GetMainLoop().Get( "root" ) ).GetNode<WorldArea>( locationId );
-		}
-		public void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
+		public virtual void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
 			string key = "Thinker" + nIndex;
 
 			GlobalPosition = reader.LoadVector2( key + nameof( GlobalPosition ) );
@@ -343,6 +344,7 @@ namespace Renown.Thinkers {
 			if ( ArchiveSystem.Instance.IsLoaded() ) {
 				Load();
 			}
+			AddToGroup( "Archive" );
 
 			SetMeta( "Faction", Faction );
 		}

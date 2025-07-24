@@ -13,7 +13,6 @@ using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using PlayerSystem.Upgrades;
-using System.Runtime.Intrinsics.X86;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -88,7 +87,7 @@ public partial class Player : Entity {
 	public static readonly int MAX_RUNES = 5;
 	public static readonly int MAX_PERKS = 1;
 	public static readonly float ACCEL = 1600.0f;
-	public static readonly float FRICTION = 1400.0f;
+	public static readonly float FRICTION = 1000.0f;
 	public static readonly float MAX_SPEED = 440.0f;
 	public static readonly float JUMP_VELOCITY = -400.0f;
 
@@ -913,7 +912,7 @@ public partial class Player : Entity {
 			DiscoveredAreas.Add( location );
 			EmitSignalLocationChanged( location );
 		}
-
+ 
 		base.SetLocation( location );
 	}
 
@@ -1248,7 +1247,11 @@ public partial class Player : Entity {
 			return;
 		}
 
-		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/env/RICOCHE2.wav" ) );
+		if ( Velocity == Godot.Vector2.Zero ) {
+			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/parry_heavy.ogg" ) );
+		} else {
+			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/parry_light.ogg" ) );
+		}
 
 		EmitSignalParrySuccess();
 
@@ -1263,7 +1266,7 @@ public partial class Player : Entity {
 		Godot.Collections.Array<Area2D> areas = ParryDamageArea.GetOverlappingAreas();
 		for ( int i = 0; i < areas.Count; i++ ) {
 			if ( areas[ i ] is Hitbox hitbox && hitbox != null ) {
-				hitbox.OnHit( this );
+				hitbox.OnHit( this, damage );
 			}
 		}
 
@@ -1286,10 +1289,10 @@ public partial class Player : Entity {
 	public void BlockInput( bool bBlocked ) {
 		if ( bBlocked ) {
 			Flags |= PlayerFlags.BlockedInput;
+			Velocity = Godot.Vector2.Zero;
 		} else {
 			Flags &= ~PlayerFlags.BlockedInput;
 		}
-		Velocity = Godot.Vector2.Zero;
 	}
 
 	private void OnCheckpointRestBegin() {
@@ -1407,7 +1410,8 @@ public partial class Player : Entity {
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
-			SetSoundLevel( 24.0f );
+			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/arm_foley.ogg" ) );
+			SetSoundLevel( 36.0f );
 		}
 	}
 	private void OnDashEnd() {
@@ -1820,18 +1824,21 @@ public partial class Player : Entity {
 			return;
 		}
 
-		HandsUsed = Hands.Right;
-
 		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 
-		// force the player to commit to the parry
 		Flags |= PlayerFlags.Parrying;
-		BlockInput( true );
+
+		if ( Velocity == Godot.Vector2.Zero ) {
+			// if we're stationary, make the player commit to a heavier parry
+			BlockInput( true );
+			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_heavy" );
+		} else {
+			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_light" );
+		}
 		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
 		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
-		ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee" );
-		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
+		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/melee.ogg" ) );
 	}
 
 	public void SwitchInputMode( Resource InputContext ) {
@@ -2148,6 +2155,9 @@ public partial class Player : Entity {
 
 		StartingPosition = GlobalPosition;
 
+		Hitbox hitbox = GetNode<Hitbox>( "HitBox" );
+		hitbox.Hit += ( source, amount ) => Damage( source, amount );
+
 		AimLine = GetNode<Line2D>( "AimAssist/AimLine" );
 		AimRayCast = GetNode<RayCast2D>( "AimAssist/AimLine/RayCast2D" );
 
@@ -2264,7 +2274,6 @@ public partial class Player : Entity {
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
 		LegAnimation.Connect( AnimatedSprite2D.SignalName.AnimationLooped, Callable.From( OnLegsAnimationLooped ) );
-
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
 
@@ -2389,7 +2398,7 @@ public partial class Player : Entity {
 			BloodDropTimer = new Timer();
 			BloodDropTimer.Name = "BloodDropTimer";
 			BloodDropTimer.WaitTime = 30.0f;
-			BloodDropTimer.Connect( "timeout", Callable.From( OnBloodDropTimerTimeout ) );
+			BloodDropTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnBloodDropTimerTimeout ) );
 			AddChild( BloodDropTimer );
 
 			BloodMaterial = ResourceLoader.Load<ShaderMaterial>( "res://resources/materials/covered_in_blood.tres" );
@@ -2447,11 +2456,11 @@ public partial class Player : Entity {
 				LeftArmAnimationState = PlayerAnimationState.Sliding;
 			}
 
-			velocity = velocity.MoveToward( InputVelocity * speed, (float)GetPhysicsProcessDeltaTime() * ACCEL );
+			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
 			TorsoAnimationState = PlayerAnimationState.Running;
 			LegAnimationState = PlayerAnimationState.Running;
 		} else {
-			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)GetPhysicsProcessDeltaTime() * FRICTION );
+			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
 			TorsoAnimationState = PlayerAnimationState.Idle;
 			LegAnimationState = PlayerAnimationState.Idle;
 		}

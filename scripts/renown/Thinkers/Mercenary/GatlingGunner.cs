@@ -218,7 +218,7 @@ namespace Renown.Thinkers {
 			ChangeInvestigationAngleTimer.CallDeferred( "start" );
 		}
 
-		public void OnHeadHit( Entity source ) {
+		public void OnHeadHit( Entity source, float nAmount ) {
 //			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
 //			BodyAnimations.Play( "die_high" );
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
@@ -227,12 +227,12 @@ namespace Renown.Thinkers {
 			HitHead = true;
 			Damage( source, Health );
 		}
-		public void OnBackpackHit( Entity source ) {
-			CallDeferred( "BlowupBackpack" );
+		public void OnBackpackHit( Entity source, float nAmount ) {
+			CallDeferred( MethodName.BlowupBackpack );
 		}
 
 		private void BlowupBackpack() {
-			GetNode<Area2D>( "Animations/BodyAnimations/BlowupArea" ).SetDeferred( "monitoring", true );
+			GetNode<Area2D>( "Animations/BodyAnimations/BlowupArea" ).SetDeferred( Area2D.PropertyName.Monitoring, true );
 
 			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = 72.0f;
@@ -241,7 +241,7 @@ namespace Renown.Thinkers {
 			AddChild( explosion );
 
 			base.Damage( this, Health );
-			DetectionMeter.CallDeferred( "hide" );
+			DetectionMeter.CallDeferred( Line2D.MethodName.Hide );
 			
 			GunChannel.Stop();
 			GunChannel.Set( "parameters/looping", false );

@@ -128,7 +128,7 @@ namespace Renown.Thinkers {
 //			SetNavigationTarget( LastTargetPosition );
 		}
 
-		public void OnHeadHit( Entity source ) {
+		public void OnHeadHit( Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}

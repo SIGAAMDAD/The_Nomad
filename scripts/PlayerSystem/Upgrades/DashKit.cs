@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Godot;
 
 namespace PlayerSystem.Upgrades {
-	public sealed partial class DashKit : Node2D, IUpgradable {
-		public int Level { get; private set; } = 0;
-		public int MaxLevel { get; private set; } = 8;
+	public sealed partial class DashKit : Node2D {
+		private static readonly float DashTimerBase = 0.3f;
 
 		private Timer DashTime;
 		private Timer DashBurnoutCooldownTimer;
@@ -13,7 +12,7 @@ namespace PlayerSystem.Upgrades {
 
 		private AudioStreamPlayer2D AudioChannel;
 
-		private static readonly float DashTimerBase = 0.3f;
+		private DashModule Module;
 
 		private float DashBurnout = 0.0f;
 		private float DashTimer = DashTimerBase;
@@ -27,13 +26,8 @@ namespace PlayerSystem.Upgrades {
 		[Signal]
 		public delegate void DashBurnoutChangedEventHandler( float nAmount );
 
-		public IReadOnlyDictionary<string, int> GetUpgradeCost() => Level switch {
-			0 => new Dictionary<string, int> { [ "" ] = 4 },
-			_ => new Dictionary<string, int> { }
-		};
-		public void ApplyUpgrade() {
-			Level = Math.Min( Level + 1, MaxLevel );
-		}
+		public void EquipModule( DashModule module ) => Module = module;
+		public DashModule GetModule() => Module;
 
 		private void OnDashBurnoutCooldownTimerTimeout() {
 			DashBurnout = 0.0f;
@@ -66,6 +60,8 @@ namespace PlayerSystem.Upgrades {
 			AudioChannel.Stream = ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ];
 			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			EmitSignalDashStart();
+
+			Module?.ApplyEffect( this );
 
 			DashBurnout += 0.30f;
 			if ( DashTimer >= 0.10f ) {

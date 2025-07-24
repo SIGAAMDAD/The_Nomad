@@ -21,6 +21,7 @@ public partial class FreeFlow : CanvasLayer {
 	private int TotalScore = 0;
 	private int HellbreakCounter = 0;
 	private Timer BurnoutTimer;
+	private TextureRect BerserkOverlay;
 
 	private static FreeFlow Instance;
 
@@ -36,6 +37,7 @@ public partial class FreeFlow : CanvasLayer {
 	}
 	private void DeactivateBerserkerMode() {
 		_Owner.SetFlags( _Owner.GetFlags() & ~Player.PlayerFlags.Berserker );
+		BerserkOverlay.Set( "shader_parameter/vignette_intensity", 0.0f );
 	}
 
 	public static void AddKill( KillType nType, int nScore ) {
@@ -52,8 +54,11 @@ public partial class FreeFlow : CanvasLayer {
 	}
 	public static void IncreaseCombo( int nAmount = 1 ) {
 		Instance.ComboCounter += nAmount;
-		if ( Instance.ComboCounter > 30 ) {
+		if ( Instance.ComboCounter > 10 ) {
 			Instance.ActivateBerserkerMode();
+
+			float redAmount = Mathf.Lerp( 0.0f, 1.0f, ( Instance.ComboCounter - 30.0f ) / 30.0f );
+			Instance.BerserkOverlay.Set( "shader_parameter/vignette_intensity", redAmount );
 		}
 	}
 	public static void EndCombo() {
@@ -96,6 +101,8 @@ public partial class FreeFlow : CanvasLayer {
 		base._Ready();
 
 		_Owner = GetParent<Player>();
+
+		BerserkOverlay = GetNode<TextureRect>( "BerserkModeOverlay" );
 
 		BurnoutTimer = GetNode<Timer>( "BurnoutTimer" );
 		BurnoutTimer.Connect( Timer.SignalName.Timeout, Callable.From( EndCombo ) );

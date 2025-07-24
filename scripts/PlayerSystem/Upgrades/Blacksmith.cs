@@ -10,7 +10,7 @@ namespace PlayerSystem.Upgrades {
 		private AudioStreamPlayer2D ForgeAmbience;
 		private AnimatedSprite2D ForgeSparks;
 
-		private NavigationAgent2D NavAgent;
+		public 
 
 		public override void _Ready() {
 			base._Ready();
@@ -35,18 +35,14 @@ namespace PlayerSystem.Upgrades {
 			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( () => Animations.ProcessMode = ProcessModeEnum.Pausable ) );
 			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenExited, Callable.From( () => Animations.ProcessMode = ProcessModeEnum.Disabled ) );
 
-			/*
-			NavAgent = GetNode<NavigationAgent2D>( "NavAgent" );
-			NavAgent.Connect( NavigationAgent2D.SignalName.VelocityComputed, Callable.From<Vector2>( ( safeVelocity ) => {
-				Velocity = safeVelocity;
-				MoveAndSlide();
-			} ) );
-			NavAgent.Connect( NavigationAgent2D.SignalName.TargetReached, Callable.From( () => {
-				NavAgent.ProcessMode = ProcessModeEnum.Disabled;
-				SetPhysicsProcess( false );
-			} ) );
-			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
-			*/
+			Node CraftStation = GetNode( "CraftStation" );
+			CraftStation.Set( "database", ResourceCache.ItemDatabase );
+
+			Node InputInventory = GetNode( "InputInventory" );
+			InputInventory.Set( "database", ResourceCache.ItemDatabase );
+
+			Node OutputInventory = GetNode( "OutputInventory" );
+			OutputInventory.Set( "database", ResourceCache.ItemDatabase );
 		}
 	};
 };

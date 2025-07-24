@@ -6,9 +6,9 @@ public partial class Hitbox : Area2D {
 	private Entity Parent;
 
 	[Signal]
-	public delegate void HitEventHandler( Entity source );
+	public delegate void HitEventHandler( Entity source, float nDamageAmount );
 
-	public void OnHit( Entity source ) => EmitSignalHit( source );
+	public void OnHit( Entity source, float nDamageAmount ) => EmitSignalHit( source, nDamageAmount );
 
 	public override void _Ready() {
 		base._Ready();

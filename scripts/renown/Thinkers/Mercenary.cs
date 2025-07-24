@@ -329,7 +329,7 @@ namespace Renown.Thinkers {
 			SetFear( Fear + 20 );
 		}
 
-		public void OnHeadHit( Entity source ) {
+		public void OnHeadHit( Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}

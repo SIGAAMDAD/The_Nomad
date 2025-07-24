@@ -1,5 +1,8 @@
 extends MarginContainer
 
+signal blacksmith_show_upgrades
+signal blacksmith_show_repairs
+
 func _ready() -> void:
 	pass
 

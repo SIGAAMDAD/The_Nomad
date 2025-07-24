@@ -6,7 +6,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pqbys"]
 shader = ExtResource("2_h8cc4")
 shader_parameter/vignette_intensity = 1.0
-shader_parameter/desaturation = 1.0
+shader_parameter/desaturation = 0.0
 
 [node name="FreeflowCounter" type="CanvasLayer"]
 script = ExtResource("1_b1i62")

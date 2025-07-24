@@ -324,7 +324,7 @@ namespace Renown.Thinkers {
 			SetFear( Fear + 20 );
 		}
 
-		public void OnHeadHit( Entity source ) {
+		public void OnHeadHit( Entity source, float nAmount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
@@ -386,8 +386,6 @@ namespace Renown.Thinkers {
 			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
 
-			//			NodeCache ??= Location.GetNodeCache();
-
 			LoseInterestTimer = new Timer();
 			LoseInterestTimer.Name = "LoseInterestTimer";
 			LoseInterestTimer.WaitTime = LoseInterestTime;
@@ -396,7 +394,7 @@ namespace Renown.Thinkers {
 			AddChild( LoseInterestTimer );
 
 			ChangeInvestigationAngleTimer = new Timer();
-			ChangeInvestigationAngleTimer.Name = nameof( ChangeInvestigationAngleTimer );
+			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
 			ChangeInvestigationAngleTimer.WaitTime = 2.0f;
 			ChangeInvestigationAngleTimer.OneShot = true;
 			ChangeInvestigationAngleTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
@@ -438,7 +436,7 @@ namespace Renown.Thinkers {
 			AimTimer.Name = "AimTimer";
 			AimTimer.WaitTime = 2.5f;
 			AimTimer.OneShot = true;
-			AimTimer.Connect( "timeout", Callable.From( OnAimTimerTimeout ) );
+			AimTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnAimTimerTimeout ) );
 			AddChild( AimTimer );
 
 			BarkChannel = new AudioStreamPlayer2D();
@@ -490,8 +488,7 @@ namespace Renown.Thinkers {
 				LookDir = Godot.Vector2.Left;
 				BodyAnimations.FlipH = true;
 				break;
-			}
-			;
+			};
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
@@ -508,6 +505,7 @@ namespace Renown.Thinkers {
 			}
 
 			AttackTimer.Start();
+			Weapon.SetAttackAngle( AimAngle );
 			Weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 			Weapon.CallDeferred( WeaponEntity.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}

@@ -1,10 +1,15 @@
-[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://ca1bx07bc3p25"]
+[gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://ca1bx07bc3p25"]
 
 [ext_resource type="Texture2D" uid="uid://b060c1x36h7ol" path="res://resources/texture_mappings/player/the_wanderer/left_arms.tres" id="1_srqll"]
+[ext_resource type="Texture2D" uid="uid://jfj3ofow8nfw" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.png" id="2_3hygu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3hygu"]
 atlas = ExtResource("1_srqll")
 region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dvtof"]
+atlas = ExtResource("2_3hygu")
+region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8bir6"]
 atlas = ExtResource("1_srqll")
@@ -29,12 +34,20 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 2.0,
+"duration": 0.8,
+"texture": SubResource("AtlasTexture_dvtof")
+}],
+"loop": false,
+"name": &"melee_heavy",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 0.2,
 "texture": SubResource("AtlasTexture_8bir6")
 }],
 "loop": false,
-"name": &"melee",
-"speed": 5.0
+"name": &"melee_light",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,

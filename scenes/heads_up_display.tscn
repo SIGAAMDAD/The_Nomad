@@ -43,7 +43,7 @@
 [ext_resource type="Script" uid="uid://dywd8fk8nlc4d" path="res://scripts/PlayerSystem/UserInterface/blacksmith_interactor.gd" id="41_dg2ec"]
 [ext_resource type="Script" uid="uid://bomm36bff65ti" path="res://scripts/PlayerSystem/UserInterface/warp_container.gd" id="41_kwx6t"]
 [ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="42_7chf1"]
-[ext_resource type="Script" path="res://scripts/PlayerSystem/UserInterface/BlacksmithUpgrade.cs" id="42_dg2ec"]
+[ext_resource type="Script" uid="uid://dmqqt3wjk5087" path="res://scripts/PlayerSystem/UserInterface/BlacksmithWeaponUpgrade.cs" id="42_dg2ec"]
 [ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="44_oiel5"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
@@ -1351,11 +1351,23 @@ text = "Yes"
 layout_mode = 2
 text = "No"
 
-[node name="BlacksmithContainer" type="MarginContainer" parent="."]
+[node name="Blacksmith" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="BlacksmithContainer" type="MarginContainer" parent="Blacksmith"]
 visible = false
+layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.4125
 anchor_bottom = 1.0
+offset_right = 187.5
+offset_bottom = 137.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 20
@@ -1364,35 +1376,36 @@ theme_override_constants/margin_bottom = 30
 script = ExtResource("41_dg2ec")
 metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="BlacksmithContainer"]
+[node name="TextureRect" type="TextureRect" parent="Blacksmith/BlacksmithContainer"]
 layout_mode = 2
 texture = ExtResource("15_ot7dw")
 
-[node name="MainSelectorContainer" type="VBoxContainer" parent="BlacksmithContainer"]
+[node name="MainSelectorContainer" type="VBoxContainer" parent="Blacksmith/BlacksmithContainer"]
 layout_mode = 2
 
-[node name="UpgradeButton" type="Button" parent="BlacksmithContainer/MainSelectorContainer"]
+[node name="UpgradeButton" type="Button" parent="Blacksmith/BlacksmithContainer/MainSelectorContainer"]
 layout_mode = 2
 text = "UPGRADE_EQUIPMENT"
 flat = true
 
-[node name="HSeparator" type="HSeparator" parent="BlacksmithContainer/MainSelectorContainer"]
+[node name="HSeparator" type="HSeparator" parent="Blacksmith/BlacksmithContainer/MainSelectorContainer"]
 layout_mode = 2
 
-[node name="RepairButton" type="Button" parent="BlacksmithContainer/MainSelectorContainer"]
+[node name="RepairButton" type="Button" parent="Blacksmith/BlacksmithContainer/MainSelectorContainer"]
 layout_mode = 2
 text = "REPAIR_EQUIPMENT"
 flat = true
 
-[node name="HSeparator2" type="HSeparator" parent="BlacksmithContainer/MainSelectorContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Blacksmith/BlacksmithContainer/MainSelectorContainer"]
 layout_mode = 2
 
-[node name="LeaveButton" type="Button" parent="BlacksmithContainer/MainSelectorContainer"]
+[node name="LeaveButton" type="Button" parent="Blacksmith/BlacksmithContainer/MainSelectorContainer"]
 layout_mode = 2
 text = "LEAVE_INTERACTION"
 flat = true
 
-[node name="BlacksmithUpgradeContainer" type="MarginContainer" parent="."]
+[node name="BlacksmithUpgradeContainer" type="MarginContainer" parent="Blacksmith"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1402,13 +1415,12 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
-metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="BlacksmithUpgradeContainer"]
+[node name="TextureRect" type="TextureRect" parent="Blacksmith/BlacksmithUpgradeContainer"]
 layout_mode = 2
 texture = ExtResource("42_7chf1")
 
-[node name="TabContainer" type="TabContainer" parent="BlacksmithUpgradeContainer"]
+[node name="TabContainer" type="TabContainer" parent="Blacksmith/BlacksmithUpgradeContainer"]
 layout_mode = 2
 theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_vil6o")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_ic8aw")
@@ -1419,11 +1431,11 @@ theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_redfb")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
 current_tab = 0
 
-[node name="Weapons" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+[node name="Weapons" type="TabBar" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer"]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="VScrollBar" type="VScrollBar" parent="BlacksmithUpgradeContainer/TabContainer/Weapons"]
+[node name="VScrollBar" type="VScrollBar" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0483333
@@ -1434,7 +1446,7 @@ offset_right = 0.2
 offset_bottom = 0.0449829
 metadata/_edit_use_anchors_ = true
 
-[node name="WeaponList" type="VBoxContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+[node name="WeaponList" type="VBoxContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -1447,18 +1459,17 @@ grow_vertical = 2
 script = ExtResource("42_dg2ec")
 metadata/_edit_use_anchors_ = true
 
-[node name="Cloner" type="HBoxContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList"]
-visible = false
+[node name="Cloner" type="HBoxContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+[node name="TextureRect" type="TextureRect" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("44_oiel5")
 expand_mode = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="Icon" type="TextureRect" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner/TextureRect"]
+[node name="Icon" type="TextureRect" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner/TextureRect"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 anchor_left = -0.014
@@ -1470,11 +1481,11 @@ texture = ExtResource("16_nrav7")
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+[node name="Label" type="Label" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+[node name="MarginContainer" type="MarginContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -1484,15 +1495,44 @@ anchor_bottom = 1.003
 offset_bottom = -0.0710144
 metadata/_edit_use_anchors_ = true
 
-[node name="Dash Thruster" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+[node name="Dash Thruster" type="TabBar" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="Arm Attachments" type="TabBar" parent="BlacksmithUpgradeContainer/TabContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Dash Thruster"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.042
+anchor_right = 0.957
+anchor_bottom = 0.93
+offset_left = -0.200003
+offset_right = -0.200012
+offset_bottom = 0.189972
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Dash Thruster/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer/Dash Thruster/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Arm Attachments" type="TabBar" parent="Blacksmith/BlacksmithUpgradeContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="Blacksmith/BlacksmithUpgradeContainer"]
+title = ""
+initial_position = 2
+visible = true
+unresizable = true
+borderless = true
+ok_button_text = "YES"
+dialog_text = "UPGRADE"
+dialog_close_on_escape = false
+cancel_button_text = "NO"
 
 [node name="DeathText" type="Label" parent="."]
 visible = false
@@ -1518,6 +1558,6 @@ horizontal_alignment = 1
 [connection signal="pressed" from="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer/WarpButton" to="CheckpointContainer" method="_on_warp_button_pressed"]
 [connection signal="pressed" from="StorageContainer/VBoxContainer/BackButton" to="StorageContainer" method="_on_back_button_pressed"]
 [connection signal="pressed" from="WarpContainer/BackButton" to="WarpContainer" method="_on_back_button_pressed"]
-[connection signal="pressed" from="BlacksmithContainer/MainSelectorContainer/UpgradeButton" to="BlacksmithContainer" method="_on_upgrade_button_pressed"]
-[connection signal="pressed" from="BlacksmithContainer/MainSelectorContainer/RepairButton" to="BlacksmithContainer" method="_on_repair_button_pressed"]
-[connection signal="pressed" from="BlacksmithContainer/MainSelectorContainer/LeaveButton" to="BlacksmithContainer" method="_on_leave_button_pressed"]
+[connection signal="pressed" from="Blacksmith/BlacksmithContainer/MainSelectorContainer/UpgradeButton" to="Blacksmith/BlacksmithContainer" method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="Blacksmith/BlacksmithContainer/MainSelectorContainer/RepairButton" to="Blacksmith/BlacksmithContainer" method="_on_repair_button_pressed"]
+[connection signal="pressed" from="Blacksmith/BlacksmithContainer/MainSelectorContainer/LeaveButton" to="Blacksmith/BlacksmithContainer" method="_on_leave_button_pressed"]

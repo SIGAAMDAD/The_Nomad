@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://gwspkpk3wqrp"]
+[gd_scene load_steps=17 format=3 uid="uid://gwspkpk3wqrp"]
 
 [ext_resource type="Script" uid="uid://dn4qqy776fsl" path="res://scripts/PlayerSystem/Upgrades/Blacksmith.cs" id="1_rqt3x"]
 [ext_resource type="Texture2D" uid="uid://dao4yerl73mak" path="res://textures/spritesheets/asturion.png" id="2_5s3qw"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bbbsfu2iqsl4r" path="res://textures/spritesheets/gfx/Sparks-Sheet.png" id="4_giqjx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rqt3x"]
+size = Vector2(31, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y48vm"]
 atlas = ExtResource("2_5s3qw")
@@ -14,6 +15,10 @@ region = Rect2(32, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_t6vhn"]
 atlas = ExtResource("2_5s3qw")
 region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_giqjx"]
+atlas = ExtResource("2_5s3qw")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_giqjx"]
 animations = [{
@@ -27,6 +32,14 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_giqjx")
+}],
+"loop": true,
+"name": &"interact",
+"speed": 1.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p25xw"]
@@ -83,13 +96,14 @@ animations = [{
 script = ExtResource("1_rqt3x")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 1)
 shape = SubResource("RectangleShape2D_rqt3x")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 process_mode = 4
 sprite_frames = SubResource("SpriteFrames_giqjx")
-animation = &"idle"
-frame_progress = 0.887296
+animation = &"interact"
+autoplay = "idle"
 
 [node name="ForgeAmbience" type="AudioStreamPlayer2D" parent="AnimatedSprite2D"]
 position = Vector2(12, 6)
@@ -106,3 +120,14 @@ frame_progress = 1.0
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 position = Vector2(0.500004, 21)
 scale = Vector2(8.75, 7.6)
+
+[node name="CraftStation" type="CraftStation" parent="."]
+input_inventories = Array[NodePath]([NodePath("../InputInventory")])
+output_inventories = Array[NodePath]([NodePath("../OutputInventory")])
+processing_mode = 1
+
+[node name="InputInventory" type="Inventory" parent="."]
+inventory_name = "Input"
+
+[node name="OutputInventory" type="Inventory" parent="."]
+inventory_name = "OutputInventory"
