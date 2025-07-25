@@ -14,9 +14,9 @@ const _rage_used_on_warp = 20.0
 
 var _owner: CharacterBody2D
 
-@onready var _warp_locations_scroll: VScrollBar = $WarpLocations
-@onready var _warp_locations_container: VBoxContainer = $WarpLocations/WarpLocationsContainer
-@onready var _warp_cloner: HBoxContainer = $WarpLocations/WarpLocationsContainer/Cloner
+@onready var _warp_locations_scroll: VScrollBar = $MarginContainer/WarpLocations
+@onready var _warp_locations_container: VBoxContainer = $MarginContainer/WarpLocations/WarpLocationsContainer
+@onready var _warp_cloner: HBoxContainer = $MarginContainer/WarpLocations/WarpLocationsContainer/Cloner
 
 @onready var _main_container: MarginContainer = $"../CheckpointContainer"
 

@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://duqwsqycslihx"]
+
+[ext_resource type="Shader" uid="uid://kgonpv2ij64i" path="res://shaders/post_processing/crt_filter.gdshader" id="1_ayjm5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocnkk"]
+shader = ExtResource("1_ayjm5")
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/scan_line_amount = 0.54
+shader_parameter/warp_amount = 0.05
+shader_parameter/vignette_amount = 0.72
+shader_parameter/vignette_intensity = 1.0
+shader_parameter/grille_amount = 1.0
+shader_parameter/brightness_boost = 2.0
+
+[node name="CrtFilter" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ocnkk")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

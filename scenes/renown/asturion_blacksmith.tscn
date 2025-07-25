@@ -1,20 +1,27 @@
-[gd_scene load_steps=17 format=3 uid="uid://gwspkpk3wqrp"]
+[gd_scene load_steps=34 format=3 uid="uid://gwspkpk3wqrp"]
 
 [ext_resource type="Script" uid="uid://dn4qqy776fsl" path="res://scripts/PlayerSystem/Upgrades/Blacksmith.cs" id="1_rqt3x"]
 [ext_resource type="Texture2D" uid="uid://dao4yerl73mak" path="res://textures/spritesheets/asturion.png" id="2_5s3qw"]
 [ext_resource type="AudioStream" uid="uid://nwdcb3mt040s" path="res://sounds/env/forge_ambience.ogg" id="3_t6vhn"]
 [ext_resource type="Texture2D" uid="uid://bbbsfu2iqsl4r" path="res://textures/spritesheets/gfx/Sparks-Sheet.png" id="4_giqjx"]
+[ext_resource type="PackedScene" uid="uid://cfagbqr0q3j2w" path="res://scenes/interactables/dialogue_interactor.tscn" id="5_giqjx"]
+[ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="5_uox27"]
+[ext_resource type="Resource" uid="uid://bra887cq3crrn" path="res://resources/dialogue/asturion.dialogue" id="6_p25xw"]
+[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="7_0lc5q"]
+[ext_resource type="Script" uid="uid://dmqqt3wjk5087" path="res://scripts/PlayerSystem/UserInterface/BlacksmithWeaponUpgrade.cs" id="8_uox27"]
+[ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="9_8nara"]
+[ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="10_ma2th"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rqt3x"]
 size = Vector2(31, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_y48vm"]
-atlas = ExtResource("2_5s3qw")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t6vhn"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8nara"]
 atlas = ExtResource("2_5s3qw")
 region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ma2th"]
+atlas = ExtResource("2_5s3qw")
+region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_giqjx"]
 atlas = ExtResource("2_5s3qw")
@@ -24,14 +31,14 @@ region = Rect2(0, 0, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_y48vm")
+"texture": SubResource("AtlasTexture_8nara")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_t6vhn")
+"texture": SubResource("AtlasTexture_ma2th")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 2.0
+"speed": 3.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -92,6 +99,40 @@ animations = [{
 "speed": 20.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p25xw"]
+size = Vector2(46, 33)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ymkad"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jpoky"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g3pl5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4wcvs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c547r"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 30
+border_width_right = 20
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 70
+corner_radius_top_right = 70
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4h6p7"]
+
+[sub_resource type="Gradient" id="Gradient_jwj75"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ty7ml"]
+gradient = SubResource("Gradient_jwj75")
+width = 24
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_le2m5"]
+texture = SubResource("GradientTexture1D_ty7ml")
+texture_margin_left = 10.0
+
 [node name="AsturionBlacksmith" type="CharacterBody2D"]
 script = ExtResource("1_rqt3x")
 
@@ -99,17 +140,19 @@ script = ExtResource("1_rqt3x")
 position = Vector2(-0.5, 1)
 shape = SubResource("RectangleShape2D_rqt3x")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-process_mode = 4
-sprite_frames = SubResource("SpriteFrames_giqjx")
-animation = &"interact"
-autoplay = "idle"
+[node name="Animations" type="Node2D" parent="."]
 
-[node name="ForgeAmbience" type="AudioStreamPlayer2D" parent="AnimatedSprite2D"]
+[node name="BodyAnimations" type="AnimatedSprite2D" parent="Animations"]
+sprite_frames = SubResource("SpriteFrames_giqjx")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.465724
+
+[node name="ForgeAmbience" type="AudioStreamPlayer2D" parent="Animations/BodyAnimations"]
 position = Vector2(12, 6)
 stream = ExtResource("3_t6vhn")
 
-[node name="ForgeSparks" type="AnimatedSprite2D" parent="AnimatedSprite2D"]
+[node name="ForgeSparks" type="AnimatedSprite2D" parent="Animations/BodyAnimations"]
 visible = false
 position = Vector2(22, -1)
 scale = Vector2(0.3, 0.3)
@@ -117,17 +160,166 @@ sprite_frames = SubResource("SpriteFrames_8nara")
 frame = 5
 frame_progress = 1.0
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
-position = Vector2(0.500004, 21)
-scale = Vector2(8.75, 7.6)
-
 [node name="CraftStation" type="CraftStation" parent="."]
 input_inventories = Array[NodePath]([NodePath("../InputInventory")])
 output_inventories = Array[NodePath]([NodePath("../OutputInventory")])
 processing_mode = 1
+database = ExtResource("5_uox27")
 
 [node name="InputInventory" type="Inventory" parent="."]
 inventory_name = "Input"
+database = ExtResource("5_uox27")
 
 [node name="OutputInventory" type="Inventory" parent="."]
 inventory_name = "OutputInventory"
+database = ExtResource("5_uox27")
+
+[node name="DialogueInteractor" parent="." node_paths=PackedStringArray("_Owner") instance=ExtResource("5_giqjx")]
+DialogueResource = ExtResource("6_p25xw")
+OptionNames = Array[StringName]([&"UPGRADE_EQUIPMENT", &"REPAIR_EQUIPMENT", &"TALK", &"LEAVE_INTERACTION"])
+_Owner = NodePath("..")
+HasStartInteractionLine = true
+
+[node name="InteractBody" type="CollisionShape2D" parent="DialogueInteractor"]
+position = Vector2(0, 41.5)
+shape = SubResource("RectangleShape2D_p25xw")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="DialogueInteractor"]
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+bbcode_enabled = true
+metadata/_edit_use_anchors_ = true
+
+[node name="UIInteractor" type="CanvasLayer" parent="."]
+
+[node name="BlacksmithUpgradeContainer" type="MarginContainer" parent="UIInteractor"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="UIInteractor/BlacksmithUpgradeContainer"]
+layout_mode = 2
+texture = ExtResource("7_0lc5q")
+
+[node name="TabContainer" type="TabContainer" parent="UIInteractor/BlacksmithUpgradeContainer"]
+layout_mode = 2
+theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_ymkad")
+theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_jpoky")
+theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_g3pl5")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_4wcvs")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_c547r")
+theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_4h6p7")
+theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_le2m5")
+current_tab = 0
+
+[node name="Weapons" type="TabBar" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VScrollBar" type="VScrollBar" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0483333
+anchor_top = 0.0191847
+anchor_right = 0.0613333
+anchor_bottom = 0.875192
+offset_right = 0.2
+offset_bottom = 0.0449829
+metadata/_edit_use_anchors_ = true
+
+[node name="WeaponList" type="VBoxContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.5
+anchor_top = 0.0112045
+anchor_right = 67.75
+anchor_bottom = 1.0028
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_uox27")
+metadata/_edit_use_anchors_ = true
+
+[node name="Cloner" type="HBoxContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("9_8nara")
+expand_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Icon" type="TextureRect" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner/TextureRect"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+anchor_left = -0.014
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.00810373
+offset_right = 0.150269
+texture = ExtResource("10_ma2th")
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar/WeaponList/Cloner"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Weapons/VScrollBar"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.375
+anchor_right = 65.5
+anchor_bottom = 1.003
+offset_bottom = -0.0710144
+metadata/_edit_use_anchors_ = true
+
+[node name="Dash Thruster" type="TabBar" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Dash Thruster"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.042
+anchor_right = 0.957
+anchor_bottom = 0.93
+offset_left = -0.200003
+offset_right = -0.200012
+offset_bottom = 0.189972
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Dash Thruster/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer/Dash Thruster/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Arm Attachments" type="TabBar" parent="UIInteractor/BlacksmithUpgradeContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="UpgradeConfirmationDialog" type="ConfirmationDialog" parent="UIInteractor/BlacksmithUpgradeContainer"]
+auto_translate_mode = 1
+title = ""
+initial_position = 2
+unresizable = true
+borderless = true
+ok_button_text = "YES"
+dialog_text = "UPGRADE"
+dialog_close_on_escape = false
+cancel_button_text = "NO"

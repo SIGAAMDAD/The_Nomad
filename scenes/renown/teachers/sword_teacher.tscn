@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://fcdfetqsoiwo"]
+
+[ext_resource type="Script" uid="uid://ck4x58fy5v5l8" path="res://scripts/renown/Thinkers/Teacher.cs" id="1_w55jx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nv8jk"]
+
+[node name="SwordTeacher" type="CharacterBody2D"]
+script = ExtResource("1_w55jx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nv8jk")

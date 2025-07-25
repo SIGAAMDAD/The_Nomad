@@ -40,6 +40,8 @@ func _on_open_storage_button_pressed() -> void:
 	$"../StorageContainer".show()
 
 func _on_rest_here_button_pressed() -> void:
+	print( "resting..." )
+	
 	UiAudioManager.OnButtonPressed()
 	
 	_owner.SetHealth( 100.0 )

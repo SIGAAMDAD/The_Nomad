@@ -6,6 +6,7 @@ public enum InteractionType {
 	Tutorial,
 	Note,
 	Door,
+	Dialogue,
 
 	EaglesPeak,
 

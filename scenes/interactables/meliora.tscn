@@ -178,7 +178,7 @@ radius = 85.235
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_coa62"]
 size = Vector2(46, 52)
 
-[node name="Meliora" type="Area2D"]
+[node name="Meliora" type="Area2D" groups=["Checkpoints"]]
 z_index = 10
 collision_layer = 2
 collision_mask = 2
@@ -201,6 +201,7 @@ frame = 12
 frame_progress = 1.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
 offset_left = -20.0
 offset_top = -20.0
 offset_right = 20.0
@@ -214,6 +215,7 @@ affect_navigation_mesh = true
 carve_navigation_mesh = true
 
 [node name="InteractBody" type="CollisionShape2D" parent="."]
+position = Vector2(0, 26)
 shape = SubResource("CircleShape2D_coa62")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]

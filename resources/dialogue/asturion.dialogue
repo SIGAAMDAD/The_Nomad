@@ -1,17 +1,12 @@
-~ meet
-Asturion: It's been a while, old man. => talk
+~ exit
+Asturion: See you soon, old man. Stand strong against the wind.
 => END
 
-~ talk
-Asturion: [[What tickles your fancy?|Whattya need?|What's broken now?]]
-- [i]Place your weapon on the counter[/i] => weapon_talk
-- Nevermind
-	Asturion: Aight... => END
+~ upgrades
+Asturion: [[What tickles your fancy?|Whattya need?|What now?]]
 => END
 
-~ weapon_talk
-Asturion: Ah, metal works. What'll it be?
-- [i]Upgrade[/i]
-- [i]Clean[/i]
-- [i]Never mind[/i] => talk
+~ talk_orphanage
+Asturion: Hey, so... Why've you been visiting that church?
+Asturion: You don't strike me as the religious type.
 => END

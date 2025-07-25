@@ -201,8 +201,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
 
 	private void PlaySound( AudioStream stream ) {
-		AudioChannel.SetDeferred( "stream", stream );
-		AudioChannel.CallDeferred( "play" );
+		AudioChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, stream );
+		AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 	}
 
 	public void Drop() {
@@ -475,6 +475,17 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 	public void ApplyUpgrade() {
 		Level = Math.Min( Level + 1, MaxLevel );
+
+		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
+			UseTime -= 0.01f;
+			ReloadTime -= 0.01f;
+		}
+		if ( ( PropertyBits & Properties.IsBladed ) != 0 ) {
+			BladedDamage += 3.15f;
+		}
+		if ( ( PropertyBits & Properties.IsBlunt ) != 0 ) {
+			BluntDamage += 3.15f;
+		}
 	}
 
 	public void Save() {

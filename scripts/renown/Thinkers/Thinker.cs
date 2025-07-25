@@ -151,10 +151,6 @@ namespace Renown.Thinkers {
 			}
 
 			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
-				Visible = true;
-			}
-
-			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
 				AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
 				Animations.ProcessMode = ProcessModeEnum.Pausable;
 			}
@@ -169,10 +165,6 @@ namespace Renown.Thinkers {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
 			} else {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
-			}
-
-			if ( ( Flags & ThinkerFlags.Dead ) == 0 ) {
-				Visible = false;
 			}
 
 			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
@@ -296,7 +288,7 @@ namespace Renown.Thinkers {
 
 			ProcessMode = ProcessModeEnum.Pausable;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
+			ProcessThreadGroupOrder = (int)GetRid().Id;
 
 			AudioChannel = new AudioStreamPlayer2D();
 			AudioChannel.Name = "AudioChannel";

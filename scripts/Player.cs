@@ -47,11 +47,12 @@ public partial class Player : Entity {
 		Inventory = 0x00001000,
 		Resting = 0x00002000,
 		UsingMelee = 0x00004000,
-		Parrying = 0x00008000,
-		Encumbured = 0x00010000,
-		Emoting = 0x00020000,
-		Sober = 0x00040000,
-		Berserker = 0x00080000,
+		LightParrying = 0x00008000,
+		HeavyParrying = 0x00010000,
+		Encumbured = 0x00020000,
+		Emoting = 0x00040000,
+		Sober = 0x00080000,
+		Berserker = 0x00100000,
 	};
 
 	public enum AnimationState : byte {
@@ -1243,7 +1244,7 @@ public partial class Player : Entity {
 	public void OnParry( RayCast2D from, float damage ) {
 		//		float distance = from.GlobalPosition.DistanceTo( from.TargetPosition );
 
-		if ( ( Flags & PlayerFlags.Parrying ) == 0 ) {
+		if ( ( Flags & PlayerFlags.LightParrying ) == 0 && ( Flags & PlayerFlags.HeavyParrying ) == 0 ) {
 			return;
 		}
 
@@ -1359,6 +1360,9 @@ public partial class Player : Entity {
 
 		SetProcessUnhandledInput( true );
 		BlockInput( true );
+	}
+
+	public void TalkBegin() {
 	}
 
 	public void EndInteraction() {
@@ -1813,7 +1817,7 @@ public partial class Player : Entity {
 
 	private void OnMeleeFinished() {
 		ArmLeft.Animations.AnimationFinished -= OnMeleeFinished;
-		Flags &= ~PlayerFlags.Parrying;
+		Flags &= ~( PlayerFlags.LightParrying | PlayerFlags.HeavyParrying );
 		BlockInput( false );
 
 		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
@@ -1827,7 +1831,7 @@ public partial class Player : Entity {
 		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
 
-		Flags |= PlayerFlags.Parrying;
+		Flags |= ( PlayerFlags.LightParrying | PlayerFlags.HeavyParrying );
 
 		if ( Velocity == Godot.Vector2.Zero ) {
 			// if we're stationary, make the player commit to a heavier parry
@@ -2154,9 +2158,6 @@ public partial class Player : Entity {
 		};
 
 		StartingPosition = GlobalPosition;
-
-		Hitbox hitbox = GetNode<Hitbox>( "HitBox" );
-		hitbox.Hit += ( source, amount ) => Damage( source, amount );
 
 		AimLine = GetNode<Line2D>( "AimAssist/AimLine" );
 		AimRayCast = GetNode<RayCast2D>( "AimAssist/AimLine/RayCast2D" );
@@ -2627,7 +2628,7 @@ public partial class Player : Entity {
 		Animations.MoveChild( back.Animations, 0 );
 		Animations.MoveChild( front.Animations, 3 );
 
-		if ( ( Flags & PlayerFlags.Parrying ) == 0 ) {
+		if ( ( Flags & PlayerFlags.LightParrying ) == 0 || ( Flags & PlayerFlags.HeavyParrying ) == 0 ) {
 			CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
 			CalcArmAnimation( ArmRight, out RightArmAnimationState );
 		}
@@ -2695,8 +2696,7 @@ public partial class Player : Entity {
 				break;
 			default:
 				break;
-			}
-			;
+			};
 		}
 		if ( index == WeaponSlot.INVALID ) {
 			Console.PrintError( string.Format( "Player.PickupWeapon: weapon {0} has invalid equipment category", (string)weapon.Data.Get( "id" ) ) );

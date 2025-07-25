@@ -539,7 +539,7 @@ namespace Renown.Thinkers {
 			CheckSight();
 
 			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
-				if ( ( player.GetFlags() & Player.PlayerFlags.Parrying ) != 0 ) {
+				if ( ( player.GetFlags() & Player.PlayerFlags.LightParrying ) != 0 || ( player.GetFlags() & Player.PlayerFlags.HeavyParrying ) != 0 ) {
 					// shoot early
 					AimTimer.Stop();
 					OnAimTimerTimeout();

@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace Renown.World {
 	public partial class WorldArea : Area2D {
@@ -35,10 +36,9 @@ namespace Renown.World {
 
 		private void OnProcessAreaBody2DEntered( Node2D body ) {
 			if ( body is Entity entity && entity != null ) {
-				if ( entity is Player player && player != null ) {
+				if ( body is Player player && player != null ) {
 					PlayerStatus = true;
 					EmitSignalPlayerEntered();
-					SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
 				}
 				entity.SetLocation( this );
 			}
@@ -47,7 +47,6 @@ namespace Renown.World {
 			if ( !GetOverlappingBodies().Contains( LevelData.Instance.ThisPlayer ) ) {
 				PlayerStatus = false;
 				EmitSignalPlayerExited();
-				SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 			}
 		}
 
@@ -56,10 +55,12 @@ namespace Renown.World {
 			
 			Connect( "body_entered", Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
 			Connect( "body_exited", Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
+			Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
+			Connect( "body_shape_exited", Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
 
-			//			ProcessMode = ProcessModeEnum.Pausable;
-			//			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
-			//			ProcessThreadGroupOrder = Constants.THREAD_GROUP_BIOMES;
+			ProcessMode = ProcessModeEnum.Pausable;
+			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
+			ProcessThreadGroupOrder = (int)GetRid().Id;
 
 			if ( !IsInGroup( "Archive" ) ) {
 				AddToGroup( "Archive" );

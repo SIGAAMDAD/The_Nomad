@@ -1,0 +1,7 @@
+[gd_resource type="ItemDefinition" format=3 uid="uid://br0o72bd31dkw"]
+
+[resource]
+id = "DASH_MODULE_COOLING_VENTS"
+can_stack = false
+max_stack = 1
+name = "Cooling Vents"

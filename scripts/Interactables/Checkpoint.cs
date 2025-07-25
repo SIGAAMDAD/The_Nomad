@@ -20,14 +20,15 @@ public partial class Checkpoint : InteractionItem {
 
 	public bool GetActivated() => Activated;
 	public void Activate( Player player ) {
-		Activated = true;
-		Animations.Hide();
-		ActivateAnimation.Show();
-		ActivateAnimation.Play( "default" );
-
+		if ( !Activated ) {
+			Activated = true;
+			Animations.Hide();
+			ActivateAnimation.Show();
+			ActivateAnimation.Play( "default" );
+		}
 		player.BeginInteraction( this );
-
 		player.Disconnect( Player.SignalName.Interaction, Callback );
+		Text.Hide();
 	}
 	public string GetTitle() => Title;
 
@@ -59,7 +60,6 @@ public partial class Checkpoint : InteractionItem {
 			Callback = Callable.From( () => Activate( player ) );
 			Text.Show();
 			player.Connect( Player.SignalName.Interaction, Callback );
-			player.EmitSignal( Player.SignalName.ShowInteraction, this );
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
@@ -68,6 +68,7 @@ public partial class Checkpoint : InteractionItem {
 			if ( player.IsConnected( Player.SignalName.Interaction, Callback ) ) {
 				player.Disconnect( Player.SignalName.Interaction, Callback );
 			}
+			player.EndInteraction();
 		}
 	}
 	public override InteractionType GetInteractionType() {
@@ -89,7 +90,10 @@ public partial class Checkpoint : InteractionItem {
 			ActivateAnimation.QueueFree();
 			Animations.Play( "activated" );
 			Animations.Show();
+			Text.Hide();
 		} ) );
+
+		ProcessMode = ProcessModeEnum.Pausable;
 
 		Text = GetNode<RichTextLabel>( "RichTextLabel" );
 		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () => Text.ParseBbcode( AccessibilityManager.GetBindString( LevelData.Instance.ThisPlayer.InteractAction ) );

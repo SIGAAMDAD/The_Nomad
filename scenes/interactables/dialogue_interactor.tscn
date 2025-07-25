@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfagbqr0q3j2w"]
+
+[ext_resource type="Script" uid="uid://bgix65586jw7q" path="res://scripts/Interactables/DialogueInteractor.cs" id="1_miw7o"]
+
+[node name="DialogueInteractor" type="Area2D"]
+script = ExtResource("1_miw7o")
