@@ -152,6 +152,12 @@ namespace Renown.Thinkers {
 			base.Damage( source, nAmount );
 			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
+			Godot.Vector2 knockbackDirection = source.GlobalPosition.DirectionTo( GlobalPosition ).Normalized();
+			const float knockbackAmount = 60.0f;
+
+			Velocity = knockbackDirection * knockbackAmount;
+			GetTree().CreateTween(  );
+
 			AimTimer.Stop();
 			Aiming = false;
 

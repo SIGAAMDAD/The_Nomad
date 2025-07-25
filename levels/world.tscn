@@ -26757,5 +26757,6 @@ Action = ExtResource("69_ariq1")
 [node name="Distortions" parent="PostProcessing" instance=ExtResource("80_6sjd4")]
 
 [node name="CrtFilter" parent="PostProcessing" instance=ExtResource("78_m0bm8")]
+visible = false
 
 [node name="Cutscene" type="Node" parent="."]

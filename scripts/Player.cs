@@ -13,6 +13,7 @@ using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using PlayerSystem.Upgrades;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -82,6 +83,8 @@ public partial class Player : Entity {
 	public static readonly float BaseFastTravelRageCost = 20.0f;
 	public static readonly float BaseFastTravelSanityCost = 0.0f;
 	public static readonly float BaseEnemyDetectionSpeed = 1.0f;
+
+	private static readonly float DirectionalInfluence = 0.7f;
 
 	public static int NumTargets = 0;
 
@@ -234,6 +237,7 @@ public partial class Player : Entity {
 	private ShaderMaterial BloodMaterial;
 
 	private static float ShakeStrength = 0.0f;
+	private static Godot.Vector2 JoltDirection = Godot.Vector2.Zero;
 
 	private static bool TutorialCompleted = false;
 
@@ -1052,6 +1056,11 @@ public partial class Player : Entity {
 
 	public static void ShakeCamera( float nAmount ) {
 		ShakeStrength += nAmount;
+		JoltDirection = Godot.Vector2.Zero;
+	}
+	public static void ShakeCameraDirectional( float nAmount, Godot.Vector2 direction ) {
+		JoltDirection = direction;
+		ShakeStrength = nAmount;
 	}
 
 	private void IdleReset() {
@@ -1206,7 +1215,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
-		ShakeCamera( nAmount );
+		ShakeCameraDirectional( nAmount, ( attacker.GlobalPosition - GlobalPosition ).Normalized() );
 
 		FreeFlow.EndCombo();
 
@@ -1436,7 +1445,7 @@ public partial class Player : Entity {
 		AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 		Damage( this, 30.0f );
 		AddStatusEffect( "status_burning" );
-		ShakeCamera( 50.0f );
+		ShakeCameraDirectional( 50.0f, DashDirection );
 
 		SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
 	}
@@ -2583,7 +2592,26 @@ public partial class Player : Entity {
 
 		if ( ShakeStrength > 0.0f ) {
 			ShakeStrength = Mathf.Lerp( ShakeStrength, 0.0f, ShakeFade * (float)delta );
-			Viewpoint.Offset = new Vector2( RNJesus.FloatRange( -ShakeStrength, ShakeStrength ), RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) );
+
+			if ( JoltDirection != Godot.Vector2.Zero ) {
+				Godot.Vector2 baseOffset = JoltDirection.Normalized() * ShakeStrength * DirectionalInfluence;
+
+				/*
+				Godot.Vector2 randomOffset = new Godot.Vector2(
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DirectionalInfluence ),
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DirectionalInfluence )
+				);
+				*/
+
+				Viewpoint.Offset = baseOffset;
+			} else {
+				Viewpoint.Offset = new Godot.Vector2(
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ),
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength )
+				);
+			}
+		} else {
+			Viewpoint.Offset = Godot.Vector2.Zero;
 		}
 
 		if ( SoundLevel > 0.1f ) {

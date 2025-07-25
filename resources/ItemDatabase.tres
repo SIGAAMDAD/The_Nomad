@@ -7,7 +7,7 @@
 [ext_resource type="ItemDefinition" uid="uid://bsixsjgbyrcph" path="res://resources/ammo/shotgun_12gauge_slug.tres" id="4_1djen"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="4_34pe8"]
 [ext_resource type="ItemDefinition" uid="uid://w4hagigx2s0c" path="res://resources/weapons/firearms/murstar.tres" id="4_garsa"]
-[ext_resource type="ItemDefinition" uid="uid://d01vxfpudal7u" path="res://resources/weapons/melee/katana.tres" id="5_iqfuk"]
+[ext_resource type="ItemDefinition" uid="uid://d01vxfpudal7u" path="res://resources/weapons/melee/hwando.tres" id="5_iqfuk"]
 [ext_resource type="ItemDefinition" uid="uid://gm6rna0vx71" path="res://resources/ammo/762_ammo.tres" id="6_hreys"]
 [ext_resource type="ItemDefinition" uid="uid://cnf43mfuhif3j" path="res://resources/ammo/556_ammo.tres" id="7_2y7i3"]
 [ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="8_w67u1"]

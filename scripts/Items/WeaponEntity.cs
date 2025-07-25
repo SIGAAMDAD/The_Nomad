@@ -160,7 +160,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		private set;
 	} = WeaponState.Idle;
 
-	private AudioStreamPlayer2D AudioChannel;
+	private AudioStreamPlayer2D UseChannel;
+	private AudioStreamPlayer2D ReloadChannel;
 
 	public SpriteFrames AnimationsLeft {
 		get;
@@ -199,11 +200,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
-
-	private void PlaySound( AudioStream stream ) {
-		AudioChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, stream );
-		AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
-	}
 
 	public void Drop() {
 		UsedItemPickup pickup = ResourceCache.GetScene( "res://scenes/interactables/used_item_pickup.tscn" ).Instantiate<UsedItemPickup>();
@@ -270,10 +266,15 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		WeaponTimer.OneShot = true;
 		AddChild( WeaponTimer );
 
-		AudioChannel = new AudioStreamPlayer2D();
-		AudioChannel.Name = "AudioChannel";
-		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		AddChild( AudioChannel );
+		UseChannel = new AudioStreamPlayer2D();
+		UseChannel.Name = "UseChannel";
+		UseChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		AddChild( UseChannel );
+
+		ReloadChannel = new AudioStreamPlayer2D();
+		ReloadChannel.Name = "ReloadChannel";
+		ReloadChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		AddChild( ReloadChannel );
 
 		Godot.Collections.Dictionary properties = (Godot.Collections.Dictionary)Data.Get( "properties" );
 		Weight = (float)Data.Get( "weight" );
@@ -395,7 +396,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	public void SetEquippedState( bool bEquipped ) {
 		if ( !bEquipped ) {
 			WeaponTimer.Stop();
-			AudioChannel.Stop();
+			UseChannel.Stop();
+			ReloadChannel.Stop();
 			return;
 		}
 	}
@@ -555,7 +557,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 				entity.Damage( _Owner, damage );
 			}
 
-			PlaySound( ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
 			LastWeaponAngle = angle;
 		}
 
@@ -618,7 +619,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			WeaponTimer.CallDeferred( Timer.MethodName.Start );
 
 			CurrentState = WeaponState.Reload;
-			PlaySound( ReloadSfx );
+
+			ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, ReloadSfx );
+			ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		} else {
 			OnReloadTimeTimeout();
 		}
@@ -682,9 +685,12 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
 		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
-			PlaySound( ResourceCache.NoAmmoSfx );
+			ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, ResourceCache.NoAmmoSfx );
+			ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			return 0.0f;
 		}
+
+		Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
 
 		bool canFire = true;
 		if ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && held ) {
@@ -753,7 +759,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		}
 
 		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
-		PlaySound( UseFirearmSfx );
+
+		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
+		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
 
 		soundLevel = Ammo.GetRange();
@@ -783,8 +791,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return; // can't use it when it's being used
-		}
-		;
+		};
 
 		SetUseMode( weaponMode );
 
