@@ -20,6 +20,8 @@ namespace PlayerSystem.UserInterface {
 		public static void EndInteraction() {
 			Instance.Hide();
 			LevelData.Instance.ThisPlayer.BlockInput( false );
+
+			Input.SetCustomMouseCursor( ResourceCache.GetResource( "res://textures/hud/crosshairs/crosshairi.tga" ) );
 		}
 		public static void StartInteraction() {
 			Godot.Collections.Array<Node> children = Instance.MainContainer.GetChildren();
@@ -28,6 +30,8 @@ namespace PlayerSystem.UserInterface {
 				children[ i ].QueueFree();
 			}
 			Instance.Show();
+
+			Input.SetCustomMouseCursor( ResourceCache.GetResource( "res://cursor_n.png" ) );
 
 			LevelData.Instance.ThisPlayer.BlockInput( true );
 		}

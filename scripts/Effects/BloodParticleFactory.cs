@@ -102,12 +102,7 @@ public partial class BloodParticleFactory : Node {
 
 		Godot.Vector2 direction = ( from - to ).Normalized();
 
-		float intensity = Mathf.Clamp( BloodIntensityFactor, 0.5f, 3.0f );
-		int decalCount = (int)Mathf.Clamp( intensity * 5.0f, 3.0f, 15.0f );
-
-		Godot.Vector2 surfaceNormal = direction.Rotated( Mathf.Pi ).Normalized();
-
-		for ( int i = 0; i < decalCount; i++ ) {
+		for ( int i = 0; i < 16; i++ ) {
 			if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
 				MeshManager.Multimesh.VisibleInstanceCount = 0;
 			}

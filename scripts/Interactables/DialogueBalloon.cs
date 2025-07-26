@@ -3,23 +3,22 @@ using Godot;
 using DialogueManagerRuntime;
 
 public partial class DialogueBalloon : CanvasLayer {
-	[Export]
-	public string NextAction = "ui_accept";
-	[Export]
-	public string SkipAction = "ui_cancel";
+	[Export] public string NextAction = "ui_accept";
+	[Export] public string SkipAction = "ui_cancel";
 
-	private Control balloon;
-	private RichTextLabel characterLabel;
-	private RichTextLabel dialogueLabel;
-	private VBoxContainer responsesMenu;
 
-	private Resource resource;
-	private Godot.Collections.Array<Variant> temporaryGameStates = new Godot.Collections.Array<Variant>();
-	private bool isWaitingForInput = false;
-	private bool willHideBalloon = false;
+	Control balloon;
+	RichTextLabel characterLabel;
+	RichTextLabel dialogueLabel;
+	VBoxContainer responsesMenu;
 
-	private DialogueLine dialogueLine;
-	private DialogueLine DialogueLine {
+	Resource resource;
+	Godot.Collections.Array<Variant> temporaryGameStates = new Godot.Collections.Array<Variant>();
+	bool isWaitingForInput = false;
+	bool willHideBalloon = false;
+
+	DialogueLine dialogueLine;
+	DialogueLine DialogueLine {
 		get => dialogueLine;
 		set {
 			if ( value == null ) {
@@ -32,7 +31,8 @@ public partial class DialogueBalloon : CanvasLayer {
 		}
 	}
 
-	private Timer MutationCooldown = new Timer();
+	Timer MutationCooldown = new Timer();
+
 
 	public override void _Ready() {
 		balloon = GetNode<Control>( "%Balloon" );
@@ -47,7 +47,7 @@ public partial class DialogueBalloon : CanvasLayer {
 				bool mouseWasClicked = @event is InputEventMouseButton && ( @event as InputEventMouseButton ).ButtonIndex == MouseButton.Left && @event.IsPressed();
 				bool skipButtonWasPressed = @event.IsActionPressed( SkipAction );
 				if ( mouseWasClicked || skipButtonWasPressed ) {
-//					GetViewport().SetInputAsHandled();
+					GetViewport().SetInputAsHandled();
 					dialogueLabel.Call( "skip_typing" );
 					return;
 				}
@@ -55,6 +55,8 @@ public partial class DialogueBalloon : CanvasLayer {
 
 			if ( !isWaitingForInput ) return;
 			if ( dialogueLine.Responses.Count > 0 ) return;
+
+			GetViewport().SetInputAsHandled();
 
 			if ( @event is InputEventMouseButton && @event.IsPressed() && ( @event as InputEventMouseButton ).ButtonIndex == MouseButton.Left ) {
 				Next( dialogueLine.NextId );
@@ -81,17 +83,21 @@ public partial class DialogueBalloon : CanvasLayer {
 		AddChild( MutationCooldown );
 
 		DialogueManager.Mutated += OnMutated;
+
+		LevelData.Instance.ThisPlayer.BlockInput( true );
 	}
 
 
 	public override void _ExitTree() {
 		DialogueManager.Mutated -= OnMutated;
+		
+		LevelData.Instance.ThisPlayer.BlockInput( false );
 	}
 
 
 	public override void _UnhandledInput( InputEvent @event ) {
 		// Only the balloon is allowed to handle input while it's showing
-//		GetViewport().SetInputAsHandled();
+		GetViewport().SetInputAsHandled();
 	}
 
 
@@ -128,6 +134,8 @@ public partial class DialogueBalloon : CanvasLayer {
 		MutationCooldown.Stop();
 
 		isWaitingForInput = false;
+		balloon.FocusMode = Control.FocusModeEnum.All;
+		balloon.GrabFocus();
 
 		// Set up the character name
 		characterLabel.Visible = !string.IsNullOrEmpty( dialogueLine.Character );
@@ -155,13 +163,16 @@ public partial class DialogueBalloon : CanvasLayer {
 			balloon.FocusMode = Control.FocusModeEnum.None;
 			responsesMenu.Show();
 		} else if ( !string.IsNullOrEmpty( dialogueLine.Time ) ) {
-			if ( !float.TryParse( dialogueLine.Time, out float time ) ) {
+			float time = 0f;
+			if ( !float.TryParse( dialogueLine.Time, out time ) ) {
 				time = dialogueLine.Text.Length * 0.02f;
 			}
 			await ToSignal( GetTree().CreateTimer( time ), "timeout" );
 			Next( dialogueLine.NextId );
 		} else {
 			isWaitingForInput = true;
+			balloon.FocusMode = Control.FocusModeEnum.All;
+			balloon.GrabFocus();
 		}
 	}
 
@@ -180,4 +191,4 @@ public partial class DialogueBalloon : CanvasLayer {
 
 
 	#endregion
-}
+};

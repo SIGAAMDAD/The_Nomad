@@ -246,10 +246,10 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	private void OnMuzzleFlashTimerTimeout() {
 		if ( Firemode == FireMode.Automatic ) {
 			for ( int i = 0; i < MuzzleFlashes.Count; i++ ) {
-				MuzzleFlashes[i].CallDeferred( MethodName.Hide );
+				MuzzleFlashes[ i ].Texture = null;
 			}
 		} else {
-			CurrentMuzzleFlash.CallDeferred( MethodName.Hide );
+			CurrentMuzzleFlash.Texture = null;
 		}
 		MuzzleLight.CallDeferred( MethodName.Hide );
 	}
@@ -335,10 +335,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 				}
 				Sprite2D texture = new Sprite2D();
 				texture.Name = "MuzzleFlash_" + i.ToString();
-				texture.Texture = ResourceCache.GetTexture( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" );
-				texture.Offset = new Godot.Vector2( 160.0f, 0.0f );
-				texture.Scale = new Godot.Vector2( 0.309f, 0.219f );
-				texture.Hide();
+//				texture.Texture = ResourceCache.GetTexture( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" );
+				texture.Offset = new Godot.Vector2( Icon.GetWidth(), 0.0f );
 
 				Animations.AddChild( texture );
 				MuzzleFlashes.Add( texture );
@@ -346,9 +344,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 			MuzzleFlashTimer = new Timer();
 			MuzzleFlashTimer.Name = "MuzzleFlashTimer";
-			MuzzleFlashTimer.WaitTime = 0.2f;
+			MuzzleFlashTimer.WaitTime = 0.05f;
 			MuzzleFlashTimer.OneShot = true;
-			MuzzleFlashTimer.Connect( "timeout", Callable.From( OnMuzzleFlashTimerTimeout ) );
+			MuzzleFlashTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMuzzleFlashTimerTimeout ) );
 			AddChild( MuzzleFlashTimer );
 
 			MuzzleLight = new PointLight2D();
@@ -715,8 +713,10 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( !canFire ) {
 			return 0.0f;
 		}
-		
-		Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
+
+		if ( _Owner is Player ) {
+			Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
+		}
 
 		switch ( Firemode ) {
 		case FireMode.Single:
@@ -731,8 +731,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case FireMode.Invalid:
 		default:
 			return 0.0f;
-		}
-		;
+		};
 
 		CurrentState = WeaponState.Use;
 		WeaponTimer.WaitTime = UseTime;
@@ -743,14 +742,17 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
 		// NOTE: correction, they WILL work like that eventually
 
-		CurrentMuzzleFlash = MuzzleFlashes[
-			RNJesus.IntRange( 0, MuzzleFlashes.Count - 1 )
-		];
+		int index = RNJesus.IntRange( 0, MuzzleFlashes.Count - 1 );
+		CurrentMuzzleFlash = MuzzleFlashes[ index ];
 		CurrentMuzzleFlash.Reparent( _Owner );
-		CurrentMuzzleFlash.Show();
 		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
+		CurrentMuzzleFlash.Texture = ResourceCache.GetTexture( "res://textures/env/muzzle/mf" + index.ToString() + ".dds" );
 
 		MuzzleLight.CallDeferred( MethodName.Show );
+
+		GpuParticles2D GunSmoke = ResourceCache.GetScene( "res://scenes/effects/gun_smoke.tscn" ).Instantiate<GpuParticles2D>();
+		GunSmoke.GlobalPosition = new Vector2( Icon.GetWidth(), 0.0f );
+		CurrentMuzzleFlash.CallDeferred( MethodName.AddChild, GunSmoke );
 		
 		MuzzleFlashTimer.Start();
 

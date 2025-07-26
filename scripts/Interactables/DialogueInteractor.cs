@@ -1,9 +1,8 @@
 using DialogueManagerRuntime;
 using Godot;
-using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
-using Microsoft.Extensions.Options;
 using PlayerSystem.UserInterface;
 using Renown.Thinkers;
+using System.Linq;
 
 public partial class DialogueInteractor : InteractionItem {
 	[Export]
@@ -31,7 +30,8 @@ public partial class DialogueInteractor : InteractionItem {
 	private void AddDialogueOptions( Resource dialogueResource ) {
 		DialogueContainer.StartInteraction();
 		for ( int i = 0; i < OptionNames.Count; i++ ) {
-			DialogueContainer.AddOption( OptionNames[ i ], Callable.From( () => EmitSignalDialogueOptionSelected( i ) ) );
+			int index = i;
+			DialogueContainer.AddOption( OptionNames[ i ], Callable.From( () => EmitSignalDialogueOptionSelected( index ) ) );
 		}
 		if ( HasStartInteractionLine ) {
 			DialogueManager.DialogueEnded -= AddDialogueOptions;
@@ -39,11 +39,13 @@ public partial class DialogueInteractor : InteractionItem {
 	}
 	private void OnInteract( Player player ) {
 		if ( HasStartInteractionLine ) {
+			DialogueManager.ShowDialogueBalloon( DialogueResource, "start" );
 			DialogueManager.DialogueEnded += AddDialogueOptions;
 		} else {
 			AddDialogueOptions( null );
 		}
 
+		Text.Hide();
 		player.Disconnect( Player.SignalName.Interaction, Callback );
 		EmitSignalBeginDialogue();
 	}
@@ -53,7 +55,6 @@ public partial class DialogueInteractor : InteractionItem {
 			Callback = Callable.From( () => OnInteract( player ) );
 			Text.Show();
 			player.Connect( Player.SignalName.Interaction, Callback );
-			player.EmitSignal( Player.SignalName.ShowInteraction, this );
 		}
 	}
 	protected override void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

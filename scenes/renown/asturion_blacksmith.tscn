@@ -178,7 +178,6 @@ database = ExtResource("5_uox27")
 DialogueResource = ExtResource("6_p25xw")
 OptionNames = Array[StringName]([&"UPGRADE_EQUIPMENT", &"REPAIR_EQUIPMENT", &"TALK", &"LEAVE_INTERACTION"])
 _Owner = NodePath("..")
-HasStartInteractionLine = true
 
 [node name="InteractBody" type="CollisionShape2D" parent="DialogueInteractor"]
 position = Vector2(0, 41.5)

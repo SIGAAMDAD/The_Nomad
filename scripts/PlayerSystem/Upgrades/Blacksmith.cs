@@ -1,5 +1,6 @@
 using DialogueManagerRuntime;
 using Godot;
+using PlayerSystem.UserInterface;
 using Renown;
 
 namespace PlayerSystem.Upgrades {
@@ -27,16 +28,18 @@ namespace PlayerSystem.Upgrades {
 		private void OnDialogueOptionSelected( int nSelectedOption ) {
 			switch ( (DialogueOption)nSelectedOption ) {
 			case DialogueOption.Upgrades:
-				DialogueManager.ShowDialogueBalloonScene( "res://scenes/interactables/Balloon.tscn", Interactor.DialogueResource, "upgrades" );
+				DialogueManager.ShowDialogueBalloon( Interactor.DialogueResource, "upgrades" );
 				break;
 			case DialogueOption.Repairs:
 				break;
 			case DialogueOption.Talk:
 				break;
 			case DialogueOption.Leave:
-				DialogueManager.ShowDialogueBalloonScene( "res://scenes/interactables/Balloon.tscn", Interactor.DialogueResource, "exit" );
+				DialogueContainer.EndInteraction();
+				DialogueManager.ShowDialogueBalloon( Interactor.DialogueResource, "exit" );
 				break;
-			};
+			}
+			;
 		}
 
 		public override void _Ready() {

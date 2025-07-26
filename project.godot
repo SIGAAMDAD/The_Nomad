@@ -80,7 +80,7 @@ file_logging/enable_file_logging=true
 editor/wrap_long_lines=true
 runtime/advanced/uses_dotnet=true
 runtime/warn_about_method_property_or_signal_name_conflicts=true
-runtime/balloon_path="res://scenes/interactables/Balloon.tscn"
+runtime/balloon_path="res:///Balloon.tscn"
 
 [display]
 

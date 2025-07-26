@@ -1025,9 +1025,15 @@ public partial class Player : Entity {
 		return ArmAngle;
 	}
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public CanvasLayer GetHUD() => HUD;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Arm GetLastUsedArm() => LastUsedArm;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetLastUsedArm( in Arm arm ) => LastUsedArm = arm;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public float GetSoundLevel() => SoundLevel;
 	public void SetHealth( float nHealth ) {
 		Health = nHealth;
@@ -1036,22 +1042,32 @@ public partial class Player : Entity {
 		}
 		EmitSignalHealthChanged( Health );
 	}
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public float GetRage() => Rage;
 	public void SetRage( float nRage ) {
 		Rage = nRage;
 		EmitSignalRageChanged( Rage );
 	}
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public PlayerFlags GetFlags() => Flags;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetFlags( PlayerFlags flags ) => Flags = flags;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Hands GetHandsUsed() => HandsUsed;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetHandsUsed( Hands hands ) => HandsUsed = hands;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public WeaponSlot[] GetSlots() => WeaponSlots;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetSlots( WeaponSlot[] slots ) => WeaponSlots = slots;
-
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetGroundMaterial( GroundMaterialType nType ) => GroundType = nType;
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Arm GetLeftArm() => ArmLeft;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public Arm GetRightArm() => ArmRight;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public int GetCurrentWeapon() => CurrentWeapon;
 
 	public static void ShakeCamera( float nAmount ) {
@@ -1674,8 +1690,7 @@ public partial class Player : Entity {
 			src = LastUsedArm;
 			dst = src;
 			break;
-		}
-		;
+		};
 
 		if ( src.Slot == WeaponSlot.INVALID ) {
 			// nothing in the source hand, deny

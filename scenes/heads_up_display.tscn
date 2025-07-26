@@ -29,7 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" uid="uid://05bob0nsii0e" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
 [ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
-[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="17_xstx4"]
+[ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="17_xstx4"]
 [ext_resource type="Script" uid="uid://cvcxs2q7qe1s5" path="res://scripts/PlayerSystem/StatusIcon.cs" id="18_a6h4m"]
 [ext_resource type="Texture2D" uid="uid://ca3yj5m0k18if" path="res://textures/hud/PAIN1.png" id="22_dg2ec"]
 [ext_resource type="Script" uid="uid://bu7gdjadtgg4m" path="res://addons/advanced_radial_menu/radial_menu_class.gd" id="25_v24h6"]
@@ -1340,22 +1340,6 @@ text = "Yes"
 layout_mode = 2
 text = "No"
 
-[node name="DeathText" type="Label" parent="."]
-visible = false
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -11.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_fonts/font = ExtResource("10_125nm")
-theme_override_font_sizes/font_size = 64
-text = "YOU DIED"
-horizontal_alignment = 1
-
 [node name="DialogueContainer" type="MarginContainer" parent="."]
 visible = false
 anchors_preset = -1
@@ -1374,6 +1358,22 @@ texture = ExtResource("15_ot7dw")
 
 [node name="OptionList" type="VBoxContainer" parent="DialogueContainer"]
 layout_mode = 2
+
+[node name="DeathText" type="Label" parent="."]
+visible = false
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_125nm")
+theme_override_font_sizes/font_size = 64
+text = "YOU DIED"
+horizontal_alignment = 1
 
 [connection signal="timeout" from="MainHUD/SaveSpinner/SaveTimer" to="." method="_on_save_timer_timeout"]
 [connection signal="timeout" from="MainHUD/AnnouncementLabel/Timer" to="." method="_on_announcement_timer_timeout"]

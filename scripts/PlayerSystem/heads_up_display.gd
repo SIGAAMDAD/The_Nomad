@@ -276,6 +276,9 @@ func _on_health_changed( health: float ) -> void:
 func EndParry() -> void:
 	_parry_overlay.hide()
 
+func _on_dialogue_interaction() -> void:
+	get_node( "MainHUD" ).visible = !get_node( "DialogueContainer" ).visible
+
 func _ready() -> void:
 	_weapon_status_timer.name = "WeaponStatusTimer"
 	_weapon_status_timer.wait_time = 5.90
@@ -297,6 +300,8 @@ func _ready() -> void:
 	_objective_status_timer.process_mode = PROCESS_MODE_DISABLED
 	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
 	add_child( _objective_status_timer )
+
+	get_node( "DialogueContainer" ).connect( "visibility_changed", _on_dialogue_interaction )
 	
 	_owner.connect( "DashStart", _dash_overlay.show )
 	_owner.connect( "DashEnd", _dash_overlay.hide )
