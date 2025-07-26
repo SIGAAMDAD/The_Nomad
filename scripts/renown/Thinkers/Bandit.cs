@@ -156,7 +156,6 @@ namespace Renown.Thinkers {
 			const float knockbackAmount = 60.0f;
 
 			Velocity = knockbackDirection * knockbackAmount;
-			GetTree().CreateTween(  );
 
 			AimTimer.Stop();
 			Aiming = false;

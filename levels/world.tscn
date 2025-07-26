@@ -24674,8 +24674,8 @@ TileMaps = []
 position = Vector2(155, -13)
 rotation = -0.0103557
 scale = Vector2(1.00067, 0.999953)
-collision_layer = 64
-collision_mask = 64
+collision_layer = 76
+collision_mask = 76
 script = ExtResource("5_qrdf2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/MountainCollision"]

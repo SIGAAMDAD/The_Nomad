@@ -656,6 +656,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		} else if ( collision is Grenade grenade && grenade != null ) {
 			grenade.OnBlowup();
 		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
+			if ( _Owner is Player ) {
+				// slow motion for the extra feels
+				Engine.TimeScale = 0.5f;
+				AudioServer.PlaybackSpeedScale = 0.5f;
+				GetTree().CreateTimer( 0.30f ).Connect( Timer.SignalName.Timeout, Callable.From( () => {
+					Engine.TimeScale = 1.0f;
+					AudioServer.PlaybackSpeedScale = 1.0f;
+				} ) );
+			}
+
 			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
 			float distance = _Owner.GlobalPosition.DistanceTo( ( (Entity)hitbox.GetMeta( "Owner" ) ).GlobalPosition ) / Ammo.GetRange();
 			if ( distance > 120.0f ) {
@@ -690,8 +700,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			return 0.0f;
 		}
 
-		Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
-
 		bool canFire = true;
 		if ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && held ) {
 			canFire = false;
@@ -707,6 +715,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( !canFire ) {
 			return 0.0f;
 		}
+		
+		Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
 
 		switch ( Firemode ) {
 		case FireMode.Single:
@@ -721,7 +731,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case FireMode.Invalid:
 		default:
 			return 0.0f;
-		};
+		}
+		;
 
 		CurrentState = WeaponState.Use;
 		WeaponTimer.WaitTime = UseTime;

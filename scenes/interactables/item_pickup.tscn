@@ -17,6 +17,7 @@ shape = SubResource("CircleShape2D_s6oxg")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 visible = false
+z_index = 1000
 offset_left = -20.0
 offset_top = -56.0
 offset_right = 20.0

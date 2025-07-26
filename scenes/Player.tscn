@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="PackedScene" uid="uid://w3nwgyanrgiq" path="res://scenes/player_system/arm_attachements/grapple_hook.tscn" id="13_srp4u"]
 [ext_resource type="PackedScene" uid="uid://c5ifktckwf67j" path="res://scenes/player_system/freeflow_counter.tscn" id="15_jfpux"]
-[ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/effects/FootSteps.cs" id="16_srp4u"]
+[ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/Effects/FootSteps.cs" id="17_jfpux"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_srp4u"]
@@ -330,7 +330,7 @@ database = ExtResource("21_kgn6m")
 [node name="MiscChannel" type="AudioStreamPlayer2D" parent="."]
 
 [node name="FootSteps" type="Node" parent="."]
-script = ExtResource("16_srp4u")
+script = ExtResource("17_jfpux")
 
 [node name="SoundArea" type="Area2D" parent="."]
 collision_layer = 28

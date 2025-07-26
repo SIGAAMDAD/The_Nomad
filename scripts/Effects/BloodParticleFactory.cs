@@ -2,11 +2,12 @@ using Godot;
 using System;
 
 public partial class BloodParticleFactory : Node {
-	private Timer ReleaseTimer = null;
-	private MultiMeshInstance2D MeshManager = null;
-
 	private static BloodParticleFactory Instance = null;
 	private static readonly int BloodInstanceMax = 256;
+	private static readonly float BloodIntensityFactor = 0.02f;
+
+	private Timer ReleaseTimer = null;
+	private MultiMeshInstance2D MeshManager = null;
 
 	private Transform2D[] TempBuffer = new Transform2D[ 16 ];
 	private NetworkSyncObject SyncObject;
@@ -34,7 +35,10 @@ public partial class BloodParticleFactory : Node {
 		int count = SyncObject.ReadByte();
 		for ( int i = 0; i < count; i++ ) {
 			MeshManager.Multimesh.VisibleInstanceCount++;
-			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, SyncObject.ReadVector2() ) );
+
+			float x = SyncObject.ReadFloat();
+			float y = SyncObject.ReadFloat();
+			MeshManager.Multimesh.SetInstanceTransform2D( MeshManager.Multimesh.VisibleInstanceCount, new Transform2D( 0.0f, new Godot.Vector2( x, y ) ) );
 		}
 	}
 	private void NetworkSync( int offset ) {
@@ -46,7 +50,8 @@ public partial class BloodParticleFactory : Node {
 		SyncObject.Write( GetPath().GetHashCode() );
 		SyncObject.Write( (byte)TempBuffer.Length );
 		for ( int i = 0; i < TempBuffer.Length; i++ ) {
-			SyncObject.Write( TempBuffer[ i ].Origin );
+			SyncObject.Write( TempBuffer[ i ].Origin.X );
+			SyncObject.Write( TempBuffer[ i ].Origin.Y );
 		}
 		SyncObject.Sync();
 	}
@@ -57,9 +62,9 @@ public partial class BloodParticleFactory : Node {
 		Instance = this;
 
 		ReleaseTimer = new Timer();
-		ReleaseTimer.WaitTime = 32.0f;
+		ReleaseTimer.WaitTime = 60.0f;
 		ReleaseTimer.OneShot = true;
-		ReleaseTimer.Connect( "timeout", Callable.From( OnReleaseTimerTimeout ) );
+		ReleaseTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReleaseTimerTimeout ) );
 		AddChild( ReleaseTimer );
 
 		MeshManager = new MultiMeshInstance2D();
@@ -87,8 +92,6 @@ public partial class BloodParticleFactory : Node {
 	}
 
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		int bloodAmount = 16;
-
 		if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
 			MeshManager.Multimesh.VisibleInstanceCount = 0;
 		}
@@ -97,10 +100,23 @@ public partial class BloodParticleFactory : Node {
 
 		int start = MeshManager.Multimesh.VisibleInstanceCount;
 
-		for ( int i = 0; i < bloodAmount; i++ ) {
-			Godot.Vector2 position = to;
-			position.Y += RNJesus.IntRange( -90, 90 );
-			position.X += RNJesus.IntRange( -140, 140 );
+		Godot.Vector2 direction = ( from - to ).Normalized();
+
+		float intensity = Mathf.Clamp( BloodIntensityFactor, 0.5f, 3.0f );
+		int decalCount = (int)Mathf.Clamp( intensity * 5.0f, 3.0f, 15.0f );
+
+		Godot.Vector2 surfaceNormal = direction.Rotated( Mathf.Pi ).Normalized();
+
+		for ( int i = 0; i < decalCount; i++ ) {
+			if ( MeshManager.Multimesh.VisibleInstanceCount >= BloodInstanceMax ) {
+				MeshManager.Multimesh.VisibleInstanceCount = 0;
+			}
+
+			//			Godot.Vector2 position = to;
+			//			position.Y += RNJesus.IntRange( -90, 90 );
+			//			position.X += RNJesus.IntRange( -140, 140 );
+			Godot.Vector2 position = to + ( new Godot.Vector2( RNJesus.FloatRange( -60.0f, 60.0f ), RNJesus.FloatRange( -120.0f, 120.0f ) ) * direction );
+
 			MeshManager.Multimesh.VisibleInstanceCount++;
 
 			TempBuffer[ i ] = new Transform2D( 0.0f, position );

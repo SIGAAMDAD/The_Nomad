@@ -185,6 +185,8 @@ position = Vector2(0, 41.5)
 shape = SubResource("RectangleShape2D_p25xw")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="DialogueInteractor"]
+visible = false
+z_index = 1000
 offset_left = -20.0
 offset_right = 20.0
 offset_bottom = 40.0
