@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DeveloperCommentary" load_steps=2 format=3 uid="uid://bugs4xbj3rhd3"]
+
+[ext_resource type="Script" path="res://scripts/developer_commentary.gd" id="1_w0yb3"]
+
+[resource]
+script = ExtResource("1_w0yb3")
+_title = "Too Fucking Angry to Die"
+_text = "If you've happened upon the Rune of Rage, you'll already know that it has a sort of \"Too Angry to Die\" effect. And fun fact, the rune used to actually be named \"Too Fucking Angry To Die\" before I changed it to fit the rune naming scheme and themes."

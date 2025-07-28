@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DeveloperCommentary" load_steps=2 format=3 uid="uid://y1vyixaywkce"]
+
+[ext_resource type="Script" path="res://scripts/developer_commentary.gd" id="1_4oqbv"]
+
+[resource]
+script = ExtResource("1_4oqbv")
+_title = "Berserker Mode"
+_text = "As you may know, this game was inspired a little bit by Berserk. And the \"Berserker Mode\" is a direct reference to the Guts vs 100 men scene from the Golden Age Arc (the 2023 release of it), where Guts begins to lose his senses and is like \"I only have to kill them\". That's the kind of feeling and sensation that the Berserker Mode is meant to create."

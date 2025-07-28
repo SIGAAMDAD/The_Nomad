@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DeveloperCommentary" load_steps=2 format=3 uid="uid://cvuevc7jismwl"]
+
+[ext_resource type="Script" path="res://scripts/developer_commentary.gd" id="1_4v84c"]
+
+[resource]
+script = ExtResource("1_4v84c")
+_title = "Berserk Influence"
+_text = "If you've full completed the game and discovered all the nooks and crannies, you'll probably have discovered the Kentaro Miura memorial in the Magma Caverns, as well as playing with the \"Berserker Mode\". Berserk at first was just an interesting anime that I watched and kind of forgot. But then I rewatched the Golden Age Arc, and I was like \"damn, there's some good story in here\". I owe a lot to Berserk. And to any who read it, keep fighting strugglers. R.I.P. Kentaro Miura."

@@ -40,6 +40,15 @@ namespace Renown {
 		public virtual void Load() {
 		}
 
+		//
+		// narrative functions
+		//
+		public virtual void OnChallenged() {
+		}
+		public virtual void OnIntimidated() {
+			int crueltyScore = LevelData.Instance.ThisPlayer.GetTraitScore();
+		}
+
 		public virtual void ClearStatusEffects() {
 			foreach ( var effect in StatusEffects ) {
 				effect.Value.Stop();

@@ -44,10 +44,6 @@ namespace Renown.World {
 		private Marketplace[] Markets;
 		[Export]
 		private Road[] TradeRoutes;
-		[Export]
-		private float BirthRate = 0.0f;
-		[Export]
-		private float TaxationRate = 30.75f;
 
 		private int PlayerRenownScore = 0;
 
@@ -61,6 +57,8 @@ namespace Renown.World {
 		private int Population = 0;
 		private int MaxPopulation = 0;
 
+		private int PlayerRenown = 0;
+
 		private HashSet<Politician> Politicians;
 
 		[Signal]
@@ -69,9 +67,6 @@ namespace Renown.World {
 		public delegate void RequestedMoneyEventHandler( Settlement settlement, float nAmount );
 
 		public SettlementType GetSettlementType() => Type;
-		public float GetTaxationRate() => TaxationRate;
-		public Road[] GetTradeRoutes() => TradeRoutes;
-		public float GetBirthRate() => BirthRate;
 		public Marketplace[] GetMarketplaces() => Markets;
 		public int GetPopulation() => Population;
 		public Government GetGovernment() => Government;
@@ -79,52 +74,9 @@ namespace Renown.World {
 
 		public override void Save() {
 			base.Save();
-
-			using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
-				writer.SaveFloat( nameof( BirthRate ), BirthRate );
-				if ( Government != null ) {
-					writer.SaveString( nameof( Government ), Government.GetPath() );
-				}
-
-				//
-				// population
-				//
-
-				writer.SaveInt( nameof( Population ), Population );
-				writer.SaveFloat( nameof( BirthRate ), BirthRate );
-
-				//
-				// save economy state
-				//
-			}
 		}
 		public override void Load() {
 			base.Load();
-
-			using ( var reader = ArchiveSystem.GetSection( GetPath() ) ) {
-				// save file compatibility
-				if ( reader == null ) {
-					return;
-				}
-
-				BirthRate = reader.LoadFloat( "BirthRate" );
-			}
-		}
-
-		private void DecreaseMoney( float nAmount ) {
-			Treasury -= nAmount;
-
-			if ( Treasury < 0.0f ) {
-				EmitSignalRequestedMoney( this, nAmount );
-			}
-		}
-
-		public float CollectTaxes() {
-			float totalCollected = 0.0f;
-
-			totalCollected += Population * TaxationRate;
-
-			return totalCollected;
 		}
 
 		public override void _Ready() {
