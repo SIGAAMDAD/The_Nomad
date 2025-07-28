@@ -11,9 +11,6 @@ public enum KillType : uint {
 };
 
 public partial class FreeFlow : CanvasLayer {
-	[Export]
-	private Player _Owner;
-
 	private int KillCounter = 0;
 	private int ComboCounter = 0;
 	private int MaxCombo = 0;
@@ -22,6 +19,8 @@ public partial class FreeFlow : CanvasLayer {
 	private int HellbreakCounter = 0;
 	private Timer BurnoutTimer;
 	private TextureRect BerserkOverlay;
+
+	private int JohnWickCounter = 0;
 
 	private static FreeFlow Instance;
 
@@ -33,10 +32,11 @@ public partial class FreeFlow : CanvasLayer {
 	public delegate void KillAddedEventHandler( KillType nType );
 
 	private void ActivateBerserkerMode() {
-		_Owner.SetFlags( _Owner.GetFlags() | Player.PlayerFlags.Berserker );
+		SteamAchievements.ActivateAchievement( "ACH_LOSE_YOURSELF" );
+		LevelData.Instance.ThisPlayer.SetFlags( LevelData.Instance.ThisPlayer.GetFlags() | Player.PlayerFlags.Berserker );
 	}
 	private void DeactivateBerserkerMode() {
-		_Owner.SetFlags( _Owner.GetFlags() & ~Player.PlayerFlags.Berserker );
+		LevelData.Instance.ThisPlayer.SetFlags( LevelData.Instance.ThisPlayer.GetFlags() & ~Player.PlayerFlags.Berserker );
 		BerserkOverlay.Set( "shader_parameter/vignette_intensity", 0.0f );
 	}
 
@@ -46,6 +46,10 @@ public partial class FreeFlow : CanvasLayer {
 			break;
 		case KillType.Headshot:
 			Instance.HeadshotCounter++;
+			Instance.JohnWickCounter++;
+			if ( Instance.JohnWickCounter > 30 ) {
+				SteamAchievements.ActivateAchievement( "ACH_JOHN_WICK_MODE" );
+			}
 			break;
 		};
 		Instance.KillCounter++;
@@ -66,7 +70,7 @@ public partial class FreeFlow : CanvasLayer {
 			Instance.MaxCombo = Instance.ComboCounter;
 		}
 		Instance.ComboCounter = 0;
-		if ( ( Instance._Owner.GetFlags() & Player.PlayerFlags.Berserker ) != 0 ) {
+		if ( ( LevelData.Instance.ThisPlayer.GetFlags() & Player.PlayerFlags.Berserker ) != 0 ) {
 			Instance.DeactivateBerserkerMode();
 		}
 	}
@@ -100,7 +104,7 @@ public partial class FreeFlow : CanvasLayer {
 	public override void _Ready() {
 		base._Ready();
 
-		_Owner = GetParent<Player>();
+		LevelData.Instance.ThisPlayer.Damaged += ( source, target, amount ) => JohnWickCounter = 0;
 
 		BerserkOverlay = GetNode<TextureRect>( "BerserkModeOverlay" );
 

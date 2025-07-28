@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Godot;
 using PlayerSystem;
 using Renown;
@@ -194,11 +196,20 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	[Signal]
 	public delegate void UsedEventHandler( WeaponEntity source );
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public bool IsBladed() => ( LastUsedMode & Properties.IsBladed ) != 0;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public bool IsBlunt() => ( LastUsedMode & Properties.IsBlunt ) != 0;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public bool IsFirearm() => ( LastUsedMode & Properties.IsFirearm ) != 0;
-
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public bool IsOneHanded() => ( LastUsedMode & Properties.IsOneHanded ) != 0;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public bool IsTwoHanded() => ( LastUsedMode & Properties.IsTwoHanded ) != 0;
+	
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void OverrideRayCast( RayCast2D rayCast ) => RayCast = rayCast;
 
 	public void Drop() {
@@ -213,16 +224,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		pickup.AdjustPosition();
 		GetTree().CurrentScene.AddChild( pickup );
 
-		_Owner.CallDeferred( "remove_child", this );
+		_Owner.CallDeferred( MethodName.RemoveChild, this );
 		_Owner = null;
 	}
 	public void TriggerPickup( Entity owner ) {
 		_Owner = owner;
 		if ( IsInsideTree() ) {
-			CallDeferred( "reparent", _Owner );
+			CallDeferred( MethodName.Reparent, _Owner );
 		} else {
 			// most likely a multiplayer weapon spawn
-			_Owner.CallDeferred( "add_child", this );
+			_Owner.CallDeferred( MethodName.AddChild, this );
 		}
 		GlobalPosition = _Owner.GlobalPosition;
 		SetUseMode( DefaultMode );
@@ -233,7 +244,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	private void OnBodyShapeEntered( Rid BodyRID, Node2D body, int BodyShapeIndex, int LocalShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			_Owner = entity;
-			CallDeferred( "reparent", _Owner );
+			CallDeferred( MethodName.Reparent, _Owner );
 			GlobalPosition = _Owner.GlobalPosition;
 			SetUseMode( DefaultMode );
 			InitProperties();
@@ -478,7 +489,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
 			UseTime -= 0.01f;
-			ReloadTime -= 0.01f;
+			ReloadTime -= 0.1f;
 		}
 		if ( ( PropertyBits & Properties.IsBladed ) != 0 ) {
 			BladedDamage += 3.15f;
@@ -493,6 +504,13 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		writer.SaveString( "Id", (string)Data.Get( "id" ) );
 		writer.SaveBool( "HasAmmo", Ammo != null );
+		writer.SaveInt( "Level", Level );
+		if ( Level > 0 ) {
+			writer.SaveFloat( "UseTime", UseTime );
+			writer.SaveFloat( "ReloadTime", ReloadTime );
+			writer.SaveFloat( "BluntDamage", BluntDamage );
+			writer.SaveFloat( "BladedDamage", BladedDamage );
+		}
 		if ( Ammo != null ) {
 			writer.SaveString( "Ammo", Ammo.GetPath() );
 		}
@@ -513,8 +531,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	public void Load( NodePath path ) {
 		using var reader = ArchiveSystem.GetSection( path );
 
-		CallDeferred( "SetData", reader.LoadString( "Id" ) );
-		CallDeferred( "InitProperties" );
+		CallDeferred( MethodName.SetData, reader.LoadString( "Id" ) );
+		CallDeferred( MethodName.InitProperties );
+
+		Level = reader.LoadInt( "Level" );
+		if ( Level > 0 ) {
+			SetDeferred( PropertyName.ReloadTime, reader.LoadFloat( "ReloadTime" ) );
+			SetDeferred( PropertyName.UseTime, reader.LoadFloat( "UseTime" ) );
+			SetDeferred( PropertyName.BluntDamage, reader.LoadFloat( "BluntDamage" ) );
+			SetDeferred( PropertyName.BladedDamage, reader.LoadFloat( "BladedDamage" ) );
+		}
 		if ( _Owner is Player player && player != null ) {
 			int slot = WeaponSlot.INVALID;
 			if ( reader.LoadBoolean( "Equipped" ) ) {
@@ -637,6 +663,14 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			damage *= Ammo.GetDamageFalloff( distance );
 			( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( RayCast, damage );
 		} else if ( collision is Entity entity && entity != null && entity != _Owner ) {
+			if ( _Owner is Player ) {
+				Engine.TimeScale = 0.5f;
+				AudioServer.PlaybackSpeedScale = 0.5f;
+				GetTree().CreateTimer( 0.30f ).Connect( Timer.SignalName.Timeout, Callable.From( () => {
+					Engine.TimeScale = 1.0f;
+					AudioServer.PlaybackSpeedScale = 1.0f;
+				} ) );
+			}
 			float distance = _Owner.GlobalPosition.DistanceTo( entity.GlobalPosition ) / Ammo.GetRange();
 			if ( distance > 120.0f ) {
 				// out of bleed range, no healing
@@ -656,9 +690,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
 			if ( _Owner is Player ) {
 				// slow motion for the extra feels
-				Engine.TimeScale = 0.5f;
-				AudioServer.PlaybackSpeedScale = 0.5f;
-				GetTree().CreateTimer( 0.30f ).Connect( Timer.SignalName.Timeout, Callable.From( () => {
+				Engine.TimeScale = 0.25f;
+				AudioServer.PlaybackSpeedScale = 0.25f;
+				GetTree().CreateTimer( 0.50f ).Connect( Timer.SignalName.Timeout, Callable.From( () => {
 					Engine.TimeScale = 1.0f;
 					AudioServer.PlaybackSpeedScale = 1.0f;
 				} ) );

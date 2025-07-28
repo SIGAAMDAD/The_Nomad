@@ -16,7 +16,7 @@ emission_shape = 1
 emission_sphere_radius = 4.0
 angle_min = -4.5
 angle_max = 65.1
-gravity = Vector3(0, -50, 0)
+gravity = Vector3(0, -4, 0)
 scale_min = 1.2
 scale_max = 2.5
 
@@ -24,7 +24,7 @@ scale_max = 2.5
 emitting = false
 amount = 150
 texture = SubResource("GradientTexture1D_jywn7")
-lifetime = 10.5
+lifetime = 5.65
 one_shot = true
 speed_scale = 2.5
 explosiveness = 0.5

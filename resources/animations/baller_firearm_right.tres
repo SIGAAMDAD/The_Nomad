@@ -279,7 +279,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"use",
-"speed": 20.0
+"speed": 16.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -308,5 +308,5 @@ animations = [{
 }],
 "loop": false,
 "name": &"use_flip",
-"speed": 20.0
+"speed": 16.0
 }]

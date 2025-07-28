@@ -33,7 +33,7 @@ version="0.7"
 [application]
 
 config/name="The Nomad"
-config/version="2.0.0"
+config/version="2.0.0 Pre Alpha"
 run/main_scene="uid://b6hb01wurydo7"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 boot_splash/bg_color=Color(0, 0, 0, 1)
@@ -70,6 +70,7 @@ UiAudioManager="*res://autoloads/UIAudioManager.cs"
 LoadingScreen="*res://scenes/menus/loading_screen.tscn"
 AccessibilityManager="*res://autoloads/AccessibilityManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [debug]
 
@@ -103,7 +104,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/FancyControls/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
 
 [global_group]
 

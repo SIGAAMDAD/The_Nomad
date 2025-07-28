@@ -110,9 +110,8 @@ public partial class DebrisFactory : Node2D {
 			Instance.Speeds[ startIndex + i ] = new Vector2( RNJesus.FloatRange( -2.5f, 2.5f ), RNJesus.FloatRange( -0.75f, 0.75f ) );
 			Instance.Transforms[ startIndex + i ] = new Transform2D( 0.0f, position );
 			Instance.Colors[ startIndex + i ].A = 1.0f;
+			Instance.MeshManager.Multimesh.VisibleInstanceCount++;
 			Instance.MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Instance.Transforms[i] );
 		}
-
-		Instance.MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
 	}
 };

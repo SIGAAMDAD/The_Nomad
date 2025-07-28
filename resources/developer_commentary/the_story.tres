@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DeveloperCommentary" load_steps=2 format=3 uid="uid://muu01xhysqu6"]
+
+[ext_resource type="Script" uid="uid://bhh8gks0cyvus" path="res://scripts/developer_commentary.gd" id="1_j5pqm"]
+
+[resource]
+script = ExtResource("1_j5pqm")
+_title = "The Story of \"The Nomad\""
+_text = ""

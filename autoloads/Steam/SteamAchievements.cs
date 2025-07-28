@@ -84,6 +84,12 @@ public partial class SteamAchievements : Node {
 		Mercenary_Of_Many_Skills,
 		Master_Of_The_Wastes,
 		Sands_of_Time,
+		Sweaty,
+		A_Childish_Wish,
+		Endless_Indulgence,
+		Cold_Reality,
+		Whispers_Of_The_Past,
+		Lose_Yourself,
 		
 		Count
 	};
@@ -101,8 +107,6 @@ public partial class SteamAchievements : Node {
 			IdString = "ACH_" + id.ToString().ToUpper();
 			Name = name;
 			Value = 0;
-
-			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 		public SteamAchievement( AchievementID id, string name, uint maxValue ) {
 			Id = id;
@@ -110,8 +114,6 @@ public partial class SteamAchievements : Node {
 			Name = name;
 			Value = 0;
 			MaxValue = maxValue;
-
-			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 		public SteamAchievement( AchievementID id, string name, float maxValue ) {
 			Id = id;
@@ -119,8 +121,6 @@ public partial class SteamAchievements : Node {
 			Name = name;
 			Value = 0.0f;
 			MaxValue = maxValue;
-
-			GD.Print( "Added SteamAPI Achievement " + IdString + "/\"" + Name + "\"" );
 		}
 
 		public readonly object GetValue() => Value;
@@ -130,14 +130,14 @@ public partial class SteamAchievements : Node {
 		public readonly bool GetAchieved() => Achieved;
 		public void SetAchieved( bool bAchieved ) => Achieved = bAchieved;
 		public void SetFloatValue( float value ) {
-			if ( Value is float floatValue ) {
+			if ( Value is float ) {
 				Value = value;
 				return;
 			}
 			Console.PrintError( string.Format( "[STEAM] Attempted to set achievement statistic data for {0} to invalid data type (float)", Name ) );
 		}
 		public void SetIntValue( int value ) {
-			if ( Value is int floatValue ) {
+			if ( Value is int ) {
 				Value = value;
 				return;
 			}

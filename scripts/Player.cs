@@ -2531,8 +2531,8 @@ public partial class Player : Entity {
 			};
 
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
-				if ( ( arm == ArmLeft && !arm.Animations.FlipH )
-					|| ( arm == ArmRight && arm.Animations.FlipH ) ) {
+				if ( ( arm == ArmLeft && !arm.Animations.FlipV )
+					|| ( arm == ArmRight && arm.Animations.FlipV ) ) {
 					animationName += "_flip";
 				}
 			}

@@ -21,11 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using Godot;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace PlayerSystem {
 	public partial class Arm : Node {
 		[Export]
 		public AnimatedSprite2D Animations;
+		[Export]
+		private Player.Hands Hand;
 		public Player Parent;
 
 		public SpriteFrames DefaultAnimation { get; private set; }
@@ -44,17 +47,17 @@ namespace PlayerSystem {
 			if ( Slot != WeaponSlot.INVALID ) {
 				WeaponEntity weapon = Parent.GetSlot( Slot ).GetWeapon();
 				if ( weapon != null ) {
-//					WeaponEntity.Properties mode = weapon.GetLastUsedMode();
-					return Flip ? weapon.AnimationsLeft : weapon.AnimationsRight;
-					/*
-					if ( ( mode & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-						return Flip ? weapon.GetFirearmFramesLeft() : weapon.GetFirearmFramesRight();
-					} else if ( ( mode & WeaponEntity.Properties.IsBlunt ) != 0 ) {
-						return Flip ? weapon.GetBluntFramesLeft() : weapon.GetBluntFramesRight();
-					} else if ( ( mode & WeaponEntity.Properties.IsBladed ) != 0 ) {
-						return Flip ? weapon.GetBladedFramesLeft() : weapon.GetBladedFramesRight();
-					}
-					*/
+					bool oneHanded = weapon.IsOneHanded();
+
+					// if we're running one-handed, we want the same animation frames, just the "flip variant",
+					// but if we're running default (two handed weapon) then determine animation frames based
+					// on orientation
+					return Hand == Player.Hands.Right ?
+						oneHanded ? weapon.AnimationsRight :
+							Animations.FlipV ? weapon.AnimationsLeft : weapon.AnimationsRight
+						:
+						oneHanded ? weapon.AnimationsLeft :
+							Animations.FlipV ? weapon.AnimationsRight : weapon.AnimationsLeft;
 				}
 			}
 			return DefaultAnimation;

@@ -298,6 +298,7 @@ position = Vector2(12, -2)
 [node name="ArmRight" type="Node" parent="." node_paths=PackedStringArray("Animations")]
 script = ExtResource("12_0rnld")
 Animations = NodePath("../Animations/ArmsRight")
+Hand = 1
 
 [node name="IdleAnimationTimer" type="Timer" parent="."]
 wait_time = 30.0
