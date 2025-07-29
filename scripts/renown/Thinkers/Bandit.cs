@@ -270,8 +270,7 @@ namespace Renown.Thinkers {
 			case BarkType.Count:
 			default:
 				break;
-			}
-			;
+			};
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
@@ -312,8 +311,7 @@ namespace Renown.Thinkers {
 				DetectionColor.G = 0.0f;
 				DetectionColor.B = 0.0f;
 				break;
-			}
-			;
+			};
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnLoseInterestTimerTimeout() {
@@ -467,7 +465,7 @@ namespace Renown.Thinkers {
 			AddChild( Weapon );
 
 			Weapon.TriggerPickup( this );
-			Weapon.OverrideRayCast( AimLine );
+			Weapon.OverrideRayCast( AimLine, ArmAnimations );
 			Weapon.SetOwner( this );
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
@@ -607,7 +605,7 @@ namespace Renown.Thinkers {
 
 		private void CheckAttack() {
 			// are we in range?
-			if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 2048.0f ) {
+			if ( GlobalPosition.DistanceTo( LastTargetPosition ) > 200.0f ) {
 
 				LookAtTarget();
 

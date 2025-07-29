@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=28 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
 [ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
@@ -15,7 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="8_opdvj"]
 [ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
 [ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
-[ext_resource type="Texture2D" uid="uid://ot6lvoooqerk" path="res://resources/ui_background_gradient.tres" id="15_w5beu"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w5beu"]
 
@@ -77,11 +76,6 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
-visible = false
-layout_mode = 2
-texture = ExtResource("15_w5beu")
-
-[node name="TextureRect2" type="TextureRect" parent="MarginContainer"]
 layout_mode = 2
 texture = ExtResource("3_sy5ew")
 
@@ -94,9 +88,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_umr50")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
 theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_70i7w")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
-current_tab = 0
+current_tab = 2
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("2_opdvj")
@@ -599,7 +594,6 @@ layout_mode = 2
 autowrap_mode = 3
 
 [node name="Equipment" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("10_j7gms")
@@ -622,37 +616,57 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer"]
 layout_mode = 2
 
-[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Primary Weapon"
 texture = ExtResource("8_opdvj")
 expand_mode = 2
 
-[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/PrimaryWeaponsContainer"]
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Heavy Primary"
 texture = ExtResource("8_opdvj")
 expand_mode = 2
 
-[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer"]
 layout_mode = 2
 
-[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("8_opdvj")
 expand_mode = 2
 
-[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/SidearmWeaponsContainer"]
+[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 texture = ExtResource("8_opdvj")
 expand_mode = 2
+
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+process_mode = 4
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ArmGadgetContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="GadgetIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/ArmGadgetContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("8_opdvj")
+expand_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment"]
 layout_mode = 1
@@ -670,33 +684,44 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+[node name="WeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PrimaryWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer"]
 layout_mode = 2
 
-[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
+[node name="PrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Primary Weapon"
 stretch_mode = 6
 
-[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/PrimaryWeaponsContainer"]
+[node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Heavy Primary"
 stretch_mode = 6
 
-[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+[node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer"]
 layout_mode = 2
 
-[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
+[node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 stretch_mode = 5
 
-[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/SidearmWeaponsContainer"]
+[node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 stretch_mode = 6
+
+[node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("5_w5beu")
+expand_mode = 3
 
 [node name="SelectionScreen" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer"]
 visible = false

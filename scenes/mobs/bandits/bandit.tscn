@@ -71,7 +71,7 @@ sprite_frames = ExtResource("5_q3nyr")
 animation = &"idle"
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-position = Vector2(59, -10)
+position = Vector2(57, -10)
 scale = Vector2(6.7, 4.6)
 rect = Rect2(-10.8955, -2.82609, 4.92537, 9.13043)
 

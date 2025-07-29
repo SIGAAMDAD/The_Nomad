@@ -18,6 +18,7 @@ public partial class FreeFlow : CanvasLayer {
 	private int TotalScore = 0;
 	private int HellbreakCounter = 0;
 	private Timer BurnoutTimer;
+	private Timer SlowmoTimer;
 	private TextureRect BerserkOverlay;
 
 	private int JohnWickCounter = 0;
@@ -101,10 +102,24 @@ public partial class FreeFlow : CanvasLayer {
 		Instance.HeadshotCounter = 0;
 	}
 
+	public static void Hitstop( float gameSpeed, float duration ) {
+		Engine.TimeScale = gameSpeed;
+		AudioServer.PlaybackSpeedScale = gameSpeed;
+
+		Instance.SlowmoTimer.WaitTime = duration;
+		Instance.SlowmoTimer.Start();
+	}
+
 	public override void _Ready() {
 		base._Ready();
 
 		LevelData.Instance.ThisPlayer.Damaged += ( source, target, amount ) => JohnWickCounter = 0;
+
+		SlowmoTimer = new Timer();
+		SlowmoTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
+			Engine.TimeScale = 1.0f;
+			AudioServer.PlaybackSpeedScale = 1.0f;
+		} ) );
 
 		BerserkOverlay = GetNode<TextureRect>( "BerserkModeOverlay" );
 

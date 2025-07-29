@@ -28,7 +28,6 @@ namespace Renown.World {
 			// scale up based on settlement supply/demand
 
 			// start with base taxation rate for the settlement
-			float taxationAmount = Location.GetTaxationRate();
 		}
 
 		private void OnInteractionBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {

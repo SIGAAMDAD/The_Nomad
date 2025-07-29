@@ -42,11 +42,19 @@ namespace PlayerSystem {
 			Parent = GetParent<Player>();
 			DefaultAnimation = Animations.SpriteFrames;
         }
+		public override void _Process( double delta ) {
+			base._Process( delta );
+		}
 
 		public SpriteFrames GetAnimationSet() {
 			if ( Slot != WeaponSlot.INVALID ) {
 				WeaponEntity weapon = Parent.GetSlot( Slot ).GetWeapon();
 				if ( weapon != null ) {
+					if ( weapon.IsFirearm() ) {
+						Animations.Offset = weapon.CurrentRecoilOffset;
+						Animations.Rotation = Mathf.DegToRad( weapon.CurrentRecoilRotation );
+					}
+
 					bool oneHanded = weapon.IsOneHanded();
 
 					// if we're running one-handed, we want the same animation frames, just the "flip variant",

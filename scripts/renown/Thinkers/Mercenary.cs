@@ -455,7 +455,7 @@ namespace Renown.Thinkers {
 			AddChild( Weapon );
 
 			Weapon.TriggerPickup( this );
-			Weapon.OverrideRayCast( AimLine );
+			Weapon.OverrideRayCast( AimLine, ArmAnimations );
 			Weapon.SetOwner( this );
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
@@ -471,7 +471,7 @@ namespace Renown.Thinkers {
 			TargetMovedTimer.Name = "TargetMovedTimer";
 			TargetMovedTimer.WaitTime = 5.0f;
 			TargetMovedTimer.OneShot = true;
-			TargetMovedTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
+			TargetMovedTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => Bark( BarkType.TargetPinned ) ) );
 			AddChild( TargetMovedTimer );
 
 			switch ( Direction ) {

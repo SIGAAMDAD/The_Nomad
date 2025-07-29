@@ -10,10 +10,10 @@ enum WeaponSlotIndex {
 var _owner: CharacterBody2D
 
 @onready var _weapon_list: VBoxContainer = $MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar/WeaponList
-@onready var _primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/PrimaryWeaponsContainer/PrimaryIcon
-@onready var _heavy_primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/PrimaryWeaponsContainer/HeavyPrimaryIcon
-@onready var _sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/SidearmWeaponsContainer/SidearmIcon
-@onready var _heavy_sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/SidearmWeaponsContainer/HeavySidearmIcon
+@onready var _primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer/PrimaryIcon
+@onready var _heavy_primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer/HeavyPrimaryIcon
+@onready var _sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer/SidearmIcon
+@onready var _heavy_sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer/HeavySidearmIcon
 @onready var _selection_container: MarginContainer = $MarginContainer/SelectionScreen
 @onready var _loadout_container: VBoxContainer = $MarginContainer/LoadoutScreen
 @onready var _background: MarginContainer = $Background

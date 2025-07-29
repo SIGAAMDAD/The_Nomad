@@ -29,26 +29,16 @@ public partial class AmmoEntity : Node2D {
 		{ "HollowPoint", ExtraEffects.HollowPoint }
 	};
 
-	private AudioStream PickupSfx;
-	private float Damage;
-	private float Range;
-	private float Velocity;
-	private AmmoType AmmoType;
-	private ExtraEffects Flags;
-	private Curve DamageFalloff;
+	public AudioStream PickupSfx { get; private set; }
+	public float Damage { get; private set; }
+	public float Range { get; private set; }
+	public float Velocity { get; private set; }
+	public AmmoType AmmoType { get; private set; }
+	public ExtraEffects Flags { get; private set; }
+	public Curve DamageFalloff { get; private set; }
 
-	private int PelletCount;
-	private ShotgunBullshit ShotFlags;
-
-	public AudioStream GetPickupSound() => PickupSfx;
-	public AmmoType GetAmmoType() => AmmoType;
-	public float GetDamage() => Damage;
-	public float GetRange() => Range;
-	public float GetVelocity() => Velocity;
-	public ExtraEffects GetEffects() => Flags;
-	public int GetPelletCount() => PelletCount;
-	public ShotgunBullshit GetShotgunBullshit() => ShotFlags;
-	public float GetDamageFalloff( float distance ) => DamageFalloff.SampleBaked( distance );
+	public int PelletCount { get; private set; }
+	public ShotgunBullshit ShotFlags { get; private set; }
 
 	public void Save() {
 		using var writer = new SaveSystem.SaveSectionWriter( GetPath() );

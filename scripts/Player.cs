@@ -120,7 +120,7 @@ public partial class Player : Entity {
 
 	private float Money = 0.0f;
 
-	private HashSet<Trait> Traits = null;
+	private Dictionary<TraitType, float> Traits = null;
 	private HashSet<RenownValue> Relations = null;
 	private HashSet<RenownValue> Debts = null;
 
@@ -346,9 +346,9 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
 	[Signal]
-	public delegate void EarnTraitEventHandler( Node self, Trait trait );
+	public delegate void DecreaseTraitScoreEventHandler( Node self, TraitType nTrait, float nScore );
 	[Signal]
-	public delegate void LoseTraitEventHandler( Node self, Trait trait );
+	public delegate void IncreaseTraitScoreEventHandler( Node self, TraitType nTrait, float nScore );
 	[Signal]
 	public delegate void MeetEntityEventHandler( Entity other, Node self );
 	[Signal]
@@ -427,7 +427,7 @@ public partial class Player : Entity {
 	//	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public HashSet<Trait> GetTraits() => Traits;
+	public Dictionary<TraitType, float> GetTraits() => Traits;
 
 	public void SetFaction( Faction faction ) {
 		// sanity
@@ -471,65 +471,26 @@ public partial class Player : Entity {
 	/// <summary>
 	/// returns true if the entity has the given trait
 	/// </summary>
-	public bool HasTrait( Trait trait ) => Traits.Contains( trait );
-	public bool HasTrait( string trait ) {
-		foreach ( var it in Traits ) {
-			if ( it.GetTraitName() == trait ) {
-				return true;
-			}
-		}
-		return false;
-	}
 	public bool HasTrait( TraitType trait ) {
 		foreach ( var it in Traits ) {
-			if ( it.GetTraitType() == trait ) {
+			if ( it.Key == trait ) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-	/// <summary>
-	/// checks if the given trait conflicts with this entity's values
-	/// </summary>
-	public bool HasConflictingTrait( Trait other ) {
-		foreach ( var trait in Traits ) {
-			if ( trait.Conflicts( other ) ) {
-				return true;
-			}
-		}
-		return false;
+	public void IncreaseTraitScore( TraitType type, float nDelta ) {
+		EmitSignalIncreaseTraitScore( this, type, nDelta );
+		Traits[ type ] += nDelta;
 	}
-	public List<Trait> GetConflictingTraits( Trait other ) {
-		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in Traits ) {
-			if ( trait.Conflicts( other ) ) {
-				traits.Add( trait );
-			}
-		}
-		return traits;
-	}
-	public List<Trait> GetAgreeableTraits( Trait other ) {
-		List<Trait> traits = new List<Trait>();
-		foreach ( var trait in Traits ) {
-			if ( trait.Agrees( other ) ) {
-				traits.Add( trait );
-			}
-		}
-		return traits;
-	}
-	public virtual void AddTrait( Trait trait ) {
-		EmitSignalEarnTrait( this, trait );
-		Traits.Add( trait );
-	}
-	public virtual void RemoveTrait( Trait trait ) {
-		EmitSignalLoseTrait( this, trait );
-		Traits.Remove( trait );
+	public void DecreaseTraitScore( TraitType type, float nDelta ) {
+		EmitSignalDecreaseTraitScore( this, type, nDelta );
+		Traits[ type ] -= nDelta;
 	}
 
 	public virtual void Meet( Renown.Object other ) {
 		Relations.Add( new RenownValue( other ) );
-		if ( other is Entity entity && entity != null ) { 
+		if ( other is Entity entity && entity != null ) {
 			EmitSignalMeetEntity( entity, this );
 		} else {
 			if ( other is Faction faction && faction != null ) {
@@ -731,7 +692,7 @@ public partial class Player : Entity {
 
 	public void LoadWeapon( WeaponEntity weapon, string ammo, int slot ) {
 		weapon._Owner = this;
-		weapon.OverrideRayCast( AimRayCast );
+		weapon.OverrideRayCast( AimRayCast, null );
 
 		if ( slot != WeaponSlot.INVALID ) {
 			weapon.SetEquippedState( true );
@@ -2366,34 +2327,6 @@ public partial class Player : Entity {
 				}
 			};
 		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUSHIDO", out achievement ) && !achievement.GetAchieved() ) {
-			EarnTrait += ( Node self, Trait trait ) => {
-				if ( trait.GetTraitType() == TraitType.Honorable ) {
-					SteamAchievements.ActivateAchievement( "ACH_BUSHIDO" );
-				}
-			};
-		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_HEARTLESS", out achievement ) && !achievement.GetAchieved() ) {
-			EarnTrait += ( Node self, Trait trait ) => {
-				if ( trait.GetTraitType() == TraitType.Cruel ) {
-					SteamAchievements.ActivateAchievement( "ACH_HEARTLESS" );
-				}
-			};
-		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_MAXIMUS_THE_MERCIFUL", out achievement ) && !achievement.GetAchieved() ) {
-			EarnTrait += ( Node self, Trait trait ) => {
-				if ( trait.GetTraitType() == TraitType.Merciful ) {
-					SteamAchievements.ActivateAchievement( "ACH_MAXIMUS_THE_MERCIFUL" );
-				}
-			};
-		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_WORSE_THAN_DEATH", out achievement ) && !achievement.GetAchieved() ) {
-			EarnTrait += ( Node self, Trait trait ) => {
-				if ( trait.GetTraitType() == TraitType.WarCriminal ) {
-					SteamAchievements.ActivateAchievement( "ACH_WORSE_THAN_DEATH" );
-				}
-			};
-		}
 		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_RIGHT_BACK_AT_U", out achievement ) && !achievement.GetAchieved() ) {
 			ParrySuccess += () => SteamAchievements.ActivateAchievement( "ACH_RIGHT_BACK_AT_U" );
 		}
@@ -2702,7 +2635,7 @@ public partial class Player : Entity {
 		}
 		stack.AddItems( nAmount == -1 ? (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] : nAmount );
 
-		PlaySound( MiscChannel, ammo.GetPickupSound() );
+		PlaySound( MiscChannel, ammo.PickupSfx );
 
 		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
 			WeaponSlot slot = WeaponSlots[ i ];
@@ -2757,7 +2690,7 @@ public partial class Player : Entity {
 		LegAnimation.FlipH = false;
 
 		weapon.Connect( "ModeChanged", Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
-		weapon.OverrideRayCast( AimRayCast );
+		weapon.OverrideRayCast( AimRayCast, null );
 
 		AmmoStack stack = null;
 		foreach ( var ammo in AmmoStacks ) {
