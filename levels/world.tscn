@@ -24614,7 +24614,7 @@ FactionImportance = 50
 
 [node name="GlobalNavMesh" type="NavigationRegion2D" parent="."]
 process_mode = 1
-position = Vector2(-88036, 52976)
+position = Vector2(-82088.5, 49459.5)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="GlobalNavMesh"]
@@ -24686,7 +24686,7 @@ position = Vector2(-28346.5, -1711.5)
 [node name="Biomes" type="Node2D" parent="."]
 
 [node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-position = Vector2(-88192, 52992)
+position = Vector2(-82240, 49472)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
@@ -25056,66 +25056,6 @@ enable_node_path = NodePath("../../../../../GlobalNavMesh")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer"]
 occluder = SubResource("OccluderPolygon2D_hc03g")
-
-[node name="OpposingForce" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp"]
-process_mode = 3
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 1
-
-[node name="PatrolRoute" type="NavigationLink2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce"]
-process_mode = 4
-position = Vector2(156, -16)
-start_position = Vector2(811, 330)
-end_position = Vector2(1002, 325)
-
-[node name="NodeCache" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
-process_mode = 4
-script = ExtResource("15_qx5q4")
-CoverCache = []
-PatrolRoutes = []
-
-[node name="CoverNode" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache"]
-position = Vector2(-87213, 53073)
-
-[node name="CoverNode2" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache"]
-position = Vector2(-87216, 53310)
-
-[node name="CoverNode3" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache"]
-position = Vector2(-87470, 53293)
-
-[node name="CoverNode4" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache"]
-position = Vector2(-87459, 53053)
-
-[node name="PatrolRoute0" type="NavigationLink2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
-position = Vector2(-87486, 53337)
-start_position = Vector2(386, 5)
-script = ExtResource("16_i5qqy")
-Prev = NodePath("../PatrolRoute3")
-Next = NodePath("../PatrolRoute1")
-
-[node name="PatrolRoute1" type="NavigationLink2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
-position = Vector2(-87089, 53324)
-end_position = Vector2(-17, -306)
-script = ExtResource("16_i5qqy")
-Prev = NodePath("../PatrolRoute0")
-Next = NodePath("../PatrolRoute2")
-
-[node name="PatrolRoute2" type="NavigationLink2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
-position = Vector2(-87506, 53092)
-start_position = Vector2(7, -90)
-end_position = Vector2(389, -86)
-script = ExtResource("16_i5qqy")
-Prev = NodePath("../PatrolRoute1")
-Next = NodePath("../PatrolRoute3")
-
-[node name="PatrolRoute3" type="NavigationLink2D" parent="Biomes/SaltWastes/RockyBastardsCamp/OpposingForce/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
-position = Vector2(-87529, 52954)
-start_position = Vector2(-4, 82)
-end_position = Vector2(46, 360)
-script = ExtResource("16_i5qqy")
-Prev = NodePath("../PatrolRoute2")
-Next = NodePath("../PatrolRoute0")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/RockyBastardsCamp"]
 polygon = PackedVector2Array(-25, -229, -815, -126, -796, 660, 1997, 745, 2001, 126, 1508, -209)
@@ -25799,7 +25739,7 @@ position = Vector2(429.5, 244)
 Data = ExtResource("54_mem04")
 
 [node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
-position = Vector2(45472, -4116)
+position = Vector2(25233.5, -1997)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
@@ -25816,7 +25756,7 @@ polygon = PackedVector2Array(-3372, 889, -856, 2204, 1490, 315, 1419, -920, 99, 
 [node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SaltWastes"]
 modulate = Color(0, 0, 0, 1)
 position = Vector2(-1, 57)
-polygon = PackedVector2Array(-2976, -19163, 52544, -5828.5, 29732, 8962, -1453, 1342)
+polygon = PackedVector2Array(-2062, -10146, 34265, -5809, 32345, 3343, 10713, 6159, -1453, 1342)
 
 [node name="Polygon2D" type="Polygon2D" parent="Biomes/SaltWastes"]
 process_mode = 4
@@ -25824,7 +25764,7 @@ z_index = -6
 texture_repeat = 3
 position = Vector2(-1, 57)
 texture = SubResource("NoiseTexture2D_legw5")
-polygon = PackedVector2Array(-2976, -19163, 52544, -5828.5, 29732, 8962, -1453, 1342)
+polygon = PackedVector2Array(-2062, -10146, 34265, -5809, 32345, 3343, 10713, 6159, -1453, 1342)
 
 [node name="WorldRestrictions" type="Node2D" parent="Biomes/SaltWastes"]
 editor_description = "This should ONLY be used for the time that the rest of the world is still in development"
@@ -25859,12 +25799,12 @@ Type = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
 position = Vector2(-1, 58.5)
-polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342, 3383, -91, 3383, 197, 3655, 197, 3657, 227, 3680.5, 262, 3683.5, 297, 3679.5, 473, 3669, 501, 3343, 594.5, 4142.5, 600.5, 3762.5, 503, 3759.5, 470.5, 3765.5, 300, 3773, 262.5, 3780.5, 249.5, 3789.5, 242, 3811.5, 227, 3815, 197, 4999, 197, 4999, -91, 3383, -91, -1453, 1342)
+polygon = PackedVector2Array(-2062, -10146, 34265, -5809, 32345, 3343, 10713, 6159, -1453, 1342)
 
 [node name="BiomeBody" type="CollisionPolygon2D" parent="Biomes/SaltWastes/SandFloor"]
 modulate = Color(0, 0, 0, 1)
 position = Vector2(-1, 57)
-polygon = PackedVector2Array(-2976, -19163, 52544, -5830, 29732, 8962, -1453, 1342)
+polygon = PackedVector2Array(-2062, -10146, 34265, -5809, 32345, 3343, 10713, 6159, -1453, 1342)
 disabled = true
 
 [node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
@@ -26701,7 +26641,7 @@ polygon = PackedVector2Array(-26570, 64890, -1781, 43867, 34677, 47276, 49213, 6
 process_mode = 4
 
 [node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
-position = Vector2(-59167, 40013)
+position = Vector2(-53175.5, 36508)
 script = ExtResource("6_54i5j")
 Links = []
 EntryNodes = {}

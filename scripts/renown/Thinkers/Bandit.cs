@@ -1,8 +1,10 @@
 using Godot;
+using ImGuiNET;
 using MountainGoap;
 using Renown.Thinkers.Groups;
 using Renown.World;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Renown.Thinkers {
 	public partial class Bandit : Thinker {
@@ -424,6 +426,13 @@ namespace Renown.Thinkers {
 				}
 			} ) );
 
+			List<MountainGoap.Action> actions = new List<MountainGoap.Action> {
+				new MountainGoap.Action(
+					name: "AimAction",
+					permutationSelectors: null
+				)
+			};
+
 			Agent = new MountainGoap.Agent(
 				name: "Bandit",
 				state: new ConcurrentDictionary<string, object> {
@@ -435,6 +444,10 @@ namespace Renown.Thinkers {
 					{ "HasCover", false },
 					{ "IsAlerted", false },
 					{ "SquadSize", 0 }
+				},
+				memory: new Dictionary<string, object> {
+					{ "WarnedFriendlies", false },
+					{ "AimTime", 0.0f }
 				}
 			);
 
@@ -514,8 +527,7 @@ namespace Renown.Thinkers {
 				LookDir = Godot.Vector2.Left;
 				BodyAnimations.FlipH = true;
 				break;
-			}
-			;
+			};
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
@@ -556,6 +568,11 @@ namespace Renown.Thinkers {
 			base.ProcessAnimations();
 		}
 		protected override void Think() {
+			if ( ImGui.Begin( "MobStatus " + System.Convert.ToUInt32( this ) ) ) {
+				ImGui.Text( "State: " + Agent.State.ToString() );
+				ImGui.End();
+			}
+
 			CheckSight();
 
 			if ( Awareness == MobAwareness.Relaxed ) {
