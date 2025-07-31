@@ -1,5 +1,8 @@
 using Godot;
+using MountainGoap;
+using Renown.Thinkers.Groups;
 using Renown.World;
+using System.Collections.Concurrent;
 
 namespace Renown.Thinkers {
 	public partial class Bandit : Thinker {
@@ -28,6 +31,8 @@ namespace Renown.Thinkers {
 
 		private float SightDetectionAmount = 0.0f;
 
+		private MountainGoap.Agent Agent;
+
 		private Hitbox HeadHitbox;
 
 		private Formations.Formation Formation;
@@ -48,6 +53,8 @@ namespace Renown.Thinkers {
 		private float AttackMeterProgress = 0.0f;
 		private Godot.Vector2 AttackMeterFull;
 		private Godot.Vector2 AttackMeterDone;
+
+		private Squad Group;
 
 		public Entity SightTarget { get; private set; } = null;
 
@@ -270,7 +277,8 @@ namespace Renown.Thinkers {
 			case BarkType.Count:
 			default:
 				break;
-			};
+			}
+			;
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
@@ -311,7 +319,8 @@ namespace Renown.Thinkers {
 				DetectionColor.G = 0.0f;
 				DetectionColor.B = 0.0f;
 				break;
-			};
+			}
+			;
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnLoseInterestTimerTimeout() {
@@ -415,6 +424,20 @@ namespace Renown.Thinkers {
 				}
 			} ) );
 
+			Agent = new MountainGoap.Agent(
+				name: "Bandit",
+				state: new ConcurrentDictionary<string, object> {
+					{ "Health", Health },
+					{ "HasAmmo", false },
+					{ "PlayerVisible", CanSeeTarget },
+					{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
+					{ "UnderFire", false },
+					{ "HasCover", false },
+					{ "IsAlerted", false },
+					{ "SquadSize", 0 }
+				}
+			);
+
 			AttackMeter = GetNode<Line2D>( "AttackMeter" );
 			AttackMeterDone = AttackMeter.Points[ 0 ];
 			AttackMeter.Points[ 1 ] = AttackMeterFull;
@@ -491,7 +514,8 @@ namespace Renown.Thinkers {
 				LookDir = Godot.Vector2.Left;
 				BodyAnimations.FlipH = true;
 				break;
-			};
+			}
+			;
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 

@@ -24545,7 +24545,7 @@ polygon = PackedVector2Array(288, 242, 688, 242, 688, 352, 656, 352, 656.5, 272,
 
 [sub_resource type="Gradient" id="Gradient_23017"]
 offsets = PackedFloat32Array(0, 0.879902, 1)
-colors = PackedColorArray(0.945737, 0.796942, 7.70092e-07, 1, 0.665379, 0.501708, 2.5028e-05, 1, 0.422312, 0.25376, 3.36915e-07, 1)
+colors = PackedColorArray(0.95, 0.891575, 0.5605, 1, 0.67, 0.554425, 0.2077, 1, 0.42, 0.252, 0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0t2pq"]
 noise_type = 2
