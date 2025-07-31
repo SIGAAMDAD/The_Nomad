@@ -1,15 +1,17 @@
-[gd_scene load_steps=75 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=76 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://b3cos6eshcvnp" path="res://scripts/PlayerSystem/heads_up_display.gd" id="1_xw6ac"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
 [ext_resource type="Texture2D" uid="uid://bp3geuugm7acv" path="res://textures/hud/motion_blur.png" id="2_b27l1"]
 [ext_resource type="PackedScene" uid="uid://bjtbbwfd87a5v" path="res://scenes/health_bar.tscn" id="2_bd8b1"]
+[ext_resource type="Texture2D" uid="uid://cn1j00pgmxlyu" path="res://textures/hud/ink_splatter_2.png" id="3_oiel5"]
 [ext_resource type="Texture2D" uid="uid://dfue6xsecgmow" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="4_4iujc"]
 [ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
-[ext_resource type="Texture2D" uid="uid://d4k877anp5jfl" path="res://textures/hud/nine_path_bg_2.png" id="8_ygw8h"]
+[ext_resource type="Shader" uid="uid://dj7nxulhpetx6" path="res://shaders/weapon_separator.gdshader" id="8_vil6o"]
+[ext_resource type="Texture2D" uid="uid://uhwhrg50f5sg" path="res://textures/env/dividerv.dds" id="9_ic8aw"]
 [ext_resource type="Texture2D" uid="uid://v06rvuihls1k" path="res://textures/hud/status_bladed.dds" id="10_2rlhc"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="10_125nm"]
 [ext_resource type="Script" uid="uid://dytd2baitf1tn" path="res://scripts/PlayerSystem/health_bar.gd" id="10_kwx6t"]
@@ -28,7 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" uid="uid://05bob0nsii0e" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
-[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
+[ext_resource type="Texture2D" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
 [ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="17_xstx4"]
 [ext_resource type="Script" uid="uid://cvcxs2q7qe1s5" path="res://scripts/PlayerSystem/StatusIcon.cs" id="18_a6h4m"]
 [ext_resource type="Texture2D" uid="uid://ca3yj5m0k18if" path="res://textures/hud/PAIN1.png" id="22_dg2ec"]
@@ -38,12 +40,12 @@
 [ext_resource type="Texture2D" uid="uid://dmnu5c28dq4e" path="res://textures/emote_praisethesun.png" id="28_xw6ac"]
 [ext_resource type="Texture2D" uid="uid://dm30q4vnh2cly" path="res://textures/emote_surprised.png" id="29_kwx6t"]
 [ext_resource type="Texture2D" uid="uid://3q4l73y6mcqp" path="res://textures/emote_pointing.png" id="30_dg2ec"]
-[ext_resource type="StyleBox" uid="uid://tbrwbir2aqj0" path="res://resources/themes/button_normal.tres" id="33_dg2ec"]
-[ext_resource type="Texture2D" uid="uid://bbbkmp4c026nq" path="res://textures/env/divider.png" id="35_7chf1"]
+[ext_resource type="StyleBox" uid="uid://eckxn00k4i1f" path="res://resources/themes/button_normal.tres" id="33_dg2ec"]
+[ext_resource type="Texture2D" uid="uid://0ht4neolbjfk" path="res://textures/env/dividerh.dds" id="35_7chf1"]
+[ext_resource type="StyleBox" uid="uid://la2hb8rupk0y" path="res://resources/themes/button_focused.tres" id="37_vil6o"]
 [ext_resource type="Script" uid="uid://b5rntv1ygu3xf" path="res://scripts/PlayerSystem/checkpoint_interactor.gd" id="39_kwx6t"]
-[ext_resource type="Script" uid="uid://boo38fnhr5awi" path="res://scripts/PlayerSystem/UserInterface/storage_container.gd" id="40_xw6ac"]
 [ext_resource type="Script" uid="uid://bomm36bff65ti" path="res://scripts/PlayerSystem/UserInterface/warp_container.gd" id="41_kwx6t"]
-[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="42_7chf1"]
+[ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="42_7chf1"]
 [ext_resource type="Script" uid="uid://cq2tsae0imu7k" path="res://scripts/PlayerSystem/UserInterface/DialogueContainer.cs" id="47_vil6o"]
 
 [sub_resource type="Gradient" id="Gradient_ot7dw"]
@@ -66,6 +68,9 @@ shader_parameter/status_icon = ExtResource("12_wjj4q")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8n186"]
 shader = ExtResource("4_4iujc")
 shader_parameter/status_icon = ExtResource("12_obapo")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s1366"]
+shader = ExtResource("8_vil6o")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4iujc"]
 shader = ExtResource("11_vfeoh")
@@ -169,17 +174,13 @@ tangential_accel_min = -16.0
 tangential_accel_max = 16.0
 color = Color(4.75, 0, 0, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fx2w2"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kwx6t"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5p2fr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fx2w2"]
 resource_local_to_scene = true
 shader = ExtResource("15_dwpkh")
 shader_parameter/is_selected = false
 shader_parameter/icon = ExtResource("16_nrav7")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_duloo"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7chf1"]
 resource_local_to_scene = true
 shader = ExtResource("15_dwpkh")
 shader_parameter/is_selected = false
@@ -301,7 +302,9 @@ offset_left = -0.120056
 offset_top = 0.159973
 grow_horizontal = 0
 grow_vertical = 0
-texture = ExtResource("8_ygw8h")
+texture = ExtResource("3_oiel5")
+expand_mode = 3
+stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="MainHUD/WeaponStatus"]
@@ -376,9 +379,12 @@ layout_mode = 2
 texture = ExtResource("12_obapo")
 stretch_mode = 3
 
-[node name="VSeparator" type="VSeparator" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer"]
-use_parent_material = true
+[node name="VSeparator" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_s1366")
+custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
+texture = ExtResource("9_ic8aw")
+expand_mode = 5
 
 [node name="FireArmStatus" type="VBoxContainer" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer"]
 use_parent_material = true
@@ -399,9 +405,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 10
 
-[node name="HSeparator" type="HSeparator" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
-use_parent_material = true
+[node name="HSeparator" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
+material = SubResource("ShaderMaterial_s1366")
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="BulletReserveLabel" type="Label" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/FireArmStatus/AmmunitionContainer"]
 use_parent_material = true
@@ -821,9 +830,12 @@ layout_mode = 2
 
 [node name="ActivateButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/InactiveContainer"]
 layout_mode = 2
+theme_override_styles/focus = ExtResource("37_vil6o")
+theme_override_styles/normal = ExtResource("33_dg2ec")
 text = "ACTIVATE_CAMPFIRE"
 
 [node name="MainContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -840,9 +852,9 @@ text = "LOAD_PROGRESS"
 
 [node name="OpenStorageButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
 layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxTexture_fx2w2")
-theme_override_styles/normal = ExtResource("33_dg2ec")
+theme_override_styles/focus = ExtResource("37_vil6o")
 text = "OPEN_STORAGE"
+flat = true
 
 [node name="HSeparator" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
 modulate = Color(0, 0, 0, 1)
@@ -853,27 +865,45 @@ expand_mode = 3
 
 [node name="RestHereButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer"]
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
-theme_override_styles/focus = SubResource("StyleBoxTexture_kwx6t")
+theme_override_styles/focus = ExtResource("37_vil6o")
 theme_override_styles/normal = ExtResource("33_dg2ec")
 text = "REST_HERE"
 
 [node name="RestingContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="LeaveButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
 layout_mode = 2
+theme_override_styles/focus = ExtResource("37_vil6o")
+theme_override_styles/normal = ExtResource("33_dg2ec")
 text = "GET_UP"
+
+[node name="HSeparator" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="WarpButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
 layout_mode = 2
+theme_override_styles/focus = ExtResource("37_vil6o")
+theme_override_styles/normal = ExtResource("33_dg2ec")
 text = "WARP_TO_CHECKPOINT"
+
+[node name="HSeparator2" type="TextureRect" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="ReflectButton" type="Button" parent="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer"]
 layout_mode = 2
+theme_override_styles/focus = ExtResource("37_vil6o")
+theme_override_styles/normal = ExtResource("33_dg2ec")
 text = "REFLECT_BUTTON"
 
 [node name="SavedGamesContainer" type="VBoxContainer" parent="CheckpointContainer/VBoxContainer/MarginContainer"]
@@ -892,35 +922,28 @@ layout_mode = 2
 
 [node name="StorageContainer" type="MarginContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(640, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -5.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("40_xw6ac")
 metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="StorageContainer"]
 layout_mode = 2
-texture = ExtResource("15_ot7dw")
+texture = ExtResource("42_7chf1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="StorageContainer"]
-layout_mode = 2
-
-[node name="StorageLabel" type="Label" parent="StorageContainer/VBoxContainer"]
-layout_mode = 2
-text = "STORAGE"
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="StorageContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="StorageContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="StorageContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(262, 0)
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -963,6 +986,7 @@ layout_mode = 2
 stretch_mode = 3
 
 [node name="VSeparator" type="VSeparator" parent="StorageContainer/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ScrollContainer" type="MarginContainer" parent="StorageContainer/VBoxContainer/HBoxContainer"]
@@ -970,7 +994,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="ItemInfo" type="VBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -981,14 +1005,18 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
 [node name="MetaData" type="VBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+[node name="HSeparator2" type="TextureRect" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="TypeContainer" type="HBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
@@ -1021,8 +1049,12 @@ custom_minimum_size = Vector2(90, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="HSeparator2" type="HSeparator" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator2" type="TextureRect" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="EffectContainer" type="VBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
@@ -1088,13 +1120,22 @@ layout_mode = 2
 [node name="AmmoStatusContainer" type="VBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+[node name="HSeparator" type="TextureRect" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
 
 [node name="DescriptionLabel" type="RichTextLabel" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
-custom_minimum_size = Vector2(230, 120)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 bbcode_enabled = true
+
+[node name="DropStackButton" type="Button" parent="StorageContainer/VBoxContainer/HBoxContainer/ItemInfo"]
+visible = false
+layout_mode = 2
+text = "DROP_ITEM_STACK"
 
 [node name="StackList" type="VBoxContainer" parent="StorageContainer/VBoxContainer/HBoxContainer"]
 visible = false
@@ -1108,7 +1149,7 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 64
 
 [node name="WeaponIcon" type="TextureRect" parent="StorageContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
-material = SubResource("ShaderMaterial_5p2fr")
+material = SubResource("ShaderMaterial_fx2w2")
 layout_mode = 2
 texture = ExtResource("16_nrav7")
 
@@ -1146,7 +1187,7 @@ text = "1"
 
 [node name="AmmoIcon" type="TextureRect" parent="StorageContainer/VBoxContainer/HBoxContainer/StackList/CategoryList"]
 visible = false
-material = SubResource("ShaderMaterial_duloo")
+material = SubResource("ShaderMaterial_7chf1")
 layout_mode = 2
 texture = ExtResource("17_rxc6h")
 
@@ -1186,12 +1227,32 @@ text = "9mm"
 layout_mode = 2
 text = "1"
 
-[node name="HSeparator2" type="HSeparator" parent="StorageContainer/VBoxContainer"]
+[node name="HSeparator" type="TextureRect" parent="StorageContainer/VBoxContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+texture = ExtResource("35_7chf1")
+expand_mode = 3
+
+[node name="BackpackDataContainer" type="VBoxContainer" parent="StorageContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="StorageContainer/VBoxContainer"]
+[node name="EncumbranceContainer" type="HBoxContainer" parent="StorageContainer/VBoxContainer/BackpackDataContainer"]
 layout_mode = 2
-text = "BACK"
+
+[node name="EncumbranceLabel" type="Label" parent="StorageContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "BACKPACK_ENCUMBRANCE"
+
+[node name="AmountLabel" type="Label" parent="StorageContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+layout_mode = 2
+
+[node name="OverweightLabel" type="Label" parent="StorageContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="WarpContainer" type="MarginContainer" parent="."]
 visible = false
@@ -1381,5 +1442,4 @@ horizontal_alignment = 1
 [connection signal="pressed" from="CheckpointContainer/VBoxContainer/MarginContainer/MainContainer/RestHereButton" to="CheckpointContainer" method="_on_rest_here_button_pressed"]
 [connection signal="pressed" from="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer/LeaveButton" to="CheckpointContainer" method="_on_leave_button_pressed"]
 [connection signal="pressed" from="CheckpointContainer/VBoxContainer/MarginContainer/RestingContainer/WarpButton" to="CheckpointContainer" method="_on_warp_button_pressed"]
-[connection signal="pressed" from="StorageContainer/VBoxContainer/BackButton" to="StorageContainer" method="_on_back_button_pressed"]
 [connection signal="pressed" from="WarpContainer/MarginContainer/WarpLocations/WarpLocationsContainer/BackButton" to="WarpContainer" method="_on_back_button_pressed"]

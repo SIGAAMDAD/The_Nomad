@@ -46,7 +46,7 @@ namespace Renown {
 		public virtual void OnChallenged() {
 		}
 		public virtual void OnIntimidated() {
-			int crueltyScore = LevelData.Instance.ThisPlayer.GetTraitScore();
+			float crueltyScore = LevelData.Instance.ThisPlayer.GetTraitScore( TraitType.Cruel );
 		}
 
 		public virtual void ClearStatusEffects() {

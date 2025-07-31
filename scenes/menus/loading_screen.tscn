@@ -1,9 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ceidjyb2qv8xs"]
+[gd_scene load_steps=7 format=3 uid="uid://ceidjyb2qv8xs"]
 
 [ext_resource type="Script" uid="uid://c8eph374f4si" path="res://scripts/menus/LoadingScreen.cs" id="1_gwdd4"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="3_7krkx"]
-[ext_resource type="Shader" uid="uid://boc7n0cb3jcay" path="res://shaders/dynamic_progress_bar.gdshader" id="4_thh8i"]
-[ext_resource type="Texture2D" uid="uid://deakbgku7e3t2" path="res://textures/loading_logo.png" id="5_thh8i"]
 
 [sub_resource type="Gradient" id="Gradient_thh8i"]
 offsets = PackedFloat32Array(0)
@@ -21,31 +19,6 @@ colors = PackedColorArray(0.0901961, 0.0901961, 0.0901961, 0.709804)
 gradient = SubResource("Gradient_7krkx")
 width = 1
 height = 1
-
-[sub_resource type="Gradient" id="Gradient_q6361"]
-colors = PackedColorArray(1, 0, 0, 1, 1, 0.541176, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_3vglh"]
-gradient = SubResource("Gradient_q6361")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3vglh"]
-shader = ExtResource("4_thh8i")
-shader_parameter/progress = 1.0
-shader_parameter/background_color = Color(1, 0, 0, 0)
-shader_parameter/color_gradient = SubResource("GradientTexture1D_3vglh")
-shader_parameter/mask_texture = ExtResource("5_thh8i")
-shader_parameter/wave_amplitude = 0.02
-shader_parameter/wave_frequency = 2.221
-shader_parameter/wave_speed = 1.475
-shader_parameter/particle_speed = 0.15
-shader_parameter/particle_lifetime = 1.0
-shader_parameter/particle_softness = 0.075
-shader_parameter/particle_spacing = 0.258
-shader_parameter/particle_offset = Vector2(0, 0)
-shader_parameter/particle_start_scale = Vector2(0.02, 0.02)
-shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
-shader_parameter/particle_scale_randomness = 0.5
-shader_parameter/particle_amount = 20
 
 [node name="LoadingScreen" type="CanvasLayer"]
 visible = false
@@ -133,6 +106,7 @@ theme_type_variation = &""
 min_value = 0.0
 max_value = 100.0
 step = 1.0
+page = 0.0
 value = 0.0
 exp_edit = false
 rounded = false
@@ -140,13 +114,3 @@ allow_greater = false
 allow_lesser = false
 script = ExtResource("3_7krkx")
 metadata/_custom_type_script = "uid://bjlqnmhmtp0yj"
-
-[node name="ProgressBar" type="TextureRect" parent="Tips"]
-visible = false
-material = SubResource("ShaderMaterial_3vglh")
-custom_minimum_size = Vector2(128, 32)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-texture = ExtResource("5_thh8i")
-expand_mode = 2

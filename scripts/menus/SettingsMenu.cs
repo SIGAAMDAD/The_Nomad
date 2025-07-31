@@ -273,12 +273,6 @@ public partial class SettingsMenu : Control {
 
 		SetProcess( true );
 
-		TextureRect PrevMenuButton = GetNode<TextureRect>( "PrevMenuButton" );
-		PrevMenuButton.Texture = AccessibilityManager.GetPrevMenuButtonTexture();
-
-		TextureRect NextMenuButton = GetNode<TextureRect>( "NextMenuButton" );
-		NextMenuButton.Texture = AccessibilityManager.GetNextMenuButtonTexture();
-
 		VSync = GetNode<OptionButton>( "TabContainer/Video/VBoxContainer/VSyncList/VSyncOptionButton" );
 		VSync.Connect( "pressed", Callable.From( UIAudioManager.OnButtonPressed ) );
 		VSync.Connect( "item_selected", Callable.From( ( int index ) => UIAudioManager.OnButtonPressed() ) );

@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cfagbqr0q3j2w" path="res://scenes/interactables/dialogue_interactor.tscn" id="5_giqjx"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="5_uox27"]
 [ext_resource type="Resource" uid="uid://bra887cq3crrn" path="res://resources/dialogue/asturion.dialogue" id="6_p25xw"]
-[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="7_0lc5q"]
+[ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="7_0lc5q"]
 [ext_resource type="Script" uid="uid://dmqqt3wjk5087" path="res://scripts/PlayerSystem/UserInterface/BlacksmithWeaponUpgrade.cs" id="8_uox27"]
 [ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="9_8nara"]
 [ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="10_ma2th"]

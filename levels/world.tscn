@@ -25805,7 +25805,6 @@ collision_mask = 12
 script = ExtResource("25_qxdx5")
 Markets = []
 TradeRoutes = []
-BirthRate = 4.0
 Biome = NodePath("..")
 AreaName = &"Abazan, City of Gold"
 TileMaps = []
@@ -25889,8 +25888,6 @@ Type = 1
 Treasury = 50000.0
 Markets = []
 TradeRoutes = []
-BirthRate = 3.5
-TaxationRate = 60.0
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
 TileMaps = []
@@ -26645,6 +26642,7 @@ polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922
 
 [node name="Polygon2D" type="Polygon2D" parent="Biomes/SafeSands"]
 z_index = -1
+texture_repeat = 2
 texture = SubResource("NoiseTexture2D_xehab")
 polygon = PackedVector2Array(-83738, -17116, -43318, -21388, -44602, -36278, 13550, -27399, 33262, -18183, 29194, 16457, 21347, 23113, -4674, 19810.5, -60194, 6476)
 
@@ -26773,9 +26771,8 @@ MemberList = []
 Debts = {}
 Relations = {}
 
-[node name="GalakanOligarchy" type="Node2D" parent="Factions" node_paths=PackedStringArray("TerritoryList", "MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
+[node name="GalakanOligarchy" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 script = ExtResource("48_7dl3v")
-TerritoryList = []
 MemberList = []
 Debts = {}
 Relations = {}

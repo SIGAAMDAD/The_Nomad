@@ -13,6 +13,8 @@ script/source = "extends Control
 func _on_button_pressed( _button: Button ) -> void:
 	_title.text = _button.text
 	_text.text = _button.get_meta( \"text\" )
+	
+	UiAudioManager.OnButtonPressed()
 
 func _ready() -> void:
 	var _files: PackedStringArray = DirAccess.get_files_at( \"res://resources/developer_commentary\" )
@@ -22,6 +24,9 @@ func _ready() -> void:
 		var _button: Button = Button.new()
 		_button.text = _commentary._title
 		_button.set_meta( \"text\", _commentary._text )
+		_button.connect( \"focus_entered\", UiAudioManager.OnButtonFocused )
+#		_button.connect( \"focus_exited\", UiAudioManager.OnButtonFocused )
+		_button.connect( \"mouse_entered\", UiAudioManager.OnButtonFocused )
 		_button.connect( \"pressed\", func(): _on_button_pressed( _button ) )
 		_button_list.add_child( _button )
 "

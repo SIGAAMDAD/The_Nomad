@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DeveloperCommentary" load_steps=2 format=3 uid="uid://beti0p4d56xdw"]
+
+[ext_resource type="Script" uid="uid://bhh8gks0cyvus" path="res://scripts/developer_commentary.gd" id="1_rfumd"]
+
+[resource]
+script = ExtResource("1_rfumd")
+_title = "Magma Caverns"
+_text = ""
+metadata/_custom_type_script = "uid://bhh8gks0cyvus"

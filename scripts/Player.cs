@@ -86,7 +86,12 @@ public partial class Player : Entity {
 
 	private static readonly float DirectionalInfluence = 0.7f;
 
-	public static int NumTargets = 0;
+	/// <summary>
+	/// The maximum amount of weight the player is currently allowed to carry
+	/// </summary>
+	public static readonly float MaximumInventoryWeight = 500.0f;
+	public static readonly int MaximumRuneSlots = 5;
+	public static readonly int MaximumQuickAccessSlots = 4;
 
 	public static readonly int MAX_RUNES = 5;
 	public static readonly int MAX_PERKS = 1;
@@ -153,22 +158,9 @@ public partial class Player : Entity {
 	private CollisionShape2D ParryDamageBox;
 
 	/// <summary>
-	/// The maximum amount of weight the player is currently allowed to carry
-	/// </summary>
-	public float MaximumInventoryWeight {
-		get;
-		private set;
-	} = 500.0f;
-
-	/// <summary>
 	/// The current total weight of inventory items
 	/// </summary>
-	public float TotalInventoryWeight {
-		get;
-		private set;
-	} = 0.0f;
-
-	private Dictionary<Resource, int> Storage = new Dictionary<Resource, int>();
+	public float TotalInventoryWeight { get; private set; } = 0.0f;
 
 	private Resource CurrentMappingContext;
 
@@ -200,18 +192,9 @@ public partial class Player : Entity {
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
-	public AnimatedSprite2D TorsoAnimation {
-		get;
-		private set;
-	}
-	public AnimatedSprite2D LegAnimation {
-		get;
-		private set;
-	}
-	public AnimatedSprite2D IdleAnimation {
-		get;
-		private set;
-	}
+	public AnimatedSprite2D TorsoAnimation { get; private set; }
+	public AnimatedSprite2D LegAnimation { get; private set; }
+	public AnimatedSprite2D IdleAnimation { get; private set; }
 
 	private Node2D Shadows;
 	private AnimatedSprite2D LeftArmShadowAnimation;
@@ -282,14 +265,21 @@ public partial class Player : Entity {
 
 	private TileMapFloor Floor;
 
+	//
+	// Inventory Management
+	//
 	private Godot.Collections.Dictionary<int, WeaponEntity> WeaponsStack = new Godot.Collections.Dictionary<int, WeaponEntity>();
 	private Godot.Collections.Dictionary<int, ConsumableStack> ConsumableStacks = new Godot.Collections.Dictionary<int, ConsumableStack>();
 	private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
 	private HashSet<Perk> UnlockedBoons;
 	private HashSet<Rune> UnlockedRunes;
-	private HashSet<WorldArea> DiscoveredAreas;
+	public Totem Totem { get; private set; } = null;
+	private Perk PerkSlot = null;
+	private Rune[] RuneSlots = new Rune[ MaximumRuneSlots ];
+	private ConsumableStack[] QuickAccessSlots = new ConsumableStack[ MaximumQuickAccessSlots ];
+	private Dictionary<GodotObject, int> Storage = new Dictionary<GodotObject, int>();
 	private Godot.Collections.Dictionary<string, string> JournalCache;
-	public Totem Totem { get; private set; }
+	private HashSet<WorldArea> DiscoveredAreas;
 
 	private float Rage = 60.0f;
 	private float Sanity = 60.0f;
@@ -479,13 +469,20 @@ public partial class Player : Entity {
 		}
 		return false;
 	}
-	public void IncreaseTraitScore( TraitType type, float nDelta ) {
-		EmitSignalIncreaseTraitScore( this, type, nDelta );
-		Traits[ type ] += nDelta;
+	public float GetTraitScore( TraitType type ) {
+		if ( Traits.TryGetValue( type, out float value ) ) {
+			return value;
+		}
+		Console.PrintWarning( string.Format( "Player.GetTraitScore: invalid trait type {0}!", type ) );
+		return 0.0f;
 	}
-	public void DecreaseTraitScore( TraitType type, float nDelta ) {
-		EmitSignalDecreaseTraitScore( this, type, nDelta );
-		Traits[ type ] -= nDelta;
+	public void ChangeTraitScore( TraitType type, float nDelta ) {
+		if ( nDelta < 0.0f ) {
+			EmitSignalDecreaseTraitScore( this, type, nDelta );
+		} else {
+			EmitSignalIncreaseTraitScore( this, type, nDelta );
+		}
+		Traits[ type ] += nDelta;
 	}
 
 	public virtual void Meet( Renown.Object other ) {
@@ -723,19 +720,17 @@ public partial class Player : Entity {
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
 		case PlayerUpdateType.Damage: {
-				switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
-				case PlayerDamageSource.Player:
-					float damage = SyncObject.ReadFloat();
-					Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
-					break;
-				case PlayerDamageSource.NPC:
-					break;
-				case PlayerDamageSource.Environment:
-					break;
-				}
-				;
+			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
+			case PlayerDamageSource.Player:
+				float damage = SyncObject.ReadFloat();
+				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
 				break;
-			}
+			case PlayerDamageSource.NPC:
+				break;
+			case PlayerDamageSource.Environment:
+				break;
+			};
+			break; }
 		case PlayerUpdateType.SetSpawn:
 			// only ever called in team modes
 			GlobalPosition = SyncObject.ReadVector2();

@@ -1,8 +1,8 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://ss18u0vngwxc"]
 
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="1_i71n2"]
+[sub_resource type="SystemFont" id="SystemFont_gwyus"]
 
 [resource]
-default_font = ExtResource("1_i71n2")
+default_font = SubResource("SystemFont_gwyus")
 TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
 TabBar/colors/font_selected_color = Color(0.95, 0.95, 0.95, 1)

@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://of3adaus8cke"]
+
+[ext_resource type="TileSet" uid="uid://ddy6sevkwqof5" path="res://resources/tilesets/magma_caverns.tres" id="1_w3md4"]
+
+[sub_resource type="Gradient" id="Gradient_w3md4"]
+colors = PackedColorArray(0, 0, 0, 1, 0.412152, 0.412152, 0.412152, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3pqs2"]
+noise_type = 4
+seed = 35
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0g60f"]
+color_ramp = SubResource("Gradient_w3md4")
+noise = SubResource("FastNoiseLite_3pqs2")
+
+[sub_resource type="Gradient" id="Gradient_04g7a"]
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6b06r"]
+noise_type = 4
+frequency = 0.4775
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bu2uc"]
+width = 256
+height = 256
+generate_mipmaps = false
+seamless = true
+seamless_blend_skirt = 1.0
+color_ramp = SubResource("Gradient_04g7a")
+noise = SubResource("FastNoiseLite_6b06r")
+
+[node name="CaveLight0" type="Node2D"]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_set = ExtResource("1_w3md4")
+
+[node name="Rocks" type="Polygon2D" parent="TileMapLayer"]
+texture_repeat = 2
+texture = SubResource("NoiseTexture2D_0g60f")
+polygon = PackedVector2Array(-224, -186, 21, -221, 484, -71, 392, 232, -358, 277)
+
+[node name="Lava" type="Polygon2D" parent="TileMapLayer"]
+texture_repeat = 2
+texture = SubResource("NoiseTexture2D_bu2uc")
+polygon = PackedVector2Array(-99, -10, -62, -25, -60, -132, 5, -152, 75, -103, 93, -14, 35, 50, -157, 66, -206, 34, -204, -26, -153, -47, -125, -20)

@@ -14,7 +14,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		public float Volume = 0.0f;
 		public bool Active = false;
 		public bool Muted {
-			get => Muted; 
+			get => Muted;
 			set {
 				if ( value ) {
 					Active = false;
@@ -24,6 +24,7 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 		}
 
 		public UserVoice() {
+			Muted = false;
 		}
 	};
 

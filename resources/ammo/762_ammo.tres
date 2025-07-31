@@ -1,6 +1,6 @@
 [gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://gm6rna0vx71"]
 
-[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="1_a8w8a"]
+[ext_resource type="Texture2D" uid="uid://nhu6hy65cj1o" path="res://textures/env/icona_bullets.dds" id="1_a8w8a"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="1_lhqhs"]
 [ext_resource type="Texture2D" uid="uid://do4v3ki34jgbj" path="res://textures/env/bullet_casings/rifle_shell.png" id="2_i4m1o"]
 [ext_resource type="ItemCategory" uid="uid://ctsrk0oxdnm5t" path="res://resources/weapons/categories/slugs_category.tres" id="2_qnvb1"]

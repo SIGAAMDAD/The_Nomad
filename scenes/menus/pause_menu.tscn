@@ -1,20 +1,24 @@
-[gd_scene load_steps=28 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=32 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
+[ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="2_1onjl"]
 [ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
 [ext_resource type="Script" uid="uid://ydv0jh21g8l7" path="res://scripts/PlayerSystem/UserInterface/backpack.gd" id="2_opdvj"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rkc7u"]
 [ext_resource type="Texture2D" uid="uid://bjkdfsajgy7uv" path="res://textures/hud/status_blunt.png" id="3_opdvj"]
-[ext_resource type="Texture2D" uid="uid://ddt088srr3oyd" path="res://textures/env/page.png" id="3_sy5ew"]
+[ext_resource type="Texture2D" uid="uid://0ht4neolbjfk" path="res://textures/env/dividerh.dds" id="4_1onjl"]
 [ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_2wrho"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="4_pf6lc"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="5_j7gms"]
-[ext_resource type="Texture2D" uid="uid://bbbkmp4c026nq" path="res://textures/env/divider.png" id="5_w5beu"]
+[ext_resource type="FontFile" uid="uid://c86hw5xibkiy0" path="res://edosz.ttf" id="5_umr50"]
 [ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="6_oey0u"]
-[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
-[ext_resource type="Texture2D" uid="uid://dhctbhur8x8jq" path="res://textures/hud/int_splatter.png" id="8_opdvj"]
+[ext_resource type="Texture2D" uid="uid://nhu6hy65cj1o" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
 [ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
 [ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
+[ext_resource type="Texture2D" uid="uid://cpt4h8soh1kek" path="res://textures/hud/int_splatter.dds" id="14_1onjl"]
+[ext_resource type="Texture2D" uid="uid://efw71j17d8u1" path="res://textures/hud/ink_frame.png" id="14_w5beu"]
+[ext_resource type="Texture2D" uid="uid://uhwhrg50f5sg" path="res://textures/env/dividerv.dds" id="15_ty7ml"]
+[ext_resource type="Texture2D" uid="uid://cn1j00pgmxlyu" path="res://textures/hud/ink_splatter_2.png" id="17_h4mgr"]
+[ext_resource type="Texture2D" uid="uid://bhhfvfnfnx0wr" path="res://textures/env/runes/rune_of_sinatra.png" id="18_umr50"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w5beu"]
 
@@ -77,10 +81,12 @@ metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
 layout_mode = 2
-texture = ExtResource("3_sy5ew")
+texture = ExtResource("2_1onjl")
+expand_mode = 2
 
 [node name="TabContainer" type="TabContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_w5beu")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_1onjl")
 theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_h4mgr")
@@ -88,7 +94,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_umr50")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
 theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_70i7w")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
-current_tab = 2
+current_tab = 3
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
 visible = false
@@ -98,6 +104,7 @@ script = ExtResource("2_opdvj")
 metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -158,9 +165,12 @@ custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 stretch_mode = 3
 
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
+[node name="VSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
+texture = ExtResource("15_ty7ml")
+expand_mode = 5
 
 [node name="ScrollContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -180,6 +190,7 @@ layout_mode = 2
 [node name="NameLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 
 [node name="MetaData" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -188,7 +199,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="TypeContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
@@ -196,6 +207,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/TypeContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 
 [node name="NoHeldContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData"]
 layout_mode = 2
@@ -203,6 +215,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "No. Held"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer"]
@@ -210,10 +223,12 @@ layout_mode = 2
 
 [node name="CountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "0/"
 
 [node name="MaxLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/HBoxContainer/VBoxContainer/MetaData/NoHeldContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "0"
 horizontal_alignment = 2
 
@@ -226,7 +241,7 @@ stretch_mode = 3
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="EffectContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
@@ -235,10 +250,18 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "Item Effect(s)"
 
 [node name="Label2" type="RichTextLabel" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/EffectContainer"]
 layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("5_umr50")
+theme_override_fonts/mono_font = ExtResource("5_umr50")
+theme_override_fonts/italics_font = ExtResource("5_umr50")
+theme_override_fonts/bold_italics_font = ExtResource("5_umr50")
+theme_override_fonts/bold_font = ExtResource("5_umr50")
+bbcode_enabled = true
+fit_content = true
 
 [node name="WeaponStatusContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
 layout_mode = 2
@@ -254,6 +277,7 @@ stretch_mode = 3
 
 [node name="DamageLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "N/A"
 
 [node name="RangeLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BladedInfo"]
@@ -270,6 +294,7 @@ stretch_mode = 3
 
 [node name="DamageLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "N/A"
 
 [node name="RangeLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/WeaponStatusContainer/BluntInfo"]
@@ -297,7 +322,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="DescriptionLabel" type="RichTextLabel" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/HBoxContainer/ItemInfo"]
@@ -404,7 +429,7 @@ text = "1"
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="BackpackDataContainer" type="VBoxContainer" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer"]
@@ -416,15 +441,18 @@ layout_mode = 2
 [node name="EncumbranceLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "BACKPACK_ENCUMBRANCE"
 
 [node name="AmountLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 
 [node name="OverweightLabel" type="Label" parent="MarginContainer/TabContainer/Backpack/MarginContainer/VBoxContainer/BackpackDataContainer/EncumbranceContainer"]
 visible = false
 modulate = Color(1, 0, 0, 1)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_umr50")
 text = "[TOO_MUCH_ENCUMBRANCE]"
 
 [node name="Journal" type="TabBar" parent="MarginContainer/TabContainer"]
@@ -499,7 +527,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer/ContractData"]
@@ -515,7 +543,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(280, 10)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Quest Log/ActiveQuestContainer"]
@@ -569,7 +597,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="ContractPay" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer/ContractData"]
@@ -585,7 +613,7 @@ layout_mode = 2
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(280, 10)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="QuestDescription" type="Label" parent="MarginContainer/TabContainer/Journal/MarginContainer/TabContainer/Notes/ActiveQuestContainer"]
@@ -594,6 +622,7 @@ layout_mode = 2
 autowrap_mode = 3
 
 [node name="Equipment" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("10_j7gms")
@@ -628,14 +657,14 @@ layout_mode = 2
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Primary Weapon"
-texture = ExtResource("8_opdvj")
+texture = ExtResource("14_1onjl")
 expand_mode = 2
 
 [node name="HeavyPrimaryIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/PrimaryWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 tooltip_text = "Heavy Primary"
-texture = ExtResource("8_opdvj")
+texture = ExtResource("14_1onjl")
 expand_mode = 2
 
 [node name="SidearmWeaponsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer"]
@@ -644,13 +673,13 @@ layout_mode = 2
 [node name="SidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
-texture = ExtResource("8_opdvj")
+texture = ExtResource("14_1onjl")
 expand_mode = 2
 
 [node name="HeavySidearmIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/HBoxContainer/SidearmWeaponsContainer"]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
-texture = ExtResource("8_opdvj")
+texture = ExtResource("14_1onjl")
 expand_mode = 2
 
 [node name="HSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
@@ -658,15 +687,87 @@ process_mode = 4
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="ArmGadgetContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+[node name="GadgetsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="GadgetIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/ArmGadgetContainer"]
+[node name="GadgetIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+texture = ExtResource("14_w5beu")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ArmGadgetDescription" type="Label" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="VSeparator" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+texture = ExtResource("15_ty7ml")
+expand_mode = 5
+
+[node name="JumpkitIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+texture = ExtResource("14_w5beu")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="JumpkitModuleDescription" type="Label" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+process_mode = 4
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="RunesContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Rune0" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("8_opdvj")
+texture = ExtResource("17_h4mgr")
 expand_mode = 3
+stretch_mode = 5
+
+[node name="Rune1" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("17_h4mgr")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Rune2" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("17_h4mgr")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Rune3" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("17_h4mgr")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Rune4" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("17_h4mgr")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HSeparator3" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen"]
+process_mode = 4
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment"]
 layout_mode = 1
@@ -720,7 +821,78 @@ stretch_mode = 6
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-texture = ExtResource("5_w5beu")
+texture = ExtResource("4_1onjl")
+expand_mode = 3
+
+[node name="GadgetsContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="GadgetIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 3
+
+[node name="ArmGadgetDescription" type="Label" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="JumpkitIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+
+[node name="JumpkitModuleDescription" type="Label" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/GadgetsContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="HSeparator2" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("4_1onjl")
+expand_mode = 3
+
+[node name="RunesContainer" type="HBoxContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 38
+
+[node name="Rune0" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("18_umr50")
+stretch_mode = 3
+
+[node name="Rune1" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("18_umr50")
+stretch_mode = 3
+
+[node name="Rune2" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("18_umr50")
+stretch_mode = 3
+
+[node name="Rune3" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("18_umr50")
+stretch_mode = 3
+
+[node name="Rune4" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen/RunesContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("18_umr50")
+stretch_mode = 3
+
+[node name="HSeparator3" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/MarginContainer/LoadoutScreen"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("4_1onjl")
 expand_mode = 3
 
 [node name="SelectionScreen" type="MarginContainer" parent="MarginContainer/TabContainer/Equipment/MarginContainer"]
@@ -754,7 +926,6 @@ size_flags_vertical = 8
 text = "BACK"
 
 [node name="Options" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 tab_alignment = 1
 metadata/_tab_index = 3
@@ -777,29 +948,29 @@ size_flags_horizontal = 0
 [node name="ResumeButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 process_mode = 2
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "RESUME_BUTTON"
+flat = true
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="HelpMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "HELP_BUTTON"
+flat = true
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ExitToMainMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_TO_MAIN_MENU_BUTTON"
+flat = true
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ExitGameButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_rkc7u")
 text = "EXIT_GAME_BUTTON"
+flat = true
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 

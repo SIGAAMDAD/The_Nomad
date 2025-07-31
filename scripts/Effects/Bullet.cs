@@ -9,18 +9,18 @@ public partial class Bullet : Area2D {
 	private int InstanceId = 0;
 
 	private void OnCollision( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		float damage = AmmoType.GetDamage();
+		float damage = AmmoType.Damage;
 		if ( body is Entity entity && entity != null && entity != GetParent<WeaponEntity>().GetParent<Entity>() ) {
 			float distance = GetParent<WeaponEntity>().GetParent<Entity>().GlobalPosition.DistanceTo( entity.GlobalPosition );
 			if ( distance > 20.0f ) {
 				// out of bleed range, no healing
-//				frameDamage -= damage;
+				//				frameDamage -= damage;
 			}
-			distance /= AmmoType.GetRange();
-			damage *= AmmoType.GetDamageFalloff( distance );
+			distance /= AmmoType.Range;
+			damage *= AmmoType.DamageFalloff.SampleBaked( distance );
 			entity.Damage( GetParent<WeaponEntity>().GetParent<Entity>(), damage );
 
-			AmmoEntity.ExtraEffects effects = AmmoType.GetEffects();
+			AmmoEntity.ExtraEffects effects = AmmoType.Flags;
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				entity.AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
@@ -28,23 +28,23 @@ public partial class Bullet : Area2D {
 			}
 		} else if ( body is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
 			float distance = GetParent<WeaponEntity>().GetParent<Entity>().GlobalPosition.DistanceTo( parryBox.GlobalPosition );
-			distance /= AmmoType.GetRange();
-			damage *= AmmoType.GetDamageFalloff( distance );
+			distance /= AmmoType.Range;
+			damage *= AmmoType.DamageFalloff.SampleBaked( distance );
 			parryBox.GetParent<Player>().OnParry( this, damage );
 		} else if ( body is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != GetParent<Entity>() ) {
 			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
 			float distance = GetParent<WeaponEntity>().GetParent<Entity>().GlobalPosition.DistanceTo( owner.GlobalPosition );
-			distance /= AmmoType.GetRange();
-			damage *= AmmoType.GetDamageFalloff( distance );
+			distance /= AmmoType.Range;
+			damage *= AmmoType.DamageFalloff.SampleBaked( distance );
 			hitbox.OnHit( GetParent<WeaponEntity>().GetParent<Entity>(), damage );
-			AmmoEntity.ExtraEffects effects = AmmoType.GetEffects();
+			AmmoEntity.ExtraEffects effects = AmmoType.Flags;
 			if ( ( effects & AmmoEntity.ExtraEffects.Incendiary ) != 0 ) {
 				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				owner.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
 		} else {
-			AmmoEntity.ExtraEffects effects = AmmoType.GetEffects();
+			AmmoEntity.ExtraEffects effects = AmmoType.Flags;
 			if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
 				explosion.GlobalPosition = GlobalPosition;
@@ -61,7 +61,7 @@ public partial class Bullet : Area2D {
 		BulletShellMesh.AddShellDeferred( GetParent<WeaponEntity>().GetParent<Entity>(), AmmoType.Data );
 		InstanceId = BulletMesh.AddBullet( this );
 
-		Velocity = AmmoType.GetVelocity();
+		Velocity = AmmoType.Velocity;
 
 		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnCollision ) );
 	}
@@ -71,7 +71,7 @@ public partial class Bullet : Area2D {
 		CallDeferred( "MoveBullet" );
 	}
 	private void MoveBullet() {
-	//	Velocity -= 1.0f * (float)GetPhysicsProcessDeltaTime();
+		//	Velocity -= 1.0f * (float)GetPhysicsProcessDeltaTime();
 		GlobalPosition += Direction * Velocity * (float)GetPhysicsProcessDeltaTime();
 		BulletMesh.SetBulletTransform( AmmoType.Data, InstanceId, GlobalPosition );
 	}
