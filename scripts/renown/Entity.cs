@@ -112,6 +112,14 @@ namespace Renown {
 			if ( LevelData.Instance != null ) {
 				LevelData.Instance.PlayerRespawn += ClearStatusEffects;
 			}
+
+			EntityManager.RegisterProcess( this );
+			EntityManager.RegisterPhysicsProcess( this );
+		}
+
+		public virtual void Update( double delta ) {
+		}
+		public virtual void PhysicsUpdate( double delta ) {
 		}
 	};
 };

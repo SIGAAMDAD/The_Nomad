@@ -42,10 +42,10 @@ public partial class SteamLobby : Node {
 
 	public readonly struct NetworkNode {
 		public readonly Node Node;
-		public readonly Action Send;
+		public readonly System.Action Send;
 		public readonly Action<System.IO.BinaryReader> Receive;
 
-		public NetworkNode( Node node, Action send, Action<System.IO.BinaryReader> receive ) {
+		public NetworkNode( Node node, System.Action send, System.Action<System.IO.BinaryReader> receive ) {
 			Node = node;
 			Send = send;
 			Receive = receive;
@@ -54,10 +54,10 @@ public partial class SteamLobby : Node {
 
 	public readonly struct PlayerNetworkNode {
 		public readonly Node Node;
-		public readonly Action Send;
+		public readonly System.Action Send;
 		public readonly Action<ulong, System.IO.BinaryReader> Receive;
 
-		public PlayerNetworkNode( Node node, Action send, Action<ulong, System.IO.BinaryReader> receive ) {
+		public PlayerNetworkNode( Node node, System.Action send, Action<ulong, System.IO.BinaryReader> receive ) {
 			Node = node;
 			Send = send;
 			Receive = receive;

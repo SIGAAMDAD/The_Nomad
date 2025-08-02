@@ -12,7 +12,7 @@ namespace Renown.Thinkers {
 			for ( int i = 0; i < children.Count; i++ ) {
 				FindCoverNodes( children[ i ] );
 				if ( children[ i ].IsInGroup( "CoverNodes" ) ) {
-					CoverPositions.Add( children[ i ].Get( "global_position" ).AsVector2() );
+					CoverPositions.Add( children[ i ].Get( Node2D.PropertyName.GlobalPosition ).AsVector2() );
 				}
 			}
 		}

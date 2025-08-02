@@ -337,10 +337,8 @@ namespace Renown.Thinkers {
 				Load();
 			}
 			AddToGroup( "Archive" );
-
-			SetMeta( "Faction", Faction );
 		}
-		public override void _PhysicsProcess( double delta ) {
+		public override void PhysicsUpdate( double delta ) {
 			if ( Health <= 0.0f ) {
 				return;
 			}
@@ -357,7 +355,7 @@ namespace Renown.Thinkers {
 				}
 			}
 		}
-		public override void _Process( double delta ) {
+		public override void Update( double delta ) {
 			ProcessAnimations();
 
 			if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {

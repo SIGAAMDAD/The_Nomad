@@ -1,5 +1,4 @@
 ~ meet
-if DialogueGlobals.GetPlayer().
 => END
 
 ~ talk_hostile

@@ -9,9 +9,9 @@ using System.Collections.Generic;
 namespace Renown.Thinkers {
 	public partial class Bandit : Thinker {
 		private enum State : uint {
-			Guarding,
-			Attacking,
-			Investigating,
+			Goto,
+			Animate,
+			UseSmartObject,
 
 			Count
 		};
@@ -105,6 +105,11 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		protected override void SetNavigationTarget( Godot.Vector2 position ) {
+			base.SetNavigationTarget( position );
+			CurrentState = State.Goto;
+		}
+
 		public override void Alert( Entity source ) {
 			LastTargetPosition = source.GlobalPosition;
 
@@ -122,7 +127,6 @@ namespace Renown.Thinkers {
 			}
 
 			SetNavigationTarget( LastTargetPosition );
-			CurrentState = State.Investigating;
 
 			SetFear( Fear + 10 );
 		}
@@ -213,13 +217,12 @@ namespace Renown.Thinkers {
 			Target = source;
 			LastTargetPosition = source.GlobalPosition;
 
-			CurrentState = State.Attacking;
+			Awareness = MobAwareness.Alert;
 			SetNavigationTarget( LastTargetPosition );
 		}
 
 		private void SetSuspicious() {
 			Awareness = MobAwareness.Suspicious;
-			CurrentState = State.Investigating;
 			Bark( BarkType.Confusion, Squad.GetMemberCount() > 0 ? BarkType.CheckItOut : BarkType.Count );
 		}
 		private void SetAlert() {
@@ -233,15 +236,6 @@ namespace Renown.Thinkers {
 
 		private void SetFear( int nAmount ) {
 			Fear = nAmount;
-			if ( Fear >= 100 ) {
-				SpeedDegrade = 0.0f;
-			} else if ( Fear >= 80 ) {
-				SpeedDegrade = 0.25f;
-			} else if ( Fear >= 60 ) {
-				SpeedDegrade = 0.5f;
-			} else {
-				SpeedDegrade = 1.0f;
-			}
 		}
 
 		private AudioStream GetBarkResource( BarkType bark ) {
@@ -279,8 +273,7 @@ namespace Renown.Thinkers {
 			case BarkType.Count:
 			default:
 				break;
-			}
-			;
+			};
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
@@ -321,15 +314,13 @@ namespace Renown.Thinkers {
 				DetectionColor.G = 0.0f;
 				DetectionColor.B = 0.0f;
 				break;
-			}
-			;
+			};
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnLoseInterestTimerTimeout() {
 			// if we have lost interest, go back to starting position
 			Awareness = MobAwareness.Suspicious;
 			SetNavigationTarget( StartPosition );
-			CurrentState = State.Guarding;
 
 			if ( Fear > 60 ) {
 				Bark( BarkType.Curse, BarkType.Quiet );
@@ -350,7 +341,6 @@ namespace Renown.Thinkers {
 
 		private void OnRestartCheckpoint() {
 			SetDeferred( PropertyName.GlobalPosition, StartPosition );
-			CurrentState = State.Guarding;
 			Awareness = MobAwareness.Relaxed;
 			Health = StartHealth;
 			Flags = 0;
@@ -395,7 +385,7 @@ namespace Renown.Thinkers {
 			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
 			HeadHitbox.Hit += OnHeadHit;
 
-			CurrentState = State.Guarding;
+			CurrentState = State.Animate;
 
 			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
 			Squad.AddThinker( this );
@@ -421,15 +411,49 @@ namespace Renown.Thinkers {
 				angle = Mathf.DegToRad( angle );
 				LookAngle = angle;
 				AimAngle = angle;
-				if ( !CanSeeTarget && CurrentState == State.Investigating ) {
+				if ( !CanSeeTarget ) {
 					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 				}
 			} ) );
 
+			List<MountainGoap.BaseGoal> goals = new List<MountainGoap.BaseGoal>() {
+				new MountainGoap.ComparativeGoal(
+					name: "SurviveGoal",
+					weight: 1.0f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Health", new ComparisonValuePair( 10.0f, ComparisonOperator.GreaterThan ) }
+					}
+				),
+				new MountainGoap.ComparativeGoal(
+					name: "IdleGoal",
+					weight: 0.7f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Fear", new ComparisonValuePair( 10, ComparisonOperator.LessThanOrEquals ) },
+						{ "Awareness", new ComparisonValuePair( MobAwareness.Suspicious, ComparisonOperator.LessThanOrEquals ) }
+					}
+				),
+				new MountainGoap.ComparativeGoal(
+					name: "FollowGoal",
+					weight: 0.7f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "DistanceToTarget", new ComparisonValuePair( 72.0f, ComparisonOperator.LessThan ) }
+					}
+				)
+			};
 			List<MountainGoap.Action> actions = new List<MountainGoap.Action> {
 				new MountainGoap.Action(
 					name: "AimAction",
 					permutationSelectors: null
+				),
+				new MountainGoap.Action(
+					name: "CoverAction",
+					permutationSelectors: null,
+					executor: ( agent, action ) => {
+						return ExecutionStatus.Executing;
+					},
+					cost: 1.0f,
+					costCallback: null, // TODO: make cost determined by the distance
+					preconditions: null
 				)
 			};
 
@@ -567,14 +591,16 @@ namespace Renown.Thinkers {
 		protected override void ProcessAnimations() {
 			base.ProcessAnimations();
 		}
-		protected override void Think() {
-			if ( ImGui.Begin( "MobStatus " + System.Convert.ToUInt32( this ) ) ) {
-				ImGui.Text( "State: " + Agent.State.ToString() );
-				ImGui.End();
-			}
 
+		private void SyncGOAPState() {
+			Agent.State[ "Health" ] = Health;
+			Agent.State[ "Fear" ] = Fear;
+			Agent.State[ "Awareness" ] = Awareness;
+		}
+		protected override void Think() {
 			CheckSight();
 
+			/*
 			if ( Awareness == MobAwareness.Relaxed ) {
 				return;
 			}
@@ -620,6 +646,7 @@ namespace Renown.Thinkers {
 					return;
 				}
 			}
+			*/
 		}
 
 		public void LookAtTarget() {
