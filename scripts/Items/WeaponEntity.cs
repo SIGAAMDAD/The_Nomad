@@ -125,7 +125,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	public int BulletsLeft { get; private set; } = 0;
 	private Timer MuzzleFlashTimer;
 	private PointLight2D MuzzleLight;
-	private RayCast2D RayCast;
 	private List<Sprite2D> MuzzleFlashes;
 	private Sprite2D CurrentMuzzleFlash;
 
@@ -163,10 +162,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetAttackAngle( float nAttackAngle ) => AttackAngle = nAttackAngle;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void OverrideRayCast( RayCast2D rayCast, AnimatedSprite2D animations ) {
-		RayCast = rayCast;
-	}
 
 	public void Drop() {
 		UsedItemPickup pickup = ResourceCache.GetScene( "res://scenes/interactables/used_item_pickup.tscn" ).Instantiate<UsedItemPickup>();
@@ -263,14 +258,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_right" ] );
 
 			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "use_bladed" ] );
-
-			if ( RayCast == null ) {
-				RayCast = new RayCast2D();
-				RayCast.Name = "RayCast";
-				RayCast.Enabled = true;
-				RayCast.TargetPosition = Godot.Vector2.Zero;
-				AddChild( RayCast );
-			}
 		}
 		if ( (bool)properties[ "is_blunt" ] ) {
 			PropertyBits |= Properties.IsBlunt;
@@ -327,14 +314,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 			ReloadSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "reload_sfx" ] );
 			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
-
-			if ( RayCast == null ) {
-				RayCast = new RayCast2D();
-				RayCast.Name = "RayCast";
-				RayCast.Enabled = true;
-				RayCast.TargetPosition = Godot.Vector2.Zero;
-				AddChild( RayCast );
-			}
 
 			UseTime = (float)properties[ "use_time" ];
 			ReloadTime = (float)properties[ "reload_time" ];
@@ -500,18 +479,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	private float UseBladed() {
 		float angle = AttackAngle;
 
-		RayCast.TargetPosition = Godot.Vector2.Right * BladedRange;
-
-		if ( angle != LastWeaponAngle ) {
-			// swung
-			float damage = BladedRange / Mathf.DegToRad( ( Mathf.RadToDeg( angle ) - Mathf.RadToDeg( LastWeaponAngle ) + 360.0f ) % 360.0f );
-			if ( RayCast.GetCollider() is Entity entity && entity != null && entity != _Owner ) {
-				entity.Damage( _Owner, damage );
-			}
-
-			LastWeaponAngle = angle;
-		}
-
 		return 0.0f;
 	}
 	private float UseBlunt() {
@@ -581,16 +548,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		return true;
 	}
 
-	private void CheckBulletHit( ref float frameDamage ) {
+	private void CheckBulletHit( ref float frameDamage, float angle ) {
 		float damage = Ammo.Damage;
 		frameDamage += damage;
 
-		GodotObject collision = RayCast.GetCollider();
-		if ( collision is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
+		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, angle, Ammo.Range, _Owner.GetRid() );
+		if ( collision.Collider is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
 			float distance = _Owner.GlobalPosition.DistanceTo( parryBox.GlobalPosition ) / Ammo.Range;
 			damage *= Ammo.DamageFalloff.SampleBaked( distance );
-			( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( RayCast, damage );
-		} else if ( collision is Entity entity && entity != null && entity != _Owner ) {
+			( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( parryBox.GlobalPosition, collision.Position, damage );
+		} else if ( collision.Collider is Entity entity && entity != null && entity != _Owner ) {
 			if ( _Owner is Player ) {
 				FreeFlow.Hitstop( 0.5f, 0.30f );
 			}
@@ -608,9 +575,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			} else if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				entity.CallDeferred( MethodName.AddChild, ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 			}
-		} else if ( collision is Grenade grenade && grenade != null ) {
+		} else if ( collision.Collider is Grenade grenade && grenade != null ) {
 			grenade.OnBlowup();
-		} else if ( collision is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
+		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != _Owner ) {
 			if ( _Owner is Player ) {
 				// slow motion for the extra feels
 				FreeFlow.Hitstop( 0.25f, 0.50f );
@@ -636,10 +603,10 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			AmmoEntity.ExtraEffects effects = Ammo.Flags;
 			if ( ( effects & AmmoEntity.ExtraEffects.Explosive ) != 0 ) {
 				Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
-				explosion.GlobalPosition = RayCast.GetCollisionPoint();
-				collision.CallDeferred( MethodName.AddChild, explosion );
+				explosion.GlobalPosition = collision.Position;
+				collision.Collider.CallDeferred( MethodName.AddChild, explosion );
 			}
-			DebrisFactory.Create( RayCast.GetCollisionPoint() );
+			DebrisFactory.Create( collision.Position );
 		}
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
@@ -735,8 +702,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			SpawnShells();
 		}
 
-		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
-
 		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
 		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
@@ -745,18 +710,14 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( Ammo.AmmoType == AmmoType.Pellets ) {
 			if ( Ammo.ShotFlags != AmmoEntity.ShotgunBullshit.Slug ) {
 				for ( int i = 0; i < Ammo.PelletCount; i++ ) {
-					// TODO: implement spread mechanics
-					RayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 35.0f ) ) ) * soundLevel;
-					CheckBulletHit( ref frameDamage );
+					CheckBulletHit( ref frameDamage, AttackAngle + Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 35.0f ) ) );
 				}
 			} else {
-				CheckBulletHit( ref frameDamage );
+				CheckBulletHit( ref frameDamage, AttackAngle );
 			}
 		} else {
-			CheckBulletHit( ref frameDamage );
+			CheckBulletHit( ref frameDamage, AttackAngle );
 		}
-
-		RayCast.TargetPosition = Godot.Vector2.Right * soundLevel;
 
 		return frameDamage;
 	}
@@ -794,8 +755,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return 0.0f; // can't use it when it's being used
-		}
-		;
+		};
 
 		SetUseMode( weaponMode );
 

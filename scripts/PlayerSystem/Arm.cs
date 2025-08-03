@@ -50,7 +50,7 @@ namespace PlayerSystem {
 			if ( Slot != WeaponSlot.INVALID ) {
 				WeaponEntity weapon = Parent.GetSlot( Slot ).GetWeapon();
 				if ( weapon != null ) {
-					if ( weapon.IsFirearm() ) {
+					if ( weapon.IsFirearm() && weapon.CurrentState == WeaponEntity.WeaponState.Use ) {
 						Animations.Offset = weapon.CurrentRecoilOffset;
 						Animations.Rotation = Mathf.DegToRad( weapon.CurrentRecoilRotation );
 					}

@@ -119,6 +119,8 @@ namespace Renown.World {
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );
 
+			AddToGroup( "WorldAreas" );
+
 			Hide();
 		}
 		public override void _Process( double delta ) {

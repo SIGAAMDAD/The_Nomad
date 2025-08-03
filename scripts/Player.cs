@@ -240,7 +240,6 @@ public partial class Player : Entity {
 	// aim reticle
 	//
 	private Line2D AimLine = null;
-	private RayCast2D AimRayCast = null;
 
 	private bool NetworkNeedsSync = false;
 	private PlayerAnimationState LeftArmAnimationState;
@@ -689,7 +688,6 @@ public partial class Player : Entity {
 
 	public void LoadWeapon( WeaponEntity weapon, string ammo, int slot ) {
 		weapon._Owner = this;
-		weapon.OverrideRayCast( AimRayCast, null );
 
 		if ( slot != WeaponSlot.INVALID ) {
 			weapon.SetEquippedState( true );
@@ -1216,15 +1214,13 @@ public partial class Player : Entity {
 		float distance = from.GlobalPosition.DistanceTo( from.GlobalPosition );
 
 		// we punch the bullet or object so hard it creates a shrapnel cloud
-		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( ArmAngle ) * distance;
-		if ( AimRayCast.GetCollider() is GodotObject collision && collision != null ) {
-			if ( collision is Entity entity && entity != null ) {
-				entity.Damage( this, damage );
-				entity.AddStatusEffect( "status_burning" );
-			}
+		RayIntersectionInfo collider = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, distance, GetRid() );
+		if ( collider.Collider is Entity entity && entity != null ) {
+			entity.Damage( this, damage );
+			entity.AddStatusEffect( "status_burning" );
 		}
 	}
-	public void OnParry( RayCast2D from, float damage ) {
+	public void OnParry( Vector2 from, Vector2 to, float damage ) {
 		//		float distance = from.GlobalPosition.DistanceTo( from.TargetPosition );
 
 		if ( ( Flags & PlayerFlags.LightParrying ) == 0 && ( Flags & PlayerFlags.HeavyParrying ) == 0 ) {
@@ -1499,7 +1495,6 @@ public partial class Player : Entity {
 			ArmAngle = ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle();
 		}
 		AimLine.GlobalRotation = ArmAngle;
-		AimRayCast.TargetPosition = AimLine.Points[ 1 ];
 
 		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			SyncShadow();
@@ -2146,10 +2141,8 @@ public partial class Player : Entity {
 		StartingPosition = GlobalPosition;
 
 		AimLine = GetNode<Line2D>( "AimAssist/AimLine" );
-		AimRayCast = GetNode<RayCast2D>( "AimAssist/AimLine/RayCast2D" );
 
 		AimLine.Points[ 1 ].X = AimLine.Points[ 0 ].X * ( ScreenSize.X / 2.0f );
-		AimRayCast.TargetPosition = GlobalPosition * PunchRange;
 
 		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CursorShape.Arrow );
 
@@ -2380,10 +2373,10 @@ public partial class Player : Entity {
 	public override void PhysicsUpdate( double delta ) {
 		base._PhysicsProcess( delta );
 
-		GodotObject collision = AimRayCast.GetCollider();
-		if ( collision is Entity entity && entity != null && entity.GetFaction() != Faction ) {
+		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, ScreenSize.X * 0.5f, GetRid() );
+		if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
-		} else if ( collision is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
+		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
 			AimLine.DefaultColor = AimingAtTarget;
 		} else {
 			AimLine.DefaultColor = AimingAtNull;
@@ -2691,7 +2684,6 @@ public partial class Player : Entity {
 		LegAnimation.FlipH = false;
 
 		weapon.Connect( "ModeChanged", Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
-		weapon.OverrideRayCast( AimRayCast, null );
 
 		AmmoStack stack = null;
 		foreach ( var ammo in AmmoStacks ) {

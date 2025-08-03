@@ -49,10 +49,10 @@ func _ready() -> void:
 
 [node name="CheckboxOption" type="HBoxContainer"]
 anchors_preset = -1
-anchor_right = 0.856
-anchor_bottom = 0.05
-offset_right = -546.84
-offset_bottom = -1.0
+anchor_right = 0.831
+anchor_bottom = 0.048
+offset_right = -530.84
+offset_bottom = -0.0400009
 script = SubResource("GDScript_yqame")
 metadata/_edit_use_anchors_ = true
 

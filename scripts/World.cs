@@ -42,36 +42,36 @@ public partial class World : LevelData {
 						switch ( op ) {
 						case "eq":
 						case "==":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() == value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() == value.AsSingle() );
 							break;
 						case "neq":
 						case "!=":
 						case "!eq":
 						case "ne":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() != value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() != value.AsSingle() );
 							break;
 						case "lt":
 						case "<":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() < value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() < value.AsSingle() );
 							break;
 						case "lte":
 						case "<=":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() <= value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() <= value.AsSingle() );
 							break;
 						case "gt":
 						case ">":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() > value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() > value.AsSingle() );
 							break;
 						case "gte":
 						case ">=":
-							Questify.SetConditionCompleted( requester, compare.AsDouble() >= value.AsDouble() );
+							Questify.SetConditionCompleted( requester, compare.AsSingle() >= value.AsSingle() );
 							break;
 						default:
 							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
 							break;
 						};
 					} else {
-						Questify.SetConditionCompleted( requester, compare.AsDouble() == value.AsDouble() );
+						Questify.SetConditionCompleted( requester, compare.AsSingle() == value.AsSingle() );
 					}
 				} else if ( compare.VariantType == Variant.Type.Int ) {
 					int index = queryType.Find( ':' );

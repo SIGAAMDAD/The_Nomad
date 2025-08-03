@@ -119,6 +119,8 @@ Families=""
 Buildings=""
 Checkpoints=""
 Cities=""
+WorldAreas=""
+NavigationObstacles=""
 
 [input]
 

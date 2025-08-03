@@ -8,6 +8,9 @@ using ImGuiNET;
 using Steamworks;
 
 public partial class LevelData : Node2D {
+	[Export]
+	protected NavigationRegion2D GlobalNavigationMesh;
+
 	protected PauseMenu PauseMenu;
 
 	protected Thread ResourceLoadThread;
@@ -156,7 +159,7 @@ public partial class LevelData : Node2D {
 			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, Callable.From<ulong>( OnPlayerLeft ) );
 		}
 
-		PhysicsServer2D.SetActive( true );
+		GodotServerManager.InitServers( GlobalNavigationMesh.GetNavigationMap() );
 
 		SetProcess( false );
 		SetProcessInternal( false );
@@ -188,8 +191,7 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				}
-				;
+				};
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

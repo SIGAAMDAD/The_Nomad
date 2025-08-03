@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bwvr3x7oln763"]
+[gd_scene load_steps=14 format=3 uid="uid://bwvr3x7oln763"]
 
 [ext_resource type="Script" uid="uid://dr403vxmggvbn" path="res://scripts/menus/Poem.cs" id="1_amyrm"]
 [ext_resource type="PackedScene" uid="uid://didj70c5uslyw" path="res://scenes/menus/fade.tscn" id="2_amyrm"]
@@ -23,6 +23,11 @@ gradient = SubResource("Gradient_bo6ix")
 [sub_resource type="SystemFont" id="SystemFont_ti3e6"]
 
 [sub_resource type="SystemFont" id="SystemFont_nmwqt"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_amyrm"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_0o1gq"]
+mesh = SubResource("QuadMesh_amyrm")
 
 [node name="Poem" type="Control"]
 layout_mode = 3
@@ -135,6 +140,9 @@ text = "PRESS ENTER TO CONTINUE"
 horizontal_alignment = 1
 
 [node name="Fade" parent="." instance=ExtResource("2_amyrm")]
+
+[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="."]
+multimesh = SubResource("MultiMesh_0o1gq")
 
 [connection signal="timeout" from="VBoxContainer/Label/Timer1" to="." method="_on_timer_1_timeout"]
 [connection signal="timeout" from="VBoxContainer/Label2/Timer2" to="." method="_on_timer_2_timeout"]

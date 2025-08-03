@@ -16,6 +16,7 @@ public partial class SettingsData : Control {
 	private static Resolution Resolution;
 	private static ShadowQuality ShadowQuality;
 	private static ShadowFilterQuality ShadowFilterQuality;
+	private static ParticleQuality ParticleQuality;
 	private static bool VSyncMode;
 	private static AntiAliasing AntiAliasing;
 	private static int MaxFps;
@@ -120,6 +121,10 @@ public partial class SettingsData : Control {
 	public static Light2D.ShadowFilterEnum GetShadowFilterEnum() => ShadowFilterType;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static float GetShadowFilterSmooth() => ShadowFilterSmooth;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static ParticleQuality GetParticleQuality() => ParticleQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static bool GetVSync() => VSyncMode;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -477,6 +482,7 @@ public partial class SettingsData : Control {
 			AspectRatio = AspectRatio.Aspect_21_9;
 			break;
 		};
+		ParticleQuality = (ParticleQuality)Convert.ToInt32( config[ "Video:ParticleQuality" ] );
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
 		ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
 		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
@@ -494,6 +500,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "Resolution={0}", Resolution ) );
 		writer.WriteLine( string.Format( "AspectRatio={0}", AspectRatio ) );
 		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
+		writer.WriteLine( string.Format( "ParticleQuality={0}", (int)ParticleQuality ) );
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
@@ -557,6 +564,9 @@ public partial class SettingsData : Control {
 		VSyncMode = Default.Vsync;
 		AntiAliasing = Default.AntiAliasing;
 		MaxFps = Default.MaxFps;
+		ShadowQuality = Default.ShadowQuality;
+		ShadowFilterQuality = Default.ShadowFilterQuality;
+		ParticleQuality = Default.ParticleQuality;
 		BloomEnabled = Default.BloomEnabled;
 		SetShowFPS( Default.ShowFps );
 		ShowBlood = Default.ShowBlood;

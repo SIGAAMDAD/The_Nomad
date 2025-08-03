@@ -268,7 +268,7 @@ shape = SubResource("RectangleShape2D_61ith")
 disabled = true
 
 [node name="RayCast2D" type="RayCast2D" parent="AimAssist/AimLine"]
-process_mode = 1
+process_mode = 4
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0

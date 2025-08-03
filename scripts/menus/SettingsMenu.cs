@@ -12,6 +12,7 @@ public partial class SettingsMenu : Control {
 		public Resolution Resolution;
 		public ShadowQuality ShadowQuality;
 		public ShadowFilterQuality ShadowFilterQuality;
+		public ParticleQuality ParticleQuality;
 		public bool VSyncMode;
 		public AntiAliasing AntiAliasing;
 		public int MaxFps;
@@ -58,6 +59,9 @@ public partial class SettingsMenu : Control {
 			WindowMode = settings.WindowMode;
 			AspectRatio = settings.AspectRatio;
 			Resolution = settings.Resolution;
+			ShadowQuality = settings.ShadowQuality;
+			ShadowFilterQuality = settings.ShadowFilterQuality;
+			ParticleQuality = settings.ParticleQuality;
 			VSyncMode = settings.Vsync;
 			AntiAliasing = settings.AntiAliasing;
 			MaxFps = settings.MaxFps;
@@ -96,6 +100,7 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer ResolutionOption;
 	private HBoxContainer WindowModeOption;
 	private HBoxContainer AntiAliasingOption;
+	private HBoxContainer ParticleQuality;
 	private HBoxContainer ShadowQuality;
 	private HBoxContainer ShadowFilterQuality;
 	private HBoxContainer MaxFps;
@@ -214,6 +219,9 @@ public partial class SettingsMenu : Control {
 
 		ResolutionOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ResolutionList" );
 		ResolutionOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+
+		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ParticleQualityList" );
+		ParticleQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MaxFps = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/MaxFpsList" );
 		MaxFps.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );

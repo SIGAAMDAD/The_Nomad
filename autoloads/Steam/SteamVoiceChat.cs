@@ -2,12 +2,6 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Runtime.Intrinsics.X86;
-using System.Runtime.Intrinsics;
-using PlayerSystem;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 
 public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private class UserVoice {
@@ -29,8 +23,11 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	};
 
 	private static AudioStreamGeneratorPlayback Playback;
-	private static readonly uint SAMPLE_RATE = 44100;
 	private static bool RecordingVoice = false;
+
+	private static readonly uint SAMPLE_RATE = 44100;
+	private static readonly float VoiceThreshold = 0.05f;
+	private static readonly float VoiceDecayRate = 0.1f;
 
 	private byte[] Packet = new byte[ 1056 ];
 	private byte[] RecordBuffer = new byte[ 1024 ];
@@ -40,9 +37,6 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 	private byte[] Output = new byte[ 44100 ];
 	private byte[] DecodeBuffer = new byte[ 1024 ];
 	private Godot.Vector2[] Frames = new Godot.Vector2[ 44100 ];
-
-	private const float VoiceThreshold = 0.05f;
-	private const float VoiceDecayRate = 0.1f;
 
 	private Dictionary<ulong, UserVoice> VoiceActivity;
 
@@ -87,12 +81,10 @@ public unsafe partial class SteamVoiceChat : CanvasLayer {
 
 		VoiceActivity = new Dictionary<ulong, UserVoice>();
 
-		SteamLobby.Instance.ClientJoinedLobby += ( steamId ) => {
-			if ( steamId == (ulong)SteamManager.GetSteamID() ) {
-				SteamUser.StartVoiceRecording();
-				RecordingVoice = true;
-				ProcessMode = ProcessModeEnum.Always;
-			}
+		SteamLobby.Instance.LobbyJoined += ( lobbyId ) => {
+			SteamUser.StartVoiceRecording();
+			RecordingVoice = true;
+			ProcessMode = ProcessModeEnum.Always;
 		};
 		SteamLobby.Instance.ClientLeftLobby += ( steamId ) => {
 			if ( steamId == (ulong)SteamManager.GetSteamID() ) {

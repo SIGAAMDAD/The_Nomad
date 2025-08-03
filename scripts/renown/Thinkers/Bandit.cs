@@ -49,7 +49,6 @@ namespace Renown.Thinkers {
 		// combat variables
 		private Timer AimTimer;
 		private Timer AttackTimer;
-		private RayCast2D AimLine;
 		private bool Aiming = false;
 		private Line2D AttackMeter;
 		private float AttackMeterProgress = 0.0f;
@@ -477,15 +476,6 @@ namespace Renown.Thinkers {
 			AttackMeter.Points[ 1 ] = AttackMeterFull;
 			AttackMeterProgress = AttackMeterFull.X;
 
-			AimLine = new RayCast2D();
-			AimLine.Name = "AimLine";
-			AimLine.TargetPosition = Godot.Vector2.Right;
-			AimLine.CollideWithAreas = true;
-			AimLine.CollideWithBodies = true;
-			AimLine.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
-			AimLine.HitFromInside = false;
-			ArmAnimations.AddChild( AimLine );
-
 			AttackTimer = new Timer();
 			AttackTimer.Name = "AttackTimer";
 			AttackTimer.OneShot = true;
@@ -522,7 +512,6 @@ namespace Renown.Thinkers {
 			AddChild( Weapon );
 
 			Weapon.TriggerPickup( this );
-			Weapon.OverrideRayCast( AimLine, ArmAnimations );
 			Weapon.SetOwner( this );
 			Weapon.SetReserve( AmmoStack );
 			Weapon.SetAmmo( Ammo );
@@ -556,12 +545,11 @@ namespace Renown.Thinkers {
 		}
 
 		private void OnAimTimerTimeout() {
-			if ( AimLine.GetCollider() is Entity entity && entity != null ) {
-				if ( entity.GetFaction() == Faction ) {
-					Bark( BarkType.OutOfTheWay );
-					SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
-					return;
-				}
+			RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, AimAngle, Ammo.Range, GetRid() );
+			if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() == Faction ) {
+				Bark( BarkType.OutOfTheWay );
+				SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
+				return;
 			}
 
 			AttackTimer.Start();
@@ -576,7 +564,6 @@ namespace Renown.Thinkers {
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
 				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
 				AttackTimer.SetDeferred( Timer.PropertyName.WaitTime, Weapon.UseTime );
-				AimLine.SetDeferred( RayCast2D.PropertyName.TargetPosition, Godot.Vector2.Right * (float)( (Godot.Collections.Dictionary)Ammo.Data.Get( "properties" ) )[ "range" ] );
 			}
 		}
 

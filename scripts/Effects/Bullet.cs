@@ -63,12 +63,12 @@ public partial class Bullet : Area2D {
 
 		Velocity = AmmoType.Velocity;
 
-		Connect( "body_shape_entered", Callable.From<Rid, Node2D, int, int>( OnCollision ) );
+		Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnCollision ) );
 	}
 	public override void _PhysicsProcess( double delta ) {
 		base._PhysicsProcess( delta );
 
-		CallDeferred( "MoveBullet" );
+		CallDeferred( MethodName.MoveBullet );
 	}
 	private void MoveBullet() {
 		//	Velocity -= 1.0f * (float)GetPhysicsProcessDeltaTime();

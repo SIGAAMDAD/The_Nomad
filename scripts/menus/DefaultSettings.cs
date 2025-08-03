@@ -47,6 +47,11 @@ public enum ShadowFilterQuality : uint {
 	High
 };
 
+public enum ParticleQuality : uint {
+	Low,
+	High
+};
+
 public enum VSyncMode : uint {
 	Off,
 	Adaptive,
@@ -77,6 +82,7 @@ public partial class DefaultSettings : Resource {
 	[Export] public AntiAliasing AntiAliasing { get; private set; } = AntiAliasing.None;
 	[Export] public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.Medium;
 	[Export] public ShadowFilterQuality ShadowFilterQuality { get; private set; } = ShadowFilterQuality.Low;
+	[Export] public ParticleQuality ParticleQuality { get; private set; } = ParticleQuality.Low;
 	[Export] public int MaxFps { get; private set; } = 60;
 	[Export] public bool BloomEnabled { get; private set; } = true;
 	[Export] public bool ShowFps { get; private set; } = false;

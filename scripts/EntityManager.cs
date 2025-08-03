@@ -1,8 +1,6 @@
 using Godot;
 using Renown;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 public partial class EntityManager : Node {
 	private List<Entity> PhysicsProcessCache;
@@ -10,6 +8,9 @@ public partial class EntityManager : Node {
 	private HashSet<Entity> ProcessList;
 	private HashSet<Entity> PhysicsProcessList;
 	private static EntityManager Instance;
+
+	// cached constants for runtime ease of access
+	private PhysicsDirectSpaceState2D SpaceState2D;
 
 	public static void RegisterPhysicsProcess( Entity node ) {
 		Instance.PhysicsProcessCache.Add( node );
@@ -45,6 +46,8 @@ public partial class EntityManager : Node {
 			Instance.SetProcess( false );
 			Instance.SetPhysicsProcess( false );
 		};
+
+		Instance.SpaceState2D = LevelData.Instance.GetWorld2D().DirectSpaceState;
 
 		Instance.PhysicsProcessCache = new List<Entity>();
 		Instance.ProcessCache = new List<Entity>();
