@@ -1,0 +1,91 @@
+[gd_scene load_steps=12 format=3 uid="uid://bvtjv1xcl6h4"]
+
+[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_c586o"]
+[ext_resource type="FontFile" uid="uid://c56hmhlimhld7" path="res://Spell of Asia.ttf" id="2_yqame"]
+
+[sub_resource type="GDScript" id="GDScript_yqame"]
+resource_name = "settings_checkbox_option"
+script/source = "class_name SettingsCheckboxOption extends HBoxContainer
+
+@export var _title: StringName
+
+var _value: bool = false
+
+signal value_changed( value: bool )
+
+func get_value() -> bool:
+	return _value
+
+func set_value( value: bool ) -> void:
+	_value = value
+	get_node( \"Value\" ).text = \"On\" if _value else \"Off\"
+	
+	emit_signal( \"value_changed\", _value )
+
+func _on_toggled() -> void:
+	_value = !_value
+	get_node( \"Value\" ).text = \"On\" if _value else \"Off\"
+	UiAudioManager.OnButtonPressed()
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhfsd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nmoh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecpn7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kv2wj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqame"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_apk1r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr20r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2jsoa"]
+
+[node name="CheckboxOption" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.856
+anchor_bottom = 0.05
+offset_right = -546.84
+offset_bottom = -1.0
+script = SubResource("GDScript_yqame")
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_c586o")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yqame")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="."]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yqame")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[connection signal="pressed" from="LeftIcon" to="." method="_on_toggled"]
+[connection signal="pressed" from="RightIcon" to="." method="_on_toggled"]

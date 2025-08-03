@@ -1,7 +1,11 @@
-[gd_scene load_steps=30 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=29 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://scenes/menus/settings_menu/list_option.tscn" id="2_5fu2g"]
+[ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="2_hiabw"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="3_08gdp"]
 [ext_resource type="Resource" uid="uid://ct8fhvbwjfr3i" path="res://resources/binds/actions/keyboard/move_north.tres" id="3_l0eij"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="3_s4m6w"]
 [ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://i86jw4vdkcoh" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
@@ -25,25 +29,10 @@ TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
 [sub_resource type="SystemFont" id="SystemFont_rrg86"]
 subpixel_positioning = 0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_afkw7"]
+texture = ExtResource("2_hiabw")
+
 [sub_resource type="SystemFont" id="SystemFont_s4m6w"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_l0eij"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_hg0fu"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_fd2q8"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_rxdtf"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_udegp"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_pt7eq"]
 subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
@@ -84,6 +73,7 @@ mouse_filter = 2
 theme = SubResource("Theme_rrg86")
 theme_override_fonts/font = SubResource("SystemFont_rrg86")
 theme_override_font_sizes/font_size = 14
+theme_override_styles/panel = SubResource("StyleBoxTexture_afkw7")
 tab_alignment = 1
 current_tab = 0
 metadata/_edit_use_anchors_ = true
@@ -107,259 +97,79 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VSyncList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+[node name="VSyncButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-size_flags_vertical = 4
+focus_neighbor_top = NodePath("../ShowBloodButton")
+focus_neighbor_bottom = NodePath("../ResolutionList")
+focus_mode = 2
+_title = &"VSYNC"
 
-[node name="VSyncLabel" type="Label" parent="TabContainer/Video/VBoxContainer/VSyncList"]
-custom_minimum_size = Vector2(260, 0)
+[node name="ResolutionList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-size_flags_horizontal = 0
-theme_override_fonts/font = SubResource("SystemFont_l0eij")
-text = "VSYNC"
-horizontal_alignment = 2
+focus_neighbor_top = NodePath("../VSyncButton")
+focus_neighbor_bottom = NodePath("../WindowModeList")
+focus_mode = 2
+_title = &"RESOLUTION"
+_no_translate = true
+_items = Array[StringName]([&"640x480", &"800x600", &"1280x768", &"1920x1080", &"1600x900"])
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/VSyncList"]
+[node name="WindowModeList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ResolutionList")
+focus_neighbor_bottom = NodePath("../MaxFpsList")
+focus_mode = 2
+_title = &"WINDOW_MODE"
+_no_translate = true
+_items = Array[StringName]([&"WINDOWED", &"BORDLERSS WINDOWED", &"FULLSCREEN", &"BORDERLESS FULLSCREEN", &"EXCLUSIVE FULLSCREEN"])
 
-[node name="VSyncOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/VSyncList"]
-modulate = Color(1, 0, 0, 1)
+[node name="MaxFpsList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-theme_override_fonts/font = SubResource("SystemFont_hg0fu")
-selected = 0
-item_count = 4
-popup/item_0/text = "VSYNC_OFF"
-popup/item_0/id = 0
-popup/item_1/text = "VSYNC_ADAPTIVE"
-popup/item_1/id = 1
-popup/item_2/text = "VSYNC_ON"
-popup/item_2/id = 2
-popup/item_3/text = "VSYNC_TRIPLE_BUFFERED"
-popup/item_3/id = 3
+focus_neighbor_top = NodePath("../WindowModeList")
+focus_neighbor_bottom = NodePath("../AntiAliasingList")
+focus_mode = 2
+_title = &"MAX_FPS"
+_no_translate = true
+_items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
 
-[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+[node name="AntiAliasingList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../MaxFpsList")
+focus_neighbor_bottom = NodePath("../ShadowQualityList")
+focus_mode = 2
+_title = &"ANTI_ALIASING"
+_no_translate = true
+_items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
 
-[node name="ResolutionLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-custom_minimum_size = Vector2(260, 0)
+[node name="ShadowQualityList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-text = "RESOLUTION"
-horizontal_alignment = 2
+focus_neighbor_top = NodePath("../AntiAliasingList")
+focus_neighbor_bottom = NodePath("../ShadowFilterQualityList")
+focus_mode = 2
+_title = &"SHADOW_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"LOW", &"MEDIUM", &"HIGH", &"ULTRA"])
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
+[node name="ShadowFilterQualityList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_neighbor_bottom = NodePath("../ShowFPSButton")
+focus_mode = 2
+_title = &"SHADOW_FILTER_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"OFF", &"LOW", &"HIGH"])
 
-[node name="ResolutionOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ResolutionList"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(280, 0)
-layout_direction = 2
+[node name="ShowFPSButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-size_flags_horizontal = 3
-selected = 0
-item_count = 5
-popup/item_0/text = "640x480"
-popup/item_0/id = 0
-popup/item_1/text = "800x600"
-popup/item_1/id = 1
-popup/item_2/text = "1280x768"
-popup/item_2/id = 2
-popup/item_3/text = "1920x1080"
-popup/item_3/id = 3
-popup/item_4/text = "1600x900"
-popup/item_4/id = 4
+focus_neighbor_top = NodePath("../ShadowFilterQualityList")
+focus_neighbor_bottom = NodePath("../ShowBloodButton")
+focus_mode = 2
+_title = &"SHOW_FPS"
 
-[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
+[node name="ShowBloodButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="WindowModeLabel" type="Label" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_fd2q8")
-text = "WINDOW_MODE"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-layout_mode = 2
-
-[node name="WindowModeOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/WindowModeList"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_rxdtf")
-alignment = 1
-selected = 0
-item_count = 5
-popup/item_0/text = "WINDOWED"
-popup/item_0/id = 0
-popup/item_1/text = "BORDLERSS WINDOWED"
-popup/item_1/id = 1
-popup/item_2/text = "FULLSCREEN"
-popup/item_2/id = 2
-popup/item_3/text = "BORDERLESS FULLSCREEN"
-popup/item_3/id = 3
-popup/item_4/text = "EXCLUSIVE FULLSCREEN"
-popup/item_4/id = 4
-
-[node name="MaxFpsList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-
-[node name="MaxFpsLabel" type="Label" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "MAX_FPS"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
-layout_mode = 2
-
-[node name="MaxFpsOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/MaxFpsList"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(280, 0)
-layout_direction = 2
-layout_mode = 2
-size_flags_horizontal = 3
-selected = 3
-item_count = 7
-popup/item_0/text = "UNLIMITED"
-popup/item_0/id = 0
-popup/item_1/text = "30"
-popup/item_1/id = 1
-popup/item_2/text = "45"
-popup/item_2/id = 2
-popup/item_3/text = "60"
-popup/item_3/id = 3
-popup/item_4/text = "90"
-popup/item_4/id = 4
-popup/item_5/text = "125"
-popup/item_5/id = 5
-popup/item_6/text = "225"
-popup/item_6/id = 6
-
-[node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="AntiAliasingLabel" type="Label" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_fonts/font = SubResource("SystemFont_udegp")
-text = "ANTI_ALIASING"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
-layout_mode = 2
-
-[node name="AntiAliasingOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/AntiAliasingList"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-theme_override_fonts/font = SubResource("SystemFont_pt7eq")
-selected = 0
-item_count = 7
-popup/item_0/text = "NONE"
-popup/item_0/id = 0
-popup/item_1/text = "FXAA"
-popup/item_1/id = 1
-popup/item_2/text = "MSAA 2x"
-popup/item_2/id = 2
-popup/item_3/text = "MSAA 4x"
-popup/item_3/id = 3
-popup/item_4/text = "MSAA 8x"
-popup/item_4/id = 4
-popup/item_5/text = "TAA"
-popup/item_5/id = 5
-popup/item_6/text = "FXAA+TAA"
-popup/item_6/id = 6
-
-[node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="ShadowQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SHADOW_QUALITY"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
-layout_mode = 2
-
-[node name="ShadowQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ShadowQualityList"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-selected = 1
-item_count = 4
-popup/item_0/text = "LOW"
-popup/item_0/id = 0
-popup/item_1/text = "MEDIUM"
-popup/item_1/id = 1
-popup/item_2/text = "HIGH"
-popup/item_2/id = 2
-popup/item_3/text = "ULTRA"
-popup/item_3/id = 3
-
-[node name="ShadowFilterQualityList" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="ShadowFilterQualityLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SHADOW_FILTER_QUALITY"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
-layout_mode = 2
-
-[node name="ShadowFilterQualityOptionButton" type="OptionButton" parent="TabContainer/Video/VBoxContainer/ShadowFilterQualityList"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-selected = 1
-item_count = 3
-popup/item_0/text = "OFF"
-popup/item_0/id = 0
-popup/item_1/text = "LOW"
-popup/item_1/id = 1
-popup/item_2/text = "HIGH"
-popup/item_2/id = 2
-
-[node name="ShowFPSButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="ShowFPSLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SHOW_FPS"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
-layout_mode = 2
-
-[node name="ShowFPSCheckBox" type="CheckBox" parent="TabContainer/Video/VBoxContainer/ShowFPSButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-
-[node name="ShowBloodButton" type="HBoxContainer" parent="TabContainer/Video/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="ShowBloodLabel" type="Label" parent="TabContainer/Video/VBoxContainer/ShowBloodButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SHOW_BLOOD"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Video/VBoxContainer/ShowBloodButton"]
-layout_mode = 2
-
-[node name="ShowBloodCheckBox" type="CheckBox" parent="TabContainer/Video/VBoxContainer/ShowBloodButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
+focus_neighbor_top = NodePath("../ShowFPSButton")
+focus_neighbor_bottom = NodePath("../VSyncButton")
+_title = &"SHOW_BLOOD"
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -380,97 +190,33 @@ offset_bottom = -184.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EffectsOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
+[node name="EffectsOnButton" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-tooltip_text = "Toggles sound effects"
+focus_neighbor_top = NodePath("../MusicVolumeSlider")
+focus_neighbor_bottom = NodePath("../EffectsVolumeSlider")
+focus_mode = 2
+_title = &"SOUND_EFFECTS_ON"
 
-[node name="EffectsOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
-custom_minimum_size = Vector2(260, 0)
+[node name="EffectsVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_s4m6w")]
 layout_mode = 2
-text = "SOUND_EFFECTS_ON"
-horizontal_alignment = 2
+focus_neighbor_top = NodePath("../EffectsOnButton")
+focus_neighbor_bottom = NodePath("../MusicOnButton")
+focus_mode = 2
+_title = &"SOUND_EFFECTS_VOLUME"
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+[node name="MusicOnButton" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../EffectsVolumeSlider")
+focus_neighbor_bottom = NodePath("../MusicVolumeSlider")
+focus_mode = 2
+_title = &"MUSIC_ON"
 
-[node name="EffectsOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
-modulate = Color(1, 0, 0, 1)
+[node name="MusicVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_s4m6w")]
 layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-
-[node name="EffectsVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
-layout_mode = 2
-
-[node name="EffectsVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "SOUND_EFFECTS_VOLUME"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
-layout_mode = 2
-
-[node name="EffectsVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(280, 0)
-layout_direction = 2
-layout_mode = 2
-size_flags_horizontal = 3
-ticks_on_borders = true
-
-[node name="MusicOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
-layout_mode = 2
-
-[node name="MusicOnLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "MUSIC_ON"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
-layout_mode = 2
-
-[node name="MusicOnCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-
-[node name="MusicVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
-layout_mode = 2
-
-[node name="MusicVolumeLabel" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "MUSIC_VOLUME"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
-layout_mode = 2
-
-[node name="MusicVolumeHSlider" type="HSlider" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(280, 0)
-layout_direction = 2
-layout_mode = 2
-size_flags_horizontal = 3
-ticks_on_borders = true
-
-[node name="MuteOnUnfocusedButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="MuteOnUnfocusedButton" type="Label" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "MUTE_ON_UNFOCUSED"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
-layout_mode = 2
-
-[node name="MuteOnUnfocusedCheckBox" type="CheckBox" parent="TabContainer/Audio/VBoxContainer/MuteOnUnfocusedButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
+focus_neighbor_top = NodePath("../MusicOnButton")
+focus_neighbor_bottom = NodePath("../EffectsOnButton")
+focus_mode = 2
+_title = &"MUSIC_VOLUME"
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
 visible = false
@@ -489,81 +235,33 @@ offset_bottom = -197.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HapticFeedbackButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+[node name="HapticFeedbackButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../DyslexiaModeButton")
+focus_neighbor_bottom = NodePath("../HapticStrengthSlider")
+focus_mode = 2
+_title = &"HAPTIC_FEEDBACK"
 
-[node name="HapticFeedbackLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
-custom_minimum_size = Vector2(260, 0)
+[node name="HapticStrengthSlider" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_s4m6w")]
 layout_mode = 2
-text = "HAPTIC_FEEDBACK"
-horizontal_alignment = 2
+focus_neighbor_top = NodePath("../HapticFeedbackButton")
+focus_neighbor_bottom = NodePath("../AutoAimButton")
+focus_mode = 2
+_title = &"HAPTIC_FEEDBACK_STRENGTH"
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+[node name="AutoAimButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../HapticStrengthSlider")
+focus_neighbor_bottom = NodePath("../DyslexiaModeButton")
+focus_mode = 2
+_title = &"AUTOAIM"
 
-[node name="HapticFeedbackCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
-modulate = Color(1, 0, 0, 1)
+[node name="DyslexiaModeButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-
-[node name="HapticStrengthSlider" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
-layout_mode = 2
-
-[node name="HapticStrengthLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "HAPTIC_FEEDBACK_STRENGTH"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
-layout_mode = 2
-
-[node name="HapticStrengthSlider" type="HSlider" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(280, 0)
-layout_direction = 2
-layout_mode = 2
-size_flags_horizontal = 3
-ticks_on_borders = true
-
-[node name="AutoAimButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
-layout_mode = 2
-tooltip_text = "Enables Autoaim"
-
-[node name="AutoAimLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "AUTOAIM"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
-layout_mode = 2
-
-[node name="AutoAimCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/AutoAimButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-
-[node name="DyslexiaModeButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
-layout_mode = 2
-tooltip_text = "Enables Autoaim"
-
-[node name="DyslexiaModeLabel" type="Label" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "DYSLEXIA_MODE"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
-layout_mode = 2
-
-[node name="DyslexiaCheckbox" type="CheckBox" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
+focus_neighbor_top = NodePath("../AutoAimButton")
+focus_previous = NodePath("../HapticFeedbackButton")
+focus_mode = 2
+_title = &"DYSLEXIA_MODE"
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 visible = false
@@ -582,59 +280,33 @@ offset_bottom = -197.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HellbreakerEnabledButton" type="HBoxContainer" parent="TabContainer/Gameplay/VBoxContainer"]
+[node name="DrawAimLineButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ExpertUIButton")
+focus_neighbor_bottom = NodePath("../HellbreakerEnabledButton")
+focus_mode = 2
+_title = &"DRAW_AIM_LINE"
 
-[node name="HellbreakerEnabledLabel" type="Label" parent="TabContainer/Gameplay/VBoxContainer/HellbreakerEnabledButton"]
-custom_minimum_size = Vector2(260, 0)
+[node name="HellbreakerEnabledButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-text = "HELLBREAKER_ENABLED"
-horizontal_alignment = 2
+focus_neighbor_top = NodePath("../DrawAimLineButton")
+focus_neighbor_bottom = NodePath("../EnableTutorialsButton")
+focus_mode = 2
+_title = &"HELLBREAKER_ENABLED"
 
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Gameplay/VBoxContainer/HellbreakerEnabledButton"]
+[node name="EnableTutorialsButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../HellbreakerEnabledButton")
+focus_neighbor_bottom = NodePath("../ExpertUIButton")
+focus_mode = 2
+_title = &"ENABLE_TUTORIALS"
 
-[node name="HelllbreakerEnabledCheckbox" type="CheckBox" parent="TabContainer/Gameplay/VBoxContainer/HellbreakerEnabledButton"]
-modulate = Color(1, 0, 0, 1)
+[node name="ExpertUIButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-
-[node name="EnableTutorialsButton" type="HBoxContainer" parent="TabContainer/Gameplay/VBoxContainer"]
-layout_mode = 2
-
-[node name="EnableTutorialsLabel" type="Label" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "ENABLE_TUTORIALS"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
-layout_mode = 2
-
-[node name="EnableTutorialsCheckbox" type="CheckBox" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
-
-[node name="ExpertUIButton" type="HBoxContainer" parent="TabContainer/Gameplay/VBoxContainer"]
-layout_mode = 2
-
-[node name="ExpertUILabel" type="Label" parent="TabContainer/Gameplay/VBoxContainer/ExpertUIButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-text = "EXPERT_UI"
-horizontal_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Gameplay/VBoxContainer/ExpertUIButton"]
-layout_mode = 2
-
-[node name="ExpertUICheckbox" type="CheckBox" parent="TabContainer/Gameplay/VBoxContainer/ExpertUIButton"]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-theme_override_constants/outline_size = 0
-theme_override_constants/h_separation = 0
+focus_neighbor_top = NodePath("../EnableTutorialsButton")
+focus_neighbor_bottom = NodePath("../DrawAimLineButton")
+focus_mode = 2
+_title = &"EXPERT_UI"
 
 [node name="Network" type="TabBar" parent="TabContainer"]
 visible = false
@@ -653,40 +325,19 @@ offset_bottom = -225.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EnableNetworkingButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
+[node name="EnableNetworkingButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../FriendsOnlyButton")
+focus_neighbor_bottom = NodePath("../FriendsOnlyButton")
+focus_mode = 2
+_title = &"ENABLE_NETWORKING"
 
-[node name="EnableNetworkingLabel" type="Label" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
-custom_minimum_size = Vector2(260, 0)
+[node name="FriendsOnlyButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-text = "ENABLE_NETWORKING"
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
-layout_mode = 2
-
-[node name="EnableNetworkingCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-
-[node name="FriendsOnlyButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="FriendsOnlyLabel" type="Label" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-text = "FRIENDS_ONLY"
-
-[node name="VSeparator" type="VSeparator" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
-layout_mode = 2
-
-[node name="FriendsOnlyCheckbox" type="CheckBox" parent="TabContainer/Network/VBoxContainer/FriendsOnlyButton"]
-modulate = Color(1, 0, 0, 1)
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-size_flags_horizontal = 8
+focus_neighbor_top = NodePath("../EnableNetworkingButton")
+focus_neighbor_bottom = NodePath("../EnableNetworkingButton")
+focus_mode = 2
+_title = &"FRIENDS_ONLY"
 
 [node name="Controls" type="TabBar" parent="TabContainer"]
 visible = false
@@ -858,5 +509,3 @@ metadata/_edit_use_anchors_ = true
 unique_name_in_owner = true
 script = ExtResource("5_gmmd7")
 abort_detection_on = Array[ExtResource("6_u2rrl")]([SubResource("Resource_qxrc6")])
-
-[connection signal="pressed" from="SaveSettingsButton" to="." method="_on_save_settings_button_pressed"]

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using GDExtension.Wrappers;
 using Godot;
+using ImGuiNET;
 using Steamworks;
 
 public partial class LevelData : Node2D {
@@ -11,7 +13,7 @@ public partial class LevelData : Node2D {
 	protected Thread ResourceLoadThread;
 	protected Thread SceneLoadThread;
 
-	protected Dictionary<CSteamID, Renown.Entity> Players = null;	
+	protected Dictionary<CSteamID, Renown.Entity> Players = null;
 	protected PackedScene PlayerScene = null;
 
 	protected static readonly string[] DeathQuotes = [
@@ -72,6 +74,9 @@ public partial class LevelData : Node2D {
 	[Signal]
 	public delegate void HellbreakerFinishedEventHandler();
 
+	[Signal]
+	public delegate void ExitLevelEventHandler();
+
 	protected virtual void OnResourcesFinishedLoading() {
 	}
 	protected virtual void OnPlayerJoined( ulong steamId ) {
@@ -83,7 +88,7 @@ public partial class LevelData : Node2D {
 		if ( Players.ContainsKey( userId ) ) {
 			return;
 		}
-		
+
 		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
 		( player as NetworkPlayer ).MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( userId );
 		player.Call( "SetOwnerId", (ulong)userId );
@@ -97,7 +102,7 @@ public partial class LevelData : Node2D {
 		if ( userId == SteamUser.GetSteamID() ) {
 			return;
 		}
-		
+
 		Console.PrintLine(
 			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username )
 		);
@@ -111,48 +116,26 @@ public partial class LevelData : Node2D {
 		static void nodeIterator( Godot.Collections.Array<Node> children ) {
 			for ( int i = 0; i < children.Count; i++ ) {
 				nodeIterator( children[ i ].GetChildren() );
-
 				if ( children[ i ] is Light2D light && light != null ) {
-					light.SetDeferred( "shadow_enabled", true );
-					switch ( SettingsData.GetShadowFilterQuality() ) {
-					case ShadowFilterQuality.Off:
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.None );
-						light.SetDeferred( "shadow_filter_smooth", 0.0f );
-						break;
-					case ShadowFilterQuality.Low:
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf5 );
-						light.SetDeferred( "shadow_filter_smooth", 0.10f );
-						break;
-					case ShadowFilterQuality.High:
-						light.SetDeferred( "shadow_filter", (long)Light2D.ShadowFilterEnum.Pcf13 );
-						light.SetDeferred( "shadow_filter_smooth", 0.10f );
-						break;
-					};
+					light.SetDeferred( Light2D.PropertyName.ShadowEnabled, true );
+					light.SetDeferred( Light2D.PropertyName.ShadowFilter, (long)SettingsData.GetShadowFilterEnum() );
+					light.SetDeferred( Light2D.PropertyName.ShadowFilterSmooth, SettingsData.GetShadowFilterSmooth() );
 				}
 			}
 		}
 		nodeIterator( GetChildren() );
-		
-		switch ( SettingsData.GetShadowQuality() ) {
-		case ShadowQuality.Low:
-			RenderingServer.CanvasSetShadowTextureSize( 256 );
-			break;
-		case ShadowQuality.Medium:
-			RenderingServer.CanvasSetShadowTextureSize( 1024 );
-			break;
-		case ShadowQuality.High:
-			RenderingServer.CanvasSetShadowTextureSize( 2048 );
-			break;
-		case ShadowQuality.Ultra:
-			RenderingServer.CanvasSetShadowTextureSize( 8192 );
-			break;
-		};
 	}
 
 	public override void _EnterTree() {
 		base._EnterTree();
 
 		Instance = this;
+		EntityManager.Init();
+	}
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		EmitSignalExitLevel();
 	}
 	public override void _Ready() {
 		base._Ready();
@@ -169,19 +152,19 @@ public partial class LevelData : Node2D {
 		PlayerRespawn += () => { ThisPlayer.BlockInput( false ); };
 
 		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
-			SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
-			SteamLobby.Instance.Connect( "ClientLeftLobby", Callable.From<ulong>( OnPlayerLeft ) );
+			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientJoinedLobby, Callable.From<ulong>( OnPlayerJoined ) );
+			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, Callable.From<ulong>( OnPlayerLeft ) );
 		}
 
 		PhysicsServer2D.SetActive( true );
 
 		SetProcess( false );
 		SetProcessInternal( false );
-		
+
 		PauseMenu = ResourceLoader.Load<PackedScene>( "res://scenes/menus/pause_menu.tscn" ).Instantiate<PauseMenu>();
 		PauseMenu.Hide();
 		PauseMenu.Name = "PauseMenu";
-		PauseMenu.Connect( "LeaveLobby", Callable.From( SteamLobby.Instance.LeaveLobby ) );
+		PauseMenu.Connect( PauseMenu.SignalName.LeaveLobby, Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		AddChild( PauseMenu );
 
 		DebrisFactory debrisFactory = ResourceCache.GetScene( "res://scenes/effects/debris_factory.tscn" ).Instantiate<DebrisFactory>();
@@ -205,7 +188,8 @@ public partial class LevelData : Node2D {
 				case "Windows":
 					process.ProcessorAffinity = System.Environment.ProcessorCount;
 					break;
-				};
+				}
+				;
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

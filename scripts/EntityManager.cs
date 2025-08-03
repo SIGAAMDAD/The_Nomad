@@ -29,13 +29,31 @@ public partial class EntityManager : Node {
 	public override void _Ready() {
 		base._Ready();
 
-		PhysicsProcessCache = new List<Entity>();
-		ProcessCache = new List<Entity>();
-
-		PhysicsProcessList = new HashSet<Entity>();
-		ProcessList = new HashSet<Entity>();
-
 		Instance = this;
+
+		SetProcess( false );
+		SetPhysicsProcess( false );
+	}
+	public static void Init() {
+		LevelData.Instance.ExitLevel += () => {
+			Instance.PhysicsProcessCache.Clear();
+			Instance.PhysicsProcessList.Clear();
+
+			Instance.ProcessCache.Clear();
+			Instance.ProcessList.Clear();
+
+			Instance.SetProcess( false );
+			Instance.SetPhysicsProcess( false );
+		};
+
+		Instance.PhysicsProcessCache = new List<Entity>();
+		Instance.ProcessCache = new List<Entity>();
+
+		Instance.PhysicsProcessList = new HashSet<Entity>();
+		Instance.ProcessList = new HashSet<Entity>();
+
+		Instance.SetProcess( true );
+		Instance.SetPhysicsProcess( true );
 	}
 	public override void _Process( double delta ) {
 		for ( int i = 0; i < ProcessCache.Count; i++ ) {

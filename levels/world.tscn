@@ -1,4 +1,4 @@
-[gd_scene load_steps=189 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=187 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -28,8 +28,6 @@
 [ext_resource type="Texture2D" uid="uid://ctt4plo6h01xg" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://b5deywvyopw0w" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
-[ext_resource type="Script" uid="uid://dmf6isngg0kla" path="res://scripts/mobs/AINodeCache.cs" id="15_qx5q4"]
-[ext_resource type="Script" uid="uid://b5dpy3k5bcf4w" path="res://scripts/mobs/AIPatrolRoute.cs" id="16_i5qqy"]
 [ext_resource type="PackedScene" uid="uid://dil6cvnitkb3b" path="res://scenes/mobs/bandits/bandit.tscn" id="16_uh3ev"]
 [ext_resource type="Texture2D" uid="uid://ci2tj22namfbs" path="res://textures/tilesets/DesertTilemap16x16.png" id="17_8pkr3"]
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="17_ortr0"]
@@ -24606,7 +24604,7 @@ DayCount = 286
 script = ExtResource("44_1r2vu")
 
 [node name="Bandit2" parent="Thinkers" node_paths=PackedStringArray("Faction") instance=ExtResource("16_uh3ev")]
-position = Vector2(-87605.5, 53070.5)
+position = Vector2(-81641, 49566)
 IsPremade = true
 Direction = 1
 Faction = NodePath("../../Factions/RockyBastards")
@@ -25506,9 +25504,8 @@ Destination = NodePath("../../Exterior/DoorDestination")
 position = Vector2(5, -2.5)
 shape = SubResource("RectangleShape2D_q0seo")
 
-[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("NodeCache", "Floor", "Location") instance=ExtResource("8_dx3bq")]
+[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Floor", "Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-1145, 194.5)
-NodeCache = NodePath("../../NodeCache")
 DefaultWeapon = ExtResource("17_ortr0")
 DefaultAmmo = ExtResource("18_dx3bq")
 Floor = NodePath("..")
@@ -25716,19 +25713,6 @@ polygon = PackedVector2Array(2946, 894, 3100.5, 894, 3078.5, 909, 3069.5, 916.5,
 position = Vector2(-16, 105)
 build_mode = 1
 polygon = PackedVector2Array(-550, -428, -703, 132, -627.5, 714, 790, 730, 1410, 417.5, 1755, -479.5, 325.5, -808)
-
-[node name="NodeCache" type="Node2D" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("CoverCache", "PatrolRoutes")]
-script = ExtResource("15_qx5q4")
-CoverCache = []
-PatrolRoutes = []
-
-[node name="PatrolRoute0" type="NavigationLink2D" parent="Biomes/SaltWastes/KiroslaEstate/NodeCache" node_paths=PackedStringArray("Prev", "Next")]
-position = Vector2(-130, 255.5)
-start_position = Vector2(-144, -4.5)
-end_position = Vector2(550, 1.5)
-script = ExtResource("16_i5qqy")
-Prev = NodePath(".")
-Next = NodePath(".")
 
 [node name="MusketSlugs" parent="Biomes/SaltWastes/KiroslaEstate" instance=ExtResource("35_qxuuj")]
 position = Vector2(386, 244.5)
@@ -26681,7 +26665,7 @@ polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299
 [node name="Players" type="Node2D" parent="Network"]
 
 [node name="Player" parent="Network/Players" instance=ExtResource("5_712nc")]
-position = Vector2(-88275.5, 53167)
+position = Vector2(-82307.5, 49631)
 
 [node name="Factions" type="Node" parent="."]
 
@@ -26721,6 +26705,7 @@ Relations = {}
 script = ExtResource("6_i8ckm")
 
 [node name="Tutorials" type="Node2D" parent="."]
+position = Vector2(5960.5, -3526.5)
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-84823, 53331.5)

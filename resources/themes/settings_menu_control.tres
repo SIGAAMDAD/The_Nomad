@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://1xdd6t28bdfl"]
+
+[ext_resource type="Texture2D" uid="uid://cpt4h8soh1kek" path="res://textures/hud/int_splatter.dds" id="1_8seyo"]
+
+[resource]
+texture = ExtResource("1_8seyo")
+texture_margin_right = 25.0

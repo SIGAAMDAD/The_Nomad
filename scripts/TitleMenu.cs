@@ -3,7 +3,7 @@ using Godot;
 public partial class TitleMenu : Control {
 	public enum MenuState {
 		Main,
-		Campaign,
+		SaveSlots,
 		Extras,
 		Settings,
 		Help,
@@ -13,7 +13,7 @@ public partial class TitleMenu : Control {
 
 	private ExtrasMenu ExtrasMenu;
 	private SettingsMenu SettingsMenu;
-	private StoryMenu StoryMenu;
+	private SaveSlotsMenu StoryMenu;
 	//	private DemoMenu DemoMenu;
 	private MainMenu MainMenu;
 	private CreditsMenu CreditsMenu;
@@ -34,7 +34,7 @@ public partial class TitleMenu : Control {
 		int index = 0;
 
 		switch ( State ) {
-		case MenuState.Campaign:
+		case MenuState.SaveSlots:
 			index = StoryMenu.GetIndex();
 			RemoveChild( StoryMenu );
 			StoryMenu.QueueFree();
@@ -61,8 +61,7 @@ public partial class TitleMenu : Control {
 		default:
 			Console.PrintError( "Invalid menu state!" );
 			break;
-		}
-		;
+		};
 
 		AddChild( MainMenu );
 		MoveChild( MainMenu, index );
@@ -75,8 +74,8 @@ public partial class TitleMenu : Control {
 		State = MenuState.Main;
 	}
 
-	private void OnMainMenuStoryMenu() {
-		StoryMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/story_menu.tscn" ).Instantiate<StoryMenu>();
+	private void OnMainMenuSaveSlotsMenu() {
+		StoryMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/save_slots_menu.tscn" ).Instantiate<SaveSlotsMenu>();
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
@@ -86,7 +85,7 @@ public partial class TitleMenu : Control {
 		MoveChild( StoryMenu, index );
 
 		ExitButton.Show();
-		State = MenuState.Campaign;
+		State = MenuState.SaveSlots;
 	}
 	private void OnMainMenuExtrasMenu() {
 		ExtrasMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
@@ -169,10 +168,10 @@ public partial class TitleMenu : Control {
 		MainMenu.SetProcess( true );
 		MainMenu.SetProcessInternal( true );
 		MainMenu.SetProcessUnhandledInput( true );
-		MainMenu.Connect( "StoryMenu", Callable.From( OnMainMenuStoryMenu ) );
-		MainMenu.Connect( "ExtrasMenu", Callable.From( OnMainMenuExtrasMenu ) );
-		MainMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
-		MainMenu.Connect( "CreditsMenu", Callable.From( OnMainMenuCreditsMenu ) );
+		MainMenu.Connect( MainMenu.SignalName.SaveSlotsMenu, Callable.From( OnMainMenuSaveSlotsMenu ) );
+		MainMenu.Connect( MainMenu.SignalName.ExtrasMenu, Callable.From( OnMainMenuExtrasMenu ) );
+		MainMenu.Connect( MainMenu.SignalName.SettingsMenu, Callable.From( OnMainMenuSettingsMenu ) );
+		MainMenu.Connect( MainMenu.SignalName.CreditsMenu, Callable.From( OnMainMenuCreditsMenu ) );
 
 		ExitButton = GetNode<Button>( "ExitButton" );
 		ExitButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );

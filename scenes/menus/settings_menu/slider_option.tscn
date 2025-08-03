@@ -1,0 +1,76 @@
+[gd_scene load_steps=5 format=3 uid="uid://b6dwqm35gxe77"]
+
+[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_lqxw1"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://resources/themes/settings_menu_slider_inactive.tres" id="2_43t3q"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://resources/themes/settings_menu_slider_active.tres" id="2_ntx2d"]
+
+[sub_resource type="GDScript" id="GDScript_lqxw1"]
+resource_name = "settings_slider_option"
+script/source = "class_name SettingsSliderOption extends HBoxContainer
+
+@export var _title: StringName
+@export_range( 0.0, 1000.0 ) var _min: float = 0.0
+@export_range( 0.0, 1000.0 ) var _max: float = 100.0
+
+signal value_changed( value: float )
+
+func get_value() -> float:
+	return get_node( \"Input\" ).value
+
+func set_value( value: float ) -> void:
+	get_node( \"Input\" ).value = value
+
+func _on_value_changed( value: float ) -> void:
+	get_node( \"Input/Value\" ).text = var_to_str( value )
+	emit_signal( \"value_changed\", value )
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	
+	var _hslider: HSlider = get_node( \"Input\" )
+	_hslider.min_value = _min
+	_hslider.max_value = _max
+	_hslider.connect( \"value_changed\", _on_value_changed )
+"
+
+[node name="SliderOption" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.85
+anchor_bottom = 0.083
+offset_right = -504.0
+offset_bottom = 0.159996
+script = SubResource("GDScript_lqxw1")
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_lqxw1")
+horizontal_alignment = 1
+
+[node name="Input" type="HSlider" parent="."]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/grabber_offset = 345
+theme_override_styles/slider = ExtResource("2_43t3q")
+theme_override_styles/grabber_area = ExtResource("2_ntx2d")
+theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
+value = 72.0
+
+[node name="Value" type="Label" parent="Input"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.429
+anchor_top = -0.219
+anchor_right = 0.571
+anchor_bottom = 1.219
+offset_left = 19.38
+offset_top = 0.00400019
+offset_right = -19.38
+offset_bottom = -0.00400162
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

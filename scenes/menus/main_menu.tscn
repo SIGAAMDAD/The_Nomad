@@ -1,7 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://ba1debi5qxy5p"]
+[gd_scene load_steps=12 format=3 uid="uid://ba1debi5qxy5p"]
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
+[ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="2_2o76q"]
 [ext_resource type="Texture2D" uid="uid://b6o7fqufmwq10" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
+[ext_resource type="StyleBox" uid="uid://635m6njp4eyq" path="res://resources/themes/button_normal_ui.tres" id="3_6bivr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bivr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_imvie"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ng0o5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r73w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hnlc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50h1w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_euy4r"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -54,20 +70,55 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="StoryModeButton" type="Button" parent="VBoxContainer"]
+[node name="ContinueGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "STORY_MODE_BUTTON"
-flat = true
+focus_neighbor_top = NodePath("../QuitGameButton")
+focus_neighbor_bottom = NodePath("../NewGameButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_6bivr")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
+text = "CONTINUE_GAME_BUTTON"
+
+[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ContinueGameButton")
+focus_neighbor_bottom = NodePath("../LoadGameButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_imvie")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
+text = "NEW_GAME_BUTTON"
+
+[node name="LoadGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../NewGameButton")
+focus_neighbor_bottom = NodePath("../ExtrasButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ng0o5")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
+text = "LOAD_GAME_BUTTON"
 
 [node name="ExtrasButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../LoadGameButton")
+focus_neighbor_bottom = NodePath("../SettingsButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8r73w")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
 text = "EXTRAS_BUTTON"
-flat = true
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ExtrasButton")
+focus_neighbor_bottom = NodePath("../TalesAroundTheCampfireButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1hnlc")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
 text = "SETTINGS_BUTTON"
-flat = true
 
 [node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
 visible = false
@@ -76,18 +127,30 @@ text = "HELP_BUTTON"
 
 [node name="TalesAroundTheCampfireButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../SettingsButton")
+focus_neighbor_bottom = NodePath("../QuitGameButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50h1w")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
 text = "MODS_BUTTON"
-flat = true
 
 [node name="CreditsButton" type="Button" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
+focus_neighbor_top = NodePath("../TalesAroundTheCampfireButton")
+focus_neighbor_bottom = NodePath("../QuitGameButton")
 text = "CREDITS_BUTTON"
-flat = true
 
 [node name="QuitGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../CreditsButton")
+focus_neighbor_bottom = NodePath("../ContinueGameButton")
+theme_override_styles/focus = ExtResource("2_2o76q")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_euy4r")
+theme_override_styles/pressed = ExtResource("2_2o76q")
+theme_override_styles/normal = ExtResource("3_6bivr")
 text = "QUIT_BUTTON"
-flat = true
 
 [node name="Logo" type="TextureRect" parent="."]
 process_mode = 4
@@ -106,3 +169,20 @@ grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
 texture = ExtResource("3_5muy6")
 metadata/_edit_use_anchors_ = true
+
+[node name="TutorialsPopup" type="ConfirmationDialog" parent="."]
+auto_translate_mode = 1
+title = "Play with tutorials?"
+initial_position = 1
+size = Vector2i(436, 132)
+unresizable = true
+always_on_top = true
+content_scale_mode = 1
+content_scale_aspect = 4
+ok_button_text = "I want tutorials"
+dialog_text = "Would you like to play with tutorials?
+
+You can reset this at any time from the Settings Menu."
+dialog_close_on_escape = false
+dialog_autowrap = true
+cancel_button_text = "Fuck it, WE BALL!"

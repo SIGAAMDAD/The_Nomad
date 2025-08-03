@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3gmdmqeluldc"]
+[gd_scene load_steps=2 format=3 uid="uid://c3gmdmqeluldc"]
 
 [ext_resource type="Script" uid="uid://cbukpoh16e4g7" path="res://scripts/menus/StoryMenu.cs" id="1_y3ttr"]
-[ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="2_3fasx"]
 
 [node name="StoryMenu" type="Control"]
 layout_mode = 3
@@ -46,24 +45,18 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "CONTINUE_GAME_BUTTON"
 flat = true
-script = ExtResource("2_3fasx")
-metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="LoadGameButton" type="Button" parent="MainContainer/OptionsContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "LOAD_GAME_BUTTON"
 flat = true
-script = ExtResource("2_3fasx")
-metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="NewGameButton" type="Button" parent="MainContainer/OptionsContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "NEW_GAME_BUTTON"
 flat = true
-script = ExtResource("2_3fasx")
-metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="SaveSlotsContainer" type="VBoxContainer" parent="MainContainer/OptionsContainer"]
 visible = false

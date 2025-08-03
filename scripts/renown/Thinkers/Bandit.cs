@@ -277,9 +277,6 @@ namespace Renown.Thinkers {
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
-			if ( SettingsData.GetCleanAudio() && ( bark == BarkType.Curse || sequenced == BarkType.Curse ) ) {
-				return;
-			}
 			if ( Health <= 0.0f || LastBark == bark ) {
 				return;
 			}
@@ -421,22 +418,22 @@ namespace Renown.Thinkers {
 					name: "SurviveGoal",
 					weight: 1.0f,
 					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Health", new ComparisonValuePair( 10.0f, ComparisonOperator.GreaterThan ) }
+						{ "Health", new ComparisonValuePair { Value = 10.0f, Operator = ComparisonOperator.GreaterThan } }
 					}
 				),
 				new MountainGoap.ComparativeGoal(
 					name: "IdleGoal",
 					weight: 0.7f,
 					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Fear", new ComparisonValuePair( 10, ComparisonOperator.LessThanOrEquals ) },
-						{ "Awareness", new ComparisonValuePair( MobAwareness.Suspicious, ComparisonOperator.LessThanOrEquals ) }
+						{ "Fear", new ComparisonValuePair { Value = 10, Operator = ComparisonOperator.LessThanOrEquals } },
+						{ "Awareness", new ComparisonValuePair { Value = MobAwareness.Suspicious, Operator = ComparisonOperator.LessThanOrEquals } }
 					}
 				),
 				new MountainGoap.ComparativeGoal(
 					name: "FollowGoal",
 					weight: 0.7f,
 					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "DistanceToTarget", new ComparisonValuePair( 72.0f, ComparisonOperator.LessThan ) }
+						{ "DistanceToTarget", new ComparisonValuePair { Value = 72.0f, Operator = ComparisonOperator.LessThan } }
 					}
 				)
 			};
@@ -729,7 +726,6 @@ namespace Renown.Thinkers {
 
 			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f && sightTarget == null ) {
 				SetSuspicious();
-				CurrentState = State.Investigating;
 				SetNavigationTarget( LastTargetPosition );
 				if ( LoseInterestTimer.IsStopped() ) {
 					LoseInterestTimer.Start();

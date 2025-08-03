@@ -1,0 +1,108 @@
+[gd_scene load_steps=13 format=3 uid="uid://d36xll77kxc8l"]
+
+[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_2n36q"]
+[ext_resource type="FontFile" uid="uid://c56hmhlimhld7" path="res://Spell of Asia.ttf" id="2_lxw3y"]
+
+[sub_resource type="GDScript" id="GDScript_7h574"]
+resource_name = "settings_list_option"
+script/source = "class_name SettingsListOption extends HBoxContainer
+
+@export var _title: StringName
+@export var _no_translate: bool = false
+@export var _items: Array[ StringName ]
+
+var _value: int = 0
+
+signal value_changed( value: int )
+
+func get_value() -> int:
+	return _value
+
+func set_value( value: int ) -> void:
+	_value = value
+	get_node( \"Value\" ).text = TranslationServer.translate( _items[ _value ] ) if !_no_translate else _items[ _value ]
+	emit_signal( \"value_changed\", _value )
+
+func _on_left_icon_pressed() -> void:
+	if _value == 0:
+		set_value( _items.size() - 1 )
+	else:
+		set_value( _value - 1 )
+	UiAudioManager.OnButtonPressed()
+
+func _on_right_icon_pressed() -> void:
+	if _value == _items.size() - 1:
+		set_value( 0 )
+	else:
+		set_value( _value + 1 )
+	UiAudioManager.OnButtonPressed()
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lxw3y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7h574"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_leexh"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pgw2q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2n36q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_di8p4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ghq0c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k52ao"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7io4o"]
+
+[node name="ListOption" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.856
+anchor_bottom = 0.083
+offset_right = 0.159973
+offset_bottom = 0.159996
+script = SubResource("GDScript_7h574")
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_2n36q")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="."]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("2_lxw3y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="."]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="."]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("2_lxw3y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[connection signal="pressed" from="LeftIcon" to="." method="_on_left_icon_pressed"]
+[connection signal="pressed" from="RightIcon" to="." method="_on_right_icon_pressed"]

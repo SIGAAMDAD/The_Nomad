@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Renown.Thinkers;
 
 namespace Renown.World {
 	public partial class WorldArea : Area2D {

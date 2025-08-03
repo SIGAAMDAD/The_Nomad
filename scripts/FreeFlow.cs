@@ -116,10 +116,12 @@ public partial class FreeFlow : CanvasLayer {
 		LevelData.Instance.ThisPlayer.Damaged += ( source, target, amount ) => JohnWickCounter = 0;
 
 		SlowmoTimer = new Timer();
+		SlowmoTimer.Name = "SlowmoTimer";
 		SlowmoTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
 			Engine.TimeScale = 1.0f;
 			AudioServer.PlaybackSpeedScale = 1.0f;
 		} ) );
+		AddChild( SlowmoTimer );
 
 		BerserkOverlay = GetNode<TextureRect>( "BerserkModeOverlay" );
 

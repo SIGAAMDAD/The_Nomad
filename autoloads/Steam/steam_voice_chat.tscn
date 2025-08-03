@@ -35,7 +35,6 @@ layout_mode = 2
 text = "jjkjljkllkljlk"
 
 [node name="Input" type="AudioStreamPlayer" parent="."]
-bus = &"Microphone"
 
 [node name="Output" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamGenerator_c5fhs")

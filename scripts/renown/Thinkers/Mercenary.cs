@@ -273,9 +273,6 @@ namespace Renown.Thinkers {
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
-			if ( SettingsData.GetCleanAudio() && ( bark == BarkType.Curse || sequenced == BarkType.Curse ) ) {
-				return;
-			}
 			if ( Health <= 0.0f || LastBark == bark ) {
 				return;
 			}

@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://btllcuh612tiu"]
+
+[ext_resource type="Script" uid="uid://ccudlw3fp5kgp" path="res://scripts/menus/SaveSlotsMenu.cs" id="1_jccs2"]
+
+[node name="SaveSlotsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jccs2")
+
+[node name="VScrollBar" type="VScrollBar" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="SaveSlotsContainer" type="VBoxContainer" parent="VScrollBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.125
+anchor_right = 80.0
+anchor_bottom = 54.625
+offset_bottom = -3.05176e-05
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="DeleteSaveConfirmation" type="ConfirmationDialog" parent="."]
+auto_translate_mode = 1
+title = "Delete Save?"
+initial_position = 1
+size = Vector2i(292, 210)
+dialog_text = "Are you sure you want to delete this save? You CANNOT undo this action.
+
+This will also remove your data from SteamCloud (if enabled)."
+dialog_autowrap = true
+
+[node name="DeleteSaveButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.79375
+anchor_top = 0.916583
+anchor_right = 0.99375
+anchor_bottom = 0.989583
+offset_top = 0.039978
+grow_horizontal = 0
+grow_vertical = 0
+text = "DELETE"
+metadata/_edit_use_anchors_ = true

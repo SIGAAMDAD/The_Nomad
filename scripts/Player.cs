@@ -1040,6 +1040,8 @@ public partial class Player : Entity {
 		IdleAnimation.Hide();
 		IdleAnimation.Stop();
 
+		AimLine.Show();
+
 		LegAnimation.Show();
 		TorsoAnimation.Show();
 		ArmRight.Animations.Show();
@@ -1291,6 +1293,8 @@ public partial class Player : Entity {
 		IdleAnimation.Show();
 		IdleAnimation.Play( "checkpoint_idle" );
 
+		AimLine.Hide();
+
 		IdleAnimation.FlipH = GlobalPosition.DirectionTo( LastCheckpoint.GlobalPosition ).X < 0.0f;
 
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnCheckpointRestBegin ) );
@@ -1373,6 +1377,8 @@ public partial class Player : Entity {
 		LegAnimation.Hide();
 		IdleAnimation.Show();
 		IdleAnimation.Play( "start" );
+
+		AimLine.Hide();
 
 		TorsoAnimationState = PlayerAnimationState.TrueIdleStart;
 		LegAnimationState = PlayerAnimationState.TrueIdleStart;
@@ -2371,7 +2377,7 @@ public partial class Player : Entity {
 		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
 	}
 
-	public override void _PhysicsProcess( double delta ) {
+	public override void PhysicsUpdate( double delta ) {
 		base._PhysicsProcess( delta );
 
 		GodotObject collision = AimRayCast.GetCollider();
@@ -2506,7 +2512,7 @@ public partial class Player : Entity {
 		}
 	}
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
-	public override void _Process( double delta ) {
+	public override void Update( double delta ) {
 		base._Process( delta );
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
