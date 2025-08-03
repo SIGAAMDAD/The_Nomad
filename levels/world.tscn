@@ -24684,6 +24684,7 @@ position = Vector2(-28346.5, -1711.5)
 [node name="Biomes" type="Node2D" parent="."]
 
 [node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
+process_mode = 4
 position = Vector2(-82240, 49472)
 collision_layer = 12
 collision_mask = 12
@@ -25792,6 +25793,7 @@ polygon = PackedVector2Array(-2062, -10146, 34265, -5809, 32345, 3343, 10713, 61
 disabled = true
 
 [node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
+process_mode = 4
 position = Vector2(-30975, 27410)
 collision_layer = 19
 collision_mask = 18

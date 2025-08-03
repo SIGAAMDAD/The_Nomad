@@ -14,71 +14,73 @@ namespace Renown.World {
 		
 		Count
 	};
-	
+
 	public partial class Biome : WorldArea {
 		/// <summary>
 		/// The current weather of the biome
 		/// </summary>
 		[Export]
 		private WeatherType CurrentWeather = WeatherType.Clear;
-		
+
 		/// <summary>
 		/// Chance of biome clear & sunny weather
 		/// </summary>
 		[Export]
 		private float WeatherChanceClear = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome hot & humid weather
 		/// </summary>
 		[Export]
 		private float WeatherChanceHumid = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome snow
 		/// </summary>
 		[Export]
 		private float WeatherChanceSnowing = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome british weather
 		/// </summary>
 		[Export]
 		private float WeatherChanceBritish = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome rain
 		/// </summary>
 		[Export]
 		private float WeatherChanceRaining = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome thunderstorm
 		/// </summary>
 		[Export]
 		private float WeatherChanceThunderStorm = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome wind
 		/// </summary>
 		[Export]
 		private float WeatherChanceWindy = 0.0f;
-		
+
 		/// <summary>
 		/// Chance of biome heatstroke weather
 		/// </summary>
 		[Export]
 		private float WeatherChanceBlazing = 0.0f;
-		
+
 		/// <summary>
 		/// How often weather changes are calculated in this biome
 		/// </summmary>
 		[Export]
 		private float WeatherChangeInterval = 0.0f;
-		
+
 		private Timer WeatherChangeTimer;
 		private Dictionary<WeatherType, float> WeatherChances;
-		
+
+		private float CheckDelta = 0.0f;
+
 		[Signal]
 		public delegate void AgentEnteredAreaEventHandler( Entity agent );
 		[Signal]
@@ -87,7 +89,7 @@ namespace Renown.World {
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
-			
+
 			// TODO: have the current season have an impact on the weather
 			for ( int i = 0; i < WeatherChances.Count; i++ ) {
 				float other = WeatherChances[ weather ];
@@ -98,7 +100,7 @@ namespace Renown.World {
 			}
 			CurrentWeather = weather;
 		}
-		
+
 		public override void _Ready() {
 			WeatherChances = new Dictionary<WeatherType, float>{
 				{ WeatherType.Clear, WeatherChanceClear },
@@ -110,12 +112,17 @@ namespace Renown.World {
 				{ WeatherType.Windy, WeatherChanceWindy },
 				{ WeatherType.Blazing, WeatherChanceBlazing },
 			};
-			
+
 			WeatherChangeTimer = new Timer();
 			WeatherChangeTimer.Name = "WeatherChangeTimer";
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );
+
+			Hide();
+		}
+		public override void _Process( double delta ) {
+			base._Process( delta );
 		}
 	};
 };

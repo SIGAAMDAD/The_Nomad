@@ -13,6 +13,7 @@
     <PackageReference Include="ImGui.NET" Version="1.91.6.1" />
     <PackageReference Include="ImGui.NET.Docking" Version="1.75.0" />
     <PackageReference Include="lz4net" Version="1.0.3.93" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MountainGoap" Version="1.1.1" />

@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="3_08gdp"]
 [ext_resource type="Resource" uid="uid://ct8fhvbwjfr3i" path="res://resources/binds/actions/keyboard/move_north.tres" id="3_l0eij"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="3_s4m6w"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="3_ybwfc"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://i86jw4vdkcoh" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
 [ext_resource type="Resource" uid="uid://cevetawunpiw4" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
@@ -37,6 +36,8 @@ subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
 subpixel_positioning = 0
+
+[sub_resource type="SystemFont" id="SystemFont_5fu2g"]
 
 [sub_resource type="Resource" id="Resource_qxrc6"]
 script = ExtResource("7_2apr8")
@@ -489,19 +490,19 @@ _action = ExtResource("11_l0eij")
 
 [node name="SaveSettingsButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = -1
+anchor_left = 0.652
+anchor_top = 0.919
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -223.0
-offset_top = -32.0
+anchor_bottom = 0.983
+offset_left = -0.279999
+offset_top = 6.87997
 offset_right = -7.0
-offset_bottom = -8.0
+offset_bottom = 0.159973
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
-theme_override_fonts/font = ExtResource("3_ybwfc")
+theme_override_fonts/font = SubResource("SystemFont_5fu2g")
 text = "SAVE_SETTINGS"
 metadata/_edit_use_anchors_ = true
 

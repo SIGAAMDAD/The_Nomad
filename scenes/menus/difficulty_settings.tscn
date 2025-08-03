@@ -1,0 +1,74 @@
+[gd_scene load_steps=6 format=3 uid="uid://s3pq2337blq4"]
+
+[ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="1_mp4t3"]
+[ext_resource type="StyleBox" uid="uid://4bi8savx2lpi" path="res://resources/themes/scroll_bar_background.tres" id="2_ebpl6"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="2_vjkul"]
+[ext_resource type="StyleBox" uid="uid://cu160bt0bepf1" path="res://resources/themes/scroll_bar_grabber.tres" id="3_ebpl6"]
+
+[sub_resource type="Theme" id="Theme_ebpl6"]
+TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
+
+[node name="DifficultySettings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_mp4t3")
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_ebpl6")
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 60
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+theme_override_styles/scroll = ExtResource("2_ebpl6")
+theme_override_styles/grabber = ExtResource("3_ebpl6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VScrollBar"]
+layout_mode = 2
+anchor_left = 1.4
+anchor_top = 0.037
+anchor_right = 112.0
+anchor_bottom = 0.109
+offset_top = 0.16
+offset_right = -6.10352e-05
+offset_bottom = 0.119999
+metadata/_edit_use_anchors_ = true
+
+[node name="NPCPermaDeath" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("2_vjkul")]
+layout_mode = 2
+_title = &"NPC_PERMA_DEATH"
+metadata/description = &"NPC_PERMA_DEATH_DESCRIPTION"
+
+[node name="FirelinkLimit" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("2_vjkul")]
+layout_mode = 2
+metadata/description = &"FIRELINK_LIMIT_DESCRIPTION"

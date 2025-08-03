@@ -258,6 +258,8 @@ public partial class World : LevelData {
 	public override void _Ready() {
 		base._Ready();
 
+		AddChild( new BiomeManager() );
+
 		SceneLoadThread = new Thread( () => {
 			long[] initTasks = [
 				WorkerThreadPool.AddTask( Callable.From( () => { PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" ); } ) ),
