@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Renown.World {
 	public partial class BiomeManager : Node {
-		private static readonly float ActivateDistance = 2048.0f;
+		private static readonly float ActivateDistance = 40000.0f;
 		private static readonly float ProcessDeltaInterval = 0.30f;
 
 		private float CheckDelta = 0.0f;
@@ -34,10 +34,8 @@ namespace Renown.World {
 				Godot.Vector2 position = LevelData.Instance.ThisPlayer.GlobalPosition;
 				System.Threading.Tasks.Parallel.For( 0, AreaCache.Length, ( index ) => {
 					if ( position.DistanceTo( AreaCache[ index ].Position ) < ActivateDistance ) {
-						AreaCache[ index ].Area.SetDeferred( WorldArea.PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
 						AreaCache[ index ].Area.SetDeferred( WorldArea.PropertyName.Visible, true );
 					} else {
-						AreaCache[ index ].Area.SetDeferred( WorldArea.PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 						AreaCache[ index ].Area.SetDeferred( WorldArea.PropertyName.Visible, false );
 					}
 				} );

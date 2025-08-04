@@ -46,8 +46,8 @@ run/icon="res://desertbkgd_icon.png"
 [audio]
 
 general/default_playback_type.web=0
+general/text_to_speech=true
 driver/driver="Alsa"
-driver/enable_input=true
 
 [autoload]
 
@@ -217,6 +217,7 @@ emote={
 
 locale/translations=PackedStringArray("res://locale/translations-en.en.translation", "res://locale/translations-es.es.translation")
 locale/translations_pot_files=PackedStringArray("res://resources/dialogue/dialogue.dialogue", "res://resources/dialogue/asturion.dialogue", "res://resources/dialogue/merc_master.dialogue", "res://resources/dialogue/kirosla.dialogue", "res://resources/quests/assassination_contract.tres", "res://resources/quests/kirosla_contract.tres", "res://resources/challenge_maps/objectives/challenge0.tres", "res://resources/challenge_maps/objectives/new_resource.tres", "res://resources/dialogue/player.dialogue", "res://resources/dialogue/mercenary.dialogue", "res://resources/dialogue/civilian.dialogue", "res://resources/quests/war_of_the_wastes/from_eagles_peak.tres", "res://resources/dialogue/teacher_swords.dialogue", "res://resources/quests/war_of_the_wastes/humanity.tres", "res://resources/quests/tales_from_a_lost_land/no_rest_for_the_weary.tres", "res://resources/dialogue/thinker.dialogue", "res://resources/quests/tales_from_a_lost_land/steel_stocks.tres", "res://resources/dialogue/tutorial_bandit1_dialogue.dialogue", "res://resources/dialogue/tutorial_bandit2_dialogue.dialogue")
+rendering/text_driver="ICU / HarfBuzz / Graphite (Built-in)"
 
 [layer_names]
 
@@ -263,11 +264,13 @@ textures/canvas_textures/default_texture_filter=0
 gl_compatibility/nvidia_disable_threaded_optimization=false
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
+textures/vram_compression/cache_gpu_compressor=false
 textures/lossless_compression/force_png=true
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
-gl_compatibility/item_buffer_size=1024
 reflections/sky_reflections/fast_filter_high_quality=true
+shading/overrides/force_vertex_shading=true
+shading/overrides/force_lambert_over_burley=true
 driver/depth_prepass/enable=false
 textures/default_filters/anisotropic_filtering_level=0
 camera/depth_of_field/depth_of_field_bokeh_shape=0

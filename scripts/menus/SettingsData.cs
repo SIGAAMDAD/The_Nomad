@@ -17,8 +17,9 @@ public partial class SettingsData : Control {
 	private static ShadowQuality ShadowQuality;
 	private static ShadowFilterQuality ShadowFilterQuality;
 	private static ParticleQuality ParticleQuality;
-	private static bool VSyncMode;
+	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
+	private static LightingQuality LightingQuality;
 	private static int MaxFps;
 	private static int DRSTargetFrames;
 	private static bool BloomEnabled;
@@ -35,6 +36,8 @@ public partial class SettingsData : Control {
 	private static bool AutoAimEnabled;
 	private static bool DyslexiaMode;
 	private static float UIScale;
+	private static bool TextToSpeech;
+	private static int TtsVoiceIndex;
 
 	//
 	// audio options
@@ -110,6 +113,10 @@ public partial class SettingsData : Control {
 		Engine.MaxFps = MaxFps;
 	}
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static LightingQuality GetLightingQuality() => LightingQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetLightingQuality( LightingQuality quality ) => LightingQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static ShadowQuality GetShadowQuality() => ShadowQuality;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetShadowQuality( ShadowQuality quality ) => ShadowQuality = quality;
@@ -126,9 +133,9 @@ public partial class SettingsData : Control {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetVSync() => VSyncMode;
+	public static VSyncMode GetVSync() => VSyncMode;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetVSync( bool vsync ) => VSyncMode = vsync;
+	public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -205,6 +212,14 @@ public partial class SettingsData : Control {
 	public static float GetUIScale() => UIScale;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetUIScale( float nScale ) => UIScale = nScale;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static bool GetTextToSpeech() => TextToSpeech;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetTextToSpeech( bool bTextToSpeech ) => TextToSpeech = bTextToSpeech;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static int GetTtsVoiceIndex() => TtsVoiceIndex;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetTtsVoiceIndex( int nVoiceIndex ) => TtsVoiceIndex = nVoiceIndex;
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
@@ -230,12 +245,6 @@ public partial class SettingsData : Control {
 		GetWindow().SetImePosition( centerScreen - windowSize / 2 );
 	}
 	public static void ApplyVideoSettings() {
-		if ( VSyncMode ) {
-			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
-		} else {
-			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Disabled );
-		}
-		/*
 		switch ( VSyncMode ) {
 		case VSyncMode.On:
 			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
@@ -266,7 +275,6 @@ public partial class SettingsData : Control {
 			);
 			break;
 		};
-		*/
 
 		//		switch ( AspectRatio ) {
 		//		case AspectRatio.Aspect_Automatic:
@@ -361,7 +369,28 @@ public partial class SettingsData : Control {
 			break;
 		};
 
+		switch ( LightingQuality ) {
+		case LightingQuality.VeryLow:
+			ProjectSettings.SetSetting( "rendering/shading/force_lambert_over_burley", true );
+			break;
+		case LightingQuality.Low:
+			ProjectSettings.SetSetting( "rendering/shading/force_lambert_over_burley", true );
+			break;
+		case LightingQuality.High:
+			ProjectSettings.SetSetting( "rendering/shading/force_lambert_over_burley", false );
+			break;
+		default:
+			Console.PrintError( string.Format( "SettingsData.ApplyVideoSettings: invalid LightingQuality ({0}) - setting to default", LightingQuality ) );
+
+			ProjectSettings.SetSetting( "rendering/shading/force_lambert_over_burley", true );
+			LightingQuality = LightingQuality.Low;
+			break;
+		};
+
 		switch ( ShadowQuality ) {
+		case ShadowQuality.Off:
+			RenderingServer.CanvasSetShadowTextureSize( 0 );
+			break;
 		case ShadowQuality.Low:
 			ProjectSettings.SetSetting( "rendering/lights_and_shadows/tighter_shadow_caster_culling", true );
 			RenderingServer.CanvasSetShadowTextureSize( 2048 );
@@ -486,8 +515,9 @@ public partial class SettingsData : Control {
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
 		ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
 		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
+		LightingQuality = (LightingQuality)Convert.ToUInt32( config[ "Video:LightingQuality" ] );
 		AntiAliasing = (AntiAliasing)Convert.ToUInt32( config[ "Video:AntiAliasing" ] );
-		VSyncMode = Convert.ToBoolean( config[ "Video:VSync" ].ToInt() );
+		VSyncMode = (VSyncMode)Convert.ToInt32( config[ "Video:VSync" ] );
 		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ].ToInt() );
 		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ].ToInt() );
 		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ].ToInt() );
@@ -503,8 +533,9 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "ParticleQuality={0}", (int)ParticleQuality ) );
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
+		writer.WriteLine( string.Format( "LightingQuality={0}", (int)LightingQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
-		writer.WriteLine( string.Format( "VSync={0}", Convert.ToInt32( VSyncMode ) ) );
+		writer.WriteLine( string.Format( "VSync={0}", (int)VSyncMode ) );
 		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToInt32( BloomEnabled ) ) );
 		writer.WriteLine( string.Format( "ShowFPS={0}", Convert.ToInt32( ShowFPS ) ) );
 		writer.WriteLine( string.Format( "ShowBlood={0}", Convert.ToInt32( ShowBlood ) ) );
@@ -518,6 +549,8 @@ public partial class SettingsData : Control {
 		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ].ToInt() );
 		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ].ToInt() );
 		EnableTutorials = Convert.ToBoolean( config[ "Accessibility:TutorialsEnabled" ].ToInt() );
+		TextToSpeech = Convert.ToBoolean( config[ "Accessibility:TextToSpeech" ].ToInt() );
+		TtsVoiceIndex = Convert.ToInt32( config[ "Accessibility:TtsVoiceIndex" ] );
 	}
 	private static void SaveAccessibilitySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Accessibility]" );
@@ -528,6 +561,8 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "DyslexiaMode={0}", Convert.ToInt32( DyslexiaMode ) ) );
 		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", Convert.ToInt32( QuicktimeAutocomplete ) ) );
 		writer.WriteLine( string.Format( "TutorialsEnabled={0}", Convert.ToInt32( EnableTutorials ) ) );
+		writer.WriteLine( string.Format( "TextToSpeech={0}", Convert.ToInt32( TextToSpeech ) ) );
+		writer.WriteLine( string.Format( "TtsVoiceIndex={0}", TtsVoiceIndex ) );
 		writer.WriteLine();
 	}
 	private static void LoadGameplaySettings( IDictionary<string, string> config ) {
@@ -567,6 +602,7 @@ public partial class SettingsData : Control {
 		ShadowQuality = Default.ShadowQuality;
 		ShadowFilterQuality = Default.ShadowFilterQuality;
 		ParticleQuality = Default.ParticleQuality;
+		LightingQuality = Default.LightingQuality;
 		BloomEnabled = Default.BloomEnabled;
 		SetShowFPS( Default.ShowFps );
 		ShowBlood = Default.ShowBlood;
@@ -579,6 +615,8 @@ public partial class SettingsData : Control {
 		DyslexiaMode = Default.DyslexiaMode;
 		EnableTutorials = Default.EnableTutorials;
 		ExpertUI = Default.ExpertUI;
+		TextToSpeech = Default.TextToSpeech;
+		TtsVoiceIndex = Default.TtsVoiceIndex;
 
 		EffectsOn = Default.SoundEffectsOn;
 		SetEffectsVolume( Default.SoundEffectsVolume );

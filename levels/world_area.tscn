@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dhgg6opghjte0"]
-
-[sub_resource type="Resource" id="Resource_rwswt"]
-metadata/__load_path__ = "res://scripts/WorldArea.cs"
-
-[node name="WorldArea" type="Area2D"]
-script = SubResource("Resource_rwswt")

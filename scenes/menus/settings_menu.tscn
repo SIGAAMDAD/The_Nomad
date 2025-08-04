@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=30 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://scenes/menus/settings_menu/list_option.tscn" id="2_5fu2g"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="3_s4m6w"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
 [ext_resource type="Resource" uid="uid://i86jw4vdkcoh" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
+[ext_resource type="PackedScene" uid="uid://b1qlrdwruaadh" path="res://scenes/menus/settings_menu/advanced_settings_button.tscn" id="5_5fu2g"]
 [ext_resource type="Resource" uid="uid://cevetawunpiw4" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
 [ext_resource type="Script" uid="uid://db27ccgomq455" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
@@ -76,10 +77,11 @@ theme_override_fonts/font = SubResource("SystemFont_rrg86")
 theme_override_font_sizes/font_size = 14
 theme_override_styles/panel = SubResource("StyleBoxTexture_afkw7")
 tab_alignment = 1
-current_tab = 0
+current_tab = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Video" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = SubResource("SystemFont_s4m6w")
@@ -98,16 +100,13 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VSyncButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="VSyncList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShowBloodButton")
-focus_neighbor_bottom = NodePath("../ResolutionList")
-focus_mode = 2
 _title = &"VSYNC"
+_items = Array[StringName]([&"VSYNC_OFF", &"VSYNC_ADAPTIVE", &"VSYNC_ON", &"VSYNC_TRIPLE_BUFFERED"])
 
 [node name="ResolutionList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../VSyncButton")
 focus_neighbor_bottom = NodePath("../WindowModeList")
 focus_mode = 2
 _title = &"RESOLUTION"
@@ -123,6 +122,14 @@ _title = &"WINDOW_MODE"
 _no_translate = true
 _items = Array[StringName]([&"WINDOWED", &"BORDLERSS WINDOWED", &"FULLSCREEN", &"BORDERLESS FULLSCREEN", &"EXCLUSIVE FULLSCREEN"])
 
+[node name="AntiAliasingList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../MaxFpsList")
+focus_mode = 2
+_title = &"ANTI_ALIASING"
+_no_translate = true
+_items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
+
 [node name="MaxFpsList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../WindowModeList")
@@ -132,36 +139,8 @@ _title = &"MAX_FPS"
 _no_translate = true
 _items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
 
-[node name="AntiAliasingList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../MaxFpsList")
-focus_neighbor_bottom = NodePath("../ShadowQualityList")
-focus_mode = 2
-_title = &"ANTI_ALIASING"
-_no_translate = true
-_items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
-
-[node name="ShadowQualityList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../AntiAliasingList")
-focus_neighbor_bottom = NodePath("../ShadowFilterQualityList")
-focus_mode = 2
-_title = &"SHADOW_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"LOW", &"MEDIUM", &"HIGH", &"ULTRA"])
-
-[node name="ShadowFilterQualityList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowQualityList")
-focus_neighbor_bottom = NodePath("../ShowFPSButton")
-focus_mode = 2
-_title = &"SHADOW_FILTER_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"OFF", &"LOW", &"HIGH"])
-
 [node name="ShowFPSButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowFilterQualityList")
 focus_neighbor_bottom = NodePath("../ShowBloodButton")
 focus_mode = 2
 _title = &"SHOW_FPS"
@@ -169,8 +148,57 @@ _title = &"SHOW_FPS"
 [node name="ShowBloodButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShowFPSButton")
-focus_neighbor_bottom = NodePath("../VSyncButton")
 _title = &"SHOW_BLOOD"
+
+[node name="AdvancedSettingsButton" parent="TabContainer/Video/VBoxContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("5_5fu2g")]
+layout_mode = 2
+_toggle_container = NodePath("../../AdvancedSettings")
+
+[node name="AdvancedSettings" type="VBoxContainer" parent="TabContainer/Video"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 97.0
+offset_top = 124.0
+offset_right = -103.0
+offset_bottom = -123.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ParticleQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_mode = 2
+_title = &"PARTICLE_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"Low", &"High"])
+
+[node name="LightingQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_mode = 2
+_title = &"LIGHTING_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"Very Low", &"Low", &"High"])
+
+[node name="ShadowFilterQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_mode = 2
+_title = &"SHADOW_FILTER_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"Off", &"Low", &"Hight"])
+
+[node name="ShadowQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../ShadowFilterQualityList")
+focus_mode = 2
+_title = &"SHADOW_QUALITY"
+_no_translate = true
+_items = Array[StringName]([&"Low", &"Medium", &"High", &"Ultra"])
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -220,7 +248,6 @@ focus_mode = 2
 _title = &"MUSIC_VOLUME"
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -263,6 +290,10 @@ focus_neighbor_top = NodePath("../AutoAimButton")
 focus_previous = NodePath("../HapticFeedbackButton")
 focus_mode = 2
 _title = &"DYSLEXIA_MODE"
+
+[node name="TextToSpeechButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
+layout_mode = 2
+_title = &"TEXT_TO_SPEECH"
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 visible = false

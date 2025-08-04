@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Threading;
 using DialogueManagerRuntime;
 using Godot;
+using Microsoft.Diagnostics.Tracing.Parsers.FrameworkEventSource;
 
 public class ResourceCache {
 	#region Mob Sound Effects
@@ -314,7 +315,7 @@ public class ResourceCache {
 		SceneLoadThread?.Start();
 
 		long[] WorkerThreads = [
-			WorkerThreadPool.AddTask( Callable.From( () => { world.CallDeferred( LevelData.MethodName.ApplyShadowQuality ); } ) ),
+			WorkerThreadPool.AddTask( Callable.From( () => world.CallDeferred( LevelData.MethodName.AddChild, new LightManager() ) ) ),
 			WorkerThreadPool.AddTask( Callable.From( () => {
 				TargetSpotted = [
 					ResourceLoader.Load<AudioStream>( "res://sounds/barks/21198.mp3" ),

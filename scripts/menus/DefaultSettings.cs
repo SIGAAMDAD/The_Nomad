@@ -35,6 +35,7 @@ public enum AntiAliasing : uint {
 };
 
 public enum ShadowQuality : uint {
+	Off,
 	Low,
 	Medium,
 	High,
@@ -43,6 +44,12 @@ public enum ShadowQuality : uint {
 
 public enum ShadowFilterQuality : uint {
 	Off,
+	Low,
+	High
+};
+
+public enum LightingQuality : uint {
+	VeryLow,
 	Low,
 	High
 };
@@ -78,7 +85,7 @@ public partial class DefaultSettings : Resource {
 	[Export] public AspectRatio AspectRatio { get; private set; } = AspectRatio.Aspect_Automatic;
 	[Export] public DRSPreset DRSPreset { get; private set; } = DRSPreset.Balanced;
 	[Export] public int DRSTargetFrames { get; private set; } = 60;
-	[Export] public bool Vsync { get; private set; } = false;
+	[Export] public VSyncMode Vsync { get; private set; } = VSyncMode.Off;
 	[Export] public AntiAliasing AntiAliasing { get; private set; } = AntiAliasing.None;
 	[Export] public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.Medium;
 	[Export] public ShadowFilterQuality ShadowFilterQuality { get; private set; } = ShadowFilterQuality.Low;
@@ -87,6 +94,8 @@ public partial class DefaultSettings : Resource {
 	[Export] public bool BloomEnabled { get; private set; } = true;
 	[Export] public bool ShowFps { get; private set; } = false;
 	[Export] public bool ShowBlood { get; private set; } = true;
+	[Export] public bool ForceVertexShading { get; private set; } = true;
+	[Export] public LightingQuality LightingQuality { get; private set; } = LightingQuality.Low;
 
 	//
 	// audio
@@ -106,6 +115,8 @@ public partial class DefaultSettings : Resource {
 	[Export] public int ColorblindMode { get; private set; } = 0;
 	[Export] public bool DyslexiaMode { get; private set; } = false;
 	[Export] public bool EnableTutorials { get; private set; } = false;
+	[Export] public bool TextToSpeech { get; private set; } = false;
+	[Export] public int TtsVoiceIndex { get; private set; } = 0;
 	[Export] public float UIScale { get; private set; } = 1.0f;
 
 	//

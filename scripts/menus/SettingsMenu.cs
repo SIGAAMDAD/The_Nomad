@@ -1,5 +1,6 @@
 using Godot;
 using Steamworks;
+using System.Net.NetworkInformation;
 
 public partial class SettingsMenu : Control {
 	private struct SettingsConfig {
@@ -13,7 +14,8 @@ public partial class SettingsMenu : Control {
 		public ShadowQuality ShadowQuality;
 		public ShadowFilterQuality ShadowFilterQuality;
 		public ParticleQuality ParticleQuality;
-		public bool VSyncMode;
+		public LightingQuality LightingQuality;
+		public VSyncMode VSyncMode;
 		public AntiAliasing AntiAliasing;
 		public int MaxFps;
 		public int DRSTargetFrames;
@@ -31,6 +33,7 @@ public partial class SettingsMenu : Control {
 		public bool AutoAimEnabled;
 		public bool DyslexiaMode;
 		public float UIScale;
+		public bool TextToSpeech;
 
 		//
 		// audio options
@@ -61,6 +64,7 @@ public partial class SettingsMenu : Control {
 			Resolution = settings.Resolution;
 			ShadowQuality = settings.ShadowQuality;
 			ShadowFilterQuality = settings.ShadowFilterQuality;
+			LightingQuality = settings.LightingQuality;
 			ParticleQuality = settings.ParticleQuality;
 			VSyncMode = settings.Vsync;
 			AntiAliasing = settings.AntiAliasing;
@@ -77,6 +81,7 @@ public partial class SettingsMenu : Control {
 			DyslexiaMode = settings.DyslexiaMode;
 			EnableTutorials = settings.EnableTutorials;
 			ExpertUI = settings.ExpertUI;
+			TextToSpeech = settings.TextToSpeech;
 
 			EffectsOn = settings.SoundEffectsOn;
 			EffectsVolume = settings.SoundEffectsVolume;
@@ -103,6 +108,7 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer ParticleQuality;
 	private HBoxContainer ShadowQuality;
 	private HBoxContainer ShadowFilterQuality;
+	private HBoxContainer LightingQuality;
 	private HBoxContainer MaxFps;
 	private HBoxContainer ShowFPS;
 	private HBoxContainer ShowBlood;
@@ -116,6 +122,9 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer HapticStrength;
 	private HBoxContainer AutoAimEnabled;
 	private HBoxContainer DyslexiaMode;
+	private HBoxContainer GhostlyGuide;
+	private HBoxContainer DisableFlashes;
+	private HBoxContainer TextToSpeech;
 
 	private HBoxContainer ExpertUI;
 	private HBoxContainer EnableTutorials;
@@ -143,9 +152,10 @@ public partial class SettingsMenu : Control {
 	private void OnSaveSettingsButtonPressed() {
 		UIAudioManager.OnButtonPressed();
 
-		SettingsData.SetVSync( VSync.Call( "get_value" ).AsBool() );
+		SettingsData.SetVSync( (VSyncMode)VSync.Call( "get_value" ).AsInt32() );
 		SettingsData.SetShadowQuality( (ShadowQuality)ShadowQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetShadowFilterQuality( (ShadowFilterQuality)ShadowFilterQuality.Call( "get_value" ).AsInt32() );
+		SettingsData.SetLightingQuality( (LightingQuality)LightingQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetResolution( (Resolution)ResolutionOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Call( "get_value" ).AsInt32() );
@@ -186,8 +196,8 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetHapticStrength( HapticStrength.Call( "get_value" ).AsSingle() );
 		SettingsData.SetAutoAimEnabled( AutoAimEnabled.Call( "get_value" ).AsBool() );
 		SettingsData.SetDyslexiaMode( DyslexiaMode.Call( "get_value" ).AsBool() );
-
 		SettingsData.SetTutorialsEnabled( EnableTutorials.Call( "get_value" ).AsBool() );
+		SettingsData.SetTextToSpeech( TextToSpeech.Call( "get_value" ).AsBool() );
 		SettingsData.SetExpertUI( ExpertUI.Call( "get_value" ).AsBool() );
 
 		SettingsData.SetNetworkingEnabled( NetworkingEnabled.Call( "get_value" ).AsBool() );
@@ -211,7 +221,7 @@ public partial class SettingsMenu : Control {
 
 		SetProcess( true );
 
-		VSync = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/VSyncButton" );
+		VSync = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/VSyncList" );
 		VSync.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		WindowModeOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/WindowModeList" );
@@ -220,7 +230,7 @@ public partial class SettingsMenu : Control {
 		ResolutionOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ResolutionList" );
 		ResolutionOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
-		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ParticleQualityList" );
+		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ParticleQualityList" );
 		ParticleQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MaxFps = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/MaxFpsList" );
@@ -229,10 +239,10 @@ public partial class SettingsMenu : Control {
 		AntiAliasingOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/AntiAliasingList" );
 		AntiAliasingOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
-		ShadowQuality = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ShadowQualityList" );
+		ShadowQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ShadowQualityList" );
 		ShadowQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
-		ShadowFilterQuality = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ShadowFilterQualityList" );
+		ShadowFilterQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ShadowFilterQualityList" );
 		ShadowFilterQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		ShowFPS = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ShowFPSButton" );
@@ -264,6 +274,9 @@ public partial class SettingsMenu : Control {
 
 		DyslexiaMode = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton" );
 		DyslexiaMode.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+
+		TextToSpeech = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/TextToSpeechButton" );
+		TextToSpeech.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		EnableTutorials = GetNode<HBoxContainer>( "TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton" );
 		EnableTutorials.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
@@ -454,7 +467,7 @@ public partial class SettingsMenu : Control {
 		NetworkTabBar = GetNode<TabBar>( "TabContainer/Network" );
 		NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
-		VSync.Call( "set_value", SettingsData.GetVSync() );
+		VSync.Call( "set_value", (int)SettingsData.GetVSync() );
 		WindowModeOption.Call( "set_value", (int)SettingsData.GetWindowMode() );
 		ResolutionOption.Call( "set_value", (int)SettingsData.GetResolution() );
 		AntiAliasingOption.Call( "set_value", (int)SettingsData.GetAntiAliasing() );
@@ -481,11 +494,12 @@ public partial class SettingsMenu : Control {
 		case 225:
 			MaxFps.Call( "set_value", 6 );
 			break;
-		default: // custom, dev setting, or someone's fucking with the .ini file
+		default: // custom, dev setting, or someone's messing with the .ini file
 			Console.PrintLine( "Custom FPS set." );
 			break;
 		};
 		ShadowFilterQuality.Call( "set_value", (int)SettingsData.GetShadowFilterQuality() );
+		LightingQuality.Call( "set_value", (int)SettingsData.GetLightingQuality() );
 		ShowFPS.Call( "set_value", SettingsData.GetShowFPS() );
 		ShowBlood.Call( "set_value", SettingsData.GetShowBlood() );
 
@@ -498,6 +512,7 @@ public partial class SettingsMenu : Control {
 		HapticStrength.Call( "set_value", SettingsData.GetHapticStrength() );
 		AutoAimEnabled.Call( "set_value", SettingsData.GetAutoAimEnabled() );
 		DyslexiaMode.Call( "set_value", SettingsData.GetDyslexiaMode() );
+		TextToSpeech.Call( "set_value", SettingsData.GetTextToSpeech() );
 
 		EnableTutorials.Call( "set_value", SettingsData.GetTutorialsEnabled() );
 		ExpertUI.Call( "set_value", SettingsData.GetExpertUI() );
@@ -516,6 +531,8 @@ public partial class SettingsMenu : Control {
 		SyncToSteamButton.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 		SyncToSteamButton.Connect( "pressed", Callable.From( OnSyncToSteamButtonPressed ) );
 		*/
+
+		VSync.GrabFocus();
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
 		SaveSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );

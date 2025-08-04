@@ -161,8 +161,12 @@ namespace Renown.Thinkers {
 			}
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS_AWAY;
 
-			if ( Location.GetBiome().IsPlayerHere() ) {
-				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
+			if ( Location.GetBiome() != null ) {
+				if ( Location.GetBiome().IsPlayerHere() ) {
+					System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
+				} else {
+					System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
+				}
 			} else {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
 			}

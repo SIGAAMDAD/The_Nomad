@@ -102,6 +102,8 @@ namespace Renown.World {
 		}
 
 		public override void _Ready() {
+			base._Ready();
+
 			WeatherChances = new Dictionary<WeatherType, float>{
 				{ WeatherType.Clear, WeatherChanceClear },
 				{ WeatherType.Humid, WeatherChanceHumid },
@@ -113,13 +115,13 @@ namespace Renown.World {
 				{ WeatherType.Blazing, WeatherChanceBlazing },
 			};
 
+			/*
 			WeatherChangeTimer = new Timer();
 			WeatherChangeTimer.Name = "WeatherChangeTimer";
 			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
 			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
 			AddChild( WeatherChangeTimer );
-
-			AddToGroup( "WorldAreas" );
+			*/
 
 			Hide();
 		}

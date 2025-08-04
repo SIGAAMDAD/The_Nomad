@@ -115,20 +115,6 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
-	public virtual void ApplyShadowQuality() {
-		static void nodeIterator( Godot.Collections.Array<Node> children ) {
-			for ( int i = 0; i < children.Count; i++ ) {
-				nodeIterator( children[ i ].GetChildren() );
-				if ( children[ i ] is Light2D light && light != null ) {
-					light.SetDeferred( Light2D.PropertyName.ShadowEnabled, true );
-					light.SetDeferred( Light2D.PropertyName.ShadowFilter, (long)SettingsData.GetShadowFilterEnum() );
-					light.SetDeferred( Light2D.PropertyName.ShadowFilterSmooth, SettingsData.GetShadowFilterSmooth() );
-				}
-			}
-		}
-		nodeIterator( GetChildren() );
-	}
-
 	public override void _EnterTree() {
 		base._EnterTree();
 

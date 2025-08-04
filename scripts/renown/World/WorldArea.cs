@@ -40,6 +40,8 @@ namespace Renown.World {
 				if ( body is Player player && player != null ) {
 					PlayerStatus = true;
 					EmitSignalPlayerEntered();
+
+					SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
 				}
 				entity.SetLocation( this );
 			}
@@ -48,20 +50,24 @@ namespace Renown.World {
 			if ( !GodotServerManager.GetCollidingObjects( GetRid() ).Contains( LevelData.Instance.ThisPlayer ) ) {
 				PlayerStatus = false;
 				EmitSignalPlayerExited();
+
+				SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 			}
 		}
 
-		public override void _Ready() {	
+		public override void _Ready() {
 			base._Ready();
-			
+
 			Connect( Area2D.SignalName.BodyEntered, Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
 			Connect( Area2D.SignalName.BodyExited, Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
 			Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
 			Connect( Area2D.SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
 
-			ProcessMode = ProcessModeEnum.Pausable;
+			ProcessMode = ProcessModeEnum.Disabled;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = (int)GetRid().Id;
+
+			AddToGroup( "WorldAreas" );
 
 			if ( !IsInGroup( "Archive" ) ) {
 				AddToGroup( "Archive" );
@@ -69,6 +75,7 @@ namespace Renown.World {
 			if ( !IsInGroup( "Locations" ) ) {
 				AddToGroup( "Locations" );
 			}
+			Hide();
 		}
 	};
 };
