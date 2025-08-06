@@ -2,6 +2,8 @@ using Godot;
 using System.Collections.Generic;
 using Renown.World;
 using DialogueManagerRuntime;
+using System.Runtime.CompilerServices;
+using MountainGoap;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -30,9 +32,6 @@ namespace Renown.Thinkers {
 
 	public partial class Thinker : Entity {
 		[Export]
-		protected TileMapFloor Floor;
-
-		[Export]
 		protected Resource DialogueResource = ResourceLoader.Load( "res://resources/dialogue/thinker.dialogue" );
 
 		[Export]
@@ -41,6 +40,8 @@ namespace Renown.Thinkers {
 		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;
+		[Export]
+		protected TileMapFloor TileFloor;
 
 		[ExportCategory( "Stats" )]
 
@@ -57,10 +58,7 @@ namespace Renown.Thinkers {
 
 		protected NodePath InitialPath;
 
-		protected Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
-
 		protected ThinkerFlags Flags;
-		protected ThinkerGroup Squad;
 
 		protected bool Initialized = false;
 
@@ -82,13 +80,11 @@ namespace Renown.Thinkers {
 
 		protected AudioStreamPlayer2D AudioChannel;
 
-		protected VisibleOnScreenNotifier2D VisibilityNotifier;
-		protected bool OnScreen = false;
-
 		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
 
-		public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
-		public TileMapFloor GetTileMapFloor() => Floor;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public TileMapFloor GetTileMapFloor() => TileFloor;
+		public void SetTileMapFloor( TileMapFloor floor ) => TileFloor = floor;
 
 		public virtual void MeetPlayer() {
 			switch ( GetRelationStatus( LevelData.Instance.ThisPlayer ) ) {
@@ -120,15 +116,15 @@ namespace Renown.Thinkers {
 		}
 
 		protected void SendPacket() {
-			if ( !OnScreen ) {
+			if ( !Visible ) {
 				return;
 			}
 
-			//			SyncObject.Write( GlobalPosition );
-			//			SyncObject.Write( BodyAnimations.Animation );
-			//			SyncObject.Write( HeadAnimations != null );
-			//			SyncObject.Write( ArmAnimations != null );
-			//			SyncObject.Sync();
+			SyncObject.Write( GlobalPosition );
+			SyncObject.Write( BodyAnimations.Animation );
+			SyncObject.Write( HeadAnimations != null );
+			SyncObject.Write( ArmAnimations != null );
+			SyncObject.Sync();
 		}
 
 		public void Notify( GroupEvent nEventType, Thinker source ) {
@@ -140,8 +136,8 @@ namespace Renown.Thinkers {
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				return;
 			}
-			SetProcess( true );
-			SetPhysicsProcess( true );
+			EntityManager.RegisterProcess( this );
+			EntityManager.RegisterPhysicsProcess( this );
 
 			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA );
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
@@ -159,6 +155,9 @@ namespace Renown.Thinkers {
 			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
 				return;
 			}
+			EntityManager.DisableProcess( this );
+			EntityManager.DisablePhysicsProcess( this );
+
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS_AWAY;
 
 			if ( Location.GetBiome() != null ) {
@@ -242,13 +241,6 @@ namespace Renown.Thinkers {
 			Animations?.SetDeferred( PropertyName.Modulate, color );
 		}
 
-		protected void OnScreenEnter() {
-			OnScreen = true;
-		}
-		protected void OnScreenExit() {
-			OnScreen = false;
-		}
-
 		public Thinker() {
 			if ( !IsInGroup( "Thinkers" ) ) {
 				AddToGroup( "Thinkers" );
@@ -323,12 +315,9 @@ namespace Renown.Thinkers {
 
 			NavAgentRID = NavAgent.GetRid();
 
-			/*
-			VisibilityNotifier = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
-			VisibilityNotifier.Connect( "screen_entered", Callable.From( OnScreenEnter ) );
-			VisibilityNotifier.Connect( "screen_exited", Callable.From( OnScreenExit ) );
-			AddChild( VisibilityNotifier );
-			*/
+			VisibleOnScreenEnabler2D enabler = GetNode<VisibleOnScreenEnabler2D>( "VisibleOnScreenEnabler2D" );
+			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( Show ) );
+			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( Hide ) );
 
 			if ( IsPremade ) {
 				InitialPath = GetPath();
@@ -360,8 +349,9 @@ namespace Renown.Thinkers {
 			}
 		}
 		public override void Update( double delta ) {
-			ProcessAnimations();
-
+			if ( Visible ) {
+				ProcessAnimations();
+			}
 			if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {
 				return;
 			}

@@ -16,6 +16,14 @@ namespace Renown.Thinkers {
 			Count
 		};
 
+		private readonly struct SightLine {
+			public readonly float Angle;
+
+			public SightLine( float angle ) {
+				Angle = angle;
+			}
+		};
+
 		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
 		private static readonly float ViewAngleAmount = Mathf.DegToRad( 80.0f );
 		private static readonly float MaxViewDistance = 180.0f;
@@ -72,7 +80,7 @@ namespace Renown.Thinkers {
 		private AudioStreamPlayer2D BarkChannel;
 
 		public Godot.Vector2 LastTargetPosition { get; private set; } = Godot.Vector2.Zero;
-		private RayCast2D[] SightLines = null;
+		private float[] SightLines = null;
 		public bool CanSeeTarget { get; private set; } = false;
 		private Tween MeleeTween;
 
@@ -92,15 +100,9 @@ namespace Renown.Thinkers {
 
 		private void GenerateRayCasts() {
 			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new RayCast2D[ rayCount ];
+			SightLines = new float[ rayCount ];
 			for ( int i = 0; i < rayCount; i++ ) {
-				RayCast2D ray = new RayCast2D();
-				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
-				ray.Enabled = true;
-				ray.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity );
-				SightLines[ i ] = ray;
-				HeadAnimations.AddChild( ray );
+				SightLines[ i ] = AngleBetweenRays * ( i - rayCount / 2.0f );
 			}
 		}
 
@@ -222,7 +224,7 @@ namespace Renown.Thinkers {
 
 		private void SetSuspicious() {
 			Awareness = MobAwareness.Suspicious;
-			Bark( BarkType.Confusion, Squad.GetMemberCount() > 0 ? BarkType.CheckItOut : BarkType.Count );
+			Bark( BarkType.Confusion, Group.Members.Count > 0 ? BarkType.CheckItOut : BarkType.Count );
 		}
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
@@ -383,8 +385,8 @@ namespace Renown.Thinkers {
 
 			CurrentState = State.Animate;
 
-			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
-			Squad.AddThinker( this );
+//			Group = SquadManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
+			Group.AddMember( this );
 
 			LoseInterestTimer = new Timer();
 			LoseInterestTimer.Name = "LoseInterestTimer";
@@ -411,65 +413,6 @@ namespace Renown.Thinkers {
 					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 				}
 			} ) );
-
-			List<MountainGoap.BaseGoal> goals = new List<MountainGoap.BaseGoal>() {
-				new MountainGoap.ComparativeGoal(
-					name: "SurviveGoal",
-					weight: 1.0f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Health", new ComparisonValuePair { Value = 10.0f, Operator = ComparisonOperator.GreaterThan } }
-					}
-				),
-				new MountainGoap.ComparativeGoal(
-					name: "IdleGoal",
-					weight: 0.7f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "Fear", new ComparisonValuePair { Value = 10, Operator = ComparisonOperator.LessThanOrEquals } },
-						{ "Awareness", new ComparisonValuePair { Value = MobAwareness.Suspicious, Operator = ComparisonOperator.LessThanOrEquals } }
-					}
-				),
-				new MountainGoap.ComparativeGoal(
-					name: "FollowGoal",
-					weight: 0.7f,
-					desiredState: new Dictionary<string, ComparisonValuePair>{
-						{ "DistanceToTarget", new ComparisonValuePair { Value = 72.0f, Operator = ComparisonOperator.LessThan } }
-					}
-				)
-			};
-			List<MountainGoap.Action> actions = new List<MountainGoap.Action> {
-				new MountainGoap.Action(
-					name: "AimAction",
-					permutationSelectors: null
-				),
-				new MountainGoap.Action(
-					name: "CoverAction",
-					permutationSelectors: null,
-					executor: ( agent, action ) => {
-						return ExecutionStatus.Executing;
-					},
-					cost: 1.0f,
-					costCallback: null, // TODO: make cost determined by the distance
-					preconditions: null
-				)
-			};
-
-			Agent = new MountainGoap.Agent(
-				name: "Bandit",
-				state: new ConcurrentDictionary<string, object> {
-					{ "Health", Health },
-					{ "HasAmmo", false },
-					{ "PlayerVisible", CanSeeTarget },
-					{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
-					{ "UnderFire", false },
-					{ "HasCover", false },
-					{ "IsAlerted", false },
-					{ "SquadSize", 0 }
-				},
-				memory: new Dictionary<string, object> {
-					{ "WarnedFriendlies", false },
-					{ "AimTime", 0.0f }
-				}
-			);
 
 			AttackMeter = GetNode<Line2D>( "AttackMeter" );
 			AttackMeterDone = AttackMeter.Points[ 0 ];
@@ -541,6 +484,153 @@ namespace Renown.Thinkers {
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
+			List<MountainGoap.BaseGoal> goals = new List<MountainGoap.BaseGoal>() {
+				new MountainGoap.ComparativeGoal(
+					name: "SurviveGoal",
+					weight: 1.0f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Health", new ComparisonValuePair { Value = 25.0f, Operator = ComparisonOperator.GreaterThan } }
+					}
+				),
+				new MountainGoap.Goal(
+					name: "ShootAtTargetGoal",
+					weight: 0.9f,
+					desiredState: new Dictionary<string, object>{
+						{ "HasAmmo", true },
+						{ "PlayerVisible", true },
+						{ "Target", null }
+					}
+				),
+				new MountainGoap.ComparativeGoal(
+					name: "IdleGoal",
+					weight: 0.7f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "Fear", new ComparisonValuePair { Value = 10, Operator = ComparisonOperator.LessThanOrEquals } },
+						{ "Awareness", new ComparisonValuePair { Value = MobAwareness.Suspicious, Operator = ComparisonOperator.LessThan } }
+					}
+				),
+				new MountainGoap.ComparativeGoal(
+					name: "FollowGoal",
+					weight: 0.7f,
+					desiredState: new Dictionary<string, ComparisonValuePair>{
+						{ "DistanceToTarget", new ComparisonValuePair { Value = 72.0f, Operator = ComparisonOperator.LessThan } }
+					}
+				)
+			};
+			List<MountainGoap.Action> actions = new List<MountainGoap.Action> {
+				new MountainGoap.Action(
+					name: "AimAction",
+					permutationSelectors: null,
+					executor: ( agent, action ) => {
+						RayIntersectionInfo info = GodotServerManager.CheckRayCast( ArmAnimations.GlobalPosition, AimAngle, Ammo.Range, GetRid() );
+						if ( info.Collider is Entity entity && entity.GetFaction() == Faction ) {
+							agent.State[ "ClearLineOfFire" ] = false;
+							Bark( BarkType.OutOfTheWay );
+							return ExecutionStatus.Failed;
+						}
+						agent.State[ "ClearLineOfFire" ] = true;
+						if ( AmmoStack.Amount == 0 ) {
+							return ExecutionStatus.NotPossible;
+						}
+						if ( AimTimer.TimeLeft == 0.0f && (bool)Agent.State[ "Aiming" ] ) {
+							Agent.State[ "Aiming" ] = false;
+							return ExecutionStatus.Succeeded;
+						} else if ( AimTimer.TimeLeft > AimTimer.WaitTime / 4.0f ) {
+							Vector2 direction = GlobalPosition.DirectionTo( LastTargetPosition );
+							AimAngle = Mathf.Atan2( direction.Y, direction.X );
+							LookAngle = AimAngle;
+						}
+						return ExecutionStatus.Executing;
+					},
+					cost: 1.0f,
+					costCallback: ( agent, currentState ) => {
+						return 1.0f;
+					},
+					preconditions: new Dictionary<string, object>{
+						{ "Aiming", true },
+						{ "HasAmmo", true }
+					},
+					comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+						{ "Fear", new ComparisonValuePair { Value = 80, Operator = ComparisonOperator.LessThan } }
+					}
+				),
+				new MountainGoap.Action(
+					name: "ShootWeaponAction",
+					permutationSelectors: null,
+					executor: ( agent, action ) => {
+						if ( AmmoStack.Amount == 0 ) {
+							Bark( BarkType.Curse );
+							return ExecutionStatus.Failed;
+						}
+						return ExecutionStatus.Executing;
+					},
+					cost: 1.0f,
+					costCallback: ( agent, currentState ) => {
+						return 1.0f;
+					},
+					preconditions: new Dictionary<string, object>{
+						{ "ClearLineOfFire", true },
+						{ "Aiming", false },
+					}
+				),
+				new MountainGoap.Action(
+					name: "ReloadAction",
+					permutationSelectors: null,
+					executor: ( agent, action ) => {
+						if ( Weapon.WeaponTimer.TimeLeft > 0.0f && Weapon.CurrentState == WeaponEntity.WeaponState.Reload ) {
+							return ExecutionStatus.Executing;
+						}
+						return ExecutionStatus.Succeeded;
+					},
+					cost: 1.0f,
+					costCallback: ( agent, currentState ) => {
+						return 1.0f;
+					},
+					preconditions: new Dictionary<string, object>{
+						{ "HasAmmo", false }
+					},
+					comparativePreconditions: null,
+					postconditions: new Dictionary<string, object>{
+						{ "HasAmmo", true }
+					}
+				),
+				new MountainGoap.Action(
+					name: "CoverAction",
+					permutationSelectors: null,
+					executor: ( agent, action ) => {
+						return ExecutionStatus.Executing;
+					},
+					cost: 1.0f,
+					costCallback: null, // TODO: make cost determined by the distance
+					preconditions: null
+				)
+			};
+
+			Agent = new MountainGoap.Agent(
+				name: "Bandit",
+				state: new ConcurrentDictionary<string, object> {
+					{ "Health", Health },
+					{ "HasAmmo", false },
+					{ "PlayerVisible", CanSeeTarget },
+					{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
+					{ "UnderFire", false },
+					{ "HasCover", false },
+					{ "IsAlerted", false },
+					{ "Awareness", MobAwareness.Relaxed },
+					{ "SquadSize", 0 },
+					{ "WeaponState", Weapon.CurrentState },
+					{ "Target", null },
+					{ "ClearLineOfFire", false },
+					{ "SquadTactic", Group.CurrentTactic }
+				},
+				memory: new Dictionary<string, object> {
+					{ "WarnedFriendlies", false },
+					{ "AimTime", 0.0f }
+				},
+				goals: goals,
+				actions: actions
+			);
+
 			GenerateRayCasts();
 		}
 
@@ -580,8 +670,16 @@ namespace Renown.Thinkers {
 			Agent.State[ "Health" ] = Health;
 			Agent.State[ "Fear" ] = Fear;
 			Agent.State[ "Awareness" ] = Awareness;
+			Agent.State[ "SquadSize" ] = Group.Members.Count;
+			Agent.State[ "HasAmmo" ] = AmmoStack.Amount > 0;
+			Agent.State[ "PlayerVisible" ] = CanSeeTarget;
+			Agent.State[ "WeaponState" ] = Weapon.CurrentState;
+			if ( Fear > 80 ) {
+				Agent.State[ "ClearLineOfFire" ] = true;
+			}
 		}
 		protected override void Think() {
+			SyncGOAPState();
 			CheckSight();
 
 			/*
@@ -703,7 +801,8 @@ namespace Renown.Thinkers {
 		public void CheckSight() {
 			Entity sightTarget = null;
 			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[ i ].GetCollider() as Entity;
+				RayIntersectionInfo info = GodotServerManager.CheckRayCast( HeadAnimations.GlobalPosition, SightLines[ i ], MaxViewDistance, GetRid() );
+				sightTarget = info.Collider as Entity;
 				if ( sightTarget != null ) {
 					break;
 				} else {
@@ -736,8 +835,7 @@ namespace Renown.Thinkers {
 				case MobAwareness.Alert:
 					SetAlert();
 					break;
-				}
-				;
+				};
 				SetDetectionColor();
 				return;
 			}

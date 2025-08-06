@@ -225,3 +225,8 @@ collision_mask = 12
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(1, 29)
 shape = SubResource("RectangleShape2D_coa62")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+process_mode = 1
+position = Vector2(-7.62939e-06, 19)
+scale = Vector2(11.4, 11.6)

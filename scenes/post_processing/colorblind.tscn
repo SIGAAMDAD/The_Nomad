@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvjmab0disbjg"]
+
+[ext_resource type="Shader" uid="uid://su6v8xn7634d" path="res://shaders/post_processing/colorblind.gdshader" id="1_xsxxr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r2l51"]
+shader = ExtResource("1_xsxxr")
+shader_parameter/mode = 0
+
+[node name="Colorblind" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_r2l51")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

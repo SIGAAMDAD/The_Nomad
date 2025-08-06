@@ -4,6 +4,12 @@ class_name HealthBar extends ProgressBar
 @onready var _show_timer: Timer = $ShowTimer
 @onready var _damage_bar: ProgressBar = $DamageBar
 
+@onready var _color_map: Dictionary[ int, Color ] = {
+	0: Color.RED,
+	1: Color.LIGHT_BLUE,
+	2: Color.DARK_ORANGE
+}
+
 func SetHealth( health: float ) -> void:
 	process_mode = PROCESS_MODE_PAUSABLE
 	
@@ -24,6 +30,8 @@ func init( health: float ) -> void:
 	_damage_bar.value = health
 	
 	process_mode = PROCESS_MODE_DISABLED
+
+	modulate = _color_map[ SettingsData.GetColorblindMode() ]
 
 func _on_show_timer_timeout() -> void:
 	var _tweener: Tween = create_tween()

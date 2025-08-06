@@ -20,33 +20,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 using Godot;
+using System.Runtime.CompilerServices;
 
 namespace PlayerSystem {
 	public partial class WeaponSlot : GodotObject {
-		public static int INVALID = -1;
+		public readonly static int INVALID = -1;
 
 		private WeaponEntity Weapon = null;
 		private int Index = 0;
 		private WeaponEntity.Properties Mode = WeaponEntity.Properties.None;
 
-		public WeaponEntity GetWeapon() {
-			return Weapon;
-		}
-		public void SetWeapon( WeaponEntity weapon ) {
-			Weapon = weapon;
-		}
-		public WeaponEntity.Properties GetMode() {
-			return Mode;
-		}
-		public void SetMode( WeaponEntity.Properties mode ) {
-			Mode = mode;
-		}
-		public void SetIndex( int nIndex ) {
-			Index = nIndex;
-		}
-
-		public bool IsUsed() {
-			return Weapon != null;
-		}
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public WeaponEntity GetWeapon() => Weapon;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void SetWeapon( WeaponEntity weapon ) => Weapon = weapon;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public WeaponEntity.Properties GetMode() => Mode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void SetMode( WeaponEntity.Properties mode ) => Mode = mode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public void SetIndex( int nIndex ) => Index = nIndex;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public bool IsUsed() => Weapon != null;
 	};
 };

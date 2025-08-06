@@ -1,6 +1,5 @@
 using Godot;
 using Steamworks;
-using System.Net.NetworkInformation;
 
 public partial class SettingsMenu : Control {
 	private struct SettingsConfig {
@@ -29,8 +28,8 @@ public partial class SettingsMenu : Control {
 		public float HapticStrength;
 		public bool HapticEnabled;
 		public bool QuicktimeAutocomplete;
-		public int ColorblindMode;
-		public bool AutoAimEnabled;
+		public ColorblindMode ColorblindMode;
+		public AutoAimMode AutoAimMode;
 		public bool DyslexiaMode;
 		public float UIScale;
 		public bool TextToSpeech;
@@ -50,7 +49,7 @@ public partial class SettingsMenu : Control {
 		public bool HellbreakerEnabled;
 		public bool HellbreakerRevanents;
 		public bool EnableTutorials;
-		public bool ExpertUI;
+		public HUDPreset HUDPreset;
 
 		//
 		// network options
@@ -58,7 +57,7 @@ public partial class SettingsMenu : Control {
 		public bool EnableNetworking;
 		public bool FriendsOnlyNetworking;
 
-		public SettingsConfig( DefaultSettings settings ) {	
+		public SettingsConfig( DefaultSettings settings ) {
 			WindowMode = settings.WindowMode;
 			AspectRatio = settings.AspectRatio;
 			Resolution = settings.Resolution;
@@ -77,11 +76,12 @@ public partial class SettingsMenu : Control {
 			HapticEnabled = settings.HapticFeedback;
 			QuicktimeAutocomplete = settings.QuicktimeAutocomplete;
 			ColorblindMode = settings.ColorblindMode;
-			AutoAimEnabled = settings.AutoAim;
+			AutoAimMode = settings.AutoAim;
 			DyslexiaMode = settings.DyslexiaMode;
 			EnableTutorials = settings.EnableTutorials;
-			ExpertUI = settings.ExpertUI;
+			HUDPreset = settings.HUDPreset;
 			TextToSpeech = settings.TextToSpeech;
+			UIScale = settings.UIScale;
 
 			EffectsOn = settings.SoundEffectsOn;
 			EffectsVolume = settings.SoundEffectsVolume;
@@ -95,10 +95,98 @@ public partial class SettingsMenu : Control {
 			EnableNetworking = settings.NetworkingEnabled;
 			FriendsOnlyNetworking = settings.FriendsOnly;
 		}
+
+		public readonly override bool Equals( object obj ) => false;
+		public readonly override int GetHashCode() => base.GetHashCode();
+
+		// memcmp less painful?
+		public static bool operator ==( SettingsConfig a, SettingsConfig b ) {
+			if ( a.WindowMode != b.WindowMode ) {
+				return false;
+			}
+			if ( a.VSyncMode != b.VSyncMode ) {
+				return false;
+			}
+			if ( a.AntiAliasing != b.AntiAliasing ) {
+				return false;
+			}
+			if ( a.BloomEnabled != b.BloomEnabled ) {
+				return false;
+			}
+			if ( a.MaxFps != b.MaxFps ) {
+				return false;
+			}
+			if ( a.ShowBlood != b.ShowBlood ) {
+				return false;
+			}
+			if ( a.ShowFPS != b.ShowFPS ) {
+				return false;
+			}
+			if ( a.Resolution != b.Resolution ) {
+				return false;
+			}
+			if ( a.ParticleQuality != b.ParticleQuality ) {
+				return false;
+			}
+			if ( a.LightingQuality != b.LightingQuality ) {
+				return false;
+			}
+			if ( a.ShadowQuality != b.ShadowQuality ) {
+				return false;
+			}
+			if ( a.ShadowFilterQuality != b.ShadowFilterQuality ) {
+				return false;
+			}
+
+			if ( a.EffectsOn != b.EffectsOn ) {
+				return false;
+			}
+			if ( a.EffectsVolume != b.EffectsVolume ) {
+				return false;
+			}
+			if ( a.MusicOn != b.MusicOn ) {
+				return false;
+			}
+			if ( a.MusicVolume != b.MusicVolume ) {
+				return false;
+			}
+
+			if ( a.HapticEnabled != b.HapticEnabled ) {
+				return false;
+			}
+			if ( a.HapticStrength != b.HapticStrength ) {
+				return false;
+			}
+			if ( a.ColorblindMode != b.ColorblindMode ) {
+				return false;
+			}
+			if ( a.AutoAimMode != b.AutoAimMode ) {
+				return false;
+			}
+			if ( a.DyslexiaMode != b.DyslexiaMode ) {
+				return false;
+			}
+			if ( a.UIScale != b.UIScale ) {
+				return false;
+			}
+
+			if ( a.EnableTutorials != b.EnableTutorials ) {
+				return false;
+			}
+			if ( a.HUDPreset != b.HUDPreset ) {
+				return false;
+			}
+			return true;
+		}
+		public static bool operator !=( SettingsConfig a, SettingsConfig b ) {
+			return !( a == b );
+		}
 	};
 
 	private readonly SettingsConfig Default;
 	private SettingsConfig Temp;
+
+	private RichTextLabel DescriptionLabel;
 
 	private HBoxContainer VSync;
 	private HBoxContainer ImageSharpening;
@@ -120,13 +208,13 @@ public partial class SettingsMenu : Control {
 
 	private HBoxContainer HapticEnabled;
 	private HBoxContainer HapticStrength;
-	private HBoxContainer AutoAimEnabled;
+	private HBoxContainer AutoAimMode;
 	private HBoxContainer DyslexiaMode;
 	private HBoxContainer GhostlyGuide;
+	private HBoxContainer ColorblindMode;
 	private HBoxContainer DisableFlashes;
 	private HBoxContainer TextToSpeech;
-
-	private HBoxContainer ExpertUI;
+	private HBoxContainer HUDPreset;
 	private HBoxContainer EnableTutorials;
 
 	private HBoxContainer NetworkingEnabled;
@@ -156,6 +244,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetShadowQuality( (ShadowQuality)ShadowQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetShadowFilterQuality( (ShadowFilterQuality)ShadowFilterQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetLightingQuality( (LightingQuality)LightingQuality.Call( "get_value" ).AsInt32() );
+		SettingsData.SetParticleQuality( (ParticleQuality)ParticleQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetResolution( (Resolution)ResolutionOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Call( "get_value" ).AsInt32() );
@@ -194,11 +283,11 @@ public partial class SettingsMenu : Control {
 
 		SettingsData.SetHapticEnabled( HapticEnabled.Call( "get_value" ).AsBool() );
 		SettingsData.SetHapticStrength( HapticStrength.Call( "get_value" ).AsSingle() );
-		SettingsData.SetAutoAimEnabled( AutoAimEnabled.Call( "get_value" ).AsBool() );
+		SettingsData.SetAutoAimMode( (AutoAimMode)AutoAimMode.Call( "get_value" ).AsInt32() );
 		SettingsData.SetDyslexiaMode( DyslexiaMode.Call( "get_value" ).AsBool() );
 		SettingsData.SetTutorialsEnabled( EnableTutorials.Call( "get_value" ).AsBool() );
 		SettingsData.SetTextToSpeech( TextToSpeech.Call( "get_value" ).AsBool() );
-		SettingsData.SetExpertUI( ExpertUI.Call( "get_value" ).AsBool() );
+		SettingsData.SetHUDPreset( (HUDPreset)HUDPreset.Call( "get_value" ).AsInt32() );
 
 		SettingsData.SetNetworkingEnabled( NetworkingEnabled.Call( "get_value" ).AsBool() );
 		SettingsData.SetFriendsOnlyNetworking( FriendsOnly.Call( "get_value" ).AsBool() );
@@ -214,6 +303,10 @@ public partial class SettingsMenu : Control {
 	private void OnRemoveSteamSyncButtonPressed() {
 		SteamRemoteStorage.FileDelete( "settings.ini" );
 	}
+	private void OnOptionFocused( HBoxContainer option ) {
+		DescriptionLabel.ParseBbcode( option.Call( "get_description" ).AsString() );
+		UIAudioManager.OnButtonFocused();
+	}
 
 	// TODO: make this more controller friendly
 	public override void _Ready() {
@@ -221,74 +314,107 @@ public partial class SettingsMenu : Control {
 
 		SetProcess( true );
 
-		VSync = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/VSyncList" );
-		VSync.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Video/MainContainer/Description" );
 
-		WindowModeOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/WindowModeList" );
-		WindowModeOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		VSync = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/VSyncList" );
+		VSync.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( VSync ) ) );
+		VSync.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( VSync ) ) );
 
-		ResolutionOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ResolutionList" );
-		ResolutionOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		WindowModeOption = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/WindowModeList" );
+		WindowModeOption.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( WindowModeOption ) ) );
+		WindowModeOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( WindowModeOption ) ) );
 
-		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ParticleQualityList" );
-		ParticleQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ResolutionOption = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ResolutionList" );
+		ResolutionOption.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ResolutionOption ) ) );
+		ResolutionOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ResolutionOption ) ) );
 
-		MaxFps = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/MaxFpsList" );
-		MaxFps.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList" );
+		ParticleQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ParticleQuality ) ) );
+		ParticleQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ParticleQuality ) ) );
 
-		AntiAliasingOption = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/AntiAliasingList" );
-		AntiAliasingOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		MaxFps = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList" );
+		MaxFps.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( MaxFps ) ) );
+		MaxFps.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( MaxFps ) ) );
 
-		ShadowQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ShadowQualityList" );
-		ShadowQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		AntiAliasingOption = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList" );
+		AntiAliasingOption.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( AntiAliasingOption ) ) );
+		AntiAliasingOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( AntiAliasingOption ) ) );
 
-		ShadowFilterQuality = GetNode<HBoxContainer>( "TabContainer/Video/AdvancedContainer/ShadowFilterQualityList" );
-		ShadowFilterQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ShadowQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList" );
+		ShadowQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShadowQuality ) ) );
+		ShadowQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ShadowQuality ) ) );
 
-		ShowFPS = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ShowFPSButton" );
-		ShowFPS.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ShadowFilterQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList" );
+		ShadowFilterQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShadowFilterQuality ) ) );
+		ShadowFilterQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ShadowFilterQuality ) ) );
 
-		ShowBlood = GetNode<HBoxContainer>( "TabContainer/Video/VBoxContainer/ShowBloodButton" );
-		ShowBlood.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		LightingQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList" );
+		LightingQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( LightingQuality ) ) );
+		LightingQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( LightingQuality ) ) );
+
+		ShowFPS = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ShowFPSButton" );
+		ShowFPS.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShowFPS ) ) );
+		ShowFPS.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ShowFPS ) ) );
+
+		ShowBlood = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton" );
+		ShowBlood.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShowBlood ) ) );
+		ShowBlood.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ShowBlood ) ) );
 
 		EffectsOn = GetNode<HBoxContainer>( "TabContainer/Audio/VBoxContainer/EffectsOnButton" );
-		EffectsOn.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		EffectsOn.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( EffectsOn ) ) );
+		EffectsOn.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( EffectsOn ) ) );
 
 		EffectsVolume = GetNode<HBoxContainer>( "TabContainer/Audio/VBoxContainer/EffectsVolumeSlider" );
-		EffectsVolume.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		EffectsVolume.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( EffectsVolume ) ) );
+		EffectsVolume.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( EffectsVolume ) ) );
 
 		MusicOn = GetNode<HBoxContainer>( "TabContainer/Audio/VBoxContainer/MusicOnButton" );
-		MusicOn.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		MusicOn.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( MusicOn ) ) );
+		MusicOn.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( MusicOn ) ) );
 
 		MusicVolume = GetNode<HBoxContainer>( "TabContainer/Audio/VBoxContainer/MusicVolumeSlider" );
-		MusicVolume.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		MusicVolume.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( MusicVolume ) ) );
+		MusicVolume.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( MusicVolume ) ) );
 
 		HapticEnabled = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton" );
-		HapticEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		HapticEnabled.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( HapticEnabled ) ) );
+		HapticEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( HapticEnabled ) ) );
 
 		HapticStrength = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider" );
-		HapticStrength.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		HapticStrength.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( HapticStrength ) ) );
+		HapticStrength.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( HapticStrength ) ) );
 
-		AutoAimEnabled = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/AutoAimButton" );
-		AutoAimEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		AutoAimMode = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/AutoAimList" );
+		AutoAimMode.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( AutoAimMode ) ) );
+		AutoAimMode.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( AutoAimMode ) ) );
+
+		ColorblindMode = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/ColorblindModeList" );
+		ColorblindMode.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ColorblindMode ) ) );
+		ColorblindMode.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ColorblindMode ) ) );
 
 		DyslexiaMode = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton" );
-		DyslexiaMode.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		DyslexiaMode.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( DyslexiaMode ) ) );
+		DyslexiaMode.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( DyslexiaMode ) ) );
 
 		TextToSpeech = GetNode<HBoxContainer>( "TabContainer/Accessibility/VBoxContainer/TextToSpeechButton" );
-		TextToSpeech.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		TextToSpeech.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( TextToSpeech ) ) );
+		TextToSpeech.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( TextToSpeech ) ) );
 
 		EnableTutorials = GetNode<HBoxContainer>( "TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton" );
-		EnableTutorials.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		EnableTutorials.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( EnableTutorials ) ) );
+		EnableTutorials.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( EnableTutorials ) ) );
 
-		ExpertUI = GetNode<HBoxContainer>( "TabContainer/Gameplay/VBoxContainer/ExpertUIButton" );
-		ExpertUI.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		HUDPreset = GetNode<HBoxContainer>( "TabContainer/Gameplay/VBoxContainer/HUDPresetList" );
+		HUDPreset.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( HUDPreset ) ) );
+		HUDPreset.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( HUDPreset ) ) );
 
 		NetworkingEnabled = GetNode<HBoxContainer>( "TabContainer/Network/VBoxContainer/EnableNetworkingButton" );
-		NetworkingEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		NetworkingEnabled.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( NetworkingEnabled ) ) );
+		NetworkingEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( NetworkingEnabled ) ) );
 
 		FriendsOnly = GetNode<HBoxContainer>( "TabContainer/Network/VBoxContainer/FriendsOnlyButton" );
-		FriendsOnly.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		FriendsOnly.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( FriendsOnly ) ) );
+		FriendsOnly.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( FriendsOnly ) ) );
 
 		TabContainer = GetNode<TabContainer>( "TabContainer" );
 		TabContainer.Connect( TabContainer.SignalName.TabClicked, Callable.From(
@@ -319,6 +445,8 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcess( false );
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Video/MainContainer/Description" );
 						break;
 					case CategoryTabBar.Audio:
 						VideoTabBar.SetProcess( false );
@@ -344,6 +472,8 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcess( false );
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Audio/VBoxContainer/Description" );
 						break;
 					case CategoryTabBar.Accessibility:
 						VideoTabBar.SetProcess( false );
@@ -369,6 +499,8 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcess( false );
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Accessibility/VBoxContainer/Description" );
 						break;
 					case CategoryTabBar.Gameplay:
 						VideoTabBar.SetProcess( false );
@@ -394,6 +526,8 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcess( false );
 						NetworkTabBar.SetProcessInternal( false );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Disabled;
+
+						DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Gameplay/VBoxContainer/Description" );
 						break;
 					case CategoryTabBar.Controls:
 						VideoTabBar.SetProcess( false );
@@ -444,9 +578,10 @@ public partial class SettingsMenu : Control {
 						NetworkTabBar.SetProcess( true );
 						NetworkTabBar.SetProcessInternal( true );
 						NetworkTabBar.ProcessMode = ProcessModeEnum.Always;
+
+						DescriptionLabel = GetNode<RichTextLabel>( "TabContainer/Network/VBoxContainer/Description" );
 						break;
-					}
-					;
+					};
 				}
 			)
 		);
@@ -460,6 +595,7 @@ public partial class SettingsMenu : Control {
 		AccessibilityTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 		GameplayTabBar = GetNode<TabBar>( "TabContainer/Gameplay" );
+		GameplayTabBar.ProcessMode = ProcessModeEnum.Disabled;
 
 		ControlsTabBar = GetNode<TabBar>( "TabContainer/Controls" );
 		ControlsTabBar.ProcessMode = ProcessModeEnum.Disabled;
@@ -499,6 +635,7 @@ public partial class SettingsMenu : Control {
 			break;
 		};
 		ShadowFilterQuality.Call( "set_value", (int)SettingsData.GetShadowFilterQuality() );
+		ParticleQuality.Call( "set_value", (int)SettingsData.GetParticleQuality() );
 		LightingQuality.Call( "set_value", (int)SettingsData.GetLightingQuality() );
 		ShowFPS.Call( "set_value", SettingsData.GetShowFPS() );
 		ShowBlood.Call( "set_value", SettingsData.GetShowBlood() );
@@ -510,12 +647,12 @@ public partial class SettingsMenu : Control {
 
 		HapticEnabled.Call( "set_value", SettingsData.GetHapticEnabled() );
 		HapticStrength.Call( "set_value", SettingsData.GetHapticStrength() );
-		AutoAimEnabled.Call( "set_value", SettingsData.GetAutoAimEnabled() );
+		ColorblindMode.Call( "set_value", (int)SettingsData.GetColorblindMode() );
+		AutoAimMode.Call( "set_value", (int)SettingsData.GetAutoAimMode() );
 		DyslexiaMode.Call( "set_value", SettingsData.GetDyslexiaMode() );
 		TextToSpeech.Call( "set_value", SettingsData.GetTextToSpeech() );
-
 		EnableTutorials.Call( "set_value", SettingsData.GetTutorialsEnabled() );
-		ExpertUI.Call( "set_value", SettingsData.GetExpertUI() );
+		HUDPreset.Call( "set_value", (int)SettingsData.GetHUDPreset() );
 
 		NetworkingEnabled.Call( "set_value", SettingsData.GetNetworkingEnabled() );
 		FriendsOnly.Call( "set_value", SettingsData.GetFriendsOnlyNetworking() );
@@ -531,8 +668,6 @@ public partial class SettingsMenu : Control {
 		SyncToSteamButton.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 		SyncToSteamButton.Connect( "pressed", Callable.From( OnSyncToSteamButtonPressed ) );
 		*/
-
-		VSync.GrabFocus();
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
 		SaveSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );

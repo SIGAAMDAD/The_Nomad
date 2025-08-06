@@ -1,7 +1,7 @@
 using Godot;
 
 namespace PlayerSystem.Upgrades {
-	public abstract class DashModule {
+	public interface DashModule {
 		public abstract StringName Name { get; }
 		public abstract StringName Description { get; }
 

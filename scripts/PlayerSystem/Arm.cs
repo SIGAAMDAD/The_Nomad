@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using Godot;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace PlayerSystem {
 	public partial class Arm : Node {

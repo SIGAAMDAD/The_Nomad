@@ -1,30 +1,62 @@
 key,en
-UNASSIGNED_BIND,UNASSIGNED
-MOVE_WEST_BIND,MOVE WEST
-MOVE_EAST_BIND,MOVE EAST
-MOVE_NORTH_BIND,MOVE NORTH
-MOVE_SOUTH_BIND,MOVE SOUTH
+UNASSIGNED_BIND,Unassigned
+MOVE_WEST_BIND,Move West
+MOVE_EAST_BIND,Move East
+MOVE_NORTH_BIND,Move North
+MOVE_SOUTH_BIND,Move South
+USE_WEAPON_BIND,Use Weapon
+BULLET_TIME_BIND,Bullet Time
+NEXT_WEAPON_BIND,Next Weapon
+PREV_WEAPON_BIND,Previous Weapon
+USE_ARM_ATTACHMENT_BIND,Use Arm Attachment
+DASH_BIND,Dash
+INTERACT_BIND,Interact
+MELEE_BIND,Melee
+USE_ITEM_BIND,Use Active Item
+MOVEMENT_BUTTON,Movement
+COMBAT_BUTTON,Combat
+UTILITY_BUTTON,Utility
 HAPTIC_FEEDBACK,Controller Shake
+HAPTIC_FEEDBACK_DESCRIPTION,Enables controller vibration through haptic device for various gameplay feedback
 HAPTIC_FEEDBACK_STRENGTH,Shake Strength
+HAPTIC_FEEDBACK_STRENGTH_DESCRIPTION,Sets shake strength of controller vibration
 AUTOAIM,Auto-Aim
+AUTOAIM_DESCRIPTION,"Enables Automatic Aiming.\n[b]Soft:[/b] influences aim angle slightly, but never forces a lock-on.\n[b]Lock-On:[/b] automatically targets the closest enemy in a 45 degree radius, note that this setting influences PvP matchmaking."
 DYSLEXIA_MODE,Dyslexia
+DYSLEXIA_MODE_DESCRIPTION,Converts all fonts in the game to a dyslexia-friendly font
 TEXT_TO_SPEECH,Text To Speech
+TEXT_TO_SPEECH_DESCRIPTION,Toggles text-to-speech with system narrator.
 TEXT_TO_SPEECH_VOICE,Text To Speech Voice
+TEXT_TO_SPEECH_VOICE_DESCRIPTION,Sets voice for system text-to-speech.
 ENABLE_TUTORIALS,Tutorials
-EXPERT_UI,Expert UI
+ENABLE_TUTORIALS_DESCRIPTION,Enables tutorialization
+DRAW_AIM_LINE,Draw Aim Line
+DRAW_AIM_LINE_DESCRIPTION,Renders an in-game line that can be used to help with aiming.
+COLORBLIND_MODE,Colorblind Mode
+COLORBLIND_MODE_DESCRIPTION,"If enabled, swaps out in-game colors for preset colors, or if enabled, custom colors, to help with Color Vision Deficiency (CVD)."
+COLORBLINDMODE_OFF,Off
+COLORBLINDMODE_PROTANOPIA,Protanopia
+COLORBLINDMODE_DEUTERANOPIA,Deuteranopia
+COLORBLINDMODE_TRITANOPIA,Tritanopia
+AUTOAIM_OFF,Off
+AUTOAIM_SOFT,Soft
+AUTOAIM_LOCKON,Lock-On
+HUD_PRESET,HUD Preset
+HELLBREAKER_ENABLED,Hellbreaker
 SOUND_EFFECTS_ON,Sound Effects
 MUSIC_ON,Music
 SOUND_EFFECTS_VOLUME,Sound Effects Volume
 MUSIC_VOLUME,Music Volume
 ENABLE_NETWORKING,Cooperative Networking
 FRIENDS_ONLY,Friends-Only Cooperative Networking
-
 ADVANCED_SETTINGS,Advanced
-
+BACK,Back
 VSYNC_ADAPTIVE,Adaptive
 VSYNC_ON,Enabled
 VSYNC_OFF,Disabled
 VSYNC_TRIPLE_BUFFERED,Triple Buffered
+VSYNC,VSync
+VSYNC_DESCRIPTION,"Enables or disables Verticle Synchronization.\n[b]Enabled:[/b] reduces risk of screen tearing, but increases input lag and forces a locked frame rate of your monitor's refresh rate.\n[b]Disabled:[/b] doesn't protect against screen tearing, but doesn't incur input lag and doesn't lock frame rate.\n[b]Adaptive:[/b] lets the video driver dynamically toggle vsync on or off.\n[b]Triple Buffering:[/b] decreases screen tearing chances and increase input lag chances, and increase GPU usage. But improves overall performance."
 ANTI_ALIASING,Anti Aliasing
 WINDOW_MODE,Window Mode
 PARTICLE_QUALITY,Particle Quality
@@ -36,51 +68,41 @@ SHOW_BLOOD,Show Blood
 MAX_FPS,Maximum FPS
 RESOLUTION,Window Resolution
 ASPECT_RATIO,Aspect Ratio
-
-DRAW_AIM_LINE,Show Aim Line
-HELLBREAKER_ENABLED,Hellbreaker
-
+RENDERING_PRESET,Quality Preset
 STORY_MENU_TITLE,ARCHIVES
-CONTINUE_GAME_BUTTON,CONTINUE WRITING
-LOAD_GAME_BUTTON,OPEN A STORY
-NEW_GAME_BUTTON,NEW GAME
-HELP_BUTTON,VALDEN'S BOOK
-SETTINGS_BUTTON,SETTINGS
-MODS_BUTTON,TALES AROUND THE CAMPFIRE
-QUIT_BUTTON,QUIT GAME
-CREDITS_BUTTON,CREDITS
-EXTRAS_BUTTON,EXTRA MODES
-EXTRAS_MODE,EXTRAS
-CREDITS_MENU,CREDITS
-
+CONTINUE_GAME_BUTTON,Continue
+LOAD_GAME_BUTTON,Load Game
+NEW_GAME_BUTTON,New Game
+HELP_BUTTON,Valden's Book
+SETTINGS_BUTTON,Settings
+MODS_BUTTON,Tales Around The Campfire
+QUIT_BUTTON,Quit Game
+CREDITS_BUTTON,Credits
+EXTRAS_BUTTON,Extra Modes
+EXTRAS_MODE,Extras
+CREDITS_MENU,Credits
 START_GAME_BUTTON,PLAY
 JOHN_WICK_BUTTON,JOHN WICK MODE
-
 STORY_MODE_BUTTON,STORY
-COOP_BUTTON,SPLITSCREEN
-MULTIPLAYER_BUTTON,MULTIPLAYER
-
-KICK_BUTTON,EXCOMMUNICATE
-START_MULTIPLAYER_GAME,TO VICTORY!
-EXIT_LOBBY,FLEE
-REFRESH_LOBBIES,REFRESH LOBBIES
-HOST_LOBBY,HOST GAME
-FINDING_MULTIPLAYER_GAME,SORTING CONTRACTS
-JOIN_GAME,JOIN GAME
-CANCEL_MATCHMAKE,CANCEL
-
-MOD_LOADED,LOADED
-MODS_MENU_TTILE,TALES AROUND THE CAMPFIRE
-
-SAVE_SETTINGS,SAVE
-
-RESUME_BUTTON,CONTINUE WRITING
-EXIT_TO_MAIN_MENU_BUTTON,TAKE A BREAK
-EXIT_GAME_BUTTON,GIVE UP
-
+COOP_BUTTON,Splitscreen Co-op
+MULTIPLAYER_BUTTON,Multiplayer
+KICK_BUTTON,Excommunicate
+START_MULTIPLAYER_GAME,To Victory!
+EXIT_LOBBY,Flee
+REFRESH_LOBBIES,Refresh Lobbies
+HOST_LOBBY,Host Game
+FINDING_MULTIPLAYER_GAME,Sorting Contracts...
+JOIN_GAME,Join Game
+CANCEL_MATCHMAKE,Cancel
+MOD_LOADED,Loaded
+MODS_MENU_TTILE,Tales Around The Campfire
+SAVE_SETTINGS,Save
+DEFAULT_SETTINGS,Default
+RESUME_BUTTON,Continue
+EXIT_TO_MAIN_MENU_BUTTON,Exit To Main Menu
+EXIT_GAME_BUTTON,Exit Game
 NPC_PERMA_DEATH,PERMANENT NPC DEATHS
-NPC_PERMA_DEATH_DESCRIPTION,"NPC's (Non Player Characters) die and stay dead. The fights you chose and the people you kill will permanently be marked"
-
+NPC_PERMA_DEATH_DESCRIPTION,NPC's (Non Player Characters) die and stay dead. The fights you chose and the people you kill will permanently be marked
 REFLECT_BUTTON,TAKE IN THE VIEW
 GET_UP,GET UP
 ACTIVATE_CAMPFIRE,REMEMBER
@@ -91,12 +113,10 @@ OPEN_STORAGE,OPEN STORAGE
 REST_HERE,REST FOR A MOMENT...
 SAVE_SLOTS_NAME,SAVE SLOTS
 WARP_TO_CHECKPOINT,WARP TO MEMORY
-
-UPGRADE_EQUIPMENT,UPGRADE EQUIPMENT
-REPAIR_EQUIPMENT,REPAIR EQUIPMENT
-TALK,TALK
-LEAVE_INTERACTION,LEAVE
-
+UPGRADE_EQUIPMENT,Upgrade Equipment
+REPAIR_EQUIPMENT,Repair Equipment
+TALK,Talk
+LEAVE_INTERACTION,Leave
 UNUSED_SLOT,UNUSED
 EASY_MODE_NAME,F.N.G.
 NORMAL_MODE_NAME,Hold My Beer
@@ -104,67 +124,59 @@ HARD_MODE_NAME,I Can Take It!
 VERY_HARD_MODE_NAME,Let's Break A Leg
 INSANE_MODE_NAME,The Black Death
 MEME_MODE_NAME,MEME MODE
-EASY_MODE_DESCRIPTION,"The most stress-free experience. You're new to the job. You'll be facing standard cannon-fodder militia. Play this if you just want the story."
+EASY_MODE_DESCRIPTION,The most stress-free experience. You're new to the job. You'll be facing standard cannon-fodder militia. Play this if you just want the story.
 NORMAL_MODE_DESCRIPTION,"The standard difficulty. You'll get put against actual threats, but nothing too challenging. Still be on your toes though..."
 HARD_MODE_DESCRIPTION,"The game will stop pulling it's punches. You are expected to learn the mechanics, then utilize everything you have to your advantage."
 VERY_HARD_MODE_DESCRIPTION,"You know what you're doing and you can handle yourself in an open battle. Most attacks deal heavy damage, you'll have to be even faster and more precise than before."
-INSANE_MODE_DESCRIPTION,"Only the insane or suicidal will attempt this. All attacks are one shot kills. Your name is one to be feared. NOTE: this is the cannon difficulty"
+INSANE_MODE_DESCRIPTION,Only the insane or suicidal will attempt this. All attacks are one shot kills. Your name is one to be feared. NOTE: this is the cannon difficulty
 INTENDED_MODE_DESCRIPTION,"The intended experience. The combat is brutal, fast-paced, but rewarding. It is a kill or be killed world."
 POWER_FANTASY_MODE_DESCRIPTION,"You are given much more power and much more leeway, but at the cost of a less rewarding and immersive expereince."
-MEME_MODE_DESCRIPTION,"PAIN."
-
+MEME_MODE_DESCRIPTION,PAIN.
 ASTURION_DOUBLE_BARREL_DESCRIPTION,"[p]Crafted by the legendary blacksmith, Asturion Gurnovil. This shotgun is known for being reliable, but a little bit heavy.[/p]"
-ASTURION_8SHOT_DESCRIPTION,""
+ASTURION_8SHOT_DESCRIPTION,
 DESERT_CARBINE_DESCRIPTION,"[p]A shortened version of the desert rifle, but slightly more dangerous due to it being a sawed-off variant of the weapon.[/p][p]\n[/p][p]Most usually found in the possession of bandits.[/p]"
-DESERT_RIFLE_DESCRIPTION,"[p]A deep desert hunting rifle designed mainly for massive beasts. The single-shot breech loaded design of this firearm coupled with the large .50 BMG bullets makes the weapon impractical for anything other than sports. Most usually handcrafted and highly personalized.[/p][p]\n[/p][p]Used primarily by the Dazaki Nomad Clan for Sand Wyrm hunting.[/p]"
+DESERT_RIFLE_DESCRIPTION,[p]A deep desert hunting rifle designed mainly for massive beasts. The single-shot breech loaded design of this firearm coupled with the large .50 BMG bullets makes the weapon impractical for anything other than sports. Most usually handcrafted and highly personalized.[/p][p]\n[/p][p]Used primarily by the Dazaki Nomad Clan for Sand Wyrm hunting.[/p]
 BALLER_DESCRIPTION,"[p]A favored sidearm of many mercenaries and even wealthier citizens as a means of self-defense (in most cases).[/p]\n[p]The baller found its unique usage when someone managed to jam whatever they could find into the sidearm, making it especially formidable because one can never know what was coming out of the barrel.[/p][p]\n[/p][i][char=0022]How did you even get that in there? Buddy, that's bigger than the barrel, that ain't gonna WORK—[char=0022][p][indent]- Some Guy, Somewhere[/indent][/p][/i]"
 MURSTAR_DESCRIPTION,"[p]Originally the unique sidearm of Havlic Murstar, a notorious gunslinger. Shortly following his death, the weapon was mass produced by Latanian Blacksmiths[/p][p]\n[/p][p]Special engravings on the original's grip suggest a much more interesting life of the owner[/p][p]\n[/p][p][i][char=0022]There's only two things you can trust in this life, my dearest sir. Your gun and your knife.[char=0022][/p][p][indent]- Havlic Murstar[/indent][/i][/p]"
 PLASMA_SMG_DESCRIPTION,"[p]A very common weapon used by ranchers, farmers, and hired guns alike. The Plasma SMG is known for being both cheap, but also highly effective.[/p][p]\n[/p][p]It is, however, considered by many to be a warcrime because of its chemically enhanced ammunition burning the skin of its victims.[/p][p]\n[/p][p][i][char=0022]I fear not the person who uses a gun, but the person who knows the gun.[char=0022][/p][p][indent]- Raio[/indent][/i][/p]"
 HEAVY_SLUGGER_DESCRIPTION,"[p]Pump action shotgun commonly used by mercenaries, this thing is especially dangerous as you will never know what's in the shot. Hits like a truck but kicks like a horse.[/p][p]\n[/p][p][i][char=0022]You think you know creative cruelty until you discover the many wonders of shotguns.[char=0022][/p][p][indent]- Raio[/indent][/i]"
-
-12_GAUGE_DESCRIPTION,"A handful of heavy-hitting medium range pellets to put a hole in almost anything. Be careful with that blast radius though."
+12_GAUGE_DESCRIPTION,A handful of heavy-hitting medium range pellets to put a hole in almost anything. Be careful with that blast radius though.
 12_GAUGE_SLUG_DESCRIPTION,"Heavy hitting, reliable, light-weight, and most importantly, cheap. A mercenary's favorite kind of metal rain."
 556_AMMO_DESCRIPTION,"Lightweight and best used with AR's. Heavy hitting and snappy in close-quarters, but quick damage falloff at range."
 762_AMMO_DESCRIPTION,"Heavy hitting with good range, but heavy and a bit inaccurate. Best used for sniper rifles and DMR's."
-PLASMA_FLECHETTES_DESCRIPTION,"Small metal spikes fired specifically from plasma based weaponry. Only effective when combined with an ionized charge that burns skin."
-
+PLASMA_FLECHETTES_DESCRIPTION,Small metal spikes fired specifically from plasma based weaponry. Only effective when combined with an ionized charge that burns skin.
 LETTER_TO_THE_BOSS_BANDIT_HIDEOUT,"[i]Hey, boss, sent Hickey and Longboy to Galakas for the toilet you wanted. They haven't returned though. Send reinforcements? Imma go out for some ciggies. Regards, Wriggler.[/i]"
-
-INVENTORY_BUTTON,BACKPACK
-CONTRACTS_BUTTON,CONTRACTS
-RECENT_EVENTS_BUTTON,NOTES
-BACKPACK_ENCUMBRANCE,ENCUMBRANCE
-TOO_MUCH_ENCUMBRANCE,CARRYING TOO MUCH!
-
-PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME,Too Fucking Angry To Die
-PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION,"Become literally too angry to die... When you die, if you have at least a quarter filled rage bar, you lose all of it and get full health back."
-
+INVENTORY_BUTTON,Backpack
+CONTRACTS_BUTTON,Contracts
+RECENT_EVENTS_BUTTON,Notes
+BACKPACK_ENCUMBRANCE,Encumbrance
+TOO_MUCH_ENCUMBRANCE,Carrying too much!
+BOON_OF_SINATRA_NAME,Boon of Sinatra
 BOON_OF_SINATRA_DESCRIPTION,"Regrets? I've had a few... but being outnumbered, outgunned, out of my mind, isn't one of them. Face the end your way."
-
-TOTEM_OF_REMEMBRANCE_NAME,"Totem of Remembrance"
-TOTEM_OF_REMEMBRANCE_DESCRIPTION,"Some memorobillia of Raio's fallen wife from a long time ago."
-
-CHALLENGE0_NAME,"The Golden Gate Massacre"
+TOTEM_OF_REMEMBRANCE_NAME,Totem of Remembrance
+TOTEM_OF_REMEMBRANCE_DESCRIPTION,Some memorobillia of Raio's fallen wife from a long time ago.
+CHALLENGE0_NAME,The Golden Gate Massacre
 CHALLENGE0_DESCRIPTION,"As the Galakan miltia grew weary and their forces dwindled, the Golden Gates, once a proud display of power and wealth, has become a crumbling mess overtaken by the Sortorian military."
-CHALLENGE0_OBJECTIVE,"Kill all enemies to exit the city in the shortest time possible."
-
-CHALLENGE1_NAME,"The Battle of Sand's Way"
-CHALLENGE1_DESCRIPTION,"WIP!"
-CHALLENGE1_OBJECTIVE,"WIP!"
-
-CHALLENGE2_NAME,"Hellbreaker"
-CHALLENGE2_DESCRIPTION,"Slice past hoards of demons and devils as you claw your way through the pits of hell itself."
-CHALLENGE2_OBJECTIVE,"Activate all 3 obelisks at the edges of the map to escape from hell."
-
-CHALLENGE3_NAME,"In The Dark of the Night"
-CHALLENGE3_DESCRIPTION,""
-
+CHALLENGE0_OBJECTIVE,Kill all enemies to exit the city in the shortest time possible.
+CHALLENGE1_NAME,The Battle of Sand's Way
+CHALLENGE1_DESCRIPTION,WIP!
+CHALLENGE1_OBJECTIVE,WIP!
+CHALLENGE2_NAME,Hellbreaker
+CHALLENGE2_DESCRIPTION,Slice past hoards of demons and devils as you claw your way through the pits of hell itself.
+CHALLENGE2_OBJECTIVE,Activate all 3 obelisks at the edges of the map to escape from hell.
+CHALLENGE3_NAME,In The Dark of the Night
+CHALLENGE3_DESCRIPTION,
 NOTE_KENTARO_MUIRA_MEMORIAL,"Made in memory of the greatest mangaka, Kentaro Muira. May he rest in peace.\n[char=0022]Hate is a place where a man who can't stand sadness goes.[char=0022]"
-
-OPEN_DOOR,"OPEN DOOR"
-USE_DOOR,"USE DOOR"
-
+OPEN_DOOR,Open Door
+USE_DOOR,Use Door
 QUEST0_NOTEBOOK,"I've gotta take the mountain path and get to Kirosla's Estate to the East, then eliminate him for the bounty."
-
-SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_DIRECT,"Found a strange geezer ranting out bandit issues. Said he uses the name Murstar... I've heard that name somewhere."
-SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_RUMOR,"Heard there was an old gunslinger on the outskirts of Sortior causing issues for the bandit clans. Should I see what they're up to?"
+SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_DIRECT,Found a strange geezer ranting about bandit issues. Said he uses the name Murstar... I've heard that name somewhere.
+SIDEQUEST_DESCRIPTION_NO_REST_FOR_THE_WEARY_RUMOR,Heard there was an old gunslinger on the outskirts of Sortior causing issues for the bandit clans. Should I see what they're up to?
+DUNES_OF_DESOLATION_BIOME_NAME,Dunes of Desolation
+SEA_OF_SANDS_BIOME_NAME,Sea of Sands
+SAFE_SANDS_BIOME_NAME,Safe Sands
+SALT_WASTES_BIOME_NAME,Salt Wastes
+FROZEN_NORTH_BIOME_NAME,Frozen North
+BILE_SWAMPS_BIOME_NAME,Bile Swamps
+BURNT_HILLS_BIOME_NAME,Burnt Hills
+ASHEN_PLAINS_BIOME_NAME,Ashen Plains

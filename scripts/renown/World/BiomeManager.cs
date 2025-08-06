@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Renown.World {
 	public partial class BiomeManager : Node {
-		private static readonly float ActivateDistance = 40000.0f;
+		/*
 		private static readonly float ProcessDeltaInterval = 0.30f;
 
 		private float CheckDelta = 0.0f;
@@ -42,5 +42,6 @@ namespace Renown.World {
 				CheckDelta = 0.0f;
 			}
 		}
+		*/
 	};
 };

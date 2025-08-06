@@ -9,10 +9,16 @@ resource_name = "settings_slider_option"
 script/source = "class_name SettingsSliderOption extends HBoxContainer
 
 @export var _title: StringName
+@export var _description: StringName
 @export_range( 0.0, 1000.0 ) var _min: float = 0.0
 @export_range( 0.0, 1000.0 ) var _max: float = 100.0
 
+var _description_cached: String
+
 signal value_changed( value: float )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
 
 func get_value() -> float:
 	return get_node( \"Input\" ).value
@@ -26,6 +32,8 @@ func _on_value_changed( value: float ) -> void:
 
 func _ready() -> void:
 	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	
+	_description_cached = TranslationServer.translate( _description_cached )
 	
 	var _hslider: HSlider = get_node( \"Input\" )
 	_hslider.min_value = _min
@@ -57,6 +65,7 @@ theme_override_styles/slider = ExtResource("2_43t3q")
 theme_override_styles/grabber_area = ExtResource("2_ntx2d")
 theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
 value = 72.0
+rounded = true
 
 [node name="Value" type="Label" parent="Input"]
 modulate = Color(0, 0, 0, 1)

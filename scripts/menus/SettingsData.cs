@@ -32,12 +32,14 @@ public partial class SettingsData : Control {
 	private static float HapticStrength;
 	private static bool HapticEnabled;
 	private static bool QuicktimeAutocomplete;
-	private static int ColorblindMode;
-	private static bool AutoAimEnabled;
+	private static ColorblindMode ColorblindMode;
+	private static AutoAimMode AutoAimMode;
 	private static bool DyslexiaMode;
 	private static float UIScale;
 	private static bool TextToSpeech;
 	private static int TtsVoiceIndex;
+	private static bool EnableTutorials;
+	private static HUDPreset HUDPreset;
 
 	//
 	// audio options
@@ -54,8 +56,6 @@ public partial class SettingsData : Control {
 	private static bool EquipWeaponOnPickup;
 	private static bool HellbreakerEnabled;
 	private static bool HellbreakerRevanents;
-	private static bool EnableTutorials;
-	private static bool ExpertUI;
 
 	//
 	// network options
@@ -197,9 +197,13 @@ public partial class SettingsData : Control {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetHapticStrength( float fHapticStrength ) => HapticStrength = fHapticStrength;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetAutoAimEnabled() => AutoAimEnabled;
+	public static AutoAimMode GetAutoAimMode() => AutoAimMode;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetAutoAimEnabled( bool bAutoAimEnabled ) => AutoAimEnabled = bAutoAimEnabled;
+	public static void SetAutoAimMode( AutoAimMode mode ) => AutoAimMode = mode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static ColorblindMode GetColorblindMode() => ColorblindMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetColorblindMode( ColorblindMode mode ) => ColorblindMode = mode;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static bool GetTutorialsEnabled() => EnableTutorials;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -220,6 +224,10 @@ public partial class SettingsData : Control {
 	public static int GetTtsVoiceIndex() => TtsVoiceIndex;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetTtsVoiceIndex( int nVoiceIndex ) => TtsVoiceIndex = nVoiceIndex;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static HUDPreset GetHUDPreset() => HUDPreset;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetHUDPreset( HUDPreset preset ) => HUDPreset = preset;
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
@@ -229,10 +237,6 @@ public partial class SettingsData : Control {
 	public static bool GetHellbreakerEnabled() => HellbreakerEnabled;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetExpertUI() => ExpertUI;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetExpertUI( bool bExpertUI ) => ExpertUI = bExpertUI;
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static int GetSaveSlot() => LastSaveSlot;
@@ -268,7 +272,8 @@ public partial class SettingsData : Control {
 			);
 			break;
 		case VSyncMode.TripleBuffered:
-			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Mailbox );
+			//			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Mailbox );
+			DisplayServer.WindowSetVsyncMode( DisplayServer.VSyncMode.Enabled );
 			ProjectSettings.SetSetting(
 				"rendering/rendering_device/vsync/swapchain_image_count",
 				3
@@ -542,27 +547,30 @@ public partial class SettingsData : Control {
 		writer.WriteLine();
 	}
 	private static void LoadAccessibilitySettings( IDictionary<string, string> config ) {
-		ColorblindMode = Convert.ToInt32( config[ "Accessibility:ColorblindMode" ] );
+		ColorblindMode = (ColorblindMode)Convert.ToInt32( config[ "Accessibility:ColorblindMode" ] );
 		HapticStrength = Convert.ToSingle( config[ "Accessibility:HapticStrength" ] );
 		HapticEnabled = Convert.ToBoolean( config[ "Accessibility:HapticEnabled" ].ToInt() );
-		AutoAimEnabled = Convert.ToBoolean( config[ "Accessibility:AutoAimEnabled" ].ToInt() );
+		AutoAimMode = (AutoAimMode)Convert.ToUInt32( config[ "Accessibility:AutoAimMode" ] );
 		DyslexiaMode = Convert.ToBoolean( config[ "Accessibility:DyslexiaMode" ].ToInt() );
 		QuicktimeAutocomplete = Convert.ToBoolean( config[ "Accessibility:QuicktimeAutocomplete" ].ToInt() );
 		EnableTutorials = Convert.ToBoolean( config[ "Accessibility:TutorialsEnabled" ].ToInt() );
 		TextToSpeech = Convert.ToBoolean( config[ "Accessibility:TextToSpeech" ].ToInt() );
 		TtsVoiceIndex = Convert.ToInt32( config[ "Accessibility:TtsVoiceIndex" ] );
+		HUDPreset = (HUDPreset)Convert.ToInt32( config[ "Accessibility:HUDPreset" ] );
 	}
 	private static void SaveAccessibilitySettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Accessibility]" );
-		writer.WriteLine( string.Format( "ColorblindMode={0}", ColorblindMode ) );
+		writer.WriteLine( string.Format( "ColorblindMode={0}", (int)ColorblindMode ) );
 		writer.WriteLine( string.Format( "HapticStrength={0}", HapticStrength ) );
 		writer.WriteLine( string.Format( "HapticEnabled={0}", Convert.ToInt32( HapticEnabled ) ) );
-		writer.WriteLine( string.Format( "AutoAimEnabled={0}", Convert.ToInt32( AutoAimEnabled ) ) );
+		writer.WriteLine( string.Format( "AutoAimMode={0}", (uint)AutoAimMode ) );
 		writer.WriteLine( string.Format( "DyslexiaMode={0}", Convert.ToInt32( DyslexiaMode ) ) );
 		writer.WriteLine( string.Format( "QuicktimeAutocomplete={0}", Convert.ToInt32( QuicktimeAutocomplete ) ) );
 		writer.WriteLine( string.Format( "TutorialsEnabled={0}", Convert.ToInt32( EnableTutorials ) ) );
 		writer.WriteLine( string.Format( "TextToSpeech={0}", Convert.ToInt32( TextToSpeech ) ) );
 		writer.WriteLine( string.Format( "TtsVoiceIndex={0}", TtsVoiceIndex ) );
+		writer.WriteLine( string.Format( "EnableTutorials={0}", Convert.ToInt32( EnableTutorials ) ) );
+		writer.WriteLine( string.Format( "HUDPreset={0}", (uint)HUDPreset ) );
 		writer.WriteLine();
 	}
 	private static void LoadGameplaySettings( IDictionary<string, string> config ) {
@@ -575,8 +583,6 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "EquipWeaponOnPickup={0}", Convert.ToInt32( EquipWeaponOnPickup ) ) );
 		writer.WriteLine( string.Format( "HellbreakerEnabled={0}", Convert.ToInt32( HellbreakerEnabled ) ) );
 		writer.WriteLine( string.Format( "HellbreakerRevanents={0}", Convert.ToInt32( HellbreakerRevanents ) ) );
-		writer.WriteLine( string.Format( "EnableTutorials={0}", Convert.ToInt32( EnableTutorials ) ) );
-		writer.WriteLine( string.Format( "ExpertUI={0}", Convert.ToInt32( ExpertUI ) ) );
 		writer.WriteLine();
 	}
 	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
@@ -611,10 +617,10 @@ public partial class SettingsData : Control {
 		HapticEnabled = Default.HapticFeedback;
 		QuicktimeAutocomplete = Default.QuicktimeAutocomplete;
 		ColorblindMode = Default.ColorblindMode;
-		AutoAimEnabled = Default.AutoAim;
+		AutoAimMode = Default.AutoAim;
 		DyslexiaMode = Default.DyslexiaMode;
 		EnableTutorials = Default.EnableTutorials;
-		ExpertUI = Default.ExpertUI;
+		HUDPreset = Default.HUDPreset;
 		TextToSpeech = Default.TextToSpeech;
 		TtsVoiceIndex = Default.TtsVoiceIndex;
 
@@ -666,7 +672,7 @@ public partial class SettingsData : Control {
 			LoadGameplaySettings( iniData );
 			LoadNetworkingSettings( iniData );
 		} catch ( Exception e ) {
-			Console.PrintWarning( string.Format( "Exception while loading settings {0}, using defaults.", e.Message ) );
+			Console.PrintError( string.Format( "Exception while loading settings {0} - using defaults.", e.Message ) );
 			GetDefaultConfig();
 		}
 

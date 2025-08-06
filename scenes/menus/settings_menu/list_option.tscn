@@ -8,12 +8,17 @@ resource_name = "settings_list_option"
 script/source = "class_name SettingsListOption extends HBoxContainer
 
 @export var _title: StringName
+@export var _description: StringName
 @export var _no_translate: bool = false
 @export var _items: Array[ StringName ]
 
+var _description_cached: String
 var _value: int = 0
 
 signal value_changed( value: int )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
 
 func get_value() -> int:
 	return _value
@@ -39,6 +44,7 @@ func _on_right_icon_pressed() -> void:
 
 func _ready() -> void:
 	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	_description_cached = TranslationServer.translate( _description )
 "
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lxw3y"]

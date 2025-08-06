@@ -875,9 +875,13 @@ public partial class Player : Entity {
 		base.SetLocation( location );
 	}
 
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public AnimatedSprite2D GetTorsoAnimation() => TorsoAnimation;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public AnimatedSprite2D GetLegsAnimation() => LegAnimation;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public AnimatedSprite2D GetRightArmAnimation() => ArmRight.Animations;
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]

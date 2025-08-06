@@ -7,7 +7,8 @@ namespace Renown.Thinkers.Groups {
 		CirclePlayer,
 		FlankPlayer,
 		Cover,
-		Retreat
+		Retreat,
+		Suppress
 	};
 	public partial class Squad {
 		public List<Thinker> Members { get; private set; } = new List<Thinker>();
@@ -38,8 +39,7 @@ namespace Renown.Thinkers.Groups {
 				break;
 			case SquadTactic.Cover:
 				break;
-			}
-			;
+			};
 		}
 		public void AssignCirclePositions() {
 			const float radius = 150.0f;

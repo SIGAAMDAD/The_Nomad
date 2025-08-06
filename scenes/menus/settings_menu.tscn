@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=34 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://scenes/menus/settings_menu/list_option.tscn" id="2_5fu2g"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://cevetawunpiw4" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
 [ext_resource type="Script" uid="uid://db27ccgomq455" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
+[ext_resource type="PackedScene" uid="uid://c4soupetm1bb5" path="res://scenes/menus/settings_menu/go_back_advanced_settings_button.tscn" id="6_10nm4"]
 [ext_resource type="Resource" uid="uid://61hxxqe5yeqk" path="res://resources/binds/actions/keyboard/move_west.tres" id="6_rxdtf"]
 [ext_resource type="Script" uid="uid://ccvqqvfooyvn0" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
@@ -22,6 +23,8 @@
 [ext_resource type="Resource" uid="uid://bsstc7pudt16e" path="res://resources/binds/actions/keyboard/interact.tres" id="10_fd2q8"]
 [ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
 [ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="11_l0eij"]
+[ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="20_afkw7"]
+[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="21_fs1xy"]
 
 [sub_resource type="Theme" id="Theme_rrg86"]
 TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
@@ -31,12 +34,15 @@ subpixel_positioning = 0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_afkw7"]
 texture = ExtResource("2_hiabw")
+modulate_color = Color(0, 0, 0, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_s4m6w"]
 subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
 subpixel_positioning = 0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5fu2g"]
 
 [sub_resource type="SystemFont" id="SystemFont_5fu2g"]
 
@@ -77,35 +83,46 @@ theme_override_fonts/font = SubResource("SystemFont_rrg86")
 theme_override_font_sizes/font_size = 14
 theme_override_styles/panel = SubResource("StyleBoxTexture_afkw7")
 tab_alignment = 1
-current_tab = 2
+current_tab = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="Video" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = SubResource("SystemFont_s4m6w")
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Video"]
+[node name="MainContainer" type="VBoxContainer" parent="TabContainer/Video"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 97.0
-offset_top = 124.0
-offset_right = -103.0
-offset_bottom = -123.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -266.0
+offset_top = -146.0
+offset_right = 266.0
+offset_bottom = 146.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VSyncList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Description" type="RichTextLabel" parent="TabContainer/Video/MainContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Video/MainContainer"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="VSyncList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 _title = &"VSYNC"
+_description = &"VSYNC_DESCRIPTION"
 _items = Array[StringName]([&"VSYNC_OFF", &"VSYNC_ADAPTIVE", &"VSYNC_ON", &"VSYNC_TRIPLE_BUFFERED"])
 
-[node name="ResolutionList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="ResolutionList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../WindowModeList")
 focus_mode = 2
@@ -113,7 +130,7 @@ _title = &"RESOLUTION"
 _no_translate = true
 _items = Array[StringName]([&"640x480", &"800x600", &"1280x768", &"1920x1080", &"1600x900"])
 
-[node name="WindowModeList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="WindowModeList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ResolutionList")
 focus_neighbor_bottom = NodePath("../MaxFpsList")
@@ -122,7 +139,7 @@ _title = &"WINDOW_MODE"
 _no_translate = true
 _items = Array[StringName]([&"WINDOWED", &"BORDLERSS WINDOWED", &"FULLSCREEN", &"BORDERLESS FULLSCREEN", &"EXCLUSIVE FULLSCREEN"])
 
-[node name="AntiAliasingList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="AntiAliasingList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../MaxFpsList")
 focus_mode = 2
@@ -130,7 +147,7 @@ _title = &"ANTI_ALIASING"
 _no_translate = true
 _items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
 
-[node name="MaxFpsList" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="MaxFpsList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../WindowModeList")
 focus_neighbor_bottom = NodePath("../AntiAliasingList")
@@ -139,36 +156,27 @@ _title = &"MAX_FPS"
 _no_translate = true
 _items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
 
-[node name="ShowFPSButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="ShowFPSButton" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../ShowBloodButton")
 focus_mode = 2
 _title = &"SHOW_FPS"
 
-[node name="ShowBloodButton" parent="TabContainer/Video/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="ShowBloodButton" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShowFPSButton")
 _title = &"SHOW_BLOOD"
 
-[node name="AdvancedSettingsButton" parent="TabContainer/Video/VBoxContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("5_5fu2g")]
+[node name="AdvancedSettingsButton" parent="TabContainer/Video/MainContainer/VBoxContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("5_5fu2g")]
 layout_mode = 2
-_toggle_container = NodePath("../../AdvancedSettings")
+_toggle_container = NodePath("../../AdvancedContainer")
 
-[node name="AdvancedSettings" type="VBoxContainer" parent="TabContainer/Video"]
+[node name="AdvancedContainer" type="VBoxContainer" parent="TabContainer/Video/MainContainer"]
 visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 97.0
-offset_top = 124.0
-offset_right = -103.0
-offset_bottom = -123.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="ParticleQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+[node name="ParticleQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShadowQualityList")
 focus_mode = 2
@@ -176,7 +184,7 @@ _title = &"PARTICLE_QUALITY"
 _no_translate = true
 _items = Array[StringName]([&"Low", &"High"])
 
-[node name="LightingQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+[node name="LightingQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShadowQualityList")
 focus_mode = 2
@@ -184,21 +192,25 @@ _title = &"LIGHTING_QUALITY"
 _no_translate = true
 _items = Array[StringName]([&"Very Low", &"Low", &"High"])
 
-[node name="ShadowFilterQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+[node name="ShadowFilterQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShadowQualityList")
 focus_mode = 2
 _title = &"SHADOW_FILTER_QUALITY"
 _no_translate = true
-_items = Array[StringName]([&"Off", &"Low", &"Hight"])
+_items = Array[StringName]([&"Off", &"Low", &"High"])
 
-[node name="ShadowQualityList" parent="TabContainer/Video/AdvancedSettings" instance=ExtResource("2_5fu2g")]
+[node name="ShadowQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../ShadowFilterQualityList")
 focus_mode = 2
 _title = &"SHADOW_QUALITY"
 _no_translate = true
 _items = Array[StringName]([&"Low", &"Medium", &"High", &"Ultra"])
+
+[node name="GoBackAdvancedSettingsButton" parent="TabContainer/Video/MainContainer/AdvancedContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("6_10nm4")]
+layout_mode = 2
+_toggle_container = NodePath("../../VBoxContainer")
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -209,15 +221,23 @@ metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = 184.0
-offset_right = -100.0
-offset_bottom = -184.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -272.0
+offset_top = -52.0
+offset_right = 272.0
+offset_bottom = 52.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Description" type="RichTextLabel" parent="TabContainer/Audio/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
 
 [node name="EffectsOnButton" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
@@ -248,20 +268,29 @@ focus_mode = 2
 _title = &"MUSIC_VOLUME"
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 114.0
-offset_top = 197.5
-offset_right = -114.0
-offset_bottom = -197.5
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -272.0
+offset_top = -65.5
+offset_right = 272.0
+offset_bottom = 65.5
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Description" type="RichTextLabel" parent="TabContainer/Accessibility/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
 
 [node name="HapticFeedbackButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
@@ -269,31 +298,36 @@ focus_neighbor_top = NodePath("../DyslexiaModeButton")
 focus_neighbor_bottom = NodePath("../HapticStrengthSlider")
 focus_mode = 2
 _title = &"HAPTIC_FEEDBACK"
+_description = &"HAPTIC_FEEDBACK_DESCRIPTION"
 
 [node name="HapticStrengthSlider" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_s4m6w")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../HapticFeedbackButton")
-focus_neighbor_bottom = NodePath("../AutoAimButton")
 focus_mode = 2
 _title = &"HAPTIC_FEEDBACK_STRENGTH"
-
-[node name="AutoAimButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../HapticStrengthSlider")
-focus_neighbor_bottom = NodePath("../DyslexiaModeButton")
-focus_mode = 2
-_title = &"AUTOAIM"
+_description = &"HAPTIC_FEEDBACK_STRENGTH_DESCRIPTION"
 
 [node name="DyslexiaModeButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../AutoAimButton")
 focus_previous = NodePath("../HapticFeedbackButton")
 focus_mode = 2
 _title = &"DYSLEXIA_MODE"
+_description = &"DYSLEXIA_MODE_DESCRIPTION"
 
 [node name="TextToSpeechButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
 _title = &"TEXT_TO_SPEECH"
+
+[node name="ColorblindModeList" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+_title = &"COLORBLIND_MODE"
+_items = Array[StringName]([&"COLORBLINDMODE_OFF", &"COLORBLINDMODE_PROTANOPIA", &"COLORBLINDMODE_TRITANOPIA", &"COLORBLINDMODE_DEUTERANOPIA"])
+
+[node name="AutoAimList" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+_title = &"AUTOAIM"
+_description = &"AUTOAIM_DESCRIPTION"
+_items = Array[StringName]([&"AUTOAIM_OFF", &"AUTOAIM_SOFT", &"AUTOAIM_LOCKON"])
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 visible = false
@@ -302,43 +336,39 @@ metadata/_tab_index = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Gameplay"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 114.0
-offset_top = 197.5
-offset_right = -114.0
-offset_bottom = -197.5
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -266.0
+offset_top = -52.0
+offset_right = 266.0
+offset_bottom = 52.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="DrawAimLineButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Description" type="RichTextLabel" parent="TabContainer/Gameplay/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-focus_neighbor_top = NodePath("../ExpertUIButton")
-focus_neighbor_bottom = NodePath("../HellbreakerEnabledButton")
-focus_mode = 2
-_title = &"DRAW_AIM_LINE"
+bbcode_enabled = true
 
 [node name="HellbreakerEnabledButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../DrawAimLineButton")
-focus_neighbor_bottom = NodePath("../EnableTutorialsButton")
 focus_mode = 2
 _title = &"HELLBREAKER_ENABLED"
 
 [node name="EnableTutorialsButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../HellbreakerEnabledButton")
-focus_neighbor_bottom = NodePath("../ExpertUIButton")
-focus_mode = 2
 _title = &"ENABLE_TUTORIALS"
+_description = &"ENABLE_TUTORIALS_DESCRIPTION"
 
-[node name="ExpertUIButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="HUDPresetList" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../EnableTutorialsButton")
-focus_neighbor_bottom = NodePath("../DrawAimLineButton")
-focus_mode = 2
-_title = &"EXPERT_UI"
+_title = &"HUD_PRESET"
+_no_translate = true
+_items = Array[StringName]([&"Full", &"Partial", &"Expert"])
 
 [node name="Network" type="TabBar" parent="TabContainer"]
 visible = false
@@ -347,15 +377,23 @@ metadata/_tab_index = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Network"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 242.0
-offset_top = 225.0
-offset_right = -242.0
-offset_bottom = -225.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -266.0
+offset_top = -25.0
+offset_right = 266.0
+offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Description" type="RichTextLabel" parent="TabContainer/Network/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
 
 [node name="EnableNetworkingButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
@@ -378,6 +416,7 @@ mouse_filter = 2
 metadata/_tab_index = 5
 
 [node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -385,6 +424,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5fu2g")
 current_tab = 2
 metadata/_edit_use_anchors_ = true
 
@@ -519,16 +559,62 @@ _action_name = &"bullet_time"
 _display_category = &"combat"
 _action = ExtResource("11_l0eij")
 
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Controls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Controls/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="MovementButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "MOVEMENT_BUTTON"
+
+[node name="UtilityButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "UTILITY_BUTTON"
+
+[node name="CombatButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "COMBAT_BUTTON"
+
 [node name="SaveSettingsButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.652
+anchor_left = 0.791
 anchor_top = 0.919
-anchor_right = 1.0
+anchor_right = 0.989
 anchor_bottom = 0.983
-offset_left = -0.279999
-offset_top = 6.87997
-offset_right = -7.0
+offset_left = -0.240021
+offset_top = -0.120026
+offset_right = 0.039978
 offset_bottom = 0.159973
 grow_horizontal = 0
 grow_vertical = 0
@@ -537,7 +623,37 @@ theme_override_fonts/font = SubResource("SystemFont_5fu2g")
 text = "SAVE_SETTINGS"
 metadata/_edit_use_anchors_ = true
 
+[node name="DefaultSettingsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.531
+anchor_top = 0.919
+anchor_right = 0.778
+anchor_bottom = 0.983
+offset_left = 31.1599
+offset_top = -0.120026
+offset_right = 0.0799255
+offset_bottom = 0.159973
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 1
+theme_override_fonts/font = SubResource("SystemFont_5fu2g")
+text = "DEFAULT_SETTINGS"
+metadata/_edit_use_anchors_ = true
+
 [node name="GUIDEInputDetector" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("5_gmmd7")
 abort_detection_on = Array[ExtResource("6_u2rrl")]([SubResource("Resource_qxrc6")])
+
+[node name="SettingsChangedDialogue" type="ConfirmationDialog" parent="."]
+title = "WARNING!"
+initial_position = 2
+size = Vector2i(400, 106)
+unresizable = true
+borderless = true
+always_on_top = true
+ok_button_text = "Yes"
+dialog_text = "WARNING: You have made changes to some settings, Save settings?"
+dialog_autowrap = true
+cancel_button_text = "No"

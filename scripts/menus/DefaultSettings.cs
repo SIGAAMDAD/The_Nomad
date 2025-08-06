@@ -76,6 +76,31 @@ public enum DRSPreset : uint {
 	Dynamic // trying to hit a target framerate
 };
 
+public enum AutoAimMode : uint {
+	Off,
+	Soft,
+	LockOn
+};
+
+public enum HUDPreset : uint {
+	// all hud elements are used
+	Full,
+
+	// only essential hud elements are presented
+	Partial,
+	
+	// all hud ui elements are hidden
+	Expert
+};
+
+public enum ColorblindMode : uint {
+	None,
+	Protanopia,
+	Deutanopia,
+	Trianopia,
+	Monochromacy
+};
+
 public partial class DefaultSettings : Resource {
 	//
 	// video
@@ -111,22 +136,22 @@ public partial class DefaultSettings : Resource {
 	[Export] public bool HapticFeedback { get; private set; } = true;
 	[Export] public int HapticStrength { get; private set; } = 50;
 	[Export] public bool QuicktimeAutocomplete { get; private set; } = false;
-	[Export] public bool AutoAim { get; private set; } = false;
-	[Export] public int ColorblindMode { get; private set; } = 0;
+	[Export] public AutoAimMode AutoAim { get; private set; } = AutoAimMode.Off;
 	[Export] public bool DyslexiaMode { get; private set; } = false;
 	[Export] public bool EnableTutorials { get; private set; } = false;
+	[Export] public ColorblindMode ColorblindMode { get; private set; } = ColorblindMode.None;
 	[Export] public bool TextToSpeech { get; private set; } = false;
 	[Export] public int TtsVoiceIndex { get; private set; } = 0;
 	[Export] public float UIScale { get; private set; } = 1.0f;
+	[Export] public HUDPreset HUDPreset { get; private set; } = HUDPreset.Full;
+	[Export] public bool DrawAimLine { get; private set; } = true;
 
 	//
 	// gameplay
 	//
 	[Export] public bool EquipWeaponOnPickup { get; private set; } = true;
-	[Export] public bool DrawAimLine { get; private set; } = true;
 	[Export] public bool Hellbreaker { get; private set; } = false;
 	[Export] public bool HellbreakerRevanents { get; private set; } = false;
-	[Export] public bool ExpertUI { get; private set; } = false;
 	[Export] public bool StopGameOnFocusLost { get; private set; } = true;
 
 	//

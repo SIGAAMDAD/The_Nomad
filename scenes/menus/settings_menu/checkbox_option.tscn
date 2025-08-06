@@ -8,10 +8,15 @@ resource_name = "settings_checkbox_option"
 script/source = "class_name SettingsCheckboxOption extends HBoxContainer
 
 @export var _title: StringName
+@export var _description: StringName
 
+var _description_cached: String
 var _value: bool = false
 
 signal value_changed( value: bool )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
 
 func get_value() -> bool:
 	return _value
@@ -29,6 +34,7 @@ func _on_toggled() -> void:
 
 func _ready() -> void:
 	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	_description_cached = TranslationServer.translate( _description )
 "
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhfsd"]

@@ -110,21 +110,20 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	/// </summary>
 	public float Dirtiness { get; private set; } = 0.0f;
 
-	public Vector2 CurrentRecoilOffset { get; private set;}
-	public float CurrentRecoilRotation { get; private set;}
+	public Vector2 CurrentRecoilOffset { get; private set; }
+	public float CurrentRecoilRotation { get; private set; }
 
 	private float AttackAngle = 0.0f;
 	private float LastWeaponAngle = 0.0f;
 
 	private AnimatedSprite2D Animations;
-	private Timer WeaponTimer;
+	public Timer WeaponTimer { get; private set; }
 	public Entity _Owner;
 
 	public AmmoStack Reserve { get; private set; }
 	public AmmoEntity Ammo { get; private set; }
 	public int BulletsLeft { get; private set; } = 0;
-	private Timer MuzzleFlashTimer;
-	private PointLight2D MuzzleLight;
+	private Sprite2D MuzzleLight;
 	private List<Sprite2D> MuzzleFlashes;
 	private Sprite2D CurrentMuzzleFlash;
 
@@ -296,19 +295,11 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 				MuzzleFlashes.Add( texture );
 			}
 
-			MuzzleFlashTimer = new Timer();
-			MuzzleFlashTimer.Name = "MuzzleFlashTimer";
-			MuzzleFlashTimer.WaitTime = 0.05f;
-			MuzzleFlashTimer.OneShot = true;
-			MuzzleFlashTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMuzzleFlashTimerTimeout ) );
-			AddChild( MuzzleFlashTimer );
-
-			MuzzleLight = new PointLight2D();
+			MuzzleLight = new Sprite2D();
 			MuzzleLight.Name = "MuzzleLight";
 			MuzzleLight.Texture = ResourceCache.Light;
-			MuzzleLight.TextureScale = 5.0f;
-			MuzzleLight.Energy = 2.5f;
-			MuzzleLight.Color = new Color( "#db7800" );
+			MuzzleLight.Scale = new Godot.Vector2( 5.0f, 5.0f );
+			MuzzleLight.Modulate = new Color { R = 4.5f, G = 3.5f, B = 2.5f };
 			MuzzleLight.Hide();
 			AddChild( MuzzleLight );
 
@@ -654,7 +645,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case FireMode.Invalid:
 		default:
 			return 0.0f;
-		};
+		}
+		;
 
 		float recoilMagnitude = ( BaseRecoilForce + ( Ammo.Velocity * VelocityRecoilFactor ) ) * recoilMultiplier;
 
@@ -662,7 +654,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		CurrentRecoilOffset += recoilDirection * recoilMagnitude;
 
 		CurrentRecoilRotation += ( RNJesus.FloatRange( 0.0f, 1.0f ) > 0.5f ? 1.0f : -1.0f ) * recoilMagnitude * 0.5f;
-//		CurrentRecoilRotation = Mathf.Clamp( CurrentRecoilRotation, -5.0f, 5.0f );
+		//		CurrentRecoilRotation = Mathf.Clamp( CurrentRecoilRotation, -5.0f, 5.0f );
 
 		CurrentState = WeaponState.Use;
 		WeaponTimer.WaitTime = UseTime;
@@ -685,7 +677,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		GunSmoke.GlobalPosition = new Vector2( Icon.GetWidth(), 0.0f );
 		CurrentMuzzleFlash.CallDeferred( MethodName.AddChild, GunSmoke );
 
-		MuzzleFlashTimer.Start();
+		GetTree().CreateTimer( 0.2f ).Connect( Timer.SignalName.Timeout, Callable.From( OnMuzzleFlashTimerTimeout ) );
 
 		/*
 		float y = CurrentMuzzleFlash.Offset.Y;
@@ -755,7 +747,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return 0.0f; // can't use it when it's being used
-		};
+		}
+		;
 
 		SetUseMode( weaponMode );
 
@@ -773,7 +766,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	}
 
 	private void OnUseTimeTimeout() {
-		WeaponTimer.Disconnect( "timeout", Callable.From( OnUseTimeTimeout ) );
+		WeaponTimer.Disconnect( Timer.SignalName.Timeout, Callable.From( OnUseTimeTimeout ) );
 
 		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
 			if ( BulletsLeft < 1 ) {
@@ -786,8 +779,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	}
 
 	private void OnReloadTimeTimeout() {
-		if ( ResourceCache.Initialized && WeaponTimer.IsConnected( "timeout", Callable.From( OnReloadTimeTimeout ) ) ) {
-			WeaponTimer.Disconnect( "timeout", Callable.From( OnReloadTimeTimeout ) );
+		if ( ResourceCache.Initialized && WeaponTimer.IsConnected( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) ) ) {
+			WeaponTimer.Disconnect( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) );
 		}
 
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );

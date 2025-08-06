@@ -80,6 +80,10 @@ public partial class Checkpoint : InteractionItem {
 
 		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );
 		Connect( SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DExited ) );
+
+		VisibleOnScreenEnabler2D enabler = GetNode<VisibleOnScreenEnabler2D>( "VisibleOnScreenEnabler2D" );
+		enabler.Connect( "screen_entered", Callable.From( Show ) );
+		enabler.Connect( "screen_exited", Callable.From( Hide ) );
 		
 		Animations = GetNode<AnimatedSprite2D>( "AnimatedSprite2D" );
 
