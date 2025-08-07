@@ -325,7 +325,7 @@ dialog_text = "UPGRADE"
 dialog_close_on_escape = false
 cancel_button_text = "NO"
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 process_mode = 1
 position = Vector2(-7.62939e-06, -1)
 scale = Vector2(18.3, 15.6)

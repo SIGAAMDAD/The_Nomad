@@ -312,9 +312,9 @@ namespace Renown.Thinkers {
 
 			NavAgentRID = NavAgent.GetRid();
 
-			VisibleOnScreenEnabler2D enabler = GetNode<VisibleOnScreenEnabler2D>( "VisibleOnScreenEnabler2D" );
-			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( Show ) );
-			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenExited, Callable.From( Hide ) );
+			VisibleOnScreenNotifier2D enabler = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
+			enabler.Connect( VisibleOnScreenNotifier2D.SignalName.ScreenEntered, Callable.From( Show ) );
+			enabler.Connect( VisibleOnScreenNotifier2D.SignalName.ScreenExited, Callable.From( Hide ) );
 
 			if ( IsPremade ) {
 				InitialPath = GetPath();

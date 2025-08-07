@@ -30,8 +30,8 @@
 [ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="16_nrav7"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="16_qxnsc"]
 [ext_resource type="Texture2D" uid="uid://05bob0nsii0e" path="res://textures/hud/ARBLS2.png" id="17_jak0u"]
-[ext_resource type="Texture2D" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
-[ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="17_xstx4"]
+[ext_resource type="Texture2D" uid="uid://nhu6hy65cj1o" path="res://textures/env/icona_bullets.dds" id="17_rxc6h"]
+[ext_resource type="Texture2D" uid="uid://dd3u85ewmb540" path="res://icon.svg" id="17_xstx4"]
 [ext_resource type="Script" uid="uid://cvcxs2q7qe1s5" path="res://scripts/PlayerSystem/StatusIcon.cs" id="18_a6h4m"]
 [ext_resource type="Texture2D" uid="uid://ca3yj5m0k18if" path="res://textures/hud/PAIN1.png" id="22_dg2ec"]
 [ext_resource type="Script" uid="uid://bu7gdjadtgg4m" path="res://addons/advanced_radial_menu/radial_menu_class.gd" id="25_v24h6"]
@@ -744,11 +744,11 @@ anchor_left = 0.551
 anchor_top = 0.000864207
 anchor_right = 0.817
 anchor_bottom = 0.269
-offset_left = 27.6006
-offset_top = 42.8142
-offset_right = -14.6394
-offset_bottom = 42.109
-pivot_offset = Vector2(47.9119, 47.9119)
+offset_left = 11.5125
+offset_top = 26.726
+offset_right = -30.7275
+offset_bottom = 26.0209
+pivot_offset = Vector2(64, 64)
 texture = ExtResource("26_vg31i")
 expand_mode = 2
 
@@ -758,7 +758,7 @@ offset_left = 147.848
 offset_top = 27.1411
 offset_right = 275.848
 offset_bottom = 155.141
-pivot_offset = Vector2(64, 63.9998)
+pivot_offset = Vector2(64, 64)
 texture = ExtResource("27_aelwk")
 expand_mode = 2
 
@@ -768,7 +768,7 @@ offset_left = 81.0056
 offset_top = 232.859
 offset_right = 209.006
 offset_bottom = 360.859
-pivot_offset = Vector2(64, 64)
+pivot_offset = Vector2(64.0002, 64)
 texture = ExtResource("28_xw6ac")
 expand_mode = 2
 

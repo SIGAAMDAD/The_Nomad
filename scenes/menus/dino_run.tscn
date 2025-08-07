@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxh7vwkn6pafs" path="res://scripts/menus/DinoRun.cs" id="1_7a48k"]
 [ext_resource type="Texture2D" uid="uid://cewbhbk1amtnw" path="res://textures/spritesheets/DinoSprites - doux.png" id="2_f2mip"]
-[ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="2_pmevc"]
+[ext_resource type="Texture2D" uid="uid://dd3u85ewmb540" path="res://icon.svg" id="2_pmevc"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_pmevc"]
 distance = -1.0
@@ -148,7 +148,7 @@ collision_mask = 4
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Dino"]
 sprite_frames = SubResource("SpriteFrames_38qxf")
 autoplay = "default"
-frame_progress = 0.833226
+frame_progress = 0.0460491
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Dino"]
 position = Vector2(0, 0.5)
