@@ -13,7 +13,6 @@ using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using PlayerSystem.Upgrades;
-using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 public enum WeaponSlotIndex : int {
 	Primary,

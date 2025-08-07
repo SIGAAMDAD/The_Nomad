@@ -385,7 +385,7 @@ namespace Renown.Thinkers {
 
 			CurrentState = State.Animate;
 
-//			Group = SquadManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
+			Group = SquadManager.GetGroup( Faction, GlobalPosition );
 			Group.AddMember( this );
 
 			LoseInterestTimer = new Timer();
@@ -493,11 +493,9 @@ namespace Renown.Thinkers {
 					}
 				),
 				new MountainGoap.Goal(
-					name: "ShootAtTargetGoal",
-					weight: 0.9f,
+					name: "KillTargetGoal",
+					weight: 0.7f,
 					desiredState: new Dictionary<string, object>{
-						{ "HasAmmo", true },
-						{ "PlayerVisible", true },
 						{ "Target", null }
 					}
 				),
@@ -674,6 +672,8 @@ namespace Renown.Thinkers {
 			Agent.State[ "HasAmmo" ] = AmmoStack.Amount > 0;
 			Agent.State[ "PlayerVisible" ] = CanSeeTarget;
 			Agent.State[ "WeaponState" ] = Weapon.CurrentState;
+			Agent.State[ "SquadTactic" ] = Group.CurrentTactic;
+			Agent.State[ "PlayerVisible" ] = CanSeeTarget;
 			if ( Fear > 80 ) {
 				Agent.State[ "ClearLineOfFire" ] = true;
 			}
@@ -681,6 +681,8 @@ namespace Renown.Thinkers {
 		protected override void Think() {
 			SyncGOAPState();
 			CheckSight();
+
+//			Agent.Step();
 
 			/*
 			if ( Awareness == MobAwareness.Relaxed ) {

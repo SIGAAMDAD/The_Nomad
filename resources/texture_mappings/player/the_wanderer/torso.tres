@@ -1,6 +1,6 @@
 [gd_resource type="CanvasTexture" load_steps=2 format=3 uid="uid://dwv26twr7cv3"]
 
-[ext_resource type="Texture2D" uid="uid://cdt541evm81ch" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.png" id="1_a12vf"]
+[ext_resource type="Texture2D" uid="uid://cdbpfdprqasia" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.dds" id="1_a12vf"]
 
 [resource]
 diffuse_texture = ExtResource("1_a12vf")

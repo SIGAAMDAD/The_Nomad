@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://ca1bx07bc3p25"]
 
 [ext_resource type="Texture2D" uid="uid://b060c1x36h7ol" path="res://resources/texture_mappings/player/the_wanderer/left_arms.tres" id="1_srqll"]
-[ext_resource type="Texture2D" uid="uid://jfj3ofow8nfw" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.png" id="2_3hygu"]
+[ext_resource type="Texture2D" uid="uid://l8cr2k4hu7fg" path="res://textures/spritesheets/skins/the_wanderer/raio_arms_left.dds" id="2_3hygu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3hygu"]
 atlas = ExtResource("1_srqll")

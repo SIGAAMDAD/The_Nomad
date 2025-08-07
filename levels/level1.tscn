@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=4 uid="uid://b3i7rvpundukw"]
+[gd_scene load_steps=13 format=4 uid="uid://b3i7rvpundukw"]
 
 [ext_resource type="Texture2D" uid="uid://hl27th00p43e" path="res://textures/bg.png" id="1_dll6n"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="2_q1lvc"]
 [ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="4_jbyux"]
 [ext_resource type="Script" uid="uid://cssgrxw2e53nm" path="res://scripts/tilemap_floor.gd" id="4_oupxb"]
 [ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="5_g7jqm"]
-[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="7_kxijb"]
 
 [sub_resource type="Resource" id="Resource_pdpul"]
 metadata/__load_path__ = "res://scripts/levels/from_eagles_peak.gd"
@@ -20,6 +19,15 @@ gradient = SubResource("Gradient_8hd6v")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7yjew"]
 shader = ExtResource("5_g7jqm")
 shader_parameter/alpha_blend = false
+
+[sub_resource type="Resource" id="Resource_61w3m"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_8hd6v"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_045es"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
 
 [node name="FromEaglesPeak" type="Node2D"]
 script = SubResource("Resource_pdpul")
@@ -118,21 +126,21 @@ tile_set = ExtResource("2_q1lvc")
 
 [node name="Sink" type="Sprite2D" parent="SecondFloorLayer0/SecondDecorLevelLayer1"]
 position = Vector2(2843, 620)
-texture = ExtResource("7_kxijb")
+texture = SubResource("Resource_61w3m")
 hframes = 19
 vframes = 19
 frame = 7
 
 [node name="OverheadCabinet" type="Sprite2D" parent="SecondFloorLayer0/SecondDecorLevelLayer1"]
 position = Vector2(2842, 603)
-texture = ExtResource("7_kxijb")
+texture = SubResource("Resource_8hd6v")
 hframes = 19
 vframes = 19
 frame = 45
 
 [node name="SideCabinet" type="Sprite2D" parent="SecondFloorLayer0/SecondDecorLevelLayer1"]
 position = Vector2(2818, 615)
-texture = ExtResource("7_kxijb")
+texture = SubResource("Resource_045es")
 hframes = 19
 vframes = 19
 frame = 110

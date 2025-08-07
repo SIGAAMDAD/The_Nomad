@@ -63,10 +63,6 @@ namespace PlayerSystem.Upgrades {
 				ForgeSparks.Play();
 			} ) );
 
-			VisibleOnScreenEnabler2D enabler = GetNode<VisibleOnScreenEnabler2D>( "VisibleOnScreenEnabler2D" );
-			enabler.Connect( "screen_entered", Callable.From( Show ) );
-			enabler.Connect( "screen_exited", Callable.From( Hide ) );
-
 			Node CraftStation = GetNode( "CraftStation" );
 			CraftStation.Set( "database", ResourceCache.ItemDatabase );
 

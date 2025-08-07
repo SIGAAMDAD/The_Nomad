@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://do001o6aysaxo" path="res://addons/guide/ui/renderers/joy/icons/stick_empty.png" id="2_23u2k"]
 [ext_resource type="Texture2D" uid="uid://veqjcwokdukw" path="res://addons/guide/ui/renderers/joy/icons/button_empty.png" id="3_7qfbp"]
 [ext_resource type="FontFile" uid="uid://cu8bvod6tnnwr" path="res://addons/guide/ui/renderers/keyboard/Lato-Black.ttf" id="4_otp86"]
-[ext_resource type="Texture2D" uid="uid://bmgxqbypegjxh" path="res://addons/guide/ui/renderers/textures/arrow_horizontal.svg" id="5_81uyo"]
-[ext_resource type="Texture2D" uid="uid://bu5nlug6uf03w" path="res://addons/guide/ui/renderers/textures/arrow_vertical.svg" id="6_syx8c"]
+[ext_resource type="Texture2D" uid="uid://dn0l0ni3ynbkb" path="res://addons/guide/ui/renderers/textures/arrow_horizontal.dds" id="5_81uyo"]
+[ext_resource type="Texture2D" uid="uid://b0j7741nsri6w" path="res://addons/guide/ui/renderers/textures/arrow_vertical.dds" id="6_syx8c"]
 
 [node name="JoyRenderer" type="MarginContainer"]
 offset_right = 100.0

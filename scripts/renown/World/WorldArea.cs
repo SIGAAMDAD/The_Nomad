@@ -4,7 +4,10 @@ using Renown.Thinkers;
 
 namespace Renown.World {
 	public partial class WorldArea : Area2D {
+		private static readonly float PlayerCheckInterval = 0.30f;
 		public static DataCache<WorldArea> Cache;
+
+		private float CheckDelta = 0.0f;
 
 		[Export]
 		protected Biome Biome;
@@ -35,6 +38,7 @@ namespace Renown.World {
 		public virtual void Load() {
 		}
 
+		/*
 		private void OnProcessAreaBody2DEntered( Node2D body ) {
 			if ( body is Entity entity && entity != null ) {
 				if ( body is Player player && player != null ) {
@@ -54,16 +58,16 @@ namespace Renown.World {
 				SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
 			}
 		}
+		*/
 
 		public override void _Ready() {
 			base._Ready();
 
-			Connect( Area2D.SignalName.BodyEntered, Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
-			Connect( Area2D.SignalName.BodyExited, Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
-			Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
-			Connect( Area2D.SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
+//			Connect( Area2D.SignalName.BodyEntered, Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
+//			Connect( Area2D.SignalName.BodyExited, Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
+//			Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
+//			Connect( Area2D.SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
 
-			ProcessMode = ProcessModeEnum.Disabled;
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = (int)GetRid().Id;
 
@@ -75,7 +79,41 @@ namespace Renown.World {
 			if ( !IsInGroup( "Locations" ) ) {
 				AddToGroup( "Locations" );
 			}
+		}
+
+		private void Disable() {
+			PlayerStatus = false;
+			EmitSignalPlayerExited();
+
 			Hide();
+			Godot.Collections.Array<Node> children = GetChildren();
+			for ( int i = 0; i < children.Count; i++ ) {
+				if ( children[ i ].Name != "AreaShape" ) {
+					children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
+				}
+			}
+		}
+		private void Enable() {
+			PlayerStatus = true;
+			EmitSignalPlayerEntered();
+
+			Show();
+			Godot.Collections.Array<Node> children = GetChildren();
+			for ( int i = 0; i < children.Count; i++ ) {
+				children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
+			}
+		}
+		public override void _Process( double delta ) {
+			base._Process( delta );
+
+			CheckDelta += (float)delta;
+			if ( CheckDelta > PlayerCheckInterval ) {
+				if ( !GetOverlappingBodies().Contains( LevelData.Instance.ThisPlayer ) ) {
+					CallDeferred( MethodName.Disable );
+				} else {
+					CallDeferred( MethodName.Enable );
+				}
+			}
 		}
 	};
 };

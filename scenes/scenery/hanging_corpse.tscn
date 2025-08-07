@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://mgg8wmojy0ea"]
-
-[ext_resource type="Texture2D" uid="uid://c7hgicdhxima4" path="res://textures/env/gore1.png" id="1_6falh"]
-
-[node name="HangingCorpse" type="Node2D"]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_6falh")

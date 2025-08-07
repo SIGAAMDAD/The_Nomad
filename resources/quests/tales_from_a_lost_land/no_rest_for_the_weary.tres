@@ -47,3 +47,4 @@ edge_type = 0
 script = ExtResource("3_jt0rk")
 nodes = Array[ExtResource("2_uaqwh")]([SubResource("Resource_svg3e"), SubResource("Resource_7nyrk"), SubResource("Resource_rllx4")])
 edges = Array[ExtResource("1_vwp6o")]([SubResource("Resource_ubdjk"), SubResource("Resource_hg8mx")])
+metadata/state_tracker = PackedStringArray("")

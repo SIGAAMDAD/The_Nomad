@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using Renown.World;
 
 namespace Renown.Thinkers.Groups {
 	public enum SquadTactic {
@@ -10,13 +11,24 @@ namespace Renown.Thinkers.Groups {
 		Retreat,
 		Suppress
 	};
-	public partial class Squad {
+	public class Squad {
+		public static readonly int MaxSquadMembers = 24;
+
 		public List<Thinker> Members { get; private set; } = new List<Thinker>();
+		public Thinker Leader { get; private set; } = null;
+		public Faction Faction { get; private set; } = null;
 		public Vector2 LastKnownTargetPosition { get; private set; }
 		public SquadTactic CurrentTactic { get; private set; } = SquadTactic.None;
 		public Dictionary<Thinker, Vector2> AssignedPositions { get; private set; } = new Dictionary<Thinker, Vector2>();
 
+		public Squad( Faction faction ) {
+			Faction = faction;
+		}
+
 		public void AddMember( Thinker member ) {
+			if ( Members.Count == 0 ) {
+				Leader = member;
+			}
 			if ( !Members.Contains( member ) ) {
 				Members.Add( member );
 			}

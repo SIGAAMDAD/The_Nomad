@@ -1,7 +1,7 @@
 [gd_resource type="TileSet" load_steps=14 format=3 uid="uid://l3b780v0d6p4"]
 
-[ext_resource type="Texture2D" uid="uid://pubd5h3pth35" path="res://textures/tilesets/kirosla_estate.png" id="1_1jwus"]
-[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="2_awt23"]
+[ext_resource type="Texture2D" uid="uid://clcanwwydfoln" path="res://textures/tilesets/kirosla_estate.dds" id="1_1jwus"]
+[ext_resource type="Texture2D" uid="uid://cvcwqconxr2m5" path="res://textures/tilesets/furniture.dds" id="2_awt23"]
 [ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="3_bdaau"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bdaau"]

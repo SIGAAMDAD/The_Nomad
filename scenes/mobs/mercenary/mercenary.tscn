@@ -69,3 +69,8 @@ modulate = Color(0, 1, 0, 1)
 position = Vector2(11, 0)
 points = PackedVector2Array(-25, -19, 4, -19)
 width = 6.0
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+process_mode = 1
+position = Vector2(0, -3)
+scale = Vector2(2, 2.8)

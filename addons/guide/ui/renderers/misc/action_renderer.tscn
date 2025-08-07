@@ -1,9 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://ortn6jb3wljf"]
 
 [ext_resource type="Script" uid="uid://bdrygt8mymguu" path="res://addons/guide/ui/renderers/misc/action_renderer.gd" id="1_140q4"]
-[ext_resource type="Texture2D" uid="uid://diwkvjkss2ie" path="res://addons/guide/ui/renderers/textures/action.svg" id="2_uqvia"]
+[ext_resource type="Texture2D" uid="uid://bjoulqdjsxq1p" path="res://addons/guide/ui/renderers/textures/action.dds" id="2_uqvia"]
 
 [node name="ActionRenderer" type="MarginContainer"]
+process_mode = 3
 offset_right = 512.0
 offset_bottom = 512.0
 size_flags_horizontal = 0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bp5h62f63d8j3"]
 
-[ext_resource type="Texture2D" uid="uid://rtmeypq6yacv" path="res://textures/tilesets/under_city_entrance-pixilart.png" id="1_4wdby"]
+[ext_resource type="Texture2D" uid="uid://dg8pnbh7oywe4" path="res://textures/tilesets/under_city_entrance-pixilart.dds" id="1_4wdby"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y2nay"]
 size = Vector2(32, 32)

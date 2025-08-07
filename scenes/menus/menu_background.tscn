@@ -1,13 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://bc6bj5sw3gvf8"]
+[gd_scene load_steps=12 format=3 uid="uid://bc6bj5sw3gvf8"]
 
 [ext_resource type="Script" uid="uid://wjwtn0scjjxm" path="res://scripts/menus/menu_background.gd" id="1_6lvap"]
-[ext_resource type="Shader" uid="uid://kkvkaj6vyikk" path="res://shaders/main_menu_decay.gdshader" id="1_rhrir"]
 [ext_resource type="PackedScene" uid="uid://3u5svye8t06i" path="res://scenes/world_environment.tscn" id="2_d58y2"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u1nnk"]
-shader = ExtResource("1_rhrir")
-shader_parameter/decay_active = true
-shader_parameter/decay_timer = 0.0
 
 [sub_resource type="Gradient" id="Gradient_6lvap"]
 offsets = PackedFloat32Array(1)
@@ -85,7 +79,6 @@ glow_map_strength = 0.0
 
 [node name="MenuBackground" type="Control"]
 z_index = -2
-material = SubResource("ShaderMaterial_u1nnk")
 custom_minimum_size = Vector2(640, 480)
 layout_mode = 3
 anchors_preset = 15

@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
 [ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="2_2o76q"]
-[ext_resource type="Texture2D" uid="uid://b6o7fqufmwq10" path="res://textures/TheNomadLogo.png" id="3_5muy6"]
 [ext_resource type="StyleBox" uid="uid://635m6njp4eyq" path="res://resources/themes/button_normal_ui.tres" id="3_6bivr"]
+[ext_resource type="Texture2D" uid="uid://k2bvu08ceylo" path="res://textures/TheNomadLogo.dds" id="4_6bivr"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bivr"]
 
@@ -167,7 +167,7 @@ offset_right = 38.24
 offset_bottom = -112.96
 grow_horizontal = 2
 scale = Vector2(0.916999, 1.5557)
-texture = ExtResource("3_5muy6")
+texture = ExtResource("4_6bivr")
 metadata/_edit_use_anchors_ = true
 
 [node name="TutorialsPopup" type="ConfirmationDialog" parent="."]

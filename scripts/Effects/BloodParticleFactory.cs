@@ -30,7 +30,7 @@ public partial class BloodParticleFactory : Node {
 				InstanceCount = BloodInstanceMax,
 				VisibleInstanceCount = 0
 			},
-			Texture = ResourceLoader.Load<Texture2D>( "res://textures/blood1.png" ),
+			Texture = ResourceLoader.Load<Texture2D>( "res://textures/blood1.dds" ),
 			ZIndex = 5
 		};
 		AddChild( MeshManager );

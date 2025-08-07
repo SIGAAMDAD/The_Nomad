@@ -57,7 +57,6 @@ stream = ExtResource("3_bcxb1")
 autoplay = true
 max_distance = 250.0
 attenuation = 27.8576
-bus = &"SFX"
 playback_type = 1
 parameters/looping = true
 

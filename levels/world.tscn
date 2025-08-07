@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://cbt2oea17d7uh" path="res://scripts/renown/World/WorldArea.cs" id="5_cyobr"]
 [ext_resource type="Script" uid="uid://gsc8bunmnojw" path="res://scripts/WallCollider.cs" id="5_qrdf2"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="5_qxdx5"]
-[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="6_5yiud"]
+[ext_resource type="Texture2D" uid="uid://cvcwqconxr2m5" path="res://textures/tilesets/furniture.dds" id="6_5yiud"]
 [ext_resource type="Script" uid="uid://q52e21p4hje3" path="res://scripts/renown/World/TradeRoute.cs" id="6_54i5j"]
 [ext_resource type="Script" uid="uid://bqdgnod1hrdmf" path="res://scripts/DayNightCycle.cs" id="6_i8ckm"]
 [ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="7_5t368"]
@@ -28,7 +28,7 @@
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://b5deywvyopw0w" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
 [ext_resource type="PackedScene" uid="uid://dil6cvnitkb3b" path="res://scenes/mobs/bandits/bandit.tscn" id="16_uh3ev"]
-[ext_resource type="Texture2D" uid="uid://ci2tj22namfbs" path="res://textures/tilesets/DesertTilemap16x16.png" id="17_8pkr3"]
+[ext_resource type="Texture2D" uid="uid://fcgjjs6rvr0a" path="res://textures/tilesets/DesertTilemap16x16.dds" id="17_8pkr3"]
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="17_ortr0"]
 [ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="18_dx3bq"]
 [ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/Interactables/EaglesPeak.cs" id="18_pjcgv"]
@@ -36,12 +36,12 @@
 [ext_resource type="Texture2D" uid="uid://cdxxc1qli1ofu" path="res://textures/fromeaglespeak.dds" id="19_x3q2i"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="20_7te1h"]
 [ext_resource type="AudioStream" uid="uid://byx3qwftkyadu" path="res://music/ui/main.ogg" id="20_x3q2i"]
-[ext_resource type="PackedScene" path="res://levels/tile_map_floor.tscn" id="21_qrdf2"]
+[ext_resource type="PackedScene" uid="uid://c0bwbf5nl7uyg" path="res://levels/tile_map_floor.tscn" id="21_qrdf2"]
 [ext_resource type="Shader" uid="uid://dd7bodjsa6mck" path="res://shaders/floor.gdshader" id="22_3mxq2"]
-[ext_resource type="Texture2D" uid="uid://pubd5h3pth35" path="res://textures/tilesets/kirosla_estate.png" id="25_cyobr"]
+[ext_resource type="Texture2D" uid="uid://clcanwwydfoln" path="res://textures/tilesets/kirosla_estate.dds" id="25_cyobr"]
 [ext_resource type="Script" uid="uid://ckxrjpdanp73b" path="res://scripts/renown/World/Settlement.cs" id="25_qxdx5"]
 [ext_resource type="ItemDefinition" uid="uid://bovippiuwxm1n" path="res://resources/ammo/shotgun_12gauge.tres" id="26_82deo"]
-[ext_resource type="Texture2D" uid="uid://b4g2lwpsvw75u" path="res://textures/tilesets/galakas.png" id="26_x7eec"]
+[ext_resource type="Texture2D" uid="uid://che4x0phecuaa" path="res://textures/tilesets/galakas.dds" id="26_x7eec"]
 [ext_resource type="ItemDefinition" uid="uid://c223850qlfwy0" path="res://resources/ammo/10mm_ammo.tres" id="27_m0qpv"]
 [ext_resource type="Script" uid="uid://4e2off6748xr" path="res://scripts/renown/World/Faction.cs" id="31_x3q2i"]
 [ext_resource type="Texture2D" uid="uid://cpgc0r1n0k5vw" path="res://textures/env/road.dds" id="32_fgsnb"]
@@ -62,8 +62,8 @@
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="53_m0bm8"]
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="53_mem04"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="54_mem04"]
-[ext_resource type="Texture2D" uid="uid://x32mktmkh1j6" path="res://textures/tilesets/galakas/Outside_D.png" id="57_ariq1"]
-[ext_resource type="Texture2D" uid="uid://lywl4pujdeub" path="res://textures/tilesets/galakas/Inside_D.png" id="58_w1k0a"]
+[ext_resource type="Texture2D" uid="uid://dbldmbct7rxby" path="res://textures/tilesets/galakas/Outside_D.dds" id="57_ariq1"]
+[ext_resource type="Texture2D" uid="uid://clj6uh5qnv31r" path="res://textures/tilesets/galakas/Inside_D.dds" id="58_w1k0a"]
 [ext_resource type="PackedScene" uid="uid://gwspkpk3wqrp" path="res://scenes/renown/asturion_blacksmith.tscn" id="59_82deo"]
 [ext_resource type="Texture2D" uid="uid://cwjow27ugo7lo" path="res://textures/env/blacksmith_forge/blacksmith-smelter.png" id="59_m0bm8"]
 [ext_resource type="AudioStream" uid="uid://cj62svdp0muym" path="res://sounds/env/Fire Crackling - Sound Effect [HQ].ogg" id="60_m0bm8"]
@@ -24583,7 +24583,9 @@ State = Dictionary[String, Variant]({
 "KiroslaDead": false,
 "KiroslaExiled": false,
 "KiroslaSlavesFreed": false,
-"MelioraFound": 0
+"MelioraFound": 0,
+"NoRestForTheWeary_QuestOutcome": "incomplete",
+"SteelStocks_QuestOutcome": "incomplete"
 })
 GlobalNavigationMesh = NodePath("GlobalNavMesh")
 ThisPlayer = NodePath("Network/Players/Player")
@@ -24632,10 +24634,11 @@ navigation_polygon = SubResource("NavigationPolygon_521i4")
 [node name="Biomes" type="Node2D" parent="."]
 
 [node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 position = Vector2(-72105, 48728.5)
 collision_layer = 12
 collision_mask = 12
+input_pickable = false
 script = ExtResource("37_n2t61")
 WeatherChanceClear = 0.8
 WeatherChanceHumid = 0.1
@@ -25136,7 +25139,7 @@ scale = Vector2(1.00004, 0.999892)
 tile_map_data = PackedByteArray("AACfAD8AAAAEAAUAAACfADoAAAAFAAUAAACgADoAAAAEAAUAAAChADoAAAAFAAUAAACiADoAAAAEAAUAAACjADoAAAAFAAUAAACkADoAAAAEAAUAAAClADoAAAAFAAUAAACmADoAAAAEAAUAAACnADoAAAAEAAUAAACoADoAAAAFAAUAAACeADoAAAAEAAUAAACeAD8AAAAFAAUAAAA=")
 tile_set = ExtResource("20_7te1h")
 
-[node name="FirstFloorLayer0" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Decor", "Area", "FloorBounds", "ParentLocation", "UpperLayer", "LowerLayer") instance=ExtResource("21_qrdf2")]
+[node name="FirstFloorLayer0" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Decor", "Area", "FloorBounds", "UpperLayer", "LowerLayer") instance=ExtResource("21_qrdf2")]
 visible = false
 z_index = 3
 position = Vector2(-2992, -662)
@@ -25144,7 +25147,6 @@ Floor = NodePath("FirstFloorLevelLayer0")
 Decor = NodePath("FirstDecorLevelLayer0")
 Area = NodePath("Area2D")
 FloorBounds = NodePath("FloorBounds")
-ParentLocation = NodePath("..")
 UpperLayer = NodePath(".")
 LowerLayer = NodePath("../FirstFloorLayer1")
 
@@ -25293,7 +25295,7 @@ shape = SubResource("SegmentShape2D_yts8v")
 position = Vector2(3312, 640)
 shape = SubResource("SegmentShape2D_in4b8")
 
-[node name="FirstFloorLayer1" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Decor", "Area", "FloorBounds", "ParentLocation", "UpperLayer", "LowerLayer") instance=ExtResource("21_qrdf2")]
+[node name="FirstFloorLayer1" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Decor", "Area", "FloorBounds", "UpperLayer", "LowerLayer") instance=ExtResource("21_qrdf2")]
 visible = false
 z_index = 3
 position = Vector2(929, -26)
@@ -25301,7 +25303,6 @@ Floor = NodePath("FirstFloorLevelLayer1")
 Decor = NodePath("FirstDecorLevelLayer1")
 Area = NodePath("Area2D")
 FloorBounds = NodePath("FloorBounds")
-ParentLocation = NodePath("..")
 UpperLayer = NodePath("../FirstFloorLayer0")
 LowerLayer = NodePath("../Exterior")
 
@@ -25476,30 +25477,27 @@ Destination = NodePath("../../Exterior/DoorDestination")
 position = Vector2(5, -2.5)
 shape = SubResource("RectangleShape2D_q0seo")
 
-[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Floor", "Location") instance=ExtResource("8_dx3bq")]
+[node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-1145, 194.5)
 DefaultWeapon = ExtResource("17_ortr0")
 DefaultAmmo = ExtResource("18_dx3bq")
-Floor = NodePath("..")
 IsPremade = true
 Location = NodePath("../..")
 FactionImportance = 18
 
-[node name="Mercenary" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Floor", "Location") instance=ExtResource("8_dx3bq")]
+[node name="Mercenary" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-634.5, 156)
 DefaultWeapon = ExtResource("17_ortr0")
 DefaultAmmo = ExtResource("18_dx3bq")
-Floor = NodePath("..")
 IsPremade = true
 Direction = 3
 Location = NodePath("../..")
 FactionImportance = 5
 
-[node name="Exterior" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Area", "ParentLocation", "UpperLayer") instance=ExtResource("21_qrdf2")]
+[node name="Exterior" parent="Biomes/SaltWastes/KiroslaEstate" node_paths=PackedStringArray("Floor", "Area", "UpperLayer") instance=ExtResource("21_qrdf2")]
 position = Vector2(38, 8)
 Floor = NodePath("TileMapLayer")
 Area = NodePath("Area2D")
-ParentLocation = NodePath("..")
 UpperLayer = NodePath("../FirstFloorLayer1")
 IsExterior = true
 
@@ -25791,7 +25789,7 @@ position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
 
 [node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 position = Vector2(-61567, 31378)
 collision_layer = 19
 collision_mask = 18
@@ -25820,13 +25818,12 @@ TileMaps = []
 position = Vector2(243.5, 2791.5)
 tile_set = SubResource("TileSet_tikye")
 
-[node name="MidCity" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Area", "Exterior", "ParentLocation", "InteriorLayers", "LowerLayer")]
+[node name="MidCity" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Area", "Exterior", "InteriorLayers", "LowerLayer")]
 position = Vector2(243.5, 2791.5)
 script = ExtResource("38_ybss6")
 AreaName = &"Galakas MidCity"
 Area = NodePath("Area2D")
 Exterior = NodePath("../Outskirts")
-ParentLocation = NodePath("..")
 InteriorLayers = []
 LowerLayer = NodePath("../Outskirts")
 
@@ -25894,14 +25891,13 @@ polygon = PackedVector2Array(-2240.5, 2, -2249, -1735.5, 2041.5, -2125, 2026, -2
 [node name="EntranceDestination" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 position = Vector2(55.5, -204)
 
-[node name="Outskirts" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "Area", "ParentLocation", "InteriorLayers", "UpperLayer")]
+[node name="Outskirts" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "Area", "InteriorLayers", "UpperLayer")]
 visible = false
 position = Vector2(243.5, 2791.5)
 script = ExtResource("38_ybss6")
 AreaName = &"Galakas Outskirts"
 Floor = NodePath("OutskirtsVillage")
 Area = NodePath("Area2D")
-ParentLocation = NodePath("..")
 InteriorLayers = []
 UpperLayer = NodePath("../MidCity")
 IsExterior = true
@@ -26098,7 +26094,7 @@ position = Vector2(22528, -2048)
 polygon = PackedVector2Array(3610.5, 9349.5, -3429.5, 9797.5, -12130, 16032.5, -16563, 16506, -21097.5, 17890.5, -44062.5, 14902.5, -46885.5, 9861.5, -49381.5, 4165.5, -47653.5, -634.5, -41171.5, -1367.5, -39393, -4640, -44488.5, -8214, -42337, -11196.5, -37786.5, -11834, -30978.5, -14173, -25218.5, -12637, -18306.5, -11805, -13570.5, -12509, -8386.5, -12765, 5373.5, -7837, 6461.5, -797)
 
 [node name="BurntHills" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 script = ExtResource("37_n2t61")
 WeatherChangeInterval = 6000.0
 AreaName = &"BURNT_HILLS_BIOME_NAME"
@@ -26109,7 +26105,7 @@ modulate = Color(0, 0, 0, 0)
 polygon = PackedVector2Array(-36477, 43557.5, -33675.5, 42110.5, -33203, 40552.5, -29478.5, 45533, -27868.5, 48231.5, -23323, 50504.5, -10823.5, 49699.5, -5206, 45630.5, -3200.5, 52114, -6463, 57344, -13624, 57000.5, -26056, 55854.5, -35024, 56252, -31824, 53180, -31900, 50182.5, -34478, 46344)
 
 [node name="BileSwamps" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
@@ -26127,7 +26123,7 @@ polygon = PackedVector2Array(-51171.5, 45362.5, -42470.5, 39132, -35421, 38683, 
 position = Vector2(-41615, 41470.5)
 
 [node name="DunesOfDesolation" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
@@ -26142,7 +26138,7 @@ position = Vector2(-7.5, -3.5)
 polygon = PackedVector2Array(-83686.5, 50876, -83553, 44173, -83097.5, 44229.5, -85899, 39229, -88413, 33499, -86685, 28699, -80203, 27966, -78424.5, 24693.5, -83520, 21119.5, -81368.5, 18137, -76818, 17499.5, -77138, 9947.5, -83673, 7534, -92490.5, 17005.5, -96702, 23912.5, -95946.5, 37101.5, -93386.5, 45997.5, -87503.5, 51836)
 
 [node name="SeaOfSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
@@ -26157,7 +26153,7 @@ position = Vector2(-7.5, -3.5)
 polygon = PackedVector2Array(-33658, 21496.5, -32570, 28536.5, -35421, 38683, -33668, 39178.5, -33194.5, 40551.5, -33195.5, 40556, -29470.5, 45536.5, -27839, 48255, -23313.5, 50512.5, -10816, 49703, -5198.5, 45634, -3096.5, 30309.5, -4312.5, 13413.5, -9619.5, 1912, -20769.5, 2001, -21967, 8177, -24728.5, 11621.5, -28952.5, 19045.5)
 
 [node name="AshenPlains" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
-process_mode = 4
+process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")

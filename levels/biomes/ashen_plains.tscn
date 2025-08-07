@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://xagcn6hqoop7"]
 
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="1_1c77f"]
-[ext_resource type="Texture2D" uid="uid://c40nnpb1nidxi" path="res://icon.svg" id="2_683qt"]
+[ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="2_683qt"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_cesbh"]
 

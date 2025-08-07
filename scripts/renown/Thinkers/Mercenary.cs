@@ -2,6 +2,7 @@ using System;
 using ChallengeMode;
 using Godot;
 using Renown.World;
+using Renown.Thinkers.Groups;
 
 namespace Renown.Thinkers {
 	public partial class Mercenary : Thinker {
@@ -42,6 +43,8 @@ namespace Renown.Thinkers {
 
 		private Godot.Vector2 StartPosition;
 		private float StartHealth;
+
+		private Squad Squad;
 
 		// combat variables
 		private Timer AimTimer;
@@ -202,7 +205,7 @@ namespace Renown.Thinkers {
 		private void SetSuspicious() {
 			Awareness = MobAwareness.Suspicious;
 			CurrentState = State.Investigating;
-			Bark( BarkType.Confusion, Squad.GetMemberCount() > 0 ? BarkType.CheckItOut : BarkType.Count );
+			Bark( BarkType.Confusion, Squad.Members.Count > 0 ? BarkType.CheckItOut : BarkType.Count );
 		}
 		private void SetAlert() {
 			if ( Awareness != MobAwareness.Alert ) {
@@ -387,8 +390,8 @@ namespace Renown.Thinkers {
 
 			CurrentState = State.Guarding;
 
-			Squad = GroupManager.GetGroup( GroupType.Bandit, Faction, GlobalPosition );
-			Squad.AddThinker( this );
+			Squad = SquadManager.GetGroup( Faction, GlobalPosition );
+			Squad.AddMember( this );
 
 			//			NodeCache ??= Location.GetNodeCache();
 

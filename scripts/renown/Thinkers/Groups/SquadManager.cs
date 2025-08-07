@@ -3,24 +3,11 @@ using System.Collections.Generic;
 using Renown.World;
 
 namespace Renown.Thinkers.Groups {
-	public class GroupManager {
+	public class SquadManager {
 		private static List<Squad> GroupCache = new List<Squad>();
 
-		private static Squad CreateGroup( GroupType nType, Faction faction ) {
-			Squad group = null;
-
-			switch ( nType ) {
-			case GroupType.Military:
-				group = new MilitarySquad( faction );
-				break;
-			case GroupType.Bandit:
-				group = new BanditGroup( faction );
-				break;
-			default:
-				Console.PrintError( "SquadManager.CreateGroup: Type isn't valid!" );
-				return null;
-			};
-
+		private static Squad CreateGroup( Faction faction ) {
+			Squad group = new Squad( faction );
 			GroupCache.Add( group );
 			return group;
 		}
@@ -32,19 +19,15 @@ namespace Renown.Thinkers.Groups {
 		/// <param>Faction</param>
 		/// <param>Thinker's position</param>
 		/// <returns>ThinkerGroup</returns>
-		public static Squad GetGroup( GroupType nType, Faction faction, Godot.Vector2 position ) {
+		public static Squad GetGroup( Faction faction, Godot.Vector2 position ) {
 			Squad current = null;
-			float bestDistance = float.MaxValue;
 			for ( int i = 0; i < GroupCache.Count; i++ ) {
-				if ( GroupCache[i].GetFaction() == faction && GroupCache[i].GetGroupType() == nType ) {
-					float distance = position.DistanceTo( GroupCache[i].GetLeader().GlobalPosition );
-					if ( distance < bestDistance ) {
-						bestDistance = distance;
-						current = GroupCache[i];
-					}
+				if ( GroupCache[ i ].Members.Count < Squad.MaxSquadMembers && GroupCache[ i ].Faction == faction ) {
+					current = GroupCache[ i ];
+					break;
 				}
 			}
-			current ??= CreateGroup( nType, faction );
+			current ??= CreateGroup( faction );
 			return current;
 		}
 	};

@@ -7,9 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://cjw5m42gufghr" path="res://addons/guide/ui/renderers/touch/icons/touch_4_fingers.png" id="5_qoicp"]
 [ext_resource type="Texture2D" uid="uid://bxj4t5vjx7o3w" path="res://addons/guide/ui/renderers/touch/icons/touch_rotate.png" id="6_4jaqi"]
 [ext_resource type="Texture2D" uid="uid://cutplj0nhphk" path="res://addons/guide/ui/renderers/touch/icons/touch_zoom.png" id="7_gvy7l"]
-[ext_resource type="Texture2D" uid="uid://bmgxqbypegjxh" path="res://addons/guide/ui/renderers/textures/arrow_horizontal.svg" id="8_m5om5"]
-[ext_resource type="Texture2D" uid="uid://dwb1h8sfsccyy" path="res://addons/guide/ui/renderers/textures/arrow_all_directions.svg" id="9_5gr2q"]
-[ext_resource type="Texture2D" uid="uid://bu5nlug6uf03w" path="res://addons/guide/ui/renderers/textures/arrow_vertical.svg" id="10_4vghq"]
+[ext_resource type="Texture2D" uid="uid://dn0l0ni3ynbkb" path="res://addons/guide/ui/renderers/textures/arrow_horizontal.dds" id="8_m5om5"]
+[ext_resource type="Texture2D" uid="uid://bfkhkhjrgpx4n" path="res://addons/guide/ui/renderers/textures/arrow_all_directions.dds" id="9_5gr2q"]
+[ext_resource type="Texture2D" uid="uid://b0j7741nsri6w" path="res://addons/guide/ui/renderers/textures/arrow_vertical.dds" id="10_4vghq"]
 
 [node name="TouchRenderer" type="MarginContainer"]
 offset_right = 100.0

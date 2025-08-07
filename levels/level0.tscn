@@ -1,8 +1,7 @@
-[gd_scene load_steps=18 format=4 uid="uid://dy3x8fkn247sb"]
+[gd_scene load_steps=32 format=4 uid="uid://dy3x8fkn247sb"]
 
 [ext_resource type="Texture2D" uid="uid://bvv2v7m78dge7" path="res://textures/bg.dds" id="1_f811g"]
 [ext_resource type="TileSet" uid="uid://becdkuct42jns" path="res://textures/tilesets/desert.tres" id="3_pdvd3"]
-[ext_resource type="Texture2D" uid="uid://8dd12h8ji5c1" path="res://textures/tilesets/furniture.png" id="5_b6lsn"]
 [ext_resource type="Texture2D" uid="uid://dfeq3b1lm8oly" path="res://textures/env/food/09_baguette.png" id="8_b6lsn"]
 [ext_resource type="Texture2D" uid="uid://5kc8kyqtjoiq" path="res://textures/env/food/20_bagel.png" id="9_fh3a0"]
 [ext_resource type="Texture2D" uid="uid://dtpgs65atmr85" path="res://textures/tilesets/desert/decor_2.png" id="9_mll6j"]
@@ -95,11 +94,56 @@ b = Vector2(133.032, 770.419)
 a = Vector2(-102.057, 4.94348)
 b = Vector2(877.366, -223.927)
 
+[sub_resource type="Resource" id="Resource_w2q2b"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jeibo"]
 size = Vector2(16, 12)
 
+[sub_resource type="Resource" id="Resource_f811g"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_f3act"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_cxy21"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a4b2c"]
 size = Vector2(26.1224, 21.3119)
+
+[sub_resource type="Resource" id="Resource_v3eec"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_1jtsu"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_qlvc7"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_gbmev"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_muost"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_7eqg7"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_l345v"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_kfjtx"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_3ffqk"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_16mdx"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
+
+[sub_resource type="Resource" id="Resource_74vbc"]
+metadata/__load_path__ = "res://textures/tilesets/furniture.png"
 
 [node name="InTheDarkofTheNight" type="Node2D"]
 
@@ -153,7 +197,7 @@ position = Vector2(1.99999, 118)
 z_index = 4
 position = Vector2(1062, 430)
 scale = Vector2(2, 2)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_w2q2b")
 hframes = 19
 vframes = 20
 frame = 16
@@ -168,7 +212,7 @@ shape = SubResource("RectangleShape2D_jeibo")
 z_index = 4
 position = Vector2(1113, 430)
 scale = Vector2(2, 2)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_f811g")
 hframes = 19
 vframes = 20
 frame = 14
@@ -183,7 +227,7 @@ shape = SubResource("RectangleShape2D_jeibo")
 z_index = 4
 position = Vector2(1203, 429)
 scale = Vector2(2, 2)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_f3act")
 hframes = 19
 vframes = 20
 frame = 14
@@ -205,7 +249,7 @@ scale = Vector2(13.6443, 4.92045)
 z_index = 4
 position = Vector2(1058, 161)
 scale = Vector2(3.0625, 5.20833)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_cxy21")
 hframes = 19
 vframes = 19
 frame = 278
@@ -233,7 +277,7 @@ shape = SubResource("RectangleShape2D_a4b2c")
 [node name="Chair" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(-11.5918, -8.544)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_v3eec")
 hframes = 19
 vframes = 19
 frame = 135
@@ -241,7 +285,7 @@ frame = 135
 [node name="Chair4" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(10.7755, -8.64001)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_1jtsu")
 flip_h = true
 hframes = 19
 vframes = 19
@@ -250,7 +294,7 @@ frame = 135
 [node name="Chair5" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(10.7755, -1.92)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_qlvc7")
 flip_h = true
 hframes = 19
 vframes = 19
@@ -259,7 +303,7 @@ frame = 135
 [node name="Chair6" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(10.7755, 5.376)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_gbmev")
 flip_h = true
 hframes = 19
 vframes = 19
@@ -268,7 +312,7 @@ frame = 135
 [node name="Chair2" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(-11.7551, -2.304)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_muost")
 hframes = 19
 vframes = 19
 frame = 135
@@ -276,7 +320,7 @@ frame = 135
 [node name="Chair3" type="Sprite2D" parent="TileMapLayer/DecorLayer/Furniture/Table"]
 position = Vector2(-11.7551, 4.608)
 scale = Vector2(0.529685, 0.5896)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_7eqg7")
 hframes = 19
 vframes = 19
 frame = 135
@@ -306,7 +350,7 @@ y_sort_enabled = true
 position = Vector2(1445, -39)
 rotation = 0.000189781
 scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_l345v")
 hframes = 19
 vframes = 19
 frame = 69
@@ -316,7 +360,7 @@ z_index = 4
 position = Vector2(1365, -33)
 rotation = 0.000189781
 scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_kfjtx")
 hframes = 19
 vframes = 19
 frame = 135
@@ -326,7 +370,7 @@ z_index = 4
 position = Vector2(1430, -43)
 rotation = 0.000189781
 scale = Vector2(0.692564, 0.862103)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_3ffqk")
 hframes = 19
 vframes = 19
 frame = 193
@@ -336,7 +380,7 @@ z_index = 4
 position = Vector2(1364, -101)
 rotation = 0.000189781
 scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_16mdx")
 hframes = 19
 vframes = 19
 frame = 12
@@ -357,7 +401,7 @@ scale = Vector2(11.7356, 6.88152)
 z_index = 3
 position = Vector2(1243, 155)
 scale = Vector2(1.49125, 1.4301)
-texture = ExtResource("5_b6lsn")
+texture = SubResource("Resource_74vbc")
 hframes = 19
 vframes = 19
 frame = 303

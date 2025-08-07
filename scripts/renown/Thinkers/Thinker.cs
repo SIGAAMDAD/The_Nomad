@@ -126,9 +126,6 @@ namespace Renown.Thinkers {
 			SyncObject.Write( ArmAnimations != null );
 			SyncObject.Sync();
 		}
-
-		public void Notify( GroupEvent nEventType, Thinker source ) {
-		}
 		protected void FindGroup() {
 		}
 
@@ -317,13 +314,12 @@ namespace Renown.Thinkers {
 
 			VisibleOnScreenEnabler2D enabler = GetNode<VisibleOnScreenEnabler2D>( "VisibleOnScreenEnabler2D" );
 			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( Show ) );
-			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenEntered, Callable.From( Hide ) );
+			enabler.Connect( VisibleOnScreenEnabler2D.SignalName.ScreenExited, Callable.From( Hide ) );
 
 			if ( IsPremade ) {
 				InitialPath = GetPath();
 			}
 
-			ProcessMode = ProcessModeEnum.Pausable;
 			GotoPosition = GlobalPosition;
 
 			if ( ArchiveSystem.Instance.IsLoaded() ) {

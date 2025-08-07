@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Threading;
 using DialogueManagerRuntime;
 using Godot;
-using Microsoft.Diagnostics.Tracing.Parsers.FrameworkEventSource;
 
 public class ResourceCache {
 	#region Mob Sound Effects
