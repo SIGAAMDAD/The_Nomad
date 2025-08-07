@@ -1,0 +1,155 @@
+[gd_scene load_steps=16 format=3 uid="uid://0svublffp5aa"]
+
+[ext_resource type="Script" uid="uid://bxh7vwkn6pafs" path="res://scripts/menus/DinoRun.cs" id="1_7a48k"]
+[ext_resource type="Texture2D" uid="uid://cewbhbk1amtnw" path="res://textures/spritesheets/DinoSprites - doux.png" id="2_f2mip"]
+[ext_resource type="Texture2D" uid="uid://cg7q6ijc6yhtp" path="res://icon.svg" id="2_pmevc"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_pmevc"]
+distance = -1.0
+
+[sub_resource type="Shader" id="Shader_pmevc"]
+code = "shader_type canvas_item;
+
+uniform vec4 sand_color : source_color = vec4( 0.8, 0.7, 0.5, 1.0 );
+uniform float speed = 1.5;
+
+void fragment() {
+	float wave = sin( TIME * 3.0 + UV.x * 10.0 ) * 0.02;
+	vec2 uv = vec2( UV.x, UV.y + wave );
+	
+	float noise = fract( sin( dot( uv, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 );
+	vec3 color = mix( sand_color.rgb, sand_color.rgb * 1.2, noise );
+	
+	float haze = smoothstep( 0.7, 1.0, UV.y );
+	color = mix( color, vec3( 0.95, 0.85, 0.6 ), haze * 0.3 );
+	
+	COLOR = vec4( color, 1.0 );
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3a1is"]
+shader = SubResource("Shader_pmevc")
+shader_parameter/sand_color = Color(1, 0.54902, 0, 1)
+shader_parameter/speed = 0.5
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f2mip"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(96, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pmevc"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(120, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3a1is"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(144, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7iq7p"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(168, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ppvpx"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(192, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lqa8c"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(216, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38qxf"]
+atlas = ExtResource("2_f2mip")
+region = Rect2(240, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_38qxf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f2mip")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pmevc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3a1is")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7iq7p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ppvpx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lqa8c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qxf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 14.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pqks6"]
+size = Vector2(14, 17)
+
+[node name="DinoRun" type="CanvasLayer"]
+script = ExtResource("1_7a48k")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="TextLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "DINO RUN!
+PRESS ANY BUTTON TO START"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Credits" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Dino Sprites Created By @ScissorMarks"
+metadata/_edit_use_anchors_ = true
+
+[node name="WorldPlane" type="Area2D" parent="."]
+position = Vector2(318, 357)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldPlane"]
+shape = SubResource("WorldBoundaryShape2D_pmevc")
+
+[node name="Ground" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_3a1is")
+position = Vector2(320, 362)
+scale = Vector2(5, 0.0937499)
+texture = ExtResource("2_pmevc")
+
+[node name="Dino" type="Area2D" parent="."]
+position = Vector2(318, 347)
+collision_layer = 4
+collision_mask = 4
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Dino"]
+sprite_frames = SubResource("SpriteFrames_38qxf")
+autoplay = "default"
+frame_progress = 0.833226
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Dino"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_pqks6")
