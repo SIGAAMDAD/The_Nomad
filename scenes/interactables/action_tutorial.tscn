@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bh3dqangoe8i2"]
 
 [ext_resource type="Script" uid="uid://dtapy2t46odlx" path="res://scripts/Interactables/ActionTutorial.cs" id="1_fy36v"]
-[ext_resource type="Texture2D" uid="uid://bust4c71xbu1n" path="res://textures/tilesets/desert/decor_3.png" id="2_ur08t"]
+[ext_resource type="Texture2D" uid="uid://cbx34tcbrj5e1" path="res://textures/env/signpost.dds" id="2_ur08t"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fy36v"]
 light_mode = 1

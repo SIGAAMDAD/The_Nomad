@@ -23,6 +23,8 @@ namespace Renown.World {
 		protected int ThreadSleep = Constants.THREADSLEEP_FACTION_PLAYER_AWAY;
 		protected System.Threading.ThreadPriority Importance = Constants.THREAD_IMPORTANCE_PLAYER_AWAY;
 
+		protected Node[] Children;
+
 		[Signal]
 		public delegate void PlayerEnteredEventHandler();
 		[Signal]
@@ -74,6 +76,20 @@ namespace Renown.World {
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = (int)GetRid().Id;
 
+			Godot.Collections.Array<Node> children = GetChildren();
+			int count = 0;
+			for ( int i = 0; i < children.Count; i++ ) {
+				// if we're not the enabler shape or a world area that needs an enabler shape, then don't disable
+				if ( children[ i ].Name != "AreaShape" && children[ i ] is not WorldArea ) {
+					count++;
+				}
+			}
+			Children = new Node[ count ];
+			for ( int i = 0; i < children.Count; i++ ) {
+				if ( children[ i ].Name != "AreaShape" && children[ i ] is not WorldArea ) {
+					Children[ i ] = children[ i ];
+				}
+			}
 
 			if ( !IsInGroup( "WorldAreas" ) ) {
 				AddToGroup( "WorldAreas" );
@@ -85,38 +101,27 @@ namespace Renown.World {
 				AddToGroup( "Locations" );
 			}
 		}
-
-		private void Disable() {
-			PlayerStatus = false;
-			EmitSignalPlayerExited();
-
-			Hide();
-			Godot.Collections.Array<Node> children = GetChildren();
-			for ( int i = 0; i < children.Count; i++ ) {
-				if ( children[ i ].Name != "AreaShape" ) {
-					children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
-				}
-			}
-		}
-		private void Enable() {
-			PlayerStatus = true;
-			EmitSignalPlayerEntered();
-
-			Show();
-			Godot.Collections.Array<Node> children = GetChildren();
-			for ( int i = 0; i < children.Count; i++ ) {
-				children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
-			}
-		}
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
 			CheckDelta += (float)delta;
 			if ( CheckDelta > PlayerCheckInterval ) {
-				if ( !GetOverlappingBodies().Contains( LevelData.Instance.ThisPlayer ) ) {
-					CallDeferred( MethodName.Disable );
+				if ( !GodotServerManager.GetCollidingObjects( GetRid() ).Contains( LevelData.Instance.ThisPlayer ) ) {
+					PlayerStatus = false;
+					CallDeferred( MethodName.EmitSignal, SignalName.PlayerExited );
+
+					CallDeferred( MethodName.Hide );
+					for ( int i = 0; i < Children.Length; i++ ) {
+						Children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Disabled );
+					}
 				} else {
-					CallDeferred( MethodName.Enable );
+					PlayerStatus = true;
+					CallDeferred( MethodName.EmitSignal, SignalName.PlayerEntered );
+
+					CallDeferred( MethodName.Show );
+					for ( int i = 0; i < Children.Length; i++ ) {
+						Children[ i ].SetDeferred( PropertyName.ProcessMode, (long)ProcessModeEnum.Pausable );
+					}
 				}
 			}
 		}

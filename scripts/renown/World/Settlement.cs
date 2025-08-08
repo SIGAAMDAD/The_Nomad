@@ -39,10 +39,6 @@ namespace Renown.World {
 		[Export]
 		private float Treasury = 0;
 		[Export]
-		private Government Government;
-		[Export]
-		private Marketplace[] Markets;
-		[Export]
 		private Road[] TradeRoutes;
 
 		private int PlayerRenownScore = 0;
@@ -67,9 +63,7 @@ namespace Renown.World {
 		public delegate void RequestedMoneyEventHandler( Settlement settlement, float nAmount );
 
 		public SettlementType GetSettlementType() => Type;
-		public Marketplace[] GetMarketplaces() => Markets;
 		public int GetPopulation() => Population;
-		public Government GetGovernment() => Government;
 		public Thinker GetMercenaryMaster() => MercenaryMaster;
 
 		public override void Save() {

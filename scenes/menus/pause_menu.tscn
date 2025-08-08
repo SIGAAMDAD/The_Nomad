@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=33 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
 [ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="2_1onjl"]
@@ -15,8 +15,9 @@
 [ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
 [ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
 [ext_resource type="Texture2D" uid="uid://cpt4h8soh1kek" path="res://textures/hud/int_splatter.dds" id="14_1onjl"]
-[ext_resource type="Texture2D" uid="uid://efw71j17d8u1" path="res://textures/hud/ink_frame.png" id="14_w5beu"]
 [ext_resource type="Texture2D" uid="uid://uhwhrg50f5sg" path="res://textures/env/dividerv.dds" id="15_ty7ml"]
+[ext_resource type="Texture2D" uid="uid://npatv6o5itdw" path="res://textures/hud/ink_frame.dds" id="16_umr50"]
+[ext_resource type="Texture2D" uid="uid://dmas3gs6mulme" path="res://textures/hud/ink_splatter_2.dds" id="17_0f518"]
 [ext_resource type="Texture2D" uid="uid://cn1j00pgmxlyu" path="res://textures/hud/ink_splatter_2.png" id="17_h4mgr"]
 [ext_resource type="Texture2D" uid="uid://bhhfvfnfnx0wr" path="res://textures/env/runes/rune_of_sinatra.png" id="18_umr50"]
 
@@ -94,17 +95,15 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_umr50")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0f518")
 theme_override_styles/tab_hovered = SubResource("StyleBoxEmpty_70i7w")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_1onjl")
-current_tab = 3
+current_tab = 0
 
 [node name="Backpack" type="TabBar" parent="MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 tab_alignment = 1
 script = ExtResource("2_opdvj")
 metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TabContainer/Backpack"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -694,7 +693,7 @@ size_flags_horizontal = 4
 [node name="GadgetIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-texture = ExtResource("14_w5beu")
+texture = ExtResource("16_umr50")
 expand_mode = 3
 stretch_mode = 5
 
@@ -712,7 +711,7 @@ expand_mode = 5
 [node name="JumpkitIcon" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/GadgetsContainer"]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-texture = ExtResource("14_w5beu")
+texture = ExtResource("16_umr50")
 expand_mode = 3
 stretch_mode = 5
 
@@ -732,28 +731,28 @@ size_flags_horizontal = 4
 [node name="Rune0" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("17_h4mgr")
+texture = ExtResource("17_0f518")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="Rune1" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("17_h4mgr")
+texture = ExtResource("17_0f518")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="Rune2" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("17_h4mgr")
+texture = ExtResource("17_0f518")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="Rune3" type="TextureRect" parent="MarginContainer/TabContainer/Equipment/Background/LoadoutScreen/RunesContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("17_h4mgr")
+texture = ExtResource("17_0f518")
 expand_mode = 3
 stretch_mode = 5
 
@@ -926,6 +925,7 @@ size_flags_vertical = 8
 text = "BACK"
 
 [node name="Options" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 tab_alignment = 1
 metadata/_tab_index = 3

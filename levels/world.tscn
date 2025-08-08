@@ -1,4 +1,4 @@
-[gd_scene load_steps=185 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=167 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -11,19 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://cvcwqconxr2m5" path="res://textures/tilesets/furniture.dds" id="6_5yiud"]
 [ext_resource type="Script" uid="uid://q52e21p4hje3" path="res://scripts/renown/World/TradeRoute.cs" id="6_54i5j"]
 [ext_resource type="Script" uid="uid://bqdgnod1hrdmf" path="res://scripts/DayNightCycle.cs" id="6_i8ckm"]
-[ext_resource type="PackedScene" uid="uid://ydsshybuc61o" path="res://scenes/scenery/light_stump.tscn" id="7_5t368"]
 [ext_resource type="PackedScene" uid="uid://bh3dqangoe8i2" path="res://scenes/interactables/action_tutorial.tscn" id="7_re8x6"]
 [ext_resource type="PackedScene" uid="uid://dtmpn24mt61j0" path="res://scenes/mobs/mercenary/mercenary.tscn" id="8_dx3bq"]
-[ext_resource type="Texture2D" uid="uid://dfeq3b1lm8oly" path="res://textures/env/food/09_baguette.png" id="8_gt7kp"]
 [ext_resource type="PackedScene" uid="uid://cafcdhhm31dvf" path="res://scenes/interactables/meliora.tscn" id="8_m0qpv"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="8_wqmfy"]
-[ext_resource type="Texture2D" uid="uid://5kc8kyqtjoiq" path="res://textures/env/food/20_bagel.png" id="9_fgsnb"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="9_mla2a"]
-[ext_resource type="Texture2D" uid="uid://lwkuylf3c2tc" path="res://textures/tilesets/furniture/individual sprites coloured outlines/Slice 217.png" id="10_3bhl6"]
 [ext_resource type="PackedScene" uid="uid://cmyvcno3h47xb" path="res://scenes/interactables/mechanic_tutorial.tscn" id="11_54i5j"]
 [ext_resource type="Script" uid="uid://duyo2hg7flovm" path="res://scripts/renown/World/WorldTimeManager.cs" id="11_re8x6"]
-[ext_resource type="PackedScene" uid="uid://couodamo5txu5" path="res://scenes/scenery/latern_0.tscn" id="11_x3q2i"]
-[ext_resource type="Texture2D" uid="uid://dtpgs65atmr85" path="res://textures/tilesets/desert/decor_2.png" id="12_cyobr"]
 [ext_resource type="Texture2D" uid="uid://ctt4plo6h01xg" path="res://textures/tilesets/desert/environment.dds" id="13_hc03g"]
 [ext_resource type="PackedScene" uid="uid://xfmxnk8t2c6a" path="res://scenes/interactables/note.tscn" id="14_f13vj"]
 [ext_resource type="Texture2D" uid="uid://b5deywvyopw0w" path="res://textures/spritesheets/bandit_grunt.png" id="15_7te1h"]
@@ -50,6 +44,7 @@
 [ext_resource type="Script" uid="uid://bxvargqmrd2aq" path="res://scripts/renown/Biome.cs" id="37_n2t61"]
 [ext_resource type="Script" uid="uid://ddxwcnnss8jat" path="res://scripts/TileMapFloor.cs" id="38_ybss6"]
 [ext_resource type="TileSet" uid="uid://t3xj6bangr0w" path="res://resources/tilesets/galakas_midcity.tres" id="39_ybss6"]
+[ext_resource type="Texture2D" uid="uid://q3p2jqpfqv5a" path="res://resources/texture_mappings/salt_wastes_noise.tres" id="43_q0seo"]
 [ext_resource type="PackedScene" uid="uid://bt43s35a1thf4" path="res://scenes/interactables/door.tscn" id="43_qxuuj"]
 [ext_resource type="Script" uid="uid://calh8qyhfc221" path="res://scripts/renown/World/ThinkerCache.cs" id="44_1r2vu"]
 [ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="44_dx3bq"]
@@ -59,8 +54,10 @@
 [ext_resource type="Texture2D" uid="uid://cko3nogsmg88m" path="res://textures/tilesets/tileset.dds" id="50_w1k0a"]
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="51_82deo"]
 [ext_resource type="Texture2D" uid="uid://cjvgtfs3fg4v8" path="res://textures/env/brick_floor.dds" id="52_m0bm8"]
+[ext_resource type="Shader" uid="uid://ctlat62hpduqw" path="res://shaders/biome_blend.gdshader" id="52_uh3ev"]
 [ext_resource type="ItemDefinition" uid="uid://clxmuasul3bij" path="res://resources/ammo/musket_slugs.tres" id="53_m0bm8"]
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="53_mem04"]
+[ext_resource type="Texture2D" uid="uid://bvo3b3wvk47cw" path="res://resources/texture_mappings/safe_sands_noise.tres" id="53_qxuuj"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="54_mem04"]
 [ext_resource type="Texture2D" uid="uid://dbldmbct7rxby" path="res://textures/tilesets/galakas/Outside_D.dds" id="57_ariq1"]
 [ext_resource type="Texture2D" uid="uid://clj6uh5qnv31r" path="res://textures/tilesets/galakas/Inside_D.dds" id="58_w1k0a"]
@@ -79,141 +76,6 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4, 5), PackedIn
 outlines = Array[PackedVector2Array]([PackedVector2Array(-471.5, -4538, -5705.5, -16089, -4247.5, -20486.5, -3470, -27532.5, 19864, -36286.5, 55000, -28926.5, 47192, 7041.5, 27224, 7553.5, 10845, 5147.5, 3482, 2528, -388, 964)])
 source_geometry_mode = 1
 source_geometry_group_name = &"NavigationObstacles"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_yfcq3"]
-size = Vector2(16, 12)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_f13vj"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-14.5, -16, 0, 30, 32, 0),
-"attribute_data": PackedByteArray("4jclP0N5PT/iNyU/XkNJP+I3JT/zGko/sp8rPzaURz8+2Cs/NpRHP5suKz95DT0/my4rP6+hPD/iNyU/r6E8Pw=="),
-"format": 34393296913,
-"index_count": 18,
-"index_data": PackedByteArray("AAAHAAYABQAEAAMAAwACAAEAAQAAAAYABQADAAEAAQAGAAUA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AABowQAAYMEAAGjBAABgQQAAaMEAAIBBAABoQQAAIEEAAHhBAAAgQQAASEEAAHDBAABIQQAAgMEAAGjBAACAwQ==")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_fybfp"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-16, -16, 0, 32, 32, 0),
-"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAA="),
-"format": 34393296913,
-"index_count": 6,
-"index_data": PackedByteArray("AAADAAIAAgABAAAA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 4,
-"vertex_data": PackedByteArray("AACAwQAAgMEAAIDBAACAQQAAgEEAAIBBAACAQQAAgME=")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_ybss6"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-16, -16, 0, 32, 32, 0),
-"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAA="),
-"format": 34393296913,
-"index_count": 6,
-"index_data": PackedByteArray("AAADAAIAAgABAAAA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 4,
-"vertex_data": PackedByteArray("AACAwQAAgMEAAIDBAACAQQAAgEEAAIBBAACAQQAAgME=")
-}]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hjey5"]
-size = Vector2(26.1224, 21.3119)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_n2t61"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQwAAAEMEAANDAAADgwAAA8MAAAODAAADQwAAAgL8AANDAAADgQAAA0EAAAOBAAADwQAAA4EAAAPBAAABAwAAAkMAAACDB")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_ho3mn"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQwAAAEMEAANDAAADgwAAA8MAAAODAAADQwAAAgL8AANDAAADgQAAA0EAAAOBAAADwQAAA4EAAAPBAAABAwAAAkMAAACDB")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_1r2vu"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQwAAAEMEAANDAAADgwAAA8MAAAODAAADQwAAAgL8AANDAAADgQAAA0EAAAOBAAADwQAAA4EAAAPBAAABAwAAAkMAAACDB")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_7dl3v"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQQAAAEMEAANBAAADgwAAA8EAAAODAAADQQAAAgL8AANBAAADgQAAA0MAAAOBAAADwwAAA4EAAAPDAAABAwAAAkEAAACDB")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_woxng"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQQAAAEMEAANBAAADgwAAA8EAAAODAAADQQAAAgL8AANBAAADgQAAA0MAAAOBAAADwwAAA4EAAAPDAAABAwAAAkEAAACDB")
-}]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_uh3ev"]
-_surfaces = [{
-"2d": true,
-"aabb": AABB(-7.5, -10, 0, 15, 17, 0),
-"attribute_data": PackedByteArray("0cICPr2Gwj50/gA+5TXEPkYcAD7lNcQ+dP4APl5DyT50/gA+AADQPs96DD4AANA+/lwNPgAA0D7+XA0+NpTHPtHCAj4or8E+"),
-"format": 34393296913,
-"index_count": 21,
-"index_data": PackedByteArray("AAAIAAcABwAGAAUABQAEAAMAAwACAAEAAQAAAAcABwAFAAMAAwABAAcA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 9,
-"vertex_data": PackedByteArray("AACQQAAAEMEAANBAAADgwAAA8EAAAODAAADQQAAAgL8AANBAAADgQAAA0MAAAOBAAADwwAAA4EAAAPDAAABAwAAAkEAAACDB")
-}]
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_mem04"]
-polygon = PackedVector2Array(-95.75, 28.375, 98.875, 24.3125, 102.031, 106.734, -95.75, 108.094)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_hc03g"]
 polygon = PackedVector2Array(-720.219, -32.4688, -720.055, -48.4688, -320.297, -48.3242, -319.469, -32.3125, -336.461, -32.4922, -335.789, -0.480469, -383.758, 0.0234375, -383.75, 95.0352, -302.812, 96.8711, -303.641, 79.8633, -271.664, 80.1914, -271.672, -15.8164, -95.7734, -15.9961, -96.6016, 64.0039, -80.6172, 64.1719, -79.9453, 96.1797, -63.9531, 96.3477, -64.125, 112.348, 32.8203, 112.352, 32.4766, -47.668, 128.414, -47.6758, 128.578, -63.6758, 176.555, -64.1797, 176.883, -95.1797, 368.758, -95.1875, 367.938, -112.199, 815.656, -111.559, 815.492, -95.5586, 1039.36, -96.2422, 1039.52, -15.2305, 1136.46, -15.2266, 1136.95, -63.2266, 1197.92, -63.5938, 1197.8, -51.5938, 1218.78, -51.375, 1218.91, -64.375, 1423.79, -64.2539, 1423.8, 31.7578, 1087.99, 32.2773, 1087.84, 47.2773, 1007.88, 48.4492, 1007.73, 255.465, 1072.69, 256.141, 1073.4, 187.145, 1133.38, 185.766, 1135.34, 286.793, 1007.4, 287.465, 1008.4, 384.484, 1200.27, 384.477, 1200.78, 239.469, 1713.46, 239.781, 1713.63, 126.77, 1455.79, 127.098, 1456.09, -95.9219, 1568.02, -95.7617, 1567.88, 15.25, 1519.9, 15.75, 1520.23, 80.7617, 1649.16, 80.0977, 1648.98, -95.9219, 1711.94, -95.2695, 1711.44, -337.301, 1688.45, -337.539, 1688.95, -385.535, 1625, -386.199, 1625.66, -450.199, 1658.62, -448.855, 1658.12, -496.867, 1705.1, -497.383, 1707.1, -594.371, 1771.04, -591.707, 1771.05, -688.719, 1804.02, -688.375, 1804.86, -769.375, 1884.79, -767.547, 1886.43, -926.547, 2078.3, -925.559, 2077.46, -940.57, 2110.43, -940.227, 2110.6, -956.223, 2159.58, -956.719, 2157.74, -972.738, 2174.73, -972.562, 2175.41, -1037.56, 2287.31, -1035.4, 2286.48, -1051.41, 2302.47, -1051.25, 2303.63, -1067.23, 2318.62, -1067.08, 2318.78, -1083.08, 2334.77, -1082.91, 2336.09, -1113.91, 2351.09, -1114.75, 2352.26, -1227.75, 2400.22, -1226.25, 2400.43, -1246.25, 2416.41, -1246.09, 2417.03, -1306.09, 2400.05, -1306.26, 2337.09, -1306.91, 2337.26, -1322.91, 2369.23, -1322.58, 2369.4, -1338.58, 2481.32, -1337.42, 2481.49, -1353.42, 2737.3, -1350.77, 2737.13, -1334.77, 2753.12, -1334.61, 2752.79, -1302.61, 2736.8, -1302.77, 2736.84, -1208.76, 2815.75, -1205.95, 2817.41, -1269.93, 2816, -1325.95, 2818.56, -1477.95, 2802.58, -1478.11, 2802.74, -1494.11, 2786.75, -1494.27, 2786.92, -1510.27, 2738.96, -1510.77, 2738.79, -1494.77, 2674.84, -1495.43, 2675.01, -1511.43, 2611.05, -1512.1, 2611.22, -1528.1, 2579.24, -1528.43, 2579.41, -1544.43, 2419.52, -1546.09, 2419.35, -1530.09, -319.984, -368.355, -320.625, -113.336, -833.484, -96.6484, -832.977, 47.375, -895.938, 47.7188, -896.109, 63.7188, -912.102, 63.5547, -912.266, 79.5547, -929.258, 80.3789, -930.328, 183.379, -929.047, 543.426, -929.07, 545.426, -896.445, 578.77, -381.75, 578.102, 285.711, 687.031, 1662.55, 620.289, 1999.31, 429.758, 2573.77, -1000.43, 2333.95, -1002.91, 2333.29, -938.918, 2317.3, -939.086, 2316.47, -859.086, 2268.51, -859.582, 2268.01, -811.582, 2204.05, -812.246, 2204.22, -828.246, 2172.24, -828.574, 2171.59, -764.574, 2155.59, -764.742, 2154.93, -700.742, 2011.03, -702.234, 2010.87, -686.234, 1994.88, -686.398, 1994.22, -622.398, 1978.23, -622.562, 1977.56, -558.562, 1945.59, -558.895, 1944.92, -494.895, 1896.96, -495.391, 1896.63, -463.391, 1848.66, -463.891, 1848, -399.891, 1800.04, -400.387, 1799.88, -384.387, 1751.91, -385.883, 1751.4, -335.887, 1744.41, -335.961, 1743.92, -95.9414, 1791.89, -96.4414, 1792.06, -16.4336, 1808.05, -16.2656, 1809.59, 511.801, 1647.7, 511.125, 1648.69, 608.145, 1601.71, 608.66, 1600.03, 480.629, 1536.08, 479.965, 1536.43, 542.977, 1424.49, 543.816, 1424.83, 511.816, 1408.84, 511.648, 1407.99, 496.641, 1296.08, 495.48, 1295.91, 511.48, 1215.95, 511.652, 1215.62, 640.66, 943.781, 640.844, 943.961, 623.844, 879.992, 624.18, 879.484, 577.172, 1088.35, 577.336, 1088.02, 513.324, 1120, 512.656, 1120.33, 577.668, 1152.3, 578, 1151.98, 416.977, 864.156, 416.996, 864.484, 384.996, 704.586, 384.34, 703.758, 464.34, 687.773, 464.172, 688.125, 623.191, 640.076, 623.554, 640.469, 495.688, 575.516, 495.012, 576.18, 624.035, 512.227, 623.371, 512.211, 528.359, 480.234, 528.027, 481.25, 623.051, 48.5, 624.566, 48.0078, 575.555, 33.0156, 575.398, 32.3359, 544.391, 16.3516, 544.223, 16.5234, 528.223, -351.242, 527.414, -351.75, 479.402, -383.727, 479.07, -384.719, 575.07, -895.414, 575.777, -895.25, 559.777, -912.234, 559.602, -912.062, 543.602, -928.055, 543.438, -927.922, 144.398, -911.938, 144.566, -911.773, 128.566, -895.766, 127.73, -895.602, 111.73, -831.648, 112.395, -832.156, -31.625)
@@ -14274,25 +14136,6 @@ size = Vector2(45, 29.25)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1u1jq"]
 size = Vector2(45, 30.5)
 
-[sub_resource type="Gradient" id="Gradient_i8ckm"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.503704, 0.8)
-colors = PackedColorArray(1, 0.443137, 0, 1, 1, 0.341176, 0, 1, 1, 0.580392, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vons5"]
-noise_type = 0
-seed = 6
-frequency = 0.3395
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_legw5"]
-width = 256
-height = 256
-generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.555
-color_ramp = SubResource("Gradient_i8ckm")
-noise = SubResource("FastNoiseLite_vons5")
-
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_fgsnb"]
 b = Vector2(1983, 1516)
 
@@ -14305,6 +14148,21 @@ b = Vector2(-2800, 541)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_cyobr"]
 b = Vector2(-1450, -878)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qxuuj"]
+shader = ExtResource("52_uh3ev")
+shader_parameter/biome1_texture = ExtResource("43_q0seo")
+shader_parameter/biome2_texture = ExtResource("53_qxuuj")
+shader_parameter/vertical = false
+shader_parameter/texture_scale = 0.685
+
+[sub_resource type="Gradient" id="Gradient_q0seo"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gb70t"]
+gradient = SubResource("Gradient_q0seo")
+width = 140
 
 [sub_resource type="TileSet" id="TileSet_tikye"]
 
@@ -24535,24 +24393,6 @@ animations = [{
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6sjd4"]
 polygon = PackedVector2Array(288, 242, 688, 242, 688, 352, 656, 352, 656.5, 272, 416, 271.5, 416, 352, 288, 351.5)
 
-[sub_resource type="Gradient" id="Gradient_23017"]
-offsets = PackedFloat32Array(0, 0.879902, 1)
-colors = PackedColorArray(0.95, 0.891575, 0.5605, 1, 0.67, 0.554425, 0.2077, 1, 0.42, 0.252, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0t2pq"]
-noise_type = 2
-seed = 6
-frequency = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xehab"]
-width = 256
-height = 256
-generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.0
-color_ramp = SubResource("Gradient_23017")
-noise = SubResource("FastNoiseLite_0t2pq")
-
 [sub_resource type="Gradient" id="Gradient_dx3bq"]
 offsets = PackedFloat32Array(0.538721, 0.606061, 0.737374)
 colors = PackedColorArray(0, 0, 0, 1, 1, 0.286275, 0, 1, 1, 0, 0, 1)
@@ -24616,6 +24456,7 @@ script = ExtResource("4_cyobr")
 DayCount = 286
 
 [node name="Thinkers" type="Node2D" parent="." groups=["Archive", "Cities"]]
+position = Vector2(59968, -33664)
 script = ExtResource("44_1r2vu")
 
 [node name="Bandit2" parent="Thinkers" node_paths=PackedStringArray("Faction") instance=ExtResource("16_uh3ev")]
@@ -24628,10 +24469,11 @@ FactionImportance = 50
 [node name="GlobalNavMesh" type="NavigationRegion2D" parent="."]
 process_mode = 1
 visible = false
-position = Vector2(-82084.5, 49453)
+position = Vector2(-22116.5, 15789)
 navigation_polygon = SubResource("NavigationPolygon_521i4")
 
 [node name="Biomes" type="Node2D" parent="."]
+position = Vector2(59968, -33664)
 
 [node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
@@ -24697,274 +24539,6 @@ position = Vector2(-155.012, 10.3947)
 rotation = 0.0103631
 scale = Vector2(0.999331, 1.00005)
 skew = -1.49012e-05
-
-[node name="Furniture" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer"]
-visible = false
-
-[node name="TreasureRoom" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-position = Vector2(1.99999, 118)
-
-[node name="TreasureChest" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom"]
-z_index = 4
-position = Vector2(1062, 430)
-scale = Vector2(2, 2)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 20
-frame = 16
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest/StaticBody2D"]
-position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_yfcq3")
-
-[node name="TreasureChest2" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom"]
-z_index = 4
-position = Vector2(1113, 430)
-scale = Vector2(2, 2)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 20
-frame = 14
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest2"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest2/StaticBody2D"]
-position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_yfcq3")
-
-[node name="TreasureChest3" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom"]
-z_index = 4
-position = Vector2(1203, 429)
-scale = Vector2(2, 2)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 20
-frame = 14
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest3"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom/TreasureChest3/StaticBody2D"]
-position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_yfcq3")
-
-[node name="LightStump7" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom" instance=ExtResource("7_5t368")]
-position = Vector2(1118, 489)
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/TreasureRoom"]
-position = Vector2(1177.98, 455.663)
-scale = Vector2(13.6443, 4.92045)
-
-[node name="Table" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 4
-position = Vector2(1058, 161)
-scale = Vector2(3.0625, 5.20833)
-mesh = SubResource("ArrayMesh_f13vj")
-texture = ExtResource("6_5yiud")
-
-[node name="Food" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-
-[node name="Baguette" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table/Food"]
-position = Vector2(0.326546, 7.296)
-scale = Vector2(0.186001, 0.0932905)
-mesh = SubResource("ArrayMesh_fybfp")
-texture = ExtResource("8_gt7kp")
-
-[node name="BAGEL" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table/Food"]
-position = Vector2(5.22449, 3.648)
-scale = Vector2(0.152422, 0.100227)
-mesh = SubResource("ArrayMesh_ybss6")
-texture = ExtResource("9_fgsnb")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-collision_layer = 2
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table/StaticBody2D"]
-position = Vector2(-0.326721, 0.0959225)
-shape = SubResource("RectangleShape2D_hjey5")
-
-[node name="Chair" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(-11.5918, -8.54395)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_n2t61")
-texture = ExtResource("6_5yiud")
-
-[node name="Chair2" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(-11.7539, -2.30371)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_ho3mn")
-texture = ExtResource("6_5yiud")
-
-[node name="Chair3" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(-11.7539, 4.6084)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_1r2vu")
-texture = ExtResource("6_5yiud")
-
-[node name="Chair4" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(10.7755, -8.64001)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_7dl3v")
-texture = ExtResource("6_5yiud")
-
-[node name="Chair5" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(10.7755, -1.92)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_woxng")
-texture = ExtResource("6_5yiud")
-
-[node name="Chair6" type="MeshInstance2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(10.7755, 5.376)
-scale = Vector2(0.529685, 0.5896)
-mesh = SubResource("ArrayMesh_uh3ev")
-texture = ExtResource("6_5yiud")
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Table"]
-position = Vector2(-0.830884, 0.569986)
-scale = Vector2(2.07092, 1.4587)
-
-[node name="LightStump3" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
-position = Vector2(1153.5, 119.499)
-
-[node name="LightStump5" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
-position = Vector2(490, 104.999)
-
-[node name="LightStump4" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture" instance=ExtResource("7_5t368")]
-position = Vector2(1597, 363.999)
-
-[node name="Desk" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-
-[node name="Chair" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-z_index = 4
-position = Vector2(1445, -57)
-rotation = 0.000189781
-scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("10_3bhl6")
-
-[node name="Desk" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-z_index = 4
-y_sort_enabled = true
-position = Vector2(1445, -39)
-rotation = 0.000189781
-scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 19
-frame = 69
-
-[node name="Chair2" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-z_index = 4
-position = Vector2(1365, -33)
-rotation = 0.000189781
-scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 19
-frame = 135
-
-[node name="Cup" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-z_index = 4
-position = Vector2(1430, -43)
-rotation = 0.000189781
-scale = Vector2(0.692564, 0.862103)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 19
-frame = 193
-
-[node name="Shelf" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-z_index = 4
-position = Vector2(1364, -101)
-rotation = 0.000189781
-scale = Vector2(1.30014, 1.52186)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 19
-frame = 12
-
-[node name="Latern0" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk" instance=ExtResource("11_x3q2i")]
-z_index = 4
-position = Vector2(1458, -45)
-rotation = 0.000189781
-scale = Vector2(0.26897, 0.257442)
-autoplay = "on"
-frame_progress = 0.0659212
-
-[node name="Note" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk" instance=ExtResource("14_f13vj")]
-process_mode = 3
-z_index = 4
-position = Vector2(1447, -36.9999)
-TextId = &"LETTER_TO_THE_BOSS_BANDIT_HIDEOUT"
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Desk"]
-position = Vector2(1411.99, -62.9588)
-scale = Vector2(11.7356, 6.88152)
-
-[node name="Pissbucket" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 3
-position = Vector2(1243, 155)
-scale = Vector2(1.49125, 1.4301)
-texture = ExtResource("6_5yiud")
-hframes = 19
-vframes = 19
-frame = 303
-
-[node name="Tent" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 4
-position = Vector2(1461, 240.999)
-scale = Vector2(0.318568, 0.370061)
-texture = ExtResource("12_cyobr")
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent"]
-position = Vector2(-5.78633, -5.92422)
-scale = Vector2(15.7326, 14.3702)
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent"]
-occluder = SubResource("OccluderPolygon2D_mem04")
-
-[node name="Tent2" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 4
-position = Vector2(1555, 243.999)
-scale = Vector2(0.318568, 0.370061)
-texture = ExtResource("12_cyobr")
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent2"]
-position = Vector2(12.5533, -13.5103)
-scale = Vector2(15.7326, 14.3702)
-enable_node_path = NodePath("../../Tent")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent2"]
-occluder = SubResource("OccluderPolygon2D_mem04")
-
-[node name="Tent3" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 4
-position = Vector2(1648, 241.999)
-scale = Vector2(0.318568, 0.370061)
-texture = ExtResource("12_cyobr")
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent3"]
-position = Vector2(28.2486, -10.808)
-scale = Vector2(15.7326, 14.3702)
-enable_node_path = NodePath("../../Tent")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent3"]
-occluder = SubResource("OccluderPolygon2D_mem04")
-
-[node name="Tent4" type="Sprite2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture"]
-z_index = 4
-position = Vector2(1738, 239.999)
-scale = Vector2(0.318568, 0.370061)
-texture = ExtResource("12_cyobr")
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent4"]
-position = Vector2(18.8311, -10.808)
-scale = Vector2(15.7326, 14.3702)
-enable_node_path = NodePath("../../Tent")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer/Furniture/Tent4"]
-occluder = SubResource("OccluderPolygon2D_mem04")
 
 [node name="Environment" type="Node2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer/DecorLayer"]
 z_index = 4
@@ -25716,13 +25290,12 @@ vertices = PackedVector2Array(-1137, 126, -982, 128, -979, 132, -1133, 133, -113
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
-[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
 position = Vector2(9092.5, -487)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 Type = 1
-Markets = []
 TradeRoutes = []
 Biome = NodePath("..")
 AreaName = &"Abazan, City of Gold"
@@ -25755,7 +25328,8 @@ process_mode = 4
 z_index = -6
 texture_repeat = 3
 position = Vector2(-10136, 800.5)
-texture = SubResource("NoiseTexture2D_legw5")
+texture = ExtResource("43_q0seo")
+texture_rotation = -0.881391
 polygon = PackedVector2Array(-1319.5, -5359.5, 22342, -2437.5, 20477, 7101, 10713, 6159, -1453, 1342)
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SaltWastes"]
@@ -25788,6 +25362,13 @@ shape = SubResource("SegmentShape2D_x3q2i")
 position = Vector2(775, 5193)
 shape = SubResource("SegmentShape2D_cyobr")
 
+[node name="SafeSandsBorder" type="Polygon2D" parent="Biomes/SaltWastes"]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_qxuuj")
+position = Vector2(72041, -52749)
+texture = SubResource("GradientTexture1D_gb70t")
+polygon = PackedVector2Array(-83055.5, 48324, -59963, 51348, -59829, 51348, -59780, 51109, -83212, 48007.5, -83218.5, 48157)
+
 [node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 position = Vector2(-61567, 31378)
@@ -25800,7 +25381,7 @@ WeatherChangeInterval = 6000.0
 AreaName = &"SAFE_SANDS_BIOME_NAME"
 TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(3625.5, 5627.5)
 collision_layer = 12
 collision_mask = 12
@@ -25808,7 +25389,6 @@ input_pickable = false
 script = ExtResource("25_qxdx5")
 Type = 1
 Treasury = 50000.0
-Markets = []
 TradeRoutes = []
 Biome = NodePath("..")
 AreaName = &"The Eternal City of Galakas"
@@ -25878,7 +25458,7 @@ tile_map_data = PackedByteArray("AAD1/9P/BgDPABsAAAD1/9T/BgDPABwAAAD1/9X/BgDPAB0
 [node name="Road" type="Polygon2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 texture_repeat = 2
 texture = ExtResource("34_hc03g")
-polygon = PackedVector2Array(-249, -31.5, -197, -140, -195, -224, -287.5, -224, -450, -226, -612.5, -232, -728.5, -230, -829, -230, -894.5, -231, -969.5, -234.5, -1100.5, -232.5, -1362, -236.5, -1456, -230.5, -1477, -210, -1488, -184, -1533, -185.5, -1543.5, -211.5, -1563.5, -227.5, -1633, -238, -1863.5, -258, -1902.5, -273.5, -1942, -372, -1922.5, -483, -1912.5, -591.5, -1906.5, -659, -1860.5, -696, -1821.5, -700, -1782.5, -711.5, -1756, -733.5, -1730, -734.5, -1716, -706, -1665.5, -650.5, -1573.5, -615.5, -1412.5, -600, -1041.5, -580.5, -878.5, -578.5, -835.5, -605, -818.5, -604.5, -790.5, -568.5, -758, -539, -604.5, -558, -465.5, -594.5, -316, -558, -166, -561, -40, -556, 146.5, -497.5, 436, -509, 584.5, -522.5, 628.5, -533.5, 650, -544.5, 695.5, -545, 701, -517, 680.5, -500, 586, -489, 383.5, -481.5, 110.5, -469, -69, -524, -171, -524, -322.5, -524, -455, -553, -599.5, -528, -775, -482, -857.5, -522.5, -1059, -535, -1510, -559, -1654.5, -588, -1731, -611, -1842.5, -621.5, -1864.5, -546.5, -1883.5, -478.5, -1774, -472.5, -1748.5, -491, -1716.5, -492.5, -1696.5, -466.5, -1656, -454.5, -1551.5, -447, -1529, -469, -1500.5, -468, -1474.5, -436, -1281, -452, -1096.5, -453.5, -977, -468, -888.5, -496, -847, -526.5, -798, -502, -813.5, -495, -820, -490, -826, -481, -830, -469.5, -830, -460, -826, -445.5, -812.5, -437.5, -804, -435.5, -482.5, -427, -473, -430.5, -466, -433.5, -460, -439.5, -446, -452.5, -442.5, -502, -446, -560.5, -323.5, -533, -353.5, -480, -354.409, -431.701, -320.5, -424, -281, -416.5, -286.5, -377, -337.5, -398, -882, -410, -950.5, -415.5, -1091, -401.5, -1275.5, -412.5, -1504.5, -394, -1737, -425.5, -1896, -423.5, -1887.5, -345.5, -1843, -295.5, -1633, -280, -1372.5, -284.5, -1315, -298, -1300, -326.5, -1261.5, -326, -1257.5, -296.5, -1184.5, -277.5, -1110.5, -296, -1091, -323.5, -1084.5, -351.5, -1036, -375.5, -1034.5, -322.5, -1049, -318.5, -965.5, -280.5, -516, -287, -218, -284.5, 38, -294, 176, -263.5, 352.5, -206.5, 230, -33)
+polygon = PackedVector2Array(-249, -31.5, -197, -140, -195, -224, -287.5, -224, -450, -226, -612.5, -232, -728.5, -230, -829, -230, -894.5, -231, -969.5, -234.5, -1100.5, -232.5, -1362, -236.5, -1456, -230.5, -1477, -210, -1488, -184, -1533, -185.5, -1543.5, -211.5, -1563.5, -227.5, -1633, -238, -1863.5, -258, -1902.5, -273.5, -1942, -372, -1922.5, -483, -1912.5, -591.5, -1906.5, -659, -1860.5, -696, -1821.5, -700, -1782.5, -711.5, -1756, -733.5, -1730, -734.5, -1716, -706, -1665.5, -650.5, -1573.5, -615.5, -1412.5, -600, -1041.5, -580.5, -878.5, -578.5, -772, -603, -465.5, -594.5, -316, -558, -166, -561, -40, -556, 146.5, -497.5, 436, -509, 584.5, -522.5, 628.5, -533.5, 648.5, -545, 695, -546, 701, -517, 680.5, -500, 586, -489, 383.5, -481.5, 110.5, -469, -69, -524, -171, -524, -322.5, -524, -455, -553, -770, -562.5, -857.5, -522.5, -1059, -535, -1510, -559, -1654.5, -588, -1731, -611, -1842.5, -621.5, -1864.5, -546.5, -1883.5, -478.5, -1774, -472.5, -1748.5, -491, -1716.5, -492.5, -1696.5, -466.5, -1656, -454.5, -1551.5, -447, -1529, -469, -1500.5, -468, -1474.5, -436, -1281, -452, -1096.5, -453.5, -746.5, -442.5, -588, -443.5, -442.5, -502, -446, -560.5, -323.5, -533, -353.5, -480, -478, -408, -754, -392, -882, -410, -957.5, -401.5, -1091, -401.5, -1275.5, -412.5, -1504.5, -394, -1737, -425.5, -1896, -423.5, -1887.5, -345.5, -1843, -295.5, -1633, -280, -1372.5, -284.5, -1315, -298, -1300, -326.5, -1261.5, -326, -1257.5, -296.5, -1184.5, -277.5, -1110.5, -296, -1091, -323.5, -1084.5, -351.5, -1036, -375.5, -1034.5, -322.5, -1049, -318.5, -965.5, -280.5, -516, -287, -218, -284.5, 38, -294, 176, -263.5, 352.5, -206.5, 230, -33)
 
 [node name="Area2D" type="Area2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 visible = false
@@ -25890,6 +25470,11 @@ polygon = PackedVector2Array(-2240.5, 2, -2249, -1735.5, 2041.5, -2125, 2026, -2
 
 [node name="EntranceDestination" type="Node2D" parent="Biomes/SafeSands/Galakas/MidCity"]
 position = Vector2(55.5, -204)
+
+[node name="Houses" type="TileMapLayer" parent="Biomes/SafeSands/Galakas/MidCity"]
+position = Vector2(-231.5, -703.5)
+tile_map_data = PackedByteArray("AADg/w8AAgAYAC8AAADh/w8AAgAZAC8AAADi/w8AAgAaAC8AAADj/w8AAgAbAC8AAADk/w8AAgAcAC8AAADl/w8AAgAdAC8AAADm/w8AAgAeAC8AAADn/w8AAgAfAC8AAADo/w8AAgAgAC8AAADg/wsAAgAYACsAAADg/wwAAgAYACwAAADg/w0AAgAYAC0AAADg/w4AAgAYAC4AAADh/wsAAgAZACsAAADh/wwAAgAZACwAAADh/w0AAgAZAC0AAADh/w4AAgAZAC4AAADi/wsAAgAaACsAAADi/wwAAgAaACwAAADi/w0AAgAaAC0AAADi/w4AAgAaAC4AAADj/wsAAgAbACsAAADj/wwAAgAbACwAAADj/w0AAgAbAC0AAADj/w4AAgAbAC4AAADk/wsAAgAcACsAAADk/wwAAgAcACwAAADk/w0AAgAcAC0AAADk/w4AAgAcAC4AAADl/wsAAgAdACsAAADl/wwAAgAdACwAAADl/w0AAgAdAC0AAADl/w4AAgAdAC4AAADm/wsAAgAeACsAAADm/wwAAgAeACwAAADm/w0AAgAeAC0AAADm/w4AAgAeAC4AAADn/wsAAgAfACsAAADn/wwAAgAfACwAAADn/w0AAgAfAC0AAADn/w4AAgAfAC4AAADo/wsAAgAgACsAAADo/wwAAgAgACwAAADo/w0AAgAgAC0AAADo/w4AAgAgAC4AAAA=")
+tile_set = ExtResource("39_ybss6")
 
 [node name="Outskirts" type="Node2D" parent="Biomes/SafeSands/Galakas" node_paths=PackedStringArray("Floor", "Area", "InteriorLayers", "UpperLayer")]
 visible = false
@@ -25958,13 +25543,12 @@ collision_mask = 12
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Galakas/WallCollision"]
 polygon = PackedVector2Array(-2397.5, 40.5, -2242.5, 40, -2240.5, -86, -178, -71.5, 1963, -36, 1963, 40, 2117.5, 40.5, 2117.5, -518.5, 2083.5, -518.5, 2082.5, -1990.5, 2116.5, -1984.5, 2118, -2346, 1965, -2346, 1963.5, -118.5, -2240, -134.5, -2197, -1288.5, -2238.5, -1312, -2201.5, -1328.5, -2202, -1881, -2360.5, -1879, -2361.5, -1791.5, -2837, -1789, -2829, -3618.5, -2976.5, -3630, -2962, -1880, -2999, -1877.5, -2997.5, -1279.5, -2840, -1273.5, -2839, -1341.5, -2361.5, -1340, -2362.5, -520, -2398.5, -519)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(1566.5, -10406)
 collision_layer = 12
 collision_mask = 12
 input_pickable = false
 script = ExtResource("25_qxdx5")
-Markets = []
 TradeRoutes = []
 Biome = NodePath("..")
 AreaName = &"Feohenni"
@@ -25974,12 +25558,11 @@ TileMaps = []
 position = Vector2(16945, 14452)
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "Biome", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(-17344, 3648)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
-Markets = []
 TradeRoutes = []
 Biome = NodePath("..")
 AreaName = &"Latan"
@@ -26067,12 +25650,11 @@ position = Vector2(854, 472.5)
 position = Vector2(2997, 545)
 polygon = PackedVector2Array(-3569.5, -3696, 770.5, -2202, -2438, 1984, -7589, 1426.5)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("Markets", "TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(19528.5, -7918)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
-Markets = []
 TradeRoutes = []
 AreaName = &"Kingdom of Sortior"
 TileMaps = []
@@ -26085,10 +25667,11 @@ polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922
 z_index = -1
 texture_repeat = 2
 position = Vector2(22528, -2048)
-texture = SubResource("NoiseTexture2D_xehab")
+texture = ExtResource("53_qxuuj")
 polygon = PackedVector2Array(3610.5, 9349.5, -3429.5, 9797.5, -12130, 16032.5, -16563, 16506, -21097.5, 17890.5, -44062.5, 14902.5, -46885.5, 9861.5, -49381.5, 4165.5, -47653.5, -634.5, -41171.5, -1367.5, -39393, -4640, -44488.5, -8214, -42337, -11196.5, -37786.5, -11834, -30978.5, -14173, -25218.5, -12637, -18306.5, -11805, -13570.5, -12509, -8386.5, -12765, 5373.5, -7837, 6461.5, -797)
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SafeSands"]
+visible = false
 modulate = Color(0, 0, 0, 1)
 position = Vector2(22528, -2048)
 polygon = PackedVector2Array(3610.5, 9349.5, -3429.5, 9797.5, -12130, 16032.5, -16563, 16506, -21097.5, 17890.5, -44062.5, 14902.5, -46885.5, 9861.5, -49381.5, 4165.5, -47653.5, -634.5, -41171.5, -1367.5, -39393, -4640, -44488.5, -8214, -42337, -11196.5, -37786.5, -11834, -30978.5, -14173, -25218.5, -12637, -18306.5, -11805, -13570.5, -12509, -8386.5, -12765, 5373.5, -7837, 6461.5, -797)
@@ -26154,6 +25737,7 @@ polygon = PackedVector2Array(-33658, 21496.5, -32570, 28536.5, -35421, 38683, -3
 
 [node name="AshenPlains" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
+position = Vector2(-46464, 50752)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
@@ -26163,45 +25747,15 @@ AreaName = &"ASHEN_PLAINS_BIOME_NAME"
 TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/AshenPlains"]
-position = Vector2(-7.5, -3.5)
+position = Vector2(46456.5, -50755.5)
 polygon = PackedVector2Array(-59903, 47155, -55595.5, 45844, -44901.5, 44584.5, -42021, 44457, -40692.5, 43187, -38661.5, 42786, -36469.5, 43561, -34470.5, 46347.5, -31892.5, 50186, -31816.5, 53183.5, -35016.5, 56255.5, -61756.5, 56635)
 
-[node name="Polygon2D" type="Polygon2D" parent="Biomes/AshenPlains"]
+[node name="Polygon2D2" type="Polygon2D" parent="Biomes/AshenPlains"]
 texture_repeat = 2
+position = Vector2(46464, -50752)
 color = Color(1, 0.76, 0.764, 1)
 texture = SubResource("NoiseTexture2D_m0qpv")
 polygon = PackedVector2Array(-59903, 47155, -55595.5, 45844, -44901.5, 44584.5, -42021, 44457, -40692.5, 43187, -38661.5, 42786, -36469.5, 43561, -34470.5, 46347.5, -31892.5, 50186, -31816.5, 53183.5, -35016.5, 56255.5, -61756.5, 56635)
-
-[node name="Roads" type="Node2D" parent="."]
-process_mode = 4
-
-[node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
-position = Vector2(-53175.5, 36508)
-script = ExtResource("6_54i5j")
-Links = []
-EntryNodes = {}
-
-[node name="Polygon2D" type="Polygon2D" parent="Roads/TheOldRoad"]
-texture_repeat = 3
-texture = ExtResource("34_hc03g")
-polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15941, -5869, 17722, -7660, 18369.5, -8474.5, 18393, -10893.5, 18440, -11105.5, 18517.5, -11292, 18038.5, -11285, 18051, -11178.5, 18038, -11168, 17963, -11216, 17977, -11267.5, 17917, -11268.5, 17928.5, -11220, 17947, -11190.5, 18011, -11146.5, 18160.5, -10714.5, 18219.5, -10039.5, 18239.5, -8506)
-
-[node name="TheGreatRoundRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
-position = Vector2(-72614, 35220)
-script = ExtResource("6_54i5j")
-Links = []
-EntryNodes = {}
-
-[node name="Polygon2D" type="Polygon2D" parent="Roads/TheGreatRoundRoad"]
-texture = ExtResource("32_fgsnb")
-polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
-
-[node name="Network" type="Node2D" parent="."]
-
-[node name="Players" type="Node2D" parent="Network"]
-
-[node name="Player" parent="Network/Players" instance=ExtResource("5_712nc")]
-position = Vector2(-82327, 49638.5)
 
 [node name="Factions" type="Node" parent="."]
 
@@ -26237,11 +25791,41 @@ MemberList = []
 Debts = {}
 Relations = {}
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
-script = ExtResource("6_i8ckm")
+[node name="Roads" type="Node2D" parent="."]
+process_mode = 4
+position = Vector2(59968, -33664)
+
+[node name="TheOldRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
+position = Vector2(-53175.5, 36508)
+script = ExtResource("6_54i5j")
+Links = []
+EntryNodes = {}
+
+[node name="Polygon2D" type="Polygon2D" parent="Roads/TheOldRoad"]
+texture_repeat = 3
+texture = ExtResource("34_hc03g")
+polygon = PackedVector2Array(17664, -7770, 15875, -5937, 15167, -4803, 13483, -3847, 9499, -2596, 5940, -1230, 3241, 139, -1029, 1007, -3386, 1139, -4573, 1425, -7148, 2897, -8011, 3241, -26131, 6924, -26226, 6963, -26259, 6997, -26292, 7046, -27652, 11014, -27678, 11073, -27716, 11093, -28469, 11398, -28835, 11586, -28985, 11724, -29097, 11861, -29009, 11931, -28966, 11844, -28833, 11695, -28450, 11470, -27671, 11160, -27633, 11139, -27596, 11091, -26205, 7100, -26166, 7046, -26080, 7004, -7995, 3289, -7055, 2914, -4534, 1498, -3389, 1206, -1010, 1094, 3352, 196, 6001, -1163, 9525, -2484, 13583, -3708, 15235, -4721, 15941, -5869, 17722, -7660, 18369.5, -8474.5, 18393, -10893.5, 18440, -11105.5, 18517.5, -11292, 18038.5, -11285, 18051, -11178.5, 18038, -11168, 17963, -11216, 17977, -11267.5, 17917, -11268.5, 17928.5, -11220, 17947, -11190.5, 18011, -11146.5, 18160.5, -10714.5, 18219.5, -10039.5, 18239.5, -8506)
+
+[node name="TheGreatRoundRoad" type="Node2D" parent="Roads" node_paths=PackedStringArray("Links", "EntryNodes")]
+position = Vector2(-72614, 35220)
+script = ExtResource("6_54i5j")
+Links = []
+EntryNodes = {}
+
+[node name="Polygon2D" type="Polygon2D" parent="Roads/TheGreatRoundRoad"]
+texture = ExtResource("32_fgsnb")
+polygon = PackedVector2Array(-311, -30, -108, 259, 280, 82, 286, -240, -16, -299, -601, -1809, 468, -5123, 2820, -9346, 1697, -11591, 2010, -13670, 2674, -14102, 2994, -14395, 3027, -14601, 3176, -14590, 3176, -14385, 2856, -14045, 2227, -13565, 2063, -11600, 3467, -9464, 3420, -9062, 1054, -5073, -38, -1879, 452, -738, 976, -412, 1008, 41, 507, 504, 833, 935, 2831, 1171, 6820, 1330, 7296, 2191, 8861, 2962, 10583, 3189, 11227, 3555, 11235, 3597, 10575, 3252, 9787, 3170, 8826, 3023, 7245, 2304, 6741, 1441, 2814, 1323, 767, 1081, 328, 607, -311, 542, -724, 158, -705, -217, -3270, -520, -5552, -319, -8194, 149, -10199, 430, -11473, 224, -11135, -113, -10083, 196, -8292, -73, -5623, -491, -3307, -676, -687, -383)
+
+[node name="Network" type="Node2D" parent="."]
+position = Vector2(59968, -33664)
+
+[node name="Players" type="Node2D" parent="Network"]
+
+[node name="Player" parent="Network/Players" instance=ExtResource("5_712nc")]
+position = Vector2(-82327, 49638.5)
 
 [node name="Tutorials" type="Node2D" parent="."]
-position = Vector2(5960.5, -3526.5)
+position = Vector2(65928.5, -37190.5)
 
 [node name="DashTutorial" parent="Tutorials" instance=ExtResource("7_re8x6")]
 position = Vector2(-84823, 53331.5)
@@ -26273,6 +25857,9 @@ Action = ExtResource("72_dx3bq")
 position = Vector2(-88121.5, 53149)
 TutorialString = "interact with an item"
 Action = ExtResource("69_ariq1")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+script = ExtResource("6_i8ckm")
 
 [node name="PostProcessing" type="Node" parent="."]
 

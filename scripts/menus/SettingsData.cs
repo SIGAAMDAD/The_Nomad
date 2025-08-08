@@ -320,37 +320,51 @@ public partial class SettingsData : Node {
 		Rid viewport = Instance.GetTree().Root.GetViewportRid();
 		switch ( AntiAliasing ) {
 		case AntiAliasing.None:
-			RenderingServer.ViewportSetUseTaa( viewport, false );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, false );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
 		case AntiAliasing.FXAA:
-			RenderingServer.ViewportSetUseTaa( viewport, false );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, false );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
 		case AntiAliasing.MSAA_2x:
-			RenderingServer.ViewportSetUseTaa( viewport, false );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, false );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa2X );
 			break;
 		case AntiAliasing.MSAA_4x:
-			RenderingServer.ViewportSetUseTaa( viewport, false );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, false );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa4X );
 			break;
 		case AntiAliasing.MSAA_8x:
-			RenderingServer.ViewportSetUseTaa( viewport, false );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, false );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Msaa8X );
 			break;
 		case AntiAliasing.TAA:
-			RenderingServer.ViewportSetUseTaa( viewport, true );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, true );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Disabled );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;
 		case AntiAliasing.FXAA_and_TAA:
-			RenderingServer.ViewportSetUseTaa( viewport, true );
+			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
+				RenderingServer.ViewportSetUseTaa( viewport, true );
+			}
 			RenderingServer.ViewportSetScreenSpaceAA( viewport, RenderingServer.ViewportScreenSpaceAA.Fxaa );
 			RenderingServer.ViewportSetMsaa2D( viewport, RenderingServer.ViewportMsaa.Disabled );
 			break;

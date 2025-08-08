@@ -10,7 +10,7 @@ colors = PackedColorArray(128.498, 0, 0, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_6lvap"]
 gradient = SubResource("Gradient_6lvap")
 width = 1
-height = 1
+height = 4
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rhrir"]
 lifetime_randomness = 0.75
@@ -103,7 +103,6 @@ speed_scale = 1.15
 randomness = 0.25
 fixed_fps = 0
 draw_order = 0
-trail_enabled = true
 trail_lifetime = 0.09
 trail_sections = 2
 process_material = SubResource("ParticleProcessMaterial_rhrir")

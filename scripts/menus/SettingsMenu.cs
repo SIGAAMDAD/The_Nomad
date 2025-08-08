@@ -690,7 +690,7 @@ public partial class SettingsMenu : Control {
 
 		Button DefaultSettingsButton = GetNode<Button>( "DefaultSettingsButton" );
 		DefaultSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-		DefaultSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		DefaultSettingsButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 		DefaultSettingsButton.Connect( Button.SignalName.Pressed, Callable.From( OnDefaultSettingsButtonPressed ) );
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
