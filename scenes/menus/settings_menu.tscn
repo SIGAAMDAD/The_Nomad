@@ -184,6 +184,15 @@ _title = &"PARTICLE_QUALITY"
 _no_translate = true
 _items = Array[StringName]([&"Low", &"High"])
 
+[node name="AnimationQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_mode = 2
+_title = &"ANIMATION_QUALITY"
+_description = &"ANIMATION_QUALITY_DESCRIPTION"
+_no_translate = true
+_items = Array[StringName]([&"Low", &"Medium", &"High"])
+
 [node name="LightingQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ShadowQualityList")

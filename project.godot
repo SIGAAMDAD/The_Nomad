@@ -235,6 +235,7 @@ rendering/text_driver="ICU / HarfBuzz / Graphite (Built-in)"
 2d_physics/layer_5="SpecialHitboxes"
 2d_physics/layer_6="Footsteps"
 2d_physics/layer_7="StaticGeometry"
+2d_physics/layer_8="WorldAreaPlayerDetection"
 
 [navigation]
 

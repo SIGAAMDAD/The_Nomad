@@ -1,4 +1,5 @@
 using Godot;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using Steamworks;
 
 public partial class SettingsMenu : Control {
@@ -14,6 +15,7 @@ public partial class SettingsMenu : Control {
 		public ShadowFilterQuality ShadowFilterQuality;
 		public ParticleQuality ParticleQuality;
 		public LightingQuality LightingQuality;
+		public AnimationQuality AnimationQuality;
 		public VSyncMode VSyncMode;
 		public AntiAliasing AntiAliasing;
 		public int MaxFps;
@@ -65,6 +67,7 @@ public partial class SettingsMenu : Control {
 			ShadowFilterQuality = settings.ShadowFilterQuality;
 			LightingQuality = settings.LightingQuality;
 			ParticleQuality = settings.ParticleQuality;
+			AnimationQuality = settings.AnimationQuality;
 			VSyncMode = settings.Vsync;
 			AntiAliasing = settings.AntiAliasing;
 			MaxFps = settings.MaxFps;
@@ -123,6 +126,9 @@ public partial class SettingsMenu : Control {
 				return false;
 			}
 			if ( a.Resolution != b.Resolution ) {
+				return false;
+			}
+			if ( a.AnimationQuality != b.AnimationQuality ) {
 				return false;
 			}
 			if ( a.ParticleQuality != b.ParticleQuality ) {
@@ -197,6 +203,7 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer ShadowQuality;
 	private HBoxContainer ShadowFilterQuality;
 	private HBoxContainer LightingQuality;
+	private HBoxContainer AnimationQuality;
 	private HBoxContainer MaxFps;
 	private HBoxContainer ShowFPS;
 	private HBoxContainer ShowBlood;
@@ -237,6 +244,11 @@ public partial class SettingsMenu : Control {
 		Controls
 	};
 
+	private void OnDefaultSettingsButtonPressed() {
+		UIAudioManager.OnButtonPressed();
+
+		
+	}
 	private void OnSaveSettingsButtonPressed() {
 		UIAudioManager.OnButtonPressed();
 
@@ -245,6 +257,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetShadowFilterQuality( (ShadowFilterQuality)ShadowFilterQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetLightingQuality( (LightingQuality)LightingQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetParticleQuality( (ParticleQuality)ParticleQuality.Call( "get_value" ).AsInt32() );
+		SettingsData.SetAnimationQuality( (AnimationQuality)AnimationQuality.Call( "get_value" ).AsInt32() );
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetResolution( (Resolution)ResolutionOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Call( "get_value" ).AsInt32() );
@@ -274,7 +287,8 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		};
+		}
+		;
 
 		SettingsData.SetEffectsOn( EffectsOn.Call( "get_value" ).AsBool() );
 		SettingsData.SetEffectsVolume( EffectsVolume.Call( "get_value" ).AsSingle() );
@@ -327,6 +341,10 @@ public partial class SettingsMenu : Control {
 		ResolutionOption = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ResolutionList" );
 		ResolutionOption.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ResolutionOption ) ) );
 		ResolutionOption.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ResolutionOption ) ) );
+
+		AnimationQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList" );
+		AnimationQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( AnimationQuality ) ) );
+		AnimationQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( AnimationQuality ) ) );
 
 		ParticleQuality = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList" );
 		ParticleQuality.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ParticleQuality ) ) );
@@ -607,7 +625,6 @@ public partial class SettingsMenu : Control {
 		WindowModeOption.Call( "set_value", (int)SettingsData.GetWindowMode() );
 		ResolutionOption.Call( "set_value", (int)SettingsData.GetResolution() );
 		AntiAliasingOption.Call( "set_value", (int)SettingsData.GetAntiAliasing() );
-		ShadowQuality.Call( "set_value", (int)SettingsData.GetShadowQuality() );
 		switch ( SettingsData.GetMaxFps() ) {
 		case 0:
 			MaxFps.Call( "set_value", 0 );
@@ -634,7 +651,9 @@ public partial class SettingsMenu : Control {
 			Console.PrintLine( "Custom FPS set." );
 			break;
 		};
+		ShadowQuality.Call( "set_value", (int)SettingsData.GetShadowQuality() );
 		ShadowFilterQuality.Call( "set_value", (int)SettingsData.GetShadowFilterQuality() );
+		AnimationQuality.Call( "set_value", (int)SettingsData.GetAnimationQuality() );
 		ParticleQuality.Call( "set_value", (int)SettingsData.GetParticleQuality() );
 		LightingQuality.Call( "set_value", (int)SettingsData.GetLightingQuality() );
 		ShowFPS.Call( "set_value", SettingsData.GetShowFPS() );
@@ -668,6 +687,11 @@ public partial class SettingsMenu : Control {
 		SyncToSteamButton.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 		SyncToSteamButton.Connect( "pressed", Callable.From( OnSyncToSteamButtonPressed ) );
 		*/
+
+		Button DefaultSettingsButton = GetNode<Button>( "DefaultSettingsButton" );
+		DefaultSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		DefaultSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		DefaultSettingsButton.Connect( Button.SignalName.Pressed, Callable.From( OnDefaultSettingsButtonPressed ) );
 
 		Button SaveSettingsButton = GetNode<Button>( "SaveSettingsButton" );
 		SaveSettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );

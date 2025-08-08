@@ -256,7 +256,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			BladedFramesLeft = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_left" ] );
 			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_right" ] );
 
-			UseBladedSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "use_bladed" ] );
+			UseBladedSfx = ResourceCache.GetSound( "res://sounds/weapons/" + (StringName)properties[ "use_bladed" ] );
 		}
 		if ( (bool)properties[ "is_blunt" ] ) {
 			PropertyBits |= Properties.IsBlunt;
@@ -303,7 +303,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			MuzzleLight.Hide();
 			AddChild( MuzzleLight );
 
-			ReloadSfx = ResourceCache.GetSound( "res://sounds/" + resourcePath + (StringName)properties[ "reload_sfx" ] );
+			ReloadSfx = ResourceCache.GetSound( "res://sounds/weapons/" + (StringName)properties[ "reload_sfx" ] );
 			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
 
 			UseTime = (float)properties[ "use_time" ];

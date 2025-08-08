@@ -1,6 +1,6 @@
 using Godot;
 
-public enum WindowMode : uint {
+public enum WindowMode : byte {
 	Windowed,
 	BorderlessWindowed,
 	Fullscreen,
@@ -8,7 +8,7 @@ public enum WindowMode : uint {
 	ExclusiveFullscreen
 };
 
-public enum Resolution : uint {
+public enum Resolution : byte {
 	Res_640x480,
 	Res_800x600,
 	Res_1280x768,
@@ -16,7 +16,7 @@ public enum Resolution : uint {
 	Res_1600x900
 };
 
-public enum AspectRatio : uint {
+public enum AspectRatio : byte {
 	Aspect_Automatic,
 	Aspect_4_3,
 	Aspect_16_10,
@@ -24,7 +24,7 @@ public enum AspectRatio : uint {
 	Aspect_21_9
 };
 
-public enum AntiAliasing : uint {
+public enum AntiAliasing : byte {
 	None,
 	FXAA,
 	MSAA_2x,
@@ -34,7 +34,7 @@ public enum AntiAliasing : uint {
 	FXAA_and_TAA
 };
 
-public enum ShadowQuality : uint {
+public enum ShadowQuality : byte {
 	Off,
 	Low,
 	Medium,
@@ -42,31 +42,37 @@ public enum ShadowQuality : uint {
 	Ultra
 };
 
-public enum ShadowFilterQuality : uint {
+public enum ShadowFilterQuality : byte {
 	Off,
 	Low,
 	High
 };
 
-public enum LightingQuality : uint {
+public enum AnimationQuality : byte {
+	Low,
+	Medium,
+	High
+};
+
+public enum LightingQuality : byte {
 	VeryLow,
 	Low,
 	High
 };
 
-public enum ParticleQuality : uint {
+public enum ParticleQuality : byte {
 	Low,
 	High
 };
 
-public enum VSyncMode : uint {
+public enum VSyncMode : byte {
 	Off,
 	Adaptive,
 	On,
 	TripleBuffered
 };
 
-public enum DRSPreset : uint {
+public enum DRSPreset : byte {
 	UltraPerformance,
 	Performance,
 	Balanced,
@@ -76,13 +82,13 @@ public enum DRSPreset : uint {
 	Dynamic // trying to hit a target framerate
 };
 
-public enum AutoAimMode : uint {
+public enum AutoAimMode : byte {
 	Off,
 	Soft,
 	LockOn
 };
 
-public enum HUDPreset : uint {
+public enum HUDPreset : byte {
 	// all hud elements are used
 	Full,
 
@@ -93,7 +99,7 @@ public enum HUDPreset : uint {
 	Expert
 };
 
-public enum ColorblindMode : uint {
+public enum ColorblindMode : byte {
 	None,
 	Protanopia,
 	Deutanopia,
@@ -115,12 +121,12 @@ public partial class DefaultSettings : Resource {
 	[Export] public ShadowQuality ShadowQuality { get; private set; } = ShadowQuality.Medium;
 	[Export] public ShadowFilterQuality ShadowFilterQuality { get; private set; } = ShadowFilterQuality.Low;
 	[Export] public ParticleQuality ParticleQuality { get; private set; } = ParticleQuality.Low;
+	[Export] public AnimationQuality AnimationQuality { get; private set; } = AnimationQuality.Low;
+	[Export] public LightingQuality LightingQuality { get; private set; } = LightingQuality.Low;
 	[Export] public int MaxFps { get; private set; } = 60;
 	[Export] public bool BloomEnabled { get; private set; } = true;
 	[Export] public bool ShowFps { get; private set; } = false;
 	[Export] public bool ShowBlood { get; private set; } = true;
-	[Export] public bool ForceVertexShading { get; private set; } = true;
-	[Export] public LightingQuality LightingQuality { get; private set; } = LightingQuality.Low;
 
 	//
 	// audio

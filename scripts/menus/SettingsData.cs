@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Runtime.CompilerServices;
 
-public partial class SettingsData : Control {
+public partial class SettingsData : Node {
 	public static DefaultSettings Default { get; private set; }
 
 	//
@@ -17,9 +17,10 @@ public partial class SettingsData : Control {
 	private static ShadowQuality ShadowQuality;
 	private static ShadowFilterQuality ShadowFilterQuality;
 	private static ParticleQuality ParticleQuality;
+	private static LightingQuality LightingQuality;
+	private static AnimationQuality AnimationQuality;
 	private static VSyncMode VSyncMode;
 	private static AntiAliasing AntiAliasing;
-	private static LightingQuality LightingQuality;
 	private static int MaxFps;
 	private static int DRSTargetFrames;
 	private static bool BloomEnabled;
@@ -132,6 +133,10 @@ public partial class SettingsData : Control {
 	public static ParticleQuality GetParticleQuality() => ParticleQuality;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static AnimationQuality GetAnimationQuality() => AnimationQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void SetAnimationQuality( AnimationQuality quality ) => AnimationQuality = quality;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static VSyncMode GetVSync() => VSyncMode;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -516,8 +521,9 @@ public partial class SettingsData : Control {
 			AspectRatio = AspectRatio.Aspect_21_9;
 			break;
 		};
-		ParticleQuality = (ParticleQuality)Convert.ToInt32( config[ "Video:ParticleQuality" ] );
 		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
+		ParticleQuality = (ParticleQuality)Convert.ToInt32( config[ "Video:ParticleQuality" ] );
+		AnimationQuality = (AnimationQuality)Convert.ToInt32( config[ "Video:AnimationQuality" ] );
 		ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
 		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
 		LightingQuality = (LightingQuality)Convert.ToUInt32( config[ "Video:LightingQuality" ] );
@@ -539,6 +545,7 @@ public partial class SettingsData : Control {
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
 		writer.WriteLine( string.Format( "LightingQuality={0}", (int)LightingQuality ) );
+		writer.WriteLine( string.Format( "AnimationQuality={0}", (int)AnimationQuality ) );
 		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
 		writer.WriteLine( string.Format( "VSync={0}", (int)VSyncMode ) );
 		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToInt32( BloomEnabled ) ) );

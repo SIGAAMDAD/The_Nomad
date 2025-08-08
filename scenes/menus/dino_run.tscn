@@ -16,13 +16,13 @@ uniform float speed = 1.5;
 void fragment() {
 	float wave = sin( TIME * 3.0 + UV.x * 10.0 ) * 0.02;
 	vec2 uv = vec2( UV.x, UV.y + wave );
-	
+
 	float noise = fract( sin( dot( uv, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 );
 	vec3 color = mix( sand_color.rgb, sand_color.rgb * 1.2, noise );
-	
+
 	float haze = smoothstep( 0.7, 1.0, UV.y );
 	color = mix( color, vec3( 0.95, 0.85, 0.6 ), haze * 0.3 );
-	
+
 	COLOR = vec4( color, 1.0 );
 }"
 

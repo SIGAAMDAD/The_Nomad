@@ -63,16 +63,21 @@ namespace Renown.World {
 		public override void _Ready() {
 			base._Ready();
 
-//			Connect( Area2D.SignalName.BodyEntered, Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
-//			Connect( Area2D.SignalName.BodyExited, Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
-//			Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
-//			Connect( Area2D.SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
+			//			Connect( Area2D.SignalName.BodyEntered, Callable.From<Node2D>( OnProcessAreaBody2DEntered ) );
+			//			Connect( Area2D.SignalName.BodyExited, Callable.From<Node2D>( OnProcessAreaBody2DExited ) );
+			//			Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DEntered( body ) ) );
+			//			Connect( Area2D.SignalName.BodyShapeExited, Callable.From<Rid, Node2D, int, int>( ( bodyRid, body, localShapeIndex, bodyShapeIndex ) => OnProcessAreaBody2DExited( body ) ) );
+
+			CollisionMask = (uint)( PhysicsLayer.WorldAreaPlayerStatus );
+			CollisionLayer = (uint)( PhysicsLayer.WorldAreaPlayerStatus );
 
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = (int)GetRid().Id;
 
-			AddToGroup( "WorldAreas" );
 
+			if ( !IsInGroup( "WorldAreas" ) ) {
+				AddToGroup( "WorldAreas" );
+			}
 			if ( !IsInGroup( "Archive" ) ) {
 				AddToGroup( "Archive" );
 			}

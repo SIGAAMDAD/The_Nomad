@@ -13,6 +13,7 @@ using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using PlayerSystem.Upgrades;
+using System.Threading.Tasks;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -94,7 +95,7 @@ public partial class Player : Entity {
 
 	public static readonly int MAX_RUNES = 5;
 	public static readonly int MAX_PERKS = 1;
-	public static readonly float ACCEL = 1600.0f;
+	public static readonly float ACCEL = 500.0f;
 	public static readonly float FRICTION = 1000.0f;
 	public static readonly float MAX_SPEED = 440.0f;
 	public static readonly float JUMP_VELOCITY = -400.0f;
@@ -191,9 +192,16 @@ public partial class Player : Entity {
 
 	private Node Animations;
 	private SpriteFrames DefaultLeftArmAnimations;
+	private Sprite2D HeadAnimation;
 	public AnimatedSprite2D TorsoAnimation { get; private set; }
 	public AnimatedSprite2D LegAnimation { get; private set; }
 	public AnimatedSprite2D IdleAnimation { get; private set; }
+
+	private float WindUpDuration = 0.05f;
+	private float WindUpProgress = 0.0f;
+	private float IdleTime = 0.0f;
+	private float NextShiftTime = 0.0f;
+	private float CurrentShake = 0.0f;
 
 	private Node2D Shadows;
 	private AnimatedSprite2D LeftArmShadowAnimation;
@@ -961,7 +969,6 @@ public partial class Player : Entity {
 	}
 	public float GetArmAngle() {
 		Godot.Vector2 mousePosition;
-
 		if ( (int)SettingsData.GetWindowMode() >= 2 ) {
 			mousePosition = DisplayServer.MouseGetPosition();
 		} else {
@@ -971,13 +978,14 @@ public partial class Player : Entity {
 		if ( LastMousePosition != mousePosition ) {
 			LastMousePosition = mousePosition;
 			IdleReset();
-		}
 
-		ArmAngle = GetLocalMousePosition().Angle();
-		if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
-			FlipSpriteRight();
-		} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
-			FlipSpriteLeft();
+			ArmAngle = GetLocalMousePosition().Angle();
+			HeadAnimation.GlobalRotation = ArmAngle;
+			if ( mousePosition.X >= ScreenSize.X / 2.0f ) {
+				FlipSpriteRight();
+			} else if ( mousePosition.X <= ScreenSize.X / 2.0f ) {
+				FlipSpriteLeft();
+			}
 		}
 		return ArmAngle;
 	}
@@ -1043,6 +1051,7 @@ public partial class Player : Entity {
 
 		AimLine.Show();
 
+		HeadAnimation.Show();
 		LegAnimation.Show();
 		TorsoAnimation.Show();
 		ArmRight.Animations.Show();
@@ -1190,7 +1199,9 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
-		ShakeCameraDirectional( nAmount, ( attacker.GlobalPosition - GlobalPosition ).Normalized() );
+		if ( attacker != null ) {
+			ShakeCameraDirectional( nAmount, ( attacker.GlobalPosition - GlobalPosition ).Normalized() );
+		}
 
 		FreeFlow.EndCombo();
 
@@ -1284,6 +1295,7 @@ public partial class Player : Entity {
 		LeftArmAnimationState = PlayerAnimationState.CheckpointIdle;
 		RightArmAnimationState = PlayerAnimationState.CheckpointIdle;
 
+		HeadAnimation.Hide();
 		TorsoAnimation.Hide();
 		LegAnimation.Hide();
 		ArmLeft.Animations.Hide();
@@ -1370,6 +1382,7 @@ public partial class Player : Entity {
 			return;
 		}
 
+		HeadAnimation.Hide();
 		TorsoAnimation.Hide();
 		ArmLeft.Animations.Hide();
 		ArmRight.Animations.Hide();
@@ -1397,8 +1410,10 @@ public partial class Player : Entity {
 
 		IdleAnimation.Play( "loop" );
 	}
+
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
+			CurrentShake += 0.01f;
 			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
 			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/arm_foley.ogg" ) );
 			SetSoundLevel( 36.0f );
@@ -1926,12 +1941,14 @@ public partial class Player : Entity {
 	}
 
 	private void FlipSpriteLeft() {
+		HeadAnimation.FlipV = true;
 		LegAnimation.FlipH = true;
 		TorsoAnimation.FlipH = true;
 		ArmLeft.Flip = true;
 		ArmRight.Flip = true;
 	}
 	private void FlipSpriteRight() {
+		HeadAnimation.FlipV = false;
 		LegAnimation.FlipH = false;
 		TorsoAnimation.FlipH = false;
 		ArmLeft.Flip = false;
@@ -2249,6 +2266,8 @@ public partial class Player : Entity {
 
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
+		HeadAnimation = GetNode<Sprite2D>( "Animations/Head" );
+
 		IdleTimer = GetNode<Timer>( "IdleAnimationTimer" );
 		IdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnIdleAnimationTimerTimeout ) );
 
@@ -2372,9 +2391,41 @@ public partial class Player : Entity {
 
 		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
 	}
+	private void UpdateIdleBreath( float delta ) {
+		IdleTime += delta;
+
+		float breath = Mathf.Sin( IdleTime * 1.5f ) * 0.30f;
+		TorsoAnimation.Position = new Vector2( 0.0f, breath );
+
+		if ( IdleTime > NextShiftTime ) {
+			NextShiftTime = IdleTime + GD.Randf() * 3.0f + 1.0f;
+
+			float shiftAmount = GD.Randf() * 1.5f - 0.75f;
+			float duration = 0.8f;
+
+//			CreateTween().TweenProperty( LegAnimation, "position", new Vector2( shiftAmount, LegAnimation.Position.Y ), duration ).SetEase( Tween.EaseType.Out );
+//			await ToSignal( GetTree().CreateTimer( duration ), "timeout" );
+//			CreateTween().TweenProperty( LegAnimation, "position", Vector2.Zero, duration * 0.7f ).SetEase( Tween.EaseType.InOut );
+		}
+	}
+	private void UpdateCameraShake( float delta ) {
+		if ( CurrentShake > 0.01f ) {
+			float shakeX = ( GD.Randf() - 0.5f ) * CurrentShake;
+			float shakeY = ( GD.Randf() - 0.5f ) * CurrentShake;
+
+			Viewpoint.SetDeferred( Camera2D.PropertyName.Offset, new Vector2( shakeX, shakeY ) );
+			CurrentShake = Mathf.Lerp( CurrentShake, 0.0f, 10.0f * delta );
+		} else if ( CurrentShake > 0.0f ) {
+			Viewpoint.SetDeferred( Camera2D.PropertyName.Offset, Vector2.Zero );
+			CurrentShake = 0.0f;
+		}
+	}
 
 	public override void PhysicsUpdate( double delta ) {
 		base._PhysicsProcess( delta );
+
+		CurrentShake = 10.5f;
+		UpdateCameraShake( (float)delta );
 
 		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, ScreenSize.X * 0.5f, GetRid() );
 		if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() != Faction ) {
@@ -2396,11 +2447,12 @@ public partial class Player : Entity {
 			return;
 		}
 
+		float baseSpeed;
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			float speed = MAX_SPEED;
 			// encumbured
 			if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
-
+				speed *= 0.5f;
 			}
 
 			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
@@ -2414,10 +2466,33 @@ public partial class Player : Entity {
 			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
 			TorsoAnimationState = PlayerAnimationState.Running;
 			LegAnimationState = PlayerAnimationState.Running;
+
+			WindUpProgress = Mathf.Clamp( WindUpProgress + WindUpDuration, 0.0f, 1.0f );
+			baseSpeed = 1.0f;
+			IdleTime = 0.0f;
 		} else {
 			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
 			TorsoAnimationState = PlayerAnimationState.Idle;
 			LegAnimationState = PlayerAnimationState.Idle;
+
+			WindUpProgress = Mathf.Clamp( WindUpProgress - WindUpDuration * 2.0f, 0.0f, 1.0f );
+			baseSpeed = 0.5f;
+
+			UpdateIdleBreath( (float)delta );
+		}
+
+		float easedSpeedFactor = WindUpProgress < 0.1f ? 2.0f * WindUpProgress * WindUpProgress : 1.0f - Mathf.Pow( -2.0f * WindUpProgress + 2.0f, 2.0f ) / 2.0f;
+//		CurrentSpeed = Mathf.Lerp( CurrentSpeed, MAX_SPEED * easedSpeedFactor, ACCEL * (float)delta );
+
+		float dynamicSpeed = baseSpeed * ( 0.05f + 0.05f * easedSpeedFactor );
+
+		// we literally move faster when using a weapon
+		if ( ArmRight.Slot != WeaponSlot.INVALID ) {
+			ArmRight.Animations.SetDeferred( AnimatedSprite2D.PropertyName.SpeedScale, dynamicSpeed );
+		}
+		if ( baseSpeed == 1.0f ) {
+			float armOffset = Mathf.Sin( Time.GetTicksMsec() / 120.0f ) * 2.0f * ( 1.0f - easedSpeedFactor );
+			ArmLeft.Animations.SetDeferred( AnimatedSprite2D.PropertyName.Offset, new Vector2( 0.0f, armOffset ) );
 		}
 
 		if ( velocity != Godot.Vector2.Zero ) {
