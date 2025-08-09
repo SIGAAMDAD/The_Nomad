@@ -89,7 +89,6 @@ public partial class Player : Entity {
 	/// <summary>
 	/// The maximum amount of weight the player is currently allowed to carry
 	/// </summary>
-	public static readonly float MaximumInventoryWeight = 500.0f;
 	public static readonly int MaximumRuneSlots = 5;
 	public static readonly int MaximumQuickAccessSlots = 4;
 
@@ -123,11 +122,14 @@ public partial class Player : Entity {
 
 	private NetworkState LastSyncState;
 
+	public const float MaximumInventoryWeight = 500.0f;
 	private float Money = 0.0f;
 
 	private Dictionary<TraitType, float> Traits = null;
 	private HashSet<RenownValue> Relations = null;
 	private HashSet<RenownValue> Debts = null;
+
+	private BladeAttackType BladeAttackType;
 
 	[Export]
 	private Node Inventory;
@@ -150,7 +152,7 @@ public partial class Player : Entity {
 	[Export]
 	private float RandomStrength = 36.0f;
 	[Export]
-	private float ShakeFade = 5.0f;
+	private float ShakeFade = 0.5f;
 
 	private Area2D ParryArea;
 	private CollisionShape2D ParryBox;
@@ -201,7 +203,6 @@ public partial class Player : Entity {
 	private float WindUpProgress = 0.0f;
 	private float IdleTime = 0.0f;
 	private float NextShiftTime = 0.0f;
-	private float CurrentShake = 0.0f;
 
 	private Node2D Shadows;
 	private AnimatedSprite2D LeftArmShadowAnimation;
@@ -1413,7 +1414,7 @@ public partial class Player : Entity {
 
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
-			CurrentShake += 0.01f;
+			Player.ShakeCamera( 2.5f );
 			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
 			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/arm_foley.ogg" ) );
 			SetSoundLevel( 36.0f );
@@ -1486,13 +1487,38 @@ public partial class Player : Entity {
 		if ( WeaponSlots[ slot ].IsUsed() ) {
 			WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
 			weapon.SetAttackAngle( ArmAngle );
+
+			float soundLevel = 0.0f;
 			if ( weapon.IsBladed() && ( Flags & PlayerFlags.UsingMelee ) == 0 ) {
 				Flags |= PlayerFlags.UsingMelee;
+
+				if ( InputVelocity.X < 0.0f ) {
+					bool slash = TorsoAnimation.FlipH;
+
+					BladeAttackType = slash ? BladeAttackType.Slash : BladeAttackType.Thrust;
+					if ( slash ) {
+						FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
+					} else {
+						weapon.BladedThrustWindUp();
+					}
+				} else if ( InputVelocity.X > 0.0f ) {
+					bool slash = !TorsoAnimation.FlipH;
+
+					BladeAttackType = slash ? BladeAttackType.Slash : BladeAttackType.Thrust;
+					if ( slash ) {
+						FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
+					} else {
+						weapon.BladedThrustWindUp();
+					}
+				} else {
+					BladeAttackType = BladeAttackType.Slash;
+					FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
+				}
+			} else if ( weapon.IsFirearm() ) {
+				FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			}
 
 			EmitSignalUsedWeapon( weapon );
-			//			AimRayCast.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes );
-			FrameDamage += weapon.Use( weapon.LastUsedMode, out float soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
 			if ( FrameDamage > 0.0f ) {
 				IncreaseBlood( FrameDamage * 0.0001f );
 				FreeFlow.IncreaseCombo();
@@ -1811,6 +1837,21 @@ public partial class Player : Entity {
 		EmitSignalSwitchedWeapon( weapon );
 	}
 	private void OnStoppedUsingWeapon() {
+		if ( ( Flags & PlayerFlags.UsingMelee ) != 0 && BladeAttackType == BladeAttackType.Thrust ) {
+			int slot = LastUsedArm.Slot;
+			if ( slot == WeaponSlot.INVALID ) {
+				return; // nothing equipped
+			}
+			if ( WeaponSlots[ slot ].IsUsed() ) {
+				WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
+				weapon.SetAttackAngle( ArmAngle );
+				if ( FrameDamage > 0.0f ) {
+					IncreaseBlood( FrameDamage * 0.0001f );
+					FreeFlow.IncreaseCombo();
+				}
+			}
+		}
+
 		Flags &= ~( PlayerFlags.UsingWeapon | PlayerFlags.UsingMelee );
 	}
 
@@ -2391,7 +2432,7 @@ public partial class Player : Entity {
 
 		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
 	}
-	private void UpdateIdleBreath( float delta ) {
+	private async void UpdateIdleBreath( float delta ) {
 		IdleTime += delta;
 
 		float breath = Mathf.Sin( IdleTime * 1.5f ) * 0.30f;
@@ -2403,29 +2444,15 @@ public partial class Player : Entity {
 			float shiftAmount = GD.Randf() * 1.5f - 0.75f;
 			float duration = 0.8f;
 
-//			CreateTween().TweenProperty( LegAnimation, "position", new Vector2( shiftAmount, LegAnimation.Position.Y ), duration ).SetEase( Tween.EaseType.Out );
-//			await ToSignal( GetTree().CreateTimer( duration ), "timeout" );
-//			CreateTween().TweenProperty( LegAnimation, "position", Vector2.Zero, duration * 0.7f ).SetEase( Tween.EaseType.InOut );
+			CreateTween().TweenProperty( LegAnimation, "position", new Vector2( shiftAmount, LegAnimation.Position.Y ), duration ).SetEase( Tween.EaseType.Out );
+			await ToSignal( GetTree().CreateTimer( duration ), "timeout" );
+			CreateTween().TweenProperty( LegAnimation, "position", Vector2.Zero, duration * 0.7f ).SetEase( Tween.EaseType.InOut );
 		}
 	}
-	private void UpdateCameraShake( float delta ) {
-		if ( CurrentShake > 0.01f ) {
-			float shakeX = ( GD.Randf() - 0.5f ) * CurrentShake;
-			float shakeY = ( GD.Randf() - 0.5f ) * CurrentShake;
-
-			Viewpoint.SetDeferred( Camera2D.PropertyName.Offset, new Vector2( shakeX, shakeY ) );
-			CurrentShake = Mathf.Lerp( CurrentShake, 0.0f, 10.0f * delta );
-		} else if ( CurrentShake > 0.0f ) {
-			Viewpoint.SetDeferred( Camera2D.PropertyName.Offset, Vector2.Zero );
-			CurrentShake = 0.0f;
-		}
-	}
-
 	public override void PhysicsUpdate( double delta ) {
 		base._PhysicsProcess( delta );
 
-		CurrentShake = 10.5f;
-		UpdateCameraShake( (float)delta );
+		Player.ShakeCameraDirectional( 2.5f, new Vector2( RNJesus.FloatRange( -30.0f, 30.0f ), RNJesus.FloatRange( -30.0f, 30.0f ) ) );
 
 		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, ScreenSize.X * 0.5f, GetRid() );
 		if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() != Faction ) {
@@ -2456,10 +2483,10 @@ public partial class Player : Entity {
 			}
 
 			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-				speed += 1800;
+				speed += 4800;
 			}
 			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-				speed += 400;
+				speed += 600;
 				LeftArmAnimationState = PlayerAnimationState.Sliding;
 			}
 
@@ -2642,7 +2669,7 @@ public partial class Player : Entity {
 		}
 		SoundArea.Radius = SoundLevel;
 
-		if ( ( Flags & PlayerFlags.Resting ) != 0 ) {
+		if ( ( Flags & PlayerFlags.Resting ) != 0 || IdleAnimation.Visible ) {
 			return;
 		}
 
@@ -2673,8 +2700,8 @@ public partial class Player : Entity {
 
 		front.Animations.Show();
 
-		Animations.MoveChild( back.Animations, 0 );
-		Animations.MoveChild( front.Animations, 3 );
+		Animations.MoveChild( back.Animations, 1 );
+		Animations.MoveChild( front.Animations, 4 );
 
 		if ( ( Flags & PlayerFlags.LightParrying ) == 0 || ( Flags & PlayerFlags.HeavyParrying ) == 0 ) {
 			CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
@@ -2761,7 +2788,7 @@ public partial class Player : Entity {
 		TorsoAnimation.FlipH = false;
 		LegAnimation.FlipH = false;
 
-		weapon.Connect( "ModeChanged", Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
+		weapon.Connect( WeaponEntity.SignalName.ModeChanged, Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
 
 		AmmoStack stack = null;
 		foreach ( var ammo in AmmoStacks ) {

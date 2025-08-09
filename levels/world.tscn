@@ -1,4 +1,4 @@
-[gd_scene load_steps=167 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=168 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -26,6 +26,7 @@
 [ext_resource type="ItemDefinition" uid="uid://bmnekgxpyq2f7" path="res://resources/weapons/firearms/plasma_smg.tres" id="17_ortr0"]
 [ext_resource type="ItemDefinition" uid="uid://bbg71vw5lg4u1" path="res://resources/ammo/plasma_flechettes.tres" id="18_dx3bq"]
 [ext_resource type="Script" uid="uid://dgsnnhvyvdugp" path="res://scripts/Interactables/EaglesPeak.cs" id="18_pjcgv"]
+[ext_resource type="ItemDefinition" uid="uid://d01vxfpudal7u" path="res://scenes/hwando.tres" id="19_gb70t"]
 [ext_resource type="ItemDefinition" uid="uid://dqt26pjfyn6tf" path="res://resources/weapons/firearms/asturion_double_barrel.tres" id="19_vg7yo"]
 [ext_resource type="Texture2D" uid="uid://cdxxc1qli1ofu" path="res://textures/fromeaglespeak.dds" id="19_x3q2i"]
 [ext_resource type="TileSet" uid="uid://l3b780v0d6p4" path="res://resources/kirosla_estate.tres" id="20_7te1h"]
@@ -24610,6 +24611,13 @@ Data = ExtResource("54_mem04")
 [node name="AmmoPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("35_qxuuj")]
 position = Vector2(-50.0259, 5.48216)
 Data = ExtResource("27_m0qpv")
+
+[node name="SwordPickup" parent="Biomes/SaltWastes/RockyBastardsCamp/DeadBandit" instance=ExtResource("35_qxuuj")]
+position = Vector2(-442.806, 55.9168)
+rotation = 0.0103631
+scale = Vector2(0.999331, 1.00005)
+skew = -1.49012e-05
+Data = ExtResource("19_gb70t")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="Biomes/SaltWastes/RockyBastardsCamp" groups=["NavigationObstacles"]]
 position = Vector2(155.5, -18.9961)

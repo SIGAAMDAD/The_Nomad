@@ -260,6 +260,8 @@ public partial class World : LevelData {
 
 		AddChild( new BiomeManager() );
 
+		_ = new MountainGoapLogging.DefaultLogger( true );
+
 		SceneLoadThread = new Thread( () => {
 			long[] initTasks = [
 				WorkerThreadPool.AddTask( Callable.From( () => { PlayerScene = ResourceLoader.Load<PackedScene>( "res://scenes/network_player.tscn" ); } ) ),

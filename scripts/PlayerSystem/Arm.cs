@@ -50,8 +50,12 @@ namespace PlayerSystem {
 				WeaponEntity weapon = Parent.GetSlot( Slot ).GetWeapon();
 				if ( weapon != null ) {
 					if ( weapon.IsFirearm() && weapon.CurrentState == WeaponEntity.WeaponState.Use ) {
-						Animations.Offset = weapon.CurrentRecoilOffset;
-						Animations.Rotation = Mathf.DegToRad( weapon.CurrentRecoilRotation );
+						if ( weapon.CurrentRecoilOffset == Vector2.Zero ) {
+							CreateTween().TweenProperty( Animations, "offset", Vector2.Zero, 0.90f );
+						} else {
+							Animations.Offset = weapon.CurrentRecoilOffset;
+						}
+						Animations.Rotation += Mathf.DegToRad( weapon.CurrentRecoilRotation );
 					}
 
 					bool oneHanded = weapon.IsOneHanded();

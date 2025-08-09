@@ -4,6 +4,7 @@ using Renown.World;
 using DialogueManagerRuntime;
 using System.Runtime.CompilerServices;
 using MountainGoap;
+using System.Threading;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -348,7 +349,7 @@ namespace Renown.Thinkers {
 			if ( Visible ) {
 				ProcessAnimations();
 			}
-			if ( ( Engine.GetProcessFrames() % 15 ) != 0 ) {
+			if ( ( Engine.GetProcessFrames() % (ulong)ThreadSleep ) != 0 ) {
 				return;
 			}
 
@@ -399,7 +400,8 @@ namespace Renown.Thinkers {
 				HeadAnimations.SetDeferred( PropertyName.GlobalRotation, LookAngle );
 			}
 			if ( ArmAnimations != null ) {
-				AimAngle = CalcAngle( AimAngle, ArmAnimations );
+				ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, Mathf.RadToDeg( AimAngle ) > 90.0f );
+				ArmAnimations.SetDeferred( PropertyName.GlobalRotation, AimAngle );
 			}
 			if ( Velocity == Godot.Vector2.Zero ) {
 				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );

@@ -1,0 +1,188 @@
+using MountainGoap;
+using System.Collections.Generic;
+using Godot;
+
+namespace Renown.Thinkers.GoapCache {
+	/// <summary>
+	/// generic actions that aren't faction specific
+	/// </summary>
+	public enum ActionType : uint {
+		SurveyForThreats,
+		RunAway,
+
+		ReloadWeapon,
+		AimWeaponAtTarget,
+		ShootAtTarget,
+
+		ThrowGrenade,
+
+		FindCover,
+		GotoNode,
+
+		Count
+	};
+
+	public static class GoapActionCache {
+		public static Dictionary<ActionType, Action> Cache;
+
+		static GoapActionCache() {
+			Cache = new Dictionary<ActionType, Action> {
+				{
+					ActionType.SurveyForThreats,
+					new Action(
+						name: "SurveyForThreats",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							if ( (MobAwareness)agent.State[ "Awareness" ] < MobAwareness.Suspicious ) {
+								agent.State[ "IsAlerted" ] = false;
+								return ExecutionStatus.Executing;
+							}
+							agent.State[ "IsAlerted" ] = true;
+							return ExecutionStatus.Succeeded;
+						},
+						cost: 0.2f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "IsAlerted", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "IsAlerted", true },
+						},
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.ReloadWeapon,
+					new Action(
+						name: "Reload",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							if ( (WeaponEntity.WeaponState)agent.State[ "WeaponState" ] == WeaponEntity.WeaponState.Reload ) {
+								return ExecutionStatus.Executing;
+							}
+							return ExecutionStatus.Succeeded;
+						},
+						cost: 1.0f,
+						costCallback: ( agent, currentState ) => {
+							return 1.0f;
+						},
+						preconditions: new Dictionary<string, object>{
+							{ "HasAmmo", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "HasAmmo", true }
+						}
+					)
+				},
+				{
+					ActionType.ShootAtTarget,
+					new Action(
+						name: "ShootAtTarget",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "HasAmmo", true },
+							{ "PlayerVisible", true }
+						},
+						comparativePreconditions: null,
+						postconditions: null,
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.AimWeaponAtTarget,
+					new Action(
+						name: "AimAction",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+
+							RayIntersectionInfo info = GodotServerManager.CheckRayCast( thinker.ArmAnimations.GlobalPosition, thinker.AimAngle,
+								thinker.Get( "Ammo" ).AsGodotObject().Get( "Range" ).AsSingle(), thinker.GetRid()
+							);
+							if ( info.Collider is Entity entity && entity.GetFaction() == thinker.GetFaction() ) {
+								agent.State[ "ClearLineOfFire" ] = false;
+								thinker.CallDeferred( "Bark", (uint)BarkType.OutOfTheWay );
+								return ExecutionStatus.Failed;
+							}
+							agent.State[ "ClearLineOfFire" ] = true;
+							if ( thinker.Get( "AmmoStack" ).AsGodotObject().Get( "Amount" ).AsInt32() == 0 ) {
+								return ExecutionStatus.NotPossible;
+							}
+
+							Timer AimTimer = (Timer)thinker.Get( "AimTimer" );
+							if ( AimTimer.TimeLeft == 0.0f && (bool)agent.State[ "Aiming" ] ) {
+								agent.State[ "Aiming" ] = false;
+								return ExecutionStatus.Succeeded;
+							} else if ( AimTimer.TimeLeft > AimTimer.WaitTime / 4.0f ) {
+								Vector2 direction = thinker.GlobalPosition.DirectionTo( thinker.Get( "LastTargetPosition" ).AsVector2() );
+								thinker.AimAngle = Mathf.Atan2( direction.Y, direction.X );
+								thinker.LookAngle = thinker.AimAngle;
+							}
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: ( agent, currentState ) => {
+							return 1.0f;
+						},
+						preconditions: new Dictionary<string, object>{
+							{ "Aiming", true },
+							{ "HasAmmo", true }
+						},
+						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+							{ "Fear", new ComparisonValuePair { Value = 80, Operator = ComparisonOperator.LessThan } }
+						}
+					)
+				},
+				{
+					ActionType.RunAway,
+					new Action(
+						name: "RunAway",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Failed;
+						},
+						cost: 0.8f,
+						costCallback: null,
+						preconditions: null,
+						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+							{ "Fear", new ComparisonValuePair{ Value = 80, Operator = ComparisonOperator.GreaterThanOrEquals } }
+						},
+						postconditions: null,
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.FindCover,
+					new Action(
+						name: "FindCover",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Failed;
+						},
+						cost: 2.0f,
+						costCallback: null, // TODO: make cost determined by the distance
+						preconditions: new Dictionary<string, object>{
+							{ "UnderFire", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "UnderFire", false },
+							{ "InCover", true }
+						},
+						arithmeticPostconditions: null
+					)
+				}
+			};
+		}
+	};
+};

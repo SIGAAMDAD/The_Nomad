@@ -1,0 +1,90 @@
+using MountainGoap;
+using System.Collections.Generic;
+
+namespace Renown.Thinkers.GoapCache {
+	/// <summary>
+	/// generic goals that aren't faction specific
+	/// </summary>
+	public enum GoalType : uint {
+		FindCover,
+		InvestigateDisturbance,
+		SurveyForThreats,
+		KillTarget,
+		Survive,
+		Follow,
+
+		Count
+	};
+
+	public static class GoapGoalCache {
+		public static Dictionary<GoalType, BaseGoal> Cache;
+
+		static GoapGoalCache() {
+			Cache = new Dictionary<GoalType, BaseGoal> {
+				{
+					GoalType.Survive,
+					new ExtremeGoal(
+						name: "Survive",
+						weight: 1.0f,
+						desiredState: new Dictionary<string, bool>{
+							{ "Health", true }
+						}
+						//desiredState: new Dictionary<string, ComparisonValuePair>{
+						//{ "Health", new ComparisonValuePair { Value = 25.0f, Operator = ComparisonOperator.GreaterThan } }
+						//}
+					)
+				},
+				{
+					GoalType.KillTarget,
+					new Goal(
+						name: "KillTarget",
+						weight: 0.9f,
+						desiredState: new Dictionary<string, object>{
+							{ "Target", null }
+						}
+					)
+				},
+				{
+					GoalType.InvestigateDisturbance,
+					new Goal(
+						name: "InvestigateDisturbance",
+						weight: 0.8f,
+						desiredState: new Dictionary<string, object>{
+							{ "PlayerVisible", true }
+						}
+					)
+				},
+				{
+					GoalType.SurveyForThreats,
+					new Goal(
+						name: "SurveyForThreats",
+						weight: 0.8f,
+						desiredState: new Dictionary<string, object>{
+							{ "IsAlerted", true }
+						}
+					)
+				},
+				{
+					GoalType.FindCover,
+					new Goal(
+						name: "FindCover",
+						weight: 0.9f,
+						desiredState: new Dictionary<string, object>{
+							{ "InCover", true }
+						}
+					)
+				},
+				{
+					GoalType.Follow,
+					new ComparativeGoal(
+						name: "Follow",
+						weight: 0.6f,
+						desiredState: new Dictionary<string, ComparisonValuePair>{
+							{ "TargetDistance", new ComparisonValuePair { Value = 200.0f, Operator = ComparisonOperator.LessThan } }
+						}
+					)
+				}
+			};
+		}
+	};
+};

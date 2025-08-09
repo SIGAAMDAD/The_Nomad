@@ -73,6 +73,7 @@ AccessibilityManager="*res://autoloads/AccessibilityManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
 Profiler="res://autoloads/Profiler.cs"
 EntityManager="*res://scripts/EntityManager.cs"
+DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
 
 [debug]
 
@@ -106,7 +107,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/collapsible_container/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/BugReporter/plugin.cfg", "res://addons/advanced_radial_menu/plugin.cfg", "res://addons/animatedbutton/plugin.cfg", "res://addons/anti-cheating/plugin.cfg", "res://addons/collapsible_container/plugin.cfg", "res://addons/debug_menu/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/idle_energy_saver/plugin.cfg", "res://addons/inventory-system/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/quest_resource_translation_parser/plugin.cfg", "res://addons/questify/plugin.cfg", "res://addons/safe_resource_loader/plugin.cfg")
 
 [global_group]
 

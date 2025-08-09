@@ -33,6 +33,7 @@ Health = 100.0
 [node name="HeadAnimations" type="AnimatedSprite2D" parent="Animations"]
 material = SubResource("ShaderMaterial_yrnty")
 position = Vector2(0, -7)
+rotation = 1.5708
 sprite_frames = ExtResource("2_61sma")
 animation = &"idle"
 

@@ -1,14 +1,23 @@
-[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://c7xsm0u6qpqhy"]
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://c7xsm0u6qpqhy"]
 
 [ext_resource type="Texture2D" uid="uid://b07qfb5ttio53" path="res://textures/spritesheets/weapon_katana.png" id="1_hi8qd"]
+[ext_resource type="Texture2D" uid="uid://dfo1b6q7pjb77" path="res://textures/spritesheets/weapon_katana.dds" id="2_hxiop"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hxiop"]
 atlas = ExtResource("1_hi8qd")
 region = Rect2(0, 0, 64, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_88c15"]
-atlas = ExtResource("1_hi8qd")
-region = Rect2(0, 0, 64, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_337ui"]
+atlas = ExtResource("2_hxiop")
+region = Rect2(128, 0, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fgicl"]
+atlas = ExtResource("2_hxiop")
+region = Rect2(192, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_81mto"]
+atlas = ExtResource("2_hxiop")
+region = Rect2(192, 0, 64, 32)
 
 [resource]
 animations = [{
@@ -22,9 +31,25 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_88c15")
+"texture": SubResource("AtlasTexture_337ui")
 }],
-"loop": false,
+"loop": true,
+"name": &"idle_flip",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fgicl")
+}],
+"loop": true,
 "name": &"use",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_81mto")
+}],
+"loop": true,
+"name": &"use_flip",
 "speed": 5.0
 }]

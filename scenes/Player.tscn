@@ -97,6 +97,12 @@ material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("4_0rnld")
 autoplay = "default"
 
+[node name="Head" type="Sprite2D" parent="Animations"]
+position = Vector2(1, -10)
+texture = ExtResource("19_b8lor")
+region_enabled = true
+region_rect = Rect2(68.4276, 39.5707, 21.3678, 20.3999)
+
 [node name="ArmsRight" type="AnimatedSprite2D" parent="Animations"]
 process_thread_group = 1
 process_thread_group_order = 0
@@ -204,12 +210,6 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/DashEffect/FlameArea"]
 position = Vector2(-35, -5)
 shape = SubResource("RectangleShape2D_srp4u")
-
-[node name="Head" type="Sprite2D" parent="Animations"]
-position = Vector2(1, -10)
-texture = ExtResource("19_b8lor")
-region_enabled = true
-region_rect = Rect2(68.4276, 39.5707, 21.3678, 20.3999)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13.75)

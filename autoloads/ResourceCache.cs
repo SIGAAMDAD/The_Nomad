@@ -126,6 +126,9 @@ public class ResourceCache {
 	public static Resource KeyboardInputMappings;
 	public static Resource GamepadInputMappings;
 
+	public static ShaderMaterial BladedThrustBlurShader;
+	public static ShaderMaterial BladedSlashBlurShader;
+
 	private static ConcurrentDictionary<string, Resource> DialogueCache = new ConcurrentDictionary<string, Resource>( 256, 256 );
 	private static ConcurrentDictionary<string, AudioStream> AudioCache = new ConcurrentDictionary<string, AudioStream>( 256, 256 );
 	private static ConcurrentDictionary<string, Texture2D> TextureCache = new ConcurrentDictionary<string, Texture2D>( 256, 256 );
@@ -312,6 +315,15 @@ public class ResourceCache {
 		Console.PrintLine( "Loading sound effects..." );
 
 		SceneLoadThread?.Start();
+
+		BladedThrustBlurShader = ResourceLoader.Load<ShaderMaterial>( "res://resources/materials/bladed_thrust_blur.tres" );
+		if ( BladedThrustBlurShader == null ) {
+			Console.PrintError( "ResourceCache.Cache: error loading res://resources/materials/bladed_thrust_blur.tres!" );
+		}
+		BladedSlashBlurShader = ResourceLoader.Load<ShaderMaterial>( "res://resources/materials/bladed_slash_blur.tres" );
+		if ( BladedSlashBlurShader == null ) {
+			Console.PrintError( "ResourceCache.Cache: error loading res://resources/materials/bladed_slash_blur.tres!" );
+		}
 
 		long[] WorkerThreads = [
 			WorkerThreadPool.AddTask( Callable.From( () => world.CallDeferred( LevelData.MethodName.AddChild, new LightManager() ) ) ),

@@ -20,9 +20,9 @@ namespace Renown {
 		public static readonly int THREAD_GROUP_FACTIONS = 2;
 		public static readonly int THREAD_GROUP_THINKERS_AWAY = 3;
 
-		public static readonly int THREADSLEEP_THINKER_PLAYER_IN_AREA = 20;
-		public static readonly int THREADSLEEP_THINKER_PLAYER_IN_BIOME = 120;
-		public static readonly int THREADSLEEP_THINKER_PLAYER_AWAY = 1000;
+		public static readonly int THREADSLEEP_THINKER_PLAYER_IN_AREA = 15;
+		public static readonly int THREADSLEEP_THINKER_PLAYER_IN_BIOME = 180;
+		public static readonly int THREADSLEEP_THINKER_PLAYER_AWAY = 5000;
 
 		public static readonly int THREADSLEEP_FACTION_PLAYER_IN_AREA = 1000;
 		public static readonly int THREADSLEEP_FACTION_PLAYER_IN_BIOME = 5000;

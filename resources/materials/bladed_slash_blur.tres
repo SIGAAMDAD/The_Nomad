@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bjdmnc08wsoxk"]
+
+[sub_resource type="Shader" id="Shader_fviyy"]
+code = "shader_type canvas_item;
+
+uniform float progress : hint_range( 0, 1 ) = 0.0;
+
+void fragment() {
+	vec2 uv = UV;
+	uv.x += ( 0.5 - uv.y ) * progress * 0.3;
+	vec4 color = texture( TEXTURE, uv );
+	
+	float edge = smoothstep( 0.7, 0.9, 1.0 - abs( uv.y - 0.5 ) );
+	COLOR = mix( color, vec4( 1.0, 0.9, 0.3, color.a ), edge * progress );
+}"
+
+[resource]
+shader = SubResource("Shader_fviyy")
+shader_parameter/progress = 0.0

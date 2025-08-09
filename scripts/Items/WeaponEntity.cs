@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Godot;
 using PlayerSystem;
@@ -10,6 +9,11 @@ public enum AmmoType : uint {
 	Heavy,
 	Light,
 	Pellets
+};
+
+public enum BladeAttackType : uint {
+	Slash,
+	Thrust
 };
 
 public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
@@ -119,6 +123,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	private AnimatedSprite2D Animations;
 	public Timer WeaponTimer { get; private set; }
 	public Entity _Owner;
+
+	private ShaderMaterial BladedThrustShader;
+	private ShaderMaterial BladedSlashShader;
 
 	public AmmoStack Reserve { get; private set; }
 	public AmmoEntity Ammo { get; private set; }
@@ -257,6 +264,12 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			BladedFramesRight = ResourceCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "bladed_frames_right" ] );
 
 			UseBladedSfx = ResourceCache.GetSound( "res://sounds/weapons/" + (StringName)properties[ "use_bladed" ] );
+
+			BladedSlashShader = ResourceCache.BladedSlashBlurShader;
+			BladedSlashShader.ResourceLocalToScene = true;
+
+			BladedThrustShader = ResourceCache.BladedThrustBlurShader;
+			BladedThrustShader.ResourceLocalToScene = true;
 		}
 		if ( (bool)properties[ "is_blunt" ] ) {
 			PropertyBits |= Properties.IsBlunt;
@@ -467,8 +480,52 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		Data = (Resource)ResourceCache.ItemDatabase.Call( "get_item", id );
 	}
 
-	private float UseBladed() {
-		float angle = AttackAngle;
+	public void BladedThrustWindUp() {
+		Material = BladedThrustShader;
+
+		BladedThrustShader.SetShaderParameter( "shader_parameter/intensity", 0.0f );
+
+		CreateTween().TweenMethod( Callable.From<float>( ( value ) =>
+			BladedThrustShader.SetShaderParameter( "shader_parameter/intensity", value ) ), 0.0f, 2.0f, 0.45f );
+	}
+	private float UseBladed( BladeAttackType attackType ) {
+		Vector2 direction = new Vector2( 1.0f, 0.0f ).Rotated( AttackAngle );
+
+		//
+		// play audio
+		//
+		float angle = Mathf.Abs( AttackAngle );
+		float pitch = 1.0f + ( angle / Mathf.Pi ) * 0.30f;
+
+		UseChannel.Stream = UseBladedSfx;
+		UseChannel.PitchScale = pitch;
+		UseChannel.Play();
+
+		if ( attackType == BladeAttackType.Slash ) {
+			float skewAmount = Mathf.Clamp( 2.5f * 0.5f, -0.3f, 0.3f );
+
+			Material = BladedSlashShader;
+
+			( _Owner as Player ).GetRightArmAnimation().Skew = skewAmount;
+			( _Owner as Player ).GetRightArmAnimation().Position = new Vector2( 2.0f * 2.5f, 0.0f ).Rotated( AttackAngle );
+
+			Tween tween = CreateTween();
+			BladedSlashShader.SetShaderParameter( "shader_parameter/progress", 0.0f );
+			tween.TweenProperty( BladedSlashShader, "shader_parameter/progress", 1.0f, 0.15f ).SetEase( Tween.EaseType.Out );
+			tween.Parallel().TweenProperty( ( _Owner as Player ).GetRightArmAnimation(), "rotation", GlobalRotation + 3.45f, 0.15f ).SetEase( Tween.EaseType.Out );
+
+			tween.TweenCallback( Callable.From( () => {
+				Material = null;
+				( _Owner as Player ).GetRightArmAnimation().Skew = 0.0f;
+				( _Owner as Player ).GetRightArmAnimation().Position = Vector2.Zero;
+			} ) );
+		} else if ( attackType == BladeAttackType.Thrust ) {
+			Tween tween = CreateTween();
+
+			tween.TweenProperty( _Owner, "global_position", _Owner.GlobalPosition + ( direction * BladedRange * 2.0f ), 0.5f );
+			BladedThrustShader.SetShaderParameter( "shader_parameter/intensity", 0.0f );
+			tween.TweenCallback( Callable.From( () => Material = null ) );
+		}
 
 		return 0.0f;
 	}
@@ -624,10 +681,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			return 0.0f;
 		}
 
-		if ( _Owner is Player ) {
-			Player.ShakeCameraDirectional( 40.0f, -new Godot.Vector2( 1.0f, 0.0f ).Rotated( LevelData.Instance.ThisPlayer.GetArmAngle() ) );
-		}
-
 		int recoilMultiplier = 0;
 		switch ( Firemode ) {
 		case FireMode.Single:
@@ -645,13 +698,19 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case FireMode.Invalid:
 		default:
 			return 0.0f;
+		};
+
+		Vector2 recoil = -new Vector2(
+			50.0f * Mathf.Cos( AttackAngle ),
+			50.0f * Mathf.Sin( AttackAngle )
+		);
+		if ( _Owner is Player ) {
+			Player.ShakeCameraDirectional( Ammo.Velocity / 4.0f, recoil );
 		}
-		;
 
 		float recoilMagnitude = ( BaseRecoilForce + ( Ammo.Velocity * VelocityRecoilFactor ) ) * recoilMultiplier;
 
-		Godot.Vector2 recoilDirection = -new Godot.Vector2( MathF.Sin( AttackAngle ), MathF.Sin( AttackAngle ) ).Normalized();
-		CurrentRecoilOffset += recoilDirection * recoilMagnitude;
+		CurrentRecoilOffset += recoil * recoilMagnitude;
 
 		CurrentRecoilRotation += ( RNJesus.FloatRange( 0.0f, 1.0f ) > 0.5f ? 1.0f : -1.0f ) * recoilMagnitude * 0.5f;
 		//		CurrentRecoilRotation = Mathf.Clamp( CurrentRecoilRotation, -5.0f, 5.0f );
@@ -695,6 +754,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		}
 
 		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
+		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, Mathf.Lerp( 1.0f, 0.25f, MagazineSize / BulletsLeft ) );
 		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
 
@@ -713,7 +773,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		return frameDamage;
 	}
-	public void UseDeferred( Properties weaponMode ) {
+	public void UseFirearmDeferred( Properties weaponMode ) {
 		if ( Engine.TimeScale == 0.0f ) {
 			return;
 		}
@@ -721,18 +781,26 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return; // can't use it when it's being used
-		}
-		;
+		};
 
 		SetUseMode( weaponMode );
 
-		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			UseFirearm( out _, false );
-		} else if ( ( LastUsedMode & Properties.IsBlunt ) != 0 ) {
-			UseBlunt();
-		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {
-			UseBladed();
+		UseFirearm( out _, false );
+
+		EmitSignalUsed( this );
+	}
+	public void UseBladedDeferred( Properties weaponMode, BladeAttackType attackType ) {
+		if ( Engine.TimeScale == 0.0f ) {
+			return;
 		}
+		switch ( CurrentState ) {
+		case WeaponState.Use:
+			return; // can't use it when it's being used
+		};
+
+		SetUseMode( weaponMode );
+
+		UseBladed( attackType );
 
 		EmitSignalUsed( this );
 	}
@@ -747,22 +815,27 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		case WeaponState.Use:
 		case WeaponState.Reload:
 			return 0.0f; // can't use it when it's being used
-		}
-		;
+		};
 
 		SetUseMode( weaponMode );
 
-		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			return UseFirearm( out soundLevel, held );
-		} else if ( ( LastUsedMode & Properties.IsBlunt ) != 0 ) {
-			return UseBlunt();
-		} else if ( ( LastUsedMode & Properties.IsBladed ) != 0 ) {
-			return UseBladed();
+		return UseFirearm( out soundLevel, held );
+	}
+	public float Use( Properties weaponMode, out float soundLevel, BladeAttackType attackType ) {
+		soundLevel = 0.0f;
+		EmitSignalUsed( this );
+
+		if ( Engine.TimeScale == 0.0f ) {
+			return 0.0f;
 		}
+		switch ( CurrentState ) {
+		case WeaponState.Use:
+			return 0.0f; // can't use it when it's being used
+		};
 
-		///		NetworkSync( held );
+		SetUseMode( weaponMode );
 
-		return 0.0f;
+		return UseBladed( attackType );
 	}
 
 	private void OnUseTimeTimeout() {

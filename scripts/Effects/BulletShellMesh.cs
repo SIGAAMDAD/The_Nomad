@@ -93,7 +93,7 @@ public partial class BulletShellMesh : Node {
 		Timer timer = new Timer();
 		timer.WaitTime = 0.15f;
 		timer.OneShot = true;
-		timer.Connect( "timeout", Callable.From( () => OnTimerTimeout( timer, from, ammo ) ) );
+		timer.Connect( Timer.SignalName.Timeout, Callable.From( () => OnTimerTimeout( timer, from, ammo ) ) );
 		Instance.AddChild( timer );
 		timer.Start();
 	}

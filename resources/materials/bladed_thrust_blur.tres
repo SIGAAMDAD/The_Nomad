@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdylgngvfq2we"]
+
+[sub_resource type="Shader" id="Shader_3o32e"]
+code = "shader_type canvas_item;
+
+uniform float intensity : hint_range( 0, 5 ) = 2.0;
+uniform vec4 trail_color : source_color = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+uniform float progress : hint_range( 0, 1 ) = 0.0;
+uniform vec2 direction = vec2( 1.0, 0.0 );
+
+void fragment() {
+	vec4 color = texture( TEXTURE, UV );
+	float trail = intensity * ( 1.0 - UV.x );
+	COLOR = mix( color, trail_color, trail * color.a );
+}"
+
+[resource]
+shader = SubResource("Shader_3o32e")
+shader_parameter/intensity = 2.0
+shader_parameter/trail_color = Color(1, 1, 1, 1)
+shader_parameter/progress = 0.0
+shader_parameter/direction = Vector2(1, 0)
