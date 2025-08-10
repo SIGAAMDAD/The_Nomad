@@ -7,6 +7,7 @@ using Multiplayer;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 public partial class SteamLobby : Node {
 	public enum Visibility {
@@ -74,12 +75,14 @@ public partial class SteamLobby : Node {
 			MaxBuffers = nMaxBuffers;
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public byte[] Rent() {
 			if ( Pool.TryTake( out byte[] buffer ) ) {
 				return buffer;
 			}
 			return new byte[ BufferSize ];
 		}
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public void Return( byte[] buffer ) {
 			if ( buffer != null && buffer.Length == BufferSize && Pool.Count < MaxBuffers ) {
 				Array.Clear( buffer, 0, buffer.Length );
@@ -114,9 +117,11 @@ public partial class SteamLobby : Node {
 			rng.GetBytes( HMacKey );
 		}
 
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static byte[] SecureOutgoingMessage( byte[] data, CSteamID target ) {
 			return data;
 		}
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static byte[] ProcessIncomingMessage( byte[] secured, CSteamID senderId ) {
 			if ( !SecurityStates.TryGetValue( senderId, out ConnectionSecurity state ) ) {
 				state = new ConnectionSecurity();

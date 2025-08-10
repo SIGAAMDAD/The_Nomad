@@ -2481,16 +2481,17 @@ public partial class Player : Entity {
 			if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
 				speed *= 0.5f;
 			}
+			float accel = ACCEL;
 
 			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-				speed += 4800;
+				accel += 2800;
 			}
 			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-				speed += 600;
+				accel += 600;
 				LeftArmAnimationState = PlayerAnimationState.Sliding;
 			}
 
-			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * ACCEL );
+			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * accel );
 			TorsoAnimationState = PlayerAnimationState.Running;
 			LegAnimationState = PlayerAnimationState.Running;
 
@@ -2537,8 +2538,17 @@ public partial class Player : Entity {
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.Slot == WeaponSlot.INVALID ) {
-			arm.Animations.Play( InputVelocity != Godot.Vector2.Zero ? "run" : "idle" );
-			animState = InputVelocity != Godot.Vector2.Zero ? PlayerAnimationState.Running : PlayerAnimationState.Idle;
+			if ( InputVelocity != Vector2.Zero ) {
+				if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
+					arm.Animations.PlayBackwards( "run" );
+				} else {
+					arm.Animations.Play( "run" );
+				}
+				animState = PlayerAnimationState.Running;
+			} else {
+				arm.Animations.Play( "idle" );
+				animState = PlayerAnimationState.Idle;
+			}
 		} else {
 			WeaponEntity weapon = WeaponSlots[ arm.Slot ].GetWeapon();
 			string animationName;
@@ -2615,7 +2625,23 @@ public partial class Player : Entity {
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
-				LegAnimation.Play( "run" );
+				bool reverse;
+				if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
+					reverse = true;
+				} else {
+					reverse = false;
+				}
+				
+				Vector2 velocity = Velocity;
+				if ( !reverse ) {
+					if ( ( InputVelocity.X < 0.0f && velocity.X > 0.0f ) || ( InputVelocity.X > 0.0f && velocity.X < 0.0f ) ) {
+						LegAnimation.Play( "run_change" );
+					} else {
+						LegAnimation.Play( "run" );
+					}
+				} else {
+					LegAnimation.PlayBackwards( "run" );
+				}
 				LegAnimationState = PlayerAnimationState.Running;
 				WalkEffect.Emitting = true;
 			}

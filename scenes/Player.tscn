@@ -73,8 +73,9 @@ light_mask = 3
 y_sort_enabled = true
 material = ExtResource("3_jfpux")
 sprite_frames = ExtResource("3_p7iby")
-animation = &"idle"
+animation = &"run_change"
 autoplay = "idle"
+frame_progress = 1.0
 
 [node name="ArmsLeft" type="AnimatedSprite2D" parent="Animations"]
 process_thread_group = 1

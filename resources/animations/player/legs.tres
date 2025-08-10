@@ -1,6 +1,7 @@
-[gd_resource type="SpriteFrames" load_steps=12 format=3 uid="uid://bcx8d0n23krkx"]
+[gd_resource type="SpriteFrames" load_steps=14 format=3 uid="uid://bcx8d0n23krkx"]
 
 [ext_resource type="Texture2D" uid="uid://t18xtkjqg4ca" path="res://resources/texture_mappings/player/the_wanderer/legs.tres" id="1_kg84c"]
+[ext_resource type="Texture2D" uid="uid://kphswx6t4rk3" path="res://textures/spritesheets/skins/the_wanderer/raio_legs.dds" id="2_eag8l"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eag8l"]
 atlas = ExtResource("1_kg84c")
@@ -25,6 +26,10 @@ region = Rect2(96, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_kh675"]
 atlas = ExtResource("1_kg84c")
 region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jlxs5"]
+atlas = ExtResource("2_eag8l")
+region = Rect2(288, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1otfq"]
 atlas = ExtResource("1_kg84c")
@@ -71,6 +76,14 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 5.75
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jlxs5")
+}],
+"loop": false,
+"name": &"run_change",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,

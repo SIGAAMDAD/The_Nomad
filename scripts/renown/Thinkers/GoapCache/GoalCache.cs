@@ -12,6 +12,8 @@ namespace Renown.Thinkers.GoapCache {
 		KillTarget,
 		Survive,
 		Follow,
+		Fallback,
+		Goto,
 
 		Count
 	};

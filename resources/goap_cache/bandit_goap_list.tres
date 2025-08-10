@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_o2p7t")
-AllowedActions = Array[int]([0, 6, 2, 3, 4])
+AllowedActions = Array[int]([0, 6, 2])
 AllowedGoals = Array[int]([0, 1, 2, 3, 4])
 AllowedSensors = Array[int]([0])

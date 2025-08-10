@@ -5,6 +5,7 @@ using Renown.World;
 using Renown;
 using System;
 using System.Diagnostics;
+using System.Text;
 
 public partial class World : LevelData {
 	[Export]
@@ -122,6 +123,18 @@ public partial class World : LevelData {
 			Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid QueryType {0}", queryType ) );
 			break;
 		};
+	}
+	private void OnQuestStarted( Resource questResource ) {
+		string[] questObjectiveNames = questResource.GetMeta( "objective_names" ).AsStringArray();
+		Godot.Collections.Array questObjectiveValues = questResource.GetMeta( "objective_values" ).AsGodotArray();
+		string name = TranslationServer.Translate( questResource.GetMeta( "name" ).AsString() );
+
+		for ( int i = 0; i < questObjectiveNames.Length; i++ ) {
+			string objectiveName = string.Format( "{0}_{1}", name, questObjectiveNames[ i ] );
+			ObjectivesState.Add( objectiveName, questObjectiveValues[ i ] );
+
+			Console.PrintLine( string.Format( "World.OnQuestStarted: added quest objective {0} with default value {1}", name, questObjectiveValues[ i ].ToString() ) );
+		}
 	}
 	private void OnConditionObjectiveCompleted( Resource questResource, Resource questObjective ) {
 	}
@@ -306,6 +319,7 @@ public partial class World : LevelData {
 		}
 
 		Questify.ToggleUpdatePolling( true );
+		Questify.ConnectQuestStarted( OnQuestStarted );
 		QuestState = Questify.Instantiate( CurrentQuest );
 		Questify.StartQuest( QuestState );
 

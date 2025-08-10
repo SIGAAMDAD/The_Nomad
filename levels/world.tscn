@@ -1,4 +1,4 @@
-[gd_scene load_steps=168 format=4 uid="uid://bdtqrrsb2fib1"]
+[gd_scene load_steps=169 format=4 uid="uid://bdtqrrsb2fib1"]
 
 [ext_resource type="Script" uid="uid://cwiu7lpjnj8m6" path="res://scripts/World.cs" id="1_re8x6"]
 [ext_resource type="Resource" uid="uid://b2xg2fa752xmy" path="res://resources/quests/war_of_the_wastes/from_eagles_peak.tres" id="2_qxuuj"]
@@ -60,6 +60,7 @@
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="53_mem04"]
 [ext_resource type="Texture2D" uid="uid://bvo3b3wvk47cw" path="res://resources/texture_mappings/safe_sands_noise.tres" id="53_qxuuj"]
 [ext_resource type="ItemDefinition" uid="uid://druoc8lqhmj03" path="res://resources/weapons/firearms/baller.tres" id="54_mem04"]
+[ext_resource type="PackedScene" uid="uid://bus6kv5j1yqtw" path="res://scenes/scenery/murstar_ranch.tscn" id="56_ortr0"]
 [ext_resource type="Texture2D" uid="uid://dbldmbct7rxby" path="res://textures/tilesets/galakas/Outside_D.dds" id="57_ariq1"]
 [ext_resource type="Texture2D" uid="uid://clj6uh5qnv31r" path="res://textures/tilesets/galakas/Inside_D.dds" id="58_w1k0a"]
 [ext_resource type="PackedScene" uid="uid://gwspkpk3wqrp" path="res://scenes/renown/asturion_blacksmith.tscn" id="59_82deo"]
@@ -24573,13 +24574,6 @@ flip_h = true
 hframes = 4
 vframes = 4
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer"]
-position = Vector2(1.04068, -3.98962)
-rotation = 0.0103631
-scale = Vector2(0.999331, 1.00005)
-skew = -1.49012e-05
-enable_node_path = NodePath("../../../../../GlobalNavMesh")
-
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Biomes/SaltWastes/RockyBastardsCamp/RockyBastardsTileMapLayer"]
 occluder = SubResource("OccluderPolygon2D_hc03g")
 
@@ -25670,6 +25664,10 @@ TileMaps = []
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SafeSands/Sortior"]
 position = Vector2(-6474, 7485)
 polygon = PackedVector2Array(4589, -4701, 317, -8607, 3530, -12514, 10321, -9922, 11197, -1999)
+
+[node name="MurstarRanch" parent="Biomes/SafeSands" node_paths=PackedStringArray("Biome") instance=ExtResource("56_ortr0")]
+position = Vector2(-733, 13550)
+Biome = NodePath("..")
 
 [node name="Polygon2D" type="Polygon2D" parent="Biomes/SafeSands"]
 z_index = -1

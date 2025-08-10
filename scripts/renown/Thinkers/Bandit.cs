@@ -63,9 +63,9 @@ namespace Renown.Thinkers {
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
-		private WeaponEntity Weapon;
-		private AmmoEntity Ammo;
-		private AmmoStack AmmoStack;
+		public WeaponEntity Weapon { get; private set; }
+		public AmmoEntity Ammo { get; private set; }
+		public AmmoStack AmmoStack { get; private set; }
 
 		private MobAwareness Awareness = MobAwareness.Relaxed;
 

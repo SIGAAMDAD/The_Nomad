@@ -53,7 +53,7 @@ namespace Renown.Thinkers {
 
 		protected Node2D Animations;
 
-		protected NavigationAgent2D NavAgent;
+		public NavigationAgent2D NavAgent { get; private set; }
 		protected Rid NavAgentRID { get; private set; }
 		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
 

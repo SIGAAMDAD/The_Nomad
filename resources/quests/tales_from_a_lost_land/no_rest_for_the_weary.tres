@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestResource" load_steps=12 format=3 uid="uid://dkos6exhhcvru"]
+[gd_resource type="Resource" script_class="QuestResource" load_steps=21 format=3 uid="uid://dkos6exhhcvru"]
 
 [ext_resource type="Script" uid="uid://d4gmb2nftapl5" path="res://addons/questify/scripts/model/quest_edge.gd" id="1_vwp6o"]
 [ext_resource type="Script" uid="uid://dtbofow3tdngk" path="res://addons/questify/scripts/model/quest_start.gd" id="2_7nyrk"]
@@ -6,8 +6,10 @@
 [ext_resource type="Script" uid="uid://bhqxygnm6kw4n" path="res://addons/questify/scripts/model/quest_resource.gd" id="3_jt0rk"]
 [ext_resource type="Script" uid="uid://c23wdreelkkg4" path="res://addons/questify/scripts/model/quest_objective.gd" id="3_svg3e"]
 [ext_resource type="Script" uid="uid://650crvoj707i" path="res://addons/questify/scripts/model/quest_end.gd" id="4_ubdjk"]
+[ext_resource type="Script" uid="uid://cyotfkardp6i" path="res://addons/questify/scripts/model/quest_condition.gd" id="6_svg3e"]
+[ext_resource type="Script" uid="uid://do8usipgxxcl2" path="res://addons/questify/scripts/model/quest_conditional_branch.gd" id="6_ubdjk"]
 
-[sub_resource type="Resource" id="Resource_7nyrk"]
+[sub_resource type="Resource" id="Resource_ubdjk"]
 script = ExtResource("2_7nyrk")
 name = "No Rest for the Weary"
 description = ""
@@ -16,35 +18,86 @@ optional = false
 graph_editor_position = Vector2(480, 340)
 graph_editor_size = Vector2(280, 626)
 
-[sub_resource type="Resource" id="Resource_svg3e"]
-script = ExtResource("3_svg3e")
-description = ""
-id = "dMl6fTwFRW"
-optional = false
-graph_editor_position = Vector2(1020, 320)
-graph_editor_size = Vector2(468, 660)
-
-[sub_resource type="Resource" id="Resource_ubdjk"]
-script = ExtResource("1_vwp6o")
-from = SubResource("Resource_7nyrk")
-to = SubResource("Resource_svg3e")
-edge_type = 0
-
 [sub_resource type="Resource" id="Resource_rllx4"]
-script = ExtResource("4_ubdjk")
-id = "8Dc6rfzMlR"
-optional = false
-graph_editor_position = Vector2(1960, 340)
-graph_editor_size = Vector2(141, 97)
+script = ExtResource("3_svg3e")
+description = "Kill the farmer"
+id = "dMl6fTwFRW"
+optional = true
+graph_editor_position = Vector2(1140, 320)
+graph_editor_size = Vector2(468, 660)
 
 [sub_resource type="Resource" id="Resource_hg8mx"]
 script = ExtResource("1_vwp6o")
-from = SubResource("Resource_svg3e")
+from = SubResource("Resource_ubdjk")
 to = SubResource("Resource_rllx4")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_d6nrl"]
+script = ExtResource("4_ubdjk")
+id = "8Dc6rfzMlR"
+optional = false
+graph_editor_position = Vector2(1780, 580)
+graph_editor_size = Vector2(141, 97)
+
+[sub_resource type="Resource" id="Resource_rcmsg"]
+script = ExtResource("1_vwp6o")
+from = SubResource("Resource_rllx4")
+to = SubResource("Resource_d6nrl")
+edge_type = 0
+
+[sub_resource type="Resource" id="Resource_1485i"]
+script = ExtResource("6_svg3e")
+type = "NoRestForTheWeary_FarmerDead"
+key = "State"
+id = "eicdi-N_RO"
+optional = false
+graph_editor_position = Vector2(380, 1000)
+graph_editor_size = Vector2(377, 432)
+metadata/value = true
+
+[sub_resource type="Resource" id="Resource_l2s6l"]
+script = ExtResource("1_vwp6o")
+from = SubResource("Resource_1485i")
+to = SubResource("Resource_rllx4")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_q3fve"]
+script = ExtResource("6_svg3e")
+type = "NoRestForTheWeary_BanditsArrived"
+key = ""
+id = "7m3dTDvXd3"
+optional = false
+graph_editor_position = Vector2(380, 1480)
+graph_editor_size = Vector2(377, 432)
+
+[sub_resource type="Resource" id="Resource_sa2ap"]
+script = ExtResource("6_ubdjk")
+id = "HkdRJG1oBk"
+optional = false
+graph_editor_position = Vector2(1140, 1020)
+graph_editor_size = Vector2(244, 151)
+
+[sub_resource type="Resource" id="Resource_6i8sv"]
+script = ExtResource("1_vwp6o")
+from = SubResource("Resource_q3fve")
+to = SubResource("Resource_sa2ap")
+edge_type = 1
+
+[sub_resource type="Resource" id="Resource_pbdq1"]
+script = ExtResource("3_svg3e")
+description = "Kill the Bandits"
+id = "CTc03yKttL"
+optional = true
+graph_editor_position = Vector2(2360, 1040)
+graph_editor_size = Vector2(468, 660)
+
+[sub_resource type="Resource" id="Resource_vd3p2"]
+script = ExtResource("1_vwp6o")
+from = SubResource("Resource_sa2ap")
+to = SubResource("Resource_pbdq1")
 edge_type = 0
 
 [resource]
 script = ExtResource("3_jt0rk")
-nodes = Array[ExtResource("2_uaqwh")]([SubResource("Resource_svg3e"), SubResource("Resource_7nyrk"), SubResource("Resource_rllx4")])
-edges = Array[ExtResource("1_vwp6o")]([SubResource("Resource_ubdjk"), SubResource("Resource_hg8mx")])
-metadata/state_tracker = PackedStringArray("")
+nodes = Array[ExtResource("2_uaqwh")]([SubResource("Resource_ubdjk"), SubResource("Resource_1485i"), SubResource("Resource_d6nrl"), SubResource("Resource_rllx4"), SubResource("Resource_pbdq1"), SubResource("Resource_q3fve"), SubResource("Resource_sa2ap")])
+edges = Array[ExtResource("1_vwp6o")]([SubResource("Resource_hg8mx"), SubResource("Resource_rcmsg"), SubResource("Resource_l2s6l"), SubResource("Resource_6i8sv"), SubResource("Resource_vd3p2")])

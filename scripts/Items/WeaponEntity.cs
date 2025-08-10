@@ -659,7 +659,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
-		if ( ( Ammo == null || BulletsLeft < 1 ) && ( ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) ) {
+		if ( Ammo == null || BulletsLeft < 1 || ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) {
 			ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, ResourceCache.NoAmmoSfx );
 			ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			return 0.0f;
@@ -754,7 +754,9 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		}
 
 		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
-		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, Mathf.Lerp( 1.0f, 0.25f, MagazineSize / BulletsLeft ) );
+		if ( BulletsLeft > 0 ) {
+			UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, Mathf.Lerp( 1.0f, 0.25f, MagazineSize / BulletsLeft ) );
+		}
 		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
 

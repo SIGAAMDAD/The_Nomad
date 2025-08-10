@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://7w2a7e3hs67d"]
+
+[node name="QuestTrigger" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -11,13 +11,26 @@ namespace Renown.Thinkers.GoapCache {
 		RunAway,
 
 		ReloadWeapon,
+		ReloadWeaponCovered,
+		ReloadWeaponCrouch,
 		AimWeaponAtTarget,
 		ShootAtTarget,
+
+		SuppressionFireFromCover,
+		SurpriseAttackFromCover,
+
+		BlindFireFromCover,
+		DodgeBackpedal,
+
+		EscapeDanger,
+
+		Follow,
+
+		LookAtDisturbance,
 
 		ThrowGrenade,
 
 		FindCover,
-		GotoNode,
 
 		Count
 	};
@@ -83,12 +96,22 @@ namespace Renown.Thinkers.GoapCache {
 						name: "ShootAtTarget",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							WeaponEntity weapon = (WeaponEntity)thinker.Get( "Weapon" ).AsGodotObject();
+
+							thinker.Get( "AttackTimer" ).AsGodotObject().CallDeferred( Timer.MethodName.Start );
+							weapon.SetAttackAngle( thinker.AimAngle );
+							weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+							weapon.CallDeferred( WeaponEntity.MethodName.UseFirearmDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+
+							if ( !(bool)agent.State[ "HasAmmo" ] ) {
+								return ExecutionStatus.Failed;
+							}
 							return ExecutionStatus.Executing;
 						},
 						cost: 1.0f,
 						costCallback: null,
 						preconditions: new Dictionary<string, object>{
-							{ "HasAmmo", true },
 							{ "PlayerVisible", true }
 						},
 						comparativePreconditions: null,
@@ -119,7 +142,9 @@ namespace Renown.Thinkers.GoapCache {
 							}
 
 							Timer AimTimer = (Timer)thinker.Get( "AimTimer" );
-							if ( AimTimer.TimeLeft == 0.0f && (bool)agent.State[ "Aiming" ] ) {
+							if ( AimTimer.IsStopped() ) {
+								AimTimer.CallDeferred( Timer.MethodName.Start );
+							} else if ( AimTimer.TimeLeft == 0.0f && (bool)agent.State[ "Aiming" ] ) {
 								agent.State[ "Aiming" ] = false;
 								return ExecutionStatus.Succeeded;
 							} else if ( AimTimer.TimeLeft > AimTimer.WaitTime / 4.0f ) {
@@ -139,6 +164,10 @@ namespace Renown.Thinkers.GoapCache {
 						},
 						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
 							{ "Fear", new ComparisonValuePair { Value = 80, Operator = ComparisonOperator.LessThan } }
+						},
+						postconditions: new Dictionary<string, object>{
+							{ "Aiming", false },
+							{ "ClearLineOfFire", true }
 						}
 					)
 				},
@@ -167,6 +196,9 @@ namespace Renown.Thinkers.GoapCache {
 						name: "FindCover",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							AINodeCache cache = (AINodeCache)agent.State[ "NodeCache" ];
+							cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
 							return ExecutionStatus.Failed;
 						},
 						cost: 2.0f,
@@ -180,6 +212,30 @@ namespace Renown.Thinkers.GoapCache {
 							{ "InCover", true }
 						},
 						arithmeticPostconditions: null
+					)
+				},
+				{
+					ActionType.BlindFireFromCover,
+					new Action(
+						name: "BlindFireFromCover"
+					)
+				},
+				{
+					ActionType.SuppressionFireFromCover,
+					new Action(
+						name: "SuppressionFireFromCover",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "InCover", true },
+							{ "HasAmmo", true }
+						},
+						comparativePreconditions: null,
+						postconditions: null
 					)
 				}
 			};
