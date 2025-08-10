@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://eo4nbjxrlwru"]
 
-[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/effects/DebrisFactory.cs" id="1_5hbki"]
+[ext_resource type="Script" uid="uid://d0tpsc7gimhuu" path="res://scripts/Effects/DebrisFactory.cs" id="1_5hbki"]
 
 [node name="DebrisFactory" type="Node2D"]
 z_index = 10

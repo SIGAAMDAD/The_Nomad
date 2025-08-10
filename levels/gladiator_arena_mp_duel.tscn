@@ -16,7 +16,7 @@
 [ext_resource type="ItemDefinition" uid="uid://35w1k1wmpk75" path="res://resources/weapons/firearms/desert_rifle.tres" id="12_jpp1x"]
 [ext_resource type="Script" uid="uid://c7w8pfc801de1" path="res://scripts/GroundMaterial.cs" id="13_mf4ic"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jr0op"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mf4ic"]
 texture = ExtResource("2_r1lm7")
 0:0/0 = 0
 1:0/0 = 0
@@ -860,7 +860,7 @@ texture = ExtResource("2_r1lm7")
 27:29/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_py8m6"]
-sources/0 = SubResource("TileSetAtlasSource_jr0op")
+sources/0 = SubResource("TileSetAtlasSource_mf4ic")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_abtrs"]
 size = Vector2(836.5, 437.5)

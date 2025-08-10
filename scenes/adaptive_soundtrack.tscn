@@ -1,7 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjtff1xak3v85"]
-
-[sub_resource type="Resource" id="Resource_7m2sl"]
-metadata/__load_path__ = "res://scripts/adaptive_soundtrack.gd"
+[gd_scene format=3 uid="uid://bjtff1xak3v85"]
 
 [node name="AdaptiveSoundtrack" type="Node2D"]
-script = SubResource("Resource_7m2sl")

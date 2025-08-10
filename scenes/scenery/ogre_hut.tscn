@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://chbv88cia678b"]
 
-[ext_resource type="Texture2D" uid="uid://lywl4pujdeub" path="res://textures/tilesets/galakas/Inside_D.png" id="1_stnl7"]
-[ext_resource type="Texture2D" uid="uid://x32mktmkh1j6" path="res://textures/tilesets/galakas/Outside_D.png" id="2_ajx2l"]
+[ext_resource type="Texture2D" uid="uid://clj6uh5qnv31r" path="res://textures/tilesets/galakas/Inside_D.dds" id="1_stnl7"]
+[ext_resource type="Texture2D" uid="uid://dbldmbct7rxby" path="res://textures/tilesets/galakas/Outside_D.dds" id="2_ajx2l"]
 [ext_resource type="Texture2D" uid="uid://dp561ffr1p326" path="res://textures/tilesets/galakas/terrain.png" id="3_m3ww5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pesfp"]

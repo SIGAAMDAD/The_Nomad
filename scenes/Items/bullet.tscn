@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cqxixrpig0btv"]
 
-[ext_resource type="Script" uid="uid://b64ek2l4moukj" path="res://scripts/effects/Bullet.cs" id="1_nnar4"]
+[ext_resource type="Script" uid="uid://b64ek2l4moukj" path="res://scripts/Effects/Bullet.cs" id="1_nnar4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qftrh"]
 size = Vector2(6.5, 5.75)

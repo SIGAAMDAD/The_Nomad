@@ -2484,10 +2484,10 @@ public partial class Player : Entity {
 			float accel = ACCEL;
 
 			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-				accel += 2800;
+				accel += 4800;
 			}
 			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-				accel += 600;
+				accel += 1600;
 				LeftArmAnimationState = PlayerAnimationState.Sliding;
 			}
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c0ekbr7fqxj4v"]
 
-[ext_resource type="Texture2D" uid="uid://b4g2lwpsvw75u" path="res://textures/tilesets/galakas.png" id="1_f16uo"]
+[ext_resource type="Texture2D" uid="uid://che4x0phecuaa" path="res://textures/tilesets/galakas.dds" id="1_f16uo"]
 [ext_resource type="Script" uid="uid://br78jnucm6beb" path="res://scripts/Interactables/EndOfChallenge.cs" id="1_qwuqe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p3nh6"]

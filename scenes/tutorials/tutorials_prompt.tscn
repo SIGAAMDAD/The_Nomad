@@ -1,7 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://cilqaqllre0do"]
-
-[sub_resource type="Resource" id="Resource_cp36j"]
-metadata/__load_path__ = "res://scripts/tutorials/tutorials_prompt.gd"
+[gd_scene format=3 uid="uid://cilqaqllre0do"]
 
 [node name="TutorialsPrompt" type="ConfirmationDialog"]
-script = SubResource("Resource_cp36j")

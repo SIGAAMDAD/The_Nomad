@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://be1vwktiohav7"]
 
-[ext_resource type="Script" uid="uid://c40m2asrycxeo" path="res://scripts/effects/Fire.cs" id="1_08243"]
+[ext_resource type="Script" uid="uid://c40m2asrycxeo" path="res://scripts/Effects/Fire.cs" id="1_08243"]
 [ext_resource type="AudioStream" uid="uid://byxwvbp5h01jr" path="res://sounds/env/fire.ogg" id="1_rt0mn"]
 
 [sub_resource type="Gradient" id="Gradient_08243"]

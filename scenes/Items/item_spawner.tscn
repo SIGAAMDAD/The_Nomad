@@ -1,7 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyrhnbyw4abs1"]
-
-[sub_resource type="Resource" id="Resource_31jef"]
-metadata/__load_path__ = "res://scripts/items/item_spawner.gd"
+[gd_scene format=3 uid="uid://cyrhnbyw4abs1"]
 
 [node name="ItemSpawner" type="Node2D"]
-script = SubResource("Resource_31jef")

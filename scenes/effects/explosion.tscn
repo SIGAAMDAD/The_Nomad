@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://chda4kfbmppo6"]
 
 [ext_resource type="SpriteFrames" uid="uid://cqnqh371svvqb" path="res://resources/animations/explosion.tres" id="1_8dm26"]
-[ext_resource type="Script" uid="uid://kijcfl2ddthk" path="res://scripts/effects/Explosion.cs" id="1_d6bb2"]
+[ext_resource type="Script" uid="uid://kijcfl2ddthk" path="res://scripts/Effects/Explosion.cs" id="1_d6bb2"]
 [ext_resource type="AudioStream" uid="uid://cp674nr5bn3ho" path="res://sounds/env/explosion.ogg" id="2_fqp2o"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d6bb2"]
