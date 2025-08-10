@@ -1,0 +1,76 @@
+﻿// <copyright file="Planner.cs" company="Chris Muller">
+// Copyright (c) Chris Muller. All rights reserved.
+// </copyright>
+
+namespace MountainGoap {
+    using System.Collections.Generic;
+	using System.Runtime.Serialization;
+
+	/// <summary>
+	/// Planner for an agent.
+	/// </summary>
+	internal static class Planner {
+        /// <summary>
+        /// Makes a plan to achieve the agent's goals.
+        /// </summary>
+        /// <param name="agent">Agent using the planner.</param>
+        /// <param name="costMaximum">Maximum allowable cost for a plan.</param>
+        /// <param name="stepMaximum">Maximum allowable steps for a plan.</param>
+        internal static void Plan(Agent agent, float costMaximum, int stepMaximum) {
+            Agent.TriggerOnPlanningStarted(agent);
+            float bestPlanUtility = 0;
+            ActionAStar? astar;
+            ActionNode? cursor;
+            ActionAStar? bestAstar = null;
+            BaseGoal? bestGoal = null;
+			for ( int i = 0; i < agent.Goals.Count; i++ ) {
+				BaseGoal goal = agent.Goals[ i ];
+
+				Agent.TriggerOnPlanningStartedForSingleGoal( agent, goal );
+				ActionGraph graph = new( agent.Actions, agent.State );
+				ActionNode start = new( null, agent.State, new() );
+				astar = new( graph, start, goal, costMaximum, stepMaximum );
+				cursor = astar.FinalPoint;
+
+				bool isNull = !( cursor is not null );
+				bool hasValue = astar.CostSoFar.TryGetValue( cursor, out float value );
+				if ( !isNull && value == 0.0f ) {
+					Agent.TriggerOnPlanningFinishedForSingleGoal( agent, goal, 0 );
+				} else if ( !isNull ) {
+					Agent.TriggerOnPlanningFinishedForSingleGoal( agent, goal, goal.Weight / astar.CostSoFar[ cursor ] );
+				}
+				if ( !isNull && cursor.Action is not null && hasValue && goal.Weight / value > bestPlanUtility ) {
+					bestPlanUtility = goal.Weight / value;
+					bestAstar = astar;
+					bestGoal = goal;
+				}	
+			}
+			if ( bestPlanUtility > 0 && bestAstar is not null && bestGoal is not null && bestAstar.FinalPoint is not null ) {
+				UpdateAgentActionList( bestAstar.FinalPoint, bestAstar, agent );
+				agent.IsBusy = true;
+				Agent.TriggerOnPlanningFinished( agent, bestGoal, bestPlanUtility );
+			} else {
+				Agent.TriggerOnPlanningFinished( agent, null, 0 );
+			}
+            agent.IsPlanning = false;
+        }
+
+        /// <summary>
+        /// Updates the agent action list with the new plan. Only supports executing one sequence of events at a time for now.
+        /// </summary>
+        /// <param name="start">Starting node.</param>
+        /// <param name="astar">AStar object used to calculate plan.</param>
+        /// <param name="agent">Agent that will implement the plan.</param>
+        private static void UpdateAgentActionList(ActionNode start, ActionAStar astar, Agent agent) {
+            ActionNode? cursor = start;
+            List<Action> actionList = new();
+            while (cursor != null && cursor.Action != null && astar.CameFrom.TryGetValue( cursor, out ActionNode value )) {
+                actionList.Add(cursor.Action);
+                cursor = value;
+            }
+            actionList.Reverse();
+            agent.CurrentActionSequences.Add(actionList);
+            Agent.TriggerOnPlanUpdated(agent, actionList);
+        }
+    }
+}
