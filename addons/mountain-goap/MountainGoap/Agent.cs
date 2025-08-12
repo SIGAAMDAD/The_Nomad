@@ -38,8 +38,6 @@ namespace MountainGoap {
 			if ( sensors != null ) Sensors = sensors;
 			CostMaximum = costMaximum;
 			StepMaximum = stepMaximum;
-
-			PlannerThread = new Thread( new ThreadStart( () => Planner.Plan( this, CostMaximum, StepMaximum ) ) );
 		}
 
 		/// <summary>
@@ -132,8 +130,6 @@ namespace MountainGoap {
 		/// </summary>
 		public bool IsPlanning { get; set; } = false;
 
-		private readonly Thread PlannerThread;
-
 		/// <summary>
 		/// You should call this every time your game state updates.
 		/// </summary>
@@ -192,7 +188,7 @@ namespace MountainGoap {
 		public void PlanAsync() {
 			if ( !IsBusy && !IsPlanning ) {
 				IsPlanning = true;
-				PlannerThread.Start();
+				new Thread( new ThreadStart( () => Planner.Plan( this, CostMaximum, StepMaximum ) ) ).Start();
 			}
 		}
 
@@ -274,7 +270,7 @@ namespace MountainGoap {
 		private void StepAsync() {
 			if ( !IsBusy && !IsPlanning ) {
 				IsPlanning = true;
-				PlannerThread.Start();
+				new Thread( new ThreadStart( () => Planner.Plan( this, CostMaximum, StepMaximum ) ) ).Start();
 			} else if ( !IsPlanning ) {
 				Execute();
 			}

@@ -32,18 +32,13 @@ namespace MountainGoap {
 				astar = new( graph, start, goal, costMaximum, stepMaximum );
 				cursor = astar.FinalPoint;
 
-				bool isNull = !( cursor is not null );
-				bool hasValue = astar.CostSoFar.TryGetValue( cursor, out float value );
-				if ( !isNull && value == 0.0f ) {
-					Agent.TriggerOnPlanningFinishedForSingleGoal( agent, goal, 0 );
-				} else if ( !isNull ) {
-					Agent.TriggerOnPlanningFinishedForSingleGoal( agent, goal, goal.Weight / astar.CostSoFar[ cursor ] );
-				}
-				if ( !isNull && cursor.Action is not null && hasValue && goal.Weight / value > bestPlanUtility ) {
-					bestPlanUtility = goal.Weight / value;
-					bestAstar = astar;
-					bestGoal = goal;
-				}	
+				if (cursor is not null && astar.CostSoFar[cursor] == 0) Agent.TriggerOnPlanningFinishedForSingleGoal(agent, goal, 0);
+                else if (cursor is not null) Agent.TriggerOnPlanningFinishedForSingleGoal(agent, goal, goal.Weight / astar.CostSoFar[cursor]);
+                if (cursor is not null && cursor.Action is not null && astar.CostSoFar.TryGetValue(cursor, out float value ) && goal.Weight / value > bestPlanUtility) {
+                    bestPlanUtility = goal.Weight / value;
+                    bestAstar = astar;
+                    bestGoal = goal;
+                }
 			}
 			if ( bestPlanUtility > 0 && bestAstar is not null && bestGoal is not null && bestAstar.FinalPoint is not null ) {
 				UpdateAgentActionList( bestAstar.FinalPoint, bestAstar, agent );

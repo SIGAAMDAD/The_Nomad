@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Godot;
 using PlayerSystem;
 using Renown;
+using Steamworks;
 
 public enum AmmoType : uint {
 	Heavy,
@@ -73,12 +74,23 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		None
 	};
 
-	private readonly float RecoilDamping = 0.85f;
-	private readonly float BaseRecoilForce = 0.5f;
-	private readonly float VelocityRecoilFactor = 0.0005f;
+	private static readonly float RecoilDamping = 0.85f;
+	private static readonly float BaseRecoilForce = 0.5f;
+	private static readonly float VelocityRecoilFactor = 0.0005f;
+	private static readonly float MinPitch = 0.9f;
+	private static readonly float MaxPitch = 1.1f;
+	private static readonly float MinResonance = 0.5f;
+	private static readonly float MaxResonance = 5.0f;
+	private static readonly float MinCutoff = 2000.0f;
+	private static readonly float MaxCutoff = 20000.0f;
+	private static readonly float MinReverb = 0.1f;
+	private static readonly float MaxReverb = 0.8f;
 
 	[Export]
 	public Resource Data;
+
+	private AudioEffectReverb ReverbEffect;
+	private int BusIndex;
 
 	// c# integrated properties so that we aren't reaching into the engine api
 	// every time we want a constant
@@ -294,6 +306,15 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 			// only allocate muzzle flash sprites if we actually need them
 			MuzzleFlashes = new System.Collections.Generic.List<Sprite2D>();
+
+			BusIndex = AudioServer.BusCount;
+			AudioServer.AddBus( BusIndex );
+			AudioServer.SetBusName( BusIndex, "WeaponBus_" + GetInstanceId() );
+
+			ReverbEffect = new AudioEffectReverb();
+			AudioServer.AddBusEffect( BusIndex, ReverbEffect );
+
+			UseChannel.Bus = "WeaponBus_" + GetInstanceId();
 
 			for ( int i = 0; ; i++ ) {
 				if ( !FileAccess.FileExists( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" ) ) {
@@ -659,7 +680,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	}
 	private float UseFirearm( out float soundLevel, bool held ) {
 		soundLevel = 0.0f;
-		if ( Ammo == null || BulletsLeft < 1 || ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && !held ) || Firemode == FireMode.Automatic ) {
+		if ( Ammo == null || BulletsLeft < 1 ) {
 			ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, ResourceCache.NoAmmoSfx );
 			ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			return 0.0f;
@@ -754,9 +775,13 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		}
 
 		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
-		if ( BulletsLeft > 0 ) {
-			UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, Mathf.Lerp( 1.0f, 0.25f, MagazineSize / BulletsLeft ) );
-		}
+
+		float ammoRatio = (float)BulletsLeft / MagazineSize;
+		float cutoff = Mathf.Lerp( MinCutoff, MaxCutoff, ammoRatio );
+		float resonance = Mathf.Lerp( MaxResonance, MinResonance, ammoRatio );
+		float reverb = Mathf.Lerp( MaxReverb, MinReverb, ammoRatio );
+
+		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, RNJesus.FloatRange( MinPitch, MaxPitch ) );
 		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
 
@@ -857,6 +882,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( ResourceCache.Initialized && WeaponTimer.IsConnected( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) ) ) {
 			WeaponTimer.Disconnect( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) );
 		}
+
+		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, 1.0f );
 
 		BulletsLeft = Reserve.RemoveItems( MagazineSize );
 		if ( _Owner is Player player && player != null ) {
