@@ -81,15 +81,12 @@ public partial class LobbyRoom : Control {
 	private void LoadGame() {
 		UIAudioManager.OnActivate();
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeIn );
 
 		string modeName;
 		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
 		case Mode.GameMode.Bloodbath:
 			modeName = "bloodbath";
-			break;
-		case Mode.GameMode.TeamBrawl:
-			modeName = "teambrawl";
 			break;
 		case Mode.GameMode.CaptureTheFlag:
 			modeName = "ctf";
@@ -100,10 +97,18 @@ public partial class LobbyRoom : Control {
 		case Mode.GameMode.Duel:
 			modeName = "duel";
 			break;
+		case Mode.GameMode.Extraction:
+			modeName = "extraction";
+			break;
+		case Mode.GameMode.HoldTheLine:
+			modeName = "holdtheline";
+			break;
+		case Mode.GameMode.BountyHunt:
+			modeName = "bountyhunt";
+			break;
 		default:
 			return;
-		}
-		;
+		};
 
 		CallDeferred( MethodName.Connect, SignalName.FinishedLoading, Callable.From( OnFinishedLoading ) );
 		LoadThread = new Thread( () => {
@@ -229,24 +234,24 @@ public partial class LobbyRoom : Control {
 
 		GetTree().CurrentScene = this;
 
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeOut );
 
 		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
 		PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
 
 		StartGameButton = GetNode<Button>( "StartGameButton" );
-		StartGameButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
+		StartGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
 		StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
 
 		ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
-		ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
-		ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
-		ExitLobbyButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( ExitLobbyButton ); } ) );
-		ExitLobbyButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( ExitLobbyButton ); } ) );
+		ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
+		ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
+		ExitLobbyButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
+		ExitLobbyButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
 		ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
 
 		VoteLabel = GetNode<Label>( "VoteLabel" );
@@ -255,7 +260,7 @@ public partial class LobbyRoom : Control {
 
 		//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 		PlayerLeaveCallback = Callable.From<ulong>( OnPlayerLeft );
-		SteamLobby.Instance.Connect( "ClientLeftLobby", PlayerLeaveCallback );
+		SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
 
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
@@ -292,6 +297,6 @@ public partial class LobbyRoom : Control {
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		SteamLobby.Instance.Disconnect( "ClientLeftLobby", PlayerLeaveCallback );
+		SteamLobby.Instance.Disconnect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
 	}
 };

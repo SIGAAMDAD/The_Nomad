@@ -24,7 +24,7 @@ public partial class SettingsData : Node {
 	private static int MaxFps;
 	private static int DRSTargetFrames;
 	private static bool BloomEnabled;
-	private static bool ShowFPS;
+	private static PerformanceOverlayPreset PerformanceOverlay;
 	private static bool ShowBlood;
 
 	//
@@ -49,7 +49,6 @@ public partial class SettingsData : Node {
 	private static float EffectsVolume;
 	private static bool MusicOn;
 	private static float MusicVolume;
-	private static bool MuteUnfocused;
 
 	//
 	// gameplay optionsSettingsData.GetShadowQuality()
@@ -62,7 +61,8 @@ public partial class SettingsData : Node {
 	// network options
 	//
 	private static bool EnableNetworking;
-	private static bool FriendsOnlyNetworking;
+	private static bool CODLobbies;
+	private static bool BountyHuntEnabled;
 
 	private static float EffectsVolumeDb_Flat = 0.0f;
 	private static float MusicVolumeDb_Flat = 0.0f;
@@ -82,171 +82,118 @@ public partial class SettingsData : Node {
 	[Signal]
 	public delegate void SettingsChangedEventHandler();
 
-	public static RefCounted GetRemapper() => Remapper;
-	public static RefCounted GetMappingFormatter() => MappingFormatter;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static RefCounted GetRemapper() => Remapper;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static RefCounted GetMappingFormatter() => MappingFormatter;
 
-	public static bool GetNetworkingEnabled() => EnableNetworking;
-	public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
-	public static bool GetFriendsOnlyNetworking() => FriendsOnlyNetworking;
-	public static void SetFriendsOnlyNetworking( bool bFriendsOnlyNetworking ) => FriendsOnlyNetworking = bFriendsOnlyNetworking;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetNetworkingEnabled() => EnableNetworking;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetNetworkingEnabled( bool bNetworking ) => EnableNetworking = bNetworking;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetBountyHuntEnabled() => BountyHuntEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetBountyHuntEnabled( bool bHuntEnabled ) => BountyHuntEnabled = bHuntEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetCODLobbyEnabled() => CODLobbies;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetCODLobbyEnabled( bool bLobbyEnabled ) => CODLobbies = bLobbyEnabled;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static WindowMode GetWindowMode() => WindowMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static DRSPreset GetDRSPreset() => DRSPreset;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetDRSPreset( DRSPreset preset ) => DRSPreset = preset;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetDRSTargetFrames() => DRSTargetFrames;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetDRSTargetFrames( int nFrames ) => DRSTargetFrames = nFrames;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static Resolution GetResolution() => Resolution;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetResolution( Resolution resolution ) => Resolution = resolution;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetMaxFps() => MaxFps;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetMaxFps( int nMaxFps ) {
-		MaxFps = nMaxFps;
-		Engine.MaxFps = MaxFps;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static WindowMode GetWindowMode() => WindowMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetWindowMode( WindowMode mode ) => WindowMode = mode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static DRSPreset GetDRSPreset() => DRSPreset;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetDRSPreset( DRSPreset preset ) => DRSPreset = preset;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static int GetDRSTargetFrames() => DRSTargetFrames;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetDRSTargetFrames( int nFrames ) => DRSTargetFrames = nFrames;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static Resolution GetResolution() => Resolution;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetResolution( Resolution resolution ) => Resolution = resolution;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static int GetMaxFps() => MaxFps;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetMaxFps( int nMaxFps ) { MaxFps = nMaxFps; Engine.MaxFps = MaxFps; }
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static LightingQuality GetLightingQuality() => LightingQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetLightingQuality( LightingQuality quality ) => LightingQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static ShadowQuality GetShadowQuality() => ShadowQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetShadowQuality( ShadowQuality quality ) => ShadowQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static ShadowFilterQuality GetShadowFilterQuality() => ShadowFilterQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetShadowFilterQuality( ShadowFilterQuality quality ) => ShadowFilterQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static Light2D.ShadowFilterEnum GetShadowFilterEnum() => ShadowFilterType;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetShadowFilterSmooth() => ShadowFilterSmooth;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static ParticleQuality GetParticleQuality() => ParticleQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static AnimationQuality GetAnimationQuality() => AnimationQuality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetAnimationQuality( AnimationQuality quality ) => AnimationQuality = quality;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static VSyncMode GetVSync() => VSyncMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static AntiAliasing GetAntiAliasing() => AntiAliasing;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetBloomEnabled() => BloomEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetBloomEnabled( bool bBloomEnabled ) => BloomEnabled = bBloomEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static PerformanceOverlayPreset GetPerformanceOverlay() => PerformanceOverlay;
+	public static void SetPerformanceOverlay( PerformanceOverlayPreset overlayPreset ) {
+		PerformanceOverlay = overlayPreset;
+
+		if ( overlayPreset == PerformanceOverlayPreset.Hidden ) {
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ProcessModeEnum.Disabled;
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = false;
+
+			Instance.GetNode<CanvasLayer>( "/root/DebugMenu" ).Set( "style", 0 );
+		} else if ( overlayPreset == PerformanceOverlayPreset.FpsOnly ) {
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ProcessModeEnum.Always;
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = true;
+
+			Instance.GetNode<CanvasLayer>( "/root/DebugMenu" ).Set( "style", 0 );
+		} else if ( overlayPreset == PerformanceOverlayPreset.Partial ) {
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ProcessModeEnum.Disabled;
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = false;
+
+			Instance.GetNode<CanvasLayer>( "/root/DebugMenu" ).Set( "style", 1 );
+		} else if ( overlayPreset == PerformanceOverlayPreset.Full ) {
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ProcessModeEnum.Disabled;
+			Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = false;
+
+			Instance.GetNode<CanvasLayer>( "/root/DebugMenu" ).Set( "style", 2 );
+		}
 	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static LightingQuality GetLightingQuality() => LightingQuality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetLightingQuality( LightingQuality quality ) => LightingQuality = quality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static ShadowQuality GetShadowQuality() => ShadowQuality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetShadowQuality( ShadowQuality quality ) => ShadowQuality = quality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static ShadowFilterQuality GetShadowFilterQuality() => ShadowFilterQuality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetShadowFilterQuality( ShadowFilterQuality quality ) => ShadowFilterQuality = quality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static Light2D.ShadowFilterEnum GetShadowFilterEnum() => ShadowFilterType;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetShadowFilterSmooth() => ShadowFilterSmooth;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static ParticleQuality GetParticleQuality() => ParticleQuality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static AnimationQuality GetAnimationQuality() => AnimationQuality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetAnimationQuality( AnimationQuality quality ) => AnimationQuality = quality;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static VSyncMode GetVSync() => VSyncMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetVSync( VSyncMode vsync ) => VSyncMode = vsync;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static AntiAliasing GetAntiAliasing() => AntiAliasing;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetAntiAliasing( AntiAliasing mode ) => AntiAliasing = mode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetBloomEnabled() => BloomEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetBloomEnabled( bool bBloomEnabled ) => BloomEnabled = bBloomEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetShowFPS() => ShowFPS;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetShowFPS( bool bShowFPS ) {
-		ShowFPS = bShowFPS;
-		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).ProcessMode = ShowFPS ? ProcessModeEnum.Always : ProcessModeEnum.Disabled;
-		Instance.GetNode<CanvasLayer>( "/root/FpsCounter" ).Visible = ShowFPS;
-	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetShowBlood() => ShowBlood;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetShowBlood( bool bShowBlood ) => ShowBlood = bShowBlood;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetShowBlood() => ShowBlood;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetShowBlood( bool bShowBlood ) => ShowBlood = bShowBlood;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetEffectsOn() => EffectsOn;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetEffectsVolume() => EffectsVolume;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetEffectsVolumeLinear() => EffectsVolumeDb_Flat;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetEffectsOn() => EffectsOn;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetEffectsOn( bool bEffectsOn ) => EffectsOn = bEffectsOn;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetEffectsVolume() => EffectsVolume;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetEffectsVolumeLinear() => EffectsVolumeDb_Flat;
 	public static void SetEffectsVolume( float fEffectsVolume ) {
 		EffectsVolume = fEffectsVolume;
 		EffectsVolumeDb_Flat = Mathf.LinearToDb( EffectsVolume * 0.01f );
 	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetMusicOn() => MusicOn;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetMusicOn( bool bMusicOn ) => MusicOn = bMusicOn;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetMusicVolume() => MusicVolume;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetMusicVolumeLinear() => MusicVolumeDb_Flat;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetMusicOn() => MusicOn;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetMusicOn( bool bMusicOn ) => MusicOn = bMusicOn;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetMusicVolume() => MusicVolume;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetMusicVolumeLinear() => MusicVolumeDb_Flat;
 	public static void SetMusicVolume( float fMusicVolume ) {
 		MusicVolume = fMusicVolume;
 		MusicVolumeDb_Flat = Mathf.LinearToDb( MusicVolume * 0.01f );
 	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetMuteUnfocused() => MuteUnfocused;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetMuteUnfocused( bool bMuteUnfocused ) => MuteUnfocused = bMuteUnfocused;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetHapticEnabled() => HapticEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetHapticEnabled( bool bHapticEnabled ) => HapticEnabled = bHapticEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetHapticStrength() => HapticStrength;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetHapticStrength( float fHapticStrength ) => HapticStrength = fHapticStrength;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static AutoAimMode GetAutoAimMode() => AutoAimMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetAutoAimMode( AutoAimMode mode ) => AutoAimMode = mode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static ColorblindMode GetColorblindMode() => ColorblindMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetColorblindMode( ColorblindMode mode ) => ColorblindMode = mode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetTutorialsEnabled() => EnableTutorials;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetTutorialsEnabled( bool bTutorialsEnabled ) => EnableTutorials = bTutorialsEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetDyslexiaMode() => DyslexiaMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetDyslexiaMode( bool bDyslexiaMode ) => DyslexiaMode = bDyslexiaMode;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static float GetUIScale() => UIScale;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetUIScale( float nScale ) => UIScale = nScale;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetTextToSpeech() => TextToSpeech;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetTextToSpeech( bool bTextToSpeech ) => TextToSpeech = bTextToSpeech;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetTtsVoiceIndex() => TtsVoiceIndex;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetTtsVoiceIndex( int nVoiceIndex ) => TtsVoiceIndex = nVoiceIndex;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static HUDPreset GetHUDPreset() => HUDPreset;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetHUDPreset( HUDPreset preset ) => HUDPreset = preset;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetHapticEnabled() => HapticEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHapticEnabled( bool bHapticEnabled ) => HapticEnabled = bHapticEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetHapticStrength() => HapticStrength;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHapticStrength( float fHapticStrength ) => HapticStrength = fHapticStrength;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static AutoAimMode GetAutoAimMode() => AutoAimMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetAutoAimMode( AutoAimMode mode ) => AutoAimMode = mode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static ColorblindMode GetColorblindMode() => ColorblindMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetColorblindMode( ColorblindMode mode ) => ColorblindMode = mode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetTutorialsEnabled() => EnableTutorials;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTutorialsEnabled( bool bTutorialsEnabled ) => EnableTutorials = bTutorialsEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetDyslexiaMode() => DyslexiaMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetDyslexiaMode( bool bDyslexiaMode ) => DyslexiaMode = bDyslexiaMode;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetUIScale() => UIScale;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetUIScale( float nScale ) => UIScale = nScale;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetTextToSpeech() => TextToSpeech;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTextToSpeech( bool bTextToSpeech ) => TextToSpeech = bTextToSpeech;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static int GetTtsVoiceIndex() => TtsVoiceIndex;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTtsVoiceIndex( int nVoiceIndex ) => TtsVoiceIndex = nVoiceIndex;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static HUDPreset GetHUDPreset() => HUDPreset;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHUDPreset( HUDPreset preset ) => HUDPreset = preset;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static bool GetHellbreakerEnabled() => HellbreakerEnabled;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetEquipWeaponOnPickup() => EquipWeaponOnPickup;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetEquipWeaponOnPickup( bool bEquipWeapon ) => EquipWeaponOnPickup = bEquipWeapon;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static bool GetHellbreakerEnabled() => HellbreakerEnabled;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHellbreakerEnabled( bool bHellbreakerEnabled ) => HellbreakerEnabled = bHellbreakerEnabled;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static int GetSaveSlot() => LastSaveSlot;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public static void SetSaveSlot( int nSlot ) => LastSaveSlot = nSlot;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static int GetSaveSlot() => LastSaveSlot;
+	[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetSaveSlot( int nSlot ) => LastSaveSlot = nSlot;
 
 	private void UpdateWindowScale() {
 		Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
@@ -480,74 +427,132 @@ public partial class SettingsData : Node {
 		writer.WriteLine();
 	}
 	private static void LoadVideoSettings( IDictionary<string, string> config ) {
-		switch ( config[ "Video:WindowMode" ] ) {
-		case "Windowed":
-			WindowMode = WindowMode.Windowed;
-			break;
-		case "BorderlessWindowed":
-			WindowMode = WindowMode.BorderlessWindowed;
-			break;
-		case "Fullscreen":
-			WindowMode = WindowMode.Fullscreen;
-			break;
-		case "BorderlessFullscreen":
-			WindowMode = WindowMode.BorderlessFullscreen;
-			break;
-		case "ExclusiveFullscreen":
+		try {
+			switch ( config[ "Video:WindowMode" ] ) {
+			case "Windowed":
+				WindowMode = WindowMode.Windowed;
+				break;
+			case "BorderlessWindowed":
+				WindowMode = WindowMode.BorderlessWindowed;
+				break;
+			case "Fullscreen":
+				WindowMode = WindowMode.Fullscreen;
+				break;
+			case "BorderlessFullscreen":
+				WindowMode = WindowMode.BorderlessFullscreen;
+				break;
+			case "ExclusiveFullscreen":
+				WindowMode = WindowMode.ExclusiveFullscreen;
+				break;
+			default:
+				Console.PrintError( "Unknown window mode \"" + config[ "Video:WindowMode" ] + " defaulting to fullscreen." );
+				WindowMode = WindowMode.Fullscreen;
+				break;
+			};
+		} catch ( Exception ) {
 			WindowMode = WindowMode.ExclusiveFullscreen;
-			break;
-		default:
-			Console.PrintError( "Unknown window mode \"" + config[ "Video:WindowMode" ] + " defaulting to fullscreen." );
-			WindowMode = WindowMode.Fullscreen;
-			break;
-		};
-		switch ( config[ "Video:Resolution" ] ) {
-		case "Res_640x480":
+		}
+		try {
+			switch ( config[ "Video:Resolution" ] ) {
+			case "Res_640x480":
+				Resolution = Resolution.Res_640x480;
+				break;
+			case "Res_800x600":
+				Resolution = Resolution.Res_800x600;
+				break;
+			case "Res_1280x768":
+				Resolution = Resolution.Res_1280x768;
+				break;
+			case "Res_1920x1080":
+				Resolution = Resolution.Res_1920x1080;
+				break;
+			case "Res_1600x900":
+				Resolution = Resolution.Res_1600x900;
+				break;
+			};
+		} catch ( Exception ) {
 			Resolution = Resolution.Res_640x480;
-			break;
-		case "Res_800x600":
-			Resolution = Resolution.Res_800x600;
-			break;
-		case "Res_1280x768":
-			Resolution = Resolution.Res_1280x768;
-			break;
-		case "Res_1920x1080":
-			Resolution = Resolution.Res_1920x1080;
-			break;
-		case "Res_1600x900":
-			Resolution = Resolution.Res_1600x900;
-			break;
-		};
-		switch ( config[ "Video:AspectRatio" ] ) {
-		case "Aspect_Automatic":
-			AspectRatio = AspectRatio.Aspect_Automatic;
-			break;
-		case "Aspect_4_3":
+		}
+		try {
+			switch ( config[ "Video:AspectRatio" ] ) {
+			case "Aspect_Automatic":
+				AspectRatio = AspectRatio.Aspect_Automatic;
+				break;
+			case "Aspect_4_3":
+				AspectRatio = AspectRatio.Aspect_4_3;
+				break;
+			case "Aspect_16_10":
+				AspectRatio = AspectRatio.Aspect_16_10;
+				break;
+			case "Aspect_16_9":
+				AspectRatio = AspectRatio.Aspect_16_9;
+				break;
+			case "Aspect_21_9":
+				AspectRatio = AspectRatio.Aspect_21_9;
+				break;
+			default:
+				Console.PrintError( string.Format( "SettingsData.LoadVideoSettings: invalid AspectRatio - {0}", AspectRatio ) );
+				AspectRatio = AspectRatio.Aspect_4_3;
+				break;
+			};
+		} catch ( Exception ) {
 			AspectRatio = AspectRatio.Aspect_4_3;
-			break;
-		case "Aspect_16_10":
-			AspectRatio = AspectRatio.Aspect_16_10;
-			break;
-		case "Aspect_16_9":
-			AspectRatio = AspectRatio.Aspect_16_9;
-			break;
-		case "Aspect_21_9":
-			AspectRatio = AspectRatio.Aspect_21_9;
-			break;
-		};
-		MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
-		ParticleQuality = (ParticleQuality)Convert.ToInt32( config[ "Video:ParticleQuality" ] );
-		AnimationQuality = (AnimationQuality)Convert.ToInt32( config[ "Video:AnimationQuality" ] );
-		ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
-		ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
-		LightingQuality = (LightingQuality)Convert.ToUInt32( config[ "Video:LightingQuality" ] );
-		AntiAliasing = (AntiAliasing)Convert.ToUInt32( config[ "Video:AntiAliasing" ] );
-		VSyncMode = (VSyncMode)Convert.ToInt32( config[ "Video:VSync" ] );
-		BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ].ToInt() );
-		ShowFPS = Convert.ToBoolean( config[ "Video:ShowFPS" ].ToInt() );
-		ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ].ToInt() );
-
-		SettingsData.ApplyVideoSettings();
+		}
+		try {
+			MaxFps = Convert.ToInt32( config[ "Video:MaxFps" ] );
+		} catch ( Exception ) {
+			MaxFps = 60;
+		}
+		try {
+			ParticleQuality = (ParticleQuality)Convert.ToInt32( config[ "Video:ParticleQuality" ] );
+		} catch ( Exception ) {
+			ParticleQuality = ParticleQuality.Low;
+		}
+		try {
+			AnimationQuality = (AnimationQuality)Convert.ToInt32( config[ "Video:AnimationQuality" ] );
+		} catch ( Exception ) {
+			AnimationQuality = AnimationQuality.Medium;
+		}
+		try {
+			ShadowQuality = (ShadowQuality)Convert.ToUInt32( config[ "Video:ShadowQuality" ] );
+		} catch ( Exception ) {
+			ShadowQuality = ShadowQuality.Medium;
+		}
+		try {
+			ShadowFilterQuality = (ShadowFilterQuality)Convert.ToUInt32( config[ "Video:ShadowFilterQuality" ] );
+		} catch ( Exception ) {
+			ShadowFilterQuality = ShadowFilterQuality.Low;
+		}
+		try {
+			LightingQuality = (LightingQuality)Convert.ToUInt32( config[ "Video:LightingQuality" ] );
+		} catch ( Exception ) {
+			LightingQuality = LightingQuality.Low;
+		}
+		try {
+			AntiAliasing = (AntiAliasing)Convert.ToUInt32( config[ "Video:AntiAliasing" ] );
+		} catch ( Exception ) {
+			AntiAliasing = AntiAliasing.FXAA;
+		}
+		try {
+			VSyncMode = (VSyncMode)Convert.ToInt32( config[ "Video:VSync" ] );
+		} catch ( Exception ) {
+			VSyncMode = VSyncMode.Off;
+		}
+		try {
+			BloomEnabled = Convert.ToBoolean( config[ "Video:Bloom" ].ToInt() );
+		} catch ( Exception ) {
+			BloomEnabled = true;
+		}
+		try {
+			PerformanceOverlay = (PerformanceOverlayPreset)Convert.ToUInt32( config[ "Video:PerformanceOverlay" ] );
+		} catch ( Exception ) {
+			PerformanceOverlay = PerformanceOverlayPreset.Hidden;
+		}
+		try {
+			ShowBlood = Convert.ToBoolean( config[ "Video:ShowBlood" ].ToInt() );
+		} catch ( Exception ) {
+			ShowBlood = true;
+		}
 	}
 	private static void SaveVideoSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Video]" );
@@ -555,6 +560,7 @@ public partial class SettingsData : Node {
 		writer.WriteLine( string.Format( "Resolution={0}", Resolution ) );
 		writer.WriteLine( string.Format( "AspectRatio={0}", AspectRatio ) );
 		writer.WriteLine( string.Format( "MaxFps={0}", MaxFps ) );
+		writer.WriteLine( string.Format( "PerformanceOverlay={0}", (int)PerformanceOverlay ) );
 		writer.WriteLine( string.Format( "ParticleQuality={0}", (int)ParticleQuality ) );
 		writer.WriteLine( string.Format( "ShadowQuality={0}", (int)ShadowQuality ) );
 		writer.WriteLine( string.Format( "ShadowFilterQuality={0}", (int)ShadowFilterQuality ) );
@@ -563,7 +569,6 @@ public partial class SettingsData : Node {
 		writer.WriteLine( string.Format( "AntiAliasing={0}", (int)AntiAliasing ) );
 		writer.WriteLine( string.Format( "VSync={0}", (int)VSyncMode ) );
 		writer.WriteLine( string.Format( "Bloom={0}", Convert.ToInt32( BloomEnabled ) ) );
-		writer.WriteLine( string.Format( "ShowFPS={0}", Convert.ToInt32( ShowFPS ) ) );
 		writer.WriteLine( string.Format( "ShowBlood={0}", Convert.ToInt32( ShowBlood ) ) );
 		writer.WriteLine();
 	}
@@ -608,12 +613,14 @@ public partial class SettingsData : Node {
 	}
 	private static void LoadNetworkingSettings( IDictionary<string, string> config ) {
 		EnableNetworking = Convert.ToBoolean( config[ "Networking:EnableNetworking" ].ToInt() );
-		FriendsOnlyNetworking = Convert.ToBoolean( config[ "Networking:FriendsOnlyNetworking" ].ToInt() );
+		BountyHuntEnabled = Convert.ToBoolean( config[ "Networking:BountyHuntEnabled" ].ToInt() );
+		CODLobbies = Convert.ToBoolean( config[ "Networking:CODLobbies" ].ToInt() );
 	}
 	private static void SaveNetworkingSettings( System.IO.StreamWriter writer ) {
 		writer.WriteLine( "[Networking]" );
 		writer.WriteLine( string.Format( "EnableNetworking={0}", Convert.ToInt32( EnableNetworking ) ) );
-		writer.WriteLine( string.Format( "FriendsOnlyNetworking={0}", Convert.ToInt32( FriendsOnlyNetworking ) ) );
+		writer.WriteLine( string.Format( "CODLobbies={0}", Convert.ToInt32( CODLobbies ) ) );
+		writer.WriteLine( string.Format( "BountyHuntEnabled={0}", Convert.ToInt32( BountyHuntEnabled ) ) );
 		writer.WriteLine();
 	}
 
@@ -631,7 +638,7 @@ public partial class SettingsData : Node {
 		ParticleQuality = Default.ParticleQuality;
 		LightingQuality = Default.LightingQuality;
 		BloomEnabled = Default.BloomEnabled;
-		SetShowFPS( Default.ShowFps );
+		PerformanceOverlay = Default.PerformanceStats;
 		ShowBlood = Default.ShowBlood;
 
 		HapticStrength = Default.HapticStrength;
@@ -646,16 +653,15 @@ public partial class SettingsData : Node {
 		TtsVoiceIndex = Default.TtsVoiceIndex;
 
 		EffectsOn = Default.SoundEffectsOn;
-		SetEffectsVolume( Default.SoundEffectsVolume );
+		EffectsVolume = Default.SoundEffectsVolume;
 		MusicOn = Default.MusicOn;
-		SetMusicVolume( Default.MusicVolume );
+		MusicVolume = Default.MusicVolume;
 
 		EquipWeaponOnPickup = Default.EquipWeaponOnPickup;
 		HellbreakerEnabled = Default.Hellbreaker;
 		HellbreakerRevanents = Default.HellbreakerRevanents;
 
 		EnableNetworking = Default.NetworkingEnabled;
-		FriendsOnlyNetworking = Default.FriendsOnly;
 	}
 
 	public override void _Ready() {

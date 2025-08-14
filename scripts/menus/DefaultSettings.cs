@@ -99,6 +99,13 @@ public enum HUDPreset : byte {
 	Expert
 };
 
+public enum PerformanceOverlayPreset : byte {
+	Hidden,
+	FpsOnly,
+	Partial,
+	Full
+};
+
 public enum ColorblindMode : byte {
 	None,
 	Protanopia,
@@ -125,7 +132,7 @@ public partial class DefaultSettings : Resource {
 	[Export] public LightingQuality LightingQuality { get; private set; } = LightingQuality.Low;
 	[Export] public int MaxFps { get; private set; } = 60;
 	[Export] public bool BloomEnabled { get; private set; } = true;
-	[Export] public bool ShowFps { get; private set; } = false;
+	[Export] public PerformanceOverlayPreset PerformanceStats { get; private set; } = PerformanceOverlayPreset.Hidden;
 	[Export] public bool ShowBlood { get; private set; } = true;
 
 	//
@@ -164,6 +171,6 @@ public partial class DefaultSettings : Resource {
 	// networking
 	//
 	[Export] public bool NetworkingEnabled { get; private set; } = true;
-	[Export] public bool FriendsOnly { get; private set; } = false;
+	[Export] public bool BountyHuntEnabled { get; private set; } = true;
 	[Export] public bool CODLobbies { get; private set; } = false;
 };

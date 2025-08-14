@@ -446,7 +446,6 @@ public partial class LobbyBrowser : Control {
 		CancelMatchmake.Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 		CancelMatchmake.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 		CancelMatchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-		CancelMatchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
 
 		MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
 

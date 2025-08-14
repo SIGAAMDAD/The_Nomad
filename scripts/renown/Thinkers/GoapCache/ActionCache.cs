@@ -32,6 +32,8 @@ namespace Renown.Thinkers.GoapCache {
 
 		FindCover,
 
+		BegForLife,
+
 		Count
 	};
 
@@ -198,7 +200,12 @@ namespace Renown.Thinkers.GoapCache {
 						executor: ( agent, action ) => {
 							Thinker thinker = (Thinker)agent.State[ "Owner" ];
 							AINodeCache cache = (AINodeCache)agent.State[ "NodeCache" ];
-							cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
+							List<Vector2> cover = cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
+
+							for ( int i = 0; i < cover.Count; i++ ) {
+
+							}
+
 							return ExecutionStatus.Failed;
 						},
 						cost: 2.0f,

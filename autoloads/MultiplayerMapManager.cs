@@ -5,20 +5,24 @@ public static class MultiplayerMapManager {
 		public readonly string Name;
 		public readonly string FileName;
 		public readonly bool ModeBloodbath;
-		public readonly bool ModeTeamBrawl;
 		public readonly bool ModeCaptureTheFlag;
 		public readonly bool ModeKingOfTheHill;
 		public readonly bool ModeDuel;
+		public readonly bool ModeBountyHunt;
+		public readonly bool ModeExtraction;
+		public readonly bool ModeHoldTheLine;
 
 		public MapData( Resource map ) {
 			Name = (string)map.Get( "_name" );
 			FileName = (string)map.Get( "_filename" );
 
 			ModeBloodbath = (bool)map.Get( "_mode_bloodbath" );
-			ModeTeamBrawl = (bool)map.Get( "_mode_team_brawl" );
 			ModeCaptureTheFlag = (bool)map.Get( "_mode_capture_the_flag" );
 			ModeKingOfTheHill = (bool)map.Get( "_mode_king_of_the_hill" );
 			ModeDuel = (bool)map.Get( "_mode_duel" );
+			ModeBountyHunt = (bool)map.Get( "_mode_bounty_hunt" );
+			ModeExtraction = (bool)map.Get( "_mode_extraction" );
+			ModeHoldTheLine = (bool)map.Get( "_mode_hold_the_line" );
 		}
 	};
 

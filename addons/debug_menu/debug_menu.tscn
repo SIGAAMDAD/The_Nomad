@@ -5,8 +5,9 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki0n8"]
 bg_color = Color(0, 0, 0, 0.25098)
 
-[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
+[node name="DebugMenu" type="CanvasLayer" node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
 layer = 128
+visible = false
 script = ExtResource("1_p440y")
 fps = NodePath("DebugMenu/VBoxContainer/FPS")
 frame_time = NodePath("DebugMenu/VBoxContainer/FrameTime")
@@ -33,6 +34,7 @@ settings = NodePath("DebugMenu/VBoxContainer/Settings")
 [node name="DebugMenu" type="Control" parent="."]
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2

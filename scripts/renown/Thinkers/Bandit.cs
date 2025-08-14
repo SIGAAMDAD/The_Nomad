@@ -98,7 +98,7 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		protected override void SetNavigationTarget( Godot.Vector2 position ) {
+		public override void SetNavigationTarget( Godot.Vector2 position ) {
 			base.SetNavigationTarget( position );
 			CurrentState = State.Goto;
 		}

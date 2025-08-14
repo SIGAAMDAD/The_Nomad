@@ -781,16 +781,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		float resonance = Mathf.Lerp( MaxResonance, MinResonance, ammoRatio );
 		float reverb = Mathf.Lerp( MaxReverb, MinReverb, ammoRatio );
 
-		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, RNJesus.FloatRange( MinPitch, MaxPitch ) );
+		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, (float)GD.RandRange( MinPitch, MaxPitch ) );
 		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		float frameDamage = 0.0f;
 
 		soundLevel = Ammo.Range;
 		if ( Ammo.AmmoType == AmmoType.Pellets ) {
 			if ( Ammo.ShotFlags != AmmoEntity.ShotgunBullshit.Slug ) {
-				for ( int i = 0; i < Ammo.PelletCount; i++ ) {
-					CheckBulletHit( ref frameDamage, AttackAngle + Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 35.0f ) ) );
-				}
+				System.Threading.Tasks.Parallel.For( 0, Ammo.PelletCount,
+					( i ) => CheckBulletHit( ref frameDamage, AttackAngle + Mathf.DegToRad( (float)GD.RandRange( 0.0f, 35.0f ) ) )
+				);
 			} else {
 				CheckBulletHit( ref frameDamage, AttackAngle );
 			}

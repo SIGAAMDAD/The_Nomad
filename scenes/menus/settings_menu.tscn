@@ -156,15 +156,14 @@ _title = &"MAX_FPS"
 _no_translate = true
 _items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
 
-[node name="ShowFPSButton" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="PerformanceOverlayList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../ShowBloodButton")
-focus_mode = 2
-_title = &"SHOW_FPS"
+_title = &"PERFORMANCE_OVERLAY"
+_description = &"PERFORMANCE_OVERLAY_DESCRIPTION"
+_items = Array[StringName]([&"PERFORMANCE_OVERLAY_HIDE", &"PERFORMANCE_OVERLAY_FPS_ONLY", &"PERFORMANCE_OVERLAY_PARTIAL", &"PERFORMANCE_OVERLAY_FULL"])
 
 [node name="ShowBloodButton" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShowFPSButton")
 _title = &"SHOW_BLOOD"
 
 [node name="AdvancedSettingsButton" parent="TabContainer/Video/MainContainer/VBoxContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("5_5fu2g")]
@@ -406,17 +405,26 @@ bbcode_enabled = true
 
 [node name="EnableNetworkingButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../FriendsOnlyButton")
-focus_neighbor_bottom = NodePath("../FriendsOnlyButton")
+focus_neighbor_top = NodePath("../CODLobbies")
+focus_neighbor_bottom = NodePath("../CODLobbies")
 focus_mode = 2
 _title = &"ENABLE_NETWORKING"
 
-[node name="FriendsOnlyButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="CODLobbies" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../EnableNetworkingButton")
 focus_neighbor_bottom = NodePath("../EnableNetworkingButton")
 focus_mode = 2
-_title = &"FRIENDS_ONLY"
+_title = &"COD_LOBBIES"
+_description = &"COD_LOBBIES_DESCRIPTION"
+
+[node name="BountyHuntEnabled" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../EnableNetworkingButton")
+focus_neighbor_bottom = NodePath("../EnableNetworkingButton")
+focus_mode = 2
+_title = &"BOUNTY_HUNT_ENABLED"
+_description = &"BOUNTY_HUNT_ENABLED_DESCRIPTION"
 
 [node name="Controls" type="TabBar" parent="TabContainer"]
 visible = false

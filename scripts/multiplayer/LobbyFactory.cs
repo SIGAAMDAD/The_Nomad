@@ -25,9 +25,6 @@ public partial class LobbyFactory : Control {
 		if ( data.ModeBloodbath ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Bloodbath ], (int)Mode.GameMode.Bloodbath );
 		}
-		if ( data.ModeTeamBrawl ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.TeamBrawl ], (int)Mode.GameMode.TeamBrawl );
-		}
 		if ( data.ModeCaptureTheFlag ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.CaptureTheFlag ], (int)Mode.GameMode.CaptureTheFlag );
 		}
@@ -37,6 +34,15 @@ public partial class LobbyFactory : Control {
 		if ( data.ModeDuel ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ], (int)Mode.GameMode.Duel );
 		}
+		if ( data.ModeExtraction ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Extraction ], (int)Mode.GameMode.Extraction );
+		}
+		if ( data.ModeBountyHunt ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.BountyHunt ], (int)Mode.GameMode.BountyHunt );
+		}
+		if ( data.ModeHoldTheLine ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.HoldTheLine ], (int)Mode.GameMode.HoldTheLine );
+		}
 		GameModeList.Selected = 0;
 	}
 	private void OnGameModeSelectionChanged( int nSelected ) {
@@ -44,8 +50,6 @@ public partial class LobbyFactory : Control {
 		case Mode.GameMode.Bloodbath:
 			MaxPlayers.MinValue = Bloodbath.MinPlayers;
 			MaxPlayers.MaxValue = Bloodbath.MaxPlayers;
-			break;
-		case Mode.GameMode.TeamBrawl:
 			break;
 		case Mode.GameMode.CaptureTheFlag:
 			break;

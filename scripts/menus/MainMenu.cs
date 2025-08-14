@@ -72,7 +72,7 @@ public partial class MainMenu : Control {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 
 		Hide();
-		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeIn );
 
 		Console.PrintLine( "Loading game..." );
 

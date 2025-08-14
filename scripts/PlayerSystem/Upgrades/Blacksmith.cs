@@ -38,8 +38,7 @@ namespace PlayerSystem.Upgrades {
 				DialogueContainer.EndInteraction();
 				DialogueManager.ShowDialogueBalloon( Interactor.DialogueResource, "exit" );
 				break;
-			}
-			;
+			};
 		}
 
 		public override void _Ready() {

@@ -21,7 +21,7 @@ public partial class SettingsMenu : Control {
 		public int MaxFps;
 		public int DRSTargetFrames;
 		public bool BloomEnabled;
-		public bool ShowFPS;
+		public PerformanceOverlayPreset PerformanceOverlay;
 		public bool ShowBlood;
 
 		//
@@ -57,7 +57,8 @@ public partial class SettingsMenu : Control {
 		// network options
 		//
 		public bool EnableNetworking;
-		public bool FriendsOnlyNetworking;
+		public bool BountyHuntEnabled;
+		public bool CODLobbies;
 
 		public SettingsConfig( DefaultSettings settings ) {
 			WindowMode = settings.WindowMode;
@@ -72,7 +73,7 @@ public partial class SettingsMenu : Control {
 			AntiAliasing = settings.AntiAliasing;
 			MaxFps = settings.MaxFps;
 			BloomEnabled = settings.BloomEnabled;
-			ShowFPS = settings.ShowFps;
+			PerformanceOverlay = settings.PerformanceStats;
 			ShowBlood = settings.ShowBlood;
 
 			HapticStrength = settings.HapticStrength;
@@ -96,7 +97,8 @@ public partial class SettingsMenu : Control {
 			HellbreakerRevanents = settings.HellbreakerRevanents;
 
 			EnableNetworking = settings.NetworkingEnabled;
-			FriendsOnlyNetworking = settings.FriendsOnly;
+			CODLobbies = settings.CODLobbies;
+			BountyHuntEnabled = settings.BountyHuntEnabled;
 		}
 
 		public readonly override bool Equals( object obj ) => false;
@@ -122,7 +124,7 @@ public partial class SettingsMenu : Control {
 			if ( a.ShowBlood != b.ShowBlood ) {
 				return false;
 			}
-			if ( a.ShowFPS != b.ShowFPS ) {
+			if ( a.PerformanceOverlay != b.PerformanceOverlay ) {
 				return false;
 			}
 			if ( a.Resolution != b.Resolution ) {
@@ -182,6 +184,16 @@ public partial class SettingsMenu : Control {
 			if ( a.HUDPreset != b.HUDPreset ) {
 				return false;
 			}
+
+			if ( a.EnableNetworking != b.EnableNetworking ) {
+				return false;
+			}
+			if ( a.BountyHuntEnabled != b.BountyHuntEnabled ) {
+				return false;
+			}
+			if ( a.CODLobbies != b.CODLobbies ) {
+				return false;
+			}
 			return true;
 		}
 		public static bool operator !=( SettingsConfig a, SettingsConfig b ) {
@@ -205,7 +217,7 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer LightingQuality;
 	private HBoxContainer AnimationQuality;
 	private HBoxContainer MaxFps;
-	private HBoxContainer ShowFPS;
+	private HBoxContainer PerformanceOverlay;
 	private HBoxContainer ShowBlood;
 
 	private HBoxContainer EffectsOn;
@@ -225,7 +237,8 @@ public partial class SettingsMenu : Control {
 	private HBoxContainer EnableTutorials;
 
 	private HBoxContainer NetworkingEnabled;
-	private HBoxContainer FriendsOnly;
+	private HBoxContainer CODLobbies;
+	private HBoxContainer BountyHuntEnabled;
 
 	private TabContainer TabContainer;
 	private TabBar ControlsTabBar;
@@ -247,10 +260,10 @@ public partial class SettingsMenu : Control {
 	private void OnDefaultSettingsButtonPressed() {
 		UIAudioManager.OnButtonPressed();
 
-		VSync.Call( "set_value", (int)SettingsData.GetVSync() );
-		WindowModeOption.Call( "set_value", (int)SettingsData.GetWindowMode() );
-		ResolutionOption.Call( "set_value", (int)SettingsData.GetResolution() );
-		AntiAliasingOption.Call( "set_value", (int)SettingsData.GetAntiAliasing() );
+		VSync.Call( "set_value", (int)Default.VSyncMode );
+		WindowModeOption.Call( "set_value", (int)Default.WindowMode );
+		ResolutionOption.Call( "set_value", (int)Default.Resolution );
+		AntiAliasingOption.Call( "set_value", (int)Default.AntiAliasing );
 		switch ( Default.MaxFps ) {
 		case 0:
 			MaxFps.Call( "set_value", 0 );
@@ -277,30 +290,31 @@ public partial class SettingsMenu : Control {
 			Console.PrintLine( "Custom FPS set." );
 			break;
 		};
-		ShadowQuality.Call( "set_value", (int)SettingsData.GetShadowQuality() );
-		ShadowFilterQuality.Call( "set_value", (int)SettingsData.GetShadowFilterQuality() );
-		AnimationQuality.Call( "set_value", (int)SettingsData.GetAnimationQuality() );
-		ParticleQuality.Call( "set_value", (int)SettingsData.GetParticleQuality() );
-		LightingQuality.Call( "set_value", (int)SettingsData.GetLightingQuality() );
-		ShowFPS.Call( "set_value", SettingsData.GetShowFPS() );
-		ShowBlood.Call( "set_value", SettingsData.GetShowBlood() );
+		ShadowQuality.Call( "set_value", (int)Default.ShadowQuality );
+		ShadowFilterQuality.Call( "set_value", (int)Default.ShadowFilterQuality );
+		AnimationQuality.Call( "set_value", (int)Default.AnimationQuality );
+		ParticleQuality.Call( "set_value", (int)Default.ParticleQuality );
+		LightingQuality.Call( "set_value", (int)Default.LightingQuality );
+		PerformanceOverlay.Call( "set_value", (int)Default.PerformanceOverlay );
+		ShowBlood.Call( "set_value", Default.ShowBlood );
 
-		EffectsOn.Call( "set_value", SettingsData.GetEffectsOn() );
-		EffectsVolume.Call( "set_value", SettingsData.GetEffectsVolume() );
-		MusicOn.Call( "set_value", SettingsData.GetMusicOn() );
-		MusicVolume.Call( "set_value", SettingsData.GetMusicVolume() );
+		EffectsOn.Call( "set_value", Default.EffectsOn );
+		EffectsVolume.Call( "set_value", Default.EffectsVolume );
+		MusicOn.Call( "set_value", Default.MusicOn );
+		MusicVolume.Call( "set_value", Default.MusicVolume );
 
-		HapticEnabled.Call( "set_value", SettingsData.GetHapticEnabled() );
-		HapticStrength.Call( "set_value", SettingsData.GetHapticStrength() );
-		ColorblindMode.Call( "set_value", (int)SettingsData.GetColorblindMode() );
-		AutoAimMode.Call( "set_value", (int)SettingsData.GetAutoAimMode() );
-		DyslexiaMode.Call( "set_value", SettingsData.GetDyslexiaMode() );
-		TextToSpeech.Call( "set_value", SettingsData.GetTextToSpeech() );
-		EnableTutorials.Call( "set_value", SettingsData.GetTutorialsEnabled() );
-		HUDPreset.Call( "set_value", (int)SettingsData.GetHUDPreset() );
+		HapticEnabled.Call( "set_value", Default.HapticEnabled );
+		HapticStrength.Call( "set_value", Default.HapticStrength );
+		ColorblindMode.Call( "set_value", (int)Default.ColorblindMode );
+		AutoAimMode.Call( "set_value", (int)Default.AutoAimMode );
+		DyslexiaMode.Call( "set_value", Default.DyslexiaMode );
+		TextToSpeech.Call( "set_value", Default.TextToSpeech );
+		EnableTutorials.Call( "set_value", Default.EnableTutorials );
+		HUDPreset.Call( "set_value", (int)Default.HUDPreset );
 
-		NetworkingEnabled.Call( "set_value", SettingsData.GetNetworkingEnabled() );
-		FriendsOnly.Call( "set_value", SettingsData.GetFriendsOnlyNetworking() );
+		NetworkingEnabled.Call( "set_value", Default.EnableNetworking );
+		BountyHuntEnabled.Call( "set_value", Default.BountyHuntEnabled );
+		CODLobbies.Call( "set_value", Default.CODLobbies );
 	}
 	private void OnSaveSettingsButtonPressed() {
 		UIAudioManager.OnButtonPressed();
@@ -314,7 +328,7 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetWindowMode( (WindowMode)WindowModeOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetResolution( (Resolution)ResolutionOption.Call( "get_value" ).AsInt32() );
 		SettingsData.SetAntiAliasing( (AntiAliasing)AntiAliasingOption.Call( "get_value" ).AsInt32() );
-		SettingsData.SetShowFPS( ShowFPS.Call( "get_value" ).AsBool() );
+		SettingsData.SetPerformanceOverlay( (PerformanceOverlayPreset)PerformanceOverlay.Call( "get_value" ).AsInt32() );
 		SettingsData.SetShowBlood( ShowBlood.Call( "get_value" ).AsBool() );
 		switch ( MaxFps.Call( "get_value" ).AsInt32() ) {
 		case 0:
@@ -340,8 +354,7 @@ public partial class SettingsMenu : Control {
 			break;
 		case 7:
 			break;
-		}
-		;
+		};
 
 		SettingsData.SetEffectsOn( EffectsOn.Call( "get_value" ).AsBool() );
 		SettingsData.SetEffectsVolume( EffectsVolume.Call( "get_value" ).AsSingle() );
@@ -357,7 +370,8 @@ public partial class SettingsMenu : Control {
 		SettingsData.SetHUDPreset( (HUDPreset)HUDPreset.Call( "get_value" ).AsInt32() );
 
 		SettingsData.SetNetworkingEnabled( NetworkingEnabled.Call( "get_value" ).AsBool() );
-		SettingsData.SetFriendsOnlyNetworking( FriendsOnly.Call( "get_value" ).AsBool() );
+		SettingsData.SetCODLobbyEnabled( CODLobbies.Call( "get_value" ).AsBool() );
+		SettingsData.SetBountyHuntEnabled( BountyHuntEnabled.Call( "get_value" ).AsBool() );
 
 		SettingsData.ApplyVideoSettings();
 		SettingsData.Save();
@@ -433,10 +447,10 @@ public partial class SettingsMenu : Control {
 		LightingQuality.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( LightingQuality ) ) );
 		LightingQuality.Connect( "value_changed", Callable.From<int>( ( value ) => Temp.LightingQuality = (LightingQuality)value ) );
 
-		ShowFPS = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ShowFPSButton" );
-		ShowFPS.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShowFPS ) ) );
-		ShowFPS.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( ShowFPS ) ) );
-		ShowFPS.Connect( "value_changed", Callable.From<bool>( ( value ) => Temp.ShowFPS = value ) );
+		PerformanceOverlay = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList" );
+		PerformanceOverlay.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( PerformanceOverlay ) ) );
+		PerformanceOverlay.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( PerformanceOverlay ) ) );
+		PerformanceOverlay.Connect( "value_changed", Callable.From<int>( ( value ) => Temp.PerformanceOverlay = (PerformanceOverlayPreset)value ) );
 
 		ShowBlood = GetNode<HBoxContainer>( "TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton" );
 		ShowBlood.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( ShowBlood ) ) );
@@ -508,10 +522,15 @@ public partial class SettingsMenu : Control {
 		NetworkingEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( NetworkingEnabled ) ) );
 		NetworkingEnabled.Connect( "value_changed", Callable.From<bool>( ( value ) => Temp.EnableNetworking = value ) );
 
-		FriendsOnly = GetNode<HBoxContainer>( "TabContainer/Network/VBoxContainer/FriendsOnlyButton" );
-		FriendsOnly.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( FriendsOnly ) ) );
-		FriendsOnly.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( FriendsOnly ) ) );
-		FriendsOnly.Connect( "value_changed", Callable.From<bool>( ( value ) => Temp.FriendsOnlyNetworking = value ) );
+		BountyHuntEnabled = GetNode<HBoxContainer>( "TabContainer/Network/VBoxContainer/BountyHuntEnabled" );
+		BountyHuntEnabled.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( BountyHuntEnabled ) ) );
+		BountyHuntEnabled.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( BountyHuntEnabled ) ) );
+		BountyHuntEnabled.Connect( "value_changed", Callable.From<bool>( ( value ) => Temp.BountyHuntEnabled = value ) );
+
+		CODLobbies = GetNode<HBoxContainer>( "TabContainer/Network/VBoxContainer/CODLobbies" );
+		CODLobbies.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( () => OnOptionFocused( CODLobbies ) ) );
+		CODLobbies.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( () => OnOptionFocused( CODLobbies ) ) );
+		CODLobbies.Connect( "value_changed", Callable.From<bool>( ( value ) => Temp.CODLobbies = value ) );
 
 		TabContainer = GetNode<TabContainer>( "TabContainer" );
 		TabContainer.Connect( TabContainer.SignalName.TabClicked, Callable.From(
@@ -737,7 +756,7 @@ public partial class SettingsMenu : Control {
 		AnimationQuality.Call( "set_value", (int)SettingsData.GetAnimationQuality() );
 		ParticleQuality.Call( "set_value", (int)SettingsData.GetParticleQuality() );
 		LightingQuality.Call( "set_value", (int)SettingsData.GetLightingQuality() );
-		ShowFPS.Call( "set_value", SettingsData.GetShowFPS() );
+		PerformanceOverlay.Call( "set_value", (int)SettingsData.GetPerformanceOverlay() );
 		ShowBlood.Call( "set_value", SettingsData.GetShowBlood() );
 
 		EffectsOn.Call( "set_value", SettingsData.GetEffectsOn() );
@@ -755,7 +774,8 @@ public partial class SettingsMenu : Control {
 		HUDPreset.Call( "set_value", (int)SettingsData.GetHUDPreset() );
 
 		NetworkingEnabled.Call( "set_value", SettingsData.GetNetworkingEnabled() );
-		FriendsOnly.Call( "set_value", SettingsData.GetFriendsOnlyNetworking() );
+		BountyHuntEnabled.Call( "set_value", SettingsData.GetBountyHuntEnabled() );
+		CODLobbies.Call( "set_value", SettingsData.GetCODLobbyEnabled() );
 
 		/*
 		Button RemoveSteamSyncButton = GetNode<Button>( "RemoveSteamSyncButton" );

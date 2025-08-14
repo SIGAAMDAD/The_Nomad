@@ -428,7 +428,7 @@ namespace Renown.Thinkers {
 
 			return true;
 		}
-		protected virtual void SetNavigationTarget( Godot.Vector2 target ) {
+		public virtual void SetNavigationTarget( Godot.Vector2 target ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dpriw3r8df1su"]
+[gd_scene load_steps=9 format=3 uid="uid://dpriw3r8df1su"]
 
 [ext_resource type="Script" uid="uid://cxfkyfa5lclsx" path="res://scripts/multiplayer/LobbyBrowser.cs" id="1_avp8t"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="4_oe0bc"]
@@ -13,12 +13,6 @@ subpixel_positioning = 0
 subpixel_positioning = 0
 
 [sub_resource type="SystemFont" id="SystemFont_lf2jg"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_veyfh"]
-subpixel_positioning = 0
-
-[sub_resource type="SystemFont" id="SystemFont_rk0b5"]
 subpixel_positioning = 0
 
 [sub_resource type="Gradient" id="Gradient_y8dcd"]
@@ -106,18 +100,12 @@ theme_override_fonts/font = SubResource("SystemFont_lf2jg")
 text = "Bloodbath"
 metadata/modename = "Bloodbath"
 
-[node name="TeamBrawlCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_veyfh")
-text = "Team Brawl"
-metadata/modename = "TeamBrawl"
-
 [node name="CaptureTheFlagCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
 layout_mode = 2
 text = "Capture The Flag"
 metadata/modename = "CaptureTheFlag"
 
-[node name="KingOfTheHiillCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
+[node name="KingOfTheHillCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
 layout_mode = 2
 text = "King of the Hill"
 metadata/modename = "KingOfTheHill"
@@ -127,11 +115,20 @@ layout_mode = 2
 text = "Duel"
 metadata/modename = "Duel"
 
-[node name="LocalWorldCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
-visible = false
+[node name="HoldTheLineCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_rk0b5")
-text = "Fever Dream"
+text = "Hold The LIne"
+metadata/modename = "Duel"
+
+[node name="BountyHuntCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+text = "Bounty Hunt"
+metadata/modename = "Duel"
+
+[node name="ExtractionCheckBox" type="CheckBox" parent="FilterList/VBoxContainer"]
+layout_mode = 2
+text = "Extraction"
+metadata/modename = "Duel"
 
 [node name="LobbyListBackground" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.345098)
@@ -343,7 +340,6 @@ layout_mode = 2
 text = "CANCEL_MATCHMAKE"
 
 [node name="ControlBar2" type="HBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -365,6 +361,7 @@ layout_mode = 2
 text = "JOIN_GAME"
 
 [node name="JoiningLobbyContainer" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.484

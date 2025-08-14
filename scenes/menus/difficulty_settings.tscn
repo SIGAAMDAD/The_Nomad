@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://s3pq2337blq4"]
+[gd_scene load_steps=7 format=3 uid="uid://s3pq2337blq4"]
 
 [ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="1_mp4t3"]
 [ext_resource type="StyleBox" uid="uid://4bi8savx2lpi" path="res://resources/themes/scroll_bar_background.tres" id="2_ebpl6"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="2_vjkul"]
 [ext_resource type="StyleBox" uid="uid://cu160bt0bepf1" path="res://resources/themes/scroll_bar_grabber.tres" id="3_ebpl6"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://scenes/menus/settings_menu/list_option.tscn" id="5_mv6kc"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="6_b24pk"]
 
 [sub_resource type="Theme" id="Theme_ebpl6"]
@@ -78,9 +77,13 @@ _title = &"FIRELINK_LIMIT"
 _description = &"FIRELINK_LIMIT_DESCRIPTION"
 metadata/description = &"FIRELINK_LIMIT_DESCRIPTION"
 
-[node name="ListOption" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("5_mv6kc")]
+[node name="AIComplexitySlider" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("6_b24pk")]
 layout_mode = 2
-
-[node name="SliderOption" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("6_b24pk")]
-layout_mode = 2
+_title = &"AI_COMPLEXITY"
+_description = &"AI_COMPLEXITY_DESCRIPTION"
 _max = 3.0
+
+[node name="SanityHallucinations" parent="MarginContainer/VBoxContainer/VScrollBar/VBoxContainer" instance=ExtResource("2_vjkul")]
+layout_mode = 2
+_title = &"SANITY_HALLUCINATIONS"
+_description = &"SANITY_HALLUCINATIONS_DESCRIPTION"

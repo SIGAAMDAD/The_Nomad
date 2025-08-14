@@ -16,6 +16,9 @@ public enum PlayerAnimationState : byte {
 
 	TrueIdleStart,
 	TrueIdleLoop,
+	
+	RunningSuddenStop,
+	RunningBackpedal,
 
 	CheckpointDrinking,
 	CheckpointExit,
@@ -217,6 +220,11 @@ public partial class NetworkPlayer : Renown.Entity {
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 			WalkEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, false );
 			SlideEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, false );
+			break;
+		case PlayerAnimationState.RunningBackpedal:
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show, "run_change" );
+			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play );
+			WalkEffect.SetDeferred( GpuParticles2D.PropertyName.Emitting, true );
 			break;
 		case PlayerAnimationState.Running:
 			LegAnimation.CallDeferred( AnimatedSprite2D.MethodName.Show );

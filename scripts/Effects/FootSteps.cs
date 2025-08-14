@@ -40,7 +40,7 @@ public partial class FootSteps : Node {
 
 		MeshManager.Multimesh.VisibleInstanceCount -= 3;
 	}
-	public void AddStep( Vector2 velocity, Vector2 position, GroundMaterialType GroundType ) {
+	public void AddStep( Vector2 velocity, Vector2 position, GroundMaterialType GroundType, AudioStreamPlayer2D customChannel = null ) {
 		Transform2D transform = new Transform2D( 0.0f, new Vector2( position.X, position.Y + 24.0f ) );
 		CheckCapacity();
 		MeshManager.Multimesh.VisibleInstanceCount++;
@@ -53,6 +53,6 @@ public partial class FootSteps : Node {
 			GroundMaterialType.Wood => ResourceCache.MoveWoodSfx[ RNJesus.IntRange( 0, ResourceCache.MoveWoodSfx.Length - 1 ) ],
 			_ => ResourceCache.MoveGravelSfx[ RNJesus.IntRange( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ],
 		};
-		GetParent<Entity>().PlaySound( null, stream );
+		GetParent<Entity>().PlaySound( customChannel, stream );
 	}
 };

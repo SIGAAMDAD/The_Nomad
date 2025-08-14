@@ -6,19 +6,14 @@ namespace Multiplayer {
 		public enum GameMode {
 			// classic modes
 			Bloodbath,
-			TeamBrawl,
 			CaptureTheFlag,
 			KingOfTheHill,
 
 			// merc modes
 			Duel,
-			Blitz,
-			BountyHuntPVE,
-			BountyHuntPVP,
-			ExtractionPVE,
-			ExtractionPVP,
-
-			LocalWorld,
+			BountyHunt,
+			Extraction,
+			HoldTheLine,
 
 			Count
 		};
@@ -28,16 +23,13 @@ namespace Multiplayer {
 
 		public static readonly Dictionary<GameMode, string> ModeNames = new Dictionary<GameMode, string>{
 			{ GameMode.Bloodbath, "Bloodbath" },
-			{ GameMode.TeamBrawl, "Team Brawl" },
 			{ GameMode.CaptureTheFlag, "Capture The Flag" },
 			{ GameMode.KingOfTheHill, "King of the Hill" },
 
 			{ GameMode.Duel, "Duel" },
-			{ GameMode.Blitz, "Blitz" },
-			{ GameMode.BountyHuntPVE, "Bounty Hunt PVE" },
-			{ GameMode.BountyHuntPVP, "Bounty Hunt PVP" },
-			{ GameMode.ExtractionPVE, "Extraction PVE" },
-			{ GameMode.ExtractionPVP, "Extraction PVP" }
+			{ GameMode.BountyHunt, "Bounty Hunt" },
+			{ GameMode.Extraction, "Extraction" },
+			{ GameMode.HoldTheLine, "Hold The Line" }
 		};
 
 		[Signal]

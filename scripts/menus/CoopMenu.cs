@@ -23,9 +23,6 @@ public partial class CoopMenu : Control {
 		if ( data.ModeBloodbath ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Bloodbath ], (int)Mode.GameMode.Bloodbath );
 		}
-		if ( data.ModeTeamBrawl ) {
-			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.TeamBrawl ], (int)Mode.GameMode.TeamBrawl );
-		}
 		if ( data.ModeCaptureTheFlag ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.CaptureTheFlag ], (int)Mode.GameMode.CaptureTheFlag );
 		}
@@ -34,6 +31,15 @@ public partial class CoopMenu : Control {
 		}
 		if ( data.ModeDuel ) {
 			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Duel ], (int)Mode.GameMode.Duel );
+		}
+		if ( data.ModeExtraction ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.Extraction ], (int)Mode.GameMode.Extraction );
+		}
+		if ( data.ModeBountyHunt ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.BountyHunt ], (int)Mode.GameMode.BountyHunt );
+		}
+		if ( data.ModeHoldTheLine ) {
+			GameModeList.AddItem( Mode.ModeNames[ Mode.GameMode.HoldTheLine ], (int)Mode.GameMode.HoldTheLine );
 		}
 		GameModeList.Selected = 0;
 	}
@@ -46,26 +52,26 @@ public partial class CoopMenu : Control {
 	}
 	private void OnTransitionFinished() {
 		Hide();
-		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeIn );
 
 		Console.PrintLine( "Loading game..." );
 
 		FinishedLoading += OnFinishedLoading;
 
-		string modeName;
-		switch ( (Mode.GameMode)GameModeList.GetItemId( GameModeList.Selected ) ) {
-		case Mode.GameMode.Duel:
-			modeName = "duel";
-			break;
-		default:
-			modeName = "";
-			break;
+		string modeName = (Mode.GameMode)GameModeList.GetItemId( GameModeList.Selected ) switch {
+			Mode.GameMode.Duel => "duel",
+			Mode.GameMode.Bloodbath => "ffa",
+			Mode.GameMode.CaptureTheFlag => "ctf",
+			Mode.GameMode.KingOfTheHill => "koth",
+			Mode.GameMode.Extraction => "extraction",
+			Mode.GameMode.BountyHunt => "bh",
+			_ => "",
 		};
 
 		string mapName = "res://levels/" + MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).FileName + "_" + modeName + "_2p.tscn";
 		LoadThread = new System.Threading.Thread( () => {
 			LoadedWorld = ResourceLoader.Load<PackedScene>( mapName );
-			CallDeferred( "emit_signal", "FinishedLoading" );
+			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
 		} );
 		LoadThread.Start();
 	}

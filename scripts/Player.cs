@@ -239,6 +239,11 @@ public partial class Player : Entity {
 
 	private Camera2D Viewpoint;
 
+	public PlayerStat<float> MaxHealth;
+	public PlayerStat<float> MaxSanity;
+	public PlayerStat<float> MaxRage;
+	public PlayerStat<float> Speed;
+
 	//
 	// multiplayer data
 	//
@@ -259,6 +264,7 @@ public partial class Player : Entity {
 	private AudioStreamPlayer2D DashChannel;
 	private AudioStreamPlayer2D MiscChannel;
 	private AudioStreamPlayer2D VoiceChannel;
+	private AudioStreamPlayer2D WalkChannel;
 
 	//
 	// for the phantoms
@@ -1003,8 +1009,8 @@ public partial class Player : Entity {
 	public float GetSoundLevel() => SoundLevel;
 	public void SetHealth( float nHealth ) {
 		Health = nHealth;
-		if ( Health > 100.0f ) {
-			Health = 100.0f;
+		if ( Health > MaxHealth.MaxValue ) {
+			Health = MaxHealth.MaxValue;
 		}
 		EmitSignalHealthChanged( Health );
 	}
@@ -1012,6 +1018,9 @@ public partial class Player : Entity {
 	public float GetRage() => Rage;
 	public void SetRage( float nRage ) {
 		Rage = nRage;
+		if ( Rage > MaxRage.MaxValue ) {
+			Rage = MaxRage.MaxValue;
+		}
 		EmitSignalRageChanged( Rage );
 	}
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -1062,9 +1071,11 @@ public partial class Player : Entity {
 	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 		if ( channel == null ) {
 			AudioChannel.Stream = stream;
+			AudioChannel.PitchScale = (float)GD.RandRange( 0.8f, 1.4f );
 			AudioChannel.Play();
 		} else {
 			channel.Stream = stream;
+			channel.PitchScale = (float)GD.RandRange( 0.8f, 1.4f );
 			channel.Play();
 		}
 	}
@@ -1415,7 +1426,9 @@ public partial class Player : Entity {
 	private void OnLegsAnimationLooped() {
 		if ( Velocity != Godot.Vector2.Zero ) {
 			Player.ShakeCamera( 2.5f );
-			FootSteps.AddStep( Velocity, GlobalPosition, GroundType );
+			if ( LegAnimation.Animation != "run_change" ) {
+				FootSteps.AddStep( Velocity, GlobalPosition, GroundType, WalkChannel );
+			}
 			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/arm_foley.ogg" ) );
 			SetSoundLevel( 36.0f );
 		}
@@ -1535,7 +1548,6 @@ public partial class Player : Entity {
 		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
 			GetArmAngle();
 		} else {
-			GD.Print( "ArmAngle: " + ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle() );
 			ArmAngle = ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle();
 		}
 		AimLine.GlobalRotation = ArmAngle;
@@ -1543,8 +1555,6 @@ public partial class Player : Entity {
 		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			SyncShadow();
 		}
-
-//		AimRayCast.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.RadToDeg( ArmAngle ) ) * AimLine.Points[ 1 ].X;
 	}
 	private void OnPrevWeapon() {
 		if ( IsInputBlocked() ) {
@@ -1733,7 +1743,7 @@ public partial class Player : Entity {
 		case Hands.Both:
 			break;
 		default:
-			Console.PrintError( "SwitchWeaponHand: invalid hand, setting to default of right" );
+			Console.PrintError( "Player.SwitchWeaponHand: invalid hand, setting to default of right" );
 			HandsUsed = Hands.Right;
 			break;
 		};
@@ -1967,7 +1977,7 @@ public partial class Player : Entity {
 			GetNode( "/root/TransitionScreen" ).Call( "transition" );
 
 			// dead
-			SetHealth( 100.0f );
+			SetHealth( MaxHealth.MaxValue );
 			SetRage( 0.0f );
 
 			SetProcess( true );
@@ -2104,47 +2114,6 @@ public partial class Player : Entity {
 		Console.PrintWarning( string.Format( "No such checkpoint \"{0}\"", locationId ) );
 	}
 
-	private float LitValue = 0.0f;
-	private Texture2D LastSpriteTexture = null;
-	private Rect2I LastCropRect = new Rect2I();
-
-	private void OnViewportFramePreDraw() {
-		Texture2D spriteTexture = TorsoAnimation.SpriteFrames.GetFrameTexture( TorsoAnimation.Animation, TorsoAnimation.Frame );
-		Image image = spriteTexture.GetImage();
-
-		image.GetPixel( 0, 0 );
-
-		LastSpriteTexture = TorsoAnimation.SpriteFrames.GetFrameTexture( TorsoAnimation.Animation, TorsoAnimation.Frame );
-		Godot.Vector2 viewportScale = TorsoAnimation.GetViewportTransform().Scale;
-		Godot.Vector2I screenPos = (Godot.Vector2I)( TorsoAnimation.GetScreenTransform().Origin * viewportScale );
-		LastCropRect = new Godot.Rect2I( screenPos - ( ( (Godot.Vector2I)LastSpriteTexture.GetSize() / new Godot.Vector2I( 2, 2 ) ) * (Godot.Vector2I)viewportScale ), (Godot.Vector2I)LastSpriteTexture.GetSize() * (Godot.Vector2I)viewportScale );
-	}
-	private void OnViewportFramePostDraw() {
-		if ( LastSpriteTexture == null ) {
-			return;
-		}
-		Image viewImage = GetViewport().GetTexture().GetImage();
-		Image spriteImage = LastSpriteTexture.GetImage();
-
-		viewImage = viewImage.GetRegion( LastCropRect );
-		viewImage.Resize( (int)LastSpriteTexture.GetSize().X, (int)LastSpriteTexture.GetSize().Y );
-		viewImage.Convert( spriteImage.GetFormat() );
-
-		Image finalImage = Image.CreateEmpty( (int)LastSpriteTexture.GetSize().X, (int)LastSpriteTexture.GetSize().Y, false, Image.Format.Rgba8 );
-		finalImage.BlitRectMask( viewImage, spriteImage, new Rect2I( Vector2I.Zero, (Vector2I)LastSpriteTexture.GetSize() ), Vector2I.Zero );
-		finalImage.FixAlphaEdges();
-		finalImage.Resize( 1, 1, Image.Interpolation.Lanczos );
-		spriteImage.Resize( 1, 1, Image.Interpolation.Lanczos );
-
-		Color finalColor = finalImage.GetPixel( 0, 0 );
-		Color baseColor = spriteImage.GetPixel( 0, 0 );
-		if ( baseColor.A != 0.0f ) {
-			finalColor = finalColor / finalColor.A;
-			baseColor = baseColor / baseColor.A;
-			LitValue = finalColor.Luminance - baseColor.Luminance;
-		}
-	}
-
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	private void OnScreenSizeChanged() => ScreenSize = DisplayServer.WindowGetSize();
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -2164,10 +2133,6 @@ public partial class Player : Entity {
 
 	public override void _Ready() {
 		base._Ready();
-
-		SetMeta( "FastTravelSanityCost", BaseFastTravelSanityCost );
-		SetMeta( "FastTravelRageCost", BaseFastTravelRageCost );
-		SetMeta( "EnemyDetectionSpeed", BaseEnemyDetectionSpeed );
 
 		AccessibilityManager.LoadBinds();
 
@@ -2193,6 +2158,10 @@ public partial class Player : Entity {
 		}
 
 		LevelData.Instance.PlayerRespawn += Respawn;
+
+		MaxHealth = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
+		MaxRage = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
+		Speed = new PlayerStat<float>( MAX_SPEED, 0.0f, 100.0f );
 
 		// don't allow keybind input when we're in the console
 		Console.Control.VisibilityChanged += () => {
@@ -2278,6 +2247,11 @@ public partial class Player : Entity {
 
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
 		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+
+		WalkChannel = new AudioStreamPlayer2D();
+		WalkChannel.Name = "WalkChannel";
+		WalkChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		AddChild( WalkChannel );
 
 		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
 		MiscChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnSlowMoSfxFinished ) );
@@ -2435,7 +2409,7 @@ public partial class Player : Entity {
 	private async void UpdateIdleBreath( float delta ) {
 		IdleTime += delta;
 
-		float breath = Mathf.Sin( IdleTime * 1.5f ) * 0.30f;
+		float breath = Mathf.Sin( IdleTime * 8.5f ) * 0.30f;
 		TorsoAnimation.Position = new Vector2( 0.0f, breath );
 
 		if ( IdleTime > NextShiftTime ) {
@@ -2484,10 +2458,10 @@ public partial class Player : Entity {
 			float accel = ACCEL;
 
 			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-				accel += 4800;
+				accel += 8800;
 			}
 			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-				accel += 1600;
+				accel += 1200;
 				LeftArmAnimationState = PlayerAnimationState.Sliding;
 			}
 
@@ -2506,18 +2480,13 @@ public partial class Player : Entity {
 			WindUpProgress = Mathf.Clamp( WindUpProgress - WindUpDuration * 2.0f, 0.0f, 1.0f );
 			baseSpeed = 0.5f;
 
-			UpdateIdleBreath( (float)delta );
+			if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+				UpdateIdleBreath( (float)delta );
+			}
 		}
 
 		float easedSpeedFactor = WindUpProgress < 0.1f ? 2.0f * WindUpProgress * WindUpProgress : 1.0f - Mathf.Pow( -2.0f * WindUpProgress + 2.0f, 2.0f ) / 2.0f;
-//		CurrentSpeed = Mathf.Lerp( CurrentSpeed, MAX_SPEED * easedSpeedFactor, ACCEL * (float)delta );
 
-		float dynamicSpeed = baseSpeed * ( 0.05f + 0.05f * easedSpeedFactor );
-
-		// we literally move faster when using a weapon
-		if ( ArmRight.Slot != WeaponSlot.INVALID ) {
-			ArmRight.Animations.SetDeferred( AnimatedSprite2D.PropertyName.SpeedScale, dynamicSpeed );
-		}
 		if ( baseSpeed == 1.0f ) {
 			float armOffset = Mathf.Sin( Time.GetTicksMsec() / 120.0f ) * 2.0f * ( 1.0f - easedSpeedFactor );
 			ArmLeft.Animations.SetDeferred( AnimatedSprite2D.PropertyName.Offset, new Vector2( 0.0f, armOffset ) );
@@ -2538,16 +2507,21 @@ public partial class Player : Entity {
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.Slot == WeaponSlot.INVALID ) {
-			if ( InputVelocity != Vector2.Zero ) {
-				if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
-					arm.Animations.PlayBackwards( "run" );
+			if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+				if ( InputVelocity != Vector2.Zero ) {
+					if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
+						arm.Animations.PlayBackwards( "run" );
+					} else {
+						arm.Animations.Play( "run" );
+					}
+					animState = PlayerAnimationState.Running;
 				} else {
-					arm.Animations.Play( "run" );
+					arm.Animations.Play( "idle" );
+					animState = PlayerAnimationState.Idle;
 				}
-				animState = PlayerAnimationState.Running;
 			} else {
-				arm.Animations.Play( "idle" );
-				animState = PlayerAnimationState.Idle;
+				animState = InputVelocity != Vector2.Zero ? PlayerAnimationState.Running : PlayerAnimationState.Idle;
+				arm.Animations.Play( animState == PlayerAnimationState.Idle ? "idle" : "run" );
 			}
 		} else {
 			WeaponEntity weapon = WeaponSlots[ arm.Slot ].GetWeapon();
@@ -2573,8 +2547,7 @@ public partial class Player : Entity {
 			};
 
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
-				if ( ( arm == ArmLeft && !arm.Animations.FlipV )
-					|| ( arm == ArmRight && arm.Animations.FlipV ) ) {
+				if ( ( arm == ArmLeft && !arm.Animations.FlipV ) || ( arm == ArmRight && arm.Animations.FlipV ) ) {
 					animationName += "_flip";
 				}
 			}
@@ -2582,11 +2555,6 @@ public partial class Player : Entity {
 		}
 	}
 	private void CheckStatus( float delta ) {
-		if ( Rage < 100.0f ) {
-			if ( ( Flags & PlayerFlags.UsedMana ) != 0 ) {
-			}
-		}
-
 		bool changed = false;
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
@@ -2625,22 +2593,27 @@ public partial class Player : Entity {
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
-				bool reverse;
-				if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
-					reverse = true;
-				} else {
-					reverse = false;
-				}
-				
-				Vector2 velocity = Velocity;
-				if ( !reverse ) {
-					if ( ( InputVelocity.X < 0.0f && velocity.X > 0.0f ) || ( InputVelocity.X > 0.0f && velocity.X < 0.0f ) ) {
-						LegAnimation.Play( "run_change" );
+				if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+					bool reverse;
+					if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
+						reverse = true;
 					} else {
-						LegAnimation.Play( "run" );
+						reverse = false;
+					}
+
+					Vector2 velocity = Velocity;
+					if ( !reverse ) {
+						if ( ( InputVelocity.X < 0.0f && velocity.X > 0.0f ) || ( InputVelocity.X > 0.0f && velocity.X < 0.0f ) ) {
+							LegAnimation.Play( "run_change" );
+							PlaySound( WalkChannel, ResourceCache.SlideSfx[ 0 ] );
+						} else {
+							LegAnimation.Play( "run" );
+						}
+					} else {
+						LegAnimation.PlayBackwards( "run" );
 					}
 				} else {
-					LegAnimation.PlayBackwards( "run" );
+					LegAnimation.Play( "run" );
 				}
 				LegAnimationState = PlayerAnimationState.Running;
 				WalkEffect.Emitting = true;

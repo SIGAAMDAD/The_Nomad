@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 func _ready() -> void:
-	visible = get_tree().root.get_node( "/root/SettingsData" ).GetShowFPS()
+	visible = get_tree().root.get_node( "/root/SettingsData" ).GetPerformanceOverlay() == 1
 	process_mode = Node.PROCESS_MODE_ALWAYS if visible else Node.PROCESS_MODE_DISABLED
 
 func _process( _delta: float ) -> void:

@@ -14,6 +14,7 @@ namespace Renown.Thinkers.GoapCache {
 		Follow,
 		Fallback,
 		Goto,
+		RunAway,
 
 		Count
 	};
@@ -34,6 +35,16 @@ namespace Renown.Thinkers.GoapCache {
 						//desiredState: new Dictionary<string, ComparisonValuePair>{
 						//{ "Health", new ComparisonValuePair { Value = 25.0f, Operator = ComparisonOperator.GreaterThan } }
 						//}
+					)
+				},
+				{
+					GoalType.RunAway,
+					new Goal(
+						name: "RunAway",
+						weight: 0.95f,
+						desiredState: new Dictionary<string, object>{
+							{ "InDanger", false }
+						}
 					)
 				},
 				{
