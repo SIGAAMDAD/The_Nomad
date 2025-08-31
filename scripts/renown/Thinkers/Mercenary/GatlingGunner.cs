@@ -2,6 +2,8 @@ using System;
 using ChallengeMode;
 using Godot;
 using Renown.World;
+using ResourceCache;
+using Menus;
 
 namespace Renown.Thinkers {
 	public partial class GatlingGunner : Thinker {
@@ -93,25 +95,25 @@ namespace Renown.Thinkers {
 
 		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
-			NodeCache = location.GetNodeCache();
+			NodeCache = location.NodeCache;
 		}
 
 		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
-				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) )
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" )
+				&& stream != AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) )
 			{
 				return;
 			}
 			base.PlaySound( channel, stream );
 		}
 
-		public override void Damage( in Entity source, float nAmount ) {
+		public override void Damage( in Entity source, float amount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
 
-			base.Damage( source, nAmount );
-			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
+			base.Damage( source, amount );
+//			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			if ( Health <= 0.0f ) {
 				DetectionMeter.CallDeferred( "hide" );
@@ -129,7 +131,7 @@ namespace Renown.Thinkers {
 				HeadAnimations.CallDeferred( "hide" );
 				ArmAnimations.CallDeferred( "hide" );
 //				if ( BodyAnimations.Animation != "die_high" ) {
-//					PlaySound( AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+//					PlaySound( AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" ) );
 					BodyAnimations.CallDeferred( "play", "die" );
 //				}
 
@@ -164,8 +166,8 @@ namespace Renown.Thinkers {
 			Awareness = MobAwareness.Alert;
 		}
 
-		private void SetFear( int nAmount ) {
-			Fear = nAmount;
+		private void SetFear( int amount ) {
+			Fear = amount;
 			if ( Fear >= 100 ) {
 				SpeedDegrade = 0.0f;
 				ChangeInvestigationAngleTimer.WaitTime = 0.5f;
@@ -219,7 +221,7 @@ namespace Renown.Thinkers {
 		}
 
 		public void OnHeadHit( Entity source, float nAmount ) {
-//			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+//			CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) );
 //			BodyAnimations.Play( "die_high" );
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
@@ -234,10 +236,10 @@ namespace Renown.Thinkers {
 		private void BlowupBackpack() {
 			GetNode<Area2D>( "Animations/BodyAnimations/BlowupArea" ).SetDeferred( Area2D.PropertyName.Monitoring, true );
 
-			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
+			Explosion explosion = SceneCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = 72.0f;
 			explosion.Damage = ExplosionDamage;
-			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
+			explosion.Effects = ExtraAmmoEffects.Incendiary;
 			AddChild( explosion );
 
 			base.Damage( this, Health );
@@ -270,9 +272,9 @@ namespace Renown.Thinkers {
 
 			ArmAnimations.CallDeferred( "play", "idle" );
 
-			CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
+			CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
 			if ( Shooting || Revved ) {
-				CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_revdown.ogg" ) );
+				CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revdown.ogg" ) );
 				RevTimer.CallDeferred( "start" );
 			}
 			Shooting = false;
@@ -386,7 +388,7 @@ namespace Renown.Thinkers {
 			CurrentState = State.Guarding;
 
 			if ( GameConfiguration.GameMode != GameMode.JohnWick ) {
-				NodeCache ??= Location.GetNodeCache();
+				NodeCache ??= Location.NodeCache;
 			}
 
 			RevTimer = new Timer();
@@ -539,7 +541,7 @@ namespace Renown.Thinkers {
 					LoseInterestTimer.CallDeferred( "start" );
 				}
 				if ( !Shooting && CanSeeTarget ) {
-					CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_aiming.ogg" ) );
+					CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_aiming.ogg" ) );
 					GunChannel.SetDeferred( "parameters/looping", false );
 					AudioChannel.SetDeferred( "parameters/looping", false );
 					Shooting = true;
@@ -552,9 +554,9 @@ namespace Renown.Thinkers {
 					AimAngle = LookAngle;
 				} else if ( Revved && Shooting ) {
 					if ( ArmAnimations.Animation != "attack" ) {
-						CallDeferred( "PlaySound", GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_shooting.ogg" ) );
+						CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_shooting.ogg" ) );
 						GunChannel.SetDeferred( "parameters/looping", true );
-						CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", RNJesus.IntRange( 0, 7 ) ) ) );
+						CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", RNJesus.IntRange( 0, 7 ) ) ) );
 						AudioChannel.SetDeferred( "parameters/looping", true );
 					}
 					ArmAnimations.CallDeferred( "play", "attack" );
@@ -562,7 +564,7 @@ namespace Renown.Thinkers {
 				}
 				if ( !Revved && CanSeeTarget ) {
 					if ( RevTimer.IsStopped() ) {
-						PlaySound( GunChannel, ResourceCache.GetSound( "res://sounds/mobs/gatling_revup.ogg" ) );
+						PlaySound( GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revup.ogg" ) );
 						RevTimer.CallDeferred( "start" );
 					}
 					ArmAnimations.CallDeferred( "play", "aim" );
@@ -621,7 +623,7 @@ namespace Renown.Thinkers {
 			}
 
 			if ( sightTarget != null ) {
-				if ( sightTarget.GetHealth() <= 0.0f ) {
+				if ( sightTarget.Health <= 0.0f ) {
 					// dead?
 				} else {
 					SightTarget = sightTarget;

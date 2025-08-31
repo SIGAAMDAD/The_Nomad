@@ -1,5 +1,29 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using Renown;
+using Steam;
 
 namespace Multiplayer.Objectives {
 	public partial class Flag : InteractionItem {
@@ -19,6 +43,8 @@ namespace Multiplayer.Objectives {
 		private bool AtHome = true;
 
 		private NetworkSyncObject SyncObject = new NetworkSyncObject( 6 );
+
+		public override InteractionType InteractionType => InteractionType.MultiplayerFlag;
 
 		[Signal]
 		public delegate void StolenEventHandler( Entity source );
@@ -45,7 +71,7 @@ namespace Multiplayer.Objectives {
 
 		private void OnFlagPickup( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 			if ( body is Entity entity && entity != null ) {
-				if ( (Modes.Team)entity.GetMeta( "Team" ) != Team && entity.GetHealth() > 0.0f ) {
+				if ( (Modes.Team)entity.GetMeta( "Team" ) != Team && entity.Health > 0.0f ) {
 					// ensure a corpse isn't picking it up
 
 					AtHome = false;
@@ -80,7 +106,6 @@ namespace Multiplayer.Objectives {
 		}
 
 		private void ReceivePacket( System.IO.BinaryReader packet ) {
-			/*
 			SyncObject.BeginRead( packet );
 
 			switch ( (FlagCommand)packet.ReadByte() ) {
@@ -89,12 +114,12 @@ namespace Multiplayer.Objectives {
 				EmitSignalDropped();
 				break;
 			case FlagCommand.Pickup: {
-				System.Action<Entity> useWeaponCallback;
+//				System.Action<Entity> useWeaponCallback;
 				Entity.DieEventHandler dieCallback;
 
-				useWeaponCallback = Callable.From<Entity>( ( source ) => SendDropPacket() );
+//				useWeaponCallback = Callable.From<Entity>( ( source ) => SendDropPacket() );
 				dieCallback = ( source, target ) => {
-					LevelData.Instance.ThisPlayer.Die -= dieCallback;
+//					LevelData.Instance.ThisPlayer.Die -= dieCallback;
 					SendDropPacket();
 				};
 
@@ -102,7 +127,6 @@ namespace Multiplayer.Objectives {
 				LevelData.Instance.ThisPlayer.Die += ( source, target ) => { };
 				break; }
 			};
-			*/
 		}
 
 		public override void _Ready() {
@@ -111,7 +135,7 @@ namespace Multiplayer.Objectives {
 			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 
 			// only the host runs the objective logic
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 

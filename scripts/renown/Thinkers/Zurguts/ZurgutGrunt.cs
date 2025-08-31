@@ -1,5 +1,6 @@
 using ChallengeMode;
 using Godot;
+using ResourceCache;
 
 namespace Renown.Thinkers {
 	public partial class ZurgutGrunt : Thinker {
@@ -110,7 +111,7 @@ namespace Renown.Thinkers {
 		}
 
 		// TODO: make the "valid target" thing for the grunt a lot looser
-		private bool IsValidTarget( GodotObject target ) => target is Entity entity && entity != null && entity.GetFaction() != Faction;
+		private bool IsValidTarget( GodotObject target ) => target is Entity entity && entity != null && entity.Faction != Faction;
 
 		private void SetAlert() {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
@@ -123,7 +124,7 @@ namespace Renown.Thinkers {
 			}
 
 			// NOTE: this sound might be a little bit annoying to the sane mind
-			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_alert.ogg" ) );
+			PlaySound( null, AudioCache.GetStream( "res://sounds/mobs/zurgut_grunt_alert.ogg" ) );
 			Awareness = MobAwareness.Alert;
 //			SetNavigationTarget( LastTargetPosition );
 		}
@@ -195,7 +196,7 @@ namespace Renown.Thinkers {
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
 				ArmAnimations.Hide();
-				CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+				CallDeferred( MethodName.PlaySound, AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) );
 				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "dead" );
 				return;
 			}
@@ -213,7 +214,7 @@ namespace Renown.Thinkers {
 			if ( !Enraged && Health < Health * 0.25f ) {
 				Enraged = true;
 				BlowupTimer.Start();
-				PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_scream.ogg" ) );
+				PlaySound( null, AudioCache.GetStream( "res://sounds/mobs/zurgut_grunt_scream.ogg" ) );
 			}
 		}
 
@@ -222,9 +223,9 @@ namespace Renown.Thinkers {
 				return;
 			}
 
-			PlaySound( null, ResourceCache.GetSound( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
+			PlaySound( null, AudioCache.GetStream( "res://sounds/mobs/zurgut_grunt_blowup.ogg" ) );
 
-			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
+			Explosion explosion = SceneCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = 126.0f;
 			explosion.Damage = BlowupDamage;
 			explosion.DamageCurve = BlowupDamageCurve;
@@ -235,11 +236,11 @@ namespace Renown.Thinkers {
 		}
 
 		private void OnHammerSwingFinished() {
-			Explosion explosion = ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
+			Explosion explosion = SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = ( HammerShape.Shape as CircleShape2D ).Radius;
 			explosion.Damage = BlowupDamage;
 			explosion.DamageCurve = BlowupDamageCurve;
-			explosion.Effects = AmmoEntity.ExtraEffects.Incendiary;
+			explosion.Effects = ExtraAmmoEffects.Incendiary;
 			AddChild( explosion );
 
 			AreaOfEffect.SetDeferred( Area2D.PropertyName.Monitoring, false );
@@ -390,7 +391,7 @@ namespace Renown.Thinkers {
 					ArmAnimations.CallDeferred( "play", "attack" );
 					AttackTimer.CallDeferred( "start" );
 					StopMoving();
-					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
+//					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
 					CallDeferred( "SwingHammer" );
 				} else {
 					SetNavigationTarget( LastTargetPosition );
@@ -444,7 +445,7 @@ namespace Renown.Thinkers {
 			}
 
 			if ( sightTarget != null ) {
-				if ( sightTarget.GetHealth() <= 0.0f ) {
+				if ( sightTarget.Health <= 0.0f ) {
 					// dead?
 				} else {
 					Target = sightTarget;

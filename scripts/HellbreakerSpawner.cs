@@ -1,6 +1,7 @@
 using Godot;
 using Renown.Thinkers;
 using Renown.World;
+using ResourceCache;
 
 public partial class HellbreakerSpawner : Area2D {
 	[Export]
@@ -15,7 +16,7 @@ public partial class HellbreakerSpawner : Area2D {
 	//			AddChild( spitter );
 	//		}
 			for ( int i = 0; i < ImpCount; i++ ) {
-				Imp imp = ResourceCache.GetScene( "res://scenes/mobs/demons/imp.tscn" ).Instantiate<Imp>();
+				Imp imp = SceneCache.GetScene( "res://scenes/mobs/demons/imp.tscn" ).Instantiate<Imp>();
 //				imp.SetFaction( GetNode<Faction>( "../../HellFaction" ) );
 				Hellbreaker.Demons.Add( imp );
 				AddChild( imp );

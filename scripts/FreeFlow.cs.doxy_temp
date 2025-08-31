@@ -1,0 +1,224 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
+using Godot;
+using System.Runtime.CompilerServices;
+
+public enum KillType : uint {
+	Bodyshot,
+	Headshot,
+	Burning,
+	Execution,
+
+	Count
+};
+
+/*
+===================================================================================
+
+FreeFlow
+
+manages player combo state and berserker mode
+
+===================================================================================
+*/
+
+public partial class FreeFlow : CanvasLayer {
+	public int KillCounter { get; private set; } = 0;
+	public int ComboCounter { get; private set; } = 0;
+	public int MaxCombo { get; private set; } = 0;
+	public int HeadshotCounter { get; private set; } = 0;
+	public int TotalScore { get; private set; } = 0;
+
+	private int HellbreakCounter = 0;
+	private Timer? BurnoutTimer;
+	private Timer? SlowmoTimer;
+	private TextureRect? BerserkOverlay;
+
+	private int JohnWickCounter = 0;
+
+	private static FreeFlow? Instance;
+
+	[Signal]
+	public delegate void ComboFinishedEventHandler( int nCombo );
+	[Signal]
+	public delegate void NewHighestComboEventHandler( int nCombo );
+	[Signal]
+	public delegate void KillAddedEventHandler( KillType nType );
+
+	/*
+	===============
+	ActivateBerserkerMode
+	===============
+	*/
+	private void ActivateBerserkerMode() {
+		SteamAchievements.ActivateAchievement( "ACH_LOSE_YOURSELF" );
+		LevelData.Instance.ThisPlayer.SetFlags( LevelData.Instance.ThisPlayer.GetFlags() | Player.PlayerFlags.Berserker );
+	}
+
+	/*
+	===============
+	DeactivateBerserkerMode
+	===============
+	*/
+	private void DeactivateBerserkerMode() {
+		LevelData.Instance.ThisPlayer.SetFlags( LevelData.Instance.ThisPlayer.GetFlags() & ~Player.PlayerFlags.Berserker );
+		BerserkOverlay.Set( "shader_parameter/vignette_intensity", 0.0f );
+	}
+
+	/*
+	===============
+	AddKill
+	===============
+	*/
+	public static void AddKill( KillType nType, int nScore ) {
+		switch ( nType ) {
+			case KillType.Bodyshot:
+				break;
+			case KillType.Headshot:
+				Instance.HeadshotCounter++;
+				Instance.JohnWickCounter++;
+				if ( Instance.JohnWickCounter > 30 ) {
+					SteamAchievements.ActivateAchievement( "ACH_JOHN_WICK_MODE" );
+				}
+				break;
+		}
+		Instance.KillCounter++;
+		Instance.TotalScore += nScore;
+		Instance.EmitSignalKillAdded( nType );
+	}
+
+	/*
+	===============
+	IncreaseCombo
+	===============
+	*/
+	public static void IncreaseCombo( int nAmount = 1 ) {
+		if ( nAmount < 0 ) {
+
+		}
+		Instance.ComboCounter += nAmount;
+		if ( Instance.ComboCounter > 10 ) {
+			Instance.ActivateBerserkerMode();
+
+			float redAmount = Mathf.Lerp( 0.0f, 1.0f, ( Instance.ComboCounter - 30.0f ) / 30.0f );
+			Instance.BerserkOverlay.Set( "shader_parameter/vignette_intensity", redAmount );
+		}
+	}
+
+	/*
+	===============
+	EndCombo
+	===============
+	*/
+	public static void EndCombo() {
+		if ( Instance.ComboCounter > Instance.MaxCombo ) {
+			Instance.MaxCombo = Instance.ComboCounter;
+		}
+		Instance.ComboCounter = 0;
+		if ( ( LevelData.Instance.ThisPlayer.GetFlags() & Player.PlayerFlags.Berserker ) != 0 ) {
+			Instance.DeactivateBerserkerMode();
+		}
+	}
+
+	/*
+	===============
+	IncreaseTotalScore
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void IncreaseTotalScore( int nAmount ) {
+		Instance.TotalScore += nAmount;
+	}
+
+	/*
+	===============
+	CalculateEncounterScore
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void CalculateEncounterScore() {
+		Instance.TotalScore += Instance.MaxCombo * 10;
+		Instance.TotalScore += Instance.HellbreakCounter * 5;
+	}
+
+	/*
+	===============
+	StartEncounter
+	===============
+	*/
+	public static void StartEncounter() {
+		Instance.TotalScore = 0;
+		Instance.MaxCombo = 0;
+		Instance.ComboCounter = 0;
+		Instance.KillCounter = 0;
+		Instance.HeadshotCounter = 0;
+	}
+
+	/*
+	===============
+	Hitstop
+	===============
+	*/
+	public static void Hitstop( float gameSpeed, float duration ) {
+		Engine.TimeScale = gameSpeed;
+		AudioServer.PlaybackSpeedScale = gameSpeed;
+
+		Instance.SlowmoTimer.WaitTime = duration;
+		Instance.SlowmoTimer.Start();
+	}
+
+	/*
+	===============
+	OnSlowmoTimerTimeout
+	===============
+	*/
+	private void OnSlowmoTimerTimeout() {
+		Engine.TimeScale = 1.0f;
+		AudioServer.PlaybackSpeedScale = 1.0f;
+	}
+
+	/*!
+	===============
+	_Ready
+
+	godot initialization override
+	===============
+	*/
+	public override void _Ready() {
+		base._Ready();
+
+		LevelData.Instance.ThisPlayer.Damaged += ( source, target, amount ) => JohnWickCounter = 0;
+
+		SlowmoTimer = new Timer();
+		SlowmoTimer.Name = "SlowmoTimer";
+		SlowmoTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnSlowmoTimerTimeout ) );
+		AddChild( SlowmoTimer );
+
+		BerserkOverlay = GetNode<TextureRect>( "BerserkModeOverlay" );
+
+		BurnoutTimer = GetNode<Timer>( "BurnoutTimer" );
+		BurnoutTimer.Connect( Timer.SignalName.Timeout, Callable.From( EndCombo ) );
+
+		Instance = this;
+	}
+};

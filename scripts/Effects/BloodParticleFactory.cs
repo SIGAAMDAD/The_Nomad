@@ -1,54 +1,68 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using System;
+using Steam;
+
+/*
+===================================================================================
+
+BloodParticleFactory
+
+===================================================================================
+*/
+/// <summary>
+/// The singleton autoload responsible for managing blood splatter effects
+/// </summary>
+/// <remarks>
+/// Is thread safe only if called into using <b>BloodParticleFactory.CreateDeferred</b>
+/// </remarks>
 
 public partial class BloodParticleFactory : Node {
 	private static BloodParticleFactory Instance;
-	private const int BloodInstanceMax = 256;
-	private const int ParticleBufferSize = 16;
-	private const float ReleaseDelay = 60.0f;
-	private const int CleanupThreshold = 24;
+	private static readonly int BLOOD_INSTANCE_MAX = 256;
+	private static readonly int PARTICLE_BUFFER_SIZE = 16;
+	private static readonly float RELEASE_DELAY = 60.0f;
+	private static readonly int CLEANUP_THRESHOLD = 24;
 
 	private Timer ReleaseTimer;
 	private MultiMeshInstance2D MeshManager;
-	private NetworkSyncObject SyncObject;
-	private readonly Transform2D[] TransformBuffer = new Transform2D[ ParticleBufferSize ];
+	private Multiplayer.NetworkSyncObject SyncObject;
 
-	public override void _Ready() {
-		base._Ready();
+	private readonly Transform2D[] TransformBuffer = new Transform2D[ PARTICLE_BUFFER_SIZE ];
 
-		Instance = this;
-
-		ReleaseTimer = new Timer();
-		ReleaseTimer.WaitTime = ReleaseDelay;
-		ReleaseTimer.OneShot = true;
-		ReleaseTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReleaseTimerTimeout ) );
-		AddChild( ReleaseTimer );
-
-		MeshManager = new MultiMeshInstance2D {
-			Multimesh = new MultiMesh {
-				Mesh = new QuadMesh { Size = new Vector2( 8f, -8f ) },
-				InstanceCount = BloodInstanceMax,
-				VisibleInstanceCount = 0
-			},
-			Texture = ResourceLoader.Load<Texture2D>( "res://textures/blood1.dds" ),
-			ZIndex = 5
-		};
-		AddChild( MeshManager );
-
-		LevelData.Instance.PlayerRespawn += ResetParticles;
-
-		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
-			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
-			SyncObject = new NetworkSyncObject( 1 + sizeof( float ) * 2 * ParticleBufferSize );
-		}
-	}
-
+	/*
+	===============
+	CreateBloodSplatter
+	===============
+	*/
 	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
-		var multimesh = MeshManager.Multimesh;
+		MultiMesh multimesh = MeshManager.Multimesh;
 		int currentCount = multimesh.VisibleInstanceCount;
 
 		// Reset if we can't fit new batch
-		if ( currentCount + ParticleBufferSize > BloodInstanceMax ) {
+		if ( currentCount + PARTICLE_BUFFER_SIZE > BLOOD_INSTANCE_MAX ) {
 			multimesh.VisibleInstanceCount = 0;
 			currentCount = 0;
 		}
@@ -56,7 +70,7 @@ public partial class BloodParticleFactory : Node {
 		Vector2 direction = ( from - to ).Normalized();
 		Vector2 basePosition = to;
 
-		for ( int i = 0; i < ParticleBufferSize; i++ ) {
+		for ( int i = 0; i < PARTICLE_BUFFER_SIZE; i++ ) {
 			Vector2 offset = new Vector2(
 				RNJesus.FloatRange( -60f, 60f ),
 				RNJesus.FloatRange( -120f, 120f )
@@ -69,7 +83,7 @@ public partial class BloodParticleFactory : Node {
 			TransformBuffer[ i ] = transform;
 		}
 
-		multimesh.VisibleInstanceCount = currentCount + ParticleBufferSize;
+		multimesh.VisibleInstanceCount = currentCount + PARTICLE_BUFFER_SIZE;
 		ReleaseTimer.Start();
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
@@ -77,6 +91,11 @@ public partial class BloodParticleFactory : Node {
 		}
 	}
 
+	/*
+	===============
+	NetworkSync
+	===============
+	*/
 	private void NetworkSync() {
 		if ( SyncObject == null ) {
 			return;
@@ -85,7 +104,7 @@ public partial class BloodParticleFactory : Node {
 		SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 		SyncObject.Write( GetPath().GetHashCode() );
 
-		for ( int i = 0; i < ParticleBufferSize;  i++ ) {
+		for ( int i = 0; i < PARTICLE_BUFFER_SIZE; i++ ) {
 			SyncObject.Write( TransformBuffer[ i ].Origin.X );
 			SyncObject.Write( TransformBuffer[ i ].Origin.Y );
 		}
@@ -93,16 +112,21 @@ public partial class BloodParticleFactory : Node {
 		SyncObject.Sync();
 	}
 
+	/*
+	===============
+	ReceivePacket
+	===============
+	*/
 	private void ReceivePacket( System.IO.BinaryReader packet ) {
 		SyncObject.BeginRead( packet );
 		ReleaseTimer.Start();
 
 		MultiMesh multimesh = MeshManager.Multimesh;
 		int currentCount = multimesh.VisibleInstanceCount;
-		int count = Mathf.Min( SyncObject.ReadByte(), ParticleBufferSize );
+		int count = Mathf.Min( SyncObject.ReadByte(), PARTICLE_BUFFER_SIZE );
 
 		// Reset if needed before adding new particles
-		if ( currentCount + count > BloodInstanceMax ) {
+		if ( currentCount + count > BLOOD_INSTANCE_MAX ) {
 			multimesh.VisibleInstanceCount = 0;
 			currentCount = 0;
 		}
@@ -114,14 +138,19 @@ public partial class BloodParticleFactory : Node {
 			);
 
 			int targetIndex = currentCount + i;
-			multimesh.SetInstanceTransform2D( targetIndex, new Transform2D( 0f, position ) );
+			multimesh.SetInstanceTransform2D( targetIndex, new Transform2D( 0.0f, position ) );
 		}
 
 		multimesh.VisibleInstanceCount = currentCount + count;
 	}
 
+	/*
+	===============
+	OnReleaseTimerTimeout
+	===============
+	*/
 	private void OnReleaseTimerTimeout() {
-		int newCount = Math.Max( MeshManager.Multimesh.VisibleInstanceCount - CleanupThreshold, 0 );
+		int newCount = Math.Max( MeshManager.Multimesh.VisibleInstanceCount - CLEANUP_THRESHOLD, 0 );
 		MeshManager.Multimesh.VisibleInstanceCount = newCount;
 
 		if ( newCount > 0 ) {
@@ -129,11 +158,79 @@ public partial class BloodParticleFactory : Node {
 		}
 	}
 
+	/*
+	===============
+	ResetParticles
+	===============
+	*/
 	private void ResetParticles() {
 		MeshManager.Multimesh.VisibleInstanceCount = 0;
 		ReleaseTimer.Stop();
 	}
 
-	public static void Create( Vector2 from, Vector2 to ) => Instance.CreateBloodSplatter( from, to );
-	public static void CreateDeferred( Vector2 from, Vector2 to ) => Instance.CallDeferred( MethodName.CreateBloodSplatter, from, to );
+	/*
+	===============
+	Create
+	===============
+	*/
+	/// <summary>
+	/// Create a blood splatter
+	/// </summary>
+	/// <param name="from"></param>
+	/// <param name="to"></param>
+	public static void Create( Vector2 from, Vector2 to ) {
+		Instance.CreateBloodSplatter( from, to );
+	}
+
+	/*
+	===============
+	CreateDeffered
+	===============
+	*/
+	/// <summary>
+	/// Create a blood splatter, but on a separate thread, this automatically queues up a Godot API deferred call
+	/// </summary>
+	/// <param name="from"></param>
+	/// <param name="to"></param>
+	/// <seealso cref="Create"/>
+	public static void CreateDeferred( Vector2 from, Vector2 to ) {
+		Instance.CallDeferred( MethodName.CreateBloodSplatter, from, to );
+	}
+
+	/*
+	===============
+	_Ready
+	===============
+	*/
+	/// <summary>
+	/// godot initialization override
+	/// </summary>
+	public override void _Ready() {
+		base._Ready();
+
+		Instance = this;
+
+		ReleaseTimer = new Timer();
+		ReleaseTimer.WaitTime = RELEASE_DELAY;
+		ReleaseTimer.OneShot = true;
+		ReleaseTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReleaseTimerTimeout ) );
+		AddChild( ReleaseTimer );
+
+		MeshManager = new MultiMeshInstance2D();
+		MeshManager.Multimesh = new MultiMesh();
+		MeshManager.Multimesh.Mesh = new QuadMesh();
+		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 8.0f, -8.0f );
+		MeshManager.Multimesh.InstanceCount = BLOOD_INSTANCE_MAX;
+		MeshManager.Multimesh.VisibleInstanceCount = 0;
+		MeshManager.Texture = ResourceLoader.Load<Texture2D>( "res://textures/blood1.dds" );
+		MeshManager.ZIndex = 5;
+		AddChild( MeshManager );
+
+		LevelData.Instance.PlayerRespawn += ResetParticles;
+
+		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
+			SyncObject = new Multiplayer.NetworkSyncObject( 1 + sizeof( float ) * 2 * PARTICLE_BUFFER_SIZE );
+		}
+	}
 };

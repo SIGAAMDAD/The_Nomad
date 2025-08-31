@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using Menus;
 
 public partial class AudioPlayer : Node {
 	public class Channel {
@@ -31,7 +32,7 @@ public partial class AudioPlayer : Node {
 		for ( int i = 0; i < Channels.Length; i++ ) {
 			Channels[i] = new Channel();
 			Channels[i].Emitter = new AudioStreamPlayer2D();
-			Channels[i].Emitter.VolumeDb = Mathf.LinearToDb( 100.0f / SettingsData.GetEffectsVolume() );
+			Channels[i].Emitter.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 			Channels[i].Emitter.MaxDistance = 400;
 			Channels[i].Emitter.Attenuation = 0.0449f;
 			Channels[i].Emitter.ProcessMode = ProcessModeEnum.Disabled;

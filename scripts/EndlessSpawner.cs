@@ -25,10 +25,6 @@ public partial class EndlessSpawner : Node2D {
 	private Resource[] AmmoList;
 
 	private void Activate() {
-		if ( !ResourceCache.Initialized ) {
-			return;
-		}
-
 		Resource ammo = AmmoList[ Random.Next( 0, AmmoList.Length - 1 ) ];
 		bool isGatling = false;
 		if ( GatlingChance > 0 ) {
@@ -45,8 +41,6 @@ public partial class EndlessSpawner : Node2D {
 			} else {
 				Resource weapon = Weapons[ Random.Next( 0, Weapons.Length - 1 ) ];
 				Mercenary mob = ResourceLoader.Load<PackedScene>( "res://scenes/mobs/mercenary/mercenary.tscn" ).Instantiate<Mercenary>();
-				mob.DefaultWeapon = weapon;
-				mob.DefaultAmmo = ammo;
 //				mob.SetFaction( GetTree().CurrentScene.GetNode<Faction>( "EvilFaction" ) );
 				mob.Scale = new Vector2( 0.75f, 0.75f );
 				GetTree().CurrentScene.GetNode( "NavigationRegion2D" ).AddChild( mob );

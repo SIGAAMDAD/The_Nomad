@@ -77,15 +77,15 @@ namespace Renown.World {
 		[Signal]
 		public delegate void MeetFactionEventHandler( Faction faction, Node self );
 		[Signal]
-		public delegate void IncreaseRelationEventHandler( Node other, Node self, float nAmount );
+		public delegate void IncreaseRelationEventHandler( Node other, Node self, float amount );
 		[Signal]
-		public delegate void DecreaseRelationEventHandler( Node other, Node self, float nAmount );
+		public delegate void DecreaseRelationEventHandler( Node other, Node self, float amount );
 		[Signal]
-		public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
+		public delegate void IncreaseRenownEventHandler( Node self, int amount );
 		[Signal]
-		public delegate void GainMoneyEventHandler( Node entity, float nAmount );
+		public delegate void GainMoneyEventHandler( Node entity, float amount );
 		[Signal]
-		public delegate void LoseMoneyEventHandler( Node entity, float nAmount );
+		public delegate void LoseMoneyEventHandler( Node entity, float amount );
 
 		public StringName GetFactionName() => FactionName;
 		public AIAlignment GetAlignment() => PrimaryAlignment;
@@ -96,14 +96,13 @@ namespace Renown.World {
 
 		public StringName GetObjectName() => GetFactionName();
 
-		public float GetMoney() => Money;
-		public virtual void DecreaseMoney( float nAmount ) {
-			Money -= nAmount;
-			EmitSignalLoseMoney( this, nAmount );
+		public virtual void DecreaseMoney( float amount ) {
+			Money -= amount;
+			EmitSignalLoseMoney( this, amount );
 		}
-		public virtual void IncreaseMoney( float nAmount ) {
-			Money += nAmount;
-			EmitSignalGainMoney( this, nAmount );
+		public virtual void IncreaseMoney( float amount ) {
+			Money += amount;
+			EmitSignalGainMoney( this, amount );
 		}
 
 		public HashSet<Trait> GetTraits() => TraitCache;
@@ -164,18 +163,33 @@ namespace Renown.World {
 				Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
 			}
 		}
-		public float GetRelationScore( Object other ) => RelationCache.TryGetValue( other, out float score ) ? score : 0.0f;
-		public void RelationIncrease( Object other, float nAmount ) {
-			RelationCache.TryAdd(other, 0.0f);
-			RelationCache[ other ] += nAmount;
+		public float GetRelationScore( Entity entity ) {
+			return RelationCache.TryGetValue( entity, out float score ) ? score : 0.0f;
 		}
-		public void RelationDecrease( Object other, float nAmount ) {
-			RelationCache.TryAdd(other, 0.0f);
-			RelationCache[ other ] -= nAmount;
+		public float GetRelationScore( Faction faction ) {
+			return RelationCache.TryGetValue( faction, out float score ) ? score : 0.0f;
 		}
-		public virtual void DetermineRelationStatus( Object other ) {
-			float score = RelationCache[ other ];
-			int renownScore = other.GetRenownScore();
+
+		public void RelationIncrease( Entity entity, float amount ) {
+			RelationCache.TryAdd( entity, 0.0f );
+			RelationCache[ entity ] += amount;
+		}
+		public void RelationIncrease( Faction faction, float amount ) {
+			RelationCache.TryAdd( faction, 0.0f );
+			RelationCache[ faction ] += amount;
+		}
+
+		public void RelationDecrease( Entity entity, float amount ) {
+			RelationCache.TryAdd( entity, 0.0f );
+			RelationCache[ entity ] -= amount;
+		}
+		public void RelationDecrease( Faction faction, float amount ) {
+			RelationCache.TryAdd( faction, 0.0f );
+			RelationCache[ faction ] -= amount;
+		}
+		public virtual void DetermineRelationStatus( Entity entity ) {
+			float score = RelationCache[ entity ];
+			int renownScore = entity.RenownScore;
 
 			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
 
@@ -194,11 +208,41 @@ namespace Renown.World {
 			}
 			*/
 			
-			RelationCache[ other ] = score;
+			RelationCache[ entity ] = score;
 		}
-		public RelationStatus GetRelationStatus( Object other ) {
-			float score = GetRelationScore( other );
+
+		public virtual void DetermineRelationStatus( Faction faction ) {
+			float score = RelationCache[ faction ];
+			int renownScore = faction.RenownScore;
+
+			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
+
+			/*
+			HashSet<Trait> traitList = other.GetTraits();
+			foreach ( var trait in traitList ) {
+				List<Trait> conflicting = GetConflictingTraits( trait );
+				for ( int i = 0; i < conflicting.Count; i++ ) {
+					score -= conflicting[i].GetNegativeRelationScore( trait );
+				}
+
+				List<Trait> agreeables = GetAgreeableTraits( trait );
+				for ( int i = 0; i < agreeables.Count; i++ ) {
+					score += conflicting[i].GetPositiveRelationScore( trait );
+				}
+			}
+			*/
 			
+			RelationCache[ faction ] = score;
+		}
+		
+		/*
+		===============
+		GetRelationStatus
+		===============
+		*/
+		public RelationStatus GetRelationStatus( Entity entity ) {
+			float score = GetRelationScore( entity );
+
 			if ( score < -100.0f ) {
 				return RelationStatus.KendrickAndDrake;
 			}
@@ -217,34 +261,58 @@ namespace Renown.World {
 			return RelationStatus.Neutral;
 		}
 
-		public int GetRenownScore() => RenownScore;
-		public void AddRenown( int nAmount ) {
-			EmitSignalIncreaseRenown( this, nAmount );
+		/*
+		===============
+		GetRelationStatus
+		===============
+		*/
+		public RelationStatus GetRelationStatus( Faction faction ) {
+			float score = GetRelationScore( faction );
+
+			if ( score < -100.0f ) {
+				return RelationStatus.KendrickAndDrake;
+			}
+			if ( score < -50.0f ) {
+				return RelationStatus.Hates;
+			}
+			if ( score < 0.0f ) {
+				return RelationStatus.Dislikes;
+			}
+			if ( score > 25.0f ) {
+				return RelationStatus.Friends;
+			}
+			if ( score > 100.0f ) {
+				return RelationStatus.GoodFriends;
+			}
+			return RelationStatus.Neutral;
+		}
+
+		public void AddRenown( int amount ) {
+			EmitSignalIncreaseRenown( this, amount );
 		}
 	#endregion
 
 		public virtual void Save() {
-			using ( var writer = new SaveSystem.SaveSectionWriter( GetPath() ) ) {
-				int counter;
+			using var writer = new SaveSystem.SaveSectionWriter( GetPath(), ArchiveSystem.SaveWriter );
+			int counter;
 
-				writer.SaveUInt( nameof( PrimaryAlignment ), (uint)PrimaryAlignment );
-				writer.SaveString( nameof( Leader ), Leader != null ? Leader.GetPath() : "nil" );
+			writer.SaveUInt( nameof( PrimaryAlignment ), (uint)PrimaryAlignment );
+			writer.SaveString( nameof( Leader ), Leader != null ? Leader.GetPath() : "nil" );
 
-				counter = 0;
-				writer.SaveInt( "DebtCount", DebtCache.Count );
-				foreach ( var debt in DebtCache ) {
-					writer.SaveString( string.Format( "DebtNode{0}", counter ), debt.Key.GetHash() );
-					writer.SaveFloat( string.Format( "DebtValue{0}", counter ), debt.Value );
-					counter++;
-				}
+			counter = 0;
+			writer.SaveInt( "DebtCount", DebtCache.Count );
+			foreach ( var debt in DebtCache ) {
+				writer.SaveString( string.Format( "DebtNode{0}", counter ), debt.Key.GetHash() );
+				writer.SaveFloat( string.Format( "DebtValue{0}", counter ), debt.Value );
+				counter++;
+			}
 
-				counter = 0;
-				writer.SaveInt( "RelationCount", RelationCache.Count );
-				foreach ( var relation in RelationCache ) {
-					writer.SaveString( string.Format( "RelationNode{0}", counter ), relation.Key.GetHash() );
-					writer.SaveFloat( string.Format( "RelationValue{0}", counter ), relation.Value );
-					counter++;
-				}
+			counter = 0;
+			writer.SaveInt( "RelationCount", RelationCache.Count );
+			foreach ( var relation in RelationCache ) {
+				writer.SaveString( string.Format( "RelationNode{0}", counter ), relation.Key.GetHash() );
+				writer.SaveFloat( string.Format( "RelationValue{0}", counter ), relation.Value );
+				counter++;
 			}
 		}
 		public virtual void Load() {
@@ -299,13 +367,13 @@ namespace Renown.World {
 		}
 		
 		private void OnMemberDeath( Entity killer, Entity member ) {
-			if ( member.GetFaction() != this ) {
+			if ( member.Faction != this ) {
 				// warning?
 				return;
 			}
 			
 			float amount = 0.0f;
-			int favor = member.GetFactionImportance();
+			int favor = member.FactionImportance;
 			if ( favor > 50 ) {
 				// leader
 				amount = favor;
@@ -345,7 +413,7 @@ namespace Renown.World {
 			if ( !IsInGroup( "Factions" ) ) {
 				AddToGroup( "Factions" );
 			}
-			if ( ArchiveSystem.Instance.IsLoaded() ) {
+			if ( ArchiveSystem.IsLoaded() ) {
 				Load();
 			} else {
 				RelationCache = new Dictionary<Object, float>( Relations != null ? Relations.Count : 0 );
@@ -375,19 +443,19 @@ namespace Renown.World {
 			ProcessMode = ProcessModeEnum.Disabled;
 		}
 		
-		protected bool CreateDebt( float nAmount ) {
+		protected bool CreateDebt( float amount ) {
 			// TODO: allow debt with politicians & specific rich mercs outside of faction
 			Godot.Collections.Array<Node> factions = GetTree().GetNodesInGroup( "Factions" );
 			foreach ( var faction in factions ) {
 				Faction loaner = faction as Faction;
-				if ( loaner.CanLoanMoney( this, nAmount ) ) {
-					AddDebt( loaner, nAmount );
+				if ( loaner.CanLoanMoney( this, amount ) ) {
+					AddDebt( loaner, amount );
 					return true;
 				}
 			}
 			return false;
 		}
-		public bool CanLoanMoney( Object destination, float nAmount ) {
+		public bool CanLoanMoney( Object destination, float amount ) {
 			if ( !RelationCache.TryGetValue( destination, out float score ) ) {
 				RelationCache.Add( destination, -10.0f );
 				return false; // they don't have an active relation with said node, so start off on a bad note
@@ -401,16 +469,16 @@ namespace Renown.World {
 			// TODO: implement malicious debt creation
 			// TODO: implement debt counter over time mechanic
 			
-			if ( Money - nAmount < 0.0f ) {
+			if ( Money - amount < 0.0f ) {
 				// we don't have enough in the reserves
 				// but if we're good enough friends, then create a new
 				// debt with a different node
-				if ( score >= 50.0f && CreateDebt( nAmount ) ) {
+				if ( score >= 50.0f && CreateDebt( amount ) ) {
 					return true;
 				}
 				return false;
 			}
-			Money -= nAmount;
+			Money -= amount;
 			
 			// if we have enough money and the relation is neutral or friendly, give them money
 			return true;
@@ -419,7 +487,7 @@ namespace Renown.World {
 			DebtCache.TryAdd( to, 0.0f );
 			DebtCache[ to ] += nAmount;
 		}
-		protected void PayDebt( Object to, float nAmount ) {
+		protected void PayDebt( Object to, float debtAmount ) {
 			// sanity check
 			if ( !DebtCache.TryGetValue( to, out float amount ) ) {
 				Console.PrintError(
@@ -427,14 +495,14 @@ namespace Renown.World {
 				);
 				return;
 			}
-			amount -= nAmount;
+			amount -= debtAmount;
 			if ( amount <= 0.0f ) {
 				// paid in full, remove it
 				DebtCache.Remove( to );
 			} else {
 				DebtCache[ to ] = amount;
 			}
-			Money -= nAmount;
+			Money -= debtAmount;
 		}
 		
 		protected void UpdateWarStatus( Faction faction ) {

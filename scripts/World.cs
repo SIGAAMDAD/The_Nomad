@@ -1,11 +1,38 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using System.Threading;
 using Steamworks;
+using Steam;
 using Godot;
 using Renown.World;
 using Renown;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using Interactables;
+using Menus;
+using Multiplayer;
 
 public partial class World : LevelData {
 	[Export]
@@ -32,97 +59,98 @@ public partial class World : LevelData {
 
 	private void OnConditionQueryRequested( string queryType, string key, Variant value, Resource requester ) {
 		switch ( queryType ) {
-		case "State":
-			if ( ObjectivesState.TryGetValue( key, out Godot.Variant compare ) ) {
-				if ( compare.VariantType == Variant.Type.Bool ) {
-					Questify.SetConditionCompleted( requester, compare.AsBool() == value.AsBool() );
-				} else if ( compare.VariantType == Variant.Type.Float ) {
-					int index = queryType.Find( ':' );
-					if ( index != -1 ) {
-						string op = queryType.Substring( index + 1 );
-						switch ( op ) {
-						case "eq":
-						case "==":
+			case "State":
+				if ( ObjectivesState.TryGetValue( key, out Godot.Variant compare ) ) {
+					if ( compare.VariantType == Variant.Type.Bool ) {
+						Questify.SetConditionCompleted( requester, compare.AsBool() == value.AsBool() );
+					} else if ( compare.VariantType == Variant.Type.Float ) {
+						int index = queryType.Find( ':' );
+						if ( index != -1 ) {
+							string op = queryType.Substring( index + 1 );
+							switch ( op ) {
+								case "eq":
+								case "==":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() == value.AsSingle() );
+									break;
+								case "neq":
+								case "!=":
+								case "!eq":
+								case "ne":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() != value.AsSingle() );
+									break;
+								case "lt":
+								case "<":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() < value.AsSingle() );
+									break;
+								case "lte":
+								case "<=":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() <= value.AsSingle() );
+									break;
+								case "gt":
+								case ">":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() > value.AsSingle() );
+									break;
+								case "gte":
+								case ">=":
+									Questify.SetConditionCompleted( requester, compare.AsSingle() >= value.AsSingle() );
+									break;
+								default:
+									Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
+									break;
+							}
+							;
+						} else {
 							Questify.SetConditionCompleted( requester, compare.AsSingle() == value.AsSingle() );
-							break;
-						case "neq":
-						case "!=":
-						case "!eq":
-						case "ne":
-							Questify.SetConditionCompleted( requester, compare.AsSingle() != value.AsSingle() );
-							break;
-						case "lt":
-						case "<":
-							Questify.SetConditionCompleted( requester, compare.AsSingle() < value.AsSingle() );
-							break;
-						case "lte":
-						case "<=":
-							Questify.SetConditionCompleted( requester, compare.AsSingle() <= value.AsSingle() );
-							break;
-						case "gt":
-						case ">":
-							Questify.SetConditionCompleted( requester, compare.AsSingle() > value.AsSingle() );
-							break;
-						case "gte":
-						case ">=":
-							Questify.SetConditionCompleted( requester, compare.AsSingle() >= value.AsSingle() );
-							break;
-						default:
-							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
-							break;
-						};
-					} else {
-						Questify.SetConditionCompleted( requester, compare.AsSingle() == value.AsSingle() );
-					}
-				} else if ( compare.VariantType == Variant.Type.Int ) {
-					int index = queryType.Find( ':' );
-					if ( index != -1 ) {
-						string op = queryType.Substring( index + 1 );
-						switch ( op ) {
-						case "eq":
-						case "==":
+						}
+					} else if ( compare.VariantType == Variant.Type.Int ) {
+						int index = queryType.Find( ':' );
+						if ( index != -1 ) {
+							string op = queryType.Substring( index + 1 );
+							switch ( op ) {
+								case "eq":
+								case "==":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() == value.AsInt32() );
+									break;
+								case "neq":
+								case "!=":
+								case "!eq":
+								case "ne":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() != value.AsInt32() );
+									break;
+								case "lt":
+								case "<":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() < value.AsInt32() );
+									break;
+								case "lte":
+								case "<=":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() <= value.AsInt32() );
+									break;
+								case "gt":
+								case ">":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() > value.AsInt32() );
+									break;
+								case "gte":
+								case ">=":
+									Questify.SetConditionCompleted( requester, compare.AsInt32() >= value.AsInt32() );
+									break;
+								default:
+									Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
+									break;
+							}
+						} else {
 							Questify.SetConditionCompleted( requester, compare.AsInt32() == value.AsInt32() );
-							break;
-						case "neq":
-						case "!=":
-						case "!eq":
-						case "ne":
-							Questify.SetConditionCompleted( requester, compare.AsInt32() != value.AsInt32() );
-							break;
-						case "lt":
-						case "<":
-							Questify.SetConditionCompleted( requester, compare.AsInt32() < value.AsInt32() );
-							break;
-						case "lte":
-						case "<=":
-							Questify.SetConditionCompleted( requester, compare.AsInt32() <= value.AsInt32() );
-							break;
-						case "gt":
-						case ">":
-							Questify.SetConditionCompleted( requester, compare.AsInt32() > value.AsInt32() );
-							break;
-						case "gte":
-						case ">=":
-							Questify.SetConditionCompleted( requester, compare.AsInt32() >= value.AsInt32() );
-							break;
-						default:
-							Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid queryType operator {0}", op ) );
-							break;
-						};
-					} else {
-						Questify.SetConditionCompleted( requester, compare.AsInt32() == value.AsInt32() );
+						}
+					} else if ( compare.VariantType == Variant.Type.String ) {
+						Questify.SetConditionCompleted( requester, compare.AsString() == value.AsString() );
+					} else if ( compare.VariantType == Variant.Type.Vector2 ) {
+						Questify.SetConditionCompleted( requester, compare.AsVector2() == value.AsVector2() );
 					}
-				} else if ( compare.VariantType == Variant.Type.String ) {
-					Questify.SetConditionCompleted( requester, compare.AsString() == value.AsString() );
-				} else if ( compare.VariantType == Variant.Type.Vector2 ) {
-					Questify.SetConditionCompleted( requester, compare.AsVector2() == value.AsVector2() );
 				}
-			}
-			break;
-		default:
-			Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid QueryType {0}", queryType ) );
-			break;
-		};
+				break;
+			default:
+				Console.PrintError( string.Format( "ChallengeLevel.OnConditionQueryRequested: invalid QueryType {0}", queryType ) );
+				break;
+		}
 	}
 	private void OnQuestStarted( Resource questResource ) {
 		string[] questObjectiveNames = questResource.GetMeta( "objective_names" ).AsStringArray();
@@ -151,24 +179,22 @@ public partial class World : LevelData {
 		SceneLoadThread.Join();
 		ResourceLoadThread.Join();
 
-		ResourceCache.Initialized = true;
-
-		if ( SettingsData.GetNetworkingEnabled() ) {
+		if ( SettingsData.EnableNetworking ) {
 			SteamLobby.Instance.SetProcess( true );
 			SteamLobby.Instance.SetPhysicsProcess( true );
 		}
 
-		if ( !SteamLobby.Instance.IsOwner() ) {
+		if ( !SteamLobby.Instance.IsHost ) {
 			GD.Print( "Adding other players (" + SteamLobby.Instance.LobbyMemberCount + ") to game..." );
 			for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[i] ) || SteamLobby.Instance.LobbyMembers[i] == SteamUser.GetSteamID() ) {
+				if ( Players.ContainsKey( SteamLobby.Instance.LobbyMembers[ i ] ) || SteamLobby.Instance.LobbyMembers[ i ] == SteamUser.GetSteamID() ) {
 					continue;
 				}
 				Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
-				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[i] ) );
-				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[i] );
-				Players.Add( SteamLobby.Instance.LobbyMembers[i], player );
+				player.Set( "MultiplayerUsername", SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] ) );
+				player.Set( "MultiplayerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
+				player.Call( "SetOwnerId", (ulong)SteamLobby.Instance.LobbyMembers[ i ] );
+				Players.Add( SteamLobby.Instance.LobbyMembers[ i ], player );
 				PlayerList.AddChild( player );
 			}
 		}
@@ -191,9 +217,9 @@ public partial class World : LevelData {
 		float bestDistance = float.MaxValue;
 
 		for ( int i = 0; i < nodes.Count; i++ ) {
-			Checkpoint checkpoint = nodes[i] as Checkpoint;
+			Checkpoint checkpoint = nodes[ i ] as Checkpoint;
 			float dist = position.DistanceTo( checkpoint.GlobalPosition );
-			
+
 			if ( dist < bestDistance ) {
 				bestDistance = dist;
 				warpPoint = checkpoint;
@@ -220,42 +246,42 @@ public partial class World : LevelData {
 			ObjectivesState.Clear();
 			foreach ( var state in State ) {
 				switch ( state.Value.VariantType ) {
-				case Godot.Variant.Type.Int:
-					ObjectivesState.Add( state.Key, reader.LoadInt( string.Format( "State_{0}", state.Key ) ) );
-					break;
-				case Godot.Variant.Type.Float:
-					ObjectivesState.Add( state.Key, reader.LoadFloat( string.Format( "State_{0}", state.Key ) ) );
-					break;
-				case Godot.Variant.Type.Bool:
-					ObjectivesState.Add( state.Key, reader.LoadBoolean( string.Format( "State_{0}", state.Key ) ) );
-					break;
-				case Godot.Variant.Type.String:
-					ObjectivesState.Add( state.Key, reader.LoadString( string.Format( "State_{0}", state.Key ) ) );
-					break;
-				};
+					case Godot.Variant.Type.Int:
+						ObjectivesState.Add( state.Key, reader.LoadInt( string.Format( "State_{0}", state.Key ) ) );
+						break;
+					case Godot.Variant.Type.Float:
+						ObjectivesState.Add( state.Key, reader.LoadFloat( string.Format( "State_{0}", state.Key ) ) );
+						break;
+					case Godot.Variant.Type.Bool:
+						ObjectivesState.Add( state.Key, reader.LoadBoolean( string.Format( "State_{0}", state.Key ) ) );
+						break;
+					case Godot.Variant.Type.String:
+						ObjectivesState.Add( state.Key, reader.LoadString( string.Format( "State_{0}", state.Key ) ) );
+						break;
+				}
 			}
 		}
 	}
 	public void Save() {
-		using ( var writer = new SaveSystem.SaveSectionWriter( "WorldState" ) ) {
+		using ( var writer = new SaveSystem.SaveSectionWriter( "WorldState", ArchiveSystem.SaveWriter ) ) {
 			writer.SaveByteArray( "QuestState", GD.VarToBytesWithObjects( Questify.Serialize() ) );
 
 			writer.SaveInt( "StateCount", ObjectivesState.Count );
 			foreach ( var state in ObjectivesState ) {
 				switch ( state.Value.VariantType ) {
-				case Godot.Variant.Type.Int:
-					writer.SaveInt( string.Format( "State_{0}", state.Key ), (int)state.Value );
-					break;
-				case Godot.Variant.Type.Float:
-					writer.SaveFloat( string.Format( "State_{0}", state.Key ), (float)state.Value );
-					break;
-				case Godot.Variant.Type.Bool:
-					writer.SaveBool( string.Format( "State_{0}", state.Key ), (bool)state.Value );
-					break;
-				case Godot.Variant.Type.String:
-					writer.SaveString( string.Format( "State_{0}", state.Key ), (string)state.Value );
-					break;
-				};
+					case Godot.Variant.Type.Int:
+						writer.SaveInt( string.Format( "State_{0}", state.Key ), (int)state.Value );
+						break;
+					case Godot.Variant.Type.Float:
+						writer.SaveFloat( string.Format( "State_{0}", state.Key ), (float)state.Value );
+						break;
+					case Godot.Variant.Type.Bool:
+						writer.SaveBool( string.Format( "State_{0}", state.Key ), (bool)state.Value );
+						break;
+					case Godot.Variant.Type.String:
+						writer.SaveString( string.Format( "State_{0}", state.Key ), (string)state.Value );
+						break;
+				}
 			}
 		}
 	}
@@ -287,7 +313,7 @@ public partial class World : LevelData {
 				WorkerThreadPool.WaitForTaskCompletion( initTasks[ i ] );
 			}
 
-			if ( !ArchiveSystem.Instance.IsLoaded() ) {
+			if ( !ArchiveSystem.IsLoaded() ) {
 				return;
 			}
 
@@ -302,20 +328,27 @@ public partial class World : LevelData {
 			}
 		} );
 
-		ResourceLoadThread = new Thread( () => ResourceCache.Cache( this, SceneLoadThread ) );
-		ResourceLoadThread.Start();
-
-		if ( !SettingsData.GetTutorialsEnabled() ) {
+		if ( !SettingsData.EnableTutorials ) {
 			DisableTutorials();
 		}
 
 		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
+		if ( ArchiveSystem.IsLoaded() ) {
 			Load();
 		} else {
 			foreach ( var state in State ) {
 				ObjectivesState.Add( state.Key, state.Value );
 			}
+		}
+
+		//
+		// cache traits
+		//
+		var traitList = new List<string>();
+		Utils.Methods.LoadFileList( "res://resources/traits", traitList );
+
+		for ( int i = 0; i < traitList.Count; i++ ) {
+			Trait.Create( traitList[ i ] );
 		}
 
 		Questify.ToggleUpdatePolling( true );

@@ -1,12 +1,44 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
+using Multiplayer;
+using Steam;
 
 namespace Renown.World {
+	/*
+	===================================================================================
+	
+	WorldTimeManager
+	
+	===================================================================================
+	*/
+	
 	public partial class WorldTimeManager : Node {
-		public static uint Year = 0;
-		public static uint Month = 0;
-		public static uint Day = 0;
-		public static uint Hour = 0;
-		public static WorldTimeManager Instance;
+		public static uint Year { get; private set; } = 0;
+		public static uint Month { get; private set; } = 0;
+		public static uint Day { get; private set; } = 0;
+		public static uint Hour { get; private set; } = 0;
 
 		private static uint NetworkYear = 0;
 		private static uint NetworkMonth = 0;
@@ -26,11 +58,10 @@ namespace Renown.World {
 
 		private int TotalDaysInYear = 0;
 
+		public static WorldTimeManager Instance;
+
 		// not a superman reference
-		public DirectionalLight2D RedSunLight {
-			get;
-			private set;
-		}
+		public DirectionalLight2D RedSunLight { get; private set; }
 
 		[Export]
 		private CanvasModulate WorldTimeOverlay;
@@ -67,7 +98,7 @@ namespace Renown.World {
 
 		private void RecalculateTime() {
 			uint totalMinutes = (uint)( Time / InGameToRealMinuteDuration );
-//			uint day = totalMinutes / MinutesPerDay;
+			//			uint day = totalMinutes / MinutesPerDay;
 
 			uint currentDayMinutes = totalMinutes % MinutesPerDay;
 			Hour = currentDayMinutes / MinutesPerHour;
@@ -179,7 +210,7 @@ namespace Renown.World {
 			base._ExitTree();
 
 			for ( int i = 0; i < Months.Length; i++ ) {
-				Months[i] = null;
+				Months[ i ] = null;
 			}
 
 			Instance = null;

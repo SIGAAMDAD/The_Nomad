@@ -1,4 +1,5 @@
 using Godot;
+using Menus;
 
 public partial class Fire : GpuParticles2D {
 	public override void _Ready() {

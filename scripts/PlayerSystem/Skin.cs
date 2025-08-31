@@ -24,6 +24,16 @@ using System.Collections.Generic;
 using Godot;
 
 namespace PlayerSystem {
+	/*
+	===================================================================================
+	
+	Skin
+	
+	BECOME A SKINWALKER!
+	
+	===================================================================================
+	*/
+	
 	public class Skin {
 		private SpriteFrames BodyAnimations;
 		private SpriteFrames ArmAnimations;
@@ -32,7 +42,7 @@ namespace PlayerSystem {
 		private StringName Name;
 
 		private static Dictionary<StringName, Skin> SkinCache = null;
-		
+
 		public static void LoadSkins() {
 			List<string> skinPaths = new List<string>();
 

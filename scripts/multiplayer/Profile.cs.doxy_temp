@@ -1,0 +1,50 @@
+using Godot;
+using System.Collections.Generic;
+
+namespace Multiplayer {
+	public class Profile {
+		public string Name { get; private set; }
+		public int SkillPoints { get; private set; } = 0;
+		public int Gold { get; private set; } = 0;
+		public HashSet<Badge> Badges { get; private set; }
+
+		private Node DashTrail;
+		private Resource PlayerSkin;
+		private Resource BeardSkin;
+
+		public Loadout Loadout { get; private set; }
+
+		public static Profile Instance;
+
+		public static void Load() {
+			string path = ProjectSettings.GlobalizePath( "res://multiplayer_profile.dat" );
+			System.IO.FileStream stream;
+			System.IO.BinaryReader reader;
+
+			Instance = new Profile();
+
+			try {
+				stream = new System.IO.FileStream( path, System.IO.FileMode.Open );
+				reader = new System.IO.BinaryReader( stream );
+			} catch ( System.Exception ) {
+				// not there, so don't mind
+				return;
+			}
+
+			Instance.SkillPoints = reader.ReadInt32();
+
+			int badgeCount = reader.ReadInt32();
+			Instance.Badges.EnsureCapacity( badgeCount );
+			for ( int i = 0; i < badgeCount; i++ ) {
+				Instance.Badges.Add( (Badge)reader.ReadUInt32() );
+			}
+		}
+
+		private Profile() {
+			Name = SteamManager.GetSteamName();
+			SkillPoints = 0;
+			Badges = new HashSet<Badge>();
+			Loadout = new Loadout();
+		}
+	};
+};

@@ -1,9 +1,9 @@
 using Godot;
 using Steamworks;
+using Steam;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Multiplayer {
@@ -123,7 +123,7 @@ namespace Multiplayer {
 			}
 			if ( Input.IsActionJustReleased( "chat_send" ) ) {
 				string messageText = FilterText( Message.Text );
-				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.GetLobbyID(), messageText.ToAsciiBuffer(), Message.Text.Length );
+				SteamMatchmaking.SendLobbyChatMsg( SteamLobby.Instance.LobbyId, messageText.ToAsciiBuffer(), Message.Text.Length );
 				Message.Clear();
 				Message.PlaceholderText = PLACEHOLDER;
 				Message.ReleaseFocus();

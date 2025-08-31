@@ -1,5 +1,7 @@
 using Godot;
 using Renown;
+using ResourceCache;
+using Menus;
 
 namespace PlayerSystem.ArmAttachments {
 	public partial class Flamethrower : ArmAttachment {
@@ -50,8 +52,8 @@ namespace PlayerSystem.ArmAttachments {
 		public override void _Ready() {
 			base._Ready();
 
-			FlamethrowerStart = ResourceCache.GetSound( "res://sounds/player/flamethrower_start.ogg" );
-			FlamethrowerLoop = ResourceCache.GetSound( "res://sounds/player/flamethrower_loop.ogg" );
+			FlamethrowerStart = AudioCache.GetStream( "res://sounds/player/flamethrower_start.ogg" );
+			FlamethrowerLoop = AudioCache.GetStream( "res://sounds/player/flamethrower_loop.ogg" );
 
 			AudioChannel = new AudioStreamPlayer2D();
 			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();

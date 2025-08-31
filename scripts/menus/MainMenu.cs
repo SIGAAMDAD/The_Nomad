@@ -1,27 +1,39 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
 using Godot;
-using System;
+
+namespace Menus;
+/*
+===================================================================================
+
+MainMenu
+
+===================================================================================
+*/
+/// <summary>
+/// 
+/// </summary>
 
 public partial class MainMenu : Control {
 	private enum IndexedButton : int {
@@ -37,16 +49,10 @@ public partial class MainMenu : Control {
 		Count
 	};
 
-	private Button ContinueGameButton;
-	private Button LoadGameButton;
-	private Button NewGameButton;
+	public static bool Loaded { get; set; } = false;
 
-	public static bool Loaded = false;
 	private Button[] ButtonList = null;
 	private int ButtonIndex = 0;
-
-	private System.Threading.Thread LoadThread;
-	private PackedScene LoadedWorld;
 
 	private ConfirmationDialog TutorialsPopup;
 
@@ -65,33 +71,30 @@ public partial class MainMenu : Control {
 
 	[Signal]
 	public delegate void BeginGameEventHandler();
-	[Signal]
-	public delegate void FinishedLoadingEventHandler();
 
+	/*
+	===============
+	OnContinueGameFinished
+	===============
+	*/
 	private void OnContinueGameFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
 
 		Hide();
-		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeIn );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/world.tscn", () => ArchiveSystem.LoadGame( SettingsData.LastSaveSlot ) );
 
 		Console.PrintLine( "Loading game..." );
 
 		GameConfiguration.GameMode = GameMode.SinglePlayer;
 
 		World.LoadTime = System.Diagnostics.Stopwatch.StartNew();
-
-		FinishedLoading += () => {
-			LoadThread.Join();
-			GetTree().ChangeSceneToPacked( LoadedWorld );
-		};
-		LoadThread = new System.Threading.Thread( () => {
-			ArchiveSystem.LoadGame( SettingsData.GetSaveSlot() );
-			LoadedWorld = ResourceLoader.Load<PackedScene>( "res://levels/world.tscn" );
-			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
-		} );
-		LoadThread.Start();
 	}
 
+	/*
+	===============
+	OnContinueGameButtonPressed
+	===============
+	*/
 	private void OnContinueGameButtonPressed() {
 		if ( MainMenu.Loaded ) {
 			return;
@@ -109,11 +112,22 @@ public partial class MainMenu : Control {
 		UIAudioManager.FadeMusic();
 	}
 
+	/*
+	===============
+	OnBeginGameFinished
+	===============
+	*/
 	private void OnBeginGameFinished() {
 		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnBeginGameFinished ) );
 		QueueFree();
 		GetTree().ChangeSceneToFile( "res://scenes/menus/poem.tscn" );
 	}
+
+	/*
+	===============
+	OnNewGameButtonPressed
+	===============
+	*/
 	private void OnNewGameButtonPressed() {
 		if ( MainMenu.Loaded ) {
 			return;
@@ -129,6 +143,11 @@ public partial class MainMenu : Control {
 		TutorialsPopup.Show();
 	}
 
+	/*
+	===============
+	OnButtonFocused
+	===============
+	*/
 	private void OnButtonPressed( System.Action signalCallback ) {
 		if ( Loaded ) {
 			return;
@@ -136,63 +155,76 @@ public partial class MainMenu : Control {
 		UIAudioManager.OnButtonPressed();
 		signalCallback();
 	}
-	private void OnButtonFocused( int nButtonIndex ) {
-		UIAudioManager.OnButtonFocused();
-		ButtonIndex = nButtonIndex;
 
+	/*
+	===============
+	OnButtonFocused
+	===============
+	*/
+	private void OnButtonFocused( int buttonIndex ) {
+		UIAudioManager.OnButtonFocused();
+		ButtonIndex = buttonIndex;
+
+		// throws null exception if its ButtonList[ ButtonIndex ]?.GrabFocus(), I did try... I did try
+		// even VSCode is tweaking
 		if ( ButtonList != null ) {
 			ButtonList[ ButtonIndex ].GrabFocus();
 		}
 	}
 
+	/*
+	===============
+	_Ready
+	===============
+	*/
 	public override void _Ready() {
 		PhysicsServer2D.SetActive( false );
 
-		if ( SettingsData.GetDyslexiaMode() ) {
+		if ( SettingsData.DyslexiaMode ) {
 			Theme = AccessibilityManager.DyslexiaTheme;
 		} else {
 			Theme = AccessibilityManager.DefaultTheme;
 		}
 
-		bool bHasSaveData = DirAccess.DirExistsAbsolute( ProjectSettings.GlobalizePath( "user://SaveData" ) );
+		bool hasSaveData = DirAccess.DirExistsAbsolute( ProjectSettings.GlobalizePath( "user://SaveData" ) );
 
 		UIAudioManager.PlayTheme();
 		Loaded = false;
 
 		MultiplayerMapManager.Init();
-		ArchiveSystem.Instance.CheckSaveData();
+		ArchiveSystem.CheckSaveData();
 
 		ProcessMode = ProcessModeEnum.Always;
 
-		ContinueGameButton = GetNode<Button>( "VBoxContainer/ContinueGameButton" );
-		if ( bHasSaveData ) {
-			ContinueGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.ContinueGame ) ) );
-			ContinueGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.ContinueGame ) ) );
-			ContinueGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnContinueGameButtonPressed ) );
+		Button continueGameButton = GetNode<Button>( "VBoxContainer/ContinueGameButton" );
+		if ( hasSaveData ) {
+			continueGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.ContinueGame ) ) );
+			continueGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.ContinueGame ) ) );
+			continueGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnContinueGameButtonPressed ) );
 
-			ContinueGameButton.GrabFocus();
+			continueGameButton.GrabFocus();
 		} else {
-			ContinueGameButton.Modulate = new Color( 0.50f, 0.50f, 0.50f, 0.75f );
+			continueGameButton.Modulate = new Color( 0.50f, 0.50f, 0.50f, 0.75f );
 		}
-		ContinueGameButton.SetMeta( "index", 0 );
+		continueGameButton.SetMeta( "index", 0 );
 
-		LoadGameButton = GetNode<Button>( "VBoxContainer/LoadGameButton" );
-		if ( bHasSaveData ) {
-			LoadGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.LoadGame ) ) );
-			LoadGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.LoadGame ) ) );
-			LoadGameButton.Connect( Button.SignalName.Pressed, Callable.From( EmitSignalSaveSlotsMenu ) );
+		Button loadGameButton = GetNode<Button>( "VBoxContainer/LoadGameButton" );
+		if ( hasSaveData ) {
+			loadGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.LoadGame ) ) );
+			loadGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.LoadGame ) ) );
+			loadGameButton.Connect( Button.SignalName.Pressed, Callable.From( EmitSignalSaveSlotsMenu ) );
 		} else {
-			LoadGameButton.Modulate = new Color( 0.60f, 0.60f, 0.60f, 1.0f );
+			loadGameButton.Modulate = new Color( 0.60f, 0.60f, 0.60f, 1.0f );
 		}
-		LoadGameButton.SetMeta( "index", 1 );
+		loadGameButton.SetMeta( "index", 1 );
 
-		Button NewGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
-		NewGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.NewGame ) ) );
-		NewGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.NewGame ) ) );
-		NewGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnNewGameButtonPressed ) );
-		NewGameButton.SetMeta( "index", 2 );
-		if ( !bHasSaveData ) {
-			NewGameButton.GrabFocus();
+		Button newGameButton = GetNode<Button>( "VBoxContainer/NewGameButton" );
+		newGameButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.NewGame ) ) );
+		newGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.NewGame ) ) );
+		newGameButton.Connect( Button.SignalName.Pressed, Callable.From( OnNewGameButtonPressed ) );
+		newGameButton.SetMeta( "index", 2 );
+		if ( !hasSaveData ) {
+			newGameButton.GrabFocus();
 		}
 
 		TutorialsPopup = GetNode<ConfirmationDialog>( "TutorialsPopup" );
@@ -220,44 +252,44 @@ public partial class MainMenu : Control {
 			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
 		};
 
-		Button ExtrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
-		ExtrasButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
-		ExtrasButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
-		ExtrasButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalExtrasMenu ) ) );
+		Button extrasButton = GetNode<Button>( "VBoxContainer/ExtrasButton" );
+		extrasButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
+		extrasButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Extras ) ) );
+		extrasButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalExtrasMenu ) ) );
 
-		Button SettingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
-		SettingsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
-		SettingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
-		SettingsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalSettingsMenu ) ) );
+		Button settingsButton = GetNode<Button>( "VBoxContainer/SettingsButton" );
+		settingsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
+		settingsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Settings ) ) );
+		settingsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalSettingsMenu ) ) );
 
-		Button ModsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
-		ModsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
-		ModsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
-		ModsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalModsMenu ) ) );
+		Button modsButton = GetNode<Button>( "VBoxContainer/TalesAroundTheCampfireButton" );
+		modsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
+		modsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Mods ) ) );
+		modsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalModsMenu ) ) );
 
-		Button CreditsButton = GetNode<Button>( "VBoxContainer/CreditsButton" );
-		CreditsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
-		CreditsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
-		CreditsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalCreditsMenu ) ) );
+		Button creditsButton = GetNode<Button>( "VBoxContainer/CreditsButton" );
+		creditsButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
+		creditsButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Credits ) ) );
+		creditsButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( EmitSignalCreditsMenu ) ) );
 
-		Button ExitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
-		ExitButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
-		ExitButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
-		ExitButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( () => GetTree().Quit() ) ) );
+		Button exitButton = GetNode<Button>( "VBoxContainer/QuitGameButton" );
+		exitButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
+		exitButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( (int)IndexedButton.Quit ) ) );
+		exitButton.Connect( Button.SignalName.Pressed, Callable.From( () => OnButtonPressed( () => GetTree().Quit() ) ) );
 
-		Label AppVersion = GetNode<Label>( "AppVersion" );
-		AppVersion.Text = ProjectSettings.GetSetting( "application/config/version" ).AsString();
-		AppVersion.ProcessMode = ProcessModeEnum.Disabled;
+		Label appVersion = GetNode<Label>( "AppVersion" );
+		appVersion.Text = ProjectSettings.GetSetting( "application/config/version" ).AsString();
+		appVersion.ProcessMode = ProcessModeEnum.Disabled;
 
 		ButtonList = [
-			ContinueGameButton,
-			NewGameButton,
-			LoadGameButton,
-			ExtrasButton,
-			SettingsButton,
-			ModsButton,
-			CreditsButton,
-			ExitButton
+			continueGameButton,
+				newGameButton,
+				loadGameButton,
+				extrasButton,
+				settingsButton,
+				modsButton,
+				creditsButton,
+				exitButton
 		];
 	}
 	/*

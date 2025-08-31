@@ -1,10 +1,42 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using Multiplayer.Overlays;
 using Multiplayer.Objectives;
 using Renown;
 using System.Collections.Generic;
+using Steam;
 
 namespace Multiplayer.Modes {
+	/*
+	===================================================================================
+	
+	CaptureTheFlag
+	
+	===================================================================================
+	*/
+	
 	public partial class CaptureTheFlag : Mode {
 		private enum FlagAction : int {
 			Returned,
@@ -29,13 +61,30 @@ namespace Multiplayer.Modes {
 
 		private System.Threading.Thread WaitThread;
 
-//		private List<int, System.Action> ;
+		//		private List<int, System.Action> ;
 
+		/*
+		===============
+		OnFlagReturned
+		===============
+		*/
 		private void OnFlagReturned( Flag flag, Entity source ) {
 		}
+
+		/*
+		===============
+		OnFlagStolen
+		===============
+		*/
 		private void OnFlagStolen( Flag flag, Entity source ) {
 		}
-		private void OnFlagCaptured( Flag flag, Entity source ) {
+
+		/*
+		===============
+		OnFlagCaptured
+		===============
+		*/
+		private void OnFlagCaptured( in Flag flag, in Entity source ) {
 		}
 
 		private void SendPacket() {
@@ -64,10 +113,21 @@ namespace Multiplayer.Modes {
 		public override void OnPlayerLeft( Entity player ) {
 			// auto-balance teams
 		}
-		public override bool HasTeams() => true;
-		public override GameMode GetMode() => GameMode.CaptureTheFlag;
+		public override bool HasTeams() {
+			return true;
+		}
+		public override GameMode GetMode() {
+			return GameMode.CaptureTheFlag;
+		}
 
-		private void JoinWaitThread() => WaitThread.Join();
+		/*
+		===============
+		JoinWaitThread
+		===============
+		*/
+		private void JoinWaitThread() {
+			WaitThread.Join();
+		}
 
 		public override void _Ready() {
 			base._Ready();
@@ -85,7 +145,7 @@ namespace Multiplayer.Modes {
 			} );
 			WaitThread.Start();
 
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 
@@ -105,7 +165,7 @@ namespace Multiplayer.Modes {
 			BlueFlag.Stolen += ( source ) => OnFlagReturned( BlueFlag, source );
 			BlueFlag.Captured += ( source ) => OnFlagCaptured( BlueFlag, source );
 
-			if ( SteamLobby.Instance.IsOwner() ) {
+			if ( SteamLobby.Instance.IsHost ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 			}
 		}

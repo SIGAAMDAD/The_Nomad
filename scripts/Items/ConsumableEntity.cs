@@ -9,7 +9,7 @@ public partial class ConsumableEntity : CharacterBody2D {
 	public override void _Ready() {
 		base._Ready();
 
-		if ( !ArchiveSystem.Instance.IsLoaded() && Data == null ) {
+		if ( !ArchiveSystem.IsLoaded() && Data == null ) {
 			Console.PrintError( string.Format( "ConsumableEntity._Ready: invalid ItemDefinition (null)" ) );
 			QueueFree();
 			return;

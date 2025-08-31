@@ -7,27 +7,45 @@ public enum InteractionType {
 	Note,
 	Door,
 	Dialogue,
+	CutsceneTrigger,
+	ItemPickup,
+	EndOfChallenge,
+	HealthPack,
+	MultiplayerFlag,
 
 	EaglesPeak,
 
 	Count
 };
 
-public partial class InteractionItem : Area2D {
-	protected CollisionShape2D InteractArea;
+public abstract partial class InteractionItem : Area2D {
+	public abstract InteractionType InteractionType { get; }
 
+	/*
+	===============
+	OnInteractionAreaBody2DEntered
+	===============
+	*/
 	protected virtual void OnInteractionAreaBody2DEntered( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 	}
+
+	/*
+	===============
+	OnInteractionAreaBody2DExited
+	===============
+	*/
 	protected virtual void OnInteractionAreaBody2DExited( Rid bodyRID, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 	}
 
-	public virtual InteractionType GetInteractionType() {
-		return InteractionType.Count;
-	}
-
+	/*
+	===============
+	_Ready
+	===============
+	*/
+	/// <summary>
+	/// godot initialization override
+	/// </summary>
 	public override void _Ready() {
 		base._Ready();
-
-		InteractArea = GetNode<CollisionShape2D>( "InteractBody" );
 	}
 };

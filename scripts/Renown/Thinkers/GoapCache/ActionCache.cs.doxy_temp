@@ -1,0 +1,268 @@
+using MountainGoap;
+using System.Collections.Generic;
+using Godot;
+
+namespace Renown.Thinkers.GoapCache {
+	/// <summary>
+	/// generic actions that aren't faction specific
+	/// </summary>
+	public enum ActionType : uint {
+		SurveyForThreats,
+		RunAway,
+
+		ReloadWeapon,
+		ReloadWeaponCovered,
+		ReloadWeaponCrouch,
+		AimWeaponAtTarget,
+		ShootAtTarget,
+
+		SuppressionFireFromCover,
+		SurpriseAttackFromCover,
+
+		BlindFireFromCover,
+		DodgeBackpedal,
+
+		EscapeDanger,
+
+		Follow,
+
+		LookAtDisturbance,
+
+		ThrowGrenade,
+
+		FindCover,
+
+		BegForLife,
+
+		Count
+	};
+
+	public static class GoapActionCache {
+		public static Dictionary<ActionType, Action> Cache;
+
+		static GoapActionCache() {
+			Cache = new Dictionary<ActionType, Action> {
+				{
+					ActionType.SurveyForThreats,
+					new Action(
+						name: "SurveyForThreats",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							if ( (MobAwareness)agent.State[ "Awareness" ] < MobAwareness.Suspicious ) {
+								agent.State[ "IsAlerted" ] = false;
+								return ExecutionStatus.Executing;
+							}
+							agent.State[ "IsAlerted" ] = true;
+							return ExecutionStatus.Succeeded;
+						},
+						cost: 0.2f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "IsAlerted", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "IsAlerted", true },
+						},
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.ReloadWeapon,
+					new Action(
+						name: "Reload",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							GD.Print( "Reloading..." );
+							if ( (WeaponEntity.WeaponState)agent.State[ "WeaponState" ] == WeaponEntity.WeaponState.Reload ) {
+								return ExecutionStatus.Executing;
+							}
+							return ExecutionStatus.Succeeded;
+						},
+						cost: 1.0f,
+						costCallback: ( agent, currentState ) => {
+							return 1.0f;
+						},
+						preconditions: new Dictionary<string, object>{
+							{ "HasAmmo", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "HasAmmo", true }
+						}
+					)
+				},
+				{
+					ActionType.ShootAtTarget,
+					new Action(
+						name: "ShootAtTarget",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							GD.Print( "Shooting..." );
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							WeaponEntity weapon = (WeaponEntity)thinker.Get( "Weapon" ).AsGodotObject();
+
+							thinker.Get( "AttackTimer" ).AsGodotObject().CallDeferred( Timer.MethodName.Start );
+							weapon.SetAttackAngle( thinker.AimAngle );
+							weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+							weapon.CallDeferred( WeaponEntity.MethodName.UseFirearmDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+
+							if ( !(bool)agent.State[ "HasAmmo" ] ) {
+								return ExecutionStatus.Failed;
+							}
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "PlayerVisible", true }
+						},
+						comparativePreconditions: null,
+						postconditions: null,
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.AimWeaponAtTarget,
+					new Action(
+						name: "AimAction",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+
+							RayIntersectionInfo info = GodotServerManager.CheckRayCast( thinker.ArmAnimations.GlobalPosition, thinker.AimAngle,
+								thinker.Get( "Ammo" ).AsGodotObject().Get( "Range" ).AsSingle(), thinker.GetRid()
+							);
+							if ( info.Collider is Entity entity && entity.GetFaction() == thinker.GetFaction() ) {
+								agent.State[ "ClearLineOfFire" ] = false;
+								thinker.CallDeferred( "Bark", (uint)BarkType.OutOfTheWay );
+								return ExecutionStatus.Failed;
+							}
+							agent.State[ "ClearLineOfFire" ] = true;
+							if ( thinker.Get( "AmmoStack" ).AsGodotObject().Get( "Amount" ).AsInt32() == 0 ) {
+								return ExecutionStatus.NotPossible;
+							}
+
+							Timer AimTimer = (Timer)thinker.Get( "AimTimer" );
+							if ( AimTimer.IsStopped() ) {
+								AimTimer.CallDeferred( Timer.MethodName.Start );
+							} else if ( AimTimer.TimeLeft == 0.0f && (bool)agent.State[ "Aiming" ] ) {
+								agent.State[ "Aiming" ] = false;
+								return ExecutionStatus.Succeeded;
+							} else if ( AimTimer.TimeLeft > AimTimer.WaitTime / 4.0f ) {
+								Vector2 direction = thinker.GlobalPosition.DirectionTo( thinker.Get( "LastTargetPosition" ).AsVector2() );
+								thinker.AimAngle = Mathf.Atan2( direction.Y, direction.X );
+								thinker.LookAngle = thinker.AimAngle;
+							}
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: ( agent, currentState ) => {
+							return 1.0f;
+						},
+						preconditions: new Dictionary<string, object>{
+							{ "Aiming", true },
+							{ "HasAmmo", true }
+						},
+						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+							{ "Fear", new ComparisonValuePair { Value = 80, Operator = ComparisonOperator.LessThan } }
+						},
+						postconditions: new Dictionary<string, object>{
+							{ "Aiming", false },
+							{ "ClearLineOfFire", true }
+						}
+					)
+				},
+				{
+					ActionType.RunAway,
+					new Action(
+						name: "RunAway",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Failed;
+						},
+						cost: 0.8f,
+						costCallback: null,
+						preconditions: null,
+						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
+							{ "Fear", new ComparisonValuePair{ Value = 80, Operator = ComparisonOperator.GreaterThanOrEquals } }
+						},
+						postconditions: null,
+						arithmeticPostconditions: null,
+						parameterPostconditions: null
+					)
+				},
+				{
+					ActionType.FindCover,
+					new Action(
+						name: "FindCover",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							GD.Print( "Finding Cover..." );
+
+							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							AINodeCache cache = (AINodeCache)agent.State[ "NodeCache" ];
+							List<Vector2> cover = cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
+							if ( cover == null || cover.Count == 0 ) {
+								return ExecutionStatus.Failed;
+							} 
+
+							Vector2 chosen = Vector2.Zero;
+							float distance = float.MaxValue;
+							for ( int i = 0; i < cover.Count; i++ ) {
+								float v = cover[ i ].DistanceSquaredTo( thinker.GlobalPosition );
+								if ( v < distance ) {
+									chosen = cover[ i ];
+									distance = v;
+								}
+							}
+							thinker.SetNavigationTarget( chosen );
+							thinker.NavAgent.TargetReached += () => {
+								agent.State[ "InCover" ] = true;
+							};
+
+							return ExecutionStatus.Failed;
+						},
+						cost: 2.0f,
+						costCallback: null, // TODO: make cost determined by the distance
+						preconditions: new Dictionary<string, object>{
+							{ "UnderFire", false },
+							{ "FoundCover", false }
+						},
+						comparativePreconditions: null,
+						postconditions: new Dictionary<string, object>{
+							{ "FoundCover", true }
+						},
+						arithmeticPostconditions: null
+					)
+				},
+				{
+					ActionType.BlindFireFromCover,
+					new Action(
+						name: "BlindFireFromCover"
+					)
+				},
+				{
+					ActionType.SuppressionFireFromCover,
+					new Action(
+						name: "SuppressionFireFromCover",
+						permutationSelectors: null,
+						executor: ( agent, action ) => {
+							return ExecutionStatus.Executing;
+						},
+						cost: 1.0f,
+						costCallback: null,
+						preconditions: new Dictionary<string, object>{
+							{ "InCover", true },
+							{ "HasAmmo", true }
+						},
+						comparativePreconditions: null,
+						postconditions: null
+					)
+				}
+			};
+		}
+	};
+};

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dbldmbct7rxby" path="res://textures/tilesets/galakas/Outside_D.dds" id="2_swasy"]
 [ext_resource type="Texture2D" uid="uid://clj6uh5qnv31r" path="res://textures/tilesets/galakas/Inside_D.dds" id="3_flidf"]
-[ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="4_pwdh8"]
+[ext_resource type="Texture2D" uid="uid://d0cwtovdxghr2" path="res://textures/tilesets/galakas/interior.png" id="4_pwdh8"]
 [ext_resource type="Texture2D" uid="uid://fcgjjs6rvr0a" path="res://textures/tilesets/DesertTilemap16x16.dds" id="4_swasy"]
 [ext_resource type="Texture2D" uid="uid://clcanwwydfoln" path="res://textures/tilesets/kirosla_estate.dds" id="5_pwdh8"]
 [ext_resource type="Texture2D" uid="uid://che4x0phecuaa" path="res://textures/tilesets/galakas.dds" id="5_swasy"]

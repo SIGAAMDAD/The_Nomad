@@ -1,0 +1,44 @@
+using Godot;
+using System.Data;
+
+public enum ClientAction : byte {
+	Input_Dash = 0b00000001,
+	Input_Move = 0b00000010,
+
+	Count
+};
+
+namespace Multiplayer {
+	/*!
+	===================================================================================
+
+	ClientPlayer
+
+	handles client logic for the player in charge of the machine
+
+	===================================================================================
+	*/
+
+	public partial class ClientPlayer : Node2D {
+		private Vector2 InputVelocity;
+
+		private Resource MoveAction;
+		private Resource DashAction;
+		private Resource SlideAction;
+		private Resource UseWeaponAction;
+
+		private void OnMove() {
+			InputVelocity = MoveAction.Get( "value_axis_2d" ).AsVector2();
+		}
+
+		private void LoadBinds() {
+			ResourceCache.MoveActionKeyboard.Connect( "triggered", Callable.From( OnMove ) );
+		}
+
+		public override void _Ready() {
+			base._Ready();
+
+			LoadBinds();
+		}
+	};
+};

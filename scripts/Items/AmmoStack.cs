@@ -1,26 +1,68 @@
 using Godot;
+using System;
+using Interactables;
 
-public partial class AmmoStack : Node {
-	public AmmoEntity AmmoType;
+public partial class AmmoStack : Node, IConsumableStack {
+	public Ammo AmmoType { get; private set; }
+	public int Amount { get; private set; }
 
-	public int Amount = 0;
-	public string ItemId;
+	public AmmoStack( Resource? ammoType, int amount ) {
+		ArgumentNullException.ThrowIfNull( ammoType );
 
-	public void SetType( AmmoEntity ammo ) {
-		AmmoType = ammo;
-		ItemId = (string)AmmoType.Get( "id" );
+		AmmoType = new Ammo( ammoType );
+		Amount = amount;
 	}
-	public void AddItems( int nItems ) {
-		Amount += nItems;
+	public AmmoStack( string itemPath ) {
+		CallDeferred( MethodName.InitFromNode, itemPath );
 	}
-	public int RemoveItems( int nItems ) {
-		if ( Amount - nItems < 0 ) {
+
+	/*
+	===============
+	InitFromNode
+	===============
+	*/
+	private void InitFromNode( string path ) {
+		ItemPickup? pickup = null;
+
+		try {
+			pickup = GetNode<ItemPickup>( path );
+			if ( pickup == null ) {
+				Console.PrintError( $"AmmoStack.InitFromNode: node {path} isn't a valid node" );
+				QueueFree();
+				return;
+			}
+		} catch ( InvalidCastException ) {
+			Console.PrintError( $"AmmoStack.InitFromNode: node {path} isn't an ItemPickup node (InvalidCastException)" );
+			QueueFree();
+			return;
+		}
+
+		AmmoType = new Ammo( pickup.Data );
+		Amount = pickup.Amount;
+	}
+
+	/*
+	===============
+	AddItems
+	===============
+	*/
+	public void AddItems( int items ) {
+		Amount += items;
+	}
+
+	/*
+	===============
+	RemoveItems
+	===============
+	*/
+	public int RemoveItems( int items ) {
+		if ( Amount - items < 0 ) {
 			int tmp = Amount;
 			Amount = 0;
 			return tmp;
 		}
 
-		Amount -= nItems;
-		return nItems;
+		Amount -= items;
+		return items;
 	}
 };

@@ -1,5 +1,6 @@
 using Godot;
 using Renown;
+using Steam;
 
 namespace Multiplayer.Objectives {
 	public partial class Hill : Area2D {
@@ -53,7 +54,7 @@ namespace Multiplayer.Objectives {
 		public override void _Ready() {
 			base._Ready();
 
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 

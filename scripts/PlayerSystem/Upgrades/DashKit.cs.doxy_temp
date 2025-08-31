@@ -1,0 +1,192 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
+using System;
+using System.Collections.Generic;
+using Godot;
+
+namespace PlayerSystem.Upgrades {
+	/*!
+	===================================================================================
+	
+	DashKit
+	
+	===================================================================================
+	*/
+	
+	public sealed partial class DashKit : Node2D {
+		private static readonly float DASH_TIMER_BASE = 0.3f;
+
+		public DashModule? Module { get; private set; }
+
+		private float DashBurnout = 0.0f;
+		private float DashTimer = DASH_TIMER_BASE;
+
+		private Timer? DashTime;
+		private Timer? DashBurnoutCooldownTimer;
+		private Timer? DashCooldownTime;
+
+		private AudioStreamPlayer2D? AudioChannel;
+
+		[Signal]
+		public delegate void DashEndEventHandler();
+		[Signal]
+		public delegate void DashStartEventHandler();
+		[Signal]
+		public delegate void DashBurnedOutEventHandler();
+		[Signal]
+		public delegate void DashBurnoutChangedEventHandler( float nAmount );
+
+		/*
+		===============
+		EquipModule
+		===============
+		*/
+		public void EquipModule( ref DashModule module ) {
+			Module = module;
+		}
+
+		/*
+		===============
+		OnDashBurnoutCooldownTimerTimeout
+		===============
+		*/
+		private void OnDashBurnoutCooldownTimerTimeout() {
+			DashBurnout = 0.0f;
+			DashTimer = 0.3f;
+
+			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/player/dash_chargeup.ogg" );
+			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
+		}
+
+		/*
+		===============
+		OnDashTimeTimeout
+		===============
+		*/
+		private void OnDashTimeTimeout() {
+			EmitSignalDashEnd();
+		}
+
+		/*
+		===============
+		OnDash
+		===============
+		*/
+		public void OnDash() {
+			if ( DashBurnout >= 1.0f ) {
+				AudioChannel.Stream = ResourceCache.DashExplosion;
+				AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
+
+				DashBurnoutCooldownTimer.Start();
+
+				EmitSignalDashBurnedOut();
+				EmitSignalDashBurnoutChanged( 0.0f );
+
+				return;
+			}
+
+			DashTime.WaitTime = DashTimer;
+			DashTime.Start();
+
+			AudioChannel.PitchScale = 1.0f + DashBurnout;
+			AudioChannel.Stream = ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ];
+			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
+			EmitSignalDashStart();
+
+			Module?.ApplyEffect( this );
+
+			DashBurnout += 0.30f;
+			if ( DashTimer >= 0.10f ) {
+				DashTimer -= 0.05f;
+			}
+			DashCooldownTime.WaitTime = 1.50f;
+			DashCooldownTime.Start();
+
+			EmitSignalDashBurnoutChanged( DashBurnout );
+		}
+
+		/*
+		===============
+		CanDash
+		===============
+		*/
+		public bool CanDash() {
+			return DashBurnoutCooldownTimer.TimeLeft == 0.0f;
+		}
+
+		/*!
+		===============
+		_Ready
+
+		godot initialization override
+		===============
+		*/
+		public override void _Ready() {
+			base._Ready();
+
+			DashTime = new Timer();
+			DashTime.Name = "DashTime";
+			DashTime.WaitTime = DashTimer;
+			DashTime.OneShot = true;
+			DashTime.Connect( Timer.SignalName.Timeout, Callable.From( OnDashTimeTimeout ) );
+			AddChild( DashTime );
+
+			DashBurnoutCooldownTimer = new Timer();
+			DashBurnoutCooldownTimer.Name = "DashBurnoutCooldownTimer";
+			DashBurnoutCooldownTimer.WaitTime = 2.5f;
+			DashBurnoutCooldownTimer.OneShot = true;
+			DashBurnoutCooldownTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
+			AddChild( DashBurnoutCooldownTimer );
+
+			AudioChannel = new AudioStreamPlayer2D();
+			AudioChannel.Name = "AudioChannel";
+			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+			AddChild( AudioChannel );
+
+			DashCooldownTime = new Timer();
+			DashCooldownTime.Name = "DashCooldownTime";
+			DashCooldownTime.WaitTime = 1.2f;
+			DashCooldownTime.OneShot = true;
+			AddChild( DashCooldownTime );
+		}
+
+		/*
+		===============
+		_Process
+		===============
+		*/
+		public override void _Process( double delta ) {
+			base._Process( delta );
+
+			// cool down the jet engine if applicable
+			if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
+				DashBurnout -= 0.10f * (float)delta;
+				DashTimer += 0.05f * (float)delta;
+				if ( DashBurnout < 0.0f ) {
+					DashBurnout = 0.0f;
+				}
+				EmitSignalDashBurnoutChanged( DashBurnout );
+			}
+		}
+	};
+};

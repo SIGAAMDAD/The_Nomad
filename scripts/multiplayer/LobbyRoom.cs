@@ -1,302 +1,320 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using Steamworks;
 using Multiplayer;
 using System.Threading;
 using System.Collections.Generic;
 using System;
+using Steam;
+using ResourceCache;
 
-public partial class LobbyRoom : Control {
-	public static LobbyRoom Instance;
+namespace Menus {
+	/*
+	===================================================================================
+	
+	LobbyRoom
+		
+	===================================================================================
+	*/
+	
+	public partial class LobbyRoom : Control {
+		public static LobbyRoom Instance;
 
-	private static readonly Color GoodPing = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
-	private static readonly Color DecentPing = new Color( 1.0f, 1.0f, 0.0f, 1.0f );
-	private static readonly Color BadPing = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+		private static readonly Color GoodPing = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
+		private static readonly Color DecentPing = new Color( 1.0f, 1.0f, 0.0f, 1.0f );
+		private static readonly Color BadPing = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
 
-	private VBoxContainer PlayerList;
-	private Button StartGameButton;
-	private Button ExitLobbyButton;
+		private VBoxContainer PlayerList;
+		private Button StartGameButton;
+		private Button ExitLobbyButton;
 
-	private HBoxContainer CurrentFocus = null;
+		private HBoxContainer CurrentFocus = null;
 
-	private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+		private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+		private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
-	private Thread LoadThread;
-	private PackedScene LoadedLevel;
+		private Label VoteLabel;
 
-	private Label VoteLabel;
+		private HBoxContainer ClonerContainer;
 
-	private HBoxContainer ClonerContainer;
+		private Dictionary<CSteamID, bool> StartGameVotes = null;
 
-	private Dictionary<CSteamID, bool> StartGameVotes = null;
+		private Callable PlayerLeaveCallback;
 
-	private Callable PlayerLeaveCallback;
+		private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
+		private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
 
-	private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
-	private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
-
-	[Signal]
-	public delegate void FinishedLoadingEventHandler();
-
-	public void FocusPlayer( HBoxContainer focus ) {
-		if ( CurrentFocus != focus ) {
-			UnfocusPlayer( CurrentFocus );
+		public void FocusPlayer( HBoxContainer focus ) {
+			if ( CurrentFocus != focus ) {
+				UnfocusPlayer( CurrentFocus );
+			}
+			( focus.GetChild( 0 ) as Label ).Modulate = FocusColor;
+			( focus.GetChild( 1 ) as Button ).Show();
+			CurrentFocus = focus;
 		}
-		( focus.GetChild( 0 ) as Label ).Modulate = FocusColor;
-		( focus.GetChild( 1 ) as Button ).Show();
-		CurrentFocus = focus;
-	}
-	public void UnfocusPlayer( HBoxContainer focus ) {
-		( focus.GetChild( 0 ) as Label ).Modulate = DefaultColor;
-		( focus.GetChild( 1 ) as Button ).Hide();
-	}
-	public void KickPlayer( CSteamID steamId ) {
-	}
-
-	private void VoteStart( CSteamID senderId ) {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			return;
+		public void UnfocusPlayer( HBoxContainer focus ) {
+			( focus.GetChild( 0 ) as Label ).Modulate = DefaultColor;
+			( focus.GetChild( 1 ) as Button ).Hide();
 		}
-		Console.PrintLine( "Received lobby vote..." );
-		if ( !StartGameVotes.ContainsKey( senderId ) ) {
-			StartGameVotes.Add( senderId, true );
+		public void KickPlayer( CSteamID steamId ) {
 		}
-		StartGameVotes[ senderId ] = true;
-	}
-	private void CancelVote( CSteamID senderId ) {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			return;
+
+		private void VoteStart( CSteamID senderId ) {
+			if ( !SteamLobby.Instance.IsHost ) {
+				return;
+			}
+			Console.PrintLine( "Received lobby vote..." );
+			if ( !StartGameVotes.ContainsKey( senderId ) ) {
+				StartGameVotes.Add( senderId, true );
+			}
+			StartGameVotes[ senderId ] = true;
 		}
-		if ( !StartGameVotes.ContainsKey( senderId ) ) {
-			StartGameVotes.Add( senderId, false );
-		} else {
-			StartGameVotes[ senderId ] = false;
+		private void CancelVote( CSteamID senderId ) {
+			if ( !SteamLobby.Instance.IsHost ) {
+				return;
+			}
+			if ( !StartGameVotes.ContainsKey( senderId ) ) {
+				StartGameVotes.Add( senderId, false );
+			} else {
+				StartGameVotes[ senderId ] = false;
+			}
 		}
-	}
 
-	private void OnFinishedLoading() {
-		LoadThread.Join();
-		GetTree().ChangeSceneToPacked( LoadedLevel );
-	}
-	private void LoadGame() {
-		UIAudioManager.OnActivate();
+		private void LoadGame() {
+			UIAudioManager.OnActivate();
 
-		GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeIn );
+			string modeName;
+			switch ( (Mode.GameMode)SteamLobby.Instance.LobbyGameMode ) {
+				case Mode.GameMode.Bloodbath:
+					modeName = "bloodbath";
+					break;
+				case Mode.GameMode.CaptureTheFlag:
+					modeName = "ctf";
+					break;
+				case Mode.GameMode.KingOfTheHill:
+					modeName = "kingofthehill";
+					break;
+				case Mode.GameMode.Duel:
+					modeName = "duel";
+					break;
+				case Mode.GameMode.Extraction:
+					modeName = "extraction";
+					break;
+				case Mode.GameMode.HoldTheLine:
+					modeName = "holdtheline";
+					break;
+				case Mode.GameMode.BountyHunt:
+					modeName = "bountyhunt";
+					break;
+				default:
+					return;
+			}
 
-		string modeName;
-		switch ( (Mode.GameMode)SteamLobby.Instance.GetGameMode() ) {
-		case Mode.GameMode.Bloodbath:
-			modeName = "bloodbath";
-			break;
-		case Mode.GameMode.CaptureTheFlag:
-			modeName = "ctf";
-			break;
-		case Mode.GameMode.KingOfTheHill:
-			modeName = "kingofthehill";
-			break;
-		case Mode.GameMode.Duel:
-			modeName = "duel";
-			break;
-		case Mode.GameMode.Extraction:
-			modeName = "extraction";
-			break;
-		case Mode.GameMode.HoldTheLine:
-			modeName = "holdtheline";
-			break;
-		case Mode.GameMode.BountyHunt:
-			modeName = "bountyhunt";
-			break;
-		default:
-			return;
-		};
-
-		CallDeferred( MethodName.Connect, SignalName.FinishedLoading, Callable.From( OnFinishedLoading ) );
-		LoadThread = new Thread( () => {
-			LoadedLevel = ResourceLoader.Load<PackedScene>( "res://levels/" +
-				MultiplayerMapManager.MapCache[ SteamLobby.Instance.GetMap() ].FileName
+			GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/" +
+				MultiplayerMapManager.MapCache[ SteamLobby.Instance.LobbyMap ].FileName
 				+ "_mp_" + modeName + ".tscn"
 			);
-			CallDeferred( MethodName.EmitSignal, SignalName.FinishedLoading );
-		} );
-		LoadThread.Start();
-	}
-
-	private void OnStartGameButtonPressed() {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			// if we're not the host, send a vote to start command
-			ServerCommandManager.SendCommand( ServerCommandType.VoteStart );
-			return;
 		}
 
-		LoadGame();
-
-		ServerCommandManager.SendCommand( ServerCommandType.StartGame );
-	}
-	private void OnExitLobbyButtonPressed() {
-		UIAudioManager.OnButtonPressed();
-
-		SteamLobby.Instance.LeaveLobby();
-
-		Hide();
-		GetTree().ChangeSceneToPacked( ResourceCache.GetScene( "res://scenes/main_menu.tscn" ) );
-	}
-
-	private void OnPlayerJoined( ulong steamId ) {
-		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
-
-		SteamLobby.Instance.GetLobbyMembers();
-
-		CSteamID userId = (CSteamID)steamId;
-
-		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
-		container.Show();
-		( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
-		( container.GetChild( 4 ) as Button ).Hide();
-		PlayerList.AddChild( container );
-	}
-	private void OnPlayerLeft( ulong steamId ) {
-		SteamLobby.Instance.GetLobbyMembers();
-
-		CSteamID userId = (CSteamID)steamId;
-		if ( userId == SteamUser.GetSteamID() ) {
-			return;
-		}
-
-		string username = SteamFriends.GetFriendPersonaName( userId );
-		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
-				PlayerList.GetChild( i ).QueueFree();
-				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
-				break;
+		private void OnStartGameButtonPressed() {
+			if ( !SteamLobby.Instance.IsHost ) {
+				// if we're not the host, send a vote to start command
+				ServerCommandManager.SendCommand( ServerCommandType.VoteStart );
+				return;
 			}
-		}
 
-		Console.PrintLine( string.Format( "{0} has faded away...", username ) );
-		SteamLobby.Instance.RemovePlayer( userId );
-	}
+			LoadGame();
 
-	/// <summary>
-	/// if the host is currently AFK, then check to see if all the
-	/// requirements are met to automatically start the game
-	/// </summary>
-	public void CheckAutoStart() {
-		if ( !SteamLobby.Instance.IsOwner() ) {
-			return;
-		}
-
-		int numStartVotes = 0;
-		int requiredVotes = SteamLobby.Instance.LobbyMemberCount / 2;
-
-		foreach ( var vote in StartGameVotes ) {
-			if ( vote.Value ) {
-				numStartVotes++;
-			}
-		}
-		if ( numStartVotes >= requiredVotes ) {
 			ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 		}
-	}
+		private void OnExitLobbyButtonPressed() {
+			UIAudioManager.OnButtonPressed();
 
-	private bool PlayerIsInQueue( CSteamID userId ) {
-		if ( userId == SteamManager.GetSteamID() ) {
-			return true;
+			SteamLobby.Instance.LeaveLobby();
+
+			Hide();
+			GetTree().ChangeSceneToPacked( SceneCache.GetScene( "res://scenes/main_menu.tscn" ) );
 		}
-		for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+
+		private void OnPlayerJoined( ulong steamId ) {
+			Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
+
+			SteamLobby.Instance.GetLobbyMembers();
+
+			CSteamID userId = (CSteamID)steamId;
+
+			HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+			container.Show();
+			( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( userId );
+			( container.GetChild( 4 ) as Button ).Hide();
+			PlayerList.AddChild( container );
+		}
+		private void OnPlayerLeft( ulong steamId ) {
+			SteamLobby.Instance.GetLobbyMembers();
+
+			CSteamID userId = (CSteamID)steamId;
+			if ( userId == SteamUser.GetSteamID() ) {
+				return;
+			}
+
 			string username = SteamFriends.GetFriendPersonaName( userId );
-			if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
-				PlayerList.GetChild( i ).QueueFree();
-				PlayerList.RemoveChild( PlayerList.GetChild( i ) );
+			for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+				if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
+					PlayerList.GetChild( i ).QueueFree();
+					PlayerList.RemoveChild( PlayerList.GetChild( i ) );
+					break;
+				}
+			}
+
+			Console.PrintLine( string.Format( "{0} has faded away...", username ) );
+			SteamLobby.Instance.RemovePlayer( userId );
+		}
+
+		/// <summary>
+		/// if the host is currently AFK, then check to see if all the
+		/// requirements are met to automatically start the game
+		/// </summary>
+		public void CheckAutoStart() {
+			if ( !SteamLobby.Instance.IsHost ) {
+				return;
+			}
+
+			int numStartVotes = 0;
+			int requiredVotes = SteamLobby.Instance.LobbyMemberCount / 2;
+
+			foreach ( var vote in StartGameVotes ) {
+				if ( vote.Value ) {
+					numStartVotes++;
+				}
+			}
+			if ( numStartVotes >= requiredVotes ) {
+				ServerCommandManager.SendCommand( ServerCommandType.StartGame );
+			}
+		}
+
+		private bool PlayerIsInQueue( CSteamID userId ) {
+			if ( userId == SteamManager.GetSteamID() ) {
 				return true;
 			}
-		}
-		return false;
-	}
-
-	private void OnButtonFocused( Button self ) {
-		UIAudioManager.OnButtonFocused();
-
-		self.Modulate = Selected;
-	}
-	private void OnButtonUnfocused( Button self ) {
-		self.Modulate = Unselected;
-	}
-
-	private void PlayerKicked( CSteamID senderId ) {
-	}
-
-	private void OnVoteKickResponseYes( CSteamID senderId ) {
-	}
-	private void OnVoteKickResponseNo( CSteamID senderId ) {
-	}
-
-	public override void _Ready() {
-		base._Ready();
-
-		GetTree().CurrentScene = this;
-
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeOut );
-
-		Theme = SettingsData.GetDyslexiaMode() ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-
-		PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
-
-		StartGameButton = GetNode<Button>( "StartGameButton" );
-		StartGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
-		StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
-		StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
-		StartGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
-		StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
-
-		ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
-		ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
-		ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
-		ExitLobbyButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
-		ExitLobbyButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
-		ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
-
-		VoteLabel = GetNode<Label>( "VoteLabel" );
-
-		ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
-
-		//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
-		PlayerLeaveCallback = Callable.From<ulong>( OnPlayerLeft );
-		SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
-
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseYes );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseNo );
-		ServerCommandManager.RegisterCommandCallback( ServerCommandType.ConnectedToLobby, ( senderId ) => OnPlayerJoined( (ulong)senderId ) );
-
-		HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
-		container.Show();
-		( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
-		( container.GetChild( 4 ) as Button ).Hide();
-		PlayerList.AddChild( container );
-
-		SteamLobby.Instance.GetLobbyMembers();
-
-		if ( SteamLobby.Instance.IsOwner() ) {
-			StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
-		} else {
-			for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
-				if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
-					continue;
+			for ( int i = 0; i < PlayerList.GetChildCount(); i++ ) {
+				string username = SteamFriends.GetFriendPersonaName( userId );
+				if ( ( ( PlayerList.GetChild( i ) as HBoxContainer ).GetChild( 3 ) as Label ).Text == username ) {
+					PlayerList.GetChild( i ).QueueFree();
+					PlayerList.RemoveChild( PlayerList.GetChild( i ) );
+					return true;
 				}
-				container = ClonerContainer.Duplicate() as HBoxContainer;
-				container.Show();
-				( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
-				( container.GetChild( 4 ) as Button ).Hide();
-				PlayerList.AddChild( container );
 			}
+			return false;
 		}
 
-		Instance = this;
-	}
-	public override void _ExitTree() {
-		base._ExitTree();
+		private void OnButtonFocused( Button self ) {
+			UIAudioManager.OnButtonFocused();
 
-		SteamLobby.Instance.Disconnect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
-	}
+			self.Modulate = Selected;
+		}
+		private void OnButtonUnfocused( Button self ) {
+			self.Modulate = Unselected;
+		}
+
+		private void PlayerKicked( CSteamID senderId ) {
+		}
+
+		private void OnVoteKickResponseYes( CSteamID senderId ) {
+		}
+		private void OnVoteKickResponseNo( CSteamID senderId ) {
+		}
+
+		public override void _Ready() {
+			base._Ready();
+
+			GetTree().CurrentScene = this;
+
+			GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( LoadingScreen.MethodName.FadeOut );
+
+			Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+
+			PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
+
+			StartGameButton = GetNode<Button>( "StartGameButton" );
+			StartGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
+			StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
+			StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
+			StartGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
+			StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
+
+			ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
+			ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
+			ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
+			ExitLobbyButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
+			ExitLobbyButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
+			ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
+
+			VoteLabel = GetNode<Label>( "VoteLabel" );
+
+			ClonerContainer = GetNode<HBoxContainer>( "MarginContainer/PlayerList/ClonerContainer" );
+
+			//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
+			PlayerLeaveCallback = Callable.From<ulong>( OnPlayerLeft );
+			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
+
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.KickPlayer, PlayerKicked );
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseYes );
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteKickResponse_Yes, OnVoteKickResponseNo );
+			ServerCommandManager.RegisterCommandCallback( ServerCommandType.ConnectedToLobby, ( senderId ) => OnPlayerJoined( (ulong)senderId ) );
+
+			HBoxContainer container = ClonerContainer.Duplicate() as HBoxContainer;
+			container.Show();
+			( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamManager.GetSteamID() );
+			( container.GetChild( 4 ) as Button ).Hide();
+			PlayerList.AddChild( container );
+
+			SteamLobby.Instance.GetLobbyMembers();
+
+			if ( SteamLobby.Instance.IsHost ) {
+				StartGameVotes = new Dictionary<CSteamID, bool>( SteamLobby.MAX_LOBBY_MEMBERS );
+			} else {
+				for ( int i = 0; i < SteamLobby.Instance.LobbyMemberCount; i++ ) {
+					if ( PlayerIsInQueue( SteamLobby.Instance.LobbyMembers[ i ] ) ) {
+						continue;
+					}
+					container = ClonerContainer.Duplicate() as HBoxContainer;
+					container.Show();
+					( container.GetChild( 3 ) as Label ).Text = SteamFriends.GetFriendPersonaName( SteamLobby.Instance.LobbyMembers[ i ] );
+					( container.GetChild( 4 ) as Button ).Hide();
+					PlayerList.AddChild( container );
+				}
+			}
+
+			Instance = this;
+		}
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			SteamLobby.Instance.Disconnect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
+		}
+	};
 };

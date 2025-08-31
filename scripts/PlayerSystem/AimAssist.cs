@@ -1,21 +1,54 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using Godot;
 using Renown;
 
 namespace PlayerSystem {
+	/*
+	===================================================================================
+	
+	AimAssist
+	
+	manages aim-assist
+	
+	===================================================================================
+	*/
+
 	public partial class AimAssist : Node2D {
 		[Export]
-		public float ConeAngle = 45.0f; // Degrees
+		public float ConeAngle = 45.0f;
 		[Export]
 		public float DetectionRadius = 500.0f;
 		[Export]
 		public float AimSnapStrength = 0.4f;
 
-		private Area2D DetectionArea;
+		private Area2D? DetectionArea;
 
-		public override void _Ready() {
-			SetupDetectionArea();
-		}
-
+		/*
+		===============
+		SetupDetectionArea
+		===============
+		*/
 		private void SetupDetectionArea() {
 			DetectionArea = new Area2D();
 			DetectionArea.CollisionLayer = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes ); // Set your enemy collision layer
@@ -32,6 +65,11 @@ namespace PlayerSystem {
 			AddChild( DetectionArea );
 		}
 
+		/*
+		===============
+		GetAssistedAimDirection
+		===============
+		*/
 		public Vector2 GetAssistedAimDirection( Vector2 originalAimDirection ) {
 			Vector2 playerPosition = LevelData.Instance.ThisPlayer.GlobalPosition;
 			Godot.Collections.Array<Node2D> targets = DetectionArea.GetOverlappingBodies();
@@ -69,6 +107,17 @@ namespace PlayerSystem {
 			}
 
 			return originalAimDirection;
+		}
+		
+		/*
+		===============
+		_Ready
+
+		godot initialization override
+		===============
+		*/
+		public override void _Ready() {
+			SetupDetectionArea();
 		}
 	};
 };

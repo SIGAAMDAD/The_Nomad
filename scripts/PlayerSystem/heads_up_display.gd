@@ -1,11 +1,33 @@
+#
+# ===========================================================================
+# Copyright (C) 2023-2025 Noah Van Til
+#
+# This file is part of The Nomad source code.
+#
+# The Nomad source code is free software; you can redistribute it
+# and/or modify it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation; either version 2 of the License,
+# or (at your option) any later version.
+#
+# The Nomad source code is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with The Nomad source code; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+# ===========================================================================
+#
+
 class_name HeadsUpDisplay extends CanvasLayer
 
 @export var _owner: CharacterBody2D
 
-const _default_color: Color = Color( 1.0, 1.0, 1.0, 1.0 )
-const _hidden_color: Color = Color( 0.0, 0.0, 0.0, 0.0 )
-const _arm_used_color: Color = Color( 0.0, 0.0, 1.0, 1.0 )
-const _arm_unused_color: Color = Color( 0.20, 0.20, 0.20, 1.0 )
+const DEFAULT_COLOR: Color = Color( 1.0, 1.0, 1.0, 1.0 )
+const HIDDEN_COLOR: Color = Color( 0.0, 0.0, 0.0, 0.0 )
+const ARM_USED_COLOR: Color = Color( 0.0, 0.0, 1.0, 1.0 )
+const ARM_UNUSED_COLOR: Color = Color( 0.20, 0.20, 0.20, 1.0 )
 
 var _fadeout_tween: Tween
 var _fadein_tween: Tween
@@ -79,6 +101,7 @@ var _location_status_timer:Timer = Timer.new()
 @onready var _objective_label: Label = $MainHUD/ObjectiveLabel
 var _objective_status_timer: Timer = Timer.new()
 
+var _hud_preset: VisibilityPreset
 var _status_icons: Dictionary[String, TextureRect]
 
 @onready var _hellbreaker_overlay: Control = $MainHUD/HellbreakerOverlay
@@ -121,6 +144,17 @@ enum InteractionType {
 	Count
 };
 
+enum VisibilityPreset {
+	# everything
+	Full,
+
+	# only essential information
+	Partial,
+
+	# hidden
+	Expert
+};
+
 enum DoorState {
 	Locked,
 	Unlocked,
@@ -128,38 +162,97 @@ enum DoorState {
 	Count
 };
 
+#
+# ===============
+# GetCurrentCheckpoint
+# ===============
+#
 func GetCurrentCheckpoint() -> Area2D:
 	return _checkpoint_interactor.GetCurrentCheckpoint()
 
+
+#
+# ===============
+# GetHealthBar
+# ===============
+#
 func GetHealthBar() -> ProgressBar:
 	return _healthbar
 
+
+#
+# ===============
+# GetRageBar
+# ===============
+#
 func GetRageBar() -> ProgressBar:
 	return _ragebar
 
+
+#
+# ===============
+# GetParryOverlay
+# ===============
+#
 func GetParryOverlay() -> TextureRect:
 	return _parry_overlay
 
+
+#
+# ===============
+# SetRage
+# ===============
+#
 func SetRage( rage: float ) -> void:
 	_ragebar.value = rage
 
+
+#
+# ===============
+# SaveStart
+# ===============
+#
 func SaveStart() -> void:
 	_save_spinner.set_process( true )
 	_save_spinner.show()
 
+
+#
+# ===============
+# SaveEnd
+# ===============
+#
 func SaveEnd() -> void:
 	_save_timer.start()
 
+
+#
+# ===============
+# _on_save_timer_timeout
+# ===============
+#
 func _on_save_timer_timeout() -> void:
 	_save_spinner.hide()
 	_save_spinner.set_process( false )
 
+
+#
+# ===============
+# _on_use_door_transition_finished
+# ===============
+#
 func _on_use_door_transition_finished() -> void:
 	get_node( "/root/TransitionScreen" ).disconnect( "transition_finished", _on_use_door_transition_finished )
 	
 	_owner.global_position = _interaction_data.GetDestination().global_position
 	_owner.BlockInput( false )
 
+
+#
+# ===============
+# _on_use_door_button_pressed
+# ===============
+#
 func _on_use_door_button_pressed() -> void:
 	_owner.BlockInput( true )
 	get_node( "/root/TransitionScreen" ).connect( "transition_finished", _on_use_door_transition_finished )
@@ -168,30 +261,46 @@ func _on_use_door_button_pressed() -> void:
 	
 	_door_interactor.hide()
 
+
+#
+# ===============
+# _on_hands_status_updated
+# ===============
+#
 func _on_hands_status_updated( handsUsed: int ) -> void:
-	_weapon_status.modulate = _default_color
+	if _hud_preset == VisibilityPreset.Expert:
+		return
+	_weapon_status.modulate = DEFAULT_COLOR
 	
 	match handsUsed:
 		HandsUsed.Left:
-			_left_arm_indicator.modulate = _arm_used_color
-			_right_arm_indicator.modulate = _arm_unused_color
+			_left_arm_indicator.modulate = ARM_USED_COLOR
+			_right_arm_indicator.modulate = ARM_UNUSED_COLOR
 		HandsUsed.Right:
-			_left_arm_indicator.modulate = _arm_unused_color
-			_right_arm_indicator.modulate = _arm_used_color
+			_left_arm_indicator.modulate = ARM_UNUSED_COLOR
+			_right_arm_indicator.modulate = ARM_USED_COLOR
 		HandsUsed.Both:
-			_left_arm_indicator.modulate = _arm_used_color
-			_right_arm_indicator.modulate = _arm_used_color
+			_left_arm_indicator.modulate = ARM_USED_COLOR
+			_right_arm_indicator.modulate = ARM_USED_COLOR
 
+
+#
+# ===============
+# _on_weapon_status_updated
+# ===============
+#
 func _on_weapon_status_updated( source: Node, properties: int ) -> void:
+	if _hud_preset == VisibilityPreset.Expert:
+		return
 	if source == null:
 		_weapon_data = null
 		
-		_weapon_status.modulate = _hidden_color
+		_weapon_status.modulate = HIDDEN_COLOR
 		return
 	if source != _weapon_data:
 		return
 	
-	_weapon_status.modulate = _default_color
+	_weapon_status.modulate = DEFAULT_COLOR
 	
 	_weapon_mode_bladed.visible = source.LastUsedMode & WeaponProperties.IsBladed
 	_weapon_mode_blunt.visible = source.LastUsedMode & WeaponProperties.IsBlunt
@@ -204,36 +313,83 @@ func _on_weapon_status_updated( source: Node, properties: int ) -> void:
 	else:
 		_weapon_mode_firearm.hide()
 
+
+#
+# ===============
+# _on_announcement_timer_timeout
+# ===============
+#
 func _on_announcement_timer_timeout() -> void:
 	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.0, 1.0 )
-	create_tween().tween_property( _announcement_text, "modulate", _hidden_color, 1.0 )
+	create_tween().tween_property( _announcement_text, "modulate", HIDDEN_COLOR, 1.0 )
 
+
+#
+# ===============
+# _fade_ui_element
+# ===============
+#
 func _fade_ui_element( element: Control, duration: float, timer: Timer ) -> void:
-	create_tween().tween_property( element, "modulate", _hidden_color, duration )
+	create_tween().tween_property( element, "modulate", HIDDEN_COLOR, duration )
 	timer.process_mode = PROCESS_MODE_DISABLED
 
+
+#
+# ===============
+# _on_location_changed
+# ===============
+#
 func _on_location_changed( location: Area2D ) -> void:
+	if _hud_preset > VisibilityPreset.Full:
+		return
+
 	_location_status_timer.process_mode = PROCESS_MODE_PAUSABLE
 	
 	_location_label.text = location.GetAreaName()
 	
 	var _tweener: Tween = create_tween()
-	_tweener.tween_property( _location_label, "modulate", _default_color, 1.5 )
+	_tweener.tween_property( _location_label, "modulate", DEFAULT_COLOR, 1.5 )
 	_tweener.connect( "finished", func(): _location_status_timer.start() )
 
+
+#
+# ===============
+# _on_weapon_reloaded
+# ===============
+#
 func _on_weapon_reloaded( source: Node ) -> void:
-	_weapon_status.modulate = _default_color
+	if _hud_preset == VisibilityPreset.Expert:
+		return
+	
+	_weapon_status.modulate = DEFAULT_COLOR
 	
 	_weapon_status_bullet_count.text = var_to_str( source.BulletsLeft )
 	_weapon_status_bullet_reserve.text = var_to_str( source.Reserve.Amount ) if source.Reserve != null else "0"
 
+
+#
+# ===============
+# _on_weapon_used
+# ===============
+#
 func _on_weapon_used( source: Node ) -> void:
-	_weapon_status.modulate = _default_color
+	if _hud_preset == VisibilityPreset.Expert:
+		return
+	
+	_weapon_status.modulate = DEFAULT_COLOR
 	
 	if source.LastUsedMode & WeaponProperties.IsFirearm:
 		_weapon_status_bullet_count.text = var_to_str( source.BulletsLeft )
 
+
+#
+# ===============
+# _on_switched_weapon
+# ===============
+#
 func _on_switched_weapon( weapon: Node ) -> void:
+	if _hud_preset == VisibilityPreset.Expert:
+		return
 	if _weapon_data != weapon && _weapon_data != null:
 		if _weapon_data.is_connected( "Reloaded", _on_weapon_reloaded ):
 			_weapon_data.disconnect( "Reloaded", _on_weapon_reloaded )
@@ -241,13 +397,13 @@ func _on_switched_weapon( weapon: Node ) -> void:
 			_weapon_data.disconnect( "Used", _on_weapon_used )
 	
 	if weapon == null:
-		_weapon_status.modulate = _hidden_color
+		_weapon_status.modulate = HIDDEN_COLOR
 		_weapon_status.process_mode = PROCESS_MODE_DISABLED
 		return
 	else:
 		_weapon_status.process_mode = PROCESS_MODE_PAUSABLE
 	
-	_weapon_status.modulate = _default_color
+	_weapon_status.modulate = DEFAULT_COLOR
 	
 	if weapon.LastUsedMode & WeaponProperties.IsFirearm:
 		_weapon_status_firearm.show()
@@ -266,63 +422,93 @@ func _on_switched_weapon( weapon: Node ) -> void:
 	_weapon_data.connect( "Reloaded", _on_weapon_reloaded )
 	_weapon_data.connect( "Used", _on_weapon_used )
 
+
+#
+# ===============
+# _on_health_changed
+# ===============
+#
 func _on_health_changed( health: float ) -> void:
+	if _hud_preset == VisibilityPreset.Expert:
+		return
+	
 	_healthbar.SetHealth( health )
 	
 	get_node( "MainHUD/Overlays/InjuredOverlay/MediumHealth" ).visible = health < 60.0
 	get_node( "MainHUD/Overlays/InjuredOverlay/LowHealth" ).visible = health < 30.0
 	get_node( "MainHUD/Overlays/InjuredOverlay/CriticalHealth" ).visible = health < 15.0
 
+
+#
+# ===============
+# EndParry
+# ===============
+#
 func EndParry() -> void:
 	_parry_overlay.hide()
 
+
+#
+# ===============
+# _on_dialogue_interaction
+# ===============
+#
 func _on_dialogue_interaction() -> void:
 	get_node( "MainHUD" ).visible = !get_node( "DialogueContainer" ).visible
 
-func _ready() -> void:
-	_weapon_status_timer.name = "WeaponStatusTimer"
-	_weapon_status_timer.wait_time = 5.90
-	_weapon_status_timer.one_shot = true
-	_weapon_status_timer.process_mode = PROCESS_MODE_DISABLED
-	_weapon_status_timer.connect( "timeout", func(): _fade_ui_element( _weapon_status, 1.5, _weapon_status_timer ) )
-	add_child( _weapon_status_timer )
-	
-	_location_status_timer.name = "LocationStatusTimer"
-	_location_status_timer.wait_time = 5.90
-	_location_status_timer.one_shot = true
-	_location_status_timer.process_mode = PROCESS_MODE_DISABLED
-	_location_status_timer.connect( "timeout", func(): _fade_ui_element( _location_label, 2.5, _location_status_timer ) )
-	add_child( _location_status_timer )
-	
-	_objective_status_timer.name = "ObjectiveStatusTimer"
-	_objective_status_timer.wait_time = 5.90
-	_objective_status_timer.one_shot = true
-	_objective_status_timer.process_mode = PROCESS_MODE_DISABLED
-	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
-	add_child( _objective_status_timer )
 
-	get_node( "DialogueContainer" ).connect( "visibility_changed", _on_dialogue_interaction )
-	
-	_owner.connect( "DashStart", _dash_overlay.show )
-	_owner.connect( "DashEnd", _dash_overlay.hide )
-	_owner.connect( "BulletTimeStart", _reflex_overlay.show )
-	_owner.connect( "BulletTimeEnd", _reflex_overlay.hide )
-	_owner.connect( "HideInteraction", HideInteraction )
-	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
-	_owner.connect( "ParrySuccess", _parry_overlay.show )
-	_owner.connect( "DashBurnoutChanged", func( burnout: float ): _dash_status.DashBurnout = burnout )
-	_owner.connect( "HealthChanged", _on_health_changed )
-	_owner.connect( "RageChanged", func( rage: float ): _ragebar.Rage = rage )
-	_owner.connect( "LocationChanged", _on_location_changed )
-	_owner.connect( "Damaged", func( source: CharacterBody2D, target: CharacterBody2D, amount: float ): _healthbar.SetHealth( target.GetHealth() ) )
-	_owner.connect( "SwitchedWeapon", _on_switched_weapon )
-	_owner.connect( "HandsStatusUpdated", _on_hands_status_updated )
-	_owner.connect( "WeaponStatusUpdated", _on_weapon_status_updated )
+#
+# ===============
+# _on_settings_changed
+# ===============
+#
+func _on_settings_changed() -> void:
+	Console.PrintLine( "Updating hud visibility preset..." )
 
+	_hud_preset = SettingsData.GetHUDPreset()
+	match _hud_preset:
+		VisibilityPreset.Full:
+			# show everything
+			_location_label.show()
+			_objective_label.show()
+			_dash_status.show()
+			_healthbar.show()
+			_ragebar.show()
+			_weapon_data.show()
+		VisibilityPreset.Partial:
+			# only show stuff that's actually important
+			_location_label.hide()
+			_objective_label.hide()
+			_dash_status.hide()
+
+			_healthbar.show()
+			_ragebar.show()
+			_weapon_data.show()
+		VisibilityPreset.Expert:
+			# show nothing, let the player determine what their status is
+			_healthbar.hide()
+			_ragebar.hide()
+			_weapon_data.hide()
+			_location_label.hide()
+			_objective_label.hide()
+			_dash_status.hide()
+
+
+#
+# ===============
+# _on_jump_audio_tween_fade_out_finished
+# ===============
+#
 func _on_jump_audio_tween_fade_out_finished() -> void:
 	_jump_music.stop()
 	_jump_music.volume_db = 0.0
 
+
+#
+# ===============
+# ShowInteraction
+# ===============
+#
 func ShowInteraction( item: Area2D ) -> void:
 	match item.GetInteractionType():
 		InteractionType.Checkpoint:
@@ -362,6 +548,12 @@ func ShowInteraction( item: Area2D ) -> void:
 		
 		_jump_music.play()
 
+
+#
+# ===============
+# HideInteraction
+# ===============
+#
 func HideInteraction() -> void:
 	if _current_interactor == _checkpoint_interactor:
 		_checkpoint_interactor.EndInteraction()
@@ -379,6 +571,12 @@ func HideInteraction() -> void:
 	_current_interactor = null
 	Input.set_custom_mouse_cursor( load( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CURSOR_ARROW )
 
+
+#
+# ===============
+# ShowAnnouncement
+# ===============
+#
 func ShowAnnouncment( text: String ) -> void:
 	_announcement_container.show()
 	
@@ -392,6 +590,58 @@ func ShowAnnouncment( text: String ) -> void:
 	create_tween().tween_property( _announcement_background.material, "shader_parameter/alpha", 0.90, 0.90 )
 	create_tween().tween_property( _announcement_text, "modulate", Color( 1.0, 1.0, 1.0, 1.0 ), 0.90 )
 
+
+#
+# ===============
+# _ready
+# ===============
+#
+func _ready() -> void:
+	_weapon_status_timer.name = "WeaponStatusTimer"
+	_weapon_status_timer.wait_time = 5.90
+	_weapon_status_timer.one_shot = true
+	_weapon_status_timer.process_mode = PROCESS_MODE_DISABLED
+	_weapon_status_timer.connect( "timeout", func(): _fade_ui_element( _weapon_status, 1.5, _weapon_status_timer ) )
+	add_child( _weapon_status_timer )
+	
+	_location_status_timer.name = "LocationStatusTimer"
+	_location_status_timer.wait_time = 5.90
+	_location_status_timer.one_shot = true
+	_location_status_timer.process_mode = PROCESS_MODE_DISABLED
+	_location_status_timer.connect( "timeout", func(): _fade_ui_element( _location_label, 2.5, _location_status_timer ) )
+	add_child( _location_status_timer )
+	
+	_objective_status_timer.name = "ObjectiveStatusTimer"
+	_objective_status_timer.wait_time = 5.90
+	_objective_status_timer.one_shot = true
+	_objective_status_timer.process_mode = PROCESS_MODE_DISABLED
+	_objective_status_timer.connect( "timeout", func(): _fade_ui_element( _objective_label, 2.5, _objective_status_timer ) )
+	add_child( _objective_status_timer )
+
+	get_node( "DialogueContainer" ).connect( "visibility_changed", _on_dialogue_interaction )
+	
+	_owner.connect( "DashStart", _dash_overlay.show )
+	_owner.connect( "DashEnd", _dash_overlay.hide )
+	_owner.connect( "BulletTimeStart", _reflex_overlay.show )
+	_owner.connect( "BulletTimeEnd", _reflex_overlay.hide )
+	_owner.connect( "HideInteraction", HideInteraction )
+	_owner.connect( "ShowInteraction", func( interaction: Area2D ): ShowInteraction( interaction ) )
+	_owner.connect( "ParrySuccess", _parry_overlay.show )
+	_owner.connect( "DashBurnoutChanged", func( burnout: float ): if _hud_preset < VisibilityPreset.Expert: _dash_status.DashBurnout = burnout )
+	_owner.connect( "HealthChanged", _on_health_changed )
+	_owner.connect( "RageChanged", func( rage: float ): if _hud_preset < VisibilityPreset.Expert: _ragebar.Rage = rage )
+	_owner.connect( "LocationChanged", _on_location_changed )
+	_owner.connect( "Damaged", func( source: CharacterBody2D, target: CharacterBody2D, amount: float ): if _hud_preset < VisibilityPreset.Expert: _healthbar.SetHealth( target.GetHealth() ) )
+	_owner.connect( "SwitchedWeapon", _on_switched_weapon )
+	_owner.connect( "HandsStatusUpdated", _on_hands_status_updated )
+	_owner.connect( "WeaponStatusUpdated", _on_weapon_status_updated )
+
+
+#
+# ===============
+# _unhandled_input
+# ===============
+#
 func _unhandled_input( event: InputEvent ) -> void:
 	if Input.is_action_just_pressed( "open_emote_menu" ):
 		_emote_menu.show()

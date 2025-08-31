@@ -2,9 +2,11 @@ using System;
 using System.Diagnostics;
 using ChallengeMode;
 using Godot;
+using Menus;
 using PlayerSystem;
 using Renown;
 using Renown.Thinkers;
+using ResourceCache;
 
 // TODO: allow multiplayer with challenge modes?
 
@@ -177,14 +179,14 @@ public partial class ChallengeLevel : LevelData {
 
 		ThisPlayer.BlockInput( true );
 
-		ChallengeCache.UpdateScore( ChallengeCache.GetCurrentLeaderboard(), ChallengeCache.GetCurrentMap(), FreeFlow.GetTotalScore(), minutes, seconds, milliseconds );
+		ChallengeCache.UpdateScore( ChallengeCache.GetCurrentLeaderboard(), ChallengeCache.CurrentMap, FreeFlow.Instance.TotalScore, minutes, seconds, milliseconds );
 		
-		ChallengeModeScore ScoreOverlay = ResourceCache.GetScene( "res://scenes/menus/challenge_mode_score.tscn" ).Instantiate<ChallengeModeScore>();
+		ChallengeModeScore ScoreOverlay = SceneCache.GetScene( "res://scenes/menus/challenge_mode_score.tscn" ).Instantiate<ChallengeModeScore>();
 		AddChild( ScoreOverlay );
 		ScoreOverlay.SetScores(
 			new ScoreData(
-				TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", ChallengeCache.GetCurrentMap() ) ),
-				FreeFlow.GetTotalScore(), FreeFlow.GetHighestCombo(), minutes, seconds, milliseconds, TotalEnemies, DeathCounter, BonusFlags
+				TranslationServer.Translate( string.Format( "CHALLENGE{0}_NAME", ChallengeCache.CurrentMap ) ),
+				FreeFlow.Instance.TotalScore, FreeFlow.Instance.MaxCombo, minutes, seconds, milliseconds, TotalEnemies, DeathCounter, BonusFlags
 			)
 		);
 	}
@@ -192,12 +194,10 @@ public partial class ChallengeLevel : LevelData {
 	protected override void OnResourcesFinishedLoading() {
 		ResourceLoadThread.Join();
 
-		ResourceCache.Initialized = true;
-
 		GC.Collect( GC.MaxGeneration, GCCollectionMode.Aggressive );
 
 		Console.PrintLine( "...Finished loading game" );
-		GetNode<CanvasLayer>( "/root/LoadingScreen" ).Call( "FadeOut" );
+		GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeOut();
 		
 		Timer = new Stopwatch();
 		Timer.Start();
@@ -312,23 +312,20 @@ public partial class ChallengeLevel : LevelData {
 	public override void _Ready() {
 		base._Ready();
 
-		ResourceLoadThread = new System.Threading.Thread( () => { ResourceCache.Cache( this, null ); } );
-		ResourceLoadThread.Start();
-
 		ThisPlayer.Die += OnPlayerDie;
 		ThisPlayer.Damaged += OnPlayerDamaged;
 
 		Player.StartThoughtBubble( "You: " + StartQuestDialogue );
 
-		EndOfChallenge end = GetNode<EndOfChallenge>( "Level/EndOfChallenge" );
-		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );
+//		EndOfChallenge end = GetNode<EndOfChallenge>( "Level/EndOfChallenge" );
+//		end.Connect( "Triggered", Callable.From( OnEndOfChallengeReached ) );
 
 		Questify.ToggleUpdatePolling( true );
 		Questify.ConnectConditionQueryRequested( OnConditionQueryRequested );
 		Questify.ConnectQuestObjectiveCompleted( OnConditionObjectiveCompleted );
 		Questify.ConnectQuestObjectiveAdded( OnQuestObjectiveAdded );
 		Questify.ConnectQuestCompleted( OnQuestCompleted );
-		Questify.StartQuest( ChallengeCache.GetQuestData() );
+		Questify.StartQuest( ChallengeCache.ActiveQuest );
 
 		ObjectivesState = new Godot.Collections.Dictionary<string, Variant>();
 		foreach ( var state in State ) {

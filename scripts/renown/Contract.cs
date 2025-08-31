@@ -10,7 +10,7 @@ public enum ContractType : uint {
 
 	Kidnapping,
 	Extortion,
-	
+
 	/// <summary>
 	/// an assassination but more for less important entities, this
 	/// can include the player.
@@ -18,17 +18,17 @@ public enum ContractType : uint {
 	/// the price of a bounty can and most likely will increase over time
 	/// </summary>
 	Bounty,
-	
+
 	Count
 };
 
 public enum ContractFlags : uint {
-	Silent		= 0x0001,
-	Ghost		= 0x0002,
-	Massacre	= 0x0004,
-	Clean		= 0x0008,
-	
-	None		= 0x0000
+	Silent = 0x0001,
+	Ghost = 0x0002,
+	Massacre = 0x0004,
+	Clean = 0x0008,
+
+	None = 0x0000
 };
 
 namespace Renown {
@@ -44,7 +44,7 @@ namespace Renown {
 			get;
 			private set;
 		}
-		
+
 		/// <summary>
 		/// the total amount of money the mercenary can get out of the deal.
 		/// this value can change with the value of the target, like a bounty
@@ -58,7 +58,7 @@ namespace Renown {
 			get;
 			private set;
 		} = 0.0f;
-		
+
 		/// <summary>
 		/// the designated place where the merc can operate in.
 		/// if they step outside here, its no longer in the protection
@@ -68,10 +68,9 @@ namespace Renown {
 			get;
 			private set;
 		}
-		
+
 		public Contract( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
-			float basePay, float? totalPay, WorldArea area, Object contractor, Faction guild )
-		{
+			float basePay, float? totalPay, WorldArea area, Object contractor, Faction guild ) {
 			Title = name;
 			Flags = flags;
 			DueDate = duedate;
@@ -99,29 +98,28 @@ namespace Renown {
 			float cost;
 
 			switch ( type ) {
-			case ContractType.Assassination: {
-					cost = 160.0f;
-					if ( target is Entity entity && entity != null ) {
-						cost *= entity.GetRenownScore();
-					} else {
-						Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Assassination, but target {0} isn't an entity", target ) );
+				case ContractType.Assassination: {
+						cost = 160.0f;
+						if ( target is Entity entity && entity != null ) {
+							cost *= entity.RenownScore;
+						} else {
+							Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Assassination, but target {0} isn't an entity", target ) );
+						}
+						break;
 					}
-					break;
-				}
-			case ContractType.Bounty: {
-					if ( target is Entity entity && entity != null ) {
-						cost = entity.GetRenownScore();
-					} else {
-						Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Bounty, but target {0} isn't an entity", target ) );
-						return 0.0f;
+				case ContractType.Bounty: {
+						if ( target is Entity entity && entity != null ) {
+							cost = entity.RenownScore;
+						} else {
+							Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Bounty, but target {0} isn't an entity", target ) );
+							return 0.0f;
+						}
+						break;
 					}
-					break;
-				}
-			default:
-				Console.PrintError( string.Format( "Contract.CalculateCost: invalid contract type {0}", type ) );
-				return 0.0f;
+				default:
+					Console.PrintError( string.Format( "Contract.CalculateCost: invalid contract type {0}", type ) );
+					return 0.0f;
 			}
-			;
 
 			//
 			// calculate flags
@@ -150,19 +148,20 @@ namespace Renown {
 		public void Start() {
 			Dictionary<string, bool> state = new Dictionary<string, bool>();
 			switch ( Type ) {
-			case ContractType.Assassination:
-				state.Add( "TargetAlive", true );
-				break;
-			case ContractType.Extortion:
-				break;
-			};
+				case ContractType.Assassination:
+					state.Add( "TargetAlive", true );
+					break;
+				case ContractType.Extortion:
+					break;
+			}
+			;
 
 			QuestState.StartContract( this, Flags, state );
 		}
 
 		public virtual ContractType GetContractType() => ContractType.Count;
 		public WorldArea GetArea() => CollateralArea;
-		
+
 		/*
 		public override string GetQuestName() => Title;
 		public override QuestType GetQuestType() => QuestType.Contract;

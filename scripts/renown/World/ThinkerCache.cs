@@ -10,33 +10,31 @@ namespace Renown.World {
 		private Dictionary<int, Thinker> Thinkers = null;
 
 		public void Load() {
-			using ( var reader = ArchiveSystem.GetSection( "ThinkerCache" ) ) {
-				int cacheSize = reader.LoadInt( "ThinkerCacheSize" );
-				Thinkers = new Dictionary<int, Thinker>( cacheSize );
+			using var reader = ArchiveSystem.GetSection( "ThinkerCache" );
+			int cacheSize = reader.LoadInt( "ThinkerCacheSize" );
+			Thinkers = new Dictionary<int, Thinker>( cacheSize );
 
-				System.Threading.Tasks.Parallel.For( 0, cacheSize, ( index ) => {
-					string key = string.Format( "Thinker{0}", index );
+			System.Threading.Tasks.Parallel.For( 0, cacheSize, ( index ) => {
+				string key = string.Format( "Thinker{0}", index );
 
-					bool premade = reader.LoadBoolean( key + "IsPremade" );
+				bool premade = reader.LoadBoolean( key + "IsPremade" );
 
-					Thinker thinker = new Thinker();
-					thinker.Load( reader, index );
+				Thinker thinker = new Thinker();
+				thinker.Load( reader, index );
 
-					if ( !premade ) {
-						AddThinker( thinker );
-					}
-				} );
-			}
+				if ( !premade ) {
+					AddThinker( thinker );
+				}
+			} );
 		}
 		public void Save() {
-			using ( var writer = new SaveSystem.SaveSectionWriter( "ThinkerCache" ) ) {
-				writer.SaveInt( "ThinkerCacheSize", Thinkers.Count );
+			using var writer = new SaveSystem.SaveSectionWriter( "ThinkerCache", ArchiveSystem.SaveWriter );
+			writer.SaveInt( "ThinkerCacheSize", Thinkers.Count );
 
-				int index = 0;
-				foreach ( var thinker in Thinkers ) {
-					thinker.Value.Save( writer, index );
-					index++;
-				}
+			int index = 0;
+			foreach ( var thinker in Thinkers ) {
+				thinker.Value.Save( writer, index );
+				index++;
 			}
 		}
 		
@@ -55,7 +53,7 @@ namespace Renown.World {
 				AddToGroup( "Archive" );
 			}
 
-			if ( ArchiveSystem.Instance.IsLoaded() ) {
+			if ( ArchiveSystem.IsLoaded() ) {
 				Load();
 			} else {
 				Godot.Collections.Array<Node> nodes = GetTree().GetNodesInGroup( "Thinkers" );

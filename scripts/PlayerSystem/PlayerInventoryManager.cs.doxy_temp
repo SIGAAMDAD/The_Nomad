@@ -1,0 +1,90 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
+using Godot;
+using System.Collections.Generic;
+
+namespace PlayerSystem {
+
+	/*!
+	===================================================================================
+	
+	InventoryManager
+
+	manages the player's single player inventory
+	
+	===================================================================================
+	*/
+	
+	public partial class InventoryManager : GodotObject {
+		public static readonly int MAX_WEAPON_SLOTS = 4;
+
+		public WeaponSlot[] WeaponSlots { get; private set; } = new WeaponSlot[ MAX_WEAPON_SLOTS ];
+		public int CurrentWeapon { get; private set; } = WeaponSlot.INVALID;
+
+		private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
+		private Godot.Collections.Dictionary<int, WeaponEntity> WeaponsStack = new Godot.Collections.Dictionary<int, WeaponEntity>();
+
+		[Signal]
+		public delegate void WeaponStatusUpdatedEventHandler( WeaponEntity entity, WeaponEntity.Properties properties );
+
+		/*
+		===============
+		DropWeapon
+		===============
+		*/
+		public void DropWeapon( int hashCode ) {
+			if ( !WeaponsStack.TryGetValue( hashCode, out WeaponEntity? weapon ) ) {
+				Console.PrintError( $"Player.DropWeapon: invalid hash id {hashCode}" );
+				return;
+			}
+			if ( weapon == null ) {
+			}
+
+			WeaponsStack.Remove( hashCode );
+			weapon.Drop();
+
+			for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
+				if ( WeaponSlots[ i ].Weapon == weapon ) {
+					if ( i == CurrentWeapon ) {
+						CurrentWeapon = WeaponSlot.INVALID;
+						EmitSignalWeaponStatusUpdated( null, WeaponEntity.Properties.None );
+					}
+					WeaponSlots[ i ].SetWeapon( null );
+				}
+			}
+		}
+
+		/*
+		===============
+		DropAmmo
+		===============
+		*/
+		public void DropAmmo( int hashCode ) {
+			if ( !AmmoStacks.ContainsKey( hashCode ) ) {
+				Console.PrintError( $"InventoryManager.DropAmmo: invalid hash id {hashCode}" );
+				return;
+			}
+			AmmoStacks.Remove( hashCode );
+		}
+	};
+};

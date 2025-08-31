@@ -2,6 +2,7 @@ using Godot;
 using Multiplayer.Overlays;
 using Renown;
 using Steamworks;
+using Steam;
 using System.Collections.Generic;
 
 namespace Multiplayer.Modes {
@@ -77,7 +78,7 @@ namespace Multiplayer.Modes {
 				return;
 			}
 
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 
@@ -113,7 +114,7 @@ namespace Multiplayer.Modes {
 
 		private Node2D SetPlayerSpawn( Entity player ) {
 			Node2D spawn = null;
-			if ( SteamLobby.Instance.IsOwner() ) {
+			if ( SteamLobby.Instance.IsHost ) {
 				if ( player is NetworkPlayer node && node != null ) {
 					OtherPlayer = node;
 					node.GlobalPosition = Player2Spawn.GlobalPosition;
@@ -230,7 +231,7 @@ namespace Multiplayer.Modes {
 
 //			MaxRounds = (int)Options[ "MaxRounds" ];
 
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 			}
 		}

@@ -3,6 +3,7 @@ using Renown;
 using System;
 using System.Diagnostics;
 
+/*
 public partial class JohnWickMode : LevelData {
 	private Stopwatch Timer;
 
@@ -54,7 +55,7 @@ public partial class JohnWickMode : LevelData {
 	}
 
 	public static void AddKill() {
-//		Mode.KillCountLabel.Text = "KILL COUNT: " + KillCounter.ToString();
+		//		Mode.KillCountLabel.Text = "KILL COUNT: " + KillCounter.ToString();
 	}
 	public static void IncreaseScore( int nAmount ) {
 		System.Threading.Interlocked.Add( ref TotalScore, nAmount );
@@ -106,28 +107,30 @@ public partial class JohnWickMode : LevelData {
 		base._Process( delta );
 
 		switch ( Marker ) {
-		case 0:
-			if ( Timer.Elapsed.Minutes >= 1 ) {
-				EmitSignalOneMinuteMarker();
-				Marker++;
-			}
-			break;
-		case 1:
-			if ( Timer.Elapsed.Minutes >= 3 ) {
-				EmitSignalThreeMinuteMarker();
-				Marker++;
-			}
-			break;
-		case 2:
-			if ( Timer.Elapsed.Minutes >= 10 ) {
-				EmitSignalTenMinuteMarker();
-				Marker++;
-			}
-			break;
-		default:
-			break;
-		};
+			case 0:
+				if ( Timer.Elapsed.Minutes >= 1 ) {
+					EmitSignalOneMinuteMarker();
+					Marker++;
+				}
+				break;
+			case 1:
+				if ( Timer.Elapsed.Minutes >= 3 ) {
+					EmitSignalThreeMinuteMarker();
+					Marker++;
+				}
+				break;
+			case 2:
+				if ( Timer.Elapsed.Minutes >= 10 ) {
+					EmitSignalTenMinuteMarker();
+					Marker++;
+				}
+				break;
+			default:
+				break;
+		}
+		;
 
 		TimeLabel.Text = string.Format( "{0}:{1}.{2}", Timer.Elapsed.Minutes, Timer.Elapsed.Seconds, Timer.Elapsed.Milliseconds );
 	}
 };
+*/

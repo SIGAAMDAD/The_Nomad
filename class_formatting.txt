@@ -1,7 +1,19 @@
-1. Static Properties
-2. Exported Properties
-3. Properties
-4. Signals
-5. Constructor/Destructor
-6. Methods
-7. Godot Overrides
+[COMMENT] class name
+[COMMENT] class description
+class name {
+	private Properties
+	public Properties
+
+	signals
+
+	constructor
+	destructor
+
+	getters/setters
+
+	[COMMENT] method name
+	[COMMENT] method description
+	methods
+
+	godot override functions
+}

@@ -88,7 +88,7 @@ flat = true
 script = ExtResource("2_nxd36")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
-[node name="StoryModeButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
+[node name="DeveloperCommentaryButton" type="Button" parent="MainContainer/HSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "DEVELOPER_COMMENTARY"

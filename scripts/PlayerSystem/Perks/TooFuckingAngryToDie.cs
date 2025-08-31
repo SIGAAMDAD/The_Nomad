@@ -13,7 +13,7 @@ namespace PlayerSystem.Perks {
 		}
 
 		private void OnUserDie( Entity source, Entity target ) {
-			if ( User.GetRage() < 10.0f ) {
+			if ( User.Rage < 10.0f ) {
 				return;
 			}
 

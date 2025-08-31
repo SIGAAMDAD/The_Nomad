@@ -1,11 +1,36 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using GDExtension.Wrappers;
 using Godot;
 using ImGuiNET;
 using Steamworks;
+using Steam;
+using Menus;
+using Multiplayer;
+using ResourceCache;
 
 public partial class LevelData : Node2D {
 	[Export]
@@ -15,7 +40,7 @@ public partial class LevelData : Node2D {
 
 	protected Thread ResourceLoadThread;
 	protected Thread SceneLoadThread;
-
+	
 	protected Dictionary<CSteamID, Renown.Entity> Players = null;
 	protected PackedScene PlayerScene = null;
 
@@ -80,10 +105,21 @@ public partial class LevelData : Node2D {
 	[Signal]
 	public delegate void ExitLevelEventHandler();
 
+	/*
+	===============
+	OnResourcesFinishedLoading
+	===============
+	*/
 	protected virtual void OnResourcesFinishedLoading() {
 	}
+
+	/*
+	===============
+	OnPlayerJoined
+	===============
+	*/
 	protected virtual void OnPlayerJoined( ulong steamId ) {
-		Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
+		Console.PrintLine( $"Adding {steamId} to game..." );
 
 		SteamLobby.Instance.GetLobbyMembers();
 
@@ -94,10 +130,16 @@ public partial class LevelData : Node2D {
 
 		Renown.Entity player = PlayerScene.Instantiate<Renown.Entity>();
 		( player as NetworkPlayer ).MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( userId );
-		player.Call( "SetOwnerId", (ulong)userId );
+		player.Call( NetworkPlayer.MethodName.SetOwner, (ulong)userId );
 		Players.Add( userId, player );
 		PlayerList.AddChild( player );
 	}
+
+	/*
+	===============
+	OnPlayerLeft
+	===============
+	*/
 	protected virtual void OnPlayerLeft( ulong steamId ) {
 		SteamLobby.Instance.GetLobbyMembers();
 
@@ -107,7 +149,7 @@ public partial class LevelData : Node2D {
 		}
 
 		Console.PrintLine(
-			string.Format( "{0} has faded away...", ( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username )
+			$"{( Players[ userId ] as NetworkPlayer ).MultiplayerData.Username} has faded away..."
 		);
 		PlayerList.CallDeferred( Node.MethodName.RemoveChild, Players[ userId ] );
 		Players[ userId ].QueueFree();
@@ -115,17 +157,37 @@ public partial class LevelData : Node2D {
 		SteamLobby.Instance.RemovePlayer( userId );
 	}
 
+	/*
+	===============
+	_EnterTree
+	===============
+	*/
 	public override void _EnterTree() {
 		base._EnterTree();
 
 		Instance = this;
 		EntityManager.Init();
 	}
+
+	/*
+	===============
+	_ExitTree
+	===============
+	*/
 	public override void _ExitTree() {
 		base._ExitTree();
 
 		EmitSignalExitLevel();
 	}
+
+	/*
+	===============
+	_Ready
+	===============
+	*/
+	/// <summary>
+	/// godot initialization override
+	/// </summary>
 	public override void _Ready() {
 		base._Ready();
 
@@ -140,7 +202,7 @@ public partial class LevelData : Node2D {
 		ResourcesLoadingFinished += OnResourcesFinishedLoading;
 		PlayerRespawn += () => { ThisPlayer.BlockInput( false ); };
 
-		if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
+		if ( SettingsData.EnableNetworking && GameConfiguration.GameMode != GameMode.ChallengeMode ) {
 			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientJoinedLobby, Callable.From<ulong>( OnPlayerJoined ) );
 			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, Callable.From<ulong>( OnPlayerLeft ) );
 		}
@@ -156,13 +218,13 @@ public partial class LevelData : Node2D {
 		PauseMenu.Connect( PauseMenu.SignalName.LeaveLobby, Callable.From( SteamLobby.Instance.LeaveLobby ) );
 		AddChild( PauseMenu );
 
-		DebrisFactory debrisFactory = ResourceCache.GetScene( "res://scenes/effects/debris_factory.tscn" ).Instantiate<DebrisFactory>();
+		DebrisFactory debrisFactory = SceneCache.GetScene( "res://scenes/effects/debris_factory.tscn" ).Instantiate<DebrisFactory>();
 		AddChild( debrisFactory );
 
-		BulletShellMesh bulletShellMesh = ResourceCache.GetScene( "res://scenes/effects/bullet_shell_mesh.tscn" ).Instantiate<BulletShellMesh>();
+		BulletShellMesh bulletShellMesh = SceneCache.GetScene( "res://scenes/effects/bullet_shell_mesh.tscn" ).Instantiate<BulletShellMesh>();
 		AddChild( bulletShellMesh );
 
-		BloodParticleFactory bloodParticleFactory = ResourceCache.GetScene( "res://scenes/effects/blood_particle_factory.tscn" ).Instantiate<BloodParticleFactory>();
+		BloodParticleFactory bloodParticleFactory = SceneCache.GetScene( "res://scenes/effects/blood_particle_factory.tscn" ).Instantiate<BloodParticleFactory>();
 		AddChild( bloodParticleFactory );
 
 		//
@@ -173,11 +235,11 @@ public partial class LevelData : Node2D {
 				process.PriorityBoostEnabled = true;
 
 				switch ( OS.GetName() ) {
-				case "Linux":
-				case "Windows":
-					process.ProcessorAffinity = System.Environment.ProcessorCount;
-					break;
-				};
+					case "Linux":
+					case "Windows":
+						process.ProcessorAffinity = System.Environment.ProcessorCount;
+						break;
+				}
 
 				process.PriorityClass = ProcessPriorityClass.AboveNormal;
 			}

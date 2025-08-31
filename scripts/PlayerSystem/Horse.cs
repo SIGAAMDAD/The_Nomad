@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 using Godot;
+using ResourceCache;
 
 public partial class Horse : CharacterBody2D {
 	private Player User;
@@ -39,7 +40,7 @@ public partial class Horse : CharacterBody2D {
 			SetDeferred( "global_position", player.GlobalPosition );
 			MountArea.SetDeferred( "monitoring", false );
 
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/mount_horse.ogg" );
+			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/env/mount_horse.ogg" );
 			AudioChannel.Play();
 			
 			EmitSignalPlayerMountHorse();
@@ -56,7 +57,7 @@ public partial class Horse : CharacterBody2D {
 			if ( Velocity == Godot.Vector2.Zero ) {
 				return;
 			}
-			SnortChannel.Stream = ResourceCache.GetSound( string.Format( "res://sounds/env/horse_snort_{0}.ogg", RNJesus.IntRange( 0, 2 ) ) );
+			SnortChannel.Stream = AudioCache.GetStream( string.Format( "res://sounds/env/horse_snort_{0}.ogg", RNJesus.IntRange( 0, 2 ) ) );
 			SnortChannel.Play();
 		} ) );
 
@@ -65,7 +66,7 @@ public partial class Horse : CharacterBody2D {
 			if ( Velocity == Godot.Vector2.Zero ) {
 				return;
 			}
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/gallop_gravel.ogg" );
+			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/env/gallop_gravel.ogg" );
 			AudioChannel.Play();
 		} ) );
 
@@ -84,10 +85,10 @@ public partial class Horse : CharacterBody2D {
 		}
 
 		if ( !AudioChannel.Playing ) {
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/env/gallop_gravel.ogg" );
+			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/env/gallop_gravel.ogg" );
 			AudioChannel.Play();
 
-			SnortChannel.Stream = ResourceCache.GetSound( string.Format( "res://sounds/env/horse_snort_{0}.ogg", RNJesus.IntRange( 0, 2 ) ) );
+			SnortChannel.Stream = AudioCache.GetStream( string.Format( "res://sounds/env/horse_snort_{0}.ogg", RNJesus.IntRange( 0, 2 ) ) );
 			SnortChannel.Play();
 		}
 	}

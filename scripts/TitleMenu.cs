@@ -1,7 +1,40 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
+using ResourceCache;
+
+namespace Menus;
+/*
+===================================================================================
+
+TitleMenu
+
+===================================================================================
+*/
 
 public partial class TitleMenu : Control {
-	public enum MenuState {
+	private enum MenuState {
 		Main,
 		SaveSlots,
 		Extras,
@@ -61,7 +94,9 @@ public partial class TitleMenu : Control {
 		default:
 			Console.PrintError( "Invalid menu state!" );
 			break;
-		};
+		}
+
+		MainMenu = SceneCache.GetScene( "res://scenes/menus/main_menu.tscn" ).Instantiate<MainMenu>();
 
 		AddChild( MainMenu );
 		MoveChild( MainMenu, index );
@@ -75,7 +110,7 @@ public partial class TitleMenu : Control {
 	}
 
 	private void OnMainMenuSaveSlotsMenu() {
-		StoryMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/save_slots_menu.tscn" ).Instantiate<SaveSlotsMenu>();
+		StoryMenu = SceneCache.GetScene( "res://scenes/menus/save_slots_menu.tscn" ).Instantiate<SaveSlotsMenu>();
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
@@ -84,11 +119,13 @@ public partial class TitleMenu : Control {
 		AddChild( StoryMenu );
 		MoveChild( StoryMenu, index );
 
+		MainMenu.QueueFree();
+
 		ExitButton.Show();
 		State = MenuState.SaveSlots;
 	}
 	private void OnMainMenuExtrasMenu() {
-		ExtrasMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
+		ExtrasMenu = SceneCache.GetScene( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
@@ -97,11 +134,13 @@ public partial class TitleMenu : Control {
 		AddChild( ExtrasMenu );
 		MoveChild( ExtrasMenu, index );
 
+		MainMenu.QueueFree();
+
 		ExitButton.Show();
 		State = MenuState.Extras;
 	}
 	private void OnMainMenuSettingsMenu() {
-		SettingsMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
+		SettingsMenu = SceneCache.GetScene( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
@@ -110,11 +149,13 @@ public partial class TitleMenu : Control {
 		AddChild( SettingsMenu );
 		MoveChild( SettingsMenu, index );
 
+		MainMenu.QueueFree();
+
 		ExitButton.Show();
 		State = MenuState.Settings;
 	}
 	private void OnMainMenuCreditsMenu() {
-		CreditsMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/credits_menu.tscn" ).Instantiate<CreditsMenu>();
+		CreditsMenu = SceneCache.GetScene( "res://scenes/menus/credits_menu.tscn" ).Instantiate<CreditsMenu>();
 
 		int index = MainMenu.GetIndex();
 		RemoveChild( MainMenu );
@@ -123,23 +164,25 @@ public partial class TitleMenu : Control {
 		AddChild( CreditsMenu );
 		MoveChild( CreditsMenu, index );
 
+		MainMenu.QueueFree();
+
 		ExitButton.Show();
 		State = MenuState.Credits;
 	}
 
 	private void ReleaseAll() {
-		ExtrasMenu?.Free();
-		SettingsMenu?.Free();
+		ExtrasMenu?.QueueFree();
+		SettingsMenu?.QueueFree();
 	}
 
 	private void OnKonamiCodeActivated() {
 		Console.PrintLine( "========== Meme Mode Activated ==========" );
 		GameConfiguration.MemeMode = true;
 		UIAudioManager.PlayCustomSound( ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" ) );
-		SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
+		Steam.SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
 	}
 	private void OnMenuIdleTimerTimeout() {
-		
+
 	}
 
 	public override void _Ready() {
@@ -147,7 +190,7 @@ public partial class TitleMenu : Control {
 
 		PhysicsServer2D.SetActive( false );
 
-		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://cursor_n.png" ) );
+		Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://cursor_n.png" ) );
 
 		AddChild( ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>() );
 
@@ -174,9 +217,9 @@ public partial class TitleMenu : Control {
 		MainMenu.Connect( MainMenu.SignalName.CreditsMenu, Callable.From( OnMainMenuCreditsMenu ) );
 
 		ExitButton = GetNode<Button>( "ExitButton" );
-		ExitButton.Connect( "focus_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		ExitButton.Connect( "mouse_entered", Callable.From( UIAudioManager.OnButtonFocused ) );
-		ExitButton.Connect( "pressed", Callable.From( OnExitButtonPressed ) );
+		ExitButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ExitButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
+		ExitButton.Connect( Button.SignalName.Pressed, Callable.From( OnExitButtonPressed ) );
 
 		MenuIdleTimer = new Timer();
 		MenuIdleTimer.OneShot = true;

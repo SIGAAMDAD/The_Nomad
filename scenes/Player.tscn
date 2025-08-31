@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="PackedScene" uid="uid://w3nwgyanrgiq" path="res://scenes/player_system/arm_attachements/grapple_hook.tscn" id="13_srp4u"]
 [ext_resource type="PackedScene" uid="uid://c5ifktckwf67j" path="res://scenes/player_system/freeflow_counter.tscn" id="15_jfpux"]
-[ext_resource type="Script" uid="uid://dn7wcbtciwfi0" path="res://scripts/Effects/FootSteps.cs" id="17_jfpux"]
+[ext_resource type="Script" uid="uid://dptkfrr1vrajn" path="res://scripts/PlayerSystem/FootSteps.cs" id="17_jfpux"]
 [ext_resource type="Texture2D" uid="uid://cdbpfdprqasia" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.dds" id="19_b8lor"]
 [ext_resource type="InventoryDatabase" uid="uid://clhvh7ktysxhx" path="res://resources/ItemDatabase.tres" id="21_kgn6m"]
 
@@ -55,7 +55,7 @@ radius = 153.118
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_srp4u"]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("Inventory", "ArmLeft", "ArmRight", "HUD", "ArmAttachment") groups=["Archive", "SceneRelevant"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("ArmLeft", "ArmRight", "HUD", "ArmAttachment") groups=["Archive", "SceneRelevant"]]
 process_priority = 4
 process_physics_priority = 4
 light_mask = 0
@@ -65,7 +65,6 @@ y_sort_enabled = true
 collision_layer = 174
 collision_mask = 174
 script = ExtResource("1_5fsym")
-Inventory = NodePath("Inventory")
 ArmLeft = NodePath("ArmLeft")
 ArmRight = NodePath("ArmRight")
 HUD = NodePath("HeadsUpDisplay")
@@ -342,7 +341,6 @@ visible = false
 position = Vector2(12, -2)
 
 [node name="AimAssist" type="Node2D" parent="."]
-visible = false
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 modulate = Color(2, 2, 2, 1)

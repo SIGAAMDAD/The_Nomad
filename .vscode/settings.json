@@ -1,3 +1,10 @@
 {
-	"godotTools.editorPath.godot4": "/media/noah/ab8ebf4d-ded3-46a9-983a-3545cd58109e/noah/the-nomad/TheNomad.x86_64"
+	"godotTools.editorPath.godot4": "/media/noah/ab8ebf4d-ded3-46a9-983a-3545cd58109e/noah/the-nomad/TheNomad.x86_64",
+	"files.exclude": {
+		"**/*.cs.doxy_temp": true,
+		"**/*.cs.uid": true,
+		"**/*.gd.doxy_temp": true,
+		"**/*.gd.uid": true,
+		"**/*.uid": true
+	}
 }

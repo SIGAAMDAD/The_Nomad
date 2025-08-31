@@ -83,7 +83,7 @@ namespace Renown.World {
 			if ( !IsInGroup( "Settlements" ) ) {
 				AddToGroup( "Settlements" );
 			}
-			if ( !ArchiveSystem.Instance.IsLoaded() ) {
+			if ( !ArchiveSystem.IsLoaded() ) {
 			}
 		}
 	};

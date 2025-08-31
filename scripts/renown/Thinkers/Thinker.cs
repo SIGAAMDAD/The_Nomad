@@ -5,6 +5,10 @@ using DialogueManagerRuntime;
 using System.Runtime.CompilerServices;
 using MountainGoap;
 using System.Threading;
+using Multiplayer;
+using Steam;
+using Menus;
+using ResourceCache;
 
 namespace Renown.Thinkers {
 	public enum ThinkerFlags : uint {
@@ -60,6 +64,8 @@ namespace Renown.Thinkers {
 		protected NodePath InitialPath;
 
 		protected ThinkerFlags Flags;
+
+		protected MountainGoap.Agent Agent;
 
 		protected bool Initialized = false;
 
@@ -140,7 +146,7 @@ namespace Renown.Thinkers {
 			System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA );
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS;
 
-			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			if ( SettingsData.EnableNetworking && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
 			}
 
@@ -158,8 +164,8 @@ namespace Renown.Thinkers {
 
 			ProcessThreadGroupOrder = Constants.THREAD_GROUP_THINKERS_AWAY;
 
-			if ( Location.GetBiome() != null ) {
-				if ( Location.GetBiome().IsPlayerHere() ) {
+			if ( Location.Biome != null ) {
+				if ( Location.Biome.PlayerStatus ) {
 					System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_IN_BIOME );
 				} else {
 					System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
@@ -168,7 +174,7 @@ namespace Renown.Thinkers {
 				System.Threading.Interlocked.Exchange( ref ThreadSleep, Constants.THREADSLEEP_THINKER_PLAYER_AWAY );
 			}
 
-			if ( SettingsData.GetNetworkingEnabled() && GameConfiguration.GameMode == GameMode.Multiplayer ) {
+			if ( SettingsData.EnableNetworking && GameConfiguration.GameMode == GameMode.Multiplayer ) {
 				SteamLobby.Instance.RemoveNetworkNode( GetPath() );
 			}
 
@@ -247,7 +253,7 @@ namespace Renown.Thinkers {
 
 		protected void OnBodyAnimationFinished() {
 			if ( BodyAnimations.Animation == "move" ) {
-				PlaySound( AudioChannel, ResourceCache.MoveGravelSfx[ RNJesus.IntRange( 0, ResourceCache.MoveGravelSfx.Length - 1 ) ] );
+				PlaySound( AudioChannel, SoundCache.GetEffectRange( SoundEffect.MoveGravel0, 4 ) );
 			}
 		}
 
@@ -308,7 +314,7 @@ namespace Renown.Thinkers {
 				Velocity = safeVelocity;// * (float)GetPhysicsProcessDeltaTime();
 				CallDeferred( MethodName.MoveAlongPath );
 			} ) );
-			NavAgent.Connect( NavigationAgent2D.SignalName.TargetReached, Callable.From( OnTargetReached ) );
+			NavAgent.TargetReached += OnTargetReached;
 			AddChild( NavAgent );
 
 			NavAgentRID = NavAgent.GetRid();
@@ -323,7 +329,7 @@ namespace Renown.Thinkers {
 
 			GotoPosition = GlobalPosition;
 
-			if ( ArchiveSystem.Instance.IsLoaded() ) {
+			if ( ArchiveSystem.IsLoaded() ) {
 				Load();
 			}
 			AddToGroup( "Archive" );

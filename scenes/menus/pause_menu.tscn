@@ -1,25 +1,26 @@
-[gd_scene load_steps=33 format=3 uid="uid://de5ahm2yawr1u"]
+[gd_scene load_steps=34 format=3 uid="uid://de5ahm2yawr1u"]
 
 [ext_resource type="Script" uid="uid://ccgj2hv37o23s" path="res://scripts/menus/PauseMenu.cs" id="1_gsnt3"]
 [ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="2_1onjl"]
-[ext_resource type="Texture2D" uid="uid://dorn7jjse1fxv" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
+[ext_resource type="Texture2D" uid="uid://bwg6jakjxt1nm" path="res://textures/hud/status_bladed.png" id="2_dqjbd"]
 [ext_resource type="Script" uid="uid://ydv0jh21g8l7" path="res://scripts/PlayerSystem/UserInterface/backpack.gd" id="2_opdvj"]
-[ext_resource type="Texture2D" uid="uid://bjkdfsajgy7uv" path="res://textures/hud/status_blunt.png" id="3_opdvj"]
-[ext_resource type="Texture2D" uid="uid://0ht4neolbjfk" path="res://textures/env/dividerh.dds" id="4_1onjl"]
+[ext_resource type="Texture2D" uid="uid://duo0ejiq3ofo1" path="res://textures/hud/status_blunt.png" id="3_opdvj"]
+[ext_resource type="Texture2D" uid="uid://cavrw6xdrnkv3" path="res://textures/env/dividerh.dds" id="4_1onjl"]
 [ext_resource type="Script" uid="uid://bkee2h7x0ho6" path="res://addons/animatedbutton/AnimatedButton.gd" id="4_2wrho"]
 [ext_resource type="Texture2D" uid="uid://dhri03k2n4tud" path="res://textures/env/bullet.dds" id="4_pf6lc"]
 [ext_resource type="Shader" uid="uid://e1sfwrae8vnm" path="res://shaders/inventory_category_selector.gdshader" id="5_j7gms"]
-[ext_resource type="FontFile" uid="uid://c86hw5xibkiy0" path="res://edosz.ttf" id="5_umr50"]
-[ext_resource type="Texture2D" uid="uid://cp6jxnn3ac02q" path="res://textures/env/iconw_adb.png" id="6_oey0u"]
-[ext_resource type="Texture2D" uid="uid://nhu6hy65cj1o" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
+[ext_resource type="FontFile" uid="uid://dq136wkvpeo86" path="res://edosz.ttf" id="5_umr50"]
+[ext_resource type="Texture2D" uid="uid://c3xj8u148gbl7" path="res://textures/env/iconw_adb.png" id="6_oey0u"]
+[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="7_sy5ew"]
 [ext_resource type="Script" uid="uid://fff43ia7d6fd" path="res://scripts/PlayerSystem/UserInterface/journal.gd" id="9_pf6lc"]
 [ext_resource type="Script" uid="uid://cl5v4e1tqpr7o" path="res://scripts/PlayerSystem/UserInterface/equipment.gd" id="10_j7gms"]
 [ext_resource type="Texture2D" uid="uid://cpt4h8soh1kek" path="res://textures/hud/int_splatter.dds" id="14_1onjl"]
-[ext_resource type="Texture2D" uid="uid://uhwhrg50f5sg" path="res://textures/env/dividerv.dds" id="15_ty7ml"]
+[ext_resource type="Texture2D" uid="uid://cyuu67qdh3603" path="res://textures/env/dividerv.dds" id="15_ty7ml"]
 [ext_resource type="Texture2D" uid="uid://npatv6o5itdw" path="res://textures/hud/ink_frame.dds" id="16_umr50"]
 [ext_resource type="Texture2D" uid="uid://dmas3gs6mulme" path="res://textures/hud/ink_splatter_2.dds" id="17_0f518"]
-[ext_resource type="Texture2D" uid="uid://cn1j00pgmxlyu" path="res://textures/hud/ink_splatter_2.png" id="17_h4mgr"]
-[ext_resource type="Texture2D" uid="uid://bhhfvfnfnx0wr" path="res://textures/env/runes/rune_of_sinatra.png" id="18_umr50"]
+[ext_resource type="Texture2D" uid="uid://bicqn7twyie1n" path="res://textures/hud/ink_splatter_2.png" id="17_h4mgr"]
+[ext_resource type="Texture2D" uid="uid://ce4b42dgafkxr" path="res://textures/env/runes/rune_of_sinatra.png" id="18_umr50"]
+[ext_resource type="FontFile" uid="uid://bk3i170p7rft3" path="res://PressStart2P-Regular.ttf" id="21_0f518"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w5beu"]
 
@@ -73,6 +74,7 @@ script = ExtResource("1_gsnt3")
 metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+process_mode = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -946,7 +948,6 @@ grow_vertical = 2
 size_flags_horizontal = 0
 
 [node name="ResumeButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
-process_mode = 2
 layout_mode = 2
 text = "RESUME_BUTTON"
 flat = true
@@ -956,6 +957,13 @@ metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 [node name="HelpMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
 layout_mode = 2
 text = "HELP_BUTTON"
+flat = true
+script = ExtResource("4_2wrho")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
+
+[node name="SettingsMenuButton" type="Button" parent="MarginContainer/TabContainer/Options/VBoxContainer"]
+layout_mode = 2
+text = "SETTINGS_BUTTON"
 flat = true
 script = ExtResource("4_2wrho")
 metadata/_custom_type_script = "uid://bkee2h7x0ho6"
@@ -989,3 +997,17 @@ size = Vector2i(200, 158)
 dialog_text = "Are you sure you want to quit?"
 dialog_autowrap = true
 cancel_button_text = "Nah"
+
+[node name="ExitButton" type="Button" parent="."]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -43.0
+offset_right = 126.0
+offset_bottom = 32.0
+grow_vertical = 0
+scale = Vector2(0.726053, 0.530469)
+theme_override_fonts/font = ExtResource("21_0f518")
+text = "< BACK"

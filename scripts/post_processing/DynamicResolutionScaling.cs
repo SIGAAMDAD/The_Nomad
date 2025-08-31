@@ -1,4 +1,5 @@
 using Godot;
+using Menus;
 
 public partial class DynamicResolutionScaling : SubViewportContainer {
 	private int TargetFrameRate = 0;
@@ -14,7 +15,7 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 	private int[] PrevFrameData = new int[ 30 ];
 
 	private void OnSettingsChanged() {
-		int MaxFps = SettingsData.GetMaxFps();
+		int MaxFps = SettingsData.MaxFps;
 		int RefreshRate = (int)DisplayServer.ScreenGetRefreshRate();
 
 		int UltraPerformance_MinFrames = 0;
@@ -32,8 +33,8 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 			Balanced_MinFrames = RefreshRate / 4;
 		}
 
-		TargetFrameRate = SettingsData.GetDRSTargetFrames();
-		Preset = SettingsData.GetDRSPreset();
+		TargetFrameRate = SettingsData.DRSTargetFrames;
+		Preset = SettingsData.DRSPreset;
 
 		switch ( Preset ) {
 		case DRSPreset.UltraPerformance:
@@ -57,8 +58,8 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 
 		SettingsData.Instance.SettingsChanged += OnSettingsChanged;
 
-		TargetFrameRate = SettingsData.GetDRSTargetFrames();
-		Preset = SettingsData.GetDRSPreset();
+		TargetFrameRate = SettingsData.DRSTargetFrames;
+		Preset = SettingsData.DRSPreset;
 	}
 	public override void _Process( double delta ) {
 		base._Process( delta );

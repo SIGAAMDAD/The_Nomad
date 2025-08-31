@@ -1,11 +1,49 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using DialogueManagerRuntime;
 using Godot;
+using ResourceCache;
+
 namespace PlayerSystem.UserInterface {
+	/*
+	===================================================================================
+	
+	DialogueContainer
+	
+	===================================================================================
+	*/
+	
 	public partial class DialogueContainer : MarginContainer {
 		private VBoxContainer MainContainer;
 
 		private static DialogueContainer Instance;
 
+
+		/*
+		===============
+		AddOption
+		===============
+		*/
 		public static void AddOption( StringName translationString, Callable callback ) {
 			if ( Instance.MainContainer.GetChildCount() > 0 ) {
 				Instance.MainContainer.AddChild( new HSeparator() );
@@ -17,12 +55,24 @@ namespace PlayerSystem.UserInterface {
 			button.Connect( Button.SignalName.Pressed, callback );
 			Instance.MainContainer.AddChild( button );
 		}
+
+		/*
+		===============
+		EndInteraction
+		===============
+		*/
 		public static void EndInteraction() {
 			Instance.Hide();
 			LevelData.Instance.ThisPlayer.BlockInput( false );
 
-			Input.SetCustomMouseCursor( ResourceCache.GetResource( "res://textures/hud/crosshairs/crosshairi.tga" ) );
+			Godot.Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ) );
 		}
+
+		/*
+		===============
+		StartInteraction
+		===============
+		*/
 		public static void StartInteraction() {
 			Godot.Collections.Array<Node> children = Instance.MainContainer.GetChildren();
 			for ( int i = 0; i < children.Count; i++ ) {
@@ -31,11 +81,19 @@ namespace PlayerSystem.UserInterface {
 			}
 			Instance.Show();
 
-			Input.SetCustomMouseCursor( ResourceCache.GetResource( "res://cursor_n.png" ) );
+			Godot.Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://cursor_n.png" ) );
 
 			LevelData.Instance.ThisPlayer.BlockInput( true );
 		}
 
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
 		public override void _Ready() {
 			base._Ready();
 

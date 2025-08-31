@@ -1,10 +1,36 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using MountainGoap;
 using Renown.Thinkers.GoapCache;
 using Renown.Thinkers.Groups;
 using Renown.World;
+using ResourceCache;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Steam;
+using Menus;
 
 namespace Renown.Thinkers {
 	public partial class Bandit : Thinker {
@@ -32,8 +58,6 @@ namespace Renown.Thinkers {
 		private AINodeCache NodeCache;
 
 		private float SightDetectionAmount = 0.0f;
-
-		private MountainGoap.Agent Agent;
 
 		private Hitbox HeadHitbox;
 
@@ -64,8 +88,6 @@ namespace Renown.Thinkers {
 		private Timer TargetMovedTimer;
 
 		public WeaponEntity Weapon { get; private set; }
-		public AmmoEntity Ammo { get; private set; }
-		public AmmoStack AmmoStack { get; private set; }
 
 		private MobAwareness Awareness = MobAwareness.Relaxed;
 
@@ -139,12 +161,12 @@ namespace Renown.Thinkers {
 
 		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
-			NodeCache = location.GetNodeCache();
+			NodeCache = location.NodeCache;
 		}
 
 		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
-			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" )
-				&& stream != ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) ) {
+			if ( ( Flags & ThinkerFlags.Dead ) != 0 && stream != AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" )
+				&& stream != AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) ) {
 				return;
 			}
 			base.PlaySound( channel, stream );
@@ -156,7 +178,7 @@ namespace Renown.Thinkers {
 			}
 
 			base.Damage( source, nAmount );
-			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
+			//			PlaySound( AudioChannel, AudioCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			Godot.Vector2 knockbackDirection = source.GlobalPosition.DirectionTo( GlobalPosition ).Normalized();
 			const float knockbackAmount = 60.0f;
@@ -186,13 +208,13 @@ namespace Renown.Thinkers {
 				HeadAnimations.CallDeferred( MethodName.Hide );
 				ArmAnimations.CallDeferred( MethodName.Hide );
 				if ( !HitHead ) {
-					CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_low.ogg" ) );
+					CallDeferred( MethodName.PlaySound, AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" ) );
 					BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die_low" );
 				}
 				return;
 			}
 
-			if ( source.GetFaction() == Faction ) {
+			if ( source.Faction == Faction ) {
 				// "CEASEFIRE!"
 				//				Bark( BarkType.Ceasefire );
 			}
@@ -227,46 +249,48 @@ namespace Renown.Thinkers {
 			Awareness = MobAwareness.Alert;
 		}
 
-		private void SetFear( int nAmount ) {
-			Fear = nAmount;
+		private void SetFear( int amount ) {
+			Fear = amount;
 		}
 
 		private AudioStream GetBarkResource( BarkType bark ) {
+			/*
 			switch ( bark ) {
-			case BarkType.ManDown:
-				return ResourceCache.ManDown[ RNJesus.IntRange( 0, ResourceCache.ManDown.Length - 1 ) ];
-			case BarkType.MenDown2:
-				return ResourceCache.ManDown2;
-			case BarkType.MenDown3:
-				return ResourceCache.ManDown3;
-			case BarkType.TargetSpotted:
-				return ResourceCache.TargetSpotted[ RNJesus.IntRange( 0, ResourceCache.TargetSpotted.Length - 1 ) ];
-			case BarkType.TargetPinned:
-				return ResourceCache.TargetPinned[ RNJesus.IntRange( 0, ResourceCache.TargetPinned.Length - 1 ) ];
-			case BarkType.TargetRunning:
-				return ResourceCache.TargetRunning[ RNJesus.IntRange( 0, ResourceCache.TargetRunning.Length - 1 ) ];
-			case BarkType.Confusion:
-				return ResourceCache.Confusion[ RNJesus.IntRange( 0, ResourceCache.Confusion.Length - 1 ) ];
-			case BarkType.Alert:
-				return ResourceCache.Alert[ RNJesus.IntRange( 0, ResourceCache.Alert.Length - 1 ) ];
-			case BarkType.OutOfTheWay:
-				return ResourceCache.OutOfTheWay[ RNJesus.IntRange( 0, ResourceCache.OutOfTheWay.Length - 1 ) ];
-			case BarkType.NeedBackup:
-				return ResourceCache.NeedBackup[ RNJesus.IntRange( 0, ResourceCache.NeedBackup.Length - 1 ) ];
-			case BarkType.SquadWiped:
-				return ResourceCache.SquadWiped;
-			case BarkType.Curse:
-				return ResourceCache.Curse[ RNJesus.IntRange( 0, ResourceCache.Curse.Length - 1 ) ];
-			case BarkType.CheckItOut:
-				return ResourceCache.CheckItOut[ RNJesus.IntRange( 0, ResourceCache.CheckItOut.Length - 1 ) ];
-			case BarkType.Quiet:
-				return ResourceCache.Quiet[ RNJesus.IntRange( 0, ResourceCache.Quiet.Length - 1 ) ];
-			case BarkType.Unstoppable:
-				return ResourceCache.Unstoppable;
-			case BarkType.Count:
-			default:
-				break;
-			};
+				case BarkType.ManDown:
+					return ResourceCache.ManDown[ RNJesus.IntRange( 0, ResourceCache.ManDown.Length - 1 ) ];
+				case BarkType.MenDown2:
+					return ResourceCache.ManDown2;
+				case BarkType.MenDown3:
+					return ResourceCache.ManDown3;
+				case BarkType.TargetSpotted:
+					return ResourceCache.TargetSpotted[ RNJesus.IntRange( 0, ResourceCache.TargetSpotted.Length - 1 ) ];
+				case BarkType.TargetPinned:
+					return ResourceCache.TargetPinned[ RNJesus.IntRange( 0, ResourceCache.TargetPinned.Length - 1 ) ];
+				case BarkType.TargetRunning:
+					return ResourceCache.TargetRunning[ RNJesus.IntRange( 0, ResourceCache.TargetRunning.Length - 1 ) ];
+				case BarkType.Confusion:
+					return ResourceCache.Confusion[ RNJesus.IntRange( 0, ResourceCache.Confusion.Length - 1 ) ];
+				case BarkType.Alert:
+					return ResourceCache.Alert[ RNJesus.IntRange( 0, ResourceCache.Alert.Length - 1 ) ];
+				case BarkType.OutOfTheWay:
+					return ResourceCache.OutOfTheWay[ RNJesus.IntRange( 0, ResourceCache.OutOfTheWay.Length - 1 ) ];
+				case BarkType.NeedBackup:
+					return ResourceCache.NeedBackup[ RNJesus.IntRange( 0, ResourceCache.NeedBackup.Length - 1 ) ];
+				case BarkType.SquadWiped:
+					return ResourceCache.SquadWiped;
+				case BarkType.Curse:
+					return ResourceCache.Curse[ RNJesus.IntRange( 0, ResourceCache.Curse.Length - 1 ) ];
+				case BarkType.CheckItOut:
+					return ResourceCache.CheckItOut[ RNJesus.IntRange( 0, ResourceCache.CheckItOut.Length - 1 ) ];
+				case BarkType.Quiet:
+					return ResourceCache.Quiet[ RNJesus.IntRange( 0, ResourceCache.Quiet.Length - 1 ) ];
+				case BarkType.Unstoppable:
+					return ResourceCache.Unstoppable;
+				case BarkType.Count:
+				default:
+					break;
+			}
+			*/
 			return null;
 		}
 		private void Bark( BarkType bark, BarkType sequenced = BarkType.Count ) {
@@ -283,28 +307,28 @@ namespace Renown.Thinkers {
 				SightDetectionAmount = SightDetectionTime;
 			}
 			switch ( Awareness ) {
-			case MobAwareness.Relaxed:
-				if ( SightDetectionAmount == 0.0f ) {
-					DetectionColor.R = 1.0f;
-					DetectionColor.G = 1.0f;
-					DetectionColor.B = 1.0f;
-				} else {
+				case MobAwareness.Relaxed:
+					if ( SightDetectionAmount == 0.0f ) {
+						DetectionColor.R = 1.0f;
+						DetectionColor.G = 1.0f;
+						DetectionColor.B = 1.0f;
+					} else {
+						DetectionColor.R = 0.0f;
+						DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+						DetectionColor.B = 1.0f;
+					}
+					break;
+				case MobAwareness.Suspicious:
 					DetectionColor.R = 0.0f;
-					DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-					DetectionColor.B = 1.0f;
-				}
-				break;
-			case MobAwareness.Suspicious:
-				DetectionColor.R = 0.0f;
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				break;
-			case MobAwareness.Alert:
-				DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = 0.0f;
-				break;
-			};
+					DetectionColor.G = 0.0f;
+					DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+					break;
+				case MobAwareness.Alert:
+					DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+					DetectionColor.G = 0.0f;
+					DetectionColor.B = 0.0f;
+					break;
+			}
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 		private void OnLoseInterestTimerTimeout() {
@@ -324,7 +348,7 @@ namespace Renown.Thinkers {
 				return;
 			}
 			HitHead = true;
-			CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.GetSound( "res://sounds/mobs/die_high.ogg" ) );
+			CallDeferred( MethodName.PlaySound, AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) );
 			BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die_high" );
 			Damage( source, Health );
 		}
@@ -373,25 +397,27 @@ namespace Renown.Thinkers {
 			StartHealth = Health;
 
 			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
-			HeadHitbox.Hit += OnHeadHit;
+			GameEventBus.ConnectSignal( HeadHitbox, Hitbox.SignalName.Hit, this, Callable.From<Entity, float>( OnHeadHit ) );
 
 			CurrentState = State.Animate;
 
 			Group = SquadManager.GetGroup( Faction, GlobalPosition );
 			Group.AddMember( this );
 
-			LoseInterestTimer = new Timer();
-			LoseInterestTimer.Name = "LoseInterestTimer";
-			LoseInterestTimer.WaitTime = LoseInterestTime;
-			LoseInterestTimer.OneShot = true;
-			LoseInterestTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnLoseInterestTimerTimeout ) );
+			LoseInterestTimer = new Timer() {
+				Name = nameof( LoseInterestTimer ),
+				WaitTime = LoseInterestTime,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( LoseInterestTimer, Timer.SignalName.Timeout, this, OnLoseInterestTimerTimeout );
 			AddChild( LoseInterestTimer );
 
-			ChangeInvestigationAngleTimer = new Timer();
-			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
-			ChangeInvestigationAngleTimer.WaitTime = 2.0f;
-			ChangeInvestigationAngleTimer.OneShot = true;
-			ChangeInvestigationAngleTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
+			ChangeInvestigationAngleTimer = new Timer() {
+				Name = nameof( ChangeInvestigationAngleTimer ),
+				WaitTime = 2.0f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( ChangeInvestigationAngleTimer, Timer.SignalName.Timeout, this, () => {
 				float angle;
 				if ( RNJesus.IntRange( 0, 99 ) > 49 ) {
 					angle = RNJesus.FloatRange( -80.0f, 80.0f );
@@ -404,75 +430,70 @@ namespace Renown.Thinkers {
 				if ( !CanSeeTarget ) {
 					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 				}
-			} ) );
+			} );
 
 			AttackMeter = GetNode<Line2D>( "AttackMeter" );
 			AttackMeterDone = AttackMeter.Points[ 0 ];
 			AttackMeter.Points[ 1 ] = AttackMeterFull;
 			AttackMeterProgress = AttackMeterFull.X;
 
-			AttackTimer = new Timer();
-			AttackTimer.Name = "AttackTimer";
-			AttackTimer.OneShot = true;
-			AttackTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => { Aiming = false; } ) );
+			AttackTimer = new Timer() {
+				Name = nameof( AttackTimer ),
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( AttackTimer, Timer.SignalName.Timeout, this, () => Aiming = false );
 			AddChild( AttackTimer );
 
-			AimTimer = new Timer();
-			AimTimer.Name = "AimTimer";
-			AimTimer.WaitTime = 2.5f;
-			AimTimer.OneShot = true;
-			AimTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnAimTimerTimeout ) );
+			AimTimer = new Timer() {
+				Name = nameof( AimTimer ),
+				WaitTime = 2.5f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( AimTimer, Timer.SignalName.Timeout, this, OnAimTimerTimeout );
 			AddChild( AimTimer );
 
-			BarkChannel = new AudioStreamPlayer2D();
-			BarkChannel.Name = "BarkChannel";
-			BarkChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+			BarkChannel = new AudioStreamPlayer2D() {
+				Name = nameof( BarkChannel ),
+				VolumeDb = SettingsData.GetEffectsVolumeLinear()
+			};
 			AddChild( BarkChannel );
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 
-			Weapon = new WeaponEntity();
-			Weapon.Name = "Weapon";
-			Weapon.Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" );
-
-			Ammo = new AmmoEntity();
-			Ammo.Name = "Ammo";
-			Ammo.Data = ResourceLoader.Load( "res://resources/ammo/556_ammo.tres" );
-			AddChild( Ammo );
-
-			AmmoStack = new AmmoStack();
-			AmmoStack.SetType( Ammo );
-			AmmoStack.Amount = (int)Ammo.Data.Get( "max_stack" );
+			Weapon = new WeaponEntity() {
+				Name = "Weapon",
+				Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" )
+			};
 
 			AddChild( Weapon );
 
+			Weapon.SetAmmoStack( new AmmoStack( ItemCache.GetItem( "res://resources/ammo/ammo_556.tres" ), 48 ) );
 			Weapon.TriggerPickup( this );
 			Weapon.SetOwner( this );
-			Weapon.SetReserve( AmmoStack );
-			Weapon.SetAmmo( Ammo );
 
-			TargetMovedTimer = new Timer();
-			TargetMovedTimer.Name = "TargetMovedTimer";
-			TargetMovedTimer.WaitTime = 5.0f;
-			TargetMovedTimer.OneShot = true;
-			TargetMovedTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => { Bark( BarkType.TargetPinned ); } ) );
+			TargetMovedTimer = new Timer() {
+				Name = nameof( TargetMovedTimer ),
+				WaitTime = 5.0f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( TargetMovedTimer, Timer.SignalName.Timeout, this, () => Bark( BarkType.TargetPinned ) );
 			AddChild( TargetMovedTimer );
 
 			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				BodyAnimations.FlipH = true;
-				break;
-			};
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					BodyAnimations.FlipH = true;
+					break;
+			}
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
@@ -480,9 +501,11 @@ namespace Renown.Thinkers {
 			List<MountainGoap.Action> actions = GoapCache.GoapAllocator.GetActionList( "bandit" );
 			List<MountainGoap.Sensor> sensors = GoapCache.GoapAllocator.GetSensorList( "bandit" );
 
+			Group = SquadManager.GetGroup( Faction, GlobalPosition );
+
 			Agent = new MountainGoap.Agent(
 				name: "Bandit",
-				state: new ConcurrentDictionary<string, object> {
+				state: new ConcurrentDictionary<string, object?> {
 					{ "Health", Health },
 					{ "HasAmmo", false },
 					{ "PlayerVisible", CanSeeTarget },
@@ -498,7 +521,7 @@ namespace Renown.Thinkers {
 					{ "SquadTactic", Group.CurrentTactic },
 					{ "Owner", this }
 				},
-				memory: new Dictionary<string, object> {
+				memory: new Dictionary<string, object?> {
 					{ "WarnedFriendlies", false },
 					{ "AimTime", 0.0f },
 					{ "CheckSight", () => CheckSight }
@@ -513,8 +536,8 @@ namespace Renown.Thinkers {
 		}
 
 		private void OnAimTimerTimeout() {
-			RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, AimAngle, Ammo.Range, GetRid() );
-			if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() == Faction ) {
+			RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, AimAngle, Weapon.Ammo.AmmoType.Range, GetRid() );
+			if ( collision.Collider is Entity entity && entity != null && entity.Faction == Faction ) {
 				Bark( BarkType.OutOfTheWay );
 				SetNavigationTarget( GlobalPosition + new Godot.Vector2( Godot.Vector2.Right.X + 50.0f, Godot.Vector2.Right.Y + 20.0f ) );
 				return;
@@ -549,7 +572,7 @@ namespace Renown.Thinkers {
 			Agent.State[ "Fear" ] = Fear;
 			Agent.State[ "Awareness" ] = Awareness;
 			Agent.State[ "SquadSize" ] = Group.Members.Count;
-			Agent.State[ "HasAmmo" ] = AmmoStack.Amount > 0;
+			Agent.State[ "HasAmmo" ] = Weapon.Ammo.Amount > 0;
 			Agent.State[ "PlayerVisible" ] = CanSeeTarget;
 			Agent.State[ "WeaponState" ] = Weapon.CurrentState;
 			Agent.State[ "SquadTactic" ] = Group.CurrentTactic;
@@ -561,6 +584,7 @@ namespace Renown.Thinkers {
 		protected override void Think() {
 			SyncGOAPState();
 
+			LookAtTarget();
 			Agent.Step( StepMode.Default );
 
 			/*
@@ -614,7 +638,7 @@ namespace Renown.Thinkers {
 
 		public void LookAtTarget() {
 			Godot.Vector2 position = LastTargetPosition;
-			if ( CanSeeTarget && SightTarget != null ) {
+			if ( SightTarget != null ) {
 				ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Stop );
 				position = SightTarget.GlobalPosition;
 			}
@@ -625,7 +649,7 @@ namespace Renown.Thinkers {
 
 		private void CheckParry() {
 			if ( AimTimer.TimeLeft > 0.0f && Target is Player player && player != null ) {
-				if ( ( player.GetFlags() & Player.PlayerFlags.LightParrying ) != 0 ) {
+				if ( ( player.Flags & Player.PlayerFlags.LightParrying ) != 0 ) {
 
 					// shoot early
 					AimTimer.Stop();
@@ -704,29 +728,29 @@ namespace Renown.Thinkers {
 			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
 				// out of sight, but we got something
 				switch ( Awareness ) {
-				case MobAwareness.Relaxed:
-					SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-					if ( SightDetectionAmount < 0.0f ) {
-						SightDetectionAmount = 0.0f;
-					}
-					break;
-				case MobAwareness.Suspicious:
-					SetSuspicious();
-					break;
-				case MobAwareness.Alert:
-					SetAlert();
-					break;
-				};
+					case MobAwareness.Relaxed:
+						SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
+						if ( SightDetectionAmount < 0.0f ) {
+							SightDetectionAmount = 0.0f;
+						}
+						break;
+					case MobAwareness.Suspicious:
+						SetSuspicious();
+						break;
+					case MobAwareness.Alert:
+						SetAlert();
+						break;
+				}
 				SetDetectionColor();
 				return;
 			}
 
 			if ( sightTarget != null ) {
-				if ( sightTarget.GetHealth() <= 0.0f && sightTarget.GetFaction() == Faction ) {
+				if ( sightTarget.Health <= 0.0f && sightTarget.Faction == Faction ) {
 					Bark( BarkType.ManDown );
 
 					Awareness = MobAwareness.Alert;
-				} else if ( sightTarget.GetFaction() != Faction ) {
+				} else if ( sightTarget.Faction != Faction ) {
 					SightTarget = sightTarget;
 					LastTargetPosition = sightTarget.GlobalPosition;
 					CanSeeTarget = true;

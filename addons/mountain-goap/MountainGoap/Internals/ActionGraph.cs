@@ -23,8 +23,8 @@ namespace MountainGoap {
         internal ActionGraph(List<Action> actions, ConcurrentDictionary<string, object?> state) {
 			for ( int i = 0; i < actions.Count; i++ ) {
 				var permutations = actions[ i ].GetPermutations( state );
-				for ( int p = 0; p < permutations.Count; p++ ) {
-					ActionNodes.Add( new ActionNode( actions[ i ], state, permutations[ p ] ) );
+				foreach ( var permutation in permutations ) {
+					ActionNodes.Add( new ActionNode( actions[ i ], state, permutation ) );
 				}
 			}
         }

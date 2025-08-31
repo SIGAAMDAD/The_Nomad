@@ -11,7 +11,7 @@ namespace Renown {
 		public override void _Ready() {
 			base._Ready();
 
-			if ( ArchiveSystem.Instance.IsLoaded() ) {
+			if ( ArchiveSystem.IsLoaded() ) {
 				
 			} else {
 				Cache = new Dictionary<NodePath, Node>();

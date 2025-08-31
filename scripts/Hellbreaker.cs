@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using Renown.Thinkers;
+using Menus;
 
 public partial class Hellbreaker : Node2D {
 	private static List<HellbreakerExit> Exits;
@@ -78,8 +79,8 @@ public partial class Hellbreaker : Node2D {
 		ThisPlayer.GetTorsoAnimation().Material = ResourceLoader.Load<Material>( "res://resources/materials/teleport.tres" );
 		ThisPlayer.GetTorsoAnimation().Material.Set( "shader_parameter/progress", 1.0f );
 		*/
-		ThisPlayer.GetTorsoAnimation().CallDeferred( "play", "default" );
-		ThisPlayer.GetTorsoAnimation().Show();
+		ThisPlayer.TorsoAnimation.CallDeferred( "play", "default" );
+		ThisPlayer.TorsoAnimation.Show();
 		/*
 		Tween TorsoTween = CreateTween();
 		TorsoTween.TweenProperty( ThisPlayer.GetTorsoAnimation().Material, "shader_parameter/progress", 0.0f, 3.0f );
@@ -90,8 +91,8 @@ public partial class Hellbreaker : Node2D {
 		ThisPlayer.GetLegsAnimation().Material = ResourceLoader.Load<Material>( "res://resources/materials/teleport.tres" );
 		ThisPlayer.GetLegsAnimation().Material.Set( "shader_parameter/progress", 1.0f );
 		*/
-		ThisPlayer.GetLegsAnimation().CallDeferred( "play", "idle" );
-		ThisPlayer.GetLegsAnimation().Show();
+		ThisPlayer.LegAnimation.CallDeferred( "play", "idle" );
+		ThisPlayer.LegAnimation.Show();
 		/*
 		Tween LegsTween = CreateTween();
 		LegsTween.TweenProperty( ThisPlayer.GetLegsAnimation().Material, "shader_parameter/progress", 0.0f, 3.0f );
@@ -102,8 +103,8 @@ public partial class Hellbreaker : Node2D {
 		ThisPlayer.GetLeftArmAnimation().Material = ResourceLoader.Load<Material>( "res://resources/materials/teleport.tres" );
 		ThisPlayer.GetLeftArmAnimation().Material.Set( "shader_parameter/progress", 1.0f );
 		*/
-		ThisPlayer.GetLeftArmAnimation().CallDeferred( "play", "idle" );
-		ThisPlayer.GetLeftArmAnimation().Show();
+		ThisPlayer.ArmLeft.Animations.CallDeferred( "play", "idle" );
+		ThisPlayer.ArmLeft.Animations.Show();
 		//Tween LeftArmTween = CreateTween();
 		//LeftArmTween.TweenProperty( ThisPlayer.GetLeftArmAnimation().Material, "shader_parameter/progress", 0.0f, 3.0f );
 		//LeftArmTween.Connect( "finished", Callable.From( () => { ThisPlayer.GetLeftArmAnimation().Material = null; } ) );
@@ -112,8 +113,8 @@ public partial class Hellbreaker : Node2D {
 		ThisPlayer.GetRightArmAnimation().Material = ResourceLoader.Load<Material>( "res://resources/materials/teleport.tres" );
 		ThisPlayer.GetRightArmAnimation().Material.Set( "shader_parameter/progress", 1.0f );
 		*/
-		ThisPlayer.GetRightArmAnimation().CallDeferred( "play", "idle" );
-		ThisPlayer.GetRightArmAnimation().Show();
+		ThisPlayer.ArmRight.Animations.CallDeferred( "play", "idle" );
+		ThisPlayer.ArmRight.Animations.Show();
 		//Tween RightArmTween = CreateTween();
 		//RightArmTween.TweenProperty( ThisPlayer.GetRightArmAnimation().Material, "shader_parameter/progress", 0.0f, 3.0f );
 		//RightArmTween.Connect( "finished", Callable.From( () => { ThisPlayer.GetRightArmAnimation().Material = null; ThisPlayer.CallDeferred( "BlockInput", false ); } ) );
@@ -137,6 +138,7 @@ public partial class Hellbreaker : Node2D {
 		Theme.CallDeferred( "play" );
 		Theme.SetDeferred( "parameters/looping", true );
 
+		/*
 		MusicTween = CreateTween();
 		MusicTween.CallDeferred( "tween_property", Theme, "volume_db", SettingsData.GetMusicVolumeLinear(), 4.5f );
 
@@ -183,6 +185,7 @@ public partial class Hellbreaker : Node2D {
 
 		player.CallDeferred( "SetHealth", 100.0f );
 		player.CallDeferred( "SetRage", 60.0f );
+		*/
 	}
 
 	public override void _Ready() {

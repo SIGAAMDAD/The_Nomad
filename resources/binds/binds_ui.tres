@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=31 format=3 uid="uid://60p4mjofgcx4"]
 
-[ext_resource type="Script" uid="uid://cpplm41b5bt6m" path="res://addons/guide/guide_action_mapping.gd" id="1_5ggct"]
+[ext_resource type="Script" uid="uid://bd74abvyklro7" path="res://addons/guide/guide_action_mapping.gd" id="1_5ggct"]
 [ext_resource type="Resource" uid="uid://c111o0a8dfohi" path="res://resources/binds/actions/ui/go_back.tres" id="2_2xjxv"]
 [ext_resource type="Script" uid="uid://dsa1dnifd6w32" path="res://addons/guide/guide_mapping_context.gd" id="2_vnu43"]
 [ext_resource type="Script" uid="uid://mtx1unc2aqn7" path="res://addons/guide/guide_input_mapping.gd" id="3_j3bg8"]

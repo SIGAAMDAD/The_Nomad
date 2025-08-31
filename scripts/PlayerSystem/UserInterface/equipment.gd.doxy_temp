@@ -1,0 +1,173 @@
+#
+# ===========================================================================
+# Copyright (C) 2023-2025 Noah Van Til
+#
+# This file is part of The Nomad source code.
+#
+# The Nomad source code is free software; you can redistribute it
+# and/or modify it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation; either version 2 of the License,
+# or (at your option) any later version.
+#
+# The Nomad source code is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with The Nomad source code; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+# ===========================================================================
+#
+
+class_name Equipment extends TabBar
+
+enum WeaponSlotIndex {
+	Primary,
+	HeavyPrimary,
+	Sidearm,
+	HeavySidearm,
+};
+
+var _owner: CharacterBody2D
+
+@onready var _weapon_list: VBoxContainer = $MarginContainer/SelectionScreen/VBoxContainer/VBoxContainer/VScrollBar/WeaponList
+@onready var _primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer/PrimaryIcon
+@onready var _heavy_primary_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/PrimaryWeaponsContainer/HeavyPrimaryIcon
+@onready var _sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer/SidearmIcon
+@onready var _heavy_sidearm_weapon: TextureRect = $MarginContainer/LoadoutScreen/WeaponsContainer/SidearmWeaponsContainer/HeavySidearmIcon
+@onready var _selection_container: MarginContainer = $MarginContainer/SelectionScreen
+@onready var _loadout_container: VBoxContainer = $MarginContainer/LoadoutScreen
+@onready var _background: MarginContainer = $Background
+
+
+#
+# ===============
+# _on_selection_container_visibility_changed
+# ===============
+#
+func _on_selection_container_visibility_changed() -> void:
+	_loadout_container.visible = !_selection_container.visible
+	_background.visible = _loadout_container.visible
+
+
+#
+# ===============
+# is_item_select_input_valid
+# ===============
+#
+static func is_item_select_input_valid( gui_event: InputEvent ) -> bool:
+	if gui_event is InputEventMouseButton:
+		return gui_event.button_index == MOUSE_BUTTON_LEFT
+	elif gui_event is InputEventJoypadButton:
+		return gui_event.button_index == JOY_BUTTON_A
+	return false
+
+
+#
+# ===============
+# init_equipment
+# ===============
+#
+func init_equipment() -> void:
+	if _owner.WeaponSlots[ WeaponSlotIndex.Primary ].GetWeapon() != null:
+		_primary_weapon.texture = _owner.WeaponSlots[ WeaponSlotIndex.Primary ].GetWeapon().Icon
+	if _owner.WeaponSlots[ WeaponSlotIndex.Sidearm ].GetWeapon() != null:
+		_sidearm_weapon.texture = _owner.WeaponSlots[ WeaponSlotIndex.Sidearm ].GetWeapon().Icon
+
+
+#
+# ===============
+# _get_weapon_categories
+# ===============
+#
+func _get_weapon_categories( weapon: Node, category: String, mutex: Mutex, weapons: Array[ Node ] ) -> void:
+	for it in weapon.Data.categories:
+		if it.id == category:
+			mutex.lock()
+			weapons.push_back( weapon )
+			mutex.unlock()
+
+
+#
+# ===============
+# get_weapons_in_category
+# ===============
+#
+func get_weapons_in_category( category: String ) -> Array[ Node ]:
+	var _weapons: Array[ Node ] = []
+	var _lock: Mutex = Mutex.new()
+	
+	for weapon in _owner.GetWeaponsStack().values():
+		_get_weapon_categories( weapon, category, _lock, _weapons )
+	
+	return _weapons
+
+
+#
+# ===============
+# _on_weapon_item_selected
+# ===============
+#
+func _on_weapon_item_selected( gui_event: InputEvent, item: TextureRect, category: String ) -> void:
+	if !is_item_select_input_valid( gui_event ):
+		return
+	
+	match category:
+		"WEAPON_CATEGORY_PRIMARY":
+			_owner.SetPrimaryWeapon( item.get_meta( "weapon" ) )
+		"WEAPON_CATEGORY_SIDEARM":
+			_owner.SetSidearmWeapon( item.get_meta( "weapon" ) )
+	
+	init_equipment()
+	_selection_container.get_node( "VBoxContainer/GoBackButton" ).emit_signal( "pressed" )
+
+
+#
+# ===============
+# _on_weapon_selected
+# ===============
+#
+func _on_weapon_selected( gui_event: InputEvent, weapon_slot: TextureRect ) -> void:
+	if !is_item_select_input_valid( gui_event ):
+		return
+	
+	_selection_container.show()
+	
+	for child in _weapon_list.get_children():
+		_weapon_list.remove_child.call_deferred( child )
+		child.queue_free.call_deferred()
+	
+	var _weapons: Array[ Node ] = get_weapons_in_category( weapon_slot.get_meta( "category" ) )
+	for weapon in _weapons:
+		var _item: TextureRect = TextureRect.new()
+		_item.texture = weapon.Icon
+		_item.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		_item.custom_minimum_size = Vector2( 128, 64 )
+		_item.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_item.tooltip_text = weapon.Data.name
+		_item.set_meta( "weapon", weapon )
+		_item.connect( "gui_input", func( gui_event: InputEvent ): _on_weapon_item_selected( gui_event, _item, weapon_slot.get_meta( "category" ) ) )
+		_weapon_list.add_child.call_deferred( _item )
+
+
+#
+# ===============
+# _ready
+# ===============
+#
+func _ready() -> void:
+	_owner = get_node( "/root/LevelData" ).ThisPlayer
+	
+	connect( "visibility_changed", init_equipment )
+	
+	var _go_back_button: Button = _selection_container.get_node( "VBoxContainer/GoBackButton" )
+	_go_back_button.connect( "pressed", func(): _selection_container.hide() )
+	
+	_selection_container.connect( "visibility_changed", _on_selection_container_visibility_changed )
+	
+	_primary_weapon.connect( "gui_input", func( gui_event: InputEvent ): _on_weapon_selected( gui_event, _primary_weapon ) )
+	_primary_weapon.set_meta( "category", "WEAPON_CATEGORY_PRIMARY" )
+	
+	_sidearm_weapon.connect( "gui_input", func( gui_event: InputEvent ): _on_weapon_selected( gui_event, _sidearm_weapon ) )
+	_sidearm_weapon.set_meta( "category", "WEAPON_CATEGORY_SIDEARM" )

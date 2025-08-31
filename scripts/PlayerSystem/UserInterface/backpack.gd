@@ -1,3 +1,25 @@
+#
+# ===========================================================================
+# Copyright (C) 2023-2025 Noah Van Til
+#
+# This file is part of The Nomad source code.
+#
+# The Nomad source code is free software; you can redistribute it
+# and/or modify it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation; either version 2 of the License,
+# or (at your option) any later version.
+#
+# The Nomad source code is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with The Nomad source code; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+# ===========================================================================
+#
+
 class_name Backpack extends TabBar
 
 enum PlayerFlags {
@@ -22,8 +44,9 @@ enum PlayerFlags {
 	Sober = 0x00040000,
 };
 
-const _backpack_item_minimum_size: Vector2 = Vector2( 64.0, 64.0 )
-const _max_items_per_row: int = 4
+const BACKPACK_ITEM_MINIMUM_SIZE: Vector2 = Vector2( 64.0, 64.0 )
+const MAX_ITEMS_PER_ROW: int = 4
+const MAXIMUM_INVENTORY_WEIGHT: float = 500.0
 
 var _owner: CharacterBody2D
 
@@ -49,9 +72,15 @@ var _owner: CharacterBody2D
 var _selected_item: NodePath
 var _pickup_script: CSharpScript = preload( "res://scripts/Interactables/ItemPickup.cs" )
 
+
+#
+# ===============
+# _on_drop_item_stack
+# ===============
+#
 func _on_drop_item_stack() -> void:
 	var _item: TextureRect = get_node( _selected_item )
-	if !_item:
+	if _item == null:
 		return
 	
 	var _item_type: Resource = _item.get_meta( "item" )
@@ -70,20 +99,18 @@ func _on_drop_item_stack() -> void:
 	
 	var _row: HBoxContainer = _item.get_parent()
 	_row.remove_child( _item )
-	_item.call_deferred( "queue_free" )
-	
+	_item.queue_free.call_deferred()
+
 	if _row.get_child_count() == 0:
 		_stack_list.remove_child( _row )
 		_row.queue_free()
 
-func _ready() -> void:
-	_owner = get_node( "/root/LevelData" ).ThisPlayer
-	
-	var _drop_item_stack_button: Button = get_node( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DropStackButton" )
-	_drop_item_stack_button.connect( "pressed", _on_drop_item_stack )
-	
-	connect( "visibility_changed", _on_visibility_changed )
 
+#
+# ===============
+# _on_visibility_changed
+# ===============
+#
 func _on_visibility_changed() -> void:
 	for child in _stack_list.get_children():
 		for image in child.get_children():
@@ -109,12 +136,18 @@ func _on_visibility_changed() -> void:
 		_row = add_item_to_backpack( _row, _item_resource )
 		_weight += _item_resource.weight * stack.amount
 	
-	_encumbrance_amount_label.text = var_to_str( _weight ) + "/" + var_to_str( _owner.MaximumInventoryWeight )
+	_encumbrance_amount_label.text = var_to_str( _weight ) + "/" + var_to_str( MAXIMUM_INVENTORY_WEIGHT )
 	if ( _owner.GetFlags() & PlayerFlags.Encumbured ):
 		_overweight_label.show()
 	else:
 		_overweight_label.hide()
 
+
+#
+# ===============
+# is_item_select_input_valid
+# ===============
+#
 static func is_item_select_input_valid( gui_event: InputEvent ) -> bool:
 	if gui_event is InputEventMouseButton:
 		return gui_event.button_index == MOUSE_BUTTON_LEFT
@@ -122,6 +155,12 @@ static func is_item_select_input_valid( gui_event: InputEvent ) -> bool:
 		return gui_event.button_index == JOY_BUTTON_A
 	return false
 
+
+#
+# ===============
+# _on_backpack_item_selected
+# ===============
+#
 func _on_backpack_item_selected( gui_event: InputEvent, item: TextureRect ) -> void:
 	if !item.has_meta( "item" ) || !is_item_select_input_valid( gui_event ):
 		return
@@ -162,6 +201,12 @@ func _on_backpack_item_selected( gui_event: InputEvent, item: TextureRect ) -> v
 	
 	_selected_item = item.get_meta( "node" )
 
+
+#
+# ===============
+# add_item
+# ===============
+#
 func add_item( row: HBoxContainer, item_type: Resource, stack_amount: int, hash: int ) -> void:
 	var _category: int = 0
 	var _found: bool = false
@@ -182,7 +227,7 @@ func add_item( row: HBoxContainer, item_type: Resource, stack_amount: int, hash:
 		Console.PrintError( "Notebook.AddItem: invalid item category \"" + item_type.categories[ _category ].id + "\"" )
 		return
 	
-	if row.get_child_count() == _max_items_per_row:
+	if row.get_child_count() == MAX_ITEMS_PER_ROW:
 		row = HBoxContainer.new()
 		_stack_list.add_child( row )
 	
@@ -191,7 +236,7 @@ func add_item( row: HBoxContainer, item_type: Resource, stack_amount: int, hash:
 	
 	_item.texture = item_type.icon
 	_item.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-	_item.custom_minimum_size = _backpack_item_minimum_size
+	_item.custom_minimum_size = BACKPACK_ITEM_MINIMUM_SIZE
 	_item.connect( "gui_input", func( gui_event: InputEvent ): _on_backpack_item_selected( gui_event, _item ) )
 	_item.set_meta( "item", item_type )
 	_item.set_meta( "amount", stack_amount )
@@ -204,14 +249,46 @@ func add_item( row: HBoxContainer, item_type: Resource, stack_amount: int, hash:
 	if item_type.properties.has( "effects" ):
 		_item.set_meta( "effects", item_type.properties[ "effects" ] )
 
+
+#
+# ===============
+# add_ammo_stack_to_backpack
+# ===============
+#
 func add_ammo_stack_to_backpack( row: HBoxContainer, stack: Node ) -> HBoxContainer:
 	add_item( row, stack.AmmoType.Data, stack.Amount, stack.get_meta( "hash" ) )
 	return row
 
+
+#
+# ===============
+# add_weapon_to_backpack
+# ===============
+#
 func add_weapon_to_backpack( row: HBoxContainer, weapon: Node ) -> HBoxContainer:
 	add_item( row, weapon.Data, 1, weapon.get_meta( "hash" ) )
 	return row
 
+
+#
+# ===============
+# add_item_to_backpack
+# ===============
+#
 func add_item_to_backpack( row: HBoxContainer, stack: Resource ) -> HBoxContainer:
 	add_item( row, _owner.GetInventory().database.get_item( stack.item_id ), stack.amount, stack.get_meta( "hash" ) )
 	return row
+
+
+#
+# ===============
+# _ready
+# ===============
+#
+func _ready() -> void:
+	_owner = get_node( "/root/LevelData" ).ThisPlayer
+	
+	var _drop_item_stack_button: Button = get_node( "MarginContainer/VBoxContainer/HBoxContainer/ItemInfo/DropStackButton" )
+	_drop_item_stack_button.connect( "pressed", _on_drop_item_stack )
+	
+	connect( "visibility_changed", _on_visibility_changed )

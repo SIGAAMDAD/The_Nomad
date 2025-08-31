@@ -10,18 +10,19 @@ namespace Renown.Thinkers {
 		[Export]
 		protected int WarCrimeCount = 0;
 		[Export]
-		protected Godot.Collections.Array<TraitType> Traits = new Godot.Collections.Array<TraitType>();
-		[Export]
 		protected Godot.Collections.Dictionary<Node, float> Relations = null;
 		[Export]
 		protected Godot.Collections.Dictionary<Node, float> Debts = null;
+		[Export]
+		public Godot.Collections.Dictionary<Trait, float> TraitScores { get; private set; } = null;
+		[Export]
+		public int RenownScore { get; private set; } = 0;
 
-		protected HashSet<Trait> TraitCache = null;
 		protected HashSet<RenownValue> RelationCache = null;
 		protected HashSet<RenownValue> DebtCache = null;
 
 		public override void Save() {
-			using var writer = new SaveSystem.SaveSectionWriter( Name );
+			using var writer = new SaveSystem.SaveSectionWriter( Name, ArchiveSystem.SaveWriter );
 			int count;
 
 			writer.SaveInt( "RelationCount", RelationCache.Count );
@@ -42,13 +43,6 @@ namespace Renown.Thinkers {
 			foreach ( var debt in DebtCache ) {
 				writer.SaveString( string.Format( "DebtNode{0}", count ), debt.Object.GetObjectName() );
 				writer.SaveFloat( string.Format( "DebtValue{0}", count ), debt.Value );
-				count++;
-			}
-
-			writer.SaveInt( "TraitCount", TraitCache.Count );
-			count = 0;
-			foreach ( var trait in TraitCache ) {
-				writer.SaveUInt( string.Format( "TraitType{0}", count ), (uint)trait.GetTraitType() );
 				count++;
 			}
 		}
@@ -77,25 +71,18 @@ namespace Renown.Thinkers {
 					reader.LoadFloat( string.Format( "DebtValue{0}", i ) )
 				) );
 			}
-
-			int traitCount = reader.LoadInt( "TraitCount" );
-			TraitCache = new HashSet<Trait>( traitCount );
-			for ( int i = 0; i < traitCount; i++ ) {
-				TraitCache.Add( Trait.Create( (TraitType)reader.LoadUInt( string.Format( "TraitType{0}", i ) ) ) );
-			}
 		}
 
-		public override void DetermineRelationStatus( Object other ) {
-			if ( !RelationCache.TryGetValue( new RenownValue( other ), out RenownValue value ) ) {
+		public override void DetermineRelationStatus( Entity entity ) {
+			if ( !RelationCache.TryGetValue( new RenownValue( entity ), out RenownValue value ) ) {
 				return;
 			}
 			float score = value.Value;
-			int renownScore = other.GetRenownScore();
 
 			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
 
-			if ( Faction.GetRelationStatus( other ) >= RelationStatus.Hates ) {
-				score -= Faction.GetRelationScore( other );
+			if ( Faction.GetRelationStatus( entity ) >= RelationStatus.Hates ) {
+				score -= Faction.GetRelationScore( entity );
 			}
 
 			/*
@@ -115,10 +102,72 @@ namespace Renown.Thinkers {
 
 			value.Value = score;
 		}
-		public override bool HasRelation( Object other ) => RelationCache.Contains( new RenownValue( other ) );
-		public override float GetRelationScore( Object other ) => RelationCache.TryGetValue( new RenownValue( other ), out RenownValue score ) ? score.Value : 0.0f;
-		public override RelationStatus GetRelationStatus( Object other ) {
-			float score = GetRelationScore( other );
+		public override void DetermineRelationStatus( Faction faction ) {
+			if ( !RelationCache.TryGetValue( new RenownValue( faction ), out RenownValue value ) ) {
+				return;
+			}
+			float score = value.Value;
+
+			// TODO: write some way of using renown to determine if the entity knows all this stuff about the other one
+
+			if ( Faction.GetRelationStatus( faction ) >= RelationStatus.Hates ) {
+				score -= Faction.GetRelationScore( faction );
+			}
+
+			/*
+			HashSet<Trait> traitList = other.GetTraits();
+			foreach ( var trait in traitList ) {
+				List<Trait> conflicting = GetConflictingTraits( trait );
+				for ( int i = 0; i < conflicting.Count; i++ ) {
+					score -= conflicting[i].GetNegativeRelationScore( trait );
+				}
+
+				List<Trait> agreeables = GetAgreeableTraits( trait );
+				for ( int i = 0; i < agreeables.Count; i++ ) {
+					score += conflicting[i].GetPositiveRelationScore( trait );
+				}
+			}
+			*/
+
+			value.Value = score;
+		}
+		public override bool HasRelation( Entity entity ) {
+			return RelationCache.Contains( new RenownValue( entity ) );
+		}
+		public override bool HasRelation( Faction faction ) {
+			return RelationCache.Contains( new RenownValue( faction ) );
+		}
+
+		public override float GetRelationScore( Entity entity ) {
+			return RelationCache.TryGetValue( new RenownValue( entity ), out RenownValue score ) ? score.Value : 0.0f;
+		}
+		public override float GetRelationScore( Faction faction ) {
+			return RelationCache.TryGetValue( new RenownValue( faction ), out RenownValue score ) ? score.Value : 0.0f;
+		}
+
+		public override RelationStatus GetRelationStatus( Entity entity ) {
+			float score = GetRelationScore( entity );
+
+			if ( score < -100.0f ) {
+				return RelationStatus.KendrickAndDrake;
+			}
+			if ( score < -50.0f ) {
+				return RelationStatus.Hates;
+			}
+			if ( score < 0.0f ) {
+				return RelationStatus.Dislikes;
+			}
+			if ( score > 25.0f ) {
+				return RelationStatus.Friends;
+			}
+			if ( score > 100.0f ) {
+				return RelationStatus.GoodFriends;
+			}
+			return RelationStatus.Neutral;
+		}
+
+		public override RelationStatus GetRelationStatus( Faction faction ) {
+			float score = GetRelationScore( faction );
 
 			if ( score < -100.0f ) {
 				return RelationStatus.KendrickAndDrake;
@@ -140,12 +189,6 @@ namespace Renown.Thinkers {
 
 		public override void _Ready() {
 			base._Ready();
-
-			TraitCache = new HashSet<Trait>( Traits.Count );
-			for ( int i = 0; i < Traits.Count; i++ ) {
-				TraitCache.Add( Trait.Create( Traits[ i ] ) );
-			}
-			Traits.Clear();
 
 			if ( Relations != null ) {
 				RelationCache = new HashSet<RenownValue>( Relations.Count );

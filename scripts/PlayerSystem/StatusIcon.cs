@@ -43,7 +43,7 @@ namespace PlayerSystem {
 			Show();
 			SetProcess( true );
 			StatusEffect = effect;
-			Texture = StatusEffect.GetIcon();
+			Texture = StatusEffect.Icon;
 
 			StatusEffect.Timeout += Stop;
 		}

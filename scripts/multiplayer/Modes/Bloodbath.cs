@@ -1,10 +1,43 @@
-using System;
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using System.Collections.Generic;
 using Godot;
 using Renown;
 using Steamworks;
+using Steam;
 
 namespace Multiplayer.Modes {
+	/*
+	===================================================================================
+	
+	Bloodbath
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// Manages data and state relevant to a Bloodbath multiplayer match
+	/// </summary>
+	
 	public partial class Bloodbath : Mode {
 		private struct Ranking {
 			public CSteamID Id = CSteamID.Nil;
@@ -14,12 +47,18 @@ namespace Multiplayer.Modes {
 			}
 		};
 
+		/// <summary>
+		/// The minimum players required for the mode
+		/// </summary>
 		public static readonly int MinPlayers = 1;
+
+		/// <summary>
+		/// The maximum amount of players that can play in the mode
+		/// </summary>
 		public static readonly int MaxPlayers = 16;
 
 		private Dictionary<CSteamID, int> Scoreboard = new Dictionary<CSteamID, int>( SteamLobby.MAX_LOBBY_MEMBERS );
 		private Dictionary<CSteamID, int> ServerScores = new Dictionary<CSteamID, int>( SteamLobby.MAX_LOBBY_MEMBERS );
-		private Player ThisPlayer;
 
 		private int MaxScore = 15;
 
@@ -29,7 +68,7 @@ namespace Multiplayer.Modes {
 
 		private void OnGameStart() {
 			Announcer.Fight();
-			ThisPlayer.BlockInput( false );
+			LevelData.Instance.ThisPlayer.BlockInput( false );
 		}
 
 		private void OnPlayerScore( Entity source, Entity target ) {
@@ -48,7 +87,7 @@ namespace Multiplayer.Modes {
 		}
 
 		public override void SpawnPlayer( Entity player ) {
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 			player.Die += OnPlayerScore;
@@ -57,6 +96,7 @@ namespace Multiplayer.Modes {
 		private void SendPacket() {
 			ushort changedBits = 0;
 			ushort index = 0;
+			
 			foreach ( var score in Scoreboard ) {
 				// TODO: delta compression
 				if ( score.Value != ServerScores[ score.Key ] ) {
@@ -108,9 +148,9 @@ namespace Multiplayer.Modes {
 
 			//			MaxScore = Convert.ToInt32( SteamMatchmaking.GetLobbyData( SteamLobby.Instance.GetLobbyID(), "RequiredScore" ) );
 
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
 			}
 		}
-    };
+	};
 };

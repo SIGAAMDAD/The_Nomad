@@ -37,7 +37,7 @@ public partial class NodeCache : Node {
 			Groups.Add( groups[ i ].Name, groups[ i ] );
 		}
 
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
+		if ( ArchiveSystem.IsLoaded() ) {
 			Load();
 		} else {
 		}

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="3_rtw2f"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
+[ext_resource type="FontFile" uid="uid://bk3i170p7rft3" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
 [ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="7_tbmy8"]
 
 [node name="MainMenu" type="Control"]

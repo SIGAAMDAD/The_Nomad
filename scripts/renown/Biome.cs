@@ -1,3 +1,25 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using Godot;
 using System.Collections.Generic;
 
@@ -15,6 +37,17 @@ namespace Renown.World {
 		Count
 	};
 
+	/*
+	===================================================================================
+	
+	Biome
+	
+	contains information and relevant data for an in-game biome, including weather and
+	player detection
+	
+	===================================================================================
+	*/
+	
 	public partial class Biome : WorldArea {
 		/// <summary>
 		/// The current weather of the biome
@@ -86,6 +119,11 @@ namespace Renown.World {
 		[Signal]
 		public delegate void AgentExitedAreaEventHandler( Entity agent );
 
+		/*
+		===============
+		OnWeatherChangeTimerTimeout
+		===============
+		*/
 		private void OnWeatherChangeTimerTimeout() {
 			float chance = 0.0f;
 			WeatherType weather = WeatherType.Clear;
@@ -101,6 +139,13 @@ namespace Renown.World {
 			CurrentWeather = weather;
 		}
 
+		/*
+		===============
+		_Ready
+
+		godot initialization override
+		===============
+		*/
 		public override void _Ready() {
 			base._Ready();
 
@@ -125,6 +170,12 @@ namespace Renown.World {
 
 			Hide();
 		}
+
+		/*
+		===============
+		_Process
+		===============
+		*/
 		public override void _Process( double delta ) {
 			base._Process( delta );
 		}

@@ -1,10 +1,10 @@
 [gd_resource type="ItemDefinition" load_steps=7 format=3 uid="uid://c223850qlfwy0"]
 
 [ext_resource type="ItemCategory" uid="uid://tulgaen38mij" path="res://resources/weapons/categories/shells_category.tres" id="1_5beet"]
-[ext_resource type="Texture2D" uid="uid://nhu6hy65cj1o" path="res://textures/env/icona_bullets.dds" id="1_hchru"]
-[ext_resource type="Texture2D" uid="uid://rj2rfamse1n7" path="res://textures/env/bullet_casings/musket_shell.png" id="2_pedk0"]
+[ext_resource type="Texture2D" uid="uid://kjha75xdsrcv" path="res://textures/env/icona_bullets.dds" id="1_hchru"]
+[ext_resource type="Texture2D" uid="uid://j1ldi28gvsu6" path="res://textures/env/bullet_casings/musket_shell.png" id="2_pedk0"]
 [ext_resource type="ItemCategory" uid="uid://0wiipwekxix3" path="res://resources/weapons/categories/ammo_category.tres" id="2_tby86"]
-[ext_resource type="AudioStream" uid="uid://ck0fdntcd4q6h" path="res://sounds/weapons/SHELPK2.wav" id="3_pedk0"]
+[ext_resource type="AudioStream" uid="uid://bfkfv1lpn4p8n" path="res://sounds/weapons/SHELPK2.wav" id="3_pedk0"]
 
 [sub_resource type="Curve" id="Curve_fgkyf"]
 _data = [Vector2(0, 0.981381), 0.0, 0.0, 0, 0, Vector2(0.675418, 0.798911), 0.0, 0.0, 0, 0, Vector2(1, 0.407906), 0.0, 0.0, 0, 0]

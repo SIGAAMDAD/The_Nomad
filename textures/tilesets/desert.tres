@@ -1,7 +1,7 @@
 [gd_resource type="TileSet" load_steps=7 format=3 uid="uid://becdkuct42jns"]
 
 [ext_resource type="Texture2D" uid="uid://cvcwqconxr2m5" path="res://textures/tilesets/furniture.dds" id="2_hd71e"]
-[ext_resource type="Texture2D" uid="uid://cbm5hgxkliht1" path="res://textures/tilesets/desert.png" id="3_ncc55"]
+[ext_resource type="Texture2D" uid="uid://dbgaj1idllye7" path="res://textures/tilesets/desert.png" id="3_ncc55"]
 [ext_resource type="Texture2D" uid="uid://fcgjjs6rvr0a" path="res://textures/tilesets/DesertTilemap16x16.dds" id="5_lbabs"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbabs"]

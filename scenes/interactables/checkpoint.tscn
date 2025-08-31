@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://co7rmsfdbg4m0"]
 
 [ext_resource type="Texture2D" uid="uid://d0mlp04cxg4tw" path="res://textures/point_light.dds" id="2_7no74"]
-[ext_resource type="Texture2D" uid="uid://b2c2uo1akvpbx" path="res://textures/campfire.png" id="2_jkcg4"]
+[ext_resource type="Texture2D" uid="uid://nto3cd6qioam" path="res://textures/campfire.png" id="2_jkcg4"]
 [ext_resource type="Script" uid="uid://mpd26orqn88g" path="res://scripts/LightData.cs" id="3_bcsha"]
 [ext_resource type="Texture2D" uid="uid://dyghteg051cwn" path="res://textures/unlit.dds" id="4_7no74"]
 

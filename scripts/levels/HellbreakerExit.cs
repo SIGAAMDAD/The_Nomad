@@ -27,7 +27,7 @@ public partial class HellbreakerExit : Node2D {
 			RemoveFromGroup( "HellbreakerExits" );
 			break;
 		case "dead":
-			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
+//			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
 			break;
 		};
 	}

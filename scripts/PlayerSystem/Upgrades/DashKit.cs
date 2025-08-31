@@ -1,21 +1,53 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using System;
 using System.Collections.Generic;
 using Godot;
+using ResourceCache;
+using Menus;
 
 namespace PlayerSystem.Upgrades {
+	/*
+	===================================================================================
+	
+	DashKit
+	
+	===================================================================================
+	*/
+	
 	public sealed partial class DashKit : Node2D {
-		private static readonly float DashTimerBase = 0.3f;
+		private static readonly float DASH_TIMER_BASE = 0.3f;
 
-		private Timer DashTime;
-		private Timer DashBurnoutCooldownTimer;
-		private Timer DashCooldownTime;
-
-		private AudioStreamPlayer2D AudioChannel;
-
-		private DashModule Module;
+		public DashModule? Module { get; private set; }
 
 		private float DashBurnout = 0.0f;
-		private float DashTimer = DashTimerBase;
+		private float DashTimer = DASH_TIMER_BASE;
+
+		private Timer? DashTime;
+		private Timer? DashBurnoutCooldownTimer;
+		private Timer? DashCooldownTime;
+
+		private AudioStreamPlayer2D? AudioChannel;
 
 		[Signal]
 		public delegate void DashEndEventHandler();
@@ -26,23 +58,45 @@ namespace PlayerSystem.Upgrades {
 		[Signal]
 		public delegate void DashBurnoutChangedEventHandler( float nAmount );
 
-		public void EquipModule( DashModule module ) => Module = module;
-		public DashModule GetModule() => Module;
+		/*
+		===============
+		EquipModule
+		===============
+		*/
+		public void EquipModule( ref DashModule module ) {
+			Module = module;
+		}
 
+		/*
+		===============
+		OnDashBurnoutCooldownTimerTimeout
+		===============
+		*/
 		private void OnDashBurnoutCooldownTimerTimeout() {
 			DashBurnout = 0.0f;
 			DashTimer = 0.3f;
 
-			AudioChannel.Stream = ResourceCache.GetSound( "res://sounds/player/dash_chargeup.ogg" );
+			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/player/dash_chargeup.ogg" );
 			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		}
+
+		/*
+		===============
+		OnDashTimeTimeout
+		===============
+		*/
 		private void OnDashTimeTimeout() {
 			EmitSignalDashEnd();
 		}
 
+		/*
+		===============
+		OnDash
+		===============
+		*/
 		public void OnDash() {
 			if ( DashBurnout >= 1.0f ) {
-				AudioChannel.Stream = ResourceCache.DashExplosion;
+				AudioChannel.Stream = SoundCache.StreamCache[ SoundEffect.DashExplosion ];
 				AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 
 				DashBurnoutCooldownTimer.Start();
@@ -57,7 +111,7 @@ namespace PlayerSystem.Upgrades {
 			DashTime.Start();
 
 			AudioChannel.PitchScale = 1.0f + DashBurnout;
-			AudioChannel.Stream = ResourceCache.DashSfx[ RNJesus.IntRange( 0, ResourceCache.DashSfx.Length - 1 ) ];
+			AudioChannel.Stream = SoundCache.GetEffectRange( SoundEffect.DashBurn0, 2 );
 			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 			EmitSignalDashStart();
 
@@ -73,8 +127,22 @@ namespace PlayerSystem.Upgrades {
 			EmitSignalDashBurnoutChanged( DashBurnout );
 		}
 
-		public bool CanDash() => DashBurnoutCooldownTimer.TimeLeft == 0.0f;
+		/*
+		===============
+		CanDash
+		===============
+		*/
+		public bool CanDash() {
+			return DashBurnoutCooldownTimer.TimeLeft == 0.0f;
+		}
 
+		/*
+		===============
+		_Ready
+
+		godot initialization override
+		===============
+		*/
 		public override void _Ready() {
 			base._Ready();
 
@@ -104,6 +172,11 @@ namespace PlayerSystem.Upgrades {
 			AddChild( DashCooldownTime );
 		}
 
+		/*
+		===============
+		_Process
+		===============
+		*/
 		public override void _Process( double delta ) {
 			base._Process( delta );
 

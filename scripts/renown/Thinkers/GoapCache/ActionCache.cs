@@ -1,10 +1,32 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using MountainGoap;
 using System.Collections.Generic;
 using Godot;
 
 namespace Renown.Thinkers.GoapCache {
 	/// <summary>
-	/// generic actions that aren't faction specific
+	/// Generic actions that aren't faction specific
 	/// </summary>
 	public enum ActionType : uint {
 		SurveyForThreats,
@@ -37,6 +59,17 @@ namespace Renown.Thinkers.GoapCache {
 		Count
 	};
 
+	/*
+	===================================================================================
+	
+	GoapActionCache
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// Stores global GOAP action Dictionary
+	/// </summary>
+	
 	public static class GoapActionCache {
 		public static Dictionary<ActionType, Action> Cache;
 
@@ -57,11 +90,11 @@ namespace Renown.Thinkers.GoapCache {
 						},
 						cost: 0.2f,
 						costCallback: null,
-						preconditions: new Dictionary<string, object>{
+						preconditions: new Dictionary<string, object?>{
 							{ "IsAlerted", false }
 						},
 						comparativePreconditions: null,
-						postconditions: new Dictionary<string, object>{
+						postconditions: new Dictionary<string, object?>{
 							{ "IsAlerted", true },
 						},
 						arithmeticPostconditions: null,
@@ -74,6 +107,7 @@ namespace Renown.Thinkers.GoapCache {
 						name: "Reload",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
+							GD.Print( "Reloading..." );
 							if ( (WeaponEntity.WeaponState)agent.State[ "WeaponState" ] == WeaponEntity.WeaponState.Reload ) {
 								return ExecutionStatus.Executing;
 							}
@@ -83,11 +117,11 @@ namespace Renown.Thinkers.GoapCache {
 						costCallback: ( agent, currentState ) => {
 							return 1.0f;
 						},
-						preconditions: new Dictionary<string, object>{
+						preconditions: new Dictionary<string, object?>{
 							{ "HasAmmo", false }
 						},
 						comparativePreconditions: null,
-						postconditions: new Dictionary<string, object>{
+						postconditions: new Dictionary<string, object?>{
 							{ "HasAmmo", true }
 						}
 					)
@@ -98,6 +132,7 @@ namespace Renown.Thinkers.GoapCache {
 						name: "ShootAtTarget",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
+							GD.Print( "Shooting..." );
 							Thinker thinker = (Thinker)agent.State[ "Owner" ];
 							WeaponEntity weapon = (WeaponEntity)thinker.Get( "Weapon" ).AsGodotObject();
 
@@ -113,7 +148,7 @@ namespace Renown.Thinkers.GoapCache {
 						},
 						cost: 1.0f,
 						costCallback: null,
-						preconditions: new Dictionary<string, object>{
+						preconditions: new Dictionary<string, object?>{
 							{ "PlayerVisible", true }
 						},
 						comparativePreconditions: null,
@@ -133,7 +168,7 @@ namespace Renown.Thinkers.GoapCache {
 							RayIntersectionInfo info = GodotServerManager.CheckRayCast( thinker.ArmAnimations.GlobalPosition, thinker.AimAngle,
 								thinker.Get( "Ammo" ).AsGodotObject().Get( "Range" ).AsSingle(), thinker.GetRid()
 							);
-							if ( info.Collider is Entity entity && entity.GetFaction() == thinker.GetFaction() ) {
+							if ( info.Collider is Entity entity && entity.Faction == thinker.Faction ) {
 								agent.State[ "ClearLineOfFire" ] = false;
 								thinker.CallDeferred( "Bark", (uint)BarkType.OutOfTheWay );
 								return ExecutionStatus.Failed;
@@ -160,14 +195,14 @@ namespace Renown.Thinkers.GoapCache {
 						costCallback: ( agent, currentState ) => {
 							return 1.0f;
 						},
-						preconditions: new Dictionary<string, object>{
+						preconditions: new Dictionary<string, object?>{
 							{ "Aiming", true },
 							{ "HasAmmo", true }
 						},
 						comparativePreconditions: new Dictionary<string, ComparisonValuePair>{
 							{ "Fear", new ComparisonValuePair { Value = 80, Operator = ComparisonOperator.LessThan } }
 						},
-						postconditions: new Dictionary<string, object>{
+						postconditions: new Dictionary<string, object?>{
 							{ "Aiming", false },
 							{ "ClearLineOfFire", true }
 						}
@@ -198,25 +233,40 @@ namespace Renown.Thinkers.GoapCache {
 						name: "FindCover",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
+							GD.Print( "Finding Cover..." );
+
 							Thinker thinker = (Thinker)agent.State[ "Owner" ];
 							AINodeCache cache = (AINodeCache)agent.State[ "NodeCache" ];
 							List<Vector2> cover = cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
-
-							for ( int i = 0; i < cover.Count; i++ ) {
-
+							if ( cover == null || cover.Count == 0 ) {
+								return ExecutionStatus.Failed;
 							}
+
+							Vector2 chosen = Vector2.Zero;
+							float distance = float.MaxValue;
+							for ( int i = 0; i < cover.Count; i++ ) {
+								float v = cover[ i ].DistanceSquaredTo( thinker.GlobalPosition );
+								if ( v < distance ) {
+									chosen = cover[ i ];
+									distance = v;
+								}
+							}
+							thinker.SetNavigationTarget( chosen );
+							thinker.NavAgent.TargetReached += () => {
+								agent.State[ "InCover" ] = true;
+							};
 
 							return ExecutionStatus.Failed;
 						},
 						cost: 2.0f,
 						costCallback: null, // TODO: make cost determined by the distance
-						preconditions: new Dictionary<string, object>{
-							{ "UnderFire", false }
+						preconditions: new Dictionary<string, object?>{
+							{ "UnderFire", false },
+							{ "FoundCover", false }
 						},
 						comparativePreconditions: null,
-						postconditions: new Dictionary<string, object>{
-							{ "UnderFire", false },
-							{ "InCover", true }
+						postconditions: new Dictionary<string, object?>{
+							{ "FoundCover", true }
 						},
 						arithmeticPostconditions: null
 					)
@@ -237,7 +287,7 @@ namespace Renown.Thinkers.GoapCache {
 						},
 						cost: 1.0f,
 						costCallback: null,
-						preconditions: new Dictionary<string, object>{
+						preconditions: new Dictionary<string, object?>{
 							{ "InCover", true },
 							{ "HasAmmo", true }
 						},

@@ -1,31 +1,65 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using Renown;
 
-public partial class CutsceneMoveToPosition : CutsceneSequence {
-	[Export]
-	private Node2D MoveTo;
-	[Export]
-	private Entity MoveTarget;
+namespace Interactables.Cutscenes {
+	public partial class CutsceneMoveToPosition : CutsceneSequence {
+		[Export]
+		private Node2D MoveTo;
+		[Export]
+		private Entity MoveTarget;
 
-	private Vector2 MoveSpeed = Vector2.Zero;
-	private Vector2 MoveDirection = Vector2.Zero;
+		public override CutsceneSequenceType SequenceType => CutsceneSequenceType.MoveToPosition;
 
-	public override CutsceneSequenceType GetSequenceType() {
-		return CutsceneSequenceType.MoveToPosition;
-	}
-	public override void Start() {
-		MoveDirection = MoveTarget.GlobalPosition.DirectionTo( MoveTo.GlobalPosition );
-	}
+		private Vector2 MoveSpeed = Vector2.Zero;
+		private Vector2 MoveDirection = Vector2.Zero;
 
-	public override void _PhysicsProcess( double delta ) {
-		base._PhysicsProcess( delta );
-
-		MoveTarget.Velocity = Player.MAX_SPEED * MoveDirection;
-		MoveTarget.MoveAndSlide();
-
-		if ( MoveTarget.GlobalPosition.DistanceTo( MoveTo.GlobalPosition ) < 10.0f ) {
-			SetPhysicsProcess( false );
-			EmitSignalEnd();
+		/*
+		===============
+		Start
+		===============
+		*/
+		public override void Start() {
+			MoveDirection = MoveTarget.GlobalPosition.DirectionTo( MoveTo.GlobalPosition );
 		}
-	}
+
+		/*
+		===============
+		_PhysicsProcess
+		===============
+		*/
+		public override void _PhysicsProcess( double delta ) {
+			base._PhysicsProcess( delta );
+
+			MoveTarget.Velocity = Player.MAX_SPEED * MoveDirection;
+			MoveTarget.MoveAndSlide();
+
+			if ( MoveTarget.GlobalPosition.DistanceTo( MoveTo.GlobalPosition ) < 10.0f ) {
+				SetPhysicsProcess( false );
+				EmitSignalEnd();
+			}
+		}
+	};
 };

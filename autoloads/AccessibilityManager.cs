@@ -1,97 +1,158 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
+using ResourceCache;
 using System.Collections.Generic;
+using Menus;
+using PlayerSystem.Input;
+using System;
+
+/*
+===================================================================================
+
+AccessibilityManager
+
+===================================================================================
+*/
 
 public partial class AccessibilityManager : Node {
 	public static Theme DyslexiaTheme;
 	public static Theme DefaultTheme;
 
-	private static Dictionary<Resource, string> KeyboardInputMappings;
-	private static Dictionary<Resource, string> GamepadInputMappings;
+	private static IReadOnlyDictionary<Resource, string> KeyboardInputMappings;
+	private static IReadOnlyDictionary<Resource, string> GamepadInputMappings;
 
+	/*
+	===============
+	AccessibilityManager
+	===============
+	*/
 	static AccessibilityManager() {
 		DyslexiaTheme = ResourceLoader.Load<Theme>( "res://resources/dyslexia.tres" );
 		DefaultTheme = ResourceLoader.Load<Theme>( "res://resources/default.tres" );
 	}
 
-	public static Texture2D GetPrevMenuButtonTexture() {
+	/*
+	===============
+	GetPrevMenuButtonTexture
+	===============
+	*/
+	public static Texture2D? GetPrevMenuButtonTexture() {
 		string name = Input.GetJoyName( 0 );
-		switch ( name ) {
-		case "XBox":
-			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_lb.png" );
-		case "PS4":
-		case "PS5":
-		case "PlayStation":
-			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_l1_alternative.png" );
+		return name switch {
+			"XBox" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_lb.png" ),
+			"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_l1_alternative.png" ),
+			_ => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_lb.png" ),
 		};
-		return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_lb.png" );
 	}
 
-	public static Texture2D GetNextMenuButtonTexture() {
+	/*
+	===============
+	GetNextMenuButtonTexture
+	===============
+	*/
+	public static Texture2D? GetNextMenuButtonTexture() {
 		string name = Input.GetJoyName( 0 );
-		switch ( name ) {
-		case "XBox":
-			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_rb.png" );
-		case "PS4":
-		case "PS5":
-		case "PlayStation":
-			return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_r1_alternative.png" );
+		return name switch {
+			"XBox" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_rb.png" ),
+			"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_r1_alternative.png" ),
+			_ => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_rb.png" ),
 		};
-		return ResourceCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_rb.png" );
 	}
 
-	public static void LoadBinds() {
-		ResourceCache.KeyboardInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_keyboard.tres" );
-		ResourceCache.GamepadInputMappings ??= ResourceLoader.Load( "res://resources/binds/binds_gamepad.tres" );
+	/*
+	===============
+	LoadBinds
+	===============
+	*/
+	public static void LoadBinds( in InputController input ) {
+		var keyboardInputMappings = new Dictionary<Resource, string>( (int)InputController.ControlBind.Count );
+		for ( InputController.ControlBind bind = InputController.ControlBind.Move; bind < InputController.ControlBind.Count; bind++ ) {
+			Resource? action = input.Bindings[ InputController.BindMapping.Keyboard ].Binds[ bind ];
+			ArgumentNullException.ThrowIfNull( action );
 
-		ResourceCache.LoadKeyboardBinds();
-		ResourceCache.LoadGamepadBinds();
-
-		KeyboardInputMappings = new Dictionary<Resource, string> {
-			{ ResourceCache.MoveActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.MoveActionKeyboard ) },
-			{ ResourceCache.DashActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.DashActionKeyboard ) },
-			{ ResourceCache.SlideActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.SlideActionKeyboard ) },
-			{ ResourceCache.UseWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.UseWeaponActionKeyboard ) },
-			{ ResourceCache.ArmAngleActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.ArmAngleActionKeyboard ) },
-			{ ResourceCache.MeleeActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.MeleeActionKeyboard ) },
-			{ ResourceCache.BulletTimeActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.BulletTimeActionKeyboard ) },
-			{ ResourceCache.NextWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.NextWeaponActionKeyboard ) },
-			{ ResourceCache.PrevWeaponActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.PrevWeaponActionKeyboard ) },
-			{ ResourceCache.OpenInventoryActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.OpenInventoryActionKeyboard ) },
-			{ ResourceCache.InteractActionKeyboard, LoadBindString( ResourceCache.KeyboardInputMappings, ResourceCache.InteractActionKeyboard ) },
-		};
-
-		GamepadInputMappings = new Dictionary<Resource, string>();
-		for ( int i = 0; i < 1; i++ ) {
-			GamepadInputMappings.Add( ResourceCache.MoveActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MoveActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.DashActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.DashActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.SlideActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.SlideActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.UseWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.UseWeaponActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.ArmAngleActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.ArmAngleActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.MeleeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.MeleeActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.BulletTimeActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.BulletTimeActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.NextWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.NextWeaponActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.PrevWeaponActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.PrevWeaponActionGamepad[ i ] ) );
-			GamepadInputMappings.Add( ResourceCache.OpenInventoryActionGamepad[ i ], LoadBindString( ResourceCache.GamepadInputMappings, ResourceCache.OpenInventoryActionGamepad[ i ] ) );
+			keyboardInputMappings.Add(
+				action,
+				LoadBindString( input.Bindings[ InputController.BindMapping.Keyboard ].MappingContext, action )
+			);
 		}
+
+		var gamepadInputMappings = new Dictionary<Resource, string>( (int)InputController.ControlBind.Count * 4 );
+		for ( InputController.BindMapping mapper = InputController.BindMapping.Gamepad0; mapper < InputController.BindMapping.Count; mapper++ ) {
+			for ( InputController.ControlBind bind = InputController.ControlBind.Move; bind < InputController.ControlBind.Count; bind++ ) {
+				Resource? action = input.Bindings[ mapper ].Binds[ bind ];
+				ArgumentNullException.ThrowIfNull( action );
+
+				gamepadInputMappings.Add(
+					action,
+					LoadBindString( input.Bindings[ mapper ].MappingContext, action )
+				);
+			}
+		}
+		GamepadInputMappings = gamepadInputMappings;
 	}
-	private static string LoadBindString( Resource mappingContext, Resource action ) {
-		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)SettingsData.GetRemapper().Call( "get_remappable_items", mappingContext, "", action );
+
+	/*
+	===============
+	LoadBindStrings
+	===============
+	*/
+	private static string? LoadBindString( Resource mappingContext, Resource action ) {
+		Godot.Collections.Array<RefCounted> items = (Godot.Collections.Array<RefCounted>)SettingsData.Remapper.Call( "get_remappable_items", mappingContext, "", action );
 		if ( items.Count == 0 ) {
 			return null;
 		}
-		Resource input = (Resource)SettingsData.GetRemapper().Call( "get_bound_input_or_null", items[ 0 ] );
-		return input == null ? "[color=red]UNBOUND[/color]" : (string)SettingsData.GetMappingFormatter().Call( "input_as_richtext_async", input );
+		Resource input = (Resource)SettingsData.Remapper.Call( "get_bound_input_or_null", items[ 0 ] );
+		return input == null ? "[color=red]UNBOUND[/color]" : (string)SettingsData.MappingFormatter.Call( "input_as_richtext_async", input );
 	}
 
-	public static void RumbleController( float nAmount, float nDuration, int nDevice = 0 ) {
-		float realAmount = nAmount * ( 1.0f / SettingsData.GetHapticStrength() );
-		Input.StartJoyVibration( nDevice, realAmount, realAmount, nDuration );
+	/*
+	===============
+	RumbleController
+	===============
+	*/
+	public static void RumbleController( float amount, float duration, int device = 0 ) {
+		float realAmount = amount * ( 1.0f / SettingsData.HapticStrength );
+		Input.StartJoyVibration( device, realAmount, realAmount, duration );
 	}
-	public static bool IsControllerRumbling( int nDevice = 0 ) {
-		return Input.GetJoyVibrationStrength( nDevice ) > Godot.Vector2.Zero;
+
+	/*
+	===============
+	IsControllerRumbling
+	===============
+	*/
+	public static bool IsControllerRumbling( int device = 0 ) {
+		return Input.GetJoyVibrationStrength( device ) > Godot.Vector2.Zero;
 	}
-	public static string GetBindString( Resource action ) {
-		if ( KeyboardInputMappings.TryGetValue( action, out string bind ) ) {
+
+	/*
+	===============
+	GetBindString
+	===============
+	*/
+	public static string? GetBindString( Resource action ) {
+		if ( KeyboardInputMappings.TryGetValue( action, out string? bind ) ) {
 			return bind;
 		} else if ( GamepadInputMappings.TryGetValue( action, out bind ) ) {
 			return bind;

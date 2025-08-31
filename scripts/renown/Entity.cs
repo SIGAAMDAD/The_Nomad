@@ -1,111 +1,345 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using Godot;
 using Renown.World;
-using System;
+using ResourceCache;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-/// <summary>
-/// the base parent class which all living renown entities inherit from
-/// implements most common renown events
-/// </summary>
 namespace Renown {
+	/*
+	===================================================================================
+	
+	Entity
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// The base class from which all entities inherit from
+	/// </summary>
+	
 	public partial class Entity : CharacterBody2D, Object {
 		[ExportCategory( "Base Stats" )]
-		[Export]
-		protected float Health;
-		[Export]
-		protected int RenownScore = 0;
 
+		/// <summary>
+		/// The health of the entity
+		/// </summary>
 		[Export]
-		protected WorldArea Location;
+		public float Health { get; protected set; } = 0.0f;
+
+		/// <summary>
+		/// The renown of an entity, think of it sort as "street cred"
+		/// </summary>
+		[Export]
+		public int RenownScore { get; protected set; } = 0;
+
+		/// <summary>
+		/// The WorldArea the entity is currently colliding with
+		/// </summary>
+		[Export]
+		public WorldArea? Location { get; protected set; } = null;
 
 		[ExportCategory( "Faction" )]
-		[Export]
-		protected Faction Faction;
-		[Export]
-		protected int FactionImportance;
 
-		protected Dictionary<string, StatusEffect> StatusEffects = new Dictionary<string, StatusEffect>();
+		/// <summary>
+		/// The faction that the entity belongs to. Used for faction-specific behaviors with the AI
+		/// </summary>
+		[Export]
+		public Faction? Faction { get; protected set; } = null;
+
+		/// <summary>
+		/// How much the entity's faction cares about them
+		/// </summary>
+		[Export]
+		public int FactionImportance { get; protected set; } = 0;
+
+		/// <summary>
+		/// The current status effects being applied to the entity
+		/// </summary>
+		/// <seealso cref="AddStatusEffect"/>
+		protected ConcurrentDictionary<string, StatusEffect> StatusEffects = new ConcurrentDictionary<string, StatusEffect>();
 
 		[Signal]
 		public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
 		[Signal]
 		public delegate void DieEventHandler( Entity source, Entity target );
 
-		public WorldArea GetLocation() => Location;
-		public virtual void SetLocation( in WorldArea location ) => Location = location;
+		/*
+		===============
+		SetLocation
+		===============
+		*/
+		public virtual void SetLocation( in WorldArea location ) {
+			Location = location;
+		}
 
+		/*
+		===============
+		Save
+		===============
+		*/
+		/// <summary>
+		/// Override this function to archive and entity's state to disk
+		/// </summary>
 		public virtual void Save() {
 		}
+
+		/*
+		===============
+		Load
+		===============
+		*/
+		/// <summary>
+		/// Override this function to load an entity's state from disk
+		/// </summary>
 		public virtual void Load() {
 		}
 
-		//
-		// narrative functions
-		//
+		/*
+		 * narrative functions
+		 */
+
+
+		/*
+		===============
+		OnChallenged
+		===============
+		*/
 		public virtual void OnChallenged() {
 		}
+
+		/*
+		===============
+		OnIntimidated
+		===============
+		*/
 		public virtual void OnIntimidated() {
-			float crueltyScore = LevelData.Instance.ThisPlayer.GetTraitScore( TraitType.Cruel );
 		}
 
+		/*
+		===============
+		ClearStatusEffects
+		===============
+		*/
+		/// <summary>
+		/// Clears all StatusEffect objects currently being applied to the entity and
+		/// clears the Dictionary
+		/// </summary>
 		public virtual void ClearStatusEffects() {
 			foreach ( var effect in StatusEffects ) {
 				effect.Value.Stop();
 			}
 			StatusEffects.Clear();
 		}
+
+		/*
+		===============
+		AddStatusEffects
+		===============
+		*/
+		/// <summary>
+		/// Adds a StatusEffect object to the entity
+		/// </summary>
+		/// <param name="effectName">The scene file name of the status effect</param>
 		public virtual void AddStatusEffect( string effectName ) {
-			if ( StatusEffects.TryGetValue( effectName, out StatusEffect data ) ) {
+			if ( effectName == null || effectName.Length == 0 ) {
+				Console.PrintError( $"Entity.AddStatusEffect: invalid effectName (null or empty)" );
+				return;
+			}
+			if ( StatusEffects.TryGetValue( effectName, out StatusEffect? data ) ) {
 				data.ResetTimer();
 				return;
 			}
-			StatusEffect effect = ResourceCache.GetScene( "res://scenes/status_effects/" + effectName + ".tscn" ).Instantiate<StatusEffect>();
+
+			PackedScene? scene = SceneCache.GetScene( $"res://scenes/status_effects/{effectName}.tscn" );
+			if ( scene == null ) {
+				Console.PrintError(
+					$"Entity.AddStatusEffect: invalid effect, ensure that all status effects are located in res://scenes/status_effects/ as scene files"
+				);
+				return;
+			}
+
+			StatusEffect effect = scene.Instantiate<StatusEffect>();
 			effect.SetVictim( this );
-			StatusEffects.Add( effectName, effect );
+			StatusEffects.TryAdd( effectName, effect );
 			effect.Timeout += () => {
 				CallDeferred( MethodName.RemoveChild, effect );
 				effect.CallDeferred( MethodName.QueueFree );
-				StatusEffects.Remove( effectName );
+				StatusEffects.TryRemove( new KeyValuePair<string, StatusEffect>( effectName, effect ) );
 			};
 			CallDeferred( MethodName.AddChild, effect );
 		}
 
+		/*
+		===============
+		PickupWeapon
+		===============
+		*/
 		public virtual void PickupWeapon( WeaponEntity weapon ) {
 		}
 
+		/*
+		===============
+		PlaySound
+		===============
+		*/
+		/// <summary>
+		/// Plays a sound effect from the provided channel and stream local to the entity's position
+		/// </summary>
+		/// <param name="channel">The audio channel to play the audio from</param>
+		/// <param name="stream">The audio file to play</param>
 		public virtual void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
+			if ( channel == null ) {
+				Console.PrintError( "Entity.PlaySound: channel is null" );
+				return;
+			}
+
+			// no need to check stream here since it'll just stay silent
 			channel.Stream = stream;
 			channel.Play();
 		}
 
-		public virtual void Damage( in Entity source, float nAmount ) {
-			EmitSignalDamaged( source, this, nAmount );
-			Health -= nAmount;
+		/*
+		===============
+		Damage
+		===============
+		*/
+		public virtual void Damage( in Entity source, float amount ) {
+			EmitSignalDamaged( source, this, amount );
+			Health -= amount;
 
 			if ( Health <= 0.0f ) {
 				EmitSignalDie( source, this );
 			}
 		}
 
+		/*
+		===============
+		HasRelation
+		===============
+		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual bool HasRelation( Object other ) => false;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual float GetRelationScore( Object other ) => 0.0f;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual RelationStatus GetRelationStatus( Object other ) => RelationStatus.Neutral;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual void DetermineRelationStatus( Object other ) { }
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual int GetRenownScore() => RenownScore;
+		public virtual bool HasRelation( Entity entity ) {
+			return false;
+		}
 
-		public float GetHealth() => Health;
-		public NodePath GetHash() => GetPath();
-		public virtual StringName GetObjectName() => "Entity";
+		/*
+		===============
+		HasRelation
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual bool HasRelation( Faction faction ) {
+			return false;
+		}
 
-		public Faction GetFaction() => Faction;
-		public int GetFactionImportance() => FactionImportance;
+		/*
+		===============
+		GetRelationScore
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual float GetRelationScore( Entity entity ) {
+			return 0.0f;
+		}
 
+		/*
+		===============
+		GetRelationScore
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual float GetRelationScore( Faction faction ) {
+			return 0.0f;
+		}
+
+		/*
+		===============
+		GetRelationStatus
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual RelationStatus GetRelationStatus( Entity entity ) {
+			return RelationStatus.Neutral;
+		}
+
+		/*
+		===============
+		GetRelationStatus
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual RelationStatus GetRelationStatus( Faction faction ) {
+			return RelationStatus.Neutral;
+		}
+
+		/*
+		===============
+		DetermineRelationStatus
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual void DetermineRelationStatus( Entity entity ) {
+		}
+
+		/*
+		===============
+		DetermineRelationStatus
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual void DetermineRelationStatus( Faction faction ) {
+		}
+
+		/*
+		===============
+		GetHash
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public NodePath GetHash() {
+			return GetPath();
+		}
+
+		/*
+		===============
+		GetObjectName
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual StringName GetObjectName() {
+			return "Entity";
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
 		public override void _Ready() {
 			base._Ready();
 
@@ -117,8 +351,19 @@ namespace Renown {
 			EntityManager.RegisterPhysicsProcess( this );
 		}
 
+		/*
+		===============
+		Update
+		===============
+		*/
 		public virtual void Update( double delta ) {
 		}
+
+		/*
+		===============
+		PhysicsUpdate
+		===============
+		*/
 		public virtual void PhysicsUpdate( double delta ) {
 		}
 	};

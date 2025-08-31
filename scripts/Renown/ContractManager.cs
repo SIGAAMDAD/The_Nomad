@@ -11,7 +11,7 @@ namespace Renown {
 		}
 
 		public static void Save() {
-			using ( var writer = new SaveSystem.SaveSectionWriter( "ContractCache" ) ) {
+			using ( var writer = new SaveSystem.SaveSectionWriter( "ContractCache", ArchiveSystem.SaveWriter ) ) {
 				writer.SaveInt( "Count", Cache.Count );
 
 				int index = 0;

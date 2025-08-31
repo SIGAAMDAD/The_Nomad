@@ -6,6 +6,16 @@ namespace Renown {
 		Count
 	};
 
+	/*
+	===================================================================================
+	
+	Phantom
+	
+	They're... They're in the WALLS! THEY'RE IN THE GODDAMN WALLS!
+	
+	===================================================================================
+	*/
+	
 	public partial class Phantom : CharacterBody2D {
 		private Thinker Thinker;
 		private AudioStreamPlayer2D Whisper;

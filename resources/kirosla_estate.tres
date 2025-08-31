@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://clcanwwydfoln" path="res://textures/tilesets/kirosla_estate.dds" id="1_1jwus"]
 [ext_resource type="Texture2D" uid="uid://cvcwqconxr2m5" path="res://textures/tilesets/furniture.dds" id="2_awt23"]
-[ext_resource type="Texture2D" uid="uid://rddmpmwio72g" path="res://textures/tilesets/galakas/interior.png" id="3_bdaau"]
+[ext_resource type="Texture2D" uid="uid://d0cwtovdxghr2" path="res://textures/tilesets/galakas/interior.png" id="3_bdaau"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bdaau"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)

@@ -1,8 +1,8 @@
 [gd_scene load_steps=29 format=3 uid="uid://cafcdhhm31dvf"]
 
 [ext_resource type="Script" uid="uid://bgc6hlmckeah7" path="res://scripts/Interactables/Checkpoint.cs" id="1_coa62"]
-[ext_resource type="Texture2D" uid="uid://da8keknq2laxc" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="1_kjg72"]
-[ext_resource type="Texture2D" uid="uid://dt7d7uidsxcat" path="res://textures/env/hellbreaker/Obelisk.png" id="1_wu3ww"]
+[ext_resource type="Texture2D" uid="uid://b1jp6lqhrfo2v" path="res://textures/env/hellbreaker/Obelisk_effects.png" id="1_kjg72"]
+[ext_resource type="Texture2D" uid="uid://b0dfkl4udd3q8" path="res://textures/env/hellbreaker/Obelisk.png" id="1_wu3ww"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kjg72"]
 atlas = ExtResource("1_wu3ww")

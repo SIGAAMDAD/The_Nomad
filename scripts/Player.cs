@@ -1,9 +1,28 @@
+/*
+===========================================================================
+Copyright (C) 2023-2025 Noah Van Til
+
+This file is part of The Nomad source code.
+
+The Nomad source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+The Nomad source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+===========================================================================
+*/
+
 using Godot;
 using System;
 using PlayerSystem;
-using PlayerSystem.Perks;
-using PlayerSystem.Runes;
-using PlayerSystem.Totems;
 using System.Collections.Generic;
 using Steamworks;
 using System.Runtime.CompilerServices;
@@ -13,7 +32,12 @@ using System.Diagnostics;
 using DialogueManagerRuntime;
 using PlayerSystem.ArmAttachments;
 using PlayerSystem.Upgrades;
-using System.Threading.Tasks;
+using Interactables;
+using System.Runtime.InteropServices;
+using Steam;
+using ResourceCache;
+using PlayerSystem.Input;
+using Menus;
 
 public enum WeaponSlotIndex : int {
 	Primary,
@@ -23,7 +47,16 @@ public enum WeaponSlotIndex : int {
 	Count
 };
 
-// TODO: dash i-frames duration and speed should decrease if we spam it
+/*
+===================================================================================
+
+Player
+
+===================================================================================
+*/
+/// <summary>
+/// The code that handles player-to-game interactions
+/// </summary>
 
 public partial class Player : Entity {
 	public enum Hands : byte {
@@ -62,6 +95,26 @@ public partial class Player : Entity {
 		Melee
 	};
 
+	//
+	// networking
+	//
+	[StructLayout( LayoutKind.Sequential )]
+	private struct NetworkState {
+		public Half LastNetworkAimAngle;
+		public Half LastNetworkBloodAmount;
+		public uint LastNetworkFlags;
+		public uint LastNetworkUseMode;
+		public string LastNetworkWeaponID;
+
+		public NetworkState() {
+			LastNetworkAimAngle = (Half)0.0f;
+			LastNetworkBloodAmount = (Half)0.0f;
+			LastNetworkFlags = 0;
+			LastNetworkUseMode = (uint)WeaponEntity.Properties.None;
+			LastNetworkWeaponID = "";
+		}
+	};
+
 	private static readonly WeaponEntity.Properties[] WeaponModeList = [
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
 		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
@@ -72,28 +125,20 @@ public partial class Player : Entity {
 		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
 	];
 
-	public static readonly float PunchRange = 40.0f;
+	public static readonly float PUNCH_RANGE = 40.0f;
 	public static readonly int MAX_WEAPON_SLOTS = 4;
-	public static readonly Color AimingAtTarget = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	public static readonly Color AimingAtNull = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
+	public static readonly Color AIMING_AT_TARGET = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+	public static readonly Color AIMING_AT_NULL = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
 
 	//
 	// constants that can be modified by runes, perks, etc.
 	//
-	public static readonly float BaseFastTravelRageCost = 20.0f;
-	public static readonly float BaseFastTravelSanityCost = 0.0f;
-	public static readonly float BaseEnemyDetectionSpeed = 1.0f;
+	public static readonly float BASE_FAST_TRAVEL_RAGE_COST = 20.0f;
+	public static readonly float BASE_FAST_TRAVEL_SANITY_COST = 0.0f;
+	public static readonly float BASE_ENEMY_DETECTION_SPEED = 1.0f;
 
-	private static readonly float DirectionalInfluence = 0.7f;
+	private static readonly float DIRECTIONAL_INFLUENCE = 0.7f;
 
-	/// <summary>
-	/// The maximum amount of weight the player is currently allowed to carry
-	/// </summary>
-	public static readonly int MaximumRuneSlots = 5;
-	public static readonly int MaximumQuickAccessSlots = 4;
-
-	public static readonly int MAX_RUNES = 5;
-	public static readonly int MAX_PERKS = 1;
 	public static readonly float ACCEL = 500.0f;
 	public static readonly float FRICTION = 1000.0f;
 	public static readonly float MAX_SPEED = 440.0f;
@@ -101,52 +146,22 @@ public partial class Player : Entity {
 
 	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
-	//
-	// networking
-	//
-	private struct NetworkState {
-		public float LastNetworkAimAngle;
-		public float LastNetworkBloodAmount;
-		public uint LastNetworkFlags;
-		public WeaponEntity.Properties LastNetworkUseMode;
-		public string LastNetworkWeaponID;
-
-		public NetworkState() {
-			LastNetworkAimAngle = 0.0f;
-			LastNetworkBloodAmount = 0.0f;
-			LastNetworkFlags = 0;
-			LastNetworkUseMode = WeaponEntity.Properties.None;
-			LastNetworkWeaponID = "";
-		}
-	};
-
-	private NetworkState LastSyncState;
-
-	public const float MaximumInventoryWeight = 500.0f;
-	private float Money = 0.0f;
-
-	private Dictionary<TraitType, float> Traits = null;
-	private HashSet<RenownValue> Relations = null;
-	private HashSet<RenownValue> Debts = null;
-
-	private BladeAttackType BladeAttackType;
-
 	[Export]
-	private Node Inventory;
+	public Node InventoryDatabase { get; private set; }
 	[Export]
-	private Arm ArmLeft;
+	public Arm ArmLeft { get; private set; }
 	[Export]
-	private Arm ArmRight;
+	public Arm ArmRight { get; private set; }
 	[Export]
 	private CanvasLayer HUD;
 	[Export]
-	private Checkpoint StartingCheckpoint;
-	[Export]
-	private ArmAttachment ArmAttachment;
+	public ArmAttachment ArmAttachment { get; private set; }
 
 	[ExportCategory( "Start" )]
 	[Export]
-	private PlayerFlags Flags = 0;
+	public PlayerFlags Flags { get; private set; } = 0;
+	[Export]
+	public Checkpoint StartingCheckpoint { get; private set; }
 
 	[ExportCategory( "Camera Shake" )]
 	[Export]
@@ -154,116 +169,140 @@ public partial class Player : Entity {
 	[Export]
 	private float ShakeFade = 0.5f;
 
-	private Area2D ParryArea;
-	private CollisionShape2D ParryBox;
-	private Area2D ParryDamageArea;
-	private CollisionShape2D ParryDamageBox;
+	/// <summary>
+	/// The current TileMapFloor that the player occupies
+	/// </summary>
+	public TileMapFloor Floor { get; private set; }
 
 	/// <summary>
-	/// The current total weight of inventory items
+	/// Handles torso animation
 	/// </summary>
-	public float TotalInventoryWeight { get; private set; } = 0.0f;
+	public AnimatedSprite2D? TorsoAnimation { get; private set; }
 
-	private Resource CurrentMappingContext;
+	/// <summary>
+	/// Handles leg animation
+	/// </summary>
+	public AnimatedSprite2D? LegAnimation { get; private set; }
 
-	private Resource SwitchToKeyboard;
-	private Resource SwitchToGamepad;
+	/// <summary>
+	/// Handles all full body animations
+	/// </summary>
+	public AnimatedSprite2D? IdleAnimation { get; private set; }
 
-	public Resource MoveAction;
-	public Resource DashAction { get; private set; }
-	public Resource SlideAction { get; private set; }
-	public Resource MeleeAction { get; private set; }
-	public Resource UseWeaponAction { get; private set; }
-	public Resource SwitchWeaponModeAction { get; private set; }
-	public Resource NextWeaponAction { get; private set; }
-	public Resource PrevWeaponAction { get; private set; }
-	public Resource OpenInventoryAction { get; private set; }
-	public Resource BulletTimeAction { get; private set; }
-	public Resource ArmAngleAction { get; private set; }
-	public Resource UseBothHandsAction { get; private set; }
-	public Resource AimAngleAction { get; private set; }
-	public Resource InteractAction { get; private set; }
+	public GroundMaterialType GroundType { get; private set; }
 
-	private GpuParticles2D WalkEffect;
-	private GpuParticles2D SlideEffect;
-
-	private GpuParticles2D DashEffect;
-	private PointLight2D DashLight;
-
-	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
-
-	private Node Animations;
-	private SpriteFrames DefaultLeftArmAnimations;
-	private Sprite2D HeadAnimation;
-	public AnimatedSprite2D TorsoAnimation { get; private set; }
-	public AnimatedSprite2D LegAnimation { get; private set; }
-	public AnimatedSprite2D IdleAnimation { get; private set; }
-
-	private float WindUpDuration = 0.05f;
-	private float WindUpProgress = 0.0f;
-	private float IdleTime = 0.0f;
-	private float NextShiftTime = 0.0f;
-
-	private Node2D Shadows;
-	private AnimatedSprite2D LeftArmShadowAnimation;
-	private AnimatedSprite2D RightArmShadowAnimation;
-	private AnimatedSprite2D TorsoShadowAnimation;
-	private AnimatedSprite2D LegShadowAnimation;
-
-	private Timer IdleTimer;
-	private Timer CheckpointDrinkTimer;
-
-	private Timer HealTimer;
-
-	private Timer SlideTime;
-
-	public GroundMaterialType GroundType {
-		get;
-		private set;
-	}
-
-	// how much blood we're covered in
-	private float BloodAmount = 0.0f;
-	private Timer BloodDropTimer;
-	private ShaderMaterial BloodMaterial;
-
-	private static float ShakeStrength = 0.0f;
-	private static Godot.Vector2 JoltDirection = Godot.Vector2.Zero;
+	/// <summary>
+	/// How much blood the player is covered in
+	/// </summary>
+	/// <seealso cref="BloodMaterial"/>
+	public float BloodAmount { get; private set; }
 
 	private static bool TutorialCompleted = false;
 
-	private Texture2D CurrentEmote;
+	private Texture2D? CurrentEmote;
 
-	public WeaponSlot[] WeaponSlots { get; private set; } = new WeaponSlot[ MAX_WEAPON_SLOTS ];
-	public int CurrentWeapon { get; private set; } = WeaponSlot.INVALID;
+	/// <summary>
+	/// The camera marked as "Current" in Godot
+	/// </summary>
+	private Camera2D? Viewpoint;
 
-	private Camera2D Viewpoint;
+	public float Rage { get; private set; } = 60.0f;
+	public float Sanity { get; private set; } = 60.0f;
 
+	/// <summary>
+	/// The hard cap on player health
+	/// </summary>
+	/// <seealso cref="PlayerSystem.PlayerStat"/>
 	public PlayerStat<float> MaxHealth;
+
+	/// <summary>
+	/// The hard cap on player sanity
+	/// </summary>
+	/// <seealso cref="PlayerSystem.PlayerStat"/>
 	public PlayerStat<float> MaxSanity;
+
+	/// <summary>
+	/// The hard cap on player rage
+	/// </summary>
+	/// <seealso cref="PlayerSystem.PlayerStat"/>
 	public PlayerStat<float> MaxRage;
+
+	/// <summary>
+	/// The hard cap on a player's maximum speed
+	/// </summary>
+	/// <seealso cref="PlayerSystem.PlayerStat"/>
 	public PlayerStat<float> Speed;
+
+	/// <summary>
+	/// Handles inventory data and management
+	/// </summary>
+	public InventoryManager Inventory;
+
+	public Hands HandsUsed { get; private set; } = Hands.Right;
+	public Arm LastUsedArm { get; private set; }
+
+	/// <summary>
+	/// For sounds that are played by other classes related to player
+	/// </summary>
+	public AudioStreamPlayer2D MiscChannel { get; private set; }
+
+	public int TileMapLevel { get; private set; }
+
+	public HashSet<RenownValue> Relations { get; private set; }
+	public HashSet<RenownValue> Debts { get; private set; }
+
+	public InputController? InputManager { get; private set; }
 
 	//
 	// multiplayer data
 	//
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
 
-	//
-	// aim reticle
-	//
+	/// <summary>
+	/// The aim recticle, can be hidden with accessibility settings
+	/// </summary>
 	private Line2D AimLine = null;
 
 	private bool NetworkNeedsSync = false;
+
+	/// <summary>
+	/// For faster synchronization over the network of the left arm's animation state, directly influenced by <see cref="ArmLeft"/>
+	/// </summary>
 	private PlayerAnimationState LeftArmAnimationState;
+
+	/// <summary>
+	/// For faster synchronization over the network of the right arm's animation state, directly influenced by <see cref="ArmRight"/>
+	/// </summary>
 	private PlayerAnimationState RightArmAnimationState;
+
+	/// <summary>
+	/// For faster synchronization over the network of the torso's animation state, directly influenced by <see cref="TorsoAnimation"/>
+	/// </summary>
 	private PlayerAnimationState TorsoAnimationState;
+
+	/// <summary>
+	/// For faster synchronization over the network of the leg's animation state, directly influenced by <see cref="LegAnimation"/>
+	/// </summary>
 	private PlayerAnimationState LegAnimationState;
 
+	/// <summary>
+	/// Generic audio channel
+	/// </summary>
 	private AudioStreamPlayer2D AudioChannel;
+
+	/// <summary>
+	/// For jumpkit related sounds
+	/// </summary>
 	private AudioStreamPlayer2D DashChannel;
-	private AudioStreamPlayer2D MiscChannel;
+
+	/// <summary>
+	/// For proximity chat
+	/// </summary>
 	private AudioStreamPlayer2D VoiceChannel;
+
+	/// <summary>
+	/// For footstep sound effects
+	/// </summary>
 	private AudioStreamPlayer2D WalkChannel;
 
 	//
@@ -274,33 +313,76 @@ public partial class Player : Entity {
 
 	private FootSteps FootSteps;
 
-	private NetworkSyncObject SyncObject;
+	private Multiplayer.NetworkSyncObject SyncObject;
 
-	private TileMapFloor Floor;
-
-	//
-	// Inventory Management
-	//
-	private Godot.Collections.Dictionary<int, WeaponEntity> WeaponsStack = new Godot.Collections.Dictionary<int, WeaponEntity>();
-	private Godot.Collections.Dictionary<int, ConsumableStack> ConsumableStacks = new Godot.Collections.Dictionary<int, ConsumableStack>();
-	private Godot.Collections.Dictionary<int, AmmoStack> AmmoStacks = new Godot.Collections.Dictionary<int, AmmoStack>();
-	private HashSet<Perk> UnlockedBoons;
-	private HashSet<Rune> UnlockedRunes;
-	public Totem Totem { get; private set; } = null;
-	private Perk PerkSlot = null;
-	private Rune[] RuneSlots = new Rune[ MaximumRuneSlots ];
-	private ConsumableStack[] QuickAccessSlots = new ConsumableStack[ MaximumQuickAccessSlots ];
-	private Dictionary<GodotObject, int> Storage = new Dictionary<GodotObject, int>();
 	private Godot.Collections.Dictionary<string, string> JournalCache;
+
+	/// <summary>
+	/// The currently discovered areas in the world
+	/// </summary>
 	private HashSet<WorldArea> DiscoveredAreas;
 
-	private float Rage = 60.0f;
-	private float Sanity = 60.0f;
-
+	/// <summary>
+	/// Handles the jump kit and all functions related to the dash mechanic
+	/// </summary>
 	private DashKit DashKit;
 
-	private Hands HandsUsed = Hands.Right;
-	private Arm LastUsedArm;
+	private GpuParticles2D? WalkEffect;
+	private GpuParticles2D? SlideEffect;
+
+	private GpuParticles2D? DashEffect;
+	private PointLight2D? DashLight;
+
+	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
+
+	private NetworkState LastSyncState;
+
+	private Area2D ParryArea;
+	private CollisionShape2D ParryBox;
+	private Area2D ParryDamageArea;
+	private CollisionShape2D ParryDamageBox;
+
+	private Node? Animations;
+	private SpriteFrames? DefaultLeftArmAnimations;
+	private Sprite2D? HeadAnimation;
+
+	private float WindUpDuration = 0.05f;
+	private float WindUpProgress = 0.0f;
+	private float IdleTime = 0.0f;
+	private float NextShiftTime = 0.0f;
+
+	private Node2D? Shadows;
+	private AnimatedSprite2D? LeftArmShadowAnimation;
+	private AnimatedSprite2D? RightArmShadowAnimation;
+	private AnimatedSprite2D? TorsoShadowAnimation;
+	private AnimatedSprite2D? LegShadowAnimation;
+
+	private Timer? IdleTimer;
+	private Timer? CheckpointDrinkTimer;
+	private Timer? HealTimer;
+	private Timer? SlideTime;
+
+	/// <summary>
+	/// The amount of time left before the blood starts fading off the player. Resets each time more blood is added.
+	/// </summary>
+	private Timer? BloodDropTimer;
+
+	/// <summary>
+	/// The shader for drawing blood splatter on the player model
+	/// </summary>
+	/// <remarks>
+	/// The amount of red on the player's sprite is determined by <see cref="BloodAmount"/>
+	/// </remarks>
+	/// <seealso cref="BloodAmount"/>
+	private ShaderMaterial? BloodMaterial;
+
+	/// <summary>
+	/// The amount of camera shake currently being applied to the <see cref="Viewpoint"/>
+	/// </summary>
+	/// <seealso cref="Viewpoint"/>
+	private static float ShakeStrength = 0.0f;
+	private static Godot.Vector2 JoltDirection = Godot.Vector2.Zero;
+
 	private float ArmAngle = 0.0f;
 	private int InputDevice = 0;
 	private float FrameDamage = 0.0f;
@@ -317,7 +399,6 @@ public partial class Player : Entity {
 	private Godot.Vector2 StartingPosition = Godot.Vector2.Zero;
 	private Checkpoint LastCheckpoint;
 
-	private int TileMapLevel = 0;
 	private static Action<int> DialogueCallback;
 
 	private Dictionary<string, object> AchievementData;
@@ -325,6 +406,8 @@ public partial class Player : Entity {
 	private Resource CurrentQuest;
 
 	private Node2D Waypoint;
+
+	private BladeAttackType BladeAttackType;
 
 	[Signal]
 	public delegate void JoinFactionEventHandler( Faction faction, Entity entity );
@@ -335,11 +418,11 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void FactionDemotionEventHandler( Faction faction, Entity entity );
 	[Signal]
-	public delegate void GainMoneyEventHandler( Node entity, float nAmount );
+	public delegate void GainMoneyEventHandler( Node entity, float amount );
 	[Signal]
-	public delegate void LoseMoneyEventHandler( Node entity, float nAmount );
-//	[Signal]
-//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
+	public delegate void LoseMoneyEventHandler( Node entity, float amount );
+	//	[Signal]
+	//	public delegate void CommitWarCrimeEventHandler( Entity entity, WarCrimeType nType );
 	[Signal]
 	public delegate void StartContractEventHandler( Contract contract, Entity entity );
 	[Signal]
@@ -349,19 +432,19 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void CanceledContractEventHandler( Contract contract, Entity entity );
 	[Signal]
-	public delegate void DecreaseTraitScoreEventHandler( Node self, TraitType nTrait, float nScore );
+	public delegate void DecreaseTraitScoreEventHandler( Node self, Trait trait, float score );
 	[Signal]
-	public delegate void IncreaseTraitScoreEventHandler( Node self, TraitType nTrait, float nScore );
+	public delegate void IncreaseTraitScoreEventHandler( Node self, Trait trait, float score );
 	[Signal]
 	public delegate void MeetEntityEventHandler( Entity other, Node self );
 	[Signal]
 	public delegate void MeetFactionEventHandler( Faction faction, Node self );
 	[Signal]
-	public delegate void IncreaseRelationEventHandler( Node other, Node self, float nAmount );
+	public delegate void IncreaseRelationEventHandler( Node other, Node self, float amount );
 	[Signal]
-	public delegate void DecreaseRelationEventHandler( Node other, Node self, float nAmount );
+	public delegate void DecreaseRelationEventHandler( Node other, Node self, float amount );
 	[Signal]
-	public delegate void IncreaseRenownEventHandler( Node self, int nAmount );
+	public delegate void IncreaseRenownEventHandler( Node self, int amount );
 
 	[Signal]
 	public delegate void SwitchedWeaponEventHandler( WeaponEntity weapon );
@@ -372,7 +455,7 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void WeaponPickedUpEventHandler( WeaponEntity source );
 	[Signal]
-	public delegate void AmmoPickedUpEventHandler( AmmoEntity source );
+	public delegate void AmmoPickedUpEventHandler( string ammoTypeID );
 	[Signal]
 	public delegate void LocationChangedEventHandler( WorldArea location );
 	[Signal]
@@ -388,11 +471,11 @@ public partial class Player : Entity {
 	// HUD related signals
 	//
 	[Signal]
-	public delegate void DashBurnoutChangedEventHandler( float nDashBurnout );
+	public delegate void DashBurnoutChangedEventHandler( float dashBurnout );
 	[Signal]
-	public delegate void RageChangedEventHandler( float nRage );
+	public delegate void RageChangedEventHandler( float rage );
 	[Signal]
-	public delegate void HealthChangedEventHandler( float nHealth );
+	public delegate void HealthChangedEventHandler( float health );
 	[Signal]
 	public delegate void StatusEffectTriggeredEventHandler( string effectName, StatusEffect effect );
 	[Signal]
@@ -410,28 +493,6 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void BulletTimeEndEventHandler();
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public virtual float GetMoney() => Money;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public virtual void DecreaseMoney( float nAmount ) {
-		Money -= nAmount;
-		EmitSignalLoseMoney( this, nAmount );
-	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public virtual void IncreaseMoney( float nAmount ) {
-		Money += nAmount;
-		EmitSignalGainMoney( this, nAmount );
-	}
-
-	//	public int GetWarCrimeCount() => WarCrimeCount;
-	//	public virtual void CommitWarCrime( WarCrimeType nType ) {
-	//		EmitSignal( "CommitWarCrime", this, nType );
-	//		WarCrimeCount++;
-	//	}
-
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Dictionary<TraitType, float> GetTraits() => Traits;
-
 	public void SetFaction( Faction faction ) {
 		// sanity
 		if ( Faction == faction ) {
@@ -446,58 +507,82 @@ public partial class Player : Entity {
 		Faction = faction;
 	}
 
-	public void DecreaseFactionImportance( int nAmount ) {
-		// sanity
-		if ( Faction == null ) {
-			Console.PrintError( "Player.DecreaseFactionImportance: no faction" );
-			return;
+	/*
+	===============
+	DecreaseFactionImportance
+	===============
+	*/
+	/// <summary>
+	/// Decreases the numerical value that the player has to a faction
+	/// </summary>
+	/// <param name="amount"></param>
+	public void DecreaseFactionImportance( Faction faction, int amount ) {
+		ArgumentNullException.ThrowIfNull( faction );
+		ArgumentOutOfRangeException.ThrowIfLessThan( amount, 0 );
+		if ( amount == 0 ) {
+			Console.PrintWarning( "Player.DecreaseFactionImportance: amount is 0, redundant call" );
 		}
-		FactionImportance -= nAmount;
+
+		FactionImportance -= amount;
 		EmitSignalFactionDemotion( Faction, this );
 	}
-	public void IncreaseFactionImportance( int nAmount ) {
-		// sanity
-		if ( Faction == null ) {
-			Console.PrintError( "Player.IncreaseFactionImportance: no faction" );
-			return;
+
+	/*
+	===============
+	IncreaseFactionImportance
+	===============
+	*/
+	public void IncreaseFactionImportance( Faction faction, int amount ) {
+		ArgumentNullException.ThrowIfNull( faction );
+		ArgumentOutOfRangeException.ThrowIfLessThan( amount, 0 );
+		if ( amount == 0 ) {
+			Console.PrintWarning( "Player.IncreaseFactionImportance: amount is 0, redundant call" );
 		}
-		FactionImportance += nAmount;
+		FactionImportance += amount;
 		EmitSignalFactionPromotion( Faction, this );
 	}
 
-	public override int GetRenownScore() => RenownScore;
-	public void AddRenown( int nAmount ) {
-		RenownScore += nAmount;
-		EmitSignalIncreaseRenown( this, nAmount );
+	/*
+	===============
+	AddRenown
+	===============
+	*/
+	public void AddRenown( int amount ) {
+		// TODO: WorldArea based renown
+
+		RenownScore += amount;
+		EmitSignalIncreaseRenown( this, amount );
 	}
 
-	/// <summary>
-	/// returns true if the entity has the given trait
-	/// </summary>
-	public bool HasTrait( TraitType trait ) {
-		foreach ( var it in Traits ) {
-			if ( it.Key == trait ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public float GetTraitScore( TraitType type ) {
-		if ( Traits.TryGetValue( type, out float value ) ) {
-			return value;
-		}
-		Console.PrintWarning( string.Format( "Player.GetTraitScore: invalid trait type {0}!", type ) );
+	/*
+	===============
+	GetTraitScore
+	===============
+	*/
+	public float GetTraitScore( Trait type ) {
+		//TODO: make this location dependent
 		return 0.0f;
 	}
-	public void ChangeTraitScore( TraitType type, float nDelta ) {
-		if ( nDelta < 0.0f ) {
-			EmitSignalDecreaseTraitScore( this, type, nDelta );
+
+	/*
+	===============
+	ChangeTraitScore
+	===============
+	*/
+	public void ChangeTraitScore( Trait type, float delta ) {
+		if ( delta < 0.0f ) {
+			EmitSignalDecreaseTraitScore( this, type, delta );
 		} else {
-			EmitSignalIncreaseTraitScore( this, type, nDelta );
+			EmitSignalIncreaseTraitScore( this, type, delta );
 		}
-		Traits[ type ] += nDelta;
+		Location?.ChangePlayerTraitScore( type, delta );
 	}
 
+	/*
+	===============
+	Meet
+	===============
+	*/
 	public virtual void Meet( Renown.Object other ) {
 		Relations.Add( new RenownValue( other ) );
 		if ( other is Entity entity && entity != null ) {
@@ -510,250 +595,258 @@ public partial class Player : Entity {
 			Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
 		}
 	}
-	public virtual void RelationIncrease( Renown.Object other, float nAmount ) {
+	
+	/*
+	===============
+	RelationIncrease
+	===============
+	*/
+	public virtual void RelationIncrease( Renown.Object other, float amount ) {
 		if ( !Relations.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 			Meet( other );
 		}
-		score.Value += nAmount;
-		EmitSignalIncreaseRelation( other as Node, this, nAmount );
+		score.Value += amount;
+		EmitSignalIncreaseRelation( other as Node, this, amount );
 
-		Console.PrintLine( string.Format( "Relation between {0} and {1} increased by {2}", this, other, nAmount ) );
+		Console.PrintLine( string.Format( "Relation between {0} and {1} increased by {2}", this, other, amount ) );
 	}
-	public virtual void RelationDecrease( Renown.Object other, float nAmount ) {
+
+	/*
+	===============
+	RelationDecrease
+	===============
+	*/
+	public virtual void RelationDecrease( Renown.Object other, float amount ) {
 		if ( !Relations.TryGetValue( new RenownValue( other ), out RenownValue score ) ) {
 			Meet( other );
 		}
-		score.Value -= nAmount;
-		EmitSignalDecreaseRelation( other as Node, this, nAmount );
+		score.Value -= amount;
+		EmitSignalDecreaseRelation( other as Node, this, amount );
 
-		Console.PrintLine( string.Format( "Relation between {0} and {1} decreased by {2}", this, other, nAmount ) );
+		Console.PrintLine( string.Format( "Relation between {0} and {1} decreased by {2}", this, other, amount ) );
 	}
 
+	/*
+	===============
+	OnFlameAreaBodyShape2DEntered
+	===============
+	*/
 	private void OnFlameAreaBodyShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Entity entity && entity != null ) {
 			entity.AddStatusEffect( "status_burning" );
 		}
 	}
 
+	/*
+	===============
+	AddStatusEffect
+	===============
+	*/
 	public override void AddStatusEffect( string effectName ) {
 		base.AddStatusEffect( effectName );
 
 		EmitSignalStatusEffectTriggered( effectName, StatusEffects[ effectName ] );
 	}
 
+	/*
+	===============
+	StartThoughtBubble
+	===============
+	*/
 	public static void StartThoughtBubble( string text ) {
 		Resource dialogue = DialogueManager.CreateResourceFromText( string.Format( "~ thought_bubble\n{0}", text ) );
 		LevelData.Instance.ThisPlayer.Velocity = Godot.Vector2.Zero;
 		DialogueManager.ShowDialogueBalloon( dialogue, "thought_bubble" );
 	}
+
+	/*
+	===============
+	StartDialogue
+	===============
+	*/
 	public static void StartDialogue( Resource dialogueResource, string key, System.Action<int> callback ) {
 		LevelData.Instance.ThisPlayer.Velocity = Godot.Vector2.Zero;
 		DialogueManager.ShowDialogueBalloon( dialogueResource, key );
 		DialogueCallback = callback;
 	}
+
+	/*
+	===============
+	ThoughtBubble
+	===============
+	*/
 	public void ThoughtBubble( string text ) {
 		StartThoughtBubble( text );
 	}
 
+	/*
+	===============
+	OnDialogueEnded
+	===============
+	*/
 	private void OnDialogueEnded( Resource dialogueResource ) {
 	}
+
+	/*
+	===============
+	OnDialogueStarted
+	===============
+	*/
 	private void OnDialogueStarted( Resource dialogueResource ) {
 	}
+
+	/*
+	===============
+	OnMutated
+	===============
+	*/
 	private void OnMutated( Godot.Collections.Dictionary mutation ) {
 		DialogueCallback?.DynamicInvoke( DialogueGlobals.Get().PlayerChoice );
 	}
 
-	public static bool IsTutorialActive() {
-		return !TutorialCompleted;
+	/*
+	===============
+	SetTileMapFloorLevel
+	===============
+	*/
+	public void SetTileMapFloorLevel( int level ) {
+		TileMapLevel = level;
 	}
 
-	public void SetTileMapFloorLevel( int nLevel ) => TileMapLevel = nLevel;
-	public int GetTileMapFloorLevel() => TileMapLevel;
+	/*
+	===============
+	AddToJournal
+	===============
+	*/
+	public void AddToJournal( Note note ) {
+		JournalCache.TryAdd( TranslationServer.Translate( $"{note.TextId}_TITLE" ), TranslationServer.Translate( note.TextId ) );
+	}
 
-	public void AddToJournal( Note note ) => JournalCache.TryAdd( TranslationServer.Translate( note.TextId + "_TITLE" ), TranslationServer.Translate( note.TextId ) );
-
-	public void SetSoundLevel( float nSoundLevel ) {
-		if ( nSoundLevel > SoundLevel ) {
-			SoundLevel = nSoundLevel;
+	/*
+	===============
+	SetSoundLevel
+	===============
+	*/
+	public void SetSoundLevel( float soundLevel ) {
+		if ( soundLevel > SoundLevel ) {
+			SoundLevel = soundLevel;
 		}
 	}
 
-	private void IncreaseInventoryWeight( float nAmount ) {
-		TotalInventoryWeight += nAmount;
-		if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.80f ) {
-			Flags |= PlayerFlags.Encumbured;
-		}
-	}
-	private void DecreaseInventoryWeight( float nAmount ) {
-		TotalInventoryWeight -= nAmount;
-		if ( TotalInventoryWeight < MaximumInventoryWeight * 0.80f ) {
-			Flags &= ~PlayerFlags.Encumbured;
-		}
-	}
-
-	#region Load & Save
+	/*
+	===============
+	Save
+	===============
+	*/
+	/// <summary>
+	/// Writes the player's gamestate to disk
+	/// </summary>
 	public override void Save() {
-		using ( var writer = new SaveSystem.SaveSectionWriter( "Player" ) ) {
-			int stackIndex;
+		using var writer = new SaveSystem.SaveSectionWriter( "Player", ArchiveSystem.SaveWriter );
 
-			writer.SaveFloat( "Health", Health );
-			writer.SaveFloat( "Rage", Rage );
-			writer.SaveInt( "Hellbreaks", Hellbreaks );
-			writer.SaveInt( "CurrentWeapon", CurrentWeapon );
-			writer.SaveUInt( "HandsUsed", (uint)HandsUsed );
+		writer.SaveFloat( "Health", Health );
+		writer.SaveFloat( "Rage", Rage );
+		writer.SaveFloat( "Sanity", Sanity );
+		writer.SaveFloat( "MaxHealth", MaxHealth.Value );
+		writer.SaveFloat( "MaxRage", MaxRage.Value );
+		writer.SaveFloat( "MaxSanity", MaxSanity.Value );
+		writer.SaveInt( "Hellbreaks", Hellbreaks );
+		writer.SaveUInt( "HandsUsed", (uint)HandsUsed );
 
-			writer.SaveVector2( "Position", GlobalPosition );
+		writer.SaveVector2( "Position", GlobalPosition );
 
-			writer.SaveInt( "ArmLeftSlot", ArmLeft.Slot );
-			writer.SaveInt( "ArmRightSlot", ArmRight.Slot );
+		writer.SaveInt( "ArmLeftSlot", ArmLeft.Slot );
+		writer.SaveInt( "ArmRightSlot", ArmRight.Slot );
 
-			writer.SaveInt( "AmmoStacksCount", AmmoStacks.Count );
-			stackIndex = 0;
-			foreach ( var stack in AmmoStacks ) {
-				writer.SaveInt( string.Format( "AmmoStackAmount{0}", stackIndex ), stack.Value.Amount );
-				writer.SaveString( string.Format( "AmmoStackNode{0}", stackIndex ), stack.Value.AmmoType.GetPath() );
-				stackIndex++;
-			}
-
-			writer.SaveInt( "WeaponStacksCount", WeaponsStack.Count );
-			stackIndex = 0;
-			foreach ( var stack in WeaponsStack ) {
-				writer.SaveString( string.Format( "WeaponStackNode{0}", stackIndex ), stack.Value.GetPath() );
-				stackIndex++;
-			}
-
-			writer.SaveInt( "ConsumableStacksCount", ConsumableStacks.Count );
-			stackIndex = 0;
-			foreach ( var stack in ConsumableStacks ) {
-				writer.SaveInt( string.Format( "ConsumableStacksAmount{0}", stackIndex ), stack.Value.Amount );
-				writer.SaveString( string.Format( "ConsumableStacksType{0}", stackIndex ), (string)stack.Value.ItemType.Get( "id" ) );
-				stackIndex++;
-			}
-		}
+		Inventory.Save( writer );
 	}
+
+	/*
+	===============
+	Load
+	===============
+	*/
+	/// <summary>
+	/// Loads the player's gamestate from disk
+	/// </summary>
 	public override void Load() {
 		using SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
 		Health = reader.LoadFloat( "Health" );
 		Rage = reader.LoadFloat( "Rage" );
 		Hellbreaks = reader.LoadInt( "Hellbreaks" );
-		CurrentWeapon = reader.LoadInt( "CurrentWeapon" );
 		HandsUsed = (Hands)reader.LoadUInt( "HandsUsed" );
+
+		MaxSanity.Value = reader.LoadFloat( "MaxSanity" );
+		MaxRage.Value = reader.LoadFloat( "MaxRage" );
+		MaxHealth.Value = reader.LoadFloat( "MaxHealth" );
 
 		GlobalPosition = reader.LoadVector2( "Position" );
 
-		ArmLeft.Slot = reader.LoadInt( "ArmLeftSlot" );
-		ArmRight.Slot = reader.LoadInt( "ArmRightSlot" );
+		ArmLeft.SetSlot( reader.LoadInt( "ArmLeftSlot" ) );
+		ArmRight.SetSlot( reader.LoadInt( "ArmRightSlot" ) );
 		switch ( HandsUsed ) {
-		case Hands.Left:
-			LastUsedArm = ArmLeft;
-			break;
-		case Hands.Right:
-		case Hands.Both:
-			LastUsedArm = ArmRight;
-			break;
-		};
-
-		AmmoStacks.Clear();
-		int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
-		for ( int i = 0; i < numAmmoStacks; i++ ) {
-			AmmoStack stack = new AmmoStack();
-			stack.Amount = reader.LoadInt( string.Format( "AmmoStackAmount{0}", i ) );
-			stack.AmmoType = new AmmoEntity();
-
-			string path = reader.LoadString( string.Format( "AmmoStackNode{0}", i ) );
-			stack.AmmoType.Load( path );
-			AddChild( stack.AmmoType );
-
-			AmmoStacks.Add( path.GetHashCode(), stack );
+			case Hands.Left:
+				LastUsedArm = ArmLeft;
+				break;
+			case Hands.Right:
+			case Hands.Both:
+				LastUsedArm = ArmRight;
+				break;
 		}
 
-		WeaponsStack.Clear();
-		int numWeapons = reader.LoadInt( "WeaponStacksCount" );
-		for ( int i = 0; i < numWeapons; i++ ) {
-			WeaponEntity weapon = new WeaponEntity();
-			weapon._Owner = this;
-			weapon.Load( reader.LoadString( string.Format( "WeaponStackNode{0}", i ) ) );
-			AddChild( weapon );
-			WeaponsStack.Add( weapon.GetPath().GetHashCode(), weapon );
-		}
-
-		ConsumableStacks.Clear();
-		int numConsumableStacks = reader.LoadInt( "ConsumableStacksCount" );
-		for ( int i = 0; i < numConsumableStacks; i++ ) {
-			ConsumableStack stack = new ConsumableStack();
-			stack.Amount = reader.LoadInt( string.Format( "ConsumableStacksAmount{0}", i ) );
-			string id = reader.LoadString( string.Format( "ConsumableStacksType{0}", i ) );
-			stack.ItemType = (Resource)( (Resource)Inventory.Get( "database" ) ).Call( "get_item", id );
-			ConsumableStacks.Add( id.GetHashCode(), stack );
-		}
-
-		if ( CurrentWeapon != WeaponSlot.INVALID ) {
-			CallDeferred( MethodName.EmitSignal, SignalName.SwitchedWeapon, WeaponSlots[ CurrentWeapon ].GetWeapon() );
-		}
+		Inventory.Load( reader, this );
 	}
 
+	/*
+	===============
+	SetTileMapFloor
+	===============
+	*/
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetTileMapFloor( TileMapFloor floor ) => Floor = floor;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public TileMapFloor GetTileMapFloor() => Floor;
-
-	public Checkpoint GetCurrentCheckpoint() => LastCheckpoint;
-
-	public void LoadWeapon( WeaponEntity weapon, string ammo, int slot ) {
-		weapon._Owner = this;
-
-		if ( slot != WeaponSlot.INVALID ) {
-			weapon.SetEquippedState( true );
-			WeaponSlots[ slot ].SetWeapon( weapon );
-		}
-
-		if ( ammo != null ) {
-			AmmoStack stack = null;
-			foreach ( var it in AmmoStacks ) {
-				if ( it.Key == ammo.GetHashCode() ) {
-					stack = it.Value;
-					break;
-				}
-			}
-			if ( stack != null ) {
-				weapon.CallDeferred( WeaponEntity.MethodName.SetReserve, stack );
-				weapon.CallDeferred( WeaponEntity.MethodName.SetAmmo, stack.AmmoType );
-			} else {
-				// TODO: error
-			}
-		}
+	public void SetTileMapFloor( TileMapFloor floor ) {
+		Floor = floor;
 	}
-	#endregion
 
+	/*
+	===============
+	ReceivePacket
+	===============
+	*/
 	private void ReceivePacket( ulong senderId, System.IO.BinaryReader reader ) {
 		SyncObject.BeginRead( reader );
 
 		PlayerUpdateType type = (PlayerUpdateType)SyncObject.ReadByte();
 		switch ( type ) {
-		case PlayerUpdateType.Damage: {
-			switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
-			case PlayerDamageSource.Player:
-				float damage = SyncObject.ReadFloat();
-				Damage( SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
+			case PlayerUpdateType.Damage: {
+					switch ( (PlayerDamageSource)SyncObject.ReadByte() ) {
+						case PlayerDamageSource.Player:
+							float damage = SyncObject.ReadFloat();
+							Damage( Steam.SteamLobby.Instance.GetPlayer( (CSteamID)senderId ), damage );
+							break;
+						case PlayerDamageSource.NPC:
+							break;
+						case PlayerDamageSource.Environment:
+							break;
+					}
+					break;
+				}
+			case PlayerUpdateType.SetSpawn:
+				// only ever called in team modes
+				GlobalPosition = SyncObject.ReadVector2();
 				break;
-			case PlayerDamageSource.NPC:
+			case PlayerUpdateType.Count:
+			default:
+				Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
 				break;
-			case PlayerDamageSource.Environment:
-				break;
-			};
-			break; }
-		case PlayerUpdateType.SetSpawn:
-			// only ever called in team modes
-			GlobalPosition = SyncObject.ReadVector2();
-			break;
-		case PlayerUpdateType.Count:
-		default:
-			Console.PrintError( string.Format( "Player.ReceivePacket: invalid PlayerUpdateType {0}", (byte)type ) );
-			break;
-		};
+		}
 	}
 
+	/*
+	===============
+	SendPacket
+	===============
+	*/
 	private void SendPacket() {
 		if ( GameConfiguration.GameMode != GameMode.Online && GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			return;
@@ -773,27 +866,27 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
-		if ( LastSyncState.LastNetworkAimAngle != AimLine.GlobalRotation ) {
+		if ( LastSyncState.LastNetworkAimAngle != (Half)AimLine.GlobalRotation ) {
 			SyncObject.Write( true );
-			LastSyncState.LastNetworkAimAngle = AimLine.GlobalRotation;
-			SyncObject.Write( LastSyncState.LastNetworkAimAngle );
+			LastSyncState.LastNetworkAimAngle = (Half)AimLine.GlobalRotation;
+//			SyncObject.Write( LastSyncState.LastNetworkAimAngle );
 		} else {
 			SyncObject.Write( false );
 		}
 
-		if ( LastSyncState.LastNetworkBloodAmount != BloodAmount ) {
+		if ( LastSyncState.LastNetworkBloodAmount != (Half)BloodAmount ) {
 			SyncObject.Write( true );
 			SyncObject.Write( BloodAmount );
-			LastSyncState.LastNetworkBloodAmount = BloodAmount;
+			LastSyncState.LastNetworkBloodAmount = (Half)BloodAmount;
 		} else {
 			SyncObject.Write( false );
 		}
 
-		if ( CurrentWeapon == WeaponSlot.INVALID ) {
+		if ( Inventory.CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
 			SyncObject.Write( false );
 		} else {
-			WeaponEntity weapon = WeaponSlots[ CurrentWeapon ].GetWeapon();
+			WeaponEntity weapon = Inventory.WeaponSlots[ Inventory.CurrentWeapon ].Weapon;
 			if ( LastSyncState.LastNetworkWeaponID != (string)weapon.Data.Get( "id" ) ) {
 				SyncObject.Write( true );
 				SyncObject.Write( (string)weapon.Data.Get( "id" ) );
@@ -801,6 +894,7 @@ public partial class Player : Entity {
 			} else {
 				SyncObject.Write( false );
 			}
+			/*
 			if ( LastSyncState.LastNetworkUseMode != weapon.LastUsedMode ) {
 				SyncObject.Write( true );
 				SyncObject.Write( (uint)weapon.LastUsedMode );
@@ -808,6 +902,7 @@ public partial class Player : Entity {
 			} else {
 				SyncObject.Write( false );
 			}
+			*/
 		}
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
@@ -818,6 +913,11 @@ public partial class Player : Entity {
 		SyncObject.Sync( Steamworks.Constants.k_nSteamNetworkingSend_Unreliable );
 	}
 
+	/*
+	===============
+	OnSoundAreaShape2DEntered
+	===============
+	*/
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
 			if ( mob.GetTileMapFloor() == Floor ) {
@@ -825,44 +925,44 @@ public partial class Player : Entity {
 			}
 		}
 	}
+
+	/*
+	===============
+	OnSoundAreaShape2DExited
+	===============
+	*/
 	private void OnSoundAreaShape2DExited( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
 	}
 
-	public bool HasPerk( string name ) {
-		foreach ( var perk in UnlockedBoons ) {
-			if ( perk.Name == name ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public bool HasRune( string name ) {
-		foreach ( var rune in UnlockedRunes ) {
-			if ( rune.Name == name ) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void IncreaseBlood( float nAmount ) {
-		if ( !SettingsData.GetShowBlood() ) {
+	/*
+	===============
+	IncreaseBlood
+	===============
+	*/
+	private void IncreaseBlood( float amount ) {
+		if ( !SettingsData.ShowBlood ) {
 			return;
 		}
 
 		// cover us with more blood if we're sober
 		if ( ( Flags & PlayerFlags.Sober ) == 0 ) {
-			BloodAmount += nAmount * 0.25f;
+			BloodAmount += amount * 0.25f;
 			BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 			BloodDropTimer.Start();
 		} else {
-			BloodAmount += nAmount;
+			BloodAmount += amount;
 			BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
 			BloodDropTimer.Start();
 		}
 	}
+
+	/*
+	===============
+	OnBloodDropTimerTimeout
+	===============
+	*/
 	private void OnBloodDropTimerTimeout() {
-		if ( !SettingsData.GetShowBlood() ) {
+		if ( !SettingsData.ShowBlood ) {
 			return;
 		}
 
@@ -880,65 +980,39 @@ public partial class Player : Entity {
 		}
 	}
 
+	/*
+	===============
+	SetLocation
+	===============
+	*/
 	public override void SetLocation( in WorldArea location ) {
 		if ( location != Location ) {
 			DiscoveredAreas.Add( location );
 			EmitSignalLocationChanged( location );
 		}
- 
+
 		base.SetLocation( location );
 	}
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public AnimatedSprite2D GetTorsoAnimation() => TorsoAnimation;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public AnimatedSprite2D GetLegsAnimation() => LegAnimation;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public AnimatedSprite2D GetLeftArmAnimation() => ArmLeft.Animations;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public AnimatedSprite2D GetRightArmAnimation() => ArmRight.Animations;
-
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetPrimaryWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.Primary ].SetWeapon( weapon );
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetHeavyPrimaryWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ].SetWeapon( weapon );
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetSidearmWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.Sidearm ].SetWeapon( weapon );
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetHeavySidearmWeapon( WeaponEntity weapon ) => WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ].SetWeapon( weapon );
-
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot GetPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Primary ];
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot GetHeavyPrimaryWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ];
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot GetSidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.Sidearm ];
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot GetHeavySidearmWeapon() => WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ];
-
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Resource GetCurrentMappingContext() => CurrentMappingContext;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot[] GetWeaponSlots() => WeaponSlots;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Godot.Collections.Dictionary<int, WeaponEntity> GetWeaponsStack() => WeaponsStack;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Godot.Collections.Dictionary<int, AmmoStack> GetAmmoStacks() => AmmoStacks;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Node GetInventory() => Inventory;
+	/*
+	===============
+	GetWeaponHand
+	===============
+	*/
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
-		if ( ArmLeft.Slot != WeaponSlot.INVALID && WeaponSlots[ ArmLeft.Slot ].GetWeapon() == weapon ) {
+		if ( ArmLeft.Slot != WeaponSlot.INVALID && Inventory.WeaponSlots[ ArmLeft.Slot ].Weapon == weapon ) {
 			return ArmLeft;
-		} else if ( ArmRight.Slot != WeaponSlot.INVALID && WeaponSlots[ ArmRight.Slot ].GetWeapon() == weapon ) {
+		} else if ( ArmRight.Slot != WeaponSlot.INVALID && Inventory.WeaponSlots[ ArmRight.Slot ].Weapon == weapon ) {
 			return ArmRight;
 		}
 		return null;
 	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Godot.Vector2 GetInputVelocity() => InputVelocity;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot GetSlot( int nSlot ) => WeaponSlots[ nSlot ];
 
+	/*
+	===============
+	SyncShadow
+	===============
+	*/
 	private void SyncShadow() {
 		// TODO: quality adjustment for this?
 		float rotation = GlobalPosition.AngleTo( WorldTimeManager.Instance.RedSunLight.GlobalPosition );
@@ -976,7 +1050,7 @@ public partial class Player : Entity {
 	}
 	public float GetArmAngle() {
 		Godot.Vector2 mousePosition;
-		if ( (int)SettingsData.GetWindowMode() >= 2 ) {
+		if ( (int)SettingsData.WindowMode >= 2 ) {
 			mousePosition = DisplayServer.MouseGetPosition();
 		} else {
 			mousePosition = GetViewport().GetMousePosition();
@@ -998,60 +1072,37 @@ public partial class Player : Entity {
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public CanvasLayer GetHUD() => HUD;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetArmAngle( float nAngle ) => ArmAngle = nAngle;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Arm GetLastUsedArm() => LastUsedArm;
+	public void SetArmAngle( float angle ) => ArmAngle = angle;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetLastUsedArm( in Arm arm ) => LastUsedArm = arm;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public float GetSoundLevel() => SoundLevel;
-	public void SetHealth( float nHealth ) {
-		Health = nHealth;
+	public void SetHealth( float health ) {
+		Health = health;
 		if ( Health > MaxHealth.MaxValue ) {
 			Health = MaxHealth.MaxValue;
 		}
 		EmitSignalHealthChanged( Health );
 	}
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public float GetRage() => Rage;
-	public void SetRage( float nRage ) {
-		Rage = nRage;
+	public void SetRage( float rage ) {
+		Rage = rage;
 		if ( Rage > MaxRage.MaxValue ) {
 			Rage = MaxRage.MaxValue;
 		}
 		EmitSignalRageChanged( Rage );
 	}
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public PlayerFlags GetFlags() => Flags;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetFlags( PlayerFlags flags ) => Flags = flags;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Hands GetHandsUsed() => HandsUsed;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetHandsUsed( Hands hands ) => HandsUsed = hands;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public WeaponSlot[] GetSlots() => WeaponSlots;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetSlots( WeaponSlot[] slots ) => WeaponSlots = slots;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetGroundMaterial( GroundMaterialType nType ) => GroundType = nType;
+	public void SetGroundMaterial( GroundMaterialType type ) => GroundType = type;
 
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Arm GetLeftArm() => ArmLeft;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public Arm GetRightArm() => ArmRight;
-	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public int GetCurrentWeapon() => CurrentWeapon;
-
-	public static void ShakeCamera( float nAmount ) {
-		ShakeStrength += nAmount;
+	public static void ShakeCamera( float amount ) {
+		ShakeStrength += amount;
 		JoltDirection = Godot.Vector2.Zero;
 	}
-	public static void ShakeCameraDirectional( float nAmount, Godot.Vector2 direction ) {
+	public static void ShakeCameraDirectional( float amount, Godot.Vector2 direction ) {
 		JoltDirection = direction;
-		ShakeStrength = nAmount;
+		ShakeStrength = amount;
 	}
 
 	private void IdleReset() {
@@ -1080,11 +1131,11 @@ public partial class Player : Entity {
 		}
 	}
 
-	public void SetupSplitScreen( int nInputIndex ) {
+	public void SetupSplitScreen( int inputIndex ) {
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			SplitScreen = true;
 		}
-		InputDevice = nInputIndex;
+		InputDevice = inputIndex;
 	}
 
 	private void Respawn() {
@@ -1116,8 +1167,8 @@ public partial class Player : Entity {
 		SetHealth( Health );
 		SetRage( Rage );
 
-		if ( ( GameConfiguration.GameMode == GameMode.Online && SteamLobby.Instance.IsOwner() ) || GameConfiguration.GameMode == GameMode.SinglePlayer ) {
-			ArchiveSystem.SaveGame( SettingsData.GetSaveSlot() );
+		if ( ( GameConfiguration.GameMode == GameMode.Online && SteamLobby.Instance.IsHost ) || GameConfiguration.GameMode == GameMode.SinglePlayer ) {
+			ArchiveSystem.SaveGame( SettingsData.LastSaveSlot );
 		}
 	}
 
@@ -1150,11 +1201,11 @@ public partial class Player : Entity {
 		ArmRight.Animations.Play( "idle" );
 		ArmRight.Animations.Show();
 
-		ArmLeft.Slot = WeaponSlot.INVALID;
-		ArmRight.Slot = WeaponSlot.INVALID;
+		ArmLeft.SetSlot( WeaponSlot.INVALID );
+		ArmRight.SetSlot( WeaponSlot.INVALID );
 		HandsUsed = Hands.Right;
 
-		CurrentWeapon = WeaponSlot.INVALID;
+		Inventory.SetEquippedWeapon( WeaponSlot.INVALID );
 
 		BloodAmount = 0.0f;
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
@@ -1162,26 +1213,12 @@ public partial class Player : Entity {
 		SetHealth( 100.0f );
 		SetRage( 60.0f );
 
-		WeaponsStack.Clear();
-		AmmoStacks.Clear();
-		ConsumableStacks.Clear();
-
-		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			WeaponSlots[ i ].SetWeapon( null );
-			WeaponSlots[ i ].SetMode( WeaponEntity.Properties.None );
-		}
-
 		BlockInput( false );
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
 
-		PlaySound( AudioChannel, ResourceCache.PlayerDieSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
-
-		// check if hellbreaker is an option
-		if ( GameConfiguration.GameMode == GameMode.ChallengeMode && SettingsData.GetHellbreakerEnabled() && Hellbreaker.CanActivate() ) {
-			return;
-		}
+//		PlaySound( AudioChannel, DieSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		// make sure we're not calling this over and over
 		Flags |= PlayerFlags.Dashing;
@@ -1207,20 +1244,20 @@ public partial class Player : Entity {
 		SetProcess( false );
 	}
 
-	public override void Damage( in Entity attacker, float nAmount ) {
+	public override void Damage( in Entity attacker, float amount ) {
 		if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return; // iframes
 		}
 		if ( attacker != null ) {
-			ShakeCameraDirectional( nAmount, ( attacker.GlobalPosition - GlobalPosition ).Normalized() );
+			ShakeCameraDirectional( amount, ( attacker.GlobalPosition - GlobalPosition ).Normalized() );
 		}
 
 		FreeFlow.EndCombo();
 
-		System.Threading.Interlocked.Exchange( ref Health, Health - ( nAmount * 0.75f ) );
-		System.Threading.Interlocked.Exchange( ref Rage, Rage + ( nAmount * 0.01f ) );
+		Health -= amount * 0.75f;
+		Rage += amount * 0.01f;
 		if ( Rage > 100.0f ) {
-			System.Threading.Interlocked.Exchange( ref Rage, 100.0f );
+			Rage = 100.0f;
 		}
 
 		if ( attacker != null ) {
@@ -1230,10 +1267,10 @@ public partial class Player : Entity {
 		if ( Health <= 0.0f ) {
 			CallDeferred( MethodName.OnDeath, attacker );
 		} else {
-			CallDeferred( MethodName.PlaySound, AudioChannel, ResourceCache.PlayerPainSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerPainSfx.Length - 1 ) ] );
+			CallDeferred( MethodName.PlaySound, AudioChannel, SoundCache.GetEffectRange( SoundEffect.PlayerPain0, 3 ) );
 		}
 
-		CallDeferred( MethodName.EmitSignal, SignalName.Damaged, attacker, this, nAmount );
+		CallDeferred( MethodName.EmitSignal, SignalName.Damaged, attacker, this, amount );
 	}
 
 	public void OnParry( Bullet from, float damage ) {
@@ -1254,9 +1291,9 @@ public partial class Player : Entity {
 		}
 
 		if ( Velocity == Godot.Vector2.Zero ) {
-			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/parry_heavy.ogg" ) );
+			PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ParryHeavy ] );
 		} else {
-			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/parry_light.ogg" ) );
+			PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ParryLight ] );
 		}
 
 		EmitSignalParrySuccess();
@@ -1381,12 +1418,12 @@ public partial class Player : Entity {
 	public void BeginInteraction( InteractionItem item ) {
 		EmitSignalShowInteraction( item );
 
-		switch ( item.GetInteractionType() ) {
-		case InteractionType.Checkpoint:
-			Flags |= PlayerFlags.Checkpoint;
-			LastCheckpoint = item as Checkpoint;
-			break;
-		};
+		switch ( item.InteractionType ) {
+			case InteractionType.Checkpoint:
+				Flags |= PlayerFlags.Checkpoint;
+				LastCheckpoint = item as Checkpoint;
+				break;
+		}
 	}
 
 	private void OnIdleAnimationTimerTimeout() {
@@ -1429,7 +1466,7 @@ public partial class Player : Entity {
 			if ( LegAnimation.Animation != "run_change" ) {
 				FootSteps.AddStep( Velocity, GlobalPosition, GroundType, WalkChannel );
 			}
-			PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/arm_foley.ogg" ) );
+			PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.PlayerArmFoley ] );
 			SetSoundLevel( 36.0f );
 		}
 	}
@@ -1448,14 +1485,14 @@ public partial class Player : Entity {
 
 	private void OnDashBurnout() {
 		Flags &= ~PlayerFlags.Dashing;
-		AddChild( ResourceCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
+		AddChild( SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
 		Damage( this, 30.0f );
 		AddStatusEffect( "status_burning" );
 		ShakeCameraDirectional( 50.0f, DashDirection );
 
 		SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
 	}
-	private void OnDash() {
+	private void OnDash( Resource dashAction ) {
 		if ( IsInputBlocked() || !DashKit.CanDash() ) {
 			return;
 		}
@@ -1470,7 +1507,7 @@ public partial class Player : Entity {
 
 		EmitSignalDashStart();
 	}
-	private void OnSlide() {
+	private void OnSlide( Resource dashAction ) {
 		if ( IsInputBlocked() || ( Flags & PlayerFlags.Dashing ) != 0 ) {
 			return;
 		}
@@ -1479,14 +1516,14 @@ public partial class Player : Entity {
 		SlideTime.Start();
 		SlideEffect.Emitting = true;
 
-		PlaySound( AudioChannel, ResourceCache.SlideSfx[ RNJesus.IntRange( 0, ResourceCache.SlideSfx.Length - 1 ) ] );
+		PlaySound( AudioChannel, SoundCache.GetEffectRange( SoundEffect.Slide0, 2 ) );
 
 		LegAnimationState = PlayerAnimationState.Sliding;
 		TorsoAnimationState = PlayerAnimationState.Sliding;
 
 		LegAnimation.Play( "slide" );
 	}
-	private void OnUseWeapon() {
+	private void OnUseWeaponTriggered( Resource useWeaponAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
@@ -1497,8 +1534,8 @@ public partial class Player : Entity {
 		if ( slot == WeaponSlot.INVALID ) {
 			return; // nothing equipped
 		}
-		if ( WeaponSlots[ slot ].IsUsed() ) {
-			WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
+		if ( Inventory.WeaponSlots[ slot ].IsUsed() ) {
+			WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
 			weapon.SetAttackAngle( ArmAngle );
 
 			float soundLevel = 0.0f;
@@ -1545,31 +1582,33 @@ public partial class Player : Entity {
 			return;
 		}
 
+		/*
 		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
 			GetArmAngle();
 		} else {
 			ArmAngle = ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle();
 		}
+		*/
 		AimLine.GlobalRotation = ArmAngle;
 
 		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
 			SyncShadow();
 		}
 	}
-	private void OnPrevWeapon() {
+	private void OnPrevWeaponTriggered( Resource prevWeaponAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
 
-		int index = CurrentWeapon < 0 ? MAX_WEAPON_SLOTS - 1 : CurrentWeapon - 1;
+		int index = Inventory.CurrentWeapon < 0 ? MAX_WEAPON_SLOTS - 1 : Inventory.CurrentWeapon - 1;
 		while ( index != -1 ) {
-			if ( WeaponSlots[ index ].IsUsed() ) {
+			if ( Inventory.WeaponSlots[ index ].IsUsed() ) {
 				break;
 			}
 			index--;
 		}
 
-		if ( index == -1 || !WeaponSlots[ index ].IsUsed() ) {
+		if ( index == -1 || !Inventory.WeaponSlots[ index ].IsUsed() ) {
 			index = WeaponSlot.INVALID;
 		}
 
@@ -1588,38 +1627,38 @@ public partial class Player : Entity {
 
 		// adjust arm state
 		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon = WeaponSlots[ index ].GetWeapon();
+			WeaponEntity weapon = Inventory.WeaponSlots[ index ].Weapon;
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				otherArm.Slot = WeaponSlot.INVALID;
+				otherArm.SetSlot( WeaponSlot.INVALID );
 				HandsUsed = Hands.Both;
 			}
 
 			EmitSignalSwitchedWeapon( weapon );
-			WeaponSlots[ index ].SetMode( WeaponSlots[ index ].GetWeapon().LastUsedMode );
+			Inventory.WeaponSlots[ index ].SetMode( Inventory.WeaponSlots[ index ].Weapon.LastUsedMode );
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ChangeWeapon ] );
 
-		CurrentWeapon = index;
-		LastUsedArm.Slot = CurrentWeapon;
+		Inventory.SetEquippedWeapon( index );
+		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
 
 		EmitSignalHandsStatusUpdated( HandsUsed );
 	}
-	private void OnNextWeapon() {
+	private void OnNextWeaponTriggered( Resource nextWeaponAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
 
-		int index = CurrentWeapon == MAX_WEAPON_SLOTS - 1 ? 0 : CurrentWeapon + 1;
+		int index = Inventory.CurrentWeapon == MAX_WEAPON_SLOTS - 1 ? 0 : Inventory.CurrentWeapon + 1;
 		while ( index < MAX_WEAPON_SLOTS ) {
-			if ( WeaponSlots[ index ].IsUsed() ) {
+			if ( Inventory.WeaponSlots[ index ].IsUsed() ) {
 				break;
 			}
 			index++;
 		}
 
-		if ( index == MAX_WEAPON_SLOTS || !WeaponSlots[ index ].IsUsed() ) {
+		if ( index == MAX_WEAPON_SLOTS || !Inventory.WeaponSlots[ index ].IsUsed() ) {
 			index = -1;
 		}
 
@@ -1638,25 +1677,25 @@ public partial class Player : Entity {
 
 		// adjust arm state
 		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon = WeaponSlots[ index ].GetWeapon();
+			WeaponEntity weapon = Inventory.WeaponSlots[ index ].Weapon;
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				otherArm.Slot = WeaponSlot.INVALID;
+				otherArm.SetSlot( WeaponSlot.INVALID );
 				HandsUsed = Hands.Both;
 			}
 
 			EmitSignalSwitchedWeapon( weapon );
-			WeaponSlots[ index ].SetMode( WeaponSlots[ index ].GetWeapon().LastUsedMode );
+			Inventory.WeaponSlots[ index ].SetMode( Inventory.WeaponSlots[ index ].Weapon.LastUsedMode );
 		} else {
 			EmitSignalSwitchedWeapon( null );
 		}
-		PlaySound( MiscChannel, ResourceCache.ChangeWeaponSfx );
+		PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ChangeWeapon ] );
 
-		CurrentWeapon = index;
-		LastUsedArm.Slot = CurrentWeapon;
+		Inventory.SetEquippedWeapon( index );
+		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
 
 		EmitSignalHandsStatusUpdated( HandsUsed );
 	}
-	private void OnBulletTime() {
+	private void OnBulletTimeTriggered( Resource bulletTimeAction ) {
 		if ( IsInputBlocked() || Rage <= 0.0f ) {
 			return;
 		}
@@ -1667,7 +1706,7 @@ public partial class Player : Entity {
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
 			ExitBulletTime();
 		} else {
-			PlaySound( MiscChannel, ResourceCache.SlowMoBeginSfx );
+			PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.SlowmoBegin ] );
 
 			Flags |= PlayerFlags.BulletTime;
 			Engine.TimeScale = 0.40f;
@@ -1688,20 +1727,20 @@ public partial class Player : Entity {
 		Arm dst;
 
 		switch ( HandsUsed ) {
-		case Hands.Left:
-			src = ArmLeft;
-			dst = ArmRight;
-			break;
-		case Hands.Right:
-			src = ArmRight;
-			dst = ArmLeft;
-			break;
-		case Hands.Both:
-		default:
-			src = LastUsedArm;
-			dst = src;
-			break;
-		};
+			case Hands.Left:
+				src = ArmLeft;
+				dst = ArmRight;
+				break;
+			case Hands.Right:
+				src = ArmRight;
+				dst = ArmLeft;
+				break;
+			case Hands.Both:
+			default:
+				src = LastUsedArm;
+				dst = src;
+				break;
+		}
 
 		if ( src.Slot == WeaponSlot.INVALID ) {
 			// nothing in the source hand, deny
@@ -1710,19 +1749,14 @@ public partial class Player : Entity {
 
 		LastUsedArm = dst;
 
-		WeaponEntity srcWeapon = WeaponSlots[ src.Slot ].GetWeapon();
+		WeaponEntity srcWeapon = Inventory.WeaponSlots[ src.Slot ].Weapon;
 		if ( ( srcWeapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 && ( srcWeapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) == 0 ) {
 			// cannot change hands, no one-handing allowed
 			return;
 		}
 
 		// check if the destination hand has something in it, if true, then swap
-		if ( dst.Slot != WeaponSlot.INVALID ) {
-			(src.Slot, dst.Slot) = (dst.Slot, src.Slot);
-		} else {
-			// if we have nothing in the destination hand, then just clear the source hand
-			(src.Slot, dst.Slot) = (WeaponSlot.INVALID, src.Slot);
-		}
+		src.SwapSlot( dst );
 		EmitSignalWeaponStatusUpdated( srcWeapon, srcWeapon.LastUsedMode );
 	}
 	private void SwitchWeaponHand() {
@@ -1732,28 +1766,28 @@ public partial class Player : Entity {
 		// TODO: implement use both hands
 
 		switch ( HandsUsed ) {
-		case Hands.Left:
-			HandsUsed = Hands.Right; // set to right
-			LastUsedArm = ArmRight;
-			break;
-		case Hands.Right:
-			HandsUsed = Hands.Left; // set to right
-			LastUsedArm = ArmLeft;
-			break;
-		case Hands.Both:
-			break;
-		default:
-			Console.PrintError( "Player.SwitchWeaponHand: invalid hand, setting to default of right" );
-			HandsUsed = Hands.Right;
-			break;
-		};
+			case Hands.Left:
+				HandsUsed = Hands.Right; // set to right
+				LastUsedArm = ArmRight;
+				break;
+			case Hands.Right:
+				HandsUsed = Hands.Left; // set to right
+				LastUsedArm = ArmLeft;
+				break;
+			case Hands.Both:
+				break;
+			default:
+				Console.PrintError( "Player.SwitchWeaponHand: invalid hand, setting to default of right" );
+				HandsUsed = Hands.Right;
+				break;
+		}
 		if ( LastUsedArm.Slot != WeaponSlot.INVALID ) {
 			EquipSlot( LastUsedArm.Slot );
 		}
 
 		EmitSignalSwitchHandUsed( HandsUsed );
 	}
-	private void SwitchWeaponMode() {
+	private void SwitchWeaponMode( Resource switchWeaponModeAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
@@ -1763,30 +1797,33 @@ public partial class Player : Entity {
 		WeaponSlot slot;
 
 		switch ( HandsUsed ) {
-		case Hands.Left: {
-				int index = ArmLeft.Slot;
-				if ( index == WeaponSlot.INVALID ) {
-					return;
+			case Hands.Left: {
+					int index = ArmLeft.Slot;
+					if ( index == WeaponSlot.INVALID ) {
+						return;
+					}
+					slot = Inventory.WeaponSlots[ index ];
+					break;
 				}
-				slot = WeaponSlots[ index ];
-				break;
-			}
-		case Hands.Right: {
-				int index = ArmRight.Slot;
-				if ( index == WeaponSlot.INVALID ) {
-					return;
+			case Hands.Right: {
+					int index = ArmRight.Slot;
+					if ( index == WeaponSlot.INVALID ) {
+						return;
+					}
+					slot = Inventory.WeaponSlots[ index ];
+					break;
 				}
-				slot = WeaponSlots[ index ];
+			case Hands.Both:
+			default:
+				slot = Inventory.WeaponSlots[ Inventory.CurrentWeapon ];
 				break;
-			}
-		case Hands.Both:
-		default:
-			slot = WeaponSlots[ CurrentWeapon ];
-			break;
-		};
+		}
 
-		WeaponEntity.Properties mode = slot.GetMode();
-		WeaponEntity weapon = slot.GetWeapon();
+		WeaponEntity.Properties mode = slot.Mode;
+		WeaponEntity? weapon = slot.Weapon;
+
+		// sanity
+		ArgumentNullException.ThrowIfNull( weapon );
 
 		slot.SetMode( WeaponEntity.Properties.None ); // clear the modes
 
@@ -1815,45 +1852,45 @@ public partial class Player : Entity {
 
 				// we've got a match!
 				slot.SetMode( current );
-				slot.GetWeapon().SetUseMode( current );
+				weapon.SetUseMode( current );
 			}
 		}
-		EmitSignalWeaponStatusUpdated( slot.GetWeapon(), slot.GetMode() );
+		EmitSignalWeaponStatusUpdated( weapon, slot.Mode );
 	}
 
-	public void EquipSlot( int nSlot ) {
-		CurrentWeapon = nSlot;
+	public void EquipSlot( int slot ) {
+		Inventory.SetEquippedWeapon( slot );
 
-		WeaponEntity weapon = WeaponSlots[ nSlot ].GetWeapon();
+		WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
 		if ( weapon != null ) {
 			// apply rules of various weapon properties
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				ArmLeft.Slot = CurrentWeapon;
-				ArmRight.Slot = CurrentWeapon;
+				ArmLeft.SetSlot( Inventory.CurrentWeapon );
+				ArmRight.SetSlot( Inventory.CurrentWeapon );
 
 				// this will automatically override any other modes
-				WeaponSlots[ ArmLeft.Slot ].SetMode( weapon.DefaultMode );
+				Inventory.WeaponSlots[ ArmLeft.Slot ].SetMode( weapon.DefaultMode );
 			}
 
-			WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
+			Inventory.WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
 		} else {
-			ArmLeft.Slot = WeaponSlot.INVALID;
-			ArmRight.Slot = WeaponSlot.INVALID;
+			ArmLeft.SetSlot( WeaponSlot.INVALID );
+			ArmRight.SetSlot( WeaponSlot.INVALID );
 		}
 
 		// update hand data
-		LastUsedArm.Slot = CurrentWeapon;
+		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
 
 		EmitSignalSwitchedWeapon( weapon );
 	}
-	private void OnStoppedUsingWeapon() {
+	private void OnUseWeaponCompleted( Resource useWeaponAction ) {
 		if ( ( Flags & PlayerFlags.UsingMelee ) != 0 && BladeAttackType == BladeAttackType.Thrust ) {
 			int slot = LastUsedArm.Slot;
 			if ( slot == WeaponSlot.INVALID ) {
 				return; // nothing equipped
 			}
-			if ( WeaponSlots[ slot ].IsUsed() ) {
-				WeaponEntity weapon = WeaponSlots[ slot ].GetWeapon();
+			if ( Inventory.WeaponSlots[ slot ].IsUsed() ) {
+				WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
 				weapon.SetAttackAngle( ArmAngle );
 				if ( FrameDamage > 0.0f ) {
 					IncreaseBlood( FrameDamage * 0.0001f );
@@ -1873,7 +1910,7 @@ public partial class Player : Entity {
 		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
 		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
 	}
-	private void OnMelee() {
+	private void OnMelee( Resource meleeAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
@@ -1892,52 +1929,26 @@ public partial class Player : Entity {
 		}
 		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
 		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
-		PlaySound( MiscChannel, ResourceCache.GetSound( "res://sounds/player/melee.ogg" ) );
+		PlaySound( MiscChannel, AudioCache.GetStream( "res://sounds/player/melee.ogg" ) );
 	}
 
-	public void SwitchInputMode( Resource InputContext ) {
-		GetNode( "/root/GUIDE" ).Call( "enable_mapping_context", InputContext, true );
-
-		CurrentMappingContext = InputContext;
-
-		if ( InputContext == ResourceCache.KeyboardInputMappings ) {
-			MoveAction = ResourceCache.MoveActionKeyboard;
-			DashAction = ResourceCache.DashActionKeyboard;
-			SlideAction = ResourceCache.SlideActionKeyboard;
-			BulletTimeAction = ResourceCache.BulletTimeActionKeyboard;
-			PrevWeaponAction = ResourceCache.PrevWeaponActionKeyboard;
-			NextWeaponAction = ResourceCache.NextWeaponActionKeyboard;
-			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionKeyboard;
-			OpenInventoryAction = ResourceCache.OpenInventoryActionKeyboard;
-			UseWeaponAction = ResourceCache.UseWeaponActionKeyboard;
-			InteractAction = ResourceCache.InteractActionKeyboard;
-		} else {
-			MoveAction = ResourceCache.MoveActionGamepad[ InputDevice ];
-			DashAction = ResourceCache.DashActionGamepad[ InputDevice ];
-			SlideAction = ResourceCache.SlideActionGamepad[ InputDevice ];
-			BulletTimeAction = ResourceCache.BulletTimeActionGamepad[ InputDevice ];
-			PrevWeaponAction = ResourceCache.PrevWeaponActionGamepad[ InputDevice ];
-			NextWeaponAction = ResourceCache.NextWeaponActionGamepad[ InputDevice ];
-			SwitchWeaponModeAction = ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ];
-			OpenInventoryAction = ResourceCache.OpenInventoryActionGamepad[ InputDevice ];
-			UseWeaponAction = ResourceCache.UseWeaponActionGamepad[ InputDevice ];
-		}
-
-		EmitSignalInputMappingContextChanged();
-	}
-	public override void _ExitTree() {
-		base._ExitTree();
-
-		GetNode( "/root/GUIDE" ).Call( "disable_mapping_context", CurrentMappingContext );
-	}
-
+	/*
+	===============
+	OnRespawnTransitionFinished
+	===============
+	*/
 	private void OnRespawnTransitionFinished() {
-		GetNode( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
+		GameEventBus.ConnectSignal( GetNode( "/root/TransitionScreen" ), "transition_finished" , this, OnRespawnTransitionFinished );
 
 		GlobalPosition = LastCheckpoint.GlobalPosition;
 		BeginInteraction( LastCheckpoint );
 	}
 
+	/*
+	===============
+	_UnhandledInput
+	===============
+	*/
 	public override void _UnhandledInput( InputEvent @event ) {
 		base._UnhandledInput( @event );
 
@@ -1960,20 +1971,20 @@ public partial class Player : Entity {
 		}
 
 		switch ( GameConfiguration.GameMode ) {
-		case GameMode.SinglePlayer:
-		case GameMode.ChallengeMode:
-		case GameMode.Online:
-		case GameMode.LocalCoop2:
-		case GameMode.LocalCoop3:
-		case GameMode.LocalCoop4:
-			break;
-		case GameMode.JohnWick:
-			return;
-		case GameMode.Multiplayer:
-			break;
-		};
+			case GameMode.SinglePlayer:
+			case GameMode.ChallengeMode:
+			case GameMode.Online:
+			case GameMode.LocalCoop2:
+			case GameMode.LocalCoop3:
+			case GameMode.LocalCoop4:
+				break;
+			case GameMode.JohnWick:
+				return;
+			case GameMode.Multiplayer:
+				break;
+		}
 		if ( Health <= 0.0f ) {
-			GetNode( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnRespawnTransitionFinished ) );
+			GameEventBus.DisconnectAllForObject( GetNode( "/root/TransitionScreen" ) );
 			GetNode( "/root/TransitionScreen" ).Call( "transition" );
 
 			// dead
@@ -1991,6 +2002,12 @@ public partial class Player : Entity {
 		}
 	}
 
+	/*
+	===============
+	FlipSpriteLeft
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	private void FlipSpriteLeft() {
 		HeadAnimation.FlipV = true;
 		LegAnimation.FlipH = true;
@@ -1998,6 +2015,13 @@ public partial class Player : Entity {
 		ArmLeft.Flip = true;
 		ArmRight.Flip = true;
 	}
+
+	/*
+	===============
+	FlipSpriteRight
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	private void FlipSpriteRight() {
 		HeadAnimation.FlipV = false;
 		LegAnimation.FlipH = false;
@@ -2006,83 +2030,65 @@ public partial class Player : Entity {
 		ArmRight.Flip = false;
 	}
 
+	/*
+	===============
+	OnSlowMoSfxFinished
+	===============
+	*/
 	private void OnSlowMoSfxFinished() {
+		/*
 		if ( MiscChannel.Stream == ResourceCache.SlowMoBeginSfx ) {
 			// only start lagging audio playback after the slowmo begin finishes
 			AudioServer.PlaybackSpeedScale = 0.50f;
 		}
+		*/
 	}
 
-	private void OnMove() {
+	/*
+	===============
+	OnMoveTriggered
+	===============
+	*/
+	/// <summary>
+	/// Handles movement input via GUIDE
+	/// </summary>
+	private void OnMoveTriggered( Resource moveAction ) {
+		ArgumentNullException.ThrowIfNull( moveAction );
 		if ( IsInputBlocked() ) {
 			return;
 		}
 
-		InputVelocity = MoveAction.Get( "value_axis_2d" ).AsVector2();
+		InputVelocity = moveAction.Get( "value_axis_2d" ).AsVector2();
 	}
-	private void OnUseGadget() {
+
+	/*
+	===============
+	OnUseGadgetTriggered
+	===============
+	*/
+	/// <summary>
+	/// Handles gadget use input
+	/// </summary>
+	private void OnUseGadgetTriggered( Resource useGadgetAction ) {
 		if ( IsInputBlocked() ) {
 			return;
 		}
 		ArmAttachment?.Use();
 	}
 
-	public void ConnectGamepadBinds() {
-		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMove ) );
-		ResourceCache.MoveActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnMove ) );
-		//		ResourceCache.UseBothHandsActionsGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseBothHands ) );
-		ResourceCache.MeleeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnMelee ) );
-		ResourceCache.SwitchWeaponModeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( SwitchWeaponMode ) );
-		ResourceCache.BulletTimeActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnBulletTime ) );
-		ResourceCache.NextWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnNextWeapon ) );
-		ResourceCache.PrevWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnPrevWeapon ) );
-		ResourceCache.DashActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnDash ) );
-		ResourceCache.SlideActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnSlide ) );
-		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( OnUseWeapon ) );
-		ResourceCache.UseWeaponActionGamepad[ InputDevice ].Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		ResourceCache.InteractActionGamepad[ InputDevice ].Connect( "triggered", Callable.From( EmitSignalInteraction ) );
-	}
-	private void ConnectKeyboardBinds() {
-		ResourceCache.MoveActionKeyboard.Connect( "triggered", Callable.From( OnMove ) );
-		ResourceCache.MoveActionKeyboard.Connect( "completed", Callable.From( OnMove ) );
-		ResourceCache.UseBothHandsActionKeyboard.Connect( "triggered", Callable.From( OnUseBothHands ) );
-		ResourceCache.MeleeActionKeyboard.Connect( "triggered", Callable.From( OnMelee ) );
-		ResourceCache.SwitchWeaponModeActionKeyboard.Connect( "triggered", Callable.From( SwitchWeaponMode ) );
-		ResourceCache.BulletTimeActionKeyboard.Connect( "triggered", Callable.From( OnBulletTime ) );
-		ResourceCache.NextWeaponActionKeyboard.Connect( "triggered", Callable.From( OnNextWeapon ) );
-		ResourceCache.PrevWeaponActionKeyboard.Connect( "triggered", Callable.From( OnPrevWeapon ) );
-		ResourceCache.DashActionKeyboard.Connect( "triggered", Callable.From( OnDash ) );
-		ResourceCache.SlideActionKeyboard.Connect( "triggered", Callable.From( OnSlide ) );
-		ResourceCache.UseWeaponActionKeyboard.Connect( "triggered", Callable.From( OnUseWeapon ) );
-		ResourceCache.UseWeaponActionKeyboard.Connect( "completed", Callable.From( OnStoppedUsingWeapon ) );
-		ResourceCache.ArmAngleActionKeyboard.Connect( "triggered", Callable.From( OnArmAngleChanged ) );
-		ResourceCache.InteractActionKeyboard.Connect( "triggered", Callable.From( EmitSignalInteraction ) );
-		ResourceCache.UseGadgetActionKeyboard.Connect( "triggered", Callable.From( OnUseGadget ) );
-	}
-	private void LoadSfx() {
-		/*
-		ActionChannel = GetNode<AudioStreamPlayer2D>( "ActionChannel" );
-		PainChannel = GetNode<AudioStreamPlayer2D>( "PainChannel" );
-		SlowMoChannel = GetNode<AudioStreamPlayer2D>( "SlowMoChannel" );
-		SlowMoChannel.Connect( "finished", Callable.From( OnSlowMoSfxFinished ) );
-
-		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
-		SlideChannel = GetNode<AudioStreamPlayer2D>( "SlideChannel" );
-		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
-		*/
-		/*
-		MoveChannel = GetNode<AudioStreamPlayer2D>( "MoveChannel" );
-		MoveChannel.SetProcess( false );
-		MoveChannel.SetProcessInternal( false );
-
-		DashChannel = GetNode<AudioStreamPlayer2D>( "DashChannel" );
-		DashChannel.SetProcess( false );
-		DashChannel.SetProcessInternal( false );
-
-		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
-		MiscChannel.SetProcess( false );
-		MiscChannel.SetProcessInternal( false );
-		*/
+	public void ConnectBindings() {
+		InputManager.SetBindAction( InputController.ControlBind.Move, GUIDEActionSignal.Triggered, OnMoveTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.Move, GUIDEActionSignal.Completed, OnMoveTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.Melee, GUIDEActionSignal.Triggered, OnMelee );
+		InputManager.SetBindAction( InputController.ControlBind.SwitchWeaponMode, GUIDEActionSignal.Triggered, SwitchWeaponMode );
+		InputManager.SetBindAction( InputController.ControlBind.BulletTime, GUIDEActionSignal.Triggered, OnBulletTimeTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.Dash, GUIDEActionSignal.Triggered, OnDash );
+		InputManager.SetBindAction( InputController.ControlBind.Slide, GUIDEActionSignal.Triggered, OnSlide );
+		InputManager.SetBindAction( InputController.ControlBind.PrevWeapon, GUIDEActionSignal.Triggered, OnPrevWeaponTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.NextWeapon, GUIDEActionSignal.Triggered, OnNextWeaponTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.UseWeapon, GUIDEActionSignal.Triggered, OnUseWeaponTriggered );
+		InputManager.SetBindAction( InputController.ControlBind.UseWeapon, GUIDEActionSignal.Completed, OnUseWeaponCompleted );
+		InputManager.SetBindAction( InputController.ControlBind.Interact, GUIDEActionSignal.Triggered, ( resource ) => EmitSignalInteraction() );
 	}
 
 	private void ExitBulletTime() {
@@ -2092,7 +2098,7 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.BulletTime;
 		Engine.TimeScale = 1.0f;
 		AudioServer.PlaybackSpeedScale = 1.0f;
-		PlaySound( MiscChannel, ResourceCache.SlowMoEndSfx );
+		PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.SlowmoEnd ] );
 
 		EmitSignalBulletTimeEnd();
 	}
@@ -2134,7 +2140,7 @@ public partial class Player : Entity {
 	public override void _Ready() {
 		base._Ready();
 
-		AccessibilityManager.LoadBinds();
+		InputManager = new InputController( this );
 
 		DialogueManager.DialogueStarted += OnDialogueStarted;
 		DialogueManager.DialogueEnded += OnDialogueEnded;
@@ -2143,21 +2149,18 @@ public partial class Player : Entity {
 		ScreenSize = DisplayServer.WindowGetSize();
 		if ( GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			MultiplayerData = new Multiplayer.PlayerData.MultiplayerMetadata( SteamManager.GetSteamID() );
-			SyncObject = new NetworkSyncObject( 1024 );
+			SyncObject = new Multiplayer.NetworkSyncObject( 1024 );
 			LastSyncState = new NetworkState();
 
 			SteamLobby.Instance.AddPlayer( SteamUser.GetSteamID(),
 				new SteamLobby.PlayerNetworkNode( this, SendPacket, ReceivePacket ) );
 		} else {
-			UnlockedBoons = new HashSet<Perk>();
-			UnlockedRunes = new HashSet<Rune>();
 			DiscoveredAreas = new HashSet<WorldArea>();
 			JournalCache = new Godot.Collections.Dictionary<string, string>();
-
 			WhisperChannel = new AudioStreamPlayer();
 		}
 
-		LevelData.Instance.PlayerRespawn += Respawn;
+		GameEventBus.Subscribe<LevelData.PlayerRespawnEventHandler>( this, Respawn );
 
 		MaxHealth = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
 		MaxRage = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
@@ -2174,17 +2177,15 @@ public partial class Player : Entity {
 
 		AimLine.Points[ 1 ].X = AimLine.Points[ 0 ].X * ( ScreenSize.X / 2.0f );
 
-		Input.SetCustomMouseCursor( ResourceCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CursorShape.Arrow );
+		Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CursorShape.Arrow );
 
 		Health = 100.0f;
 		Rage = 60.0f;
 		Sanity = 60.0f;
 
 		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
-			ResourceCache.LoadKeyboardBinds();
-			ResourceCache.LoadGamepadBinds();
+			ConnectBindings();
 		}
-		LoadSfx();
 
 		Resource screenshot = ResourceLoader.Load( "res://resources/binds/actions/keyboard/screenshot.tres" );
 		screenshot.Connect( "triggered", Callable.From( () => {
@@ -2228,20 +2229,11 @@ public partial class Player : Entity {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
 
-		ConnectGamepadBinds();
-		ConnectKeyboardBinds();
-
 		DashKit = new DashKit();
-		DashKit.Connect( DashKit.SignalName.DashBurnedOut, Callable.From( OnDashBurnout ) );
-		DashKit.Connect( DashKit.SignalName.DashBurnoutChanged, Callable.From<float>( EmitSignalDashBurnoutChanged ) );
-		DashKit.Connect( DashKit.SignalName.DashEnd, Callable.From( OnDashEnd ) );
+		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashBurnedOut, this, OnDashBurnout );
+		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashBurnoutChanged, this, Callable.From<float>( EmitSignalDashBurnoutChanged ) );
+		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashEnd, this, OnDashEnd );
 		AddChild( DashKit );
-
-		//
-		// initialize input context
-		//
-		SwitchToGamepad = ResourceLoader.Load( "res://resources/binds/actions/keyboard/switch_to_gamepad.tres" );
-		SwitchToKeyboard = ResourceLoader.Load( "res://resources/binds/actions/gamepad/switch_to_keyboard.tres" );
 
 		Viewpoint = GetNode<Camera2D>( "Camera2D" );
 
@@ -2254,7 +2246,7 @@ public partial class Player : Entity {
 		AddChild( WalkChannel );
 
 		MiscChannel = GetNode<AudioStreamPlayer2D>( "MiscChannel" );
-		MiscChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnSlowMoSfxFinished ) );
+		GameEventBus.ConnectSignal( MiscChannel, AudioStreamPlayer2D.SignalName.Finished, this, OnSlowMoSfxFinished );
 		MiscChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
 
 		CollisionShape2D SoundBounds = GetNode<CollisionShape2D>( "SoundArea/CollisionShape2D" );
@@ -2269,16 +2261,10 @@ public partial class Player : Entity {
 		ParryDamageBox = GetNode<CollisionShape2D>( "AimAssist/AimLine/ParryDamageArea/CollisionShape2D" );
 
 		Area2D Area = GetNode<Area2D>( "SoundArea" );
-		Area.Connect( Area2D.SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
+		GameEventBus.ConnectSignal( Area, Area2D.SignalName.BodyShapeEntered, this, Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
 
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
-
-		SwitchToKeyboard.Connect( "triggered", Callable.From( () => { SwitchInputMode( ResourceCache.KeyboardInputMappings ); } ) );
-		SwitchToGamepad.Connect( "triggered", Callable.From( () => { SwitchInputMode( ResourceCache.GamepadInputMappings ); } ) );
-		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
-			SwitchInputMode( ResourceCache.KeyboardInputMappings );
-		}
-
+		
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
 		HeadAnimation = GetNode<Sprite2D>( "Animations/Head" );
@@ -2287,10 +2273,10 @@ public partial class Player : Entity {
 		IdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnIdleAnimationTimerTimeout ) );
 
 		IdleAnimation = GetNode<AnimatedSprite2D>( "Animations/Idle" );
-		IdleAnimation.Connect( AnimatedSprite2D.SignalName.AnimationFinished, Callable.From( OnIdleAnimationAnimationFinished ) );
+		GameEventBus.ConnectSignal( IdleAnimation, AnimatedSprite2D.SignalName.AnimationFinished, this, OnIdleAnimationAnimationFinished );
 
 		LegAnimation = GetNode<AnimatedSprite2D>( "Animations/Legs" );
-		LegAnimation.Connect( AnimatedSprite2D.SignalName.AnimationLooped, Callable.From( OnLegsAnimationLooped ) );
+		GameEventBus.ConnectSignal( LegAnimation, AnimatedSprite2D.SignalName.AnimationLooped, this, OnLegsAnimationLooped );
 
 		TorsoAnimation = GetNode<AnimatedSprite2D>( "Animations/Torso" );
 
@@ -2326,42 +2312,40 @@ public partial class Player : Entity {
 		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
 
 		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
-		SlideTime.Connect( Timer.SignalName.Timeout, Callable.From( OnSlideTimeout ) );
+		GameEventBus.ConnectSignal( SlideTime, Timer.SignalName.Timeout, this, OnSlideTimeout );
 
 		CheckpointDrinkTimer = new Timer();
 		CheckpointDrinkTimer.Name = "CheckpointDrinkTimer";
 		CheckpointDrinkTimer.WaitTime = 10.5f;
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
-		CheckpointDrinkTimer.Connect( Timer.SignalName.Timeout, Callable.From( () => {
-			IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_drink" );
-			TorsoAnimationState = PlayerAnimationState.CheckpointDrinking;
-			LegAnimationState = PlayerAnimationState.CheckpointDrinking;
-			LeftArmAnimationState = PlayerAnimationState.CheckpointDrinking;
-			RightArmAnimationState = PlayerAnimationState.CheckpointDrinking;
-		} ) );
+		GameEventBus.ConnectSignal( CheckpointDrinkTimer, Timer.SignalName.Timeout, this,
+			() => {
+				IdleAnimation.CallDeferred( AnimatedSprite2D.MethodName.Play, "checkpoint_drink" );
+				TorsoAnimationState = PlayerAnimationState.CheckpointDrinking;
+				LegAnimationState = PlayerAnimationState.CheckpointDrinking;
+				LeftArmAnimationState = PlayerAnimationState.CheckpointDrinking;
+				RightArmAnimationState = PlayerAnimationState.CheckpointDrinking;
+			}
+		);
 		AddChild( CheckpointDrinkTimer );
-
-		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			WeaponSlots[ i ] = new WeaponSlot();
-			WeaponSlots[ i ].SetIndex( i );
-		}
 
 		LastUsedArm = ArmRight;
 
 		GetTree().Root.SizeChanged += OnScreenSizeChanged;
+		GameEventBus.ConnectSignal( GetTree().Root, Viewport.SignalName.SizeChanged, this, OnScreenSizeChanged );
 
 		SteamAchievements.SteamAchievement achievement;
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUILDING_THE_LEGEND", out achievement ) && !achievement.GetAchieved() ) {
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_BUILDING_THE_LEGEND", out achievement ) && !achievement.Achieved ) {
 			IncreaseRenown += ( Node self, int amount ) => {
 				if ( amount >= 200 ) {
 					SteamAchievements.ActivateAchievement( "ACH_BUIDLING_THE_LEGEND" );
 				}
 			};
 		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_RIGHT_BACK_AT_U", out achievement ) && !achievement.GetAchieved() ) {
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_RIGHT_BACK_AT_U", out achievement ) && !achievement.Achieved ) {
 			ParrySuccess += () => SteamAchievements.ActivateAchievement( "ACH_RIGHT_BACK_AT_U" );
 		}
-		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_MASTER_OF_THE_WASTES", out achievement ) && !achievement.GetAchieved() ) {
+		if ( SteamAchievements.AchievementTable.TryGetValue( "ACH_MASTER_OF_THE_WASTES", out achievement ) && !achievement.Achieved ) {
 			LocationChanged += ( WorldArea location ) => {
 				int count = 0;
 				foreach ( var area in WorldArea.Cache.Cache ) {
@@ -2383,7 +2367,7 @@ public partial class Player : Entity {
 
 		ProcessMode = ProcessModeEnum.Pausable;
 
-		if ( SettingsData.GetShowBlood() ) {
+		if ( SettingsData.ShowBlood ) {
 			BloodDropTimer = new Timer();
 			BloodDropTimer.Name = "BloodDropTimer";
 			BloodDropTimer.WaitTime = 30.0f;
@@ -2398,13 +2382,9 @@ public partial class Player : Entity {
 			ArmRight.Animations.Material = null;
 		}
 
-		if ( ArchiveSystem.Instance.IsLoaded() ) {
+		if ( ArchiveSystem.IsLoaded() ) {
 			Load();
-		} else {
-			Totem = (Totem)ResourceCache.GetResource( "res://resources/totems/totem_of_remembrance.tres" );
 		}
-
-		Input.JoyConnectionChanged += ( device, connected ) => { if ( connected ) { SwitchInputMode( ResourceCache.GamepadInputMappings ); } };
 	}
 	private async void UpdateIdleBreath( float delta ) {
 		IdleTime += delta;
@@ -2429,12 +2409,12 @@ public partial class Player : Entity {
 		Player.ShakeCameraDirectional( 2.5f, new Vector2( RNJesus.FloatRange( -30.0f, 30.0f ), RNJesus.FloatRange( -30.0f, 30.0f ) ) );
 
 		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, ScreenSize.X * 0.5f, GetRid() );
-		if ( collision.Collider is Entity entity && entity != null && entity.GetFaction() != Faction ) {
-			AimLine.DefaultColor = AimingAtTarget;
-		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).GetFaction() != Faction ) {
-			AimLine.DefaultColor = AimingAtTarget;
+		if ( collision.Collider is Entity entity && entity != null && entity.Faction != Faction ) {
+			AimLine.DefaultColor = AIMING_AT_TARGET;
+		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).Faction != Faction ) {
+			AimLine.DefaultColor = AIMING_AT_TARGET;
 		} else {
-			AimLine.DefaultColor = AimingAtNull;
+			AimLine.DefaultColor = AIMING_AT_NULL;
 		}
 
 		CheckStatus( (float)delta );
@@ -2452,7 +2432,7 @@ public partial class Player : Entity {
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			float speed = MAX_SPEED;
 			// encumbured
-			if ( TotalInventoryWeight >= MaximumInventoryWeight * 0.85f ) {
+			if ( Inventory.TotalInventoryWeight >= InventoryManager.MAXIMUM_INVENTORY_WEIGHT * 0.85f ) {
 				speed *= 0.5f;
 			}
 			float accel = ACCEL;
@@ -2480,7 +2460,7 @@ public partial class Player : Entity {
 			WindUpProgress = Mathf.Clamp( WindUpProgress - WindUpDuration * 2.0f, 0.0f, 1.0f );
 			baseSpeed = 0.5f;
 
-			if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+			if ( SettingsData.AnimationQuality > AnimationQuality.Low ) {
 				UpdateIdleBreath( (float)delta );
 			}
 		}
@@ -2507,7 +2487,7 @@ public partial class Player : Entity {
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
 		if ( arm.Slot == WeaponSlot.INVALID ) {
-			if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+			if ( SettingsData.AnimationQuality > AnimationQuality.Low ) {
 				if ( InputVelocity != Vector2.Zero ) {
 					if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
 						arm.Animations.PlayBackwards( "run" );
@@ -2524,27 +2504,27 @@ public partial class Player : Entity {
 				arm.Animations.Play( animState == PlayerAnimationState.Idle ? "idle" : "run" );
 			}
 		} else {
-			WeaponEntity weapon = WeaponSlots[ arm.Slot ].GetWeapon();
+			WeaponEntity weapon = Inventory.WeaponSlots[ arm.Slot ].Weapon;
 			string animationName;
 			switch ( weapon.CurrentState ) {
-			default:
-			case WeaponEntity.WeaponState.Idle:
-				animationName = "idle";
-				animState = PlayerAnimationState.WeaponIdle;
-				break;
-			case WeaponEntity.WeaponState.Reload:
-				animationName = "reload";
-				animState = PlayerAnimationState.WeaponReload;
-				break;
-			case WeaponEntity.WeaponState.Use:
-				animationName = "use";
-				animState = PlayerAnimationState.WeaponUse;
-				break;
-			case WeaponEntity.WeaponState.Empty:
-				animationName = "empty";
-				animState = PlayerAnimationState.WeaponEmpty;
-				break;
-			};
+				default:
+				case WeaponEntity.WeaponState.Idle:
+					animationName = "idle";
+					animState = PlayerAnimationState.WeaponIdle;
+					break;
+				case WeaponEntity.WeaponState.Reload:
+					animationName = "reload";
+					animState = PlayerAnimationState.WeaponReload;
+					break;
+				case WeaponEntity.WeaponState.Use:
+					animationName = "use";
+					animState = PlayerAnimationState.WeaponUse;
+					break;
+				case WeaponEntity.WeaponState.Empty:
+					animationName = "empty";
+					animState = PlayerAnimationState.WeaponEmpty;
+					break;
+			}
 
 			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
 				if ( ( arm == ArmLeft && !arm.Animations.FlipV ) || ( arm == ArmRight && arm.Animations.FlipV ) ) {
@@ -2558,7 +2538,7 @@ public partial class Player : Entity {
 		bool changed = false;
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
-			Rage += FrameDamage * FreeFlow.GetCurrentCombo() * delta;
+			Rage += FrameDamage * FreeFlow.Instance.ComboCounter * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
 			changed = true;
@@ -2593,7 +2573,7 @@ public partial class Player : Entity {
 
 		if ( InputVelocity != Godot.Vector2.Zero ) {
 			if ( ( Flags & PlayerFlags.Sliding ) == 0 && ( Flags & PlayerFlags.OnHorse ) == 0 ) {
-				if ( SettingsData.GetAnimationQuality() > AnimationQuality.Low ) {
+				if ( SettingsData.AnimationQuality > AnimationQuality.Low ) {
 					bool reverse;
 					if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
 						reverse = true;
@@ -2605,7 +2585,7 @@ public partial class Player : Entity {
 					if ( !reverse ) {
 						if ( ( InputVelocity.X < 0.0f && velocity.X > 0.0f ) || ( InputVelocity.X > 0.0f && velocity.X < 0.0f ) ) {
 							LegAnimation.Play( "run_change" );
-							PlaySound( WalkChannel, ResourceCache.SlideSfx[ 0 ] );
+							PlaySound( WalkChannel, SoundCache.StreamCache[ SoundEffect.Slide0 ] );
 						} else {
 							LegAnimation.Play( "run" );
 						}
@@ -2640,12 +2620,12 @@ public partial class Player : Entity {
 			ShakeStrength = Mathf.Lerp( ShakeStrength, 0.0f, ShakeFade * (float)delta );
 
 			if ( JoltDirection != Godot.Vector2.Zero ) {
-				Godot.Vector2 baseOffset = JoltDirection.Normalized() * ShakeStrength * DirectionalInfluence;
+				Godot.Vector2 baseOffset = JoltDirection.Normalized() * ShakeStrength * DIRECTIONAL_INFLUENCE;
 
 				/*
 				Godot.Vector2 randomOffset = new Godot.Vector2(
-					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DirectionalInfluence ),
-					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DirectionalInfluence )
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DIRECTIONAL_INFLUENCE ),
+					RNJesus.FloatRange( -ShakeStrength, ShakeStrength ) * ( 1.0f - DIRECTIONAL_INFLUENCE )
 				);
 				*/
 
@@ -2706,168 +2686,5 @@ public partial class Player : Entity {
 			CalcArmAnimation( ArmLeft, out LeftArmAnimationState );
 			CalcArmAnimation( ArmRight, out RightArmAnimationState );
 		}
-	}
-
-	private void OnWeaponModeChanged( WeaponEntity source, WeaponEntity.Properties useMode ) => EmitSignalWeaponStatusUpdated( source, useMode );
-
-	public void PickupAmmo( AmmoEntity ammo, int nAmount = -1 ) {
-		AmmoStack stack = null;
-		bool found = false;
-
-		EmitSignalAmmoPickedUp( ammo );
-
-		foreach ( var it in AmmoStacks ) {
-			if ( (string)ammo.Data.Get( "id" ) == (string)it.Value.AmmoType.Data.Get( "id" ) ) {
-				found = true;
-				stack = it.Value;
-				break;
-			}
-		}
-		if ( !found ) {
-			stack = new AmmoStack();
-
-			int hashCode = ammo.GetPath().GetHashCode();
-			stack.SetType( ammo );
-			stack.SetMeta( "hash", hashCode );
-			AmmoStacks.Add( hashCode, stack );
-		}
-		stack.AddItems( nAmount == -1 ? (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "stack_add_amount" ] : nAmount );
-
-		PlaySound( MiscChannel, ammo.PickupSfx );
-
-		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			WeaponSlot slot = WeaponSlots[ i ];
-			if ( slot.IsUsed() && (int)slot.GetWeapon().Ammunition
-				== (int)( (Godot.Collections.Dictionary)ammo.Data.Get( "properties" ) )[ "type" ] ) {
-				slot.GetWeapon().SetReserve( stack );
-				slot.GetWeapon().SetAmmo( ammo );
-				if ( LastUsedArm.Slot == i ) {
-					EmitSignalWeaponStatusUpdated( WeaponSlots[ i ].GetWeapon(), WeaponSlots[ i ].GetMode() );
-				}
-			}
-		}
-	}
-	public override void PickupWeapon( WeaponEntity weapon ) {
-		int index = WeaponSlot.INVALID;
-
-		EmitSignalWeaponPickedUp( weapon );
-
-		Godot.Collections.Array<Resource> categories = (Godot.Collections.Array<Resource>)weapon.Data.Get( "categories" );
-
-		for ( int i = 0; i < categories.Count; i++ ) {
-			switch ( (string)categories[ i ].Get( "id" ) ) {
-			case "WEAPON_CATEGORY_PRIMARY":
-				index = (int)WeaponSlotIndex.Primary;
-				break;
-			case "WEAPON_CATEGORY_HEAVY_PRIMARY":
-				index = (int)WeaponSlotIndex.HeavyPrimary;
-				break;
-			case "WEAPON_CATEGORY_SIDEARM":
-				index = (int)WeaponSlotIndex.Sidearm;
-				break;
-			case "WEAPON_CATEGORY_HEAVY_SIDEARM":
-				index = (int)WeaponSlotIndex.HeavySidearm;
-				break;
-			default:
-				break;
-			};
-		}
-		if ( index == WeaponSlot.INVALID ) {
-			Console.PrintError( string.Format( "Player.PickupWeapon: weapon {0} has invalid equipment category", (string)weapon.Data.Get( "id" ) ) );
-		} else if ( !WeaponSlots[ index ].IsUsed() ) {
-			WeaponSlots[ index ].SetWeapon( weapon );
-			CurrentWeapon = index;
-		}
-
-		int hashCode = weapon.GetPath().GetHashCode();
-		weapon.SetMeta( "hash", hashCode );
-		WeaponsStack.Add( hashCode, weapon );
-		TotalInventoryWeight += weapon.Weight;
-
-		TorsoAnimation.FlipH = false;
-		LegAnimation.FlipH = false;
-
-		weapon.Connect( WeaponEntity.SignalName.ModeChanged, Callable.From<WeaponEntity, WeaponEntity.Properties>( OnWeaponModeChanged ) );
-
-		AmmoStack stack = null;
-		foreach ( var ammo in AmmoStacks ) {
-			if ( (int)( (Godot.Collections.Dictionary)ammo.Value.AmmoType.Data.Get( "properties" ) )[ "type" ] ==
-				(int)weapon.Ammunition ) {
-				stack = ammo.Value;
-				break;
-			}
-		}
-		if ( stack != null ) {
-			weapon.SetReserve( stack );
-			weapon.SetAmmo( stack.AmmoType );
-		}
-		if ( SettingsData.GetEquipWeaponOnPickup() ) {
-			// apply rules of various weapon properties
-			if ( ( weapon.DefaultMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				HandsUsed = Hands.Both;
-
-				ArmLeft.Slot = WeaponSlot.INVALID;
-
-				LastUsedArm = ArmRight;
-				LastUsedArm.Slot = index;
-
-				// this will automatically overwrite any other modes
-				WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
-			} else if ( ( weapon.DefaultMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
-				LastUsedArm ??= ArmRight;
-				LastUsedArm.Slot = CurrentWeapon;
-
-				if ( LastUsedArm == ArmRight ) {
-					HandsUsed = Hands.Right;
-				} else if ( LastUsedArm == ArmLeft ) {
-					HandsUsed = Hands.Left;
-				}
-
-				WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
-			}
-
-			// update the hand data
-			LastUsedArm.Slot = CurrentWeapon;
-			WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
-			weapon.SetUseMode( weapon.DefaultMode );
-
-			EmitSignalSwitchedWeapon( weapon );
-			EmitSignalHandsStatusUpdated( HandsUsed );
-		}
-	}
-
-	public void DropWeapon( int hashCode ) {
-		if ( !WeaponsStack.TryGetValue( hashCode, out WeaponEntity weapon ) ) {
-			Console.PrintError( string.Format( "Player.DropWeapon: invalid hash id {0}", hashCode ) );
-			return;
-		}
-
-		WeaponsStack.Remove( hashCode );
-		weapon.Drop();
-
-		for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-			if ( WeaponSlots[ i ].GetWeapon() == weapon ) {
-				if ( i == CurrentWeapon ) {
-					CurrentWeapon = WeaponSlot.INVALID;
-					EmitSignalWeaponStatusUpdated( null, WeaponEntity.Properties.None );
-
-					if ( ArmLeft.Slot == i ) {
-						ArmLeft.Slot = CurrentWeapon;
-					}
-					if ( ArmRight.Slot == i ) {
-						ArmRight.Slot = CurrentWeapon;
-					}
-				}
-				WeaponSlots[ i ].SetWeapon( null );
-			}
-		}
-	}
-	public void DropAmmo( int hashCode ) {
-		if ( !AmmoStacks.TryGetValue( hashCode, out AmmoStack stack ) ) {
-			Console.PrintError( string.Format( "Player.DropAmmo: invalid hash id {0}", hashCode ) );
-			return;
-		}
-
-		AmmoStacks.Remove( hashCode );
 	}
 };

@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using Renown;
 using Steamworks;
+using Steam;
 
 namespace Multiplayer.Modes {
 	public partial class Team : Node {
@@ -64,7 +65,7 @@ namespace Multiplayer.Modes {
 			base._Ready();
 
 			// only the host runs the team logic
-			if ( !SteamLobby.Instance.IsOwner() ) {
+			if ( !SteamLobby.Instance.IsHost ) {
 				return;
 			}
 

@@ -1,23 +1,57 @@
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using DialogueManagerRuntime;
 using Godot;
 
-public partial class CutsceneDialogue : CutsceneSequence {
-	[Export]
-	private Resource DialogueResource;
-	[Export]
-	private StringName Starting;
+namespace Interactables.Cutscenes {
+	public partial class CutsceneDialogue : CutsceneSequence {
+		[Export]
+		private Resource DialogueResource;
+		[Export]
+		private StringName Starting;
 
-	private void OnDialogueEnded( Resource dialogueResource ) {
-		DialogueManager.DialogueEnded -= OnDialogueEnded;
-		EmitSignalEnd();
-	}
+		public override CutsceneSequenceType SequenceType => CutsceneSequenceType.Dialogue;
 
-	public override CutsceneSequenceType GetSequenceType() {
-		return CutsceneSequenceType.Dialogue;
-	}
-	public override void Start() {
-		DialogueManager.DialogueEnded += OnDialogueEnded;
+		/*
+		===============
+		OnDialogueEnded
+		===============
+		*/
+		private void OnDialogueEnded( Resource dialogueResource ) {
+			DialogueManager.DialogueEnded -= OnDialogueEnded;
+			EmitSignalEnd();
+		}
 
-		DialogueManager.ShowDialogueBalloonScene( "res://scenes/interactables/Balloon.tscn", DialogueResource, Starting );
-	}
+		/*
+		===============
+		Start
+		===============
+		*/
+		public override void Start() {
+			DialogueManager.DialogueEnded += OnDialogueEnded;
+
+			DialogueManager.ShowDialogueBalloonScene( "res://scenes/interactables/Balloon.tscn", DialogueResource, Starting );
+		}
+	};
 };

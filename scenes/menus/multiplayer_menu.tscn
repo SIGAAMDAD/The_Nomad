@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cp2ega0a8ryv2"]
+[gd_scene load_steps=4 format=3 uid="uid://cp2ega0a8ryv2"]
 
 [ext_resource type="Script" uid="uid://dj8kxghn7pam5" path="res://scripts/menus/MultiplayerMenu.cs" id="1_gogso"]
 [ext_resource type="PackedScene" uid="uid://dpriw3r8df1su" path="res://scenes/multiplayer/lobby_browser.tscn" id="2_pwpfp"]
 [ext_resource type="PackedScene" uid="uid://bmc6jfet87hxo" path="res://scenes/multiplayer/lobby_factory.tscn" id="3_58ccb"]
-[ext_resource type="PackedScene" uid="uid://3l84fwgu6pjm" path="res://scenes/multiplayer/profile_menu.tscn" id="4_58ccb"]
 
 [node name="MultiplayerMenu" type="Control"]
 layout_mode = 3
@@ -22,11 +21,7 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
-[node name="ProfileMenu" parent="." instance=ExtResource("4_58ccb")]
-visible = false
-layout_mode = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,17 +30,37 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="MenuTitle" type="Label" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
-size_flags_horizontal = 4
-text = "MULTIPLAYER"
+size_flags_vertical = 4
+metadata/_edit_use_anchors_ = true
 
-[node name="Button" type="Button" parent="VBoxContainer"]
+[node name="QuickmatchButton" type="Button" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "QUICKMATCH_BUTTON"
 
-[node name="ProfileButton" type="Button" parent="VBoxContainer"]
+[node name="ProfileContainer" type="VBoxContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
-size_flags_horizontal = 0
-text = "PROFILE_BUTTON"
+
+[node name="NameLabel" type="Label" parent="HBoxContainer/ProfileContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="SkillPointsLabel" type="Label" parent="HBoxContainer/ProfileContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PrimaryWeaponIcon" type="TextureRect" parent="HBoxContainer/ProfileContainer"]
+layout_mode = 2
+stretch_mode = 5
+
+[node name="SecondaryWeaponIcon" type="TextureRect" parent="HBoxContainer/ProfileContainer"]
+layout_mode = 2
+stretch_mode = 5
+
+[node name="CustomizeButton" type="Button" parent="HBoxContainer/ProfileContainer"]
+layout_mode = 2
+text = "CUSTOMIZE"
