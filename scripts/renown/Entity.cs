@@ -81,9 +81,62 @@ namespace Renown {
 		protected ConcurrentDictionary<string, StatusEffect> StatusEffects = new ConcurrentDictionary<string, StatusEffect>();
 
 		[Signal]
-		public delegate void DamagedEventHandler( Entity source, Entity target, float nAmount );
+		public delegate void DamagedEventHandler( Entity source, Entity target, float amount );
 		[Signal]
 		public delegate void DieEventHandler( Entity source, Entity target );
+
+		/*
+		===============
+		GetHash
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public NodePath GetHash() {
+			return GetPath();
+		}
+
+		/*
+		===============
+		GetObjectName
+		===============
+		*/
+		/// <summary>
+		/// Returns the entity's object name, for debugging purposes
+		/// </summary>
+		/// <returns>The debug name of a <see cref="Renown.Object"/></returns>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual StringName GetObjectName() {
+			return "Entity";
+		}
+
+		/*
+		===============
+		GetRenownScore
+		===============
+		*/
+		/// <summary>
+		/// Returns the renown score of an entity if the entity has a renown score, otherwise,
+		/// 0
+		/// </summary>
+		/// <returns>The entity's renown score (if present), or 0</returns>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public virtual int GetRenownScore() {
+			return 0;
+		}
+
+		/*
+		===============
+		GetMoney
+		===============
+		*/
+		/// <summary>
+		/// Returns the money value of an entity if the entity has a money value, otherwise,
+		/// 0
+		/// </summary>
+		/// <returns>The entity's money (if present), or 0</returns>
+		public virtual float GetMoney() {
+			return 0.0f;
+		}
 
 		/*
 		===============
@@ -240,17 +293,7 @@ namespace Renown {
 		===============
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual bool HasRelation( Entity entity ) {
-			return false;
-		}
-
-		/*
-		===============
-		HasRelation
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual bool HasRelation( Faction faction ) {
+		public virtual bool HasRelation( Object other ) {
 			return false;
 		}
 
@@ -260,17 +303,7 @@ namespace Renown {
 		===============
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual float GetRelationScore( Entity entity ) {
-			return 0.0f;
-		}
-
-		/*
-		===============
-		GetRelationScore
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual float GetRelationScore( Faction faction ) {
+		public virtual float GetRelationScore( Object other ) {
 			return 0.0f;
 		}
 
@@ -280,17 +313,7 @@ namespace Renown {
 		===============
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual RelationStatus GetRelationStatus( Entity entity ) {
-			return RelationStatus.Neutral;
-		}
-
-		/*
-		===============
-		GetRelationStatus
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual RelationStatus GetRelationStatus( Faction faction ) {
+		public virtual RelationStatus GetRelationStatus( Object other ) {
 			return RelationStatus.Neutral;
 		}
 
@@ -300,36 +323,7 @@ namespace Renown {
 		===============
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual void DetermineRelationStatus( Entity entity ) {
-		}
-
-		/*
-		===============
-		DetermineRelationStatus
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual void DetermineRelationStatus( Faction faction ) {
-		}
-
-		/*
-		===============
-		GetHash
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public NodePath GetHash() {
-			return GetPath();
-		}
-
-		/*
-		===============
-		GetObjectName
-		===============
-		*/
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public virtual StringName GetObjectName() {
-			return "Entity";
+		public virtual void DetermineRelationStatus( Object other ) {
 		}
 
 		/*

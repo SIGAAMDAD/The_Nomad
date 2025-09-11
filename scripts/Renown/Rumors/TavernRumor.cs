@@ -22,9 +22,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using System;
 
 namespace Renown.Rumors {
 	public partial class TavernRumor : Resource {
+		[Export]
+		private StringName RumorDetails;
 	};
 };

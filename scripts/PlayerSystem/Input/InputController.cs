@@ -28,8 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using PlayerSystem;
+using PlayerSystem.Input;
 
-namespace PlayerSystem.Input {
+public partial class Player {
 	/*
 	===================================================================================
 	
@@ -278,14 +280,6 @@ namespace PlayerSystem.Input {
 		/// Ensures we force the creation of an InputController with a given Owner object
 		/// </summary>
 		private InputController() {
-		}
-
-		/*
-		===============
-		Dispose
-		===============
-		*/
-		public void Dispose() {
 		}
 
 		/*

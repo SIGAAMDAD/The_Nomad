@@ -24,6 +24,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Godot;
 using System;
 using Steam;
+using ResourceCache;
 
 /*
 ===================================================================================
@@ -40,7 +41,6 @@ BloodParticleFactory
 /// </remarks>
 
 public partial class BloodParticleFactory : Node {
-	private static BloodParticleFactory Instance;
 	private static readonly int BLOOD_INSTANCE_MAX = 256;
 	private static readonly int PARTICLE_BUFFER_SIZE = 16;
 	private static readonly float RELEASE_DELAY = 60.0f;
@@ -52,12 +52,43 @@ public partial class BloodParticleFactory : Node {
 
 	private readonly Transform2D[] TransformBuffer = new Transform2D[ PARTICLE_BUFFER_SIZE ];
 
+	private static BloodParticleFactory Instance;
+
+	/*
+	===============
+	Create
+	===============
+	*/
+	/// <summary>
+	/// Create a blood splatter
+	/// </summary>
+	/// <param name="from"></param>
+	/// <param name="to"></param>
+	public static void Create( Vector2 from, Vector2 to ) {
+		Instance.CreateBloodSplatter( in from, in to );
+	}
+
+	/*
+	===============
+	CreateDeffered
+	===============
+	*/
+	/// <summary>
+	/// Create a blood splatter, but on a separate thread, this automatically queues up a Godot API deferred call
+	/// </summary>
+	/// <param name="from"></param>
+	/// <param name="to"></param>
+	/// <seealso cref="Create"/>
+	public static void CreateDeferred( in Vector2 from, in Vector2 to ) {
+		Instance.CallDeferred( MethodName.Create, from, to );
+	}
+
 	/*
 	===============
 	CreateBloodSplatter
 	===============
 	*/
-	private void CreateBloodSplatter( Vector2 from, Vector2 to ) {
+	private void CreateBloodSplatter( in Vector2 from, in Vector2 to ) {
 		MultiMesh multimesh = MeshManager.Multimesh;
 		int currentCount = multimesh.VisibleInstanceCount;
 
@@ -170,35 +201,6 @@ public partial class BloodParticleFactory : Node {
 
 	/*
 	===============
-	Create
-	===============
-	*/
-	/// <summary>
-	/// Create a blood splatter
-	/// </summary>
-	/// <param name="from"></param>
-	/// <param name="to"></param>
-	public static void Create( Vector2 from, Vector2 to ) {
-		Instance.CreateBloodSplatter( from, to );
-	}
-
-	/*
-	===============
-	CreateDeffered
-	===============
-	*/
-	/// <summary>
-	/// Create a blood splatter, but on a separate thread, this automatically queues up a Godot API deferred call
-	/// </summary>
-	/// <param name="from"></param>
-	/// <param name="to"></param>
-	/// <seealso cref="Create"/>
-	public static void CreateDeferred( Vector2 from, Vector2 to ) {
-		Instance.CallDeferred( MethodName.CreateBloodSplatter, from, to );
-	}
-
-	/*
-	===============
 	_Ready
 	===============
 	*/
@@ -216,17 +218,20 @@ public partial class BloodParticleFactory : Node {
 		ReleaseTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReleaseTimerTimeout ) );
 		AddChild( ReleaseTimer );
 
-		MeshManager = new MultiMeshInstance2D();
-		MeshManager.Multimesh = new MultiMesh();
-		MeshManager.Multimesh.Mesh = new QuadMesh();
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 8.0f, -8.0f );
-		MeshManager.Multimesh.InstanceCount = BLOOD_INSTANCE_MAX;
-		MeshManager.Multimesh.VisibleInstanceCount = 0;
-		MeshManager.Texture = ResourceLoader.Load<Texture2D>( "res://textures/blood1.dds" );
-		MeshManager.ZIndex = 5;
+		MeshManager = new MultiMeshInstance2D() {
+			Texture = TextureCache.GetTexture( "res://textures/blood1.dds" ),
+			ZIndex = 10,
+			Multimesh = new MultiMesh() {
+				InstanceCount = BLOOD_INSTANCE_MAX,
+				VisibleInstanceCount = 0,
+				Mesh = new QuadMesh() {
+					Size = new Vector2( 8.0f, -8.0f )
+				}
+			}
+		};
 		AddChild( MeshManager );
 
-		LevelData.Instance.PlayerRespawn += ResetParticles;
+		GameEventBus.Subscribe<LevelData.PlayerRespawnEventHandler>( this, ResetParticles );
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );

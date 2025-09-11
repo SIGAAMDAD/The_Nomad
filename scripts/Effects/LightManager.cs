@@ -154,7 +154,7 @@ public partial class LightManager : Node {
 			LightMode = CanvasItemMaterial.LightModeEnum.LightOnly
 		};
 
-		SettingsData.Instance.SettingsChanged += ApplyChanges;
+		SettingsData.SettingsChanged += ApplyChanges;
 
 		ApplyChanges();
 	}
@@ -167,6 +167,6 @@ public partial class LightManager : Node {
 	public override void _ExitTree() {
 		base._ExitTree();
 
-		SettingsData.Instance.SettingsChanged -= ApplyChanges;
+		SettingsData.SettingsChanged -= ApplyChanges;
 	}
 };

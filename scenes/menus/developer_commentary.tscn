@@ -20,7 +20,11 @@ func _ready() -> void:
 	var _files: PackedStringArray = DirAccess.get_files_at( \"res://resources/developer_commentary\" )
 	
 	for file in _files:
-		var _commentary: DeveloperCommentary = load( file )
+		var _commentary: DeveloperCommentary = load( \"res://resources/developer_commentary/\" + file )
+		if _commentary == null:
+			Console.PrintError( \"couldn't load developer commentary file \" + file + \"!\" )
+			continue
+		
 		var _button: Button = Button.new()
 		_button.text = _commentary._title
 		_button.set_meta( \"text\", _commentary._text )
@@ -71,4 +75,6 @@ layout_mode = 2
 horizontal_alignment = 1
 
 [node name="Text" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
+autowrap_mode = 3

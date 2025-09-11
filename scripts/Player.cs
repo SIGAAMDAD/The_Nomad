@@ -1,22 +1,23 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
@@ -38,14 +39,8 @@ using Steam;
 using ResourceCache;
 using PlayerSystem.Input;
 using Menus;
-
-public enum WeaponSlotIndex : int {
-	Primary,
-	HeavyPrimary,
-	Sidearm,
-	HeavySidearm,
-	Count
-};
+using PlayerSystem.Inventory;
+using PlayerSystem.Stats;
 
 /*
 ===================================================================================
@@ -115,20 +110,7 @@ public partial class Player : Entity {
 		}
 	};
 
-	private static readonly WeaponEntity.Properties[] WeaponModeList = [
-		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBladed,
-		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsBlunt,
-		WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsFirearm,
-
-		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsBladed,
-		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsBlunt,
-		WeaponEntity.Properties.IsTwoHanded | WeaponEntity.Properties.IsFirearm
-	];
-
 	public static readonly float PUNCH_RANGE = 40.0f;
-	public static readonly int MAX_WEAPON_SLOTS = 4;
-	public static readonly Color AIMING_AT_TARGET = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-	public static readonly Color AIMING_AT_NULL = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
 
 	//
 	// constants that can be modified by runes, perks, etc.
@@ -138,11 +120,6 @@ public partial class Player : Entity {
 	public static readonly float BASE_ENEMY_DETECTION_SPEED = 1.0f;
 
 	private static readonly float DIRECTIONAL_INFLUENCE = 0.7f;
-
-	public static readonly float ACCEL = 500.0f;
-	public static readonly float FRICTION = 1000.0f;
-	public static readonly float MAX_SPEED = 440.0f;
-	public static readonly float JUMP_VELOCITY = -400.0f;
 
 	public static Godot.Vector2I ScreenSize = Godot.Vector2I.Zero;
 
@@ -206,40 +183,65 @@ public partial class Player : Entity {
 	/// </summary>
 	private Camera2D? Viewpoint;
 
-	public float Rage { get; private set; } = 60.0f;
-	public float Sanity { get; private set; } = 60.0f;
-
-	/// <summary>
-	/// The hard cap on player health
-	/// </summary>
-	/// <seealso cref="PlayerSystem.PlayerStat"/>
-	public PlayerStat<float> MaxHealth;
-
-	/// <summary>
-	/// The hard cap on player sanity
-	/// </summary>
-	/// <seealso cref="PlayerSystem.PlayerStat"/>
-	public PlayerStat<float> MaxSanity;
-
-	/// <summary>
-	/// The hard cap on player rage
-	/// </summary>
-	/// <seealso cref="PlayerSystem.PlayerStat"/>
-	public PlayerStat<float> MaxRage;
-
-	/// <summary>
-	/// The hard cap on a player's maximum speed
-	/// </summary>
-	/// <seealso cref="PlayerSystem.PlayerStat"/>
-	public PlayerStat<float> Speed;
+	public AimAssist? AimAssist { get; private set; }
 
 	/// <summary>
 	/// Handles inventory data and management
 	/// </summary>
-	public InventoryManager Inventory;
+	public InventoryManager? Inventory { get; private set; }
+
+	private MovementHandler? Movement;
+
+	public WeaponSlotManager? WeaponSlots { get; private set; }
+
+	public StatManager? StatManager { get; private set; }
+
+	/// <summary>
+	/// Handles the jump kit and all functions related to the dash mechanic
+	/// </summary>
+	public DashKit DashKit { get; private set; }
+
+	public void SetEquippedWeapon( WeaponSlotIndex weaponSlot ) => WeaponSlots.SetEquippedWeapon( weaponSlot );
+	public WeaponSlot? GetHeavyPrimaryWeapon() => WeaponSlots.GetHeavyPrimaryWeapon();
+	public WeaponSlot? GetPrimaryWeapon() => WeaponSlots.GetPrimaryWeapon();
+	public WeaponSlot? GetHeavySidearmWeapon() => WeaponSlots.GetHeavySidearmWeapon();
+	public WeaponSlot? GetSidearmWeapon() => WeaponSlots.GetSidearmWeapon();
+	public void SetHeavyPrimaryWeapon( in WeaponEntity weapon ) => WeaponSlots.SetHeavyPrimaryWeapon( weapon );
+	public void SetPrimaryWeapon( in WeaponEntity weapon ) => WeaponSlots.SetPrimaryWeapon( weapon );
+	public void SetHeavySidearmWeapon( in WeaponEntity weapon ) => WeaponSlots.SetHeavySidearmWeapon( weapon );
+	public void SetSidearmWeapon( in WeaponEntity weapon ) => WeaponSlots.SetSidearmWeapon( weapon );
+
+	public void OnDash() => DashKit.OnDash();
+	public void SetModule( IDashModule? module ) => DashKit.SetModule( module );
+
+	public Resource? GetBindActionResource( InputController.ControlBind bind ) => InputManager.GetBindActionResource( bind );
+	public void SetBindAction( InputController.ControlBind bind, GUIDEActionSignal signal, InputAction action ) => InputManager.SetBindAction( bind, signal, action );
+
+	public void PickupAmmo( in ItemPickup ammo ) => Inventory.PickupAmmo( in ammo );
+	public void PickupWeapon( in WeaponEntity weapon ) => Inventory.PickupWeapon( in weapon );
+	public void DropAmmo( int hashCode ) => Inventory.DropAmmo( hashCode );
+	public void DropWeapon( int weapon ) => Inventory.DropWeapon( weapon );
+
+	public float GetHealth() => StatManager.GetHealth();
+	public float GetRage() => StatManager.GetRage();
+	public float GetSanity() => StatManager.GetSanity();
+	public void SetHealth( float health ) => StatManager.SetHealth( health );
+	public void SetRage( float rage ) => StatManager.SetRage( rage );
+	public void SetSanity( float sanity ) => StatManager.SetSanity( sanity );
+	public void SetStatMaxValue( string statName, float maxValue ) => StatManager.SetStatMaxValue( statName, maxValue );
+	public void SetStatMinValue( string statName, float minValue ) => StatManager.SetStatMinValue( statName, minValue );
+	public void SetStatValue( string statName, float newValue ) => StatManager.SetStatValue( statName, newValue );
+	public float GetStatMaxValue( string statName ) => StatManager.GetStatMaxValue( statName );
+	public float GetStatMinValue( string statName ) => StatManager.GetStatMinValue( statName );
+	public float GetStatValue( string statName ) => StatManager.GetStatValue( statName );
 
 	public Hands HandsUsed { get; private set; } = Hands.Right;
 	public Arm LastUsedArm { get; private set; }
+
+	public GpuParticles2D? WalkEffect { get; private set; }
+	public GpuParticles2D? SlideEffect { get; private set; }
+	public GpuParticles2D? DashEffect { get; private set; }
+	public PointLight2D? DashLight { get; private set; }
 
 	/// <summary>
 	/// For sounds that are played by other classes related to player
@@ -257,11 +259,6 @@ public partial class Player : Entity {
 	// multiplayer data
 	//
 	public Multiplayer.PlayerData.MultiplayerMetadata MultiplayerData;
-
-	/// <summary>
-	/// The aim recticle, can be hidden with accessibility settings
-	/// </summary>
-	private Line2D AimLine = null;
 
 	private bool NetworkNeedsSync = false;
 
@@ -322,19 +319,6 @@ public partial class Player : Entity {
 	/// </summary>
 	private HashSet<WorldArea> DiscoveredAreas;
 
-	/// <summary>
-	/// Handles the jump kit and all functions related to the dash mechanic
-	/// </summary>
-	private DashKit DashKit;
-
-	private GpuParticles2D? WalkEffect;
-	private GpuParticles2D? SlideEffect;
-
-	private GpuParticles2D? DashEffect;
-	private PointLight2D? DashLight;
-
-	private Godot.Vector2 PhysicsPosition = Godot.Vector2.Zero;
-
 	private NetworkState LastSyncState;
 
 	private Area2D ParryArea;
@@ -343,7 +327,7 @@ public partial class Player : Entity {
 	private CollisionShape2D ParryDamageBox;
 
 	private Node? Animations;
-	private SpriteFrames? DefaultLeftArmAnimations;
+	public SpriteFrames? DefaultLeftArmAnimations;
 	private Sprite2D? HeadAnimation;
 
 	private float WindUpDuration = 0.05f;
@@ -360,7 +344,7 @@ public partial class Player : Entity {
 	private Timer? IdleTimer;
 	private Timer? CheckpointDrinkTimer;
 	private Timer? HealTimer;
-	private Timer? SlideTime;
+	public Timer? SlideTime;
 
 	/// <summary>
 	/// The amount of time left before the blood starts fading off the player. Resets each time more blood is added.
@@ -383,9 +367,9 @@ public partial class Player : Entity {
 	private static float ShakeStrength = 0.0f;
 	private static Godot.Vector2 JoltDirection = Godot.Vector2.Zero;
 
-	private float ArmAngle = 0.0f;
+	public float ArmAngle { get; private set; } = 0.0f;
 	private int InputDevice = 0;
-	private float FrameDamage = 0.0f;
+	public float FrameDamage = 0.0f;
 	private int Hellbreaks = 0;
 	private bool SplitScreen = false;
 	private float SoundLevel = 0.1f;
@@ -407,7 +391,7 @@ public partial class Player : Entity {
 
 	private Node2D Waypoint;
 
-	private BladeAttackType BladeAttackType;
+	public BladeAttackType BladeAttackType;
 
 	[Signal]
 	public delegate void JoinFactionEventHandler( Faction faction, Entity entity );
@@ -493,18 +477,18 @@ public partial class Player : Entity {
 	[Signal]
 	public delegate void BulletTimeEndEventHandler();
 
-	public void SetFaction( Faction faction ) {
-		// sanity
-		if ( Faction == faction ) {
-			Console.PrintWarning( "Player.SetFaction: same faction" );
-			return;
-		}
-		if ( faction != null ) {
-			EmitSignalJoinFaction( faction, this );
-		} else {
-			EmitSignalLeaveFaction( Faction, this );
-		}
-		Faction = faction;
+	/*
+	===============
+	SetInputVelocity
+	===============
+	*/
+	/// <summary>
+	/// Sets the player's input velocity
+	/// </summary>
+	/// <param name="velocity">The new velocity</param>
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void SetInputVelocity( Vector2 velocity ) {
+		InputVelocity = velocity;
 	}
 
 	/*
@@ -595,7 +579,7 @@ public partial class Player : Entity {
 			Console.PrintError( "Entity.Meet: node isn't an entity or faction!" );
 		}
 	}
-	
+
 	/*
 	===============
 	RelationIncrease
@@ -744,21 +728,17 @@ public partial class Player : Entity {
 	public override void Save() {
 		using var writer = new SaveSystem.SaveSectionWriter( "Player", ArchiveSystem.SaveWriter );
 
-		writer.SaveFloat( "Health", Health );
-		writer.SaveFloat( "Rage", Rage );
-		writer.SaveFloat( "Sanity", Sanity );
-		writer.SaveFloat( "MaxHealth", MaxHealth.Value );
-		writer.SaveFloat( "MaxRage", MaxRage.Value );
-		writer.SaveFloat( "MaxSanity", MaxSanity.Value );
 		writer.SaveInt( "Hellbreaks", Hellbreaks );
 		writer.SaveUInt( "HandsUsed", (uint)HandsUsed );
 
 		writer.SaveVector2( "Position", GlobalPosition );
 
-		writer.SaveInt( "ArmLeftSlot", ArmLeft.Slot );
-		writer.SaveInt( "ArmRightSlot", ArmRight.Slot );
+		writer.SaveInt( "ArmLeftSlot", (int)ArmLeft.Slot );
+		writer.SaveInt( "ArmRightSlot", (int)ArmRight.Slot );
 
+		StatManager.Save( writer );
 		Inventory.Save( writer );
+		WeaponSlots.Save( writer );
 	}
 
 	/*
@@ -772,19 +752,13 @@ public partial class Player : Entity {
 	public override void Load() {
 		using SaveSystem.SaveSectionReader reader = ArchiveSystem.GetSection( "Player" );
 
-		Health = reader.LoadFloat( "Health" );
-		Rage = reader.LoadFloat( "Rage" );
 		Hellbreaks = reader.LoadInt( "Hellbreaks" );
 		HandsUsed = (Hands)reader.LoadUInt( "HandsUsed" );
 
-		MaxSanity.Value = reader.LoadFloat( "MaxSanity" );
-		MaxRage.Value = reader.LoadFloat( "MaxRage" );
-		MaxHealth.Value = reader.LoadFloat( "MaxHealth" );
-
 		GlobalPosition = reader.LoadVector2( "Position" );
 
-		ArmLeft.SetSlot( reader.LoadInt( "ArmLeftSlot" ) );
-		ArmRight.SetSlot( reader.LoadInt( "ArmRightSlot" ) );
+		ArmLeft.SetSlot( (WeaponSlotIndex)reader.LoadInt( "ArmLeftSlot" ) );
+		ArmRight.SetSlot( (WeaponSlotIndex)reader.LoadInt( "ArmRightSlot" ) );
 		switch ( HandsUsed ) {
 			case Hands.Left:
 				LastUsedArm = ArmLeft;
@@ -795,7 +769,9 @@ public partial class Player : Entity {
 				break;
 		}
 
+		StatManager.Load( reader );
 		Inventory.Load( reader, this );
+		WeaponSlots.Load( reader );
 	}
 
 	/*
@@ -866,10 +842,10 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
-		if ( LastSyncState.LastNetworkAimAngle != (Half)AimLine.GlobalRotation ) {
+		if ( LastSyncState.LastNetworkAimAngle != (Half)AimAssist.GlobalRotation ) {
 			SyncObject.Write( true );
-			LastSyncState.LastNetworkAimAngle = (Half)AimLine.GlobalRotation;
-//			SyncObject.Write( LastSyncState.LastNetworkAimAngle );
+			LastSyncState.LastNetworkAimAngle = (Half)AimAssist.GlobalRotation;
+			//			SyncObject.Write( LastSyncState.LastNetworkAimAngle );
 		} else {
 			SyncObject.Write( false );
 		}
@@ -882,6 +858,7 @@ public partial class Player : Entity {
 			SyncObject.Write( false );
 		}
 
+		/*
 		if ( Inventory.CurrentWeapon == WeaponSlot.INVALID ) {
 			SyncObject.Write( false );
 			SyncObject.Write( false );
@@ -894,7 +871,6 @@ public partial class Player : Entity {
 			} else {
 				SyncObject.Write( false );
 			}
-			/*
 			if ( LastSyncState.LastNetworkUseMode != weapon.LastUsedMode ) {
 				SyncObject.Write( true );
 				SyncObject.Write( (uint)weapon.LastUsedMode );
@@ -902,8 +878,8 @@ public partial class Player : Entity {
 			} else {
 				SyncObject.Write( false );
 			}
-			*/
 		}
+		*/
 
 		SyncObject.Write( (byte)LeftArmAnimationState );
 		SyncObject.Write( (byte)RightArmAnimationState );
@@ -919,8 +895,8 @@ public partial class Player : Entity {
 	===============
 	*/
 	private void OnSoundAreaShape2DEntered( Rid bodyRid, Node2D body, int bodyShapeIndex, int localShapeIndex ) {
-		if ( body is Renown.Thinkers.Thinker mob && mob != null ) {
-			if ( mob.GetTileMapFloor() == Floor ) {
+		if ( body is Renown.Thinkers.MobBase mob && mob != null ) {
+			if ( mob.TileFloor == Floor ) {
 				mob.Alert( this );
 			}
 		}
@@ -939,7 +915,7 @@ public partial class Player : Entity {
 	IncreaseBlood
 	===============
 	*/
-	private void IncreaseBlood( float amount ) {
+	public void IncreaseBlood( float amount ) {
 		if ( !SettingsData.ShowBlood ) {
 			return;
 		}
@@ -1000,11 +976,13 @@ public partial class Player : Entity {
 	===============
 	*/
 	public Arm GetWeaponHand( WeaponEntity weapon ) {
+		/*
 		if ( ArmLeft.Slot != WeaponSlot.INVALID && Inventory.WeaponSlots[ ArmLeft.Slot ].Weapon == weapon ) {
 			return ArmLeft;
 		} else if ( ArmRight.Slot != WeaponSlot.INVALID && Inventory.WeaponSlots[ ArmRight.Slot ].Weapon == weapon ) {
 			return ArmRight;
 		}
+		*/
 		return null;
 	}
 
@@ -1075,22 +1053,49 @@ public partial class Player : Entity {
 	public void SetArmAngle( float angle ) => ArmAngle = angle;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetLastUsedArm( in Arm arm ) => LastUsedArm = arm;
-	public void SetHealth( float health ) {
-		Health = health;
-		if ( Health > MaxHealth.MaxValue ) {
-			Health = MaxHealth.MaxValue;
-		}
-		EmitSignalHealthChanged( Health );
-	}
-	public void SetRage( float rage ) {
-		Rage = rage;
-		if ( Rage > MaxRage.MaxValue ) {
-			Rage = MaxRage.MaxValue;
-		}
-		EmitSignalRageChanged( Rage );
-	}
+
+	/*
+	===============
+	SetFlags
+	===============
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="flags"></param>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public void SetFlags( PlayerFlags flags ) => Flags = flags;
+	public void SetFlags( PlayerFlags flags ) {
+		Flags = flags;
+	}
+
+	/*
+	===============
+	AddFlags
+	===============
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="flags"></param>
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void AddFlags( PlayerFlags flags ) {
+		Flags |= flags;
+	}
+
+	/*
+	===============
+	RemoveFlags
+	===============
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="flags"></param>
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public void RemoveFlags( PlayerFlags flags ) {
+		Flags &= ~flags;
+	}
+
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public void SetHandsUsed( Hands hands ) => HandsUsed = hands;
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -1105,12 +1110,22 @@ public partial class Player : Entity {
 		ShakeStrength = amount;
 	}
 
-	private void IdleReset() {
+	/*
+	===============
+	IdleReset
+	===============
+	*/
+	/// <summary>
+	/// <para>Resets the idle animation timer, hides the idle animation, and reverts back to the default animations.</para>
+	/// <para>Only called when exiting the idle animation or to ensure the player sprite isn't in the idle animation
+	/// when someone else is happening.</para>
+	/// </summary>
+	public void IdleReset() {
 		IdleTimer.Start();
 		IdleAnimation.Hide();
 		IdleAnimation.Stop();
 
-		AimLine.Show();
+		AimAssist.Show();
 
 		HeadAnimation.Show();
 		LegAnimation.Show();
@@ -1119,6 +1134,11 @@ public partial class Player : Entity {
 		ArmLeft.Animations.Show();
 	}
 
+	/*
+	===============
+	PlaySound
+	===============
+	*/
 	public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
 		if ( channel == null ) {
 			AudioChannel.Stream = stream;
@@ -1131,6 +1151,11 @@ public partial class Player : Entity {
 		}
 	}
 
+	/*
+	===============
+	SetupSplitScreen
+	===============
+	*/
 	public void SetupSplitScreen( int inputIndex ) {
 		if ( Input.GetConnectedJoypads().Count > 0 ) {
 			SplitScreen = true;
@@ -1151,9 +1176,6 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.Dashing;
 		BlockInput( false );
 
-		Health = 100.0f;
-		Rage = 60.0f;
-
 		TorsoAnimation.Play( "default" );
 		LegAnimation.Play( "idle" );
 		ArmLeft.Animations.Play( "idle" );
@@ -1163,9 +1185,6 @@ public partial class Player : Entity {
 		LegAnimation.Show();
 		ArmLeft.Animations.Show();
 		ArmRight.Animations.Show();
-
-		SetHealth( Health );
-		SetRage( Rage );
 
 		if ( ( GameConfiguration.GameMode == GameMode.Online && SteamLobby.Instance.IsHost ) || GameConfiguration.GameMode == GameMode.SinglePlayer ) {
 			ArchiveSystem.SaveGame( SettingsData.LastSaveSlot );
@@ -1201,24 +1220,21 @@ public partial class Player : Entity {
 		ArmRight.Animations.Play( "idle" );
 		ArmRight.Animations.Show();
 
-		ArmLeft.SetSlot( WeaponSlot.INVALID );
-		ArmRight.SetSlot( WeaponSlot.INVALID );
+		ArmLeft.SetSlot( WeaponSlotIndex.Invalid );
+		ArmRight.SetSlot( WeaponSlotIndex.Invalid );
 		HandsUsed = Hands.Right;
 
-		Inventory.SetEquippedWeapon( WeaponSlot.INVALID );
+		WeaponSlots.SetEquippedWeapon( WeaponSlotIndex.Invalid );
 
 		BloodAmount = 0.0f;
 		BloodMaterial.SetShaderParameter( "blood_coef", BloodAmount );
-
-		SetHealth( 100.0f );
-		SetRage( 60.0f );
 
 		BlockInput( false );
 	}
 	private void OnDeath( Entity attacker ) {
 		EmitSignalDie( attacker, this );
 
-//		PlaySound( AudioChannel, DieSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
+		//		PlaySound( AudioChannel, DieSfx[ RNJesus.IntRange( 0, ResourceCache.PlayerDieSfx.Length - 1 ) ] );
 
 		// make sure we're not calling this over and over
 		Flags |= PlayerFlags.Dashing;
@@ -1254,11 +1270,8 @@ public partial class Player : Entity {
 
 		FreeFlow.EndCombo();
 
-		Health -= amount * 0.75f;
-		Rage += amount * 0.01f;
-		if ( Rage > 100.0f ) {
-			Rage = 100.0f;
-		}
+		StatManager.SetHealth( StatManager.GetStatValue( "Health" ) - amount * 0.75f );
+		StatManager.SetRage( StatManager.GetStatValue( "Rage" ) - amount * 0.01f );
 
 		if ( attacker != null ) {
 			BloodParticleFactory.Create( attacker.GlobalPosition, GlobalPosition );
@@ -1273,6 +1286,35 @@ public partial class Player : Entity {
 		CallDeferred( MethodName.EmitSignal, SignalName.Damaged, attacker, this, amount );
 	}
 
+	/*
+	===============
+	ActivateParry
+	===============
+	*/
+	public void ActivateParry() {
+		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
+		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
+
+		Flags |= PlayerFlags.LightParrying | PlayerFlags.HeavyParrying;
+
+		if ( Velocity == Godot.Vector2.Zero ) {
+			// if we're stationary, make the player commit to a heavier parry
+			BlockInput( true );
+			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_heavy" );
+		} else {
+			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_light" );
+		}
+	}
+
+	/*
+	===============
+	DeactivateParry
+	===============
+	*/
+	public void DeactivateParry() {
+	}
+
+	/*
 	public void OnParry( Bullet from, float damage ) {
 		float distance = from.GlobalPosition.DistanceTo( from.GlobalPosition );
 
@@ -1283,6 +1325,7 @@ public partial class Player : Entity {
 			entity.AddStatusEffect( "status_burning" );
 		}
 	}
+	*/
 	public void OnParry( Vector2 from, Vector2 to, float damage ) {
 		//		float distance = from.GlobalPosition.DistanceTo( from.TargetPosition );
 
@@ -1313,9 +1356,7 @@ public partial class Player : Entity {
 			}
 		}
 
-		Rage -= 35.0f;
-
-		EmitSignalRageChanged( Rage );
+		StatManager.SetRage( StatManager.GetStatValue( "Rage" ) - 35.0f );
 
 		// create a freeze frame
 		float timeScale = (float)Engine.TimeScale;
@@ -1353,7 +1394,7 @@ public partial class Player : Entity {
 		IdleAnimation.Show();
 		IdleAnimation.Play( "checkpoint_idle" );
 
-		AimLine.Hide();
+		AimAssist.Hide();
 
 		IdleAnimation.FlipH = GlobalPosition.DirectionTo( LastCheckpoint.GlobalPosition ).X < 0.0f;
 
@@ -1377,7 +1418,7 @@ public partial class Player : Entity {
 		Flags &= ~PlayerFlags.Resting;
 	}
 	public void LeaveCampfire() {
-		AimLine.Show();
+		AimAssist.Show();
 
 		CheckpointDrinkTimer.Stop();
 		CheckpointDrinkTimer.ProcessMode = ProcessModeEnum.Disabled;
@@ -1392,7 +1433,7 @@ public partial class Player : Entity {
 
 		IdleTimer.Stop();
 
-		AimLine.Hide();
+		AimAssist.Hide();
 
 		// clean all the blood off us
 		BloodAmount = 0.0f;
@@ -1439,7 +1480,7 @@ public partial class Player : Entity {
 		IdleAnimation.Show();
 		IdleAnimation.Play( "start" );
 
-		AimLine.Hide();
+		AimAssist.Hide();
 
 		TorsoAnimationState = PlayerAnimationState.TrueIdleStart;
 		LegAnimationState = PlayerAnimationState.TrueIdleStart;
@@ -1470,467 +1511,6 @@ public partial class Player : Entity {
 			SetSoundLevel( 36.0f );
 		}
 	}
-	private void OnDashEnd() {
-		EmitSignalDashEnd();
-		DashLight.Hide();
-		DashEffect.Emitting = false;
-		Flags &= ~PlayerFlags.Dashing;
-	}
-	private void OnSlideTimeout() {
-		SlideEffect.Emitting = false;
-		Flags &= ~PlayerFlags.Sliding;
-	}
-
-	private bool IsInputBlocked( bool bIsInventory = false ) => ( Flags & PlayerFlags.BlockedInput ) != 0 || ( !bIsInventory && ( Flags & PlayerFlags.Inventory ) != 0 );
-
-	private void OnDashBurnout() {
-		Flags &= ~PlayerFlags.Dashing;
-		AddChild( SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-		Damage( this, 30.0f );
-		AddStatusEffect( "status_burning" );
-		ShakeCameraDirectional( 50.0f, DashDirection );
-
-		SteamAchievements.ActivateAchievement( "ACH_AHHH_GAHHH_HAAAAAAA" );
-	}
-	private void OnDash( Resource dashAction ) {
-		if ( IsInputBlocked() || !DashKit.CanDash() ) {
-			return;
-		}
-
-		IdleReset();
-		Flags |= PlayerFlags.Dashing;
-		DashEffect.Emitting = true;
-		DashLight.Show();
-		DashDirection = Velocity;
-
-		DashKit.OnDash();
-
-		EmitSignalDashStart();
-	}
-	private void OnSlide( Resource dashAction ) {
-		if ( IsInputBlocked() || ( Flags & PlayerFlags.Dashing ) != 0 ) {
-			return;
-		}
-		IdleReset();
-		Flags |= PlayerFlags.Sliding;
-		SlideTime.Start();
-		SlideEffect.Emitting = true;
-
-		PlaySound( AudioChannel, SoundCache.GetEffectRange( SoundEffect.Slide0, 2 ) );
-
-		LegAnimationState = PlayerAnimationState.Sliding;
-		TorsoAnimationState = PlayerAnimationState.Sliding;
-
-		LegAnimation.Play( "slide" );
-	}
-	private void OnUseWeaponTriggered( Resource useWeaponAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		IdleReset();
-
-		int slot = LastUsedArm.Slot;
-		if ( slot == WeaponSlot.INVALID ) {
-			return; // nothing equipped
-		}
-		if ( Inventory.WeaponSlots[ slot ].IsUsed() ) {
-			WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
-			weapon.SetAttackAngle( ArmAngle );
-
-			float soundLevel = 0.0f;
-			if ( weapon.IsBladed() && ( Flags & PlayerFlags.UsingMelee ) == 0 ) {
-				Flags |= PlayerFlags.UsingMelee;
-
-				if ( InputVelocity.X < 0.0f ) {
-					bool slash = TorsoAnimation.FlipH;
-
-					BladeAttackType = slash ? BladeAttackType.Slash : BladeAttackType.Thrust;
-					if ( slash ) {
-						FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
-					} else {
-						weapon.BladedThrustWindUp();
-					}
-				} else if ( InputVelocity.X > 0.0f ) {
-					bool slash = !TorsoAnimation.FlipH;
-
-					BladeAttackType = slash ? BladeAttackType.Slash : BladeAttackType.Thrust;
-					if ( slash ) {
-						FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
-					} else {
-						weapon.BladedThrustWindUp();
-					}
-				} else {
-					BladeAttackType = BladeAttackType.Slash;
-					FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, BladeAttackType );
-				}
-			} else if ( weapon.IsFirearm() ) {
-				FrameDamage += weapon.Use( weapon.LastUsedMode, out soundLevel, ( Flags & PlayerFlags.UsingWeapon ) != 0 );
-			}
-
-			EmitSignalUsedWeapon( weapon );
-			if ( FrameDamage > 0.0f ) {
-				IncreaseBlood( FrameDamage * 0.0001f );
-				FreeFlow.IncreaseCombo();
-			}
-			Flags |= PlayerFlags.UsingWeapon;
-			SetSoundLevel( soundLevel );
-		}
-	}
-	private void OnArmAngleChanged() {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		/*
-		if ( CurrentMappingContext == ResourceCache.KeyboardInputMappings ) {
-			GetArmAngle();
-		} else {
-			ArmAngle = ArmAngleAction.Get( "value_axis_2d" ).AsVector2().Angle();
-		}
-		*/
-		AimLine.GlobalRotation = ArmAngle;
-
-		if ( GameConfiguration.GameMode != GameMode.Multiplayer ) {
-			SyncShadow();
-		}
-	}
-	private void OnPrevWeaponTriggered( Resource prevWeaponAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		int index = Inventory.CurrentWeapon < 0 ? MAX_WEAPON_SLOTS - 1 : Inventory.CurrentWeapon - 1;
-		while ( index != -1 ) {
-			if ( Inventory.WeaponSlots[ index ].IsUsed() ) {
-				break;
-			}
-			index--;
-		}
-
-		if ( index == -1 || !Inventory.WeaponSlots[ index ].IsUsed() ) {
-			index = WeaponSlot.INVALID;
-		}
-
-		Arm otherArm;
-		if ( LastUsedArm == ArmLeft ) {
-			otherArm = ArmRight;
-			HandsUsed = Hands.Left;
-		} else if ( LastUsedArm == ArmRight ) {
-			otherArm = ArmLeft;
-			HandsUsed = Hands.Right;
-		} else {
-			Console.PrintError( "OnNextWeapon: invalid LastUsedArm" );
-			LastUsedArm = ArmRight;
-			return;
-		}
-
-		// adjust arm state
-		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon = Inventory.WeaponSlots[ index ].Weapon;
-			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				otherArm.SetSlot( WeaponSlot.INVALID );
-				HandsUsed = Hands.Both;
-			}
-
-			EmitSignalSwitchedWeapon( weapon );
-			Inventory.WeaponSlots[ index ].SetMode( Inventory.WeaponSlots[ index ].Weapon.LastUsedMode );
-		} else {
-			EmitSignalSwitchedWeapon( null );
-		}
-		PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ChangeWeapon ] );
-
-		Inventory.SetEquippedWeapon( index );
-		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
-
-		EmitSignalHandsStatusUpdated( HandsUsed );
-	}
-	private void OnNextWeaponTriggered( Resource nextWeaponAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		int index = Inventory.CurrentWeapon == MAX_WEAPON_SLOTS - 1 ? 0 : Inventory.CurrentWeapon + 1;
-		while ( index < MAX_WEAPON_SLOTS ) {
-			if ( Inventory.WeaponSlots[ index ].IsUsed() ) {
-				break;
-			}
-			index++;
-		}
-
-		if ( index == MAX_WEAPON_SLOTS || !Inventory.WeaponSlots[ index ].IsUsed() ) {
-			index = -1;
-		}
-
-		Arm otherArm;
-		if ( LastUsedArm == ArmLeft ) {
-			otherArm = ArmRight;
-			HandsUsed = Hands.Left;
-		} else if ( LastUsedArm == ArmRight ) {
-			otherArm = ArmLeft;
-			HandsUsed = Hands.Right;
-		} else {
-			Console.PrintError( "OnNextWeapon: invalid LastUsedArm" );
-			LastUsedArm = ArmRight;
-			return;
-		}
-
-		// adjust arm state
-		if ( index != WeaponSlot.INVALID ) {
-			WeaponEntity weapon = Inventory.WeaponSlots[ index ].Weapon;
-			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				otherArm.SetSlot( WeaponSlot.INVALID );
-				HandsUsed = Hands.Both;
-			}
-
-			EmitSignalSwitchedWeapon( weapon );
-			Inventory.WeaponSlots[ index ].SetMode( Inventory.WeaponSlots[ index ].Weapon.LastUsedMode );
-		} else {
-			EmitSignalSwitchedWeapon( null );
-		}
-		PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.ChangeWeapon ] );
-
-		Inventory.SetEquippedWeapon( index );
-		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
-
-		EmitSignalHandsStatusUpdated( HandsUsed );
-	}
-	private void OnBulletTimeTriggered( Resource bulletTimeAction ) {
-		if ( IsInputBlocked() || Rage <= 0.0f ) {
-			return;
-		}
-
-		IdleReset();
-		EmitSignalBulletTimeStart();
-
-		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			ExitBulletTime();
-		} else {
-			PlaySound( MiscChannel, SoundCache.StreamCache[ SoundEffect.SlowmoBegin ] );
-
-			Flags |= PlayerFlags.BulletTime;
-			Engine.TimeScale = 0.40f;
-		}
-	}
-	private void OnUseBothHands() {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-		HandsUsed = Hands.Both;
-	}
-	private void SwitchWeaponWielding() {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		Arm src;
-		Arm dst;
-
-		switch ( HandsUsed ) {
-			case Hands.Left:
-				src = ArmLeft;
-				dst = ArmRight;
-				break;
-			case Hands.Right:
-				src = ArmRight;
-				dst = ArmLeft;
-				break;
-			case Hands.Both:
-			default:
-				src = LastUsedArm;
-				dst = src;
-				break;
-		}
-
-		if ( src.Slot == WeaponSlot.INVALID ) {
-			// nothing in the source hand, deny
-			return;
-		}
-
-		LastUsedArm = dst;
-
-		WeaponEntity srcWeapon = Inventory.WeaponSlots[ src.Slot ].Weapon;
-		if ( ( srcWeapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 && ( srcWeapon.LastUsedMode & WeaponEntity.Properties.IsOneHanded ) == 0 ) {
-			// cannot change hands, no one-handing allowed
-			return;
-		}
-
-		// check if the destination hand has something in it, if true, then swap
-		src.SwapSlot( dst );
-		EmitSignalWeaponStatusUpdated( srcWeapon, srcWeapon.LastUsedMode );
-	}
-	private void SwitchWeaponHand() {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-		// TODO: implement use both hands
-
-		switch ( HandsUsed ) {
-			case Hands.Left:
-				HandsUsed = Hands.Right; // set to right
-				LastUsedArm = ArmRight;
-				break;
-			case Hands.Right:
-				HandsUsed = Hands.Left; // set to right
-				LastUsedArm = ArmLeft;
-				break;
-			case Hands.Both:
-				break;
-			default:
-				Console.PrintError( "Player.SwitchWeaponHand: invalid hand, setting to default of right" );
-				HandsUsed = Hands.Right;
-				break;
-		}
-		if ( LastUsedArm.Slot != WeaponSlot.INVALID ) {
-			EquipSlot( LastUsedArm.Slot );
-		}
-
-		EmitSignalSwitchHandUsed( HandsUsed );
-	}
-	private void SwitchWeaponMode( Resource switchWeaponModeAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-		// weapon mode order (default)
-		// blade -> blunt -> firearm
-
-		WeaponSlot slot;
-
-		switch ( HandsUsed ) {
-			case Hands.Left: {
-					int index = ArmLeft.Slot;
-					if ( index == WeaponSlot.INVALID ) {
-						return;
-					}
-					slot = Inventory.WeaponSlots[ index ];
-					break;
-				}
-			case Hands.Right: {
-					int index = ArmRight.Slot;
-					if ( index == WeaponSlot.INVALID ) {
-						return;
-					}
-					slot = Inventory.WeaponSlots[ index ];
-					break;
-				}
-			case Hands.Both:
-			default:
-				slot = Inventory.WeaponSlots[ Inventory.CurrentWeapon ];
-				break;
-		}
-
-		WeaponEntity.Properties mode = slot.Mode;
-		WeaponEntity? weapon = slot.Weapon;
-
-		// sanity
-		ArgumentNullException.ThrowIfNull( weapon );
-
-		slot.SetMode( WeaponEntity.Properties.None ); // clear the modes
-
-		// find the next most suitable mode
-		WeaponEntity.Properties props = weapon.PropertyBits;
-		bool IsOneHanded = ( props & WeaponEntity.Properties.IsOneHanded ) != 0;
-		bool IsTwoHanded = ( props & WeaponEntity.Properties.IsTwoHanded ) != 0;
-		const WeaponEntity.Properties hands = ~( WeaponEntity.Properties.IsOneHanded | WeaponEntity.Properties.IsTwoHanded );
-
-		for ( int i = 0; i < WeaponModeList.Length; i++ ) {
-			WeaponEntity.Properties current = WeaponModeList[ i ];
-			if ( mode == current ) {
-				// same mode, don't switch
-				continue;
-			}
-			if ( ( props & ( current & hands ) ) != 0 ) {
-				// apply some filters
-				if ( ( current & WeaponEntity.Properties.IsOneHanded ) != 0 && IsOneHanded ) {
-					// one handing not possible, deny
-					continue;
-				}
-				if ( ( current & WeaponEntity.Properties.IsTwoHanded ) != 0 && IsTwoHanded ) {
-					// two handing not possible, deny
-					continue;
-				}
-
-				// we've got a match!
-				slot.SetMode( current );
-				weapon.SetUseMode( current );
-			}
-		}
-		EmitSignalWeaponStatusUpdated( weapon, slot.Mode );
-	}
-
-	public void EquipSlot( int slot ) {
-		Inventory.SetEquippedWeapon( slot );
-
-		WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
-		if ( weapon != null ) {
-			// apply rules of various weapon properties
-			if ( ( weapon.LastUsedMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
-				ArmLeft.SetSlot( Inventory.CurrentWeapon );
-				ArmRight.SetSlot( Inventory.CurrentWeapon );
-
-				// this will automatically override any other modes
-				Inventory.WeaponSlots[ ArmLeft.Slot ].SetMode( weapon.DefaultMode );
-			}
-
-			Inventory.WeaponSlots[ LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
-		} else {
-			ArmLeft.SetSlot( WeaponSlot.INVALID );
-			ArmRight.SetSlot( WeaponSlot.INVALID );
-		}
-
-		// update hand data
-		LastUsedArm.SetSlot( Inventory.CurrentWeapon );
-
-		EmitSignalSwitchedWeapon( weapon );
-	}
-	private void OnUseWeaponCompleted( Resource useWeaponAction ) {
-		if ( ( Flags & PlayerFlags.UsingMelee ) != 0 && BladeAttackType == BladeAttackType.Thrust ) {
-			int slot = LastUsedArm.Slot;
-			if ( slot == WeaponSlot.INVALID ) {
-				return; // nothing equipped
-			}
-			if ( Inventory.WeaponSlots[ slot ].IsUsed() ) {
-				WeaponEntity weapon = Inventory.WeaponSlots[ slot ].Weapon;
-				weapon.SetAttackAngle( ArmAngle );
-				if ( FrameDamage > 0.0f ) {
-					IncreaseBlood( FrameDamage * 0.0001f );
-					FreeFlow.IncreaseCombo();
-				}
-			}
-		}
-
-		Flags &= ~( PlayerFlags.UsingWeapon | PlayerFlags.UsingMelee );
-	}
-
-	private void OnMeleeFinished() {
-		ArmLeft.Animations.AnimationFinished -= OnMeleeFinished;
-		Flags &= ~( PlayerFlags.LightParrying | PlayerFlags.HeavyParrying );
-		BlockInput( false );
-
-		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
-		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, false );
-	}
-	private void OnMelee( Resource meleeAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		ParryArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
-		ParryDamageArea.SetDeferred( Area2D.PropertyName.Monitoring, true );
-
-		Flags |= ( PlayerFlags.LightParrying | PlayerFlags.HeavyParrying );
-
-		if ( Velocity == Godot.Vector2.Zero ) {
-			// if we're stationary, make the player commit to a heavier parry
-			BlockInput( true );
-			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_heavy" );
-		} else {
-			ArmLeft.Animations.CallDeferred( AnimatedSprite2D.MethodName.Play, "melee_light" );
-		}
-		ArmLeft.Animations.SpriteFrames = DefaultLeftArmAnimations;
-		ArmLeft.Animations.AnimationFinished += OnMeleeFinished;
-		PlaySound( MiscChannel, AudioCache.GetStream( "res://sounds/player/melee.ogg" ) );
-	}
 
 	/*
 	===============
@@ -1938,7 +1518,7 @@ public partial class Player : Entity {
 	===============
 	*/
 	private void OnRespawnTransitionFinished() {
-		GameEventBus.ConnectSignal( GetNode( "/root/TransitionScreen" ), "transition_finished" , this, OnRespawnTransitionFinished );
+		GameEventBus.ConnectSignal( GetNode( "/root/TransitionScreen" ), "transition_finished", this, OnRespawnTransitionFinished );
 
 		GlobalPosition = LastCheckpoint.GlobalPosition;
 		BeginInteraction( LastCheckpoint );
@@ -1986,10 +1566,6 @@ public partial class Player : Entity {
 		if ( Health <= 0.0f ) {
 			GameEventBus.DisconnectAllForObject( GetNode( "/root/TransitionScreen" ) );
 			GetNode( "/root/TransitionScreen" ).Call( "transition" );
-
-			// dead
-			SetHealth( MaxHealth.MaxValue );
-			SetRage( 0.0f );
 
 			SetProcess( true );
 			SetPhysicsProcess( true );
@@ -2044,54 +1620,7 @@ public partial class Player : Entity {
 		*/
 	}
 
-	/*
-	===============
-	OnMoveTriggered
-	===============
-	*/
-	/// <summary>
-	/// Handles movement input via GUIDE
-	/// </summary>
-	private void OnMoveTriggered( Resource moveAction ) {
-		ArgumentNullException.ThrowIfNull( moveAction );
-		if ( IsInputBlocked() ) {
-			return;
-		}
-
-		InputVelocity = moveAction.Get( "value_axis_2d" ).AsVector2();
-	}
-
-	/*
-	===============
-	OnUseGadgetTriggered
-	===============
-	*/
-	/// <summary>
-	/// Handles gadget use input
-	/// </summary>
-	private void OnUseGadgetTriggered( Resource useGadgetAction ) {
-		if ( IsInputBlocked() ) {
-			return;
-		}
-		ArmAttachment?.Use();
-	}
-
-	public void ConnectBindings() {
-		InputManager.SetBindAction( InputController.ControlBind.Move, GUIDEActionSignal.Triggered, OnMoveTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.Move, GUIDEActionSignal.Completed, OnMoveTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.Melee, GUIDEActionSignal.Triggered, OnMelee );
-		InputManager.SetBindAction( InputController.ControlBind.SwitchWeaponMode, GUIDEActionSignal.Triggered, SwitchWeaponMode );
-		InputManager.SetBindAction( InputController.ControlBind.BulletTime, GUIDEActionSignal.Triggered, OnBulletTimeTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.Dash, GUIDEActionSignal.Triggered, OnDash );
-		InputManager.SetBindAction( InputController.ControlBind.Slide, GUIDEActionSignal.Triggered, OnSlide );
-		InputManager.SetBindAction( InputController.ControlBind.PrevWeapon, GUIDEActionSignal.Triggered, OnPrevWeaponTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.NextWeapon, GUIDEActionSignal.Triggered, OnNextWeaponTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.UseWeapon, GUIDEActionSignal.Triggered, OnUseWeaponTriggered );
-		InputManager.SetBindAction( InputController.ControlBind.UseWeapon, GUIDEActionSignal.Completed, OnUseWeaponCompleted );
-		InputManager.SetBindAction( InputController.ControlBind.Interact, GUIDEActionSignal.Triggered, ( resource ) => EmitSignalInteraction() );
-	}
-
-	private void ExitBulletTime() {
+	public void ExitBulletTime() {
 		if ( ( Flags & PlayerFlags.BulletTime ) == 0 ) {
 			return;
 		}
@@ -2141,6 +1670,8 @@ public partial class Player : Entity {
 		base._Ready();
 
 		InputManager = new InputController( this );
+		Movement = new MovementHandler( this as IPlayerInput, this );
+		Inventory = new InventoryManager( this );
 
 		DialogueManager.DialogueStarted += OnDialogueStarted;
 		DialogueManager.DialogueEnded += OnDialogueEnded;
@@ -2162,10 +1693,6 @@ public partial class Player : Entity {
 
 		GameEventBus.Subscribe<LevelData.PlayerRespawnEventHandler>( this, Respawn );
 
-		MaxHealth = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
-		MaxRage = new PlayerStat<float>( 100.0f, 0.0f, float.MaxValue );
-		Speed = new PlayerStat<float>( MAX_SPEED, 0.0f, 100.0f );
-
 		// don't allow keybind input when we're in the console
 		Console.Control.VisibilityChanged += () => {
 			BlockInput( Console.Control.Visible );
@@ -2173,19 +1700,7 @@ public partial class Player : Entity {
 
 		StartingPosition = GlobalPosition;
 
-		AimLine = GetNode<Line2D>( "AimAssist/AimLine" );
-
-		AimLine.Points[ 1 ].X = AimLine.Points[ 0 ].X * ( ScreenSize.X / 2.0f );
-
 		Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://textures/hud/crosshairs/crosshairi.tga" ), Input.CursorShape.Arrow );
-
-		Health = 100.0f;
-		Rage = 60.0f;
-		Sanity = 60.0f;
-
-		if ( GameConfiguration.GameMode != GameMode.LocalCoop2 ) {
-			ConnectBindings();
-		}
 
 		Resource screenshot = ResourceLoader.Load( "res://resources/binds/actions/keyboard/screenshot.tres" );
 		screenshot.Connect( "triggered", Callable.From( () => {
@@ -2229,12 +1744,6 @@ public partial class Player : Entity {
 			QuestState.StartContract( ResourceLoader.Load( Renown.Constants.StartingQuestPath ), Renown.Constants.StartingQuestFlags, Renown.Constants.StartingQuestState );
 		}
 
-		DashKit = new DashKit();
-		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashBurnedOut, this, OnDashBurnout );
-		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashBurnoutChanged, this, Callable.From<float>( EmitSignalDashBurnoutChanged ) );
-		GameEventBus.ConnectSignal( DashKit, DashKit.SignalName.DashEnd, this, OnDashEnd );
-		AddChild( DashKit );
-
 		Viewpoint = GetNode<Camera2D>( "Camera2D" );
 
 		AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioChannel" );
@@ -2260,11 +1769,11 @@ public partial class Player : Entity {
 		ParryDamageArea = GetNode<Area2D>( "AimAssist/AimLine/ParryDamageArea" );
 		ParryDamageBox = GetNode<CollisionShape2D>( "AimAssist/AimLine/ParryDamageArea/CollisionShape2D" );
 
-		Area2D Area = GetNode<Area2D>( "SoundArea" );
-		GameEventBus.ConnectSignal( Area, Area2D.SignalName.BodyShapeEntered, this, Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
+		Area2D area = GetNode<Area2D>( "SoundArea" );
+		GameEventBus.ConnectSignal( area, Area2D.SignalName.BodyShapeEntered, this, Callable.From<Rid, Node2D, int, int>( OnSoundAreaShape2DEntered ) );
 
 		FootSteps = GetNode<FootSteps>( "FootSteps" );
-		
+
 		DefaultLeftArmAnimations = ArmLeft.Animations.SpriteFrames;
 
 		HeadAnimation = GetNode<Sprite2D>( "Animations/Head" );
@@ -2311,8 +1820,8 @@ public partial class Player : Entity {
 		DashEffect = GetNode<GpuParticles2D>( "Animations/DashEffect" );
 		DashLight = GetNode<PointLight2D>( "Animations/DashEffect/PointLight2D" );
 
-		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
-		GameEventBus.ConnectSignal( SlideTime, Timer.SignalName.Timeout, this, OnSlideTimeout );
+		//		SlideTime = GetNode<Timer>( "Timers/SlideTime" );
+		//		GameEventBus.ConnectSignal( SlideTime, Timer.SignalName.Timeout, this, OnSlideTimeout );
 
 		CheckpointDrinkTimer = new Timer();
 		CheckpointDrinkTimer.Name = "CheckpointDrinkTimer";
@@ -2386,98 +1895,16 @@ public partial class Player : Entity {
 			Load();
 		}
 	}
-	private async void UpdateIdleBreath( float delta ) {
-		IdleTime += delta;
-
-		float breath = Mathf.Sin( IdleTime * 8.5f ) * 0.30f;
-		TorsoAnimation.Position = new Vector2( 0.0f, breath );
-
-		if ( IdleTime > NextShiftTime ) {
-			NextShiftTime = IdleTime + GD.Randf() * 3.0f + 1.0f;
-
-			float shiftAmount = GD.Randf() * 1.5f - 0.75f;
-			float duration = 0.8f;
-
-			CreateTween().TweenProperty( LegAnimation, "position", new Vector2( shiftAmount, LegAnimation.Position.Y ), duration ).SetEase( Tween.EaseType.Out );
-			await ToSignal( GetTree().CreateTimer( duration ), "timeout" );
-			CreateTween().TweenProperty( LegAnimation, "position", Vector2.Zero, duration * 0.7f ).SetEase( Tween.EaseType.InOut );
-		}
-	}
 	public override void PhysicsUpdate( double delta ) {
 		base._PhysicsProcess( delta );
 
 		Player.ShakeCameraDirectional( 2.5f, new Vector2( RNJesus.FloatRange( -30.0f, 30.0f ), RNJesus.FloatRange( -30.0f, 30.0f ) ) );
-
-		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, ArmAngle, ScreenSize.X * 0.5f, GetRid() );
-		if ( collision.Collider is Entity entity && entity != null && entity.Faction != Faction ) {
-			AimLine.DefaultColor = AIMING_AT_TARGET;
-		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).Faction != Faction ) {
-			AimLine.DefaultColor = AIMING_AT_TARGET;
-		} else {
-			AimLine.DefaultColor = AIMING_AT_NULL;
-		}
 
 		CheckStatus( (float)delta );
 
 		if ( ( Flags & PlayerFlags.BlockedInput ) != 0 ) {
 			return;
 		}
-
-		Godot.Vector2 velocity = Velocity;
-		if ( InputVelocity == Godot.Vector2.Zero && velocity == Godot.Vector2.Zero ) {
-			return;
-		}
-
-		float baseSpeed;
-		if ( InputVelocity != Godot.Vector2.Zero ) {
-			float speed = MAX_SPEED;
-			// encumbured
-			if ( Inventory.TotalInventoryWeight >= InventoryManager.MAXIMUM_INVENTORY_WEIGHT * 0.85f ) {
-				speed *= 0.5f;
-			}
-			float accel = ACCEL;
-
-			if ( ( Flags & PlayerFlags.Dashing ) != 0 ) {
-				accel += 8800;
-			}
-			if ( ( Flags & PlayerFlags.Sliding ) != 0 ) {
-				accel += 1200;
-				LeftArmAnimationState = PlayerAnimationState.Sliding;
-			}
-
-			velocity = velocity.MoveToward( InputVelocity * speed, (float)delta * accel );
-			TorsoAnimationState = PlayerAnimationState.Running;
-			LegAnimationState = PlayerAnimationState.Running;
-
-			WindUpProgress = Mathf.Clamp( WindUpProgress + WindUpDuration, 0.0f, 1.0f );
-			baseSpeed = 1.0f;
-			IdleTime = 0.0f;
-		} else {
-			velocity = velocity.MoveToward( Godot.Vector2.Zero, (float)delta * FRICTION );
-			TorsoAnimationState = PlayerAnimationState.Idle;
-			LegAnimationState = PlayerAnimationState.Idle;
-
-			WindUpProgress = Mathf.Clamp( WindUpProgress - WindUpDuration * 2.0f, 0.0f, 1.0f );
-			baseSpeed = 0.5f;
-
-			if ( SettingsData.AnimationQuality > AnimationQuality.Low ) {
-				UpdateIdleBreath( (float)delta );
-			}
-		}
-
-		float easedSpeedFactor = WindUpProgress < 0.1f ? 2.0f * WindUpProgress * WindUpProgress : 1.0f - Mathf.Pow( -2.0f * WindUpProgress + 2.0f, 2.0f ) / 2.0f;
-
-		if ( baseSpeed == 1.0f ) {
-			float armOffset = Mathf.Sin( Time.GetTicksMsec() / 120.0f ) * 2.0f * ( 1.0f - easedSpeedFactor );
-			ArmLeft.Animations.SetDeferred( AnimatedSprite2D.PropertyName.Offset, new Vector2( 0.0f, armOffset ) );
-		}
-
-		if ( velocity != Godot.Vector2.Zero ) {
-			IdleReset();
-		}
-
-		Velocity = velocity;
-		MoveAndSlide();
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
@@ -2486,7 +1913,7 @@ public partial class Player : Entity {
 		arm.Animations.FlipV = TorsoAnimation.FlipH;
 		arm.Animations.SpriteFrames = arm.GetAnimationSet();
 
-		if ( arm.Slot == WeaponSlot.INVALID ) {
+		if ( arm.Slot == WeaponSlotIndex.Invalid ) {
 			if ( SettingsData.AnimationQuality > AnimationQuality.Low ) {
 				if ( InputVelocity != Vector2.Zero ) {
 					if ( ( TorsoAnimation.FlipH && InputVelocity.X > 0.0f ) || ( !TorsoAnimation.FlipH && InputVelocity.X < 0.0f ) ) {
@@ -2504,7 +1931,7 @@ public partial class Player : Entity {
 				arm.Animations.Play( animState == PlayerAnimationState.Idle ? "idle" : "run" );
 			}
 		} else {
-			WeaponEntity weapon = Inventory.WeaponSlots[ arm.Slot ].Weapon;
+			WeaponEntity weapon = WeaponSlots[ arm.Slot ].Weapon;
 			string animationName;
 			switch ( weapon.CurrentState ) {
 				default:
@@ -2538,15 +1965,15 @@ public partial class Player : Entity {
 		bool changed = false;
 		if ( FrameDamage > 0.0f ) {
 			// the more attacks we chain together without taking a hit, the more rage we get
-			Rage += FrameDamage * FreeFlow.Instance.ComboCounter * delta;
+			//Rage += FrameDamage * FreeFlow.Instance.ComboCounter * delta;
 			FrameDamage = 0.0f;
 			Flags |= PlayerFlags.UsedMana;
 			changed = true;
 		}
 		FrameDamage = 0.0f;
-		if ( Health < 100.0f && Rage > 0.0f ) {
+		if ( StatManager.GetStatValue( "Health" ) < 100.0f && StatManager.GetStatValue( "Rage" ) > 0.0f ) {
 			Health += 3.0f * delta;
-			Rage -= 10.0f * delta;
+			//Rage -= 10.0f * delta;
 			changed = true;
 			// mana conversion ratio to health is extremely inefficient
 
@@ -2554,9 +1981,10 @@ public partial class Player : Entity {
 			EmitSignalHealthChanged( Health );
 		}
 		if ( ( Flags & PlayerFlags.BulletTime ) != 0 ) {
-			Rage -= 20.0f * delta;
+			//			Rage -= 20.0f * delta;
 			changed = true;
 		}
+		/*
 		if ( Rage > 100.0f ) {
 			Rage = 100.0f;
 		} else if ( Rage < 0.0f ) {
@@ -2566,6 +1994,7 @@ public partial class Player : Entity {
 		if ( changed ) {
 			EmitSignalRageChanged( Rage );
 		}
+		*/
 	}
 	[MethodImpl( MethodImplOptions.AggressiveOptimization )]
 	public override void Update( double delta ) {

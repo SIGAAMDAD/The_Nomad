@@ -22,49 +22,61 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Utils;
 
 namespace Menus {
 	public partial class SaveSlotsMenu : Control {
+		private static readonly StringName @IndexMetaName = "index";
+
 		private Button DeleteSaveButton;
 		private VBoxContainer SlotsContainer;
 
-		private Button[] ButtonList;
-		private int ButtonIndex = 0;
+		private Button[]? SaveSlots = null;
+		private int SelectedSlot = 0;
 
 		[Signal]
 		public delegate void BeginGameEventHandler();
 
+		/*
+		===============
+		OnContinueGameFinished
+		===============
+		*/
 		private void OnContinueGameFinished() {
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnContinueGameFinished ) );
-
-			Hide();
-			GetNode<LoadingScreen>( "/root/LoadingScreen" ).Call( "FadeIn" );
-
 			Console.PrintLine( "Loading game..." );
 
-			/*
-			if ( SettingsData.GetNetworkingEnabled() ) {
-				Console.PrintLine( "Networking enabled, creating co-op lobby..." );
+			TransitionScreen.TransitionFinished -= OnContinueGameFinished;
 
-				GameConfiguration.GameMode = GameMode.Online;
-
-				SteamLobby.Instance.SetMaxMembers( 4 );
-				string name = SteamManager.GetSteamName();
-				if ( name[ name.Length - 1 ] == 's' ) {
-					SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
-				} else {
-					SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
-				}
-
-				SteamLobby.Instance.CreateLobby();
-			} else {
-			}
-			*/
-			GameConfiguration.GameMode = GameMode.SinglePlayer;
+			Hide();
+			GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/world.tscn" );
+			GameConfiguration.SetGameMode( GameMode.SinglePlayer );
 
 			World.LoadTime = System.Diagnostics.Stopwatch.StartNew();
 		}
+
+		/*
+		===============
+		TransitionToLoadingScreen
+		===============
+		*/
+		private void TransitionToLoadingScreen() {
+			UIAudioManager.OnActivate();
+
+			Hide();
+			TransitionScreen.TransitionFinished += OnContinueGameFinished;
+			TransitionScreen.Transition();
+
+			UIAudioManager.FadeMusic();
+		}
+
+		/*
+		===============
+		OnContinueGameButtonPressed
+		===============
+		*/
 		private void OnContinueGameButtonPressed() {
 			if ( MainMenu.Loaded ) {
 				return;
@@ -72,16 +84,14 @@ namespace Menus {
 			MainMenu.Loaded = true;
 
 			EmitSignalBeginGame();
-
-			UIAudioManager.OnActivate();
-
-			Hide();
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-
-			UIAudioManager.FadeMusic();
+			TransitionToLoadingScreen();
 		}
 
+		/*
+		===============
+		OnSaveSlotButtonPressed
+		===============
+		*/
 		private void OnSaveSlotButtonPressed( Button SaveSlot ) {
 			if ( MainMenu.Loaded ) {
 				return;
@@ -90,122 +100,136 @@ namespace Menus {
 
 			EmitSignalBeginGame();
 
-			UIAudioManager.OnActivate();
+			SettingsData.SetSaveSlot( SaveSlot.GetMeta( IndexMetaName ).AsInt32() );
 
-			SettingsData.SetSaveSlot( (int)SaveSlot.GetMeta( "index" ) );
-
-			Hide();
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnContinueGameFinished ) );
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-
-			UIAudioManager.FadeMusic();
+			TransitionToLoadingScreen();
 		}
 
-		private List<string> GetSaveSlotList( string directory ) {
-			List<string> saveSlotList = new List<string>();
-
-			DirAccess dir = DirAccess.Open( directory );
-			if ( dir != null ) {
-				dir.ListDirBegin();
-				string fileName = dir.GetNext();
-				while ( fileName.Length > 0 ) {
-					if ( fileName.GetExtension() != "ngd" ) {
-						fileName = dir.GetNext();
-						continue;
-					}
-					saveSlotList.Add( fileName );
-					fileName = dir.GetNext();
-				}
-			} else {
-				Console.PrintError( string.Format( "An error occurred when trying to access path \"{0}\"", directory ) );
-			}
-
-			return saveSlotList;
+		/*
+		===============
+		ConnectButton
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="button"></param>
+		/// <param name="pressedCallback"></param>
+		private void ConnectButton( Button button, Action pressedCallback ) {
+			GameEventBus.ConnectSignal( button, Button.SignalName.FocusEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( button, Button.SignalName.MouseEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( button, Button.SignalName.Pressed, this, pressedCallback );
 		}
+
+		/*
+		===============
+		ConnectSlotButton
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="button"></param>
+		/// <param name="pressedCallback"></param>
+		private void ConnectSlotButton( Button button ) {
+			GameEventBus.ConnectSignal( button, Button.SignalName.FocusEntered, this, () => OnButtonFocused( button ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.MouseEntered, this, () => OnButtonFocused( button ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.Pressed, this, () => OnSaveSlotButtonPressed( button ) );
+		}
+
+		/*
+		===============
+		LoadSaveSlots
+		===============
+		*/
 		private void LoadSaveSlots() {
-			List<string> saveSlots = GetSaveSlotList( "user://SaveData" );
-			Console.PrintLine( string.Format( "Found {0} save slots.", saveSlots.Count ) );
+			int i;
+			List<string> saveSlots = new List<string>();
+			Godot.Collections.Array<Node> children;
 
-			// clear out the children first
-			for ( int i = 0; i < SlotsContainer.GetChildCount(); i++ ) {
-				SlotsContainer.GetChild( i ).CallDeferred( MethodName.QueueFree );
-				SlotsContainer.RemoveChild( SlotsContainer.GetChild( i ) );
+			Utils.Methods.LoadFileList( "user://SaveData", saveSlots );
+			Console.PrintLine( $"...found {saveSlots.Count} save slots" );
+
+			// release all the children first
+			children = SlotsContainer.GetChildren();
+			for ( i = 0; i < children.Count; i++ ) {
+				children[ i ].CallDeferred( MethodName.QueueFree );
+				SlotsContainer.RemoveChild( children[ i ] );
+			}
+			for ( i = 0; i < saveSlots.Count; i++ ) {
+				Button label = new Button() {
+					Text = saveSlots[ i ],
+					Theme = this.Theme,
+					Visible = true
+				};
+				ConnectSlotButton( label );
+				label.SetMeta( IndexMetaName, i );
+				SlotsContainer.AddChild( label );
 			}
 
-			ButtonIndex = 0;
-
-			ButtonList = new Button[ saveSlots.Count ];
-			for ( int i = 0; i < saveSlots.Count; i++ ) {
-				Button label = new Button();
-
-				label.Text = saveSlots[ i ];
-				label.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( label ) ) );
-				label.Connect( Button.SignalName.MouseEntered, Callable.From( () => OnButtonFocused( label ) ) );
-				label.Connect( Button.SignalName.Pressed, Callable.From( () => OnSaveSlotButtonPressed( label ) ) );
-				label.SetMeta( "index", i );
-				label.Theme = DeleteSaveButton.Theme;
-				label.Show();
-				SlotsContainer.AddChild( label );
-
-				ButtonList[ i ] = label;
+			// link focus navigation
+			children = SlotsContainer.GetChildren();
+			for ( i = 0; i < children.Count; i++ ) {
+				if ( children[ i ] is Button button && button != null ) {
+					if ( i == 0 ) {
+						button.FocusNeighborTop = children.Last().GetPath();
+						button.FocusNeighborBottom = children[ i + 1 ].GetPath();
+					} else if ( i == children.Count - 1 ) {
+						button.FocusNeighborTop = children[ i - 1 ].GetPath();
+						button.FocusNeighborBottom = children.First().GetPath();
+					} else {
+						button.FocusNeighborTop = children[ i - 1 ].GetPath();
+						button.FocusNeighborBottom = children[ i + 1 ].GetPath();
+					}
+				}
 			}
 		}
 
+		/*
+		===============
+		OnDeleteSaveButtonPressed
+		===============
+		*/
 		private void OnDeleteSaveButtonPressed() {
-			ArchiveSystem.DeleteSave( ButtonIndex );
-			ButtonIndex = 0;
+			ArchiveSystem.DeleteSave( SelectedSlot );
+			SelectedSlot = 0;
 
 			LoadSaveSlots();
 		}
 
+		/*
+		===============
+		OnButtonFocused
+		===============
+		*/
 		private void OnButtonFocused( Button button ) {
-			UIAudioManager.OnButtonFocused();
+			UIAudioManager.OnButtonFocused( button );
 
-			if ( ButtonList[ ButtonIndex ] != button ) {
-				ButtonIndex = (int)button.GetMeta( "index" );
+			if ( SaveSlots[ SelectedSlot ] != button ) {
+				SelectedSlot = button.GetMeta( IndexMetaName ).AsInt32();
 			}
 		}
 
+		/*
+		===============
+		_Ready
+		===============
+		*/
 		public override void _Ready() {
 			base._Ready();
 
 			Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
-			ConfirmationDialog DeleteSaveConfirm = GetNode<ConfirmationDialog>( "DeleteSaveConfirmation" );
-			DeleteSaveConfirm.Connect( ConfirmationDialog.SignalName.Canceled, Callable.From( Hide ) );
-			DeleteSaveConfirm.Connect( ConfirmationDialog.SignalName.Confirmed, Callable.From( OnDeleteSaveButtonPressed ) );
+			ConfirmationDialog deleteSaveConfirm = GetNode<ConfirmationDialog>( "DeleteSaveConfirmation" );
+			GameEventBus.ConnectSignal( deleteSaveConfirm, ConfirmationDialog.SignalName.Canceled, this, Hide );
+			GameEventBus.ConnectSignal( deleteSaveConfirm, ConfirmationDialog.SignalName.Confirmed, this, OnDeleteSaveButtonPressed );
 
 			DeleteSaveButton = GetNode<Button>( "DeleteSaveButton" );
-			DeleteSaveButton.Connect( Button.SignalName.FocusEntered, Callable.From( () => OnButtonFocused( DeleteSaveButton ) ) );
-			DeleteSaveButton.Connect( Button.SignalName.Pressed, Callable.From( DeleteSaveConfirm.Show ) );
+			Methods.ConnectMenuButton( DeleteSaveButton, this, DeleteSaveButton.Hide );
 
 			SlotsContainer = GetNode<VBoxContainer>( "VScrollBar/SaveSlotsContainer" );
 
 			LoadSaveSlots();
-		}
-		public override void _UnhandledInput( InputEvent @event ) {
-			base._UnhandledInput( @event );
-
-			if ( Input.IsActionJustPressed( "ui_down" ) ) {
-				ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
-				if ( ButtonIndex == ButtonList.Length - 1 ) {
-					ButtonIndex = 0;
-				} else {
-					ButtonIndex++;
-				}
-				ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
-			} else if ( Input.IsActionJustPressed( "ui_up" ) ) {
-				ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusExited );
-				if ( ButtonIndex == 0 ) {
-					ButtonIndex = ButtonList.Length - 1;
-				} else {
-					ButtonIndex--;
-				}
-				ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
-			} else if ( Input.IsActionJustPressed( "ui_accept" ) || Input.IsActionJustPressed( "ui_enter" ) ) {
-				ButtonList[ ButtonIndex ].EmitSignal( Button.SignalName.FocusEntered );
-				ButtonList[ ButtonIndex ].CallDeferred( Button.MethodName.EmitSignal, Button.SignalName.Pressed );
-			}
 		}
 	};
 };

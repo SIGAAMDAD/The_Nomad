@@ -1,26 +1,29 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
 using Godot;
+using Items;
+using PlayerSystem.Inventory;
 using System.Runtime.CompilerServices;
 
 namespace PlayerSystem {
@@ -42,7 +45,7 @@ namespace PlayerSystem {
 		public Player? Parent { get; private set; }
 
 		public SpriteFrames? DefaultAnimation { get; private set; }
-		public int Slot { get; private set; } = WeaponSlot.INVALID;
+		public WeaponSlotIndex Slot { get; private set; } = WeaponSlotIndex.Invalid;
 
 		public bool Flip { get; set; } = false;
 
@@ -52,7 +55,7 @@ namespace PlayerSystem {
 		===============
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetSlot( int slot ) {
+		public void SetSlot( WeaponSlotIndex slot ) {
 			Slot = slot;
 		}
 
@@ -64,11 +67,11 @@ namespace PlayerSystem {
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public void SwapSlot( Arm other ) {
 			// check if the destination hand has something in it, if true, then swap
-			if ( other.Slot != WeaponSlot.INVALID ) {
+			if ( other.Slot != WeaponSlotIndex.Invalid ) {
 				(Slot, other.Slot) = (other.Slot, Slot);
 			} else {
 				// if we have nothing in the destination hand, then just clear the source hand
-				(Slot, other.Slot) = (WeaponSlot.INVALID, Slot);
+				(Slot, other.Slot) = (WeaponSlotIndex.Invalid, Slot);
 			}
 		}
 
@@ -78,16 +81,16 @@ namespace PlayerSystem {
 		===============
 		*/
 		public SpriteFrames? GetAnimationSet() {
-			if ( Slot != WeaponSlot.INVALID ) {
-				WeaponEntity? weapon = Parent.Inventory.WeaponSlots[ Slot ].Weapon;
+			if ( Slot != WeaponSlotIndex.Invalid ) {
+				WeaponEntity? weapon = Parent.WeaponSlots[ Slot ].Weapon;
 				if ( weapon != null ) {
-					if ( weapon.IsFirearm() && weapon.CurrentState == WeaponEntity.WeaponState.Use ) {
-						if ( weapon.CurrentRecoilOffset == Vector2.Zero ) {
+					if ( weapon.IsFirearm() && weapon.CurrentState == WeaponEntity.WeaponState.Use && weapon is WeaponFirearm firearm ) {
+						if ( firearm.CurrentRecoilOffset == Vector2.Zero ) {
 							CreateTween().TweenProperty( Animations, "offset", Vector2.Zero, 0.90f );
 						} else {
-							Animations.Offset = weapon.CurrentRecoilOffset;
+							Animations.Offset = firearm.CurrentRecoilOffset;
 						}
-						Animations.Rotation += Mathf.DegToRad( weapon.CurrentRecoilRotation );
+						Animations.Rotation += Mathf.DegToRad( firearm.CurrentRecoilRotation );
 					}
 
 					bool oneHanded = weapon.IsOneHanded();
@@ -96,11 +99,11 @@ namespace PlayerSystem {
 					// but if we're running default (two handed weapon) then determine animation frames based
 					// on orientation
 					return Hand == Player.Hands.Right ?
-						oneHanded ? weapon.AnimationsRight :
-							Animations.FlipV ? weapon.AnimationsLeft : weapon.AnimationsRight
+						oneHanded ? weapon.FramesRight :
+							Animations.FlipV ? weapon.FramesLeft : weapon.FramesRight
 						:
-						oneHanded ? weapon.AnimationsLeft :
-							Animations.FlipV ? weapon.AnimationsRight : weapon.AnimationsLeft;
+						oneHanded ? weapon.FramesLeft :
+							Animations.FlipV ? weapon.FramesRight : weapon.FramesLeft;
 				} else {
 					throw new System.Exception( $"Arm {Hand} has weapon slot {Slot} but the weapon slot is empty" );
 				}

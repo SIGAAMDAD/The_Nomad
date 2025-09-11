@@ -5,7 +5,7 @@ This document outlines the strict coding standards and formatting rules for this
 ## Table of Contents
 1. [Indentation](#indentation)
 2. [Brace-Style](#brace-style)
-3. [Docuemntation](#documentation)
+3. [Documentation](#documentation)
 
 ## Indentation
 
@@ -135,6 +135,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 * camelCase: Parameters and Local Variables
 * SNAKE_CASE: Constants
 
+The only exception to the casing is if you're creating a static readonly StringName to reduce string allocations, in which case, use Godot's PascalCasing for those constants.
+
 ## Class Layout
 
 Method parameters must be declared like this:
@@ -211,10 +213,14 @@ namespace declaration {
 		structs/classes (should only ever be small, extremely focused classes, very rarely public)
 
 		public static readonly constants
+		protected static reaonly constants
 		private static readonly constants
 		public exports
+		protected exports
 		private exports
 		public properties
+		protected properties
+		private properties
 
 		singleton instances
 

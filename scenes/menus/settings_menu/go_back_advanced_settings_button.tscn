@@ -1,10 +1,10 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4soupetm1bb5"]
 
-[ext_resource type="FontFile" uid="uid://c86hw5xibkiy0" path="res://edosz.ttf" id="1_yrcgj"]
+[ext_resource type="FontFile" uid="uid://dq136wkvpeo86" path="res://edosz.ttf" id="1_yrcgj"]
 [ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="2_skb4f"]
 [ext_resource type="StyleBox" uid="uid://635m6njp4eyq" path="res://resources/themes/button_normal_ui.tres" id="3_msrpu"]
 
-[sub_resource type="GDScript" id="GDScript_8y4fd"]
+[sub_resource type="GDScript" id="GDScript_7w5jp"]
 resource_name = "advanced_settinsg"
 script/source = "class_name AdvancedSettingsButton extends Button
 
@@ -30,7 +30,7 @@ theme_override_styles/hover = ExtResource("2_skb4f")
 theme_override_styles/pressed = ExtResource("2_skb4f")
 theme_override_styles/normal = ExtResource("3_msrpu")
 text = "BACK"
-script = SubResource("GDScript_8y4fd")
+script = SubResource("GDScript_7w5jp")
 metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]

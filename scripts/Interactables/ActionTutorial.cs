@@ -88,7 +88,7 @@ public partial class ActionTutorial : InteractionItem {
 		Text = GetNode<RichTextLabel>( "RichTextLabel" );
 		LevelData.Instance.ThisPlayer.InputMappingContextChanged += () =>
 				Text.ParseBbcode( AccessibilityManager.GetBindString(
-					LevelData.Instance.ThisPlayer.InputManager.GetBindActionResource( PlayerSystem.Input.InputController.ControlBind.Interact )
+					LevelData.Instance.ThisPlayer.InputManager.GetBindActionResource( Player.InputController.ControlBind.Interact )
 				) );
 
 		Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );

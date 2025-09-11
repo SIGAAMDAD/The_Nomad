@@ -158,7 +158,7 @@ csharp_indent_braces = false
 csharp_indent_case_contents = true
 csharp_indent_case_contents_when_block = true
 csharp_indent_labels = one_less_than_current
-csharp_indent_switch_labels = false
+csharp_indent_switch_labels = true
 
 # Space preferences
 csharp_space_after_cast = false
@@ -193,7 +193,7 @@ csharp_preserve_single_line_statements = true
 # Naming rules
 
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
-dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = _interface
 dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
 
 dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion

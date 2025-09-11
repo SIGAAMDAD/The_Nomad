@@ -23,6 +23,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using Renown.Thinkers;
+using System;
 using System.Collections.Generic;
 
 namespace Renown.World {
@@ -33,6 +34,9 @@ namespace Renown.World {
 	
 	===================================================================================
 	*/
+	/// <summary>
+	/// Represents an in-game region, whether that be a settlement, a location of interest, or a biome
+	/// </summary>
 	
 	public partial class WorldArea : Area2D {
 		private static readonly float PlayerCheckInterval = 0.30f;
@@ -47,7 +51,7 @@ namespace Renown.World {
 		[Export]
 		public AINodeCache NodeCache { get; private set; }
 		[Export]
-		protected TileMapLayer[] TileMaps;
+		public TileMapLayer[] TileMaps;
 
 		public bool PlayerStatus { get; private set; } = false;
 
@@ -66,19 +70,18 @@ namespace Renown.World {
 		/// </summary>
 		public Dictionary<Trait, float>? PlayerTraitScores { get; private set; } = new Dictionary<Trait, float>();
 
-		[Signal]
-		public delegate void PlayerEnteredEventHandler();
-		[Signal]
-		public delegate void PlayerExitedEventHandler();
-
 		public virtual void Save() {
 			using var writer = new SaveSystem.SaveSectionWriter( AreaName, ArchiveSystem.SaveWriter );
 
 			writer.SaveInt( nameof( PlayerRenownScore ), PlayerRenownScore );
 
 			writer.SaveInt( "PlayerTraitCount", PlayerTraitScores.Count );
+
+			int index = 0;
 			foreach ( var trait in PlayerTraitScores ) {
-				writer.SaveFloat( $"PlayerTraitScore{trait.Key.Name}", trait.Value );
+				writer.SaveString( $"PlayerTraitPath{index}", trait.Key.ResourcePath );
+				writer.SaveFloat( $"PlayerTraitScore{index}", trait.Value );
+				index++;
 			}
 		}
 		public virtual void Load() {
@@ -93,7 +96,10 @@ namespace Renown.World {
 			int count = reader.LoadInt( "PlayerTraitCount" );
 			PlayerTraitScores = new Dictionary<Trait, float>( count );
 			for ( int i = 0; i < count; i++ ) {
-
+				PlayerTraitScores.Add(
+					Trait.Create( reader.LoadString( $"PlayerTraitPath{i}" ) ),
+					reader.LoadFloat( $"PlayerTraitScore{i}" )
+				);
 			}
 		}
 
@@ -102,7 +108,19 @@ namespace Renown.World {
 		ChangePlayerTraitScore
 		===============
 		*/
-		public void ChangePlayerTraitScore( Trait trait, float score ) {
+		/// <summary>
+		/// Changes the player's trait score in this WorldArea
+		/// </summary>
+		/// <param name="trait">The trait to influence</param>
+		/// <param name="amount">The amount to change the trait score by, this number can be either negative or positive</param>
+		/// <exception cref="ArgumentException">Thrown if the trait isn't found in the cache</exception>
+		public void ChangePlayerTraitScore( Trait trait, float amount ) {
+			if ( !PlayerTraitScores.TryGetValue( trait, out float currentScore ) ) {
+				// this is to prevent someone creating traits during runtime to prevent issues with savefiles
+				throw new ArgumentException( $"Trait {trait.Name} hasn't been cached!" );
+			}
+			PlayerTraitScores[ trait ] += amount;
+			GameEventBus.EmitSignalPlayerTraitScoreChanged( this, trait, amount );
 		}
 
 		/*
@@ -110,8 +128,13 @@ namespace Renown.World {
 		ChangePlayerRenownScore
 		===============
 		*/
-		public void ChangePlayerRenownScore( int score ) {
-
+		/// <summary>
+		/// Changes the player's renown score in this WorldArea
+		/// </summary>
+		/// <param name="amount">The amount to change the renown score by, this number can either be negative or positive</param>
+		public void ChangePlayerRenownScore( int amount ) {
+			PlayerRenownScore += amount;
+			GameEventBus.EmitSignalPlayerRenownScoreChanged( this, amount );
 		}
 
 		/*
@@ -123,8 +146,7 @@ namespace Renown.World {
 			if ( body is Player player && player != null ) {
 				PlayerStatus = true;
 				player.SetLocation( this );
-
-				CallDeferred( MethodName.EmitSignal, SignalName.PlayerEntered );
+				GameEventBus.EmitSignalPlayerEnteredArea( this );
 				CallDeferred( MethodName.Show );
 
 				for ( int i = 0; i < Children.Length; i++ ) {
@@ -141,7 +163,7 @@ namespace Renown.World {
 		private void OnProcessAreaBody2DExited( Node2D body ) {
 			if ( !GetOverlappingBodies().Contains( LevelData.Instance.ThisPlayer ) ) {
 				PlayerStatus = false;
-				CallDeferred( MethodName.EmitSignal, SignalName.PlayerExited );
+				GameEventBus.EmitSignalPlayerExitedArea( this );
 				CallDeferred( MethodName.Hide );
 
 				for ( int i = 0; i < Children.Length; i++ ) {
@@ -218,7 +240,7 @@ namespace Renown.World {
 			if ( CheckDelta > PlayerCheckInterval ) {
 				if ( !GodotServerManager.GetCollidingObjects( GetRid() ).Contains( LevelData.Instance.ThisPlayer ) ) {
 					PlayerStatus = false;
-					CallDeferred( MethodName.EmitSignal, SignalName.PlayerExited );
+					GameEventBus.EmitSignalPlayerExitedArea( this );
 
 					CallDeferred( MethodName.Hide );
 					for ( int i = 0; i < Children.Length; i++ ) {
@@ -226,7 +248,7 @@ namespace Renown.World {
 					}
 				} else {
 					PlayerStatus = true;
-					CallDeferred( MethodName.EmitSignal, SignalName.PlayerEntered );
+					GameEventBus.EmitSignalPlayerEnteredArea( this );
 
 					CallDeferred( MethodName.Show );
 					for ( int i = 0; i < Children.Length; i++ ) {

@@ -1,22 +1,23 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
@@ -26,6 +27,7 @@ using Godot;
 using Multiplayer;
 using Steamworks;
 using Steam;
+using System;
 
 namespace Menus {
 	/*
@@ -81,17 +83,7 @@ namespace Menus {
 				} else {
 					GameMode = Mode.GameMode.Count;
 				}
-				switch ( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) ) {
-					case "Online":
-						GameType = global::GameMode.Online;
-						break;
-					case "Multiplayer":
-						GameType = global::GameMode.Multiplayer;
-						break;
-					default:
-						break;
-				}
-				;
+				GameType = global::GameMode.Multiplayer;
 				MapName = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 			}
 			public bool Refresh() {
@@ -138,7 +130,7 @@ namespace Menus {
 		private Label GameModeLabel;
 
 		private Label JoiningLobbyLabel;
-		private Range JoiningLobbySpinner;
+		private Godot.Range JoiningLobbySpinner;
 
 		private HBoxContainer JoiningLobbyContainer;
 
@@ -153,8 +145,6 @@ namespace Menus {
 		private CheckBox GameFilter_KingOfTheHill;
 		private CheckBox GameFilter_CaptureTheFlag;
 		private CheckBox GameFilter_Duel;
-
-		private Timer RefreshTimer;
 
 		private int MatchmakingPhase = 0;
 
@@ -209,10 +199,8 @@ namespace Menus {
 					Console.PrintLine( "...Finished loading game" );
 					break;
 			}
-			;
 
 			ServerCommandManager.SendCommand( ServerCommandType.ConnectedToLobby );
-			System.GC.KeepAlive( this );
 		}
 		private static void OnLobbyJoined( ulong lobbyId ) {
 		}
@@ -237,7 +225,6 @@ namespace Menus {
 					JoiningLobbySpinner.Set( "status", 5 );
 					break;
 			}
-			;
 		}
 
 		private void MatchmakingLoop() {
@@ -298,7 +285,6 @@ namespace Menus {
 						break;
 					}
 			}
-			;
 		}
 
 		private void GetLobbyList() {
@@ -405,82 +391,77 @@ namespace Menus {
 			Matchmake.Show();
 		}
 
+		private void ConnectButton( Button button, Action pressedCallback ) {
+			GameEventBus.ConnectSignal( button, Button.SignalName.MouseEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( button, Button.SignalName.FocusEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( button, Button.SignalName.Pressed, this, pressedCallback );
+		}
+
 		public override void _Ready() {
+			base._Ready();
+
+			Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
+
 			HostGame = GetNode<Button>( "ControlBar/HostButton" );
-			HostGame.Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-			HostGame.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			HostGame.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			HostGame.Connect( Button.SignalName.Pressed, Callable.From( OnHostGameButtonPressed ) );
+			ConnectButton( HostGame, OnHostGameButtonPressed );
 
 			RefreshLobbies = GetNode<Button>( "ControlBar/RefreshButton" );
-			RefreshLobbies.Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-			RefreshLobbies.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			RefreshLobbies.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			RefreshLobbies.Connect( Button.SignalName.Pressed, Callable.From( OnRefreshButtonPressed ) );
+			ConnectButton( RefreshLobbies, OnRefreshButtonPressed );
 
 			JoiningLobbyContainer = GetNode<HBoxContainer>( "JoiningLobbyContainer" );
 			JoiningLobbyLabel = GetNode<Label>( "JoiningLobbyContainer/JoiningLobbyLabel" );
-			JoiningLobbySpinner = GetNode<Range>( "JoiningLobbyContainer/JoiningLobbySpinner" );
+			JoiningLobbySpinner = GetNode<Godot.Range>( "JoiningLobbyContainer/JoiningLobbySpinner" );
 
 			Matchmake = GetNode<Button>( "ControlBar/MatchmakeButton" );
-			Matchmake.Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-			Matchmake.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			Matchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			Matchmake.Connect( Button.SignalName.Pressed, Callable.From( OnMatchmakeButtonPressed ) );
+			ConnectButton( Matchmake, OnMatchmakeButtonPressed );
 
 			CancelMatchmake = GetNode<Button>( "ControlBar/CancelMatchmakeButton" );
-			CancelMatchmake.Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
-			CancelMatchmake.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			CancelMatchmake.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-
 			MatchmakingSpinner = GetNode<Control>( "MatchMakingSpinner" );
-
 			MatchmakingLabel = GetNode<Label>( "MatchMakingLabel" );
-			MatchmakingLabel.Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
 			MatchmakingTimer = GetNode<Timer>( "MatchMakingLabel/MatchMakingLabelTimer" );
-			MatchmakingTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMatchmakingLabelTimerTimeout ) );
+			GameEventBus.ConnectSignal( MatchmakingTimer, Timer.SignalName.Timeout, this, OnMatchmakingLabelTimerTimeout );
 
 			LobbyTable = GetNode<VBoxContainer>( "LobbyList/Lobbies" );
 
-			Label MapName = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/MapNameLabel" );
+			Label mapName = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/MapNameLabel" );
 			MapNameLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/MapNameContainer/Label" );
 
-			Label PlayerCount = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/PlayerCountLabel" );
+			Label playerCount = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/PlayerCountLabel" );
 			PlayerCountLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/PlayerCountContainer/Label" );
 
-			Label GameMode = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/GameModeLabel" );
+			Label gameMode = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/GameModeLabel" );
 			GameModeLabel = GetNode<Label>( "LobbyMetadataContainer/VBoxContainer/GameModeContainer/Label" );
 
-			Button JoinButton = GetNode<Button>( "ControlBar2/JoinButton" );
-			JoinButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			JoinButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			JoinButton.Connect( Button.SignalName.Pressed, Callable.From( OnJoinButtonPressed ) );
+			Button joinButton = GetNode<Button>( "ControlBar2/JoinButton" );
+			ConnectButton( joinButton, OnJoinButtonPressed );
 
 			LobbyManager = GetNode<HBoxContainer>( "ControlBar" );
 			JoinGame = GetNode<HBoxContainer>( "ControlBar2" );
 
 			ShowFullServers = GetNode<CheckBox>( "FilterList/VBoxContainer/FullserversCheckBox" );
-			ShowFullServers.Connect( CheckBox.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			ShowFullServers.Connect( CheckBox.SignalName.Pressed, Callable.From( UIAudioManager.OnButtonPressed ) );
+			GameEventBus.ConnectSignal( ShowFullServers, CheckBox.SignalName.MouseEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( ShowFullServers, CheckBox.SignalName.FocusEntered, this, UIAudioManager.OnButtonFocusedCallable );
+			GameEventBus.ConnectSignal( ShowFullServers, CheckBox.SignalName.Pressed, this, UIAudioManager.OnButtonPressedCallable );
 
 			MatchmakingThread = new System.Threading.Thread( MatchmakingLoop );
 
-			Timer RefreshTimer = new Timer();
-			RefreshTimer.Name = "RefreshTimer";
-			RefreshTimer.WaitTime = 0.5f;
-			RefreshTimer.OneShot = false;
-			RefreshTimer.Autostart = true;
-			RefreshTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnRefreshButtonPressed ) );
-			AddChild( RefreshTimer );
+			Timer refreshTimer = new Timer() {
+				Name = nameof( refreshTimer ),
+				WaitTime = 0.5f,
+				OneShot = false,
+				Autostart = true,
+			};
+			GameEventBus.ConnectSignal( refreshTimer, Timer.SignalName.Timeout, this, OnRefreshButtonPressed );
+			AddChild( refreshTimer );
 
 			LobbyJoinedCallback = Callable.From<ulong>( OnLobbyJoined );
 			LobbyConnectionStatusChangedCallback = Callable.From<int>( OnConnectionStatusChanged );
 			LobbyListUpdatedCallback = Callable.From( GetLobbyList );
 
-			SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyJoined, LobbyJoinedCallback );
-			SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyConnectionStatusChanged, LobbyConnectionStatusChangedCallback );
-			SteamLobby.Instance.Connect( SteamLobby.SignalName.LobbyListUpdated, LobbyListUpdatedCallback );
+			GameEventBus.ConnectSignal( SteamLobby.Instance, SteamLobby.SignalName.LobbyJoined, this, LobbyJoinedCallback );
+			GameEventBus.ConnectSignal( SteamLobby.Instance, SteamLobby.SignalName.LobbyConnectionStatusChanged, this, LobbyConnectionStatusChangedCallback );
+			GameEventBus.ConnectSignal( SteamLobby.Instance, SteamLobby.SignalName.LobbyListUpdated, this, LobbyListUpdatedCallback );
 
 			SteamLobby.Instance.SetPhysicsProcess( true );
 
@@ -490,13 +471,6 @@ namespace Menus {
 			GameFilter_Duel = GetNode<CheckBox>( "FilterList/VBoxContainer/DuelCheckBox" );
 
 			Instance = this;
-		}
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyJoined, LobbyJoinedCallback );
-			SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyConnectionStatusChanged, LobbyConnectionStatusChangedCallback );
-			SteamLobby.Instance.Disconnect( SteamLobby.SignalName.LobbyListUpdated, LobbyListUpdatedCallback );
 		}
 	};
 };

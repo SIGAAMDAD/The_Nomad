@@ -1,90 +1,102 @@
 using Godot;
 using System.Collections.Generic;
 using Renown.World;
-
-public enum ContractType : uint {
-	/// <summary>
-	/// fixed-price bounty, most usual target is a politician
-	/// </summary>
-	Assassination,
-
-	Kidnapping,
-	Extortion,
-
-	/// <summary>
-	/// an assassination but more for less important entities, this
-	/// can include the player.
-	/// 
-	/// the price of a bounty can and most likely will increase over time
-	/// </summary>
-	Bounty,
-
-	Count
-};
-
-public enum ContractFlags : uint {
-	Silent = 0x0001,
-	Ghost = 0x0002,
-	Massacre = 0x0004,
-	Clean = 0x0008,
-
-	None = 0x0000
-};
+using Renown.Thinkers;
+using System;
 
 namespace Renown {
 	public partial class Contract : Resource {
+		/// <summary>
+		/// The name of the contract as it appears on the Mercenary Master's ledger
+		/// </summary>
 		public readonly string Title;
-		public readonly ContractFlags Flags;
-		public readonly ContractType Type;
-		public readonly Object Contractor;
-		public readonly Faction Guild;
-
-		// not readonly to allow extensions
-		public WorldTimestamp DueDate {
-			get;
-			private set;
-		}
 
 		/// <summary>
-		/// the total amount of money the mercenary can get out of the deal.
+		/// Extra requirements that impact the final paycheck of a contract. These are usually rare and narrative driven.
+		/// see <see cref="Contracts.Flags"/> for more information.
+		/// </summary>
+		public readonly Contracts.Flags Flags;
+
+		/// <summary>
+		/// The type of the contract, see <see cref="ContractType"/>
+		/// </summary>T
+		public readonly Contracts.Type Type;
+
+		/// <summary>
+		/// The target of the contract, not always filled.
+		/// </summary>
+		public readonly Thinker Target;
+
+		/// <summary>
+		/// The faction or NPC paying for the contract and the person who posted the contract
+		/// </summary>
+		public readonly Object Client;
+
+		/// <summary>
+		/// The guild that is handling the processing of the contract, sort of the "middleman"
+		/// </summary>
+		public readonly Faction Guild;
+
+		/// <summary>
+		/// The deadline the contract must be completed before to get the paycheck. Deadlines can occur when the player has
+		/// high relation status with the client, but this is extremely rare.
+		/// </summary>
+		public WorldTimestamp DueDate { get; private set; }
+
+		/// <summary>
+		/// The total amount of money the mercenary can get out of the deal.
 		/// this value can change with the value of the target, like a bounty
 		/// for instance.
 		/// </summary>
-		public float TotalPay {
-			get;
-			private set;
-		} = 0.0f;
-		public float BasePay {
-			get;
-			private set;
-		} = 0.0f;
+		public float TotalPay { get; private set; } = 0.0f;
 
 		/// <summary>
-		/// the designated place where the merc can operate in.
+		/// The amount of money the contract type costs.
+		/// </summary>
+		public float BasePay { get; private set; } = 0.0f;
+
+		/// <summary>
+		/// The designated place where the merc can operate in.
 		/// if they step outside here, its no longer in the protection
 		/// of the guild.
 		/// </summary>
-		public WorldArea CollateralArea {
-			get;
-			private set;
-		}
+		public WorldArea CollateralArea { get; private set; }
 
-		public Contract( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
-			float basePay, float? totalPay, WorldArea area, Object contractor, Faction guild ) {
+		/*
+		===============
+		Contract
+		===============
+		*/
+		public Contract( string name, WorldTimestamp duedate, Contracts.Flags flags, Contracts.Type type,
+			float basePay, float totalPay, WorldArea area, Object client, Faction guild, Thinker target )
+		{
+			// check that all the parameters are actually valid
+			ArgumentException.ThrowIfNullOrEmpty( name );
+			ArgumentNullException.ThrowIfNull( area );
+			ArgumentNullException.ThrowIfNull( client );
+			ArgumentNullException.ThrowIfNull( guild );
+			ArgumentOutOfRangeException.ThrowIfLessThanOrEqual( basePay, 0.0f );
+
 			Title = name;
 			Flags = flags;
 			DueDate = duedate;
-			Contractor = contractor;
+			Client = client;
 			Guild = guild;
-			TotalPay = totalPay != null ? (float)totalPay : basePay;
+			TotalPay = totalPay;
 			BasePay = basePay;
 			CollateralArea = area;
+			Target = target;
 
-			GD.Print( string.Format( "Contract {0} created, [type:{1}] [flags:[2]], [contractor:{3}], [guild:{4}], [basePay:{5}]", name, type, flags, contractor, guild, basePay ) );
+			Console.PrintLine( $"Contract {name} created, [type:{type}] [flags:[{flags}]], [client:{client}], [guild:{guild}], [basePay:{basePay}]" );
 		}
 		public Contract() {
 		}
 
+		/*
+		===============
+		CalculateCost
+		===============
+		*/
 		/// <summary>
 		/// calculates the cost of a generic contract with the given values,
 		/// doesn't however take into account how the pay might change over time
@@ -94,78 +106,80 @@ namespace Renown {
 		/// <param name="duedate"></param>
 		/// <param name="area"></param>
 		/// <returns></returns>
-		public static float CalculateCost( ContractFlags flags, ContractType type, WorldTimestamp duedate, WorldArea area, Object target = null ) {
-			float cost;
+		public static float CalculateCost( in Contract contract ) {
+			float cost = contract.BasePay;
 
-			switch ( type ) {
-				case ContractType.Assassination: {
-						cost = 160.0f;
-						if ( target is Entity entity && entity != null ) {
-							cost *= entity.RenownScore;
-						} else {
-							Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Assassination, but target {0} isn't an entity", target ) );
-						}
-						break;
-					}
-				case ContractType.Bounty: {
-						if ( target is Entity entity && entity != null ) {
-							cost = entity.RenownScore;
-						} else {
-							Console.PrintError( string.Format( "Contract.CalculateCost: ContractType is Bounty, but target {0} isn't an entity", target ) );
-							return 0.0f;
-						}
-						break;
-					}
+			switch ( contract.Type ) {
+				case Contracts.Type.Assassination:
+				case Contracts.Type.Bounty:
+				case Contracts.Type.Extortion:
+					cost *= contract.Target.RenownScore;
+					break;
 				default:
-					Console.PrintError( string.Format( "Contract.CalculateCost: invalid contract type {0}", type ) );
+					Console.PrintError( $"Contract.CalculateCost: invalid contract type {contract.Type}" );
 					return 0.0f;
 			}
 
 			//
 			// calculate flags
 			//
-			if ( ( flags & ContractFlags.Clean ) != 0 ) {
+			if ( ( contract.Flags & Contracts.Flags.Clean ) != 0 ) {
 				cost += 2000.0f;
 			}
-			if ( ( flags & ContractFlags.Massacre ) != 0 ) {
+			if ( ( contract.Flags & Contracts.Flags.Massacre ) != 0 ) {
 				// a lot of cleanup
 				cost += 1000.0f;
 			}
-			if ( ( flags & ContractFlags.Ghost ) != 0 ) {
+			if ( ( contract.Flags & Contracts.Flags.Ghost ) != 0 ) {
 				cost += 2500.0f;
-			} else if ( ( flags & ContractFlags.Silent ) != 0 ) {
+			} else if ( ( contract.Flags & Contracts.Flags.Silent ) != 0 ) {
 				cost += 3500.0f;
 			}
 
 			return cost;
 		}
 
-		public virtual void Load( int nHashCode ) {
-			using ( var reader = ArchiveSystem.GetSection( nHashCode.ToString() ) ) {
-			}
+		/*
+		===============
+		CalculateCost
+		===============
+		*/
+		public static float CalculateCost( Contracts.Type type, Contracts.Flags flags, Thinker target ) {
+			float cost = type switch {
+				Contracts.Type.Assassination => Contracts.Assassination.BASE_COST,
+				Contracts.Type.Extortion => Contracts.Extortion.BASE_COST,
+				Contracts.Type.Extraction => Contracts.Extraction.BASE_COST,
+				_ => throw new ArgumentOutOfRangeException( nameof( type ) )
+			};
+
+			return cost;
 		}
 
+		/*
+		===============
+		Load
+		===============
+		*/
+		public virtual void Load( int hashCode ) {
+			using var reader = ArchiveSystem.GetSection( $"Contract{hashCode}" );
+		}
+
+		/*
+		===============
+		Start
+		===============
+		*/
 		public void Start() {
 			Dictionary<string, bool> state = new Dictionary<string, bool>();
 			switch ( Type ) {
-				case ContractType.Assassination:
+				case Contracts.Type.Assassination:
 					state.Add( "TargetAlive", true );
 					break;
-				case ContractType.Extortion:
+				case Contracts.Type.Extortion:
 					break;
 			}
-			;
 
 			QuestState.StartContract( this, Flags, state );
 		}
-
-		public virtual ContractType GetContractType() => ContractType.Count;
-		public WorldArea GetArea() => CollateralArea;
-
-		/*
-		public override string GetQuestName() => Title;
-		public override QuestType GetQuestType() => QuestType.Contract;
-		public override QuestStatus GetStatus() => Status;
-		*/
 	};
 };

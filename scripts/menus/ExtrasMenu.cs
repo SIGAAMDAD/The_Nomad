@@ -26,6 +26,7 @@ using ChallengeMode;
 using Godot;
 using Steamworks;
 using Steam;
+using ResourceCache;
 
 namespace Menus {
 	/*
@@ -41,6 +42,7 @@ namespace Menus {
 		private VScrollBar CoopOptions;
 
 		private MultiplayerMenu MultiplayerMenu;
+		private Control DeveloperCommentaryMenu;
 
 		private HBoxContainer OptionsScroll;
 
@@ -86,7 +88,7 @@ namespace Menus {
 		private void OnMultiplayerButtonPressed() {
 			MainContainer.Hide();
 
-			MultiplayerMenu ??= ResourceLoader.Load<PackedScene>( "res://scenes/menus/multiplayer_menu.tscn" ).Instantiate<MultiplayerMenu>();
+			MultiplayerMenu ??= SceneCache.GetScene( "res://scenes/menus/multiplayer_menu.tscn" ).Instantiate<MultiplayerMenu>();
 
 			SteamLobby.Instance.SetPhysicsProcess( true );
 
@@ -94,6 +96,22 @@ namespace Menus {
 
 			AddChild( MultiplayerMenu );
 			MultiplayerMenu.Show();
+		}
+
+		/*
+		===============
+		OnDeveloperCommentaryButtonPressed
+		===============
+		*/
+		private void OnDeveloperCommentaryButtonPressed() {
+			MainContainer.Hide();
+
+			DeveloperCommentaryMenu ??= SceneCache.GetScene( "res://scenes/menus/developer_commentary.tscn" ).Instantiate<Control>();
+
+			UIAudioManager.OnButtonPressed();
+
+			AddChild( DeveloperCommentaryMenu );
+			DeveloperCommentaryMenu.Show();
 		}
 
 		/*
@@ -204,7 +222,7 @@ namespace Menus {
 			Resource questData = Questify.Instantiate( quest );
 			ChallengeCache.SetQuestData( questData );
 
-			GameConfiguration.GameMode = GameMode.ChallengeMode;
+			GameConfiguration.SetGameMode( GameMode.ChallengeMode );
 
 			QueueFree();
 			GetTree().ChangeSceneToPacked( mapData );
@@ -283,7 +301,7 @@ namespace Menus {
 			MultiplayerButton.Connect( Button.SignalName.Pressed, Callable.From( OnMultiplayerButtonPressed ) );
 
 			DeveloperCommentaryButton = GetNode<Button>( "MainContainer/HSplitContainer/VBoxContainer/DeveloperCommentaryButton" );
-			DeveloperCommentaryButton.Connect( Button.SignalName.Pressed, Callable.From( OnStoryModeButtonPressed ) );
+			DeveloperCommentaryButton.Connect( Button.SignalName.Pressed, Callable.From( OnDeveloperCommentaryButtonPressed ) );
 
 			OptionsScroll = GetNode<HBoxContainer>( "MainContainer/HSplitContainer/HBoxContainer" );
 

@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Godot;
-using PlayerSystem;
+using PlayerSystem.Inventory;
 using Renown;
 using ResourceCache;
 using Menus;
@@ -98,45 +98,15 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		Invalid = -1
 	};
 
-	private static readonly float RecoilDamping = 0.85f;
-	private static readonly float BaseRecoilForce = 0.5f;
-	private static readonly float VelocityRecoilFactor = 0.0005f;
-	private static readonly float MinPitch = 0.9f;
-	private static readonly float MaxPitch = 1.1f;
-	private static readonly float MinResonance = 0.5f;
-	private static readonly float MaxResonance = 5.0f;
-	private static readonly float MinCutoff = 2000.0f;
-	private static readonly float MaxCutoff = 20000.0f;
-	private static readonly float MinReverb = 0.1f;
-	private static readonly float MaxReverb = 0.8f;
-
 	[Export]
 	public Resource Data;
 
-	// c# integrated properties so that we aren't reaching into the engine api
-	// every time we want a constant
-	public Texture2D? Icon { get; private set; } = null;
-	public int MagazineSize { get; private set; } = 0;
-	public AmmoType Ammunition { get; private set; } = AmmoType.Light;
-	public MagazineType MagType { get; private set; } = MagazineType.Invalid;
-	public FireMode Firemode { get; private set; } = FireMode.Single;
-	public SpriteFrames FirearmFramesLeft { get; private set; }
-	public SpriteFrames FirearmFramesRight { get; private set; }
-	public SpriteFrames BluntFramesLeft { get; private set; }
-	public SpriteFrames BluntFramesRight { get; private set; }
-	public SpriteFrames BladedFramesLeft { get; private set; }
-	public SpriteFrames BladedFramesRight { get; private set; }
-	public float BladedRange { get; private set; } = 0.0f;
-	public float BluntRange { get; private set; } = 0.0f;
-	public float BladedDamage { get; private set; } = 0.0f;
-	public float BluntDamage { get; private set; } = 0.0f;
-	public AudioStream UseFirearmSfx { get; private set; }
-	public AudioStream UseBladedSfx { get; private set; }
-	public AudioStream UseBluntSfx { get; private set; }
-	public AudioStream ReloadSfx { get; private set; }
-	public float UseTime { get; private set; } = 0.0f;
-	public float ReloadTime { get; private set; } = 0.0f;
-	public float Weight { get; private set; } = 0.0f;
+	public SpriteFrames? FramesLeft { get; protected set; }
+	public SpriteFrames? FramesRight { get; protected set; }
+	public Texture2D? Icon{ get; protected set; }
+	public AudioStream UseSfx { get; protected set; }
+	public float UseTime { get; protected set; } = 0.0f;
+	public float Weight { get; protected set; } = 0.0f;
 
 	public int Level { get; private set; } = 0;
 	public int MaxLevel { get; private set; } = 8;
@@ -145,40 +115,32 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	/// The more you use a weapon, the nastier it gets. If you don't clean it,
 	/// it has the potential to jam or the degrade in quality
 	/// </summary>
-	public float Dirtiness { get; private set; } = 0.0f;
+	public float Dirtiness { get; protected set; } = 0.0f;
 
-	public Vector2 CurrentRecoilOffset { get; private set; }
-	public float CurrentRecoilRotation { get; private set; }
+	/// <summary>
+	/// The speed at which a weapon gets dirty
+	/// </summary>
+	public float FilthRate { get; protected set; } = 1.0f;
 
 	public Timer WeaponTimer { get; private set; }
 	public Entity Holder { get; private set; }
 
-	public AmmoStack Ammo { get; private set; }
-	public int BulletsLeft { get; private set; } = 0;
+	public WeaponState CurrentState { get; protected set; } = WeaponState.Idle;
 
-	public WeaponState CurrentState { get; private set; } = WeaponState.Idle;
+	public Properties PropertyBits { get; protected set; } = Properties.None;
+	public Properties DefaultMode { get; protected set; } = Properties.None;
+	public Properties LastUsedMode { get; protected set; } = Properties.None;
 
-	public SpriteFrames AnimationsLeft { get; private set; }
-	public SpriteFrames AnimationsRight { get; private set; }
+	protected float AttackAngle = 0.0f;
+	protected float LastWeaponAngle = 0.0f;
 
-	public Properties PropertyBits { get; private set; } = Properties.None;
-	public Properties DefaultMode { get; private set; } = Properties.None;
-	public Properties LastUsedMode { get; private set; } = Properties.None;
+	protected AnimatedSprite2D Animations;
 
-	private float AttackAngle = 0.0f;
-	private float LastWeaponAngle = 0.0f;
+	protected ShaderMaterial BladedThrustShader;
+	protected ShaderMaterial BladedSlashShader;
 
-	private AnimatedSprite2D Animations;
-
-	private Sprite2D MuzzleLight;
-	private Sprite2D[] MuzzleFlashes;
-	private Sprite2D CurrentMuzzleFlash;
-
-	private ShaderMaterial BladedThrustShader;
-	private ShaderMaterial BladedSlashShader;
-
-	private AudioStreamPlayer2D UseChannel;
-	private AudioStreamPlayer2D ReloadChannel;
+	protected AudioStreamPlayer2D UseChannel;
+	protected AudioStreamPlayer2D ReloadChannel;
 
 	private AudioEffectReverb ReverbEffect;
 	private int BusIndex;
@@ -200,7 +162,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	/// </summary>
 	/// <returns>True if <see cref="LastUsedMode"/> is <see cref="Properties.IsBladed"/></returns>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public bool IsBladed() {
+	public virtual bool IsBladed() {
 		return ( LastUsedMode & Properties.IsBladed ) != 0;
 	}
 
@@ -214,7 +176,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	/// </summary>
 	/// <returns>True if <see cref="LastUsedMode"/> is <see cref="Properties.IsBlunt"/></returns>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public bool IsBlunt() {
+	public virtual bool IsBlunt() {
 		return ( LastUsedMode & Properties.IsBlunt ) != 0;
 	}
 
@@ -228,7 +190,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	/// </summary>
 	/// <returns>True if <see cref="LastUsedMode"/> is <see cref="Properties.IsFirearm"/></returns>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	public bool IsFirearm() {
+	public virtual bool IsFirearm() {
 		return ( LastUsedMode & Properties.IsFirearm ) != 0;
 	}
 
@@ -305,7 +267,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			Holder.CallDeferred( MethodName.AddChild, this );
 		}
 		GlobalPosition = Holder.GlobalPosition;
-		SetUseMode( DefaultMode );
 		InitProperties();
 
 		owner.PickupWeapon( this );
@@ -321,7 +282,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			Holder = entity;
 			CallDeferred( MethodName.Reparent, Holder );
 			GlobalPosition = Holder.GlobalPosition;
-			SetUseMode( DefaultMode );
 			InitProperties();
 
 			Material = null;
@@ -332,26 +292,10 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 	/*
 	===============
-	OnMuzzleFlashTimerTimeout
-	===============
-	*/
-	private void OnMuzzleFlashTimerTimeout() {
-		if ( Firemode == FireMode.Automatic ) {
-			for ( int i = 0; i < MuzzleFlashes.Length; i++ ) {
-				MuzzleFlashes[ i ].Texture = null;
-			}
-		} else {
-			CurrentMuzzleFlash.Texture = null;
-		}
-		MuzzleLight.CallDeferred( MethodName.Hide );
-	}
-
-	/*
-	===============
 	InitProperties
 	===============
 	*/
-	private void InitProperties() {
+	protected virtual void InitProperties() {
 		PropertyBits = Properties.None;
 
 		Animations = new AnimatedSprite2D();
@@ -380,6 +324,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( properties[ "is_twohanded" ].AsBool() ) {
 			PropertyBits |= Properties.IsTwoHanded;
 		}
+		/*
 		if ( properties[ "is_bladed" ].AsBool() ) {
 			PropertyBits |= Properties.IsBladed;
 			BladedDamage = properties[ "bladed_damage" ].AsSingle();
@@ -398,6 +343,8 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			ArgumentNullException.ThrowIfNull( BladedThrustShader );
 			BladedThrustShader.ResourceLocalToScene = true;
 		}
+		*/
+		/*
 		if ( properties[ "is_blunt" ].AsBool() ) {
 			PropertyBits |= Properties.IsBlunt;
 			BluntDamage = properties[ "blunt_damage" ].AsSingle();
@@ -408,65 +355,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 			UseBluntSfx = AudioCache.GetStream( "res://sounds/player/melee.wav" );
 		}
-		if ( properties[ "is_firearm" ].AsBool() ) {
-			PropertyBits |= Properties.IsFirearm;
-
-			FirearmFramesLeft = SpriteFramesCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "firearm_frames_left" ] );
-			FirearmFramesRight = SpriteFramesCache.GetSpriteFrames( "res://resources/animations/" + resourcePath + (StringName)properties[ "firearm_frames_right" ] );
-
-			Firemode = (FireMode)properties[ "firemode" ].AsInt32();
-			MagType = (MagazineType)properties[ "magazine_type" ].AsInt32();
-			MagazineSize = properties[ "magsize" ].AsInt32();
-			Ammunition = (AmmoType)properties[ "ammo_type" ].AsInt32();
-
-			ReloadChannel = new AudioStreamPlayer2D();
-			ReloadChannel.Name = "ReloadChannel";
-			ReloadChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			AddChild( ReloadChannel );
-
-			//			BusIndex = AudioServer.BusCount;
-			//			AudioServer.AddBus( BusIndex );
-			//			AudioServer.SetBusName( BusIndex, "WeaponBus_" + GetInstanceId() );
-
-			//			ReverbEffect = new AudioEffectReverb();
-			//			AudioServer.AddBusEffect( BusIndex, ReverbEffect );
-
-			//			UseChannel.Bus = "WeaponBus_" + GetInstanceId();
-
-			int count = 0;
-			for ( int i = 0; ; i++ ) {
-				if ( !FileAccess.FileExists( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" ) ) {
-					break;
-				}
-				count++;
-			}
-			MuzzleFlashes = new Sprite2D[ count ];
-			for ( int i = 0; ; i++ ) {
-				if ( !FileAccess.FileExists( "res://textures/env/muzzle/mf" + i.ToString() + ".dds" ) ) {
-					break;
-				}
-				Sprite2D texture = new Sprite2D();
-				texture.Name = "MuzzleFlash_" + i.ToString();
-				texture.Offset = new Godot.Vector2( Icon.GetWidth(), 0.0f );
-
-				Animations.AddChild( texture );
-				MuzzleFlashes[ i ] = texture;
-			}
-
-			MuzzleLight = new Sprite2D();
-			MuzzleLight.Name = "MuzzleLight";
-			MuzzleLight.Texture = TextureCache.GetTexture( "res://textures/point_light.dds" );
-			MuzzleLight.Scale = new Godot.Vector2( 5.0f, 5.0f );
-			MuzzleLight.Modulate = new Color { R = 4.5f, G = 3.5f, B = 2.5f };
-			MuzzleLight.Hide();
-			AddChild( MuzzleLight );
-
-			ReloadSfx = AudioCache.GetStream( "res://sounds/weapons/" + properties[ "reload_sfx" ].AsStringName() );
-			UseFirearmSfx = (AudioStream)properties[ "use_firearm" ];
-
-			UseTime = properties[ "use_time" ].AsSingle();
-			ReloadTime = properties[ "reload_time" ].AsSingle();
-		}
+		*/
 
 		if ( properties[ "default_is_onehanded" ].AsBool() ) {
 			DefaultMode |= Properties.IsOneHanded;
@@ -483,7 +372,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		if ( properties[ "default_is_firearm" ].AsBool() ) {
 			DefaultMode |= Properties.IsFirearm;
 		}
-		SetUseMode( DefaultMode );
 	}
 
 	/*
@@ -497,31 +385,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 			UseChannel.Stop();
 			ReloadChannel.Stop();
 			return;
-		}
-	}
-
-	/*
-	===============
-	SetUseMode
-	===============
-	*/
-	public void SetUseMode( Properties weaponMode ) {
-		Properties cmp = LastUsedMode;
-
-		LastUsedMode = weaponMode;
-		if ( ( weaponMode & Properties.IsFirearm ) != 0 ) {
-			AnimationsLeft = FirearmFramesLeft;
-			AnimationsRight = FirearmFramesRight;
-		} else if ( ( weaponMode & Properties.IsBlunt ) != 0 ) {
-			AnimationsLeft = BluntFramesLeft;
-			AnimationsRight = BluntFramesRight;
-		} else if ( ( weaponMode & Properties.IsBladed ) != 0 ) {
-			AnimationsLeft = BladedFramesLeft;
-			AnimationsRight = BladedFramesRight;
-		}
-
-		if ( ( cmp & LastUsedMode ) != 0 ) {
-			EmitSignalModeChanged( this, LastUsedMode );
 		}
 	}
 
@@ -545,19 +408,10 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	ApplyUpgrade
 	===============
 	*/
-	public void ApplyUpgrade() {
+	public virtual void ApplyUpgrade() {
 		Level = Math.Min( Level + 1, MaxLevel );
 
-		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
-			UseTime -= 0.01f;
-			ReloadTime -= 0.1f;
-		}
-		if ( ( PropertyBits & Properties.IsBladed ) != 0 ) {
-			BladedDamage += 3.15f;
-		}
-		if ( ( PropertyBits & Properties.IsBlunt ) != 0 ) {
-			BluntDamage += 3.15f;
-		}
+		FilthRate -= 0.15f;
 	}
 
 	/*
@@ -565,34 +419,24 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	Save
 	===============
 	*/
-	public void Save() {
-		using var writer = new SaveSystem.SaveSectionWriter( GetPath(), ArchiveSystem.SaveWriter );
-
+	public void SaveBase( SaveSystem.SaveSectionWriter writer ) {
 		writer.SaveString( "Id", Data.Get( "id" ).AsString() );
-		writer.SaveBool( "HasAmmo", Ammo != null );
 		writer.SaveInt( "Level", Level );
 		if ( Level > 0 ) {
 			writer.SaveFloat( "UseTime", UseTime );
-			writer.SaveFloat( "ReloadTime", ReloadTime );
-			writer.SaveFloat( "BluntDamage", BluntDamage );
-			writer.SaveFloat( "BladedDamage", BladedDamage );
-		}
-		if ( Ammo != null ) {
-			writer.SaveString( "Ammo", Ammo.GetPath() );
 		}
 
 		if ( Holder is Player player && player != null ) {
 			bool equipped = false;
-			for ( int i = 0; i < Player.MAX_WEAPON_SLOTS; i++ ) {
-				if ( this == player.Inventory.WeaponSlots[ i ].Weapon ) {
-					writer.SaveInt( "Slot", i );
+			for ( WeaponSlotIndex i = 0; i < WeaponSlotIndex.Count; i++ ) {
+				if ( this == player.WeaponSlots[ i ].Weapon ) {
+					writer.SaveInt( "Slot", (int)i );
 					equipped = true;
 					break;
 				}
 			}
 			writer.SaveBool( "Equipped", equipped );
 		}
-		writer.SaveInt( "BulletsLeft", BulletsLeft );
 	}
 
 	/*
@@ -600,14 +444,15 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	Load
 	===============
 	*/
-	/// <summary>
-	/// Loads a WeaponEntity's state from disk
-	/// </summary>
-	/// <param name="holder">The holder of the WeaponEntity</param>
-	/// <param name="path">The original node path that is used as a section name</param>
-	public void Load( Entity holder, NodePath path ) {
-		using var reader = ArchiveSystem.GetSection( path );
+	public virtual void Load( Entity holder, NodePath path ) {
+	}
 
+	/*
+	===============
+	LoadBase
+	===============
+	*/
+	protected void LoadBase( Entity holder, SaveSystem.SaveSectionReader reader ) {
 		ArgumentNullException.ThrowIfNull( reader );
 
 		Holder = holder;
@@ -617,31 +462,16 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		Level = reader.LoadInt( "Level" );
 		if ( Level > 0 ) {
-			SetDeferred( PropertyName.ReloadTime, reader.LoadFloat( "ReloadTime" ) );
 			SetDeferred( PropertyName.UseTime, reader.LoadFloat( "UseTime" ) );
-			SetDeferred( PropertyName.BluntDamage, reader.LoadFloat( "BluntDamage" ) );
-			SetDeferred( PropertyName.BladedDamage, reader.LoadFloat( "BladedDamage" ) );
 		}
 		if ( Holder is Player player && player != null ) {
-			int slot = WeaponSlot.INVALID;
+			WeaponSlotIndex slot = WeaponSlotIndex.Invalid;
 			if ( reader.LoadBoolean( "Equipped" ) ) {
-				slot = reader.LoadInt( "Slot" );
+				slot = (WeaponSlotIndex)reader.LoadInt( "Slot" );
 			}
 			if ( reader.LoadBoolean( "HasAmmo" ) ) {
-				player.Inventory.LoadWeapon( this, reader.LoadString( "ammo" ), slot );
+				player.Inventory.LoadWeapon( this, reader.LoadString( "ammo" ), (int)slot );
 			}
-		}
-
-		int nBulletCount = reader.LoadInt( "BulletsLeft" );
-		if ( ( PropertyBits & Properties.IsFirearm ) != 0 ) {
-			if ( nBulletCount == 0 ) {
-				CurrentState = WeaponState.Reload;
-			} else {
-				CurrentState = WeaponState.Idle;
-			}
-			BulletsLeft = nBulletCount;
-		} else {
-			CurrentState = WeaponState.Idle;
 		}
 	}
 
@@ -659,6 +489,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 	BladedThrustWindUp
 	===============
 	*/
+	/*
 	public void BladedThrustWindUp() {
 		Material = BladedThrustShader;
 
@@ -667,12 +498,14 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 		CreateTween().TweenMethod( Callable.From<float>( ( value ) =>
 			BladedThrustShader.SetShaderParameter( "shader_parameter/intensity", value ) ), 0.0f, 2.0f, 0.45f );
 	}
+	*/
 
 	/*
 	===============
 	UseBladed
 	===============
 	*/
+	/*
 	private float UseBladed( BladeAttackType attackType ) {
 		Vector2 direction = new Vector2( 1.0f, 0.0f ).Rotated( AttackAngle );
 
@@ -714,422 +547,7 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		return 0.0f;
 	}
-
-	/*
-	===============
-	UseBlunt
-	===============
 	*/
-	private float UseBlunt() {
-		return 0.0f;
-	}
-
-	/*
-	===============
-	SetAmmoStack
-	===============
-	*/
-	public void SetAmmoStack( AmmoStack ammo ) {
-		ArgumentNullException.ThrowIfNull( ammo );
-		Ammo = ammo;
-		if ( BulletsLeft < 1 ) {
-			// force a reload
-			Reload();
-		}
-	}
-
-	/*
-	===============
-	SpawnShells
-	===============
-	*/
-	private void SpawnShells() {
-		BulletShellMesh.AddShellDeferred( Holder, Ammo.AmmoType.ItemId );
-	}
-
-	/*
-	===============
-	Reload
-	===============
-	*/
-	private bool Reload() {
-		if ( Ammo == null ) {
-			return false;
-		}
-		if ( Ammo.Amount < 1 && BulletsLeft < 1 ) {
-			// no more ammo
-			if ( MagType == MagazineType.Cycle ) {
-				CurrentState = WeaponState.Empty;
-			} else {
-				CurrentState = WeaponState.Idle;
-			}
-			return false;
-		}
-
-		if ( Holder is Player player && player != null ) {
-			if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
-				player.SetLastUsedArm( player.GetWeaponHand( this ) );
-
-				// I can't think of a single gun that doesn't take both hands to reload
-				player.SetHandsUsed( Player.Hands.Both );
-			}
-		}
-
-		if ( MagType == MagazineType.Breech && Ammo != null ) {
-			// ejecting shells
-			for ( int i = 0; i < MagazineSize; i++ ) {
-				SpawnShells();
-			}
-		}
-
-		WeaponTimer.SetDeferred( Timer.PropertyName.WaitTime, ReloadTime );
-		if ( !WeaponTimer.IsConnected( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) ) ) {
-			WeaponTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) );
-		}
-		WeaponTimer.CallDeferred( Timer.MethodName.Start );
-
-		CurrentState = WeaponState.Reload;
-
-		ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, ReloadSfx );
-		ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
-
-		return true;
-	}
-
-	/*
-	===============
-	CheckBulletHit
-	===============
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="frameDamage"></param>
-	/// <param name="angle"></param>
-	private void CheckBulletHit( ref float frameDamage, float angle ) {
-		// TODO: make this cleaner
-
-		float damage = Ammo.AmmoType.Damage;
-		frameDamage += damage;
-
-		RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, angle, Ammo.AmmoType.Range, Holder.GetRid() );
-		if ( collision.Collider is Area2D parryBox && parryBox != null && parryBox.HasMeta( "ParryBox" ) ) {
-			float distance = Holder.GlobalPosition.DistanceTo( parryBox.GlobalPosition ) / Ammo.AmmoType.Range;
-			damage *= Ammo.AmmoType.DamageFalloff.SampleBaked( distance );
-			( (Player)parryBox.GetMeta( "Owner" ) ).OnParry( parryBox.GlobalPosition, collision.Position, damage );
-		} else if ( collision.Collider is Entity entity && entity != null && entity != Holder ) {
-			if ( Holder is Player ) {
-				FreeFlow.Hitstop( 0.5f, 0.30f );
-			}
-			float distance = Holder.GlobalPosition.DistanceTo( entity.GlobalPosition ) / Ammo.AmmoType.Range;
-			if ( distance > 120.0f ) {
-				// out of bleed range, no healing
-				frameDamage -= damage;
-			}
-			damage *= Ammo.AmmoType.DamageFalloff.SampleBaked( distance );
-			entity.Damage( Holder, damage );
-
-			ExtraAmmoEffects effects = Ammo.AmmoType.Effects;
-			if ( ( effects & ExtraAmmoEffects.Incendiary ) != 0 ) {
-				entity.AddStatusEffect( "status_burning" );
-			} else if ( ( effects & ExtraAmmoEffects.Explosive ) != 0 ) {
-				entity.CallDeferred( MethodName.AddChild, SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-			}
-		} else if ( collision.Collider is Grenade grenade && grenade != null ) {
-			grenade.OnBlowup();
-		} else if ( collision.Collider is Hitbox hitbox && hitbox != null && (Entity)hitbox.GetMeta( "Owner" ) != Holder ) {
-			if ( Holder is Player ) {
-				// slow motion for the extra feels
-				FreeFlow.Hitstop( 0.25f, 0.50f );
-			}
-
-			Entity owner = (Entity)hitbox.GetMeta( "Owner" );
-			float distance = Holder.GlobalPosition.DistanceTo( ( (Entity)hitbox.GetMeta( "Owner" ) ).GlobalPosition ) / Ammo.AmmoType.Range;
-			if ( distance > 120.0f ) {
-				// out of bleed range, no healing
-				frameDamage -= damage;
-			}
-			damage *= Ammo.AmmoType.DamageFalloff.SampleBaked( distance );
-
-			hitbox.OnHit( Holder, damage );
-			ExtraAmmoEffects effects = Ammo.AmmoType.Effects;
-			if ( ( effects & ExtraAmmoEffects.Incendiary ) != 0 ) {
-				( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).AddStatusEffect( "status_burning" );
-			} else if ( ( effects & ExtraAmmoEffects.Explosive ) != 0 ) {
-				owner.CallDeferred( MethodName.AddChild, SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>() );
-			}
-		} else {
-			frameDamage -= damage;
-			ExtraAmmoEffects effects = Ammo.AmmoType.Effects;
-			if ( ( effects & ExtraAmmoEffects.Explosive ) != 0 ) {
-				Explosion explosion = SceneCache.GetScene( "res://scenes/effects/explosion.tscn" ).Instantiate<Explosion>();
-				explosion.GlobalPosition = collision.Position;
-				collision.Collider.CallDeferred( MethodName.AddChild, explosion );
-			}
-			DebrisFactory.Create( collision.Position );
-		}
-	}
-
-	/*
-	===============
-	UseFirearm
-	===============
-	*/
-	private float UseFirearm( out float soundLevel, bool held ) {
-		soundLevel = 0.0f;
-		if ( Ammo == null || BulletsLeft < 1 ) {
-			ReloadChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, AudioCache.GetStream( "res://sounds/weapons/noammo.wav" ) );
-			ReloadChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
-			return 0.0f;
-		}
-
-		bool canFire = true;
-		if ( ( Firemode == FireMode.Single || Firemode == FireMode.Burst ) && held ) {
-			canFire = false;
-		} else {
-			// check for jams
-			if ( Dirtiness > 90.0f && RNJesus.IntRange( 0, 9 ) > 5 ) {
-				canFire = false;
-			} else if ( Dirtiness > 80.0f && RNJesus.IntRange( 0, 19 ) > 13 ) {
-				canFire = false;
-			}
-		}
-
-		if ( !canFire ) {
-			return 0.0f;
-		}
-
-		int recoilMultiplier = 0;
-		switch ( Firemode ) {
-			case FireMode.Single:
-				BulletsLeft -= 1;
-				recoilMultiplier = 1;
-				break;
-			case FireMode.Burst:
-				BulletsLeft -= 2;
-				recoilMultiplier = 2;
-				break;
-			case FireMode.Automatic:
-				BulletsLeft--;
-				recoilMultiplier = 1;
-				break;
-			case FireMode.Invalid:
-			default:
-				return 0.0f;
-		}
-
-		Vector2 recoil = -new Vector2(
-			50.0f * Mathf.Cos( AttackAngle ),
-			50.0f * Mathf.Sin( AttackAngle )
-		);
-		if ( Holder is Player ) {
-			Player.ShakeCameraDirectional( Ammo.AmmoType.Velocity / 4.0f, recoil );
-		}
-
-		float recoilMagnitude = ( BaseRecoilForce + ( Ammo.AmmoType.Velocity * VelocityRecoilFactor ) ) * recoilMultiplier;
-
-		CurrentRecoilOffset += recoil * recoilMagnitude;
-
-		CurrentRecoilRotation += ( RNJesus.FloatRange( 0.0f, 1.0f ) > 0.5f ? 1.0f : -1.0f ) * recoilMagnitude * 0.5f;
-		//		CurrentRecoilRotation = Mathf.Clamp( CurrentRecoilRotation, -5.0f, 5.0f );
-
-		CurrentState = WeaponState.Use;
-		WeaponTimer.WaitTime = UseTime;
-		WeaponTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnUseTimeTimeout ) );
-		WeaponTimer.Start();
-
-		// bullets work like those in Halo 3.
-		// start as a hitscan, then if we don't get a hit after 75% of the distance, turn it into a projectile
-		// NOTE: correction, they WILL work like that eventually
-
-		int index = RNJesus.IntRange( 0, MuzzleFlashes.Length - 1 );
-		CurrentMuzzleFlash = MuzzleFlashes[ index ];
-		CurrentMuzzleFlash.Reparent( Holder );
-		CurrentMuzzleFlash.GlobalRotation = AttackAngle;
-		CurrentMuzzleFlash.Texture = TextureCache.GetTexture( "res://textures/env/muzzle/mf" + index.ToString() + ".dds" );
-
-		MuzzleLight.CallDeferred( MethodName.Show );
-
-		GpuParticles2D GunSmoke = SceneCache.GetScene( "res://scenes/effects/gun_smoke.tscn" ).Instantiate<GpuParticles2D>();
-		GunSmoke.GlobalPosition = new Vector2( Icon.GetWidth(), 0.0f );
-		CurrentMuzzleFlash.CallDeferred( MethodName.AddChild, GunSmoke );
-
-		GetTree().CreateTimer( 0.2f ).Connect( Timer.SignalName.Timeout, Callable.From( OnMuzzleFlashTimerTimeout ) );
-
-		/*
-		float y = CurrentMuzzleFlash.Offset.Y;
-		if ( Holder.GetLeftArm().Animations.FlipH ) {
-			CurrentMuzzleFlash.Offset = new Godot.Vector2( -160, y );
-		} else {
-			CurrentMuzzleFlash.Offset = new Godot.Vector2( 160, y );
-		}
-		CurrentMuzzleFlash.FlipH = Holder.GetLeftArm().Animations.FlipH;
-		*/
-
-		if ( MagType == MagazineType.Cycle ) {
-			// ejecting shells
-			SpawnShells();
-		}
-
-		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.Stream, UseFirearmSfx );
-
-		float ammoRatio = (float)BulletsLeft / MagazineSize;
-		float cutoff = Mathf.Lerp( MinCutoff, MaxCutoff, ammoRatio );
-		float resonance = Mathf.Lerp( MaxResonance, MinResonance, ammoRatio );
-		float reverb = Mathf.Lerp( MaxReverb, MinReverb, ammoRatio );
-
-		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, (float)GD.RandRange( MinPitch, MaxPitch ) );
-		UseChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
-		float frameDamage = 0.0f;
-
-		soundLevel = Ammo.AmmoType.Range;
-		if ( Ammo.AmmoType.Type == AmmoType.Pellets ) {
-			if ( Ammo.AmmoType.ShotgunBullshit != ShotgunBullshit.Slug ) {
-				System.Threading.Tasks.Parallel.For( 0, Ammo.AmmoType.PelletCount,
-					( i ) => CheckBulletHit( ref frameDamage, AttackAngle + Mathf.DegToRad( (float)GD.RandRange( 0.0f, 35.0f ) ) )
-				);
-			} else {
-				CheckBulletHit( ref frameDamage, AttackAngle );
-			}
-		} else {
-			CheckBulletHit( ref frameDamage, AttackAngle );
-		}
-
-		return frameDamage;
-	}
-
-	/*
-	===============
-	UseFirearmDeferred
-	===============
-	*/
-	public void UseFirearmDeferred( Properties weaponMode ) {
-		if ( Engine.TimeScale == 0.0f ) {
-			return;
-		}
-		switch ( CurrentState ) {
-			case WeaponState.Use:
-			case WeaponState.Reload:
-				return; // can't use it when it's being used
-		}
-
-		SetUseMode( weaponMode );
-
-		UseFirearm( out _, false );
-
-		EmitSignalUsed( this );
-	}
-
-	/*
-	===============
-	UseBladedDeferred
-	===============
-	*/
-	public void UseBladedDeferred( Properties weaponMode, BladeAttackType attackType ) {
-		if ( Engine.TimeScale == 0.0f ) {
-			return;
-		}
-		switch ( CurrentState ) {
-			case WeaponState.Use:
-				return; // can't use it when it's being used
-		}
-
-		SetUseMode( weaponMode );
-
-		UseBladed( attackType );
-
-		EmitSignalUsed( this );
-	}
-
-	/*
-	===============
-	Use
-	===============
-	*/
-	public float Use( Properties weaponMode, out float soundLevel, bool held = false ) {
-		soundLevel = 0.0f;
-		EmitSignalUsed( this );
-
-		if ( Engine.TimeScale == 0.0f ) {
-			return 0.0f;
-		}
-		switch ( CurrentState ) {
-			case WeaponState.Use:
-			case WeaponState.Reload:
-				return 0.0f; // can't use it when it's being used
-		}
-		;
-
-		SetUseMode( weaponMode );
-
-		return UseFirearm( out soundLevel, held );
-	}
-
-	/*
-	===============
-	Use
-	===============
-	*/
-	public float Use( Properties weaponMode, out float soundLevel, BladeAttackType attackType ) {
-		soundLevel = 0.0f;
-		EmitSignalUsed( this );
-
-		if ( Engine.TimeScale == 0.0f ) {
-			return 0.0f;
-		}
-		switch ( CurrentState ) {
-			case WeaponState.Use:
-				return 0.0f; // can't use it when it's being used
-		}
-
-		SetUseMode( weaponMode );
-
-		return UseBladed( attackType );
-	}
-
-	/*
-	===============
-	OnUseTimeTimeout
-	===============
-	*/
-	private void OnUseTimeTimeout() {
-		WeaponTimer.Disconnect( Timer.SignalName.Timeout, Callable.From( OnUseTimeTimeout ) );
-
-		if ( ( LastUsedMode & Properties.IsFirearm ) != 0 ) {
-			if ( BulletsLeft < 1 ) {
-				Reload();
-				return;
-			}
-		}
-		CurrentState = WeaponState.Idle;
-		EmitSignalUsed( this );
-	}
-
-	/*
-	===============
-	OnReloadTimeTimeout
-	===============
-	*/
-	private void OnReloadTimeTimeout() {
-		if ( WeaponTimer.IsConnected( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) ) ) {
-			WeaponTimer.Disconnect( Timer.SignalName.Timeout, Callable.From( OnReloadTimeTimeout ) );
-		}
-
-		UseChannel.SetDeferred( AudioStreamPlayer2D.PropertyName.PitchScale, 1.0f );
-
-		BulletsLeft = Ammo.RemoveItems( MagazineSize );
-		if ( Holder is Player player && player != null ) {
-			if ( ( LastUsedMode & Properties.IsOneHanded ) != 0 ) {
-				if ( player.LastUsedArm == player.ArmLeft ) {
-					player.SetHandsUsed( Player.Hands.Left );
-				} else if ( player.LastUsedArm == player.ArmRight ) {
-					player.SetHandsUsed( Player.Hands.Right );
-				}
-			}
-		}
-		CurrentState = WeaponState.Idle;
-		EmitSignalReloaded( this );
-	}
 
 	/*
 	===============
@@ -1163,25 +581,6 @@ public partial class WeaponEntity : Node2D, PlayerSystem.Upgrades.IUpgradable {
 
 		if ( GameConfiguration.GameMode == GameMode.Online || GameConfiguration.GameMode == GameMode.Multiplayer ) {
 			//SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
-		}
-	}
-
-	/*
-	===============
-	_Process
-	===============
-	*/
-	public override void _Process( double delta ) {
-		base._Process( delta );
-
-		CurrentRecoilOffset *= RecoilDamping;
-		CurrentRecoilRotation *= RecoilDamping;
-
-		if ( CurrentRecoilOffset.Length() < 0.1f ) {
-			CurrentRecoilOffset = Godot.Vector2.Zero;
-		}
-		if ( Mathf.Abs( CurrentRecoilRotation ) < 0.1f ) {
-			CurrentRecoilRotation = 0.0f;
 		}
 	}
 };

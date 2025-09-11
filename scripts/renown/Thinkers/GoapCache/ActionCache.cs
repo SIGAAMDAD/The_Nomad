@@ -1,28 +1,30 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
 using MountainGoap;
 using System.Collections.Generic;
 using Godot;
+using Items;
 
 namespace Renown.Thinkers.GoapCache {
 	/// <summary>
@@ -134,12 +136,11 @@ namespace Renown.Thinkers.GoapCache {
 						executor: ( agent, action ) => {
 							GD.Print( "Shooting..." );
 							Thinker thinker = (Thinker)agent.State[ "Owner" ];
-							WeaponEntity weapon = (WeaponEntity)thinker.Get( "Weapon" ).AsGodotObject();
+							WeaponFirearm weapon = (WeaponFirearm)thinker.Get( "Weapon" ).AsGodotObject();
 
 							thinker.Get( "AttackTimer" ).AsGodotObject().CallDeferred( Timer.MethodName.Start );
 							weapon.SetAttackAngle( thinker.AimAngle );
-							weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
-							weapon.CallDeferred( WeaponEntity.MethodName.UseFirearmDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+							weapon.CallDeferred( WeaponFirearm.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 
 							if ( !(bool)agent.State[ "HasAmmo" ] ) {
 								return ExecutionStatus.Failed;
@@ -163,7 +164,7 @@ namespace Renown.Thinkers.GoapCache {
 						name: "AimAction",
 						permutationSelectors: null,
 						executor: ( agent, action ) => {
-							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							MobBase thinker = (MobBase)agent.State[ "Owner" ];
 
 							RayIntersectionInfo info = GodotServerManager.CheckRayCast( thinker.ArmAnimations.GlobalPosition, thinker.AimAngle,
 								thinker.Get( "Ammo" ).AsGodotObject().Get( "Range" ).AsSingle(), thinker.GetRid()
@@ -186,8 +187,8 @@ namespace Renown.Thinkers.GoapCache {
 								return ExecutionStatus.Succeeded;
 							} else if ( AimTimer.TimeLeft > AimTimer.WaitTime / 4.0f ) {
 								Vector2 direction = thinker.GlobalPosition.DirectionTo( thinker.Get( "LastTargetPosition" ).AsVector2() );
-								thinker.AimAngle = Mathf.Atan2( direction.Y, direction.X );
-								thinker.LookAngle = thinker.AimAngle;
+//								thinker.AimAngle = Mathf.Atan2( direction.Y, direction.X );
+//								thinker.LookAngle = thinker.AimAngle;
 							}
 							return ExecutionStatus.Executing;
 						},
@@ -235,9 +236,9 @@ namespace Renown.Thinkers.GoapCache {
 						executor: ( agent, action ) => {
 							GD.Print( "Finding Cover..." );
 
-							Thinker thinker = (Thinker)agent.State[ "Owner" ];
+							MobBase thinker = (MobBase)agent.State[ "Owner" ];
 							AINodeCache cache = (AINodeCache)agent.State[ "NodeCache" ];
-							List<Vector2> cover = cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.Get( "LastTargetPosition" ).AsVector2() );
+							List<Vector2> cover = cache.GetValidCoverPositions( thinker.GlobalPosition, thinker.LastTargetPosition );
 							if ( cover == null || cover.Count == 0 ) {
 								return ExecutionStatus.Failed;
 							}

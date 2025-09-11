@@ -1,27 +1,29 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
 using Godot;
 using Renown;
+using System;
 
 namespace PlayerSystem {
 	/*
@@ -29,12 +31,13 @@ namespace PlayerSystem {
 	
 	AimAssist
 	
-	manages aim-assist
-	
 	===================================================================================
 	*/
 
 	public partial class AimAssist : Node2D {
+		private static readonly Color AIMING_AT_TARGET = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+		private static readonly Color AIMING_AT_NULL = new Color( 0.5f, 0.5f, 0.0f, 1.0f );
+
 		[Export]
 		public float ConeAngle = 45.0f;
 		[Export]
@@ -44,25 +47,16 @@ namespace PlayerSystem {
 
 		private Area2D? DetectionArea;
 
-		/*
-		===============
-		SetupDetectionArea
-		===============
-		*/
-		private void SetupDetectionArea() {
-			DetectionArea = new Area2D();
-			DetectionArea.CollisionLayer = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes ); // Set your enemy collision layer
-			DetectionArea.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes );
-			DetectionArea.Monitoring = true;
+		private Line2D AimLine;
+		private Player Player;
 
-			CircleShape2D circle = new CircleShape2D();
-			circle.Radius = DetectionRadius;
+		public AimAssist( Player? owner ) {
+			ArgumentNullException.ThrowIfNull( owner );
 
-			CollisionShape2D DetectionShape = new CollisionShape2D();
-			DetectionShape.Shape = circle;
+			Player = owner;
 
-			DetectionArea.AddChild( DetectionShape );
-			AddChild( DetectionArea );
+			AimLine = GetNode<Line2D>( "AimLine" );
+			AimLine.Points[ 1 ].X = AimLine.Points[ 0 ].X * ( Player.ScreenSize.X / 2.0f );
 		}
 
 		/*
@@ -70,7 +64,7 @@ namespace PlayerSystem {
 		GetAssistedAimDirection
 		===============
 		*/
-		public Vector2 GetAssistedAimDirection( Vector2 originalAimDirection ) {
+		public Vector2 GetAssistedAimDirection( in Vector2 originalAimDirection ) {
 			Vector2 playerPosition = LevelData.Instance.ThisPlayer.GlobalPosition;
 			Godot.Collections.Array<Node2D> targets = DetectionArea.GetOverlappingBodies();
 
@@ -102,22 +96,64 @@ namespace PlayerSystem {
 			}
 
 			if ( bestTarget != null ) {
-				Vector2 targetDirection = ( bestTarget.GlobalPosition - playerPosition ).Normalized();
-				return originalAimDirection.Lerp( targetDirection, AimSnapStrength ).Normalized();
+				return originalAimDirection.Lerp(
+					( bestTarget.GlobalPosition - playerPosition ).Normalized(),
+					AimSnapStrength
+				).Normalized();
 			}
 
 			return originalAimDirection;
 		}
-		
+
+		/*
+		===============
+		SetupDetectionArea
+		===============
+		*/
+		private void SetupDetectionArea() {
+			CollisionShape2D DetectionShape = new CollisionShape2D() {
+				Shape = new CircleShape2D() {
+					Radius = DetectionRadius
+				}
+			};
+
+			DetectionArea = new Area2D() {
+				CollisionLayer = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes ),
+				CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpriteEntity | PhysicsLayer.SpecialHitboxes ),
+				Monitoring = true
+			};
+			DetectionArea.AddChild( DetectionShape );
+			AddChild( DetectionArea );
+		}
+
 		/*
 		===============
 		_Ready
-
-		godot initialization override
 		===============
 		*/
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
 		public override void _Ready() {
 			SetupDetectionArea();
+		}
+
+		/*
+		===============
+		_PhysicsProcess
+		===============
+		*/
+		public override void _PhysicsProcess( double delta ) {
+			base._PhysicsProcess( delta );
+
+			RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, Player.ArmAngle, Player.ScreenSize.X * 0.5f, Player.GetRid() );
+			if ( collision.Collider is Entity entity && entity != null && entity.Faction != Player.Faction ) {
+				AimLine.DefaultColor = AIMING_AT_TARGET;
+			} else if ( collision.Collider is Hitbox hitbox && hitbox != null && ( (Node2D)hitbox.GetMeta( "Owner" ) as Entity ).Faction != Player.Faction ) {
+				AimLine.DefaultColor = AIMING_AT_TARGET;
+			} else {
+				AimLine.DefaultColor = AIMING_AT_NULL;
+			}
 		}
 	};
 };

@@ -23,7 +23,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using ResourceCache;
-using System.Runtime.InteropServices;
 
 /*
 ===================================================================================
@@ -33,39 +32,24 @@ DebrisFactory
 ===================================================================================
 */
 
-public partial class DebrisFactory : Node2D {
-	private struct DebrisCloud {
-	};
+public partial class DebrisFactory : Node {
+	private static readonly int INSTANCE_COUNT = 4096;
 
 	private Timer ReleaseTimer = null;
+	private MultiMeshInstance2D MeshManager = null;
+
 	private Vector2[] Speeds = null;
 	private Transform2D[] Transforms = null;
 	private Color[] Colors = null;
-	private MultiMeshInstance2D MeshManager = null;
-	private static DebrisFactory Instance = null;
 
-	/*
-	===============
-	OnReleaseTimerTimeout
-	===============
-	*/
-	private void OnReleaseTimerTimeout() {
-		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 1;
-		if ( instanceCount < 0 ) {
-			instanceCount = 0;
-		}
-		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
-		if ( Instance.MeshManager.Multimesh.VisibleInstanceCount > 0 ) {
-			ReleaseTimer.Start();
-		}
-	}
+	private static DebrisFactory Instance = null;
 
 	/*
 	===============
 	Create
 	===============
 	*/
-	public static void Create( Vector2 position ) {
+	public static void Create( in Vector2 position ) {
 		const int numSmokeClouds = 8;
 
 		int instanceCount = Instance.MeshManager.Multimesh.VisibleInstanceCount;
@@ -88,6 +72,23 @@ public partial class DebrisFactory : Node2D {
 			Instance.MeshManager.Multimesh.VisibleInstanceCount++;
 			Instance.MeshManager.Multimesh.SetInstanceTransform2D( startIndex + i, Instance.Transforms[ i ] );
 		}
+		Instance.MeshManager.Multimesh.InstanceCount = instanceCount;
+	}
+
+	/*
+	===============
+	OnReleaseTimerTimeout
+	===============
+	*/
+	private void OnReleaseTimerTimeout() {
+		int instanceCount = MeshManager.Multimesh.VisibleInstanceCount - 1;
+		if ( instanceCount < 0 ) {
+			instanceCount = 0;
+		}
+		MeshManager.Multimesh.VisibleInstanceCount = instanceCount;
+		if ( Instance.MeshManager.Multimesh.VisibleInstanceCount > 0 ) {
+			ReleaseTimer.Start();
+		}
 	}
 
 	/*
@@ -103,24 +104,27 @@ public partial class DebrisFactory : Node2D {
 
 		Instance = this;
 
-		ReleaseTimer = new Timer();
-		ReleaseTimer.WaitTime = 3.5f;
-		ReleaseTimer.OneShot = true;
-		ReleaseTimer.Connect( "timeout", Callable.From( OnReleaseTimerTimeout ) );
+		ReleaseTimer = new Timer() {
+			Name = nameof( ReleaseTimer ),
+			OneShot = true,
+			WaitTime = 3.5f
+		};
+		GameEventBus.ConnectSignal( ReleaseTimer, Timer.SignalName.Timeout, this, OnReleaseTimerTimeout );
 		AddChild( ReleaseTimer );
 
-		MeshManager = new MultiMeshInstance2D();
-		MeshManager.Multimesh = new MultiMesh();
-		MeshManager.Multimesh.Mesh = new QuadMesh();
-		( MeshManager.Multimesh.Mesh as QuadMesh ).Size = new Vector2( 32.0f, -32.0f );
-		MeshManager.Texture = TextureCache.GetTexture( "res://textures/env/dustcloud.png" );
+		MeshManager = new MultiMeshInstance2D() {
+			Name = nameof( MeshManager ),
+			Texture = TextureCache.GetTexture( "res://textures/env/dustcloud.png" ),
+			ZIndex = 10,
+			Multimesh = new MultiMesh() {
+				InstanceCount = INSTANCE_COUNT,
+				VisibleInstanceCount = 0,
+				Mesh = new QuadMesh() {
+					Size = new Vector2( 32.0f, -32.0f ) 
+				}
+			}
+		};
 		AddChild( MeshManager );
-
-		ZIndex = 10;
-
-		// cache a shitload
-		MeshManager.Multimesh.InstanceCount = 8192;
-		MeshManager.Multimesh.VisibleInstanceCount = 0;
 
 		Speeds = new Vector2[ MeshManager.Multimesh.InstanceCount ];
 		Transforms = new Transform2D[ MeshManager.Multimesh.InstanceCount ];

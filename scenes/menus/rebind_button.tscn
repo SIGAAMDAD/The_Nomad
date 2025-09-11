@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bldmryd5eq435"]
 
 [ext_resource type="Script" uid="uid://dar1mxk61oius" path="res://scripts/menus/rebind_button.gd" id="1_w32cl"]
-[ext_resource type="FontFile" uid="uid://ccf0qqfxgkxs5" path="res://PressStart2P-Regular.ttf" id="2_rhh8j"]
+[ext_resource type="FontFile" uid="uid://bk3i170p7rft3" path="res://PressStart2P-Regular.ttf" id="2_rhh8j"]
 
 [node name="RebindButton" type="Control" groups=["Rebindings"]]
 layout_mode = 3
@@ -17,6 +17,7 @@ script = ExtResource("1_w32cl")
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
 
 [node name="RebindNameLabel" type="Label" parent="HBoxContainer"]
 custom_minimum_size = Vector2(260, 0)

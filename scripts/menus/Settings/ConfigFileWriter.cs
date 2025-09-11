@@ -22,6 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using System;
 
 namespace Menus.Settings {
@@ -74,12 +75,11 @@ namespace Menus.Settings {
 				writer.Flush();
 			}
 
+			SettingsData.UpdateRemappingConfig();
 			result = ResourceSaver.Save( SettingsData.RemappingConfig, "user://input_context.tres" );
 			if ( result != Error.Ok ) {
-
+				Console.PrintError( $"Error writing input configuration: {result}" );
 			}
-
-			SettingsData.Instance.EmitSignal( SettingsData.SignalName.SettingsChanged );
 		}
 
 		/*

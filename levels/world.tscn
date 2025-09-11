@@ -24461,15 +24461,13 @@ script = ExtResource("44_1r2vu")
 
 [node name="Bandit2" parent="Thinkers" node_paths=PackedStringArray("Faction") instance=ExtResource("16_uh3ev")]
 position = Vector2(-81641, 49566)
-IsPremade = true
-Direction = 1
+MovementSpeed = 200.0
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
 [node name="Bandit3" parent="Thinkers" node_paths=PackedStringArray("Faction") instance=ExtResource("16_uh3ev")]
 position = Vector2(-81640, 49611.5)
-IsPremade = true
-Direction = 1
+MovementSpeed = 200.0
 Faction = NodePath("../../Factions/RockyBastards")
 FactionImportance = 50
 
@@ -24481,7 +24479,7 @@ navigation_polygon = SubResource("NavigationPolygon_521i4")
 [node name="Biomes" type="Node2D" parent="."]
 position = Vector2(59968, -33664)
 
-[node name="SaltWastes" type="Area2D" parent="Biomes"]
+[node name="SaltWastes" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 position = Vector2(-72105, 48728.5)
 collision_layer = 12
@@ -24497,6 +24495,7 @@ WeatherChanceThunderStorm = 0.5
 WeatherChanceWindy = 0.9
 WeatherChanceBlazing = 0.2
 WeatherChangeInterval = 1200.0
+TileMaps = []
 
 [node name="MountainCollision" type="StaticBody2D" parent="Biomes/SaltWastes"]
 position = Vector2(-9980, 730.5)
@@ -25053,14 +25052,13 @@ shape = SubResource("RectangleShape2D_q0seo")
 
 [node name="Mercenary3" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-1145, 194.5)
-IsPremade = true
+MovementSpeed = 200.0
 Location = NodePath("../..")
 FactionImportance = 18
 
 [node name="Mercenary" parent="Biomes/SaltWastes/KiroslaEstate/FirstFloorLayer1" node_paths=PackedStringArray("Location") instance=ExtResource("8_dx3bq")]
 position = Vector2(-634.5, 156)
-IsPremade = true
-Direction = 3
+MovementSpeed = 200.0
 Location = NodePath("../..")
 FactionImportance = 5
 
@@ -25286,13 +25284,14 @@ vertices = PackedVector2Array(-1137, 126, -982, 128, -979, 132, -1133, 133, -113
 affect_navigation_mesh = true
 carve_navigation_mesh = true
 
-[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("TradeRoutes") groups=["Archive", "Cities", "Settlements"]]
+[node name="Abazan" type="Area2D" parent="Biomes/SaltWastes" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Settlements"]]
 position = Vector2(9092.5, -487)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 Type = 1
 TradeRoutes = []
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SaltWastes/Abazan"]
 build_mode = 1
@@ -25362,7 +25361,7 @@ position = Vector2(72041, -52749)
 texture = SubResource("GradientTexture1D_gb70t")
 polygon = PackedVector2Array(-83055.5, 48324, -59963, 51348, -59829, 51348, -59780, 51109, -83212, 48007.5, -83218.5, 48157)
 
-[node name="SafeSands" type="Area2D" parent="Biomes"]
+[node name="SafeSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 position = Vector2(-61567, 31378)
 collision_layer = 19
@@ -25371,8 +25370,9 @@ input_pickable = false
 script = ExtResource("37_n2t61")
 CurrentWeather = 6
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
-[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Galakas" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(3625.5, 5627.5)
 collision_layer = 12
 collision_mask = 12
@@ -25381,6 +25381,7 @@ script = ExtResource("25_qxdx5")
 Type = 1
 Treasury = 50000.0
 TradeRoutes = []
+TileMaps = []
 
 [node name="UnderCity" type="TileMapLayer" parent="Biomes/SafeSands/Galakas"]
 position = Vector2(243.5, 2791.5)
@@ -25529,24 +25530,26 @@ collision_mask = 12
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Biomes/SafeSands/Galakas/WallCollision"]
 polygon = PackedVector2Array(-2397.5, 40.5, -2242.5, 40, -2240.5, -86, -178, -71.5, 1963, -36, 1963, 40, 2117.5, 40.5, 2117.5, -518.5, 2083.5, -518.5, 2082.5, -1990.5, 2116.5, -1984.5, 2118, -2346, 1965, -2346, 1963.5, -118.5, -2240, -134.5, -2197, -1288.5, -2238.5, -1312, -2201.5, -1328.5, -2202, -1881, -2360.5, -1879, -2361.5, -1791.5, -2837, -1789, -2829, -3618.5, -2976.5, -3630, -2962, -1880, -2999, -1877.5, -2997.5, -1279.5, -2840, -1273.5, -2839, -1341.5, -2361.5, -1340, -2362.5, -520, -2398.5, -519)
 
-[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes") groups=["Archive", "Locations", "Settlements"]]
+[node name="Feohenni" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Locations", "Settlements"]]
 position = Vector2(1566.5, -10406)
 collision_layer = 12
 collision_mask = 12
 input_pickable = false
 script = ExtResource("25_qxdx5")
 TradeRoutes = []
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SafeSands/Feohenni"]
 position = Vector2(16945, 14452)
 polygon = PackedVector2Array(-18953, -14215, -18468, -15351, -16044, -15669, -14961, -14058, -16442, -13201)
 
-[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Latan" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(-17344, 3648)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 TradeRoutes = []
+TileMaps = []
 
 [node name="AsturionsForge" type="Area2D" parent="Biomes/SafeSands/Latan" node_paths=PackedStringArray("Biome", "TileMaps")]
 position = Vector2(2667, 599.5)
@@ -25630,12 +25633,13 @@ position = Vector2(854, 472.5)
 position = Vector2(2997, 545)
 polygon = PackedVector2Array(-3569.5, -3696, 770.5, -2202, -2438, 1984, -7589, 1426.5)
 
-[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes") groups=["Archive", "Cities", "Locations", "Settlements"]]
+[node name="Sortior" type="Area2D" parent="Biomes/SafeSands" node_paths=PackedStringArray("TradeRoutes", "TileMaps") groups=["Archive", "Cities", "Locations", "Settlements"]]
 position = Vector2(19528.5, -7918)
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("25_qxdx5")
 TradeRoutes = []
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SafeSands/Sortior"]
 position = Vector2(-6474, 7485)
@@ -25658,22 +25662,24 @@ modulate = Color(0, 0, 0, 1)
 position = Vector2(22528, -2048)
 polygon = PackedVector2Array(3610.5, 9349.5, -3429.5, 9797.5, -12130, 16032.5, -16563, 16506, -21097.5, 17890.5, -44062.5, 14902.5, -46885.5, 9861.5, -49381.5, 4165.5, -47653.5, -634.5, -41171.5, -1367.5, -39393, -4640, -44488.5, -8214, -42337, -11196.5, -37786.5, -11834, -30978.5, -14173, -25218.5, -12637, -18306.5, -11805, -13570.5, -12509, -8386.5, -12765, 5373.5, -7837, 6461.5, -797)
 
-[node name="BurntHills" type="Area2D" parent="Biomes"]
+[node name="BurntHills" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 script = ExtResource("37_n2t61")
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/BurntHills"]
 modulate = Color(0, 0, 0, 0)
 polygon = PackedVector2Array(-36477, 43557.5, -33675.5, 42110.5, -33203, 40552.5, -29478.5, 45533, -27868.5, 48231.5, -23323, 50504.5, -10823.5, 49699.5, -5206, 45630.5, -3200.5, 52114, -6463, 57344, -13624, 57000.5, -26056, 55854.5, -35024, 56252, -31824, 53180, -31900, 50182.5, -34478, 46344)
 
-[node name="BileSwamps" type="Area2D" parent="Biomes"]
+[node name="BileSwamps" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
 CurrentWeather = 3
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/BileSwamps"]
 modulate = Color(1, 1, 1, 0)
@@ -25683,33 +25689,35 @@ polygon = PackedVector2Array(-51171.5, 45362.5, -42470.5, 39132, -35421, 38683, 
 [node name="CorpseOfTheBeast" parent="Biomes/BileSwamps" instance=ExtResource("8_m0qpv")]
 position = Vector2(-41615, 41470.5)
 
-[node name="DunesOfDesolation" type="Area2D" parent="Biomes"]
+[node name="DunesOfDesolation" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
 CurrentWeather = 6
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/DunesOfDesolation"]
 modulate = Color(0, 0, 0, 0)
 position = Vector2(-7.5, -3.5)
 polygon = PackedVector2Array(-83686.5, 50876, -83553, 44173, -83097.5, 44229.5, -85899, 39229, -88413, 33499, -86685, 28699, -80203, 27966, -78424.5, 24693.5, -83520, 21119.5, -81368.5, 18137, -76818, 17499.5, -77138, 9947.5, -83673, 7534, -92490.5, 17005.5, -96702, 23912.5, -95946.5, 37101.5, -93386.5, 45997.5, -87503.5, 51836)
 
-[node name="SeaOfSands" type="Area2D" parent="Biomes"]
+[node name="SeaOfSands" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 collision_layer = 12
 collision_mask = 12
 script = ExtResource("37_n2t61")
 CurrentWeather = 6
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/SeaOfSands"]
 modulate = Color(1, 1, 1, 0)
 position = Vector2(-7.5, -3.5)
 polygon = PackedVector2Array(-33658, 21496.5, -32570, 28536.5, -35421, 38683, -33668, 39178.5, -33194.5, 40551.5, -33195.5, 40556, -29470.5, 45536.5, -27839, 48255, -23313.5, 50512.5, -10816, 49703, -5198.5, 45634, -3096.5, 30309.5, -4312.5, 13413.5, -9619.5, 1912, -20769.5, 2001, -21967, 8177, -24728.5, 11621.5, -28952.5, 19045.5)
 
-[node name="AshenPlains" type="Area2D" parent="Biomes"]
+[node name="AshenPlains" type="Area2D" parent="Biomes" node_paths=PackedStringArray("TileMaps")]
 process_mode = 1
 position = Vector2(-46464, 50752)
 collision_layer = 12
@@ -25717,6 +25725,7 @@ collision_mask = 12
 script = ExtResource("37_n2t61")
 CurrentWeather = 7
 WeatherChangeInterval = 6000.0
+TileMaps = []
 
 [node name="AreaShape" type="CollisionPolygon2D" parent="Biomes/AshenPlains"]
 position = Vector2(46456.5, -50755.5)
@@ -25757,8 +25766,11 @@ MemberList = []
 Debts = {}
 Relations = {}
 
-[node name="GalakanOligarchy" type="Node2D" parent="Factions" groups=["Archive", "Factions"]]
+[node name="GalakanOligarchy" type="Node2D" parent="Factions" node_paths=PackedStringArray("MemberList", "Debts", "Relations") groups=["Archive", "Factions"]]
 script = ExtResource("48_7dl3v")
+MemberList = []
+Debts = {}
+Relations = {}
 
 [node name="Roads" type="Node2D" parent="."]
 process_mode = 4

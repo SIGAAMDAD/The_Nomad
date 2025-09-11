@@ -1,15 +1,17 @@
 using Godot;
-using Renown;
 using ResourceCache;
+using System;
 
 namespace PlayerSystem.Perks {
-	public partial class Perk2 : Perk {
-		public Perk2( Player user )
+	public partial class ToTheDeath : Perk {
+		public ToTheDeath( Player user )
 			: base( user )
 		{
 			Icon = TextureCache.GetTexture( "res://textures/icons/perk0.jpg" );
-			Name = TranslationServer.Translate( "PERK_TOO_FUCKING_ANGRY_TO_DIE_NAME" );
-			Description = TranslationServer.Translate( "PERK_TOO_FUCKING_ANGRY_TO_DIE_DESCRIPTION" );
+			ArgumentNullException.ThrowIfNull( Icon );
+
+			Name = TranslationServer.Translate( Name );
+			Description = TranslationServer.Translate( Description );
 		}
 
 		public override void Connect() {

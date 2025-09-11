@@ -14,5 +14,6 @@ func _init() -> void:
 	if !_remapping_config:
 		_remapping_config = GUIDERemappingConfig.new()
 	
+	Console.PrintLine( "Initializing remapper..." )
 	_remapper.initialize( _mapping_contexts, _remapping_config )
 	_remappable_items = _remapper.get_remappable_items()

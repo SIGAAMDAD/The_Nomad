@@ -1,21 +1,105 @@
-[gd_scene load_steps=12 format=3 uid="uid://ba1debi5qxy5p"]
+[gd_scene load_steps=33 format=3 uid="uid://ba1debi5qxy5p"]
 
 [ext_resource type="Script" uid="uid://bojijd4w8aj3v" path="res://scripts/menus/MainMenu.cs" id="1_l4s3c"]
-[ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="2_2o76q"]
-[ext_resource type="StyleBox" uid="uid://635m6njp4eyq" path="res://resources/themes/button_normal_ui.tres" id="3_6bivr"]
+[ext_resource type="Texture2D" uid="uid://34t24sh0lbnu" path="res://textures/hud/ink_streak.dds" id="2_imvie"]
+[ext_resource type="Script" uid="uid://cbshr7htyovlm" path="res://scripts/menus/SelectionNodes/Button.cs" id="3_imvie"]
 [ext_resource type="Texture2D" uid="uid://k2bvu08ceylo" path="res://textures/TheNomadLogo.dds" id="4_6bivr"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8r73w"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1hnlc"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bivr"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_50h1w"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_euy4r"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bre17"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_imvie"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_88kup"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ng0o5"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3hrp"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r73w"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_25m6f"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkawv"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w32d4"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hnlc"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_287l7"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8hoqd"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_555wk"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50h1w"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awvna"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jygr6"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n8vdk"]
+texture = ExtResource("2_imvie")
+modulate_color = Color(2, 2.00392, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_euy4r"]
 
@@ -73,84 +157,92 @@ metadata/_edit_use_anchors_ = true
 [node name="ContinueGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../QuitGameButton")
-focus_neighbor_bottom = NodePath("../NewGameButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_6bivr")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
-text = "CONTINUE_GAME_BUTTON"
-
-[node name="NewGameButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-focus_neighbor_top = NodePath("../ContinueGameButton")
 focus_neighbor_bottom = NodePath("../LoadGameButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_imvie")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
-text = "NEW_GAME_BUTTON"
+theme_override_styles/focus = SubResource("StyleBoxTexture_ng0o5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6bivr")
+text = "CONTINUE_GAME_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.5
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="LoadGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../NewGameButton")
-focus_neighbor_bottom = NodePath("../ExtrasButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_ng0o5")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
+focus_neighbor_top = NodePath("../ContinueGameButton")
+focus_neighbor_bottom = NodePath("../NewGameButton")
+theme_override_styles/focus = SubResource("StyleBoxTexture_50h1w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_euy4r")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_bre17")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_imvie")
 text = "LOAD_GAME_BUTTON"
+script = ExtResource("3_imvie")
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
+
+[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../LoadGameButton")
+focus_neighbor_bottom = NodePath("../ExtrasButton")
+theme_override_styles/focus = SubResource("StyleBoxTexture_88kup")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bh4e2")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ng0o5")
+text = "NEW_GAME_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.2
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="ExtrasButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../LoadGameButton")
+focus_neighbor_top = NodePath("../NewGameButton")
 focus_neighbor_bottom = NodePath("../SettingsButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_8r73w")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
+theme_override_styles/focus = SubResource("StyleBoxTexture_uxao6")
+theme_override_styles/hover = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_8r73w")
 text = "EXTRAS_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.2
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ExtrasButton")
 focus_neighbor_bottom = NodePath("../TalesAroundTheCampfireButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_1hnlc")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w32d4")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1hnlc")
 text = "SETTINGS_BUTTON"
-
-[node name="ValdensBookButton" type="Button" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "HELP_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.2
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="TalesAroundTheCampfireButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../SettingsButton")
 focus_neighbor_bottom = NodePath("../QuitGameButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_50h1w")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
+theme_override_styles/focus = SubResource("StyleBoxTexture_287l7")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50h1w")
 text = "MODS_BUTTON"
-
-[node name="CreditsButton" type="Button" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-focus_neighbor_top = NodePath("../TalesAroundTheCampfireButton")
-focus_neighbor_bottom = NodePath("../QuitGameButton")
-text = "CREDITS_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.2
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="QuitGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../CreditsButton")
+focus_neighbor_top = NodePath("../TalesAroundTheCampfireButton")
 focus_neighbor_bottom = NodePath("../ContinueGameButton")
-theme_override_styles/focus = ExtResource("2_2o76q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_euy4r")
-theme_override_styles/pressed = ExtResource("2_2o76q")
-theme_override_styles/normal = ExtResource("3_6bivr")
+theme_override_styles/focus = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_euy4r")
 text = "QUIT_BUTTON"
+script = ExtResource("3_imvie")
+Duration = 0.2
+metadata/_custom_type_script = "uid://bkee2h7x0ho6"
 
 [node name="Logo" type="TextureRect" parent="."]
 process_mode = 4

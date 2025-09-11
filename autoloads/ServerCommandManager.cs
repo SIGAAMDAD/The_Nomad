@@ -74,8 +74,8 @@ public class ServerCommandManager {
 	SendCommand
 	===============
 	*/
-	public static void SendCommand( ServerCommandType nType ) {
-		uint command = (uint)nType;
+	public static void SendCommand( ServerCommandType type ) {
+		uint command = (uint)type;
 
 		byte[] packet = [
 			(byte)SteamLobby.MessageType.ServerCommand,
@@ -84,7 +84,7 @@ public class ServerCommandManager {
 			(byte)( ( command >> 16 ) & 0xff ),
 			(byte)( ( command >> 24 ) & 0xff )
 		];
-		Console.PrintLine( string.Format( "Sending server command: {0}...", nType.ToString() ) );
+		Console.PrintLine( string.Format( "Sending server command: {0}...", type.ToString() ) );
 		SteamLobby.Instance.SendP2PPacket( packet );
 	}
 
@@ -93,8 +93,8 @@ public class ServerCommandManager {
 	SendCommand
 	===============
 	*/
-	public static void SendCommand( CSteamID targetId, ServerCommandType nType ) {
-		uint command = (uint)nType;
+	public static void SendCommand( CSteamID targetId, ServerCommandType type ) {
+		uint command = (uint)type;
 
 		byte[] packet = [
 			(byte)SteamLobby.MessageType.ServerCommand,
@@ -104,7 +104,7 @@ public class ServerCommandManager {
 			(byte)( ( command >> 24 ) & 0xff )
 		];
 
-		Console.PrintLine( string.Format( "Sending targeted server command [id:{0}]: {1}...", targetId.ToString(), nType.ToString() ) );
+		Console.PrintLine( string.Format( "Sending targeted server command [id:{0}]: {1}...", targetId.ToString(), type.ToString() ) );
 		SteamLobby.Instance.SendTargetPacket( targetId, packet, Constants.k_nSteamNetworkingSend_Reliable );
 	}
 
@@ -133,8 +133,8 @@ public class ServerCommandManager {
 	RegisterCommandCallback
 	===============
 	*/
-	public static void RegisterCommandCallback( ServerCommandType nType, Action<CSteamID> callback ) {
-		CommandCache[ (int)nType ] = callback;
+	public static void RegisterCommandCallback( ServerCommandType type, Action<CSteamID> callback ) {
+		CommandCache[ (int)type ] = callback;
 	}
 
 	/*
@@ -142,7 +142,7 @@ public class ServerCommandManager {
 	ExecuteCommand
 	===============
 	*/
-	public static void ExecuteCommand( CSteamID senderId, ServerCommandType nType ) {
-		CommandCache[ (int)nType ]?.Invoke( senderId );
+	public static void ExecuteCommand( CSteamID senderId, ServerCommandType type ) {
+		CommandCache[ (int)type ]?.Invoke( senderId );
 	}
 };

@@ -36,82 +36,66 @@ namespace Renown.Thinkers {
 	};
 
 	public partial class Thinker : Entity {
-		[Export]
-		protected Resource DialogueResource = ResourceLoader.Load( "res://resources/dialogue/thinker.dialogue" );
+		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		[Export]
+		protected Resource DialogueResource = ResourceLoader.Load( "res://resources/dialogue/thinker.dialogue" );
+		[Export]
 		protected bool IsPremade = false;
-		
+
 		[ExportCategory( "Start" )]
 		[Export]
 		protected DirType Direction;
 		[Export]
-		protected TileMapFloor TileFloor;
+		public TileMapFloor TileFloor { get; private set; }
 
 		[ExportCategory( "Stats" )]
 
 		[Export]
-		protected bool HasMetPlayer = false;
-		[Export]
 		public float MovementSpeed { get; protected set; } = 200.0f;
 
-		protected Node2D Animations;
-
 		public NavigationAgent2D NavAgent { get; private set; }
-		protected Rid NavAgentRID { get; private set; }
-		protected Godot.Vector2 LookDir = Godot.Vector2.Zero;
-
-		protected NodePath InitialPath;
-
-		protected ThinkerFlags Flags;
-
-		protected MountainGoap.Agent Agent;
-
-		protected bool Initialized = false;
+		public Rid NavAgentRID { get; private set; }
 
 		// memory
 		public bool TargetReached { get; protected set; } = false;
-		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
-		public float LookAngle = 0.0f;
-		public float AimAngle = 0.0f;
-
-		protected static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-		protected Color DemonEyeColor;
-
-		// networking
-		protected NetworkSyncObject SyncObject = null;
+		public float LookAngle { get; set; } = 0.0f;
+		public float AimAngle { get; set; } = 0.0f;
+		public Vector2 LookDir { get; set; } = Vector2.Zero;
 
 		public AnimatedSprite2D BodyAnimations { get; protected set; }
 		public AnimatedSprite2D ArmAnimations { get; protected set; }
 		public AnimatedSprite2D HeadAnimations { get; protected set; }
+
+		protected Color DemonEyeColor;
+		protected Godot.Vector2 GotoPosition = Godot.Vector2.Zero;
+		protected Node2D Animations;
+		protected NodePath InitialPath;
+		protected ThinkerFlags Flags;
+		protected bool Initialized = false;
+
+		// networking
+		protected NetworkSyncObject SyncObject = null;
 
 		protected AudioStreamPlayer2D AudioChannel;
 
 		protected int ThreadSleep = Constants.THREADSLEEP_THINKER_PLAYER_IN_AREA;
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public TileMapFloor GetTileMapFloor() => TileFloor;
-		public void SetTileMapFloor( TileMapFloor floor ) => TileFloor = floor;
+		public void SetTileMapFloor( TileMapFloor floor ) {
+			TileFloor = floor;
+		}
 
 		public virtual void MeetPlayer() {
 			switch ( GetRelationStatus( LevelData.Instance.ThisPlayer ) ) {
-			case RelationStatus.Neutral:
-				if ( HasMetPlayer ) {
-					DialogueManager.ShowDialogueBalloon( DialogueResource, "meet_neutral" );
-				} else {
-					DialogueManager.ShowDialogueBalloon( DialogueResource, "talk_neutral" );
-				}
-				break;
-			case RelationStatus.Friends:
-				if ( HasMetPlayer ) {
-					DialogueManager.ShowDialogueBalloon( DialogueResource, "meet_friendly" );
-				} else {
-					DialogueManager.ShowDialogueBalloon( DialogueResource, "talk_friendly" );
-				}
-				break;
-			case RelationStatus.GoodFriends:
-				break;
-			};
+				case RelationStatus.Neutral:
+					break;
+				case RelationStatus.Friends:
+					break;
+				case RelationStatus.GoodFriends:
+					break;
+			}
+			;
 		}
 
 		public virtual void Alert( Entity source ) {
@@ -184,20 +168,12 @@ namespace Renown.Thinkers {
 			}
 		}
 		public override void SetLocation( in WorldArea location ) {
-			if ( Location != null ) {
-				Location.PlayerEntered -= OnPlayerEnteredArea;
-				Location.PlayerExited -= OnPlayerExitedArea;
-			}
-
 			if ( location == null ) {
 				Location = null;
 				return;
 			}
 
 			Location = location;
-
-			Location.PlayerEntered += OnPlayerEnteredArea;
-			Location.PlayerExited += OnPlayerExitedArea;
 		}
 
 		public override void PlaySound( AudioStreamPlayer2D channel, AudioStream stream ) {
@@ -222,7 +198,6 @@ namespace Renown.Thinkers {
 
 			writer.SaveUInt( key + nameof( Flags ), (uint)Flags );
 			writer.SaveFloat( key + nameof( MovementSpeed ), MovementSpeed );
-			writer.SaveBool( key + nameof( HasMetPlayer ), HasMetPlayer );
 		}
 		public virtual void Load( SaveSystem.SaveSectionReader reader, int nIndex ) {
 			string key = "Thinker" + nIndex;
@@ -232,7 +207,6 @@ namespace Renown.Thinkers {
 
 			Flags = (ThinkerFlags)reader.LoadUInt( key + nameof( Flags ) );
 			MovementSpeed = reader.LoadFloat( key + nameof( MovementSpeed ) );
-			HasMetPlayer = reader.LoadBoolean( key + nameof( HasMetPlayer ) );
 		}
 
 		public virtual void StopMoving() {
@@ -270,7 +244,7 @@ namespace Renown.Thinkers {
 		public override void _Ready() {
 			base._Ready();
 
-			Die += OnDie;
+			GameEventBus.ConnectSignal( this, Entity.SignalName.Die, this, Callable.From<Entity, Entity>( OnDie ) );
 
 			Animations = GetNode<Node2D>( "Animations" );
 
@@ -290,34 +264,12 @@ namespace Renown.Thinkers {
 			ProcessThreadGroup = ProcessThreadGroupEnum.SubThread;
 			ProcessThreadGroupOrder = (int)GetRid().Id;
 
-			AudioChannel = new AudioStreamPlayer2D();
-			AudioChannel.Name = "AudioChannel";
-			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			AudioChannel.ProcessMode = ProcessModeEnum.Pausable;
+			AudioChannel = new AudioStreamPlayer2D() {
+				Name = nameof( AudioChannel ),
+				VolumeDb = SettingsData.GetEffectsVolumeLinear(),
+				ProcessMode = ProcessModeEnum.Pausable
+			};
 			AddChild( AudioChannel );
-
-			NavAgent = new NavigationAgent2D();
-			NavAgent.Name = "NavAgent";
-			NavAgent.PathMaxDistance = 10000.0f;
-			NavAgent.AvoidanceEnabled = true;
-			NavAgent.AvoidanceLayers = 1;
-			NavAgent.AvoidanceMask = 1;
-			NavAgent.NeighborDistance = 1024.0f;
-			NavAgent.Radius = 20.0f;
-			NavAgent.MaxNeighbors = 1024;
-			NavAgent.MaxSpeed = MovementSpeed;
-			NavAgent.PathPostprocessing = NavigationPathQueryParameters2D.PathPostProcessing.Edgecentered;
-			NavAgent.TimeHorizonAgents = 2.0f;
-			NavAgent.MaxSpeed = MovementSpeed;
-			NavAgent.ProcessMode = ProcessModeEnum.Pausable;
-			NavAgent.Connect( NavigationAgent2D.SignalName.VelocityComputed, Callable.From<Godot.Vector2>( ( safeVelocity ) => {
-				Velocity = safeVelocity;// * (float)GetPhysicsProcessDeltaTime();
-				CallDeferred( MethodName.MoveAlongPath );
-			} ) );
-			NavAgent.TargetReached += OnTargetReached;
-			AddChild( NavAgent );
-
-			NavAgentRID = NavAgent.GetRid();
 
 			VisibleOnScreenNotifier2D enabler = GetNode<VisibleOnScreenNotifier2D>( "VisibleOnScreenNotifier2D" );
 			enabler.Connect( VisibleOnScreenNotifier2D.SignalName.ScreenEntered, Callable.From( Animations.Show ) );
@@ -328,6 +280,31 @@ namespace Renown.Thinkers {
 			}
 
 			GotoPosition = GlobalPosition;
+
+			NavAgent = new NavigationAgent2D() {
+				Name = nameof( NavAgent ),
+				PathMaxDistance = 10000.0f,
+				AvoidanceEnabled = true,
+				AvoidanceLayers = 1,
+				AvoidanceMask = 1,
+				NeighborDistance = 1024.0f,
+				Radius = 20.0f,
+				MaxNeighbors = 1024,
+				PathPostprocessing = NavigationPathQueryParameters2D.PathPostProcessing.Edgecentered,
+				TimeHorizonAgents = 2.0f,
+				MaxSpeed = MovementSpeed,
+				ProcessMode = ProcessModeEnum.Pausable
+			};
+			GameEventBus.ConnectSignal( NavAgent, NavigationAgent2D.SignalName.VelocityComputed, this,
+				Callable.From<Vector2>( ( safeVelocity ) => {
+					Velocity = safeVelocity;// * (float)GetPhysicsProcessDeltaTime();
+					CallDeferred( MethodName.MoveAlongPath );
+				} )
+			);
+			GameEventBus.ConnectSignal( NavAgent, NavigationAgent2D.SignalName.TargetReached, this, OnTargetReached );
+			AddChild( NavAgent );
+
+			NavAgentRID = NavAgent.GetRid();
 
 			if ( ArchiveSystem.IsLoaded() ) {
 				Load();

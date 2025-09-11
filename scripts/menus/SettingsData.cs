@@ -36,6 +36,9 @@ namespace Menus {
 	*/
 
 	public partial class SettingsData : Node {
+		/// <summary>
+		/// The hard-coded path to the configuration file, this should not change
+		/// </summary>
 		private static readonly string ConfigSaveFile = "user://settings.ini";
 
 		//
@@ -91,7 +94,7 @@ namespace Menus {
 		//
 		// network options
 		//
-		public static bool EnableNetworking { get; private set; }
+		public static bool EnableNetworking;
 		public static bool CODLobbies { get; private set; }
 		public static bool BountyHuntEnabled { get; private set; }
 
@@ -108,36 +111,45 @@ namespace Menus {
 
 		public static int LastSaveSlot { get; private set; } = 0;
 
-		private static readonly IReadOnlyDictionary<WindowResolution, Vector2I> WindowResolutions = new Dictionary<WindowResolution, Vector2I>{
-			{ WindowResolution.Res_640x480, new Vector2I( 640, 480 ) },
-			{ WindowResolution.Res_800x600, new Vector2I( 800, 600 ) },
-			{ WindowResolution.Res_1024x768, new Vector2I( 1024, 768 ) },
-			{ WindowResolution.Res_1280x720, new Vector2I( 1280, 720 ) },
-			{ WindowResolution.Res_1280x768, new Vector2I( 1280, 768 ) },
-			{ WindowResolution.Res_1280x800, new Vector2I( 1280, 800 ) },
-			{ WindowResolution.Res_1280x1024, new Vector2I( 1280, 1024 ) },
-			{ WindowResolution.Res_1360x768, new Vector2I( 1360, 768 ) },
-			{ WindowResolution.Res_1366x768, new Vector2I( 1366, 768 ) },
-			{ WindowResolution.Res_1440x900, new Vector2I( 1440, 900 ) },
-			{ WindowResolution.Res_1536x864, new Vector2I( 1536, 864 ) },
-			{ WindowResolution.Res_1600x900, new Vector2I( 1600, 900 ) },
-			{ WindowResolution.Res_1600x1200, new Vector2I( 1600, 1200 ) },
-			{ WindowResolution.Res_1680x1050, new Vector2I( 1680, 1050 ) },
-			{ WindowResolution.Res_1920x1080, new Vector2I( 1920, 1080 ) },
-			{ WindowResolution.Res_1920x1200, new Vector2I( 1920, 1200 ) },
-			{ WindowResolution.Res_2048x1152, new Vector2I( 2048, 1152 ) },
-			{ WindowResolution.Res_2048x1536, new Vector2I( 2048, 1536 ) },
-			{ WindowResolution.Res_2560x1080, new Vector2I( 2560, 1080 ) },
-			{ WindowResolution.Res_2560x1440, new Vector2I( 2560, 1440 ) },
-			{ WindowResolution.Res_2560x1600, new Vector2I( 2560, 1600 ) },
-			{ WindowResolution.Res_3440x1440, new Vector2I( 3440, 1440 ) },
-			{ WindowResolution.Res_3840x2160, new Vector2I( 3840, 2160 ) }
-		};
+		public static event Action SettingsChanged;
 
 		public static SettingsData Instance = null;
 
-		[Signal]
-		public delegate void SettingsChangedEventHandler();
+		/*
+		===============
+		GetRemapper
+		===============
+		*/
+		/// <summary>
+		/// For rebind_button.gd
+		/// </summary>
+		/// <returns></returns>
+		public RefCounted GetRemapper() {
+			return Remapper;
+		}
+
+		/*
+		===============
+		GetMappingFormatter
+		===============
+		*/
+		/// <summary>
+		/// For rebind_button.gd
+		/// </summary>
+		/// <returns></returns>
+		public RefCounted GetMappingFormatter() {
+			return MappingFormatter;
+		}
+
+		/*
+		===============
+		UpdateRemappingCOnfig
+		===============
+		*/
+		public static void UpdateRemappingConfig() {
+			RemappingConfig = (Resource)Remapper.Call( "get_mapping_config" );
+			Instance.GetNode( "/root/GUIDE" ).Call( "set_remapping_config", RemappingConfig );
+		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void SetNetworkingEnabled( bool networking ) => EnableNetworking = networking;
@@ -164,7 +176,7 @@ namespace Menus {
 		public static void SetMaxFps( int maxFps ) {
 			MaxFps = maxFps;
 			Engine.MaxFps = MaxFps;
-	}
+		}
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void SetLightingQuality( LightingQuality quality ) => LightingQuality = quality;
@@ -174,6 +186,10 @@ namespace Menus {
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void SetShadowFilterQuality( ShadowFilterQuality quality ) => ShadowFilterQuality = quality;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetShadowFilterType( Light2D.ShadowFilterEnum filterType ) => ShadowFilterType = filterType;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetShadowFilterSmooth( float filterSmooth ) => ShadowFilterSmooth = filterSmooth;
 
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void SetParticleQuality( ParticleQuality quality ) => ParticleQuality = quality;
@@ -230,307 +246,89 @@ namespace Menus {
 		}
 		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetMusicOn( bool musicOn ) => MusicOn = musicOn;
 		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static float GetMusicVolumeLinear() => MusicVolumeDb_Flat;
+
+		/*
+		===============
+		SetMusicVolume
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public static void SetMusicVolume( float musicVolume ) {
 			MusicVolume = musicVolume;
 			MusicVolumeDb_Flat = Mathf.LinearToDb( MusicVolume * 0.01f );
 		}
 
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHapticEnabled( bool hapticEnabled ) => HapticEnabled = hapticEnabled;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHapticStrength( float hapticStrength ) => HapticStrength = hapticStrength;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetAutoAimMode( AutoAimMode mode ) => AutoAimMode = mode;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetColorblindMode( ColorblindMode mode ) => ColorblindMode = mode;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTutorialsEnabled( bool tutorialsEnabled ) => EnableTutorials = tutorialsEnabled;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetDyslexiaMode( bool dyslexiaMode ) => DyslexiaMode = dyslexiaMode;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetUIScale( float scale ) => UIScale = scale;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTextToSpeech( bool textToSpeech ) => TextToSpeech = textToSpeech;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetTtsVoiceIndex( int voiceIndex ) => TtsVoiceIndex = voiceIndex;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHUDPreset( HUDPreset preset ) => HUDPreset = preset;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetEquipWeaponOnPickup( bool equipWeapon ) => EquipWeaponOnPickup = equipWeapon;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetHellbreakerEnabled( bool hellbreakerEnabled ) => HellbreakerEnabled = hellbreakerEnabled;
-		[MethodImpl( MethodImplOptions.AggressiveInlining )] public static void SetSaveSlot( int slot ) => LastSaveSlot = slot;
-
 		/*
 		===============
-		UpdateWindowScale
+		SetHapticEnabled
 		===============
 		*/
-		/// <summary>
-		/// Updates window position based on the size
-		/// </summary>
-		private void UpdateWindowScale() {
-			Godot.Vector2I centerScreen = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
-			Godot.Vector2I windowSize = GetWindow().GetSizeWithDecorations();
-			GetWindow().SetImePosition( centerScreen - windowSize / 2 );
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetHapticEnabled( bool hapticEnabled ) {
+			HapticEnabled = hapticEnabled;
 		}
 
 		/*
 		===============
-		UpdateWindowResolution
+		SetHapticStrength
 		===============
 		*/
-		/// <summary>
-		/// Updates window resolution based on <see cref="Resolution"/>
-		/// </summary>
-		private static void UpdateWindowResolution() {
-			if ( !WindowResolutions.TryGetValue( Resolution, out Vector2I windowSize ) ) {
-				Console.PrintError( string.Format( "SettingsData.ApplyVideoSettings: invalid Resolution ({0}) - setting to default", (int)Resolution ) );
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetHapticStrength( float hapticStrength ) {
+			HapticStrength = hapticStrength;
+		}
 
-				Resolution = WindowResolution.Res_640x480;
-				windowSize = WindowResolutions[ WindowResolution.Res_640x480 ];
-			}
-			Instance.GetWindow().Size = windowSize;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetAutoAimMode( AutoAimMode mode ) => AutoAimMode = mode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetColorblindMode( ColorblindMode mode ) => ColorblindMode = mode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetTutorialsEnabled( bool tutorialsEnabled ) => EnableTutorials = tutorialsEnabled;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetDyslexiaMode( bool dyslexiaMode ) => DyslexiaMode = dyslexiaMode;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetUIScale( float scale ) => UIScale = scale;
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetTextToSpeech( bool textToSpeech ) => TextToSpeech = textToSpeech;
+
+		/*
+		===============
+		SetTtsVoiceIndex
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetTtsVoiceIndex( int voiceIndex ) {
+			TtsVoiceIndex = voiceIndex;
 		}
 
 		/*
 		===============
-		UpdateVSyncSettings
+		SetHUDPreset
 		===============
 		*/
-		private static void UpdateVSyncMode() {
-			ArgumentNullException.ThrowIfNull( Settings.VSyncMode.DataTable );
-
-			if ( !Settings.VSyncMode.DataTable.TryGetValue( VSyncMode, out Settings.VSyncMode mode ) ) {
-				Console.PrintError( string.Format( "SettingsData.ApplyVideoSettings: invalid VSyncMode ({0}) - setting to default", (int)VSyncMode ) );
-				VSyncMode = VSyncMode.Off;
-				mode = Settings.VSyncMode.DataTable[ VSyncMode ];
-			}
-
-			DisplayServer.WindowSetVsyncMode( mode.Mode );
-			ProjectSettings.SetSetting(
-				"rendering/rendering_device/vsync/swapchain_image_count",
-				mode.SwapChainImageCount
-			);
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetHUDPreset( HUDPreset preset ) {
+			HUDPreset = preset;
 		}
 
 		/*
 		===============
-		UpdateWindowMode
+		SetEquipWeaponPickup
 		===============
 		*/
-		private static void UpdateWindowMode() {
-			DisplayServer.WindowMode mode;
-			bool borderless;
-
-			switch ( WindowMode ) {
-				case WindowMode.Windowed:
-					borderless = false;
-					mode = DisplayServer.WindowMode.Windowed;
-					break;
-				case WindowMode.BorderlessWindowed:
-					borderless = true;
-					mode = DisplayServer.WindowMode.Windowed;
-					break;
-				case WindowMode.Fullscreen:
-					borderless = false;
-					mode = DisplayServer.WindowMode.Fullscreen;
-					break;
-				case WindowMode.BorderlessFullscreen:
-					borderless = true;
-					mode = DisplayServer.WindowMode.Fullscreen;
-					break;
-				case WindowMode.ExclusiveFullscreen:
-					borderless = true;
-					mode = DisplayServer.WindowMode.ExclusiveFullscreen;
-					break;
-				default:
-					Console.PrintError( $"SettingsData.ApplyVideoSettings: invalid WindowMode ({WindowMode}) - setting to default" );
-					WindowMode = WindowMode.Fullscreen;
-
-					mode = DisplayServer.WindowMode.Fullscreen;
-					borderless = false;
-					break;
-			}
-
-			DisplayServer.WindowSetMode( mode );
-			DisplayServer.WindowSetFlag( DisplayServer.WindowFlags.Borderless, borderless );
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetEquipWeaponOnPickup( bool equipWeapon ) {
+			EquipWeaponOnPickup = equipWeapon;
 		}
 
 		/*
 		===============
-		UpdateAntiAliasing
+		SetSaveSlot
 		===============
 		*/
-		private static void UpdateAntiAliasing() {
-			RenderingServer.ViewportMsaa viewportMsaa;
-			RenderingServer.ViewportScreenSpaceAA screenSpaceAA;
-			bool useTaa;
-
-			switch ( AntiAliasing ) {
-				case AntiAliasing.None:
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Disabled;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-				case AntiAliasing.FXAA:
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Disabled;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Fxaa;
-					break;
-				case AntiAliasing.MSAA_2x:
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Msaa2X;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-				case AntiAliasing.MSAA_4x:
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Msaa4X;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-				case AntiAliasing.MSAA_8x:
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Msaa8X;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-				case AntiAliasing.FXAA_and_TAA:
-					useTaa = true;
-					viewportMsaa = RenderingServer.ViewportMsaa.Disabled;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Fxaa;
-					break;
-				case AntiAliasing.TAA:
-					useTaa = true;
-					viewportMsaa = RenderingServer.ViewportMsaa.Disabled;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-				default:
-					Console.PrintError( $"SettingsData.ApplyVideoSettings: invalid AntiAliasing ({AntiAliasing}) - setting to default" );
-					AntiAliasing = AntiAliasing.None;
-
-					useTaa = false;
-					viewportMsaa = RenderingServer.ViewportMsaa.Disabled;
-					screenSpaceAA = RenderingServer.ViewportScreenSpaceAA.Disabled;
-					break;
-			}
-
-			Rid viewport = Instance.GetViewport().GetViewportRid();
-			if ( RenderingServer.GetCurrentRenderingDriverName() == "vulkan" ) {
-				RenderingServer.ViewportSetUseTaa( viewport, useTaa );
-			}
-			RenderingServer.ViewportSetScreenSpaceAA( viewport, screenSpaceAA );
-			RenderingServer.ViewportSetMsaa2D( viewport, viewportMsaa );
-		}
-
-		/*
-		===============
-		UpdateLightingQuality
-		===============
-		*/
-		private static void UpdateLightingQuality() {
-			bool forceLambertOverBurley = false;
-
-			switch ( LightingQuality ) {
-				case LightingQuality.VeryLow:
-					forceLambertOverBurley = true;
-					break;
-				case LightingQuality.Low:
-					forceLambertOverBurley = false;
-					break;
-				case LightingQuality.High:
-					forceLambertOverBurley = false;
-					break;
-				default:
-					Console.PrintError( $"SettingsData.ApplyVideoSettings: invalid LightingQuality ({LightingQuality}) - setting to default" );
-					LightingQuality = LightingQuality.Low;
-					break;
-			}
-
-			ProjectSettings.SetSetting( "rendering/shading/force_lambert_over_burley", forceLambertOverBurley );
-
-			// if we're in a level, apply the changes
-			if ( Instance.GetTree().CurrentScene == LevelData.Instance ) {
-			}
-		}
-
-		/*
-		===============
-		UpdateShadowQuality
-		===============
-		*/
-		private static void UpdateShadowQuality() {
-			int shadowTextureSize;
-			bool tighterShadowCasterCulling;
-
-			switch ( ShadowQuality ) {
-				case ShadowQuality.Off:
-					shadowTextureSize = 0;
-					tighterShadowCasterCulling = true;
-					break;
-				case ShadowQuality.Low:
-					shadowTextureSize = 2048;
-					tighterShadowCasterCulling = true;
-					break;
-				case ShadowQuality.Medium:
-					shadowTextureSize = 4096;
-					tighterShadowCasterCulling = false;
-					break;
-				case ShadowQuality.High:
-					shadowTextureSize = 8192;
-					tighterShadowCasterCulling = false;
-					break;
-				case ShadowQuality.Ultra:
-					shadowTextureSize = 12288;
-					tighterShadowCasterCulling = false;
-					break;
-				default:
-					Console.PrintError( $"SettingsData.ApplyVideoSettings: invalid ShadowQuality ({ShadowQuality}) - setting to default" );
-
-					ShadowQuality = ShadowQuality.Medium;
-
-					shadowTextureSize = 4096;
-					tighterShadowCasterCulling = false;
-					break;
-			}
-
-			RenderingServer.CanvasSetShadowTextureSize( shadowTextureSize );
-			ProjectSettings.SetSetting( "rendering/lights_and_shadows/tighter_shadow_caster_culling", tighterShadowCasterCulling );
-		}
-
-		/*
-		===============
-		UpdateShadowFilterQuality
-		===============
-		*/
-		private static void UpdateShadowFilterQuality() {
-			// adjust filtering quality accordingly
-			switch ( ShadowFilterQuality ) {
-				case ShadowFilterQuality.Off: // hard shadows
-					ShadowFilterType = Light2D.ShadowFilterEnum.None;
-					ShadowFilterSmooth = 0.0f;
-					break;
-				case ShadowFilterQuality.Low: // small amounts of filtering
-					ShadowFilterType = Light2D.ShadowFilterEnum.Pcf5;
-					ShadowFilterSmooth = 0.10f;
-					break;
-				case ShadowFilterQuality.High: // full soft shadows, heaviest performance cost
-					ShadowFilterType = Light2D.ShadowFilterEnum.Pcf13;
-					ShadowFilterSmooth = 0.20f;
-					break;
-				default:
-					Console.PrintError( $"SettingsData.ApplyVideoSettings: invalid ShadowFilterQuality ({ShadowFilterQuality}) - setting to default" );
-					ShadowFilterType = Light2D.ShadowFilterEnum.Pcf5;
-					ShadowFilterSmooth = 0.10f;
-
-					ShadowFilterQuality = ShadowFilterQuality.Low;
-					break;
-			}
-		}
-
-		/*
-		===============
-		ApplyVideoSettings
-		===============
-		*/
-		public static void ApplyVideoSettings() {
-			UpdateVSyncMode();
-			UpdateWindowResolution();
-			UpdateWindowMode();
-			UpdateAntiAliasing();
-			UpdateLightingQuality();
-			UpdateShadowQuality();
-			UpdateShadowFilterQuality();
-
-			Engine.MaxFps = MaxFps;
-
-			Instance.UpdateWindowScale();
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static void SetSaveSlot( int slot ) {
+			LastSaveSlot = slot;
 		}
 
 		/*
@@ -543,6 +341,16 @@ namespace Menus {
 		/// </summary>
 		public static void Save() {
 			using var configWriter = new Settings.ConfigFileWriter( ConfigSaveFile );
+			SettingsChanged.Invoke();
+		}
+
+		/*
+		===============
+		ApplyVideoSettings
+		===============
+		*/
+		public static void ApplyVideoSettings() {
+			using var updater = new Settings.VideoSettingsUpdater( Instance );
 		}
 
 		/*
@@ -560,7 +368,7 @@ namespace Menus {
 
 			Console.PrintLine( "Loading game configuration..." );
 
-			RefCounted bindingSetup = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/menus/settings_bindings.gd" ).New();
+			using RefCounted bindingSetup = (RefCounted)ResourceLoader.Load<GDScript>( "res://scripts/menus/settings_bindings.gd" ).New();
 
 			Remapper = (RefCounted)bindingSetup.Get( "_remapper" );
 			RemappingConfig = (Resource)bindingSetup.Get( "_remapping_config" );

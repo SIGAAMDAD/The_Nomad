@@ -1,30 +1,36 @@
-[gd_scene load_steps=34 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=89 format=3 uid="uid://dot7q6fxsd0g0"]
 
 [ext_resource type="Script" uid="uid://cct3faf7mc756" path="res://scripts/menus/SettingsMenu.cs" id="1_mcc4n"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://scenes/menus/settings_menu/list_option.tscn" id="2_5fu2g"]
 [ext_resource type="Texture2D" uid="uid://cjvotv7wjq0co" path="res://textures/env/page.dds" id="2_hiabw"]
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="3_08gdp"]
+[ext_resource type="Texture2D" uid="uid://34t24sh0lbnu" path="res://textures/hud/ink_streak.dds" id="3_ek4rk"]
+[ext_resource type="Script" uid="uid://bikrmrgwayubp" path="res://scripts/menus/SelectionNodes/OptionList.cs" id="3_ffd5i"]
 [ext_resource type="Resource" uid="uid://ct8fhvbwjfr3i" path="res://resources/binds/actions/keyboard/move_north.tres" id="3_l0eij"]
-[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="3_s4m6w"]
 [ext_resource type="PackedScene" uid="uid://bldmryd5eq435" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
+[ext_resource type="FontFile" uid="uid://ux04pgma8dbw" path="res://Spell of Asia.ttf" id="4_amktp"]
 [ext_resource type="Resource" uid="uid://i86jw4vdkcoh" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
-[ext_resource type="PackedScene" uid="uid://b1qlrdwruaadh" path="res://scenes/menus/settings_menu/advanced_settings_button.tscn" id="5_5fu2g"]
+[ext_resource type="Script" uid="uid://8gw38ohl8mi1" path="res://scripts/menus/SelectionNodes/Label.cs" id="5_ek4rk"]
 [ext_resource type="Resource" uid="uid://cevetawunpiw4" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
 [ext_resource type="Resource" uid="uid://byljkymouyt6d" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
 [ext_resource type="Script" uid="uid://db27ccgomq455" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
-[ext_resource type="PackedScene" uid="uid://c4soupetm1bb5" path="res://scenes/menus/settings_menu/go_back_advanced_settings_button.tscn" id="6_10nm4"]
 [ext_resource type="Resource" uid="uid://61hxxqe5yeqk" path="res://resources/binds/actions/keyboard/move_west.tres" id="6_rxdtf"]
 [ext_resource type="Script" uid="uid://ccvqqvfooyvn0" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
 [ext_resource type="Resource" uid="uid://uvydpnflwo7r" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
 [ext_resource type="Script" uid="uid://cw71o87tvdx3q" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
+[ext_resource type="Script" uid="uid://dwpjby044rtko" path="res://scripts/menus/SelectionNodes/OptionCheckbox.cs" id="7_ek4rk"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://resources/themes/settings_menu_slider_inactive.tres" id="7_ffd5i"]
 [ext_resource type="Resource" uid="uid://b3wjmxhtiwox5" path="res://resources/binds/actions/keyboard/open_inventory.tres" id="7_l0eij"]
+[ext_resource type="FontFile" uid="uid://dq136wkvpeo86" path="res://edosz.ttf" id="8_2ibmv"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://resources/themes/settings_menu_slider_active.tres" id="8_ek4rk"]
 [ext_resource type="Resource" uid="uid://dco5qqy2mjj4b" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="8_muhwa"]
+[ext_resource type="Script" uid="uid://djx1m28j6oo6h" path="res://scripts/menus/SelectionNodes/AdvancedButton.cs" id="9_amktp"]
 [ext_resource type="Resource" uid="uid://bfs13isxpin4p" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="9_rrg86"]
 [ext_resource type="Resource" uid="uid://bsstc7pudt16e" path="res://resources/binds/actions/keyboard/interact.tres" id="10_fd2q8"]
 [ext_resource type="Resource" uid="uid://qxofkhmq3ajd" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
 [ext_resource type="Resource" uid="uid://doj6o7isyxhf4" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="11_l0eij"]
 [ext_resource type="StyleBox" uid="uid://cnnadvoflyh14" path="res://resources/themes/button_focused_ui.tres" id="20_afkw7"]
 [ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="21_fs1xy"]
+[ext_resource type="StyleBox" uid="uid://635m6njp4eyq" path="res://resources/themes/button_normal_ui.tres" id="27_asps2"]
+[ext_resource type="Script" uid="uid://cbshr7htyovlm" path="res://scripts/menus/SelectionNodes/Button.cs" id="28_amktp"]
 
 [sub_resource type="Theme" id="Theme_rrg86"]
 TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
@@ -39,8 +45,276 @@ modulate_color = Color(0, 0, 0, 1)
 [sub_resource type="SystemFont" id="SystemFont_s4m6w"]
 subpixel_positioning = 0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ffd5i"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lxw3y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7h574"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_leexh"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pgw2q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2n36q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_di8p4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ghq0c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k52ao"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7io4o"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ek4rk"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_amktp"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y2hwk"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0umxr"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xe2a0"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_htq4l"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhfsd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nmoh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecpn7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kv2wj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqame"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_apk1r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr20r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2jsoa"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ibmv"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_asps2"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bn04h"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p0w42"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_udwsp"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dn7lm"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7vnhk"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3i875"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0gxpi"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ja5y3"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s7vlx"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_74270"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jfhyg"]
+texture = ExtResource("3_ek4rk")
+
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
 subpixel_positioning = 0
+
+[sub_resource type="GDScript" id="GDScript_yqame"]
+resource_name = "settings_checkbox_option"
+script/source = "class_name SettingsCheckboxOption extends HBoxContainer
+
+@export var _title: StringName
+@export var _description: StringName
+
+var _description_cached: String
+var _value: bool = false
+
+signal value_changed( value: bool )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
+
+func get_value() -> bool:
+	return _value
+
+func set_value( value: bool ) -> void:
+	_value = value
+	get_node( \"Value\" ).text = \"On\" if _value else \"Off\"
+	
+	emit_signal( \"value_changed\", _value )
+
+func _on_toggled() -> void:
+	_value = !_value
+	get_node( \"Value\" ).text = \"On\" if _value else \"Off\"
+	UiAudioManager.OnButtonPressed()
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	_description_cached = TranslationServer.translate( _description )
+"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fho2h"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="GDScript" id="GDScript_lqxw1"]
+resource_name = "settings_slider_option"
+script/source = "class_name SettingsSliderOption extends HBoxContainer
+
+@export var _title: StringName
+@export var _description: StringName
+@export_range( 0.0, 1000.0 ) var _min: float = 0.0
+@export_range( 0.0, 1000.0 ) var _max: float = 100.0
+
+var _description_cached: String
+
+signal value_changed( value: float )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
+
+func get_value() -> float:
+	return get_node( \"Input\" ).value
+
+func set_value( value: float ) -> void:
+	get_node( \"Input\" ).value = value
+
+func _on_value_changed( value: float ) -> void:
+	get_node( \"Input/Value\" ).text = var_to_str( value )
+	emit_signal( \"value_changed\", value )
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	
+	_description_cached = TranslationServer.translate( _description_cached )
+	
+	var _hslider: HSlider = get_node( \"Input\" )
+	_hslider.min_value = _min
+	_hslider.max_value = _max
+	_hslider.connect( \"value_changed\", _on_value_changed )
+"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nntag"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1oeek"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rpr1w"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b2cyl"]
+texture = ExtResource("3_ek4rk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ey12s"]
+texture = ExtResource("3_ek4rk")
+texture_margin_right = 25.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_apk1r"]
+texture = ExtResource("3_ek4rk")
+texture_margin_right = 25.0
+
+[sub_resource type="GDScript" id="GDScript_7h574"]
+resource_name = "settings_list_option"
+script/source = "class_name SettingsListOption extends HBoxContainer
+
+@export var _title: StringName
+@export var _description: StringName
+@export var _no_translate: bool = false
+@export var _items: Array[ StringName ]
+
+var _description_cached: String
+var _value: int = 0
+
+signal value_changed( value: int )
+
+func get_description() -> String:
+	return \"\" if _description.length() == 0 else _description_cached
+
+func get_value() -> int:
+	return _value
+
+func set_value( value: int ) -> void:
+	_value = value
+	get_node( \"Value\" ).text = TranslationServer.translate( _items[ _value ] ) if !_no_translate else _items[ _value ]
+	emit_signal( \"value_changed\", _value )
+
+func _on_left_icon_pressed() -> void:
+	if _value == 0:
+		set_value( _items.size() - 1 )
+	else:
+		set_value( _value - 1 )
+	UiAudioManager.OnButtonPressed()
+
+func _on_right_icon_pressed() -> void:
+	if _value == _items.size() - 1:
+		set_value( 0 )
+	else:
+		set_value( _value + 1 )
+	UiAudioManager.OnButtonPressed()
+
+func _ready() -> void:
+	get_node( \"Title\" ).text = TranslationServer.translate( _title )
+	_description_cached = TranslationServer.translate( _description )
+"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lxw3y"]
+resource_local_to_scene = true
+texture = ExtResource("3_ek4rk")
+texture_margin_right = 25.0
+
+[sub_resource type="GDScript" id="GDScript_10nm4"]
+resource_name = "controls_settings"
+script/source = "class_name ControlsSettings extends TabBar
+
+@onready var _movement_binds_container: VBoxContainer = $VBoxContainer/MarginContainer/HBoxContainer/MovementContainer
+
+func _hide_all() -> void:
+	_movement_binds_container.hide()
+
+func _on_movement_button_pressed() -> void:
+	_hide_all()
+	
+	_movement_binds_container.show()
+
+func _on_utility_button_pressed() -> void:
+	pass
+
+func _on_combat_button_pressed() -> void:
+	pass
+
+func _ready() -> void:
+	var _movement_button: Button = get_node( \"VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer/MovementButton\" )
+	_movement_button.connect( \"pressed\", _on_movement_button_pressed )
+	
+	var _utility_button: Button = get_node( \"VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer/UtilityButton\" )
+	_utility_button.connect( \"pressed\", _on_utility_button_pressed )
+	
+	var _combat_button: Button = get_node( \"VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer/CombatButton\" )
+	_combat_button.connect( \"pressed\", _on_combat_button_pressed )
+"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5fu2g"]
 
@@ -69,12 +343,14 @@ metadata/_edit_use_anchors_ = true
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 20.0
-offset_right = -10.0
-offset_bottom = -50.0
+anchor_left = 0.016
+anchor_top = 0.042
+anchor_right = 0.984
+anchor_bottom = 0.896
+offset_left = -0.240001
+offset_top = -0.160002
+offset_right = 0.23999
+offset_bottom = -0.0800171
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -116,109 +392,611 @@ bbcode_enabled = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VSyncList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="VSyncList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
 layout_mode = 2
-_title = &"VSYNC"
-_description = &"VSYNC_DESCRIPTION"
-_items = Array[StringName]([&"VSYNC_OFF", &"VSYNC_ADAPTIVE", &"VSYNC_ON", &"VSYNC_TRIPLE_BUFFERED"])
+focus_neighbor_bottom = NodePath("../ResolutionList")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"VSYNC"
+Description = &"VSYNC_DESCRIPTION"
+Items = Array[StringName]([&"VSYNC_OFF", &"VSYNC_ADAPTIVE", &"VSYNC_ON", &"VSYNC_TRIPLE_BUFFERED"])
+metadata/_edit_use_anchors_ = true
 
-[node name="ResolutionList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/VSyncList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_ffd5i")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/VSyncList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/VSyncList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/VSyncList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="ResolutionList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../VSyncList")
 focus_neighbor_bottom = NodePath("../WindowModeList")
 focus_mode = 2
-_title = &"RESOLUTION"
-_no_translate = true
-_items = Array[StringName]([&"640x480", &"800x600", &"1024x768", &"1280x720", &"1280x768", &"1280x800", &"1280x1024", &"1360x768", &"1366x768", &"1440x900", &"1536x864", &"1600x900", &"1600x1200", &"1680x1050", &"1920x1080", &"1920x1200", &"2048x1152", &"2048x1536", &"2560x1080", &"2560x1440", &"2560x1600", &"3440x1440", &"3840x2160"])
+script = ExtResource("3_ffd5i")
+Title = &"RESOLUTION"
+Description = &"RESOLUTION_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"640x480", &"800x600", &"1024x768", &"1280x720", &"1280x768", &"1280x800", &"1280x1024", &"1360x768", &"1366x768", &"1440x900", &"1536x864", &"1600x900", &"1600x1200", &"1680x1050", &"1920x1080", &"1920x1200", &"2048x1152", &"2048x1536", &"2560x1080", &"2560x1440", &"2560x1600", &"3440x1440", &"3840x2160"])
+metadata/_edit_use_anchors_ = true
 
-[node name="WindowModeList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_ek4rk")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="WindowModeList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ResolutionList")
-focus_neighbor_bottom = NodePath("../MaxFpsList")
-focus_mode = 2
-_title = &"WINDOW_MODE"
-_no_translate = true
-_items = Array[StringName]([&"WINDOWED", &"BORDLERSS WINDOWED", &"FULLSCREEN", &"BORDERLESS FULLSCREEN", &"EXCLUSIVE FULLSCREEN"])
-
-[node name="AntiAliasingList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../MaxFpsList")
-focus_mode = 2
-_title = &"ANTI_ALIASING"
-_no_translate = true
-_items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
-
-[node name="MaxFpsList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../WindowModeList")
 focus_neighbor_bottom = NodePath("../AntiAliasingList")
 focus_mode = 2
-_title = &"MAX_FPS"
-_no_translate = true
-_items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
+script = ExtResource("3_ffd5i")
+Title = &"WINDOW_MODE"
+Description = &"WINDOW_MODE_DESCRIPTION"
+Items = Array[StringName]([&"WINDOWED", &"BORDLERSS WINDOWED", &"FULLSCREEN", &"BORDERLESS FULLSCREEN", &"EXCLUSIVE FULLSCREEN"])
+metadata/_edit_use_anchors_ = true
 
-[node name="PerformanceOverlayList" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-_title = &"PERFORMANCE_OVERLAY"
-_description = &"PERFORMANCE_OVERLAY_DESCRIPTION"
-_items = Array[StringName]([&"PERFORMANCE_OVERLAY_HIDE", &"PERFORMANCE_OVERLAY_FPS_ONLY", &"PERFORMANCE_OVERLAY_PARTIAL", &"PERFORMANCE_OVERLAY_FULL"])
+theme_override_styles/normal = SubResource("StyleBoxTexture_amktp")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
 
-[node name="ShowBloodButton" parent="TabContainer/Video/MainContainer/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList"]
 layout_mode = 2
-_title = &"SHOW_BLOOD"
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
 
-[node name="AdvancedSettingsButton" parent="TabContainer/Video/MainContainer/VBoxContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("5_5fu2g")]
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList"]
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-_toggle_container = NodePath("../../AdvancedContainer")
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="AntiAliasingList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../WindowModeList")
+focus_neighbor_bottom = NodePath("../MaxFpsList")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"ANTI_ALIASING"
+Description = &"ANTI_ALIASING_DESCRIPTION"
+Items = Array[StringName]([&"NONE", &"FXAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"TAA", &"FXAA+TAA"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_y2hwk")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="MaxFpsList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../AntiAliasingList")
+focus_neighbor_bottom = NodePath("../PerformanceOverlayList")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"MAX_FPS"
+Description = &"MAX_FPS_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"UNLIMITED", &"30", &"45", &"60", &"90", &"125", &"225"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_0umxr")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="PerformanceOverlayList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../MaxFpsList")
+focus_neighbor_bottom = NodePath("../ShowBloodButton")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"PERFORMANCE_OVERLAY"
+Description = &"PERFORMANCE_OVERLAY_DESCRIPTION"
+Items = Array[StringName]([&"PERFORMANCE_OVERLAY_HIDE", &"PERFORMANCE_OVERLAY_FPS_ONLY", &"PERFORMANCE_OVERLAY_PARTIAL", &"PERFORMANCE_OVERLAY_FULL"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_xe2a0")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="ShowBloodButton" type="HBoxContainer" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../PerformanceOverlayList")
+focus_neighbor_bottom = NodePath("../AdvancedSettingsButton")
+focus_mode = 2
+script = ExtResource("7_ek4rk")
+Title = &"SHOW_BLOOD"
+Description = &"SHOW_BLOOD_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_htq4l")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Video/MainContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShowBloodButton")
+theme_override_fonts/font = ExtResource("8_2ibmv")
+theme_override_styles/focus = SubResource("StyleBoxTexture_2ibmv")
+theme_override_styles/hover = SubResource("StyleBoxTexture_asps2")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_bn04h")
+theme_override_styles/normal = SubResource("StyleBoxTexture_p0w42")
+text = "ADVANCED_SETTINGS"
+script = ExtResource("9_amktp")
+metadata/_edit_use_anchors_ = true
 
 [node name="AdvancedContainer" type="VBoxContainer" parent="TabContainer/Video/MainContainer"]
 visible = false
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="ParticleQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+[node name="ParticleQualityList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_neighbor_top = NodePath("../../..")
+focus_neighbor_bottom = NodePath("../AnimationQualityList")
 focus_mode = 2
-_title = &"PARTICLE_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"Low", &"High"])
+script = ExtResource("3_ffd5i")
+Title = &"PARTICLE_QUALITY"
+Description = &"PARTICLE_QUALITY_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"Low", &"High"])
+metadata/_edit_use_anchors_ = true
 
-[node name="AnimationQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowQualityList")
+theme_override_styles/normal = SubResource("StyleBoxTexture_udwsp")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="AnimationQualityList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ParticleQualityList")
+focus_neighbor_bottom = NodePath("../LightingQualityList")
 focus_mode = 2
-_title = &"ANIMATION_QUALITY"
-_description = &"ANIMATION_QUALITY_DESCRIPTION"
-_no_translate = true
-_items = Array[StringName]([&"Low", &"Medium", &"High"])
+script = ExtResource("3_ffd5i")
+Title = &"ANIMATION_QUALITY"
+Description = &"ANIMATION_QUALITY_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"Low", &"Medium", &"High"])
+metadata/_edit_use_anchors_ = true
 
-[node name="LightingQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowQualityList")
-focus_mode = 2
-_title = &"LIGHTING_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"Very Low", &"Low", &"High"])
+theme_override_styles/normal = SubResource("StyleBoxTexture_dn7lm")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
 
-[node name="ShadowFilterQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ShadowQualityList")
-focus_mode = 2
-_title = &"SHADOW_FILTER_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"Off", &"Low", &"High"])
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
 
-[node name="ShadowQualityList" parent="TabContainer/Video/MainContainer/AdvancedContainer" instance=ExtResource("2_5fu2g")]
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList"]
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="LightingQualityList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../AnimationQualityList")
 focus_neighbor_bottom = NodePath("../ShadowFilterQualityList")
 focus_mode = 2
-_title = &"SHADOW_QUALITY"
-_no_translate = true
-_items = Array[StringName]([&"Low", &"Medium", &"High", &"Ultra"])
+script = ExtResource("3_ffd5i")
+Title = &"LIGHTING_QUALITY"
+Description = &"LIGHTING_QUALITY_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"Very Low", &"Low", &"High"])
+metadata/_edit_use_anchors_ = true
 
-[node name="GoBackAdvancedSettingsButton" parent="TabContainer/Video/MainContainer/AdvancedContainer" node_paths=PackedStringArray("_toggle_container") instance=ExtResource("6_10nm4")]
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-_toggle_container = NodePath("../../VBoxContainer")
+theme_override_styles/normal = SubResource("StyleBoxTexture_7vnhk")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="ShadowFilterQualityList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../LightingQualityList")
+focus_neighbor_bottom = NodePath("../ShadowQualityList")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"SHADOW_FILTER_QUALITY"
+Description = &"SHADOW_FILTER_QUALITY_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"Off", &"Low", &"High"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_3i875")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="ShadowQualityList" type="HBoxContainer" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowFilterQualityList")
+focus_neighbor_bottom = NodePath("../GoBackAdvancedSettingsButton")
+focus_mode = 2
+script = ExtResource("3_ffd5i")
+Title = &"SHADOW_QUALITY"
+Description = &"SHADOW_QUALITY_DESCRIPTION"
+NoTranslate = true
+Items = Array[StringName]([&"Low", &"Medium", &"High", &"Ultra"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_0gxpi")
+horizontal_alignment = 1
+script = ExtResource("5_ek4rk")
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Video/MainContainer/AdvancedContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ShadowQualityList")
+focus_neighbor_bottom = NodePath("../ParticleQualityList")
+theme_override_fonts/font = ExtResource("8_2ibmv")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ja5y3")
+theme_override_styles/hover = SubResource("StyleBoxTexture_s7vlx")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_74270")
+theme_override_styles/normal = SubResource("StyleBoxTexture_jfhyg")
+text = "BACK"
+script = ExtResource("9_amktp")
+metadata/_edit_use_anchors_ = true
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -247,33 +1025,169 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="EffectsOnButton" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="EffectsOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../MusicVolumeSlider")
 focus_neighbor_bottom = NodePath("../EffectsVolumeSlider")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"SOUND_EFFECTS_ON"
+metadata/_edit_use_anchors_ = true
 
-[node name="EffectsVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_s4m6w")]
+[node name="Title" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_fho2h")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Audio/VBoxContainer/EffectsOnButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="EffectsVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../EffectsOnButton")
 focus_neighbor_bottom = NodePath("../MusicOnButton")
 focus_mode = 2
+script = SubResource("GDScript_lqxw1")
 _title = &"SOUND_EFFECTS_VOLUME"
+metadata/_edit_use_anchors_ = true
 
-[node name="MusicOnButton" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Title" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_nntag")
+horizontal_alignment = 1
+
+[node name="Input" type="HSlider" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/grabber_offset = 345
+theme_override_styles/slider = ExtResource("7_ffd5i")
+theme_override_styles/grabber_area = ExtResource("8_ek4rk")
+theme_override_styles/grabber_area_highlight = ExtResource("8_ek4rk")
+value = 72.0
+rounded = true
+
+[node name="Value" type="Label" parent="TabContainer/Audio/VBoxContainer/EffectsVolumeSlider/Input"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.429
+anchor_top = -0.219
+anchor_right = 0.571
+anchor_bottom = 1.219
+offset_left = 19.38
+offset_top = 0.00400019
+offset_right = -19.38
+offset_bottom = -0.00400162
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="MusicOnButton" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../EffectsVolumeSlider")
 focus_neighbor_bottom = NodePath("../MusicVolumeSlider")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"MUSIC_ON"
+metadata/_edit_use_anchors_ = true
 
-[node name="MusicVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("3_s4m6w")]
+[node name="Title" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_1oeek")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Audio/VBoxContainer/MusicOnButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="MusicVolumeSlider" type="HBoxContainer" parent="TabContainer/Audio/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../MusicOnButton")
-focus_neighbor_bottom = NodePath("../EffectsOnButton")
 focus_mode = 2
+script = SubResource("GDScript_lqxw1")
 _title = &"MUSIC_VOLUME"
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_rpr1w")
+horizontal_alignment = 1
+
+[node name="Input" type="HSlider" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/grabber_offset = 345
+theme_override_styles/slider = ExtResource("7_ffd5i")
+theme_override_styles/grabber_area = ExtResource("8_ek4rk")
+theme_override_styles/grabber_area_highlight = ExtResource("8_ek4rk")
+value = 72.0
+rounded = true
+
+[node name="Value" type="Label" parent="TabContainer/Audio/VBoxContainer/MusicVolumeSlider/Input"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.429
+anchor_top = -0.219
+anchor_right = 0.571
+anchor_bottom = 1.219
+offset_left = 19.38
+offset_top = 0.00400019
+offset_right = -19.38
+offset_bottom = -0.00400162
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
 visible = false
@@ -300,42 +1214,262 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="HapticFeedbackButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="HapticFeedbackButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../DyslexiaModeButton")
 focus_neighbor_bottom = NodePath("../HapticStrengthSlider")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"HAPTIC_FEEDBACK"
 _description = &"HAPTIC_FEEDBACK_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
 
-[node name="HapticStrengthSlider" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_s4m6w")]
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_b2cyl")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="HapticStrengthSlider" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../HapticFeedbackButton")
+focus_neighbor_bottom = NodePath("../DyslexiaModeButton")
 focus_mode = 2
+script = SubResource("GDScript_lqxw1")
 _title = &"HAPTIC_FEEDBACK_STRENGTH"
 _description = &"HAPTIC_FEEDBACK_STRENGTH_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
 
-[node name="DyslexiaModeButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-focus_previous = NodePath("../HapticFeedbackButton")
+theme_override_styles/normal = SubResource("StyleBoxTexture_ey12s")
+horizontal_alignment = 1
+
+[node name="Input" type="HSlider" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/grabber_offset = 345
+theme_override_styles/slider = ExtResource("7_ffd5i")
+theme_override_styles/grabber_area = ExtResource("8_ek4rk")
+theme_override_styles/grabber_area_highlight = ExtResource("8_ek4rk")
+value = 72.0
+rounded = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/HapticStrengthSlider/Input"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.429
+anchor_top = -0.219
+anchor_right = 0.571
+anchor_bottom = 1.219
+offset_left = 19.38
+offset_top = 0.00400019
+offset_right = -19.38
+offset_bottom = -0.00400162
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="DyslexiaModeButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../HapticStrengthSlider")
+focus_neighbor_bottom = NodePath("../TextToSpeechButton")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"DYSLEXIA_MODE"
 _description = &"DYSLEXIA_MODE_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
 
-[node name="TextToSpeechButton" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="TextToSpeechButton" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../DyslexiaModeButton")
+focus_neighbor_bottom = NodePath("../ColorblindModeList")
+focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"TEXT_TO_SPEECH"
+metadata/_edit_use_anchors_ = true
 
-[node name="ColorblindModeList" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="ColorblindModeList" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../TextToSpeechButton")
+focus_neighbor_bottom = NodePath("../AutoAimList")
+focus_mode = 2
+script = SubResource("GDScript_7h574")
 _title = &"COLORBLIND_MODE"
 _items = Array[StringName]([&"COLORBLINDMODE_OFF", &"COLORBLINDMODE_PROTANOPIA", &"COLORBLINDMODE_TRITANOPIA", &"COLORBLINDMODE_DEUTERANOPIA"])
+metadata/_edit_use_anchors_ = true
 
-[node name="AutoAimList" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/ColorblindModeList"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_lxw3y")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/ColorblindModeList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/ColorblindModeList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/ColorblindModeList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
+
+[node name="AutoAimList" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ColorblindModeList")
+focus_mode = 2
+script = SubResource("GDScript_7h574")
 _title = &"AUTOAIM"
 _description = &"AUTOAIM_DESCRIPTION"
 _items = Array[StringName]([&"AUTOAIM_OFF", &"AUTOAIM_SOFT", &"AUTOAIM_LOCKON"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Accessibility/VBoxContainer/AutoAimList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_lxw3y")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/AutoAimList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Accessibility/VBoxContainer/AutoAimList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Accessibility/VBoxContainer/AutoAimList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 visible = false
@@ -362,21 +1496,91 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="HellbreakerEnabledButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="EnableTutorialsButton" type="HBoxContainer" parent="TabContainer/Gameplay/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../HUDPresetList")
 focus_mode = 2
-_title = &"HELLBREAKER_ENABLED"
-
-[node name="EnableTutorialsButton" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("3_08gdp")]
-layout_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"ENABLE_TUTORIALS"
 _description = &"ENABLE_TUTORIALS_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
 
-[node name="HUDPresetList" parent="TabContainer/Gameplay/VBoxContainer" instance=ExtResource("2_5fu2g")]
+[node name="Title" type="Label" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="HUDPresetList" type="HBoxContainer" parent="TabContainer/Gameplay/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../EnableTutorialsButton")
+focus_mode = 2
+script = SubResource("GDScript_7h574")
 _title = &"HUD_PRESET"
 _no_translate = true
 _items = Array[StringName]([&"Full", &"Partial", &"Expert"])
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Gameplay/VBoxContainer/HUDPresetList"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_lxw3y")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Gameplay/VBoxContainer/HUDPresetList"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Gameplay/VBoxContainer/HUDPresetList"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../LeftIcon")
+focus_neighbor_right = NodePath("../RightIcon")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Gameplay/VBoxContainer/HUDPresetList"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Value")
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_di8p4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
+text = ">"
+flat = true
 
 [node name="Network" type="TabBar" parent="TabContainer"]
 visible = false
@@ -403,34 +1607,273 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="EnableNetworkingButton" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="EnableNetworkingButton" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../CODLobbies")
 focus_neighbor_bottom = NodePath("../CODLobbies")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"ENABLE_NETWORKING"
+metadata/_edit_use_anchors_ = true
 
-[node name="CODLobbies" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Title" type="Label" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Network/VBoxContainer/EnableNetworkingButton"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="CODLobbies" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../EnableNetworkingButton")
 focus_neighbor_bottom = NodePath("../EnableNetworkingButton")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"COD_LOBBIES"
 _description = &"COD_LOBBIES_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
 
-[node name="BountyHuntEnabled" parent="TabContainer/Network/VBoxContainer" instance=ExtResource("3_08gdp")]
+[node name="Title" type="Label" parent="TabContainer/Network/VBoxContainer/CODLobbies"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Network/VBoxContainer/CODLobbies"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Network/VBoxContainer/CODLobbies"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Network/VBoxContainer/CODLobbies"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
+
+[node name="BountyHuntEnabled" type="HBoxContainer" parent="TabContainer/Network/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../EnableNetworkingButton")
 focus_neighbor_bottom = NodePath("../EnableNetworkingButton")
 focus_mode = 2
+script = SubResource("GDScript_yqame")
 _title = &"BOUNTY_HUNT_ENABLED"
 _description = &"BOUNTY_HUNT_ENABLED_DESCRIPTION"
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="TabContainer/Network/VBoxContainer/BountyHuntEnabled"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
+horizontal_alignment = 1
+
+[node name="LeftIcon" type="Button" parent="TabContainer/Network/VBoxContainer/BountyHuntEnabled"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="TabContainer/Network/VBoxContainer/BountyHuntEnabled"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="TabContainer/Network/VBoxContainer/BountyHuntEnabled"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_amktp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true
 
 [node name="Controls" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
 mouse_filter = 2
+script = SubResource("GDScript_10nm4")
 metadata/_tab_index = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Description" type="RichTextLabel" parent="TabContainer/Controls/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Controls/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="NavigationContainer" type="VBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+focus_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="MovementButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../CombatButton")
+focus_neighbor_bottom = NodePath("../UtilityButton")
+theme_override_fonts/font = ExtResource("8_2ibmv")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "MOVEMENT_BUTTON"
+
+[node name="UtilityButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../MovementButton")
+theme_override_fonts/font = ExtResource("8_2ibmv")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "UTILITY_BUTTON"
+
+[node name="CombatButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/NavigationContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../UtilityButton")
+focus_neighbor_bottom = NodePath("../MovementButton")
+theme_override_fonts/font = ExtResource("8_2ibmv")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("21_fs1xy")
+text = "COMBAT_BUTTON"
+
+[node name="MovementContainer" type="VBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer"]
+process_mode = 3
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 32
+
+[node name="MoveNorthBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../SlideBind")
+focus_neighbor_bottom = NodePath("../MoveEastBind")
+focus_mode = 2
+_action_label = &"Move North"
+_action_name = &"move_north"
+_display_category = &"Movement"
+_action = ExtResource("3_l0eij")
+
+[node name="MoveEastBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../MoveNorthBind")
+focus_neighbor_bottom = NodePath("../MoveSouthBind")
+focus_mode = 2
+_action_label = &"Move East"
+_action_name = &"move_east"
+_display_category = &"Movement"
+_action = ExtResource("4_pt7eq")
+
+[node name="MoveSouthBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../MoveEastBind")
+focus_neighbor_bottom = NodePath("../MoveWestBind")
+focus_mode = 2
+_action_label = &"Move South"
+_action_name = &"move_south"
+_display_category = &"Movement"
+_action = ExtResource("5_fd2q8")
+
+[node name="MoveWestBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../MoveSouthBind")
+focus_neighbor_bottom = NodePath("../DashBind")
+focus_mode = 2
+_action_label = &"Move West"
+_action_name = &"move_west"
+_display_category = &"Movement"
+_action = ExtResource("6_rxdtf")
+
+[node name="DashBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../MoveWestBind")
+focus_neighbor_bottom = NodePath("../SlideBind")
+focus_mode = 2
+_action_label = &"Dash"
+_action_name = &"dash"
+_display_category = &"movement"
+_action = ExtResource("5_g1xt0")
+
+[node name="SlideBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/HBoxContainer/MovementContainer" instance=ExtResource("4_6t40d")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
+focus_neighbor_top = NodePath("../DashBind")
+focus_neighbor_bottom = NodePath("../MoveNorthBind")
+focus_mode = 2
+_action_label = &"Slide"
+_action_name = &"slide"
+_display_category = &"movement"
+_action = ExtResource("6_uhm1t")
 
 [node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
 visible = false
@@ -442,7 +1885,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5fu2g")
-current_tab = 2
+current_tab = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Movement" type="TabBar" parent="TabContainer/Controls/TabContainer"]
@@ -451,62 +1894,7 @@ layout_mode = 2
 mouse_filter = 2
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/TabContainer/Movement"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 32
-
-[node name="MoveNorthBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Move North"
-_action_name = &"move_north"
-_display_category = &"Movement"
-_action = ExtResource("3_l0eij")
-
-[node name="MoveEastBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Move East"
-_action_name = &"move_east"
-_display_category = &"Movement"
-_action = ExtResource("4_pt7eq")
-
-[node name="MoveSouthBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Move South"
-_action_name = &"move_south"
-_display_category = &"Movement"
-_action = ExtResource("5_fd2q8")
-
-[node name="MoveWestBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Move West"
-_action_name = &"move_west"
-_display_category = &"Movement"
-_action = ExtResource("6_rxdtf")
-
-[node name="DashBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Dash"
-_action_name = &"dash"
-_display_category = &"movement"
-_action = ExtResource("5_g1xt0")
-
-[node name="SlideBind" parent="TabContainer/Controls/TabContainer/Movement/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action_label = &"Slide"
-_action_name = &"slide"
-_display_category = &"movement"
-_action = ExtResource("6_uhm1t")
-
 [node name="Utility" type="TabBar" parent="TabContainer/Controls/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -534,6 +1922,7 @@ _display_category = &"Utility"
 _action = ExtResource("10_fd2q8")
 
 [node name="Combat" type="TabBar" parent="TabContainer/Controls/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -576,86 +1965,149 @@ _action_name = &"bullet_time"
 _display_category = &"combat"
 _action = ExtResource("11_l0eij")
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Controls"]
+[node name="SaveSettingsIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(24, 24)
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_left = 0.726063
+anchor_top = 0.917
+anchor_right = 0.789063
 anchor_bottom = 1.0
+offset_left = 0.319946
+offset_top = -0.160034
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+expand_mode = 2
 metadata/_edit_use_anchors_ = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Controls/MarginContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-metadata/_edit_use_anchors_ = true
-
-[node name="MovementButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/focus = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-text = "MOVEMENT_BUTTON"
-
-[node name="UtilityButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/focus = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-text = "UTILITY_BUTTON"
-
-[node name="CombatButton" type="Button" parent="TabContainer/Controls/MarginContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/focus = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-text = "COMBAT_BUTTON"
 
 [node name="SaveSettingsButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.791
-anchor_top = 0.919
-anchor_right = 0.989
-anchor_bottom = 0.983
+anchor_left = 0.520687
+anchor_top = 0.927333
+anchor_right = 0.718688
+anchor_bottom = 0.991333
 offset_left = -0.240021
 offset_top = -0.120026
 offset_right = 0.039978
 offset_bottom = 0.159973
 grow_horizontal = 0
 grow_vertical = 0
+focus_neighbor_left = NodePath("../DefaultSettingsButton")
 mouse_filter = 1
 theme_override_fonts/font = SubResource("SystemFont_5fu2g")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("27_asps2")
 text = "SAVE_SETTINGS"
+script = ExtResource("28_amktp")
+metadata/_edit_use_anchors_ = true
+
+[node name="ResetSettingsIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4345
+anchor_top = 0.917
+anchor_right = 0.4965
+anchor_bottom = 1.0
+offset_left = -0.0800171
+offset_top = -0.160034
+offset_right = 0.23999
+expand_mode = 2
+stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="DefaultSettingsButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.531
-anchor_top = 0.919
-anchor_right = 0.778
-anchor_bottom = 0.983
+anchor_left = 0.131
+anchor_top = 0.927333
+anchor_right = 0.426437
+anchor_bottom = 0.991333
 offset_left = 31.1599
 offset_top = -0.120026
 offset_right = 0.0799255
 offset_bottom = 0.159973
 grow_horizontal = 0
 grow_vertical = 0
+focus_neighbor_left = NodePath("../ExitButton")
+focus_neighbor_right = NodePath("../SaveSettingsButton")
 mouse_filter = 1
 theme_override_fonts/font = SubResource("SystemFont_5fu2g")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("27_asps2")
 text = "DEFAULT_SETTINGS"
+script = ExtResource("28_amktp")
+metadata/_edit_use_anchors_ = true
+
+[node name="ExitIcon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.000250006
+anchor_top = 0.917
+anchor_right = 0.06225
+anchor_bottom = 1.0
+offset_left = -0.160004
+offset_top = -0.160034
+offset_right = 0.159996
+expand_mode = 2
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="ExitButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.061
+anchor_top = 0.925
+anchor_right = 0.139
+anchor_bottom = 0.99
+offset_left = -0.0400009
+offset_top = -3.05176e-05
+offset_right = 0.0399933
+offset_bottom = -0.200043
+focus_neighbor_right = NodePath("../DefaultSettingsButton")
+theme_override_styles/focus = ExtResource("20_afkw7")
+theme_override_styles/hover = ExtResource("20_afkw7")
+theme_override_styles/pressed = ExtResource("20_afkw7")
+theme_override_styles/normal = ExtResource("27_asps2")
+text = "BACK"
+script = ExtResource("28_amktp")
+metadata/_edit_use_anchors_ = true
+
+[node name="LeftIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(48, 32)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0594375
+anchor_top = 0.0441667
+anchor_right = 0.133938
+anchor_bottom = 0.1105
+offset_left = -0.0400004
+offset_top = -0.2
+offset_right = 0.279999
+offset_bottom = -0.0400009
+expand_mode = 3
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="RightIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(48, 32)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.865688
+anchor_top = 0.0441667
+anchor_right = 0.941
+anchor_bottom = 0.11
+offset_left = -0.0400391
+offset_top = -0.2
+offset_right = -24.2401
+offset_bottom = -5.8
+expand_mode = 3
+stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 
 [node name="GUIDEInputDetector" type="Node" parent="."]
@@ -674,3 +2126,52 @@ ok_button_text = "Yes"
 dialog_text = "WARNING: You have made changes to some settings, Save settings?"
 dialog_autowrap = true
 cancel_button_text = "No"
+
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/VSyncList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/VSyncList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/VSyncList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/VSyncList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/ResolutionList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/WindowModeList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/AntiAliasingList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/MaxFpsList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/PerformanceOverlayList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton/LeftIcon" to="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton/RightIcon" to="TabContainer/Video/MainContainer/VBoxContainer/ShowBloodButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList/LeftIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList/RightIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ParticleQualityList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList/LeftIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList/RightIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/AnimationQualityList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList/LeftIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList/RightIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/LightingQualityList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList/LeftIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList/RightIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ShadowFilterQualityList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList/LeftIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList/RightIcon" to="TabContainer/Video/MainContainer/AdvancedContainer/ShadowQualityList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Audio/VBoxContainer/EffectsOnButton/LeftIcon" to="TabContainer/Audio/VBoxContainer/EffectsOnButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Audio/VBoxContainer/EffectsOnButton/RightIcon" to="TabContainer/Audio/VBoxContainer/EffectsOnButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Audio/VBoxContainer/MusicOnButton/LeftIcon" to="TabContainer/Audio/VBoxContainer/MusicOnButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Audio/VBoxContainer/MusicOnButton/RightIcon" to="TabContainer/Audio/VBoxContainer/MusicOnButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton/LeftIcon" to="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton/RightIcon" to="TabContainer/Accessibility/VBoxContainer/HapticFeedbackButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton/LeftIcon" to="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton/RightIcon" to="TabContainer/Accessibility/VBoxContainer/DyslexiaModeButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton/LeftIcon" to="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton/RightIcon" to="TabContainer/Accessibility/VBoxContainer/TextToSpeechButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/ColorblindModeList/LeftIcon" to="TabContainer/Accessibility/VBoxContainer/ColorblindModeList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/ColorblindModeList/RightIcon" to="TabContainer/Accessibility/VBoxContainer/ColorblindModeList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/AutoAimList/LeftIcon" to="TabContainer/Accessibility/VBoxContainer/AutoAimList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Accessibility/VBoxContainer/AutoAimList/RightIcon" to="TabContainer/Accessibility/VBoxContainer/AutoAimList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton/LeftIcon" to="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton/RightIcon" to="TabContainer/Gameplay/VBoxContainer/EnableTutorialsButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Gameplay/VBoxContainer/HUDPresetList/LeftIcon" to="TabContainer/Gameplay/VBoxContainer/HUDPresetList" method="_on_left_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Gameplay/VBoxContainer/HUDPresetList/RightIcon" to="TabContainer/Gameplay/VBoxContainer/HUDPresetList" method="_on_right_icon_pressed"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/EnableNetworkingButton/LeftIcon" to="TabContainer/Network/VBoxContainer/EnableNetworkingButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/EnableNetworkingButton/RightIcon" to="TabContainer/Network/VBoxContainer/EnableNetworkingButton" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/CODLobbies/LeftIcon" to="TabContainer/Network/VBoxContainer/CODLobbies" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/CODLobbies/RightIcon" to="TabContainer/Network/VBoxContainer/CODLobbies" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/BountyHuntEnabled/LeftIcon" to="TabContainer/Network/VBoxContainer/BountyHuntEnabled" method="_on_toggled"]
+[connection signal="pressed" from="TabContainer/Network/VBoxContainer/BountyHuntEnabled/RightIcon" to="TabContainer/Network/VBoxContainer/BountyHuntEnabled" method="_on_toggled"]

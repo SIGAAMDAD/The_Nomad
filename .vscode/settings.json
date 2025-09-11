@@ -1,5 +1,8 @@
 {
-	"godotTools.editorPath.godot4": "/media/noah/ab8ebf4d-ded3-46a9-983a-3545cd58109e/noah/the-nomad/TheNomad.x86_64",
+	"godotTools.editorPath.godot4": "C:\\Users\\nyvan\\OneDrive\\Documents\\Godot_v4.4.1-stable_mono_win64\\Godot_v4.4.1-stable_mono_win64.exe",
+	"dotnet.defaultSolution": "TheNomad.sln",
+	"testExplorer.useNativeTesting": false,
+	"dotnet-test-explorer.testProjectPath": "TheNomad.csproj",
 	"files.exclude": {
 		"**/*.cs.doxy_temp": true,
 		"**/*.cs.uid": true,

@@ -45,8 +45,8 @@ namespace Menus {
 		private OptionButton GameModeList;
 		private Label PlayerCountLabel;
 
-		private void OnMapSelectionChanged( int nSelected ) {
-			MultiplayerMapManager.MapData data = MultiplayerMapManager.MapCache.Values.ElementAt( nSelected );
+		private void OnMapSelectionChanged( int selected ) {
+			MultiplayerMapManager.MapData data = MultiplayerMapManager.MapCache.Values.ElementAt( selected );
 
 			GameModeList.Clear();
 			if ( data.ModeBloodbath ) {
@@ -72,43 +72,40 @@ namespace Menus {
 			}
 			GameModeList.Selected = 0;
 		}
-		private void OnGameModeSelectionChanged( int nSelected ) {
-			switch ( (Mode.GameMode)nSelected ) {
+		private void OnGameModeSelectionChanged( int selected ) {
+			switch ( (Mode.GameMode)selected ) {
 				case Mode.GameMode.Bloodbath:
-					MaxPlayers.MinValue = Bloodbath.MinPlayers;
-					MaxPlayers.MaxValue = Bloodbath.MaxPlayers;
+					MaxPlayers.MinValue = Bloodbath.MIN_PLAYERS;
+					MaxPlayers.MaxValue = Bloodbath.MAX_PLAYERS;
 					break;
 				case Mode.GameMode.CaptureTheFlag:
 					break;
 				case Mode.GameMode.KingOfTheHill:
 					break;
 				case Mode.GameMode.Duel:
-					MaxPlayers.MinValue = Duel.MinPlayers;
-					MaxPlayers.MaxValue = Duel.MaxPlayers;
+					MaxPlayers.MinValue = Duel.MIN_PLAYERS;
+					MaxPlayers.MaxValue = Duel.MAX_PLAYERS;
 					break;
 			}
-			;
 		}
 
 		public override void _Ready() {
 			Theme = SettingsData.DyslexiaMode ? AccessibilityManager.DyslexiaTheme : AccessibilityManager.DefaultTheme;
 
-			Label TitleLabel = GetNode<Label>( "TitleLabel" );
-
 			LobbyName = GetNode<LineEdit>( "MarginContainer/VBoxContainer/NameContainer/NameLineEdit" );
+
 			MaxPlayers = GetNode<HSlider>( "MarginContainer/VBoxContainer/MaxPlayersContainer/HBoxContainer/MaxPlayersHSlider" );
-			MaxPlayers.Connect( HSlider.SignalName.ValueChanged, Callable.From<double>( ( value ) => { PlayerCountLabel.Text = Convert.ToString( (int)value ); } ) );
+			GameEventBus.ConnectSignal( MaxPlayers, HSlider.SignalName.ValueChanged, this, Callable.From<double>( ( value ) => { PlayerCountLabel.Text = Convert.ToString( (int)value ); } ) );
 
 			PlayerCountLabel = GetNode<Label>( "MarginContainer/VBoxContainer/MaxPlayersContainer/HBoxContainer/PlayerCountLabel" );
 			PlayerCountLabel.Text = Convert.ToString( MaxPlayers.Value );
 
 			MapList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/MapContainer/MapOptionButton" );
-			MapList.Connect( OptionButton.SignalName.ItemSelected, Callable.From<int>( OnMapSelectionChanged ) );
+			GameEventBus.ConnectSignal(  MapList, OptionButton.SignalName.ItemSelected, this, Callable.From<int>( OnMapSelectionChanged ) );
 
 			GameModeList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/GameModeContainer/GameModeOptionButton" );
 
-			Button CreateButton = GetNode<Button>( "CreateButton" );
-			CreateButton.Connect( Button.SignalName.Pressed, Callable.From( OnCreateButtonPressed ) );
+			GameEventBus.ConnectSignal( GetNode( "CreateButton" ), Button.SignalName.Pressed, this, OnCreateButtonPressed );
 
 			foreach ( var map in MultiplayerMapManager.MapCache ) {
 				MapList.AddItem( map.Value.Name );
@@ -131,14 +128,12 @@ namespace Menus {
 				}
 			}
 
-			/*
 			SteamLobby.Instance.SetLobbyName( LobbyName.Text );
 			SteamLobby.Instance.SetMaxMembers( (int)MaxPlayers.Value );
 			SteamLobby.Instance.SetMap( MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name );
 			SteamLobby.Instance.SetGameMode( (uint)GameModeList.GetItemId( GameModeList.Selected ) );
 			SteamLobby.Instance.SetHostStatus( true );
-			*/
-			GameConfiguration.GameMode = GameMode.Multiplayer;
+			GameConfiguration.SetGameMode( GameMode.Multiplayer );
 
 			SteamLobby.Instance.CreateLobby();
 

@@ -24,7 +24,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Godot;
 using ResourceCache;
 using System;
-using System.Collections.Generic;
 
 namespace Renown {
 	/*
@@ -36,6 +35,12 @@ namespace Renown {
 	*/
 
 	public partial class Trait : Resource {
+		/// <summary>
+		/// The score a trait needs to have to be considered "Outstanding", or in other words, a literal defining
+		/// character trait.
+		/// </summary>
+		public static readonly float OUTSTANDING_TRAIT_SCORE = 65.0f;
+
 		[Export]
 		public StringName Name { get; private set; }
 		[Export]
@@ -78,9 +83,9 @@ namespace Renown {
 		Conflicts
 		===============
 		*/
-		public bool Conflicts( Trait trait ) {
+		public bool Conflicts( Trait trait, float a, float b ) {
 			if ( ConflictingTraits.TryGetValue( trait, out bool conflicts ) ) {
-				return conflicts;
+				return conflicts && Mathf.Abs( a - b ) > 65.0f;
 			}
 			return false;
 		}

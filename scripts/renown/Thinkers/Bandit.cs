@@ -23,7 +23,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using MountainGoap;
-using Renown.Thinkers.GoapCache;
 using Renown.Thinkers.Groups;
 using Renown.World;
 using ResourceCache;
@@ -31,9 +30,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Steam;
 using Menus;
+using Items;
 
 namespace Renown.Thinkers {
-	public partial class Bandit : Thinker {
+	public partial class Bandit : MobBase {
 		private enum State : uint {
 			Goto,
 			Animate,
@@ -42,22 +42,14 @@ namespace Renown.Thinkers {
 			Count
 		};
 
-		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
-		private static readonly float ViewAngleAmount = Mathf.DegToRad( 80.0f );
-		private static readonly float MaxViewDistance = 180.0f;
-
 		private static readonly int ChallengeMode_Score = 10;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
 		[Export]
-		private float SightDetectionTime = 0.0f;
-		[Export]
 		private float SightDetectionSpeed = 0.0f;
 		[Export]
 		private AINodeCache NodeCache;
-
-		private float SightDetectionAmount = 0.0f;
 
 		private Hitbox HeadHitbox;
 
@@ -67,7 +59,7 @@ namespace Renown.Thinkers {
 
 		private State CurrentState;
 
-		private Godot.Vector2 StartPosition;
+		private Vector2 StartPosition;
 		private float StartHealth;
 
 		// combat variables
@@ -76,29 +68,19 @@ namespace Renown.Thinkers {
 		private bool Aiming = false;
 		private Line2D AttackMeter;
 		private float AttackMeterProgress = 0.0f;
-		private Godot.Vector2 AttackMeterFull;
-		private Godot.Vector2 AttackMeterDone;
+		private Vector2 AttackMeterFull;
+		private Vector2 AttackMeterDone;
 
 		private Squad Group;
 
-		public Entity SightTarget { get; private set; } = null;
-
-		private Timer LoseInterestTimer;
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
-		public WeaponEntity Weapon { get; private set; }
-
-		private MobAwareness Awareness = MobAwareness.Relaxed;
+		public WeaponFirearm Weapon { get; private set; }
 
 		private AudioStreamPlayer2D BarkChannel;
 
-		public Godot.Vector2 LastTargetPosition { get; private set; } = Godot.Vector2.Zero;
-		private float[] SightLines = null;
-		public bool CanSeeTarget { get; private set; } = false;
 		private Tween MeleeTween;
-
-		public Entity Target { get; private set; }
 
 		private Line2D DetectionMeter;
 
@@ -111,14 +93,6 @@ namespace Renown.Thinkers {
 
 		private BarkType LastBark = BarkType.Count;
 		private BarkType SequencedBark = BarkType.Count;
-
-		private void GenerateRayCasts() {
-			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new float[ rayCount ];
-			for ( int i = 0; i < rayCount; i++ ) {
-				SightLines[ i ] = AngleBetweenRays * ( i - rayCount / 2.0f );
-			}
-		}
 
 		public override void SetNavigationTarget( Godot.Vector2 position ) {
 			base.SetNavigationTarget( position );
@@ -155,9 +129,6 @@ namespace Renown.Thinkers {
 				SteamAchievements.ActivateAchievement( "ACH_DANCE_DANCE_DANCE" );
 			}
 		}
-
-		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
-		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
 		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
@@ -234,19 +205,6 @@ namespace Renown.Thinkers {
 
 			Awareness = MobAwareness.Alert;
 			SetNavigationTarget( LastTargetPosition );
-		}
-
-		private void SetSuspicious() {
-			Awareness = MobAwareness.Suspicious;
-			Bark( BarkType.Confusion, Group.Members.Count > 0 ? BarkType.CheckItOut : BarkType.Count );
-		}
-		private void SetAlert() {
-			if ( Awareness != MobAwareness.Alert ) {
-				//				SetNavigationTarget( NodeCache.FindClosestCover( GlobalPosition, Target.GlobalPosition ).GlobalPosition );
-			}
-			Target = SightTarget;
-			Bark( BarkType.TargetSpotted );
-			Awareness = MobAwareness.Alert;
 		}
 
 		private void SetFear( int amount ) {
@@ -384,157 +342,6 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		public override void _Ready() {
-			base._Ready();
-
-			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
-				AddToGroup( "Enemies" );
-
-				LevelData.Instance.PlayerRespawn += OnRestartCheckpoint;
-			}
-
-			StartPosition = GlobalPosition;
-			StartHealth = Health;
-
-			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
-			GameEventBus.ConnectSignal( HeadHitbox, Hitbox.SignalName.Hit, this, Callable.From<Entity, float>( OnHeadHit ) );
-
-			CurrentState = State.Animate;
-
-			Group = SquadManager.GetGroup( Faction, GlobalPosition );
-			Group.AddMember( this );
-
-			LoseInterestTimer = new Timer() {
-				Name = nameof( LoseInterestTimer ),
-				WaitTime = LoseInterestTime,
-				OneShot = true
-			};
-			GameEventBus.ConnectSignal( LoseInterestTimer, Timer.SignalName.Timeout, this, OnLoseInterestTimerTimeout );
-			AddChild( LoseInterestTimer );
-
-			ChangeInvestigationAngleTimer = new Timer() {
-				Name = nameof( ChangeInvestigationAngleTimer ),
-				WaitTime = 2.0f,
-				OneShot = true
-			};
-			GameEventBus.ConnectSignal( ChangeInvestigationAngleTimer, Timer.SignalName.Timeout, this, () => {
-				float angle;
-				if ( RNJesus.IntRange( 0, 99 ) > 49 ) {
-					angle = RNJesus.FloatRange( -80.0f, 80.0f );
-				} else {
-					angle = RNJesus.FloatRange( 100.0f, 260.0f );
-				}
-				angle = Mathf.DegToRad( angle );
-				LookAngle = angle;
-				AimAngle = angle;
-				if ( !CanSeeTarget ) {
-					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
-				}
-			} );
-
-			AttackMeter = GetNode<Line2D>( "AttackMeter" );
-			AttackMeterDone = AttackMeter.Points[ 0 ];
-			AttackMeter.Points[ 1 ] = AttackMeterFull;
-			AttackMeterProgress = AttackMeterFull.X;
-
-			AttackTimer = new Timer() {
-				Name = nameof( AttackTimer ),
-				OneShot = true
-			};
-			GameEventBus.ConnectSignal( AttackTimer, Timer.SignalName.Timeout, this, () => Aiming = false );
-			AddChild( AttackTimer );
-
-			AimTimer = new Timer() {
-				Name = nameof( AimTimer ),
-				WaitTime = 2.5f,
-				OneShot = true
-			};
-			GameEventBus.ConnectSignal( AimTimer, Timer.SignalName.Timeout, this, OnAimTimerTimeout );
-			AddChild( AimTimer );
-
-			BarkChannel = new AudioStreamPlayer2D() {
-				Name = nameof( BarkChannel ),
-				VolumeDb = SettingsData.GetEffectsVolumeLinear()
-			};
-			AddChild( BarkChannel );
-
-			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
-
-			Weapon = new WeaponEntity() {
-				Name = "Weapon",
-				Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" )
-			};
-
-			AddChild( Weapon );
-
-			Weapon.SetAmmoStack( new AmmoStack( ItemCache.GetItem( "res://resources/ammo/ammo_556.tres" ), 48 ) );
-			Weapon.TriggerPickup( this );
-			Weapon.SetOwner( this );
-
-			TargetMovedTimer = new Timer() {
-				Name = nameof( TargetMovedTimer ),
-				WaitTime = 5.0f,
-				OneShot = true
-			};
-			GameEventBus.ConnectSignal( TargetMovedTimer, Timer.SignalName.Timeout, this, () => Bark( BarkType.TargetPinned ) );
-			AddChild( TargetMovedTimer );
-
-			switch ( Direction ) {
-				case DirType.North:
-					LookDir = Godot.Vector2.Up;
-					break;
-				case DirType.East:
-					LookDir = Godot.Vector2.Right;
-					break;
-				case DirType.South:
-					LookDir = Godot.Vector2.Down;
-					break;
-				case DirType.West:
-					LookDir = Godot.Vector2.Left;
-					BodyAnimations.FlipH = true;
-					break;
-			}
-			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-			AimAngle = LookAngle;
-
-			List<MountainGoap.BaseGoal> goals = GoapCache.GoapAllocator.GetGoalList( "bandit" );
-			List<MountainGoap.Action> actions = GoapCache.GoapAllocator.GetActionList( "bandit" );
-			List<MountainGoap.Sensor> sensors = GoapCache.GoapAllocator.GetSensorList( "bandit" );
-
-			Group = SquadManager.GetGroup( Faction, GlobalPosition );
-
-			Agent = new MountainGoap.Agent(
-				name: "Bandit",
-				state: new ConcurrentDictionary<string, object?> {
-					{ "Health", Health },
-					{ "HasAmmo", false },
-					{ "PlayerVisible", CanSeeTarget },
-					{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
-					{ "UnderFire", false },
-					{ "HasCover", false },
-					{ "Awareness", MobAwareness.Relaxed },
-					{ "IsAlerted", false }, // Awareness is greater than relaxed
-					{ "SquadSize", 0 },
-					{ "WeaponState", Weapon.CurrentState },
-					{ "Target", null },
-					{ "ClearLineOfFire", false },
-					{ "SquadTactic", Group.CurrentTactic },
-					{ "Owner", this }
-				},
-				memory: new Dictionary<string, object?> {
-					{ "WarnedFriendlies", false },
-					{ "AimTime", 0.0f },
-					{ "CheckSight", () => CheckSight }
-				},
-				goals: goals,
-				actions: actions,
-				sensors: sensors,
-				costMaximum: float.MaxValue,
-				24
-			);
-			GenerateRayCasts();
-		}
-
 		private void OnAimTimerTimeout() {
 			RayIntersectionInfo collision = GodotServerManager.CheckRayCast( GlobalPosition, AimAngle, Weapon.Ammo.AmmoType.Range, GetRid() );
 			if ( collision.Collider is Entity entity && entity != null && entity.Faction == Faction ) {
@@ -545,15 +352,13 @@ namespace Renown.Thinkers {
 
 			AttackTimer.Start();
 			Weapon.SetAttackAngle( AimAngle );
-			Weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
-			Weapon.CallDeferred( WeaponEntity.MethodName.UseFirearmDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+			Weapon.CallDeferred( WeaponFirearm.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}
-		public override void PickupWeapon( WeaponEntity weapon ) {
+		public void PickupWeapon( WeaponFirearm weapon ) {
 			// TODO: evaluate if we actually want it
 			Weapon = weapon;
 
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
 				AttackTimer.SetDeferred( Timer.PropertyName.WaitTime, Weapon.UseTime );
 			}
 		}
@@ -703,77 +508,164 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		public void CheckSight() {
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				RayIntersectionInfo info = GodotServerManager.CheckRayCast( HeadAnimations.GlobalPosition, SightLines[ i ], MaxViewDistance, GetRid() );
-				sightTarget = info.Collider as Entity;
-				if ( sightTarget != null ) {
-					break;
+		/*
+		===============
+		GetStateDictionary
+		===============
+		*/
+		protected override ConcurrentDictionary<string, object?> GetStateDictionary() {
+			/*
+			return new ConcurrentDictionary<string, object?>() {
+				{ "Health", Health },
+				{ "HasAmmo", false },
+				{ "PlayerVisible", CanSeeTarget },
+				{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
+				{ "UnderFire", false },
+				{ "HasCover", false },
+				{ "Awareness", MobAwareness.Relaxed },
+				{ "IsAlerted", false }, // Awareness is greater than relaxed
+				{ "SquadSize", 0 },
+				{ "WeaponState", Weapon.CurrentState },
+				{ "Target", null },
+				{ "ClearLineOfFire", false },
+				{ "SquadTactic", Group.CurrentTactic },
+				{ "Owner", this }
+			};
+			*/
+			return null;
+		}
+
+		/*
+		===============
+		GetMemoryDictionary
+		===============
+		*/
+		protected override Dictionary<string, object?> GetMemoryDictionary() {
+			return new Dictionary<string, object?>() {
+				{ "WarnedFriendlies", false },
+				{ "AimTime", 0.0f },
+				{ "CheckSight", () => CheckSight }
+			};
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		public override void _Ready() {
+			base._Ready();
+
+			if ( GameConfiguration.GameMode == GameMode.ChallengeMode ) {
+				AddToGroup( "Enemies" );
+
+				LevelData.Instance.PlayerRespawn += OnRestartCheckpoint;
+			}
+
+			StartPosition = GlobalPosition;
+			StartHealth = Health;
+
+			HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
+			GameEventBus.ConnectSignal( HeadHitbox, Hitbox.SignalName.Hit, this, Callable.From<Entity, float>( OnHeadHit ) );
+
+			CurrentState = State.Animate;
+
+			Group = SquadManager.GetGroup( Faction, GlobalPosition );
+			Group.AddMember( this );
+
+			LoseInterestTimer = new Timer() {
+				Name = nameof( LoseInterestTimer ),
+				WaitTime = LoseInterestTime,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( LoseInterestTimer, Timer.SignalName.Timeout, this, OnLoseInterestTimerTimeout );
+			AddChild( LoseInterestTimer );
+
+			ChangeInvestigationAngleTimer = new Timer() {
+				Name = nameof( ChangeInvestigationAngleTimer ),
+				WaitTime = 2.0f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( ChangeInvestigationAngleTimer, Timer.SignalName.Timeout, this, () => {
+				float angle;
+				if ( RNJesus.IntRange( 0, 99 ) > 49 ) {
+					angle = RNJesus.FloatRange( -80.0f, 80.0f );
 				} else {
-					sightTarget = null;
+					angle = RNJesus.FloatRange( 100.0f, 260.0f );
 				}
-			}
-
-			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f && sightTarget == null ) {
-				SetSuspicious();
-				SetNavigationTarget( LastTargetPosition );
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.Start();
+				angle = Mathf.DegToRad( angle );
+				LookAngle = angle;
+				AimAngle = angle;
+				if ( !CanSeeTarget ) {
+					ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 				}
+			} );
+
+			AttackMeter = GetNode<Line2D>( "AttackMeter" );
+			AttackMeterDone = AttackMeter.Points[ 0 ];
+			AttackMeter.Points[ 1 ] = AttackMeterFull;
+			AttackMeterProgress = AttackMeterFull.X;
+
+			AttackTimer = new Timer() {
+				Name = nameof( AttackTimer ),
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( AttackTimer, Timer.SignalName.Timeout, this, () => Aiming = false );
+			AddChild( AttackTimer );
+
+			AimTimer = new Timer() {
+				Name = nameof( AimTimer ),
+				WaitTime = 2.5f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( AimTimer, Timer.SignalName.Timeout, this, OnAimTimerTimeout );
+			AddChild( AimTimer );
+
+			BarkChannel = new AudioStreamPlayer2D() {
+				Name = nameof( BarkChannel ),
+				VolumeDb = SettingsData.GetEffectsVolumeLinear()
+			};
+			AddChild( BarkChannel );
+
+			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
+
+			Weapon = new WeaponFirearm() {
+				Name = nameof( Weapon ),
+				Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" )
+			};
+			AddChild( Weapon );
+
+			Weapon.SetAmmoStack( new AmmoStack( ItemCache.GetItem( "res://resources/ammo/ammo_556.tres" ), 48 ) );
+			Weapon.TriggerPickup( this );
+			Weapon.SetOwner( this );
+
+			TargetMovedTimer = new Timer() {
+				Name = nameof( TargetMovedTimer ),
+				WaitTime = 5.0f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( TargetMovedTimer, Timer.SignalName.Timeout, this, () => Bark( BarkType.TargetPinned ) );
+			AddChild( TargetMovedTimer );
+
+			switch ( Direction ) {
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					BodyAnimations.FlipH = true;
+					break;
 			}
+			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+			AimAngle = LookAngle;
 
-			CanSeeTarget = sightTarget != null;
-
-			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
-				// out of sight, but we got something
-				switch ( Awareness ) {
-					case MobAwareness.Relaxed:
-						SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-						if ( SightDetectionAmount < 0.0f ) {
-							SightDetectionAmount = 0.0f;
-						}
-						break;
-					case MobAwareness.Suspicious:
-						SetSuspicious();
-						break;
-					case MobAwareness.Alert:
-						SetAlert();
-						break;
-				}
-				SetDetectionColor();
-				return;
-			}
-
-			if ( sightTarget != null ) {
-				if ( sightTarget.Health <= 0.0f && sightTarget.Faction == Faction ) {
-					Bark( BarkType.ManDown );
-
-					Awareness = MobAwareness.Alert;
-				} else if ( sightTarget.Faction != Faction ) {
-					SightTarget = sightTarget;
-					LastTargetPosition = sightTarget.GlobalPosition;
-					CanSeeTarget = true;
-
-					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
-					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-					AimAngle = LookAngle;
-
-					if ( Awareness >= MobAwareness.Suspicious ) {
-						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += SightDetectionSpeed * 2.0f * (float)GetProcessDeltaTime();
-					} else {
-						SightDetectionAmount += SightDetectionSpeed * (float)GetProcessDeltaTime();
-					}
-				}
-			}
-
-			if ( IsAlert() ) {
-				SetAlert();
-			} else if ( IsSuspicious() ) {
-				SetSuspicious();
-			}
-			SetDetectionColor();
+			Group = SquadManager.GetGroup( Faction, GlobalPosition );
 		}
 	};
 };

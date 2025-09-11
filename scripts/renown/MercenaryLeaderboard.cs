@@ -147,7 +147,7 @@ namespace Renown {
 		/// <param name="timeSeconds"></param>
 		/// <param name="timeMilliseconds"></param>
 		/// <param name="score"></param>
-		public static void UploadData( ContractType type, int timeMinutes, int timeSeconds, int timeMilliseconds, int score ) {
+		public static void UploadData( Contracts.Type type, int timeMinutes, int timeSeconds, int timeMilliseconds, int score ) {
 			if ( !SteamAPI.IsSteamRunning() ) {
 				return;
 			}

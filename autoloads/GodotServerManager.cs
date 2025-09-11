@@ -56,14 +56,19 @@ public partial class GodotServerManager : Node {
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static Rid GetNavigationMap() => GlobalNavigationMap;
 
-	public static RayIntersectionInfo CheckRayCast( Vector2 position, float nAngle, float nDistance, Rid caster ) {
+	/*
+	===============
+	CheckRayCast
+	===============
+	*/
+	public static RayIntersectionInfo CheckRayCast( Vector2 position, float angle, float distance, Rid caster ) {
 		if ( !RayQueryCache.TryTake( out PhysicsRayQueryParameters2D rayQuery ) ) {
 			rayQuery = new PhysicsRayQueryParameters2D();
 		}
 		rayQuery.From = position;
 		rayQuery.To = new Vector2(
-			position.X + nDistance * Mathf.Cos( nAngle ),
-			position.Y + nDistance * Mathf.Sin( nAngle )
+			position.X + distance * Mathf.Cos( angle ),
+			position.Y + distance * Mathf.Sin( angle )
 		);
 		rayQuery.Exclude = [ caster ];
 		rayQuery.CollisionMask = (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player | PhysicsLayer.SpecialHitboxes | PhysicsLayer.StaticGeometry );
@@ -86,6 +91,12 @@ public partial class GodotServerManager : Node {
 
 		return info;
 	}
+
+	/*
+	===============
+	GetCollidingObjects
+	===============
+	*/
 	public static List<GodotObject> GetCollidingObjects( Rid areaRid ) {
 		PhysicsShapeQueryParameters2D shapeQuery = new PhysicsShapeQueryParameters2D();
 
@@ -104,6 +115,11 @@ public partial class GodotServerManager : Node {
 		return collisions;
 	}
 
+	/*
+	===============
+	InitServers
+	===============
+	*/
 	public static void InitServers( Rid navigationMap ) {
 		SpaceState2D = LevelData.Instance.GetWorld2D().DirectSpaceState;
 		RayQueryCache = new ConcurrentBag<PhysicsRayQueryParameters2D>();

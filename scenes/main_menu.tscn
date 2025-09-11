@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6hb01wurydo7"]
+[gd_scene load_steps=4 format=3 uid="uid://b6hb01wurydo7"]
 
 [ext_resource type="Script" uid="uid://djj36kx7c1an2" path="res://scripts/TitleMenu.cs" id="1_eotv5"]
 [ext_resource type="PackedScene" uid="uid://ba1debi5qxy5p" path="res://scenes/menus/main_menu.tscn" id="3_rtw2f"]
-[ext_resource type="FontFile" uid="uid://bk3i170p7rft3" path="res://PressStart2P-Regular.ttf" id="4_24y2n"]
 [ext_resource type="Script" uid="uid://cduis24lfk66b" path="res://addons/konamicode/konamicode.gd" id="7_tbmy8"]
 
 [node name="MainMenu" type="Control"]
@@ -19,21 +18,6 @@ metadata/_edit_use_anchors_ = true
 [node name="MainMenu" parent="." instance=ExtResource("3_rtw2f")]
 layout_mode = 1
 
-[node name="ExitButton" type="Button" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = -43.0
-offset_right = 126.0
-offset_bottom = 32.0
-grow_vertical = 0
-scale = Vector2(0.726053, 0.530469)
-theme_override_fonts/font = ExtResource("4_24y2n")
-text = "< BACK"
-
 [node name="KonamiCode" type="Node" parent="." node_paths=PackedStringArray("timer")]
 process_mode = 3
 script = ExtResource("7_tbmy8")
@@ -45,5 +29,3 @@ metadata/_custom_type_script = "uid://cduis24lfk66b"
 [node name="Timer" type="Timer" parent="KonamiCode"]
 wait_time = 10.0
 one_shot = true
-
-[connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

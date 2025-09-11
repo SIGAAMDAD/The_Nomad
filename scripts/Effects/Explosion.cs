@@ -39,7 +39,7 @@ public partial class Explosion : Node2D {
 	public float Radius = 80.0f;
 	public float Damage = 30.0f;
 	public Curve DamageCurve = null;
-	public ExtraAmmoEffects Effects = 0;
+	public Items.ExtraAmmoEffects Effects = 0;
 
 	private Area2D BlowupArea;
 
@@ -71,7 +71,7 @@ public partial class Explosion : Node2D {
 			if ( entities[ i ] is Entity entity && entity != null ) {
 				float damage = Damage * ( DamageCurve != null ? DamageCurve.SampleBaked( entity.GlobalPosition.DistanceTo( GlobalPosition ) ) : 1.0f );
 				entity.Damage( GetParent<Entity>(), damage );
-				if ( ( Effects & ExtraAmmoEffects.Incendiary ) != 0 ) {
+				if ( ( Effects & Items.ExtraAmmoEffects.Incendiary ) != 0 ) {
 					entity.AddStatusEffect( "status_burning" );
 				}
 			}
@@ -91,9 +91,9 @@ public partial class Explosion : Node2D {
 
 		ZIndex = 8;
 
-		AudioStreamPlayer2D AudioChannel = GetNode<AudioStreamPlayer2D>( "AudioStreamPlayer2D" );
-		AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		AudioChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnFinished ) );
+		AudioStreamPlayer2D audioChannel = GetNode<AudioStreamPlayer2D>( "AudioStreamPlayer2D" );
+		audioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		audioChannel.Connect( AudioStreamPlayer2D.SignalName.Finished, Callable.From( OnFinished ) );
 
 		BlowupArea = GetNode<Area2D>( "Area2D" );
 		( BlowupArea.GetChild<CollisionShape2D>( 0 ).Shape as CircleShape2D ).Radius = Radius;

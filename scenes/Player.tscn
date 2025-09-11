@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://dc17uyypxry83"]
+[gd_scene load_steps=31 format=3 uid="uid://dc17uyypxry83"]
 
 [ext_resource type="Script" uid="uid://8wfs3owmyui2" path="res://scripts/Player.cs" id="1_5fsym"]
 [ext_resource type="SpriteFrames" uid="uid://ca1bx07bc3p25" path="res://resources/animations/player/left_arm.tres" id="2_p7iby"]
@@ -14,6 +14,7 @@
 [ext_resource type="SpriteFrames" uid="uid://1xowiqlfkdd1" path="res://resources/animations/player/idle.tres" id="10_0rnld"]
 [ext_resource type="Script" uid="uid://crni4i3li1ixf" path="res://scripts/PlayerSystem/Arm.cs" id="12_0rnld"]
 [ext_resource type="PackedScene" uid="uid://w3nwgyanrgiq" path="res://scenes/player_system/arm_attachements/grapple_hook.tscn" id="13_srp4u"]
+[ext_resource type="Script" uid="uid://b3xfjhm41llhi" path="res://scripts/PlayerSystem/AimAssist.cs" id="14_ebwui"]
 [ext_resource type="PackedScene" uid="uid://c5ifktckwf67j" path="res://scenes/player_system/freeflow_counter.tscn" id="15_jfpux"]
 [ext_resource type="Script" uid="uid://dptkfrr1vrajn" path="res://scripts/PlayerSystem/FootSteps.cs" id="17_jfpux"]
 [ext_resource type="Texture2D" uid="uid://cdbpfdprqasia" path="res://textures/spritesheets/skins/the_wanderer/raio_torso.dds" id="19_b8lor"]
@@ -293,7 +294,7 @@ process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
 y_sort_enabled = true
-position = Vector2(1, 4)
+position = Vector2(1, 5)
 one_shot = false
 
 [node name="FlameArea" type="Area2D" parent="Animations/DashEffect"]
@@ -306,7 +307,6 @@ position = Vector2(-35, -5)
 shape = SubResource("RectangleShape2D_srp4u")
 
 [node name="TorsoCollision2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(-1, -1)
 shape = SubResource("RectangleShape2D_0rnld")
 
@@ -341,6 +341,7 @@ visible = false
 position = Vector2(12, -2)
 
 [node name="AimAssist" type="Node2D" parent="."]
+script = ExtResource("14_ebwui")
 
 [node name="AimLine" type="Line2D" parent="AimAssist"]
 modulate = Color(2, 2, 2, 1)

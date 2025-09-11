@@ -16,20 +16,20 @@ public partial class HellbreakerExit : Node2D {
 			return;
 		}
 		switch ( DefaultAnimation.Animation ) {
-		case "idle":
-			ExitSound.Play();
-			DefaultAnimation.Hide();
-			UseAnimation.Show();
-			UseAnimation.Play( "use" );
+			case "idle":
+				ExitSound.Play();
+				DefaultAnimation.Hide();
+				UseAnimation.Show();
+				UseAnimation.Play( "use" );
 
-			EmitSignalUsed( this );
+				EmitSignalUsed( this );
 
-			RemoveFromGroup( "HellbreakerExits" );
-			break;
-		case "dead":
-//			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
-			break;
-		};
+				RemoveFromGroup( "HellbreakerExits" );
+				break;
+			case "dead":
+				//			DialogueManager.ShowDialogueBalloon( ResourceCache.GetDialogue( "player" ), "hellbreaker_exit_used" );
+				break;
+		}
 	}
 	private void OnUseAnimationFinished() {
 		UseAnimation.Hide();

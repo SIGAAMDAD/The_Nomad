@@ -22,6 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using System.Collections.Generic;
+using System;
 using Godot;
 
 namespace Utils {
@@ -43,6 +44,19 @@ namespace Utils {
 			} else {
 				Console.PrintError( $"PreLoader.LoadFileList: an error occurred when trying to access path \"{path}\"" );
 			}
+		}
+
+		/*
+		===============
+		ConnectMenuButton
+		===============
+		*/
+		public static void ConnectMenuButton( Button button, Node connector, Action pressedCallback ) {
+			GameEventBus.ConnectSignal( button, Button.SignalName.FocusEntered, connector, Callable.From( () => UIAudioManager.OnButtonFocused( button ) ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.MouseEntered, connector, Callable.From( () => UIAudioManager.OnButtonFocused( button ) ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.FocusExited, connector, Callable.From( () => UIAudioManager.OnButtonUnfocused( button ) ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.MouseExited, connector, Callable.From( () => UIAudioManager.OnButtonUnfocused( button ) ) );
+			GameEventBus.ConnectSignal( button, Button.SignalName.Pressed, connector, pressedCallback );
 		}
 	};
 };

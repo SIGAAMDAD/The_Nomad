@@ -74,8 +74,8 @@ namespace Menus.Settings {
 				LoadNetworkingSettings();
 			} catch ( System.IO.FileNotFoundException ) {
 				Console.PrintLine( $"Configuration file {configPath} doesn't exist, applying default values..." );
-			} catch ( Exception ) {
-				Console.PrintLine( $"Error loading file {configPath} (exception caught), applying default values..." );
+			} catch ( Exception e ) {
+				Console.PrintLine( $"Error loading file {configPath} (exception caught {e.Message}), applying default values..." );
 			}
 		}
 
@@ -180,7 +180,7 @@ namespace Menus.Settings {
 		/// <param name="value"></param>
 		private void LoadConfigValue( string name, out bool value ) {
 			ArgumentNullException.ThrowIfNull( IniData );
-			value = IniData.TryGetValue( name, out string? data ) ? Convert.ToBoolean( data ) : false;
+			value = IniData.TryGetValue( name, out string? data ) ? Convert.ToBoolean( data.ToInt() ) : false;
 		}
 
 		/*

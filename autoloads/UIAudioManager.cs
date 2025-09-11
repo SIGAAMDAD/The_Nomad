@@ -23,6 +23,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using Menus;
+using ResourceCache;
+using System;
+using System.Reflection;
 
 /*
 ===================================================================================
@@ -33,45 +36,44 @@ UIAudioManager
 */
 
 public partial class UIAudioManager : Node {
-	private static AudioStreamPlayer UISfxStream;
+	private static readonly StringName @ParameterLoopingPropertyName = "parameters/looping";
+
+	public static Callable OnButtonFocusedCallable;
+	public static Callable OnButtonUnfocusedCallable;
+	public static Callable OnButtonPressedCallable;
+
+	private static Callable OnMenuIntroMusicFinishedCallable;
+	private static Callable OnAudioFadeFinishedCallable;
+
+	private static AudioStreamPlayer UIButtonPressedStream;
+	private static AudioStreamPlayer UIButtonFocusedStream;
 	private static AudioStreamPlayer UIMusicStream;
 
-	private static AudioStream ButtonPressed;
-	private static AudioStream ButtonFocused;
-	private static AudioStream Activate;
-	private static AudioStream LoopingTheme;
-	private static AudioStream IntroTheme;
-
-	/*
-	===============
-	OnSettingsChanged
-	===============
-	*/
-	private void OnSettingsChanged() {
-		UISfxStream.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		UIMusicStream.VolumeDb = SettingsData.GetMusicVolumeLinear();
-	}
-
-	/*
-	===============
-	OnMenuIntroThemeFinished
-	===============
-	*/
-	private static void OnMenuIntroThemeFinished() {
-		UIMusicStream.Stream = LoopingTheme;
-		UIMusicStream.Set( "parameters/looping", true );
-		UIMusicStream.Disconnect( "finished", Callable.From( OnMenuIntroThemeFinished ) );
-		UIMusicStream.Play();
-	}
+	private static AudioStream? ButtonPressed;
+	private static AudioStream? ButtonFocused;
+	private static AudioStream? Activate;
+	private static AudioStream? LoopingTheme;
+	private static AudioStream? IntroTheme;
 
 	/*
 	===============
 	OnButtonFocused
 	===============
 	*/
-	public static void OnButtonFocused() {
-		UISfxStream.Stream = ButtonFocused;
-		UISfxStream.Play();
+	public static void OnButtonFocused( Control? button ) {
+		ArgumentNullException.ThrowIfNull( button );
+
+		UIButtonFocusedStream.Stream = ButtonFocused;
+		UIButtonFocusedStream.Play();
+	}
+
+	/*
+	===============
+	OnButtonUnfocused
+	===============
+	*/
+	public static void OnButtonUnfocused( Control? button ) {
+		ArgumentNullException.ThrowIfNull( button );
 	}
 
 	/*
@@ -80,8 +82,8 @@ public partial class UIAudioManager : Node {
 	===============
 	*/
 	public static void OnButtonPressed() {
-		UISfxStream.Stream = ButtonPressed;
-		UISfxStream.Play();
+		UIButtonPressedStream.Stream = ButtonPressed;
+		UIButtonPressedStream.Play();
 	}
 
 	/*
@@ -90,8 +92,8 @@ public partial class UIAudioManager : Node {
 	===============
 	*/
 	public static void OnActivate() {
-		UISfxStream.Stream = Activate;
-		UISfxStream.Play();
+		UIButtonPressedStream.Stream = Activate;
+		UIButtonPressedStream.Play();
 	}
 
 	/*
@@ -100,8 +102,8 @@ public partial class UIAudioManager : Node {
 	===============
 	*/
 	public static void PlayCustomSound( AudioStream stream ) {
-		UISfxStream.Stream = stream;
-		UISfxStream.Play();
+		UIButtonPressedStream.Stream = stream;
+		UIButtonPressedStream.Play();
 	}
 
 	/*
@@ -110,11 +112,47 @@ public partial class UIAudioManager : Node {
 	===============
 	*/
 	public static void PlayTheme() {
+		Node root = (Node)Engine.GetMainLoop().Get( SceneTree.PropertyName.Root );
+
 		UIMusicStream.VolumeDb = SettingsData.GetMusicVolumeLinear();
 		UIMusicStream.Stream = IntroTheme;
-		if ( !UIMusicStream.IsConnected( "finished", Callable.From( OnMenuIntroThemeFinished ) ) ) {
-			UIMusicStream.Connect( "finished", Callable.From( OnMenuIntroThemeFinished ) );
-		}
+		GameEventBus.ConnectSignal( UIMusicStream, AudioStreamPlayer2D.SignalName.Finished, root.GetNode( "/root/UiAudioManager" ), OnMenuIntroMusicFinishedCallable );
+		UIMusicStream.Play();
+	}
+
+	/*
+	===============
+	FadeMusic
+	===============
+	*/
+	public static void FadeMusic() {
+		Node root = (Node)Engine.GetMainLoop().Get( SceneTree.PropertyName.Root );
+
+		Tween audioFade = root.GetTree().CreateTween();
+		audioFade.TweenProperty( UIMusicStream, "volume_db", -20.0f, 1.5f );
+		audioFade.Connect( AudioStreamPlayer2D.SignalName.Finished, OnAudioFadeFinishedCallable );
+	}
+
+	/*
+	===============
+	OnSettingsChanged
+	===============
+	*/
+	private void OnSettingsChanged() {
+		UIButtonFocusedStream.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		UIButtonPressedStream.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+		UIMusicStream.VolumeDb = SettingsData.GetMusicVolumeLinear();
+	}
+
+	/*
+	===============
+	OnMenuIntroThemeFinished
+	===============
+	*/
+	private void OnMenuIntroThemeFinished() {
+		UIMusicStream.Stream = LoopingTheme;
+		UIMusicStream.Set( ParameterLoopingPropertyName, true );
+		GameEventBus.DisconnectAllForObject( UIMusicStream );
 		UIMusicStream.Play();
 	}
 
@@ -129,41 +167,56 @@ public partial class UIAudioManager : Node {
 
 	/*
 	===============
-	FadeMusic
-	===============
-	*/
-	public static void FadeMusic() {
-		Node Root = (Node)Engine.GetMainLoop().Get( "root" );
-
-		Tween AudioFade = Root.GetTree().CreateTween();
-		AudioFade.TweenProperty( UIMusicStream, "volume_db", -20.0f, 1.5f );
-		AudioFade.Connect( "finished", Callable.From( OnAudioFadeFinished ) );
-	}
-
-	/*
-	===============
 	_Ready
 	===============
 	*/
 	public override void _Ready() {
 		base._Ready();
 
-		ButtonPressed = ResourceLoader.Load<AudioStream>( "res://sounds/ui/button_pressed.ogg" );
-		ButtonFocused = ResourceLoader.Load<AudioStream>( "res://sounds/ui/button_focused.ogg" );
-		Activate = ResourceLoader.Load<AudioStream>( "res://sounds/ui/begin_game.ogg" );
+		OnAudioFadeFinishedCallable = Callable.From( OnAudioFadeFinished );
+		OnMenuIntroMusicFinishedCallable = Callable.From( OnMenuIntroThemeFinished );
+		OnButtonFocusedCallable = Callable.From<Control>( OnButtonFocused );
+		OnButtonUnfocusedCallable = Callable.From<Control>( OnButtonUnfocused );
+		OnButtonPressedCallable = Callable.From( OnButtonPressed );
 
-		IntroTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_intro.ogg" );
-		LoopingTheme = ResourceLoader.Load<AudioStream>( "res://music/ui/menu_loop2.ogg" );
+		ButtonPressed = AudioCache.GetStream( "res://sounds/ui/button_pressed.ogg" );
+		ButtonFocused = AudioCache.GetStream( "res://sounds/ui/button_focused.ogg" );
+		Activate = AudioCache.GetStream( "res://sounds/ui/begin_game.ogg" );
 
-		UISfxStream = new AudioStreamPlayer();
-		UISfxStream.Name = "UISfxStream";
-		UISfxStream.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-		AddChild( UISfxStream );
+		IntroTheme = AudioCache.GetStream( "res://music/ui/menu_intro.ogg" );
+		LoopingTheme = AudioCache.GetStream( "res://music/ui/menu_loop2.ogg" );
 
-		UIMusicStream = new AudioStreamPlayer();
-		UIMusicStream.Name = "UIMusicStream";
+		UIButtonFocusedStream = new AudioStreamPlayer() {
+			Name = nameof( UIButtonFocusedStream ),
+			VolumeDb = SettingsData.GetEffectsVolumeLinear()
+		};
+		AddChild( UIButtonFocusedStream );
+
+		UIButtonPressedStream = new AudioStreamPlayer() {
+			Name = nameof( UIButtonPressedStream ),
+			VolumeDb = SettingsData.GetEffectsVolumeLinear()
+		};
+		AddChild( UIButtonPressedStream );
+
+		UIMusicStream = new AudioStreamPlayer() {
+			Name = nameof( UIMusicStream ),
+			VolumeDb = SettingsData.GetMusicVolumeLinear()
+		};
 		AddChild( UIMusicStream );
 
-		SettingsData.Instance.SettingsChanged += OnSettingsChanged;
+		SetProcess( false );
+
+		SettingsData.SettingsChanged += OnSettingsChanged;
+	}
+
+	/*
+	===============
+	_ExitTree
+	===============
+	*/
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		SettingsData.SettingsChanged -= OnSettingsChanged;
 	}
 };

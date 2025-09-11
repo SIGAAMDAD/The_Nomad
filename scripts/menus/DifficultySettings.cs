@@ -23,35 +23,35 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 
+/*
+===================================================================================
+
+DifficultySettings
+
+===================================================================================
+*/
+/// <summary>
+/// Handles difficulty settings
+/// </summary>
+
 public partial class DifficultySettings : Resource {
+	/// <summary>
+	/// Toggles permanent NPC deaths, corpses will persist between sessions if enabled.
+	/// </summary>
 	[Export] public bool NPCPermaDeath { get; private set; }
+
+	/// <summary>
+	/// Sets the limit of firelink charges that can be recharged by resting at a meliora
+	/// </summary>
 	[Export] public bool FirelinkLimit { get; private set; }
+
+	/// <summary>
+	/// Toggles auditory hallucinations
+	/// </summary>
 	[Export] public bool AuditoryHallucinations { get; private set; }
+
+	/// <summary>
+	/// Whether fast travel costs sanity/rage
+	/// </summary>
 	[Export] public bool FreeFastTravel { get; private set; }
-
-	//
-	// Immersion Settings
-	//
-
-	/// <summary>
-	/// If enabled, the game will make the player engage with quest discovery diagetically instead
-	/// of automatic map markers
-	/// </summary>
-	[Export] public bool TavernRumors { get; private set; } = false;
-
-	/// <summary>
-	/// Allows the dynamic weather cycle of each biome to impact gameplay in specific ways
-	/// </summary>
-	[Export] public bool WeatherEffectsGameplay { get; private set; } = false;
-
-	/// <summary>
-	/// Allows the day-night cycle to be used as a diagetic deadline for quests
-	/// </summary>
-	[Export] public bool DayNightCycleEffectsGameplay { get; private set; } = false;
-
-	/// <summary>
-	/// Enables semi-realistic firearm mechanics. Manual reloading, and weather impacts firearms in various
-	/// ways
-	/// </summary>
-	[Export] public bool RealisticFirearms { get; private set; } = false;
 };

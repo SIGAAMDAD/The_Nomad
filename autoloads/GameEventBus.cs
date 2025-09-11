@@ -23,8 +23,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Util;
 
 /*
 ===================================================================================
@@ -38,17 +40,87 @@ GameEventBus
 /// </summary>
 
 public partial class GameEventBus : Node {
-	private struct ConnectionInfo {
-		public GodotObject Source;
-		public StringName SignalName;
-		public Callable Callable;
-		public Type EventType;
-		public Delegate EventHandler;
+	private readonly struct ConnectionInfo {
+		public readonly GodotObject Source;
+		public readonly StringName SignalName;
+		public readonly Callable Callable;
+
+		public ConnectionInfo( GodotObject source, StringName signalName, Callable callable ) {
+			Source = source;
+			SignalName = signalName;
+			Callable = callable;
+		}
+	};
+	private readonly struct SubscriptionInfo {
+		public readonly Type EventType;
+		public readonly Delegate EventHandler;
+
+		public SubscriptionInfo( Type eventType, Delegate eventHandler ) {
+			EventType = eventType;
+			EventHandler = eventHandler;
+		}
 	};
 
-	private static readonly Dictionary<object, List<ConnectionInfo>> Connections = new Dictionary<object, List<ConnectionInfo>>();
-	private static readonly Dictionary<string, Callable> CachedCallables = new Dictionary<string, Callable>();
-	private static readonly Dictionary<Type, Delegate> EventHandlers = new Dictionary<Type, Delegate>();
+	private static ObjectPool<ConnectionInfo> ConnectionPool = new ObjectPool<ConnectionInfo>();
+	private static ObjectPool<SubscriptionInfo> SubscriptionPool = new ObjectPool<SubscriptionInfo>();
+
+	private static readonly ConcurrentDictionary<GodotObject, List<ConnectionInfo>> Connections = new ConcurrentDictionary<GodotObject, List<ConnectionInfo>>();
+	private static readonly ConcurrentDictionary<object, List<SubscriptionInfo>> Subscriptions = new ConcurrentDictionary<object, List<SubscriptionInfo>>();
+	private static readonly ConcurrentDictionary<string, Callable> CachedCallables = new ConcurrentDictionary<string, Callable>();
+	private static readonly ConcurrentDictionary<Type, Delegate> SubscriptionCache = new ConcurrentDictionary<Type, Delegate>();
+
+	//
+	// Global events
+	//
+
+	public static event Action<Renown.World.WorldArea> PlayerEnteredArea;
+	public static event Action<Renown.World.WorldArea> PlayerExitedArea;
+	public static event Action<Renown.World.WorldArea, int> PlayerRenownScoreChanged;
+	public static event Action<Renown.World.WorldArea, Renown.Trait, float> PlayerTraitScoreChanged;
+
+	/*
+	===============
+	EmitSignalPlayerEnteredArea
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void EmitSignalPlayerEnteredArea( Renown.World.WorldArea area ) {
+		ArgumentNullException.ThrowIfNull( area );
+		PlayerEnteredArea.Invoke( area );
+	}
+
+	/*
+	===============
+	EmitSignalPlayerExitedArea
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void EmitSignalPlayerExitedArea( Renown.World.WorldArea area ) {
+		ArgumentNullException.ThrowIfNull( area );
+		PlayerExitedArea.Invoke( area );
+	}
+
+	/*
+	===============
+	EmitSignalPlayerRenownScoreChanged
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void EmitSignalPlayerRenownScoreChanged( Renown.World.WorldArea area, int amount ) {
+		ArgumentNullException.ThrowIfNull( area );
+		PlayerRenownScoreChanged.Invoke( area, amount );
+	}
+
+	/*
+	===============
+	EmitSignalPlayerTraitScoreChanged
+	===============
+	*/
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void EmitSignalPlayerTraitScoreChanged( Renown.World.WorldArea area, Renown.Trait trait, float amount ) {
+		ArgumentNullException.ThrowIfNull( area );
+		PlayerTraitScoreChanged.Invoke( area, trait, amount );
+	}
 
 	/*
 	===============
@@ -72,14 +144,14 @@ public partial class GameEventBus : Node {
 			Connections[ target ] = connectionList;
 		}
 
-		connectionList.Add( new ConnectionInfo {
-			Source = source,
-			SignalName = signalName,
-			Callable = callable
-		} );
+		connectionList.Add( new ConnectionInfo(
+			source: source,
+			signalName: signalName,
+			callable: callable
+		) );
 
 		if ( target is Node targetNode ) {
-			targetNode.TreeExiting += () => DisconnectAllForObject( target );
+			targetNode.Connect( Node.SignalName.TreeExiting, Callable.From( () => DisconnectAllForObject( target ) ) );
 		}
 	}
 
@@ -88,30 +160,37 @@ public partial class GameEventBus : Node {
 	ConnectSignal
 	===============
 	*/
-	public static void ConnectSignal( GodotObject source, StringName signalName, GodotObject target, Callable method ) {
+	public static void ConnectSignal( GodotObject source, StringName signalName, GodotObject target, Callable? method ) {
+		if ( !method.HasValue ) {
+			throw new ArgumentNullException( nameof( method ) );
+		}
 		if ( !source.HasSignal( signalName ) ) {
 			throw new InvalidOperationException( $"GodotObject {source.GetType().FullName} doesn't have signal {signalName}" );
 		}
 
-		string callableKey = $"{target.GetInstanceId()}:{method.Delegate.Method.Name}";
-		if ( !CachedCallables.TryGetValue( callableKey, out method ) ) {
-			CachedCallables[ callableKey ] = method;
+		string callableKey = $"{target.GetInstanceId()}:{method.Value.Delegate.Method.Name}";
+		if ( !CachedCallables.TryGetValue( callableKey, out Callable callable ) ) {
+			CachedCallables[ callableKey ] = method.Value;
 		}
 
-		source.Connect( signalName, method );
+		source.Connect( signalName, method.Value );
 		if ( !Connections.TryGetValue( target, out List<ConnectionInfo> connectionList ) ) {
 			connectionList = new List<ConnectionInfo>();
 			Connections[ target ] = connectionList;
 		}
 
-		connectionList.Add( new ConnectionInfo {
-			Source = source,
-			SignalName = signalName,
-			Callable = method
-		} );
+		connectionList.Add( new ConnectionInfo(
+			source: source,
+			signalName: signalName,
+			callable: method.Value
+		) );
+
+		Console.PrintDebug(
+			$"Connected signal {signalName} from GodotObject {source.GetType().FullName} to GodotObject {target.GetType().FullName}"
+		);
 
 		if ( target is Node targetNode ) {
-			targetNode.TreeExiting += () => DisconnectAllForObject( target );
+			targetNode.Connect( Node.SignalName.TreeExiting, Callable.From( () => DisconnectAllForObject( target ) ) );
 		}
 	}
 
@@ -120,24 +199,24 @@ public partial class GameEventBus : Node {
 	Subscribe
 	===============
 	*/
-	public static void Subscribe<T>( object subscriber, Action handler ) {
+	public static void Subscribe<T>( object subscriber, Delegate handler ) {
 		Type eventType = typeof( T );
 
-		if ( EventHandlers.TryGetValue( eventType, out Delegate callback ) ) {
-			EventHandlers[ eventType ] = Delegate.Combine( callback, handler );
+		if ( SubscriptionCache.TryGetValue( eventType, out Delegate callback ) ) {
+			SubscriptionCache[ eventType ] = Delegate.Combine( callback, handler );
 		} else {
-			EventHandlers.Add( eventType, handler );
+			SubscriptionCache.TryAdd( eventType, handler );
 		}
 
-		if ( !Connections.TryGetValue( subscriber, out List<ConnectionInfo> connectionList ) ) {
-			connectionList = new List<ConnectionInfo>();
-			Connections.Add( subscriber, connectionList );
+		if ( !Subscriptions.TryGetValue( subscriber, out List<SubscriptionInfo> connectionList ) ) {
+			connectionList = new List<SubscriptionInfo>();
+			Subscriptions.TryAdd( subscriber, connectionList );
 		}
 
-		connectionList.Add( new ConnectionInfo {
-			EventType = eventType,
-			EventHandler = handler
-		} );
+		connectionList.Add( new SubscriptionInfo(
+			eventType: eventType,
+			eventHandler: handler
+		) );
 
 		if ( subscriber is Node node ) {
 			node.Connect( Node.SignalName.TreeExiting, Callable.From( () => Unsubscribe<T>( subscriber, handler ) ) );
@@ -149,42 +228,40 @@ public partial class GameEventBus : Node {
 	Unsubscribe
 	===============
 	*/
-	public static void Unsubscribe<T>( object subscriber, Action handler ) {
+	public static void Unsubscribe<T>( object subscriber, Delegate handler ) {
 		Type eventType = typeof( T );
 
-		if ( EventHandlers.TryGetValue( eventType, out Delegate callback ) ) {
+		if ( SubscriptionCache.TryGetValue( eventType, out Delegate callback ) ) {
 			Delegate newCallback = Delegate.Remove( callback, handler );
 			if ( newCallback == null ) {
-				EventHandlers.Remove( eventType );
+				SubscriptionCache.TryRemove( new KeyValuePair<Type, Delegate>( eventType, callback ) );
 			} else {
-				EventHandlers[ eventType ] = newCallback;
+				SubscriptionCache[ eventType ] = newCallback;
 			}
 		}
 
-		if ( Connections.TryGetValue( subscriber, out List<ConnectionInfo> connectionList ) ) {
+		if ( Subscriptions.TryGetValue( subscriber, out List<SubscriptionInfo> connectionList ) ) {
 			connectionList.RemoveAll( conn => conn.EventType == eventType && conn.EventHandler.Equals( handler ) );
 
 			// if we've got no dangling connections, remove the object from the event cache
 			if ( connectionList.Count == 0 ) {
-				Connections.Remove( subscriber );
+				Subscriptions.TryRemove( new KeyValuePair<object, List<SubscriptionInfo>>( subscriber, connectionList ) );
 			}
 		}
 	}
 
 	/*
 	===============
-	EmitSignal
+	ReleaseDanglingDelegates
 	===============
 	*/
-	public static void EmitSignal<T>( T eventData ) {
-		Type eventType = typeof( T );
-
-		if ( EventHandlers.TryGetValue( eventType, out Delegate handler ) ) {
-			try {
-				( handler as Action<T> )?.Invoke( eventData );
-			} catch ( Exception e ) {
-				Console.PrintError( $"Error in event handler for {eventType.FullName}: {e.Message}" );
-			}
+	public static void ReleaseDanglingDelegates( Delegate @event ) {
+		if ( @event == null ) {
+			return;
+		}
+		Delegate[] invocations = @event.GetInvocationList();
+		for ( int i = 0; i < invocations.Length; i++ ) {
+			Delegate.Remove( @event, invocations[ i ] );
 		}
 	}
 
@@ -198,8 +275,13 @@ public partial class GameEventBus : Node {
 			DisconnectAllForObject( pair.Key );
 		}
 
+		ReleaseDanglingDelegates( PlayerEnteredArea );
+		ReleaseDanglingDelegates( PlayerExitedArea );
+		ReleaseDanglingDelegates( PlayerRenownScoreChanged );
+		ReleaseDanglingDelegates( PlayerTraitScoreChanged );
+
 		Connections.Clear();
-		EventHandlers.Clear();
+		SubscriptionCache.Clear();
 		CachedCallables.Clear();
 	}
 
@@ -209,28 +291,32 @@ public partial class GameEventBus : Node {
 	===============
 	*/
 	public static void DisconnectAllForObject( object obj ) {
-		if ( Connections.TryGetValue( obj, out List<ConnectionInfo> connections ) ) {
+		if ( Connections.TryGetValue( obj as GodotObject, out List<ConnectionInfo> connections ) ) {
 			for ( int i = 0; i < connections.Count; i++ ) {
 				if ( connections[ i ].Source != null && IsInstanceValid( connections[ i ].Source ) ) {
+					Console.PrintDebug(
+						string.Format( "Disconnected signal {0} from GodotObject {1} to GodotObject {2}"
+							, connections[ i ].SignalName, connections[ i ].Source.GetType().FullName,
+							obj.GetType().FullName )
+					);
 					connections[ i ].Source.Disconnect( connections[ i ].SignalName, connections[ i ].Callable );
 				}
-
-				// remove subscriptions
-				if ( connections[ i ].EventType != null && connections[ i ].EventHandler != null ) {
-					if ( EventHandlers.TryGetValue( connections[ i ].EventType, out Delegate callback ) ) {
-						Delegate newDelegate = Delegate.Remove( callback, connections[ i ].EventHandler );
+			}
+			Connections.TryRemove( new KeyValuePair<GodotObject, List<ConnectionInfo>>( obj as GodotObject, connections ) );
+		}
+		if ( Subscriptions.TryGetValue( obj, out List<SubscriptionInfo>? subscriptions ) ) {
+			for ( int i = 0; i < subscriptions.Count; i++ ) {
+				if ( subscriptions[ i ].EventType != null && subscriptions[ i ].EventHandler != null ) {
+					if ( SubscriptionCache.TryGetValue( subscriptions[ i ].EventType, out Delegate? callback ) ) {
+						Delegate newDelegate = Delegate.Remove( callback, subscriptions[ i ].EventHandler );
 						if ( newDelegate == null ) {
-							EventHandlers.Remove( connections[ i ].EventType );
+							SubscriptionCache.TryRemove( new KeyValuePair<Type, Delegate>( subscriptions[ i ].EventType, subscriptions[ i ].EventHandler ) );
 						} else {
-							EventHandlers[ connections[ i ].EventType ] = newDelegate;
+							SubscriptionCache[ subscriptions[ i ].EventType ] = newDelegate;
 						}
 					}
 				}
 			}
-			Connections.Remove( obj );
-		}
-		if ( obj is Node node ) {
-			node.TreeExiting -= () => DisconnectAllForObject( obj );
 		}
 	}
 

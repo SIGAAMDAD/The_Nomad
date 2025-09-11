@@ -56,7 +56,7 @@ namespace Renown {
 
 		// change this if you want some other starting contract
 		public static readonly StringName StartingQuestPath = "res://resources/quests/war_of_the_wastes/from_eagles_peak.tres";
-		public static readonly ContractFlags StartingQuestFlags = ContractFlags.None;
+		public static readonly Contracts.Flags StartingQuestFlags = Contracts.Flags.None;
 		public static readonly Dictionary<string, bool> StartingQuestState = new Dictionary<string, bool>{
 			{ "TargetAlive", true }
 		};

@@ -1,9 +1,32 @@
-using ChallengeMode;
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using ResourceCache;
+using Items;
 
 namespace Renown.Thinkers {
-	public partial class ZurgutGrunt : Thinker {
+	public partial class ZurgutGrunt : MobBase {
 		private enum State : uint {
 			Idle,
 			Attacking,
@@ -71,47 +94,35 @@ namespace Renown.Thinkers {
 				SightDetectionAmount = SightDetectionTime;
 			}
 			switch ( Awareness ) {
-			case MobAwareness.Relaxed:
-				if ( SightDetectionAmount == 0.0f ) {
-					DetectionColor.R = 1.0f;
-					DetectionColor.G = 1.0f;
-					DetectionColor.B = 1.0f;
-				} else {
+				case MobAwareness.Relaxed:
+					if ( SightDetectionAmount == 0.0f ) {
+						DetectionColor.R = 1.0f;
+						DetectionColor.G = 1.0f;
+						DetectionColor.B = 1.0f;
+					} else {
+						DetectionColor.R = 0.0f;
+						DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+						DetectionColor.B = 1.0f;
+					}
+					break;
+				case MobAwareness.Suspicious:
 					DetectionColor.R = 0.0f;
-					DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-					DetectionColor.B = 1.0f;
-				}
-				break;
-			case MobAwareness.Suspicious:
-				DetectionColor.R = 0.0f;
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				break;
-			case MobAwareness.Alert:
-				DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = 0.0f;
-				break;
-			};
+					DetectionColor.G = 0.0f;
+					DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+					break;
+				case MobAwareness.Alert:
+					DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
+					DetectionColor.G = 0.0f;
+					DetectionColor.B = 0.0f;
+					break;
+			}
 			DetectionMeter.SetDeferred( Line2D.PropertyName.DefaultColor, DetectionColor );
 		}
 
-		private void GenerateRayCasts() {
-			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new RayCast2D[ rayCount ];
-			for ( int i = 0; i < rayCount; i++ ) {
-				RayCast2D ray = new RayCast2D();
-				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
-				ray.Enabled = true;
-				ray.CollisionMask = 2;
-				SightLines[i] = ray;
-				HeadAnimations.AddChild( ray );
-			}
-		}
-
 		// TODO: make the "valid target" thing for the grunt a lot looser
-		private bool IsValidTarget( GodotObject target ) => target is Entity entity && entity != null && entity.Faction != Faction;
+		private bool IsValidTarget( GodotObject target ) {
+			return target is Entity entity && entity != null && entity.Faction != Faction;
+		}
 
 		private void SetAlert() {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
@@ -126,10 +137,10 @@ namespace Renown.Thinkers {
 			// NOTE: this sound might be a little bit annoying to the sane mind
 			PlaySound( null, AudioCache.GetStream( "res://sounds/mobs/zurgut_grunt_alert.ogg" ) );
 			Awareness = MobAwareness.Alert;
-//			SetNavigationTarget( LastTargetPosition );
+			//			SetNavigationTarget( LastTargetPosition );
 		}
 
-		public void OnHeadHit( Entity source, float nAmount ) {
+		public void OnHeadHit( Entity source, float amount ) {
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
@@ -164,7 +175,7 @@ namespace Renown.Thinkers {
 			ArmAnimations.Hide();
 			BodyAnimations.Show();
 			BodyAnimations.Play( "dead" );
-			
+
 			Enraged = false;
 			BlowupTimer.Stop();
 		}
@@ -191,7 +202,7 @@ namespace Renown.Thinkers {
 
 				Velocity = Godot.Vector2.Zero;
 				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
-				
+
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
 				HeadAnimations.Hide();
@@ -273,20 +284,20 @@ namespace Renown.Thinkers {
 			SightTarget = null;
 
 			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				BodyAnimations.FlipH = true;
-				break;
-			};
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					BodyAnimations.FlipH = true;
+					break;
+			}
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 		}
@@ -353,23 +364,21 @@ namespace Renown.Thinkers {
 			}
 
 			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				break;
-			};
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					break;
+			}
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
-
-			GenerateRayCasts();
 		}
 
 		protected override void ProcessAnimations() {
@@ -380,28 +389,8 @@ namespace Renown.Thinkers {
 		}
 		protected override void Think() {
 			CheckSight();
-
-			if ( Enraged ) {
-				return;
-			}
-
-			switch ( CurrentState ) {
-			case State.Attacking:
-				if ( GlobalPosition.DistanceTo( LastTargetPosition ) < 80.0f && AttackTimer.IsStopped() ) {
-					ArmAnimations.CallDeferred( "play", "attack" );
-					AttackTimer.CallDeferred( "start" );
-					StopMoving();
-//					CallDeferred( "PlaySound", AudioChannel, ResourceCache.GetSound( "res://sounds/player/melee.wav" ) );
-					CallDeferred( "SwingHammer" );
-				} else {
-					SetNavigationTarget( LastTargetPosition );
-				}
-				break;
-			case State.Idle:
-				break;
-			};
 		}
-		
+
 		public void LookAtTarget() {
 			if ( SightTarget == null ) {
 				return;
@@ -409,64 +398,6 @@ namespace Renown.Thinkers {
 			LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
-		}
-		private void CheckSight() {
-			if ( Awareness == MobAwareness.Alert ) {
-				return;
-			}
-
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[ i ].GetCollider() as Entity;
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-					break;
-				} else {
-					sightTarget = null;
-				}
-			}
-
-			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
-				// out of sight, but we got something
-				switch ( Awareness ) {
-				case MobAwareness.Relaxed:
-					SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-					if ( SightDetectionAmount < 0.0f ) {
-						SightDetectionAmount = 0.0f;
-					}
-					break;
-				case MobAwareness.Alert:
-					SetAlert();
-					break;
-				}
-				;
-				SetDetectionColor();
-				CanSeeTarget = false;
-				return;
-			}
-
-			if ( sightTarget != null ) {
-				if ( sightTarget.Health <= 0.0f ) {
-					// dead?
-				} else {
-					Target = sightTarget;
-					LastTargetPosition = sightTarget.GlobalPosition;
-					CanSeeTarget = true;
-
-					SightDetectionAmount += SightDetectionSpeed * 2.0f;
-				}
-			}
-
-			if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
-				SetAlert();
-				CurrentState = State.Attacking;
-				//				SetNavigationTarget( LastTargetPosition );
-			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
-				SetAlert();
-			}
-			if ( IsAlert() ) {
-				SetAlert();
-			}
-			SetDetectionColor();
 		}
 
 		private void SwingHammer() {

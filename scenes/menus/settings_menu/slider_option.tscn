@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6dwqm35gxe77"]
+[gd_scene load_steps=6 format=3 uid="uid://b6dwqm35gxe77"]
 
-[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_lqxw1"]
+[ext_resource type="Texture2D" uid="uid://34t24sh0lbnu" path="res://textures/hud/ink_streak.dds" id="1_43t3q"]
 [ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://resources/themes/settings_menu_slider_inactive.tres" id="2_43t3q"]
 [ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://resources/themes/settings_menu_slider_active.tres" id="2_ntx2d"]
 
@@ -41,6 +41,10 @@ func _ready() -> void:
 	_hslider.connect( \"value_changed\", _on_value_changed )
 "
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ey12s"]
+texture = ExtResource("1_43t3q")
+texture_margin_right = 25.0
+
 [node name="SliderOption" type="HBoxContainer"]
 anchors_preset = -1
 anchor_right = 0.85
@@ -53,7 +57,7 @@ metadata/_edit_use_anchors_ = true
 [node name="Title" type="Label" parent="."]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-theme_override_styles/normal = ExtResource("1_lqxw1")
+theme_override_styles/normal = SubResource("StyleBoxTexture_ey12s")
 horizontal_alignment = 1
 
 [node name="Input" type="HSlider" parent="."]

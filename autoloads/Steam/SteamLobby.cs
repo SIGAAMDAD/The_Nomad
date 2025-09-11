@@ -31,6 +31,7 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
+using ResourceCache;
 
 namespace Steam {
 	/*
@@ -837,7 +838,6 @@ namespace Steam {
 					CallDeferred( MethodName.ProcessServerCommand, (ulong)msg.Sender, msg.Data );
 					break;
 			}
-			;
 		}
 		private void HandleIncomingMessages() {
 			int processed = 0;
@@ -958,10 +958,10 @@ namespace Steam {
 
 			switch ( SteamMatchmaking.GetLobbyData( LobbyId, "gametype" ) ) {
 				case "Online":
-					GameConfiguration.GameMode = GameMode.Online;
+					GameConfiguration.SetGameMode( GameMode.Online );
 					break;
 				case "Multiplayer":
-					GameConfiguration.GameMode = GameMode.Multiplayer;
+					GameConfiguration.SetGameMode( GameMode.Multiplayer );
 					LobbyMap = SteamMatchmaking.GetLobbyData( LobbyId, "map" );
 					LobbyGameMode = Convert.ToUInt32( SteamMatchmaking.GetLobbyData( LobbyId, "gamemode" ) );
 					Console.PrintLine( $"Lobby map: {LobbyMap}" );
@@ -972,7 +972,7 @@ namespace Steam {
 			ConnectToLobbyMembers();
 			EmitSignalLobbyJoined( (ulong)LobbyId );
 
-			ChatBar = ResourceLoader.Load<PackedScene>( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
+			ChatBar = SceneCache.GetScene( "res://scenes/multiplayer/chat_bar.tscn" ).Instantiate<Chat>();
 			GetTree().Root.AddChild( ChatBar );
 		}
 
@@ -982,19 +982,19 @@ namespace Steam {
 		===============
 		*/
 		private void OnLobbyChatMsg( LobbyChatMsg_t pCallback ) {
-			byte[] szBuffer = new byte[ 1024 ];
+			byte[] buffer = new byte[ 1024 ];
 
-			int nBufferLength = SteamMatchmaking.GetLobbyChatEntry(
+			int bufferLength = SteamMatchmaking.GetLobbyChatEntry(
 				(CSteamID)pCallback.m_ulSteamIDLobby,
 				(int)pCallback.m_iChatID,
 				out CSteamID senderId,
-				szBuffer,
-				szBuffer.Length,
+				buffer,
+				buffer.Length,
 				out EChatEntryType entryType
 			);
 
 			if ( entryType == EChatEntryType.k_EChatEntryTypeChatMsg ) {
-				string message = System.Text.Encoding.UTF8.GetString( szBuffer, 0, nBufferLength );
+				string message = System.Text.Encoding.UTF8.GetString( buffer, 0, bufferLength );
 				EmitSignalChatMessageReceived( (ulong)senderId, message, (int)ChatMessageType.None );
 			}
 		}
@@ -1362,6 +1362,34 @@ namespace Steam {
 		*/
 		private void CmdNetworkingProfile() {
 			GetTree().Root.GetNode<NetworkingMonitor>( "NetworkingMonitor" ).Visible = !GetTree().Root.GetNode<NetworkingMonitor>( "NetworkingMonitor" ).Visible;
+		}
+
+		public void SetLobbyName( string name ) {
+			ArgumentException.ThrowIfNullOrEmpty( name );
+			LobbyName = name;
+		}
+
+		public void SetMaxMembers( int memberLimit ) {
+			if ( memberLimit < 0 || memberLimit > MAX_LOBBY_MEMBERS ) {
+				throw new ArgumentOutOfRangeException( $"memberLimit {memberLimit} is less than 0 or greater than MAX_LOBBY_MEMBERS ({MAX_LOBBY_MEMBERS})" );
+			}
+			LobbyMaxMembers = memberLimit;
+		}
+
+		public void SetMap( string map ) {
+			ArgumentException.ThrowIfNullOrEmpty( map );
+			LobbyMap = map;
+		}
+
+		public void SetGameMode( uint gameMode ) {
+			if ( gameMode < (uint)Mode.GameMode.Bloodbath || gameMode >= (uint)Mode.GameMode.Count ) {
+				throw new ArgumentOutOfRangeException( nameof( gameMode ) );
+			}
+			LobbyGameMode = gameMode;
+		}
+
+		public void SetHostStatus( bool isHost ) {
+			IsHost = isHost;
 		}
 
 		/*

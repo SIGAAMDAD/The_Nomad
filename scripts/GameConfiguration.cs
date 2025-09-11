@@ -22,6 +22,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
+using System;
+using System.Collections.Concurrent;
 
 public enum GameDifficulty {
 	Wanderer,
@@ -44,12 +46,40 @@ public enum GameMode {
 };
 
 public partial class GameConfiguration : Node {
-	public static Node LoadedLevel = null;
-
 	public static bool MemeMode = false;
-
 	public static bool Paused = false;
-	public static GameDifficulty GameDifficulty = GameDifficulty.Wanderer;
 	public static bool DemonEyeActive = false;
-	public static GameMode GameMode = GameMode.SinglePlayer;
+	public static GameMode GameMode { get; private set; } = GameMode.SinglePlayer;
+	public static GameDifficulty GameDifficulty { get; private set; } = GameDifficulty.Wanderer;
+
+	public static event Action GameModeChanged;
+	public static event Action GameDifficultyChanged;
+
+	private static GameConfiguration Instance;
+
+	/*
+	===============
+	SetGameMode
+	===============
+	*/
+	public static void SetGameMode( GameMode gameMode ) {
+		GameMode = gameMode;
+		GameModeChanged.Invoke();
+	}
+
+	/*
+	===============
+	SetGameDifficulty
+	===============
+	*/
+	public static void SetGameDifficulty( GameDifficulty difficulty ) {
+		GameDifficulty = difficulty;
+		GameDifficultyChanged.Invoke();
+	}
+
+	public override void _Ready() {
+		base._Ready();
+
+		Instance = this;
+	}
 };

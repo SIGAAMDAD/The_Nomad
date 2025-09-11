@@ -23,11 +23,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 using Godot;
 
 namespace PlayerSystem.Upgrades {
-	public struct CoolingVents : DashModule {
+	public struct CoolingVents : IDashModule {
 		public readonly StringName Name => "Cooling Vents";
-		public readonly StringName Description => "Enhanced cooling mechanisms for the jumpkit.";
+		public readonly StringName Description => "Enhanced cooling mechanisms for the dashkit.";
+		public readonly bool CanBurnout => true;
+		public readonly float BurnoutMax => 1.0f;
+		public readonly float BurnoutCooldown => 0.5f;
+		public readonly float DashDuration => 0.5f;
 
 		public void ApplyEffect( DashKit dashKit ) {
+
 		}
 	};
 };

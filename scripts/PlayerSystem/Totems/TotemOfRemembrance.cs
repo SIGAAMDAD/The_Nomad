@@ -1,4 +1,4 @@
 namespace PlayerSystem.Totems {
-	public partial class TotemOfRemembrance : Totem {
+	public sealed partial class TotemOfRemembrance : Totem {
 	};
 };

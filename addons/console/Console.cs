@@ -59,13 +59,16 @@ public partial class Console : Control {
 		}
 	};
 
-	private static readonly string LogFile = "user://debug.log";
-	private static readonly string ConsoleHistoryFile = "user://history.txt";
+	private static readonly string LOG_FILE = "user://debug.log";
+	private static readonly string CONSOLE_HISTORY_FILE = "user://history.txt";
 
+	[Export]
 	public bool Enabled { get; private set; } = true;
 
+	[Export]
 	public bool EnableOnReleaseBuild { get; private set; } = true;
 
+	[Export]
 	public bool PauseEnabled { get; private set; } = false;
 
 	private Dictionary<string, ConsoleCommand> ConsoleCommands = new Dictionary<string, ConsoleCommand>();
@@ -169,10 +172,10 @@ public partial class Console : Control {
 	===============
 	*/
 	/// <summary>
-	/// Saves the console history list to <see cref="ConsoleHistoryFile"/>
+	/// Saves the console history list to <see cref="CONSOLE_HISTORY_FILE"/>
 	/// </summary>
 	private void SaveHistory() {
-		using var file = FileAccess.Open( ConsoleHistoryFile, FileAccess.ModeFlags.Write );
+		using var file = FileAccess.Open( CONSOLE_HISTORY_FILE, FileAccess.ModeFlags.Write );
 		if ( file != null ) {
 			int startIndex = Math.Max( 0, ConsoleHistory.Count - 100 ); // Max 100 lines
 			for ( int i = startIndex; i < ConsoleHistory.Count; i++ ) {
@@ -180,12 +183,12 @@ public partial class Console : Control {
 					PrintError( $"Console.SaveHistory: error saving line at index {i} with data \"{ConsoleHistory[ i ]}\"" );
 
 					// make sure we remove any corrupt data
-					DirAccess.RemoveAbsolute( ConsoleHistoryFile );
+					DirAccess.RemoveAbsolute( CONSOLE_HISTORY_FILE );
 					break;
 				}
 			}
 		} else {
-			PrintError( $"Console.SaveHistory: couldn't save console history to {ConsoleHistoryFile}" );
+			PrintError( $"Console.SaveHistory: couldn't save console history to {CONSOLE_HISTORY_FILE}" );
 		}
 	}
 
@@ -416,8 +419,6 @@ public partial class Console : Control {
 			GetTree().Paused = WasPausedAlready || PauseEnabled;
 			LineEdit.GrabFocus();
 			EmitSignalConsoleOpened();
-
-			ProcessMode = ProcessModeEnum.Always;
 		} else {
 			Control.AnchorBottom = 1.0f;
 			ScrollToBottom();
@@ -426,8 +427,6 @@ public partial class Console : Control {
 				GetTree().Paused = false;
 			}
 			EmitSignalConsoleClosed();
-
-			ProcessMode = ProcessModeEnum.Disabled;
 		}
 	}
 
@@ -608,9 +607,9 @@ public partial class Console : Control {
 		ConsoleHistory.Clear();
 		ConsoleHistoryIndex = 0;
 
-		Error result = DirAccess.RemoveAbsolute( ConsoleHistoryFile );
+		Error result = DirAccess.RemoveAbsolute( CONSOLE_HISTORY_FILE );
 		if ( result != Error.Ok ) {
-			PrintError( $"Error deleting console history file \"{ConsoleHistoryFile}\" - godot error {result}" );
+			PrintError( $"Error deleting console history file \"{CONSOLE_HISTORY_FILE}\" - godot error {result}" );
 		}
 	}
 
@@ -776,8 +775,7 @@ public partial class Console : Control {
 			RichLabel.CallDeferred( RichTextLabel.MethodName.AppendText, $"{text}\n" );
 			GD.Print( text );
 		}
-
-
+		Instance.LogFileHandle?.WriteLine( text );
 	}
 
 	/*
@@ -796,6 +794,7 @@ public partial class Console : Control {
 			RichLabel.CallDeferred( RichTextLabel.MethodName.AppendText, $"[color=light_coral]   ERROR:[/color] {text}\n" );
 			GD.PushError( text );
 		}
+		Instance.LogFileHandle?.WriteLine( $"   ERROR: {text}" );
 	}
 
 	/*
@@ -808,7 +807,13 @@ public partial class Console : Control {
 	/// </summary>
 	/// <param name="text"></param>
 	public static void PrintDebug( string text ) {
-		PrintLine( $"[color=light_blue]   DEBUG:[/color] {text}" );
+		if ( !IsInstanceValid( RichLabel ) ) {
+			Instance.CallDeferred( MethodName.PrintLine, $"[color=light_blue]   DEBUG:[/color] {text}", true );
+		} else {
+			RichLabel.CallDeferred( RichTextLabel.MethodName.AppendText, $"[color=light_blue]   DEBUG:[/color] {text}" );
+			GD.Print( text );
+		}
+		Instance.LogFileHandle?.WriteLine( $"   DEBUG: {text}" );
 	}
 
 	/*
@@ -827,8 +832,14 @@ public partial class Console : Control {
 			RichLabel.CallDeferred( RichTextLabel.MethodName.AppendText, $"[color=gold]   WARNING:[/color] {text}\n" );
 			GD.PushWarning( text );
 		}
+		Instance.LogFileHandle?.WriteLine( $"   WARNING: {text}" );
 	}
 
+	/*
+	===============
+	_EnterTree
+	===============
+	*/
 	public override void _EnterTree() {
 		Instance = this;
 
@@ -841,7 +852,7 @@ public partial class Console : Control {
 		Control.AnchorRight = 1.0f;
 		CanvasLayer.AddChild( Control );
 
-		var style = new StyleBoxFlat();
+		StyleBoxFlat style = new StyleBoxFlat();
 		style.BgColor = new Color( 0, 0, 0, 0.84f );
 
 		RichLabel = new RichTextLabel();
@@ -878,6 +889,24 @@ public partial class Console : Control {
 			}
 		}
 
+		try {
+			System.IO.FileStream stream = new System.IO.FileStream( ProjectSettings.GlobalizePath( LOG_FILE ), System.IO.FileMode.Create );
+			LogFileHandle = new System.IO.StreamWriter( stream );
+		} catch ( Exception e ) {
+			GD.PushWarning( $"Couldn't create logfile {LOG_FILE}! Exception: {e.Message}" );
+		}
+
 		InitializeCommands();
+	}
+
+	/*
+	===============
+	_ExitTree
+	===============
+	*/
+	public override void _ExitTree() {
+		base._ExitTree();
+
+		LogFileHandle.Close();
 	}
 };

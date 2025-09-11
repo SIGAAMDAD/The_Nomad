@@ -23,152 +23,155 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using System.Diagnostics;
-using Menus;
 
-/*
-===================================================================================
 
-Poem
-
-===================================================================================
-*/
-
-public partial class Poem : Control {
-	private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
-	private static readonly Color HiddenColor = new Color( 0.0f, 0.0f, 0.0f, 0.0f );
-
-	private bool Loading = false;
-
-	private Label Author;
-	private Label PressEnter;
-	private Timer[] Timers;
-	private Label[] Labels;
-	private int CurrentTimer = 0;
-
+namespace Menus {
 	/*
-	===============
-	OnTimerTimeout
-	===============
+	===================================================================================
+
+	Poem
+
+	===================================================================================
 	*/
-	private void OnTimerTimeout() {
-		AdvanceTimer();
-	}
 
-	/*
-	===============
-	OnTransitionFinished
-	===============
-	*/
-	private void OnTransitionFinished() {
-		GetNode<CanvasLayer>( "/root/TransitionScreen" ).Disconnect( "transition_finished", Callable.From( OnTransitionFinished ) );
+	public partial class Poem : Control {
+		private static readonly Color DefaultColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
+		private static readonly Color HiddenColor = new Color( 0.0f, 0.0f, 0.0f, 0.0f );
 
-		GameConfiguration.GameMode = GameMode.SinglePlayer;
+		private bool Loading = false;
 
-		Console.PrintLine( "Loading game..." );
-
-		World.LoadTime = Stopwatch.StartNew();
-
-		Hide();
-		GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/world.tscn" );
+		private Label Author;
+		private Label PressEnter;
+		private Timer[] Timers;
+		private Label[] Labels;
+		private int CurrentTimer = 0;
 
 		/*
-		if ( SettingsData.GetNetworkingEnabled() ) {
-			Console.PrintLine( "Networking enabled, creating co-op lobby..." );
+		===============
+		OnTimerTimeout
+		===============
+		*/
+		private void OnTimerTimeout() {
+			AdvanceTimer();
+		}
 
-			GameConfiguration.GameMode = GameMode.Online;
+		/*
+		===============
+		OnTransitionFinished
+		===============
+		*/
+		private void OnTransitionFinished() {
+			TransitionScreen.TransitionFinished -= OnTransitionFinished;
 
-			SteamLobby.Instance.SetMaxMembers( 4 );
-			string name = SteamManager.GetSteamName();
-			if ( name[ name.Length - 1 ] == 's' ) {
-				SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+			GameConfiguration.SetGameMode( GameMode.SinglePlayer );
+
+			Console.PrintLine( "Loading game..." );
+
+			World.LoadTime = Stopwatch.StartNew();
+
+			Hide();
+			GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/world.tscn" );
+
+			/*
+			if ( SettingsData.GetNetworkingEnabled() ) {
+				Console.PrintLine( "Networking enabled, creating co-op lobby..." );
+
+				GameConfiguration.GameMode = GameMode.Online;
+
+				SteamLobby.Instance.SetMaxMembers( 4 );
+				string name = SteamManager.GetSteamName();
+				if ( name[ name.Length - 1 ] == 's' ) {
+					SteamLobby.Instance.SetLobbyName( string.Format( "{0}' Lobby", name ) );
+				} else {
+					SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+				}
+
+				SteamLobby.Instance.CreateLobby();
 			} else {
-				SteamLobby.Instance.SetLobbyName( string.Format( "{0}'s Lobby", name ) );
+				GameConfiguration.GameMode = GameMode.SinglePlayer;
+			}
+			*/
+		}
+
+		/*
+		===============
+		AdvanceTimer
+		===============
+		*/
+		private void AdvanceTimer() {
+			if ( Loading ) {
+				return;
+			}
+			if ( CurrentTimer >= Labels.Length ) {
+				Loading = true;
+				TransitionScreen.TransitionFinished += OnTransitionFinished;
+				TransitionScreen.Transition();
+				return;
 			}
 
-			SteamLobby.Instance.CreateLobby();
-		} else {
-			GameConfiguration.GameMode = GameMode.SinglePlayer;
+			CurrentTimer++;
+			if ( CurrentTimer < Timers.Length ) {
+				Tween fadeTween = CreateTween();
+				fadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
+
+				Timers[ CurrentTimer ].Start();
+			} else {
+				Tween fadeTween = CreateTween();
+				fadeTween.TweenProperty( Author, "modulate", DefaultColor, 1.5f );
+				fadeTween.TweenProperty( PressEnter, "modulate", DefaultColor, 0.9f );
+			}
 		}
+
+		/*
+		===============
+		_Ready
+		===============
 		*/
-	}
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
+		public override void _Ready() {
+			base._Ready();
 
-	/*
-	===============
-	AdvanceTimer
-	===============
-	*/
-	private void AdvanceTimer() {
-		if ( Loading ) {
-			return;
-		}
-		if ( CurrentTimer >= Labels.Length ) {
-			Loading = true;
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
-			return;
-		}
+			Theme = AccessibilityManager.DefaultTheme;
 
-		CurrentTimer++;
-		if ( CurrentTimer < Timers.Length ) {
+			Timers = [
+				GetNode<Timer>( "VBoxContainer/Label/Timer1" ),
+				GetNode<Timer>( "VBoxContainer/Label2/Timer2" ),
+				GetNode<Timer>( "VBoxContainer/Label3/Timer3" ),
+				GetNode<Timer>( "VBoxContainer/Label4/Timer4" ),
+				GetNode<Timer>( "VBoxContainer/Label5/Timer5" )
+			];
+			Labels = [
+				GetNode<Label>( "VBoxContainer/Label" ),
+				GetNode<Label>( "VBoxContainer/Label2" ),
+				GetNode<Label>( "VBoxContainer/Label3" ),
+				GetNode<Label>( "VBoxContainer/Label4" ),
+				GetNode<Label>( "VBoxContainer/Label5" )
+			];
+
+			for ( int i = 0; i < Timers.Length; i++ ) {
+				Timers[ i ].Connect( Timer.SignalName.Timeout, Callable.From( OnTimerTimeout ) );
+			}
+
 			Tween FadeTween = CreateTween();
 			FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
 
-			Timers[ CurrentTimer ].Start();
-		} else {
-			Tween FadeTween = CreateTween();
-			FadeTween.TweenProperty( Author, "modulate", DefaultColor, 1.5f );
-			FadeTween.TweenProperty( PressEnter, "modulate", DefaultColor, 0.9f );
-		}
-	}
-
-	/*
-	===============
-	_Ready
-
-	godot initialization override
-	===============
-	*/
-	public override void _Ready() {
-		Theme = AccessibilityManager.DefaultTheme;
-
-		base._Ready();
-
-		Timers = [
-			GetNode<Timer>( "VBoxContainer/Label/Timer1" ),
-			GetNode<Timer>( "VBoxContainer/Label2/Timer2" ),
-			GetNode<Timer>( "VBoxContainer/Label3/Timer3" ),
-			GetNode<Timer>( "VBoxContainer/Label4/Timer4" ),
-			GetNode<Timer>( "VBoxContainer/Label5/Timer5" )
-		];
-		Labels = [
-			GetNode<Label>( "VBoxContainer/Label" ),
-			GetNode<Label>( "VBoxContainer/Label2" ),
-			GetNode<Label>( "VBoxContainer/Label3" ),
-			GetNode<Label>( "VBoxContainer/Label4" ),
-			GetNode<Label>( "VBoxContainer/Label5" )
-		];
-
-		for ( int i = 0; i < Timers.Length; i++ ) {
-			Timers[ i ].Connect( Timer.SignalName.Timeout, Callable.From( OnTimerTimeout ) );
+			Author = GetNode<Label>( "VBoxContainer/AuthorName" );
+			PressEnter = GetNode<Label>( "VBoxContainer/PressEnter" );
 		}
 
-		Tween FadeTween = CreateTween();
-		FadeTween.TweenProperty( Labels[ CurrentTimer ], "modulate", DefaultColor, 1.5f );
+		/*
+		===============
+		_UnhandledInput
+		===============
+		*/
+		public override void _UnhandledInput( InputEvent @event ) {
+			base._UnhandledInput( @event );
 
-		Author = GetNode<Label>( "VBoxContainer/AuthorName" );
-		PressEnter = GetNode<Label>( "VBoxContainer/PressEnter" );
-	}
-
-	/*
-	===============
-	_UnhandledInput
-	===============
-	*/
-	public override void _UnhandledInput( InputEvent @event ) {
-		base._UnhandledInput( @event );
-
-		if ( Input.IsActionJustPressed( "ui_advance" ) ) {
-			CallDeferred( MethodName.AdvanceTimer );
+			if ( Input.IsActionJustPressed( "ui_advance" ) ) {
+				CallDeferred( MethodName.AdvanceTimer );
+			}
 		}
-	}
+	};
 };

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dch0nrai2popc"]
 
-[ext_resource type="Script" uid="uid://bsn7dhytwb1qo" path="res://scripts/menus/fade.gd" id="1_x0838"]
+[ext_resource type="Script" uid="uid://dgpvyl3d2poko" path="res://scripts/menus/TransitionScreen.cs" id="1_x0838"]
 
 [sub_resource type="Animation" id="Animation_p81mj"]
 length = 0.001

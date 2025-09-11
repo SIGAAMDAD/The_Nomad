@@ -21,9 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Godot;
+namespace Items {
+	public interface IConsumableStack {
+		public int Amount { get; protected set; }
 
-public interface IConsumableStack {
-	public void AddItems( int items );
-	public int RemoveItems( int items );
+		public void AddItems( int items );
+		public int RemoveItems( int items );
+	};
 };

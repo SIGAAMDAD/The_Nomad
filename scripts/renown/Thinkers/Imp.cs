@@ -1,10 +1,8 @@
 using Godot;
-using System.Diagnostics;
 
 namespace Renown.Thinkers {
-	public partial class Imp : Thinker {
+	public partial class Imp : MobBase {
 		private Timer AttackTimer;
-		private Entity Target;
 
 		private Area2D MeleeArea;
 

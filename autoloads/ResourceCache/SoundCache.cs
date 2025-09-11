@@ -103,10 +103,10 @@ namespace ResourceCache {
 	public partial class SoundCache : Node {
 		public static readonly ConcurrentDictionary<SoundEffect, AudioStream>? StreamCache = new ConcurrentDictionary<SoundEffect, AudioStream>();
 		private static readonly IReadOnlyDictionary<SoundEffect, string> StreamPaths = new Dictionary<SoundEffect, string>() {
-			[SoundEffect.MoveGravel0] = "sounds/env/move_gravel_0.ogg",
-			[SoundEffect.MoveGravel1] = "sounds/env/move_gravel_1.ogg",
-			[SoundEffect.MoveGravel2] = "sounds/env/move_gravel_2.ogg",
-			[SoundEffect.MoveGravel3] = "sounds/env/move_gravel_3.ogg",
+			[SoundEffect.MoveGravel0] = "sounds/env/move_gravel_0.wav",
+			[SoundEffect.MoveGravel1] = "sounds/env/move_gravel_1.wav",
+			[SoundEffect.MoveGravel2] = "sounds/env/move_gravel_2.wav",
+			[SoundEffect.MoveGravel3] = "sounds/env/move_gravel_3.wav",
 			[SoundEffect.MoveWood0] = "sounds/env/move_wood_0.ogg",
 			[SoundEffect.MoveWood1] = "sounds/env/move_wood_1.ogg",
 			[SoundEffect.MoveWood2] = "sounds/env/move_wood_2.ogg",
@@ -134,8 +134,8 @@ namespace ResourceCache {
 			[SoundEffect.PlayerMoveSand1] = "sounds/player/move_sand_1.wav",
 			[SoundEffect.PlayerMoveSand2] = "sounds/player/move_sand_2.wav",
 			[SoundEffect.PlayerMoveSand3] = "sounds/player/move_sand_3.wav",
-			[SoundEffect.PlayerMoveWater0] = "sounds/player/moveWater0.wav",
-			[SoundEffect.PlayerMoveWater1] = "sounds/player/moveWater1.wav",
+			[SoundEffect.PlayerMoveWater0] = "sounds/player/move_water_0.wav",
+			[SoundEffect.PlayerMoveWater1] = "sounds/player/move_water_1.wav",
 			[SoundEffect.PlayerMoveStone0] = "sounds/player/move_stone_0.wav",
 			[SoundEffect.PlayerMoveStone1] = "sounds/player/move_stone_1.wav",
 			[SoundEffect.PlayerMoveStone2] = "sounds/player/move_stone_2.wav",
@@ -166,8 +166,8 @@ namespace ResourceCache {
 
 			[SoundEffect.DashBurn0] = "sounds/player/dashkit_burn_0.wav",
 			[SoundEffect.DashBurn1] = "sounds/player/dashkit_burn_1.wav",
-			[SoundEffect.DashExplosion] = "sounds/player/dash_explosion.ogg",
-			[SoundEffect.DashChargeup] = "sounds/player/dash_chargeup.ogg",
+			[SoundEffect.DashExplosion] = "sounds/player/dash_explosion.wav",
+			[SoundEffect.DashChargeup] = "sounds/player/dash_chargeup.wav",
 
 			[SoundEffect.SlowmoBegin] = "sounds/player/slowmo_begin.wav",
 			[SoundEffect.SlowmoEnd] = "sounds/player/slowmo_end.ogg",

@@ -25,7 +25,6 @@ using Godot;
 using ResourceCache;
 using System.Collections.Generic;
 using Menus;
-using PlayerSystem.Input;
 using System;
 
 /*
@@ -59,12 +58,14 @@ public partial class AccessibilityManager : Node {
 	===============
 	*/
 	public static Texture2D? GetPrevMenuButtonTexture() {
-		string name = Input.GetJoyName( 0 );
-		return name switch {
-			"XBox" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_lb.png" ),
-			"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_l1_alternative.png" ),
-			_ => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_lb.png" ),
-		};
+		return Input.GetConnectedJoypads().Count > 0 ?
+				Input.GetJoyName( 0 ) switch {
+					"XBox" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Xbox Series/Default/xbox_lb.png" ),
+					"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/PlayStation Series/Default/playstation_trigger_l1_alternative.png" ),
+					_ => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Steam Controller/Default/steam_lb.png" ),
+				}
+			:
+				TextureCache.GetTexture( "res://textures/kenny_input-prompts/Keyboard & Mouse/Default/keyboard_q.png" );
 	}
 
 	/*
@@ -73,12 +74,62 @@ public partial class AccessibilityManager : Node {
 	===============
 	*/
 	public static Texture2D? GetNextMenuButtonTexture() {
-		string name = Input.GetJoyName( 0 );
-		return name switch {
-			"XBox" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Xbox Series/Default/xbox_rb.png" ),
-			"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenney_input-prompts/PlayStation Series/Default/playstation_trigger_r1_alternative.png" ),
-			_ => TextureCache.GetTexture( "res://textures/kenney_input-prompts/Steam Controller/Default/steam_rb.png" ),
-		};
+		return Input.GetConnectedJoypads().Count > 0 ?
+				Input.GetJoyName( 0 ) switch {
+					"XBox" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Xbox Series/Default/xbox_rb.png" ),
+					"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/PlayStation Series/Default/playstation_trigger_r1_alternative.png" ),
+					_ => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Steam Controller/Default/steam_rb.png" ),
+				}
+			:
+				TextureCache.GetTexture( "res://textures/kenny_input-prompts/Keyboard & Mouse/Default/keyboard_e.png" );
+	}
+
+	/*
+	===============
+	GetSaveSettingsButtonTexture
+	===============
+	*/
+	public static Texture2D? GetSaveSettingsButtonTexture() {
+		return Input.GetConnectedJoypads().Count > 0 ?
+				Input.GetJoyName( 0 ) switch {
+					"XBox One Controller" or "XBox 360 Controller" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Xbox Series/Default/xbox_button_x.png" ),
+					"PS4 Controller" or "PS5 Controller" or "Sony PlayStation Controller" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/PlayStation Series/Default/playstation_button_color_square.png" ),
+					_ => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Steam Controller/Default/steam_button_color_x.png" ),
+				}
+			:
+				TextureCache.GetTexture( "res://textures/kenny_input-prompts/Keyboard & Mouse/Default/keyboard_enter.png" );
+	}
+
+	/*
+	===============
+	GetResetSettingsButtonTexture
+	===============
+	*/
+	public static Texture2D? GetResetSettingsButtonTexture() {
+		return Input.GetConnectedJoypads().Count > 0 ?
+				Input.GetJoyName( 0 ) switch {
+					"XBox" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Xbox Series/Default/xbox_button_y.png" ),
+					"PS4" or "PS5" or "PlayStation" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/PlayStation Series/Default/playstation_button_color_triangle.png" ),
+					_ => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Steam Controller/Default/steam_button_color_y.png" ),
+				}
+			:
+				TextureCache.GetTexture( "res://textures/kenny_input-prompts/Keyboard & Mouse/Default/keyboard_backspace.png" );
+	}
+
+	/*
+	===============
+	GetExitMenuButtonTexture
+	===============
+	*/
+	public static Texture2D? GetExitMenuButtonTexture() {
+		return Input.GetConnectedJoypads().Count > 0 ?
+				Input.GetJoyName( 0 ) switch {
+					"XBox One Controller" or "XBox 360 Controller" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Xbox Series/Default/xbox_button_b.png" ),
+					"PS4 Controller" or "PS5 Controller" or "Sony PlayStation Controller" => TextureCache.GetTexture( "res://textures/kenny_input-prompts/PlayStation Series/Default/playstation_button_color_circle.png" ),
+					_ => TextureCache.GetTexture( "res://textures/kenny_input-prompts/Steam Controller/Default/steam_button_color_b.png" ),
+				}
+			:
+				TextureCache.GetTexture( "res://textures/kenny_input-prompts/Keyboard & Mouse/Default/keyboard_escape.png" );
 	}
 
 	/*
@@ -86,21 +137,24 @@ public partial class AccessibilityManager : Node {
 	LoadBinds
 	===============
 	*/
-	public static void LoadBinds( in InputController input ) {
-		var keyboardInputMappings = new Dictionary<Resource, string>( (int)InputController.ControlBind.Count );
-		for ( InputController.ControlBind bind = InputController.ControlBind.Move; bind < InputController.ControlBind.Count; bind++ ) {
-			Resource? action = input.Bindings[ InputController.BindMapping.Keyboard ].Binds[ bind ];
+	public static void LoadBinds( in Player.InputController input ) {
+		ArgumentNullException.ThrowIfNull( input );
+		ArgumentNullException.ThrowIfNull( input.Bindings );
+
+		var keyboardInputMappings = new Dictionary<Resource, string>( (int)Player.InputController.ControlBind.Count );
+		for ( Player.InputController.ControlBind bind = Player.InputController.ControlBind.Move; bind < Player.InputController.ControlBind.Count; bind++ ) {
+			Resource? action = input.Bindings[ Player.InputController.BindMapping.Keyboard ].Binds[ bind ];
 			ArgumentNullException.ThrowIfNull( action );
 
 			keyboardInputMappings.Add(
 				action,
-				LoadBindString( input.Bindings[ InputController.BindMapping.Keyboard ].MappingContext, action )
+				LoadBindString( input.Bindings[ Player.InputController.BindMapping.Keyboard ].MappingContext, action )
 			);
 		}
 
-		var gamepadInputMappings = new Dictionary<Resource, string>( (int)InputController.ControlBind.Count * 4 );
-		for ( InputController.BindMapping mapper = InputController.BindMapping.Gamepad0; mapper < InputController.BindMapping.Count; mapper++ ) {
-			for ( InputController.ControlBind bind = InputController.ControlBind.Move; bind < InputController.ControlBind.Count; bind++ ) {
+		var gamepadInputMappings = new Dictionary<Resource, string>( (int)Player.InputController.ControlBind.Count * 4 );
+		for ( Player.InputController.BindMapping mapper = Player.InputController.BindMapping.Gamepad0; mapper < Player.InputController.BindMapping.Count; mapper++ ) {
+			for ( Player.InputController.ControlBind bind = Player.InputController.ControlBind.Move; bind < Player.InputController.ControlBind.Count; bind++ ) {
 				Resource? action = input.Bindings[ mapper ].Binds[ bind ];
 				ArgumentNullException.ThrowIfNull( action );
 

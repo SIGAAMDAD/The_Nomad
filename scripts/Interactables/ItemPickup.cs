@@ -22,7 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using SaveSystem;
+using Items;
 
 namespace Interactables {
 	/*
@@ -57,22 +57,25 @@ namespace Interactables {
 		*/
 		private void OnPickupItem( Player player ) {
 			if ( player == null ) {
-				Console.PrintError( $"ItemPickup.OnPickupItem: player parameter is null" );
+				Console.PrintError( "ItemPickup.OnPickupItem: player parameter is null" );
 				return;
 			}
 			Godot.Collections.Array<Resource> Categories = (Godot.Collections.Array<Resource>)Data.Get( "categories" );
 
 			bool done = false;
 			for ( int i = 0; i < Categories.Count; i++ ) {
-				string name = (string)Categories[ i ].Get( "name" );
+				string name = Categories[ i ].Get( "name" ).AsString();
 				switch ( name ) {
-					case "Weapon":
-						WeaponEntity weapon = new WeaponEntity();
-						weapon.Name = $"Weapon{weapon.GetInstanceId()}";
-						weapon.Data = Data;
+					case "Firearm":
+						WeaponFirearm weapon = new WeaponFirearm() {
+							Name = $"Weapon{GetInstanceId()}",
+							Data = Data
+						};
 						player.AddChild( weapon );
 						weapon.TriggerPickup( player );
 						done = true;
+						break;
+					case "Melee":
 						break;
 					case "Ammo":
 						AmmoStack ammo = new AmmoStack( Data, Amount ) {
@@ -190,7 +193,7 @@ namespace Interactables {
 			Text = GetNode<RichTextLabel>( "RichTextLabel" );
 			LevelData.Instance.ThisPlayer.InputMappingContextChanged += () =>
 				Text.ParseBbcode( AccessibilityManager.GetBindString(
-					LevelData.Instance.ThisPlayer.InputManager.GetBindActionResource( PlayerSystem.Input.InputController.ControlBind.Interact )
+					LevelData.Instance.ThisPlayer.InputManager.GetBindActionResource( Player.InputController.ControlBind.Interact )
 				) );
 
 			Connect( SignalName.BodyShapeEntered, Callable.From<Rid, Node2D, int, int>( OnInteractionAreaBody2DEntered ) );

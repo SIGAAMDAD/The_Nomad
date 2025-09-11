@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=3 uid="uid://cjy2h2wmmfkmc"]
+[gd_scene load_steps=75 format=3 uid="uid://cjy2h2wmmfkmc"]
 
 [ext_resource type="Script" uid="uid://b3cos6eshcvnp" path="res://scripts/PlayerSystem/heads_up_display.gd" id="1_xw6ac"]
 [ext_resource type="PackedScene" uid="uid://bky7kqeq3nqso" path="res://scenes/rage_bar.tscn" id="2_4ecwx"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://bicqn7twyie1n" path="res://textures/hud/ink_splatter_2.png" id="3_oiel5"]
 [ext_resource type="Texture2D" uid="uid://cci46631gyer8" path="res://textures/hud/dash_overlay.png" id="3_vkldb"]
 [ext_resource type="Shader" uid="uid://raq0ehpl5el4" path="res://shaders/weapon_status.gdshader" id="4_4iujc"]
-[ext_resource type="PackedScene" uid="uid://d2sk4218wtapr" path="res://scenes/mobs/boss_health_bar.tscn" id="4_y7hg5"]
 [ext_resource type="Shader" uid="uid://cid2v70xt32ae" path="res://shaders/water.gdshader" id="4_yowj8"]
 [ext_resource type="Script" uid="uid://bjlqnmhmtp0yj" path="res://addons/tattomoosa.spinner/spinner.gd" id="7_50mcg"]
 [ext_resource type="Shader" uid="uid://dj7nxulhpetx6" path="res://shaders/weapon_separator.gdshader" id="8_vil6o"]
@@ -429,11 +428,6 @@ size_flags_vertical = 4
 [node name="WeaponIcon" type="TextureRect" parent="MainHUD/WeaponStatus/MarginContainer/VBoxContainer/HBoxContainer/MeleeStatus"]
 use_parent_material = true
 layout_mode = 2
-
-[node name="BossHealthBar" parent="MainHUD" instance=ExtResource("4_y7hg5")]
-visible = false
-layout_mode = 1
-script = null
 
 [node name="HealthBar" parent="MainHUD" instance=ExtResource("2_bd8b1")]
 modulate = Color(1, 1, 1, 0)

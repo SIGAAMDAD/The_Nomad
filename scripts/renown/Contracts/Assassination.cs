@@ -1,22 +1,23 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
@@ -24,50 +25,23 @@ using Renown.Thinkers;
 using Renown.World;
 
 namespace Renown.Contracts {
-
-	public readonly struct AssassinationData {
-		public readonly Thinker Target;
-		public readonly string Name;
-		public readonly WorldTimestamp DueDate;
-		public readonly ContractFlags Flags;
-		public readonly ContractType Type;
-		public readonly float BasePay;
-		public readonly WorldArea Area;
-		public readonly Object Contractor;
-		public readonly Faction Guild;
-
-		public AssassinationData( string name, WorldTimestamp duedate, ContractFlags flags, ContractType type,
-			float basePay, WorldArea area, Object contractor, Faction guild, Thinker Target )
-		{
-			Name = name;
-			DueDate = duedate;
-			Flags = flags;
-			Type = type;
-			BasePay = basePay;
-			Area = area;
-			Contractor = contractor;
-			Guild = guild;
-			this.Target = Target;
-		}
-	};
-
 	public partial class Assassination : Contract {
-		private readonly AssassinationData Data;
+		public static readonly float BASE_COST = 1000.0f;
 
 		public Assassination( in AssassinationData data )
 			: base(
 				name: data.Name,
 				duedate: data.DueDate,
 				flags: data.Flags,
-				type: data.Type,
-				basePay: data.BasePay,
+				type: Type.Assassination,
+				basePay: BASE_COST,
 				area: data.Area,
-				contractor: data.Contractor,
+				client: data.Client,
 				guild: data.Guild,
-				totalPay: null
+				totalPay: 0.0f,
+				target: null
 			)
 		{
-			Data.Target.Die += OnTargetDie;
 		}
 
 		private void OnTargetDie( Entity source, Entity target ) {

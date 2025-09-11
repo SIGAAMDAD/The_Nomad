@@ -1,22 +1,23 @@
 /*
 ===========================================================================
-Copyright (C) 2023-2025 Noah Van Til
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
 
-This file is part of The Nomad source code.
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The Nomad source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-The Nomad source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with The Nomad source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
@@ -42,11 +43,12 @@ namespace Renown.World {
 	
 	Biome
 	
-	contains information and relevant data for an in-game biome, including weather and
-	player detection
-	
 	===================================================================================
 	*/
+	/// <summary>
+	/// contains information and relevant data for an in-game biome, including weather and
+	/// player detection
+	/// </summary>
 	
 	public partial class Biome : WorldArea {
 		/// <summary>
@@ -114,11 +116,6 @@ namespace Renown.World {
 
 		private float CheckDelta = 0.0f;
 
-		[Signal]
-		public delegate void AgentEnteredAreaEventHandler( Entity agent );
-		[Signal]
-		public delegate void AgentExitedAreaEventHandler( Entity agent );
-
 		/*
 		===============
 		OnWeatherChangeTimerTimeout
@@ -142,10 +139,11 @@ namespace Renown.World {
 		/*
 		===============
 		_Ready
-
-		godot initialization override
 		===============
 		*/
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
 		public override void _Ready() {
 			base._Ready();
 
@@ -160,24 +158,15 @@ namespace Renown.World {
 				{ WeatherType.Blazing, WeatherChanceBlazing },
 			};
 
-			/*
-			WeatherChangeTimer = new Timer();
-			WeatherChangeTimer.Name = "WeatherChangeTimer";
-			WeatherChangeTimer.WaitTime = WeatherChangeInterval;
-			WeatherChangeTimer.Connect( "timeout", Callable.From( OnWeatherChangeTimerTimeout ) );
+			WeatherChangeTimer = new Timer() {
+				Name = nameof( WeatherChangeTimer ),
+				WaitTime = WeatherChangeInterval,
+				Autostart = true
+			};
+			GameEventBus.ConnectSignal( WeatherChangeTimer, Timer.SignalName.Timeout, this, OnWeatherChangeTimerTimeout );
 			AddChild( WeatherChangeTimer );
-			*/
 
 			Hide();
-		}
-
-		/*
-		===============
-		_Process
-		===============
-		*/
-		public override void _Process( double delta ) {
-			base._Process( delta );
 		}
 	};
 };

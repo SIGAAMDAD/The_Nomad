@@ -10,7 +10,7 @@ func is_same_as(other:GUIDEModifier) -> bool:
 
 ## Called when the modifier is started to be used by GUIDE. Can be used to perform
 ## initializations.
-func _begin_usage() -> void :
+func _begin_usage() -> void:
 	pass
 	
 ## Called, when the modifier is no longer used by GUIDE. Can be used to perform

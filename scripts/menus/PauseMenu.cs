@@ -23,6 +23,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using ResourceCache;
+using Utils;
 
 namespace Menus {
 	/*
@@ -53,7 +54,6 @@ namespace Menus {
 
 		[Signal]
 		public delegate void GamePausedEventHandler();
-
 		[Signal]
 		public delegate void LeaveLobbyEventHandler();
 
@@ -167,30 +167,36 @@ namespace Menus {
 			SettingsMenu = SceneCache.GetScene( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
 
 			ExitSettingsMenuButton = GetNode<Button>( "ExitButton" );
-			ExitSettingsMenuButton.Connect( Button.SignalName.Pressed, Callable.From( OnExitSettingsMenuButtonPressed ) );
+			GameEventBus.ConnectSignal( ExitSettingsMenuButton, Button.SignalName.Pressed, this, OnExitSettingsMenuButtonPressed );
 
 			ConfirmExitDlg = GetNode<ConfirmationDialog>( "ConfirmExit" );
-			ConfirmExitDlg.Connect( ConfirmationDialog.SignalName.Confirmed, Callable.From( OnConfirmExitConfirmed ) );
-			ConfirmExitDlg.Connect( ConfirmationDialog.SignalName.Canceled, Callable.From( ConfirmExitDlg.Hide ) );
+			GameEventBus.ConnectSignal( ConfirmExitDlg, ConfirmationDialog.SignalName.Confirmed, this, OnConfirmExitConfirmed );
+			GameEventBus.ConnectSignal( ConfirmExitDlg, ConfirmationDialog.SignalName.Canceled, this, ConfirmExitDlg.Hide );
 
 			TabContainer = GetNode<TabContainer>( "MarginContainer/TabContainer" );
-			TabContainer.Connect( TabContainer.SignalName.TabClicked, Callable.From<int>( OnTabContainerTabClicked ) );
+			GameEventBus.ConnectSignal( TabContainer, TabContainer.SignalName.TabClicked, this, Callable.From<int>( OnTabContainerTabClicked ) );
 
 			ConfirmQuitDlg = GetNode<ConfirmationDialog>( "ConfirmQuit" );
-			ConfirmQuitDlg.Connect( ConfirmationDialog.SignalName.Confirmed, Callable.From( OnConfirmQuitDlgConfirmed ) );
-			ConfirmQuitDlg.Connect( ConfirmationDialog.SignalName.Canceled, Callable.From( ConfirmQuitDlg.Hide ) );
+			GameEventBus.ConnectSignal( ConfirmQuitDlg, ConfirmationDialog.SignalName.Confirmed, this, OnConfirmQuitDlgConfirmed );
+			GameEventBus.ConnectSignal( ConfirmQuitDlg, ConfirmationDialog.SignalName.Canceled, this, ConfirmQuitDlg.Hide );
 
-			Button ResumeButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ResumeButton" );
-			ResumeButton.Connect( Button.SignalName.Pressed, Callable.From( OnToggled ) );
+			Methods.ConnectMenuButton(
+				GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ResumeButton" ),
+				this,
+				OnToggled
+			);
 
-			Button SettingsButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/SettingsMenuButton" );
-			SettingsButton.Connect( Button.SignalName.Pressed, Callable.From( OnSettingsMenuButtonPressed ) );
+			Methods.ConnectMenuButton(
+				GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/SettingsMenuButton" ),
+				this,
+				OnSettingsMenuButtonPressed
+			);
 
-			Button ExitToMainMenuButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ExitToMainMenuButton" );
-			ExitToMainMenuButton.Connect( Button.SignalName.Pressed, Callable.From( ConfirmExitDlg.Show ) );
-
-			Button ExitGameButton = GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ExitGameButton" );
-			ExitGameButton.Connect( Button.SignalName.Pressed, Callable.From( ConfirmQuitDlg.Show ) );
+			Methods.ConnectMenuButton(
+				GetNode<Button>( "MarginContainer/TabContainer/Options/VBoxContainer/ExitToMainMenuButton" ),
+				this,
+				ConfirmExitDlg.Show
+			);
 
 			ProcessMode = ProcessModeEnum.Always;
 
@@ -215,7 +221,7 @@ namespace Menus {
 
 			// ensure that whenever there's a connection status change, we automatically pause
 			// so that someone isn't getting ganked
-			Input.JoyConnectionChanged += OnJoyConnectionChanged;
+			GameEventBus.Subscribe<Input.JoyConnectionChangedEventHandler>( this, OnJoyConnectionChanged );
 		}
 
 		/*

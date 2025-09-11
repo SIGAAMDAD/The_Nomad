@@ -24,6 +24,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Godot;
 using Multiplayer;
 using ResourceCache;
+using System;
 
 namespace Menus {
 	/*
@@ -62,40 +63,42 @@ namespace Menus {
 		===============
 		*/
 		private void InitProfile() {
-			Label Name = GetNode<Label>( "HBoxContainer/ProfileContainer/NameLabel" );
-			Name.Text = Profile.Instance.Name;
+			Label name = GetNode<Label>( "HBoxContainer/ProfileContainer/NameLabel" );
+			name.Text = Profile.Instance.Name;
 
-			Label SkillPoints = GetNode<Label>( "HBoxContainer/ProfileContainer/SkillPointsLabel" );
-			SkillPoints.Text = string.Format( "NOTORIETY: {0}", Profile.Instance.SkillPoints );
+			Label skillPoints = GetNode<Label>( "HBoxContainer/ProfileContainer/SkillPointsLabel" );
+			skillPoints.Text = string.Format( "NOTORIETY: {0}", Profile.Instance.SkillPoints );
 
-			Resource PrimaryWeapon = ItemCache.GetItem( Profile.Instance.Loadout.PrimaryWeaponId );
-			Resource SecondaryWeapon = ItemCache.GetItem( Profile.Instance.Loadout.SecondaryWeaponId );
+			Resource? primaryWeapon = ItemCache.GetItem( Profile.Instance.Loadout.PrimaryWeaponId );
+			ArgumentNullException.ThrowIfNull( primaryWeapon );
 
-			TextureRect PrimaryWeaponIcon = GetNode<TextureRect>( "HBoxContainer/ProfileContainer/PrimaryWeaponIcon" );
-			PrimaryWeaponIcon.Texture = PrimaryWeapon.Get( "icon" ).AsGodotObject() as Texture2D;
+			Resource? secondaryWeapon = ItemCache.GetItem( Profile.Instance.Loadout.SecondaryWeaponId );
+			ArgumentNullException.ThrowIfNull( secondaryWeapon );
 
-			TextureRect SecondaryWeaponIcon = GetNode<TextureRect>( "HBoxContainer/ProfileContainer/SecondaryWeaponIcon" );
-			SecondaryWeaponIcon.Texture = SecondaryWeapon.Get( "icon" ).AsGodotObject() as Texture2D;
+			TextureRect primaryWeaponIcon = GetNode<TextureRect>( "HBoxContainer/ProfileContainer/PrimaryWeaponIcon" );
+			primaryWeaponIcon.Texture = primaryWeapon.Get( "icon" ).AsGodotObject() as Texture2D;
+
+			TextureRect secondaryWeaponIcon = GetNode<TextureRect>( "HBoxContainer/ProfileContainer/SecondaryWeaponIcon" );
+			secondaryWeaponIcon.Texture = secondaryWeapon.Get( "icon" ).AsGodotObject() as Texture2D;
 		}
 
 		/*
 		================
 		_Ready
-
-		godot initialization override
 		===============
 		*/
+		/// <summary>
+		/// godot initialization override
+		/// </summary>
 		public override void _Ready() {
 			Profile.Load();
 
-			Button QuickmatchButton = GetNode<Button>( "HBoxContainer/VBoxContainer/QuickmatchButton" );
-			QuickmatchButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			QuickmatchButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-			QuickmatchButton.Connect( Button.SignalName.Pressed, Callable.From( OnQuickmatchButtonPressed ) );
+			SelectionNodes.Button quickmatchButton = GetNode<SelectionNodes.Button>( "HBoxContainer/VBoxContainer/QuickmatchButton" );
+			quickmatchButton.Pressed += OnQuickmatchButtonPressed;
 
 			LobbyBrowser = GetNode<LobbyBrowser>( "LobbyBrowser" );
 			LobbyBrowser.Hide();
-			LobbyBrowser.Connect( LobbyBrowser.SignalName.OnHostGame, Callable.From( OnLobbyBrowserHostGamePressed ) );
+			GameEventBus.ConnectSignal( LobbyBrowser, LobbyBrowser.SignalName.OnHostGame, this, OnLobbyBrowserHostGamePressed );
 
 			LobbyFactory = GetNode<LobbyFactory>( "LobbyFactory" );
 			LobbyFactory.Hide();

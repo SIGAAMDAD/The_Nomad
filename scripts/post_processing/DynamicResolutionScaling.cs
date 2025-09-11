@@ -37,26 +37,26 @@ public partial class DynamicResolutionScaling : SubViewportContainer {
 		Preset = SettingsData.DRSPreset;
 
 		switch ( Preset ) {
-		case DRSPreset.UltraPerformance:
-			MinFrames = UltraPerformance_MinFrames;
-			break;
-		case DRSPreset.Performance:
-			MinFrames = Performance_MinFrames;
-			break;
-		case DRSPreset.Balanced:
-			MinFrames = Balanced_MinFrames;
-			break;
-		case DRSPreset.Quality:
-		case DRSPreset.UltraQuality:
-			MinFrames = 0;
-			break;
-		};
+			case DRSPreset.UltraPerformance:
+				MinFrames = UltraPerformance_MinFrames;
+				break;
+			case DRSPreset.Performance:
+				MinFrames = Performance_MinFrames;
+				break;
+			case DRSPreset.Balanced:
+				MinFrames = Balanced_MinFrames;
+				break;
+			case DRSPreset.Quality:
+			case DRSPreset.UltraQuality:
+				MinFrames = 0;
+				break;
+		}
 	}
 
 	public override void _Ready() {
 		base._Ready();
 
-		SettingsData.Instance.SettingsChanged += OnSettingsChanged;
+		SettingsData.SettingsChanged += OnSettingsChanged;
 
 		TargetFrameRate = SettingsData.DRSTargetFrames;
 		Preset = SettingsData.DRSPreset;

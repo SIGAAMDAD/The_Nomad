@@ -23,218 +23,171 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using ResourceCache;
+using System;
 
-namespace Menus;
-/*
-===================================================================================
+namespace Menus {
+	/*
+	===================================================================================
 
-TitleMenu
+	TitleMenu
 
-===================================================================================
-*/
+	===================================================================================
+	*/
 
-public partial class TitleMenu : Control {
-	private enum MenuState {
-		Main,
-		SaveSlots,
-		Extras,
-		Settings,
-		Help,
-		Credits,
-		Mods
-	};
+	public partial class TitleMenu : Control {
+		private enum MenuState {
+			Main,
+			SaveSlots,
+			Extras,
+			Settings,
+			Help,
+			Credits,
+			Mods
+		};
 
-	private ExtrasMenu ExtrasMenu;
-	private SettingsMenu SettingsMenu;
-	private SaveSlotsMenu StoryMenu;
-	//	private DemoMenu DemoMenu;
-	private MainMenu MainMenu;
-	private CreditsMenu CreditsMenu;
-	private Button ExitButton;
+		private static readonly StringName @ExitMenuSignalName = "ExitMenu";
 
-	private LobbyBrowser LobbyBrowser;
-	private LobbyFactory LobbyFactory;
+		private ExtrasMenu ExtrasMenu;
+		private SettingsMenu SettingsMenu;
+		private SaveSlotsMenu StoryMenu;
+		//	private DemoMenu DemoMenu;
+		private MainMenu MainMenu;
+		private CreditsMenu CreditsMenu;
 
-	private Control CurrentMenu;
+		private LobbyBrowser LobbyBrowser;
+		private LobbyFactory LobbyFactory;
 
-	private Timer MenuIdleTimer;
+		private Control CurrentMenu;
 
-	private MenuState State = MenuState.Main;
-
-	private void OnExitButtonPressed() {
-		UIAudioManager.OnButtonPressed();
-
-		int index = 0;
-
-		switch ( State ) {
-		case MenuState.SaveSlots:
-			index = StoryMenu.GetIndex();
-			RemoveChild( StoryMenu );
-			StoryMenu.QueueFree();
-			StoryMenu = null;
-			break;
-		case MenuState.Extras:
-			index = ExtrasMenu.GetIndex();
-			RemoveChild( ExtrasMenu );
-			ExtrasMenu.QueueFree();
-			ExtrasMenu = null;
-			break;
-		case MenuState.Settings:
-			index = SettingsMenu.GetIndex();
-			RemoveChild( SettingsMenu );
-			SettingsMenu.QueueFree();
-			SettingsMenu = null;
-			break;
-		case MenuState.Credits:
-			index = CreditsMenu.GetIndex();
-			RemoveChild( CreditsMenu );
-			CreditsMenu.QueueFree();
-			CreditsMenu = null;
-			break;
-		default:
-			Console.PrintError( "Invalid menu state!" );
-			break;
-		}
-
-		MainMenu = SceneCache.GetScene( "res://scenes/menus/main_menu.tscn" ).Instantiate<MainMenu>();
-
-		AddChild( MainMenu );
-		MoveChild( MainMenu, index );
-		//AddChild( DemoMenu );
-		//MoveChild( DemoMenu, index );
-
-		ExitButton.Hide();
-		MainMenu.Show();
-		//DemoMenu.Show();
-		State = MenuState.Main;
-	}
-
-	private void OnMainMenuSaveSlotsMenu() {
-		StoryMenu = SceneCache.GetScene( "res://scenes/menus/save_slots_menu.tscn" ).Instantiate<SaveSlotsMenu>();
-
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
-		//int index = DemoMenu.GetIndex();
-		//RemoveChild( DemoMenu );
-		AddChild( StoryMenu );
-		MoveChild( StoryMenu, index );
-
-		MainMenu.QueueFree();
-
-		ExitButton.Show();
-		State = MenuState.SaveSlots;
-	}
-	private void OnMainMenuExtrasMenu() {
-		ExtrasMenu = SceneCache.GetScene( "res://scenes/menus/extras_menu.tscn" ).Instantiate<ExtrasMenu>();
-
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
-		//int index = DemoMenu.GetIndex();
-		//RemoveChild( DemoMenu );
-		AddChild( ExtrasMenu );
-		MoveChild( ExtrasMenu, index );
-
-		MainMenu.QueueFree();
-
-		ExitButton.Show();
-		State = MenuState.Extras;
-	}
-	private void OnMainMenuSettingsMenu() {
-		SettingsMenu = SceneCache.GetScene( "res://scenes/menus/settings_menu.tscn" ).Instantiate<SettingsMenu>();
-
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
-		//int index = DemoMenu.GetIndex();
-		//RemoveChild( DemoMenu );
-		AddChild( SettingsMenu );
-		MoveChild( SettingsMenu, index );
-
-		MainMenu.QueueFree();
-
-		ExitButton.Show();
-		State = MenuState.Settings;
-	}
-	private void OnMainMenuCreditsMenu() {
-		CreditsMenu = SceneCache.GetScene( "res://scenes/menus/credits_menu.tscn" ).Instantiate<CreditsMenu>();
-
-		int index = MainMenu.GetIndex();
-		RemoveChild( MainMenu );
-		//		int index = DemoMenu.GetIndex();
-		//		RemoveChild( DemoMenu );
-		AddChild( CreditsMenu );
-		MoveChild( CreditsMenu, index );
-
-		MainMenu.QueueFree();
-
-		ExitButton.Show();
-		State = MenuState.Credits;
-	}
-
-	private void ReleaseAll() {
-		ExtrasMenu?.QueueFree();
-		SettingsMenu?.QueueFree();
-	}
-
-	private void OnKonamiCodeActivated() {
-		Console.PrintLine( "========== Meme Mode Activated ==========" );
-		GameConfiguration.MemeMode = true;
-		UIAudioManager.PlayCustomSound( ResourceLoader.Load<AudioStream>( "res://sounds/ui/meme_mode_activated.ogg" ) );
-		Steam.SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
-	}
-	private void OnMenuIdleTimerTimeout() {
-
-	}
-
-	public override void _Ready() {
-		base._Ready();
-
-		PhysicsServer2D.SetActive( false );
-
-		Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://cursor_n.png" ) );
-
-		AddChild( ResourceLoader.Load<PackedScene>( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>() );
-
-		Node KonamiCode = GetNode( "KonamiCode" );
-		KonamiCode.Connect( "success", Callable.From( OnKonamiCodeActivated ) );
+		private MenuState State = MenuState.Main;
 
 		/*
-		DemoMenu = GetNode<DemoMenu>( "DemoMenu" );
-		DemoMenu.SetProcess( true );
-		DemoMenu.SetProcessInternal( true );
-		DemoMenu.SetProcessUnhandledInput( true );
-		DemoMenu.Connect( "SettingsMenu", Callable.From( OnMainMenuSettingsMenu ) );
-		DemoMenu.Connect( "CreditsMenu", Callable.From( OnMainMenuCreditsMenu ) );
-		DemoMenu.BeginGame += ReleaseAll;
+		===============
+		InitMainMenu
+		===============
 		*/
+		/// <summary>
+		/// Connects relevant signals to the main menu
+		/// </summary>
+		private void InitMainMenu() {
+			MainMenu.SetProcess( true );
+			MainMenu.SetProcessInternal( true );
+			MainMenu.SetProcessUnhandledInput( true );
 
-		MainMenu = GetNode<MainMenu>( "MainMenu" );
-		MainMenu.SetProcess( true );
-		MainMenu.SetProcessInternal( true );
-		MainMenu.SetProcessUnhandledInput( true );
-		MainMenu.Connect( MainMenu.SignalName.SaveSlotsMenu, Callable.From( OnMainMenuSaveSlotsMenu ) );
-		MainMenu.Connect( MainMenu.SignalName.ExtrasMenu, Callable.From( OnMainMenuExtrasMenu ) );
-		MainMenu.Connect( MainMenu.SignalName.SettingsMenu, Callable.From( OnMainMenuSettingsMenu ) );
-		MainMenu.Connect( MainMenu.SignalName.CreditsMenu, Callable.From( OnMainMenuCreditsMenu ) );
+			CurrentMenu ??= MainMenu;
 
-		ExitButton = GetNode<Button>( "ExitButton" );
-		ExitButton.Connect( Button.SignalName.FocusEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-		ExitButton.Connect( Button.SignalName.MouseEntered, Callable.From( UIAudioManager.OnButtonFocused ) );
-		ExitButton.Connect( Button.SignalName.Pressed, Callable.From( OnExitButtonPressed ) );
+			GameEventBus.ConnectSignal( MainMenu, MainMenu.SignalName.SaveSlotsMenu, this, OnMainMenuSaveSlotsMenu );
+			GameEventBus.ConnectSignal( MainMenu, MainMenu.SignalName.ExtrasMenu, this, OnMainMenuExtrasMenu );
+			GameEventBus.ConnectSignal( MainMenu, MainMenu.SignalName.SettingsMenu, this, OnMainMenuSettingsMenu );
+			GameEventBus.ConnectSignal( MainMenu, MainMenu.SignalName.CreditsMenu, this, OnMainMenuCreditsMenu );
+		}
 
-		MenuIdleTimer = new Timer();
-		MenuIdleTimer.OneShot = true;
-		MenuIdleTimer.Autostart = true;
-		MenuIdleTimer.WaitTime = 120.0f;
-		MenuIdleTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnMenuIdleTimerTimeout ) );
-		AddChild( MenuIdleTimer );
+		private void SetMenu<T>( ref T newMenu, MenuState newState, string scenePath ) where T : Control {
+			int index = CurrentMenu.GetIndex();
+			RemoveChild( CurrentMenu );
+			CurrentMenu.QueueFree();
 
-		GetTree().CurrentScene = this;
+			newMenu = SceneCache.GetScene( scenePath ).Instantiate<T>();
+			AddChild( newMenu );
+			MoveChild( newMenu, index );
 
-		SetProcess( false );
-		SetProcessInternal( false );
-	}
-	public override void _UnhandledInput( InputEvent @event ) {
-		base._UnhandledInput( @event );
-		MenuIdleTimer.Start();
-	}
+			CurrentMenu = newMenu;
+			State = newState;
+
+			if ( newMenu != MainMenu ) {
+				GameEventBus.ConnectSignal( newMenu, ExitMenuSignalName, this, Callable.From( OnExitButtonPressed ) );
+			}
+			newMenu.Show();
+		}
+
+		/*
+		===============
+		OnExitButtonPressed
+		===============
+		*/
+		private void OnExitButtonPressed() {
+			UIAudioManager.OnButtonPressed();
+			SetMenu( ref MainMenu, MenuState.Main, "res://scenes/menus/main_menu.tscn" );
+			InitMainMenu();
+		}
+
+		/*
+		===============
+		OnMainMenuSaveSlotsMenu
+		===============
+		*/
+		private void OnMainMenuSaveSlotsMenu() {
+			SetMenu( ref StoryMenu, MenuState.SaveSlots, "res://scenes/menus/save_slots_menu.tscn" );
+		}
+
+		/*
+		===============
+		OnMainMenuExtrasMenu
+		===============
+		*/
+		private void OnMainMenuExtrasMenu() {
+			SetMenu( ref ExtrasMenu, MenuState.Extras, "res://scenes/menus/extras_menu.tscn" );
+		}
+
+		/*
+		===============
+		OnMainMenuSettingsMenu
+		===============
+		*/
+		private void OnMainMenuSettingsMenu() {
+			SetMenu( ref SettingsMenu, MenuState.Settings, "res://scenes/menus/settings_menu.tscn" );
+		}
+
+		/*
+		===============
+		OnMainMenuCreditsMenu
+		===============
+		*/
+		private void OnMainMenuCreditsMenu() {
+			SetMenu( ref CreditsMenu, MenuState.Credits, "res://scenes/menus/credits_menu.tscn" );
+		}
+
+		private void ReleaseAll() {
+			ExtrasMenu?.QueueFree();
+			SettingsMenu?.QueueFree();
+			StoryMenu?.QueueFree();
+		}
+
+		/*
+		===============
+		OnKonamiCodeActivated
+		===============
+		*/
+		private void OnKonamiCodeActivated() {
+			Console.PrintLine( "========== Meme Mode Activated ==========" );
+			GameConfiguration.MemeMode = true;
+			UIAudioManager.PlayCustomSound( AudioCache.GetStream( "res://sounds/ui/meme_mode_activated.ogg" ) );
+			Steam.SteamAchievements.ActivateAchievement( "ACH_DNA_OF_THE_SOUL" );
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		/// Loads and initializes the menu system
+		/// </summary>
+		public override void _Ready() {
+			base._Ready();
+
+			PhysicsServer2D.SetActive( false );
+			UIAudioManager.PlayTheme();
+			Input.SetCustomMouseCursor( TextureCache.GetTexture( "res://cursor_n.png" ) );
+
+			AddChild( SceneCache.GetScene( "res://scenes/menus/menu_background.tscn" ).Instantiate<Control>() );
+
+			GameEventBus.ConnectSignal( GetNode( "KonamiCode" ), "success", this, OnKonamiCodeActivated );
+
+			MainMenu = GetNode<MainMenu>( "MainMenu" );
+			InitMainMenu();
+
+			GetTree().CurrentScene = this;
+		}
+	};
 };

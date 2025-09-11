@@ -23,7 +23,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using MountainGoap;
-using Renown.Thinkers.GoapCache;
 using Renown.Thinkers.Groups;
 using Renown.World;
 using ResourceCache;
@@ -31,9 +30,18 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Steam;
 using Menus;
+using Items;
 
 namespace Renown.Thinkers {
-	public partial class Mercenary : Thinker {
+	/*
+	===================================================================================
+	
+	Mercenary
+	
+	===================================================================================
+	*/
+
+	public partial class Mercenary : MobBase {
 		private enum State : uint {
 			Goto,
 			Animate,
@@ -42,9 +50,9 @@ namespace Renown.Thinkers {
 			Count
 		};
 
-		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
-		private static readonly float ViewAngleAmount = Mathf.DegToRad( 80.0f );
-		private static readonly float MaxViewDistance = 180.0f;
+
+		protected override string AGENT_ID => "mercenary_shotgunner";
+		protected override string AGENT_NAME => "MercenaryShotgunner";
 
 		private static readonly int ChallengeMode_Score = 10;
 
@@ -87,7 +95,7 @@ namespace Renown.Thinkers {
 		private Timer ChangeInvestigationAngleTimer;
 		private Timer TargetMovedTimer;
 
-		public WeaponEntity Weapon { get; private set; }
+		public WeaponFirearm Weapon { get; private set; }
 
 		private MobAwareness Awareness = MobAwareness.Relaxed;
 
@@ -111,14 +119,6 @@ namespace Renown.Thinkers {
 
 		private BarkType LastBark = BarkType.Count;
 		private BarkType SequencedBark = BarkType.Count;
-
-		private void GenerateRayCasts() {
-			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new float[ rayCount ];
-			for ( int i = 0; i < rayCount; i++ ) {
-				SightLines[ i ] = AngleBetweenRays * ( i - rayCount / 2.0f );
-			}
-		}
 
 		public override void SetNavigationTarget( Godot.Vector2 position ) {
 			base.SetNavigationTarget( position );
@@ -384,6 +384,46 @@ namespace Renown.Thinkers {
 			}
 		}
 
+		/*
+		===============
+		GetStateDictionary
+		===============
+		*/
+		protected override ConcurrentDictionary<string, object?> GetStateDictionary() {
+			/*
+			return new ConcurrentDictionary<string, object?>() {
+				{ "Health", Health },
+				{ "HasAmmo", false },
+				{ "PlayerVisible", CanSeeTarget },
+				{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
+				{ "UnderFire", false },
+				{ "HasCover", false },
+				{ "Awareness", MobAwareness.Relaxed },
+				{ "IsAlerted", false }, // Awareness is greater than relaxed
+				{ "SquadSize", 0 },
+				{ "WeaponState", Weapon.CurrentState },
+				{ "Target", null },
+				{ "ClearLineOfFire", false },
+				{ "SquadTactic", Group.CurrentTactic },
+				{ "Owner", this }
+			};
+			*/
+			return null;
+		}
+
+		/*
+		===============
+		GetMemoryDictionary
+		===============
+		*/
+		protected override Dictionary<string, object?> GetMemoryDictionary() {
+			return new Dictionary<string, object?>() {
+				{ "WarnedFriendlies", false },
+				{ "AimTime", 0.0f },
+				{ "CheckSight", () => CheckSight }
+			};
+		}
+
 		public override void _Ready() {
 			base._Ready();
 
@@ -460,14 +500,14 @@ namespace Renown.Thinkers {
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 
-			Weapon = new WeaponEntity() {
+			Weapon = new WeaponFirearm() {
 				Name = "Weapon",
 				Data = ResourceLoader.Load( "res://resources/weapons/firearms/desert_carbine.tres" )
 			};
 
 			AddChild( Weapon );
 
-			Weapon.SetAmmoStack( new AmmoStack( ItemCache.GetItem( "res://resources/ammo/ammo_556.tres" ), 48 ) );
+			Weapon.SetAmmoStack( new AmmoStack( ItemCache.GetItem( "res://resources/ammo/ammo_556.tres" ), 72 ) );
 			Weapon.TriggerPickup( this );
 			Weapon.SetOwner( this );
 
@@ -497,42 +537,7 @@ namespace Renown.Thinkers {
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 
-			List<MountainGoap.BaseGoal> goals = GoapCache.GoapAllocator.GetGoalList( "bandit" );
-			List<MountainGoap.Action> actions = GoapCache.GoapAllocator.GetActionList( "bandit" );
-			List<MountainGoap.Sensor> sensors = GoapCache.GoapAllocator.GetSensorList( "bandit" );
-
 			Group = SquadManager.GetGroup( Faction, GlobalPosition );
-
-			Agent = new MountainGoap.Agent(
-				name: "Bandit",
-				state: new ConcurrentDictionary<string, object?> {
-					{ "Health", Health },
-					{ "HasAmmo", false },
-					{ "PlayerVisible", CanSeeTarget },
-					{ "PlayerInRange", GlobalPosition.DistanceTo( LastTargetPosition ) < 200.0f },
-					{ "UnderFire", false },
-					{ "HasCover", false },
-					{ "Awareness", MobAwareness.Relaxed },
-					{ "IsAlerted", false }, // Awareness is greater than relaxed
-					{ "SquadSize", 0 },
-					{ "WeaponState", Weapon.CurrentState },
-					{ "Target", null },
-					{ "ClearLineOfFire", false },
-					{ "SquadTactic", Group.CurrentTactic },
-					{ "Owner", this }
-				},
-				memory: new Dictionary<string, object?> {
-					{ "WarnedFriendlies", false },
-					{ "AimTime", 0.0f },
-					{ "CheckSight", () => CheckSight }
-				},
-				goals: goals,
-				actions: actions,
-				sensors: sensors,
-				costMaximum: float.MaxValue,
-				24
-			);
-			GenerateRayCasts();
 		}
 
 		private void OnAimTimerTimeout() {
@@ -545,15 +550,13 @@ namespace Renown.Thinkers {
 
 			AttackTimer.Start();
 			Weapon.SetAttackAngle( AimAngle );
-			Weapon.CallDeferred( WeaponEntity.MethodName.SetUseMode, (uint)WeaponEntity.Properties.TwoHandedFirearm );
-			Weapon.CallDeferred( WeaponEntity.MethodName.UseFirearmDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
+			Weapon.CallDeferred( WeaponFirearm.MethodName.UseDeferred, (uint)WeaponEntity.Properties.TwoHandedFirearm );
 		}
-		public override void PickupWeapon( WeaponEntity weapon ) {
+		public void PickupWeapon( WeaponFirearm weapon ) {
 			// TODO: evaluate if we actually want it
 			Weapon = weapon;
 
 			if ( ( Weapon.PropertyBits & WeaponEntity.Properties.IsFirearm ) != 0 ) {
-				Weapon.SetUseMode( WeaponEntity.Properties.TwoHandedFirearm );
 				AttackTimer.SetDeferred( Timer.PropertyName.WaitTime, Weapon.UseTime );
 			}
 		}
@@ -701,79 +704,6 @@ namespace Renown.Thinkers {
 
 				CallDeferred( MethodName.StopMoving );
 			}
-		}
-
-		public void CheckSight() {
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				RayIntersectionInfo info = GodotServerManager.CheckRayCast( HeadAnimations.GlobalPosition, SightLines[ i ], MaxViewDistance, GetRid() );
-				sightTarget = info.Collider as Entity;
-				if ( sightTarget != null ) {
-					break;
-				} else {
-					sightTarget = null;
-				}
-			}
-
-			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f && sightTarget == null ) {
-				SetSuspicious();
-				SetNavigationTarget( LastTargetPosition );
-				if ( LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.Start();
-				}
-			}
-
-			CanSeeTarget = sightTarget != null;
-
-			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
-				// out of sight, but we got something
-				switch ( Awareness ) {
-					case MobAwareness.Relaxed:
-						SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-						if ( SightDetectionAmount < 0.0f ) {
-							SightDetectionAmount = 0.0f;
-						}
-						break;
-					case MobAwareness.Suspicious:
-						SetSuspicious();
-						break;
-					case MobAwareness.Alert:
-						SetAlert();
-						break;
-				}
-				SetDetectionColor();
-				return;
-			}
-
-			if ( sightTarget != null ) {
-				if ( sightTarget.Health <= 0.0f && sightTarget.Faction == Faction ) {
-					Bark( BarkType.ManDown );
-
-					Awareness = MobAwareness.Alert;
-				} else if ( sightTarget.Faction != Faction ) {
-					SightTarget = sightTarget;
-					LastTargetPosition = sightTarget.GlobalPosition;
-					CanSeeTarget = true;
-
-					LookDir = GlobalPosition.DirectionTo( SightTarget.GlobalPosition );
-					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-					AimAngle = LookAngle;
-
-					if ( Awareness >= MobAwareness.Suspicious ) {
-						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += SightDetectionSpeed * 2.0f * (float)GetProcessDeltaTime();
-					} else {
-						SightDetectionAmount += SightDetectionSpeed * (float)GetProcessDeltaTime();
-					}
-				}
-			}
-
-			if ( IsAlert() ) {
-				SetAlert();
-			} else if ( IsSuspicious() ) {
-				SetSuspicious();
-			}
-			SetDetectionColor();
 		}
 	};
 };

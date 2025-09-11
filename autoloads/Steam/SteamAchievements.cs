@@ -23,7 +23,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Godot;
 using Steamworks;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Steam {
 	/*
@@ -41,7 +43,7 @@ namespace Steam {
 	/// </remarks>
 
 	[GlobalClass]
-	public partial class SteamAchievements : Node {
+	public partial class SteamAchievements : Node, IObservable<SteamAchievements.SteamAchievement> {
 		// don't judge me...
 		public enum AchievementID {
 			R_U_Cheating = 0,
@@ -196,6 +198,31 @@ namespace Steam {
 				Console.PrintError( string.Format( "[STEAM] Attempted to set achievement statistic data for {0} to invalid data type (int)", Name ) );
 			}
 		};
+		private class Unsubscriber : IDisposable {
+			private readonly List<IObserver<SteamAchievement>> Observers;
+			private readonly IObserver<SteamAchievement> Observer;
+
+			/*
+			===============
+			Unsubscriber
+			===============
+			*/
+			public Unsubscriber( List<IObserver<SteamAchievement>> observers, IObserver<SteamAchievement> observer ) {
+				Observers = observers;
+				Observer = observer;
+			}
+
+			/*
+			===============
+			Dispose
+			===============
+			*/
+			public void Dispose() {
+				if ( Observer != null && Observers.Contains( Observer ) ) {
+					Observers.Remove( Observer );
+				}
+			}
+		};
 
 		private Callback<UserStatsReceived_t> UserStatsReceived;
 		private Callback<UserStatsStored_t> UserStatsStored;
@@ -205,6 +232,13 @@ namespace Steam {
 
 		public static ConcurrentDictionary<string, SteamAchievement> AchievementTable;
 		private bool SteamStatsReceived = false;
+
+		private List<IObserver<SteamAchievement>> Observers = new List<IObserver<SteamAchievement>>();
+
+		public IDisposable Subscribe( IObserver<SteamAchievement> observer ) {
+			Observers.Add( observer );
+			return new Unsubscriber( Observers, observer );
+		}
 
 		/*
 		===============

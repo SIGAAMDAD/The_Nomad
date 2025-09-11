@@ -28,6 +28,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using Menus;
 using System;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SaveSystem {
 	public enum FieldType : uint {

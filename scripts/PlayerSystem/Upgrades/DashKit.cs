@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 using System;
-using System.Collections.Generic;
 using Godot;
 using ResourceCache;
 using Menus;
+using System.Runtime.CompilerServices;
 
 namespace PlayerSystem.Upgrades {
 	/*
@@ -34,18 +34,20 @@ namespace PlayerSystem.Upgrades {
 	
 	===================================================================================
 	*/
-	
-	public sealed partial class DashKit : Node2D {
+
+	public sealed partial class DashKit : GodotObject, IDashKit {
 		private static readonly float DASH_TIMER_BASE = 0.3f;
 
-		public DashModule? Module { get; private set; }
+		public IDashModule? Module { get; private set; } = new DefaultModule();
 
 		private float DashBurnout = 0.0f;
 		private float DashTimer = DASH_TIMER_BASE;
+		private float DashBurnoutCooldown = 0.0f;
 
 		private Timer? DashTime;
 		private Timer? DashBurnoutCooldownTimer;
-		private Timer? DashCooldownTime;
+
+		private Player? Owner;
 
 		private AudioStreamPlayer2D? AudioChannel;
 
@@ -56,37 +58,48 @@ namespace PlayerSystem.Upgrades {
 		[Signal]
 		public delegate void DashBurnedOutEventHandler();
 		[Signal]
-		public delegate void DashBurnoutChangedEventHandler( float nAmount );
+		public delegate void DashBurnoutChangedEventHandler( float amount );
+
+		public DashKit( Player? owner ) {
+			ArgumentNullException.ThrowIfNull( owner );
+
+			Owner = owner;
+
+			DashTime = new Timer() {
+				Name = nameof( DashTime ),
+				WaitTime = DashTimer,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( DashTime, Timer.SignalName.Timeout, this, OnDashTimeTimeout );
+			owner.AddChild( DashTime );
+
+			DashBurnoutCooldownTimer = new Timer() {
+				Name = nameof( DashBurnoutCooldownTimer ),
+				WaitTime = 2.5f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( DashBurnoutCooldownTimer, Timer.SignalName.Timeout, this, OnDashBurnoutCooldownTimerTimeout );
+			owner.AddChild( DashBurnoutCooldownTimer );
+
+			AudioChannel = new AudioStreamPlayer2D() {
+				Name = nameof( AudioChannel ),
+				VolumeDb = SettingsData.GetEffectsVolumeLinear()
+			};
+			owner.AddChild( AudioChannel );
+		}
 
 		/*
 		===============
-		EquipModule
+		SetModule
 		===============
 		*/
-		public void EquipModule( ref DashModule module ) {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="module"></param>
+		public void SetModule( IDashModule? module ) {
+			ArgumentNullException.ThrowIfNull( module );
 			Module = module;
-		}
-
-		/*
-		===============
-		OnDashBurnoutCooldownTimerTimeout
-		===============
-		*/
-		private void OnDashBurnoutCooldownTimerTimeout() {
-			DashBurnout = 0.0f;
-			DashTimer = 0.3f;
-
-			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/player/dash_chargeup.ogg" );
-			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
-		}
-
-		/*
-		===============
-		OnDashTimeTimeout
-		===============
-		*/
-		private void OnDashTimeTimeout() {
-			EmitSignalDashEnd();
 		}
 
 		/*
@@ -94,6 +107,9 @@ namespace PlayerSystem.Upgrades {
 		OnDash
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public void OnDash() {
 			if ( DashBurnout >= 1.0f ) {
 				AudioChannel.Stream = SoundCache.StreamCache[ SoundEffect.DashExplosion ];
@@ -121,8 +137,7 @@ namespace PlayerSystem.Upgrades {
 			if ( DashTimer >= 0.10f ) {
 				DashTimer -= 0.05f;
 			}
-			DashCooldownTime.WaitTime = 1.50f;
-			DashCooldownTime.Start();
+			DashBurnoutCooldown = 0.0f;
 
 			EmitSignalDashBurnoutChanged( DashBurnout );
 		}
@@ -132,61 +147,61 @@ namespace PlayerSystem.Upgrades {
 		CanDash
 		===============
 		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public bool CanDash() {
 			return DashBurnoutCooldownTimer.TimeLeft == 0.0f;
 		}
 
 		/*
 		===============
-		_Ready
-
-		godot initialization override
+		OnDashBurnoutCooldownTimerTimeout
 		===============
 		*/
-		public override void _Ready() {
-			base._Ready();
+		private void OnDashBurnoutCooldownTimerTimeout() {
+			DashBurnout = 0.0f;
+			DashTimer = Module.DashDuration;
+			DashBurnoutCooldown = 0.0f;
 
-			DashTime = new Timer();
-			DashTime.Name = "DashTime";
-			DashTime.WaitTime = DashTimer;
-			DashTime.OneShot = true;
-			DashTime.Connect( Timer.SignalName.Timeout, Callable.From( OnDashTimeTimeout ) );
-			AddChild( DashTime );
-
-			DashBurnoutCooldownTimer = new Timer();
-			DashBurnoutCooldownTimer.Name = "DashBurnoutCooldownTimer";
-			DashBurnoutCooldownTimer.WaitTime = 2.5f;
-			DashBurnoutCooldownTimer.OneShot = true;
-			DashBurnoutCooldownTimer.Connect( Timer.SignalName.Timeout, Callable.From( OnDashBurnoutCooldownTimerTimeout ) );
-			AddChild( DashBurnoutCooldownTimer );
-
-			AudioChannel = new AudioStreamPlayer2D();
-			AudioChannel.Name = "AudioChannel";
-			AudioChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
-			AddChild( AudioChannel );
-
-			DashCooldownTime = new Timer();
-			DashCooldownTime.Name = "DashCooldownTime";
-			DashCooldownTime.WaitTime = 1.2f;
-			DashCooldownTime.OneShot = true;
-			AddChild( DashCooldownTime );
+			AudioChannel.Stream = AudioCache.GetStream( "res://sounds/player/dash_chargeup.ogg" );
+			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Play );
 		}
 
 		/*
 		===============
-		_Process
+		OnDashTimeTimeout
 		===============
 		*/
-		public override void _Process( double delta ) {
-			base._Process( delta );
+		private void OnDashTimeTimeout() {
+			EmitSignalDashEnd();
+		}
 
-			// cool down the jet engine if applicable
-			if ( DashBurnout > 0.0f && DashCooldownTime.TimeLeft == 0.0f ) {
-				DashBurnout -= 0.10f * (float)delta;
-				DashTimer += 0.05f * (float)delta;
-				if ( DashBurnout < 0.0f ) {
-					DashBurnout = 0.0f;
-				}
+		/*
+		===============
+		Update
+		===============
+		*/
+		public void Update( float delta ) {
+			UpdateBurnoutCooldown( delta );
+		}
+
+		/*
+		===============
+		UpdateBurnoutCooldown
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delta"></param>
+		private void UpdateBurnoutCooldown( float delta ) {
+			if ( DashBurnout == 0.0f ) {
+				return;
+			}
+
+			DashBurnoutCooldown += delta;
+			if ( DashBurnoutCooldown > Module.BurnoutCooldown ) {
+				DashBurnout = Mathf.Clamp( DashBurnout - ( 0.10f * delta ), 0.0f, DashBurnout );
+				DashTimer += 0.05f * delta;
 				EmitSignalDashBurnoutChanged( DashBurnout );
 			}
 		}

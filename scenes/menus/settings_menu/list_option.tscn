@@ -1,6 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://d36xll77kxc8l"]
+[gd_scene load_steps=14 format=3 uid="uid://d36xll77kxc8l"]
 
-[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_2n36q"]
+[ext_resource type="Texture2D" uid="uid://34t24sh0lbnu" path="res://textures/hud/ink_streak.dds" id="1_2n36q"]
 [ext_resource type="FontFile" uid="uid://ux04pgma8dbw" path="res://Spell of Asia.ttf" id="2_lxw3y"]
 
 [sub_resource type="GDScript" id="GDScript_7h574"]
@@ -47,6 +47,10 @@ func _ready() -> void:
 	_description_cached = TranslationServer.translate( _description )
 "
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lxw3y"]
+texture = ExtResource("1_2n36q")
+texture_margin_right = 25.0
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lxw3y"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7h574"]
@@ -77,7 +81,7 @@ metadata/_edit_use_anchors_ = true
 [node name="Title" type="Label" parent="."]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-theme_override_styles/normal = ExtResource("1_2n36q")
+theme_override_styles/normal = SubResource("StyleBoxTexture_lxw3y")
 horizontal_alignment = 1
 
 [node name="LeftIcon" type="Button" parent="."]

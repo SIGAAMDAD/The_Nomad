@@ -1,7 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bvtjv1xcl6h4"]
+[gd_scene load_steps=13 format=3 uid="uid://bvtjv1xcl6h4"]
 
-[ext_resource type="StyleBox" uid="uid://1xdd6t28bdfl" path="res://resources/themes/settings_menu_control.tres" id="1_c586o"]
-[ext_resource type="FontFile" uid="uid://c56hmhlimhld7" path="res://Spell of Asia.ttf" id="2_yqame"]
+[ext_resource type="Texture2D" uid="uid://34t24sh0lbnu" path="res://textures/hud/ink_streak.dds" id="1_yqame"]
+[ext_resource type="FontFile" uid="uid://ux04pgma8dbw" path="res://Spell of Asia.ttf" id="2_yqame"]
 
 [sub_resource type="GDScript" id="GDScript_yqame"]
 resource_name = "settings_checkbox_option"
@@ -37,6 +37,10 @@ func _ready() -> void:
 	_description_cached = TranslationServer.translate( _description )
 "
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_apk1r"]
+texture = ExtResource("1_yqame")
+texture_margin_right = 25.0
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhfsd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nmoh"]
@@ -65,7 +69,7 @@ metadata/_edit_use_anchors_ = true
 [node name="Title" type="Label" parent="."]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-theme_override_styles/normal = ExtResource("1_c586o")
+theme_override_styles/normal = SubResource("StyleBoxTexture_apk1r")
 horizontal_alignment = 1
 
 [node name="LeftIcon" type="Button" parent="."]

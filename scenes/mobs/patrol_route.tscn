@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://pq4l57dgxijy"]
-
-[sub_resource type="Resource" id="Resource_tk1l8"]
-metadata/__load_path__ = "res://scripts/mobs/patrol_route.gd"
-
-[node name="PatrolRoute" type="Node2D"]
-script = SubResource("Resource_tk1l8")

@@ -5,6 +5,7 @@ using Steamworks;
 using System.Collections.Generic;
 using Menus;
 using Steam;
+using PlayerSystem.Input;
 
 public enum PlayerAnimationState : byte {
 	Idle,
@@ -162,7 +163,7 @@ namespace Multiplayer {
 			}
 
 			NetworkPosition = new Godot.Vector2( SyncObject.ReadFloat(), SyncObject.ReadFloat() );
-			CurrentSpeed = Player.MAX_SPEED;
+			CurrentSpeed = Player.MovementHandler.MAX_SPEED;
 
 			if ( SyncObject.ReadBoolean() ) {
 				Player.PlayerFlags flags = (Player.PlayerFlags)SyncObject.ReadUInt32();

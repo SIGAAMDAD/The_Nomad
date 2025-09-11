@@ -1,12 +1,42 @@
-using System;
-using ChallengeMode;
+/*
+===========================================================================
+The Nomad AGPL Source Code
+Copyright (C) 2025 Noah Van Til
+
+The Nomad Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Nomad Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have questions concerning this license or the applicable additional
+terms, you may contact me via email at nyvantil@gmail.com.
+===========================================================================
+*/
+
 using Godot;
 using Renown.World;
 using ResourceCache;
 using Menus;
+using Items;
 
 namespace Renown.Thinkers {
-	public partial class GatlingGunner : Thinker {
+	/*
+	===================================================================================
+	
+	GatlingGunner
+	
+	===================================================================================
+	*/
+	
+	public partial class GatlingGunner : MobBase {
 		private enum State : uint {
 			Guarding,
 			Attacking,
@@ -15,25 +45,18 @@ namespace Renown.Thinkers {
 			Count
 		};
 
-		private static readonly float ExplosionDamage = 80.0f;
-		private static readonly float BulletDamage = 3.5f;
-
-		private static readonly float AngleBetweenRays = Mathf.DegToRad( 8.0f );
-		private static readonly float ViewAngleAmount = Mathf.DegToRad( 60.0f );
-		private static readonly float MaxViewDistance = 220.0f;
+		private static readonly float EXPLOSION_DAMAGE = 80.0f;
+		private static readonly float BULLET_DAMAGE = 3.5f;
+		private static readonly float GATLING_GUN_RANGE = 728.0f;
 
 		private static readonly int ChallengeMode_Score = 50;
 
 		[Export]
 		private float LoseInterestTime = 0.0f;
 		[Export]
-		private float SightDetectionTime = 0.0f;
-		[Export]
 		private float SightDetectionSpeed = 0.0f;
 		[Export]
 		private AINodeCache NodeCache;
-
-		private float SightDetectionAmount = 0.0f;
 
 		private State CurrentState;
 
@@ -44,24 +67,11 @@ namespace Renown.Thinkers {
 
 		// combat variables
 		private Timer RevTimer;
-		private RayCast2D AimLine;
 		private bool Revved = false;
 		private bool Shooting = false;
 		private AudioStreamPlayer2D GunChannel;
 
-//		private HashSet<Entity> SightTargets = new HashSet<Entity>();
-		private Entity SightTarget = null;
-
-		private Timer LoseInterestTimer;
 		private Timer ChangeInvestigationAngleTimer;
-
-		private MobAwareness Awareness = MobAwareness.Relaxed;
-
-		private Godot.Vector2 LastTargetPosition = Godot.Vector2.Zero;
-		private RayCast2D[] SightLines = null;
-		private bool CanSeeTarget = false;
-
-		private Entity Target;
 
 		private Line2D DetectionMeter;
 
@@ -72,26 +82,9 @@ namespace Renown.Thinkers {
 
 		private Color DetectionColor = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
-		private void GenerateRayCasts() {
-			int rayCount = (int)( ViewAngleAmount / AngleBetweenRays );
-			SightLines = new RayCast2D[ rayCount ];
-			for ( int i = 0; i < rayCount; i++ ) {
-				RayCast2D ray = new RayCast2D();
-				float angle = AngleBetweenRays * ( i - rayCount / 2.0f );
-				ray.TargetPosition = Godot.Vector2.Right.Rotated( angle ) * MaxViewDistance;
-				ray.Enabled = true;
-				ray.CollisionMask = 2;
-				SightLines[i] = ray;
-				HeadAnimations.AddChild( ray );
-			}
-		}
-
 		public override void Alert( Entity source ) {
 			return; // deaf, but they have a mix track playing inside that helmet
 		}
-
-		public bool IsAlert() => Awareness == MobAwareness.Alert || SightDetectionAmount >= SightDetectionTime;
-		public bool IsSuspicious() => Awareness == MobAwareness.Suspicious || SightDetectionAmount >= SightDetectionTime * 0.25f;
 
 		public override void SetLocation( in WorldArea location ) {
 			base.SetLocation( location );
@@ -113,11 +106,11 @@ namespace Renown.Thinkers {
 			}
 
 			base.Damage( source, amount );
-//			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
+			//			PlaySound( AudioChannel, ResourceCache.Pain[ RNJesus.IntRange( 0, ResourceCache.Pain.Length - 1 ) ] );
 
 			if ( Health <= 0.0f ) {
-				DetectionMeter.CallDeferred( "hide" );
-				
+				DetectionMeter.CallDeferred( Line2D.MethodName.Hide );
+
 				GunChannel.Stop();
 				GunChannel.Set( "parameters/looping", false );
 
@@ -128,15 +121,15 @@ namespace Renown.Thinkers {
 				NavigationServer2D.AgentSetVelocityForced( NavAgent.GetRid(), Godot.Vector2.Zero );
 				GotoPosition = Godot.Vector2.Zero;
 				Flags |= ThinkerFlags.Dead;
-				HeadAnimations.CallDeferred( "hide" );
-				ArmAnimations.CallDeferred( "hide" );
-//				if ( BodyAnimations.Animation != "die_high" ) {
-//					PlaySound( AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" ) );
-					BodyAnimations.CallDeferred( "play", "die" );
-//				}
+				HeadAnimations.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+				ArmAnimations.CallDeferred( AnimatedSprite2D.MethodName.Hide );
+				//				if ( BodyAnimations.Animation != "die_high" ) {
+				//					PlaySound( AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_low.ogg" ) );
+				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die" );
+				//				}
 
-				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
-				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( "disabled", true );
+				GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
+				GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).GetChild<CollisionShape2D>( 0 ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 				return;
 			}
 
@@ -157,15 +150,6 @@ namespace Renown.Thinkers {
 			SetNavigationTarget( LastTargetPosition );
 		}
 
-		private void SetSuspicious() {
-			Awareness = MobAwareness.Suspicious;
-			CurrentState = State.Investigating;
-		}
-		private void SetAlert() {
-			Target = SightTarget;
-			Awareness = MobAwareness.Alert;
-		}
-
 		private void SetFear( int amount ) {
 			Fear = amount;
 			if ( Fear >= 100 ) {
@@ -183,46 +167,16 @@ namespace Renown.Thinkers {
 			}
 		}
 
-		private bool IsValidTarget( Entity target ) => target is Player;
-		private void SetDetectionColor() {
-			if ( SightDetectionAmount > SightDetectionTime ) {
-				SightDetectionAmount = SightDetectionTime;
-			}
-			switch ( Awareness ) {
-			case MobAwareness.Relaxed:
-				if ( SightDetectionAmount == 0.0f ) {
-					DetectionColor.R = 1.0f;
-					DetectionColor.G = 1.0f;
-					DetectionColor.B = 1.0f;
-				} else {
-					DetectionColor.R = 0.0f;
-					DetectionColor.G = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-					DetectionColor.B = 1.0f;
-				}
-				break;
-			case MobAwareness.Suspicious:
-				DetectionColor.R = 0.0f;
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				break;
-			case MobAwareness.Alert:
-				DetectionColor.R = Mathf.Lerp( 0.05f, 1.0f, SightDetectionAmount );
-				DetectionColor.G = 0.0f;
-				DetectionColor.B = 0.0f;
-				break;
-			};
-			DetectionMeter.SetDeferred( "default_color", DetectionColor );
-		}
 		private void OnChangeInvestigationAngleTimerTimeout() {
 			float angle = RNJesus.FloatRange( 0, 360.0f );
 			LookAngle = angle;
 			AimAngle = angle;
-			ChangeInvestigationAngleTimer.CallDeferred( "start" );
+			ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 		}
 
 		public void OnHeadHit( Entity source, float nAmount ) {
-//			CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) );
-//			BodyAnimations.Play( "die_high" );
+			//			CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( "res://sounds/mobs/die_high.ogg" ) );
+			//			BodyAnimations.Play( "die_high" );
 			if ( ( Flags & ThinkerFlags.Dead ) != 0 ) {
 				return;
 			}
@@ -238,13 +192,13 @@ namespace Renown.Thinkers {
 
 			Explosion explosion = SceneCache.GetScene( "res://scenes/effects/big_explosion.tscn" ).Instantiate<Explosion>();
 			explosion.Radius = 72.0f;
-			explosion.Damage = ExplosionDamage;
+			explosion.Damage = EXPLOSION_DAMAGE;
 			explosion.Effects = ExtraAmmoEffects.Incendiary;
 			AddChild( explosion );
 
 			base.Damage( this, Health );
 			DetectionMeter.CallDeferred( Line2D.MethodName.Hide );
-			
+
 			GunChannel.Stop();
 			GunChannel.Set( "parameters/looping", false );
 
@@ -255,27 +209,27 @@ namespace Renown.Thinkers {
 			Flags |= ThinkerFlags.Dead;
 			HeadAnimations.Hide();
 			ArmAnimations.Hide();
-			BodyAnimations.CallDeferred( "play", "die" );
+			BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "die" );
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", true );
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, true );
 		}
 
 		private void OnRevTimerTimeout() {
 			Revved = !Revved;
 		}
 		private void OnLoseInterestTimerTimeout() {
-			GunChannel.CallDeferred( "stop" );
+			GunChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Stop );
 			GunChannel.SetDeferred( "parameters/looping", false );
 
-			AudioChannel.CallDeferred( "stop" );
+			AudioChannel.CallDeferred( AudioStreamPlayer2D.MethodName.Stop );
 			AudioChannel.SetDeferred( "parameters/looping", false );
 
-			ArmAnimations.CallDeferred( "play", "idle" );
+			ArmAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 
-			CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
+			CallDeferred( MethodName.PlaySound, AudioChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_dissapointed.ogg" ) );
 			if ( Shooting || Revved ) {
-				CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revdown.ogg" ) );
-				RevTimer.CallDeferred( "start" );
+				CallDeferred( MethodName.PlaySound, GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revdown.ogg" ) );
+				RevTimer.CallDeferred( Timer.MethodName.Start );
 			}
 			Shooting = false;
 			Revved = false;
@@ -287,17 +241,17 @@ namespace Renown.Thinkers {
 			GlobalPosition = StartPosition;
 			Health = StartHealth;
 
-			DetectionMeter.CallDeferred( "show" );
-			ArmAnimations.CallDeferred( "show" );
-			HeadAnimations.CallDeferred( "show" );
+			DetectionMeter.CallDeferred( Line2D.MethodName.Show );
+			ArmAnimations.CallDeferred( AnimatedSprite2D.MethodName.Show );
+			HeadAnimations.CallDeferred( AnimatedSprite2D.MethodName.Show );
 
 			NavAgent.AvoidanceEnabled = true;
 
-			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( "disabled", false );
-			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( "monitoring", true );
+			GetNode<CollisionShape2D>( "CollisionShape2D" ).SetDeferred( CollisionShape2D.PropertyName.Disabled, false );
+			GetNode<Hitbox>( "Animations/HeadAnimations/HeadHitbox" ).SetDeferred( Hitbox.PropertyName.Monitoring, true );
 
-			SetDeferred( "collision_layer", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
-			SetDeferred( "collision_mask", (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( PropertyName.CollisionLayer, (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
+			SetDeferred( PropertyName.CollisionMask, (uint)( PhysicsLayer.SpriteEntity | PhysicsLayer.Player ) );
 
 			Flags &= ~ThinkerFlags.Dead;
 
@@ -307,20 +261,20 @@ namespace Renown.Thinkers {
 			SightTarget = null;
 
 			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				BodyAnimations.FlipH = true;
-				break;
-			};
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					BodyAnimations.FlipH = true;
+					break;
+			}
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
 		}
@@ -330,9 +284,9 @@ namespace Renown.Thinkers {
 
 			NavAgent.AvoidanceEnabled = false;
 
-			SetDeferred( "collision_layer", (uint)PhysicsLayer.None );
-			SetDeferred( "collision_mask", (uint)PhysicsLayer.None );
-			
+			SetDeferred( PropertyName.CollisionLayer, (uint)PhysicsLayer.None );
+			SetDeferred( PropertyName.CollisionMask, (uint)PhysicsLayer.None );
+
 			if ( source is Player ) {
 				if ( GameConfiguration.GameMode == GameMode.ChallengeMode || GameConfiguration.GameMode == GameMode.JohnWick ) {
 					if ( BodyAnimations.Animation == "die_high" ) {
@@ -343,7 +297,7 @@ namespace Renown.Thinkers {
 				}
 			}
 		}
-		
+
 		private void OnHellbreakerBegin() {
 			AudioChannel.ProcessMode = ProcessModeEnum.Disabled;
 			NavAgent.ProcessMode = ProcessModeEnum.Disabled;
@@ -368,9 +322,10 @@ namespace Renown.Thinkers {
 				LevelData.Instance.HellbreakerFinished += OnHellbreakerFinished;
 			}
 
-			GunChannel = new AudioStreamPlayer2D();
-			GunChannel.Name = "GunChannel";
-			GunChannel.VolumeDb = SettingsData.GetEffectsVolumeLinear();
+			GunChannel = new AudioStreamPlayer2D() {
+				Name = nameof( GunChannel ),
+				VolumeDb = SettingsData.GetEffectsVolumeLinear()
+			};
 			AddChild( GunChannel );
 
 			HeadAnimations = GetNode<AnimatedSprite2D>( "Animations/HeadAnimations" );
@@ -378,12 +333,12 @@ namespace Renown.Thinkers {
 			ArmAnimations = GetNode<AnimatedSprite2D>( "Animations/ArmAnimations" );
 			//			ArmAnimations.AnimationFinished += OnArmAnimationFinished;
 
-			Hitbox HeadHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
-			HeadHitbox.Hit += OnHeadHit;
+			Hitbox headHitbox = HeadAnimations.GetNode<Hitbox>( "HeadHitbox" );
+			GameEventBus.ConnectSignal( headHitbox, Hitbox.SignalName.Hit, this, Callable.From<Entity, float>( OnHeadHit ) );
 
 			// the massive oxygen tank on their back, highly dangerous and explosive
-			Hitbox BackpackHitbox = BodyAnimations.GetNode<Hitbox>( "BackpackHitbox" );
-			BackpackHitbox.Hit += OnBackpackHit;
+			Hitbox backpackHitbox = BodyAnimations.GetNode<Hitbox>( "BackpackHitbox" );
+			GameEventBus.ConnectSignal( backpackHitbox, Hitbox.SignalName.Hit, this, Callable.From<Entity, float>( OnBackpackHit ) );
 
 			CurrentState = State.Guarding;
 
@@ -391,32 +346,30 @@ namespace Renown.Thinkers {
 				NodeCache ??= Location.NodeCache;
 			}
 
-			RevTimer = new Timer();
-			RevTimer.WaitTime = 2.5f;
-			RevTimer.Connect( "timeout", Callable.From( OnRevTimerTimeout ) );
+			RevTimer = new Timer() {
+				Name = nameof( RevTimer ),
+				WaitTime = 2.5f,
+				OneShot = true
+			};
+			GameEventBus.ConnectSignal( RevTimer, Timer.SignalName.Timeout, this, OnRevTimerTimeout );
 			AddChild( RevTimer );
 
-			AimLine = new RayCast2D();
-			AimLine.Name = "AimLine";
-			AimLine.TargetPosition = Godot.Vector2.Right;
-			AimLine.CollideWithAreas = true;
-			AimLine.CollideWithBodies = true;
-			AimLine.CollisionMask = (uint)( PhysicsLayer.Player | PhysicsLayer.SpecialHitboxes | PhysicsLayer.SpriteEntity );
-			ArmAnimations.AddChild( AimLine );
-
-			LoseInterestTimer = new Timer();
-			LoseInterestTimer.WaitTime = LoseInterestTime;
-			LoseInterestTimer.OneShot = true;
-			LoseInterestTimer.Connect( "timeout", Callable.From( OnLoseInterestTimerTimeout ) );
+			LoseInterestTimer = new Timer() {
+				Name = nameof( LoseInterestTimer ),
+				OneShot = true,
+				WaitTime = LoseInterestTime
+			};
+			GameEventBus.ConnectSignal( LoseInterestTimer, Timer.SignalName.Timeout, this, OnLoseInterestTimerTimeout );
 			AddChild( LoseInterestTimer );
 
 			DetectionMeter = GetNode<Line2D>( "DetectionMeter" );
 
-			ChangeInvestigationAngleTimer = new Timer();
-			ChangeInvestigationAngleTimer.Name = "ChangeInvestigationAngleTimer";
-			ChangeInvestigationAngleTimer.OneShot = true;
-			ChangeInvestigationAngleTimer.WaitTime = 1.0f;
-			ChangeInvestigationAngleTimer.Connect( "timeout", Callable.From( OnChangeInvestigationAngleTimerTimeout ) );
+			ChangeInvestigationAngleTimer = new Timer() {
+				Name = nameof( ChangeInvestigationAngleTimer ),
+				OneShot = true,
+				WaitTime = 1.0f
+			};
+			GameEventBus.ConnectSignal( ChangeInvestigationAngleTimer, Timer.SignalName.Timeout, this, OnChangeInvestigationAngleTimerTimeout );
 			AddChild( ChangeInvestigationAngleTimer );
 
 			StartPosition = GlobalPosition;
@@ -427,23 +380,21 @@ namespace Renown.Thinkers {
 			}
 
 			switch ( Direction ) {
-			case DirType.North:
-				LookDir = Godot.Vector2.Up;
-				break;
-			case DirType.East:
-				LookDir = Godot.Vector2.Right;
-				break;
-			case DirType.South:
-				LookDir = Godot.Vector2.Down;
-				break;
-			case DirType.West:
-				LookDir = Godot.Vector2.Left;
-				break;
-			};
+				case DirType.North:
+					LookDir = Godot.Vector2.Up;
+					break;
+				case DirType.East:
+					LookDir = Godot.Vector2.Right;
+					break;
+				case DirType.South:
+					LookDir = Godot.Vector2.Down;
+					break;
+				case DirType.West:
+					LookDir = Godot.Vector2.Left;
+					break;
+			}
 			LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
 			AimAngle = LookAngle;
-
-			GenerateRayCasts();
 
 			if ( GameConfiguration.GameMode == GameMode.JohnWick ) {
 				Target = LevelData.Instance.ThisPlayer;
@@ -457,56 +408,59 @@ namespace Renown.Thinkers {
 				return;
 			}
 
-			ArmAnimations.SetDeferred( "global_rotation", AimAngle );
-			HeadAnimations.SetDeferred( "global_rotation", LookAngle );
+			ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.GlobalRotation, AimAngle );
+			HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.GlobalRotation, LookAngle );
 
 			if ( Velocity.X < 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", true );
+				BodyAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, true );
 			} else if ( Velocity.X > 0.0f ) {
-				BodyAnimations.SetDeferred( "flip_h", false );
+				BodyAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipH, false );
 			}
 
 			if ( LookAngle > 225.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", true );
+				HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
 			} else if ( LookAngle < 135.0f ) {
-				HeadAnimations.SetDeferred( "flip_v", false );
+				HeadAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
 			}
 
 			if ( AimAngle > 225.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", true );
+				ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, true );
 			} else if ( AimAngle < 135.0f ) {
-				ArmAnimations.SetDeferred( "flip_v", false );
+				ArmAnimations.SetDeferred( AnimatedSprite2D.PropertyName.FlipV, false );
 			}
 
 			if ( Velocity != Godot.Vector2.Zero ) {
-				HeadAnimations.CallDeferred( "play", "move" );
-				BodyAnimations.CallDeferred( "play", "move" );
+				HeadAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "move" );
+				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "move" );
 			} else {
 				//				if ( Awareness == MobAwareness.Relaxed ) {
 				//					BodyAnimations.CallDeferred( "play", "calm" );
 				//					HeadAnimations.CallDeferred( "hide" );
 				//					ArmAnimations.CallDeferred( "hide" );
 				//				} else {
-				ArmAnimations.CallDeferred( "show" );
-				HeadAnimations.CallDeferred( "show" );
-				BodyAnimations.CallDeferred( "play", "idle" );
-				HeadAnimations.CallDeferred( "play", "idle" );
+				ArmAnimations.CallDeferred( AnimatedSprite2D.MethodName.Show );
+				HeadAnimations.CallDeferred( AnimatedSprite2D.MethodName.Show );
+				BodyAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
+				HeadAnimations.CallDeferred( AnimatedSprite2D.MethodName.Play, "idle" );
 				//				}
 			}
 		}
 		private void CalcShots() {
 			const int numShots = 24;
-			
-			for ( int i = 0; i < numShots; i++ ) {
-				AimLine.TargetPosition = Godot.Vector2.Right.Rotated( Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 60.0f ) ) ) * 1024.0f;
-				AimLine.ForceRaycastUpdate();
 
-				GodotObject collision = AimLine.GetCollider();
-				if ( collision != null ) {
-					if ( collision is Entity entity && entity != null ) {
-						entity.Damage( this, BulletDamage );
+			for ( int i = 0; i < numShots; i++ ) {
+				RayIntersectionInfo info = GodotServerManager.CheckRayCast(
+					GlobalPosition,
+					Mathf.DegToRad( RNJesus.FloatRange( 0.0f, 60.0f ) ),
+					GATLING_GUN_RANGE,
+					GetRid()
+				);
+				
+				if ( info.Collider != null ) {
+					if ( info.Collider is Entity entity && entity != null ) {
+						entity.Damage( this, BULLET_DAMAGE );
 					} else {
-						DebrisFactory.Create( AimLine.GetCollisionPoint() );
+						DebrisFactory.Create( info.Position );
 					}
 				}
 			}
@@ -523,59 +477,60 @@ namespace Renown.Thinkers {
 					CurrentState = State.Attacking;
 					ChangeInvestigationAngleTimer.Stop();
 				} else {
-//					CurrentState = State.Investigating;
+					//					CurrentState = State.Investigating;
 				}
 			}
 
 			switch ( CurrentState ) {
-			case State.Investigating:
-				if ( ChangeInvestigationAngleTimer.IsStopped() ) {
-					ChangeInvestigationAngleTimer.CallDeferred( "start" );
-				}
-				if ( Target != null && CanSeeTarget ) {
-					CurrentState = State.Attacking;
-				}
-				break;
-			case State.Attacking:
-				if ( !CanSeeTarget && LoseInterestTimer.IsStopped() ) {
-					LoseInterestTimer.CallDeferred( "start" );
-				}
-				if ( !Shooting && CanSeeTarget ) {
-					CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_aiming.ogg" ) );
-					GunChannel.SetDeferred( "parameters/looping", false );
-					AudioChannel.SetDeferred( "parameters/looping", false );
-					Shooting = true;
-					ArmAnimations.CallDeferred( "play", "aim" );
-
-					SetNavigationTarget( LastTargetPosition );
-
-					LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
-					LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
-					AimAngle = LookAngle;
-				} else if ( Revved && Shooting ) {
-					if ( ArmAnimations.Animation != "attack" ) {
-						CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_shooting.ogg" ) );
-						GunChannel.SetDeferred( "parameters/looping", true );
-						CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", RNJesus.IntRange( 0, 7 ) ) ) );
-						AudioChannel.SetDeferred( "parameters/looping", true );
+				case State.Investigating:
+					if ( ChangeInvestigationAngleTimer.IsStopped() ) {
+						ChangeInvestigationAngleTimer.CallDeferred( Timer.MethodName.Start );
 					}
-					ArmAnimations.CallDeferred( "play", "attack" );
-					CallDeferred( "CalcShots" );
-				}
-				if ( !Revved && CanSeeTarget ) {
-					if ( RevTimer.IsStopped() ) {
-						PlaySound( GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revup.ogg" ) );
-						RevTimer.CallDeferred( "start" );
+					if ( Target != null && CanSeeTarget ) {
+						CurrentState = State.Attacking;
 					}
-					ArmAnimations.CallDeferred( "play", "aim" );
-				}
-				break;
-			case State.Guarding:
-				if ( Awareness > MobAwareness.Relaxed ) {
-					CurrentState = State.Investigating;
-				}
-				break;
-			};
+					break;
+				case State.Attacking:
+					if ( !CanSeeTarget && LoseInterestTimer.IsStopped() ) {
+						LoseInterestTimer.CallDeferred( "start" );
+					}
+					if ( !Shooting && CanSeeTarget ) {
+						CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_aiming.ogg" ) );
+						GunChannel.SetDeferred( "parameters/looping", false );
+						AudioChannel.SetDeferred( "parameters/looping", false );
+						Shooting = true;
+						ArmAnimations.CallDeferred( "play", "aim" );
+
+						SetNavigationTarget( LastTargetPosition );
+
+						LookDir = GlobalPosition.DirectionTo( LastTargetPosition );
+						LookAngle = Mathf.Atan2( LookDir.Y, LookDir.X );
+						AimAngle = LookAngle;
+					} else if ( Revved && Shooting ) {
+						if ( ArmAnimations.Animation != "attack" ) {
+							CallDeferred( "PlaySound", GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_shooting.ogg" ) );
+							GunChannel.SetDeferred( "parameters/looping", true );
+							CallDeferred( "PlaySound", AudioChannel, AudioCache.GetStream( string.Format( "res://sounds/mobs/gatling_laughter{0}.ogg", RNJesus.IntRange( 0, 7 ) ) ) );
+							AudioChannel.SetDeferred( "parameters/looping", true );
+						}
+						ArmAnimations.CallDeferred( "play", "attack" );
+						CallDeferred( "CalcShots" );
+					}
+					if ( !Revved && CanSeeTarget ) {
+						if ( RevTimer.IsStopped() ) {
+							PlaySound( GunChannel, AudioCache.GetStream( "res://sounds/mobs/gatling_revup.ogg" ) );
+							RevTimer.CallDeferred( "start" );
+						}
+						ArmAnimations.CallDeferred( "play", "aim" );
+					}
+					break;
+				case State.Guarding:
+					if ( Awareness > MobAwareness.Relaxed ) {
+						CurrentState = State.Investigating;
+					}
+					break;
+			}
+			;
 		}
 
 		protected override bool MoveAlongPath() {
@@ -588,70 +543,6 @@ namespace Renown.Thinkers {
 			base.MoveAlongPath();
 			MovementSpeed = movespeed;
 			return true;
-		}
-
-		private void CheckSight() {
-			Entity sightTarget = null;
-			for ( int i = 0; i < SightLines.Length; i++ ) {
-				sightTarget = SightLines[i].GetCollider() as Entity;
-				if ( sightTarget != null && IsValidTarget( sightTarget ) ) {
-					break;
-				} else {
-					sightTarget = null;
-				}
-			}
-
-			if ( sightTarget == null && SightDetectionAmount > 0.0f ) {
-				// out of sight, but we got something
-				switch ( Awareness ) {
-				case MobAwareness.Relaxed:
-					SightDetectionAmount -= SightDetectionAmount * (float)GetProcessDeltaTime();
-					if ( SightDetectionAmount < 0.0f ) {
-						SightDetectionAmount = 0.0f;
-					}
-					break;
-				case MobAwareness.Suspicious:
-					SetSuspicious();
-					break;
-				case MobAwareness.Alert:
-					SetAlert();
-					break;
-				};
-				SetDetectionColor();
-				CanSeeTarget = false;
-				return;
-			}
-
-			if ( sightTarget != null ) {
-				if ( sightTarget.Health <= 0.0f ) {
-					// dead?
-				} else {
-					SightTarget = sightTarget;
-					LastTargetPosition = sightTarget.GlobalPosition;
-					CanSeeTarget = true;
-
-					if ( Awareness >= MobAwareness.Suspicious ) {
-						// if we're already suspicious, then detection rate increases as we're more alert
-						SightDetectionAmount += SightDetectionSpeed * 2.0f;
-					} else {
-						SightDetectionAmount += SightDetectionSpeed;
-					}
-				}
-			}
-
-			if ( SightDetectionAmount >= SightDetectionTime * 0.25f && SightDetectionAmount < SightDetectionTime * 0.90f ) {
-				SetSuspicious();
-				CurrentState = State.Investigating;
-				SetNavigationTarget( LastTargetPosition );
-			} else if ( SightDetectionAmount >= SightDetectionTime * 0.90f ) {
-				SetAlert();
-			}
-			if ( IsAlert() ) {
-				SetAlert();
-			} else if ( IsSuspicious() ) {
-				SetSuspicious();
-			}
-			SetDetectionColor();
 		}
 	};
 };

@@ -30,8 +30,9 @@ using System.Runtime.CompilerServices;
 using System;
 using Interactables;
 using Menus;
+using Items;
 
-namespace PlayerSystem {
+namespace PlayerSystem.Inventory {
 
 	/*
 	===================================================================================
@@ -45,11 +46,6 @@ namespace PlayerSystem {
 	/// </summary>
 
 	public partial class InventoryManager : GodotObject {
-		/// <summary>
-		/// The maximum number of weapons a player can have on them at a time
-		/// </summary>
-		public static readonly int MAX_WEAPON_SLOTS = 4;
-
 		/// <summary>
 		/// The maximum amount of weight a player can carry on them before becoming <see cref="Player.PlayerFlags.Encumbured"/>,
 		/// thus slowing them down
@@ -75,16 +71,6 @@ namespace PlayerSystem {
 		/// The maximum amount of equippable perks a player can have at a time
 		/// </summary>
 		public static readonly int MAX_PERKS = 1;
-
-		/// <summary>
-		/// The weapons that are currently equipped by the player
-		/// </summary>
-		public WeaponSlot[] WeaponSlots { get; private set; } = new WeaponSlot[ MAX_WEAPON_SLOTS ];
-
-		/// <summary>
-		/// The weapon slot currently being used by the player
-		/// </summary>
-		public int CurrentWeapon { get; private set; } = WeaponSlot.INVALID;
 
 		/// <summary>
 		/// The boons that the player has already found
@@ -149,7 +135,7 @@ namespace PlayerSystem {
 		/// <summary>
 		/// The owning Player object
 		/// </summary>
-		private Player Owner;
+		private Player? Owner;
 
 		[Signal]
 		public delegate void WeaponStatusUpdatedEventHandler( WeaponEntity entity, WeaponEntity.Properties properties );
@@ -178,29 +164,6 @@ namespace PlayerSystem {
 
 			UnlockedBoons = new HashSet<Perk>();
 			UnlockedRunes = new HashSet<Rune>();
-
-			for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-				WeaponSlots[ i ] = new WeaponSlot();
-				WeaponSlots[ i ].SetIndex( i );
-			}
-		}
-
-		/*
-		===============
-		SetEquippedWeapon
-		===============
-		*/
-		/// <summary>
-		/// Sets the currently equipped WeaponSlot
-		/// </summary>
-		/// <param name="weaponSlot">Which <see cref="WeaponSlotIndex"/> to use</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weaponSlot"/> is not a valid <see cref="WeaponSlotIndex"/></exception>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetEquippedWeapon( int weaponSlot ) {
-			if ( weaponSlot < 0 || weaponSlot >= (int)WeaponSlotIndex.Count ) {
-				throw new ArgumentOutOfRangeException( $"weaponSlot is invalid ({weaponSlot}), it must be a valid WeaponSlotIndex" );
-			}
-			CurrentWeapon = weaponSlot;
 		}
 
 		/*
@@ -285,123 +248,6 @@ namespace PlayerSystem {
 
 		/*
 		===============
-		SetPrimaryWeapon
-		===============
-		*/
-		/// <summary>
-		/// Sets the <see cref="WeaponEntity"/> in the <see cref="WeaponSlotIndex.HeavyPrimary"/> slot
-		/// </summary>
-		/// <param name="weapon">The weapon to use</param>
-		/// <exception cref="ArgumentNullException">Thrown if weapon is null</exception>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetPrimaryWeapon( WeaponEntity weapon ) {
-			ArgumentNullException.ThrowIfNull( weapon );
-			WeaponSlots[ (int)WeaponSlotIndex.Primary ].SetWeapon( weapon );
-		}
-
-		/*
-		===============
-		SetHeavyPrimaryWeapon
-		===============
-		*/
-		/// <summary>
-		/// Sets the <see cref="WeaponEntity"/> in the <see cref="WeaponSlotIndex.HeavyPrimary"/> slot
-		/// </summary>
-		/// <param name="weapon">The weapon to use</param>
-		/// <exception cref="ArgumentNullException">Thrown if weapon is null</exception>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetHeavyPrimaryWeapon( WeaponEntity weapon ) {
-			WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ].SetWeapon( weapon );
-		}
-
-		/*
-		===============
-		SetSidearmWeapon
-		===============
-		*/
-		/// <summary>
-		/// Sets the <see cref="WeaponEntity"/> in the <see cref="WeaponSlotIndex.Sidearm"/> slot
-		/// </summary>
-		/// <param name="weapon">The weapon to use</param>
-		/// <exception cref="ArgumentNullException">Thrown if weapon is null</exception>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetSidearmWeapon( WeaponEntity weapon ) {
-			WeaponSlots[ (int)WeaponSlotIndex.Sidearm ].SetWeapon( weapon );
-		}
-
-		/*
-		===============
-		SetHeavySidearmWeapon
-		===============
-		*/
-		/// <summary>
-		/// Sets the <see cref="WeaponEntity"/> in the <see cref="WeaponSlotIndex.HeavySidearm"/> slot
-		/// </summary>
-		/// <param name="weapon">The weapon to use</param>
-		/// <exception cref="ArgumentNullException">Thrown if weapon is null</exception>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public void SetHeavySidearmWeapon( WeaponEntity weapon ) {
-			WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ].SetWeapon( weapon );
-		}
-
-		/*
-		===============
-		GetPrimaryWeapon
-		===============
-		*/
-		/// <summary>
-		/// Fetches the currently equipped weapon in the "Primary" slot
-		/// </summary>
-		/// <returns>The <see cref="WeaponSlot"/> object within the <see cref="WeaponSlotIndex.Primary"/> slot</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public WeaponSlot? GetPrimaryWeapon() {
-			return WeaponSlots[ (int)WeaponSlotIndex.Primary ];
-		}
-
-		/*
-		===============
-		GetHeavyPrimaryWeapon
-		===============
-		*/
-		/// <summary>
-		/// Fetches the currently equipped weapon in the "Heavy Primary" slot
-		/// </summary>
-		/// <returns>The <see cref="WeaponSlot"/> object within the <see cref="WeaponSlotIndex.HeavyPrimary"/> slot</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public WeaponSlot? GetHeavyPrimaryWeapon() {
-			return WeaponSlots[ (int)WeaponSlotIndex.HeavyPrimary ];
-		}
-
-		/*
-		===============
-		GetSidearmWeapon
-		===============
-		*/
-		/// <summary>
-		/// Fetches the currently equipped weapon in the "Sidearm" slot
-		/// </summary>
-		/// <returns>The <see cref="WeaponSlot"/> object within the <see cref="WeaponSlotIndex.Sidearm"/> slot</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public WeaponSlot? GetSidearmWeapon() {
-			return WeaponSlots[ (int)WeaponSlotIndex.Sidearm ];
-		}
-
-		/*
-		===============
-		GetHeavySidearmWeapon
-		===============
-		*/
-		/// <summary>
-		/// Fetches the currently equipped weapon in the "Heavy Sidearm" slot
-		/// </summary>
-		/// <returns>The <see cref="WeaponSlot"/> object within the <see cref="WeaponSlotIndex.HeavySidearm"/> slot</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		public WeaponSlot? GetHeavySidearmWeapon() {
-			return WeaponSlots[ (int)WeaponSlotIndex.HeavySidearm ];
-		}
-
-		/*
-		===============
 		Save
 		===============
 		*/
@@ -419,8 +265,6 @@ namespace PlayerSystem {
 			ArgumentNullException.ThrowIfNull( ConsumableStacks );
 
 			int stackIndex;
-
-			writer.SaveInt( nameof( CurrentWeapon ), CurrentWeapon );
 
 			writer.SaveInt( "AmmoStacksCount", AmmoStacks.Count );
 			stackIndex = 0;
@@ -461,8 +305,6 @@ namespace PlayerSystem {
 			ArgumentNullException.ThrowIfNull( WeaponsStack );
 			ArgumentNullException.ThrowIfNull( ConsumableStacks );
 
-			CurrentWeapon = reader.LoadInt( nameof( CurrentWeapon ) );
-
 			AmmoStacks.Clear();
 			int numAmmoStacks = reader.LoadInt( "AmmoStacksCount" );
 			for ( int i = 0; i < numAmmoStacks; i++ ) {
@@ -488,10 +330,6 @@ namespace PlayerSystem {
 				);
 				ConsumableStacks.Add( stack.GetItemID().GetHashCode(), stack );
 			}
-
-			if ( CurrentWeapon != WeaponSlot.INVALID ) {
-				CallDeferred( MethodName.EmitSignal, Player.SignalName.SwitchedWeapon, WeaponSlots[ CurrentWeapon ].Weapon );
-			}
 		}
 
 		/*
@@ -509,9 +347,9 @@ namespace PlayerSystem {
 		public void LoadWeapon( WeaponEntity weapon, string ammo, int slot ) {
 			ArgumentNullException.ThrowIfNull( AmmoStacks );
 
-			if ( slot != WeaponSlot.INVALID ) {
+			if ( slot != (int)WeaponSlotIndex.Invalid ) {
 				weapon.SetEquippedState( true );
-				WeaponSlots[ slot ].SetWeapon( weapon );
+				Owner.WeaponSlots[ (WeaponSlotIndex)slot ].SetWeapon( weapon );
 			}
 
 			if ( ammo != null && ammo.Length > 0 ) {
@@ -523,7 +361,7 @@ namespace PlayerSystem {
 					}
 				}
 				if ( stack != null ) {
-					weapon.CallDeferred( WeaponEntity.MethodName.SetAmmoStack, stack );
+					weapon.CallDeferred( WeaponFirearm.MethodName.SetAmmoStack, stack );
 				} else {
 					throw new ArgumentOutOfRangeException( $"InventoryManager.LoadWeapon: ammo type {ammo} wasn't found!" );
 				}
@@ -577,16 +415,18 @@ namespace PlayerSystem {
 
 			Owner.PlaySound( Owner.MiscChannel, stack.AmmoType.PickupSfx );
 
-			for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-				WeaponSlot slot = WeaponSlots[ i ];
+			for ( WeaponSlotIndex i = 0; i < WeaponSlotIndex.Count; i++ ) {
+				WeaponSlot slot = Owner.WeaponSlots[ i ];
 
 				// sanity check
 				ArgumentNullException.ThrowIfNull( slot.Weapon );
 
-				if ( slot.IsUsed() && slot.Weapon.Ammunition == stack.AmmoType.Type ) {
-					slot.Weapon.SetAmmoStack( stack );
-					if ( Owner.LastUsedArm.Slot == i ) {
-						Owner.EmitSignal( Player.SignalName.WeaponStatusUpdated, slot.Weapon, (uint)slot.Mode );
+				if ( slot.Weapon is WeaponFirearm firearm && firearm != null ) {
+					if ( firearm.Ammo.AmmoType.Type == stack.AmmoType.Type ) {
+						firearm.SetAmmoStack( stack );
+						if ( Owner.LastUsedArm.Slot == i ) {
+							Owner.EmitSignal( Player.SignalName.WeaponStatusUpdated, slot.Weapon, (uint)slot.Mode );
+						}
 					}
 				}
 			}
@@ -615,7 +455,7 @@ namespace PlayerSystem {
 				?? throw new InvalidOperationException( $"weapon {weapon.GetInstanceId()} ItemDefinition doesn't contain a categories definition" );
 
 			// find the appropriate slot
-			WeaponSlotIndex index = (WeaponSlotIndex)WeaponSlot.INVALID;
+			WeaponSlotIndex index = WeaponSlotIndex.Invalid;
 			for ( int i = 0; i < categories.Count; i++ ) {
 				index = categories[ i ].Get( "id" ).AsString() switch {
 					"WEAPON_CATEGORY_PRIMARY" => WeaponSlotIndex.Primary,
@@ -626,11 +466,11 @@ namespace PlayerSystem {
 				};
 			}
 
-			if ( index == (WeaponSlotIndex)WeaponSlot.INVALID ) {
+			if ( index == WeaponSlotIndex.Invalid ) {
 				throw new ArgumentOutOfRangeException( $"WeaponEntity {weapon.GetInstanceId()} doesn't have a suitable category" );
-			} else if ( WeaponSlots[ (int)index ].IsUsed() ) {
-				WeaponSlots[ (int)index ].SetWeapon( weapon );
-				CurrentWeapon = (int)index;
+			} else if ( Owner.WeaponSlots[ index ].IsUsed() ) {
+				Owner.WeaponSlots[ index ].SetWeapon( weapon );
+				Owner.WeaponSlots.SetEquippedWeapon( index );
 			}
 
 			int hashCode = (int)weapon.GetInstanceId();
@@ -644,15 +484,17 @@ namespace PlayerSystem {
 
 			weapon.Connect( WeaponEntity.SignalName.ModeChanged, Callable.From<WeaponEntity, WeaponEntity.Properties>( ( source, useMode ) => Owner.EmitSignal( Player.SignalName.WeaponStatusUpdated, source, (uint)source.DefaultMode ) ) );
 
-			AmmoStack? stack = null;
-			foreach ( var ammo in AmmoStacks ) {
-				if ( ammo.Value.AmmoType.Type == weapon.Ammunition ) {
-					stack = ammo.Value;
-					break;
+			if ( weapon is WeaponFirearm firearm && firearm != null ) {
+				AmmoStack? stack = null;
+				foreach ( var ammo in AmmoStacks ) {
+					if ( ammo.Value.AmmoType.Type == firearm.Ammo.AmmoType.Type ) {
+						stack = ammo.Value;
+						break;
+					}
 				}
-			}
-			if ( stack != null ) {
-				weapon.SetAmmoStack( stack );
+				if ( stack != null ) {
+					firearm.SetAmmoStack( stack );
+				}
 			}
 
 			if ( SettingsData.EquipWeaponOnPickup ) {
@@ -660,13 +502,13 @@ namespace PlayerSystem {
 				if ( ( weapon.DefaultMode & WeaponEntity.Properties.IsTwoHanded ) != 0 ) {
 					Owner.SetHandsUsed( Player.Hands.Both );
 
-					Owner.ArmLeft.SetSlot( WeaponSlot.INVALID );
+					Owner.ArmLeft.SetSlot( WeaponSlotIndex.Invalid );
 
 					Owner.SetLastUsedArm( Owner.ArmRight );
-					Owner.LastUsedArm.SetSlot( (int)index );
+					Owner.LastUsedArm.SetSlot( index );
 
 					// this will automatically overwrite any other modes
-					WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
+					Owner.WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
 				} else if ( ( weapon.DefaultMode & WeaponEntity.Properties.IsOneHanded ) != 0 ) {
 					if ( Owner.LastUsedArm == null ) {
 						Owner.SetLastUsedArm( Owner.ArmRight );
@@ -675,19 +517,18 @@ namespace PlayerSystem {
 					// sanity
 					ArgumentNullException.ThrowIfNull( Owner.LastUsedArm );
 
-					Owner.LastUsedArm.SetSlot( CurrentWeapon );
+					Owner.LastUsedArm.SetSlot( Owner.WeaponSlots.CurrentWeapon );
 					if ( Owner.LastUsedArm == Owner.ArmRight ) {
 						Owner.SetHandsUsed( Player.Hands.Right );
 					} else if ( Owner.LastUsedArm == Owner.ArmLeft ) {
 						Owner.SetHandsUsed( Player.Hands.Left );
 					}
-					WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
+					Owner.WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.DefaultMode );
 				}
 
 				// update the hand data
-				Owner.LastUsedArm.SetSlot( CurrentWeapon );
-				WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
-				weapon.SetUseMode( weapon.DefaultMode );
+				Owner.LastUsedArm.SetSlot( Owner.WeaponSlots.CurrentWeapon );
+				Owner.WeaponSlots[ Owner.LastUsedArm.Slot ].SetMode( weapon.PropertyBits );
 
 				Owner.EmitSignal( Player.SignalName.SwitchedWeapon, weapon );
 				Owner.EmitSignal( Player.SignalName.HandsStatusUpdated, (uint)Owner.HandsUsed );
@@ -723,13 +564,13 @@ namespace PlayerSystem {
 			WeaponsStack.Remove( hashCode );
 			weapon.Drop();
 
-			for ( int i = 0; i < MAX_WEAPON_SLOTS; i++ ) {
-				if ( WeaponSlots[ i ].Weapon == weapon ) {
-					if ( i == CurrentWeapon ) {
-						CurrentWeapon = WeaponSlot.INVALID;
+			for ( WeaponSlotIndex i = 0; i < WeaponSlotIndex.Count; i++ ) {
+				if ( Owner.WeaponSlots[ i ].Weapon == weapon ) {
+					if ( i == Owner.WeaponSlots.CurrentWeapon ) {
+						Owner.WeaponSlots.SetEquippedWeapon( WeaponSlotIndex.Invalid );
 						EmitSignalWeaponStatusUpdated( null, WeaponEntity.Properties.None );
 					}
-					WeaponSlots[ i ].SetWeapon( null );
+					Owner.WeaponSlots[ i ].SetWeapon( null );
 				}
 			}
 		}

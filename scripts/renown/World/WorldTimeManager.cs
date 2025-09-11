@@ -22,8 +22,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Multiplayer;
 using Steam;
+using System;
 
 namespace Renown.World {
 	/*
@@ -35,33 +35,22 @@ namespace Renown.World {
 	*/
 	
 	public partial class WorldTimeManager : Node {
+		private static readonly uint MinutesPerDay = 2440;
+		private static readonly uint MinutesPerHour = 60;
+		private static readonly float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
+
 		public static uint Year { get; private set; } = 0;
 		public static uint Month { get; private set; } = 0;
 		public static uint Day { get; private set; } = 0;
 		public static uint Hour { get; private set; } = 0;
 
-		private static uint NetworkYear = 0;
-		private static uint NetworkMonth = 0;
-		private static uint NetworkDay = 0;
-		private static uint NetworkHour = 0;
-		private static float NetworkTime = 0.0f;
-
-		private float Time = 0.0f;
-		private float PastMinute = -1.0f;
-
-		private NetworkSyncObject SyncObject = null;
-		private bool IsHostWorld = false;
-
-		private const uint MinutesPerDay = 2440;
-		private const uint MinutesPerHour = 60;
-		private const float InGameToRealMinuteDuration = ( 2.0f * Mathf.Pi ) / MinutesPerDay;
+		// not a superman reference
+		public DirectionalLight2D RedSunLight { get; private set; }
 
 		private int TotalDaysInYear = 0;
 
-		public static WorldTimeManager Instance;
-
-		// not a superman reference
-		public DirectionalLight2D RedSunLight { get; private set; }
+		private float Time = 0.0f;
+		private float PastMinute = -1.0f;
 
 		[Export]
 		private CanvasModulate WorldTimeOverlay;
@@ -81,30 +70,36 @@ namespace Renown.World {
 		[Export]
 		private Month[] Months;
 
-		[Signal]
-		public delegate void TimeTickEventHandler( uint day, uint hour, uint minute );
-		[Signal]
-		public delegate void DayTimeStartEventHandler();
-		[Signal]
-		public delegate void NightTimeStartEventHandler();
-		[Signal]
-		public delegate void NewMonthEventHandler();
-		[Signal]
-		public delegate void NewYearEventHandler();
+		public static WorldTimeManager Instance;
 
+		public static event Action<uint, uint, uint> TimeTick;
+		public static event Action DayTimeStart;
+		public static event Action NightTimeStart;
+		public static event Action NewMonth;
+		public static event Action NewYear;
+
+		/*
+		===============
+		Now
+		===============
+		*/
 		public static WorldTimestamp Now() {
 			return new WorldTimestamp();
 		}
 
+		/*
+		===============
+		RecalculateTime
+		===============
+		*/
 		private void RecalculateTime() {
 			uint totalMinutes = (uint)( Time / InGameToRealMinuteDuration );
-			//			uint day = totalMinutes / MinutesPerDay;
-
 			uint currentDayMinutes = totalMinutes % MinutesPerDay;
-			Hour = currentDayMinutes / MinutesPerHour;
 			uint minute = currentDayMinutes % MinutesPerHour;
 
+			Hour = currentDayMinutes / MinutesPerHour;
 			RedSunLight.GlobalRotation += Mathf.DegToRad( 1.0f / Hour ) * 0.001f;
+
 			if ( Hour < 7 || Hour > 21 ) {
 				RedSunLight.Energy = 0.0f;
 			} else {
@@ -113,27 +108,28 @@ namespace Renown.World {
 			if ( PastMinute != minute ) {
 				if ( Hour >= 24 ) {
 					Day++;
-					if ( Day >= Months[ Month ].GetDayCount() ) {
+					if ( Day >= Months[ Month ].DayCount ) {
 						Day = 0;
 						Month++;
-						EmitSignalNewMonth();
+						NewMonth?.Invoke();
 						if ( Month >= Months.Length ) {
 							Month = 0;
 							Year++;
-							EmitSignalNewYear();
+							NewYear?.Invoke();
 						}
 					}
 					Hour = 0;
 				} else if ( Hour >= 20 ) {
-					EmitSignalNightTimeStart();
+					NightTimeStart?.Invoke();
 				} else if ( Hour >= 7 ) {
-					EmitSignalDayTimeStart();
+					DayTimeStart?.Invoke();
 				}
-				EmitSignalTimeTick( Day, Hour, minute );
+				TimeTick?.Invoke( Day, Hour, minute );
 				PastMinute = minute;
 			}
 		}
 
+		/*
 		private void SendPacket() {
 			SyncObject.Write( (byte)SteamLobby.MessageType.GameData );
 			SyncObject.Write( GetPath().GetHashCode() );
@@ -199,22 +195,38 @@ namespace Renown.World {
 				Time = SyncObject.ReadFloat();
 			}
 		}
+		*/
 
-		public static float GetGameSpeed() => Instance.InGameSpeed;
-
+		/*
+		===============
+		_EnterTree
+		===============
+		*/
 		public override void _EnterTree() {
 			base._EnterTree();
 			Instance = this;
 		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
 		public override void _ExitTree() {
 			base._ExitTree();
 
-			for ( int i = 0; i < Months.Length; i++ ) {
-				Months[ i ] = null;
-			}
-
-			Instance = null;
+			GameEventBus.ReleaseDanglingDelegates( TimeTick );
+			GameEventBus.ReleaseDanglingDelegates( DayTimeStart );
+			GameEventBus.ReleaseDanglingDelegates( NightTimeStart );
+			GameEventBus.ReleaseDanglingDelegates( NewMonth );
+			GameEventBus.ReleaseDanglingDelegates( NewYear );
 		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
 		public override void _Ready() {
 			base._Ready();
 
@@ -228,7 +240,7 @@ namespace Renown.World {
 			Hour = (uint)StartingHour;
 
 			for ( int i = 0; i < Months.Length; i++ ) {
-				TotalDaysInYear += Months[ i ].GetDayCount();
+				TotalDaysInYear += Months[ i ].DayCount;
 			}
 
 			NewYear += () => {
@@ -247,22 +259,6 @@ namespace Renown.World {
 			SetPhysicsProcess( false );
 			SetPhysicsProcessInternal( false );
 
-			/*
-			if ( SettingsData.GetNetworkingEnabled() ) {
-				SyncObject = new NetworkSyncObject( sizeof( uint ) * 3 + sizeof( float ) );
-				if ( SteamLobby.Instance.IsOwner() ) {
-					// we're running the host's world
-					//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, SendPacket, null ) );
-					IsHostWorld = true;
-				} else {
-					//				SteamLobby.Instance.AddNetworkNode( GetPath(), new SteamLobby.NetworkNode( this, null, ReceivePacket ) );
-					SetProcess( false );
-				}
-			} else {
-				IsHostWorld = true;
-			}
-			*/
-			IsHostWorld = true;
 			SetProcess( true );
 
 			/*
@@ -282,51 +278,13 @@ namespace Renown.World {
 		public override void _Process( double delta ) {
 			base._Process( delta );
 
-			if ( IsHostWorld && ( Engine.GetProcessFrames() % 30 ) != 0 ) {
+			if ( ( Engine.GetProcessFrames() % 30 ) != 0 ) {
 				Time += (float)delta * InGameToRealMinuteDuration * InGameSpeed;
 				RecalculateTime();
 			}
-
 			if ( ( Engine.GetProcessFrames() % 60 ) != 0 ) {
 				WorldTimeOverlay.Color = Gradient.Gradient.Sample( Mathf.Lerp( 0.0f, Gradient.Width, 1.0f / Hour ) );
 			}
 		}
-	};
-	public readonly struct WorldTimestamp {
-		private readonly uint SavedYear = 0;
-		private readonly uint SavedMonth = 0;
-		private readonly uint SavedDay = 0;
-		
-		public WorldTimestamp() {
-			SavedYear = WorldTimeManager.Year;
-			SavedMonth = WorldTimeManager.Month;
-			SavedDay = WorldTimeManager.Day;
-		}
-		public WorldTimestamp( uint Year, uint Month, uint Day ) {
-			SavedYear = Year;
-			SavedMonth = Month;
-			SavedDay = Day;
-		}
-		public WorldTimestamp( WorldTimestamp other ) {
-			SavedYear = other.SavedYear;
-			SavedMonth = other.SavedMonth;
-			SavedDay = other.SavedDay;
-		}
-
-		public bool LaterThan( WorldTimestamp other ) => SavedYear > other.SavedYear && SavedMonth > other.SavedMonth && SavedDay > other.SavedDay;
-		public bool EarlierThan( WorldTimestamp other ) => SavedYear < other.SavedYear && SavedMonth < other.SavedMonth && SavedDay < other.SavedDay;
-
-		public bool LaterThanOrSame( WorldTimestamp other ) => SavedYear >= other.SavedYear && SavedMonth >= other.SavedMonth && SavedDay >= other.SavedDay;
-		public bool EarlierThanOrSame( WorldTimestamp other ) => SavedYear <= other.SavedYear && SavedMonth <= other.SavedMonth && SavedDay <= other.SavedDay;
-
-		public static bool operator >( WorldTimestamp a, WorldTimestamp b ) => a.LaterThan( b );
-		public static bool operator <( WorldTimestamp a, WorldTimestamp b ) => a.EarlierThan( b );
-
-		public static bool operator >=( WorldTimestamp a, WorldTimestamp b ) => a.LaterThanOrSame( b );
-		public static bool operator <=( WorldTimestamp a, WorldTimestamp b ) => a.EarlierThanOrSame( b );
-
-		public uint GetYear() => SavedYear;
-		public uint GetMonth() => SavedMonth;
-		public uint GetDay() => SavedDay;
 	};
 };

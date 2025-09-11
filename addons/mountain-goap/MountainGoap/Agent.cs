@@ -19,28 +19,6 @@ namespace MountainGoap {
 		public readonly string Name;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Agent"/> class.
-		/// </summary>
-		/// <param name="name">Name of the agent.</param>
-		/// <param name="state">Initial agent state.</param>
-		/// <param name="memory">Initial agent memory.</param>
-		/// <param name="goals">Initial agent goals.</param>
-		/// <param name="actions">Actions available to the agent.</param>
-		/// <param name="sensors">Sensors available to the agent.</param>
-		/// <param name="costMaximum">Maximum cost of an allowable plan.</param>
-		/// <param name="stepMaximum">Maximum steps in an allowable plan.</param>
-		public Agent( string? name = null, ConcurrentDictionary<string, object?>? state = null, Dictionary<string, object?>? memory = null, List<BaseGoal>? goals = null, List<Action>? actions = null, List<Sensor>? sensors = null, float costMaximum = float.MaxValue, int stepMaximum = int.MaxValue ) {
-			Name = name ?? $"Agent {Guid.NewGuid()}";
-			if ( state != null ) State = state;
-			if ( memory != null ) Memory = memory;
-			if ( goals != null ) Goals = goals;
-			if ( actions != null ) Actions = actions;
-			if ( sensors != null ) Sensors = sensors;
-			CostMaximum = costMaximum;
-			StepMaximum = stepMaximum;
-		}
-
-		/// <summary>
 		/// Event that fires when the agent executes a step of work.
 		/// </summary>
 		public static event AgentStepEvent OnAgentStep = ( agent ) => { };
@@ -129,6 +107,38 @@ namespace MountainGoap {
 		/// Gets or sets a value indicating whether the agent is currently planning.
 		/// </summary>
 		public bool IsPlanning { get; set; } = false;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Agent"/> class.
+		/// </summary>
+		/// <param name="name">Name of the agent.</param>
+		/// <param name="state">Initial agent state.</param>
+		/// <param name="memory">Initial agent memory.</param>
+		/// <param name="goals">Initial agent goals.</param>
+		/// <param name="actions">Actions available to the agent.</param>
+		/// <param name="sensors">Sensors available to the agent.</param>
+		/// <param name="costMaximum">Maximum cost of an allowable plan.</param>
+		/// <param name="stepMaximum">Maximum steps in an allowable plan.</param>
+		public Agent( string? name = null, ConcurrentDictionary<string, object?>? state = null, Dictionary<string, object?>? memory = null, List<BaseGoal>? goals = null, List<Action>? actions = null, List<Sensor>? sensors = null, float costMaximum = float.MaxValue, int stepMaximum = int.MaxValue ) {
+			Name = name ?? $"Agent {Guid.NewGuid()}";
+			if ( state != null ) {
+				State = state;
+			}
+			if ( memory != null ) {
+				Memory = memory;
+			}
+			if ( goals != null ) {
+				Goals = goals;
+			}
+			if ( actions != null ) {
+				Actions = actions;
+			}
+			if ( sensors != null ) {
+				Sensors = sensors;
+			}
+			CostMaximum = costMaximum;
+			StepMaximum = stepMaximum;
+		}
 
 		/// <summary>
 		/// You should call this every time your game state updates.

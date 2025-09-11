@@ -94,8 +94,8 @@ namespace Menus {
 
 			UIAudioManager.OnActivate();
 
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Connect( "transition_finished", Callable.From( OnTransitionFinished ) );
-			GetNode<CanvasLayer>( "/root/TransitionScreen" ).Call( "transition" );
+			TransitionScreen.TransitionFinished += OnTransitionFinished;
+			TransitionScreen.Transition();
 			/*
 			TODO: split screen with online
 			string name = LobbyName.Text;
@@ -109,7 +109,7 @@ namespace Menus {
 			}
 			*/
 
-			GameConfiguration.GameMode = GameMode.LocalCoop2;
+			GameConfiguration.SetGameMode( GameMode.LocalCoop2 );
 
 			Console.PrintLine( string.Format( "Starting game [map: {0}, gamemode: {1}]...", MultiplayerMapManager.MapCache.Values.ElementAt( MapList.Selected ).Name, GameModeList.Selected ) );
 		}
@@ -118,14 +118,13 @@ namespace Menus {
 			base._Ready();
 
 			MapList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/MapContainer/MapOptionButton" );
-			MapList.Connect( OptionButton.SignalName.ItemSelected, Callable.From<int>( OnMapSelectionChanged ) );
+			GameEventBus.ConnectSignal( MapList, OptionButton.SignalName.ItemSelected, this, Callable.From<int>( OnMapSelectionChanged ) );
 
 			GameModeList = GetNode<OptionButton>( "MarginContainer/VBoxContainer/GameModeContainer/GameModeOptionButton" );
 
 			UIChannel = GetNode<AudioStreamPlayer>( "../../UIChannel" );
 
-			Button startButton = GetNode<Button>( "StartButton" );
-			startButton.Connect( Button.SignalName.Pressed, Callable.From( OnStartButtonPressed ) );
+			GameEventBus.ConnectSignal( GetNode<Button>( "StartButton" ), Button.SignalName.Pressed, this, OnStartButtonPressed );
 
 			foreach ( var map in MultiplayerMapManager.MapCache ) {
 				MapList.AddItem( map.Value.Name );

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System;
 using Steam;
 using ResourceCache;
+using Utils;
 
 namespace Menus {
 	/*
@@ -40,20 +41,21 @@ namespace Menus {
 	*/
 	
 	public partial class LobbyRoom : Control {
-		public static LobbyRoom Instance;
-
 		private static readonly Color GoodPing = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
 		private static readonly Color DecentPing = new Color( 1.0f, 1.0f, 0.0f, 1.0f );
 		private static readonly Color BadPing = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+
+		private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
+		private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
+
+		private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
+		private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		private VBoxContainer PlayerList;
 		private Button StartGameButton;
 		private Button ExitLobbyButton;
 
 		private HBoxContainer CurrentFocus = null;
-
-		private readonly Color Selected = new Color( 1.0f, 0.0f, 0.0f, 1.0f );
-		private readonly Color Unselected = new Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		private Label VoteLabel;
 
@@ -63,9 +65,13 @@ namespace Menus {
 
 		private Callable PlayerLeaveCallback;
 
-		private readonly Color FocusColor = new Color( 0.0f, 1.0f, 0.0f, 1.0f );
-		private readonly Color DefaultColor = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
+		public static LobbyRoom Instance;
 
+		/*
+		===============
+		FocusPlayer
+		===============
+		*/
 		public void FocusPlayer( HBoxContainer focus ) {
 			if ( CurrentFocus != focus ) {
 				UnfocusPlayer( CurrentFocus );
@@ -74,13 +80,30 @@ namespace Menus {
 			( focus.GetChild( 1 ) as Button ).Show();
 			CurrentFocus = focus;
 		}
+
+		/*
+		===============
+		UnfocusPlayer
+		===============
+		*/
 		public void UnfocusPlayer( HBoxContainer focus ) {
 			( focus.GetChild( 0 ) as Label ).Modulate = DefaultColor;
 			( focus.GetChild( 1 ) as Button ).Hide();
 		}
+
+		/*
+		===============
+		KickPlayer
+		===============
+		*/
 		public void KickPlayer( CSteamID steamId ) {
 		}
 
+		/*
+		===============
+		VoteStart
+		===============
+		*/
 		private void VoteStart( CSteamID senderId ) {
 			if ( !SteamLobby.Instance.IsHost ) {
 				return;
@@ -91,6 +114,12 @@ namespace Menus {
 			}
 			StartGameVotes[ senderId ] = true;
 		}
+
+		/*
+		===============
+		CancelVote
+		===============
+		*/
 		private void CancelVote( CSteamID senderId ) {
 			if ( !SteamLobby.Instance.IsHost ) {
 				return;
@@ -102,35 +131,24 @@ namespace Menus {
 			}
 		}
 
+		/*
+		===============
+		LoadGame
+		===============
+		*/
 		private void LoadGame() {
 			UIAudioManager.OnActivate();
 
-			string modeName;
-			switch ( (Mode.GameMode)SteamLobby.Instance.LobbyGameMode ) {
-				case Mode.GameMode.Bloodbath:
-					modeName = "bloodbath";
-					break;
-				case Mode.GameMode.CaptureTheFlag:
-					modeName = "ctf";
-					break;
-				case Mode.GameMode.KingOfTheHill:
-					modeName = "kingofthehill";
-					break;
-				case Mode.GameMode.Duel:
-					modeName = "duel";
-					break;
-				case Mode.GameMode.Extraction:
-					modeName = "extraction";
-					break;
-				case Mode.GameMode.HoldTheLine:
-					modeName = "holdtheline";
-					break;
-				case Mode.GameMode.BountyHunt:
-					modeName = "bountyhunt";
-					break;
-				default:
-					return;
-			}
+			string modeName = (Mode.GameMode)SteamLobby.Instance.LobbyGameMode switch {
+				Mode.GameMode.Bloodbath => "ffa",
+				Mode.GameMode.CaptureTheFlag => "ctf",
+				Mode.GameMode.KingOfTheHill => "koth",
+				Mode.GameMode.Duel => "duel",
+				Mode.GameMode.Extraction => "extraction",
+				Mode.GameMode.HoldTheLine => "htl",
+				Mode.GameMode.BountyHunt => "bh",
+				_ => ""
+			};
 
 			GetNode<LoadingScreen>( "/root/LoadingScreen" ).FadeIn( "res://levels/" +
 				MultiplayerMapManager.MapCache[ SteamLobby.Instance.LobbyMap ].FileName
@@ -138,6 +156,11 @@ namespace Menus {
 			);
 		}
 
+		/*
+		===============
+		OnStartGameButtonPressed
+		===============
+		*/
 		private void OnStartGameButtonPressed() {
 			if ( !SteamLobby.Instance.IsHost ) {
 				// if we're not the host, send a vote to start command
@@ -149,6 +172,12 @@ namespace Menus {
 
 			ServerCommandManager.SendCommand( ServerCommandType.StartGame );
 		}
+
+		/*
+		===============
+		OnExitLobbyButtonPressed
+		===============
+		*/
 		private void OnExitLobbyButtonPressed() {
 			UIAudioManager.OnButtonPressed();
 
@@ -158,6 +187,11 @@ namespace Menus {
 			GetTree().ChangeSceneToPacked( SceneCache.GetScene( "res://scenes/main_menu.tscn" ) );
 		}
 
+		/*
+		===============
+		OnPlayerJoined
+		===============
+		*/
 		private void OnPlayerJoined( ulong steamId ) {
 			Console.PrintLine( string.Format( "Adding {0} to game...", steamId ) );
 
@@ -171,6 +205,12 @@ namespace Menus {
 			( container.GetChild( 4 ) as Button ).Hide();
 			PlayerList.AddChild( container );
 		}
+
+		/*
+		===============
+		OnPlayerLeft
+		===============
+		*/
 		private void OnPlayerLeft( ulong steamId ) {
 			SteamLobby.Instance.GetLobbyMembers();
 
@@ -192,6 +232,11 @@ namespace Menus {
 			SteamLobby.Instance.RemovePlayer( userId );
 		}
 
+		/*
+		===============
+		CheckAutoStart
+		===============
+		*/
 		/// <summary>
 		/// if the host is currently AFK, then check to see if all the
 		/// requirements are met to automatically start the game
@@ -214,6 +259,11 @@ namespace Menus {
 			}
 		}
 
+		/*
+		===============
+		PlayerIsInQueue
+		===============
+		*/
 		private bool PlayerIsInQueue( CSteamID userId ) {
 			if ( userId == SteamManager.GetSteamID() ) {
 				return true;
@@ -229,23 +279,35 @@ namespace Menus {
 			return false;
 		}
 
-		private void OnButtonFocused( Button self ) {
-			UIAudioManager.OnButtonFocused();
-
-			self.Modulate = Selected;
-		}
-		private void OnButtonUnfocused( Button self ) {
-			self.Modulate = Unselected;
-		}
-
+		/*
+		===============
+		PlayerKicked
+		===============
+		*/
 		private void PlayerKicked( CSteamID senderId ) {
 		}
 
+		/*
+		===============
+		OnVoteKickResponseYes
+		===============
+		*/
 		private void OnVoteKickResponseYes( CSteamID senderId ) {
 		}
+
+		/*
+		===============
+		OnVoteKickResponseNo
+		===============
+		*/
 		private void OnVoteKickResponseNo( CSteamID senderId ) {
 		}
 
+		/*
+		===============
+		_Ready
+		===============
+		*/
 		public override void _Ready() {
 			base._Ready();
 
@@ -258,18 +320,10 @@ namespace Menus {
 			PlayerList = GetNode<VBoxContainer>( "MarginContainer/PlayerList" );
 
 			StartGameButton = GetNode<Button>( "StartGameButton" );
-			StartGameButton.Connect( Button.SignalName.MouseEntered, Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
-			StartGameButton.Connect( "mouse_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
-			StartGameButton.Connect( "focus_entered", Callable.From( () => { OnButtonFocused( StartGameButton ); } ) );
-			StartGameButton.Connect( "focus_exited", Callable.From( () => { OnButtonUnfocused( StartGameButton ); } ) );
-			StartGameButton.Connect( "pressed", Callable.From( OnStartGameButtonPressed ) );
+			Methods.ConnectMenuButton( StartGameButton, this, OnStartGameButtonPressed );
 
 			ExitLobbyButton = GetNode<Button>( "ExitLobbyButton" );
-			ExitLobbyButton.Connect( "mouse_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
-			ExitLobbyButton.Connect( "mouse_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
-			ExitLobbyButton.Connect( "focus_entered", Callable.From( () => OnButtonFocused( ExitLobbyButton ) ) );
-			ExitLobbyButton.Connect( "focus_exited", Callable.From( () => OnButtonUnfocused( ExitLobbyButton ) ) );
-			ExitLobbyButton.Connect( "pressed", Callable.From( OnExitLobbyButtonPressed ) );
+			Methods.ConnectMenuButton( ExitLobbyButton, this, OnExitLobbyButtonPressed );
 
 			VoteLabel = GetNode<Label>( "VoteLabel" );
 
@@ -277,7 +331,7 @@ namespace Menus {
 
 			//		SteamLobby.Instance.Connect( "ClientJoinedLobby", Callable.From<ulong>( OnPlayerJoined ) );
 			PlayerLeaveCallback = Callable.From<ulong>( OnPlayerLeft );
-			SteamLobby.Instance.Connect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
+			GameEventBus.ConnectSignal( SteamLobby.Instance, SteamLobby.SignalName.ClientLeftLobby, this, PlayerLeaveCallback );
 
 			ServerCommandManager.RegisterCommandCallback( ServerCommandType.StartGame, ( senderId ) => { LoadGame(); } );
 			ServerCommandManager.RegisterCommandCallback( ServerCommandType.VoteStart, VoteStart );
@@ -310,11 +364,6 @@ namespace Menus {
 			}
 
 			Instance = this;
-		}
-		public override void _ExitTree() {
-			base._ExitTree();
-
-			SteamLobby.Instance.Disconnect( SteamLobby.SignalName.ClientLeftLobby, PlayerLeaveCallback );
 		}
 	};
 };

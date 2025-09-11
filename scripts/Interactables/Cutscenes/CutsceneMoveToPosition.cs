@@ -22,6 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
+using PlayerSystem.Input;
 using Renown;
 
 namespace Interactables.Cutscenes {
@@ -53,7 +54,7 @@ namespace Interactables.Cutscenes {
 		public override void _PhysicsProcess( double delta ) {
 			base._PhysicsProcess( delta );
 
-			MoveTarget.Velocity = Player.MAX_SPEED * MoveDirection;
+			MoveTarget.Velocity = Player.MovementHandler.MAX_SPEED * MoveDirection;
 			MoveTarget.MoveAndSlide();
 
 			if ( MoveTarget.GlobalPosition.DistanceTo( MoveTo.GlobalPosition ) < 10.0f ) {
