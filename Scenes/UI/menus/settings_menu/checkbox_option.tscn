@@ -1,0 +1,63 @@
+[gd_scene load_steps=12 format=3 uid="uid://bvtjv1xcl6h4"]
+
+[ext_resource type="Script" uid="uid://dwpjby044rtko" path="res://scripts/menus/SelectionNodes/OptionCheckbox.cs" id="1_apk1r"]
+[ext_resource type="FontFile" uid="uid://ux04pgma8dbw" path="res://Spell of Asia.ttf" id="2_yqame"]
+[ext_resource type="Script" uid="uid://8gw38ohl8mi1" path="res://scripts/menus/SelectionNodes/Label.cs" id="3_yr20r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhfsd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nmoh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecpn7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kv2wj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqame"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_apk1r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr20r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2jsoa"]
+
+[node name="CheckboxOption" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.831
+anchor_bottom = 0.048
+offset_right = -530.84
+offset_bottom = -0.0400009
+script = ExtResource("1_apk1r")
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+script = ExtResource("3_yr20r")
+
+[node name="LeftIcon" type="Button" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yqame")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nhfsd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0nmoh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ecpn7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kv2wj")
+text = "<"
+flat = true
+
+[node name="Value" type="Label" parent="."]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="RightIcon" type="Button" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yqame")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yqame")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_apk1r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yr20r")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2jsoa")
+text = ">"
+flat = true

@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://b6dwqm35gxe77"]
+
+[ext_resource type="Script" uid="uid://bppu7wpksshjd" path="res://scripts/menus/SelectionNodes/OptionSlider.cs" id="1_jmcvf"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://resources/themes/settings_menu_slider_inactive.tres" id="2_43t3q"]
+[ext_resource type="Script" uid="uid://8gw38ohl8mi1" path="res://scripts/menus/SelectionNodes/Label.cs" id="2_ey12s"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://resources/themes/settings_menu_slider_active.tres" id="2_ntx2d"]
+
+[node name="SliderOption" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.85
+anchor_bottom = 0.083
+offset_right = -504.0
+offset_bottom = 0.159996
+script = ExtResource("1_jmcvf")
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+script = ExtResource("2_ey12s")
+
+[node name="Input" type="HSlider" parent="."]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_constants/grabber_offset = 2890
+theme_override_styles/slider = ExtResource("2_43t3q")
+theme_override_styles/grabber_area = ExtResource("2_ntx2d")
+theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
+value = 72.0
+rounded = true
+
+[node name="Value" type="Label" parent="Input"]
+modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.429
+anchor_top = -0.219
+anchor_right = 0.571
+anchor_bottom = 1.219
+offset_left = 19.38
+offset_top = 0.00400019
+offset_right = -19.38
+offset_bottom = -0.00400162
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

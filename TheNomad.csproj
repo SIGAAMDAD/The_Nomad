@@ -1,0 +1,37 @@
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <PubishAOT>true</PubishAOT>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EnforceCodeStyleInBuilds>true</EnforceCodeStyleInBuilds>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Source/NomadBackend/**" />
+    <Compile Include="Source/NomadBackend/BackendManager.cs" />
+    <Compile Remove="Source/GUIDE/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ConsoleSystem">
+      <HintPath>Source\NomadBackend\ConsoleSystem\bin\Debug\net9.0\ConsoleSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="EventSystem">
+      <HintPath>Source\NomadBackend\EventSystem\bin\Debug\net9.0\EventSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="SaveSystem">
+      <HintPath>Source\NomadBackend\SaveSystem\bin\Debug\net9.0\SaveSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="ResourceCache">
+      <HintPath>Source\NomadBackend\ResourceCache\bin\Debug\net9.0\ResourceCache.dll</HintPath>
+    </Reference>
+    <Reference Include="CVars">
+      <HintPath>Source\NomadBackend\CVars\bin\Debug\net9.0\CVars.dll</HintPath>
+    </Reference>
+    <Reference Include="Core">
+      <HintPath>Source\NomadBackend\Core\bin\Debug\net9.0\Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
