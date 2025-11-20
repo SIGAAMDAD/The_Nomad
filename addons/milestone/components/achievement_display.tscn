@@ -1,0 +1,212 @@
+[gd_scene load_steps=21 format=3 uid="uid://b2ygwvy3dv00a"]
+
+[ext_resource type="Script" uid="uid://duq7n487fomxs" path="res://addons/milestone/scripts/achievements/achievement_display.gd" id="1_7177w"]
+[ext_resource type="Shader" uid="uid://5j1fq85a0wof" path="res://addons/milestone/shaders/ray_shine.gdshader" id="2_f3trb"]
+[ext_resource type="Shader" uid="uid://b6j5u0yo2a6u7" path="res://addons/milestone/shaders/grayscale.gdshader" id="3_7177w"]
+[ext_resource type="Texture2D" uid="uid://dmbey47vfsa2g" path="res://addons/milestone/icons/missing_icon.svg" id="4_7177w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pv48d"]
+bg_color = Color(0.137255, 0.14902, 0.180392, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5dxj"]
+bg_color = Color(0.0994691, 0.0994691, 0.0994691, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.392157)
+
+[sub_resource type="Gradient" id="Gradient_4xbx4"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 0.655, 0.1, 0.647059)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jaqhe"]
+gradient = SubResource("Gradient_4xbx4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7177w"]
+shader = ExtResource("2_f3trb")
+shader_parameter/gradient = SubResource("GradientTexture2D_jaqhe")
+shader_parameter/spread = 0.23
+shader_parameter/cutoff = 1.0
+shader_parameter/size = 0.375
+shader_parameter/speed = 2.0
+shader_parameter/ray1_density = 9.82
+shader_parameter/ray2_density = 17.785
+shader_parameter/ray2_intensity = -0.595
+shader_parameter/core_intensity = 4.455
+shader_parameter/hdr = false
+shader_parameter/seed = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyofh"]
+bg_color = Color(1, 1, 1, 1)
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uyofh"]
+resource_local_to_scene = true
+shader = ExtResource("3_7177w")
+shader_parameter/use_grayscale = false
+
+[sub_resource type="SystemFont" id="SystemFont_7177w"]
+font_names = PackedStringArray("Inter")
+font_weight = 650
+subpixel_positioning = 0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f3trb"]
+
+[sub_resource type="SystemFont" id="SystemFont_f3trb"]
+font_names = PackedStringArray("Inter")
+font_weight = 500
+subpixel_positioning = 0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sngl5"]
+
+[sub_resource type="SystemFont" id="SystemFont_aa0m6"]
+font_names = PackedStringArray("Inter")
+font_weight = 500
+subpixel_positioning = 0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6i5y1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7177w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7177w"]
+bg_color = Color(0.239216, 0.266667, 0.313726, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3trb"]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.101961, 0.623529, 1, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[node name="AchievementDisplay" type="PanelContainer" node_paths=PackedStringArray("achievement_rare_overlay", "achievement_icon", "achievement_name", "achievement_description", "achievement_action_label", "progress_container", "achievement_progress_label", "achievement_progress_bar")]
+offset_right = 484.0
+offset_bottom = 78.0
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pv48d")
+script = ExtResource("1_7177w")
+achievement_rare_overlay = NodePath("MarginContainer/BoxContainer/PanelContainer/AchievementRareOverlay")
+achievement_icon = NodePath("MarginContainer/BoxContainer/PanelContainer/AchievementIcon")
+achievement_name = NodePath("MarginContainer/BoxContainer/BoxContainer/AchievementName")
+achievement_description = NodePath("MarginContainer/BoxContainer/BoxContainer/AchievementDescription")
+achievement_action_label = NodePath("MarginContainer/BoxContainer/BoxContainer2/AchievementActionLabel")
+progress_container = NodePath("MarginContainer/BoxContainer/BoxContainer2/ProgressContainer")
+achievement_progress_label = NodePath("MarginContainer/BoxContainer/BoxContainer2/ProgressContainer/AchievementProgressLabel")
+achievement_progress_bar = NodePath("MarginContainer/BoxContainer/BoxContainer2/ProgressContainer/AchievementProgressBar")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BoxContainer" type="BoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(66, 66)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_t5dxj")
+
+[node name="AchievementRareOverlay" type="Panel" parent="MarginContainer/BoxContainer/PanelContainer"]
+unique_name_in_owner = true
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_7177w")
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uyofh")
+
+[node name="AchievementIcon" type="TextureRect" parent="MarginContainer/BoxContainer/PanelContainer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uyofh")
+layout_mode = 2
+texture = ExtResource("4_7177w")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BoxContainer" type="BoxContainer" parent="MarginContainer/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+alignment = 1
+vertical = true
+
+[node name="AchievementName" type="Label" parent="MarginContainer/BoxContainer/BoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0.862745, 0.870588, 0.87451, 1)
+theme_override_fonts/font = SubResource("SystemFont_7177w")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f3trb")
+text = "achievement_name"
+
+[node name="AchievementDescription" type="Label" parent="MarginContainer/BoxContainer/BoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0.721569, 0.737255, 0.74902, 1)
+theme_override_fonts/font = SubResource("SystemFont_f3trb")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sngl5")
+text = "achievement_description"
+
+[node name="BoxContainer2" type="BoxContainer" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 3
+alignment = 1
+vertical = true
+
+[node name="AchievementActionLabel" type="Label" parent="MarginContainer/BoxContainer/BoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.572549, 0.603922, 1)
+theme_override_fonts/font = SubResource("SystemFont_aa0m6")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6i5y1")
+text = "achievement_action"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressContainer" type="BoxContainer" parent="MarginContainer/BoxContainer/BoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 2
+vertical = true
+
+[node name="AchievementProgressLabel" type="Label" parent="MarginContainer/BoxContainer/BoxContainer2/ProgressContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.862745, 0.870588, 0.87451, 1)
+theme_override_fonts/font = SubResource("SystemFont_aa0m6")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7177w")
+text = "0/0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="AchievementProgressBar" type="ProgressBar" parent="MarginContainer/BoxContainer/BoxContainer2/ProgressContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_7177w")
+theme_override_styles/fill = SubResource("StyleBoxFlat_f3trb")
+show_percentage = false

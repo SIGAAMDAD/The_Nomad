@@ -1,0 +1,7 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+
+/icons/original_icons export-ignore
+/icons/original_icons/** export-ignore
+# Ignore editor folder
+/editor export-ignore

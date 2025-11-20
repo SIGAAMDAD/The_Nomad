@@ -1,0 +1,77 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="The Nomad"
+run/main_scene="uid://b6hb01wurydo7"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="TheNomad"
+config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+config/icon="res://icon.svg"
+
+[audio]
+
+driver/enable_input=true
+
+[autoload]
+
+BackendManager="*res://Source/NomadBackend/BackendManager.cs"
+GUIDE="*res://addons/guide/guide.gd"
+AchievementManager="*res://addons/milestone/autoload/achievement_manager.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_width"
+window/stretch/scale_mode="integer"
+window/vsync/vsync_mode=0
+
+[dotnet]
+
+project/assembly_name="TheNomad"
+
+[editor]
+
+export/convert_text_resources_to_binary=false
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/milestone/plugin.cfg")
+
+[milestone]
+
+general/achievements_path="res://resources/achievements"
+debug/print_errors=true
+debug/print_output=true
+general/save_as_json=false
+
+[navigation]
+
+pathfinding/max_threads=1024
+
+[physics]
+
+2d/run_on_separate_thread=true
+common/physics_ticks_per_second=30
+2d/physics_engine="Rapier2D"
+common/physics_interpolation=true
+common/enable_object_picking=false
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+textures/canvas_textures/default_texture_repeat=1
+viewport/hdr_2d=true
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
