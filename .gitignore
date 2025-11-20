@@ -8,3 +8,4 @@
 *.uid
 *.exe
 *.dll
+*.so
