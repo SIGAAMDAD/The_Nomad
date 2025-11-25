@@ -23,7 +23,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using EventSystem;
 using Godot;
-using ResourceCache;
 
 namespace Menus {
 	/*
