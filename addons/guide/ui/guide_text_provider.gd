@@ -19,4 +19,3 @@ func supports(input:GUIDEInput) -> bool:
 func get_text(input:GUIDEInput) -> String:
 	return "not implemented"
  
-

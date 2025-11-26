@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4mill88us6k3"]
+
+[ext_resource type="Script" uid="uid://b107hcub8bvir" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Label/Label.cs" id="1_7nq2b"]
+
+[node name="Label" type="Label"]
+script = ExtResource("1_7nq2b")
