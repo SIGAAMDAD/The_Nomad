@@ -27,4 +27,3 @@ func cache_key(input:GUIDEInput) -> String:
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
-

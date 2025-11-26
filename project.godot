@@ -23,7 +23,7 @@ driver/enable_input=true
 
 [autoload]
 
-BackendManager="*res://Source/NomadBackend/BackendManager.cs"
+NomadBootstrapper="*res://Source/Game/Infrastructure/NomadBootstrapper.cs"
 GUIDE="*res://addons/guide/guide.gd"
 AchievementManager="*res://addons/milestone/autoload/achievement_manager.gd"
 
@@ -47,7 +47,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/konamicode/plugin.cfg", "res://addons/milestone/plugin.cfg")
+enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/konamicode/plugin.cfg")
 
 [milestone]
 

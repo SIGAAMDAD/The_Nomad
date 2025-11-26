@@ -11,27 +11,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Source/NomadBackend/**" />
-    <Compile Include="Source/NomadBackend/BackendManager.cs" />
     <Compile Remove="Source/GUIDE/**" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ConsoleSystem">
-      <HintPath>Source\NomadBackend\ConsoleSystem\bin\Debug\net9.0\ConsoleSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="EventSystem">
-      <HintPath>Source\NomadBackend\EventSystem\bin\Debug\net9.0\EventSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="SaveSystem">
-      <HintPath>Source\NomadBackend\SaveSystem\bin\Debug\net9.0\SaveSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="ResourceCache">
-      <HintPath>Source\NomadBackend\ResourceCache\bin\Debug\net9.0\ResourceCache.dll</HintPath>
-    </Reference>
-    <Reference Include="CVars">
-      <HintPath>Source\NomadBackend\CVars\bin\Debug\net9.0\CVars.dll</HintPath>
-    </Reference>
-    <Reference Include="Core">
-      <HintPath>Source\NomadBackend\Core\bin\Debug\net9.0\Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="Source\NomadBackend\Core\Core.csproj" />
+    <ProjectReference Include="Source\NomadBackend\Systems\EventSystem\EventSystem\EventSystem.csproj" />
+    <ProjectReference Include="Source\NomadBackend\Systems\Audio\Audio.csproj" />
+    <ProjectReference Include="Source\NomadBackend\Systems\SaveSystem\SaveSystem.csproj" />
+    <ProjectReference Include="Source\NomadBackend\Systems\ResourceCache\ResourceCache.csproj" />
+    <ProjectReference Include="Source\NomadBackend\Systems\ConsoleSystem\ConsoleSystem.csproj" />
   </ItemGroup>
 </Project>
