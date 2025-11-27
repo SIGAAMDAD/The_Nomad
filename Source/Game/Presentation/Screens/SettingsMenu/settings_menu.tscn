@@ -1,48 +1,13 @@
-[gd_scene load_steps=60 format=3 uid="uid://dot7q6fxsd0g0"]
+[gd_scene load_steps=25 format=3 uid="uid://dot7q6fxsd0g0"]
 
-[ext_resource type="Script" uid="uid://co0alybo8yu3t" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_mcc4n"]
-[ext_resource type="Texture2D" uid="uid://d2lsmtv8p5gk1" path="res://Assets/Textures/ui/page.dds" id="2_hiabw"]
-[ext_resource type="Script" path="res://scripts/Menus/Settings/OptionManager.cs" id="3_3i875"]
-[ext_resource type="Texture2D" uid="uid://dvvbjvfhbqlm2" path="res://Assets/Textures/ui/ink_streak.dds" id="3_ek4rk"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/move_north.tres" id="3_l0eij"]
-[ext_resource type="Script" path="res://scripts/Menus/SelectionNodes/SettingsContainer.cs" id="3_y2hwk"]
-[ext_resource type="Script" uid="uid://c7vnev7idxrv7" path="res://Source/Game/Application/Menus/Settings/Options/DisplayOptionManager.cs" id="4_0gxpi"]
-[ext_resource type="PackedScene" path="res://scenes/menus/rebind_button.tscn" id="4_6t40d"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/move_east.tres" id="4_pt7eq"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Scenes/UI/menus/settings_menu/list_option.tscn" id="5_1oeek"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/move_south.tres" id="5_fd2q8"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/dash.tres" id="5_g1xt0"]
-[ext_resource type="Script" uid="uid://db27ccgomq455" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Scenes/UI/menus/settings_menu/checkbox_option.tscn" id="6_rpr1w"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/move_west.tres" id="6_rxdtf"]
+[ext_resource type="Script" uid="uid://bsku6wiymkxyu" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_mcc4n"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionList/OptionList.tscn" id="5_1oeek"]
+[ext_resource type="Script" uid="uid://d3m87y2j3agne" path="res://addons/guide/remapping/guide_input_detector.gd" id="5_gmmd7"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionCheckbox/OptionCheckbox.tscn" id="6_rpr1w"]
 [ext_resource type="Script" uid="uid://ccvqqvfooyvn0" path="res://addons/guide/inputs/guide_input.gd" id="6_u2rrl"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/slide.tres" id="6_uhm1t"]
 [ext_resource type="Script" uid="uid://cw71o87tvdx3q" path="res://addons/guide/inputs/guide_input_key.gd" id="7_2apr8"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/open_inventory.tres" id="7_l0eij"]
-[ext_resource type="FontFile" path="res://edosz.ttf" id="8_2ibmv"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/use_weapon.tres" id="8_muhwa"]
-[ext_resource type="Script" path="res://scripts/Menus/SelectionNodes/AdvancedButton.cs" id="9_amktp"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/next_weapon.tres" id="9_rrg86"]
-[ext_resource type="Script" uid="uid://b5gjyq4g5hd4a" path="res://Source/Game/Application/Menus/Settings/Options/GraphicsOptionManager.cs" id="10_1oeek"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/interact.tres" id="10_fd2q8"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/prev_weapon.tres" id="10_l0eij"]
-[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Scenes/UI/menus/settings_menu/slider_option.tscn" id="11_b2cyl"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/bullet_time.tres" id="11_l0eij"]
-[ext_resource type="Script" uid="uid://5ld0c68hw1l4" path="res://Source/Game/Application/Menus/Settings/Options/AudioOptionManager.cs" id="13_rpr1w"]
-[ext_resource type="Script" uid="uid://cq2ocegn3g6tl" path="res://Source/Game/Application/Menus/Settings/Options/AcccessibilityOptionManager.cs" id="14_b2cyl"]
-[ext_resource type="Script" uid="uid://bc08krpto0u7f" path="res://Source/Game/Application/Menus/Settings/Options/GameplayOptionManager.cs" id="15_bn04h"]
-[ext_resource type="Script" uid="uid://crfsp3o8jymwg" path="res://Source/Game/Application/Menus/Settings/Options/NetworkingOptionManager.cs" id="16_p0w42"]
-[ext_resource type="Script" path="res://scripts/Menus/SelectionNodes/NavigationButton.cs" id="19_dn7lm"]
-[ext_resource type="StyleBox" path="res://resources/themes/button_focused_ui.tres" id="20_afkw7"]
-[ext_resource type="StyleBox" path="res://resources/themes/settings_menu_control.tres" id="21_fs1xy"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/use_item.tres" id="27_3i875"]
-[ext_resource type="StyleBox" path="res://resources/themes/button_normal_ui.tres" id="27_asps2"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/use_gadget.tres" id="28_0gxpi"]
-[ext_resource type="Script" uid="uid://tuhhvb2i4ue7" path="res://Source/Game/NomadUI/Menus/SelectionNodes/Button.cs" id="28_amktp"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/quick_swap_weapon_0.tres" id="34_1oeek"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/quick_swap_weapon_1.tres" id="34_nntag"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/quick_swap_weapon_2.tres" id="35_1oeek"]
-[ext_resource type="Resource" path="res://resources/binds/actions/keyboard/quick_swap_weapon_3.tres" id="36_rpr1w"]
+[ext_resource type="FontFile" uid="uid://c86hw5xibkiy0" path="res://edosz.ttf" id="8_2ibmv"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.tscn" id="11_b2cyl"]
 
 [sub_resource type="Theme" id="Theme_rrg86"]
 TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
@@ -51,35 +16,26 @@ TabBar/colors/font_hovered_color = Color(1, 0, 0, 1)
 subpixel_positioning = 0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_afkw7"]
-texture = ExtResource("2_hiabw")
 modulate_color = Color(0, 0, 0, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_s4m6w"]
 subpixel_positioning = 0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p0w42"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bn04h"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_asps2"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ibmv"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jfhyg"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_74270"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s7vlx"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ja5y3"]
-texture = ExtResource("3_ek4rk")
 
 [sub_resource type="SystemFont" id="SystemFont_08gdp"]
 subpixel_positioning = 0
@@ -125,7 +81,6 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_afkw7")
 tab_alignment = 1
 current_tab = 4
 all_tabs_in_front = true
-script = ExtResource("3_3i875")
 metadata/_edit_use_anchors_ = true
 
 [node name="Display" type="TabBar" parent="TabContainer"]
@@ -133,7 +88,6 @@ visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = SubResource("SystemFont_s4m6w")
-script = ExtResource("4_0gxpi")
 metadata/_tab_index = 0
 
 [node name="OptionsContainer" type="VBoxContainer" parent="TabContainer/Display"]
@@ -156,11 +110,8 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="BasicContainer" type="VBoxContainer" parent="TabContainer/Display/OptionsContainer" node_paths=PackedStringArray("FocusNode", "ParentNode")]
+[node name="BasicContainer" type="VBoxContainer" parent="TabContainer/Display/OptionsContainer"]
 layout_mode = 2
-script = ExtResource("3_y2hwk")
-FocusNode = NodePath("ResolutionList")
-ParentNode = NodePath("../..")
 metadata/_edit_use_anchors_ = true
 
 [node name="ResolutionList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
@@ -168,37 +119,25 @@ layout_mode = 2
 accessibility_name = "Resolution"
 accessibility_description = "Controls window resolution"
 accessibility_live = 1
-Title = &"RESOLUTION"
-Description = &"RESOLUTION_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"640x480", &"800x600", &"1024x768", &"1280x720", &"1280x768", &"1280x800", &"1280x1024", &"1360x768", &"1366x768", &"1440x900", &"1536x864", &"1600x900", &"1600x1200", &"1680x1050", &"1920x1080", &"1920x1200", &"2048x1152", &"2048x1536", &"2560x1080", &"2560x1440", &"2560x1600", &"3440x1440", &"3840x2160"])
+script = null
 
 [node name="VSyncList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"VSYNC"
-Description = &"VSYNC_DESCRIPTION"
-Items = Array[StringName]([&"VSYNC_ON", &"VSYNC_OFF"])
+script = null
 
 [node name="WindowModeList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"WINDOW_MODE"
-Description = &"WINDOW_MODE_DESCRIPTION"
-Items = Array[StringName]([&"WINDOW_MODE_WINDOWED", &"WINDOW_MODE_FULLSCREEN"])
+script = null
 
 [node name="AntiAliasingList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"ANTI_ALIASING"
-Description = &"ANTI_ALIASING_DESCRIPTION"
-Items = Array[StringName]([&"ANTI_ALIASING_NONE", &"ANTI_ALIASING_EDGE_AA", &"ANTI_ALIASING_SCREENSPACE"])
+script = null
 
 [node name="MaxFpsList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"MAX_FPS"
-Description = &"MAX_FPS_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"MAX_FPS_UNLIMITED", &"60", &"MAX_FPS_NATIVE_REFRESH_RATE"])
+script = null
 
-[node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/BasicContainer" node_paths=PackedStringArray("ToggleContainer")]
+[node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/BasicContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_right = NodePath(".")
@@ -208,50 +147,34 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_bn04h")
 theme_override_styles/hover = SubResource("StyleBoxTexture_asps2")
 theme_override_styles/focus = SubResource("StyleBoxTexture_2ibmv")
 text = "ADVANCED_SETTINGS"
-script = ExtResource("9_amktp")
-ToggleContainer = NodePath("../../AdvancedContainer")
 metadata/_edit_use_anchors_ = true
 
-[node name="AdvancedContainer" type="VBoxContainer" parent="TabContainer/Display/OptionsContainer" node_paths=PackedStringArray("ParentNode")]
+[node name="AdvancedContainer" type="VBoxContainer" parent="TabContainer/Display/OptionsContainer"]
 visible = false
 layout_mode = 2
-script = ExtResource("3_y2hwk")
-ParentNode = NodePath("../..")
 metadata/_edit_use_anchors_ = true
 
 [node name="VSyncList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"VSYNC"
-Description = &"VSYNC_DESCRIPTION"
-Items = Array[StringName]([&"VSYNC_OFF", &"VSYNC_ADAPTIVE", &"VSYNC_ON", &"VSYNC_TRIPLE_BUFFERED"])
+script = null
 
 [node name="WindowModeList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"WINDOW_MODE"
-Description = &"WINDOW_MODE_DESCRIPTION"
-Items = Array[StringName]([&"WINDOW_MODE_WINDOWED", &"WINDOW_MODE_WINDOWED_BORDERLESS", &"WINDOW_MODE_FULLSCREEN", &"WINDOW_MODE_FULLSCREEN_BORDERLESS", &"WINDOW_MODE_EXCLUSIVE_FULLSCREEN"])
+script = null
 
 [node name="AntiAliasingList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"ANTI_ALIASING"
-Description = &"ANTI_ALIASING_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"NONE", &"FXAA", &"TAA", &"SMAA", &"MSAA 2x", &"MSAA 4x", &"MSAA 8x", &"FXAA+TAA"])
+script = null
 
 [node name="MaxFpsList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"MAX_FPS"
-Description = &"MAX_FPS_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"UNLIMITED", &"30", &"48", &"60", &"90", &"125", &"144", &"225"])
+script = null
 
 [node name="PerformanceOverlayList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"PERFORMANCE_OVERLAY"
-Description = &"PERFORMANCE_OVERLAY_DESCRIPTION"
-Items = Array[StringName]([&"PERFORMANCE_OVERLAY_HIDE", &"PERFORMANCE_OVERLAY_FPS_ONLY", &"PERFORMANCE_OVERLAY_PARTIAL", &"PERFORMANCE_OVERLAY_FULL"])
+script = null
 
-[node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" node_paths=PackedStringArray("ToggleContainer")]
+[node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/AdvancedContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_right = NodePath(".")
@@ -261,14 +184,11 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_74270")
 theme_override_styles/hover = SubResource("StyleBoxTexture_s7vlx")
 theme_override_styles/focus = SubResource("StyleBoxTexture_ja5y3")
 text = "BACK"
-script = ExtResource("9_amktp")
-ToggleContainer = NodePath("../../BasicContainer")
 metadata/_edit_use_anchors_ = true
 
 [node name="Graphics" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
-script = ExtResource("10_1oeek")
 metadata/_tab_index = 1
 
 [node name="OptionsContainer" type="VBoxContainer" parent="TabContainer/Graphics"]
@@ -286,17 +206,13 @@ layout_mode = 2
 
 [node name="EffectsQualityList" parent="TabContainer/Graphics/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"EFFECTS_QUALITY"
-Description = &"EFFECTS_QUALITY_DESCRIPTION"
-Items = Array[StringName]([&"QUALITY_LOW", &"QUALITY_NORMAL", &"QUALITY_HIGH", &"QUALITY_CUSTOM"])
+script = null
 
 [node name="PresetList" parent="TabContainer/Graphics/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"GRAPHICS_QUALITY"
-Description = &"GRAPHICS_QUALITY_DESCRIPTION"
-Items = Array[StringName]([&"QUALITY_LOW", &"QUALITY_NORMAL", &"QUALITY_HIGH"])
+script = null
 
-[node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Graphics/OptionsContainer/BasicContainer" node_paths=PackedStringArray("ToggleContainer")]
+[node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Graphics/OptionsContainer/BasicContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_right = NodePath(".")
@@ -306,8 +222,6 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_bn04h")
 theme_override_styles/hover = SubResource("StyleBoxTexture_asps2")
 theme_override_styles/focus = SubResource("StyleBoxTexture_2ibmv")
 text = "ADVANCED_SETTINGS"
-script = ExtResource("9_amktp")
-ToggleContainer = NodePath("../../AdvancedContainer")
 metadata/_edit_use_anchors_ = true
 
 [node name="AdvancedContainer" type="VBoxContainer" parent="TabContainer/Graphics/OptionsContainer"]
@@ -315,42 +229,29 @@ layout_mode = 2
 
 [node name="ShadowFilterSmoothSlider" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("11_b2cyl")]
 layout_mode = 2
-Title = &"SHADOW_FILTER_SMOOTH"
-Description = &"SHADOW_FILTER_SMOOTH_DESCRIPTION"
-Max = 1.0
+script = null
 
 [node name="ShadowFilterQualityList" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"SHADOW_FILTER_QUALITY"
-Description = &"SHADOW_FILTER_QUALITY_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"Off", &"Low", &"High"])
+script = null
 
 [node name="PhysicallyBasedRenderingButton" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"PHYSICALLY_BASED_RENDERING"
-Description = &"PHYSICALLY_BASED_RENDERING_DESCRIPTION"
+script = null
 
 [node name="AnimationQualityList" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"ANIMATION_QUALITY"
-Description = &"ANIMATION_QUALITY_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"Low", &"Medium", &"High"])
+script = null
 
 [node name="ParticleQualityList" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"PARTICLE_QUALITY"
-Description = &"PARTICLE_QUALITY_DESCRIPTION"
-NoTranslate = true
-Items = Array[StringName]([&"Low", &"High"])
+script = null
 
 [node name="ForceVertexShadingButton" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"FORCE_VERTEX_SHADING"
-Description = &"FORCE_VERTEX_SHADING_DESCRIPTION"
+script = null
 
-[node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer" node_paths=PackedStringArray("ToggleContainer")]
+[node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Graphics/OptionsContainer/AdvancedContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_right = NodePath(".")
@@ -360,8 +261,6 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_74270")
 theme_override_styles/hover = SubResource("StyleBoxTexture_s7vlx")
 theme_override_styles/focus = SubResource("StyleBoxTexture_ja5y3")
 text = "BACK"
-script = ExtResource("9_amktp")
-ToggleContainer = NodePath("../../BasicContainer")
 metadata/_edit_use_anchors_ = true
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
@@ -369,7 +268,6 @@ visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = SubResource("SystemFont_08gdp")
-script = ExtResource("13_rpr1w")
 metadata/_tab_index = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
@@ -393,28 +291,23 @@ bbcode_enabled = true
 
 [node name="EffectsOnToggle" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"SOUND_EFFECTS_ON"
-Description = &"SOUND_EFFECTS_ON_DESCRIPTION"
+script = null
 
 [node name="EffectsVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("11_b2cyl")]
 layout_mode = 2
-Title = &"SOUND_EFFECTS_VOLUME"
-Description = &"SOUND_EFFECTS_VOLUME_DESCRIPTION"
+script = null
 
 [node name="MusicOnToggle" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"MUSIC_ON"
-Description = &"MUSIC_ON_DESCRIPTION"
+script = null
 
 [node name="MusicVolumeSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("11_b2cyl")]
 layout_mode = 2
-Title = &"MUSIC_VOLUME"
-Description = &"MUSIC_VOLUME_DESCRIPTION"
+script = null
 
 [node name="Accessibility" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
-script = ExtResource("14_b2cyl")
 metadata/_tab_index = 3
 
 [node name="OptionsContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
@@ -439,44 +332,34 @@ bbcode_enabled = true
 
 [node name="HapticFeedbackToggle" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"HAPTIC_FEEDBACK"
-Description = &"HAPTIC_FEEDBACK_DESCRIPTION"
+script = null
 
 [node name="HapticStrengthSlider" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("11_b2cyl")]
 layout_mode = 2
-Title = &"HAPTIC_STRENGTH"
-Description = &"HAPTIC_STRENGTH_DESCRIPTION"
+script = null
 
 [node name="DyslexiaModeButton" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"DYSLEXIA_MODE"
-Description = &"DYSLEXIA_MODE_DESCRIPTION"
+script = null
 
 [node name="TextToSpeechButton" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"TEXT_TO_SPEECH"
-Description = &"TEXT_TO_SPEECH_DESCRIPTION"
+script = null
 
 [node name="ColorblindModeList" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"COLORBLIND_MODE"
-Description = &"COLORBLIND_MODE_DESCRIPTION"
-Items = Array[StringName]([&"COLORBLINDMODE_OFF", &"COLORBLINDMODE_PROTANOPIA", &"COLORBLINDMODE_TRITANOPIA", &"COLORBLINDMODE_DEUTERANOPIA"])
+script = null
 
 [node name="AutoAimModeList" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"AUTOAIM"
-Description = &"AUTOAIM_DESCRIPTION"
-Items = Array[StringName]([&"AUTOAIM_OFF", &"AUTOAIM_SOFT", &"AUTOAIM_LOCKON"])
+script = null
 
 [node name="ShowBloodToggle" parent="TabContainer/Accessibility/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"SHOW_BLOOD"
-Description = &"SHOW_BLOOD_DESCRIPTION"
+script = null
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 layout_mode = 2
-script = ExtResource("15_bn04h")
 metadata/_tab_index = 4
 
 [node name="OptionsContainer" type="VBoxContainer" parent="TabContainer/Gameplay"]
@@ -501,14 +384,11 @@ bbcode_enabled = true
 
 [node name="EnableTutorialsButton" parent="TabContainer/Gameplay/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"ENABLE_TUTORIALS"
-Description = &"ENABLE_TUTORIALS_DESCRIPTION"
+script = null
 
 [node name="HUDPreset" parent="TabContainer/Gameplay/OptionsContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"HUD_PRESET"
-Description = &"HUD_PRESET_DESCRIPTION"
-Items = Array[StringName]([&"HUD_PRESET_FULL", &"HUD_PRESET_PARTIAL", &"HUD_PRESET_EXPERT"])
+script = null
 
 [node name="Difficulty" type="FoldableContainer" parent="TabContainer/Gameplay/OptionsContainer"]
 layout_mode = 2
@@ -519,19 +399,19 @@ layout_mode = 2
 
 [node name="DifficultyPreset" parent="TabContainer/Gameplay/OptionsContainer/Difficulty/OptionsContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
+script = null
 
 [node name="FirelinkLimit" parent="TabContainer/Gameplay/OptionsContainer/Difficulty/OptionsContainer" instance=ExtResource("5_1oeek")]
 layout_mode = 2
-Title = &"FIRELINK_LIMIT"
-Description = &"FIRELINK_LIMIT_DESCRIPTION"
+script = null
 
 [node name="NPCPermaDeathButton" parent="TabContainer/Gameplay/OptionsContainer/Difficulty/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"NPC_PERMA_DEATH"
-Description = &"NPC_PERMA_DEATH_DESCRIPTION"
+script = null
 
 [node name="FreeFastTravel" parent="TabContainer/Gameplay/OptionsContainer/Difficulty/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
+script = null
 
 [node name="Immersion" type="FoldableContainer" parent="TabContainer/Gameplay/OptionsContainer"]
 layout_mode = 2
@@ -541,17 +421,19 @@ layout_mode = 2
 
 [node name="MapMarkers" parent="TabContainer/Gameplay/OptionsContainer/Immersion/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
+script = null
 
 [node name="WeatherEffectsGameplay" parent="TabContainer/Gameplay/OptionsContainer/Immersion/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
+script = null
 
 [node name="DayNightCycleEffectsGameplay" parent="TabContainer/Gameplay/OptionsContainer/Immersion/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
+script = null
 
 [node name="Network" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
-script = ExtResource("16_p0w42")
 metadata/_tab_index = 5
 
 [node name="OptionsContainer" type="VBoxContainer" parent="TabContainer/Network"]
@@ -576,18 +458,15 @@ bbcode_enabled = true
 
 [node name="CODLobbies" parent="TabContainer/Network/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"COD_LOBBY"
-Description = &"COD_LOBBY_DESCRIPTION"
+script = null
 
 [node name="BountyHuntEnabled" parent="TabContainer/Network/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"BOUNTY_HUNT"
-Description = &"BOUNTY_HUNT_DESCRIPTION"
+script = null
 
 [node name="ChatFilter" parent="TabContainer/Network/OptionsContainer" instance=ExtResource("6_rpr1w")]
 layout_mode = 2
-Title = &"CHAT_FILTER"
-Description = &"CHAT_FILTER_DESCRIPTION"
+script = null
 
 [node name="Controls" type="TabBar" parent="TabContainer"]
 visible = false
@@ -627,53 +506,32 @@ size_flags_vertical = 0
 focus_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="MovementButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer" node_paths=PackedStringArray("FocusButton", "FocusContainer")]
+[node name="MovementButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../CombatButton")
 focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../UtilityButton")
 theme_override_fonts/font = ExtResource("8_2ibmv")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "MOVEMENT_BUTTON"
-script = ExtResource("19_dn7lm")
-FocusButton = NodePath("../../MovementContainer/MoveNorthBind")
-FocusContainer = NodePath("../../MovementContainer")
 
-[node name="UtilityButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer" node_paths=PackedStringArray("FocusButton", "FocusContainer")]
+[node name="UtilityButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../MovementButton")
 focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../CombatButton")
 theme_override_fonts/font = ExtResource("8_2ibmv")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "UTILITY_BUTTON"
-script = ExtResource("19_dn7lm")
-FocusButton = NodePath("../../UtilityContainer/UseItemBind")
-FocusContainer = NodePath("../../UtilityContainer")
 
-[node name="CombatButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer" node_paths=PackedStringArray("FocusButton", "FocusContainer")]
+[node name="CombatButton" type="Button" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/NavigationContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../UtilityButton")
 focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../MovementButton")
 theme_override_fonts/font = ExtResource("8_2ibmv")
-theme_override_styles/normal = ExtResource("21_fs1xy")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "COMBAT_BUTTON"
-script = ExtResource("19_dn7lm")
-FocusButton = NodePath("../../CombatContainer/UseWeaponBind")
-FocusContainer = NodePath("../../CombatContainer")
 
 [node name="MovementContainer" type="VBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer"]
 process_mode = 3
@@ -684,155 +542,13 @@ size_flags_vertical = 4
 mouse_filter = 2
 theme_override_constants/separation = 32
 
-[node name="MoveNorthBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../SlideBind")
-focus_neighbor_bottom = NodePath("../MoveEastBind")
-focus_mode = 2
-_action = ExtResource("3_l0eij")
-
-[node name="MoveEastBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../MoveNorthBind")
-focus_neighbor_bottom = NodePath("../MoveSouthBind")
-focus_mode = 2
-_action = ExtResource("4_pt7eq")
-
-[node name="MoveSouthBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../MoveEastBind")
-focus_neighbor_bottom = NodePath("../MoveWestBind")
-focus_mode = 2
-_action = ExtResource("5_fd2q8")
-
-[node name="MoveWestBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../MoveSouthBind")
-focus_neighbor_bottom = NodePath("../DashBind")
-focus_mode = 2
-_action = ExtResource("6_rxdtf")
-
-[node name="DashBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../MoveWestBind")
-focus_neighbor_bottom = NodePath("../SlideBind")
-focus_mode = 2
-_action = ExtResource("5_g1xt0")
-
-[node name="SlideBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/MovementContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/MovementButton")
-focus_neighbor_top = NodePath("../DashBind")
-focus_neighbor_bottom = NodePath("../MoveNorthBind")
-focus_mode = 2
-_action = ExtResource("6_uhm1t")
-
 [node name="UtilityContainer" type="VBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer"]
 visible = false
 layout_mode = 2
 
-[node name="UseItemBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/UtilityContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/UtilityButton")
-focus_neighbor_top = NodePath("../InteractBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../UseGadgetBind")
-focus_mode = 2
-_action = ExtResource("27_3i875")
-
-[node name="UseGadgetBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/UtilityContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/UtilityButton")
-focus_neighbor_top = NodePath("../UseItemBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../InteractBind")
-focus_mode = 2
-_action = ExtResource("28_0gxpi")
-
-[node name="InteractBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/UtilityContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/UtilityButton")
-focus_neighbor_top = NodePath("../UseGadgetBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../UseItemBind")
-focus_mode = 2
-_action = ExtResource("10_fd2q8")
-
 [node name="CombatContainer" type="VBoxContainer" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer"]
 visible = false
 layout_mode = 2
-
-[node name="UseWeaponBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../QuickSwap3Bind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../NextWeaponBind")
-focus_mode = 2
-_action = ExtResource("8_muhwa")
-
-[node name="NextWeaponBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../UseWeaponBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../PrevWeaponBind")
-focus_mode = 2
-_action = ExtResource("9_rrg86")
-
-[node name="PrevWeaponBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../NextWeaponBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../BulletTimeBind")
-focus_mode = 2
-_action = ExtResource("10_l0eij")
-
-[node name="BulletTimeBind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../PrevWeaponBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../QuickSwap0Bind")
-focus_mode = 2
-_action = ExtResource("11_l0eij")
-
-[node name="QuickSwap0Bind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../BulletTimeBind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../QuickSwap1Bind")
-focus_mode = 2
-_action = ExtResource("34_1oeek")
-
-[node name="QuickSwap1Bind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../QuickSwap0Bind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../QuickSwap2Bind")
-focus_mode = 2
-_action = ExtResource("34_nntag")
-
-[node name="QuickSwap2Bind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("35_1oeek")
-
-[node name="QuickSwap3Bind" parent="TabContainer/Controls/VBoxContainer/MarginContainer/ControlsContainer/CombatContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-focus_neighbor_left = NodePath("../../NavigationContainer/CombatButton")
-focus_neighbor_top = NodePath("../QuickSwap2Bind")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath("../UseWeaponBind")
-focus_mode = 2
-_action = ExtResource("36_rpr1w")
 
 [node name="TabContainer" type="TabContainer" parent="TabContainer/Controls"]
 visible = false
@@ -866,14 +582,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 32
 
-[node name="OpenInventoryBind" parent="TabContainer/Controls/TabContainer/Utility/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("7_l0eij")
-
-[node name="InteractBind" parent="TabContainer/Controls/TabContainer/Utility/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("10_fd2q8")
-
 [node name="Combat" type="TabBar" parent="TabContainer/Controls/TabContainer"]
 visible = false
 layout_mode = 2
@@ -889,22 +597,6 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 32
 metadata/_edit_use_anchors_ = true
-
-[node name="UseWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("8_muhwa")
-
-[node name="NextWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("9_rrg86")
-
-[node name="PrevWeaponBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("10_l0eij")
-
-[node name="BulletTimeBind" parent="TabContainer/Controls/TabContainer/Combat/VBoxContainer" instance=ExtResource("4_6t40d")]
-layout_mode = 2
-_action = ExtResource("11_l0eij")
 
 [node name="SaveSettingsIcon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(24, 24)
@@ -938,12 +630,7 @@ focus_neighbor_left = NodePath("../DefaultSettingsButton")
 focus_neighbor_right = NodePath("../ExitButton")
 mouse_filter = 1
 theme_override_fonts/font = SubResource("SystemFont_5fu2g")
-theme_override_styles/normal = ExtResource("27_asps2")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "SAVE_SETTINGS"
-script = ExtResource("28_amktp")
 metadata/_edit_use_anchors_ = true
 
 [node name="ResetSettingsIcon" type="TextureRect" parent="."]
@@ -978,12 +665,7 @@ focus_neighbor_left = NodePath("../ExitButton")
 focus_neighbor_right = NodePath("../SaveSettingsButton")
 mouse_filter = 1
 theme_override_fonts/font = SubResource("SystemFont_5fu2g")
-theme_override_styles/normal = ExtResource("27_asps2")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "DEFAULT_SETTINGS"
-script = ExtResource("28_amktp")
 metadata/_edit_use_anchors_ = true
 
 [node name="ExitIcon" type="TextureRect" parent="."]
@@ -1012,12 +694,7 @@ offset_top = -3.05176e-05
 offset_right = 0.0399933
 offset_bottom = -0.200043
 focus_neighbor_right = NodePath("../DefaultSettingsButton")
-theme_override_styles/normal = ExtResource("27_asps2")
-theme_override_styles/pressed = ExtResource("20_afkw7")
-theme_override_styles/hover = ExtResource("20_afkw7")
-theme_override_styles/focus = ExtResource("20_afkw7")
 text = "BACK"
-script = ExtResource("28_amktp")
 metadata/_edit_use_anchors_ = true
 
 [node name="LeftIcon" type="TextureRect" parent="."]

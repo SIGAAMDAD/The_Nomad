@@ -20,9 +20,9 @@ If you have questions concerning this license or the applicable additional
 terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
-
-using EventSystem;
 using Godot;
+using NomadCore.Abstractions.Services;
+using NomadCore.Infrastructure;
 using System.Runtime.CompilerServices;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
@@ -37,7 +37,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class Button : Godot.Button, ISelectionNode {
+	public partial class Button : global::Godot.Button, ISelectionNode {
 		private static readonly StringName @HoverThemeStyleBoxName = "hover";
 		private static readonly NodePath @ModulateColorThemePropertyName = "modulate_color";
 
@@ -194,11 +194,12 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		public override void _Ready() {
 			base._Ready();
 
-			GameEventBus.ConnectSignal( this, Button.SignalName.FocusEntered, this, Callable.From( OnFocused ) );
-			GameEventBus.ConnectSignal( this, Button.SignalName.MouseEntered, this, Callable.From( OnFocused ) );
-			GameEventBus.ConnectSignal( this, Button.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
-			GameEventBus.ConnectSignal( this, Button.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
-			GameEventBus.ConnectSignal( this, Button.SignalName.Pressed, this, Callable.From( () => Activated.Publish( EmptyEventArgs.Args ) ) );
+			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
+			eventBus.ConnectSignal( this, Button.SignalName.FocusEntered, this, Callable.From( OnFocused ) );
+			eventBus.ConnectSignal( this, Button.SignalName.MouseEntered, this, Callable.From( OnFocused ) );
+			eventBus.ConnectSignal( this, Button.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
+			eventBus.ConnectSignal( this, Button.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
+			eventBus.ConnectSignal( this, Button.SignalName.Pressed, this, Callable.From( () => Activated.Publish( EmptyEventArgs.Args ) ) );
 
 			StyleBox = (StyleBoxTexture)GetThemeStylebox( HoverThemeStyleBoxName );
 		}

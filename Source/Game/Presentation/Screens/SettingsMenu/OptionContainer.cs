@@ -22,22 +22,17 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.Common.Interfaces;
-using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
-using Game.Infrastructure.Configuration;
-using Game.Infrastructure.UI.NomadUI.Menus;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
+using Godot;
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
+using System.Collections.Generic;
 
 namespace Game.Presentation.Screens.SettingsMenu {
 	/*
 	===================================================================================
 	
-	SettingsMenu
+	OptionContainer
 	
 	===================================================================================
 	*/
@@ -45,19 +40,32 @@ namespace Game.Presentation.Screens.SettingsMenu {
 	/// 
 	/// </summary>
 
-	public sealed partial class SettingsMenu : BaseMenu {
-		private readonly ISettingsPresetService _presetService = new SettingsPresetService(
-			ServiceRegistry.Get<ICVarSystemService>(),
-			new SettingsPresetRepository()
-		);
+	public abstract partial class OptionContainer : TabBar {
+		[Export]
+		protected RichTextLabel? DescriptionLabel;
+
+		public void AddOption( OptionNode node ) {
+		}
 
 		/*
 		===============
-		OnSaveButtonPressed
+		LinkNodes
 		===============
 		*/
-		private void OnSaveButtonPressed( in UIEvent eventData, in IEventArgs args ) {
-		}
+		/// <summary>
+		/// Links inner option adjustment nodes to their appropriate ui elements.
+		/// </summary>
+		protected abstract void LinkNodes();
+
+		/*
+		===============
+		OnVisibilityChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract void OnVisibilityChanged();
 
 		/*
 		===============
@@ -65,10 +73,18 @@ namespace Game.Presentation.Screens.SettingsMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// godot initialization override
 		/// </summary>
-		public override void _Ready() {
+		/// <remarks>
+		/// By making it sealed, we force the inheritors to only use the <see cref="LinkNodes"/> method.
+		/// </remarks>
+		public sealed override void _Ready() {
 			base._Ready();
+
+			LinkNodes();
+
+			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
+			eventBus.ConnectSignal( this, SignalName.VisibilityChanged, this, OnVisibilityChanged );
 		}
 	};
 };

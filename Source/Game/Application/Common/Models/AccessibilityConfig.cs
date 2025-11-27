@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,24 +21,18 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Domain.Enums.Settings;
 
-using Godot;
-using NomadCore.Systems.EventSystem.Common;
+namespace Game.Application.Common.Models {
+	public readonly record struct AccessibilityConfig {
+		public readonly float HapticStrength { get; init; }
+		public readonly float UIScale { get; init; }
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
-	/*
-	===================================================================================
-	
-	UIEvent
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Inherits from <see cref="GameEvent"/> to make UI node based events slightly less boilerplatey.
-	/// Shouldn't be a static event, this should be instantiated per unique ui element
-	/// </summary>
+		public readonly bool DyslexiaMode { get; init; }
+		public readonly bool HapticEnabled { get; init; }
+		public readonly bool TextToSpeech { get; init; }
 
-	public sealed class UIEvent( Control node, string? name ) : GameEvent( name ) {
-		public readonly Control Node = node;
+		public readonly ColorblindMode ColorblindMode { get; init; }
+		public readonly AutoAimMode AutoAimMode { get; init; }
 	};
 };

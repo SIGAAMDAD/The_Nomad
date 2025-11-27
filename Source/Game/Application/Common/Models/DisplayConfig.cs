@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,24 +21,19 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Domain.Enums.Settings;
 
-using Godot;
-using NomadCore.Systems.EventSystem.Common;
-
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
-	/*
-	===================================================================================
-	
-	UIEvent
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Inherits from <see cref="GameEvent"/> to make UI node based events slightly less boilerplatey.
-	/// Shouldn't be a static event, this should be instantiated per unique ui element
-	/// </summary>
-
-	public sealed class UIEvent( Control node, string? name ) : GameEvent( name ) {
-		public readonly Control Node = node;
+namespace Game.Application.Common.Models {
+	public readonly record struct DisplayConfig {
+		public readonly int Monitor { get; init; }
+		public readonly int MaxFps { get; init; }
+		public readonly int DRSTargetFrames { get; init; }
+		public readonly WindowMode WindowMode { get; init; }
+		public readonly WindowResolution WindowResolution { get; init; }
+		public readonly AspectRatio AspectRatio { get; init; }
+		public readonly VSyncMode VSyncMode { get; init; }
+		public readonly AntiAliasing AntiAliasing { get; init; }
+		public readonly PerformanceOverlayPreset PerformanceOverlayPreset { get; init; }
+		public readonly bool SeparateRenderingThread { get; init; }
 	};
 };

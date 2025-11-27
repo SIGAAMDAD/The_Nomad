@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,23 +21,15 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Interfaces;
-using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
-using Game.Infrastructure.Configuration;
-using Game.Infrastructure.UI.NomadUI.Menus;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
+using System;
 
-namespace Game.Presentation.Screens.SettingsMenu {
+namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/*
 	===================================================================================
 	
-	SettingsMenu
+	OptionCheckbox
 	
 	===================================================================================
 	*/
@@ -45,30 +37,62 @@ namespace Game.Presentation.Screens.SettingsMenu {
 	/// 
 	/// </summary>
 
-	public sealed partial class SettingsMenu : BaseMenu {
-		private readonly ISettingsPresetService _presetService = new SettingsPresetService(
-			ServiceRegistry.Get<ICVarSystemService>(),
-			new SettingsPresetRepository()
-		);
-
+	public partial class OptionCheckbox : OptionNode {
 		/*
 		===============
-		OnSaveButtonPressed
-		===============
-		*/
-		private void OnSaveButtonPressed( in UIEvent eventData, in IEventArgs args ) {
-		}
-
-		/*
-		===============
-		_Ready
+		SetValue
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
+		/// <param name="value"></param>
+		public override void SetValue( object value ) {
+			bool data = (bool)value;
+			ValueLabel.Text = data ? "On" : "Off";
+			base.SetValue( value );
+		}
+
+		/*
+		===============
+		OnToggled
+		===============
+		*/
+		private void OnToggled() {
+			SetValue( !(bool)Value );
+			//UIAudioManager.OnButtonPressed();
+		}
+
+		/*
+		===============
+		BindNodes
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void BindNodes() {
+			base.BindNodes();
+
+			ValueLabel = GetNode<Godot.Label>( "Value" );
+		}
+
+		/*
+		===============
+		ConnectSignals
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="eventBus"></param>
+		protected override void ConnectSignals( IGameEventBusService? eventBus ) {
+			ArgumentNullException.ThrowIfNull( eventBus );
+
+			base.ConnectSignals( eventBus );
+
+			eventBus.ConnectSignal( GetNode<Godot.Button>( "LeftIcon" ), Button.SignalName.Pressed, this, OnToggled );
+			eventBus.ConnectSignal( GetNode<Godot.Button>( "RightIcon" ), Button.SignalName.Pressed, this, OnToggled );
 		}
 	};
 };

@@ -31,6 +31,7 @@ using NomadCore.Systems.SaveSystem.Services;
 using NomadCore.Systems.Audio.Services;
 using NomadCore.Systems.EntitySystem.Services;
 using Game.Domain.Settings;
+using Game.Application.Configuration;
 
 namespace Game.Infrastructure {
 	/*
@@ -62,6 +63,7 @@ namespace Game.Infrastructure {
 			ServiceRegistry.Register<IAudioService>( new AudioService() );
 			ServiceRegistry.Register<IEntityService>( new EntityComponentSystem( GetTree().Root ) );
 
+			ServiceRegistry.Register<ICVarSystemService>( CVarRegistrationService.RegisterCVarSystem() );
 			var settingsManager = new SettingsManager( "user://settings.ini" );
 		}
 	};
