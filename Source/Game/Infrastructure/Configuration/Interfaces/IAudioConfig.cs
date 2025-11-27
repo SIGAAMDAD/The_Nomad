@@ -21,54 +21,23 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Interfaces;
-using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
-using Game.Infrastructure.Configuration;
-using Game.Infrastructure.UI.NomadUI.Menus;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
-
-namespace Game.Presentation.Screens.SettingsMenu {
+namespace Game.Infrastructure.Configuration.Interfaces {
 	/*
 	===================================================================================
 	
-	SettingsMenu
+	IAudioConfig
 	
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
+	
+	public interface IAudioConfig : IEngineConfig {
+		public string AudioDriver { get; }
+		public int OutputDevice { get; }
+		public string[] OutputAudioDevices { get; }
 
-	public sealed partial class SettingsMenu : BaseMenu {
-		private readonly ISettingsPresetService _presetService = new SettingsPresetService(
-			ServiceRegistry.Get<ICVarSystemService>(),
-			new SettingsPresetRepository()
-		);
-
-		/*
-		===============
-		OnSaveButtonPressed
-		===============
-		*/
-		private void OnSaveButtonPressed( in UIEvent eventData, in IEventArgs args ) {
-		}
-
-		/*
-		===============
-		_Ready
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void _Ready() {
-			base._Ready();
-		}
+		public void SetOutputDevice( int deviceIndex );
 	};
 };

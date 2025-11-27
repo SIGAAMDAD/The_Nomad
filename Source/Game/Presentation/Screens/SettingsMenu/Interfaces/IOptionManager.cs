@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,24 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Domain.Configuration.Interfaces;
 
-using Godot;
-using NomadCore.Systems.EventSystem.Common;
-
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
-	/*
-	===================================================================================
-	
-	UIEvent
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Inherits from <see cref="GameEvent"/> to make UI node based events slightly less boilerplatey.
-	/// Shouldn't be a static event, this should be instantiated per unique ui element
-	/// </summary>
-
-	public sealed class UIEvent( Control node, string? name ) : GameEvent( name ) {
-		public readonly Control Node = node;
+namespace Game.Presentation.Screens.Settings.Interfaces {
+	public interface IOptionManager {
+		public void Save( ISettingsDataRepository dataRepository );
 	};
 };

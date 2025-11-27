@@ -22,53 +22,54 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.Common.Interfaces;
-using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
-using Game.Infrastructure.Configuration;
-using Game.Infrastructure.UI.NomadUI.Menus;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
+using NomadCore.Interfaces.ConsoleSystem;
+using System;
+using System.Collections.Generic;
 
-namespace Game.Presentation.Screens.SettingsMenu {
+namespace Game.Application.Configuration {
 	/*
 	===================================================================================
 	
-	SettingsMenu
+	SettingsService
 	
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
+	
+	public abstract class SettingsService : ISettingsService {
+		protected readonly Dictionary<string, OptionNode> _options = new Dictionary<string, OptionNode>();
+		private readonly Dictionary<string, Any> _values = new Dictionary<string, Any>();
 
-	public sealed partial class SettingsMenu : BaseMenu {
-		private readonly ISettingsPresetService _presetService = new SettingsPresetService(
-			ServiceRegistry.Get<ICVarSystemService>(),
-			new SettingsPresetRepository()
-		);
+		private readonly ICVarSystemService CVarSystem;
 
-		/*
-		===============
-		OnSaveButtonPressed
-		===============
-		*/
-		private void OnSaveButtonPressed( in UIEvent eventData, in IEventArgs args ) {
+		public SettingsService( ICVarSystemService? cvarSystem ) {
+			ArgumentNullException.ThrowIfNull( cvarSystem );
+			CVarSystem = cvarSystem;
 		}
 
-		/*
-		===============
-		_Ready
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void _Ready() {
-			base._Ready();
+		private void OnCheckboxChanged( in OptionNode.ValueChangedEventData valueChanged ) {
+			_values[ valueChanged.VarName ] = Any.From( (bool)valueChanged.Value );
 		}
+
+		public void AddCheckboxOption<T>( OptionCheckbox checkbox ) {
+			_values[ checkbox.ConfigVarName ] = ;
+			_options[ checkbox.ConfigVarName ] = checkbox;
+			checkbox.ValueChanged.Subscribe( this, OnCheckboxChanged );
+		}
+
+		public void AddListOption( OptionList list ) {
+			throw new System.NotImplementedException();
+		}
+
+		public void AddSliderOption( OptionSlider slider ) {
+			throw new System.NotImplementedException();
+		}
+
+		public abstract void Save();
 	};
 };

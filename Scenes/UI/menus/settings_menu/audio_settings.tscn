@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cps3cqykptpsu"]
 
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://scenes/menus/settings_menu/checkbox_option.tscn" id="1_wegae"]
-[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://scenes/menus/settings_menu/slider_option.tscn" id="2_7hn08"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionCheckbox/OptionCheckbox.tscn" id="1_wegae"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.tscn" id="2_7hn08"]
 
 [node name="AudioSettings" type="VBoxContainer"]
 anchors_preset = 15

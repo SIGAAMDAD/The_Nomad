@@ -24,6 +24,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
 using System;
+using System.Collections.Generic;
 
 namespace Game.Domain.Settings {
 	/*
@@ -58,10 +59,6 @@ namespace Game.Domain.Settings {
 
 			Logger?.PrintLine( "SettingsManager: initializing global configuration..." );
 			cvarSystem.Load( configurationFile );
-
-			ServiceRegistry.Register( new AudioConfigService( cvarSystem ) );
-			ServiceRegistry.Register( new AccessibilityConfigService( cvarSystem ) );
-			ServiceRegistry.Register( new DisplayConfigService( cvarSystem ) );
 		}
 	};
 };

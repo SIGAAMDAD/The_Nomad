@@ -21,23 +21,15 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Interfaces;
-using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
-using Game.Infrastructure.Configuration;
-using Game.Infrastructure.UI.NomadUI.Menus;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
 using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
+using NomadCore.Enums.ConsoleSystem;
+using NomadCore.Utilities;
 
-namespace Game.Presentation.Screens.SettingsMenu {
+namespace Game.Application.Configuration.Registries {
 	/*
 	===================================================================================
 	
-	SettingsMenu
+	GameplayCVars
 	
 	===================================================================================
 	*/
@@ -45,30 +37,49 @@ namespace Game.Presentation.Screens.SettingsMenu {
 	/// 
 	/// </summary>
 
-	public sealed partial class SettingsMenu : BaseMenu {
-		private readonly ISettingsPresetService _presetService = new SettingsPresetService(
-			ServiceRegistry.Get<ICVarSystemService>(),
-			new SettingsPresetRepository()
-		);
-
+	public static class GameplayCVars {
 		/*
 		===============
-		OnSaveButtonPressed
-		===============
-		*/
-		private void OnSaveButtonPressed( in UIEvent eventData, in IEventArgs args ) {
-		}
-
-		/*
-		===============
-		_Ready
+		Register
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
+		/// <param name="cvarSystem"></param>
+		public static void Register( ICVarSystemService cvarSystem ) {
+			cvarSystem.Register(
+				new CVarCreateInfo<float>(
+					name: "game.ScreenShakeIntensity",
+					defaultValue: 1.0f,
+					description: "Scales the intensity of how much the game will jitter the camera. Set to lower values for less jolting.",
+					flags: CVarFlags.Archive
+				)
+			);
+			cvarSystem.Register(
+				new CVarCreateInfo<int>(
+					name: "game.EnemyTacticalIntelligence",
+					defaultValue: 0,
+					description: "Controls how much planning can be executed for an enemy GOAP agent. Directly impacts performance.",
+					flags: CVarFlags.Archive
+				)
+			);
+			cvarSystem.Register(
+				new CVarCreateInfo<float>(
+					name: "game.PlayerDamageScale",
+					defaultValue: 1.0f,
+					description: "Scales how much damage the player receives.",
+					flags: CVarFlags.Archive
+				)
+			);
+			cvarSystem.Register(
+				 new CVarCreateInfo<bool>(
+					name: "game.AutoInform",
+					defaultValue: false,
+					description: "Automatically buys and places the Galakan Gossip newspaper in the player's inventory.",
+					flags: CVarFlags.Archive
+				)
+			);
 		}
 	};
 };

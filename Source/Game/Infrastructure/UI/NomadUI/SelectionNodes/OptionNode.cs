@@ -21,8 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using EventSystem;
 using Godot;
+using NomadCore.Abstractions.Services;
+using NomadCore.Infrastructure;
+using NomadCore.Interfaces.EventSystem;
+using NomadCore.Systems.EventSystem.Common;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -40,19 +43,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// <typeparam name="T">The type being used to store the data. Should be a float, int32, or a bool.</typeparam>
 
 	public partial class OptionNode : HBoxContainer {
-		public readonly struct ValueChangedEventData : IEventArgs {
-			public readonly object Value;
-
-			/*
-			===============
-			ValueChangedEventData
-			===============
-			*/
-			public ValueChangedEventData( object value ) {
-				Value = value;
-			}
+		public readonly struct ValueChangedEventData( string varName, object value ) : IEventArgs {
+			public readonly string VarName = varName;
+			public readonly object Value = value;
 		};
 
+		[Export]
+		public string ConfigVarName { get; private set; }
 		[Export]
 		public StringName Title { get; private set; }
 		[Export]
@@ -65,16 +62,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 
 		private string? DescriptionCached;
 
-		public readonly UIEvent ValueChanged = null;
-
-		/*
-		===============
-		OptionNode
-		===============
-		*/
-		public OptionNode() {
-			ValueChanged = new UIEvent( this, nameof( ValueChanged ) );
-		}
+		public readonly GameEvent<ValueChangedEventData> ValueChanged = new GameEvent<ValueChangedEventData>( nameof( ValueChanged +) );
 
 		/*
 		===============
@@ -83,7 +71,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		*/
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public string? GetDescription() {
-			return Description.IsEmpty ? "" : DescriptionCached;
+			return Description.IsEmpty ? String.Empty : DescriptionCached;
 		}
 
 		/*
@@ -98,7 +86,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public virtual void SetValue( object value ) {
 			Value = value;
-			ValueChanged.Publish( new ValueChangedEventData( value ) );
+			ValueChanged.Publish( new ValueChangedEventData( ConfigVarName, value ) );
 		}
 
 		/*
@@ -179,11 +167,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		/// Binds the relevant nodes associated with this <see cref="OptionNode{T}"/>.
 		/// </summary>
 		protected virtual void BindNodes() {
+			var logger = ServiceRegistry.Get<ILoggerService>();
+
 			if ( Title.IsEmpty ) {
-				ConsoleSystem.Console.PrintError( $"OptionNode.BindNodes: Title StringName is empty for {Name}!" );
+				logger?.PrintError( $"OptionNode.BindNodes: Title StringName is empty for {Name}!" );
 			}
 			if ( Description != null && Description.IsEmpty ) {
-				ConsoleSystem.Console.PrintError( $"OptionNode.BindNodes: Description StringName is empty for {Name}!" );
+				logger?.PrintError( $"OptionNode.BindNodes: Description StringName is empty for {Name}!" );
 			}
 
 			TitleLabel = GetNode<SelectionNodes.Label>( "Title" );
@@ -200,11 +190,14 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		/// <summary>
 		/// Connects all focus and unfocus signals associated with the <see cref="OptionNode{T}"/>.
 		/// </summary>
-		protected virtual void ConnectSignals() {
-			GameEventBus.ConnectSignal( this, SignalName.FocusEntered, this, OnFocused );
-			GameEventBus.ConnectSignal( this, SignalName.MouseEntered, this, OnFocused );
-			GameEventBus.ConnectSignal( this, SignalName.FocusExited, this, OnUnfocused );
-			GameEventBus.ConnectSignal( this, SignalName.MouseExited, this, OnUnfocused );
+		/// <param name="eventBus"></param>
+		protected virtual void ConnectSignals( IGameEventBusService? eventBus ) {
+			ArgumentNullException.ThrowIfNull( eventBus );
+
+			eventBus.ConnectSignal( this, SignalName.FocusEntered, this, OnFocused );
+			eventBus.ConnectSignal( this, SignalName.MouseEntered, this, OnFocused );
+			eventBus.ConnectSignal( this, SignalName.FocusExited, this, OnUnfocused );
+			eventBus.ConnectSignal( this, SignalName.MouseExited, this, OnUnfocused );
 		}
 
 		/*
@@ -220,7 +213,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 
 			LinkFocusNodes();
 			BindNodes();
-			ConnectSignals();
+			ConnectSignals( ServiceRegistry.Get<IGameEventBusService>() );
 		}
 	};
 };

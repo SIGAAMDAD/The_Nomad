@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,24 +21,31 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Application.Configuration.CVars;
+using Game.Application.Configuration.Registries;
+using NomadCore.Abstractions.Services;
+using NomadCore.Systems.ConsoleSystem.CVars.Services;
 
-using Godot;
-using NomadCore.Systems.EventSystem.Common;
+namespace Game.Application.Configuration {
+	public static class CVarRegistrationService {
+		/*
+		===============
+		RegisterCVarSystem
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public static ICVarSystemService RegisterCVarSystem() {
+			var service = new CVarSystem();
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
-	/*
-	===================================================================================
-	
-	UIEvent
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Inherits from <see cref="GameEvent"/> to make UI node based events slightly less boilerplatey.
-	/// Shouldn't be a static event, this should be instantiated per unique ui element
-	/// </summary>
+			GameplayCVars.Register( service );
+			GraphicsCVars.Register( service );
+			DisplayCVars.Register( service );
+			AudioCVars.Register( service );
 
-	public sealed class UIEvent( Control node, string? name ) : GameEvent( name ) {
-		public readonly Control Node = node;
+			return service;
+		}
 	};
 };

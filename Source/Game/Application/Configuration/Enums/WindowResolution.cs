@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,24 +21,35 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+namespace Game.Application.Configuration.Enums {
+	public enum WindowResolution : byte {
+		Res_640x480,
+		Res_800x600,
+		Res_1024x768,
+		Res_1280x720,
+		Res_1280x768,
+		Res_1280x800,
+		Res_1280x1024,
+		Res_1360x768,
+		Res_1366x768,
+		Res_1440x900,
+		Res_1536x864,
+		Res_1600x900,
+		Res_1600x1200,
+		Res_1680x1050,
+		Res_1920x1080,
+		Res_1920x1200,
+		Res_2048x1152,
+		Res_2048x1536,
+		Res_2560x1080,
+		Res_2560x1440,
+		Res_2560x1600,
+		Res_3440x1440,
+		Res_3840x2160,
+		Res_Native,
 
-using Godot;
-using NomadCore.Systems.EventSystem.Common;
+		Count,
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
-	/*
-	===================================================================================
-	
-	UIEvent
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Inherits from <see cref="GameEvent"/> to make UI node based events slightly less boilerplatey.
-	/// Shouldn't be a static event, this should be instantiated per unique ui element
-	/// </summary>
-
-	public sealed class UIEvent( Control node, string? name ) : GameEvent( name ) {
-		public readonly Control Node = node;
+		Default = Res_Native
 	};
 };

@@ -24,12 +24,13 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Godot;
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
+using System;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/*
 	===================================================================================
-
-	Label
+	
+	OptionSlider
 	
 	===================================================================================
 	*/
@@ -37,69 +38,81 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class Label : global::Godot.Label, ISelectionNode {
-		private static readonly StringName @NormalThemeStyleBoxName = "normal";
+	public partial class OptionSlider : OptionNode {
+		[Export( PropertyHint.Range, "0.0,1000.0" )]
+		public float Min = 0.0f;
+		[Export( PropertyHint.Range, "0.0,1000.0" )]
+		public float Max = 100.0f;
 
-		public bool IsFocused => _isFocused;
-		public StyleBoxTexture FocusedStyleBox => StyleBox;
+		public override object Value => (float)Input.Value;
 
-		private bool _isFocused = false;
-
-		private StyleBoxTexture StyleBox;
+		private HSlider Input;
 
 		/*
 		===============
-		OnFocused
+		SetValue
 		===============
 		*/
-		public void OnFocused() {
-			DisableMouseFocus();
-			_isFocused = true;
-
-			//UIAudioManager.OnButtonFocused( this );
+		public override void SetValue( object value ) {
+			float data = (float)value;
+			Input.Value = data;
 		}
 
 		/*
 		===============
-		OnUnfocused
+		OnLeftCycle
 		===============
 		*/
-		public void OnUnfocused() {
-			_isFocused = false;
-
-			//UIAudioManager.OnButtonUnfocused( this );
+		public void OnLeftCycle() {
+			//UIAudioManager.OnButtonPressed();
+			Input.Value -= Input.Step;
 		}
 
 		/*
 		===============
-		DisableMouseFocus
+		OnRightCycle
 		===============
 		*/
-		public void DisableMouseFocus() {
-			Control focusOwner = GetViewport().GuiGetHoveredControl();
-			if ( focusOwner != null && focusOwner is Label label ) {
-				label.OnUnfocused();
+		public void OnRightCycle() {
+			//UIAudioManager.OnButtonPressed();
+			Input.Value += Input.Step;
+		}
+
+		/*
+		===============
+		OnValueChanged
+		===============
+		*/
+		/// <summary>
+		/// Called whenever the slider's value has been changed by Godot.
+		/// </summary>
+		/// <param name="value">The slider's new value.</param>
+		private void OnValueChanged( float value ) {
+			if ( value < Min || value > Max ) {
+				throw new ArgumentOutOfRangeException( nameof( value ) );
 			}
+
+			ValueLabel.Text = value.ToString();
+			ValueChanged.Publish( new ValueChangedEventData( ConfigVarName, value ) );
 		}
 
 		/*
 		===============
-		_Ready
+		BindNodes
 		===============
 		*/
-		public override void _Ready() {
-			base._Ready();
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void BindNodes() {
+			base.BindNodes();
 
-			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
-			eventBus.ConnectSignal( this, Label.SignalName.FocusEntered, this, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.MouseEntered, this, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
+			Input = GetNode<HSlider>( "Input" );
+			Input.MinValue = Min;
+			Input.MaxValue = Max;
+			ServiceRegistry.Get<IGameEventBusService>().ConnectSignal( Input, HSlider.SignalName.ValueChanged, this, Callable.From<float>( OnValueChanged ) );
 
-			StyleBox = new StyleBoxTexture() {
-				//Texture = TextureCache.GetTexture( "res://textures/hud/ink_streak.dds" )
-			};
-			AddThemeStyleboxOverride( NormalThemeStyleBoxName, StyleBox );
+			ValueLabel = Input.GetNode<Godot.Label>( "Value" );
 		}
 	};
 };
