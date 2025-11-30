@@ -21,11 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
-using NomadCore.Abstractions.Services;
-using System;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
+namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/*
 	===================================================================================
 	
@@ -37,106 +36,22 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class OptionList : OptionNode {
+	public partial class OptionList : OptionNode.OptionNode {
 		[Export]
-		public bool NoTranslate { get; private set; }
-		[Export]
-		public Godot.Collections.Array<StringName> Items { get; private set; } = new Godot.Collections.Array<StringName>();
+		public string[] Items { get; private set; }
+
+		public override IOptionNodeView View => _view;
+		private IOptionListView _view;
 
 		/*
 		===============
-		AddItem
+		_Ready
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="item"></param>
-		/// <exception cref="ArgumentException"></exception>
-		public void AddItem( StringName item ) {
-			if ( item == null || item.IsEmpty ) {
-				throw new ArgumentException( "item is null or empty!", nameof( item ) );
-			}
-			Items.Add( item );
-			if ( ValueLabel.Text.Length == 0 ) {
-				SetValue( 0 );
-			}
-		}
+		public override void _Ready() {
+			base._Ready();
 
-		/*
-		===============
-		SetValue
-		===============
-		*/
-		public override void SetValue( object value ) {
-			int data = (int)value;
-			if ( data == -1 ) {
-				ValueLabel.Text = "Custom";
-			} else {
-				ValueLabel.Text = Items[ data ];//NoTranslate ? Items[ data ] : TranslationServer.Translate( Items[ data ] );
-			}
-			base.SetValue( value );
-		}
-
-		/*
-		===============
-		OnLeftIconPressed
-		===============
-		*/
-		private void OnLeftIconPressed() {
-			int data = (int)Value;
-			if ( data == 0 ) {
-				SetValue( Items.Count - 1 );
-			} else if ( data == -1 ) {
-				SetValue( 0 );
-			} else {
-				SetValue( data - 1 );
-			}
-			//UIAudioManager.OnButtonPressed();
-		}
-
-		/*
-		===============
-		OnRightIconPressed
-		===============
-		*/
-		private void OnRightIconPressed() {
-			int data = (int)Value;
-			if ( data == Items.Count - 1 || data == -1 ) {
-				SetValue( 0 );
-			} else {
-				SetValue( data + 1 );
-			}
-			//UIAudioManager.OnButtonPressed();
-		}
-
-		/*
-		===============
-		BindNodes
-		===============
-		*/
-		protected override void BindNodes() {
-			base.BindNodes();
-
-			ValueLabel = GetNode<Godot.Label>( "Value" );
-		}
-
-		/*
-		===============
-		ConnectSignals
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="eventBus"></param>
-		protected override void ConnectSignals( IGameEventBusService? eventBus ) {
-			ArgumentNullException.ThrowIfNull( eventBus );
-
-			base.ConnectSignals( eventBus );
-
-			eventBus.ConnectSignal( GetNode<Godot.Button>( "LeftIcon" ), Button.SignalName.Pressed, this, OnLeftIconPressed );
-			eventBus.ConnectSignal( GetNode<Godot.Button>( "RightIcon" ), Button.SignalName.Pressed, this, OnRightIconPressed );
+			_view = new OptionListView( this );
 		}
 	};
 };

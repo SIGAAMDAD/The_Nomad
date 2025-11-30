@@ -61,7 +61,7 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<WindowMode>(
 					name: "display.WindowMode",
-					defaultValue: Enums.WindowMode.ExclusiveFullscreen,
+					defaultValue: WindowMode.ExclusiveFullscreen,
 					description: "The game's window mode.",
 					flags: CVarFlags.Archive
 				)
@@ -69,7 +69,7 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<WindowResolution>(
 					name: "display.Resolution",
-					defaultValue: Enums.WindowResolution.Res_640x480,
+					defaultValue: WindowResolution.Res_640x480,
 					description: "Size of the game's display window",
 					flags: CVarFlags.Archive
 				)
@@ -77,7 +77,7 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<AspectRatio>(
 					name: "display.AspectRatio",
-					defaultValue: Enums.AspectRatio.Aspect_Automatic,
+					defaultValue: AspectRatio.Aspect_Automatic,
 					description: "The display aspect ratio.",
 					flags: CVarFlags.Archive
 				)
@@ -85,15 +85,15 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<VSyncMode>(
 					name: "display.VSyncMode",
-					defaultValue: Enums.VSyncMode.Off,
+					defaultValue: VSyncMode.Off,
 					description: "Sets the engine's vertical sync policy",
 					flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
+				new CVarCreateInfo<MaxFps>(
 					name: "display.MaxFps",
-					defaultValue: 60,
+					defaultValue: MaxFps.MaxFps60,
 					description: "Sets the maximum amount of gameplay loops per second, set to 0 for unlimited.",
 					flags: CVarFlags.Archive
 				)
@@ -101,7 +101,7 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<AntiAliasing>(
 					name: "display.AntiAliasing",
-					defaultValue: Enums.AntiAliasing.None,
+					defaultValue: AntiAliasing.None,
 					description: "Sets the renderer's method for reduces aliasing (jaggies) for the final displayed image.",
 					flags: CVarFlags.Archive
 				)
@@ -117,10 +117,10 @@ namespace Game.Application.Configuration.Registries {
 			cvarSystem.Register(
 				new CVarCreateInfo<PerformanceOverlayPreset>(
 					name: "display.PerformanceOverlay",
-					defaultValue: Enums.PerformanceOverlayPreset.Hidden,
+					defaultValue: PerformanceOverlayPreset.Hidden,
 					description: "Enables an overlay to be drawn that displays .",
 					flags: CVarFlags.Archive,
-					validator: value => value >= Enums.PerformanceOverlayPreset.Hidden && value < Enums.PerformanceOverlayPreset.Count
+					validator: value => value >= PerformanceOverlayPreset.Hidden && value < PerformanceOverlayPreset.Count
 				)
 			);
 			cvarSystem.Register(

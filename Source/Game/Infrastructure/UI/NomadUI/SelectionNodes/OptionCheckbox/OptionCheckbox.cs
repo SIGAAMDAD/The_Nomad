@@ -21,11 +21,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using System;
+using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
+namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
 	===================================================================================
 	
@@ -37,62 +35,22 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class OptionCheckbox : OptionNode {
+	public partial class OptionCheckbox : OptionNode.OptionNode {
+		public override IOptionNodeView View => _view;
+		private IOptionCheckboxView _view;
+
 		/*
 		===============
-		SetValue
+		_Ready
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="value"></param>
-		public override void SetValue( object value ) {
-			bool data = (bool)value;
-			ValueLabel.Text = data ? "On" : "Off";
-			base.SetValue( value );
-		}
+		public override void _Ready() {
+			base._Ready();
 
-		/*
-		===============
-		OnToggled
-		===============
-		*/
-		private void OnToggled() {
-			SetValue( !(bool)Value );
-			//UIAudioManager.OnButtonPressed();
-		}
-
-		/*
-		===============
-		BindNodes
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void BindNodes() {
-			base.BindNodes();
-
-			ValueLabel = GetNode<Godot.Label>( "Value" );
-		}
-
-		/*
-		===============
-		ConnectSignals
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="eventBus"></param>
-		protected override void ConnectSignals( IGameEventBusService? eventBus ) {
-			ArgumentNullException.ThrowIfNull( eventBus );
-
-			base.ConnectSignals( eventBus );
-
-			eventBus.ConnectSignal( GetNode<Godot.Button>( "LeftIcon" ), Button.SignalName.Pressed, this, OnToggled );
-			eventBus.ConnectSignal( GetNode<Godot.Button>( "RightIcon" ), Button.SignalName.Pressed, this, OnToggled );
+			_view = new OptionCheckboxView( this );
 		}
 	};
 };

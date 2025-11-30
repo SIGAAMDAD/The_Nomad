@@ -21,20 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Configuration.Enums;
-
 namespace Game.Application.Common.Models {
-	public readonly record struct GraphicsConfig {
-		public readonly ShadowFilterQuality ShadowFilterType { get; init; }
-		public readonly int ShadowAtlasSize { get; init; }
-		public readonly float ShadowFilterSmooth { get; init; }
-		public readonly bool BakedLights { get; init; }
-		public readonly bool PhysicallyBasedRendering { get; init; }
-		public readonly bool BloomEnabled { get; init; }
-		public readonly bool ForceVertexShading { get; init; }
-		public readonly bool FootstepsEnabled { get; init; }
-		public readonly QualitySetting Preset { get; init; }
-		public readonly ParticleQuality ParticleQuality { get; init; }
-		public readonly AnimationQuality AnimationQuality { get; init; }
+	public record GraphicsConfig {
+		public LightingConfig Lighting;
+		public EffectsConfig Effects;
+		public ShadowConfig Shadows;
 	};
 };

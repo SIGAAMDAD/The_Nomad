@@ -53,7 +53,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 			Separate
 		};
 
-		private readonly Dictionary<VSyncMode, VSyncModeData> VSyncModes = new Dictionary<VSyncMode, VSyncModeData>() {
+		private readonly Dictionary<VSyncMode, VSyncModeData> _vsyncModes = new Dictionary<VSyncMode, VSyncModeData>() {
 			{ VSyncMode.Off, new VSyncModeData { SwapChainImageCount = 2, VSyncMode = DisplayServer.VSyncMode.Disabled } },
 			{ VSyncMode.On, new VSyncModeData { SwapChainImageCount = 2, VSyncMode = DisplayServer.VSyncMode.Enabled } },
 			{ VSyncMode.Adaptive, new VSyncModeData { SwapChainImageCount = 2, VSyncMode = DisplayServer.VSyncMode.Adaptive } },
@@ -63,7 +63,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 		/// <summary>
 		/// Various premade window resolutions, sourced from wikipedia
 		/// </summary>
-		private readonly Dictionary<WindowResolution, Vector2I> WindowResolutions = new Dictionary<WindowResolution, Vector2I>() {
+		private readonly Dictionary<WindowResolution, Vector2I> _windowResolutions = new Dictionary<WindowResolution, Vector2I>() {
 			{ WindowResolution.Res_640x480, new Vector2I( 640, 480 ) },
 			{ WindowResolution.Res_800x600, new Vector2I( 800, 600 ) },
 			{ WindowResolution.Res_1024x768, new Vector2I( 1024, 768 ) },
@@ -89,7 +89,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 			{ WindowResolution.Res_3840x2160, new Vector2I( 3840, 2160 ) }
 		};
 
-		private readonly float[] AspectRatios = [
+		private readonly float[] _aspectRatios = [
 			0.0f, // automatic
 			(float)( 4.0f / 3.0f ),
 			(float)( 16.0f / 10.0f ),
@@ -97,13 +97,13 @@ namespace Game.Infrastructure.Configuration.Godot {
 			(float)( 21.0f / 9.0f )
 		];
 
-		public int NativeDisplayWidth => NativeScreenSize.X;
-		public int NativeDisplayHeight => NativeScreenSize.Y;
+		public int NativeDisplayWidth => _nativeScreenSize.X;
+		public int NativeDisplayHeight => _nativeScreenSize.Y;
 
 		public int Monitor => _screenIndex;
 		private int _screenIndex;
 
-		public int MonitorCount => ScreenSizes.Length;
+		public int MonitorCount => _screenSizes.Length;
 
 		public int DisplayWidth => _displayWidth;
 		private int _displayWidth;
@@ -114,10 +114,10 @@ namespace Game.Infrastructure.Configuration.Godot {
 		public float RefreshRate => _refreshRate;
 		private float _refreshRate;
 
-		private readonly ICVarSystemService Service;
-		private readonly ILoggerService? Logger;
-		private readonly Vector2I NativeScreenSize;
-		private readonly Vector2I[] ScreenSizes;
+		private readonly ICVarSystemService _cvarSystem;
+		private readonly ILoggerService? _logger;
+		private readonly Vector2I _nativeScreenSize;
+		private readonly Vector2I[] _screenSizes;
 
 		/*
 		===============
@@ -133,11 +133,11 @@ namespace Game.Infrastructure.Configuration.Godot {
 			ArgumentNullException.ThrowIfNull( service );
 			ArgumentNullException.ThrowIfNull( logger );
 
-			Service = service;
-			Logger = logger;
+			_cvarSystem = service;
+			_logger = logger;
 
-			NativeScreenSize = DisplayServer.ScreenGetSize( DisplayServer.WindowGetCurrentScreen() );
-			ScreenSizes = GetScreenList();
+			_nativeScreenSize = DisplayServer.ScreenGetSize( DisplayServer.WindowGetCurrentScreen() );
+			_screenSizes = GetScreenList();
 
 			service.GetCVar<WindowMode>( "display.WindowMode" )?.ValueChanged.Subscribe( this, OnWindowModeChanged );
 			service.GetCVar<WindowResolution>( "display.WindowResolution" )?.ValueChanged.Subscribe( this, OnWindowResolutionChanged );
@@ -151,6 +151,29 @@ namespace Game.Infrastructure.Configuration.Godot {
 
 		/*
 		===============
+		GetSupportedResolutions
+		===============
+		*/
+		/// <summary>
+		/// Returns a list of monitor supported window resolutions
+		/// </summary>
+		/// <param name="monitorIndex"></param>
+		/// <returns></returns>
+		public WindowResolution[] GetSupportedResolutions( int monitorIndex ) {
+			var screenSize = _screenSizes[ monitorIndex ];
+			var resolutions = new List<WindowResolution>();
+
+			foreach ( var resolution in _windowResolutions ) {
+				if ( resolution.Value <= screenSize ) {
+					resolutions.Add( resolution.Key );
+				}
+			}
+
+			return [ .. resolutions ];
+		}
+
+		/*
+		===============
 		GetNativeResolutionForMonitor
 		===============
 		*/
@@ -160,10 +183,10 @@ namespace Game.Infrastructure.Configuration.Godot {
 		/// <param name="monitorIndex"></param>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void GetNativeResolutionForMonitor( int monitorIndex, out int nativeWidth, out int nativeHeight ) {
-			if ( monitorIndex < 0 || monitorIndex >= ScreenSizes.Length ) {
+			if ( monitorIndex < 0 || monitorIndex >= _screenSizes.Length ) {
 				throw new ArgumentOutOfRangeException( nameof( monitorIndex ) );
 			}
-			Vector2I screenSize = ScreenSizes[ monitorIndex ];
+			var screenSize = _screenSizes[ monitorIndex ];
 			nativeWidth = screenSize.X;
 			nativeHeight = screenSize.Y;
 		}
@@ -180,7 +203,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 		private void UpdateDisplayData( int screenIndex ) {
 			_refreshRate = DisplayServer.ScreenGetRefreshRate( screenIndex );
 
-			Vector2I screenSize = ScreenSizes[ screenIndex ];
+			var screenSize = _screenSizes[ screenIndex ];
 			_displayWidth = screenSize.X;
 			_displayHeight = screenSize.Y;
 		}
@@ -230,12 +253,12 @@ namespace Game.Infrastructure.Configuration.Godot {
 		private void OnWindowResolutionChanged( in ICVarValueChangedEventData<WindowResolution> args ) {
 			Vector2I resolution;
 			if ( args.Value == WindowResolution.Res_Native ) {
-				resolution = NativeScreenSize;
-			} else if ( !WindowResolutions.TryGetValue( args.Value, out resolution ) ) {
-				Logger?.PrintError( $"Display.OnWindowResolutionChanged: invalid WindowResolution '{args.Value}', setting to default - '{WindowResolution.Default}'" );
-				var windowResolution = Service.GetCVar<WindowResolution>( "display.WindowResolution" );
+				resolution = _nativeScreenSize;
+			} else if ( !_windowResolutions.TryGetValue( args.Value, out resolution ) ) {
+				_logger?.PrintError( $"Display.OnWindowResolutionChanged: invalid WindowResolution '{args.Value}', setting to default - '{WindowResolution.Default}'" );
+				var windowResolution = _cvarSystem.GetCVar<WindowResolution>( "display.WindowResolution" );
 				windowResolution.Reset();
-				resolution = WindowResolutions[ windowResolution.Value ];
+				resolution = _windowResolutions[ windowResolution.Value ];
 			}
 			DisplayServer.WindowSetSize( resolution );
 		}
@@ -315,11 +338,11 @@ namespace Game.Infrastructure.Configuration.Godot {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnVSyncModeChanged( in ICVarValueChangedEventData<VSyncMode> args ) {
-			if ( !VSyncModes.TryGetValue( args.Value, out VSyncModeData data ) ) {
-				Logger?.PrintError( $"Display.OnVSyncModeChanged: invalid VSyncMode '{args.Value}', setting to default - '{VSyncMode.Default}'" );
-				var vsyncMode = Service.GetCVar<VSyncMode>( "display.VSyncMode" );
+			if ( !_vsyncModes.TryGetValue( args.Value, out VSyncModeData data ) ) {
+				_logger?.PrintError( $"Display.OnVSyncModeChanged: invalid VSyncMode '{args.Value}', setting to default - '{VSyncMode.Default}'" );
+				var vsyncMode = _cvarSystem.GetCVar<VSyncMode>( "display.VSyncMode" );
 				vsyncMode.Reset();
-				data = VSyncModes[ VSyncMode.Default ];
+				data = _vsyncModes[ VSyncMode.Default ];
 			}
 			DisplayServer.WindowSetVsyncMode( data.VSyncMode );
 			ProjectSettings.SetSetting( "rendering/rendering_device/vsync/swap_chain_image_count", data.SwapChainImageCount );

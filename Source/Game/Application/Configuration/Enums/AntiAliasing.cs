@@ -36,4 +36,14 @@ namespace Game.Application.Configuration.Enums {
 
 		Default = FXAA
 	};
+
+	public enum AntiAliasingBasic : byte {
+		None = AntiAliasing.None,
+		EdgeAA = AntiAliasing.FXAA,
+		ScreenSpace = AntiAliasing.MSAA_4x,
+
+		Count,
+
+		Default = EdgeAA
+	};
 };

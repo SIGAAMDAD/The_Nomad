@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvb3r6r8llena"]
+
+[ext_resource type="Script" uid="uid://bjlm6u6rb8lfi" path="res://Scenes/Prefabs/PostProcessing/Bloom/Bloom.cs" id="1_0vu2y"]
+
+[node name="Bloom" type="SubViewport"]
+script = ExtResource("1_0vu2y")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

@@ -32,4 +32,13 @@ namespace Game.Application.Configuration.Enums {
 
 		Default = Adaptive
 	};
+
+	public enum VSyncModeBasic : byte {
+		Off = VSyncMode.Off,
+		On = VSyncMode.On,
+
+		Count,
+
+		Default = Off
+	};
 };

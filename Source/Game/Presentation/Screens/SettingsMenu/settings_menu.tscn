@@ -79,12 +79,11 @@ theme_override_fonts/font = SubResource("SystemFont_rrg86")
 theme_override_font_sizes/font_size = 14
 theme_override_styles/panel = SubResource("StyleBoxTexture_afkw7")
 tab_alignment = 1
-current_tab = 4
+current_tab = 0
 all_tabs_in_front = true
 metadata/_edit_use_anchors_ = true
 
 [node name="Display" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = SubResource("SystemFont_s4m6w")
@@ -114,28 +113,25 @@ bbcode_enabled = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="ResolutionList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+[node name="WindowResolutionList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-accessibility_name = "Resolution"
-accessibility_description = "Controls window resolution"
-accessibility_live = 1
-script = null
 
-[node name="VSyncList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+[node name="VSyncModeListBasic" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
-[node name="WindowModeList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+[node name="WindowModeListBasic" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
-[node name="AntiAliasingList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+[node name="AntiAliasingListBasic" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
-[node name="MaxFpsList" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+[node name="MaxFpsListBasic" parent="TabContainer/Display/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
 [node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/BasicContainer"]
 layout_mode = 2
@@ -154,25 +150,29 @@ visible = false
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VSyncList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+[node name="VSyncModeList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
 [node name="WindowModeList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
 [node name="AntiAliasingList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
 [node name="MaxFpsList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
+
+[node name="DRSTargetFramesSlider" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("11_b2cyl")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="PerformanceOverlayList" parent="TabContainer/Display/OptionsContainer/AdvancedContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
 
 [node name="GoBackAdvancedSettingsButton" type="Button" parent="TabContainer/Display/OptionsContainer/AdvancedContainer"]
 layout_mode = 2
@@ -205,12 +205,8 @@ bbcode_enabled = true
 layout_mode = 2
 
 [node name="EffectsQualityList" parent="TabContainer/Graphics/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
+unique_name_in_owner = true
 layout_mode = 2
-script = null
-
-[node name="PresetList" parent="TabContainer/Graphics/OptionsContainer/BasicContainer" instance=ExtResource("5_1oeek")]
-layout_mode = 2
-script = null
 
 [node name="AdvancedSettingsButton" type="Button" parent="TabContainer/Graphics/OptionsContainer/BasicContainer"]
 layout_mode = 2
@@ -359,6 +355,7 @@ layout_mode = 2
 script = null
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 4
 

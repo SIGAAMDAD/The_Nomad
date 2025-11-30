@@ -22,11 +22,13 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 namespace Game.Application.Common.Models {
-	public readonly record struct AudioConfig {
-		public readonly int OutputDeviceIndex { get; init; }
-		public readonly float EffectsVolume { get; init; }
-		public readonly float MusicVolume { get; init; }
-		public readonly bool EffectsOn { get; init; }
-		public readonly bool MusicOn { get; init; }
-	};
+	public readonly record struct AudioConfig(
+		string AudioDriver,
+		int MixRate,
+		int OutputDeviceIndex,
+		float EffectsVolume,
+		float MusicVolume,
+		bool EffectsOn,
+		bool MusicOn
+	);
 };

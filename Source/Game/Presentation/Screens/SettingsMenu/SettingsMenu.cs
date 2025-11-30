@@ -23,12 +23,13 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Game.Application.Common.Interfaces;
 using Game.Application.Configuration;
-using Game.Domain.Configuration.Interfaces;
-using Game.Domain.DomainServices.Settings;
+using Game.Application.Configuration.Services;
 using Game.Infrastructure.Configuration;
+using Game.Infrastructure.Configuration.Godot;
+using Game.Infrastructure.Configuration.Interfaces;
 using Game.Infrastructure.UI.NomadUI.Menus;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes;
-using Game.Presentation.Screens.Settings.Interfaces;
+using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList;
 using NomadCore.Abstractions.Services;
 using NomadCore.Infrastructure;
 using NomadCore.Interfaces.EventSystem;
@@ -51,6 +52,28 @@ namespace Game.Presentation.Screens.SettingsMenu {
 			new SettingsPresetRepository()
 		);
 
+		private readonly IGraphicsService _graphicsService;
+		private readonly IDisplayService _displayService;
+		private readonly ISettingsScreenController _controller;
+		private readonly ICVarSystemService _cvarSystem;
+		private readonly IDisplayConfig _displayConfig;
+		private readonly ILoggerService _logger;
+
+		/*
+		===============
+		SettingsMenu
+		===============
+		*/
+		public SettingsMenu() {
+			_cvarSystem = ServiceRegistry.Get<ICVarSystemService>() ?? throw new System.Exception( "CVar system isn't initialized yet" );
+			_logger = ServiceRegistry.Get<ILoggerService>() ?? throw new System.Exception( "Logger system isn't initialized yet" );
+
+			_displayConfig = new GodotDisplay( _cvarSystem, _logger );
+			_graphicsService = new GraphicsService( _cvarSystem );
+			_displayService = new DisplayService( _cvarSystem, _displayConfig );
+			_controller = new SettingsMenuController( _cvarSystem, _graphicsService, _displayService );
+		}
+
 		/*
 		===============
 		OnSaveButtonPressed
@@ -69,6 +92,10 @@ namespace Game.Presentation.Screens.SettingsMenu {
 		/// </summary>
 		public override void _Ready() {
 			base._Ready();
+
+			_controller.InitializeWindowResolutions( GetNode<OptionList>( "%WindowResolutionList" ) );
+			_controller.InitializeAntiAliasing( GetNode<OptionList>( "%AntiAliasingListBasic" ), GetNode<OptionList>( "%AntiAliasingList" ) );
+			_controller.InitializeMaxFps( GetNode<OptionList>( "%MaxFpsListBasic" ), GetNode<OptionList>( "%MaxFpsList" ) );
 		}
 	};
 };

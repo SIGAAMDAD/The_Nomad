@@ -22,10 +22,14 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 namespace Game.Application.Common.Models {
-	public readonly record struct GameplayConfig {
-		public readonly float ScreenShakeIntensity { get; init; }
-		public readonly int EnemyTacticalIntelligence { get; init; }
-		public readonly float PlayerDamageScale { get; init; }
-		public readonly bool AutoInform { get; init; }
-	};
+	public readonly record struct GameplayConfig(
+		float ScreenShakeIntensity,
+		int EnemyTacticalIntelligence,
+		float PlayerDamageScale,
+		int FirelinkLimit,
+		bool HideRenownStats,
+		bool QuestsTimeOut,
+		bool AutoInform,
+		bool WeatherEffectsGameplay
+	);
 };

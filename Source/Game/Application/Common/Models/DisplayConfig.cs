@@ -21,19 +21,19 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Domain.Enums.Settings;
+using Game.Application.Configuration.Enums;
 
 namespace Game.Application.Common.Models {
-	public readonly record struct DisplayConfig {
-		public readonly int Monitor { get; init; }
-		public readonly int MaxFps { get; init; }
-		public readonly int DRSTargetFrames { get; init; }
-		public readonly WindowMode WindowMode { get; init; }
-		public readonly WindowResolution WindowResolution { get; init; }
-		public readonly AspectRatio AspectRatio { get; init; }
-		public readonly VSyncMode VSyncMode { get; init; }
-		public readonly AntiAliasing AntiAliasing { get; init; }
-		public readonly PerformanceOverlayPreset PerformanceOverlayPreset { get; init; }
-		public readonly bool SeparateRenderingThread { get; init; }
-	};
+	public readonly record struct DisplayConfig(
+		int Monitor,
+		int DRSTargetFrames,
+		MaxFps MaxFps,
+		WindowMode WindowMode,
+		WindowResolution WindowResolution,
+		AspectRatio AspectRatio,
+		VSyncMode VSyncMode,
+		AntiAliasing AntiAliasing,
+		PerformanceOverlayPreset PerformanceOverlayPreset,
+		bool SeparateRenderingThread
+	);
 };
