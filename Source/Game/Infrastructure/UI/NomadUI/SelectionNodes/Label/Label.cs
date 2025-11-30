@@ -41,11 +41,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		private static readonly StringName @NormalThemeStyleBoxName = "normal";
 
 		public bool IsFocused => _isFocused;
-		public StyleBoxTexture FocusedStyleBox => StyleBox;
+		public StyleBoxTexture FocusedStyleBox => _styleBox;
 
 		private bool _isFocused = false;
 
-		private StyleBoxTexture StyleBox;
+		private StyleBoxTexture _styleBox;
 
 		/*
 		===============
@@ -96,10 +96,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 			eventBus.ConnectSignal( this, Label.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
 			eventBus.ConnectSignal( this, Label.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
 
-			StyleBox = new StyleBoxTexture() {
+			_styleBox = new StyleBoxTexture() {
 				//Texture = TextureCache.GetTexture( "res://textures/hud/ink_streak.dds" )
 			};
-			AddThemeStyleboxOverride( NormalThemeStyleBoxName, StyleBox );
+			AddThemeStyleboxOverride( NormalThemeStyleBoxName, _styleBox );
 		}
 	};
 };

@@ -26,7 +26,7 @@ using NomadCore.Abstractions.Services;
 using NomadCore.Enums.ConsoleSystem;
 using NomadCore.Utilities;
 
-namespace Game.Application.Configuration.CVars {
+namespace Game.Application.Configuration.Registries {
 	/*
 	===================================================================================
 	
@@ -58,12 +58,12 @@ namespace Game.Application.Configuration.CVars {
 				)
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
+				new CVarCreateInfo<ShadowAtlasSize>(
 					name: "r.ShadowAtlasSize",
-					defaultValue: 2048,
+					defaultValue: ShadowAtlasSize.Default,
 					description: "Sets godot's 2D shadow atlas size, will always be rounded to a power of two. Higher values have an increased effect on performance.",
 					flags: CVarFlags.Archive,
-					validator: value => ( value % 2 ) == 0
+					validator: value => value >= ShadowAtlasSize.Size1024 && value < ShadowAtlasSize.Count
 				)
 			);
 			cvarSystem.Register(
@@ -78,28 +78,28 @@ namespace Game.Application.Configuration.CVars {
 			cvarSystem.Register(
 				new CVarCreateInfo<ShadowFilterQuality>(
 					name: "r.ShadowFilterType",
-					defaultValue: ShadowFilterQuality.Off,
+					defaultValue: ShadowFilterQuality.Default,
 					description: "Sets the in-game 2D shadow filtering quality, higher values have a heavy impact on performance.",
 					flags: CVarFlags.Archive,
-					validator: value => value >= ShadowFilterQuality.Off && value <= ShadowFilterQuality.Count
+					validator: value => value >= ShadowFilterQuality.Off && value < ShadowFilterQuality.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<ParticleQuality>(
 					name: "r.ParticleQuality",
-					defaultValue: Enums.ParticleQuality.Low,
+					defaultValue: ParticleQuality.Low,
 					description: "Sets the game's quality of particles.",
 					flags: CVarFlags.Archive,
-					validator: value => value >= Enums.ParticleQuality.Low && value < Enums.ParticleQuality.Count
+					validator: value => value >= ParticleQuality.Low && value < ParticleQuality.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<AnimationQuality>(
 					name: "r.AnimationQuality",
-					defaultValue: Enums.AnimationQuality.Low,
+					defaultValue: AnimationQuality.Low,
 					description: "Sets the quality of in-game animations, performance isn't impacted heavily by this (CPU only).",
 					flags: CVarFlags.Archive,
-					validator: value => value >= Enums.AnimationQuality.Low && value < Enums.AnimationQuality.Count
+					validator: value => value >= AnimationQuality.Low && value < AnimationQuality.Count
 				)
 			);
 			cvarSystem.Register(

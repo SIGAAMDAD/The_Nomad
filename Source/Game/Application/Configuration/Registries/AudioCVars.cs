@@ -25,7 +25,7 @@ using NomadCore.Abstractions.Services;
 using NomadCore.Enums.ConsoleSystem;
 using NomadCore.Utilities;
 
-namespace Game.Application.Configuration.CVars {
+namespace Game.Application.Configuration.Registries {
 	/*
 	===================================================================================
 	

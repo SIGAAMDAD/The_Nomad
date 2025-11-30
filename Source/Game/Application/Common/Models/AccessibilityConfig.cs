@@ -21,18 +21,16 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Domain.Enums.Settings;
+using Game.Application.Configuration.Enums;
 
 namespace Game.Application.Common.Models {
-	public readonly record struct AccessibilityConfig {
-		public readonly float HapticStrength { get; init; }
-		public readonly float UIScale { get; init; }
-
-		public readonly bool DyslexiaMode { get; init; }
-		public readonly bool HapticEnabled { get; init; }
-		public readonly bool TextToSpeech { get; init; }
-
-		public readonly ColorblindMode ColorblindMode { get; init; }
-		public readonly AutoAimMode AutoAimMode { get; init; }
-	};
+	public readonly record struct AccessibilityConfig(
+		float HapticStrength,
+		float UIScale,
+		bool DyslexiaMode,
+		bool HapticEnabled,
+		bool TextToSpeech,
+		ColorblindMode ColorblindMode,
+		AutoAimMode AutoAimMode
+	);
 };

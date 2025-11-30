@@ -36,4 +36,14 @@ namespace Game.Application.Configuration.Enums {
 
 		Default = ExclusiveFullscreen
 	};
+	
+	public enum WindowModeBasic : byte {
+		Windowed = WindowMode.Windowed,
+		BorderlessWindowed = WindowMode.BorderlessWindowed,
+		Fullscreen = WindowMode.ExclusiveFullscreen,
+
+		Count,
+
+		Default = Fullscreen
+	};
 };

@@ -21,6 +21,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Application.Configuration.Enums;
+
 namespace Game.Infrastructure.Configuration.Interfaces {
 	/*
 	===================================================================================
@@ -43,6 +45,7 @@ namespace Game.Infrastructure.Configuration.Interfaces {
 		public int MonitorCount { get; }
 		public float RefreshRate { get; }
 
+		public WindowResolution[] GetSupportedResolutions( int monitorIndex );
 		public void GetNativeResolutionForMonitor( int monitorIndex, out int nativeWidth, out int nativeHeight );
 	};
 };

@@ -48,8 +48,8 @@ namespace Game.Infrastructure.Configuration.Godot {
 		public string[] OutputAudioDevices => _outputAudioDevices;
 		private readonly string[] _outputAudioDevices;
 
-		private readonly ILoggerService? Logger;
-		
+		private readonly ILoggerService? _logger;
+
 		/*
 		===============
 		GodotAudio
@@ -64,7 +64,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 			ArgumentNullException.ThrowIfNull( service );
 			ArgumentNullException.ThrowIfNull( logger );
 
-			Logger = logger;
+			_logger = logger;
 
 			_audioDriverName = AudioServer.GetDriverName();
 
@@ -76,7 +76,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 				}
 			}
 
-			Logger?.PrintLine( $"GodotAudio: initialized audio backend using driver '{_audioDriverName}' and output device '{_outputAudioDevices[ _outputDeviceIndex ]}'" );
+			_logger?.PrintLine( $"GodotAudio: initialized audio backend using driver '{_audioDriverName}' and output device '{_outputAudioDevices[ _outputDeviceIndex ]}'" );
 		}
 
 		/*
@@ -94,7 +94,7 @@ namespace Game.Infrastructure.Configuration.Godot {
 				throw new ArgumentOutOfRangeException( nameof( deviceIndex ) );
 			}
 			_outputDeviceIndex = deviceIndex;
-			Logger?.PrintLine( $"GodotAudio.SetOutputDevice: setting audio output device to '{_outputAudioDevices[ _outputDeviceIndex ]}'" );
+			_logger?.PrintLine( $"GodotAudio.SetOutputDevice: setting audio output device to '{_outputAudioDevices[ _outputDeviceIndex ]}'" );
 		}
 	};
 };

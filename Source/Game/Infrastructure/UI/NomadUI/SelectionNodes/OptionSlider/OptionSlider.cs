@@ -21,12 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using System;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
+namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/*
 	===================================================================================
 	
@@ -38,81 +36,24 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class OptionSlider : OptionNode {
+	public partial class OptionSlider : OptionNode.OptionNode {
 		[Export( PropertyHint.Range, "0.0,1000.0" )]
-		public float Min = 0.0f;
+		public float Min { get; private set; } = 0.0f;
 		[Export( PropertyHint.Range, "0.0,1000.0" )]
-		public float Max = 100.0f;
+		public float Max { get; private set; } = 100.0f;
 
-		public override object Value => (float)Input.Value;
-
-		private HSlider Input;
-
-		/*
-		===============
-		SetValue
-		===============
-		*/
-		public override void SetValue( object value ) {
-			float data = (float)value;
-			Input.Value = data;
-		}
+		public override IOptionNodeView View => _view;
+		private IOptionSliderView _view;
 
 		/*
 		===============
-		OnLeftCycle
+		_Ready
 		===============
 		*/
-		public void OnLeftCycle() {
-			//UIAudioManager.OnButtonPressed();
-			Input.Value -= Input.Step;
-		}
+		public override void _Ready() {
+			base._Ready();
 
-		/*
-		===============
-		OnRightCycle
-		===============
-		*/
-		public void OnRightCycle() {
-			//UIAudioManager.OnButtonPressed();
-			Input.Value += Input.Step;
-		}
-
-		/*
-		===============
-		OnValueChanged
-		===============
-		*/
-		/// <summary>
-		/// Called whenever the slider's value has been changed by Godot.
-		/// </summary>
-		/// <param name="value">The slider's new value.</param>
-		private void OnValueChanged( float value ) {
-			if ( value < Min || value > Max ) {
-				throw new ArgumentOutOfRangeException( nameof( value ) );
-			}
-
-			ValueLabel.Text = value.ToString();
-			ValueChanged.Publish( new ValueChangedEventData( ConfigVarName, value ) );
-		}
-
-		/*
-		===============
-		BindNodes
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void BindNodes() {
-			base.BindNodes();
-
-			Input = GetNode<HSlider>( "Input" );
-			Input.MinValue = Min;
-			Input.MaxValue = Max;
-			ServiceRegistry.Get<IGameEventBusService>().ConnectSignal( Input, HSlider.SignalName.ValueChanged, this, Callable.From<float>( OnValueChanged ) );
-
-			ValueLabel = Input.GetNode<Godot.Label>( "Value" );
+			_view = new OptionSliderView( this, Min, Max );
 		}
 	};
 };
