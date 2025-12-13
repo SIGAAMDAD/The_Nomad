@@ -60,13 +60,16 @@ namespace GUIDE {
 		/// <param name="input"></param>
 		/// <param name="index"></param>
 		public void Bind( GUIDEMappingContext mappingContext, GUIDEAction action, GUIDEInput input, int index = 0 ) {
-			if ( !RemappedInputs.ContainsKey( mappingContext ) ) {
-				RemappedInputs[ mappingContext ] = new Godot.Collections.Dictionary<GUIDEAction, Godot.Collections.Dictionary<int, GUIDEInput>>();
+			if ( !RemappedInputs.TryGetValue( mappingContext, out Godot.Collections.Dictionary<GUIDEAction, Godot.Collections.Dictionary<int, GUIDEInput>>? value ) ) {
+				value =  new Godot.Collections.Dictionary<GUIDEAction, Godot.Collections.Dictionary<int, GUIDEInput>>();
+				RemappedInputs[ mappingContext ] = value;
 			}
-			if ( !RemappedInputs[ mappingContext ].ContainsKey( action ) ) {
-				RemappedInputs[ mappingContext ][ action ] = new Godot.Collections.Dictionary<int, GUIDEInput>();
+			if ( !value.TryGetValue( action, out Godot.Collections.Dictionary<int, GUIDEInput>? value1 ) ) {
+				value1 =  new Godot.Collections.Dictionary<int, GUIDEInput>();
+				value[ action ] = value1;
 			}
-			RemappedInputs[ mappingContext ][ action ][ index ] = input;
+
+			value1[ index ] = input;
 		}
 
 		/*
