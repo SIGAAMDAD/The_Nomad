@@ -22,16 +22,15 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
 using Godot;
-using NomadCore.Systems.ConsoleSystem.Services;
-using NomadCore.Systems.EventSystem.Services;
-using NomadCore.Systems.SaveSystem.Services;
-using NomadCore.Systems.Audio.Services;
-using NomadCore.Systems.EntitySystem.Services;
 using Game.Domain.Settings;
 using Game.Application.Configuration;
+using NomadCore.Abstractions.Services;
+using NomadCore.Infrastructure;
+using NomadCore.Systems.EventSystem.Services;
+using NomadCore.Systems.ConsoleSystem.Services;
+using NomadCore.Systems.SaveSystem.Services;
+using NomadCore.Systems.Audio.Services;
 
 namespace Game.Infrastructure {
 	/*
@@ -57,13 +56,14 @@ namespace Game.Infrastructure {
 		public override void _Ready() {
 			base._Ready();
 
+			var cvarSystem = ServiceRegistry.Register( CVarRegistrationService.RegisterCVarSystem() );
+
 			var eventBus = ServiceRegistry.Register<IGameEventBusService>( new GameEventBus() );
-			ServiceRegistry.Register<IConsoleService>( new Console( GetTree().Root, eventBus ) );
+			ServiceRegistry.Register<IConsoleService>( new Console( GetTree().Root, cvarSystem, eventBus ) );
 			ServiceRegistry.Register<ISaveService>( new SaveManager() );
 			ServiceRegistry.Register<IAudioService>( new AudioService() );
-			ServiceRegistry.Register<IEntityService>( new EntityComponentSystem( GetTree().Root ) );
+			ServiceRegistry.Register<IEntityService>( new EntityComponentSystemService( GetTree().Root ) );
 
-			ServiceRegistry.Register<ICVarSystemService>( CVarRegistrationService.RegisterCVarSystem() );
 			var settingsManager = new SettingsManager( "user://settings.ini" );
 		}
 	};
