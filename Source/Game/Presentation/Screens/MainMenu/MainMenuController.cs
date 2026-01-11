@@ -76,7 +76,7 @@ namespace Game.Presentation.Screens.MainMenu {
 			} else if ( args.ButtonId == _view.CreditsButton.ButtonId ) {
 				
 			} else if ( args.ButtonId == _view.ExtrasButton.ButtonId ) {
-				
+				UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 			} else if ( args.ButtonId == _view.SettingsButton.ButtonId ) {
 				UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 			} else if ( args.ButtonId == _view.QuitGameButton.ButtonId ) {
