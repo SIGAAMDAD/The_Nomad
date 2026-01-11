@@ -21,26 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Configuration.Enums;
-using NomadCore.Interfaces.EventSystem;
-using NomadCore.Systems.EventSystem.Common;
+using Game.Domain.Configuration.Enums;
+using NomadCore.Domain.Models.Interfaces;
 
 namespace Game.Domain.Events {
-	public readonly struct SettingsPresetAppliedEventData( QualitySetting preset ) : IEventArgs {
-		public readonly QualitySetting Preset = preset;
-	};
-
-	/*
-	===================================================================================
-
-	SettingsPresetApplied
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// Event that triggers whenever a settinsg preset is applied to the current CVar configuration.
-	/// </summary>
-
-	public sealed class SettingsPresetApplied() : GameEvent<SettingsPresetAppliedEventData>( nameof( SettingsPresetApplied ) ) {
-	};
+	public readonly record struct SettingsPresetAppliedEventData(
+		QualitySetting Preset
+	) : IEventArgs;
 };

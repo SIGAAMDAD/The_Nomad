@@ -21,13 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Game.Application.Configuration.Enums {
-	public enum MaxFps : byte {
+	public enum MaxFps : uint {
 		MaxFps30,
 		MaxFps48,
 		MaxFps60,
@@ -36,47 +34,99 @@ namespace Game.Application.Configuration.Enums {
 		MaxFps172,
 		MaxFps225,
 		MaxFps333,
+		MaxFpsUnlimited,
 
 		Count,
 
 		Default = MaxFps60
 	};
-	
+
 	public static class MaxFpsExtensions {
-		private static readonly Dictionary<MaxFps, string> _maxFpsStrings = new() {
-			[ MaxFps.MaxFps30 ] = "30",
-			[ MaxFps.MaxFps48 ] = "48",
-			[ MaxFps.MaxFps60 ] = "60",
-			[ MaxFps.MaxFps90 ] = "90",
-			[ MaxFps.MaxFps125 ] = "125",
-			[ MaxFps.MaxFps172 ] = "172",
-			[ MaxFps.MaxFps225 ] = "225",
-			[ MaxFps.MaxFps333 ] = "333"
-		};
+		private const string MAX_FPS_30 = "30";
+		private const string MAX_FPS_48 = "48";
+		private const string MAX_FPS_60 = "60";
+		private const string MAX_FPS_90 = "90";
+		private const string MAX_FPS_125 = "125";
+		private const string MAX_FPS_172 = "172";
+		private const string MAX_FPS_225 = "225";
+		private const string MAX_FPS_333 = "333";
+		private const string MAX_FPS_UNLIMITED = "Unlimited";
 
 		/*
 		===============
 		ToDisplayString
 		===============
 		*/
-		public static string ToDisplayString( this MaxFps maxFps ) {
-			return _maxFpsStrings[ maxFps ];
-		}
-		
+		public static InternString ToDisplayString( this MaxFps maxFps ) => maxFps switch {
+			MaxFps.MaxFps30 => new( MAX_FPS_30 ),
+			MaxFps.MaxFps48 => new( MAX_FPS_48 ),
+			MaxFps.MaxFps60 => new( MAX_FPS_60 ),
+			MaxFps.MaxFps90 => new( MAX_FPS_90 ),
+			MaxFps.MaxFps125 => new( MAX_FPS_125 ),
+			MaxFps.MaxFps172 => new( MAX_FPS_172 ),
+			MaxFps.MaxFps225 => new( MAX_FPS_225 ),
+			MaxFps.MaxFps333 => new( MAX_FPS_333 ),
+			MaxFps.MaxFpsUnlimited => new( MAX_FPS_UNLIMITED ),
+			_ => throw new ArgumentOutOfRangeException( nameof( maxFps ) )
+		};
+
+		/*
+		===============
+		ToInt
+		===============
+		*/
+		public static int ToInt( this MaxFps maxFps ) => maxFps switch {
+			MaxFps.MaxFps30 => 30,
+			MaxFps.MaxFps48 => 48,
+			MaxFps.MaxFps60 => 60,
+			MaxFps.MaxFps90 => 90,
+			MaxFps.MaxFps125 => 125,
+			MaxFps.MaxFps172 => 172,
+			MaxFps.MaxFps225 => 225,
+			MaxFps.MaxFps333 => 333,
+			MaxFps.MaxFpsUnlimited => 0,
+			_ => throw new ArgumentOutOfRangeException( nameof( maxFps ) )
+		};
+
 		/*
 		===============
 		TryParse
 		===============
 		*/
-		public static bool TryParse( string maxFpsString, out MaxFps maxFps ) {
-			foreach ( var match in _maxFpsStrings ) {
-				if ( match.Value.Equals( maxFpsString, StringComparison.OrdinalIgnoreCase ) ) {
-					maxFps = match.Key;
-					return true;
-				}
+		public static bool TryParse( InternString maxFpsString, out MaxFps maxFps ) {
+			switch ( (string)maxFpsString ) {
+				case MAX_FPS_30:
+					maxFps = MaxFps.MaxFps30;
+					break;
+				case MAX_FPS_48:
+					maxFps = MaxFps.MaxFps48;
+					break;
+				case MAX_FPS_60:
+					maxFps = MaxFps.MaxFps60;
+					break;
+				case MAX_FPS_90:
+					maxFps = MaxFps.MaxFps90;
+					break;
+				case MAX_FPS_125:
+					maxFps = MaxFps.MaxFps125;
+					break;
+				case MAX_FPS_172:
+					maxFps = MaxFps.MaxFps172;
+					break;
+				case MAX_FPS_225:
+					maxFps = MaxFps.MaxFps225;
+					break;
+				case MAX_FPS_333:
+					maxFps = MaxFps.MaxFps333;
+					break;
+				case MAX_FPS_UNLIMITED:
+					maxFps = MaxFps.MaxFpsUnlimited;
+					break;
+				default:
+					maxFps = MaxFps.Default;
+					return false;
 			}
-			maxFps = MaxFps.Default;
-			return false;
+			return true;
 		}
 	};
 };

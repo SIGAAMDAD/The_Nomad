@@ -1,0 +1,294 @@
+[gd_scene format=3 uid="uid://v4dl6gfdxko3"]
+
+[ext_resource type="Script" uid="uid://c5c5m713q5dkd" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_658rn"]
+[ext_resource type="Theme" uid="uid://bssws0vv2d2eg" path="res://Assets/Themes/MainTheme.tres" id="1_m4e4s"]
+[ext_resource type="Texture2D" uid="uid://7s2ik281liux" path="res://Assets/Textures/ui/menu_background.dds" id="2_wcut1"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/NomadButton/NomadButton.tscn" id="3_l307y"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionList/OptionList.tscn" id="4_sceel"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p5rsb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yx041"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yx041"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m4e4s"]
+
+[node name="SettingsMenu" type="Control" unique_id=149270650]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_m4e4s")
+script = ExtResource("1_658rn")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="." unique_id=437594247]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_wcut1")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=959101728]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1005372505]
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer" unique_id=369180040]
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p5rsb")
+theme_override_styles/tabbar_background = SubResource("StyleBoxFlat_yx041")
+current_tab = 1
+
+[node name="Display" type="TabContainer" parent="MarginContainer/VBoxContainer/TabContainer" unique_id=1338488515]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_yx041")
+theme_override_styles/tab_unselected = SubResource("StyleBoxEmpty_m4e4s")
+current_tab = 0
+metadata/_tab_index = 0
+
+[node name="Basic" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Display" unique_id=1908791641]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="MonitorList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=62428316 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.Monitor"
+Title = &"Monitor"
+
+[node name="WindowModeList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=1937998290 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.WindowMode"
+Title = &"Display Mode"
+
+[node name="WindowResolutionList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=1721561237 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.WindowResolution"
+Title = &"Resolution"
+
+[node name="VSyncList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=2014587530 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.VSyncMode"
+Title = &"VSync"
+
+[node name="AspectRatioList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=304588338 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.AspectRatio"
+Title = &"Aspect Ratio"
+
+[node name="MaxFpsList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=610293301 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.MaxFps"
+Title = &"Max FPS"
+Description = &""
+
+[node name="BrightnessSlider" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=314321795 instance=ExtResource("5_yx041")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.Brightness"
+Title = &"Brightness"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/TabContainer/Display/Basic" unique_id=665885871]
+layout_mode = 2
+
+[node name="Advanced" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Display" unique_id=1094889627]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="AntiAliasing" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced" unique_id=76621337]
+layout_mode = 2
+text = "ANTI ALIASING"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced" unique_id=158657258]
+layout_mode = 2
+
+[node name="AntiAliasingList" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced" unique_id=1393170708 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.AntiAliasing"
+Title = &"Method"
+Description = &""
+
+[node name="AntiAliasingOptions" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced" unique_id=231868992]
+layout_mode = 2
+theme_override_constants/margin_left = 120
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced/AntiAliasingOptions" unique_id=91618041]
+layout_mode = 2
+
+[node name="SharpeningEnabled" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=836527264 instance=ExtResource("6_m4e4s")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.SharpeningEnabled"
+Title = &"Sharpening"
+
+[node name="SharpeningAmount" parent="MarginContainer/VBoxContainer/TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=1230149142 instance=ExtResource("5_yx041")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "display.SharpeningAmount"
+Title = &"Amount"
+
+[node name="Filters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Display" unique_id=921085909]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="UseDebandingEnabled" parent="MarginContainer/VBoxContainer/TabContainer/Display/Filters" unique_id=1986944487 instance=ExtResource("6_m4e4s")]
+layout_mode = 2
+ConfigVarName = "display.UseDebanding"
+Title = &"Reduce Color Banding"
+Description = &""
+
+[node name="VignetteEnabled" parent="MarginContainer/VBoxContainer/TabContainer/Display/Filters" unique_id=133336806 instance=ExtResource("6_m4e4s")]
+layout_mode = 2
+ConfigVarName = "display.Vignette"
+Title = &"Vignette"
+Description = &""
+
+[node name="FilmGrainEnabled" parent="MarginContainer/VBoxContainer/TabContainer/Display/Filters" unique_id=1171167011 instance=ExtResource("6_m4e4s")]
+layout_mode = 2
+ConfigVarName = "display.Vignette"
+Title = &"Vignette"
+Description = &""
+
+[node name="MotionBlurSlider" parent="MarginContainer/VBoxContainer/TabContainer/Display/Filters" unique_id=577430253 instance=ExtResource("5_yx041")]
+layout_mode = 2
+
+[node name="Graphics" type="TabContainer" parent="MarginContainer/VBoxContainer/TabContainer" unique_id=1593447782]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+current_tab = 0
+metadata/_tab_index = 1
+
+[node name="Basic" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Graphics" unique_id=2080659402]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Audio" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer" unique_id=1215111633]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+metadata/_tab_index = 2
+
+[node name="OutputDeviceList" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=1412364431 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.OutputDeviceIndex"
+Title = &"Output Device"
+
+[node name="DriverAPIList" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=560109090 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.AudioDriver"
+Title = &"Audio API"
+
+[node name="MasterVolumeSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=1691011436 instance=ExtResource("5_yx041")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.MasterVolume"
+Title = &"Master Volume"
+
+[node name="MusicOnCheckbox" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=1423251664 instance=ExtResource("6_m4e4s")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.MusicOn"
+Title = &"Music On"
+
+[node name="MusicVolumeSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=275356694 instance=ExtResource("5_yx041")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.MusicVolume"
+Title = &"Music Volume"
+
+[node name="EffectsOnCheckbox" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=163248377 instance=ExtResource("6_m4e4s")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.EffectsOn"
+Title = &"Effects On"
+
+[node name="EffectsVolumeSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=882495971 instance=ExtResource("5_yx041")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.EffectsVolume"
+Title = &"Effects Volume"
+
+[node name="MaxChannelsList" parent="MarginContainer/VBoxContainer/TabContainer/Audio" unique_id=1313570105 instance=ExtResource("4_sceel")]
+unique_name_in_owner = true
+layout_mode = 2
+ConfigVarName = "audio.MaxChannels"
+Title = &"Max Simultaneous"
+
+[node name="Controls" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer" unique_id=953773224]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="Accessibility" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer" unique_id=647451556]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="BottomContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=64717721]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/BottomContainer" unique_id=753670562]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/BottomContainer" unique_id=358009642]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="BackButton" parent="MarginContainer/VBoxContainer/BottomContainer/ButtonContainer" unique_id=715285024 instance=ExtResource("3_l307y")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+text = "BACK"
+
+[node name="SaveButton" parent="MarginContainer/VBoxContainer/BottomContainer/ButtonContainer" unique_id=1028061777 instance=ExtResource("3_l307y")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+text = "SAVE"
+
+[node name="ResetButton" parent="MarginContainer/VBoxContainer/BottomContainer/ButtonContainer" unique_id=463857775 instance=ExtResource("3_l307y")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+text = "RESET"

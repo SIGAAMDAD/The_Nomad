@@ -21,12 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/*
@@ -41,9 +39,9 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/// </summary>
 
 	public sealed class OptionSliderView : OptionNodeView<OptionSlider>, IOptionSliderView {
-		public OptionSliderValueChanged ValueChanged => _valueChanged;
-		private readonly OptionSliderValueChanged _valueChanged = new OptionSliderValueChanged();
+		public InternString SliderId => _owner.SliderId;
 
+		public HSlider Slider => _input;
 		public float Value => (float)_input.Value;
 
 		private readonly HSlider _input;
@@ -60,7 +58,6 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 			_input = _owner.GetNode<HSlider>( "Input" );
 			_input.MinValue = min;
 			_input.MaxValue = max;
-			ServiceRegistry.Get<IGameEventBusService>()?.ConnectSignal( _input, HSlider.SignalName.ValueChanged, _input, OnValueChanged );
 
 			_valueLabel = _input.GetNode<Godot.Label>( "Value" );
 		}
@@ -72,16 +69,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 		*/
 		public void SetValue( float value ) {
 			_input.Value = value;
-		}
-
-		/*
-		===============
-		OnValueChanged
-		===============
-		*/
-		private void OnValueChanged() {
-			_valueLabel.Text = Value.ToString();
-			_valueChanged.Publish( new OptionSliderValueChangedEventData( _owner.ConfigVarName, Value ) );
+			_valueLabel.Text = value.ToString();
 		}
 	};
 };

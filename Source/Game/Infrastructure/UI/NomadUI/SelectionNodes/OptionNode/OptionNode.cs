@@ -21,8 +21,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
+using Nomad.Core.Memory;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/*
@@ -43,7 +44,5 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		public StringName Title { get; private set; }
 		[Export]
 		public StringName Description { get; private set; }
-
-		public virtual IOptionNodeView View { get; }
 	};
 };

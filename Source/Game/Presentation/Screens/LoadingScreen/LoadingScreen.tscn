@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://b2gnqlt8pqd2u"]
+
+[ext_resource type="Script" uid="uid://bicwmf5k6uqyg" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.cs" id="1_rv5q0"]
+[ext_resource type="Shader" uid="uid://b2hjlccom1xs3" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreenVignette.gdshader" id="2_i25kx"]
+[ext_resource type="Texture2D" uid="uid://7s2ik281liux" path="res://Assets/Textures/ui/menu_background.dds" id="2_mvx2s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oey1p"]
+shader = ExtResource("2_i25kx")
+shader_parameter/radius = 0.650000030875
+shader_parameter/softness = 0.6530000310175
+shader_parameter/intensity = 3.0
+shader_parameter/contrast = 1.1650000315875
+shader_parameter/vignette_color = Color(0.32544088, 0.3254409, 0.32544088, 1)
+
+[node name="LoadingScreen" type="CanvasLayer" unique_id=963186252]
+script = ExtResource("1_rv5q0")
+
+[node name="Background" type="TextureRect" parent="." unique_id=350131122]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_mvx2s")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Vignette" type="ColorRect" parent="." unique_id=791951951]
+material = SubResource("ShaderMaterial_oey1p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="." unique_id=375596481]
+anchors_preset = -1
+anchor_top = 0.483
+anchor_right = 1.0
+anchor_bottom = 0.517
+offset_top = 0.1599884
+offset_bottom = -0.16000366
+grow_horizontal = 2
+grow_vertical = 2
+text = "LOADING..."
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

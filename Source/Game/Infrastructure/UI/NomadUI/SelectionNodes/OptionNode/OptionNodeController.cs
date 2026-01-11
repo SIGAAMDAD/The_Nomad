@@ -22,6 +22,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
+using Godot;
+using Nomad.Core.Events;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/*
@@ -35,7 +37,40 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/// 
 	/// </summary>
 	
-	public class OptionNodeController<TView>( TView view ) : IOptionNodeController where TView : IOptionNodeView {
-		protected readonly TView _view = view;
+	public class OptionNodeController<TView> : IOptionNodeController where TView : IOptionNodeView {
+		protected readonly TView _view;
+
+		/*
+		===============
+		OptionNodeController
+		===============
+		*/
+		public OptionNodeController( IGodotEventBusService eventBus, TView view ) {
+			_view = view;
+
+			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.FocusEntered, view.Owner, OnFocused );
+			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.MouseEntered, view.Owner, OnFocused );
+			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.FocusExited, view.Owner, OnUnfocused );
+			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.MouseExited, view.Owner, OnUnfocused );
+		}
+
+		/*
+		===============
+		OnFocused
+		===============
+		*/
+		public void OnFocused() {
+			// FIXME: disable mouse focus?
+			_view.Owner.GrabClickFocus();
+			_view.Owner.GrabFocus();
+		}
+
+		/*
+		===============
+		OnUnfocused
+		===============
+		*/
+		public void OnUnfocused() {
+		}
 	};
 };

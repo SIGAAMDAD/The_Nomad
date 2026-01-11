@@ -21,13 +21,13 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common;
-using Game.Application.Common.Interfaces;
-using Game.Application.Common.Models;
+using Game.Application.Common.Models.Interfaces;
+using Game.Application.Common.Models.ValueObjects;
 using Game.Application.Configuration.Enums;
-using Game.Domain.Configuration.Interfaces;
-using Game.Infrastructure.Configuration;
-using NomadCore.Abstractions.Services;
+using Game.Application.Configuration.Registries;
+using Game.Domain.Configuration.Enums;
+using Nomad.Core.Exceptions;
+using Nomad.CVars;
 using System.Collections.Generic;
 
 namespace Game.Application.Configuration.Services {
@@ -41,9 +41,9 @@ namespace Game.Application.Configuration.Services {
 	/// <summary>
 	/// 
 	/// </summary>
-
+	
 	public sealed class GraphicsSettingsService : IGraphicsSettingsService {
-		private class EffectsConfiguration( GraphicsSettingsService service ) : IEffectsConfiguration {
+		private readonly record struct EffectsConfiguration( GraphicsSettingsService service ) : IEffectsConfiguration {
 			private readonly GraphicsSettingsService _service = service;
 
 			public AnimationQuality AnimationQuality {
@@ -63,8 +63,8 @@ namespace Game.Application.Configuration.Services {
 				_service._config.Effects = config;
 			}
 		};
-		private class LightingConfiguration( GraphicsSettingsService service ) : ILightingConfiguration {
-			private GraphicsSettingsService _service = service;
+		private readonly record struct LightingConfiguration( GraphicsSettingsService service ) : ILightingConfiguration {
+			private readonly GraphicsSettingsService _service = service;
 
 			public bool BakedLights {
 				get => _service._config.Lighting.BakedLights;
@@ -95,8 +95,8 @@ namespace Game.Application.Configuration.Services {
 				_service._config.Lighting = config;
 			}
 		};
-		private class ShadowConfiguration( GraphicsSettingsService service ) : IShadowConfiguration {
-			private GraphicsSettingsService _service = service;
+		private readonly record struct ShadowConfiguration( GraphicsSettingsService service ) : IShadowConfiguration {
+			private readonly GraphicsSettingsService _service = service;
 
 			public ShadowFilterQuality ShadowFilterType {
 				get => _service._config.Shadows.ShadowFilterType;
@@ -122,43 +122,18 @@ namespace Game.Application.Configuration.Services {
 			}
 		};
 
-		private readonly IReadOnlyList<string> _shadowAtlasSizes = [
-			ShadowAtlasSize.Size1024.ToDisplayString(),
-			ShadowAtlasSize.Size2048.ToDisplayString(),
-			ShadowAtlasSize.Size4096.ToDisplayString(),
-			ShadowAtlasSize.Size8192.ToDisplayString()
-		];
-		private readonly IReadOnlyList<string> _effectsQualities = [
-			TranslationKeys.Graphics.QualityLow,
-			TranslationKeys.Graphics.QualityNormal,
-			TranslationKeys.Graphics.QualityHigh
-		];
-		private readonly IReadOnlyList<string> _lightingQualities = [
-			TranslationKeys.Graphics.QualityLow,
-			TranslationKeys.Graphics.QualityNormal,
-			TranslationKeys.Graphics.QualityHigh
-		];
-		private readonly IReadOnlyList<string> _shadowQualities = [
-			TranslationKeys.Graphics.ShadowFilterTypeOff,
-			TranslationKeys.Graphics.ShadowFilterTypeHard,
-			TranslationKeys.Graphics.ShadowFilterTypeSoft
-		];
+		public IEffectsConfiguration Effects => _effectsConfig;
+		private readonly EffectsConfiguration _effectsConfig;
 
-		public IEffectsConfiguration Effects => _effects;
-		private readonly EffectsConfiguration _effects;
+		public ILightingConfiguration Lighting => _lightingConfig;
+		private readonly LightingConfiguration _lightingConfig;
 
-		public ILightingConfiguration Lighting => _lighting;
-		private readonly LightingConfiguration _lighting;
-
-		public IShadowConfiguration Shadow => _shadow;
-		private readonly ShadowConfiguration _shadow;
+		public IShadowConfiguration Shadow => _shadowConfig;
+		private readonly ShadowConfiguration _shadowConfig;
 
 		private GraphicsConfig _config;
-		private EffectsConfig _effectsConfig;
-		private LightingConfig _lightingConfig;
 
 		private readonly ICVarSystemService _cvarSystem;
-		private readonly IGraphicsPresetRepository _presetRepository;
 
 		/*
 		===============
@@ -166,119 +141,82 @@ namespace Game.Application.Configuration.Services {
 		===============
 		*/
 		public GraphicsSettingsService( ICVarSystemService cvarSystem ) {
+			GraphicsCVars.Register( cvarSystem );
+
+			_effectsConfig = new EffectsConfiguration( this );
+			_lightingConfig = new LightingConfiguration( this );
+			_shadowConfig = new ShadowConfiguration( this );
+
 			_cvarSystem = cvarSystem;
-			_presetRepository = new GraphicsPresetRepository();
-
-			_effects = new EffectsConfiguration( this );
-			_lighting = new LightingConfiguration( this );
-			_shadow = new ShadowConfiguration( this );
-
-			_config = new GraphicsConfig() {
-				Effects = new EffectsConfig() {
-					ParticleQuality = _cvarSystem.GetCVar<ParticleQuality>( "r.ParticleQuality" ).Value,
-					AnimationQuality = _cvarSystem.GetCVar<AnimationQuality>( "r.AnimationQuality" ).Value
+			_config = new GraphicsConfig {
+				Lighting = new LightingConfig {
+					BakedLights = GetCVar<bool>( "r.BakedLights" ).Value,
+					BloomEnabled = GetCVar<bool>( "r.BloomEnabled" ).Value,
+					PhysicallyBasedRendering = GetCVar<bool>( "r.PhysicallyBasedRendering" ).Value,
+					
 				},
-				Lighting = new LightingConfig() {
-					BakedLights = _cvarSystem.GetCVar<bool>( "r.BakedLights" ).Value,
-					ForceVertexShading = _cvarSystem.GetCVar<bool>( "r.ForceVertexShading" ).Value,
-					PhysicallyBasedRendering = _cvarSystem.GetCVar<bool>( "r.PhysicallyBasedRendering" ).Value,
-					BloomEnabled = _cvarSystem.GetCVar<bool>( "r.BloomEnabled" ).Value
+				Shadows = new ShadowConfig {
+					ShadowAtlasSize = GetCVar<ShadowAtlasSize>( "r.ShadowAtlasSize" ).Value,
+					ShadowFilterSmooth = GetCVar<float>( "r.ShadowFilterSmooth" ).Value,
+					ShadowFilterType = GetCVar<ShadowFilterQuality>( "r.ShadowFilterType" ).Value
 				},
-				Shadows = new ShadowConfig() {
-					ShadowFilterType = _cvarSystem.GetCVar<ShadowFilterQuality>( "r.ShadowFilterType" ).Value,
-					ShadowAtlasSize = _cvarSystem.GetCVar<ShadowAtlasSize>( "r.ShadowAtlasSize" ).Value,
-					ShadowFilterSmooth = _cvarSystem.GetCVar<float>( "r.ShadowFilterSmooth" ).Value
+				Effects = new EffectsConfig {
+					AnimationQuality = GetCVar<AnimationQuality>( "r.AnimationQuality" ).Value,
+					ParticleQuality = GetCVar<ParticleQuality>( "r.ParticleQuality" ).Value
 				}
 			};
 		}
 
 		/*
 		===============
-		GetCurrentConfig
+		SetConfig
 		===============
 		*/
+		public void SetConfig( GraphicsConfig config ) {
+			_config = config;
+		}
+
+		private ICVar<T> GetCVar<T>( string name ) =>
+			_cvarSystem.GetCVar<T>( name ) ?? throw new CVarMissing( name );
+
 		public GraphicsConfig GetCurrentConfig() {
-			return _config;
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetShadowAtlasSizes
-		===============
-		*/
 		public IReadOnlyList<string> GetShadowAtlasSizes() {
-			return _shadowAtlasSizes;
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetEffectsQualityList
-		===============
-		*/
 		public IReadOnlyList<string> GetEffectsQualityList() {
-			return _effectsQualities;
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetLightingQualityList
-		===============
-		*/
 		public IReadOnlyList<string> GetLightingQualityList() {
-			return _lightingQualities;
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetShadowFilterQualityList
-		===============
-		*/
 		public IReadOnlyList<string> GetShadowFilterQualityList() {
-			return _shadowQualities;
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		SetPreset
-		===============
-		*/
 		public void SetPreset( QualitySetting preset ) {
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetPreset
-		===============
-		*/
 		public QualitySetting GetPreset() {
-			return _presetRepository.DetectPreset( _config );
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetEffectsPreset
-		===============
-		*/
 		public QualitySetting GetEffectsPreset() {
-			return _presetRepository.DetectEffectsPreset( _effectsConfig );
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetLightingPreset
-		===============
-		*/
 		public QualitySetting GetLightingPreset() {
-			return _presetRepository.DetectLightingPreset( _lightingConfig );
+			throw new System.NotImplementedException();
 		}
 
-		/*
-		===============
-		GetLightingPreset
-		===============
-		*/
 		public QualitySetting GetShadowPreset() {
-			return _presetRepository.DetectLightingPreset( _lightingConfig );
+			throw new System.NotImplementedException();
 		}
 	};
 };

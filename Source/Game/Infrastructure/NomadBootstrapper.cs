@@ -21,16 +21,21 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-
 using Godot;
-using Game.Domain.Settings;
-using Game.Application.Configuration;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using NomadCore.Systems.EventSystem.Services;
-using NomadCore.Systems.ConsoleSystem.Services;
-using NomadCore.Systems.SaveSystem.Services;
-using NomadCore.Systems.Audio.Services;
+using Game.Application.Common.Models.Interfaces;
+using Game.Application.Configuration.Services;
+using Game.Infrastructure.Configuration.Godot.Services;
+using Nomad.Core.ServiceRegistry.Interfaces;
+using Nomad.Core.ServiceRegistry.Services;
+using Nomad.Audio.Interfaces;
+using Nomad.Logger;
+using Nomad.Core.Logger;
+using Nomad.Events;
+using Nomad.Console;
+using Nomad.CVars;
+using Nomad.Audio.Fmod;
+using Nomad.Logger.Private.Sinks;
+using Game.Application.Configuration.Registries;
 
 namespace Game.Infrastructure {
 	/*
@@ -45,6 +50,15 @@ namespace Game.Infrastructure {
 	/// </summary>
 
 	public sealed partial class NomadBootstrapper : Node {
+		public IServiceLocator ServiceLocator => _serviceLocator;
+		private IServiceLocator _serviceLocator;
+
+		public IServiceRegistry ServicesFactory => _serviceFactory;
+		private ServiceCollection _serviceFactory;
+
+		private IAudioDevice _audioService;
+		private IChannelRepository _channelRepository;
+
 		/*
 		===============
 		_Ready
@@ -56,15 +70,73 @@ namespace Game.Infrastructure {
 		public override void _Ready() {
 			base._Ready();
 
-			var cvarSystem = ServiceRegistry.Register( CVarRegistrationService.RegisterCVarSystem() );
+			_serviceFactory = new ServiceCollection();
+			_serviceLocator = new ServiceLocator( _serviceFactory );
 
-			var eventBus = ServiceRegistry.Register<IGameEventBusService>( new GameEventBus() );
-			ServiceRegistry.Register<IConsoleService>( new Console( GetTree().Root, cvarSystem, eventBus ) );
-			ServiceRegistry.Register<ISaveService>( new SaveManager() );
-			ServiceRegistry.Register<IAudioService>( new AudioService() );
-			ServiceRegistry.Register<IEntityService>( new EntityComponentSystemService( GetTree().Root ) );
+			LoggerBootstrapper.Initialize( _serviceFactory, _serviceLocator );
+			var logger = _serviceLocator.GetService<ILoggerService>();
 
-			var settingsManager = new SettingsManager( "user://settings.ini" );
+			logger.PrintLine( "NomadBootstrapper: Initializing NomadBackend..." );
+
+			EventSystemBootstrapper.Initialize( _serviceLocator, _serviceFactory );
+			ConsoleBootstrapper.Initialize( _serviceLocator, _serviceFactory, GetTree().Root );
+
+			var cvarSystem = _serviceLocator.GetService<ICVarSystemService>();
+			AudioCVars.Register( cvarSystem );
+
+			logger.AddSink( new FileSink( cvarSystem ) );
+
+			_serviceFactory.RegisterSingleton<IGraphicsSettingsService>( new GraphicsSettingsService( cvarSystem ) );
+			_serviceFactory.RegisterSingleton<IDisplaySettingsService>( new DisplaySettingsService( cvarSystem, new GodotDisplay( GetViewport().GetViewportRid(), cvarSystem, logger ) ) );
+
+			FMODBootstrapper.Initialize( _serviceLocator, _serviceFactory );
+			_serviceFactory.RegisterSingleton<IAudioSettingsService>( new AudioSettingsService( cvarSystem, _serviceLocator.GetService<IAudioDevice>() ) );
+
+			_audioService = _serviceLocator.GetService<IAudioDevice>();
+			_channelRepository = _serviceLocator.GetService<IChannelRepository>();
+
+			if ( FileAccess.FileExists( "user://settings.ini" ) ) {
+				cvarSystem.Load( "user://settings.ini" );
+			}
+		}
+
+		/*
+		===============
+		_Process
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delta"></param>
+		public override void _Process( double delta ) {
+			base._Process( delta );
+
+			float deltaTime = (float)delta;
+			_audioService?.Update( deltaTime );
+			_channelRepository?.Update( deltaTime );
+		}
+
+		public override void _Notification( int what ) {
+			base._Notification( what );
+
+			switch ( (long)what ) {
+				case NotificationWMCloseRequest:
+					System.Environment.Exit( 0 );
+					break;
+			}
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			_serviceFactory?.Dispose();
+			_serviceLocator?.Dispose();
 		}
 	};
 };

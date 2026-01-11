@@ -23,9 +23,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using System;
+using Nomad.Core.Memory;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/*
@@ -41,13 +40,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/// <typeparam name="T"></typeparam>
 
 	public class OptionNodeView<T> : IOptionNodeView where T : OptionNode {
-		public string? Description => _descriptionCached;
-		private readonly string? _descriptionCached;
+		public InternString Description => _descriptionCached;
+		private readonly InternString _descriptionCached;
 
 		public OptionNode Owner => _owner;
 		protected readonly T _owner;
 
-		protected readonly SelectionNodes.Label _titleLabel;
+		protected readonly Label _titleLabel;
 
 		/*
 		===============
@@ -57,32 +56,12 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		public OptionNodeView( T owner ) {
 			_owner = owner;
 
-			_titleLabel = _owner.GetNode<SelectionNodes.Label>( "Title" );
+			_titleLabel = _owner.GetNode<Label>( "Title" );
 			_titleLabel.Text = TranslationServer.Translate( owner.Title );
 
-			_descriptionCached = _owner.Description.IsEmpty ? String.Empty : TranslationServer.Translate( owner.Description );
+			_descriptionCached = ( _owner.Description == null || _owner.Description.IsEmpty ) ? InternString.Empty : StringPool.Intern( TranslationServer.Translate( owner.Description ) );
 
-			ConnectSignals( ServiceRegistry.Get<IGameEventBusService>() );
 			LinkFocusNodes();
-		}
-
-		/*
-		===============
-		OnFocused
-		===============
-		*/
-		public void OnFocused() {
-			// FIXME: disable mouse focus?
-			_owner.GrabClickFocus();
-			_owner.GrabFocus();
-		}
-
-		/*
-		===============
-		OnUnfocused
-		===============
-		*/
-		public void OnUnfocused() {
 		}
 
 		/*
@@ -99,7 +78,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 			int index = _owner.GetIndex();
 			Node parent = _owner.GetParent();
 			int childCount = parent.GetChildCount();
-			if ( index == 0 ) {
+			if ( childCount == 1 ) {
+				_owner.FocusNeighborTop = path;
+				_owner.FocusNeighborBottom = path;
+			} else if ( index == 0 ) {
 				_owner.FocusNeighborTop = parent.GetChild( childCount - 1 ).GetPath();
 				_owner.FocusNeighborBottom = parent.GetChild( index + 1 ).GetPath();
 			} else if ( index == childCount - 1 ) {
@@ -115,20 +97,6 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 			_owner.FocusPrevious = path;
 
 			_owner.FocusMode = HBoxContainer.FocusModeEnum.All;
-		}
-
-		/*
-		===============
-		ConnectSignals
-		===============
-		*/
-		private void ConnectSignals( IGameEventBusService? eventBus ) {
-			ArgumentNullException.ThrowIfNull( eventBus );
-
-			eventBus.ConnectSignal( _owner, HBoxContainer.SignalName.FocusEntered, _owner, OnFocused );
-			eventBus.ConnectSignal( _owner, HBoxContainer.SignalName.MouseEntered, _owner, OnFocused );
-			eventBus.ConnectSignal( _owner, HBoxContainer.SignalName.FocusExited, _owner, OnUnfocused );
-			eventBus.ConnectSignal( _owner, HBoxContainer.SignalName.MouseExited, _owner, OnUnfocused );
 		}
 	};
 };

@@ -23,12 +23,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using NomadCore.Systems.EventSystem.Common;
+using Nomad.Core.Util;
 using System;
-using System.Collections.Generic;
-using Godot;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/*
@@ -43,14 +39,9 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/// </summary>
 
 	public class OptionListView : OptionNodeView<OptionList>, IOptionListView {
-		public GameEvent TogglePrev => _togglePrev;
-		private readonly GameEvent _togglePrev = new GameEvent( nameof( TogglePrev ) );
-
-		public GameEvent ToggleNext => _toggleNext;
-		private readonly GameEvent _toggleNext = new GameEvent( nameof( ToggleNext ) );
-
+		public InternString ListId => _owner.ListId;
+		
 		private readonly Godot.Label _valueLabel;
-		private readonly IReadOnlyList<string> _items;
 
 		/*
 		===============
@@ -60,49 +51,21 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		public OptionListView( OptionList owner )
 			: base( owner )
 		{
-			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
-			ArgumentNullException.ThrowIfNull( eventBus );
-			eventBus.ConnectSignal( _owner.GetNode<Godot.Button>( "LeftIcon" ), Button.SignalName.Pressed, _owner, OnLeftIconPressed );
-			eventBus.ConnectSignal( _owner.GetNode<Godot.Button>( "RightIcon" ), Button.SignalName.Pressed, _owner, OnRightIconPressed );
-
-			_items = _owner.Items;
-
 			_valueLabel = _owner.GetNode<Godot.Label>( "Value" );
 		}
 
 		/*
 		===============
-		SetSelectedIndex
+		SetOption
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="index"></param>
+		/// <param name="value"></param>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public void SetSelectedIndex( int index ) {
-			if ( index < 0 || index >= _items.Count ) {
-				throw new ArgumentOutOfRangeException( nameof( index ) );
-			}
-			_valueLabel.Text = TranslationServer.Translate( _items[ index ] );
-		}
-
-		/*
-		===============
-		OnLeftIconPressed
-		===============
-		*/
-		private void OnLeftIconPressed() {
-			_togglePrev.Publish( EmptyEventArgs.Args );
-		}
-
-		/*
-		===============
-		OnRightIconPressed
-		===============
-		*/
-		private void OnRightIconPressed() {
-			_toggleNext.Publish( EmptyEventArgs.Args );
+		public void SetOption( string value ) {
+			_valueLabel.SetDeferred( Label.PropertyName.Text, value );
 		}
 	};
 };

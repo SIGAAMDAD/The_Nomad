@@ -21,15 +21,15 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
+using Nomad.Core.Util;
 using System.Collections.Generic;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionListController : IOptionNodeController {
-		public OptionListValueChanged ValueChanged { get; }
+		InternString ListId { get; }
+		int Value { get; }
 
-		public int Value { get; }
-
-		public void SetOptions( IReadOnlyList<string> items );
+		void SetOptions( IReadOnlyList<string> items );
+		void SetValue( int value );
 	};
 };

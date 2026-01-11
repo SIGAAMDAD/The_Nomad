@@ -22,7 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 namespace Game.Application.Configuration.Enums {
-	public enum ParticleQuality : sbyte {
+	public enum ParticleQuality : uint {
 		Low,
 		High,
 

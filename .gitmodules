@@ -1,6 +1,6 @@
-[submodule "the-nomad/Source"]
-	path = the-nomad/Source
-	url = https://github.com/SIGAAMDAD/NomadBackend.git
-[submodule "Source/NomadBackend"]
-	path = Source/NomadBackend
-	url = https://github.com/SIGAAMDAD/NomadBackend.git
+[submodule "Source/NomadFramework"]
+	path = Source/NomadFramework
+	url = https://github.com/SIGAAMDAD/NomadFramework.git
+[submodule "TheNomadFMOD"]
+	path = TheNomadFMOD
+	url = https://github.com/SIGAAMDAD/TheNomadFMOD.git

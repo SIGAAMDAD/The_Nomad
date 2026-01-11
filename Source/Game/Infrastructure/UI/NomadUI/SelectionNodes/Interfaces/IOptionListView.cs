@@ -21,13 +21,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Systems.EventSystem.Common;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionListView : IOptionNodeView {
-		public GameEvent TogglePrev { get; }
-		public GameEvent ToggleNext { get; }
+		InternString ListId { get; }
 
-		public void SetSelectedIndex( int index );
+		void SetOption( string value );
 	};
 };

@@ -1,238 +1,112 @@
-[gd_scene load_steps=28 format=3 uid="uid://ba1debi5qxy5p"]
+[gd_scene format=3 uid="uid://b5rsunkqihqxv"]
 
-[ext_resource type="Script" uid="uid://yn7168pe5i6d" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_l4s3c"]
-[ext_resource type="Script" uid="uid://da6nrwrhhbgc0" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Button/Button.cs" id="3_imvie"]
+[ext_resource type="Script" uid="uid://tsjpn4gc7fs1" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
+[ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/NomadButton/NomadButton.tscn" id="3_lpod2"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1squj"]
+[sub_resource type="Gradient" id="Gradient_chk6h"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 0, 0, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_imvie"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_l2kqe"]
+gradient = SubResource("Gradient_chk6h")
+width = 1
+height = 3
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bre17"]
-modulate_color = Color(2, 2.00392, 0, 1)
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1squj"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(640, 1, 1)
+angular_velocity_min = -32.000015
+angular_velocity_max = 31.999983
+gravity = Vector3(0, -100, 0)
+linear_accel_min = -16.000002
+linear_accel_max = 15.999997
+radial_accel_min = -24.000002
+radial_accel_max = 23.999998
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_euy4r"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_50h1w"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ng0o5"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_88kup"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r73w"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3hrp"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hnlc"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w32d4"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkawv"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_25m6f"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50h1w"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_555wk"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8hoqd"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_287l7"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_euy4r"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n8vdk"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jygr6"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awvna"]
-modulate_color = Color(2, 2.00392, 0, 1)
-
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=486417476]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_l4s3c")
+script = ExtResource("1_2o76q")
 metadata/_edit_use_anchors_ = true
 
-[node name="AppVersion" type="Label" parent="."]
-process_mode = 4
-texture_filter = 1
+[node name="Logo" type="TextureRect" parent="." unique_id=1120502592]
+custom_minimum_size = Vector2(800, 180)
 layout_mode = 1
-offset_left = 16.0
-offset_top = 24.0
-offset_right = 74.0
-offset_bottom = 48.0
-scale = Vector2(0.75, 0.75)
-text = "AppVer "
+anchors_preset = -1
+anchor_left = 0.187
+anchor_top = 0.12200001
+anchor_right = 0.81200004
+anchor_bottom = 0.372
+offset_left = 0.63998413
+offset_top = 0.15999603
+offset_right = 0.6398926
+offset_bottom = 0.16000366
+grow_horizontal = 2
+size_flags_vertical = 0
+texture = ExtResource("2_lpod2")
 metadata/_edit_use_anchors_ = true
 
-[node name="CopyrightLabel" type="Label" parent="."]
-process_mode = 4
-visible = false
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=743321201]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -22.0
-offset_bottom = 2.0
-grow_horizontal = 2
-grow_vertical = 0
-text = " Copyright © 2025 GDR Games"
-horizontal_alignment = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.220313
-anchor_top = 0.499917
-anchor_right = 0.759375
-anchor_bottom = 1.00017
-offset_top = 0.0399933
-offset_bottom = -0.0800171
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_top = 340
+theme_override_constants/margin_right = 300
+theme_override_constants/margin_bottom = 160
 metadata/_edit_use_anchors_ = true
 
-[node name="ContinueGameButton" type="Button" parent="VBoxContainer"]
+[node name="OptionsContainer" type="VBoxContainer" parent="MarginContainer" unique_id=852986257]
 layout_mode = 2
-focus_neighbor_top = NodePath("../QuitGameButton")
-focus_neighbor_bottom = NodePath("../LoadGameButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1squj")
-text = "CONTINUE_GAME_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.5
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1squj")
 
-[node name="LoadGameButton" type="Button" parent="VBoxContainer"]
+[node name="NewGameButton" parent="MarginContainer/OptionsContainer" unique_id=1938011170 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../ContinueGameButton")
-focus_neighbor_bottom = NodePath("../NewGameButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_imvie")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_bre17")
-theme_override_styles/hover = SubResource("StyleBoxTexture_euy4r")
-theme_override_styles/focus = SubResource("StyleBoxTexture_50h1w")
-text = "LOAD_GAME_BUTTON"
-script = ExtResource("3_imvie")
+text = "NEW_GAME"
+Duration = 0.25
 
-[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+[node name="LoadGameButton" parent="MarginContainer/OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../LoadGameButton")
-focus_neighbor_bottom = NodePath("../ExtrasButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ng0o5")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
-theme_override_styles/hover = SubResource("StyleBoxTexture_bh4e2")
-theme_override_styles/focus = SubResource("StyleBoxTexture_88kup")
-text = "NEW_GAME_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.2
+text = "LOAD_GAME"
+Duration = 0.25
 
-[node name="ExtrasButton" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" parent="MarginContainer/OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../NewGameButton")
-focus_neighbor_bottom = NodePath("../SettingsButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_8r73w")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/focus = SubResource("StyleBoxTexture_uxao6")
-text = "EXTRAS_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.2
+text = "SETTINGS"
+Duration = 0.25
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+[node name="ExtrasButton" parent="MarginContainer/OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../ExtrasButton")
-focus_neighbor_bottom = NodePath("../TalesAroundTheCampfireButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1hnlc")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_w32d4")
-theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
-theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
-text = "SETTINGS_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.2
+text = "EXTRAS"
+Duration = 0.25
 
-[node name="TalesAroundTheCampfireButton" type="Button" parent="VBoxContainer"]
+[node name="CreditsButton" parent="MarginContainer/OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../SettingsButton")
-focus_neighbor_bottom = NodePath("../QuitGameButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_50h1w")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_555wk")
-theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
-theme_override_styles/focus = SubResource("StyleBoxTexture_287l7")
-text = "MODS_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.2
+text = "CREDITS"
+Duration = 0.25
 
-[node name="QuitGameButton" type="Button" parent="VBoxContainer"]
+[node name="QuitGameButton" parent="MarginContainer/OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
+unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../TalesAroundTheCampfireButton")
-focus_neighbor_bottom = NodePath("../ContinueGameButton")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_euy4r")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_n8vdk")
-theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
-theme_override_styles/focus = SubResource("StyleBoxTexture_awvna")
-text = "QUIT_BUTTON"
-script = ExtResource("3_imvie")
-Duration = 0.2
+text = "QUIT GAME"
+Duration = 0.25
 
-[node name="Logo" type="TextureRect" parent="."]
-process_mode = 4
-modulate = Color(1.15, 1.5, 1, 1)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.183
-anchor_top = 0.158
-anchor_right = 0.839
-anchor_bottom = 0.392
-offset_left = 0.0799866
-offset_top = 0.159996
-offset_right = 38.24
-offset_bottom = -112.96
-grow_horizontal = 2
-scale = Vector2(0.916999, 1.5557)
-metadata/_edit_use_anchors_ = true
-
-[node name="TutorialsPopup" type="ConfirmationDialog" parent="."]
-auto_translate_mode = 1
-title = "Play with tutorials?"
-initial_position = 1
-size = Vector2i(436, 132)
-unresizable = true
-always_on_top = true
-content_scale_mode = 1
-content_scale_aspect = 4
-ok_button_text = "I want tutorials"
-dialog_text = "Would you like to play with tutorials?
-
-You can reset this at any time from the Settings Menu."
-dialog_close_on_escape = false
-dialog_autowrap = true
-cancel_button_text = "Fuck it, WE BALL!"
+[node name="EmbersEmitter" type="GPUParticles2D" parent="." unique_id=901455067]
+position = Vector2(640, 720)
+amount = 600
+texture = SubResource("GradientTexture2D_l2kqe")
+lifetime = 3.0
+process_material = SubResource("ParticleProcessMaterial_1squj")

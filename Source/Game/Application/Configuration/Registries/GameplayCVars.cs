@@ -21,9 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Abstractions.Services;
-using NomadCore.Enums.ConsoleSystem;
-using NomadCore.Utilities;
+using Nomad.CVars;
 
 namespace Game.Application.Configuration.Registries {
 	/*
@@ -50,34 +48,26 @@ namespace Game.Application.Configuration.Registries {
 		public static void Register( ICVarSystemService cvarSystem ) {
 			cvarSystem.Register(
 				new CVarCreateInfo<float>(
-					name: "game.ScreenShakeIntensity",
-					defaultValue: 1.0f,
-					description: "Scales the intensity of how much the game will jitter the camera. Set to lower values for less jolting.",
-					flags: CVarFlags.Archive
+					Name: new( "game.ScreenShakeIntensity" ),
+					DefaultValue: 1.0f,
+					Description: new( "Scales the intensity of how much the game will jitter the camera. Set to lower values for less jolting." ),
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<int>(
-					name: "game.EnemyTacticalIntelligence",
-					defaultValue: 0,
-					description: "Controls how much planning can be executed for an enemy GOAP agent. Directly impacts performance.",
-					flags: CVarFlags.Archive
+					Name: new( "game.EnemyTacticalIntelligence" ),
+					DefaultValue: 0,
+					Description: new( "Controls how much planning can be executed for an enemy GOAP agent. Directly impacts performance." ),
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<float>(
-					name: "game.PlayerDamageScale",
-					defaultValue: 1.0f,
-					description: "Scales how much damage the player receives.",
-					flags: CVarFlags.Archive
-				)
-			);
-			cvarSystem.Register(
-				 new CVarCreateInfo<bool>(
-					name: "game.AutoInform",
-					defaultValue: false,
-					description: "Automatically buys and places the Galakan Gossip newspaper in the player's inventory.",
-					flags: CVarFlags.Archive
+					Name: new( "game.PlayerDamageScale" ),
+					DefaultValue: 1.0f,
+					Description: new( "Scales how much damage the player receives." ),
+					Flags: CVarFlags.Archive
 				)
 			);
 		}

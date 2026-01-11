@@ -22,10 +22,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.Configuration.Enums;
-using NomadCore.Abstractions.Services;
-using NomadCore.Enums.ConsoleSystem;
-using NomadCore.Utilities;
+using Nomad.Core;
+using Nomad.CVars;
 using System;
+using System.ComponentModel;
 
 namespace Game.Application.Configuration.Registries {
 	/*
@@ -52,83 +52,106 @@ namespace Game.Application.Configuration.Registries {
 		public static void Register( ICVarSystemService cvarSystem ) {
 			cvarSystem.Register(
 				new CVarCreateInfo<int>(
-					name: "display.Monitor",
-					defaultValue: 0,
-					description: String.Empty,
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.MONITOR,
+					DefaultValue: 0,
+					Description: String.Empty,
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= 0
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<WindowMode>(
-					name: "display.WindowMode",
-					defaultValue: WindowMode.ExclusiveFullscreen,
-					description: "The game's window mode.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.WINDOW_MODE,
+					DefaultValue: WindowMode.ExclusiveFullscreen,
+					Description: "The game's window mode.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= WindowMode.Windowed && value < WindowMode.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<WindowResolution>(
-					name: "display.Resolution",
-					defaultValue: WindowResolution.Res_640x480,
-					description: "Size of the game's display window",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.WINDOW_RESOLUTION,
+					DefaultValue: WindowResolution.Res_640x480,
+					Description: "Size of the game's display window.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= WindowResolution.Res_640x480 && value < WindowResolution.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<AspectRatio>(
-					name: "display.AspectRatio",
-					defaultValue: AspectRatio.Aspect_Automatic,
-					description: "The display aspect ratio.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.ASPECT_RATIO,
+					DefaultValue: AspectRatio.Aspect_Automatic,
+					Description: "The display aspect ratio.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= AspectRatio.Aspect_Automatic && value < AspectRatio.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<VSyncMode>(
-					name: "display.VSyncMode",
-					defaultValue: VSyncMode.Off,
-					description: "Sets the engine's vertical sync policy",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.VSYNC_MODE,
+					DefaultValue: VSyncMode.Off,
+					Description: "Sets the engine's vertical sync policy.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= VSyncMode.Off && value < VSyncMode.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<MaxFps>(
-					name: "display.MaxFps",
-					defaultValue: MaxFps.MaxFps60,
-					description: "Sets the maximum amount of gameplay loops per second, set to 0 for unlimited.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.MAX_FPS,
+					DefaultValue: MaxFps.MaxFps60,
+					Description: "Sets the maximum amount of gameplay loops per second, set to 0 for unlimited.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= MaxFps.MaxFps30 && value < MaxFps.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<AntiAliasing>(
-					name: "display.AntiAliasing",
-					defaultValue: AntiAliasing.None,
-					description: "Sets the renderer's method for reduces aliasing (jaggies) for the final displayed image.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.ANTI_ALIASING,
+					DefaultValue: AntiAliasing.None,
+					Description: "Sets the renderer's method for reduces aliasing (jaggies) for the final displayed image.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= AntiAliasing.None && value < AntiAliasing.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<int>(
-					name: "display.DRSTargetFrames",
-					defaultValue: 60,
-					description: String.Empty,
-					flags: CVarFlags.Archive
+					Name: "display.DRSTargetFrames",
+					DefaultValue: 60,
+					Description: String.Empty,
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<PerformanceOverlayPreset>(
-					name: "display.PerformanceOverlay",
-					defaultValue: PerformanceOverlayPreset.Hidden,
-					description: "Enables an overlay to be drawn that displays .",
-					flags: CVarFlags.Archive,
-					validator: value => value >= PerformanceOverlayPreset.Hidden && value < PerformanceOverlayPreset.Count
+					Name: "display.PerformanceOverlay",
+					DefaultValue: PerformanceOverlayPreset.Hidden,
+					Description: "Enables an overlay to be drawn that displays .",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= PerformanceOverlayPreset.Hidden && value < PerformanceOverlayPreset.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<bool>(
-					name: "r.SeparateRenderingThread", // put into display settings because putting it into graphics would be more confusing
-					defaultValue: false,
-					description: "Allows Godot to utilize a separate thread for its rendering pipeline. This is an experimental feature for Godot, and may result in slower performance and in some cases crash the application.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Display.SEPARATE_RENDERING_THREAD, // put into display settings because putting it into graphics would be more confusing
+					DefaultValue: false,
+					Description: "Allows Godot to utilize a separate thread for its rendering pipeline. This is an experimental feature for Godot, and may result in slower performance and in some cases crash the application.",
+					Flags: CVarFlags.Archive
+				)
+			);
+			cvarSystem.Register(
+				new CVarCreateInfo<float>(
+					Name: Constants.CVars.Display.BRIGHTNESS,
+					DefaultValue: 90.0f,
+					Description: "Sets the brightness level of the game's rendered frame.",
+					Flags: CVarFlags.Archive
+				)
+			);
+			cvarSystem.Register(
+				new CVarCreateInfo<float>(
+					Name: Constants.CVars.Display.RESOLUTION_SCALE,
+					DefaultValue: 50.0f,
+					Description: "Sets rendering resolution for the game window.",
+					Flags: CVarFlags.Archive
 				)
 			);
 		}

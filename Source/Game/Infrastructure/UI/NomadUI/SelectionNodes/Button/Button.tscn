@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cj8rgeahnjf4w"]
-
-[ext_resource type="Script" uid="uid://da6nrwrhhbgc0" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Button/Button.cs" id="1_2ftgt"]
-
-[node name="Button" type="Button"]
-script = ExtResource("1_2ftgt")
-metadata/_edit_use_anchors_ = true

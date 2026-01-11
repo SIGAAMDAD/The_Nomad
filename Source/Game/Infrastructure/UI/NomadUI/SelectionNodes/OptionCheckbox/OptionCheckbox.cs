@@ -21,7 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -36,8 +36,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/// </summary>
 
 	public partial class OptionCheckbox : OptionNode.OptionNode {
-		public override IOptionNodeView View => _view;
-		private IOptionCheckboxView _view;
+		public OptionCheckboxView View { get; private set; }
+		public InternString CheckboxId { get; private set; }
 
 		/*
 		===============
@@ -50,7 +50,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		public override void _Ready() {
 			base._Ready();
 
-			_view = new OptionCheckboxView( this );
+			CheckboxId = new InternString( Name );
+			View = new OptionCheckboxView( this );
 		}
 	};
 };

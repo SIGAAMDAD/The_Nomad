@@ -1,28 +1,53 @@
-<Project Sdk="Godot.NET.Sdk/4.5.1">
+<Project Sdk="Godot.NET.Sdk/4.6.0-beta.3">
   <PropertyGroup>
+    <!-- Build Configuration -->
     <TargetFramework>net10.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net10.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
-    <PubishAOT>true</PubishAOT>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EnforceCodeStyleInBuilds>true</EnforceCodeStyleInBuilds>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <BuildInParallel>true</BuildInParallel>
+
+    <!-- Performance -->
+    <PubishAOT>true</PubishAOT>
+    <TieredCompilation>true</TieredCompilation>
+    <Deterministic>true</Deterministic>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <Optimize>true</Optimize>
+    <SkipLocalsInit>true</SkipLocalsInit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Source/NomadBackend/**" />
-    <Compile Remove="Source/GUIDE/**" />
+    <PackageReference Include="Godot.NET.Sdk" Version="4.6.0-dev.6" />
+    <PackageReference Include="Godot.SourceGenerators" Version="4.6.0-dev.6" />
+    <PackageReference Include="GodotSharp" Version="4.6.0-dev.6" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Source\NomadBackend\Core\Core.csproj" />
-    <ProjectReference Include="Source\NomadBackend\Systems\EventSystem\EventSystem\EventSystem.csproj" />
-    <ProjectReference Include="Source\NomadBackend\Systems\Audio\Audio.csproj" />
-    <ProjectReference Include="Source\NomadBackend\Systems\SaveSystem\SaveSystem.csproj" />
-    <ProjectReference Include="Source\NomadBackend\Systems\ResourceCache\ResourceCache.csproj" />
-    <ProjectReference Include="Source\NomadBackend\Systems\ConsoleSystem\ConsoleSystem.csproj" />
+    <Compile Remove="Source\NomadFramework\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ppy.SDL3-CS" Version="2025.1118.0" />
-    <PackageReference Include="SDL3-CS" Version="3.2.4.6" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Audio.FMOD\Nomad.Audio.FMOD.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Logger\Nomad.Logger.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.CVars\Nomad.CVars.csproj" />
+	  <ProjectReference Include="Source\NomadFramework\Source\Nomad.Events\Nomad.Events.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Console\Nomad.Console.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Rendering\Nomad.Rendering.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWindows)' == 'true'">
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsLinux)' == 'true'">
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
 </Project>

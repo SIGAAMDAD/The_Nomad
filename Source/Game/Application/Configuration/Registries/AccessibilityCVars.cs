@@ -22,10 +22,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.Configuration.Enums;
-using NomadCore.Abstractions.Services;
-using NomadCore.Enums.ConsoleSystem;
-using NomadCore.Utilities;
-
+using Nomad.Core;
+using Nomad.CVars;
 namespace Game.Application.Configuration.Registries {
 	/*
 	===================================================================================
@@ -51,60 +49,60 @@ namespace Game.Application.Configuration.Registries {
 		public static void Register( ICVarSystemService cvarSystem ) {
 			cvarSystem.Register(
 				new CVarCreateInfo<float>(
-					name: "input.HapticStrength",
-					defaultValue: 50.0f,
-					description: "Sets the intensity of haptic feedback effects.",
-					flags: CVarFlags.Archive,
-					value => value >= 0.0f && value <= 100.0f
+					Name: Constants.CVars.Accessibility.HAPTIC_STRENGTH,
+					DefaultValue: 50.0f,
+					Description: "Sets the intensity of haptic feedback effects.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= 0.0f && value <= 100.0f
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<bool>(
-					name: "input.HapticEnabled",
-					defaultValue: true,
-					description: "Enables haptic feedback effects.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Accessibility.HAPTIC_ENABLED,
+					DefaultValue: true,
+					Description: "Enables haptic feedback effects.",
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<ColorblindMode>(
-					name: "accessibility.ColorblindMode",
-					defaultValue: ColorblindMode.None,
-					description: "Sets the colorblind mode for the game, enabling makes different elements be set to varying color values.",
-					flags: CVarFlags.Archive,
-					validator: value => value >= ColorblindMode.None && value < ColorblindMode.Count
+					Name: Constants.CVars.Accessibility.COLORBLIND_MODE,
+					DefaultValue: ColorblindMode.None,
+					Description: "Sets the colorblind mode for the game, enabling makes different elements be set to varying color values.",
+					Flags: CVarFlags.Archive,
+					Validator: value => value >= ColorblindMode.None && value < ColorblindMode.Count
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<bool>(
-					name: "accessibility.DyslexiaMode",
-					defaultValue: false,
-					description: "Switches all fonts in the game to the OpenDyslexia font.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Accessibility.DYSLEXIA_MODE,
+					DefaultValue: false,
+					Description: "Switches all fonts in the game to the OpenDyslexia font.",
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<float>(
-					name: "accessibility.UIScale",
-					defaultValue: 1.0f,
-					description: "Sets the scaling of in-game User Interface elements.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Accessibility.UI_SCALE,
+					DefaultValue: 1.0f,
+					Description: "Sets the scaling of in-game User Interface elements.",
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<AutoAimMode>(
-					name: "accessibility.AutoAimMode",
-					defaultValue: AutoAimMode.Off,
-					description: "Sets aim assist algorithm that the game will utilize.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Accessibility.AUTO_AIM_MODE,
+					DefaultValue: AutoAimMode.Off,
+					Description: "Sets aim assist algorithm that the game will utilize.",
+					Flags: CVarFlags.Archive
 				)
 			);
 			cvarSystem.Register(
 				new CVarCreateInfo<bool>(
-					name: "accessibility.TextToSpeech",
-					defaultValue: false,
-					description: "Enables narration for in-game User Interface elements.",
-					flags: CVarFlags.Archive
+					Name: Constants.CVars.Accessibility.TEXT_TO_SPEECH,
+					DefaultValue: false,
+					Description: "Enables narration for in-game User Interface elements.",
+					Flags: CVarFlags.Archive
 				)
 			);
 		}

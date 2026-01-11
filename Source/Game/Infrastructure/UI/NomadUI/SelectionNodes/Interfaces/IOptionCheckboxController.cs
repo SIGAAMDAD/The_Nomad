@@ -21,12 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionCheckboxController : IOptionNodeController {
-		public OptionCheckboxValueChanged ValueChanged { get; }
-
-		public bool Value { get; }
+		InternString CheckboxId { get; }
+		bool Value { get; set; }
 	};
 };

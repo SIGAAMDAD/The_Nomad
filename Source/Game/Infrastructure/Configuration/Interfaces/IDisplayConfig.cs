@@ -21,6 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Application.Common.Models.ValueObjects;
 using Game.Application.Configuration.Enums;
 
 namespace Game.Infrastructure.Configuration.Interfaces {
@@ -36,16 +37,15 @@ namespace Game.Infrastructure.Configuration.Interfaces {
 	/// </summary>
 
 	public interface IDisplayConfig : IEngineConfig {
-		public int NativeDisplayWidth { get; }
-		public int NativeDisplayHeight { get; }
+		public WindowSize NativeDisplaySize { get; }
+		public WindowSize DisplaySize { get; }
 
-		public int DisplayWidth { get; }
-		public int DisplayHeight { get; }
 		public int Monitor { get; }
 		public int MonitorCount { get; }
 		public float RefreshRate { get; }
 
 		public WindowResolution[] GetSupportedResolutions( int monitorIndex );
-		public void GetNativeResolutionForMonitor( int monitorIndex, out int nativeWidth, out int nativeHeight );
+		public void GetNativeResolutionForMonitor( int monitorIndex, out WindowSize nativeSize );
+		public void InitConfig();
 	};
 };

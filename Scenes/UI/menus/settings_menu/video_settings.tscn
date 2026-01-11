@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://cc0rl7qlf6ovr"]
-
-[node name="_VBoxContainer_246195" type="VBoxContainer"]
-visible = false
-theme_override_constants/separation = 0

@@ -22,7 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 namespace Game.Application.Configuration.Enums {
-	public enum ColorblindMode : byte {
+	public enum ColorblindMode : uint {
 		None,
 		Protanopia,
 		Deutanopia,

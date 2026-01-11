@@ -21,12 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionSliderController : IOptionNodeController {
-		public OptionSliderValueChanged ValueChanged { get; }
-
-		public float Value { get; }
+		InternString SliderId { get; }
+		float Value { get; }
 	};
 };

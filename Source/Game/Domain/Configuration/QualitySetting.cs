@@ -21,7 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-namespace Game.Application.Configuration.Enums {
+namespace Game.Domain.Configuration.Enums {
 	public enum QualitySetting : sbyte {
 		Custom = -1,
 		Low,

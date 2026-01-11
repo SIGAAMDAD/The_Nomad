@@ -21,12 +21,14 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Systems.EventSystem.Common;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionCheckboxView : IOptionNodeView {
-		public GameEvent Toggled { get; }
+		InternString CheckboxId { get; }
+		Godot.Button Left { get; }
+		Godot.Button Right { get; }
 
-		public void SetValue( bool value );
+		void SetValue( bool value );
 	};
 };
