@@ -38,12 +38,37 @@ namespace Game.Application.UI {
 	/// </summary>
 	
 	public static class UIEventHelper {
+		/*
+		===============
+		GetUIEvent
+		===============
+		*/
+		/// <summary>
+		/// Fetches a ui event of type <typeparamref name="TArgs"/> and id <paramref name="name"/>.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public static IGameEvent<TArgs> GetUIEvent<TArgs>( IGameEventRegistryService eventRegistry, string name )
 			where TArgs : struct
 		{
 			return eventRegistry.GetEvent<TArgs>( name );
 		}
 
+		/*
+		===============
+		SubscribeToUIEvent
+		===============
+		*/
+		/// <summary>
+		/// Subscribes to a ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="subscriber"></param>
+		/// <param name="name"></param>
+		/// <param name="callback"></param>
 		public static void SubscribeToUIEvent<TArgs>( IGameEventRegistryService eventRegistry, object subscriber, string name, EventCallback<TArgs> callback )
 			where TArgs : struct
 		{
@@ -51,6 +76,19 @@ namespace Game.Application.UI {
 			uiEvent.Subscribe( subscriber, callback );
 		}
 
+		/*
+		===============
+		SubscribeToUIEventAsync
+		===============
+		*/
+		/// <summary>
+		/// Subscribes to an asynchronous ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="subscriber"></param>
+		/// <param name="name"></param>
+		/// <param name="callback"></param>
 		public static void SubscribeToUIEventAsync<TArgs>( IGameEventRegistryService eventRegistry, object subscriber, string name, AsyncEventCallback<TArgs> callback )
 			where TArgs : struct
 		{
@@ -58,6 +96,19 @@ namespace Game.Application.UI {
 			uiEvent.SubscribeAsync( subscriber, callback );
 		}
 
+		/*
+		===============
+		UnsubscribeFromUIEvent
+		===============
+		*/
+		/// <summary>
+		/// Unsubscribes from a ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="subscriber"></param>
+		/// <param name="name"></param>
+		/// <param name="callback"></param>
 		public static void UnsubscribeFromUIEvent<TArgs>( IGameEventRegistryService eventRegistry, object subscriber, string name, EventCallback<TArgs> callback )
 			where TArgs : struct
 		{
@@ -65,6 +116,19 @@ namespace Game.Application.UI {
 			uiEvent.Unsubscribe( subscriber, callback );
 		}
 
+		/*
+		===============
+		UnsubscribeFromUIEventAsync
+		===============
+		*/
+		/// <summary>
+		/// Unsubscribes from an asynchronous ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="subscriber"></param>
+		/// <param name="name"></param>
+		/// <param name="callback"></param>
 		public static void UnsubscribeFromUIEventAsync<TArgs>( IGameEventRegistryService eventRegistry, object subscriber, string name, AsyncEventCallback<TArgs> callback )
 			where TArgs : struct
 		{
@@ -72,6 +136,18 @@ namespace Game.Application.UI {
 			uiEvent.UnsubscribeAsync( subscriber, callback );
 		}
 
+		/*
+		===============
+		PublishUIEvent
+		===============
+		*/
+		/// <summary>
+		/// Publishes a ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="name"></param>
+		/// <param name="args"></param>
 		public static void PublishUIEvent<TArgs>( IGameEventRegistryService eventRegistry, string name, in TArgs args )
 			where TArgs : struct
 		{
@@ -79,6 +155,20 @@ namespace Game.Application.UI {
 			uiEvent.Publish( in args );
 		}
 
+		/*
+		===============
+		PublishUIEventAsync
+		===============
+		*/
+		/// <summary>
+		/// Publishes an asynchronous ui event.
+		/// </summary>
+		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="eventRegistry"></param>
+		/// <param name="name"></param>
+		/// <param name="args"></param>
+		/// <param name="ct"></param>
+		/// <returns></returns>
 		public static async Task PublishUIEventAsync<TArgs>( IGameEventRegistryService eventRegistry, string name, TArgs args, CancellationToken ct = default )
 			where TArgs : struct
 		{

@@ -30,6 +30,7 @@ driver/enable_input=true
 [autoload]
 
 NomadBootstrapper="*res://Source/Game/Infrastructure/NomadBootstrapper.cs"
+GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
 
 [display]
 

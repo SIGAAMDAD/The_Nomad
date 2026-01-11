@@ -2,30 +2,15 @@
 
 [ext_resource type="Script" uid="uid://tsjpn4gc7fs1" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
+[ext_resource type="PackedScene" uid="uid://cjlaujtogos17" path="res://Source/Game/Presentation/Screens/MainMenu/EmbersEmitter.tscn" id="2_ucyp2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/NomadButton/NomadButton.tscn" id="3_lpod2"]
 
-[sub_resource type="Gradient" id="Gradient_chk6h"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(1, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_l2kqe"]
-gradient = SubResource("Gradient_chk6h")
-width = 1
-height = 3
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1squj"]
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(640, 1, 1)
-angular_velocity_min = -32.000015
-angular_velocity_max = 31.999983
-gravity = Vector3(0, -100, 0)
-linear_accel_min = -16.000002
-linear_accel_max = 15.999997
-radial_accel_min = -24.000002
-radial_accel_max = 23.999998
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_chk6h"]
+light_mode = 1
 
 [node name="MainMenu" type="Control" unique_id=486417476]
+light_mask = 2
+visibility_layer = 2
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +20,10 @@ grow_vertical = 2
 script = ExtResource("1_2o76q")
 metadata/_edit_use_anchors_ = true
 
+[node name="EmbersEmitter" parent="." unique_id=924772111 instance=ExtResource("2_ucyp2")]
+
 [node name="Logo" type="TextureRect" parent="." unique_id=1120502592]
+material = SubResource("CanvasItemMaterial_chk6h")
 custom_minimum_size = Vector2(800, 180)
 layout_mode = 1
 anchors_preset = -1
@@ -103,10 +91,3 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "QUIT GAME"
 Duration = 0.25
-
-[node name="EmbersEmitter" type="GPUParticles2D" parent="." unique_id=901455067]
-position = Vector2(640, 720)
-amount = 600
-texture = SubResource("GradientTexture2D_l2kqe")
-lifetime = 3.0
-process_material = SubResource("ParticleProcessMaterial_1squj")

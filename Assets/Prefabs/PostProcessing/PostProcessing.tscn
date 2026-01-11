@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://ctprgbdliiw5t"]
+
+[ext_resource type="Script" uid="uid://boy4yalh5cpo" path="res://Assets/Prefabs/PostProcessing/PostProcessing.cs" id="1_fd70d"]
+[ext_resource type="PackedScene" uid="uid://e1p1ssxifsma" path="res://Assets/Prefabs/PostProcessing/GammaCorrection/GammeCorrection.tscn" id="2_1rx11"]
+
+[node name="PostProcessing" type="CanvasLayer" unique_id=640013331]
+script = ExtResource("1_fd70d")
+
+[node name="GammeCorrection" parent="." unique_id=312621495 instance=ExtResource("2_1rx11")]
+visible = false
+mouse_filter = 2
