@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://xkghavev18ri"]
+
+[ext_resource type="Shader" uid="uid://cw145nm1tq7xr" path="res://Assets/Prefabs/PostProcessing/Upscaling/Upscaling.gdshader" id="1_37bgu"]
+[ext_resource type="Script" uid="uid://cfyu5yre4phsk" path="res://Assets/Prefabs/PostProcessing/Upscaling/Upscaling.cs" id="1_w1cjw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w1cjw"]
+shader = ExtResource("1_37bgu")
+shader_parameter/render_scale = 0.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_w1cjw"]
+viewport_path = NodePath("UpscalingViewport/SubViewport")
+
+[node name="Upscaling" type="Control" unique_id=1600295151 node_paths=PackedStringArray("Viewport", "Image")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w1cjw")
+Viewport = NodePath("UpscalingViewport/SubViewport")
+Image = NodePath("UpscalePass")
+metadata/_edit_use_anchors_ = true
+
+[node name="UpscalingViewport" type="SubViewportContainer" parent="." unique_id=1923217528]
+material = SubResource("ShaderMaterial_w1cjw")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="UpscalingViewport" unique_id=96530468]
+handle_input_locally = false
+size = Vector2i(320, 240)
+size_2d_override = Vector2i(320, 240)
+render_target_update_mode = 4
+
+[node name="UpscalePass" type="TextureRect" parent="." unique_id=992066768]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_w1cjw")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true

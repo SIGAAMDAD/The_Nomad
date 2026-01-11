@@ -1,0 +1,25 @@
+[gd_resource type="Environment" format=3 uid="uid://bkpxs50m5cylk"]
+
+[sub_resource type="Gradient" id="Gradient_tyteb"]
+offsets = PackedFloat32Array(0, 0.9045802)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_25jyc"]
+gradient = SubResource("Gradient_tyteb")
+
+[resource]
+background_mode = 3
+background_color = Color(1, 1, 1, 1)
+background_canvas_max_layer = -2
+glow_enabled = true
+glow_levels/5 = 3.3
+glow_levels/6 = 13.23
+glow_levels/7 = 16.35
+glow_intensity = 1.79
+glow_strength = 0.96
+glow_bloom = 0.15
+glow_blend_mode = 0
+glow_hdr_threshold = 4.0
+glow_hdr_scale = 4.0
+glow_hdr_luminance_cap = 79.4
+adjustment_enabled = true
+adjustment_color_correction = SubResource("GradientTexture1D_25jyc")

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://e1p1ssxifsma"]
+
+[ext_resource type="Shader" uid="uid://ch27e82tob8xw" path="res://Assets/Prefabs/PostProcessing/GammaCorrection/GammeCorrection.gdshader" id="1_vmfbt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vmfbt"]
+shader = ExtResource("1_vmfbt")
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/exposure = 1.0
+shader_parameter/tonemap_mode = 0
+
+[node name="GammeCorrection" type="ColorRect" unique_id=312621495]
+material = SubResource("ShaderMaterial_vmfbt")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

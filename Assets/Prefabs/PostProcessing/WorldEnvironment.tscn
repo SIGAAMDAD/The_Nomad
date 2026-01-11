@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dnich4hvfpcnv"]
+
+[ext_resource type="Environment" uid="uid://bkpxs50m5cylk" path="res://Assets/Prefabs/PostProcessing/WorldEnvironment.tres" id="1_6m6v0"]
+[ext_resource type="Script" uid="uid://bdylnub55a1k8" path="res://Assets/Prefabs/PostProcessing/WorldEnvironment.cs" id="2_ti8fb"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" unique_id=694682359]
+environment = ExtResource("1_6m6v0")
+script = ExtResource("2_ti8fb")

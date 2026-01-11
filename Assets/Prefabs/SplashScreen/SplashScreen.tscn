@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://lo18vwcn05qx"]
+
+[ext_resource type="Script" uid="uid://c8oyj6juc6akn" path="res://Assets/Prefabs/SplashScreen/SplashScreen.cs" id="1_w2q2w"]
+[ext_resource type="Texture2D" uid="uid://bjrvgwaabxanp" path="res://Assets/Textures/Logos/rapier_logo.jpg" id="2_43prf"]
+[ext_resource type="VideoStream" uid="uid://bhr0ncf4x22xf" path="res://Assets/Prefabs/SplashScreen/godot_intro_animation_4k.ogv" id="2_ejb01"]
+[ext_resource type="Texture2D" uid="uid://ct3551q1h31dk" path="res://Assets/Prefabs/SplashScreen/pride-dark-c-side.png" id="2_nfv4h"]
+[ext_resource type="Texture2D" uid="uid://bda77pmffmvg8" path="res://Assets/Textures/Logos/FMOD Logo White - Transparent Background.png" id="4_nfv4h"]
+
+[node name="SplashScreen" type="Control" unique_id=1253664552]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w2q2w")
+metadata/_edit_use_anchors_ = true
+
+[node name="GodotLogoAnimation" type="VideoStreamPlayer" parent="." unique_id=59797816]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("2_ejb01")
+metadata/_edit_use_anchors_ = true
+
+[node name="GodotPrideLogo" type="TextureRect" parent="." unique_id=1227701279]
+visible = false
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_nfv4h")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="3DPartyLogos" type="Control" parent="." unique_id=647747372]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="ColorRect" parent="3DPartyLogos" unique_id=1466529130]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Rapier2DLogo" type="TextureRect" parent="3DPartyLogos" unique_id=656898179]
+custom_minimum_size = Vector2(256, 172)
+layout_mode = 1
+offset_left = 36.0
+offset_top = 23.0
+offset_right = 292.0
+offset_bottom = 195.0
+texture = ExtResource("2_43prf")
+expand_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="3DPartyLogos" unique_id=84212596]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.555
+anchor_top = 0.127
+anchor_right = 0.9110001
+anchor_bottom = 0.26500002
+offset_left = -0.2000122
+offset_top = 0.0399971
+offset_right = -0.040039063
+offset_bottom = -0.20000458
+texture = ExtResource("4_nfv4h")
+expand_mode = 2
