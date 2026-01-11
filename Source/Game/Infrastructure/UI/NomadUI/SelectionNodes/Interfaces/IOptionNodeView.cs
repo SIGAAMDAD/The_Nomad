@@ -23,9 +23,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface IOptionNodeView {
-		public OptionNode.OptionNode Owner { get; }
-
-		public void OnFocused();
-		public void OnUnfocused();
+		OptionNode.OptionNode Owner { get; }
 	};
 };

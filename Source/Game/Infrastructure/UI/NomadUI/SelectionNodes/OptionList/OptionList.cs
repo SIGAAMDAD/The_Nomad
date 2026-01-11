@@ -21,8 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
-using Godot;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/*
@@ -37,11 +36,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/// </summary>
 
 	public partial class OptionList : OptionNode.OptionNode {
-		[Export]
-		public string[] Items { get; private set; }
-
-		public override IOptionNodeView View => _view;
-		private IOptionListView _view;
+		public OptionListView View { get; private set; }
+		public InternString ListId { get; private set; }
 
 		/*
 		===============
@@ -51,7 +47,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		public override void _Ready() {
 			base._Ready();
 
-			_view = new OptionListView( this );
+			ListId = new InternString( Name );
+			View = new OptionListView( this );
 		}
 	};
 };

@@ -21,9 +21,15 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Interfaces;
-using Game.Application.Common.Models;
-using NomadCore.Abstractions.Services;
+using Game.Application.Common.Models.Interfaces;
+using Game.Application.Common.Models.ValueObjects;
+using Nomad.Core;
+using Nomad.Audio.Interfaces;
+using Nomad.Core.Exceptions;
+using Nomad.CVars;
+using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System;
 
 namespace Game.Application.Configuration.Services {
 	/*
@@ -36,69 +42,103 @@ namespace Game.Application.Configuration.Services {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed class AudioSettingsService : IAudioSettingsService {
-		private class AudioConfiguration( AudioSettingsService service ) : IAudioConfiguration {
-			private readonly AudioSettingsService _service = service;
+
+	internal sealed class AudioSettingsService : IAudioSettingsService {
+		private readonly record struct AudioConfiguration( AudioSettingsService owner ) : IAudioConfiguration {
+			private readonly AudioSettingsService _owner = owner;
 
 			public bool EffectsOn {
-				get => _service._config.EffectsOn;
-				set => _service._config = _service._config with { EffectsOn = value };
+				get => _owner._config.EffectsOn;
+				set => _owner._config = _owner._config with { EffectsOn = value };
 			}
 			public bool MusicOn {
-				get => _service._config.MusicOn;
-				set => _service._config = _service._config with { MusicOn = value };
+				get => _owner._config.MusicOn;
+				set => _owner._config = _owner._config with { MusicOn = value };
 			}
 			public float EffectsVolume {
-				get => _service._config.EffectsVolume;
-				set => _service._config = _service._config with { EffectsVolume = value };
+				get => _owner._config.EffectsVolume;
+				set => _owner._config = _owner._config with { EffectsVolume = value };
 			}
 			public float MusicVolume {
-				get => _service._config.MusicVolume;
-				set => _service._config = _service._config with { MusicVolume = value };
+				get => _owner._config.MusicVolume;
+				set => _owner._config = _owner._config with { MusicVolume = value };
+			}
+			public float MasterVolume {
+				get => _owner._config.MasterVolume;
+				set => _owner._config = _owner._config with { MasterVolume = value };
 			}
 			public int OutputAudioDevice {
-				get => _service._config.OutputDeviceIndex;
-				set => _service._config = _service._config with { OutputDeviceIndex = value };
+				get => _owner._config.OutputDeviceIndex;
+				set => _owner._config = _owner._config with { OutputDeviceIndex = value };
 			}
+
 			public string AudioDriver {
-				get => _service._config.AudioDriver;
+				get => _owner._config.AudioDriver;
+				set => _owner._config = _owner._config with { AudioDriver = value };
 			}
 		};
 
-		public IAudioConfiguration Configuration => _configuration;
-		private readonly AudioConfiguration _configuration;
+		public IAudioConfiguration Config => _audioConfig;
+		private readonly AudioConfiguration _audioConfig;
 
 		private AudioConfig _config;
 
 		private readonly ICVarSystemService _cvarSystem;
+		private readonly IAudioDevice _driver;
 
 		/*
 		===============
 		AudioSettingsService
 		===============
 		*/
-		public AudioSettingsService( ICVarSystemService cvarSystem ) {
+		public AudioSettingsService( ICVarSystemService cvarSystem, IAudioDevice driverService ) {
 			_cvarSystem = cvarSystem;
-			_configuration = new AudioConfiguration( this );
+			_driver = driverService;
 
-			_config = new AudioConfig() {
-				EffectsVolume = _cvarSystem.GetCVar<float>( "audio.EffectsVolume" ).Value,
-				MusicVolume = _cvarSystem.GetCVar<float>( "audio.MusicVolume" ).Value,
-				EffectsOn = _cvarSystem.GetCVar<bool>( "audio.EffectsOn" ).Value,
-				MusicOn = _cvarSystem.GetCVar<bool>( "audio.MusicOn").Value,
-				AudioDriver = _cvarSystem.GetCVar<string>( "audio.AudioDriver" ).Value,
-				OutputDeviceIndex = _cvarSystem.GetCVar<int>( "audio.OutputDeviceIndex" ).Value
+			var audioDriver = GetCVar<string>( Constants.CVars.Audio.AUDIO_DRIVER );
+			audioDriver.Value = _driver.AudioDriver;
+
+			_audioConfig = new AudioConfiguration( this );
+			
+			_config = new AudioConfig {
+				EffectsOn = GetCVar<bool>( Constants.CVars.Audio.EFFECTS_ON ).Value,
+				EffectsVolume = GetCVar<float>( Constants.CVars.Audio.EFFECTS_VOLUME ).Value,
+				MusicOn = GetCVar<bool>( Constants.CVars.Audio.MUSIC_ON ).Value,
+				MusicVolume = GetCVar<float>( Constants.CVars.Audio.MUSIC_VOLUME ).Value,
+				AudioDriver = audioDriver.Value,
+				OutputDeviceIndex = GetCVar<int>( Constants.CVars.Audio.OUTPUT_DEVICE_INDEX ).Value
 			};
 		}
 
 		/*
 		===============
-		GetCurrentConfig
+		SetConfig
 		===============
 		*/
-		public AudioConfig GetCurrentConfig() {
-			return _config;
+		public void SetConfig( AudioConfig config ) {
+			_config = config;
 		}
+
+		/*
+		===============
+		GetAudioDevices
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public IEnumerable<string> GetAudioDevices()
+			=> _driver.GetOutputDevices();
+
+		/*
+		===============
+		GetAudioDrivers
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public IEnumerable<string> GetAudioDrivers()
+			=> _driver.GetAudioDrivers();
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private ICVar<T> GetCVar<T>( string name ) =>
+			_cvarSystem.GetCVar<T>( name ) ?? throw new CVarMissing( name );
 	};
 };

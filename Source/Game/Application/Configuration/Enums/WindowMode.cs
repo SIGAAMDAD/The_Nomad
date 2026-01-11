@@ -21,11 +21,14 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Game.Application.Configuration.Enums {
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum WindowMode : byte {
+	public enum WindowMode : uint {
 		Windowed,
 		BorderlessWindowed,
 		Fullscreen,
@@ -37,13 +40,99 @@ namespace Game.Application.Configuration.Enums {
 		Default = ExclusiveFullscreen
 	};
 	
-	public enum WindowModeBasic : byte {
-		Windowed = WindowMode.Windowed,
-		BorderlessWindowed = WindowMode.BorderlessWindowed,
-		Fullscreen = WindowMode.ExclusiveFullscreen,
+	public enum WindowModeBasic : uint {
+		Windowed,
+		BorderlessWindowed,
+		Fullscreen,
 
 		Count,
 
 		Default = Fullscreen
+	};
+
+	public static class WindowModeExtensions {
+		private const string WINDOW_MODE_WINDOWED = "Windowed";
+		private const string WINDOW_MODE_BORDERLESS_WINDOWED = "Borderless Windowed";
+		private const string WINDOW_MODE_FULLSCREEN = "Fullscreen";
+		private const string WINDOW_MODE_BORDERLESS_FULLSCREEN = "Borderless Fullscreen";
+		private const string WINDOW_MODE_EXCLUSIVE_FULLSCREEN = "Fullscreen";
+
+		/*
+		===============
+		AsString
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static string AsString( this WindowModeBasic mode ) => mode switch {
+			WindowModeBasic.Windowed => WINDOW_MODE_WINDOWED,
+			WindowModeBasic.BorderlessWindowed => WINDOW_MODE_BORDERLESS_WINDOWED,
+			WindowModeBasic.Fullscreen => WINDOW_MODE_FULLSCREEN,
+			_ => throw new ArgumentOutOfRangeException( nameof( mode  ) )
+		};
+
+		/*
+		===============
+		AsRealMode
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static WindowMode AsRealMode( this WindowModeBasic mode ) => mode switch {
+			WindowModeBasic.Windowed => WindowMode.Windowed,
+			WindowModeBasic.BorderlessWindowed => WindowMode.BorderlessWindowed,
+			WindowModeBasic.Fullscreen => WindowMode.ExclusiveFullscreen,
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
+
+		/*
+		===============
+		AsString
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static string AsString( this WindowMode mode ) => mode switch {
+			WindowMode.Windowed => WINDOW_MODE_WINDOWED,
+			WindowMode.BorderlessWindowed => WINDOW_MODE_BORDERLESS_WINDOWED,
+			WindowMode.Fullscreen => WINDOW_MODE_FULLSCREEN,
+			WindowMode.BorderlessFullscreen => WINDOW_MODE_BORDERLESS_FULLSCREEN,
+			WindowMode.ExclusiveFullscreen => WINDOW_MODE_EXCLUSIVE_FULLSCREEN,
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
+
+		/*
+		===============
+		AsUIMode
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static WindowModeBasic AsUIMode( this WindowMode mode ) => mode switch {
+			WindowMode.Windowed => WindowModeBasic.Windowed,
+			WindowMode.BorderlessWindowed => WindowModeBasic.BorderlessWindowed,
+			WindowMode.BorderlessFullscreen or WindowMode.Fullscreen or WindowMode.ExclusiveFullscreen => WindowModeBasic.Fullscreen,
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
 	};
 };

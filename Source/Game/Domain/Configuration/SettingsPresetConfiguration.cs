@@ -21,7 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Configuration.Enums;
+using Game.Domain.Configuration.Enums;
 using System.Collections.Generic;
 
 namespace Game.Domain.Configuration {

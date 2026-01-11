@@ -22,7 +22,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Domain.Configuration.Interfaces;
-using NomadCore.Abstractions.Services;
+using Nomad.Core.Exceptions;
+using Nomad.CVars;
 using System;
 using System.Collections.Generic;
 
@@ -50,7 +51,7 @@ namespace Game.Infrastructure.Configuration {
 		/// 
 		/// </summary>
 		/// <param name="cvarSystem"></param>
-		public SettingsDataRepository( ICVarSystemService? cvarSystem ) {
+		public SettingsDataRepository( ICVarSystemService cvarSystem ) {
 			ArgumentNullException.ThrowIfNull( cvarSystem );
 
 			_cvarSystem = cvarSystem;
@@ -69,7 +70,7 @@ namespace Game.Infrastructure.Configuration {
 		/// <returns></returns>
 		/// <exception cref="KeyNotFoundException"></exception>
 		public T GetValue<T>( string name ) {
-			var cvar = _cvarSystem.GetCVar<T>( name ) ?? throw new KeyNotFoundException( name );
+			var cvar = _cvarSystem.GetCVar<T>( name ) ?? throw new CVarMissing( name );
 			return cvar.Value;
 		}
 
@@ -85,7 +86,7 @@ namespace Game.Infrastructure.Configuration {
 		/// <param name="name">The cvar's name.</param>
 		/// <param name="value">The value to assign to the cvar.</param>
 		public void SetValue<T>( string name, T value ) {
-			var cvar = _cvarSystem.GetCVar<T>( name ) ?? throw new KeyNotFoundException( name );
+			var cvar = _cvarSystem.GetCVar<T>( name ) ?? throw new CVarMissing( name );
 			cvar.Value = value;
 		}
 

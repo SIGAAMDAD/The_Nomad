@@ -21,8 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Game.Application.Configuration.Enums {
-	public enum VSyncMode : byte {
+	public enum VSyncMode : uint {
 		Off,
 		Adaptive,
 		On,
@@ -33,12 +36,34 @@ namespace Game.Application.Configuration.Enums {
 		Default = Adaptive
 	};
 
-	public enum VSyncModeBasic : byte {
-		Off = VSyncMode.Off,
-		On = VSyncMode.On,
+	public enum VSyncModeBasic : uint {
+		Off,
+		On,
 
 		Count,
 
 		Default = Off
+	};
+
+	/*
+	===================================================================================
+	
+	VSyncModeExtensions
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	public static class VSyncModeExtensions {
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static string AsString( this VSyncMode mode ) => mode switch {
+			VSyncMode.Off => "Off",
+			VSyncMode.On => "On",
+			VSyncMode.Adaptive => "Adaptive",
+			VSyncMode.TripleBuffered => "Triple Buffered",
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
 	};
 };

@@ -1,28 +1,52 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6dwqm35gxe77"]
+[gd_scene format=3 uid="uid://b6dwqm35gxe77"]
 
 [ext_resource type="Script" uid="uid://h8opghtpx1ji" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
-[ext_resource type="StyleBox" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
 [ext_resource type="Script" uid="uid://b107hcub8bvir" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Label/Label.cs" id="2_ey12s"]
-[ext_resource type="StyleBox" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
 
-[node name="SliderOption" type="HBoxContainer"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_up0iq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mk8c5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qfg6k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s08g1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur6u2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6qup"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3gxsm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yiorb"]
+
+[node name="SliderOption" type="HBoxContainer" unique_id=233075417]
 anchors_preset = -1
-anchor_right = 0.85
-anchor_bottom = 0.083
-offset_right = -504.0
-offset_bottom = 0.159996
+anchor_right = 0.07700001
+anchor_bottom = 0.083000004
+offset_right = -9.280006
+offset_bottom = 0.15999222
 script = ExtResource("1_jmcvf")
 metadata/_edit_use_anchors_ = true
 
-[node name="Title" type="Label" parent="."]
-custom_minimum_size = Vector2(260, 0)
+[node name="Title" type="Label" parent="." unique_id=540623078]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_alignment = 1
 script = ExtResource("2_ey12s")
 
-[node name="Input" type="HSlider" parent="."]
-custom_minimum_size = Vector2(280, 0)
+[node name="LeftIcon" type="Button" parent="." unique_id=129810878]
+layout_mode = 2
+focus_neighbor_right = NodePath("../Input/Value")
+theme_override_styles/normal = SubResource("StyleBoxTexture_up0iq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mk8c5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qfg6k")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_s08g1")
+text = "<"
+flat = true
+
+[node name="Input" type="HSlider" parent="." unique_id=359159165]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -34,19 +58,29 @@ theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
 value = 72.0
 rounded = true
 
-[node name="Value" type="Label" parent="Input"]
+[node name="Value" type="Label" parent="Input" unique_id=358455664]
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.429
-anchor_top = -0.219
-anchor_right = 0.571
-anchor_bottom = 1.219
-offset_left = 19.38
-offset_top = 0.00400019
-offset_right = -19.38
-offset_bottom = -0.00400162
+anchor_left = -4.5
+anchor_top = -0.21900001
+anchor_right = 5.5000005
+anchor_bottom = 1.2190001
+offset_left = 39.096
+offset_top = 0.0040004253
+offset_right = -39.096
+offset_bottom = -0.004003525
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
+
+[node name="RightIcon" type="Button" parent="." unique_id=499043046]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Input/Value")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ur6u2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_w6qup")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_3gxsm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yiorb")
+text = ">"
+flat = true

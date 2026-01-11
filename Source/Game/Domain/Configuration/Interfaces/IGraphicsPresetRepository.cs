@@ -21,8 +21,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Models;
-using Game.Application.Configuration.Enums;
+using Game.Application.Common.Models.ValueObjects;
+using Game.Domain.Configuration.Enums;
 
 namespace Game.Domain.Configuration.Interfaces {
 	public interface IGraphicsPresetRepository {

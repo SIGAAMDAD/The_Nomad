@@ -21,8 +21,8 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/*
@@ -42,8 +42,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 		[Export( PropertyHint.Range, "0.0,1000.0" )]
 		public float Max { get; private set; } = 100.0f;
 
-		public override IOptionNodeView View => _view;
-		private IOptionSliderView _view;
+		public OptionSliderView View { get; private set; }
+		public InternString SliderId { get; private set; }
 
 		/*
 		===============
@@ -53,7 +53,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 		public override void _Ready() {
 			base._Ready();
 
-			_view = new OptionSliderView( this, Min, Max );
+			SliderId = new InternString( Name );
+			View = new OptionSliderView( this, Min, Max );
 		}
 	};
 };

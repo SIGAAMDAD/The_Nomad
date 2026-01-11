@@ -21,12 +21,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Godot;
-
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	public interface ISelectionNode {
 		public bool IsFocused { get; }
-		public StyleBoxTexture FocusedStyleBox { get; }
 
 		public void OnFocused();
 		public void OnUnfocused();

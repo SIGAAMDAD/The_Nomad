@@ -21,27 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Infrastructure;
-using NomadCore.Interfaces.EventSystem;
-using NomadCore.Systems.EventSystem.Common;
+using Nomad.Core.Util;
 
 namespace Game.Domain.Events {
-	public readonly struct SettingsOptionValueChangedEventData( string name, Any value ) : IEventArgs {
-		public readonly string Name = name;
-		public readonly Any Value = value;
-	};
-
-	/*
-	===================================================================================
-	
-	SettingsOptionValueChanged
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-
-	public sealed class SettingsOptionValueChanged() : GameEvent<SettingsOptionValueChangedEventData>( nameof( SettingsOptionValueChanged ) ) {
-	};
+	public readonly record struct SettingsOptionValueChangedEventData(
+		InternString Name,
+		Any Value
+	);
 };

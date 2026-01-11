@@ -21,8 +21,13 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using System;
+
 namespace Game.Application.Configuration.Enums {
-	public enum AntiAliasing : byte {
+	/// <summary>
+	/// Anti aliasing mode.
+	/// </summary>
+	public enum AntiAliasing : uint {
 		None,
 		FXAA,
 		TAA,
@@ -30,20 +35,61 @@ namespace Game.Application.Configuration.Enums {
 		MSAA_2x,
 		MSAA_4x,
 		MSAA_8x,
-		FXAA_and_TAA,
 
 		Count,
 
 		Default = FXAA
 	};
 
-	public enum AntiAliasingBasic : byte {
+	public enum AntiAliasingBasic : uint {
 		None = AntiAliasing.None,
 		EdgeAA = AntiAliasing.FXAA,
 		ScreenSpace = AntiAliasing.MSAA_4x,
 
-		Count,
+		Count = 3,
 
 		Default = EdgeAA
+	};
+
+	public static class AntiAliasingExtensions {
+		/*
+		===============
+		AsString
+		===============
+		*/
+		/// <summary>
+		/// Converts a <see cref="AntiAliasingBasic"/> enum to a human-readable string.
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static string AsString( this AntiAliasingBasic mode ) => mode switch {
+			AntiAliasingBasic.None => "None",
+			AntiAliasingBasic.EdgeAA => "Edge AA",
+			AntiAliasingBasic.ScreenSpace => "ScreenSpace",
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
+
+		/*
+		===============
+		AsString
+		===============
+		*/
+		/// <summary>
+		/// Converts a <see cref="AntiAliasing"/> enum to a human-readable string.
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static string AsString( this AntiAliasing mode ) => mode switch {
+			AntiAliasing.None => "None",
+			AntiAliasing.FXAA => "FXAA",
+			AntiAliasing.TAA => "TAA",
+			AntiAliasing.SMAA => "SMAA",
+			AntiAliasing.MSAA_2x => "MSAA 2x",
+			AntiAliasing.MSAA_4x => "MSAA 4x",
+			AntiAliasing.MSAA_8x => "MSAA 8x",
+			_ => throw new ArgumentOutOfRangeException( nameof( mode ) )
+		};
 	};
 };

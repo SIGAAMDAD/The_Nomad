@@ -1,27 +1,5 @@
-/*
-===========================================================================
-The Nomad AGPL Source Code
-Copyright (C) 2025 Noah Van Til
-
-The Nomad Source Code is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-The Nomad Source Code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
-
-If you have questions concerning this license or the applicable additional
-terms, you may contact me via email at nyvantil@gmail.com.
-===========================================================================
-*/
-
-using Game.Infrastructure.UI.NomadUI.Menus;
+using Game.Infrastructure;
+using Godot;
 
 namespace Game.Presentation.Screens.MainMenu {
 	/*
@@ -32,16 +10,39 @@ namespace Game.Presentation.Screens.MainMenu {
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	/// Handles the main menu's creation.
 	/// </summary>
+	
+	public sealed partial class MainMenu : Control {
+		private MainMenuView _view;
+		private MainMenuController _controller;
 
-	public sealed partial class MainMenu : BaseMenu {
 		/*
 		===============
 		_Ready
 		===============
 		*/
 		public override void _Ready() {
+			base._Ready();
+
+			var bootstrapper = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
+
+			_view = new MainMenuView( this );
+			_controller = new MainMenuController(
+				bootstrapper.ServiceLocator,
+				_view
+			);
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		public override void _ExitTree() {
+			base._ExitTree();
+
+			_controller.Dispose();
 		}
 	};
 };

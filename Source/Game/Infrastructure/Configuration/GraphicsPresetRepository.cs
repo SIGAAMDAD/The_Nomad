@@ -21,8 +21,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common.Models;
+using Game.Application.Common.Models.ValueObjects;
 using Game.Application.Configuration.Enums;
+using Game.Domain.Configuration.Enums;
 using Game.Domain.Configuration.Interfaces;
 using System.Collections.Generic;
 
@@ -226,6 +227,14 @@ namespace Game.Infrastructure.Configuration {
 				AnimationQuality = AnimationQuality.High,
 				ParticleQuality = ParticleQuality.High,
 			};
+		}
+
+		public ShadowConfig GetShadowPreset( QualitySetting preset ) {
+			throw new System.NotImplementedException();
+		}
+
+		public QualitySetting DetectShadowPreset( ShadowConfig currentValues ) {
+			throw new System.NotImplementedException();
 		}
 	};
 };

@@ -21,14 +21,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
-using NomadCore.Systems.EventSystem.Common;
-using System;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -46,8 +42,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		private static readonly StringName ON_STRING = TranslationServer.Translate( "UI_ON" );
 		private static readonly StringName OFF_STRING = TranslationServer.Translate( "UI_OFF" );
 
-		public GameEvent Toggled => _toggled;
-		private readonly GameEvent _toggled = new GameEvent( nameof( Toggled ) );
+		public InternString CheckboxId => _owner.CheckboxId;
+
+		public Button Left => _owner.GetNode<Button>( "LeftIcon" );
+		public Button Right => _owner.GetNode<Button>( "RightIcon" );
 
 		private readonly Godot.Label _valueLabel;
 
@@ -59,12 +57,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		public OptionCheckboxView( OptionCheckbox owner )
 			: base( owner )
 		{
-			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
-			ArgumentNullException.ThrowIfNull( eventBus );
-			eventBus.ConnectSignal( _owner.GetNode<Godot.Button>( "LeftIcon" ), Button.SignalName.Pressed, _owner, OnToggled );
-			eventBus.ConnectSignal( _owner.GetNode<Godot.Button>( "RightIcon" ), Button.SignalName.Pressed, _owner, OnToggled );
-
 			_valueLabel = _owner.GetNode<Godot.Label>( "Value" );
+			SetValue( false );
 		}
 
 		/*
@@ -78,15 +72,6 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		/// <param name="value"></param>
 		public void SetValue( bool value ) {
 			_valueLabel.Text = value ? ON_STRING : OFF_STRING;
-		}
-
-		/*
-		===============
-		OnToggled
-		===============
-		*/
-		private void OnToggled() {
-			_toggled.Publish( EmptyEventArgs.Args );
 		}
 	};
 };

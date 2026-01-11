@@ -21,10 +21,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
+using Game.Application.UI;
+using Game.Domain.Events.UI;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using NomadCore.Interfaces.EventSystem;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -39,10 +41,15 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/// </summary>
 	
 	public class OptionCheckboxController : OptionNodeController<IOptionCheckboxView>, IOptionCheckboxController {
-		public OptionCheckboxValueChanged ValueChanged => _valueChanged;
-		private readonly OptionCheckboxValueChanged _valueChanged = new OptionCheckboxValueChanged();
+		public InternString CheckboxId => _view.CheckboxId;
 
-		public bool Value => _value;
+		public bool Value {
+			get => _value;
+			set {
+				_value = value;
+				_view.SetValue( value );
+			}
+		}
 		private bool _value;
 
 		/*
@@ -53,13 +60,16 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="eventBus"></param>
+		/// <param name="eventFactory"></param>
 		/// <param name="view"></param>
-		public OptionCheckboxController( IOptionCheckboxView view, bool value )
-			: base( view )
+		public OptionCheckboxController( IGodotEventBusService eventBus, OptionCheckboxView view )
+			: base( eventBus, view )
 		{
-			_view.Toggled.Subscribe( this, OnToggled );
-			_value = value;
-			_view.SetValue( _value );
+			_view.SetValue( false );
+
+			eventBus.ConnectSignal( view.Left, Godot.Button.SignalName.Pressed, view.Left, OnToggled );
+			eventBus.ConnectSignal( view.Right, Godot.Button.SignalName.Pressed, view.Right, OnToggled );
 		}
 
 		/*
@@ -70,11 +80,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventData"></param>
-		/// <param name="args"></param>
-		private void OnToggled( in IGameEvent eventData, in IEventArgs args ) {
+		private void OnToggled() {
 			_value = !_value;
-			_valueChanged.Publish( new OptionCheckboxValueChangedEventData( _view.Owner.ConfigVarName, _value ) );
+
+			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
+			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT, new OptionCheckboxValueChangedEventArgs( _view.CheckboxId, _value ) );
 		}
 	};
 };

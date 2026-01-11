@@ -21,7 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
+
 namespace Game.Domain.Configuration {
-	public record CVarValue( string name, string value ) {
-	}
+	public record CVarValue(
+		InternString Name,
+		string Value
+	);
 };

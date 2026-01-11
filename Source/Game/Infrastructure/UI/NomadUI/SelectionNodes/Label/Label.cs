@@ -22,8 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using NomadCore.Abstractions.Services;
-using NomadCore.Infrastructure;
+using Nomad.Core.Events;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/*
@@ -37,15 +36,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/// 
 	/// </summary>
 
-	public partial class Label : global::Godot.Label, ISelectionNode {
+	public partial class Label : Godot.Label {
 		private static readonly StringName @NormalThemeStyleBoxName = "normal";
 
 		public bool IsFocused => _isFocused;
-		public StyleBoxTexture FocusedStyleBox => _styleBox;
-
 		private bool _isFocused = false;
-
-		private StyleBoxTexture _styleBox;
 
 		/*
 		===============
@@ -90,16 +85,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		public override void _Ready() {
 			base._Ready();
 
-			var eventBus = ServiceRegistry.Get<IGameEventBusService>();
+			var eventBus = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGodotEventBusService>();
 			eventBus.ConnectSignal( this, Label.SignalName.FocusEntered, this, Callable.From( OnFocused ) );
 			eventBus.ConnectSignal( this, Label.SignalName.MouseEntered, this, Callable.From( OnFocused ) );
 			eventBus.ConnectSignal( this, Label.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
 			eventBus.ConnectSignal( this, Label.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
-
-			_styleBox = new StyleBoxTexture() {
-				//Texture = TextureCache.GetTexture( "res://textures/hud/ink_streak.dds" )
-			};
-			AddThemeStyleboxOverride( NormalThemeStyleBoxName, _styleBox );
 		}
 	};
 };

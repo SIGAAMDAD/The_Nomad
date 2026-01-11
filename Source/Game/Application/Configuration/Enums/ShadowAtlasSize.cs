@@ -21,12 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Game.Application.Configuration.Enums {
-	public enum ShadowAtlasSize : byte {
+	public enum ShadowAtlasSize : uint {
 		Size1024,
 		Size2048,
 		Size4096,
@@ -38,36 +37,48 @@ namespace Game.Application.Configuration.Enums {
 	};
 
 	public static class ShadowAtlasSizeExtensions {
-		private static readonly Dictionary<ShadowAtlasSize, string> _atlasSizeStrings = new() {
-			[ ShadowAtlasSize.Size1024 ] = "1024",
-			[ ShadowAtlasSize.Size2048 ] = "2048",
-			[ ShadowAtlasSize.Size4096 ] = "4096",
-			[ ShadowAtlasSize.Size8192 ] = "8912"
-		};
+		private const string SHADOW_ATLAS_SIZE_1024 = "1024";
+		private const string SHADOW_ATLAS_SIZE_2048 = "2048";
+		private const string SHADOW_ATLAS_SIZE_4096 = "4096";
+		private const string SHADOW_ATLAS_SIZE_8192 = "8192";
 
 		/*
 		===============
 		ToDisplayString
 		===============
 		*/
-		public static string ToDisplayString( this ShadowAtlasSize atlasSize ) {
-			return _atlasSizeStrings[ atlasSize ];
-		}
+		public static InternString ToDisplayString( this ShadowAtlasSize atlasSize ) => atlasSize switch {
+			ShadowAtlasSize.Size1024 => new( SHADOW_ATLAS_SIZE_1024 ),
+			ShadowAtlasSize.Size2048 => new( SHADOW_ATLAS_SIZE_2048 ),
+			ShadowAtlasSize.Size4096 => new( SHADOW_ATLAS_SIZE_4096 ),
+			ShadowAtlasSize.Size8192 => new( SHADOW_ATLAS_SIZE_8192 ),
+			_ => throw new ArgumentOutOfRangeException( nameof( atlasSize ) )
+		};
 		
 		/*
 		===============
 		TryParse
 		===============
 		*/
-		public static bool TryParse( string atlasSizeString, out ShadowAtlasSize atlasSize ) {
-			foreach ( var match in _atlasSizeStrings ) {
-				if ( match.Value.Equals( atlasSizeString, StringComparison.OrdinalIgnoreCase ) ) {
-					atlasSize = match.Key;
-					return true;
-				}
+		public static bool TryParse( InternString atlasSizeString, out ShadowAtlasSize atlasSize ) {
+			switch ( (string)atlasSizeString ) {
+				case SHADOW_ATLAS_SIZE_1024:
+					atlasSize = ShadowAtlasSize.Size1024;
+					break;
+				case SHADOW_ATLAS_SIZE_2048:
+					atlasSize = ShadowAtlasSize.Size2048;
+					break;
+				case SHADOW_ATLAS_SIZE_4096:
+					atlasSize = ShadowAtlasSize.Size4096;
+					break;
+				case SHADOW_ATLAS_SIZE_8192:
+					atlasSize = ShadowAtlasSize.Size8192;
+					break;
+				default:
+					atlasSize = ShadowAtlasSize.Default;
+					return false;
 			}
-			atlasSize = ShadowAtlasSize.Default;
-			return false;
+			return true;
 		}
 	};
 };

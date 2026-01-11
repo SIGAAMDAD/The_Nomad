@@ -21,11 +21,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Common;
-using System.Collections.Generic;
+using Nomad.Core.Util;
+using System;
 
 namespace Game.Application.Configuration.Enums {
-	public enum AspectRatio : byte {
+	public enum AspectRatio : uint {
 		Aspect_Automatic,
 		Aspect_4_3,
 		Aspect_16_10,
@@ -38,37 +38,53 @@ namespace Game.Application.Configuration.Enums {
 	};
 
 	public static class AspectRatioExtensions {
-		private static readonly Dictionary<AspectRatio, string> _aspectRatioStrings = new() {
-			[ AspectRatio.Aspect_Automatic ] = TranslationKeys.Display.AspectRatioAutomatic,
-			[ AspectRatio.Aspect_4_3 ] = "4:3",
-			[ AspectRatio.Aspect_16_10 ] = "16:10",
-			[ AspectRatio.Aspect_16_9 ] = "16:9",
-			[ AspectRatio.Aspect_21_9 ] = "21:9"
-		};
+		private const string ASPECT_RATIO_AUTOMATIC = "Automatic";
+		private const string ASPECT_RATIO_4_3 = "4:3";
+		private const string ASPECT_RATIO_16_10 = "16:10";
+		private const string ASPECT_RATIO_16_9 = "16:9";
+		private const string ASPECT_RATIO_21_9 = "21:9";
 
 		/*
 		===============
 		ToDisplayString
 		===============
 		*/
-		public static string ToDisplayString( this AspectRatio aspectRatio ) {
-			return _aspectRatioStrings[ aspectRatio ];
-		}
+		public static InternString ToDisplayString( this AspectRatio aspectRatio ) => aspectRatio switch {
+			AspectRatio.Aspect_Automatic => new( ASPECT_RATIO_AUTOMATIC ),
+			AspectRatio.Aspect_4_3 => new( ASPECT_RATIO_4_3 ),
+			AspectRatio.Aspect_16_10 => new( ASPECT_RATIO_16_10 ),
+			AspectRatio.Aspect_16_9 => new( ASPECT_RATIO_16_9 ),
+			AspectRatio.Aspect_21_9 => new( ASPECT_RATIO_21_9 ),
+			_ => throw new ArgumentOutOfRangeException( nameof( aspectRatio ) )
+		};
 		
 		/*
 		===============
 		TryParse
 		===============
 		*/
-		public static bool TryParse( string aspectRatioString, out AspectRatio aspectRatio ) {
-			foreach ( var match in _aspectRatioStrings ) {
-				if ( match.Value.Equals( aspectRatioString, System.StringComparison.OrdinalIgnoreCase ) ) {
-					aspectRatio = match.Key;
-					return true;
-				}
+		public static bool TryParse( InternString aspectRatioString, out AspectRatio aspectRatio ) {
+			switch ( (string)aspectRatioString ) {
+				case ASPECT_RATIO_AUTOMATIC:
+					aspectRatio = AspectRatio.Aspect_Automatic;
+					break;
+				case ASPECT_RATIO_4_3:
+					aspectRatio = AspectRatio.Aspect_4_3;
+					break;
+				case ASPECT_RATIO_16_10:
+					aspectRatio = AspectRatio.Aspect_16_10;
+					break;
+				case ASPECT_RATIO_16_9:
+					aspectRatio = AspectRatio.Aspect_16_9;
+					break;
+				case ASPECT_RATIO_21_9:
+					aspectRatio = AspectRatio.Aspect_21_9;
+					break;
+				default:
+					aspectRatio = AspectRatio.Default;
+					return false;
 			}
-			aspectRatio = AspectRatio.Default;
-			return false;
+			return true;
 		}
 	};
 };

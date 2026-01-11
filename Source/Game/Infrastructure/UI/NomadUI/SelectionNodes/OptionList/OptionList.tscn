@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://d36xll77kxc8l"]
+[gd_scene format=3 uid="uid://d36xll77kxc8l"]
 
 [ext_resource type="Script" uid="uid://digumf5fj1s10" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionList/OptionList.cs" id="1_lxw3y"]
-[ext_resource type="FontFile" uid="uid://c56hmhlimhld7" path="res://Spell of Asia.ttf" id="2_lxw3y"]
 [ext_resource type="Script" uid="uid://b107hcub8bvir" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Label/Label.cs" id="3_7h574"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pgw2q"]
@@ -22,26 +21,25 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_di8p4"]
 
-[node name="ListOption" type="HBoxContainer"]
+[node name="ListOption" type="HBoxContainer" unique_id=560109090]
 anchors_preset = -1
 anchor_right = 0.856
 anchor_bottom = 0.083
 offset_right = 0.159973
 offset_bottom = 0.159996
+focus_mode = 2
 script = ExtResource("1_lxw3y")
 metadata/_edit_use_anchors_ = true
 
-[node name="Title" type="Label" parent="."]
-custom_minimum_size = Vector2(260, 0)
+[node name="Title" type="Label" parent="." unique_id=762957306]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_alignment = 1
 script = ExtResource("3_7h574")
 
-[node name="LeftIcon" type="Button" parent="."]
+[node name="LeftIcon" type="Button" parent="." unique_id=1369047634]
 layout_mode = 2
 focus_neighbor_right = NodePath("../Value")
-theme_override_fonts/font = ExtResource("2_lxw3y")
 theme_override_styles/normal = SubResource("StyleBoxTexture_pgw2q")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_leexh")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h574")
@@ -49,19 +47,18 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_lxw3y")
 text = "<"
 flat = true
 
-[node name="Value" type="Label" parent="."]
-custom_minimum_size = Vector2(240, 0)
+[node name="Value" type="Label" parent="." unique_id=1287402549]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_neighbor_left = NodePath("../LeftIcon")
 focus_neighbor_right = NodePath("../RightIcon")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2n36q")
 horizontal_alignment = 1
+text_overrun_behavior = 5
 
-[node name="RightIcon" type="Button" parent="."]
+[node name="RightIcon" type="Button" parent="." unique_id=1332607949]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Value")
-theme_override_fonts/font = ExtResource("2_lxw3y")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7io4o")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_k52ao")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_ghq0c")

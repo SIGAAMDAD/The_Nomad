@@ -21,10 +21,14 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Events;
+using Game.Application.UI;
+using Game.Domain.Events.UI;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using NomadCore.Interfaces.EventSystem;
+using Godot;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
@@ -40,8 +44,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 	/// </summary>
 
 	public class OptionListController : OptionNodeController<IOptionListView>, IOptionListController {
-		public OptionListValueChanged ValueChanged => _valueChanged;
-		private readonly OptionListValueChanged _valueChanged = new OptionListValueChanged();
+		private static readonly NodePath LEFT_BUTTON_NODEPATH = "LeftIcon";
+		private static readonly NodePath RIGHT_BUTTON_NODEPATH = "RightIcon";
+
+		public InternString ListId => _view.ListId;
 
 		public int Value => _value;
 		private int _value;
@@ -56,17 +62,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="eventBus"></param>
 		/// <param name="view"></param>
-		/// <param name="items"></param>
-		/// <param name="value"></param>
-		public OptionListController( IOptionListView view, IReadOnlyList<string> items, int value )
-			: base( view )
+		public OptionListController( IGodotEventBusService eventBus, OptionListView view )
+			: base( eventBus, view )
 		{
-			_view.TogglePrev.Subscribe( this, OnPrevToggle );
-			_view.ToggleNext.Subscribe( this, OnNextToggle );
-
-			_items = items;
-			_value = value;
+			eventBus.ConnectSignal( view.Owner.GetNode<Button>( LEFT_BUTTON_NODEPATH ), Button.SignalName.Pressed, view.Owner, OnPrevToggle );
+			eventBus.ConnectSignal( view.Owner.GetNode<Button>( RIGHT_BUTTON_NODEPATH ), Button.SignalName.Pressed, view.Owner, OnNextToggle );
 		}
 
 		/*
@@ -80,6 +82,27 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <param name="items"></param>
 		public void SetOptions( IReadOnlyList<string> items ) {
 			_items = items;
+
+			// we don't know how many elements we have so just reset
+			SetValue( 0 );
+		}
+
+		/*
+		===============
+		SetValue
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="value"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void SetValue( int value ) {
+			if ( _items == null ) {
+				throw new InvalidOperationException();
+			}
+			_value = value;
+			_view.SetOption( _items[ value ] );
 		}
 
 		/*
@@ -90,14 +113,18 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventData"></param>
-		/// <param name="args"></param>
-		private void OnPrevToggle( in IGameEvent eventData, in IEventArgs args ) {
+		private void OnPrevToggle() {
+			if ( _items == null ) {
+				return;
+			}
 			_value--;
 			if ( _value < 0 ) {
 				_value = _items.Count - 1;
 			}
-			_valueChanged.Publish( new OptionListValueChangedEventData( _view.Owner.ConfigVarName, _value ) );
+			_view.SetOption( _items[ _value ] );
+
+			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
+			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_LIST_VALUE_SET_EVENT, new OptionListValueSetEventArgs( _view.ListId, _value ) );
 		}
 
 		/*
@@ -108,14 +135,18 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventData"></param>
-		/// <param name="args"></param>
-		private void OnNextToggle( in IGameEvent eventData, in IEventArgs args ) {
+		private void OnNextToggle() {
+			if ( _items == null ) {
+				return;
+			}
 			_value++;
 			if ( _value >= _items.Count ) {
 				_value = 0;
 			}
-			_valueChanged.Publish( new OptionListValueChangedEventData( _view.Owner.ConfigVarName, _value ) );
+			_view.SetOption( _items[ _value ] );
+
+			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
+			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_LIST_VALUE_SET_EVENT, new OptionListValueSetEventArgs( _view.ListId, _value ) );
 		}
 	};
 };
