@@ -41,15 +41,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
-
+		protected override void OnInit() {
 			CheckboxId = new InternString( Name );
 			View = new OptionCheckboxView( this );
 		}

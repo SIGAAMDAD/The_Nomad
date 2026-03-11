@@ -1,10 +1,11 @@
 using Game.Application.UI;
 using Game.Application.UI.Menus.Events;
 using Game.Domain.Events.UI;
-using Game.Infrastructure;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.ServiceRegistry.Interfaces;
+using Nomad.Events.Global;
 using System;
 
 namespace Game.Presentation.Screens.MainMenu {
@@ -22,6 +23,10 @@ namespace Game.Presentation.Screens.MainMenu {
 	internal sealed class MainMenuController : IDisposable {
 		private readonly MainMenuView _view;
 
+		private readonly ISubscriptionHandle _clicked;
+
+		private bool _isDisposed = false;
+
 		/*
 		===============
 		MainMenuController
@@ -32,18 +37,17 @@ namespace Game.Presentation.Screens.MainMenu {
 		/// </summary>
 		/// <param name="locator"></param>
 		/// <param name="view"></param>
-		public MainMenuController( IServiceLocator locator, MainMenuView view ) {
+		public MainMenuController( MainMenuView view ) {
 			_view = view;
 
-			var audioDevice = locator.GetService<IAudioDevice>();
+			var audioDevice = ServiceLocator.GetService<IAudioDevice>();
 			audioDevice.LoadBank( "res://Assets/Audio/Banks/Desktop/ui.bank" );
 			audioDevice.LoadBank( "res://Assets/Audio/Banks/Desktop/music.bank" );
 
-			var musicService = locator.GetService<IMusicService>();
+			var musicService = ServiceLocator.GetService<IMusicService>();
 			musicService.PlayTheme( "event:/Music/UserInterface/MainMenuTheme" );
 
-			var eventFactory = locator.GetService<IGameEventRegistryService>();
-			UIEventHelper.SubscribeToUIEvent<ButtonClickedEventArgs>( eventFactory, this, UIConstants.BUTTON_CLICKED_EVENT, OnButtonClicked );
+			_clicked = GameEventRegistry.GetEvent<ButtonClickedEventArgs>( UIConstants.BUTTON_CLICKED_EVENT, UIConstants.NAMESPACE ).Subscribe( OnButtonClicked );
 		}
 
 		/*
@@ -55,8 +59,11 @@ namespace Game.Presentation.Screens.MainMenu {
 		/// 
 		/// </summary>
 		public void Dispose() {
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.UnsubscribeFromUIEvent<ButtonClickedEventArgs>( eventFactory, this, UIConstants.BUTTON_CLICKED_EVENT, OnButtonClicked );
+			if ( !_isDisposed ) {
+				_clicked?.Dispose();
+			}
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*
@@ -70,15 +77,12 @@ namespace Game.Presentation.Screens.MainMenu {
 		/// <param name="args"></param>
 		/// <exception cref="Exception"></exception>
 		private void OnButtonClicked( in ButtonClickedEventArgs args ) {
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
 			if ( args.ButtonId == _view.NewGameButton.ButtonId ) {
-			//	UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.CharacterCreation ) );
-			} else if ( args.ButtonId == _view.CreditsButton.ButtonId ) {
-				
+			} else if ( args.ButtonId == _view.CreditsButton.ButtonId ) {				
 			} else if ( args.ButtonId == _view.ExtrasButton.ButtonId ) {
-				UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
+				GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 			} else if ( args.ButtonId == _view.SettingsButton.ButtonId ) {
-				UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
+				GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 			} else if ( args.ButtonId == _view.QuitGameButton.ButtonId ) {
 				System.Environment.Exit( 0 );
 			} else {

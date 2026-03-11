@@ -24,7 +24,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct ButtonClickedEventArgs(
-		InternString ButtonId
-	);
+	public readonly struct ButtonClickedEventArgs {
+		public InternString ButtonId => _buttonId;
+		private readonly InternString _buttonId;
+
+		public ButtonClickedEventArgs( InternString buttonId ) {
+			_buttonId = buttonId;
+		}
+	};
 };

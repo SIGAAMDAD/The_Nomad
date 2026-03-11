@@ -23,22 +23,24 @@ terms, you may contact me via email at nyvantil@gmail.com.
 
 namespace Game.Application.UI {
 	public static class UIConstants {
-		public const string BUTTON_CLICKED_EVENT = "UIEvents:ButtonClicked";
-		public const string BUTTON_FOCUSED_EVENT = "UIEvents:ButtonFocused";
-		public const string BUTTON_UNFOCUSED_EVENT = "UIEvents:ButtonUnfocused";
+		public const string NAMESPACE = "UIEvents";
+
+		public const string BUTTON_CLICKED_EVENT = NAMESPACE + ":ButtonClicked";
+		public const string BUTTON_FOCUSED_EVENT = NAMESPACE + ":ButtonFocused";
+		public const string BUTTON_UNFOCUSED_EVENT = NAMESPACE + ":ButtonUnfocused";
 		
-		public const string OPTION_CHECKBOX_TOGGLED_EVENT = "UIEvents:OptionCheckboxToggled";
-		public const string OPTION_SLIDER_TOGGLED_LEFT_EVENT = "UIEvents:OptionSliderLeft";
-		public const string OPTION_SLIDER_TOGGLED_RIGHT_EVENT = "UIEvents:OptionSliderRight";
-		public const string OPTION_SLIDER_VALUE_CHANGED_EVENT = "UIEvents:OptionSliderValueChanged";
-		public const string OPTION_LIST_VALUE_SET_EVENT = "UIEvents:OptionListValueSet";
-		public const string OPTION_LIST_FOCUSED_EVENT = "UIEvents:OptionListFocused";
+		public const string OPTION_CHECKBOX_TOGGLED_EVENT = NAMESPACE + ":OptionCheckboxToggled";
+		public const string OPTION_SLIDER_TOGGLED_LEFT_EVENT = NAMESPACE + ":OptionSliderLeft";
+		public const string OPTION_SLIDER_TOGGLED_RIGHT_EVENT = NAMESPACE + ":OptionSliderRight";
+		public const string OPTION_SLIDER_VALUE_CHANGED_EVENT = NAMESPACE + ":OptionSliderValueChanged";
+		public const string OPTION_LIST_VALUE_SET_EVENT = NAMESPACE + ":OptionListValueSet";
+		public const string OPTION_LIST_FOCUSED_EVENT = NAMESPACE + ":OptionListFocused";
 
-		public const string MUGSHOT_FOCUSED_EVENT = "UIEvents:MugshotFocusedEvent";
+		public const string MUGSHOT_FOCUSED_EVENT = NAMESPACE + ":MugshotFocusedEvent";
 
-		public const string MENU_STATE_CHANGED_EVENT = "UIEvents:MenuStateChanged";
+		public const string MENU_STATE_CHANGED_EVENT = NAMESPACE + ":MenuStateChanged";
 
-		public const string MENU_TRANSITION_REQUESTED_EVENT = "UIEvents:MenuTransitionRequested";
-		public const string MENU_TRANSITION_COMPLETED_EVENT = "UIEvents:MenuTransitionCompleted";
+		public const string MENU_TRANSITION_REQUESTED_EVENT = NAMESPACE + ":MenuTransitionRequested";
+		public const string MENU_TRANSITION_COMPLETED_EVENT = NAMESPACE + ":MenuTransitionCompleted";
 	};
 };

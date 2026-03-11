@@ -29,7 +29,7 @@ driver/enable_input=true
 
 [autoload]
 
-NomadBootstrapper="*res://Source/Game/Infrastructure/NomadBootstrapper.cs"
+GodotBootstrapper="*uid://04sxyypuhcnv"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
 
 [display]
@@ -77,6 +77,8 @@ common/enable_object_picking=false
 
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
+textures/vram_compression/import_s3tc_bptc=true
+textures/vram_compression/import_etc2_astc=true
 viewport/hdr_2d=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -25,6 +25,7 @@ using Game.Domain.Events.UI;
 using Game.Infrastructure.Audio;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
+using Nomad.Events.Global;
 
 namespace Game.Application.UI.EventHandlers {
 	/*
@@ -38,16 +39,23 @@ namespace Game.Application.UI.EventHandlers {
 	/// 
 	/// </summary>
 	
-	public sealed class AudioUIEventHandler : IUIEventHandler {
+	public sealed class AudioUIEventHandler {
 		private readonly IAudioEmitter _emitter;
 
 		public AudioUIEventHandler( IEmitterFactory emitterFactory, IGameEventRegistryService eventRegistry ) {
 			_emitter = emitterFactory.CreateEmitter( "SoundCategory:UI" );
+
+			var clickedEvent = GameEventRegistry.GetEvent<ButtonClickedEventArgs>( UIConstants.BUTTON_CLICKED_EVENT, UIConstants.NAMESPACE );
+			clickedEvent.Subscribe( OnButtonClicked );
 			
-			UIEventHelper.SubscribeToUIEvent<ButtonClickedEventArgs>( eventRegistry, this, UIConstants.BUTTON_CLICKED_EVENT, OnButtonClicked );
-			UIEventHelper.SubscribeToUIEvent<ButtonFocusedEventArgs>( eventRegistry, this, UIConstants.BUTTON_FOCUSED_EVENT, OnButtonFocused );
-			UIEventHelper.SubscribeToUIEvent<OptionListValueSetEventArgs>( eventRegistry, this, UIConstants.OPTION_LIST_VALUE_SET_EVENT, OnListValueSet );
-			UIEventHelper.SubscribeToUIEvent<OptionListFocusedEventArgs>( eventRegistry, this, UIConstants.OPTION_LIST_FOCUSED_EVENT, OnListFocused );
+			var focusedEvent = GameEventRegistry.GetEvent<ButtonFocusedEventArgs>( UIConstants.BUTTON_FOCUSED_EVENT, UIConstants.NAMESPACE );
+			focusedEvent.Subscribe( OnButtonFocused );
+
+			var optionListFocused = GameEventRegistry.GetEvent<OptionListFocusedEventArgs>( UIConstants.OPTION_LIST_FOCUSED_EVENT, UIConstants.NAMESPACE );
+			optionListFocused.Subscribe( OnListFocused );
+
+			var optionListSet = GameEventRegistry.GetEvent<OptionListValueSetEventArgs>( UIConstants.OPTION_LIST_VALUE_SET_EVENT, UIConstants.NAMESPACE );
+			optionListSet.Subscribe( OnListValueSet );
 		}
 
 		/*

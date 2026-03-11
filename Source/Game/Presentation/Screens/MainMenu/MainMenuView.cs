@@ -1,6 +1,6 @@
-using Godot;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
+using Nomad.EngineUtils.UserInterface;
 
 namespace Game.Presentation.Screens.MainMenu {
 	/*
@@ -14,8 +14,8 @@ namespace Game.Presentation.Screens.MainMenu {
 	/// 
 	/// </summary>
 
-	internal sealed class MainMenuView( Control owner ) {
-		public Control Owner => owner;
+	internal sealed class MainMenuView( EnginePanel owner ) {
+		public EnginePanel Owner => owner;
 
 		public NomadButtonView NewGameButton => _newGameButton;
 		private readonly NomadButtonView _newGameButton = owner.GetNode<NomadButtonNode>( "%NewGameButton" ).View;

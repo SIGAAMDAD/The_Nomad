@@ -37,7 +37,9 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/// 
 	/// </summary>
 	
-	public class OptionNodeController<TView> : IOptionNodeController where TView : IOptionNodeView {
+	public class OptionNodeController<TView> : IOptionNodeController
+		where TView : IOptionNodeView
+	{
 		protected readonly TView _view;
 
 		/*
@@ -45,13 +47,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		OptionNodeController
 		===============
 		*/
-		public OptionNodeController( IGodotEventBusService eventBus, TView view ) {
+		public OptionNodeController( TView view ) {
 			_view = view;
 
-			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.FocusEntered, view.Owner, OnFocused );
-			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.MouseEntered, view.Owner, OnFocused );
-			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.FocusExited, view.Owner, OnUnfocused );
-			eventBus.ConnectSignal( view.Owner, HBoxContainer.SignalName.MouseExited, view.Owner, OnUnfocused );
+			view.Owner.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( OnFocused ) );
+			view.Owner.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( OnFocused ) );
+			view.Owner.Connect( HBoxContainer.SignalName.FocusExited, Callable.From( OnUnfocused ) );
+			view.Owner.Connect( HBoxContainer.SignalName.MouseExited, Callable.From( OnUnfocused ) );
 		}
 
 		/*
@@ -59,10 +61,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		OnFocused
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public void OnFocused() {
-			// FIXME: disable mouse focus?
-			_view.Owner.GrabClickFocus();
-			_view.Owner.GrabFocus();
 		}
 
 		/*
@@ -70,6 +72,9 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		OnUnfocused
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public void OnUnfocused() {
 		}
 	};

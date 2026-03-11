@@ -25,9 +25,14 @@ using Nomad.Core.Util;
 using System;
 
 namespace Game.Domain.Events.Localization {
-	public readonly record struct LanguageChangedEventArgs(
-		InternString OldLanguage,
-		InternString NewLanguage,
-		DateTime Timestamp
-	);
+	public readonly struct LanguageChangedEventArgs {
+		public InternString OldLanguage => _oldLanguage;
+		private readonly InternString _oldLanguage;
+
+		public InternString NewLanguage => _newLanguage;
+		private readonly InternString _newLanguage;
+		
+		public DateTime TimeStamp => _timestamp;
+		private readonly DateTime _timestamp;
+	};
 };

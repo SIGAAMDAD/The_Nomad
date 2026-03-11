@@ -28,6 +28,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.Events.Global;
 using System;
 using System.Collections.Generic;
 
@@ -62,13 +63,12 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventBus"></param>
 		/// <param name="view"></param>
-		public OptionListController( IGodotEventBusService eventBus, OptionListView view )
-			: base( eventBus, view )
+		public OptionListController( OptionListView view )
+			: base( view )
 		{
-			eventBus.ConnectSignal( view.Owner.GetNode<Button>( LEFT_BUTTON_NODEPATH ), Button.SignalName.Pressed, view.Owner, OnPrevToggle );
-			eventBus.ConnectSignal( view.Owner.GetNode<Button>( RIGHT_BUTTON_NODEPATH ), Button.SignalName.Pressed, view.Owner, OnNextToggle );
+			view.Owner.GetNode<Button>( LEFT_BUTTON_NODEPATH ).Connect( Button.SignalName.Pressed, Callable.From( OnPrevToggle ) );
+			view.Owner.GetNode<Button>( RIGHT_BUTTON_NODEPATH ).Connect( Button.SignalName.Pressed, Callable.From( OnNextToggle ) );
 		}
 
 		/*
@@ -123,8 +123,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 			}
 			_view.SetOption( _items[ _value ] );
 
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_LIST_VALUE_SET_EVENT, new OptionListValueSetEventArgs( _view.ListId, _value ) );
+			GameEventRegistry.GetEvent<OptionListValueSetEventArgs>( UIConstants.OPTION_LIST_VALUE_SET_EVENT, UIConstants.NAMESPACE ).Publish( new OptionListValueSetEventArgs( _view.ListId, _value ) );
 		}
 
 		/*
@@ -145,8 +144,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 			}
 			_view.SetOption( _items[ _value ] );
 
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_LIST_VALUE_SET_EVENT, new OptionListValueSetEventArgs( _view.ListId, _value ) );
+			GameEventRegistry.GetEvent<OptionListValueSetEventArgs>( UIConstants.OPTION_LIST_VALUE_SET_EVENT, UIConstants.NAMESPACE ).Publish( new OptionListValueSetEventArgs( _view.ListId, _value ) );
 		}
 	};
 };

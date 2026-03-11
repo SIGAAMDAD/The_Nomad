@@ -25,6 +25,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
 using Nomad.Core.Util;
+using Nomad.Core.EngineUtils.Globals;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -39,8 +40,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/// </summary>
 	
 	public sealed class OptionCheckboxView : OptionNodeView<OptionCheckbox>, IOptionCheckboxView {
-		private static readonly StringName ON_STRING = TranslationServer.Translate( "UI_ON" );
-		private static readonly StringName OFF_STRING = TranslationServer.Translate( "UI_OFF" );
+		private static readonly string ON_STRING = TranslationServer.Translate( new( "UI_ON" ) );
+		private static readonly string OFF_STRING = LocalizationService.Translate( new( "UI_OFF" ) );
 
 		public InternString CheckboxId => _owner.CheckboxId;
 

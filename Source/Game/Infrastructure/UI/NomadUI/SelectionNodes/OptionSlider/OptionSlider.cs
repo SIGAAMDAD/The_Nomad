@@ -47,12 +47,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
-		public override void _Ready() {
-			base._Ready();
-
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnInit() {
 			SliderId = new InternString( Name );
 			View = new OptionSliderView( this, Min, Max );
 		}

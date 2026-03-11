@@ -24,8 +24,16 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct MugshotListItemFocusedEventArgs(
-		InternString ListId,
-		InternString ItemId
-	);
+	public readonly struct MugshotListItemFocusedEventArgs {
+		public InternString ListId => _listId;
+		private readonly InternString _listId;
+
+		public InternString ItemId => _itemId;
+		private readonly InternString _itemId;
+
+		public MugshotListItemFocusedEventArgs( InternString listId, InternString itemId ) {
+			_listId = listId;
+			_itemId = itemId;
+		}
+	};
 };

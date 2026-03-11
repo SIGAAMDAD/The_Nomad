@@ -9,3 +9,6 @@
 *.exe
 *.dll
 *.so
+*.log
+
+steam_appid.txt

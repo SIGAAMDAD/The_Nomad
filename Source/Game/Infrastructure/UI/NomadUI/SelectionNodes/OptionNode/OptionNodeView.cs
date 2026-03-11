@@ -25,6 +25,8 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
 using Nomad.Core.Memory;
 using Nomad.Core.Util;
+using Nomad.Core.EngineUtils.Globals;
+using Nomad.Core.EngineUtils.UserInterface;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	/*
@@ -53,15 +55,19 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		OptionNodeView
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="owner"></param>
 		public OptionNodeView( T owner ) {
 			_owner = owner;
 
-			_titleLabel = _owner.GetNode<Label>( "Title" );
-			_titleLabel.Text = TranslationServer.Translate( owner.Title );
+			_titleLabel = _owner.GetNode<Label>( "Text" );
+			_titleLabel.Text = LocalizationService.Translate( new( owner.Title ) );
 
-			_descriptionCached = ( _owner.Description == null || _owner.Description.IsEmpty ) ? InternString.Empty : StringPool.Intern( TranslationServer.Translate( owner.Description ) );
+			_descriptionCached = ( _owner.Description == null || _owner.Description.IsEmpty ) ? InternString.Empty : StringPool.Intern( LocalizationService.Translate( new( owner.Description ) ) );
 
-			LinkFocusNodes();
+			//LinkFocusNodes();
 		}
 
 		/*
@@ -69,6 +75,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 		LinkFocusNodes
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/*
 		private void LinkFocusNodes() {
 			NodePath path = _owner.GetPath();
 
@@ -98,5 +108,6 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 
 			_owner.FocusMode = HBoxContainer.FocusModeEnum.All;
 		}
+		*/
 	};
 };

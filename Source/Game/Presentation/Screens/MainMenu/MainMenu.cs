@@ -1,5 +1,5 @@
-using Game.Infrastructure;
 using Godot;
+using Nomad.EngineUtils.UserInterface;
 
 namespace Game.Presentation.Screens.MainMenu {
 	/*
@@ -13,35 +13,28 @@ namespace Game.Presentation.Screens.MainMenu {
 	/// Handles the main menu's creation.
 	/// </summary>
 	
-	public sealed partial class MainMenu : Control {
+	public sealed partial class MainMenu : EnginePanel {
 		private MainMenuView _view;
 		private MainMenuController _controller;
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
-		public override void _Ready() {
-			base._Ready();
-
-			var bootstrapper = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
-
+		protected override void OnInit() {
 			_view = new MainMenuView( this );
 			_controller = new MainMenuController(
-				bootstrapper.ServiceLocator,
 				_view
 			);
 		}
 
 		/*
 		===============
-		_ExitTree
+		OnShutdown
 		===============
 		*/
-		public override void _ExitTree() {
-			base._ExitTree();
-
+		protected override void OnShutdown() {
 			_controller.Dispose();
 		}
 	};

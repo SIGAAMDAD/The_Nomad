@@ -24,8 +24,16 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct OptionCheckboxValueChangedEventArgs(
-		InternString CheckboxId,
-		bool Value
-	);
+	public readonly struct OptionCheckboxValueChangedEventArgs {
+		public InternString CheckboxId => _checkboxId;
+		private readonly InternString _checkboxId;
+
+		public bool Value => _value;
+		private readonly bool _value;
+
+		public OptionCheckboxValueChangedEventArgs( InternString checkboxId, bool value ) {
+			_checkboxId = checkboxId;
+			_value = value;
+		}
+	};
 };

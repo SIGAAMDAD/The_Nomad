@@ -1,6 +1,7 @@
-using Game.Infrastructure;
 using Godot;
 using Nomad.Core.Events;
+using Nomad.EngineUtils.UserInterface;
+using Nomad.Events.Global;
 
 namespace Game.Prefabs.SplashScreen {
 	/*
@@ -14,11 +15,11 @@ namespace Game.Prefabs.SplashScreen {
 	/// Handles logo showcasing in the splash screen.
 	/// </summary>
 	
-	public partial class Logo : Control {
+	public partial class Logo : EnginePanel {
 		[Export]
 		private float _duration = 1.0f;
 		[Export]
-		private Control _logo;
+		private EnginePanel _logo;
 
 		public IGameEvent<EmptyEventArgs> Finished => _finished;
 		private readonly IGameEvent<EmptyEventArgs> _finished;
@@ -32,8 +33,7 @@ namespace Game.Prefabs.SplashScreen {
 		/// Creates a Logo node.
 		/// </summary>
 		public Logo() {
-			var eventFactory = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			_finished = eventFactory.GetEvent<EmptyEventArgs>( nameof( Finished ) );
+			_finished = GameEventRegistry.GetEvent<EmptyEventArgs>( nameof( Finished ), "Logo" );
 		}
 
 		/*
@@ -45,29 +45,27 @@ namespace Game.Prefabs.SplashScreen {
 		/// 
 		/// </summary>
 		private void OnFinished() {
-			_finished.Publish( new EmptyEventArgs() );
+			_finished.Publish( default );
 		}
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
-
-			var godotEventBus = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGodotEventBusService>();
-			if ( _logo is VideoStreamPlayer player ) {
-				godotEventBus.ConnectSignal( player, VideoStreamPlayer.SignalName.Finished, this, OnFinished );
+		protected override void OnInit() {
+			if ( (Node)_logo is VideoStreamPlayer player ) {
+				player.Connect( VideoStreamPlayer.SignalName.Finished, Callable.From( OnFinished ) );
 			} else {
+				// TODO: event?
 				var timer = new Timer() {
 					WaitTime = _duration
 				};
 				timer.CallDeferred( Timer.MethodName.Start );
-				godotEventBus.ConnectSignal( timer, Timer.SignalName.Timeout, this, OnFinished );
+				timer.Connect( Timer.SignalName.Timeout, Callable.From( OnFinished ) );
 			}
 		}
 	};

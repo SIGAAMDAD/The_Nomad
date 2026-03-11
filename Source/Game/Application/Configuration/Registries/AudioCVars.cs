@@ -21,7 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Nomad.CVars;
+using Nomad.Core.CVars;
 using Nomad.Core;
 using System;
 
@@ -49,129 +49,129 @@ namespace Game.Application.Configuration.Registries {
 		/// <param name="cvarSystem"></param>
 		public static void Register( ICVarSystemService cvarSystem ) {
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.MASTER_VOLUME,
-					DefaultValue: 80.0f,
-					Description: "The maximum volume output of the game.",
-					Flags: CVarFlags.Archive,
-					Validator: value => value >= 0.0f && value <= 100.0f
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.MASTER_VOLUME,
+					DefaultValue = 80.0f,
+					Description = "The maximum volume output of the game.",
+					Flags = CVarFlags.Archive,
+					Validator = value => value >= 0.0f && value <= 100.0f
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.EFFECTS_VOLUME,
-					DefaultValue: 50.0f,
-					Description: "Sets sound effects volume.",
-					Flags: CVarFlags.Archive,
-					Validator: value => value >= 0.0f && value <= 100.0f
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.EFFECTS_VOLUME,
+					DefaultValue = 50.0f,
+					Description = "Sets sound effects volume.",
+					Flags = CVarFlags.Archive,
+					Validator = value => value >= 0.0f && value <= 100.0f
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<bool>(
-					Name: Constants.CVars.Audio.EFFECTS_ON,
-					DefaultValue: true,
-					Description: "Enables sound effects.",
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<bool> {
+					Name = Constants.CVars.EngineUtils.Audio.EFFECTS_ON,
+					DefaultValue = true,
+					Description = "Enables sound effects.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.MUSIC_VOLUME,
-					DefaultValue: 50.0f,
-					Description: "Sets music volume.",
-					Flags: CVarFlags.Archive,
-					Validator: value => value >= 0.0f && value <= 100.0f
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.MUSIC_VOLUME,
+					DefaultValue = 50.0f,
+					Description = "Sets music volume.",
+					Flags = CVarFlags.Archive,
+					Validator = value => value >= 0.0f && value <= 100.0f
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<bool>(
-					Name: Constants.CVars.Audio.MUSIC_ON,
-					DefaultValue: true,
-					Description: "Enables music.",
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<bool> {
+					Name = Constants.CVars.EngineUtils.Audio.MUSIC_ON,
+					DefaultValue = true,
+					Description = "Enables music.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
-					Name: Constants.CVars.Audio.OUTPUT_DEVICE_INDEX,
-					DefaultValue: 0,
-					Description: "The device index of the output device to use for audio.",
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<int> {
+					Name = Constants.CVars.EngineUtils.Audio.OUTPUT_DEVICE_INDEX,
+					DefaultValue = 0,
+					Description = "The device index of the output device to use for audio.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<string>(
-					Name: Constants.CVars.Audio.AUDIO_DRIVER,
-					DefaultValue: String.Empty,
-					Description: "The active audio driver in use by the Audio system.",
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<string> {
+					Name = Constants.CVars.EngineUtils.Audio.AUDIO_DRIVER,
+					DefaultValue = string.Empty,
+					Description = "The active audio driver in use by the Audio system.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
-					Name: Constants.CVars.Audio.MAX_ACTIVE_CHANNELS,
-					DefaultValue: 256,
-					Description: String.Empty,
-					Flags: CVarFlags.Archive,
-					Validator: value => value >= Constants.Audio.MIN_AUDIO_CHANNELS && value <= Constants.Audio.MAX_AUDIO_CHANNELS
-				)
+				new CVarCreateInfo<int> {
+					Name = Constants.CVars.EngineUtils.Audio.MAX_ACTIVE_CHANNELS,
+					DefaultValue = 256,
+					Description = "The maximum number of audio channels that can be allocated at a time",
+					Flags = CVarFlags.Archive,
+					Validator = value => value >= Constants.Audio.MIN_AUDIO_CHANNELS && value <= Constants.Audio.MAX_AUDIO_CHANNELS
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
-					Name: Constants.CVars.Audio.MAX_CHANNELS,
-					DefaultValue: 512,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly,
-					Validator: value => value >= Constants.Audio.MIN_AUDIO_CHANNELS && value <= Constants.Audio.MAX_AUDIO_CHANNELS
-				)
+				new CVarCreateInfo<int> {
+					Name = Constants.CVars.EngineUtils.Audio.MAX_CHANNELS,
+					DefaultValue = 512,
+					Description = "The maximum number of audio channels that can be created.",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly,
+					Validator = value => value >= Constants.Audio.MIN_AUDIO_CHANNELS && value <= Constants.Audio.MAX_AUDIO_CHANNELS
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.DISTANCE_FALLOFF_START,
-					DefaultValue: 50.0f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.DISTANCE_FALLOFF_START,
+					DefaultValue = 50.0f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.DISTANCE_FALLOFF_END,
-					DefaultValue: 100.0f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.DISTANCE_FALLOFF_END,
+					DefaultValue = 100.0f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.MIN_TIME_BETWEEN_CHANNEL_STEALS,
-					DefaultValue: 0.1f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.MIN_TIME_BETWEEN_CHANNEL_STEALS,
+					DefaultValue = 0.1f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.FREQUENCY_PENALTY,
-					DefaultValue: 0.4f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.FREQUENCY_PENALTY,
+					DefaultValue = 0.4f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.VOLUME_WEIGHT,
-					DefaultValue: 0.2f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.VOLUME_WEIGHT,
+					DefaultValue = 0.2f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: Constants.CVars.Audio.DISTANCE_WEIGHT,
-					DefaultValue: 0.3f,
-					Description: String.Empty,
-					Flags: CVarFlags.Init | CVarFlags.ReadOnly
-				)
+				new CVarCreateInfo<float> {
+					Name = Constants.CVars.EngineUtils.Audio.DISTANCE_WEIGHT,
+					DefaultValue = 0.3f,
+					Description = " ",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
 			);
 		}
 	};

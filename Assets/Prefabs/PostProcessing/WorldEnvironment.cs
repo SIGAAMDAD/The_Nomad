@@ -1,7 +1,7 @@
 using Game.Infrastructure;
 using Godot;
 using Nomad.Core;
-using Nomad.CVars;
+using Nomad.Core.CVars;
 
 namespace Game.Prefabs {
 	/*
@@ -19,9 +19,7 @@ namespace Game.Prefabs {
 		public override void _Ready() {
 			base._Ready();
 
-			var cvarSystem = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper").ServiceLocator.GetService<ICVarSystemService>();
-			
-			cvarSystem.GetCVar<float>( Constants.CVars.Display.BRIGHTNESS ).ValueChanged.Subscribe( this, OnBrightnessChanged );
+//			CVarSystem.GetCVar<float>( Constants.CVars.Display.BRIGHTNESS ).ValueChanged.Subscribe( OnBrightnessChanged );
 		}
 
 		/*

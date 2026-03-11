@@ -22,13 +22,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.UI;
-using Game.Application.UI.EventHandlers;
 using Game.Application.UI.Menus;
-using Game.Infrastructure;
 using Godot;
-using Nomad.Audio.Interfaces;
+using Nomad.Core.EngineUtils;
 using Nomad.Core.Events;
-using Nomad.Core.Logger;
+using Nomad.Core.ServiceRegistry.Globals;
 
 namespace Game.Application {
 	/*
@@ -51,18 +49,7 @@ namespace Game.Application {
 		public override void _Ready() {
 			base._Ready();
 
-			var bootstrapper = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
-			var locator = bootstrapper.ServiceLocator;
-			var serviceFactory = bootstrapper.ServicesFactory;
-			var rootNode = GetTree().Root;
-
-			var logger = locator.GetService<ILoggerService>();
-			var eventFactory = locator.GetService<IGameEventRegistryService>();
-
-			var eventHandler = serviceFactory.RegisterSingleton<AudioUIEventHandler>( new AudioUIEventHandler( locator.GetService<IEmitterFactory>(), eventFactory) );
-
-			var menuManager = new MenuManager( this );
-			AddChild( menuManager );
+			var menuManager = new MenuManager( ServiceLocator.GetService<ISceneManager>(), ServiceLocator.GetService<IGameEventRegistryService>() );
 			menuManager.TransitionToMenu( MenuState.Main );
 		}
 	};

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b5rsunkqihqxv"]
+[gd_scene format=3 uid="uid://4bgmvef7xly3"]
 
 [ext_resource type="Script" uid="uid://tsjpn4gc7fs1" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
@@ -61,33 +61,63 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "NEW_GAME"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="LoadGameButton" parent="MarginContainer/OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "LOAD_GAME"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="SettingsButton" parent="MarginContainer/OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SETTINGS"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="ExtrasButton" parent="MarginContainer/OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "EXTRAS"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="CreditsButton" parent="MarginContainer/OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "CREDITS"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="QuitGameButton" parent="MarginContainer/OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "QUIT GAME"
 Duration = 0.25
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null

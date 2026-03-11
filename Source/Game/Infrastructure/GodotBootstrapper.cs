@@ -22,20 +22,20 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Game.Application.Common.Models.Interfaces;
-using Game.Application.Configuration.Services;
-using Game.Infrastructure.Configuration.Godot.Services;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Core.ServiceRegistry.Services;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Audio.Interfaces;
 using Nomad.Logger;
-using Nomad.Core.Logger;
 using Nomad.Events;
-using Nomad.Console;
 using Nomad.CVars;
-using Nomad.Audio.Fmod;
 using Nomad.Logger.Private.Sinks;
 using Game.Application.Configuration.Registries;
+using Nomad.Core;
+using Nomad.Core.CVars;
+using Nomad.EngineUtils;
+using Nomad.FileSystem;
+using Nomad.Core.Logger;
+using Nomad.Core.FileSystem;
+using System;
 
 namespace Game.Infrastructure {
 	/*
@@ -49,15 +49,11 @@ namespace Game.Infrastructure {
 	/// 
 	/// </summary>
 
-	public sealed partial class NomadBootstrapper : Node {
-		public IServiceLocator ServiceLocator => _serviceLocator;
-		private IServiceLocator _serviceLocator;
-
-		public IServiceRegistry ServicesFactory => _serviceFactory;
-		private ServiceCollection _serviceFactory;
-
+	public sealed partial class GodotBootstrapper : Node {
 		private IAudioDevice _audioService;
 		private IChannelRepository _channelRepository;
+
+		private NomadFrameworkBootstrapper _bootstrapper;
 
 		/*
 		===============
@@ -70,33 +66,42 @@ namespace Game.Infrastructure {
 		public override void _Ready() {
 			base._Ready();
 
-			_serviceFactory = new ServiceCollection();
-			_serviceLocator = new ServiceLocator( _serviceFactory );
+			GD.Print( $"Initializing NomadFramework... {AppContext.BaseDirectory}, {System.Environment.CurrentDirectory}" );
 
-			LoggerBootstrapper.Initialize( _serviceFactory, _serviceLocator );
-			var logger = _serviceLocator.GetService<ILoggerService>();
+			var serviceFactory = ServiceRegistry.Instance;
+			var serviceLocator = ServiceLocator.Instance;
+			
+			_bootstrapper = new NomadFrameworkBootstrapper( serviceFactory, serviceLocator )
+				.AddBootstrapper( new LoggerBootstrapper() )
+				.AddBootstrapper( new EventBootstrapper() )
+				.AddBootstrapper( new CVarBootstrapper() )
+				.AddBootstrapper( new EngineServiceBootstrapper() )
+				.AddBootstrapper( new FileSystemBootstrapper() );
 
-			logger.PrintLine( "NomadBootstrapper: Initializing NomadBackend..." );
+			_bootstrapper.Bootstrap();
 
-			EventSystemBootstrapper.Initialize( _serviceLocator, _serviceFactory );
-			ConsoleBootstrapper.Initialize( _serviceLocator, _serviceFactory, GetTree().Root );
-
-			var cvarSystem = _serviceLocator.GetService<ICVarSystemService>();
+			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
 			AudioCVars.Register( cvarSystem );
 
-			logger.AddSink( new FileSink( cvarSystem ) );
+			var logger = serviceLocator.GetService<ILoggerService>();
+			logger.AddSink( new FileSink( cvarSystem, serviceLocator.GetService<IFileSystem>() ) );
 
-			_serviceFactory.RegisterSingleton<IGraphicsSettingsService>( new GraphicsSettingsService( cvarSystem ) );
-			_serviceFactory.RegisterSingleton<IDisplaySettingsService>( new DisplaySettingsService( cvarSystem, new GodotDisplay( GetViewport().GetViewportRid(), cvarSystem, logger ) ) );
+			//			FMODBootstrapper.Initialize( serviceLocator, serviceFactory );
 
-			FMODBootstrapper.Initialize( _serviceLocator, _serviceFactory );
-			_serviceFactory.RegisterSingleton<IAudioSettingsService>( new AudioSettingsService( cvarSystem, _serviceLocator.GetService<IAudioDevice>() ) );
+			//			_audioService = serviceLocator.GetService<IAudioDevice>();
+			//			_channelRepository = serviceLocator.GetService<IChannelRepository>();
 
-			_audioService = _serviceLocator.GetService<IAudioDevice>();
-			_channelRepository = _serviceLocator.GetService<IChannelRepository>();
-
-			if ( FileAccess.FileExists( "user://settings.ini" ) ) {
-				cvarSystem.Load( "user://settings.ini" );
+			var fileSystem = serviceLocator.GetService<IFileSystem>();
+			var configFile = cvarSystem.Register(
+				new CVarCreateInfo<string> {
+					Name = Nomad.Core.Constants.CVars.Console.DEFAULT_CONFIG_FILE,
+					DefaultValue = "res://Assets/Config/default.ini",
+					Description = "The default configuration file.",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
+			);
+			if ( fileSystem.FileExists( configFile.Value ) ) {
+				cvarSystem.Load( fileSystem, configFile.Value );
 			}
 		}
 
@@ -117,16 +122,6 @@ namespace Game.Infrastructure {
 			_channelRepository?.Update( deltaTime );
 		}
 
-		public override void _Notification( int what ) {
-			base._Notification( what );
-
-			switch ( (long)what ) {
-				case NotificationWMCloseRequest:
-					System.Environment.Exit( 0 );
-					break;
-			}
-		}
-
 		/*
 		===============
 		_ExitTree
@@ -135,8 +130,7 @@ namespace Game.Infrastructure {
 		public override void _ExitTree() {
 			base._ExitTree();
 
-			_serviceFactory?.Dispose();
-			_serviceLocator?.Dispose();
+			_bootstrapper?.Dispose();
 		}
 	};
 };
