@@ -32,7 +32,7 @@ namespace Game.Presentation.Screens.LoadingScreen {
 		/// 
 		/// </summary>
 		private void OnSwitchTip() {
-			_currentTip = ;
+			_currentTip = 0;
 		}
 
 		/*

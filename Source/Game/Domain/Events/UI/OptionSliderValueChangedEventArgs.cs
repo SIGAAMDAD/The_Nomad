@@ -24,8 +24,16 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct OptionSliderValueChangedEventArgs(
-		InternString SliderId,
-		float Value
-	);
+	public readonly struct OptionSliderValueChangedEventArgs {
+		public InternString SliderId => _sliderId;
+		private readonly InternString _sliderId;
+
+		public float Value => _value;
+		private readonly float _value;
+
+		public OptionSliderValueChangedEventArgs( InternString sliderId, float value ) {
+			_sliderId = sliderId;
+			_value = value;
+		}
+	};
 };

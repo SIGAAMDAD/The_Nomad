@@ -24,9 +24,20 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct MenuStateChangedEventArgs<TState>(
-		InternString MenuId,
-		TState PreviousState,
-		TState CurrentState
-	) where TState : unmanaged;
+	public readonly struct MenuStateChangedEventArgs<TState> where TState : unmanaged {
+		public InternString MenuId => _menuId;
+		private readonly InternString _menuId;
+
+		public TState PreviousState => _previousState;
+		private readonly TState _previousState;
+
+		public TState CurrentState => _currentState;
+		private readonly TState _currentState;
+
+		public MenuStateChangedEventArgs( InternString menuId, TState previousState, TState currentState ) {
+			_menuId = menuId;
+			_previousState = previousState;
+			_currentState = currentState;
+		}
+	};
 };

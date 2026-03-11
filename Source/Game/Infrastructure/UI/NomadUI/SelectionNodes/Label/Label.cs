@@ -22,7 +22,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Nomad.Core.Events;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 	/*
@@ -85,11 +84,10 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes {
 		public override void _Ready() {
 			base._Ready();
 
-			var eventBus = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGodotEventBusService>();
-			eventBus.ConnectSignal( this, Label.SignalName.FocusEntered, this, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.MouseEntered, this, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.FocusExited, this, Callable.From( OnUnfocused ) );
-			eventBus.ConnectSignal( this, Label.SignalName.MouseExited, this, Callable.From( OnUnfocused ) );
+			Connect( Label.SignalName.FocusEntered, Callable.From( OnFocused ) );
+			Connect( Label.SignalName.MouseEntered, Callable.From( OnFocused ) );
+			Connect( Label.SignalName.FocusExited, Callable.From( OnUnfocused ) );
+			Connect( Label.SignalName.MouseExited, Callable.From( OnUnfocused ) );
 		}
 	};
 };

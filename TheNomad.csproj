@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.6.0-beta.3">
+<Project Sdk="Godot.NET.Sdk/4.6.1">
   <PropertyGroup>
     <!-- Build Configuration -->
     <TargetFramework>net10.0</TargetFramework>
@@ -12,7 +12,6 @@
     <BuildInParallel>true</BuildInParallel>
 
     <!-- Performance -->
-    <PubishAOT>true</PubishAOT>
     <TieredCompilation>true</TieredCompilation>
     <Deterministic>true</Deterministic>
     <UseSharedCompilation>true</UseSharedCompilation>
@@ -20,9 +19,9 @@
     <SkipLocalsInit>true</SkipLocalsInit>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Godot.NET.Sdk" Version="4.6.0-dev.6" />
-    <PackageReference Include="Godot.SourceGenerators" Version="4.6.0-dev.6" />
-    <PackageReference Include="GodotSharp" Version="4.6.0-dev.6" />
+    <PackageReference Include="Godot.NET.Sdk" Version="4.6.1" />
+    <PackageReference Include="Godot.SourceGenerators" Version="4.6.1" />
+    <PackageReference Include="GodotSharp" Version="4.6.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Source\NomadFramework\**" />
@@ -30,12 +29,15 @@
   <ItemGroup>
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Audio.FMOD\Nomad.Audio.FMOD.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.EngineUtils.Settings\Nomad.EngineUtils.Settings.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.EngineUtils.Godot\Nomad.EngineUtils.Godot.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Logger\Nomad.Logger.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.FileSystem\Nomad.FileSystem.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.CVars\Nomad.CVars.csproj" />
 	  <ProjectReference Include="Source\NomadFramework\Source\Nomad.Events\Nomad.Events.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Console\Nomad.Console.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
-    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Rendering\Nomad.Rendering.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -50,4 +52,49 @@
   <PropertyGroup Condition="'$(IsLinux)' == 'true'">
     <DefineConstants>LINUX</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodstudio.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodstudioL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmod.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodL.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmod.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodL.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodstudio.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodstudioL.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/steam_api64.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/steam_api.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/libsteam_api.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+  </ItemGroup>
 </Project>

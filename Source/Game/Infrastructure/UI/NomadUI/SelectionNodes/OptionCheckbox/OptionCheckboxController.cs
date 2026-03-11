@@ -25,8 +25,9 @@ using Game.Application.UI;
 using Game.Domain.Events.UI;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using Nomad.Core.Events;
+using Godot;
 using Nomad.Core.Util;
+using Nomad.Events.Global;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -60,16 +61,16 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventBus"></param>
+		/// <param name="eventFactory"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="view"></param>
-		public OptionCheckboxController( IGodotEventBusService eventBus, OptionCheckboxView view )
-			: base( eventBus, view )
+		public OptionCheckboxController( OptionCheckboxView view )
+			: base( view )
 		{
 			_view.SetValue( false );
 
-			eventBus.ConnectSignal( view.Left, Godot.Button.SignalName.Pressed, view.Left, OnToggled );
-			eventBus.ConnectSignal( view.Right, Godot.Button.SignalName.Pressed, view.Right, OnToggled );
+			view.Left.Connect( Godot.Button.SignalName.Pressed, Callable.From( OnToggled ) );
+			view.Right.Connect( Godot.Button.SignalName.Pressed, Callable.From( OnToggled ) );
 		}
 
 		/*
@@ -82,9 +83,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		/// </summary>
 		private void OnToggled() {
 			_value = !_value;
-
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT, new OptionCheckboxValueChangedEventArgs( _view.CheckboxId, _value ) );
+			GameEventRegistry.GetEvent<OptionCheckboxValueChangedEventArgs>( UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT, UIConstants.NAMESPACE ).Publish( new OptionCheckboxValueChangedEventArgs( _view.CheckboxId, _value ) );
 		}
 	};
 };

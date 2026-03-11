@@ -41,12 +41,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
-		public override void _Ready() {
-			base._Ready();
-
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnInit() {
 			ListId = new InternString( Name );
 			View = new OptionListView( this );
 		}

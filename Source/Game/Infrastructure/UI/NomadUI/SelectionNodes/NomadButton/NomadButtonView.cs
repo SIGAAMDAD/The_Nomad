@@ -42,11 +42,20 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/// <param name="owner"></param>
 	/// <param name="animationConfig"></param>
 
-	public class NomadButtonView( NomadButtonNode owner, NomadButtonAnimation animationConfig ) : INomadButtonView {
+	public class NomadButtonView : INomadButtonView {
 		public InternString ButtonId => _buttonId;
-		private readonly InternString _buttonId = new( owner.Name );
+		private readonly InternString _buttonId;
 
-		public NomadButtonNode Owner => owner;
+		public NomadButtonNode Owner => _owner;
+		private readonly NomadButtonNode _owner;
+
+		private readonly NomadButtonAnimation _animationConfig;
+
+		public NomadButtonView( NomadButtonNode owner, NomadButtonAnimation animationConfig ) {
+			_owner = owner;
+			_buttonId = new InternString( owner.Name );
+			_animationConfig = animationConfig;
+		}
 
 		/*
 		===============
@@ -58,7 +67,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// </summary>
 		/// <param name="text"></param>
 		public void SetText( string text ) {
-			owner.Text = text;
+			_owner.Text = text;
 		}
 
 		/*
@@ -80,13 +89,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		===============
 		*/
 		private void HoverPositionAnimation() {
-			if ( !animationConfig.AnimatePosition ) {
+			if ( !_animationConfig.AnimatePosition ) {
 				return;
 			}
 			Tweening(
 				"position",
-				owner.IsFocused ? animationConfig.PositionValue : Vector2.Zero,
-				animationConfig.Duration
+				_owner.IsFocused ? _animationConfig.PositionValue : Vector2.Zero,
+				_animationConfig.Duration
 			);
 		}
 
@@ -96,13 +105,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		===============
 		*/
 		private void HoverScaleAnimation() {
-			if ( !animationConfig.AnimateScale ) {
+			if ( !_animationConfig.AnimateScale ) {
 				return;
 			}
 			Tweening(
 				"scale",
-				owner.IsFocused ? new Vector2( animationConfig.ScaleIntensity, animationConfig.ScaleIntensity ) : Vector2.One,
-				animationConfig.Duration
+				_owner.IsFocused ? new Vector2( _animationConfig.ScaleIntensity, _animationConfig.ScaleIntensity ) : Vector2.One,
+				_animationConfig.Duration
 			);
 		}
 
@@ -112,9 +121,9 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		===============
 		*/
 		private async void Tweening( NodePath property, Variant finalValue, float duration ) {
-			Tween tween = owner.CreateTween().SetTrans( animationConfig.TransitionType );
-			tween.TweenProperty( owner, property, finalValue, duration );
-			await owner.ToSignal( tween, Tween.SignalName.Finished );
+			Tween tween = _owner.CreateTween().SetTrans( _animationConfig.TransitionType );
+			tween.TweenProperty( _owner, property, finalValue, duration );
+			await _owner.ToSignal( tween, Tween.SignalName.Finished );
 			tween.Kill();
 		}
 	};

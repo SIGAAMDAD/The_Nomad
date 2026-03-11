@@ -25,6 +25,7 @@ using Game.Domain.Events.UI;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.Events.Global;
 using System.Collections.Generic;
 
 namespace Game.Application.UI.Menus {
@@ -41,13 +42,36 @@ namespace Game.Application.UI.Menus {
 	/// <param name="currentMenu"></param>
 	/// <param name="states"></param>
 
-	public class MenuStateMachine<TState>( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, Control?> states )
+	public class MenuStateMachine<TState>
 		where TState : unmanaged
 	{
-		public TState CurrentState => currentMenu;
-		public InternString OwnerId => menuId;
+		public TState CurrentState => _currentMenu;
+		private TState _currentMenu;
 
-		private readonly IReadOnlyDictionary<TState, Control?> _states = states;
+		public InternString OwnerId => _menuId;
+		private readonly InternString _menuId;
+
+		private readonly IReadOnlyDictionary<TState, Control?> _states;
+		private readonly IGameEventRegistryService _eventFactory;
+
+		/*
+		===============
+		MenuStateMachine
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="menuId"></param>
+		/// <param name="currentMenu"></param>
+		/// <param name="eventFactory"></param>
+		/// <param name="states"></param>
+		public MenuStateMachine( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, Control?> states ) {
+			_menuId = menuId;
+			_currentMenu = currentMenu;
+			_eventFactory = eventFactory;
+			_states = states;
+		}
 
 		/*
 		===============
@@ -64,12 +88,13 @@ namespace Game.Application.UI.Menus {
 				return;
 			}
 
-			TState oldMenu = currentMenu;
+			TState oldMenu = _currentMenu;
 			_states[ oldMenu ]?.CallDeferred( Control.MethodName.Hide );
-			currentMenu = stateId;
+			_currentMenu = stateId;
 			newState?.CallDeferred( Control.MethodName.Show );
 
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.MENU_STATE_CHANGED_EVENT, new MenuStateChangedEventArgs<TState>( menuId, oldMenu, currentMenu ) );
+			var menuStateChanged = _eventFactory.GetEvent<MenuStateChangedEventArgs<TState>>( UIConstants.MENU_STATE_CHANGED_EVENT, UIConstants.NAMESPACE );
+			menuStateChanged.Publish( new MenuStateChangedEventArgs<TState>( _menuId, oldMenu, _currentMenu ) );
 		}
 	};
 };

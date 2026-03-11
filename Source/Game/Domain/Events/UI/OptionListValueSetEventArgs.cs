@@ -24,8 +24,16 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Nomad.Core.Util;
 
 namespace Game.Domain.Events.UI {
-	public readonly record struct OptionListValueSetEventArgs(
-		InternString ListId,
-		int Value
-	);
+	public readonly struct OptionListValueSetEventArgs {
+		public InternString ListId => _listId;
+		private readonly InternString _listId;
+
+		public int Value => _value;
+		private readonly int _value;
+
+		public OptionListValueSetEventArgs( InternString listId, int value ) {
+			_listId = listId;
+			_value = value;
+		}
+	};
 };

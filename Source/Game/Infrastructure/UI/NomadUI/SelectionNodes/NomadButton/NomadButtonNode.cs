@@ -22,7 +22,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Nomad.Core.Events;
+using Nomad.EngineUtils.UserInterface;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/*
@@ -36,7 +36,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/// 
 	/// </summary>
 
-	public partial class NomadButtonNode : Button {
+	public partial class NomadButtonNode : EngineButton {
 		[Export( PropertyHint.Range, "0,10,0.001,or_greater" )]
 		public float Duration = 1.0f;
 
@@ -62,17 +62,13 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
-
-			var bootstrapper = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
-
+		protected override void OnInit() {
 			View = new NomadButtonView(
 				this,
 				new NomadButtonAnimation {
@@ -84,7 +80,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 					PositionValue = PositionValue
 				}
 			);
-			Controller = new NomadButtonController( bootstrapper.ServiceLocator.GetService<IGodotEventBusService>(), View );
+			Controller = new NomadButtonController( View );
 		}
 	};
 };

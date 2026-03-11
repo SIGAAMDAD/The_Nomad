@@ -22,14 +22,11 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.UI.Menus.Events;
-using Game.Infrastructure;
-using Game.Infrastructure.Caching;
-using Godot;
+using Nomad.Core.EngineUtils;
 using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.Util;
+using Nomad.Core.EngineUtils.Globals;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Game.Application.UI.Menus {
 	/*
@@ -42,20 +39,58 @@ namespace Game.Application.UI.Menus {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed partial class MenuManager( Node worldNode ) : Node {
+
+	public sealed class MenuManager : IDisposable {
 		private MenuState _currentState = MenuState.None;
 		private MenuState _previousState = MenuState.None;
 
-		private readonly Dictionary<MenuState, FilePath> _scenePaths = new Dictionary<MenuState, FilePath>() {
-			[MenuState.Main] = new( "res://Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", PathType.Resource ),
-			[MenuState.Loading] = new( "res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", PathType.Resource ),
-			[MenuState.Settings] = new( "res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", PathType.Resource )
+		private readonly Dictionary<MenuState, string> _scenePaths = new Dictionary<MenuState, string>() {
+			[ MenuState.Main ] = EngineService.GetStoragePath( "Prefabs/Menus/MainMenu.tscn", StorageScope.StreamingAssets ),
+			[ MenuState.Loading ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.StreamingAssets ),
+			[ MenuState.Settings ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.StreamingAssets )
 		};
 
-		private Control _currentMenuInstance;
-
 		private IGameEventRegistryService _eventRegistry;
+
+		private IScene? _currentScene;
+		private readonly ISceneManager _sceneManager;
+		private readonly ISubscriptionHandle _menuTransitionRequested;
+
+		private bool _isDiposed = false;
+
+		/*
+		===============
+		MenuManager
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sceneManager"></param>
+		/// <param name="eventFactory"></param>
+		public MenuManager( ISceneManager sceneManager, IGameEventRegistryService eventFactory ) {
+			_sceneManager = sceneManager;
+			_eventRegistry = eventFactory;
+
+			var menuTransitionRequested = eventFactory.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE );
+			_menuTransitionRequested = menuTransitionRequested.Subscribe( OnMenuTransitionRequested );
+		}
+
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public void Dispose() {
+			if ( !_isDiposed ) {
+				_menuTransitionRequested?.Dispose();
+			}
+			GC.SuppressFinalize( this );
+			_isDiposed = true;
+		}
 
 		/*
 		===============
@@ -67,27 +102,22 @@ namespace Game.Application.UI.Menus {
 		/// </summary>
 		/// <param name="newState"></param>
 		/// <returns></returns>
-		public async Task TransitionToMenu( MenuState newState ) {
+		public void TransitionToMenu( MenuState newState ) {
 			if ( _currentState == newState ) {
 				return;
 			}
 
 			_previousState = _currentState;
 
-			if ( _currentMenuInstance != null ) {
-				SceneCache.Instance.ReleaseReference( _scenePaths[ _previousState ] );
-				worldNode.CallDeferred( Node.MethodName.RemoveChild, _currentMenuInstance );
-				_currentMenuInstance.CallDeferred( Control.MethodName.QueueFree );
+			if ( _currentScene != null ) {
+				_sceneManager.UnloadScene( _currentScene );
 			}
 
-			var entry = await SceneCache.Instance.GetCachedAsync( _scenePaths[ newState ] );
-			entry.Get( out var menu );
-
-			_currentMenuInstance = menu.Instantiate<Control>();
+			_currentScene = _sceneManager.LoadScene( _scenePaths[ newState ], LoadSceneMode.Single );
 			_currentState = newState;
-			worldNode.CallDeferred( Node.MethodName.AddChild, _currentMenuInstance );
 
-			UIEventHelper.PublishUIEvent( _eventRegistry, UIConstants.MENU_TRANSITION_COMPLETED_EVENT, new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
+			var menuTransitionCompleted = _eventRegistry.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE );
+			menuTransitionCompleted.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
 		}
 
 		/*
@@ -101,20 +131,6 @@ namespace Game.Application.UI.Menus {
 		/// <param name="args"></param>
 		private void OnMenuTransitionRequested( in MenuTransitionRequestedEventArgs args ) {
 			TransitionToMenu( args.ToState );
-		}
-
-		/*
-		===============
-		_Ready
-		===============
-		*/
-		public override void _Ready() {
-			base._Ready();
-
-			_eventRegistry = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.SubscribeToUIEvent<MenuTransitionRequestedEventArgs>( _eventRegistry, this, UIConstants.MENU_TRANSITION_REQUESTED_EVENT, OnMenuTransitionRequested );
-
-			var logger = GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<ILoggerService>();
 		}
 	};
 };

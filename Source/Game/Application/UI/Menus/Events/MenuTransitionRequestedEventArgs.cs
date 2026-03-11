@@ -21,11 +21,17 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Domain.Models.Interfaces;
-
 namespace Game.Application.UI.Menus.Events {
-	public readonly record struct MenuTransitionRequestedEventArgs(
-		MenuState FromState,
-		MenuState ToState
-	) : IEventArgs;
+	public readonly struct MenuTransitionRequestedEventArgs {
+		public MenuState FromState => _fromState;
+		private readonly MenuState _fromState;
+
+		public MenuState ToState => _toState;
+		private readonly MenuState _toState;
+
+		public MenuTransitionRequestedEventArgs( MenuState fromState, MenuState toState ) {
+			_fromState = fromState;
+			_toState = toState;
+		}
+	};
 };

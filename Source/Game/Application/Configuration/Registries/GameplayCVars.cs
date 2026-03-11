@@ -21,7 +21,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Nomad.CVars;
+using Nomad.Core.CVars;
 
 namespace Game.Application.Configuration.Registries {
 	/*
@@ -47,28 +47,28 @@ namespace Game.Application.Configuration.Registries {
 		/// <param name="cvarSystem"></param>
 		public static void Register( ICVarSystemService cvarSystem ) {
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: new( "game.ScreenShakeIntensity" ),
-					DefaultValue: 1.0f,
-					Description: new( "Scales the intensity of how much the game will jitter the camera. Set to lower values for less jolting." ),
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<float> {
+					Name = "game.ScreenShakeIntensity",
+					DefaultValue = 1.0f,
+					Description = "Scales the intensity of how much the game will jitter the camera. Set to lower values for less jolting.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<int>(
-					Name: new( "game.EnemyTacticalIntelligence" ),
-					DefaultValue: 0,
-					Description: new( "Controls how much planning can be executed for an enemy GOAP agent. Directly impacts performance." ),
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<int> {
+					Name = "game.EnemyTacticalIntelligence",
+					DefaultValue = 0,
+					Description = "Controls how much planning can be executed for an enemy GOAP agent. Directly impacts performance.",
+					Flags = CVarFlags.Archive
+				}
 			);
 			cvarSystem.Register(
-				new CVarCreateInfo<float>(
-					Name: new( "game.PlayerDamageScale" ),
-					DefaultValue: 1.0f,
-					Description: new( "Scales how much damage the player receives." ),
-					Flags: CVarFlags.Archive
-				)
+				new CVarCreateInfo<float> {
+					Name = "game.PlayerDamageScale",
+					DefaultValue = 1.0f,
+					Description = "Scales how much damage the player receives.",
+					Flags = CVarFlags.Archive
+				}
 			);
 		}
 	};

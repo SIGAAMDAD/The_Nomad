@@ -21,12 +21,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Godot;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.Util;
 using Nomad.ResourceCache;
+using Nomad.Core.EngineUtils.Globals;
 using System;
+using Nomad.Core.EngineUtils;
+using Nomad.Logger.Globals;
+using Nomad.Events.Global;
 
 namespace Game.Infrastructure.Caching {
 	/*
@@ -41,15 +41,14 @@ namespace Game.Infrastructure.Caching {
 	/// </summary>
 	
 	public static class SceneCache {
-		public static BaseCache<PackedScene, FilePath> Instance => _sceneCache.Value;
-		private static readonly Lazy<BaseCache<PackedScene, FilePath>> _sceneCache = new Lazy<BaseCache<PackedScene, FilePath>>( Create, true );
+		public static BaseCache<IScene, string> Instance => _sceneCache.Value;
+		private static readonly Lazy<BaseCache<IScene, string>> _sceneCache = new Lazy<BaseCache<IScene, string>>( Create, true );
 
-		private static BaseCache<PackedScene, FilePath> Create() {
-			var bootstrapper = ( (Node)Engine.GetMainLoop().Get( SceneTree.PropertyName.Root ) ).GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
-			return new BaseCache<PackedScene, FilePath>(
-				bootstrapper.ServiceLocator.GetService<ILoggerService>(),
-				bootstrapper.ServiceLocator.GetService<IGameEventRegistryService>(),
-				new GodotLoader<PackedScene>()
+		private static BaseCache<IScene, string> Create() {
+			return new BaseCache<IScene, string>(
+				Logging.Instance,
+				GameEventRegistry.Instance,
+				EngineService.GetResourceLoader()
 			);
 		}
 	};

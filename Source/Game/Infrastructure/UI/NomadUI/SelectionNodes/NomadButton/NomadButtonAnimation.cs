@@ -22,7 +22,6 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Nomad.Core.Abstractions;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	public readonly record struct NomadButtonAnimation(
@@ -32,5 +31,5 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		float ScaleIntensity,
 		bool AnimateScale,
 		bool AnimatePosition
-	) : IValueObject<NomadButtonAnimation>;
+	);
 };

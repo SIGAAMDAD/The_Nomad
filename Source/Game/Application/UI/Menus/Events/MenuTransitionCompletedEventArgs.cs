@@ -21,11 +21,17 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using NomadCore.Domain.Models.Interfaces;
-
 namespace Game.Application.UI.Menus.Events {
-	public readonly record struct MenuTransitionCompletedEventArgs(
-		MenuState CurrentState,
-		MenuState PreviousState
-	) : IEventArgs;
+	public readonly struct MenuTransitionCompletedEventArgs {
+		public MenuState CurrentState => _currentState;
+		private readonly MenuState _currentState;
+
+		public MenuState PreviousState => _previousState;
+		private readonly MenuState _previousState;
+
+		public MenuTransitionCompletedEventArgs( MenuState currentState, MenuState previousState ) {
+			_currentState = currentState;
+			_previousState = previousState;
+		}
+	};
 };

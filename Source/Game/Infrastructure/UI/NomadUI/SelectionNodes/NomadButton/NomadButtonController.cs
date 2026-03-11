@@ -27,7 +27,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Events.Private;
+using Nomad.Events.Global;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/*
@@ -58,29 +58,12 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// 
 		/// </summary>
 		/// <param name="view"></param>
-		public NomadButtonController( IGodotEventBusService eventBus, NomadButtonView view ) {
+		public NomadButtonController( NomadButtonView view ) {
 			_view = view;
 
-			eventBus.ConnectSignal( view.Owner, NomadButtonNode.SignalName.FocusEntered, view.Owner, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( view.Owner, NomadButtonNode.SignalName.FocusExited, view.Owner, Callable.From( OnUnfocused ) );
-			eventBus.ConnectSignal( view.Owner, NomadButtonNode.SignalName.MouseEntered, view.Owner, Callable.From( OnFocused ) );
-			eventBus.ConnectSignal( view.Owner, NomadButtonNode.SignalName.MouseExited, view.Owner, Callable.From( OnUnfocused ) );
-			eventBus.ConnectSignal( view.Owner, NomadButtonNode.SignalName.Pressed, view.Owner, Callable.From( OnPressed ) );
-		}
-
-		/*
-		===============
-		DisableMouseFocus
-		===============
-		*/
-		/// <summary>
-		/// Disables the focus of another UI element pinned by the mouse.
-		/// </summary>
-		public void DisableMouseFocus() {
-			Control focusNode = _view.Owner.GetViewport().GuiGetHoveredControl();
-			if ( focusNode != null && focusNode is NomadButtonNode button ) {
-				button.Controller.OnUnfocused();
-			}
+			view.Owner.Focused.Subscribe( OnFocused );
+			view.Owner.Unfocused.Subscribe( OnUnfocused );
+			view.Owner.Clicked.Subscribe( OnPressed );
 		}
 		
 		/*
@@ -91,13 +74,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// <summary>
 		/// Focus callback for a <see cref="NomadButtonNode"/>.
 		/// </summary>
-		public void OnFocused() {
-			DisableMouseFocus();
+		private void OnFocused( in EmptyEventArgs args ) {
 			_isFocused = true;
 			_view.AnimateHover();
 
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.BUTTON_FOCUSED_EVENT, new ButtonFocusedEventArgs( _view.ButtonId ) );
+			GameEventRegistry.GetEvent<ButtonFocusedEventArgs>( UIConstants.BUTTON_FOCUSED_EVENT, UIConstants.NAMESPACE ).Publish( new ButtonFocusedEventArgs( _view.ButtonId ) );
 		}
 
 		/*
@@ -108,12 +89,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void OnUnfocused() {
+		private void OnUnfocused( in EmptyEventArgs args ) {
 			_isFocused = false;
 			_view.AnimateHover();
-			
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.BUTTON_UNFOCUSED_EVENT, new ButtonUnfocusedEventArgs( _view.ButtonId ) );
+
+			GameEventRegistry.GetEvent<ButtonUnfocusedEventArgs>( UIConstants.BUTTON_UNFOCUSED_EVENT, UIConstants.NAMESPACE ).Publish( new ButtonUnfocusedEventArgs( _view.ButtonId ) );
 		}
 		
 		/*
@@ -124,9 +104,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnPressed() {
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.BUTTON_CLICKED_EVENT, new ButtonClickedEventArgs( _view.ButtonId ) );
+		private void OnPressed( in EmptyEventArgs args ) {
+			GameEventRegistry.GetEvent<ButtonClickedEventArgs>( UIConstants.BUTTON_CLICKED_EVENT, UIConstants.NAMESPACE ).Publish( new ButtonClickedEventArgs( _view.ButtonId ) );
 		}
 	};
 };

@@ -43,7 +43,7 @@ namespace Game.Prefabs.SplashScreen {
 			base._Ready();
 
 			for ( int i = 0; i < _screens.Length; i++ ) {
-				_screens[ i ].Finished.Subscribe( this, OnLogoFinished );
+				_screens[ i ].Finished.Subscribe( OnLogoFinished );
 			}
 		}
 	};

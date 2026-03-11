@@ -21,7 +21,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 namespace Game.Domain.Events.UI {
-	public readonly record struct MenuOpenedEventArgs(
-		string MenuId
-	);
+	public readonly struct MenuOpenedEventArgs {
+		public string MenuId => _menuId;
+		private readonly string _menuId;
+
+		public MenuOpenedEventArgs( string menuId ) {
+			_menuId = menuId;
+		}
+	};
 };

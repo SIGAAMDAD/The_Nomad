@@ -28,6 +28,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.Events.Global;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/*
@@ -59,12 +60,11 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventBus"></param>
 		/// <param name="view"></param>
-		public OptionSliderController( IGodotEventBusService eventBus, OptionSliderView view )
-			: base( eventBus, view )
+		public OptionSliderController( OptionSliderView view )
+			: base( view )
 		{
-			eventBus.ConnectSignal( view.Slider, HSlider.SignalName.ValueChanged, view.Slider, Callable.From<float>( OnValueChanged ) );
+			view.Slider.Connect( HSlider.SignalName.ValueChanged, Callable.From<float>( OnValueChanged ) );
 		}
 
 		/*
@@ -76,8 +76,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 		/// 
 		/// </summary>
 		private void OnValueChanged( float value ) {
-			var eventFactory = _view.Owner.GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" ).ServiceLocator.GetService<IGameEventRegistryService>();
-			UIEventHelper.PublishUIEvent( eventFactory, UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT, new OptionSliderValueChangedEventArgs( _view.SliderId, (float)_view.Slider.Value ) );
+			GameEventRegistry.GetEvent<OptionSliderValueChangedEventArgs>( UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT, UIConstants.NAMESPACE ).Publish( new OptionSliderValueChangedEventArgs( _view.SliderId, (float)_view.Slider.Value ) );
 		}
 	};
 };

@@ -21,12 +21,12 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Godot;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.Util;
+using Nomad.Core.EngineUtils.Globals;
 using Nomad.ResourceCache;
 using System;
+using Nomad.Core.EngineUtils.Assets;
+using Nomad.Events.Global;
+using Nomad.Logger.Globals;
 
 namespace Game.Infrastructure.Caching {
 	/*
@@ -41,15 +41,14 @@ namespace Game.Infrastructure.Caching {
 	/// </summary>
 	
 	public static class TextureCache {
-		public static BaseCache<Texture, FilePath> Instance => _textureCache.Value;
-		private static readonly Lazy<BaseCache<Texture, FilePath>> _textureCache = new Lazy<BaseCache<Texture, FilePath>>( Create, true );
+		public static BaseCache<ITexture, string> Instance => _textureCache.Value;
+		private static readonly Lazy<BaseCache<ITexture, string>> _textureCache = new Lazy<BaseCache<ITexture, string>>( Create, true );
 
-		private static BaseCache<Texture, FilePath> Create() {
-			var bootstrapper = ( (Node)Engine.GetMainLoop().Get( SceneTree.PropertyName.Root ) ).GetNode<NomadBootstrapper>( "/root/NomadBootstrapper" );
-			return new BaseCache<Texture, FilePath>(
-				bootstrapper.ServiceLocator.GetService<ILoggerService>(),
-				bootstrapper.ServiceLocator.GetService<IGameEventRegistryService>(),
-				new GodotLoader<Texture>()
+		private static BaseCache<ITexture, string> Create() {
+			return new BaseCache<ITexture, string>(
+				Logging.Instance,
+				GameEventRegistry.Instance,
+				EngineService.GetResourceLoader()
 			);
 		}
 	};

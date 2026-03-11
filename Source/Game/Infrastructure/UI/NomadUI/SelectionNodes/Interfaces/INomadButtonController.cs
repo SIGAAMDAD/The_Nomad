@@ -27,8 +27,5 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces {
 	public interface INomadButtonController {
 		InternString ButtonId { get; }
 		bool IsFocused { get; }
-
-		void OnFocused();
-		void OnUnfocused();
 	};
 };
