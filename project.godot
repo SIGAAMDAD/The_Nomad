@@ -24,7 +24,7 @@ config/icon="res://icon.svg"
 [audio]
 
 buses/default_bus_layout="uid://cl3g7vpkeebj3"
-driver/driver="Alsa"
+driver/driver="Dummy"
 driver/enable_input=true
 
 [autoload]
@@ -46,13 +46,13 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="TheNomad"
 
-[editor]
-
-export/convert_text_resources_to_binary=false
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/konamicode/plugin.cfg")
+
+[memory]
+
+limits/message_queue/max_size_mb=8
 
 [milestone]
 
@@ -70,6 +70,7 @@ pathfinding/max_threads=1024
 2d/run_on_separate_thread=true
 common/physics_ticks_per_second=30
 2d/physics_engine="Rapier2D"
+3d/physics_engine="Dummy"
 common/physics_interpolation=true
 common/enable_object_picking=false
 
@@ -79,8 +80,11 @@ textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
+2d/batching/item_buffer_size=12288
+driver/depth_prepass/enable=false
 viewport/hdr_2d=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
+limits/global_shader_variables/buffer_size=8192
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 
 [shader_globals]

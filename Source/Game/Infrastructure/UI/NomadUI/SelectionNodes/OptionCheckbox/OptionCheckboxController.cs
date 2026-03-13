@@ -27,7 +27,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
 using Nomad.Core.Util;
-using Nomad.Events.Global;
+using Nomad.Events.Globals;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 	/*
@@ -69,8 +69,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
 		{
 			_view.SetValue( false );
 
-			view.Left.Connect( Godot.Button.SignalName.Pressed, Callable.From( OnToggled ) );
-			view.Right.Connect( Godot.Button.SignalName.Pressed, Callable.From( OnToggled ) );
+			view.Left.Connect( Button.SignalName.Pressed, Callable.From( OnToggled ) );
+			view.Right.Connect( Button.SignalName.Pressed, Callable.From( OnToggled ) );
 		}
 
 		/*

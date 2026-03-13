@@ -36,6 +36,9 @@ using Nomad.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.FileSystem;
 using System;
+using Nomad.OnlineServices.Steam;
+using Nomad.Audio.Fmod;
+using Nomad.Core.EngineUtils;
 
 namespace Game.Infrastructure {
 	/*
@@ -76,7 +79,8 @@ namespace Game.Infrastructure {
 				.AddBootstrapper( new EventBootstrapper() )
 				.AddBootstrapper( new CVarBootstrapper() )
 				.AddBootstrapper( new EngineServiceBootstrapper() )
-				.AddBootstrapper( new FileSystemBootstrapper() );
+				.AddBootstrapper( new FileSystemBootstrapper() )
+				.AddBootstrapper( new SteamBootstrapper() );
 
 			_bootstrapper.Bootstrap();
 
@@ -86,16 +90,17 @@ namespace Game.Infrastructure {
 			var logger = serviceLocator.GetService<ILoggerService>();
 			logger.AddSink( new FileSink( cvarSystem, serviceLocator.GetService<IFileSystem>() ) );
 
-			//			FMODBootstrapper.Initialize( serviceLocator, serviceFactory );
+			FMODBootstrapper.Initialize( serviceLocator, serviceFactory );
 
-			//			_audioService = serviceLocator.GetService<IAudioDevice>();
-			//			_channelRepository = serviceLocator.GetService<IChannelRepository>();
+			_audioService = serviceLocator.GetService<IAudioDevice>();
+			_channelRepository = serviceLocator.GetService<IChannelRepository>();
 
 			var fileSystem = serviceLocator.GetService<IFileSystem>();
+			var engineService = serviceLocator.GetService<IEngineService>();
 			var configFile = cvarSystem.Register(
 				new CVarCreateInfo<string> {
 					Name = Nomad.Core.Constants.CVars.Console.DEFAULT_CONFIG_FILE,
-					DefaultValue = "res://Assets/Config/default.ini",
+					DefaultValue = engineService.GetStoragePath( "Config/default.ini", StorageScope.StreamingAssets ),
 					Description = "The default configuration file.",
 					Flags = CVarFlags.Init | CVarFlags.ReadOnly
 				}

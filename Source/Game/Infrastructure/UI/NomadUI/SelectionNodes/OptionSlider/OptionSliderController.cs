@@ -28,7 +28,7 @@ using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Events.Global;
+using Nomad.Events.Globals;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionSlider {
 	/*

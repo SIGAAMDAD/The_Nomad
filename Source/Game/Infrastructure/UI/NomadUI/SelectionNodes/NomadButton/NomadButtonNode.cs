@@ -21,6 +21,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
+using Game.Application.Audio;
+using Game.Application.UI;
+using Game.Infrastructure.Audio;
 using Godot;
 using Nomad.EngineUtils.UserInterface;
 
@@ -81,6 +84,12 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 				}
 			);
 			Controller = new NomadButtonController( View );
+
+			AddComponent<UIAudioFeedback>(comp => {
+				comp.Button = this;
+				comp.ClickSound = UIConstants.BUTTON_CLICKED_EVENT;
+				comp.FocusedSound = UIConstants.BUTTON_FOCUSED_EVENT;
+			});
 		}
 	};
 };

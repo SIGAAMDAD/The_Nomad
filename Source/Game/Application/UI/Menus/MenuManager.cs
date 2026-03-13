@@ -45,9 +45,9 @@ namespace Game.Application.UI.Menus {
 		private MenuState _previousState = MenuState.None;
 
 		private readonly Dictionary<MenuState, string> _scenePaths = new Dictionary<MenuState, string>() {
-			[ MenuState.Main ] = EngineService.GetStoragePath( "Prefabs/Menus/MainMenu.tscn", StorageScope.StreamingAssets ),
-			[ MenuState.Loading ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.StreamingAssets ),
-			[ MenuState.Settings ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.StreamingAssets )
+			[ MenuState.Main ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", StorageScope.Install ),
+			[ MenuState.Loading ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.Install ),
+			[ MenuState.Settings ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.Install )
 		};
 
 		private IGameEventRegistryService _eventRegistry;

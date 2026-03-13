@@ -25,7 +25,7 @@ using Nomad.Core.EngineUtils.Globals;
 using Nomad.ResourceCache;
 using System;
 using Nomad.Core.EngineUtils.Assets;
-using Nomad.Events.Global;
+using Nomad.Events.Globals;
 using Nomad.Logger.Globals;
 
 namespace Game.Infrastructure.Caching {
