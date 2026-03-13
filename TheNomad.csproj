@@ -5,7 +5,7 @@
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net10.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Nullable>enable</Nullable>
+    <Nullable>annotations</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EnforceCodeStyleInBuilds>true</EnforceCodeStyleInBuilds>
     <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
@@ -54,47 +54,5 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmod.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodL.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodstudio.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsWindows)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodstudioL.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmod.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/fmodL.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmod.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodL.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodstudio.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.Audio.FMOD/libfmodstudioL.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/steam_api64.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/steam_api.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
-    <Content Condition="'$(IsLinux)' == 'true'" Include="Source/NomadFramework/Source/Nomad.OnlineServices.Steam/libsteam_api.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
   </ItemGroup>
 </Project>

@@ -24,10 +24,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Game.Application.UI;
 using Game.Domain.Events.UI;
 using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
-using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Events.Global;
+using Nomad.Events.Globals;
 
 namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/*

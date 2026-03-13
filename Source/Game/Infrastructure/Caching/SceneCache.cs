@@ -26,7 +26,7 @@ using Nomad.Core.EngineUtils.Globals;
 using System;
 using Nomad.Core.EngineUtils;
 using Nomad.Logger.Globals;
-using Nomad.Events.Global;
+using Nomad.Events.Globals;
 
 namespace Game.Infrastructure.Caching {
 	/*

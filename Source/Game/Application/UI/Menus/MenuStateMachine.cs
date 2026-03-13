@@ -25,7 +25,6 @@ using Game.Domain.Events.UI;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Events.Global;
 using System.Collections.Generic;
 
 namespace Game.Application.UI.Menus {
