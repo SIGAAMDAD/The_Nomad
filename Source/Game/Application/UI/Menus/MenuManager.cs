@@ -22,9 +22,10 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.UI.Menus.Events;
-using Nomad.Core.EngineUtils;
 using Nomad.Core.Events;
-using Nomad.Core.EngineUtils.Globals;
+using Nomad.Core.Engine.SceneManagement;
+using Nomad.Core.Engine.Globals;
+using Nomad.Core.Engine.Services;
 using System;
 using System.Collections.Generic;
 

@@ -14,11 +14,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Audio.Interfaces;
-using Nomad.Core.ECS;
-using Nomad.Core.EngineUtils;
-using Nomad.Core.EngineUtils.UserInterface;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Core.UI;
+using Nomad.EngineUtils;
 
 namespace Game.Application.Audio {
 	/*
@@ -32,9 +31,7 @@ namespace Game.Application.Audio {
 	/// 
 	/// </summary>
 	
-	public class UIAudioFeedback : IComponent {
-		public IGameObject Object { get; set; }
-
+	public class UIAudioFeedback : NomadBehaviour {
 		public IButton Button { get; set; }
 		public string ClickSound { get; set; }
 		public string FocusedSound { get; set; }
@@ -53,28 +50,54 @@ namespace Game.Application.Audio {
 			_emitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:UI" );
 		}
 
-		public void OnInit() {
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void OnInit() {
 			Button?.Clicked.Subscribe( OnClicked );
 			Button?.Focused.Subscribe( OnFocused );
 			Button?.Unfocused.Subscribe( OnUnfocused );
 		}
 
-		public void OnUpdate( float delta ) {
-		}
-
-		public void OnPhysicsUpdate( float delta ) {
-		}
-
-		public void OnShutdown() {
-		}
-
+		/*
+		===============
+		OnUnfocused
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnUnfocused( in EmptyEventArgs args ) {
 		}
 
+		/*
+		===============
+		OnFocused
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnFocused( in EmptyEventArgs args ) {
 			_emitter.PlaySound( FocusedSound );
 		}
 
+		/*
+		===============
+		OnClicked
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnClicked( in EmptyEventArgs args ) {
 			_emitter.PlaySound( ClickSound );
 		}

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dy3we64uds61v"]
 
-[ext_resource type="Script" uid="uid://2p4ahvpj7hg5" path="res://Source/Game/Application/ApplicationBootstrapper.cs" id="1_7somw"]
+[ext_resource type="Script" uid="uid://cta1e3desy0ki" path="res://Source/Game/Application/ApplicationBootstrapper.cs" id="1_7somw"]
 [ext_resource type="PackedScene" uid="uid://ctprgbdliiw5t" path="res://Assets/Prefabs/PostProcessing/PostProcessing.tscn" id="2_dy48w"]
 
 [node name="ApplicationBootstrapper" type="Node" unique_id=1721190559]

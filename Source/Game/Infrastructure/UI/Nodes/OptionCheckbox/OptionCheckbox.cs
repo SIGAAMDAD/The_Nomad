@@ -21,17 +21,18 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.Audio;
 using Game.Application.UI;
-using Game.Infrastructure.Audio;
-using Godot;
+using Nomad.Core.Engine.Globals;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
 using Nomad.EngineUtils.UserInterface;
+using Nomad.Events.Globals;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
+namespace Game.Infrastructure.UI.Nodes.OptionCheckbox {
 	/*
 	===================================================================================
 	
-	NomadButton
+	OptionCheckbox
 	
 	===================================================================================
 	*/
@@ -39,29 +40,27 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 	/// 
 	/// </summary>
 
-	public partial class NomadButtonNode : EngineButton {
-		[Export( PropertyHint.Range, "0,10,0.001,or_greater" )]
-		public float Duration = 1.0f;
+	public partial class OptionCheckbox : OptionNode.OptionNode {
+		private static readonly string ON_STRING = LocalizationService.Translate( new InternString( "UI_ON" ) );
+		private static readonly string OFF_STRING = LocalizationService.Translate( new InternString( "UI_OFF" ) );
 
-		[Export]
-		public bool AnimateScale = true;
-		[Export]
-		public bool AnimatePosition = false;
-		[Export]
-		public Tween.TransitionType TransitionType;
+		public bool Value {
+			get => _value;
+			set {
+				_valueLabel.Text = value ? ON_STRING : OFF_STRING;
+			}
+		}
+		private bool _value;
 
-		[ExportGroup( "Scale Properties", "scale_" )]
-		[Export]
-		public float ScaleIntensity = 1.10f;
+		public InternString CheckboxId => new InternString( Name );
 
-		[ExportGroup( "Position Properties", "position_" )]
-		[Export]
-		public Vector2 PositionValue = new Vector2( 0.0f, -4.0f );
+		public EngineButton Left => FindChild<EngineButton>( "LeftIcon" );
+		public EngineButton Right => FindChild<EngineButton>( "RightIcon" );
 
-		public bool IsFocused => Controller.IsFocused;
+		private EngineText _valueLabel;
 
-		public NomadButtonView View { get; private set; }
-		public NomadButtonController Controller { get; private set; }
+		public IGameEvent<bool> Toggled => _toggled;
+		private IGameEvent<bool> _toggled;
 
 		/*
 		===============
@@ -72,24 +71,27 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.NomadButton {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			View = new NomadButtonView(
-				this,
-				new NomadButtonAnimation {
-					Duration = Duration,
-					AnimateScale = AnimateScale,
-					AnimatePosition = AnimatePosition,
-					TransitionType = TransitionType,
-					ScaleIntensity = ScaleIntensity,
-					PositionValue = PositionValue
-				}
-			);
-			Controller = new NomadButtonController( View );
+			_valueLabel = FindChild<EngineText>( "Value" );
 
-			AddComponent<UIAudioFeedback>(comp => {
-				comp.Button = this;
-				comp.ClickSound = UIConstants.BUTTON_CLICKED_EVENT;
-				comp.FocusedSound = UIConstants.BUTTON_FOCUSED_EVENT;
-			});
+			Left.Clicked.Subscribe( OnToggled );
+			Right.Clicked.Subscribe( OnToggled );
+
+			_value = false;
+
+			_toggled = GameEventRegistry.GetEvent<bool>( $"{Name}:{UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT}", UIConstants.NAMESPACE );
+		}
+
+		/*
+		===============
+		OnToggled
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		private void OnToggled( in EmptyEventArgs args ) {
+			_value = !_value;
+			_toggled.Publish( _value );
 		}
 	};
 };

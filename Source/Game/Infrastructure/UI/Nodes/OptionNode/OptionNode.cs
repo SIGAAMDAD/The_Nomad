@@ -22,9 +22,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Godot;
-using Nomad.EngineUtils.UserInterface;
+using Nomad.UI;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
+namespace Game.Infrastructure.UI.Nodes.OptionNode {
 	/*
 	===================================================================================
 	
@@ -33,15 +33,15 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
 	===================================================================================
 	*/
 	/// <summary>
-	/// The base class for all <see cref="HBoxContainer"/> based option nodes in the settings menu.
+	/// The base class for all <see cref="EngineHorizontalContainer"/> based option nodes in the settings menu.
 	/// </summary>
 
-	public partial class OptionNode : EnginePanel {
+	public partial class OptionNode : EngineHorizontalContainer {
 		[Export]
 		public string ConfigVarName { get; private set; }
 		[Export]
-		public StringName Title { get; private set; }
+		public string Title { get; private set; }
 		[Export]
-		public StringName Description { get; private set; }
+		public string Description { get; private set; }
 	};
 };

@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://cl4nh7idbcep6"]
 
-[ext_resource type="Script" uid="uid://cjtm0v7jn1tr5" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_658rn"]
+[ext_resource type="Script" uid="uid://cea3wgdsok2vi" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_658rn"]
 [ext_resource type="Theme" uid="uid://bssws0vv2d2eg" path="res://Assets/Themes/MainTheme.tres" id="1_m4e4s"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/NomadButton/NomadButton.tscn" id="3_l307y"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionList/OptionList.tscn" id="4_sceel"]
-[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_l307y"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="4_sceel"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p5rsb"]
 
@@ -57,44 +57,36 @@ metadata/_tab_index = 0
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.Monitor"
-Title = &"Monitor"
 
 [node name="WindowModeList" parent="TabContainer/Display/Basic" unique_id=1937998290 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.WindowMode"
-Title = &"Display Mode"
 
 [node name="WindowResolutionList" parent="TabContainer/Display/Basic" unique_id=1721561237 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.WindowResolution"
-Title = &"Resolution"
 
 [node name="VSyncList" parent="TabContainer/Display/Basic" unique_id=2014587530 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.VSyncMode"
-Title = &"VSync"
 
 [node name="AspectRatioList" parent="TabContainer/Display/Basic" unique_id=304588338 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.AspectRatio"
-Title = &"Aspect Ratio"
 
 [node name="MaxFpsList" parent="TabContainer/Display/Basic" unique_id=610293301 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.MaxFps"
-Title = &"Max FPS"
-Description = &""
 
 [node name="BrightnessSlider" parent="TabContainer/Display/Basic" unique_id=314321795 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.Brightness"
-Title = &"Brightness"
 
 [node name="HSeparator" type="HSeparator" parent="TabContainer/Display/Basic" unique_id=665885871]
 layout_mode = 2
@@ -115,8 +107,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.AntiAliasing"
-Title = &"Method"
-Description = &""
 
 [node name="AntiAliasingOptions" type="MarginContainer" parent="TabContainer/Display/Advanced" unique_id=231868992]
 layout_mode = 2
@@ -129,13 +119,11 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningEnabled"
-Title = &"Sharpening"
 
 [node name="SharpeningAmount" parent="TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=1230149142 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningAmount"
-Title = &"Amount"
 
 [node name="Filters" type="VBoxContainer" parent="TabContainer/Display" unique_id=921085909]
 visible = false
@@ -145,20 +133,14 @@ metadata/_tab_index = 2
 [node name="UseDebandingEnabled" parent="TabContainer/Display/Filters" unique_id=1986944487 instance=ExtResource("6_m4e4s")]
 layout_mode = 2
 ConfigVarName = "display.UseDebanding"
-Title = &"Reduce Color Banding"
-Description = &""
 
 [node name="VignetteEnabled" parent="TabContainer/Display/Filters" unique_id=133336806 instance=ExtResource("6_m4e4s")]
 layout_mode = 2
 ConfigVarName = "display.Vignette"
-Title = &"Vignette"
-Description = &""
 
 [node name="FilmGrainEnabled" parent="TabContainer/Display/Filters" unique_id=1171167011 instance=ExtResource("6_m4e4s")]
 layout_mode = 2
 ConfigVarName = "display.Vignette"
-Title = &"Vignette"
-Description = &""
 
 [node name="MotionBlurSlider" parent="TabContainer/Display/Filters" unique_id=577430253 instance=ExtResource("5_yx041")]
 layout_mode = 2
@@ -186,49 +168,41 @@ metadata/_tab_index = 2
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.OutputDeviceIndex"
-Title = &"Output Device"
 
 [node name="DriverAPIList" parent="TabContainer/Audio" unique_id=560109090 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.AudioDriver"
-Title = &"Audio API"
 
 [node name="MasterVolumeSlider" parent="TabContainer/Audio" unique_id=1691011436 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.MasterVolume"
-Title = &"Master Volume"
 
 [node name="MusicOnCheckbox" parent="TabContainer/Audio" unique_id=1423251664 instance=ExtResource("6_m4e4s")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.MusicOn"
-Title = &"Music On"
 
 [node name="MusicVolumeSlider" parent="TabContainer/Audio" unique_id=275356694 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.MusicVolume"
-Title = &"Music Volume"
 
 [node name="EffectsOnCheckbox" parent="TabContainer/Audio" unique_id=163248377 instance=ExtResource("6_m4e4s")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.EffectsOn"
-Title = &"Effects On"
 
 [node name="EffectsVolumeSlider" parent="TabContainer/Audio" unique_id=882495971 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.EffectsVolume"
-Title = &"Effects Volume"
 
 [node name="MaxChannelsList" parent="TabContainer/Audio" unique_id=1313570105 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.MaxChannels"
-Title = &"Max Simultaneous"
 
 [node name="Controls" type="MarginContainer" parent="TabContainer" unique_id=953773224]
 unique_name_in_owner = true

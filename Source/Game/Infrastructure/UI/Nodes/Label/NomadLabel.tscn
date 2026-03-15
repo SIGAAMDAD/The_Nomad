@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c4mill88us6k3"]
+
+[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="1_7nq2b"]
+
+[node name="NomadLabel" type="Label" unique_id=1178157066]
+size_flags_horizontal = 3
+script = ExtResource("1_7nq2b")

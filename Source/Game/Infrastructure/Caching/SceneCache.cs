@@ -22,9 +22,9 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Nomad.ResourceCache;
-using Nomad.Core.EngineUtils.Globals;
+using Nomad.Core.Engine.Globals;
 using System;
-using Nomad.Core.EngineUtils;
+using Nomad.Core.Engine.SceneManagement;
 using Nomad.Logger.Globals;
 using Nomad.Events.Globals;
 

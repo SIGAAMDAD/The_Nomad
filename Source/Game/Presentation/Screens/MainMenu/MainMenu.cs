@@ -1,12 +1,12 @@
 using Game.Application.UI;
 using Game.Application.UI.Menus.Events;
 using Nomad.Audio.Interfaces;
-using Nomad.Core.EngineUtils;
-using Nomad.Core.EngineUtils.Globals;
+using Nomad.Core.Engine.Globals;
+using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.EngineUtils.UserInterface;
 using Nomad.Events.Globals;
+using Nomad.EngineUtils.UserInterface;
 
 namespace Game.Presentation.Screens.MainMenu {
 	/*
@@ -39,7 +39,7 @@ namespace Game.Presentation.Screens.MainMenu {
 			var musicService = ServiceLocator.GetService<IMusicService>();
 			musicService.PlayTheme( "event:/Music/UserInterface/MainMenuTheme" );
 
-			_buttonGroup = GameEventRegistry.CreateGroup( "MainMenu" );
+			_buttonGroup = GameEventRegistry.GetGroup( "MainMenu" );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked, OnQuitGameClicked );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsMenuButtonClicked );
 		}
