@@ -18,6 +18,12 @@
     <Optimize>true</Optimize>
     <SkipLocalsInit>true</SkipLocalsInit>
   </PropertyGroup>
+  <!--
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+  -->
   <ItemGroup>
     <PackageReference Include="Godot.NET.Sdk" Version="4.6.1" />
     <PackageReference Include="Godot.SourceGenerators" Version="4.6.1" />
@@ -27,14 +33,18 @@
     <Compile Remove="Source\NomadFramework\**" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Ensures the source generation works correctly -->
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Audio.FMOD\Nomad.Audio.FMOD.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.EngineUtils.Settings\Nomad.EngineUtils.Settings.csproj" />
+
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.SourceGenerators\Nomad.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.EngineUtils.Godot\Nomad.EngineUtils.Godot.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Logger\Nomad.Logger.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.FileSystem\Nomad.FileSystem.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.CVars\Nomad.CVars.csproj" />
-	  <ProjectReference Include="Source\NomadFramework\Source\Nomad.Events\Nomad.Events.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Events\Nomad.Events.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Console\Nomad.Console.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />

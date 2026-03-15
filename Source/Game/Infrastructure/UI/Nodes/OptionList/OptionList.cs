@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -22,53 +22,56 @@ terms, you may contact me via email at nyvantil@gmail.com.
 */
 
 using Game.Application.UI;
-using Game.Domain.Events.UI;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.EngineUtils.UserInterface;
 using Nomad.Events.Globals;
 using System;
 using System.Collections.Generic;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
+namespace Game.Infrastructure.UI.Nodes.OptionList {
 	/*
 	===================================================================================
 	
-	OptionListController
-	
+	OptionList
+		
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
 
-	public class OptionListController : OptionNodeController<IOptionListView>, IOptionListController {
-		private static readonly NodePath LEFT_BUTTON_NODEPATH = "LeftIcon";
-		private static readonly NodePath RIGHT_BUTTON_NODEPATH = "RightIcon";
-
-		public InternString ListId => _view.ListId;
-
-		public int Value => _value;
+	public partial class OptionList : OptionNode.OptionNode {
+		public int Value {
+			get => _value;
+			set => SetValue( value );
+		}
 		private int _value;
 
+		public InternString ListId => new InternString( Name );
+
+		private EngineText _valueLabel;
 		private IReadOnlyList<string> _items;
+
+		public IGameEvent<int> ValueSet => _valueSet;
+		private IGameEvent<int> _valueSet;
 
 		/*
 		===============
-		OptionListController
+		SetValue
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="view"></param>
-		public OptionListController( OptionListView view )
-			: base( view )
-		{
-			view.Owner.GetNode<Button>( LEFT_BUTTON_NODEPATH ).Connect( Button.SignalName.Pressed, Callable.From( OnPrevToggle ) );
-			view.Owner.GetNode<Button>( RIGHT_BUTTON_NODEPATH ).Connect( Button.SignalName.Pressed, Callable.From( OnNextToggle ) );
+		/// <param name="value"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void SetValue( int value ) {
+			if ( _items == null ) {
+				throw new InvalidOperationException();
+			}
+			_value = value;
+			_valueLabel.Text = _items[ value ];
 		}
 
 		/*
@@ -87,22 +90,20 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 			SetValue( 0 );
 		}
 
+
 		/*
 		===============
-		SetValue
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="value"></param>
-		/// <exception cref="InvalidOperationException"></exception>
-		public void SetValue( int value ) {
-			if ( _items == null ) {
-				throw new InvalidOperationException();
-			}
-			_value = value;
-			_view.SetOption( _items[ value ] );
+		protected override void OnInit() {
+			FindChild<EngineButton>( "LeftIcon" ).Clicked.Subscribe( OnPrevToggle );
+			FindChild<EngineButton>( "RightIcon" ).Clicked.Subscribe( OnNextToggle );
+
+			_valueSet = GameEventRegistry.GetEvent<int>( $"{Name}:{UIConstants.OPTION_LIST_VALUE_SET_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
@@ -113,7 +114,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnPrevToggle() {
+		private void OnPrevToggle( in EmptyEventArgs args ) {
 			if ( _items == null ) {
 				return;
 			}
@@ -121,9 +122,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 			if ( _value < 0 ) {
 				_value = _items.Count - 1;
 			}
-			_view.SetOption( _items[ _value ] );
-
-			GameEventRegistry.GetEvent<OptionListValueSetEventArgs>( UIConstants.OPTION_LIST_VALUE_SET_EVENT, UIConstants.NAMESPACE ).Publish( new OptionListValueSetEventArgs( _view.ListId, _value ) );
+			_valueLabel.Text = _items[ _value ];
+			_valueSet.Publish( _value );
 		}
 
 		/*
@@ -134,7 +134,7 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnNextToggle() {
+		private void OnNextToggle( in EmptyEventArgs args ) {
 			if ( _items == null ) {
 				return;
 			}
@@ -142,9 +142,8 @@ namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionList {
 			if ( _value >= _items.Count ) {
 				_value = 0;
 			}
-			_view.SetOption( _items[ _value ] );
-
-			GameEventRegistry.GetEvent<OptionListValueSetEventArgs>( UIConstants.OPTION_LIST_VALUE_SET_EVENT, UIConstants.NAMESPACE ).Publish( new OptionListValueSetEventArgs( _view.ListId, _value ) );
+			_valueLabel.Text = _items[ _value ];
+			_valueSet.Publish( _value );
 		}
 	};
 };

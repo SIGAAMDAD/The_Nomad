@@ -29,7 +29,7 @@ driver/enable_input=true
 
 [autoload]
 
-GodotBootstrapper="*uid://04sxyypuhcnv"
+GodotBootstrapper="*uid://cq3c7yunik8mt"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
 
 [display]
@@ -48,7 +48,7 @@ project/assembly_name="TheNomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/guide/plugin.cfg", "res://addons/konamicode/plugin.cfg")
+enabled=PackedStringArray("res://addons/guide/plugin.cfg")
 
 [memory]
 

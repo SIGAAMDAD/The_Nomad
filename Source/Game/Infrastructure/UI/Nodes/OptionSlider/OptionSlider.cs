@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,61 +21,90 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
+using Game.Application.UI;
 using Godot;
+using Nomad.Core.UI;
 using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Events.Globals;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode {
+namespace Game.Infrastructure.UI.Nodes.OptionSlider {
 	/*
 	===================================================================================
 	
-	OptionNodeController
+	OptionSlider
 	
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public class OptionNodeController<TView> : IOptionNodeController
-		where TView : IOptionNodeView
-	{
-		protected readonly TView _view;
 
-		/*
-		===============
-		OptionNodeController
-		===============
-		*/
-		public OptionNodeController( TView view ) {
-			_view = view;
+	public partial class OptionSlider : OptionNode.OptionNode {
+		[Export( PropertyHint.Range, "0.0,1000.0" )]
+		public float Min { get; private set; } = 0.0f;
+		[Export( PropertyHint.Range, "0.0,1000.0" )]
+		public float Max { get; private set; } = 100.0f;
 
-			view.Owner.Connect( HBoxContainer.SignalName.FocusEntered, Callable.From( OnFocused ) );
-			view.Owner.Connect( HBoxContainer.SignalName.MouseEntered, Callable.From( OnFocused ) );
-			view.Owner.Connect( HBoxContainer.SignalName.FocusExited, Callable.From( OnUnfocused ) );
-			view.Owner.Connect( HBoxContainer.SignalName.MouseExited, Callable.From( OnUnfocused ) );
+		public float Value {
+			get => _value;
+			set {
+				SetValue( value );
+			}
 		}
+		private float _value;
+
+		public InternString SliderId => new InternString( Name );
+		
+		private EngineHorizontalSlider _slider;
+		private EngineText _valueLabel;
+
+		public IGameEvent<float> ValueChanged => _valueChanged;
+		private IGameEvent<float> _valueChanged;
 
 		/*
 		===============
-		OnFocused
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public void OnFocused() {
+		protected override void OnInit() {
+			_slider = FindChild<EngineHorizontalSlider>( "Input" );
+			_slider.Changed.Subscribe( OnValueChanged );
+
+			_valueLabel = FindChild<EngineText>( "Value" );
+			
+			// CHAIN?
+			_valueChanged = GameEventRegistry.GetEvent<float>( $"{Name}:{UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
 		===============
-		OnUnfocused
+		SetValue
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public void OnUnfocused() {
+		/// <param name="value"></param>
+		public void SetValue( float value ) {
+			_slider.Value = value;
+			_valueLabel.Text = value.ToString();
+		}
+
+		/*
+		===============
+		OnValueChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnValueChanged( in float args ) {
+			_valueChanged.Publish( args );
 		}
 	};
 };

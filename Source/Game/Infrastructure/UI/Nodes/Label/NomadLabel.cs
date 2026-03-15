@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 The Nomad AGPL Source Code
 Copyright (C) 2025 Noah Van Til
@@ -21,69 +21,62 @@ terms, you may contact me via email at nyvantil@gmail.com.
 ===========================================================================
 */
 
-using Game.Application.UI;
-using Game.Domain.Events.UI;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.Interfaces;
-using Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionNode;
-using Godot;
-using Nomad.Core.Util;
-using Nomad.Events.Globals;
+using Nomad.Core.Events;
+using Nomad.EngineUtils.UserInterface;
 
-namespace Game.Infrastructure.UI.NomadUI.SelectionNodes.OptionCheckbox {
+namespace Game.Infrastructure.UI.Nodes.Label {
 	/*
 	===================================================================================
-	
-	OptionCheckboxController
+
+	NomadLabel
 	
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public class OptionCheckboxController : OptionNodeController<IOptionCheckboxView>, IOptionCheckboxController {
-		public InternString CheckboxId => _view.CheckboxId;
 
-		public bool Value {
-			get => _value;
-			set {
-				_value = value;
-				_view.SetValue( value );
-			}
-		}
-		private bool _value;
+	public partial class NomadLabel : EngineText {
+		public bool IsFocused => _isFocused;
+		private bool _isFocused = false;
 
 		/*
 		===============
-		OptionCheckboxController
+		OnFocused
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventFactory"></param>
-		/// <param name="eventFactory"></param>
-		/// <param name="view"></param>
-		public OptionCheckboxController( OptionCheckboxView view )
-			: base( view )
-		{
-			_view.SetValue( false );
-
-			view.Left.Connect( Button.SignalName.Pressed, Callable.From( OnToggled ) );
-			view.Right.Connect( Button.SignalName.Pressed, Callable.From( OnToggled ) );
+		/// <param name="args"></param>
+		public void OnFocused( in EmptyEventArgs args ) {
+			_isFocused = true;
 		}
 
 		/*
 		===============
-		OnToggled
+		OnUnfocused
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnToggled() {
-			_value = !_value;
-			GameEventRegistry.GetEvent<OptionCheckboxValueChangedEventArgs>( UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT, UIConstants.NAMESPACE ).Publish( new OptionCheckboxValueChangedEventArgs( _view.CheckboxId, _value ) );
+		/// <param name="args"></param>
+		public void OnUnfocused( in EmptyEventArgs args ) {
+			_isFocused = false;
+		}
+
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnInit() {
+			Focused.Subscribe( OnFocused );
+			Unfocused.Subscribe( OnUnfocused );
 		}
 	};
 };

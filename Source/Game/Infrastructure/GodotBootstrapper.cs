@@ -38,7 +38,7 @@ using Nomad.Core.FileSystem;
 using System;
 using Nomad.OnlineServices.Steam;
 using Nomad.Audio.Fmod;
-using Nomad.Core.EngineUtils;
+using Nomad.Core.Engine.Services;
 
 namespace Game.Infrastructure {
 	/*

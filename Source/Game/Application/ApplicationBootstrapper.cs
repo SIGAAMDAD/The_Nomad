@@ -24,7 +24,7 @@ terms, you may contact me via email at nyvantil@gmail.com.
 using Game.Application.UI;
 using Game.Application.UI.Menus;
 using Godot;
-using Nomad.Core.EngineUtils;
+using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 

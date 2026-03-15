@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://b6dwqm35gxe77"]
 
-[ext_resource type="Script" uid="uid://h8opghtpx1ji" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
+[ext_resource type="Script" uid="uid://cmdqb5swirceo" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
 [ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
-[ext_resource type="Script" uid="uid://b107hcub8bvir" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/Label/Label.cs" id="2_ey12s"]
+[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="2_ey12s"]
 [ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_up0iq"]

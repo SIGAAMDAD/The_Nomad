@@ -1,8 +1,8 @@
 using Game.Application.UI;
 using Game.Application.UI.Menus.Events;
 using Nomad.Core.Events;
-using Nomad.EngineUtils.UserInterface;
 using Nomad.Events.Globals;
+using Nomad.EngineUtils.UserInterface;
 
 namespace Game.Presentation.Screens.SettingsMenu {
 	/*
@@ -14,12 +14,10 @@ namespace Game.Presentation.Screens.SettingsMenu {
 	*/
 	/// <summary>
 	/// 
+	/// </summary>
 	
 	public partial class SettingsMenu : EnginePanel {
 		private ISubscriptionGroup _buttonGroup;
-
-		public SettingsMenu() {
-		}
 
 		/*
 		===============
@@ -30,7 +28,7 @@ namespace Game.Presentation.Screens.SettingsMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_buttonGroup = GameEventRegistry.CreateGroup( "SettingsMenuButtons" );
+			_buttonGroup = GameEventRegistry.GetGroup( "SettingsMenuButtons" );
 			_buttonGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/BackButton" ).Clicked, OnBackPressed );
 		}
 
@@ -46,6 +44,15 @@ namespace Game.Presentation.Screens.SettingsMenu {
 			_buttonGroup?.Dispose();
 		}
 
+		/*
+		===============
+		OnBackPressed
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnBackPressed( in EmptyEventArgs args ) {
 			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Settings, MenuState.Main ) );
 		}

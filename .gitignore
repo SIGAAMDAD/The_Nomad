@@ -1,7 +1,7 @@
 .godot/
 .vscode/
-*.cs.uid
-*.gd.uid
+**/*.cs.uid
+**/*.gd.uid
 *.tscn.uid
 *.gdshader.uid
 *.import
