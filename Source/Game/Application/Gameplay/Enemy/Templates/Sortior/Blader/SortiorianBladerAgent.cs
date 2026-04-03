@@ -32,8 +32,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
 		public override WorkingMemory Memory => BladerMemory;
 		public SortiorianBladerMemory BladerMemory { get; }
 
-		public SortiorianBladerAgent( AStarPlanner planner, ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals )
-			: base( planner, replanController, stateCompiler, goalSelector, sensors, actions, goals )
+		public SortiorianBladerAgent( ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals )
+			: base( replanController, stateCompiler, goalSelector, sensors, actions, goals )
 		{
 			BladerMemory = new SortiorianBladerMemory();
 		}

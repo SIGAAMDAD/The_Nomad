@@ -13,7 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.GOAP {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public readonly struct PlanStep {
 		public readonly PlannerAction Action;
 
