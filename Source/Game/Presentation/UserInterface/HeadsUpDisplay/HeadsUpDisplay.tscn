@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cqrfhexbsn2fq"]
 
-[ext_resource type="Script" uid="uid://chcgflgv8njti" path="res://Source/Game/Presentation/UserInterface/HeadsUpDisplay/HeadsUpDisplay.cs" id="1_f501r"]
+[ext_resource type="Script" uid="uid://dydfhvw6xmxvx" path="res://Source/Game/Presentation/UserInterface/HeadsUpDisplay/HeadsUpDisplay.cs" id="1_f501r"]
 
 [node name="HeadsUpDisplay" type="CanvasLayer" unique_id=725041088]
 script = ExtResource("1_f501r")

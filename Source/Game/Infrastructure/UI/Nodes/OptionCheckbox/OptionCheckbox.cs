@@ -1,34 +1,26 @@
 ﻿/*
 ===========================================================================
-The Nomad AGPL Source Code
-Copyright (C) 2025 Noah Van Til
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
 
-The Nomad Source Code is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-The Nomad Source Code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
-
-If you have questions concerning this license or the applicable additional
-terms, you may contact me via email at nyvantil@gmail.com.
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Game.Application.UI;
+using Nomad.Game.Application.UI;
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.EngineUtils.UserInterface;
+using Nomad.UI;
 using Nomad.Events.Globals;
 
-namespace Game.Infrastructure.UI.Nodes.OptionCheckbox {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 	/*
 	===================================================================================
 	
@@ -47,6 +39,7 @@ namespace Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		public bool Value {
 			get => _value;
 			set {
+				_value = value;
 				_valueLabel.Text = value ? ON_STRING : OFF_STRING;
 			}
 		}
@@ -71,12 +64,15 @@ namespace Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
+			EngineText title = FindChild<EngineText>( "Title" );
+			title.Text = Title;
+
 			_valueLabel = FindChild<EngineText>( "Value" );
 
 			Left.Clicked.Subscribe( OnToggled );
 			Right.Clicked.Subscribe( OnToggled );
 
-			_value = false;
+			Value = false;
 
 			_toggled = GameEventRegistry.GetEvent<bool>( $"{Name}:{UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT}", UIConstants.NAMESPACE );
 		}
@@ -90,7 +86,7 @@ namespace Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		/// 
 		/// </summary>
 		private void OnToggled( in EmptyEventArgs args ) {
-			_value = !_value;
+			Value = !_value;
 			_toggled.Publish( _value );
 		}
 	};

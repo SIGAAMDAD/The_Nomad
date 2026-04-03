@@ -1,5 +1,12 @@
 [gd_scene format=3 uid="uid://cirvkfu4rutp3"]
 
+[ext_resource type="Script" uid="uid://pxygy11mhurf" path="res://Assets/Prefabs/Player/PlayerAggregatte.cs" id="1_07406"]
+[ext_resource type="Script" uid="uid://d3kjakj1ioi55" path="res://Assets/Prefabs/Player/PlayerCamera2D.cs" id="1_jic80"]
+
 [node name="Player" type="Node2D" unique_id=664959359]
+script = ExtResource("1_07406")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=178613071]
+script = ExtResource("1_jic80")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1408154902]

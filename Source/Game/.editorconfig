@@ -1,0 +1,201 @@
+# top-most EditorConfig file
+root = true
+
+# -----------------------------------------------------------------------------
+# General settings for all files
+# -----------------------------------------------------------------------------
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+indent_size = 4
+tab_width = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# -----------------------------------------------------------------------------
+# C# specific settings
+# -----------------------------------------------------------------------------
+[*.cs]
+
+# =============================================================================
+# Indentation & Tabs
+# =============================================================================
+indent_style = tab
+indent_size = 4
+
+# =============================================================================
+# Brace style (K&R – opening brace on same line)
+# =============================================================================
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_catch = false
+csharp_new_line_before_else = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_new_line_between_query_expression_clauses = false
+
+# Always require braces (even for single-line statements)
+csharp_prefer_braces = true:warning
+
+# =============================================================================
+# Spacing rules (matching the examples)
+# =============================================================================
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_parentheses = control_flow_statements
+csharp_space_between_method_call_parameter_list_parentheses = true
+csharp_space_before_method_call_parentheses = true
+csharp_space_between_method_declaration_parameter_list_parentheses = true
+csharp_space_before_method_declaration_parentheses = true
+csharp_space_between_collection_expression_brackets = true
+csharp_space_after_cast = false
+csharp_space_around_binary_operators = before_and_after
+
+# =============================================================================
+# Code style preferences
+# =============================================================================
+csharp_style_namespace_declarations = block_scoped:warning
+
+# Prefer collection expression syntax [ 1, 2, 3 ] over new[] { ... }
+csharp_style_prefer_collection_expression = true:suggestion
+
+# Prefer 'default' over 'default(T)'
+csharp_prefer_simple_default_expression = true:suggestion
+
+# Prefer 'using' statement without braces for single line (suggestion)
+csharp_prefer_simple_using_statement = true:suggestion
+
+# Expression‑bodied members – we prefer block bodies
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_properties = false:silent
+csharp_style_expression_bodied_indexers = false:silent
+csharp_style_expression_bodied_accessors = false:silent
+
+# Prefer readonly fields when possible
+dotnet_style_readonly_field = true:warning
+
+# Prefer 'nameof' over string literals
+dotnet_style_prefer_conditional_expression_over_assignment = false:suggestion
+
+# Pattern matching preferences
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_deconstructed_variable_declaration = true:suggestion
+
+# Prefer index/range operators
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+
+# Do NOT use foreach on indexable collections (performance warning)
+csharp_style_prefer_foreach = false:warning
+
+# =============================================================================
+# Naming conventions
+# =============================================================================
+
+# 1. Constants (all const fields, regardless of accessibility) → SNAKE_CASE
+dotnet_naming_rule.constants_rule.severity = warning
+dotnet_naming_rule.constants_rule.symbols = constants
+dotnet_naming_rule.constants_rule.style = snake_case_style
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+
+dotnet_naming_style.snake_case_style.capitalization = all_upper
+dotnet_naming_style.snake_case_style.word_separator = _
+
+# 2. Public fields (non‑const) → PascalCase
+dotnet_naming_rule.public_fields_rule.severity = warning
+dotnet_naming_rule.public_fields_rule.symbols = public_fields
+dotnet_naming_rule.public_fields_rule.style = pascal_case_style
+
+dotnet_naming_symbols.public_fields.applicable_kinds = field
+dotnet_naming_symbols.public_fields.applicable_accessibilities = public
+dotnet_naming_symbols.public_fields.excluded_modifiers = const
+
+# 3. Internal fields (non‑const) → _camelCase
+dotnet_naming_rule.internal_fields_rule.severity = warning
+dotnet_naming_rule.internal_fields_rule.symbols = internal_fields
+dotnet_naming_rule.internal_fields_rule.style = underscore_camel_case_style
+
+dotnet_naming_symbols.internal_fields.applicable_kinds = field
+dotnet_naming_symbols.internal_fields.applicable_accessibilities = internal
+dotnet_naming_symbols.internal_fields.excluded_modifiers = const
+
+# 4. Protected fields (non‑const) → camelCase (no underscore)
+dotnet_naming_rule.protected_fields_rule.severity = warning
+dotnet_naming_rule.protected_fields_rule.symbols = protected_fields
+dotnet_naming_rule.protected_fields_rule.style = camel_case_style
+
+dotnet_naming_symbols.protected_fields.applicable_kinds = field
+dotnet_naming_symbols.protected_fields.applicable_accessibilities = protected
+dotnet_naming_symbols.protected_fields.excluded_modifiers = const
+
+# 5. Private fields (non‑const) → _camelCase
+dotnet_naming_rule.private_fields_rule.severity = warning
+dotnet_naming_rule.private_fields_rule.symbols = private_fields
+dotnet_naming_rule.private_fields_rule.style = underscore_camel_case_style
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.excluded_modifiers = const
+
+# 6. All other members (methods, properties, events, classes, structs, interfaces, enums, delegates) → PascalCase
+dotnet_naming_rule.nonfield_members_rule.severity = warning
+dotnet_naming_rule.nonfield_members_rule.symbols = nonfield_members
+dotnet_naming_rule.nonfield_members_rule.style = pascal_case_style
+
+dotnet_naming_symbols.nonfield_members.applicable_kinds = method, property, event, class, struct, interface, enum, delegate
+dotnet_naming_symbols.nonfield_members.applicable_accessibilities = *
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case_style.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case_style.required_prefix = _
+
+# 7. Parameters and local variables → camelCase
+dotnet_naming_rule.locals_rule.severity = warning
+dotnet_naming_rule.locals_rule.symbols = locals
+dotnet_naming_rule.locals_rule.style = camel_case_style
+
+dotnet_naming_symbols.locals.applicable_kinds = parameter, local
+
+# =============================================================================
+# Code analysis severity – treat specific CA warnings as errors
+# =============================================================================
+dotnet_diagnostic.CA1816.severity = error
+dotnet_diagnostic.CA2200.severity = error
+dotnet_diagnostic.CA2213.severity = error
+dotnet_diagnostic.CA2215.severity = error
+dotnet_diagnostic.CA2218.severity = error
+dotnet_diagnostic.CA2219.severity = error
+dotnet_diagnostic.CA2224.severity = error
+dotnet_diagnostic.CA2227.severity = error
+dotnet_diagnostic.CA2241.severity = error
+dotnet_diagnostic.CA1506.severity = error
+dotnet_diagnostic.CA1501.severity = error
+dotnet_diagnostic.CA1502.severity = error
+dotnet_diagnostic.CA1307.severity = error
+dotnet_diagnostic.CA1308.severity = error
+dotnet_diagnostic.CA1310.severity = error
+dotnet_diagnostic.CA2119.severity = error
+dotnet_diagnostic.CA2013.severity = error
+dotnet_diagnostic.CA2012.severity = error
+dotnet_diagnostic.CA2011.severity = error
+dotnet_diagnostic.CA1836.severity = error
+dotnet_diagnostic.CA1834.severity = error
+dotnet_diagnostic.CA1830.severity = error
+dotnet_diagnostic.CA1835.severity = error
+dotnet_diagnostic.CA1829.severity = error
+dotnet_diagnostic.CA1827.severity = error
+dotnet_diagnostic.CA1825.severity = error
+dotnet_diagnostic.CA1822.severity = error
+dotnet_diagnostic.CA1812.severity = error
+
+# =============================================================================
+# Additional style rules
+# =============================================================================
+# Enforce XML documentation comments on public APIs (optional)
+dotnet_diagnostic.CS1591.severity = warning

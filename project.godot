@@ -8,10 +8,6 @@
 
 config_version=5
 
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-
 [application]
 
 config/name="The Nomad"
@@ -29,26 +25,21 @@ driver/enable_input=true
 
 [autoload]
 
-GodotBootstrapper="*uid://cq3c7yunik8mt"
+GodotBootstrapper="*uid://1rkvk2tt5v6i"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=800
+window/size/viewport_height=600
 window/size/resizable=false
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_width"
-window/stretch/scale_mode="integer"
+window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 
 [dotnet]
 
 project/assembly_name="TheNomad"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/guide/plugin.cfg")
 
 [memory]
 

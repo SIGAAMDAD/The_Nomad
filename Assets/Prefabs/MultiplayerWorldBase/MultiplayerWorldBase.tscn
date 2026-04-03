@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b6os1ulgnx4or"]
+
+[ext_resource type="Script" uid="uid://b3hqlvqow5n76" path="res://Assets/Prefabs/MultiplayerWorldBase/MultiplayerWorldBase.cs" id="1_2h5fg"]
+
+[node name="MultiplayerWorldBase" type="Node2D" unique_id=539847619]
+script = ExtResource("1_2h5fg")

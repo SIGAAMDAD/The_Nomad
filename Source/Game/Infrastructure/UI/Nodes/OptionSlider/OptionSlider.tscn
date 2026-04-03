@@ -1,50 +1,44 @@
 [gd_scene format=3 uid="uid://b6dwqm35gxe77"]
 
-[ext_resource type="Script" uid="uid://cmdqb5swirceo" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
-[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
-[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="2_ey12s"]
-[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_up0iq"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mk8c5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qfg6k"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s08g1"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur6u2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6qup"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3gxsm"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yiorb"]
+[ext_resource type="Script" uid="uid://cjhhdlqpqg424" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
+[ext_resource type="Script" uid="uid://2ekqwjvbn4g" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="2_ey12s"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_se010"]
+[ext_resource type="Script" uid="uid://ds1o6nxcjh10v" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Input.cs" id="6_jkvmf"]
+[ext_resource type="Script" uid="uid://wxxt76t1up6m" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Value.cs" id="7_jkvmf"]
 
 [node name="SliderOption" type="HBoxContainer" unique_id=233075417]
 anchors_preset = -1
-anchor_right = 0.07700001
+anchor_right = 0.074
 anchor_bottom = 0.083000004
-offset_right = -9.280006
+offset_right = -3.5199928
 offset_bottom = 0.15999222
 script = ExtResource("1_jmcvf")
+Min = null
+Max = null
+ConfigVarName = null
+Title = null
+Description = null
 metadata/_edit_use_anchors_ = true
 
 [node name="Title" type="Label" parent="." unique_id=540623078]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("2_ey12s")
 
-[node name="LeftIcon" type="Button" parent="." unique_id=129810878]
+[node name="LeftIcon" parent="." unique_id=1938011170 instance=ExtResource("3_se010")]
 layout_mode = 2
-focus_neighbor_right = NodePath("../Input/Value")
-theme_override_styles/normal = SubResource("StyleBoxTexture_up0iq")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_mk8c5")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_qfg6k")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_s08g1")
+size_flags_horizontal = 1
 text = "<"
-flat = true
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="Input" type="HSlider" parent="." unique_id=359159165]
 layout_mode = 2
@@ -55,32 +49,38 @@ theme_override_constants/grabber_offset = 2890
 theme_override_styles/slider = ExtResource("2_43t3q")
 theme_override_styles/grabber_area = ExtResource("2_ntx2d")
 theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
-value = 72.0
-rounded = true
+value = 100.0
+script = ExtResource("6_jkvmf")
 
 [node name="Value" type="Label" parent="Input" unique_id=358455664]
-modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = -4.5
-anchor_top = -0.21900001
-anchor_right = 5.5000005
-anchor_bottom = 1.2190001
-offset_left = 39.096
-offset_top = 0.0040004253
-offset_right = -39.096
-offset_bottom = -0.004003525
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 20.0
+offset_bottom = 11.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "0"
+horizontal_alignment = 1
+script = ExtResource("7_jkvmf")
 metadata/_edit_use_anchors_ = true
 
-[node name="RightIcon" type="Button" parent="." unique_id=499043046]
+[node name="RightIcon" parent="." unique_id=1863145585 instance=ExtResource("3_se010")]
 layout_mode = 2
-focus_neighbor_left = NodePath("../Input/Value")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ur6u2")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_w6qup")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_3gxsm")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_yiorb")
+size_flags_horizontal = 1
 text = ">"
-flat = true
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null

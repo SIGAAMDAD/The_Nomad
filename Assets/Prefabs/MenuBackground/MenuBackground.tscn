@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://cjlaujtogos17"]
+
+[ext_resource type="Script" uid="uid://r8c18xrrn8ai" path="res://Assets/Prefabs/MenuBackground/EmbersEmitter.cs" id="1_wfdbj"]
+
+[sub_resource type="Gradient" id="Gradient_chk6h"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_l2kqe"]
+gradient = SubResource("Gradient_chk6h")
+width = 1
+height = 3
+use_hdr = true
+
+[sub_resource type="Gradient" id="Gradient_56rce"]
+colors = PackedColorArray(1, 0, 0.016666412, 1, 1, 0.42745098, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3c6wi"]
+gradient = SubResource("Gradient_56rce")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1squj"]
+lifetime_randomness = 1.0
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(800, 1, 1)
+angular_velocity_min = -32.000015
+angular_velocity_max = 31.999983
+gravity = Vector3(0, -100, 0)
+linear_accel_min = -16.000002
+linear_accel_max = 15.999997
+radial_accel_min = -24.000002
+radial_accel_max = 23.999998
+color = Color(1, 0, 0, 1)
+color_ramp = SubResource("GradientTexture1D_3c6wi")
+hue_variation_min = 0.99999994
+hue_variation_max = 0.99999994
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=850975367]
+layer = -2
+
+[node name="EmbersEmitter" type="GPUParticles2D" parent="." unique_id=924772111]
+position = Vector2(400, 600)
+amount = 600
+texture = SubResource("GradientTexture2D_l2kqe")
+lifetime = 3.76
+speed_scale = 0.85
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_1squj")
+script = ExtResource("1_wfdbj")

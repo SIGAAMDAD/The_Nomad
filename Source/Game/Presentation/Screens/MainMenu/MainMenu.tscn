@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://4bgmvef7xly3"]
 
-[ext_resource type="Script" uid="uid://tsjpn4gc7fs1" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
+[ext_resource type="Script" uid="uid://bfhxn0clec0fv" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
-[ext_resource type="PackedScene" uid="uid://cjlaujtogos17" path="res://Source/Game/Presentation/Screens/MainMenu/EmbersEmitter.tscn" id="2_ucyp2"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/NomadUI/SelectionNodes/NomadButton/NomadButton.tscn" id="3_lpod2"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_lpod2"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_chk6h"]
 light_mode = 1
@@ -19,8 +18,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2o76q")
 metadata/_edit_use_anchors_ = true
-
-[node name="EmbersEmitter" parent="." unique_id=924772111 instance=ExtResource("2_ucyp2")]
 
 [node name="Logo" type="TextureRect" parent="." unique_id=1120502592]
 material = SubResource("CanvasItemMaterial_chk6h")
@@ -56,34 +53,64 @@ offset_bottom = -0.16003418
 unique_name_in_owner = true
 layout_mode = 2
 text = "NEW_GAME"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "LOAD_GAME"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SETTINGS"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="ExtrasButton" parent="OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "EXTRAS"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="CreditsButton" parent="OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "CREDITS"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "QUIT GAME"
-Duration = 0.25
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null

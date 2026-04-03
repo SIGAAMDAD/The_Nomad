@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://o31p63gibdmp"]
+
+[ext_resource type="Script" uid="uid://cvw66vch1rx2x" path="res://Source/Game/Presentation/Screens/MenuHub/MenuHub.cs" id="1_r5rte"]
+[ext_resource type="PackedScene" uid="uid://cjlaujtogos17" path="res://Assets/Prefabs/MenuBackground/MenuBackground.tscn" id="2_hl1qx"]
+
+[node name="MenuHub" type="Control" unique_id=1400059784]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r5rte")
+metadata/_edit_use_anchors_ = true
+
+[node name="EmbersEmitter" parent="." unique_id=850975367 instance=ExtResource("2_hl1qx")]

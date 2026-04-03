@@ -1,0 +1,23 @@
+[gd_resource type="Theme" format=3 uid="uid://dpk342frgg8ej"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1of73"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgwre"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lden"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uuho2"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctiby"]
+bg_color = Color(1, 1, 1, 1)
+
+[resource]
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_1of73")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_dgwre")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_7lden")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_uuho2")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_ctiby")
