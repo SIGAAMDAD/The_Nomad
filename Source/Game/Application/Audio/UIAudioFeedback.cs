@@ -19,7 +19,7 @@ using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.UI;
 using Nomad.EngineUtils;
 
-namespace Game.Application.Audio {
+namespace Nomad.Game.Application.Audio {
 	/*
 	===================================================================================
 	

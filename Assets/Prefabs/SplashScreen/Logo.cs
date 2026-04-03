@@ -1,9 +1,9 @@
 using Godot;
 using Nomad.Core.Events;
-using Nomad.EngineUtils.UserInterface;
 using Nomad.Events.Globals;
+using Nomad.UI;
 
-namespace Game.Prefabs.SplashScreen {
+namespace Nomad.Game.Prefabs {
 	/*
 	===================================================================================
 	

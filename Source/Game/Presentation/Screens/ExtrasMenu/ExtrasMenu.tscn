@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://l7k7jon212yb"]
+
+[ext_resource type="Script" uid="uid://codu0lw2yerd2" path="res://Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.cs" id="1_7nf3k"]
+[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_0r0jo"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="2_ybbbd"]
+
+[node name="ExtrasMenu" type="Control" unique_id=1840752397]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7nf3k")
+metadata/_edit_use_anchors_ = true
+
+[node name="ButtonContainer" type="VBoxContainer" parent="." unique_id=1209745133]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" parent="ButtonContainer" unique_id=1178157066 instance=ExtResource("2_0r0jo")]
+layout_mode = 2
+text = "EXTRAS"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="HSeparator" type="HSeparator" parent="ButtonContainer" unique_id=2058435098]
+layout_mode = 2
+
+[node name="MultiplayerButton" parent="ButtonContainer" unique_id=1938011170 instance=ExtResource("2_ybbbd")]
+layout_mode = 2
+text = "MULTIPLAYER"
+
+[node name="ChallengeModeButton" parent="ButtonContainer" unique_id=1833191803 instance=ExtResource("2_ybbbd")]
+layout_mode = 2
+text = "CHALLENGE_MODE"
+
+[node name="DeveloperCommentaryButton" parent="ButtonContainer" unique_id=1984206908 instance=ExtResource("2_ybbbd")]
+layout_mode = 2
+text = "DEVELOPER_COMMENTARY"
+
+[node name="BackButton" parent="ButtonContainer" unique_id=803415569 instance=ExtResource("2_ybbbd")]
+layout_mode = 2
+text = "BACK"

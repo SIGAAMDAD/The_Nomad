@@ -1,0 +1,28 @@
+{
+    "Bindings": [
+        {
+            "Name": "Move",
+            "ValueType": "Vector2",
+            "Scheme": "KeyboardAndMouse",
+            "Bindings": {
+                "Kind": "Axis2DComposite",
+                "Up": "W",
+                "Down": "S",
+                "Left": "A",
+                "Right": "D"
+            }
+        },
+        {
+            "Name": "Look",
+            "ValueType": "Vector2",
+            "Scheme": "KeyboardAndMouse",
+            "Bindings": {
+                "Kind": "Delta2D",
+                "DeviceId": "Mouse",
+                "ControlId": "Delta",
+                "Sensitivity": 1.0,
+                "InvertY": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://ca65in2437vw6"]
+
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_fymkd"]
+[ext_resource type="Script" uid="uid://dqwkt1qi1wof2" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/LobbyBrowser.cs" id="2_8mo5w"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_x15ph"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="3_4jm05"]
+
+[node name="MultiplayerMenu" type="Control" unique_id=1563836225]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=556280858]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="MatchmakeButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("1_fymkd")]
+layout_mode = 2
+text = "AUTO_MATCHMAKE"
+
+[node name="LobbyBrowserButton" parent="OptionsContainer" unique_id=841835361 instance=ExtResource("1_fymkd")]
+layout_mode = 2
+text = "LOBBY_BROWSER"
+
+[node name="BackButton" parent="OptionsContainer" unique_id=1092678771 instance=ExtResource("1_fymkd")]
+layout_mode = 2
+text = "BACK_BUTTON"
+
+[node name="LobbyBrowserContainer" type="MarginContainer" parent="." unique_id=293870756]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 80
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LobbyBrowserContainer" unique_id=890497805]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LobbyBrowserContainer/VBoxContainer" unique_id=1219705842]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="LobbyListContainer" type="VBoxContainer" parent="LobbyBrowserContainer/VBoxContainer/ScrollContainer" unique_id=1998475401]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_8mo5w")
+
+[node name="FilterContainer" type="VBoxContainer" parent="LobbyBrowserContainer/VBoxContainer" unique_id=1538592772]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MapList" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=560109090 instance=ExtResource("2_x15ph")]
+layout_mode = 2
+
+[node name="GameModeList" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=1681487070 instance=ExtResource("2_x15ph")]
+layout_mode = 2
+
+[node name="ShowFullLobbiesCheckbox" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=1489148105 instance=ExtResource("3_4jm05")]
+layout_mode = 2
+
+[node name="MatchmakingContainer" type="MarginContainer" parent="." unique_id=1544086465]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

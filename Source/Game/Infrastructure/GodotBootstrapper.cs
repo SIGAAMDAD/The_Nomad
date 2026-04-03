@@ -1,23 +1,15 @@
 /*
 ===========================================================================
-The Nomad AGPL Source Code
-Copyright (C) 2025 Noah Van Til
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
 
-The Nomad Source Code is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-The Nomad Source Code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
-
-If you have questions concerning this license or the applicable additional
-terms, you may contact me via email at nyvantil@gmail.com.
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
@@ -28,7 +20,7 @@ using Nomad.Logger;
 using Nomad.Events;
 using Nomad.CVars;
 using Nomad.Logger.Private.Sinks;
-using Game.Application.Configuration.Registries;
+using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Core;
 using Nomad.Core.CVars;
 using Nomad.EngineUtils;
@@ -39,8 +31,13 @@ using System;
 using Nomad.OnlineServices.Steam;
 using Nomad.Audio.Fmod;
 using Nomad.Core.Engine.Services;
+using Nomad.Console;
+using Nomad.Game.Infrastructure.StateManagement;
+using Nomad.Core.Events;
+using Nomad.Input;
+using Nomad.Core.Engine.Globals;
 
-namespace Game.Infrastructure {
+namespace Nomad.Game.Infrastructure {
 	/*
 	===================================================================================
 
@@ -78,30 +75,31 @@ namespace Game.Infrastructure {
 				.AddBootstrapper( new LoggerBootstrapper() )
 				.AddBootstrapper( new EventBootstrapper() )
 				.AddBootstrapper( new CVarBootstrapper() )
-				.AddBootstrapper( new EngineServiceBootstrapper() )
+				.AddBootstrapper( new EngineBootstrapper() )
 				.AddBootstrapper( new FileSystemBootstrapper() )
-				.AddBootstrapper( new SteamBootstrapper() );
+				.AddBootstrapper( new SteamBootstrapper() )
+				.AddBootstrapper( new ConsoleBootstrapper() )
+				.AddBootstrapper( new FMODBootstrapper() )
+				.AddBootstrapper( new InputBootstrapper() );
 
 			_bootstrapper.Bootstrap();
 
+			serviceFactory.AddSingleton( new GameStateManager( serviceLocator.GetService<IGameEventRegistryService>() ) );
+
 			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
-			AudioCVars.Register( cvarSystem );
 
 			var logger = serviceLocator.GetService<ILoggerService>();
 			logger.AddSink( new FileSink( cvarSystem, serviceLocator.GetService<IFileSystem>() ) );
-
-			FMODBootstrapper.Initialize( serviceLocator, serviceFactory );
 
 			_audioService = serviceLocator.GetService<IAudioDevice>();
 			_channelRepository = serviceLocator.GetService<IChannelRepository>();
 
 			var fileSystem = serviceLocator.GetService<IFileSystem>();
-			var engineService = serviceLocator.GetService<IEngineService>();
 			var configFile = cvarSystem.Register(
 				new CVarCreateInfo<string> {
-					Name = Nomad.Core.Constants.CVars.Console.DEFAULT_CONFIG_FILE,
-					DefaultValue = engineService.GetStoragePath( "Config/default.ini", StorageScope.StreamingAssets ),
-					Description = "The default configuration file.",
+					Name = "game.ConfigPath",
+					DefaultValue = $"{fileSystem.GetUserDataPath()}/UserConfig.ini",
+					Description = "The path to the configuration file.",
 					Flags = CVarFlags.Init | CVarFlags.ReadOnly
 				}
 			);
@@ -132,6 +130,9 @@ namespace Game.Infrastructure {
 		_ExitTree
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void _ExitTree() {
 			base._ExitTree();
 

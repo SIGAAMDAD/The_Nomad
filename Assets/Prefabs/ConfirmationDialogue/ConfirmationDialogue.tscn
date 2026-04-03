@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://ck7x5oonahx26"]
+
+[ext_resource type="Script" uid="uid://2ubblxilljf0" path="res://Assets/Prefabs/ConfirmationDialogue/ConfirmationDialogue.cs" id="1_td7wb"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_ysjad"]
+
+[node name="ConfirmationDialogue" type="MarginContainer" unique_id=1996574600]
+anchors_preset = -1
+script = ExtResource("1_td7wb")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=405938492]
+layout_mode = 2
+
+[node name="Message" type="Label" parent="VBoxContainer" unique_id=487401034]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=359382246]
+layout_mode = 2
+
+[node name="ConfirmButton" parent="VBoxContainer/ButtonContainer" unique_id=1938011170 instance=ExtResource("1_ysjad")]
+layout_mode = 2
+
+[node name="CancelButton" parent="VBoxContainer/ButtonContainer" unique_id=1352904771 instance=ExtResource("1_ysjad")]
+layout_mode = 2

@@ -1,34 +1,26 @@
 ﻿/*
 ===========================================================================
-The Nomad AGPL Source Code
-Copyright (C) 2025 Noah Van Til
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
 
-The Nomad Source Code is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-The Nomad Source Code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
-
-If you have questions concerning this license or the applicable additional
-terms, you may contact me via email at nyvantil@gmail.com.
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Game.Application.UI;
+using Nomad.Game.Application.UI;
 using Godot;
-using Nomad.Core.UI;
+using Nomad.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Events.Globals;
 
-namespace Game.Infrastructure.UI.Nodes.OptionSlider {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 	/*
 	===================================================================================
 	
@@ -47,12 +39,11 @@ namespace Game.Infrastructure.UI.Nodes.OptionSlider {
 		public float Max { get; private set; } = 100.0f;
 
 		public float Value {
-			get => _value;
+			get => (float)_slider.Value;
 			set {
 				SetValue( value );
 			}
 		}
-		private float _value;
 
 		public InternString SliderId => new InternString( Name );
 		
@@ -71,13 +62,24 @@ namespace Game.Infrastructure.UI.Nodes.OptionSlider {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_slider = FindChild<EngineHorizontalSlider>( "Input" );
-			_slider.Changed.Subscribe( OnValueChanged );
+			EngineText title = FindChild<EngineText>( "Title" );
+			title.Text = Title;
 
-			_valueLabel = FindChild<EngineText>( "Value" );
+			_slider = FindChild<EngineHorizontalSlider>( "Input" );
+			_slider.Minimum = Min;
+			_slider.Maximum = Max;
+			_slider.ValueSet.Subscribe( OnValueChanged );
+
+			_valueLabel = _slider.FindChild<EngineText>( "Value" );
+
+			var leftButton = FindChild<EngineButton>( "LeftIcon" );
+			leftButton.Clicked.Subscribe( OnToggleLeft );
+
+			var rightButton = FindChild<EngineButton>( "RightIcon" );
+			rightButton.Clicked.Subscribe( OnToggleRight );
 			
 			// CHAIN?
-			_valueChanged = GameEventRegistry.GetEvent<float>( $"{Name}:{UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT}", UIConstants.NAMESPACE );
+			_valueChanged = GameEventRegistry.GetEvent<float>( $"{GetHashCode()}:{UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
@@ -104,7 +106,34 @@ namespace Game.Infrastructure.UI.Nodes.OptionSlider {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnValueChanged( in float args ) {
+			SetValue( args );
 			_valueChanged.Publish( args );
+		}
+
+		/*
+		===============
+		OnToggleLeft
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnToggleLeft( in EmptyEventArgs args ) {
+			OnValueChanged( (float)_slider.Value - 1.0f );
+		}
+
+		/*
+		===============
+		OnToggleRight
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnToggleRight( in EmptyEventArgs args ) {
+			OnValueChanged( (float)_slider.Value + 1.0f );
 		}
 	};
 };

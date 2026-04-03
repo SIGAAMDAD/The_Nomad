@@ -1,33 +1,26 @@
 /*
 ===========================================================================
-The Nomad AGPL Source Code
-Copyright (C) 2025 Noah Van Til
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
 
-The Nomad Source Code is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-The Nomad Source Code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with The Nomad Source Code.  If not, see <http://www.gnu.org/licenses/>.
-
-If you have questions concerning this license or the applicable additional
-terms, you may contact me via email at nyvantil@gmail.com.
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Game.Domain.Events.UI;
-using Godot;
+using Nomad.Game.Domain.Events.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.Game.Application.UI;
+using Nomad.UI;
 using System.Collections.Generic;
 
-namespace Game.Application.UI.Menus {
+namespace Nomad.Game.Application.UI.Menus {
 	/*
 	===================================================================================
 	
@@ -50,7 +43,7 @@ namespace Game.Application.UI.Menus {
 		public InternString OwnerId => _menuId;
 		private readonly InternString _menuId;
 
-		private readonly IReadOnlyDictionary<TState, Control?> _states;
+		private readonly IReadOnlyDictionary<TState, EnginePanel?> _states;
 		private readonly IGameEventRegistryService _eventFactory;
 
 		/*
@@ -65,7 +58,7 @@ namespace Game.Application.UI.Menus {
 		/// <param name="currentMenu"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="states"></param>
-		public MenuStateMachine( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, Control?> states ) {
+		public MenuStateMachine( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, EnginePanel?> states ) {
 			_menuId = menuId;
 			_currentMenu = currentMenu;
 			_eventFactory = eventFactory;
@@ -82,15 +75,15 @@ namespace Game.Application.UI.Menus {
 		/// </summary>
 		/// <param name="stateId"></param>
 		public void SetState( TState stateId ) {
-			if ( !_states.TryGetValue( stateId, out Control? newState ) ) {
+			if ( !_states.TryGetValue( stateId, out EnginePanel? newState ) ) {
 				// NOTE: this might need... extra verification
 				return;
 			}
 
 			TState oldMenu = _currentMenu;
-			_states[ oldMenu ]?.CallDeferred( Control.MethodName.Hide );
+			_states[ oldMenu ]?.Visible = false;
 			_currentMenu = stateId;
-			newState?.CallDeferred( Control.MethodName.Show );
+			newState?.Visible = true;
 
 			var menuStateChanged = _eventFactory.GetEvent<MenuStateChangedEventArgs<TState>>( UIConstants.MENU_STATE_CHANGED_EVENT, UIConstants.NAMESPACE );
 			menuStateChanged.Publish( new MenuStateChangedEventArgs<TState>( _menuId, oldMenu, _currentMenu ) );

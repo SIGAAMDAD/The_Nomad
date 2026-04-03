@@ -1,7 +1,8 @@
 using Godot;
 using Nomad.Core.Events;
+using Nomad.UI;
 
-namespace Game.Prefabs.SplashScreen {
+namespace Nomad.Game.Prefabs {
 	/*
 	===================================================================================
 
@@ -13,7 +14,7 @@ namespace Game.Prefabs.SplashScreen {
 	/// 
 	/// </summary>
 
-	public partial class SplashScreen : Control {
+	public partial class SplashScreen : EnginePanel {
 		[Export]
 		private Logo[] _screens;
 
@@ -39,9 +40,7 @@ namespace Game.Prefabs.SplashScreen {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {                
-			base._Ready();
-
+		protected override void OnInit() {                
 			for ( int i = 0; i < _screens.Length; i++ ) {
 				_screens[ i ].Finished.Subscribe( OnLogoFinished );
 			}

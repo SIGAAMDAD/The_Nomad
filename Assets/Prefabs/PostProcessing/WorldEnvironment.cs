@@ -1,9 +1,7 @@
-using Game.Infrastructure;
 using Godot;
-using Nomad.Core;
 using Nomad.Core.CVars;
 
-namespace Game.Prefabs {
+namespace Nomad.Game.Prefabs {
 	/*
 	===================================================================================
 	

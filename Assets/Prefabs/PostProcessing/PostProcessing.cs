@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace Game.Prefabs {
+namespace Nomad.Game.Prefabs {
 	/*
 	===================================================================================
 	
