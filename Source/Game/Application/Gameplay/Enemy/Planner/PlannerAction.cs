@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.GOAP {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public sealed class PlannerAction {
 		public string Name { get; }
 		public int BaseCost { get; }
