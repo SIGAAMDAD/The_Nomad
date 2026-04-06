@@ -15,13 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Godot;
 using Nomad.Core.Engine.SceneManagement;
-using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Logger.Globals;
-using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Prefabs {
 	/*

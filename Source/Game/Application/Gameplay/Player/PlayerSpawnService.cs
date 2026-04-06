@@ -56,8 +56,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 			_repository = repository ?? throw new ArgumentNullException( nameof( repository ) );
 
-			_spawnRequested = eventFactory.
-				GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
+			_spawnRequested = eventFactory
+				.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
 				.Subscribe( OnSpawnRequested );
 		}
 
