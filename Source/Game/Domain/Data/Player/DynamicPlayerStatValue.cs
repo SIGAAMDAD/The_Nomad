@@ -28,17 +28,14 @@ namespace Nomad.Game.Domain.Data.Player {
 	/// </summary>
 	
 	public readonly struct DynamicPlayerStatValue {
-		public InternString StatId => _statId;
-		private readonly InternString _statId;
-
-		public float Value => _value;
-		private readonly float _value;
+		public InternString StatId { get; }
+		public float Value { get; }
 
 		private readonly StatLimits _limits;
 
 		public DynamicPlayerStatValue( InternString statId, float value, StatLimits limits ) {
-			_statId = statId;
-			_value = value;
+			StatId = statId;
+			Value = value;
 			_limits = limits;
 		}
 	};

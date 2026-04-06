@@ -58,6 +58,7 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 			_buttonGroup = GameEventRegistry.GetGroup( "MainMenu" );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked, OnQuitGameClicked );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/NewGameButton" ).Clicked, OnNewGameButtonClicked );
+			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/ExtrasButton" ).Clicked, OnExtrasButtonClicked );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsMenuButtonClicked );
 		}
 
@@ -75,6 +76,21 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 
 		/*
 		===============
+		OnExtrasButtonClicked
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnExtrasButtonClicked( in EmptyEventArgs args ) {
+			GameEventRegistry
+				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Extras ) );
+		}
+
+		/*
+		===============
 		OnNewGameButtonClicked
 		===============
 		*/
@@ -83,7 +99,9 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnNewGameButtonClicked( in EmptyEventArgs args ) {
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.NewGame ) );
+			GameEventRegistry
+				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.NewGame ) );
 		}
 
 		/*
@@ -96,7 +114,9 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSettingsMenuButtonClicked( in EmptyEventArgs args ) {
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
+			GameEventRegistry
+				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 		}
 
 		/*

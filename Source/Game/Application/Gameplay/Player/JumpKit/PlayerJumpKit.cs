@@ -8,7 +8,7 @@ License, v2. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 This software is provided "as is", without warranty of any kind,
-express or implied, including but not limited to the warranties
+express or implied including but not limited to the warranties
 of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
@@ -16,58 +16,83 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
+using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player.JumpKit.Modules;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Input.Events;
+using Nomad.Logger.Globals;
 using Nomad.Scene.GameObjects;
 using System;
 
 namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 	/*
 	===================================================================================
-	
+
 	PlayerJumpKit
-	
+
 	===================================================================================
 	*/
-	/// <summary>
-	/// 
-	/// </summary>
+	internal sealed class PlayerJumpKit : NomadBehaviour {
+		public float BurnoutAmount => _runtime.BurnoutAmount;
+		public bool IsDashing => _runtime.IsDashing;
+		public bool IsBurnedOut => _runtime.IsBurnedOut;
+		public bool CanDash => _runtime.CanStartDash();
 
-	public sealed class PlayerJumpKit : NomadBehaviour {
 		public IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout => _dashBurnout;
-		private IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout;
+		private readonly IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
 
 		public IGameEvent<PlayerDashRechargedEventArgs> DashRecharged => _dashRecharged;
-		private IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged;
+		private readonly IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
 
-		private ISubscriptionHandle _dashAction;
-		private readonly System.Timers.Timer _dashTimer = new();
-		private readonly System.Timers.Timer _dashBurnoutCooldownTimer = new();
+		private readonly IGameEvent<PlayerStatChangedEventArgs> _statChanged = default;
 
-		private IAudioEmitter _emitter;
+		private ISubscriptionHandle? _dashAction;
+
+		private IAudioEmitter? _emitter;
+		private EngineLight2D? _light;
+
 		private IDashModule _module = new DefaultModule();
-		private EngineLight2D _light;
-
-		private float _dashBurnoutAmount = 0.0f;
-		private float _dashBurnoutCooldown = 0.0f;
-		private float _dashDuration = 0.0f;
+		private DashRuntime _runtime = default;
+		private DashEffects _effects = default;
 
 		/*
 		===============
-		OnInit
+		PlayerJumpKit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="eventFactory"></param>
-		public void OnInit( IGameEventRegistryService eventFactory ) {
-			OnInit();
+		public PlayerJumpKit() {
+			var eventFactory = GameEventRegistry.Instance;
 
-			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>( EventNames.PLAYER_DASH_BURNOUT, nameof( PlayerJumpKit ) );
-			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>( EventNames.PLAYER_DASH_RECHARGED, nameof( PlayerJumpKit ) );
+			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
+				EventNames.PLAYER_DASH_BURNOUT,
+				nameof( PlayerJumpKit )
+			);
+
+			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
+				EventNames.PLAYER_DASH_RECHARGED,
+				nameof( PlayerJumpKit )
+			);
+
+			_statChanged = eventFactory.GetEvent<PlayerStatChangedEventArgs>(
+				EventNames.PLAYER_STAT_CHANGED,
+				EventNames.NAMESPACE
+			);
+
+			_dashAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>( $"Dash:{Constants.Events.BUTTON_CLICKED}", Constants.Events.NAMESPACE )
+				.Subscribe( OnDashActionTriggered );
+
+			_runtime = new DashRuntime(
+				initialDashDuration: _module.DashDuration,
+				burnoutRechargeDuration: 2.5f
+			);
+
+			_effects = new DashEffects( _emitter, _light );
 		}
 
 		/*
@@ -82,16 +107,23 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
-			if ( _dashBurnoutCooldown == 0.0f ) {
-				return;
-			}
+			DashUpdateResult result = _runtime.Update( delta, _module );
 
-			_dashBurnoutCooldown += delta;
-			if ( _dashBurnoutCooldown > _module.BurnoutCooldown ) {
-				_dashBurnoutAmount = Math.Clamp( _dashBurnoutAmount - ( 0.10f * delta ), 0.0f, _dashBurnoutAmount );
+			if ( result.DashEnded ) {
+				_effects.OnDashEnded();
+			}
+			if ( result.BurnedOutThisFrame ) {
+				_effects.OnBurnoutTriggered( result );
+				PublishDashBurnout( result );
+			}
+			if ( result.RechargedThisFrame ) {
+				_effects.OnDashRecharged( result );
+				PublishDashRecharged( result );
+			}
+			if ( result.BurnoutChangedThisFrame ) {
+				OnBurnoutAmountChanged( result );
 			}
 		}
-
 
 		/*
 		===============
@@ -104,15 +136,69 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public override void OnShutdown() {
 			base.OnShutdown();
 
+			_dashAction?.Dispose();
+
 			_dashBurnout?.Dispose();
 			_dashRecharged?.Dispose();
-
-			_dashAction?.Dispose();
 		}
 
-		private void TriggerDash() {
-			if ( _dashBurnoutAmount >= 1.0f ) {
-				return;
+		/*
+		===============
+		SetModule
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="module"></param>
+		public void SetModule( IDashModule module ) {
+			ArgumentNullException.ThrowIfNull( module );
+
+			_module = module;
+			_runtime.ResetDashDuration( module.DashDuration );
+		}
+
+		/*
+		===============
+		BindPresentation
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="emitter"></param>
+		/// <param name="light"></param>
+		public void BindPresentation( IAudioEmitter? emitter, EngineLight2D? light ) {
+			_emitter = emitter;
+			_light = light;
+			_effects = new DashEffects( _emitter, _light );
+		}
+
+		/*
+		===============
+		TryStartDash
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
+		private void TryStartDash() {
+			DashStartResult result = _runtime.TryStartDash( _module );
+
+			switch ( result.Status ) {
+				case DashStartStatus.Rejected:
+					return;
+				case DashStartStatus.BurnedOut:
+					_effects.OnBurnoutTriggered( result );
+					PublishDashBurnout( result );
+					return;
+				case DashStartStatus.Started:
+					Logging.PrintLine( "Dash started." );
+					_effects.OnDashStarted( result );
+					return;
+				default:
+					throw new InvalidOperationException( $"Unhandled dash start status '{result.Status}'." );
 			}
 		}
 
@@ -121,12 +207,65 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		OnDashActionTriggered
 		===============
 		*/
+		private void OnDashActionTriggered( in ButtonActionEventArgs args ) {
+			Logging.PrintLine( "Dash action triggered!" );
+			TryStartDash();
+		}
+
+		/*
+		===============
+		OnBurnoutAmountChanged
+		===============
+		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnDashActionTriggered( in EmptyEventArgs args ) {
-			TriggerDash();
+		/// <param name="result"></param>
+		private void OnBurnoutAmountChanged( in DashUpdateResult result ) {
+			_statChanged.Publish( new PlayerStatChangedEventArgs( result.BurnoutAmount, 0.0f, StatType.JumpKitHeat ) );
+			// Optional integration point:
+			// - update HUD meter
+			// - publish a burnout-changed event
+			// - update player-facing UI state
+		}
+
+		/*
+		===============
+		PublishDashBurnout
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="result"></param>
+		private void PublishDashBurnout( in DashStartResult result ) {
+			_dashBurnout.Publish( default );
+		}
+
+		/*
+		===============
+		PublishDashBurnout
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="result"></param>
+		private void PublishDashBurnout( in DashUpdateResult result ) {
+			_dashBurnout.Publish( default );
+		}
+
+		/*
+		===============
+		PublishDashRecharged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="result"></param>
+		private void PublishDashRecharged( in DashUpdateResult result ) {
+			_dashRecharged.Publish( default );
 		}
 	};
 };

@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public interface IActionRunner {
-		ActionRunStatus Start( object agent );
-		ActionRunStatus Tick( object agent, float dt );
-		void Cancel( object agent );
+		ActionRunStatus Start( NpcAgent agent );
+		ActionRunStatus Tick( NpcAgent agent, float dt );
+		void Cancel( NpcAgent agent );
 	};
 };

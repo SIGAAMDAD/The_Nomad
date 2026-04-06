@@ -13,7 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
+using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Events.Globals;
+using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Logger.Globals;
 using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Prefabs {
@@ -28,6 +35,17 @@ namespace Nomad.Game.Prefabs {
 	/// The base "world" object.
 	/// </summary>
 	
-	public partial class WorldBase : EngineSceneObject {
+	public partial class WorldBase : Node2D {
+		private readonly PlayerSpawnService _spawnService;
+
+		public WorldBase() {
+			var eventFactory = GameEventRegistry.Instance;
+			var serviceRegistry = ServiceRegistry.Instance;
+			var logger = Logging.Instance;
+
+			var gameStateService = ServiceLocator.GetService<IGameStateService>();
+
+			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ) );
+		}
 	};
 };

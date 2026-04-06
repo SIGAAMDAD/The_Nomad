@@ -23,20 +23,17 @@ namespace Nomad.Game.Domain.Events.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public float NewValue => _newValue;
-		private readonly float _newValue;
+		public float NewValue { get; }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public float OldValue => _oldValue;
-		private readonly float _oldValue;
+		public float OldValue { get; }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public StatType StatId => _statId;
-		private readonly StatType _statId;
+		public StatType StatId { get; }
 
 		/// <summary>
 		/// 
@@ -44,10 +41,10 @@ namespace Nomad.Game.Domain.Events.Player {
 		/// <param name="newValue"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="statId"></param>
-		public PlayerStatChangedEventArgs(float newValue, float oldValue, StatType statId) {
-			_newValue = newValue;
-			_oldValue = oldValue;
-			_statId = statId;
+		public PlayerStatChangedEventArgs( float newValue, float oldValue, StatType statId ) {
+			NewValue = newValue;
+			OldValue = oldValue;
+			StatId = statId;
 		}
 	};
 };

@@ -16,5 +16,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public class WorkingMemory {
 		public bool EnemyVisible;
+		public bool EnemyAudible;
+		public bool EnemyInMeleeRange;
+		public bool EnemyInCloseRange;
+		public bool EnemyInMidRange;
+		public bool EnemyInFarRange;
+		public bool PathToEnemyClear;
+		public bool HasLineOfSight;
 	};
 };

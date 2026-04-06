@@ -32,11 +32,23 @@ namespace Nomad.Game.Domain.Data.Player {
 		/// </summary>
 		public const string PLAYER_DASH_RECHARGED = NAMESPACE + ".PlayerDashRecharged";
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public const string PLAYER_DASH_MODULE_UNLOCKED = NAMESPACE + ".PlayerDashModuleUnlocked";
 
 		/// <summary>
 		/// Event that triggers whenever the player changes their current dashkit module.
 		/// </summary>
 		public const string PLAYER_DASH_MODULE_CHANGED = NAMESPACE + ".PlayerDashModuleChanged";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string PLAYER_DIE = NAMESPACE + ".PlayerDie";
+
+		public const string PLAYER_SPAWN_REQUESTED = NAMESPACE + ".PlayerSpawnRequested";
+
+		public const string PLAYER_SPAWN_RESULT_READY = NAMESPACE + ".PlayerSpawnResultReady";
 	};
 }

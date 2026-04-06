@@ -13,8 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
+using Game.Infrastructure.UI.Nodes.Label;
+using Nomad.Core;
+using Nomad.Core.Events;
+using Nomad.Core.Input;
 using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Events.Extensions;
+using Nomad.Events.Globals;
 using Nomad.Input.Interfaces;
 using Nomad.Input.ValueObjects;
 using Nomad.UI;
@@ -31,22 +36,47 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// 
 	/// </summary>
 	
-	public partial class BindingButton : EngineHorizontalContainer {
-		public string Mapping { private get; set; }
-		public string BindName { private get; set; }
+	public sealed partial class BindingButton : EngineHorizontalContainer {
+		private ISubscriptionHandle _keyboardEvent;
 
-		private InputActionDefinition? FindActionDefinition() {
-			var bindResolver = ServiceLocator.GetService<IBindResolver>();
-			var actions = bindResolver.GetBindMapping( Mapping );
+		private bool _isRebinding = false;
+		private int _rebindIndex = 0;
 
-			for ( int i = 0; i < actions.Count; i++ ) {
-				if ( actions[ i ].Name.Equals( BindName, System.StringComparison.InvariantCulture ) ) {
-					return actions[ i ];
-				}
+		private InputActionDefinition? _action = null;
+
+		/*
+		===============
+		SetBind
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mapping"></param>
+		/// <param name="bindName"></param>
+		public void SetBind( string mapping, string bindName ) {
+			var title = FindChild<NomadLabel>( "Title" );
+			title.Text = bindName;
+
+			var firstBind = FindChild<EngineButton>( "Bind1" );
+			var secondBind = FindChild<EngineButton>( "Bind2" );
+
+			_action = FindActionDefinition( mapping, bindName );
+			if ( _action == null ) {
+				firstBind.Text = secondBind.Text = "UNBOUND";
+				return;
 			}
-			return null;
+
+			if ( _action.Bindings.Length >= 1 ) {
+				firstBind.Text = _action.Bindings[ 0 ].ToString();
+			}
+			if ( _action.Bindings.Length >= 2 ) {
+				secondBind.Text = _action.Bindings[ 1 ].ToString();
+			} else {
+				secondBind.Text = "UNBOUND";
+			}
 		}
-		
+
 		/*
 		===============
 		OnInit
@@ -58,23 +88,41 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		protected override void OnInit() {
 			base.OnInit();
 
-			var firstBind = FindChild<NomadButton>( "Bind1" );
-			var secondBind = FindChild<NomadButton>( "Bind2" );
+			_keyboardEvent = GameEventRegistry.GetEvent<KeyboardEventArgs>( Constants.Events.Input.KEYBOARD_EVENT, Constants.Events.Input.NAMESPACE )
+				.Where( e => _isRebinding )
+				.Subscribe( OnSetBindKey );
+		}
 
-			InputActionDefinition? action = FindActionDefinition();
-			if ( action == null ) {
-				firstBind.Text = secondBind.Text = "UNBOUND";
+		private void OnSetBindKey( in KeyboardEventArgs args ) {
+			if ( _action == null ) {
 				return;
 			}
+		}
 
-			if ( action.Bindings.Length >= 1 ) {
-				firstBind.Text = action.Bindings[ 0 ].
-			}
-			if ( action.Bindings.Length >= 2 ) {
-				
-			}
+		/*
+		===============
+		FindActionDefinition
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mapping"></param>
+		/// <param name="bindName"></param>
+		/// <returns></returns>
+		private static InputActionDefinition? FindActionDefinition( string mapping, string bindName ) {
+			var bindResolver = ServiceLocator.GetService<IBindResolver>();
+			var actions = bindResolver.GetBindMapping( mapping );
 
-			firstBind.Text = "";
+			if ( actions == null ) {
+				return null;
+			}
+			for ( int i = 0; i < actions.Count; i++ ) {
+				if ( actions[ i ].Name.Equals( bindName, System.StringComparison.InvariantCulture ) ) {
+					return actions[ i ];
+				}
+			}
+			return null;
 		}
 	};
 };

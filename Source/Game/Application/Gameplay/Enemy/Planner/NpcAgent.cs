@@ -18,6 +18,19 @@ using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public abstract class NpcAgent {
+		public virtual WorkingMemory Memory { get; } = new WorkingMemory();
+
+		public WorldState CurrentState { get; private set; }
+		public GoalDef CurrentGoal => _currentGoal;
+		public Plan CurrentPlan => _currentPlan;
+		public PlannerAction RunningAction => _runningAction;
+
+		public EnemyBase Base => _base;
+		private readonly EnemyBase _base;
+
+		public bool HasPlan => _currentPlan != null && !_currentPlan.IsFinished;
+		public bool IsExecutingAction => _runningAction != null;
+
 		private readonly ReplanController _replanController;
 		private readonly IStateCompiler _stateCompiler;
 		private readonly IGoalSelector _goalSelector;
@@ -29,8 +42,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 		private PlannerAction _runningAction;
 		private GoalDef _currentGoal;
 
-		protected NpcAgent( ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals )
-		{
+		protected NpcAgent( EnemyBase owner, ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals ) {
+			_base = owner ?? throw new ArgumentNullException( nameof( owner ) );
 			_replanController = replanController ?? throw new ArgumentNullException( nameof( replanController ) );
 			_stateCompiler = stateCompiler ?? throw new ArgumentNullException( nameof( stateCompiler ) );
 			_goalSelector = goalSelector ?? throw new ArgumentNullException( nameof( goalSelector ) );
@@ -38,16 +51,6 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			_actions = actions ?? Array.Empty<PlannerAction>();
 			_goals = goals ?? Array.Empty<GoalDef>();
 		}
-
-		public virtual WorkingMemory Memory { get; } = new WorkingMemory();
-
-		public WorldState CurrentState { get; private set; }
-		public GoalDef CurrentGoal => _currentGoal;
-		public Plan CurrentPlan => _currentPlan;
-		public PlannerAction RunningAction => _runningAction;
-
-		public bool HasPlan => _currentPlan != null && !_currentPlan.IsFinished;
-		public bool IsExecutingAction => _runningAction != null;
 
 		public void Tick( float dt ) {
 			TickSensors( dt );

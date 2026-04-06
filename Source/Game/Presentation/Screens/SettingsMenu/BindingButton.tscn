@@ -18,6 +18,18 @@ layout_mode = 2
 
 [node name="Bind1" parent="." unique_id=1938011170 instance=ExtResource("2_ni2o5")]
 layout_mode = 2
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="Bind2" parent="." unique_id=564495054 instance=ExtResource("2_ni2o5")]
 layout_mode = 2
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null

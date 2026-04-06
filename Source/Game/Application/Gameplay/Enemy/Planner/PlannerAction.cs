@@ -14,10 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 	public sealed class PlannerAction {
-		public string Name { get; }
+		public InternString Name { get; }
 		public int BaseCost { get; }
 		public WorldCondition[] Preconditions { get; }
 		public WorldEffect[] Effects { get; }
@@ -26,7 +27,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 		public IActionRunner Runner { get; }
 
 		public PlannerAction( string name, int baseCost, WorldCondition[] preconditions, WorldEffect[] effects, IActionRunner runner, Func<PlanningContext, bool> validateContext = null, Func<PlanningContext, int> getDynamicCost = null ) {
-			Name = name;
+			Name = new InternString( name );
 			BaseCost = baseCost;
 			Preconditions = preconditions ?? Array.Empty<WorldCondition>();
 			Effects = effects ?? Array.Empty<WorldEffect>();
