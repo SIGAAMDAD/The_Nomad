@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cre4jywn58wrl"]
+
+[ext_resource type="Script" uid="uid://dyi22oqkvicrf" path="res://Assets/Prefabs/Player/Arm.cs" id="1_ede1o"]
+
+[node name="Arm" type="Node2D" unique_id=975599666]
+script = ExtResource("1_ede1o")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=263886458]

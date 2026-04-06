@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://p648ymu4llbw"]
+
+[ext_resource type="Script" uid="uid://d353kjo0hviyg" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.cs" id="1_bd60m"]
+
+[node name="PlayerSpawner" type="Node2D" unique_id=654047548]
+script = ExtResource("1_bd60m")

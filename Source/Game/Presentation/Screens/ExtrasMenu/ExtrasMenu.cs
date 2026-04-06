@@ -36,14 +36,6 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		private EnginePanel _multiplayerMenu;
 		private EnginePanel _developerCommentaryMenu;
 
-		private ISubscriptionHandle _multiplayerButtonClicked;
-		private ISubscriptionHandle _multiplayerMenuDisplayStateChanged;
-
-		private ISubscriptionHandle _developerCommentaryButtonClicked;
-		private ISubscriptionHandle _developerCommentaryMenuDisplayStateChanged;
-
-		private ISubscriptionHandle _backButtonClicked;
-
 		/*
 		===============
 		OnInit
@@ -58,31 +50,13 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 			_multiplayerMenu = FindChild<EnginePanel>( "MultiplayerMenu" );
 			_developerCommentaryMenu = FindChild<EnginePanel>( "DeveloperCommentaryMenu" );
 
-			_developerCommentaryButtonClicked = FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked.Subscribe( OnDeveloperCommentaryButtonPressed );
-			_developerCommentaryMenuDisplayStateChanged = _developerCommentaryMenu.DisplayStateChanged.Subscribe( OnDeveloperMenuDisplayStateChanged );
+			FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked.Subscribe( OnDeveloperCommentaryButtonPressed );
+			_developerCommentaryMenu.DisplayStateChanged.Subscribe( OnDeveloperMenuDisplayStateChanged );
 			
-			_multiplayerButtonClicked = FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked.Subscribe( OnMultiplayerButtonPressed );
-			_multiplayerMenuDisplayStateChanged = _multiplayerMenu.DisplayStateChanged.Subscribe( OnMultiplayerMenuDisplayStateChanged );
+			FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked.Subscribe( OnMultiplayerButtonPressed );
+			_multiplayerMenu.DisplayStateChanged.Subscribe( OnMultiplayerMenuDisplayStateChanged );
 
-			_backButtonClicked = FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
-		}
-
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnShutdown() {
-			base.OnShutdown();
-
-			_developerCommentaryButtonClicked?.Dispose();
-			_developerCommentaryMenuDisplayStateChanged?.Dispose();
-			_multiplayerButtonClicked?.Dispose();
-			_multiplayerMenuDisplayStateChanged?.Dispose();
-			_backButtonClicked?.Dispose();
+			FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
 		}
 
 		/*

@@ -15,7 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Audio.Interfaces;
-using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.CVars;
 using Nomad.CVars.Global;

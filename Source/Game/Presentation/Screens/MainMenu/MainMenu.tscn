@@ -43,31 +43,25 @@ offset_right = 0.3199463
 offset_bottom = -22.960022
 
 [node name="NewGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "NEW_GAME"
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "LOAD_GAME"
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "SETTINGS"
 
 [node name="ExtrasButton" parent="OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "EXTRAS"
 
 [node name="CreditsButton" parent="OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "CREDITS"
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
-unique_name_in_owner = true
 layout_mode = 2
 text = "QUIT GAME"
