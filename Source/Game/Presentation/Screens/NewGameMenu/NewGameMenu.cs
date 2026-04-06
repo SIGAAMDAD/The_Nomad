@@ -53,6 +53,12 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 			_eventGroup.Add( _customDifficultyContainer.DisplayStateChanged, OnCustomContainerDisplayStateChanged );
 		}
 
+		protected override void OnShutdown() {
+			base.OnShutdown();
+
+			_eventGroup?.Dispose();
+		}
+
 		/*
 		===============
 		OnOptionsContainerDisplayStateChanged

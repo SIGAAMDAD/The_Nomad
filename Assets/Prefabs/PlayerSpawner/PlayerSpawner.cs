@@ -11,8 +11,11 @@ namespace Nomad.Game.Prefabs {
 		public override void _Ready() {
 			base._Ready();
 
-			GameEventRegistry.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
-				.PublishAfter( new PlayerSpawnRequestedEventArgs( Guid.NewGuid(), GlobalPosition.ToSystem(), true ), 2000 );
+			var spawnRequest = GameEventRegistry
+				.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
+				.PublishAfter( 1000 );
+			
+			spawnRequest.Publish( new PlayerSpawnRequestedEventArgs( Guid.NewGuid(), GlobalPosition.ToSystem(), true ) );
 		}
 	};
 };

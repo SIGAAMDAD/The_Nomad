@@ -63,6 +63,20 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 
 		/*
 		===============
+		OnShutdown
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnShutdown() {
+			base.OnShutdown();
+
+			_buttonGroup?.Dispose();
+		}
+
+		/*
+		===============
 		OnDisplayStateChanged
 		===============
 		*/

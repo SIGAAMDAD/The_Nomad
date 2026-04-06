@@ -36,6 +36,8 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		private EnginePanel _multiplayerMenu;
 		private EnginePanel _developerCommentaryMenu;
 
+		private ISubscriptionGroup _eventGroup;
+
 		/*
 		===============
 		OnInit
@@ -50,13 +52,26 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 			_multiplayerMenu = FindChild<EnginePanel>( "MultiplayerMenu" );
 			_developerCommentaryMenu = FindChild<EnginePanel>( "DeveloperCommentaryMenu" );
 
-			FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked.Subscribe( OnDeveloperCommentaryButtonPressed );
-			_developerCommentaryMenu.DisplayStateChanged.Subscribe( OnDeveloperMenuDisplayStateChanged );
-			
-			FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked.Subscribe( OnMultiplayerButtonPressed );
-			_multiplayerMenu.DisplayStateChanged.Subscribe( OnMultiplayerMenuDisplayStateChanged );
+			_eventGroup = GameEventRegistry.GetGroup( nameof( ExtrasMenu ) );
+			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked, OnDeveloperCommentaryButtonPressed );
+			_eventGroup.Add( _developerCommentaryMenu.DisplayStateChanged, OnDeveloperMenuDisplayStateChanged );
+			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked, OnMultiplayerButtonPressed );
+			_eventGroup.Add( _multiplayerMenu.DisplayStateChanged, OnMultiplayerMenuDisplayStateChanged );
+			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked, OnBackButtonPressed );
+		}
 
-			FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
+		/*
+		===============
+		OnShutdown
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnShutdown() {
+			base.OnShutdown();
+
+			_eventGroup?.Dispose();
 		}
 
 		/*

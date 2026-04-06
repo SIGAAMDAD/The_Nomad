@@ -37,5 +37,12 @@ namespace Nomad.Game.Prefabs {
 	/// </summary>
 	
 	public partial class PlayerPrefab : EngineCharacter2D {
+		internal PlayerBase? Controller { get; set; }
+
+		protected override void OnPhysicsUpdate( float delta ) {
+			base.OnPhysicsUpdate( delta );
+
+			Controller?.OnPhysicsUpdate( delta );
+		}
 	};
 };
