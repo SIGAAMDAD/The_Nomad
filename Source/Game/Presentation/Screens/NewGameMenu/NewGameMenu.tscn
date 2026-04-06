@@ -1,76 +1,13 @@
 [gd_scene format=3 uid="uid://ctv8krg0ni462"]
 
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_op4pf"]
+[ext_resource type="Script" uid="uid://fd1is3jrnmwq" path="res://Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.cs" id="2_aaton"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_yt3u4"]
+[ext_resource type="Script" uid="uid://btudn57ursdxq" path="res://Source/Game/Presentation/Screens/NewGameMenu/OptionsContainer.cs" id="3_al7ex"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="4_4f1u2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="5_4f1u2"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_aaton"]
-
-[sub_resource type="CSharpScript" id="CSharpScript_4f1u2"]
-script/source = "/*
-===========================================================================
-The Nomad MPLv2 Source Code
-Copyright (C) 2025-2026 Noah Van Til
-
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v2. If a copy of the MPL was not distributed with this
-file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
-This software is provided \"as is\", without warranty of any kind,
-express or implied, including but not limited to the warranties
-of merchantability, fitness for a particular purpose and noninfringement.
-===========================================================================
-*/
-
-using Nomad.Core.Events;
-using Nomad.Events.Globals;
-using Nomad.Game.Application.UI;
-using Nomad.Game.Application.UI.Menus.Events;
-using Nomad.UI;
-
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
-	/*
-	===================================================================================
-	
-	NewGameMenu
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-	
-	public partial class NewGameMenu : EnginePanel {
-		private ISubscriptionGroup _buttonGroup;
-
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnInit() {
-			_buttonGroup = GameEventRegistry.GetGroup( nameof( NewGameMenu ) );
-			_buttonGroup.Add( FindChild<EngineButton>( \"ButtonContainer/BackButton\" ).Clicked, OnBackButtonPressed );
-		}
-
-		/*
-		===============
-		OnBackButtonPressed
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name=\"args\"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args ) {
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.NewGame, MenuState.Main ) );
-		}
-	};
-};
-"
+[ext_resource type="Script" uid="uid://ds00g0f8rgb7i" path="res://Source/Game/Presentation/Screens/NewGameMenu/CustomDifficultyContainer.cs" id="5_va14k"]
 
 [node name="NewGameMenu" type="Control" unique_id=1672155218]
 layout_mode = 3
@@ -80,10 +17,54 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_op4pf")
-script = SubResource("CSharpScript_4f1u2")
+script = ExtResource("2_aaton")
 metadata/_edit_use_anchors_ = true
 
-[node name="PaddingContainer" type="MarginContainer" parent="." unique_id=1650031815]
+[node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=1633693974]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -121.5
+offset_top = -68.0
+offset_right = 121.5
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+script = ExtResource("3_al7ex")
+
+[node name="Title" type="Label" parent="OptionsContainer" unique_id=110466548]
+layout_mode = 2
+text = "NEW GAME"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="OptionsContainer" unique_id=670325317]
+layout_mode = 2
+
+[node name="StandardModeButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "STANDARD_DIFFICULTY_MODE"
+
+[node name="HardModeButton" parent="OptionsContainer" unique_id=1144643278 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "HARD_DIFFICULTY_MODE"
+
+[node name="CustomModeButton" parent="OptionsContainer" unique_id=1501311376 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "CUSTOM_DIFFICULTY_MODE"
+
+[node name="BackButton" parent="OptionsContainer" unique_id=1651535036 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "BACK"
+
+[node name="CustomDifficultyContainer" type="Control" parent="." unique_id=140169052]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -91,151 +72,63 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 80
-theme_override_constants/margin_top = 80
-theme_override_constants/margin_right = 80
-theme_override_constants/margin_bottom = 80
+script = ExtResource("5_va14k")
 metadata/_edit_use_anchors_ = true
 
-[node name="OptionsContainer" type="VBoxContainer" parent="PaddingContainer" unique_id=1633693974]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="StandardModeButton" parent="PaddingContainer/OptionsContainer" unique_id=1938011170 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "STANDARD_DIFFICULTY_MODE"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="HardModeButton" parent="PaddingContainer/OptionsContainer" unique_id=1144643278 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "HARD_DIFFICULTY_MODE"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="CustomModeButton" parent="PaddingContainer/OptionsContainer" unique_id=1501311376 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "CUSTOM_DIFFICULTY_MODE"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="BackButton" parent="PaddingContainer/OptionsContainer" unique_id=1651535036 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "BACK"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="CustomOptionsContainer" type="ScrollContainer" parent="PaddingContainer" unique_id=1406197640]
-visible = false
-layout_mode = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-
-[node name="OptionsContainer" type="VBoxContainer" parent="PaddingContainer/CustomOptionsContainer" unique_id=540672047]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ContractPayoutScaling" parent="PaddingContainer/CustomOptionsContainer/OptionsContainer" unique_id=560109090 instance=ExtResource("2_yt3u4")]
-layout_mode = 2
-ConfigVarName = "game.ContractPayoutScaling"
-Title = "Contract Payout Scaling"
-Description = null
-
-[node name="EnemyDamageOutput" parent="PaddingContainer/CustomOptionsContainer/OptionsContainer" unique_id=184113502 instance=ExtResource("2_yt3u4")]
-layout_mode = 2
-ConfigVarName = "game.EnemyDamageOutput"
-Title = "Enemy Damage Output"
-Description = null
-
-[node name="NPCPermaDeath" parent="PaddingContainer/CustomOptionsContainer/OptionsContainer" unique_id=1489148105 instance=ExtResource("4_4f1u2")]
-layout_mode = 2
-ConfigVarName = "game.NPCPermaDeath"
-Title = "NPC Permanent Deaths"
-
-[node name="MaximumFirelinkCharges" parent="PaddingContainer/CustomOptionsContainer/OptionsContainer" unique_id=233075417 instance=ExtResource("5_aaton")]
-layout_mode = 2
-ConfigVarName = "game.MaximumFirelinkCharges"
-Title = "Maximum Firelink Charges"
-
-[node name="CustomButtonContainer" type="HBoxContainer" parent="." unique_id=1444767546]
-visible = false
+[node name="VBoxContainer" type="VBoxContainer" parent="CustomDifficultyContainer" unique_id=931831097]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.437
-anchor_top = 0.957
-anchor_right = 0.563
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 76.640015
-offset_top = 22.95996
-offset_right = -76.640015
-grow_horizontal = 2
-grow_vertical = 0
-metadata/_edit_use_anchors_ = true
-
-[node name="BackButton" parent="CustomButtonContainer" unique_id=289799171 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-text = "BACK"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="ResetButton" parent="CustomButtonContainer" unique_id=866776675 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-text = "RESET"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="NextButton" parent="CustomButtonContainer" unique_id=1449215447 instance=ExtResource("5_4f1u2")]
-layout_mode = 2
-text = "NEXT"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
-
-[node name="HardcoreWarningDialogue" type="MarginContainer" parent="." unique_id=1729170933]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HardcoreWarningDialogue" unique_id=1900503716]
+[node name="Title" type="Label" parent="CustomDifficultyContainer/VBoxContainer" unique_id=1196368756]
 layout_mode = 2
+text = "CUSTOM GAMEPLAY OPTIONS"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CustomDifficultyContainer/VBoxContainer" unique_id=535586280]
+layout_mode = 2
+
+[node name="CustomOptionsContainer" type="VBoxContainer" parent="CustomDifficultyContainer/VBoxContainer" unique_id=540672047]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ContractPayoutScaling" parent="CustomDifficultyContainer/VBoxContainer/CustomOptionsContainer" unique_id=560109090 instance=ExtResource("2_yt3u4")]
+layout_mode = 2
+ConfigVarName = "game.ContractPayoutScaling"
+Title = "Contract Payout Scaling"
+
+[node name="EnemyDamageOutput" parent="CustomDifficultyContainer/VBoxContainer/CustomOptionsContainer" unique_id=184113502 instance=ExtResource("2_yt3u4")]
+layout_mode = 2
+ConfigVarName = "game.EnemyDamageOutput"
+Title = "Enemy Damage Output"
+
+[node name="NPCPermaDeath" parent="CustomDifficultyContainer/VBoxContainer/CustomOptionsContainer" unique_id=1489148105 instance=ExtResource("4_4f1u2")]
+layout_mode = 2
+ConfigVarName = "game.NPCPermaDeath"
+Title = "NPC Permanent Deaths"
+
+[node name="MaximumFirelinkCharges" parent="CustomDifficultyContainer/VBoxContainer/CustomOptionsContainer" unique_id=233075417 instance=ExtResource("5_aaton")]
+layout_mode = 2
+ConfigVarName = "game.MaximumFirelinkCharges"
+Title = "Maximum Firelink Charges"
+
+[node name="CustomButtonContainer" type="HBoxContainer" parent="CustomDifficultyContainer/VBoxContainer" unique_id=1444767546]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="BackButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=289799171 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+text = "BACK"
+
+[node name="ResetButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=866776675 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+text = "RESET"
+
+[node name="NextButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=1449215447 instance=ExtResource("5_4f1u2")]
+layout_mode = 2
+text = "NEXT"

@@ -20,7 +20,6 @@ using Nomad.Logger;
 using Nomad.Events;
 using Nomad.CVars;
 using Nomad.Logger.Private.Sinks;
-using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Core;
 using Nomad.Core.CVars;
 using Nomad.EngineUtils;
@@ -30,12 +29,8 @@ using Nomad.Core.FileSystem;
 using System;
 using Nomad.OnlineServices.Steam;
 using Nomad.Audio.Fmod;
-using Nomad.Core.Engine.Services;
 using Nomad.Console;
-using Nomad.Game.Infrastructure.StateManagement;
-using Nomad.Core.Events;
 using Nomad.Input;
-using Nomad.Core.Engine.Globals;
 
 namespace Nomad.Game.Infrastructure {
 	/*
@@ -83,8 +78,6 @@ namespace Nomad.Game.Infrastructure {
 				.AddBootstrapper( new InputBootstrapper() );
 
 			_bootstrapper.Bootstrap();
-
-			serviceFactory.AddSingleton( new GameStateManager( serviceLocator.GetService<IGameEventRegistryService>() ) );
 
 			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
 

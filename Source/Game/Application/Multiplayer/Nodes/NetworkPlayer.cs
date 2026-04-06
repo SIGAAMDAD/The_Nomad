@@ -13,7 +13,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Events;
+using Nomad.Core.Logger;
+using Nomad.Core.ServiceRegistry.Interfaces;
+using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Prefabs;
+
 namespace Nomad.Game.Application.Multiplayer.Nodes {
-	public sealed partial class NetworkPlayer {
+	public sealed partial class NetworkPlayer : PlayerBase {
+		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger ) : base( guid, prefab, scope, eventFactory, logger ) {
+		}
 	};
 };

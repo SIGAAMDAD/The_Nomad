@@ -15,12 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
 using Nomad.Game.Application.UI.Menus.Events;
-using Nomad.Game.Domain.Data.StateManagement;
-using Nomad.Game.Infrastructure.StateManagement;
+using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.PauseMenu {
@@ -38,6 +39,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 	public partial class PauseMenu : EnginePresentationLayer {
 		private ISubscriptionGroup _buttonGroup;
 
+		private IGameStateService _gameStateService;
+
 		/*
 		===============
 		OnInit
@@ -54,6 +57,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsButtonPressed );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/ExitWorldButton" ).Clicked, OnExitWorldButtonPressed );
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked, OnQuitGameButtonPressed );
+
+			_gameStateService = ServiceLocator.GetService<IGameStateService>();
 		}
 
 		/*
@@ -68,7 +73,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		private void OnDisplayStateChanged( in bool displayState ) {
 			Enabled = displayState;
 			if ( !Enabled ) {
-				GameStateManager.CurrentState = GameState.Level;
+				_gameStateService.SetState( GameState.Level );
 			}
 		}
 		

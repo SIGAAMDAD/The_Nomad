@@ -17,11 +17,10 @@ using System;
 
 namespace Nomad.Game.Domain.Events.Player {
 	public readonly struct PlayerDashModuleUnlockedEventArgs {
-		public Type ModuleType => _moduleType;
-		private readonly Type _moduleType;
+		public Type ModuleType { get; }
 
 		public PlayerDashModuleUnlockedEventArgs( Type moduleType ) {
-			_moduleType = moduleType;
+			ModuleType = moduleType;
 		}
 	};
 };

@@ -1,12 +1,36 @@
 [gd_scene format=3 uid="uid://cirvkfu4rutp3"]
 
-[ext_resource type="Script" uid="uid://pxygy11mhurf" path="res://Assets/Prefabs/Player/PlayerAggregatte.cs" id="1_07406"]
+[ext_resource type="Script" uid="uid://dhx0w27h2pp5h" path="res://Assets/Prefabs/Player/PlayerPrefab.cs" id="1_07406"]
 [ext_resource type="Script" uid="uid://d3kjakj1ioi55" path="res://Assets/Prefabs/Player/PlayerCamera2D.cs" id="1_jic80"]
+[ext_resource type="PackedScene" uid="uid://cre4jywn58wrl" path="res://Assets/Prefabs/Player/Arm.tscn" id="3_5ofd5"]
+[ext_resource type="Texture2D" uid="uid://dfama5idhd08n" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.dds" id="3_qeavp"]
+[ext_resource type="SpriteFrames" uid="uid://d0t1mmjx3q6lu" path="res://Assets/Animations/Player/TorsoFrames.tres" id="3_qq8fn"]
 
-[node name="Player" type="Node2D" unique_id=664959359]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qeavp"]
+radius = 11.0
+height = 34.0
+
+[node name="Player" type="CharacterBody2D" unique_id=449054365]
 script = ExtResource("1_07406")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=178613071]
+zoom = Vector2(2.25, 2.25)
+process_callback = 0
 script = ExtResource("1_jic80")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1408154902]
+[node name="HeadSprite" type="Sprite2D" parent="." unique_id=1230354207]
+position = Vector2(4, -12)
+texture = ExtResource("3_qeavp")
+region_enabled = true
+region_rect = Rect2(64, 32, 32, 32)
+
+[node name="BodyAnimator" type="AnimatedSprite2D" parent="." unique_id=1408154902]
+sprite_frames = ExtResource("3_qq8fn")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=195522354]
+shape = SubResource("CapsuleShape2D_qeavp")
+
+[node name="LeftArm" parent="." unique_id=975599666 instance=ExtResource("3_5ofd5")]
+
+[node name="RightArm" parent="." unique_id=2006628997 instance=ExtResource("3_5ofd5")]

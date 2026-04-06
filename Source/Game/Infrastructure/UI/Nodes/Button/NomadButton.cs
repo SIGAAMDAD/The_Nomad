@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Game.Application.Audio;
-using Nomad.Game.Application.UI;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.UI;
@@ -79,7 +78,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			AddComponent<UIAudioFeedback>(comp => {
+			AddComponent<UIButtonAudioFeedback>(comp => {
 				comp.Button = this;
 				comp.ClickSound = AudioConstants.BUTTON_PRESSED;
 				comp.FocusedSound = AudioConstants.BUTTON_FOCUSED;
