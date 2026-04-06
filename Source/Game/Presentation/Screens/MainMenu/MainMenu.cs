@@ -62,15 +62,9 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsMenuButtonClicked );
 		}
 
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void OnShutdown() {
+			base.OnShutdown();
+
 			_buttonGroup?.Dispose();
 		}
 

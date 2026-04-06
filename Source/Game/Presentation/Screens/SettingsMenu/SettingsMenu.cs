@@ -46,7 +46,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// </summary>
 
 	public partial class SettingsMenu : EnginePanel {
-		private ISubscriptionGroup _buttonGroup;
+		private ISubscriptionGroup _eventGroup;
+
 		private DisplaySettingsService _displaySettings;
 		private AudioSettingsService _audioSettings;
 
@@ -59,11 +60,10 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_buttonGroup = GameEventRegistry.GetGroup( nameof( SettingsMenu ) );
-
-			_buttonGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/BackButton" ).Clicked, OnBackPressed );
-			_buttonGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/ResetButton" ).Clicked, OnResetPressed );
-			_buttonGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/SaveButton" ).Clicked, OnSavePressed );
+			_eventGroup = GameEventRegistry.GetGroup( nameof( SettingsMenu ) );
+			_eventGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/BackButton" ).Clicked, OnBackPressed );
+			_eventGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/ResetButton" ).Clicked, OnResetPressed );
+			_eventGroup.Add( FindChild<EngineButton>( "BottomContainer/ButtonContainer/SaveButton" ).Clicked, OnSavePressed );
 
 			var cvarSystem = ServiceLocator.GetService<ICVarSystemService>();
 
@@ -88,7 +88,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// 
 		/// </summary>
 		protected override void OnShutdown() {
-			_buttonGroup?.Dispose();
+			base.OnShutdown();
+
+			_eventGroup?.Dispose();
 		}
 
 		/*

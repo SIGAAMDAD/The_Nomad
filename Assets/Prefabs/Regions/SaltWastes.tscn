@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cg1t4dmstlusg"]
+
+[sub_resource type="Gradient" id="Gradient_jqawo"]
+colors = PackedColorArray(1, 0.58431375, 0, 1, 0.7411765, 0.3372549, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_eda3t"]
+noise_type = 5
+frequency = 0.926
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_flhqy"]
+noise = SubResource("FastNoiseLite_eda3t")
+color_ramp = SubResource("Gradient_jqawo")
+seamless = true
+seamless_blend_skirt = 0.8
+
+[node name="SaltWastes" type="Node2D" unique_id=1364440601]
+
+[node name="SandBackground" type="Polygon2D" parent="." unique_id=1173812449]
+texture = SubResource("NoiseTexture2D_flhqy")
+polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 840, 250, 808, -358, 802, -666)
