@@ -14,9 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.EngineUtils;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	internal sealed class PlayerAnimator : NomadBehaviour {
-		
 	};
 };

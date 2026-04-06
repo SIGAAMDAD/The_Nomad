@@ -28,11 +28,10 @@ namespace Nomad.Game.Domain.Events.Player {
 	/// </summary>
 	
 	public readonly struct PlayerDashModuleChangedEventArgs {
-		public Type ModuleType => _moduleType;
-		private readonly Type _moduleType;
+		public Type ModuleType { get; }
 
 		public PlayerDashModuleChangedEventArgs( Type moduleType ) {
-			_moduleType = moduleType;
+			ModuleType = moduleType;
 		}
 	};
 };

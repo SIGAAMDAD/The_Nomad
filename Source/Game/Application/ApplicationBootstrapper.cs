@@ -17,11 +17,15 @@ using Nomad.Game.Application.UI.Menus;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Game.Infrastructure.StateManagement;
-using Nomad.Game.Domain.Events.StateManagement;
-using Nomad.Game.Domain.Data.StateManagement;
-using Nomad.Scene.GameObjects;
 using Nomad.UI;
+using Nomad.Game.Application.Gameplay;
+using Nomad.Game.Domain.Events.Gameplay;
+using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Events.Globals;
+using Nomad.CVars.Global;
+using Nomad.Logger.Globals;
+using Nomad.Game.Application.Configuration.Registries;
 
 namespace Nomad.Game.Application {
 	/*
@@ -37,6 +41,7 @@ namespace Nomad.Game.Application {
 	
 	public sealed partial class ApplicationBootstrapper : EngineAspectRatioContainer {
 		private MenuManager _menuManager;
+		private IGameFlowCoordinator _gameFlowCoordinator;
 		private ISubscriptionHandle _onGameStateChanged;
 
 		/*
@@ -49,9 +54,20 @@ namespace Nomad.Game.Application {
 		/// </summary>
 		protected override void OnInit() {
 			base.OnInit();
+
+			var eventFactory = GameEventRegistry.Instance;
+			var gameStateManager = new GameStateManager( eventFactory );
+			var cvarSystem = CVarSystem.Instance;
+			var sceneManager = ServiceLocator.GetService<ISceneManager>();
 			
-			_menuManager = new MenuManager( ServiceLocator.GetService<ISceneManager>(), ServiceLocator.GetService<IGameEventRegistryService>() );
-			_onGameStateChanged = GameStateManager.StateChanged.Subscribe( OnGameStateChanged );
+			GameplayCVars.Register( cvarSystem );
+
+			_menuManager = new MenuManager( sceneManager, eventFactory );
+			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, gameStateManager, cvarSystem, Logging.Instance, sceneManager );
+			_onGameStateChanged = gameStateManager.StateChanged.Subscribe( OnGameStateChanged );
+			
+			ServiceRegistry.AddSingleton<IGameStateService>( gameStateManager );
+			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
 		}
 
 		/*

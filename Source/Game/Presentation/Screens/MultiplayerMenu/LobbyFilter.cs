@@ -26,7 +26,8 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 		public IGameEvent<int> MapAddedToFilter => _mapAddedToFilter;
 		private IGameEvent<int> _mapAddedToFilter;
 
-		public IGameEvent<int> MapRemovedFromFilter => ;
+		public IGameEvent<int> MapRemovedFromFilter => _mapRemovedFromFilter;
+		private IGameEvent<int> _mapRemovedFromFilter;
 
 		public IGameEvent<int> GameModeAddedToFilter => _gameModeAddedToFilter;
 		private IGameEvent<int> _gameModeAddedToFilter;
@@ -42,8 +43,6 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 		protected override void OnInit() {
 			base.OnInit();
 
-			_mapAddedToFilter = GameEventRegistry.GetEvent<int>();
-			_gameModeAddedToFilter = GameEventRegistry.GetEvent<int>();
 			_showFullLobbiesChanged = GameEventRegistry.GetEvent<bool>( UIConstants.SHOW_FULL_LOBBIES_CHANGED_EVENT, UIConstants.NAMESPACE );
 		}
 

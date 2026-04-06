@@ -39,6 +39,7 @@ namespace Nomad.Game.Application.UI.Menus {
 
 		private readonly Dictionary<MenuState, string> _scenePaths = new Dictionary<MenuState, string>() {
 			[ MenuState.Main ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", StorageScope.Install ),
+			[ MenuState.Extras ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.tscn", StorageScope.Install ),
 			[ MenuState.Loading ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.Install ),
 			[ MenuState.Settings ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.Install ),
 			[ MenuState.NewGame ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.tscn", StorageScope.Install )

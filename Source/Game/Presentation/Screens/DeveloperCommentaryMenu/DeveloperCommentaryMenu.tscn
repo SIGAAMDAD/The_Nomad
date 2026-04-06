@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cucn21ccc3ve6"]
+
+[ext_resource type="Script" uid="uid://cygojnacu4ua" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DeveloperCommentaryMenu.cs" id="1_ndpkn"]
+
+[node name="DeveloperCommentaryMenu" type="Control" unique_id=2081063852]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ndpkn")
+
+[node name="HBoxContainer" type="HSplitContainer" parent="." unique_id=1874630659]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionContainer" type="ScrollContainer" parent="HBoxContainer" unique_id=1844697964]
+layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="DataList" type="VBoxContainer" parent="HBoxContainer/OptionContainer" unique_id=2137945943]
+layout_mode = 2
+
+[node name="DataContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=98807988]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HBoxContainer/DataContainer" unique_id=1196879579]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="HBoxContainer/DataContainer" unique_id=1730514759]
+layout_mode = 2

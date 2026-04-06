@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Game.Application.UI;
-using Godot;
 using Nomad.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
@@ -33,16 +32,27 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 	/// </summary>
 
 	public partial class OptionSlider : OptionNode.OptionNode {
-		[Export( PropertyHint.Range, "0.0,1000.0" )]
-		public float Min { get; private set; } = 0.0f;
-		[Export( PropertyHint.Range, "0.0,1000.0" )]
-		public float Max { get; private set; } = 100.0f;
+		public float Min {
+			get => _min;
+			set {
+				_min = value;
+				_slider?.Minimum = _min;
+			}
+		}
+		private float _min = 0.0f;
+
+		public float Max {
+			get => _max;
+			set {
+				_max = value;
+				_slider?.Maximum = _max;
+			}
+		}
+		private float _max = 100.0f;
 
 		public float Value {
 			get => (float)_slider.Value;
-			set {
-				SetValue( value );
-			}
+			set => SetValue( value );
 		}
 
 		public InternString SliderId => new InternString( Name );
@@ -66,8 +76,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 			title.Text = Title;
 
 			_slider = FindChild<EngineHorizontalSlider>( "Input" );
-			_slider.Minimum = Min;
-			_slider.Maximum = Max;
+			_slider.Minimum = _min;
+			_slider.Maximum = _max;
 			_slider.ValueSet.Subscribe( OnValueChanged );
 
 			_valueLabel = _slider.FindChild<EngineText>( "Value" );

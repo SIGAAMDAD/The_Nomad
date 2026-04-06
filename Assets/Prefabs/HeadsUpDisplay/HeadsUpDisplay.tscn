@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://c6mafucos8cwk"]
+
+[node name="HeadsUpDisplay" type="CanvasLayer" unique_id=983129353]
+
+[node name="Control" type="Control" parent="." unique_id=756735863]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="StatBarContainer" type="VBoxContainer" parent="Control" unique_id=1228700349]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthBar" type="ProgressBar" parent="Control/StatBarContainer" unique_id=1368512284]
+layout_mode = 2
+show_percentage = false
+
+[node name="RageBar" type="ProgressBar" parent="Control/StatBarContainer" unique_id=184847358]
+layout_mode = 2
+show_percentage = false
+
+[node name="LocationLabel" type="Label" parent="Control" unique_id=2041213495]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="CombatContainer" type="VBoxContainer" parent="Control" unique_id=209906830]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -43.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="DashStatusBar" type="ProgressBar" parent="Control/CombatContainer" unique_id=1050937763]
+layout_mode = 2
+show_percentage = false
+
+[node name="WeaponStatusContainer" type="MarginContainer" parent="Control/CombatContainer" unique_id=109358728]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CombatContainer/WeaponStatusContainer" unique_id=316757214]
+layout_mode = 2
+
+[node name="WeaponIcon" type="TextureRect" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=503786097]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=1588688972]
+layout_mode = 2
+
+[node name="AmmoCounterLabel" type="Label" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=601177881]
+layout_mode = 2
+horizontal_alignment = 1
