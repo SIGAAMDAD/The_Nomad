@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.CVars;
+using Nomad.Game.Domain.Data.Gameplay;
 
 namespace Nomad.Game.Application.Configuration.Registries {
 	/*
@@ -59,6 +60,14 @@ namespace Nomad.Game.Application.Configuration.Registries {
 					Name = "game.PlayerDamageScale",
 					DefaultValue = 1.0f,
 					Description = "Scales how much damage the player receives.",
+					Flags = CVarFlags.Archive
+				}
+			);
+			cvarSystem.Register(
+				new CVarCreateInfo<GameplayMode> {
+					Name = "game.Mode",
+					DefaultValue = GameplayMode.Single,
+					Description = "The current gameplay mode.",
 					Flags = CVarFlags.Archive
 				}
 			);

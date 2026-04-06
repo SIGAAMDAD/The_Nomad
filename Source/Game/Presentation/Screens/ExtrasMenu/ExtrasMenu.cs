@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
@@ -34,14 +33,12 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 	/// </summary>
 	
 	public sealed partial class ExtrasMenu : EnginePanel {
-		private ISubscriptionGroup _buttonGroup;
-
 		private EnginePanel _multiplayerMenu;
 		private EnginePanel _developerCommentaryMenu;
 
 		/*
 		===============
-		OnInit9
+		OnInit
 		===============
 		*/
 		/// <summary>
@@ -50,23 +47,42 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		protected override void OnInit() {
 			base.OnInit();
 
-			_buttonGroup.Add( FindChild<NomadButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked, OnDeveloperCommentaryButtonPressed );
-			_buttonGroup.Add( FindChild<NomadButton>( "ButtonContainer/MultiplayerButton" ).Clicked, OnMultiplayerButtonPressed );
-			_buttonGroup.Add( FindChild<NomadButton>( "ButtonContainer/BackButton" ).Clicked, OnBackButtonPressed );
+			_multiplayerMenu = FindChild<EnginePanel>( "MultiplayerMenu" );
+			_developerCommentaryMenu = FindChild<EnginePanel>( "DeveloperCommentaryMenu" );
+
+			FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked.Subscribe( OnDeveloperCommentaryButtonPressed );
+			_developerCommentaryMenu.DisplayStateChanged.Subscribe( OnDeveloperMenuDisplayStateChanged );
+			
+			FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked.Subscribe( OnMultiplayerButtonPressed );
+			_multiplayerMenu.DisplayStateChanged.Subscribe( OnMultiplayerMenuDisplayStateChanged );
+
+			FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
 		}
 
 		/*
 		===============
-		OnShutdown
+		OnDeveloperMenuDisplayStateChanged
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnShutdown() {
-			base.OnShutdown();
+		/// <param name="args"></param>
+		private void OnDeveloperMenuDisplayStateChanged( in bool args ) {
+			_multiplayerMenu.Visible = !args;
+		}
 
-			_buttonGroup?.Dispose();
+		/*
+		===============
+		OnMultiplayerMenuDisplayStateChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnMultiplayerMenuDisplayStateChanged( in bool args ) {
+			_developerCommentaryMenu.Visible = !args;
 		}
 
 		/*
@@ -79,7 +95,7 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDeveloperCommentaryButtonPressed( in EmptyEventArgs args ) {
-			_developerCommentaryMenu.Enabled = true;
+			_developerCommentaryMenu.Visible = true;
 		}
 		
 		/*
@@ -92,7 +108,7 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnMultiplayerButtonPressed( in EmptyEventArgs args ) {
-			_multiplayerMenu.Enabled = true;
+			_multiplayerMenu.Visible = true;
 		}
 		
 		/*
@@ -105,7 +121,9 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnBackButtonPressed( in EmptyEventArgs args ) {
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Extras, MenuState.Main ) );
+			GameEventRegistry
+				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Extras, MenuState.Main ) );
 		}
 	};
 };

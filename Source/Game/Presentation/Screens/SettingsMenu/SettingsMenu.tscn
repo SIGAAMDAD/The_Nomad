@@ -3,12 +3,14 @@
 [ext_resource type="Script" uid="uid://cea3wgdsok2vi" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_658rn"]
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_m4e4s"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_l307y"]
-[ext_resource type="Script" uid="uid://cythal2b7a0pn" path="res://Source/Game/Presentation/Screens/SettingsMenu/Basic.cs" id="3_p5rsb"]
+[ext_resource type="Script" uid="uid://dyqfy3o52we1p" path="res://Source/Game/Presentation/Screens/SettingsMenu/TabContainer.cs" id="3_lwvah"]
+[ext_resource type="Script" uid="uid://bcobvothx5kic" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplayOptionsContainer.cs" id="4_gcelo"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="4_sceel"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
 [ext_resource type="Script" uid="uid://cleir4o3hjo2m" path="res://Source/Game/Presentation/Screens/SettingsMenu/Advanced.cs" id="6_amo7r"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
-[ext_resource type="Script" uid="uid://dmqa5yilyx65g" path="res://Source/Game/Presentation/Screens/SettingsMenu/Audio.cs" id="8_amo7r"]
+[ext_resource type="Script" uid="uid://joixvrjngy6j" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="8_1rltl"]
+[ext_resource type="Script" uid="uid://icxemiykmnx8" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]
 [ext_resource type="PackedScene" uid="uid://bbvty47p7xtk4" path="res://Source/Game/Presentation/Screens/SettingsMenu/BindingButton.tscn" id="9_dfq4n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amo7r"]
@@ -49,16 +51,12 @@ script = ExtResource("1_658rn")
 metadata/_edit_use_anchors_ = true
 
 [node name="TabContainer" type="TabContainer" parent="." unique_id=369180040]
-custom_minimum_size = Vector2(0, 320)
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.23300001
 anchor_right = 1.0
-anchor_bottom = 0.767
-offset_top = 4.699997
-offset_bottom = -4.700012
-grow_horizontal = 2
-grow_vertical = 2
+anchor_bottom = 0.568
+offset_bottom = 0.19998169
+size_flags_vertical = 3
 theme_override_constants/tab_separation = 20
 theme_override_styles/panel = SubResource("StyleBoxFlat_amo7r")
 theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_dfq4n")
@@ -67,59 +65,52 @@ theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_lwvah")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_1rltl")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_lwvah")
 tab_alignment = 1
-current_tab = 4
+current_tab = 0
+script = ExtResource("3_lwvah")
 metadata/_edit_use_anchors_ = true
 
 [node name="Display" type="TabContainer" parent="TabContainer" unique_id=1338488515]
-unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yx041")
 theme_override_styles/tab_unselected = SubResource("StyleBoxEmpty_m4e4s")
 current_tab = 0
+script = ExtResource("4_gcelo")
 metadata/_tab_index = 0
 
 [node name="Basic" type="VBoxContainer" parent="TabContainer/Display" unique_id=2084214716]
 layout_mode = 2
-script = ExtResource("3_p5rsb")
 metadata/_tab_index = 0
 
 [node name="MonitorList" parent="TabContainer/Display/Basic" unique_id=62428316 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.Monitor"
 Title = "Display"
 Description = "Which display to render the game window into"
 
 [node name="WindowModeList" parent="TabContainer/Display/Basic" unique_id=1937998290 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.WindowMode"
 Title = "Display Mode"
 
 [node name="WindowResolutionList" parent="TabContainer/Display/Basic" unique_id=1721561237 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.WindowResolution"
 Title = "Screen Resolution"
 Description = "How large the game window should be"
 
 [node name="VSyncList" parent="TabContainer/Display/Basic" unique_id=2014587530 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.VSyncMode"
 Title = "VSync"
 
 [node name="AspectRatioList" parent="TabContainer/Display/Basic" unique_id=304588338 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.AspectRatio"
 Title = "Aspect Ratio"
 
 [node name="MaxFpsSlider" parent="TabContainer/Display/Basic" unique_id=233075417 instance=ExtResource("5_yx041")]
-unique_name_in_owner = true
 layout_mode = 2
 Min = 30.0
 Max = 600.0
@@ -127,7 +118,6 @@ ConfigVarName = "display.MaxFps"
 Title = "Maximum Framerate"
 
 [node name="BrightnessSlider" parent="TabContainer/Display/Basic" unique_id=314321795 instance=ExtResource("5_yx041")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.Brightness"
 Title = "Brightness"
@@ -203,17 +193,19 @@ metadata/_tab_index = 1
 
 [node name="Basic" type="VBoxContainer" parent="TabContainer/Graphics" unique_id=1874527131]
 layout_mode = 2
-script = ExtResource("3_p5rsb")
 metadata/_tab_index = 0
 
 [node name="QualityPresetList" parent="TabContainer/Graphics/Basic" unique_id=560109090 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Quality Preset"
 
 [node name="EnvironmentQualityList" parent="TabContainer/Graphics/Basic" unique_id=407446345 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Environment Quality"
 
 [node name="EffectsQualityList" parent="TabContainer/Graphics/Basic" unique_id=198144553 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Effects Quality"
 
 [node name="Advanced" type="VBoxContainer" parent="TabContainer/Graphics" unique_id=261948630]
 visible = false
@@ -223,9 +215,11 @@ metadata/_tab_index = 1
 
 [node name="ShadowQualityList" parent="TabContainer/Graphics/Advanced" unique_id=611256808 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Shadow Quality"
 
 [node name="LightingQualityList" parent="TabContainer/Graphics/Advanced" unique_id=1616122728 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Lighting Quality"
 
 [node name="Audio" type="VBoxContainer" parent="TabContainer" unique_id=211957021]
 unique_name_in_owner = true
@@ -233,12 +227,16 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-script = ExtResource("8_amo7r")
+script = ExtResource("8_1rltl")
 metadata/_tab_index = 2
 
 [node name="OutputDeviceList" parent="TabContainer/Audio" unique_id=1412364431 instance=ExtResource("4_sceel")]
 unique_name_in_owner = true
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../MaxChannelsList")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../DriverAPIList")
 ConfigVarName = "audio.OutputDeviceIndex"
 Title = "Output Device"
 
@@ -251,7 +249,6 @@ Title = "Audio Driver"
 [node name="MasterVolumeSlider" parent="TabContainer/Audio" unique_id=1691011436 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
-Max = 100.0
 ConfigVarName = "audio.MasterVolume"
 Title = "Master Volume"
 
@@ -264,7 +261,6 @@ Title = "Music On"
 [node name="MusicVolumeSlider" parent="TabContainer/Audio" unique_id=275356694 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
-Max = 100.0
 ConfigVarName = "audio.MusicVolume"
 Title = "Music Volume"
 
@@ -277,7 +273,6 @@ Title = "Effects On"
 [node name="EffectsVolumeSlider" parent="TabContainer/Audio" unique_id=882495971 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
-Max = 100.0
 ConfigVarName = "audio.EffectsVolume"
 Title = "Effects Volume"
 
@@ -300,9 +295,11 @@ metadata/_tab_index = 0
 
 [node name="HUDPresetList" parent="TabContainer/Gameplay/Gameplay" unique_id=1259039572 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "HUD Preset"
 
 [node name="DifficultyPresetList" parent="TabContainer/Gameplay/Gameplay" unique_id=162577962 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Difficulty Preset"
 
 [node name="ContractPayoutScalingList" parent="TabContainer/Gameplay/Gameplay" unique_id=1448857571 instance=ExtResource("4_sceel")]
 layout_mode = 2
@@ -320,42 +317,55 @@ metadata/_tab_index = 1
 
 [node name="ColorblindnessPresetList" parent="TabContainer/Gameplay/Accessibility" unique_id=1700211727 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Colorblindness Mode"
 
 [node name="AutoAimModeList" parent="TabContainer/Gameplay/Accessibility" unique_id=1703866765 instance=ExtResource("4_sceel")]
 layout_mode = 2
+Title = "Auto Aim Mode"
 
 [node name="Controls" type="TabContainer" parent="TabContainer" unique_id=1270349589]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 current_tab = 0
 metadata/_tab_index = 4
 
 [node name="Bindings" type="VBoxContainer" parent="TabContainer/Controls" unique_id=370131663]
 layout_mode = 2
+script = ExtResource("9_1rltl")
 metadata/_tab_index = 0
 
-[node name="BindingButton" parent="TabContainer/Controls/Bindings" unique_id=653888067 instance=ExtResource("9_dfq4n")]
+[node name="MoveBind" parent="TabContainer/Controls/Bindings" unique_id=653888067 instance=ExtResource("9_dfq4n")]
+layout_mode = 2
+
+[node name="DashBind" parent="TabContainer/Controls/Bindings" unique_id=2127362521 instance=ExtResource("9_dfq4n")]
+layout_mode = 2
+
+[node name="ParryBind" parent="TabContainer/Controls/Bindings" unique_id=475136607 instance=ExtResource("9_dfq4n")]
+layout_mode = 2
+
+[node name="InteractBind" parent="TabContainer/Controls/Bindings" unique_id=1058226074 instance=ExtResource("9_dfq4n")]
 layout_mode = 2
 
 [node name="BottomContainer" type="VBoxContainer" parent="." unique_id=64717721]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.78700006
+anchor_top = 0.57500005
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 0.35998535
+offset_top = -3.0517578e-05
 grow_horizontal = 2
 grow_vertical = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="DescriptionLabel" type="Label" parent="BottomContainer" unique_id=753670562]
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_horizontal = 3
 autowrap_mode = 2
 
 [node name="ButtonContainer" type="HBoxContainer" parent="BottomContainer" unique_id=358009642]
 layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="BackButton" parent="BottomContainer/ButtonContainer" unique_id=715285024 instance=ExtResource("3_l307y")]
 unique_name_in_owner = true

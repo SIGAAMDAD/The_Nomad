@@ -20,15 +20,12 @@ namespace Nomad.Game.Domain.Events.Interactables {
 	/// 
 	/// </summary>
 	public readonly struct PlayerInteractionStatusChangedEventArgs {
-		public PlayerInteractionStatus OldStatus => _oldStatus;
-		private readonly PlayerInteractionStatus _oldStatus;
-
-		public PlayerInteractionStatus NewStatus => _newStatus;
-		private readonly PlayerInteractionStatus _newStatus;
+		public PlayerInteractionStatus OldStatus { get; }
+		public PlayerInteractionStatus NewStatus { get; }
 
 		public PlayerInteractionStatusChangedEventArgs( PlayerInteractionStatus oldStatus, PlayerInteractionStatus newStatus ) {
-			_oldStatus = oldStatus;
-			_newStatus = newStatus;
+			OldStatus = oldStatus;
+			NewStatus = newStatus;
 		}
 	};
 };

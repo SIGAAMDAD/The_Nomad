@@ -22,7 +22,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
 		public override int BasePriority => 60;
 
 		public override int GetScoreModifier( PlanningContext context ) {
-			var m = (SortiorianBladerMemory)context.Memory;
+			var m = (SortorianBladerMemory)context.Memory;
 			int score = 0;
 			if ( m.EnemyVisible ) {
 				score += 25;

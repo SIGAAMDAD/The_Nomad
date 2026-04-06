@@ -13,25 +13,54 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Nomad.Core.Compatibility.Guards;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
+	/*
+	===================================================================================
+	
+	SensorBase
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	public abstract class SensorBase : ISensor {
 		private readonly float _intervalSeconds;
 		private float _timeUntilNextTick;
 
+		/*
+		===============
+		SensorBase
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="intervalSeconds"></param>
 		protected SensorBase( float intervalSeconds ) {
-			_intervalSeconds = intervalSeconds <= 0f ? 0f : intervalSeconds;
-			_timeUntilNextTick = 0f;
+			_intervalSeconds = intervalSeconds <= 0.0f ? 0.0f : intervalSeconds;
+			_timeUntilNextTick = 0.0f;
 		}
 
+		/*
+		===============
+		Tick
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="agent"></param>
+		/// <param name="dt"></param>
 		public void Tick( NpcAgent agent, float dt ) {
-			if ( agent == null ) {
-				throw new ArgumentNullException( nameof( agent ) );
-			}
-			if ( _intervalSeconds > 0f ) {
+			ArgumentGuard.ThrowIfNull( agent );
+
+			if ( _intervalSeconds > 0.0f ) {
 				_timeUntilNextTick -= dt;
-				if ( _timeUntilNextTick > 0f ) {
+				if ( _timeUntilNextTick > 0.0f ) {
 					return;
 				}
 
@@ -41,6 +70,16 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 			Sense( agent, dt );
 		}
 
+		/*
+		===============
+		Sense
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="agent"></param>
+		/// <param name="dt"></param>
 		protected abstract void Sense( NpcAgent agent, float dt );
 	};
 };

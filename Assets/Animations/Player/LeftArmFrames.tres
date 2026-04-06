@@ -1,0 +1,18 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://cpsa63wyig2qa"]
+
+[ext_resource type="Texture2D" uid="uid://c4gdsveinl1p1" path="res://Assets/Textures/Skins/TheWanderer/raio_arms_left.dds" id="1_4j1dy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3y6uy"]
+atlas = ExtResource("1_4j1dy")
+region = Rect2(0, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3y6uy")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]

@@ -15,9 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
-using Nomad.Game.Application.UI;
-using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.NewGameMenu {
@@ -33,12 +30,10 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// </summary>
 	
 	public partial class NewGameMenu : EnginePanel {
-		private EnginePanel _optionsContainer;
-
+		private EngineVerticalContainer _optionsContainer;
 		private EnginePanel _customDifficultyContainer;
-		private EnginePanel _customDifficultyButtonContainer;
 
-		private ISubscriptionGroup _buttonGroup;
+		private ISubscriptionGroup _eventGroup;
 
 		/*
 		===============
@@ -49,86 +44,39 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_buttonGroup = GameEventRegistry.GetGroup( nameof( NewGameMenu ) );
+			_eventGroup = GameEventRegistry.GetGroup( nameof( NewGameMenu ) );
 
-			_optionsContainer = FindChild<EnginePanel>( "PaddingContainer/OptionsContainer" );
+			_optionsContainer = FindChild<EngineVerticalContainer>( "OptionsContainer" );
+			_customDifficultyContainer = FindChild<EnginePanel>( "CustomDifficultyContainer" );
 
-			_buttonGroup.Add( _optionsContainer.FindChild<EngineButton>( "EasyDifficultyButton" ).Clicked, OnEasyDifficultySelected );
-			_buttonGroup.Add( _optionsContainer.FindChild<EngineButton>( "HardDifficultyButton" ).Clicked, OnHardDifficultySelected );
-			_buttonGroup.Add( _optionsContainer.FindChild<EngineButton>( "CustomDifficultyButton" ).Clicked, OnCustomDifficultySelected );
-			_buttonGroup.Add( _optionsContainer.FindChild<EngineButton>( "BackButton" ).Clicked, OnBackButtonPressed );
-
-			_customDifficultyContainer = FindChild<EnginePanel>( "PaddingContainer/CustomOptionsContainer" );
-			_customDifficultyButtonContainer = FindChild<EnginePanel>( "CustomButtonContainer" );
-
-			_buttonGroup.Add( _customDifficultyButtonContainer.FindChild<EngineButton>( "BackButton" ).Clicked, OnBackButtonCustomPressed );
+			_eventGroup.Add( _optionsContainer.DisplayStateChanged, OnOptionsContainerDisplayStateChanged );
+			_eventGroup.Add( _customDifficultyContainer.DisplayStateChanged, OnCustomContainerDisplayStateChanged );
 		}
 
 		/*
 		===============
-		OnCustomDifficultySelected
+		OnOptionsContainerDisplayStateChanged
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnCustomDifficultySelected( in EmptyEventArgs args ) {
-			_optionsContainer.Visible = false;
-			_customDifficultyContainer.Visible = true;
-			_customDifficultyButtonContainer.Visible = true;
+		private void OnOptionsContainerDisplayStateChanged( in bool args ) {
+			_customDifficultyContainer.Visible = !args;
 		}
 
 		/*
 		===============
-		OnEasyDifficultySelected
+		OnCustomContainerDisplayStateChanged
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnEasyDifficultySelected( in EmptyEventArgs args ) {
-		}
-
-		/*
-		===============
-		OnHardDifficultySelected
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnHardDifficultySelected( in EmptyEventArgs args ) {
-		}
-
-		/*
-		===============
-		OnBackButtonPressed
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args ) {
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.NewGame, MenuState.Main ) );
-		}
-
-		/*
-		===============
-		OnBackButtonCustomPressed
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnBackButtonCustomPressed( in EmptyEventArgs args ) {
-			_optionsContainer.Visible = true;
-			_customDifficultyContainer.Visible = false;
-			_customDifficultyButtonContainer.Visible = false;
+		private void OnCustomContainerDisplayStateChanged( in bool args ) {
+			_optionsContainer.Visible = !args;
 		}
 	};
 };

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://ca65in2437vw6"]
 
+[ext_resource type="Script" uid="uid://ueb1uithc46l" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenu.cs" id="1_823be"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_fymkd"]
 [ext_resource type="Script" uid="uid://dqwkt1qi1wof2" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/LobbyBrowser.cs" id="2_8mo5w"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_x15ph"]
@@ -12,10 +13,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_823be")
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=556280858]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -39,6 +40,7 @@ layout_mode = 2
 text = "BACK_BUTTON"
 
 [node name="LobbyBrowserContainer" type="MarginContainer" parent="." unique_id=293870756]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
