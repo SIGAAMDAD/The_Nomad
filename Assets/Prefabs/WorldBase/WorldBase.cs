@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Audio.Interfaces;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
@@ -45,6 +46,9 @@ namespace Nomad.Game.Prefabs {
 			var gameStateService = ServiceLocator.GetService<IGameStateService>();
 			var spawnApplicator = new PlayerSpawnApplicator();
 			var profileResolver = new PlayerSpawnProfileResolver();
+			var audioDevice = ServiceLocator.GetService<IAudioDevice>();
+
+			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 
 			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver );
 		}

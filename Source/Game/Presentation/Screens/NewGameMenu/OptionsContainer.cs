@@ -14,7 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
@@ -36,6 +38,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// </summary>
 	
 	public partial class OptionsContainer : EngineVerticalContainer {
+		private IMusicService _musicService;
+
 		/*
 		===============
 		OnInit
@@ -45,6 +49,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
+			_musicService = ServiceLocator.GetService<IMusicService>();
+
 			FindChild<EngineButton>( "StandardModeButton" ).Clicked.Subscribe( OnEasyDifficultySelected );
 			FindChild<EngineButton>( "HardModeButton" ).Clicked.Subscribe( OnHardDifficultySelected );
 			FindChild<EngineButton>( "CustomModeButton" ).Clicked.Subscribe( OnCustomDifficultySelected );
@@ -74,6 +80,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnEasyDifficultySelected( in EmptyEventArgs args ) {
+			_musicService.StopTheme( true );
+			
 			GameEventRegistry
 				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
 				.Publish( new WorldBootstrapRequestEventArgs(
@@ -95,6 +103,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnHardDifficultySelected( in EmptyEventArgs args ) {
+			_musicService.StopTheme( true );
+
 			GameEventRegistry
 				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
 				.Publish( new WorldBootstrapRequestEventArgs(
