@@ -18,6 +18,9 @@ namespace Nomad.Game.Domain.Events.Gameplay {
 		public const string NAMESPACE = "Nomad.Game.Domain.Events.Gameplay";
 
 		public const string GAME_STATE_CHANGED = NAMESPACE + ".GameStateChanged";
-		public const string BEGIN_GAME = NAMESPACE + ".BeginGame";
+		
+		public const string WORLD_BOOTSTRAP_REQUESTED = NAMESPACE + ".WorldBootstrapRequested";
+		public const string WORLD_BOOTSTRAP_SUCCEEDED = NAMESPACE + ".WorldBootstrapSucceeded";
+		public const string WORLD_BOOTSTRAP_FAILURE = NAMESPACE + ".WorldBootstrapFailure";
 	};
 };

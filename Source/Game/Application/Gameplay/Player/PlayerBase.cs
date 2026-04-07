@@ -19,6 +19,7 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.EngineUtils;
+using Nomad.Game.Application.Gameplay.Player.Animation;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.Stats;
 using Nomad.Game.Domain.Data.Player;
@@ -26,8 +27,6 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
-using Nomad.Scene.GameObjects;
-using NumericsVector2 = System.Numerics.Vector2;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -41,28 +40,29 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// 
 	/// </summary>
 	
-	public abstract class PlayerBase {
-		private const float MoveSpeed = 200.0f;
-
-		private readonly PlayerJumpKit _jumpKit;
-		private readonly IPlayerStatsRepository _statsRepository;
-
+	public abstract class PlayerBase : IPlayerBase {
 		public Guid Id => _id;
 		private readonly Guid _id;
 
+		private readonly PlayerJumpKit _jumpKit;
+		private readonly PlayerAnimator _animator;
+
+		private readonly IPlayerBaseStatsRepository _statsRepository;
+		private readonly IPlayerDerivedStatService _derivedStatService;
+		private readonly IPlayerResourceService _resourceService;
+		private readonly PlayerStatDependencyGraph _dependencyGraph;
+		private readonly PlayerMovementController _movementController;
+		private readonly IPlayerFlagService _flagService;
+
 		private readonly ISubscriptionHandle _lookAngle;
-		private readonly ISubscriptionHandle _moveAction;
-		private readonly ISubscriptionGroup _inputActions;
 		private readonly Sprite2D _headSprite;
 
 		private readonly PlayerPrefab _prefab;
-		private NumericsVector2 _moveInput;
+
+		private bool _isDisposed = false;
 
 		public IGameEvent<PlayerDieEventArgs> Die => _die;
 		private readonly IGameEvent<PlayerDieEventArgs> _die;
-
-		public IGameEvent<PlayerStatChangedEventArgs> StatChanged => _statChanged;
-		private readonly IGameEvent<PlayerStatChangedEventArgs> _statChanged;
 
 		/*
 		===============
@@ -79,72 +79,59 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="logger"></param>
 		public PlayerBase( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger ) {
 			_prefab = prefab;
-			_prefab.Controller = this;
 			_id = guid;
-			_die = eventFactory.GetEvent<PlayerDieEventArgs>( $"{_id}:{EventNames.PLAYER_DIE}", EventNames.NAMESPACE );
-			_statChanged = eventFactory.GetEvent<PlayerStatChangedEventArgs>( $"{_id}:{EventNames.PLAYER_STAT_CHANGED}", EventNames.NAMESPACE );
+			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
+				$"{_id}:{EventNames.PLAYER_DIE}",
+				EventNames.NAMESPACE
+			);
+
+			_statsRepository = new PlayerBaseStatsRepository( eventFactory, logger );
+			_dependencyGraph = new PlayerStatDependencyGraph();
+			_derivedStatService = new PlayerDerivedStatService( _statsRepository, _dependencyGraph, eventFactory );
+			_flagService = new PlayerFlagService( eventFactory );
+			_resourceService = new PlayerResourceService( _derivedStatService, eventFactory );
+
+			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
+				_statsRepository.SetBaseStatValue( pair.Key, pair.Value );
+			}
+
+			_movementController = prefab.AddComponent<PlayerMovementController>(comp => {
+				comp.Stats = _derivedStatService;
+				comp.Flags = _flagService;
+			} );
+			_jumpKit = prefab.AddComponent<PlayerJumpKit>();
+			_animator = prefab.AddComponent<PlayerAnimator>();
 
 			_lookAngle = eventFactory.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Subscribe( OnLookAngleChanged );
-			
-			_moveAction = eventFactory.GetEvent<AxisActionEventArgs>( $"Move:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Subscribe( OnMoveAction );
-			
-			_inputActions = eventFactory.GetGroup( nameof( PlayerAggregate ) );
-			_inputActions.Add(
-				eventFactory.GetEvent<ButtonActionEventArgs>( $"Dash:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE ),
-				OnDashTriggered
-			);
-			_inputActions.Add(
-				eventFactory.GetEvent<ButtonActionEventArgs>( $"Parry:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE ),
-				OnParryTriggered
-			);
-			_inputActions.Add(
-				eventFactory.GetEvent<ButtonActionEventArgs>( $"Interact:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE ),
-				OnInteractTriggered
-			);
-			_inputActions.Add(
-				eventFactory.GetEvent<ButtonActionEventArgs>( $"Use Weapon:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE ),
-				OnUseWeaponTriggered
-			);
 
 			_headSprite = prefab.GetNode<Sprite2D>( "HeadSprite" );
-			prefab.AddChild( new Node() );
-
-			_jumpKit = _prefab.AddComponent<PlayerJumpKit>();
-			_statsRepository = new PlayerStatsRepository( eventFactory, logger );
 			scope.AddSingleton( _statsRepository );
+			scope.AddSingleton( _flagService );
 		}
 
-		private void OnParryTriggered( in ButtonActionEventArgs args ) {
-		}
-
-		private void OnInteractTriggered( in ButtonActionEventArgs args ) {
-		}
-
-		private void OnUseWeaponTriggered( in ButtonActionEventArgs args ) {
-		}
-
-		private void OnDashTriggered( in ButtonActionEventArgs args ) {
-		}
-
-		internal void OnPhysicsUpdate( float delta ) {
-			var moveInput = _moveInput;
-
-			if ( moveInput.LengthSquared() > 1.0f ) {
-				moveInput = NumericsVector2.Normalize( moveInput );
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public void Dispose() {
+			if ( !_isDisposed ) {
+				_die?.Dispose();
 			}
-
-			_prefab.Velocity = moveInput.ToGodot() * MoveSpeed;
-			_prefab.MoveAndSlide();
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
-		private void OnMoveAction( in AxisActionEventArgs args ) {
-			_moveInput = args.Value;
+		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context ) {
+			spawnApplicator.Apply( this, profile, _derivedStatService, _resourceService, _flagService, in context );
 		}
 
 		private void OnLookAngleChanged( in AxisActionEventArgs args ) {
-			_headSprite.Rotation = _prefab.GetLocalMousePosition().AngleTo( _prefab.Position.ToGodot() );
+			_headSprite.Rotation = _prefab.GetLocalMousePosition().Angle();
 		}
 	};
 };

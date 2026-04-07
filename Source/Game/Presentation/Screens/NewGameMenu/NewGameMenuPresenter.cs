@@ -92,10 +92,15 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		}
 
 		private static void BeginGame() {
-			GameEventRegistry.GetEvent<BeginGameEventArgs>(
-				EventNames.BEGIN_GAME,
-				EventNames.NAMESPACE
-			).Publish( new BeginGameEventArgs( GameplayMode.Single ) );
+			GameEventRegistry
+				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.Publish( new WorldBootstrapRequestEventArgs(
+					requestId: Guid.NewGuid(),
+					mode: WorldBootstrapMode.SinglePlayer,
+					worldId: "world.single.default",
+					difficulty: DifficultyPreset.Standard,
+					lobbyId: null
+				) );
 		}
 	};
 };

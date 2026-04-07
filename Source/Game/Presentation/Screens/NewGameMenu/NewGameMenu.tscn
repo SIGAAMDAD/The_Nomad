@@ -3,11 +3,11 @@
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_op4pf"]
 [ext_resource type="Script" uid="uid://fd1is3jrnmwq" path="res://Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.cs" id="2_aaton"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_yt3u4"]
-[ext_resource type="Script" uid="uid://btudn57ursdxq" path="res://Source/Game/Presentation/Screens/NewGameMenu/OptionsContainer.cs" id="3_al7ex"]
+[ext_resource type="Script" uid="uid://cljm0e8utoo78" path="res://Source/Game/Presentation/Screens/NewGameMenu/OptionsContainer.cs" id="3_al7ex"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="4_4f1u2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="5_4f1u2"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_aaton"]
-[ext_resource type="Script" uid="uid://ds00g0f8rgb7i" path="res://Source/Game/Presentation/Screens/NewGameMenu/CustomDifficultyContainer.cs" id="5_va14k"]
+[ext_resource type="Script" uid="uid://6dxmev33av0x" path="res://Source/Game/Presentation/Screens/NewGameMenu/CustomDifficultyContainer.cs" id="5_va14k"]
 
 [node name="NewGameMenu" type="Control" unique_id=1672155218]
 layout_mode = 3

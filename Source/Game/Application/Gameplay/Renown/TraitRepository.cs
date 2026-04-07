@@ -13,8 +13,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Collections.Generic;
+
 namespace Nomad.Game.Application.Gameplay.Renown {
+	/*
+	===================================================================================
+	
+	TraitRepository
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class TraitRepository {
-		
+		private readonly Dictionary<Guid, TraitBase> _traits = new();
+
+		public TraitRepository() {
+		}
 	};
 };

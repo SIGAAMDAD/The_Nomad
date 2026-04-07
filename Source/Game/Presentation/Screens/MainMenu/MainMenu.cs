@@ -55,17 +55,10 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 			var musicService = ServiceLocator.GetService<IMusicService>();
 			musicService.PlayTheme( "event:/Music/UserInterface/MainMenuTheme" );
 
-			_buttonGroup = GameEventRegistry.GetGroup( "MainMenu" );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked, OnQuitGameClicked );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/NewGameButton" ).Clicked, OnNewGameButtonClicked );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/ExtrasButton" ).Clicked, OnExtrasButtonClicked );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsMenuButtonClicked );
-		}
-
-		protected override void OnShutdown() {
-			base.OnShutdown();
-
-			_buttonGroup?.Dispose();
+			FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked.Subscribe( OnQuitGameClicked );
+			FindChild<EngineButton>( "OptionsContainer/NewGameButton" ).Clicked.Subscribe( OnNewGameButtonClicked );
+			FindChild<EngineButton>( "OptionsContainer/ExtrasButton" ).Clicked.Subscribe( OnExtrasButtonClicked );
+			FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked.Subscribe( OnSettingsMenuButtonClicked );
 		}
 
 		/*

@@ -20,6 +20,7 @@ using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Logger.Globals;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -33,7 +34,7 @@ namespace Nomad.Game.Prefabs {
 	/// The base "world" object.
 	/// </summary>
 	
-	public partial class WorldBase : Node2D {
+	public partial class WorldBase : EngineObject2D {
 		private readonly PlayerSpawnService _spawnService;
 
 		public WorldBase() {
@@ -42,8 +43,10 @@ namespace Nomad.Game.Prefabs {
 			var logger = Logging.Instance;
 
 			var gameStateService = ServiceLocator.GetService<IGameStateService>();
+			var spawnApplicator = new PlayerSpawnApplicator();
+			var profileResolver = new PlayerSpawnProfileResolver();
 
-			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ) );
+			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver );
 		}
 	};
 };

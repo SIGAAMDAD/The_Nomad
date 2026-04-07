@@ -15,12 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.CVars;
+using Nomad.Game.Application.Configuration.Enums.Gameplay;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
@@ -39,21 +41,11 @@ namespace Nomad.Game.Application.Gameplay {
 	/// </summary>
 	
 	internal sealed class GameFlowCoordinator : IGameFlowCoordinator {
-		private sealed record GameplayStartDescriptor(
-			string ScenePath,
-			GameState TargetState
-		);
-
-		private static readonly Dictionary<GameplayMode, GameplayStartDescriptor> _worldScenePaths = new Dictionary<GameplayMode, GameplayStartDescriptor> {
-			[ GameplayMode.Single ] = new( "Assets/Prefabs/SingleWorld/SingleWorld.tscn", GameState.Level ),
-			[ GameplayMode.Network ] = new( "Assets/Prefabs/NetworkWorld/NetworkWorld.tscn", GameState.Level ),
-		};
-		
-		private readonly ISubscriptionHandle _beginGameRequested;
-
-		private readonly ISceneManager _sceneManager;
 		private readonly ILoggerCategory _category;
 		private readonly IGameStateService _gameStateService;
+		private readonly IGameEventRegistryService _eventFactory;
+		private readonly IWorldBootstrapper _worldBootstrapper;
+
 		private readonly ICVar<GameplayMode> _gameMode;
 
 		private bool _isDisposed = false;
@@ -66,20 +58,24 @@ namespace Nomad.Game.Application.Gameplay {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="boostrapper"></param>
 		/// <param name="eventFactory"></param>
+		/// <param name="gameStateService"></param>
 		/// <param name="cvarSystem"></param>
 		/// <param name="logger"></param>
-		/// <param name="sceneManager"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public GameFlowCoordinator( IGameEventRegistryService eventFactory, IGameStateService gameStateService, ICVarSystemService cvarSystem, ILoggerService logger, ISceneManager sceneManager ) {
+		public GameFlowCoordinator( IWorldBootstrapper boostrapper, IGameEventRegistryService eventFactory, IGameStateService gameStateService, ICVarSystemService cvarSystem, ILoggerService logger ) {
 			ArgumentGuard.ThrowIfNull( logger );
 			ArgumentGuard.ThrowIfNull( cvarSystem );
 
-			_beginGameRequested = eventFactory.GetEvent<BeginGameEventArgs>( EventNames.BEGIN_GAME, EventNames.NAMESPACE )
-				.Subscribe( OnBeginGameRequested );
+			_worldBootstrapper = boostrapper ?? throw new ArgumentNullException( nameof( boostrapper ) );
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
+			_eventFactory
+				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.Subscribe( OnWorldBootstrapRequested );
 			
-			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );	
-			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
+			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_category = logger.CreateCategory( nameof( GameFlowCoordinator ), LogLevel.Info, true );
 			_gameMode = cvarSystem.GetCVarOrThrow<GameplayMode>( "game.Mode" );
 		}
@@ -94,31 +90,54 @@ namespace Nomad.Game.Application.Gameplay {
 		/// </summary>
 		public void Dispose() {
 			if ( !_isDisposed ) {
-				_beginGameRequested?.Dispose();
+				_eventFactory
+					.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+					.Unsubscribe( OnWorldBootstrapRequested );
+				
 				_category?.Dispose();
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
 
-		/*
-		===============
-		OnBeginGameRequested
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnBeginGameRequested( in BeginGameEventArgs args ) {
-			if ( !_worldScenePaths.TryGetValue( args.Mode, out var descriptor ) ) {
-				_category.PrintError( $"BeginGame requested with invalid GameMode '{args.Mode}'!" );
-				return;
-			}
+		private void OnWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
+			_category.PrintLine( "Loading world..." );
+			HandleWorldBootstrapRequested( in args );
+		}
 
-			_gameMode.Value = args.Mode;
-			_sceneManager.LoadScene( descriptor.ScenePath );
-			_gameStateService.Current = GameState.Level;
+		private void HandleWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
+			try {
+				WorldBootstrapResult result = _worldBootstrapper.Bootstrap( args );
+				switch ( result ) {
+					case WorldBootstrapSuccess success:
+						_gameMode.Value = MapGameplayMode( success.Mode );
+						_gameStateService.Current = GameState.Level;
+						_category.PrintLine(
+							$"World bootstrap succeeded for '{success.WorldId}' (WorldInstanceId={success.WorldInstanceId})"
+						);
+						break;
+					case WorldBootstrapFailure failure:
+						_category.PrintError(
+							$"World bootstrap failed for '{failure.WorldId}'. Reason='{failure.Reason}', Detail='{failure.Detail}'"
+						);
+						break;
+					default:
+						_category.PrintError( "Unknown world bootstrap result received." );
+						break;
+				}
+			} catch ( Exception e ) {
+				_category.PrintError( $"Unhandled bootstrap exception: {e}" );
+				throw;
+			}
+		}
+
+		private static GameplayMode MapGameplayMode( WorldBootstrapMode mode ) {
+			return mode switch {
+				WorldBootstrapMode.SinglePlayer => GameplayMode.Single,
+				WorldBootstrapMode.MultiplayerHost => GameplayMode.Network,
+				WorldBootstrapMode.MultiplayerClient => GameplayMode.Network,
+				_ => throw new ArgumentOutOfRangeException( nameof( mode ), mode, null )
+			};
 		}
 	};
 };

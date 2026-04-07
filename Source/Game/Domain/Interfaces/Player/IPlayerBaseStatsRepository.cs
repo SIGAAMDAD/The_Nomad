@@ -14,27 +14,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
-using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player {
-	/*
-	===================================================================================
-	
-	IPlayerStatsRepository
-	
-	===================================================================================
-	*/
 	/// <summary>
 	/// The base abstraction contract for managing player related numbers.
 	/// </summary>
-	
-	public interface IPlayerStatsRepository {
+	public interface IPlayerBaseStatsRepository {
 		/// <summary>
 		/// 
 		/// </summary>
-		IGameEvent<PlayerStatChangedEventArgs> StatChanged { get; }
+		IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged { get; }
 
 		/// <summary>
 		/// 
@@ -42,35 +33,13 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 		/// <param name="type"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		void SetStatValue( StatType type, float value );
+		void SetBaseStatValue( BaseStatType type, float value );
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		float GetStatValue( StatType type );
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="statId"></param>
-		/// <param name="limits"></param>
-		/// <param name="initialValue"></param>
-		void AddDynamicStat( InternString statId, StatLimits limits, float initialValue );
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="statId"></param>
-		/// <returns></returns>
-		float GetDynamicStatValue( InternString statId );
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="statId"></param>
-		/// <returns></returns>
-		bool HasDynamicStat( InternString statId );
+		float GetBaseStatValue( BaseStatType type );
 	};
 };

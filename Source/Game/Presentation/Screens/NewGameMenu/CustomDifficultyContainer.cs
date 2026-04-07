@@ -29,17 +29,9 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// </summary>
 	
 	public partial class CustomDifficultyContainer : EnginePanel {
-		private ISubscriptionHandle _backButtonPressed;
-
 		protected override void OnInit() {
-			_backButtonPressed = FindChild<EngineButton>( "VBoxContainer/CustomButtonContainer/BackButton" ).Clicked
+			FindChild<EngineButton>( "VBoxContainer/CustomButtonContainer/BackButton" ).Clicked
 				.Subscribe( OnBackButtonPressed );
-		}
-
-		protected override void OnShutdown() {
-			base.OnShutdown();
-
-			_backButtonPressed?.Dispose();
 		}
 
 		/*

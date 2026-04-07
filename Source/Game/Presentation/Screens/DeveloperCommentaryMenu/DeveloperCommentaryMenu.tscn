@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cucn21ccc3ve6"]
 
-[ext_resource type="Script" uid="uid://cygojnacu4ua" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DeveloperCommentaryMenu.cs" id="1_ndpkn"]
+[ext_resource type="Script" uid="uid://fdnbflxboqs7" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DeveloperCommentaryMenu.cs" id="1_ndpkn"]
+[ext_resource type="Script" uid="uid://wwu77l3mokr" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DataList.cs" id="2_xdcx2"]
+[ext_resource type="Script" uid="uid://78lrhuxvqeky" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DataContainer.cs" id="3_xdcx2"]
 
 [node name="DeveloperCommentaryMenu" type="Control" unique_id=2081063852]
 layout_mode = 3
@@ -18,17 +20,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+split_offsets = PackedInt32Array(260, 787)
+split_offset = 260
 
 [node name="OptionContainer" type="ScrollContainer" parent="HBoxContainer" unique_id=1844697964]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
 [node name="DataList" type="VBoxContainer" parent="HBoxContainer/OptionContainer" unique_id=2137945943]
 layout_mode = 2
+script = ExtResource("2_xdcx2")
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer" unique_id=90276832]
+layout_mode = 2
 
 [node name="DataContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=98807988]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
+script = ExtResource("3_xdcx2")
 
 [node name="Title" type="Label" parent="HBoxContainer/DataContainer" unique_id=1196879579]
 layout_mode = 2

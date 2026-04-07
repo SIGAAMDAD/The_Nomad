@@ -113,7 +113,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_players[ guid ] = playerBase;
 			return playerBase;
 		}
-
+		
 		/*
 		===============
 		OnGameStateChanged

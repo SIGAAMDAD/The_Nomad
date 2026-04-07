@@ -13,38 +13,34 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
+using System;
+using System.Collections.Generic;
+using Nomad.Game.Domain.Data.Player;
+
+namespace Nomad.Game.Domain.Interfaces.Player {
 	/// <summary>
-	/// Player statistic identifiers.
+	/// 
 	/// </summary>
-	public enum StatType : byte {
-		/// <summary>
-		/// The player's current health.
-		/// </summary>
-		Health,
-
-		/// <summary>
-		/// The player's current mana.
-		/// </summary>
-		Rage,
-
-		/// <summary>
-		/// The current heat value of the player's dashkit.
-		/// </summary>
-		JumpKitHeat,
-
-		/// <summary>
-		/// The player's current sanity score, this does stat
-		/// is not accounted for in Standard Mode.
-		/// </summary>
-		Sanity,
+	public interface IPlayerFlagService : IDisposable {
+		IReadOnlyList<string> CurrentFlags { get; }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		Count,
+		/// <param name="flags"></param>
+		/// <returns></returns>
+		bool GetFlags( PlayerFlags flags );
 
-		Min = Health,
-		Max = Sanity
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flags"></param>
+		void AddFlags( PlayerFlags flags );
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flags"></param>
+		void RemoveFlags( PlayerFlags flags );
 	};
 };

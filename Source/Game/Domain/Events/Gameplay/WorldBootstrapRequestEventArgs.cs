@@ -20,10 +20,16 @@ namespace Nomad.Game.Domain.Events.Gameplay {
 	public readonly struct WorldBootstrapRequestEventArgs {
 		public Guid RequestId { get; }
 		public WorldBootstrapMode Mode { get; }
+		public string WorldId { get; }
+		public DifficultyPreset Difficulty { get; }
+		public Guid? LobbyId { get; }
 
-		public WorldBootstrapRequestEventArgs( Guid requestId, WorldBootstrapMode mode ) {
+		public WorldBootstrapRequestEventArgs( Guid requestId, WorldBootstrapMode mode, string worldId, DifficultyPreset difficulty, Guid? lobbyId = null ) {
 			RequestId = requestId;
 			Mode = mode;
+			WorldId = worldId;
+			Difficulty = difficulty;
+			LobbyId = lobbyId;
 		}
 	};
 };

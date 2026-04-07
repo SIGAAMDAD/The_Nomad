@@ -17,6 +17,7 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Interface.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player {
@@ -36,7 +37,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private readonly IGameEvent<PlayerSpawnResultEventArgs> _spawnResultsReady = default;
 
 		private readonly ISubscriptionHandle _spawnRequested;
+
 		private readonly PlayerRepository _repository;
+		private readonly IPlayerSpawnApplicator _spawnApplicator;
+		private readonly IPlayerSpawnResolver _profileResolver;
 
 		private bool _isDisposed = false;
 		
@@ -51,10 +55,12 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="eventFactory"></param>
 		/// <param name="repository"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public PlayerSpawnService( IGameEventRegistryService eventFactory, PlayerRepository repository ) {
+		public PlayerSpawnService( IGameEventRegistryService eventFactory, PlayerRepository repository, IPlayerSpawnApplicator spawnApplicator, IPlayerSpawnResolver profileResolver ) {
 			_spawnResultsReady = eventFactory.GetEvent<PlayerSpawnResultEventArgs>( EventNames.PLAYER_SPAWN_RESULT_READY, EventNames.NAMESPACE );
 
 			_repository = repository ?? throw new ArgumentNullException( nameof( repository ) );
+			_profileResolver = profileResolver ?? throw new ArgumentNullException( nameof( profileResolver ) );
+			_spawnApplicator = spawnApplicator ?? throw new ArgumentNullException( nameof( spawnApplicator ) );
 
 			_spawnRequested = eventFactory
 				.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
@@ -88,6 +94,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="args"></param>
 		private void OnSpawnRequested( in PlayerSpawnRequestedEventArgs args ) {
 			var player = _repository.CreatePlayer( in args );
+
+			var profile = _profileResolver.Resolve( in args.Context );
+			player.ApplySpawnProfile( _spawnApplicator, profile, in args.Context );
+
 			_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, player.Id, true ) );
 		}
 	};
