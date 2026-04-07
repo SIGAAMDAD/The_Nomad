@@ -16,7 +16,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
@@ -251,7 +253,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private void OnMoveActionTriggered( in AxisActionEventArgs args ) {
 			_moveInput = args.Value;
 			_moveInput.Y = -_moveInput.Y;
-			if ( args.Phase == InputActionPhase.Started ) {
+			if ( args.Phase == InputActionPhase.Performed ) {
 				_startMoving.Publish( new PlayerStartMovingEventArgs( _moveInput ) );
 			} else if ( args.Phase == InputActionPhase.Canceled ) {
 				_stopMoving.Publish( default );
@@ -259,7 +261,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		}
 
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args ) {
-			if ( args.Phase == InputActionPhase.Started ) {
+			if ( args.Phase == InputActionPhase.Performed ) {
 				Flags.AddFlags( PlayerFlags.Sliding );
 			}
 		}

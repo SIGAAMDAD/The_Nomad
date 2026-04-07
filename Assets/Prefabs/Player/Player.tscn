@@ -32,9 +32,10 @@ autoplay = "idle"
 
 [node name="LegAnimator" type="AnimatedSprite2D" parent="." unique_id=1328575102]
 sprite_frames = ExtResource("5_cgnku")
-animation = &"idle"
+animation = &"sudden_stop"
 autoplay = "idle"
-frame_progress = 0.2958592
+frame = 3
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=195522354]
 position = Vector2(-2, 4)
