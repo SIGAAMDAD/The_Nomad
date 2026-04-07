@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
@@ -74,8 +75,14 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// <param name="args"></param>
 		private void OnEasyDifficultySelected( in EmptyEventArgs args ) {
 			GameEventRegistry
-				.GetEvent<BeginGameEventArgs>( EventNames.BEGIN_GAME, EventNames.NAMESPACE )
-				.Publish( new BeginGameEventArgs( GameplayMode.Single ) );
+				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.Publish( new WorldBootstrapRequestEventArgs(
+					requestId: Guid.NewGuid(),
+					mode: WorldBootstrapMode.SinglePlayer,
+					worldId: "world.single.default",
+					difficulty: DifficultyPreset.Standard,
+					lobbyId: null
+				) );
 		}
 
 		/*
@@ -89,8 +96,14 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// <param name="args"></param>
 		private void OnHardDifficultySelected( in EmptyEventArgs args ) {
 			GameEventRegistry
-				.GetEvent<BeginGameEventArgs>( EventNames.BEGIN_GAME, EventNames.NAMESPACE )
-				.Publish( new BeginGameEventArgs( GameplayMode.Single ) );
+				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.Publish( new WorldBootstrapRequestEventArgs(
+					requestId: Guid.NewGuid(),
+					mode: WorldBootstrapMode.SinglePlayer,
+					worldId: "world.single.default",
+					difficulty: DifficultyPreset.Hard,
+					lobbyId: null
+				) );
 		}
 
 		/*

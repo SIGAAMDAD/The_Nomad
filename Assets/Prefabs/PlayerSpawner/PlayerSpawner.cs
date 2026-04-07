@@ -13,9 +13,12 @@ namespace Nomad.Game.Prefabs {
 
 			var spawnRequest = GameEventRegistry
 				.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
-				.PublishAfter( 1000 );
+				.PublishAfter( 500 );
 			
-			spawnRequest.Publish( new PlayerSpawnRequestedEventArgs( Guid.NewGuid(), GlobalPosition.ToSystem(), true ) );
+			spawnRequest.Publish( new PlayerSpawnRequestedEventArgs(
+				Guid.NewGuid(),
+				new PlayerSpawnContext( PlayerSpawnReason.NewGame, GlobalPosition.ToSystem(), Name ) )
+			);
 		}
 	};
 };

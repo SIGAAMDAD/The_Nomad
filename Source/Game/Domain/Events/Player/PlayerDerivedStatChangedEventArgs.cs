@@ -19,7 +19,7 @@ namespace Nomad.Game.Domain.Events.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	public readonly struct PlayerStatChangedEventArgs {
+	public readonly struct PlayerDerivedStatChangedEventArgs {
 		/// <summary>
 		/// 
 		/// </summary>
@@ -33,7 +33,7 @@ namespace Nomad.Game.Domain.Events.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public StatType StatId { get; }
+		public DerivedStatType StatId { get; }
 
 		/// <summary>
 		/// 
@@ -41,7 +41,7 @@ namespace Nomad.Game.Domain.Events.Player {
 		/// <param name="newValue"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="statId"></param>
-		public PlayerStatChangedEventArgs( float newValue, float oldValue, StatType statId ) {
+		public PlayerDerivedStatChangedEventArgs( float newValue, float oldValue, DerivedStatType statId ) {
 			NewValue = newValue;
 			OldValue = oldValue;
 			StatId = statId;

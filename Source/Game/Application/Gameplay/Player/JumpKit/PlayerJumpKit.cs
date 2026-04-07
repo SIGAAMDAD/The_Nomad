@@ -46,15 +46,15 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public IGameEvent<PlayerDashRechargedEventArgs> DashRecharged => _dashRecharged;
 		private readonly IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
 
-		private readonly IGameEvent<PlayerStatChangedEventArgs> _statChanged = default;
+		private readonly IGameEvent<PlayerBaseStatChangedEventArgs> _statChanged = default;
 
-		private ISubscriptionHandle? _dashAction;
+		private readonly ISubscriptionHandle _dashAction;
 
 		private IAudioEmitter? _emitter;
 		private EngineLight2D? _light;
 
 		private IDashModule _module = new DefaultModule();
-		private DashRuntime _runtime = default;
+		private readonly DashRuntime _runtime = default;
 		private DashEffects _effects = default;
 
 		/*
@@ -78,13 +78,13 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 				nameof( PlayerJumpKit )
 			);
 
-			_statChanged = eventFactory.GetEvent<PlayerStatChangedEventArgs>(
-				EventNames.PLAYER_STAT_CHANGED,
+			_statChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>(
+				EventNames.PLAYER_BASE_STAT_CHANGED,
 				EventNames.NAMESPACE
 			);
 
 			_dashAction = eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"Dash:{Constants.Events.BUTTON_CLICKED}", Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>( $"Dash:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Subscribe( OnDashActionTriggered );
 
 			_runtime = new DashRuntime(
@@ -222,7 +222,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// </summary>
 		/// <param name="result"></param>
 		private void OnBurnoutAmountChanged( in DashUpdateResult result ) {
-			_statChanged.Publish( new PlayerStatChangedEventArgs( result.BurnoutAmount, 0.0f, StatType.JumpKitHeat ) );
+			_statChanged.Publish( new PlayerBaseStatChangedEventArgs( result.BurnoutAmount, 0.0f, BaseStatType.BaseMovementSpeed ) );
 			// Optional integration point:
 			// - update HUD meter
 			// - publish a burnout-changed event

@@ -47,14 +47,14 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
 
 			var eventFactory = GameEventRegistry.Instance;
 			_eventGroup.Add(
-				eventFactory.GetEvent<PlayerStatChangedEventArgs>( EventNames.PLAYER_STAT_CHANGED, EventNames.NAMESPACE ),
+				eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( EventNames.PLAYER_BASE_STAT_CHANGED, EventNames.NAMESPACE ),
 				OnStatChanged
 			);
 		}
 
-		private void OnStatChanged( in PlayerStatChangedEventArgs args ) {
+		private void OnStatChanged( in PlayerBaseStatChangedEventArgs args ) {
 			switch ( args.StatId ) {
-				case StatType.Health:
+				case BaseStatType.BaseHealth:
 					break;
 			}
 		}

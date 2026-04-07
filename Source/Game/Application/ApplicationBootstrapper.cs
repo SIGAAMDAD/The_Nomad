@@ -26,6 +26,8 @@ using Nomad.Events.Globals;
 using Nomad.CVars.Global;
 using Nomad.Logger.Globals;
 using Nomad.Game.Application.Configuration.Registries;
+using Nomad.Game.Infrastructure;
+using Nomad.Game.Application.Gameplay.World;
 
 namespace Nomad.Game.Application {
 	/*
@@ -42,6 +44,7 @@ namespace Nomad.Game.Application {
 	public sealed partial class ApplicationBootstrapper : EngineAspectRatioContainer {
 		private MenuManager _menuManager;
 		private IGameFlowCoordinator _gameFlowCoordinator;
+		private IWorldLoader _worldLoader;
 		private ISubscriptionHandle _onGameStateChanged;
 
 		/*
@@ -59,14 +62,18 @@ namespace Nomad.Game.Application {
 			var gameStateManager = new GameStateManager( eventFactory );
 			var cvarSystem = CVarSystem.Instance;
 			var sceneManager = ServiceLocator.GetService<ISceneManager>();
-			
+	
 			GameplayCVars.Register( cvarSystem );
 
 			_menuManager = new MenuManager( sceneManager, eventFactory );
-			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, gameStateManager, cvarSystem, Logging.Instance, sceneManager );
+			_worldLoader = new SceneWorldLoader( sceneManager );
+			
+			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
+			_gameFlowCoordinator = new GameFlowCoordinator( worldBootstrapper, eventFactory, gameStateManager, cvarSystem, Logging.Instance );
 			_onGameStateChanged = gameStateManager.StateChanged.Subscribe( OnGameStateChanged );
 			
 			ServiceRegistry.AddSingleton<IGameStateService>( gameStateManager );
+			ServiceRegistry.AddSingleton( _worldLoader );
 			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
 		}
 

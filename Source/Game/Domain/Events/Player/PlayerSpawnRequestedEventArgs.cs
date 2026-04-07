@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Numerics;
+using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Domain.Events.Player {
 	/// <summary>
@@ -22,13 +23,11 @@ namespace Nomad.Game.Domain.Events.Player {
 	/// </summary>
 	public readonly struct PlayerSpawnRequestedEventArgs {
 		public Guid RequestId { get; }
-		public Vector2 Position { get; }
-		public bool IsLocalPlayer { get; }
+		public readonly PlayerSpawnContext Context;
 
-		public PlayerSpawnRequestedEventArgs( Guid requestId, Vector2 position, bool isLocalPlayer ) {
+		public PlayerSpawnRequestedEventArgs( Guid requestId, PlayerSpawnContext context ) {
 			RequestId = requestId;
-			Position = position;
-			IsLocalPlayer = isLocalPlayer;
+			Context = context;
 		}
 	};
 };

@@ -13,7 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Events.Renown;
+
 namespace Nomad.Game.Application.Gameplay.Renown {
 	public abstract class TraitBase {
+		public IGameEvent<TraitChangedEventArgs> Changed => _changed;
+		private readonly IGameEvent<TraitChangedEventArgs> _changed;
+
+		public TraitBase( IGameEventRegistryService eventFactory ) {
+		}
 	};
 };

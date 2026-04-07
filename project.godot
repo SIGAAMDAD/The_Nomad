@@ -27,6 +27,7 @@ driver/enable_input=true
 
 GodotBootstrapper="*uid://1rkvk2tt5v6i"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
+DialogueManager="*uid://c3rodes2l3gxb"
 
 [display]
 
@@ -40,6 +41,10 @@ window/vsync/vsync_mode=0
 [dotnet]
 
 project/assembly_name="TheNomad"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 
 [memory]
 
@@ -72,6 +77,7 @@ textures/canvas_textures/default_texture_repeat=1
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
 2d/batching/item_buffer_size=12288
+2d/batching/uniform_set_cache_size=2048
 driver/depth_prepass/enable=false
 viewport/hdr_2d=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false

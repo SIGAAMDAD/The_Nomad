@@ -13,30 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Util;
-
 namespace Nomad.Game.Domain.Data.Player {
-	/*
-	===================================================================================
-	
-	DynamicPlayerStatValue
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-	
-	public readonly struct DynamicPlayerStatValue {
-		public InternString StatId { get; }
-		public float Value { get; }
-
-		private readonly StatLimits _limits;
-
-		public DynamicPlayerStatValue( InternString statId, float value, StatLimits limits ) {
-			StatId = statId;
-			Value = value;
-			_limits = limits;
-		}
+	public enum PlayerResourceType : byte {
+		Health,
+		Rage,
+		Sanity
 	};
 };

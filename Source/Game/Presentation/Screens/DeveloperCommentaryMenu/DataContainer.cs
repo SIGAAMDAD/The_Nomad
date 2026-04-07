@@ -13,28 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	/*
-	===================================================================================
-	
-	StatLimits
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-	
-	public readonly struct StatLimits {
-		public float Max => _max;
-		private readonly float _max;
+using Nomad.UI;
 
-		public float Min => _min;
-		private readonly float _min;
-
-		public StatLimits( float min, float max ) {
-			_min = min;
-			_max = max;
-		}
+namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
+	public partial class DataContainer : EngineVerticalContainer {
 	};
 };

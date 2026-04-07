@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://cea3wgdsok2vi" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.cs" id="1_658rn"]
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_m4e4s"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_l307y"]
-[ext_resource type="Script" uid="uid://dyqfy3o52we1p" path="res://Source/Game/Presentation/Screens/SettingsMenu/TabContainer.cs" id="3_lwvah"]
-[ext_resource type="Script" uid="uid://bcobvothx5kic" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplayOptionsContainer.cs" id="4_gcelo"]
+[ext_resource type="Script" uid="uid://dgge6berbwfp6" path="res://Source/Game/Presentation/Screens/SettingsMenu/TabContainer.cs" id="3_lwvah"]
+[ext_resource type="Script" uid="uid://e6q7p6bglw0" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplayOptionsContainer.cs" id="4_gcelo"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="4_sceel"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
 [ext_resource type="Script" uid="uid://cleir4o3hjo2m" path="res://Source/Game/Presentation/Screens/SettingsMenu/Advanced.cs" id="6_amo7r"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
-[ext_resource type="Script" uid="uid://joixvrjngy6j" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="8_1rltl"]
-[ext_resource type="Script" uid="uid://icxemiykmnx8" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]
+[ext_resource type="Script" uid="uid://36ru1ao14e22" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="8_1rltl"]
+[ext_resource type="Script" uid="uid://0yasjxnrioox" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]
 [ext_resource type="PackedScene" uid="uid://bbvty47p7xtk4" path="res://Source/Game/Presentation/Screens/SettingsMenu/BindingButton.tscn" id="9_dfq4n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amo7r"]
@@ -75,11 +75,12 @@ size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yx041")
 theme_override_styles/tab_unselected = SubResource("StyleBoxEmpty_m4e4s")
-current_tab = 0
+current_tab = 1
 script = ExtResource("4_gcelo")
 metadata/_tab_index = 0
 
 [node name="Basic" type="VBoxContainer" parent="TabContainer/Display" unique_id=2084214716]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -112,8 +113,6 @@ Title = "Aspect Ratio"
 
 [node name="MaxFpsSlider" parent="TabContainer/Display/Basic" unique_id=233075417 instance=ExtResource("5_yx041")]
 layout_mode = 2
-Min = 30.0
-Max = 600.0
 ConfigVarName = "display.MaxFps"
 Title = "Maximum Framerate"
 
@@ -126,9 +125,7 @@ Title = "Brightness"
 layout_mode = 2
 
 [node name="Advanced" type="VBoxContainer" parent="TabContainer/Display" unique_id=1566633214]
-visible = false
 layout_mode = 2
-script = ExtResource("6_amo7r")
 metadata/_tab_index = 1
 
 [node name="AntiAliasing" type="Label" parent="TabContainer/Display/Advanced" unique_id=76621337]
@@ -162,6 +159,12 @@ unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningAmount"
 Title = "Amount"
+
+[node name="TargetFramerateSlider" parent="TabContainer/Display/Advanced" unique_id=1823433323 instance=ExtResource("5_yx041")]
+layout_mode = 2
+
+[node name="RenderResolutionScalingSlider" parent="TabContainer/Display/Advanced" unique_id=1501271473 instance=ExtResource("5_yx041")]
+layout_mode = 2
 
 [node name="Filters" type="VBoxContainer" parent="TabContainer/Display" unique_id=1401944297]
 visible = false

@@ -14,8 +14,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.UI;
+using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Core.FileSystem;
 
-namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
+namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
 	/*
 	===================================================================================
 	
@@ -28,5 +30,16 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 	/// </summary>
 	
 	public partial class DeveloperCommentaryMenu : EnginePanel {
+		protected override void OnInit() {
+			base.OnInit();
+
+			var fileSystem = ServiceLocator.GetService<IFileSystem>();
+
+			fileSystem.AddSearchDirectory( "Assets/DeveloperCommentary" );
+			var files = fileSystem.GetFiles( "Assets/DeveloperCommentary", "*.json", true );
+			for ( int i = 0; i < files.Count; i++ ) {
+				
+			}
+		}
 	};
 };

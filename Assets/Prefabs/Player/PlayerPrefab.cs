@@ -13,16 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Core.ServiceRegistry.Services;
-using Nomad.Events.Globals;
-using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Application.Gameplay.Player.JumpKit;
-using Nomad.Game.Application.Gameplay.Player.Stats;
-using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Logger.Globals;
+using Nomad.Game.Domain.Data.Player;
 using Nomad.Scene.GameObjects;
+using System.Collections.Generic;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -37,12 +30,26 @@ namespace Nomad.Game.Prefabs {
 	/// </summary>
 	
 	public partial class PlayerPrefab : EngineCharacter2D {
-		internal PlayerBase? Controller { get; set; }
+		public PlayerInitializationDefinition Definition { get; init; }
 
-		protected override void OnPhysicsUpdate( float delta ) {
-			base.OnPhysicsUpdate( delta );
-
-			Controller?.OnPhysicsUpdate( delta );
+		public PlayerPrefab() {
+			Definition = new PlayerInitializationDefinition {
+				Stats = new PlayerStatBlockDefinition {
+					BaseStats = new Dictionary<BaseStatType, float> {
+						[BaseStatType.BaseHealth] = 100.0f,
+						[BaseStatType.BaseRage] = 100.0f,
+						[BaseStatType.BaseMovementSpeed] = 400.0f,
+						[BaseStatType.BaseSanity] = 90.0f,
+						[BaseStatType.EncumbranceThreshold] = 100.0f,
+						[BaseStatType.BaseDashSpeed] = 8800.0f
+					}
+				},
+				Resources = new PlayerSpawnResourceProfile {
+					HealthFillPercent = 1.0f,
+					RageFillPercent = 1.0f,
+					SanityFillPercent = 1.0f
+				}
+			};
 		}
 	};
 };

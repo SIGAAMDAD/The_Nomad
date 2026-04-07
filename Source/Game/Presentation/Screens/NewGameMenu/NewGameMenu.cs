@@ -44,19 +44,11 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_eventGroup = GameEventRegistry.GetGroup( nameof( NewGameMenu ) );
-
 			_optionsContainer = FindChild<EngineVerticalContainer>( "OptionsContainer" );
 			_customDifficultyContainer = FindChild<EnginePanel>( "CustomDifficultyContainer" );
 
-			_eventGroup.Add( _optionsContainer.DisplayStateChanged, OnOptionsContainerDisplayStateChanged );
-			_eventGroup.Add( _customDifficultyContainer.DisplayStateChanged, OnCustomContainerDisplayStateChanged );
-		}
-
-		protected override void OnShutdown() {
-			base.OnShutdown();
-
-			_eventGroup?.Dispose();
+			_optionsContainer.DisplayStateChanged.Subscribe( OnOptionsContainerDisplayStateChanged );
+			_customDifficultyContainer.DisplayStateChanged.Subscribe( OnCustomContainerDisplayStateChanged );
 		}
 
 		/*
