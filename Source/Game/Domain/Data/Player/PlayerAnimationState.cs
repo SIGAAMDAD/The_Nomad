@@ -13,16 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
+namespace Nomad.Game.Domain.Data.Player {
+	/// <summary>
+	/// The player's global animation state.
+	/// </summary>
+	public enum PlayerAnimationState : uint {
+		Idle,
+		Moving,
+		Sliding,
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerDerivedStatService : IDisposable {
-		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
+		TrueIdle,
 
-		float GetValue( DerivedStatType type );
-		void FlushDirty();
+		Count
 	};
 };

@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Audio.Interfaces;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
@@ -21,7 +22,9 @@ using Nomad.Game.Application.Gameplay.Player.JumpKit.Modules;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
+using Nomad.Input.ValueObjects;
 using Nomad.Logger.Globals;
 using Nomad.Scene.GameObjects;
 using System;
@@ -34,11 +37,31 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 	===================================================================================
 	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class PlayerJumpKit : NomadBehaviour {
 		public float BurnoutAmount => _runtime.BurnoutAmount;
 		public bool IsDashing => _runtime.IsDashing;
 		public bool IsBurnedOut => _runtime.IsBurnedOut;
 		public bool CanDash => _runtime.CanStartDash();
+
+		private readonly ISubscriptionHandle _dashAction;
+
+		private IAudioEmitter? _emitter;
+		private EngineLight2D? _light;
+
+		private PlayerPrefab _prefab;
+
+		private IDashModule _module = new DefaultModule();
+		private readonly DashRuntime _runtime = default;
+
+		public IGameEvent<PlayerDashStartEventArgs> DashStarted => _dashStarted;
+		private readonly IGameEvent<PlayerDashStartEventArgs> _dashStarted;
+
+		public IGameEvent<EmptyEventArgs> DashEnded => _dashEnded;
+		private readonly IGameEvent<EmptyEventArgs> _dashEnded;
 
 		public IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout => _dashBurnout;
 		private readonly IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
@@ -47,15 +70,6 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		private readonly IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
 
 		private readonly IGameEvent<PlayerBaseStatChangedEventArgs> _statChanged = default;
-
-		private readonly ISubscriptionHandle _dashAction;
-
-		private IAudioEmitter? _emitter;
-		private EngineLight2D? _light;
-
-		private IDashModule _module = new DefaultModule();
-		private readonly DashRuntime _runtime = default;
-		private DashEffects _effects = default;
 
 		/*
 		===============
@@ -70,12 +84,22 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
 				EventNames.PLAYER_DASH_BURNOUT,
-				nameof( PlayerJumpKit )
+				EventNames.NAMESPACE
 			);
 
 			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
 				EventNames.PLAYER_DASH_RECHARGED,
-				nameof( PlayerJumpKit )
+				EventNames.NAMESPACE
+			);
+
+			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
+				EventNames.PLAYER_DASH_STARTED,
+				EventNames.NAMESPACE
+			);
+
+			_dashEnded = eventFactory.GetEvent<EmptyEventArgs>(
+				EventNames.PLAYER_DASH_ENDED,
+				EventNames.NAMESPACE
 			);
 
 			_statChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>(
@@ -91,8 +115,12 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 				initialDashDuration: _module.DashDuration,
 				burnoutRechargeDuration: 2.5f
 			);
+		}
 
-			_effects = new DashEffects( _emitter, _light );
+		public override void OnInit() {
+			base.OnInit();
+			
+			_prefab = Object.CastAs<PlayerPrefab>();
 		}
 
 		/*
@@ -110,14 +138,12 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 			DashUpdateResult result = _runtime.Update( delta, _module );
 
 			if ( result.DashEnded ) {
-				_effects.OnDashEnded();
+				_dashEnded.Publish( default );
 			}
 			if ( result.BurnedOutThisFrame ) {
-				_effects.OnBurnoutTriggered( result );
 				PublishDashBurnout( result );
 			}
 			if ( result.RechargedThisFrame ) {
-				_effects.OnDashRecharged( result );
 				PublishDashRecharged( result );
 			}
 			if ( result.BurnoutChangedThisFrame ) {
@@ -152,26 +178,10 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// </summary>
 		/// <param name="module"></param>
 		public void SetModule( IDashModule module ) {
-			ArgumentNullException.ThrowIfNull( module );
+			ArgumentGuard.ThrowIfNull( module );
 
 			_module = module;
 			_runtime.ResetDashDuration( module.DashDuration );
-		}
-
-		/*
-		===============
-		BindPresentation
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="emitter"></param>
-		/// <param name="light"></param>
-		public void BindPresentation( IAudioEmitter? emitter, EngineLight2D? light ) {
-			_emitter = emitter;
-			_light = light;
-			_effects = new DashEffects( _emitter, _light );
 		}
 
 		/*
@@ -188,15 +198,14 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 			switch ( result.Status ) {
 				case DashStartStatus.Rejected:
-					return;
+					Logging.PrintLine( "Dash rejected" );
+					break;
 				case DashStartStatus.BurnedOut:
-					_effects.OnBurnoutTriggered( result );
 					PublishDashBurnout( result );
-					return;
+					break;
 				case DashStartStatus.Started:
-					Logging.PrintLine( "Dash started." );
-					_effects.OnDashStarted( result );
-					return;
+					_dashStarted.Publish( new PlayerDashStartEventArgs( _runtime.BurnoutAmount ) );
+					break;
 				default:
 					throw new InvalidOperationException( $"Unhandled dash start status '{result.Status}'." );
 			}
@@ -207,8 +216,14 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		OnDashActionTriggered
 		===============
 		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashActionTriggered( in ButtonActionEventArgs args ) {
-			Logging.PrintLine( "Dash action triggered!" );
+			if ( args.Phase != InputActionPhase.Started ) {
+				return;
+			}
 			TryStartDash();
 		}
 

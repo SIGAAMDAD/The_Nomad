@@ -20,7 +20,7 @@ namespace Nomad.Game.Domain.Data.Player {
 	public enum BaseStatType : byte {
 		Min = 0,
 
-		BaseMovementSpeed,
+		BaseMovementSpeed = Min,
 		InventoryWeight,
 		EncumbranceThreshold,
 		BaseDashSpeed,

@@ -17,7 +17,7 @@ namespace Nomad.Game.Domain.Data.Player {
 	public enum DerivedStatType : byte {
 		Min = 0,
 
-		MovementSpeedMultiplier,
+		MovementSpeedMultiplier = Min,
 		EffectiveMovementSpeed,
 		DashSpeedMultiplier,
 		EffectiveDashSpeed,

@@ -14,15 +14,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerDerivedStatService : IDisposable {
-		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
-
-		float GetValue( DerivedStatType type );
-		void FlushDirty();
+namespace Nomad.Game.Domain.Data.Player {
+	[Flags]
+	public enum PlayerJumpKitFlags : byte {
+		IsBurnedOut = 1 << 0,
+		IsDashing = 1 << 1,
+		DashEnded = 1 << 2,
+		BurnedOutThisFrame = 1 << 3,
+		RechargedThisFrame = 1 << 4
 	};
 };

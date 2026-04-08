@@ -14,11 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Player.Animation;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.Stats;
@@ -26,7 +24,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Input.Events;
+using Nomad.Logger.Globals;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -44,19 +42,23 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		public Guid Id => _id;
 		private readonly Guid _id;
 
+		//
+		// Components
+		//
 		private readonly PlayerJumpKit _jumpKit;
-		private readonly PlayerAnimator _animator;
+		private readonly PlayerAnimationRepository _animator;
+		private readonly PlayerMovementController _movementController;
+		private readonly PlayerAudioService _audioService;
 
+		//
+		// Services & Repositories
+		//
 		private readonly IPlayerBaseStatsRepository _statsRepository;
 		private readonly IPlayerDerivedStatService _derivedStatService;
 		private readonly IPlayerResourceService _resourceService;
 		private readonly PlayerStatDependencyGraph _dependencyGraph;
-		private readonly PlayerMovementController _movementController;
 		private readonly IPlayerFlagService _flagService;
-
-		private readonly ISubscriptionHandle _lookAngle;
-		private readonly Sprite2D _headSprite;
-
+		
 		private readonly PlayerPrefab _prefab;
 
 		private bool _isDisposed = false;
@@ -94,20 +96,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
 				_statsRepository.SetBaseStatValue( pair.Key, pair.Value );
 			}
+			_derivedStatService.FlushDirty();
 
 			_movementController = prefab.AddComponent<PlayerMovementController>(comp => {
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
 			} );
 			_jumpKit = prefab.AddComponent<PlayerJumpKit>();
-			_animator = prefab.AddComponent<PlayerAnimator>();
-
-			_lookAngle = eventFactory.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Subscribe( OnLookAngleChanged );
-
-			_headSprite = prefab.GetNode<Sprite2D>( "HeadSprite" );
-			scope.AddSingleton( _statsRepository );
-			scope.AddSingleton( _flagService );
+			_audioService = prefab.AddComponent<PlayerAudioService>();
+			_animator = new PlayerAnimationRepository( prefab, _movementController );
 		}
 
 		/*
@@ -128,10 +125,6 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context ) {
 			spawnApplicator.Apply( this, profile, _derivedStatService, _resourceService, _flagService, in context );
-		}
-
-		private void OnLookAngleChanged( in AxisActionEventArgs args ) {
-			_headSprite.Rotation = _prefab.GetLocalMousePosition().Angle();
 		}
 	};
 };

@@ -30,9 +30,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	/// Service responsible for calculating and managing derived player statistics.
+	/// Derived stats are calculated from base stats and may have dependencies on other derived stats.
+	/// This service handles caching, dependency tracking, and automatic recalculation when base stats change.
 	/// </summary>
-	
+
 	internal sealed class PlayerDerivedStatService : IPlayerDerivedStatService {
 		private readonly IPlayerBaseStatsRepository _baseStats;
 		private readonly PlayerStatDependencyGraph _graph;
@@ -51,11 +53,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the PlayerDerivedStatService.
 		/// </summary>
-		/// <param name="baseStats"></param>
-		/// <param name="graph"></param>
-		/// <param name="eventFactory"></param>
+		/// <param name="baseStats">Repository providing access to base player statistics.</param>
+		/// <param name="graph">Dependency graph defining relationships between derived stats.</param>
+		/// <param name="eventFactory">Factory for creating game events.</param>
 		public PlayerDerivedStatService( IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory ) {
 			_baseStats = baseStats;
 			_graph = graph;
@@ -77,7 +79,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Cleans up resources and unsubscribes from base stat change events.
 		/// </summary>
 		public void Dispose() {
 			if ( !_isDisposed ) {
@@ -93,10 +95,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Gets the current value of a derived stat, recalculating it if necessary.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">The type of derived stat to retrieve.</param>
+		/// <returns>The calculated value of the derived stat.</returns>
 		public float GetValue( DerivedStatType type ) {
 			if ( _dirty[(int)type] ) {
 				RecalculateWithDependencies( type );
@@ -110,7 +112,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Recalculates all dirty derived stats and publishes change events for any that have changed.
 		/// </summary>
 		public void FlushDirty() {
 			for ( int i = 0; i < _dirty.Length; i++ ) {
@@ -126,10 +128,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Recalculates a specific derived stat, ensuring all dependencies are calculated first.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <param name="type">The derived stat type to recalculate.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown when an unsupported derived stat type is provided.</exception>
 		private void RecalculateWithDependencies( DerivedStatType type ) {
 			switch ( type ) {
 				case DerivedStatType.MovementSpeedMultiplier:
@@ -156,8 +158,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 				case DerivedStatType.SanityDrainMultiplier:
 					RecalculateSingle( type, EvaluateSanityDrainMultiplier );
 					break;
+				case DerivedStatType.EffectiveSanityMax:
+					RecalculateSingle( type, EvaluateEffectiveSanityMax );
+					break;
 				default:
-					throw new ArgumentOutOfRangeException( nameof( type ) );
+					throw new ArgumentOutOfRangeException( $"{type}" );
 			}
 		}
 
@@ -167,10 +172,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Recalculates a single derived stat using the provided evaluator function.
+		/// Publishes change events and marks dependent stats as dirty if the value changed.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="evaluator"></param>
+		/// <param name="type">The derived stat type being recalculated.</param>
+		/// <param name="evaluator">Function that calculates the new value for the stat.</param>
 		private void RecalculateSingle( DerivedStatType type, Func<float> evaluator ) {
 			float oldValue = _values[(int)type];
 			float newValue = evaluator();
@@ -199,9 +205,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the movement speed multiplier based on inventory weight and encumbrance threshold.
+		/// Applies a penalty when carrying weight exceeds the threshold.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The movement speed multiplier (0.2 to 1.0).</returns>
 		private float EvaluateMovementSpeedMultiplier() {
 			float weight = _baseStats.GetBaseStatValue( BaseStatType.InventoryWeight );
 			float threshold = _baseStats.GetBaseStatValue( BaseStatType.EncumbranceThreshold );
@@ -227,9 +234,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the effective movement speed by multiplying base speed with the movement speed multiplier.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The effective movement speed (base speed * multiplier).</returns>
 		private float EvaluateEffectiveMovementSpeed() {
 			float baseSpeed = _baseStats.GetBaseStatValue( BaseStatType.BaseMovementSpeed );
 			float moveMultiplier = _values[(int)DerivedStatType.MovementSpeedMultiplier];
@@ -242,9 +249,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the dash speed multiplier. Currently returns 1.0 (no modification).
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The dash speed multiplier.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float EvaluateDashSpeedMultiplier() {
 			return 1.0f;
@@ -256,9 +263,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the effective dash speed by multiplying base dash speed with the dash speed multiplier.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The effective dash speed (base dash speed * multiplier).</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float EvaluateEffectiveDashSpeed() {
 			float baseDashSpeed = _baseStats.GetBaseStatValue( BaseStatType.BaseDashSpeed );
@@ -272,9 +279,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the effective maximum health, currently equal to base health.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The effective maximum health.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float EvaluateEffectiveHealthMax() {
 			return _baseStats.GetBaseStatValue( BaseStatType.BaseHealth );
@@ -286,9 +293,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the effective maximum rage, currently equal to base rage.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The effective maximum rage.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float EvaluateEffectiveRageMax() {
 			return _baseStats.GetBaseStatValue( BaseStatType.BaseRage );
@@ -300,12 +307,26 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Calculates the sanity drain multiplier. Currently returns 1.0 (no modification).
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The sanity drain multiplier.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float EvaluateSanityDrainMultiplier() {
 			return 1.0f;
+		}
+
+		/*
+		===============
+		EvaluateEffectiveSanityMax
+		===============
+		*/
+		/// <summary>
+		/// Calculates the effective maximum sanity, currently equal to base sanity.
+		/// </summary>
+		/// <returns>The effective maximum sanity.</returns>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private float EvaluateEffectiveSanityMax() {
+			return _baseStats.GetBaseStatValue( BaseStatType.BaseSanity );
 		}
 
 		/*
@@ -314,11 +335,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Compares two float values for equality within a small tolerance.
 		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
+		/// <param name="a">First float value.</param>
+		/// <param name="b">Second float value.</param>
+		/// <returns>True if the values are approximately equal.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private static bool FloatEquals( float a, float b ) {
 			return Math.Abs( a - b ) < 0.0001f;
@@ -330,12 +351,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		===============
 		*/
 		/// <summary>
-		/// 
+		/// Handles base stat change events by marking affected derived stats as dirty and recalculating them.
 		/// </summary>
-		/// <param name="e"></param>
-		private void OnBaseStatChanged( in PlayerBaseStatChangedEventArgs e ) {
+		/// <param name="args">Event arguments containing information about the changed base stat.</param>
+		private void OnBaseStatChanged( in PlayerBaseStatChangedEventArgs args ) {
 			HashSet<DerivedStatType> affected = new HashSet<DerivedStatType>();
-			_graph.CollectAffectedFromBase( e.StatId, affected );
+			_graph.CollectAffectedFromBase( args.StatId, affected );
 
 			foreach ( DerivedStatType type in affected ) {
 				_dirty[(int)type] = true;

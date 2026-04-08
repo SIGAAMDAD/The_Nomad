@@ -100,21 +100,25 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// <param name="newState"></param>
 		/// <returns></returns>
 		public void TransitionToMenu( MenuState newState ) {
-			if ( _currentState == newState ) {
-				return;
+			try {
+				if ( _currentState == newState ) {
+					return;
+				}
+
+				_previousState = _currentState;
+
+				if ( _currentScene != null ) {
+					_sceneManager.UnloadScene( _currentScene );
+				}
+
+				_currentScene = _sceneManager.LoadScene( _scenePaths[ newState ], LoadSceneMode.Additive );
+				_currentState = newState;
+
+				var menuTransitionCompleted = _eventRegistry.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE );
+				menuTransitionCompleted.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
+			} catch ( Exception e ) {
+				throw;
 			}
-
-			_previousState = _currentState;
-
-			if ( _currentScene != null ) {
-				_sceneManager.UnloadScene( _currentScene );
-			}
-
-			_currentScene = _sceneManager.LoadScene( _scenePaths[ newState ], LoadSceneMode.Additive );
-			_currentState = newState;
-
-			var menuTransitionCompleted = _eventRegistry.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE );
-			menuTransitionCompleted.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
 		}
 
 		/*

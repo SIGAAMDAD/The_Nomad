@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Godot;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
@@ -23,7 +22,6 @@ using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Logger.Globals;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/*
@@ -37,18 +35,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// 
 	/// </summary>
 	
-	internal sealed class PlayerAnimator : NomadBehaviour {
-		private AnimatedSprite2D _torsoAnimator;
-		private AnimatedSprite2D _legAnimator;
+	internal abstract class PlayerAnimator : NomadBehaviour {
+		protected PlayerPrefab prefab;
 
-		private PlayerPrefab _prefab;
+		public abstract IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
 
-		private readonly IAudioEmitter _emitter;
-		private readonly IListenerService _listenerService;
-
-		private readonly ISubscriptionHandle _startMoving;
-		private readonly ISubscriptionHandle _stopMoving;
-		
 		/*
 		===============
 		PlayerAnimator
@@ -60,14 +51,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public PlayerAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
 
-			_emitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
-			_listenerService = ServiceLocator.GetService<IListenerService>();
-
-			_startMoving = eventFactory
+			eventFactory
 				.GetEvent<PlayerStartMovingEventArgs>( EventNames.PLAYER_START_MOVING, EventNames.NAMESPACE )
 				.Subscribe( OnPlayerStartMoving );
 			
-			_stopMoving = eventFactory
+			eventFactory
 				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_STOP_MOVING, EventNames.NAMESPACE )
 				.Subscribe( OnPlayerStopMoving );
 		}
@@ -83,16 +71,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnInit() {
 			base.OnInit();
 
-			_prefab = Object.CastAs<PlayerPrefab>();
-			_torsoAnimator = _prefab.GetNode<AnimatedSprite2D>( "TorsoAnimator" );
-			_legAnimator = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
-			_legAnimator.AnimationLooped += OnLegAnimationLooped;
-		}
-
-		private void OnLegAnimationLooped() {
-			if ( _prefab.Velocity != Vector2.Zero ) {
-				_emitter.PlaySound( "event:/SoundEffects/Environment/Player/WalkSand", _prefab.GlobalPosition.ToSystem() );
-			}
+			prefab = Object.CastAs<PlayerPrefab>();
 		}
 
 		/*
@@ -107,40 +86,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
-			var velocity = _prefab.Velocity;
+			var velocity = prefab.Velocity;
 			if ( velocity.X > 0.0f ) {
 				Flip( false );
 			} else if ( velocity.X < 0.0f ) {
 				Flip( true );
 			}
-
-			_emitter.Position = _prefab.GlobalPosition.ToSystem();
-			_listenerService.SetListenerPosition( 0, _prefab.GlobalPosition.ToSystem() );
 		}
 
-		private void Flip( bool flip ) {
-			_torsoAnimator.FlipH = flip;
-			_legAnimator.FlipH = flip;
-		}
-
-		private void OnPlayerStartMoving( in PlayerStartMovingEventArgs args ) {
-			_legAnimator.Play( "move" );
-
-			// are we backpedaling?
-			if ( ( _torsoAnimator.FlipH && args.Velocity.X > 0.0f ) || ( !_torsoAnimator.FlipH && args.Velocity.X < 0.0f ) ) {
-				// sudden stop?
-				if ( ( args.Velocity.X < 0.0f && _prefab.Velocity.X > 0.0f ) || ( args.Velocity.X > 0.0f && _prefab.Velocity.X < 0.0f ) ) {
-					_legAnimator.Play( "sudden_stop" );
-				} else {
-					_legAnimator.Play( "move" );
-				}
-			} else {
-				_legAnimator.PlayBackwards( "move" );
-			}
-		}
-
-		private void OnPlayerStopMoving( in EmptyEventArgs args ) {
-			_legAnimator.Play( "idle" );
-		}
+		protected abstract void Flip( bool flip );
+		protected abstract void OnPlayerStartMoving( in PlayerStartMovingEventArgs args );
+		protected abstract void OnPlayerStopMoving( in EmptyEventArgs args );
 	};
 };

@@ -28,6 +28,7 @@ using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
 using Nomad.Input.ValueObjects;
+using Nomad.Logger.Globals;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -83,6 +84,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			eventFactory
 				.GetEvent<AxisActionEventArgs>( $"Move:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Subscribe( OnMoveActionTriggered );
+			
+			eventFactory
+				.GetEvent<PlayerDashStartEventArgs>( EventNames.PLAYER_DASH_STARTED, EventNames.NAMESPACE )
+				.Subscribe( OnDashStarted );
+			
+			eventFactory
+				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_DASH_ENDED, EventNames.NAMESPACE )
+				.Subscribe( OnDashEnded );
 			
 			_slideTimer = eventFactory
 				.GetEvent<EmptyEventArgs>( $"{Guid.NewGuid()}:{nameof(_slideTimer)}", nameof( PlayerMovementController ) )
@@ -170,7 +179,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplyDashingSpeedBonus() {
-			return Flags.GetFlags( PlayerFlags.Dashing ) ? 8800.0f : 0.0f;
+			return Flags.GetFlags( PlayerFlags.Dashing ) ? Stats.GetValue( DerivedStatType.EffectiveDashSpeed ) : 1.0f;
 		}
 
 		/*
@@ -184,7 +193,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplySlidingSpeedBonus() {
-			return Flags.GetFlags( PlayerFlags.Sliding ) ? 1200.0f : 0.0f;
+			return Flags.GetFlags( PlayerFlags.Sliding ) ? 1200.0f : 1.0f;
 		}
 
 		/*
@@ -199,8 +208,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private Vector2 HandleAcceleration( float delta ) {
-			float speed = _effectiveMovementSpeed;
-			float accel = Domain.Data.Player.Constants.MOVEMENT_ACCELERATION + ApplyDashingSpeedBonus() + ApplySlidingSpeedBonus();
+			float speed = _effectiveMovementSpeed + ApplyDashingSpeedBonus() + ApplySlidingSpeedBonus();
+			float accel = Domain.Data.Player.Constants.MOVEMENT_ACCELERATION;
 			return MoveToward( _velocity, _moveInput * speed, delta * accel );
 		}
 
@@ -249,7 +258,44 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private void OnSlideTimerTimeout( in EmptyEventArgs args ) {
 			Flags.RemoveFlags( PlayerFlags.Sliding );
 		}
+
+		/*
+		===============
+		OnDashStarted
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnDashStarted( in PlayerDashStartEventArgs args ) {
+			Logging.PrintLine( "Dash started" );
+			Flags.AddFlags( PlayerFlags.Dashing );
+		}
+
+		/*
+		===============
+		OnDashEnded
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnDashEnded( in EmptyEventArgs args ) {
+			Logging.PrintLine( "Dash ended" );
+			Flags.RemoveFlags( PlayerFlags.Dashing );
+		}
 		
+		/*
+		===============
+		OnMoveActionTriggered
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnMoveActionTriggered( in AxisActionEventArgs args ) {
 			_moveInput = args.Value;
 			_moveInput.Y = -_moveInput.Y;
@@ -260,6 +306,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			}
 		}
 
+		/*
+		===============
+		OnSlideActionTriggered
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args ) {
 			if ( args.Phase == InputActionPhase.Performed ) {
 				Flags.AddFlags( PlayerFlags.Sliding );

@@ -83,7 +83,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="flag"></param>
 		/// <returns></returns>
 		public bool GetFlags( PlayerFlags flag ) {
-			return _flags.HasFlag( flag );
+			return ( _flags & flag ) != 0;
 		}
 
 		/*
