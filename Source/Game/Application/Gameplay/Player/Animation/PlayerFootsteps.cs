@@ -59,7 +59,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			_prefab = Object.CastAs<PlayerPrefab>();
 			
 			// TODO: use framework to create this
-			var texture = ResourceLoader.Load<Texture2D>( "res://Assets/Textures/Effects/footstep.png" );
+			var texture = ResourceLoader.Load<Texture2D>( "res://Assets/Textures/Environment/footstep.png" );
 			_mesh = new MultiMeshInstance2D() {
 				Name = nameof( PlayerFootsteps ),
 				Texture = texture,
@@ -72,17 +72,17 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 					InstanceCount = MAX_STEPS,
 				}
 			};
+
+			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			legAnimation.AnimationLooped?.Subscribe( OnLegAnimationLooped );
+
+			var legAnimator = _prefab.GetComponent<PlayerLegAnimator>();
+			legAnimator.AnimationStateChanged.Subscribe( OnAnimationStateChanged );
 			
 			// attach the mesh to a detached transform otherwise we'll have the transforms following the player.
 			var sceneObject = new Node();
 			sceneObject.AddChild( _mesh );
 			_prefab.AddChild( sceneObject );
-
-			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			legAnimation.AnimationLooped.Subscribe( OnLegAnimationLooped );
-
-			var legAnimator = _prefab.GetComponent<PlayerLegAnimator>();
-			legAnimator.AnimationStateChanged.Subscribe( OnAnimationStateChanged );
 		}
 
 		private void OnAnimationStateChanged( in PlayerAnimationStateChangedEventArgs args ) {

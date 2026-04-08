@@ -13,18 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Prefabs;
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-namespace Nomad.Game.Application.Multiplayer.Nodes {
-	public sealed partial class NetworkPlayer : PlayerBase {
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( guid, prefab, scope, eventFactory, logger )
-		{
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar {
+	internal sealed class DashKitHeatBarPresenter {
+		private readonly IDashKitHeatBarModel _model;
+		private readonly IDashKitHeatBarView _view;
+
+		public DashKitHeatBarPresenter( IDashKitHeatBarModel model, IDashKitHeatBarView view ) {
+			_model = model;
+			_view = view;
+		}
+
+		public void Render() {
+			_view.SetValue( _model.BurnoutAmount );
 		}
 	};
 };

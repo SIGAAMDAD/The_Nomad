@@ -13,10 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
-using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;

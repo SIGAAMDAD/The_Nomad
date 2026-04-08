@@ -17,6 +17,8 @@ namespace Nomad.Game.Domain.Data.Player {
 	public static class EventNames {
 		public const string NAMESPACE = "Nomad.Game.Domain.Data.Player";
 
+		public const string PLAYER_STATE_CHANGED = NAMESPACE + ".PlayerStateChanged";
+
 		/// <summary>
 		/// 
 		/// </summary>

@@ -22,18 +22,23 @@ shader_parameter/peak_position = 0.5
 shader_parameter/use_peak_curve = true
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1841690282]
+process_mode = 3
+visible = false
 script = ExtResource("1_ocebb")
 
 [node name="TransitionFlicker" type="ColorRect" parent="." unique_id=625334614]
+process_mode = 3
 material = SubResource("ShaderMaterial_e1q40")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=520594388]
+process_mode = 2
 anchors_preset = -1
 anchor_left = 0.39100003
 anchor_top = 0.35700002
@@ -50,19 +55,49 @@ metadata/_edit_use_anchors_ = true
 [node name="ResumeGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
 text = "RESUME_GAME"
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=791109034 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
 text = "LOAD_GAME"
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=374986074 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
 text = "SETTINGSBUTTON"
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="ExitWorldButton" parent="OptionsContainer" unique_id=167440039 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
 text = "EXIT_TO_MAIN_MENU"
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=2053121442 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
 text = "QUIT_TO_DESKTOP"
+Duration = null
+AnimateScale = null
+AnimatePosition = null
+TransitionType = null
+ScaleIntensity = null
+PositionValue = null

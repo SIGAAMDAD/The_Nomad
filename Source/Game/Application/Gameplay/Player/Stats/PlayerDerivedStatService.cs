@@ -20,6 +20,7 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	/*
@@ -38,6 +39,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	internal sealed class PlayerDerivedStatService : IPlayerDerivedStatService {
 		private readonly IPlayerBaseStatsRepository _baseStats;
 		private readonly PlayerStatDependencyGraph _graph;
+		private readonly List<IPlayerDerivedStatEvaluator> _evaluators = new();
 
 		private readonly float[] _values = new float[(int)DerivedStatType.Count];
 		private readonly bool[] _dirty = new bool[(int)DerivedStatType.Count];
@@ -69,6 +71,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 			for ( int i = 0; i < _dirty.Length; i++ ) {
 				_dirty[i] = true;
 			}
+
+			_evaluators.Add( new MovementDerivedStatEvaluator() );
+			_evaluators.Add( new HealthDerivedStatEvaluator() );
+			_evaluators.Add( new RageDerivedStatEvaluator() );
+			_evaluators.Add( new SanityDerivedStatEvaluator() );
+			_evaluators.Add( new DashKitDerivedStatEvaluator() );
 
 			_baseStats.BaseStatChanged.Subscribe( OnBaseStatChanged );
 		}
@@ -133,37 +141,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <param name="type">The derived stat type to recalculate.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown when an unsupported derived stat type is provided.</exception>
 		private void RecalculateWithDependencies( DerivedStatType type ) {
-			switch ( type ) {
-				case DerivedStatType.MovementSpeedMultiplier:
-					RecalculateSingle( type, EvaluateMovementSpeedMultiplier );
-					break;
-				case DerivedStatType.EffectiveMovementSpeed:
-					// Ensure dependency is valid first
-					GetValue( DerivedStatType.MovementSpeedMultiplier );
-					RecalculateSingle( type, EvaluateEffectiveMovementSpeed );
-					break;
-				case DerivedStatType.DashSpeedMultiplier:
-					RecalculateSingle( type, EvaluateDashSpeedMultiplier );
-					break;
-				case DerivedStatType.EffectiveDashSpeed:
-					GetValue( DerivedStatType.DashSpeedMultiplier );
-					RecalculateSingle( type, EvaluateEffectiveDashSpeed );
-					break;
-				case DerivedStatType.EffectiveHealthMax:
-					RecalculateSingle( type, EvaluateEffectiveHealthMax );
-					break;
-				case DerivedStatType.EffectiveRageMax:
-					RecalculateSingle( type, EvaluateEffectiveRageMax );
-					break;
-				case DerivedStatType.SanityDrainMultiplier:
-					RecalculateSingle( type, EvaluateSanityDrainMultiplier );
-					break;
-				case DerivedStatType.EffectiveSanityMax:
-					RecalculateSingle( type, EvaluateEffectiveSanityMax );
-					break;
-				default:
-					throw new ArgumentOutOfRangeException( $"{type}" );
-			}
+			EnsureDependencies( type );
+			RecalculateSingle( type, () => EvaluateFromEvaluator( type ) );
 		}
 
 		/*
@@ -199,134 +178,36 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 			}
 		}
 
-		/*
-		===============
-		EvaluateMovementSpeedMultiplier
-		===============
-		*/
-		/// <summary>
-		/// Calculates the movement speed multiplier based on inventory weight and encumbrance threshold.
-		/// Applies a penalty when carrying weight exceeds the threshold.
-		/// </summary>
-		/// <returns>The movement speed multiplier (0.2 to 1.0).</returns>
-		private float EvaluateMovementSpeedMultiplier() {
-			float weight = _baseStats.GetBaseStatValue( BaseStatType.InventoryWeight );
-			float threshold = _baseStats.GetBaseStatValue( BaseStatType.EncumbranceThreshold );
+		private void EnsureDependencies( DerivedStatType type ) {
+			switch ( type ) {
+				case DerivedStatType.EffectiveMovementSpeed:
+					GetValue( DerivedStatType.MovementSpeedMultiplier );
+					break;
+				case DerivedStatType.EffectiveDashSpeed:
+					GetValue( DerivedStatType.DashSpeedMultiplier );
+					break;
+				case DerivedStatType.MovementSpeedMultiplier:
+				case DerivedStatType.DashSpeedMultiplier:
+				case DerivedStatType.EffectiveHealthMax:
+				case DerivedStatType.EffectiveRageMax:
+				case DerivedStatType.EffectiveSanityMax:
+				case DerivedStatType.SanityDrainMultiplier:
+					break;
+				default:
+					throw new ArgumentOutOfRangeException( nameof( type ), $"Unsupported derived stat '{type}'." );
+			}
+		}
 
-			if ( threshold <= 0.0f ) {
-				return 1.0f;
+		private float EvaluateFromEvaluator( DerivedStatType type ) {
+			var context = new PlayerDerivedStatEvaluationContext( _baseStats, GetValue );
+
+			for ( int i = 0; i < _evaluators.Count; i++ ) {
+				if ( _evaluators[i].CanEvaluate( type ) ) {
+					return _evaluators[i].Evaluate( type, in context );
+				}
 			}
 
-			if ( weight <= threshold ) {
-				return 1.0f;
-			}
-
-			float overRatio = (weight - threshold) / threshold;
-
-			// Example curve: up to 80% slowdown cap
-			float penalty = Math.Min( overRatio * 0.35f, 0.80f );
-			return Math.Max( 0.20f, 1.0f - penalty );
-		}
-
-		/*
-		===============
-		EvaluateEffectiveMovementSpeed
-		===============
-		*/
-		/// <summary>
-		/// Calculates the effective movement speed by multiplying base speed with the movement speed multiplier.
-		/// </summary>
-		/// <returns>The effective movement speed (base speed * multiplier).</returns>
-		private float EvaluateEffectiveMovementSpeed() {
-			float baseSpeed = _baseStats.GetBaseStatValue( BaseStatType.BaseMovementSpeed );
-			float moveMultiplier = _values[(int)DerivedStatType.MovementSpeedMultiplier];
-			return Math.Max( 0.0f, baseSpeed * moveMultiplier );
-		}
-
-		/*
-		===============
-		EvaluateDashSpeedMultiplier
-		===============
-		*/
-		/// <summary>
-		/// Calculates the dash speed multiplier. Currently returns 1.0 (no modification).
-		/// </summary>
-		/// <returns>The dash speed multiplier.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateDashSpeedMultiplier() {
-			return 1.0f;
-		}
-
-		/*
-		===============
-		EvaluateEffectiveDashSpeed
-		===============
-		*/
-		/// <summary>
-		/// Calculates the effective dash speed by multiplying base dash speed with the dash speed multiplier.
-		/// </summary>
-		/// <returns>The effective dash speed (base dash speed * multiplier).</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateEffectiveDashSpeed() {
-			float baseDashSpeed = _baseStats.GetBaseStatValue( BaseStatType.BaseDashSpeed );
-			float multiplier = _values[(int)DerivedStatType.DashSpeedMultiplier];
-			return Math.Max( 0.0f, baseDashSpeed * multiplier );
-		}
-
-		/*
-		===============
-		EvaluateEffectiveHealthMax
-		===============
-		*/
-		/// <summary>
-		/// Calculates the effective maximum health, currently equal to base health.
-		/// </summary>
-		/// <returns>The effective maximum health.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateEffectiveHealthMax() {
-			return _baseStats.GetBaseStatValue( BaseStatType.BaseHealth );
-		}
-
-		/*
-		===============
-		EvaluateEffectiveRageMax
-		===============
-		*/
-		/// <summary>
-		/// Calculates the effective maximum rage, currently equal to base rage.
-		/// </summary>
-		/// <returns>The effective maximum rage.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateEffectiveRageMax() {
-			return _baseStats.GetBaseStatValue( BaseStatType.BaseRage );
-		}
-
-		/*
-		===============
-		EvaluateSanityDrainMultiplier
-		===============
-		*/
-		/// <summary>
-		/// Calculates the sanity drain multiplier. Currently returns 1.0 (no modification).
-		/// </summary>
-		/// <returns>The sanity drain multiplier.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateSanityDrainMultiplier() {
-			return 1.0f;
-		}
-
-		/*
-		===============
-		EvaluateEffectiveSanityMax
-		===============
-		*/
-		/// <summary>
-		/// Calculates the effective maximum sanity, currently equal to base sanity.
-		/// </summary>
-		/// <returns>The effective maximum sanity.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private float EvaluateEffectiveSanityMax() {
-			return _baseStats.GetBaseStatValue( BaseStatType.BaseSanity );
+			throw new ArgumentOutOfRangeException( nameof( type ), $"No derived stat evaluator registered for '{type}'." );
 		}
 
 		/*

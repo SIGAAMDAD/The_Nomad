@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using System;
+using Nomad.Core.Util;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/*
@@ -32,7 +34,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// </summary>
 	
 	internal sealed class PlayerHeadAnimator : NomadBehaviour {
-		private Sprite2D _headSprite;
+		private EngineSprite2D _headSprite;
 		private PlayerPrefab _prefab;
 
 		public PlayerHeadAnimator() {
@@ -46,11 +48,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			base.OnInit();
 
 			_prefab = Object.CastAs<PlayerPrefab>();
-			_headSprite = _prefab.GetNode<Sprite2D>( "HeadSprite" );
+			_headSprite = _prefab.FindChild<EngineSprite2D>( "HeadSprite" );
 		}
 
 		private void OnLookAngleChanged( in AxisActionEventArgs args ) {
-			_headSprite.Rotation = _prefab.GetLocalMousePosition().Angle();
+			_headSprite.Rotation = AngleMath.RadToDeg( _prefab.GetLocalMousePosition().Angle() );
 		}
 	};
 };

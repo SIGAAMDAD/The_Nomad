@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://clu1gshn54ujf"]
+
+[ext_resource type="Script" uid="uid://8ahxi4ti0u6x" path="res://Source/Game/Presentation/Screens/Gameplay/GameplayScreen.cs" id="1_4o5g5"]
+[ext_resource type="PackedScene" uid="uid://c6mafucos8cwk" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplay.tscn" id="2_pf7j4"]
+[ext_resource type="PackedScene" uid="uid://cca2v6mecxhw3" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenu.tscn" id="3_ttclx"]
+
+[node name="GameplayScreen" type="CanvasLayer" unique_id=1256565877]
+script = ExtResource("1_4o5g5")
+
+[node name="HeadsUpDisplay" parent="." unique_id=756735863 instance=ExtResource("2_pf7j4")]
+mouse_filter = 2
+
+[node name="PauseMenu" parent="." unique_id=1841690282 instance=ExtResource("3_ttclx")]

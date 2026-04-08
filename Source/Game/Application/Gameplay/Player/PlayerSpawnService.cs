@@ -14,8 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Godot;
 using Nomad.Core.Events;
+using Nomad.Core.Logger;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interface.Player;
@@ -34,16 +34,17 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// </summary>
 	
 	internal sealed class PlayerSpawnService : IPlayerSpawnService {
-		public IGameEvent<PlayerSpawnResultEventArgs> SpawnResultsReady => _spawnResultsReady;
-		private readonly IGameEvent<PlayerSpawnResultEventArgs> _spawnResultsReady = default;
-
-		private readonly ISubscriptionHandle _spawnRequested;
+		private readonly ILoggerCategory _category;
+		private readonly IGameEventRegistryService _eventFactory;
 
 		private readonly PlayerRepository _repository;
 		private readonly IPlayerSpawnApplicator _spawnApplicator;
 		private readonly IPlayerSpawnResolver _profileResolver;
 
 		private bool _isDisposed = false;
+
+		public IGameEvent<PlayerSpawnResultEventArgs> SpawnResultsReady => _spawnResultsReady;
+		private readonly IGameEvent<PlayerSpawnResultEventArgs> _spawnResultsReady = default;
 		
 		/*
 		===============
@@ -55,15 +56,26 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="repository"></param>
+		/// <param name="spawnApplicator"></param>
+		/// <param name="profileResolver"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public PlayerSpawnService( IGameEventRegistryService eventFactory, PlayerRepository repository, IPlayerSpawnApplicator spawnApplicator, IPlayerSpawnResolver profileResolver ) {
+		public PlayerSpawnService(
+			IGameEventRegistryService eventFactory,
+			PlayerRepository repository,
+			IPlayerSpawnApplicator spawnApplicator,
+			IPlayerSpawnResolver profileResolver,
+			ILoggerService logger
+		) {
 			_spawnResultsReady = eventFactory.GetEvent<PlayerSpawnResultEventArgs>( EventNames.PLAYER_SPAWN_RESULT_READY, EventNames.NAMESPACE );
 
 			_repository = repository ?? throw new ArgumentNullException( nameof( repository ) );
 			_profileResolver = profileResolver ?? throw new ArgumentNullException( nameof( profileResolver ) );
 			_spawnApplicator = spawnApplicator ?? throw new ArgumentNullException( nameof( spawnApplicator ) );
 
-			_spawnRequested = eventFactory
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+			_category = logger.CreateCategory( nameof( PlayerSpawnService ), LogLevel.Info, true );
+
+			eventFactory
 				.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
 				.Subscribe( OnSpawnRequested );
 		}
@@ -78,7 +90,11 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		public void Dispose() {
 			if ( !_isDisposed ) {
-				_spawnRequested?.Dispose();
+				_eventFactory
+					.GetEvent<PlayerSpawnRequestedEventArgs>( EventNames.PLAYER_SPAWN_REQUESTED, EventNames.NAMESPACE )
+					.Unsubscribe( OnSpawnRequested );
+				
+				_category?.Dispose();
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -102,7 +118,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 				_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, player.Id, true ) );
 			} catch ( Exception e ) {
-				GD.PrintErr( $"Exception caught when spawning player - {e}" );
+				_category.PrintError( $"Exception thrown when spawning player: {e}" );
 				throw;
 			}
 		}

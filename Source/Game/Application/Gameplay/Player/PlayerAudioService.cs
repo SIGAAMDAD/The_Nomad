@@ -89,23 +89,23 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private void OnDashStarted( in PlayerDashStartEventArgs args ) {
 			_dashEffectEmitter.Pitch = 1.0f + args.BurnoutAmount;
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( Domain.Audio.AudioEventId.SoundEffectsFXPlayerDashActivate ).Path );
+			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashActivate ).Path );
 		}
 
 		private void OnDashBurnout( in PlayerDashBurnoutEventArgs args ) {
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( Domain.Audio.AudioEventId.SoundEffectsFXPlayerDashBurnout ).Path );
+			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashBurnout ).Path );
 		}
 
 		private void OnDashRecharged( in PlayerDashRechargedEventArgs args ) {
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( Domain.Audio.AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
+			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
 		}
 
 		private void OnLegAnimationLooped() {
 			if ( _prefab.Velocity != Vector2.Zero ) {
 				_walkEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-				_walkEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( Domain.Audio.AudioEventId.SoundEffectsFoleyPlayerWalkSand ).Path );
+				_walkEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFoleyPlayerWalkSand ).Path );
 			}
 		}
 	};

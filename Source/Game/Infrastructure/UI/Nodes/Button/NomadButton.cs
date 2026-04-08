@@ -53,9 +53,6 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		public bool IsFocused => _isFocused;
 		private bool _isFocused = false;
 
-		private ISubscriptionHandle _focused;
-		private ISubscriptionHandle _unfocused;
-
 		/*
 		===============
 		AnimateHover
@@ -84,21 +81,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 				comp.FocusedSound = AudioConstants.BUTTON_FOCUSED;
 			});
 
-			_focused = Focused.Subscribe( OnFocused );
-			_unfocused = Unfocused.Subscribe( OnUnfocused );
-		}
-
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnShutdown() {
-			_focused?.Dispose();
-			_unfocused?.Dispose();
+			Focused.Subscribe( OnFocused );
+			Unfocused.Subscribe( OnUnfocused );
 		}
 
 		/*

@@ -29,6 +29,12 @@ GodotBootstrapper="*uid://1rkvk2tt5v6i"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
 DialogueManager="*uid://c3rodes2l3gxb"
 
+[debug]
+
+settings/stdout/verbose_stdout=true
+file_logging/enable_file_logging=true
+file_logging/log_path="godot.log"
+
 [display]
 
 window/size/viewport_width=800
@@ -79,10 +85,12 @@ textures/vram_compression/import_etc2_astc=true
 2d/batching/item_buffer_size=12288
 2d/batching/uniform_set_cache_size=2048
 driver/depth_prepass/enable=false
+textures/default_filters/anisotropic_filtering_level=0
 viewport/hdr_2d=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 limits/global_shader_variables/buffer_size=8192
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+2d/snap/snap_2d_transforms_to_pixel=true
 
 [shader_globals]
 

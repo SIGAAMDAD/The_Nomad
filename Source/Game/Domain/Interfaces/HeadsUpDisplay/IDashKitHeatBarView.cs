@@ -13,17 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using System.Drawing;
-using Nomad.Game.Application.Configuration.Enums;
-
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
-	public abstract class HUDComponent : IDisposable {
-		public abstract bool Visible { get; }
-		public abstract Color Color { get; }
-		public abstract HUDPreset Visibility { get; }
-		public abstract float FadeTime { get; }
-
-		public abstract void Dispose();
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
+	public interface IDashKitHeatBarView : IHudComponentView {
+		void SetValue( float value );
 	};
 };

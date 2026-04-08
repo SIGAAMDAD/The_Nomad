@@ -10,5 +10,6 @@
 *.dll
 *.so
 *.log
+*.lscache
 
 steam_appid.txt

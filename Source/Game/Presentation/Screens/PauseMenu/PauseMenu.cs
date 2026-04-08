@@ -13,8 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Core.Engine.Globals;
+using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
+using Nomad.Core.Input;
+using Nomad.Core.Input.ValueObjects;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
@@ -36,10 +40,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 	/// 
 	/// </summary>
 	
-	public partial class PauseMenu : EnginePresentationLayer {
-		private ISubscriptionGroup _buttonGroup;
-
+	public sealed partial class PauseMenu : EnginePresentationLayer {
 		private IGameStateService _gameStateService;
+		private IGamePauseService _pauseService;
 
 		/*
 		===============
@@ -50,15 +53,22 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
+			Visible = false;
 			DisplayStateChanged.Subscribe( OnDisplayStateChanged );
 
-			_buttonGroup = GameEventRegistry.GetGroup( nameof( PauseMenu ) );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/ResumeGameButton" ).Clicked, OnResumeGameButtonPressed );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked, OnSettingsButtonPressed );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/ExitWorldButton" ).Clicked, OnExitWorldButtonPressed );
-			_buttonGroup.Add( FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked, OnQuitGameButtonPressed );
+			FindChild<EngineButton>( "OptionsContainer/ResumeGameButton" ).Clicked.Subscribe( OnResumeGameButtonPressed );
+			FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked.Subscribe( OnSettingsButtonPressed );
+			FindChild<EngineButton>( "OptionsContainer/ExitWorldButton" ).Clicked.Subscribe( OnExitWorldButtonPressed );
+			FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked.Subscribe( OnQuitGameButtonPressed );
 
-			_gameStateService = ServiceLocator.GetService<IGameStateService>();
+			var serviceLocator = ServiceLocator.Instance;
+			_gameStateService = serviceLocator.GetService<IGameStateService>();
+			_pauseService = serviceLocator.GetService<IGamePauseService>();
+
+			var eventFactory = serviceLocator.GetService<IGameEventRegistryService>();
+			eventFactory
+				.GetEvent<KeyboardEventArgs>( Core.Constants.Events.Input.KEYBOARD_EVENT, Core.Constants.Events.Input.NAMESPACE )
+				.Subscribe( OnKeyboardEvent );
 		}
 
 		/*
@@ -72,7 +82,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		protected override void OnShutdown() {
 			base.OnShutdown();
 
-			_buttonGroup?.Dispose();
+			var eventFactory = ServiceLocator.GetService<IGameEventRegistryService>();
+			eventFactory
+				.GetEvent<KeyboardEventArgs>( Core.Constants.Events.Input.KEYBOARD_EVENT, Core.Constants.Events.Input.NAMESPACE )
+				.Unsubscribe( OnKeyboardEvent );
 		}
 
 		/*
@@ -85,10 +98,12 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="displayState"></param>
 		private void OnDisplayStateChanged( in bool displayState ) {
-			Enabled = displayState;
-			if ( !Enabled ) {
+			if ( !displayState ) {
 				_gameStateService.SetState( GameState.Level );
+			} else {
+				_gameStateService.SetState( GameState.Paused );
 			}
+			_pauseService.SetPaused( displayState );
 		}
 		
 		/*
@@ -114,6 +129,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnExitWorldButtonPressed( in EmptyEventArgs args ) {
+			_pauseService.SetPaused( false );
 			SceneManager.LoadScene( EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MenuHub/MenuHub.tscn", Core.Engine.Services.StorageScope.Install ) );
 		}
 
@@ -140,7 +156,23 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnResumeGameButtonPressed( in EmptyEventArgs args ) {
+			GD.Print( "Resume game pressed" );
 			Visible = false;
+		}
+
+		/*
+		===============
+		OnKeyboardEvent
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnKeyboardEvent( in KeyboardEventArgs args ) {
+			if ( args.KeyNum == KeyNum.Escape && args.Pressed ) {
+				Visible = !Visible;
+			}
 		}
 	};
 };

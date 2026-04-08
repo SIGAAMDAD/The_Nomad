@@ -5,8 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://cre4jywn58wrl" path="res://Assets/Prefabs/Player/Arm.tscn" id="3_5ofd5"]
 [ext_resource type="Texture2D" uid="uid://dfama5idhd08n" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.dds" id="3_qeavp"]
 [ext_resource type="SpriteFrames" uid="uid://d0t1mmjx3q6lu" path="res://Assets/Animations/Player/TorsoFrames.tres" id="3_qq8fn"]
+[ext_resource type="Script" uid="uid://b5h72rodn6oi7" path="res://Assets/Prefabs/Player/SpritePrefab.cs" id="4_20k8i"]
 [ext_resource type="Script" uid="uid://bsybnreywho8y" path="res://Assets/Prefabs/Player/AnimatorPrefab.cs" id="5_26jrr"]
 [ext_resource type="SpriteFrames" uid="uid://2n2ntccgcreg" path="res://Assets/Animations/Player/LegFrames.tres" id="5_cgnku"]
+[ext_resource type="PackedScene" uid="uid://b5auo6x0mgi2j" path="res://Assets/Prefabs/JumpKitEffect/JumpKitEffect.tscn" id="9_7flu3"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qeavp"]
 radius = 8.0
@@ -25,6 +27,7 @@ position = Vector2(4, -12)
 texture = ExtResource("3_qeavp")
 region_enabled = true
 region_rect = Rect2(64, 32, 32, 32)
+script = ExtResource("4_20k8i")
 
 [node name="TorsoAnimator" type="AnimatedSprite2D" parent="." unique_id=1408154902]
 sprite_frames = ExtResource("3_qq8fn")
@@ -45,3 +48,6 @@ shape = SubResource("CapsuleShape2D_qeavp")
 [node name="LeftArm" parent="." unique_id=975599666 instance=ExtResource("3_5ofd5")]
 
 [node name="RightArm" parent="." unique_id=2006628997 instance=ExtResource("3_5ofd5")]
+
+[node name="JumpKitEffect" parent="." unique_id=443619981 instance=ExtResource("9_7flu3")]
+position = Vector2(0, 7)
