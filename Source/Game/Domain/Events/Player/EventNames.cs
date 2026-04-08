@@ -20,6 +20,11 @@ namespace Nomad.Game.Domain.Data.Player {
 		/// <summary>
 		/// 
 		/// </summary>
+		public const string PLAYER_ANIMATION_STATE_CHANGED = NAMESPACE + ".PlayerAnimationStateChanged";
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public const string PLAYER_DERIVED_STAT_CHANGED = NAMESPACE + ".PlayerDerivedStatChanged";
 
 		/// <summary>
@@ -31,6 +36,16 @@ namespace Nomad.Game.Domain.Data.Player {
 		/// 
 		/// </summary>
 		public const string PLAYER_RESOURCE_CHANGED = NAMESPACE + ".PlayerResourceChanged";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string PLAYER_DASH_STARTED = NAMESPACE + ".PlayerDashStarted";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string PLAYER_DASH_ENDED = NAMESPACE + ".PlayerDashEnded";
 
 		/// <summary>
 		/// Event that triggers whenever a dash "burnout" (overcharge) occurs.

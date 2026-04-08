@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Godot;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
@@ -93,12 +94,17 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSpawnRequested( in PlayerSpawnRequestedEventArgs args ) {
-			var player = _repository.CreatePlayer( in args );
+			try {
+				var player = _repository.CreatePlayer( in args );
 
-			var profile = _profileResolver.Resolve( in args.Context );
-			player.ApplySpawnProfile( _spawnApplicator, profile, in args.Context );
+				var profile = _profileResolver.Resolve( in args.Context );
+				player.ApplySpawnProfile( _spawnApplicator, profile, in args.Context );
 
-			_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, player.Id, true ) );
+				_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, player.Id, true ) );
+			} catch ( Exception e ) {
+				GD.PrintErr( $"Exception caught when spawning player - {e}" );
+				throw;
+			}
 		}
 	};
 };

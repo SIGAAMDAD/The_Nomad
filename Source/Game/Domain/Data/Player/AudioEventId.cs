@@ -13,16 +13,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
+namespace Nomad.Game.Domain.Data.Player {
+	/// <summary>
+	/// 
+	/// </summary>
+	public enum AudioEventId : byte {
+		DashKit_Start,
+		DashKit_BurnoutExplosion,
+		DashKit_Recharge,
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerDerivedStatService : IDisposable {
-		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
+		Walk_Gravel,
+		Walk_Sand,
+		Walk_Stone,
+		Walk_Wood,
+		Walk_Water,
 
-		float GetValue( DerivedStatType type );
-		void FlushDirty();
+		Foley_Arm,
+		Foley_ClothRuffle,
+
+		SlowMoBegin,
+		SlowMoEnd,
+
+		Count
 	};
 };

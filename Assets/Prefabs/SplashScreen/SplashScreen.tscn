@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c0n5hjd7x0j7a" path="res://Assets/Prefabs/SplashScreen/SplashScreen.cs" id="1_w2q2w"]
 [ext_resource type="VideoStream" uid="uid://xkjr5vteee8c" path="res://Assets/Prefabs/SplashScreen/godot_intro_animation_4k.ogv" id="2_ejb01"]
 [ext_resource type="Texture2D" uid="uid://b8tsio8j861nq" path="res://Assets/Prefabs/SplashScreen/pride-dark-c-side.png" id="2_nfv4h"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Logos/logo_square_2d.png" id="4_ejb01"]
+[ext_resource type="Texture2D" uid="uid://dr5jcwd1ncvgf" path="res://Assets/Textures/Logos/rapier_logo.png" id="4_ejb01"]
 [ext_resource type="Texture2D" uid="uid://c7x7qdvkmpj16" path="res://Assets/Textures/Logos/FMODLogo.png" id="5_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://btp5520673kjn" path="res://Assets/Textures/Logos/NomadFramework.png" id="6_2ybxc"]
 

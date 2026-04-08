@@ -107,8 +107,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_sceneManager.ActiveScene.Root.AddChild( composite.Root );
 
 			var guid = Guid.NewGuid();
-			var registryScope = _registry.AddScoped<IServiceRegistry, ServiceCollection>();
-			var playerBase = new PlayerAggregate( guid, composite.Root.CastAs<PlayerPrefab>(), registryScope as IServiceRegistry, _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( guid, composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
 
 			_players[ guid ] = playerBase;
 			return playerBase;

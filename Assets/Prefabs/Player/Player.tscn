@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cre4jywn58wrl" path="res://Assets/Prefabs/Player/Arm.tscn" id="3_5ofd5"]
 [ext_resource type="Texture2D" uid="uid://dfama5idhd08n" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.dds" id="3_qeavp"]
 [ext_resource type="SpriteFrames" uid="uid://d0t1mmjx3q6lu" path="res://Assets/Animations/Player/TorsoFrames.tres" id="3_qq8fn"]
+[ext_resource type="Script" uid="uid://bsybnreywho8y" path="res://Assets/Prefabs/Player/AnimatorPrefab.cs" id="5_26jrr"]
 [ext_resource type="SpriteFrames" uid="uid://2n2ntccgcreg" path="res://Assets/Animations/Player/LegFrames.tres" id="5_cgnku"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qeavp"]
@@ -29,13 +30,13 @@ region_rect = Rect2(64, 32, 32, 32)
 sprite_frames = ExtResource("3_qq8fn")
 animation = &"idle"
 autoplay = "idle"
+script = ExtResource("5_26jrr")
 
 [node name="LegAnimator" type="AnimatedSprite2D" parent="." unique_id=1328575102]
 sprite_frames = ExtResource("5_cgnku")
-animation = &"sudden_stop"
+animation = &"idle"
 autoplay = "idle"
-frame = 3
-frame_progress = 1.0
+script = ExtResource("5_26jrr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=195522354]
 position = Vector2(-2, 4)
