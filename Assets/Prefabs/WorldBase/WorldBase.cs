@@ -13,14 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Engine.SceneManagement;
+using Nomad.Core.Events;
+using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Logger.Globals;
+using Nomad.Game.Presentation.Screens.Gameplay;
+using Nomad.Game.Presentation.Screens.PauseMenu;
 using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Prefabs {
@@ -35,22 +36,46 @@ namespace Nomad.Game.Prefabs {
 	/// The base "world" object.
 	/// </summary>
 	
-	public partial class WorldBase : EngineObject2D {
-		private readonly PlayerSpawnService _spawnService;
+	public partial class WorldBase : EngineSceneObject {
+		private PlayerSpawnService _spawnService;
+		private ISceneManager _sceneManager;
+		private GameplayScreen _gameOverlay;
 
-		public WorldBase() {
-			var eventFactory = GameEventRegistry.Instance;
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void OnInit() {
+			base.OnInit();
+
+			var serviceLocator = ServiceLocator.Instance;
 			var serviceRegistry = ServiceRegistry.Instance;
-			var logger = Logging.Instance;
 
-			var gameStateService = ServiceLocator.GetService<IGameStateService>();
+			var eventFactory = serviceLocator.GetService<IGameEventRegistryService>();
+			var logger = serviceLocator.GetService<ILoggerService>();
+			var gameStateService = serviceLocator.GetService<IGameStateService>();
 			var spawnApplicator = new PlayerSpawnApplicator();
 			var profileResolver = new PlayerSpawnProfileResolver();
-			var audioDevice = ServiceLocator.GetService<IAudioDevice>();
+			var audioDevice = serviceLocator.GetService<IAudioDevice>();
+			_sceneManager = serviceLocator.GetService<ISceneManager>();
 
 			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 
-			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver );
+			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver, logger );
+
+			var gameOverlayScene = _sceneManager.LoadPrefab( "Source/Game/Presentation/Screens/Gameplay/GameplayScreen.tscn" );
+			_gameOverlay = gameOverlayScene.Root.CastAs<GameplayScreen>();
+			AddChild( _gameOverlay );
+		}
+
+		protected override void OnShutdown() {
+			base.OnShutdown();
+
+			_spawnService?.Dispose();
 		}
 	};
 };

@@ -127,7 +127,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 			IsDashing = true;
 			RemainingDashTime = CurrentDashDuration;
 
-			BurnoutAmount = Math.Clamp( BurnoutAmount + BURNOUT_PER_DASH, 0.0f, 1.0f );
+			BurnoutAmount += BURNOUT_PER_DASH;
 			CurrentDashDuration = Math.Max( MINIMUM_DASH_DURATION, CurrentDashDuration - DASH_DURATION_PENALTY_PER_DASH );
 			BurnoutCooldownElapsed = 0.0f;
 

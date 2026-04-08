@@ -17,6 +17,7 @@ namespace Nomad.Game.Domain.Data.Player {
 	public enum PlayerResourceType : byte {
 		Health,
 		Rage,
-		Sanity
+		Sanity,
+		JumpKitHeat
 	};
 };

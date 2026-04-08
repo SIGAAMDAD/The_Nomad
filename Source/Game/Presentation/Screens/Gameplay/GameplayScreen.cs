@@ -13,18 +13,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Prefabs;
+using Nomad.Events.Globals;
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
+using Nomad.UI;
 
-namespace Nomad.Game.Application.Multiplayer.Nodes {
-	public sealed partial class NetworkPlayer : PlayerBase {
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( guid, prefab, scope, eventFactory, logger )
-		{
+namespace Nomad.Game.Presentation.Screens.Gameplay {
+	internal sealed partial class GameplayScreen : EnginePresentationLayer {
+		private IHudRoot _hudRoot;
+
+		protected override void OnInit() {
+			base.OnInit();
+
+			var eventFactory = GameEventRegistry.Instance;
+			_hudRoot = new HudRoot( FindChild<EnginePanel>( "HeadsUpDisplay" ), eventFactory );
+		}
+
+		protected override void OnUpdate( float delta ) {
+			base.OnUpdate( delta );
+
+			_hudRoot.Render();
 		}
 	};
 };

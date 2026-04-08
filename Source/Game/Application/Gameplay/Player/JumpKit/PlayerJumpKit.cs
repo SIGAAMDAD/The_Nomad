@@ -13,9 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player.JumpKit.Modules;
@@ -49,8 +52,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 		private readonly ISubscriptionHandle _dashAction;
 
-		private IAudioEmitter? _emitter;
 		private EngineLight2D? _light;
+		private GpuParticles2D _particles;
 
 		private PlayerPrefab _prefab;
 
@@ -69,7 +72,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public IGameEvent<PlayerDashRechargedEventArgs> DashRecharged => _dashRecharged;
 		private readonly IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
 
-		private readonly IGameEvent<PlayerBaseStatChangedEventArgs> _statChanged = default;
+		private readonly IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged = default;
 
 		/*
 		===============
@@ -102,8 +105,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 				EventNames.NAMESPACE
 			);
 
-			_statChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>(
-				EventNames.PLAYER_BASE_STAT_CHANGED,
+			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
+				EventNames.PLAYER_RESOURCE_CHANGED,
 				EventNames.NAMESPACE
 			);
 
@@ -121,6 +124,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 			base.OnInit();
 			
 			_prefab = Object.CastAs<PlayerPrefab>();
+
+			_light = _prefab.FindChild<EngineLight2D>( "JumpKitEffect/PointLight2D" );
+			_particles = _prefab.GetNode<GpuParticles2D>( "JumpKitEffect" );
 		}
 
 		/*
@@ -138,9 +144,13 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 			DashUpdateResult result = _runtime.Update( delta, _module );
 
 			if ( result.DashEnded ) {
+				_light.Visible = false;
+				_particles.Emitting = false;
 				_dashEnded.Publish( default );
 			}
 			if ( result.BurnedOutThisFrame ) {
+				_light.Visible = false;
+				_particles.Emitting = false;
 				PublishDashBurnout( result );
 			}
 			if ( result.RechargedThisFrame ) {
@@ -198,12 +208,13 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 			switch ( result.Status ) {
 				case DashStartStatus.Rejected:
-					Logging.PrintLine( "Dash rejected" );
 					break;
 				case DashStartStatus.BurnedOut:
 					PublishDashBurnout( result );
 					break;
 				case DashStartStatus.Started:
+					_light.Visible = true;
+					_particles.Emitting = true;
 					_dashStarted.Publish( new PlayerDashStartEventArgs( _runtime.BurnoutAmount ) );
 					break;
 				default:
@@ -237,7 +248,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// </summary>
 		/// <param name="result"></param>
 		private void OnBurnoutAmountChanged( in DashUpdateResult result ) {
-			_statChanged.Publish( new PlayerBaseStatChangedEventArgs( result.BurnoutAmount, 0.0f, BaseStatType.BaseMovementSpeed ) );
+			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( result.BurnoutAmount, 0.0f, PlayerResourceType.JumpKitHeat ) );
 			// Optional integration point:
 			// - update HUD meter
 			// - publish a burnout-changed event

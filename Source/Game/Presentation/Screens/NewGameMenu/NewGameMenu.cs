@@ -33,8 +33,6 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		private EngineVerticalContainer _optionsContainer;
 		private EnginePanel _customDifficultyContainer;
 
-		private ISubscriptionGroup _eventGroup;
-
 		/*
 		===============
 		OnInit

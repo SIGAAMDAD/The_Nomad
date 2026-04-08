@@ -14,16 +14,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
-using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.UI;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
+namespace Nomad.Game.Application.Gameplay.Player.State {
 	/*
 	===================================================================================
 	
-	HeadsUpDisplay
+	PlayerStateChanged
 	
 	===================================================================================
 	*/
@@ -31,32 +29,35 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
 	/// 
 	/// </summary>
 	
-	public partial class HeadsUpDisplay : EnginePresentationLayer {
-		private ISubscriptionGroup _eventGroup;
+	internal sealed class PlayerStateController {
+		public PlayerStateId State {
+			get => _state;
+			set {
+				if ( _state == value ) {
+					return;
+				}
+				var oldValue = _state;
+				_state = value;
+				_stateChanged.Publish( new PlayerStateChangedEventArgs( oldValue, _state ) );
+			}
+		}
+		private PlayerStateId _state = PlayerStateId.Idle;
+
+		public IGameEvent<PlayerStateChangedEventArgs> StateChanged => _stateChanged;
+		private readonly IGameEvent<PlayerStateChangedEventArgs> _stateChanged;
 
 		/*
 		===============
-		OnInit
+		PlayerStateController
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
-			base.OnInit();
-
-			var eventFactory = GameEventRegistry.Instance;
-			_eventGroup.Add(
-				eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( EventNames.PLAYER_BASE_STAT_CHANGED, EventNames.NAMESPACE ),
-				OnStatChanged
-			);
-		}
-
-		private void OnStatChanged( in PlayerBaseStatChangedEventArgs args ) {
-			switch ( args.StatId ) {
-				case BaseStatType.BaseHealth:
-					break;
-			}
+		/// <param name="eventFactory"></param>
+		public PlayerStateController( IGameEventRegistryService eventFactory ) {
+			_stateChanged = eventFactory
+				.GetEvent<PlayerStateChangedEventArgs>( EventNames.PLAYER_STATE_CHANGED, EventNames.NAMESPACE );
 		}
 	};
 };

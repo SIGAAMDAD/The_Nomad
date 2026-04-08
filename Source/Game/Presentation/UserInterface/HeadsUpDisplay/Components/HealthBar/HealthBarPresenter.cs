@@ -13,27 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum AudioEventId : byte {
-		DashKit_Start,
-		DashKit_BurnoutExplosion,
-		DashKit_Recharge,
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-		Walk_Gravel,
-		Walk_Sand,
-		Walk_Stone,
-		Walk_Wood,
-		Walk_Water,
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
+	internal sealed class HealthBarPresenter {
+		private readonly IHealthBarModel _model;
+		private readonly IHealthBarView _view;
 
-		Foley_Arm,
-		Foley_ClothRuffle,
+		public HealthBarPresenter( IHealthBarModel model, IHealthBarView view ) {
+			_model = model;
+			_view = view;
+		}
 
-		SlowMoBegin,
-		SlowMoEnd,
-
-		Count
+		public void Render() {
+			_view.SetValue( _model.Health );
+		}
 	};
 };

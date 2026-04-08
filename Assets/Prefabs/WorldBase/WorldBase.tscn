@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://djwi3r6bok4s7" path="res://Assets/Prefabs/WorldBase/WorldBase.cs" id="1_3opmr"]
 
 [node name="WorldBase" type="Node2D" unique_id=441724395]
+process_mode = 1
 script = ExtResource("1_3opmr")

@@ -13,14 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
-using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
-using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
@@ -28,7 +24,6 @@ using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
 using Nomad.Input.ValueObjects;
-using Nomad.Logger.Globals;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -52,7 +47,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 		private PlayerPrefab _prefab;
 
-		private readonly IGameEvent<EmptyEventArgs> _slideTimer;
+		private readonly Godot.Timer _slideTimer;
 
 		public IGameEvent<PlayerStartMovingEventArgs> StartMoving => _startMoving;
 		private readonly IGameEvent<PlayerStartMovingEventArgs> _startMoving;
@@ -93,10 +88,11 @@ namespace Nomad.Game.Application.Gameplay.Player {
 				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_DASH_ENDED, EventNames.NAMESPACE )
 				.Subscribe( OnDashEnded );
 			
-			_slideTimer = eventFactory
-				.GetEvent<EmptyEventArgs>( $"{Guid.NewGuid()}:{nameof(_slideTimer)}", nameof( PlayerMovementController ) )
-				.PublishAfter( (int)Domain.Data.Player.Constants.SLIDE_DURATION );
-			_slideTimer.Subscribe( OnSlideTimerTimeout );
+			_slideTimer = new Godot.Timer() {
+				WaitTime = Domain.Data.Player.Constants.SLIDE_DURATION,
+				OneShot = true
+			};
+			_slideTimer.Timeout += OnSlideTimerTimeout;
 		}
 
 		/*
@@ -111,6 +107,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			base.OnInit();
 
 			_prefab = Object.CastAs<PlayerPrefab>();
+			_prefab.AddChild( _slideTimer );
 
 			_effectiveMovementSpeed = Stats.GetValue( DerivedStatType.EffectiveMovementSpeed );
 		}
@@ -249,13 +246,30 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			return from + vector / length * delta;
 		}
 
+		/*
+		===============
+		OnStatChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnStatChanged( in PlayerDerivedStatChangedEventArgs args ) {
 			if ( args.StatId == DerivedStatType.EffectiveMovementSpeed ) {
 				_effectiveMovementSpeed = args.NewValue;
 			}
 		}
 
-		private void OnSlideTimerTimeout( in EmptyEventArgs args ) {
+		/*
+		===============
+		OnSlideTimerTimeout
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		private void OnSlideTimerTimeout() {
 			Flags.RemoveFlags( PlayerFlags.Sliding );
 		}
 
@@ -269,7 +283,6 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDashStarted( in PlayerDashStartEventArgs args ) {
-			Logging.PrintLine( "Dash started" );
 			Flags.AddFlags( PlayerFlags.Dashing );
 		}
 
@@ -283,7 +296,6 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDashEnded( in EmptyEventArgs args ) {
-			Logging.PrintLine( "Dash ended" );
 			Flags.RemoveFlags( PlayerFlags.Dashing );
 		}
 		
@@ -316,7 +328,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args ) {
-			if ( args.Phase == InputActionPhase.Performed ) {
+			if ( args.Phase == InputActionPhase.Started ) {
 				Flags.AddFlags( PlayerFlags.Sliding );
 			}
 		}

@@ -14,28 +14,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Drawing;
-using Nomad.Game.Application.Configuration.Enums;
+using System.Numerics;
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
+using Nomad.UI;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
-	public sealed class LocationLabel : HUDComponent {
-		public override bool Visible => _visible;
-		private bool _visible = true;
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components {
+	internal sealed partial class AmmoCounterView : EngineText, IAmmoCounterView {
+		public void SetColor( Vector4 color ) {
+			Color = Color.FromArgb( (int)color.W, (int)color.X, (int)color.Y, (int)color.Z );
+		}
 
-		public override Color Color => throw new System.NotImplementedException();
-
-		public override HUDPreset Visibility => throw new System.NotImplementedException();
-
-		public override float FadeTime => throw new System.NotImplementedException();
-
-		/*
-		===============
-		Dispose
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void Dispose() {
+		public void SetAmmoText( string text ) {
+			Text = text;
 		}
 	};
 };

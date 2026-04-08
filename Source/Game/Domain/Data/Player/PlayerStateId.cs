@@ -13,18 +13,36 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Prefabs;
+namespace Nomad.Game.Domain.Data.Player {
+	/// <summary>
+	/// 
+	/// </summary>
+	public enum PlayerStateId : byte {
+		/// <summary>
+		/// Not moving, idling.
+		/// </summary>
+		Idle,
 
-namespace Nomad.Game.Application.Multiplayer.Nodes {
-	public sealed partial class NetworkPlayer : PlayerBase {
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( guid, prefab, scope, eventFactory, logger )
-		{
-		}
+		/// <summary>
+		/// Can be running, dashing, or sliding.
+		/// </summary>
+		Moving,
+
+		/// <summary>
+		/// Duh.
+		/// </summary>
+		Dead,
+
+		/// <summary>
+		/// In the idle animation.
+		/// </summary>
+		TrueIdle,
+
+		/// <summary>
+		/// Currently resting at a checkpoint.
+		/// </summary>
+		Checkpoint,
+
+		Count
 	};
 };

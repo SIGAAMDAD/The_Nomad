@@ -1,35 +1,75 @@
 [gd_scene format=3 uid="uid://c6mafucos8cwk"]
 
-[node name="HeadsUpDisplay" type="CanvasLayer" unique_id=983129353]
+[ext_resource type="Script" uid="uid://ct7q084fet250" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplayView.cs" id="1_fk5k7"]
+[ext_resource type="Shader" uid="uid://bfa3mvmq5pitr" path="res://Assets/Shaders/DynamicProgressBar.gdshader" id="1_ux8up"]
+[ext_resource type="Script" uid="uid://dmpyle8xfr6rs" path="res://Assets/Prefabs/HeadsUpDisplay/HealthBarView.cs" id="2_xk7bv"]
+[ext_resource type="Script" uid="uid://biojpkaavmw48" path="res://Assets/Prefabs/HeadsUpDisplay/RageBarView.cs" id="3_xs3se"]
+[ext_resource type="Texture2D" uid="uid://c00d7qt2s3on6" path="res://icon.svg" id="5_kj2yv"]
+[ext_resource type="Script" uid="uid://bo41ryxnsorly" path="res://Assets/Prefabs/HeadsUpDisplay/DashStatusBarView.cs" id="5_uq2bp"]
 
-[node name="Control" type="Control" parent="." unique_id=756735863]
+[sub_resource type="Gradient" id="Gradient_fk5k7"]
+offsets = PackedFloat32Array(0.46268657, 1)
+colors = PackedColorArray(1, 0.7294118, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xk7bv"]
+gradient = SubResource("Gradient_fk5k7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xs3se"]
+resource_local_to_scene = true
+shader = ExtResource("1_ux8up")
+shader_parameter/progress = 0.0
+shader_parameter/background_color = Color(0, 0, 0, 1)
+shader_parameter/color_gradient = SubResource("GradientTexture1D_xk7bv")
+shader_parameter/wave_amplitude = 0.0050000002375
+shader_parameter/wave_frequency = 3.0
+shader_parameter/wave_speed = 1.5
+shader_parameter/particle_speed = 0.05
+shader_parameter/particle_lifetime = 1.590000028025
+shader_parameter/particle_softness = 0.01
+shader_parameter/particle_spacing = 0.1
+shader_parameter/particle_offset = Vector2(0, 0)
+shader_parameter/particle_start_scale = Vector2(0.02, 0.02)
+shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
+shader_parameter/particle_scale_randomness = 0.5
+shader_parameter/particle_amount = 10
+
+[node name="HeadsUpDisplay" type="Control" unique_id=756735863]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_fk5k7")
 metadata/_edit_use_anchors_ = true
 
-[node name="StatBarContainer" type="VBoxContainer" parent="Control" unique_id=1228700349]
+[node name="StatBarContainer" type="VBoxContainer" parent="." unique_id=1228700349]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="HealthBar" type="ProgressBar" parent="Control/StatBarContainer" unique_id=1368512284]
+[node name="HealthBar" type="ProgressBar" parent="StatBarContainer" unique_id=1368512284]
 layout_mode = 2
 show_percentage = false
+script = ExtResource("2_xk7bv")
 
-[node name="RageBar" type="ProgressBar" parent="Control/StatBarContainer" unique_id=184847358]
+[node name="RageBar" type="ProgressBar" parent="StatBarContainer" unique_id=184847358]
 layout_mode = 2
 show_percentage = false
+script = ExtResource("3_xs3se")
 
-[node name="LocationLabel" type="Label" parent="Control" unique_id=2041213495]
-layout_mode = 0
-offset_right = 40.0
+[node name="LocationLabel" type="Label" parent="." unique_id=2041213495]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
 offset_bottom = 23.0
+grow_horizontal = 0
+metadata/_edit_use_anchors_ = true
 
-[node name="CombatContainer" type="VBoxContainer" parent="Control" unique_id=209906830]
+[node name="CombatContainer" type="VBoxContainer" parent="." unique_id=209906830]
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -40,23 +80,30 @@ offset_left = -4.0
 offset_top = -43.0
 grow_horizontal = 0
 grow_vertical = 0
+metadata/_edit_use_anchors_ = true
 
-[node name="DashStatusBar" type="ProgressBar" parent="Control/CombatContainer" unique_id=1050937763]
+[node name="DashStatusBar" type="TextureRect" parent="CombatContainer" unique_id=1918011572]
+material = SubResource("ShaderMaterial_xs3se")
+custom_minimum_size = Vector2(80, 10)
 layout_mode = 2
-show_percentage = false
+size_flags_vertical = 0
+texture = ExtResource("5_kj2yv")
+expand_mode = 2
+script = ExtResource("5_uq2bp")
 
-[node name="WeaponStatusContainer" type="MarginContainer" parent="Control/CombatContainer" unique_id=109358728]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/CombatContainer/WeaponStatusContainer" unique_id=316757214]
-layout_mode = 2
-
-[node name="WeaponIcon" type="TextureRect" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=503786097]
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=1588688972]
+[node name="WeaponStatusContainer" type="MarginContainer" parent="CombatContainer" unique_id=109358728]
+custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 
-[node name="AmmoCounterLabel" type="Label" parent="Control/CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=601177881]
+[node name="VBoxContainer" type="VBoxContainer" parent="CombatContainer/WeaponStatusContainer" unique_id=316757214]
+layout_mode = 2
+
+[node name="WeaponIcon" type="TextureRect" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=503786097]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=1588688972]
+layout_mode = 2
+
+[node name="AmmoCounterLabel" type="Label" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=601177881]
 layout_mode = 2
 horizontal_alignment = 1

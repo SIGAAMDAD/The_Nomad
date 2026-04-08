@@ -14,17 +14,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
-using Nomad.Core.Logger;
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Prefabs;
+using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Application.Multiplayer.Nodes {
-	public sealed partial class NetworkPlayer : PlayerBase {
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( guid, prefab, scope, eventFactory, logger )
-		{
+namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators {
+	internal sealed class RageDerivedStatEvaluator : IPlayerDerivedStatEvaluator {
+		public bool CanEvaluate( DerivedStatType type ) {
+			return type == DerivedStatType.EffectiveRageMax;
 		}
-	};
-};
+
+		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context ) {
+			return type switch {
+				DerivedStatType.EffectiveRageMax => Math.Max( 0.0f, context.GetBaseStat( BaseStatType.BaseRage ) ),
+				_ => throw new ArgumentOutOfRangeException( nameof( type ) )
+			};
+		}
+	}
+}

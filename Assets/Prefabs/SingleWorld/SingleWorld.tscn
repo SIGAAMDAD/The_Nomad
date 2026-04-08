@@ -10,4 +10,5 @@ script = ExtResource("1_gohso")
 [node name="SaltWastes" parent="." unique_id=1364440601 instance=ExtResource("2_xaw48")]
 
 [node name="PlayerSpawner" parent="SaltWastes" unique_id=654047548 instance=ExtResource("3_xaw48")]
+process_priority = 2
 position = Vector2(820, 249)

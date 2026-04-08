@@ -19,7 +19,6 @@ using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Core.ServiceRegistry.Services;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Events.Player;
@@ -104,7 +103,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			var composite = _sceneManager.LoadPrefab( _playerPrefab );
 
 			_logger.PrintLine( $"Adding player to active scene '{_sceneManager.ActiveScene.Name}'" );
-			_sceneManager.ActiveScene.Root.AddChild( composite.Root );
+			_sceneManager.ActiveScene.Root.AddChild( composite.Root.CastAs<PlayerPrefab>() );
 
 			var guid = Guid.NewGuid();
 			var playerBase = new PlayerAggregate( guid, composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
