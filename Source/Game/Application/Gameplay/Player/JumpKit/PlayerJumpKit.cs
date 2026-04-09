@@ -14,11 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using Nomad.Audio.Interfaces;
 using Nomad.Core.Compatibility.Guards;
-using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
-using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player.JumpKit.Modules;
@@ -28,7 +25,6 @@ using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Input.Events;
 using Nomad.Input.ValueObjects;
-using Nomad.Logger.Globals;
 using Nomad.Scene.GameObjects;
 using System;
 
@@ -45,12 +41,12 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 	/// </summary>
 	
 	internal sealed class PlayerJumpKit : NomadBehaviour {
+		public Guid Id { get; set; }
+
 		public float BurnoutAmount => _runtime.BurnoutAmount;
 		public bool IsDashing => _runtime.IsDashing;
 		public bool IsBurnedOut => _runtime.IsBurnedOut;
 		public bool CanDash => _runtime.CanStartDash();
-
-		private readonly ISubscriptionHandle _dashAction;
 
 		private EngineLight2D? _light;
 		private GpuParticles2D _particles;
@@ -61,18 +57,18 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		private readonly DashRuntime _runtime = default;
 
 		public IGameEvent<PlayerDashStartEventArgs> DashStarted => _dashStarted;
-		private readonly IGameEvent<PlayerDashStartEventArgs> _dashStarted;
+		private IGameEvent<PlayerDashStartEventArgs> _dashStarted = default;
 
 		public IGameEvent<EmptyEventArgs> DashEnded => _dashEnded;
-		private readonly IGameEvent<EmptyEventArgs> _dashEnded;
+		private IGameEvent<EmptyEventArgs> _dashEnded = default;
 
 		public IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout => _dashBurnout;
-		private readonly IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
+		private IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
 
 		public IGameEvent<PlayerDashRechargedEventArgs> DashRecharged => _dashRecharged;
-		private readonly IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
+		private IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
 
-		private readonly IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged = default;
+		private IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged = default;
 
 		/*
 		===============
@@ -85,32 +81,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public PlayerJumpKit() {
 			var eventFactory = GameEventRegistry.Instance;
 
-			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
-				EventNames.PLAYER_DASH_BURNOUT,
-				EventNames.NAMESPACE
-			);
-
-			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
-				EventNames.PLAYER_DASH_RECHARGED,
-				EventNames.NAMESPACE
-			);
-
-			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
-				EventNames.PLAYER_DASH_STARTED,
-				EventNames.NAMESPACE
-			);
-
-			_dashEnded = eventFactory.GetEvent<EmptyEventArgs>(
-				EventNames.PLAYER_DASH_ENDED,
-				EventNames.NAMESPACE
-			);
-
-			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				EventNames.PLAYER_RESOURCE_CHANGED,
-				EventNames.NAMESPACE
-			);
-
-			_dashAction = eventFactory
+			eventFactory
 				.GetEvent<ButtonActionEventArgs>( $"Dash:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Subscribe( OnDashActionTriggered );
 
@@ -127,6 +98,33 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 			_light = _prefab.FindChild<EngineLight2D>( "JumpKitEffect/PointLight2D" );
 			_particles = _prefab.GetNode<GpuParticles2D>( "JumpKitEffect" );
+			
+			var eventFactory = GameEventRegistry.Instance;
+
+			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
+				$"{Id}:{EventNames.PLAYER_DASH_BURNOUT}",
+				EventNames.NAMESPACE
+			);
+
+			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
+				$"{Id}:{EventNames.PLAYER_DASH_RECHARGED}",
+				EventNames.NAMESPACE
+			);
+
+			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
+				$"{Id}:{EventNames.PLAYER_DASH_STARTED}",
+				EventNames.NAMESPACE
+			);
+
+			_dashEnded = eventFactory.GetEvent<EmptyEventArgs>(
+				$"{Id}:{EventNames.PLAYER_DASH_ENDED}",
+				EventNames.NAMESPACE
+			);
+
+			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
+				$"{Id}:{EventNames.PLAYER_RESOURCE_CHANGED}",
+				EventNames.NAMESPACE
+			);
 		}
 
 		/*
@@ -172,8 +170,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		public override void OnShutdown() {
 			base.OnShutdown();
 
-			_dashAction?.Dispose();
-
+			_dashStarted?.Dispose();
+			_dashEnded?.Dispose();
 			_dashBurnout?.Dispose();
 			_dashRecharged?.Dispose();
 		}

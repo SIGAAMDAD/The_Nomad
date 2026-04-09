@@ -13,14 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Numerics;
-
-namespace Nomad.Game.Domain.Events.Player {
-	public readonly struct PlayerStartMovingEventArgs {
-		public Vector2 Velocity { get; }
-
-		public PlayerStartMovingEventArgs( Vector2 velocity ) {
-			Velocity = velocity;
-		}
+namespace Nomad.Game.Domain.Data.Entities {
+	public enum StatusEffectDurationPolicy {
+		Fixed,
+		RefreshOnReapply,
+		ExtendOnReapply
 	};
 };

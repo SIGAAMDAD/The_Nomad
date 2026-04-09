@@ -66,7 +66,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 				Modulate = new Color( 1.0f, 1.0f, 1.0f, 0.75f ),
 				Multimesh = new MultiMesh() {
 					Mesh = new QuadMesh() {
-						Size = new Vector2( 16.0f, -8.0f )
+						Size = new Vector2( 10.0f, -4.0f )
 					},
 					VisibleInstanceCount = 0,
 					InstanceCount = MAX_STEPS,
@@ -74,10 +74,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			};
 
 			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			legAnimation.AnimationLooped?.Subscribe( OnLegAnimationLooped );
+			legAnimation.AnimationLooped.Subscribe( OnLegAnimationLooped );
 
-			var legAnimator = _prefab.GetComponent<PlayerLegAnimator>();
-			legAnimator.AnimationStateChanged.Subscribe( OnAnimationStateChanged );
+			var movementController = _prefab.GetComponent<PlayerMovementController>();
+			movementController.MovementChanged.Subscribe( OnMovementChanged );
 			
 			// attach the mesh to a detached transform otherwise we'll have the transforms following the player.
 			var sceneObject = new Node();
@@ -85,8 +85,17 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			_prefab.AddChild( sceneObject );
 		}
 
-		private void OnAnimationStateChanged( in PlayerAnimationStateChangedEventArgs args ) {
-			_isMoving = args.NewAnimationId == new InternString( "move" );
+		/*
+		===============
+		OnMovementChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnMovementChanged( in PlayerMovementChangedEventArgs args ) {
+			_isMoving = args.IsMoving;
 		}
 
 		/*
@@ -104,8 +113,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			var position = _prefab.GlobalPosition;
 			Transform2D transform = new Transform2D( 0.0f, new Vector2( position.X, position.Y + 24.0f ) );
 			CheckCapacity();
-			_mesh.Multimesh.VisibleInstanceCount++;
-			_mesh.Multimesh.SetInstanceTransform2D( _steps.Count, transform );
+			_mesh.Multimesh.SetInstanceTransform2D( _mesh.Multimesh.VisibleInstanceCount++, transform );
 			_steps.Enqueue( transform );
 		}
 
@@ -124,13 +132,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 
 			for ( int i = 0; i < DEQUEUE_LIMIT; i++ ) {
 				_steps.Dequeue();
+				_mesh.Multimesh.VisibleInstanceCount--;
 			}
 
 			int instance = 0;
 			foreach ( var step in _steps ) {
 				_mesh.Multimesh.SetInstanceTransform2D( instance++, step );
 			}
-			_mesh.Multimesh.VisibleInstanceCount--;
 		}
 	};
 };

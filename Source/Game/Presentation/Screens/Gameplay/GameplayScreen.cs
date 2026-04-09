@@ -32,7 +32,7 @@ namespace Nomad.Game.Presentation.Screens.Gameplay {
 		protected override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
-			_hudRoot.Render();
+			_hudRoot.Render( delta );
 		}
 	};
 };

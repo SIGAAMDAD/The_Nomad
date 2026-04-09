@@ -34,15 +34,8 @@ namespace Nomad.Game.Domain.Data.Player {
 		Dead,
 
 		/// <summary>
-		/// In the idle animation.
-		/// </summary>
-		TrueIdle,
-
-		/// <summary>
 		/// Currently resting at a checkpoint.
 		/// </summary>
-		Checkpoint,
-
-		Count
+		RestingAtCheckpoint
 	};
 };

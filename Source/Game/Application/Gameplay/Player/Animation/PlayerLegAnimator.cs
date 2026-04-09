@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
@@ -20,16 +22,29 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
-	internal sealed class PlayerLegAnimator : PlayerAnimator {
-		private EngineAnimatedSprite2D _animator;
+	/*
+	===================================================================================
+	
+	PlayerLegAnimator
 
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	internal sealed class PlayerLegAnimator : PlayerAnimator {
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
+
+		private string _currentAnimation = "idle";
+		private Vector2 _lastVelocity = Vector2.Zero;
+		private bool _isBackpedaling = false;
 
 		public PlayerLegAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = _animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+			_animationStateChanged = _animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
 		}
 
 		/*
@@ -43,40 +58,43 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnInit() {
 			base.OnInit();
 
-			_animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-		}
-
-		protected override void Flip( bool flip ) {
-			_animator.FlipH = flip;
+			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
 		}
 
 		/*
 		===============
-		PlayerStartMoving
+		OnPlayerMovementChanged
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		protected override void OnPlayerStartMoving( in PlayerStartMovingEventArgs args ) {
-			_animator.Play( "move" );
-
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
+			if ( !args.IsMoving ) {
+				animator.Play( "idle" );
+				return;
+			}
 			// are we backpedaling?
-			if ( ( _animator.FlipH && args.Velocity.X > 0.0f ) || ( !_animator.FlipH && args.Velocity.X < 0.0f ) ) {
+			if ( !args.WalkingReverse ) {
 				// sudden stop?
-				if ( ( args.Velocity.X < 0.0f && prefab.Velocity.X > 0.0f ) || ( args.Velocity.X > 0.0f && prefab.Velocity.X < 0.0f ) ) {
-					_animator.Play( "sudden_stop" );
+				if ( HasSuddenStop( args.OldVelocity, args.NewVelocity ) ) {
+					animator.Play( "sudden_stop" );
 				} else {
-					_animator.Play( "move" );
+					animator.Play( "move" );
 				}
 			} else {
-				_animator.PlayBackwards( "move" );
+				animator.PlayBackwards( "move" );
 			}
 		}
 
-		protected override void OnPlayerStopMoving( in EmptyEventArgs args ) {
-			_animator.Play( "idle" );
+		private static bool HasSuddenStop( Vector2 oldVelocity, Vector2 newVelocity ) {
+			const float epsilon = 0.01f;
+
+			if ( MathF.Abs( oldVelocity.X ) < epsilon || MathF.Abs( newVelocity.X ) < epsilon ) {
+				return false;
+			}
+			return MathF.Sign( oldVelocity.X ) != MathF.Sign( newVelocity.X );
 		}
 	};
 };

@@ -32,6 +32,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules {
 		public string Description => "The default module, no special effects.";
 
 		public float BurnoutMax => 1.0f;
+		public float DashBurnoutIncrease => 0.30f;
 		public float DashDuration => 0.65f;
 		public float BurnoutCooldown => 0.30f;
 	};

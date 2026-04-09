@@ -52,8 +52,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
 			_dashKitPresenter = new DashKitHeatBarPresenter( new DashKitHeatBarModel( eventFactory ), root.FindChild<DashStatusBarView>( "CombatContainer/DashStatusBar" ) );
 		}
 
-		public void Render() {
-			_healthBarPresenter.Render();
+		public void Render( float delta ) {
+			_healthBarPresenter.Render( delta );
 			_dashKitPresenter.Render();
 		}
 	};

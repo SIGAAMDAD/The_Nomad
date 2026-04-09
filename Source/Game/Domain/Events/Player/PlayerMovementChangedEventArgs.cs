@@ -13,13 +13,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Player;
+using System.Numerics;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Events.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IPlayerSpawnResolver {
-		PlayerSpawnProfileDefinition Resolve( in PlayerSpawnContext context );
+	public readonly struct PlayerMovementChangedEventArgs {
+		public Vector2 OldVelocity { get; }
+		public Vector2 NewVelocity { get; }
+		public bool IsMoving { get; }
+		public bool WalkingReverse { get; }
+		public bool FacingLeft { get; }
+
+		public PlayerMovementChangedEventArgs( Vector2 oldVelocity, Vector2 newVelocity, bool isMoving, bool walkingReverse, bool facingLeft ) {
+			OldVelocity = oldVelocity;
+			NewVelocity = newVelocity;
+			IsMoving = isMoving;
+			WalkingReverse = walkingReverse;
+			FacingLeft = facingLeft;
+		}
 	};
 };

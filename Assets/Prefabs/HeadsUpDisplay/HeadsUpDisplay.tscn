@@ -2,10 +2,36 @@
 
 [ext_resource type="Script" uid="uid://ct7q084fet250" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplayView.cs" id="1_fk5k7"]
 [ext_resource type="Shader" uid="uid://bfa3mvmq5pitr" path="res://Assets/Shaders/DynamicProgressBar.gdshader" id="1_ux8up"]
+[ext_resource type="Shader" uid="uid://daqg6rmq242i" path="res://Assets/Shaders/HealthBar.gdshader" id="2_0ao32"]
 [ext_resource type="Script" uid="uid://dmpyle8xfr6rs" path="res://Assets/Prefabs/HeadsUpDisplay/HealthBarView.cs" id="2_xk7bv"]
 [ext_resource type="Script" uid="uid://biojpkaavmw48" path="res://Assets/Prefabs/HeadsUpDisplay/RageBarView.cs" id="3_xs3se"]
 [ext_resource type="Texture2D" uid="uid://c00d7qt2s3on6" path="res://icon.svg" id="5_kj2yv"]
 [ext_resource type="Script" uid="uid://bo41ryxnsorly" path="res://Assets/Prefabs/HeadsUpDisplay/DashStatusBarView.cs" id="5_uq2bp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_otcf6"]
+shader = ExtResource("2_0ao32")
+shader_parameter/health = 1.0
+shader_parameter/trail = 0.0
+shader_parameter/width = 300.0
+shader_parameter/height = 40.0
+shader_parameter/health_color = Color(0, 1, 0.08235294, 1)
+shader_parameter/full_health_color = Color(0, 1, 0.20392157, 1)
+shader_parameter/low_health_color = Color(0.87058824, 0.2, 0, 1)
+shader_parameter/low_health_threshold = 0.25
+shader_parameter/low_health_pulse_speed = 2.0
+shader_parameter/damaged_health_color = Color(1.02227, 0.36054, 0.36266, 1)
+shader_parameter/healed_health_color = Color(0, 0.3019608, 0, 1)
+shader_parameter/edge_color = Color(4, 4, 4, 1)
+shader_parameter/edge_pixels = 4.0
+shader_parameter/background_color = Color(0.125, 0.125, 0.125, 1)
+shader_parameter/border_color = Color(0, 0, 0, 0.6666667)
+shader_parameter/border_pixels = 1.0
+shader_parameter/round_corners = true
+shader_parameter/skew_pixels = 10.0
+shader_parameter/top_quarter_modulate = Color(2, 2, 2, 1)
+shader_parameter/top_half_modulate = Color(1, 1, 1, 1)
+shader_parameter/bottom_half_modulate = Color(1, 1, 1, 1)
+shader_parameter/bottom_quarter_modulate = Color(0.375, 0.375, 0.375, 1)
 
 [sub_resource type="Gradient" id="Gradient_fk5k7"]
 offsets = PackedFloat32Array(0.46268657, 1)
@@ -44,13 +70,18 @@ script = ExtResource("1_fk5k7")
 metadata/_edit_use_anchors_ = true
 
 [node name="StatBarContainer" type="VBoxContainer" parent="." unique_id=1228700349]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.37500003
+anchor_bottom = 0.080000006
+offset_right = -260.00003
+offset_bottom = -8.000004
+metadata/_edit_use_anchors_ = true
 
-[node name="HealthBar" type="ProgressBar" parent="StatBarContainer" unique_id=1368512284]
+[node name="HealthBar" type="Control" parent="StatBarContainer" unique_id=2029426139]
+material = SubResource("ShaderMaterial_otcf6")
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
-show_percentage = false
 script = ExtResource("2_xk7bv")
 
 [node name="RageBar" type="ProgressBar" parent="StatBarContainer" unique_id=184847358]

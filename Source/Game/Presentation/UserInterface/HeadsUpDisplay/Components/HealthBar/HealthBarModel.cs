@@ -23,18 +23,21 @@ using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
 	internal sealed class HealthBarModel : IHealthBarModel {
+		public bool LastWasHeal { get; private set; }
 		public float Health { get; private set; }
 		public float MaxHealth { get; private set; }
 		public Color Color { get; private set; }
 		public HUDPreset Preset { get; private set; }
 
+		public event Action HealthChanged;
+
 		public HealthBarModel( IGameEventRegistryService eventFactory ) {
 			eventFactory
-				.GetEvent<PlayerResourceChangedEventArgs>( EventNames.PLAYER_RESOURCE_CHANGED, EventNames.NAMESPACE )
+				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnResourceChanged );
 			
 			eventFactory
-				.GetEvent<PlayerDerivedStatChangedEventArgs>( EventNames.PLAYER_DERIVED_STAT_CHANGED, EventNames.NAMESPACE )
+				.GetEvent<PlayerDerivedStatChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DERIVED_STAT_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnDerivedStatChanged );
 		}
 
@@ -58,8 +61,11 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			if ( args.Resource != PlayerResourceType.Health ) {
 				return;
 			}
+			LastWasHeal = args.NewValue > Health;
 			Health = args.NewValue;
 			UpdateColor();
+
+			HealthChanged?.Invoke();
 		}
 
 		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args ) {

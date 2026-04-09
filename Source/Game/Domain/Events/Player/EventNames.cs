@@ -69,9 +69,10 @@ namespace Nomad.Game.Domain.Data.Player {
 		/// </summary>
 		public const string PLAYER_DASH_MODULE_CHANGED = NAMESPACE + ".PlayerDashModuleChanged";
 
-		public const string PLAYER_START_MOVING = NAMESPACE + ".PlayerStartMoving";
-
-		public const string PLAYER_STOP_MOVING = NAMESPACE + ".PlayerStopMoving";
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string PLAYER_MOVEMENT_CHANGED = NAMESPACE + ".PlayerMovementChanged";
 
 		/// <summary>
 		/// 

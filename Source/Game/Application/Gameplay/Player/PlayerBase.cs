@@ -19,12 +19,12 @@ using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player.Animation;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
+using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Application.Gameplay.Player.Stats;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Logger.Globals;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -46,13 +46,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		// Components
 		//
 		private readonly PlayerJumpKit _jumpKit;
-		private readonly PlayerAnimationRepository _animator;
+		private readonly PlayerAnimationCoordinator _animator;
 		private readonly PlayerMovementController _movementController;
 		private readonly PlayerAudioService _audioService;
 
 		//
 		// Services & Repositories
 		//
+		private readonly PlayerStateCoordinator _stateCoordinator;
 		private readonly IPlayerBaseStatsRepository _statsRepository;
 		private readonly IPlayerDerivedStatService _derivedStatService;
 		private readonly IPlayerResourceService _resourceService;
@@ -87,11 +88,12 @@ namespace Nomad.Game.Application.Gameplay.Player {
 				EventNames.NAMESPACE
 			);
 
-			_statsRepository = new PlayerBaseStatsRepository( eventFactory, logger );
+			_statsRepository = new PlayerBaseStatsRepository( _id, eventFactory, logger );
 			_dependencyGraph = new PlayerStatDependencyGraph();
-			_derivedStatService = new PlayerDerivedStatService( _statsRepository, _dependencyGraph, eventFactory );
+			_derivedStatService = new PlayerDerivedStatService( _id, _statsRepository, _dependencyGraph, eventFactory );
 			_flagService = new PlayerFlagService( eventFactory );
-			_resourceService = new PlayerResourceService( _derivedStatService, eventFactory );
+			_resourceService = new PlayerResourceService( _id, _derivedStatService, eventFactory );
+			_stateCoordinator = new PlayerStateCoordinator( _id, PlayerStateId.Idle, eventFactory );
 
 			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
 				_statsRepository.SetBaseStatValue( pair.Key, pair.Value );
@@ -101,10 +103,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_movementController = prefab.AddComponent<PlayerMovementController>(comp => {
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
+				comp.Id = _id;
 			} );
-			_jumpKit = prefab.AddComponent<PlayerJumpKit>();
-			_audioService = prefab.AddComponent<PlayerAudioService>();
-			_animator = new PlayerAnimationRepository( prefab, _movementController );
+			_jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
+				comp.Id = _id;
+			} );
+			_audioService = prefab.AddComponent<PlayerAudioService>( comp => {
+				comp.Id = _id;
+			} );
+			_animator = new PlayerAnimationCoordinator( _id, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
 		}
 
 		/*

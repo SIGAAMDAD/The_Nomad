@@ -37,7 +37,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private readonly IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged;
 
 		private readonly IPlayerDerivedStatService _derivedStats;
-		private readonly float[] _values = new float[ 3 ];
+		private readonly float[] _values = new float[ (int)PlayerResourceType.Count ];
 
 		private readonly ISubscriptionHandle _derivedStatChanged;
 		private bool _isDisposed = false;
@@ -50,15 +50,16 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="id"></param>
 		/// <param name="derivedStats"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerResourceService( IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory ) {
+		public PlayerResourceService( Guid id, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory ) {
 			ArgumentGuard.ThrowIfNull( derivedStats );
 			ArgumentGuard.ThrowIfNull( eventFactory );
 
 			_derivedStats = derivedStats;
 			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				EventNames.PLAYER_RESOURCE_CHANGED,
+				$"{id}:{EventNames.PLAYER_RESOURCE_CHANGED}",
 				EventNames.NAMESPACE
 			);
 

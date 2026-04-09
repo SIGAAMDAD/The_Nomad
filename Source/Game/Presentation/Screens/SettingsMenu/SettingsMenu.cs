@@ -75,7 +75,6 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 				cvarSystem
 			);
 
-			InitAdvancedDisplayOptions();
 			InitControlOptions();
 		}
 
@@ -107,26 +106,6 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			container.FindChild<BindingButton>( "MoveBind" ).SetBind( "KeyboardAndMouse", "Move" );
 			container.FindChild<BindingButton>( "DashBind" ).SetBind( "KeyboardAndMouse", "Dash" );
 			container.FindChild<BindingButton>( "ParryBind" ).SetBind( "KeyboardAndMouse", "Parry" );
-		}
-
-		/*
-		===============
-		InitAdvancedDisplayOptions
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		private void InitAdvancedDisplayOptions() {
-			var container = FindChild<EngineVerticalContainer>( "TabContainer/Display/Advanced" );
-
-			var cvarSystem = CVarSystem.Instance;
-			var windowService = ServiceLocator.GetService<IWindowService>();
-			var displayService = ServiceLocator.GetService<IDisplayService>();
-
-			var antiAliasing = container.FindChild<OptionList>( "AntiAliasingList" );
-			antiAliasing.SetOptions( _displaySettings.AntiAliasingModes );
-			antiAliasing.Value = (int)cvarSystem.GetCVarOrThrow<AntiAliasingMode>( Core.Constants.CVars.EngineUtils.Display.ANTI_ALIASING ).Value;
 		}
 
 		/*

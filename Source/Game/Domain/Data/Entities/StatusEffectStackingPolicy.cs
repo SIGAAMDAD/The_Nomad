@@ -13,13 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public enum PlayerResourceType : byte {
-		Health,
-		Rage,
-		Sanity,
-		JumpKitHeat,
-
-		Count
+namespace Nomad.Game.Domain.Data.Entities {
+	public enum StatusEffectStackingPolicy {
+		None,
+		RefreshDuration,
+		AddStacks,
+		Replace,
+		IndependentInstances
 	};
 };

@@ -13,11 +13,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
-	internal sealed class PlayerAnimationRepository {
+	/*
+	===================================================================================
+	
+	PlayerAnimationCoordinator
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	internal sealed class PlayerAnimationCoordinator {
 		public PlayerAnimationState Current => _current;
 		private PlayerAnimationState _current = PlayerAnimationState.Idle;
 
@@ -26,10 +41,26 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		private readonly PlayerLegAnimator _legAnimator;
 		private readonly PlayerFootsteps _footsteps;
 
-		public PlayerAnimationRepository( PlayerPrefab prefab, PlayerMovementController movementController ) { 
-			_torsoAnimator = prefab.AddComponent<PlayerTorsoAnimator>();
+		/*
+		===============
+		PlayerAnimationCoordinator
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="prefab"></param>
+		/// <param name="initialState"></param>
+		/// <param name="movementController"></param>
+		public PlayerAnimationCoordinator( Guid id, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController ) {
+			_legAnimator = prefab.AddComponent<PlayerLegAnimator>( comp => {
+				comp.Id = id;
+			} );
+			_torsoAnimator = prefab.AddComponent<PlayerTorsoAnimator>( comp => {
+				comp.Id = id;
+			} );
 			_headAnimator = prefab.AddComponent<PlayerHeadAnimator>();
-			_legAnimator = prefab.AddComponent<PlayerLegAnimator>();
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
 		}
 	};
