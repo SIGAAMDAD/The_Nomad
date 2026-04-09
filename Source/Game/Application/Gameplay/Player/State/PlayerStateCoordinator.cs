@@ -13,15 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Interfaces.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.State {
 	/*
 	===================================================================================
 	
-	PlayerStateChanged
+	PlayerStateCoordinator
 	
 	===================================================================================
 	*/
@@ -29,18 +31,8 @@ namespace Nomad.Game.Application.Gameplay.Player.State {
 	/// 
 	/// </summary>
 	
-	internal sealed class PlayerStateController {
-		public PlayerStateId State {
-			get => _state;
-			set {
-				if ( _state == value ) {
-					return;
-				}
-				var oldValue = _state;
-				_state = value;
-				_stateChanged.Publish( new PlayerStateChangedEventArgs( oldValue, _state ) );
-			}
-		}
+	internal sealed class PlayerStateCoordinator : IPlayerStateWriter, IPlayerStateReader {
+		public PlayerStateId Current => _state;
 		private PlayerStateId _state = PlayerStateId.Idle;
 
 		public IGameEvent<PlayerStateChangedEventArgs> StateChanged => _stateChanged;
@@ -48,16 +40,40 @@ namespace Nomad.Game.Application.Gameplay.Player.State {
 
 		/*
 		===============
-		PlayerStateController
+		PlayerStateCoordinator
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="initialState"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerStateController( IGameEventRegistryService eventFactory ) {
+		public PlayerStateCoordinator( Guid playerId, PlayerStateId initialState, IGameEventRegistryService eventFactory ) {
+			_state = initialState;
 			_stateChanged = eventFactory
-				.GetEvent<PlayerStateChangedEventArgs>( EventNames.PLAYER_STATE_CHANGED, EventNames.NAMESPACE );
+				.GetEvent<PlayerStateChangedEventArgs>( $"{playerId}:{EventNames.PLAYER_STATE_CHANGED}", EventNames.NAMESPACE );
+		}
+
+		public bool TrySetState( PlayerStateId newState ) {
+			if ( newState == _state || !CanTransitionTo( newState ) ) {
+				return false;
+			}
+
+			var oldState = _state;
+			_state = newState;
+
+			_stateChanged.Publish( new PlayerStateChangedEventArgs( oldState, newState ) );
+			
+			return true;
+		}
+
+		private bool CanTransitionTo( PlayerStateId newState ) {
+			return (_state, newState) switch {
+				(PlayerStateId.Dead, PlayerStateId.Moving) => false,
+				(PlayerStateId.Dead, PlayerStateId.RestingAtCheckpoint) => false,
+				_ => true
+			};
 		}
 	};
 };

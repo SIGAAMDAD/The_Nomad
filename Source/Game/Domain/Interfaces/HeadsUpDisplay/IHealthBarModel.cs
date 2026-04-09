@@ -13,9 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+
 namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
 	public interface IHealthBarModel : IHudComponentModel {
+		bool LastWasHeal { get; }
 		float Health { get; }
 		float MaxHealth { get; }
+		
+		event Action HealthChanged;
 	};
 };

@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
@@ -20,13 +21,48 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		private readonly IHealthBarModel _model;
 		private readonly IHealthBarView _view;
 
+		private readonly float _delay = 1.0f;
+		private readonly float _trailSpeed = 50.0f;
+
+		private int _delayExpirationTicks = 0;
+
 		public HealthBarPresenter( IHealthBarModel model, IHealthBarView view ) {
 			_model = model;
 			_view = view;
+
+			_model.HealthChanged += OnHealthChanged;
 		}
 
-		public void Render() {
-			_view.SetValue( _model.Health );
+		private void OnHealthChanged() {
+			int now = DateTime.Now.Millisecond;
+			_delayExpirationTicks = now + (int)( _delay * 1000 );
+
+			if ( _model.LastWasHeal ) {
+				_view.SetTrail( _view.GetHealth() );
+			}
+			_view.SetValue( _model.Health / _model.MaxHealth );
+		}
+
+		public void Render( float delta ) {
+			_view.SetSizeParameters();
+			
+			int now = DateTime.Now.Millisecond;
+			if ( now < _delayExpirationTicks ) {
+				return;
+			}
+
+			float health = _view.GetHealth();
+			float trail = _view.GetTrail();
+
+			float deltaFrac = _trailSpeed * delta / _model.MaxHealth;
+			float diff = health - trail;
+
+			if ( MathF.Abs( diff ) * _model.MaxHealth <= 0.0001f ) {
+				trail = MathF.Min( trail + deltaFrac, health );
+			} else {
+				trail = MathF.Max( trail - deltaFrac, health );
+			}
+			_view.SetTrail( trail );
 		}
 	};
 };

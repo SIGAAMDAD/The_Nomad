@@ -23,6 +23,6 @@ namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
 		IRageBarView RageBar { get; }
 		IAmmoCounterView AmmoCounter { get; }
 
-		void Render();
+		void Render( float delta );
 	};
 };

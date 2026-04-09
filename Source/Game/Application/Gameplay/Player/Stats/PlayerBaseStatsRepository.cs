@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
@@ -48,13 +49,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="id"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBaseStatsRepository( IGameEventRegistryService eventFactory, ILoggerService logger ) {
+		public PlayerBaseStatsRepository( Guid id, IGameEventRegistryService eventFactory, ILoggerService logger ) {
 			ArgumentGuard.ThrowIfNull( eventFactory );
 			ArgumentGuard.ThrowIfNull( logger );
 
-			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( EventNames.PLAYER_BASE_STAT_CHANGED, EventNames.NAMESPACE );
+			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( $"{id}:{EventNames.PLAYER_BASE_STAT_CHANGED}", EventNames.NAMESPACE );
 			_category = logger?.CreateCategory( nameof( PlayerBaseStatsRepository ), LogLevel.Info, true );
 		}
 

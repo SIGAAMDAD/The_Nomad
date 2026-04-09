@@ -30,11 +30,11 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 
 		public DashKitHeatBarModel( IGameEventRegistryService eventFactory ) {
 			eventFactory
-				.GetEvent<PlayerResourceChangedEventArgs>( EventNames.PLAYER_RESOURCE_CHANGED, EventNames.NAMESPACE )
+				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnResourceChanged );
 			
 			eventFactory
-				.GetEvent<PlayerDashModuleChangedEventArgs>( EventNames.PLAYER_DASH_MODULE_CHANGED, EventNames.NAMESPACE )
+				.GetEvent<PlayerDashModuleChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DASH_MODULE_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnDashModuleChanged );
 		}
 

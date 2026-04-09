@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using System;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -23,6 +24,7 @@ using Nomad.Game.Domain.Audio;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -38,6 +40,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// </summary>
 	
 	internal sealed class PlayerAudioService : NomadBehaviour {
+		public Guid Id { get; set; }
 		private PlayerPrefab _prefab;
 
 		private readonly IAudioEmitter _walkEffectEmitter;
@@ -50,20 +53,6 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_dashEffectEmitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
 			_foleyEmitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
 			_listenerService = ServiceLocator.GetService<IListenerService>();
-
-			var eventFactory = GameEventRegistry.Instance;
-
-			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>( EventNames.PLAYER_DASH_STARTED, EventNames.NAMESPACE )
-				.Subscribe( OnDashStarted );
-			
-			eventFactory
-				.GetEvent<PlayerDashBurnoutEventArgs>( EventNames.PLAYER_DASH_BURNOUT, EventNames.NAMESPACE )
-				.Subscribe( OnDashBurnout );
-			
-			eventFactory
-				.GetEvent<PlayerDashRechargedEventArgs>( EventNames.PLAYER_DASH_RECHARGED, EventNames.NAMESPACE )
-				.Subscribe( OnDashRecharged );
 		}
 
 		public override void OnInit() {
@@ -71,8 +60,22 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 			_prefab = Object.CastAs<PlayerPrefab>();
 
-			var legAnimator = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
-			legAnimator.AnimationLooped += OnLegAnimationLooped;
+			var legAnimator = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			legAnimator.AnimationLooped.Subscribe( OnLegAnimationLooped );
+
+			var eventFactory = GameEventRegistry.Instance;
+
+			eventFactory
+				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_STARTED}", EventNames.NAMESPACE )
+				.Subscribe( OnDashStarted );
+			
+			eventFactory
+				.GetEvent<PlayerDashBurnoutEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_BURNOUT}", EventNames.NAMESPACE )
+				.Subscribe( OnDashBurnout );
+			
+			eventFactory
+				.GetEvent<PlayerDashRechargedEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_RECHARGED}", EventNames.NAMESPACE )
+				.Subscribe( OnDashRecharged );
 		}
 
 		public override void OnUpdate( float delta ) {
@@ -102,7 +105,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
 		}
 
-		private void OnLegAnimationLooped() {
+		private void OnLegAnimationLooped( in EmptyEventArgs args ) {
 			if ( _prefab.Velocity != Vector2.Zero ) {
 				_walkEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
 				_walkEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFoleyPlayerWalkSand ).Path );

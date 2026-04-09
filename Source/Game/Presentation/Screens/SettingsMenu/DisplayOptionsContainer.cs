@@ -41,6 +41,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			base.OnInit();
 
 			InitBasicDisplayOptions();
+			InitAdvancedDisplayOptions();
 		}
 
 		private void InitBasicDisplayOptions() {
@@ -102,6 +103,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			var aspectRatio = FindChild<OptionList>( "Basic/AspectRatioList" );
 			aspectRatio.SetOptions( aspectRatios );
 			aspectRatio.Value = (int)cvarSystem.GetCVarOrThrow<AspectRatio>( Core.Constants.CVars.EngineUtils.Display.ASPECT_RATIO ).Value;
+		}
+
+		private void InitAdvancedDisplayOptions() {
+			var cvarSystem = CVarSystem.Instance;
+			var windowService = ServiceLocator.GetService<IWindowService>();
+
+			var antiAliasing = FindChild<OptionList>( "Advanced/AntiAliasingList" );
 		}
 	};
 };

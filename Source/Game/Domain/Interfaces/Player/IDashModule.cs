@@ -14,17 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 namespace Nomad.Game.Domain.Interfaces.Player {
-	/*
-	===================================================================================
-	
-	IDashModule
-	
-	===================================================================================
-	*/
 	/// <summary>
 	/// 
 	/// </summary>
-	
 	public interface IDashModule {
 		/// <summary>
 		/// The name of this dash module/upgrade.
@@ -40,6 +32,11 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 		/// The maximum amount of burnout that is allowed before overcharge.
 		/// </summary>
 		float BurnoutMax { get; }
+
+		/// <summary>
+		/// How much burnout accumulates per usage of the jumpkit.
+		/// </summary>
+		float DashBurnoutIncrease { get; }
 
 		/// <summary>
 		/// The amount of time in milliseconds that each dash gets.

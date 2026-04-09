@@ -13,13 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 using Nomad.UI;
 
 namespace Nomad.Game.Prefabs {
-	internal sealed partial class HealthBarView : EngineProgressBar, IHealthBarView {
+	internal sealed partial class HealthBarView : EnginePanel, IHealthBarView {
 		private readonly HudComponentView _impl;
+		private ShaderMaterial _material;
 
 		public HealthBarView() {
 			_impl = new HudComponentView( this );
@@ -30,7 +32,35 @@ namespace Nomad.Game.Prefabs {
 		}
 
 		public void SetValue( float value ) {
-			
+			SetHealth( value );
+		}
+
+		public void SetSizeParameters() {
+			Vector2 size = Size;
+			_material.SetShaderParameter( "width", size.X );
+			_material.SetShaderParameter( "height", size.Y );
+		}
+
+		public float GetHealth() {
+			return _material.GetShaderParameter( "health" ).AsSingle();
+		}
+
+		public float GetTrail() {
+			return _material.GetShaderParameter( "trail" ).AsSingle();
+		}
+
+		public void SetHealth( float value ) {
+			_material.SetShaderParameter( "health", value );
+		}
+
+		public void SetTrail( float value ) {
+			_material.SetShaderParameter( "trail", value );
+		}
+
+		protected override void OnInit() {
+			base.OnInit();
+
+			_material = (ShaderMaterial)Material;
 		}
 	};
 };

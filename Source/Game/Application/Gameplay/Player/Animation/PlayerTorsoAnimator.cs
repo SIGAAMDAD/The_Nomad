@@ -21,8 +21,6 @@ using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	internal sealed class PlayerTorsoAnimator : PlayerAnimator {
-		private EngineAnimatedSprite2D _animator;
-
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
 
@@ -35,17 +33,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnInit() {
 			base.OnInit();
 
-			_animator = prefab.FindChild<EngineAnimatedSprite2D>( "TorsoAnimator" );
+			animator = prefab.FindChild<EngineAnimatedSprite2D>( "TorsoAnimator" );
 		}
 
-		protected override void Flip( bool flip ) {
-			_animator.FlipH = flip;
-		}
-
-		protected override void OnPlayerStartMoving( in PlayerStartMovingEventArgs args ) {
-		}
-
-		protected override void OnPlayerStopMoving( in EmptyEventArgs args ) {
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
 		}
 	};
 };

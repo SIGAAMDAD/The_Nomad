@@ -13,12 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/*
@@ -33,29 +35,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// </summary>
 	
 	internal abstract class PlayerAnimator : NomadBehaviour {
+		public Guid Id { get; set; }
+
 		protected PlayerPrefab prefab;
+		protected EngineAnimatedSprite2D animator;
 
 		public abstract IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
-
-		/*
-		===============
-		PlayerAnimator
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public PlayerAnimator() {
-			var eventFactory = GameEventRegistry.Instance;
-
-			eventFactory
-				.GetEvent<PlayerStartMovingEventArgs>( EventNames.PLAYER_START_MOVING, EventNames.NAMESPACE )
-				.Subscribe( OnPlayerStartMoving );
-			
-			eventFactory
-				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_STOP_MOVING, EventNames.NAMESPACE )
-				.Subscribe( OnPlayerStopMoving );
-		}
 
 		/*
 		===============
@@ -69,6 +54,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			base.OnInit();
 
 			prefab = Object.CastAs<PlayerPrefab>();
+
+			var eventFactory = GameEventRegistry.Instance;
+
+			eventFactory
+				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{EventNames.PLAYER_MOVEMENT_CHANGED}", EventNames.NAMESPACE )
+				.Subscribe( OnPlayerMovementChanged );
 		}
 
 		/*
@@ -91,8 +82,19 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			}
 		}
 
-		protected abstract void Flip( bool flip );
-		protected abstract void OnPlayerStartMoving( in PlayerStartMovingEventArgs args );
-		protected abstract void OnPlayerStopMoving( in EmptyEventArgs args );
+		/*
+		===============
+		Flip
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flip"></param>
+		private void Flip( bool flip ) {
+			animator.FlipH = flip;
+		}
+
+		protected abstract void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args );
 	};
 };

@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Nomad.Core.Events;
@@ -38,9 +39,13 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// </summary>
 	
 	internal sealed class PlayerMovementController : NomadBehaviour {
+		public Guid Id { get; set; }
 		public IPlayerDerivedStatService Stats { get; set; }
 		public IPlayerFlagService Flags { get; set; }
+
 		private float _effectiveMovementSpeed = 0.0f;
+		private bool _wasMovingLastFrame = false;
+		private bool _facingLeft = false;
 
 		private Vector2 _moveInput = Vector2.Zero;
 		private Vector2 _velocity = Vector2.Zero;
@@ -49,11 +54,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 		private readonly Godot.Timer _slideTimer;
 
-		public IGameEvent<PlayerStartMovingEventArgs> StartMoving => _startMoving;
-		private readonly IGameEvent<PlayerStartMovingEventArgs> _startMoving;
-
-		public IGameEvent<EmptyEventArgs> StopMoving => _stopMoving;
-		private readonly IGameEvent<EmptyEventArgs> _stopMoving;
+		public IGameEvent<PlayerMovementChangedEventArgs> MovementChanged => _movementChanged;
+		private IGameEvent<PlayerMovementChangedEventArgs> _movementChanged = default;
 
 		/*
 		===============
@@ -63,14 +65,9 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="id"></param>
 		public PlayerMovementController() {
 			var eventFactory = GameEventRegistry.Instance;
-
-			_startMoving = eventFactory
-				.GetEvent<PlayerStartMovingEventArgs>( EventNames.PLAYER_START_MOVING, EventNames.NAMESPACE );
-			
-			_stopMoving = eventFactory
-				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_STOP_MOVING, EventNames.NAMESPACE );
 			
 			eventFactory
 				.GetEvent<ButtonActionEventArgs>( $"Slide:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
@@ -81,12 +78,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 				.Subscribe( OnMoveActionTriggered );
 			
 			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>( EventNames.PLAYER_DASH_STARTED, EventNames.NAMESPACE )
-				.Subscribe( OnDashStarted );
-			
-			eventFactory
-				.GetEvent<EmptyEventArgs>( EventNames.PLAYER_DASH_ENDED, EventNames.NAMESPACE )
-				.Subscribe( OnDashEnded );
+				.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
+				.Subscribe( OnLookActionTriggered );
 			
 			_slideTimer = new Godot.Timer() {
 				WaitTime = Domain.Data.Player.Constants.SLIDE_DURATION,
@@ -110,6 +103,19 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_prefab.AddChild( _slideTimer );
 
 			_effectiveMovementSpeed = Stats.GetValue( DerivedStatType.EffectiveMovementSpeed );
+
+			var eventFactory = GameEventRegistry.Instance;
+
+			eventFactory
+				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_STARTED}", EventNames.NAMESPACE )
+				.Subscribe( OnDashStarted );
+			
+			eventFactory
+				.GetEvent<EmptyEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_ENDED}", EventNames.NAMESPACE )
+				.Subscribe( OnDashEnded );
+
+			_movementChanged = eventFactory
+				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{EventNames.PLAYER_MOVEMENT_CHANGED}", EventNames.NAMESPACE );
 		}
 
 		/*
@@ -138,8 +144,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 				.Unsubscribe( OnMoveActionTriggered );
 
 			_slideTimer?.Dispose();
-			_startMoving?.Dispose();
-			_stopMoving?.Dispose();
+			_movementChanged?.Dispose();
 		}
 
 		/*
@@ -154,12 +159,23 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		public override void OnPhysicsUpdate( float delta ) {
 			base.OnPhysicsUpdate( delta );
 
-			var moveInput = _moveInput;
-			if ( moveInput != Vector2.Zero ) {
+			var previousVelocity = _velocity;
+
+			if ( _moveInput != Vector2.Zero ) {
 				_velocity = HandleAcceleration( delta );
 			} else {
 				_velocity = HandleDeceleration( delta );
 			}
+
+			bool isMovingNow = _velocity.LengthSquared() > 0.001f;
+
+			bool reverse =
+				MathF.Sign( previousVelocity.X ) != 0 &&
+				MathF.Sign( _moveInput.X ) != 0 &&
+				MathF.Sign( previousVelocity.X ) != MathF.Sign( _moveInput.X );
+			
+			_movementChanged.Publish( new PlayerMovementChangedEventArgs( previousVelocity, _velocity, isMovingNow, reverse, _facingLeft ) );
+			_wasMovingLastFrame = isMovingNow;
 
 			_prefab.Velocity = _velocity.ToGodot();
 			_prefab.MoveAndSlide();
@@ -310,12 +326,22 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="args"></param>
 		private void OnMoveActionTriggered( in AxisActionEventArgs args ) {
 			_moveInput = args.Value;
+
+			// invert the Y axis for the 2D plane
 			_moveInput.Y = -_moveInput.Y;
-			if ( args.Phase == InputActionPhase.Performed ) {
-				_startMoving.Publish( new PlayerStartMovingEventArgs( _moveInput ) );
-			} else if ( args.Phase == InputActionPhase.Canceled ) {
-				_stopMoving.Publish( default );
-			}
+		}
+
+		/*
+		===============
+		OnLookActionTriggered
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnLookActionTriggered( in AxisActionEventArgs args ) {
+			
 		}
 
 		/*
