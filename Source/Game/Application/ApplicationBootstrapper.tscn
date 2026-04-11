@@ -9,18 +9,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 ratio = 2.0
 script = ExtResource("1_7somw")
 
 [node name="PostProcessing1" parent="." unique_id=640013331 instance=ExtResource("2_dy48w")]
 
 [node name="PostProcessingContainer" type="SubViewportContainer" parent="." unique_id=1952815325]
+process_mode = 3
 layout_mode = 2
 stretch = true
+mouse_target = true
 
 [node name="PostProcessing" type="SubViewport" parent="PostProcessingContainer" unique_id=1674784600]
-handle_input_locally = false
+process_mode = 3
 size = Vector2i(800, 400)
 size_2d_override = Vector2i(800, 600)
 size_2d_override_stretch = true

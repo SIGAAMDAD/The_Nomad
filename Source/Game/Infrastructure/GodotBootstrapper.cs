@@ -99,6 +99,8 @@ namespace Nomad.Game.Infrastructure {
 			if ( fileSystem.FileExists( configFile.Value ) ) {
 				cvarSystem.Load( fileSystem, configFile.Value );
 			}
+
+			ProcessMode = ProcessModeEnum.Always;
 		}
 
 		/*

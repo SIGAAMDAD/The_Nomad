@@ -32,6 +32,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 				return true;
 			}
 
+			// FIXME: mayhaps use a Span<int> with actions.Length + maxExpansions length?
 			List<PlannerNode> nodes = new List<PlannerNode>( 64 );
 			List<int> open = new List<int>( 64 );
 			Dictionary<WorldState, int> bestG = new Dictionary<WorldState, int>();
@@ -138,11 +139,9 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			int current = goalNodeIndex;
 			while ( current >= 0 ) {
 				PlannerNode node = nodes[current];
-
 				if ( node.ActionIndex >= 0 ) {
 					reversed.Add( new PlanStep( actions[node.ActionIndex] ) );
 				}
-
 				current = node.ParentIndex;
 			}
 

@@ -53,7 +53,6 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			Visible = false;
 			DisplayStateChanged.Subscribe( OnDisplayStateChanged );
 
 			FindChild<EngineButton>( "OptionsContainer/ResumeGameButton" ).Clicked.Subscribe( OnResumeGameButtonPressed );
@@ -115,7 +114,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnQuitGameButtonPressed( in EmptyEventArgs args ) {
+		private static void OnQuitGameButtonPressed( in EmptyEventArgs args ) {
 			EngineService.Quit();
 		}
 
@@ -142,7 +141,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnSettingsButtonPressed( in EmptyEventArgs args ) {
+		private static void OnSettingsButtonPressed( in EmptyEventArgs args ) {
 			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Pause, MenuState.Settings ) );
 		}
 
