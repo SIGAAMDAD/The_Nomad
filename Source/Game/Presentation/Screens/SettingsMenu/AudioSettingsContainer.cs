@@ -51,11 +51,11 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			var audioDevice = ServiceLocator.GetService<IAudioDevice>();
 
 			var outputDeviceList = FindChild<OptionList>( "OutputDeviceList" );
-			outputDeviceList.SetOptions( audioDevice.GetOutputDevices() );
+			outputDeviceList.SetOptions( audioDevice.OutputDevices );
 			outputDeviceList.Value = cvarSystem.GetCVarOrThrow<int>( Core.Constants.CVars.EngineUtils.Audio.OUTPUT_DEVICE_INDEX ).Value;
 
 			var audioDriver = FindChild<OptionList>( "DriverAPIList" );
-			var driverList = audioDevice.GetAudioDrivers();
+			var driverList = audioDevice.AudioDrivers;
 			audioDriver.SetOptions( driverList );
 			string currentDriver = cvarSystem.GetCVarOrThrow<string>( Core.Constants.CVars.EngineUtils.Audio.AUDIO_DRIVER ).Value;
 			for ( int i = 0; i < driverList.Count; i++ ) {

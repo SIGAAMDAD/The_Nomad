@@ -24,6 +24,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player {
@@ -39,7 +40,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// </summary>
 	
 	internal sealed class PlayerRepository : IDisposable {
-		private readonly ConcurrentDictionary<Guid, PlayerBase> _players = new();
+		private readonly ConcurrentDictionary<Guid, IPlayerBase> _players = new();
 		private readonly string _playerPrefab;
 
 		private readonly ISceneManager _sceneManager;

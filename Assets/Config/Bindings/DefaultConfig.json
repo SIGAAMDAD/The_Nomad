@@ -2,6 +2,7 @@
 	"Bindings": [
 		{
 			"Name": "Move",
+			"Id": "Move",
 			"ValueType": "Vector2",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -14,6 +15,7 @@
 		},
 		{
 			"Name": "Look",
+			"Id": "Look",
 			"ValueType": "Vector2",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -26,6 +28,7 @@
 		},
 		{
 			"Name": "Dash",
+			"Id": "Dash",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -36,6 +39,7 @@
 		},
 		{
 			"Name": "Parry",
+			"Id": "Parry",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -45,7 +49,19 @@
 			}
 		},
 		{
+			"Name": "Bullet Time",
+			"Id": "BulletTime",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "T"
+			}
+		},
+		{
 			"Name": "Interact",
+			"Id": "Interact",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -56,12 +72,68 @@
 		},
 		{
 			"Name": "Use Weapon",
+			"Id": "UseWeapon",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
 				"Kind": "Button",
 				"DeviceId": "Mouse",
 				"ControlId": "Left"
+			}
+		},
+		{
+			"Name": "Reload",
+			"Id": "Reload",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "R"
+			}
+		},
+		{
+			"Name": "Switch to Primary Weapon",
+			"Id": "SwitchToPrimary",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "Num1"
+			}
+		},
+		{
+			"Name": "Switch to Secondary Weapon",
+			"Id": "SwitchToSecondary",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "Num2"
+			}
+		},
+		{
+			"Name": "Switch to Heavy Primary Weapon",
+			"Id": "SwitchToHeavyPrimary",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "Num3"
+			}
+		},
+		{
+			"Name": "Switch to Heavy Sidearm Weapon",
+			"Id": "SwitchToHeavySecondary",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "Num4"
 			}
 		}
 	]

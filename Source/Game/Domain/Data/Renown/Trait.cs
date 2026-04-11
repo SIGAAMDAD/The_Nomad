@@ -17,6 +17,6 @@ using System;
 
 namespace Nomad.Game.Domain.Data.Renown {
 	public record Trait {
-		public Guid Guid { get; init; }
+		public Guid Id { get; init; }
 	};
 };

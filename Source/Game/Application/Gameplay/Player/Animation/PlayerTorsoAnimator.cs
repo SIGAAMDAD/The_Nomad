@@ -27,7 +27,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public PlayerTorsoAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = _animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Torso:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>(
+				$"Torso:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}",
+				EventNames.NAMESPACE
+			);
 		}
 
 		public override void OnInit() {

@@ -80,9 +80,27 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			movementController.MovementChanged.Subscribe( OnMovementChanged );
 			
 			// attach the mesh to a detached transform otherwise we'll have the transforms following the player.
-			var sceneObject = new Node();
+			var sceneObject = new EngineSceneObject();
 			sceneObject.AddChild( _mesh );
 			_prefab.AddChild( sceneObject );
+		}
+
+		/*
+		===============
+		OnShutdown
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void OnShutdown() {
+			base.OnShutdown();
+
+			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			legAnimation.AnimationLooped.Unsubscribe( OnLegAnimationLooped );
+
+			var movementController = _prefab.GetComponent<PlayerMovementController>();
+			movementController.MovementChanged.Unsubscribe( OnMovementChanged );
 		}
 
 		/*

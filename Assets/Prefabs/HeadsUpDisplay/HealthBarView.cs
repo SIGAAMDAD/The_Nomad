@@ -36,7 +36,7 @@ namespace Nomad.Game.Prefabs {
 		}
 
 		public void SetSizeParameters() {
-			Vector2 size = Size;
+			Vector2 size = CustomMinimumSize;
 			_material.SetShaderParameter( "width", size.X );
 			_material.SetShaderParameter( "height", size.Y );
 		}

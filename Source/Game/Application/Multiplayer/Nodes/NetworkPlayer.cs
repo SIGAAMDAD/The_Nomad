@@ -18,13 +18,17 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Multiplayer.Nodes {
 	public sealed partial class NetworkPlayer : PlayerBase {
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+		private readonly INetworkSessionService _sessionService;
+
+		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger, INetworkSessionService sessionService )
 			: base( guid, prefab, scope, eventFactory, logger )
 		{
+			_sessionService = sessionService ?? throw new ArgumentNullException( nameof( sessionService ) );
 		}
 	};
 };

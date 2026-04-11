@@ -44,7 +44,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public PlayerLegAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = _animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
 		}
 
 		/*
