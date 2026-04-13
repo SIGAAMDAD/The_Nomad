@@ -1,36 +1,12 @@
 [gd_scene format=3 uid="uid://lo18vwcn05qx"]
 
 [ext_resource type="Script" uid="uid://bfcdaikc2gset" path="res://Assets/Prefabs/SplashScreen/SplashSandTransition.cs" id="1_5ao4a"]
-[ext_resource type="Shader" uid="uid://cditcuf6qpiuj" path="res://Assets/Shaders/SplashScreenFade.gdshader" id="2_5ao4a"]
+[ext_resource type="Shader" uid="uid://8yixyqoso0g1" path="res://Assets/Shaders/SplashScreenLogosFade.gdshader" id="2_5ao4a"]
 [ext_resource type="Texture2D" uid="uid://boqhrse1rtiog" path="res://Assets/Textures/Logos/Godot mascot with rapier logo.png" id="3_5ao4a"]
 [ext_resource type="Texture2D" uid="uid://bkujojv3i03dm" path="res://Assets/Textures/Logos/FMOD Logo White - Transparent Background.png" id="4_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://btp5520673kjn" path="res://Assets/Textures/Logos/NomadFramework.png" id="6_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://lghrybel3eae" path="res://Assets/Textures/Logos/GodotLogo.png" id="6_5ao4a"]
 [ext_resource type="Shader" uid="uid://dqx10l1yd8hjx" path="res://Assets/Shaders/SoloLogoSplashScreenFade.gdshader" id="6_mkkvq"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5ao4a"]
-frequency = 0.84
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mkkvq"]
-noise = SubResource("FastNoiseLite_5ao4a")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mkkvq"]
-shader = ExtResource("2_5ao4a")
-shader_parameter/progress = 1.0
-shader_parameter/noise_tex = SubResource("NoiseTexture2D_mkkvq")
-shader_parameter/wind_dir = Vector2(1, -0.08)
-shader_parameter/dissolve_scale = 13.090000574275
-shader_parameter/edge_width = 0.0010000000475
-shader_parameter/grain_strength = 1.0
-shader_parameter/drift_distance = 0.5
-shader_parameter/alpha_clip = 0.1750000083125
-shader_parameter/sand_color = Color(0.84, 0.71, 0.5, 1)
-shader_parameter/ember_color = Color(1, 0.47, 0.14, 1)
-shader_parameter/ember_amount = 0.1
-shader_parameter/glow_strength = 0.8
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_5ao4a"]
-viewport_path = NodePath("SubViewport")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
 frequency = 0.045
@@ -51,6 +27,24 @@ shader_parameter/wind_dir = Vector2(1, -0.25)
 shader_parameter/dust_color = Color(0.81960785, 0.57254905, 0.1764706, 1)
 shader_parameter/ember_color = Color(1, 0.42, 0.1, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mkkvq"]
+shader = ExtResource("2_5ao4a")
+shader_parameter/progress = 0.0
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/aspect = 1.538
+shader_parameter/edge_width = 0.0010000000475
+shader_parameter/distortion_strength = 0.015
+shader_parameter/noise_scale = 28.0
+shader_parameter/burn_color = Color(1, 0.45, 0.08, 1)
+shader_parameter/ember_color = Color(1, 0.85, 0.35, 1)
+shader_parameter/char_color = Color(0.06, 0.02, 0.01, 1)
+shader_parameter/pixelate_heat = false
+shader_parameter/virtual_resolution = Vector2(800, 600)
+shader_parameter/time_scale = 4.00000019
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ao4a"]
+viewport_path = NodePath("SubViewport")
+
 [node name="SplashScreen" type="Control" unique_id=1253664552]
 layout_mode = 3
 anchors_preset = 15
@@ -65,7 +59,44 @@ metadata/_edit_use_anchors_ = true
 wait_time = 2.0
 one_shot = true
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=68675603]
+[node name="EpilepsyWarning" type="Label" parent="." unique_id=914685969]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.041
+anchor_top = 0.372
+anchor_right = 0.95900005
+anchor_bottom = 0.62700003
+offset_left = -0.29999924
+offset_top = 0.2999878
+offset_right = 0.2999878
+offset_bottom = 0.2999878
+grow_horizontal = 2
+grow_vertical = 2
+text = "Photosensitivity Warning: This game contains flashing lights, rapid visual effects, and high-contrast patterns that may trigger seizures or discomfort in some people. If you or anyone in your family has a history of seizures, epilepsy, migraines, or sensitivity to flashing lights, use caution before playing. Stop playing immediately and consult a doctor if you experience dizziness, altered vision, eye or muscle twitching, disorientation, or any involuntary movements."
+horizontal_alignment = 1
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="GodotLogo" type="TextureRect" parent="." unique_id=82550544]
+texture_filter = 2
+material = SubResource("ShaderMaterial_gxtmw")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.09200001
+anchor_top = 0.22666667
+anchor_right = 0.90599996
+anchor_bottom = 0.71466666
+offset_left = 0.3999939
+offset_right = 0.2000122
+offset_bottom = 0.19998169
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_5ao4a")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ThirdPartyLogos" type="TextureRect" parent="." unique_id=68675603]
 texture_filter = 2
 material = SubResource("ShaderMaterial_mkkvq")
 layout_mode = 1
@@ -163,23 +194,4 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Made using FMOD Studio by Firelight Technologies Pty Ltd."
 horizontal_alignment = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="GodotLogo" type="TextureRect" parent="." unique_id=82550544]
-visible = false
-texture_filter = 2
-material = SubResource("ShaderMaterial_gxtmw")
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.09200001
-anchor_top = 0.22666667
-anchor_right = 0.90599996
-anchor_bottom = 0.71466666
-offset_left = 0.3999939
-offset_right = 0.2000122
-offset_bottom = 0.19998169
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("6_5ao4a")
-expand_mode = 2
 metadata/_edit_use_anchors_ = true

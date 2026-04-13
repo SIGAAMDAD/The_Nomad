@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://e6q7p6bglw0" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplayOptionsContainer.cs" id="4_gcelo"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="4_sceel"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
-[ext_resource type="Script" uid="uid://36ru1ao14e22" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="6_amo7r"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
 [ext_resource type="Script" uid="uid://36ru1ao14e22" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="8_1rltl"]
 [ext_resource type="Script" uid="uid://0yasjxnrioox" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]
@@ -75,12 +74,11 @@ size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yx041")
 theme_override_styles/tab_unselected = SubResource("StyleBoxEmpty_m4e4s")
-current_tab = 1
+current_tab = 0
 script = ExtResource("4_gcelo")
 metadata/_tab_index = 0
 
 [node name="Basic" type="VBoxContainer" parent="TabContainer/Display" unique_id=2084214716]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -125,6 +123,7 @@ Title = "Brightness"
 layout_mode = 2
 
 [node name="Advanced" type="VBoxContainer" parent="TabContainer/Display" unique_id=1566633214]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -213,7 +212,7 @@ Title = "Effects Quality"
 [node name="Advanced" type="VBoxContainer" parent="TabContainer/Graphics" unique_id=261948630]
 visible = false
 layout_mode = 2
-script = ExtResource("6_amo7r")
+script = ExtResource("8_1rltl")
 metadata/_tab_index = 1
 
 [node name="ShadowQualityList" parent="TabContainer/Graphics/Advanced" unique_id=611256808 instance=ExtResource("4_sceel")]
@@ -265,7 +264,8 @@ Title = "Music On"
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "audio.MusicVolume"
-Title = "Music Volume"
+Title = "AUDIO_MUSIC_VOLUME"
+Description = ""
 
 [node name="EffectsOnCheckbox" parent="TabContainer/Audio" unique_id=163248377 instance=ExtResource("6_m4e4s")]
 unique_name_in_owner = true
@@ -375,33 +375,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 text = "BACK"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
 
 [node name="SaveButton" parent="BottomContainer/ButtonContainer" unique_id=1028061777 instance=ExtResource("3_l307y")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 text = "SAVE"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null
 
 [node name="ResetButton" parent="BottomContainer/ButtonContainer" unique_id=463857775 instance=ExtResource("3_l307y")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 text = "RESET"
-Duration = null
-AnimateScale = null
-AnimatePosition = null
-TransitionType = null
-ScaleIntensity = null
-PositionValue = null

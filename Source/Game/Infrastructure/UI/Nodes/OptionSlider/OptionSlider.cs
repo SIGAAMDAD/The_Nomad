@@ -36,7 +36,9 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 			get => _min;
 			set {
 				_min = value;
-				_slider?.Minimum = _min;
+				if ( _slider != null ) {
+					_slider.Minimum = _min;
+				}
 			}
 		}
 		private float _min = 0.0f;
@@ -45,7 +47,9 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 			get => _max;
 			set {
 				_max = value;
-				_slider?.Maximum = _max;
+				if ( _slider != null ) {
+					_slider.Maximum = _max;
+				}
 			}
 		}
 		private float _max = 100.0f;

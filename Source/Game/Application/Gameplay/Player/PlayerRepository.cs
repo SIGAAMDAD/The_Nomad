@@ -44,11 +44,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private readonly string _playerPrefab;
 
 		private readonly ISceneManager _sceneManager;
+		private readonly IGameStateService _gameStateService;
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly IServiceRegistry _registry;
 		private readonly ILoggerService _logger;
-		
-		private readonly ISubscriptionHandle _onGameStateChanged;
 
 		private bool _isDisposed = false;
 
@@ -67,12 +66,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="sceneManager"></param>
 		/// <param name="playerPrefab"></param>
 		public PlayerRepository( IGameEventRegistryService eventFactory, IServiceRegistry registry, ILoggerService logger, IGameStateService gameStateService, ISceneManager sceneManager, string playerPrefab ) {
-			_onGameStateChanged = gameStateService.StateChanged.Subscribe( OnGameStateChanged );
+			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_playerPrefab = playerPrefab;
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_registry = registry ?? throw new ArgumentNullException( nameof( registry ) );
 			_logger = logger ?? throw new ArgumentNullException( nameof( logger ) );
+
+			_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 		}
 
 		/*
@@ -85,7 +86,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		public void Dispose() {
 			if ( !_isDisposed ) {
-				_onGameStateChanged?.Dispose();
+				_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;

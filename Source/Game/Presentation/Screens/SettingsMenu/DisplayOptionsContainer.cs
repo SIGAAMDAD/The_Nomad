@@ -37,6 +37,14 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// </summary>
 	
 	public partial class DisplayOptionsContainer : EngineTabContainer {
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		protected override void OnInit() {
 			base.OnInit();
 
@@ -44,6 +52,15 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			InitAdvancedDisplayOptions();
 		}
 
+		/*
+		===============
+		InitBasicDisplayOptions
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		private void InitBasicDisplayOptions() {
 			var cvarSystem = CVarSystem.Instance;
 			var windowService = ServiceLocator.GetService<IWindowService>();
@@ -105,6 +122,14 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			aspectRatio.Value = (int)cvarSystem.GetCVarOrThrow<AspectRatio>( Core.Constants.CVars.EngineUtils.Display.ASPECT_RATIO ).Value;
 		}
 
+		/*
+		===============
+		InitAdvancedDisplayOptions
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		private void InitAdvancedDisplayOptions() {
 			var cvarSystem = CVarSystem.Instance;
 			var windowService = ServiceLocator.GetService<IWindowService>();

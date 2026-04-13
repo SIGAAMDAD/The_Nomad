@@ -74,7 +74,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 
 			Value = false;
 
-			_toggled = GameEventRegistry.GetEvent<bool>( $"{Name}:{UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT}", UIConstants.NAMESPACE );
+			_toggled = GameEventRegistry.GetEvent<bool>( $"{GetHashCode()}:{UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*

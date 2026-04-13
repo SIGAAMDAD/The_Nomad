@@ -12,6 +12,7 @@ offset_right = -7.6800003
 offset_bottom = -7.9200006
 size_flags_horizontal = 3
 theme_override_styles/normal = ExtResource("1_lo75g")
+theme_override_styles/pressed = ExtResource("2_lo75g")
 theme_override_styles/hover = ExtResource("2_lo75g")
 theme_override_styles/focus = ExtResource("2_lo75g")
 script = ExtResource("3_lo75g")

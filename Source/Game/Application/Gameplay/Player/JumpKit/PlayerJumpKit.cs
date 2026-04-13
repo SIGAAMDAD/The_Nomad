@@ -53,7 +53,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 		private PlayerPrefab _prefab;
 
+		public IDashModule Module => _module;
 		private IDashModule _module = new DefaultModule();
+		
 		private readonly DashRuntime _runtime = default;
 
 		public IGameEvent<PlayerDashStartEventArgs> DashStarted => _dashStarted;

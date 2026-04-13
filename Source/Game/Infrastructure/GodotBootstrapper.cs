@@ -31,6 +31,7 @@ using Nomad.OnlineServices.Steam;
 using Nomad.Audio.Fmod;
 using Nomad.Console;
 using Nomad.Input;
+using Nomad.Save;
 
 namespace Nomad.Game.Infrastructure {
 	/*
@@ -75,7 +76,8 @@ namespace Nomad.Game.Infrastructure {
 				.AddBootstrapper( new SteamBootstrapper() )
 				.AddBootstrapper( new ConsoleBootstrapper() )
 				.AddBootstrapper( new FMODBootstrapper() )
-				.AddBootstrapper( new InputBootstrapper() );
+				.AddBootstrapper( new InputBootstrapper() )
+				.AddBootstrapper( new SaveBootstrapper() );
 
 			_bootstrapper.Bootstrap();
 
