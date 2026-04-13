@@ -66,11 +66,7 @@ namespace Nomad.Game.Application {
 	
 			GameplayCVars.Register( cvarSystem );
 
-			var splashScreen = GetNode<SplashSandTransition>( "PostProcessingContainer/PostProcessing/__NomadManagedSceneHost/SplashScreen" );
-			splashScreen.Finished += () => {
-				_menuManager = new MenuManager( sceneManager, eventFactory );
-				splashScreen.QueueFree();
-			};
+			_menuManager = new MenuManager( sceneManager, eventFactory );
 			_worldLoader = new SceneWorldLoader( sceneManager );
 			
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );

@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c5rjepxbbn8hu"]
+
+[ext_resource type="Shader" uid="uid://ck56nq0jgwy7f" path="res://Assets/Shaders/MenuFade.gdshader" id="1_ekkg8"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
+frequency = 0.51
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ekkg8"]
+noise = SubResource("FastNoiseLite_ejb01")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_ekkg8")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_ekkg8")
+shader_parameter/progress = 1.0
+shader_parameter/scale = 17.955
+shader_parameter/edge_softness = 0.050000002375
+shader_parameter/drift_strength = 0.25
+shader_parameter/ember_strength = 0.5
+shader_parameter/dust_opacity = 0.490000023275
+shader_parameter/wind_dir = Vector2(1, -0.25)
+shader_parameter/dust_color = Color(0.82, 0.68, 0.45, 1)
+shader_parameter/ember_color = Color(1, 0.42, 0.1, 1)
