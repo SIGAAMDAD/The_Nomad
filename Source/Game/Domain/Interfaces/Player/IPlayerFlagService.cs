@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player {
 	/// <summary>
@@ -23,6 +25,16 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 	/// </summary>
 	public interface IPlayerFlagService : IDisposable {
 		IReadOnlyList<string> CurrentFlags { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void ClearFlags();
 
 		/// <summary>
 		/// 
@@ -42,5 +54,11 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 		/// </summary>
 		/// <param name="flags"></param>
 		void RemoveFlags( PlayerFlags flags );
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flags"></param>
+		void ApplyFlags( IReadOnlyList<string> flags );
 	};
 };

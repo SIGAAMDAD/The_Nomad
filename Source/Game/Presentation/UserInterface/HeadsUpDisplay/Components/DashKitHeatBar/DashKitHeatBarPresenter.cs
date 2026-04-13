@@ -16,16 +16,48 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar {
+	/*
+	===================================================================================
+	
+	DashKitHeatBarPresenter
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class DashKitHeatBarPresenter {
 		private readonly IDashKitHeatBarModel _model;
 		private readonly IDashKitHeatBarView _view;
 
+		private float _lastFrameBurnoutAmount = 0.0f;
+
+		/*
+		===============
+		DashKitHeatBarPresenter
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="model"></param>
+		/// <param name="view"></param>
 		public DashKitHeatBarPresenter( IDashKitHeatBarModel model, IDashKitHeatBarView view ) {
 			_model = model;
 			_view = view;
 		}
 
+		/*
+		===============
+		Render
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public void Render() {
+			_view.ShowOverlayVisibility( _lastFrameBurnoutAmount > _model.BurnoutAmount );
 			_view.SetValue( _model.BurnoutAmount );
 		}
 	};

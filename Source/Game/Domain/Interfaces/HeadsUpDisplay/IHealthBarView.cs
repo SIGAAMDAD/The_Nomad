@@ -19,6 +19,9 @@ namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
 		void SetSizeParameters();
 		void SetTrail( float value );
 
+		void SetVeryLowHealthVisibility( bool visible );
+		void SetWarningBarsVisibility( bool visible );
+
 		float GetHealth();
 		float GetTrail();
 	};

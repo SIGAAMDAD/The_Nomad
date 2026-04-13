@@ -13,62 +13,39 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using System.Collections.Concurrent;
-using Nomad.Core.FileSystem;
+using System.Text.Json;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items {
-	internal sealed class ItemCatalog : DataLoader {
-		protected override string dataPath => "Assets/Items/";
-		protected override string extensionPattern => "*.item";
-
-		private readonly ConcurrentDictionary<Guid, ItemDefinition> _dataCache = new();
-
-		public ItemCatalog( IFileSystem fileSystem )
-			: base( fileSystem )
-		{
-		}
-
+	/*
+	===================================================================================
+	
+	ItemCatalog
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	internal sealed class ItemCatalog {
 		/*
 		===============
-		LoadDefinition
+		LoadItemBase
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
-		protected override bool LoadDefinition( string filePath ) {
-			using var fileBuffer = fileSystem.LoadFile( filePath );
-			if ( fileBuffer == null ) {
-				return false;
-			}
-
-			using var stream = fileBuffer.AsStream( 0, fileBuffer.Length );
-			using var document = JsonLoader.Parse( stream );
-
-			var definition = new ItemDefinition {
-				Weight = JsonLoader.GetOptional<float>( document.RootElement, "Weight", 0.0f ),
-				Name = JsonLoader.GetOptional<string>( document.RootElement, "Name", "UNKNOWN" ),
-				Type = JsonLoader.GetOptional<ItemType>( document.RootElement, "Type", ItemType.Consumable )
+		/// <param name="json"></param>
+		/// <param name="definition"></param>
+		public static ItemDefinition LoadItemBase( JsonElement json, ItemDefinition definition ) {
+			return definition with {
+				Weight = JsonLoader.TryGet( json, nameof( definition.Weight ), out float weight ) ? weight : 0.0f,
+				BaseCost = JsonLoader.TryGet( json, nameof( definition.BaseCost ), out float baseCost ) ? baseCost : 0.0f,
+				Name = JsonLoader.TryGet( json, nameof( definition.Name ), out string name ) ? name : $"Item#{definition.GetHashCode()}",
 			};
-			_dataCache.AddOrUpdate( Guid.NewGuid(), definition, ( id, old ) => {
-				old = old with {
-					Name = definition.Name,
-					Weight = definition.Weight,
-					Type = definition.Type
-				};
-				return old;
-			} );
-
-			return true;
-		}
-
-		public ItemDefinition? Get( Guid itemId ) {
-			return _dataCache.TryGetValue( itemId, out var item ) ? item : null;
 		}
 	};
 };

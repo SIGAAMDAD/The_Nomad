@@ -14,9 +14,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 namespace Nomad.Game.Domain.Data.Items {
-	public record ItemDefinition {
+	/// <summary>
+	/// 
+	/// </summary>
+	public abstract record ItemDefinition {
+		/// <summary>
+		/// 
+		/// </summary>
+		public abstract ItemType BaseType { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public string Name { get; init; }
-		public ItemType Type { get; init; }
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public float Weight { get; init; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public float BaseCost { get; init; }
 	};
 };

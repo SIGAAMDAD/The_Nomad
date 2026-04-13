@@ -22,13 +22,38 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar {
+	/*
+	===================================================================================
+	
+	DashKitHeatBarModel
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class DashKitHeatBarModel : IDashKitHeatBarModel {
 		public float BurnoutAmount { get; private set; }
 		public float MaxBurnout { get; private set; }
 		public HUDPreset Preset { get; private set; }
 		public Color Color { get; private set; }
 
+		private readonly IGameEventRegistryService _eventFactory;
+
+		/*
+		===============
+		DashKitHeatBarModel
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="eventFactory"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public DashKitHeatBarModel( IGameEventRegistryService eventFactory ) {
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
 			eventFactory
 				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnResourceChanged );
@@ -38,18 +63,51 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 				.Subscribe( OnDashModuleChanged );
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public void Dispose() {
+			_eventFactory
+				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnResourceChanged );
+			
+			_eventFactory
+				.GetEvent<PlayerDashModuleChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DASH_MODULE_CHANGED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnDashModuleChanged );
+		}
+
+		/*
+		===============
+		OnDashModuleChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashModuleChanged( in PlayerDashModuleChangedEventArgs args ) {
 			MaxBurnout = 1.0f;
 		}
 
+		/*
+		===============
+		OnResourceChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnResourceChanged( in PlayerResourceChangedEventArgs args ) {
 			if ( args.Resource != PlayerResourceType.JumpKitHeat ) {
 				return;
 			}
 			BurnoutAmount = args.NewValue;
-		}
-
-		public void Dispose() {
 		}
 	};
 };

@@ -71,6 +71,17 @@
 			}
 		},
 		{
+			"Name": "Use Arm Attachment",
+			"Id": "UseArmAttachment",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "G"
+			}
+		},
+		{
 			"Name": "Use Weapon",
 			"Id": "UseWeapon",
 			"ValueType": "Button",

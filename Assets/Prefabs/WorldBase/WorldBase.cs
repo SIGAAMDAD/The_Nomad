@@ -56,8 +56,8 @@ namespace Nomad.Game.Prefabs {
 			var audioDevice = serviceLocator.GetService<IAudioDevice>();
 			_sceneManager = serviceLocator.GetService<ISceneManager>();
 
-			var itemCatalog = new ItemCatalog( fileSystem );
-			serviceRegistry.AddSingleton( itemCatalog );
+			var firearmCatalog = new FirearmCatalog( fileSystem );
+			serviceRegistry.AddSingleton( firearmCatalog );
 
 			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 

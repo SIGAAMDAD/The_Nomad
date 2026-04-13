@@ -19,9 +19,11 @@ using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 using Nomad.UI;
 
 namespace Nomad.Game.Prefabs {
-	internal sealed partial class HealthBarView : EnginePanel, IHealthBarView {
+	internal sealed partial class HealthBarView : EngineColorRect, IHealthBarView {
 		private readonly HudComponentView _impl;
 		private ShaderMaterial _material;
+		private TextureRect _veryLowHealthOverlay;
+		private TextureRect _warningOverlay;
 
 		public HealthBarView() {
 			_impl = new HudComponentView( this );
@@ -57,10 +59,21 @@ namespace Nomad.Game.Prefabs {
 			_material.SetShaderParameter( "trail", value );
 		}
 
+		public void SetVeryLowHealthVisibility( bool visible ) {
+			_veryLowHealthOverlay.Visible = visible;
+		}
+
+		public void SetWarningBarsVisibility( bool visible ) {
+			_warningOverlay.Visible = visible;
+		}
+
 		protected override void OnInit() {
 			base.OnInit();
 
 			_material = (ShaderMaterial)Material;
+
+			_warningOverlay = GetNode<TextureRect>( "Overlay/WarningBars" );
+			_veryLowHealthOverlay = GetNode<TextureRect>( "Overlay/VeryLowHealth" );
 		}
 	};
 };

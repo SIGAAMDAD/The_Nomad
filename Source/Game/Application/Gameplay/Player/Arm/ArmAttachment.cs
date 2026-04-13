@@ -13,12 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
+using Nomad.Input.Events;
+using Nomad.Input.ValueObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	internal class ArmAttachment {
-		public ArmAttachment( IGameEventRegistryService eventRegistry ) {
-			
+		public ArmAttachment( IGameEventRegistryService eventFactory ) {
+			eventFactory
+				.GetEvent<ButtonActionEventArgs>( $"UseArmAttachment:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.Subscribe( OnUseArmAttachmentTriggered );
+		}
+
+		private void OnUseArmAttachmentTriggered( in ButtonActionEventArgs args ) {
+			if ( args.Phase != InputActionPhase.Started ) {
+				return;
+			}
 		}
 	};
 };

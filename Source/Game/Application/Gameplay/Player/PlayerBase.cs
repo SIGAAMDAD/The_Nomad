@@ -49,6 +49,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private readonly PlayerAnimationCoordinator _animator;
 		private readonly PlayerMovementController _movementController;
 		private readonly PlayerAudioService _audioService;
+		private readonly PlayerBulletTime _bulletTime;
 
 		//
 		// Services & Repositories
@@ -110,8 +111,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			} );
 			_audioService = prefab.AddComponent<PlayerAudioService>( comp => {
 				comp.Id = _id;
+				comp.FlagService = _flagService;
 			} );
 			_animator = new PlayerAnimationCoordinator( _id, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
+			_bulletTime = prefab.AddComponent<PlayerBulletTime>( comp => {
+				comp.FlagService = _flagService;
+				comp.DerivedStatService = _derivedStatService;
+				comp.ResourceService = _resourceService;
+			} );
 		}
 
 		/*

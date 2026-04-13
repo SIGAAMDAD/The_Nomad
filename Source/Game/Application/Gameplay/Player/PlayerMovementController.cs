@@ -44,9 +44,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		public IPlayerFlagService Flags { get; set; }
 
 		private float _effectiveMovementSpeed = 0.0f;
-		private bool _wasMovingLastFrame = false;
-		private bool _facingLeft = false;
 
+		private bool _isMoving = false;
 		private Vector2 _moveInput = Vector2.Zero;
 		private Vector2 _velocity = Vector2.Zero;
 
@@ -76,10 +75,6 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			eventFactory
 				.GetEvent<AxisActionEventArgs>( $"Move:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Subscribe( OnMoveActionTriggered );
-			
-			eventFactory
-				.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Subscribe( OnLookActionTriggered );
 			
 			_slideTimer = new Godot.Timer() {
 				WaitTime = Domain.Data.Player.Constants.SLIDE_DURATION,
@@ -115,7 +110,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 				.Subscribe( OnDashEnded );
 
 			_movementChanged = eventFactory
-				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{EventNames.PLAYER_MOVEMENT_CHANGED}", EventNames.NAMESPACE );
+				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{EventNames.PLAYER_MOVEMENT_CHANGED}", EventNames.NAMESPACE, EventFlags.NoLock );
 		}
 
 		/*
@@ -130,6 +125,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			base.OnShutdown();
 
 			var eventFactory = GameEventRegistry.Instance;
+
+			eventFactory
+				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_STARTED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnDashStarted );
+			
+			eventFactory
+				.GetEvent<EmptyEventArgs>( $"{Id}:{EventNames.PLAYER_DASH_ENDED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnDashEnded );
 
 			eventFactory
 				.GetEvent<PlayerDerivedStatChangedEventArgs>( EventNames.PLAYER_DERIVED_STAT_CHANGED, EventNames.NAMESPACE )
@@ -161,21 +164,19 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 			var previousVelocity = _velocity;
 
-			if ( _moveInput != Vector2.Zero ) {
+			if ( _isMoving ) {
 				_velocity = HandleAcceleration( delta );
 			} else {
 				_velocity = HandleDeceleration( delta );
 			}
 
 			bool isMovingNow = _velocity.LengthSquared() > 0.001f;
-
 			bool reverse =
 				MathF.Sign( previousVelocity.X ) != 0 &&
 				MathF.Sign( _moveInput.X ) != 0 &&
 				MathF.Sign( previousVelocity.X ) != MathF.Sign( _moveInput.X );
-			
-			_movementChanged.Publish( new PlayerMovementChangedEventArgs( previousVelocity, _velocity, isMovingNow, reverse, _facingLeft ) );
-			_wasMovingLastFrame = isMovingNow;
+
+			_movementChanged.Publish( new PlayerMovementChangedEventArgs( previousVelocity, _velocity, isMovingNow, reverse ) );
 
 			_prefab.Velocity = _velocity.ToGodot();
 			_prefab.MoveAndSlide();
@@ -192,7 +193,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplyDashingSpeedBonus() {
-			return Flags.GetFlags( PlayerFlags.Dashing ) ? Stats.GetValue( DerivedStatType.EffectiveDashSpeed ) : 1.0f;
+			return Flags.GetFlags( PlayerFlags.Dashing ) ? Stats.GetValue( DerivedStatType.EffectiveDashSpeed ) : 0.0f;
 		}
 
 		/*
@@ -206,7 +207,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplySlidingSpeedBonus() {
-			return Flags.GetFlags( PlayerFlags.Sliding ) ? 1200.0f : 1.0f;
+			return Flags.GetFlags( PlayerFlags.Sliding ) ? 1200.0f : 0.0f;
 		}
 
 		/*
@@ -325,23 +326,12 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnMoveActionTriggered( in AxisActionEventArgs args ) {
+			_isMoving = args.Phase == InputActionPhase.Started || args.Phase == InputActionPhase.Performed;
+
 			_moveInput = args.Value;
 
 			// invert the Y axis for the 2D plane
 			_moveInput.Y = -_moveInput.Y;
-		}
-
-		/*
-		===============
-		OnLookActionTriggered
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnLookActionTriggered( in AxisActionEventArgs args ) {
-			
 		}
 
 		/*
@@ -356,6 +346,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args ) {
 			if ( args.Phase == InputActionPhase.Started ) {
 				Flags.AddFlags( PlayerFlags.Sliding );
+				_slideTimer.Start();
 			}
 		}
 	};

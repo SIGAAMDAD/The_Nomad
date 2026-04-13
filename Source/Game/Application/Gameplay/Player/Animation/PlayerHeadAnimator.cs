@@ -24,10 +24,8 @@ using Nomad.CVars.Global;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Prefabs;
-using Nomad.Input.Events;
 using Nomad.Input.Interfaces;
 using Nomad.Scene.GameObjects;
-using Nomad.Core.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/*
@@ -42,24 +40,29 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// </summary>
 	
 	internal sealed class PlayerHeadAnimator : NomadBehaviour {
+		public Vector2 AngleToCursor { get; private set; }
+		public float LookAngle { get; private set; }
+
 		private EngineSprite2D _headSprite;
 		private PlayerPrefab _prefab;
 
 		private Vector2 _windowSize;
-		private Vector2 _mousePosition;
 
-		private IInputSnapshotService _snapshotService;
+		private readonly IInputSnapshotService _snapshotService;
 
+		/*
+		===============
+		PlayerHeadAnimator
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public PlayerHeadAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
 			var cvarSystem = CVarSystem.Instance;
 
 			_snapshotService = ServiceLocator.GetService<IInputSnapshotService>();
-			
-			eventFactory.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Subscribe( OnLookAngleChanged );
-			eventFactory.GetEvent<MousePositionChangedEventArgs>( Core.Constants.Events.Input.MOUSE_POSITION_CHANGED_EVENT, Core.Constants.Events.Input.NAMESPACE )
-				.Subscribe( OnMousePositionChanged );
 			
 			var windowSize = cvarSystem.GetCVarOrThrow<WindowResolution>( Core.Constants.CVars.EngineUtils.Display.WINDOW_RESOLUTION );
 			var size = (WindowSize)windowSize.Value;
@@ -77,34 +80,37 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
-			var toMouse = _mousePosition - _windowSize;
-			float angle = MathF.Atan2( toMouse.Y, toMouse.X );
-			_headSprite.Rotation = AngleMath.RadToDeg( angle );
+			var position = _prefab.GetViewport().GetMousePosition().ToSystem();
+
+			AngleToCursor = position - _windowSize;
+			LookAngle = MathF.Atan2( AngleToCursor.Y, AngleToCursor.X );
+			_headSprite.Rotation = AngleMath.RadToDeg( LookAngle );
+
+			switch ( AngleMath.GetQuadrantFromVector( AngleToCursor.X, AngleToCursor.Y ) ) {
+				case 1:
+				case 4:
+					_headSprite.FlipVertical = false;
+					_headSprite.Offset = new Godot.Vector2( 5.0f, -5.0f );
+					break;
+				case 2:
+				case 3:
+					_headSprite.FlipVertical = true;
+					_headSprite.Offset = new Godot.Vector2( 5.0f, 5.0f );
+					break;
+			}
 		}
 
 		public override void OnShutdown() {
 			base.OnShutdown();
 
-			var eventFactory = GameEventRegistry.Instance;
 			var cvarSystem = CVarSystem.Instance;
-
-			eventFactory.GetEvent<AxisActionEventArgs>( $"Look:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Subscribe( OnLookAngleChanged );
-			
 			var windowSize = cvarSystem.GetCVarOrThrow<WindowResolution>( Core.Constants.CVars.EngineUtils.Display.WINDOW_RESOLUTION );
 			windowSize.ValueChanged.Unsubscribe( OnWindowSizeChanged );
 		}
 
-		private void OnLookAngleChanged( in AxisActionEventArgs args ) {
-		}
-
 		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args ) {
-			var size = (WindowSize)args.NewValue;
-			_windowSize = new Vector2( size.Width, size.Height ) * 0.5f;
-		}
-
-		private void OnMousePositionChanged( in MousePositionChangedEventArgs args ) {
-			_mousePosition = new Vector2( args.PositionX, args.PositionY );
+			var size = _prefab.GetViewportRect().Size * 0.5f;
+			_windowSize = size.ToSystem();
 		}
 	};
 };

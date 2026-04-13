@@ -35,5 +35,29 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules {
 		public float DashBurnoutIncrease => 0.30f;
 		public float DashDuration => 0.65f;
 		public float BurnoutCooldown => 0.30f;
+
+		public float BurnoutResetDuration {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
+
+		public float DashVelocity {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
+
+		public int BaseIFrames {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
+
+		public float EnginePitchPerChain {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
 	};
 };

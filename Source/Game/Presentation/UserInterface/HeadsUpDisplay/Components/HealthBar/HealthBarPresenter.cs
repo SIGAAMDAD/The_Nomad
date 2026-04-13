@@ -17,6 +17,17 @@ using System;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
+	/*
+	===================================================================================
+	
+	HealthBarPresenter
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class HealthBarPresenter {
 		private readonly IHealthBarModel _model;
 		private readonly IHealthBarView _view;
@@ -24,8 +35,22 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		private readonly float _delay = 1.0f;
 		private readonly float _trailSpeed = 50.0f;
 
+		// TODO: make these configurable
+		private readonly float _veryLowHealthThreshold = 0.25f;
+		private readonly float _warningThreshold = 0.5f;
+
 		private int _delayExpirationTicks = 0;
 
+		/*
+		===============
+		HealthBarPresenter
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="model"></param>
+		/// <param name="view"></param>
 		public HealthBarPresenter( IHealthBarModel model, IHealthBarView view ) {
 			_model = model;
 			_view = view;
@@ -33,16 +58,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			_model.HealthChanged += OnHealthChanged;
 		}
 
-		private void OnHealthChanged() {
-			int now = DateTime.Now.Millisecond;
-			_delayExpirationTicks = now + (int)( _delay * 1000 );
-
-			if ( _model.LastWasHeal ) {
-				_view.SetTrail( _view.GetHealth() );
-			}
-			_view.SetValue( _model.Health / _model.MaxHealth );
-		}
-
+		/*
+		===============
+		Render
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delta"></param>
 		public void Render( float delta ) {
 			_view.SetSizeParameters();
 			
@@ -63,6 +87,28 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 				trail = MathF.Max( trail - deltaFrac, health );
 			}
 			_view.SetTrail( trail );
+		}
+
+		/*
+		===============
+		OnHealthChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		private void OnHealthChanged() {
+			int now = DateTime.Now.Millisecond;
+			_delayExpirationTicks = now + (int)( _delay * 1000 );
+
+			if ( _model.LastWasHeal ) {
+				_view.SetTrail( _view.GetHealth() );
+			}
+
+			float ratio = _model.Health / _model.MaxHealth;
+			_view.SetWarningBarsVisibility( ratio <= _warningThreshold );
+			_view.SetVeryLowHealthVisibility( ratio <= _veryLowHealthThreshold );
+			_view.SetValue( ratio );
 		}
 	};
 };

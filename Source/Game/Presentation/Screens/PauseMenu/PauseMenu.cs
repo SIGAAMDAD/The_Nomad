@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
@@ -155,7 +154,6 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnResumeGameButtonPressed( in EmptyEventArgs args ) {
-			GD.Print( "Resume game pressed" );
 			Visible = false;
 		}
 

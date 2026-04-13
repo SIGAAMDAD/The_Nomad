@@ -88,6 +88,18 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 		/*
 		===============
+		ClearFlags
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public void ClearFlags() {
+			_flags = PlayerFlags.None;
+		}
+
+		/*
+		===============
 		AddFlags
 		===============
 		*/
@@ -110,6 +122,25 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="flags"></param>
 		public void RemoveFlags( PlayerFlags flags ) {
 			_flags &= ~flags;
+		}
+
+		/*
+		===============
+		ApplyFlags
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flags"></param>
+		public void ApplyFlags( IReadOnlyList<string> flags ) {
+			ClearFlags();
+
+			for ( int i = 0; i < flags.Count; i++ ) {
+				if ( Enum.TryParse( typeof( PlayerFlags ), flags[ i ], out var flag ) ) {
+					AddFlags( (PlayerFlags)flag );
+				}
+			}
 		}
 
 		/*

@@ -25,6 +25,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Scene.GameObjects;
+using Nomad.Game.Domain.Interfaces.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -41,17 +42,26 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	
 	internal sealed class PlayerAudioService : NomadBehaviour {
 		public Guid Id { get; set; }
+		public IPlayerFlagService FlagService { get; set; }
 		private PlayerPrefab _prefab;
 
 		private readonly IAudioEmitter _walkEffectEmitter;
 		private readonly IAudioEmitter _dashEffectEmitter;
-		private readonly IAudioEmitter _foleyEmitter;
+		private readonly IAudioEmitter _slideEffectEmitter;
+
+		/// <summary>
+		/// An emitter meant for sounds only the local player can hear, such as bullet time, low health, heavy breathing, etc.
+		/// </summary>
+		private readonly IAudioEmitter _internalEffectsEmitter;
 		private readonly IListenerService _listenerService;
 
 		public PlayerAudioService() {
-			_walkEffectEmitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
-			_dashEffectEmitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
-			_foleyEmitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:Foley" );
+			var emitterFactory = ServiceLocator.GetService<IEmitterFactory>();
+			_walkEffectEmitter = emitterFactory.CreateEmitter( "SoundCategory:Foley" );
+			_dashEffectEmitter = emitterFactory.CreateEmitter( "SoundCategory:Foley" );
+			_slideEffectEmitter = emitterFactory.CreateEmitter( "SoundCategory:Foley" );
+			_internalEffectsEmitter = emitterFactory.CreateEmitter( "SoundCategory:FX" );
+
 			_listenerService = ServiceLocator.GetService<IListenerService>();
 		}
 
@@ -62,6 +72,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 
 			var legAnimator = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
 			legAnimator.AnimationLooped.Subscribe( OnLegAnimationLooped );
+
+			FlagService.FlagsChanged.Subscribe( OnFlagsChanged );
 
 			var eventFactory = GameEventRegistry.Instance;
 
@@ -87,6 +99,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			}
 			_walkEffectEmitter.Position = position;
 			_dashEffectEmitter.Position = position;
+			_slideEffectEmitter.Position = position;
 		}
 
 		private void OnDashStarted( in PlayerDashStartEventArgs args ) {
@@ -103,6 +116,18 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private void OnDashRecharged( in PlayerDashRechargedEventArgs args ) {
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
 			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
+		}
+
+		private void OnFlagsChanged( in PlayerFlagsChangedEventArgs args ) {
+			if ( args.NewFlags.HasFlag( PlayerFlags.Sliding ) ) {
+				_slideEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
+				_slideEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFoleyPlayerSlide ).Path );
+			}
+			if ( args.NewFlags.HasFlag( PlayerFlags.BulletTime ) ) {
+				_internalEffectsEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerSlowMoStart ).Path );
+			} else if ( args.OldFlags.HasFlag( PlayerFlags.BulletTime ) ) {
+				_internalEffectsEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerSlowMoEnd ).Path );
+			}
 		}
 
 		private void OnLegAnimationLooped( in EmptyEventArgs args ) {

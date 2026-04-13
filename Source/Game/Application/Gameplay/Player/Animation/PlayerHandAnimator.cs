@@ -13,3 +13,57 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Player;
+using Nomad.Scene.GameObjects;
+using Nomad.Game.Domain.Events.Player;
+using Nomad.Events.Globals;
+
+namespace Nomad.Game.Application.Gameplay.Player.Animation {
+	/*
+	===================================================================================
+	
+	PlayerHandAnimator
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	internal sealed class PlayerHandAnimator : PlayerAnimator {
+		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
+		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
+
+		/*
+		===============
+		PlayerHandAnimator
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public PlayerHandAnimator() {
+			var eventFactory = GameEventRegistry.Instance;
+
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Hand:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+		}
+
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void OnInit() {
+			base.OnInit();
+
+			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+		}
+
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
+		}
+	};
+};

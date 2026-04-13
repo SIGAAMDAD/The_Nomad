@@ -13,8 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Domain.Events.Gameplay;
+
 namespace Nomad.Game.Domain.Interfaces.Gameplay {
 	public interface ICombatService {
-		
+		DamageResult UseWeapon( in UseWeaponRequestEventArgs args );
 	};
 };
