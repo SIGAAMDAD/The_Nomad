@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Godot;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -39,6 +40,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	
 	public partial class OptionsContainer : EngineVerticalContainer {
 		private IMusicService _musicService;
+		private ShaderMaterial _material;
 
 		/*
 		===============
@@ -55,6 +57,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 			FindChild<EngineButton>( "HardModeButton" ).Clicked.Subscribe( OnHardDifficultySelected );
 			FindChild<EngineButton>( "CustomModeButton" ).Clicked.Subscribe( OnCustomDifficultySelected );
 			FindChild<EngineButton>( "BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
+			
+			_material = Material as ShaderMaterial;
 		}
 
 		/*

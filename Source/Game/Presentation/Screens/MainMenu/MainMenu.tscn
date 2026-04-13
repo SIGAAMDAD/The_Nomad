@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://4bgmvef7xly3"]
 
 [ext_resource type="Script" uid="uid://bfhxn0clec0fv" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
+[ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_ucyp2"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_lpod2"]
 
 [node name="MainMenu" type="Control" unique_id=486417476]
 light_mask = 2
 visibility_layer = 2
+material = ExtResource("1_ucyp2")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +19,7 @@ script = ExtResource("1_2o76q")
 metadata/_edit_use_anchors_ = true
 
 [node name="Logo" type="TextureRect" parent="." unique_id=224291744]
+use_parent_material = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13000001
@@ -31,6 +34,7 @@ texture = ExtResource("2_lpod2")
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=852986257]
+use_parent_material = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.23400001
@@ -43,25 +47,31 @@ offset_right = 0.3199463
 offset_bottom = -22.960022
 
 [node name="NewGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "NEW_GAME"
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "LOAD_GAME"
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "SETTINGS"
 
 [node name="ExtrasButton" parent="OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "EXTRAS"
 
 [node name="CreditsButton" parent="OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "CREDITS"
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
+use_parent_material = true
 layout_mode = 2
 text = "QUIT GAME"

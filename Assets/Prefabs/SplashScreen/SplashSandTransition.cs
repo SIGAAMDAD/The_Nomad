@@ -14,7 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using System;
+using Nomad.Events.Globals;
+using Nomad.Game.Application.UI;
+using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Application.UI.Menus.Events;
+using Nomad.UI;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -28,7 +32,7 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 	
-	public partial class SplashSandTransition : Control {
+	public partial class SplashSandTransition : EnginePanel {
 		private const float HOLD_TIME = 3.0f;
 		private const float FADE_TIME = 1.5f;
 
@@ -39,8 +43,6 @@ namespace Nomad.Game.Prefabs {
 		private TextureRect _thirdPartyLogos;
 		private TextureRect _godotLogo;
 		private Label _epilepsyWarning;
-
-		public event Action Finished;
 
 		/*
 		===============
@@ -66,7 +68,9 @@ namespace Nomad.Game.Prefabs {
 					tween.Connect( Tween.SignalName.Finished, Callable.From( OnShowEpilepsyWarning ) );
 					break;
 				case 2:
-					Finished?.Invoke();
+					GameEventRegistry
+						.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+						.Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Main ) );
 					break;
 			}
 			tween?.TweenMethod(
@@ -107,14 +111,14 @@ namespace Nomad.Game.Prefabs {
 
 		/*
 		===============
-		_Ready
+		OnInit
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
-			base._Ready();
+		protected override void OnInit() {
+			base.OnInit();
 
 			_godotLogo = GetNode<TextureRect>( "GodotLogo" );
 

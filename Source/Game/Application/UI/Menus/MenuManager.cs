@@ -20,6 +20,8 @@ using Nomad.Core.Engine.Globals;
 using Nomad.Core.Engine.Services;
 using System;
 using System.Collections.Generic;
+using Godot;
+using Nomad.UI;
 
 namespace Nomad.Game.Application.UI.Menus {
 	/*
@@ -34,22 +36,27 @@ namespace Nomad.Game.Application.UI.Menus {
 	/// </summary>
 
 	public sealed class MenuManager : IDisposable {
+		private const float FADE_TIME = 0.75f;
+		private static readonly StringName @ShaderVariableProgressName = "progress";
+
 		private MenuState _currentState = MenuState.None;
 		private MenuState _previousState = MenuState.None;
 
 		private readonly Dictionary<MenuState, string> _scenePaths = new Dictionary<MenuState, string>() {
-			[ MenuState.Main ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", StorageScope.Install ),
-			[ MenuState.Extras ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.tscn", StorageScope.Install ),
-			[ MenuState.Loading ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.Install ),
-			[ MenuState.Settings ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.Install ),
-			[ MenuState.NewGame ] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.tscn", StorageScope.Install )
+			[MenuState.Splash] = EngineService.GetStoragePath( "Prefabs/SplashScreen/SplashScreen.tscn", StorageScope.StreamingAssets ),
+			[MenuState.Main] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", StorageScope.Install ),
+			[MenuState.Extras] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.tscn", StorageScope.Install ),
+			[MenuState.Loading] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.Install ),
+			[MenuState.Settings] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.Install ),
+			[MenuState.NewGame] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.tscn", StorageScope.Install )
 		};
 
 		private readonly IGameEventRegistryService _eventRegistry;
 
 		private IScene? _currentScene;
 		private readonly ISceneManager _sceneManager;
-		private readonly ISubscriptionHandle _menuTransitionRequested;
+
+		private readonly Callable _setShaderProgressValue;
 
 		private bool _isDiposed = false;
 
@@ -67,8 +74,9 @@ namespace Nomad.Game.Application.UI.Menus {
 			_sceneManager = sceneManager;
 			_eventRegistry = eventFactory;
 
-			var menuTransitionRequested = eventFactory.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE );
-			_menuTransitionRequested = menuTransitionRequested.Subscribe( OnMenuTransitionRequested );
+			eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.Subscribe( OnMenuTransitionRequested );
 
 			sceneManager.LoadScene( EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MenuHub/MenuHub.tscn", StorageScope.Install ), LoadSceneMode.Single );
 		}
@@ -83,7 +91,9 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// </summary>
 		public void Dispose() {
 			if ( !_isDiposed ) {
-				_menuTransitionRequested?.Dispose();
+				_eventRegistry
+					.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+					.Subscribe( OnMenuTransitionRequested );
 			}
 			GC.SuppressFinalize( this );
 			_isDiposed = true;
@@ -100,25 +110,17 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// <param name="newState"></param>
 		/// <returns></returns>
 		public void TransitionToMenu( MenuState newState ) {
-			try {
-				if ( _currentState == newState ) {
-					return;
-				}
-
-				_previousState = _currentState;
-
-				if ( _currentScene != null ) {
-					_sceneManager.UnloadScene( _currentScene );
-				}
-
-				_currentScene = _sceneManager.LoadScene( _scenePaths[ newState ], LoadSceneMode.Additive );
-				_currentState = newState;
-
-				var menuTransitionCompleted = _eventRegistry.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE );
-				menuTransitionCompleted.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
-			} catch ( Exception e ) {
-				throw;
+			if ( _currentState == newState ) {
+				return;
 			}
+
+			_previousState = _currentState;
+			TransitionFrom( newState );
+			_currentState = newState;
+
+			_eventRegistry
+				.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE )
+				.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
 		}
 
 		/*
@@ -132,6 +134,66 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// <param name="args"></param>
 		private void OnMenuTransitionRequested( in MenuTransitionRequestedEventArgs args ) {
 			TransitionToMenu( args.ToState );
+		}
+
+		/*
+		===============
+		TransitionFrom
+		===============
+		*/
+		/// <summary>
+		/// Animates the transition between two menu screens.
+		/// </summary>
+		/// <param name="newState">The menu state to transition from.</param>
+		private void TransitionFrom( MenuState newState ) {
+			if ( _currentScene == null ) {
+				// in the case that we are initializing just skip straight to the splashscreen.
+				TransitionTo( MenuState.Splash );
+				return;
+			}
+			var root = _currentScene.Root.CastAs<EnginePanel>();
+			Tween tween = root.CreateTween();
+			ShaderMaterial shader = root.Material as ShaderMaterial;
+
+			shader.SetShaderParameter( ShaderVariableProgressName, 1.0f );
+			tween.TweenMethod(
+				Callable.From<float>( value => shader.SetShaderParameter( ShaderVariableProgressName, value ) ),
+				1.0f,
+				0.0f,
+				FADE_TIME
+			)
+			.SetTrans( Tween.TransitionType.Linear );
+			tween.Connect( Tween.SignalName.Finished, Callable.From( () => {
+				_sceneManager.UnloadScene( _currentScene );
+				TransitionTo( newState );
+		 	} ) );
+		}
+		
+		/*
+		===============
+		TransitionTo
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newState"></param>
+		private void TransitionTo( MenuState newState ) {
+			var toScene = _sceneManager.LoadScene( _scenePaths[newState], LoadSceneMode.Additive );
+			var root = toScene.Root.CastAs<EnginePanel>();
+			Tween tween = root.CreateTween();
+			ShaderMaterial shader = root.Material as ShaderMaterial;
+
+			_currentScene = toScene;
+
+			shader.SetShaderParameter( ShaderVariableProgressName, 0.0f );
+			tween.TweenMethod(
+				Callable.From<float>( value => shader.SetShaderParameter( ShaderVariableProgressName, value ) ),
+				0.0f,
+				1.0f,
+				FADE_TIME
+			)
+			.SetTrans( Tween.TransitionType.Linear );
 		}
 	};
 };

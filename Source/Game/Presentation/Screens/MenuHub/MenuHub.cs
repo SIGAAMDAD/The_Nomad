@@ -50,7 +50,7 @@ namespace Nomad.Game.Presentation.Screens.MenuHub {
 		/// </summary>
 		protected override void OnInit() {
 			SceneManager.LoadScene( EngineService.GetStoragePath( "Prefabs/MenuBackground/MenuBackground.tscn", StorageScope.StreamingAssets ), LoadSceneMode.Additive );
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Main ) );
+			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Splash ) );
 		}
 	};
 };

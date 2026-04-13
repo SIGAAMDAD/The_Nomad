@@ -1,30 +1,32 @@
 [gd_scene format=3 uid="uid://lo18vwcn05qx"]
 
 [ext_resource type="Script" uid="uid://bfcdaikc2gset" path="res://Assets/Prefabs/SplashScreen/SplashSandTransition.cs" id="1_5ao4a"]
+[ext_resource type="Shader" uid="uid://ck56nq0jgwy7f" path="res://Assets/Shaders/MenuFade.gdshader" id="1_mkkvq"]
 [ext_resource type="Shader" uid="uid://8yixyqoso0g1" path="res://Assets/Shaders/SplashScreenLogosFade.gdshader" id="2_5ao4a"]
+[ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="2_mkkvq"]
 [ext_resource type="Texture2D" uid="uid://boqhrse1rtiog" path="res://Assets/Textures/Logos/Godot mascot with rapier logo.png" id="3_5ao4a"]
 [ext_resource type="Texture2D" uid="uid://bkujojv3i03dm" path="res://Assets/Textures/Logos/FMOD Logo White - Transparent Background.png" id="4_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://btp5520673kjn" path="res://Assets/Textures/Logos/NomadFramework.png" id="6_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://lghrybel3eae" path="res://Assets/Textures/Logos/GodotLogo.png" id="6_5ao4a"]
-[ext_resource type="Shader" uid="uid://dqx10l1yd8hjx" path="res://Assets/Shaders/SoloLogoSplashScreenFade.gdshader" id="6_mkkvq"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
-frequency = 0.045
+frequency = 0.51
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2ybxc"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ekkg8"]
 noise = SubResource("FastNoiseLite_ejb01")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gxtmw"]
-shader = ExtResource("6_mkkvq")
-shader_parameter/noise_tex = SubResource("NoiseTexture2D_2ybxc")
+resource_local_to_scene = true
+shader = ExtResource("1_mkkvq")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_ekkg8")
 shader_parameter/progress = 1.0
-shader_parameter/scale = 14.925
-shader_parameter/edge_softness = 0.06
-shader_parameter/drift_strength = 0.0890000042275
+shader_parameter/scale = 17.955
+shader_parameter/edge_softness = 0.050000002375
+shader_parameter/drift_strength = 0.25
 shader_parameter/ember_strength = 0.5
-shader_parameter/dust_opacity = 0.6800000323
+shader_parameter/dust_opacity = 0.490000023275
 shader_parameter/wind_dir = Vector2(1, -0.25)
-shader_parameter/dust_color = Color(0.81960785, 0.57254905, 0.1764706, 1)
+shader_parameter/dust_color = Color(0.82, 0.68, 0.45, 1)
 shader_parameter/ember_color = Color(1, 0.42, 0.1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mkkvq"]
@@ -46,6 +48,8 @@ shader_parameter/time_scale = 4.00000019
 viewport_path = NodePath("SubViewport")
 
 [node name="SplashScreen" type="Control" unique_id=1253664552]
+texture_filter = 2
+material = SubResource("ShaderMaterial_gxtmw")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,6 +65,7 @@ one_shot = true
 
 [node name="EpilepsyWarning" type="Label" parent="." unique_id=914685969]
 visible = false
+use_parent_material = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.041
@@ -79,8 +84,7 @@ autowrap_mode = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="GodotLogo" type="TextureRect" parent="." unique_id=82550544]
-texture_filter = 2
-material = SubResource("ShaderMaterial_gxtmw")
+material = ExtResource("2_mkkvq")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.09200001
@@ -97,7 +101,6 @@ expand_mode = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="ThirdPartyLogos" type="TextureRect" parent="." unique_id=68675603]
-texture_filter = 2
 material = SubResource("ShaderMaterial_mkkvq")
 layout_mode = 1
 anchors_preset = 15
