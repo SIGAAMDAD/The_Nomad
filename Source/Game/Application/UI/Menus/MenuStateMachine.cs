@@ -16,7 +16,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Domain.Events.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Application.UI;
 using Nomad.UI;
 using System.Collections.Generic;
 
@@ -81,9 +80,13 @@ namespace Nomad.Game.Application.UI.Menus {
 			}
 
 			TState oldMenu = _currentMenu;
-			_states[ oldMenu ]?.Visible = false;
+			if ( _states[ oldMenu ] != null ) {
+				_states[ oldMenu ].Visible = false;
+			}
 			_currentMenu = stateId;
-			newState?.Visible = true;
+			if ( newState != null ) {
+				newState.Visible = true;
+			}
 
 			var menuStateChanged = _eventFactory.GetEvent<MenuStateChangedEventArgs<TState>>( UIConstants.MENU_STATE_CHANGED_EVENT, UIConstants.NAMESPACE );
 			menuStateChanged.Publish( new MenuStateChangedEventArgs<TState>( _menuId, oldMenu, _currentMenu ) );

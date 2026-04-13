@@ -13,10 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-
-namespace Nomad.Game.Domain.Data.Renown {
-	public record Trait {
-		public Guid Id { get; init; }
+namespace Nomad.Game.Domain.Data.World {
+	/// <summary>
+	/// 
+	/// </summary>
+	public readonly struct CalendarDefinition {
+		
 	};
 };

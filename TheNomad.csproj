@@ -1,8 +1,7 @@
 <Project Sdk="Godot.NET.Sdk/4.6.2">
   <PropertyGroup>
     <!-- Build Configuration -->
-    <TargetFramework>net10.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net10.0</TargetFramework>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <LangVersion>14.0</LangVersion>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -35,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Source\NomadFramework\**" />
+    <Compile Remove="android/build/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <!-- Ensures the source generation works correctly -->
@@ -51,6 +51,7 @@
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Events\Nomad.Events.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Input\Nomad.Input.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Console\Nomad.Console.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Save\Nomad.Save.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />
   </ItemGroup>
