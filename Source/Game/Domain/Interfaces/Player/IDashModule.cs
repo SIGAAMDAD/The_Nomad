@@ -47,5 +47,25 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 		/// The amount of time before the dashkit cools down after being used.
 		/// </summary>
 		float BurnoutCooldown { get; }
+
+		/// <summary>
+		/// The cooldown length after an overcharge before the dashkit can be used again.
+		/// </summary>
+		float BurnoutResetDuration { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		float DashVelocity { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		int BaseIFrames { get; }
+
+		/// <summary>
+		/// The module's audio pitch curve.
+		/// </summary>
+		float EnginePitchPerChain { get; }
 	};
 };

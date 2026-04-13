@@ -54,13 +54,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <param name="initialState"></param>
 		/// <param name="movementController"></param>
 		public PlayerAnimationCoordinator( Guid id, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController ) {
+			_headAnimator = prefab.AddComponent<PlayerHeadAnimator>();
 			_legAnimator = prefab.AddComponent<PlayerLegAnimator>( comp => {
 				comp.Id = id;
 			} );
 			_torsoAnimator = prefab.AddComponent<PlayerTorsoAnimator>( comp => {
 				comp.Id = id;
 			} );
-			_headAnimator = prefab.AddComponent<PlayerHeadAnimator>();
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
 		}
 	};

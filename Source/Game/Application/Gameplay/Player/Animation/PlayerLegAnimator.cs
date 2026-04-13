@@ -37,9 +37,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
 
-		private string _currentAnimation = "idle";
+		private PlayerAnimationState _state = PlayerAnimationState.Idle;
 		private Vector2 _lastVelocity = Vector2.Zero;
 		private bool _isBackpedaling = false;
+
+		private Godot.GpuParticles2D _dustPuff;
 
 		public PlayerLegAnimator() {
 			var eventFactory = GameEventRegistry.Instance;
@@ -59,6 +61,24 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			base.OnInit();
 
 			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			animator.AnimationLooped.Subscribe( OnLooped );
+
+			_dustPuff = animator.GetNode<Godot.GpuParticles2D>( "DustPuff" );
+		}
+
+		/*
+		===============
+		OnLooped
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnLooped( in EmptyEventArgs args ) {
+			if ( _state == PlayerAnimationState.Moving ) {
+				_dustPuff.Emitting = true;
+			}
 		}
 
 		/*
@@ -73,8 +93,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
 			if ( !args.IsMoving ) {
 				animator.Play( "idle" );
+				_state = PlayerAnimationState.Idle;
 				return;
 			}
+
+			_state = PlayerAnimationState.Moving;
 			// are we backpedaling?
 			if ( !args.WalkingReverse ) {
 				// sudden stop?

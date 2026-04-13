@@ -14,7 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Text.Json;
 using Nomad.Core.FileSystem;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Infrastructure.Gameplay {
 	/*
@@ -28,11 +32,15 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 	/// 
 	/// </summary>
 	
-	internal abstract class DataLoader {
+	internal abstract class DataLoader<TData>
+		where TData : class
+	{
 		protected abstract string dataPath { get; }
 		protected abstract string extensionPattern { get; }
 
 		protected readonly IFileSystem fileSystem;
+		protected readonly ConcurrentDictionary<Guid, TData> dataCache = new();
+		protected readonly ConcurrentDictionary<string, Guid> nameToGuid = new();
 
 		/*
 		===============
@@ -49,14 +57,56 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 
 			var files = this.fileSystem.GetFiles( dataPath, extensionPattern, true );
 			for ( int i = 0; i < files.Count; i++ ) {
-				LoadDefinition( files[i] );
+				using var fileBuffer = this.fileSystem.LoadFile( files[i] );
+				if ( fileBuffer == null ) {
+					return;
+				}
+				using var json = JsonLoader.Parse( fileBuffer.AsStream() );
+				if ( TryLoadDefinition( json.RootElement, out var definition ) ) {
+					var dataId = Path.GetFileNameWithoutExtension( files[i] );
+					if ( !nameToGuid.TryGetValue( dataId, out var guid ) ) {
+						guid = Guid.NewGuid();
+						nameToGuid[dataId] = guid;
+					}
+					dataCache[guid] = definition;
+				}
 			}
+		}
+
+		/*
+		===============
+		Get
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public TData? Get( Guid itemId ) {
+			return dataCache.TryGetValue( itemId, out var item ) ? item : null;
+		}
+
+		/*
+		===============
+		GuidFromName
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="itemName"></param>
+		/// <returns></returns>
+		public Guid GuidFromName( string itemName ) {
+			return nameToGuid.TryGetValue( itemName, out var guid ) ? guid : Guid.Empty;
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="filePath"></param>
-		protected abstract bool LoadDefinition( string filePath );
+		/// <param name="json"></param>
+		/// <param name="definition"></param>
+		/// <returns></returns>
+		protected abstract bool TryLoadDefinition( JsonElement json, out TData definition );
 	};
 };

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_xaw48"]
 
 [node name="SingleWorld" type="Node2D" unique_id=1220327146]
+process_mode = 1
 script = ExtResource("1_gohso")
 
 [node name="SaltWastes" parent="." unique_id=1364440601 instance=ExtResource("2_xaw48")]

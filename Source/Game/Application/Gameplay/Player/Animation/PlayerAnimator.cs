@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
+using Nomad.Core.Util;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
@@ -40,6 +41,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		protected PlayerPrefab prefab;
 		protected EngineAnimatedSprite2D animator;
 
+		private PlayerHeadAnimator _headAnimator;
+
 		public abstract IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
 
 		/*
@@ -54,6 +57,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			base.OnInit();
 
 			prefab = Object.CastAs<PlayerPrefab>();
+			_headAnimator = prefab.GetComponent<PlayerHeadAnimator>();
 
 			var eventFactory = GameEventRegistry.Instance;
 
@@ -74,11 +78,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		public override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
-			var velocity = prefab.Velocity;
-			if ( velocity.X > 0.0f ) {
-				Flip( false );
-			} else if ( velocity.X < 0.0f ) {
-				Flip( true );
+			switch ( AngleMath.GetQuadrantFromVector( _headAnimator.AngleToCursor.X, _headAnimator.AngleToCursor.Y ) ) {
+				case 1:
+				case 4:
+					Flip( false );
+					break;
+				case 2:
+				case 3:
+					Flip( true );
+					break;
 			}
 		}
 

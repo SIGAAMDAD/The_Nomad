@@ -22,6 +22,17 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
+	/*
+	===================================================================================
+	
+	HealthBarModel
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
 	internal sealed class HealthBarModel : IHealthBarModel {
 		public bool LastWasHeal { get; private set; }
 		public float Health { get; private set; }
@@ -31,7 +42,21 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 
 		public event Action HealthChanged;
 
+		private readonly IGameEventRegistryService _eventFactory;
+
+		/*
+		===============
+		HealthBarModel
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="eventFactory"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public HealthBarModel( IGameEventRegistryService eventFactory ) {
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
 			eventFactory
 				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
 				.Subscribe( OnResourceChanged );
@@ -41,9 +66,32 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 				.Subscribe( OnDerivedStatChanged );
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public void Dispose() {
+			_eventFactory
+				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnResourceChanged );
+			
+			_eventFactory
+				.GetEvent<PlayerDerivedStatChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DERIVED_STAT_CHANGED}", EventNames.NAMESPACE )
+				.Unsubscribe( OnDerivedStatChanged );
 		}
-
+		
+		/*
+		===============
+		UpdateColor
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		private void UpdateColor() {
 			Color = Color.Green;
 
@@ -57,6 +105,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			}
 		}
 
+		/*
+		===============
+		OnResourceChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnResourceChanged( in PlayerResourceChangedEventArgs args ) {
 			if ( args.Resource != PlayerResourceType.Health ) {
 				return;
@@ -68,6 +125,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			HealthChanged?.Invoke();
 		}
 
+		/*
+		===============
+		OnDerivedStatChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args ) {
 			if ( args.StatId != DerivedStatType.EffectiveHealthMax ) {
 				return;

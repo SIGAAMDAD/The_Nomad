@@ -32,23 +32,12 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 	/// </summary>
 
 	public partial class NomadButton : EngineButton {
-		[Export( PropertyHint.Range, "0,10,0.001,or_greater" )]
-		public float Duration = 0.25f;
-
-		[Export]
-		public bool AnimateScale = true;
-		[Export]
-		public bool AnimatePosition = false;
-		[Export]
-		public Tween.TransitionType TransitionType;
-
-		[ExportGroup( "Scale Properties", "scale_" )]
-		[Export]
-		public float ScaleIntensity = 1.10f;
-
-		[ExportGroup( "Position Properties", "position_" )]
-		[Export]
-		public Vector2 PositionValue = new Vector2( 0.0f, -4.0f );
+		private readonly float _duration = 0.25f;
+		private readonly bool _animateScale = true;
+		private readonly bool _animatePosition = false;
+		private readonly Tween.TransitionType _transitionType = Tween.TransitionType.Linear;
+		private readonly float _scaleIntensity = 1.10f;
+		private readonly Vector2 _positionValue = new Vector2( 0.0f, -4.0f );
 
 		public bool IsFocused => _isFocused;
 		private bool _isFocused = false;
@@ -94,13 +83,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// 
 		/// </summary>
 		private void HoverPositionAnimation() {
-			if ( !AnimatePosition ) {
+			if ( !_animatePosition ) {
 				return;
 			}
 			Tweening(
 				"position",
-				_isFocused ? PositionValue : Vector2.Zero,
-				Duration
+				_isFocused ? _positionValue : Vector2.Zero,
+				_duration
 			);
 		}
 
@@ -113,13 +102,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// 
 		/// </summary>
 		private void HoverScaleAnimation() {
-			if ( !AnimateScale ) {
+			if ( !_animateScale ) {
 				return;
 			}
 			Tweening(
 				"scale",
-				_isFocused ? new Vector2( ScaleIntensity, ScaleIntensity ) : Vector2.One,
-				Duration
+				_isFocused ? new Vector2( _scaleIntensity, _scaleIntensity ) : Vector2.One,
+				_duration
 			);
 		}
 
@@ -135,7 +124,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// <param name="finalValue"></param>
 		/// <param name="duration"></param>
 		private async void Tweening( NodePath property, Variant finalValue, float duration ) {
-			Tween tween = CreateTween().SetTrans( TransitionType );
+			Tween tween = CreateTween().SetTrans( _transitionType );
 			tween.TweenProperty( this, property, finalValue, duration );
 			await ToSignal( tween, Tween.SignalName.Finished );
 			tween.Kill();

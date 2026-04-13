@@ -1,127 +1,185 @@
 [gd_scene format=3 uid="uid://lo18vwcn05qx"]
 
-[ext_resource type="Script" uid="uid://c0n5hjd7x0j7a" path="res://Assets/Prefabs/SplashScreen/SplashScreen.cs" id="1_w2q2w"]
-[ext_resource type="VideoStream" uid="uid://xkjr5vteee8c" path="res://Assets/Prefabs/SplashScreen/godot_intro_animation_4k.ogv" id="2_ejb01"]
-[ext_resource type="Texture2D" uid="uid://b8tsio8j861nq" path="res://Assets/Prefabs/SplashScreen/pride-dark-c-side.png" id="2_nfv4h"]
-[ext_resource type="Texture2D" uid="uid://dr5jcwd1ncvgf" path="res://Assets/Textures/Logos/rapier_logo.png" id="4_ejb01"]
-[ext_resource type="Texture2D" uid="uid://c7x7qdvkmpj16" path="res://Assets/Textures/Logos/FMODLogo.png" id="5_2ybxc"]
+[ext_resource type="Script" uid="uid://bfcdaikc2gset" path="res://Assets/Prefabs/SplashScreen/SplashSandTransition.cs" id="1_5ao4a"]
+[ext_resource type="Shader" uid="uid://cditcuf6qpiuj" path="res://Assets/Shaders/SplashScreenFade.gdshader" id="2_5ao4a"]
+[ext_resource type="Texture2D" uid="uid://boqhrse1rtiog" path="res://Assets/Textures/Logos/Godot mascot with rapier logo.png" id="3_5ao4a"]
+[ext_resource type="Texture2D" uid="uid://bkujojv3i03dm" path="res://Assets/Textures/Logos/FMOD Logo White - Transparent Background.png" id="4_2ybxc"]
 [ext_resource type="Texture2D" uid="uid://btp5520673kjn" path="res://Assets/Textures/Logos/NomadFramework.png" id="6_2ybxc"]
+[ext_resource type="Texture2D" uid="uid://lghrybel3eae" path="res://Assets/Textures/Logos/GodotLogo.png" id="6_5ao4a"]
+[ext_resource type="Shader" uid="uid://dqx10l1yd8hjx" path="res://Assets/Shaders/SoloLogoSplashScreenFade.gdshader" id="6_mkkvq"]
 
-[node name="SplashScreen" type="Control" unique_id=1253664552 node_paths=PackedStringArray("_screens")]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5ao4a"]
+frequency = 0.84
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mkkvq"]
+noise = SubResource("FastNoiseLite_5ao4a")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mkkvq"]
+shader = ExtResource("2_5ao4a")
+shader_parameter/progress = 1.0
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_mkkvq")
+shader_parameter/wind_dir = Vector2(1, -0.08)
+shader_parameter/dissolve_scale = 13.090000574275
+shader_parameter/edge_width = 0.0010000000475
+shader_parameter/grain_strength = 1.0
+shader_parameter/drift_distance = 0.5
+shader_parameter/alpha_clip = 0.1750000083125
+shader_parameter/sand_color = Color(0.84, 0.71, 0.5, 1)
+shader_parameter/ember_color = Color(1, 0.47, 0.14, 1)
+shader_parameter/ember_amount = 0.1
+shader_parameter/glow_strength = 0.8
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ao4a"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
+frequency = 0.045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2ybxc"]
+noise = SubResource("FastNoiseLite_ejb01")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gxtmw"]
+shader = ExtResource("6_mkkvq")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_2ybxc")
+shader_parameter/progress = 1.0
+shader_parameter/scale = 14.925
+shader_parameter/edge_softness = 0.06
+shader_parameter/drift_strength = 0.0890000042275
+shader_parameter/ember_strength = 0.5
+shader_parameter/dust_opacity = 0.6800000323
+shader_parameter/wind_dir = Vector2(1, -0.25)
+shader_parameter/dust_color = Color(0.81960785, 0.57254905, 0.1764706, 1)
+shader_parameter/ember_color = Color(1, 0.42, 0.1, 1)
+
+[node name="SplashScreen" type="Control" unique_id=1253664552]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_w2q2w")
-_screens = []
+script = ExtResource("1_5ao4a")
 metadata/_edit_use_anchors_ = true
 
-[node name="GodotLogoAnimation" type="VideoStreamPlayer" parent="." unique_id=59797816]
-visible = false
+[node name="Timer" type="Timer" parent="." unique_id=850161156]
+wait_time = 2.0
+one_shot = true
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=68675603]
+texture_filter = 2
+material = SubResource("ShaderMaterial_mkkvq")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-stream = ExtResource("2_ejb01")
+texture = SubResource("ViewportTexture_5ao4a")
 metadata/_edit_use_anchors_ = true
 
-[node name="GodotPrideLogo" type="TextureRect" parent="." unique_id=1227701279]
-visible = false
-custom_minimum_size = Vector2(128, 128)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_nfv4h")
-expand_mode = 2
-metadata/_edit_use_anchors_ = true
+[node name="SubViewport" type="SubViewport" parent="." unique_id=272311378]
+size = Vector2i(800, 600)
+render_target_update_mode = 4
 
-[node name="3DPartyLogos" type="Control" parent="." unique_id=647747372]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="Background" type="ColorRect" parent="3DPartyLogos" unique_id=1466529130]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="Rapier2DLogo" type="TextureRect" parent="3DPartyLogos" unique_id=656898179]
-custom_minimum_size = Vector2(256, 172)
-layout_mode = 1
+[node name="BuiltWithLabel" type="Label" parent="SubViewport" unique_id=634043539]
 anchors_preset = -1
-anchor_left = 0.045
-anchor_top = 0.038000003
-anchor_right = 0.365
-anchor_bottom = 0.46500003
-offset_top = 0.19999886
-offset_bottom = -3.0517578e-05
-texture = ExtResource("4_ejb01")
-expand_mode = 4
+anchor_left = 0.44125003
+anchor_top = 0.25500003
+anchor_right = 0.55525
+anchor_bottom = 0.293
+offset_left = -3.0517578e-05
+offset_top = -1.5258789e-05
+offset_right = -0.19998169
+offset_bottom = 0.19999695
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "BUILT WITH"
+metadata/_edit_use_anchors_ = true
 
-[node name="FMODLogo" type="TextureRect" parent="3DPartyLogos" unique_id=84212596]
-layout_mode = 1
+[node name="Rapier2DLogo" type="TextureRect" parent="SubViewport" unique_id=656898179]
 anchors_preset = -1
-anchor_left = 0.30200002
-anchor_top = 0.47700003
-anchor_right = 0.717
-anchor_bottom = 0.59800005
+anchor_left = -0.13299999
+anchor_top = 0.19200005
+anchor_right = 0.49575004
+anchor_bottom = 0.72800004
 offset_left = 0.3999939
 offset_top = -0.2000122
-offset_right = 0.4000244
+offset_right = -0.100097656
 offset_bottom = 0.19998169
-texture = ExtResource("5_2ybxc")
-expand_mode = 2
+texture = ExtResource("3_5ao4a")
+expand_mode = 3
+metadata/_edit_use_anchors_ = true
 
-[node name="FMODAttribution" type="Label" parent="3DPartyLogos" unique_id=993428563]
-layout_mode = 1
+[node name="FMODLogo" type="TextureRect" parent="SubViewport" unique_id=84212596]
+custom_minimum_size = Vector2(272, 72)
 anchors_preset = -1
-anchor_left = 0.22200002
-anchor_top = 0.91300005
-anchor_right = 0.78900003
-anchor_bottom = 0.952
-offset_left = 0.39997864
-offset_top = 0.19995117
-offset_right = -0.2000122
+anchor_left = 0.33250004
+anchor_top = 0.407
+anchor_right = 0.6725001
+anchor_bottom = 0.527
+offset_left = -3.0517578e-05
+offset_top = -0.19999695
+offset_right = -6.1035156e-05
 offset_bottom = -0.2000122
-text = "Made using FMOD Studio by Firelight Technologies Pty Ltd."
+texture = ExtResource("4_2ybxc")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
-[node name="NomadFrameworkLogo" type="TextureRect" parent="3DPartyLogos" unique_id=2068582487]
-layout_mode = 1
+[node name="NomadFrameworkLogo" type="TextureRect" parent="SubViewport" unique_id=2068582487]
 anchors_preset = -1
-anchor_left = 0.67200005
-anchor_top = 0.12
-anchor_right = 0.8970001
-anchor_bottom = 0.393
-offset_left = 0.39996338
-offset_right = 0.39996338
-offset_bottom = 0.19999695
+anchor_left = 0.69150007
+anchor_top = 0.2963333
+anchor_right = 0.9402501
+anchor_bottom = 0.56616676
+offset_left = -0.20007324
+offset_top = 0.2000122
+offset_right = -0.20007324
+offset_bottom = 0.29995728
 texture = ExtResource("6_2ybxc")
 expand_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="NomadFrameworkAttribution" type="Label" parent="3DPartyLogos" unique_id=776022294]
+[node name="NomadFrameworkAttribution" type="Label" parent="SubViewport" unique_id=776022294]
+anchors_preset = -1
+anchor_top = 0.83500004
+anchor_right = 1.0
+anchor_bottom = 0.873
+offset_top = -3.0517578e-05
+offset_bottom = 0.2000122
+grow_horizontal = 2
+grow_vertical = 0
+text = "Made using NomadFramework by GDR Software"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="FMODAttribution" type="Label" parent="SubViewport" unique_id=993428563]
+anchors_preset = -1
+anchor_top = 0.873
+anchor_right = 1.0
+anchor_bottom = 0.91200006
+offset_top = 0.2000122
+offset_bottom = -0.2000122
+grow_horizontal = 2
+grow_vertical = 0
+text = "Made using FMOD Studio by Firelight Technologies Pty Ltd."
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="GodotLogo" type="TextureRect" parent="." unique_id=82550544]
+visible = false
+texture_filter = 2
+material = SubResource("ShaderMaterial_gxtmw")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.27
-anchor_top = 0.855
-anchor_right = 0.735
-anchor_bottom = 0.89300007
-offset_left = -1.5258789e-05
-offset_bottom = 0.19995117
-text = "Made using NomadFramework by GDR Software"
+anchor_left = 0.09200001
+anchor_top = 0.22666667
+anchor_right = 0.90599996
+anchor_bottom = 0.71466666
+offset_left = 0.3999939
+offset_right = 0.2000122
+offset_bottom = 0.19998169
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_5ao4a")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true

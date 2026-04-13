@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://e6q7p6bglw0" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplayOptionsContainer.cs" id="4_gcelo"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="4_sceel"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_yx041"]
-[ext_resource type="Script" uid="uid://cleir4o3hjo2m" path="res://Source/Game/Presentation/Screens/SettingsMenu/Advanced.cs" id="6_amo7r"]
+[ext_resource type="Script" uid="uid://36ru1ao14e22" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="6_amo7r"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
 [ext_resource type="Script" uid="uid://36ru1ao14e22" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainer.cs" id="8_1rltl"]
 [ext_resource type="Script" uid="uid://0yasjxnrioox" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]

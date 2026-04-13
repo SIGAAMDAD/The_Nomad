@@ -28,6 +28,7 @@ using Nomad.Logger.Globals;
 using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Game.Infrastructure;
 using Nomad.Game.Application.Gameplay.World;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application {
 	/*
@@ -65,7 +66,11 @@ namespace Nomad.Game.Application {
 	
 			GameplayCVars.Register( cvarSystem );
 
-			_menuManager = new MenuManager( sceneManager, eventFactory );
+			var splashScreen = GetNode<SplashSandTransition>( "PostProcessingContainer/PostProcessing/__NomadManagedSceneHost/SplashScreen" );
+			splashScreen.Finished += () => {
+				_menuManager = new MenuManager( sceneManager, eventFactory );
+				splashScreen.QueueFree();
+			};
 			_worldLoader = new SceneWorldLoader( sceneManager );
 			
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );

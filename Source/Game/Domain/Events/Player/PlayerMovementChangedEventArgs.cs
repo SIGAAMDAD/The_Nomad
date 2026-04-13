@@ -17,21 +17,19 @@ using System.Numerics;
 
 namespace Nomad.Game.Domain.Events.Player {
 	/// <summary>
-	/// 
+	/// Event that triggers every time the player's movement state changes.
 	/// </summary>
 	public readonly struct PlayerMovementChangedEventArgs {
 		public Vector2 OldVelocity { get; }
 		public Vector2 NewVelocity { get; }
 		public bool IsMoving { get; }
 		public bool WalkingReverse { get; }
-		public bool FacingLeft { get; }
 
-		public PlayerMovementChangedEventArgs( Vector2 oldVelocity, Vector2 newVelocity, bool isMoving, bool walkingReverse, bool facingLeft ) {
+		public PlayerMovementChangedEventArgs( Vector2 oldVelocity, Vector2 newVelocity, bool isMoving, bool walkingReverse ) {
 			OldVelocity = oldVelocity;
 			NewVelocity = newVelocity;
 			IsMoving = isMoving;
 			WalkingReverse = walkingReverse;
-			FacingLeft = facingLeft;
 		}
 	};
 };
