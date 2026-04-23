@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cj6mtuievu57c" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.cs" id="3_lo75g"]
 
 [node name="NomadButton" type="Button" unique_id=1938011170]
+use_parent_material = true
 anchors_preset = -1
 anchor_right = 0.006
 anchor_bottom = 0.011000001

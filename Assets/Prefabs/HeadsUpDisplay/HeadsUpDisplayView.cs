@@ -13,7 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Events.Globals;
+using Nomad.Game.Domain.Events.World;
 using Nomad.UI;
+using Godot;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -28,5 +31,20 @@ namespace Nomad.Game.Prefabs {
 	/// </summary>
 	
 	public partial class HeadsUpDisplayView : EnginePanel {
+		private Label _dateLabel;
+
+		protected override void OnInit() {
+			base.OnInit();
+
+			_dateLabel = GetNode<Label>( "DateLabel" );
+
+			GameEventRegistry
+				.GetEvent<MinuteChangedEventArgs>( EventNames.MINUTE_CHANGED, EventNames.NAMESPACE )
+				.Subscribe( OnMinuteChanged );
+		}
+
+		private void OnMinuteChanged( in MinuteChangedEventArgs args ) {
+			_dateLabel.Text = $"{args.Time.Hour}:{args.Time.Minute} {args.Time.Month}, {args.Time.Day} {args.Time.Year}";
+		}
 	};
 };

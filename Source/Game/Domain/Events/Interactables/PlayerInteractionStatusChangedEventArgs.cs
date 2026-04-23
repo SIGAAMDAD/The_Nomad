@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Game.Domain.Data.Interactables;
 
 namespace Nomad.Game.Domain.Events.Interactables {
@@ -20,10 +21,12 @@ namespace Nomad.Game.Domain.Events.Interactables {
 	/// 
 	/// </summary>
 	public readonly struct PlayerInteractionStatusChangedEventArgs {
+		public Guid InteractionItemId { get; }
 		public PlayerInteractionStatus OldStatus { get; }
 		public PlayerInteractionStatus NewStatus { get; }
 
-		public PlayerInteractionStatusChangedEventArgs( PlayerInteractionStatus oldStatus, PlayerInteractionStatus newStatus ) {
+		public PlayerInteractionStatusChangedEventArgs( Guid interactionItemId, PlayerInteractionStatus oldStatus, PlayerInteractionStatus newStatus ) {
+			InteractionItemId = interactionItemId;
 			OldStatus = oldStatus;
 			NewStatus = newStatus;
 		}

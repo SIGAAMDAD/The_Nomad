@@ -14,13 +14,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using CommandLine;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Save.Data;
 using Nomad.Save.Events;
 
 namespace Nomad.Game.Application.Gameplay.Player {
@@ -34,12 +34,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	internal sealed class PlayerSaveCoordinator {
 		private readonly IPlayerDerivedStatService _derivedStatService;
 		private readonly IPlayerResourceService _resourceService;
 		private readonly PlayerPrefab _prefab;
-		private readonly IPlayerFlagService _flagService;
+		private readonly IPlayerStateReader _stateReader;
+
+		private readonly object _lock = new();
 
 		/*
 		===============
@@ -53,10 +55,13 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="resourceService"></param>
 		/// <param name="prefab"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerSaveCoordinator( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService, PlayerPrefab prefab, IGameEventRegistryService eventFactory ) {
+		public PlayerSaveCoordinator( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService, IPlayerStateReader stateReader, PlayerPrefab prefab, IGameEventRegistryService eventFactory ) {
 			_derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
 			_resourceService = resourceService ?? throw new ArgumentNullException( nameof( resourceService ) );
 			_prefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
+			_stateReader = stateReader ?? throw new ArgumentNullException( nameof( stateReader ) );
+
+			global::Godot.GD.Print( "Creating save coordinator" );
 
 			eventFactory
 				.GetEvent<SaveBeginEventArgs>( Save.Data.EventNames.SAVE_BEGIN_EVENT, Save.Data.EventNames.NAMESPACE )
@@ -73,24 +78,27 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSaveBegin( in SaveBeginEventArgs args ) {
-			using var section = args.Writer.AddSection( "Player" );
+			lock ( _lock ) {
+				using var section = args.Writer.AddSection( "Player" );
 
-			section.AddField( nameof( DerivedStatType.EffectiveHealthMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveHealthMax ) );
-			section.AddField( nameof( DerivedStatType.EffectiveRageMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
-			section.AddField( nameof( DerivedStatType.EffectiveSanityMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveSanityMax ) );
+				section.AddField( nameof( DerivedStatType.EffectiveHealthMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveHealthMax ) );
+				section.AddField( nameof( DerivedStatType.EffectiveRageMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
+				section.AddField( nameof( DerivedStatType.EffectiveSanityMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveSanityMax ) );
 
-			var position = _prefab.GlobalPosition.ToSystem();
-			section.AddField( "PositionX", position.X );
-			section.AddField( "PositionY", position.Y );
+				var position = _prefab.GlobalPosition.ToSystem();
+				section.AddField( "PositionX", position.X );
+				section.AddField( "PositionY", position.Y );
+				section.AddField( "State", (byte)_stateReader.Current );
 
-			section.AddField( nameof( PlayerResourceType.Health ), _resourceService.GetValue( PlayerResourceType.Health ) );
-			section.AddField( nameof( PlayerResourceType.Rage ), _resourceService.GetValue( PlayerResourceType.Rage ) );
-			section.AddField( nameof( PlayerResourceType.Sanity ), _resourceService.GetValue( PlayerResourceType.Sanity ) );
+				section.AddField( nameof( PlayerResourceType.Health ), _resourceService.GetValue( PlayerResourceType.Health ) );
+				section.AddField( nameof( PlayerResourceType.Rage ), _resourceService.GetValue( PlayerResourceType.Rage ) );
+				section.AddField( nameof( PlayerResourceType.Sanity ), _resourceService.GetValue( PlayerResourceType.Sanity ) );
 
-			var jumpKit = _prefab.GetComponent<PlayerJumpKit>();
-			var module = jumpKit.Module;
+				var jumpKit = _prefab.GetComponent<PlayerJumpKit>();
+				var module = jumpKit.Module;
 
-			section.AddField( $"DashModule", module.Name );
+				section.AddField( $"DashModule", module.Name );
+			}
 		}
 	};
 };

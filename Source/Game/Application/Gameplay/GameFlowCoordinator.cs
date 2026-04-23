@@ -14,15 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
-using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.CVars;
-using Nomad.Game.Application.Configuration.Enums.Gameplay;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
@@ -100,11 +96,29 @@ namespace Nomad.Game.Application.Gameplay {
 			_isDisposed = true;
 		}
 
+		/*
+		===============
+		OnWorldBootstrapRequested
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
 			_category.PrintLine( "Loading world..." );
 			HandleWorldBootstrapRequested( in args );
 		}
 
+		/*
+		===============
+		HandleWorldBootstrapRequested
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void HandleWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
 			try {
 				WorldBootstrapResult result = _worldBootstrapper.Bootstrap( args );
@@ -131,9 +145,21 @@ namespace Nomad.Game.Application.Gameplay {
 			}
 		}
 
+		/*
+		===============
+		MapGameplayMode
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		private static GameplayMode MapGameplayMode( WorldBootstrapMode mode ) {
 			return mode switch {
-				WorldBootstrapMode.SinglePlayer => GameplayMode.Single,
+				WorldBootstrapMode.SinglePlayerNewGame => GameplayMode.Single,
+				WorldBootstrapMode.SinglePlayerLoadGame => GameplayMode.Single,
 				WorldBootstrapMode.MultiplayerHost => GameplayMode.Network,
 				WorldBootstrapMode.MultiplayerClient => GameplayMode.Network,
 				_ => throw new ArgumentOutOfRangeException( nameof( mode ), mode, null )

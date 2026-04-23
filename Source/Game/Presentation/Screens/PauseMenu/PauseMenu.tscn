@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cca2v6mecxhw3"]
 
-[ext_resource type="Script" uid="uid://b0fdjkd543qmp" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenu.cs" id="1_ocebb"]
+[ext_resource type="Script" uid="uid://bv6a1fqbtaifb" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuView.cs" id="1_03k4a"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_ugbl1"]
 [ext_resource type="Shader" uid="uid://btyjd7ohxwpru" path="res://Source/Game/Presentation/Screens/PauseMenu/TransitionFlicker.gdshader" id="2_03k4a"]
 
@@ -24,7 +24,7 @@ shader_parameter/use_peak_curve = true
 [node name="PauseMenu" type="CanvasLayer" unique_id=1841690282]
 process_mode = 3
 visible = false
-script = ExtResource("1_ocebb")
+script = ExtResource("1_03k4a")
 
 [node name="TransitionFlicker" type="ColorRect" parent="." unique_id=625334614]
 process_mode = 3
@@ -55,20 +55,20 @@ metadata/_edit_use_anchors_ = true
 
 [node name="ResumeGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "RESUME_GAME"
+text = "ui.pause.resume_game"
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=791109034 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "LOAD_GAME"
+text = "ui.load_game"
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=374986074 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "SETTINGSBUTTON"
+text = "ui.settings_menu"
 
 [node name="ExitWorldButton" parent="OptionsContainer" unique_id=167440039 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "EXIT_TO_MAIN_MENU"
+text = "ui.pause.exit_world"
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=2053121442 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "QUIT_TO_DESKTOP"
+text = "ui.quit_game"

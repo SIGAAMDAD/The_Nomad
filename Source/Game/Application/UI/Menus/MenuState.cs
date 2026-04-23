@@ -22,6 +22,7 @@ namespace Nomad.Game.Application.UI.Menus {
 		Extras,
 		Credits,
 		NewGame,
+		LoadGame,
 		
 		Pause,
 

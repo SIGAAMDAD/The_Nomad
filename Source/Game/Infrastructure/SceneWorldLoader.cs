@@ -20,10 +20,21 @@ using Nomad.Core.Util;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
 namespace Nomad.Game.Infrastructure {
+	/*
+	===================================================================================
+	
+	SceneWorldLoader
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+
 	internal sealed class SceneWorldLoader : IWorldLoader {
 		private static readonly Dictionary<InternString, string> _scenePaths = new() {
-			[ new( "world.single.default" )] = "Assets/Prefabs/SingleWorld/SingleWorld.tscn",
-			[ new( "world.network.default" )] = "Assets/Prefabs/NetworkWorld/NetworkWorld.tscn",
+			[new( "world.single.default" )] = "Assets/Prefabs/SingleWorld/SingleWorld.tscn",
+			[new( "world.network.default" )] = "Assets/Prefabs/NetworkWorld/NetworkWorld.tscn",
 		};
 
 		private readonly ISceneManager _sceneManager;

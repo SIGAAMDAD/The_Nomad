@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://biki41o0xqxfx"]
+
+[ext_resource type="Script" uid="uid://b80ew46wkbw5d" path="res://Source/Game/Presentation/Screens/LoadGameMenu/LoadGameMenuView.cs" id="1_visox"]
+[ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_w2u1f"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_oam2l"]
+
+[node name="LoadGameMenu" type="Control" unique_id=1420051496]
+material = ExtResource("1_w2u1f")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_visox")
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=148057333]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 60
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=1608206486]
+use_parent_material = true
+layout_mode = 2
+
+[node name="SlotList" type="VBoxContainer" parent="MarginContainer/ScrollContainer" unique_id=445401441]
+use_parent_material = true
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+
+[node name="ButtonContainer" type="HBoxContainer" parent="." unique_id=519372721]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9480001
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 31.199951
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="BackButton" parent="ButtonContainer" unique_id=2006554927 instance=ExtResource("3_oam2l")]
+layout_mode = 2
+text = "UI_BACK"
+
+[node name="DeleteSlotButton" parent="ButtonContainer" unique_id=1370062232 instance=ExtResource("3_oam2l")]
+layout_mode = 2
+text = "UI_LOADGAME_DELETESLOT"
+
+[node name="LoadSlotButton" parent="ButtonContainer" unique_id=617722901 instance=ExtResource("3_oam2l")]
+layout_mode = 2
+text = "UI_LOADGAME_LOADSLOT"

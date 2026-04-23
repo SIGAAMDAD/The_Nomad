@@ -18,6 +18,6 @@ using Nomad.Game.Domain.Events.Gameplay;
 
 namespace Nomad.Game.Domain.Interfaces.Gameplay {
 	public interface IWorldBootstrapper {
-		WorldBootstrapResult Bootstrap( WorldBootstrapRequestEventArgs request );
+		WorldBootstrapResult Bootstrap( in WorldBootstrapRequestEventArgs request );
 	};
 };

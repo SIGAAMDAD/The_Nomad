@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://deb8m0dblgv2j"]
+
+[ext_resource type="Script" uid="uid://blbf6k3mn54c8" path="res://Source/Game/Presentation/Screens/ModMenu/ModMenuView.cs" id="1_nf6xt"]
+
+[node name="ModMenu" type="Control" unique_id=576244292]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nf6xt")
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1769982564]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ModList" type="VBoxContainer" parent="ScrollContainer" unique_id=816443319]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/ModList" unique_id=1284446319]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/ModList/HBoxContainer" unique_id=2041694800]
+layout_mode = 2

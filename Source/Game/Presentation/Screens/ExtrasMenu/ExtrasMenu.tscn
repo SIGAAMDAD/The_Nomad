@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://l7k7jon212yb"]
 
 [ext_resource type="Script" uid="uid://codu0lw2yerd2" path="res://Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.cs" id="1_7nf3k"]
+[ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_omgvv"]
 [ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_0r0jo"]
 [ext_resource type="Script" uid="uid://bp0g60owcsy52" path="res://Source/Game/Presentation/Screens/ExtrasMenu/OptionsContainer.cs" id="2_f13g6"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="2_ybbbd"]
 [ext_resource type="PackedScene" uid="uid://ca65in2437vw6" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenu.tscn" id="4_0r0jo"]
 
 [node name="ExtrasMenu" type="Control" unique_id=1840752397]
+material = ExtResource("1_omgvv")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +19,7 @@ script = ExtResource("1_7nf3k")
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=1209745133]
+use_parent_material = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -33,29 +36,31 @@ script = ExtResource("2_f13g6")
 
 [node name="Title" parent="OptionsContainer" unique_id=1178157066 instance=ExtResource("2_0r0jo")]
 layout_mode = 2
-text = "EXTRAS"
+text = "UI_EXTRAS"
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="HSeparator" type="HSeparator" parent="OptionsContainer" unique_id=2058435098]
+use_parent_material = true
 layout_mode = 2
 
 [node name="MultiplayerButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("2_ybbbd")]
 layout_mode = 2
-text = "MULTIPLAYER"
+text = "UI_MULTIPLAYER"
 
 [node name="ChallengeModeButton" parent="OptionsContainer" unique_id=1833191803 instance=ExtResource("2_ybbbd")]
 layout_mode = 2
-text = "CHALLENGE_MODE"
+text = "UI_CHALLENGE_MODE"
 
 [node name="DeveloperCommentaryButton" parent="OptionsContainer" unique_id=1984206908 instance=ExtResource("2_ybbbd")]
 layout_mode = 2
-text = "DEVELOPER_COMMENTARY"
+text = "UI_DEVELOPER_COMMENTARY"
 
 [node name="BackButton" parent="OptionsContainer" unique_id=803415569 instance=ExtResource("2_ybbbd")]
 layout_mode = 2
-text = "BACK"
+text = "UI_BACK"
 
 [node name="MultiplayerMenu" parent="." unique_id=1563836225 instance=ExtResource("4_0r0jo")]
 visible = false
+use_parent_material = true
 layout_mode = 1

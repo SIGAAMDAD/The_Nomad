@@ -1,7 +1,7 @@
 <Project Sdk="Godot.NET.Sdk/4.6.2">
   <PropertyGroup>
     <!-- Build Configuration -->
-    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>14.0</LangVersion>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -21,19 +21,15 @@
 
     <NoWarn>$(NoWarn);CA2213;CA1501;CA1812</NoWarn>
   </PropertyGroup>
-  <!--
-  <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-  </PropertyGroup>
-  -->
+  
   <ItemGroup>
     <PackageReference Include="Godot.NET.Sdk" Version="4.6.2" />
     <PackageReference Include="Godot.SourceGenerators" Version="4.6.2" />
     <PackageReference Include="GodotSharp" Version="4.6.2" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Source\NomadFramework\**" />
+    <Compile Remove="Assets/Mods/**" />
+    <Compile Remove="Source/NomadFramework/**" />
     <Compile Remove="android/build/**/*.cs" />
   </ItemGroup>
   <ItemGroup>

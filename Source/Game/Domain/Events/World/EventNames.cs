@@ -14,7 +14,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 namespace Nomad.Game.Domain.Events.World {
+	/// <summary>
+	/// 
+	/// </summary>
 	public static class EventNames {
+		/// <summary>
+		/// 
+		/// </summary>
 		public const string NAMESPACE = "Nomad.Game.Domain.Events.World";
 
 		/// <summary>
@@ -41,5 +47,25 @@ namespace Nomad.Game.Domain.Events.World {
 		/// 
 		/// </summary>
 		public const string MINUTE_CHANGED = NAMESPACE + ".MinuteChanged";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string DAYTIME_START = NAMESPACE + ".DayTimeStart";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string NIGHTTIME_START = NAMESPACE + ".NightTimeStart";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string WEATHER_CHANGED = NAMESPACE + ".WeatherChanged";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public const string SEASON_CHANGED = NAMESPACE + ".SeasonChanged";
 	};
 };

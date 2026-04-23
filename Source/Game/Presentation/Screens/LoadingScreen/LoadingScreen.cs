@@ -52,7 +52,7 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			_tipSwitch = GameEventRegistry.GetEvent<EmptyEventArgs>( nameof( _tipSwitch ), nameof( LoadingScreen ) ).PublishEvery( default, 4500 );
+			_tipSwitch = GameEventRegistry.GetEvent<EmptyEventArgs>( nameof( _tipSwitch ), nameof( LoadingScreen ) ).PublishEvery( EmptyEventArgs.Args, 4500 );
 			_tipSubscription = _tipSwitch.Subscribe( OnSwitchTip );
 
 			_tipLabel = FindChild<EngineText>( "TipLabel" );

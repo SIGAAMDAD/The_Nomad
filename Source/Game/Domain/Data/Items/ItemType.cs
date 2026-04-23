@@ -14,11 +14,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 namespace Nomad.Game.Domain.Data.Items {
+	/// <summary>
+	/// 
+	/// </summary>
 	public enum ItemType : byte {
 		Consumable,
 		Ammunition,
-		Weapon,
+		Firearm,
+		Melee,
 		QuestItem,
+		Totem,
+		Rune,
+		Boon,
 
 		Count
 	};

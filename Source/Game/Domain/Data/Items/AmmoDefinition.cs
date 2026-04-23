@@ -13,6 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Text.Json;
+using Nomad.Core.Util;
+
 namespace Nomad.Game.Domain.Data.Items {
 	public sealed record AmmoDefinition : ItemDefinition {
 		public override ItemType BaseType => ItemType.Ammunition;
@@ -21,5 +24,15 @@ namespace Nomad.Game.Domain.Data.Items {
 		public float Range { get; init; }
 		public float Velocity { get; init; }
 		public float Damage { get; init; }
+
+		public static AmmoDefinition Load( JsonElement json ) {
+			return new AmmoDefinition {
+				Type = JsonLoader.TryGet( json, nameof( Type ), out AmmoType type ) ? type : AmmoType.Pistol,
+				Modifier = JsonLoader.TryGet( json, nameof( Modifier ), out AmmoModifier modifier ) ? modifier : AmmoModifier.None,
+				Damage = JsonLoader.TryGet( json, nameof( Damage ), out float damage ) ? damage : 0.0f,
+				Velocity = JsonLoader.TryGet( json, nameof( Velocity ), out float velocity ) ? velocity : 0.0f,
+				Range = JsonLoader.TryGet( json, nameof( Range ), out float range ) ? range : 0.0f,
+			};
+		}
 	};
 };

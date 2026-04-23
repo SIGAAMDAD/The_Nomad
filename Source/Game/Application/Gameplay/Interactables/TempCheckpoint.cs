@@ -28,5 +28,8 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 	/// </summary>
 	
 	internal sealed partial class TempCheckpoint : Interactable, ICheckpoint {
+		protected override void OnInit() {
+			base.OnInit();
+		}
 	};
 };

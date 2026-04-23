@@ -13,17 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using System;
 using Nomad.Core.Events;
-using Nomad.Core.Util;
-using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Interactables;
-using Nomad.Game.Prefabs;
-using Nomad.Input;
 using Nomad.Input.Events;
 using Nomad.Input.ValueObjects;
+using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Interactables {
 	/*
@@ -37,23 +34,24 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 	/// 
 	/// </summary>
 	
-	internal partial class Interactable : Area2D, IInteractable {
-		private static readonly InternString INTERACT_ACTION_NAME = new( "Interact" );
-
+	internal partial class Interactable : EngineObject2D, IInteractable {
 		public PlayerInteractionStatus PlayerStatus {
 			get => _playerStatus;
 			set {
+				if ( _playerStatus == value ) {
+					return;
+				}
 				PlayerInteractionStatus oldValue = _playerStatus;
 				_playerStatus = value;
-				_statusChanged.Publish( new PlayerInteractionStatusChangedEventArgs( oldValue, value ) );
+				_statusChanged.Publish( new PlayerInteractionStatusChangedEventArgs( Guid.Empty, oldValue, value ) );
 			}
 		}
 		private PlayerInteractionStatus _playerStatus = PlayerInteractionStatus.None;
 
 		public IGameEvent<PlayerInteractionStatusChangedEventArgs> StatusChanged => _statusChanged;
-		private IGameEvent<PlayerInteractionStatusChangedEventArgs> _statusChanged;
+		private readonly IGameEvent<PlayerInteractionStatusChangedEventArgs> _statusChanged = default;
 
-		private ISubscriptionHandle _playerInteractionAction;
+		private InteractableZone _zone;
 
 		/*
 		===============
@@ -65,7 +63,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnInteractionAction( in ButtonActionEventArgs args ) {
-			if ( _playerStatus != PlayerInteractionStatus.InRange || args.ActionId != INTERACT_ACTION_NAME ) {
+			if ( _playerStatus != PlayerInteractionStatus.InRange ) {
 				return;
 			}
 			if ( args.Phase == InputActionPhase.Performed ) {
@@ -75,63 +73,36 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 
 		/*
 		===============
-		OnBodyShapeExited
+		OnPlayerExited
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="bodyRid"></param>
-		/// <param name="body"></param>
-		/// <param name="bodyShapeIndex"></param>
-		/// <param name="localShapeIndex"></param>
-		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex ) {
-			if ( body is PlayerPrefab && ( _playerStatus == PlayerInteractionStatus.InRange || _playerStatus == PlayerInteractionStatus.Interacting ) ) {
+		private void OnPlayerExited() {
+			if ( _playerStatus == PlayerInteractionStatus.InRange || _playerStatus == PlayerInteractionStatus.Interacting ) {
 				PlayerStatus = PlayerInteractionStatus.None;
 			}
 		}
 
 		/*
 		===============
-		OnBodyShapeEntered
+		OnPlayerEntered
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="bodyRid"></param>
-		/// <param name="body"></param>
-		/// <param name="bodyShapeIndex"></param>
-		/// <param name="localShapeIndex"></param>
-		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex ) {
-			if ( body is PlayerPrefab ) {
-				PlayerStatus = PlayerInteractionStatus.InRange;
-			}
+		private void OnPlayerEntered() {
+			PlayerStatus = PlayerInteractionStatus.InRange;
 		}
 
-		public override void _Ready() {
-			base._Ready();
+		protected override void OnInit() {
+			base.OnInit();
 
-			_statusChanged = GameEventRegistry.GetEvent<PlayerInteractionStatusChangedEventArgs>( EventNames.PLAYER_INTERACTION_STATUS_CHANGED, EventNames.NAMESPACE );
-			_playerInteractionAction = GameEventRegistry.GetEvent<ButtonActionEventArgs>( $"Interact:{Constants.Events.BUTTON_ACTION}", Constants.Events.NAMESPACE )
-				.Subscribe( OnInteractionAction );
-
-			BodyShapeEntered += OnBodyShapeEntered;
-			BodyShapeExited += OnBodyShapeExited;
-		}
-
-		/*
-		===============
-		_ExitTree
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void _ExitTree() {
-			base._ExitTree();
-			
-			_playerInteractionAction?.Dispose();
+			_zone = new InteractableZone();
+			_zone.PlayerEntered += OnPlayerEntered;
+			_zone.PlayerExited += OnPlayerExited;
 		}
 	};
 };

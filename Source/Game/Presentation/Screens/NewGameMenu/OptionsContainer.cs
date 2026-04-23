@@ -90,7 +90,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
 				.Publish( new WorldBootstrapRequestEventArgs(
 					requestId: Guid.NewGuid(),
-					mode: WorldBootstrapMode.SinglePlayer,
+					mode: WorldBootstrapMode.SinglePlayerNewGame,
 					worldId: "world.single.default",
 					difficulty: DifficultyPreset.Standard,
 					lobbyId: null
@@ -113,7 +113,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
 				.Publish( new WorldBootstrapRequestEventArgs(
 					requestId: Guid.NewGuid(),
-					mode: WorldBootstrapMode.SinglePlayer,
+					mode: WorldBootstrapMode.SinglePlayerNewGame,
 					worldId: "world.single.default",
 					difficulty: DifficultyPreset.Hard,
 					lobbyId: null

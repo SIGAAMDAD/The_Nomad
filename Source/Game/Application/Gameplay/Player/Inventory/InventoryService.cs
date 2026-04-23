@@ -30,7 +30,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory {
 	
 	internal sealed class InventoryService {
 		private readonly IPlayerDerivedStatService _derivedStatService;
-
 		private readonly InventoryRepository _repository;
 
 		public InventoryService( IPlayerDerivedStatService derivedStatService ) {
