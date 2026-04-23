@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ueb1uithc46l" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenu.cs" id="1_823be"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_fymkd"]
 [ext_resource type="Script" uid="uid://dqwkt1qi1wof2" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/LobbyBrowser.cs" id="2_8mo5w"]
+[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_dmnlr"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_x15ph"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="3_4jm05"]
 
@@ -17,6 +18,7 @@ script = ExtResource("1_823be")
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=556280858]
+use_parent_material = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -27,20 +29,33 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
+[node name="Title" parent="OptionsContainer" unique_id=1178157066 instance=ExtResource("2_dmnlr")]
+layout_mode = 2
+text = "UI_EXTRAS_MULTIPLAYER"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="OptionsContainer" unique_id=1254039730]
+layout_mode = 2
+
 [node name="MatchmakeButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("1_fymkd")]
 layout_mode = 2
-text = "AUTO_MATCHMAKE"
+text = "UI_MULTIPLAYER_AUTOMATCHMAKE"
 
 [node name="LobbyBrowserButton" parent="OptionsContainer" unique_id=841835361 instance=ExtResource("1_fymkd")]
 layout_mode = 2
-text = "LOBBY_BROWSER"
+text = "UI_MULTIPLAYER_LOBBY_BROWSER"
+
+[node name="CreateLobbyButton" parent="OptionsContainer" unique_id=975288052 instance=ExtResource("1_fymkd")]
+layout_mode = 2
+text = "UI_MULTIPLAYER_CREATE_LOBBY"
 
 [node name="BackButton" parent="OptionsContainer" unique_id=1092678771 instance=ExtResource("1_fymkd")]
 layout_mode = 2
-text = "BACK_BUTTON"
+text = "UI_BACK"
 
 [node name="LobbyBrowserContainer" type="MarginContainer" parent="." unique_id=293870756]
 visible = false
+use_parent_material = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,9 +69,11 @@ theme_override_constants/margin_bottom = 80
 metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LobbyBrowserContainer" unique_id=890497805]
+use_parent_material = true
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="LobbyBrowserContainer/VBoxContainer" unique_id=1219705842]
+use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -64,12 +81,14 @@ horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
 [node name="LobbyListContainer" type="VBoxContainer" parent="LobbyBrowserContainer/VBoxContainer/ScrollContainer" unique_id=1998475401]
+use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2_8mo5w")
 
 [node name="FilterContainer" type="VBoxContainer" parent="LobbyBrowserContainer/VBoxContainer" unique_id=1538592772]
+use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -84,6 +103,7 @@ layout_mode = 2
 
 [node name="MatchmakingContainer" type="MarginContainer" parent="." unique_id=1544086465]
 visible = false
+use_parent_material = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

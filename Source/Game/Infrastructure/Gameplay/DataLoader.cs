@@ -35,9 +35,6 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 	internal abstract class DataLoader<TData>
 		where TData : class
 	{
-		protected abstract string dataPath { get; }
-		protected abstract string extensionPattern { get; }
-
 		protected readonly IFileSystem fileSystem;
 		protected readonly ConcurrentDictionary<Guid, TData> dataCache = new();
 		protected readonly ConcurrentDictionary<string, Guid> nameToGuid = new();
@@ -54,23 +51,6 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// <exception cref="ArgumentNullException"></exception>
 		protected DataLoader( IFileSystem fileSystem ) {
 			this.fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
-
-			var files = this.fileSystem.GetFiles( dataPath, extensionPattern, true );
-			for ( int i = 0; i < files.Count; i++ ) {
-				using var fileBuffer = this.fileSystem.LoadFile( files[i] );
-				if ( fileBuffer == null ) {
-					return;
-				}
-				using var json = JsonLoader.Parse( fileBuffer.AsStream() );
-				if ( TryLoadDefinition( json.RootElement, out var definition ) ) {
-					var dataId = Path.GetFileNameWithoutExtension( files[i] );
-					if ( !nameToGuid.TryGetValue( dataId, out var guid ) ) {
-						guid = Guid.NewGuid();
-						nameToGuid[dataId] = guid;
-					}
-					dataCache[guid] = definition;
-				}
-			}
 		}
 
 		/*
@@ -89,6 +69,20 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 
 		/*
 		===============
+		Get
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool TryGet( Guid itemId, out TData? item ) {
+			return dataCache.TryGetValue( itemId, out item );
+		}
+
+		/*
+		===============
 		GuidFromName
 		===============
 		*/
@@ -99,6 +93,35 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// <returns></returns>
 		public Guid GuidFromName( string itemName ) {
 			return nameToGuid.TryGetValue( itemName, out var guid ) ? guid : Guid.Empty;
+		}
+
+		/*
+		===============
+		ScanDirectory
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="dataPath"></param>
+		/// <param name="extensionPattern"></param>
+		protected void ScanDirectory( string dataPath, string extensionPattern ) {
+			var files = fileSystem.GetFiles( dataPath, extensionPattern, true );
+			for ( int i = 0; i < files.Count; i++ ) {
+				using var fileBuffer = fileSystem.LoadFile( files[i] );
+				if ( fileBuffer == null ) {
+					return;
+				}
+				using var json = JsonLoader.Parse( fileBuffer.AsStream() );
+				if ( TryLoadDefinition( json.RootElement, out var definition ) ) {
+					var dataId = Path.GetFileNameWithoutExtension( files[i] );
+					if ( !nameToGuid.TryGetValue( dataId, out var guid ) ) {
+						guid = Guid.NewGuid();
+						nameToGuid[dataId] = guid;
+					}
+					dataCache[guid] = definition;
+				}
+			}
 		}
 
 		/// <summary>

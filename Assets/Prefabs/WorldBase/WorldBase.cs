@@ -20,6 +20,7 @@ using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Game.Presentation.Screens.Gameplay;
@@ -56,12 +57,14 @@ namespace Nomad.Game.Prefabs {
 			var audioDevice = serviceLocator.GetService<IAudioDevice>();
 			_sceneManager = serviceLocator.GetService<ISceneManager>();
 
-			var firearmCatalog = new FirearmCatalog( fileSystem );
-			serviceRegistry.AddSingleton( firearmCatalog );
-
 			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 
 			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver, logger );
+
+			var itemCatalog = new ItemCatalog( fileSystem );
+			itemCatalog.AddLoader( ItemType.Ammunition, AmmoDefinition.Load );
+			itemCatalog.AddLoader( ItemType.Firearm, FirearmDefinition.Load  );
+			serviceRegistry.AddSingleton( new ItemCatalog( fileSystem ) );
 		}
 
 		/*

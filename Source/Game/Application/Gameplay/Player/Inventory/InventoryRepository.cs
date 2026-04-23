@@ -19,7 +19,7 @@ using Nomad.Game.Domain.Data.Items;
 
 namespace Nomad.Game.Application.Gameplay.Player.Inventory {
 	internal sealed class InventoryRepository {
-		private readonly Dictionary<Guid, ItemStack> _stacks = new();
+		private readonly Dictionary<Guid, ItemStorageService> _inventories = new();
 
 		public InventoryRepository() {
 		}

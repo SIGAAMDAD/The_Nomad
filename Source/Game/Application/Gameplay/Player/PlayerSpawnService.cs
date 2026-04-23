@@ -19,7 +19,6 @@ using Nomad.Core.Logger;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Game.Domain.Interfaces.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*

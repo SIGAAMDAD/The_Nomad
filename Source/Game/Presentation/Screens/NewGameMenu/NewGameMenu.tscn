@@ -43,7 +43,7 @@ metadata/_edit_use_anchors_ = true
 [node name="Title" type="Label" parent="OptionsContainer" unique_id=110466548]
 use_parent_material = true
 layout_mode = 2
-text = "NEW GAME"
+text = "UI_NEWGAME"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="OptionsContainer" unique_id=670325317]
@@ -51,28 +51,24 @@ use_parent_material = true
 layout_mode = 2
 
 [node name="StandardModeButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("5_4f1u2")]
-use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 6
-text = "STANDARD_DIFFICULTY_MODE"
+text = "UI_NEWGAME_STANDARD_MODE"
 
 [node name="HardModeButton" parent="OptionsContainer" unique_id=1144643278 instance=ExtResource("5_4f1u2")]
-use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 6
-text = "HARD_DIFFICULTY_MODE"
+text = "UI_NEWGAME_HARD_MODE"
 
 [node name="CustomModeButton" parent="OptionsContainer" unique_id=1501311376 instance=ExtResource("5_4f1u2")]
-use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 6
-text = "CUSTOM_DIFFICULTY_MODE"
+text = "UI_NEWGAME_CUSTOM_MODE"
 
 [node name="BackButton" parent="OptionsContainer" unique_id=1651535036 instance=ExtResource("5_4f1u2")]
-use_parent_material = true
 layout_mode = 2
 size_flags_horizontal = 6
-text = "BACK"
+text = "UI_BACK"
 
 [node name="CustomDifficultyContainer" type="Control" parent="." unique_id=140169052]
 visible = false
@@ -97,7 +93,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Title" type="Label" parent="CustomDifficultyContainer/VBoxContainer" unique_id=1196368756]
 layout_mode = 2
-text = "CUSTOM GAMEPLAY OPTIONS"
+text = "UI_NEWGAME_CUSTOM_GAMEPLAY_OPTIONS"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="CustomDifficultyContainer/VBoxContainer" unique_id=535586280]
@@ -134,12 +130,12 @@ size_flags_vertical = 8
 
 [node name="BackButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=289799171 instance=ExtResource("5_4f1u2")]
 layout_mode = 2
-text = "BACK"
+text = "UI_BACK"
 
 [node name="ResetButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=866776675 instance=ExtResource("5_4f1u2")]
 layout_mode = 2
-text = "RESET"
+text = "UI_RESET"
 
 [node name="NextButton" parent="CustomDifficultyContainer/VBoxContainer/CustomButtonContainer" unique_id=1449215447 instance=ExtResource("5_4f1u2")]
 layout_mode = 2
-text = "NEXT"
+text = "UI_NEXT"

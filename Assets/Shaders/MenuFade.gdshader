@@ -15,10 +15,11 @@ uniform vec4 dust_color : source_color = vec4(0.82, 0.68, 0.45, 1.0);
 uniform vec4 ember_color : source_color = vec4(1.0, 0.42, 0.1, 1.0);
 
 void fragment() {
-    vec4 base = texture(TEXTURE, UV);
+    vec4 base = COLOR;
 
     // Preserve transparent background around the logo.
-    if (base.a < 0.01) {
+    if (base.a <= 0.001) {
+		COLOR = vec4(0.0);
         discard;
     }
 

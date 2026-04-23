@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Engine.Services;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
@@ -38,6 +39,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		public IPlayerResourceService ResourceService { get; set; }
 		public IPlayerDerivedStatService DerivedStatService { get; set; }
 		public IPlayerFlagService FlagService { get; set; }
+		public ITimeService TimeService { get; set; }
 
 		private float _maxRage = 0.0f;
 		private float _bulletTimeRageDepletionRate = 2.5f;
@@ -134,8 +136,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_isActive = value;
 			if ( !_isActive ) {
 				FlagService.RemoveFlags( PlayerFlags.BulletTime );
+				TimeService.SetTimeScale( 0.5f );
 			} else {
 				FlagService.AddFlags( PlayerFlags.BulletTime );
+				TimeService.SetTimeScale( 1.0f );
 			}
 		}
 

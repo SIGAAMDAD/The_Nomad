@@ -98,6 +98,7 @@ namespace Nomad.Game.Infrastructure {
 					Flags = CVarFlags.Init | CVarFlags.ReadOnly
 				}
 			);
+
 			if ( fileSystem.FileExists( configFile.Value ) ) {
 				cvarSystem.Load( fileSystem, configFile.Value );
 			}

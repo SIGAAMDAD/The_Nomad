@@ -18,6 +18,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Scene.GameObjects;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Events.Globals;
+using Godot;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/*
@@ -32,6 +33,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// </summary>
 	
 	internal sealed class PlayerHandAnimator : PlayerAnimator {
+		public SpriteFrames Frames { get; set; }
+
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
 
@@ -61,8 +64,18 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			base.OnInit();
 
 			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			animator.SpriteFrames = Frames;
 		}
 
+		/*
+		===============
+		OnPlayerMovementChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
 		}
 	};

@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Core.Events;
 using Nomad.UI;
 
@@ -28,31 +29,6 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 	/// 
 	/// </summary>
 	
-	public partial class LobbyBrowser : EngineVerticalContainer {
-		private ISubscriptionGroup _filterGroup;
-
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnInit() {
-			base.OnInit();
-		}
-
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnShutdown() {
-			base.OnShutdown();
-		}
+	public partial class LobbyBrowser : VBoxContainer {
 	};
 };

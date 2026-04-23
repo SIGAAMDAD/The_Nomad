@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Collections.Generic;
+
 namespace Nomad.Game.Domain.Data.World {
 	/// <summary>
 	/// 
 	/// </summary>
-	public readonly struct CalendarDefinition {
-		
+	public sealed record CalendarDefinition {
+		public IReadOnlyList<MonthDefinition> Months { get; init; }
 	};
 };

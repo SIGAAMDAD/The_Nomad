@@ -14,14 +14,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.World {
 	/// <summary>
 	/// 
 	/// </summary>
 	public sealed record WorldDefinition {
-		public string Name { get; init; }
+		public InternString Name { get; init; }
+
+		public WorldTime StartTime { get; init; }
+
 		public CalendarDefinition Calendar { get; init; }
-		public List<BiomeDefinition> Biomes { get; init; }
+		public IReadOnlyDictionary<InternString, SeasonDefinition> Seasons { get; init; }
+		public IReadOnlyList<BiomeDefinition> Biomes { get; init; }
 	};
 };

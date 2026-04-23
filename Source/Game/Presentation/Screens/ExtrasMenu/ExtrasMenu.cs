@@ -62,20 +62,6 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 
 		/*
 		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnShutdown() {
-			base.OnShutdown();
-
-			_eventGroup?.Dispose();
-		}
-
-		/*
-		===============
 		OnDeveloperMenuDisplayStateChanged
 		===============
 		*/

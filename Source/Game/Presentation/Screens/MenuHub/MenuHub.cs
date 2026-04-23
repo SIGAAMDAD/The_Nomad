@@ -13,14 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core;
-using Nomad.Core.CVars;
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Engine.Services;
-using Nomad.Core.Engine.Windowing;
-using Nomad.Core.Events;
-using Nomad.CVars.Global;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
@@ -49,8 +44,8 @@ namespace Nomad.Game.Presentation.Screens.MenuHub {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			SceneManager.LoadScene( EngineService.GetStoragePath( "Prefabs/MenuBackground/MenuBackground.tscn", StorageScope.StreamingAssets ), LoadSceneMode.Additive );
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Splash ) );
+//			SceneManager.LoadScene( EngineService.GetStoragePath( "Prefabs/MenuBackground/MenuBackground.tscn", StorageScope.StreamingAssets ), LoadSceneMode.Additive );
+//			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Splash ) );
 		}
 	};
 };

@@ -17,17 +17,19 @@ using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Infrastructure.Gameplay.Items;
+using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Domain.Data.Items;
 
 namespace Nomad.Game.Application.Gameplay.GameServices {
 	internal sealed class CombatService : ICombatService {
-		private readonly FirearmCatalog _firearmCatalog;
+		private readonly IItemCatalog _firearmCatalog;
 
-		public CombatService( FirearmCatalog database ) {
+		public CombatService( IItemCatalog database ) {
 			_firearmCatalog = database;
 		}
 
 		public DamageResult UseWeapon( in UseWeaponRequestEventArgs args ) {
-			var weapon = _firearmCatalog.Get( args.WeaponId );
+			var weapon = _firearmCatalog.Get<FirearmDefinition>( args.WeaponId );
 			if ( weapon == null ) {
 				return new DamageResult(
 					null,

@@ -13,13 +13,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
-using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
-	public sealed partial class LobbyFilter : EngineVerticalContainer {
+	/*
+	===================================================================================
+	
+	LobbyFilter
+	
+	===================================================================================
+	*/
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	public sealed partial class LobbyFilter : VBoxContainer {
 		public IGameEvent<bool> ShowFullLobbiesChanged => _showFullLobbiesChanged;
 		private IGameEvent<bool> _showFullLobbiesChanged;
 
@@ -34,28 +45,16 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 
 		/*
 		===============
-		OnInit
+		_Ready
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
-			base.OnInit();
+		public override void _Ready() {
+			base._Ready();
 
 			_showFullLobbiesChanged = GameEventRegistry.GetEvent<bool>( UIConstants.SHOW_FULL_LOBBIES_CHANGED_EVENT, UIConstants.NAMESPACE );
-		}
-
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnShutdown() {
-			base.OnShutdown();
 		}
 	};
 };

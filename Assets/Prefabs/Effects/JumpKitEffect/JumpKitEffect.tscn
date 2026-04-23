@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b5auo6x0mgi2j"]
 
 [ext_resource type="Texture2D" uid="uid://c6p3dqucwxybi" path="res://Assets/Textures/Environment/PointLight.dds" id="1_40cnk"]
-[ext_resource type="Script" uid="uid://5q4ge1qrginh" path="res://Assets/Prefabs/JumpKitEffect/PointLight2d.cs" id="2_385py"]
+[ext_resource type="Script" uid="uid://5q4ge1qrginh" path="res://Assets/Prefabs/Effects/JumpKitEffect/PointLight2d.cs" id="2_385py"]
 
 [sub_resource type="Gradient" id="Gradient_s48sx"]
 offsets = PackedFloat32Array(0, 0.36214, 0.530864, 1)

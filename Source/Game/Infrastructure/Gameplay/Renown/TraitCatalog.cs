@@ -32,9 +32,6 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown {
 	/// </summary>
 	
 	internal sealed class TraitCatalog : DataLoader<TraitDefinition> {
-		protected override string dataPath => "Assets/Traits";
-		protected override string extensionPattern => "*.trait";
-
 		/*
 		===============
 		TraitCatalog
@@ -62,10 +59,9 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown {
 		/// <returns></returns>
 		protected override bool TryLoadDefinition( JsonElement json, out TraitDefinition definition ) {			
 			definition = new TraitDefinition {
-				Id = JsonLoader.GetRequired<string>( json, nameof( definition.Id ) ),
-				DisplayName = JsonLoader.GetRequired<string>( json, nameof( definition.DisplayName ) ),
-				Description = JsonLoader.GetRequired<string>( json, nameof( definition.Description ) ),
-				ShortSummary = JsonLoader.GetRequired<string>( json, nameof( definition.ShortSummary ) ),
+				Id = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.Id ) ) ),
+				DisplayName = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.DisplayName ) ) ),
+				Description = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.Description ) ) ),
 				OutstandingMargin = JsonLoader.GetRequired<int>( json, nameof( definition.OutstandingMargin ) ),
 				IsRegionBased = JsonLoader.GetRequired<bool>( json, nameof( definition.IsRegionBased ) ),
 				CanBleedToAdjacent = JsonLoader.GetRequired<bool>( json, nameof( definition.CanBleedToAdjacent ) ),

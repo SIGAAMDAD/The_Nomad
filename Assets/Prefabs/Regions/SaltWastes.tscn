@@ -18,4 +18,4 @@ seamless_blend_skirt = 0.8
 [node name="SandBackground" type="Polygon2D" parent="." unique_id=1173812449]
 texture_repeat = 2
 texture = SubResource("NoiseTexture2D_flhqy")
-polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 840, 250, 808, -358, 802, -666)
+polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 1056, -52, 802, -666)

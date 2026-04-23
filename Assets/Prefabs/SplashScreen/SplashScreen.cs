@@ -14,55 +14,99 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Events.Globals;
+using Nomad.Game.Application.UI;
+using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.UI;
-using System;
 
 namespace Nomad.Game.Prefabs {
 	/*
 	===================================================================================
-
+	
 	SplashScreen
-
+	
 	===================================================================================
 	*/
 	/// <summary>
 	/// 
 	/// </summary>
+	
+	internal sealed partial class SplashScreen : EnginePanel {
+		private const float HOLD_TIME = 6.0f;
+		private const float FADE_TIME = 1.5f;
 
-	public sealed partial class SplashScreen : EnginePanel {
-		private VideoStreamPlayer _videoPlayer;
-		private Control _logos;
+		private ShaderMaterial _shader;
+		private Timer _timer;
+		private int _stage = 0;
 
-		public event Action Finished;
+		private TextureRect _thirdPartyLogos;
+		private TextureRect _godotLogo;
+		private Label _epilepsyWarning;
 
 		/*
 		===============
-		OnGodotAnimationFinished
+		OnHoldTimeTimeout
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnGodotAnimationFinished() {
-			_videoPlayer.Visible = false;
+		private void OnHoldTimeTimeout() {
+			Tween? tween = _stage < 2 ? CreateTween() : null;
+			float from = 0.0f;
+			float to = 1.0f;
 
-			var timer = _logos.GetNode<Timer>( "Timer" );
-			timer.Start();
-			_logos.Visible = true;
+			switch ( _stage ) {
+				case 0:
+					tween.Connect( Tween.SignalName.Finished, Callable.From( OnShowEngineLogo ) );
+					_shader.SetShaderParameter( "edge_width", 0.075f );
+					break;
+				case 1:
+					from = 1.0f;
+					to = 0.0f;
+					tween.Connect( Tween.SignalName.Finished, Callable.From( OnShowEpilepsyWarning ) );
+					break;
+				case 2:
+					GameEventRegistry
+						.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+						.Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Main ) );
+					break;
+			}
+			tween?.TweenMethod(
+				Callable.From<float>( value => _shader.SetShaderParameter( "progress", value ) ),
+				from,
+				to,
+				FADE_TIME
+			)
+			.SetTrans( Tween.TransitionType.Linear );
+			_stage++;
 		}
 
 		/*
 		===============
-		OnTimerTimeout
+		OnShowEpilepsyWarning
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnTimerTimeout() {
-			Visible = false;
-			CallDeferred( Node.MethodName.QueueFree );
-			Finished?.Invoke();
+		private void OnShowEpilepsyWarning() {
+			_epilepsyWarning.Visible = true;
+			_timer.Start();
+		}
+
+		/*
+		===============
+		OnShowEngineLogo
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		private void OnShowEngineLogo() {
+			_shader = _godotLogo.Material as ShaderMaterial;
+			_timer.Start();
 		}
 
 		/*
@@ -74,14 +118,19 @@ namespace Nomad.Game.Prefabs {
 		/// 
 		/// </summary>
 		protected override void OnInit() {
-			// godot splash video attribution
-			_videoPlayer = GetNode<VideoStreamPlayer>( "GodotLogoAnimation" );
-			_videoPlayer.Connect( VideoStreamPlayer.SignalName.Finished, Callable.From( OnGodotAnimationFinished ) );
-			
-			// logo attributions
-			var timer = GetNode<Timer>( "ThirdPartyLogos/Timer" );
-			timer.Connect( Timer.SignalName.Timeout, Callable.From( OnTimerTimeout ) );
-			_logos = GetNode<Control>( "ThirdPartyLogos" );
+			base.OnInit();
+
+			_godotLogo = GetNode<TextureRect>( "GodotLogo" );
+
+			_timer = GetNode<Timer>( "Timer" );
+			_timer.WaitTime = HOLD_TIME;
+			_timer.Connect( Timer.SignalName.Timeout, Callable.From( OnHoldTimeTimeout ) );
+			_timer.Start();
+
+			_thirdPartyLogos = GetNode<TextureRect>( "ThirdPartyLogos" );
+			_shader = _thirdPartyLogos.Material as ShaderMaterial;
+
+			_epilepsyWarning = GetNode<Label>( "EpilepsyWarning" );
 		}
 	};
 };

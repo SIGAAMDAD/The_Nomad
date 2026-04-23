@@ -18,7 +18,6 @@ namespace Nomad.Game.Domain.Data.Items {
 	/// 
 	/// </summary>
 	public abstract record WeaponDefinition : ItemDefinition {
-		public override ItemType BaseType => ItemType.Weapon;
 		public WeaponType Type { get; init; }
 		public float BaseDurability { get; init; }
 	};

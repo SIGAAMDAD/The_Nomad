@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://4bgmvef7xly3"]
 
-[ext_resource type="Script" uid="uid://bfhxn0clec0fv" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenu.cs" id="1_2o76q"]
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_ucyp2"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
+[ext_resource type="Script" uid="uid://bhg2i4mrmysc6" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenuView.cs" id="2_ucyp2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_lpod2"]
 
 [node name="MainMenu" type="Control" unique_id=486417476]
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_2o76q")
+script = ExtResource("2_ucyp2")
 metadata/_edit_use_anchors_ = true
 
 [node name="Logo" type="TextureRect" parent="." unique_id=224291744]
@@ -47,31 +47,21 @@ offset_right = 0.3199463
 offset_bottom = -22.960022
 
 [node name="NewGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("3_lpod2")]
-use_parent_material = true
 layout_mode = 2
-text = "NEW_GAME"
+text = "UI_NEWGAME"
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=17782853 instance=ExtResource("3_lpod2")]
-use_parent_material = true
 layout_mode = 2
-text = "LOAD_GAME"
+text = "UI_LOADGAME"
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=597641786 instance=ExtResource("3_lpod2")]
-use_parent_material = true
 layout_mode = 2
-text = "SETTINGS"
+text = "UI_SETTINGSMENU"
 
 [node name="ExtrasButton" parent="OptionsContainer" unique_id=500990521 instance=ExtResource("3_lpod2")]
-use_parent_material = true
 layout_mode = 2
-text = "EXTRAS"
-
-[node name="CreditsButton" parent="OptionsContainer" unique_id=77999233 instance=ExtResource("3_lpod2")]
-use_parent_material = true
-layout_mode = 2
-text = "CREDITS"
+text = "UI_EXTRASMENU"
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
-use_parent_material = true
 layout_mode = 2
-text = "QUIT GAME"
+text = "UI_QUITGAME"

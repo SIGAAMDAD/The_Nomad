@@ -102,7 +102,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 
 			_valueLabel = FindChild<EngineText>( "Value" );
 
-			_valueSet = GameEventRegistry.GetEvent<int>( $"{Name}:{UIConstants.OPTION_LIST_VALUE_SET_EVENT}", UIConstants.NAMESPACE );
+			_valueSet = GameEventRegistry.GetEvent<int>( $"{GetHashCode()}:{UIConstants.OPTION_LIST_VALUE_SET_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*

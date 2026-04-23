@@ -52,6 +52,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "LOADING..."
 horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1355305070]
 material = SubResource("ShaderMaterial_oey1p")
@@ -65,6 +66,7 @@ offset_top = 32.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("2_mvx2s")
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=47120545]
 custom_minimum_size = Vector2(0, 120)
@@ -76,3 +78,4 @@ offset_top = 120.23993
 grow_horizontal = 2
 grow_vertical = 0
 texture = SubResource("GradientTexture1D_2m0pv")
+metadata/_edit_use_anchors_ = true

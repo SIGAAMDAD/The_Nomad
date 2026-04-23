@@ -18,7 +18,7 @@ using System.Numerics;
 using Nomad.Core.CVars;
 using Nomad.Core.Engine.Windowing;
 using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Core.Util;
+using Nomad.Core.Numerics;
 using Nomad.CVars;
 using Nomad.CVars.Global;
 using Nomad.EngineUtils;
@@ -70,6 +70,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			windowSize.ValueChanged.Subscribe( OnWindowSizeChanged );
 		}
 
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		///
 		public override void OnInit() {
 			base.OnInit();
 
@@ -77,6 +83,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			_headSprite = _prefab.FindChild<EngineSprite2D>( "HeadSprite" );
 		}
 
+		/*
+		===============
+		OnUpdate
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delta"></param>
 		public override void OnUpdate( float delta ) {
 			base.OnUpdate( delta );
 
@@ -84,7 +99,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 
 			AngleToCursor = position - _windowSize;
 			LookAngle = MathF.Atan2( AngleToCursor.Y, AngleToCursor.X );
-			_headSprite.Rotation = AngleMath.RadToDeg( LookAngle );
+			_headSprite.Rotation = AngleMath.ToDegrees( LookAngle );
 
 			switch ( AngleMath.GetQuadrantFromVector( AngleToCursor.X, AngleToCursor.Y ) ) {
 				case 1:
@@ -100,6 +115,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			}
 		}
 
+		/*
+		===============
+		OnShutdown
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void OnShutdown() {
 			base.OnShutdown();
 
@@ -108,6 +131,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			windowSize.ValueChanged.Unsubscribe( OnWindowSizeChanged );
 		}
 
+		/*
+		===============
+		OnWindowSizeChanged
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args ) {
 			var size = _prefab.GetViewportRect().Size * 0.5f;
 			_windowSize = size.ToSystem();

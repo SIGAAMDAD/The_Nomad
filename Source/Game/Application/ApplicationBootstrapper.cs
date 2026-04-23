@@ -15,12 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.UI.Menus;
 using Nomad.Core.Engine.SceneManagement;
-using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.UI;
 using Nomad.Game.Application.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Events.Globals;
 using Nomad.CVars.Global;
@@ -28,7 +25,8 @@ using Nomad.Logger.Globals;
 using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Game.Infrastructure;
 using Nomad.Game.Application.Gameplay.World;
-using Nomad.Game.Prefabs;
+using Nomad.Save.Services;
+using Nomad.Game.Application.Gameplay.Persistence;
 
 namespace Nomad.Game.Application {
 	/*
@@ -46,7 +44,9 @@ namespace Nomad.Game.Application {
 		private MenuManager _menuManager;
 		private IGameFlowCoordinator _gameFlowCoordinator;
 		private IWorldLoader _worldLoader;
-		private ISubscriptionHandle _onGameStateChanged;
+		private ISceneManager _sceneManager;
+		private IGameStateService _gameStateService;
+		private SaveGameController _saveController;
 
 		/*
 		===============
@@ -60,20 +60,20 @@ namespace Nomad.Game.Application {
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
-			var gameStateManager = new GameStateManager( eventFactory );
 			var cvarSystem = CVarSystem.Instance;
-			var sceneManager = ServiceLocator.GetService<ISceneManager>();
 	
 			GameplayCVars.Register( cvarSystem );
 
-			_menuManager = new MenuManager( sceneManager, eventFactory );
-			_worldLoader = new SceneWorldLoader( sceneManager );
-			
+			_sceneManager = ServiceLocator.GetService<ISceneManager>();
+			_gameStateService = new GameStateManager( eventFactory );
+			_menuManager = new MenuManager( _sceneManager, _gameStateService, eventFactory );
+			_worldLoader = new SceneWorldLoader( _sceneManager );
+			_saveController = new SaveGameController( ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
+
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
-			_gameFlowCoordinator = new GameFlowCoordinator( worldBootstrapper, eventFactory, gameStateManager, cvarSystem, Logging.Instance );
-			_onGameStateChanged = gameStateManager.StateChanged.Subscribe( OnGameStateChanged );
+			_gameFlowCoordinator = new GameFlowCoordinator( worldBootstrapper, eventFactory, _gameStateService, cvarSystem, Logging.Instance );
 			
-			ServiceRegistry.AddSingleton<IGameStateService>( gameStateManager );
+			ServiceRegistry.AddSingleton( _gameStateService );
 			ServiceRegistry.AddSingleton( _worldLoader );
 			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
 		}
@@ -89,26 +89,10 @@ namespace Nomad.Game.Application {
 		protected override void OnShutdown() {
 			base.OnShutdown();
 
-			_onGameStateChanged?.Dispose();
+			_gameFlowCoordinator?.Dispose();
 			_menuManager?.Dispose();
-		}
-
-		/*
-		===============
-		OnGameStateChanged
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnGameStateChanged( in GameStateChangedEventArgs args ) {
-			if ( args.CurrentState == GameState.Menu ) {
-				_menuManager = new MenuManager( ServiceLocator.GetService<ISceneManager>(), ServiceLocator.GetService<IGameEventRegistryService>() );
-			} else {
-				_menuManager?.Dispose();
-				_menuManager = null;
-			}
+			_saveController?.Dispose();
+			_gameStateService?.Dispose();
 		}
 	};
 };

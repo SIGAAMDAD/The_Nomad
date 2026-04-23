@@ -25,6 +25,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
+using Nomad.Game.Application.Gameplay.Inventory;
 
 namespace Nomad.Game.Application.Gameplay.Player {
 	/*
@@ -60,6 +61,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		private readonly IPlayerResourceService _resourceService;
 		private readonly PlayerStatDependencyGraph _dependencyGraph;
 		private readonly IPlayerFlagService _flagService;
+		private readonly PlayerSaveCoordinator _saveCoordinator;
+		private readonly InventoryContainer _container;
 		
 		private readonly PlayerPrefab _prefab;
 
@@ -95,6 +98,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_flagService = new PlayerFlagService( eventFactory );
 			_resourceService = new PlayerResourceService( _id, _derivedStatService, eventFactory );
 			_stateCoordinator = new PlayerStateCoordinator( _id, PlayerStateId.Idle, eventFactory );
+			_saveCoordinator = new PlayerSaveCoordinator( _derivedStatService, _resourceService, _stateCoordinator, _prefab, eventFactory );
 
 			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
 				_statsRepository.SetBaseStatValue( pair.Key, pair.Value );
@@ -137,6 +141,17 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			_isDisposed = true;
 		}
 
+		/*
+		===============
+		ApplySpawnProfile
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="spawnApplicator"></param>
+		/// <param name="profile"></param>
+		/// <param name="context"></param>
 		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context ) {
 			spawnApplicator.Apply( this, profile, _derivedStatService, _resourceService, _flagService, in context );
 		}

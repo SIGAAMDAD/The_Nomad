@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.World;
 
 namespace Nomad.Game.Domain.Events.World {
@@ -20,9 +21,11 @@ namespace Nomad.Game.Domain.Events.World {
 	/// 
 	/// </summary>
 	public readonly struct MonthChangedEventArgs {
+		public InternString Current { get; }
 		public WorldTime Time { get; }
 
-		public MonthChangedEventArgs( WorldTime time ) {
+		public MonthChangedEventArgs( InternString current, WorldTime time ) {
+			Current = current;
 			Time = time;
 		}
 	};

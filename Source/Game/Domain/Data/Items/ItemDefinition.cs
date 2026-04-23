@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
+
 namespace Nomad.Game.Domain.Data.Items {
 	/// <summary>
 	/// 
@@ -26,7 +28,12 @@ namespace Nomad.Game.Domain.Data.Items {
 		/// <summary>
 		/// 
 		/// </summary>
-		public string Name { get; init; }
+		public InternString Name { get; init; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public InternString JournalEntry { get; init; }
 
 		/// <summary>
 		/// 

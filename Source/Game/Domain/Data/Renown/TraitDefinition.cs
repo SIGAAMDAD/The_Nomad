@@ -14,14 +14,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.Renown {
 	public record TraitDefinition {
-		public string Id { get; init; }
-		public string DisplayName { get; init; }
-		public string Description { get; init; }
-		public string ShortSummary { get; init; }
-		
+		public InternString Id { get; init; }
+		public InternString DisplayName { get; init; }
+		public InternString Description { get; init; }
+
 		public int OutstandingMargin { get; init; }
 		public bool IsRegionBased { get; init; }
 		public bool CanBleedToAdjacent { get; init; }
@@ -45,7 +45,7 @@ namespace Nomad.Game.Domain.Data.Renown {
 		public int MinScore { get; init; }
 		public int MaxScore { get; init; }
 
-		public HashSet<string> ConflictingTraits { get; init; }
-		public Dictionary<string, float> FactionBias { get; init; }
+		public HashSet<InternString> ConflictingTraits { get; init; }
+		public Dictionary<InternString, float> FactionBias { get; init; }
 	};
 };
