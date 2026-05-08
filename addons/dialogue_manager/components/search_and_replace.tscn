@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://gr8nakpbrhby"]
+
+[ext_resource type="Script" uid="uid://cijsmjkq21cdq" path="res://addons/dialogue_manager/components/search_and_replace.gd" id="1_8oj1f"]
+
+[sub_resource type="DPITexture" id="DPITexture_w0gko"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[node name="SearchAndReplace" type="VBoxContainer" unique_id=782167968]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_8oj1f")
+
+[node name="Search" type="HBoxContainer" parent="." unique_id=1115363445]
+layout_mode = 2
+
+[node name="Input" type="LineEdit" parent="Search" unique_id=866352843]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Text to search for"
+metadata/_edit_use_custom_anchors = true
+
+[node name="MatchCaseCheckBox" type="CheckBox" parent="Search" unique_id=719779721]
+layout_mode = 2
+text = "Match case"
+
+[node name="VSeparator" type="VSeparator" parent="Search" unique_id=383542638]
+layout_mode = 2
+
+[node name="PreviousButton" type="Button" parent="Search" unique_id=1822683303]
+layout_mode = 2
+tooltip_text = "Previous"
+icon = SubResource("DPITexture_w0gko")
+flat = true
+
+[node name="ResultLabel" type="Label" parent="Search" unique_id=33824428]
+layout_mode = 2
+text = "0 of 0"
+
+[node name="NextButton" type="Button" parent="Search" unique_id=150789765]
+layout_mode = 2
+tooltip_text = "Next"
+icon = SubResource("DPITexture_w0gko")
+flat = true
+
+[node name="VSeparator2" type="VSeparator" parent="Search" unique_id=1416464951]
+layout_mode = 2
+
+[node name="ReplaceCheckButton" type="CheckButton" parent="Search" unique_id=922919703]
+layout_mode = 2
+text = "Replace"
+
+[node name="Replace" type="HBoxContainer" parent="." unique_id=1791659353]
+visible = false
+layout_mode = 2
+
+[node name="ReplaceLabel" type="Label" parent="Replace" unique_id=225415246]
+layout_mode = 2
+text = "Replace with:"
+
+[node name="Input" type="LineEdit" parent="Replace" unique_id=1832508436]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ReplaceButton" type="Button" parent="Replace" unique_id=763091563]
+layout_mode = 2
+disabled = true
+text = "Replace"
+flat = true
+
+[node name="ReplaceAllButton" type="Button" parent="Replace" unique_id=2095428838]
+layout_mode = 2
+disabled = true
+text = "Replace all"
+flat = true
+
+[connection signal="theme_changed" from="." to="." method="_on_search_and_replace_theme_changed"]
+[connection signal="visibility_changed" from="." to="." method="_on_search_and_replace_visibility_changed"]
+[connection signal="focus_entered" from="Search/Input" to="." method="_on_input_focus_entered"]
+[connection signal="gui_input" from="Search/Input" to="." method="_on_input_gui_input"]
+[connection signal="text_changed" from="Search/Input" to="." method="_on_input_text_changed"]
+[connection signal="toggled" from="Search/MatchCaseCheckBox" to="." method="_on_match_case_check_box_toggled"]
+[connection signal="pressed" from="Search/PreviousButton" to="." method="_on_previous_button_pressed"]
+[connection signal="pressed" from="Search/NextButton" to="." method="_on_next_button_pressed"]
+[connection signal="toggled" from="Search/ReplaceCheckButton" to="." method="_on_replace_check_button_toggled"]
+[connection signal="focus_entered" from="Replace/Input" to="." method="_on_input_focus_entered"]
+[connection signal="gui_input" from="Replace/Input" to="." method="_on_input_gui_input"]
+[connection signal="pressed" from="Replace/ReplaceButton" to="." method="_on_replace_button_pressed"]
+[connection signal="pressed" from="Replace/ReplaceAllButton" to="." method="_on_replace_all_button_pressed"]
