@@ -15,11 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions {
-	public sealed class ActionRunnerAdapter : IActionRunner {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions
+{
+	public sealed class ActionRunnerAdapter : IActionRunner
+	{
 		private readonly AiAction _owner;
 
-		public ActionRunnerAdapter( AiAction owner ) {
+		public ActionRunnerAdapter( AiAction owner )
+		{
 			_owner = owner ?? throw new ArgumentNullException( nameof( owner ) );
 		}
 

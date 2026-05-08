@@ -18,8 +18,10 @@ using System.Numerics;
 using Nomad.Core.UI;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
-	internal sealed class HudComponentView : IHudComponentView {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
+{
+	internal sealed class HudComponentView : IHudComponentView
+	{
 		public bool Visible {
 			get => _component.Visible;
 			set => _component.Visible = value;
@@ -27,11 +29,13 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
 
 		private readonly IUIElement _component;
 
-		public HudComponentView( IUIElement component ) {
+		public HudComponentView( IUIElement component )
+		{
 			_component = component;
 		}
 
-		public void SetColor( Vector4 color ) {
+		public void SetColor( Vector4 color )
+		{
 			_component.Color = Color.FromArgb( (int)color.W, (int)color.X, (int)color.Y, (int)color.Z );
 		}
 	};

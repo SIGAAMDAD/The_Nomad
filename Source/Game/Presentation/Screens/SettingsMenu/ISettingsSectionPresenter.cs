@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
-	internal interface ISettingsSectionPresenter {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
+	internal interface ISettingsSectionPresenter
+	{
 		void Save();
 		void Reset();
 		void SyncView();

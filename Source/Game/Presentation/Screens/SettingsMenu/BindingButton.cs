@@ -24,7 +24,8 @@ using Nomad.Input.Interfaces;
 using Nomad.Input.ValueObjects;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -35,8 +36,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed partial class BindingButton : EngineHorizontalContainer {
+
+	public sealed partial class BindingButton : EngineHorizontalContainer
+	{
 		private ISubscriptionHandle _keyboardEvent;
 
 		private bool _isRebinding = false;
@@ -54,7 +56,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// </summary>
 		/// <param name="mapping"></param>
 		/// <param name="bindName"></param>
-		public void SetBind( string mapping, string bindName ) {
+		public void SetBind( string mapping, string bindName )
+		{
 			var title = FindChild<NomadLabel>( "Title" );
 			title.Text = bindName;
 
@@ -68,10 +71,10 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			}
 
 			if ( _action.Bindings.Length >= 1 ) {
-				firstBind.Text = _action.Bindings[ 0 ].ToString();
+				firstBind.Text = _action.Bindings[0].ToString();
 			}
 			if ( _action.Bindings.Length >= 2 ) {
-				secondBind.Text = _action.Bindings[ 1 ].ToString();
+				secondBind.Text = _action.Bindings[1].ToString();
 			} else {
 				secondBind.Text = "UNBOUND";
 			}
@@ -85,15 +88,17 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
-			_keyboardEvent = GameEventRegistry.GetEvent<KeyboardEventArgs>( Constants.Events.Input.KEYBOARD_EVENT, Constants.Events.Input.NAMESPACE )
+			_keyboardEvent = GameEventRegistry.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace )
 				.Where( e => _isRebinding )
 				.Subscribe( OnSetBindKey );
 		}
 
-		private void OnSetBindKey( in KeyboardEventArgs args ) {
+		private void OnSetBindKey( in KeyboardEventArgs args )
+		{
 			if ( _action == null ) {
 				return;
 			}
@@ -110,7 +115,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <param name="mapping"></param>
 		/// <param name="bindName"></param>
 		/// <returns></returns>
-		private static InputActionDefinition? FindActionDefinition( string mapping, string bindName ) {
+		private static InputActionDefinition? FindActionDefinition( string mapping, string bindName )
+		{
 			var bindResolver = ServiceLocator.GetService<IBindResolver>();
 			var actions = bindResolver.GetBindMapping( mapping );
 
@@ -118,8 +124,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 				return null;
 			}
 			for ( int i = 0; i < actions.Count; i++ ) {
-				if ( actions[ i ].Name.Equals( bindName, System.StringComparison.InvariantCulture ) ) {
-					return actions[ i ];
+				if ( actions[i].Name.Equals( bindName, System.StringComparison.InvariantCulture ) ) {
+					return actions[i];
 				}
 			}
 			return null;

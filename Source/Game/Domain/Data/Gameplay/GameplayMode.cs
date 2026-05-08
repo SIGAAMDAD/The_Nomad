@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Gameplay {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum GameplayMode : byte {
+	public enum GameplayMode : byte
+	{
 		/// <summary>
 		/// Single player campaign.
 		/// </summary>
@@ -27,7 +29,7 @@ namespace Nomad.Game.Domain.Data.Gameplay {
 		/// Multiplayer mode.
 		/// </summary>
 		Network,
-		
+
 		/// <summary>
 		/// Arkham style challenge mode.
 		/// </summary>

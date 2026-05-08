@@ -20,10 +20,11 @@ using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Input.Events;
+using Nomad.Input;
 using Nomad.Input.ValueObjects;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -34,8 +35,9 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerBulletTime : NomadBehaviour {
+
+	internal sealed class PlayerBulletTime : NomadBehaviour
+	{
 		public IPlayerResourceService ResourceService { get; set; }
 		public IPlayerDerivedStatService DerivedStatService { get; set; }
 		public IPlayerFlagService FlagService { get; set; }
@@ -53,15 +55,16 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"BulletTime:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>( $"BulletTime:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
 				.Subscribe( OnBulletTimeTriggered );
-			
+
 			DerivedStatService.DerivedStatChanged.Subscribe( OnDerivedStatChanged );
 		}
 
@@ -74,12 +77,13 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="delta"></param>
-		public override void OnUpdate( float delta ) {
+		public override void OnUpdate( float delta )
+		{
 			base.OnUpdate( delta );
 
 			if ( _isActive ) {
 				float value = ResourceService.GetValue( PlayerResourceType.Rage );
-				value = Math.Clamp( value - ( _bulletTimeRageDepletionRate * delta ), 0.0f, DerivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
+				value = Math.Clamp( value - (_bulletTimeRageDepletionRate * delta), 0.0f, DerivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
 				ResourceService.SetValue( PlayerResourceType.Rage, value );
 				if ( value == 0.0f ) {
 					Toggle( false );
@@ -95,15 +99,16 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnShutdown() {
+		public override void OnShutdown()
+		{
 			base.OnShutdown();
-			
+
 			var eventFactory = GameEventRegistry.Instance;
-			
+
 			eventFactory
 				.GetEvent<ButtonActionEventArgs>( $"BulletTime:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
 				.Unsubscribe( OnBulletTimeTriggered );
-			
+
 			DerivedStatService.DerivedStatChanged.Unsubscribe( OnDerivedStatChanged );
 		}
 
@@ -116,7 +121,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		private bool ValidateState() {
+		private bool ValidateState()
+		{
 			return ResourceService.GetValue( PlayerResourceType.Rage ) > 0.0f;
 		}
 
@@ -129,7 +135,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="value"></param>
-		private void Toggle( bool value ) {
+		private void Toggle( bool value )
+		{
 			if ( !ValidateState() ) {
 				return;
 			}
@@ -152,7 +159,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnBulletTimeTriggered( in ButtonActionEventArgs args ) {
+		private void OnBulletTimeTriggered( in ButtonActionEventArgs args )
+		{
 			if ( args.Phase == InputActionPhase.Started ) {
 				Toggle( !_isActive );
 			}
@@ -167,7 +175,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args ) {
+		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args )
+		{
 			if ( args.StatId == DerivedStatType.EffectiveRageMax ) {
 				_maxRage = args.NewValue;
 			}

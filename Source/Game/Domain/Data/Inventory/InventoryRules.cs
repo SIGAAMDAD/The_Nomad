@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Data.Inventory {
-	public sealed record InventoryRules {
+namespace Nomad.Game.Domain.Data.Inventory
+{
+	public sealed record InventoryRules
+	{
 		public float MaxWeight { get; init; }
 		public bool IgnoreWeight { get; init; }
 

@@ -17,9 +17,11 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Core.Compatibility.Guards;
 using System;
 
-namespace Nomad.Game.Application.Gameplay {
+namespace Nomad.Game.Application.Gameplay
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +32,9 @@ namespace Nomad.Game.Application.Gameplay {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed class GameStateManager : IGameStateService {
+
+	public sealed class GameStateManager : IGameStateService
+	{
 		/// <summary>
 		/// 
 		/// </summary>
@@ -58,8 +61,10 @@ namespace Nomad.Game.Application.Gameplay {
 		/// 
 		/// </summary>
 		/// <param name="eventFactory"></param>
-		public GameStateManager( IGameEventRegistryService eventFactory ) {
-			_stateChanged = eventFactory.GetEvent<GameStateChangedEventArgs>( EventNames.GAME_STATE_CHANGED, EventNames.NAMESPACE );
+		public GameStateManager( IGameEventRegistryService eventFactory )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+			_stateChanged = eventFactory.GetEvent<GameStateChangedEventArgs>( GameStateChangedEventArgs.Name, GameStateChangedEventArgs.NameSpace );
 		}
 
 		/*
@@ -70,9 +75,10 @@ namespace Nomad.Game.Application.Gameplay {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
-				_stateChanged?.Dispose();
+				_stateChanged.Dispose();
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -87,7 +93,10 @@ namespace Nomad.Game.Application.Gameplay {
 		/// 
 		/// </summary>
 		/// <param name="newState"></param>
-		public void SetState( GameState newState ) {
+		public void SetState( GameState newState )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+
 			if ( newState == _currentState ) {
 				return;
 			}

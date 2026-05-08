@@ -17,32 +17,35 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Scene.GameObjects;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Nomad.Game.Application.Gameplay.SplitScreen {
-	internal sealed class SplitScreenService : IDisposable {
+namespace Nomad.Game.Application.Gameplay.SplitScreen
+{
+	internal sealed class SplitScreenService : IDisposable
+	{
 		private readonly IGameObject _worldRoot;
 		private readonly ISubscriptionHandle _spawnResultsReady;
 		private readonly ISplitScreenService _splitScreenService;
 
 		private bool _isDisposed = false;
 
-		public SplitScreenService( IGameEventRegistryService eventFactory, IServiceLocator serviceLocator, IGameObject worldRoot ) {
+		public SplitScreenService( IGameEventRegistryService eventFactory, IServiceLocator serviceLocator, IGameObject worldRoot )
+		{
 			_worldRoot = worldRoot ?? throw new ArgumentNullException( nameof( worldRoot ) );
 			_splitScreenService = serviceLocator.GetService<ISplitScreenService>();
 
 			_spawnResultsReady = eventFactory
-				.GetEvent<PlayerSpawnResultEventArgs>( EventNames.PLAYER_SPAWN_RESULT_READY, EventNames.NAMESPACE )
+				.GetEvent<PlayerSpawnResultEventArgs>( PlayerSpawnResultEventArgs.Name, PlayerSpawnResultEventArgs.NameSpace )
 				.Subscribe( OnPlayerSpawned );
 
 			Refresh();
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( _isDisposed ) {
 				return;
 			}
@@ -54,7 +57,8 @@ namespace Nomad.Game.Application.Gameplay.SplitScreen {
 			_isDisposed = true;
 		}
 
-		private void OnPlayerSpawned( in PlayerSpawnResultEventArgs args ) {
+		private void OnPlayerSpawned( in PlayerSpawnResultEventArgs args )
+		{
 			if ( !args.Success ) {
 				return;
 			}
@@ -62,12 +66,14 @@ namespace Nomad.Game.Application.Gameplay.SplitScreen {
 			Refresh();
 		}
 
-		private void Refresh() {
+		private void Refresh()
+		{
 			var players = GetPlayers();
 			_splitScreenService.Apply( _worldRoot, players );
 		}
 
-		private IReadOnlyList<IGameObject> GetPlayers() {
+		private IReadOnlyList<IGameObject> GetPlayers()
+		{
 			return _worldRoot
 				.Children
 				.Where( child => child.FindChild<IGameObject>( "Camera2D" ) != null )

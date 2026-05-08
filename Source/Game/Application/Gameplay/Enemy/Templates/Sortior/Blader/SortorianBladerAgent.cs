@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public class SortorianBladerAgent : NpcAgent {
+
+	public class SortorianBladerAgent : NpcAgent
+	{
 		public override WorkingMemory Memory => BladerMemory;
 		public SortorianBladerMemory BladerMemory { get; }
 
@@ -38,11 +40,13 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
 			BladerMemory = new SortorianBladerMemory();
 		}
 
-		protected override int GetPlanningBudget() {
+		protected override int GetPlanningBudget()
+		{
 			return 96;
 		}
 
-		protected override void OnActionFailed( PlannerAction action ) {
+		protected override void OnActionFailed( PlannerAction action )
+		{
 			if ( action.Name == "HeavyGuardBreak" || action.Name == "AdvanceToDuelRange" ) {
 				ForceReplan( ReplanReason.ActionFailed );
 			}

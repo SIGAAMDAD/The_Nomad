@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Gameplay {
-	public interface IWorldLoader {
+namespace Nomad.Game.Domain.Interfaces.Gameplay
+{
+	public interface IWorldLoader
+	{
 		IWorldHandle Load( string worldId );
 	};
 };

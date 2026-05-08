@@ -27,7 +27,8 @@ using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -38,8 +39,9 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerRepository : IDisposable {
+
+	internal sealed class PlayerRepository : IDisposable
+	{
 		private readonly ConcurrentDictionary<Guid, IPlayerBase> _players = new();
 		private readonly string _playerPrefab;
 
@@ -65,7 +67,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="gameStateService"></param>
 		/// <param name="sceneManager"></param>
 		/// <param name="playerPrefab"></param>
-		public PlayerRepository( IGameEventRegistryService eventFactory, IServiceRegistry registry, ILoggerService logger, IGameStateService gameStateService, ISceneManager sceneManager, string playerPrefab ) {
+		public PlayerRepository( IGameEventRegistryService eventFactory, IServiceRegistry registry, ILoggerService logger, IGameStateService gameStateService, ISceneManager sceneManager, string playerPrefab )
+		{
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_playerPrefab = playerPrefab;
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
@@ -84,7 +87,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
 				_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 			}
@@ -102,7 +106,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="origin"></param>
 		/// <returns></returns>
-		public PlayerBase CreatePlayer( in PlayerSpawnRequestedEventArgs args ) {
+		public PlayerBase CreatePlayer( in PlayerSpawnRequestedEventArgs args )
+		{
 			var composite = _sceneManager.LoadPrefab( _playerPrefab );
 
 			_logger.PrintLine( $"Adding player to active scene '{_sceneManager.ActiveScene.Name}'" );
@@ -111,10 +116,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			var guid = Constants.LOCAL_GUID;
 			var playerBase = new PlayerAggregate( guid, composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
 
-			_players[ guid ] = playerBase;
+			_players[guid] = playerBase;
 			return playerBase;
 		}
-		
+
 		/*
 		===============
 		OnGameStateChanged
@@ -124,7 +129,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnGameStateChanged( in GameStateChangedEventArgs args ) {
+		private void OnGameStateChanged( in GameStateChangedEventArgs args )
+		{
 			if ( args.CurrentState == GameState.Menu ) {
 				_players.Clear();
 			}

@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IStorageUnit {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IStorageUnit
+	{
 		InternString Id { get; }
 		InternString DisplayName { get; }
 

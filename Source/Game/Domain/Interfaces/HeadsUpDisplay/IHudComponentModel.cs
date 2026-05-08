@@ -17,8 +17,10 @@ using System;
 using System.Drawing;
 using Nomad.Game.Application.Configuration.Enums;
 
-namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
-	public interface IHudComponentModel : IDisposable {
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
+{
+	public interface IHudComponentModel : IDisposable
+	{
 		HUDPreset Preset { get; }
 		Color Color { get; }
 	};

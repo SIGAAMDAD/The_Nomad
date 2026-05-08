@@ -15,9 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	[Flags]
-	public enum PlayerJumpKitFlags : byte {
+	public enum PlayerJumpKitFlags : byte
+	{
 		IsBurnedOut = 1 << 0,
 		IsDashing = 1 << 1,
 		DashEnded = 1 << 2,

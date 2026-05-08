@@ -20,7 +20,8 @@ using System.Text.Json;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Infrastructure.Gameplay {
+namespace Nomad.Game.Infrastructure.Gameplay
+{
 	/*
 	===================================================================================
 	
@@ -31,7 +32,7 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	internal abstract class DataLoader<TData>
 		where TData : class
 	{
@@ -49,7 +50,8 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// </summary>
 		/// <param name="fileSystem"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		protected DataLoader( IFileSystem fileSystem ) {
+		protected DataLoader( IFileSystem fileSystem )
+		{
 			this.fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
 		}
 
@@ -63,7 +65,8 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <returns></returns>
-		public TData? Get( Guid itemId ) {
+		public TData? Get( Guid itemId )
+		{
 			return dataCache.TryGetValue( itemId, out var item ) ? item : null;
 		}
 
@@ -77,7 +80,8 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <returns></returns>
-		public bool TryGet( Guid itemId, out TData? item ) {
+		public bool TryGet( Guid itemId, out TData? item )
+		{
 			return dataCache.TryGetValue( itemId, out item );
 		}
 
@@ -91,7 +95,8 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// </summary>
 		/// <param name="itemName"></param>
 		/// <returns></returns>
-		public Guid GuidFromName( string itemName ) {
+		public Guid GuidFromName( string itemName )
+		{
 			return nameToGuid.TryGetValue( itemName, out var guid ) ? guid : Guid.Empty;
 		}
 
@@ -105,7 +110,8 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 		/// </summary>
 		/// <param name="dataPath"></param>
 		/// <param name="extensionPattern"></param>
-		protected void ScanDirectory( string dataPath, string extensionPattern ) {
+		protected void ScanDirectory( string dataPath, string extensionPattern )
+		{
 			var files = fileSystem.GetFiles( dataPath, extensionPattern, true );
 			for ( int i = 0; i < files.Count; i++ ) {
 				using var fileBuffer = fileSystem.LoadFile( files[i] );

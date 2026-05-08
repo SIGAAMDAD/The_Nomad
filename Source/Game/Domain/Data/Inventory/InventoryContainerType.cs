@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Inventory {
-	public enum InventoryContainerType : byte {
+namespace Nomad.Game.Domain.Data.Inventory
+{
+	public enum InventoryContainerType : byte
+	{
 		Backpack,
 		MelioraStash,
 		GroundLoot,

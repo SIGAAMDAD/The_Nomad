@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum WeaponSlotIndex : byte {
+	public enum WeaponSlotIndex : byte
+	{
 		LightSidearm,
 		LightPrimary,
 		HeavySidearm,

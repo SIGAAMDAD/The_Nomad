@@ -23,12 +23,13 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Input.Events;
+using Nomad.Input;
 using Nomad.Input.ValueObjects;
 using Nomad.Scene.GameObjects;
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
+namespace Nomad.Game.Application.Gameplay.Player.JumpKit
+{
 	/*
 	===================================================================================
 
@@ -39,8 +40,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerJumpKit : NomadBehaviour {
+
+	internal sealed class PlayerJumpKit : NomadBehaviour, IJumpKit
+	{
 		public Guid Id { get; set; }
 
 		public float BurnoutAmount => _runtime.BurnoutAmount;
@@ -55,14 +57,14 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 
 		public IDashModule Module => _module;
 		private IDashModule _module = new DefaultModule();
-		
+
 		private readonly DashRuntime _runtime = default;
 
 		public IGameEvent<PlayerDashStartEventArgs> DashStarted => _dashStarted;
 		private IGameEvent<PlayerDashStartEventArgs> _dashStarted = default;
 
-		public IGameEvent<EmptyEventArgs> DashEnded => _dashEnded;
-		private IGameEvent<EmptyEventArgs> _dashEnded = default;
+		public IGameEvent<PlayerDashEndedEventArgs> DashEnded => _dashEnded;
+		private IGameEvent<PlayerDashEndedEventArgs> _dashEnded = default;
 
 		public IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout => _dashBurnout;
 		private IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
@@ -80,11 +82,12 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// <summary>
 		/// 
 		/// </summary>
-		public PlayerJumpKit() {
+		public PlayerJumpKit()
+		{
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"Dash:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>( $"Dash:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
 				.Subscribe( OnDashActionTriggered );
 
 			_runtime = new DashRuntime(
@@ -93,39 +96,40 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 			);
 		}
 
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
-			
+
 			_prefab = Object.CastAs<PlayerPrefab>();
 
 			_light = _prefab.FindChild<EngineLight2D>( "JumpKitEffect/PointLight2D" );
 			_particles = _prefab.GetNode<GpuParticles2D>( "JumpKitEffect" );
-			
+
 			var eventFactory = GameEventRegistry.Instance;
 
 			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
-				$"{Id}:{EventNames.PLAYER_DASH_BURNOUT}",
-				EventNames.NAMESPACE
+				$"{Id}:{PlayerDashBurnoutEventArgs.Name}",
+				PlayerDashBurnoutEventArgs.NameSpace
 			);
 
 			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
-				$"{Id}:{EventNames.PLAYER_DASH_RECHARGED}",
-				EventNames.NAMESPACE
+				$"{Id}:{PlayerDashRechargedEventArgs.Name}",
+				PlayerDashRechargedEventArgs.NameSpace
 			);
 
 			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
-				$"{Id}:{EventNames.PLAYER_DASH_STARTED}",
-				EventNames.NAMESPACE
+				$"{Id}:{PlayerDashStartEventArgs.Name}",
+				PlayerDashStartEventArgs.NameSpace
 			);
 
-			_dashEnded = eventFactory.GetEvent<EmptyEventArgs>(
-				$"{Id}:{EventNames.PLAYER_DASH_ENDED}",
-				EventNames.NAMESPACE
+			_dashEnded = eventFactory.GetEvent<PlayerDashEndedEventArgs>(
+				$"{Id}:{PlayerDashEndedEventArgs.Name}",
+				PlayerDashEndedEventArgs.NameSpace
 			);
 
 			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				$"{Id}:{EventNames.PLAYER_RESOURCE_CHANGED}",
-				EventNames.NAMESPACE
+				$"{Id}:{PlayerResourceChangedEventArgs.Name}",
+				PlayerResourceChangedEventArgs.NameSpace
 			);
 		}
 
@@ -138,7 +142,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="delta"></param>
-		public override void OnUpdate( float delta ) {
+		public override void OnUpdate( float delta )
+		{
 			base.OnUpdate( delta );
 
 			DashUpdateResult result = _runtime.Update( delta, _module );
@@ -169,7 +174,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnShutdown() {
+		public override void OnShutdown()
+		{
 			base.OnShutdown();
 
 			_dashStarted?.Dispose();
@@ -187,7 +193,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="module"></param>
-		public void SetModule( IDashModule module ) {
+		public void SetModule( IDashModule module )
+		{
 			ArgumentGuard.ThrowIfNull( module );
 
 			_module = module;
@@ -203,7 +210,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <exception cref="InvalidOperationException"></exception>
-		private void TryStartDash() {
+		private void TryStartDash()
+		{
 			DashStartResult result = _runtime.TryStartDash( _module );
 
 			switch ( result.Status ) {
@@ -231,7 +239,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDashActionTriggered( in ButtonActionEventArgs args ) {
+		private void OnDashActionTriggered( in ButtonActionEventArgs args )
+		{
 			if ( args.Phase != InputActionPhase.Started ) {
 				return;
 			}
@@ -247,8 +256,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="result"></param>
-		private void OnBurnoutAmountChanged( in DashUpdateResult result ) {
-			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( result.BurnoutAmount, 0.0f, PlayerResourceType.JumpKitHeat ) );
+		private void OnBurnoutAmountChanged( in DashUpdateResult result )
+		{
+			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( 0.0f, result.BurnoutAmount, PlayerResourceType.JumpKitHeat ) );
 			// Optional integration point:
 			// - update HUD meter
 			// - publish a burnout-changed event
@@ -264,7 +274,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="result"></param>
-		private void PublishDashBurnout( in DashStartResult result ) {
+		private void PublishDashBurnout( in DashStartResult result )
+		{
 			_dashBurnout.Publish( default );
 		}
 
@@ -277,7 +288,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="result"></param>
-		private void PublishDashBurnout( in DashUpdateResult result ) {
+		private void PublishDashBurnout( in DashUpdateResult result )
+		{
 			_dashBurnout.Publish( default );
 		}
 
@@ -290,7 +302,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="result"></param>
-		private void PublishDashRecharged( in DashUpdateResult result ) {
+		private void PublishDashRecharged( in DashUpdateResult result )
+		{
 			_dashRecharged.Publish( default );
 		}
 	};

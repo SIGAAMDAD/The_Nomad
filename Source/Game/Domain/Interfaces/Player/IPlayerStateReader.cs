@@ -17,10 +17,18 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerStateReader {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	public interface IPlayerStateReader
+	{
 		PlayerStateId Current { get; }
 
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerStateChangedEventArgs" )]
+		[EventPayload( "OldState", typeof( PlayerStateId ), Order = 1 )]
+		[EventPayload( "NewState", typeof( PlayerStateId ), Order = 2 )]
 		IGameEvent<PlayerStateChangedEventArgs> StateChanged { get; }
 	};
 };

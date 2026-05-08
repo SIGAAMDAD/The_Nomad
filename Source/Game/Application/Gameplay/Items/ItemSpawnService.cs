@@ -16,32 +16,43 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
 using Nomad.Game.Domain.Events.Items;
+using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Application.Gameplay.Items {
+namespace Nomad.Game.Application.Gameplay.Items
+{
 	/*
 	===================================================================================
-	
+
 	ItemSpawnService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal sealed class ItemSpawnService {
+
+	internal sealed class ItemSpawnService : IItemSpawnService
+	{
 		private readonly ItemRepository _repository;
 
-		public ItemSpawnService( IGameEventRegistryService eventFactory, IFileSystem fileSystem ) {
+		public IGameEvent<ItemSpawnRequestEventArgs> ItemSpawnRequest => _itemSpawnRequest;
+		private readonly IGameEvent<ItemSpawnRequestEventArgs> _itemSpawnRequest = default;
+
+		public ItemSpawnService( IGameEventRegistryService eventFactory, IFileSystem fileSystem )
+		{
 			_repository = new ItemRepository( fileSystem );
 
-			eventFactory
-				.GetEvent<ItemSpawnRequestedEventArgs>( EventNames.ITEM_SPAWN_REQUESTED, EventNames.NAMESPACE )
-				.Subscribe( OnItemSpawnRequested );
+			_itemSpawnRequest = eventFactory
+				.GetEvent<ItemSpawnRequestEventArgs>(
+					ItemSpawnRequestEventArgs.Name,
+					ItemSpawnRequestEventArgs.NameSpace
+				);
+			_itemSpawnRequest.Subscribe( OnItemSpawnRequested );
 		}
 
-		private void OnItemSpawnRequested( in ItemSpawnRequestedEventArgs args ) {
-			
+		private void OnItemSpawnRequested( in ItemSpawnRequestEventArgs args )
+		{
+
 		}
 	};
 };

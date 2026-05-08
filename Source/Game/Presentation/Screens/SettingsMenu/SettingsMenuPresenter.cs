@@ -18,23 +18,23 @@ using System.Collections.Generic;
 using Nomad.Core.CVars;
 using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
-using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
-	
+
 	SettingsMenuPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal sealed class SettingsMenuPresenter {
+
+	internal sealed class SettingsMenuPresenter
+	{
 		private readonly SettingsMenuView _view;
 
 		private readonly IGameEventRegistryService _eventFactory;
@@ -48,7 +48,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="view"></param>
 		/// <param name="cvarSystem"></param>
@@ -58,7 +58,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			IGameEventRegistryService eventFactory,
 			IFileSystem fileSystem,
 			IReadOnlyList<ISettingsSectionPresenter> sections
-		) {
+		)
+		{
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_cvarSystem = cvarSystem ?? throw new ArgumentNullException( nameof( cvarSystem ) );
@@ -76,9 +77,10 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnSaveRequested() {
+		private void OnSaveRequested()
+		{
 			foreach ( var section in _sections ) {
 				section.Save();
 			}
@@ -92,9 +94,10 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnResetRequested() {
+		private void OnResetRequested()
+		{
 			foreach ( var section in _sections ) {
 				section.Reset();
 				section.SyncView();
@@ -107,11 +110,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnBackRequested() {
+		private void OnBackRequested()
+		{
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Settings, MenuState.None ) );
 		}
 	};

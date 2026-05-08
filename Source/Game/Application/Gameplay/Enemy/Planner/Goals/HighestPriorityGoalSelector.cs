@@ -15,9 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals {
-	public sealed class HighestPriorityGoalSelector : IGoalSelector {
-		public GoalDef SelectBestGoal( NpcAgent agent, GoalDef[] goals ) {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals
+{
+	public sealed class HighestPriorityGoalSelector : IGoalSelector
+	{
+		public GoalDef SelectBestGoal( NpcAgent agent, GoalDef[] goals )
+		{
 			if ( goals == null || goals.Length == 0 ) {
 				throw new InvalidOperationException( "No goals available." );
 			}

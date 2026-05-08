@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Gameplay {
-	public enum WorldBootstrapFailureReason : byte {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
+	public enum WorldBootstrapFailureReason : byte
+	{
 		Unknown = 0,
 		InvalidRequest,
 		WorldLoadFailed,

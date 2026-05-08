@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 
-namespace Nomad.Game.Domain.Interfaces.Entity {
-	public interface IEntityBase {
+namespace Nomad.Game.Domain.Interfaces.Entity
+{
+	public interface IEntityBase
+	{
 	};
 };

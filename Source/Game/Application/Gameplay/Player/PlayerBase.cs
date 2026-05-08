@@ -27,19 +27,21 @@ using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Inventory;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
-	
+
 	PlayerBase
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	public abstract class PlayerBase : IPlayerBase {
+
+	public abstract class PlayerBase : IPlayerBase
+	{
 		public Guid Id => _id;
 		private readonly Guid _id;
 
@@ -56,14 +58,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		// Services & Repositories
 		//
 		private readonly PlayerStateCoordinator _stateCoordinator;
-		private readonly IPlayerBaseStatsRepository _statsRepository;
-		private readonly IPlayerDerivedStatService _derivedStatService;
-		private readonly IPlayerResourceService _resourceService;
+		private readonly PlayerBaseStatsRepository _statsRepository;
+		private readonly PlayerDerivedStatService _derivedStatService;
+		private readonly PlayerResourceService _resourceService;
 		private readonly PlayerStatDependencyGraph _dependencyGraph;
-		private readonly IPlayerFlagService _flagService;
+		private readonly PlayerFlagService _flagService;
 		private readonly PlayerSaveCoordinator _saveCoordinator;
 		private readonly InventoryContainer _container;
-		
+
 		private readonly PlayerPrefab _prefab;
 
 		private bool _isDisposed = false;
@@ -77,23 +79,24 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="guid"></param>
 		/// <param name="prefab"></param>
 		/// <param name="scope"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBase( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger ) {
+		public PlayerBase( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+		{
 			_prefab = prefab;
 			_id = guid;
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
-				$"{_id}:{EventNames.PLAYER_DIE}",
-				EventNames.NAMESPACE
+				$"{_id}:{PlayerDieEventArgs.Name}",
+				PlayerDieEventArgs.NameSpace
 			);
 
 			_statsRepository = new PlayerBaseStatsRepository( _id, eventFactory, logger );
-			_dependencyGraph = new PlayerStatDependencyGraph();
+			_dependencyGraph = PlayerStatDependencyGraph.CreateDefault();
 			_derivedStatService = new PlayerDerivedStatService( _id, _statsRepository, _dependencyGraph, eventFactory );
 			_flagService = new PlayerFlagService( eventFactory );
 			_resourceService = new PlayerResourceService( _id, _derivedStatService, eventFactory );
@@ -105,7 +108,7 @@ namespace Nomad.Game.Application.Gameplay.Player {
 			}
 			_derivedStatService.FlushDirty();
 
-			_movementController = prefab.AddComponent<PlayerMovementController>(comp => {
+			_movementController = prefab.AddComponent<PlayerMovementController>( comp => {
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
 				comp.Id = _id;
@@ -131,9 +134,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
 				_die?.Dispose();
 			}
@@ -147,12 +151,13 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="spawnApplicator"></param>
 		/// <param name="profile"></param>
 		/// <param name="context"></param>
-		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context ) {
+		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context )
+		{
 			spawnApplicator.Apply( this, profile, _derivedStatService, _resourceService, _flagService, in context );
 		}
 	};

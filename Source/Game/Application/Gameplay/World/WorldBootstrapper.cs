@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Gameplay;
@@ -21,7 +22,8 @@ using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.World {
+namespace Nomad.Game.Application.Gameplay.World
+{
 	/*
 	===================================================================================
 	
@@ -34,14 +36,21 @@ namespace Nomad.Game.Application.Gameplay.World {
 	/// Handles the creation of new worlds, loading existing ones, and setting up multiplayer sessions.
 	/// Publishes success or failure events depending on the outcome of the bootstrap process.
 	/// </summary>
-	
-	internal sealed class WorldBootstrapper : IWorldBootstrapper {
+
+	internal sealed class WorldBootstrapper : IWorldBootstrapper
+	{
 		private readonly IWorldLoader _worldLoader;
 		private readonly IPlayerSpawnService _spawnService;
 		private readonly INetworkSessionService _networkSessionService;
 
+		public IGameEvent<WorldBootstrapFailureEventArgs> BootstrapFailure => _bootstrapFailed;
 		private readonly IGameEvent<WorldBootstrapFailureEventArgs> _bootstrapFailed;
+
+		public IGameEvent<WorldBootstrapSucceededEventArgs> BootstrapSucceeded => _bootstrapSucceeded;
 		private readonly IGameEvent<WorldBootstrapSucceededEventArgs> _bootstrapSucceeded;
+
+		public IGameEvent<WorldBootstrapRequestEventArgs> BootstrapRequest => _bootstrapRequest;
+		private readonly IGameEvent<WorldBootstrapRequestEventArgs> _bootstrapRequest;
 
 		/*
 		===============
@@ -54,10 +63,14 @@ namespace Nomad.Game.Application.Gameplay.World {
 		/// <param name="eventFactory">The service used to register and publish game events.</param>
 		/// <param name="loader">The service responsible for loading world data.</param>
 		/// <exception cref="ArgumentNullException">Thrown when <paramref name="loader"/> is null.</exception>
-		public WorldBootstrapper( IGameEventRegistryService eventFactory, IWorldLoader loader ) {
+		public WorldBootstrapper( IGameEventRegistryService eventFactory, IWorldLoader loader )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
 			_worldLoader = loader ?? throw new ArgumentNullException( nameof( loader ) );
-			_bootstrapFailed = eventFactory.GetEvent<WorldBootstrapFailureEventArgs>( EventNames.WORLD_BOOTSTRAP_FAILURE, EventNames.NAMESPACE );
-			_bootstrapSucceeded = eventFactory.GetEvent<WorldBootstrapSucceededEventArgs>( EventNames.WORLD_BOOTSTRAP_SUCCEEDED, EventNames.NAMESPACE );
+			_bootstrapFailed = eventFactory.GetEvent<WorldBootstrapFailureEventArgs>( WorldBootstrapFailureEventArgs.Name, WorldBootstrapFailureEventArgs.NameSpace );
+			_bootstrapSucceeded = eventFactory.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace );
+			_bootstrapRequest = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace );
 		}
 
 		/*
@@ -72,13 +85,14 @@ namespace Nomad.Game.Application.Gameplay.World {
 		/// </summary>
 		/// <param name="request">The bootstrap request containing mode, world ID, and other parameters.</param>
 		/// <returns>A <see cref="WorldBootstrapResult"/> indicating success or failure with details.</returns>
-		public WorldBootstrapResult Bootstrap( in WorldBootstrapRequestEventArgs request ) {
+		private void OnBootstrapRequested( in WorldBootstrapRequestEventArgs args )
+		{
 			try {
-				Validate( in request );
+				Validate( in args );
 
 				Guid? resolvedLobbyId = null;
 
-				switch ( request.Mode ) {
+				switch ( args.Mode ) {
 					case WorldBootstrapMode.SinglePlayerNewGame:
 						break;
 					case WorldBootstrapMode.SinglePlayerLoadGame:
@@ -90,31 +104,28 @@ namespace Nomad.Game.Application.Gameplay.World {
 					default:
 						break;
 				}
-				IWorldHandle world = LoadWorld( request.WorldId );
+				IWorldHandle world = LoadWorld( args.WorldId );
 
-				var succeeded = new WorldBootstrapSucceededEventArgs(
-					request.RequestId,
-					request.Mode,
-					request.WorldId,
+				_bootstrapSucceeded.Publish( new WorldBootstrapSucceededEventArgs(
+					args.RequestId,
+					args.Mode,
+					args.WorldId,
 					world.Id,
 					resolvedLobbyId
-				);
-
-				_bootstrapSucceeded.Publish( in succeeded );
-
-				return new WorldBootstrapSuccess {
-					RequestId = succeeded.RequestId,
-					Mode = succeeded.Mode,
-					WorldId = succeeded.WorldId,
-					WorldInstanceId = succeeded.WorldInstanceId,
-					LobbyId = succeeded.LobbyId
-				};
+				) );
 			} catch ( Exception e ) {
-				return PublishFailure( request, WorldBootstrapFailureReason.Unknown, $"{e.Message}\n{e.StackTrace}" );
+				_bootstrapFailed.Publish( new WorldBootstrapFailureEventArgs(
+					args.RequestId,
+					args.Mode,
+					args.WorldId,
+					WorldBootstrapFailureReason.Unknown,
+					$"{e.Message}\n{e.StackTrace}"
+				) );
 			}
 		}
 
-		private static void Validate( in WorldBootstrapRequestEventArgs request ) {
+		private static void Validate( in WorldBootstrapRequestEventArgs request )
+		{
 			if ( request.RequestId == Guid.Empty ) {
 				throw new InvalidOperationException( "Bootstrap request id cannot be empty." );
 			}
@@ -123,32 +134,13 @@ namespace Nomad.Game.Application.Gameplay.World {
 			}
 		}
 
-		private IWorldHandle LoadWorld( string worldId ) {
+		private IWorldHandle LoadWorld( string worldId )
+		{
 			try {
 				return _worldLoader.Load( worldId );
 			} catch ( Exception e ) {
 				throw new InvalidOperationException( $"Failed to load world '{worldId}': {e.Message}" );
 			}
-		}
-
-		private WorldBootstrapFailure PublishFailure( in WorldBootstrapRequestEventArgs request, WorldBootstrapFailureReason reason, string? detail ) {
-			var failed = new WorldBootstrapFailureEventArgs(
-				request.RequestId,
-				request.Mode,
-				request.WorldId,
-				reason,
-				detail
-			);
-
-			_bootstrapFailed.Publish( in failed );
-
-			return new WorldBootstrapFailure {
-				RequestId = failed.RequestId,
-				Mode = failed.Mode,
-				WorldId = failed.WorldId,
-				Reason = failed.Reason,
-				Detail = failed.Detail
-			};
 		}
 	};
 };

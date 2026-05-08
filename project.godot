@@ -37,7 +37,6 @@ formats/zstd/long_distance_matching=true
 
 settings/stdout/verbose_stdout=true
 file_logging/enable_file_logging=true
-file_logging/log_path="godot.log"
 
 [dialogue_manager]
 

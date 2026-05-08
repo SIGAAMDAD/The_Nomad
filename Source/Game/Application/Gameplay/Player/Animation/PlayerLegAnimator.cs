@@ -21,7 +21,8 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerLegAnimator : PlayerAnimator {
+
+	internal sealed class PlayerLegAnimator : PlayerAnimator
+	{
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
 
@@ -43,10 +45,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 
 		private Godot.GpuParticles2D _dustPuff;
 
-		public PlayerLegAnimator() {
+		public PlayerLegAnimator()
+		{
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{PlayerAnimationStateChangedEventArgs.Name}", PlayerAnimationStateChangedEventArgs.NameSpace );
 		}
 
 		/*
@@ -57,11 +60,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			animator.AnimationLooped.Subscribe( OnLooped );
+			animator.AnimationLooped += OnLooped;
 
 			_dustPuff = animator.GetNode<Godot.GpuParticles2D>( "DustPuff" );
 		}
@@ -75,7 +79,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnLooped( in EmptyEventArgs args ) {
+		private void OnLooped()
+		{
 			if ( _state == PlayerAnimationState.Moving ) {
 				_dustPuff.Emitting = true;
 			}
@@ -90,7 +95,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
+		{
 			if ( !args.IsMoving ) {
 				animator.Play( "idle" );
 				_state = PlayerAnimationState.Idle;
@@ -111,7 +117,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 			}
 		}
 
-		private static bool HasSuddenStop( Vector2 oldVelocity, Vector2 newVelocity ) {
+		private static bool HasSuddenStop( Vector2 oldVelocity, Vector2 newVelocity )
+		{
 			const float epsilon = 0.01f;
 
 			if ( MathF.Abs( oldVelocity.X ) < epsilon || MathF.Abs( newVelocity.X ) < epsilon ) {

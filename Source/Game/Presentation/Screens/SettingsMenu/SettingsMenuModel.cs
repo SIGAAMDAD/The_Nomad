@@ -17,9 +17,12 @@ using Nomad.Core.Events;
 using Nomad.EngineUtils.Settings.Interfaces;
 using Nomad.Game.Application.UI;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
-	internal sealed class SettingsMenuModel {
-		public SettingsMenuModel( AudioSettingsContainerModel audioModel ) {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
+	internal sealed class SettingsMenuModel
+	{
+		public SettingsMenuModel( AudioSettingsContainerModel audioModel )
+		{
 		}
 	};
 };

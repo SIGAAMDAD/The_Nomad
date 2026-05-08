@@ -19,11 +19,14 @@ using System;
 using System.Collections.Generic;
 using Nomad.Game.Domain.Interfaces.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public static class ModuleActivatorCache {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public static class ModuleActivatorCache
+	{
 		private static readonly Dictionary<Type, Func<IGameModule>> _cache = new();
 
-		public static Func<IGameModule> GetOrCreate( Type type ) {
+		public static Func<IGameModule> GetOrCreate( Type type )
+		{
 			if ( _cache.TryGetValue( type, out var ctor ) ) {
 				return ctor;
 			}

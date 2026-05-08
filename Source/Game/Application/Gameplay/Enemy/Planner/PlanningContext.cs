@@ -13,11 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public sealed class PlanningContext {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public sealed class PlanningContext
+	{
 		public WorkingMemory Memory { get; }
 
-		public PlanningContext( WorkingMemory memory ) {
+		public PlanningContext( WorkingMemory memory )
+		{
 			Memory = memory;
 		}
 	};

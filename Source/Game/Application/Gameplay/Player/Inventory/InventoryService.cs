@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Inventory {
+namespace Nomad.Game.Application.Gameplay.Player.Inventory
+{
 	/*
 	===================================================================================
 	
@@ -27,12 +28,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class InventoryService {
+
+	internal sealed class InventoryService
+	{
 		private readonly IPlayerDerivedStatService _derivedStatService;
 		private readonly InventoryRepository _repository;
 
-		public InventoryService( IPlayerDerivedStatService derivedStatService ) {
+		public InventoryService( IPlayerDerivedStatService derivedStatService )
+		{
 			_derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
 
 			_repository = new InventoryRepository();

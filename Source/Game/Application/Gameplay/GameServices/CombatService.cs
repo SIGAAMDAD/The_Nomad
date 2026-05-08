@@ -19,16 +19,29 @@ using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Core.Events;
 
-namespace Nomad.Game.Application.Gameplay.GameServices {
-	internal sealed class CombatService : ICombatService {
+namespace Nomad.Game.Application.Gameplay.GameServices
+{
+	internal sealed class CombatService : ICombatService
+	{
 		private readonly IItemCatalog _firearmCatalog;
 
-		public CombatService( IItemCatalog database ) {
+		public IGameEvent<UseWeaponRequestEventArgs> UseWeaponRequest => _useWeaponRequest;
+		private readonly IGameEvent<UseWeaponRequestEventArgs> _useWeaponRequest = default;
+
+		public CombatService( IItemCatalog database )
+		{
 			_firearmCatalog = database;
 		}
 
-		public DamageResult UseWeapon( in UseWeaponRequestEventArgs args ) {
+		public void Dispose()
+		{
+			_useWeaponRequest?.Dispose();
+		}
+
+		public DamageResult UseWeapon( in UseWeaponRequestEventArgs args )
+		{
 			var weapon = _firearmCatalog.Get<FirearmDefinition>( args.WeaponId );
 			if ( weapon == null ) {
 				return new DamageResult(

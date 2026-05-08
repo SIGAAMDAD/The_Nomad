@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Compatibility.Guards;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors
+{
 	/*
 	===================================================================================
 	
@@ -26,8 +27,9 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public abstract class SensorBase : ISensor {
+
+	public abstract class SensorBase : ISensor
+	{
 		private readonly float _intervalSeconds;
 		private float _timeUntilNextTick;
 
@@ -40,7 +42,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 		/// 
 		/// </summary>
 		/// <param name="intervalSeconds"></param>
-		protected SensorBase( float intervalSeconds ) {
+		protected SensorBase( float intervalSeconds )
+		{
 			_intervalSeconds = intervalSeconds <= 0.0f ? 0.0f : intervalSeconds;
 			_timeUntilNextTick = 0.0f;
 		}
@@ -55,7 +58,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 		/// </summary>
 		/// <param name="agent"></param>
 		/// <param name="dt"></param>
-		public void Tick( NpcAgent agent, float dt ) {
+		public void Tick( NpcAgent agent, float dt )
+		{
 			ArgumentGuard.ThrowIfNull( agent );
 
 			if ( _intervalSeconds > 0.0f ) {

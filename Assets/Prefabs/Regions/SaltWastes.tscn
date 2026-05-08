@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cg1t4dmstlusg"]
 
+[ext_resource type="PackedScene" uid="uid://b4g5q4f2mg8gf" path="res://Assets/Prefabs/RegionArea/RegionArea.tscn" id="1_eda3t"]
+
 [sub_resource type="Gradient" id="Gradient_jqawo"]
 colors = PackedColorArray(1, 0.58431375, 0, 1, 0.7411765, 0.3372549, 0, 1)
 
@@ -19,3 +21,5 @@ seamless_blend_skirt = 0.8
 texture_repeat = 2
 texture = SubResource("NoiseTexture2D_flhqy")
 polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 1056, -52, 802, -666)
+
+[node name="RegionAreaRoot" parent="." unique_id=1146163250 instance=ExtResource("1_eda3t")]

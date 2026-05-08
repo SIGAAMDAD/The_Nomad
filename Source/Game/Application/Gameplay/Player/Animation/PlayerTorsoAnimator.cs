@@ -15,31 +15,35 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
-using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
-	internal sealed class PlayerTorsoAnimator : PlayerAnimator {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
+	internal sealed class PlayerTorsoAnimator : PlayerAnimator
+	{
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
 
-		public PlayerTorsoAnimator() {
+		public PlayerTorsoAnimator()
+		{
 			var eventFactory = GameEventRegistry.Instance;
 
 			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>(
-				$"Torso:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}",
-				EventNames.NAMESPACE
+				$"Torso:{PlayerAnimationStateChangedEventArgs.Name}",
+				PlayerAnimationStateChangedEventArgs.NameSpace
 			);
 		}
 
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			animator = prefab.FindChild<EngineAnimatedSprite2D>( "TorsoAnimator" );
 		}
 
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
+		{
 		}
 	};
 };

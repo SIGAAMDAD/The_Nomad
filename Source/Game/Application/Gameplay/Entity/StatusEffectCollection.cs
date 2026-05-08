@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 
-namespace Nomad.Game.Application.Gameplay.Entity {
-	internal sealed class StatusEffectCollection {
+namespace Nomad.Game.Application.Gameplay.Entity
+{
+	internal sealed class StatusEffectCollection
+	{
 	};
 };

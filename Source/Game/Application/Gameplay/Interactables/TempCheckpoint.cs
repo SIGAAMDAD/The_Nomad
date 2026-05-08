@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Interfaces.Interactables;
 
-namespace Nomad.Game.Application.Gameplay.Interactables {
+namespace Nomad.Game.Application.Gameplay.Interactables
+{
 	/*
 	===================================================================================
 	
@@ -26,9 +27,11 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 	/// <summary>
 	/// Represents a temporary checkpoint, known as "Firelink" in-game.
 	/// </summary>
-	
-	internal sealed partial class TempCheckpoint : Interactable, ICheckpoint {
-		protected override void OnInit() {
+
+	internal sealed partial class TempCheckpoint : Interactable, ICheckpoint
+	{
+		protected override void OnInit()
+		{
 			base.OnInit();
 		}
 	};

@@ -27,7 +27,8 @@ using Nomad.Game.Prefabs;
 using Nomad.Input.Interfaces;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
 	/*
 	===================================================================================
 	
@@ -38,8 +39,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerHeadAnimator : NomadBehaviour {
+
+	internal sealed class PlayerHeadAnimator : NomadBehaviour
+	{
+		private static readonly Godot.Vector2 HEAD_OFFSET_RIGHT = new Godot.Vector2( 5.0f, 5.0f );
+		private static readonly Godot.Vector2 HEAD_OFFSET_LEFT = new Godot.Vector2( 5.0f, -5.0f );
+
 		public Vector2 AngleToCursor { get; private set; }
 		public float LookAngle { get; private set; }
 
@@ -58,12 +63,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		public PlayerHeadAnimator() {
+		public PlayerHeadAnimator()
+		{
 			var eventFactory = GameEventRegistry.Instance;
 			var cvarSystem = CVarSystem.Instance;
 
 			_snapshotService = ServiceLocator.GetService<IInputSnapshotService>();
-			
+
 			var windowSize = cvarSystem.GetCVarOrThrow<WindowResolution>( Core.Constants.CVars.EngineUtils.Display.WINDOW_RESOLUTION );
 			var size = (WindowSize)windowSize.Value;
 			_windowSize = new Vector2( size.Width, size.Height ) * 0.5f;
@@ -75,8 +81,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		OnInit
 		===============
 		*/
-		///
-		public override void OnInit() {
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			_prefab = Object.CastAs<PlayerPrefab>();
@@ -92,27 +101,20 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// 
 		/// </summary>
 		/// <param name="delta"></param>
-		public override void OnUpdate( float delta ) {
+		public override void OnUpdate( float delta )
+		{
 			base.OnUpdate( delta );
 
 			var position = _prefab.GetViewport().GetMousePosition().ToSystem();
 
 			AngleToCursor = position - _windowSize;
 			LookAngle = MathF.Atan2( AngleToCursor.Y, AngleToCursor.X );
+
+			bool facingLeft = AngleToCursor.X < 0.0f;
 			_headSprite.Rotation = AngleMath.ToDegrees( LookAngle );
 
-			switch ( AngleMath.GetQuadrantFromVector( AngleToCursor.X, AngleToCursor.Y ) ) {
-				case 1:
-				case 4:
-					_headSprite.FlipVertical = false;
-					_headSprite.Offset = new Godot.Vector2( 5.0f, -5.0f );
-					break;
-				case 2:
-				case 3:
-					_headSprite.FlipVertical = true;
-					_headSprite.Offset = new Godot.Vector2( 5.0f, 5.0f );
-					break;
-			}
+			_headSprite.FlipV = facingLeft;
+			_headSprite.Offset = facingLeft ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
 		}
 
 		/*
@@ -123,7 +125,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnShutdown() {
+		public override void OnShutdown()
+		{
 			base.OnShutdown();
 
 			var cvarSystem = CVarSystem.Instance;
@@ -140,7 +143,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args ) {
+		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args )
+		{
 			var size = _prefab.GetViewportRect().Size * 0.5f;
 			_windowSize = size.ToSystem();
 		}

@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
-	public interface IAmmoCounterView : IHudComponentView {
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
+{
+	public interface IAmmoCounterView : IHudComponentView
+	{
 		void SetAmmoText( string text );
 	};
 };

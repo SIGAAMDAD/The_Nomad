@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Configuration.Enums {
-	public enum ParticleQuality : uint {
+namespace Nomad.Game.Application.Configuration.Enums
+{
+	public enum ParticleQuality : uint
+	{
 		Low,
 		High,
 

@@ -18,11 +18,10 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Interactables;
-using Nomad.Input.Events;
-using Nomad.Input.ValueObjects;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Interactables {
+namespace Nomad.Game.Application.Gameplay.Interactables
+{
 	/*
 	===================================================================================
 	
@@ -33,8 +32,9 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal partial class Interactable : EngineObject2D, IInteractable {
+
+	internal partial class Interactable : EngineObject2D, IInteractable
+	{
 		public PlayerInteractionStatus PlayerStatus {
 			get => _playerStatus;
 			set {
@@ -55,31 +55,14 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 
 		/*
 		===============
-		OnInteractionAction
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnInteractionAction( in ButtonActionEventArgs args ) {
-			if ( _playerStatus != PlayerInteractionStatus.InRange ) {
-				return;
-			}
-			if ( args.Phase == InputActionPhase.Performed ) {
-				PlayerStatus = PlayerInteractionStatus.Interacting;
-			}
-		}
-
-		/*
-		===============
 		OnPlayerExited
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnPlayerExited() {
+		private void OnPlayerExited()
+		{
 			if ( _playerStatus == PlayerInteractionStatus.InRange || _playerStatus == PlayerInteractionStatus.Interacting ) {
 				PlayerStatus = PlayerInteractionStatus.None;
 			}
@@ -93,11 +76,13 @@ namespace Nomad.Game.Application.Gameplay.Interactables {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnPlayerEntered() {
+		private void OnPlayerEntered()
+		{
 			PlayerStatus = PlayerInteractionStatus.InRange;
 		}
 
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_zone = new InteractableZone();

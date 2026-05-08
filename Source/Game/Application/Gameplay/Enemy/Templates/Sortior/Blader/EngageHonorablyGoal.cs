@@ -16,12 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
-	public class EngageHonorablyGoal : AiGoal {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader
+{
+	public class EngageHonorablyGoal : AiGoal
+	{
 		public override string Name => "EngageHonorably";
 		public override int BasePriority => 60;
 
-		public override int GetScoreModifier( PlanningContext context ) {
+		public override int GetScoreModifier( PlanningContext context )
+		{
 			var m = (SortorianBladerMemory)context.Memory;
 			int score = 0;
 			if ( m.EnemyVisible ) {
@@ -36,7 +39,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
 			return score;
 		}
 
-		protected override GoalBuilder Build() {
+		protected override GoalBuilder Build()
+		{
 			var builder = new GoalBuilder();
 			builder.Wants( WorldKey.EnemyVisible, true );
 			return builder;

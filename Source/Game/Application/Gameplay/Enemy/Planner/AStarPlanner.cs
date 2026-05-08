@@ -17,9 +17,12 @@ using System;
 using System.Collections.Generic;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public sealed class AStarPlanner {
-		public static bool TryPlan( WorldState start, GoalDef goal, PlanningContext context, PlannerAction[] actions, int maxExpansions, out Plan plan ) {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public sealed class AStarPlanner
+	{
+		public static bool TryPlan( WorldState start, GoalDef goal, PlanningContext context, PlannerAction[] actions, int maxExpansions, out Plan plan )
+		{
 			if ( goal == null ) {
 				throw new ArgumentNullException( nameof( goal ) );
 			}
@@ -108,11 +111,13 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return false;
 		}
 
-		private static int Heuristic( WorldState state, GoalDef goal ) {
+		private static int Heuristic( WorldState state, GoalDef goal )
+		{
 			return state.CountUnmet( goal.DesiredState );
 		}
 
-		private static int FindLowestFIndex( List<int> open, List<PlannerNode> nodes ) {
+		private static int FindLowestFIndex( List<int> open, List<PlannerNode> nodes )
+		{
 			int bestOpenIndex = 0;
 			int bestNodeIndex = open[0];
 			int bestF = nodes[bestNodeIndex].F;
@@ -133,7 +138,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return bestOpenIndex;
 		}
 
-		private static Plan ReconstructPlan( List<PlannerNode> nodes, int goalNodeIndex, PlannerAction[] actions ) {
+		private static Plan ReconstructPlan( List<PlannerNode> nodes, int goalNodeIndex, PlannerAction[] actions )
+		{
 			List<PlanStep> reversed = new List<PlanStep>( 8 );
 
 			int current = goalNodeIndex;

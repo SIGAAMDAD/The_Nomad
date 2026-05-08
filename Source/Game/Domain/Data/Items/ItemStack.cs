@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Compatibility.Guards;
 
-namespace Nomad.Game.Domain.Data.Items {
-	public sealed class ItemStack {
+namespace Nomad.Game.Domain.Data.Items
+{
+	public sealed class ItemStack
+	{
 		public Guid ItemId { get; }
 		public int Amount { get; private set; }
 
@@ -33,7 +35,8 @@ namespace Nomad.Game.Domain.Data.Items {
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <param name="amount"></param>
-		public ItemStack( Guid itemId, int amount ) {
+		public ItemStack( Guid itemId, int amount )
+		{
 			RangeGuard.ThrowIfNegativeOrZero( amount, nameof( amount ) );
 			ItemId = itemId;
 			Amount = amount;
@@ -48,7 +51,8 @@ namespace Nomad.Game.Domain.Data.Items {
 		/// 
 		/// </summary>
 		/// <param name="amount"></param>
-		public void Add( int amount ) {
+		public void Add( int amount )
+		{
 			RangeGuard.ThrowIfNegativeOrZero( amount, nameof( amount ) );
 			checked {
 				Amount += amount;
@@ -65,7 +69,8 @@ namespace Nomad.Game.Domain.Data.Items {
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		public bool TryRemove( int amount ) {
+		public bool TryRemove( int amount )
+		{
 			if ( amount <= 0 ) {
 				return false;
 			}

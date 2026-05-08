@@ -20,15 +20,19 @@ using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Application.Gameplay.GameServices {
-	internal sealed class InventoryService {
+namespace Nomad.Game.Application.Gameplay.GameServices
+{
+	internal sealed class InventoryService
+	{
 		private readonly IItemCatalog _catalog;
 
-		public InventoryService( IItemCatalog catalog ) {
+		public InventoryService( IItemCatalog catalog )
+		{
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
 		}
 
-		public InventoryMoveResult MoveStack( InventoryContainer source, InventoryContainer destination, Guid itemId, int amount ) {
+		public InventoryMoveResult MoveStack( InventoryContainer source, InventoryContainer destination, Guid itemId, int amount )
+		{
 			if ( amount <= 0 ) {
 				return InventoryMoveResult.InvalidAmount;
 			}

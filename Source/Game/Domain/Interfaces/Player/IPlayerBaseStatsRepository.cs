@@ -17,14 +17,20 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/// <summary>
 	/// The base abstraction contract for managing player related numbers.
 	/// </summary>
-	public interface IPlayerBaseStatsRepository {
+	public interface IPlayerBaseStatsRepository
+	{
 		/// <summary>
 		/// 
 		/// </summary>
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerBaseStatChangedEventArgs" )]
+		[EventPayload( "OldValue", typeof( float ), Order = 1 )]
+		[EventPayload( "NewValue", typeof( float ), Order = 2 )]
+		[EventPayload( "StatId", typeof( BaseStatType ), Order = 3 )]
 		IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged { get; }
 
 		/// <summary>

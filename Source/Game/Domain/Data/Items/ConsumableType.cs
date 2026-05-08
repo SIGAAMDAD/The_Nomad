@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items {
-	public enum ConsumableType : byte {
+namespace Nomad.Game.Domain.Data.Items
+{
+	public enum ConsumableType : byte
+	{
 		Resource,
 
 		Limits,

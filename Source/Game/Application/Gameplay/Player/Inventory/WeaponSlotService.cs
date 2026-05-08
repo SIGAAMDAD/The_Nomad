@@ -15,26 +15,31 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
-using Nomad.Input.Events;
+using Nomad.Input;
 
-namespace Nomad.Game.Application.Gameplay.Player.Inventory {
-	internal sealed class WeaponSlotService {
+namespace Nomad.Game.Application.Gameplay.Player.Inventory
+{
+	internal sealed class WeaponSlotService
+	{
 		private readonly WeaponSlot[] _slots = new WeaponSlot[(int)WeaponSlotIndex.Count];
 
-		public WeaponSlotService( IGameEventRegistryService eventFactory ) {
+		public WeaponSlotService( IGameEventRegistryService eventFactory )
+		{
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"SwitchToPrimary:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>( $"SwitchToPrimary:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
 				.Subscribe( OnSwitchToPrimaryWeaponTriggered );
-			
+
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"SwitchToSecondary:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>( $"SwitchToSecondary:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
 				.Subscribe( OnSwitchToSecondaryWeaponTriggered );
 		}
 
-		private void OnSwitchToSecondaryWeaponTriggered( in ButtonActionEventArgs args ) {
+		private void OnSwitchToSecondaryWeaponTriggered( in ButtonActionEventArgs args )
+		{
 		}
 
-		private void OnSwitchToPrimaryWeaponTriggered( in ButtonActionEventArgs args ) {
+		private void OnSwitchToPrimaryWeaponTriggered( in ButtonActionEventArgs args )
+		{
 		}
 	};
 };

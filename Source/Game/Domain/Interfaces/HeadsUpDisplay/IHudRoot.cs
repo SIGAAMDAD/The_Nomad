@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Configuration.Enums;
 
-namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay {
-	public interface IHudRoot {
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
+{
+	public interface IHudRoot
+	{
 		HUDPreset Preset { get; }
 
 		IHealthBarView HealthBar { get; }

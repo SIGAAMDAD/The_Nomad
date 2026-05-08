@@ -13,19 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Mods {
-	public readonly struct ModuleScanResult {
+namespace Nomad.Game.Domain.Data.Mods
+{
+	public readonly struct ModuleScanResult
+	{
 		public bool IsValid { get; }
 		public string? EntryType { get; }
 		public string? Error { get; }
 
-		private ModuleScanResult( bool isValid, string? entryType, string? error ) {
+		private ModuleScanResult( bool isValid, string? entryType, string? error )
+		{
 			IsValid = isValid;
 			EntryType = entryType;
 			Error = error;
 		}
 
-		public static ModuleScanResult Success( string entryType ) {
+		public static ModuleScanResult Success( string entryType )
+		{
 			return new ModuleScanResult(
 				true,
 				entryType,
@@ -33,7 +37,8 @@ namespace Nomad.Game.Domain.Data.Mods {
 			);
 		}
 
-		public static ModuleScanResult Fail( string error ) {
+		public static ModuleScanResult Fail( string error )
+		{
 			return new ModuleScanResult(
 				false,
 				null,

@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public abstract class NpcAgent {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public abstract class NpcAgent
+	{
 		public virtual WorkingMemory Memory { get; } = new WorkingMemory();
 
 		public WorldState CurrentState { get; private set; }
@@ -42,7 +44,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 		private PlannerAction _runningAction;
 		private GoalDef _currentGoal;
 
-		protected NpcAgent( EnemyBase owner, ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals ) {
+		protected NpcAgent( EnemyBase owner, ReplanController replanController, IStateCompiler stateCompiler, IGoalSelector goalSelector, ISensor[] sensors, PlannerAction[] actions, GoalDef[] goals )
+		{
 			_base = owner ?? throw new ArgumentNullException( nameof( owner ) );
 			_replanController = replanController ?? throw new ArgumentNullException( nameof( replanController ) );
 			_stateCompiler = stateCompiler ?? throw new ArgumentNullException( nameof( stateCompiler ) );
@@ -52,7 +55,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			_goals = goals ?? Array.Empty<GoalDef>();
 		}
 
-		public void Tick( float dt ) {
+		public void Tick( float dt )
+		{
 			TickSensors( dt );
 			CurrentState = _stateCompiler.BuildState( this );
 
@@ -74,13 +78,15 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			ExecuteCurrentStep( dt );
 		}
 
-		private void TickSensors( float dt ) {
+		private void TickSensors( float dt )
+		{
 			for ( int i = 0; i < _sensors.Length; i++ ) {
 				_sensors[i].Tick( this, dt );
 			}
 		}
 
-		private bool IsCurrentStepStillValid( PlanningContext context ) {
+		private bool IsCurrentStepStillValid( PlanningContext context )
+		{
 			if ( !HasPlan ) {
 				return false;
 			}
@@ -97,7 +103,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return true;
 		}
 
-		private void BuildPlan( PlanningContext context ) {
+		private void BuildPlan( PlanningContext context )
+		{
 			ReplanReason reasons = _replanController.ConsumeReasons();
 
 			if ( _currentGoal == null ) {
@@ -116,7 +123,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			}
 		}
 
-		private void ExecuteCurrentStep( float dt ) {
+		private void ExecuteCurrentStep( float dt )
+		{
 			if ( !HasPlan ) {
 				return;
 			}
@@ -164,7 +172,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			}
 		}
 
-		private void AdvancePlan() {
+		private void AdvancePlan()
+		{
 			if ( _currentPlan == null ) {
 				return;
 			}
@@ -175,12 +184,14 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			}
 		}
 
-		private void ClearPlan() {
+		private void ClearPlan()
+		{
 			CancelRunningActionIfAny();
 			_currentPlan = Plan.Empty;
 		}
 
-		private void CancelRunningActionIfAny() {
+		private void CancelRunningActionIfAny()
+		{
 			if ( _runningAction != null ) {
 				_runningAction.Runner.Cancel( this );
 				_runningAction = null;
@@ -196,15 +207,18 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 		protected virtual void OnActionSucceeded( PlannerAction action ) { }
 		protected virtual void OnActionFailed( PlannerAction action ) { }
 
-		public void ForceReplan( ReplanReason reason = ReplanReason.ContextInvalid ) {
+		public void ForceReplan( ReplanReason reason = ReplanReason.ContextInvalid )
+		{
 			_replanController.MarkDirty( reason );
 		}
 
-		public void NotifyHeavyDamage() {
+		public void NotifyHeavyDamage()
+		{
 			_replanController.MarkDirty( ReplanReason.TookHeavyDamage );
 		}
 
-		public void NotifyTargetLost() {
+		public void NotifyTargetLost()
+		{
 			_replanController.MarkDirty( ReplanReason.TargetLost );
 		}
 	};

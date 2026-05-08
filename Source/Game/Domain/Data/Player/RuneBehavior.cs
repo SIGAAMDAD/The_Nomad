@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/*
 	===================================================================================
 	
@@ -27,12 +28,14 @@ namespace Nomad.Game.Domain.Data.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public abstract class RuneBehavior : IRuneBehavior {
+
+	public abstract class RuneBehavior : IRuneBehavior
+	{
 		protected readonly IPlayerDerivedStatService derivedStatService;
 		protected readonly IPlayerResourceService resourceService;
-		
-		public RuneBehavior( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService ) {
+
+		public RuneBehavior( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService )
+		{
 			this.derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
 			this.resourceService = resourceService ?? throw new ArgumentNullException( nameof( resourceService ) );
 		}

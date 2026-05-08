@@ -19,16 +19,29 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IPlayerFlagService : IDisposable {
+	public interface IPlayerFlagService : IDisposable
+	{
+		/// <summary>
+		/// 
+		/// </summary>
 		IReadOnlyList<string> CurrentFlags { get; }
 
 		/// <summary>
 		/// 
 		/// </summary>
+		PlayerFlags Bits { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerFlagsChangedEventArgs" )]
+		[EventPayload( "OldFlags", typeof( PlayerFlags ), Order = 1 )]
+		[EventPayload( "NewFlags", typeof( PlayerFlags ), Order = 2 )]
 		IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
 
 		/// <summary>
@@ -58,7 +71,15 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="flagName"></param>
+		/// <param name="state"></param>
+		void SetFlag( string flagName, bool state );
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="flags"></param>
-		void ApplyFlags( IReadOnlyList<string> flags );
+		/// <param name="clearFlags"></param>
+		void ApplyFlags( IReadOnlyList<string> flags, bool clearFlags = false );
 	};
 };

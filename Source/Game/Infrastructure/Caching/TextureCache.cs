@@ -20,7 +20,8 @@ using Nomad.Core.Engine.Assets;
 using Nomad.Events.Globals;
 using Nomad.Logger.Globals;
 
-namespace Nomad.Game.Infrastructure.Caching {
+namespace Nomad.Game.Infrastructure.Caching
+{
 	/*
 	===================================================================================
 	
@@ -31,12 +32,14 @@ namespace Nomad.Game.Infrastructure.Caching {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public static class TextureCache {
+
+	public static class TextureCache
+	{
 		public static BaseCache<ITexture, string> Instance => _textureCache.Value;
 		private static readonly Lazy<BaseCache<ITexture, string>> _textureCache = new Lazy<BaseCache<ITexture, string>>( Create, true );
 
-		private static BaseCache<ITexture, string> Create() {
+		private static BaseCache<ITexture, string> Create()
+		{
 			return new BaseCache<ITexture, string>(
 				Logging.Instance,
 				GameEventRegistry.Instance,

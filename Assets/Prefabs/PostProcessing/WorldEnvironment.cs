@@ -12,12 +12,12 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	public partial class WorldEnvironment : Godot.WorldEnvironment {
 		public override void _Ready() {
 			base._Ready();
 
-//			CVarSystem.GetCVar<float>( Constants.CVars.Display.BRIGHTNESS ).ValueChanged.Subscribe( OnBrightnessChanged );
+			//			CVarSystem.GetCVar<float>( Constants.CVars.Display.BRIGHTNESS ).ValueChanged.Subscribe( OnBrightnessChanged );
 		}
 
 		/*

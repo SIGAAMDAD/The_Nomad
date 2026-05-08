@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public readonly struct WeaponSlot {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public readonly struct WeaponSlot
+	{
 		public WeaponSlotIndex Index { get; }
 	};
 };

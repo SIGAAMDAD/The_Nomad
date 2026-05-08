@@ -17,22 +17,23 @@ using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
+namespace Nomad.Game.Presentation.Screens.ExtrasMenu
+{
 	/*
 	===================================================================================
-	
+
 	ExtrasMenu
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	public sealed partial class ExtrasMenu : EnginePanel {
+
+	public sealed partial class ExtrasMenu : EnginePanel
+	{
 		private EnginePanel _multiplayerMenu;
 		private EnginePanel _developerCommentaryMenu;
 
@@ -44,20 +45,20 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_multiplayerMenu = FindChild<EnginePanel>( "MultiplayerMenu" );
 			_developerCommentaryMenu = FindChild<EnginePanel>( "DeveloperCommentaryMenu" );
 
-			_eventGroup = GameEventRegistry.GetGroup( nameof( ExtrasMenu ) );
-			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked, OnDeveloperCommentaryButtonPressed );
-			_eventGroup.Add( _developerCommentaryMenu.DisplayStateChanged, OnDeveloperMenuDisplayStateChanged );
-			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked, OnMultiplayerButtonPressed );
-			_eventGroup.Add( _multiplayerMenu.DisplayStateChanged, OnMultiplayerMenuDisplayStateChanged );
-			_eventGroup.Add( FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked, OnBackButtonPressed );
+			FindChild<EngineButton>( "ButtonContainer/DeveloperCommentaryButton" ).Clicked.Subscribe( OnDeveloperCommentaryButtonPressed );
+			_developerCommentaryMenu.DisplayStateChanged.Subscribe( OnDeveloperMenuDisplayStateChanged );
+			FindChild<EngineButton>( "ButtonContainer/MultiplayerButton" ).Clicked.Subscribe( OnMultiplayerButtonPressed );
+			_multiplayerMenu.DisplayStateChanged.Subscribe( OnMultiplayerMenuDisplayStateChanged );
+			FindChild<EngineButton>( "ButtonContainer/BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
 		}
 
 		/*
@@ -66,10 +67,11 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDeveloperMenuDisplayStateChanged( in bool args ) {
+		private void OnDeveloperMenuDisplayStateChanged( in bool args )
+		{
 			_multiplayerMenu.Visible = !args;
 		}
 
@@ -79,10 +81,11 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnMultiplayerMenuDisplayStateChanged( in bool args ) {
+		private void OnMultiplayerMenuDisplayStateChanged( in bool args )
+		{
 			_developerCommentaryMenu.Visible = !args;
 		}
 
@@ -92,38 +95,41 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDeveloperCommentaryButtonPressed( in EmptyEventArgs args ) {
+		private void OnDeveloperCommentaryButtonPressed( in EmptyEventArgs args )
+		{
 			_developerCommentaryMenu.Visible = true;
 		}
-		
+
 		/*
 		===============
 		OnMultiplayerButtonPressed
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnMultiplayerButtonPressed( in EmptyEventArgs args ) {
+		private void OnMultiplayerButtonPressed( in EmptyEventArgs args )
+		{
 			_multiplayerMenu.Visible = true;
 		}
-		
+
 		/*
 		===============
 		OnBackButtonPressed
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args ) {
+		private void OnBackButtonPressed( in EmptyEventArgs args )
+		{
 			GameEventRegistry
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Extras, MenuState.Main ) );
 		}
 	};

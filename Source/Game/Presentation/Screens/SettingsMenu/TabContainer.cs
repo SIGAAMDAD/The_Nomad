@@ -17,7 +17,8 @@ using Nomad.Game.Application.Audio;
 using Nomad.Game.Infrastructure.Audio;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,8 +29,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed partial class TabContainer : EngineTabContainer {
+
+	public sealed partial class TabContainer : EngineTabContainer
+	{
 		/*
 		===============
 		OnInit
@@ -38,7 +40,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			AddComponent<UITabContainerAudioFeedback>( comp => {

@@ -13,7 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -24,11 +25,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class DisplaySettingsContainerPresenter : ISettingsSectionPresenter {
+
+	internal sealed class DisplaySettingsContainerPresenter : ISettingsSectionPresenter
+	{
 		private readonly DisplaySettingsContainerModel _model;
 		private readonly DisplaySettingsContainerView _view;
-		
+
 		/*
 		===============
 		DisplaySettingsContainerPresenter
@@ -39,7 +41,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// </summary>
 		/// <param name="view"></param>
 		/// <param name="model"></param>
-		public DisplaySettingsContainerPresenter( DisplaySettingsContainerView view, DisplaySettingsContainerModel model ) {
+		public DisplaySettingsContainerPresenter( DisplaySettingsContainerView view, DisplaySettingsContainerModel model )
+		{
 			_model = model;
 			_view = view;
 
@@ -54,7 +57,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Reset() {
+		public void Reset()
+		{
 			_model.Reset();
 		}
 
@@ -66,7 +70,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Save() {
+		public void Save()
+		{
 			_model.Save();
 		}
 
@@ -78,7 +83,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void SyncView() {
+		public void SyncView()
+		{
 			_view.SetWindowModes( _model.WindowModes );
 			_view.SetWindowMode( _model.WindowMode );
 

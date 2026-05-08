@@ -21,7 +21,8 @@ using Nomad.Core.CVars;
 using Nomad.CVars;
 using Nomad.EngineUtils.Settings.Services;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class AudioSettingsContainerModel {
+
+	internal sealed class AudioSettingsContainerModel
+	{
 		public float MusicVolume => _service.Config.MusicVolume;
 		public float MusicMinVolume { get; private set; } = 0.0f;
 		public float MusicMaxVolume { get; private set; } = 100.0f;
@@ -65,7 +67,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <param name="service"></param>
 		/// <param name="cvarSystem"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public AudioSettingsContainerModel( IAudioDevice device, AudioSettingsService service, ICVarSystemService cvarSystem ) {
+		public AudioSettingsContainerModel( IAudioDevice device, AudioSettingsService service, ICVarSystemService cvarSystem )
+		{
 			ArgumentGuard.ThrowIfNull( cvarSystem, nameof( cvarSystem ) );
 
 			_device = device ?? throw new ArgumentNullException( nameof( device ) );
@@ -86,35 +89,43 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			EffectsMaxVolume = 100.0f;
 		}
 
-		public void Reset() {
+		public void Reset()
+		{
 			_service.Reset();
 		}
 
-		public void Save() {
+		public void Save()
+		{
 			_service.Save();
 		}
 
-		public void SetMusicVolume( float value ) {
+		public void SetMusicVolume( float value )
+		{
 			_service.Config.MusicVolume = value;
 		}
 
-		public void SetMusicOn( bool value ) {
+		public void SetMusicOn( bool value )
+		{
 			_service.Config.MusicOn = value;
 		}
 
-		public void SetEffectsVolume( float value ) {
+		public void SetEffectsVolume( float value )
+		{
 			_service.Config.SoundEffectsVolume = value;
 		}
 
-		public void SetEffectsOn( bool value ) {
+		public void SetEffectsOn( bool value )
+		{
 			_service.Config.SoundEffectsOn = value;
 		}
 
-		public void SetOutputDevice( int value ) {
+		public void SetOutputDevice( int value )
+		{
 			_service.Config.OutputDeviceIndex = value;
 		}
 
-		public void SetAudioDriverAPI( int value ) {
+		public void SetAudioDriverAPI( int value )
+		{
 			_service.Config.AudioDriver = value;
 		}
 	};

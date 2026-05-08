@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public sealed class TotemSlot {
-		
+namespace Nomad.Game.Domain.Data.Player
+{
+	public sealed class TotemSlot
+	{
+
 	};
 };

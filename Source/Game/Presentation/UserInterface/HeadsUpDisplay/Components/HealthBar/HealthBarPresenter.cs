@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class HealthBarPresenter {
+
+	internal sealed class HealthBarPresenter
+	{
 		private readonly IHealthBarModel _model;
 		private readonly IHealthBarView _view;
 
@@ -51,7 +53,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		/// </summary>
 		/// <param name="model"></param>
 		/// <param name="view"></param>
-		public HealthBarPresenter( IHealthBarModel model, IHealthBarView view ) {
+		public HealthBarPresenter( IHealthBarModel model, IHealthBarView view )
+		{
 			_model = model;
 			_view = view;
 
@@ -67,9 +70,10 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		/// 
 		/// </summary>
 		/// <param name="delta"></param>
-		public void Render( float delta ) {
+		public void Render( float delta )
+		{
 			_view.SetSizeParameters();
-			
+
 			int now = DateTime.Now.Millisecond;
 			if ( now < _delayExpirationTicks ) {
 				return;
@@ -97,9 +101,10 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnHealthChanged() {
+		private void OnHealthChanged()
+		{
 			int now = DateTime.Now.Millisecond;
-			_delayExpirationTicks = now + (int)( _delay * 1000 );
+			_delayExpirationTicks = now + (int)(_delay * 1000);
 
 			if ( _model.LastWasHeal ) {
 				_view.SetTrail( _view.GetHealth() );

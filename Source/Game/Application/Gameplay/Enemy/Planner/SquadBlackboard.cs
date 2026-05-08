@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Numerics;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public sealed class SquadBlackboard {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public sealed class SquadBlackboard
+	{
 		public EngineCharacter2D? SharedTarget = null;
 		public Vector2 LastKnownEnemyPosition;
 	};

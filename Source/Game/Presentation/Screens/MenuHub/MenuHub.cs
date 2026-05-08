@@ -19,33 +19,35 @@ using Nomad.Core.Engine.Services;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.MenuHub {
+namespace Nomad.Game.Presentation.Screens.MenuHub
+{
 	/*
 	===================================================================================
-	
+
 	MenuHub
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	public partial class MenuHub : EnginePanel {
+
+	public partial class MenuHub : EnginePanel
+	{
 		/*
 		===============
 		OnInit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
-//			SceneManager.LoadScene( EngineService.GetStoragePath( "Prefabs/MenuBackground/MenuBackground.tscn", StorageScope.StreamingAssets ), LoadSceneMode.Additive );
-//			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Splash ) );
+		protected override void OnInit()
+		{
+			//			SceneManager.LoadScene( EngineService.GetStoragePath( "Prefabs/MenuBackground/MenuBackground.tscn", StorageScope.StreamingAssets ), LoadSceneMode.Additive );
+			//			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE ).Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Splash ) );
 		}
 	};
 };

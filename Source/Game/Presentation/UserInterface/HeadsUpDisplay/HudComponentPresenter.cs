@@ -15,11 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
-	internal sealed class HudComponentPresenter {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
+{
+	internal sealed class HudComponentPresenter
+	{
 		private readonly IHudComponentView _view;
 
-		public HudComponentPresenter( IHudComponentView view ) {
+		public HudComponentPresenter( IHudComponentView view )
+		{
 			_view = view;
 		}
 	};

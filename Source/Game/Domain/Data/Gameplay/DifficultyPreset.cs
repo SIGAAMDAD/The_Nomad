@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Gameplay {
-	public enum DifficultyPreset {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
+	public enum DifficultyPreset
+	{
 		Standard = 0,
 		Hard,
 		Custom,

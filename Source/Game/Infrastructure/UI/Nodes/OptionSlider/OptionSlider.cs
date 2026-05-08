@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
@@ -18,20 +18,23 @@ using Nomad.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Events.Globals;
+using Nomad.Game.Domain.Events.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
+{
 	/*
 	===================================================================================
-	
+
 	OptionSlider
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class OptionSlider : OptionNode.OptionNode {
+	public partial class OptionSlider : OptionNode.OptionNode
+	{
 		public float Min {
 			get => _min;
 			set {
@@ -59,13 +62,22 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 			set => SetValue( value );
 		}
 
-		public InternString SliderId => new InternString( Name );
-		
 		private EngineHorizontalSlider _slider;
 		private EngineText _valueLabel;
 
-		public IGameEvent<float> ValueChanged => _valueChanged;
-		private IGameEvent<float> _valueChanged;
+		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionSliderValueChangedEventArgs" )]
+		[EventPayload( "Value", typeof( float ) )]
+		public IGameEvent<OptionSliderValueChangedEventArgs> ValueChanged => _valueChanged;
+		private readonly IGameEvent<OptionSliderValueChangedEventArgs> _valueChanged = default;
+
+		public OptionSlider()
+		{
+			_valueChanged = GameEventRegistry
+				.GetEvent<OptionSliderValueChangedEventArgs>(
+					$"{GetHashCode()}:{OptionSliderValueChangedEventArgs.Name}",
+					OptionSliderValueChangedEventArgs.NameSpace
+				);
+		}
 
 		/*
 		===============
@@ -73,9 +85,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			EngineText title = FindChild<EngineText>( "Title" );
 			title.Text = Title;
 
@@ -91,9 +104,6 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 
 			var rightButton = FindChild<EngineButton>( "RightIcon" );
 			rightButton.Clicked.Subscribe( OnToggleRight );
-			
-			// CHAIN?
-			_valueChanged = GameEventRegistry.GetEvent<float>( $"{GetHashCode()}:{UIConstants.OPTION_SLIDER_VALUE_CHANGED_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
@@ -102,10 +112,11 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="value"></param>
-		public void SetValue( float value ) {
+		public void SetValue( float value )
+		{
 			_slider.Value = value;
 			_valueLabel.Text = value.ToString();
 		}
@@ -116,12 +127,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnValueChanged( in float args ) {
+		private void OnValueChanged( in float args )
+		{
 			SetValue( args );
-			_valueChanged.Publish( args );
+			_valueChanged.Publish( new OptionSliderValueChangedEventArgs( args ) );
 		}
 
 		/*
@@ -130,10 +142,11 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnToggleLeft( in EmptyEventArgs args ) {
+		private void OnToggleLeft( in EmptyEventArgs args )
+		{
 			OnValueChanged( (float)_slider.Value - 1.0f );
 		}
 
@@ -143,10 +156,11 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnToggleRight( in EmptyEventArgs args ) {
+		private void OnToggleRight( in EmptyEventArgs args )
+		{
 			OnValueChanged( (float)_slider.Value + 1.0f );
 		}
 	};

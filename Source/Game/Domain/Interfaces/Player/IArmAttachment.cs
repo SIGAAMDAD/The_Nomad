@@ -14,14 +14,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IArmAttachment {
-		IGameEvent<EmptyEventArgs> Equipped { get; }
-		IGameEvent<EmptyEventArgs> Used { get; }
+	public interface IArmAttachment
+	{
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "ArmAttachmentEquippedEventArgs" )]
+		IGameEvent<ArmAttachmentEquippedEventArgs> Equipped { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "ArmAttachmentUsedEventArgs" )]
+		IGameEvent<ArmAttachmentUsedEventArgs> Used { get; }
 
 		void Use();
 	};

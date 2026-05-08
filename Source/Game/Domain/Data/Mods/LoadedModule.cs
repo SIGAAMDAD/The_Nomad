@@ -17,8 +17,10 @@ using Nomad.Game.Domain.Interfaces.Mods;
 using Nomad.Game.Infrastructure.Mods;
 using System.Reflection;
 
-namespace Nomad.Game.Domain.Data.Mods {
-	public sealed record LoadedModule {
+namespace Nomad.Game.Domain.Data.Mods
+{
+	public sealed record LoadedModule
+	{
 		public string Directory { get; init; }
 		public ModuleManifest Manifest { get; init; }
 		public ModuleLoadContext LoadContext { get; init; }

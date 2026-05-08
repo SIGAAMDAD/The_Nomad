@@ -13,11 +13,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 
-namespace Nomad.Game.Domain.Interfaces.Gameplay {
-	public interface IWorldBootstrapper {
-		WorldBootstrapResult Bootstrap( in WorldBootstrapRequestEventArgs request );
+namespace Nomad.Game.Domain.Interfaces.Gameplay
+{
+	public interface IWorldBootstrapper
+	{
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "WorldBootstrapFailureEventArgs" )]
+		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
+		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
+		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
+		[EventPayload( "Reason", typeof( WorldBootstrapFailureReason ), Order = 4 )]
+		[EventPayload( "Detail", typeof( string ), Order = 5 )]
+		IGameEvent<WorldBootstrapFailureEventArgs> BootstrapFailure { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "WorldBootstrapSucceededEventArgs" )]
+		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
+		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
+		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
+		[EventPayload( "WorldInstanceId", typeof( Guid ), Order = 4 )]
+		[EventPayload( "LobbyId", typeof( Guid? ), Order = 5 )]
+		IGameEvent<WorldBootstrapSucceededEventArgs> BootstrapSucceeded { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "WorldBootstrapRequestEventArgs" )]
+		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
+		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
+		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
+		[EventPayload( "Difficulty", typeof( DifficultyPreset ), Order = 4 )]
+		[EventPayload( "Lobbyid", typeof( Guid? ), Order = 5 )]
+		IGameEvent<WorldBootstrapRequestEventArgs> BootstrapRequest { get; }
 	};
 };

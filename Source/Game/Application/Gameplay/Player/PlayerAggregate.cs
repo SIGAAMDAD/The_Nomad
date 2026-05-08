@@ -19,7 +19,8 @@ using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Prefabs;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +31,9 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerAggregate : PlayerBase {
+
+	internal sealed class PlayerAggregate : PlayerBase
+	{
 		public PlayerAggregate( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
 			: base( guid, prefab, scope, eventFactory, logger )
 		{

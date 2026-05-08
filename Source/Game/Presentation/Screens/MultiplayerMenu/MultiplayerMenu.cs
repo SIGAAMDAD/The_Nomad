@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
+namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+{
 	/*
 	===================================================================================
 	
@@ -27,9 +28,11 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class MultiplayerMenu : Control {
-		public override void _Ready() {
+
+	public partial class MultiplayerMenu : Control
+	{
+		public override void _Ready()
+		{
 			base._Ready();
 
 			GetNode<EngineButton>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;

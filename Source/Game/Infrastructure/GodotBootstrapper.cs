@@ -33,7 +33,8 @@ using Nomad.Console;
 using Nomad.Input;
 using Nomad.Save;
 
-namespace Nomad.Game.Infrastructure {
+namespace Nomad.Game.Infrastructure
+{
 	/*
 	===================================================================================
 
@@ -42,10 +43,11 @@ namespace Nomad.Game.Infrastructure {
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public sealed partial class GodotBootstrapper : Node {
+	public sealed partial class GodotBootstrapper : Node
+	{
 		private IAudioDevice _audioService;
 		private IChannelRepository _channelRepository;
 
@@ -57,16 +59,17 @@ namespace Nomad.Game.Infrastructure {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 
 			GD.Print( $"Initializing NomadFramework... {AppContext.BaseDirectory}, {System.Environment.CurrentDirectory}" );
 
 			var serviceFactory = ServiceRegistry.Instance;
 			var serviceLocator = ServiceLocator.Instance;
-			
+
 			_bootstrapper = new NomadFrameworkBootstrapper( serviceFactory, serviceLocator )
 				.AddBootstrapper( new LoggerBootstrapper() )
 				.AddBootstrapper( new EventBootstrapper() )
@@ -82,9 +85,6 @@ namespace Nomad.Game.Infrastructure {
 			_bootstrapper.Bootstrap();
 
 			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
-
-			var logger = serviceLocator.GetService<ILoggerService>();
-			logger.AddSink( new FileSink( cvarSystem, serviceLocator.GetService<IFileSystem>() ) );
 
 			_audioService = serviceLocator.GetService<IAudioDevice>();
 			_channelRepository = serviceLocator.GetService<IChannelRepository>();
@@ -112,10 +112,11 @@ namespace Nomad.Game.Infrastructure {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
-		public override void _Process( double delta ) {
+		public override void _Process( double delta )
+		{
 			base._Process( delta );
 
 			float deltaTime = (float)delta;
@@ -129,9 +130,10 @@ namespace Nomad.Game.Infrastructure {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public override void _ExitTree() {
+		public override void _ExitTree()
+		{
 			base._ExitTree();
 
 			_bootstrapper?.Dispose();

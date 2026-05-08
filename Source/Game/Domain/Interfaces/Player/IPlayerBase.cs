@@ -17,10 +17,14 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerBase : IDisposable {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IPlayerBase : IDisposable
+	{
 		Guid Id { get; }
 
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerDieEventArgs" )]
+		[EventPayload( "Id", typeof( Guid ) )]
 		IGameEvent<PlayerDieEventArgs> Die { get; }
 	};
 };

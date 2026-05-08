@@ -15,9 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
 	[Flags]
-	public enum ReplanReason {
+	public enum ReplanReason
+	{
 		None = 0,
 		NoPlan = 1 << 0,
 		ActionFailed = 1 << 1,

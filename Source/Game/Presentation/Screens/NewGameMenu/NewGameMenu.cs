@@ -17,7 +17,8 @@ using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,8 +29,9 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class NewGameMenu : EnginePanel {
+
+	public partial class NewGameMenu : EnginePanel
+	{
 		private EngineVerticalContainer _optionsContainer;
 		private EnginePanel _customDifficultyContainer;
 
@@ -41,7 +43,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			_optionsContainer = FindChild<EngineVerticalContainer>( "OptionsContainer" );
 			_customDifficultyContainer = FindChild<EnginePanel>( "CustomDifficultyContainer" );
 
@@ -58,7 +61,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnOptionsContainerDisplayStateChanged( in bool args ) {
+		private void OnOptionsContainerDisplayStateChanged( in bool args )
+		{
 			_customDifficultyContainer.Visible = !args;
 		}
 
@@ -71,7 +75,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnCustomContainerDisplayStateChanged( in bool args ) {
+		private void OnCustomContainerDisplayStateChanged( in bool args )
+		{
 			_optionsContainer.Visible = !args;
 		}
 	};

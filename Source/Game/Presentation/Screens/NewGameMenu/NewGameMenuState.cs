@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
-	public enum NewGameMenuState : byte {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
+	public enum NewGameMenuState : byte
+	{
 		Options,
 		CustomDifficulty
 	};

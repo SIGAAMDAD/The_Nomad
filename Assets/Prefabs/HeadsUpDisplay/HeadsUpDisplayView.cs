@@ -29,7 +29,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	public partial class HeadsUpDisplayView : EnginePanel {
 		private Label _dateLabel;
 
@@ -39,7 +39,7 @@ namespace Nomad.Game.Prefabs {
 			_dateLabel = GetNode<Label>( "DateLabel" );
 
 			GameEventRegistry
-				.GetEvent<MinuteChangedEventArgs>( EventNames.MINUTE_CHANGED, EventNames.NAMESPACE )
+				.GetEvent<MinuteChangedEventArgs>( MinuteChangedEventArgs.Name, MinuteChangedEventArgs.NameSpace )
 				.Subscribe( OnMinuteChanged );
 		}
 

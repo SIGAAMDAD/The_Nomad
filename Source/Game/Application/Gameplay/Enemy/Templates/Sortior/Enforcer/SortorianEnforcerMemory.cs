@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Enforcer {
-	public class SortorianEnforcerMemory : WorkingMemory {
-		
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Enforcer
+{
+	public class SortorianEnforcerMemory : WorkingMemory
+	{
+
 	};
 };

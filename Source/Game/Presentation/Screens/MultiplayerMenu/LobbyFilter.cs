@@ -18,7 +18,8 @@ using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
+namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+{
 	/*
 	===================================================================================
 	
@@ -29,8 +30,9 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed partial class LobbyFilter : VBoxContainer {
+
+	public sealed partial class LobbyFilter : VBoxContainer
+	{
 		public IGameEvent<bool> ShowFullLobbiesChanged => _showFullLobbiesChanged;
 		private IGameEvent<bool> _showFullLobbiesChanged;
 
@@ -51,10 +53,9 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
-
-			_showFullLobbiesChanged = GameEventRegistry.GetEvent<bool>( UIConstants.SHOW_FULL_LOBBIES_CHANGED_EVENT, UIConstants.NAMESPACE );
 		}
 	};
 };

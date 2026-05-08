@@ -14,13 +14,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
+using Godot;
 using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
 	/*
 	===================================================================================
 	
@@ -31,8 +31,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerAnimationCoordinator {
+
+	internal sealed class PlayerAnimationCoordinator
+	{
 		public PlayerAnimationState Current => _current;
 		private PlayerAnimationState _current = PlayerAnimationState.Idle;
 
@@ -40,6 +41,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		private readonly PlayerHeadAnimator _headAnimator;
 		private readonly PlayerLegAnimator _legAnimator;
 		private readonly PlayerFootsteps _footsteps;
+
+		private readonly PlayerHandAnimator _leftHandAnimator;
+		private readonly PlayerHandAnimator _rightHandAnimator;
 
 		/*
 		===============
@@ -53,7 +57,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <param name="prefab"></param>
 		/// <param name="initialState"></param>
 		/// <param name="movementController"></param>
-		public PlayerAnimationCoordinator( Guid id, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController ) {
+		public PlayerAnimationCoordinator( Guid id, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController )
+		{
 			_headAnimator = prefab.AddComponent<PlayerHeadAnimator>();
 			_legAnimator = prefab.AddComponent<PlayerLegAnimator>( comp => {
 				comp.Id = id;
@@ -62,6 +67,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 				comp.Id = id;
 			} );
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
+
+			_leftHandAnimator = prefab.AddComponent<PlayerHandAnimator>( comp => {
+				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmAnimations.tres" );
+			} );
+			_rightHandAnimator = prefab.AddComponent<PlayerHandAnimator>( comp => {
+				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmAnimations.tres" );
+			} );
 		}
 	};
 };

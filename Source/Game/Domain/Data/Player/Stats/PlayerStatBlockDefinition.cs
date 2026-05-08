@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public sealed record PlayerStatBlockDefinition {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public sealed record PlayerStatBlockDefinition
+	{
 		public Dictionary<BaseStatType, float> BaseStats { get; init; } = new();
 	};
 };

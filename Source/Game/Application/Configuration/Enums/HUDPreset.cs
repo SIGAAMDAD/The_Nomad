@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Configuration.Enums {
+namespace Nomad.Game.Application.Configuration.Enums
+{
 	/// <summary>
 	/// The amount of the Heads Up Display that is shown during gameplay
 	/// </summary>
-	public enum HUDPreset : uint {
+	public enum HUDPreset : uint
+	{
 		/// <summary>
 		/// Everything is shown at all times.
 		/// </summary>

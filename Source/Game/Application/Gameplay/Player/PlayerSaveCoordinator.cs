@@ -14,16 +14,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using CommandLine;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
+using Nomad.Game.Application.Gameplay.Player.State;
+using Nomad.Game.Application.Gameplay.Player.Stats;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Save.Events;
+using Nomad.Save.Services;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -35,11 +37,12 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// 
 	/// </summary>
 
-	internal sealed class PlayerSaveCoordinator {
-		private readonly IPlayerDerivedStatService _derivedStatService;
-		private readonly IPlayerResourceService _resourceService;
+	internal sealed class PlayerSaveCoordinator
+	{
+		private readonly PlayerDerivedStatService _derivedStatService;
+		private readonly PlayerResourceService _resourceService;
 		private readonly PlayerPrefab _prefab;
-		private readonly IPlayerStateReader _stateReader;
+		private readonly PlayerStateCoordinator _stateReader;
 
 		private readonly object _lock = new();
 
@@ -55,16 +58,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="resourceService"></param>
 		/// <param name="prefab"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerSaveCoordinator( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService, IPlayerStateReader stateReader, PlayerPrefab prefab, IGameEventRegistryService eventFactory ) {
+		public PlayerSaveCoordinator( PlayerDerivedStatService derivedStatService, PlayerResourceService resourceService, PlayerStateCoordinator stateReader, PlayerPrefab prefab, IGameEventRegistryService eventFactory )
+		{
 			_derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
 			_resourceService = resourceService ?? throw new ArgumentNullException( nameof( resourceService ) );
 			_prefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
 			_stateReader = stateReader ?? throw new ArgumentNullException( nameof( stateReader ) );
 
-			global::Godot.GD.Print( "Creating save coordinator" );
-
 			eventFactory
-				.GetEvent<SaveBeginEventArgs>( Save.Data.EventNames.SAVE_BEGIN_EVENT, Save.Data.EventNames.NAMESPACE )
+				.GetEvent<SaveBeginEventArgs>( SaveBeginEventArgs.Name, SaveBeginEventArgs.NameSpace )
 				.Subscribe( OnSaveBegin );
 		}
 
@@ -77,7 +79,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnSaveBegin( in SaveBeginEventArgs args ) {
+		private void OnSaveBegin( in SaveBeginEventArgs args )
+		{
 			lock ( _lock ) {
 				using var section = args.Writer.AddSection( "Player" );
 

@@ -15,9 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
-	public class SortorianBladerStateCompiler : IStateCompiler {
-		public WorldState BuildState( NpcAgent agent ) {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader
+{
+	public class SortorianBladerStateCompiler : IStateCompiler
+	{
+		public WorldState BuildState( NpcAgent agent )
+		{
 			var a = (SortorianBladerAgent)agent;
 			var m = a.Memory;
 

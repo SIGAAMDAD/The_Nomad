@@ -19,7 +19,8 @@ using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Application.Gameplay.Inventory {
+namespace Nomad.Game.Application.Gameplay.Inventory
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +31,9 @@ namespace Nomad.Game.Application.Gameplay.Inventory {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class InventoryContainer {
+
+	internal sealed class InventoryContainer
+	{
 		public IReadOnlyList<ItemStack> Stacks => _stacks;
 		private readonly List<ItemStack> _stacks = new();
 
@@ -64,17 +66,20 @@ namespace Nomad.Game.Application.Gameplay.Inventory {
 		/// <param name="type"></param>
 		/// <param name="catalog"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public InventoryContainer( InventoryContainerType type, InventoryRules rules, IItemCatalog catalog ) {
+		public InventoryContainer( InventoryContainerType type, InventoryRules rules, IItemCatalog catalog )
+		{
 			Type = type;
 			Rules = rules ?? throw new ArgumentNullException( nameof( rules ) );
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
 		}
 
-		public void AddStack( Guid itemId, int amount ) {
+		public void AddStack( Guid itemId, int amount )
+		{
 			_stacks.Add( new ItemStack( itemId, amount ) );
 		}
 
-		public void RemoveStack( ItemStack stack ) {
+		public void RemoveStack( ItemStack stack )
+		{
 			_stacks.Remove( stack );
 		}
 	};

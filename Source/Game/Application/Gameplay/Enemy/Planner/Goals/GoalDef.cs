@@ -15,25 +15,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals {
-	public sealed class GoalDef {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals
+{
+	public sealed class GoalDef
+	{
 		public string Name { get; }
 		public int BasePriority { get; }
 		public WorldCondition[] DesiredState { get; }
 		public Func<PlanningContext, int> ScoreModifier { get; }
 
-		public GoalDef( string name, int basePriority, WorldCondition[] desiredState, Func<PlanningContext, int> scoreModifier = null ) {
+		public GoalDef( string name, int basePriority, WorldCondition[] desiredState, Func<PlanningContext, int> scoreModifier = null )
+		{
 			Name = name ?? throw new ArgumentNullException( nameof( name ) );
 			BasePriority = basePriority;
 			DesiredState = desiredState ?? Array.Empty<WorldCondition>();
 			ScoreModifier = scoreModifier;
 		}
 
-		public int GetPriority( PlanningContext context ) {
+		public int GetPriority( PlanningContext context )
+		{
 			return BasePriority + (ScoreModifier != null ? ScoreModifier( context ) : 0);
 		}
 
-		public bool IsSatisfied( WorldState state ) {
+		public bool IsSatisfied( WorldState state )
+		{
 			return state.Meets( DesiredState );
 		}
 	}

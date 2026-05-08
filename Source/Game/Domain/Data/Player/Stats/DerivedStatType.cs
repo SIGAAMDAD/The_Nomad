@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public enum DerivedStatType : byte {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public enum DerivedStatType : sbyte
+	{
 		Min = 0,
 
 		MovementSpeedMultiplier = Min,

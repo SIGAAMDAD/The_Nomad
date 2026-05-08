@@ -15,12 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.World {
-	public readonly struct WeatherWeight {
+namespace Nomad.Game.Domain.Data.World
+{
+	public readonly struct WeatherWeight
+	{
 		public InternString Id { get; }
 		public float Weight { get; }
 
-		public WeatherWeight( InternString id, float weight ) {
+		public WeatherWeight( InternString id, float weight )
+		{
 			Id = id;
 			Weight = weight;
 		}

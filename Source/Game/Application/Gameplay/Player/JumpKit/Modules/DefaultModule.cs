@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules {
+namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules
+{
 	/*
 	===================================================================================
 	
@@ -26,8 +27,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules {
 	/// <summary>
 	/// The default dash module that is equipped at the start, does nothing special.
 	/// </summary>
-	
-	internal sealed class DefaultModule : IDashModule {
+
+	internal sealed class DefaultModule : IDashModule
+	{
 		public string Name => "Default";
 		public string Description => "The default module, no special effects.";
 

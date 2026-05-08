@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/// <summary>
 	/// Player statistic identifiers.
 	/// </summary>
-	public enum BaseStatType : byte {
+	public enum BaseStatType : sbyte
+	{
 		Min = 0,
 
 		BaseMovementSpeed = Min,

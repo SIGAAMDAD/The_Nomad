@@ -15,12 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Renown {
+namespace Nomad.Game.Domain.Data.Renown
+{
 	/// <summary>
 	/// Extra parameters that can be added to a contract's terms of service.
 	/// </summary>
 	[Flags]
-	public enum ContractFlags : byte {
+	public enum ContractFlags : byte
+	{
 		/// <summary>
 		/// 
 		/// </summary>

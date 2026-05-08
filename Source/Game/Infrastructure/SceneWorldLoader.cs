@@ -19,7 +19,8 @@ using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
-namespace Nomad.Game.Infrastructure {
+namespace Nomad.Game.Infrastructure
+{
 	/*
 	===================================================================================
 	
@@ -31,7 +32,8 @@ namespace Nomad.Game.Infrastructure {
 	/// 
 	/// </summary>
 
-	internal sealed class SceneWorldLoader : IWorldLoader {
+	internal sealed class SceneWorldLoader : IWorldLoader
+	{
 		private static readonly Dictionary<InternString, string> _scenePaths = new() {
 			[new( "world.single.default" )] = "Assets/Prefabs/SingleWorld/SingleWorld.tscn",
 			[new( "world.network.default" )] = "Assets/Prefabs/NetworkWorld/NetworkWorld.tscn",
@@ -39,11 +41,13 @@ namespace Nomad.Game.Infrastructure {
 
 		private readonly ISceneManager _sceneManager;
 
-		public SceneWorldLoader( ISceneManager sceneManager ) {
+		public SceneWorldLoader( ISceneManager sceneManager )
+		{
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 		}
 
-		public IWorldHandle Load( string worldId ) {
+		public IWorldHandle Load( string worldId )
+		{
 			var id = new InternString( worldId );
 			if ( !_scenePaths.TryGetValue( id, out string? scenePath ) ) {
 				throw new InvalidOperationException( $"No scene path mapped for world '{worldId}'." );
@@ -59,11 +63,13 @@ namespace Nomad.Game.Infrastructure {
 			return handle;
 		}
 
-		private sealed class LoadedWorldHandle : IWorldHandle {
+		private sealed class LoadedWorldHandle : IWorldHandle
+		{
 			public Guid Id { get; }
 			public string WorldId { get; }
 
-			public LoadedWorldHandle( Guid id, InternString worldId ) {
+			public LoadedWorldHandle( Guid id, InternString worldId )
+			{
 				Id = id;
 				WorldId = worldId;
 			}

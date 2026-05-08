@@ -1,8 +1,11 @@
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Enemy {
-	public abstract partial class EnemyBase : EngineCharacter2D {
-		protected override void OnInit() {
+namespace Nomad.Game.Application.Gameplay.Enemy
+{
+	public abstract partial class EnemyBase : EngineCharacter2D
+	{
+		protected override void OnInit()
+		{
 			base.OnInit();
 		}
 	};

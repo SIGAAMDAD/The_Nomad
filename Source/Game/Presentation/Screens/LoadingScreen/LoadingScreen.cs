@@ -20,7 +20,8 @@ using Nomad.Events.Globals;
 using Nomad.UI;
 using System;
 
-namespace Nomad.Game.Presentation.Screens.LoadingScreen {
+namespace Nomad.Game.Presentation.Screens.LoadingScreen
+{
 	/*
 	===================================================================================
 	
@@ -31,8 +32,9 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class LoadingScreen : EnginePanel {
+
+	public partial class LoadingScreen : EnginePanel
+	{
 		[Export]
 		private string[] _tipList;
 
@@ -51,7 +53,8 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			_tipSwitch = GameEventRegistry.GetEvent<EmptyEventArgs>( nameof( _tipSwitch ), nameof( LoadingScreen ) ).PublishEvery( EmptyEventArgs.Args, 4500 );
 			_tipSubscription = _tipSwitch.Subscribe( OnSwitchTip );
 
@@ -67,7 +70,8 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnShutdown() {
+		protected override void OnShutdown()
+		{
 			_tipSubscription?.Dispose();
 			_tipSwitch?.Dispose();
 		}
@@ -80,10 +84,11 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnSwitchTip( in EmptyEventArgs args ) {
+		private void OnSwitchTip( in EmptyEventArgs args )
+		{
 			_currentTip = Random.Shared.Next( 0, _tipList.Length - 1 );
 			// TODO: add something here to avoid showing the same tip twice.
-			_tipLabel.Text = _tipList[ _currentTip ];
+			_tipLabel.Text = _tipList[_currentTip];
 		}
 	};
 };

@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Mods {
-	public enum ModuleState : byte {
+namespace Nomad.Game.Domain.Data.Mods
+{
+	public enum ModuleState : byte
+	{
 		Discovered,
 		Validated,
 		Loaded,

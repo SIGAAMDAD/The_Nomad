@@ -1,0 +1,34 @@
+/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
+namespace Nomad.Game.Domain.Data.Multiplayer
+{
+	public enum PacketType : byte
+	{
+		None = 0,
+
+		ClientInput = 1,
+		StateSnapshot = 2,
+
+		PlayerKilled = 20,
+		PlayerRespawned = 21,
+		ScoreChanged = 22,
+		MatchPhaseChanged = 23,
+
+		ObjectiveChanged = 40,
+		BountyChanged = 41,
+		ExtractionStateChanged = 42
+	};
+};

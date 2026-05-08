@@ -19,19 +19,21 @@ using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Application.Gameplay.Items {
+namespace Nomad.Game.Application.Gameplay.Items
+{
 	/*
 	===================================================================================
-	
+
 	ItemBase
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal abstract class ItemBase : IItemBase {
+
+	internal abstract class ItemBase : IItemBase
+	{
 		public ItemStatus State => _state;
 		private readonly ItemStatus _state;
 
@@ -44,9 +46,13 @@ namespace Nomad.Game.Application.Gameplay.Items {
 		public IGameEvent<ItemStatusChangedEventArgs> StatusChanged => _statusChanged;
 		private readonly IGameEvent<ItemStatusChangedEventArgs> _statusChanged;
 
-		public ItemBase( Guid id, ItemDefinition definition, IGameEventRegistryService eventFactory ) {
+		public ItemBase( Guid id, ItemDefinition definition, IGameEventRegistryService eventFactory )
+		{
 			_statusChanged = eventFactory
-				.GetEvent<ItemStatusChangedEventArgs>( EventNames.ITEM_STATUS_CHANGED, EventNames.NAMESPACE );
+				.GetEvent<ItemStatusChangedEventArgs>(
+					ItemStatusChangedEventArgs.Name,
+					ItemStatusChangedEventArgs.NameSpace
+				);
 		}
 	};
 };

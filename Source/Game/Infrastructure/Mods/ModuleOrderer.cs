@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Nomad.Game.Domain.Data.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public static class ModuleOrderer {
-		public static List<DiscoveredModule> TopologicalSort( List<DiscoveredModule> modules ) {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public static class ModuleOrderer
+	{
+		public static List<DiscoveredModule> TopologicalSort( List<DiscoveredModule> modules )
+		{
 			var byId = modules.ToDictionary( x => x.Manifest.Id, StringComparer.Ordinal );
 			var visited = new Dictionary<string, int>( StringComparer.Ordinal );
 			var ordered = new List<DiscoveredModule>( modules.Count );
@@ -16,7 +19,8 @@ namespace Nomad.Game.Infrastructure.Mods {
 
 			return ordered;
 
-			void Visit( DiscoveredModule module ) {
+			void Visit( DiscoveredModule module )
+			{
 				if ( visited.TryGetValue( module.Manifest.Id, out var state ) ) {
 					if ( state == 1 ) {
 						throw new InvalidOperationException( $"Cycle detected at {module.Manifest.Id}" );

@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed partial class SettingsMenuView : EnginePanel {
+
+	internal sealed partial class SettingsMenuView : EnginePanel
+	{
 		public AudioSettingsContainerView AudioView { get; private set; }
 		public DisplaySettingsContainerView DisplayView { get; private set; }
 
@@ -46,7 +48,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			AudioView = FindChild<AudioSettingsContainerView>( "TabContainer/Audio" );

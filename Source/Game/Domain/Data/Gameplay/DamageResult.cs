@@ -15,13 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Gameplay {
-	public readonly struct DamageResult {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
+	public readonly struct DamageResult
+	{
 		public Guid? Hit { get; }
 		public float Amount { get; }
 		public bool Success { get; }
 
-		public DamageResult( Guid? hit, float amount, bool success ) {
+		public DamageResult( Guid? hit, float amount, bool success )
+		{
 			Hit = hit;
 			Amount = amount;
 		}

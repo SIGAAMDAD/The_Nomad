@@ -13,12 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public readonly struct SpawnValueRule {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public readonly struct SpawnValueRule
+	{
 		public SpawnValueMode Mode { get; }
 		public float Value { get; }
 
-		public SpawnValueRule( SpawnValueMode mode, float value = 0.0f ) {
+		public SpawnValueRule( SpawnValueMode mode, float value = 0.0f )
+		{
 			Mode = mode;
 			Value = value;
 		}

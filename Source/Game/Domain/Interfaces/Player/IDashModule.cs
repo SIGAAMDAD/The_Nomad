@@ -13,13 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IDashModule {
+	public interface IDashModule
+	{
 		/// <summary>
 		/// The name of this dash module/upgrade.
 		/// </summary>

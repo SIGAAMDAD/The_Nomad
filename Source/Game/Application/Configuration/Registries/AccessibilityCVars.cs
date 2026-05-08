@@ -17,7 +17,8 @@ using Nomad.Game.Application.Configuration.Enums;
 using Nomad.Core;
 using Nomad.Core.CVars;
 
-namespace Nomad.Game.Application.Configuration.Registries {
+namespace Nomad.Game.Application.Configuration.Registries
+{
 	/*
 	===================================================================================
 	
@@ -29,7 +30,8 @@ namespace Nomad.Game.Application.Configuration.Registries {
 	/// 
 	/// </summary>
 
-	public static class AccessibilityCVars {
+	public static class AccessibilityCVars
+	{
 		/*
 		===============
 		Register
@@ -39,7 +41,8 @@ namespace Nomad.Game.Application.Configuration.Registries {
 		/// 
 		/// </summary>
 		/// <param name="cvarSystem"></param>
-		public static void Register( ICVarSystemService cvarSystem ) {
+		public static void Register( ICVarSystemService cvarSystem )
+		{
 			cvarSystem.Register(
 				new CVarCreateInfo<float> {
 					Name = Constants.CVars.EngineUtils.Accessibility.HAPTIC_STRENGTH,

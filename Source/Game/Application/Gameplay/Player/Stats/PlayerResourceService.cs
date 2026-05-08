@@ -20,7 +20,8 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -31,13 +32,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerResourceService : IPlayerResourceService, IDisposable {
+
+	internal sealed class PlayerResourceService : IPlayerResourceService, IDisposable
+	{
 		public IGameEvent<PlayerResourceChangedEventArgs> ResourceChanged => _resourceChanged;
 		private readonly IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged;
 
 		private readonly IPlayerDerivedStatService _derivedStats;
-		private readonly float[] _values = new float[ (int)PlayerResourceType.Count ];
+		private readonly float[] _values = new float[(int)PlayerResourceType.Count];
 
 		private readonly ISubscriptionHandle _derivedStatChanged;
 		private bool _isDisposed = false;
@@ -53,14 +55,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="id"></param>
 		/// <param name="derivedStats"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerResourceService( Guid id, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory ) {
+		public PlayerResourceService( Guid id, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory )
+		{
 			ArgumentGuard.ThrowIfNull( derivedStats );
 			ArgumentGuard.ThrowIfNull( eventFactory );
 
 			_derivedStats = derivedStats;
 			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				$"{id}:{EventNames.PLAYER_RESOURCE_CHANGED}",
-				EventNames.NAMESPACE
+				$"{id}:{PlayerResourceChangedEventArgs.Name}",
+				PlayerResourceChangedEventArgs.NameSpace
 			);
 
 			_derivedStatChanged = _derivedStats.DerivedStatChanged.Subscribe( OnDerivedStatChanged );
@@ -74,13 +77,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
 				_derivedStatChanged?.Dispose();
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
-			
+
 		}
 
 		/*
@@ -93,8 +97,9 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public float GetValue( PlayerResourceType type ) {
-			return _values[ (int)type ];
+		public float GetValue( PlayerResourceType type )
+		{
+			return _values[(int)type];
 		}
 
 		/*
@@ -108,7 +113,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="type"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public float GetMaxValue( PlayerResourceType type ) {
+		public float GetMaxValue( PlayerResourceType type )
+		{
 			return type switch {
 				PlayerResourceType.Health => _derivedStats.GetValue( DerivedStatType.EffectiveHealthMax ),
 				PlayerResourceType.Rage => _derivedStats.GetValue( DerivedStatType.EffectiveRageMax ),
@@ -127,16 +133,17 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
-		public void SetValue( PlayerResourceType type, float value ) {
-			float oldValue = _values[ (int)type ];
+		public void SetValue( PlayerResourceType type, float value )
+		{
+			float oldValue = _values[(int)type];
 			float newValue = Clamp( type, value );
 
 			if ( NearlyEqual( oldValue, newValue ) ) {
 				return;
 			}
 
-			_values[ (int)type ] = newValue;
-			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( newValue, oldValue, type ) );
+			_values[(int)type] = newValue;
+			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( oldValue, newValue, type ) );
 		}
 
 		/*
@@ -149,7 +156,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="delta"></param>
-		public void AddValue( PlayerResourceType type, float delta ) {
+		public void AddValue( PlayerResourceType type, float delta )
+		{
 			SetValue( type, GetValue( type ) + delta );
 		}
 
@@ -164,7 +172,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="type"></param>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		public bool TryConsume( PlayerResourceType type, float amount ) {
+		public bool TryConsume( PlayerResourceType type, float amount )
+		{
 			RangeGuard.ThrowIfLessThan( amount, 0.0f, nameof( amount ) );
 
 			float current = GetValue( type );
@@ -187,7 +196,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="type"></param>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		public bool HasAtLeast( PlayerResourceType type, float amount ) {
+		public bool HasAtLeast( PlayerResourceType type, float amount )
+		{
 			return GetValue( type ) >= amount;
 		}
 
@@ -200,7 +210,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="type"></param>
-		public void Fill( PlayerResourceType type ) {
+		public void Fill( PlayerResourceType type )
+		{
 			SetValue( type, GetMaxValue( type ) );
 		}
 
@@ -213,7 +224,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="type"></param>
-		public void Empty( PlayerResourceType type ) {
+		public void Empty( PlayerResourceType type )
+		{
 			SetValue( type, 0.0f );
 		}
 
@@ -225,7 +237,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void NormalizeToCurrentMaxes() {
+		public void NormalizeToCurrentMaxes()
+		{
 			SetValue( PlayerResourceType.Health, GetValue( PlayerResourceType.Health ) );
 			SetValue( PlayerResourceType.Rage, GetValue( PlayerResourceType.Rage ) );
 			SetValue( PlayerResourceType.Sanity, GetValue( PlayerResourceType.Sanity ) );
@@ -240,7 +253,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args ) {
+		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args )
+		{
 			switch ( args.StatId ) {
 				case DerivedStatType.EffectiveHealthMax:
 					SetValue( PlayerResourceType.Health, GetValue( PlayerResourceType.Health ) );
@@ -265,7 +279,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="type"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		private float Clamp( PlayerResourceType type, float value ) {
+		private float Clamp( PlayerResourceType type, float value )
+		{
 			float max = GetMaxValue( type );
 			if ( max < 0.0f ) {
 				max = 0.0f;
@@ -290,7 +305,8 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		private static bool NearlyEqual( float a, float b ) {
+		private static bool NearlyEqual( float a, float b )
+		{
 			return Math.Abs( a - b ) < 0.0001f;
 		}
 	}

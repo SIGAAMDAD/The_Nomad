@@ -19,12 +19,15 @@ using Nomad.Core.FileSystem;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Application.Gameplay.Items {
-	internal sealed class ItemRepository {
+namespace Nomad.Game.Application.Gameplay.Items
+{
+	internal sealed class ItemRepository
+	{
 		private readonly Dictionary<Guid, IItemBase> _items = new();
 		private readonly Dictionary<string, ItemDefinition> _definitionCache = new();
 
-		public ItemRepository( IFileSystem fileSystem ) {
+		public ItemRepository( IFileSystem fileSystem )
+		{
 		}
 	};
 };

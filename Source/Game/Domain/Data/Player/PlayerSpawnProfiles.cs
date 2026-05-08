@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public static class PlayerSpawnProfiles {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public static class PlayerSpawnProfiles
+	{
 		public static readonly PlayerSpawnProfileDefinition NewGame = new() {
 			Id = "NewGame",
 			Health = new( SpawnValueMode.Full ),

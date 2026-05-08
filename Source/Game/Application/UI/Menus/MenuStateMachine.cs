@@ -18,17 +18,20 @@ using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.UI;
 using System.Collections.Generic;
+using System;
+using Nomad.Core.Compatibility.Guards;
 
-namespace Nomad.Game.Application.UI.Menus {
+namespace Nomad.Game.Application.UI.Menus
+{
 	/*
 	===================================================================================
-	
+
 	MenuStateMachine
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <param name="currentMenu"></param>
 	/// <param name="states"></param>
@@ -43,7 +46,13 @@ namespace Nomad.Game.Application.UI.Menus {
 		private readonly InternString _menuId;
 
 		private readonly IReadOnlyDictionary<TState, EnginePanel?> _states;
-		private readonly IGameEventRegistryService _eventFactory;
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.UI" )]
+		[EventPayload( "MenuId", typeof( InternString ), Order = 1 )]
+		[EventPayload( "PreviousState", "TState", Order = 2 )]
+		[EventPayload( "CurrentState", "TState", Order = 3 )]
+		public IGameEvent<MenuStateChangedEventArgs<TState>> MenuStateChanged => _menuStateChanged;
+		private readonly IGameEvent<MenuStateChangedEventArgs<TState>> _menuStateChanged = default;
 
 		/*
 		===============
@@ -51,17 +60,25 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="menuId"></param>
 		/// <param name="currentMenu"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="states"></param>
-		public MenuStateMachine( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, EnginePanel?> states ) {
+		public MenuStateMachine( InternString menuId, TState currentMenu, IGameEventRegistryService eventFactory, IReadOnlyDictionary<TState, EnginePanel?> states )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
 			_menuId = menuId;
+			_states = states ?? throw new ArgumentNullException( nameof( states ) );
 			_currentMenu = currentMenu;
-			_eventFactory = eventFactory;
-			_states = states;
+
+			_menuStateChanged = eventFactory
+				.GetEvent<MenuStateChangedEventArgs<TState>>(
+					MenuStateChangedEventArgs<TState>.Name,
+					MenuStateChangedEventArgs<TState>.NameSpace
+				);
 		}
 
 		/*
@@ -73,23 +90,23 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// Changes the state to the requested index.
 		/// </summary>
 		/// <param name="stateId"></param>
-		public void SetState( TState stateId ) {
+		public void SetState( TState stateId )
+		{
 			if ( !_states.TryGetValue( stateId, out EnginePanel? newState ) ) {
 				// NOTE: this might need... extra verification
 				return;
 			}
 
 			TState oldMenu = _currentMenu;
-			if ( _states[ oldMenu ] != null ) {
-				_states[ oldMenu ].Visible = false;
+			if ( _states[oldMenu] != null ) {
+				_states[oldMenu].Visible = false;
 			}
 			_currentMenu = stateId;
 			if ( newState != null ) {
 				newState.Visible = true;
 			}
 
-			var menuStateChanged = _eventFactory.GetEvent<MenuStateChangedEventArgs<TState>>( UIConstants.MENU_STATE_CHANGED_EVENT, UIConstants.NAMESPACE );
-			menuStateChanged.Publish( new MenuStateChangedEventArgs<TState>( _menuId, oldMenu, _currentMenu ) );
+			_menuStateChanged.Publish( new MenuStateChangedEventArgs<TState>( _menuId, oldMenu, _currentMenu ) );
 		}
 	};
 };

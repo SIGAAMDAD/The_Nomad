@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Data.Player.Inventory {
-	public sealed record TotemDefinition : ItemDefinition {
+namespace Nomad.Game.Domain.Data.Player.Inventory
+{
+	public sealed record TotemDefinition : ItemDefinition
+	{
 		public override ItemType BaseType => ItemType.Totem;
 		public InternString ValdensBook { get; init; }
 	};

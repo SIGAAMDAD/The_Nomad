@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Infrastructure.Audio {
-	public static class AudioConstants {
+namespace Nomad.Game.Infrastructure.Audio
+{
+	public static class AudioConstants
+	{
 		public const string BUTTON_FOCUSED = "event:/UI/ButtonFocused";
 		public const string BUTTON_PRESSED = "event:/UI/ButtonPressed";
 		public const string BEGIN_GAME = "event:/UI/BeginGame";

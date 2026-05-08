@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Configuration.Enums.Gameplay {
-	public enum ContractPayoutScaling : byte {
+namespace Nomad.Game.Application.Configuration.Enums.Gameplay
+{
+	public enum ContractPayoutScaling : byte
+	{
 		LateCapitalistSociety,
 		JustGiveMeMyMoney,
 		RichBoy,

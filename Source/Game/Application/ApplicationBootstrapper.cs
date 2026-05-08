@@ -27,20 +27,23 @@ using Nomad.Game.Infrastructure;
 using Nomad.Game.Application.Gameplay.World;
 using Nomad.Save.Services;
 using Nomad.Game.Application.Gameplay.Persistence;
+using Nomad.Core.Logger;
 
-namespace Nomad.Game.Application {
+namespace Nomad.Game.Application
+{
 	/*
 	===================================================================================
-	
+
 	ApplicationBootstrapper
-	
+
 	===================================================================================
 	*/
 	/// <summary>
 	/// Initializes the Application layer.
 	/// </summary>
-	
-	public sealed partial class ApplicationBootstrapper : EngineAspectRatioContainer {
+
+	public sealed partial class ApplicationBootstrapper : EngineAspectRatioContainer
+	{
 		private MenuManager _menuManager;
 		private IGameFlowCoordinator _gameFlowCoordinator;
 		private IWorldLoader _worldLoader;
@@ -54,25 +57,27 @@ namespace Nomad.Game.Application {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
 			var cvarSystem = CVarSystem.Instance;
-	
+			var logger = ServiceLocator.GetService<ILoggerService>();
+
 			GameplayCVars.Register( cvarSystem );
 
 			_sceneManager = ServiceLocator.GetService<ISceneManager>();
 			_gameStateService = new GameStateManager( eventFactory );
-			_menuManager = new MenuManager( _sceneManager, _gameStateService, eventFactory );
+			_menuManager = new MenuManager( _sceneManager, _gameStateService, eventFactory, logger );
 			_worldLoader = new SceneWorldLoader( _sceneManager );
 			_saveController = new SaveGameController( ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
 
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
-			_gameFlowCoordinator = new GameFlowCoordinator( worldBootstrapper, eventFactory, _gameStateService, cvarSystem, Logging.Instance );
-			
+			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, _gameStateService, cvarSystem, Logging.Instance );
+
 			ServiceRegistry.AddSingleton( _gameStateService );
 			ServiceRegistry.AddSingleton( _worldLoader );
 			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
@@ -84,9 +89,10 @@ namespace Nomad.Game.Application {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnShutdown() {
+		protected override void OnShutdown()
+		{
 			base.OnShutdown();
 
 			_gameFlowCoordinator?.Dispose();

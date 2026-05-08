@@ -17,8 +17,10 @@ using System.Collections.Generic;
 using Nomad.Core.Util;
 using Godot;
 
-namespace Nomad.Game.Domain.Data.World {
-	public sealed record SeasonDefinition {
+namespace Nomad.Game.Domain.Data.World
+{
+	public sealed record SeasonDefinition
+	{
 		public InternString Id { get; init; }
 
 		public float DaylightHours { get; init; }
@@ -26,7 +28,7 @@ namespace Nomad.Game.Domain.Data.World {
 
 		public int MinWeatherDurationHours { get; init; }
 		public int MaxWeatherDurationHours { get; init; }
-		
+
 		public IReadOnlyList<WeatherWeight> WeatherTable { get; init; }
 
 		public Color NightAmbient { get; init; }

@@ -17,25 +17,30 @@ using System;
 using Godot;
 using Nomad.Game.Prefabs;
 
-namespace Nomad.Game.Application.Gameplay.Interactables {
-	internal sealed partial class InteractableZone : Area2D {
+namespace Nomad.Game.Application.Gameplay.Interactables
+{
+	internal sealed partial class InteractableZone : Area2D
+	{
 		public event Action PlayerEntered;
 		public event Action PlayerExited;
 
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 
 			BodyShapeEntered += OnBodyShapeEntered;
 			BodyShapeExited += OnBodyShapeExited;
 		}
 
-		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex ) {
+		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
+		{
 			if ( body is PlayerPrefab ) {
 				PlayerEntered?.Invoke();
 			}
 		}
 
-		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex ) {
+		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
+		{
 			if ( body is PlayerPrefab ) {
 				PlayerExited?.Invoke();
 			}

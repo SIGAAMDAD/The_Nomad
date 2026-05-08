@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
@@ -16,22 +16,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Audio;
 using Godot;
 using Nomad.Core.Events;
-using Nomad.UI;
 using Nomad.Game.Infrastructure.Audio;
+using Nomad.Game.Domain.Audio;
+using Nomad.Core.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
+namespace Nomad.Game.Infrastructure.UI.Nodes.NomadButton
+{
 	/*
 	===================================================================================
-	
+
 	NomadButton
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class NomadButton : EngineButton {
+	public partial class NomadButton : Button
+	{
 		private readonly float _duration = 0.25f;
 		private readonly bool _animateScale = true;
 		private readonly bool _animatePosition = false;
@@ -39,8 +42,29 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		private readonly float _scaleIntensity = 1.10f;
 		private readonly Vector2 _positionValue = new Vector2( 0.0f, -4.0f );
 
+		private readonly UIButtonAudioFeedback _feedback;
+
 		public bool IsFocused => _isFocused;
 		private bool _isFocused = false;
+
+		/*
+		===============
+		NomadButton
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public NomadButton()
+		{
+			_feedback = new UIButtonAudioFeedback() {
+				Button = this,
+				ClickSound = AudioEventIdConstants.GetEvent( AudioEventId.UIButtonPressed ).Path,
+				FocusedSound = AudioEventIdConstants.GetEvent( AudioEventId.UIButtonFocused ).Path
+			};
+			FocusEntered += OnFocused;
+			FocusExited += OnUnfocused;
+		}
 
 		/*
 		===============
@@ -50,28 +74,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// <summary>
 		/// Activates button animations.
 		/// </summary>
-		public void AnimateHover() {
+		private void AnimateHover()
+		{
 			HoverPositionAnimation();
 			HoverScaleAnimation();
-		}
-
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnInit() {
-			AddComponent<UIButtonAudioFeedback>(comp => {
-				comp.Button = this;
-				comp.ClickSound = AudioConstants.BUTTON_PRESSED;
-				comp.FocusedSound = AudioConstants.BUTTON_FOCUSED;
-			});
-
-			Focused.Subscribe( OnFocused );
-			Unfocused.Subscribe( OnUnfocused );
 		}
 
 		/*
@@ -80,9 +86,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void HoverPositionAnimation() {
+		private void HoverPositionAnimation()
+		{
 			if ( !_animatePosition ) {
 				return;
 			}
@@ -99,9 +106,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void HoverScaleAnimation() {
+		private void HoverScaleAnimation()
+		{
 			if ( !_animateScale ) {
 				return;
 			}
@@ -118,12 +126,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="property"></param>
 		/// <param name="finalValue"></param>
 		/// <param name="duration"></param>
-		private async void Tweening( NodePath property, Variant finalValue, float duration ) {
+		private async void Tweening( NodePath property, Variant finalValue, float duration )
+		{
 			Tween tween = CreateTween().SetTrans( _transitionType );
 			tween.TweenProperty( this, property, finalValue, duration );
 			await ToSignal( tween, Tween.SignalName.Finished );
@@ -138,7 +147,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		/// <summary>
 		/// Focus callback for a <see cref="NomadButton"/>.
 		/// </summary>
-		private void OnFocused( in EmptyEventArgs args ) {
+		private void OnFocused()
+		{
 			_isFocused = true;
 			AnimateHover();
 		}
@@ -149,9 +159,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.Button {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnUnfocused( in EmptyEventArgs args ) {
+		private void OnUnfocused()
+		{
 			_isFocused = false;
 			AnimateHover();
 		}

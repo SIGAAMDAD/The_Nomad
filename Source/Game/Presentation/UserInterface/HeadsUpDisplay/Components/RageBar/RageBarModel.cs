@@ -15,9 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar {
-	internal sealed class RageBarModel {
-		public RageBarModel( IGameEventRegistryService eventFactory ) {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar
+{
+	internal sealed class RageBarModel
+	{
+		public RageBarModel( IGameEventRegistryService eventFactory )
+		{
 		}
 	};
 };

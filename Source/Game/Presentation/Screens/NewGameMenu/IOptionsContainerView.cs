@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
-	public interface IOptionsContainerView {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
+	public interface IOptionsContainerView
+	{
 		event Action StandardModeRequested;
 		event Action HardModeRequested;
 		event Action CustomModeRequested;

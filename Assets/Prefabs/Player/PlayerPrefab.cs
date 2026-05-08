@@ -28,7 +28,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	public partial class PlayerPrefab : EngineCharacter2D {
 		public PlayerInitializationDefinition Definition { get; init; }
 
@@ -36,12 +36,12 @@ namespace Nomad.Game.Prefabs {
 			Definition = new PlayerInitializationDefinition {
 				Stats = new PlayerStatBlockDefinition {
 					BaseStats = new Dictionary<BaseStatType, float> {
-						[BaseStatType.BaseHealth] = 100.0f,
-						[BaseStatType.BaseRage] = 100.0f,
-						[BaseStatType.BaseMovementSpeed] = 200.0f,
-						[BaseStatType.BaseSanity] = 90.0f,
-						[BaseStatType.EncumbranceThreshold] = 100.0f,
-						[BaseStatType.BaseDashSpeed] = 8800.0f
+						[ BaseStatType.BaseHealth ] = 100.0f,
+						[ BaseStatType.BaseRage ] = 100.0f,
+						[ BaseStatType.BaseMovementSpeed ] = 200.0f,
+						[ BaseStatType.BaseSanity ] = 90.0f,
+						[ BaseStatType.EncumbranceThreshold ] = 100.0f,
+						[ BaseStatType.BaseDashSpeed ] = 8800.0f
 					}
 				},
 				Resources = new PlayerSpawnResourceProfile {

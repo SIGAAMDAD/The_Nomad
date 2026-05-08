@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.Core.Events;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Engine.Globals;
@@ -25,20 +24,23 @@ using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.EngineUtils;
+using Nomad.Core.Logger;
 
-namespace Nomad.Game.Application.UI.Menus {
+namespace Nomad.Game.Application.UI.Menus
+{
 	/*
 	===================================================================================
-	
+
 	MenuManager
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed class MenuManager : IDisposable {
+	internal sealed class MenuManager : IDisposable
+	{
 		private const float FADE_TIME = 0.75f;
 		private static readonly StringName ShaderVariableProgressName = "progress";
 
@@ -59,6 +61,19 @@ namespace Nomad.Game.Application.UI.Menus {
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly ISceneManager _sceneManager;
 		private readonly IGameStateService _gameStateService;
+		private readonly ILoggerService _logger;
+
+		[Event( nameSpace: "Nomad.Game.Application.UI.Menus" )]
+		[EventPayload( "PreviousState", typeof( MenuState ), Order = 1 )]
+		[EventPayload( "CurrentState", typeof( MenuState ), Order = 2 )]
+		public IGameEvent<MenuTransitionCompletedEventArgs> MenuTransitionCompleted => _menuTransitionCompleted;
+		private readonly IGameEvent<MenuTransitionCompletedEventArgs> _menuTransitionCompleted = default;
+
+		[Event( nameSpace: "Nomad.Game.Application.UI.Menus" )]
+		[EventPayload( "FromState", typeof( MenuState ), Order = 1 )]
+		[EventPayload( "ToState", typeof( MenuState ), Order = 2 )]
+		public IGameEvent<MenuTransitionRequestedEventArgs> MenuTransitionRequested => _menuTransitionRequested;
+		private readonly IGameEvent<MenuTransitionRequestedEventArgs> _menuTransitionRequested = default;
 
 		private IScene? _currentMenu;
 		private readonly IScene _menuHubPrefab;
@@ -71,22 +86,35 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="sceneManager"></param>
 		/// <param name="gameStateService"></param>
 		/// <param name="eventFactory"></param>
+		/// <param name="logger"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public MenuManager( ISceneManager sceneManager, IGameStateService gameStateService, IGameEventRegistryService eventFactory ) {
+		public MenuManager( ISceneManager sceneManager, IGameStateService gameStateService, IGameEventRegistryService eventFactory, ILoggerService logger )
+		{
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
+			_logger = logger ?? throw new ArgumentNullException( nameof( logger ) );
+
+			_menuTransitionRequested = _eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				);
+			_menuTransitionRequested.Subscribe( OnMenuTransitionRequested );
+
+			_menuTransitionCompleted = _eventFactory
+				.GetEvent<MenuTransitionCompletedEventArgs>(
+					MenuTransitionCompletedEventArgs.Name,
+					MenuTransitionCompletedEventArgs.NameSpace
+				);
 
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
-				.Subscribe( OnMenuTransitionRequested );
-			_eventFactory
-				.GetEvent<WorldBootstrapSucceededEventArgs>( EventNames.WORLD_BOOTSTRAP_SUCCEEDED, EventNames.NAMESPACE )
+				.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace )
 				.Subscribe( OnWorldBootstrapSucceeded );
 
 			_menuHubPrefab = _sceneManager.LoadPrefab( EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MenuHub/MenuHub.tscn", StorageScope.Install ) );
@@ -102,19 +130,20 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( _isDisposed ) {
 				return;
 			}
 
 			_gameStateService.StateChanged.Unsubscribe( OnGameStateChanged );
+
+			_menuTransitionRequested.Unsubscribe( OnMenuTransitionRequested );
+
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
-				.Unsubscribe( OnMenuTransitionRequested );
-			_eventFactory
-				.GetEvent<WorldBootstrapSucceededEventArgs>( EventNames.WORLD_BOOTSTRAP_SUCCEEDED, EventNames.NAMESPACE )
+				.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace )
 				.Unsubscribe( OnWorldBootstrapSucceeded );
 
 			GC.SuppressFinalize( this );
@@ -127,11 +156,12 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="newState"></param>
 		/// <returns></returns>
-		public void TransitionToMenu( MenuState newState ) {
+		public void TransitionToMenu( MenuState newState )
+		{
 			newState = ResolveRequestedState( newState );
 
 			if ( newState == MenuState.None ) {
@@ -141,7 +171,7 @@ namespace Nomad.Game.Application.UI.Menus {
 				return;
 			}
 			if ( !_scenePaths.ContainsKey( newState ) ) {
-				GD.PushWarning( $"Menu state '{newState}' does not have a registered scene path yet." );
+				_logger.PrintError( $"Menu state '{newState}' does not have a registered scene path yet." );
 				return;
 			}
 
@@ -149,9 +179,7 @@ namespace Nomad.Game.Application.UI.Menus {
 			TransitionFrom( newState );
 			_currentState = newState;
 
-			_eventFactory
-				.GetEvent<MenuTransitionCompletedEventArgs>( UIConstants.MENU_TRANSITION_COMPLETED_EVENT, UIConstants.NAMESPACE )
-				.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
+			_menuTransitionCompleted.Publish( new MenuTransitionCompletedEventArgs( _currentState, _previousState ) );
 		}
 
 		/*
@@ -160,10 +188,11 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnMenuTransitionRequested( in MenuTransitionRequestedEventArgs args ) {
+		private void OnMenuTransitionRequested( in MenuTransitionRequestedEventArgs args )
+		{
 			TransitionToMenu( args.ToState );
 		}
 
@@ -173,10 +202,11 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnGameStateChanged( in GameStateChangedEventArgs args ) {
+		private void OnGameStateChanged( in GameStateChangedEventArgs args )
+		{
 			switch ( args.CurrentState ) {
 				case GameState.Paused:
 					AttachMenuHubToActiveScene();
@@ -201,10 +231,11 @@ namespace Nomad.Game.Application.UI.Menus {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnWorldBootstrapSucceeded( in WorldBootstrapSucceededEventArgs args ) {
+		private void OnWorldBootstrapSucceeded( in WorldBootstrapSucceededEventArgs args )
+		{
 			AttachMenuHubToActiveScene();
 			SetMenuHubVisible( false );
 		}
@@ -218,7 +249,8 @@ namespace Nomad.Game.Application.UI.Menus {
 		/// Animates the transition between two menu screens.
 		/// </summary>
 		/// <param name="newState">The menu state to transition from.</param>
-		private void TransitionFrom( MenuState newState ) {
+		private void TransitionFrom( MenuState newState )
+		{
 			if ( _currentMenu == null ) {
 				TransitionTo( newState );
 				return;
@@ -235,17 +267,18 @@ namespace Nomad.Game.Application.UI.Menus {
 			CloseMenuScene( oldMenu );
 			TransitionTo( newState );
 		}
-		
+
 		/*
 		===============
 		TransitionTo
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="newState"></param>
-		private void TransitionTo( MenuState newState ) {
+		private void TransitionTo( MenuState newState )
+		{
 			var toScene = _sceneManager.LoadPrefab( _scenePaths[newState] );
 			var root = GetSceneRootNode( toScene );
 
@@ -256,7 +289,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			TryAnimateMenu( toScene, 0.0f, 1.0f, null );
 		}
 
-		private MenuState ResolveRequestedState( MenuState requestedState ) {
+		private MenuState ResolveRequestedState( MenuState requestedState )
+		{
 			if ( requestedState != MenuState.None ) {
 				return requestedState;
 			}
@@ -267,11 +301,13 @@ namespace Nomad.Game.Application.UI.Menus {
 			return _gameStateService.Current == GameState.Paused ? MenuState.Pause : MenuState.Main;
 		}
 
-		private void ActivateStandaloneMenuHub() {
+		private void ActivateStandaloneMenuHub()
+		{
 			_sceneManager.SetActiveScene( _menuHubPrefab );
 		}
 
-		private void AttachMenuHubToActiveScene() {
+		private void AttachMenuHubToActiveScene()
+		{
 			if ( _sceneManager.ActiveScene == null ) {
 				return;
 			}
@@ -279,7 +315,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			AttachMenuHubTo( GetSceneRootNode( _sceneManager.ActiveScene ) );
 		}
 
-		private void AttachMenuHubTo( Node parent ) {
+		private void AttachMenuHubTo( Node parent )
+		{
 			Node menuHubRoot = GetSceneRootNode( _menuHubPrefab );
 			Node? currentParent = menuHubRoot.GetParent();
 
@@ -291,7 +328,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			parent.AddChild( menuHubRoot );
 		}
 
-		private void AttachNodeToMenuHub( Node child ) {
+		private void AttachNodeToMenuHub( Node child )
+		{
 			Node menuHubRoot = GetSceneRootNode( _menuHubPrefab );
 			Node? currentParent = child.GetParent();
 
@@ -303,7 +341,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			menuHubRoot.AddChild( child );
 		}
 
-		private void ClearCurrentMenu( bool resetState ) {
+		private void ClearCurrentMenu( bool resetState )
+		{
 			if ( _currentMenu != null ) {
 				CloseMenuScene( _currentMenu );
 			}
@@ -314,7 +353,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			}
 		}
 
-		private void CloseMenuScene( IScene scene ) {
+		private void CloseMenuScene( IScene scene )
+		{
 			Node root = GetSceneRootNode( scene );
 			Node? parent = root.GetParent();
 
@@ -327,13 +367,15 @@ namespace Nomad.Game.Application.UI.Menus {
 			}
 		}
 
-		private void SetMenuHubVisible( bool visible ) {
+		private void SetMenuHubVisible( bool visible )
+		{
 			if ( GetSceneRootNode( _menuHubPrefab ) is CanvasItem canvasItem ) {
 				canvasItem.Visible = visible;
 			}
 		}
 
-		private static bool TryAnimateMenu( IScene scene, float fromValue, float toValue, Action? onFinished ) {
+		private static bool TryAnimateMenu( IScene scene, float fromValue, float toValue, Action? onFinished )
+		{
 			if ( FindTransitionSurface( GetSceneRootNode( scene ) ) is not CanvasItem surface ) {
 				return false;
 			}
@@ -363,7 +405,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			return true;
 		}
 
-		private static CanvasItem? FindTransitionSurface( Node node ) {
+		private static CanvasItem? FindTransitionSurface( Node node )
+		{
 			if ( node is CanvasItem canvasItem && canvasItem.Material is ShaderMaterial ) {
 				return canvasItem;
 			}
@@ -383,7 +426,8 @@ namespace Nomad.Game.Application.UI.Menus {
 			return null;
 		}
 
-		private static Node GetSceneRootNode( IScene scene ) {
+		private static Node GetSceneRootNode( IScene scene )
+		{
 			if ( scene.Root is not GodotGameObject root ) {
 				throw new InvalidCastException( $"Expected a Godot scene root for '{scene.Name}'." );
 			}

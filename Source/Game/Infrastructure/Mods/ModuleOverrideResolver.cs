@@ -18,9 +18,12 @@ using System.Linq;
 using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public static class ModuleOverrideResolver {
-		public static List<DiscoveredModule> Resolve( List<DiscoveredModule> discovered ) {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public static class ModuleOverrideResolver
+	{
+		public static List<DiscoveredModule> Resolve( List<DiscoveredModule> discovered )
+		{
 			var byId = discovered.ToDictionary( x => x.Manifest.Id, StringComparer.Ordinal );
 			var replacedBy = new Dictionary<string, DiscoveredModule>( StringComparer.Ordinal );
 

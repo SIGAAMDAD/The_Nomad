@@ -17,23 +17,28 @@ using System;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators {
-	internal readonly struct PlayerDerivedStatEvaluationContext {
+namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
+{
+	internal readonly struct PlayerDerivedStatEvaluationContext
+	{
 		private readonly Func<DerivedStatType, float> _getDerivedValue;
 
 		public IPlayerBaseStatsRepository BaseStats { get; }
 
-		public PlayerDerivedStatEvaluationContext( IPlayerBaseStatsRepository baseStats, Func<DerivedStatType, float> getDerivedValue ) {
+		public PlayerDerivedStatEvaluationContext( IPlayerBaseStatsRepository baseStats, Func<DerivedStatType, float> getDerivedValue )
+		{
 			BaseStats = baseStats;
 			_getDerivedValue = getDerivedValue;
 		}
 
-		public float GetBaseStat( BaseStatType type ) {
+		public float GetBaseStat( BaseStatType type )
+		{
 			return BaseStats.GetBaseStatValue( type );
 		}
 
-		public float GetDerivedStat( DerivedStatType type ) {
+		public float GetDerivedStat( DerivedStatType type )
+		{
 			return _getDerivedValue( type );
 		}
-	}
-}
+	};
+};

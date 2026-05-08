@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/*
 	===================================================================================
 	
@@ -26,15 +27,16 @@ namespace Nomad.Game.Domain.Interfaces.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public interface IDashModuleFactory {
+
+	public interface IDashModuleFactory
+	{
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="moduleType"></param>
 		/// <param name="factory"></param>
 		void RegisterModuleFactory( Type moduleType, Func<IDashModule> factory );
-		
+
 		/// <summary>
 		/// 
 		/// </summary>
