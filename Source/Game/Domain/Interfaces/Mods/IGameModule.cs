@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.ServiceRegistry.Interfaces;
 
-namespace Nomad.Game.Domain.Interfaces.Mods {
-	public interface IGameModule : IDisposable {
+namespace Nomad.Game.Domain.Interfaces.Mods
+{
+	public interface IGameModule : IDisposable
+	{
 		string Id { get; }
 
 		void RegisterServices( IServiceRegistry services );

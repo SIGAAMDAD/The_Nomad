@@ -8,18 +8,22 @@ using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Mods;
 using Nomad.Game.Domain.Interfaces.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public sealed class ModuleLoader {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public sealed class ModuleLoader
+	{
 		private readonly IServiceRegistry _serviceRegistry;
 		private readonly Dictionary<string, LoadedModule> _loaded = new( StringComparer.Ordinal );
 
-		public ModuleLoader( IServiceRegistry serviceRegistry ) {
+		public ModuleLoader( IServiceRegistry serviceRegistry )
+		{
 			_serviceRegistry = serviceRegistry;
 		}
 
 		public IReadOnlyDictionary<string, LoadedModule> LoadedModules => _loaded;
 
-		public void LoadAll( string modulesRoot ) {
+		public void LoadAll( string modulesRoot )
+		{
 			var discovered = ModuleDiscovery.Discover( modulesRoot );
 			discovered = ModuleOverrideResolver.Resolve( discovered );
 			var ordered = ModuleOrderer.TopologicalSort( discovered );
@@ -31,7 +35,8 @@ namespace Nomad.Game.Infrastructure.Mods {
 			StartModules();
 		}
 
-		private void LoadModules( List<DiscoveredModule> ordered ) {
+		private void LoadModules( List<DiscoveredModule> ordered )
+		{
 			foreach ( var module in ordered ) {
 				var assemblyPath = Path.Combine( module.Directory, module.Manifest.EntryAssembly );
 				if ( !File.Exists( assemblyPath ) ) {
@@ -65,14 +70,16 @@ namespace Nomad.Game.Infrastructure.Mods {
 			}
 		}
 
-		private void RegisterServices() {
+		private void RegisterServices()
+		{
 			foreach ( var module in _loaded.Values ) {
 				module.Instance.RegisterServices( _serviceRegistry );
 				module.State = ModuleState.Registered;
 			}
 		}
 
-		private void InitializeModules( IServiceLocator services ) {
+		private void InitializeModules( IServiceLocator services )
+		{
 			foreach ( var module in _loaded.Values ) {
 				var host = new ModuleHost( services, module.Directory, module.Manifest );
 				module.Instance.Initialize( host );
@@ -80,14 +87,16 @@ namespace Nomad.Game.Infrastructure.Mods {
 			}
 		}
 
-		private void StartModules() {
+		private void StartModules()
+		{
 			foreach ( var module in _loaded.Values ) {
 				module.Instance.Start();
 				module.State = ModuleState.Started;
 			}
 		}
 
-		public void UnloadAll() {
+		public void UnloadAll()
+		{
 			foreach ( var module in _loaded.Values.Reverse() ) {
 				try { module.Instance.Stop(); } catch { }
 				try { module.Instance.Dispose(); } catch { }

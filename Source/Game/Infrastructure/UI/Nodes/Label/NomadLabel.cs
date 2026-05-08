@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Events;
 using Nomad.UI;
 
-namespace Game.Infrastructure.UI.Nodes.Label {
+namespace Game.Infrastructure.UI.Nodes.Label
+{
 	/*
 	===================================================================================
 
@@ -28,7 +29,8 @@ namespace Game.Infrastructure.UI.Nodes.Label {
 	/// 
 	/// </summary>
 
-	public partial class NomadLabel : EngineText {
+	public partial class NomadLabel : EngineText
+	{
 		public bool IsFocused => _isFocused;
 		private bool _isFocused = false;
 
@@ -41,7 +43,8 @@ namespace Game.Infrastructure.UI.Nodes.Label {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		public void OnFocused( in EmptyEventArgs args ) {
+		public void OnFocused( in EmptyEventArgs args )
+		{
 			_isFocused = true;
 		}
 
@@ -54,7 +57,8 @@ namespace Game.Infrastructure.UI.Nodes.Label {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		public void OnUnfocused( in EmptyEventArgs args ) {
+		public void OnUnfocused( in EmptyEventArgs args )
+		{
 			_isFocused = false;
 		}
 
@@ -66,7 +70,8 @@ namespace Game.Infrastructure.UI.Nodes.Label {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			Focused.Subscribe( OnFocused );
 			Unfocused.Subscribe( OnUnfocused );
 		}

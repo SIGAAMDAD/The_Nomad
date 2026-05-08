@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public record RuneDefinition {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public record RuneDefinition
+	{
 		public string Name { get; init; }
 		public string Description { get; init; }
 	};

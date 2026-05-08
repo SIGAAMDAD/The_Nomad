@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
 	/// <summary>
 	/// Unique identifier keys for various planner variables used by the internal GOAP system.
 	/// </summary>
-	public enum WorldKey : uint {
+	public enum WorldKey : uint
+	{
 		/**
 		 * Shared perception keys
 		 */
@@ -73,7 +75,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 		SquadHasFrontliner,
 		SquadHasSuppressor,
 		LaneReservedByAlly,
-		
+
 		/**
 		 * Target posture keys
 		 */

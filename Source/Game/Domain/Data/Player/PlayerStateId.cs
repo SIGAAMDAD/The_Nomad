@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum PlayerStateId : byte {
+	public enum PlayerStateId : sbyte
+	{
 		/// <summary>
 		/// Not moving, idling.
 		/// </summary>
@@ -36,6 +38,9 @@ namespace Nomad.Game.Domain.Data.Player {
 		/// <summary>
 		/// Currently resting at a checkpoint.
 		/// </summary>
-		RestingAtCheckpoint
+		RestingAtCheckpoint,
+
+		Min = Idle,
+		Max = RestingAtCheckpoint
 	};
 };

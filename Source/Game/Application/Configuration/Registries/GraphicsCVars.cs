@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Configuration.Enums;
 using Nomad.Core.CVars;
 
-namespace Nomad.Game.Application.Configuration.Registries {
+namespace Nomad.Game.Application.Configuration.Registries
+{
 	/*
 	===================================================================================
 	
@@ -28,7 +29,8 @@ namespace Nomad.Game.Application.Configuration.Registries {
 	/// 
 	/// </summary>
 
-	public static class GraphicsCVars {
+	public static class GraphicsCVars
+	{
 		/*
 		===============
 		Register
@@ -38,7 +40,8 @@ namespace Nomad.Game.Application.Configuration.Registries {
 		/// 
 		/// </summary>
 		/// <param name="cvarSystem"></param>
-		public static void Register( ICVarSystemService cvarSystem ) {
+		public static void Register( ICVarSystemService cvarSystem )
+		{
 			cvarSystem.Register(
 				new CVarCreateInfo<bool> {
 					Name = Nomad.EngineUtils.Constants.CVars.BAKED_LIGHTS,

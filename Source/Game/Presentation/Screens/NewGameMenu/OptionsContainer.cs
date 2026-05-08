@@ -19,26 +19,26 @@ using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
-using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
 	/*
 	===================================================================================
-	
+
 	OptionsContainer
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	public partial class OptionsContainer : EngineVerticalContainer {
+
+	public partial class OptionsContainer : EngineVerticalContainer
+	{
 		private IMusicService _musicService;
 		private ShaderMaterial _material;
 
@@ -48,16 +48,17 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			_musicService = ServiceLocator.GetService<IMusicService>();
 
 			FindChild<EngineButton>( "StandardModeButton" ).Clicked.Subscribe( OnEasyDifficultySelected );
 			FindChild<EngineButton>( "HardModeButton" ).Clicked.Subscribe( OnHardDifficultySelected );
 			FindChild<EngineButton>( "CustomModeButton" ).Clicked.Subscribe( OnCustomDifficultySelected );
 			FindChild<EngineButton>( "BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
-			
+
 			_material = Material as ShaderMaterial;
 		}
 
@@ -67,10 +68,11 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnCustomDifficultySelected( in EmptyEventArgs args ) {
+		private void OnCustomDifficultySelected( in EmptyEventArgs args )
+		{
 			Visible = false;
 		}
 
@@ -80,20 +82,21 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnEasyDifficultySelected( in EmptyEventArgs args ) {
+		private void OnEasyDifficultySelected( in EmptyEventArgs args )
+		{
 			_musicService.StopTheme( true );
-			
+
 			GameEventRegistry
-				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace )
 				.Publish( new WorldBootstrapRequestEventArgs(
 					requestId: Guid.NewGuid(),
 					mode: WorldBootstrapMode.SinglePlayerNewGame,
 					worldId: "world.single.default",
 					difficulty: DifficultyPreset.Standard,
-					lobbyId: null
+					lobbyid: null
 				) );
 		}
 
@@ -103,20 +106,24 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnHardDifficultySelected( in EmptyEventArgs args ) {
+		private void OnHardDifficultySelected( in EmptyEventArgs args )
+		{
 			_musicService.StopTheme( true );
 
 			GameEventRegistry
-				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
+				.GetEvent<WorldBootstrapRequestEventArgs>(
+					WorldBootstrapRequestEventArgs.Name,
+					WorldBootstrapRequestEventArgs.NameSpace
+				)
 				.Publish( new WorldBootstrapRequestEventArgs(
 					requestId: Guid.NewGuid(),
 					mode: WorldBootstrapMode.SinglePlayerNewGame,
 					worldId: "world.single.default",
 					difficulty: DifficultyPreset.Hard,
-					lobbyId: null
+					lobbyid: null
 				) );
 		}
 
@@ -126,12 +133,13 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args ) {
+		private void OnBackButtonPressed( in EmptyEventArgs args )
+		{
 			GameEventRegistry
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.NewGame, MenuState.Main ) );
 		}
 	};

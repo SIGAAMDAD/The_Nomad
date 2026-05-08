@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Configuration.Enums.Gameplay {
-	public enum EnemyTacticalIntelligence : byte {
+namespace Nomad.Game.Application.Configuration.Enums.Gameplay
+{
+	public enum EnemyTacticalIntelligence : byte
+	{
 		Basic,
 		Adaptive
 	};

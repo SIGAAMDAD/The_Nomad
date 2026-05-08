@@ -13,12 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Gameplay {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
 	/// <summary>
 	/// Defines the different modes for bootstrapping a game world.
 	/// This enum specifies how the world should be initialized, whether for single-player or multiplayer scenarios.
 	/// </summary>
-	public enum WorldBootstrapMode : byte {
+	public enum WorldBootstrapMode : byte
+	{
 		/// <summary>
 		/// Starts a new single-player game, creating a fresh world instance.
 		/// </summary>

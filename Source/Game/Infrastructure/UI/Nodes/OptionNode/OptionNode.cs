@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using Nomad.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionNode {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionNode
+{
 	/*
 	===================================================================================
 	
@@ -28,7 +29,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionNode {
 	/// The base class for all <see cref="EngineHorizontalContainer"/> based option nodes in the settings menu.
 	/// </summary>
 
-	public partial class OptionNode : EngineHorizontalContainer {
+	public partial class OptionNode : EngineHorizontalContainer
+	{
 		[Export]
 		public string ConfigVarName { get; private set; }
 		[Export]

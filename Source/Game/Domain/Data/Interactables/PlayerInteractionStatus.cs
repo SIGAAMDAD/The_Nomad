@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Interactables {
+namespace Nomad.Game.Domain.Data.Interactables
+{
 	/// <summary>
 	/// The relation of the player to an interactable object.
 	/// </summary>
-	public enum PlayerInteractionStatus : byte {
+	public enum PlayerInteractionStatus : byte
+	{
 		/// <summary>
 		/// Player is not within processing range.
 		/// </summary>

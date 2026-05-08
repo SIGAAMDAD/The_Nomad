@@ -13,8 +13,34 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Entity {
-	internal abstract class EntityBase {
-		
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Events.Entity;
+
+namespace Nomad.Game.Application.Gameplay.Entity
+{
+	internal abstract class EntityBase
+	{
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		public IGameEvent<EntityDieEventArgs> EntityDie => _entityDie;
+		private readonly IGameEvent<EntityDieEventArgs> _entityDie = default;
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => _entityTakeDamage;
+		private readonly IGameEvent<EntityTakeDamageEventArgs> _entityTakeDamage = default;
+
+		public EntityBase( IGameEventRegistryService eventFactory )
+		{
+			_entityDie = eventFactory
+				.GetEvent<EntityDieEventArgs>(
+					EntityDieEventArgs.Name,
+					EntityDieEventArgs.NameSpace
+				);
+
+			_entityTakeDamage = eventFactory
+				.GetEvent<EntityTakeDamageEventArgs>(
+					EntityTakeDamageEventArgs.Name,
+					EntityTakeDamageEventArgs.NameSpace
+				);
+		}
 	};
 };

@@ -19,7 +19,8 @@ using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
-namespace Nomad.Game.Presentation.Screens.PauseMenu {
+namespace Nomad.Game.Presentation.Screens.PauseMenu
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +31,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal static class PauseMenuFactory {
+
+	internal static class PauseMenuFactory
+	{
 		/*
 		===============
 		Create
@@ -42,7 +44,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static PauseMenuPresenter Create( PauseMenuView view ) {
+		public static PauseMenuPresenter Create( PauseMenuView view )
+		{
 			var serviceLocator = ServiceLocator.Instance;
 			var emitterFactory = serviceLocator.GetService<IEmitterFactory>();
 			var engineService = serviceLocator.GetService<IEngineService>();

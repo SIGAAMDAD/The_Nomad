@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.Interactables {
-	public sealed record MelioraDefinition {
+namespace Nomad.Game.Domain.Data.Interactables
+{
+	public sealed record MelioraDefinition
+	{
 		public Guid Id { get; init; }
 		public InternString NameId { get; init; }
 	};

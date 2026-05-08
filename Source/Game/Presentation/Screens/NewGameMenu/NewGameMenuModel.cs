@@ -13,7 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
 	/*
 	===================================================================================
 	
@@ -24,18 +25,21 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed class NewGameMenuModel {
+
+	public sealed class NewGameMenuModel
+	{
 		public NewGameMenuState State { get; private set; } = NewGameMenuState.Options;
-		
+
 		public bool IsOptionsVisible => State == NewGameMenuState.Options;
 		public bool IsCustomDifficultyVisible => State == NewGameMenuState.CustomDifficulty;
 
-		public void ShowOptions() {
+		public void ShowOptions()
+		{
 			State = NewGameMenuState.Options;
 		}
 
-		public void ShowCustomDifficulty() {
+		public void ShowCustomDifficulty()
+		{
 			State = NewGameMenuState.CustomDifficulty;
 		}
 	};

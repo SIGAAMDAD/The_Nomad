@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
@@ -13,26 +13,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.UI;
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.UI;
 using Nomad.Events.Globals;
+using Nomad.Game.Domain.Events.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox
+{
 	/*
 	===================================================================================
-	
+
 	OptionCheckbox
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class OptionCheckbox : OptionNode.OptionNode {
+	public partial class OptionCheckbox : OptionNode.OptionNode
+	{
 		private static readonly string ON_STRING = LocalizationService.Translate( new InternString( "UI_ON" ) );
 		private static readonly string OFF_STRING = LocalizationService.Translate( new InternString( "UI_OFF" ) );
 
@@ -45,15 +47,24 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		}
 		private bool _value;
 
-		public InternString CheckboxId => new InternString( Name );
-
 		public EngineButton Left => FindChild<EngineButton>( "LeftIcon" );
 		public EngineButton Right => FindChild<EngineButton>( "RightIcon" );
 
 		private EngineText _valueLabel;
 
-		public IGameEvent<bool> Toggled => _toggled;
-		private IGameEvent<bool> _toggled;
+		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionCheckboxValueChangedEventArgs" )]
+		[EventPayload( "Value", typeof( bool ) )]
+		public IGameEvent<OptionCheckboxValueChangedEventArgs> Toggled => _toggled;
+		private readonly IGameEvent<OptionCheckboxValueChangedEventArgs> _toggled = default;
+
+		public OptionCheckbox()
+		{
+			_toggled = GameEventRegistry
+				.GetEvent<OptionCheckboxValueChangedEventArgs>(
+					$"{GetHashCode()}:{OptionCheckboxValueChangedEventArgs.Name}",
+					OptionCheckboxValueChangedEventArgs.NameSpace
+				);
+		}
 
 		/*
 		===============
@@ -61,9 +72,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			EngineText title = FindChild<EngineText>( "Title" );
 			title.Text = Title;
 
@@ -73,8 +85,6 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 			Right.Clicked.Subscribe( OnToggled );
 
 			Value = false;
-
-			_toggled = GameEventRegistry.GetEvent<bool>( $"{GetHashCode()}:{UIConstants.OPTION_CHECKBOX_TOGGLED_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
@@ -83,11 +93,12 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnToggled( in EmptyEventArgs args ) {
+		private void OnToggled( in EmptyEventArgs args )
+		{
 			Value = !_value;
-			_toggled.Publish( _value );
+			_toggled.Publish( new OptionCheckboxValueChangedEventArgs( _value ) );
 		}
 	};
 };

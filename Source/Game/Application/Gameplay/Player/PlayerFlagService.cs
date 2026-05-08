@@ -19,8 +19,10 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Core.Compatibility.Guards;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -31,16 +33,18 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerFlagService : IPlayerFlagService {
+
+	internal sealed class PlayerFlagService : IPlayerFlagService
+	{
 		public IReadOnlyList<string> CurrentFlags => GetActiveFlags();
 
+		public PlayerFlags Bits => _isDisposed ? throw new ObjectDisposedException( nameof( PlayerFlagService ) ) : _flags;
 		private PlayerFlags _flags = PlayerFlags.None;
-
-		private bool _isDisposed = false;
 
 		public IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged => _flagsChanged;
 		private readonly IGameEvent<PlayerFlagsChangedEventArgs> _flagsChanged;
+
+		private bool _isDisposed = false;
 
 		/*
 		===============
@@ -51,9 +55,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="eventFactory"></param>
-		public PlayerFlagService( IGameEventRegistryService eventFactory ) {
+		public PlayerFlagService( IGameEventRegistryService eventFactory )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			_flagsChanged = eventFactory
-				.GetEvent<PlayerFlagsChangedEventArgs>( EventNames.PLAYER_FLAGS_CHANGED, EventNames.NAMESPACE );
+				.GetEvent<PlayerFlagsChangedEventArgs>(
+					PlayerFlagsChangedEventArgs.Name,
+					PlayerFlagsChangedEventArgs.NameSpace
+				);
 		}
 
 		/*
@@ -64,10 +73,12 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
-			if ( !_isDisposed ) {
-				_flagsChanged?.Dispose();
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
 			}
+			_flagsChanged.Dispose();
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
@@ -82,8 +93,10 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// </summary>
 		/// <param name="flag"></param>
 		/// <returns></returns>
-		public bool GetFlags( PlayerFlags flag ) {
-			return ( _flags & flag ) != 0;
+		public bool GetFlags( PlayerFlags flag )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			return (_flags & flag) != 0;
 		}
 
 		/*
@@ -94,8 +107,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void ClearFlags() {
+		public void ClearFlags()
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			if ( _flags == PlayerFlags.None ) {
+				return;
+			}
+			var prevFlags = _flags;
 			_flags = PlayerFlags.None;
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
 		}
 
 		/*
@@ -107,8 +127,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="flags"></param>
-		public void AddFlags( PlayerFlags flags ) {
+		public void AddFlags( PlayerFlags flags )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			if ( _flags.HasFlag( flags ) ) {
+				return;
+			}
+			var prevFlags = _flags;
 			_flags |= flags;
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
 		}
 
 		/*
@@ -120,8 +147,15 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="flags"></param>
-		public void RemoveFlags( PlayerFlags flags ) {
+		public void RemoveFlags( PlayerFlags flags )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			if ( !_flags.HasFlag( flags ) ) {
+				return;
+			}
+			var prevFlags = _flags;
 			_flags &= ~flags;
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
 		}
 
 		/*
@@ -133,13 +167,39 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <param name="flags"></param>
-		public void ApplyFlags( IReadOnlyList<string> flags ) {
-			ClearFlags();
-
+		/// <param name="clearFlags"></param>
+		public void ApplyFlags( IReadOnlyList<string> flags, bool clearFlags = false )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			if ( clearFlags ) {
+				ClearFlags();
+			}
+			var prevFlags = _flags;
 			for ( int i = 0; i < flags.Count; i++ ) {
-				if ( Enum.TryParse( typeof( PlayerFlags ), flags[ i ], out var flag ) ) {
-					AddFlags( (PlayerFlags)flag );
+				if ( Enum.TryParse( typeof( PlayerFlags ), flags[i], out var flag ) ) {
+					_flags |= (PlayerFlags)flag;
 				}
+			}
+			if ( prevFlags != _flags ) {
+				_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			}
+		}
+
+		/*
+		===============
+		SetFlag
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flagName"></param>
+		/// <param name="state"></param>
+		public void SetFlag( string flagName, bool state )
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
+			if ( Enum.TryParse( typeof( PlayerFlags ), flagName, out var flag ) ) {
+				AddFlags( (PlayerFlags)flag );
 			}
 		}
 
@@ -152,12 +212,14 @@ namespace Nomad.Game.Application.Gameplay.Player {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		private List<string> GetActiveFlags() {
+		private List<string> GetActiveFlags()
+		{
+			StateGuard.ThrowIfDisposed( _isDisposed, this );
 			List<string> flags = new List<string>();
 
 			foreach ( var flag in Enum.GetValues<PlayerFlags>() ) {
 				if ( _flags.HasFlag( flag ) ) {
-					flags.Add( flag.ToString() );
+					flags.Add( Enum.GetName( flag ) );
 				}
 			}
 			return flags;

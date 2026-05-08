@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items {
+namespace Nomad.Game.Domain.Data.Items
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract record WeaponDefinition : ItemDefinition {
+	public abstract record WeaponDefinition : ItemDefinition
+	{
 		public WeaponType Type { get; init; }
 		public float BaseDurability { get; init; }
 	};

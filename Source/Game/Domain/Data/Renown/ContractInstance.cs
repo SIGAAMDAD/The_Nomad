@@ -15,11 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Renown {
+namespace Nomad.Game.Domain.Data.Renown
+{
 	/// <summary>
 	/// Represents a "live"/active contract.
 	/// </summary>
-	public record ContractInstance {
+	public record ContractInstance
+	{
 		/// <summary>
 		/// What the contract's internal id is.
 		/// </summary>

@@ -15,12 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Application.UI.Menus {
-	public readonly struct MenuId {
+namespace Nomad.Game.Application.UI.Menus
+{
+	public readonly struct MenuId
+	{
 		public string Id => _id;
 		private readonly InternString _id;
 
-		public MenuId( string id ) {
+		public MenuId( string id )
+		{
 			_id = new InternString( id );
 		}
 	};

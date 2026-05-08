@@ -20,7 +20,8 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Engine.Windowing;
 using Nomad.EngineUtils.Settings.Services;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -31,8 +32,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class DisplaySettingsContainerModel {
+
+	internal sealed class DisplaySettingsContainerModel
+	{
 		public WindowMode WindowMode => _service.Config.WindowMode;
 		public WindowResolution WindowResolution => _service.Config.Resolution;
 		public int MonitorIndex => _service.Config.MonitorIndex;
@@ -68,7 +70,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <param name="windowService"></param>
 		/// <param name="service"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DisplaySettingsContainerModel( IWindowService windowService, DisplaySettingsService service ) {
+		public DisplaySettingsContainerModel( IWindowService windowService, DisplaySettingsService service )
+		{
 			_service = service ?? throw new ArgumentNullException( nameof( service ) );
 			_windowModes = new string[] {
 				"Windowed",
@@ -96,31 +99,38 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			}
 		}
 
-		public void Save() {
+		public void Save()
+		{
 			_service.Save();
 		}
 
-		public void Reset() {
+		public void Reset()
+		{
 			_service.ResetToDefault();
 		}
 
-		public void SetWindowResolution( WindowResolution value ) {
+		public void SetWindowResolution( WindowResolution value )
+		{
 			_service.Config.Resolution = value;
 		}
 
-		public void SetWindowMode( WindowMode value ) {
+		public void SetWindowMode( WindowMode value )
+		{
 			_service.Config.WindowMode = value;
 		}
 
-		public void SetVSyncMode( VSyncMode value ) {
+		public void SetVSyncMode( VSyncMode value )
+		{
 			_service.Config.VSyncMode = value;
 		}
 
-		public void SetMaximumFramerate( int value ) {
+		public void SetMaximumFramerate( int value )
+		{
 			_service.Config.MaximumFrameRate = value;
 		}
 
-		public void SetMonitorIndex( int value ) {
+		public void SetMonitorIndex( int value )
+		{
 			_service.Config.MonitorIndex = value;
 		}
 	};

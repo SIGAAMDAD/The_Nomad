@@ -16,17 +16,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators {
-	internal sealed class HealthDerivedStatEvaluator : IPlayerDerivedStatEvaluator {
-		public bool CanEvaluate( DerivedStatType type ) {
+namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
+{
+	internal sealed class HealthDerivedStatEvaluator : IPlayerDerivedStatEvaluator
+	{
+		public bool CanEvaluate( DerivedStatType type )
+		{
 			return type == DerivedStatType.EffectiveHealthMax;
 		}
 
-		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context ) {
+		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context )
+		{
 			return type switch {
 				DerivedStatType.EffectiveHealthMax => Math.Max( 0.0f, context.GetBaseStat( BaseStatType.BaseHealth ) ),
 				_ => throw new ArgumentOutOfRangeException( nameof( type ) )
 			};
 		}
-	}
-}
+	};
+};

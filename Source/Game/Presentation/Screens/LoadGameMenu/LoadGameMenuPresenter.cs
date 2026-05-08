@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Save.Services;
 
-namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
+namespace Nomad.Game.Presentation.Screens.LoadGameMenu
+{
 	/*
 	===================================================================================
 	
@@ -26,10 +27,13 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class LoadGameMenuPresenter {
-		public LoadGameMenuPresenter( LoadGameMenuView view, LoadGameMenuModel model, ISaveDataProvider dataProvider ) {
+
+	internal sealed class LoadGameMenuPresenter
+	{
+		public LoadGameMenuPresenter( LoadGameMenuView view, LoadGameMenuModel model, ISaveDataProvider dataProvider )
+		{
 			view.SlotSelected += OnSlotSelected;
+			view.Back += OnBackPressed;
 
 			var files = dataProvider.ListSaveFiles();
 			foreach ( var file in files ) {
@@ -37,7 +41,12 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
 			}
 		}
 
-		private void OnSlotSelected( int slot ) {
+		private void OnSlotSelected( int slot )
+		{
+		}
+
+		private void OnBackPressed()
+		{
 		}
 	};
 };

@@ -21,7 +21,8 @@ using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
 using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed partial class DisplaySettingsContainerView : EngineTabContainer {
+
+	internal sealed partial class DisplaySettingsContainerView : EngineTabContainer
+	{
 		public event Action<int> MonitorChanged;
 		public event Action<WindowMode> WindowModeChanged;
 		public event Action<WindowResolution> WindowResolutionChanged;
@@ -47,48 +49,58 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		private OptionList _vsyncList;
 		private OptionSlider _maximumFramerate;
 
-		public void SetMonitorIndex( int value ) {
+		public void SetMonitorIndex( int value )
+		{
 			_monitorIndex.Value = value;
 			MonitorChanged?.Invoke( value );
 		}
 
-		public void SetMonitors( IReadOnlyList<string> items ) {
+		public void SetMonitors( IReadOnlyList<string> items )
+		{
 			_monitorIndex.SetOptions( items );
 		}
 
-		public void SetWindowMode( WindowMode value ) {
+		public void SetWindowMode( WindowMode value )
+		{
 			_windowMode.Value = (int)value;
 			WindowModeChanged?.Invoke( value );
 		}
 
-		public void SetWindowModes( IReadOnlyList<string> items ) {
+		public void SetWindowModes( IReadOnlyList<string> items )
+		{
 			_windowMode.SetOptions( items );
 		}
 
-		public void SetWindowResolution( WindowResolution value ) {
+		public void SetWindowResolution( WindowResolution value )
+		{
 			_windowResolution.Value = (int)value;
 			WindowResolutionChanged?.Invoke( value );
 		}
 
-		public void SetWindowResolutions( IReadOnlyList<string> items ) {
+		public void SetWindowResolutions( IReadOnlyList<string> items )
+		{
 			_windowResolution.SetOptions( items );
 		}
 
-		public void SetVSyncMode( VSyncMode value ) {
+		public void SetVSyncMode( VSyncMode value )
+		{
 			_vsyncList.Value = (int)value;
 			VSyncModeChanged?.Invoke( value );
 		}
 
-		public void SetVSyncModes( IReadOnlyList<string> items ) {
+		public void SetVSyncModes( IReadOnlyList<string> items )
+		{
 			_vsyncList.SetOptions( items );
 		}
 
-		public void SetMaximumFramerate( int value ) {
+		public void SetMaximumFramerate( int value )
+		{
 			_maximumFramerate.Value = value;
 			MaximumFramerateChanged?.Invoke( value );
 		}
 
-		public void SetMaximumFramerateLimits( float min, float max ) {
+		public void SetMaximumFramerateLimits( float min, float max )
+		{
 			_maximumFramerate.Min = min;
 			_maximumFramerate.Max = max;
 		}
@@ -101,23 +113,24 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_monitorIndex = FindChild<OptionList>( "Basic/MonitorList" );
-			_monitorIndex.ValueSet.Subscribe( ( in value ) => MonitorChanged?.Invoke( value ) );
+			_monitorIndex.ValueSet.Subscribe( ( in value ) => MonitorChanged?.Invoke( value.Value ) );
 
 			_windowMode = FindChild<OptionList>( "Basic/WindowModeList" );
-			_windowMode.ValueSet.Subscribe( ( in value ) => WindowModeChanged?.Invoke( (WindowMode)value ) );
-			
+			_windowMode.ValueSet.Subscribe( ( in value ) => WindowModeChanged?.Invoke( (WindowMode)value.Value ) );
+
 			_windowResolution = FindChild<OptionList>( "Basic/WindowResolutionList" );
-			_windowResolution.ValueSet.Subscribe( ( in value ) => WindowResolutionChanged?.Invoke( (WindowResolution)value ) );
+			_windowResolution.ValueSet.Subscribe( ( in value ) => WindowResolutionChanged?.Invoke( (WindowResolution)value.Value ) );
 
 			_vsyncList = FindChild<OptionList>( "Basic/VSyncList" );
-			_vsyncList.ValueSet.Subscribe( ( in value ) => VSyncModeChanged?.Invoke( (VSyncMode)value ) );
+			_vsyncList.ValueSet.Subscribe( ( in value ) => VSyncModeChanged?.Invoke( (VSyncMode)value.Value ) );
 
 			_maximumFramerate = FindChild<OptionSlider>( "Basic/MaxFpsSlider" );
-			_maximumFramerate.ValueChanged.Subscribe( ( in value ) => MaximumFramerateChanged?.Invoke( (int)value ) );
+			_maximumFramerate.ValueChanged.Subscribe( ( in value ) => MaximumFramerateChanged?.Invoke( (int)value.Value ) );
 		}
 	};
 };

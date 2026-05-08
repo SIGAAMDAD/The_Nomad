@@ -15,12 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Mods {
+namespace Nomad.Game.Domain.Data.Mods
+{
 	[AttributeUsage( AttributeTargets.Class )]
-	public sealed class ModAttribute : Attribute {
+	public sealed class ModAttribute : Attribute
+	{
 		public string Id { get; }
 
-		public ModAttribute( string id ) {
+		public ModAttribute( string id )
+		{
 			Id = id;
 		}
 	};

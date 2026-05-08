@@ -18,21 +18,24 @@ using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.UI;
 using Nomad.EngineUtils;
+using Godot;
 
-namespace Nomad.Game.Application.Audio {
+namespace Nomad.Game.Application.Audio
+{
 	/*
 	===================================================================================
-	
+
 	UIButtonAudioFeedback
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	public class UIButtonAudioFeedback : NomadBehaviour {
-		public IButton Button { get; set; }
+
+	public class UIButtonAudioFeedback : NomadBehaviour
+	{
+		public Button Button { get; set; }
 		public string ClickSound { get; set; }
 		public string FocusedSound { get; set; }
 
@@ -44,9 +47,10 @@ namespace Nomad.Game.Application.Audio {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public UIButtonAudioFeedback() {
+		public UIButtonAudioFeedback()
+		{
 			_emitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:UI" );
 		}
 
@@ -56,12 +60,13 @@ namespace Nomad.Game.Application.Audio {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public override void OnInit() {
-			Button?.Clicked.Subscribe( OnClicked );
-			Button?.Focused.Subscribe( OnFocused );
-			Button?.Unfocused.Subscribe( OnUnfocused );
+		public override void OnInit()
+		{
+			Button.Pressed += OnClicked;
+			Button.FocusEntered += OnFocused;
+			Button.FocusExited += OnUnfocused;
 		}
 
 		/*
@@ -70,10 +75,10 @@ namespace Nomad.Game.Application.Audio {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnUnfocused( in EmptyEventArgs args ) {
+		private void OnUnfocused()
+		{
 		}
 
 		/*
@@ -82,10 +87,10 @@ namespace Nomad.Game.Application.Audio {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnFocused( in EmptyEventArgs args ) {
+		private void OnFocused()
+		{
 			_emitter.PlaySound( FocusedSound );
 		}
 
@@ -95,10 +100,10 @@ namespace Nomad.Game.Application.Audio {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnClicked( in EmptyEventArgs args ) {
+		private void OnClicked()
+		{
 			_emitter.PlaySound( ClickSound );
 		}
 	};

@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling {
-	public class MercenaryGatlingMemory : WorkingMemory {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling
+{
+	public class MercenaryGatlingMemory : WorkingMemory
+	{
 		public bool IsShooting;
 		public bool IsRevving;
 	};

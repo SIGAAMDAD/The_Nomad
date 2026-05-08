@@ -13,7 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Interactables {
-	public interface ICheckpoint : IInteractable {
+namespace Nomad.Game.Domain.Interfaces.Interactables
+{
+	public interface ICheckpoint : IInteractable
+	{
 	};
 };

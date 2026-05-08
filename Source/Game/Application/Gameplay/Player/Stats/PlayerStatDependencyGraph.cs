@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats {
+namespace Nomad.Game.Application.Gameplay.Player.Stats
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerStatDependencyGraph {
+
+	internal sealed class PlayerStatDependencyGraph
+	{
 		private readonly Dictionary<BaseStatType, DerivedStatType[]> _baseToDerived = new();
 		private readonly Dictionary<DerivedStatType, DerivedStatType[]> _derivedToDerived = new();
 
@@ -40,7 +42,19 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <summary>
 		/// 
 		/// </summary>
-		public PlayerStatDependencyGraph() {
+		public PlayerStatDependencyGraph()
+		{
+		}
+
+		public static PlayerStatDependencyGraph CreateDefault()
+		{
+			var graph = new PlayerStatDependencyGraph();
+			graph.ConfigureDefaultDependencies();
+			return graph;
+		}
+
+		private void ConfigureDefaultDependencies()
+		{
 			_baseToDerived[BaseStatType.InventoryWeight] = [
 				DerivedStatType.MovementSpeedMultiplier,
 				DerivedStatType.EffectiveMovementSpeed
@@ -57,6 +71,18 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 
 			_baseToDerived[BaseStatType.BaseDashSpeed] = [
 				DerivedStatType.EffectiveDashSpeed
+			];
+
+			_baseToDerived[BaseStatType.BaseHealth] = [
+				DerivedStatType.EffectiveHealthMax
+			];
+
+			_baseToDerived[BaseStatType.BaseRage] = [
+				DerivedStatType.EffectiveRageMax
+			];
+
+			_baseToDerived[BaseStatType.BaseSanity] = [
+				DerivedStatType.EffectiveSanityMax
 			];
 
 			_derivedToDerived[DerivedStatType.MovementSpeedMultiplier] = [
@@ -78,7 +104,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="output"></param>
-		public void CollectAffectedFromBase( BaseStatType type, HashSet<DerivedStatType> output ) {
+		public void CollectAffectedFromBase( BaseStatType type, HashSet<DerivedStatType> output )
+		{
 			if ( _baseToDerived.TryGetValue( type, out var values ) ) {
 				for ( int i = 0; i < values.Length; i++ ) {
 					output.Add( values[i] );
@@ -96,7 +123,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="output"></param>
-		public void CollectAffectedFromDerived( DerivedStatType type, HashSet<DerivedStatType> output ) {
+		public void CollectAffectedFromDerived( DerivedStatType type, HashSet<DerivedStatType> output )
+		{
 			if ( _derivedToDerived.TryGetValue( type, out var values ) ) {
 				for ( int i = 0; i < values.Length; i++ ) {
 					output.Add( values[i] );

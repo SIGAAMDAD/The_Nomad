@@ -15,13 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Drawing;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Game.Application.Configuration.Enums;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar
+{
 	/*
 	===================================================================================
 	
@@ -32,14 +34,16 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class DashKitHeatBarModel : IDashKitHeatBarModel {
+
+	internal sealed class DashKitHeatBarModel : IDashKitHeatBarModel
+	{
 		public float BurnoutAmount { get; private set; }
 		public float MaxBurnout { get; private set; }
 		public HUDPreset Preset { get; private set; }
 		public Color Color { get; private set; }
 
-		private readonly IGameEventRegistryService _eventFactory;
+		private readonly IDisposable _resourceChanged;
+		private readonly IDisposable _dashModuleChanged;
 
 		/*
 		===============
@@ -51,16 +55,13 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DashKitHeatBarModel( IGameEventRegistryService eventFactory ) {
-			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+		public DashKitHeatBarModel( IGameEventRegistryService eventFactory )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			eventFactory
-				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
+			_resourceChanged = eventFactory
+				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{PlayerResourceChangedEventArgs.Name}", PlayerResourceChangedEventArgs.NameSpace )
 				.Subscribe( OnResourceChanged );
-			
-			eventFactory
-				.GetEvent<PlayerDashModuleChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DASH_MODULE_CHANGED}", EventNames.NAMESPACE )
-				.Subscribe( OnDashModuleChanged );
 		}
 
 		/*
@@ -71,27 +72,10 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
-			_eventFactory
-				.GetEvent<PlayerResourceChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_RESOURCE_CHANGED}", EventNames.NAMESPACE )
-				.Unsubscribe( OnResourceChanged );
-			
-			_eventFactory
-				.GetEvent<PlayerDashModuleChangedEventArgs>( $"{Constants.LOCAL_GUID}:{EventNames.PLAYER_DASH_MODULE_CHANGED}", EventNames.NAMESPACE )
-				.Unsubscribe( OnDashModuleChanged );
-		}
-
-		/*
-		===============
-		OnDashModuleChanged
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnDashModuleChanged( in PlayerDashModuleChangedEventArgs args ) {
-			MaxBurnout = 1.0f;
+		public void Dispose()
+		{
+			_resourceChanged.Dispose();
+			_dashModuleChanged.Dispose();
 		}
 
 		/*
@@ -103,7 +87,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnResourceChanged( in PlayerResourceChangedEventArgs args ) {
+		private void OnResourceChanged( in PlayerResourceChangedEventArgs args )
+		{
 			if ( args.Resource != PlayerResourceType.JumpKitHeat ) {
 				return;
 			}

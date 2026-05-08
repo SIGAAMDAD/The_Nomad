@@ -19,7 +19,8 @@ using Nomad.Core.FileSystem;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Renown;
 
-namespace Nomad.Game.Infrastructure.Gameplay.Renown {
+namespace Nomad.Game.Infrastructure.Gameplay.Renown
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +31,9 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class TraitCatalog : DataLoader<TraitDefinition> {
+
+	internal sealed class TraitCatalog : DataLoader<TraitDefinition>
+	{
 		/*
 		===============
 		TraitCatalog
@@ -57,7 +59,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown {
 		/// <param name="json"></param>
 		/// <param name="definition"></param>
 		/// <returns></returns>
-		protected override bool TryLoadDefinition( JsonElement json, out TraitDefinition definition ) {			
+		protected override bool TryLoadDefinition( JsonElement json, out TraitDefinition definition )
+		{
 			definition = new TraitDefinition {
 				Id = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.Id ) ) ),
 				DisplayName = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.DisplayName ) ) ),

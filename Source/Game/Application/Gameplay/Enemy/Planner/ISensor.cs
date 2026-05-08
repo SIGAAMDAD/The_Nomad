@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public interface ISensor {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public interface ISensor
+	{
 		void Tick( NpcAgent agent, float deltaTime );
 	};
 };

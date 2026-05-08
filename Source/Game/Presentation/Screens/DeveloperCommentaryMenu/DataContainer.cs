@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
-	public partial class DataContainer : EngineVerticalContainer {
+namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu
+{
+	public partial class DataContainer : EngineVerticalContainer
+	{
 	};
 };

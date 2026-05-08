@@ -22,7 +22,8 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
 	/*
 	===================================================================================
 	
@@ -33,8 +34,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PlayerFootsteps : NomadBehaviour {
+
+	internal sealed class PlayerFootsteps : NomadBehaviour
+	{
 		private const int MAX_STEPS = 24;
 		private const int DEQUEUE_LIMIT = 3;
 
@@ -53,11 +55,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			_prefab = Object.CastAs<PlayerPrefab>();
-			
+
 			// TODO: use framework to create this
 			var texture = ResourceLoader.Load<Texture2D>( "res://Assets/Textures/Environment/footstep.png" );
 			_mesh = new MultiMeshInstance2D() {
@@ -73,12 +76,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 				}
 			};
 
-			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			legAnimation.AnimationLooped.Subscribe( OnLegAnimationLooped );
+			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
+			legAnimation.Animation += OnLegAnimationLooped;
 
 			var movementController = _prefab.GetComponent<PlayerMovementController>();
 			movementController.MovementChanged.Subscribe( OnMovementChanged );
-			
+
 			// attach the mesh to a detached transform otherwise we'll have the transforms following the player.
 			var sceneObject = new EngineSceneObject();
 			sceneObject.AddChild( _mesh );
@@ -93,11 +96,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnShutdown() {
+		public override void OnShutdown()
+		{
 			base.OnShutdown();
 
-			var legAnimation = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			legAnimation.AnimationLooped.Unsubscribe( OnLegAnimationLooped );
+			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
+			legAnimation.AnimationLooped -= OnLegAnimationLooped;
 
 			var movementController = _prefab.GetComponent<PlayerMovementController>();
 			movementController.MovementChanged.Unsubscribe( OnMovementChanged );
@@ -112,7 +116,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnMovementChanged( in PlayerMovementChangedEventArgs args ) {
+		private void OnMovementChanged( in PlayerMovementChangedEventArgs args )
+		{
 			_isMoving = args.IsMoving;
 		}
 
@@ -124,7 +129,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnLegAnimationLooped( in EmptyEventArgs args ) {
+		private void OnLegAnimationLooped()
+		{
 			if ( !_isMoving ) {
 				return;
 			}
@@ -143,7 +149,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		/// <summary>
 		/// Checks the current number of allocated footsteps and removes 3 of the oldest from the queue if we're overflowing with feet.
 		/// </summary>
-		private void CheckCapacity() {
+		private void CheckCapacity()
+		{
 			if ( _steps.Count < MAX_STEPS ) {
 				return;
 			}

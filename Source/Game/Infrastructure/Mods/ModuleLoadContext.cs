@@ -19,7 +19,8 @@ using System;
 using System.IO;
 using GodotPlugins.Game;
 
-namespace Nomad.Game.Infrastructure.Mods {
+namespace Nomad.Game.Infrastructure.Mods
+{
 	/*
 	===================================================================================
 	
@@ -30,8 +31,9 @@ namespace Nomad.Game.Infrastructure.Mods {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed class ModuleLoadContext : AssemblyLoadContext {
+
+	public sealed class ModuleLoadContext : AssemblyLoadContext
+	{
 		private readonly AssemblyDependencyResolver _resolver;
 
 		public string MainAssemblyPath { get; }
@@ -43,12 +45,14 @@ namespace Nomad.Game.Infrastructure.Mods {
 			_resolver = new AssemblyDependencyResolver( mainAssemblyPath );
 		}
 
-		protected override Assembly? Load( AssemblyName assemblyName ) {
+		protected override Assembly? Load( AssemblyName assemblyName )
+		{
 			string? path = _resolver.ResolveAssemblyToPath( assemblyName );
 			return path == null ? null : LoadFromAssemblyPath( path );
 		}
 
-		protected override IntPtr LoadUnmanagedDll( string unmanagedDllName ) {
+		protected override IntPtr LoadUnmanagedDll( string unmanagedDllName )
+		{
 			string? path = _resolver.ResolveUnmanagedDllToPath( unmanagedDllName );
 			return path == null ? IntPtr.Zero : LoadUnmanagedDllFromPath( path );
 		}

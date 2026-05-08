@@ -21,7 +21,8 @@ using Nomad.Core.FileSystem;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils.Settings.Services;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal static class SettingsMenuFactory {
+
+	internal static class SettingsMenuFactory
+	{
 		/*
 		===============
 		Create
@@ -44,7 +46,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static SettingsMenuPresenter Create( SettingsMenuView view ) {
+		public static SettingsMenuPresenter Create( SettingsMenuView view )
+		{
 			var serviceLocator = ServiceLocator.Instance;
 			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
 			var eventFactory = serviceLocator.GetService<IGameEventRegistryService>();

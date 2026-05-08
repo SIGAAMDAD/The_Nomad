@@ -21,7 +21,8 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Save.Services;
 using Nomad.Save.ValueObjects;
 
-namespace Nomad.Game.Application.Gameplay.Persistence {
+namespace Nomad.Game.Application.Gameplay.Persistence
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Application.Gameplay.Persistence {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class SaveGameController : IDisposable {
+
+	internal sealed class SaveGameController : IDisposable
+	{
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly ISaveDataProvider _dataProvider;
 
@@ -52,14 +54,15 @@ namespace Nomad.Game.Application.Gameplay.Persistence {
 		/// <param name="dataProvider"></param>
 		/// <param name="eventFactory"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public SaveGameController( ISaveDataProvider dataProvider, IGameEventRegistryService eventFactory ) {
+		public SaveGameController( ISaveDataProvider dataProvider, IGameEventRegistryService eventFactory )
+		{
 			_dataProvider = dataProvider ?? throw new ArgumentNullException( nameof( dataProvider ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
 			_saveFiles = _dataProvider.ListSaveFiles();
 
 			_eventFactory
-				.GetEvent<PlayerSpawnResultEventArgs>( EventNames.PLAYER_SPAWN_RESULT_READY, EventNames.NAMESPACE )
+				.GetEvent<PlayerSpawnResultEventArgs>( PlayerSpawnResultEventArgs.Name, PlayerSpawnResultEventArgs.NameSpace )
 				.Subscribe( OnCheckInitialSave );
 		}
 
@@ -71,17 +74,19 @@ namespace Nomad.Game.Application.Gameplay.Persistence {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
 				_eventFactory
-					.GetEvent<PlayerSpawnResultEventArgs>( EventNames.PLAYER_SPAWN_RESULT_READY, EventNames.NAMESPACE )
+					.GetEvent<PlayerSpawnResultEventArgs>( PlayerSpawnResultEventArgs.Name, PlayerSpawnResultEventArgs.NameSpace )
 					.Unsubscribe( OnCheckInitialSave );
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
 
-		private void OnCheckInitialSave( in PlayerSpawnResultEventArgs args ) {
+		private void OnCheckInitialSave( in PlayerSpawnResultEventArgs args )
+		{
 			_dataProvider.Save(
 				$"Data{_saveFiles.Count + 1}",
 				new GameVersion( 2, 0, 1 ) // TODO: make this is an automated constant

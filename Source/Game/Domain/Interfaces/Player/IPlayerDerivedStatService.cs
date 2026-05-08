@@ -18,8 +18,14 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IPlayerDerivedStatService : IDisposable {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IPlayerDerivedStatService : IDisposable
+	{
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerDerivedStatChangedEventArgs" )]
+		[EventPayload( "NewValue", typeof( float ), Order = 1 )]
+		[EventPayload( "OldValue", typeof( float ), Order = 2 )]
+		[EventPayload( "StatId", typeof( DerivedStatType ), Order = 3 )]
 		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
 
 		float GetValue( DerivedStatType type );

@@ -18,7 +18,8 @@ using System.Collections.Generic;
 using Nomad.Save.Services;
 using Nomad.Save.ValueObjects;
 
-namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
+namespace Nomad.Game.Presentation.Screens.LoadGameMenu
+{
 	/*
 	===================================================================================
 	
@@ -29,8 +30,9 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class LoadGameMenuModel {
+
+	internal sealed class LoadGameMenuModel
+	{
 		private readonly ISaveDataProvider _saveDataProvider;
 
 		/*
@@ -43,7 +45,8 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
 		/// </summary>
 		/// <param name="saveDataProvider"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public LoadGameMenuModel( ISaveDataProvider saveDataProvider ) {
+		public LoadGameMenuModel( ISaveDataProvider saveDataProvider )
+		{
 			_saveDataProvider = saveDataProvider ?? throw new ArgumentNullException( nameof( saveDataProvider ) );
 		}
 
@@ -56,7 +59,8 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public IReadOnlyList<SaveFileMetadata> GetSlots() {
+		public IReadOnlyList<SaveFileMetadata> GetSlots()
+		{
 			return _saveDataProvider.ListSaveFiles();
 		}
 	};

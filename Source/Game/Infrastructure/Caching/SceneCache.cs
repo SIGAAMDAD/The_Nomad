@@ -20,7 +20,8 @@ using Nomad.Core.Engine.SceneManagement;
 using Nomad.Logger.Globals;
 using Nomad.Events.Globals;
 
-namespace Nomad.Game.Infrastructure.Caching {
+namespace Nomad.Game.Infrastructure.Caching
+{
 	/*
 	===================================================================================
 	
@@ -31,12 +32,14 @@ namespace Nomad.Game.Infrastructure.Caching {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public static class SceneCache {
+
+	public static class SceneCache
+	{
 		public static BaseCache<IScene, string> Instance => _sceneCache.Value;
 		private static readonly Lazy<BaseCache<IScene, string>> _sceneCache = new Lazy<BaseCache<IScene, string>>( Create, true );
 
-		private static BaseCache<IScene, string> Create() {
+		private static BaseCache<IScene, string> Create()
+		{
 			return new BaseCache<IScene, string>(
 				Logging.Instance,
 				GameEventRegistry.Instance,

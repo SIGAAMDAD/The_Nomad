@@ -15,11 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.World {
+namespace Nomad.Game.Domain.Data.World
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public readonly struct MonthDefinition {
+	public readonly struct MonthDefinition
+	{
 		public InternString Id { get; init; }
 		public InternString DisplayName { get; init; }
 		public InternString SeasonId { get; init; }

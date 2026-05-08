@@ -18,7 +18,8 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using System;
 
-namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
+namespace Nomad.Game.Application.Gameplay.Player.JumpKit
+{
 	/*
 	===================================================================================
 
@@ -29,8 +30,9 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 	/// <summary>
 	/// Owns dash state and timing. No engine side-effects live here.
 	/// </summary>
-	
-	internal sealed class DashRuntime {
+
+	internal sealed class DashRuntime
+	{
 		private const float BURNOUT_PER_DASH = 0.30f;
 		private const float BURNOUT_RECOVERY_RATE = 0.10f;
 		private const float DASH_DURATION_PENALTY_PER_DASH = 0.05f;
@@ -58,7 +60,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// </summary>
 		/// <param name="initialDashDuration"></param>
 		/// <param name="burnoutRechargeDuration"></param>
-		public DashRuntime( float initialDashDuration, float burnoutRechargeDuration ) {
+		public DashRuntime( float initialDashDuration, float burnoutRechargeDuration )
+		{
 			CurrentDashDuration = initialDashDuration;
 			_burnoutRechargeDuration = burnoutRechargeDuration;
 		}
@@ -72,7 +75,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public bool CanStartDash() {
+		public bool CanStartDash()
+		{
 			return !IsDashing && !IsBurnedOut;
 		}
 
@@ -85,7 +89,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="dashDuration"></param>
-		public void ResetDashDuration( float dashDuration ) {
+		public void ResetDashDuration( float dashDuration )
+		{
 			CurrentDashDuration = dashDuration;
 		}
 
@@ -99,7 +104,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// </summary>
 		/// <param name="module"></param>
 		/// <returns></returns>
-		public DashStartResult TryStartDash( IDashModule module ) {
+		public DashStartResult TryStartDash( IDashModule module )
+		{
 			ArgumentGuard.ThrowIfNull( module );
 
 			if ( IsDashing || IsBurnedOut ) {
@@ -151,7 +157,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// <param name="delta"></param>
 		/// <param name="module"></param>
 		/// <returns></returns>
-		public DashUpdateResult Update( float delta, IDashModule module ) {
+		public DashUpdateResult Update( float delta, IDashModule module )
+		{
 			ArgumentGuard.ThrowIfNull( module );
 
 			bool dashEnded = false;
@@ -202,13 +209,13 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 					float previousBurnout = BurnoutAmount;
 
 					BurnoutAmount = Math.Clamp(
-						BurnoutAmount - ( BURNOUT_RECOVERY_RATE * delta ),
+						BurnoutAmount - (BURNOUT_RECOVERY_RATE * delta),
 						0.0f,
 						previousBurnout );
 
 					CurrentDashDuration = Math.Min(
 						module.DashDuration,
-						CurrentDashDuration + ( DASH_DURATION_RECOVERY_RATE * delta ) );
+						CurrentDashDuration + (DASH_DURATION_RECOVERY_RATE * delta) );
 
 					burnoutChanged = BurnoutAmount != previousBurnout;
 				}
@@ -236,7 +243,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit {
 		/// 
 		/// </summary>
 		/// <param name="module"></param>
-		private void EnterBurnout( IDashModule module ) {
+		private void EnterBurnout( IDashModule module )
+		{
 			IsDashing = false;
 			RemainingDashTime = 0.0f;
 

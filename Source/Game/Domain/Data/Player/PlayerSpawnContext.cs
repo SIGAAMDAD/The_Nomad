@@ -15,14 +15,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Numerics;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public readonly struct PlayerSpawnContext {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public readonly struct PlayerSpawnContext
+	{
 		public PlayerSpawnReason Reason { get; }
 		public Vector2 SpawnPosition { get; }
 		public string? SpawnPointId { get; }
 		public string? ProfileOverrideId { get; }
 
-		public PlayerSpawnContext( PlayerSpawnReason reason, Vector2 spawnPosition, string? spawnPointId = null, string? profileOverrideId = null ) {
+		public PlayerSpawnContext( PlayerSpawnReason reason, Vector2 spawnPosition, string? spawnPointId = null, string? profileOverrideId = null )
+		{
 			Reason = reason;
 			SpawnPosition = spawnPosition;
 			SpawnPointId = spawnPointId;

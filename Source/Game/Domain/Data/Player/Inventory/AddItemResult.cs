@@ -13,12 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public readonly struct AddItemResult {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public readonly struct AddItemResult
+	{
 		public int AddedQuantity { get; }
 		public bool Succeeded { get; }
 
-		public AddItemResult( int addedQuantity, bool succeeded ) {
+		public AddItemResult( int addedQuantity, bool succeeded )
+		{
 			AddedQuantity = addedQuantity;
 			Succeeded = succeeded;
 		}

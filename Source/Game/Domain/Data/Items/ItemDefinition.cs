@@ -15,11 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.Items {
+namespace Nomad.Game.Domain.Data.Items
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract record ItemDefinition {
+	public abstract record ItemDefinition
+	{
 		/// <summary>
 		/// 
 		/// </summary>

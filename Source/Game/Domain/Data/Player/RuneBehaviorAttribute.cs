@@ -16,12 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Interfaces.Mods;
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	[AttributeUsage( AttributeTargets.Class )]
-	public sealed class RuneBehaviorAttribute : Attribute, IAttribute {
+	public sealed class RuneBehaviorAttribute : Attribute, IAttribute
+	{
 		public string Id { get; }
 
-		public RuneBehaviorAttribute( string id ) {
+		public RuneBehaviorAttribute( string id )
+		{
 			Id = id;
 		}
 	};

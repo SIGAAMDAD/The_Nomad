@@ -16,8 +16,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IInventoryService {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IInventoryService
+	{
+
+
 		AddItemResult AddItem( Guid guid, int amount );
 	};
 };

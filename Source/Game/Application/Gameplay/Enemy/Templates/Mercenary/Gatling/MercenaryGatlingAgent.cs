@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Gameplay.Enemy.Planner;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public class MercenaryGatlingAgent : NpcAgent {
+
+	public class MercenaryGatlingAgent : NpcAgent
+	{
 		public override WorkingMemory Memory => GatlingMemory;
 		public MercenaryGatlingMemory GatlingMemory { get; }
 
@@ -38,7 +40,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Mercenary.Gatling {
 			GatlingMemory = new MercenaryGatlingMemory();
 		}
 
-		protected override int GetPlanningBudget() {
+		protected override int GetPlanningBudget()
+		{
 			return 96;
 		}
 	};

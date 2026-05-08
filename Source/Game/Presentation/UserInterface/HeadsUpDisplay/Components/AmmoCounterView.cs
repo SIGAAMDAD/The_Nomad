@@ -18,13 +18,17 @@ using System.Numerics;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components {
-	internal sealed partial class AmmoCounterView : EngineText, IAmmoCounterView {
-		public void SetColor( Vector4 color ) {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components
+{
+	internal sealed partial class AmmoCounterView : EngineText, IAmmoCounterView
+	{
+		public void SetColor( Vector4 color )
+		{
 			Color = Color.FromArgb( (int)color.W, (int)color.X, (int)color.Y, (int)color.Z );
 		}
 
-		public void SetAmmoText( string text ) {
+		public void SetAmmoText( string text )
+		{
 			Text = text;
 		}
 	};

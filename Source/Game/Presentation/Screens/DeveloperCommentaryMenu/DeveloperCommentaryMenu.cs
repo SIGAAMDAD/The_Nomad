@@ -17,7 +17,8 @@ using Nomad.UI;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.FileSystem;
 
-namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
+namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,9 +29,11 @@ namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class DeveloperCommentaryMenu : EnginePanel {
-		protected override void OnInit() {
+
+	public partial class DeveloperCommentaryMenu : EnginePanel
+	{
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			var fileSystem = ServiceLocator.GetService<IFileSystem>();
@@ -38,7 +41,7 @@ namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu {
 			fileSystem.AddSearchDirectory( "Assets/DeveloperCommentary" );
 			var files = fileSystem.GetFiles( "Assets/DeveloperCommentary", "*.json", true );
 			for ( int i = 0; i < files.Count; i++ ) {
-				
+
 			}
 		}
 	};

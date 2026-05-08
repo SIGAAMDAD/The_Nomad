@@ -18,18 +18,22 @@ using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.Gameplay {
-	internal sealed partial class GameplayScreen : EnginePresentationLayer {
+namespace Nomad.Game.Presentation.Screens.Gameplay
+{
+	internal sealed partial class GameplayScreen : EnginePresentationLayer
+	{
 		private IHudRoot _hudRoot;
 
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
 			_hudRoot = new HudRoot( FindChild<EnginePanel>( "HeadsUpDisplay" ), eventFactory );
 		}
 
-		protected override void OnUpdate( float delta ) {
+		protected override void OnUpdate( float delta )
+		{
 			base.OnUpdate( delta );
 
 			_hudRoot.Render( delta );

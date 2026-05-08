@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public readonly struct DashUpdateResult {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public readonly struct DashUpdateResult
+	{
 		public float BurnoutAmount { get; }
 		public float DashDuration { get; }
 		public float RemainingDashTime { get; }
@@ -35,7 +37,8 @@ namespace Nomad.Game.Domain.Data.Player {
 			bool rechargedThisFrame,
 			bool isDashing,
 			bool isBurnedOut
-		) {
+		)
+		{
 			BurnoutAmount = burnoutAmount;
 			DashDuration = dashDuration;
 			RemainingDashTime = remainingDashTime;

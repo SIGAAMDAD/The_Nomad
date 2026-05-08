@@ -29,7 +29,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	public partial class DashStatusBarView : EngineImageView, IDashKitHeatBarView {
 		private readonly HudComponentView _impl;
 		private ShaderMaterial _material;

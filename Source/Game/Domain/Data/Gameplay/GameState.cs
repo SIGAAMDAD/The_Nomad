@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Gameplay {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum GameState : byte {
+	public enum GameState : byte
+	{
 		/// <summary>
 		/// 
 		/// </summary>

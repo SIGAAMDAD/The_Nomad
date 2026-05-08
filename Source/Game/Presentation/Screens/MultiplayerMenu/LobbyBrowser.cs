@@ -17,7 +17,8 @@ using Godot;
 using Nomad.Core.Events;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
+namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,7 +29,8 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class LobbyBrowser : VBoxContainer {
+
+	public partial class LobbyBrowser : VBoxContainer
+	{
 	};
 };

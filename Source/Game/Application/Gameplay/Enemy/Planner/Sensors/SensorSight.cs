@@ -17,7 +17,8 @@ using System.Numerics;
 using Nomad.Core.Physics.Services;
 using Nomad.Core.Physics.ValueObjects;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors
+{
 	/*
 	===================================================================================
 	
@@ -29,7 +30,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 	/// 
 	/// </summary>
 
-	public class SensorSight : SensorBase {
+	public class SensorSight : SensorBase
+	{
 		private readonly IRaycastService _raycastService;
 
 		/*
@@ -56,7 +58,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors {
 		/// </summary>
 		/// <param name="agent"></param>
 		/// <param name="dt"></param>
-		protected override void Sense( NpcAgent agent, float dt ) {
+		protected override void Sense( NpcAgent agent, float dt )
+		{
 			WorkingMemory memory = agent.Memory;
 		}
 	};

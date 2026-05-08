@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Mods;
 
-namespace Nomad.Game.Domain.Interfaces.Mods {
-	public interface IModuleHost {
+namespace Nomad.Game.Domain.Interfaces.Mods
+{
+	public interface IModuleHost
+	{
 		IServiceLocator Services { get; }
 		string ModuleDirectory { get; }
 		ModuleManifest Manifest { get; }

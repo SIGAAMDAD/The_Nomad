@@ -17,7 +17,8 @@ using System;
 using Nomad.Audio.Interfaces;
 using Nomad.Game.Domain.Audio;
 
-namespace Nomad.Game.Presentation.Screens.PauseMenu {
+namespace Nomad.Game.Presentation.Screens.PauseMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,8 +29,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class PauseMenuModel {
+
+	internal sealed class PauseMenuModel
+	{
 		public bool IsPaused { get; private set; } = false;
 
 		private readonly IAudioEmitter _emitter;
@@ -43,7 +45,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="factory"></param>
-		public PauseMenuModel( IEmitterFactory factory ) {
+		public PauseMenuModel( IEmitterFactory factory )
+		{
 			ArgumentNullException.ThrowIfNull( factory );
 			_emitter = factory.CreateEmitter( "SoundCategory:UI" );
 		}
@@ -58,7 +61,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// </summary>
 		/// <param name="isPaused"></param>
 		/// <returns><see langword="true"/> when the pause state changed.</returns>
-		public bool SetPaused( bool isPaused ) {
+		public bool SetPaused( bool isPaused )
+		{
 			if ( IsPaused == isPaused ) {
 				return false;
 			}

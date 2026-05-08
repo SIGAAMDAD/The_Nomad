@@ -16,8 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.Renown {
-	public record TraitDefinition {
+namespace Nomad.Game.Domain.Data.Renown
+{
+	public record TraitDefinition
+	{
 		public InternString Id { get; init; }
 		public InternString DisplayName { get; init; }
 		public InternString Description { get; init; }

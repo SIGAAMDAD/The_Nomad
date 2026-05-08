@@ -20,23 +20,25 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Events.Globals;
 using Godot;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation {
+namespace Nomad.Game.Application.Gameplay.Player.Animation
+{
 	/*
 	===================================================================================
-	
+
 	PlayerHandAnimator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal sealed class PlayerHandAnimator : PlayerAnimator {
+
+	internal sealed class PlayerHandAnimator : PlayerAnimator
+	{
 		public SpriteFrames Frames { get; set; }
 
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
-		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged;
+		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = default;
 
 		/*
 		===============
@@ -44,12 +46,17 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public PlayerHandAnimator() {
+		public PlayerHandAnimator()
+		{
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Hand:{Id}:{EventNames.PLAYER_ANIMATION_STATE_CHANGED}", EventNames.NAMESPACE );
+			_animationStateChanged = eventFactory
+				.GetEvent<PlayerAnimationStateChangedEventArgs>(
+					$"Hand:{Id}:{PlayerAnimationStateChangedEventArgs.NameSpace}",
+					PlayerAnimationStateChangedEventArgs.NameSpace
+				);
 		}
 
 		/*
@@ -58,9 +65,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			base.OnInit();
 
 			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
@@ -73,10 +81,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args ) {
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
+		{
+			if ( !args.IsMoving ) {
+				animator.Play( "idle" );
+				return;
+			}
+			animator.Play( "move" );
 		}
 	};
 };

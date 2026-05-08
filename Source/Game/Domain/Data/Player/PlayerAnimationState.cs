@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/// <summary>
 	/// The player's global animation state.
 	/// </summary>
-	public enum PlayerAnimationState : uint {
+	public enum PlayerAnimationState : uint
+	{
 		Idle,
 		Moving,
 		Sliding,

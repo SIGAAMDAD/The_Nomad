@@ -13,7 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Scene.GameObjects;
+using Godot;
+using Nomad.Core.Numerics;
+using Nomad.Game.Application.Gameplay;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -24,11 +26,57 @@ namespace Nomad.Game.Prefabs {
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///  
 	/// </summary>
-	
-	public sealed partial class PlayerCamera2D : EngineCamera2D {
+
+	public sealed partial class PlayerCamera2D : Camera2D {
+		private Vector2 _joltDirection = Vector2.Zero;
+		private float _shakeStrength = 0.0f;
+
+		private const float SHAKE_FADE = 0.5f;
+		private const float DIRECTIONAL_INFLUENCE = 0.7f;
+
+		/*
+		===============
+		PlayerCamera2D
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
 		public PlayerCamera2D() {
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void _Ready() {
+			base._Ready();
+		}
+
+		public override void _Process( double delta ) {
+			base._Process( delta );
+
+			if ( _shakeStrength > 0.0f ) {
+				_shakeStrength = Interpolation.Lerp( _shakeStrength, 0.0f, SHAKE_FADE * (float)delta );
+
+				if ( _joltDirection != Vector2.Zero ) {
+					Vector2 baseOffset = _joltDirection.Normalized() * _shakeStrength * DIRECTIONAL_INFLUENCE;
+					Offset = baseOffset;
+				} else {
+					Offset = new Vector2(
+						RNJesus.FloatRange( -_shakeStrength, _shakeStrength ),
+						RNJesus.FloatRange( -_shakeStrength, _shakeStrength )
+					);
+				}
+			} else {
+				Offset = Vector2.Zero;
+			}
 		}
 	};
 };

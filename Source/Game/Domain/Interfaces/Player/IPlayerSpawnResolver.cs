@@ -15,11 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Player {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IPlayerSpawnResolver {
+	public interface IPlayerSpawnResolver
+	{
 		PlayerSpawnProfileDefinition Resolve( in PlayerSpawnContext context );
 	};
 };

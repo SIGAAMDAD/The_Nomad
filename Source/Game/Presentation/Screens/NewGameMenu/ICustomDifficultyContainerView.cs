@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
-	public interface ICustomDifficultyContainerView {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
+	public interface ICustomDifficultyContainerView
+	{
 		event Action BackRequested;
 
 		void SetVisibility( bool visible );

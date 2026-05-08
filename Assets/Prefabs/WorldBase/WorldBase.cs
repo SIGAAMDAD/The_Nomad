@@ -37,7 +37,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// The base "world" object.
 	/// </summary>
-	
+
 	public partial class WorldBase : EngineSceneObject {
 		private PlayerSpawnService _spawnService;
 		private ISceneManager _sceneManager;
@@ -63,7 +63,7 @@ namespace Nomad.Game.Prefabs {
 
 			var itemCatalog = new ItemCatalog( fileSystem );
 			itemCatalog.AddLoader( ItemType.Ammunition, AmmoDefinition.Load );
-			itemCatalog.AddLoader( ItemType.Firearm, FirearmDefinition.Load  );
+			itemCatalog.AddLoader( ItemType.Firearm, FirearmDefinition.Load );
 			serviceRegistry.AddSingleton( new ItemCatalog( fileSystem ) );
 		}
 

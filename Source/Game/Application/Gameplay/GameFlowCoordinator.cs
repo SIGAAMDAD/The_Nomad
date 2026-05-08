@@ -23,7 +23,8 @@ using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
-namespace Nomad.Game.Application.Gameplay {
+namespace Nomad.Game.Application.Gameplay
+{
 	/*
 	===================================================================================
 	
@@ -35,17 +36,17 @@ namespace Nomad.Game.Application.Gameplay {
 	/// A coordination service meant to intercept gameplay state changes, load scenes, and tell the program
 	/// what to do when certain game modes are applied.
 	/// </summary>
-	
-	internal sealed class GameFlowCoordinator : IGameFlowCoordinator {
+
+	internal sealed class GameFlowCoordinator : IGameFlowCoordinator
+	{
 		private readonly ILoggerCategory _category;
 		private readonly IGameStateService _gameStateService;
 		private readonly IGameEventRegistryService _eventFactory;
-		private readonly IWorldBootstrapper _worldBootstrapper;
 
 		private readonly ICVar<GameplayMode> _gameMode;
 
 		private bool _isDisposed = false;
-		
+
 		/*
 		===============
 		GameFlowCoordinator
@@ -54,23 +55,26 @@ namespace Nomad.Game.Application.Gameplay {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="boostrapper"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="gameStateService"></param>
 		/// <param name="cvarSystem"></param>
 		/// <param name="logger"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public GameFlowCoordinator( IWorldBootstrapper boostrapper, IGameEventRegistryService eventFactory, IGameStateService gameStateService, ICVarSystemService cvarSystem, ILoggerService logger ) {
-			ArgumentGuard.ThrowIfNull( logger );
-			ArgumentGuard.ThrowIfNull( cvarSystem );
+		public GameFlowCoordinator( IGameEventRegistryService eventFactory, IGameStateService gameStateService, ICVarSystemService cvarSystem, ILoggerService logger )
+		{
+			ArgumentGuard.ThrowIfNull( logger, nameof( logger ) );
+			ArgumentGuard.ThrowIfNull( cvarSystem, nameof( cvarSystem ) );
 
-			_worldBootstrapper = boostrapper ?? throw new ArgumentNullException( nameof( boostrapper ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
 			_eventFactory
-				.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
-				.Subscribe( OnWorldBootstrapRequested );
-			
+				.GetEvent<WorldBootstrapFailureEventArgs>( WorldBootstrapFailureEventArgs.Name, WorldBootstrapFailureEventArgs.NameSpace )
+				.Subscribe( OnWorldBootstrapFailed );
+
+			_eventFactory
+				.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace )
+				.Subscribe( OnWorldBootstrapSucceeded );
+
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_category = logger.CreateCategory( nameof( GameFlowCoordinator ), LogLevel.Info, true );
 			_gameMode = cvarSystem.GetCVarOrThrow<GameplayMode>( "game.Mode" );
@@ -84,65 +88,58 @@ namespace Nomad.Game.Application.Gameplay {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Dispose() {
-			if ( !_isDisposed ) {
-				_eventFactory
-					.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE )
-					.Unsubscribe( OnWorldBootstrapRequested );
-				
-				_category?.Dispose();
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
 			}
+
+			_eventFactory
+				.GetEvent<WorldBootstrapFailureEventArgs>( WorldBootstrapFailureEventArgs.Name, WorldBootstrapFailureEventArgs.NameSpace )
+				.Unsubscribe( OnWorldBootstrapFailed );
+
+			_eventFactory
+				.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace )
+				.Unsubscribe( OnWorldBootstrapSucceeded );
+
+			_category?.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
 
 		/*
 		===============
-		OnWorldBootstrapRequested
+		OnWorldBootstrapFailed
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
-			_category.PrintLine( "Loading world..." );
-			HandleWorldBootstrapRequested( in args );
+		private void OnWorldBootstrapFailed( in WorldBootstrapFailureEventArgs args )
+		{
+			_category.PrintError(
+				$"World bootstrap failed for '{args.WorldId}'. Reason='{args.Reason}', Detail='{args.Detail}'"
+			);
 		}
 
 		/*
 		===============
-		HandleWorldBootstrapRequested
+		OnWorldBootstrapSucceeded
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void HandleWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args ) {
-			try {
-				WorldBootstrapResult result = _worldBootstrapper.Bootstrap( args );
-				switch ( result ) {
-					case WorldBootstrapSuccess success:
-						_gameMode.Value = MapGameplayMode( success.Mode );
-						_gameStateService.Current = GameState.Level;
-						_category.PrintLine(
-							$"World bootstrap succeeded for '{success.WorldId}' (WorldInstanceId={success.WorldInstanceId})"
-						);
-						break;
-					case WorldBootstrapFailure failure:
-						_category.PrintError(
-							$"World bootstrap failed for '{failure.WorldId}'. Reason='{failure.Reason}', Detail='{failure.Detail}'"
-						);
-						break;
-					default:
-						_category.PrintError( "Unknown world bootstrap result received." );
-						break;
-				}
-			} catch ( Exception e ) {
-				_category.PrintError( $"Unhandled bootstrap exception: {e}" );
-				throw;
-			}
+		private void OnWorldBootstrapSucceeded( in WorldBootstrapSucceededEventArgs args )
+		{
+			_gameMode.Value = MapGameplayMode( args.Mode );
+			_gameStateService.Current = GameState.Level;
+			_category.PrintLine(
+				$"World bootstrap succeeded for '{args.WorldId}' (WorldInstanceId={args.WorldInstanceId})"
+			);
 		}
 
 		/*
@@ -156,7 +153,8 @@ namespace Nomad.Game.Application.Gameplay {
 		/// <param name="mode"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private static GameplayMode MapGameplayMode( WorldBootstrapMode mode ) {
+		private static GameplayMode MapGameplayMode( WorldBootstrapMode mode )
+		{
 			return mode switch {
 				WorldBootstrapMode.SinglePlayerNewGame => GameplayMode.Single,
 				WorldBootstrapMode.SinglePlayerLoadGame => GameplayMode.Single,

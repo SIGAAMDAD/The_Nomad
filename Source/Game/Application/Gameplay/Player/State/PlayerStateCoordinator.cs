@@ -15,23 +15,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.State {
+namespace Nomad.Game.Application.Gameplay.Player.State
+{
 	/*
 	===================================================================================
-	
+
 	PlayerStateCoordinator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal sealed class PlayerStateCoordinator : IPlayerStateWriter, IPlayerStateReader {
+
+	internal sealed class PlayerStateCoordinator : IPlayerStateWriter, IPlayerStateReader
+	{
 		public PlayerStateId Current => _state;
 		private PlayerStateId _state = PlayerStateId.Idle;
 
@@ -44,18 +47,26 @@ namespace Nomad.Game.Application.Gameplay.Player.State {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="playerId"></param>
 		/// <param name="initialState"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerStateCoordinator( Guid playerId, PlayerStateId initialState, IGameEventRegistryService eventFactory ) {
+		public PlayerStateCoordinator( Guid playerId, PlayerStateId initialState, IGameEventRegistryService eventFactory )
+		{
+			RangeGuard.ThrowIfOutOfRange( (int)initialState, (int)PlayerStateId.Min, (int)PlayerStateId.Max, nameof( initialState ) );
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
 			_state = initialState;
 			_stateChanged = eventFactory
-				.GetEvent<PlayerStateChangedEventArgs>( $"{playerId}:{EventNames.PLAYER_STATE_CHANGED}", EventNames.NAMESPACE );
+				.GetEvent<PlayerStateChangedEventArgs>(
+					$"{playerId}:{PlayerStateChangedEventArgs.Name}",
+					PlayerStateChangedEventArgs.NameSpace
+				);
 		}
 
-		public bool TrySetState( PlayerStateId newState ) {
+		public bool TrySetState( PlayerStateId newState )
+		{
 			if ( newState == _state || !CanTransitionTo( newState ) ) {
 				return false;
 			}
@@ -64,14 +75,15 @@ namespace Nomad.Game.Application.Gameplay.Player.State {
 			_state = newState;
 
 			_stateChanged.Publish( new PlayerStateChangedEventArgs( oldState, newState ) );
-			
+
 			return true;
 		}
 
-		private bool CanTransitionTo( PlayerStateId newState ) {
+		private bool CanTransitionTo( PlayerStateId newState )
+		{
 			return (_state, newState) switch {
-				(PlayerStateId.Dead, PlayerStateId.Moving) => false,
-				(PlayerStateId.Dead, PlayerStateId.RestingAtCheckpoint) => false,
+				(PlayerStateId.Dead, PlayerStateId.Moving ) => false,
+				(PlayerStateId.Dead, PlayerStateId.RestingAtCheckpoint ) => false,
 				_ => true
 			};
 		}

@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
-namespace Nomad.Game.Presentation.Screens.LoadingScreen {
-	internal sealed class LoadingScreenModel {
+namespace Nomad.Game.Presentation.Screens.LoadingScreen
+{
+	internal sealed class LoadingScreenModel
+	{
 		private readonly IGameStateService _gameStateService;
 	};
 };

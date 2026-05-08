@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
@@ -20,35 +20,47 @@ using Nomad.UI;
 using Nomad.Events.Globals;
 using System;
 using System.Collections.Generic;
+using Nomad.Game.Domain.Events.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
+namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList
+{
 	/*
 	===================================================================================
-	
+
 	OptionList
-		
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class OptionList : OptionNode.OptionNode {
+	public partial class OptionList : OptionNode.OptionNode
+	{
 		public int Value {
 			get => _value;
 			set => SetValue( value );
 		}
 		private int _value;
 
-		public InternString ListId => new InternString( Name );
-
 		private EngineText _valueLabel;
 
 		public IReadOnlyList<string> Values => _items;
 		private IReadOnlyList<string> _items;
 
-		public IGameEvent<int> ValueSet => _valueSet;
-		private IGameEvent<int> _valueSet;
+		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionListValueSetEventArgs" )]
+		[EventPayload( "Value", typeof( int ) )]
+		public IGameEvent<OptionListValueSetEventArgs> ValueSet => _valueSet;
+		private readonly IGameEvent<OptionListValueSetEventArgs> _valueSet = default;
+
+		public OptionList()
+		{
+			_valueSet = GameEventRegistry
+				.GetEvent<OptionListValueSetEventArgs>(
+					$"{GetHashCode()}:{OptionListValueSetEventArgs.Name}",
+					OptionListValueSetEventArgs.NameSpace
+				);
+		}
 
 		/*
 		===============
@@ -56,16 +68,17 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="value"></param>
 		/// <exception cref="InvalidOperationException"></exception>
-		public void SetValue( int value ) {
+		public void SetValue( int value )
+		{
 			if ( _items == null ) {
 				throw new InvalidOperationException();
 			}
 			_value = value;
-			_valueLabel.Text = _items[ value ];
+			_valueLabel.Text = _items[value];
 		}
 
 		/*
@@ -74,16 +87,16 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="items"></param>
-		public void SetOptions( IReadOnlyList<string> items ) {
+		public void SetOptions( IReadOnlyList<string> items )
+		{
 			_items = items;
 
 			// we don't know how many elements we have so just reset
 			SetValue( 0 );
 		}
-
 
 		/*
 		===============
@@ -91,18 +104,17 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			EngineText title = FindChild<EngineText>( "Title" );
 			title.Text = Title;
-			
+
 			FindChild<EngineButton>( "LeftIcon" ).Clicked.Subscribe( OnPrevToggle );
 			FindChild<EngineButton>( "RightIcon" ).Clicked.Subscribe( OnNextToggle );
 
 			_valueLabel = FindChild<EngineText>( "Value" );
-
-			_valueSet = GameEventRegistry.GetEvent<int>( $"{GetHashCode()}:{UIConstants.OPTION_LIST_VALUE_SET_EVENT}", UIConstants.NAMESPACE );
 		}
 
 		/*
@@ -111,9 +123,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnPrevToggle( in EmptyEventArgs args ) {
+		private void OnPrevToggle( in EmptyEventArgs args )
+		{
 			if ( _items == null ) {
 				return;
 			}
@@ -121,8 +134,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 			if ( _value < 0 ) {
 				_value = _items.Count - 1;
 			}
-			_valueLabel.Text = _items[ _value ];
-			_valueSet.Publish( _value );
+			_valueLabel.Text = _items[_value];
+			_valueSet.Publish( new OptionListValueSetEventArgs( _value ) );
 		}
 
 		/*
@@ -131,9 +144,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnNextToggle( in EmptyEventArgs args ) {
+		private void OnNextToggle( in EmptyEventArgs args )
+		{
 			if ( _items == null ) {
 				return;
 			}
@@ -141,8 +155,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList {
 			if ( _value >= _items.Count ) {
 				_value = 0;
 			}
-			_valueLabel.Text = _items[ _value ];
-			_valueSet.Publish( _value );
+			_valueLabel.Text = _items[_value];
+			_valueSet.Publish( new OptionListValueSetEventArgs( _value ) );
 		}
 	};
 };

@@ -13,18 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.World {
+namespace Nomad.Game.Domain.Data.World
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public readonly struct WorldTime {
+	public readonly struct WorldTime
+	{
 		public int Year { get; }
 		public int Month { get; }
 		public int Day { get; }
 		public int Hour { get; }
 		public int Minute { get; }
 
-		public WorldTime( int year, int month, int day, int hour, int minute ) {
+		public WorldTime( int year, int month, int day, int hour, int minute )
+		{
 			Year = year;
 			Month = month;
 			Day = day;

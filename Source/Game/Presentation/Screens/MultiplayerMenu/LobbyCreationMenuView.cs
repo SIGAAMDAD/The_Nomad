@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using System;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
+namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+{
 	/*
 	===================================================================================
 	
@@ -27,8 +28,9 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed partial class LobbyCreationMenuView : Control {
+
+	public sealed partial class LobbyCreationMenuView : Control
+	{
 		public event Action Back;
 		public event Action CreateLobby;
 		public event Action Reset;
@@ -41,7 +43,8 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 		}
 	};

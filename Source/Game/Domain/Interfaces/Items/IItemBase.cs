@@ -17,11 +17,16 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Items {
-	public interface IItemBase {
+namespace Nomad.Game.Domain.Interfaces.Items
+{
+	public interface IItemBase
+	{
 		ItemStatus State { get; }
 		ItemDefinition Definition { get; }
 
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Items", PayloadName = "ItemStatusChangedEventArgs" )]
+		[EventPayload( "OldStatus", typeof( ItemStatus ), Order = 1 )]
+		[EventPayload( "NewStatus", typeof( ItemStatus ), Order = 2 )]
 		IGameEvent<ItemStatusChangedEventArgs> StatusChanged { get; }
 	};
 };

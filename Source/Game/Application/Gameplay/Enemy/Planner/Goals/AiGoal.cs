@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals {
-	public abstract class AiGoal {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals
+{
+	public abstract class AiGoal
+	{
 		public abstract string Name { get; }
 		public abstract int BasePriority { get; }
 
@@ -22,7 +24,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals {
 
 		public virtual int GetScoreModifier( PlanningContext context ) => 0;
 
-		public GoalDef Compile() {
+		public GoalDef Compile()
+		{
 			GoalBuilder builder = Build();
 			return new GoalDef( Name, BasePriority, builder.GetDesiredState(), GetScoreModifier );
 		}

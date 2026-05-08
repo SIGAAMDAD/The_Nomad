@@ -17,7 +17,8 @@ using System;
 using Nomad.Core.Events;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.PauseMenu {
+namespace Nomad.Game.Presentation.Screens.PauseMenu
+{
 	/*
 	===================================================================================
 	
@@ -28,8 +29,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed partial class PauseMenuView : EnginePresentationLayer {
+
+	internal sealed partial class PauseMenuView : EnginePresentationLayer
+	{
 		public event Action Resume;
 		public event Action LoadGame;
 		public event Action SettingsMenu;
@@ -47,7 +49,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="visibility"></param>
-		public void SetVisibility( bool visibility ) {
+		public void SetVisibility( bool visibility )
+		{
 			Visible = visibility;
 		}
 
@@ -59,7 +62,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_presenter = PauseMenuFactory.Create( this );
@@ -79,7 +83,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnShutdown() {
+		protected override void OnShutdown()
+		{
 			_presenter?.Dispose();
 			_presenter = null;
 
@@ -95,7 +100,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnResumeGame( in EmptyEventArgs args ) {
+		private void OnResumeGame( in EmptyEventArgs args )
+		{
 			Resume?.Invoke();
 		}
 
@@ -108,7 +114,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnLoadGame( in EmptyEventArgs args ) {
+		private void OnLoadGame( in EmptyEventArgs args )
+		{
 			LoadGame?.Invoke();
 		}
 
@@ -121,7 +128,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnSettingsMenu( in EmptyEventArgs args ) {
+		private void OnSettingsMenu( in EmptyEventArgs args )
+		{
 			SettingsMenu?.Invoke();
 		}
 
@@ -134,7 +142,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnQuitToMainMenu( in EmptyEventArgs args ) {
+		private void OnQuitToMainMenu( in EmptyEventArgs args )
+		{
 			QuitToMainMenu?.Invoke();
 		}
 
@@ -147,7 +156,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnQuitGame( in EmptyEventArgs args ) {
+		private void OnQuitGame( in EmptyEventArgs args )
+		{
 			QuitGame?.Invoke();
 		}
 	};

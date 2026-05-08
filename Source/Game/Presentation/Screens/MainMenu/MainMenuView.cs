@@ -21,7 +21,8 @@ using Nomad.Core.ServiceRegistry.Globals;
 using System;
 using Godot;
 
-namespace Nomad.Game.Presentation.Screens.MainMenu {
+namespace Nomad.Game.Presentation.Screens.MainMenu
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 	/// <summary>
 	/// Handles the main menu's creation.
 	/// </summary>
-	
-	internal sealed partial class MainMenuView : Control {
+
+	internal sealed partial class MainMenuView : Control
+	{
 		public event Action NewGame;
 		public event Action LoadGame;
 		public event Action Extras;
@@ -42,7 +44,8 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 
 		private readonly MainMenuPresenter _presenter;
 
-		public MainMenuView() {
+		public MainMenuView()
+		{
 			_presenter = new MainMenuPresenter(
 				this,
 				ServiceLocator.GetService<IEngineService>(),
@@ -58,7 +61,8 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 
 			var audioDevice = ServiceLocator.GetService<IAudioDevice>();

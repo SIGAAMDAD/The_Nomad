@@ -17,9 +17,12 @@ using System;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player {
-	internal sealed class PlayerSpawnProfileResolver : IPlayerSpawnResolver {
-		public PlayerSpawnProfileDefinition Resolve( in PlayerSpawnContext context ) {
+namespace Nomad.Game.Application.Gameplay.Player
+{
+	internal sealed class PlayerSpawnProfileResolver : IPlayerSpawnResolver
+	{
+		public PlayerSpawnProfileDefinition Resolve( in PlayerSpawnContext context )
+		{
 			return context.Reason switch {
 				PlayerSpawnReason.NewGame => PlayerSpawnProfiles.NewGame,
 				_ => throw new ArgumentOutOfRangeException( nameof( context ) ),

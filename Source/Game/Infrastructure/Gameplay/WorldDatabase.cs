@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.FileSystem;
 
-namespace Nomad.Game.Infrastructure.Gameplay {
+namespace Nomad.Game.Infrastructure.Gameplay
+{
 	/*
 	===================================================================================
 	
@@ -27,11 +28,13 @@ namespace Nomad.Game.Infrastructure.Gameplay {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class WorldDatabase {
+
+	internal sealed class WorldDatabase
+	{
 		private readonly IFileSystem _fileSystem;
 
-		public WorldDatabase( IFileSystem fileSystem ) {
+		public WorldDatabase( IFileSystem fileSystem )
+		{
 			_fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
 		}
 	};

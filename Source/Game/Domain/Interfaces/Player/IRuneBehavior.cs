@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IRuneBehavior {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IRuneBehavior
+	{
 		void Activate();
 		void Deactivate();
 	};

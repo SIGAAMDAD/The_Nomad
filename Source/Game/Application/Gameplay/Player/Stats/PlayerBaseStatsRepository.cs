@@ -21,7 +21,8 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats {
+namespace Nomad.Game.Application.Gameplay.Player.Stats
+{
 	/*
 	===================================================================================
 	
@@ -32,9 +33,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public sealed class PlayerBaseStatsRepository : IPlayerBaseStatsRepository {
-		private readonly float[] _statValues = new float[ (int)BaseStatType.Count ];
+
+	public sealed class PlayerBaseStatsRepository : IPlayerBaseStatsRepository
+	{
+		private readonly float[] _statValues = new float[(int)BaseStatType.Count];
 
 		private readonly ILoggerCategory _category;
 
@@ -52,11 +54,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <param name="id"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBaseStatsRepository( Guid id, IGameEventRegistryService eventFactory, ILoggerService logger ) {
-			ArgumentGuard.ThrowIfNull( eventFactory );
-			ArgumentGuard.ThrowIfNull( logger );
+		public PlayerBaseStatsRepository( Guid id, IGameEventRegistryService eventFactory, ILoggerService logger )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+			ArgumentGuard.ThrowIfNull( logger, nameof( logger ) );
 
-			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( $"{id}:{EventNames.PLAYER_BASE_STAT_CHANGED}", EventNames.NAMESPACE );
+			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( $"{id}:{PlayerBaseStatChangedEventArgs.Name}", PlayerBaseStatChangedEventArgs.NameSpace );
 			_category = logger?.CreateCategory( nameof( PlayerBaseStatsRepository ), LogLevel.Info, true );
 		}
 
@@ -70,9 +73,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public float GetBaseStatValue( BaseStatType type ) {
+		public float GetBaseStatValue( BaseStatType type )
+		{
 			RangeGuard.ThrowIfOutOfRange( (int)type, (int)BaseStatType.Min, (int)BaseStatType.Max, nameof( type ) );
-			return _statValues[ (int)type ];
+			return _statValues[(int)type];
 		}
 
 		/*
@@ -85,10 +89,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
-		public void SetBaseStatValue( BaseStatType type, float value ) {
+		public void SetBaseStatValue( BaseStatType type, float value )
+		{
 			RangeGuard.ThrowIfOutOfRange( (int)type, (int)BaseStatType.Min, (int)BaseStatType.Max, nameof( type ) );
 
-			ref var stat = ref _statValues[ (int)type ];
+			ref var stat = ref _statValues[(int)type];
 			if ( stat == value ) {
 				return;
 			}
@@ -96,7 +101,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 			float oldValue = stat;
 			stat = value;
 
-			_baseStatChanged.Publish( new PlayerBaseStatChangedEventArgs( value, oldValue, type ) );
+			_baseStatChanged.Publish( new PlayerBaseStatChangedEventArgs( oldValue, value, type ) );
 		}
 	};
 };

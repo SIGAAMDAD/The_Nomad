@@ -16,16 +16,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
-using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 
-namespace Nomad.Game.Presentation.Screens.MainMenu {
-	internal sealed class MainMenuPresenter {
+namespace Nomad.Game.Presentation.Screens.MainMenu
+{
+	internal sealed class MainMenuPresenter
+	{
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly IEngineService _engineService;
 
-		public MainMenuPresenter( MainMenuView view, IEngineService engineService, IGameEventRegistryService eventFactory ) {
+		public MainMenuPresenter( MainMenuView view, IEngineService engineService, IGameEventRegistryService eventFactory )
+		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_engineService = engineService ?? throw new ArgumentNullException( nameof( engineService ) );
 
@@ -36,31 +37,36 @@ namespace Nomad.Game.Presentation.Screens.MainMenu {
 			view.QuitGame += OnQuitGamePressed;
 		}
 
-		private void OnNewGamePressed() {
+		private void OnNewGamePressed()
+		{
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.NewGame ) );
 		}
 
-		private void OnLoadGamePressed() {
+		private void OnLoadGamePressed()
+		{
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.LoadGame ) );
 		}
 
-		private void OnSettingsMenuPressed() {
+		private void OnSettingsMenuPressed()
+		{
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Settings ) );
 		}
 
-		private void OnExtrasMenuPressed() {
+		private void OnExtrasMenuPressed()
+		{
 			_eventFactory
-				.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Main, MenuState.Extras ) );
 		}
 
-		private void OnQuitGamePressed() {
+		private void OnQuitGamePressed()
+		{
 			_engineService.Quit();
 		}
 	};

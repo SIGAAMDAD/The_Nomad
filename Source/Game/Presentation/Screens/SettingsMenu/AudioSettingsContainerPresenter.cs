@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils.Settings.Services;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu {
+namespace Nomad.Game.Presentation.Screens.SettingsMenu
+{
 	/*
 	===================================================================================
 	
@@ -27,12 +28,14 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class AudioSettingsContainerPresenter : ISettingsSectionPresenter {
+
+	internal sealed class AudioSettingsContainerPresenter : ISettingsSectionPresenter
+	{
 		private readonly AudioSettingsContainerView _view;
 		private readonly AudioSettingsContainerModel _model;
 
-		public AudioSettingsContainerPresenter( AudioSettingsContainerView view, AudioSettingsContainerModel model ) {
+		public AudioSettingsContainerPresenter( AudioSettingsContainerView view, AudioSettingsContainerModel model )
+		{
 			_view = view;
 			_model = model;
 
@@ -46,11 +49,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 			SyncView();
 		}
 
-		public void Reset() {
+		public void Reset()
+		{
 			_model.Reset();
 		}
 
-		public void Save() {
+		public void Save()
+		{
 			_model.Save();
 		}
 
@@ -62,11 +67,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu {
 		/// <summary>
 		/// 
 		/// </summary>
-		public void SyncView() {
+		public void SyncView()
+		{
 			_view.SetMusicVolume( _model.MusicVolume );
 			_view.SetMusicVolumeLimits( _model.MusicMinVolume, _model.MusicMaxVolume );
 			_view.SetMusicOn( _model.MusicOn );
-			
+
 			_view.SetEffectsVolume( _model.EffectsVolume );
 			_view.SetEffectsVolumeLimits( _model.EffectsMinVolume, _model.EffectsMaxVolume );
 			_view.SetEffectsOn( _model.EffectsOn );

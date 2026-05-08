@@ -15,17 +15,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Numerics;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public readonly struct ActionContext {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public readonly struct ActionContext
+	{
 		public Vector2 Position => _position;
 		private readonly Vector2 _position;
 
 		public int SlotA => _slotA;
 		private readonly int _slotA;
-		
+
 		public int SlotB => _slotB;
 		private readonly int _slotB;
-		
+
 		public object? TargetRef => _targetRef;
 		private readonly object? _targetRef;
 	};

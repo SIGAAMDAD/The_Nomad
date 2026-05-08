@@ -15,9 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Items {
+namespace Nomad.Game.Domain.Data.Items
+{
 	[Flags]
-	public enum FirearmFlags : ulong {
+	public enum FirearmFlags : ulong
+	{
 		None = 0,
 
 		// basic operation

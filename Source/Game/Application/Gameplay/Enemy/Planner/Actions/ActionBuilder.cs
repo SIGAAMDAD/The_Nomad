@@ -15,18 +15,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions {
-	public sealed class ActionBuilder {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions
+{
+	public sealed class ActionBuilder
+	{
 		private readonly List<WorldCondition> _preconditions = new List<WorldCondition>();
 		private readonly List<WorldEffect> _effects = new List<WorldEffect>();
 
 		public int BaseCost { get; set; }
 
-		public void Requires( WorldKey key, bool value ) {
+		public void Requires( WorldKey key, bool value )
+		{
 			_preconditions.Add( new WorldCondition( key, value ) );
 		}
 
-		public void Effect( WorldKey key, bool value ) {
+		public void Effect( WorldKey key, bool value )
+		{
 			_effects.Add( new WorldEffect( key, value ) );
 		}
 

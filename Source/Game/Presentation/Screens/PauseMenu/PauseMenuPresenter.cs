@@ -18,26 +18,26 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Input;
 using Nomad.Core.Input.ValueObjects;
-using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 
-namespace Nomad.Game.Presentation.Screens.PauseMenu {
+namespace Nomad.Game.Presentation.Screens.PauseMenu
+{
 	/*
 	===================================================================================
-	
+
 	PauseMenuPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	
-	internal sealed class PauseMenuPresenter : IDisposable {
+
+	internal sealed class PauseMenuPresenter : IDisposable
+	{
 		private readonly PauseMenuView _view;
 		private readonly PauseMenuModel _model;
 
@@ -57,7 +57,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="view"></param>
 		/// <param name="model"></param>
@@ -72,7 +72,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 			IGameEventRegistryService eventFactory,
 			IGameStateService gameStateService,
 			IGamePauseService pauseService
-		) {
+		)
+		{
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_model = model ?? throw new ArgumentNullException( nameof( model ) );
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
@@ -80,9 +81,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 			_pauseService = pauseService ?? throw new ArgumentNullException( nameof( pauseService ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
-			_menuTransitionRequested = eventFactory.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE );
-			_worldBootstrapRequested = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>( EventNames.WORLD_BOOTSTRAP_REQUESTED, EventNames.NAMESPACE );
-			_keyboardEvent = eventFactory.GetEvent<KeyboardEventArgs>( Core.Constants.Events.Input.KEYBOARD_EVENT, Core.Constants.Events.Input.NAMESPACE );
+			_menuTransitionRequested = eventFactory.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace );
+			_worldBootstrapRequested = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace );
+			_keyboardEvent = eventFactory.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace );
 
 			_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 
@@ -103,9 +104,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( _isDisposed ) {
 				return;
 			}
@@ -129,9 +131,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public void SyncView() {
+		public void SyncView()
+		{
 			_view.SetVisibility( _model.IsPaused );
 		}
 
@@ -141,14 +144,16 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnGameStateChanged( in GameStateChangedEventArgs args ) {
+		private void OnGameStateChanged( in GameStateChangedEventArgs args )
+		{
 			SyncFromGameState( args.CurrentState );
 		}
 
-		private void SyncFromGameState( GameState state ) {
+		private void SyncFromGameState( GameState state )
+		{
 			bool isPaused = state == GameState.Paused;
 			_model.SetPaused( isPaused );
 			_pauseService.SetPaused( isPaused );
@@ -161,9 +166,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnResumeGame() {
+		private void OnResumeGame()
+		{
 			_gameStateService.SetState( GameState.Level );
 		}
 
@@ -173,9 +179,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnLoadGame() {
+		private void OnLoadGame()
+		{
 			_menuTransitionRequested.Publish( new MenuTransitionRequestedEventArgs( MenuState.Pause, MenuState.LoadGame ) );
 		}
 
@@ -185,9 +192,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnOpenSettingsMenu() {
+		private void OnOpenSettingsMenu()
+		{
 			_menuTransitionRequested.Publish( new MenuTransitionRequestedEventArgs( MenuState.Pause, MenuState.Settings ) );
 		}
 
@@ -197,9 +205,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnQuitGame() {
+		private void OnQuitGame()
+		{
 			_engineService.Quit();
 		}
 
@@ -209,9 +218,10 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		private void OnQuitToMainMenu() {
+		private void OnQuitToMainMenu()
+		{
 			_gameStateService.SetState( GameState.Menu );
 		}
 
@@ -221,10 +231,11 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu {
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnKeyboardEvent( in KeyboardEventArgs args ) {
+		private void OnKeyboardEvent( in KeyboardEventArgs args )
+		{
 			if ( args.Pressed && args.KeyNum == KeyNum.Escape ) {
 				_gameStateService.SetState( _model.IsPaused ? GameState.Level : GameState.Paused );
 			}

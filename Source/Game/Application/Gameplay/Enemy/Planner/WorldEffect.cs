@@ -13,15 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public readonly struct WorldEffect {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public readonly struct WorldEffect
+	{
 		public WorldKey Key => _key;
 		private readonly WorldKey _key;
 
 		public bool Value => _value;
 		private readonly bool _value;
 
-		public WorldEffect( WorldKey key, bool value ) {
+		public WorldEffect( WorldKey key, bool value )
+		{
 			_key = key;
 			_value = value;
 		}

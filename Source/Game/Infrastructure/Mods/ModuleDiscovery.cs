@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using Nomad.Game.Domain.Data.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public static class ModuleDiscovery {
-		public static List<DiscoveredModule> Discover( string modulesRoot ) {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public static class ModuleDiscovery
+	{
+		public static List<DiscoveredModule> Discover( string modulesRoot )
+		{
 			var results = new List<DiscoveredModule>();
 
 			if ( !Directory.Exists( modulesRoot ) ) {
@@ -30,7 +33,8 @@ namespace Nomad.Game.Infrastructure.Mods {
 			return results;
 		}
 
-		private static void ValidateManifest( ModuleManifest manifest, string manifestPath ) {
+		private static void ValidateManifest( ModuleManifest manifest, string manifestPath )
+		{
 			if ( string.IsNullOrWhiteSpace( manifest.Id ) ) {
 				throw new InvalidOperationException( $"{manifestPath}: id is required" );
 			}

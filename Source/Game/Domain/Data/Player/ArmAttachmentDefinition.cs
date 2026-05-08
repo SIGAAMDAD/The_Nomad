@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public sealed record ArmAttachmentDefinition {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public sealed record ArmAttachmentDefinition
+	{
 		public ItemDefinition Definition { get; init; }
 
 		public string IconPath { get; init; }

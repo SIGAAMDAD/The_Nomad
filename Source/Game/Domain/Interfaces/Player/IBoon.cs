@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Player {
-	public interface IBoon {
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IBoon
+	{
 		void OnEquipped();
 		void OnUnequipped();
 		void Tick( float delta );

@@ -16,7 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Events;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu {
+namespace Nomad.Game.Presentation.Screens.NewGameMenu
+{
 	/*
 	===================================================================================
 	
@@ -27,9 +28,11 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public partial class CustomDifficultyContainer : EnginePanel {
-		protected override void OnInit() {
+
+	public partial class CustomDifficultyContainer : EnginePanel
+	{
+		protected override void OnInit()
+		{
 			FindChild<EngineButton>( "VBoxContainer/CustomButtonContainer/BackButton" ).Clicked
 				.Subscribe( OnBackButtonPressed );
 		}
@@ -43,7 +46,8 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args ) {
+		private void OnBackButtonPressed( in EmptyEventArgs args )
+		{
 			Visible = false;
 		}
 	};

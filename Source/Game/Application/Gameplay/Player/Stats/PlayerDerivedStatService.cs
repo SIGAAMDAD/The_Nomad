@@ -17,13 +17,15 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Nomad.Core.Events;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats {
+namespace Nomad.Game.Application.Gameplay.Player.Stats
+{
 	/*
 	===================================================================================
 	
@@ -37,7 +39,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 	/// This service handles caching, dependency tracking, and automatic recalculation when base stats change.
 	/// </summary>
 
-	internal sealed class PlayerDerivedStatService : IPlayerDerivedStatService {
+	internal sealed class PlayerDerivedStatService : IPlayerDerivedStatService
+	{
 		private readonly IPlayerBaseStatsRepository _baseStats;
 		private readonly PlayerStatDependencyGraph _graph;
 		private readonly List<IPlayerDerivedStatEvaluator> _evaluators = new();
@@ -62,12 +65,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <param name="baseStats">Repository providing access to base player statistics.</param>
 		/// <param name="graph">Dependency graph defining relationships between derived stats.</param>
 		/// <param name="eventFactory">Factory for creating game events.</param>
-		public PlayerDerivedStatService( Guid id, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory ) {
-			_baseStats = baseStats;
-			_graph = graph;
+		public PlayerDerivedStatService( Guid id, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
+		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
+			_baseStats = baseStats ?? throw new ArgumentNullException( nameof( baseStats ) );
+			_graph = graph ?? throw new ArgumentNullException( nameof( graph ) );
 			_derivedStatChanged = eventFactory.GetEvent<PlayerDerivedStatChangedEventArgs>(
-				$"{id}:{EventNames.PLAYER_DERIVED_STAT_CHANGED}",
-				EventNames.NAMESPACE
+				$"{id}:{PlayerDerivedStatChangedEventArgs.Name}",
+				PlayerDerivedStatChangedEventArgs.NameSpace
 			);
 
 			for ( int i = 0; i < (int)DerivedStatType.Count; i++ ) {
@@ -91,7 +97,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <summary>
 		/// Cleans up resources and unsubscribes from base stat change events.
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			if ( !_isDisposed ) {
 				_baseStats.BaseStatChanged.Unsubscribe( OnBaseStatChanged );
 			}
@@ -109,7 +116,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type">The type of derived stat to retrieve.</param>
 		/// <returns>The calculated value of the derived stat.</returns>
-		public float GetValue( DerivedStatType type ) {
+		public float GetValue( DerivedStatType type )
+		{
 			if ( _dirty.Get( (int)type ) ) {
 				RecalculateWithDependencies( type );
 			}
@@ -124,7 +132,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <summary>
 		/// Recalculates all dirty derived stats and publishes change events for any that have changed.
 		/// </summary>
-		public void FlushDirty() {
+		public void FlushDirty()
+		{
 			for ( int i = 0; i < (int)DerivedStatType.Count; i++ ) {
 				if ( _dirty.Get( i ) ) {
 					RecalculateWithDependencies( (DerivedStatType)i );
@@ -142,7 +151,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type">The derived stat type to recalculate.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown when an unsupported derived stat type is provided.</exception>
-		private void RecalculateWithDependencies( DerivedStatType type ) {
+		private void RecalculateWithDependencies( DerivedStatType type )
+		{
 			EnsureDependencies( type );
 			RecalculateSingle( type, () => EvaluateFromEvaluator( type ) );
 		}
@@ -158,7 +168,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// </summary>
 		/// <param name="type">The derived stat type being recalculated.</param>
 		/// <param name="evaluator">Function that calculates the new value for the stat.</param>
-		private void RecalculateSingle( DerivedStatType type, Func<float> evaluator ) {
+		private void RecalculateSingle( DerivedStatType type, Func<float> evaluator )
+		{
 			float oldValue = _values[(int)type];
 			float newValue = evaluator();
 
@@ -180,7 +191,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 			}
 		}
 
-		private void EnsureDependencies( DerivedStatType type ) {
+		private void EnsureDependencies( DerivedStatType type )
+		{
 			switch ( type ) {
 				case DerivedStatType.EffectiveMovementSpeed:
 					GetValue( DerivedStatType.MovementSpeedMultiplier );
@@ -200,7 +212,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 			}
 		}
 
-		private float EvaluateFromEvaluator( DerivedStatType type ) {
+		private float EvaluateFromEvaluator( DerivedStatType type )
+		{
 			var context = new PlayerDerivedStatEvaluationContext( _baseStats, GetValue );
 
 			for ( int i = 0; i < _evaluators.Count; i++ ) {
@@ -224,7 +237,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// <param name="b">Second float value.</param>
 		/// <returns>True if the values are approximately equal.</returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private static bool FloatEquals( float a, float b ) {
+		private static bool FloatEquals( float a, float b )
+		{
 			return Math.Abs( a - b ) < 0.0001f;
 		}
 
@@ -237,7 +251,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 		/// Handles base stat change events by marking affected derived stats as dirty and recalculating them.
 		/// </summary>
 		/// <param name="args">Event arguments containing information about the changed base stat.</param>
-		private void OnBaseStatChanged( in PlayerBaseStatChangedEventArgs args ) {
+		private void OnBaseStatChanged( in PlayerBaseStatChangedEventArgs args )
+		{
 			HashSet<DerivedStatType> affected = new HashSet<DerivedStatType>();
 			_graph.CollectAffectedFromBase( args.StatId, affected );
 
@@ -245,8 +260,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats {
 				_dirty.Set( (int)type, true );
 			}
 
-			// Eager refresh hot-path values if desired:
-			FlushDirty();
+			foreach ( DerivedStatType type in affected ) {
+				if ( _dirty.Get( (int)type ) ) {
+					RecalculateWithDependencies( type );
+				}
+			}
 		}
 	};
 };

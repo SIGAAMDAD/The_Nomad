@@ -17,11 +17,14 @@ using System;
 using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Application.Gameplay.Player.Inventory {
-	internal sealed class ItemStorageService {
+namespace Nomad.Game.Application.Gameplay.Player.Inventory
+{
+	internal sealed class ItemStorageService
+	{
 		private readonly Dictionary<Guid, ItemStack> _stacks = new();
 
-		public ItemStorageService() {
+		public ItemStorageService()
+		{
 		}
 	};
 };

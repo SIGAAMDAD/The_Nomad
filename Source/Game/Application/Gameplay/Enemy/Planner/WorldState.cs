@@ -13,17 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public readonly struct WorldState {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public readonly struct WorldState
+	{
 		private readonly ulong _lo;
 		private readonly ulong _hi;
 
-		public WorldState( ulong lo, ulong hi ) {
+		public WorldState( ulong lo, ulong hi )
+		{
 			_lo = lo;
 			_hi = hi;
 		}
 
-		public bool Get( WorldKey key ) {
+		public bool Get( WorldKey key )
+		{
 			int index = (int)key;
 			if ( index < 64 ) {
 				ulong mask = 1UL << index;
@@ -35,7 +39,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return (_hi & hiMask) != 0;
 		}
 
-		public WorldState Set( WorldKey key, bool value ) {
+		public WorldState Set( WorldKey key, bool value )
+		{
 			int index = (int)key;
 			ulong lo = _lo;
 			ulong hi = _hi;
@@ -60,7 +65,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return new WorldState( lo, hi );
 		}
 
-		public bool Meets( WorldCondition[] conditions ) {
+		public bool Meets( WorldCondition[] conditions )
+		{
 			for ( int i = 0; i < conditions.Length; i++ ) {
 				if ( Get( conditions[i].Key ) != conditions[i].Value ) {
 					return false;
@@ -70,7 +76,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return true;
 		}
 
-		public WorldState Apply( WorldEffect[] effects ) {
+		public WorldState Apply( WorldEffect[] effects )
+		{
 			WorldState state = this;
 
 			for ( int i = 0; i < effects.Length; i++ ) {
@@ -80,7 +87,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return state;
 		}
 
-		public int CountUnmet( WorldCondition[] conditions ) {
+		public int CountUnmet( WorldCondition[] conditions )
+		{
 			int count = 0;
 
 			for ( int i = 0; i < conditions.Length; i++ ) {
@@ -92,15 +100,18 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return count;
 		}
 
-		public bool Equals( WorldState other ) {
+		public bool Equals( WorldState other )
+		{
 			return _lo == other._lo && _hi == other._hi;
 		}
 
-		public override bool Equals( object obj ) {
+		public override bool Equals( object obj )
+		{
 			return obj is WorldState other && Equals( other );
 		}
 
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			unchecked {
 				return (_lo.GetHashCode() * 397) ^ _hi.GetHashCode();
 			}

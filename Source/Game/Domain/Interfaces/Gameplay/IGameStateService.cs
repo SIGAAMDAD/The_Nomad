@@ -18,12 +18,18 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 
-namespace Nomad.Game.Domain.Interfaces.Gameplay {
+namespace Nomad.Game.Domain.Interfaces.Gameplay
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IGameStateService : IDisposable {
+	public interface IGameStateService : IDisposable
+	{
 		GameState Current { get; set; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "GameStateChangedEventArgs" )]
+		[EventPayload( "PrevState", typeof( GameState ), Order = 1 )]
+		[EventPayload( "CurrentState", typeof( GameState ), Order = 2 )]
 		IGameEvent<GameStateChangedEventArgs> StateChanged { get; }
 
 		void SetState( GameState state );

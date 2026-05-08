@@ -15,11 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Configuration.Enums.Gameplay;
 
-namespace Nomad.Game.Domain.Data.Gameplay {
+namespace Nomad.Game.Domain.Data.Gameplay
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public record GameplayConfiguration {
+	public record GameplayConfiguration
+	{
 		public EnemyTacticalIntelligence EnemyTacticalIntelligence { get; init; }
 		public ContractPayoutScaling ContractPayoutScaling { get; init; }
 		public EnemyDamageOutput EnemyDamageOutput { get; init; }

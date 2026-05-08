@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Assets/Mods/**" />
+    <Compile Remove="TheNomad.Tests/**" />
     <Compile Remove="Source/NomadFramework/**" />
     <Compile Remove="android/build/**/*.cs" />
   </ItemGroup>
@@ -50,6 +51,17 @@
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Save\Nomad.Save.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="steam_api64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+    <Content Condition="'$(IsWindows)' == 'true'" Include="steam_api.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>

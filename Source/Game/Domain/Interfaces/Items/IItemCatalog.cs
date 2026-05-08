@@ -16,11 +16,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Items {
-	public interface IItemCatalog {
+namespace Nomad.Game.Domain.Interfaces.Items
+{
+	public interface IItemCatalog
+	{
 		TItemDefinition? Get<TItemDefinition>( Guid id )
 			where TItemDefinition : ItemDefinition;
-		
+
 		bool TryGet<TItemDefinition>( Guid id, out TItemDefinition? definition )
 			where TItemDefinition : ItemDefinition;
 	};

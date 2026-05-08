@@ -13,7 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader {
-	public partial class SortorianBladerEnemy : EnemyBase {
+namespace Nomad.Game.Application.Gameplay.Enemy.Templates.Sortior.Blader
+{
+	public partial class SortorianBladerEnemy : EnemyBase
+	{
 	};
 };

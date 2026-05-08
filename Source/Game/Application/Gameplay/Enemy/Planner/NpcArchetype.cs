@@ -16,12 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Actions;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	public abstract class NpcArchetype {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	public abstract class NpcArchetype
+	{
 		protected abstract AiAction[] CreateActions();
 		protected abstract AiGoal[] CreateGoals();
 
-		public PlannerAction[] CompileActions() {
+		public PlannerAction[] CompileActions()
+		{
 			AiAction[] authored = CreateActions();
 			PlannerAction[] compiled = new PlannerAction[authored.Length];
 
@@ -32,7 +35,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
 			return compiled;
 		}
 
-		public GoalDef[] CompileGoals() {
+		public GoalDef[] CompileGoals()
+		{
 			AiGoal[] authored = CreateGoals();
 			GoalDef[] compiled = new GoalDef[authored.Length];
 

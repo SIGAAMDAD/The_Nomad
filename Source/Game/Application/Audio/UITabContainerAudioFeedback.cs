@@ -18,7 +18,8 @@ using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.UI;
 using Nomad.EngineUtils;
 
-namespace Nomad.Game.Application.Audio {
+namespace Nomad.Game.Application.Audio
+{
 	/*
 	===================================================================================
 	
@@ -29,8 +30,9 @@ namespace Nomad.Game.Application.Audio {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	public class UITabContainerAudioFeedback : NomadBehaviour {
+
+	public class UITabContainerAudioFeedback : NomadBehaviour
+	{
 		public ITabContainer TabContainer { get; set; }
 		public string ClickSound { get; set; }
 		public string FocusedSound { get; set; }
@@ -45,7 +47,8 @@ namespace Nomad.Game.Application.Audio {
 		/// <summary>
 		/// 
 		/// </summary>
-		public UITabContainerAudioFeedback() {
+		public UITabContainerAudioFeedback()
+		{
 			_emitter = ServiceLocator.GetService<IEmitterFactory>().CreateEmitter( "SoundCategory:UI" );
 		}
 
@@ -57,7 +60,8 @@ namespace Nomad.Game.Application.Audio {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void OnInit() {
+		public override void OnInit()
+		{
 			TabContainer?.TabChanged.Subscribe( OnTabChanged );
 			TabContainer?.TabFocused.Subscribe( OnTabFocused );
 		}
@@ -71,7 +75,8 @@ namespace Nomad.Game.Application.Audio {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnTabFocused( in int args ) {
+		private void OnTabFocused( in int args )
+		{
 			_emitter.PlaySound( FocusedSound );
 		}
 
@@ -84,7 +89,8 @@ namespace Nomad.Game.Application.Audio {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnTabChanged( in int args ) {
+		private void OnTabChanged( in int args )
+		{
 			_emitter.PlaySound( ClickSound );
 		}
 	};

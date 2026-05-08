@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public sealed record PlayerInitializationDefinition {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public sealed record PlayerInitializationDefinition
+	{
 		public PlayerStatBlockDefinition Stats { get; init; } = new();
 		public PlayerSpawnResourceProfile Resources { get; init; } = new();
 	};

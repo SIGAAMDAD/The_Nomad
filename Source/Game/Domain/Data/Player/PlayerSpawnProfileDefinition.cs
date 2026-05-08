@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public sealed record PlayerSpawnProfileDefinition {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public sealed record PlayerSpawnProfileDefinition
+	{
 		public string Id { get; init; } = string.Empty;
 
 		public SpawnValueRule Health { get; init; } = new( SpawnValueMode.Preserve );

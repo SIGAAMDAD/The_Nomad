@@ -15,12 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Player {
+namespace Nomad.Game.Domain.Data.Player
+{
 	/// <summary>
 	/// 
 	/// </summary>
 	[Flags]
-	public enum PlayerFlags : uint {
+	public enum PlayerFlags : uint
+	{
 		None = 0,
 
 		/// <summary>

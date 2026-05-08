@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Domain.Data.Player {
-	public static class Constants {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public static class Constants
+	{
 		public const float MOVEMENT_ACCELERATION = 800.0f;
 		public const float MOVEMENT_FRICTION = 1000.0f;
 		public const float MOVEMENT_MAX_SPEED = 440.0f;

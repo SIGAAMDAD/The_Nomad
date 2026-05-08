@@ -21,7 +21,8 @@ using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Infrastructure.Gameplay.Items {
+namespace Nomad.Game.Infrastructure.Gameplay.Items
+{
 	/*
 	===================================================================================
 	
@@ -32,8 +33,9 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items {
 	/// <summary>
 	/// 
 	/// </summary>
-	
-	internal sealed class ItemCatalog : DataLoader<ItemDefinition>, IItemCatalog {
+
+	internal sealed class ItemCatalog : DataLoader<ItemDefinition>, IItemCatalog
+	{
 		private readonly Dictionary<ItemType, Func<JsonElement, ItemDefinition>> _loaders = new();
 
 		/*
@@ -77,7 +79,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items {
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="callback"></param>
-		public void AddLoader( ItemType type, Func<JsonElement, ItemDefinition> callback ) {
+		public void AddLoader( ItemType type, Func<JsonElement, ItemDefinition> callback )
+		{
 			_loaders[type] = callback;
 		}
 
@@ -93,7 +96,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items {
 		/// <param name="definition"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		protected override bool TryLoadDefinition( JsonElement json, out ItemDefinition definition ) {
+		protected override bool TryLoadDefinition( JsonElement json, out ItemDefinition definition )
+		{
 			definition = null;
 			if ( !JsonLoader.TryGet<ItemType>( json, nameof( definition.BaseType ), out var baseType ) ) {
 				return false;
@@ -116,7 +120,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items {
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="definition"></param>
-		private static ItemDefinition LoadItemBase( JsonElement json, ItemDefinition definition ) {
+		private static ItemDefinition LoadItemBase( JsonElement json, ItemDefinition definition )
+		{
 			return definition with {
 				Weight = JsonLoader.TryGet( json, nameof( definition.Weight ), out float weight ) ? weight : 0.0f,
 				BaseCost = JsonLoader.TryGet( json, nameof( definition.BaseCost ), out float baseCost ) ? baseCost : 0.0f,

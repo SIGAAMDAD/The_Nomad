@@ -12,7 +12,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	public partial class PostProcessing : CanvasLayer {
 	};
 };

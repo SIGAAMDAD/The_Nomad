@@ -13,11 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Renown {
+namespace Nomad.Game.Domain.Data.Renown
+{
 	/// <summary>
 	/// A contract's underlying metadata.
 	/// </summary>
-	public record Contract {
+	public record Contract
+	{
 		public string Archetype { get; init; }
 		public float BaseBounty { get; init; }
 		public ContractFlags Flags { get; init; }

@@ -13,16 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Mods {
-	public sealed record ModuleManifest {
+namespace Nomad.Game.Domain.Data.Mods
+{
+	public sealed record ModuleManifest
+	{
 		public string Id { get; init; }
-	    public string Version { get; init; }
-	    public string EntryAssembly { get; init; }
-	    public string EntryType { get; init; }
-	    public string[] Dependencies { get; init; }
-	    public string[] OptionalDependencies { get; init; }
-	    public string[] Replaces { get; init; }
-	    public string[] Capabilities { get; init; }
-	    public string[] LoadAfter { get; init; }
+		public string Version { get; init; }
+		public string EntryAssembly { get; init; }
+		public string EntryType { get; init; }
+		public string[] Dependencies { get; init; }
+		public string[] OptionalDependencies { get; init; }
+		public string[] Replaces { get; init; }
+		public string[] Capabilities { get; init; }
+		public string[] LoadAfter { get; init; }
 	};
 };

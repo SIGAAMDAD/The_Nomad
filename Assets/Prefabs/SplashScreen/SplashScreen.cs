@@ -15,9 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Godot;
 using Nomad.Events.Globals;
-using Nomad.Game.Application.UI;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Application.UI.Menus.Events;
 using Nomad.UI;
 
 namespace Nomad.Game.Prefabs {
@@ -31,7 +29,7 @@ namespace Nomad.Game.Prefabs {
 	/// <summary>
 	/// 
 	/// </summary>
-	
+
 	internal sealed partial class SplashScreen : EnginePanel {
 		private const float HOLD_TIME = 6.0f;
 		private const float FADE_TIME = 1.5f;
@@ -69,7 +67,7 @@ namespace Nomad.Game.Prefabs {
 					break;
 				case 2:
 					GameEventRegistry
-						.GetEvent<MenuTransitionRequestedEventArgs>( UIConstants.MENU_TRANSITION_REQUESTED_EVENT, UIConstants.NAMESPACE )
+						.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
 						.Publish( new MenuTransitionRequestedEventArgs( MenuState.Splash, MenuState.Main ) );
 					break;
 			}

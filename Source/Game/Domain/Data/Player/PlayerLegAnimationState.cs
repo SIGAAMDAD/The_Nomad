@@ -13,10 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public enum PlayerLegAnimationState : byte {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public enum PlayerLegAnimationState : byte
+	{
 		Idle,
-		
+
 		Moving,
 		MovingSuddenStop,
 

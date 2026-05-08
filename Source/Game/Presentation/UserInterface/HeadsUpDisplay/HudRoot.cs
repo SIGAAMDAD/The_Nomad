@@ -21,8 +21,10 @@ using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHea
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar;
 using Nomad.UI;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
-	internal sealed class HudRoot : IHudRoot {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
+{
+	internal sealed class HudRoot : IHudRoot
+	{
 		public HUDPreset Preset {
 			get {
 				throw new System.NotImplementedException();
@@ -47,12 +49,14 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay {
 		private readonly HealthBarPresenter _healthBarPresenter;
 		private readonly DashKitHeatBarPresenter _dashKitPresenter;
 
-		public HudRoot( EnginePanel root, IGameEventRegistryService eventFactory ) {
+		public HudRoot( EnginePanel root, IGameEventRegistryService eventFactory )
+		{
 			_healthBarPresenter = new HealthBarPresenter( new HealthBarModel( eventFactory ), root.FindChild<HealthBarView>( "StatBarContainer/HealthBar" ) );
 			_dashKitPresenter = new DashKitHeatBarPresenter( new DashKitHeatBarModel( eventFactory ), root.FindChild<DashStatusBarView>( "CombatContainer/DashStatusBar" ) );
 		}
 
-		public void Render( float delta ) {
+		public void Render( float delta )
+		{
 			_healthBarPresenter.Render( delta );
 			_dashKitPresenter.Render();
 		}

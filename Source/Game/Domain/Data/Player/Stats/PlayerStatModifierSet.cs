@@ -13,13 +13,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player {
-	public struct PlayerStatModifierSet {
+namespace Nomad.Game.Domain.Data.Player
+{
+	public struct PlayerStatModifierSet
+	{
 		public float FlatAdd { get; set; }
 		public float AddPercent { get; set; }
 		public float MulPercent { get; set; }
 
-		public float Apply( float baseValue ) {
+		public float Apply( float baseValue )
+		{
 			float value = baseValue + FlatAdd;
 			value *= 1.0f + AddPercent;
 			value *= 1.0f + MulPercent;

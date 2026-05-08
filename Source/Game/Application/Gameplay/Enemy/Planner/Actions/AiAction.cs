@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions {
-	public abstract class AiAction {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions
+{
+	public abstract class AiAction
+	{
 		public abstract string Name { get; }
 
 		protected abstract void Build( ActionBuilder builder );
@@ -26,7 +28,8 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions {
 		public virtual ActionRunStatus Tick( NpcAgent agent, float dt ) => ActionRunStatus.Succeeded;
 		public virtual void Cancel( NpcAgent agent ) { }
 
-		public PlannerAction Compile() {
+		public PlannerAction Compile()
+		{
 			ActionBuilder builder = new ActionBuilder();
 			Build( builder );
 

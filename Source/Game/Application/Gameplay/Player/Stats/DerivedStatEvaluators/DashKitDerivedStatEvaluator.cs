@@ -16,14 +16,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators {
-	internal sealed class DashKitDerivedStatEvaluator : IPlayerDerivedStatEvaluator {
-		public bool CanEvaluate( DerivedStatType type ) {
+namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
+{
+	internal sealed class DashKitDerivedStatEvaluator : IPlayerDerivedStatEvaluator
+	{
+		public bool CanEvaluate( DerivedStatType type )
+		{
 			return type == DerivedStatType.DashSpeedMultiplier
 				|| type == DerivedStatType.EffectiveDashSpeed;
 		}
 
-		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context ) {
+		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context )
+		{
 			return type switch {
 				DerivedStatType.DashSpeedMultiplier => 1.0f,
 				DerivedStatType.EffectiveDashSpeed => Math.Max(
@@ -32,5 +36,5 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators {
 				_ => throw new ArgumentOutOfRangeException( nameof( type ) )
 			};
 		}
-	}
-}
+	};
+};

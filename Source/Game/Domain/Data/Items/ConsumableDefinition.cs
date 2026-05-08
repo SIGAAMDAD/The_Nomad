@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Domain.Data.Items {
-	public sealed record ConsumableDefinition : ItemDefinition {
+namespace Nomad.Game.Domain.Data.Items
+{
+	public sealed record ConsumableDefinition : ItemDefinition
+	{
 		public override ItemType BaseType => ItemType.Consumable;
 	};
 };

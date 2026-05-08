@@ -17,13 +17,16 @@ using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Mods;
 using Nomad.Game.Domain.Interfaces.Mods;
 
-namespace Nomad.Game.Infrastructure.Mods {
-	public sealed class ModuleHost : IModuleHost {
+namespace Nomad.Game.Infrastructure.Mods
+{
+	public sealed class ModuleHost : IModuleHost
+	{
 		public IServiceLocator Services { get; }
 		public string ModuleDirectory { get; }
 		public ModuleManifest Manifest { get; }
 
-		public ModuleHost( IServiceLocator services, string moduleDirectory, ModuleManifest manifest ) {
+		public ModuleHost( IServiceLocator services, string moduleDirectory, ModuleManifest manifest )
+		{
 			Services = services;
 			ModuleDirectory = moduleDirectory;
 			Manifest = manifest;

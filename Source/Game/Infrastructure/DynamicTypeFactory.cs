@@ -19,14 +19,16 @@ using System.Reflection;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Game.Domain.Interfaces.Mods;
 
-namespace Nomad.Game.Infrastructure {
+namespace Nomad.Game.Infrastructure
+{
 	internal abstract class DynamicTypeFactory<AttributeType, BehaviorInterface, BehaviorType>
 		where AttributeType : Attribute, IAttribute
 		where BehaviorType : BehaviorInterface
 	{
 		protected readonly Dictionary<string, Type> types = new();
 
-		public DynamicTypeFactory() {
+		public DynamicTypeFactory()
+		{
 			foreach ( var assembly in AppDomain.CurrentDomain.GetAssemblies() ) {
 				RegisterFromAssembly( assembly );
 			}
@@ -41,7 +43,8 @@ namespace Nomad.Game.Infrastructure {
 		/// 
 		/// </summary>
 		/// <param name="assembly"></param>
-		public void RegisterFromAssembly( Assembly assembly ) {
+		public void RegisterFromAssembly( Assembly assembly )
+		{
 			ArgumentGuard.ThrowIfNull( assembly );
 
 			foreach ( var type in assembly.GetTypes() ) {

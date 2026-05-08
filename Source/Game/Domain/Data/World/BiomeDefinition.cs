@@ -16,11 +16,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Data.World {
+namespace Nomad.Game.Domain.Data.World
+{
 	/// <summary>
 	/// 
 	/// </summary>
-	public sealed record BiomeDefinition {
+	public sealed record BiomeDefinition
+	{
 		public InternString Id { get; init; }
 		public InternString DisplayName { get; init; }
 		public InternString JournalEntryId { get; init; }

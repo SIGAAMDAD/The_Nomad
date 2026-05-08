@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Configuration.Enums {
-	public enum PerformanceOverlayPreset : uint {
+namespace Nomad.Game.Application.Configuration.Enums
+{
+	public enum PerformanceOverlayPreset : uint
+	{
 		Hidden,
 		FpsOnly,
 		Partial,

@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Enemy.Planner {
-	internal struct PlannerNode {
+namespace Nomad.Game.Application.Gameplay.Enemy.Planner
+{
+	internal struct PlannerNode
+	{
 		public WorldState State;
 		public int ParentIndex;
 		public int ActionIndex;

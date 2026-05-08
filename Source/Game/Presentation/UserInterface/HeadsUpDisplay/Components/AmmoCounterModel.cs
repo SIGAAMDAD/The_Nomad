@@ -15,12 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components {
-	internal sealed class AmmoCounterModel {
+namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components
+{
+	internal sealed class AmmoCounterModel
+	{
 		public int CurrentAmmo { get; private set; }
 		public int ReserveAmmo { get; private set; }
 
-		public AmmoCounterModel( IGameEventRegistryService eventFactory ) {
+		public AmmoCounterModel( IGameEventRegistryService eventFactory )
+		{
 		}
 	};
 };

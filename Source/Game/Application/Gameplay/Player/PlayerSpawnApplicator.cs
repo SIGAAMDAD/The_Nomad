@@ -17,7 +17,8 @@ using System;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
-namespace Nomad.Game.Application.Gameplay.Player {
+namespace Nomad.Game.Application.Gameplay.Player
+{
 	/*
 	===================================================================================
 	
@@ -28,19 +29,22 @@ namespace Nomad.Game.Application.Gameplay.Player {
 	/// <summary>
 	/// Applies a spawn profile's data to the current player state.
 	/// </summary>
-	
-	internal sealed class PlayerSpawnApplicator : IPlayerSpawnApplicator {
-		public void Apply( PlayerBase player, PlayerSpawnProfileDefinition profile, IPlayerDerivedStatService derivedStats, IPlayerResourceService resources, IPlayerFlagService flags, in PlayerSpawnContext context ) {
+
+	internal sealed class PlayerSpawnApplicator : IPlayerSpawnApplicator
+	{
+		public void Apply( PlayerBase player, PlayerSpawnProfileDefinition profile, IPlayerDerivedStatService derivedStats, IPlayerResourceService resources, IPlayerFlagService flags, in PlayerSpawnContext context )
+		{
 			ApplyResource( profile.Health, PlayerResourceType.Health, derivedStats.GetValue( DerivedStatType.EffectiveHealthMax ), resources );
 			ApplyResource( profile.Rage, PlayerResourceType.Rage, derivedStats.GetValue( DerivedStatType.EffectiveRageMax ), resources );
 			ApplyResource( profile.Sanity, PlayerResourceType.Sanity, derivedStats.GetValue( DerivedStatType.EffectiveSanityMax ), resources );
 
 			foreach ( var pair in profile.FlagOverrides ) {
-				// TODO: make string kvp setters for the flag service
+				flags.SetFlag( pair.Key, pair.Value );
 			}
 		}
 
-		private static void ApplyResource( SpawnValueRule rule, PlayerResourceType type, float maxValue, IPlayerResourceService resources ) {
+		private static void ApplyResource( SpawnValueRule rule, PlayerResourceType type, float maxValue, IPlayerResourceService resources )
+		{
 			switch ( rule.Mode ) {
 				case SpawnValueMode.Preserve:
 					break;

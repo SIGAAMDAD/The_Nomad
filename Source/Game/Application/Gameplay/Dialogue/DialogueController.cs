@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Dialogue {
-	internal sealed class DialogueController {
-		
+namespace Nomad.Game.Application.Gameplay.Dialogue
+{
+	internal sealed class DialogueController
+	{
+
 	};
 };
