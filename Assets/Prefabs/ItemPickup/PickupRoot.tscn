@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bfemcejvjvwts"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1hn40"]
+radius = 19.026299
+
+[node name="PickupRoot" type="Node2D" unique_id=1146163250]
+
+[node name="Zone" type="Area2D" parent="." unique_id=312689260]
+collision_layer = 512
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=1316175464]
+shape = SubResource("CircleShape2D_1hn40")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=100575583]

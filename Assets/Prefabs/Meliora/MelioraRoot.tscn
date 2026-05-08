@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bktaccmkkt34m"]
+
+[ext_resource type="SpriteFrames" uid="uid://fx2lnx6ui0rs" path="res://Assets/Animations/Environment/Meliora.tres" id="1_u81d1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ip35x"]
+radius = 89.560036
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u81d1"]
+size = Vector2(81, 44)
+
+[node name="MelioraRoot" type="Node2D" unique_id=1146163250]
+
+[node name="Zone" type="Area2D" parent="." unique_id=312689260]
+collision_layer = 512
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=1316175464]
+position = Vector2(0, 29)
+shape = SubResource("CircleShape2D_ip35x")
+
+[node name="Blocker" type="StaticBody2D" parent="." unique_id=1432106006]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocker" unique_id=956666712]
+position = Vector2(-3.5, 33)
+shape = SubResource("RectangleShape2D_u81d1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471559592]
+position = Vector2(0, -51)
+sprite_frames = ExtResource("1_u81d1")
+animation = &"inactive"
+autoplay = "inactive"
+frame_progress = 0.2186134

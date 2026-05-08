@@ -1,0 +1,44 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://e64baw45l5ya"]
+
+[ext_resource type="Texture2D" uid="uid://bawd82xlm4jbu" path="res://Assets/Textures/Skins/TheWanderer/raio_arms_right.png" id="1_1pbyi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwavd"]
+atlas = ExtResource("1_1pbyi")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1m2c2"]
+atlas = ExtResource("1_1pbyi")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5jf5e"]
+atlas = ExtResource("1_1pbyi")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5670q"]
+atlas = ExtResource("1_1pbyi")
+region = Rect2(0, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwavd")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1m2c2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5jf5e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5670q")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]

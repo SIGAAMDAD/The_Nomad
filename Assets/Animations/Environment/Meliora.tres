@@ -1,0 +1,79 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://fx2lnx6ui0rs"]
+
+[ext_resource type="Texture2D" uid="uid://bhi5rxt2bpess" path="res://Assets/Textures/Environment/Meliora.png" id="1_bltxe"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqu2p"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(0, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0wgxa"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(190, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wj25s"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(380, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nb7ui"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(570, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w7844"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(760, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkc48"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(950, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ulo38"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(1140, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xfj86"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(1330, 0, 190, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_obe8g"]
+atlas = ExtResource("1_bltxe")
+region = Rect2(1520, 0, 190, 240)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oqu2p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0wgxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wj25s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nb7ui")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w7844")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lkc48")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ulo38")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xfj86")
+}],
+"loop": true,
+"name": &"active",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_obe8g")
+}],
+"loop": true,
+"name": &"inactive",
+"speed": 5.0
+}]
