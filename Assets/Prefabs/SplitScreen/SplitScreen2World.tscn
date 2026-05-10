@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btdyqiyrv0111"]
 
-[ext_resource type="Script" uid="uid://be7gg3e5tt08s" path="res://Assets/Prefabs/SplitScreen/SplitScreen2World.cs" id="1_7eg4w"]
+[ext_resource type="Script" uid="uid://ge58oddwqmkt" path="res://Assets/Prefabs/SplitScreen/SplitScreen2World.cs" id="1_7eg4w"]
 
 [node name="SplitScreen2World" type="Node2D" unique_id=441724395]
 process_mode = 1

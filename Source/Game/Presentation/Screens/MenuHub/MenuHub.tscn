@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://o31p63gibdmp"]
 
-[ext_resource type="Script" uid="uid://cvw66vch1rx2x" path="res://Source/Game/Presentation/Screens/MenuHub/MenuHub.cs" id="1_r5rte"]
+[ext_resource type="Script" uid="uid://l4rbmy88l86d" path="res://Source/Game/Presentation/Screens/MenuHub/MenuHub.cs" id="1_r5rte"]
 [ext_resource type="PackedScene" uid="uid://cjlaujtogos17" path="res://Assets/Prefabs/MenuBackground/MenuBackground.tscn" id="2_hl1qx"]
 
 [node name="MenuHub" type="Control" unique_id=1400059784]

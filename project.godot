@@ -25,9 +25,9 @@ driver/enable_input=true
 
 [autoload]
 
-GodotBootstrapper="*uid://1rkvk2tt5v6i"
+GodotBootstrapper="*uid://cq3c7yunik8mt"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
-DialogueManager="*uid://c3rodes2l3gxb"
+DialogueManager="*uid://b2yemrmv8bqvf"
 
 [compression]
 

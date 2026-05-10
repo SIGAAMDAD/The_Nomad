@@ -26,9 +26,9 @@ namespace Nomad.Game.Application.Gameplay.World
 {
 	/*
 	===================================================================================
-	
+
 	WorldBootstrapper
-	
+
 	===================================================================================
 	*/
 	/// <summary>
@@ -68,9 +68,22 @@ namespace Nomad.Game.Application.Gameplay.World
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_worldLoader = loader ?? throw new ArgumentNullException( nameof( loader ) );
-			_bootstrapFailed = eventFactory.GetEvent<WorldBootstrapFailureEventArgs>( WorldBootstrapFailureEventArgs.Name, WorldBootstrapFailureEventArgs.NameSpace );
-			_bootstrapSucceeded = eventFactory.GetEvent<WorldBootstrapSucceededEventArgs>( WorldBootstrapSucceededEventArgs.Name, WorldBootstrapSucceededEventArgs.NameSpace );
-			_bootstrapRequest = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace );
+
+			_bootstrapFailed = eventFactory.GetEvent<WorldBootstrapFailureEventArgs>(
+				WorldBootstrapFailureEventArgs.Name,
+				WorldBootstrapFailureEventArgs.NameSpace
+			);
+
+			_bootstrapSucceeded = eventFactory.GetEvent<WorldBootstrapSucceededEventArgs>(
+				WorldBootstrapSucceededEventArgs.Name,
+				WorldBootstrapSucceededEventArgs.NameSpace
+			);
+
+			_bootstrapRequest = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>(
+				WorldBootstrapRequestEventArgs.Name,
+				WorldBootstrapRequestEventArgs.NameSpace
+			);
+			_bootstrapRequest.Subscribe( OnBootstrapRequested );
 		}
 
 		/*

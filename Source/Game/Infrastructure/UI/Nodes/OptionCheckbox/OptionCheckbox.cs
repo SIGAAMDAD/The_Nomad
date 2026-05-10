@@ -16,9 +16,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.UI;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Events.UI;
+using Godot;
 
 namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox
 {
@@ -47,10 +47,10 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox
 		}
 		private bool _value;
 
-		public EngineButton Left => FindChild<EngineButton>( "LeftIcon" );
-		public EngineButton Right => FindChild<EngineButton>( "RightIcon" );
+		public Button Left => GetNode<Button>( "LeftIcon" );
+		public Button Right => GetNode<Button>( "RightIcon" );
 
-		private EngineText _valueLabel;
+		private Label _valueLabel;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionCheckboxValueChangedEventArgs" )]
 		[EventPayload( "Value", typeof( bool ) )]
@@ -76,13 +76,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox
 		/// </summary>
 		protected override void OnInit()
 		{
-			EngineText title = FindChild<EngineText>( "Title" );
+			Label title = GetNode<Label>( "Title" );
 			title.Text = Title;
 
-			_valueLabel = FindChild<EngineText>( "Value" );
+			_valueLabel = GetNode<Label>( "Value" );
 
-			Left.Clicked.Subscribe( OnToggled );
-			Right.Clicked.Subscribe( OnToggled );
+			Left.Pressed += OnToggled;
+			Right.Pressed += OnToggled;
 
 			Value = false;
 		}
@@ -95,7 +95,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox
 		/// <summary>
 		///
 		/// </summary>
-		private void OnToggled( in EmptyEventArgs args )
+		private void OnToggled()
 		{
 			Value = !_value;
 			_toggled.Publish( new OptionCheckboxValueChangedEventArgs( _value ) );

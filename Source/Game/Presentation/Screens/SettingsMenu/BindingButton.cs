@@ -13,8 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.Nodes.Label;
-using Nomad.Core;
+using Game.Infrastructure.UI.Nodes.NomadLabel;
+using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Input;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -28,13 +28,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	BindingButton
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	public sealed partial class BindingButton : EngineHorizontalContainer
@@ -52,17 +52,17 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="mapping"></param>
 		/// <param name="bindName"></param>
 		public void SetBind( string mapping, string bindName )
 		{
-			var title = FindChild<NomadLabel>( "Title" );
+			var title = GetNode<NomadLabel>( "Title" );
 			title.Text = bindName;
 
-			var firstBind = FindChild<EngineButton>( "Bind1" );
-			var secondBind = FindChild<EngineButton>( "Bind2" );
+			var firstBind = GetNode<Button>( "Bind1" );
+			var secondBind = GetNode<Button>( "Bind2" );
 
 			_action = FindActionDefinition( mapping, bindName );
 			if ( _action == null ) {
@@ -86,7 +86,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void OnInit()
 		{
@@ -110,7 +110,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="mapping"></param>
 		/// <param name="bindName"></param>

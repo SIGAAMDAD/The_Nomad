@@ -14,19 +14,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Godot;
 using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	SettingsMenuView
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed partial class SettingsMenuView : EnginePanel
@@ -46,7 +47,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void OnInit()
 		{
@@ -57,9 +58,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 			_presenter = SettingsMenuFactory.Create( this );
 
-			FindChild<EngineButton>( "BottomContainer/ButtonContainer/BackButton" ).Clicked.Subscribe( ( in args ) => BackRequested?.Invoke() );
-			FindChild<EngineButton>( "BottomContainer/ButtonContainer/SaveButton" ).Clicked.Subscribe( ( in args ) => SaveRequested?.Invoke() );
-			FindChild<EngineButton>( "BottomContainer/ButtonContainer/ResetButton" ).Clicked.Subscribe( ( in args ) => ResetRequested?.Invoke() );
+			GetNode<Button>( "BottomContainer/ButtonContainer/BackButton" ).Pressed += () => BackRequested?.Invoke();
+			GetNode<Button>( "BottomContainer/ButtonContainer/SaveButton" ).Pressed += () => SaveRequested?.Invoke();
+			GetNode<Button>( "BottomContainer/ButtonContainer/ResetButton" ).Pressed += () => ResetRequested?.Invoke();
 		}
 	};
 };

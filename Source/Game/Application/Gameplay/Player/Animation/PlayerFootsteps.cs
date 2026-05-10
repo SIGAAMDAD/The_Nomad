@@ -26,13 +26,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
-	
+
 	PlayerFootsteps
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerFootsteps : NomadBehaviour
@@ -53,7 +53,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnInit()
 		{
@@ -77,7 +77,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			};
 
 			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
-			legAnimation.Animation += OnLegAnimationLooped;
+			legAnimation.AnimationLooped += OnLegAnimationLooped;
 
 			var movementController = _prefab.GetComponent<PlayerMovementController>();
 			movementController.MovementChanged.Subscribe( OnMovementChanged );
@@ -94,7 +94,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnShutdown()
 		{
@@ -113,7 +113,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnMovementChanged( in PlayerMovementChangedEventArgs args )
@@ -127,7 +127,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		private void OnLegAnimationLooped()
 		{

@@ -13,33 +13,68 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Events.Entity;
 
 namespace Nomad.Game.Application.Gameplay.Entity
 {
+	/*
+	===================================================================================
+
+	EntityBase
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal abstract class EntityBase
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		public IGameEvent<EntityDieEventArgs> EntityDie => _entityDie;
-		private readonly IGameEvent<EntityDieEventArgs> _entityDie = default;
+		public IGameEvent<EntityDieEventArgs> EntityDie => _die;
+		private readonly IGameEvent<EntityDieEventArgs> _die = default;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => _entityTakeDamage;
-		private readonly IGameEvent<EntityTakeDamageEventArgs> _entityTakeDamage = default;
+		[EventPayload( "Source", typeof( DamageSource ), Order = 1 )]
+		[EventPayload( "Amount", typeof( float ), Order = 2 )]
+		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => _takeDamage;
+		private readonly IGameEvent<EntityTakeDamageEventArgs> _takeDamage = default;
 
-		public EntityBase( IGameEventRegistryService eventFactory )
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		[EventPayload( "EffectId", typeof( InternString ) )]
+		public IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect => _applyStatusEffect;
+		private readonly IGameEvent<EntityApplyStatusEffectEventArgs> _applyStatusEffect = default;
+
+		public Guid Guid => guid;
+		protected readonly Guid guid;
+
+		public EntityBase( Guid guid, IGameEventRegistryService eventFactory )
 		{
-			_entityDie = eventFactory
+			ArgumentGuard.ThrowIfNull( eventFactory );
+
+			this.guid = guid;
+
+			_die = eventFactory
 				.GetEvent<EntityDieEventArgs>(
 					EntityDieEventArgs.Name,
 					EntityDieEventArgs.NameSpace
 				);
 
-			_entityTakeDamage = eventFactory
+			_takeDamage = eventFactory
 				.GetEvent<EntityTakeDamageEventArgs>(
 					EntityTakeDamageEventArgs.Name,
 					EntityTakeDamageEventArgs.NameSpace
+				);
+
+			_applyStatusEffect = eventFactory
+				.GetEvent<EntityApplyStatusEffectEventArgs>(
+					EntityApplyStatusEffectEventArgs.Name,
+					EntityApplyStatusEffectEventArgs.NameSpace
 				);
 		}
 	};

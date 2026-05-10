@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dy3we64uds61v"]
 
-[ext_resource type="Script" uid="uid://c2asalysino52" path="res://Source/Game/Application/ApplicationBootstrapper.cs" id="1_7somw"]
+[ext_resource type="Script" uid="uid://cta1e3desy0ki" path="res://Source/Game/Application/ApplicationBootstrapper.cs" id="1_7somw"]
 [ext_resource type="PackedScene" uid="uid://ctprgbdliiw5t" path="res://Assets/Prefabs/PostProcessing/PostProcessing.tscn" id="2_dy48w"]
 
 [node name="ApplicationBootstrapper" type="AspectRatioContainer" unique_id=1946506973]
@@ -24,7 +24,7 @@ mouse_target = true
 
 [node name="PostProcessing" type="SubViewport" parent="PostProcessingContainer" unique_id=1674784600]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(800, 400)
 size_2d_override = Vector2i(800, 600)
 size_2d_override_stretch = true
 render_target_update_mode = 4

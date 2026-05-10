@@ -54,10 +54,10 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		{
 			_musicService = ServiceLocator.GetService<IMusicService>();
 
-			FindChild<EngineButton>( "StandardModeButton" ).Clicked.Subscribe( OnEasyDifficultySelected );
-			FindChild<EngineButton>( "HardModeButton" ).Clicked.Subscribe( OnHardDifficultySelected );
-			FindChild<EngineButton>( "CustomModeButton" ).Clicked.Subscribe( OnCustomDifficultySelected );
-			FindChild<EngineButton>( "BackButton" ).Clicked.Subscribe( OnBackButtonPressed );
+			GetNode<Button>( "StandardModeButton" ).Pressed += OnEasyDifficultySelected;
+			GetNode<Button>( "HardModeButton" ).Pressed += OnHardDifficultySelected;
+			GetNode<Button>( "CustomModeButton" ).Pressed += OnCustomDifficultySelected;
+			GetNode<Button>( "BackButton" ).Pressed += OnBackButtonPressed;
 
 			_material = Material as ShaderMaterial;
 		}
@@ -70,8 +70,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnCustomDifficultySelected( in EmptyEventArgs args )
+		private void OnCustomDifficultySelected()
 		{
 			Visible = false;
 		}
@@ -84,13 +83,15 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnEasyDifficultySelected( in EmptyEventArgs args )
+		private void OnEasyDifficultySelected()
 		{
 			_musicService.StopTheme( true );
 
 			GameEventRegistry
-				.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace )
+				.GetEvent<WorldBootstrapRequestEventArgs>(
+					WorldBootstrapRequestEventArgs.Name,
+					WorldBootstrapRequestEventArgs.NameSpace
+				)
 				.Publish( new WorldBootstrapRequestEventArgs(
 					requestId: Guid.NewGuid(),
 					mode: WorldBootstrapMode.SinglePlayerNewGame,
@@ -108,8 +109,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnHardDifficultySelected( in EmptyEventArgs args )
+		private void OnHardDifficultySelected()
 		{
 			_musicService.StopTheme( true );
 
@@ -135,11 +135,13 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args )
+		private void OnBackButtonPressed()
 		{
 			GameEventRegistry
-				.GetEvent<MenuTransitionRequestedEventArgs>( MenuTransitionRequestedEventArgs.Name, MenuTransitionRequestedEventArgs.NameSpace )
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
 				.Publish( new MenuTransitionRequestedEventArgs( MenuState.NewGame, MenuState.Main ) );
 		}
 	};

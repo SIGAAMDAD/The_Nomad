@@ -13,28 +13,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using System;
+using Nomad.Core.OnlineServices;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Application.Multiplayer
 {
-	/*
-	===================================================================================
-
-	MultiplayerMenu
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	public partial class MultiplayerMenu : Control
+	internal sealed class PacketWriter<PacketType>
+		where PacketType : struct
 	{
-		public override void _Ready()
-		{
-			base._Ready();
+		private readonly INetworkSessionService _networkService;
 
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
+		public PacketWriter( INetworkSessionService networkService )
+		{
+			_networkService = networkService ?? throw new ArgumentNullException( nameof( networkService ) );
 		}
 	};
 };

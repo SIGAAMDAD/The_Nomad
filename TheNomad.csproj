@@ -23,15 +23,12 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Godot.NET.Sdk" Version="4.6.2" />
-    <PackageReference Include="Godot.SourceGenerators" Version="4.6.2" />
-    <PackageReference Include="GodotSharp" Version="4.6.2" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Assets/Mods/**" />
     <Compile Remove="TheNomad.Tests/**" />
     <Compile Remove="Source/NomadFramework/**" />
     <Compile Remove="android/build/**/*.cs" />
+    <Compile Remove="**/bin/**/*.cs" />
+    <Compile Remove="**/obj/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <!-- Ensures the source generation works correctly -->

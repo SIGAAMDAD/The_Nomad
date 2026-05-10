@@ -17,13 +17,19 @@ using System;
 
 namespace Nomad.Game.Domain.Data.Gameplay
 {
+	/// <summary>
+	///
+	/// </summary>
 	public readonly struct DamageResult
 	{
+		/// <summary>
+		/// Not null if we hit another entity
+		/// </summary>
 		public Guid? Hit { get; }
-		public float Amount { get; }
-		public bool Success { get; }
 
-		public DamageResult( Guid? hit, float amount, bool success )
+		public float Amount { get; }
+
+		public DamageResult( Guid? hit, float amount )
 		{
 			Hit = hit;
 			Amount = amount;

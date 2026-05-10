@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://b6dwqm35gxe77"]
 
-[ext_resource type="Script" uid="uid://cjhhdlqpqg424" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
+[ext_resource type="Script" uid="uid://cmdqb5swirceo" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
 [ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
-[ext_resource type="Script" uid="uid://2ekqwjvbn4g" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="2_ey12s"]
+[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.cs" id="2_ey12s"]
 [ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_se010"]
-[ext_resource type="Script" uid="uid://ds1o6nxcjh10v" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Input.cs" id="6_jkvmf"]
-[ext_resource type="Script" uid="uid://wxxt76t1up6m" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Value.cs" id="7_jkvmf"]
+[ext_resource type="Script" uid="uid://bymta1giek5h5" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Input.cs" id="6_jkvmf"]
+[ext_resource type="Script" uid="uid://wt20slxx6rh0" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/Value.cs" id="7_jkvmf"]
 
 [node name="SliderOption" type="HBoxContainer" unique_id=233075417]
 use_parent_material = true

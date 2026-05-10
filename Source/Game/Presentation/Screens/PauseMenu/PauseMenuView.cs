@@ -16,18 +16,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.UI;
+using Godot;
 
 namespace Nomad.Game.Presentation.Screens.PauseMenu
 {
 	/*
 	===================================================================================
-	
+
 	PauseMenuView
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed partial class PauseMenuView : EnginePresentationLayer
@@ -46,7 +47,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="visibility"></param>
 		public void SetVisibility( bool visibility )
@@ -60,7 +61,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void OnInit()
 		{
@@ -68,11 +69,11 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 
 			_presenter = PauseMenuFactory.Create( this );
 
-			FindChild<EngineButton>( "OptionsContainer/ResumeGameButton" ).Clicked.Subscribe( OnResumeGame );
-			FindChild<EngineButton>( "OptionsContainer/LoadGameButton" ).Clicked.Subscribe( OnLoadGame );
-			FindChild<EngineButton>( "OptionsContainer/SettingsButton" ).Clicked.Subscribe( OnSettingsMenu );
-			FindChild<EngineButton>( "OptionsContainer/ExitWorldButton" ).Clicked.Subscribe( OnQuitToMainMenu );
-			FindChild<EngineButton>( "OptionsContainer/QuitGameButton" ).Clicked.Subscribe( OnQuitGame );
+			GetNode<Button>( "OptionsContainer/ResumeGameButton" ).Pressed += OnResumeGame;
+			GetNode<Button>( "OptionsContainer/LoadGameButton" ).Pressed += OnLoadGame;
+			GetNode<Button>( "OptionsContainer/SettingsButton" ).Pressed += OnSettingsMenu;
+			GetNode<Button>( "OptionsContainer/ExitWorldButton" ).Pressed += OnQuitToMainMenu;
+			GetNode<Button>( "OptionsContainer/QuitGameButton" ).Pressed += OnQuitGame;
 		}
 
 		/*
@@ -81,7 +82,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void OnShutdown()
 		{
@@ -97,10 +98,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnResumeGame( in EmptyEventArgs args )
+		private void OnResumeGame()
 		{
 			Resume?.Invoke();
 		}
@@ -111,10 +111,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnLoadGame( in EmptyEventArgs args )
+		private void OnLoadGame()
 		{
 			LoadGame?.Invoke();
 		}
@@ -125,10 +124,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnSettingsMenu( in EmptyEventArgs args )
+		private void OnSettingsMenu()
 		{
 			SettingsMenu?.Invoke();
 		}
@@ -139,10 +137,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnQuitToMainMenu( in EmptyEventArgs args )
+		private void OnQuitToMainMenu()
 		{
 			QuitToMainMenu?.Invoke();
 		}
@@ -153,10 +150,9 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnQuitGame( in EmptyEventArgs args )
+		private void OnQuitGame()
 		{
 			QuitGame?.Invoke();
 		}

@@ -13,28 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using Nomad.Core.Util;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Domain.Data.Entities
 {
-	/*
-	===================================================================================
-
-	MultiplayerMenu
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	public partial class MultiplayerMenu : Control
+	public sealed record StatusEffectDefinition
 	{
-		public override void _Ready()
-		{
-			base._Ready();
-
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
-		}
+		public InternString Id { get; init; }
+		public float Duration { get; init; }
+		public StatusEffectDurationPolicy DurationPolicy { get; init; }
+		public StatusEffectStackingPolicy StackingPolicy { get; init; }
 	};
 };

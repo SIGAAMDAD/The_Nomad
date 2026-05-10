@@ -13,11 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.UI;
 using Nomad.Core.Events;
-using Nomad.Core.Util;
-using Nomad.UI;
 using Nomad.Events.Globals;
+using Godot;
 using System;
 using System.Collections.Generic;
 using Nomad.Game.Domain.Events.UI;
@@ -43,7 +41,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList
 		}
 		private int _value;
 
-		private EngineText _valueLabel;
+		private Label _valueLabel;
 
 		public IReadOnlyList<string> Values => _items;
 		private IReadOnlyList<string> _items;
@@ -108,13 +106,13 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList
 		/// </summary>
 		protected override void OnInit()
 		{
-			EngineText title = FindChild<EngineText>( "Title" );
+			Label title = GetNode<Label>( "Title" );
 			title.Text = Title;
 
-			FindChild<EngineButton>( "LeftIcon" ).Clicked.Subscribe( OnPrevToggle );
-			FindChild<EngineButton>( "RightIcon" ).Clicked.Subscribe( OnNextToggle );
+			GetNode<Button>( "LeftIcon" ).Pressed += OnPrevToggle;
+			GetNode<Button>( "RightIcon" ).Pressed += OnNextToggle;
 
-			_valueLabel = FindChild<EngineText>( "Value" );
+			_valueLabel = GetNode<Label>( "Value" );
 		}
 
 		/*
@@ -125,7 +123,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList
 		/// <summary>
 		///
 		/// </summary>
-		private void OnPrevToggle( in EmptyEventArgs args )
+		private void OnPrevToggle()
 		{
 			if ( _items == null ) {
 				return;
@@ -146,7 +144,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionList
 		/// <summary>
 		///
 		/// </summary>
-		private void OnNextToggle( in EmptyEventArgs args )
+		private void OnNextToggle()
 		{
 			if ( _items == null ) {
 				return;

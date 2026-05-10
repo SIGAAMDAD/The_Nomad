@@ -28,13 +28,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
-	
+
 	PlayerAnimator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal abstract class PlayerAnimator : NomadBehaviour
@@ -57,7 +57,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnInit()
 		{
@@ -69,7 +69,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{PlayerMovementChangedEventArgs.Name}", PlayerMovementChangedEventArgs.NameSpace )
+				.GetEvent<PlayerMovementChangedEventArgs>(
+					$"{Id}:{PlayerMovementChangedEventArgs.Name}",
+					PlayerMovementChangedEventArgs.NameSpace
+				)
 				.Subscribe( OnPlayerMovementChanged );
 		}
 
@@ -79,7 +82,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		public override void OnUpdate( float delta )
@@ -95,7 +98,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flip"></param>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
@@ -105,7 +108,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		protected abstract void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args );

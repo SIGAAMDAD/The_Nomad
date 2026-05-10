@@ -23,13 +23,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
-	
+
 	PlayerAnimationCoordinator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerAnimationCoordinator
@@ -42,8 +42,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		private readonly PlayerLegAnimator _legAnimator;
 		private readonly PlayerFootsteps _footsteps;
 
-		private readonly PlayerHandAnimator _leftHandAnimator;
-		private readonly PlayerHandAnimator _rightHandAnimator;
+		private readonly PlayerLeftHandAnimator _leftHandAnimator;
+		private readonly PlayerRightHandAnimator _rightHandAnimator;
 
 		/*
 		===============
@@ -51,7 +51,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="prefab"></param>
@@ -68,10 +68,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			} );
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
 
-			_leftHandAnimator = prefab.AddComponent<PlayerHandAnimator>( comp => {
+			_leftHandAnimator = prefab.AddComponent<PlayerLeftHandAnimator>( comp => {
 				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmAnimations.tres" );
 			} );
-			_rightHandAnimator = prefab.AddComponent<PlayerHandAnimator>( comp => {
+			_rightHandAnimator = prefab.AddComponent<PlayerRightHandAnimator>( comp => {
 				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmAnimations.tres" );
 			} );
 		}

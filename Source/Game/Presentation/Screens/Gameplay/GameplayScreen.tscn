@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://clu1gshn54ujf"]
 
-[ext_resource type="Script" uid="uid://8ahxi4ti0u6x" path="res://Source/Game/Presentation/Screens/Gameplay/GameplayScreen.cs" id="1_4o5g5"]
+[ext_resource type="Script" uid="uid://cdfu13e6rtr" path="res://Source/Game/Presentation/Screens/Gameplay/GameplayScreen.cs" id="1_4o5g5"]
 [ext_resource type="PackedScene" uid="uid://c6mafucos8cwk" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplay.tscn" id="2_pf7j4"]
 
 [node name="GameplayScreen" type="CanvasLayer" unique_id=1256565877]

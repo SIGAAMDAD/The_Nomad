@@ -13,23 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
-using Nomad.UI;
+using Godot;
 
-namespace Game.Infrastructure.UI.Nodes.Label
+namespace Game.Infrastructure.UI.Nodes.NomadLabel
 {
 	/*
 	===================================================================================
 
 	NomadLabel
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class NomadLabel : EngineText
+	public partial class NomadLabel : Label
 	{
 		public bool IsFocused => _isFocused;
 		private bool _isFocused = false;
@@ -40,10 +39,9 @@ namespace Game.Infrastructure.UI.Nodes.Label
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		public void OnFocused( in EmptyEventArgs args )
+		public void OnFocused()
 		{
 			_isFocused = true;
 		}
@@ -54,26 +52,19 @@ namespace Game.Infrastructure.UI.Nodes.Label
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		public void OnUnfocused( in EmptyEventArgs args )
+		public void OnUnfocused()
 		{
 			_isFocused = false;
 		}
 
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			Focused.Subscribe( OnFocused );
-			Unfocused.Subscribe( OnUnfocused );
+			base._Ready();
+
+			FocusEntered += OnFocused;
+			FocusExited += OnUnfocused;
 		}
 	};
 };

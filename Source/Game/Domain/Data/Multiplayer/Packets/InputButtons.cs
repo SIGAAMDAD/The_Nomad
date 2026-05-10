@@ -13,28 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Domain.Data.Multiplayer.Packets
 {
-	/*
-	===================================================================================
-
-	MultiplayerMenu
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	public partial class MultiplayerMenu : Control
+	public enum InputButtons : uint
 	{
-		public override void _Ready()
-		{
-			base._Ready();
+		None = 0,
 
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
-		}
+		Fire = 1 << 0,
+		AltFire = 1 << 1,
+		Melee = 1 << 2,
+		Parry = 1 << 3,
+		Dash = 1 << 4,
+		Slide = 1 << 5,
+		Interact = 1 << 6,
+		Reload = 1 << 7,
+		SwapWeapon = 1 << 8,
+		UseMetalArm = 1 << 9,
+		BulletTime = 1 << 10,
+		Crouch = 1 << 11
 	};
 };

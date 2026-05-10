@@ -13,12 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.UI;
-using Nomad.UI;
-using Nomad.Core.Events;
-using Nomad.Core.Util;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Events.UI;
+using Godot;
+using Nomad.Core.Events;
 
 namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 {
@@ -40,7 +38,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 			set {
 				_min = value;
 				if ( _slider != null ) {
-					_slider.Minimum = _min;
+					_slider.MinValue = _min;
 				}
 			}
 		}
@@ -51,7 +49,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 			set {
 				_max = value;
 				if ( _slider != null ) {
-					_slider.Maximum = _max;
+					_slider.MaxValue = _max;
 				}
 			}
 		}
@@ -62,8 +60,8 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 			set => SetValue( value );
 		}
 
-		private EngineHorizontalSlider _slider;
-		private EngineText _valueLabel;
+		private HSlider _slider;
+		private Label _valueLabel;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionSliderValueChangedEventArgs" )]
 		[EventPayload( "Value", typeof( float ) )]
@@ -89,21 +87,21 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 		/// </summary>
 		protected override void OnInit()
 		{
-			EngineText title = FindChild<EngineText>( "Title" );
+			Label title = GetNode<Label>( "Title" );
 			title.Text = Title;
 
-			_slider = FindChild<EngineHorizontalSlider>( "Input" );
-			_slider.Minimum = _min;
-			_slider.Maximum = _max;
-			_slider.ValueSet.Subscribe( OnValueChanged );
+			_slider = GetNode<HSlider>( "Input" );
+			_slider.MinValue = _min;
+			_slider.MaxValue = _max;
+			_slider.ValueChanged += OnValueChanged;
 
-			_valueLabel = _slider.FindChild<EngineText>( "Value" );
+			_valueLabel = _slider.GetNode<Label>( "Value" );
 
-			var leftButton = FindChild<EngineButton>( "LeftIcon" );
-			leftButton.Clicked.Subscribe( OnToggleLeft );
+			var leftButton = GetNode<Button>( "LeftIcon" );
+			leftButton.Pressed += OnToggleLeft;
 
-			var rightButton = FindChild<EngineButton>( "RightIcon" );
-			rightButton.Clicked.Subscribe( OnToggleRight );
+			var rightButton = GetNode<Button>( "RightIcon" );
+			rightButton.Pressed += OnToggleRight;
 		}
 
 		/*
@@ -130,10 +128,11 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnValueChanged( in float args )
+		private void OnValueChanged( double args )
 		{
-			SetValue( args );
-			_valueChanged.Publish( new OptionSliderValueChangedEventArgs( args ) );
+			float value = (float)args;
+			SetValue( value );
+			_valueChanged.Publish( new OptionSliderValueChangedEventArgs( value ) );
 		}
 
 		/*
@@ -144,8 +143,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnToggleLeft( in EmptyEventArgs args )
+		private void OnToggleLeft()
 		{
 			OnValueChanged( (float)_slider.Value - 1.0f );
 		}
@@ -158,8 +156,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnToggleRight( in EmptyEventArgs args )
+		private void OnToggleRight()
 		{
 			OnValueChanged( (float)_slider.Value + 1.0f );
 		}
