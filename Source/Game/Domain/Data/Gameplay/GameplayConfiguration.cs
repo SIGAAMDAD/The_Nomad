@@ -18,9 +18,9 @@ using Nomad.Game.Application.Configuration.Enums.Gameplay;
 namespace Nomad.Game.Domain.Data.Gameplay
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	public record GameplayConfiguration
+	public sealed record GameplayConfiguration
 	{
 		public EnemyTacticalIntelligence EnemyTacticalIntelligence { get; init; }
 		public ContractPayoutScaling ContractPayoutScaling { get; init; }

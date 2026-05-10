@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c5rjepxbbn8hu"]
 
-[ext_resource type="Shader" uid="uid://ck56nq0jgwy7f" path="res://Assets/Shaders/MenuFade.gdshader" id="1_ekkg8"]
+[ext_resource type="Shader" uid="uid://dxjv16nnkg0c" path="res://Assets/Shaders/MenuFade.gdshader" id="1_ekkg8"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
 frequency = 0.51

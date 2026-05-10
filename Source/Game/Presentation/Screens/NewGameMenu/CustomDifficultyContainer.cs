@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Core.Events;
 using Nomad.UI;
 
@@ -20,21 +21,20 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 {
 	/*
 	===================================================================================
-	
+
 	CustomDifficultyContainer
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	public partial class CustomDifficultyContainer : EnginePanel
 	{
 		protected override void OnInit()
 		{
-			FindChild<EngineButton>( "VBoxContainer/CustomButtonContainer/BackButton" ).Clicked
-				.Subscribe( OnBackButtonPressed );
+			GetNode<Button>( "VBoxContainer/CustomButtonContainer/BackButton" ).Pressed += OnBackButtonPressed;
 		}
 
 		/*
@@ -43,10 +43,9 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnBackButtonPressed( in EmptyEventArgs args )
+		private void OnBackButtonPressed()
 		{
 			Visible = false;
 		}

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://biki41o0xqxfx"]
 
-[ext_resource type="Script" uid="uid://b80ew46wkbw5d" path="res://Source/Game/Presentation/Screens/LoadGameMenu/LoadGameMenuView.cs" id="1_visox"]
+[ext_resource type="Script" uid="uid://bc6yrt6d3cc1v" path="res://Source/Game/Presentation/Screens/LoadGameMenu/LoadGameMenuView.cs" id="1_visox"]
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_w2u1f"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_oam2l"]
 

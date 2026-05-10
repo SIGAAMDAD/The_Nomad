@@ -14,10 +14,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Entities;
 
 namespace Nomad.Game.Application.Gameplay.Entity
 {
+	/*
+	===================================================================================
+
+	StatusEffectCollection
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class StatusEffectCollection
 	{
+		private readonly Dictionary<InternString, StatusEffectInstance> _effects = new();
+		private readonly ISubscriptionHandle _applyStatusEffect;
+
+		public StatusEffectCollection( IGameEventRegistryService eventFactory )
+		{
+		}
 	};
 };

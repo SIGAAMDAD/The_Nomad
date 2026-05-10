@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ctp6hjx2ic3hn"]
 
-[ext_resource type="Script" uid="uid://lhaco2s50cip" path="res://Assets/Prefabs/SingleWorld/SingleWorld.cs" id="1_gohso"]
+[ext_resource type="Script" uid="uid://cjfhepllsjf3u" path="res://Assets/Prefabs/SingleWorld/SingleWorld.cs" id="1_gohso"]
 [ext_resource type="PackedScene" uid="uid://cg1t4dmstlusg" path="res://Assets/Prefabs/Regions/SaltWastes.tscn" id="2_xaw48"]
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_xaw48"]
 

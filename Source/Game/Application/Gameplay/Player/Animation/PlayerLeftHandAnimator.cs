@@ -13,14 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Events.Player;
+using Nomad.Events.Globals;
 using Godot;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
 
-	MultiplayerMenu
+	PlayerLeftHandAnimator
 
 	===================================================================================
 	*/
@@ -28,13 +31,20 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 	///
 	/// </summary>
 
-	public partial class MultiplayerMenu : Control
+	internal sealed class PlayerLeftHandAnimator : PlayerHandAnimator
 	{
-		public override void _Ready()
+		/*
+		===============
+		OnPlayerMovementChanged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
 		{
-			base._Ready();
-
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
+			base.OnPlayerMovementChanged( args );
 		}
 	};
 };

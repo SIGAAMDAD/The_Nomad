@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://e1p1ssxifsma"]
 
-[ext_resource type="Shader" uid="uid://wcq5xpsak3yj" path="res://Assets/Prefabs/PostProcessing/GammaCorrection/GammeCorrection.gdshader" id="1_vmfbt"]
+[ext_resource type="Shader" uid="uid://ch27e82tob8xw" path="res://Assets/Prefabs/PostProcessing/GammaCorrection/GammeCorrection.gdshader" id="1_vmfbt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vmfbt"]
 shader = ExtResource("1_vmfbt")

@@ -1,7 +1,7 @@
 /*
 ===========================================================================
-The Nomad MPLv2 Source Code
-Copyright (C) 2025-2026 Noah Van Til
+The Nomad Framework
+Copyright (C) 2025 Noah Van Til
 
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v2. If a copy of the MPL was not distributed with this
@@ -13,28 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using Nomad.EngineUtils;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Application.Multiplayer.Gameplay
 {
-	/*
-	===================================================================================
-
-	MultiplayerMenu
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	public partial class MultiplayerMenu : Control
+	internal sealed class NetworkMovement : NomadBehaviour
 	{
-		public override void _Ready()
-		{
-			base._Ready();
 
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
-		}
 	};
 };

@@ -13,17 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
 using Nomad.Core.Events;
-using Nomad.Events.Globals;
+using Nomad.Scene.GameObjects;
 using Nomad.Game.Domain.Events.Player;
+using Nomad.Events.Globals;
+using Godot;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
 
-	PlayerHandAnimator
+	PlayerRightHandAnimator
 
 	===================================================================================
 	*/
@@ -31,7 +32,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 	///
 	/// </summary>
 
-	internal abstract class PlayerHandAnimator : PlayerAnimator
+	internal sealed class PlayerRightHandAnimator : PlayerAnimator
 	{
 		public SpriteFrames Frames { get; set; }
 
@@ -40,13 +41,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 		/*
 		===============
-		PlayerHandAnimator
+		PlayerRightHandAnimator
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		public PlayerHandAnimator()
+		public PlayerRightHandAnimator()
 		{
 			var eventFactory = GameEventRegistry.Instance;
 
@@ -69,7 +70,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		{
 			base.OnInit();
 
-			animator = prefab.GetNode<AnimatedSprite2D>( "Animator" );
+			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
 			animator.SpriteFrames = Frames;
 		}
 

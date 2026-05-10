@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b2gnqlt8pqd2u"]
 
 [ext_resource type="Script" uid="uid://ch5rlnf1ehti0" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.cs" id="1_rv5q0"]
-[ext_resource type="Shader" uid="uid://cr7jp1p1bxogq" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.gdshader" id="2_i25kx"]
+[ext_resource type="Shader" uid="uid://bo2wdwwx7uyfh" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.gdshader" id="2_i25kx"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_mvx2s"]
 
 [sub_resource type="Gradient" id="Gradient_i25kx"]

@@ -14,24 +14,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Numerics;
+using Godot;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.Scene.GameObjects;
+using Vector2 = System.Numerics.Vector2;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
-	
+
 	PlayerLegAnimator
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerLegAnimator : PlayerAnimator
@@ -43,13 +43,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		private Vector2 _lastVelocity = Vector2.Zero;
 		private bool _isBackpedaling = false;
 
-		private Godot.GpuParticles2D _dustPuff;
+		private GpuParticles2D _dustPuff;
 
 		public PlayerLegAnimator()
 		{
 			var eventFactory = GameEventRegistry.Instance;
 
-			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>( $"Leg:{Id}:{PlayerAnimationStateChangedEventArgs.Name}", PlayerAnimationStateChangedEventArgs.NameSpace );
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>(
+				$"Leg:{Id}:{PlayerAnimationStateChangedEventArgs.Name}",
+				PlayerAnimationStateChangedEventArgs.NameSpace
+			);
 		}
 
 		/*
@@ -58,16 +61,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnInit()
 		{
 			base.OnInit();
 
-			animator = prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
+			animator = prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
 			animator.AnimationLooped += OnLooped;
 
-			_dustPuff = animator.GetNode<Godot.GpuParticles2D>( "DustPuff" );
+			_dustPuff = animator.GetNode<GpuParticles2D>( "DustPuff" );
 		}
 
 		/*
@@ -76,7 +79,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnLooped()
@@ -92,7 +95,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )

@@ -15,8 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Domain.Data.Entities
 {
-	public sealed class StatusEffectActionContext
+	public enum DamageSource : byte
 	{
-
+		Entity,
+		Environmental
 	};
 };
