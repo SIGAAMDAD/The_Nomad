@@ -13,16 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Entities;
-
-namespace Nomad.Game.Domain.Interfaces.Player
+namespace Nomad.Game.Domain.Data.Multiplayer
 {
-	public interface IStatusEffectDefinition
+	public enum ClientState : byte
 	{
-		string Id { get; }
-		string DisplayName { get; }
+		/// <summary>
+		/// Currently in a lobby waiting room.
+		/// </summary>
+		Waiting,
 
-		StatusEffectDurationPolicy DurationPolicy { get; }
-		StatusEffectStackingPolicy StackingPolicy { get; }
+		/// <summary>
+		/// Ready for the game round to start.
+		/// </summary>
+		Ready,
+
+		/// <summary>
+		/// Currently in a game.
+		/// </summary>
+		InGame,
 	};
 };

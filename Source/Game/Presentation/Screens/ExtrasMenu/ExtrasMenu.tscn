@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://l7k7jon212yb"]
 
-[ext_resource type="Script" uid="uid://cjr12awbffdp6" path="res://Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.cs" id="1_7nf3k"]
+[ext_resource type="Script" path="res://Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.cs" id="1_7nf3k"]
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_omgvv"]
 [ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_0r0jo"]
-[ext_resource type="Script" uid="uid://bp0g60owcsy52" path="res://Source/Game/Presentation/Screens/ExtrasMenu/OptionsContainer.cs" id="2_f13g6"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="2_ybbbd"]
 [ext_resource type="PackedScene" uid="uid://ca65in2437vw6" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenu.tscn" id="4_0r0jo"]
 
@@ -21,18 +20,18 @@ metadata/_edit_use_anchors_ = true
 [node name="OptionsContainer" type="VBoxContainer" parent="." unique_id=1209745133]
 use_parent_material = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 4.0
+anchors_preset = -1
+anchor_left = 0.349
+anchor_top = 0.35700002
+anchor_right = 0.651
+anchor_bottom = 0.642
+offset_left = 116.79999
+offset_top = 81.79999
+offset_right = -116.80005
+offset_bottom = -81.20001
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_f13g6")
+metadata/_edit_use_anchors_ = true
 
 [node name="Title" parent="OptionsContainer" unique_id=1178157066 instance=ExtResource("2_0r0jo")]
 layout_mode = 2

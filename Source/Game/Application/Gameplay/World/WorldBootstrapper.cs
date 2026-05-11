@@ -17,6 +17,7 @@ using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Networking.Session;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;

@@ -14,23 +14,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
+using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
-using Nomad.Game.Domain.Events.Multiplayer;
 
-namespace Nomad.Game.Domain.Interfaces.Multiplayer
+namespace Nomad.Game.Application.Multiplayer
 {
-	public interface ICaptureTheFlagMode : IDisposable
+	internal sealed class TeamService
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "CapturerId", typeof( PeerId ) )]
-		IGameEvent<FlagCapturedEventArgs> FlagCaptured { get; }
+		private readonly Dictionary<Guid, Team> _teams = new();
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "ReturnerId", typeof( PeerId ) )]
-		IGameEvent<FlagReturnedEventArgs> FlagReturned { get; }
-
-		CaptureTheFlagInstanceData Snapshot { get; }
+		public Guid AddTeam()
+		{
+			var guid = Guid.NewGuid();
+			_teams[guid] = new Team();
+			return guid;
+		}
 	};
 };

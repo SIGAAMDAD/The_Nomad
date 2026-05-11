@@ -13,48 +13,43 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Multiplayer
+using Nomad.Core.Util;
+
+namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	public enum Mode : byte
+	/// <summary>
+	///
+	/// </summary>
+	public sealed record GameModeDefinition
 	{
 		/// <summary>
-		/// "Bloodbath" mode.
+		///
 		/// </summary>
-		Deathmatch,
+		public InternString Id { get; init; }
 
 		/// <summary>
 		///
 		/// </summary>
-		TeamDeathmatch,
+		public InternString DisplayName { get; init; }
 
 		/// <summary>
 		///
 		/// </summary>
-		KingOfTheHill,
+		public InternString Description { get; init; }
+
+		/// <summary>
+		/// The minimum required players in a lobby to start the game.
+		/// </summary>
+		public int MinPlayers { get; init; }
+
+		/// <summary>
+		/// The maximum amount of players allowed in the lobby for this gamemode.
+		/// </summary>
+		public int MaxPlayers { get; init; }
 
 		/// <summary>
 		///
 		/// </summary>
-		CaptureTheFlag,
-
-		/// <summary>
-		///
-		/// </summary>
-		BountyHunt,
-
-		/// <summary>
-		///
-		/// </summary>
-		HoldTheLine,
-
-		/// <summary>
-		///
-		/// </summary>
-		SplinterCell,
-
-		/// <summary>
-		///
-		/// </summary>
-		Duel
+		public Mode Mode { get; init; }
 	};
 };

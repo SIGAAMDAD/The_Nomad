@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dyh47j7kg0hn8"]
 
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="1_1k57j"]
-[ext_resource type="Script" uid="uid://cgxp58iyecvy8" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/LobbyCreationMenuView.cs" id="1_1w28u"]
+[ext_resource type="Script" uid="uid://cgxp58iyecvy8" path="res://Source/Game/Presentation/Screens/LobbyCreationMenu/LobbyCreationMenuView.cs" id="1_1w28u"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_afgk1"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_5y6x8"]
 
@@ -59,7 +59,7 @@ layout_mode = 2
 size_flags_vertical = 8
 text = "UI_RESET"
 
-[node name="SaveButton" parent="MarginContainer/ButtonContainer" unique_id=1285668785 instance=ExtResource("3_5y6x8")]
+[node name="CreateButton" parent="MarginContainer/ButtonContainer" unique_id=1285668785 instance=ExtResource("3_5y6x8")]
 layout_mode = 2
 size_flags_vertical = 8
 text = "UI_MULTIPLAYER_CREATE_LOBBY"

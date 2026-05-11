@@ -13,39 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-using System;
-
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	/*
-	===================================================================================
-	
-	LobbyCreationMenuView
-	
-	===================================================================================
-	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-
-	public sealed partial class LobbyCreationMenuView : Control
+	public enum VoteReason : byte
 	{
-		public event Action Back;
-		public event Action CreateLobby;
-		public event Action Reset;
+		DecideMap,
+		DecideGameMode,
 
-		/*
-		===============
-		_Ready
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void _Ready()
-		{
-			base._Ready();
-		}
+		KickPlayer,
+		StartGame
 	};
 };

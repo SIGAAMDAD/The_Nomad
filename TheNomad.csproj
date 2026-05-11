@@ -48,6 +48,7 @@
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Save\Nomad.Save.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />
+    <ProjectReference Include="Source\NomadFramework\Source\Nomad.Networking\Nomad.Networking.csproj" />
   </ItemGroup>
 
   <ItemGroup>

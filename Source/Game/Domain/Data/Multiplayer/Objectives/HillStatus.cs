@@ -13,16 +13,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Entities;
-
-namespace Nomad.Game.Domain.Interfaces.Player
+namespace Nomad.Game.Application.Multiplayer.Objectives
 {
-	public interface IStatusEffectDefinition
+	/// <summary>
+	///
+	/// </summary>
+	public enum HillStatus : byte
 	{
-		string Id { get; }
-		string DisplayName { get; }
+		/// <summary>
+		/// The hill is currently not generating points for either team.
+		/// </summary>
+		Unclaimed,
 
-		StatusEffectDurationPolicy DurationPolicy { get; }
-		StatusEffectStackingPolicy StackingPolicy { get; }
+		/// <summary>
+		/// One team is holding the hill.
+		/// </summary>
+		Claimed,
+
+		/// <summary>
+		/// Two teams on the same hill.
+		/// </summary>
+		Contested
 	};
 };

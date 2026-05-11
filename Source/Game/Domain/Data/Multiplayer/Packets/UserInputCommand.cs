@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Domain.Data.Multiplayer.Packets
 {
-	public readonly struct UserCommandPacket
+	public readonly struct UserInputCommand
 	{
 		/// <summary>
 		/// Simulation time covered by this command.
@@ -47,7 +47,7 @@ namespace Nomad.Game.Domain.Data.Multiplayer.Packets
 
 		public readonly byte Impulse;
 
-		public UserCommandPacket(
+		public UserInputCommand(
 			byte msec,
 			sbyte moveX,
 			sbyte moveY,
