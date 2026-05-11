@@ -13,9 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Packets
+using System.Collections.Generic;
+using Nomad.Core.OnlineServices;
+
+namespace Nomad.Game.Domain.Data.Multiplayer.Modes
 {
-	public readonly struct DeathmatchModeState
+	public sealed record Team
 	{
+		public List<PeerId> Members { get; } = new();
 	};
 };

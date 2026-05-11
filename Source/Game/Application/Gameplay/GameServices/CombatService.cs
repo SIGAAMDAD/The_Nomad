@@ -44,11 +44,7 @@ namespace Nomad.Game.Application.Gameplay.GameServices
 		{
 			var weapon = _firearmCatalog.Get<FirearmDefinition>( args.WeaponId );
 			if ( weapon == null ) {
-				return new DamageResult(
-					null,
-					0.0f,
-					false
-				);
+				return new DamageResult();
 			}
 
 			return new DamageResult();

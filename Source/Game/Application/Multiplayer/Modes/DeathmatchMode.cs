@@ -15,9 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Networking.Session;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Networking.Rpc;
+using Nomad.Networking.Events;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
@@ -42,22 +45,9 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				throw new System.NotImplementedException();
 			}
 		}
-
-		public DeathmatchMode( INetworkSessionService networkService, IGameEventRegistryService eventFactory )
-			: base( networkService, eventFactory )
+		public DeathmatchMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
+			: base( sessionService, rpcBus, eventBus, eventFactory )
 		{
-		}
-
-		public void Dispose()
-		{
-		}
-
-		public override void Sync()
-		{
-			if ( networkService.IsHost ) {
-				// if we're the host, all logic is run on our local machine.
-				return;
-			}
 		}
 	};
 };

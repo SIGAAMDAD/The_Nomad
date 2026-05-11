@@ -13,23 +13,31 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
-using Nomad.Networking.Session;
+using System;
 using Nomad.Game.Application.Multiplayer.Modes;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Networking.Rpc;
-using Nomad.Networking.Events;
 
 namespace Nomad.Game.Application.Multiplayer
 {
-	internal sealed class CaptureTheFlagMode : ModeBase
-	{
-		public override string ModeName => "Capture The Flag";
-		public override Mode Mode => Mode.CaptureTheFlag;
+	/*
+	===================================================================================
 
-		public CaptureTheFlagMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+	NetworkGameSimulation
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class NetworkGameSimulation
+	{
+		private readonly ModeBase _modeData;
+		private readonly NetworkGameClock _clock;
+
+		public NetworkGameSimulation( ModeBase modeData )
 		{
+			_modeData = modeData ?? throw new ArgumentNullException( nameof( modeData ) );
+			_clock = new NetworkGameClock();
 		}
 	};
 };

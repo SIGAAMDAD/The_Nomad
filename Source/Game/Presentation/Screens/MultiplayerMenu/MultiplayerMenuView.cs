@@ -13,36 +13,45 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.UI;
-using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Core.FileSystem;
+using System;
+using Godot;
 
-namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu
+namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {
 	/*
 	===================================================================================
-	
-	DeveloperCommentaryMenu
-	
+
+	MultiplayerMenu
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class DeveloperCommentaryMenu : EnginePanel
+	public sealed partial class MultiplayerMenuView : Control
 	{
-		protected override void OnInit()
+		public event Action CreateLobby;
+		public event Action LobbyBrowser;
+		public event Action Matchmake;
+		public event Action Back;
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _Ready()
 		{
-			base.OnInit();
+			base._Ready();
 
-			var fileSystem = ServiceLocator.GetService<IFileSystem>();
-
-			fileSystem.AddSearchDirectory( "Assets/DeveloperCommentary" );
-			var files = fileSystem.GetFiles( "Assets/DeveloperCommentary", "*.json", true );
-			for ( int i = 0; i < files.Count; i++ ) {
-
-			}
+			GetNode<Button>( "OptionsContainer/CreateLobbyButton" ).Pressed += () => CreateLobby?.Invoke();
+			GetNode<Button>( "OptionsContainer/MatchmakeButton" ).Pressed += () => Matchmake?.Invoke();
+			GetNode<Button>( "OptionsContainer/LobbyBrowserButton" ).Pressed += () => LobbyBrowser?.Invoke();
+			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Back?.Invoke();
 		}
 	};
 };

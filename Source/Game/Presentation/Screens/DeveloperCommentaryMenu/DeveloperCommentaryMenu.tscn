@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cucn21ccc3ve6"]
 
-[ext_resource type="Script" uid="uid://frjax384cwnq" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DeveloperCommentaryMenu.cs" id="1_ndpkn"]
+[ext_resource type="Script" uid="uid://j88tmhbfw6kp" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DeveloperCommentaryMenuView.cs" id="1_ndpkn"]
 [ext_resource type="Script" uid="uid://b2ag43prb24is" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DataList.cs" id="2_xdcx2"]
 [ext_resource type="Script" uid="uid://cwvjq1nu1vl5" path="res://Source/Game/Presentation/Screens/DeveloperCommentaryMenu/DataContainer.cs" id="3_xdcx2"]
 

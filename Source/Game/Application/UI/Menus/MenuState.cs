@@ -21,8 +21,15 @@ namespace Nomad.Game.Application.UI.Menus
 		Main,
 		Loading,
 		Settings,
+
 		Extras,
-		Credits,
+
+		DeveloperCommentary,
+
+		Multiplayer,
+		LobbyBrowser,
+		CreateLobby,
+
 		NewGame,
 		LoadGame,
 

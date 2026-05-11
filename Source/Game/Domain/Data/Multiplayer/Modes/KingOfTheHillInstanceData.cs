@@ -13,16 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Entities;
-
-namespace Nomad.Game.Domain.Interfaces.Player
+namespace Nomad.Game.Domain.Data.Multiplayer.Modes
 {
-	public interface IStatusEffectDefinition
+	public readonly struct KingOfTheHillInstanceData
 	{
-		string Id { get; }
-		string DisplayName { get; }
-
-		StatusEffectDurationPolicy DurationPolicy { get; }
-		StatusEffectStackingPolicy StackingPolicy { get; }
+		public float RedTeamHoldTime { get; init; }
+		public float BlueTeamHoldTime { get; init; }
 	};
 };

@@ -13,24 +13,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
-using Nomad.Game.Domain.Events.Multiplayer;
 
-namespace Nomad.Game.Domain.Interfaces.Multiplayer
+namespace Nomad.Game.Application.Multiplayer.Lobby
 {
-	public interface ICaptureTheFlagMode : IDisposable
+	/*
+	===================================================================================
+
+	VoteMultiChoiceService
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class VoteMultiChoiceService : VoteService
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "CapturerId", typeof( PeerId ) )]
-		IGameEvent<FlagCapturedEventArgs> FlagCaptured { get; }
-
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "ReturnerId", typeof( PeerId ) )]
-		IGameEvent<FlagReturnedEventArgs> FlagReturned { get; }
-
-		CaptureTheFlagInstanceData Snapshot { get; }
+		public VoteMultiChoiceService( IGameEventRegistryService eventFactory )
+			: base( eventFactory )
+		{
+		}
 	};
 };

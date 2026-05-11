@@ -13,16 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Entities;
-
-namespace Nomad.Game.Domain.Interfaces.Player
+namespace Nomad.Game.Domain.Data.Multiplayer.Objectives
 {
-	public interface IStatusEffectDefinition
+	public enum FlagStatus : byte
 	{
-		string Id { get; }
-		string DisplayName { get; }
+		/// <summary>
+		/// At homebase, safe and sound.
+		/// </summary>
+		Home,
 
-		StatusEffectDurationPolicy DurationPolicy { get; }
-		StatusEffectStackingPolicy StackingPolicy { get; }
+		/// <summary>
+		/// The flag has been picked up by a player and is being carried.
+		/// </summary>
+		Taken,
+
+		/// <summary>
+		/// The flag has been dropped and is waiting to be returned to homebase.
+		/// </summary>
+		Unclaimed
 	};
 };

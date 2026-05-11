@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
@@ -21,16 +20,20 @@ using Nomad.Game.Domain.Events.Multiplayer;
 
 namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
-	public interface ICaptureTheFlagMode : IDisposable
+	public interface IDuelMode
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "CapturerId", typeof( PeerId ) )]
-		IGameEvent<FlagCapturedEventArgs> FlagCaptured { get; }
+		[EventPayload( "WinnerId", typeof( PeerId ), Order = 1 )]
+		[EventPayload( "LoserId", typeof( PeerId ), Order = 2 )]
+		[EventPayload( "WasTie", typeof( bool ), Order = 3 )]
+		IGameEvent<DuelRoundEndEventArgs> DuelRoundEnd { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "ReturnerId", typeof( PeerId ) )]
-		IGameEvent<FlagReturnedEventArgs> FlagReturned { get; }
+		IGameEvent<DuelRoundBeginEventArgs> DuelRoundBegin { get; }
 
-		CaptureTheFlagInstanceData Snapshot { get; }
+		DuelInstanceData Snapshot { get; }
+
+		bool TryBeginRound();
+		bool TryEndRound( PeerId winnerId, PeerId loserId, bool wasTie );
 	};
 };

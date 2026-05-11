@@ -13,28 +13,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
 
-namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
+using System;
+
+[AttributeUsage( AttributeTargets.Method, AllowMultiple = false )]
+public sealed class RpcMethodAttribute : Attribute
 {
-	/*
-	===================================================================================
+	public string Name { get; }
 
-	MultiplayerMenu
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	public partial class MultiplayerMenu : Control
+	public RpcMethodAttribute(string name)
 	{
-		public override void _Ready()
-		{
-			base._Ready();
+		Name = name;
+	}
+}
 
-			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Visible = false;
-		}
-	};
-};
+[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
+public sealed class RpcMethodPayloadAttribute : Attribute
+{
+	public string Name { get; }
+	public Type Type { get; }
+	public int Order { get; init; }
+
+	public RpcMethodPayloadAttribute(string name, Type type)
+	{
+		Name = name;
+		Type = type;
+	}
+}

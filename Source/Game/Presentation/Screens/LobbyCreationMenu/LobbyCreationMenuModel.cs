@@ -13,19 +13,40 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.OnlineServices;
 
-namespace Nomad.Game.Application.Multiplayer
+namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 {
-	internal sealed class PacketWriter<PacketType>
-		where PacketType : struct
+	internal sealed class LobbyCreationMenuModel
 	{
-		private readonly INetworkSessionService _networkService;
+		public LobbyCreateInfo Info { get; private set; }
 
-		public PacketWriter( INetworkSessionService networkService )
+		public LobbyCreationMenuModel()
 		{
-			_networkService = networkService ?? throw new ArgumentNullException( nameof( networkService ) );
+			// FIXME: this is a placeholder
+			Info = new LobbyCreateInfo {
+				MaxPlayers = 16
+			};
+		}
+
+		public void SetName( string name )
+		{
+			Info = Info with { Name = name };
+		}
+
+		public void SetMap( string map )
+		{
+			Info = Info with { Map = map };
+		}
+
+		public void SetGameMode( string gameMode )
+		{
+			Info = Info with { GameMode = gameMode };
+		}
+
+		public void SetVisibility( LobbyVisibility visibility )
+		{
+			Info = Info with { Visibility = visibility };
 		}
 	};
 };
