@@ -14,20 +14,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Generic;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
 
-namespace Nomad.Game.Application.Multiplayer
+namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
-	internal sealed class TeamService
+	public interface IPlayerProfile : IDisposable
 	{
-		private readonly Dictionary<Guid, Team> _teams = new();
-
-		public Guid AddTeam()
-		{
-			var guid = Guid.NewGuid();
-			_teams[guid] = new Team();
-			return guid;
-		}
+		int Level { get; }
+		int ExperiencePoints { get; }
+		IFaction Faction { get; }
 	};
 };

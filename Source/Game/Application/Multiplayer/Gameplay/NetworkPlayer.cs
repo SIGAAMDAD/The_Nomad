@@ -39,18 +39,17 @@ namespace Nomad.Game.Application.Multiplayer
 
 	internal sealed class NetworkPlayer : PlayerBase
 	{
-		private readonly INetworkSessionService _sessionService;
-		private readonly INetworkEventBus _eventBus;
-		private readonly INetworkRpcBus _rpcBus;
+		private readonly MultiplayerObject _multiplayer;
 
 		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
 			: base( guid, prefab, scope, eventFactory, logger )
 		{
-			_rpcBus = locator.GetService<INetworkRpcBus>();
-			_eventBus = locator.GetService<INetworkEventBus>();
-			_sessionService = locator.GetService<INetworkSessionService>();
+			var sessionService = locator.GetService<INetworkSessionService>();
+			var eventBus = locator.GetService<INetworkEventBus>();
+			var rpcBus = locator.GetService<INetworkRpcBus>();
+			_multiplayer = new MultiplayerObject( sessionService, rpcBus, eventBus, eventFactory );
 
-			_rpcBus.Register<UserInputCommand>( OnUserInputCommand );
+			_multiplayer.RegisterRpc<UserInputCommand>( OnUserInputCommand );
 		}
 
 		private void OnUserInputCommand( in NetworkRpcContext context, in UserInputCommand rpc )
