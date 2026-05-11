@@ -13,28 +13,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Events.Multiplayer;
+using System;
+using Nomad.Game.Domain.Data.Multiplayer.Profile;
 
 namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
-	public interface IVoteService
+	public interface IFaction : IDisposable
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "InitiatorId", typeof( PeerId ), Order = 1 )]
-		[EventPayload( "VictimId", typeof( PeerId ), Order = 2 )]
-		IGameEvent<VoteKickStartedEventArgs> VoteKickStarted { get; }
+		FactionDefinition Definition { get; }
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		IGameEvent<VoteCancelledEventArgs> VoteCancelled { get; }
-
-		//
-		// Client requests
-		//
-
-		bool RequestVoteKickStart( PeerId victimId, string reason );
-		bool RequestVoteChoice( int voteChoice );
-		bool RequestVoteCancel();
+		bool RequestJoin();
+		bool RequestLeave();
 	};
 };

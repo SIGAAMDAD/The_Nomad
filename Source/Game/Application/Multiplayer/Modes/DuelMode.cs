@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Application.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
 using Nomad.Game.Domain.Events.Multiplayer;
@@ -39,6 +40,13 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 
 	internal sealed class DuelMode : ModeBase, IDuelMode
 	{
+		private enum DuelRoundState : byte
+		{
+			Waiting,
+			Active,
+			Ended
+		};
+
 		private struct HostState
 		{
 			public Guid SessionId { get; set; }
@@ -61,10 +69,25 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		public DuelInstanceData Snapshot => new DuelInstanceData { Player1Score = _hostState.Player1Score, Player2Score = _hostState.Player2Score, RoundIndex = _hostState.RoundIndex };
 
 		private HostState _hostState;
+		private readonly MultiplayerStateMachine<DuelRoundState> _roundFlow;
 
+		/*
+		===============
+		DuelMode
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="sessionService"></param>
+		/// <param name="rpcBus"></param>
+		/// <param name="eventBus"></param>
+		/// <param name="eventFactory"></param>
 		public DuelMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
 			: base( sessionService, rpcBus, eventBus, eventFactory )
 		{
+			_roundFlow = CreateStateMachine<DuelRoundState>();
+
 			_duelRoundBegin = GetEvent<DuelRoundBeginEventArgs>(
 				DuelRoundBeginEventArgs.Name,
 				DuelRoundBeginEventArgs.NameSpace
@@ -84,23 +107,63 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 			RefreshContenders( resetStateForNewSession: true );
 		}
 
+		/*
+		===============
+		TryBeginRound
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		public bool TryBeginRound()
 		{
 			return PublishHostEvent( _duelRoundBegin, default );
 		}
 
+		/*
+		===============
+		TryEndRound
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="winnerId"></param>
+		/// <param name="loserId"></param>
+		/// <param name="wasTie"></param>
+		/// <returns></returns>
 		public bool TryEndRound( PeerId winnerId, PeerId loserId, bool wasTie )
 		{
 			return PublishHostEvent( _duelRoundEnd, new DuelRoundEndEventArgs( winnerId, loserId, wasTie ) );
 		}
 
+		/*
+		===============
+		OnDuelRoundBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDuelRoundBegin( in DuelRoundBeginEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: true );
+			_roundFlow.TransitionTo( DuelRoundState.Active, allowSameState: true );
 			_hostState.RoundIndex++;
 			AdvanceStateVersion();
 		}
 
+		/*
+		===============
+		OnDuelRoundEnd
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDuelRoundEnd( in DuelRoundEndEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: true );
@@ -109,9 +172,19 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				ApplyScore( args.WinnerId );
 			}
 
+			_roundFlow.TransitionTo( DuelRoundState.Ended, allowSameState: true );
 			AdvanceStateVersion();
 		}
 
+		/*
+		===============
+		ApplyScore
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="winnerId"></param>
 		private void ApplyScore( PeerId winnerId )
 		{
 			if ( winnerId.Equals( _hostState.Player1Id ) ) {
@@ -126,9 +199,18 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 			}
 		}
 
+		/*
+		===============
+		RefreshContenders
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="resetStateForNewSession"></param>
 		private void RefreshContenders( bool resetStateForNewSession )
 		{
-			NetworkSessionInfo? session = sessionService.CurrentSession;
+			NetworkSessionInfo? session = CurrentSession;
 			if ( session == null ) {
 				_hostState = default;
 				return;
@@ -143,32 +225,46 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 			}
 
 			_hostState.Player1Id = session.HostPeerId;
-			_hostState.Player2Id = default;
-
-			int bestSlot = int.MaxValue;
-			for ( int i = 0; i < session.Peers.Count; i++ ) {
-				NetworkPeerInfo peer = session.Peers[i];
-				if ( peer.PeerId.Equals( _hostState.Player1Id ) ) {
-					continue;
-				}
-
-				if ( peer.PlayerSlot < bestSlot ) {
-					bestSlot = peer.PlayerSlot;
-					_hostState.Player2Id = peer.PeerId;
-				}
-			}
+			_hostState.Player2Id = peerRoster.GetFirstNonHostPeer()?.PeerId ?? default;
 		}
 
+		/*
+		===============
+		OnSessionChanged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		protected override void OnSessionChanged( in NetworkSessionChangedEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: true );
 		}
 
+		/*
+		===============
+		OnPeerConnected
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		protected override void OnPeerConnected( in PeerConnectedEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: false );
 		}
 
+		/*
+		===============
+		OnPeerDisconnected
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		protected override void OnPeerDisconnected( in PeerDisconnectedEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: false );
