@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Events.Globals;
 using Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu;
 using Nomad.Game.Presentation.Screens.MultiplayerMenu;
 
@@ -33,12 +34,11 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu
 
 	internal sealed partial class ExtrasMenuView : Control
 	{
-		private MultiplayerMenuView _multiplayerMenu;
-		private DeveloperCommentaryMenuView _developerCommentaryMenu;
-
 		public event Action Back;
 		public event Action MultiplayerMenu;
 		public event Action DeveloperCommentaryMenu;
+
+		private ExtrasMenuPresenter _presenter;
 
 		/*
 		===============
@@ -52,12 +52,11 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu
 		{
 			base._Ready();
 
-			_multiplayerMenu = GetNode<MultiplayerMenuView>( "MultiplayerMenu" );
-			_developerCommentaryMenu = GetNode<DeveloperCommentaryMenuView>( "DeveloperCommentaryMenu" );
+			GetNode<Button>( "OptionsContainer/DeveloperCommentaryButton" ).Pressed += () => DeveloperCommentaryMenu?.Invoke();
+			GetNode<Button>( "OptionsContainer/MultiplayerButton" ).Pressed += () => MultiplayerMenu?.Invoke();
+			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Back?.Invoke();
 
-			GetNode<Button>( "ButtonContainer/DeveloperCommentaryButton" ).Pressed += () => DeveloperCommentaryMenu?.Invoke();
-			GetNode<Button>( "ButtonContainer/MultiplayerButton" ).Pressed += () => MultiplayerMenu?.Invoke();
-			GetNode<Button>( "ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
+			_presenter = new ExtrasMenuPresenter( this, GameEventRegistry.Instance );
 		}
 	};
 };

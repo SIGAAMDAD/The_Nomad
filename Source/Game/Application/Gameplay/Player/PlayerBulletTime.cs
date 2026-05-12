@@ -27,13 +27,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerBulletTime
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerBulletTime : NomadBehaviour
@@ -53,7 +53,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnInit()
 		{
@@ -74,7 +74,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		public override void OnUpdate( float delta )
@@ -97,7 +97,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnShutdown()
 		{
@@ -106,7 +106,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"BulletTime:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
+				.GetEvent<ButtonActionEventArgs>(
+					$"BulletTime:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
 				.Unsubscribe( OnBulletTimeTriggered );
 
 			DerivedStatService.DerivedStatChanged.Unsubscribe( OnDerivedStatChanged );
@@ -118,7 +121,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		private bool ValidateState()
@@ -132,7 +135,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="value"></param>
 		private void Toggle( bool value )
@@ -156,7 +159,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnBulletTimeTriggered( in ButtonActionEventArgs args )
@@ -172,7 +175,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args )

@@ -13,16 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Multiplayer.Objectives;
+using System;
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Modes
+namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	public readonly struct CaptureTheFlagInstanceData
+	public sealed record LobbyWaitingRoomInfo
 	{
-		public byte RedTeamScore { get; init; }
-		public byte BlueTeamScore { get; init; }
-
-		public FlagStatus RedFlagState { get; init; }
-		public FlagStatus BlueFlagState { get; init; }
+		public Guid LobbyId { get; init; }
+		public LobbyWaitingRoomState State { get; init; }
+		public int MinPlayers { get; init; }
+		public int MaxPlayers { get; init; }
+		public int PlayerCount { get; init; }
+		public int ReadyCount { get; init; }
+		public bool CanStart { get; init; }
+		public bool CanReady { get; init; }
+		public bool LateJoinAllowed { get; init; }
+		public int CountdownSecondsRemaining { get; init; }
+		public uint StateVersion { get; init; }
+		public uint RosterVersion { get; init; }
 	};
 };

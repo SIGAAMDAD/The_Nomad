@@ -18,13 +18,12 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Domain.Data.Multiplayer.Packets;
 using Nomad.Game.Prefabs;
 using Nomad.Networking.Events;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
 
-namespace Nomad.Game.Application.Multiplayer
+namespace Nomad.Game.Application.Multiplayer.Gameplay
 {
 	/*
 	===================================================================================
@@ -49,13 +48,7 @@ namespace Nomad.Game.Application.Multiplayer
 			var rpcBus = locator.GetService<INetworkRpcBus>();
 			_multiplayer = new MultiplayerObject( sessionService, rpcBus, eventBus, eventFactory );
 
-			_multiplayer.RegisterRpc<UserInputCommand>( OnUserInputCommand );
-		}
 
-		private void OnUserInputCommand( in NetworkRpcContext context, in UserInputCommand rpc )
-		{
-			if ( context.FromClient ) {
-			}
 		}
 	};
 };

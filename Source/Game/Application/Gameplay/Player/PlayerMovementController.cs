@@ -23,20 +23,22 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Input;
-using Nomad.Input.ValueObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerMovementController
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	/// Applies movement from an IPlayerInputSource.
+	///
+	/// This controller no longer subscribes directly to input actions. Local and
+	/// remote input are supplied through LocalPlayerInputSource and
+	/// RemotePlayerInputSource.
 	/// </summary>
 
 	internal sealed class PlayerMovementController : NomadBehaviour
@@ -44,12 +46,14 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public Guid Id { get; set; }
 		public IPlayerDerivedStatService Stats { get; set; }
 		public IPlayerFlagService Flags { get; set; }
+		public IPlayerInputSource InputSource { get; set; }
 
 		private float _effectiveMovementSpeed = 0.0f;
 
 		private bool _isMoving = false;
 		private Vector2 _moveInput = Vector2.Zero;
 		private Vector2 _velocity = Vector2.Zero;
+		private uint _inputTick;
 
 		private PlayerPrefab _prefab;
 
@@ -68,26 +72,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 		PlayerMovementController
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id"></param>
 		public PlayerMovementController()
 		{
-			var eventFactory = GameEventRegistry.Instance;
-
-			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"Slide:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
-				.Subscribe( OnSlideActionTriggered );
-
-			eventFactory
-				.GetEvent<AxisActionEventArgs>( $"Move:{AxisActionEventArgs.Name}", AxisActionEventArgs.NameSpace )
-				.Subscribe( OnMoveActionTriggered );
-
 			_slideTimer = new Godot.Timer() {
 				WaitTime = Domain.Data.Player.Constants.SLIDE_DURATION,
 				OneShot = true
 			};
+
 			_slideTimer.Timeout += OnSlideTimerTimeout;
 		}
 
@@ -96,9 +87,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnInit
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
 		public override void OnInit()
 		{
 			base.OnInit();
@@ -118,6 +106,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 				.GetEvent<PlayerDashEndedEventArgs>( $"{Id}:{PlayerDashEndedEventArgs.Name}", PlayerDashEndedEventArgs.NameSpace )
 				.Subscribe( OnDashEnded );
 
+			eventFactory
+				.GetEvent<PlayerDerivedStatChangedEventArgs>( PlayerDerivedStatChangedEventArgs.Name, PlayerDerivedStatChangedEventArgs.NameSpace )
+				.Subscribe( OnStatChanged );
+
 			_movementChanged = eventFactory
 				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{PlayerMovementChangedEventArgs.Name}", PlayerMovementChangedEventArgs.NameSpace, EventFlags.NoLock );
 		}
@@ -127,9 +119,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnShutdown
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
 		public override void OnShutdown()
 		{
 			base.OnShutdown();
@@ -148,15 +137,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 				.GetEvent<PlayerDerivedStatChangedEventArgs>( PlayerDerivedStatChangedEventArgs.Name, PlayerDerivedStatChangedEventArgs.NameSpace )
 				.Unsubscribe( OnStatChanged );
 
-			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"Slide:{Input.Constants.Events.BUTTON_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Unsubscribe( OnSlideActionTriggered );
+			_slideTimer.Timeout -= OnSlideTimerTimeout;
+			_slideTimer.Dispose();
 
-			eventFactory
-				.GetEvent<AxisActionEventArgs>( $"Move:{Input.Constants.Events.AXIS_ACTION}", Input.Constants.Events.NAMESPACE )
-				.Unsubscribe( OnMoveActionTriggered );
-
-			_slideTimer?.Dispose();
 			_movementChanged?.Dispose();
 		}
 
@@ -165,15 +148,22 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnPhysicsUpdate
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="delta"></param>
 		public override void OnPhysicsUpdate( float delta )
 		{
 			base.OnPhysicsUpdate( delta );
 
-			var previousVelocity = _velocity;
+			PlayerInputFrame input = InputSource != null
+				? InputSource.ReadFrame( _inputTick++ )
+				: PlayerInputFrame.Empty;
+
+			_moveInput = input.Move;
+			_isMoving = input.IsMoving;
+
+			if ( input.SlidePressed ) {
+				StartSlide();
+			}
+
+			Vector2 previousVelocity = _velocity;
 
 			if ( _isMoving ) {
 				_velocity = HandleAcceleration( delta );
@@ -195,13 +185,24 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		/*
 		===============
+		StartSlide
+		===============
+		*/
+		private void StartSlide()
+		{
+			if ( Flags.GetFlags( PlayerFlags.Sliding ) ) {
+				return;
+			}
+
+			Flags.AddFlags( PlayerFlags.Sliding );
+			_slideTimer.Start();
+		}
+
+		/*
+		===============
 		ApplyDashingSpeedBonus
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplyDashingSpeedBonus()
 		{
@@ -213,10 +214,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		ApplySlidingSpeedBonus
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplySlidingSpeedBonus()
 		{
@@ -228,11 +225,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		HandleAcceleration
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="delta"></param>
-		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private Vector2 HandleAcceleration( float delta )
 		{
@@ -246,11 +238,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		HandleDeceleration
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="delta"></param>
-		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public Vector2 HandleDeceleration( float delta )
 		{
@@ -262,13 +249,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		MoveToward
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="from"></param>
-		/// <param name="to"></param>
-		/// <param name="delta"></param>
-		/// <returns></returns>
 		private static Vector2 MoveToward( Vector2 from, Vector2 to, float delta )
 		{
 			Vector2 vector = to - from;
@@ -284,10 +264,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnStatChanged
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
 		private void OnStatChanged( in PlayerDerivedStatChangedEventArgs args )
 		{
 			if ( args.StatId == DerivedStatType.EffectiveMovementSpeed ) {
@@ -300,9 +276,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnSlideTimerTimeout
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
 		private void OnSlideTimerTimeout()
 		{
 			Flags.RemoveFlags( PlayerFlags.Sliding );
@@ -313,10 +286,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnDashStarted
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
 		private void OnDashStarted( in PlayerDashStartEventArgs args )
 		{
 			Flags.AddFlags( PlayerFlags.Dashing );
@@ -327,49 +296,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnDashEnded
 		===============
 		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
 		private void OnDashEnded( in PlayerDashEndedEventArgs args )
 		{
 			Flags.RemoveFlags( PlayerFlags.Dashing );
 		}
-
-		/*
-		===============
-		OnMoveActionTriggered
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnMoveActionTriggered( in AxisActionEventArgs args )
-		{
-			_isMoving = args.Phase == InputActionPhase.Started || args.Phase == InputActionPhase.Performed;
-
-			_moveInput = args.Value;
-
-			// invert the Y axis for the 2D plane
-			_moveInput.Y = -_moveInput.Y;
-		}
-
-		/*
-		===============
-		OnSlideActionTriggered
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnSlideActionTriggered( in ButtonActionEventArgs args )
-		{
-			if ( args.Phase == InputActionPhase.Started ) {
-				Flags.AddFlags( PlayerFlags.Sliding );
-				_slideTimer.Start();
-			}
-		}
-	};
-};
+	}
+}

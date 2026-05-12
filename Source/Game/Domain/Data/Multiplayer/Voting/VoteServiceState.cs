@@ -13,17 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
+namespace Nomad.Game.Domain.Data.Multiplayer.Voting
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum VoteReason : byte
+	public enum VoteServiceState : byte
 	{
-		DecideMap,
-		DecideGameMode,
+		Disabled = 0,
+		Idle,
+		Voting,
+		Resolving,
+		Cooldown,
+		Locked,
 
-		KickPlayer,
-		StartGame
+		Count
 	};
 };

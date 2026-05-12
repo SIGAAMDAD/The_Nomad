@@ -13,26 +13,43 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
+using System;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Player;
 
-namespace Nomad.Game.Application.Multiplayer.Lobby
+namespace Nomad.Game.Domain.Interfaces.Player
 {
 	/*
 	===================================================================================
 
-	VoteMultiChoiceService
+	IPlayerInputSource
 
 	===================================================================================
 	*/
 	/// <summary>
+	/// Supplies normalized player input to gameplay code.
 	///
+	/// Local input sources read keyboard/controller events.
+	/// Remote input sources are fed by network RPCs.
+	/// Player gameplay code should not care which one is used.
 	/// </summary>
 
-	internal sealed class VoteMultiChoiceService : VoteService
+	public interface IPlayerInputSource : IDisposable
 	{
-		public VoteMultiChoiceService( IGameEventRegistryService eventFactory )
-			: base( eventFactory )
-		{
-		}
-	};
-};
+		PeerId PeerId { get; }
+		bool IsEnabled { get; }
+
+		/// <summary>
+		/// The most recently produced input frame.
+		/// </summary>
+		PlayerInputFrame Current { get; }
+
+		/// <summary>
+		/// Gets the input frame for a game/network tick.
+		/// Repeated calls with the same tick should return the same frame.
+		/// </summary>
+		PlayerInputFrame ReadFrame( uint tick );
+
+		void Reset();
+	}
+}
