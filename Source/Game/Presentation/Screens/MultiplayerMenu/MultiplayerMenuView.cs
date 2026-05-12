@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Events.Globals;
 
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {
@@ -38,12 +39,23 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 
 		private MultiplayerMenuPresenter _presenter;
 
+		private MarginContainer _lobbyBrowser;
+		private Control _lobbyFactory;
+		private VBoxContainer _optionsContainer;
+
 		public void SetLobbyBrowserVisible( bool visible )
 		{
+			_lobbyBrowser.Visible = visible;
 		}
 
 		public void SetLobbyFactoryVisible( bool visible )
 		{
+			_lobbyFactory.Visible = visible;
+		}
+
+		public void SetOptionsContainerVisible( bool visible )
+		{
+			_optionsContainer.Visible = visible;
 		}
 
 		/*
@@ -63,7 +75,11 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 			GetNode<Button>( "OptionsContainer/LobbyBrowserButton" ).Pressed += () => LobbyBrowser?.Invoke();
 			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Back?.Invoke();
 
-			_presenter = new MultiplayerMenuPresenter( this, new MultiplayerMenuModel() );
+			_presenter = new MultiplayerMenuPresenter( this, new MultiplayerMenuModel(), GameEventRegistry.Instance );
+
+			_lobbyBrowser = GetNode<MarginContainer>( "LobbyBrowserContainer" );
+			_lobbyFactory = GetNode<Control>( "LobbyCreationMenu" );
+			_optionsContainer = GetNode<VBoxContainer>( "OptionsContainer" );
 		}
 	};
 };

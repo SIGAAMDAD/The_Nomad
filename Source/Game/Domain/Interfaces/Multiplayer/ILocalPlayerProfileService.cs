@@ -14,31 +14,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
+using System.Threading;
+using System.Threading.Tasks;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Multiplayer.Profile;
 
-namespace Nomad.Game.Application.Multiplayer.Profile
+namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
-	/*
-	===================================================================================
-
-	PlayerProfileService
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	internal sealed class PlayerProfileService
+	public interface ILocalPlayerProfileService : IDisposable
 	{
-		private readonly PlayerProfileRecord _profile;
+		PeerId LocalPeerId { get; }
+		PlayerProfileRecord CurrentProfile { get; }
+		PlayerStatsRecord CurrentStats { get; }
+		uint LocalRevision { get; }
 
-		public PlayerProfileService( PeerId peerId, IGameEventRegistryService eventFactory )
-		{
-			_profile = new PlayerProfileRecord {
-			};
-		}
+		void SetLocalPlayer( PeerId peerId, string callsign );
+		PlayerStatsRecord UpdateStats( Func<PlayerStatsRecord, PlayerStatsRecord> update );
+		void SetStats( PlayerStatsRecord stats );
+
+		ValueTask<PlayerProfileRecord> RefreshStatsFromOnlineAsync( CancellationToken ct = default );
+		ValueTask<bool> PushStatsToOnlineAsync( CancellationToken ct = default );
 	};
 };

@@ -69,6 +69,11 @@ namespace Nomad.Game.Application.Multiplayer
 		private DateTime _countdownEndsUtc;
 		private int _countdownSeconds;
 
+		/*
+		===============
+		LobbyWaitingRoomService
+		===============
+		*/
 		public LobbyWaitingRoomService(
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
@@ -126,6 +131,14 @@ namespace Nomad.Game.Application.Multiplayer
 			Subscribe( votingService.VoteEnded, OnVoteEnded );
 		}
 
+		/*
+		===============
+		Frame
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public void Frame()
 		{
 			if ( !IsHost || !_stateMachine.Is( LobbyWaitingRoomState.Countdown ) ) {
@@ -142,6 +155,15 @@ namespace Nomad.Game.Application.Multiplayer
 			}
 		}
 
+		/*
+		===============
+		RequestReady
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		public bool RequestReady()
 		{
 			return RequestReadyState( LobbyReadyState.Ready );

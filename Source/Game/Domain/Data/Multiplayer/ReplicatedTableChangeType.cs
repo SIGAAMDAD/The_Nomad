@@ -13,17 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Multiplayer.Objectives;
-
-namespace Nomad.Game.Domain.Data.Multiplayer.Modes
+namespace Nomad.Game.Domain.Data.Multiplayer
 {
-	public readonly struct CaptureTheFlagInstanceData
+	public enum ReplicatedTableChangeType : byte
 	{
-		public byte RedTeamScore { get; init; }
-		public byte BlueTeamScore { get; init; }
-		public byte RoundIndex { get; init; }
-
-		public FlagStatus RedFlagState { get; init; }
-		public FlagStatus BlueFlagState { get; init; }
+		None = 0,
+		Set,
+		Remove,
+		Clear
 	};
 };

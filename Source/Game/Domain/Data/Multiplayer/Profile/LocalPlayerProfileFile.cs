@@ -14,31 +14,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Profile;
 
-namespace Nomad.Game.Application.Multiplayer.Profile
+namespace Nomad.Game.Domain.Data.Multiplayer.Profile
 {
-	/*
-	===================================================================================
-
-	PlayerProfileService
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	internal sealed class PlayerProfileService
+	public sealed record LocalPlayerProfileFile
 	{
-		private readonly PlayerProfileRecord _profile;
+		public const int CURRENT_SCHEMA_VERSION = 1;
 
-		public PlayerProfileService( PeerId peerId, IGameEventRegistryService eventFactory )
-		{
-			_profile = new PlayerProfileRecord {
-			};
-		}
+		public int SchemaVersion { get; init; } = CURRENT_SCHEMA_VERSION;
+
+		public PeerId PeerId { get; init; }
+		public PlayerProfileRecord Profile { get; init; }
+
+		/// <summary>
+		/// Increments every time the local profile changes.
+		/// Useful for save debouncing, debugging, and sync.
+		/// </summary>
+		public uint LocalRevision { get; init; }
+
+		public DateTimeOffset CreatedAtUtc { get; init; }
+
+		public DateTimeOffset LastSavedAtUtc { get; init; }
 	};
 };

@@ -29,16 +29,31 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 		public MultiplayerMenuPresenter( MultiplayerMenuView view, MultiplayerMenuModel model, IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
-			_view = view;
-			_model = model;
+			_view = view ?? throw new ArgumentNullException( nameof( view ) );
+			_model = model ?? throw new ArgumentNullException( nameof( model ) );
 
 			view.Back += OnBack;
 			view.CreateLobby += OnCreateLobby;
+			view.LobbyBrowser += OnLobbyBrowser;
+		}
+
+		public void SyncView()
+		{
+			_view.SetLobbyBrowserVisible( _model.State == MultiplayerMenuState.LobbyBrowser );
+			_view.SetLobbyFactoryVisible( _model.State == MultiplayerMenuState.LobbyCreation );
+			_view.SetOptionsContainerVisible( _model.State == MultiplayerMenuState.Options );
 		}
 
 		private void OnCreateLobby()
 		{
 			_model.SetState( MultiplayerMenuState.LobbyCreation );
+			SyncView();
+		}
+
+		private void OnLobbyBrowser()
+		{
+			_model.SetState( MultiplayerMenuState.LobbyBrowser );
+			SyncView();
 		}
 
 		private void OnBack()
