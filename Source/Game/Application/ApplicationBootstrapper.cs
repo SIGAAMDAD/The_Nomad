@@ -28,6 +28,15 @@ using Nomad.Game.Application.Gameplay.World;
 using Nomad.Save.Services;
 using Nomad.Game.Application.Gameplay.Persistence;
 using Nomad.Core.Logger;
+using Nomad.Game.Application.Multiplayer;
+using Nomad.Core.Events;
+using Nomad.Core.CVars;
+using Nomad.Game.Application.Multiplayer.Profile;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Player;
+using Nomad.Networking.Session;
+using Nomad.Networking.Rpc;
+using Nomad.Networking.Events;
 
 namespace Nomad.Game.Application
 {
@@ -50,6 +59,7 @@ namespace Nomad.Game.Application
 		private ISceneManager _sceneManager;
 		private IGameStateService _gameStateService;
 		private SaveGameController _saveController;
+		private MultiplayerCoordinator _multiplayerCoordinator;
 
 		/*
 		===============
@@ -63,20 +73,40 @@ namespace Nomad.Game.Application
 		{
 			base.OnInit();
 
-			var eventFactory = GameEventRegistry.Instance;
-			var cvarSystem = CVarSystem.Instance;
-			var logger = ServiceLocator.GetService<ILoggerService>();
+			var locator = ServiceLocator.Instance;
+			var eventFactory = locator.GetService<IGameEventRegistryService>();
+			var cvarSystem = locator.GetService<ICVarSystemService>();
+			var logger = locator.GetService<ILoggerService>();
 
 			GameplayCVars.Register( cvarSystem );
 
-			_sceneManager = ServiceLocator.GetService<ISceneManager>();
+			_sceneManager = locator.GetService<ISceneManager>();
 			_gameStateService = new GameStateManager( eventFactory );
 			_menuManager = new MenuManager( _sceneManager, _gameStateService, eventFactory, logger );
 			_worldLoader = new SceneWorldLoader( _sceneManager );
 			_saveController = new SaveGameController( ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
 
+			var sessionService = locator.GetService<INetworkSessionService>();
+			var rpcBus = locator.GetService<INetworkRpcBus>();
+			var eventBus = locator.GetService<INetworkEventBus>();
+
+			var votingService = new VotingService( sessionService, rpcBus, eventBus, eventFactory );
+
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
 			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, _gameStateService, cvarSystem, Logging.Instance );
+			_multiplayerCoordinator = new MultiplayerCoordinator(
+				new LocalPlayerProfileService(
+					new PeerId( Constants.LOCAL_GUID ), "Unknown", locator.GetService<IOnlinePlatformService>().Stats, logger
+				),
+				new LobbyWaitingRoomService(
+					sessionService,
+					rpcBus,
+					eventBus,
+					eventFactory,
+					votingService
+				),
+				votingService
+			);
 
 			ServiceRegistry.AddSingleton( _gameStateService );
 			ServiceRegistry.AddSingleton( _worldLoader );

@@ -13,13 +13,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Game.Domain.Interfaces.Multiplayer;
+
 namespace Nomad.Game.Application.Multiplayer
 {
+	/*
+	===================================================================================
+
+	MultiplayerCoordinator
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class MultiplayerCoordinator
 	{
+		private readonly ILocalPlayerProfileService _localPlayerProfile;
+		private readonly ILobbyWaitingRoomService _waitingRoomService;
+		private readonly IVotingService _votingService;
 
-		public MultiplayerCoordinator()
+		public MultiplayerCoordinator(
+			ILocalPlayerProfileService localProfileService,
+			ILobbyWaitingRoomService waitingRoomService,
+			IVotingService votingService
+		)
 		{
+			_localPlayerProfile = localProfileService ?? throw new ArgumentNullException( nameof( localProfileService ) );
+			_waitingRoomService = waitingRoomService ?? throw new ArgumentNullException( nameof( waitingRoomService ) );
+			_votingService = votingService ?? throw new ArgumentNullException( nameof( votingService ) );
 		}
 	};
 };

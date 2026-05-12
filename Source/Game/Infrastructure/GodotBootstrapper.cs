@@ -32,6 +32,7 @@ using Nomad.Audio.Fmod;
 using Nomad.Console;
 using Nomad.Input;
 using Nomad.Save;
+using Nomad.Networking;
 
 namespace Nomad.Game.Infrastructure
 {
@@ -80,7 +81,8 @@ namespace Nomad.Game.Infrastructure
 				.AddBootstrapper( new ConsoleBootstrapper() )
 				.AddBootstrapper( new FMODBootstrapper() )
 				.AddBootstrapper( new InputBootstrapper() )
-				.AddBootstrapper( new SaveBootstrapper() );
+				.AddBootstrapper( new SaveBootstrapper() )
+				.AddBootstrapper( new NetworkBootstrapper() );
 
 			_bootstrapper.Bootstrap();
 

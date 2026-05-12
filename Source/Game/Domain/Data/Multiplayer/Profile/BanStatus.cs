@@ -15,25 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Domain.Data.Multiplayer.Profile
 {
-	public sealed record CombatStatsRecord
+	public enum BanStatus
 	{
-		public uint Kills { get; init; }
-		public uint Deaths { get; init; }
-		public uint Assists { get; init; }
-		public uint Executions { get; init; }
-		public uint Headshots { get; init; }
-
-		public uint ParryKills { get; init; }
-		public uint PerfectParries { get; init; }
-		public uint DashOverheatKills { get; init; }
-
-		public uint DamageDealt { get; init; }
-		public uint DamageTaken { get; init; }
-
-		public uint ShotsFired { get; init; }
-		public uint ShotsHit { get; init; }
-
-		public float KillDeathRatio => Deaths == 0 ? Kills : (float)Kills / Deaths;
-		public float Accuracy => ShotsFired == 0 ? 0f : (float)ShotsHit / ShotsFired;
+		Active,
+		UnderReview,
+		Revoked
 	};
 };

@@ -17,6 +17,21 @@ namespace Nomad.Game.Domain.Data.Multiplayer.Profile
 {
 	public sealed record PlayerStatsRecord
 	{
+		/// <summary>
+		/// Lifetime damage dealt.
+		/// </summary>
+		public ulong TotalDamageDealt { get; init; }
+
+		/// <summary>
+		/// Lifetime damage taken.
+		/// </summary>
+		public ulong TotalDamageTaken { get; init; }
+
+		/// <summary>
+		///
+		/// </summary>
+		public ulong BestKillStreak { get; init; }
+
 		public ulong MatchesPlayed { get; init; }
 		public ulong MatchesWon { get; init; }
 		public ulong MatchesLost { get; init; }
@@ -30,14 +45,22 @@ namespace Nomad.Game.Domain.Data.Multiplayer.Profile
 		public ulong DuelMatchesWon { get; init; }
 		public ulong DuelMatchesLost { get; init; }
 
+		/// <summary>
+		/// The number of duel rounds you have gone without taking hits.
+		/// </summary>
+		public ulong DuelNoDamageRounds { get; init; }
+
+		/// <summary>
+		/// The number of duel rounds you have gone without using bullet time.
+		/// </summary>
+		public ulong DuelNoBulletTimeRounds { get; init; }
+
 		public ulong BountiesClaimed { get; init; }
 		public ulong BountyTargetsKilled { get; init; }
 		public ulong BountyHuntsSurvived { get; init; }
 
 		public ulong ExtractionsCompleted { get; init; }
-		public ulong ExtractionsDenied { get; init; }
-		public ulong VipCarries { get; init; }
-		public ulong VipSaves { get; init; }
+		public ulong ExtractionsFailed { get; init; }
 
 		public ulong FlagsCaptured { get; init; }
 		public ulong FlagsReturned { get; init; }
@@ -49,7 +72,20 @@ namespace Nomad.Game.Domain.Data.Multiplayer.Profile
 		public ulong GrabParrySuccesses { get; init; }
 
 		public ulong DashOverheatKills { get; init; }
-		public ulong NoDeathRounds { get; init; }
+
+		/// <summary>
+		/// The amount of games won without taking any damage
+		/// </summary>
+		public ulong NoDamageWins { get; init; }
+
+		/// <summary>
+		/// The amount of games won without dying.
+		/// </summary>
+		public ulong NoDeathWins { get; init; }
+
+		/// <summary>
+		/// The amount of games won without utilizing bullet time at all.
+		/// </summary>
 		public ulong NoBulletTimeWins { get; init; }
 
 		public ulong ContractsCompleted { get; init; }
