@@ -13,23 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Packets
+namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	public enum InputButtons : uint
+	public enum LobbyCountdownCancelReason : byte
 	{
 		None = 0,
+		PlayerNotReady,
+		PeerDisconnected,
+		HostCancelled,
+		SessionEnded,
+		VoteFailed,
 
-		Fire = 1 << 0,
-		AltFire = 1 << 1,
-		Melee = 1 << 2,
-		Parry = 1 << 3,
-		Dash = 1 << 4,
-		Slide = 1 << 5,
-		Interact = 1 << 6,
-		Reload = 1 << 7,
-		SwapWeapon = 1 << 8,
-		UseMetalArm = 1 << 9,
-		BulletTime = 1 << 10,
-		Crouch = 1 << 11
+		Count
 	};
 };

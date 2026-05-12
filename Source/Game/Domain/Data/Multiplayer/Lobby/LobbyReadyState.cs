@@ -13,14 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.OnlineServices;
-
 namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	public sealed record VoteKickInstance : VoteInstance
+	public enum LobbyReadyState : byte
 	{
-		public override VoteReason Reason => VoteReason.KickPlayer;
+		NotReady = 0,
+		Ready,
+		Loading,
+		Loaded,
 
-		public PeerId VictimId { get; init; }
+		Count
 	};
 };

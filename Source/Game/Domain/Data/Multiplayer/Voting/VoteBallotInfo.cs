@@ -13,26 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
+using Nomad.Core.OnlineServices;
 
-namespace Nomad.Game.Application.Multiplayer.Lobby
+namespace Nomad.Game.Domain.Data.Multiplayer.Voting
 {
-	/*
-	===================================================================================
-
-	VoteSingleChoiceService
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	internal sealed class VoteSingleChoiceService : VoteService
+	public readonly struct VoteBallotInfo
 	{
-		public VoteSingleChoiceService( IGameEventRegistryService eventFactory )
-			: base( eventFactory )
+		public PeerId PeerId { get; }
+		public VoteOptionId OptionId { get; }
+		public uint Version { get; }
+
+		public VoteBallotInfo( PeerId peerId, VoteOptionId optionId, uint version )
 		{
+			PeerId = peerId;
+			OptionId = optionId;
+			Version = version;
 		}
 	};
 };

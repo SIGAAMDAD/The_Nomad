@@ -13,6 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Events;
+using Nomad.Game.Application.UI.Menus;
+
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {
 	internal sealed class MultiplayerMenuPresenter
@@ -20,8 +24,11 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 		private readonly MultiplayerMenuView _view;
 		private readonly MultiplayerMenuModel _model;
 
-		public MultiplayerMenuPresenter( MultiplayerMenuView view, MultiplayerMenuModel model )
+		private readonly IGameEventRegistryService _eventFactory;
+
+		public MultiplayerMenuPresenter( MultiplayerMenuView view, MultiplayerMenuModel model, IGameEventRegistryService eventFactory )
 		{
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_view = view;
 			_model = model;
 
@@ -36,6 +43,12 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 
 		private void OnBack()
 		{
+			_eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Multiplayer, MenuState.Extras ) );
 		}
 	};
 };

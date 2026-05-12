@@ -1,0 +1,90 @@
+/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
+using System.Numerics;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Player;
+
+namespace Nomad.Game.Application.Multiplayer.PlayerInput
+{
+	/*
+	===================================================================================
+
+	PlayerInputCommandRpc
+
+	===================================================================================
+	*/
+	/// <summary>
+	/// Client-to-host player input command.
+	///
+	/// Long-term, the RPC bus should provide the authenticated sender PeerId to
+	/// handlers. Until then, the host should validate PeerId against the session.
+	/// </summary>
+
+	public readonly struct PlayerInputCommandRpc
+	{
+		public PeerId PeerId { get; }
+		public uint Tick { get; }
+		public ushort Sequence { get; }
+		public float MoveX { get; }
+		public float MoveY { get; }
+		public PlayerInputButtons ButtonsDown { get; }
+		public PlayerInputButtons ButtonsPressed { get; }
+
+		public PlayerInputCommandRpc(
+			PeerId peerId,
+			uint tick,
+			ushort sequence,
+			float moveX,
+			float moveY,
+			PlayerInputButtons buttonsDown,
+			PlayerInputButtons buttonsPressed
+		)
+		{
+			PeerId = peerId;
+			Tick = tick;
+			Sequence = sequence;
+			MoveX = moveX;
+			MoveY = moveY;
+			ButtonsDown = buttonsDown;
+			ButtonsPressed = buttonsPressed;
+		}
+
+		public PlayerInputCommandRpc( in PlayerInputFrame frame )
+			: this(
+				frame.PeerId,
+				frame.Tick,
+				frame.Sequence,
+				frame.Move.X,
+				frame.Move.Y,
+				frame.ButtonsDown,
+				frame.ButtonsPressed
+			)
+		{
+		}
+
+		public PlayerInputFrame ToFrame()
+		{
+			return new PlayerInputFrame(
+				PeerId,
+				Tick,
+				Sequence,
+				new Vector2( MoveX, MoveY ),
+				ButtonsDown,
+				ButtonsPressed
+			);
+		}
+	}
+}

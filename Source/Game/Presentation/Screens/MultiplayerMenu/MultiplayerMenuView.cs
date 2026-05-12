@@ -21,7 +21,7 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 	/*
 	===================================================================================
 
-	MultiplayerMenu
+	MultiplayerMenuView
 
 	===================================================================================
 	*/
@@ -35,6 +35,16 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 		public event Action LobbyBrowser;
 		public event Action Matchmake;
 		public event Action Back;
+
+		private MultiplayerMenuPresenter _presenter;
+
+		public void SetLobbyBrowserVisible( bool visible )
+		{
+		}
+
+		public void SetLobbyFactoryVisible( bool visible )
+		{
+		}
 
 		/*
 		===============
@@ -52,6 +62,8 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 			GetNode<Button>( "OptionsContainer/MatchmakeButton" ).Pressed += () => Matchmake?.Invoke();
 			GetNode<Button>( "OptionsContainer/LobbyBrowserButton" ).Pressed += () => LobbyBrowser?.Invoke();
 			GetNode<Button>( "OptionsContainer/BackButton" ).Pressed += () => Back?.Invoke();
+
+			_presenter = new MultiplayerMenuPresenter( this, new MultiplayerMenuModel() );
 		}
 	};
 };

@@ -13,23 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Multiplayer
+namespace Nomad.Game.Domain.Data.Multiplayer.Voting
 {
-	public enum ClientState : byte
+	public readonly struct VoteOptionInfo
 	{
-		/// <summary>
-		/// Currently in a lobby waiting room.
-		/// </summary>
-		Waiting,
+		public VoteOptionId Id { get; }
+		public VoteKind Kind { get; }
+		public string DisplayName { get; }
+		public string Value { get; }
+		public int VoteCount { get; }
 
-		/// <summary>
-		/// Ready for the game round to start.
-		/// </summary>
-		Ready,
-
-		/// <summary>
-		/// Currently in a game.
-		/// </summary>
-		InGame,
+		public VoteOptionInfo( VoteOptionId id, VoteKind kind, string displayName, string value, int voteCount = 0 )
+		{
+			Id = id;
+			Kind = kind;
+			DisplayName = displayName ?? string.Empty;
+			Value = value ?? string.Empty;
+			VoteCount = voteCount;
+		}
 	};
 };

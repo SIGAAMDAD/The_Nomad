@@ -14,19 +14,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer.Profile;
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
+namespace Nomad.Game.Application.Multiplayer.Profile
 {
-	/// <summary>
-	///
-	/// </summary>
-	public abstract record VoteInstance
+	internal sealed class PlayerProfileService
 	{
-		public abstract VoteReason Reason { get; }
+		private readonly PlayerProfileRecord _profile;
 
-		public PeerId InitiatorId { get; init; }
-		public DateTime StartTime { get; init; } = DateTime.UtcNow;
-		public DateTime EndTime { get; init; }
+		public PlayerProfileService( PeerId peerId, IGameEventRegistryService eventFactory )
+		{
+			_profile = new PlayerProfileRecord {
+			};
+		}
 	};
 };

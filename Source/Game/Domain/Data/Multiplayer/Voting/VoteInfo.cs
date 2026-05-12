@@ -14,22 +14,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
-using Nomad.Game.Domain.Data.Multiplayer.Objectives;
-using Nomad.Game.Domain.Events.Multiplayer;
 
-namespace Nomad.Game.Domain.Interfaces.Multiplayer
+namespace Nomad.Game.Domain.Data.Multiplayer.Voting
 {
-	public interface ICaptureTheFlagMode : IDisposable
+	public sealed record VoteInfo
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
-		[EventPayload( "PeerId", typeof( PeerId ), Order = 1 )]
-		[EventPayload( "PreviousStatus", typeof( FlagStatus ), Order = 2 )]
-		[EventPayload( "CurrentStatus", typeof( FlagStatus ), Order = 3 )]
-		IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged { get; }
-
-		CaptureTheFlagInstanceData Snapshot { get; }
+		public VoteId Id { get; init; }
+		public VoteKind Kind { get; init; }
+		public PeerId StartedBy { get; init; }
+		public PeerId TargetPeer { get; init; }
+		public int RequiredVotes { get; init; }
+		public int EligibleVoters { get; init; }
+		public int VotesCast { get; init; }
+		public uint Version { get; init; }
+		public DateTime StartedUtc { get; init; }
+		public DateTime EndsUtc { get; init; }
 	};
 };

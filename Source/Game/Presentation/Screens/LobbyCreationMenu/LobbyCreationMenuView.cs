@@ -42,6 +42,8 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 		private OptionList _mapList;
 		private OptionList _gameModeList;
 
+		private LobbyCreationMenuPresenter _presenter;
+
 		public void SetGameModeOptions( IReadOnlyList<string> options )
 		{
 			_gameModeList.SetOptions( options );
@@ -80,6 +82,8 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 
 			GetNode<Button>( "MarginContainer/ButtonContainer/CreateButton" ).Pressed += () => CreateLobby?.Invoke();
 			GetNode<Button>( "MarginContainer/ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
+
+			_presenter = new LobbyCreationMenuPresenter( this, new LobbyCreationMenuModel() );
 		}
 	};
 };

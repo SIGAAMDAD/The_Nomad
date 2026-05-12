@@ -13,19 +13,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Nomad.Core.OnlineServices;
 
-namespace Nomad.Game.Domain.Data.Multiplayer.Packets
+namespace Nomad.Game.Domain.Data.Multiplayer.Lobby
 {
-	public readonly struct PlayerDiePacket
+	public readonly struct LobbyPeerStatus
 	{
-		public readonly Guid VictimId;
-		public readonly Guid KillerId;
+		public PeerId PeerId { get; }
+		public LobbyReadyState ReadyState { get; }
+		public bool IsHost { get; }
+		public bool IsLocal { get; }
+		public bool IsConnected { get; }
 
-		public PlayerDiePacket( Guid victimId, Guid killerId )
+		public LobbyPeerStatus( PeerId peerId, LobbyReadyState readyState, bool isHost, bool isLocal, bool isConnected )
 		{
-			VictimId = victimId;
-			KillerId = killerId;
+			PeerId = peerId;
+			ReadyState = readyState;
+			IsHost = isHost;
+			IsLocal = isLocal;
+			IsConnected = isConnected;
 		}
 	};
 };
