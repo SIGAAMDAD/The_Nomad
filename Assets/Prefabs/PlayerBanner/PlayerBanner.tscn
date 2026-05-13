@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://mtmbi13ahvs8"]
+
+[ext_resource type="Script" uid="uid://cpxka60uklip2" path="res://Assets/Prefabs/PlayerBanner/PlayerBanner.cs" id="1_t8dea"]
+
+[node name="PlayerBanner" type="HBoxContainer" unique_id=150481472]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t8dea")
+metadata/_edit_use_anchors_ = true
+
+[node name="ProfilePicture" type="TextureRect" parent="." unique_id=160510218]
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 2
+
+[node name="UserNameLabel" type="Label" parent="." unique_id=1308997864]
+layout_mode = 2
+size_flags_horizontal = 3

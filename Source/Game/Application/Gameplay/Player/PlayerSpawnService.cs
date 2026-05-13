@@ -24,13 +24,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerSpawnService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerSpawnService : IPlayerSpawnService
@@ -56,7 +56,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="repository"></param>
@@ -100,7 +100,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Dispose()
 		{
@@ -121,7 +121,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSpawnRequested( in PlayerSpawnRequestedEventArgs args )

@@ -46,6 +46,9 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 		TeamLeaveRequestRpc,
 		TeamAutoAssignRequestRpc,
 
-		PlayerInputCommandRpc
+		PlayerInputCommandRpc,
+
+		PlayerDie,
+		PlayerRespawnRequestRpc,
 	};
 };

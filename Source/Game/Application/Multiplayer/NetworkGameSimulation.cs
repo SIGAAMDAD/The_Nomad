@@ -39,5 +39,10 @@ namespace Nomad.Game.Application.Multiplayer
 			_modeData = modeData ?? throw new ArgumentNullException( nameof( modeData ) );
 			_clock = new NetworkGameClock();
 		}
+
+		public void Update( float delta )
+		{
+			_clock.Update();
+		}
 	};
 };

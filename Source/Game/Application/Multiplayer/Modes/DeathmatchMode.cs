@@ -22,6 +22,8 @@ using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
+using System.Collections.Generic;
+using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
@@ -38,6 +40,12 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 
 	internal sealed class DeathmatchMode : ModeBase, IDeathmatchMode
 	{
+		private struct HostState
+		{
+			public SessionId SessionId { get; set; }
+			public int[] Scoreboard { get; set; }
+		};
+
 		public override string ModeName => "Bloodbath";
 		public override Mode Mode => Mode.Deathmatch;
 
@@ -46,6 +54,10 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				throw new System.NotImplementedException();
 			}
 		}
+
+		private HostState _hostState;
+
+		private readonly Dictionary<PeerId, int> _peerScoreboardIndex = new();
 
 		public DeathmatchMode(
 			INetworkSessionService sessionService,
@@ -56,6 +68,29 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		)
 			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
+		}
+
+		/*
+		===============
+		TryGetPeerScore
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="peerId"></param>
+		/// <param name="score"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		public bool TryGetPeerScore( PeerId peerId, out int score, out int rank )
+		{
+			score = 0;
+			if ( !_peerScoreboardIndex.TryGetValue( peerId, out rank ) ) {
+				return false;
+			}
+
+			score = _hostState.Scoreboard[rank];
+			return true;
 		}
 	};
 };

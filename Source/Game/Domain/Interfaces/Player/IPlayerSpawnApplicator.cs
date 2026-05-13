@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player
@@ -21,7 +20,7 @@ namespace Nomad.Game.Domain.Interfaces.Player
 	public interface IPlayerSpawnApplicator
 	{
 		void Apply(
-			PlayerBase player,
+			IPlayerBase player,
 			PlayerSpawnProfileDefinition profile,
 			IPlayerDerivedStatService derivedStats,
 			IPlayerResourceService resources,

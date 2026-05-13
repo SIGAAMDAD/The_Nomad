@@ -36,19 +36,21 @@ namespace Nomad.Game.Application.Gameplay.Entity
 	internal abstract class EntityBase
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		public IGameEvent<EntityDieEventArgs> EntityDie => _die;
-		private readonly IGameEvent<EntityDieEventArgs> _die = default;
+		[EventPayload( "AttackerId", typeof( Guid ), Order = 1 )]
+		public IGameEvent<EntityDieEventArgs> EntityDie => entityDie;
+		protected readonly IGameEvent<EntityDieEventArgs> entityDie = default;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "Source", typeof( DamageSource ), Order = 1 )]
-		[EventPayload( "Amount", typeof( float ), Order = 2 )]
-		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => _takeDamage;
-		private readonly IGameEvent<EntityTakeDamageEventArgs> _takeDamage = default;
+		[EventPayload( "AttackerId", typeof( Guid ), Order = 1 )]
+		[EventPayload( "Source", typeof( DamageSource ), Order = 2 )]
+		[EventPayload( "Amount", typeof( float ), Order = 3 )]
+		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => takeDamage;
+		protected readonly IGameEvent<EntityTakeDamageEventArgs> takeDamage = default;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
 		[EventPayload( "EffectId", typeof( InternString ) )]
-		public IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect => _applyStatusEffect;
-		private readonly IGameEvent<EntityApplyStatusEffectEventArgs> _applyStatusEffect = default;
+		public IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect => applyStatusEffect;
+		protected readonly IGameEvent<EntityApplyStatusEffectEventArgs> applyStatusEffect = default;
 
 		public Guid Guid => guid;
 		protected readonly Guid guid;
@@ -59,19 +61,19 @@ namespace Nomad.Game.Application.Gameplay.Entity
 
 			this.guid = guid;
 
-			_die = eventFactory
+			entityDie = eventFactory
 				.GetEvent<EntityDieEventArgs>(
 					EntityDieEventArgs.Name,
 					EntityDieEventArgs.NameSpace
 				);
 
-			_takeDamage = eventFactory
+			takeDamage = eventFactory
 				.GetEvent<EntityTakeDamageEventArgs>(
 					EntityTakeDamageEventArgs.Name,
 					EntityTakeDamageEventArgs.NameSpace
 				);
 
-			_applyStatusEffect = eventFactory
+			applyStatusEffect = eventFactory
 				.GetEvent<EntityApplyStatusEffectEventArgs>(
 					EntityApplyStatusEffectEventArgs.Name,
 					EntityApplyStatusEffectEventArgs.NameSpace

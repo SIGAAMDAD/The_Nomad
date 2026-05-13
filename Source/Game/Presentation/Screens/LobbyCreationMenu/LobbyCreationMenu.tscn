@@ -44,6 +44,9 @@ layout_mode = 2
 [node name="GameModeList" parent="ConfigContainer" unique_id=154905174 instance=ExtResource("2_afgk1")]
 layout_mode = 2
 
+[node name="VisibilityList" parent="ConfigContainer" unique_id=1344257881 instance=ExtResource("2_afgk1")]
+layout_mode = 2
+
 [node name="ButtonContainer" type="HBoxContainer" parent="." unique_id=599071310]
 use_parent_material = true
 layout_mode = 1

@@ -61,6 +61,7 @@ namespace Nomad.Game.Infrastructure.UI.Nodes.NomadButton
 			};
 			FocusEntered += OnFocused;
 			FocusExited += OnUnfocused;
+			_feedback.OnInit();
 		}
 
 		/*
