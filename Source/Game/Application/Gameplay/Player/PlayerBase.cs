@@ -26,6 +26,9 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Inventory;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Application.Gameplay.Entity;
+using Nomad.Game.Domain.Events.Entity;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -40,10 +43,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 	///
 	/// </summary>
 
-	public abstract class PlayerBase : IPlayerBase
+	internal abstract class PlayerBase : EntityBase, IPlayerBase
 	{
-		public Guid Id => _id;
-		private readonly Guid _id;
+		public PeerId Id => new PeerId( guid );
 
 		//
 		// Components
@@ -81,26 +83,28 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="guid"></param>
+		/// <param name="peerId"></param>
 		/// <param name="prefab"></param>
 		/// <param name="scope"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBase( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+		public PlayerBase( PeerId peerId, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( peerId.Id, eventFactory )
 		{
 			_prefab = prefab;
-			_id = guid;
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
-				$"{_id}:{PlayerDieEventArgs.Name}",
+				PlayerDieEventArgs.Name,
 				PlayerDieEventArgs.NameSpace
 			);
 
-			_statsRepository = new PlayerBaseStatsRepository( _id, eventFactory, logger );
+			entityDie.Subscribe( OnBaseDie );
+
+			_statsRepository = new PlayerBaseStatsRepository( peerId.Id, eventFactory, logger );
 			_dependencyGraph = PlayerStatDependencyGraph.CreateDefault();
-			_derivedStatService = new PlayerDerivedStatService( _id, _statsRepository, _dependencyGraph, eventFactory );
+			_derivedStatService = new PlayerDerivedStatService( peerId.Id, _statsRepository, _dependencyGraph, eventFactory );
 			_flagService = new PlayerFlagService( eventFactory );
-			_resourceService = new PlayerResourceService( _id, _derivedStatService, eventFactory );
-			_stateCoordinator = new PlayerStateCoordinator( _id, PlayerStateId.Idle, eventFactory );
+			_resourceService = new PlayerResourceService( peerId.Id, _derivedStatService, eventFactory );
+			_stateCoordinator = new PlayerStateCoordinator( peerId.Id, PlayerStateId.Idle, eventFactory );
 			_saveCoordinator = new PlayerSaveCoordinator( _derivedStatService, _resourceService, _stateCoordinator, _prefab, eventFactory );
 
 			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
@@ -111,16 +115,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_movementController = prefab.AddComponent<PlayerMovementController>( comp => {
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
-				comp.Id = _id;
+				comp.Id = peerId.Id;
 			} );
 			_jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
-				comp.Id = _id;
+				comp.Id = peerId.Id;
 			} );
 			_audioService = prefab.AddComponent<PlayerAudioService>( comp => {
-				comp.Id = _id;
+				comp.Id = peerId.Id;
 				comp.FlagService = _flagService;
 			} );
-			_animator = new PlayerAnimationCoordinator( _id, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
+			_animator = new PlayerAnimationCoordinator( peerId.Id, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
 			_bulletTime = prefab.AddComponent<PlayerBulletTime>( comp => {
 				comp.FlagService = _flagService;
 				comp.DerivedStatService = _derivedStatService;
@@ -159,6 +163,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public void ApplySpawnProfile( IPlayerSpawnApplicator spawnApplicator, PlayerSpawnProfileDefinition profile, in PlayerSpawnContext context )
 		{
 			spawnApplicator.Apply( this, profile, _derivedStatService, _resourceService, _flagService, in context );
+		}
+
+		private void OnBaseDie( in EntityDieEventArgs args )
+		{
+			_die.Publish(
+				new PlayerDieEventArgs(
+					playerId: Id,
+					killerId: new PeerId( args.AttackerId )
+				)
+			);
 		}
 	};
 };

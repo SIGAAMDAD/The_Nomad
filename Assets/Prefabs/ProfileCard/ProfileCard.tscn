@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://o4uwkqe5ktst"]
+
+[node name="ProfileCard" type="Control" unique_id=1138221706]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1761332527]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 104.0
+grow_horizontal = 2
+
+[node name="UserNameLabel" type="Label" parent="VBoxContainer" unique_id=1705080018]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="FactionLabel" type="Label" parent="VBoxContainer" unique_id=678352864]
+layout_mode = 2
+
+[node name="BanStatusLabel" type="Label" parent="VBoxContainer" unique_id=178452923]
+layout_mode = 2
+
+[node name="ReliabilityGradeLabel" type="Label" parent="VBoxContainer" unique_id=316383108]
+layout_mode = 2

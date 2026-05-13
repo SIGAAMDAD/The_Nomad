@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
+using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Multiplayer.Profile;
@@ -30,6 +31,7 @@ namespace Nomad.Game.Application.Multiplayer
 	{
 		public static MultiplayerCoordinator Initialize( IServiceRegistry registry, IServiceLocator locator )
 		{
+			var logger = locator.GetService<ILoggerService>();
 			var eventFactory = locator.GetService<IGameEventRegistryService>();
 			var sessionService = locator.GetService<INetworkSessionService>();
 			var rpcBus = locator.GetService<INetworkRpcBus>();

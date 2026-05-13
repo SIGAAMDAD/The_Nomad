@@ -21,9 +21,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerSpawnApplicator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
@@ -32,7 +32,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerSpawnApplicator : IPlayerSpawnApplicator
 	{
-		public void Apply( PlayerBase player, PlayerSpawnProfileDefinition profile, IPlayerDerivedStatService derivedStats, IPlayerResourceService resources, IPlayerFlagService flags, in PlayerSpawnContext context )
+		public void Apply( IPlayerBase player, PlayerSpawnProfileDefinition profile, IPlayerDerivedStatService derivedStats, IPlayerResourceService resources, IPlayerFlagService flags, in PlayerSpawnContext context )
 		{
 			ApplyResource( profile.Health, PlayerResourceType.Health, derivedStats.GetValue( DerivedStatType.EffectiveHealthMax ), resources );
 			ApplyResource( profile.Rage, PlayerResourceType.Rage, derivedStats.GetValue( DerivedStatType.EffectiveRageMax ), resources );

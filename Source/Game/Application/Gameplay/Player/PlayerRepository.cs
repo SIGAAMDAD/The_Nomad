@@ -18,6 +18,7 @@ using System.Collections.Concurrent;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
+using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Data.Player;
@@ -31,13 +32,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerRepository
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerRepository : IDisposable
@@ -59,7 +60,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="registry"></param>
@@ -85,7 +86,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Dispose()
 		{
@@ -102,7 +103,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="origin"></param>
 		/// <returns></returns>
@@ -114,7 +115,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_sceneManager.ActiveScene.Root.AddChild( composite.Root.CastAs<PlayerPrefab>() );
 
 			var guid = Constants.LOCAL_GUID;
-			var playerBase = new PlayerAggregate( guid, composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( new PeerId( guid ), composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
 
 			_players[guid] = playerBase;
 			return playerBase;
@@ -126,7 +127,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnGameStateChanged( in GameStateChangedEventArgs args )

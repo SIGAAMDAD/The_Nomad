@@ -18,6 +18,7 @@ using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Multiplayer;
+using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
@@ -80,9 +81,29 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				GameStartEventArgs.NameSpace
 			);
 
+			eventFactory
+				.GetEvent<PlayerDieEventArgs>(
+					PlayerDieEventArgs.Name,
+					PlayerDieEventArgs.NameSpace
+				)
+				.Subscribe( OnPlayerDie );
+
 			Subscribe( sessionService.SessionChanged, HandleSessionChanged );
 			Subscribe( sessionService.PeerConnected, HandlePeerConnected );
 			Subscribe( sessionService.PeerDisconnected, HandlePeerDisconnected );
+		}
+
+		/*
+		===============
+		OnPlayerDie
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnPlayerDie( in PlayerDieEventArgs args )
+		{
 		}
 
 		/*

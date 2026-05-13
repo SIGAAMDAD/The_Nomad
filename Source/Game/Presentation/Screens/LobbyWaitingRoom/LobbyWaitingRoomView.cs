@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Godot;
 using Nomad.Core.Engine.Globals;
+using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
@@ -23,18 +24,45 @@ using Nomad.Networking.Session;
 
 namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 {
+	/*
+	===================================================================================
+
+	LobbyWaitingRoomView
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed partial class LobbyWaitingRoomView : Control
 	{
-		private ILobbyWaitingRoomService _waitingRoomService;
-		private IVotingService _votingService;
-		private INetworkSessionService _networkSession;
+		private readonly IUserAvatarService _avatarService;
 
 		private VBoxContainer _memberList;
+		private LobbyWaitingRoomPresenter _presenter;
 
 		public event Action Leave;
 		public event Action StartGame;
+		public event Action VoteStart;
 		public event Action ReadyUp;
 		public event Action ChangeSettings;
+
+		public LobbyWaitingRoomView()
+		{
+			_avatarService = ServiceLocator.GetService<IOnlinePlatformService>().AvatarService;
+		}
+
+		public void AddMember( string displayName, PeerId peerId )
+		{
+			var banner = new PlayerBanner( _avatarService, peerId, displayName );
+			_memberList.AddChild( banner );
+		}
+
+		public void RemoveMember( int index )
+		{
+			_memberList.RemoveChild( _memberList.GetChild( index ) );
+		}
 
 		public override void _Ready()
 		{
@@ -43,95 +71,46 @@ namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 			_memberList = GetNode<VBoxContainer>( "MemberList" );
 
 			var locator = ServiceLocator.Instance;
-			_waitingRoomService = locator.GetService<ILobbyWaitingRoomService>();
-			_votingService = locator.GetService<IVotingService>();
-			_networkSession = locator.GetService<INetworkSessionService>();
+			var waitingRoomService = locator.GetService<ILobbyWaitingRoomService>();
+			var votingService = locator.GetService<IVotingService>();
+			var sessionService = locator.GetService<INetworkSessionService>();
 
+			GetNode<Button>( "ButtonContainer/LeaveButton" ).Pressed += () => Leave?.Invoke();
 			Button lobbyOption1Button = GetNode<Button>( "ButtonContainer/LobbyOption1Button" );
 			Button lobbyOption2Button = GetNode<Button>( "ButtonContainer/LobbyOption2Button" );
 
 			// if we're not the host, we can only ready up.
-			if ( !_waitingRoomService.CanStart ) {
+			if ( !waitingRoomService.CanStart ) {
 				lobbyOption1Button.Text = LocalizationService.Translate( new InternString( "UI_LOBBY_VOTE_START" ) );
 				lobbyOption2Button.Text = LocalizationService.Translate( new InternString( "UI_LOBBY_GAME_READY" ) );
 			} else {
 				lobbyOption1Button.Text = LocalizationService.Translate( new InternString( "UI_LOBBY_CHANGE_SETTINGS" ) );
 				lobbyOption2Button.Text = LocalizationService.Translate( new InternString( "UI_LOBBY_START_GAME" ) );
-
-				_waitingRoomService.OpenWaitingRoom();
 			}
-			_networkSession.PeerConnected.Subscribe( OnPeerConnected );
-			_networkSession.PeerDisconnected.Subscribe( OnPeerDisconnected );
-			_networkSession.SessionChanged.Subscribe( OnSessionChanged );
 
-			RefreshMemberList();
+			_presenter = new LobbyWaitingRoomPresenter(
+				this,
+				new LobbyWaitingRoomModel( sessionService ),
+				sessionService,
+				votingService,
+				waitingRoomService
+			);
 		}
 
-		private void OnSessionChanged( in NetworkSessionChangedEventArgs args )
-		{
-			RefreshMemberList();
-		}
-
-		private void OnPeerConnected( in PeerConnectedEventArgs args )
-		{
-			if ( _networkSession.CurrentSession == null ) {
-				return;
-			}
-
-			foreach ( var peer in _networkSession.CurrentSession.Peers ) {
-				if ( peer.PeerId == args.PeerId ) {
-					AddMemberLabel( peer );
-					return;
-				}
-			}
-		}
-
-		private void OnPeerDisconnected( in PeerDisconnectedEventArgs args )
-		{
-			foreach ( var child in _memberList.GetChildren() ) {
-				if ( child.GetMeta( "PeerId" ).AsInt32() == args.PeerId.GetHashCode() ) {
-					_memberList.RemoveChild( child );
-					break;
-				}
-			}
-		}
-
-		private void RefreshMemberList()
-		{
-			foreach ( var child in _memberList.GetChildren() ) {
-				_memberList.RemoveChild( child );
-				child.QueueFree();
-			}
-
-			if ( _networkSession.CurrentSession == null ) {
-				return;
-			}
-
-			foreach ( var peer in _networkSession.CurrentSession.Peers ) {
-				AddMemberLabel( peer );
-			}
-		}
-
-		private void AddMemberLabel( NetworkPeerInfo peer )
-		{
-			foreach ( var child in _memberList.GetChildren() ) {
-				if ( child.GetMeta( "PeerId" ).AsInt32() == peer.PeerId.GetHashCode() ) {
-					return;
-				}
-			}
-
-			var label = new Label() {
-				Text = peer.DisplayName
-			};
-			label.SetMeta( "PeerId", peer.PeerId.GetHashCode() );
-			_memberList.AddChild( label );
-		}
-
+		/*
+		===============
+		_Process
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
 		public override void _Process( double delta )
 		{
 			base._Process( delta );
 
-			_waitingRoomService.Frame();
+			_presenter.Update();
 		}
 	};
 };

@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
+using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Prefabs;
@@ -41,7 +42,7 @@ namespace Nomad.Game.Application.Multiplayer.Gameplay
 	{
 		private readonly MultiplayerObject _multiplayer;
 
-		public NetworkPlayer( Guid guid, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
+		public NetworkPlayer( PeerId guid, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
 			: base( guid, prefab, scope, eventFactory, logger )
 		{
 			var sessionService = locator.GetService<INetworkSessionService>();
