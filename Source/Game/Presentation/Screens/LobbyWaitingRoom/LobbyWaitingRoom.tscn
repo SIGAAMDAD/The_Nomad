@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=993798681]
+[node name="ButtonContainer" type="HBoxContainer" parent="." unique_id=993798681]
 use_parent_material = true
 layout_mode = 1
 anchors_preset = -1
@@ -42,12 +42,12 @@ grow_horizontal = 2
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="LeaveButton" parent="HBoxContainer" unique_id=1938011170 instance=ExtResource("2_vr07t")]
+[node name="LeaveButton" parent="ButtonContainer" unique_id=1938011170 instance=ExtResource("2_vr07t")]
 layout_mode = 2
 text = "UI_LOBBY_LEAVE"
 
-[node name="LobbyOption1Button" parent="HBoxContainer" unique_id=1401193165 instance=ExtResource("2_vr07t")]
+[node name="LobbyOption1Button" parent="ButtonContainer" unique_id=1401193165 instance=ExtResource("2_vr07t")]
 layout_mode = 2
 
-[node name="LobbyOption2Button" parent="HBoxContainer" unique_id=1167775302 instance=ExtResource("2_vr07t")]
+[node name="LobbyOption2Button" parent="ButtonContainer" unique_id=1167775302 instance=ExtResource("2_vr07t")]
 layout_mode = 2

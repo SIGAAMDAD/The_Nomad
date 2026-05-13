@@ -16,7 +16,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.UI;
 
 namespace Nomad.Game.Prefabs {
 	/*
@@ -30,7 +29,7 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	internal sealed partial class SplashScreen : EnginePanel {
+	internal sealed partial class SplashScreen : Control {
 		private const float HOLD_TIME = 6.0f;
 		private const float FADE_TIME = 1.5f;
 
@@ -109,14 +108,14 @@ namespace Nomad.Game.Prefabs {
 
 		/*
 		===============
-		OnInit
+		_Ready
 		===============
 		*/
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
-			base.OnInit();
+		public override void _Ready() {
+			base._Ready();
 
 			_godotLogo = GetNode<TextureRect>( "GodotLogo" );
 
@@ -129,6 +128,22 @@ namespace Nomad.Game.Prefabs {
 			_shader = _thirdPartyLogos.Material as ShaderMaterial;
 
 			_epilepsyWarning = GetNode<Label>( "EpilepsyWarning" );
+		}
+
+		/*
+		===============
+		_UnhandledInput
+		===============
+		*/
+		/// <summary>
+		/// Ensures we have a manual skip utility for the splash screens.
+		/// </summary>
+		/// <param name="event"></param>
+		public override void _UnhandledInput( InputEvent @event ) {
+			base._UnhandledInput( @event );
+
+			_timer.Stop();
+			_timer.EmitSignal( Timer.SignalName.Timeout );
 		}
 	};
 };
