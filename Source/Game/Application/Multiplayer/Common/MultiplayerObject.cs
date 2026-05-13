@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
@@ -51,6 +52,7 @@ namespace Nomad.Game.Application.Multiplayer
 		private readonly INetworkSessionService _sessionService;
 		private readonly INetworkRpcBus _rpcBus;
 		private readonly INetworkEventBus _eventBus;
+		private readonly INetworkMessageRegistry _registry;
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly List<Action> _cleanup = new();
 
@@ -74,9 +76,11 @@ namespace Nomad.Game.Application.Multiplayer
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
 			IGameEventRegistryService eventFactory
 		)
 		{
+			_registry = messageRegistry ?? throw new ArgumentNullException( nameof( messageRegistry ) );
 			_sessionService = sessionService ?? throw new ArgumentNullException( nameof( sessionService ) );
 			_rpcBus = rpcBus ?? throw new ArgumentNullException( nameof( rpcBus ) );
 			_eventBus = eventBus ?? throw new ArgumentNullException( nameof( eventBus ) );
@@ -134,9 +138,10 @@ namespace Nomad.Game.Application.Multiplayer
 		/// </summary>
 		/// <typeparam name="TArgs"></typeparam>
 		/// <param name="gameEvent"></param>
-		public void RegisterNetworkEvent<TArgs>( IGameEvent<TArgs> gameEvent )
+		public void RegisterNetworkEvent<TArgs>( MessageIds id, IGameEvent<TArgs> gameEvent )
 			where TArgs : struct
 		{
+			_registry.Register<TArgs>( (ushort)id, NetworkMessageKind.Event );
 			_eventBus.Register( gameEvent );
 			AddCleanup( () => _eventBus.Unregister<TArgs>() );
 		}
@@ -151,9 +156,10 @@ namespace Nomad.Game.Application.Multiplayer
 		/// </summary>
 		/// <typeparam name="TRpc"></typeparam>
 		/// <param name="handler"></param>
-		public void RegisterRpc<TRpc>( NetworkRpcHandler<TRpc> handler )
+		public void RegisterRpc<TRpc>( MessageIds id, NetworkRpcHandler<TRpc> handler )
 			where TRpc : struct
 		{
+			_registry.Register<TRpc>( (ushort)id, NetworkMessageKind.Rpc );
 			_rpcBus.Register( handler );
 			AddCleanup( () => _rpcBus.Unregister<TRpc>() );
 		}

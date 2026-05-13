@@ -119,7 +119,7 @@ namespace Nomad.Game.Application.Multiplayer.Profile
 				allSucceeded &= success;
 			}
 
-			bool stored = await _statsService.StoreStats();
+			bool stored = _statsService.StoreStats();
 			_category?.PrintDebug( $"PushStatsToOnlineAsync: pushed {PlayerProfileStatsSchema.Stats.Length} stats for PeerId='{LocalPeerId}'. Success={allSucceeded && stored}." );
 			return allSucceeded && stored;
 		}

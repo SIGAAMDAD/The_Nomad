@@ -21,6 +21,7 @@ using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Events;
+using Nomad.Networking.Messaging;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
@@ -45,8 +46,15 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				throw new System.NotImplementedException();
 			}
 		}
-		public DeathmatchMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+
+		public DeathmatchMode(
+			INetworkSessionService sessionService,
+			INetworkRpcBus rpcBus,
+			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
+			IGameEventRegistryService eventFactory
+		)
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
 		}
 	};

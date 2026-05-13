@@ -52,6 +52,7 @@ namespace Nomad.Game.Application.UI.Menus
 			[MenuState.Main] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MainMenu/MainMenu.tscn", StorageScope.Install ),
 			[MenuState.Extras] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenu.tscn", StorageScope.Install ),
 			[MenuState.Multiplayer] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenu.tscn", StorageScope.Install ),
+			[MenuState.LobbyWaitingRoom] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LobbyWaitingRoom/LobbyWaitingRoom.tscn", StorageScope.Install ),
 			[MenuState.Loading] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.tscn", StorageScope.Install ),
 			[MenuState.Settings] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/SettingsMenu/SettingsMenu.tscn", StorageScope.Install ),
 			[MenuState.NewGame] = EngineService.GetStoragePath( "Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.tscn", StorageScope.Install ),

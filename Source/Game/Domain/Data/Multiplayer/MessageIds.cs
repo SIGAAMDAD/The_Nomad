@@ -13,29 +13,39 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.UI.Menus
+namespace Nomad.Game.Domain.Data.Multiplayer
 {
-	public enum MenuState : byte
+	public enum MessageIds : ushort
 	{
-		Splash,
-		Main,
-		Loading,
-		Settings,
+		VoteServiceStateChanged,
+		VoteStarted,
+		VoteCast,
+		VoteEnded,
+		VoteCancelled,
 
-		Extras,
+		VoteStartGameRequestRpc,
+		VoteCastRequestRpc,
 
-		DeveloperCommentary,
+		WaitingRoomStateChanged,
+		PeerReadyChanged,
+		CountdownStarted,
+		CountdownCancelled,
+		GameStartRequested,
 
-		Multiplayer,
-		LobbyWaitingRoom,
+		LobbyReadyRequestRpc,
+		LobbyCancelCountdownRequestRpc,
 
-		NewGame,
-		LoadGame,
+		DuelRoundBegin,
+		DuelRoundEnd,
 
-		Pause,
+		TeamChanged,
+		TeamServiceStateChanged,
+		TeamsReset,
 
-		None,
+		TeamJoinRequestRpc,
+		TeamLeaveRequestRpc,
+		TeamAutoAssignRequestRpc,
 
-		Count
+		PlayerInputCommandRpc
 	};
 };

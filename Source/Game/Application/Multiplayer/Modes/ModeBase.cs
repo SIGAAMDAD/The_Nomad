@@ -20,6 +20,7 @@ using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Events;
+using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
 
@@ -62,8 +63,14 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		/// <param name="eventBus"></param>
 		/// <param name="eventFactory"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public ModeBase( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+		public ModeBase(
+			INetworkSessionService sessionService,
+			INetworkRpcBus rpcBus,
+			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
+			IGameEventRegistryService eventFactory
+		)
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
 			peerRoster = new MultiplayerPeerRoster( sessionService );
 			lifecycle = new MultiplayerStateMachine<ModeLifecycleState>();

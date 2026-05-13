@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b4g5q4f2mg8gf"]
 
-[ext_resource type="Script" uid="uid://ts38rvnul04l" path="res://Assets/Prefabs/RegionArea/RegionArea.cs" id="1_hmxwr"]
+[ext_resource type="Script" uid="uid://b3axpn71gcp8y" path="res://Assets/Prefabs/RegionArea/RegionArea.cs" id="1_hmxwr"]
 
 [node name="RegionAreaRoot" type="Node2D" unique_id=1146163250]
 script = ExtResource("1_hmxwr")

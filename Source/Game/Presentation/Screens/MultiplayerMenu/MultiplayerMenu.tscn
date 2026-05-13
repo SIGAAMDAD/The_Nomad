@@ -15,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_dmnlr")
 metadata/_edit_use_anchors_ = true
 
@@ -95,12 +96,21 @@ size_flags_horizontal = 3
 
 [node name="MapList" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=560109090 instance=ExtResource("2_x15ph")]
 layout_mode = 2
+ConfigVarName = ""
+Title = ""
+Description = ""
 
 [node name="GameModeList" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=1681487070 instance=ExtResource("2_x15ph")]
 layout_mode = 2
+ConfigVarName = ""
+Title = ""
+Description = ""
 
 [node name="ShowFullLobbiesCheckbox" parent="LobbyBrowserContainer/VBoxContainer/FilterContainer" unique_id=1489148105 instance=ExtResource("3_4jm05")]
 layout_mode = 2
+ConfigVarName = ""
+Title = ""
+Description = ""
 
 [node name="MatchmakingContainer" type="MarginContainer" parent="." unique_id=1544086465]
 visible = false

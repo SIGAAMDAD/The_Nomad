@@ -20,6 +20,7 @@ using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Networking.Events;
+using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
 
@@ -46,7 +47,8 @@ namespace Nomad.Game.Application.Multiplayer.Gameplay
 			var sessionService = locator.GetService<INetworkSessionService>();
 			var eventBus = locator.GetService<INetworkEventBus>();
 			var rpcBus = locator.GetService<INetworkRpcBus>();
-			_multiplayer = new MultiplayerObject( sessionService, rpcBus, eventBus, eventFactory );
+			var messageRegistry = locator.GetService<INetworkMessageRegistry>();
+			_multiplayer = new MultiplayerObject( sessionService, rpcBus, eventBus, messageRegistry, eventFactory );
 
 
 		}

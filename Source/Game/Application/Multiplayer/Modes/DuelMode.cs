@@ -22,6 +22,7 @@ using Nomad.Game.Domain.Data.Multiplayer.Modes;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Networking.Events;
+using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
 
@@ -40,7 +41,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 
 	internal sealed class DuelMode : ModeBase, IDuelMode
 	{
-		private enum DuelRoundState : byte
+		private enum RoundState : byte
 		{
 			Waiting,
 			Active,
@@ -69,7 +70,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		public DuelInstanceData Snapshot => new DuelInstanceData { Player1Score = _hostState.Player1Score, Player2Score = _hostState.Player2Score, RoundIndex = _hostState.RoundIndex };
 
 		private HostState _hostState;
-		private readonly MultiplayerStateMachine<DuelRoundState> _roundFlow;
+		private readonly MultiplayerStateMachine<RoundState> _roundFlow;
 
 		/*
 		===============
@@ -82,11 +83,18 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		/// <param name="sessionService"></param>
 		/// <param name="rpcBus"></param>
 		/// <param name="eventBus"></param>
+		/// <param name="messageRegistry"></param>
 		/// <param name="eventFactory"></param>
-		public DuelMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+		public DuelMode(
+			INetworkSessionService sessionService,
+			INetworkRpcBus rpcBus,
+			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
+			IGameEventRegistryService eventFactory
+		)
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
-			_roundFlow = CreateStateMachine<DuelRoundState>();
+			_roundFlow = CreateStateMachine<RoundState>();
 
 			_duelRoundBegin = GetEvent<DuelRoundBeginEventArgs>(
 				DuelRoundBeginEventArgs.Name,
@@ -98,8 +106,8 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				DuelRoundEndEventArgs.NameSpace
 			);
 
-			RegisterNetworkEvent( _duelRoundBegin );
-			RegisterNetworkEvent( _duelRoundEnd );
+			RegisterNetworkEvent( MessageIds.DuelRoundBegin, _duelRoundBegin );
+			RegisterNetworkEvent( MessageIds.DuelRoundEnd, _duelRoundEnd );
 
 			Subscribe( _duelRoundBegin, OnDuelRoundBegin );
 			Subscribe( _duelRoundEnd, OnDuelRoundEnd );
@@ -150,7 +158,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		private void OnDuelRoundBegin( in DuelRoundBeginEventArgs args )
 		{
 			RefreshContenders( resetStateForNewSession: true );
-			_roundFlow.TransitionTo( DuelRoundState.Active, allowSameState: true );
+			_roundFlow.TransitionTo( RoundState.Active, allowSameState: true );
 			_hostState.RoundIndex++;
 			AdvanceStateVersion();
 		}
@@ -172,7 +180,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 				ApplyScore( args.WinnerId );
 			}
 
-			_roundFlow.TransitionTo( DuelRoundState.Ended, allowSameState: true );
+			_roundFlow.TransitionTo( RoundState.Ended, allowSameState: true );
 			AdvanceStateVersion();
 		}
 
