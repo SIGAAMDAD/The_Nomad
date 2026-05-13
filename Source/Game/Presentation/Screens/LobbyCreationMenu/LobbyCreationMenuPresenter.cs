@@ -20,6 +20,7 @@ using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.UI.Menus;
 using Nomad.Game.Infrastructure.Multiplayer;
+using Nomad.Networking.Session;
 
 namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 {
@@ -38,17 +39,17 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 	{
 		private readonly LobbyCreationMenuModel _model;
 		private readonly LobbyCreationMenuView _view;
-		private readonly ILobbyService _lobbyService;
+		private readonly INetworkSessionService _sessionService;
 
 		private readonly IGameEventRegistryService _eventFactory;
 
 		private bool _isDisposed = false;
 
-		public LobbyCreationMenuPresenter( LobbyCreationMenuView view, LobbyCreationMenuModel model, ILobbyService lobbyService, IGameEventRegistryService eventFactory )
+		public LobbyCreationMenuPresenter( LobbyCreationMenuView view, LobbyCreationMenuModel model, INetworkSessionService sessionService, IGameEventRegistryService eventFactory )
 		{
 			_model = model;
 			_view = view;
-			_lobbyService = lobbyService ?? throw new ArgumentNullException( nameof( lobbyService ) );
+			_sessionService = sessionService ?? throw new ArgumentNullException( nameof( sessionService ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
 			view.CreateLobby += OnCreateLobby;
@@ -105,8 +106,7 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 
 		private async void OnCreateLobby()
 		{
-			GD.Print( "Creating lobby..." );
-			await _lobbyService.CreateLobby( _model.Info ).ConfigureAwait( false );
+			await _sessionService.StartHostAsync( _model.Info ).ConfigureAwait( false );
 		}
 
 		private void OnBack()

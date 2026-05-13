@@ -19,8 +19,6 @@ using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.UI;
 using Nomad.Game.Application.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Events.Globals;
-using Nomad.CVars.Global;
 using Nomad.Logger.Globals;
 using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Game.Infrastructure;
@@ -31,13 +29,6 @@ using Nomad.Core.Logger;
 using Nomad.Game.Application.Multiplayer;
 using Nomad.Core.Events;
 using Nomad.Core.CVars;
-using Nomad.Game.Application.Multiplayer.Profile;
-using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Networking.Session;
-using Nomad.Networking.Rpc;
-using Nomad.Networking.Events;
-using Nomad.Networking.Messaging;
 
 namespace Nomad.Game.Application
 {
@@ -87,29 +78,10 @@ namespace Nomad.Game.Application
 			_worldLoader = new SceneWorldLoader( _sceneManager );
 			_saveController = new SaveGameController( ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
 
-			var sessionService = locator.GetService<INetworkSessionService>();
-			var rpcBus = locator.GetService<INetworkRpcBus>();
-			var eventBus = locator.GetService<INetworkEventBus>();
-			var messageRegistry = locator.GetService<INetworkMessageRegistry>();
-
-			var votingService = new VotingService( sessionService, rpcBus, eventBus, messageRegistry, eventFactory );
-
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
 			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, _gameStateService, cvarSystem, Logging.Instance );
-			_multiplayerCoordinator = new MultiplayerCoordinator(
-				new LocalPlayerProfileService(
-					new PeerId( Constants.LOCAL_GUID ), "Unknown", locator.GetService<IOnlinePlatformService>().Stats, logger
-				),
-				new LobbyWaitingRoomService(
-					sessionService,
-					rpcBus,
-					eventBus,
-					messageRegistry,
-					eventFactory,
-					votingService
-				),
-				votingService
-			);
+
+			_multiplayerCoordinator = MultiplayerBootstrapper.Initialize( ServiceRegistry.Instance, ServiceLocator.Instance );
 
 			ServiceRegistry.AddSingleton( _gameStateService );
 			ServiceRegistry.AddSingleton( _worldLoader );

@@ -42,7 +42,7 @@ namespace Nomad.Game.Application.UI.Menus
 	internal sealed class MenuManager : IDisposable
 	{
 		private const float FADE_TIME = 0.75f;
-		private static readonly StringName ShaderVariableProgressName = "progress";
+		private const string SHADER_VARIABLE_PROGRESS_NAME = "progress";
 
 		private MenuState _currentState = MenuState.None;
 		private MenuState _previousState = MenuState.None;
@@ -195,7 +195,10 @@ namespace Nomad.Game.Application.UI.Menus
 		/// <param name="args"></param>
 		private void OnMenuTransitionRequested( in MenuTransitionRequestedEventArgs args )
 		{
-			TransitionToMenu( args.ToState );
+			var toState = args.ToState;
+
+			// we might be calling this from a non ui thread, so make it deferred.
+			Callable.From( () => TransitionToMenu( toState ) ).CallDeferred();
 		}
 
 		/*
@@ -386,14 +389,14 @@ namespace Nomad.Game.Application.UI.Menus
 			}
 
 			try {
-				shader.SetShaderParameter( ShaderVariableProgressName, fromValue );
+				shader.SetShaderParameter( SHADER_VARIABLE_PROGRESS_NAME, fromValue );
 			} catch ( Exception ) {
 				return false;
 			}
 
 			Tween tween = surface.CreateTween();
 			tween.TweenMethod(
-				Callable.From<float>( value => shader.SetShaderParameter( ShaderVariableProgressName, value ) ),
+				Callable.From<float>( value => shader.SetShaderParameter( SHADER_VARIABLE_PROGRESS_NAME, value ) ),
 				fromValue,
 				toValue,
 				FADE_TIME

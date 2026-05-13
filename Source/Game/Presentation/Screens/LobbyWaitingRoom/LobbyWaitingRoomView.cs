@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Linq;
 using Godot;
 using Nomad.Core.Engine.Globals;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -63,27 +62,28 @@ namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 			}
 			_networkSession.PeerConnected.Subscribe( OnPeerConnected );
 			_networkSession.PeerDisconnected.Subscribe( OnPeerDisconnected );
+			_networkSession.SessionChanged.Subscribe( OnSessionChanged );
 
-			var members = _networkSession.CurrentSession.Peers;
-			foreach ( var peer in members ) {
-				var label = new Label() {
-					Text = peer.DisplayName
-				};
-				label.SetMeta( "PeerId", peer.PeerId.GetHashCode() );
-				_memberList.AddChild( label );
-			}
+			RefreshMemberList();
+		}
+
+		private void OnSessionChanged( in NetworkSessionChangedEventArgs args )
+		{
+			RefreshMemberList();
 		}
 
 		private void OnPeerConnected( in PeerConnectedEventArgs args )
 		{
-			var peerId = args.PeerId;
-			var peer = _networkSession.CurrentSession.Peers.First( p => p.PeerId == peerId );
+			if ( _networkSession.CurrentSession == null ) {
+				return;
+			}
 
-			var label = new Label() {
-				Text = peer.DisplayName,
-			};
-			label.SetMeta( "PeerId", peer.PeerId.GetHashCode() );
-			_memberList.AddChild( label );
+			foreach ( var peer in _networkSession.CurrentSession.Peers ) {
+				if ( peer.PeerId == args.PeerId ) {
+					AddMemberLabel( peer );
+					return;
+				}
+			}
 		}
 
 		private void OnPeerDisconnected( in PeerDisconnectedEventArgs args )
@@ -94,6 +94,37 @@ namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 					break;
 				}
 			}
+		}
+
+		private void RefreshMemberList()
+		{
+			foreach ( var child in _memberList.GetChildren() ) {
+				_memberList.RemoveChild( child );
+				child.QueueFree();
+			}
+
+			if ( _networkSession.CurrentSession == null ) {
+				return;
+			}
+
+			foreach ( var peer in _networkSession.CurrentSession.Peers ) {
+				AddMemberLabel( peer );
+			}
+		}
+
+		private void AddMemberLabel( NetworkPeerInfo peer )
+		{
+			foreach ( var child in _memberList.GetChildren() ) {
+				if ( child.GetMeta( "PeerId" ).AsInt32() == peer.PeerId.GetHashCode() ) {
+					return;
+				}
+			}
+
+			var label = new Label() {
+				Text = peer.DisplayName
+			};
+			label.SetMeta( "PeerId", peer.PeerId.GetHashCode() );
+			_memberList.AddChild( label );
 		}
 
 		public override void _Process( double delta )

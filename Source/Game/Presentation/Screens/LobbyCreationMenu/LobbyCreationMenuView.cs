@@ -14,11 +14,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
+using Nomad.Networking.Session;
 using System;
 using System.Collections.Generic;
 
@@ -86,7 +85,12 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 			GetNode<Button>( "ButtonContainer/CreateButton" ).Pressed += () => CreateLobby?.Invoke();
 			GetNode<Button>( "ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
 
-			_presenter = new LobbyCreationMenuPresenter( this, new LobbyCreationMenuModel(), ServiceLocator.GetService<IOnlinePlatformService>().Lobbies, GameEventRegistry.Instance );
+			_presenter = new LobbyCreationMenuPresenter(
+				this,
+				new LobbyCreationMenuModel(),
+				ServiceLocator.GetService<INetworkSessionService>(),
+				GameEventRegistry.Instance
+			);
 		}
 
 		/*
