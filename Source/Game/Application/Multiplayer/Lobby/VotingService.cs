@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Voting;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
@@ -75,9 +76,10 @@ namespace Nomad.Game.Application.Multiplayer
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
+			INetworkMessageRegistry registry,
 			IGameEventRegistryService eventFactory
 		)
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+			: base( sessionService, rpcBus, eventBus, registry, eventFactory )
 		{
 			_stateMachine = new MultiplayerStateMachine<VoteServiceState>(
 				VoteServiceState.Idle,
@@ -90,14 +92,14 @@ namespace Nomad.Game.Application.Multiplayer
 			_voteEnded = GetEvent<VoteEndedEventArgs>( nameof( VoteEndedEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
 			_voteCancelled = GetEvent<VoteCancelledEventArgs>( nameof( VoteCancelledEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
 
-			RegisterNetworkEvent( _voteServiceStateChanged );
-			RegisterNetworkEvent( _voteStarted );
-			RegisterNetworkEvent( _voteCast );
-			RegisterNetworkEvent( _voteEnded );
-			RegisterNetworkEvent( _voteCancelled );
+			RegisterNetworkEvent( MessageIds.VoteServiceStateChanged, _voteServiceStateChanged );
+			RegisterNetworkEvent( MessageIds.VoteStarted, _voteStarted );
+			RegisterNetworkEvent( MessageIds.VoteCast, _voteCast );
+			RegisterNetworkEvent( MessageIds.VoteEnded, _voteEnded );
+			RegisterNetworkEvent( MessageIds.VoteCancelled, _voteCancelled );
 
-			RegisterRpc<VoteStartGameRequestRpc>( OnStartGameVoteRequest );
-			RegisterRpc<VoteCastRequestRpc>( OnCastVoteRequest );
+			RegisterRpc<VoteStartGameRequestRpc>( MessageIds.VoteStartGameRequestRpc, OnStartGameVoteRequest );
+			RegisterRpc<VoteCastRequestRpc>( MessageIds.VoteCastRequestRpc, OnCastVoteRequest );
 
 			Subscribe( _voteServiceStateChanged, OnVoteServiceStateChanged );
 			Subscribe( _voteStarted, OnVoteStarted );

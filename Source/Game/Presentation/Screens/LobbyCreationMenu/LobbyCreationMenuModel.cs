@@ -14,6 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Infrastructure.Multiplayer;
 
 namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 {
@@ -25,7 +27,8 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 		{
 			// FIXME: this is a placeholder
 			Info = new LobbyCreateInfo {
-				MaxPlayers = 16
+				MaxPlayers = 16,
+				GameMode = GameModeCache.Modes[ Mode.Deathmatch ].DisplayName
 			};
 		}
 

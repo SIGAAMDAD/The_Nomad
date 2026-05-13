@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Lobby;
 using Nomad.Game.Domain.Data.Multiplayer.Voting;
 using Nomad.Game.Domain.Events.Multiplayer;
@@ -28,6 +29,17 @@ using Nomad.Networking.Session;
 
 namespace Nomad.Game.Application.Multiplayer
 {
+	/*
+	===================================================================================
+
+	LobbyWaitingRoomService
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class LobbyWaitingRoomService : MultiplayerObject, ILobbyWaitingRoomService
 	{
 		private const int DEFAULT_MIN_PLAYERS = 1;
@@ -78,10 +90,11 @@ namespace Nomad.Game.Application.Multiplayer
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
 			IGameEventRegistryService eventFactory,
 			IVotingService votingService
 		)
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
 			_votingService = votingService ?? throw new ArgumentNullException( nameof( votingService ) );
 			_stateMachine = new MultiplayerStateMachine<LobbyWaitingRoomState>(
@@ -110,14 +123,14 @@ namespace Nomad.Game.Application.Multiplayer
 				LobbyGameStartRequestedEventArgs.NameSpace
 			);
 
-			RegisterNetworkEvent( _waitingRoomStateChanged );
-			RegisterNetworkEvent( _peerReadyChanged );
-			RegisterNetworkEvent( _countdownStarted );
-			RegisterNetworkEvent( _countdownCancelled );
-			RegisterNetworkEvent( _gameStartRequested );
+			RegisterNetworkEvent( MessageIds.WaitingRoomStateChanged, _waitingRoomStateChanged );
+			RegisterNetworkEvent( MessageIds.PeerReadyChanged, _peerReadyChanged );
+			RegisterNetworkEvent( MessageIds.CountdownStarted, _countdownStarted );
+			RegisterNetworkEvent( MessageIds.CountdownCancelled, _countdownCancelled );
+			RegisterNetworkEvent( MessageIds.GameStartRequested, _gameStartRequested );
 
-			RegisterRpc<LobbyReadyRequestRpc>( OnReadyRequest );
-			RegisterRpc<LobbyCancelCountdownRequestRpc>( OnCancelCountdownRequest );
+			RegisterRpc<LobbyReadyRequestRpc>( MessageIds.LobbyReadyRequestRpc, OnReadyRequest );
+			RegisterRpc<LobbyCancelCountdownRequestRpc>( MessageIds.LobbyCancelCountdownRequestRpc, OnCancelCountdownRequest );
 
 			Subscribe( _waitingRoomStateChanged, OnWaitingRoomStateChanged );
 			Subscribe( _peerReadyChanged, OnPeerReadyChanged );

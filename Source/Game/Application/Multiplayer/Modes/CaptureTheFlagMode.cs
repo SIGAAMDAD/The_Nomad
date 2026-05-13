@@ -24,6 +24,7 @@ using Nomad.Game.Domain.Data.Multiplayer.Objectives;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
+using Nomad.Networking.Messaging;
 
 namespace Nomad.Game.Application.Multiplayer
 {
@@ -75,8 +76,14 @@ namespace Nomad.Game.Application.Multiplayer
 		private HostState _hostState;
 		private readonly MultiplayerStateMachine<RoundState> _roundFlow;
 
-		public CaptureTheFlagMode( INetworkSessionService sessionService, INetworkRpcBus rpcBus, INetworkEventBus eventBus, IGameEventRegistryService eventFactory )
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+		public CaptureTheFlagMode(
+			INetworkSessionService sessionService,
+			INetworkRpcBus rpcBus,
+			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
+			IGameEventRegistryService eventFactory
+		)
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
 			_flagStatusChanged = eventFactory.GetEvent<FlagStatusChangedEventArgs>(
 				FlagStatusChangedEventArgs.Name,

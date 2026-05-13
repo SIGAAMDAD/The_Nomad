@@ -24,6 +24,7 @@ using Nomad.Core;
 using Nomad.Core.CVars;
 using Nomad.EngineUtils;
 using Nomad.FileSystem;
+using Nomad.Core.OnlineServices;
 using Nomad.Core.Logger;
 using Nomad.Core.FileSystem;
 using System;
@@ -51,6 +52,7 @@ namespace Nomad.Game.Infrastructure
 	{
 		private IAudioDevice _audioService;
 		private IChannelRepository _channelRepository;
+		private IOnlinePlatformService _onlineService;
 
 		private NomadFrameworkBootstrapper _bootstrapper;
 
@@ -90,6 +92,7 @@ namespace Nomad.Game.Infrastructure
 
 			_audioService = serviceLocator.GetService<IAudioDevice>();
 			_channelRepository = serviceLocator.GetService<IChannelRepository>();
+			_onlineService = serviceLocator.GetService<IOnlinePlatformService>();
 
 			var fileSystem = serviceLocator.GetService<IFileSystem>();
 			var configFile = cvarSystem.Register(
@@ -124,6 +127,7 @@ namespace Nomad.Game.Infrastructure
 			float deltaTime = (float)delta;
 			_audioService?.Update( deltaTime );
 			_channelRepository?.Update( deltaTime );
+			_onlineService?.Frame();
 		}
 
 		/*

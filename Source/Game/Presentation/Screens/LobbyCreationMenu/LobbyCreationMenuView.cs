@@ -14,6 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Core.OnlineServices;
+using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Events.Globals;
 using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
 using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
 using System;
@@ -76,14 +79,29 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 		{
 			base._Ready();
 
-			_name = GetNode<LineEdit>( "MarginContainer/ConfigContainer/LobbyName" );
-			_mapList = GetNode<OptionList>( "MarginContainer/ConfigContainer/MapList" );
-			_gameModeList = GetNode<OptionList>( "MarginContainer/ConfigContainer/GameModeList" );
+			_name = GetNode<LineEdit>( "ConfigContainer/LobbyName" );
+			_mapList = GetNode<OptionList>( "ConfigContainer/MapList" );
+			_gameModeList = GetNode<OptionList>( "ConfigContainer/GameModeList" );
 
-			GetNode<Button>( "MarginContainer/ButtonContainer/CreateButton" ).Pressed += () => CreateLobby?.Invoke();
-			GetNode<Button>( "MarginContainer/ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
+			GetNode<Button>( "ButtonContainer/CreateButton" ).Pressed += () => CreateLobby?.Invoke();
+			GetNode<Button>( "ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
 
-			_presenter = new LobbyCreationMenuPresenter( this, new LobbyCreationMenuModel() );
+			_presenter = new LobbyCreationMenuPresenter( this, new LobbyCreationMenuModel(), ServiceLocator.GetService<IOnlinePlatformService>().Lobbies, GameEventRegistry.Instance );
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_presenter?.Dispose();
 		}
 	};
 };

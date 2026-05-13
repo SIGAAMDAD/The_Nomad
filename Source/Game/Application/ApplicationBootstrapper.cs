@@ -37,6 +37,7 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Networking.Session;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Events;
+using Nomad.Networking.Messaging;
 
 namespace Nomad.Game.Application
 {
@@ -89,8 +90,9 @@ namespace Nomad.Game.Application
 			var sessionService = locator.GetService<INetworkSessionService>();
 			var rpcBus = locator.GetService<INetworkRpcBus>();
 			var eventBus = locator.GetService<INetworkEventBus>();
+			var messageRegistry = locator.GetService<INetworkMessageRegistry>();
 
-			var votingService = new VotingService( sessionService, rpcBus, eventBus, eventFactory );
+			var votingService = new VotingService( sessionService, rpcBus, eventBus, messageRegistry, eventFactory );
 
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
 			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, _gameStateService, cvarSystem, Logging.Instance );
@@ -102,6 +104,7 @@ namespace Nomad.Game.Application
 					sessionService,
 					rpcBus,
 					eventBus,
+					messageRegistry,
 					eventFactory,
 					votingService
 				),

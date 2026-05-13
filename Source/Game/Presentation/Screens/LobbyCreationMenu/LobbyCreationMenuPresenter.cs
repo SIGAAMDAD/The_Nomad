@@ -13,23 +13,75 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
+using Godot;
+using Nomad.Core.Events;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Application.UI.Menus;
 using Nomad.Game.Infrastructure.Multiplayer;
 
 namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 {
-	internal sealed class LobbyCreationMenuPresenter
+	/*
+	===================================================================================
+
+	LobbyCreationMenuPresenter
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class LobbyCreationMenuPresenter : IDisposable
 	{
 		private readonly LobbyCreationMenuModel _model;
 		private readonly LobbyCreationMenuView _view;
+		private readonly ILobbyService _lobbyService;
 
-		public LobbyCreationMenuPresenter( LobbyCreationMenuView view, LobbyCreationMenuModel model )
+		private readonly IGameEventRegistryService _eventFactory;
+
+		private bool _isDisposed = false;
+
+		public LobbyCreationMenuPresenter( LobbyCreationMenuView view, LobbyCreationMenuModel model, ILobbyService lobbyService, IGameEventRegistryService eventFactory )
 		{
 			_model = model;
 			_view = view;
+			_lobbyService = lobbyService ?? throw new ArgumentNullException( nameof( lobbyService ) );
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
 			view.CreateLobby += OnCreateLobby;
 			view.Back += OnBack;
+
+			SyncView();
+
+			_eventFactory
+				.GetEvent<LobbyStartResultEventArgs>(
+					LobbyStartResultEventArgs.Name,
+					LobbyStartResultEventArgs.NameSpace
+				)
+				.Subscribe( OnLobbyStartResult );
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.CreateLobby -= OnCreateLobby;
+			_view.Back -= OnBack;
+
+			_eventFactory
+				.GetEvent<LobbyStartResultEventArgs>(
+					LobbyStartResultEventArgs.Name,
+					LobbyStartResultEventArgs.NameSpace
+				)
+				.Unsubscribe( OnLobbyStartResult );
+
+			_isDisposed = true;
+			GC.SuppressFinalize( this );
 		}
 
 		public void SyncView()
@@ -51,12 +103,35 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 			_view.SetGameModeValue( gameModes.IndexOf( _model.Info.GameMode ) );
 		}
 
-		private void OnCreateLobby()
+		private async void OnCreateLobby()
 		{
+			GD.Print( "Creating lobby..." );
+			await _lobbyService.CreateLobby( _model.Info ).ConfigureAwait( false );
 		}
 
 		private void OnBack()
 		{
+			_eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Multiplayer, MenuState.Extras ) );
+		}
+
+		private void OnLobbyStartResult( in LobbyStartResultEventArgs args )
+		{
+			if ( !args.Success ) {
+				// TODO: create error dialogue
+				GD.PushError( "Error creating lobby" );
+				return;
+			}
+			_eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
+				.Publish( new MenuTransitionRequestedEventArgs( MenuState.Multiplayer, MenuState.LobbyWaitingRoom ));
 		}
 	};
 };

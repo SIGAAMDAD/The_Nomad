@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Team;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Multiplayer;
@@ -78,10 +79,11 @@ namespace Nomad.Game.Application.Multiplayer.Team
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
 			IGameEventRegistryService eventFactory,
 			IReadOnlyList<TeamDefinition>? teams = null
 		)
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
 			_sessionService = sessionService ?? throw new ArgumentNullException( nameof( sessionService ) );
 
@@ -105,13 +107,13 @@ namespace Nomad.Game.Application.Multiplayer.Team
 				TeamsResetEventArgs.NameSpace
 			);
 
-			RegisterNetworkEvent( _teamChanged );
-			RegisterNetworkEvent( _teamServiceStateChanged );
-			RegisterNetworkEvent( _teamsReset );
+			RegisterNetworkEvent( MessageIds.TeamChanged, _teamChanged );
+			RegisterNetworkEvent( MessageIds.TeamServiceStateChanged, _teamServiceStateChanged );
+			RegisterNetworkEvent( MessageIds.TeamsReset, _teamsReset );
 
-			RegisterRpc<TeamJoinRequestRpc>( OnJoinTeamRequest );
-			RegisterRpc<TeamLeaveRequestRpc>( OnLeaveTeamRequest );
-			RegisterRpc<TeamAutoAssignRequestRpc>( OnAutoAssignRequest );
+			RegisterRpc<TeamJoinRequestRpc>( MessageIds.TeamJoinRequestRpc, OnJoinTeamRequest );
+			RegisterRpc<TeamLeaveRequestRpc>( MessageIds.TeamLeaveRequestRpc, OnLeaveTeamRequest );
+			RegisterRpc<TeamAutoAssignRequestRpc>( MessageIds.TeamAutoAssignRequestRpc, OnAutoAssignRequest );
 
 			Subscribe( _teamChanged, OnTeamChanged );
 			Subscribe( _teamServiceStateChanged, OnTeamServiceStateChanged );

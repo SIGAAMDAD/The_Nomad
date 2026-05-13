@@ -1,10 +1,120 @@
 [gd_scene format=3 uid="uid://dyh47j7kg0hn8"]
 
-[ext_resource type="Script" uid="uid://cgxp58iyecvy8" path="res://Source/Game/Presentation/Screens/LobbyCreationMenu/LobbyCreationMenuView.cs" id="1_1w28u"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_afgk1"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="3_5y6x8"]
 
+[sub_resource type="CSharpScript" id="CSharpScript_8aq8l"]
+script/source = "/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided \"as is\", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
+using Godot;
+using Nomad.Core.OnlineServices;
+using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Events.Globals;
+using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
+using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
+using System;
+using System.Collections.Generic;
+
+namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
+{
+	/*
+	===================================================================================
+
+	LobbyCreationMenuView
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	public sealed partial class LobbyCreationMenuView : Control
+	{
+		public event Action Back;
+		public event Action CreateLobby;
+		public event Action Reset;
+
+		private LineEdit _name;
+		private OptionList _mapList;
+		private OptionList _gameModeList;
+
+		private LobbyCreationMenuPresenter _presenter;
+
+		public void SetGameModeOptions( IReadOnlyList<string> options )
+		{
+			_gameModeList.SetOptions( options );
+		}
+
+		public void SetGameModeValue( int value )
+		{
+			_gameModeList.SetValue( value );
+		}
+
+		public void SetMapOptions( IReadOnlyList<string> options )
+		{
+			_mapList.SetOptions( options );
+		}
+
+		public void SetMapValue( int value )
+		{
+			_mapList.SetValue( value );
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _Ready()
+		{
+			base._Ready();
+
+			_name = GetNode<LineEdit>( \"ConfigContainer/LobbyName\" );
+			_mapList = GetNode<OptionList>( \"ConfigContainer/MapList\" );
+			_gameModeList = GetNode<OptionList>( \"ConfigContainer/GameModeList\" );
+
+			GetNode<Button>( \"ButtonContainer/CreateButton\" ).Pressed += () => CreateLobby?.Invoke();
+			GetNode<Button>( \"ButtonContainer/BackButton\" ).Pressed += () => Back?.Invoke();
+
+			_presenter = new LobbyCreationMenuPresenter( this, new LobbyCreationMenuModel(), ServiceLocator.GetService<IOnlinePlatformService>().Lobbies, GameEventRegistry.Instance );
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_presenter?.Dispose();
+		}
+	};
+};
+"
+
 [node name="LobbyCreationMenu" type="Control" unique_id=326181912]
+use_parent_material = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,51 +122,61 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("1_1w28u")
+script = SubResource("CSharpScript_8aq8l")
 metadata/_edit_use_anchors_ = true
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=755158973]
+[node name="ConfigContainer" type="VBoxContainer" parent="." unique_id=1553121298]
+use_parent_material = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.067
+anchor_right = 0.95000005
+anchor_bottom = 0.933
+offset_top = -0.20000076
+offset_right = -6.1035156e-05
+offset_bottom = 0.2000122
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="ConfigContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1553121298]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LobbyName" type="LineEdit" parent="MarginContainer/ConfigContainer" unique_id=305369452]
+[node name="LobbyName" type="LineEdit" parent="ConfigContainer" unique_id=305369452]
+use_parent_material = true
 layout_mode = 2
 placeholder_text = "Lobby Name"
 caret_blink = true
 
-[node name="MapList" parent="MarginContainer/ConfigContainer" unique_id=560109090 instance=ExtResource("2_afgk1")]
+[node name="MapList" parent="ConfigContainer" unique_id=560109090 instance=ExtResource("2_afgk1")]
 layout_mode = 2
 
-[node name="GameModeList" parent="MarginContainer/ConfigContainer" unique_id=154905174 instance=ExtResource("2_afgk1")]
+[node name="GameModeList" parent="ConfigContainer" unique_id=154905174 instance=ExtResource("2_afgk1")]
 layout_mode = 2
 
-[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer" unique_id=599071310]
-layout_mode = 2
+[node name="ButtonContainer" type="HBoxContainer" parent="." unique_id=599071310]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.882
+anchor_right = 0.95000005
+anchor_bottom = 0.933
+offset_top = -0.2000122
+offset_right = -6.1035156e-05
+offset_bottom = 0.2000122
+metadata/_edit_use_anchors_ = true
 
-[node name="BackButton" parent="MarginContainer/ButtonContainer" unique_id=1938011170 instance=ExtResource("3_5y6x8")]
+[node name="BackButton" parent="ButtonContainer" unique_id=1938011170 instance=ExtResource("3_5y6x8")]
 layout_mode = 2
 size_flags_vertical = 8
 text = "UI_BACK"
 
-[node name="ResetButton" parent="MarginContainer/ButtonContainer" unique_id=724584032 instance=ExtResource("3_5y6x8")]
+[node name="ResetButton" parent="ButtonContainer" unique_id=724584032 instance=ExtResource("3_5y6x8")]
 layout_mode = 2
 size_flags_vertical = 8
 text = "UI_RESET"
 
-[node name="CreateButton" parent="MarginContainer/ButtonContainer" unique_id=1285668785 instance=ExtResource("3_5y6x8")]
+[node name="CreateButton" parent="ButtonContainer" unique_id=1285668785 instance=ExtResource("3_5y6x8")]
 layout_mode = 2
 size_flags_vertical = 8
 text = "UI_MULTIPLAYER_CREATE_LOBBY"

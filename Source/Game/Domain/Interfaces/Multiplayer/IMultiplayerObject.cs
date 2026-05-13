@@ -19,6 +19,7 @@ using Nomad.Networking.Session;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Messaging;
 using System;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
@@ -78,16 +79,18 @@ namespace Nomad.Game.Domain.Interfaces.Multiplayer
 		///
 		/// </summary>
 		/// <typeparam name="TArgs"></typeparam>
+		/// <param name="id"></param>
 		/// <param name="gameEvent"></param>
-		void RegisterNetworkEvent<TArgs>( IGameEvent<TArgs> gameEvent )
+		void RegisterNetworkEvent<TArgs>( MessageIds id, IGameEvent<TArgs> gameEvent )
 			where TArgs : struct;
 
 		/// <summary>
 		///
 		/// </summary>
 		/// <typeparam name="TRpc"></typeparam>
+		/// <param name="id"></param>
 		/// <param name="handler"></param>
-		void RegisterRpc<TRpc>( NetworkRpcHandler<TRpc> handler )
+		void RegisterRpc<TRpc>( MessageIds id, NetworkRpcHandler<TRpc> handler )
 			where TRpc : struct;
 
 		/// <summary>

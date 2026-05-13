@@ -18,6 +18,7 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Gameplay.Player.Input;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Networking.Events;
@@ -51,11 +52,12 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
+			INetworkMessageRegistry messageRegistry,
 			IGameEventRegistryService eventFactory
 		)
-			: base( sessionService, rpcBus, eventBus, eventFactory )
+			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
-			RegisterRpc<PlayerInputCommandRpc>( OnPlayerInputCommand );
+			RegisterRpc<PlayerInputCommandRpc>( MessageIds.PlayerInputCommandRpc, OnPlayerInputCommand );
 		}
 
 		/*
