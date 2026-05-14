@@ -68,6 +68,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		)
 			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
+			_hostState = new HostState();
 		}
 
 		/*

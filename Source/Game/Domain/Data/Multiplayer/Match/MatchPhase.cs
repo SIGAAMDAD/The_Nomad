@@ -13,13 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Runtime.InteropServices;
-
-namespace Nomad.Game.Domain.Data.Multiplayer
+namespace Nomad.Game.Domain.Data.Multiplayer.Match
 {
-	[StructLayout( LayoutKind.Sequential, Pack = 1 )]
-	public readonly struct NetPacketHeader
+	/// <summary>
+	///
+	/// </summary>
+	public enum MatchPhase : byte
 	{
-		public readonly PacketType Type;
+		None,
+		WaitingForPlayers,
+		Loading,
+		Warmup,
+		Countdown,
+		Active,
+		RoundEnd,
+		MatchEnd,
+		PostMatch,
+		ReturningToLobby
 	};
 };

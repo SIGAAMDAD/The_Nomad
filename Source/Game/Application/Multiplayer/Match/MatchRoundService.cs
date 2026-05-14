@@ -15,10 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Application.Multiplayer.Match
 {
-	internal sealed class MatchFlowService
+	internal sealed class MatchRoundService
 	{
-		public MatchFlowService()
+		private enum RoundState : byte
 		{
-		}
+		};
+
+		private readonly MultiplayerStateMachine<RoundState> _stateMachine;
 	};
 };

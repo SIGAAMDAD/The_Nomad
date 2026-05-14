@@ -15,10 +15,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Application.Multiplayer.Match
 {
-	internal sealed class MatchFlowService
+	/*
+	===================================================================================
+
+	MatchStatsAccumulator
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class MatchStatsAccumulator
 	{
-		public MatchFlowService()
-		{
-		}
 	};
 };
