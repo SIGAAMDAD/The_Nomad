@@ -13,12 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Multiplayer.Match
+using System.Numerics;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer.Team;
+
+namespace Nomad.Game.Domain.Data.Multiplayer.Objectives
 {
-	internal sealed class MatchFlowService
+	public readonly struct FlagObjectiveSnapshot
 	{
-		public MatchFlowService()
-		{
-		}
+		public TeamId TeamId { get; init; }
+		public FlagStatus Status { get; init; }
+
+		public PeerId Carrier { get; init; }
+
+		public Vector2 HomePosition { get; init; }
+		public Vector2 CurrentPosition { get; init; }
+		public Vector2 DroppedPosition { get; init; }
+
+		public uint Version { get; init; }
 	};
 };

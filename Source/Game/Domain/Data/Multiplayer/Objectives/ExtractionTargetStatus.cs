@@ -13,12 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Multiplayer.Match
+namespace Nomad.Game.Domain.Data.Multiplayer.Objectives
 {
-	internal sealed class MatchFlowService
+	public enum ExtractionTargetStatus : byte
 	{
-		public MatchFlowService()
-		{
-		}
+		Inactive = 0,
+		Unsecured,
+		Secured,
+		Carried,
+		Downed,
+		Extracting,
+		Extracted,
+		Killed,
+		Lost
 	};
 };

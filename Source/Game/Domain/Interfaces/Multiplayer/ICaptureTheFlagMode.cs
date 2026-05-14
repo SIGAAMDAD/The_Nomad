@@ -18,10 +18,14 @@ using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
 using Nomad.Game.Domain.Data.Multiplayer.Objectives;
+using Nomad.Game.Domain.Data.Multiplayer.Team;
 using Nomad.Game.Domain.Events.Multiplayer;
 
 namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
+	/// <summary>
+	///
+	/// </summary>
 	public interface ICaptureTheFlagMode : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
@@ -30,6 +34,17 @@ namespace Nomad.Game.Domain.Interfaces.Multiplayer
 		[EventPayload( "CurrentStatus", typeof( FlagStatus ), Order = 3 )]
 		IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged { get; }
 
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
+		IGameEvent<CTFRoundBeginEventArgs> CTFRoundBegin { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
+		IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd { get; }
+
 		CaptureTheFlagInstanceData Snapshot { get; }
+
+		bool TryBeginRound();
+		bool TryEndRound( CaptureTheFlagRoundEndReason reason );
+
+		bool TryGetTeamScore( TeamId teamId, out int score );
 	};
 };

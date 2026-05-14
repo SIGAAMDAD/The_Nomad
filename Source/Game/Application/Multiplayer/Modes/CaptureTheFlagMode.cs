@@ -25,6 +25,8 @@ using Nomad.Game.Domain.Interfaces.Multiplayer;
 using Nomad.Game.Domain.Events.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
 using Nomad.Networking.Messaging;
+using Nomad.Game.Domain.Data.Multiplayer.Team;
+using System;
 
 namespace Nomad.Game.Application.Multiplayer
 {
@@ -51,9 +53,9 @@ namespace Nomad.Game.Application.Multiplayer
 		private struct HostState
 		{
 			public SessionId SessionId { get; set; }
-			public byte RedTeamScore { get; set; }
-			public byte BlueTeamScore { get; set; }
-			public byte RoundIndex { get; set; }
+			public uint RedTeamScore { get; set; }
+			public uint BlueTeamScore { get; set; }
+			public uint RoundIndex { get; set; }
 
 			public FlagStatus RedFlagStatus { get; set; }
 			public FlagStatus BlueFlagStatus { get; set; }
@@ -64,6 +66,12 @@ namespace Nomad.Game.Application.Multiplayer
 
 		public IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged => _flagStatusChanged;
 		private readonly IGameEvent<FlagStatusChangedEventArgs> _flagStatusChanged = default;
+
+		public IGameEvent<CTFRoundBeginEventArgs> CTFRoundBegin => _ctfRoundBegin;
+		private readonly IGameEvent<CTFRoundBeginEventArgs> _ctfRoundBegin = default;
+
+		public IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd => _ctfRoundEnd;
+		private readonly IGameEvent<CTFRoundEndEventArgs> _ctfRoundEnd = default;
 
 		public CaptureTheFlagInstanceData Snapshot => new CaptureTheFlagInstanceData {
 			RedTeamScore = _hostState.RedTeamScore,
@@ -76,19 +84,46 @@ namespace Nomad.Game.Application.Multiplayer
 		private HostState _hostState;
 		private readonly MultiplayerStateMachine<RoundState> _roundFlow;
 
+		private readonly ITeamService _teamService;
+
 		public CaptureTheFlagMode(
 			INetworkSessionService sessionService,
 			INetworkRpcBus rpcBus,
 			INetworkEventBus eventBus,
 			INetworkMessageRegistry messageRegistry,
-			IGameEventRegistryService eventFactory
+			IGameEventRegistryService eventFactory,
+			ITeamService teamService
 		)
 			: base( sessionService, rpcBus, eventBus, messageRegistry, eventFactory )
 		{
+			_teamService = teamService ?? throw new ArgumentNullException( nameof( teamService ) );
+
 			_flagStatusChanged = eventFactory.GetEvent<FlagStatusChangedEventArgs>(
 				FlagStatusChangedEventArgs.Name,
 				FlagStatusChangedEventArgs.NameSpace
 			);
+		}
+
+		public bool TryBeginRound()
+		{
+			if ( !IsHost ) {
+				return false;
+			}
+			PublishHostEvent( _ctfRoundBegin, new CTFRoundBeginEventArgs() );
+			return true;
+		}
+
+		public bool TryEndRound( CaptureTheFlagRoundEndReason reason )
+		{
+			if ( !IsHost ) {
+				return false;
+			}
+			return true;
+		}
+
+		public bool TryGetTeamScore( TeamId teamId, out int score )
+		{
+			return true;
 		}
 	};
 };

@@ -17,13 +17,14 @@ using Nomad.Game.Domain.Data.Multiplayer.Objectives;
 
 namespace Nomad.Game.Domain.Data.Multiplayer.Modes
 {
-	public readonly struct CaptureTheFlagInstanceData
+	public readonly struct CaptureTheFlagSnapshot
 	{
-		public byte RedTeamScore { get; init; }
-		public byte BlueTeamScore { get; init; }
-		public byte RoundIndex { get; init; }
+		public uint ScoreVersion { get; init; }
+		public uint RedTeamScore { get; init; }
+		public uint BlueTeamScore { get; init; }
+		public uint RoundIndex { get; init; }
 
-		public FlagStatus RedFlagState { get; init; }
-		public FlagStatus BlueFlagState { get; init; }
+		public FlagObjectiveSnapshot RedFlagState { get; init; }
+		public FlagObjectiveSnapshot BlueFlagState { get; init; }
 	};
 };
