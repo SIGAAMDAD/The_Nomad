@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://ku8fgugmqh2i"]
+
+[ext_resource type="Texture2D" uid="uid://bynuh0bi783st" path="res://Assets/Textures/UserInterface/dividerh.dds" id="1_h3pg1"]
+
+[resource]
+texture = ExtResource("1_h3pg1")
+modulate_color = Color(1, 1, 0, 1)
