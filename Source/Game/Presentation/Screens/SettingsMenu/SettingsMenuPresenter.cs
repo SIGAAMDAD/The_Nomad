@@ -33,7 +33,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 	///
 	/// </summary>
 
-	internal sealed class SettingsMenuPresenter
+	internal sealed class SettingsMenuPresenter : IDisposable
 	{
 		private readonly SettingsMenuView _view;
 
@@ -41,6 +41,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		private readonly ICVarSystemService _cvarSystem;
 		private readonly IFileSystem _fileSystem;
 		private readonly IReadOnlyList<ISettingsSectionPresenter> _sections;
+
+		private bool _isDisposed = false;
 
 		/*
 		===============
@@ -69,6 +71,28 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 			_view.SaveRequested += OnSaveRequested;
 			_view.ResetRequested += OnResetRequested;
 			_view.BackRequested += OnBackRequested;
+		}
+
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.SaveRequested -= OnSaveRequested;
+			_view.ResetRequested -= OnResetRequested;
+			_view.BackRequested -= OnBackRequested;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*

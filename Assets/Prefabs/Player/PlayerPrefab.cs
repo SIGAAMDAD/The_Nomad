@@ -13,35 +13,41 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
+using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Scene.GameObjects;
 using System.Collections.Generic;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
-	
+
 	PlayerAggregate
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class PlayerPrefab : EngineCharacter2D {
+	public partial class PlayerPrefab : EngineCharacter2D
+	{
+		public PeerId PeerId { get; init; }
 		public PlayerInitializationDefinition Definition { get; init; }
 
-		public PlayerPrefab() {
+		public PlayerPrefab()
+		{
 			Definition = new PlayerInitializationDefinition {
 				Stats = new PlayerStatBlockDefinition {
 					BaseStats = new Dictionary<BaseStatType, float> {
-						[ BaseStatType.BaseHealth ] = 100.0f,
-						[ BaseStatType.BaseRage ] = 100.0f,
-						[ BaseStatType.BaseMovementSpeed ] = 200.0f,
-						[ BaseStatType.BaseSanity ] = 90.0f,
-						[ BaseStatType.EncumbranceThreshold ] = 100.0f,
-						[ BaseStatType.BaseDashSpeed ] = 8800.0f
+						[BaseStatType.BaseHealth] = 100.0f,
+						[BaseStatType.BaseRage] = 100.0f,
+						[BaseStatType.BaseMovementSpeed] = 200.0f,
+						[BaseStatType.BaseSanity] = 90.0f,
+						[BaseStatType.EncumbranceThreshold] = 100.0f,
+						[BaseStatType.BaseDashSpeed] = 8800.0f
 					}
 				},
 				Resources = new PlayerSpawnResourceProfile {

@@ -13,13 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Game.Infrastructure.UI.Nodes.NomadLabel;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.Input;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
+using Nomad.Game.Presentation.Widgets.NomadLabel;
 using Nomad.Input.Interfaces;
 using Nomad.Input.ValueObjects;
 using Nomad.UI;
@@ -92,7 +92,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		{
 			base.OnInit();
 
-			_keyboardEvent = GameEventRegistry.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace )
+			_keyboardEvent = GameEventRegistry
+				.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace )
 				.Where( e => _isRebinding )
 				.Subscribe( OnSetBindKey );
 		}

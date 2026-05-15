@@ -18,7 +18,8 @@ using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 using Nomad.UI;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -30,7 +31,8 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public partial class DashStatusBarView : EngineImageView, IDashKitHeatBarView {
+	public partial class DashStatusBarView : EngineImageView, IDashKitHeatBarView
+	{
 		private readonly HudComponentView _impl;
 		private ShaderMaterial _material;
 		private TextureRect _overlay;
@@ -43,7 +45,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		public DashStatusBarView() {
+		public DashStatusBarView()
+		{
 			_impl = new HudComponentView( this );
 		}
 
@@ -55,7 +58,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			if ( Material is ShaderMaterial material ) {
@@ -75,7 +79,8 @@ namespace Nomad.Game.Prefabs {
 		/// 
 		/// </summary>
 		/// <param name="visible"></param>
-		public void ShowOverlayVisibility( bool visible ) {
+		public void ShowOverlayVisibility( bool visible )
+		{
 			_overlay.Visible = visible;
 		}
 
@@ -88,7 +93,8 @@ namespace Nomad.Game.Prefabs {
 		/// 
 		/// </summary>
 		/// <param name="color"></param>
-		public void SetColor( System.Numerics.Vector4 color ) {
+		public void SetColor( System.Numerics.Vector4 color )
+		{
 			_impl.SetColor( color );
 		}
 
@@ -101,7 +107,8 @@ namespace Nomad.Game.Prefabs {
 		/// 
 		/// </summary>
 		/// <param name="value"></param>
-		public void SetValue( float value ) {
+		public void SetValue( float value )
+		{
 			_material.SetShaderParameter( "progress", value );
 		}
 	};

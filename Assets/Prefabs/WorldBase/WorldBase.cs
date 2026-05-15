@@ -26,7 +26,8 @@ using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Game.Presentation.Screens.Gameplay;
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -38,12 +39,14 @@ namespace Nomad.Game.Prefabs {
 	/// The base "world" object.
 	/// </summary>
 
-	public partial class WorldBase : EngineSceneObject {
+	public partial class WorldBase : EngineSceneObject
+	{
 		private PlayerSpawnService _spawnService;
 		private ISceneManager _sceneManager;
 		private GameplayScreen _gameOverlay;
 
-		public WorldBase() {
+		public WorldBase()
+		{
 			var serviceLocator = ServiceLocator.Instance;
 			var serviceRegistry = ServiceRegistry.Instance;
 
@@ -75,7 +78,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			var gameOverlayScene = _sceneManager.LoadPrefab( "Source/Game/Presentation/Screens/Gameplay/GameplayScreen.tscn" );
@@ -83,7 +87,8 @@ namespace Nomad.Game.Prefabs {
 			AddChild( _gameOverlay );
 		}
 
-		protected override void OnShutdown() {
+		protected override void OnShutdown()
+		{
 			base.OnShutdown();
 
 			_spawnService?.Dispose();

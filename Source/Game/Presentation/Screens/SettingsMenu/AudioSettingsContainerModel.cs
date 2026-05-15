@@ -18,20 +18,19 @@ using System.Collections.Generic;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
-using Nomad.CVars;
 using Nomad.EngineUtils.Settings.Services;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	AudioSettingsContainerModel
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class AudioSettingsContainerModel
@@ -46,6 +45,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public bool EffectsOn => _service.Config.SoundEffectsOn;
 		public int OutputDeviceIndex => _service.Config.OutputDeviceIndex;
 		public int AudioDriverAPI => _service.Config.AudioDriver;
+		public int SpeakerMode => _service.Config.SpeakerMode;
 
 		public IReadOnlyList<string> OutputDevices => _device.OutputDevices;
 		public IReadOnlyList<string> AudioDrivers => _device.AudioDrivers;
@@ -61,7 +61,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="device"></param>
 		/// <param name="service"></param>

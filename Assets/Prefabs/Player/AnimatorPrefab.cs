@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Scene.GameObjects;
 
-namespace Nomad.Game.Prefabs {
-	public partial class AnimatorPrefab : EngineAnimatedSprite2D {
+namespace Nomad.Game.Prefabs
+{
+	public partial class AnimatorPrefab : EngineAnimatedSprite2D
+	{
 	};
 };

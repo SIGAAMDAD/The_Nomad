@@ -2,12 +2,12 @@
 
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_5byss"]
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_op4pf"]
-[ext_resource type="Script" uid="uid://dqru01jjcuvev" path="res://Source/Game/Presentation/Screens/NewGameMenu/NewGameMenu.cs" id="2_aaton"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_yt3u4"]
+[ext_resource type="Script" uid="uid://hnwp6hppnkas" path="res://Source/Game/Presentation/Screens/NewGameMenu/NewGameMenuView.cs" id="2_aaton"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Presentation/Widgets/OptionList/OptionList.tscn" id="2_yt3u4"]
 [ext_resource type="Script" uid="uid://box4dm4n822ct" path="res://Source/Game/Presentation/Screens/NewGameMenu/OptionsContainer.cs" id="3_al7ex"]
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="4_4f1u2"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="5_4f1u2"]
-[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Infrastructure/UI/Nodes/OptionSlider/OptionSlider.tscn" id="5_aaton"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Presentation/Widgets/OptionCheckbox/OptionCheckbox.tscn" id="4_4f1u2"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="5_4f1u2"]
+[ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Presentation/Widgets/OptionSlider/OptionSlider.tscn" id="5_aaton"]
 [ext_resource type="Script" uid="uid://07foyu68vhg6" path="res://Source/Game/Presentation/Screens/NewGameMenu/CustomDifficultyContainer.cs" id="5_va14k"]
 
 [node name="NewGameMenu" type="Control" unique_id=1672155218]

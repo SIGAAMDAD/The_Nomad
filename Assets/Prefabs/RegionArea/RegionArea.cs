@@ -15,12 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Godot;
 
-namespace Nomad.Game.Prefabs {
-	public partial class RegionArea : Node2D {
+namespace Nomad.Game.Prefabs
+{
+	public partial class RegionArea : Node2D
+	{
 		[Export]
 		private CollisionShape2D _shape;
 
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 
 			var area2D = GetNode<Area2D>( "Zone" );

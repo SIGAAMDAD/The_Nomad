@@ -14,8 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
-using Nomad.UI;
 using Godot;
 
 namespace Nomad.Game.Presentation.Screens.PauseMenu
@@ -31,7 +29,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 	///
 	/// </summary>
 
-	internal sealed partial class PauseMenuView : EnginePresentationLayer
+	internal sealed partial class PauseMenuView : CanvasLayer
 	{
 		public event Action Resume;
 		public event Action LoadGame;
@@ -53,43 +51,6 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		public void SetVisibility( bool visibility )
 		{
 			Visible = visibility;
-		}
-
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		protected override void OnInit()
-		{
-			base.OnInit();
-
-			_presenter = PauseMenuFactory.Create( this );
-
-			GetNode<Button>( "OptionsContainer/ResumeGameButton" ).Pressed += OnResumeGame;
-			GetNode<Button>( "OptionsContainer/LoadGameButton" ).Pressed += OnLoadGame;
-			GetNode<Button>( "OptionsContainer/SettingsButton" ).Pressed += OnSettingsMenu;
-			GetNode<Button>( "OptionsContainer/ExitWorldButton" ).Pressed += OnQuitToMainMenu;
-			GetNode<Button>( "OptionsContainer/QuitGameButton" ).Pressed += OnQuitGame;
-		}
-
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		protected override void OnShutdown()
-		{
-			_presenter?.Dispose();
-			_presenter = null;
-
-			base.OnShutdown();
 		}
 
 		/*
@@ -155,6 +116,43 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		private void OnQuitGame()
 		{
 			QuitGame?.Invoke();
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _Ready()
+		{
+			base._Ready();
+
+			_presenter = ScreenPresenterFactory.CreatePauseMenuPresenter( this );
+
+			GetNode<Button>( "OptionsContainer/ResumeGameButton" ).Pressed += OnResumeGame;
+			GetNode<Button>( "OptionsContainer/LoadGameButton" ).Pressed += OnLoadGame;
+			GetNode<Button>( "OptionsContainer/SettingsButton" ).Pressed += OnSettingsMenu;
+			GetNode<Button>( "OptionsContainer/ExitWorldButton" ).Pressed += OnQuitToMainMenu;
+			GetNode<Button>( "OptionsContainer/QuitGameButton" ).Pressed += OnQuitGame;
+		}
+
+		/*
+		===============
+		OnShutdown
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_presenter?.Dispose();
+			_presenter = null;
 		}
 	};
 };

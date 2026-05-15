@@ -41,7 +41,6 @@ namespace Nomad.Game.Presentation.Screens.DeveloperCommentaryMenu
 			fileSystem.AddSearchDirectory( "Assets/DeveloperCommentary" );
 			var files = fileSystem.GetFiles( "Assets/DeveloperCommentary", "*.json", true );
 			for ( int i = 0; i < files.Count; i++ ) {
-
 			}
 		}
 	};

@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://ca65in2437vw6"]
 
 [ext_resource type="Script" uid="uid://3euca1o5vsf8" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/MultiplayerMenuView.cs" id="1_dmnlr"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_fymkd"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="1_fymkd"]
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_ixdfl"]
 [ext_resource type="Script" uid="uid://c81u4os1rhukw" path="res://Source/Game/Presentation/Screens/MultiplayerMenu/LobbyBrowser.cs" id="2_8mo5w"]
-[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_dmnlr"]
-[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Infrastructure/UI/Nodes/OptionList/OptionList.tscn" id="2_x15ph"]
-[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Infrastructure/UI/Nodes/OptionCheckbox/OptionCheckbox.tscn" id="3_4jm05"]
+[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Presentation/Widgets/Label/NomadLabel.tscn" id="2_dmnlr"]
+[ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Presentation/Widgets/OptionList/OptionList.tscn" id="2_x15ph"]
+[ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Presentation/Widgets/OptionCheckbox/OptionCheckbox.tscn" id="3_4jm05"]
 [ext_resource type="PackedScene" uid="uid://dyh47j7kg0hn8" path="res://Source/Game/Presentation/Screens/LobbyCreationMenu/LobbyCreationMenu.tscn" id="7_40pm1"]
 
 [node name="MultiplayerMenu" type="Control" unique_id=1563836225]

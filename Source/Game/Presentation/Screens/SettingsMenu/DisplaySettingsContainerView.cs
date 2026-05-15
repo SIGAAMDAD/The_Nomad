@@ -15,26 +15,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using Godot;
 using Nomad.Core.Engine.Rendering;
 using Nomad.Core.Engine.Windowing;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
-using Nomad.UI;
+using Nomad.Game.Presentation.Widgets.OptionList;
+using Nomad.Game.Presentation.Widgets.OptionSlider;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	DisplaySettingsContainerView
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed partial class DisplaySettingsContainerView : EngineTabContainer
+	internal sealed partial class DisplaySettingsContainerView : TabContainer
 	{
 		public event Action<int> MonitorChanged;
 		public event Action<WindowMode> WindowModeChanged;
@@ -107,29 +107,29 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 		/*
 		===============
-		OnInit
+		_Ready
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			base.OnInit();
+			base._Ready();
 
-			_monitorIndex = FindChild<OptionList>( "Basic/MonitorList" );
+			_monitorIndex = GetNode<OptionList>( "Basic/MonitorList" );
 			_monitorIndex.ValueSet.Subscribe( ( in value ) => MonitorChanged?.Invoke( value.Value ) );
 
-			_windowMode = FindChild<OptionList>( "Basic/WindowModeList" );
+			_windowMode = GetNode<OptionList>( "Basic/WindowModeList" );
 			_windowMode.ValueSet.Subscribe( ( in value ) => WindowModeChanged?.Invoke( (WindowMode)value.Value ) );
 
-			_windowResolution = FindChild<OptionList>( "Basic/WindowResolutionList" );
+			_windowResolution = GetNode<OptionList>( "Basic/WindowResolutionList" );
 			_windowResolution.ValueSet.Subscribe( ( in value ) => WindowResolutionChanged?.Invoke( (WindowResolution)value.Value ) );
 
-			_vsyncList = FindChild<OptionList>( "Basic/VSyncList" );
+			_vsyncList = GetNode<OptionList>( "Basic/VSyncList" );
 			_vsyncList.ValueSet.Subscribe( ( in value ) => VSyncModeChanged?.Invoke( (VSyncMode)value.Value ) );
 
-			_maximumFramerate = FindChild<OptionSlider>( "Basic/MaxFpsSlider" );
+			_maximumFramerate = GetNode<OptionSlider>( "Basic/MaxFpsSlider" );
 			_maximumFramerate.ValueChanged.Subscribe( ( in value ) => MaximumFramerateChanged?.Invoke( (int)value.Value ) );
 		}
 	};

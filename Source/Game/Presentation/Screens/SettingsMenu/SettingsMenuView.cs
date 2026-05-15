@@ -15,7 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
-using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
@@ -30,7 +29,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 	///
 	/// </summary>
 
-	internal sealed partial class SettingsMenuView : EnginePanel
+	internal sealed partial class SettingsMenuView : Control
 	{
 		public AudioSettingsContainerView AudioView { get; private set; }
 		public DisplaySettingsContainerView DisplayView { get; private set; }
@@ -43,20 +42,20 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 		/*
 		===============
-		OnInit
+		_Ready
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			base.OnInit();
+			base._Ready();
 
-			AudioView = FindChild<AudioSettingsContainerView>( "TabContainer/Audio" );
-			DisplayView = FindChild<DisplaySettingsContainerView>( "TabContainer/Display" );
+			AudioView = GetNode<AudioSettingsContainerView>( "TabContainer/Audio" );
+			DisplayView = GetNode<DisplaySettingsContainerView>( "TabContainer/Display" );
 
-			_presenter = SettingsMenuFactory.Create( this );
+			_presenter = ScreenPresenterFactory.CreateSettingsMenuPresenter( this );
 
 			GetNode<Button>( "BottomContainer/ButtonContainer/BackButton" ).Pressed += () => BackRequested?.Invoke();
 			GetNode<Button>( "BottomContainer/ButtonContainer/SaveButton" ).Pressed += () => SaveRequested?.Invoke();

@@ -73,11 +73,9 @@ namespace Nomad.Game.Application.Multiplayer
 		public IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd => _ctfRoundEnd;
 		private readonly IGameEvent<CTFRoundEndEventArgs> _ctfRoundEnd = default;
 
-		public CaptureTheFlagInstanceData Snapshot => new CaptureTheFlagInstanceData {
+		public CaptureTheFlagSnapshot Snapshot => new CaptureTheFlagSnapshot {
 			RedTeamScore = _hostState.RedTeamScore,
 			BlueTeamScore = _hostState.BlueTeamScore,
-			RedFlagState = _hostState.RedFlagStatus,
-			BlueFlagState = _hostState.BlueFlagStatus,
 			RoundIndex = _hostState.RoundIndex
 		};
 
@@ -123,6 +121,7 @@ namespace Nomad.Game.Application.Multiplayer
 
 		public bool TryGetTeamScore( TeamId teamId, out int score )
 		{
+			score = 0;
 			return true;
 		}
 	};

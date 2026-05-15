@@ -22,7 +22,8 @@ using Nomad.Game.Domain.Data.World;
 using System.Collections.Generic;
 using Godot;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -34,7 +35,8 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public sealed partial class SingleWorld : WorldBase {
+	public sealed partial class SingleWorld : WorldBase
+	{
 		private readonly SimulationCoordinator _coordinator;
 
 		private readonly CalendarDefinition _calender;
@@ -141,7 +143,8 @@ namespace Nomad.Game.Prefabs {
 			DuskAmbient = new Color( 0.24f, 0.29f, 0.39f, 1.0f )
 		};
 
-		public SingleWorld() {
+		public SingleWorld()
+		{
 			_worldDefinition = new WorldDefinition {
 				Name = new InternString( "Bellatum Terrae" ),
 				Calendar = new CalendarDefinition {
@@ -179,10 +182,10 @@ namespace Nomad.Game.Prefabs {
 					}
 				},
 				Seasons = new Dictionary<InternString, SeasonDefinition> {
-					[ new( "season.early_longsummer.id" ) ] = EarlyLongSummer,
-					[ new( "season.late_longsummer.id" ) ] = LateLongSummer,
-					[ new( "season.early_longwinter.id" ) ] = EarlyLongWinter,
-					[ new( "season.late_longwinter.id" ) ] = LateLongWinter,
+					[new( "season.early_longsummer.id" )] = EarlyLongSummer,
+					[new( "season.late_longsummer.id" )] = LateLongSummer,
+					[new( "season.early_longwinter.id" )] = EarlyLongWinter,
+					[new( "season.late_longwinter.id" )] = LateLongWinter,
 				}
 			};
 

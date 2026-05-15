@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cca2v6mecxhw3"]
 
 [ext_resource type="Script" uid="uid://cj4ewb0ypaia0" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuView.cs" id="1_03k4a"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="1_ugbl1"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="1_ugbl1"]
 [ext_resource type="Shader" uid="uid://bjgggkjltu32l" path="res://Source/Game/Presentation/Screens/PauseMenu/TransitionFlicker.gdshader" id="2_03k4a"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e1q40"]
