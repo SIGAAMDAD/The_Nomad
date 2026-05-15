@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://b6dwqm35gxe77"]
+
+[ext_resource type="Script" uid="uid://cmdqb5swirceo" path="res://Source/Game/Presentation/Widgets/OptionSlider/OptionSlider.cs" id="1_jmcvf"]
+[ext_resource type="StyleBox" uid="uid://dlqg5fjwv737u" path="res://Source/Game/Presentation/Widgets/OptionSlider/settings_menu_slider_inactive.tres" id="2_43t3q"]
+[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Presentation/Widgets/Label/NomadLabel.cs" id="2_ey12s"]
+[ext_resource type="StyleBox" uid="uid://bol5e6pjlteeu" path="res://Source/Game/Presentation/Widgets/OptionSlider/settings_menu_slider_active.tres" id="2_ntx2d"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="3_se010"]
+[ext_resource type="Script" uid="uid://bymta1giek5h5" path="res://Source/Game/Presentation/Widgets/OptionSlider/Input.cs" id="6_jkvmf"]
+[ext_resource type="Script" uid="uid://wt20slxx6rh0" path="res://Source/Game/Presentation/Widgets/OptionSlider/Value.cs" id="7_jkvmf"]
+
+[node name="SliderOption" type="HBoxContainer" unique_id=233075417]
+use_parent_material = true
+anchors_preset = -1
+anchor_right = 0.074
+anchor_bottom = 0.083000004
+offset_right = -3.5199928
+offset_bottom = 0.15999222
+script = ExtResource("1_jmcvf")
+ConfigVarName = null
+Title = null
+Description = null
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="." unique_id=540623078]
+use_parent_material = true
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_ey12s")
+
+[node name="LeftIcon" parent="." unique_id=1938011170 instance=ExtResource("3_se010")]
+layout_mode = 2
+size_flags_horizontal = 1
+text = "<"
+
+[node name="Input" type="HSlider" parent="." unique_id=359159165]
+use_parent_material = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_constants/grabber_offset = 2890
+theme_override_styles/slider = ExtResource("2_43t3q")
+theme_override_styles/grabber_area = ExtResource("2_ntx2d")
+theme_override_styles/grabber_area_highlight = ExtResource("2_ntx2d")
+value = 100.0
+script = ExtResource("6_jkvmf")
+
+[node name="Value" type="Label" parent="Input" unique_id=358455664]
+modulate = Color(1, 0, 0, 1)
+use_parent_material = true
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 20.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "0"
+horizontal_alignment = 1
+script = ExtResource("7_jkvmf")
+metadata/_edit_use_anchors_ = true
+
+[node name="RightIcon" parent="." unique_id=1863145585 instance=ExtResource("3_se010")]
+layout_mode = 2
+size_flags_horizontal = 1
+text = ">"

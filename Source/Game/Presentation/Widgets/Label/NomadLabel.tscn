@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c4mill88us6k3"]
+
+[ext_resource type="Script" uid="uid://cgfaohi17ua2h" path="res://Source/Game/Presentation/Widgets/Label/NomadLabel.cs" id="1_7nq2b"]
+
+[node name="NomadLabel" type="Label" unique_id=1178157066]
+use_parent_material = true
+anchors_preset = -1
+anchor_right = 0.001
+anchor_bottom = 0.038000003
+offset_right = -0.8
+offset_bottom = -22.800001
+size_flags_horizontal = 3
+script = ExtResource("1_7nq2b")
+metadata/_edit_use_anchors_ = true
