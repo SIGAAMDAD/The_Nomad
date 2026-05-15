@@ -17,17 +17,21 @@ using Nomad.Events.Globals;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.SplitScreen;
 
-namespace Nomad.Game.Prefabs {
-	public partial class SplitScreen2World : WorldBase {
+namespace Nomad.Game.Prefabs
+{
+	public partial class SplitScreen2World : WorldBase
+	{
 		private SplitScreenService _splitScreenService;
 
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_splitScreenService = new SplitScreenService( GameEventRegistry.Instance, ServiceLocator.Instance, this );
 		}
 
-		protected override void OnShutdown() {
+		protected override void OnShutdown()
+		{
 			base.OnShutdown();
 
 			_splitScreenService?.Dispose();

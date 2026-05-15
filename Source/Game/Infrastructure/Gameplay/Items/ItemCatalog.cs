@@ -25,13 +25,13 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 {
 	/*
 	===================================================================================
-	
+
 	ItemCatalog
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class ItemCatalog : DataLoader<ItemDefinition>, IItemCatalog
@@ -44,7 +44,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="fileSystem"></param>
 		public ItemCatalog( IFileSystem fileSystem )
@@ -52,12 +52,35 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		{
 		}
 
+		/*
+		===============
+		Get
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
 		public TItemDefinition? Get<TItemDefinition>( Guid itemId )
 			where TItemDefinition : ItemDefinition
 		{
 			return (TItemDefinition?)Get( itemId );
 		}
 
+		/*
+		===============
+		TryGet
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
 		public bool TryGet<TItemDefinition>( Guid itemId, out TItemDefinition? item )
 			where TItemDefinition : ItemDefinition
 		{
@@ -75,7 +98,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="callback"></param>
@@ -90,7 +113,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="definition"></param>
@@ -116,7 +139,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="definition"></param>

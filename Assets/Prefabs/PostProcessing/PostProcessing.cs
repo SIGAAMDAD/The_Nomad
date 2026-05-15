@@ -1,7 +1,8 @@
 using Godot;
 using System;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -13,6 +14,7 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public partial class PostProcessing : CanvasLayer {
+	public partial class PostProcessing : CanvasLayer
+	{
 	};
 };

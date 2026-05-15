@@ -24,13 +24,13 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 {
 	/*
 	===================================================================================
-	
+
 	LoadGameMenuView
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	public partial class LoadGameMenuView : Control
@@ -49,12 +49,12 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="metadata"></param>
 		public void AddSlot( SaveFileMetadata metadata )
 		{
-			EngineButton button = new EngineButton() {
+			NomadButton button = new NomadButton() {
 				Text = $"{metadata.SaveName} {metadata.LastAccessDay}:{metadata.LastAccessMonth}:{metadata.LastAccessYear}"
 			};
 			_slotList.AddChild( button );
@@ -66,7 +66,7 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void _Ready()
 		{

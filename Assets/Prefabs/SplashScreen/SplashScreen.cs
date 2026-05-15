@@ -17,7 +17,8 @@ using Godot;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI.Menus;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -29,7 +30,8 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	internal sealed partial class SplashScreen : Control {
+	internal sealed partial class SplashScreen : Control
+	{
 		private const float HOLD_TIME = 6.0f;
 		private const float FADE_TIME = 1.5f;
 
@@ -49,7 +51,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnHoldTimeTimeout() {
+		private void OnHoldTimeTimeout()
+		{
 			Tween? tween = _stage < 2 ? CreateTween() : null;
 			float from = 0.0f;
 			float to = 1.0f;
@@ -88,7 +91,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnShowEpilepsyWarning() {
+		private void OnShowEpilepsyWarning()
+		{
 			_epilepsyWarning.Visible = true;
 			_timer.Start();
 		}
@@ -101,7 +105,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		private void OnShowEngineLogo() {
+		private void OnShowEngineLogo()
+		{
 			_shader = _godotLogo.Material as ShaderMaterial;
 			_timer.Start();
 		}
@@ -114,7 +119,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 
 			_godotLogo = GetNode<TextureRect>( "GodotLogo" );
@@ -139,7 +145,8 @@ namespace Nomad.Game.Prefabs {
 		/// Ensures we have a manual skip utility for the splash screens.
 		/// </summary>
 		/// <param name="event"></param>
-		public override void _UnhandledInput( InputEvent @event ) {
+		public override void _UnhandledInput( InputEvent @event )
+		{
 			base._UnhandledInput( @event );
 
 			_timer.Stop();

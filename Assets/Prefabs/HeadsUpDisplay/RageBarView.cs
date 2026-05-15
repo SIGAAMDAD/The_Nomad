@@ -15,7 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.UI;
 
-namespace Nomad.Game.Prefabs {
-	public partial class RageBarView : EngineColorRect {
+namespace Nomad.Game.Prefabs
+{
+	public partial class RageBarView : EngineColorRect
+	{
 	};
 };

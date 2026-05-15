@@ -40,7 +40,7 @@ namespace Nomad.Game.Domain.Interfaces.Multiplayer
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Multiplayer" )]
 		IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd { get; }
 
-		CaptureTheFlagInstanceData Snapshot { get; }
+		CaptureTheFlagSnapshot Snapshot { get; }
 
 		bool TryBeginRound();
 		bool TryEndRound( CaptureTheFlagRoundEndReason reason );

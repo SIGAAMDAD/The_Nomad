@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://l7k7jon212yb"]
 
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_omgvv"]
-[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Infrastructure/UI/Nodes/Label/NomadLabel.tscn" id="2_0r0jo"]
+[ext_resource type="PackedScene" uid="uid://c4mill88us6k3" path="res://Source/Game/Presentation/Widgets/Label/NomadLabel.tscn" id="2_0r0jo"]
 [ext_resource type="Script" uid="uid://phsucke0jexb" path="res://Source/Game/Presentation/Screens/ExtrasMenu/ExtrasMenuView.cs" id="2_f13g6"]
-[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Infrastructure/UI/Nodes/Button/NomadButton.tscn" id="2_ybbbd"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="2_ybbbd"]
 
 [node name="ExtrasMenu" type="Control" unique_id=1840752397]
 material = ExtResource("1_omgvv")

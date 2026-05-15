@@ -17,33 +17,47 @@ using Godot;
 using Nomad.Core.Events;
 using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
-using Nomad.UI;
 using System;
 
 namespace Nomad.Game.Presentation.Screens.LoadingScreen
 {
 	/*
 	===================================================================================
-	
+
 	LoadingScreen
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class LoadingScreen : EnginePanel
+	internal sealed partial class LoadingScreen : Control
 	{
 		[Export]
 		private string[] _tipList;
 
 		private int _currentTip = 0;
 
-		private EngineText _tipLabel;
+		private Label _tipLabel;
 
 		private IGameEvent<EmptyEventArgs> _tipSwitch;
 		private ISubscriptionHandle _tipSubscription;
+
+		/*
+		===============
+		OnSwitchTip
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		private void OnSwitchTip( in EmptyEventArgs args )
+		{
+			_currentTip = Random.Shared.Next( 0, _tipList.Length - 1 );
+			// TODO: add something here to avoid showing the same tip twice.
+			_tipLabel.Text = _tipList[_currentTip];
+		}
 
 		/*
 		===============
@@ -51,14 +65,21 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			_tipSwitch = GameEventRegistry.GetEvent<EmptyEventArgs>( nameof( _tipSwitch ), nameof( LoadingScreen ) ).PublishEvery( EmptyEventArgs.Args, 4500 );
+			base._Ready();
+
+			_tipSwitch = GameEventRegistry
+				.GetEvent<EmptyEventArgs>(
+					nameof( _tipSwitch ),
+					nameof( LoadingScreen )
+				)
+				.PublishEvery( EmptyEventArgs.Args, 4500 );
 			_tipSubscription = _tipSwitch.Subscribe( OnSwitchTip );
 
-			_tipLabel = FindChild<EngineText>( "TipLabel" );
+			_tipLabel = GetNode<Label>( "TipLabel" );
 			OnSwitchTip( default );
 		}
 
@@ -68,27 +89,14 @@ namespace Nomad.Game.Presentation.Screens.LoadingScreen
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnShutdown()
+		public override void _ExitTree()
 		{
+			base._ExitTree();
+
 			_tipSubscription?.Dispose();
 			_tipSwitch?.Dispose();
-		}
-
-		/*
-		===============
-		OnSwitchTip
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		private void OnSwitchTip( in EmptyEventArgs args )
-		{
-			_currentTip = Random.Shared.Next( 0, _tipList.Length - 1 );
-			// TODO: add something here to avoid showing the same tip twice.
-			_tipLabel.Text = _tipList[_currentTip];
 		}
 	};
 };

@@ -17,7 +17,8 @@ using Godot;
 using Nomad.Core.Numerics;
 using Nomad.Game.Application.Gameplay;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -29,7 +30,8 @@ namespace Nomad.Game.Prefabs {
 	///  
 	/// </summary>
 
-	public sealed partial class PlayerCamera2D : Camera2D {
+	public sealed partial class PlayerCamera2D : Camera2D
+	{
 		private Vector2 _joltDirection = Vector2.Zero;
 		private float _shakeStrength = 0.0f;
 
@@ -44,7 +46,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		public PlayerCamera2D() {
+		public PlayerCamera2D()
+		{
 		}
 
 		/*
@@ -55,11 +58,13 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void _Ready() {
+		public override void _Ready()
+		{
 			base._Ready();
 		}
 
-		public override void _Process( double delta ) {
+		public override void _Process( double delta )
+		{
 			base._Process( delta );
 
 			if ( _shakeStrength > 0.0f ) {

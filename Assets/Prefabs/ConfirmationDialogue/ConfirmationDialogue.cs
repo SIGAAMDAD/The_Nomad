@@ -15,7 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.UI;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -27,7 +28,8 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public partial class ConfirmationDialogue : EnginePanel {
+	public partial class ConfirmationDialogue : EnginePanel
+	{
 		/*
 		===============
 		OnInit
@@ -36,7 +38,8 @@ namespace Nomad.Game.Prefabs {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 		}
 	};
 };

@@ -15,25 +15,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionCheckbox;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionList;
-using Nomad.Game.Infrastructure.UI.Nodes.OptionSlider;
-using Nomad.UI;
+using Godot;
+using Nomad.Game.Presentation.Widgets.OptionCheckbox;
+using Nomad.Game.Presentation.Widgets.OptionList;
+using Nomad.Game.Presentation.Widgets.OptionSlider;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	AudioSettingsContainerView
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed partial class AudioSettingsContainerView : EngineVerticalContainer
+	internal sealed partial class AudioSettingsContainerView : VBoxContainer
 	{
 		public event Action<int> AudioDriverChanged;
 		public event Action<int> OutputDeviceChanged;
@@ -112,35 +112,35 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 		/*
 		===============
-		OnInit
+		_Ready
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			base.OnInit();
+			base._Ready();
 
-			_driverAPI = FindChild<OptionList>( "DriverAPIList" );
+			_driverAPI = GetNode<OptionList>( "DriverAPIList" );
 			_driverAPI.ValueSet.Subscribe( ( in value ) => AudioDriverChanged?.Invoke( value.Value ) );
 
-			_outputDevice = FindChild<OptionList>( "OutputDeviceList" );
+			_outputDevice = GetNode<OptionList>( "OutputDeviceList" );
 			_outputDevice.ValueSet.Subscribe( ( in value ) => OutputDeviceChanged?.Invoke( value.Value ) );
 
-			_masterVolume = FindChild<OptionSlider>( "MasterVolumeSlider" );
+			_masterVolume = GetNode<OptionSlider>( "MasterVolumeSlider" );
 			_masterVolume.ValueChanged.Subscribe( ( in value ) => MasterVolumeChanged?.Invoke( value.Value ) );
 
-			_musicVolume = FindChild<OptionSlider>( "MusicVolumeSlider" );
+			_musicVolume = GetNode<OptionSlider>( "MusicVolumeSlider" );
 			_musicVolume.ValueChanged.Subscribe( ( in value ) => MusicVolumeChanged?.Invoke( value.Value ) );
 
-			_musicOn = FindChild<OptionCheckbox>( "MusicOnCheckbox" );
+			_musicOn = GetNode<OptionCheckbox>( "MusicOnCheckbox" );
 			_musicOn.Toggled.Subscribe( ( in value ) => MusicOnChanged?.Invoke( value.Value ) );
 
-			_effectsVolume = FindChild<OptionSlider>( "EffectsVolumeSlider" );
+			_effectsVolume = GetNode<OptionSlider>( "EffectsVolumeSlider" );
 			_effectsVolume.ValueChanged.Subscribe( ( in value ) => EffectsVolumeChanged?.Invoke( value.Value ) );
 
-			_effectsOn = FindChild<OptionCheckbox>( "EffectsOnCheckbox" );
+			_effectsOn = GetNode<OptionCheckbox>( "EffectsOnCheckbox" );
 			_effectsOn.Toggled.Subscribe( ( in value ) => EffectsOnChanged?.Invoke( value.Value ) );
 		}
 	};

@@ -1,7 +1,8 @@
 using Godot;
 using Nomad.Core.CVars;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -13,8 +14,10 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public partial class WorldEnvironment : Godot.WorldEnvironment {
-		public override void _Ready() {
+	public partial class WorldEnvironment : Godot.WorldEnvironment
+	{
+		public override void _Ready()
+		{
 			base._Ready();
 
 			//			CVarSystem.GetCVar<float>( Constants.CVars.Display.BRIGHTNESS ).ValueChanged.Subscribe( OnBrightnessChanged );
@@ -29,7 +32,8 @@ namespace Nomad.Game.Prefabs {
 		/// 
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnBrightnessChanged( in CVarValueChangedEventArgs<float> args ) {
+		private void OnBrightnessChanged( in CVarValueChangedEventArgs<float> args )
+		{
 			Environment.AdjustmentBrightness = args.NewValue * 0.01f;
 		}
 	};

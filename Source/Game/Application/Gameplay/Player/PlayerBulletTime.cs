@@ -62,7 +62,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"BulletTime:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
+				.GetEvent<ButtonActionEventArgs>(
+					$"BulletTime:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
 				.Subscribe( OnBulletTimeTriggered );
 
 			DerivedStatService.DerivedStatChanged.Subscribe( OnDerivedStatChanged );

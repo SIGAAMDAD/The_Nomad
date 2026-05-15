@@ -18,7 +18,8 @@ using Nomad.Game.Domain.Events.World;
 using Nomad.UI;
 using Godot;
 
-namespace Nomad.Game.Prefabs {
+namespace Nomad.Game.Prefabs
+{
 	/*
 	===================================================================================
 	
@@ -30,10 +31,12 @@ namespace Nomad.Game.Prefabs {
 	/// 
 	/// </summary>
 
-	public partial class HeadsUpDisplayView : EnginePanel {
+	public partial class HeadsUpDisplayView : EnginePanel
+	{
 		private Label _dateLabel;
 
-		protected override void OnInit() {
+		protected override void OnInit()
+		{
 			base.OnInit();
 
 			_dateLabel = GetNode<Label>( "DateLabel" );
@@ -43,7 +46,8 @@ namespace Nomad.Game.Prefabs {
 				.Subscribe( OnMinuteChanged );
 		}
 
-		private void OnMinuteChanged( in MinuteChangedEventArgs args ) {
+		private void OnMinuteChanged( in MinuteChangedEventArgs args )
+		{
 			_dateLabel.Text = $"{args.Time.Hour}:{args.Time.Minute} {args.Time.Month}, {args.Time.Day} {args.Time.Year}";
 		}
 	};
