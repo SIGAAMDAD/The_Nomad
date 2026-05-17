@@ -22,4 +22,8 @@ texture_repeat = 2
 texture = SubResource("NoiseTexture2D_flhqy")
 polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 1056, -52, 802, -666)
 
-[node name="RegionAreaRoot" parent="." unique_id=1146163250 instance=ExtResource("1_eda3t")]
+[node name="RegionAreaRoot" parent="." unique_id=1146163250 node_paths=PackedStringArray("_shape") instance=ExtResource("1_eda3t")]
+_shape = NodePath("ZoneBody")
+
+[node name="ZoneBody" type="CollisionPolygon2D" parent="RegionAreaRoot" unique_id=1956831381]
+polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 1056, -52, 802, -666)

@@ -17,6 +17,8 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 {
 	public enum Mode : byte
 	{
+		None = 0,
+
 		/// <summary>
 		/// "Bloodbath" mode.
 		/// </summary>
@@ -25,7 +27,7 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 		/// <summary>
 		///
 		/// </summary>
-		TeamDeathmatch,
+		TeamBrawl,
 
 		/// <summary>
 		///

@@ -13,21 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using Nomad.Core;
+using Nomad.Core.ServiceRegistry.Interfaces;
 
-namespace Nomad.Game.Prefabs
+namespace Nomad.Game.Infrastructure.Root
 {
-	public partial class RegionArea : Node2D
+	public sealed record StartupContext
 	{
-		[Export]
-		private CollisionPolygon2D _shape;
-
-		public override void _Ready()
-		{
-			base._Ready();
-
-			var area2D = GetNode<Area2D>( "Zone" );
-			area2D.Reparent( _shape );
-		}
+		public IServiceRegistry ServiceRegistry { get; init; }
+		public IServiceLocator ServiceLocator { get; init; }
+		public NomadFrameworkBootstrapper Bootstrapper { get; init; }
 	};
 };

@@ -50,5 +50,7 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 
 		PlayerDie,
 		PlayerRespawnRequestRpc,
+
+		MatchPhaseChangedRpc,
 	};
 };

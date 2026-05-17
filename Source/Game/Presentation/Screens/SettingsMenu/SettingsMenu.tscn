@@ -3,13 +3,11 @@
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_lwvah"]
 [ext_resource type="Theme" uid="uid://dpk342frgg8ej" path="res://Assets/Themes/MainTheme.tres" id="1_m4e4s"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="3_l307y"]
-[ext_resource type="Script" uid="uid://dgge6berbwfp6" path="res://Source/Game/Presentation/Screens/SettingsMenu/TabContainer.cs" id="3_lwvah"]
 [ext_resource type="Script" uid="uid://b0k50pudru7la" path="res://Source/Game/Presentation/Screens/SettingsMenu/SettingsMenuView.cs" id="3_xmqc5"]
 [ext_resource type="PackedScene" uid="uid://d36xll77kxc8l" path="res://Source/Game/Presentation/Widgets/OptionList/OptionList.tscn" id="4_sceel"]
 [ext_resource type="Script" uid="uid://dgkc585vo8w5a" path="res://Source/Game/Presentation/Screens/SettingsMenu/DisplaySettingsContainerView.cs" id="5_lwvah"]
 [ext_resource type="PackedScene" uid="uid://b6dwqm35gxe77" path="res://Source/Game/Presentation/Widgets/OptionSlider/OptionSlider.tscn" id="5_yx041"]
 [ext_resource type="PackedScene" uid="uid://bvtjv1xcl6h4" path="res://Source/Game/Presentation/Widgets/OptionCheckbox/OptionCheckbox.tscn" id="6_m4e4s"]
-[ext_resource type="Script" uid="uid://0yasjxnrioox" path="res://Source/Game/Presentation/Screens/SettingsMenu/VerticalContainer.cs" id="9_1rltl"]
 [ext_resource type="PackedScene" uid="uid://bbvty47p7xtk4" path="res://Source/Game/Presentation/Screens/SettingsMenu/BindingButton.tscn" id="9_dfq4n"]
 [ext_resource type="Script" uid="uid://p235oy18dnhc" path="res://Source/Game/Presentation/Screens/SettingsMenu/AudioSettingsContainerView.cs" id="9_lwvah"]
 
@@ -62,7 +60,6 @@ theme_override_styles/tab_selected = SubResource("StyleBoxFlat_1rltl")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_lwvah")
 tab_alignment = 1
 current_tab = 0
-script = ExtResource("3_lwvah")
 metadata/_edit_use_anchors_ = true
 
 [node name="Display" type="TabContainer" parent="TabContainer" unique_id=1338488515]
@@ -349,7 +346,6 @@ metadata/_tab_index = 4
 
 [node name="Bindings" type="VBoxContainer" parent="TabContainer/Controls" unique_id=370131663]
 layout_mode = 2
-script = ExtResource("9_1rltl")
 metadata/_tab_index = 0
 
 [node name="MoveBind" parent="TabContainer/Controls/Bindings" unique_id=653888067 instance=ExtResource("9_dfq4n")]

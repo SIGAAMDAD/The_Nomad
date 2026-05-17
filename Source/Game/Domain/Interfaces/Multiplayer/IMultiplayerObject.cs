@@ -17,7 +17,6 @@ using Nomad.Core.OnlineServices;
 using Nomad.Core.Events;
 using Nomad.Networking.Session;
 using Nomad.Networking.Rpc;
-using Nomad.Networking.Messaging;
 using System;
 using Nomad.Game.Domain.Data.Multiplayer;
 
@@ -49,6 +48,11 @@ namespace Nomad.Game.Domain.Interfaces.Multiplayer
 		/// Has this object been disposed of yet?
 		/// </summary>
 		bool IsDisposed { get; }
+
+		/// <summary>
+		///
+		/// </summary>
+		uint Revision { get; }
 
 		/// <summary>
 		/// The currently active session belonging to this multiplayer object.

@@ -138,6 +138,16 @@ namespace Nomad.Game.Application.Gameplay.World
 			}
 		}
 
+		/*
+		===============
+		Validate
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="request"></param>
+		/// <exception cref="InvalidOperationException"></exception>
 		private static void Validate( in WorldBootstrapRequestEventArgs request )
 		{
 			if ( request.RequestId == Guid.Empty ) {
@@ -148,6 +158,17 @@ namespace Nomad.Game.Application.Gameplay.World
 			}
 		}
 
+		/*
+		===============
+		LoadWorld
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="worldId"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
 		private IWorldHandle LoadWorld( string worldId )
 		{
 			try {

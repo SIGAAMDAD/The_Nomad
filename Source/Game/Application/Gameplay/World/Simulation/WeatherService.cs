@@ -24,16 +24,16 @@ namespace Nomad.Game.Application.Gameplay.World
 {
 	/*
 	===================================================================================
-	
+
 	WeatherService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed class WeatherService : IWeather
+	internal sealed class WeatherService : IWeatherService
 	{
 		private readonly CalendarService _calendarService;
 		private readonly SeasonService _seasonService;
@@ -41,6 +41,11 @@ namespace Nomad.Game.Application.Gameplay.World
 		private long _nextWeatherChangeAtAbsoluteMinute = 0;
 
 		public InternString CurrentWeatherId { get; private set; } = new InternString( "weather.clear" );
+
+		private readonly IDisposable _minuteChanged;
+		private readonly IDisposable _seasonChanged;
+
+		private bool _isDisposed = false;
 
 		public IGameEvent<WeatherChangedEventArgs> WeatherChanged => _weatherChanged;
 		private readonly IGameEvent<WeatherChangedEventArgs> _weatherChanged = default;
@@ -51,11 +56,12 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="seasonService"></param>
 		/// <param name="calendarService"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public WeatherService(
 			IGameEventRegistryService eventFactory,
 			SeasonService seasonService,
@@ -70,15 +76,43 @@ namespace Nomad.Game.Application.Gameplay.World
 				WeatherChangedEventArgs.NameSpace
 			);
 
-			eventFactory
-				.GetEvent<MinuteChangedEventArgs>( MinuteChangedEventArgs.Name, MinuteChangedEventArgs.NameSpace )
+			_minuteChanged = eventFactory
+				.GetEvent<MinuteChangedEventArgs>(
+					MinuteChangedEventArgs.Name,
+					MinuteChangedEventArgs.NameSpace
+				)
 				.Subscribe( OnMinuteChanged );
 
-			eventFactory
-				.GetEvent<SeasonChangedEventArgs>( SeasonChangedEventArgs.Name, SeasonChangedEventArgs.NameSpace )
+			_seasonChanged = eventFactory
+				.GetEvent<SeasonChangedEventArgs>(
+					SeasonChangedEventArgs.Name,
+					SeasonChangedEventArgs.NameSpace
+				)
 				.Subscribe( OnSeasonChanged );
 
 			CurrentSetup();
+		}
+
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_minuteChanged?.Dispose();
+			_seasonChanged?.Dispose();
+			_weatherChanged?.Dispose();
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*
@@ -87,7 +121,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		private void CurrentSetup()
 		{
@@ -101,7 +135,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnMinuteChanged( in MinuteChangedEventArgs args )
@@ -116,11 +150,13 @@ namespace Nomad.Game.Application.Gameplay.World
 
 			ScheduleNextWeatherChange( season );
 
-			_weatherChanged.Publish( new WeatherChangedEventArgs(
-				args.Time,
-				previous,
-				CurrentWeatherId
-			) );
+			_weatherChanged.Publish(
+				new WeatherChangedEventArgs(
+					args.Time,
+					previous,
+					CurrentWeatherId
+				)
+			);
 		}
 
 		/*
@@ -129,7 +165,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSeasonChanged( in SeasonChangedEventArgs args )
@@ -149,7 +185,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="season"></param>
 		private void ScheduleNextWeatherChange( SeasonDefinition season )
@@ -167,7 +203,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="season"></param>
 		/// <param name="currentWeatherId"></param>

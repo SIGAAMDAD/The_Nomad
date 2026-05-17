@@ -31,13 +31,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
-	
+
 	PlayerHeadAnimator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerHeadAnimator : NomadBehaviour
@@ -61,7 +61,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public PlayerHeadAnimator()
 		{
@@ -82,7 +82,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnInit()
 		{
@@ -98,7 +98,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		public override void OnUpdate( float delta )
@@ -113,8 +113,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			bool facingLeft = AngleToCursor.X < 0.0f;
 			_headSprite.Rotation = AngleMath.ToDegrees( LookAngle );
 
-			_headSprite.FlipV = facingLeft;
-			_headSprite.Offset = facingLeft ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
+			_headSprite.FlipV = !facingLeft;
+			_headSprite.Offset = !facingLeft ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
 		}
 
 		/*
@@ -123,7 +123,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnShutdown()
 		{
@@ -140,7 +140,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args )

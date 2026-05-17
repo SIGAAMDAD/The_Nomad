@@ -49,6 +49,12 @@ namespace Nomad.Game.Application.Multiplayer
 		public PeerId LocalPeerId => _sessionService.CurrentSession?.LocalPeerId ?? default;
 		public PeerId HostPeerId => _sessionService.CurrentSession?.HostPeerId ?? default;
 
+		public uint Revision => _revision;
+		private uint _revision = 0;
+
+		public uint LastServerTick => lastServerTick;
+		protected uint lastServerTick = 0;
+
 		private readonly INetworkSessionService _sessionService;
 		private readonly INetworkRpcBus _rpcBus;
 		private readonly INetworkEventBus _eventBus;
@@ -106,8 +112,23 @@ namespace Nomad.Game.Application.Multiplayer
 			}
 			_cleanup.Clear();
 
-			_isDisposed = true;
+			Dispose( true );
+
 			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="disposing"></param>
+		protected virtual void Dispose( bool disposing )
+		{
 		}
 
 		/*
@@ -315,6 +336,27 @@ namespace Nomad.Game.Application.Multiplayer
 		{
 			ArgumentGuard.ThrowIfNull( cleanup, nameof( cleanup ) );
 			_cleanup.Add( cleanup );
+		}
+
+		protected uint IncrementRevision()
+		{
+			unchecked {
+				_revision++;
+			}
+			if ( _revision == 0 ) {
+				_revision = 1;
+			}
+			return _revision;
+		}
+
+		protected bool ShouldApplyRevision( uint incomingRevision )
+		{
+			return incomingRevision > _revision;
+		}
+
+		protected void SetRevision( uint revision )
+		{
+			_revision = revision;
 		}
 	};
 };

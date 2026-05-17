@@ -13,14 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Events.Player;
+using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.CVars;
+using Nomad.Core.FileSystem;
+using Nomad.Core.ServiceRegistry.Interfaces;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation
+namespace Nomad.Game.Infrastructure.Godot
 {
 	/*
 	===================================================================================
 
-	PlayerRightHandAnimator
+	ConfigStartup
 
 	===================================================================================
 	*/
@@ -28,20 +31,35 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 	///
 	/// </summary>
 
-	internal sealed class PlayerRightHandAnimator : PlayerHandAnimator
+	internal static class ConfigStartup
 	{
 		/*
 		===============
-		OnPlayerMovementChanged
+		Configure
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
+		/// <param name="fileSystem"></param>
+		/// <param name="cvarSystem"></param>
+		public static void Configure( IServiceLocator locator )
 		{
-			base.OnPlayerMovementChanged( in args );
+			var cvarSystem = locator.GetService<ICVarSystemService>();
+			var fileSystem = locator.GetService<IFileSystem>();
+
+			ICVar<string> configFile = cvarSystem.Register(
+				new CVarCreateInfo<string> {
+					Name = "game.ConfigPath",
+					DefaultValue = $"{fileSystem.GetUserDataPath()}/UserConfig.ini",
+					Description = "The path to the configuration file.",
+					Flags = CVarFlags.Init | CVarFlags.ReadOnly
+				}
+			);
+
+			if ( fileSystem.FileExists( configFile.Value ) ) {
+				cvarSystem.Load( fileSystem, configFile.Value );
+			}
 		}
 	};
 };

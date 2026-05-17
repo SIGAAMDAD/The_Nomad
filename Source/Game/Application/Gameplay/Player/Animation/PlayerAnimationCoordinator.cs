@@ -69,10 +69,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
 
 			_leftHandAnimator = prefab.AddComponent<PlayerLeftHandAnimator>( comp => {
-				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmAnimations.tres" );
+				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmFrames.tres" );
+				comp.Animator = prefab.GetNode<AnimatedSprite2D>( "LeftArm/AnimatedSprite2D" );
 			} );
 			_rightHandAnimator = prefab.AddComponent<PlayerRightHandAnimator>( comp => {
-				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmAnimations.tres" );
+				comp.Frames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmFrames.tres" );
+				comp.Animator = prefab.GetNode<AnimatedSprite2D>( "RightArm/AnimatedSprite2D" );
 			} );
 		}
 	};

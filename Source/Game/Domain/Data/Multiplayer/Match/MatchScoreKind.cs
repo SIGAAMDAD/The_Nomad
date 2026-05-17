@@ -13,21 +13,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-
-namespace Nomad.Game.Prefabs
+namespace Nomad.Game.Domain.Data.Multiplayer.Match
 {
-	public partial class RegionArea : Node2D
+	public enum MatchScoreKind : byte
 	{
-		[Export]
-		private CollisionPolygon2D _shape;
-
-		public override void _Ready()
-		{
-			base._Ready();
-
-			var area2D = GetNode<Area2D>( "Zone" );
-			area2D.Reparent( _shape );
-		}
+		Kill,
+		Assist,
+		Objective,
+		RoundWin,
+		MatchWin,
+		Capture,
+		Extraction,
+		BountyClaim,
+		HoldTime,
+		Custom
 	};
 };

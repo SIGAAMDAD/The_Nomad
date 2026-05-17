@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Application.Multiplayer.Match;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Multiplayer.Modes;
 using Nomad.Game.Domain.Events.Multiplayer;
@@ -70,6 +71,9 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 
 		private HostState _hostState;
 		private readonly MultiplayerStateMachine<RoundState> _roundFlow;
+
+		private readonly MatchFlowService _flowService;
+		private readonly MatchRoundService _roundService;
 
 		/*
 		===============

@@ -55,7 +55,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		=============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="calendar"></param>
@@ -91,6 +91,14 @@ namespace Nomad.Game.Application.Gameplay.World
 			calendar.DayChanged.Subscribe( OnDayChanged );
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public void Dispose()
 		{
 			_seasonChanged.Dispose();
@@ -129,7 +137,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		=============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="time"></param>
 		/// <returns></returns>
@@ -194,7 +202,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		*/
 		/// <summary>
 		/// Blends two prototype SeasonDefinitions together.
-		/// 
+		///
 		/// NOTE:
 		/// If your SeasonDefinition grows more fields later, update this method.
 		/// </summary>

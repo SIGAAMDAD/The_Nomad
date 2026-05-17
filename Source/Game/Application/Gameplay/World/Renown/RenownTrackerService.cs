@@ -29,9 +29,9 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 {
 	/*
 	===================================================================================
-	
+
 	RenownTrackerService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
@@ -55,15 +55,23 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public RenownTrackerService( IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			_renownScoreChanged = eventFactory.GetEvent<RenownScoreChangedEventArgs>( RenownScoreChangedEventArgs.Name, RenownScoreChangedEventArgs.NameSpace );
-			_renownTierChanged = eventFactory.GetEvent<RenownTierChangedEventArgs>( RenownTierChangedEventArgs.Name, RenownTierChangedEventArgs.NameSpace );
+			_renownScoreChanged = eventFactory.GetEvent<RenownScoreChangedEventArgs>(
+				RenownScoreChangedEventArgs.Name,
+				RenownScoreChangedEventArgs.NameSpace
+			);
+
+			_renownTierChanged = eventFactory.GetEvent<RenownTierChangedEventArgs>(
+				RenownTierChangedEventArgs.Name,
+				RenownTierChangedEventArgs.NameSpace
+			);
 
 			_tiers = new RenownTierDefinition[] {
 				Constants.TIER_0_DEFINITION,
@@ -81,7 +89,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <param name="amount"></param>
@@ -134,7 +142,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		public void ApplyDelta( RenownDelta delta )
@@ -157,10 +165,22 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 			}
 
 			status.CurrentTier = ResolveRenownTier( status.CurrentRenown );
-			_renownScoreChanged.Publish( new RenownScoreChangedEventArgs( delta.RegionId, previousValue, status.CurrentRenown ) );
+			_renownScoreChanged.Publish(
+				new RenownScoreChangedEventArgs(
+					delta.RegionId,
+					previousValue,
+					status.CurrentRenown
+				)
+			);
 
 			if ( status.CurrentTier.Tier != previousTier ) {
-				_renownTierChanged.Publish( new RenownTierChangedEventArgs( delta.RegionId, previousTier, status.CurrentTier.Tier ) );
+				_renownTierChanged.Publish(
+					new RenownTierChangedEventArgs(
+						delta.RegionId,
+						previousTier,
+						status.CurrentTier.Tier
+					)
+				);
 			}
 		}
 
@@ -170,7 +190,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public IReadOnlyDictionary<InternString, RenownStatus> GetAllStatuses()
@@ -184,7 +204,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <returns></returns>
@@ -215,7 +235,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <returns></returns>
@@ -230,7 +250,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <returns></returns>
@@ -246,7 +266,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <param name="sourceId"></param>
@@ -263,7 +283,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="score"></param>
 		/// <returns></returns>
@@ -289,7 +309,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <returns></returns>

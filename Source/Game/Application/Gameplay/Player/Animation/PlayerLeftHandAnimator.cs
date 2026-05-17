@@ -13,10 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.Events.Globals;
-using Godot;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
@@ -44,7 +41,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		/// <param name="args"></param>
 		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
 		{
-			base.OnPlayerMovementChanged( args );
+			base.OnPlayerMovementChanged( in args );
 		}
 	};
 };

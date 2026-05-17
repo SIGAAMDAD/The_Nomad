@@ -22,13 +22,13 @@ namespace Nomad.Game.Application.Gameplay.World
 {
 	/*
 	===================================================================================
-	
+
 	SimulationSaveCoordinator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class SimulationSaveCoordinator
@@ -38,6 +38,18 @@ namespace Nomad.Game.Application.Gameplay.World
 
 		private readonly object _lock = new();
 
+		/*
+		===============
+		SimulationSaveCoordinator
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="calendarService"></param>
+		/// <param name="weatherService"></param>
+		/// <param name="eventFactory"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public SimulationSaveCoordinator( CalendarService calendarService, WeatherService weatherService, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
@@ -56,7 +68,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnSaveBegin( in SaveBeginEventArgs args )
