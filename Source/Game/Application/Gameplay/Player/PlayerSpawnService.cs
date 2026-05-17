@@ -71,8 +71,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 			ILoggerService logger
 		)
 		{
-			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
-
 			_repository = repository ?? throw new ArgumentNullException( nameof( repository ) );
 			_profileResolver = profileResolver ?? throw new ArgumentNullException( nameof( profileResolver ) );
 			_spawnApplicator = spawnApplicator ?? throw new ArgumentNullException( nameof( spawnApplicator ) );

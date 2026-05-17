@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using Nomad.Audio.Interfaces;
+using Nomad.Audio.ValueObjects;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
 using Nomad.EngineUtils.Settings.Services;
@@ -45,7 +46,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public bool EffectsOn => _service.Config.SoundEffectsOn;
 		public int OutputDeviceIndex => _service.Config.OutputDeviceIndex;
 		public int AudioDriverAPI => _service.Config.AudioDriver;
-		public int SpeakerMode => _service.Config.SpeakerMode;
+		public SpeakerMode SpeakerMode => _service.Config.SpeakerMode;
 
 		public IReadOnlyList<string> OutputDevices => _device.OutputDevices;
 		public IReadOnlyList<string> AudioDrivers => _device.AudioDrivers;

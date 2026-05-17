@@ -34,6 +34,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 	internal abstract class PlayerHandAnimator : PlayerAnimator
 	{
 		public SpriteFrames Frames { get; set; }
+		public AnimatedSprite2D Animator { get; set; }
 
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = default;
@@ -69,7 +70,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		{
 			base.OnInit();
 
-			animator = prefab.GetNode<AnimatedSprite2D>( "Animator" );
+			animator = Animator;
 			animator.SpriteFrames = Frames;
 		}
 

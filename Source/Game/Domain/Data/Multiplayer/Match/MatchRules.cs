@@ -17,14 +17,26 @@ namespace Nomad.Game.Domain.Data.Multiplayer.Match
 {
 	public sealed record MatchRules
 	{
-		public bool FriendlyFireEnabled { get; init; }
-		public bool AllowRespawn { get; init; }
+		public Mode Mode { get; set; }
+		public string MapId { get; set; } = string.Empty;
 
-		public uint ScoreLimit { get; init; }
-		public uint TimeLimit { get; init; }
+		public byte MaxPlayers { get; set; } = 8;
+		public byte MaxTeams { get; set; } = 0;
 
-		public bool AllowLateJoin { get; init; }
-		public bool AllowSpectators { get; init; }
-		public bool Ranked { get; init; }
+		public byte ScoreLimit { get; set; } = 20;
+		public byte RoundLimit { get; set; } = 1;
+
+		public uint MatchDurationTicks { get; set; } = 0;
+		public uint RoundDurationTicks { get; set; } = 0;
+		public uint WarmupTicks { get; set; } = 0;
+		public uint CountdownTicks { get; set; } = 180;
+		public uint PostMatchTicks { get; set; } = 300;
+
+		public bool FriendlyFire { get; set; }
+		public bool AllowRespawns { get; set; } = true;
+		public bool AllowSpectators { get; set; } = true;
+		public bool AllowLateJoin { get; set; }
+		public bool LockLoadoutsOnStart { get; set; } = true;
+		public bool Ranked { get; set; }
 	};
 };

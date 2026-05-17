@@ -59,8 +59,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 		private PlayerInputFrame _current = PlayerInputFrame.Empty;
 		private uint _lastTick = uint.MaxValue;
-		private ushort _sequence;
-		private bool _isDisposed;
+		private ushort _sequence = 0;
+		private bool _isDisposed = false;
 
 		/*
 		===============
@@ -188,7 +188,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 				_moveInput.Y = -_moveInput.Y;
 				return;
 			}
-
 			_moveInput = Vector2.Zero;
 		}
 

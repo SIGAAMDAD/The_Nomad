@@ -19,14 +19,10 @@ using Nomad.Audio.Interfaces;
 using Nomad.Logger;
 using Nomad.Events;
 using Nomad.CVars;
-using Nomad.Logger.Private.Sinks;
 using Nomad.Core;
-using Nomad.Core.CVars;
 using Nomad.EngineUtils;
 using Nomad.FileSystem;
 using Nomad.Core.OnlineServices;
-using Nomad.Core.Logger;
-using Nomad.Core.FileSystem;
 using System;
 using Nomad.OnlineServices.Steam;
 using Nomad.Audio.Fmod;
@@ -34,13 +30,16 @@ using Nomad.Console;
 using Nomad.Input;
 using Nomad.Save;
 using Nomad.Networking;
+using Nomad.Game.Presentation.Screens;
+using Nomad.Game.Infrastructure.Root;
+using Nomad.Game.Infrastructure.Godot;
 
 namespace Nomad.Game.Infrastructure
 {
 	/*
 	===================================================================================
 
-	NomadBootstrapper
+	GodotBootstrapper
 
 	===================================================================================
 	*/
@@ -48,13 +47,10 @@ namespace Nomad.Game.Infrastructure
 	///
 	/// </summary>
 
-	public sealed partial class GodotBootstrapper : Node
+	internal sealed partial class GodotBootstrapper : Node
 	{
-		private IAudioDevice _audioService;
-		private IChannelRepository _channelRepository;
-		private IOnlinePlatformService _onlineService;
-
-		private NomadFrameworkBootstrapper _bootstrapper;
+		private GodotFrameworkStartup _startup;
+		private GodotFramePump? _framePump;
 
 		/*
 		===============
@@ -68,47 +64,17 @@ namespace Nomad.Game.Infrastructure
 		{
 			base._Ready();
 
-			GD.Print( $"Initializing NomadFramework... {AppContext.BaseDirectory}, {System.Environment.CurrentDirectory}" );
-
-			var serviceFactory = ServiceRegistry.Instance;
-			var serviceLocator = ServiceLocator.Instance;
-
-			_bootstrapper = new NomadFrameworkBootstrapper( serviceFactory, serviceLocator )
-				.AddBootstrapper( new LoggerBootstrapper() )
-				.AddBootstrapper( new EventBootstrapper() )
-				.AddBootstrapper( new CVarBootstrapper() )
-				.AddBootstrapper( new EngineBootstrapper() )
-				.AddBootstrapper( new FileSystemBootstrapper() )
-				.AddBootstrapper( new SteamBootstrapper() )
-				.AddBootstrapper( new ConsoleBootstrapper() )
-				.AddBootstrapper( new FMODBootstrapper() )
-				.AddBootstrapper( new InputBootstrapper() )
-				.AddBootstrapper( new SaveBootstrapper() )
-				.AddBootstrapper( new NetworkBootstrapper() );
-
-			_bootstrapper.Bootstrap();
-
-			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
-
-			_audioService = serviceLocator.GetService<IAudioDevice>();
-			_channelRepository = serviceLocator.GetService<IChannelRepository>();
-			_onlineService = serviceLocator.GetService<IOnlinePlatformService>();
-
-			var fileSystem = serviceLocator.GetService<IFileSystem>();
-			var configFile = cvarSystem.Register(
-				new CVarCreateInfo<string> {
-					Name = "game.ConfigPath",
-					DefaultValue = $"{fileSystem.GetUserDataPath()}/UserConfig.ini",
-					Description = "The path to the configuration file.",
-					Flags = CVarFlags.Init | CVarFlags.ReadOnly
-				}
-			);
-
-			if ( fileSystem.FileExists( configFile.Value ) ) {
-				cvarSystem.Load( fileSystem, configFile.Value );
-			}
-
 			ProcessMode = ProcessModeEnum.Always;
+
+			_startup = new GodotFrameworkStartup();
+
+			StartupContext context = _startup.Bootstrap();
+
+			ConfigStartup.Configure( context.ServiceLocator );
+
+			_framePump = new GodotFramePump( context.ServiceLocator );
+
+			ScreenPresenterFactory.Initialize( context.ServiceLocator );
 		}
 
 		/*
@@ -124,10 +90,7 @@ namespace Nomad.Game.Infrastructure
 		{
 			base._Process( delta );
 
-			float deltaTime = (float)delta;
-			_audioService?.Update( deltaTime );
-			_channelRepository?.Update( deltaTime );
-			_onlineService?.Frame();
+			_framePump?.Frame( (float)delta );
 		}
 
 		/*
@@ -142,7 +105,10 @@ namespace Nomad.Game.Infrastructure
 		{
 			base._ExitTree();
 
-			_bootstrapper?.Dispose();
+			_framePump = null;
+
+			_startup?.Dispose();
+			_startup = null;
 		}
 	};
 };

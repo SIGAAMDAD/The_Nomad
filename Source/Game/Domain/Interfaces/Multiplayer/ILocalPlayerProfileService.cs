@@ -21,6 +21,9 @@ using Nomad.Game.Domain.Data.Multiplayer.Profile;
 
 namespace Nomad.Game.Domain.Interfaces.Multiplayer
 {
+	/// <summary>
+	///
+	/// </summary>
 	public interface ILocalPlayerProfileService : IDisposable
 	{
 		PeerId LocalPeerId { get; }

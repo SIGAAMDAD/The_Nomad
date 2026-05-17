@@ -13,21 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using System;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.World;
+using Nomad.Game.Domain.Events.World;
 
-namespace Nomad.Game.Prefabs
+namespace Nomad.Game.Domain.Interfaces.World
 {
-	public partial class RegionArea : Node2D
+	public interface IWeatherService : IDisposable
 	{
-		[Export]
-		private CollisionPolygon2D _shape;
+		[Event( nameSpace: "Nomad.Game.Domain.Events.World" )]
+		[EventPayload( "Time", typeof( WorldTime ), Order = 1 )]
+		[EventPayload( "Previous", typeof( InternString ), Order = 2 )]
+		[EventPayload( "Current", typeof( InternString ), Order = 3 )]
+		IGameEvent<WeatherChangedEventArgs> WeatherChanged { get; }
 
-		public override void _Ready()
-		{
-			base._Ready();
-
-			var area2D = GetNode<Area2D>( "Zone" );
-			area2D.Reparent( _shape );
-		}
+		InternString CurrentWeatherId { get; }
 	};
 };

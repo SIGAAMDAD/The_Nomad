@@ -29,6 +29,7 @@ using Nomad.Game.Application.Gameplay.Inventory;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Events.Entity;
+using Nomad.Game.Application.Gameplay.Player.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -116,6 +117,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
 				comp.Id = peerId.Id;
+				comp.InputSource = new LocalPlayerInputSource( peerId, eventFactory );
 			} );
 			_jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
 				comp.Id = peerId.Id;

@@ -13,21 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-
 namespace Nomad.Game.Prefabs
 {
-	public partial class RegionArea : Node2D
+	internal sealed partial class PickupRoot : InteractableRoot
 	{
-		[Export]
-		private CollisionPolygon2D _shape;
-
-		public override void _Ready()
-		{
-			base._Ready();
-
-			var area2D = GetNode<Area2D>( "Zone" );
-			area2D.Reparent( _shape );
-		}
 	};
 };

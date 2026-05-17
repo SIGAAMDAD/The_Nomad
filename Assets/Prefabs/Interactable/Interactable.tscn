@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dv6ktbyhtedws"]
 
-[ext_resource type="Script" uid="uid://g3c6ger0y3kl" path="res://Assets/Prefabs/Interactable/Interactable.cs" id="1_hk5pm"]
+[ext_resource type="Script" uid="uid://cevulokr6alxc" path="res://Assets/Prefabs/Interactable/InteractableRoot.cs" id="1_hk5pm"]
 
 [node name="Interactable" type="Node2D" unique_id=1146163250]
 script = ExtResource("1_hk5pm")

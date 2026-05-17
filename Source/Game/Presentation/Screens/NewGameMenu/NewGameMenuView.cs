@@ -33,6 +33,11 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		private VBoxContainer _optionsContainer;
 		private Control _customDifficultyContainer;
 
+		public void SetOptionsContainerVisibility( bool visible )
+		{
+			_optionsContainer.Visible = visible;
+		}
+
 		/*
 		===============
 		_Ready

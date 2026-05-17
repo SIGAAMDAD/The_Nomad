@@ -43,24 +43,6 @@ namespace Nomad.Game.Application.Multiplayer
 
 	internal sealed class CaptureTheFlagMode : ModeBase, ICaptureTheFlagMode
 	{
-		private enum RoundState : byte
-		{
-			Waiting,
-			Active,
-			Ended
-		};
-
-		private struct HostState
-		{
-			public SessionId SessionId { get; set; }
-			public uint RedTeamScore { get; set; }
-			public uint BlueTeamScore { get; set; }
-			public uint RoundIndex { get; set; }
-
-			public FlagStatus RedFlagStatus { get; set; }
-			public FlagStatus BlueFlagStatus { get; set; }
-		};
-
 		public override string ModeName => "Capture The Flag";
 		public override Mode Mode => Mode.CaptureTheFlag;
 
@@ -74,13 +56,7 @@ namespace Nomad.Game.Application.Multiplayer
 		private readonly IGameEvent<CTFRoundEndEventArgs> _ctfRoundEnd = default;
 
 		public CaptureTheFlagSnapshot Snapshot => new CaptureTheFlagSnapshot {
-			RedTeamScore = _hostState.RedTeamScore,
-			BlueTeamScore = _hostState.BlueTeamScore,
-			RoundIndex = _hostState.RoundIndex
 		};
-
-		private HostState _hostState;
-		private readonly MultiplayerStateMachine<RoundState> _roundFlow;
 
 		private readonly ITeamService _teamService;
 

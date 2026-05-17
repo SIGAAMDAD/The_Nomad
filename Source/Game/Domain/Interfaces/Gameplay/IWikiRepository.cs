@@ -13,21 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.World;
-using Nomad.Game.Domain.Events.World;
+using Nomad.Game.Domain.Data.Gameplay;
 
-namespace Nomad.Game.Domain.Interfaces.World
+namespace Nomad.Game.Domain.Interfaces.Gameplay
 {
-	public interface IWeather
+	public interface IWikiRepository
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ), Order = 1 )]
-		[EventPayload( "Previous", typeof( InternString ), Order = 2 )]
-		[EventPayload( "Current", typeof( InternString ), Order = 3 )]
-		IGameEvent<WeatherChangedEventArgs> WeatherChanged { get; }
-
-		InternString CurrentWeatherId { get; }
+		bool TryGetEntry( InternString entryId, out WikiEntry entry );
+		bool EntryExists( InternString entryId );
 	};
 };

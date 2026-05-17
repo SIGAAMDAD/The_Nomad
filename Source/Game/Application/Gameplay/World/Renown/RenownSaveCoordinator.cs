@@ -49,6 +49,8 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 					writer.AddField( $"{regionId}:{nameof( status.Value.CurrentRenown )}", status.Value.CurrentRenown );
 					writer.AddField( $"{regionId}:{nameof( status.Value.LastAnyChangeDay )}", status.Value.LastAnyChangeDay );
 					writer.AddField( $"{regionId}:{nameof( status.Value.LastPositiveChangeDay )}", status.Value.LastPositiveChangeDay );
+					writer.AddField( $"{regionId}:{nameof( status.Value.HighestTierReached )}", status.Value.HighestTierReached );
+					writer.AddField( $"{regionId}:{nameof( status.Value.PeakRenown )}", status.Value.PeakRenown );
 				}
 			}
 		}
