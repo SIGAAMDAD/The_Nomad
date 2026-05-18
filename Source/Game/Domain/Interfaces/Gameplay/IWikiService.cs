@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Microsoft.Diagnostics.Tracing.Stacks;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Gameplay;
@@ -25,9 +24,14 @@ namespace Nomad.Game.Domain.Interfaces.Gameplay
 	public interface IWikiService : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "WikiPageFoundEventArgs" )]
-		[EventPayload( "PageId", typeof( InternStackSource ) )]
+		[EventPayload( "PageId", typeof( InternString ) )]
 		IGameEvent<WikiPageFoundEventArgs> PageFound { get; }
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="pageId"></param>
+		/// <returns></returns>
 		bool IsPageUnlocked( InternString pageId );
 
 		/// <summary>
@@ -41,8 +45,9 @@ namespace Nomad.Game.Domain.Interfaces.Gameplay
 		/// Attempts a retrieval of a Valden's Book page.
 		/// </summary>
 		/// <param name="pageId"></param>
-		/// <param name="page"></param>
+		/// <param name="localizationName"></param>
+		/// <param name="localizationDescription"></param>
 		/// <returns><c>true</c> if the page has been unlocked, <c>false</c> if otherwise.</returns>
-		bool TryGetPage( InternString pageId, out WikiEntry page );
+		bool TryTranslatePage( InternString pageId, out string localizationName, out string localizationDescription );
 	};
 };

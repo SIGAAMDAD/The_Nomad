@@ -92,23 +92,40 @@ namespace Nomad.Game.Application.Gameplay.ValdensBook
 
 		/*
 		===============
-		TryGetPage
+		TryTranslatePage
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="pageId"></param>
-		/// <param name="page"></param>
+		/// <param name="localizationName"></param>
+		/// <param name="localizationDescription"></param>
 		/// <returns></returns>
-		public bool TryGetPage( InternString pageId, out WikiEntry page )
+		public bool TryTranslatePage( InternString pageId, out string localizationName, out string localizationDescription )
 		{
-			return _entryCache.TryGetValue( pageId, out page );
+			localizationName = string.Empty;
+			localizationDescription = string.Empty;
+			if ( _entryCache.TryGetValue( pageId, out var page ) ) {
+				localizationName = _localizationService.Translate( page.Name );
+				localizationDescription = _localizationService.Translate( page.Description );
+				return true;
+			}
+			return false;
 		}
 
 		public bool TryUnlockPage( InternString pageId )
 		{
-			return true;
+			if ( _entryCache.TryGetValue( pageId, out var page ) ) {
+				if ( page.TryUnlock( pageId ) ) {
+					_pageFound.Publish(
+						new WikiPageFoundEventArgs(
+							pageId
+						)
+					);
+				}
+			}
+			return false;
 		}
 
 		private void OnSaveBegin( in SaveBeginEventArgs args )
