@@ -13,28 +13,5 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Util;
-
-namespace Nomad.Game.Domain.Data.Gameplay
-{
-	public sealed class WikiEntry
-	{
-		public InternString Name { get; init; }
-		public InternString Description { get; init; }
-
-		public bool Unlocked { get; private set; } = false;
-
-		public WikiEntry( InternString name, InternString description )
-		{
-			Name = name;
-			Description = description;
-		}
-
-		public bool TryUnlock( InternString name )
-		{
-			bool locked = !Unlocked;
-			Unlocked = true;
-			return locked;
-		}
-	};
-};
+namespace Nomad.Game.Application.Gameplay.Wiki
+{};
