@@ -17,6 +17,17 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.Gameplay
 {
+	/*
+	===================================================================================
+
+	WikiEntry
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	public sealed class WikiEntry
 	{
 		public InternString Name { get; init; }
@@ -24,12 +35,31 @@ namespace Nomad.Game.Domain.Data.Gameplay
 
 		public bool Unlocked { get; private set; } = false;
 
-		public WikiEntry( InternString name, InternString description )
+		/*
+		===============
+		WikiEntry
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="id"></param>
+		public WikiEntry( InternString id )
 		{
-			Name = name;
-			Description = description;
+			Name = new InternString( string.Concat( (string)id, ".name" ) );
+			Description = new InternString( string.Concat( (string)id, ".description" ) );
 		}
 
+		/*
+		===============
+		TryUnlock
+		===============
+		*/
+		/// summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public bool TryUnlock( InternString name )
 		{
 			bool locked = !Unlocked;
