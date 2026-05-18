@@ -38,6 +38,11 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 			_optionsContainer.Visible = visible;
 		}
 
+		public void SetCustomDifficultyContainerVisibility( bool visible )
+		{
+			_customDifficultyContainer.Visible = visible;
+		}
+
 		/*
 		===============
 		_Ready
