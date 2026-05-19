@@ -36,18 +36,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 
 		/*
 		===============
-		PlayerStatDependencyGraph
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		public PlayerStatDependencyGraph()
-		{
-		}
-
-		/*
-		===============
 		CreateDefault
 		===============
 		*/

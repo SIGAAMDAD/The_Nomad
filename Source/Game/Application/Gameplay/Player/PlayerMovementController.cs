@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Microsoft.Diagnostics.Tracing.Parsers;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
@@ -43,14 +44,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 	/// RemotePlayerInputSource.
 	/// </summary>
 
-	internal sealed class PlayerMovementController : NomadBehaviour
+	internal sealed class PlayerMovementController : NomadBehaviour, IMovementController
 	{
+		private const float MOVING_THRESHOLD = 0.001f;
+		private const float HARD_START_THRESHOLD = 64.0f;
+		private const float HARD_STOP_THRESHOLD = 64.0f;
+
 		public PlayerId Id { get; set; }
 		public IPlayerDerivedStatService Stats { get; set; }
 		public IPlayerFlagService Flags { get; set; }
 		public IPlayerInputSource InputSource { get; set; }
 		public IPlayerStateReader StateReader { get; set; }
 		public IPlayerStateWriter StateWriter { get; set; }
+		public IAimWriter AimWriter { get; set; }
 
 		private float _effectiveMovementSpeed = 0.0f;
 
@@ -63,13 +69,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		private readonly Godot.Timer _slideTimer;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerMovementChangedEventArgs" )]
-		[EventPayload( "OldVelocity", typeof( Vector2 ), Order = 1 )]
-		[EventPayload( "NewVelocity", typeof( Vector2 ), Order = 2 )]
-		[EventPayload( "IsMoving", typeof( bool ), Order = 3 )]
-		[EventPayload( "WalkingReverse", typeof( bool ), Order = 4 )]
-		public IGameEvent<PlayerMovementChangedEventArgs> MovementChanged => _movementChanged;
-		private IGameEvent<PlayerMovementChangedEventArgs> _movementChanged = null;
+		public IGameEvent<PlayerLocomotionCueEventArgs> LocomotionCue => _locomotionCue;
+		private IGameEvent<PlayerLocomotionCueEventArgs> _locomotionCue = null;
 
 		/*
 		===============
@@ -85,7 +86,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 				WaitTime = Domain.Data.Player.Constants.SLIDE_DURATION,
 				OneShot = true
 			};
-
 			_slideTimer.Timeout += OnSlideTimerTimeout;
 		}
 
@@ -129,10 +129,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 				)
 				.Subscribe( OnStatChanged );
 
-			_movementChanged = eventFactory
-				.GetEvent<PlayerMovementChangedEventArgs>(
-					$"{Id}:{PlayerMovementChangedEventArgs.Name}",
-					PlayerMovementChangedEventArgs.NameSpace,
+			_locomotionCue = eventFactory
+				.GetEvent<PlayerLocomotionCueEventArgs>(
+					$"{Id}:{PlayerLocomotionCueEventArgs.Name}",
+					PlayerLocomotionCueEventArgs.NameSpace,
 					EventFlags.NoLock
 				);
 		}
@@ -175,7 +175,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_slideTimer.Timeout -= OnSlideTimerTimeout;
 			_slideTimer.Dispose();
 
-			_movementChanged?.Dispose();
+			_locomotionCue.Dispose();
 		}
 
 		/*
@@ -200,12 +200,14 @@ namespace Nomad.Game.Application.Gameplay.Player
 				_velocity = Vector2.Zero;
 
 				if ( previousVelocity.LengthSquared() > 0.001f ) {
-					_movementChanged.Publish(
-						new PlayerMovementChangedEventArgs(
+					_locomotionCue.Publish(
+						new PlayerLocomotionCueEventArgs(
+							PlayerLocomotionCue.HardStop,
 							previousVelocity,
 							_velocity,
-							false,
-							false
+							_isMoving,
+							_moveInput,
+							0
 						)
 					);
 				}
@@ -216,9 +218,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 				return;
 			}
 
-			PlayerInputFrame input = InputSource != null
-				? InputSource.ReadFrame( _inputTick++ )
-				: PlayerInputFrame.Empty;
+			PlayerInputFrame input = InputSource != null ? InputSource.ReadFrame( _inputTick++ ) : PlayerInputFrame.Empty;
+
+			AimWriter.SetAimDirection( input.AimDirection );
 
 			_moveInput = input.Move;
 			_isMoving = input.IsMoving;
@@ -241,19 +243,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 				StateWriter.SetIdle( PlayerStateChangeReason.Movement );
 			}
 
-			bool reverse =
-				MathF.Sign( previousVelocity.X ) != 0 &&
-				MathF.Sign( _moveInput.X ) != 0 &&
-				MathF.Sign( previousVelocity.X ) != MathF.Sign( _moveInput.X );
-
-			_movementChanged.Publish(
-				new PlayerMovementChangedEventArgs(
-					previousVelocity,
-					_velocity,
-					isMovingNow,
-					reverse
-				)
-			);
+			PlayerLocomotionCue cue = DetectLocomotionCue( previousVelocity );
+			if ( cue != PlayerLocomotionCue.None ) {
+				_locomotionCue.Publish(
+					new PlayerLocomotionCueEventArgs(
+						cue,
+						previousVelocity,
+						_velocity,
+						_isMoving,
+						_moveInput,
+						input.Tick
+					)
+				);
+			}
 
 			_prefab.Velocity = _velocity.ToGodot();
 			_prefab.MoveAndSlide();
@@ -261,9 +263,58 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		/*
 		===============
+		DetectLocomotionCue
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="previousVelocity"></param>
+		/// <returns></returns>
+		private PlayerLocomotionCue DetectLocomotionCue( Vector2 previousVelocity )
+		{
+			bool wasMoving = previousVelocity.LengthSquared() > MOVING_THRESHOLD;
+			bool isMoving = _velocity.LengthSquared() > MOVING_THRESHOLD;
+			bool hasInput = _moveInput.LengthSquared() > MOVING_THRESHOLD;
+
+			if ( !wasMoving && isMoving && _velocity.Length() >= HARD_START_THRESHOLD ) {
+				return PlayerLocomotionCue.HardStart;
+			}
+
+			if ( wasMoving && !isMoving && previousVelocity.Length() >= HARD_STOP_THRESHOLD ) {
+				return PlayerLocomotionCue.HardStop;
+			}
+
+			bool reverse =
+				MathF.Sign( previousVelocity.X ) != 0 &&
+				MathF.Sign( _moveInput.X ) != 0 &&
+				MathF.Sign( previousVelocity.X ) != MathF.Sign( _moveInput.X );
+
+			if ( reverse ) {
+				return PlayerLocomotionCue.Reverse;
+			}
+
+			if ( wasMoving && hasInput ) {
+				Vector2 previousDir = Vector2.Normalize( previousVelocity );
+				Vector2 inputDir = Vector2.Normalize( _moveInput );
+
+				float dot = Vector2.Dot( previousDir, inputDir );
+				if ( dot < 0.35f ) {
+					return PlayerLocomotionCue.SharpTurn;
+				}
+			}
+
+			return PlayerLocomotionCue.None;
+		}
+
+		/*
+		===============
 		StartSlide
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void StartSlide()
 		{
 			if ( Flags.GetFlags( PlayerFlags.Sliding ) ) {
@@ -279,6 +330,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		ApplyDashingSpeedBonus
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplyDashingSpeedBonus()
 		{
@@ -290,6 +345,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		ApplySlidingSpeedBonus
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float ApplySlidingSpeedBonus()
 		{
@@ -301,6 +360,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 		HandleAcceleration
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
+		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private Vector2 HandleAcceleration( float delta )
 		{
@@ -314,6 +378,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 		HandleDeceleration
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
+		/// <returns></returns>
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		public Vector2 HandleDeceleration( float delta )
 		{

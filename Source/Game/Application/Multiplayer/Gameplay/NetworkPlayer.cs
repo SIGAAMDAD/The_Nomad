@@ -43,8 +43,8 @@ namespace Nomad.Game.Application.Multiplayer.Gameplay
 	{
 		private readonly MultiplayerObject _multiplayer;
 
-		public NetworkPlayer( PeerId peerId, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( new PlayerId( peerId ), prefab, scope, eventFactory, logger )
+		public NetworkPlayer( PeerId peerId, PlayerPrefab prefab, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( new PlayerId( peerId ), prefab, eventFactory, logger )
 		{
 			var sessionService = locator.GetService<INetworkSessionService>();
 			var eventBus = locator.GetService<INetworkEventBus>();

@@ -13,19 +13,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 using Godot;
-using Nomad.EngineUtils;
-using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Data.Player.State;
+using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
 	/*
 	===================================================================================
 
-	PlayerFootsteps
+	PlayerWalkEffects
 
 	===================================================================================
 	*/
@@ -33,36 +33,50 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 	///
 	/// </summary>
 
-	internal sealed class PlayerFootsteps : NomadBehaviour
+	internal sealed class PlayerWalkEffects : IDisposable
 	{
 		private const int MAX_STEPS = 24;
 		private const int DEQUEUE_LIMIT = 3;
 
-		private PlayerPrefab _prefab;
+		private readonly PlayerPrefab _prefab;
+		private readonly IPlayerStateReader _stateReader;
 
-		private readonly Queue<Transform2D> _steps = new( MAX_STEPS );
-		private MultiMeshInstance2D _mesh;
+		//
+		// Footsteps
+		//
 
-		private bool _isMoving = false;
+		private readonly Queue<Transform2D> _steps = new Queue<Transform2D>( MAX_STEPS );
+		private readonly MultiMeshInstance2D _mesh;
+
+		//
+		// Independent Engine vfx
+		//
+
+		private readonly GpuParticles2D _dustPuff;
+
+		private bool _isDisposed = false;
 
 		/*
 		===============
-		OnInit
+		PlayerWalkEffects
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		public override void OnInit()
+		/// <param name="prefab"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public PlayerWalkEffects( PlayerPrefab prefab, IPlayerStateReader stateReader )
 		{
-			base.OnInit();
+			_prefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
+			_stateReader = stateReader ?? throw new ArgumentNullException( nameof( stateReader ) );
 
-			_prefab = Object.CastAs<PlayerPrefab>();
+			_dustPuff = prefab.GetNode<GpuParticles2D>( "Animations/LegAnimator/DustPuff" );
 
 			// TODO: use framework to create this
 			var texture = ResourceLoader.Load<Texture2D>( "res://Assets/Textures/Environment/footstep.png" );
 			_mesh = new MultiMeshInstance2D() {
-				Name = nameof( PlayerFootsteps ),
+				Name = nameof( PlayerWalkEffects ),
 				Texture = texture,
 				Modulate = new Color( 1.0f, 1.0f, 1.0f, 0.75f ),
 				Multimesh = new MultiMesh() {
@@ -74,49 +88,37 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 				}
 			};
 
-			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
+			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
 			legAnimation.AnimationLooped += OnLegAnimationLooped;
 
-			var movementController = _prefab.GetComponent<PlayerMovementController>();
-			movementController.MovementChanged.Subscribe( OnMovementChanged );
-
 			// attach the mesh to a detached transform otherwise we'll have the transforms following the player.
-			var sceneObject = new EngineSceneObject();
+			var sceneObject = new Node();
 			sceneObject.AddChild( _mesh );
 			_prefab.AddChild( sceneObject );
 		}
 
 		/*
 		===============
-		OnShutdown
+		Dispose
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		public override void OnShutdown()
+		public void Dispose()
 		{
-			base.OnShutdown();
+			if ( _isDisposed ) {
+				return;
+			}
 
-			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "LegAnimator" );
+			var legAnimation = _prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
 			legAnimation.AnimationLooped -= OnLegAnimationLooped;
 
-			var movementController = _prefab.GetComponent<PlayerMovementController>();
-			movementController.MovementChanged.Unsubscribe( OnMovementChanged );
-		}
+			_prefab.RemoveChild( _mesh.GetParent() );
+			_mesh.QueueFree();
 
-		/*
-		===============
-		OnMovementChanged
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnMovementChanged( in PlayerMovementChangedEventArgs args )
-		{
-			_isMoving = args.IsMoving;
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*
@@ -129,12 +131,20 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		/// </summary>
 		private void OnLegAnimationLooped()
 		{
-			if ( !_isMoving ) {
+			if ( _stateReader.Current != PlayerStateId.Moving ) {
 				return;
 			}
-			var position = _prefab.GlobalPosition;
-			Transform2D transform = new Transform2D( 0.0f, new Vector2( position.X, position.Y + 24.0f ) );
+
+			_dustPuff.Emitting = true;
+
+			Vector2 position = _prefab.GlobalPosition;
+			Transform2D transform = new Transform2D(
+				rotation: 0.0f,
+				origin: new Vector2( position.X, position.Y + 24.0f )
+			);
+
 			CheckCapacity();
+
 			_mesh.Multimesh.SetInstanceTransform2D( _mesh.Multimesh.VisibleInstanceCount++, transform );
 			_steps.Enqueue( transform );
 		}
@@ -145,7 +155,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		===============
 		*/
 		/// <summary>
-		/// Checks the current number of allocated footsteps and removes 3 of the oldest from the queue if we're overflowing with feet.
+		/// Checks the current number of allocated footsteps and removes 3 of the oldest from the queue
+		/// if we're overflowing with feet.
 		/// </summary>
 		private void CheckCapacity()
 		{

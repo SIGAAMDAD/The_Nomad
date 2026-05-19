@@ -13,9 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Domain.Data.Items;
+
 namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IWeaponBase : IItemBase
+	public interface IWeaponBase : IItemBase<WeaponDefinition>
 	{
 
 	};

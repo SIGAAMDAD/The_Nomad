@@ -43,7 +43,7 @@ position = Vector2(-3, 8)
 [node name="TorsoAnimator" type="AnimatedSprite2D" parent="Animations" unique_id=1408154902]
 position = Vector2(-1, 0)
 sprite_frames = ExtResource("3_qq8fn")
-animation = &"idle"
+animation = &"move"
 autoplay = "idle"
 script = ExtResource("5_26jrr")
 

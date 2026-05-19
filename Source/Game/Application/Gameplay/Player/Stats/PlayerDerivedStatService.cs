@@ -15,7 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Nomad.Core.Events;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Game.Domain.Data.Player;
@@ -24,6 +23,7 @@ using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Core.Numerics;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats
 {
@@ -72,6 +72,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		public PlayerDerivedStatService( PlayerId playerId, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+			if ( playerId == PlayerId.Invalid ) {
+				throw new InvalidOperationException( "PlayerDerivedStatsService given an invalid PlayerId!" );
+			}
 
 			_playerId = playerId;
 
@@ -106,10 +109,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		/// </summary>
 		public void Dispose()
 		{
-			if ( !_isDisposed ) {
-				_derivedStatChanged?.Dispose();
-				_baseStatChanged?.Dispose();
+			if ( _isDisposed ) {
+				return;
 			}
+
+			_derivedStatChanged.Dispose();
+			_baseStatChanged.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
@@ -184,10 +190,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			_values[(int)type] = newValue;
 			_dirty.Set( (int)type, false );
 
-			if ( !FloatEquals( oldValue, newValue ) ) {
+			if ( !ScalarMath.NearlyEqual( oldValue, newValue ) ) {
 				_derivedStatChanged.Publish(
 					new PlayerDerivedStatChangedEventArgs(
-						_playerId,
 						newValue,
 						oldValue,
 						type
@@ -257,23 +262,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			}
 
 			throw new ArgumentOutOfRangeException( nameof( type ), $"No derived stat evaluator registered for '{type}'." );
-		}
-
-		/*
-		===============
-		FloatEquals
-		===============
-		*/
-		/// <summary>
-		/// Compares two float values for equality within a small tolerance.
-		/// </summary>
-		/// <param name="a">First float value.</param>
-		/// <param name="b">Second float value.</param>
-		/// <returns>True if the values are approximately equal.</returns>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
-		private static bool FloatEquals( float a, float b )
-		{
-			return Math.Abs( a - b ) < 0.0001f;
 		}
 
 		/*

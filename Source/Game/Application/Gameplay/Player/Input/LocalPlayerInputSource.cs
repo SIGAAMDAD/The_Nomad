@@ -16,9 +16,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.CVars;
+using Nomad.Core.Engine.Windowing;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
-using Nomad.Events.Globals;
+using Nomad.Core.Input;
+using Nomad.CVars;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
@@ -52,8 +54,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 		public PlayerInputFrame Current => _current;
 
-		private readonly IGameEvent<ButtonActionEventArgs> _slideAction;
-		private readonly IGameEvent<AxisActionEventArgs> _moveAction;
+		private readonly IDisposable _slideAction;
+		private readonly IDisposable _moveAction;
+		private readonly IDisposable _lookAction;
+
+		private readonly IDisposable _windowSizeChanged;
+
+		private float _mouseAngle = 0.0f;
+		private Vector2 _mouseDirection = Vector2.Zero;
+		private Vector2 _windowSize = Vector2.Zero;
 
 		private Vector2 _moveInput = Vector2.Zero;
 		private PlayerInputButtons _buttonsDown = PlayerInputButtons.None;
@@ -74,24 +83,39 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		/// </summary>
 		/// <param name="playerId"></param>
 		/// <param name="eventFactory"></param>
-		public LocalPlayerInputSource( PlayerId playerId, IGameEventRegistryService eventFactory )
+		public LocalPlayerInputSource( PlayerId playerId, ICVarSystemService cvarSystem, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+			ArgumentGuard.ThrowIfNull( cvarSystem, nameof( cvarSystem ) );
+
+			var windowSize = cvarSystem.GetCVarOrThrow<WindowResolution>( Core.Constants.CVars.EngineUtils.Display.WINDOW_RESOLUTION );
+			var size = (WindowSize)windowSize.Value;
+			_windowSize = new Vector2( size.Width, size.Height ) * 0.5f;
+
+			_windowSizeChanged = windowSize.ValueChanged.Subscribe( OnWindowSizeChanged );
 
 			_playerId = playerId;
 
-			_slideAction = eventFactory.GetEvent<ButtonActionEventArgs>(
-				$"Slide:{ButtonActionEventArgs.Name}",
-				ButtonActionEventArgs.NameSpace
-			);
+			_slideAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Slide:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( OnSlideActionTriggered );
 
-			_moveAction = eventFactory.GetEvent<AxisActionEventArgs>(
-				$"Move:{AxisActionEventArgs.Name}",
-				AxisActionEventArgs.NameSpace
-			);
+			_moveAction = eventFactory
+				.GetEvent<AxisActionEventArgs>(
+					$"Move:{AxisActionEventArgs.Name}",
+					AxisActionEventArgs.NameSpace
+				)
+				.Subscribe( OnMoveActionTriggered );
 
-			_slideAction.Subscribe( OnSlideActionTriggered );
-			_moveAction.Subscribe( OnMoveActionTriggered );
+			_lookAction = eventFactory
+				.GetEvent<MousePositionChangedEventArgs>(
+					MousePositionChangedEventArgs.Name,
+					MousePositionChangedEventArgs.NameSpace
+				)
+				.Subscribe( OnMousePositionChanged );
 		}
 
 		/*
@@ -99,17 +123,22 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		Dispose
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		public void Dispose()
 		{
 			if ( _isDisposed ) {
 				return;
 			}
 
-			_slideAction.Unsubscribe( OnSlideActionTriggered );
-			_moveAction.Unsubscribe( OnMoveActionTriggered );
+			_slideAction?.Dispose();
+			_moveAction?.Dispose();
+			_lookAction?.Dispose();
+			_windowSizeChanged?.Dispose();
 
-			_isDisposed = true;
 			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*
@@ -117,6 +146,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		ReadFrame
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="tick"></param>
+		/// <returns></returns>
 		public PlayerInputFrame ReadFrame( uint tick )
 		{
 			if ( _lastTick == tick ) {
@@ -131,6 +165,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 					tick,
 					_sequence++,
 					Vector2.Zero,
+					Vector2.Zero,
+					0.0f,
 					PlayerInputButtons.None,
 					PlayerInputButtons.None
 				);
@@ -143,6 +179,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 				tick,
 				_sequence++,
 				_moveInput,
+				_mouseDirection,
+				_mouseAngle,
 				_buttonsDown,
 				_buttonsPressed
 			);
@@ -158,6 +196,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		Reset
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		public void Reset()
 		{
 			_moveInput = Vector2.Zero;
@@ -173,6 +214,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		OnMoveActionTriggered
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnMoveActionTriggered( in AxisActionEventArgs args )
 		{
 			if ( args.Phase == InputActionPhase.Started || args.Phase == InputActionPhase.Performed ) {
@@ -188,9 +233,29 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 		/*
 		===============
+		OnMousePositionChanged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnMousePositionChanged( in MousePositionChangedEventArgs args )
+		{
+			var position = new Vector2( args.PositionX, args.PositionY );
+			_mouseDirection = position - _windowSize;
+			_mouseAngle = MathF.Atan2( _mouseDirection.Y, _mouseDirection.X );
+		}
+
+		/*
+		===============
 		OnSlideActionTriggered
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args )
 		{
 			if ( args.Phase == InputActionPhase.Started ) {
@@ -203,5 +268,20 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 				_buttonsDown &= ~PlayerInputButtons.Slide;
 			}
 		}
-	}
-}
+
+		/*
+		===============
+		OnWindowSizeChanged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args )
+		{
+			var size = (WindowSize)args.NewValue;
+			_windowSize = new Vector2( size.Width, size.Height );
+		}
+	};
+};

@@ -13,17 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player
-{
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct PlayerAnimationIntent
-	{
-		public readonly float AimAngleRadians;
-		public readonly bool FlipX;
+using System;
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Events.Player;
 
-		public readonly bool LockLowerBody;
-		public readonly bool LockUpperBody;
+namespace Nomad.Game.Domain.Interfaces.Player
+{
+	public interface IPlayerAnimationController : IDisposable
+	{
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerAnimationStateChangedEventArgs" )]
+		[EventPayload( "OldState", typeof( PlayerAnimationState ), Order = 1 )]
+		[EventPayload( "NewState", typeof( PlayerAnimationState ), Order = 2 )]
+		IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
 	};
 };

@@ -23,7 +23,7 @@ namespace Nomad.Game.Application.Gameplay.Items
 {
 	internal sealed class ItemRepository
 	{
-		private readonly Dictionary<Guid, IItemBase> _items = new();
+		private readonly Dictionary<Guid, IItemBase<ItemDefinition>> _items = new();
 		private readonly Dictionary<string, ItemDefinition> _definitionCache = new();
 
 		public ItemRepository( IFileSystem fileSystem )

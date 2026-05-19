@@ -40,6 +40,9 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		public ushort Sequence { get; }
 		public float MoveX { get; }
 		public float MoveY { get; }
+		public float AimDirectionX { get; }
+		public float AimDirectionY { get; }
+		public float AimAngle { get; }
 		public PlayerInputButtons ButtonsDown { get; }
 		public PlayerInputButtons ButtonsPressed { get; }
 
@@ -49,6 +52,9 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 			ushort sequence,
 			float moveX,
 			float moveY,
+			float aimDirectionX,
+			float aimDirectionY,
+			float aimAngle,
 			PlayerInputButtons buttonsDown,
 			PlayerInputButtons buttonsPressed
 		)
@@ -58,6 +64,9 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 			Sequence = sequence;
 			MoveX = moveX;
 			MoveY = moveY;
+			AimDirectionX = aimDirectionX;
+			AimDirectionY = aimDirectionY;
+			AimAngle = aimAngle;
 			ButtonsDown = buttonsDown;
 			ButtonsPressed = buttonsPressed;
 		}
@@ -69,6 +78,9 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 				frame.Sequence,
 				frame.Move.X,
 				frame.Move.Y,
+				frame.AimDirection.X,
+				frame.AimDirection.Y,
+				frame.AimAngle,
 				frame.ButtonsDown,
 				frame.ButtonsPressed
 			)
@@ -82,6 +94,8 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 				Tick,
 				Sequence,
 				new Vector2( MoveX, MoveY ),
+				new Vector2( AimDirectionX, AimDirectionY ),
+				AimAngle,
 				ButtonsDown,
 				ButtonsPressed
 			);

@@ -272,7 +272,6 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		{
 			_resourceChanged.Publish(
 				new PlayerResourceChangedEventArgs(
-					Id,
 					0.0f,
 					result.BurnoutAmount,
 					PlayerResourceType.JumpKitHeat

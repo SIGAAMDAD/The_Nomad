@@ -63,6 +63,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerResourceService( PlayerId playerId, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+			if ( playerId == PlayerId.Invalid ) {
+				throw new InvalidOperationException( "PlayerResourceService given an invalid PlayerId!" );
+			}
 
 			_playerId = playerId;
 			_derivedStats = derivedStats ?? throw new ArgumentNullException( nameof( derivedStats ) );
@@ -154,8 +157,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_values[(int)type] = newValue;
 			_resourceChanged.Publish(
 				new PlayerResourceChangedEventArgs(
-					_playerId,
-					oldValue, newValue, type ) );
+					oldValue,
+					newValue,
+					type
+				)
+			);
 		}
 
 		/*

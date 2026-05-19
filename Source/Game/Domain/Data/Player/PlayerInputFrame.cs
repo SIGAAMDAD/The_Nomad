@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Numerics;
-using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Domain.Data.Player
@@ -38,16 +37,20 @@ namespace Nomad.Game.Domain.Data.Player
 			0,
 			0,
 			Vector2.Zero,
+			Vector2.Zero,
+			0.0f,
 			PlayerInputButtons.None,
 			PlayerInputButtons.None
 		);
 
-		public PlayerId PlayerId { get; }
-		public uint Tick { get; }
-		public ushort Sequence { get; }
-		public Vector2 Move { get; }
-		public PlayerInputButtons ButtonsDown { get; }
-		public PlayerInputButtons ButtonsPressed { get; }
+		public readonly PlayerId PlayerId;
+		public readonly uint Tick;
+		public readonly ushort Sequence;
+		public readonly Vector2 Move;
+		public readonly Vector2 AimDirection;
+		public readonly float AimAngle;
+		public readonly PlayerInputButtons ButtonsDown;
+		public readonly PlayerInputButtons ButtonsPressed;
 
 		public bool IsMoving => Move.LengthSquared() > 0.0001f;
 		public bool SlidePressed => IsPressed( PlayerInputButtons.Slide );
@@ -58,6 +61,8 @@ namespace Nomad.Game.Domain.Data.Player
 			uint tick,
 			ushort sequence,
 			Vector2 move,
+			Vector2 aimDirection,
+			float aimAngle,
 			PlayerInputButtons buttonsDown,
 			PlayerInputButtons buttonsPressed
 		)
@@ -66,6 +71,8 @@ namespace Nomad.Game.Domain.Data.Player
 			Tick = tick;
 			Sequence = sequence;
 			Move = move;
+			AimDirection = aimDirection;
+			AimAngle = aimAngle;
 			ButtonsDown = buttonsDown;
 			ButtonsPressed = buttonsPressed;
 		}
@@ -87,6 +94,8 @@ namespace Nomad.Game.Domain.Data.Player
 				Tick,
 				Sequence,
 				Move,
+				AimDirection,
+				AimAngle,
 				ButtonsDown,
 				ButtonsPressed
 			);
@@ -99,6 +108,8 @@ namespace Nomad.Game.Domain.Data.Player
 				tick,
 				Sequence,
 				Move,
+				AimDirection,
+				AimAngle,
 				ButtonsDown,
 				ButtonsPressed
 			);
@@ -111,9 +122,11 @@ namespace Nomad.Game.Domain.Data.Player
 				tick,
 				Sequence,
 				Move,
+				AimDirection,
+				AimAngle,
 				ButtonsDown,
 				PlayerInputButtons.None
 			);
 		}
-	}
-}
+	};
+};

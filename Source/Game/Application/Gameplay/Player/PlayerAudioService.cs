@@ -90,8 +90,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			_prefab = Object.CastAs<PlayerPrefab>();
 
-			var legAnimator = _prefab.FindChild<EngineAnimatedSprite2D>( "LegAnimator" );
-			legAnimator.AnimationLooped.Subscribe( OnLegAnimationLooped );
+			var legAnimator = _prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
+			legAnimator.AnimationLooped += OnLegAnimationLooped;
 
 			FlagService.FlagsChanged.Subscribe( OnFlagsChanged );
 
@@ -217,8 +217,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		private void OnLegAnimationLooped( in EmptyEventArgs args )
+		private void OnLegAnimationLooped()
 		{
 			if ( _prefab.Velocity != Vector2.Zero ) {
 				_walkEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
