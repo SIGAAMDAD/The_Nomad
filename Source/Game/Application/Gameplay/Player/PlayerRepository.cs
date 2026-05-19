@@ -51,7 +51,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly ISceneManager _sceneManager;
 		private readonly IGameStateService _gameStateService;
 		private readonly IGameEventRegistryService _eventFactory;
-		private readonly IServiceRegistry _registry;
 		private readonly ILoggerService _logger;
 
 		private readonly IDisposable _gameStateChanged;
@@ -80,7 +79,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_playerPrefab = playerPrefab;
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
-			_registry = registry ?? throw new ArgumentNullException( nameof( registry ) );
 			_logger = logger ?? throw new ArgumentNullException( nameof( logger ) );
 
 			_gameStateChanged = _gameStateService.StateChanged.Subscribe( OnGameStateChanged );
@@ -124,7 +122,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_sceneManager.ActiveScene.Root.AddChild( composite.Root.CastAs<PlayerPrefab>() );
 
 			var guid = Constants.LOCAL_GUID;
-			var playerBase = new PlayerAggregate( new PlayerId( new PeerId( guid ) ), composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( new PlayerId( new PeerId( guid ) ), composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
 
 			_players[guid] = playerBase;
 			return playerBase;

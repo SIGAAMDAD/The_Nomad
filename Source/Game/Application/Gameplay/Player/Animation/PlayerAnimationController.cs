@@ -14,11 +14,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Numerics;
+using Godot;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
-using Nomad.Core.Numerics;
-using Nomad.EngineUtils;
 using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Data.Player.State;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
@@ -36,70 +37,154 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 	/// <para>Handles all higher level animation routing. Sprite directionality and state coordination.</para>
 	/// </summary>
 
-	internal sealed class PlayerAnimationController : NomadBehaviour
+	internal sealed class PlayerAnimationController : IPlayerAnimationController
 	{
-		public PlayerPrefab Prefab { get; set; }
-		public float LookAngle { get; set; }
+		private static readonly Vector2 HEAD_OFFSET_LEFT = new Vector2( 5.0f, 5.0f );
+		private static readonly Vector2 HEAD_OFFSET_RIGHT = new Vector2( 5.0f, -5.0f );
 
-		private Vector2 _windowSize = Vector2.Zero;
+		public PlayerAnimationState Current => _activeState;
+		private PlayerAnimationState _activeState = PlayerAnimationState.Idle;
 
-		private readonly IPlayerStateReader _stateReader;
 		private readonly PlayerId _playerId = PlayerId.Invalid;
 
-		public PlayerAnimationController( PlayerId playerId, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory )
+		private readonly AnimatedSprite2D _torsoAnimator;
+		private readonly Sprite2D _headAnimator;
+		private readonly AnimatedSprite2D _legAnimator;
+		private readonly PlayerWalkEffects _walkEffects;
+
+		private readonly AnimatedSprite2D _leftHandAnimator;
+		private readonly AnimatedSprite2D _rightHandAnimator;
+
+		private readonly IDisposable _stateChanged;
+		private readonly IDisposable _aimAngleChanged;
+		private readonly IDisposable _locomotionCue;
+
+		private bool _isDisposed = false;
+
+		public IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
+		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = null;
+
+		public PlayerAnimationController(
+			PlayerId playerId,
+			PlayerPrefab prefab,
+			IMovementController movementController,
+			IAimReader aimReader,
+			IPlayerStateReader stateReader,
+			IGameEventRegistryService eventFactory
+		)
 		{
+			ArgumentGuard.ThrowIfNull( prefab, nameof( prefab ) );
+			ArgumentGuard.ThrowIfNull( movementController, nameof( movementController ) );
+			ArgumentGuard.ThrowIfNull( aimReader, nameof( aimReader ) );
+			ArgumentGuard.ThrowIfNull( stateReader, nameof( stateReader ) );
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
 			_playerId = playerId;
-			_stateReader = stateReader ?? throw new ArgumentNullException( nameof( stateReader ) );
 
-			_stateReader.StateChanged.Subscribe( OnStateChanged );
+			_headAnimator = prefab.GetNode<Sprite2D>( "Animations/HeadSprite" );
+
+			_legAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
+
+			_torsoAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/TorsoAnimator" );
+			_walkEffects = new PlayerWalkEffects( prefab, stateReader );
+
+			_leftHandAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/LeftArm/AnimatedSprite2D" );
+			_leftHandAnimator.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmFrames.tres" );
+
+			_rightHandAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/RightArm/AnimatedSprite2D" );
+			_rightHandAnimator.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmFrames.tres" );
+
+			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>(
+				PlayerAnimationStateChangedEventArgs.Name,
+				PlayerAnimationStateChangedEventArgs.NameSpace
+			);
+
+			_stateChanged = stateReader.StateChanged.Subscribe( OnStateChanged );
+			_locomotionCue = movementController.LocomotionCue.Subscribe( OnLocomotionCue );
+			_aimAngleChanged = aimReader.AimAngleChanged.Subscribe( OnAimAngleChanged );
 		}
 
-		/*
-		===============
-		Update
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="delta"></param>
-		public void Update( float delta )
+		public void Dispose()
 		{
-			var position = Prefab.GetViewport().GetMousePosition().ToSystem();
+			if ( _isDisposed ) {
+				return;
+			}
 
-			var angleToCursor = position - _windowSize;
-			LookAngle = MathF.Atan2( angleToCursor.Y, angleToCursor.X );
+			_walkEffects.Dispose();
+			_stateChanged.Dispose();
+			_locomotionCue.Dispose();
+			_aimAngleChanged.Dispose();
 
-			bool facingLeft = angleToCursor.X < 0.0f;
-			float rotation = AngleMath.ToDegrees( LookAngle );
-
-			CheckArmStatus( facingLeft );
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
-		/*
-		===============
-		CheckArmStatus
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="facingLeft"></param>
-		private void CheckArmStatus( bool facingLeft )
+		private void OnAimAngleChanged( in AimAngleChangedEventArgs args )
 		{
+			bool flip = args.NewDirection.X < 0.0f;
+
+			_headAnimator.FlipV = flip;
+			_torsoAnimator.FlipH = flip;
+			_legAnimator.FlipH = flip;
+			_leftHandAnimator.FlipV = flip;
+			_rightHandAnimator.FlipV = flip;
+
+			_headAnimator.Rotation = args.NewAngle;
+			_headAnimator.Offset = flip ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
+
+			_leftHandAnimator.Rotation = args.NewAngle;
+			_rightHandAnimator.Rotation = args.NewAngle;
 		}
 
-		/*
-		===============
-		OnStateChanged
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="args"></param>
+		private void OnLocomotionCue( in PlayerLocomotionCueEventArgs args )
+		{
+			switch ( args.Cue ) {
+				case PlayerLocomotionCue.HardStart:
+					break;
+
+				case PlayerLocomotionCue.HardStop:
+					_legAnimator.Play( "sudden_stop" );
+					break;
+
+				case PlayerLocomotionCue.Reverse:
+					_legAnimator.PlayBackwards( "move" );
+					break;
+			}
+		}
+
 		private void OnStateChanged( in PlayerStateChangedEventArgs args )
 		{
+			switch ( args.NewState ) {
+				case PlayerStateId.Idle:
+					SetAnimationStatus( PlayerAnimationState.Idle );
+					break;
+
+				case PlayerStateId.Moving:
+					SetAnimationStatus( PlayerAnimationState.Running );
+					break;
+
+				case PlayerStateId.RestingAtCheckpoint:
+					SetAnimationStatus( PlayerAnimationState.RestingAtCheckpoint );
+					break;
+			}
+		}
+
+		private void SetAnimationStatus( PlayerAnimationState state )
+		{
+			string animationName = state switch {
+				PlayerAnimationState.Idle => "idle",
+				PlayerAnimationState.Running => "move",
+				PlayerAnimationState.RestingAtCheckpoint => "checkpoint_resting",
+				PlayerAnimationState.TrueIdle => "true_idle",
+				_ => throw new ArgumentOutOfRangeException( nameof( state ) )
+			};
+
+			_torsoAnimator.Play( animationName );
+			_legAnimator.Play( animationName );
+			_leftHandAnimator.Play( animationName );
+			_rightHandAnimator.Play( animationName );
+
+			_activeState = state;
 		}
 	};
 };

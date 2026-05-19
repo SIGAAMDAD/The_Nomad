@@ -500,7 +500,6 @@ namespace Nomad.Game.Application.Gameplay.Player.State
 			if ( publishEvent ) {
 				_stateChanged.Publish(
 					new PlayerStateChangedEventArgs(
-						_playerId,
 						oldState,
 						newState
 					)

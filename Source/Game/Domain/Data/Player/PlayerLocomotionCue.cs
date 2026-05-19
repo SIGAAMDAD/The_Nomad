@@ -18,12 +18,13 @@ namespace Nomad.Game.Domain.Data.Player
 	/// <summary>
 	///
 	/// </summary>
-	public readonly struct PlayerAnimationIntent
+	public enum PlayerLocomotionCue : byte
 	{
-		public readonly float AimAngleRadians;
-		public readonly bool FlipX;
+		None = 0,
 
-		public readonly bool LockLowerBody;
-		public readonly bool LockUpperBody;
+		HardStart,
+		HardStop,
+		Reverse,
+		SharpTurn
 	};
 };

@@ -32,7 +32,7 @@ namespace Nomad.Game.Application.Gameplay.Items
 	///
 	/// </summary>
 
-	internal abstract class ItemBase : IItemBase
+	internal abstract class ItemBase : IItemBase<ItemDefinition>
 	{
 		public ItemStatus State => _state;
 		private readonly ItemStatus _state;

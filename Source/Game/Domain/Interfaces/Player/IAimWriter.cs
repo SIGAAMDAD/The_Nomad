@@ -13,35 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Events.Player;
+using System.Numerics;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation
+namespace Nomad.Game.Domain.Interfaces.Player
 {
-	/*
-	===================================================================================
-
-	PlayerRightHandAnimator
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	internal sealed class PlayerRightHandAnimator : PlayerHandAnimator
+	public interface IAimWriter
 	{
-		/*
-		===============
-		OnPlayerMovementChanged
-		===============
-		*/
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="args"></param>
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
-		{
-			base.OnPlayerMovementChanged( in args );
-		}
+		/// <param name="direction"></param>
+		/// <param name="serverTick"></param>
+		void SetAimDirection( Vector2 direction, uint serverTick = 0 );
 	};
 };

@@ -26,8 +26,6 @@ namespace Nomad.Game.Domain.Interfaces.Interactables
 	/// </summary>
 	public interface IInteractable
 	{
-		Guid InteractableId { get; }
-
 		/// <summary>
 		///
 		/// </summary>

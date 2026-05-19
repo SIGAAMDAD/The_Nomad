@@ -18,8 +18,29 @@ using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
 {
+	/*
+	===================================================================================
+
+	MovementDerivedStatEvaluator
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class MovementDerivedStatEvaluator : IPlayerDerivedStatEvaluator
 	{
+		/*
+		===============
+		CanEvaluate
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public bool CanEvaluate( DerivedStatType type )
 		{
 			return type == DerivedStatType.MovementSpeedMultiplier

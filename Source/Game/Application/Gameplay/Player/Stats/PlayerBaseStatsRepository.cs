@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
@@ -59,6 +60,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			ArgumentGuard.ThrowIfNull( logger, nameof( logger ) );
+			if ( playerId == PlayerId.Invalid ) {
+				throw new InvalidOperationException( "PlayerBaseStatsRepository given an invalid PlayerId!" );
+			}
 
 			_playerId = playerId;
 
@@ -110,7 +114,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 
 			_baseStatChanged.Publish(
 				new PlayerBaseStatChangedEventArgs(
-					_playerId,
 					oldValue,
 					value,
 					type

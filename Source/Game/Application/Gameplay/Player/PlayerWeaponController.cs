@@ -13,35 +13,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Events.Player;
+using System;
+using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.Events;
 
-namespace Nomad.Game.Application.Gameplay.Player.Animation
+namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
 
-	PlayerLeftHandAnimator
+	PlayerWeaponController
 
 	===================================================================================
 	*/
 	/// <summary>
-	///
+	/// Owns weapon state, weapon binding usage, and weapon slot handling.
 	/// </summary>
 
-	internal sealed class PlayerLeftHandAnimator : PlayerHandAnimator
+	internal sealed class PlayerWeaponController
 	{
-		/*
-		===============
-		OnPlayerMovementChanged
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="args"></param>
-		protected override void OnPlayerMovementChanged( in PlayerMovementChangedEventArgs args )
+		private readonly IDisposable _useWeapon;
+		private readonly IDisposable _nextWeapon;
+		private readonly IDisposable _prevWeapon;
+		private readonly IDisposable _reload;
+		private readonly IDisposable _switchToPrimaryWeapon;
+		private readonly IDisposable _switchToSecondaryWeapon;
+		private readonly IDisposable _switchToHeavyPrimaryWeapon;
+		private readonly IDisposable _switchToHeavySecondaryWeapon;
+
+		public PlayerWeaponController( IGameEventRegistryService eventFactory )
 		{
-			base.OnPlayerMovementChanged( in args );
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 		}
 	};
 };
