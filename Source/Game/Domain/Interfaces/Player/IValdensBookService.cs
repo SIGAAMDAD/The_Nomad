@@ -13,34 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Player
+using System;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Events.Gameplay;
+
+namespace Nomad.Game.Domain.Interfaces.Player
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum PlayerStateId : sbyte
+	public interface IValdensBookService : IDisposable
 	{
-		/// <summary>
-		/// Not moving, idling.
-		/// </summary>
-		Idle,
-
-		/// <summary>
-		/// Can be running, dashing, or sliding.
-		/// </summary>
-		Moving,
-
-		/// <summary>
-		/// Duh.
-		/// </summary>
-		Dead,
-
-		/// <summary>
-		/// Currently resting at a checkpoint.
-		/// </summary>
-		RestingAtCheckpoint,
-
-		Min = Idle,
-		Max = RestingAtCheckpoint
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "ValdensBookPageFoundEventArgs" )]
+		[EventPayload( "PageId", typeof( InternString ) )]
+		IGameEvent<ValdensBookPageFoundEventArgs> PageFound { get; }
 	};
 };

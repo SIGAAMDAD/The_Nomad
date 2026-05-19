@@ -16,7 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
-using Nomad.Core.Compatibility.Guards;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
@@ -105,6 +105,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			if ( _isDisposed ) {
 				return;
 			}
+
 			_spawnRequested.Dispose();
 			_spawnResultsReady.Dispose();
 			_category.Dispose();
@@ -130,7 +131,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				var profile = _profileResolver.Resolve( in args.Context );
 				player.ApplySpawnProfile( _spawnApplicator, profile, in args.Context );
 
-				_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, player.Id, true ) );
+				_spawnResultsReady.Publish( new PlayerSpawnResultEventArgs( args.RequestId, new PlayerId( player.Id ), true ) );
 			} catch ( Exception e ) {
 				_category.PrintError( $"Exception thrown when spawning player: {e}" );
 				throw;

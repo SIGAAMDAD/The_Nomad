@@ -14,7 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player
@@ -36,7 +36,14 @@ namespace Nomad.Game.Domain.Interfaces.Player
 
 	public interface IPlayerInputSource : IDisposable
 	{
-		PeerId PeerId { get; }
+		/// <summary>
+		///
+		/// </summary>
+		PlayerId PlayerId { get; }
+
+		/// <summary>
+		///
+		/// </summary>
 		bool IsEnabled { get; }
 
 		/// <summary>

@@ -13,11 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Events.Interactables;
+using Nomad.Game.Domain.Data.Multiplayer;
+using System;
 
 namespace Nomad.Game.Domain.Interfaces.Interactables
 {
@@ -26,6 +26,8 @@ namespace Nomad.Game.Domain.Interfaces.Interactables
 	/// </summary>
 	public interface IInteractable
 	{
+		Guid InteractableId { get; }
+
 		/// <summary>
 		///
 		/// </summary>
@@ -35,7 +37,7 @@ namespace Nomad.Game.Domain.Interfaces.Interactables
 		///
 		/// </summary>
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "PlayerInteractionStatusChangedEventArgs" )]
-		[EventPayload( "InteractorId", typeof( PeerId ), Order = 1 )]
+		[EventPayload( "InteractorId", typeof( PlayerId ), Order = 1 )]
 		[EventPayload( "OldStatus", typeof( PlayerInteractionStatus ), Order = 2 )]
 		[EventPayload( "NewStatus", typeof( PlayerInteractionStatus ), Order = 3 )]
 		IGameEvent<PlayerInteractionStatusChangedEventArgs> StatusChanged { get; }

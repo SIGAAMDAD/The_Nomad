@@ -60,7 +60,7 @@ namespace Nomad.Game.Domain.Data.Gameplay
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public bool TryUnlock( InternString name )
+		public bool TryUnlock()
 		{
 			bool locked = !Unlocked;
 			Unlocked = true;

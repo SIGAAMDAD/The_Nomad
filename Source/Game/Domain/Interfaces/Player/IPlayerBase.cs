@@ -13,20 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Interfaces.Entity;
 
 namespace Nomad.Game.Domain.Interfaces.Player
 {
-	public interface IPlayerBase : IDisposable
+	public interface IPlayerBase : IEntityBase
 	{
-		PeerId Id { get; }
+		PlayerId PlayerId { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerDieEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PeerId ), Order = 1 )]
-		[EventPayload( "KillerId", typeof( PeerId ), Order = 2 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "KillerId", typeof( EntityId ), Order = 2 )]
 		IGameEvent<PlayerDieEventArgs> Die { get; }
 	};
 };

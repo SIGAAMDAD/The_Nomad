@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Numerics;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Domain.Data.Player
 {
@@ -33,7 +34,7 @@ namespace Nomad.Game.Domain.Data.Player
 	public readonly struct PlayerInputFrame
 	{
 		public static readonly PlayerInputFrame Empty = new PlayerInputFrame(
-			PeerId.Invalid,
+			PlayerId.Invalid,
 			0,
 			0,
 			Vector2.Zero,
@@ -41,7 +42,7 @@ namespace Nomad.Game.Domain.Data.Player
 			PlayerInputButtons.None
 		);
 
-		public PeerId PeerId { get; }
+		public PlayerId PlayerId { get; }
 		public uint Tick { get; }
 		public ushort Sequence { get; }
 		public Vector2 Move { get; }
@@ -53,7 +54,7 @@ namespace Nomad.Game.Domain.Data.Player
 		public bool SlideDown => IsDown( PlayerInputButtons.Slide );
 
 		public PlayerInputFrame(
-			PeerId peerId,
+			PlayerId playerId,
 			uint tick,
 			ushort sequence,
 			Vector2 move,
@@ -61,7 +62,7 @@ namespace Nomad.Game.Domain.Data.Player
 			PlayerInputButtons buttonsPressed
 		)
 		{
-			PeerId = peerId;
+			PlayerId = playerId;
 			Tick = tick;
 			Sequence = sequence;
 			Move = move;
@@ -79,10 +80,10 @@ namespace Nomad.Game.Domain.Data.Player
 			return (ButtonsPressed & button) != 0;
 		}
 
-		public PlayerInputFrame WithPeer( PeerId peerId )
+		public PlayerInputFrame WithPeer( PlayerId playerId )
 		{
 			return new PlayerInputFrame(
-				peerId,
+				playerId,
 				Tick,
 				Sequence,
 				Move,
@@ -94,7 +95,7 @@ namespace Nomad.Game.Domain.Data.Player
 		public PlayerInputFrame WithTick( uint tick )
 		{
 			return new PlayerInputFrame(
-				PeerId,
+				PlayerId,
 				tick,
 				Sequence,
 				Move,
@@ -106,7 +107,7 @@ namespace Nomad.Game.Domain.Data.Player
 		public PlayerInputFrame WithoutTransientButtons( uint tick )
 		{
 			return new PlayerInputFrame(
-				PeerId,
+				PlayerId,
 				tick,
 				Sequence,
 				Move,

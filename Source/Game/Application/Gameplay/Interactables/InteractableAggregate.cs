@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
 using Nomad.Game.Domain.Data.Interactables;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Interactables;
 using Nomad.Game.Prefabs;
@@ -69,7 +69,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// <summary>
 		///
 		/// </summary>
-		private void OnPlayerExited( PeerId peerId )
+		private void OnPlayerExited( PlayerId peerId )
 		{
 			if ( _playerStatus == PlayerInteractionStatus.InRange || _playerStatus == PlayerInteractionStatus.Interacting ) {
 				SetStatus( peerId, PlayerInteractionStatus.None );
@@ -84,12 +84,12 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// <summary>
 		///
 		/// </summary>
-		private void OnPlayerEntered( PeerId peerId )
+		private void OnPlayerEntered( PlayerId peerId )
 		{
 			SetStatus( peerId, PlayerInteractionStatus.InRange );
 		}
 
-		private void SetStatus( PeerId interactorId, PlayerInteractionStatus newStatus )
+		private void SetStatus( PlayerId interactorId, PlayerInteractionStatus newStatus )
 		{
 			if ( _playerStatus == newStatus ) {
 				return;

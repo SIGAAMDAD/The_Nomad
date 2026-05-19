@@ -23,14 +23,15 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats
 {
 	/*
 	===================================================================================
-	
+
 	PlayerDerivedStatService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
@@ -48,6 +49,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		private readonly float[] _values = new float[(int)DerivedStatType.Count];
 		private readonly PackedBitSet _dirty = new PackedBitSet( (int)DerivedStatType.Count );
 
+		private readonly PlayerId _playerId;
+		private readonly IDisposable _baseStatChanged;
+
 		private bool _isDisposed = false;
 
 		public IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged => _derivedStatChanged;
@@ -61,18 +65,21 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		/// <summary>
 		/// Initializes a new instance of the PlayerDerivedStatService.
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="playerId"></param>
 		/// <param name="baseStats">Repository providing access to base player statistics.</param>
 		/// <param name="graph">Dependency graph defining relationships between derived stats.</param>
 		/// <param name="eventFactory">Factory for creating game events.</param>
-		public PlayerDerivedStatService( Guid id, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
+		public PlayerDerivedStatService( PlayerId playerId, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
+			_playerId = playerId;
+
 			_baseStats = baseStats ?? throw new ArgumentNullException( nameof( baseStats ) );
 			_graph = graph ?? throw new ArgumentNullException( nameof( graph ) );
+
 			_derivedStatChanged = eventFactory.GetEvent<PlayerDerivedStatChangedEventArgs>(
-				$"{id}:{PlayerDerivedStatChangedEventArgs.Name}",
+				PlayerDerivedStatChangedEventArgs.Name,
 				PlayerDerivedStatChangedEventArgs.NameSpace
 			);
 
@@ -86,7 +93,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			_evaluators.Add( new SanityDerivedStatEvaluator() );
 			_evaluators.Add( new DashKitDerivedStatEvaluator() );
 
-			_baseStats.BaseStatChanged.Subscribe( OnBaseStatChanged );
+			_baseStatChanged = _baseStats.BaseStatChanged.Subscribe( OnBaseStatChanged );
 		}
 
 		/*
@@ -100,7 +107,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		public void Dispose()
 		{
 			if ( !_isDisposed ) {
-				_baseStats.BaseStatChanged.Unsubscribe( OnBaseStatChanged );
+				_derivedStatChanged?.Dispose();
+				_baseStatChanged?.Dispose();
 			}
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -178,7 +186,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 
 			if ( !FloatEquals( oldValue, newValue ) ) {
 				_derivedStatChanged.Publish(
-					new PlayerDerivedStatChangedEventArgs( newValue, oldValue, type )
+					new PlayerDerivedStatChangedEventArgs(
+						_playerId,
+						newValue,
+						oldValue,
+						type
+					)
 				);
 
 				// If this derived stat feeds others, mark them dirty
@@ -191,6 +204,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			}
 		}
 
+		/*
+		===============
+		EnsureDependencies
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		private void EnsureDependencies( DerivedStatType type )
 		{
 			switch ( type ) {
@@ -212,9 +235,20 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			}
 		}
 
+		/*
+		===============
+		EvaluateFromEvaluator
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		private float EvaluateFromEvaluator( DerivedStatType type )
 		{
-			var context = new PlayerDerivedStatEvaluationContext( _baseStats, GetValue );
+			PlayerDerivedStatEvaluationContext context = new PlayerDerivedStatEvaluationContext( _baseStats, GetValue );
 
 			for ( int i = 0; i < _evaluators.Count; i++ ) {
 				if ( _evaluators[i].CanEvaluate( type ) ) {

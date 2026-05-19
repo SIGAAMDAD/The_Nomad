@@ -16,7 +16,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Core.Events;
@@ -28,7 +27,10 @@ namespace Nomad.Game.Application.Gameplay.GameServices
 		private readonly IItemCatalog _firearmCatalog;
 
 		public IGameEvent<UseWeaponRequestEventArgs> UseWeaponRequest => _useWeaponRequest;
-		private readonly IGameEvent<UseWeaponRequestEventArgs> _useWeaponRequest = default;
+		private readonly IGameEvent<UseWeaponRequestEventArgs> _useWeaponRequest = null;
+
+		public IGameEvent<UseWeaponResultEventArgs> UseWeaponResult => _useWeaponResult;
+		private readonly IGameEvent<UseWeaponResultEventArgs> _useWeaponResult = null;
 
 		public CombatService( IItemCatalog database )
 		{

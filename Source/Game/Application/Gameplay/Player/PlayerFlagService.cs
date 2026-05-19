@@ -20,18 +20,19 @@ using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerFlagService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerFlagService : IPlayerFlagService
@@ -40,6 +41,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		public PlayerFlags Bits => _isDisposed ? throw new ObjectDisposedException( nameof( PlayerFlagService ) ) : _flags;
 		private PlayerFlags _flags = PlayerFlags.None;
+
+		private readonly PlayerId _playerId = PlayerId.Invalid;
 
 		public IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged => _flagsChanged;
 		private readonly IGameEvent<PlayerFlagsChangedEventArgs> _flagsChanged;
@@ -52,12 +55,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
+		/// <param name="playerId"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerFlagService( IGameEventRegistryService eventFactory )
+		public PlayerFlagService( PlayerId playerId, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
+			_playerId = playerId;
+
 			_flagsChanged = eventFactory
 				.GetEvent<PlayerFlagsChangedEventArgs>(
 					PlayerFlagsChangedEventArgs.Name,
@@ -71,14 +78,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Dispose()
 		{
 			if ( _isDisposed ) {
 				return;
 			}
+
 			_flagsChanged.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
@@ -89,7 +98,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flag"></param>
 		/// <returns></returns>
@@ -105,7 +114,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void ClearFlags()
 		{
@@ -115,7 +124,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags = PlayerFlags.None;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -124,7 +133,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		public void AddFlags( PlayerFlags flags )
@@ -135,7 +144,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags |= flags;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -144,7 +153,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		public void RemoveFlags( PlayerFlags flags )
@@ -155,7 +164,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags &= ~flags;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -164,7 +173,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		/// <param name="clearFlags"></param>
@@ -181,7 +190,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				}
 			}
 			if ( prevFlags != _flags ) {
-				_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+				_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 			}
 		}
 
@@ -191,7 +200,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flagName"></param>
 		/// <param name="state"></param>
@@ -209,7 +218,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		private List<string> GetActiveFlags()

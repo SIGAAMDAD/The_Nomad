@@ -41,7 +41,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 
 	internal sealed class PlayerInputReplicationService : MultiplayerObject
 	{
-		private readonly Dictionary<PeerId, RemotePlayerInputSource> _remoteSources = new Dictionary<PeerId, RemotePlayerInputSource>();
+		private readonly Dictionary<PlayerId, RemotePlayerInputSource> _remoteSources = new Dictionary<PlayerId, RemotePlayerInputSource>();
 
 		/*
 		===============
@@ -69,11 +69,11 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		{
 			ArgumentGuard.ThrowIfNull( source, nameof( source ) );
 
-			if ( !source.PeerId.IsValid ) {
+			if ( !source.PlayerId.IsValid ) {
 				return false;
 			}
 
-			_remoteSources[source.PeerId] = source;
+			_remoteSources[source.PlayerId] = source;
 			return true;
 		}
 
@@ -82,9 +82,14 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		UnregisterRemoteSource
 		===============
 		*/
-		public bool UnregisterRemoteSource( PeerId peerId )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
+		public bool UnregisterRemoteSource( PlayerId playerId )
 		{
-			return _remoteSources.Remove( peerId );
+			return _remoteSources.Remove( playerId );
 		}
 
 		/*
@@ -98,7 +103,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 				return false;
 			}
 
-			if ( !frame.PeerId.IsValid ) {
+			if ( !frame.PlayerId.IsValid ) {
 				return false;
 			}
 
@@ -128,11 +133,11 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 				return;
 			}
 
-			if ( !IsPeerInSession( rpc.PeerId ) ) {
+			if ( !IsPeerInSession( rpc.PlayerId ) ) {
 				return;
 			}
 
-			if ( !_remoteSources.TryGetValue( rpc.PeerId, out RemotePlayerInputSource source ) ) {
+			if ( !_remoteSources.TryGetValue( rpc.PlayerId, out RemotePlayerInputSource source ) ) {
 				return;
 			}
 
@@ -145,19 +150,24 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		IsPeerInSession
 		===============
 		*/
-		private bool IsPeerInSession( PeerId peerId )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
+		private bool IsPeerInSession( PlayerId playerId )
 		{
-			if ( CurrentSession == null || !peerId.IsValid ) {
+			if ( CurrentSession == null || !playerId.IsValid ) {
 				return false;
 			}
 
-			if ( peerId == CurrentSession.LocalPeerId ) {
+			if ( playerId == CurrentSession.LocalPeerId ) {
 				return true;
 			}
 
 			IReadOnlyList<NetworkPeerInfo> peers = CurrentSession.Peers;
 			for ( int i = 0; i < peers.Count; i++ ) {
-				if ( peers[i].PeerId == peerId ) {
+				if ( playerId == peers[i].PeerId ) {
 					return true;
 				}
 			}

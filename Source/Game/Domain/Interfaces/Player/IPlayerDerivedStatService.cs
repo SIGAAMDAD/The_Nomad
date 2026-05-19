@@ -28,7 +28,16 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		[EventPayload( "StatId", typeof( DerivedStatType ), Order = 3 )]
 		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		float GetValue( DerivedStatType type );
+
+		/// <summary>
+		///
+		/// </summary>
 		void FlushDirty();
 	};
 };

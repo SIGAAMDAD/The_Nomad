@@ -13,10 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
@@ -25,13 +25,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 {
 	/*
 	===================================================================================
-	
+
 	PlayerBaseStatsRepository
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	public sealed class PlayerBaseStatsRepository : IPlayerBaseStatsRepository
@@ -39,6 +39,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		private readonly float[] _statValues = new float[(int)BaseStatType.Count];
 
 		private readonly ILoggerCategory _category;
+		private readonly PlayerId _playerId;
 
 		public IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged => _baseStatChanged;
 		private readonly IGameEvent<PlayerBaseStatChangedEventArgs> _baseStatChanged;
@@ -49,17 +50,23 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBaseStatsRepository( Guid id, IGameEventRegistryService eventFactory, ILoggerService logger )
+		public PlayerBaseStatsRepository( PlayerId playerId, IGameEventRegistryService eventFactory, ILoggerService logger )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			ArgumentGuard.ThrowIfNull( logger, nameof( logger ) );
 
-			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>( $"{id}:{PlayerBaseStatChangedEventArgs.Name}", PlayerBaseStatChangedEventArgs.NameSpace );
+			_playerId = playerId;
+
+			_baseStatChanged = eventFactory.GetEvent<PlayerBaseStatChangedEventArgs>(
+				PlayerBaseStatChangedEventArgs.Name,
+				PlayerBaseStatChangedEventArgs.NameSpace
+			);
+
 			_category = logger?.CreateCategory( nameof( PlayerBaseStatsRepository ), LogLevel.Info, true );
 		}
 
@@ -69,7 +76,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -85,7 +92,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
@@ -93,7 +100,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		{
 			RangeGuard.ThrowIfOutOfRange( (int)type, (int)BaseStatType.Min, (int)BaseStatType.Max, nameof( type ) );
 
-			ref var stat = ref _statValues[(int)type];
+			ref float stat = ref _statValues[(int)type];
 			if ( stat == value ) {
 				return;
 			}
@@ -101,7 +108,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			float oldValue = stat;
 			stat = value;
 
-			_baseStatChanged.Publish( new PlayerBaseStatChangedEventArgs( oldValue, value, type ) );
+			_baseStatChanged.Publish(
+				new PlayerBaseStatChangedEventArgs(
+					_playerId,
+					oldValue,
+					value,
+					type
+				)
+			);
 		}
 	};
 };

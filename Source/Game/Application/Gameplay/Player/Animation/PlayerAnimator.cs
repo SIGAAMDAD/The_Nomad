@@ -23,6 +23,7 @@ using Nomad.Game.Prefabs;
 using Godot;
 using Nomad.Core.Util;
 using System.Runtime.CompilerServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
@@ -39,7 +40,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 	internal abstract class PlayerAnimator : NomadBehaviour
 	{
-		public Guid Id { get; set; }
+		public PlayerId Id { get; set; }
 
 		protected PlayerPrefab prefab;
 		protected AnimatedSprite2D animator;
@@ -47,8 +48,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		private PlayerHeadAnimator _headAnimator;
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerAnimationStateChangedEventArgs" )]
-		[EventPayload( "OldAnimationId", typeof( InternString ), Order = 1 )]
-		[EventPayload( "NewAnimationId", typeof( InternString ), Order = 2 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "OldAnimationId", typeof( InternString ), Order = 2 )]
+		[EventPayload( "NewAnimationId", typeof( InternString ), Order = 3 )]
 		public abstract IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
 
 		/*

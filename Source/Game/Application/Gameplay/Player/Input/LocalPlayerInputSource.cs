@@ -15,9 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Numerics;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Events.Globals;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Input;
@@ -39,8 +41,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 	internal sealed class LocalPlayerInputSource : IPlayerInputSource
 	{
-		public PeerId PeerId => _peerId;
-		private readonly PeerId _peerId;
+		public PlayerId PlayerId => _playerId;
+		private readonly PlayerId _playerId;
 
 		public bool IsEnabled {
 			get => _isEnabled;
@@ -67,23 +69,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		LocalPlayerInputSource
 		===============
 		*/
-		public LocalPlayerInputSource( PeerId peerId )
-			: this( peerId, GameEventRegistry.Instance )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="eventFactory"></param>
+		public LocalPlayerInputSource( PlayerId playerId, IGameEventRegistryService eventFactory )
 		{
-		}
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-		/*
-		===============
-		LocalPlayerInputSource
-		===============
-		*/
-		public LocalPlayerInputSource( PeerId peerId, IGameEventRegistryService eventFactory )
-		{
-			if ( eventFactory == null ) {
-				throw new ArgumentNullException( nameof( eventFactory ) );
-			}
-
-			_peerId = peerId;
+			_playerId = playerId;
 
 			_slideAction = eventFactory.GetEvent<ButtonActionEventArgs>(
 				$"Slide:{ButtonActionEventArgs.Name}",
@@ -132,7 +127,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 			if ( !_isEnabled ) {
 				_current = new PlayerInputFrame(
-					_peerId,
+					_playerId,
 					tick,
 					_sequence++,
 					Vector2.Zero,
@@ -144,7 +139,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			}
 
 			_current = new PlayerInputFrame(
-				_peerId,
+				_playerId,
 				tick,
 				_sequence++,
 				_moveInput,
@@ -168,7 +163,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			_moveInput = Vector2.Zero;
 			_buttonsDown = PlayerInputButtons.None;
 			_buttonsPressed = PlayerInputButtons.None;
-			_current = PlayerInputFrame.Empty.WithPeer( _peerId );
+			_current = PlayerInputFrame.Empty.WithPeer( _playerId );
 			_lastTick = uint.MaxValue;
 			_sequence = 0;
 		}

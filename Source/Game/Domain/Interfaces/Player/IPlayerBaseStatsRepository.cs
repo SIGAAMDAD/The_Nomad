@@ -25,7 +25,7 @@ namespace Nomad.Game.Domain.Interfaces.Player
 	public interface IPlayerBaseStatsRepository
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerBaseStatChangedEventArgs" )]
 		[EventPayload( "OldValue", typeof( float ), Order = 1 )]
@@ -34,7 +34,7 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged { get; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
@@ -42,7 +42,7 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		void SetBaseStatValue( BaseStatType type, float value );
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>

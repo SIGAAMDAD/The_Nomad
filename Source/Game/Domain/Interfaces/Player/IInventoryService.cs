@@ -20,8 +20,6 @@ namespace Nomad.Game.Domain.Interfaces.Player
 {
 	public interface IInventoryService
 	{
-
-
 		AddItemResult AddItem( Guid guid, int amount );
 	};
 };

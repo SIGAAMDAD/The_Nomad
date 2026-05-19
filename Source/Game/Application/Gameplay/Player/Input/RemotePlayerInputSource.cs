@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
@@ -36,8 +37,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 	{
 		private const int DEFAULT_BUFFER_SIZE = 64;
 
-		public PeerId PeerId => _peerId;
-		private readonly PeerId _peerId;
+		public PlayerId PlayerId => _playerId;
+		private readonly PlayerId _playerId;
 
 		public bool IsEnabled {
 			get => _isEnabled;
@@ -61,15 +62,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		RemotePlayerInputSource
 		===============
 		*/
-		public RemotePlayerInputSource( PeerId peerId, int bufferSize = DEFAULT_BUFFER_SIZE )
+		public RemotePlayerInputSource( PlayerId playerId, int bufferSize = DEFAULT_BUFFER_SIZE )
 		{
 			if ( bufferSize < 1 ) {
 				bufferSize = DEFAULT_BUFFER_SIZE;
 			}
 
-			_peerId = peerId;
+			_playerId = playerId;
 			_buffer = new PlayerInputFrame[bufferSize];
-			_current = PlayerInputFrame.Empty.WithPeer( peerId );
+			_current = PlayerInputFrame.Empty.WithPeer( playerId );
 		}
 
 		/*
@@ -99,7 +100,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 				return false;
 			}
 
-			if ( frame.PeerId != _peerId ) {
+			if ( frame.PlayerId != _playerId ) {
 				return false;
 			}
 
@@ -129,7 +130,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		public PlayerInputFrame ReadFrame( uint tick )
 		{
 			if ( !_isEnabled ) {
-				_current = PlayerInputFrame.Empty.WithPeer( _peerId ).WithTick( tick );
+				_current = PlayerInputFrame.Empty.WithPeer( _playerId ).WithTick( tick );
 				return _current;
 			}
 
@@ -156,7 +157,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			Array.Clear( _buffer, 0, _buffer.Length );
 			_head = 0;
 			_count = 0;
-			_current = PlayerInputFrame.Empty.WithPeer( _peerId );
+			_current = PlayerInputFrame.Empty.WithPeer( _playerId );
 			_lastSequence = 0;
 			_hasSequence = false;
 		}

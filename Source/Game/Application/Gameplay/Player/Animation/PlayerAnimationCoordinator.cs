@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
@@ -53,18 +54,18 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="playerId"></param>
 		/// <param name="prefab"></param>
 		/// <param name="initialState"></param>
 		/// <param name="movementController"></param>
-		public PlayerAnimationCoordinator( Guid id, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController )
+		public PlayerAnimationCoordinator( PlayerId playerId, PlayerPrefab prefab, PlayerAnimationState initialState, IPlayerStateReader stateReader, PlayerMovementController movementController )
 		{
 			_headAnimator = prefab.AddComponent<PlayerHeadAnimator>();
 			_legAnimator = prefab.AddComponent<PlayerLegAnimator>( comp => {
-				comp.Id = id;
+				comp.Id = playerId;
 			} );
 			_torsoAnimator = prefab.AddComponent<PlayerTorsoAnimator>( comp => {
-				comp.Id = id;
+				comp.Id = playerId;
 			} );
 			_footsteps = prefab.AddComponent<PlayerFootsteps>();
 

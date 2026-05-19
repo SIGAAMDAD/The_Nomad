@@ -14,14 +14,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Util;
+using System;
+using System.Collections.Generic;
 
 namespace Nomad.Game.Domain.Data.Entities
 {
 	public sealed record StatusEffectDefinition
 	{
 		public InternString Id { get; init; }
-		public float Duration { get; init; }
-		public StatusEffectDurationPolicy DurationPolicy { get; init; }
-		public StatusEffectStackingPolicy StackingPolicy { get; init; }
-	};
+		public InternString DisplayName { get; init; }
+		public InternString? Description { get; init; }
+
+		public StatusEffectFlags Flags { get; init; }
+
+		public StatusEffectStackingPolicy StackPolicy { get; init; } = StatusEffectStackingPolicy.RefreshDuration;
+
+		public byte MaxStacks { get; init; } = 1;
+		public float DurationSeconds { get; init; }
+		public float TickIntervalSeconds { get; init; }
+
+		public float DamagePerTick { get; init; }
+		public float HealPerTick { get; init; }
+
+		public IReadOnlyList<StatusEffectModifier> Modifiers { get; init; }
+			= Array.Empty<StatusEffectModifier>();
+	}
 };

@@ -18,6 +18,7 @@ namespace Nomad.Game.Domain.Data.Entities
 	public enum DamageSource : byte
 	{
 		Entity,
-		Environmental
+		Environmental,
+		StatusEffect
 	};
 };

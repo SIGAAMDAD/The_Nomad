@@ -86,6 +86,10 @@ namespace Nomad.Game.Application.Multiplayer.Match
 			RegisterRpc<MatchPhaseChangedRpc>( MessageIds.MatchPhaseChangedRpc, OnMatchPhaseChanged );
 		}
 
+		public void BeginCountdown( uint countdown )
+		{
+		}
+
 		[RpcMethod( "MatchPhaseChangedRpc" )]
 		[RpcMethodPayload( "MatchRevision", typeof( uint ), Order = 1 )]
 		[RpcMethodPayload( "Phase", typeof( MatchPhase ), Order = 2 )]

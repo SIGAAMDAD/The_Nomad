@@ -13,8 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Scene.GameObjects;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace Nomad.Game.Prefabs
 
 	public partial class PlayerPrefab : EngineCharacter2D
 	{
-		public PeerId PeerId { get; init; }
+		public PlayerId PeerId { get; init; }
 		public PlayerInitializationDefinition Definition { get; init; }
 
 		public PlayerPrefab()

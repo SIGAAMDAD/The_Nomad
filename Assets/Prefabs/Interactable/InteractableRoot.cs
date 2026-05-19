@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
-using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Gameplay.Interactables;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Prefabs
 {
 	internal partial class InteractableRoot : Node2D
 	{
-		public event Action<PeerId> PlayerEntered;
-		public event Action<PeerId> PlayerExited;
+		public event Action<PlayerId> PlayerEntered;
+		public event Action<PlayerId> PlayerExited;
 
 		private InteractableAggregate _aggregate;
 

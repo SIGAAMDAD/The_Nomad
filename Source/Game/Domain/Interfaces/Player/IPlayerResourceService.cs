@@ -13,13 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player
 {
-	public interface IPlayerResourceService
+	/// <summary>
+	///
+	/// </summary>
+	public interface IPlayerResourceService : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerResourceChangedEventArgs" )]
 		[EventPayload( "OldValue", typeof( float ), Order = 1 )]
@@ -27,10 +31,32 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		[EventPayload( "Resource", typeof( PlayerResourceType ), Order = 3 )]
 		IGameEvent<PlayerResourceChangedEventArgs> ResourceChanged { get; }
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		float GetValue( PlayerResourceType type );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="value"></param>
 		void SetValue( PlayerResourceType type, float value );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="delta"></param>
 		void AddValue( PlayerResourceType type, float delta );
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		float GetMaxValue( PlayerResourceType type );
 	};
 };

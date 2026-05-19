@@ -38,7 +38,7 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		bool IsBurnedOut { get; }
 		bool CanDash { get; }
 
-		IDashModule Module { get; }
+		IDashModule? Module { get; }
 
 		void SetModule( IDashModule module );
 	};
