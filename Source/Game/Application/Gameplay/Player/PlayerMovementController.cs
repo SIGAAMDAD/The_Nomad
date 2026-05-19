@@ -19,7 +19,9 @@ using System.Runtime.CompilerServices;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Data.Player.State;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
@@ -43,10 +45,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerMovementController : NomadBehaviour
 	{
-		public Guid Id { get; set; }
+		public PlayerId Id { get; set; }
 		public IPlayerDerivedStatService Stats { get; set; }
 		public IPlayerFlagService Flags { get; set; }
 		public IPlayerInputSource InputSource { get; set; }
+		public IPlayerStateReader StateReader { get; set; }
+		public IPlayerStateWriter StateWriter { get; set; }
 
 		private float _effectiveMovementSpeed = 0.0f;
 
@@ -65,13 +69,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 		[EventPayload( "IsMoving", typeof( bool ), Order = 3 )]
 		[EventPayload( "WalkingReverse", typeof( bool ), Order = 4 )]
 		public IGameEvent<PlayerMovementChangedEventArgs> MovementChanged => _movementChanged;
-		private IGameEvent<PlayerMovementChangedEventArgs> _movementChanged = default;
+		private IGameEvent<PlayerMovementChangedEventArgs> _movementChanged = null;
 
 		/*
 		===============
 		PlayerMovementController
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		public PlayerMovementController()
 		{
 			_slideTimer = new Godot.Timer() {
@@ -87,6 +94,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnInit
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		public override void OnInit()
 		{
 			base.OnInit();
@@ -99,19 +109,32 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{PlayerDashStartEventArgs.Name}", PlayerDashStartEventArgs.NameSpace )
+				.GetEvent<PlayerDashStartEventArgs>(
+					$"{Id}:{PlayerDashStartEventArgs.Name}",
+					PlayerDashStartEventArgs.NameSpace
+				)
 				.Subscribe( OnDashStarted );
 
 			eventFactory
-				.GetEvent<PlayerDashEndedEventArgs>( $"{Id}:{PlayerDashEndedEventArgs.Name}", PlayerDashEndedEventArgs.NameSpace )
+				.GetEvent<PlayerDashEndedEventArgs>(
+					$"{Id}:{PlayerDashEndedEventArgs.Name}",
+					PlayerDashEndedEventArgs.NameSpace
+				)
 				.Subscribe( OnDashEnded );
 
 			eventFactory
-				.GetEvent<PlayerDerivedStatChangedEventArgs>( PlayerDerivedStatChangedEventArgs.Name, PlayerDerivedStatChangedEventArgs.NameSpace )
+				.GetEvent<PlayerDerivedStatChangedEventArgs>(
+					$"{Id}:{PlayerDerivedStatChangedEventArgs.Name}",
+					PlayerDerivedStatChangedEventArgs.NameSpace
+				)
 				.Subscribe( OnStatChanged );
 
 			_movementChanged = eventFactory
-				.GetEvent<PlayerMovementChangedEventArgs>( $"{Id}:{PlayerMovementChangedEventArgs.Name}", PlayerMovementChangedEventArgs.NameSpace, EventFlags.NoLock );
+				.GetEvent<PlayerMovementChangedEventArgs>(
+					$"{Id}:{PlayerMovementChangedEventArgs.Name}",
+					PlayerMovementChangedEventArgs.NameSpace,
+					EventFlags.NoLock
+				);
 		}
 
 		/*
@@ -119,6 +142,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnShutdown
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		public override void OnShutdown()
 		{
 			base.OnShutdown();
@@ -126,15 +152,24 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{PlayerDashStartEventArgs.Name}", PlayerDashStartEventArgs.NameSpace )
+				.GetEvent<PlayerDashStartEventArgs>(
+					PlayerDashStartEventArgs.Name,
+					PlayerDashStartEventArgs.NameSpace
+				)
 				.Unsubscribe( OnDashStarted );
 
 			eventFactory
-				.GetEvent<PlayerDashEndedEventArgs>( $"{Id}:{PlayerDashEndedEventArgs.Name}", PlayerDashEndedEventArgs.NameSpace )
+				.GetEvent<PlayerDashEndedEventArgs>(
+					PlayerDashEndedEventArgs.Name,
+					PlayerDashEndedEventArgs.NameSpace
+				)
 				.Unsubscribe( OnDashEnded );
 
 			eventFactory
-				.GetEvent<PlayerDerivedStatChangedEventArgs>( PlayerDerivedStatChangedEventArgs.Name, PlayerDerivedStatChangedEventArgs.NameSpace )
+				.GetEvent<PlayerDerivedStatChangedEventArgs>(
+					PlayerDerivedStatChangedEventArgs.Name,
+					PlayerDerivedStatChangedEventArgs.NameSpace
+				)
 				.Unsubscribe( OnStatChanged );
 
 			_slideTimer.Timeout -= OnSlideTimerTimeout;
@@ -148,9 +183,38 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnPhysicsUpdate
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
 		public override void OnPhysicsUpdate( float delta )
 		{
 			base.OnPhysicsUpdate( delta );
+			Vector2 previousVelocity = _velocity;
+
+			if ( !StateReader.CanMove || !StateReader.CanTakeInput ) {
+				// make sure we enforce a no movement state if its present.
+
+				_moveInput = Vector2.Zero;
+				_isMoving = false;
+				_velocity = Vector2.Zero;
+
+				if ( previousVelocity.LengthSquared() > 0.001f ) {
+					_movementChanged.Publish(
+						new PlayerMovementChangedEventArgs(
+							previousVelocity,
+							_velocity,
+							false,
+							false
+						)
+					);
+				}
+
+				_prefab.Velocity = _velocity.ToGodot();
+				_prefab.MoveAndSlide();
+
+				return;
+			}
 
 			PlayerInputFrame input = InputSource != null
 				? InputSource.ReadFrame( _inputTick++ )
@@ -163,8 +227,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 				StartSlide();
 			}
 
-			Vector2 previousVelocity = _velocity;
-
 			if ( _isMoving ) {
 				_velocity = HandleAcceleration( delta );
 			} else {
@@ -172,12 +234,26 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 
 			bool isMovingNow = _velocity.LengthSquared() > 0.001f;
+
+			if ( isMovingNow ) {
+				StateWriter.SetMoving( PlayerStateChangeReason.Movement );
+			} else {
+				StateWriter.SetIdle( PlayerStateChangeReason.Movement );
+			}
+
 			bool reverse =
 				MathF.Sign( previousVelocity.X ) != 0 &&
 				MathF.Sign( _moveInput.X ) != 0 &&
 				MathF.Sign( previousVelocity.X ) != MathF.Sign( _moveInput.X );
 
-			_movementChanged.Publish( new PlayerMovementChangedEventArgs( previousVelocity, _velocity, isMovingNow, reverse ) );
+			_movementChanged.Publish(
+				new PlayerMovementChangedEventArgs(
+					previousVelocity,
+					_velocity,
+					isMovingNow,
+					reverse
+				)
+			);
 
 			_prefab.Velocity = _velocity.ToGodot();
 			_prefab.MoveAndSlide();
@@ -296,9 +372,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnDashEnded
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashEnded( in PlayerDashEndedEventArgs args )
 		{
 			Flags.RemoveFlags( PlayerFlags.Dashing );
 		}
-	}
-}
+	};
+};

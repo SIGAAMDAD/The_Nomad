@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using System;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -26,6 +25,7 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Scene.GameObjects;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -43,7 +43,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerAudioService : NomadBehaviour
 	{
-		public Guid Id { get; set; }
+		public PlayerId Id { get; set; }
 		public IPlayerFlagService FlagService { get; set; }
 		private PlayerPrefab _prefab;
 
@@ -57,6 +57,14 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly IAudioEmitter _internalEffectsEmitter;
 		private readonly IListenerService _listenerService;
 
+		/*
+		===============
+		PlayerAudioService
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public PlayerAudioService()
 		{
 			var emitterFactory = ServiceLocator.GetService<IEmitterFactory>();
@@ -68,6 +76,14 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_listenerService = ServiceLocator.GetService<IListenerService>();
 		}
 
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public override void OnInit()
 		{
 			base.OnInit();
@@ -82,18 +98,36 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>( $"{Id}:{PlayerDashStartEventArgs.Name}", PlayerDashStartEventArgs.NameSpace )
+				.GetEvent<PlayerDashStartEventArgs>(
+					$"{Id}:{PlayerDashStartEventArgs.Name}",
+					PlayerDashStartEventArgs.NameSpace
+				)
 				.Subscribe( OnDashStarted );
 
 			eventFactory
-				.GetEvent<PlayerDashBurnoutEventArgs>( $"{Id}:{PlayerDashBurnoutEventArgs.Name}", PlayerDashBurnoutEventArgs.NameSpace )
+				.GetEvent<PlayerDashBurnoutEventArgs>(
+					$"{Id}:{PlayerDashBurnoutEventArgs.Name}",
+					PlayerDashBurnoutEventArgs.NameSpace
+				)
 				.Subscribe( OnDashBurnout );
 
 			eventFactory
-				.GetEvent<PlayerDashRechargedEventArgs>( $"{Id}:{PlayerDashRechargedEventArgs.Name}", PlayerDashRechargedEventArgs.NameSpace )
+				.GetEvent<PlayerDashRechargedEventArgs>(
+					$"{Id}:{PlayerDashRechargedEventArgs.Name}",
+					PlayerDashRechargedEventArgs.NameSpace
+				)
 				.Subscribe( OnDashRecharged );
 		}
 
+		/*
+		===============
+		OnUpdate
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
 		public override void OnUpdate( float delta )
 		{
 			base.OnUpdate( delta );
@@ -107,6 +141,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_slideEffectEmitter.Position = position;
 		}
 
+		/*
+		===============
+		OnDashStarted
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashStarted( in PlayerDashStartEventArgs args )
 		{
 			_dashEffectEmitter.Pitch = 1.0f + args.BurnoutAmount;
@@ -114,18 +157,45 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashActivate ).Path );
 		}
 
+		/*
+		===============
+		OnDashBurnout
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashBurnout( in PlayerDashBurnoutEventArgs args )
 		{
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
 			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashBurnout ).Path );
 		}
 
+		/*
+		===============
+		OnDashRecharged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashRecharged( in PlayerDashRechargedEventArgs args )
 		{
 			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
 			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
 		}
 
+		/*
+		===============
+		OnFlagsChanged
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnFlagsChanged( in PlayerFlagsChangedEventArgs args )
 		{
 			if ( args.NewFlags.HasFlag( PlayerFlags.Sliding ) ) {
@@ -139,6 +209,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 		}
 
+		/*
+		===============
+		OnLegAnimationLooped
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnLegAnimationLooped( in EmptyEventArgs args )
 		{
 			if ( _prefab.Velocity != Vector2.Zero ) {

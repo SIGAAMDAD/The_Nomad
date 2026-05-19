@@ -15,12 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Concurrent;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Events.Player;
@@ -52,6 +54,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly IServiceRegistry _registry;
 		private readonly ILoggerService _logger;
 
+		private readonly IDisposable _gameStateChanged;
+
 		private bool _isDisposed = false;
 
 		/*
@@ -70,6 +74,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="playerPrefab"></param>
 		public PlayerRepository( IGameEventRegistryService eventFactory, IServiceRegistry registry, ILoggerService logger, IGameStateService gameStateService, ISceneManager sceneManager, string playerPrefab )
 		{
+			ArgumentGuard.ThrowIfNullOrWhiteSpace( playerPrefab, nameof( playerPrefab ) );
+
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_playerPrefab = playerPrefab;
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
@@ -77,7 +83,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_registry = registry ?? throw new ArgumentNullException( nameof( registry ) );
 			_logger = logger ?? throw new ArgumentNullException( nameof( logger ) );
 
-			_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
+			_gameStateChanged = _gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 		}
 
 		/*
@@ -90,9 +96,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// </summary>
 		public void Dispose()
 		{
-			if ( !_isDisposed ) {
-				_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
+			if ( _isDisposed ) {
+				return;
 			}
+
+			_gameStateChanged?.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
@@ -115,7 +124,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_sceneManager.ActiveScene.Root.AddChild( composite.Root.CastAs<PlayerPrefab>() );
 
 			var guid = Constants.LOCAL_GUID;
-			var playerBase = new PlayerAggregate( new PeerId( guid ), composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( new PlayerId( new PeerId( guid ) ), composite.Root.CastAs<PlayerPrefab>(), _registry, _eventFactory, _logger );
 
 			_players[guid] = playerBase;
 			return playerBase;

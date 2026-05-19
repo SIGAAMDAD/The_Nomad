@@ -13,31 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
+using System;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Events.Gameplay;
 
-namespace Nomad.Game.Application.Gameplay.Entity
+namespace Nomad.Game.Domain.Interfaces.Player
 {
-	/*
-	===================================================================================
-
-	StatusEffectCollection
-
-	===================================================================================
-	*/
-	/// <summary>
-	///
-	/// </summary>
-
-	internal sealed class StatusEffectCollection
+	public interface IJournalService : IDisposable
 	{
-		private readonly Dictionary<InternString, StatusEffectInstance> _effects = new();
-		private readonly ISubscriptionHandle _applyStatusEffect;
-
-		public StatusEffectCollection( IGameEventRegistryService eventFactory )
-		{
-		}
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "JournalPageFoundEventArgs" )]
+		[EventPayload( "PageId", typeof( InternString ) )]
+		IGameEvent<JournalPageFoundEventArgs> PageFound { get; }
 	};
 };

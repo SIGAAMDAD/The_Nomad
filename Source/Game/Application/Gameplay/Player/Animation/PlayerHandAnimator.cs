@@ -37,26 +37,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		public AnimatedSprite2D Animator { get; set; }
 
 		public override IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
-		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = default;
-
-		/*
-		===============
-		PlayerHandAnimator
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		public PlayerHandAnimator()
-		{
-			var eventFactory = GameEventRegistry.Instance;
-
-			_animationStateChanged = eventFactory
-				.GetEvent<PlayerAnimationStateChangedEventArgs>(
-					$"Hand:{Id}:{PlayerAnimationStateChangedEventArgs.NameSpace}",
-					PlayerAnimationStateChangedEventArgs.NameSpace
-				);
-		}
+		private IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = default;
 
 		/*
 		===============
@@ -69,6 +50,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		public override void OnInit()
 		{
 			base.OnInit();
+
+			var eventFactory = GameEventRegistry.Instance;
+
+			_animationStateChanged = eventFactory
+				.GetEvent<PlayerAnimationStateChangedEventArgs>(
+					$"Hand:{Id}:{PlayerAnimationStateChangedEventArgs.NameSpace}",
+					PlayerAnimationStateChangedEventArgs.NameSpace
+				);
 
 			animator = Animator;
 			animator.SpriteFrames = Frames;

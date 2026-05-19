@@ -19,6 +19,7 @@ using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.Gameplay.Player.JumpKit.Modules;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
@@ -38,12 +39,12 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerJumpKit : NomadBehaviour, IJumpKit
 	{
-		public Guid Id { get; set; }
+		public PlayerId Id { get; set; }
 
 		public float BurnoutAmount => _runtime.BurnoutAmount;
 		public bool IsDashing => _runtime.IsDashing;
@@ -80,14 +81,17 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public PlayerJumpKit()
 		{
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<ButtonActionEventArgs>( $"Dash:{ButtonActionEventArgs.Name}", ButtonActionEventArgs.NameSpace )
+				.GetEvent<ButtonActionEventArgs>(
+					$"Dash:{Id}:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
 				.Subscribe( OnDashActionTriggered );
 
 			_runtime = new DashRuntime(
@@ -96,6 +100,14 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 			);
 		}
 
+		/*
+		===============
+		OnInit
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public override void OnInit()
 		{
 			base.OnInit();
@@ -139,7 +151,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		public override void OnUpdate( float delta )
@@ -172,7 +184,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public override void OnShutdown()
 		{
@@ -190,7 +202,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="module"></param>
 		public void SetModule( IDashModule module )
@@ -207,7 +219,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <exception cref="InvalidOperationException"></exception>
 		private void TryStartDash()
@@ -236,7 +248,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDashActionTriggered( in ButtonActionEventArgs args )
@@ -253,12 +265,19 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="result"></param>
 		private void OnBurnoutAmountChanged( in DashUpdateResult result )
 		{
-			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( 0.0f, result.BurnoutAmount, PlayerResourceType.JumpKitHeat ) );
+			_resourceChanged.Publish(
+				new PlayerResourceChangedEventArgs(
+					Id,
+					0.0f,
+					result.BurnoutAmount,
+					PlayerResourceType.JumpKitHeat
+				)
+			);
 			// Optional integration point:
 			// - update HUD meter
 			// - publish a burnout-changed event
@@ -271,7 +290,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="result"></param>
 		private void PublishDashBurnout( in DashStartResult result )
@@ -285,7 +304,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="result"></param>
 		private void PublishDashBurnout( in DashUpdateResult result )
@@ -299,7 +318,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="result"></param>
 		private void PublishDashRecharged( in DashUpdateResult result )

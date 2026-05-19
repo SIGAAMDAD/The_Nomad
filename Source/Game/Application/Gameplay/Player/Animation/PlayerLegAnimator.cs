@@ -84,7 +84,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		/// <param name="args"></param>
 		private void OnLooped()
 		{
-			if ( _state == PlayerAnimationState.Moving ) {
+			if ( _state == PlayerAnimationState.Running ) {
 				_dustPuff.Emitting = true;
 			}
 		}
@@ -106,7 +106,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 				return;
 			}
 
-			_state = PlayerAnimationState.Moving;
+			_state = PlayerAnimationState.Running;
 			// are we backpedaling?
 			if ( !args.WalkingReverse ) {
 				// sudden stop?

@@ -13,7 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
@@ -26,10 +25,12 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Inventory;
-using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Events.Entity;
 using Nomad.Game.Application.Gameplay.Player.Input;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Data.Player.State;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -46,7 +47,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal abstract class PlayerBase : EntityBase, IPlayerBase
 	{
-		public PeerId Id => new PeerId( guid );
+		public PlayerId PlayerId => new PlayerId( Id );
 
 		//
 		// Components
@@ -71,8 +72,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		private readonly PlayerPrefab _prefab;
 
-		private bool _isDisposed = false;
-
 		public IGameEvent<PlayerDieEventArgs> Die => _die;
 		private readonly IGameEvent<PlayerDieEventArgs> _die;
 
@@ -84,13 +83,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="peerId"></param>
+		/// <param name="playerId"></param>
 		/// <param name="prefab"></param>
 		/// <param name="scope"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBase( PeerId peerId, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( peerId.Id, eventFactory )
+		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( new EntityId( playerId.Id ), eventFactory )
 		{
 			_prefab = prefab;
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
@@ -100,12 +99,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			entityDie.Subscribe( OnBaseDie );
 
-			_statsRepository = new PlayerBaseStatsRepository( peerId.Id, eventFactory, logger );
+			_statsRepository = new PlayerBaseStatsRepository( playerId, eventFactory, logger );
 			_dependencyGraph = PlayerStatDependencyGraph.CreateDefault();
-			_derivedStatService = new PlayerDerivedStatService( peerId.Id, _statsRepository, _dependencyGraph, eventFactory );
-			_flagService = new PlayerFlagService( eventFactory );
-			_resourceService = new PlayerResourceService( peerId.Id, _derivedStatService, eventFactory );
-			_stateCoordinator = new PlayerStateCoordinator( peerId.Id, PlayerStateId.Idle, eventFactory );
+			_derivedStatService = new PlayerDerivedStatService( playerId, _statsRepository, _dependencyGraph, eventFactory );
+			_flagService = new PlayerFlagService( playerId, eventFactory );
+			_resourceService = new PlayerResourceService( playerId, _derivedStatService, eventFactory );
+			_stateCoordinator = new PlayerStateCoordinator( playerId, PlayerStateId.Idle, eventFactory );
 			_saveCoordinator = new PlayerSaveCoordinator( _derivedStatService, _resourceService, _stateCoordinator, _prefab, eventFactory );
 
 			foreach ( var pair in prefab.Definition.Stats.BaseStats ) {
@@ -116,17 +115,17 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_movementController = prefab.AddComponent<PlayerMovementController>( comp => {
 				comp.Stats = _derivedStatService;
 				comp.Flags = _flagService;
-				comp.Id = peerId.Id;
-				comp.InputSource = new LocalPlayerInputSource( peerId, eventFactory );
+				comp.Id = playerId;
+				comp.InputSource = new LocalPlayerInputSource( playerId, eventFactory );
 			} );
 			_jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
-				comp.Id = peerId.Id;
+				comp.Id = playerId;
 			} );
 			_audioService = prefab.AddComponent<PlayerAudioService>( comp => {
-				comp.Id = peerId.Id;
+				comp.Id = playerId;
 				comp.FlagService = _flagService;
 			} );
-			_animator = new PlayerAnimationCoordinator( peerId.Id, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
+			_animator = new PlayerAnimationCoordinator( playerId, prefab, PlayerAnimationState.Idle, _stateCoordinator, _movementController );
 			_bulletTime = prefab.AddComponent<PlayerBulletTime>( comp => {
 				comp.FlagService = _flagService;
 				comp.DerivedStatService = _derivedStatService;
@@ -142,13 +141,14 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <summary>
 		///
 		/// </summary>
-		public void Dispose()
+		protected override void Dispose( bool disposing )
 		{
-			if ( !_isDisposed ) {
-				_die?.Dispose();
+			if ( !disposing ) {
+				return;
 			}
-			GC.SuppressFinalize( this );
-			_isDisposed = true;
+			base.Dispose( disposing );
+
+			_die?.Dispose();
 		}
 
 		/*
@@ -171,8 +171,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		{
 			_die.Publish(
 				new PlayerDieEventArgs(
-					playerId: Id,
-					killerId: new PeerId( args.AttackerId )
+					playerId: PlayerId,
+					killerId: args.AttackerId
 				)
 			);
 		}

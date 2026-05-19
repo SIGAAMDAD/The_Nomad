@@ -16,6 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
+using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
@@ -24,16 +26,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 {
 	/*
 	===================================================================================
-	
+
 	PlayerResourceService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed class PlayerResourceService : IPlayerResourceService, IDisposable
+	internal sealed class PlayerResourceService : IPlayerResourceService
 	{
 		public IGameEvent<PlayerResourceChangedEventArgs> ResourceChanged => _resourceChanged;
 		private readonly IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged;
@@ -41,7 +43,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly IPlayerDerivedStatService _derivedStats;
 		private readonly float[] _values = new float[(int)PlayerResourceType.Count];
 
-		private readonly ISubscriptionHandle _derivedStatChanged;
+		private readonly PlayerId _playerId = PlayerId.Invalid;
+
+		private readonly IDisposable _derivedStatChanged = null;
+
 		private bool _isDisposed = false;
 
 		/*
@@ -50,19 +55,20 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="playerId"></param>
 		/// <param name="derivedStats"></param>
 		/// <param name="eventFactory"></param>
-		public PlayerResourceService( Guid id, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory )
+		public PlayerResourceService( PlayerId playerId, IPlayerDerivedStatService derivedStats, IGameEventRegistryService eventFactory )
 		{
-			ArgumentGuard.ThrowIfNull( derivedStats );
-			ArgumentGuard.ThrowIfNull( eventFactory );
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			_derivedStats = derivedStats;
+			_playerId = playerId;
+			_derivedStats = derivedStats ?? throw new ArgumentNullException( nameof( derivedStats ) );
+
 			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				$"{id}:{PlayerResourceChangedEventArgs.Name}",
+				PlayerResourceChangedEventArgs.Name,
 				PlayerResourceChangedEventArgs.NameSpace
 			);
 
@@ -75,13 +81,16 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Dispose()
 		{
-			if ( !_isDisposed ) {
-				_derivedStatChanged?.Dispose();
+			if ( _isDisposed ) {
+				return;
 			}
+
+			_derivedStatChanged?.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 
@@ -93,7 +102,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -108,7 +117,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -129,7 +138,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
@@ -143,7 +152,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 
 			_values[(int)type] = newValue;
-			_resourceChanged.Publish( new PlayerResourceChangedEventArgs( oldValue, newValue, type ) );
+			_resourceChanged.Publish(
+				new PlayerResourceChangedEventArgs(
+					_playerId,
+					oldValue, newValue, type ) );
 		}
 
 		/*
@@ -152,7 +164,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="delta"></param>
@@ -167,7 +179,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="amount"></param>
@@ -191,7 +203,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="amount"></param>
@@ -207,7 +219,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		public void Fill( PlayerResourceType type )
@@ -221,7 +233,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		public void Empty( PlayerResourceType type )
@@ -235,7 +247,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void NormalizeToCurrentMaxes()
 		{
@@ -250,7 +262,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="args"></param>
 		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args )
@@ -274,7 +286,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="value"></param>
@@ -300,7 +312,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="a"></param>
 		/// <param name="b"></param>

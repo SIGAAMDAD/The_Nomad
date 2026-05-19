@@ -13,12 +13,85 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Data.Player.State;
 
 namespace Nomad.Game.Domain.Interfaces.Player
 {
 	public interface IPlayerStateWriter
 	{
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <returns></returns>
 		bool TrySetState( PlayerStateId newState );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <param name="reason"></param>
+		/// <param name="serverTick"></param>
+		/// <returns></returns>
+		PlayerStateTransitionResult TrySetState( PlayerStateId newState, PlayerStateChangeReason reason, uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <param name="reason"></param>
+		/// <param name="serverTick"></param>
+		/// <param name="publishEvent"></param>
+		void ForceSetState( PlayerStateId newState, PlayerStateChangeReason reason, uint serverTick = 0, bool publishEvent = true );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="reason"></param>
+		/// <param name="serverTick"></param>
+		/// <returns></returns>
+		bool SetIdle( PlayerStateChangeReason reason = PlayerStateChangeReason.Movement, uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="reason"></param>
+		/// <param name="serverTick"></param>
+		/// <returns></returns>
+		bool SetMoving( PlayerStateChangeReason reason = PlayerStateChangeReason.Movement, uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="reason"></param>
+		/// <param name="serverTick"></param>
+		/// <returns></returns>
+		bool SetDead( PlayerStateChangeReason reason = PlayerStateChangeReason.Death, uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="serverTick"></param>
+		/// <returns></returns>
+		bool SetRestingAtCheckpoint( uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="serverTick"></param>
+		void ReviveToIdle( uint serverTick = 0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="serverTick"></param>
+		void Respawn( uint serverTick =  0 );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <returns></returns>
+		bool CanTransitionTo( PlayerStateId newState );
 	};
 };

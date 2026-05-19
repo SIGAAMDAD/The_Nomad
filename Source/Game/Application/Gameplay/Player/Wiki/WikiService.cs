@@ -15,16 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Concurrent;
-using Nomad.Core.Compatibility.Guards;
+using System.Collections.Generic;
+using System.Linq;
 using Nomad.Core.Engine.Services;
-using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Save.Services;
 
-namespace Nomad.Game.Application.Gameplay.ValdensBook
+namespace Nomad.Game.Application.Gameplay.Player.Wiki
 {
 	/*
 	===================================================================================
@@ -34,45 +32,45 @@ namespace Nomad.Game.Application.Gameplay.ValdensBook
 	===================================================================================
 	*/
 	/// <summary>
-	///
+	/// A cache entry table of localizations stored and indexed with <see cref="InternString"/>. Contains both
+	/// Valden's Book and Journal entries.
 	/// </summary>
 	/// <remarks>
-	/// Owns: wiki page unlock event, wiki page entry cache. But does not own the actual unlocking of wiki pages that itself is handled by <see cref="WikiEntry"/>.
+	/// Owns the translation and the generation of the cache entries but not the events themselves.
 	/// </remarks>
 
-	internal sealed class WikiService : IWikiService
+	internal abstract class WikiService : IWikiService
 	{
-		private readonly IDisposable _saveBegin;
-
 		private readonly ConcurrentDictionary<InternString, WikiEntry> _entryCache = new();
 		private readonly ILocalizationService _localizationService;
 
-		public IGameEvent<WikiPageFoundEventArgs> PageFound => _pageFound;
-		private readonly IGameEvent<WikiPageFoundEventArgs> _pageFound = null;
-
-		public WikiService( ILocalizationService localizationService, IGameEventRegistryService eventFactory )
+		/*
+		===============
+		WikiService
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="localizationService"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public WikiService( ILocalizationService localizationService )
 		{
-			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
-
 			_localizationService = localizationService ?? throw new ArgumentNullException( nameof( localizationService ) );
-
-			_saveBegin = eventFactory
-				.GetEvent<SaveBeginEventArgs>(
-					SaveBeginEventArgs.Name,
-					SaveBeginEventArgs.NameSpace
-				)
-				.Subscribe( OnSaveBegin );
-
-			_pageFound = eventFactory.GetEvent<WikiPageFoundEventArgs>(
-				WikiPageFoundEventArgs.Name,
-				WikiPageFoundEventArgs.NameSpace
-			);
 		}
 
-		public void Dispose()
+		/*
+		===============
+		GetWikiEntries
+		===============
+		*/
+		/// <summary>
+		/// Retrieves a snapshot of the currently unlocked wiki entries.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IReadOnlyList<WikiEntry> GetWikiEntries()
 		{
-			_saveBegin?.Dispose();
-			_pageFound?.Dispose();
+			return _entryCache.Values.ToArray();
 		}
 
 		/*
@@ -85,7 +83,7 @@ namespace Nomad.Game.Application.Gameplay.ValdensBook
 		/// </summary>
 		/// <param name="pageId"></param>
 		/// <returns></returns>
-		public bool IsPageUnlocked( InternString pageId )
+		public virtual bool IsPageUnlocked( InternString pageId )
 		{
 			return _entryCache.ContainsKey( pageId );
 		}
@@ -99,40 +97,41 @@ namespace Nomad.Game.Application.Gameplay.ValdensBook
 		///
 		/// </summary>
 		/// <param name="pageId"></param>
-		/// <param name="localizationName"></param>
-		/// <param name="localizationDescription"></param>
+		/// <param name="translatedName"></param>
+		/// <param name="translatedDescription"></param>
 		/// <returns></returns>
-		public bool TryTranslatePage( InternString pageId, out string localizationName, out string localizationDescription )
+		public virtual bool TryTranslatePage( InternString pageId, out string translatedName, out string translatedDescription )
 		{
-			localizationName = string.Empty;
-			localizationDescription = string.Empty;
-			if ( _entryCache.TryGetValue( pageId, out var page ) ) {
-				localizationName = _localizationService.Translate( page.Name );
-				localizationDescription = _localizationService.Translate( page.Description );
-				return true;
+			if ( !_entryCache.TryGetValue( pageId, out var entry ) ) {
+				translatedName = string.Empty;
+				translatedDescription = string.Empty;
+				return false;
 			}
-			return false;
+
+			translatedName = _localizationService.Translate( entry.Name );
+			translatedDescription = _localizationService.Translate( entry.Description );
+
+			return true;
 		}
 
-		public bool TryUnlockPage( InternString pageId )
+		/*
+		===============
+		TryUnlockPage
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="pageId"></param>
+		/// <returns></returns>
+		public virtual bool TryUnlockPage( InternString pageId )
 		{
-			if ( _entryCache.TryGetValue( pageId, out var page ) ) {
-				if ( page.TryUnlock( pageId ) ) {
-					_pageFound.Publish(
-						new WikiPageFoundEventArgs(
-							pageId
-						)
-					);
-				}
+			if ( !_entryCache.TryGetValue( pageId, out var entry ) ) {
+				entry = new WikiEntry( pageId );
+				_entryCache[pageId] = entry;
 			}
-			return false;
-		}
 
-		private void OnSaveBegin( in SaveBeginEventArgs args )
-		{
-			lock ( this ) {
-				var writer = args.Writer.AddSection( "WikiData" );
-			}
+			return entry.TryUnlock();
 		}
 	};
 };

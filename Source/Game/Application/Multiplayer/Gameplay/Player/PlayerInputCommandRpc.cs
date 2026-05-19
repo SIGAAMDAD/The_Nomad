@@ -14,7 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Numerics;
-using Nomad.Core.OnlineServices;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Application.Multiplayer.PlayerInput
@@ -35,7 +35,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 
 	public readonly struct PlayerInputCommandRpc
 	{
-		public PeerId PeerId { get; }
+		public PlayerId PlayerId { get; }
 		public uint Tick { get; }
 		public ushort Sequence { get; }
 		public float MoveX { get; }
@@ -44,7 +44,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		public PlayerInputButtons ButtonsPressed { get; }
 
 		public PlayerInputCommandRpc(
-			PeerId peerId,
+			PlayerId playerId,
 			uint tick,
 			ushort sequence,
 			float moveX,
@@ -53,7 +53,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 			PlayerInputButtons buttonsPressed
 		)
 		{
-			PeerId = peerId;
+			PlayerId = playerId;
 			Tick = tick;
 			Sequence = sequence;
 			MoveX = moveX;
@@ -64,7 +64,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 
 		public PlayerInputCommandRpc( in PlayerInputFrame frame )
 			: this(
-				frame.PeerId,
+				frame.PlayerId,
 				frame.Tick,
 				frame.Sequence,
 				frame.Move.X,
@@ -78,7 +78,7 @@ namespace Nomad.Game.Application.Multiplayer.PlayerInput
 		public PlayerInputFrame ToFrame()
 		{
 			return new PlayerInputFrame(
-				PeerId,
+				PlayerId,
 				Tick,
 				Sequence,
 				new Vector2( MoveX, MoveY ),

@@ -12,11 +12,11 @@
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://Assets/Prefabs/Effects/DustPuff/DustPuff.tscn" id="7_yip5k"]
 [ext_resource type="Texture2D" uid="uid://bfp0u5rcwv765" path="res://Assets/Textures/Generated/BeardTexture.tres" id="8_40dfe"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_40dfe"]
-size = Vector2(0, 0)
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qeavp"]
 radius = 8.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_40dfe"]
+size = Vector2(0, 0)
 
 [node name="Player" type="CharacterBody2D" unique_id=449054365]
 process_mode = 1
@@ -29,24 +29,35 @@ zoom = Vector2(2.25, 2.25)
 process_callback = 0
 script = ExtResource("1_jic80")
 
-[node name="TorsoAnimator" type="AnimatedSprite2D" parent="." unique_id=1408154902]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=195522354]
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_qeavp")
+
+[node name="JumpKitEffect" parent="." unique_id=443619981 instance=ExtResource("6_40dfe")]
+position = Vector2(-3, 8)
+
+[node name="Animations" type="Node2D" parent="." unique_id=728925156]
+
+[node name="LeftArm" parent="Animations" unique_id=975599666 instance=ExtResource("3_5ofd5")]
+
+[node name="TorsoAnimator" type="AnimatedSprite2D" parent="Animations" unique_id=1408154902]
 position = Vector2(-1, 0)
 sprite_frames = ExtResource("3_qq8fn")
 animation = &"idle"
 autoplay = "idle"
 script = ExtResource("5_26jrr")
 
-[node name="LegAnimator" type="AnimatedSprite2D" parent="." unique_id=1328575102]
+[node name="LegAnimator" type="AnimatedSprite2D" parent="Animations" unique_id=1328575102]
 position = Vector2(-1, 0)
 sprite_frames = ExtResource("5_cgnku")
 animation = &"idle"
 autoplay = "idle"
 script = ExtResource("5_26jrr")
 
-[node name="DustPuff" parent="LegAnimator" unique_id=166928531 instance=ExtResource("7_yip5k")]
+[node name="DustPuff" parent="Animations/LegAnimator" unique_id=166928531 instance=ExtResource("7_yip5k")]
 position = Vector2(0.99999976, 14.000001)
 
-[node name="HeadSprite" type="Sprite2D" parent="." unique_id=1230354207]
+[node name="HeadSprite" type="Sprite2D" parent="Animations" unique_id=1230354207]
 position = Vector2(-1, -7)
 texture = ExtResource("3_qeavp")
 offset = Vector2(5, -5)
@@ -54,100 +65,91 @@ region_enabled = true
 region_rect = Rect2(64, 32, 32, 32)
 script = ExtResource("4_20k8i")
 
-[node name="Beard" type="Node2D" parent="HeadSprite" unique_id=2127868676]
+[node name="Beard" type="Node2D" parent="Animations/HeadSprite" unique_id=2127868676]
 position = Vector2(9, 0)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="HeadSprite/Beard" unique_id=859871965]
+[node name="StaticBody2D" type="StaticBody2D" parent="Animations/HeadSprite/Beard" unique_id=859871965]
 collision_layer = 16384
 collision_mask = 16384
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HeadSprite/Beard/StaticBody2D" unique_id=1937353276]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadSprite/Beard/StaticBody2D" unique_id=1937353276]
 position = Vector2(9, 0)
 shape = SubResource("RectangleShape2D_40dfe")
 
-[node name="PinJoint2D" type="PinJoint2D" parent="HeadSprite/Beard" unique_id=1604541817]
+[node name="PinJoint2D" type="PinJoint2D" parent="Animations/HeadSprite/Beard" unique_id=1604541817]
 position = Vector2(1, 1)
 node_a = NodePath("../StaticBody2D")
 node_b = NodePath("../BeardSegment0")
 
-[node name="BeardSegment0" type="RigidBody2D" parent="HeadSprite/Beard" unique_id=1085023362]
+[node name="BeardSegment0" type="RigidBody2D" parent="Animations/HeadSprite/Beard" unique_id=1085023362]
 position = Vector2(1, 0)
 collision_layer = 16384
 collision_mask = 16384
 gravity_scale = 0.0
 
-[node name="Sprite2D" type="Sprite2D" parent="HeadSprite/Beard/BeardSegment0" unique_id=18601135]
+[node name="Sprite2D" type="Sprite2D" parent="Animations/HeadSprite/Beard/BeardSegment0" unique_id=18601135]
 texture = ExtResource("8_40dfe")
 offset = Vector2(-0.075, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HeadSprite/Beard/BeardSegment0" unique_id=2037579560]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadSprite/Beard/BeardSegment0" unique_id=2037579560]
 position = Vector2(9, 0)
 shape = SubResource("RectangleShape2D_40dfe")
 
-[node name="PinJoint2D2" type="PinJoint2D" parent="HeadSprite/Beard" unique_id=1218601143]
+[node name="PinJoint2D2" type="PinJoint2D" parent="Animations/HeadSprite/Beard" unique_id=1218601143]
 position = Vector2(1, 2)
 node_a = NodePath("../BeardSegment0")
 node_b = NodePath("../BeardSegment1")
 
-[node name="BeardSegment1" type="RigidBody2D" parent="HeadSprite/Beard" unique_id=1794332761]
+[node name="BeardSegment1" type="RigidBody2D" parent="Animations/HeadSprite/Beard" unique_id=1794332761]
 position = Vector2(1, 2)
 collision_layer = 16384
 collision_mask = 16384
 gravity_scale = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HeadSprite/Beard/BeardSegment1" unique_id=526258341]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadSprite/Beard/BeardSegment1" unique_id=526258341]
 position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_40dfe")
 
-[node name="Sprite2D" type="Sprite2D" parent="HeadSprite/Beard/BeardSegment1" unique_id=236237992]
+[node name="Sprite2D" type="Sprite2D" parent="Animations/HeadSprite/Beard/BeardSegment1" unique_id=236237992]
 texture = ExtResource("8_40dfe")
 offset = Vector2(-0.075, 0)
 
-[node name="PinJoint2D3" type="PinJoint2D" parent="HeadSprite/Beard" unique_id=1158475441]
+[node name="PinJoint2D3" type="PinJoint2D" parent="Animations/HeadSprite/Beard" unique_id=1158475441]
 position = Vector2(1, 3)
 node_a = NodePath("../BeardSegment1")
 node_b = NodePath("../BeardSegment2")
 
-[node name="BeardSegment2" type="RigidBody2D" parent="HeadSprite/Beard" unique_id=296659245]
+[node name="BeardSegment2" type="RigidBody2D" parent="Animations/HeadSprite/Beard" unique_id=296659245]
 position = Vector2(1, 3)
 collision_layer = 16384
 collision_mask = 16384
 gravity_scale = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HeadSprite/Beard/BeardSegment2" unique_id=878599781]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadSprite/Beard/BeardSegment2" unique_id=878599781]
 position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_40dfe")
 
-[node name="Sprite2D" type="Sprite2D" parent="HeadSprite/Beard/BeardSegment2" unique_id=1363666463]
+[node name="Sprite2D" type="Sprite2D" parent="Animations/HeadSprite/Beard/BeardSegment2" unique_id=1363666463]
 texture = ExtResource("8_40dfe")
 offset = Vector2(-0.075, 0)
 
-[node name="PinJoint2D4" type="PinJoint2D" parent="HeadSprite/Beard" unique_id=1712800026]
+[node name="PinJoint2D4" type="PinJoint2D" parent="Animations/HeadSprite/Beard" unique_id=1712800026]
 position = Vector2(1, 4)
 node_a = NodePath("../BeardSegment2")
 node_b = NodePath("../BeardSegment3")
 
-[node name="BeardSegment3" type="RigidBody2D" parent="HeadSprite/Beard" unique_id=60257646]
+[node name="BeardSegment3" type="RigidBody2D" parent="Animations/HeadSprite/Beard" unique_id=60257646]
 position = Vector2(1, 4)
 collision_layer = 16384
 collision_mask = 16384
 gravity_scale = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HeadSprite/Beard/BeardSegment3" unique_id=905630232]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Animations/HeadSprite/Beard/BeardSegment3" unique_id=905630232]
 position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_40dfe")
 
-[node name="Sprite2D" type="Sprite2D" parent="HeadSprite/Beard/BeardSegment3" unique_id=1021285461]
+[node name="Sprite2D" type="Sprite2D" parent="Animations/HeadSprite/Beard/BeardSegment3" unique_id=1021285461]
 texture = ExtResource("8_40dfe")
 offset = Vector2(-0.075, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=195522354]
-position = Vector2(0, -1)
-shape = SubResource("CapsuleShape2D_qeavp")
-
-[node name="LeftArm" parent="." unique_id=975599666 instance=ExtResource("3_5ofd5")]
-
-[node name="RightArm" parent="." unique_id=2006628997 instance=ExtResource("3_5ofd5")]
-
-[node name="JumpKitEffect" parent="." unique_id=443619981 instance=ExtResource("6_40dfe")]
-position = Vector2(-3, 8)
+[node name="RightArm" parent="Animations" unique_id=2006628997 instance=ExtResource("3_5ofd5")]

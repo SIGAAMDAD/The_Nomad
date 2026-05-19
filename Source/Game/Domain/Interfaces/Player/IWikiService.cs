@@ -14,18 +14,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
+using System.Collections.Generic;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
 
 namespace Nomad.Game.Domain.Interfaces.Gameplay
 {
-	public interface IWikiService : IDisposable
+	/// <summary>
+	///
+	/// </summary>
+	public interface IWikiService
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay", PayloadName = "WikiPageFoundEventArgs" )]
-		[EventPayload( "PageId", typeof( InternString ) )]
-		IGameEvent<WikiPageFoundEventArgs> PageFound { get; }
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
+		IReadOnlyList<WikiEntry> GetWikiEntries();
 
 		/// <summary>
 		///
@@ -42,12 +46,12 @@ namespace Nomad.Game.Domain.Interfaces.Gameplay
 		bool TryUnlockPage( InternString pageId );
 
 		/// <summary>
-		/// Attempts a retrieval of a Valden's Book page.
+		/// Attemps a retrieval of a wiki page.
 		/// </summary>
 		/// <param name="pageId"></param>
-		/// <param name="localizationName"></param>
-		/// <param name="localizationDescription"></param>
-		/// <returns><c>true</c> if the page has been unlocked, <c>false</c> if otherwise.</returns>
-		bool TryTranslatePage( InternString pageId, out string localizationName, out string localizationDescription );
+		/// <param name="translatedName"></param>
+		/// <param name="translatedDescription"></param>
+		/// <returns></returns>
+		bool TryTranslatePage( InternString pageId, out string translatedName, out string translatedDescription );
 	};
 };

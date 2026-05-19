@@ -21,8 +21,11 @@ namespace Nomad.Game.Domain.Data.Player
 	public enum PlayerAnimationState : uint
 	{
 		Idle,
-		Moving,
+		Running,
 		Sliding,
+
+		RestingAtCheckpoint,
+		Dying,
 
 		TrueIdle,
 

@@ -19,6 +19,7 @@ using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Prefabs;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
@@ -42,16 +43,15 @@ namespace Nomad.Game.Application.Multiplayer.Gameplay
 	{
 		private readonly MultiplayerObject _multiplayer;
 
-		public NetworkPlayer( PeerId guid, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( guid, prefab, scope, eventFactory, logger )
+		public NetworkPlayer( PeerId peerId, PlayerPrefab prefab, IServiceRegistry scope, IServiceLocator locator, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( new PlayerId( peerId ), prefab, scope, eventFactory, logger )
 		{
 			var sessionService = locator.GetService<INetworkSessionService>();
 			var eventBus = locator.GetService<INetworkEventBus>();
 			var rpcBus = locator.GetService<INetworkRpcBus>();
 			var messageRegistry = locator.GetService<INetworkMessageRegistry>();
+
 			_multiplayer = new MultiplayerObject( sessionService, rpcBus, eventBus, messageRegistry, eventFactory );
-
-
 		}
 	};
 };

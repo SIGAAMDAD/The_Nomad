@@ -14,11 +14,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Abstractions;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Events.Entity;
+using Nomad.Game.Domain.Interfaces.Entity;
 
 namespace Nomad.Game.Application.Gameplay.Entity
 {
@@ -33,33 +35,39 @@ namespace Nomad.Game.Application.Gameplay.Entity
 	///
 	/// </summary>
 
-	internal abstract class EntityBase
+	internal abstract class EntityBase : IEntityBase
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "AttackerId", typeof( Guid ), Order = 1 )]
 		public IGameEvent<EntityDieEventArgs> EntityDie => entityDie;
 		protected readonly IGameEvent<EntityDieEventArgs> entityDie = default;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "AttackerId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "Source", typeof( DamageSource ), Order = 2 )]
-		[EventPayload( "Amount", typeof( float ), Order = 3 )]
 		public IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage => takeDamage;
 		protected readonly IGameEvent<EntityTakeDamageEventArgs> takeDamage = default;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "EffectId", typeof( InternString ) )]
 		public IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect => applyStatusEffect;
 		protected readonly IGameEvent<EntityApplyStatusEffectEventArgs> applyStatusEffect = default;
 
-		public Guid Guid => guid;
-		protected readonly Guid guid;
+		public EntityId Id => id;
+		protected readonly EntityId id;
 
-		public EntityBase( Guid guid, IGameEventRegistryService eventFactory )
+		public EntityType Type { get; }
+
+		private bool _isDisposed = false;
+
+		/*
+		===============
+		EntityBase
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="eventFactory"></param>
+		public EntityBase( EntityId id, IGameEventRegistryService eventFactory )
 		{
-			ArgumentGuard.ThrowIfNull( eventFactory );
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			this.guid = guid;
+			this.id = id;
 
 			entityDie = eventFactory
 				.GetEvent<EntityDieEventArgs>(
@@ -78,6 +86,30 @@ namespace Nomad.Game.Application.Gameplay.Entity
 					EntityApplyStatusEffectEventArgs.Name,
 					EntityApplyStatusEffectEventArgs.NameSpace
 				);
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			entityDie?.Dispose();
+			takeDamage?.Dispose();
+			applyStatusEffect?.Dispose();
+
+			Dispose( true );
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		protected virtual void Dispose( bool disposing )
+		{
+		}
+
+		public bool Equals( IEntityBase? other )
+		{
+			return id == other.Id;
 		}
 	};
 };

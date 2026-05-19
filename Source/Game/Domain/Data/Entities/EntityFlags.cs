@@ -13,14 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Gameplay;
+using System;
 
-namespace Nomad.Game.Domain.Interfaces.Gameplay
+namespace Nomad.Game.Domain.Data.Entities
 {
-	public interface IWikiRepository
+	[Flags]
+	public enum EntityFlags : uint
 	{
-		bool TryGetEntry( InternString entryId, out WikiEntry entry );
-		bool EntryExists( InternString entryId );
+		Alive = 1 << 0,
+		CanTakeDamage = 1 << 1,
 	};
 };

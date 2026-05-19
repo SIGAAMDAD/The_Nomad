@@ -16,28 +16,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	public interface IPlayerFlagService : IDisposable
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		IReadOnlyList<string> CurrentFlags { get; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		PlayerFlags Bits { get; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerFlagsChangedEventArgs" )]
 		[EventPayload( "OldFlags", typeof( PlayerFlags ), Order = 1 )]
@@ -45,38 +46,38 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		void ClearFlags();
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		/// <returns></returns>
 		bool GetFlags( PlayerFlags flags );
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		void AddFlags( PlayerFlags flags );
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		void RemoveFlags( PlayerFlags flags );
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flagName"></param>
 		/// <param name="state"></param>
 		void SetFlag( string flagName, bool state );
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="flags"></param>
 		/// <param name="clearFlags"></param>

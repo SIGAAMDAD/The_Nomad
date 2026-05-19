@@ -20,13 +20,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 {
 	/*
 	===================================================================================
-	
+
 	PlayerStatDependencyGraph
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PlayerStatDependencyGraph
@@ -40,19 +40,36 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public PlayerStatDependencyGraph()
 		{
 		}
 
+		/*
+		===============
+		CreateDefault
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		public static PlayerStatDependencyGraph CreateDefault()
 		{
-			var graph = new PlayerStatDependencyGraph();
+			PlayerStatDependencyGraph graph = new PlayerStatDependencyGraph();
 			graph.ConfigureDefaultDependencies();
 			return graph;
 		}
 
+		/*
+		===============
+		ConfigureDefaultDependencies
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void ConfigureDefaultDependencies()
 		{
 			_baseToDerived[BaseStatType.InventoryWeight] = [
@@ -100,7 +117,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="output"></param>
@@ -119,7 +136,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="output"></param>

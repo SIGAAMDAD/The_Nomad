@@ -107,14 +107,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			var position = _prefab.GetViewport().GetMousePosition().ToSystem();
 
-			AngleToCursor = position - _windowSize;
-			LookAngle = MathF.Atan2( AngleToCursor.Y, AngleToCursor.X );
-
-			bool facingLeft = AngleToCursor.X < 0.0f;
-			_headSprite.Rotation = AngleMath.ToDegrees( LookAngle );
-
-			_headSprite.FlipV = !facingLeft;
-			_headSprite.Offset = !facingLeft ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
+			_headSprite.FlipV = facingLeft;
+			_headSprite.Offset = facingLeft ? HEAD_OFFSET_RIGHT : HEAD_OFFSET_LEFT;
 		}
 
 		/*

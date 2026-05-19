@@ -17,10 +17,36 @@ namespace Nomad.Game.Domain.Data.Entities
 {
 	public enum StatusEffectStackingPolicy
 	{
-		None,
+		None = 0,
+
+		/// <summary>
+		/// If the effect already exists, ignore the new application.
+		/// </summary>
+		Ignore,
+
+		/// <summary>
+		/// Reset the duration, but do not increase stacks.
+		/// </summary>
 		RefreshDuration,
-		AddStacks,
+
+		/// <summary>
+		/// Add stack count up to MaxStacks.
+		/// </summary>
+		AddStack,
+
+		/// <summary>
+		/// Add stack and refresh duration.
+		/// </summary>
+		AddStackAndRefresh,
+
+		/// <summary>
+		/// Replace old instance entirely.
+		/// </summary>
 		Replace,
-		IndependentInstances
+
+		/// <summary>
+		/// Keep the instance with the strongest magnitude
+		/// </summary>
+		StrongestOnly
 	};
 };

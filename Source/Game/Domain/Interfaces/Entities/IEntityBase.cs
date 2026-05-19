@@ -13,11 +13,38 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
+using System;
+using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Events.Entity;
 
 namespace Nomad.Game.Domain.Interfaces.Entity
 {
-	public interface IEntityBase
+	/// <summary>
+	///
+	/// </summary>
+	public interface IEntityBase : IDisposable, IEquatable<IEntityBase>
 	{
+		/// <summary>
+		///
+		/// </summary>
+		EntityId Id { get; }
+
+		EntityType Type { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		[EventPayload( "AttackerId", typeof( EntityId ), Order = 1 )]
+		IGameEvent<EntityDieEventArgs> EntityDie { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		[EventPayload( "AttackerId", typeof( EntityId ), Order = 1 )]
+		[EventPayload( "Source", typeof( DamageSource ), Order = 2 )]
+		[EventPayload( "Amount", typeof( float ), Order = 3 )]
+		IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
+		[EventPayload( "EffectId", typeof( InternString ) )]
+		IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect { get; }
 	};
 };

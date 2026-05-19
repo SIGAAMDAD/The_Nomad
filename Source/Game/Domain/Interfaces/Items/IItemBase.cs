@@ -19,10 +19,11 @@ using Nomad.Game.Domain.Events.Items;
 
 namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IItemBase
+	public interface IItemBase<TDefinition>
+		where TDefinition : class
 	{
 		ItemStatus State { get; }
-		ItemDefinition Definition { get; }
+		TDefinition Definition { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Items", PayloadName = "ItemStatusChangedEventArgs" )]
 		[EventPayload( "OldStatus", typeof( ItemStatus ), Order = 1 )]

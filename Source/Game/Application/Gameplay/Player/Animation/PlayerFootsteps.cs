@@ -15,8 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 using Godot;
-using Nomad.Core.Events;
-using Nomad.Core.Util;
 using Nomad.EngineUtils;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Prefabs;

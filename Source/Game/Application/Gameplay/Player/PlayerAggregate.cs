@@ -15,8 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
-using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player
@@ -34,8 +35,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerAggregate : PlayerBase
 	{
-		public PlayerAggregate( PeerId peerId, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( peerId, prefab, scope, eventFactory, logger )
+		private readonly IJournalService _journalService;
+		private readonly IValdensBookService _valdensBookService;
+
+		public PlayerAggregate( PlayerId playerId, PlayerPrefab prefab, IServiceRegistry scope, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( playerId, prefab, scope, eventFactory, logger )
 		{
 		}
 	};
