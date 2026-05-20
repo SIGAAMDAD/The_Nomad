@@ -13,18 +13,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
+using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Infrastructure.Gameplay.Items;
 
-namespace Nomad.Game.Domain.Data.Mods
+namespace Nomad.Game.Infrastructure.Gameplay
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public sealed class ModAttribute : Attribute
+	internal sealed class WorldContentCache : IWorldContentCache
 	{
-		public string Id { get; }
+		public IItemCatalog Items => _itemCatalog;
+		private readonly ItemCatalog _itemCatalog;
 
-		public ModAttribute( string id )
+		public WorldContentCache( IFileSystem fileSystem, ILoggerService logger )
 		{
-			Id = id;
+			_itemCatalog = new ItemCatalog( fileSystem, logger );
+		}
+
+		public void Dispose()
+		{
+			_itemCatalog.Clear();
 		}
 	};
 };

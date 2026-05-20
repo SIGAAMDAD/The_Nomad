@@ -13,30 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 namespace Nomad.Game.Domain.Data.Mods
 {
-	public sealed record ModuleManifest
+	public sealed record ModuleDependency
 	{
-		[JsonIgnore]
-		public string DirectoryPath { get; set; } = string.Empty;
-
 		public ModuleId Id { get; init; }
-		public string Name { get; init; }
-		public string Version { get; init; }
-		public string ApiVersion { get; init; }
-		public string Author { get; init; }
-
-		public string? Pck { get; init; }
-		public int LoadPriority { get; init; } = 0;
-		public bool Official { get; init; } = false;
-
-		public string Assembly { get; init; }
-		public string EntryType { get; init; }
-
-		public List<ModuleDependency> Dependencies { get; init; } = new();
-		public List<string> Incompatibilities { get; init; } = new();
+		public string? Version { get; init; }
+		public bool Optional { get; init; } = false;
 	};
 };

@@ -13,12 +13,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Microsoft.Diagnostics.Runtime;
+using Nomad.Core.CVars;
+using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
+using Nomad.Game.Domain.Data.Mods;
 
-namespace Nomad.Game.Domain.Data.Player
+namespace Nomad.Game.Domain.Interfaces.Mods
 {
-	public readonly struct WeaponSlot
+	public interface IModuleContext
 	{
-		public WeaponSlotIndex Index { get; }
+		ModuleId ModuleId { get; }
+		ModuleInfo Module { get; }
+
+		string RuntimeApiVersion { get; }
+
+		ILoggerService Logger { get; }
+		IFileSystem FileSystem { get; }
+		ICVarSystemService CVarSystem { get; }
 	};
 };

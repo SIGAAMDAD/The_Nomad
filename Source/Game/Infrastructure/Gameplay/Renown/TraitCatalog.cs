@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Text.Json;
 using Godot;
 using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Renown;
 
@@ -23,28 +24,30 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown
 {
 	/*
 	===================================================================================
-	
+
 	TraitCatalog
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class TraitCatalog : DataLoader<TraitDefinition>
 	{
+		protected override string LoggerCategoryName => nameof( TraitCatalog );
+
 		/*
 		===============
 		TraitCatalog
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="fileSystem"></param>
-		public TraitCatalog( IFileSystem fileSystem )
-			: base( fileSystem )
+		public TraitCatalog( IFileSystem fileSystem, ILoggerService logger )
+			: base( fileSystem, logger )
 		{
 		}
 
@@ -54,7 +57,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="definition"></param>
@@ -62,12 +65,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown
 		protected override bool TryLoadDefinition( JsonElement json, out TraitDefinition definition )
 		{
 			definition = new TraitDefinition {
-				Id = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.Id ) ) ),
-				DisplayName = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.DisplayName ) ) ),
-				Description = new InternString( JsonLoader.GetRequired<string>( json, nameof( definition.Description ) ) ),
-				OutstandingMargin = JsonLoader.GetRequired<int>( json, nameof( definition.OutstandingMargin ) ),
-				IsRegionBased = JsonLoader.GetRequired<bool>( json, nameof( definition.IsRegionBased ) ),
-				CanBleedToAdjacent = JsonLoader.GetRequired<bool>( json, nameof( definition.CanBleedToAdjacent ) ),
+
 			};
 
 			return true;

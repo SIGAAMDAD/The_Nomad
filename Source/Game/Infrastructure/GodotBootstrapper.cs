@@ -54,15 +54,15 @@ namespace Nomad.Game.Infrastructure
 
 		/*
 		===============
-		_Ready
+		_EnterTree
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
-		public override void _Ready()
+		public override void _EnterTree()
 		{
-			base._Ready();
+			base._EnterTree();
 
 			ProcessMode = ProcessModeEnum.Always;
 

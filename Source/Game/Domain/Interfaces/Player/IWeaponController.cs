@@ -13,15 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Data.Mods;
+using System;
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Events.Player;
 
-namespace Nomad.Game.Domain.Interfaces.Mods
+namespace Nomad.Game.Domain.Interfaces.Player
 {
-	public interface IModuleHost
+	public interface IWeaponController : IDisposable
 	{
-		IServiceLocator Services { get; }
-		string ModuleDirectory { get; }
-		ModuleManifest Manifest { get; }
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player" )]
+		IGameEvent<WeaponUsedEventArgs> WeaponUsed { get; }
 	};
 };

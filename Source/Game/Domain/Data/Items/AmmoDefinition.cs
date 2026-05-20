@@ -30,11 +30,11 @@ namespace Nomad.Game.Domain.Data.Items
 		public static AmmoDefinition Load( JsonElement json )
 		{
 			return new AmmoDefinition {
-				Type = JsonLoader.TryGet( json, nameof( Type ), out AmmoType type ) ? type : AmmoType.Pistol,
-				Modifier = JsonLoader.TryGet( json, nameof( Modifier ), out AmmoModifier modifier ) ? modifier : AmmoModifier.None,
-				Damage = JsonLoader.TryGet( json, nameof( Damage ), out float damage ) ? damage : 0.0f,
-				Velocity = JsonLoader.TryGet( json, nameof( Velocity ), out float velocity ) ? velocity : 0.0f,
-				Range = JsonLoader.TryGet( json, nameof( Range ), out float range ) ? range : 0.0f,
+				Type = JsonLoader.GetRequired<AmmoType>( json, nameof( Type ) ),
+				Modifier = JsonLoader.GetRequired<AmmoModifier>( json, nameof( Modifier ) ),
+				Damage = JsonLoader.GetRequired<float>( json, nameof( Damage ) ),
+				Velocity = JsonLoader.GetRequired<float>( json, nameof( Velocity ) ),
+				Range = JsonLoader.GetRequired<float>( json, nameof( Range ) )
 			};
 		}
 	};

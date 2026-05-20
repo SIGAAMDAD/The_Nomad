@@ -13,10 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Mods
+namespace Nomad.Game.Application.Gameplay.Items
 {
-	public interface IAttribute
+	internal sealed class ItemBootstrapper
 	{
-		string Id { get; }
 	};
 };

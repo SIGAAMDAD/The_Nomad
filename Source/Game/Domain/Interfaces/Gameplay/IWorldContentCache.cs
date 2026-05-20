@@ -13,23 +13,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Data.Mods;
-using Nomad.Game.Domain.Interfaces.Mods;
+using System;
+using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Infrastructure.Mods
+namespace Nomad.Game.Domain.Interfaces.Gameplay
 {
-	public sealed class ModuleHost : IModuleHost
+	public interface IWorldContentCache : IDisposable
 	{
-		public IServiceLocator Services { get; }
-		public string ModuleDirectory { get; }
-		public ModuleManifest Manifest { get; }
-
-		public ModuleHost( IServiceLocator services, string moduleDirectory, ModuleManifest manifest )
-		{
-			Services = services;
-			ModuleDirectory = moduleDirectory;
-			Manifest = manifest;
-		}
+		IItemCatalog Items { get; }
 	};
 };

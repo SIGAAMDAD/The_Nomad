@@ -13,20 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Interfaces.Mods;
-using Nomad.Game.Infrastructure.Mods;
-using System.Reflection;
-
-namespace Nomad.Game.Domain.Data.Mods
+namespace Nomad.Game.Domain.Interfaces.Mods
 {
-	public sealed record LoadedModule
+	public interface INomadModule
 	{
-		public string Directory { get; init; }
-		public ModuleManifest Manifest { get; init; }
-		public ModuleLoadContext LoadContext { get; init; }
-		public Assembly Assembly { get; init; }
-		public IGameModule Instance { get; init; }
+		string Id { get; }
 
-		public ModuleState State { get; set; }
+		void OnPreLoad();
 	};
 };
