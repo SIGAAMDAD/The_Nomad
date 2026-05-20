@@ -24,7 +24,7 @@ namespace Nomad.Game.Domain.Interfaces.World
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface ICalendar : IDisposable
+	public interface ICalendarService : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.World" )]
 		[EventPayload( "Time", typeof( WorldTime ) )]

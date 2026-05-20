@@ -13,48 +13,55 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Runtime.Loader;
-using System.Reflection;
 using System;
-using System.IO;
-using GodotPlugins.Game;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
-	/*
-	===================================================================================
-	
-	ModuleLoadContext
-	
-	===================================================================================
-	*/
-	/// <summary>
-	/// 
-	/// </summary>
-
 	public sealed class ModuleLoadContext : AssemblyLoadContext
 	{
+		private static readonly HashSet<string> SharedAssemblies = new HashSet<string>( StringComparer.OrdinalIgnoreCase ) {
+			"System",
+			"System.Runtime",
+			"GodotSharp",
+			"GodotSharpEditor",
+			"TheNomad",
+		};
+
 		private readonly AssemblyDependencyResolver _resolver;
 
-		public string MainAssemblyPath { get; }
-
 		public ModuleLoadContext( string mainAssemblyPath )
-			: base( name: Path.GetFileNameWithoutExtension( mainAssemblyPath ), isCollectible: true )
+			: base( isCollectible: true )
 		{
-			MainAssemblyPath = mainAssemblyPath;
 			_resolver = new AssemblyDependencyResolver( mainAssemblyPath );
 		}
 
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
+			if ( assemblyName.Name != null && SharedAssemblies.Contains( assemblyName.Name ) ) {
+				return null; // let default context provide shared contracts.
+			}
+
 			string? path = _resolver.ResolveAssemblyToPath( assemblyName );
-			return path == null ? null : LoadFromAssemblyPath( path );
+
+			if ( path != null ) {
+				return LoadFromAssemblyPath( path );
+			}
+
+			return null;
 		}
 
 		protected override IntPtr LoadUnmanagedDll( string unmanagedDllName )
 		{
 			string? path = _resolver.ResolveUnmanagedDllToPath( unmanagedDllName );
-			return path == null ? IntPtr.Zero : LoadUnmanagedDllFromPath( path );
+
+			if ( path != null ) {
+				return LoadUnmanagedDllFromPath( path );
+			}
+
+			return IntPtr.Zero;
 		}
 	};
 };

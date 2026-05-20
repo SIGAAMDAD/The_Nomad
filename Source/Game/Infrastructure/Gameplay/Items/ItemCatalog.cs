@@ -17,9 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.ResourceCache;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items
 {
@@ -36,6 +38,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 
 	internal sealed class ItemCatalog : DataLoader<ItemDefinition>, IItemCatalog
 	{
+		protected override string LoggerCategoryName => nameof( ItemCatalog );
+
 		private readonly Dictionary<ItemType, Func<JsonElement, ItemDefinition>> _loaders = new();
 
 		/*
@@ -47,8 +51,8 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		///
 		/// </summary>
 		/// <param name="fileSystem"></param>
-		public ItemCatalog( IFileSystem fileSystem )
-			: base( fileSystem )
+		public ItemCatalog( IFileSystem fileSystem, ILoggerService logger )
+			: base( fileSystem, logger )
 		{
 		}
 

@@ -14,31 +14,36 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Infrastructure.Gameplay
 {
 	/*
 	===================================================================================
-	
+
 	DataLoader
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal abstract class DataLoader<TData>
 		where TData : class
 	{
+		protected abstract string LoggerCategoryName { get; }
+
 		protected readonly IFileSystem fileSystem;
-		protected readonly ConcurrentDictionary<Guid, TData> dataCache = new();
-		protected readonly ConcurrentDictionary<string, Guid> nameToGuid = new();
+		protected readonly ILoggerCategory category;
+		protected readonly Dictionary<Guid, TData> dataCache = new();
+		protected readonly Dictionary<string, Guid> nameToGuid = new();
 
 		/*
 		===============
@@ -46,13 +51,31 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="fileSystem"></param>
+		/// <param name="logger"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		protected DataLoader( IFileSystem fileSystem )
+		protected DataLoader( IFileSystem fileSystem, ILoggerService logger )
 		{
+			ArgumentGuard.ThrowIfNull( logger, nameof( logger ) );
+
 			this.fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
+			category = logger.CreateCategory( LoggerCategoryName, LogLevel.Info, true );
+		}
+
+		/*
+		===============
+		Clear
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public void Clear()
+		{
+			dataCache.Clear();
+			nameToGuid.Clear();
 		}
 
 		/*
@@ -61,7 +84,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <returns></returns>
@@ -76,7 +99,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <returns></returns>
@@ -91,7 +114,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="itemName"></param>
 		/// <returns></returns>
@@ -106,32 +129,40 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="dataPath"></param>
 		/// <param name="extensionPattern"></param>
 		protected void ScanDirectory( string dataPath, string extensionPattern )
 		{
 			var files = fileSystem.GetFiles( dataPath, extensionPattern, true );
+
 			for ( int i = 0; i < files.Count; i++ ) {
 				using var fileBuffer = fileSystem.LoadFile( files[i] );
+
 				if ( fileBuffer == null ) {
 					return;
 				}
+
 				using var json = JsonLoader.Parse( fileBuffer.AsStream() );
+
 				if ( TryLoadDefinition( json.RootElement, out var definition ) ) {
-					var dataId = Path.GetFileNameWithoutExtension( files[i] );
+					string dataId = Path.GetFileNameWithoutExtension( files[i] );
+
+					category.PrintLine( $"...Loaded cached data chunk '{dataId}'" );
+
 					if ( !nameToGuid.TryGetValue( dataId, out var guid ) ) {
 						guid = Guid.NewGuid();
 						nameToGuid[dataId] = guid;
 					}
+
 					dataCache[guid] = definition;
 				}
 			}
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="definition"></param>

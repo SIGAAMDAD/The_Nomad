@@ -13,26 +13,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Interfaces.Mods;
+using System;
+using Nomad.Game.Domain.Data.Items;
 
-namespace NomadMain {
-	public sealed class NomadMainModule : IGameModule {
-		public string Id => "NomadMain";
+namespace Nomad.Game.Application.Gameplay.Player.Combat
+{
+	internal sealed class PlayerWeaponInstance
+	{
+		private readonly WeaponDefinition _definition;
 
-		public void Dispose() {
-		}
-
-		public void Initialize( IModuleHost host ) {
-		}
-
-		public void RegisterServices( IServiceRegistry services ) {
-		}
-
-		public void Start() {
-		}
-
-		public void Stop() {
+		/*
+		===============
+		PlayerWeaponInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public PlayerWeaponInstance( WeaponDefinition definition )
+		{
+			_definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
 		}
 	};
 };

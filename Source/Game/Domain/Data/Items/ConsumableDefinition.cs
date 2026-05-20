@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Text.Json;
+using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Domain.Data.Items
@@ -20,5 +22,16 @@ namespace Nomad.Game.Domain.Data.Items
 	public sealed record ConsumableDefinition : ItemDefinition
 	{
 		public override ItemType BaseType => ItemType.Consumable;
+
+		public PlayerResourceType Resource { get; init; }
+		public float Amount { get; init; }
+
+		public static ConsumableDefinition Load( JsonElement json )
+		{
+			return new ConsumableDefinition {
+				Resource = JsonLoader.GetRequired<PlayerResourceType>( json, nameof( Resource ) ),
+				Amount = JsonLoader.GetRequired<float>( json, nameof( Amount ) )
+			};
+		}
 	};
 };

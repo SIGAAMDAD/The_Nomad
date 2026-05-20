@@ -28,7 +28,7 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 		public static PlayerId Invalid => new PlayerId( PeerId.Invalid );
 
 		public Guid Guid => Id;
-		public bool IsValid => Id != Guid.Empty;
+		public bool IsValid => this != Invalid;
 
 		public readonly Guid Id;
 
@@ -40,6 +40,13 @@ namespace Nomad.Game.Domain.Data.Multiplayer
 		public PlayerId( EntityId value )
 		{
 			Id = value.Id;
+		}
+
+		public void ThrowIfInvalid( string callingMethod )
+		{
+			if ( !IsValid ) {
+				throw new InvalidOperationException( $"{callingMethod} given an invalid PlayerId!" );
+			}
 		}
 
 		public override bool Equals( [NotNullWhen( true )] object? obj )

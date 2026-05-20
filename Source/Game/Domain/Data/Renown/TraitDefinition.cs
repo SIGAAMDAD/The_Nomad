@@ -14,6 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.Renown
@@ -49,5 +51,20 @@ namespace Nomad.Game.Domain.Data.Renown
 
 		public HashSet<InternString> ConflictingTraits { get; init; }
 		public Dictionary<InternString, float> FactionBias { get; init; }
+
+		public static TraitDefinition Load( JsonElement json )
+		{
+			return new TraitDefinition {
+				Id = new InternString( JsonLoader.GetRequired<string>( json, nameof( Id ) ) ),
+				DisplayName = new InternString( JsonLoader.GetRequired<string>( json, nameof( DisplayName ) ) ),
+				Description = new InternString( JsonLoader.GetRequired<string>( json, nameof( Description ) ) ),
+				OutstandingMargin = JsonLoader.GetRequired<int>( json, nameof( OutstandingMargin ) ),
+				IsRegionBased = JsonLoader.GetRequired<bool>( json, nameof( IsRegionBased ) ),
+				CanBleedToAdjacent = JsonLoader.GetRequired<bool>( json, nameof( CanBleedToAdjacent ) ),
+				ConflictingTraits = JsonLoader.GetRequiredArray<string>( json, nameof( ConflictingTraits ) )
+					.Select( s => new InternString( s ) )
+					.ToHashSet()
+			};
+		}
 	};
 };

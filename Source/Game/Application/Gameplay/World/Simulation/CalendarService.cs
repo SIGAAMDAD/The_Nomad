@@ -40,7 +40,7 @@ namespace Nomad.Game.Application.Gameplay.World
 
 	===================================================================================
 	*/
-	internal sealed class CalendarService : ICalendar
+	internal sealed class CalendarService : ICalendarService
 	{
 		// 4 real minutes = 1 in-game hour
 		private const int HOUR_TICRATE_MS = (60 * 1000) * 4;
@@ -98,7 +98,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="cvarSystem"></param>

@@ -13,38 +13,44 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.Items
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
-	public abstract record ItemDefinition
+	public abstract record ItemDefinition : IDisposable
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public abstract ItemType BaseType { get; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public InternString Name { get; init; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public InternString JournalEntry { get; init; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public float Weight { get; init; }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public float BaseCost { get; init; }
+
+		public void Dispose()
+		{
+			GC.SuppressFinalize( this );
+		}
 	};
 };
