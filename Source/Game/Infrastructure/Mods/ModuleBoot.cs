@@ -42,7 +42,6 @@ namespace Nomad.Game.Infrastructure.Mods
 		private void PreLoadModules()
 		{
 			foreach ( var module in _modules ) {
-				var context = new ;
 			}
 		}
 	};

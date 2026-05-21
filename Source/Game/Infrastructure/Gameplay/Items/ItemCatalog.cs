@@ -21,7 +21,6 @@ using Nomad.Core.Logger;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
-using Nomad.ResourceCache;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items
 {
@@ -36,8 +35,9 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 	///
 	/// </summary>
 
-	internal sealed class ItemCatalog : DataLoader<ItemDefinition>, IItemCatalog
+	internal sealed class ItemCatalog : DataDefinitionRegistry<ItemDefinitionId, ItemDefinition>, IItemCatalog
 	{
+		protected override Func<string, ItemDefinitionId> KeyFactory => k => new ItemDefinitionId( new InternString( k ) );
 		protected override string LoggerCategoryName => nameof( ItemCatalog );
 
 		private readonly Dictionary<ItemType, Func<JsonElement, ItemDefinition>> _loaders = new();
@@ -56,6 +56,11 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		{
 		}
 
+		public void ScanAndLoad()
+		{
+			ScanDirectory( "Assets/Items", "*.json" );
+		}
+
 		/*
 		===============
 		Get
@@ -67,7 +72,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		/// <typeparam name="TItemDefinition"></typeparam>
 		/// <param name="itemId"></param>
 		/// <returns></returns>
-		public TItemDefinition? Get<TItemDefinition>( Guid itemId )
+		public TItemDefinition? Get<TItemDefinition>( ItemDefinitionId itemId )
 			where TItemDefinition : ItemDefinition
 		{
 			return (TItemDefinition?)Get( itemId );
@@ -85,7 +90,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		/// <param name="itemId"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public bool TryGet<TItemDefinition>( Guid itemId, out TItemDefinition? item )
+		public bool TryGet<TItemDefinition>( ItemDefinitionId itemId, out TItemDefinition? item )
 			where TItemDefinition : ItemDefinition
 		{
 			if ( !TryGet( itemId, out var data ) ) {

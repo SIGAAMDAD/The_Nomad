@@ -13,6 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Text.Json;
+using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Player;
 
 namespace Nomad.Game.Domain.Data.Items
@@ -22,8 +25,16 @@ namespace Nomad.Game.Domain.Data.Items
 	/// </summary>
 	public abstract record WeaponDefinition : ItemDefinition
 	{
-		public WeaponType Type { get; init; }
+		public abstract WeaponType WeaponType { get; }
 		public float BaseDurability { get; init; }
 		public WeaponSlotIndex Slot { get; init; }
+
+		protected virtual WeaponDefinition LoadBase( JsonElement json )
+		{
+			return this with {
+				BaseDurability = json.GetRequired<float>( nameof( BaseDurability ) ),
+				Slot = Enum.Parse<WeaponSlotIndex>( json.GetRequired<string>( nameof( Slot ) ) )
+			};
+		}
 	};
 };

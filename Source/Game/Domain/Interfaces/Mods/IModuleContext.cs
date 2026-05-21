@@ -17,13 +17,12 @@ using Microsoft.Diagnostics.Runtime;
 using Nomad.Core.CVars;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
-using Nomad.Game.Domain.Data.Mods;
 
 namespace Nomad.Game.Domain.Interfaces.Mods
 {
 	public interface IModuleContext
 	{
-		ModuleId ModuleId { get; }
+		string ModuleId { get; }
 		ModuleInfo Module { get; }
 
 		string RuntimeApiVersion { get; }

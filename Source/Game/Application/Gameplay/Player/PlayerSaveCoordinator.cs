@@ -19,7 +19,7 @@ using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Game.Prefabs;
 using Nomad.Save.Services;
 

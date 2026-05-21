@@ -24,6 +24,7 @@ using Nomad.CVars;
 using Nomad.EngineUtils;
 using Nomad.Events;
 using Nomad.FileSystem;
+using Nomad.Game.Infrastructure.Gameplay;
 using Nomad.Input;
 using Nomad.Logger;
 using Nomad.Networking;
@@ -85,7 +86,8 @@ namespace Nomad.Game.Infrastructure.Root
 				.AddBootstrapper( new FMODBootstrapper() )
 				.AddBootstrapper( new InputBootstrapper() )
 				.AddBootstrapper( new SaveBootstrapper() )
-				.AddBootstrapper( new NetworkBootstrapper() );
+				.AddBootstrapper( new NetworkBootstrapper() )
+				.AddBootstrapper( new GameplayBootstrapper() );
 		}
 	};
 };

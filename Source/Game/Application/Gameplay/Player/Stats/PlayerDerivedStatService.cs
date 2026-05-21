@@ -19,7 +19,7 @@ using Nomad.Core.Events;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Multiplayer;

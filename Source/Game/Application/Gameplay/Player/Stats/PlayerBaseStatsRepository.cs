@@ -20,7 +20,7 @@ using Nomad.Core.Logger;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Interfaces.Player.Stats;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats
 {

@@ -31,33 +31,18 @@ namespace Nomad.Game.Application.Gameplay.Player
 	===================================================================================
 	*/
 	/// <summary>
-	/// Owns weapon state, weapon binding usage, and weapon slot handling.
+	/// Owns weapon usage handling (useWeapon + reload bindings).
 	/// </summary>
 
 	internal sealed class PlayerWeaponController : IWeaponController
 	{
 		private readonly IDisposable _useWeapon;
-		private readonly IDisposable _nextWeapon;
-		private readonly IDisposable _prevWeapon;
 		private readonly IDisposable _reload;
-		private readonly IDisposable _switchToPrimaryWeapon;
-		private readonly IDisposable _switchToSecondaryWeapon;
-		private readonly IDisposable _switchToHeavyPrimaryWeapon;
-		private readonly IDisposable _switchToHeavySecondaryWeapon;
 
 		private bool _isDisposed = false;
 
-		public IGameEvent<WeaponUsedEventArgs> WeaponUsed {
-			get {
-				throw new NotImplementedException();
-			}
-		}
-
-		public IGameEvent<WeaponSlotChangedEventArgs> WeaponSlotChanged {
-			get {
-				throw new NotImplementedException();
-			}
-		}
+		public IGameEvent<WeaponUsedEventArgs> WeaponUsed => _weaponUsed;
+		private readonly IGameEvent<WeaponUsedEventArgs> _weaponUsed = null;
 
 		public PlayerWeaponController( IGameEventRegistryService eventFactory )
 		{
@@ -69,6 +54,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 					ButtonActionEventArgs.NameSpace
 				)
 				.Subscribe( OnUseWeapon );
+
+			_reload = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Reload:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( OnReload );
 		}
 
 		public void Dispose()
@@ -78,13 +70,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 
 			_useWeapon.Dispose();
-			_nextWeapon.Dispose();
-			_prevWeapon.Dispose();
 			_reload.Dispose();
-			_switchToPrimaryWeapon.Dispose();
-			_switchToSecondaryWeapon.Dispose();
-			_switchToHeavyPrimaryWeapon.Dispose();
-			_switchToHeavySecondaryWeapon.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -93,6 +79,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private void OnUseWeapon( in ButtonActionEventArgs args )
 		{
 			if ( args.Phase == InputActionPhase.Started ) {
+			}
+		}
+
+		private void OnReload( in ButtonActionEventArgs args )
+		{
+			if ( args.Phase != InputActionPhase.Started ) {
+				return;
 			}
 		}
 	};

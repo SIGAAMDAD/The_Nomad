@@ -13,8 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Text.Json;
-using Godot;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.Util;
@@ -33,8 +33,9 @@ namespace Nomad.Game.Infrastructure.Gameplay.Renown
 	///
 	/// </summary>
 
-	internal sealed class TraitCatalog : DataLoader<TraitDefinition>
+	internal sealed class TraitCatalog : DataDefinitionRegistry<TraitDefinitionId, TraitDefinition>
 	{
+		protected override Func<string, TraitDefinitionId> KeyFactory => k => new TraitDefinitionId( new InternString( k ) );
 		protected override string LoggerCategoryName => nameof( TraitCatalog );
 
 		/*
