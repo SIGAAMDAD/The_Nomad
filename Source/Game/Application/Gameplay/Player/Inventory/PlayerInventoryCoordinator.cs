@@ -36,17 +36,19 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 		public PlayerInventoryCoordinator( IPlayerBaseStatsRepository baseStatsRepository, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory, IItemCatalog itemCatalog )
 		{
-			_storageUnitService = new StorageUnitService( itemCatalog );
+			_storageUnitService = new StorageUnitService( itemCatalog, eventFactory );
 
 			if ( _storageUnitService.TryAddInventory(
-				new InternString( "INVENTORY_PLAYER_BACKPACK" ),
-				new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" ),
-				new InventoryRules {
-					MaxWeight = baseStatsRepository.GetBaseStatValue( BaseStatType.EncumbranceThreshold ),
-					IgnoreWeight = false,
-					AcceptsItem = _ => true
+				new StorageUnitDefinition {
+					Id = new InternString( "INVENTORY_PLAYER_BACKPACK" ),
+					DisplayName = new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" ),
+					Rules = new InventoryRules {
+						MaxWeight = baseStatsRepository.GetBaseStatValue( BaseStatType.EncumbranceThreshold ),
+						IgnoreWeight = false,
+						AcceptsItem = _ => true
+					},
+					Type = InventoryContainerType.Backpack,
 				},
-				InventoryContainerType.Backpack,
 				out var backpackStorage
 			) ) {
 				_backpack = new PlayerBackpack( BackpackStatus.Equipped, stateReader, backpackStorage, eventFactory );

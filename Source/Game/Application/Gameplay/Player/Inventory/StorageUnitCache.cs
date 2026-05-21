@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Application.Gameplay.Inventory;
 using Nomad.Game.Domain.Data.Inventory;
@@ -38,6 +39,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 	{
 		private readonly Dictionary<InternString, IStorageUnit> _inventories = new();
 		private readonly IItemCatalog _itemCatalog;
+		private readonly IGameEventRegistryService _eventFactory;
 
 		/*
 		===============
@@ -49,9 +51,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// </summary>
 		/// <param name="itemCatalog"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public StorageUnitService( IItemCatalog itemCatalog )
+		public StorageUnitService( IItemCatalog itemCatalog, IGameEventRegistryService eventFactory )
 		{
 			_itemCatalog = itemCatalog ?? throw new ArgumentNullException( nameof( itemCatalog ) );
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 		}
 
 		/*
@@ -69,27 +72,22 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <param name="inventory"></param>
 		/// <returns></returns>
 		public bool TryAddInventory(
-			InternString id,
-			InternString displayName,
-			InventoryRules rules,
-			InventoryContainerType type,
+			StorageUnitDefinition definition,
 			out IStorageUnit? inventory
 		)
 		{
-			if ( _inventories.ContainsKey( id ) ) {
+			if ( _inventories.ContainsKey( definition.Id ) ) {
 				inventory = null;
 				return false;
 			}
 
 			inventory = new StorageUnit(
-				id: id,
-				displayName: displayName,
-				rules: rules,
-				type: type,
-				_itemCatalog
+				definition,
+				_itemCatalog,
+				_eventFactory
 			);
 
-			_inventories[id] = inventory;
+			_inventories[definition.Id] = inventory;
 
 			return true;
 		}

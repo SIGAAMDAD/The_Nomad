@@ -16,11 +16,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.Inventory
 {
@@ -38,25 +40,21 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 	internal sealed class StorageUnit : IStorageUnit
 	{
-		public InternString Id => _id;
-		private readonly InternString _id;
+		public InternString Id => _definition.Id;
+		public InternString DisplayName => _definition.DisplayName;
+		public InventoryContainerType Type => _definition.Type;
+		public InventoryRules Rules => _definition.Rules;
 
-		public InternString DisplayName => _displayName;
-		private readonly InternString _displayName;
-
-		public InventoryContainerType Type => _type;
-		private readonly InventoryContainerType _type;
-
-		public InventoryRules Rules => _rules;
-		private readonly InventoryRules _rules;
-
+		private readonly StorageUnitDefinition _definition;
 		private readonly IItemCatalog _catalog;
-
 		private readonly Dictionary<ItemDefinitionId, int> _stacks = new();
+
+		private readonly IDisposable _saveBegin;
+		private readonly IDisposable _loadBegin;
 
 		public float CurrentWeight {
 			get {
-				if ( _rules.IgnoreWeight ) {
+				if ( _definition.Rules.IgnoreWeight ) {
 					return 0.0f;
 				}
 
@@ -85,13 +83,24 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <param name="type"></param>
 		/// <param name="catalog"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public StorageUnit( InternString id, InternString displayName, InventoryRules rules, InventoryContainerType type, IItemCatalog catalog )
+		public StorageUnit( StorageUnitDefinition definition, IItemCatalog catalog, IGameEventRegistryService eventFactory )
 		{
-			_id = id;
-			_displayName = displayName;
-			_type = type;
-			_rules = rules ?? throw new ArgumentNullException( nameof( rules ) );
+			_definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
+
+			_saveBegin = eventFactory
+				.GetEvent<SaveBeginEventArgs>(
+					SaveBeginEventArgs.Name,
+					SaveBeginEventArgs.NameSpace
+				)
+				.Subscribe( OnSaveBegin );
+
+			_loadBegin = eventFactory
+				.GetEvent<LoadBeginEventArgs>(
+					LoadBeginEventArgs.Name,
+					LoadBeginEventArgs.NameSpace
+				)
+				.Subscribe( OnLoadBegin );
 		}
 
 		/*
@@ -111,13 +120,13 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 			var item = _catalog.Get<ItemDefinition>( itemType );
 
-			if ( !_rules.AcceptsItem( item ) ) {
+			if ( !_definition.Rules.AcceptsItem( item ) ) {
 				return false;
 			}
 
-			if ( !_rules.IgnoreWeight ) {
+			if ( !_definition.Rules.IgnoreWeight ) {
 				float newWeight = CurrentWeight + item.Weight * amount;
-				if ( newWeight > _rules.MaxWeight ) {
+				if ( newWeight > _definition.Rules.MaxWeight ) {
 					return false;
 				}
 			}
@@ -155,6 +164,14 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			_stacks[itemType] = stackSize;
 
 			return true;
+		}
+
+		private void OnSaveBegin( in SaveBeginEventArgs args )
+		{
+		}
+
+		private void OnLoadBegin( in LoadBeginEventArgs args )
+		{
 		}
 	};
 };
