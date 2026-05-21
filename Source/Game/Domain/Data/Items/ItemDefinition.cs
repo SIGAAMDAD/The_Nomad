@@ -31,6 +31,11 @@ namespace Nomad.Game.Domain.Data.Items
 		/// <summary>
 		///
 		/// </summary>
+		public ItemDefinitionId Id { get; init; }
+
+		/// <summary>
+		///
+		/// </summary>
 		public InternString Name { get; init; }
 
 		/// <summary>

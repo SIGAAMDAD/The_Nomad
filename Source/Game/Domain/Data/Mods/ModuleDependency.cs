@@ -17,7 +17,7 @@ namespace Nomad.Game.Domain.Data.Mods
 {
 	public sealed record ModuleDependency
 	{
-		public ModuleId Id { get; init; }
+		public string Id { get; init; }
 		public string? Version { get; init; }
 		public bool Optional { get; init; } = false;
 	};

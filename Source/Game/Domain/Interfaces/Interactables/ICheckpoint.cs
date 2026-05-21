@@ -13,9 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Numerics;
+using Nomad.Game.Domain.Data.Interactables;
+
 namespace Nomad.Game.Domain.Interfaces.Interactables
 {
 	public interface ICheckpoint : IInteractable
 	{
+		Vector2 Origin { get; }
+
+		CheckpointStatus Status { get; }
+
+		/// <summary>
+		/// <c>True</c> if the checkpoint is a firelink. <c>False</c> if the checkpoint
+		/// is not automatically destroyed after leaving it.
+		/// </summary>
+		bool IsTemporary { get; }
 	};
 };

@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Game.Domain.Interfaces.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player

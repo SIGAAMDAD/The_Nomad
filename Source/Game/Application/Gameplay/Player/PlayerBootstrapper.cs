@@ -19,12 +19,15 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.Player.Animation;
+using Nomad.Game.Application.Gameplay.Player.Combat;
 using Nomad.Game.Application.Gameplay.Player.Input;
+using Nomad.Game.Application.Gameplay.Player.Inventory;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Application.Gameplay.Player.Stats;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player.State;
+using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player
@@ -69,6 +72,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var resourceService = new PlayerResourceService( playerId, derivedStatService, eventFactory );
 			var stateCoordinator = new PlayerStateCoordinator( playerId, PlayerStateId.Idle, eventFactory );
 			var saveCoordinator = new PlayerSaveCoordinator( derivedStatService, resourceService, stateCoordinator, prefab, eventFactory );
+			var inventoryCoordinator = new PlayerInventoryCoordinator( statsRepository, stateCoordinator, eventFactory, ServiceLocator.GetService<IWorldContentCache>().Items );
+			var weaponCoordinator = new PlayerWeaponCoordinator( playerId, inventoryCoordinator, eventFactory );
 
 			ApplyBaseStats( prefab, statsRepository );
 			derivedStatService.FlushDirty();
@@ -121,7 +126,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 				resourceService,
 				dependencyGraph,
 				flagService,
-				saveCoordinator
+				saveCoordinator,
+				weaponCoordinator
 			);
 		}
 

@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Linq;
 using System.Text.Json;
 using Nomad.Core.Util;
 
@@ -20,20 +22,32 @@ namespace Nomad.Game.Domain.Data.Items
 {
 	public sealed record FirearmDefinition : WeaponDefinition
 	{
-		public override ItemType BaseType => ItemType.Firearm;
+		public override ItemType BaseType => ItemType.FirearmWeapon;
+		public override WeaponType WeaponType => WeaponType.Firearm;
 		public FirearmFlags Flags { get; init; }
+
 		public float FireRate { get; init; }
 		public int MagazineSize { get; init; }
 
+		public float BaseAimDownSightsSpeed { get; init; } = 1.0f;
+		public float BaseHipFireAccuracy { get; init; } = 1.0f;
+		public float BaseReloadSpeed { get; init; } = 1.0f;
+		public float BaseEquipSpeed { get; init; } = 1.0f;
+		public float BaseRecoilRecovery { get; init; } = 1.0f;
+		public float BaseJamChance { get; init; } = 0.0f;
+
 		public static FirearmDefinition Load( JsonElement json )
 		{
-			return new FirearmDefinition {
-				Type = JsonLoader.TryGet( json, nameof( Type ), out WeaponType type ) ? type : WeaponType.Firearm,
-				BaseDurability = JsonLoader.TryGet( json, nameof( BaseDurability ), out float baseDurability ) ? baseDurability : 0.0f,
-				Flags = JsonLoader.TryGet( json, nameof( Flags ), out FirearmFlags flags ) ? flags : FirearmFlags.None,
-				FireRate = JsonLoader.TryGet( json, nameof( FireRate ), out float fireRate ) ? fireRate : 0.0f,
-				MagazineSize = JsonLoader.TryGet( json, nameof( MagazineSize ), out int magazineSize ) ? magazineSize : 0,
+			var definition = new FirearmDefinition {
+				BaseDurability = JsonLoader.GetRequired<float>( json, nameof( BaseDurability ) ),
+				FireRate = JsonLoader.GetRequired<float>( json, nameof( FireRate ) ),
+				MagazineSize = JsonLoader.GetRequired<int>( json, nameof( MagazineSize ) ),
+				Flags = JsonLoader.GetRequiredArray<string>( json, nameof( Flags ) )
+					.Select( s => Enum.TryParse( s, out FirearmFlags flag ) ? flag : default )
+					.Aggregate( ( prev, next ) => prev | next )
 			};
+			definition.LoadBase( json );
+			return definition;
 		}
 	};
 };

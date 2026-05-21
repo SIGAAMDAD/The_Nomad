@@ -90,40 +90,40 @@ focus_neighbor_top = NodePath("../BrightnessSlider")
 focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../WindowModeList")
 ConfigVarName = "display.Monitor"
-Title = "ui.settings.display.monitor_index"
+Title = "UI_SETTINGS_DISPLAY_MONITOR_INDEX"
 Description = "Which display to render the game window into"
 
 [node name="WindowModeList" parent="TabContainer/Display/Basic" unique_id=1937998290 instance=ExtResource("4_sceel")]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 ConfigVarName = "display.WindowMode"
-Title = "ui.settings.display.window_mode"
+Title = "UI_SETTINGS_DISPLAY_WINDOW_MODE"
 
 [node name="WindowResolutionList" parent="TabContainer/Display/Basic" unique_id=1721561237 instance=ExtResource("4_sceel")]
 layout_mode = 2
 ConfigVarName = "display.WindowResolution"
-Title = "ui.settings.display.window_resolution"
+Title = "UI_SETTINGS_DISPLAY_WINDOW_RESOLUTION"
 Description = "How large the game window should be"
 
 [node name="VSyncList" parent="TabContainer/Display/Basic" unique_id=2014587530 instance=ExtResource("4_sceel")]
 layout_mode = 2
 ConfigVarName = "display.VSyncMode"
-Title = "ui.settings.display.vsync_mode"
+Title = "UI_SETTINGS_DISPLAY_VSYNC_MODE"
 
 [node name="AspectRatioList" parent="TabContainer/Display/Basic" unique_id=304588338 instance=ExtResource("4_sceel")]
 layout_mode = 2
 ConfigVarName = "display.AspectRatio"
-Title = "Aspect Ratio"
+Title = "UI_SETTINGS_DISPLAY_ASPECT_RATIO"
 
 [node name="MaxFpsSlider" parent="TabContainer/Display/Basic" unique_id=233075417 instance=ExtResource("5_yx041")]
 layout_mode = 2
 ConfigVarName = "display.MaxFps"
-Title = "ui.settings.display.maximum_framerate"
+Title = "UI_SETTINGS_DISPLAY_MAXIMUM_FRAMERATE"
 
 [node name="BrightnessSlider" parent="TabContainer/Display/Basic" unique_id=314321795 instance=ExtResource("5_yx041")]
 layout_mode = 2
 ConfigVarName = "display.Brightness"
-Title = "ui.settings.display.brightness"
+Title = "UI_SETTINGS_DISPLAY_BRIGHTNESS"
 
 [node name="HSeparator" type="HSeparator" parent="TabContainer/Display/Basic" unique_id=665885871]
 use_parent_material = true
@@ -137,7 +137,7 @@ metadata/_tab_index = 1
 
 [node name="AntiAliasing" type="Label" parent="TabContainer/Display/Advanced" unique_id=76621337]
 layout_mode = 2
-text = "ANTI ALIASING"
+text = "UI_SETTINGS_DISPLAY_ANTI_ALIASING"
 
 [node name="HSeparator" type="HSeparator" parent="TabContainer/Display/Advanced" unique_id=158657258]
 layout_mode = 2
@@ -146,7 +146,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.AntiAliasing"
-Title = "Anti Aliasing"
+Title = "UI_SETTINGS_DISPLAY_ANTI_ALIASING"
 
 [node name="AntiAliasingOptions" type="MarginContainer" parent="TabContainer/Display/Advanced" unique_id=231868992]
 layout_mode = 2
@@ -159,13 +159,13 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningEnabled"
-Title = "Sharpening"
+Title = "UI_SETTINGS_DISPLAY_SHARPENING_ENABLED"
 
 [node name="SharpeningAmount" parent="TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=1230149142 instance=ExtResource("5_yx041")]
 unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningAmount"
-Title = "Amount"
+Title = "UI_SETTINGS_DISPLAY_SHARPENING_AMOUNT"
 
 [node name="TargetFramerateSlider" parent="TabContainer/Display/Advanced" unique_id=1823433323 instance=ExtResource("5_yx041")]
 layout_mode = 2
@@ -374,7 +374,8 @@ metadata/_edit_use_anchors_ = true
 
 [node name="DescriptionLabel" type="Label" parent="BottomContainer" unique_id=753670562]
 use_parent_material = true
-custom_minimum_size = Vector2(0, 220)
+custom_minimum_size = Vector2(800, 220)
+custom_maximum_size = Vector2(800, 220)
 layout_mode = 2
 size_flags_horizontal = 3
 autowrap_mode = 2

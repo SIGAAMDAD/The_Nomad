@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using Nomad.Game.Domain.Data.Player.State;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation

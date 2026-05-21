@@ -25,13 +25,13 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 {
 	/*
 	===================================================================================
-	
+
 	RenownDecayService
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class RenownDecayService : IDisposable
@@ -42,7 +42,7 @@ namespace Nomad.Game.Application.Gameplay.World.Renown
 		private readonly CVarBinding<int> _gracePeriodDays;
 		private readonly CVarBinding<float> _baseDailyDecay;
 
-		public RenownDecayService( IRenownTrackerService tracker, ICalendar calendar, ICVarSystemService cvarSystem )
+		public RenownDecayService( IRenownTrackerService tracker, ICalendarService calendar, ICVarSystemService cvarSystem )
 		{
 			ArgumentGuard.ThrowIfNull( calendar, nameof( calendar ) );
 			ArgumentGuard.ThrowIfNull( cvarSystem, nameof( cvarSystem ) );

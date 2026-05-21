@@ -23,7 +23,7 @@ namespace Nomad.Game.Domain.Data.Mods
 		[JsonIgnore]
 		public string DirectoryPath { get; set; } = string.Empty;
 
-		public ModuleId Id { get; init; }
+		public string Id { get; init; }
 		public string Name { get; init; }
 		public string Version { get; init; }
 		public string ApiVersion { get; init; }

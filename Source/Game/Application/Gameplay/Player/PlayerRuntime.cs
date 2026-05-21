@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Game.Application.Gameplay.Player.Animation;
+using Nomad.Game.Application.Gameplay.Player.Combat;
 using Nomad.Game.Application.Gameplay.Player.Input;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
@@ -49,6 +50,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerFlagService FlagService { get; }
 		public PlayerSaveCoordinator SaveCoordinator { get; }
 
+		public PlayerWeaponCoordinator WeaponCoordinator { get; }
+
 		public PlayerRuntime(
 			PlayerAimCoordinator aimCoordinator,
 			PlayerJumpKit jumpKit,
@@ -62,7 +65,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 			PlayerResourceService resourceService,
 			PlayerStatDependencyGraph dependencyGraph,
 			PlayerFlagService flagService,
-			PlayerSaveCoordinator saveCoordinator
+			PlayerSaveCoordinator saveCoordinator,
+			PlayerWeaponCoordinator weaponCoordinator
 		)
 		{
 			AimCoordinator = aimCoordinator;
@@ -78,6 +82,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			DependencyGraph = dependencyGraph;
 			FlagService = flagService;
 			SaveCoordinator = saveCoordinator;
+			WeaponCoordinator = weaponCoordinator;
 		}
 	};
 };

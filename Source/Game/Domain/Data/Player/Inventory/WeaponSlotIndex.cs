@@ -16,7 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 namespace Nomad.Game.Domain.Data.Player
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	public enum WeaponSlotIndex : byte
 	{
@@ -25,6 +25,9 @@ namespace Nomad.Game.Domain.Data.Player
 		HeavySidearm,
 		HeavyPrimary,
 
-		Count
+		Count,
+
+		Min = LightSidearm,
+		Max = HeavyPrimary
 	};
 };
