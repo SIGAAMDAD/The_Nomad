@@ -13,31 +13,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Events.Interactables;
-using Nomad.Game.Domain.Data.Multiplayer;
-using System;
 
-namespace Nomad.Game.Domain.Interfaces.Interactables
+namespace Nomad.Game.Application.Gameplay.Interactables
 {
+	/*
+	===================================================================================
+
+	CheckpointService
+
+	===================================================================================
+	*/
 	/// <summary>
 	///
 	/// </summary>
-	public interface IInteractable
+
+	internal sealed class CheckpointService
 	{
 		/// <summary>
-		///
+		/// Represents all the meliora in the game.
 		/// </summary>
-		PlayerInteractionStatus PlayerStatus { get; }
+		private readonly Dictionary<CheckpointInstanceId, CheckpointInstance> _permanent = new();
 
 		/// <summary>
-		///
+		/// Represents the temporary firelink checkpoint.
 		/// </summary>
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "PlayerInteractionStatusChangedEventArgs" )]
-		[EventPayload( "InteractorId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldStatus", typeof( PlayerInteractionStatus ), Order = 2 )]
-		[EventPayload( "NewStatus", typeof( PlayerInteractionStatus ), Order = 3 )]
-		IGameEvent<PlayerInteractionStatusChangedEventArgs> StatusChanged { get; }
+		private readonly CheckpointInstance _temporary;
+
+		public CheckpointService( IGameEventRegistryService eventFactory )
+		{
+		}
 	};
 };

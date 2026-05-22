@@ -17,8 +17,8 @@ using Nomad.Game.Domain.Data.Items;
 
 namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IWeaponBase : IItemBase<WeaponDefinition>
+	public interface IWeaponInstance : IItemInstance<WeaponDefinition>
 	{
-
+		public WeaponDefinition WeaponDefinition { get; }
 	};
 };

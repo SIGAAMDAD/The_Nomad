@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
@@ -22,7 +23,7 @@ namespace Nomad.Game.Domain.Interfaces.Player.Inventory
 	/// <summary>
 	///
 	/// </summary>
-	public interface IStorageUnit
+	public interface IStorageUnit : IDisposable
 	{
 		InternString Id { get; }
 		InternString DisplayName { get; }
@@ -33,5 +34,9 @@ namespace Nomad.Game.Domain.Interfaces.Player.Inventory
 
 		bool TryAdd( ItemDefinitionId itemType, int amount );
 		bool TryRemove( ItemDefinitionId itemType, int amount );
+
+		bool TryAddInstance( ItemInstanceId instance );
+		bool TryRemoveInstance( ItemInstanceId instance );
+		bool ContainsInstance( ItemInstanceId instance );
 	};
 };

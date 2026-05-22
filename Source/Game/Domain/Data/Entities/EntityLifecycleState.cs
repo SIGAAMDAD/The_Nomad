@@ -13,9 +13,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Application.Gameplay.Items
+namespace Nomad.Game.Domain.Data.Entities
 {
-	internal sealed class ItemBootstrapper
+	/*
+	===================================================================================
+
+	EntityLifecycleState
+
+	===================================================================================
+	*/
+	/// <summary>
+	/// Generic lifecycle state for any live runtime entity.
+	/// </summary>
+
+	public enum EntityLifecycleState : byte
 	{
+		None = 0,
+
+		Created,
+		Spawned,
+		Active,
+		Inactive,
+		Hidden,
+		Destroyed,
+		Despawning,
+		Disposed
 	};
 };

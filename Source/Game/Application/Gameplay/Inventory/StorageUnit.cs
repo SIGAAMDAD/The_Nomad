@@ -20,6 +20,7 @@ using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Domain.Interfaces.Player.Inventory;
 using Nomad.Save.Services;
@@ -47,7 +48,10 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 		private readonly StorageUnitDefinition _definition;
 		private readonly IItemCatalog _catalog;
+		private readonly IItemInstanceRepository _instanceRepository;
+
 		private readonly Dictionary<ItemDefinitionId, int> _stacks = new();
+		private readonly HashSet<ItemInstanceId> _instances = new();
 
 		private readonly IDisposable _saveBegin;
 		private readonly IDisposable _loadBegin;
@@ -63,6 +67,11 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 				foreach ( var stack in _stacks ) {
 					var item = _catalog.Get<ItemDefinition>( stack.Key );
 					weight += item.Weight * stack.Value;
+				}
+
+				foreach ( var instance in _instances ) {
+					var item = _instanceRepository.Get<ItemDefinition>( instance );
+					weight += item.Definition.Weight;
 				}
 
 				return weight;
@@ -166,10 +175,92 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			return true;
 		}
 
-		private void OnSaveBegin( in SaveBeginEventArgs args )
+		/*
+		===============
+		TryAddInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="instanceId"></param>
+		/// <returns></returns>
+		public bool TryAddInstance( ItemInstanceId instanceId )
 		{
+			return _instances.Add( instanceId );
 		}
 
+		/*
+		===============
+		TryRemoveInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="instanceId"></param>
+		/// <returns></returns>
+		public bool TryRemoveInstance( ItemInstanceId instanceId )
+		{
+			return _instances.Remove( instanceId );
+		}
+
+		/*
+		===============
+		ContainsInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="instanceId"></param>
+		/// <returns></returns>
+		public bool ContainsInstance( ItemInstanceId instanceId )
+		{
+			return _instances.Contains( instanceId );
+		}
+
+		/*
+		===============
+		OnSaveBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnSaveBegin( in SaveBeginEventArgs args )
+		{
+			lock ( this ) {
+				var writer = args.Writer.AddSection( $"StorageUnit#{(string)Id}:{(string)DisplayName}" );
+
+				writer.AddField( "StackCount", _stacks.Count );
+
+				int index = 0;
+				foreach ( var stack in _stacks ) {
+					writer.AddField( $"Stack{index}:Type", (string)stack.Key.Value );
+					writer.AddField( $"Stack{index}:Amount", stack.Value );
+					index++;
+				}
+
+				writer.AddField( "InstanceCount", _instances.Count );
+
+				index = 0;
+				foreach ( var instance in _instances ) {
+					index++;
+				}
+			}
+		}
+
+		/*
+		===============
+		OnLoadBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnLoadBegin( in LoadBeginEventArgs args )
 		{
 		}

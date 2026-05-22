@@ -13,53 +13,36 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Entities
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Data.Hazards;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
 	/*
 	===================================================================================
 
-	EntityKind
+	IHazardEntity
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// Broad runtime category of an entity.
-	///
-	/// This should be used for coarse filtering, interaction routing, save/load routing,
-	/// and broad gameplay checks. Specific behavior should come from capability interfaces.
+	/// Optional capability for hazards such as fire, poison gas, traps, radiation,
+	/// cursed zones, weather volumes, or environmental damage sources.
 	/// </summary>
 
-	public enum EntityType : byte
+	public interface IHazardEntity : IEntityBase
 	{
-		None = 0,
+		HazardInstanceId HazardId { get; }
 
-		Player,
-		Enemy,
-		Npc,
+		HazardType HazardType { get; }
 
-		Item,
-		Consumable,
-		Weapon,
-		Ammo,
-		Armor,
+		bool IsHazardActive { get; }
 
-		Container,
-		Door,
-		Checkpoint,
-		Interactable,
-		LoreObject,
+		uint HazardRevision { get; }
 
-		Projectile,
-		ThrownObject,
-		Trap,
-		Hazard,
-
-		WorldObject,
-		Destructible,
-		Trigger,
-		Volume,
-
-		Corpse,
-		Effect
+		bool CanApplyHazard( EntityId targetId );
+		bool ApplyHazard( EntityId targetId, uint tick );
+		void EnableHazard();
+		void DisableHazard();
 	};
 };

@@ -13,53 +13,38 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Entities
+using Nomad.Game.Domain.Data.Entities;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
 	/*
 	===================================================================================
 
-	EntityKind
+	IOwnedEntity
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// Broad runtime category of an entity.
+	/// Optional capability for entities owned by another entity.
 	///
-	/// This should be used for coarse filtering, interaction routing, save/load routing,
-	/// and broad gameplay checks. Specific behavior should come from capability interfaces.
+	/// Examples:
+	/// - item owned by player
+	/// - weapon owned by NPC
+	/// - projectile owned by shooter
+	/// - container contents owned by container
 	/// </summary>
 
-	public enum EntityType : byte
+	public interface IOwnedEntity : IEntityBase
 	{
-		None = 0,
+		EntityId OwnerEntityId { get; }
 
-		Player,
-		Enemy,
-		Npc,
+		EntityOwnershipKind OwnershipKind { get; }
 
-		Item,
-		Consumable,
-		Weapon,
-		Ammo,
-		Armor,
+		uint OwnershipRevision { get; }
 
-		Container,
-		Door,
-		Checkpoint,
-		Interactable,
-		LoreObject,
+		bool HasOwner { get; }
 
-		Projectile,
-		ThrownObject,
-		Trap,
-		Hazard,
-
-		WorldObject,
-		Destructible,
-		Trigger,
-		Volume,
-
-		Corpse,
-		Effect
+		void SetOwner( EntityId ownerEntityId, EntityOwnershipKind ownershipKind );
+		void ClearOwner();
 	};
 };

@@ -13,23 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items
+namespace Nomad.Game.Domain.Data.Interactables
 {
-	public enum ItemStatus : byte
+	public sealed record CheckpointDefinition
 	{
-		/// <summary>
-		/// On the ground.
-		/// </summary>
-		Dormant,
-
-		/// <summary>
-		/// In an entity's possession.
-		/// </summary>
-		Owned,
-
-		/// <summary>
-		/// Inside a storage unit.
-		/// </summary>
-		Stored
+		public CheckpointDefinitionId Id { get; init; }
+		public bool IsTemporary { get; init; }
 	};
 };

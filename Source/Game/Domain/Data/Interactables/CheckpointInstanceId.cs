@@ -14,13 +14,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Util;
 
 namespace Nomad.Game.Domain.Data.Interactables
 {
-	public sealed record MelioraDefinition
+	/// <summary>
+	/// 
+	/// </summary>
+	public readonly struct CheckpointInstanceId : IEquatable<CheckpointInstanceId>
 	{
-		public Guid Id { get; init; }
-		public InternString NameId { get; init; }
+		public static readonly CheckpointInstanceId Invalid = new CheckpointInstanceId( Guid.Empty );
+		public bool IsValid => Value != Guid.Empty;
+
+		public readonly Guid Value;
+
+		public CheckpointInstanceId( Guid value )
+		{
+			Value = value;
+		}
+
+		public bool Equals( CheckpointInstanceId other )
+		{
+			return Value == other.Value;
+		}
 	};
 };

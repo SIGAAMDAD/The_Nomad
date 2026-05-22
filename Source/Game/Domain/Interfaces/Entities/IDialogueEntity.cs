@@ -13,9 +13,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Interfaces.Interactables
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Entities;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
-	public interface IItemPickup : IInteractable
+	/*
+	===================================================================================
+
+	IDialogueEntity
+
+	===================================================================================
+	*/
+	/// <summary>
+	/// Optional capability for entities that can initiate dialogue.
+	/// </summary>
+
+	public interface IDialogueEntity : IInteractableEntity
 	{
+		InternString DialogueId { get; }
+
+		uint DialogueRevision { get; }
+
+		bool CanTalk( EntityId speakerId );
+		bool BeginDialogue( EntityId speakerId );
 	};
 };

@@ -13,53 +13,33 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Entities
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Entities;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
 	/*
 	===================================================================================
 
-	EntityKind
+	ILoreEntity
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// Broad runtime category of an entity.
+	/// Optional capability for lore/readable/discoverable entities.
 	///
-	/// This should be used for coarse filtering, interaction routing, save/load routing,
-	/// and broad gameplay checks. Specific behavior should come from capability interfaces.
+	/// Valden's Book interactables should likely implement this.
 	/// </summary>
 
-	public enum EntityType : byte
+	public interface ILoreEntity : IInteractableEntity
 	{
-		None = 0,
+		InternString JournalEntryId { get; }
 
-		Player,
-		Enemy,
-		Npc,
+		bool IsDiscovered { get; }
 
-		Item,
-		Consumable,
-		Weapon,
-		Ammo,
-		Armor,
+		uint LoreRevision { get; }
 
-		Container,
-		Door,
-		Checkpoint,
-		Interactable,
-		LoreObject,
-
-		Projectile,
-		ThrownObject,
-		Trap,
-		Hazard,
-
-		WorldObject,
-		Destructible,
-		Trigger,
-		Volume,
-
-		Corpse,
-		Effect
+		bool CanUnlockLore( EntityId actorId );
+		bool UnlockLore( EntityId actorId );
 	};
 };

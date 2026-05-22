@@ -14,53 +14,33 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Domain.Data.Items
+namespace Nomad.Game.Domain.Interfaces.Inventory
 {
 	/// <summary>
 	///
 	/// </summary>
-	public abstract record ItemDefinition : IDisposable
+	public interface IItemInstanceRepository : IDisposable
 	{
 		/// <summary>
 		///
 		/// </summary>
-		public abstract ItemType BaseType { get; }
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		IItemInstance<TItemDefinition>? Get<TItemDefinition>( ItemInstanceId itemId )
+			where TItemDefinition : ItemDefinition;
 
 		/// <summary>
 		///
 		/// </summary>
-		public ItemDefinitionId Id { get; init; }
-
-		/// <summary>
-		///
-		/// </summary>
-		public InternString Name { get; init; }
-
-		/// <summary>
-		///
-		/// </summary>
-		public InternString JournalEntry { get; init; }
-
-		/// <summary>
-		///
-		/// </summary>
-		public float Weight { get; init; }
-
-		/// <summary>
-		/// Causes item instances to store more than one at a time when stacked.
-		/// </summary>
-		public bool IsStackable { get; init; }
-
-		/// <summary>
-		///
-		/// </summary>
-		public float BaseCost { get; init; }
-
-		public void Dispose()
-		{
-			GC.SuppressFinalize( this );
-		}
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		bool TryGet<TItemDefinition>( ItemInstanceId itemId, out IItemInstance<TItemDefinition>? instance )
+			where TItemDefinition : ItemDefinition;
 	};
 };

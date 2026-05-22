@@ -14,37 +14,99 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Core.Events;
+using System.Collections.Generic;
 using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Events.Entity;
+using Nomad.Game.Domain.Data.Interactables;
 
-namespace Nomad.Game.Domain.Interfaces.Entity
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
+	/*
+	===================================================================================
+
+	IEntityBase
+
+	===================================================================================
+	*/
 	/// <summary>
+	/// Base contract for any live runtime entity in the game.
 	///
+	/// This is intentionally minimal. It is the common denominator for players,
+	/// AI, NPCs, items, consumables, world objects, projectiles, doors, containers,
+	/// checkpoints, and generic interactables.
+	///
+	/// IEntityBase should not define health, movement, inventory, AI, animation,
+	/// networking implementation, or item-specific behavior. Those belong to
+	/// capability interfaces layered on top.
 	/// </summary>
-	public interface IEntityBase : IDisposable, IEquatable<IEntityBase>
+
+	public interface IEntityBase : IDisposable
 	{
 		/// <summary>
-		///
+		/// Unique runtime id for this exact live entity.
 		/// </summary>
 		EntityId Id { get; }
 
+		/// <summary>
+		/// Immutable definition/archetype id, if this entity has one.
+		///
+		/// Examples:
+		/// ITEM_WEAPON_HARDBALLER
+		/// CHECKPOINT_MELIORA_DURINTAVERN
+		/// </summary>
+		InternString DefinitionId { get; }
+
+		/// <summary>
+		/// Display name or localization key.
+		/// </summary>
+		InternString DisplayName { get; }
+
+		/// <summary>
+		/// Broad entity category.
+		/// </summary>
 		EntityType Type { get; }
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "AttackerId", typeof( EntityId ), Order = 1 )]
-		IGameEvent<EntityDieEventArgs> EntityDie { get; }
+		/// <summary>
+		/// Current generic lifecycle state.
+		/// </summary>
+		EntityLifecycleState LifecycleState { get; }
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "AttackerId", typeof( EntityId ), Order = 1 )]
-		[EventPayload( "Source", typeof( DamageSource ), Order = 2 )]
-		[EventPayload( "Amount", typeof( float ), Order = 3 )]
-		IGameEvent<EntityTakeDamageEventArgs> EntityTakeDamage { get; }
+		/// <summary>
+		/// Generic entity flags.
+		/// </summary>
+		EntityFlags Flags { get; }
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Entity" )]
-		[EventPayload( "EffectId", typeof( InternString ) )]
-		IGameEvent<EntityApplyStatusEffectEventArgs> EntityApplyStatusEffect { get; }
+		/// <summary>
+		/// Optional tags for queries, filtering, interaction routing, and debug tooling.
+		/// </summary>
+		IReadOnlyCollection<InternString> Tags { get; }
+
+		/// <summary>
+		/// Monotonic revision for generic entity state changes.
+		///
+		/// Incremented when lifecycle, flags, display name, or tags change.
+		/// More specialized systems may have their own revisions.
+		/// </summary>
+		uint Revision { get; }
+
+		bool IsValid { get; }
+		bool IsSpawned { get; }
+		bool IsActive { get; }
+		bool IsHidden { get; }
+		bool IsDestroyed { get; }
+		bool IsDisposed { get; }
+
+		void Spawn();
+		void Activate();
+		void Deactivate();
+		void Hide();
+		void Show();
+		void Despawn();
+		void Destroy();
+
+		bool HasFlags( EntityFlags flags );
+		void AddFlags( EntityFlags flags );
+		void RemoveFlags( EntityFlags flags );
+		void SetFlags( EntityFlags flags );
 	};
 };
