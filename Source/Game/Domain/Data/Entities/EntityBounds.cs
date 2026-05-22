@@ -13,23 +13,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items
+using System.Numerics;
+
+namespace Nomad.Game.Domain.Data.Entities
 {
-	public enum ItemStatus : byte
+	public readonly struct EntityBounds
 	{
-		/// <summary>
-		/// On the ground.
-		/// </summary>
-		Dormant,
+		public readonly Vector2 Center;
+		public readonly Vector2 Extents;
 
-		/// <summary>
-		/// In an entity's possession.
-		/// </summary>
-		Owned,
-
-		/// <summary>
-		/// Inside a storage unit.
-		/// </summary>
-		Stored
+		public EntityBounds( Vector2 center, Vector2 extents )
+		{
+			Center = center;
+			Extents = extents;
+		}
 	};
 };

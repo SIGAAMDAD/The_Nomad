@@ -22,6 +22,7 @@ namespace Nomad.Game.Domain.Data.Entities
 	{
 		public static readonly EntityId Invalid = new EntityId( Guid.Empty );
 
+		public bool IsValid => Id != Guid.Empty;
 		public readonly Guid Id;
 
 		public EntityId( Guid id )

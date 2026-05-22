@@ -13,11 +13,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Items;
+using System;
+using Nomad.Core.Util;
 
-namespace Nomad.Game.Domain.Interfaces.Items
+namespace Nomad.Game.Domain.Data.Interactables
 {
-	public interface IFirearm : IItemBase<FirearmDefinition>
+	/// <summary>
+	/// 
+	/// </summary>
+	public readonly struct CheckpointDefinitionId : IEquatable<CheckpointDefinitionId>
 	{
+		public static readonly CheckpointDefinitionId Invalid = new CheckpointDefinitionId( InternString.Empty );
+		public bool IsValid => Value != InternString.Empty;
+
+		public readonly InternString Value;
+
+		public CheckpointDefinitionId( InternString value )
+		{
+			Value = value;
+		}
+
+		public bool Equals( CheckpointDefinitionId other )
+		{
+			return Value == other.Value;
+		}
 	};
 };

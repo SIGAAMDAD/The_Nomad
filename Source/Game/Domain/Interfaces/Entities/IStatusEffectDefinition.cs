@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Data.Entities;
 
-namespace Nomad.Game.Domain.Interfaces.Player
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
 	public interface IStatusEffectDefinition
 	{

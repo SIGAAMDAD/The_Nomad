@@ -13,53 +13,35 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Entities
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Data.Interactables;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
 	/*
 	===================================================================================
 
-	EntityKind
+	ICheckpointEntity
 
 	===================================================================================
 	*/
 	/// <summary>
-	/// Broad runtime category of an entity.
-	///
-	/// This should be used for coarse filtering, interaction routing, save/load routing,
-	/// and broad gameplay checks. Specific behavior should come from capability interfaces.
+	/// Optional capability for checkpoint/rest entities.
 	/// </summary>
 
-	public enum EntityType : byte
+	public interface ICheckpointEntity : IInteractableEntity
 	{
-		None = 0,
+		CheckpointInstanceId CheckpointId { get; }
 
-		Player,
-		Enemy,
-		Npc,
+		CheckpointStatus Status { get; }
 
-		Item,
-		Consumable,
-		Weapon,
-		Ammo,
-		Armor,
+		bool CanRest { get; }
 
-		Container,
-		Door,
-		Checkpoint,
-		Interactable,
-		LoreObject,
+		bool IsTemporary { get; }
 
-		Projectile,
-		ThrownObject,
-		Trap,
-		Hazard,
+		uint CheckpointRevision { get; }
 
-		WorldObject,
-		Destructible,
-		Trigger,
-		Volume,
-
-		Corpse,
-		Effect
+		bool ActivateCheckpoint( EntityId actorId );
+		bool Rest( EntityId actorId );
 	};
 };

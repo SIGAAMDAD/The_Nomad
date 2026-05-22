@@ -13,23 +13,31 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items
+namespace Nomad.Game.Domain.Data.Interactables
 {
-	public enum ItemStatus : byte
+	public enum EntityInteractionResultKind : byte
 	{
-		/// <summary>
-		/// On the ground.
-		/// </summary>
-		Dormant,
+		None = 0,
 
-		/// <summary>
-		/// In an entity's possession.
-		/// </summary>
-		Owned,
+		Success,
+		Failed,
 
-		/// <summary>
-		/// Inside a storage unit.
-		/// </summary>
-		Stored
+		InvalidActor,
+		InvalidTarget,
+		InvalidTool,
+
+		OutOfRange,
+		NoLineOfSight,
+
+		Locked,
+		Disabled,
+		AlreadyUsed,
+		WrongKind,
+		MissingRequirement,
+
+		InventoryFull,
+		NoUsesRemaining,
+
+		PreviewOnly
 	};
 };

@@ -59,6 +59,17 @@ namespace Nomad.Game.Application.Gameplay.Combat
 			_instance = instance ?? throw new ArgumentNullException( nameof( instance ) );
 		}
 
+		/*
+		===============
+		TrySetAmmo
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="ammoDefinition"></param>
+		/// <returns></returns>
+		/// <exception cref="IndexOutOfRangeException"></exception>
 		public bool TrySetAmmo( AmmoDefinition ammoDefinition )
 		{
 			ArgumentGuard.ThrowIfNull( ammoDefinition, nameof( ammoDefinition ) );
@@ -106,7 +117,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 		public bool TryReload( IStorageUnit inventory )
 		{
-			int reloadAmount = ( _instance.Stats.MagazineSize + 1 ) - _ammoCount;
+			int reloadAmount = _instance.Stats.MagazineSize + 1 - _ammoCount;
 
 			if ( !inventory.TryRemove( _ammoDefinition.Id, reloadAmount ) ) {
 				return false;

@@ -16,14 +16,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Items;
+using Nomad.Game.Domain.Interfaces.Entities;
+using Nomad.Game.Domain.Interfaces.Player.Inventory;
 
 namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IItemBase<TDefinition>
-		where TDefinition : class
+	/// <summary>
+	///
+	/// </summary>
+	/// <typeparam name="TDefinition"></typeparam>
+	public interface IItemInstance<TDefinition> : IEntityBase
+		where TDefinition : ItemDefinition
 	{
+		ItemInstanceId InstanceId { get; }
+		ItemDefinition Definition { get; }
+
+		IStorageUnit? StorageUnit { get; }
+
 		ItemStatus State { get; }
-		TDefinition Definition { get; }
+
+		ItemType BaseType { get; }
+
+		int StackCount { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Items", PayloadName = "ItemStatusChangedEventArgs" )]
 		[EventPayload( "OldStatus", typeof( ItemStatus ), Order = 1 )]

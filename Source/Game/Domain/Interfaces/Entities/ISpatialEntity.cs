@@ -13,23 +13,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items
+using System.Numerics;
+using Nomad.Game.Domain.Data.Entities;
+
+namespace Nomad.Game.Domain.Interfaces.Entities
 {
-	public enum ItemStatus : byte
+	public interface ISpatialEntity : IEntityBase
 	{
-		/// <summary>
-		/// On the ground.
-		/// </summary>
-		Dormant,
+		Vector2 Position { get; }
+		float RotationRadians { get; }
+		Vector2 Scale { get; }
+		Vector2 Forward { get; }
 
-		/// <summary>
-		/// In an entity's possession.
-		/// </summary>
-		Owned,
+		uint SpatialRevision { get; }
 
-		/// <summary>
-		/// Inside a storage unit.
-		/// </summary>
-		Stored
+		void SetPosition( Vector2 position );
+		void SetRotation( float radians );
+		void SetScale( Vector2 scale );
+
+		void SetTransform( Vector2 position, float rotationRadians, Vector2 scale );
+
+		bool ContainsPoint( Vector2 point );
+		bool IntersectsBounds( in EntityBounds bounds );
 	};
 };

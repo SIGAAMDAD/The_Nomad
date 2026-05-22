@@ -15,13 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Items;
 
 namespace Nomad.Game.Application.Gameplay.Combat
 {
-	internal abstract class WeaponInstance<TWeaponDefinition> : EntityBase
+	internal abstract class WeaponInstance<TWeaponDefinition> : ItemInstance
 		where TWeaponDefinition : WeaponDefinition
 	{
 		public TWeaponDefinition Definition => definition;
@@ -30,7 +29,6 @@ namespace Nomad.Game.Application.Gameplay.Combat
 		protected float dirtiness = 0.0f;
 
 		public WeaponInstance( EntityId id, IGameEventRegistryService eventFactory, TWeaponDefinition definition )
-			: base( id, eventFactory )
 		{
 			this.definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
 		}

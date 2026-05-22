@@ -21,6 +21,7 @@ using Nomad.Core.Logger;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Infrastructure.Gameplay.Items;
 
@@ -30,6 +31,9 @@ namespace Nomad.Game.Infrastructure.Gameplay
 	{
 		public IItemCatalog Items => _itemCatalog;
 		private readonly ItemCatalog _itemCatalog;
+
+		public IItemInstanceRepository ItemInstances => _itemInstances;
+		private readonly ItemInstanceRepository _itemInstances;
 
 		private readonly IDisposable _worldBootstrapSucceeded;
 
@@ -54,6 +58,8 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			_itemCatalog.AddLoader( ItemType.Ammunition, AmmoDefinition.Load );
 			_itemCatalog.AddLoader( ItemType.FirearmWeapon, FirearmDefinition.Load );
 
+			_itemInstances = new ItemInstanceRepository( logger, eventFactory, _itemCatalog );
+
 			_worldBootstrapSucceeded = eventFactory
 				.GetEvent<WorldBootstrapRequestEventArgs>(
 					WorldBootstrapRequestEventArgs.Name,
@@ -69,6 +75,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			}
 
 			_itemCatalog.Clear();
+			_itemInstances.Clear();
 
 			_worldBootstrapSucceeded.Dispose();
 

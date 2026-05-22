@@ -13,23 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Domain.Data.Items
+namespace Nomad.Game.Domain.Data.Hazards
 {
-	public enum ItemStatus : byte
+	public sealed record HazardDefinition
 	{
-		/// <summary>
-		/// On the ground.
-		/// </summary>
-		Dormant,
-
-		/// <summary>
-		/// In an entity's possession.
-		/// </summary>
-		Owned,
-
-		/// <summary>
-		/// Inside a storage unit.
-		/// </summary>
-		Stored
+		public HazardDefinitionId Id { get; init; }
 	};
 };

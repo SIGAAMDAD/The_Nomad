@@ -17,23 +17,27 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Combat;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Combat;
-using Nomad.Game.Domain.Interfaces.Entity;
-using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Domain.Interfaces.Player.Inventory;
 
-namespace Nomad.Game.Domain.Interfaces.Combat
+namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IFirearmInstance : IEntityBase
+	/// <summary>
+	///
+	/// </summary>
+	public interface IFirearmInstance : IWeaponInstance
 	{
 		FirearmMagazine AmmoSnapshot { get; }
 
 		FirearmResolvedStats Stats { get; }
-		FirearmDefinition Definition { get; }
+		FirearmDefinition FirearmDefinition { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Combat" )]
+		[EventPayload( "FirearmId", typeof( ItemInstanceId ), Order = 1 )]
 		IGameEvent<FirearmJammedEventArgs> FirearmJammed { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Combat" )]
+		[EventPayload( "FirearmId", typeof( ItemInstanceId ), Order = 1 )]
+		[EventPayload( "AmmoCount", typeof( int ), Order = 2 )]
 		IGameEvent<FirearmReloadedEventArgs> FirearmReloaded { get; }
 
 		bool TryReload( IStorageUnit inventory );
