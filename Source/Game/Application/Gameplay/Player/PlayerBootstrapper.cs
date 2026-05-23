@@ -127,7 +127,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 				dependencyGraph,
 				flagService,
 				saveCoordinator,
-				weaponCoordinator
+				weaponCoordinator,
+				inventoryCoordinator
 			);
 		}
 

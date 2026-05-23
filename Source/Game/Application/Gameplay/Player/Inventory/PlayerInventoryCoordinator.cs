@@ -23,22 +23,26 @@ using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Domain.Interfaces.Player.Inventory;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
+using Nomad.Game.Application.Gameplay.Inventory;
 
 namespace Nomad.Game.Application.Gameplay.Player.Inventory
 {
-	internal sealed class PlayerInventoryCoordinator : IInventoryCoordinator
+	internal sealed class PlayerInventoryCoordinator : InventoryCoordinator, IPlayerInventoryCoordinator
 	{
 		public IBackpackService Backpack => _backpack;
-		private readonly PlayerBackpack _backpack;
+		private readonly BackpackService _backpack;
 
-		private readonly StorageUnitService _storageUnitService;
+		public IWeaponSlotService WeaponSlots => null;
+
+		private readonly StorageUnitRepository _storageUnitRepository;
 		private readonly PlayerWeaponSlotService _slotService;
 
 		public PlayerInventoryCoordinator( IPlayerBaseStatsRepository baseStatsRepository, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory, IItemCatalog itemCatalog )
 		{
-			_storageUnitService = new StorageUnitService( itemCatalog, eventFactory );
+			_storageUnitRepository = new StorageUnitRepository( itemCatalog, eventFactory );
 
-			if ( _storageUnitService.TryAddInventory(
+			if ( _storageUnitRepository.TryAddInventory(
 				new StorageUnitDefinition {
 					Id = new InternString( "INVENTORY_PLAYER_BACKPACK" ),
 					DisplayName = new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" ),
@@ -51,7 +55,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 				},
 				out var backpackStorage
 			) ) {
-				_backpack = new PlayerBackpack( BackpackStatus.Equipped, stateReader, backpackStorage, eventFactory );
+				_backpack = new BackpackService( BackpackStatus.Equipped, stateReader, backpackStorage, eventFactory );
 			}
 		}
 

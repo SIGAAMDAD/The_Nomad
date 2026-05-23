@@ -18,8 +18,8 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Combat;
 using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Interfaces.Combat;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
 
 namespace Nomad.Game.Application.Gameplay.Combat
 {
@@ -76,31 +76,31 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 			switch ( ammoDefinition.Modifier ) {
 				case AmmoModifier.ArmorPiercing:
-					if ( !_instance.Definition.Flags.HasFlag( FirearmFlags.ArmorPiercingCapable ) ) {
+					if ( !_instance.FirearmDefinition.Flags.HasFlag( FirearmFlags.ArmorPiercingCapable ) ) {
 						return false;
 					}
 					break;
 
 				case AmmoModifier.Explosive:
-					if ( !_instance.Definition.Flags.HasFlag( FirearmFlags.ExplosiveAmmoCapable ) ) {
+					if ( !_instance.FirearmDefinition.Flags.HasFlag( FirearmFlags.ExplosiveAmmoCapable ) ) {
 						return false;
 					}
 					break;
 
 				case AmmoModifier.HollowPoint:
-					if ( !_instance.Definition.Flags.HasFlag( FirearmFlags.HollowPointCapable ) ) {
+					if ( !_instance.FirearmDefinition.Flags.HasFlag( FirearmFlags.HollowPointCapable ) ) {
 						return false;
 					}
 					break;
 
 				case AmmoModifier.Incendiary:
-					if ( !_instance.Definition.Flags.HasFlag( FirearmFlags.IncendiaryCapable ) ) {
+					if ( !_instance.FirearmDefinition.Flags.HasFlag( FirearmFlags.IncendiaryCapable ) ) {
 						return false;
 					}
 					break;
 
 				case AmmoModifier.Subsonic:
-					if ( !_instance.Definition.Flags.HasFlag( FirearmFlags.SubsonicCapable ) ) {
+					if ( !_instance.FirearmDefinition.Flags.HasFlag( FirearmFlags.SubsonicCapable ) ) {
 						return false;
 					}
 					break;

@@ -18,17 +18,17 @@ using Nomad.Core.Util;
 using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Player.Inventory
+namespace Nomad.Game.Domain.Interfaces.Inventory
 {
 	/// <summary>
 	///
 	/// </summary>
 	public interface IStorageUnit : IDisposable
 	{
-		InternString Id { get; }
+		InternString StorageId { get; }
 		InternString DisplayName { get; }
 
-		InventoryContainerType Type { get; }
+		InventoryContainerType ContainerType { get; }
 		InventoryRules Rules { get; }
 		float CurrentWeight { get; }
 

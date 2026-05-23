@@ -17,7 +17,7 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Items;
 using Nomad.Game.Domain.Interfaces.Entities;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Inventory;
 
 namespace Nomad.Game.Domain.Interfaces.Items
 {

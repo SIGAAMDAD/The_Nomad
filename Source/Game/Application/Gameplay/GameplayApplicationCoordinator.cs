@@ -15,22 +15,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Inventory;
+using Nomad.Game.Application.Gameplay.Inventory;
+using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Domain.Events.Gameplay;
 
-namespace Nomad.Game.Application.Gameplay.Player.Combat
+namespace Nomad.Game.Application.Gameplay
 {
-	internal sealed class PlayerWeaponCoordinator : IDisposable
+	internal sealed class GameplayApplicationCoordinator : IDisposable
 	{
-		private readonly PlayerWeaponController _controller;
+		private InteractableApplicationCoordinator _interactableCoordinator;
+
+		private readonly IDisposable _gameStateChanged;
 
 		private bool _isDisposed = false;
 
-		public PlayerWeaponCoordinator( PlayerId playerId, IInventoryCoordinator inventoryCoordinator, IGameEventRegistryService eventFactory )
+		public GameplayApplicationCoordinator( IGameEventRegistryService eventFactory )
 		{
-			playerId.ThrowIfInvalid( nameof( PlayerWeaponCoordinator ) );
-
-			_controller = new PlayerWeaponController( eventFactory );
+			_gameStateChanged = eventFactory
+				.GetEvent<GameStateChangedEventArgs>(
+					GameStateChangedEventArgs.Name,
+					GameStateChangedEventArgs.NameSpace
+				)
+				.Subscribe( OnGameStateChanged );
 		}
 
 		public void Dispose()
@@ -39,10 +45,17 @@ namespace Nomad.Game.Application.Gameplay.Player.Combat
 				return;
 			}
 
-			_controller.Dispose();
+			_gameStateChanged.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
+		}
+
+		private void OnGameStateChanged( in GameStateChangedEventArgs args )
+		{
+			if ( args.CurrentState == GameState.Level ) {
+
+			}
 		}
 	};
 };

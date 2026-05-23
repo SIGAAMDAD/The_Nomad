@@ -13,14 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
 
-namespace Nomad.Game.Domain.Data.Interactables
+namespace Nomad.Game.Domain.Interfaces.Player.Inventory
 {
-	public sealed record CheckpointDefinition
+	public interface IPlayerInventoryCoordinator : IInventoryCoordinator
 	{
-		public CheckpointDefinitionId Id { get; init; }
-		public InternString DisplayName { get; init; }
-		public bool IsTemporary { get; init; }
+		IBackpackService Backpack { get; }
+		IWeaponSlotService WeaponSlots { get; }
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="firearm"></param>
+		/// <returns></returns>
+		bool TryGetFirearm( ItemInstanceId itemId, out FirearmDefinition firearm );
 	};
 };

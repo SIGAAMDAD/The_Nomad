@@ -94,7 +94,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 			_keyboardEvent = GameEventRegistry
 				.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace )
-				.Where( e => _isRebinding )
+				.Where( ( in e ) => _isRebinding )
 				.Subscribe( OnSetBindKey );
 		}
 

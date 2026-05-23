@@ -18,8 +18,8 @@ using Nomad.Core.Events;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Events.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Interfaces.Items;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
 using Nomad.Save.Interfaces;
 using Nomad.Save.Services;
 
@@ -51,6 +51,9 @@ namespace Nomad.Game.Domain.Data.Items
 
 		public IStorageUnit? StorageUnit => _storageUnit;
 		private IStorageUnit? _storageUnit = null;
+
+		public int StackCount => _stackCount;
+		private int _stackCount = 0;
 
 		public IGameEvent<ItemStatusChangedEventArgs> StatusChanged => _statusChanged;
 		private readonly IGameEvent<ItemStatusChangedEventArgs> _statusChanged = null;

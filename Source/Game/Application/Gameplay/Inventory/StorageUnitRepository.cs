@@ -17,17 +17,16 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Application.Gameplay.Inventory;
 using Nomad.Game.Domain.Data.Inventory;
 using Nomad.Game.Domain.Interfaces.Items;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Inventory;
 
-namespace Nomad.Game.Application.Gameplay.Player.Inventory
+namespace Nomad.Game.Application.Gameplay.Inventory
 {
 	/*
 	===================================================================================
 
-	StorageUnitService
+	StorageUnitRepository
 
 	===================================================================================
 	*/
@@ -35,7 +34,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 	///
 	/// </summary>
 
-	internal sealed class StorageUnitService
+	internal sealed class StorageUnitRepository
 	{
 		private readonly Dictionary<InternString, IStorageUnit> _inventories = new();
 		private readonly IItemCatalog _itemCatalog;
@@ -43,7 +42,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 		/*
 		===============
-		StorageUnitService
+		StorageUnitRepository
 		===============
 		*/
 		/// <summary>
@@ -51,7 +50,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// </summary>
 		/// <param name="itemCatalog"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public StorageUnitService( IItemCatalog itemCatalog, IGameEventRegistryService eventFactory )
+		public StorageUnitRepository( IItemCatalog itemCatalog, IGameEventRegistryService eventFactory )
 		{
 			_itemCatalog = itemCatalog ?? throw new ArgumentNullException( nameof( itemCatalog ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );

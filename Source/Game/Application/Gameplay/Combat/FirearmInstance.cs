@@ -19,8 +19,8 @@ using Nomad.Game.Domain.Data.Combat;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Combat;
-using Nomad.Game.Domain.Interfaces.Combat;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Domain.Interfaces.Inventory;
 
 namespace Nomad.Game.Application.Gameplay.Combat
 {
@@ -37,6 +37,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 	internal class FirearmInstance : WeaponInstance<FirearmDefinition>, IFirearmInstance
 	{
+		public FirearmDefinition FirearmDefinition => definition;
 		public FirearmMagazine AmmoSnapshot => _magazineService.Snapshot;
 		public FirearmResolvedStats Stats => _resolvedStats;
 
@@ -52,7 +53,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 		private readonly IGameEvent<FirearmReloadedEventArgs> _reloaded = null;
 
 		public FirearmInstance( ItemInstanceId id, IGameEventRegistryService eventFactory, FirearmDefinition definition )
-			: base( new EntityId( id.Value ), eventFactory, definition )
+			: base( new EntityId( id.Value ), id, eventFactory, definition )
 		{
 			_modService = new FirearmModService( definition );
 			_resolvedStats = _modService.Resolve( Array.Empty<FirearmModDefinition>() );
