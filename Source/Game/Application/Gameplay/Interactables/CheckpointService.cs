@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Interactables;
+using Nomad.Game.Domain.Interfaces.Interactables;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -30,7 +31,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 	///
 	/// </summary>
 
-	internal sealed class CheckpointService
+	internal sealed class CheckpointService : ICheckpointService
 	{
 		/// <summary>
 		/// Represents all the meliora in the game.
@@ -43,6 +44,10 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		private readonly CheckpointInstance _temporary;
 
 		public CheckpointService( IGameEventRegistryService eventFactory )
+		{
+		}
+
+		public void Dispose()
 		{
 		}
 	};

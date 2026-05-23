@@ -23,15 +23,17 @@ using Nomad.Game.Domain.Data.Player.Inventory;
 using Nomad.Game.Domain.Data.Player.State;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player.State;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Prefabs;
+using Nomad.Game.Domain.Data.Entities;
 
-namespace Nomad.Game.Application.Gameplay.Player.Inventory
+namespace Nomad.Game.Application.Gameplay.Inventory
 {
 	/*
 	===================================================================================
 
-	PlayerBackpack
+	BackpackService
 
 	===================================================================================
 	*/
@@ -39,32 +41,44 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 	///
 	/// </summary>
 
-	internal sealed class PlayerBackpack : IBackpackService
+	internal sealed class BackpackService : ItemInstance, IBackpackService
 	{
-		public InternString Id => _inventory.Id;
-		public InternString DisplayName => _inventory.DisplayName;
-		public InventoryContainerType Type => _inventory.Type;
+		public InternString StorageId => _inventory.StorageId;
+		public InventoryContainerType ContainerType => _inventory.ContainerType;
 		public InventoryRules Rules => _inventory.Rules;
 		public float CurrentWeight => _inventory.CurrentWeight;
+
+		public BackpackLocationKind LocationKind => _locationKind;
+		private BackpackLocationKind _locationKind;
+
+		public EntityId LocationEntityId => _ownerId;
+		private EntityId _ownerId;
 
 		public Vector2 DroppedOrigin => Vector2.Zero;
 
 		public BackpackStatus Status => _status;
 		private BackpackStatus _status = BackpackStatus.Equipped;
 
+		public IStorageUnit? Storage => _inventory;
 		private readonly IStorageUnit _inventory;
+
 		private readonly IDisposable _stateChanged;
 
 		private PlayerStateId _currentState = PlayerStateId.Idle;
-
 		private bool _isDisposed = false;
 
-		public IGameEvent<PlayerBackpackStatusChangedEventArgs> StatusChanged => _statusChanged;
-		private readonly IGameEvent<PlayerBackpackStatusChangedEventArgs> _statusChanged = null;
+		public IGameEvent<BackpackStatusChangedEventArgs> StateChanged => _statusChanged;
+		private readonly IGameEvent<BackpackStatusChangedEventArgs> _statusChanged = null;
+
+		public IGameEvent<BackpackUnequipRequestedEventArgs> UnequipRequested => _unequipRequested;
+		private readonly IGameEvent<BackpackUnequipRequestedEventArgs> _unequipRequested = null;
+
+		public IGameEvent<BackpackUnequippedEventArgs> Unequipped => _unequipped;
+		private readonly IGameEvent<BackpackUnequippedEventArgs> _unequipped = null;
 
 		/*
 		===============
-		PlayerBackpack
+		BackpackService
 		===============
 		*/
 		/// <summary>
@@ -75,12 +89,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <param name="inventory"></param>
 		/// <param name="eventFactory"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public PlayerBackpack(
+		public BackpackService(
 			BackpackStatus initialStatus,
 			IPlayerStateReader stateReader,
 			IStorageUnit inventory,
 			IGameEventRegistryService eventFactory
 		)
+			: base( ItemInstanceId.Invalid, null, eventFactory )
 		{
 			RangeGuard.ThrowIfOutOfRange( (int)initialStatus, (int)BackpackStatus.Min, (int)BackpackStatus.Max, nameof( initialStatus ) );
 			ArgumentGuard.ThrowIfNull( stateReader, nameof( stateReader ) );
@@ -89,9 +104,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 			_status = initialStatus;
 			_inventory = inventory ?? throw new ArgumentNullException( nameof( inventory ) );
 
-			_statusChanged = eventFactory.GetEvent<PlayerBackpackStatusChangedEventArgs>(
-				PlayerBackpackStatusChangedEventArgs.Name,
-				PlayerBackpackStatusChangedEventArgs.NameSpace
+			_statusChanged = eventFactory.GetEvent<BackpackStatusChangedEventArgs>(
+				BackpackStatusChangedEventArgs.Name,
+				BackpackStatusChangedEventArgs.NameSpace
+			);
+
+			_unequipRequested = eventFactory.GetEvent<BackpackUnequipRequestedEventArgs>(
+				BackpackUnequipRequestedEventArgs.Name,
+				BackpackUnequipRequestedEventArgs.NameSpace
 			);
 
 			_stateChanged = stateReader.StateChanged.Subscribe( OnStateChanged );
@@ -111,6 +131,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 				return;
 			}
 
+			_statusChanged.Dispose();
+			_unequipRequested.Dispose();
 			_stateChanged.Dispose();
 
 			GC.SuppressFinalize( this );
@@ -157,7 +179,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 					break;
 
 				case PlayerStateId.RestingAtCheckpoint:
-					RemoveBackpack();
+					RemoveBackpack( true );
 					break;
 
 				default:
@@ -199,21 +221,39 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 			return _inventory.TryRemove( itemType, amount );
 		}
 
+		public bool TryAddInstance( ItemInstanceId instanceId )
+		{
+			return _inventory.TryAddInstance( instanceId );
+		}
+
+		public bool TryRemoveInstance( ItemInstanceId instanceId )
+		{
+			return _inventory.TryRemoveInstance( instanceId );
+		}
+
+		public bool ContainsInstance( ItemInstanceId instanceId )
+		{
+			return _inventory.ContainsInstance( instanceId );
+		}
+
 		private void SetBackpackStatus( BackpackStatus status )
 		{
 			BackpackStatus previousStatus = _status;
 			_status = status;
 
 			_statusChanged.Publish(
-				new PlayerBackpackStatusChangedEventArgs(
+				new BackpackStatusChangedEventArgs(
 					previousStatus,
 					_status
 				)
 			);
 		}
 
-		private void RemoveBackpack()
+		private void RemoveBackpack( bool atCheckpoint = false )
 		{
+			if ( _status != BackpackStatus.Equipped ) {
+				return;
+			}
 		}
 
 		/*

@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
+using Nomad.Core.Util;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Entity;
-using Nomad.Game.Domain.Events.Entity;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Entities;
 
@@ -64,14 +64,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
 		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( new EntityId( playerId.Id ), eventFactory )
+			: base( new EntityId( playerId.Id ), InternString.Empty, InternString.Empty, EntityType.Player, EntityFlags.None )
 		{
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
 				PlayerDieEventArgs.Name,
 				PlayerDieEventArgs.NameSpace
 			);
-
-			entityDie.Subscribe( OnBaseDie );
 
 			_runtime = PlayerBootstrapper.Bootstrap( playerId, prefab, eventFactory, logger );
 		}
@@ -114,16 +112,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 				_runtime.ResourceService,
 				_runtime.FlagService,
 				in context
-			);
-		}
-
-		private void OnBaseDie( in EntityDieEventArgs args )
-		{
-			_die.Publish(
-				new PlayerDieEventArgs(
-					playerId: PlayerId,
-					killerId: args.AttackerId
-				)
 			);
 		}
 	};

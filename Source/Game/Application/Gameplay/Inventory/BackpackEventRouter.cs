@@ -15,23 +15,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Interfaces.Interactables;
 
-namespace Nomad.Game.Application.Gameplay.Combat
+namespace Nomad.Game.Application.Gameplay.Inventory
 {
-	internal abstract class WeaponInstance<TWeaponDefinition> : ItemInstance
-		where TWeaponDefinition : WeaponDefinition
+	/*
+	===================================================================================
+
+	BackpackEventRouter
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class BackpackEventRouter
 	{
-		public WeaponDefinition WeaponDefinition => definition;
-		protected readonly TWeaponDefinition definition;
+		private readonly IDisposable _unequipRequested;
+		private readonly IDisposable _retrieveRequested;
 
-		protected float dirtiness = 0.0f;
+		private readonly ICheckpointService _checkpointService;
 
-		public WeaponInstance( EntityId id, ItemInstanceId instanceId, IGameEventRegistryService eventFactory, TWeaponDefinition definition )
-			: base( instanceId, definition, eventFactory )
+		public BackpackEventRouter( ICheckpointService checkpointService, IGameEventRegistryService eventFactory )
 		{
-			this.definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
 		}
 	};
 };

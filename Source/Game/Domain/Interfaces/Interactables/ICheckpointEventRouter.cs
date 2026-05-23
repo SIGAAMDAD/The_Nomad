@@ -14,20 +14,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Generic;
-using Nomad.Core.FileSystem;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Events.Interactables;
 
-namespace Nomad.Game.Application.Gameplay.Items
+namespace Nomad.Game.Domain.Interfaces.Interactables
 {
-	internal sealed class ItemRepository
+	public interface ICheckpointEventRouter : IDisposable
 	{
-		private readonly Dictionary<Guid, IItemBase<ItemDefinition>> _items = new();
-		private readonly Dictionary<string, ItemDefinition> _definitionCache = new();
-
-		public ItemRepository( IFileSystem fileSystem )
-		{
-		}
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "CheckpointRestRequestedEventArgs" )]
+		[EventPayload( "RequesterId", typeof( PlayerId ), Order = 1 )]
+		IGameEvent<CheckpointRestRequestedEventArgs> RestRequested { get; }
 	};
 };

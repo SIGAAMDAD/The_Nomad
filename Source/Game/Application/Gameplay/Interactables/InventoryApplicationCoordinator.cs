@@ -15,22 +15,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Inventory;
+using Nomad.Game.Application.Gameplay.Interactables;
+using Nomad.Game.Domain.Interfaces.Interactables;
 
-namespace Nomad.Game.Application.Gameplay.Player.Combat
+namespace Nomad.Game.Application.Gameplay.Inventory
 {
-	internal sealed class PlayerWeaponCoordinator : IDisposable
+	internal sealed class InteractableApplicationCoordinator : IDisposable
 	{
-		private readonly PlayerWeaponController _controller;
+		private readonly ICheckpointEventRouter _checkpointEventRouter;
+		private readonly ICheckpointService _checkpointService;
 
-		private bool _isDisposed = false;
+		private bool _isDisposed;
 
-		public PlayerWeaponCoordinator( PlayerId playerId, IInventoryCoordinator inventoryCoordinator, IGameEventRegistryService eventFactory )
+		public InteractableApplicationCoordinator( IGameEventRegistryService eventFactory )
 		{
-			playerId.ThrowIfInvalid( nameof( PlayerWeaponCoordinator ) );
-
-			_controller = new PlayerWeaponController( eventFactory );
+			_checkpointService = new CheckpointService( eventFactory );
+			_checkpointEventRouter = new CheckpointEventRouter( _checkpointService, eventFactory );
 		}
 
 		public void Dispose()
@@ -38,8 +38,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Combat
 			if ( _isDisposed ) {
 				return;
 			}
-
-			_controller.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;

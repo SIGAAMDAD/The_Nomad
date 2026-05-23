@@ -17,7 +17,7 @@ using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Entity;
+using Nomad.Game.Domain.Interfaces.Entities;
 
 namespace Nomad.Game.Domain.Interfaces.Player
 {

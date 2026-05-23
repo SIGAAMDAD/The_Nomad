@@ -41,9 +41,9 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 	internal sealed class StorageUnit : IStorageUnit
 	{
-		public InternString Id => _definition.Id;
+		public InternString StorageId => _definition.Id;
 		public InternString DisplayName => _definition.DisplayName;
-		public InventoryContainerType Type => _definition.Type;
+		public InventoryContainerType ContainerType => _definition.Type;
 		public InventoryRules Rules => _definition.Rules;
 
 		private readonly StorageUnitDefinition _definition;
@@ -110,6 +110,10 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 					LoadBeginEventArgs.NameSpace
 				)
 				.Subscribe( OnLoadBegin );
+		}
+
+		public void Dispose()
+		{
 		}
 
 		/*
@@ -232,7 +236,7 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		private void OnSaveBegin( in SaveBeginEventArgs args )
 		{
 			lock ( this ) {
-				var writer = args.Writer.AddSection( $"StorageUnit#{(string)Id}:{(string)DisplayName}" );
+				var writer = args.Writer.AddSection( $"StorageUnit#{(string)StorageId}:{(string)DisplayName}" );
 
 				writer.AddField( "StackCount", _stacks.Count );
 

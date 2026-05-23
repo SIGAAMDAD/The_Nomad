@@ -14,17 +14,49 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Player.Inventory
+namespace Nomad.Game.Domain.Interfaces.Inventory
 {
+	/// <summary>
+	///
+	/// </summary>
 	public interface IInventoryCoordinator : IDisposable
 	{
-		IBackpackService Backpack { get; }
+		/// <summary>
+		///
+		/// </summary>
+		IReadOnlyCollection<IStorageUnit> StorageUnits { get; }
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
 		bool TryTakeItems( ItemDefinitionId itemId, int amount );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
 		bool TryGiveItems( ItemDefinitionId itemId, int amount );
 
-		bool TryGetFirearm( ItemInstanceId itemId, out FirearmDefinition firearm );
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="instanceId"></param>
+		/// <returns></returns>
+		bool TryTakeInstance( ItemInstanceId instanceId );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="instanceId"></param>
+		/// <returns></returns>
+		bool TryGiveInstance( ItemInstanceId instanceId );
 	};
 };

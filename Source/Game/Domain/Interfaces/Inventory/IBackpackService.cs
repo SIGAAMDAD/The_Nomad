@@ -16,24 +16,39 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Domain.Data.Inventory;
+using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Data.Player.Inventory;
 using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Domain.Interfaces.Items;
 
-namespace Nomad.Game.Domain.Interfaces.Player.Inventory
+namespace Nomad.Game.Domain.Interfaces.Inventory
 {
 	/// <summary>
 	///
 	/// </summary>
-	public interface IBackpackService : IStorageUnit, IDisposable
+	public interface IBackpackService : IItemInstance<ItemDefinition>, IStorageUnit, IDisposable
 	{
 		Vector2 DroppedOrigin { get; }
 
+		BackpackLocationKind LocationKind { get; }
+		EntityId LocationEntityId { get; }
+
+		IStorageUnit Storage { get; }
+
 		BackpackStatus Status { get; }
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerBackpackStatusChangedEventArgs" )]
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "BackpackStatusChangedEventArgs" )]
 		[EventPayload( "PreviousStatus", typeof( BackpackStatus ), Order = 1 )]
 		[EventPayload( "CurrentStatus", typeof( BackpackStatus ), Order = 2 )]
-		IGameEvent<PlayerBackpackStatusChangedEventArgs> StatusChanged { get; }
+		IGameEvent<BackpackStatusChangedEventArgs> StateChanged { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "BackpackUnequipRequestedEventArgs" )]
+		IGameEvent<BackpackUnequipRequestedEventArgs> UnequipRequested { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "BackpackUnequippedEventArgs" )]
+		IGameEvent<BackpackUnequippedEventArgs> Unequipped { get; }
 
 		/// <summary>
 		///
