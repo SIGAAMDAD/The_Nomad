@@ -14,21 +14,41 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Collections.Generic;
 using Godot;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Prefabs
 {
 	internal abstract partial class InteractableRoot : Node2D
 	{
+		public static event Action<InteractableRoot, PlayerId> InteractionFocusEntered;
+		public static event Action<InteractableRoot, PlayerId> InteractionFocusExited;
+
 		public event Action<PlayerId> PlayerEntered;
 		public event Action<PlayerId> PlayerExited;
+
+		public virtual InternString InteractionPrompt => new InternString( "Interact" );
+		public virtual EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Use;
+
+		public virtual void BuildInteractionOptions( List<InteractionMenuOption> options )
+		{
+			options.Add( new InteractionMenuOption( InteractionPrompt, PrimaryInteractionKind ) );
+		}
+
+		public virtual EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
+		{
+			return EntityInteractionResult.InvalidTarget();
+		}
 
 		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
 				GD.Print( "Player Entered" );
 				PlayerEntered?.Invoke( player.PeerId );
+				InteractionFocusEntered?.Invoke( this, player.PeerId );
 			}
 		}
 
@@ -37,6 +57,7 @@ namespace Nomad.Game.Prefabs
 			if ( body is PlayerPrefab player ) {
 				GD.Print( "Player Exited" );
 				PlayerExited?.Invoke( player.PeerId );
+				InteractionFocusExited?.Invoke( this, player.PeerId );
 			}
 		}
 

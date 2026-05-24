@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -41,6 +42,9 @@ namespace Nomad.Game.Prefabs
 
 		[Export]
 		private int _amount = 1;
+
+		public override InternString InteractionPrompt => new InternString( "Pick Up" );
+		public override EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Pickup;
 
 		private IGameEvent<ItemPickupRequestedEventArgs> _pickupRequested = null;
 		private IDisposable? _pickupCompleted;
@@ -87,6 +91,18 @@ namespace Nomad.Game.Prefabs
 			);
 
 			return EntityInteractionResult.SuccessResult();
+		}
+
+		public override void BuildInteractionOptions( List<InteractionMenuOption> options )
+		{
+			options.Add( new InteractionMenuOption( new InternString( "Pick Up" ), EntityInteractionKind.Pickup ) );
+		}
+
+		public override EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
+		{
+			return kind == EntityInteractionKind.Pickup
+				? RequestPickup( playerId )
+				: EntityInteractionResult.InvalidTarget();
 		}
 
 		public override void _ExitTree()

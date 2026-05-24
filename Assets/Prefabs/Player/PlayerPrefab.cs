@@ -33,7 +33,7 @@ namespace Nomad.Game.Prefabs
 
 	public partial class PlayerPrefab : EngineCharacter2D
 	{
-		public PlayerId PeerId { get; init; }
+		public PlayerId PeerId { get; set; }
 		public PlayerInitializationDefinition Definition { get; init; }
 
 		public PlayerPrefab()

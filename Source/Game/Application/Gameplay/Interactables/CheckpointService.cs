@@ -21,6 +21,7 @@ using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Entities;
 using Nomad.Game.Domain.Interfaces.Interactables;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -55,6 +56,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// </summary>
 		private readonly Dictionary<PlayerId, CheckpointInstance> _temporary = new();
 		private readonly Dictionary<PlayerId, CheckpointInstanceId> _current = new();
+		private readonly IGameEventRegistryService _eventFactory;
 
 		private bool _isDisposed = false;
 
@@ -69,6 +71,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// <param name="eventFactory"></param>
 		public CheckpointService( IGameEventRegistryService eventFactory )
 		{
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 		}
 
 		/*
@@ -139,15 +142,39 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// <returns></returns>
 		public bool TryRegisterPermanent( CheckpointDefinition definition, CheckpointInstanceId checkpoint )
 		{
+			return TryRegisterPermanent( definition, checkpoint, null, out _ );
+		}
+
+		/*
+		===============
+		TryRegisterPermanent
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="definition"></param>
+		/// <param name="checkpoint"></param>
+		/// <param name="prefab"></param>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		internal bool TryRegisterPermanent( CheckpointDefinition definition, CheckpointInstanceId checkpoint, CheckpointPrefab? prefab, out CheckpointInstance? instance )
+		{
+			instance = null;
+
 			if ( definition == null || !checkpoint.IsValid || definition.IsTemporary ) {
 				return false;
 			}
 
-			if ( _permanent.ContainsKey( checkpoint ) ) {
+			if ( _permanent.TryGetValue( checkpoint, out instance ) ) {
 				return true;
 			}
 
-			_permanent[checkpoint] = new CheckpointInstance( definition, checkpoint );
+			instance = prefab == null
+				? new CheckpointInstance( definition, checkpoint )
+				: new CheckpointInstance( definition, checkpoint, prefab, _eventFactory );
+			_permanent[checkpoint] = instance;
+
 			return true;
 		}
 

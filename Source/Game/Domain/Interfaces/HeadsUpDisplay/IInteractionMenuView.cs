@@ -14,13 +14,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Events.Interactables;
 
-namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 {
-	internal sealed class RageBarModel
+	public interface IInteractionMenuView : IHudComponentView
 	{
-		public RageBarModel( IGameEventRegistryService eventFactory )
-		{
-		}
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "InteractionMenuOptionSelectedEventArgs" )]
+		[EventPayload( "Option", typeof( int ), Order = 1 )]
+		IGameEvent<InteractionMenuOptionSelectedEventArgs> OptionSelected { get; }
+
+		void AddOption( InternString prompt, EventCallback<InteractionMenuOptionSelectedEventArgs> callback );
 	};
 };

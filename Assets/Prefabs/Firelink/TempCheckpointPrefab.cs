@@ -13,8 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
-
 namespace Nomad.Game.Prefabs
 {
 	internal sealed partial class TempCheckpointPrefab : CheckpointPrefab

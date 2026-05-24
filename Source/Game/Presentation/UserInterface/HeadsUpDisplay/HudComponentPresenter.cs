@@ -13,17 +13,38 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
-	internal sealed class HudComponentPresenter
+	internal abstract class HudComponentPresenter : IDisposable
 	{
-		private readonly IHudComponentView _view;
+		protected readonly IHudComponentView view;
+
+		private bool _isDisposed = false;
 
 		public HudComponentPresenter( IHudComponentView view )
 		{
-			_view = view;
+			this.view = view;
 		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			Dispose( true );
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		protected virtual void Dispose( bool disposing )
+		{
+		}
+
+		public abstract void Render( float delta );
 	};
 };

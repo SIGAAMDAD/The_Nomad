@@ -19,6 +19,7 @@ using Nomad.Core.Util;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Interactables;
+using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Entities;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Domain.Data.Items;
@@ -55,10 +56,31 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 
 		private readonly CheckpointDefinition _definition;
 		private readonly CheckpointInstanceId _instanceId;
+		private readonly IGameEvent<CheckpointActivationRequestedEventArgs>? _activationRequested;
+		private readonly IGameEvent<CheckpointRestRequestedEventArgs>? _restRequested;
+		private readonly IGameEvent<CheckpointLeaveRequestedEventArgs>? _leaveRequested;
 
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab prefab, IGameEventRegistryService eventFactory )
 			: this( definition, instanceId, prefab, EntityFlags.Interactable | EntityFlags.Persistent )
 		{
+			if ( eventFactory == null ) {
+				throw new ArgumentNullException( nameof( eventFactory ) );
+			}
+
+			_activationRequested = eventFactory.GetEvent<CheckpointActivationRequestedEventArgs>(
+				CheckpointActivationRequestedEventArgs.Name,
+				CheckpointActivationRequestedEventArgs.NameSpace
+			);
+
+			_restRequested = eventFactory.GetEvent<CheckpointRestRequestedEventArgs>(
+				CheckpointRestRequestedEventArgs.Name,
+				CheckpointRestRequestedEventArgs.NameSpace
+			);
+
+			_leaveRequested = eventFactory.GetEvent<CheckpointLeaveRequestedEventArgs>(
+				CheckpointLeaveRequestedEventArgs.Name,
+				CheckpointLeaveRequestedEventArgs.NameSpace
+			);
 		}
 
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId )
@@ -82,6 +104,54 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		private static CheckpointDefinition RequireDefinition( CheckpointDefinition definition )
 		{
 			return definition ?? throw new ArgumentNullException( nameof( definition ) );
+		}
+
+		public bool RequestActivate( PlayerId playerId )
+		{
+			playerId.ThrowIfInvalid( nameof( RequestActivate ) );
+
+			if ( _activationRequested == null ) {
+				return false;
+			}
+
+			_activationRequested.Publish( new CheckpointActivationRequestedEventArgs( playerId, _instanceId ) );
+			return true;
+		}
+
+		public bool RequestRest( PlayerId playerId )
+		{
+			playerId.ThrowIfInvalid( nameof( RequestRest ) );
+
+			if ( _restRequested == null ) {
+				return false;
+			}
+
+			_restRequested.Publish( new CheckpointRestRequestedEventArgs( playerId, _instanceId ) );
+			return true;
+		}
+
+		public bool RequestLeave( PlayerId playerId )
+		{
+			playerId.ThrowIfInvalid( nameof( RequestLeave ) );
+
+			if ( _leaveRequested == null ) {
+				return false;
+			}
+
+			_leaveRequested.Publish( new CheckpointLeaveRequestedEventArgs( playerId ) );
+			return true;
+		}
+
+		public EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
+		{
+			bool requested = kind switch {
+				EntityInteractionKind.Activate => RequestActivate( playerId ),
+				EntityInteractionKind.Rest => RequestRest( playerId ),
+				EntityInteractionKind.Close => RequestLeave( playerId ),
+				_ => false
+			};
+
+			return requested ? EntityInteractionResult.SuccessResult() : EntityInteractionResult.InvalidTarget();
 		}
 
 		private void SetStatus( CheckpointStatus status )

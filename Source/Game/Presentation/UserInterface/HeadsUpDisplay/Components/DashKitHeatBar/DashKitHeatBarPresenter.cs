@@ -13,27 +13,39 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar
 {
 	/*
 	===================================================================================
-	
+
 	DashKitHeatBarPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed class DashKitHeatBarPresenter
+	internal sealed class DashKitHeatBarPresenter : HudComponentPresenter
 	{
-		private readonly IDashKitHeatBarModel _model;
 		private readonly IDashKitHeatBarView _view;
 
+		private float _burnoutAmount = 0.0f;
+		private float _maxBurnout = 0.0f;
+
+		private readonly IDisposable _resourceChanged;
+		private readonly IDisposable _dashModuleChanged;
+
 		private float _lastFrameBurnoutAmount = 0.0f;
+
+		private readonly PlayerId _playerId;
 
 		/*
 		===============
@@ -41,14 +53,32 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="model"></param>
 		/// <param name="view"></param>
-		public DashKitHeatBarPresenter( IDashKitHeatBarModel model, IDashKitHeatBarView view )
+		public DashKitHeatBarPresenter( PlayerId playerId, IDashKitHeatBarView view, IGameEventRegistryService eventFactory )
+			: base( view )
 		{
-			_model = model;
+			_playerId = playerId;
 			_view = view;
+
+			_resourceChanged = eventFactory
+				.GetEvent<PlayerResourceChangedEventArgs>(
+					PlayerResourceChangedEventArgs.Name,
+					PlayerResourceChangedEventArgs.NameSpace
+				)
+				.Subscribe( OnResourceChanged );
+		}
+
+		protected override void Dispose( bool disposing )
+		{
+			if ( !disposing ) {
+				return;
+			}
+			base.Dispose( disposing );
+
+			_resourceChanged.Dispose();
 		}
 
 		/*
@@ -57,12 +87,21 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
-		public void Render()
+		public override void Render( float delta )
 		{
-			_view.ShowOverlayVisibility( _lastFrameBurnoutAmount > _model.BurnoutAmount );
-			_view.SetValue( _model.BurnoutAmount );
+			_view.ShowOverlayVisibility( _lastFrameBurnoutAmount > _burnoutAmount );
+			_view.SetValue( _burnoutAmount );
+		}
+
+		private void OnResourceChanged( in PlayerResourceChangedEventArgs args )
+		{
+			if ( args.PlayerId != _playerId || args.Resource != PlayerResourceType.JumpKitHeat ) {
+				return;
+			}
+
+			_burnoutAmount = args.NewValue;
 		}
 	};
 };
