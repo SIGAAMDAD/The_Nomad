@@ -1,17 +1,44 @@
+/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Godot;
-using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
+using Nomad.Game.Application.Gameplay.Interactables;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Interactables;
 
 namespace Nomad.Game.Prefabs
 {
+	/*
+	===================================================================================
+
+	CheckpointPrefab
+
+	===================================================================================
+	*/
+	/// <summary>
+	/// Represents a checkpoint scene, this is the default permanent checkpoint prefab, or as
+	/// called in the game, a "Meliora".
+	/// </summary>
+
 	internal partial class CheckpointPrefab : InteractableRoot
 	{
 		[Export(PropertyHint.LocaleId, hintString: "The checkpoint's id")]
@@ -21,98 +48,148 @@ namespace Nomad.Game.Prefabs
 		private StringName _displayName;
 
 		private CheckpointInstanceId _checkpointId = CheckpointInstanceId.Invalid;
-		private IGameEvent<CheckpointActivationRequestedEventArgs>? _activationRequested;
-		private IGameEvent<CheckpointRestRequestedEventArgs>? _restRequested;
-		private IGameEvent<CheckpointLeaveRequestedEventArgs>? _leaveRequested;
+		private CheckpointInstance? _instance = null;
 
+		public override InternString InteractionPrompt => new InternString( "Interact" );
+		public override EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Activate;
+
+		public override void BuildInteractionOptions( List<InteractionMenuOption> options )
+		{
+			options.Add( new InteractionMenuOption( new InternString( "Rest for a While" ), EntityInteractionKind.Rest ) );
+			options.Add( new InteractionMenuOption( new InternString( "Take in the View" ), EntityInteractionKind.Activate ) );
+			options.Add( new InteractionMenuOption( new InternString( "Open Storage" ), EntityInteractionKind.Open ) );
+			options.Add( new InteractionMenuOption( new InternString( "Get Up" ), EntityInteractionKind.Close ) );
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public override void _Ready()
 		{
 			base._Ready();
+
 			_checkpointId = CreateCheckpointId();
-			EnsureEvents();
-			TryRegisterPermanent();
+			TryEnsureInstance();
 		}
 
+		/*
+		===============
+		RequestActivate
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestActivate( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestActivate ) );
 
-			if ( !TryRegisterPermanent() ) {
+			if ( !TryEnsureInstance() ) {
 				return false;
 			}
 
-			EnsureEvents();
-			_activationRequested!.Publish( new CheckpointActivationRequestedEventArgs( playerId, _checkpointId ) );
-			return true;
+			return _instance!.RequestActivate( playerId );
 		}
 
+		/*
+		===============
+		RequestRest
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestRest( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestRest ) );
 
-			if ( !TryRegisterPermanent() ) {
+			if ( !TryEnsureInstance() ) {
 				return false;
 			}
 
-			EnsureEvents();
-			_restRequested!.Publish( new CheckpointRestRequestedEventArgs( playerId, _checkpointId ) );
-			return true;
+			return _instance!.RequestRest( playerId );
 		}
 
+		/*
+		===============
+		RequestLeave
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestLeave( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestLeave ) );
 
-			EnsureEvents();
-			_leaveRequested!.Publish( new CheckpointLeaveRequestedEventArgs( playerId ) );
-			return true;
+			return TryEnsureInstance() && _instance!.RequestLeave( playerId );
 		}
 
-		public EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
+		/*
+		===============
+		RequestInteraction
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="kind"></param>
+		/// <returns></returns>
+		public override EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
 		{
-			bool requested = kind switch {
-				EntityInteractionKind.Activate => RequestActivate( playerId ),
-				EntityInteractionKind.Rest => RequestRest( playerId ),
-				EntityInteractionKind.Close => RequestLeave( playerId ),
-				_ => false
-			};
-
-			return requested ? EntityInteractionResult.SuccessResult() : EntityInteractionResult.InvalidTarget();
+			return TryEnsureInstance()
+				? _instance!.RequestInteraction( playerId, kind )
+				: EntityInteractionResult.InvalidTarget();
 		}
 
-		private bool TryRegisterPermanent()
+		/*
+		===============
+		TryEnsureInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
+		private bool TryEnsureInstance()
 		{
-			if ( _checkpointId.IsValid && ServiceLocator.Instance.TryGetService<ICheckpointService>( out ICheckpointService? service ) ) {
-				return service.TryRegisterPermanent( CreateDefinition(), _checkpointId );
+			if ( _instance != null ) {
+				return true;
 			}
 
-			return false;
-		}
-
-		private void EnsureEvents()
-		{
-			if ( _activationRequested != null && _restRequested != null && _leaveRequested != null ) {
-				return;
+			if ( !_checkpointId.IsValid ) {
+				_checkpointId = CreateCheckpointId();
 			}
 
-			var eventFactory = ServiceLocator.GetService<IGameEventRegistryService>();
+			if ( !_checkpointId.IsValid || !ServiceLocator.Instance.TryGetService( out ICheckpointService? service ) ) {
+				return false;
+			}
 
-			_activationRequested = eventFactory.GetEvent<CheckpointActivationRequestedEventArgs>(
-				CheckpointActivationRequestedEventArgs.Name,
-				CheckpointActivationRequestedEventArgs.NameSpace
-			);
-
-			_restRequested = eventFactory.GetEvent<CheckpointRestRequestedEventArgs>(
-				CheckpointRestRequestedEventArgs.Name,
-				CheckpointRestRequestedEventArgs.NameSpace
-			);
-
-			_leaveRequested = eventFactory.GetEvent<CheckpointLeaveRequestedEventArgs>(
-				CheckpointLeaveRequestedEventArgs.Name,
-				CheckpointLeaveRequestedEventArgs.NameSpace
-			);
+			return service is CheckpointService checkpointService
+				&& checkpointService.TryRegisterPermanent( CreateDefinition(), _checkpointId, this, out _instance );
 		}
 
+		/*
+		===============
+		CreateDefinition
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private CheckpointDefinition CreateDefinition()
 		{
 			string id = GetExportedId();
@@ -125,6 +202,15 @@ namespace Nomad.Game.Prefabs
 			};
 		}
 
+		/*
+		===============
+		CreateCheckpointId
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private CheckpointInstanceId CreateCheckpointId()
 		{
 			string id = GetExportedId();
@@ -137,6 +223,15 @@ namespace Nomad.Game.Prefabs
 			return new CheckpointInstanceId( new Guid( bytes ) );
 		}
 
+		/*
+		===============
+		GetExportedId
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private string GetExportedId()
 		{
 			string exportedId = _id.ToString();

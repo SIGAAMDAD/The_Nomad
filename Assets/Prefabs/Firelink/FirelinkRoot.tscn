@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://d4tlkrbrhhqx"]
 
+[ext_resource type="Script" uid="uid://jhp1udwhs6rt" path="res://Assets/Prefabs/Firelink/TempCheckpointPrefab.cs" id="1_h7wov"]
+
 [node name="FirelinkRoot" type="Node2D" unique_id=1437990481]
+script = ExtResource("1_h7wov")

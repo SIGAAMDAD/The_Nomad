@@ -18,5 +18,10 @@ namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 	public interface IRageBarView : IHudComponentView
 	{
 		void SetValue( float value );
+		void SetSizeParameters();
+		void SetTrail( float value );
+
+		float GetRage();
+		float GetTrail();
 	};
 };

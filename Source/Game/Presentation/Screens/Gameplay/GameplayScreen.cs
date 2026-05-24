@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Godot;
+using Nomad.Core.OnlineServices;
 using Nomad.Events.Globals;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
@@ -31,7 +33,7 @@ namespace Nomad.Game.Presentation.Screens.Gameplay
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
-			_hudRoot = new HudRoot( GetNode<HeadsUpDisplayView>( "HeadsUpDisplay" ), eventFactory );
+			_hudRoot = new HudRoot( new PlayerId( new PeerId( Constants.LOCAL_GUID ) ), GetNode<HeadsUpDisplayView>( "HeadsUpDisplay" ), eventFactory );
 		}
 
 		protected override void OnUpdate( float delta )
@@ -39,6 +41,13 @@ namespace Nomad.Game.Presentation.Screens.Gameplay
 			base.OnUpdate( delta );
 
 			_hudRoot.Render( delta );
+		}
+
+		protected override void OnShutdown()
+		{
+			base.OnShutdown();
+
+			_hudRoot.Dispose();
 		}
 	};
 };

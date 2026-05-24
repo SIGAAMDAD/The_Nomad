@@ -26,10 +26,14 @@ namespace Nomad.Game.Application.Gameplay.GameServices
 	{
 		private readonly IItemCatalog _firearmCatalog;
 
-		public IGameEvent<UseWeaponRequestEventArgs> UseWeaponRequest => _useWeaponRequest;
-		private readonly IGameEvent<UseWeaponRequestEventArgs> _useWeaponRequest = null;
-
 		public IGameEvent<UseWeaponResultEventArgs> UseWeaponResult => _useWeaponResult;
+
+		public IGameEvent<UseWeaponFirearmRequestEventArgs> UseWeaponFirearmRequest {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
+
 		private readonly IGameEvent<UseWeaponResultEventArgs> _useWeaponResult = null;
 
 		public CombatService( IItemCatalog database )
@@ -39,17 +43,6 @@ namespace Nomad.Game.Application.Gameplay.GameServices
 
 		public void Dispose()
 		{
-			_useWeaponRequest?.Dispose();
-		}
-
-		public DamageResult UseWeapon( in UseWeaponRequestEventArgs args )
-		{
-			var weapon = _firearmCatalog.Get<FirearmDefinition>( args.WeaponId );
-			if ( weapon == null ) {
-				return new DamageResult();
-			}
-
-			return new DamageResult();
 		}
 	};
 };

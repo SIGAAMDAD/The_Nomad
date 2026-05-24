@@ -47,7 +47,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerRepository : IPlayerRuntimeRegistry, IDisposable
 	{
-		private readonly ConcurrentDictionary<Guid, PlayerBase> _players = new();
+		private readonly ConcurrentDictionary<PlayerId, PlayerBase> _players = new();
 		private readonly string _playerPrefab;
 
 		private readonly ISceneManager _sceneManager;
@@ -119,14 +119,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerBase CreatePlayer( in PlayerSpawnRequestedEventArgs args )
 		{
 			var composite = _sceneManager.LoadPrefab( _playerPrefab );
+			var prefab = composite.Root.CastAs<PlayerPrefab>();
+			prefab.PeerId = new PlayerId( new PeerId( Constants.LOCAL_GUID ) );
 
 			_logger.PrintLine( $"Adding player to active scene '{_sceneManager.ActiveScene.Name}'" );
-			_sceneManager.ActiveScene.Root.AddChild( composite.Root.CastAs<PlayerPrefab>() );
+			_sceneManager.ActiveScene.Root.AddChild( prefab );
 
-			var guid = Constants.LOCAL_GUID;
-			var playerBase = new PlayerAggregate( new PlayerId( new PeerId( guid ) ), composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( prefab.PeerId, composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
 
-			_players[guid] = playerBase;
+			_players[prefab.PeerId] = playerBase;
 			return playerBase;
 		}
 
@@ -134,7 +135,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		{
 			playerId.ThrowIfInvalid( nameof( TryGetInventory ) );
 
-			if ( !_players.TryGetValue( playerId.Id, out PlayerBase? player ) ) {
+			if ( !_players.TryGetValue( playerId, out PlayerBase? player ) ) {
 				inventory = null;
 				return false;
 			}
@@ -147,7 +148,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		{
 			playerId.ThrowIfInvalid( nameof( TryGetState ) );
 
-			if ( !_players.TryGetValue( playerId.Id, out PlayerBase? player ) ) {
+			if ( !_players.TryGetValue( playerId, out PlayerBase? player ) ) {
 				reader = null;
 				writer = null;
 				return false;

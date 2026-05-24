@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Gameplay;
 
@@ -24,13 +25,14 @@ namespace Nomad.Game.Domain.Interfaces.Gameplay
 	public interface ICombatService : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay" )]
-		[EventPayload( "WeaponId", typeof( ItemDefinitionId ), Order = 1 )]
+		[EventPayload( "WeaponId", typeof( ItemInstanceId ), Order = 1 )]
 		[EventPayload( "FromPosition", typeof( Vector2 ), Order = 2 )]
-		[EventPayload( "Angle", typeof( float ), Order = 3 )]
-		IGameEvent<UseWeaponRequestEventArgs> UseWeaponRequest { get; }
+		[EventPayload( "AngleRadians", typeof( float ), Order = 3 )]
+		IGameEvent<UseWeaponFirearmRequestEventArgs> UseWeaponFirearmRequest { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Gameplay" )]
-		[EventPayload( "DamageAmount", typeof( float ), Order = 1 )]
+		[EventPayload( "HitEntityId", typeof( EntityId ), Order = 1 )]
+		[EventPayload( "DamageAmount", typeof( float ), Order = 2 )]
 		IGameEvent<UseWeaponResultEventArgs> UseWeaponResult { get; }
 	};
 };

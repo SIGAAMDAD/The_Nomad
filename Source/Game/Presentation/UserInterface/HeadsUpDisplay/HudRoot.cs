@@ -13,51 +13,100 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Game.Application.Configuration.Enums;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.InteractionMenu;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
+	/*
+	===================================================================================
+
+	HudRoot
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class HudRoot : IHudRoot
 	{
-		public HUDPreset Preset {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+		public HUDPreset Preset => _preset;
+		private HUDPreset _preset;
 
-		public IHealthBarView HealthBar => _healthBar;
-		private readonly IHealthBarView _healthBar;
+		private readonly ComponentGroup _combatGroup;
+		private readonly ComponentGroup _neutralGroup;
+		private readonly ComponentGroup _explorationGroup;
+		private readonly InteractionMenuPresenter _interactionMenu;
 
-		public IRageBarView RageBar {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+		private bool _isDisposed = false;
 
-		public IAmmoCounterView AmmoCounter {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
-
-		private readonly HealthBarPresenter _healthBarPresenter;
-		private readonly DashKitHeatBarPresenter _dashKitPresenter;
-
-		public HudRoot( HeadsUpDisplayView root, IGameEventRegistryService eventFactory )
+		/*
+		===============
+		HudRoot
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="root"></param>
+		/// <param name="eventFactory"></param>
+		public HudRoot( PlayerId playerId, HeadsUpDisplayView root, IGameEventRegistryService eventFactory )
 		{
-			_healthBarPresenter = new HealthBarPresenter( new HealthBarModel( eventFactory ), root.GetNode<HealthBarView>( "MainHUD/UpperContainer/StatBarContainer/HealthBar" ) );
-			_dashKitPresenter = new DashKitHeatBarPresenter( new DashKitHeatBarModel( eventFactory ), root.GetNode<DashStatusBarView>( "MainHUD/LowerContainer/DashStatusBar" ) );
+			_neutralGroup = new ComponentGroup(
+				new List<HudComponentPresenter>() {
+					new HealthBarPresenter( playerId, root.GetNode<HealthBarView>( "NeutralHUD/StatBarContainer/HealthBar" ), eventFactory ),
+					new RageBarPresenter( playerId, root.GetNode<RageBarView>( "NeutralHUD/StatBarContainer/RageBar" ), eventFactory ),
+					new DashKitHeatBarPresenter( playerId, root.GetNode<DashStatusBarView>( "NeutralHUD/StatBarContainer/DashStatusBar" ), eventFactory ),
+				}
+			);
+			_interactionMenu = new InteractionMenuPresenter( playerId, root );
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_neutralGroup.Dispose();
+			_interactionMenu.Dispose();
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		/*
+		===============
+		Render
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
 		public void Render( float delta )
 		{
-			_healthBarPresenter.Render( delta );
-			_dashKitPresenter.Render();
+			_neutralGroup.Render( delta );
+			_interactionMenu.Render();
 		}
 	};
 };
