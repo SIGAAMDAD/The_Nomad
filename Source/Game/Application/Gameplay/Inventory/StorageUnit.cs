@@ -48,7 +48,7 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 		private readonly StorageUnitDefinition _definition;
 		private readonly IItemCatalog _catalog;
-		private readonly IItemInstanceRepository _instanceRepository;
+		private readonly IItemInstanceRepository? _instanceRepository;
 
 		private readonly Dictionary<ItemDefinitionId, int> _stacks = new();
 		private readonly HashSet<ItemInstanceId> _instances = new();
@@ -69,9 +69,13 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 					weight += item.Weight * stack.Value;
 				}
 
-				foreach ( var instance in _instances ) {
-					var item = _instanceRepository.Get<ItemDefinition>( instance );
-					weight += item.Definition.Weight;
+				if ( _instanceRepository != null ) {
+					foreach ( var instance in _instances ) {
+						var item = _instanceRepository.Get<ItemDefinition>( instance );
+						if ( item != null ) {
+							weight += item.Definition.Weight;
+						}
+					}
 				}
 
 				return weight;
@@ -132,6 +136,9 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			RangeGuard.ThrowIfNegativeOrZero( amount, nameof( amount ) );
 
 			var item = _catalog.Get<ItemDefinition>( itemType );
+			if ( item == null ) {
+				return false;
+			}
 
 			if ( !_definition.Rules.AcceptsItem( item ) ) {
 				return false;
@@ -145,7 +152,8 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			}
 
 			checked {
-				_stacks[itemType] += amount;
+				_stacks.TryGetValue( itemType, out int currentAmount );
+				_stacks[itemType] = currentAmount + amount;
 			}
 
 			return true;
@@ -168,13 +176,20 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 				return false;
 			}
 
-			int stackSize = _stacks[itemType];
+			if ( !_stacks.TryGetValue( itemType, out int stackSize ) ) {
+				return false;
+			}
+
 			if ( stackSize < amount ) {
 				return false;
 			}
 
 			stackSize -= amount;
-			_stacks[itemType] = stackSize;
+			if ( stackSize == 0 ) {
+				_stacks.Remove( itemType );
+			} else {
+				_stacks[itemType] = stackSize;
+			}
 
 			return true;
 		}

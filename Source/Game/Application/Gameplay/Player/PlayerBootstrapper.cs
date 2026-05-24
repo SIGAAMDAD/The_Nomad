@@ -64,7 +64,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var cvarSystem = ServiceLocator.GetService<ICVarSystemService>();
 			var timeService = ServiceLocator.GetService<ITimeService>();
 
-			var aimCoordinator = new PlayerAimCoordinator( eventFactory );
+			var aimCoordinator = new PlayerAimCoordinator( playerId, eventFactory );
 			var statsRepository = new PlayerBaseStatsRepository( playerId, eventFactory, logger );
 			var dependencyGraph = PlayerStatDependencyGraph.CreateDefault();
 			var derivedStatService = new PlayerDerivedStatService( playerId, statsRepository, dependencyGraph, eventFactory );
@@ -72,7 +72,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var resourceService = new PlayerResourceService( playerId, derivedStatService, eventFactory );
 			var stateCoordinator = new PlayerStateCoordinator( playerId, PlayerStateId.Idle, eventFactory );
 			var saveCoordinator = new PlayerSaveCoordinator( derivedStatService, resourceService, stateCoordinator, prefab, eventFactory );
-			var inventoryCoordinator = new PlayerInventoryCoordinator( statsRepository, stateCoordinator, eventFactory, ServiceLocator.GetService<IWorldContentCache>().Items );
+			var inventoryCoordinator = new PlayerInventoryCoordinator( playerId, statsRepository, stateCoordinator, eventFactory, ServiceLocator.GetService<IWorldContentCache>().Items );
 			var weaponCoordinator = new PlayerWeaponCoordinator( playerId, inventoryCoordinator, eventFactory );
 
 			ApplyBaseStats( prefab, statsRepository );

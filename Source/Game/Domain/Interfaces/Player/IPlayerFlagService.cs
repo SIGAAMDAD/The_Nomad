@@ -41,8 +41,9 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		///
 		/// </summary>
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerFlagsChangedEventArgs" )]
-		[EventPayload( "OldFlags", typeof( PlayerFlags ), Order = 1 )]
-		[EventPayload( "NewFlags", typeof( PlayerFlags ), Order = 2 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "OldFlags", typeof( PlayerFlags ), Order = 2 )]
+		[EventPayload( "NewFlags", typeof( PlayerFlags ), Order = 3 )]
 		IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
 
 		/// <summary>

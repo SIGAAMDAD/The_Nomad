@@ -127,7 +127,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags = PlayerFlags.None;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -147,7 +147,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags |= flags;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -167,7 +167,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			var prevFlags = _flags;
 			_flags &= ~flags;
-			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+			_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 		}
 
 		/*
@@ -193,7 +193,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				}
 			}
 			if ( prevFlags != _flags ) {
-				_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( prevFlags, _flags ) );
+				_flagsChanged.Publish( new PlayerFlagsChangedEventArgs( _playerId, prevFlags, _flags ) );
 			}
 		}
 

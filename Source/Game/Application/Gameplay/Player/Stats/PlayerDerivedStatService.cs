@@ -193,6 +193,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 			if ( !ScalarMath.NearlyEqual( oldValue, newValue ) ) {
 				_derivedStatChanged.Publish(
 					new PlayerDerivedStatChangedEventArgs(
+						_playerId,
 						newValue,
 						oldValue,
 						type

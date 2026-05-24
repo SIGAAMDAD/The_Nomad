@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player.State;
 using Nomad.Game.Domain.Events.Player;
 
@@ -35,8 +36,9 @@ namespace Nomad.Game.Domain.Interfaces.Player.State
 		bool CanTakeDamage { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerStateChangedEventArgs" )]
-		[EventPayload( "OldState", typeof( PlayerStateId ), Order = 1 )]
-		[EventPayload( "NewState", typeof( PlayerStateId ), Order = 2 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "OldState", typeof( PlayerStateId ), Order = 2 )]
+		[EventPayload( "NewState", typeof( PlayerStateId ), Order = 3 )]
 		IGameEvent<PlayerStateChangedEventArgs> StateChanged { get; }
 	};
 };

@@ -28,6 +28,8 @@ using Nomad.Game.Domain.Events.Gameplay;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player
@@ -43,9 +45,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 	///
 	/// </summary>
 
-	internal sealed class PlayerRepository : IDisposable
+	internal sealed class PlayerRepository : IPlayerRuntimeRegistry, IDisposable
 	{
-		private readonly ConcurrentDictionary<Guid, IPlayerBase> _players = new();
+		private readonly ConcurrentDictionary<Guid, PlayerBase> _players = new();
 		private readonly string _playerPrefab;
 
 		private readonly ISceneManager _sceneManager;
@@ -126,6 +128,34 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			_players[guid] = playerBase;
 			return playerBase;
+		}
+
+		public bool TryGetInventory( PlayerId playerId, out IPlayerInventoryCoordinator? inventory )
+		{
+			playerId.ThrowIfInvalid( nameof( TryGetInventory ) );
+
+			if ( !_players.TryGetValue( playerId.Id, out PlayerBase? player ) ) {
+				inventory = null;
+				return false;
+			}
+
+			inventory = player.Runtime.InventoryCoordinator;
+			return true;
+		}
+
+		public bool TryGetState( PlayerId playerId, out IPlayerStateReader? reader, out IPlayerStateWriter? writer )
+		{
+			playerId.ThrowIfInvalid( nameof( TryGetState ) );
+
+			if ( !_players.TryGetValue( playerId.Id, out PlayerBase? player ) ) {
+				reader = null;
+				writer = null;
+				return false;
+			}
+
+			reader = player.Runtime.StateCoordinator;
+			writer = player.Runtime.StateCoordinator;
+			return true;
 		}
 
 		/*

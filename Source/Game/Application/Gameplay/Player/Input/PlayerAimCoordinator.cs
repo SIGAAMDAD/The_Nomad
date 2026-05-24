@@ -17,6 +17,7 @@ using System;
 using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Core.Numerics;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
 
@@ -33,6 +34,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		private float _aimAngleRadians = 0.0f;
 		private Vector2 _aimDirection = Vector2.Zero;
 
+		private readonly PlayerId _playerId;
+
 		private bool _isDisposed = false;
 
 		public IGameEvent<AimAngleChangedEventArgs> AimAngleChanged => _aimAngleChanged;
@@ -47,8 +50,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
-		public PlayerAimCoordinator( IGameEventRegistryService eventFactory )
+		public PlayerAimCoordinator( PlayerId playerId, IGameEventRegistryService eventFactory )
 		{
+			playerId.ThrowIfInvalid( nameof( PlayerAimCoordinator ) );
+
+			_playerId = playerId;
+
 			_aimAngleChanged = eventFactory.GetEvent<AimAngleChangedEventArgs>(
 				AimAngleChangedEventArgs.Name,
 				AimAngleChangedEventArgs.NameSpace
@@ -98,6 +105,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 			_aimAngleChanged.Publish(
 				new AimAngleChangedEventArgs(
+					_playerId,
 					oldAngle,
 					_aimAngleRadians,
 					oldDirection,

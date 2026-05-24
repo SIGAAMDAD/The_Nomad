@@ -22,27 +22,41 @@ using Nomad.Game.Domain.Interfaces.Items;
 using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Domain.Interfaces.Player.Inventory;
-using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Application.Gameplay.Inventory;
+using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Infrastructure.Caching;
+using Godot;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player.Inventory
 {
+	/*
+	===================================================================================
+
+	PlayerInventoryCoordinator
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class PlayerInventoryCoordinator : InventoryCoordinator, IPlayerInventoryCoordinator
 	{
 		public IBackpackService Backpack => _backpack;
 		private readonly BackpackService _backpack;
 
-		public IWeaponSlotService WeaponSlots => null;
+		public IWeaponSlotService WeaponSlots => _slotService;
+		private readonly IWeaponSlotService _slotService;
 
 		private readonly StorageUnitRepository _storageUnitRepository;
-		private readonly PlayerWeaponSlotService _slotService;
 
-		public PlayerInventoryCoordinator( IPlayerBaseStatsRepository baseStatsRepository, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory, IItemCatalog itemCatalog )
+		public PlayerInventoryCoordinator( PlayerId playerId, IPlayerBaseStatsRepository baseStatsRepository, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory, IItemCatalog itemCatalog )
 		{
 			_storageUnitRepository = new StorageUnitRepository( itemCatalog, eventFactory );
 
-			if ( _storageUnitRepository.TryAddInventory(
+			if ( !_storageUnitRepository.TryAddInventory(
 				new StorageUnitDefinition {
 					Id = new InternString( "INVENTORY_PLAYER_BACKPACK" ),
 					DisplayName = new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" ),
@@ -55,33 +69,39 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 				},
 				out var backpackStorage
 			) ) {
-				_backpack = new BackpackService( BackpackStatus.Equipped, stateReader, backpackStorage, eventFactory );
+				throw new System.InvalidOperationException( "Failed to create player backpack storage." );
 			}
+
+			backpackStorage = backpackStorage ?? throw new System.InvalidOperationException( "Player backpack storage was not returned." );
+			AddStorageUnit( backpackStorage );
+
+			_backpack = new BackpackService(
+				BackpackStatus.Equipped,
+				stateReader,
+				backpackStorage,
+
+				// FIXME: don't manually load it here
+				ResourceLoader.Load<PackedScene>( "res://Assets/Prefabs/Player/BackpackUnequipped/BackpackUnequipped.tscn" ).Instantiate<BackpackUnequippedPrefab>(),
+
+				eventFactory
+			);
+
+			_slotService = new PlayerWeaponSlotService( playerId, eventFactory );
 		}
 
-		public void Dispose()
+		protected override void Dispose( bool disposing )
 		{
+			if ( !disposing ) {
+				return;
+			}
+			base.Dispose( disposing );
+
 			_slotService.Dispose();
 		}
 
 		public bool TryUnequipBackpack()
 		{
 			return _backpack.TryUnequip();
-		}
-
-		public bool TryTakeItems( ItemDefinitionId itemId, int amount )
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public bool TryGiveItems( ItemDefinitionId itemId, int amount )
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public bool TryGetFirearm( ItemInstanceId itemId, out FirearmDefinition firearm )
-		{
-			throw new System.NotImplementedException();
 		}
 	};
 };

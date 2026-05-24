@@ -57,15 +57,12 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			}
 		}
 
-		public uint InteractionRevision {
-			get {
-				throw new NotImplementedException();
-			}
-		}
+		public uint InteractionRevision => _revision;
+		private uint _revision = 0;
 
 		private readonly IGameEvent<PlayerInteractionStatusChangedEventArgs> _statusChanged = default;
 
-		private readonly InteractableRoot _prefab;
+		private readonly InteractableRoot? _prefab;
 
 		/*
 		===============
@@ -78,9 +75,25 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// <param name="prefab"></param>
 		/// <exception cref="ArgumentNullException"></exception>
 		public InteractableAggregate( InteractableRoot prefab )
-			: base( EntityId.Invalid, InternString.Empty, InternString.Empty, EntityType.Interactable, EntityFlags.None )
+			: this(
+				prefab,
+				new EntityId( Guid.NewGuid() ),
+				InternString.Empty,
+				InternString.Empty,
+				EntityFlags.Interactable
+			)
 		{
-			_prefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
+		}
+
+		protected InteractableAggregate( InteractableRoot? prefab, EntityId entityId, InternString definitionId, InternString displayName, EntityFlags flags )
+			: base( entityId, definitionId, displayName, EntityType.Interactable, flags )
+		{
+			_prefab = prefab;
+
+			if ( _prefab == null ) {
+				return;
+			}
+
 			_prefab.PlayerEntered += OnPlayerEntered;
 			_prefab.PlayerExited += OnPlayerExited;
 		}
@@ -118,10 +131,16 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			if ( _playerStatus == newStatus ) {
 				return;
 			}
-			var oldStatus = _playerStatus;
+
+			PlayerInteractionStatus oldStatus = _playerStatus;
 			_playerStatus = newStatus;
+
 			_statusChanged.Publish(
-				new PlayerInteractionStatusChangedEventArgs( interactorId, oldStatus, newStatus )
+				new PlayerInteractionStatusChangedEventArgs(
+					interactorId,
+					oldStatus,
+					newStatus
+				)
 			);
 		}
 	};

@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player
@@ -34,11 +35,12 @@ namespace Nomad.Game.Domain.Interfaces.Player
 		/// Event that triggers whenever the player's aim angle has changed, publishes angles in radians.
 		/// </summary>
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player" )]
-		[EventPayload( "OldAngle", typeof( float ), Order = 1 )]
-		[EventPayload( "NewAngle", typeof( float ), Order = 2 )]
-		[EventPayload( "OldDirection", typeof( Vector2 ), Order = 3 )]
-		[EventPayload( "NewDirection", typeof( Vector2 ), Order = 4 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 5 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "OldAngle", typeof( float ), Order = 2 )]
+		[EventPayload( "NewAngle", typeof( float ), Order = 3 )]
+		[EventPayload( "OldDirection", typeof( Vector2 ), Order = 4 )]
+		[EventPayload( "NewDirection", typeof( Vector2 ), Order = 5 )]
+		[EventPayload( "ServerTick", typeof( uint ), Order = 6 )]
 		IGameEvent<AimAngleChangedEventArgs> AimAngleChanged { get; }
 	};
 };

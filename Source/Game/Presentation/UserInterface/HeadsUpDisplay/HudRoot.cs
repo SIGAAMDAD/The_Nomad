@@ -19,7 +19,6 @@ using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar;
-using Nomad.UI;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
@@ -49,10 +48,10 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		private readonly HealthBarPresenter _healthBarPresenter;
 		private readonly DashKitHeatBarPresenter _dashKitPresenter;
 
-		public HudRoot( EnginePanel root, IGameEventRegistryService eventFactory )
+		public HudRoot( HeadsUpDisplayView root, IGameEventRegistryService eventFactory )
 		{
-			_healthBarPresenter = new HealthBarPresenter( new HealthBarModel( eventFactory ), root.FindChild<HealthBarView>( "StatBarContainer/HealthBar" ) );
-			_dashKitPresenter = new DashKitHeatBarPresenter( new DashKitHeatBarModel( eventFactory ), root.FindChild<DashStatusBarView>( "CombatContainer/DashStatusBar" ) );
+			_healthBarPresenter = new HealthBarPresenter( new HealthBarModel( eventFactory ), root.GetNode<HealthBarView>( "MainHUD/UpperContainer/StatBarContainer/HealthBar" ) );
+			_dashKitPresenter = new DashKitHeatBarPresenter( new DashKitHeatBarModel( eventFactory ), root.GetNode<DashStatusBarView>( "MainHUD/LowerContainer/DashStatusBar" ) );
 		}
 
 		public void Render( float delta )

@@ -16,22 +16,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
-using Nomad.UI;
 
 namespace Nomad.Game.Prefabs
 {
 	/*
 	===================================================================================
-	
+
 	DashStatusBarView
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	public partial class DashStatusBarView : EngineImageView, IDashKitHeatBarView
+	public partial class DashStatusBarView : TextureRect, IDashKitHeatBarView
 	{
 		private readonly HudComponentView _impl;
 		private ShaderMaterial _material;
@@ -43,7 +42,7 @@ namespace Nomad.Game.Prefabs
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public DashStatusBarView()
 		{
@@ -52,31 +51,11 @@ namespace Nomad.Game.Prefabs
 
 		/*
 		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void OnInit()
-		{
-			base.OnInit();
-
-			if ( Material is ShaderMaterial material ) {
-				_material = material;
-				_material.SetShaderParameter( "progress", 0.0f );
-			}
-
-			_overlay = GetNode<TextureRect>( "Overlay/ImageView" );
-		}
-
-		/*
-		===============
 		ShowOverlayVisibility
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="visible"></param>
 		public void ShowOverlayVisibility( bool visible )
@@ -90,7 +69,7 @@ namespace Nomad.Game.Prefabs
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="color"></param>
 		public void SetColor( System.Numerics.Vector4 color )
@@ -104,12 +83,32 @@ namespace Nomad.Game.Prefabs
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="value"></param>
 		public void SetValue( float value )
 		{
 			_material.SetShaderParameter( "progress", value );
+		}
+
+		/*
+		===============
+		_Ready
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _Ready()
+		{
+			base._Ready();
+
+			if ( Material is ShaderMaterial material ) {
+				_material = material;
+				_material.SetShaderParameter( "progress", 0.0f );
+			}
+
+			_overlay = GetNode<TextureRect>( "Overlay/ImageView" );
 		}
 	};
 };

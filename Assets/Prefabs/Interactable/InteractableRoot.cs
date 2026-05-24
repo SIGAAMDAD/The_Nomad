@@ -15,21 +15,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
-using Nomad.Game.Application.Gameplay.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Prefabs
 {
-	internal partial class InteractableRoot : Node2D
+	internal abstract partial class InteractableRoot : Node2D
 	{
 		public event Action<PlayerId> PlayerEntered;
 		public event Action<PlayerId> PlayerExited;
 
-		private InteractableAggregate _aggregate;
-
 		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
+				GD.Print( "Player Entered" );
 				PlayerEntered?.Invoke( player.PeerId );
 			}
 		}
@@ -37,6 +35,7 @@ namespace Nomad.Game.Prefabs
 		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
+				GD.Print( "Player Exited" );
 				PlayerExited?.Invoke( player.PeerId );
 			}
 		}
@@ -48,8 +47,6 @@ namespace Nomad.Game.Prefabs
 			var area2D = GetNode<Area2D>( "Zone" );
 			area2D.BodyShapeEntered += OnBodyShapeEntered;
 			area2D.BodyShapeExited += OnBodyShapeExited;
-
-			_aggregate = new InteractableAggregate( this );
 		}
 	};
 };

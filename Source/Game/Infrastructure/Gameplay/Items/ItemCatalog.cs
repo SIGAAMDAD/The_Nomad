@@ -75,7 +75,17 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		public TItemDefinition? Get<TItemDefinition>( ItemDefinitionId itemId )
 			where TItemDefinition : ItemDefinition
 		{
-			return (TItemDefinition?)Get( itemId );
+			if ( TryGet( itemId, out ItemDefinition? definition ) ) {
+				return (TItemDefinition?)definition;
+			}
+
+			foreach ( ItemDefinition item in dataCache.Values ) {
+				if ( item.Id.Equals( itemId ) ) {
+					return (TItemDefinition?)item;
+				}
+			}
+
+			return null;
 		}
 
 		/*
@@ -93,12 +103,20 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		public bool TryGet<TItemDefinition>( ItemDefinitionId itemId, out TItemDefinition? item )
 			where TItemDefinition : ItemDefinition
 		{
-			if ( !TryGet( itemId, out var data ) ) {
-				item = null;
-				return false;
+			if ( TryGet( itemId, out var data ) ) {
+				item = (TItemDefinition?)data;
+				return true;
 			}
-			item = (TItemDefinition?)data;
-			return true;
+
+			foreach ( ItemDefinition definition in dataCache.Values ) {
+				if ( definition.Id.Equals( itemId ) ) {
+					item = (TItemDefinition?)definition;
+					return true;
+				}
+			}
+
+			item = null;
+			return false;
 		}
 
 		/*
@@ -155,6 +173,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		private static ItemDefinition LoadItemBase( JsonElement json, ItemDefinition definition )
 		{
 			return definition with {
+				Id = new ItemDefinitionId( new InternString( JsonLoader.TryGet( json, nameof( definition.Id ), out string id ) ? id : string.Empty ) ),
 				Weight = JsonLoader.TryGet( json, nameof( definition.Weight ), out float weight ) ? weight : 0.0f,
 				BaseCost = JsonLoader.TryGet( json, nameof( definition.BaseCost ), out float baseCost ) ? baseCost : 0.0f,
 				Name = new InternString( JsonLoader.TryGet( json, nameof( definition.Name ), out string name ) ? name : $"Item#{definition.GetHashCode()}" ),

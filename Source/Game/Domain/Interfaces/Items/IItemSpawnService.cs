@@ -13,16 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
-using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Events.Items;
 
 namespace Nomad.Game.Domain.Interfaces.Items
 {
-	public interface IItemSpawnService
+	public interface IItemSpawnService : IDisposable
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Items" )]
-		[EventPayload( "ItemId", typeof( InternString ) )]
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Items", PayloadName = "ItemSpawnRequestEventArgs" )]
+		[EventPayload( "ItemId", typeof( ItemDefinitionId ), Order = 1 )]
+		[EventPayload( "Amount", typeof( int ), Order = 2 )]
 		IGameEvent<ItemSpawnRequestEventArgs> ItemSpawnRequest { get; }
 	};
 };

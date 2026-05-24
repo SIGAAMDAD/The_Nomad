@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Events.Interactables;
 
@@ -24,6 +25,16 @@ namespace Nomad.Game.Domain.Interfaces.Interactables
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "CheckpointRestRequestedEventArgs" )]
 		[EventPayload( "RequesterId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "CheckpointId", typeof( CheckpointInstanceId ), Order = 2 )]
 		IGameEvent<CheckpointRestRequestedEventArgs> RestRequested { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "CheckpointLeaveRequestedEventArgs" )]
+		[EventPayload( "RequesterId", typeof( PlayerId ), Order = 1 )]
+		IGameEvent<CheckpointLeaveRequestedEventArgs> LeaveRequested { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "CheckpointActivationRequestedEventArgs" )]
+		[EventPayload( "RequesterId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "CheckpointId", typeof( CheckpointInstanceId ), Order = 2 )]
+		IGameEvent<CheckpointActivationRequestedEventArgs> ActivationRequested { get; }
 	};
 };

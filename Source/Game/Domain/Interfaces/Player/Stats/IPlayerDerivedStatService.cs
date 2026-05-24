@@ -15,17 +15,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
 namespace Nomad.Game.Domain.Interfaces.Player.Stats
 {
+	/// <summary>
+	///
+	/// </summary>
 	public interface IPlayerDerivedStatService : IDisposable
 	{
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player", PayloadName = "PlayerDerivedStatChangedEventArgs" )]
-		[EventPayload( "NewValue", typeof( float ), Order = 1 )]
-		[EventPayload( "OldValue", typeof( float ), Order = 2 )]
-		[EventPayload( "StatId", typeof( DerivedStatType ), Order = 3 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "NewValue", typeof( float ), Order = 2 )]
+		[EventPayload( "OldValue", typeof( float ), Order = 3 )]
+		[EventPayload( "StatId", typeof( DerivedStatType ), Order = 4 )]
 		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
 
 		/// <summary>

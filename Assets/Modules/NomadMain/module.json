@@ -1,0 +1,14 @@
+{
+	"id": "gdr.nomadmain",
+	"name": "NomadMain",
+	"version": "1.0.0",
+	"apiVersion": "1.0.0",
+	"author": "GDR Software",
+	"assembly": "NomadMain.dll",
+	"pck": "NomadMain.pck",
+	"entryType": "NomadMain.NomadMainModule",
+	"loadPriority": 0,
+	"official": true,
+	"dependencies": [],
+	"incompatibilities": []
+}
