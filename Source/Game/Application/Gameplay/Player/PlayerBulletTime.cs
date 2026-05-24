@@ -20,7 +20,6 @@ using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Domain.Interfaces.Player.Stats;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;

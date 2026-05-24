@@ -47,6 +47,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		//
 
 		private readonly PlayerRuntime _runtime;
+		internal PlayerRuntime Runtime => _runtime;
 
 		public IGameEvent<PlayerDieEventArgs> Die => _die;
 		private readonly IGameEvent<PlayerDieEventArgs> _die;

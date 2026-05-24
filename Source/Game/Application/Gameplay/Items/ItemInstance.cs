@@ -53,7 +53,7 @@ namespace Nomad.Game.Domain.Data.Items
 		private IStorageUnit? _storageUnit = null;
 
 		public int StackCount => _stackCount;
-		private int _stackCount = 0;
+		private int _stackCount = 1;
 
 		public IGameEvent<ItemStatusChangedEventArgs> StatusChanged => _statusChanged;
 		private readonly IGameEvent<ItemStatusChangedEventArgs> _statusChanged = null;

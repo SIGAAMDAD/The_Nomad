@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Inventory;
@@ -24,8 +25,27 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		public IReadOnlyCollection<IStorageUnit> StorageUnits => _units;
 		private readonly List<IStorageUnit> _units = new();
 
+		private bool _isDisposed = false;
+
 		public void Dispose()
 		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			Dispose( true );
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		protected virtual void Dispose( bool disposing )
+		{
+		}
+
+		protected void AddStorageUnit( IStorageUnit storageUnit )
+		{
+			_units.Add( storageUnit ?? throw new ArgumentNullException( nameof( storageUnit ) ) );
 		}
 
 		public bool TryGetFirearm( ItemInstanceId itemId, out FirearmDefinition firearm )

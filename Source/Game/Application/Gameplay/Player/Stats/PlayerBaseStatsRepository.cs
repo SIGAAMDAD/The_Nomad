@@ -114,6 +114,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 
 			_baseStatChanged.Publish(
 				new PlayerBaseStatChangedEventArgs(
+					_playerId,
 					oldValue,
 					value,
 					type

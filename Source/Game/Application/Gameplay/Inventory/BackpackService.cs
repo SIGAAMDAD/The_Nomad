@@ -25,8 +25,8 @@ using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Player.State;
 using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Prefabs;
 using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Inventory
 {
@@ -43,6 +43,20 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 	internal sealed class BackpackService : ItemInstance, IBackpackService
 	{
+		private sealed record BackpackItemDefinition : ItemDefinition
+		{
+			public override ItemType BaseType => ItemType.QuestItem;
+		}
+
+		private static readonly ItemDefinition BackpackDefinition = new BackpackItemDefinition {
+			Id = new ItemDefinitionId( new InternString( "ITEM_PLAYER_BACKPACK" ) ),
+			Name = new InternString( "ITEM_PLAYER_BACKPACK_NAME" ),
+			JournalEntry = InternString.Empty,
+			Weight = 0.0f,
+			IsStackable = false,
+			BaseCost = 0.0f
+		};
+
 		public InternString StorageId => _inventory.StorageId;
 		public InventoryContainerType ContainerType => _inventory.ContainerType;
 		public InventoryRules Rules => _inventory.Rules;
@@ -64,8 +78,9 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 		private readonly IDisposable _stateChanged;
 
+		private readonly BackpackUnequippedPrefab _unequippedPrefab;
+
 		private PlayerStateId _currentState = PlayerStateId.Idle;
-		private bool _isDisposed = false;
 
 		public IGameEvent<BackpackStatusChangedEventArgs> StateChanged => _statusChanged;
 		private readonly IGameEvent<BackpackStatusChangedEventArgs> _statusChanged = null;
@@ -93,9 +108,10 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			BackpackStatus initialStatus,
 			IPlayerStateReader stateReader,
 			IStorageUnit inventory,
+			BackpackUnequippedPrefab prefab,
 			IGameEventRegistryService eventFactory
 		)
-			: base( ItemInstanceId.Invalid, null, eventFactory )
+			: base( new ItemInstanceId( Guid.NewGuid() ), BackpackDefinition, eventFactory )
 		{
 			RangeGuard.ThrowIfOutOfRange( (int)initialStatus, (int)BackpackStatus.Min, (int)BackpackStatus.Max, nameof( initialStatus ) );
 			ArgumentGuard.ThrowIfNull( stateReader, nameof( stateReader ) );
@@ -114,6 +130,8 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 				BackpackUnequipRequestedEventArgs.NameSpace
 			);
 
+			_unequippedPrefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
+
 			_stateChanged = stateReader.StateChanged.Subscribe( OnStateChanged );
 		}
 
@@ -125,18 +143,16 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <summary>
 		///
 		/// </summary>
-		public void Dispose()
+		protected override void Dispose( bool disposing )
 		{
-			if ( _isDisposed ) {
+			if ( !disposing ) {
 				return;
 			}
+			base.Dispose( disposing );
 
 			_statusChanged.Dispose();
 			_unequipRequested.Dispose();
 			_stateChanged.Dispose();
-
-			GC.SuppressFinalize( this );
-			_isDisposed = true;
 		}
 
 		/*

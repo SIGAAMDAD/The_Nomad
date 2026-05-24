@@ -16,11 +16,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Godot;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
-using Nomad.UI;
 
 namespace Nomad.Game.Prefabs
 {
-	internal sealed partial class HealthBarView : EngineColorRect, IHealthBarView
+	internal sealed partial class HealthBarView : ColorRect, IHealthBarView
 	{
 		private readonly HudComponentView _impl;
 		private ShaderMaterial _material;
@@ -40,6 +39,11 @@ namespace Nomad.Game.Prefabs
 		public void SetValue( float value )
 		{
 			SetHealth( value );
+		}
+
+		public void SetVisibility( bool visible )
+		{
+			_impl.Visible = visible;
 		}
 
 		public void SetSizeParameters()
@@ -79,9 +83,9 @@ namespace Nomad.Game.Prefabs
 			_warningOverlay.Visible = visible;
 		}
 
-		protected override void OnInit()
+		public override void _Ready()
 		{
-			base.OnInit();
+			base._Ready();
 
 			_material = (ShaderMaterial)Material;
 

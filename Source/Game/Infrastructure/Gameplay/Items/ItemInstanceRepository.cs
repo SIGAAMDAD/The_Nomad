@@ -20,6 +20,7 @@ using Nomad.Game.Application.Gameplay.Combat;
 using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Interfaces.Inventory;
 using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Save.Extensions;
 using Nomad.Save.Services;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items

@@ -157,6 +157,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_values[(int)type] = newValue;
 			_resourceChanged.Publish(
 				new PlayerResourceChangedEventArgs(
+					_playerId,
 					oldValue,
 					newValue,
 					type

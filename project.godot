@@ -54,6 +54,10 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="TheNomad"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/radial_progress/plugin.cfg")
+
 [internationalization]
 
 locale/translation_remaps={}

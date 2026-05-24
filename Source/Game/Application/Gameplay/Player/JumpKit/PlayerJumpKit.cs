@@ -89,7 +89,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 
 			eventFactory
 				.GetEvent<ButtonActionEventArgs>(
-					$"Dash:{Id}:{ButtonActionEventArgs.Name}",
+					$"Dash:{ButtonActionEventArgs.Name}",
 					ButtonActionEventArgs.NameSpace
 				)
 				.Subscribe( OnDashActionTriggered );
@@ -120,27 +120,27 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 			var eventFactory = GameEventRegistry.Instance;
 
 			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
-				$"{Id}:{PlayerDashBurnoutEventArgs.Name}",
+				PlayerDashBurnoutEventArgs.Name,
 				PlayerDashBurnoutEventArgs.NameSpace
 			);
 
 			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
-				$"{Id}:{PlayerDashRechargedEventArgs.Name}",
+				PlayerDashRechargedEventArgs.Name,
 				PlayerDashRechargedEventArgs.NameSpace
 			);
 
 			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
-				$"{Id}:{PlayerDashStartEventArgs.Name}",
+				PlayerDashStartEventArgs.Name,
 				PlayerDashStartEventArgs.NameSpace
 			);
 
 			_dashEnded = eventFactory.GetEvent<PlayerDashEndedEventArgs>(
-				$"{Id}:{PlayerDashEndedEventArgs.Name}",
+				PlayerDashEndedEventArgs.Name,
 				PlayerDashEndedEventArgs.NameSpace
 			);
 
 			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				$"{Id}:{PlayerResourceChangedEventArgs.Name}",
+				PlayerResourceChangedEventArgs.Name,
 				PlayerResourceChangedEventArgs.NameSpace
 			);
 		}
@@ -272,6 +272,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		{
 			_resourceChanged.Publish(
 				new PlayerResourceChangedEventArgs(
+					Id,
 					0.0f,
 					result.BurnoutAmount,
 					PlayerResourceType.JumpKitHeat

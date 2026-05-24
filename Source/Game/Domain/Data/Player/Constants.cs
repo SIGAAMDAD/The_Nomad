@@ -25,6 +25,8 @@ namespace Nomad.Game.Domain.Data.Player
 
 		public const float SLIDE_DURATION = 1.0f;
 
+		public const int MAX_HOT_SLOTS = 6;
+
 		public static readonly Guid LOCAL_GUID = Guid.NewGuid();
 	};
 };

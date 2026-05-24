@@ -13,9 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Drawing;
-using System.Numerics;
-using Nomad.Core.UI;
+using Godot;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
@@ -27,16 +25,16 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 			set => _component.Visible = value;
 		}
 
-		private readonly IUIElement _component;
+		private readonly Control _component;
 
-		public HudComponentView( IUIElement component )
+		public HudComponentView( Control component )
 		{
 			_component = component;
 		}
 
-		public void SetColor( Vector4 color )
+		public void SetColor( System.Numerics.Vector4 color )
 		{
-			_component.Color = Color.FromArgb( (int)color.W, (int)color.X, (int)color.Y, (int)color.Z );
+			_component.Modulate = new Color( color.X, color.Y, color.Z, color.W );
 		}
 	};
 };

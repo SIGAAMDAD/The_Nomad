@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Interactables;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Domain.Interfaces.Entities
 {
@@ -33,6 +34,8 @@ namespace Nomad.Game.Domain.Interfaces.Entities
 	{
 		CheckpointInstanceId CheckpointId { get; }
 
+		PlayerId CurrentPlayerId { get; }
+
 		CheckpointStatus Status { get; }
 
 		bool CanRest { get; }
@@ -41,7 +44,8 @@ namespace Nomad.Game.Domain.Interfaces.Entities
 
 		uint CheckpointRevision { get; }
 
-		bool ActivateCheckpoint( EntityId actorId );
-		bool Rest( EntityId actorId );
+		bool TryActivateCheckpoint( PlayerId playerId );
+		bool TryRest( PlayerId playerId );
+		bool TryLeave( PlayerId playerId );
 	};
 };

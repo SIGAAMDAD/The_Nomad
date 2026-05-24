@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
 using Nomad.Game.Domain.Events.Player;
 
@@ -26,12 +27,22 @@ namespace Nomad.Game.Domain.Interfaces.Player.Inventory
 	/// </summary>
 	public interface IWeaponSlotService : IDisposable
 	{
+		/// <summary>
+		///
+		/// </summary>
 		WeaponSlotIndex Current { get; }
 
 		[Event( nameSpace: "Nomad.Game.Domain.Events.Player" )]
-		[EventPayload( "PreviousSlot", typeof( WeaponSlotIndex ), Order = 1 )]
-		[EventPayload( "CurrentSlot", typeof( WeaponSlotIndex ), Order = 2 )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "PreviousSlot", typeof( WeaponSlotIndex ), Order = 2 )]
+		[EventPayload( "CurrentSlot", typeof( WeaponSlotIndex ), Order = 3 )]
 		IGameEvent<WeaponSlotChangedEventArgs> WeaponSlotChanged { get; }
+
+		[Event( nameSpace: "Nomad.Game.Domain.Events.Player" )]
+		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
+		[EventPayload( "PreviousWeaponId", typeof( ItemInstanceId ), Order = 2 )]
+		[EventPayload( "CurrentWeaponId", typeof( ItemInstanceId ), Order = 3 )]
+		IGameEvent<WeaponSlotContentsChangedEventArgs> WeaponSlotContentsChanged { get; }
 
 		/// <summary>
 		///
@@ -55,5 +66,19 @@ namespace Nomad.Game.Domain.Interfaces.Player.Inventory
 		/// <param name="weapon"></param>
 		/// <returns></returns>
 		bool TrySetSlot( WeaponSlotIndex slot, ItemInstanceId weapon );
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		bool TrySwapSlots( WeaponSlotIndex a, WeaponSlotIndex b );
+
+		/// <summary>
+		/// Attempts to clear all weapon slots.
+		/// </summary>
+		/// <returns></returns>
+		bool TryClearSlots();
 	};
 };

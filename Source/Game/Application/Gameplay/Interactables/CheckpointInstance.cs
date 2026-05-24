@@ -14,18 +14,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Interfaces.Entities;
-using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Domain.Data.Multiplayer;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -47,46 +44,109 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 
 		public CheckpointInstanceId CheckpointId => _instanceId;
 
-		public bool IsTemporary => false;
-		public bool CanRest => _status == CheckpointStatus.Activated;
+		public PlayerId CurrentPlayerId => _currentPlayerId;
+		private PlayerId _currentPlayerId = PlayerId.Invalid;
+
+		public bool IsTemporary => _definition.IsTemporary;
+		public bool CanRest => _status == CheckpointStatus.Activated || ( IsTemporary && _status == CheckpointStatus.Inactive );
 
 		public uint CheckpointRevision => _revision;
 		private uint _revision = 0;
 
-		private readonly IDisposable _saveBegin;
-		private readonly IDisposable _loadBegin;
-
 		private readonly CheckpointDefinition _definition;
 		private readonly CheckpointInstanceId _instanceId;
 
-		private ItemInstanceId _backpackStorageId = ItemInstanceId.Invalid;
-
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab prefab, IGameEventRegistryService eventFactory )
-			: base( prefab )
+			: this( definition, instanceId, prefab, EntityFlags.Interactable | EntityFlags.Persistent )
+		{
+		}
+
+		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId )
+			: this( definition, instanceId, null, EntityFlags.Interactable | EntityFlags.Transient )
+		{
+		}
+
+		private CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab? prefab, EntityFlags flags )
+			: base(
+				prefab,
+				new EntityId( instanceId.Value ),
+				RequireDefinition( definition ).Id.Value,
+				RequireDefinition( definition ).DisplayName,
+				flags
+			)
 		{
 			_instanceId = instanceId;
-			_definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
+			_definition = definition;
+		}
+
+		private static CheckpointDefinition RequireDefinition( CheckpointDefinition definition )
+		{
+			return definition ?? throw new ArgumentNullException( nameof( definition ) );
 		}
 
 		private void SetStatus( CheckpointStatus status )
 		{
-			CheckpointStatus previousStatus = status;
+			if ( _status == status ) {
+				return;
+			}
+
 			_status = status;
 			_revision++;
 		}
 
-		public bool ActivateCheckpoint( EntityId actorId )
+		public bool TryActivateCheckpoint( PlayerId playerId )
 		{
+			playerId.ThrowIfInvalid( nameof( TryActivateCheckpoint ) );
+
+			if ( IsTemporary ) {
+				return false;
+			}
+
+			if ( _status != CheckpointStatus.Inactive ) {
+				return true;
+			}
+
 			SetStatus( CheckpointStatus.Activated );
 
 			return true;
 		}
 
-		public bool Rest( EntityId actorId )
+		public bool TryRest( PlayerId playerId )
 		{
+			playerId.ThrowIfInvalid( nameof( TryRest ) );
+
+			if ( _currentPlayerId.IsValid && _currentPlayerId != playerId ) {
+				return false;
+			}
+
 			if ( !CanRest ) {
 				return false;
 			}
+
+			if ( _status == CheckpointStatus.Inactive ) {
+				SetStatus( CheckpointStatus.Activated );
+			}
+
+			_currentPlayerId = playerId;
+			SetStatus( CheckpointStatus.Current );
+
+			return true;
+		}
+
+		public bool TryLeave( PlayerId playerId )
+		{
+			playerId.ThrowIfInvalid( nameof( TryLeave ) );
+
+			if ( _status != CheckpointStatus.Current ) {
+				return false;
+			}
+
+			if ( _currentPlayerId.IsValid && _currentPlayerId != playerId ) {
+				return false;
+			}
+
+			_currentPlayerId = PlayerId.Invalid;
+			SetStatus( CheckpointStatus.Activated );
 
 			return true;
 		}

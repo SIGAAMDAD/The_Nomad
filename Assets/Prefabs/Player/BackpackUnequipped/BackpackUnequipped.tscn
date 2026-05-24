@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b37b1hu3n2ci"]
+
+[ext_resource type="Script" uid="uid://cvnn1hevwg264" path="res://Assets/Prefabs/Player/BackpackUnequipped/BackpackUnequippedPrefab.cs" id="1_han30"]
+[ext_resource type="Texture2D" uid="uid://dqictsnk23726" path="res://Assets/Textures/Environment/BackpackUnequipped.png" id="1_sejf0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_han30"]
+size = Vector2(54, 48)
+
+[node name="BackpackUnequipped" type="Node2D" unique_id=291345598]
+script = ExtResource("1_han30")
+
+[node name="Zone" type="Area2D" parent="." unique_id=969459125]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=1935319537]
+shape = SubResource("RectangleShape2D_han30")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=300000469]
+texture = ExtResource("1_sejf0")

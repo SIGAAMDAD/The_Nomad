@@ -52,6 +52,7 @@ namespace Nomad.Game.Application
 		private IGameStateService _gameStateService;
 		private SaveGameController _saveController;
 		private MultiplayerCoordinator _multiplayerCoordinator;
+		private GameplayApplicationCoordinator _gameplayCoordinator;
 
 		/*
 		===============
@@ -80,6 +81,7 @@ namespace Nomad.Game.Application
 
 			var worldBootstrapper = new WorldBootstrapper( eventFactory, _worldLoader );
 			_gameFlowCoordinator = new GameFlowCoordinator( eventFactory, _gameStateService, cvarSystem, Logging.Instance );
+			_gameplayCoordinator = new GameplayApplicationCoordinator( eventFactory, locator );
 
 			_multiplayerCoordinator = MultiplayerBootstrapper.Initialize( ServiceRegistry.Instance, ServiceLocator.Instance );
 
@@ -101,6 +103,7 @@ namespace Nomad.Game.Application
 			base.OnShutdown();
 
 			_gameFlowCoordinator?.Dispose();
+			_gameplayCoordinator?.Dispose();
 			_menuManager?.Dispose();
 			_saveController?.Dispose();
 			_gameStateService?.Dispose();

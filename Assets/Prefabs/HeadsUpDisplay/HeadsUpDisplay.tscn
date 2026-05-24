@@ -7,7 +7,9 @@
 [ext_resource type="Script" uid="uid://bi4x0sxwbck6b" path="res://Assets/Prefabs/HeadsUpDisplay/RageBarView.cs" id="3_xs3se"]
 [ext_resource type="Texture2D" uid="uid://cp7mt2ochnjfp" path="res://icon.svg" id="5_kj2yv"]
 [ext_resource type="Script" uid="uid://cmim40wcvghc7" path="res://Assets/Prefabs/HeadsUpDisplay/DashStatusBarView.cs" id="5_uq2bp"]
+[ext_resource type="Script" uid="uid://bh18t5qaaayqq" path="res://Assets/Prefabs/HeadsUpDisplay/HotSlotsContainerView.cs" id="8_6bk6h"]
 [ext_resource type="Texture2D" uid="uid://d1a1a10i0k4rm" path="res://Assets/Textures/Effects/UserInterface/DashOverlay.png" id="8_otcf6"]
+[ext_resource type="PackedScene" uid="uid://deghgrpmlqm5n" path="res://Assets/Prefabs/HeadsUpDisplay/HotSlot/HotSlot.tscn" id="9_bqotp"]
 [ext_resource type="Texture2D" uid="uid://du26gbsfc8cl8" path="res://Assets/Textures/Effects/UserInterface/BloodStreaks.dds" id="9_khytw"]
 [ext_resource type="Texture2D" uid="uid://ba1gsw2vux4cm" path="res://Assets/Textures/Effects/UserInterface/BloodOverlay1.dds" id="10_bqotp"]
 [ext_resource type="Texture2D" uid="uid://bhcu070hk6qh4" path="res://Assets/Textures/Effects/UserInterface/MotionBlur.dds" id="11_h2pm7"]
@@ -24,8 +26,8 @@ resource_local_to_scene = true
 shader = ExtResource("2_0ao32")
 shader_parameter/health = 1.0
 shader_parameter/trail = 1.0
-shader_parameter/width = 800.0
-shader_parameter/height = 20.0
+shader_parameter/width = 400.0
+shader_parameter/height = 10.0
 shader_parameter/health_gradient = SubResource("GradientTexture1D_otcf6")
 shader_parameter/damaged_health_color = Color(0.6295712, 0, 0.10651501, 1)
 shader_parameter/healed_health_color = Color(0, 1, 0, 1)
@@ -51,8 +53,8 @@ gradient = SubResource("Gradient_otcf6")
 shader = ExtResource("2_0ao32")
 shader_parameter/health = 1.0
 shader_parameter/trail = 1.0
-shader_parameter/width = 800.0
-shader_parameter/height = 20.0
+shader_parameter/width = 400.0
+shader_parameter/height = 10.0
 shader_parameter/health_gradient = SubResource("GradientTexture1D_khytw")
 shader_parameter/damaged_health_color = Color(1.022, 1.022, 1.022, 1)
 shader_parameter/healed_health_color = Color(0.80784315, 0.41568628, 0.90588236, 1)
@@ -115,25 +117,29 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="StatBarContainer" type="VBoxContainer" parent="." unique_id=1228700349]
+[node name="UpperContainer" type="HBoxContainer" parent="MainHUD" unique_id=1998000432]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.625
-anchor_bottom = 0.07300001
-offset_right = -460.0
-offset_bottom = -3.800003
+anchor_right = 1.0
+anchor_bottom = 0.040000003
+grow_horizontal = 2
+size_flags_vertical = 6
 metadata/_edit_use_anchors_ = true
 
-[node name="HealthBar" type="ColorRect" parent="StatBarContainer" unique_id=251449667]
+[node name="StatBarContainer" type="VBoxContainer" parent="MainHUD/UpperContainer" unique_id=1228700349]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HealthBar" type="ColorRect" parent="MainHUD/UpperContainer/StatBarContainer" unique_id=251449667]
 material = SubResource("ShaderMaterial_otcf6")
-custom_minimum_size = Vector2(500, 30)
+custom_minimum_size = Vector2(400, 10)
 layout_mode = 2
 script = ExtResource("2_xk7bv")
 
-[node name="Overlay" type="Node" parent="StatBarContainer/HealthBar" unique_id=1612278476]
+[node name="Overlay" type="Node" parent="MainHUD/UpperContainer/StatBarContainer/HealthBar" unique_id=1612278476]
 metadata/_edit_use_anchors_ = true
 
-[node name="VeryLowHealth" type="TextureRect" parent="StatBarContainer/HealthBar/Overlay" unique_id=1415815265]
+[node name="VeryLowHealth" type="TextureRect" parent="MainHUD/UpperContainer/StatBarContainer/HealthBar/Overlay" unique_id=1415815265]
 visible = false
 texture_filter = 2
 anchors_preset = 15
@@ -144,7 +150,7 @@ grow_vertical = 2
 texture = ExtResource("10_bqotp")
 metadata/_edit_use_anchors_ = true
 
-[node name="WarningBars" type="TextureRect" parent="StatBarContainer/HealthBar/Overlay" unique_id=772991763]
+[node name="WarningBars" type="TextureRect" parent="MainHUD/UpperContainer/StatBarContainer/HealthBar/Overlay" unique_id=772991763]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -154,15 +160,15 @@ grow_vertical = 2
 texture = ExtResource("9_khytw")
 metadata/_edit_use_anchors_ = true
 
-[node name="RageBar" type="ColorRect" parent="StatBarContainer" unique_id=2013531205]
+[node name="RageBar" type="ColorRect" parent="MainHUD/UpperContainer/StatBarContainer" unique_id=2013531205]
 material = SubResource("ShaderMaterial_0ao32")
-custom_minimum_size = Vector2(500, 30)
+custom_minimum_size = Vector2(400, 10)
 layout_mode = 2
 script = ExtResource("3_xs3se")
 
-[node name="Overlay" type="Node" parent="StatBarContainer/RageBar" unique_id=1124518073]
+[node name="Overlay" type="Node" parent="MainHUD/UpperContainer/StatBarContainer/RageBar" unique_id=1124518073]
 
-[node name="ImageView" type="TextureRect" parent="StatBarContainer/RageBar/Overlay" unique_id=355348137]
+[node name="ImageView" type="TextureRect" parent="MainHUD/UpperContainer/StatBarContainer/RageBar/Overlay" unique_id=355348137]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -172,42 +178,64 @@ grow_vertical = 2
 texture = ExtResource("11_h2pm7")
 metadata/_edit_use_anchors_ = true
 
-[node name="LocationLabel" type="Label" parent="." unique_id=2041213495]
+[node name="HotSlotsContainer" type="VBoxContainer" parent="MainHUD" unique_id=497008511]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = -1
+anchor_left = 0.892
+anchor_top = 0.163
 anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 23.0
+anchor_bottom = 0.837
+offset_left = 0.39996338
+offset_top = 0.19999695
+offset_bottom = -0.2000122
 grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 10
+script = ExtResource("8_6bk6h")
 metadata/_edit_use_anchors_ = true
 
-[node name="CombatContainer" type="VBoxContainer" parent="." unique_id=209906830]
-custom_minimum_size = Vector2(160, 0)
+[node name="HotSlot0" parent="MainHUD/HotSlotsContainer" unique_id=483126325 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot1" parent="MainHUD/HotSlotsContainer" unique_id=426577831 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot2" parent="MainHUD/HotSlotsContainer" unique_id=10731724 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot3" parent="MainHUD/HotSlotsContainer" unique_id=1818924886 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot4" parent="MainHUD/HotSlotsContainer" unique_id=598585394 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot5" parent="MainHUD/HotSlotsContainer" unique_id=1213340026 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="LowerContainer" type="HBoxContainer" parent="MainHUD" unique_id=158499629]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.94200003
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -4.0
-offset_top = -43.0
-grow_horizontal = 0
+offset_top = -0.2000122
+grow_horizontal = 2
 grow_vertical = 0
-metadata/_edit_use_anchors_ = true
+size_flags_vertical = 10
 
-[node name="DashStatusBar" type="TextureRect" parent="CombatContainer" unique_id=1918011572]
+[node name="DashStatusBar" type="TextureRect" parent="MainHUD/LowerContainer" unique_id=1918011572]
 material = SubResource("ShaderMaterial_xs3se")
 custom_minimum_size = Vector2(80, 10)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 0
 texture = ExtResource("5_kj2yv")
 expand_mode = 2
 script = ExtResource("5_uq2bp")
 
-[node name="Overlay" type="Node" parent="CombatContainer/DashStatusBar" unique_id=1452871251]
+[node name="Overlay" type="Node" parent="MainHUD/LowerContainer/DashStatusBar" unique_id=1452871251]
 
-[node name="ImageView" type="TextureRect" parent="CombatContainer/DashStatusBar/Overlay" unique_id=476288591]
+[node name="ImageView" type="TextureRect" parent="MainHUD/LowerContainer/DashStatusBar/Overlay" unique_id=476288591]
 visible = false
 texture_filter = 2
 anchors_preset = 15
@@ -218,29 +246,22 @@ grow_vertical = 2
 texture = ExtResource("8_otcf6")
 metadata/_edit_use_anchors_ = true
 
-[node name="WeaponStatusContainer" type="MarginContainer" parent="CombatContainer" unique_id=109358728]
-custom_minimum_size = Vector2(0, 160)
+[node name="LocationLabel" type="Label" parent="MainHUD/LowerContainer" unique_id=2041213495]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="WeaponStatusContainer" type="VBoxContainer" parent="MainHUD/LowerContainer" unique_id=316757214]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WeaponIcon" type="TextureRect" parent="MainHUD/LowerContainer/WeaponStatusContainer" unique_id=503786097]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="MainHUD/LowerContainer/WeaponStatusContainer" unique_id=1588688972]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CombatContainer/WeaponStatusContainer" unique_id=316757214]
-layout_mode = 2
-
-[node name="WeaponIcon" type="TextureRect" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=503786097]
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=1588688972]
-layout_mode = 2
-
-[node name="AmmoCounterLabel" type="Label" parent="CombatContainer/WeaponStatusContainer/VBoxContainer" unique_id=601177881]
+[node name="AmmoCounterLabel" type="Label" parent="MainHUD/LowerContainer/WeaponStatusContainer" unique_id=601177881]
 layout_mode = 2
 horizontal_alignment = 1
-
-[node name="DateLabel" type="Label" parent="." unique_id=306050572]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.9620001
-anchor_right = 0.26900002
-anchor_bottom = 1.0
-offset_top = -0.20007324
-offset_right = -0.2000122
-grow_vertical = 0

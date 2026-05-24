@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bktaccmkkt34m"]
 
+[ext_resource type="Script" uid="uid://8j24p4qsw3n2" path="res://Assets/Prefabs/Meliora/CheckpointPrefab.cs" id="1_p4dx3"]
 [ext_resource type="SpriteFrames" uid="uid://fx2lnx6ui0rs" path="res://Assets/Animations/Environment/Meliora.tres" id="1_u81d1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ip35x"]
@@ -9,6 +10,7 @@ radius = 89.560036
 size = Vector2(81, 44)
 
 [node name="MelioraRoot" type="Node2D" unique_id=1146163250]
+script = ExtResource("1_p4dx3")
 
 [node name="Zone" type="Area2D" parent="." unique_id=312689260]
 collision_layer = 512

@@ -40,6 +40,7 @@ namespace Nomad.Game.Prefabs
 	public partial class WorldBase : EngineSceneObject
 	{
 		private PlayerSpawnService _spawnService;
+		private PlayerRepository _playerRepository;
 		private ISceneManager _sceneManager;
 		private GameplayScreen _gameOverlay;
 
@@ -59,7 +60,10 @@ namespace Nomad.Game.Prefabs
 
 			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 
-			_spawnService = new PlayerSpawnService( eventFactory, new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" ), spawnApplicator, profileResolver, logger );
+			_playerRepository = new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" );
+			serviceRegistry.AddSingleton<IPlayerRuntimeRegistry>( _playerRepository );
+
+			_spawnService = new PlayerSpawnService( eventFactory, _playerRepository, spawnApplicator, profileResolver, logger );
 		}
 
 		/*
@@ -84,6 +88,7 @@ namespace Nomad.Game.Prefabs
 			base.OnShutdown();
 
 			_spawnService?.Dispose();
+			_playerRepository?.Dispose();
 		}
 	};
 };

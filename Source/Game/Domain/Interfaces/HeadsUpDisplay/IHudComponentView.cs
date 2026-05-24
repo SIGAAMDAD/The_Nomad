@@ -14,10 +14,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Numerics;
-using Nomad.Core.UI;
 
 namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 {
+	/// <summary>
+	///
+	/// </summary>
 	public interface IHudComponentView
 	{
 		bool Visible { get; }

@@ -44,6 +44,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		public WeaponSlotIndex Current => _activeSlot;
 		private WeaponSlotIndex _activeSlot = WeaponSlotIndex.LightPrimary;
 
+		private readonly PlayerId _playerId;
+
 		private readonly IDisposable _nextWeapon;
 		private readonly IDisposable _prevWeapon;
 		private readonly IDisposable _switchToPrimaryWeapon;
@@ -55,6 +57,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 		public IGameEvent<WeaponSlotChangedEventArgs> WeaponSlotChanged => _weaponSlotChanged;
 		private readonly IGameEvent<WeaponSlotChangedEventArgs> _weaponSlotChanged = null;
+
+		public IGameEvent<WeaponSlotContentsChangedEventArgs> WeaponSlotContentsChanged => _weaponSlotContentsChanged;
+		private readonly IGameEvent<WeaponSlotContentsChangedEventArgs> _weaponSlotContentsChanged = null;
 
 		/*
 		===============
@@ -71,9 +76,16 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			playerId.ThrowIfInvalid( nameof( PlayerWeaponSlotService ) );
 
+			_playerId = playerId;
+
 			_weaponSlotChanged = eventFactory.GetEvent<WeaponSlotChangedEventArgs>(
 				WeaponSlotChangedEventArgs.Name,
 				WeaponSlotChangedEventArgs.NameSpace
+			);
+
+			_weaponSlotContentsChanged = eventFactory.GetEvent<WeaponSlotContentsChangedEventArgs>(
+				WeaponSlotContentsChangedEventArgs.Name,
+				WeaponSlotContentsChangedEventArgs.NameSpace
 			);
 
 			_nextWeapon = eventFactory
@@ -212,6 +224,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 			_weaponSlotChanged.Publish(
 				new WeaponSlotChangedEventArgs(
+					_playerId,
 					previousSlot,
 					_activeSlot
 				)
@@ -316,6 +329,47 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 			if ( args.Phase == InputActionPhase.Started ) {
 				SetActiveSlot( WeaponSlotIndex.HeavySidearm );
 			}
+		}
+
+		/*
+		===============
+		TrySwapSlots
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		public bool TrySwapSlots( WeaponSlotIndex a, WeaponSlotIndex b )
+		{
+			var tmp = _slots[ (int)b ];
+
+			if ( !TrySetSlot( b, _slots[ (int)a ] ) ) {
+				return false;
+			}
+
+			if ( !TrySetSlot( a, tmp ) ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/*
+		===============
+		TryClearSlots
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
+		public bool TryClearSlots()
+		{
+			Array.Fill( _slots, ItemInstanceId.Invalid );
+			return true;
 		}
 	};
 };
