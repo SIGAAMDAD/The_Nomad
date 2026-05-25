@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
@@ -32,14 +33,14 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 
 	internal sealed class ComponentGroup : IDisposable
 	{
-		private readonly List<HudComponentPresenter> _components;
+		private readonly List<IHudComponentPresenter> _components;
 		private readonly Timer _fadeTimer;
 
 		private bool _active = false;
 
 		private bool _isDisposed = false;
 
-		public ComponentGroup( List<HudComponentPresenter> components, float fadeTimeout = 1.0f )
+		public ComponentGroup( List<IHudComponentPresenter> components, float fadeTimeout = 1.0f )
 		{
 			_components = components;
 

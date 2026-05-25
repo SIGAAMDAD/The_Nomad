@@ -22,10 +22,10 @@ using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar
 {
-	internal sealed class RageBarPresenter : HudComponentPresenter
+	internal sealed class RageBarPresenter : HudComponentPresenter<IRageBarView>
 	{
-		private readonly IRageBarView _view;
 		private readonly PlayerId _playerId;
+
 		private readonly IDisposable _resourceChanged;
 		private readonly IDisposable _derivedStatChanged;
 
@@ -37,7 +37,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBa
 			: base( view )
 		{
 			_playerId = playerId;
-			_view = view;
 
 			_resourceChanged = eventFactory
 				.GetEvent<PlayerResourceChangedEventArgs>(
@@ -68,16 +67,16 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBa
 
 		public override void Render( float delta )
 		{
-			_view.SetSizeParameters();
+			view.SetSizeParameters();
 
 			if ( _maxRage <= 0.0f ) {
-				_view.SetValue( 0.0f );
-				_view.SetTrail( 0.0f );
+				view.SetValue( 0.0f );
+				view.SetTrail( 0.0f );
 				return;
 			}
 
-			float rage = _view.GetRage();
-			float trail = _view.GetTrail();
+			float rage = view.GetRage();
+			float trail = view.GetTrail();
 
 			float deltaFrac = _trailSpeed * delta / _maxRage;
 			float diff = rage - trail;
@@ -90,13 +89,13 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBa
 				trail = MathF.Max( trail - deltaFrac, rage );
 			}
 
-			_view.SetTrail( trail );
+			view.SetTrail( trail );
 		}
 
 		private void OnRageChanged()
 		{
 			float ratio = _maxRage > 0.0f ? Math.Clamp( _rage / _maxRage, 0.0f, 1.0f ) : 0.0f;
-			_view.SetValue( ratio );
+			view.SetValue( ratio );
 		}
 
 		private void OnDerivedStatChanged( in PlayerDerivedStatChangedEventArgs args )

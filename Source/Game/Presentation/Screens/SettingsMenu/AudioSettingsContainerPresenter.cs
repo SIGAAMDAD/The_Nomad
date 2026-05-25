@@ -20,13 +20,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	AudioSettingsContainerPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class AudioSettingsContainerPresenter : ISettingsSectionPresenter
@@ -52,11 +52,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public void Reset()
 		{
 			_model.Reset();
+			SyncView();
 		}
 
 		public void Save()
 		{
 			_model.Save();
+			SyncView();
 		}
 
 		/*
@@ -65,7 +67,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void SyncView()
 		{

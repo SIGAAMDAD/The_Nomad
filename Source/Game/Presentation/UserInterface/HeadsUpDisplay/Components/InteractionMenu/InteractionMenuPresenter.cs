@@ -16,72 +16,145 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using Godot;
+using Nomad.Core.Engine.Services;
+using Nomad.Core.Events;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Prefabs;
+using Nomad.Input;
+using Nomad.Input.ValueObjects;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.InteractionMenu
 {
-	internal sealed class InteractionMenuPresenter : IDisposable
+	/*
+	===================================================================================
+
+	InteractionMenuPresenter
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class InteractionMenuPresenter : HudComponentPresenter<IInteractionMenuView>
 	{
 		private readonly PlayerId _playerId;
-		private readonly HeadsUpDisplayView _view;
+
 		private readonly List<InteractionMenuOption> _options = new List<InteractionMenuOption>( 6 );
 
-		private InteractableRoot? _focused;
-		private bool _menuVisible = false;
-		private bool _wasInteractPressed = false;
-		private bool _isDisposed = false;
+		private readonly IDisposable _interactAction;
 
-		public InteractionMenuPresenter( PlayerId playerId, HeadsUpDisplayView view )
+		private readonly ILocalizationService _localizationService;
+
+		private InteractableRoot? _focused;
+
+		/*
+		===============
+		InteractionMenuPresenter
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="view"></param>
+		/// <param name="eventFactory"></param>
+		/// <param name="localizationService"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public InteractionMenuPresenter(
+			PlayerId playerId,
+			IInteractionMenuView view,
+			IGameEventRegistryService eventFactory,
+			ILocalizationService localizationService
+		)
+			: base( view )
 		{
 			_playerId = playerId;
-			_view = view ?? throw new ArgumentNullException( nameof( view ) );
+			_localizationService = localizationService ?? throw new ArgumentNullException( nameof( localizationService ) );
 
 			InteractableRoot.InteractionFocusEntered += OnInteractionFocusEntered;
 			InteractableRoot.InteractionFocusExited += OnInteractionFocusExited;
-			_view.InteractionOptionPressed += OnInteractionOptionPressed;
+			view.OptionPressed += OnInteractionOptionPressed;
+
+			_interactAction = (eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) ))
+				.GetEvent<ButtonActionEventArgs>(
+					$"Interact:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( OnInteractActionTriggered );
 		}
 
-		public void Dispose()
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="disposing"></param>
+		protected override void Dispose( bool disposing )
 		{
-			if ( _isDisposed ) {
+			if ( !disposing ) {
 				return;
 			}
+			base.Dispose( disposing );
 
 			InteractableRoot.InteractionFocusEntered -= OnInteractionFocusEntered;
 			InteractableRoot.InteractionFocusExited -= OnInteractionFocusExited;
-			_view.InteractionOptionPressed -= OnInteractionOptionPressed;
-
-			_isDisposed = true;
+			view.OptionPressed -= OnInteractionOptionPressed;
+			_interactAction.Dispose();
 		}
 
-		public void Render()
+		/*
+		===============
+		Render
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
+		public override void Render( float delta )
 		{
-			bool interactPressed = global::Godot.Input.IsKeyPressed( Key.E );
-
-			if ( interactPressed && !_wasInteractPressed ) {
-				OnInteractPressed();
-			}
-
-			_wasInteractPressed = interactPressed;
 		}
 
+		/*
+		===============
+		OnInteractionFocusEntered
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="interactable"></param>
+		/// <param name="playerId"></param>
 		private void OnInteractionFocusEntered( InteractableRoot interactable, PlayerId playerId )
 		{
 			if ( playerId != _playerId ) {
-				GD.Print( $"PlayerId({playerId.Id}) != PlayerId({_playerId.Id})" );
 				return;
 			}
 
 			_focused = interactable;
-			_menuVisible = false;
-			GD.Print( "Showing interaction prompt..." );
 
-			_view.HideInteractionMenu();
-			_view.ShowInteractionPrompt( interactable.InteractionPrompt.ToString() );
+			view.HideMenu();
+			view.ShowPrompt(
+				_localizationService.Translate( interactable.InteractionPrompt )
+			);
 		}
 
+		/*
+		===============
+		OnInteractionFocusExited
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="interactable"></param>
+		/// <param name="playerId"></param>
 		private void OnInteractionFocusExited( InteractableRoot interactable, PlayerId playerId )
 		{
 			if ( playerId != _playerId || _focused != interactable ) {
@@ -90,28 +163,60 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Intera
 
 			_focused = null;
 			_options.Clear();
-			_menuVisible = false;
 
-			_view.HideInteractionPrompt();
-			_view.HideInteractionMenu();
+			view.HidePrompt();
+			view.HideMenu();
 		}
 
+		/*
+		===============
+		OnInteractActionTriggered
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnInteractActionTriggered( in ButtonActionEventArgs args )
+		{
+			if ( args.Phase != InputActionPhase.Canceled ) {
+				return;
+			}
+
+			OnInteractPressed();
+			view.HidePrompt();
+		}
+
+		/*
+		===============
+		OnInteractPressed
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void OnInteractPressed()
 		{
 			if ( _focused == null ) {
 				return;
 			}
 
-			if ( !_menuVisible ) {
-				_focused.RequestInteraction( _playerId, _focused.PrimaryInteractionKind );
-				BuildAndShowMenu();
+			var result = _focused.RequestInteraction( _playerId, _focused.PrimaryInteractionKind );
+			if ( result.Equals( EntityInteractionResult.Failed ) ) {
 				return;
 			}
 
-			_view.HideInteractionMenu();
-			_menuVisible = false;
+			BuildAndShowMenu();
 		}
 
+		/*
+		===============
+		BuildAndShowMenu
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void BuildAndShowMenu()
 		{
 			if ( _focused == null ) {
@@ -120,10 +225,22 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Intera
 
 			_options.Clear();
 			_focused.BuildInteractionOptions( _options );
-			_view.ShowInteractionMenu( _options );
-			_menuVisible = _options.Count > 0;
+			view.ShowMenu( _options );
+
+			if ( _options.Count == 0 ) {
+				view.HideMenu();
+			}
 		}
 
+		/*
+		===============
+		OnInteractionOptionPressed
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="optionIndex"></param>
 		private void OnInteractionOptionPressed( int optionIndex )
 		{
 			if ( _focused == null || optionIndex < 0 || optionIndex >= _options.Count ) {
@@ -134,8 +251,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Intera
 			_focused.RequestInteraction( _playerId, option.Kind );
 
 			if ( option.Kind == EntityInteractionKind.Close ) {
-				_view.HideInteractionMenu();
-				_menuVisible = false;
+				view.HideMenu();
 			}
 		}
 	};

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Util;
+using Nomad.Game.Application.Gameplay.Interactables;
+using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Data.Multiplayer;
 
@@ -30,6 +32,8 @@ namespace Nomad.Game.Prefabs
 		public event Action<PlayerId> PlayerEntered;
 		public event Action<PlayerId> PlayerExited;
 
+		protected InteractableAggregate? aggregate = null;
+
 		public virtual InternString InteractionPrompt => new InternString( "Interact" );
 		public virtual EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Use;
 
@@ -40,13 +44,23 @@ namespace Nomad.Game.Prefabs
 
 		public virtual EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
 		{
-			return EntityInteractionResult.InvalidTarget();
+			if ( aggregate == null ) {
+				return EntityInteractionResult.Failed;
+			}
+
+			return aggregate.Interact(
+				EntityInteractionContext
+					.Simple(
+						actorId: new EntityId( playerId.Id ),
+						targetId: aggregate.Id,
+						kind: kind
+					)
+			);
 		}
 
 		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
-				GD.Print( "Player Entered" );
 				PlayerEntered?.Invoke( player.PeerId );
 				InteractionFocusEntered?.Invoke( this, player.PeerId );
 			}
@@ -55,7 +69,6 @@ namespace Nomad.Game.Prefabs
 		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
-				GD.Print( "Player Exited" );
 				PlayerExited?.Invoke( player.PeerId );
 				InteractionFocusExited?.Invoke( this, player.PeerId );
 			}

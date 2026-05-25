@@ -15,15 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Core.Util;
-using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Domain.Data.Entities;
 using Nomad.Game.Domain.Data.Interactables;
 using Nomad.Game.Domain.Events.Interactables;
 using Nomad.Game.Domain.Interfaces.Entities;
 using Nomad.Game.Prefabs;
-using Nomad.Game.Domain.Data.Items;
 using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Core.Compatibility.Guards;
+using BenchmarkDotNet.Exporters;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -61,11 +60,9 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		private readonly IGameEvent<CheckpointLeaveRequestedEventArgs>? _leaveRequested;
 
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab prefab, IGameEventRegistryService eventFactory )
-			: this( definition, instanceId, prefab, EntityFlags.Interactable | EntityFlags.Persistent )
+			: this( definition, instanceId, prefab, EntityFlags.Interactable | EntityFlags.Persistent, eventFactory )
 		{
-			if ( eventFactory == null ) {
-				throw new ArgumentNullException( nameof( eventFactory ) );
-			}
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_activationRequested = eventFactory.GetEvent<CheckpointActivationRequestedEventArgs>(
 				CheckpointActivationRequestedEventArgs.Name,
@@ -83,18 +80,19 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			);
 		}
 
-		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId )
-			: this( definition, instanceId, null, EntityFlags.Interactable | EntityFlags.Transient )
+		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, IGameEventRegistryService eventFactory )
+			: this( definition, instanceId, null, EntityFlags.Interactable | EntityFlags.Transient, eventFactory )
 		{
 		}
 
-		private CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab? prefab, EntityFlags flags )
+		private CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab? prefab, EntityFlags flags, IGameEventRegistryService eventFactory )
 			: base(
 				prefab,
 				new EntityId( instanceId.Value ),
 				RequireDefinition( definition ).Id.Value,
 				RequireDefinition( definition ).DisplayName,
-				flags
+				flags,
+				eventFactory
 			)
 		{
 			_instanceId = instanceId;
@@ -219,6 +217,19 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			SetStatus( CheckpointStatus.Activated );
 
 			return true;
+		}
+
+		public override EntityInteractionResult Interact( in EntityInteractionContext context )
+		{
+			switch ( context.Kind ) {
+				case EntityInteractionKind.Activate:
+					return TryActivateCheckpoint( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
+				case EntityInteractionKind.Close:
+					return TryLeave( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
+				case EntityInteractionKind.Rest:
+					return TryRest( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
+			}
+			return EntityInteractionResult.Failed;
 		}
 	};
 };

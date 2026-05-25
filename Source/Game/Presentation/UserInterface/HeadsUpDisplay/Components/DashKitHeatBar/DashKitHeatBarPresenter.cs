@@ -33,10 +33,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 	///
 	/// </summary>
 
-	internal sealed class DashKitHeatBarPresenter : HudComponentPresenter
+	internal sealed class DashKitHeatBarPresenter : HudComponentPresenter<IDashKitHeatBarView>
 	{
-		private readonly IDashKitHeatBarView _view;
-
 		private float _burnoutAmount = 0.0f;
 		private float _maxBurnout = 0.0f;
 
@@ -61,7 +59,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 			: base( view )
 		{
 			_playerId = playerId;
-			_view = view;
 
 			_resourceChanged = eventFactory
 				.GetEvent<PlayerResourceChangedEventArgs>(
@@ -91,8 +88,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 		/// </summary>
 		public override void Render( float delta )
 		{
-			_view.ShowOverlayVisibility( _lastFrameBurnoutAmount > _burnoutAmount );
-			_view.SetValue( _burnoutAmount );
 		}
 
 		private void OnResourceChanged( in PlayerResourceChangedEventArgs args )
@@ -102,6 +97,9 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 			}
 
 			_burnoutAmount = args.NewValue;
+
+			view.ShowOverlayVisibility( _lastFrameBurnoutAmount > _burnoutAmount );
+			view.SetValue( _burnoutAmount );
 		}
 	};
 };

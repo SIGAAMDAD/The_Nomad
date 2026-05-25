@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Game.Application.Configuration.Enums;
 using Nomad.Game.Domain.Data.Multiplayer;
@@ -46,7 +47,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		private readonly ComponentGroup _combatGroup;
 		private readonly ComponentGroup _neutralGroup;
 		private readonly ComponentGroup _explorationGroup;
-		private readonly InteractionMenuPresenter _interactionMenu;
 
 		private bool _isDisposed = false;
 
@@ -61,16 +61,16 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		/// <param name="playerId"></param>
 		/// <param name="root"></param>
 		/// <param name="eventFactory"></param>
-		public HudRoot( PlayerId playerId, HeadsUpDisplayView root, IGameEventRegistryService eventFactory )
+		public HudRoot( PlayerId playerId, HeadsUpDisplayView root, ILocalizationService localizationService, IGameEventRegistryService eventFactory )
 		{
 			_neutralGroup = new ComponentGroup(
-				new List<HudComponentPresenter>() {
+				new List<IHudComponentPresenter>() {
 					new HealthBarPresenter( playerId, root.GetNode<HealthBarView>( "NeutralHUD/StatBarContainer/HealthBar" ), eventFactory ),
 					new RageBarPresenter( playerId, root.GetNode<RageBarView>( "NeutralHUD/StatBarContainer/RageBar" ), eventFactory ),
 					new DashKitHeatBarPresenter( playerId, root.GetNode<DashStatusBarView>( "NeutralHUD/StatBarContainer/DashStatusBar" ), eventFactory ),
+					new InteractionMenuPresenter( playerId, root.GetNode<InteractionMenuView>( "NeutralHUD/InteractionMenu" ), eventFactory, localizationService )
 				}
 			);
-			_interactionMenu = new InteractionMenuPresenter( playerId, root );
 		}
 
 		/*
@@ -88,7 +88,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 			}
 
 			_neutralGroup.Dispose();
-			_interactionMenu.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -106,7 +105,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		public void Render( float delta )
 		{
 			_neutralGroup.Render( delta );
-			_interactionMenu.Render();
 		}
 	};
 };

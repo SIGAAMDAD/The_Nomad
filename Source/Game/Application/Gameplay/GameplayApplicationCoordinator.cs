@@ -23,10 +23,10 @@ using Nomad.Game.Application.Gameplay.Items;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Domain.Data.Gameplay;
 using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Events.Player;
 using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Domain.Interfaces.Interactables;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Core.Logger;
+using Nomad.Logger.Extensions;
 
 namespace Nomad.Game.Application.Gameplay
 {
@@ -34,13 +34,13 @@ namespace Nomad.Game.Application.Gameplay
 	{
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly IServiceLocator _services;
+		private readonly ILoggerCategory _category;
 
 		private InteractableApplicationCoordinator? _interactableCoordinator;
 		private InventoryApplicationCoordinator? _inventoryCoordinator;
-		private IItemSpawnService? _itemSpawner;
+		private ItemSpawner? _itemSpawner;
 
 		private readonly IDisposable _gameStateChanged;
-		private readonly IDisposable _playerSpawned;
 
 		private bool _isDisposed = false;
 
@@ -49,19 +49,15 @@ namespace Nomad.Game.Application.Gameplay
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_services = services ?? throw new ArgumentNullException( nameof( services ) );
 
+			var logger = _services.GetService<ILoggerService>();
+			_category = logger.For<GameplayApplicationCoordinator>();
+
 			_gameStateChanged = eventFactory
 				.GetEvent<GameStateChangedEventArgs>(
 					GameStateChangedEventArgs.Name,
 					GameStateChangedEventArgs.NameSpace
 				)
 				.Subscribe( OnGameStateChanged );
-
-			_playerSpawned = eventFactory
-				.GetEvent<PlayerSpawnResultEventArgs>(
-					PlayerSpawnResultEventArgs.Name,
-					PlayerSpawnResultEventArgs.NameSpace
-				)
-				.Subscribe( OnPlayerSpawned );
 		}
 
 		public void Dispose()
@@ -71,7 +67,7 @@ namespace Nomad.Game.Application.Gameplay
 			}
 
 			_gameStateChanged.Dispose();
-			_playerSpawned.Dispose();
+			_category.Dispose();
 			DisposeLevelServices();
 
 			GC.SuppressFinalize( this );
@@ -90,13 +86,6 @@ namespace Nomad.Game.Application.Gameplay
 			}
 		}
 
-		private void OnPlayerSpawned( in PlayerSpawnResultEventArgs args )
-		{
-			if ( args.Success ) {
-				CreateLevelServices();
-			}
-		}
-
 		private void CreateLevelServices()
 		{
 			if ( _interactableCoordinator != null || _inventoryCoordinator != null || _itemSpawner != null ) {
@@ -107,11 +96,14 @@ namespace Nomad.Game.Application.Gameplay
 				return;
 			}
 
+			_category.PrintLine( $"Initializing level services...." );
+
 			var sceneManager = _services.GetService<ISceneManager>();
 			var worldContent = _services.GetService<IWorldContentCache>();
 
 			_interactableCoordinator = new InteractableApplicationCoordinator( players, _eventFactory );
 			_services.Collection.AddSingleton<ICheckpointService>( _interactableCoordinator.CheckpointService );
+
 			_inventoryCoordinator = new InventoryApplicationCoordinator( players, _eventFactory );
 			_itemSpawner = new ItemSpawner( sceneManager, worldContent.Items, _eventFactory );
 		}

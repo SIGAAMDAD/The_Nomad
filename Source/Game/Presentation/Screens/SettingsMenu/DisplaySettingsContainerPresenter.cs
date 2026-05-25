@@ -17,13 +17,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	DisplaySettingsContainerPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class DisplaySettingsContainerPresenter : ISettingsSectionPresenter
@@ -37,7 +37,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="view"></param>
 		/// <param name="model"></param>
@@ -45,6 +45,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		{
 			_model = model;
 			_view = view;
+
+			_view.MonitorChanged += _model.SetMonitorIndex;
+			_view.WindowResolutionChanged += _model.SetWindowResolution;
+			_view.WindowModeChanged += _model.SetWindowMode;
+			_view.VSyncModeChanged += _model.SetVSyncMode;
+			_view.MaximumFramerateChanged += _model.SetMaximumFramerate;
 
 			SyncView();
 		}
@@ -55,11 +61,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Reset()
 		{
 			_model.Reset();
+			SyncView();
 		}
 
 		/*
@@ -68,11 +75,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void Save()
 		{
 			_model.Save();
+			SyncView();
 		}
 
 		/*
@@ -81,7 +89,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void SyncView()
 		{

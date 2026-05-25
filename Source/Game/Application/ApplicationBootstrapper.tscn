@@ -3,28 +3,34 @@
 [ext_resource type="Script" uid="uid://cta1e3desy0ki" path="res://Source/Game/Application/ApplicationBootstrapper.cs" id="1_7somw"]
 [ext_resource type="PackedScene" uid="uid://ctprgbdliiw5t" path="res://Assets/Prefabs/PostProcessing/PostProcessing.tscn" id="2_dy48w"]
 
-[node name="ApplicationBootstrapper" type="AspectRatioContainer" unique_id=1946506973]
+[node name="ApplicationBootstrapper" type="Control" unique_id=2109756975]
 process_mode = 3
 custom_minimum_size = Vector2(800, 600)
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-ratio = 2.0
 script = ExtResource("1_7somw")
 metadata/_edit_use_anchors_ = true
 
 [node name="PostProcessing1" parent="." unique_id=640013331 instance=ExtResource("2_dy48w")]
 
 [node name="PostProcessingContainer" type="SubViewportContainer" parent="." unique_id=1952815325]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 stretch = true
 mouse_target = true
+metadata/_edit_use_anchors_ = true
 
 [node name="PostProcessing" type="SubViewport" parent="PostProcessingContainer" unique_id=1674784600]
 handle_input_locally = false
-size = Vector2i(800, 400)
+size = Vector2i(800, 600)
 size_2d_override = Vector2i(800, 600)
 size_2d_override_stretch = true
 render_target_update_mode = 4

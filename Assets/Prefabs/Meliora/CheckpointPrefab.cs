@@ -50,7 +50,7 @@ namespace Nomad.Game.Prefabs
 		private CheckpointInstanceId _checkpointId = CheckpointInstanceId.Invalid;
 		private CheckpointInstance? _instance = null;
 
-		public override InternString InteractionPrompt => new InternString( "Interact" );
+		public override InternString InteractionPrompt => _instance.Status == CheckpointStatus.Inactive ? new InternString( "Activate" ) : new InternString( "Rest For a Moment" );
 		public override EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Activate;
 
 		public override void BuildInteractionOptions( List<InteractionMenuOption> options )
@@ -74,7 +74,7 @@ namespace Nomad.Game.Prefabs
 			base._Ready();
 
 			_checkpointId = CreateCheckpointId();
-			TryEnsureInstance();
+			CallDeferred( MethodName.TryEnsureInstance );
 		}
 
 		/*
@@ -149,9 +149,10 @@ namespace Nomad.Game.Prefabs
 		/// <returns></returns>
 		public override EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
 		{
-			return TryEnsureInstance()
-				? _instance!.RequestInteraction( playerId, kind )
-				: EntityInteractionResult.InvalidTarget();
+			return TryEnsureInstance() ?
+					_instance!.RequestInteraction( playerId, kind )
+				:
+					EntityInteractionResult.InvalidTarget();
 		}
 
 		/*
@@ -177,8 +178,17 @@ namespace Nomad.Game.Prefabs
 				return false;
 			}
 
-			return service is CheckpointService checkpointService
-				&& checkpointService.TryRegisterPermanent( CreateDefinition(), _checkpointId, this, out _instance );
+			if (
+				!( service is CheckpointService checkpointService
+				&& checkpointService.TryRegisterPermanent( CreateDefinition(), _checkpointId, this, out _instance )
+			) )
+			{
+				return false;
+			}
+
+			aggregate = _instance;
+
+			return true;
 		}
 
 		/*

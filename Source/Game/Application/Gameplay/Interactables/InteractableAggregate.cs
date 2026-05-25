@@ -74,18 +74,19 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// </summary>
 		/// <param name="prefab"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public InteractableAggregate( InteractableRoot prefab )
+		public InteractableAggregate( InteractableRoot prefab, IGameEventRegistryService eventFactory )
 			: this(
 				prefab,
 				new EntityId( Guid.NewGuid() ),
 				InternString.Empty,
 				InternString.Empty,
-				EntityFlags.Interactable
+				EntityFlags.Interactable,
+				eventFactory
 			)
 		{
 		}
 
-		protected InteractableAggregate( InteractableRoot? prefab, EntityId entityId, InternString definitionId, InternString displayName, EntityFlags flags )
+		protected InteractableAggregate( InteractableRoot? prefab, EntityId entityId, InternString definitionId, InternString displayName, EntityFlags flags, IGameEventRegistryService eventFactory )
 			: base( entityId, definitionId, displayName, EntityType.Interactable, flags )
 		{
 			_prefab = prefab;
@@ -96,6 +97,12 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 
 			_prefab.PlayerEntered += OnPlayerEntered;
 			_prefab.PlayerExited += OnPlayerExited;
+
+			_statusChanged = eventFactory
+				.GetEvent<PlayerInteractionStatusChangedEventArgs>(
+					PlayerInteractionStatusChangedEventArgs.Name,
+					PlayerInteractionStatusChangedEventArgs.NameSpace
+				);
 		}
 
 		/*

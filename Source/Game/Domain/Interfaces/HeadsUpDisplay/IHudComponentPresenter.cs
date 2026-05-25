@@ -13,16 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
-using Nomad.EngineUtils.Settings.Interfaces;
-using Nomad.Game.Application.UI;
+using System;
+using System.Drawing;
+using Nomad.Game.Application.Configuration.Enums;
 
-namespace Nomad.Game.Presentation.Screens.SettingsMenu
+namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 {
-	internal sealed class SettingsMenuModel
+	public interface IHudComponentPresenter : IDisposable
 	{
-		public SettingsMenuModel( AudioSettingsContainerModel audioModel )
-		{
-		}
+		HUDPreset Preset { get; }
+		Color Color { get; }
+		bool Visible { get; }
+
+		void Show();
+		void Hide();
+
+		void Render( float delta );
 	};
 };
