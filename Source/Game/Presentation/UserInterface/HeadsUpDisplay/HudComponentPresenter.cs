@@ -14,17 +14,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Drawing;
+using Nomad.Game.Application.Configuration.Enums;
 using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
-	internal abstract class HudComponentPresenter : IDisposable
+	internal abstract class HudComponentPresenter<TView> : IHudComponentPresenter
+		where TView : IHudComponentView
 	{
-		protected readonly IHudComponentView view;
+		protected readonly TView view;
 
 		private bool _isDisposed = false;
 
-		public HudComponentPresenter( IHudComponentView view )
+		public HUDPreset Preset => _preset;
+		private HUDPreset _preset;
+
+		public Color Color => _color;
+		private Color _color;
+
+		public bool Visible => view.Visible;
+
+		public HudComponentPresenter( TView view )
 		{
 			this.view = view;
 		}
@@ -46,5 +57,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		}
 
 		public abstract void Render( float delta );
+
+		public void Show()
+		{
+			view.Show();
+		}
+
+		public void Hide()
+		{
+			view.Hide();
+		}
 	};
 };

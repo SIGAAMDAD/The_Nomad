@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://boqgm1x6ll1p3" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplayView.cs" id="1_fk5k7"]
 [ext_resource type="Shader" uid="uid://0yocfhpkakrd" path="res://Assets/Shaders/DynamicProgressBar.gdshader" id="1_ux8up"]
 [ext_resource type="Shader" uid="uid://bryus4epoxj7" path="res://Assets/Shaders/HealthBar.gdshader" id="2_0ao32"]
+[ext_resource type="Script" uid="uid://brs4pledbmb30" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/InteractionMenuView.cs" id="2_8k8bm"]
 [ext_resource type="Script" uid="uid://bg86t65h20dd3" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/HealthBarView.cs" id="2_xk7bv"]
+[ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="3_ia0rx"]
 [ext_resource type="Script" uid="uid://bi4x0sxwbck6b" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/RageBarView.cs" id="3_xs3se"]
 [ext_resource type="Texture2D" uid="uid://cp7mt2ochnjfp" path="res://icon.svg" id="5_kj2yv"]
 [ext_resource type="Script" uid="uid://cmim40wcvghc7" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/DashStatusBarView.cs" id="5_uq2bp"]
@@ -104,7 +106,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+mouse_filter = 1
 script = ExtResource("1_fk5k7")
 metadata/_edit_use_anchors_ = true
 
@@ -115,7 +117,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="InteractionMenu" type="MarginContainer" parent="NeutralHUD" unique_id=1872239974]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 60
+script = ExtResource("2_8k8bm")
+_buttonPrefab = ExtResource("3_ia0rx")
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionsContainer" type="VBoxContainer" parent="NeutralHUD/InteractionMenu" unique_id=1257003829]
+top_level = true
+layout_mode = 2
+offset_transform_enabled = true
+mouse_filter = 0
+mouse_behavior_recursive = 2
+alignment = 1
+
+[node name="InteractionPrompt" type="Label" parent="NeutralHUD/InteractionMenu" unique_id=671114498]
+visible = false
+layout_mode = 2
+size_flags_vertical = 8
+horizontal_alignment = 1
 
 [node name="StatBarContainer" type="VBoxContainer" parent="NeutralHUD" unique_id=1228700349]
 layout_mode = 1
@@ -203,9 +236,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="HotSlotsContainer" type="VBoxContainer" parent="CombatHUD" unique_id=497008511]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.892
@@ -271,6 +306,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="LocationLabel" type="Label" parent="ExplorationHUD" unique_id=2041213495]
@@ -285,28 +321,3 @@ offset_right = -239.00002
 grow_vertical = 0
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
-
-[node name="InteractionHUD" type="Control" parent="." unique_id=1404186199]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="MarginContainer" type="MarginContainer" parent="InteractionHUD" unique_id=1872239974]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 60
-theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 60
-metadata/_edit_use_anchors_ = true
-
-[node name="OptionsContainer" type="VBoxContainer" parent="InteractionHUD/MarginContainer" unique_id=1257003829]
-layout_mode = 2

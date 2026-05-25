@@ -25,5 +25,8 @@ namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 		bool Visible { get; }
 
 		void SetColor( Vector4 color );
+
+		void Show();
+		void Hide();
 	};
 };

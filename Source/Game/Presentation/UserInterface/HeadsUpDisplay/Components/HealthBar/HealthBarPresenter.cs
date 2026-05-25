@@ -34,10 +34,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 	///
 	/// </summary>
 
-	internal sealed class HealthBarPresenter : HudComponentPresenter
+	internal sealed class HealthBarPresenter : HudComponentPresenter<IHealthBarView>
 	{
-		private readonly IHealthBarView _view;
-
 		private bool _lastWasHeal = false;
 		private float _health = 0.0f;
 		private float _maxHealth = 0.0f;
@@ -70,7 +68,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		public HealthBarPresenter( PlayerId playerId, IHealthBarView view, IGameEventRegistryService eventFactory )
 			: base( view )
 		{
-			_view = view;
 			_playerId = playerId;
 
 			_resourceChanged = eventFactory
@@ -88,6 +85,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 				.Subscribe( OnDerivedStatChanged );
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="disposing"></param>
 		protected override void Dispose( bool disposing )
 		{
 			if ( !disposing ) {
@@ -110,15 +116,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 		/// <param name="delta"></param>
 		public override void Render( float delta )
 		{
-			_view.SetSizeParameters();
+			view.SetSizeParameters();
 
 			int now = DateTime.Now.Millisecond;
 			if ( now < _delayExpirationTicks ) {
 				return;
 			}
 
-			float health = _view.GetHealth();
-			float trail = _view.GetTrail();
+			float health = view.GetHealth();
+			float trail = view.GetTrail();
 
 			float deltaFrac = _trailSpeed * delta / _maxHealth;
 			float diff = health - trail;
@@ -128,7 +134,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			} else {
 				trail = MathF.Max( trail - deltaFrac, health );
 			}
-			_view.SetTrail( trail );
+			view.SetTrail( trail );
 		}
 
 		/*
@@ -145,13 +151,13 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Health
 			_delayExpirationTicks = now + (int)(_delay * 1000);
 
 			if ( _lastWasHeal ) {
-				_view.SetTrail( _view.GetHealth() );
+				view.SetTrail( view.GetHealth() );
 			}
 
 			float ratio = _health / _maxHealth;
-			_view.SetWarningBarsVisibility( ratio <= _warningThreshold );
-			_view.SetVeryLowHealthVisibility( ratio <= _veryLowHealthThreshold );
-			_view.SetValue( ratio );
+			view.SetWarningBarsVisibility( ratio <= _warningThreshold );
+			view.SetVeryLowHealthVisibility( ratio <= _veryLowHealthThreshold );
+			view.SetValue( ratio );
 		}
 
 		/*

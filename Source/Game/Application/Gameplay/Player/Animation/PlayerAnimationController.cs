@@ -65,6 +65,20 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		public IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged => _animationStateChanged;
 		private readonly IGameEvent<PlayerAnimationStateChangedEventArgs> _animationStateChanged = null;
 
+		/*
+		===============
+		PlayerAnimationController
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="prefab"></param>
+		/// <param name="movementController"></param>
+		/// <param name="aimReader"></param>
+		/// <param name="stateReader"></param>
+		/// <param name="eventFactory"></param>
 		public PlayerAnimationController(
 			PlayerId playerId,
 			PlayerPrefab prefab,
@@ -179,6 +193,26 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 				PlayerAnimationState.TrueIdle => "true_idle",
 				_ => throw new ArgumentOutOfRangeException( nameof( state ) )
 			};
+
+			if (
+				state == PlayerAnimationState.RestingAtCheckpoint ||
+				state == PlayerAnimationState.TrueIdle ||
+				state == PlayerAnimationState.Dying
+			) {
+				_torsoAnimator.Play( animationName );
+
+				_legAnimator.Hide();
+				_leftHandAnimator.Hide();
+				_rightHandAnimator.Hide();
+				_headAnimator.Hide();
+
+				return;
+			}
+
+			_legAnimator.Show();
+			_leftHandAnimator.Show();
+			_rightHandAnimator.Show();
+			_headAnimator.Show();
 
 			_torsoAnimator.Play( animationName );
 			_legAnimator.Play( animationName );

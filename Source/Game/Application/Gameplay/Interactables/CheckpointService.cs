@@ -170,9 +170,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 				return true;
 			}
 
-			instance = prefab == null
-				? new CheckpointInstance( definition, checkpoint )
-				: new CheckpointInstance( definition, checkpoint, prefab, _eventFactory );
+			instance = new CheckpointInstance( definition, checkpoint, prefab, _eventFactory );
 			_permanent[checkpoint] = instance;
 
 			return true;
@@ -311,7 +309,7 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			}
 
 			checkpoint = new CheckpointInstanceId( Guid.NewGuid() );
-			_temporary[playerId] = new CheckpointInstance( TemporaryCheckpointDefinition, checkpoint );
+			_temporary[playerId] = new CheckpointInstance( TemporaryCheckpointDefinition, checkpoint, _eventFactory );
 
 			return true;
 		}

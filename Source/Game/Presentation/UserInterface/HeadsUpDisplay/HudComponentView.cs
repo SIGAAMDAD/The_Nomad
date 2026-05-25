@@ -36,5 +36,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		{
 			_component.Modulate = new Color( color.X, color.Y, color.Z, color.W );
 		}
+
+		public void Show()
+		{
+			_component.Show();
+		}
+
+		public void Hide()
+		{
+			_component.Hide();
+		}
 	};
 };

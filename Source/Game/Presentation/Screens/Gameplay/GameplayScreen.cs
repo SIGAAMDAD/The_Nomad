@@ -13,7 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Engine.Services;
 using Nomad.Core.OnlineServices;
+using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Data.Player;
@@ -33,7 +35,12 @@ namespace Nomad.Game.Presentation.Screens.Gameplay
 			base.OnInit();
 
 			var eventFactory = GameEventRegistry.Instance;
-			_hudRoot = new HudRoot( new PlayerId( new PeerId( Constants.LOCAL_GUID ) ), GetNode<HeadsUpDisplayView>( "HeadsUpDisplay" ), eventFactory );
+			_hudRoot = new HudRoot(
+				new PlayerId( new PeerId( Constants.LOCAL_GUID ) ),
+				GetNode<HeadsUpDisplayView>( "HeadsUpDisplay" ),
+				ServiceLocator.GetService<ILocalizationService>(),
+				eventFactory
+			);
 		}
 
 		protected override void OnUpdate( float delta )

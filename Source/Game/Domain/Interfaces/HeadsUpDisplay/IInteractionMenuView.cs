@@ -13,18 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Events;
-using Nomad.Core.Util;
-using Nomad.Game.Domain.Events.Interactables;
+using System;
+using System.Collections.Generic;
+using Nomad.Game.Domain.Data.Interactables;
 
 namespace Nomad.Game.Domain.Interfaces.HeadsUpDisplay
 {
 	public interface IInteractionMenuView : IHudComponentView
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.Interactables", PayloadName = "InteractionMenuOptionSelectedEventArgs" )]
-		[EventPayload( "Option", typeof( int ), Order = 1 )]
-		IGameEvent<InteractionMenuOptionSelectedEventArgs> OptionSelected { get; }
+		event Action<int> OptionPressed;
 
-		void AddOption( InternString prompt, EventCallback<InteractionMenuOptionSelectedEventArgs> callback );
+		void ShowMenu( IReadOnlyList<InteractionMenuOption> options );
+		void HideMenu();
+
+		void ShowPrompt( string prompt );
+		void HidePrompt();
 	};
 };

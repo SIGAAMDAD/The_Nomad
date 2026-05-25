@@ -43,7 +43,7 @@ namespace Nomad.Game.Application
 	/// Initializes the Application layer.
 	/// </summary>
 
-	public sealed partial class ApplicationBootstrapper : EngineAspectRatioContainer
+	public sealed partial class ApplicationBootstrapper : EnginePanel
 	{
 		private MenuManager _menuManager;
 		private IGameFlowCoordinator _gameFlowCoordinator;
