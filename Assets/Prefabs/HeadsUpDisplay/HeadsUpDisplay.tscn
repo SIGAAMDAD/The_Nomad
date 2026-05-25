@@ -139,6 +139,8 @@ metadata/_edit_use_anchors_ = true
 [node name="OptionsContainer" type="VBoxContainer" parent="NeutralHUD/InteractionMenu" unique_id=1257003829]
 top_level = true
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 offset_transform_enabled = true
 mouse_filter = 0
 mouse_behavior_recursive = 2

@@ -1,6 +1,25 @@
 [gd_scene format=3 uid="uid://d4tlkrbrhhqx"]
 
 [ext_resource type="Script" uid="uid://jhp1udwhs6rt" path="res://Assets/Prefabs/Firelink/TempCheckpointPrefab.cs" id="1_h7wov"]
+[ext_resource type="SpriteFrames" uid="uid://b0aq8a35kuldq" path="res://Assets/Animations/Environment/Firelink.tres" id="2_anmak"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c7viu"]
+radius = 14.0
 
 [node name="FirelinkRoot" type="Node2D" unique_id=1437990481]
 script = ExtResource("1_h7wov")
+_id = &"CHECKPOINT_TEMPORARY_ID"
+_displayName = &"CHECKPOINT_TEMPORARY_DISPLAY_NAME"
+
+[node name="Zone" type="Area2D" parent="." unique_id=718891144]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=743709491]
+shape = SubResource("CircleShape2D_c7viu")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1571441799]
+position = Vector2(0, -3.9999998)
+scale = Vector2(0.4, 0.4)
+sprite_frames = ExtResource("2_anmak")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.8641981

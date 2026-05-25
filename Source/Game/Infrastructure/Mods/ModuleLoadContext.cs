@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -22,26 +21,29 @@ namespace Nomad.Game.Infrastructure.Mods
 {
 	public sealed class ModuleLoadContext : AssemblyLoadContext
 	{
-		private static readonly HashSet<string> SharedAssemblies = new HashSet<string>( StringComparer.OrdinalIgnoreCase ) {
-			"System",
-			"System.Runtime",
-			"GodotSharp",
-			"GodotSharpEditor",
-			"TheNomad",
-		};
-
 		private readonly AssemblyDependencyResolver _resolver;
+		private readonly ModSecurityPolicy _policy;
 
-		public ModuleLoadContext( string mainAssemblyPath )
+		public ModuleLoadContext( string mainAssemblyPath, ModSecurityPolicy policy )
 			: base( isCollectible: true )
 		{
 			_resolver = new AssemblyDependencyResolver( mainAssemblyPath );
+			_policy = policy;
 		}
 
 		protected override Assembly? Load( AssemblyName assemblyName )
 		{
-			if ( assemblyName.Name != null && SharedAssemblies.Contains( assemblyName.Name ) ) {
-				return null; // let default context provide shared contracts.
+			string name = assemblyName.Name ?? string.Empty;
+
+			if ( IsForbiddenNomadAssembly( name ) ) {
+				throw new InvalidOperationException(
+					$"Mod attempted to load forbidden framework assembly '{name}'." +
+					$"Mods must use Nomad.Modding.Abstractions or Nomad.Game.ModSdk"
+				);
+			}
+
+			if ( IsSharedAssembly( name ) ) {
+				return null;
 			}
 
 			string? path = _resolver.ResolveAssemblyToPath( assemblyName );
@@ -62,6 +64,22 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 
 			return IntPtr.Zero;
+		}
+
+		private bool IsSharedAssembly( string name )
+		{
+			return _policy.AllowedSharedAssemblies.Contains( name, StringComparer.Ordinal );
+		}
+
+		private bool IsForbiddenNomadAssembly( string name )
+		{
+			for ( int i = 0; i < _policy.ForbiddenAssemblyPrefixes.Length; i++ ) {
+				if ( name.StartsWith( _policy.ForbiddenAssemblyPrefixes[i], StringComparison.Ordinal ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	};
 };
