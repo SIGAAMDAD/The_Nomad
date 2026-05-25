@@ -22,7 +22,6 @@ using Nomad.Game.Domain.Interfaces.Entities;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Core.Compatibility.Guards;
-using BenchmarkDotNet.Exporters;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -55,36 +54,76 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 
 		private readonly CheckpointDefinition _definition;
 		private readonly CheckpointInstanceId _instanceId;
+
 		private readonly IGameEvent<CheckpointActivationRequestedEventArgs>? _activationRequested;
 		private readonly IGameEvent<CheckpointRestRequestedEventArgs>? _restRequested;
 		private readonly IGameEvent<CheckpointLeaveRequestedEventArgs>? _leaveRequested;
 
+		/*
+		===============
+		CheckpointInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="definition"></param>
+		/// <param name="instanceId"></param>
+		/// <param name="prefab"></param>
+		/// <param name="eventFactory"></param>
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab prefab, IGameEventRegistryService eventFactory )
 			: this( definition, instanceId, prefab, EntityFlags.Interactable | EntityFlags.Persistent, eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			_activationRequested = eventFactory.GetEvent<CheckpointActivationRequestedEventArgs>(
-				CheckpointActivationRequestedEventArgs.Name,
-				CheckpointActivationRequestedEventArgs.NameSpace
-			);
+			_activationRequested = eventFactory
+				.GetEvent<CheckpointActivationRequestedEventArgs>(
+					CheckpointActivationRequestedEventArgs.Name,
+					CheckpointActivationRequestedEventArgs.NameSpace
+				);
 
-			_restRequested = eventFactory.GetEvent<CheckpointRestRequestedEventArgs>(
-				CheckpointRestRequestedEventArgs.Name,
-				CheckpointRestRequestedEventArgs.NameSpace
-			);
+			_restRequested = eventFactory
+				.GetEvent<CheckpointRestRequestedEventArgs>(
+					CheckpointRestRequestedEventArgs.Name,
+					CheckpointRestRequestedEventArgs.NameSpace
+				);
 
-			_leaveRequested = eventFactory.GetEvent<CheckpointLeaveRequestedEventArgs>(
-				CheckpointLeaveRequestedEventArgs.Name,
-				CheckpointLeaveRequestedEventArgs.NameSpace
-			);
+			_leaveRequested = eventFactory
+				.GetEvent<CheckpointLeaveRequestedEventArgs>(
+					CheckpointLeaveRequestedEventArgs.Name,
+					CheckpointLeaveRequestedEventArgs.NameSpace
+				);
 		}
 
+		/*
+		===============
+		CheckpointInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="definition"></param>
+		/// <param name="instanceId"></param>
+		/// <param name="eventFactory"></param>
 		public CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, IGameEventRegistryService eventFactory )
 			: this( definition, instanceId, null, EntityFlags.Interactable | EntityFlags.Transient, eventFactory )
 		{
 		}
 
+		/*
+		===============
+		CheckpointInstance
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="definition"></param>
+		/// <param name="instanceId"></param>
+		/// <param name="prefab"></param>
+		/// <param name="flags"></param>
+		/// <param name="eventFactory"></param>
 		private CheckpointInstance( CheckpointDefinition definition, CheckpointInstanceId instanceId, CheckpointPrefab? prefab, EntityFlags flags, IGameEventRegistryService eventFactory )
 			: base(
 				prefab,
@@ -99,11 +138,32 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			_definition = definition;
 		}
 
+		/*
+		===============
+		RequireDefinition
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="definition"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		private static CheckpointDefinition RequireDefinition( CheckpointDefinition definition )
 		{
 			return definition ?? throw new ArgumentNullException( nameof( definition ) );
 		}
 
+		/*
+		===============
+		RequestActivate
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestActivate( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestActivate ) );
@@ -116,6 +176,16 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			return true;
 		}
 
+		/*
+		===============
+		RequestRest
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestRest( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestRest ) );
@@ -124,10 +194,25 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 				return false;
 			}
 
-			_restRequested.Publish( new CheckpointRestRequestedEventArgs( playerId, _instanceId ) );
+			_restRequested.Publish(
+				new CheckpointRestRequestedEventArgs(
+					playerId,
+					_instanceId
+				)
+			);
 			return true;
 		}
 
+		/*
+		===============
+		RequestLeave
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool RequestLeave( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( RequestLeave ) );
@@ -136,10 +221,25 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 				return false;
 			}
 
-			_leaveRequested.Publish( new CheckpointLeaveRequestedEventArgs( playerId ) );
+			_leaveRequested.Publish(
+				new CheckpointLeaveRequestedEventArgs(
+					playerId
+				)
+			);
 			return true;
 		}
 
+		/*
+		===============
+		RequestInteraction
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <param name="kind"></param>
+		/// <returns></returns>
 		public EntityInteractionResult RequestInteraction( PlayerId playerId, EntityInteractionKind kind )
 		{
 			bool requested = kind switch {
@@ -152,6 +252,15 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			return requested ? EntityInteractionResult.SuccessResult() : EntityInteractionResult.InvalidTarget();
 		}
 
+		/*
+		===============
+		SetStatus
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="status"></param>
 		private void SetStatus( CheckpointStatus status )
 		{
 			if ( _status == status ) {
@@ -162,6 +271,16 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			_revision++;
 		}
 
+		/*
+		===============
+		TryActivateCheckpoint
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool TryActivateCheckpoint( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( TryActivateCheckpoint ) );
@@ -179,6 +298,16 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			return true;
 		}
 
+		/*
+		===============
+		TryRest
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool TryRest( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( TryRest ) );
@@ -201,6 +330,16 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			return true;
 		}
 
+		/*
+		===============
+		TryLeave
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public bool TryLeave( PlayerId playerId )
 		{
 			playerId.ThrowIfInvalid( nameof( TryLeave ) );
@@ -219,17 +358,19 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			return true;
 		}
 
+		/*
+		===============
+		Interact
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
 		public override EntityInteractionResult Interact( in EntityInteractionContext context )
 		{
-			switch ( context.Kind ) {
-				case EntityInteractionKind.Activate:
-					return TryActivateCheckpoint( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
-				case EntityInteractionKind.Close:
-					return TryLeave( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
-				case EntityInteractionKind.Rest:
-					return TryRest( new PlayerId( context.ActorId ) ) ? EntityInteractionResult.Succeeded : EntityInteractionResult.Failed;
-			}
-			return EntityInteractionResult.Failed;
+			return RequestInteraction( new PlayerId( context.ActorId ), context.Kind );
 		}
 	};
 };

@@ -13,25 +13,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Microsoft.Diagnostics.Runtime;
-using Nomad.Core.CVars;
-using Nomad.Core.FileSystem;
-using Nomad.Core.Logger;
-using Nomad.Modding.Events;
+using System;
 
-namespace Nomad.Game.Domain.Interfaces.Mods
+namespace Nomad.Modding
 {
-	public interface IModuleContext
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+	public sealed class ModuleBehaviorAttribute : Attribute
 	{
-		string ModuleId { get; }
-		ModuleInfo Module { get; }
+		public string Id { get; }
 
-		string RuntimeApiVersion { get; }
-
-		IModEventRegistry Events { get; }
-
-		ILoggerService Logger { get; }
-		IFileSystem FileSystem { get; }
-		ICVarSystemService CVarSystem { get; }
-	};
-};
+		public ModuleBehaviorAttribute(string id)
+		{
+			Id = id;
+		}
+	}
+}

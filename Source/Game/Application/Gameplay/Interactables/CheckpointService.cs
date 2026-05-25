@@ -22,6 +22,8 @@ using Nomad.Game.Domain.Data.Multiplayer;
 using Nomad.Game.Domain.Interfaces.Entities;
 using Nomad.Game.Domain.Interfaces.Interactables;
 using Nomad.Game.Prefabs;
+using Nomad.Save.Extensions;
+using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.Interactables
 {
@@ -56,6 +58,10 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		/// </summary>
 		private readonly Dictionary<PlayerId, CheckpointInstance> _temporary = new();
 		private readonly Dictionary<PlayerId, CheckpointInstanceId> _current = new();
+
+		private readonly IDisposable _saveBegin;
+		private readonly IDisposable _loadBegin;
+
 		private readonly IGameEventRegistryService _eventFactory;
 
 		private bool _isDisposed = false;
@@ -72,6 +78,20 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		public CheckpointService( IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
+			_saveBegin = eventFactory
+				.GetEvent<SaveBeginEventArgs>(
+					SaveBeginEventArgs.Name,
+					SaveBeginEventArgs.NameSpace
+				)
+				.Subscribe( OnSaveBegin );
+
+			_loadBegin = eventFactory
+				.GetEvent<LoadBeginEventArgs>(
+					LoadBeginEventArgs.Name,
+					LoadBeginEventArgs.NameSpace
+				)
+				.Subscribe( OnLoadBegin );
 		}
 
 		/*
@@ -87,6 +107,11 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 			if ( _isDisposed ) {
 				return;
 			}
+
+			_permanent.Clear();
+			_temporary.Clear();
+			_loadBegin.Dispose();
+			_saveBegin.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -367,6 +392,51 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 
 			instance = null;
 			return false;
+		}
+
+		/*
+		===============
+		OnSaveBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnSaveBegin( in SaveBeginEventArgs args )
+		{
+			lock ( this ) {
+				using var writer = args.Writer.AddSection( nameof( CheckpointService ) );
+
+				foreach ( var checkpoint in _permanent ) {
+					writer.WriteBool( $"{checkpoint.Value.DefinitionId}:Activated", checkpoint.Value.Status != CheckpointStatus.Inactive );
+				}
+			}
+		}
+
+		/*
+		===============
+		OnLoadBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		/// <exception cref="Exception"></exception>
+		private void OnLoadBegin( in LoadBeginEventArgs args )
+		{
+			lock ( this ) {
+				using var reader = args.Reader.FindSection( nameof( CheckpointService ) );
+
+				if ( reader == null ) {
+					throw new Exception();
+				}
+
+				foreach ( var checkpoint in _permanent ) {
+					bool activated = reader.ReadBool( $"{checkpoint.Value.DefinitionId}:Activated" );
+				}
+			}
 		}
 	};
 };

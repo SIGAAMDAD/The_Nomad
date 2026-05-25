@@ -32,10 +32,16 @@ namespace Nomad.Game.Infrastructure.Mods
 
 		private readonly IFileSystem _fileSystem;
 
+		private readonly ModAssemblyValidator _validator;
+		private readonly ModSecurityPolicy _policy;
+
 		public ModuleScanner( string apiVersion, IFileSystem fileSystem )
 		{
 			_apiVersion = apiVersion;
 			_fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
+
+			_policy = new ModSecurityPolicy();
+			_validator = new ModAssemblyValidator( _policy );
 		}
 
 		public void AddScanRoot( string path )
@@ -195,7 +201,12 @@ namespace Nomad.Game.Infrastructure.Mods
 			string assemblyPath = Path.Combine( manifest.DirectoryPath, manifest.Assembly );
 			string fullAssemblyPath = Path.Combine( assemblyPath );
 
-			var loadContext = new ModuleLoadContext( fullAssemblyPath );
+			var report = _validator.Validate( assemblyPath );
+			if ( !report.IsAllowed ) {
+				throw new Exception();
+			}
+
+			var loadContext = new ModuleLoadContext( fullAssemblyPath, _policy );
 			Assembly assembly = loadContext.LoadFromAssemblyPath( fullAssemblyPath );
 
 			Type? entryType = assembly.GetType( manifest.EntryType, throwOnError: false );

@@ -23,8 +23,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Remove="Assets/Mods/**" />
+    <Compile Remove="Assets/Modules/**" />
     <Compile Remove="Docs/**" />
+    <Compile Remove="Source/Modding/**" />
     <Compile Remove="TheNomad.Tests/**" />
     <Compile Remove="Source/NomadFramework/**" />
     <Compile Remove="android/build/**/*.cs" />
@@ -32,6 +33,13 @@
     <Compile Remove="**/obj/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Source/Modding/TheNomad.Modding.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+
+    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+
     <!-- Ensures the source generation works correctly -->
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Audio.FMOD\Nomad.Audio.FMOD.csproj" />
@@ -49,7 +57,7 @@
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.Save\Nomad.Save.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.ResourceCache\Nomad.ResourceCache.csproj" />
     <ProjectReference Include="Source\NomadFramework\Source\Nomad.OnlineServices.Steam\Nomad.OnlineServices.Steam.csproj" />
-    </ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <Content Condition="'$(IsWindows)' == 'true'" Include="steam_api64.dll">

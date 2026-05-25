@@ -13,14 +13,42 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Collections.Generic;
+using Nomad.Core.Util;
+using Nomad.Game.Domain.Data.Interactables;
+
 namespace Nomad.Game.Prefabs
 {
+	/*
+	===================================================================================
+
+	TempCheckpointPrefab
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed partial class TempCheckpointPrefab : CheckpointPrefab
 	{
+		public override void BuildInteractionOptions( List<InteractionMenuOption> options )
+		{
+			options.Add( new InteractionMenuOption( new InternString( "Rest for a While" ), EntityInteractionKind.Rest ) );
+			options.Add( new InteractionMenuOption( new InternString( "Leave Backpack" ), EntityInteractionKind.TurnIn ) );
+			options.Add( new InteractionMenuOption( new InternString( "Get Up" ), EntityInteractionKind.Close ) );
+		}
+
 		public void Create()
 		{
 			Visible = true;
 			ProcessMode = ProcessModeEnum.Pausable;
+		}
+
+		public void Destroy()
+		{
+			Visible = false;
+			ProcessMode = ProcessModeEnum.Disabled;
 		}
 
 		public override void _Ready()
