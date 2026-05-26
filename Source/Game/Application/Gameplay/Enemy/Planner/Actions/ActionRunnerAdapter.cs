@@ -14,6 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Game.Application.Gameplay.Enemy.Planner;
+using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
+using Nomad.Game.Sdk.Gameplay.Npc;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions
 {
@@ -26,9 +29,9 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Actions
 			_owner = owner ?? throw new ArgumentNullException( nameof( owner ) );
 		}
 
-		public ActionRunStatus Start( NpcAgent agent ) => _owner.Start( agent );
-		public ActionRunStatus Tick( NpcAgent agent, float dt ) => _owner.Tick( agent, dt );
-		public void Cancel( NpcAgent agent ) => _owner.Cancel( agent );
+		public ActionRunStatus Start( NpcAgentId agent ) => ActionRunStatus.Running; //_owner.Start( agent );
+		public ActionRunStatus Tick( NpcAgentId agent, float dt ) => ActionRunStatus.Succeeded; // _owner.Tick( agent, dt );
+		public void Cancel( NpcAgentId agent ) { } //=> _owner.Cancel( agent );
 	}
 
 };

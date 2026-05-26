@@ -18,11 +18,10 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Domain.Interfaces.Inventory;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Events.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Inventory;
 using Nomad.Game.Infrastructure.Gameplay.Items;
 
 namespace Nomad.Game.Infrastructure.Gameplay

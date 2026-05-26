@@ -13,13 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Events.UI;
+using Nomad.Game.Sdk.Events.UI;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.UI;
 using System.Collections.Generic;
 using System;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Game.Application.UI.Menus;
 
 namespace Nomad.Game.Application.UI.Menus
 {
@@ -47,7 +48,7 @@ namespace Nomad.Game.Application.UI.Menus
 
 		private readonly IReadOnlyDictionary<TState, EnginePanel?> _states;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.UI" )]
+		[Event( nameSpace: "Nomad.Game.Sdk.Events.UI" )]
 		[EventPayload( "MenuId", typeof( InternString ), Order = 1 )]
 		[EventPayload( "PreviousState", "TState", Order = 2 )]
 		[EventPayload( "CurrentState", "TState", Order = 3 )]

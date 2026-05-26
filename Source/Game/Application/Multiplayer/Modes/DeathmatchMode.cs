@@ -16,14 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Networking.Session;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using System.Collections.Generic;
-using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Multiplayer.Modes;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
@@ -47,7 +48,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		};
 
 		public override string ModeName => "Bloodbath";
-		public override Mode Mode => Mode.Deathmatch;
+		public override MultiplayerMode Mode => MultiplayerMode.Deathmatch;
 
 		public IGameEvent<NewDeathmatchLeaderEventArgs> NewDeathmatchLeader {
 			get {

@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
+using Nomad.Game.Application.Gameplay.Enemy.Planner;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 {

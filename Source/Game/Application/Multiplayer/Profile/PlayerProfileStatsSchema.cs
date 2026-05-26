@@ -13,33 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Multiplayer.Profile;
+using Nomad.Game.Sdk.Multiplayer.Profile;
 
 namespace Nomad.Game.Application.Multiplayer.Profile
 {
-	internal readonly struct PlayerProfileStatDescriptor
-	{
-		public string PropertyName { get; }
-		public InternString StatKey { get; }
-		public Func<PlayerStatsRecord, ulong> Read { get; }
-		public Func<PlayerStatsRecord, ulong, PlayerStatsRecord> Write { get; }
-
-		public PlayerProfileStatDescriptor(
-			string propertyName,
-			string statKey,
-			Func<PlayerStatsRecord, ulong> read,
-			Func<PlayerStatsRecord, ulong, PlayerStatsRecord> write
-		)
-		{
-			PropertyName = propertyName;
-			StatKey = new InternString( statKey );
-			Read = read;
-			Write = write;
-		}
-	};
-
 	internal static class PlayerProfileStatsSchema
 	{
 		public static PlayerProfileStatDescriptor[] Stats => _stats;

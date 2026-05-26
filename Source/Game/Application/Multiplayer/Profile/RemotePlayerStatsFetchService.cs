@@ -18,8 +18,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Profile;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer.Profile;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Application.Multiplayer.Profile
 {

@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Voting;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Voting;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
@@ -86,11 +86,11 @@ namespace Nomad.Game.Application.Multiplayer
 				IsValidStateTransition
 			);
 
-			_voteServiceStateChanged = GetEvent<VoteServiceStateChangedEventArgs>( nameof( VoteServiceStateChangedEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
-			_voteStarted = GetEvent<VoteStartedEventArgs>( nameof( VoteStartedEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
-			_voteCast = GetEvent<VoteCastEventArgs>( nameof( VoteCastEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
-			_voteEnded = GetEvent<VoteEndedEventArgs>( nameof( VoteEndedEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
-			_voteCancelled = GetEvent<VoteCancelledEventArgs>( nameof( VoteCancelledEventArgs ), "Nomad.Game.Domain.Events.Multiplayer" );
+			_voteServiceStateChanged = GetEvent<VoteServiceStateChangedEventArgs>( nameof( VoteServiceStateChangedEventArgs ), "Nomad.Game.Sdk.Events.Multiplayer" );
+			_voteStarted = GetEvent<VoteStartedEventArgs>( nameof( VoteStartedEventArgs ), "Nomad.Game.Sdk.Events.Multiplayer" );
+			_voteCast = GetEvent<VoteCastEventArgs>( nameof( VoteCastEventArgs ), "Nomad.Game.Sdk.Events.Multiplayer" );
+			_voteEnded = GetEvent<VoteEndedEventArgs>( nameof( VoteEndedEventArgs ), "Nomad.Game.Sdk.Events.Multiplayer" );
+			_voteCancelled = GetEvent<VoteCancelledEventArgs>( nameof( VoteCancelledEventArgs ), "Nomad.Game.Sdk.Events.Multiplayer" );
 
 			RegisterNetworkEvent( MessageIds.VoteServiceStateChanged, _voteServiceStateChanged );
 			RegisterNetworkEvent( MessageIds.VoteStarted, _voteStarted );

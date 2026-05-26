@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
+using Nomad.Game.Sdk.HeadsUpDisplay;
+using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Prefabs
 {

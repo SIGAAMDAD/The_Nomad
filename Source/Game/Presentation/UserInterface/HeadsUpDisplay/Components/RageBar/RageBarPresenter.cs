@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.HeadsUpDisplay;
+using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar
 {

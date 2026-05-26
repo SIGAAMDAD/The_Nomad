@@ -28,5 +28,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		TargetLost = 1 << 4,
 		TookHeavyDamage = 1 << 5,
 		PeriodicRefresh = 1 << 6
-	};
-};
+	}
+}

@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
-using Nomad.Game.Domain.Data.Multiplayer.Team;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Modes;
+using Nomad.Game.Sdk.Multiplayer.Team;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
@@ -49,7 +49,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		};
 
 		public override string ModeName => "King of the Hill";
-		public override Mode Mode => Mode.KingOfTheHill;
+		public override MultiplayerMode Mode => MultiplayerMode.KingOfTheHill;
 
 		public IGameEvent<HillStatusChangedEventArgs> HillStatusChanged => _hillStatusChanged;
 		private readonly IGameEvent<HillStatusChangedEventArgs> _hillStatusChanged = default;

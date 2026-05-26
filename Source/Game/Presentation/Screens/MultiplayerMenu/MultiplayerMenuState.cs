@@ -20,5 +20,5 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 		Options,
 		LobbyBrowser,
 		LobbyCreation
-	};
-};
+	}
+}

@@ -18,10 +18,9 @@ using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Team;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer.Team;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
@@ -37,11 +36,11 @@ namespace Nomad.Game.Application.Multiplayer.Team
 	===================================================================================
 	*/
 	/// <summary>
-	/// Host-authoritative replicated team state.
+	/// <para>Host-authoritative replicated team state.</para>
 	///
-	/// Clients request changes with RPCs.
+	/// <para>Clients request changes with RPCs.
 	/// The host validates and publishes replicated team events.
-	/// Clients apply replicated team events locally.
+	/// Clients apply replicated team events locally.</para>
 	/// </summary>
 
 	internal sealed class TeamService : MultiplayerObject, ITeamService

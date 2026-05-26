@@ -14,8 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
+using Nomad.Game.Sdk.HeadsUpDisplay;
 
 namespace Nomad.Game.Prefabs
 {

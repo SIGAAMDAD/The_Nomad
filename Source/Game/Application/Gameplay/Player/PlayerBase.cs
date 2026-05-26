@@ -17,13 +17,14 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.Util;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Entity;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -65,7 +66,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
 		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( new EntityId( playerId.Id ), InternString.Empty, InternString.Empty, EntityType.Player, EntityFlags.None )
+			: base( new EntityId( playerId ), InternString.Empty, InternString.Empty, EntityType.Player, EntityFlags.None )
 		{
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
 				PlayerDieEventArgs.Name,

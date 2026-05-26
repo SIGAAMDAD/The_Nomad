@@ -20,11 +20,11 @@ using Nomad.Core.Engine.Services;
 using System;
 using System.Collections.Generic;
 using Godot;
-using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.EngineUtils;
 using Nomad.Core.Logger;
+using Nomad.Game.Application.UI.Menus;
 
 namespace Nomad.Game.Application.UI.Menus
 {

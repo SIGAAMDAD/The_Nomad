@@ -18,11 +18,9 @@ using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Inventory;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Interfaces.Inventory;
-using Nomad.Game.Domain.Interfaces.Items;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Sdk.Inventory;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Player.Inventory;
 using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.Inventory

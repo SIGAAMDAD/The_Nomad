@@ -13,7 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Application.Configuration.Enums;
+using Nomad.Game.Sdk.Configuration;
 using Nomad.Core.CVars;
 
 namespace Nomad.Game.Application.Configuration.Registries

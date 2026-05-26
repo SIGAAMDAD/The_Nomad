@@ -18,7 +18,7 @@ using Nomad.Events.Globals;
 using Godot;
 using System;
 using System.Collections.Generic;
-using Nomad.Game.Domain.Events.UI;
+using Nomad.Game.Sdk.Events.UI;
 
 namespace Nomad.Game.Presentation.Widgets.OptionList
 {
@@ -46,7 +46,7 @@ namespace Nomad.Game.Presentation.Widgets.OptionList
 		public IReadOnlyList<string> Values => _items;
 		private IReadOnlyList<string> _items;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionListValueSetEventArgs" )]
+		[Event( nameSpace: "Nomad.Game.Sdk.Events.UI", PayloadName = "OptionListValueSetEventArgs" )]
 		[EventPayload( "Value", typeof( int ) )]
 		public IGameEvent<OptionListValueSetEventArgs> ValueSet => _valueSet;
 		private readonly IGameEvent<OptionListValueSetEventArgs> _valueSet = default;

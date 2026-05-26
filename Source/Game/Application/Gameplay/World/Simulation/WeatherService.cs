@@ -16,9 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.World;
-using Nomad.Game.Domain.Events.World;
-using Nomad.Game.Domain.Interfaces.World;
+using Nomad.Game.Sdk.World;
+using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Application.Gameplay.World
 {
@@ -126,7 +125,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		private void CurrentSetup()
 		{
 			CurrentWeatherId = RollWeather( _seasonService.CurrentSeason, null );
-			ScheduleNextWeatherChange( _seasonService.CurrentSeason );
+			ScheduleNextWeatherChange( _seasonService.CurrentSeason.Id );
 		}
 
 		/*
@@ -148,7 +147,7 @@ namespace Nomad.Game.Application.Gameplay.World
 			InternString previous = CurrentWeatherId;
 			CurrentWeatherId = RollWeather( season, previous );
 
-			ScheduleNextWeatherChange( season );
+			ScheduleNextWeatherChange( season.Id );
 
 			_weatherChanged.Publish(
 				new WeatherChangedEventArgs(
@@ -187,9 +186,12 @@ namespace Nomad.Game.Application.Gameplay.World
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="season"></param>
-		private void ScheduleNextWeatherChange( SeasonDefinition season )
+		/// <param name="seasonId"></param>
+		private void ScheduleNextWeatherChange( SeasonDefinitionId seasonId )
 		{
+			if ( !_seasonService.TryGetSeason( seasonId, out var season ) ) {
+				return;
+			}
 			int durationHours = RNJesus.IntRange(
 				season.MinWeatherDurationHours,
 				season.MaxWeatherDurationHours + 1

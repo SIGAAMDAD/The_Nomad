@@ -19,6 +19,7 @@ using Godot;
 using Nomad.Game.Presentation.Widgets.OptionCheckbox;
 using Nomad.Game.Presentation.Widgets.OptionList;
 using Nomad.Game.Presentation.Widgets.OptionSlider;
+using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {

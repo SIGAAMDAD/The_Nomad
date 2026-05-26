@@ -20,11 +20,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using Nomad.Core.FileSystem;
-using Nomad.Game.Domain.Data.Mods;
-using Nomad.Game.Domain.Interfaces.Mods;
+using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
+	/*
+	===================================================================================
+
+	ModuleScanner
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal sealed class ModuleScanner
 	{
 		private readonly string _apiVersion;
@@ -35,6 +45,17 @@ namespace Nomad.Game.Infrastructure.Mods
 		private readonly ModAssemblyValidator _validator;
 		private readonly ModSecurityPolicy _policy;
 
+		/*
+		===============
+		ModuleScanner
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="apiVersion"></param>
+		/// <param name="fileSystem"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public ModuleScanner( string apiVersion, IFileSystem fileSystem )
 		{
 			_apiVersion = apiVersion;
@@ -44,6 +65,15 @@ namespace Nomad.Game.Infrastructure.Mods
 			_validator = new ModAssemblyValidator( _policy );
 		}
 
+		/*
+		===============
+		AddScanRoot
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="path"></param>
 		public void AddScanRoot( string path )
 		{
 			if ( !string.IsNullOrWhiteSpace( path ) ) {
@@ -51,6 +81,15 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 		}
 
+		/*
+		===============
+		ScanAndLoad
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		public IReadOnlyList<DiscoveredModule> ScanAndLoad()
 		{
 			var manifests = ScanManifests();
@@ -67,6 +106,15 @@ namespace Nomad.Game.Infrastructure.Mods
 			return loaded;
 		}
 
+		/*
+		===============
+		ScanManifests
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private List<ModuleManifest> ScanManifests()
 		{
 			var manifests = new List<ModuleManifest>();
@@ -111,6 +159,17 @@ namespace Nomad.Game.Infrastructure.Mods
 			return manifests;
 		}
 
+		/*
+		===============
+		ValidateManifests
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="manifests"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="FileNotFoundException"></exception>
 		private void ValidateManifests( List<ModuleManifest> manifests )
 		{
 			var ids = new HashSet<string>( StringComparer.OrdinalIgnoreCase );
@@ -162,6 +221,17 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 		}
 
+		/*
+		===============
+		SortByDependencies
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="manifests"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
 		private List<ModuleManifest> SortByDependencies( List<ModuleManifest> manifests )
 		{
 			var byId = manifests.ToDictionary( m => m.Id, StringComparer.OrdinalIgnoreCase );
@@ -196,6 +266,18 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 		}
 
+		/*
+		===============
+		LoadModuleAssembly
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="manifest"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private DiscoveredModule LoadModuleAssembly( ModuleManifest manifest )
 		{
 			string assemblyPath = Path.Combine( manifest.DirectoryPath, manifest.Assembly );

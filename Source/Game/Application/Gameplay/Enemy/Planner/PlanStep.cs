@@ -23,5 +23,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		{
 			Action = action;
 		}
-	};
-};
+	}
+}

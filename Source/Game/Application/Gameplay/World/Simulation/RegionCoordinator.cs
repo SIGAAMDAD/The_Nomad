@@ -17,8 +17,8 @@ using System;
 using System.Collections.Immutable;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.World;
-using Nomad.Game.Domain.Events.World;
+using Nomad.Game.Sdk.World;
+using Nomad.Game.Sdk.Events.World;
 using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.World
@@ -36,7 +36,7 @@ namespace Nomad.Game.Application.Gameplay.World
 
 	internal sealed class RegionCoordinator
 	{
-		[Event( nameSpace: "Nomad.Game.Domain.Events.World", PayloadName = "RegionPlayerStatusChangedEventArgs" )]
+		[Event( nameSpace: "Nomad.Game.Sdk.Events.World", PayloadName = "RegionPlayerStatusChangedEventArgs" )]
 		[EventPayload( "Id", typeof( Guid ), Order = 1 )]
 		[EventPayload( "NewStatus", typeof( RegionPlayerStatus ), Order = 2 )]
 		public IGameEvent<RegionPlayerStatusChangedEventArgs> PlayerStatusChanged => _playerStatusChanged;

@@ -18,7 +18,7 @@ using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 
 namespace Nomad.Game.Infrastructure.Gameplay
 {

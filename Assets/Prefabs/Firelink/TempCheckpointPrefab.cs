@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Interactables;
+using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Prefabs
 {

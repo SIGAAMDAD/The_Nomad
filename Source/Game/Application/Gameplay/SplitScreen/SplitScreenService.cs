@@ -17,7 +17,7 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Scene.GameObjects;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Sdk.Events.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;

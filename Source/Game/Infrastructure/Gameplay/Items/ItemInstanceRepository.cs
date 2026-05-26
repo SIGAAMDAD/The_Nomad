@@ -17,11 +17,11 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Game.Application.Gameplay.Combat;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Interfaces.Inventory;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Inventory;
 using Nomad.Save.Extensions;
 using Nomad.Save.Services;
+using Nomad.Game.Application.Gameplay.Items;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items
 {

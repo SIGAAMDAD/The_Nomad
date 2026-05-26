@@ -14,10 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Logger;
-using Nomad.Game.Domain.Data.Mods;
-using Nomad.Game.Domain.Interfaces.Mods;
-using Nomad.Logger.Extensions;
+using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
@@ -63,10 +62,46 @@ namespace Nomad.Game.Infrastructure.Mods
 
 		public void Warning( string message )
 		{
+			if ( !TryEnterLogWindow() ) {
+				return;
+			}
+
+			_category.PrintWarning( Format( message ) );
 		}
 
-		public void Warning( string format, params object?[] args )
+		public void Error( string message )
 		{
+			if ( !TryEnterLogWindow() ) {
+				return;
+			}
+
+			_category.PrintError( Format( message ) );
+		}
+
+		public void Debug( string message )
+		{
+			if ( !TryEnterLogWindow() ) {
+				return;
+			}
+
+			_category.PrintDebug( Format( message ) );
+		}
+
+		public void Exception( Exception exception, string message )
+		{
+			ArgumentGuard.ThrowIfNull( exception, nameof( exception ) );
+
+			if ( !TryEnterLogWindow() ) {
+				return;
+			}
+
+			_category.PrintError(
+				Format(
+					$"{message}{Environment.NewLine}" +
+					$"{exception.GetType().FullName}: {exception.Message}{Environment.NewLine}" +
+					$"{exception.StackTrace}"
+				)
+			);
 		}
 
 		private bool TryEnterLogWindow()

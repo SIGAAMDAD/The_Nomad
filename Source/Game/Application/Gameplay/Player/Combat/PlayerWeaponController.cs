@@ -16,10 +16,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Player;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

@@ -19,8 +19,7 @@ using System.Text.Json;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Items
 {

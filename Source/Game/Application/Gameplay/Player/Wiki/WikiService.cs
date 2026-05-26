@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.Wiki
 {

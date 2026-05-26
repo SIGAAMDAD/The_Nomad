@@ -17,10 +17,10 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Multiplayer.Match;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Modes;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
@@ -59,7 +59,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 		};
 
 		public override string ModeName => "Duel";
-		public override Mode Mode => Mode.Duel;
+		public override MultiplayerMode Mode => MultiplayerMode.Duel;
 
 		public IGameEvent<DuelRoundEndEventArgs> DuelRoundEnd => _duelRoundEnd;
 		private readonly IGameEvent<DuelRoundEndEventArgs> _duelRoundEnd = default;

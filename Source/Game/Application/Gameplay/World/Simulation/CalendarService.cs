@@ -20,9 +20,8 @@ using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.CVars;
 using Nomad.Events.Extensions;
-using Nomad.Game.Domain.Data.World;
-using Nomad.Game.Domain.Events.World;
-using Nomad.Game.Domain.Interfaces.World;
+using Nomad.Game.Sdk.World;
+using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Application.Gameplay.World
 {

@@ -19,6 +19,7 @@ using Nomad.Core.Engine.Rendering;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Engine.Windowing;
 using Nomad.EngineUtils.Settings.Services;
+using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {

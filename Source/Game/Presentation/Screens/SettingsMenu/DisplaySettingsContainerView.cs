@@ -20,6 +20,7 @@ using Nomad.Core.Engine.Rendering;
 using Nomad.Core.Engine.Windowing;
 using Nomad.Game.Presentation.Widgets.OptionList;
 using Nomad.Game.Presentation.Widgets.OptionSlider;
+using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {

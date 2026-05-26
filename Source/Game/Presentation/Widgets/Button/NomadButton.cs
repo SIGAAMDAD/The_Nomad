@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Game.Application.Audio;
 using Godot;
-using Nomad.Game.Domain.Audio;
+using Nomad.Game.Sdk;
 
 namespace Nomad.Game.Presentation.Widgets.NomadButton
 {

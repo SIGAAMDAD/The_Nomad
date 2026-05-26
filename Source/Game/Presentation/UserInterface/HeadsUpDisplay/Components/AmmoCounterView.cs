@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Drawing;
 using System.Numerics;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
+using Nomad.Game.Sdk.HeadsUpDisplay;
 using Nomad.UI;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components

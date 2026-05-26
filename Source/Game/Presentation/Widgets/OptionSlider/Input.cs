@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
+namespace Nomad.Game.Presentation.Widgets.OptionSlider
 {
 	public sealed partial class Input : EngineHorizontalSlider
 	{

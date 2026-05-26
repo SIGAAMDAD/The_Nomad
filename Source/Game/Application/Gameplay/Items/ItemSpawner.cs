@@ -18,9 +18,8 @@ using Godot;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
 using Nomad.EngineUtils;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Events.Items;
-using Nomad.Game.Domain.Interfaces.Items;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Events.Items;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Items

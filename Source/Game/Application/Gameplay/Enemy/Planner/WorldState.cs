@@ -120,4 +120,4 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		public static bool operator ==( WorldState left, WorldState right ) => left.Equals( right );
 		public static bool operator !=( WorldState left, WorldState right ) => !left.Equals( right );
 	}
-};
+}

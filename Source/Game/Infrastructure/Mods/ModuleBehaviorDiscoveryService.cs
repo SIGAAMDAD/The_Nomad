@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Nomad.Game.Domain.Data.Mods;
+using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
 {

@@ -15,12 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Events.Interactables;
-using Nomad.Game.Domain.Interfaces.Entities;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk.Interactables;
+using Nomad.Game.Sdk.Events.Interactables;
 using Nomad.Game.Prefabs;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Core.Compatibility.Guards;
 
 namespace Nomad.Game.Application.Gameplay.Interactables

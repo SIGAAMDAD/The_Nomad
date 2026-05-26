@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 
 namespace Nomad.Game.Infrastructure
 {

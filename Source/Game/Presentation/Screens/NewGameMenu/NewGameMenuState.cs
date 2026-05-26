@@ -19,5 +19,5 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 	{
 		Options,
 		CustomDifficulty
-	};
-};
+	}
+}

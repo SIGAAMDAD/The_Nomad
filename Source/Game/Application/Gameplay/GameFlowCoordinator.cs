@@ -19,9 +19,8 @@ using Nomad.Core.CVars;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.CVars;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Application.Gameplay
 {

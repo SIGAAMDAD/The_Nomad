@@ -19,9 +19,8 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Numerics;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.World;
-using Nomad.Game.Domain.Events.World;
-using Nomad.Game.Domain.Interfaces.World;
+using Nomad.Game.Sdk.World;
+using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Application.Gameplay.World
 {
@@ -43,7 +42,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		public SeasonDefinition CurrentSeason { get; private set; }
 
 		private readonly CalendarService _calendar;
-		private readonly IReadOnlyDictionary<InternString, SeasonDefinition> _seasons;
+		private readonly IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> _seasons;
 		private readonly IReadOnlyList<MonthDefinition> _months;
 
 		public IGameEvent<SeasonChangedEventArgs> SeasonChanged => _seasonChanged;
@@ -66,7 +65,7 @@ namespace Nomad.Game.Application.Gameplay.World
 			IGameEventRegistryService eventFactory,
 			CalendarService calendar,
 			IReadOnlyList<MonthDefinition> months,
-			IReadOnlyDictionary<InternString, SeasonDefinition> seasons
+			IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> seasons
 		)
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory );
@@ -104,6 +103,11 @@ namespace Nomad.Game.Application.Gameplay.World
 			_seasonChanged.Dispose();
 		}
 
+		public bool TryGetSeason( SeasonDefinitionId id, out SeasonDefinition definition )
+		{
+			return _seasons.TryGetValue( id, out definition );
+		}
+
 		/*
 		============
 		OnDayChanged
@@ -126,8 +130,8 @@ namespace Nomad.Game.Application.Gameplay.World
 
 			_seasonChanged.Publish( new SeasonChangedEventArgs(
 				args.Time,
-				previous,
-				next
+				previous.Id,
+				next.Id
 			) );
 		}
 

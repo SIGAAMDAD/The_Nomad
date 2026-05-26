@@ -23,6 +23,7 @@ using Nomad.Game.Presentation.Widgets.NomadLabel;
 using Nomad.Input.Interfaces;
 using Nomad.Input.ValueObjects;
 using Nomad.UI;
+using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {

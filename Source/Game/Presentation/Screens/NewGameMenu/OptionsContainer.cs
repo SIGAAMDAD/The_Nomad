@@ -20,9 +20,10 @@ using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.UI;
+using Nomad.Game.Presentation.Screens.NewGameMenu;
 
 namespace Nomad.Game.Presentation.Screens.NewGameMenu
 {

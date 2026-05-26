@@ -21,9 +21,8 @@ using Godot;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
 using Nomad.Game.Application.Gameplay.Interactables;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Interactables;
+using Nomad.Game.Sdk.Interactables;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Prefabs
 {
@@ -39,7 +38,7 @@ namespace Nomad.Game.Prefabs
 	/// called in the game, a "Meliora".
 	/// </summary>
 
-	internal partial class CheckpointPrefab : InteractableRoot
+	public partial class CheckpointPrefab : InteractableRoot
 	{
 		[Export(PropertyHint.LocaleId, hintString: "The checkpoint's id")]
 		private StringName _id;

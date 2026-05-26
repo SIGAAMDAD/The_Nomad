@@ -19,10 +19,11 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
+using Nomad.Game.Sdk.Player;
 using Nomad.Save.Services;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.Wiki
 {

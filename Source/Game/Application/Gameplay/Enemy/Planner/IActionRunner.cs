@@ -13,12 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Gameplay.Npc;
+
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 {
-	public interface IActionRunner
-	{
-		ActionRunStatus Start( NpcAgent agent );
-		ActionRunStatus Tick( NpcAgent agent, float dt );
-		void Cancel( NpcAgent agent );
-	};
-};
+    public interface IActionRunner
+    {
+        ActionRunStatus Start(NpcAgentId agent);
+        ActionRunStatus Tick(NpcAgentId agent, float dt);
+        void Cancel(NpcAgentId agent);
+    }
+}

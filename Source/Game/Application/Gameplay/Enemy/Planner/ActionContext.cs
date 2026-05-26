@@ -30,5 +30,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 
 		public object? TargetRef => _targetRef;
 		private readonly object? _targetRef;
-	};
-};
+	}
+}

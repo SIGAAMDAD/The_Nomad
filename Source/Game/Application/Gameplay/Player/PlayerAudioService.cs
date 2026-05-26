@@ -19,13 +19,13 @@ using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
-using Nomad.Game.Domain.Audio;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Scene.GameObjects;
-using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

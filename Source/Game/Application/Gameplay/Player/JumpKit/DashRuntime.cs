@@ -14,8 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Compatibility.Guards;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.JumpKit;
 using System;
 
 namespace Nomad.Game.Application.Gameplay.Player.JumpKit
@@ -56,7 +56,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="initialDashDuration"></param>
 		/// <param name="burnoutRechargeDuration"></param>
@@ -72,7 +72,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public bool CanStartDash()
@@ -86,7 +86,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="dashDuration"></param>
 		public void ResetDashDuration( float dashDuration )
@@ -100,7 +100,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="module"></param>
 		/// <returns></returns>
@@ -152,7 +152,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="delta"></param>
 		/// <param name="module"></param>
@@ -240,7 +240,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="module"></param>
 		private void EnterBurnout( IDashModule module )

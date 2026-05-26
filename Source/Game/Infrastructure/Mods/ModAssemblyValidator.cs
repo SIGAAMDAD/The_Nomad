@@ -18,7 +18,7 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Nomad.Game.Domain.Data.Mods;
+using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
@@ -88,7 +88,7 @@ namespace Nomad.Game.Infrastructure.Mods
 				if ( IsForbiddenAssembly( name ) ) {
 					report.Error(
 						"MOD100",
-						$"Forbidden assembly reference '{name}'. Mods must use Nomad.Mods.Abstractions / Nomad.Game.ModSdk instead of raw framework assemblies.",
+						$"Forbidden assembly reference '{name}'. Mods must use Nomad.Mods.Abstractions / Nomad.Game.Sdk instead of raw framework assemblies.",
 						assembly.MainModule.FileName
 					);
 				}

@@ -18,13 +18,13 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Game.Application.Gameplay.Player.Input;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Player;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Multiplayer.PlayerInput
 {

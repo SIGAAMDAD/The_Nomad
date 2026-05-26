@@ -13,13 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Modes;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
 	internal static class ModeFactory
 	{
-		public static ModeBase CreateMode( Mode mode )
+		public static ModeBase CreateMode( MultiplayerMode mode )
 		{
 			return mode switch {};
 		}

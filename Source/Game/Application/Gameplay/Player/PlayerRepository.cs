@@ -21,16 +21,16 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Domain.Interfaces.Player;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
-using Nomad.Game.Domain.Interfaces.Player.State;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Events.Gameplay;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Player.Inventory;
+using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Prefabs;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

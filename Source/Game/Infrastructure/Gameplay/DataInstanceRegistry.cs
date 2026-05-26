@@ -34,7 +34,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 	/// </summary>
 
 	internal abstract class DataInstanceRegistry<TInstanceId, TInstance> : IDisposable
-		where TInstanceId : struct, IEquatable<TInstanceId>
+		where TInstanceId : struct
 		where TInstance : class, IDisposable
 	{
 		protected abstract string LoggerCategoryName { get; }

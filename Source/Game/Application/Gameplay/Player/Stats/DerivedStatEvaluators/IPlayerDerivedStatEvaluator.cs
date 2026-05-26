@@ -13,7 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Game.Domain.Data.Player;
+using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
 {
@@ -21,5 +21,5 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
 	{
 		bool CanEvaluate( DerivedStatType type );
 		float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context );
-	};
-};
+	}
+}

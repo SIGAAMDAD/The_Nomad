@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Godot;
 using Nomad.Core.Compatibility.Guards;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
+using Nomad.Game.Sdk.HeadsUpDisplay;
+using Nomad.Game.Sdk.Player;
 
 namespace Nomad.Game.Prefabs
 {

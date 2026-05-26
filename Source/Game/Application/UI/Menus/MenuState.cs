@@ -37,5 +37,5 @@ namespace Nomad.Game.Application.UI.Menus
 		None,
 
 		Count
-	};
-};
+	}
+}

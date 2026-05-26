@@ -15,18 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Networking.Session;
-using Nomad.Game.Application.Multiplayer.Modes;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer.Modes;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Events;
-using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Objectives;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Modes;
+using Nomad.Game.Sdk.Events.Multiplayer;
 using Nomad.Networking.Messaging;
-using Nomad.Game.Domain.Data.Multiplayer.Team;
+using Nomad.Game.Sdk.Multiplayer.Team;
 using System;
+using Nomad.Game.Application.Multiplayer.Modes;
 
 namespace Nomad.Game.Application.Multiplayer
 {
@@ -44,7 +41,7 @@ namespace Nomad.Game.Application.Multiplayer
 	internal sealed class CaptureTheFlagMode : ModeBase, ICaptureTheFlagMode
 	{
 		public override string ModeName => "Capture The Flag";
-		public override Mode Mode => Mode.CaptureTheFlag;
+		public override MultiplayerMode Mode => MultiplayerMode.CaptureTheFlag;
 
 		public IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged => _flagStatusChanged;
 		private readonly IGameEvent<FlagStatusChangedEventArgs> _flagStatusChanged = default;

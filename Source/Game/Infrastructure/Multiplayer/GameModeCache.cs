@@ -16,8 +16,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Lobby;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Lobby;
 
 namespace Nomad.Game.Infrastructure.Multiplayer
 {
@@ -29,13 +30,13 @@ namespace Nomad.Game.Infrastructure.Multiplayer
 			Id = new InternString( "multiplayer.mode.bloodbath.id" ),
 			DisplayName = new InternString( "multiplayer.mode.bloodbath.displayname" ),
 			Description = new InternString( "multiplayer.mode.bloodbath.description" ),
-			Mode = Mode.Deathmatch,
+			Mode = MultiplayerMode.Deathmatch,
 			MinPlayers = 1,
 			MaxPlayers = 16
 		};
 
-		public static readonly ImmutableDictionary<Mode, GameModeDefinition> Modes = new Dictionary<Mode, GameModeDefinition> {
-			[Mode.Deathmatch] = Bloodbath
+		public static readonly ImmutableDictionary<MultiplayerMode, GameModeDefinition> Modes = new Dictionary<MultiplayerMode, GameModeDefinition> {
+			[MultiplayerMode.Deathmatch] = Bloodbath
 		}.ToImmutableDictionary();
 	};
 };

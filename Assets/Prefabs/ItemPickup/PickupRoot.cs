@@ -19,11 +19,11 @@ using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Items;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk.Events.Items;
+using Nomad.Game.Sdk.Interactables;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Prefabs
 {
