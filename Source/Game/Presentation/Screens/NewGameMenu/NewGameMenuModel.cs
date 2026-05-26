@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Presentation.Screens.NewGameMenu;
+
 namespace Nomad.Game.Presentation.Screens.NewGameMenu
 {
 	/*

@@ -15,19 +15,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.Events;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Inventory;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Data.Player.Inventory;
-using Nomad.Game.Domain.Interfaces.Items;
-using Nomad.Game.Domain.Interfaces.Player.Stats;
-using Nomad.Game.Domain.Interfaces.Player.State;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
-using Nomad.Game.Domain.Interfaces.Inventory;
+using Nomad.Game.Sdk.Inventory;
+using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.Inventory;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Player.Stats;
+using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Application.Gameplay.Inventory;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
 using Nomad.Game.Infrastructure.Caching;
 using Godot;
 using Nomad.Game.Prefabs;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.Inventory
 {

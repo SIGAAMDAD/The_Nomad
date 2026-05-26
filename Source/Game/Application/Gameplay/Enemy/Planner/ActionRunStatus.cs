@@ -22,5 +22,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		Failed,
 
 		Count
-	};
-};
+	}
+}

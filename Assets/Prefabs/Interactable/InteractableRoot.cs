@@ -17,14 +17,13 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Util;
-using Nomad.Game.Application.Gameplay.Interactables;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Prefabs
 {
-	internal abstract partial class InteractableRoot : Node2D
+	public abstract partial class InteractableRoot : Node2D
 	{
 		public static event Action<InteractableRoot, PlayerId> InteractionFocusEntered;
 		public static event Action<InteractableRoot, PlayerId> InteractionFocusExited;
@@ -32,7 +31,7 @@ namespace Nomad.Game.Prefabs
 		public event Action<PlayerId> PlayerEntered;
 		public event Action<PlayerId> PlayerExited;
 
-		protected InteractableAggregate? aggregate = null;
+		protected IInteractableEntity? aggregate = null;
 
 		public virtual InternString InteractionPrompt => new InternString( "Interact" );
 		public virtual EntityInteractionKind PrimaryInteractionKind => EntityInteractionKind.Use;
@@ -51,7 +50,7 @@ namespace Nomad.Game.Prefabs
 			return aggregate.Interact(
 				EntityInteractionContext
 					.Simple(
-						actorId: new EntityId( playerId.Id ),
+						actorId: new EntityId( playerId ),
 						targetId: aggregate.Id,
 						kind: kind
 					)

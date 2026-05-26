@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Interfaces.World;
+using Nomad.Game.Sdk.World;
 using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.World.Renown

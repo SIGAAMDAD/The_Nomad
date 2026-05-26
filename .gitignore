@@ -11,5 +11,7 @@
 *.so
 *.log
 *.lscache
+**/bin
+**/obj
 
 steam_appid.txt

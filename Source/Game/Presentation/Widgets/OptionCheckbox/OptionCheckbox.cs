@@ -17,7 +17,7 @@ using Nomad.Core.Engine.Globals;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Events.Globals;
-using Nomad.Game.Domain.Events.UI;
+using Nomad.Game.Sdk.Events.UI;
 using Godot;
 
 namespace Nomad.Game.Presentation.Widgets.OptionCheckbox
@@ -52,7 +52,7 @@ namespace Nomad.Game.Presentation.Widgets.OptionCheckbox
 
 		private Label _valueLabel;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionCheckboxValueChangedEventArgs" )]
+		[Event( nameSpace: "Nomad.Game.Sdk.Events.UI", PayloadName = "OptionCheckboxValueChangedEventArgs" )]
 		[EventPayload( "Value", typeof( bool ) )]
 		public IGameEvent<OptionCheckboxValueChangedEventArgs> Toggled => _toggled;
 		private readonly IGameEvent<OptionCheckboxValueChangedEventArgs> _toggled = default;

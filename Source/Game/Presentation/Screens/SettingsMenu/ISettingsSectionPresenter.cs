@@ -20,5 +20,5 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		void Save();
 		void Reset();
 		void SyncView();
-	};
-};
+	}
+}

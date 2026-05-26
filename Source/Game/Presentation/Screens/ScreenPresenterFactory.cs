@@ -21,7 +21,7 @@ using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.EngineUtils.Settings.Services;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Presentation.Screens.ExtrasMenu;
 using Nomad.Game.Presentation.Screens.MainMenu;
 using Nomad.Game.Presentation.Screens.PauseMenu;

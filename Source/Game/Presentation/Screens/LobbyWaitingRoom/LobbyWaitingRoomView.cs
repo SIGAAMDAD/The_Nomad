@@ -19,7 +19,7 @@ using Nomad.Core.Engine.Globals;
 using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Networking.Session;
 
 namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom

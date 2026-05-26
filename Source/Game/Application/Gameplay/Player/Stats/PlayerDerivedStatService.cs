@@ -17,12 +17,11 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.Compatibility.Guards;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player.Stats;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Player.Stats;
 using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Core.Numerics;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats

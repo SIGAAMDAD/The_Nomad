@@ -16,12 +16,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Audio.Interfaces;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Events;
-using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Domain.Interfaces.Gameplay;
 using Nomad.Game.Presentation.Screens.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Scene.GameObjects;
 
 namespace Nomad.Game.Prefabs

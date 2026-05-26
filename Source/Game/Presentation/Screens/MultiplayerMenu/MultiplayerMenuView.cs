@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Godot;
 using Nomad.Events.Globals;
+using Nomad.Game.Presentation.Screens.MultiplayerMenu;
 
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {

@@ -25,10 +25,12 @@ using Nomad.Game.Application.Gameplay.Player.Inventory;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Application.Gameplay.Player.Stats;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Player.State;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Player.State;
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Prefabs;
+using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

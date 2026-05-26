@@ -19,10 +19,11 @@
     <SkipLocalsInit>true</SkipLocalsInit>
     <ImplicitUsings>disable</ImplicitUsings>
 
-    <NoWarn>$(NoWarn);CA2213;CA1501;CA1812;CA1822;CA1506</NoWarn>
+    <NoWarn>$(NoWarn);CA2213;CA1501;CA1812;CA1822;CA1506;CA1308</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
+    <Compile Remove="Source/Game/Sdk/**" />
     <Compile Remove="Assets/Modules/**" />
     <Compile Remove="Docs/**" />
     <Compile Remove="Source/Modding/**" />
@@ -33,10 +34,12 @@
     <Compile Remove="**/obj/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Source/Modding/TheNomad.Modding.csproj">
+    <ProjectReference Include="Source/Modding/Nomad.Modding.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+
+    <ProjectReference Include="Source/Game/Sdk/Nomad.Game.Sdk.csproj" />
 
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
 

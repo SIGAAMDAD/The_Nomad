@@ -18,10 +18,9 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
 using Nomad.Networking.Session;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
+using Nomad.Game.Sdk.Player;
 
 namespace Nomad.Game.Application.Gameplay.World
 {

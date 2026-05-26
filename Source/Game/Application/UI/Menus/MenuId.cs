@@ -26,5 +26,5 @@ namespace Nomad.Game.Application.UI.Menus
 		{
 			_id = new InternString( id );
 		}
-	};
-};
+	}
+}

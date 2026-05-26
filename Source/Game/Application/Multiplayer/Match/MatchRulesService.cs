@@ -1,7 +1,22 @@
+/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
 using System;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Match;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Match;
 
 namespace Nomad.Game.Application.Multiplayer.Match
 {
@@ -42,7 +57,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 			_current = Clone( rules );
 		}
 
-		public MatchRules CreateDefaultRules( Mode mode, string mapId )
+		public MatchRules CreateDefaultRules( MultiplayerMode mode, string mapId )
 		{
 			MatchRules rules = new MatchRules {
 				Mode = mode,
@@ -50,7 +65,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 			};
 
 			switch ( mode ) {
-				case Mode.Duel:
+				case MultiplayerMode.Duel:
 					rules.MaxPlayers = 2;
 					rules.MaxTeams = 0;
 					rules.ScoreLimit = 3;
@@ -61,7 +76,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 					rules.RoundDurationTicks = 0;
 					break;
 
-				case Mode.Deathmatch:
+				case MultiplayerMode.Deathmatch:
 					rules.MaxPlayers = 16;
 					rules.MaxTeams = 0;
 					rules.ScoreLimit = 20;
@@ -70,7 +85,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 					rules.MatchDurationTicks = 60 * 5 * 60;
 					break;
 
-				case Mode.TeamBrawl:
+				case MultiplayerMode.TeamBrawl:
 					rules.MaxPlayers = 16;
 					rules.MaxTeams = 2;
 					rules.ScoreLimit = 30;
@@ -79,7 +94,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 					rules.MatchDurationTicks = 60 * 8 * 60;
 					break;
 
-				case Mode.KingOfTheHill:
+				case MultiplayerMode.KingOfTheHill:
 					rules.MaxPlayers = 16;
 					rules.MaxTeams = 2;
 					rules.ScoreLimit = 100;
@@ -88,7 +103,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 					rules.MatchDurationTicks = 60 * 10 * 60;
 					break;
 
-				case Mode.CaptureTheFlag:
+				case MultiplayerMode.CaptureTheFlag:
 					rules.MaxPlayers = 16;
 					rules.MaxTeams = 2;
 					rules.ScoreLimit = 3;
@@ -115,7 +130,7 @@ namespace Nomad.Game.Application.Multiplayer.Match
 				return MatchRulesValidationResult.Fail( "Match rules are null." );
 			}
 
-			if ( rules.Mode == Mode.None ) {
+			if ( rules.Mode == MultiplayerMode.None ) {
 				return MatchRulesValidationResult.Fail( "Match mode cannot be None." );
 			}
 
@@ -131,13 +146,13 @@ namespace Nomad.Game.Application.Multiplayer.Match
 				return MatchRulesValidationResult.Fail( "RoundLimit must be greater than zero." );
 			}
 
-			if ( rules.Mode == Mode.Duel && rules.MaxPlayers != 2 ) {
+			if ( rules.Mode == MultiplayerMode.Duel && rules.MaxPlayers != 2 ) {
 				return MatchRulesValidationResult.Fail( "Duel requires exactly two players." );
 			}
 
-			if ( (rules.Mode == Mode.TeamBrawl ||
-				 rules.Mode == Mode.KingOfTheHill ||
-				 rules.Mode == Mode.CaptureTheFlag) &&
+			if ( (rules.Mode == MultiplayerMode.TeamBrawl ||
+				 rules.Mode == MultiplayerMode.KingOfTheHill ||
+				 rules.Mode == MultiplayerMode.CaptureTheFlag) &&
 				rules.MaxTeams < 2
 			) {
 				return MatchRulesValidationResult.Fail( "Team modes require at least two teams." );

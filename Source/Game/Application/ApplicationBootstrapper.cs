@@ -18,7 +18,7 @@ using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.UI;
 using Nomad.Game.Application.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Logger.Globals;
 using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Game.Infrastructure;

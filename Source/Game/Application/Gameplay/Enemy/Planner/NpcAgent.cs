@@ -15,6 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
+using Nomad.Game.Application.Gameplay.Enemy.Planner;
+using Nomad.Game.Sdk.Gameplay.Npc;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 {
@@ -133,7 +135,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 			if ( !ReferenceEquals( _runningAction, step ) ) {
 				_runningAction = step;
 
-				ActionRunStatus started = step.Runner.Start( this );
+				ActionRunStatus started = step.Runner.Start( NpcAgentId.Invalid );
 				if ( started == ActionRunStatus.Succeeded ) {
 					OnActionSucceeded( step );
 					AdvancePlan();
@@ -150,7 +152,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 				OnActionStarted( step );
 			}
 
-			ActionRunStatus tickStatus = step.Runner.Tick( this, dt );
+			ActionRunStatus tickStatus = step.Runner.Tick( NpcAgentId.Invalid, dt );
 			switch ( tickStatus ) {
 				case ActionRunStatus.Running:
 					break;
@@ -193,7 +195,7 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		private void CancelRunningActionIfAny()
 		{
 			if ( _runningAction != null ) {
-				_runningAction.Runner.Cancel( this );
+				_runningAction.Runner.Cancel( NpcAgentId.Invalid );
 				_runningAction = null;
 			}
 		}

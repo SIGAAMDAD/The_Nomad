@@ -16,11 +16,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer.Match;
-using Nomad.Game.Domain.Data.Multiplayer.Team;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer.Match;
+using Nomad.Game.Sdk.Multiplayer.Team;
+using Nomad.Game.Sdk.Events.Multiplayer;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Application.Multiplayer.Match
 {

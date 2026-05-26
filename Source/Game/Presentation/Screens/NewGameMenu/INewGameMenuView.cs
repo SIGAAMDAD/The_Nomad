@@ -19,5 +19,5 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 	{
 		IOptionsContainerView OptionsView { get; }
 		ICustomDifficultyContainerView CustomDifficultyView { get; }
-	};
-};
+	}
+}

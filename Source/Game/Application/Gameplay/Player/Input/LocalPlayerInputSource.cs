@@ -21,11 +21,12 @@ using Nomad.Core.Engine.Windowing;
 using Nomad.Core.Events;
 using Nomad.Core.Input;
 using Nomad.CVars;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Player;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player.Input
 {

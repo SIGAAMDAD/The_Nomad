@@ -16,14 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Multiplayer;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Events.Multiplayer;
+using Nomad.Game.Sdk.Events.Player;
 using Nomad.Networking.Events;
 using Nomad.Networking.Messaging;
 using Nomad.Networking.Rpc;
 using Nomad.Networking.Session;
+using Nomad.Game.Sdk.Multiplayer.Modes;
 
 namespace Nomad.Game.Application.Multiplayer.Modes
 {
@@ -41,7 +42,7 @@ namespace Nomad.Game.Application.Multiplayer.Modes
 	internal abstract class ModeBase : MultiplayerObject, IGameMode
 	{
 		public abstract string ModeName { get; }
-		public abstract Mode Mode { get; }
+		public abstract MultiplayerMode Mode { get; }
 
 		public IGameEvent<GameStartEventArgs> GameStart => _gameStart;
 		private readonly IGameEvent<GameStartEventArgs> _gameStart = default;

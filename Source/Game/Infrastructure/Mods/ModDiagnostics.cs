@@ -16,8 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Nomad.Game.Domain.Data.Mods;
-using Nomad.Game.Domain.Interfaces.Mods;
+using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
 {

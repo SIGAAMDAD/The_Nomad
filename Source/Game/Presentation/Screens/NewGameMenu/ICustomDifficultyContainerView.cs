@@ -22,5 +22,5 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 		event Action BackRequested;
 
 		void SetVisibility( bool visible );
-	};
-};
+	}
+}

@@ -18,7 +18,7 @@ using System.Text.Json;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Renown;
+using Nomad.Game.Sdk.Renown;
 
 namespace Nomad.Game.Infrastructure.Gameplay.Renown
 {

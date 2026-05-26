@@ -21,10 +21,9 @@ using Nomad.Game.Application.Gameplay.Inventory;
 using Nomad.Game.Application.Gameplay.Interactables;
 using Nomad.Game.Application.Gameplay.Items;
 using Nomad.Game.Application.Gameplay.Player;
-using Nomad.Game.Domain.Data.Gameplay;
-using Nomad.Game.Domain.Events.Gameplay;
-using Nomad.Game.Domain.Interfaces.Gameplay;
-using Nomad.Game.Domain.Interfaces.Interactables;
+using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Events.Gameplay;
+using Nomad.Game.Sdk.Interactables;
 using Nomad.Core.Logger;
 using Nomad.Logger.Extensions;
 

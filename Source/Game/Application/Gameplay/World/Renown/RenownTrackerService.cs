@@ -21,9 +21,9 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Numerics;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Renown;
-using Nomad.Game.Domain.Events.Renown;
-using Nomad.Game.Domain.Interfaces.World;
+using Nomad.Game.Sdk.Renown;
+using Nomad.Game.Sdk.Events.Renown;
+using Nomad.Game.Sdk.World;
 
 namespace Nomad.Game.Application.Gameplay.World.Renown
 {

@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Audio.Interfaces;
-using Nomad.Game.Domain.Audio;
+using Nomad.Game.Sdk;
 
 namespace Nomad.Game.Presentation.Screens.PauseMenu
 {

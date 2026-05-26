@@ -14,7 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.CVars;
-using Nomad.Game.Domain.Data.Gameplay;
+using Nomad.Game.Sdk.Gameplay;
 
 namespace Nomad.Game.Application.Configuration.Registries
 {

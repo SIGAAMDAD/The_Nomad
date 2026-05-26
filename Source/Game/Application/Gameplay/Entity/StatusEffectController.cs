@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Util;
-using Nomad.Game.Domain.Data.Entities;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk;
+using Nomad.Game.Application.Gameplay.Entity;
 
 namespace Nomad.Game.Application.Gameplay.Entity
 {

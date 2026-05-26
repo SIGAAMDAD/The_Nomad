@@ -14,6 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Game.Application.Gameplay.Enemy.Planner;
+using Nomad.Game.Application.Gameplay.Enemy.Planner.Goals;
 
 namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Sensors
 {

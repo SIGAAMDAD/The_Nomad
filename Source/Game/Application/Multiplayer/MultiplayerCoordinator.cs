@@ -14,7 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Application.Multiplayer
 {

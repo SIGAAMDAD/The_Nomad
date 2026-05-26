@@ -14,7 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Events.Globals;
-using Nomad.Game.Domain.Events.UI;
+using Nomad.Game.Sdk.Events.UI;
 using Godot;
 using Nomad.Core.Events;
 
@@ -63,7 +63,7 @@ namespace Nomad.Game.Presentation.Widgets.OptionSlider
 		private HSlider _slider;
 		private Label _valueLabel;
 
-		[Event( nameSpace: "Nomad.Game.Domain.Events.UI", PayloadName = "OptionSliderValueChangedEventArgs" )]
+		[Event( nameSpace: "Nomad.Game.Sdk.Events.UI", PayloadName = "OptionSliderValueChangedEventArgs" )]
 		[EventPayload( "Value", typeof( float ) )]
 		public IGameEvent<OptionSliderValueChangedEventArgs> ValueChanged => _valueChanged;
 		private readonly IGameEvent<OptionSliderValueChangedEventArgs> _valueChanged = default;

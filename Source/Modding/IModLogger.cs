@@ -13,9 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+
 namespace Nomad.Modding
 {
     public interface IModLogger
     {
+        void Info(string message);
+        void Debug(string message);
+        void Warning(string message);
+        void Error(string message);
+
+        void Exception(Exception exception, string message);
     }
 }

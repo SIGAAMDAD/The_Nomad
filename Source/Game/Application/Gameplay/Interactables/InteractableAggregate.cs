@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Application.Gameplay.Entity;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Interactables;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Interactables;
-using Nomad.Game.Domain.Interfaces.Entities;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Interactables;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Events.Interactables;
 using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Interactables

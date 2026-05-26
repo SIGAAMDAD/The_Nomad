@@ -18,21 +18,21 @@ using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
 using Nomad.Game.Application.Gameplay.World;
-using Nomad.Game.Domain.Data.World;
 using System.Collections.Generic;
 using Godot;
+using Nomad.Game.Sdk.World;
 
 namespace Nomad.Game.Prefabs
 {
 	/*
 	===================================================================================
-	
+
 	SingleWorld
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	public sealed partial class SingleWorld : WorldBase
@@ -44,7 +44,7 @@ namespace Nomad.Game.Prefabs
 		private readonly Dictionary<InternString, SeasonDefinition> _seasons;
 
 		public static readonly SeasonDefinition EarlyLongSummer = new() {
-			Id = new( "season.early_longsummer.id" ),
+			Id = new( new( "season.early_longsummer.id" ) ),
 
 			DaylightHours = 13.75f,
 			TwilightHours = 0.80f,
@@ -69,7 +69,7 @@ namespace Nomad.Game.Prefabs
 		};
 
 		public static readonly SeasonDefinition LateLongSummer = new() {
-			Id = new( "season.late_longsummer.id" ),
+			Id = new( new( "season.late_longsummer.id" ) ),
 
 			DaylightHours = 14.50f,
 			TwilightHours = 0.70f,
@@ -94,7 +94,7 @@ namespace Nomad.Game.Prefabs
 		};
 
 		public static readonly SeasonDefinition EarlyLongWinter = new() {
-			Id = new( "season.early_longwinter.id" ),
+			Id = new( new( "season.early_longwinter.id" ) ),
 
 			DaylightHours = 10.25f,
 			TwilightHours = 0.95f,
@@ -119,7 +119,7 @@ namespace Nomad.Game.Prefabs
 		};
 
 		public static readonly SeasonDefinition LateLongWinter = new() {
-			Id = new( "season.late_longwinter.id" ),
+			Id = new( new( "season.late_longwinter.id" ) ),
 
 			DaylightHours = 9.00f,
 			TwilightHours = 1.05f,
@@ -153,39 +153,39 @@ namespace Nomad.Game.Prefabs
 							Id = new InternString( "month.early_longsummer.id" ),
 							DisplayName = new InternString( "month.early_longsummer.displayname" ),
 							DayCount = 69,
-							SeasonId = new InternString( "season.early_longsummer.id" ),
-							TransitionSeasonId = new InternString( "season.late_longsummer.id" )
+							SeasonId = new SeasonDefinitionId( new( "season.early_longsummer.id" ) ),
+							TransitionSeasonId = new SeasonDefinitionId( new( "season.late_longsummer.id" ) )
 						},
 						new MonthDefinition {
 							Id = new InternString( "month.late_longsummer.id" ),
 							DisplayName = new InternString( "month.late_longsummer.displayname" ),
 							DayCount = 89,
-							SeasonId = new InternString( "season.late_longsummer.id" ),
-							TransitionSeasonId = new InternString( "season.early_longwinter.id" ),
+							SeasonId = new SeasonDefinitionId( new( "season.late_longsummer.id" ) ),
+							TransitionSeasonId = new SeasonDefinitionId( new( "season.early_longwinter.id" ) ),
 							TransitionStartNormalized = 0.5f
 						},
 						new MonthDefinition {
 							Id = new InternString( "month.early_longwinter.id" ),
 							DisplayName = new InternString( "month.early_longwinter.displayname" ),
 							DayCount = 69,
-							SeasonId = new InternString( "season.early_longwinter.id" ),
-							TransitionSeasonId = new InternString( "season.late_longwinter.id" )
+							SeasonId = new SeasonDefinitionId( new( "season.early_longwinter.id" ) ),
+							TransitionSeasonId = new SeasonDefinitionId( new( "season.late_longwinter.id" ) )
 						},
 						new MonthDefinition {
 							Id = new InternString( "month.late_longwinter.id" ),
 							DisplayName = new InternString( "month.late_longwinter.displayname" ),
 							DayCount = 89,
-							SeasonId = new InternString( "season.late_longwinter.id" ),
-							TransitionSeasonId = new InternString( "season.early_longsummer.id" ),
+							SeasonId = new SeasonDefinitionId( new( "season.late_longwinter.id" ) ),
+							TransitionSeasonId = new SeasonDefinitionId( new( "season.early_longsummer.id" ) ),
 							TransitionStartNormalized = 0.5f
 						},
 					}
 				},
-				Seasons = new Dictionary<InternString, SeasonDefinition> {
-					[new( "season.early_longsummer.id" )] = EarlyLongSummer,
-					[new( "season.late_longsummer.id" )] = LateLongSummer,
-					[new( "season.early_longwinter.id" )] = EarlyLongWinter,
-					[new( "season.late_longwinter.id" )] = LateLongWinter,
+				Seasons = new Dictionary<SeasonDefinitionId, SeasonDefinition> {
+					[new( new( "season.early_longsummer.id" ) )] = EarlyLongSummer,
+					[new( new( "season.late_longsummer.id" ) )] = LateLongSummer,
+					[new( new( "season.early_longwinter.id" ) )] = EarlyLongWinter,
+					[new( new( "season.late_longwinter.id" ) )] = LateLongWinter,
 				}
 			};
 

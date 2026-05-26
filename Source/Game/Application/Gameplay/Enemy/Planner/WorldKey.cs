@@ -88,5 +88,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner
 		TargetCommittedToAttack,
 
 		Count
-	};
-};
+	}
+}

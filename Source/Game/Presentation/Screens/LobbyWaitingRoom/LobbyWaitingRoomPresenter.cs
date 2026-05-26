@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Data.Multiplayer.Lobby;
-using Nomad.Game.Domain.Interfaces.Multiplayer;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Multiplayer.Lobby;
 using Nomad.Networking.Session;
 
 namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom

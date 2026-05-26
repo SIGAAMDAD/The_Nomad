@@ -15,8 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Events;
-using Nomad.Game.Domain.Data.Entities;
-using Nomad.Game.Domain.Data.Items;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Application.Gameplay.Items;
 
 namespace Nomad.Game.Application.Gameplay.Combat
 {

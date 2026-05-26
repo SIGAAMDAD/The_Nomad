@@ -1,6 +1,7 @@
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
-using Nomad.Game.Domain.Interfaces.Player.State;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Player.Inventory;
+using Nomad.Game.Sdk.Player.State;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -8,5 +9,5 @@ namespace Nomad.Game.Application.Gameplay.Player
 	{
 		bool TryGetInventory( PlayerId playerId, out IPlayerInventoryCoordinator? inventory );
 		bool TryGetState( PlayerId playerId, out IPlayerStateReader? reader, out IPlayerStateWriter? writer );
-	};
-};
+	}
+}

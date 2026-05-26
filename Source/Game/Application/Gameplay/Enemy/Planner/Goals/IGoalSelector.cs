@@ -18,5 +18,5 @@ namespace Nomad.Game.Application.Gameplay.Enemy.Planner.Goals
 	public interface IGoalSelector
 	{
 		GoalDef SelectBestGoal( NpcAgent agent, GoalDef[] goals );
-	};
-};
+	}
+}

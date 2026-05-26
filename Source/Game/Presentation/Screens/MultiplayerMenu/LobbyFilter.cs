@@ -17,6 +17,7 @@ using Godot;
 using Nomad.Core.Events;
 using Nomad.Events.Globals;
 using Nomad.Game.Application.UI;
+using Nomad.Game.Presentation.Screens.MultiplayerMenu;
 
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {

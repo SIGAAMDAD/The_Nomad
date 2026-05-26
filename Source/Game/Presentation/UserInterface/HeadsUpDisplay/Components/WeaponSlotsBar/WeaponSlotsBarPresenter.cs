@@ -16,12 +16,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Numerics;
 using System.Timers;
-using Nomad.Game.Domain.Data.Items;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.HeadsUpDisplay;
-using Nomad.Game.Domain.Interfaces.Inventory;
-using Nomad.Game.Domain.Interfaces.Player.Inventory;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.HeadsUpDisplay;
+using Nomad.Game.Sdk.Player.Inventory;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.WeaponSlotsBar
 {

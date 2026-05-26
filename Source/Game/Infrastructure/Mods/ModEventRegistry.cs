@@ -19,8 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Nomad.Core.Events;
 using Nomad.Events.Extensions;
-using Nomad.Game.Domain.Data.Mods;
-using Nomad.Game.Domain.Interfaces.Mods;
+using Nomad.Game.Sdk.Mods;
 using Nomad.Modding.Events;
 
 namespace Nomad.Game.Infrastructure.Mods
@@ -47,6 +46,21 @@ namespace Nomad.Game.Infrastructure.Mods
 			foreach ( var key in allowedGameEventKeys ) {
 				_allowedGameEvents.Add( key );
 			}
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_subscriptions.Dispose();
+
+			// Only clear the mod-owned event namespace.
+			_eventFactory.ClearEventsInNamespace( GetLocalEventNamespace() );
+
+			_isDisposed = true;
+			GC.SuppressFinalize( this );
 		}
 
 		public ISubscriptionHandle On<TArgs>(
@@ -91,7 +105,7 @@ namespace Nomad.Game.Infrastructure.Mods
 			string key = GetGameEventKey( eventId.NameSpace, eventId.Name );
 
 			if ( !_allowedGameEvents.Contains( key ) ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' is not allowed to subscribe to game event '{key}'."
 				);
 			}
@@ -122,7 +136,7 @@ namespace Nomad.Game.Infrastructure.Mods
 			ThrowIfDisposed();
 
 			if ( !_policy.AllowLocalEventPublishing ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' is not allowed to publish local events."
 				);
 			}
@@ -149,7 +163,7 @@ namespace Nomad.Game.Infrastructure.Mods
 			ThrowIfDisposed();
 
 			if ( !_policy.AllowLocalEventPublishing ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' is not allowed to publish local events."
 				);
 			}
@@ -169,21 +183,6 @@ namespace Nomad.Game.Infrastructure.Mods
 		public void ResetFrameQuota()
 		{
 			_publishesThisFrame = 0;
-		}
-
-		public void Dispose()
-		{
-			if ( _isDisposed ) {
-				return;
-			}
-
-			_subscriptions.Dispose();
-
-			// Only clear the mod-owned event namespace.
-			_eventFactory.ClearEventsInNamespace( GetLocalEventNamespace() );
-
-			_isDisposed = true;
-			GC.SuppressFinalize( this );
 		}
 
 		private EventCallback<TArgs> GuardCallback<TArgs>(
@@ -226,7 +225,7 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 
 			if ( _localEvents.Count >= _policy.MaxLocalEvents ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' exceeded max local event count {_policy.MaxLocalEvents}."
 				);
 			}
@@ -237,7 +236,7 @@ namespace Nomad.Game.Infrastructure.Mods
 		private void EnsureSubscriptionQuota()
 		{
 			if ( _subscriptions.Count >= _policy.MaxEventSubscriptions ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' exceeded max subscription count {_policy.MaxEventSubscriptions}."
 				);
 			}
@@ -248,7 +247,7 @@ namespace Nomad.Game.Infrastructure.Mods
 			_publishesThisFrame++;
 
 			if ( _publishesThisFrame > _policy.MaxPublishesPerFrame ) {
-				throw new ModEventPolicyException(
+				throw new ModPolicyException(
 					$"Mod '{_identity.Id}' exceeded max event publishes per frame {_policy.MaxPublishesPerFrame}."
 				);
 			}
@@ -270,11 +269,13 @@ namespace Nomad.Game.Infrastructure.Mods
 				throw new ArgumentException( "Event name cannot be null or whitespace.", nameof( name ) );
 			}
 
-			if ( name.Contains( "..", StringComparison.Ordinal ) ||
+			if (
+				name.Contains( "..", StringComparison.Ordinal ) ||
 				name.Contains( ':', StringComparison.Ordinal ) ||
 				name.Contains( '/', StringComparison.Ordinal ) ||
-				name.Contains( '\\', StringComparison.Ordinal ) ) {
-				throw new ModEventPolicyException(
+				name.Contains( '\\', StringComparison.Ordinal )
+			) {
+				throw new ModPolicyException(
 					$"Invalid mod event name '{name}'."
 				);
 			}

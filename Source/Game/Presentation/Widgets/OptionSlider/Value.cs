@@ -1,6 +1,6 @@
 using Nomad.UI;
 
-namespace Nomad.Game.Infrastructure.UI.Nodes.OptionSlider
+namespace Nomad.Game.Presentation.Widgets.OptionSlider
 {
 	public partial class Value : EngineText
 	{

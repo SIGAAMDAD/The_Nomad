@@ -17,9 +17,9 @@ using System;
 using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Core.Numerics;
-using Nomad.Game.Domain.Data.Multiplayer;
-using Nomad.Game.Domain.Events.Player;
-using Nomad.Game.Domain.Interfaces.Player;
+using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player.Input
 {
