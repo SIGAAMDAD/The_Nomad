@@ -13,31 +13,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-
-namespace Nomad.Game.Sdk.Gameplay.Npc
+namespace Nomad.Game.Sdk.Npc.Planner.Goals
 {
-    public readonly struct NpcAgentId
+    public abstract class AiGoal
     {
-        public static readonly NpcAgentId Invalid = new NpcAgentId(Guid.Empty);
+        public abstract string Name { get; }
+        public abstract int BasePriority { get; }
 
-        public bool IsValid => Value != Guid.Empty;
+        protected abstract GoalBuilder Build();
 
-        public readonly Guid Value;
-
-        public NpcAgentId(Guid value)
+        public virtual int GetScoreModifier(PlanningContext context)
         {
-            Value = value;
+            return 0;
         }
 
-        public bool Equals(NpcAgentId other)
+        public GoalDef Compile()
         {
-            return Value == other.Value;
-        }
-
-        public static implicit operator Guid(NpcAgentId value)
-        {
-            return value.Value;
+            GoalBuilder builder = Build();
+            return new GoalDef(
+                Name,
+                BasePriority,
+                builder.GetDesiredState(),
+                GetScoreModifier
+            );
         }
     }
 }

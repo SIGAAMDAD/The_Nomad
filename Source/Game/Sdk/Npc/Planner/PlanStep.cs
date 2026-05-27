@@ -13,3 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner
+{
+    public readonly struct PlanStep
+    {
+        public readonly PlannerAction Action;
+
+        public PlanStep(PlannerAction action)
+        {
+            Action = action;
+        }
+    }
+}

@@ -24,5 +24,7 @@
 
   <ItemGroup>
     <!-- Ensures the source generation works correctly -->
+	<ProjectReference Include="../../../../Source/Game/Sdk/Nomad.Game.Sdk.csproj" />
+	<ProjectReference Include="../../../../Source/Modding/Nomad.Modding.csproj" />
   </ItemGroup>
 </Project>

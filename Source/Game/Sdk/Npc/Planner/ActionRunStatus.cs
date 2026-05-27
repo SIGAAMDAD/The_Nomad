@@ -13,3 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner
+{
+    public enum ActionRunStatus : byte
+    {
+        Running,
+        Succeeded,
+        Failed,
+
+        Count
+    }
+}

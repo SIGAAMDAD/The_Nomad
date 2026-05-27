@@ -13,3 +13,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Npc.Planner;
+
+namespace Nomad.Modules.NomadMain.AI.Sortior.Blader
+{
+	public class SortorianBladerMemory : WorkingMemory
+	{
+		public bool TargetBlocking;
+		public bool TargetRecovering;
+		public bool PathToTargetClear;
+		public bool HasDuelLane;
+		public bool AllyEngagingTarget;
+		public bool SquadPushOrdered;
+		public bool RecentlyParriedByTarget;
+		public bool RecentlyHitByGunfire;
+		public bool HasLineForCharge;
+		public bool TargetLooksVulnerable;
+	};
+};

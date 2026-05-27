@@ -13,3 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner.Goals
+{
+    public interface IGoalSelector
+    {
+        GoalDef SelectBestGoal(INpcAgent agent, GoalDef[] goals);
+    }
+}

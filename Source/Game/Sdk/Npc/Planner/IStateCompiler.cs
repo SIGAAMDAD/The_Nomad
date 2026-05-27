@@ -13,3 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner
+{
+    public interface IStateCompiler
+    {
+        WorldState BuildState(INpcAgent agent);
+    }
+}

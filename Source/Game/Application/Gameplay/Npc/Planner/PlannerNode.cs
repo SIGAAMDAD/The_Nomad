@@ -13,3 +13,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Npc.Planner;
+
+namespace Nomad.Game.Application.Gameplay.Npc.Planner
+{
+	internal struct PlannerNode
+	{
+		public WorldState State;
+		public int ParentIndex;
+		public int ActionIndex;
+		public int G; // accumulated cost
+		public int H; // heuristic
+		public int F => G + H;
+	};
+};

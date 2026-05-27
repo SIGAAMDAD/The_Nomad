@@ -13,3 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Core.Util;
+using Nomad.Game.Application.Gameplay.Entity;
+using Nomad.Game.Sdk.Entities;
+using Nomad.Game.Sdk.Npc;
+
+namespace Nomad.Game.Application.Gameplay.Npc
+{
+	internal abstract class NpcBase : EntityBase, INpcEntity
+	{
+		public abstract NpcType BotType { get; }
+
+		protected NpcBase( EntityId entityId, InternString definitionId, InternString displayName, EntityType type, EntityFlags flags = EntityFlags.None )
+			: base( entityId, definitionId, displayName, type, flags )
+		{
+		}
+	};
+};
