@@ -13,16 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
-using Nomad.Game.Sdk.Renown;
+using System;
+using Nomad.Game.Domain.Data.Items;
 
-namespace Nomad.Game.Application.Gameplay.Npc
+namespace Nomad.Modules.NomadMain
 {
-	internal sealed class MercenaryMaster
+	public sealed class FirelinkCharge : IConsumableBehavior
 	{
-		private readonly List<ContractInstanceId> _contracts;
-
-		public MercenaryMaster()
+		public FirelinkCharge( ItemDefinition definition )
 		{
 		}
 	};

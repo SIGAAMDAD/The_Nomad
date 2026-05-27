@@ -13,17 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Collections.Generic;
-using Nomad.Game.Sdk.Renown;
-
 namespace Nomad.Game.Application.Gameplay.Npc
 {
-	internal sealed class MercenaryMaster
+	internal sealed class NpcFactory
 	{
-		private readonly List<ContractInstanceId> _contracts;
-
-		public MercenaryMaster()
-		{
-		}
 	};
 };

@@ -15,14 +15,26 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Renown
 {
-	/// <summary>
-	/// A contract's underlying metadata.
-	/// </summary>
-	public record Contract
-	{
-		public string Archetype { get; init; }
-		public float BaseBounty { get; init; }
-		public ContractFlags Flags { get; init; }
-		public bool RequiresProof { get; init; }
-	}
+    public enum ContractParameterStrictness
+    {
+        /// <summary>
+        /// Failing this fails the contract.
+        /// </summary>
+        Required,
+
+        /// <summary>
+        /// Failing this only removes bonus pay.
+        /// </summary>
+        Bonus,
+
+        /// <summary>
+        /// Affects client/faction relationship more than payout.
+        /// </summary>
+        ClientPref,
+
+        /// <summary>
+        /// Player may not know this condition at first.
+        /// </summary>
+        Hidden
+    }
 }
