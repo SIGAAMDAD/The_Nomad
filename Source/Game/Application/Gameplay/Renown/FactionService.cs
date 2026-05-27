@@ -13,33 +13,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Nomad.Core.Events;
 
-namespace Nomad.Game.Sdk.Renown
+namespace Nomad.Game.Application.Gameplay.Renown
 {
+	/*
+	===================================================================================
+
+	FactionService
+
+	===================================================================================
+	*/
 	/// <summary>
-	/// Represents a "live"/active contract.
+	///
 	/// </summary>
-	public record ContractInstance
+
+	internal sealed class FactionService
 	{
-		/// <summary>
-		/// What the contract's internal id is.
-		/// </summary>
-		public Guid Id { get; init; }
-
-		/// <summary>
-		/// The contract's internal type.
-		/// </summary>
-		public Guid Archetype { get; init; }
-
-		/// <summary>
-		/// The time of the contract's creation.
-		/// </summary>
-		public DateTime CreationTime { get; init; }
-
-		/// <summary>
-		/// The time of which this contract is due.
-		/// </summary>
-		public DateTime DueDate { get; init; }
-	}
-}
+		public FactionService( IGameEventRegistryService eventFactory )
+		{
+		}
+	};
+};

@@ -1,0 +1,39 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://b0aq8a35kuldq"]
+
+[ext_resource type="Texture2D" uid="uid://c4g2icfq6nbsm" path="res://Assets/Textures/Environment/Firelink.png" id="1_e62i5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ctub"]
+atlas = ExtResource("1_e62i5")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s476n"]
+atlas = ExtResource("1_e62i5")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lupkq"]
+atlas = ExtResource("1_e62i5")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eo1my"]
+atlas = ExtResource("1_e62i5")
+region = Rect2(96, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ctub")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s476n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lupkq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eo1my")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
