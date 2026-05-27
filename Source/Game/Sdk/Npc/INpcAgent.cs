@@ -13,3 +13,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Gameplay.Npc;
+using Nomad.Game.Sdk.Npc.Planner;
+
+namespace Nomad.Game.Sdk.Npc
+{
+    public interface INpcAgent : INpcEntity
+    {
+        WorkingMemory Memory { get; }
+        WorldState CurrentState { get; }
+        Plan CurrentPlan { get; }
+
+        bool HasPlan { get; }
+        bool IsExecutingAction { get; }
+
+        NpcAgentId AgentId { get; }
+
+        void ForceReplan(ReplanReason reason = ReplanReason.ContextInvalid);
+        void NotifyHeavyDamage();
+        void NotifyTargetLost();
+    }
+}

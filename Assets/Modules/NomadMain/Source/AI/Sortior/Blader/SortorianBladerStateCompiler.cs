@@ -13,3 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Npc;
+using Nomad.Game.Sdk.Npc.Planner;
+
+namespace Nomad.Modules.NomadMain.AI.Sortior.Blader
+{
+	public class SortorianBladerStateCompiler : IStateCompiler
+	{
+		public WorldState BuildState( INpcAgent agent )
+		{
+			var a = (SortorianBladerAgent)agent;
+			var m = a.Memory;
+
+			WorldState state = default;
+			state = state.Set( WorldKey.EnemyVisible, m.EnemyVisible );
+			state = state.Set( WorldKey.EnemyInMeleeRange, m.EnemyInMeleeRange );
+			return state;
+		}
+	};
+};

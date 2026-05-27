@@ -13,3 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Collections.Generic;
+
+namespace Nomad.Game.Sdk.Npc.Planner.Goals
+{
+    public sealed class GoalBuilder
+    {
+        private readonly List<WorldCondition> _desired = new List<WorldCondition>();
+
+        public void Wants(WorldKey key, bool value)
+        {
+            _desired.Add(new WorldCondition(key, value));
+        }
+
+        public WorldCondition[] GetDesiredState()
+        {
+            return _desired.ToArray();
+        }
+    }
+}

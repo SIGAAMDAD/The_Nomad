@@ -13,3 +13,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+
+namespace Nomad.Game.Sdk.Npc.Planner
+{
+	public sealed class Plan
+	{
+		public static readonly Plan Empty = new Plan( Array.Empty<PlanStep>() );
+
+		public bool IsEmpty => Steps.Length == 0;
+		public bool IsFinished => CurrentIndex >= Steps.Length;
+		public PlanStep CurrentStep => Steps[CurrentIndex];
+
+		public readonly PlanStep[] Steps;
+		public int CurrentIndex;
+
+		public Plan( PlanStep[] steps )
+		{
+			Steps = steps ?? Array.Empty<PlanStep>();
+			CurrentIndex = 0;
+		}
+	};
+};

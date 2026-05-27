@@ -13,3 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner
+{
+    public readonly struct WorldCondition
+    {
+        public WorldKey Key => _key;
+        private readonly WorldKey _key;
+
+        public bool Value => _value;
+        private readonly bool _value;
+
+        public WorldCondition(WorldKey key, bool value)
+        {
+            _key = key;
+            _value = value;
+        }
+    }
+}

@@ -13,8 +13,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-
 namespace Nomad.Game.Sdk.Renown
 {
     public interface IContractInstance

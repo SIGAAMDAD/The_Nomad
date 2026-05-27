@@ -13,3 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+namespace Nomad.Game.Sdk.Npc.Planner.Sensors
+{
+    public interface ISensor
+    {
+        void Tick(INpcAgent agent, float deltaTime);
+    }
+}

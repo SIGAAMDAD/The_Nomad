@@ -18,6 +18,11 @@ namespace Nomad.Game.Sdk.Npc
     public enum NpcType : byte
     {
         /// <summary>
+        /// A random worker NPC that can be killed, but is simply just repeating an animation.
+        /// </summary>
+        Bystander,
+
+        /// <summary>
         /// Is a giver/receiver system. Includes blacksmiths, store owners, merc masters, etc.
         /// </summary>
         Vendor,

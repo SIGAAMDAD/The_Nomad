@@ -15,29 +15,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 
-namespace Nomad.Game.Sdk.Gameplay.Npc
+namespace Nomad.Game.Sdk.Npc.Planner.Actions
 {
-    public readonly struct NpcAgentId
+    public sealed class ActionRunnerAdapter : IActionRunner
     {
-        public static readonly NpcAgentId Invalid = new NpcAgentId(Guid.Empty);
+        private readonly AiAction _owner;
 
-        public bool IsValid => Value != Guid.Empty;
-
-        public readonly Guid Value;
-
-        public NpcAgentId(Guid value)
+        public ActionRunnerAdapter(AiAction owner)
         {
-            Value = value;
+            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         }
 
-        public bool Equals(NpcAgentId other)
+        public ActionRunStatus Start(INpcAgent agent)
         {
-            return Value == other.Value;
+            return _owner.Start(agent);
         }
 
-        public static implicit operator Guid(NpcAgentId value)
+        public ActionRunStatus Tick(INpcAgent agent, float dt)
         {
-            return value.Value;
+            return _owner.Tick(agent, dt);
+        }
+
+        public void Cancel(INpcAgent agent)
+        {
+            _owner.Cancel(agent);
         }
     }
 }

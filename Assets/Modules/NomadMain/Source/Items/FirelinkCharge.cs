@@ -14,14 +14,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Game.Domain.Data.Items;
-
+using Nomad.Game.Sdk.Items;
+using Nomad.Modding;
 namespace Nomad.Modules.NomadMain
 {
 	public sealed class FirelinkCharge : IConsumableBehavior
 	{
 		public FirelinkCharge( ItemDefinition definition )
 		{
+		}
+
+		public void Drop()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Use()
+		{
+			throw new NotImplementedException();
 		}
 	};
 };
