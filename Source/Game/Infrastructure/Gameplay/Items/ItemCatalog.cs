@@ -176,7 +176,10 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 				Weight = JsonLoader.TryGet( json, nameof( definition.Weight ), out float weight ) ? weight : 0.0f,
 				BaseCost = JsonLoader.TryGet( json, nameof( definition.BaseCost ), out float baseCost ) ? baseCost : 0.0f,
 				Name = new InternString( JsonLoader.TryGet( json, nameof( definition.Name ), out string name ) ? name : $"Item#{definition.GetHashCode()}" ),
-				JournalEntry = new InternString( JsonLoader.TryGet( json, nameof( definition.JournalEntry ), out string journalEntry ) ? journalEntry : string.Empty )
+				JournalEntry = new InternString( JsonLoader.TryGet( json, nameof( definition.JournalEntry ), out string journalEntry ) ? journalEntry : string.Empty ),
+				BehaviorId = JsonLoader.TryGet( json, nameof( definition.BehaviorId ), out string behaviorId )
+					? new InternString( behaviorId )
+					: null
 			};
 		}
 	};

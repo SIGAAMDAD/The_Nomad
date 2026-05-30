@@ -99,12 +99,13 @@ namespace Nomad.Game.Application.Gameplay
 
 			var sceneManager = _services.GetService<ISceneManager>();
 			var worldContent = _services.GetService<IWorldContentCache>();
+			var behaviorRegistry = _services.GetService<INomadBehaviorRegistry>();
 
 			_interactableCoordinator = new InteractableApplicationCoordinator( players, _eventFactory );
 			_services.Collection.AddSingleton<ICheckpointService>( _interactableCoordinator.CheckpointService );
 
 			_inventoryCoordinator = new InventoryApplicationCoordinator( players, _eventFactory );
-			_itemSpawner = new ItemSpawner( sceneManager, worldContent.Items, _eventFactory );
+			_itemSpawner = new ItemSpawner( sceneManager, worldContent.Items, behaviorRegistry, _eventFactory );
 		}
 
 		private void DisposeLevelServices()

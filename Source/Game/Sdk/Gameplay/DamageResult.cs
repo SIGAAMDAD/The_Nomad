@@ -17,22 +17,22 @@ using System;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct DamageResult
-	{
-		/// <summary>
-		/// Not null if we hit another entity
-		/// </summary>
-		public Guid? Hit { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct DamageResult
+    {
+        /// <summary>
+        /// Not null if we hit another entity
+        /// </summary>
+        public Guid? Hit { get; }
 
-		public float Amount { get; }
+        public float Amount { get; }
 
-		public DamageResult( Guid? hit, float amount )
-		{
-			Hit = hit;
-			Amount = amount;
-		}
-	}
+        public DamageResult(Guid? hit, float amount)
+        {
+            Hit = hit;
+            Amount = amount;
+        }
+    }
 }

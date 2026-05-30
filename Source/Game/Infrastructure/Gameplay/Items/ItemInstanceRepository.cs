@@ -36,7 +36,7 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 	///
 	/// </summary>
 
-	internal sealed class ItemInstanceRepository : DataInstanceRegistry<ItemInstanceId, ItemInstance>, IItemInstanceRepository
+	internal sealed class ItemInstanceRepository : DataInstanceRegistry<ItemInstanceId, IItemInstance>, IItemInstanceRepository
 	{
 		protected override string LoggerCategoryName => nameof( ItemInstanceRepository );
 
@@ -60,46 +60,6 @@ namespace Nomad.Game.Infrastructure.Gameplay.Items
 		{
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
-		}
-
-		/*
-		===============
-		Get
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TItemDefinition"></typeparam>
-		/// <param name="itemId"></param>
-		/// <returns></returns>
-		public IItemInstance<TItemDefinition>? Get<TItemDefinition>( ItemInstanceId itemId )
-			where TItemDefinition : ItemDefinition
-		{
-			return (IItemInstance<TItemDefinition>?)Get( itemId );
-		}
-
-		/*
-		===============
-		TryGet
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TItemDefinition"></typeparam>
-		/// <param name="itemId"></param>
-		/// <param name="instance"></param>
-		/// <returns></returns>
-		public bool TryGet<TItemDefinition>( ItemInstanceId itemId, out IItemInstance<TItemDefinition>? instance )
-			where TItemDefinition : ItemDefinition
-		{
-			if ( !TryGet( itemId, out var itemInstance ) || itemInstance is not IItemInstance<TItemDefinition> converted ) {
-				instance = null;
-				return false;
-			}
-			instance = converted;
-			return true;
 		}
 
 		/*

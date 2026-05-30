@@ -19,9 +19,9 @@ using Nomad.Game.Sdk.Configuration;
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IHudComponentModel : IDisposable
-	{
-		HUDPreset Preset { get; }
-		Color Color { get; }
-	}
+    public interface IHudComponentModel : IDisposable
+    {
+        HUDPreset Preset { get; }
+        Color Color { get; }
+    }
 }

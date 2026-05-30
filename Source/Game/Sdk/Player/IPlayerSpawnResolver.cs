@@ -17,11 +17,11 @@ using Nomad.Game.Sdk.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public interface IPlayerSpawnResolver
-	{
-		PlayerSpawnProfileDefinition Resolve( in PlayerSpawnContext context );
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IPlayerSpawnResolver
+    {
+        PlayerSpawnProfileDefinition Resolve(in PlayerSpawnContext context);
+    }
 }

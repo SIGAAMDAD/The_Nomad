@@ -17,44 +17,44 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Renown
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public readonly struct RenownDelta
-	{
-		public readonly InternString RegionId;
-		public readonly float Amount;
-		public readonly int WorldDay;
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct RenownDelta
+    {
+        public readonly InternString RegionId;
+        public readonly float Amount;
+        public readonly int WorldDay;
 
-		public readonly InternString SourceId;
-		public readonly RenownSourceType SourceType;
+        public readonly InternString SourceId;
+        public readonly RenownSourceType SourceType;
 
-		public readonly bool CanSpread;
-		public readonly bool CanDecay;
-		public readonly bool IsHistorical;
-		public readonly float HistoricalFloorValue;
+        public readonly bool CanSpread;
+        public readonly bool CanDecay;
+        public readonly bool IsHistorical;
+        public readonly float HistoricalFloorValue;
 
-		public RenownDelta(
-			InternString regionId,
-			float amount,
-			int worldDay,
-			InternString sourceId,
-			RenownSourceType sourceType,
-			bool canSpread = true,
-			bool canDecay = true,
-			bool isHistorical = false,
-			float historicalFloorValue = 0f
-		)
-		{
-			RegionId = regionId;
-			Amount = amount;
-			WorldDay = worldDay;
-			SourceId = sourceId;
-			SourceType = sourceType;
-			CanSpread = canSpread;
-			CanDecay = canDecay;
-			IsHistorical = isHistorical;
-			HistoricalFloorValue = historicalFloorValue;
-		}
-	}
+        public RenownDelta(
+            InternString regionId,
+            float amount,
+            int worldDay,
+            InternString sourceId,
+            RenownSourceType sourceType,
+            bool canSpread = true,
+            bool canDecay = true,
+            bool isHistorical = false,
+            float historicalFloorValue = 0f
+        )
+        {
+            RegionId = regionId;
+            Amount = amount;
+            WorldDay = worldDay;
+            SourceId = sourceId;
+            SourceType = sourceType;
+            CanSpread = canSpread;
+            CanDecay = canDecay;
+            IsHistorical = isHistorical;
+            HistoricalFloorValue = historicalFloorValue;
+        }
+    }
 }

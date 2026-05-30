@@ -46,6 +46,11 @@ namespace Nomad.Game.Sdk.Items
         /// <summary>
         ///
         /// </summary>
+        public InternString? BehaviorId { get; init; }
+
+        /// <summary>
+        ///
+        /// </summary>
         public float Weight { get; init; }
 
         /// <summary>

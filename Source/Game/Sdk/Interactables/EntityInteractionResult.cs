@@ -15,90 +15,90 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/// <summary>
-	/// Result of an entity interaction attempt.
-	/// </summary>
-	public readonly struct EntityInteractionResult
-	{
-		public static readonly EntityInteractionResult Succeeded = new EntityInteractionResult(
-			true,
-			string.Empty,
-			EntityInteractionResultKind.Success
-		);
+    /// <summary>
+    /// Result of an entity interaction attempt.
+    /// </summary>
+    public readonly struct EntityInteractionResult
+    {
+        public static readonly EntityInteractionResult Succeeded = new EntityInteractionResult(
+            true,
+            string.Empty,
+            EntityInteractionResultKind.Success
+        );
 
-		public static readonly EntityInteractionResult Failed = new EntityInteractionResult(
-			false,
-			"Interaction failed.",
-			EntityInteractionResultKind.Failed
-		);
+        public static readonly EntityInteractionResult Failed = new EntityInteractionResult(
+            false,
+            "Interaction failed.",
+            EntityInteractionResultKind.Failed
+        );
 
-		public bool Success { get; }
+        public bool Success { get; }
 
-		public string Message { get; }
+        public string Message { get; }
 
-		public EntityInteractionResultKind Kind { get; }
+        public EntityInteractionResultKind Kind { get; }
 
-		public bool ShouldConsumeInput => Success;
+        public bool ShouldConsumeInput => Success;
 
-		public EntityInteractionResult(
-			bool success,
-			string message,
-			EntityInteractionResultKind kind
-		)
-		{
-			Success = success;
-			Message = message;
-			Kind = kind;
-		}
+        public EntityInteractionResult(
+            bool success,
+            string message,
+            EntityInteractionResultKind kind
+        )
+        {
+            Success = success;
+            Message = message;
+            Kind = kind;
+        }
 
-		public static EntityInteractionResult SuccessResult()
-		{
-			return Succeeded;
-		}
+        public static EntityInteractionResult SuccessResult()
+        {
+            return Succeeded;
+        }
 
-		public static EntityInteractionResult SuccessResult( string message )
-		{
-			return new EntityInteractionResult(
-				true,
-				message,
-				EntityInteractionResultKind.Success
-			);
-		}
+        public static EntityInteractionResult SuccessResult(string message)
+        {
+            return new EntityInteractionResult(
+                true,
+                message,
+                EntityInteractionResultKind.Success
+            );
+        }
 
-		public static EntityInteractionResult Fail( string reason )
-		{
-			return new EntityInteractionResult(
-				false,
-				reason,
-				EntityInteractionResultKind.Failed
-			);
-		}
+        public static EntityInteractionResult Fail(string reason)
+        {
+            return new EntityInteractionResult(
+                false,
+                reason,
+                EntityInteractionResultKind.Failed
+            );
+        }
 
-		public static EntityInteractionResult OutOfRange()
-		{
-			return new EntityInteractionResult(
-				false,
-				"Target is out of range.",
-				EntityInteractionResultKind.OutOfRange
-			);
-		}
+        public static EntityInteractionResult OutOfRange()
+        {
+            return new EntityInteractionResult(
+                false,
+                "Target is out of range.",
+                EntityInteractionResultKind.OutOfRange
+            );
+        }
 
-		public static EntityInteractionResult Locked()
-		{
-			return new EntityInteractionResult(
-				false,
-				"Target is locked.",
-				EntityInteractionResultKind.Locked
-			);
-		}
+        public static EntityInteractionResult Locked()
+        {
+            return new EntityInteractionResult(
+                false,
+                "Target is locked.",
+                EntityInteractionResultKind.Locked
+            );
+        }
 
-		public static EntityInteractionResult InvalidTarget()
-		{
-			return new EntityInteractionResult(
-				false,
-				"Invalid interaction target.",
-				EntityInteractionResultKind.InvalidTarget
-			);
-		}
-	}
+        public static EntityInteractionResult InvalidTarget()
+        {
+            return new EntityInteractionResult(
+                false,
+                "Invalid interaction target.",
+                EntityInteractionResultKind.InvalidTarget
+            );
+        }
+    }
 }

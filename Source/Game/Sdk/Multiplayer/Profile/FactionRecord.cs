@@ -17,28 +17,28 @@ using System.Collections.Generic;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record FactionRecord
-	{
-		public FactionId Id { get; init; }
-		public string Name { get; init; }
-		public string ShortName { get; init; }
-		public string Description { get; init; }
-		public string FlavorLine { get; init; }
+    public sealed record FactionRecord
+    {
+        public FactionId Id { get; init; }
+        public string Name { get; init; }
+        public string ShortName { get; init; }
+        public string Description { get; init; }
+        public string FlavorLine { get; init; }
 
-		/// <summary>
-		/// Faction ranks in ascending order.
-		/// </summary>
-		public IReadOnlyList<FactionRankRecord> Ranks { get; init; }
+        /// <summary>
+        /// Faction ranks in ascending order.
+        /// </summary>
+        public IReadOnlyList<FactionRankRecord> Ranks { get; init; }
 
-		/// <summary>
-		/// Weekly contract pool for this faction.
-		/// The live board chooses from this list each weekly refresh.
-		/// </summary>
-		public IReadOnlyList<WeeklyContractDefinitionRecord> WeeklyContractPool { get; init; }
+        /// <summary>
+        /// Weekly contract pool for this faction.
+        /// The live board chooses from this list each weekly refresh.
+        /// </summary>
+        public IReadOnlyList<WeeklyContractDefinitionRecord> WeeklyContractPool { get; init; }
 
-		/// <summary>
-		/// Rewards granted by faction standing/rank advancement.
-		/// </summary>
-		public IReadOnlyList<FactionRewardRecord> RewardTrack { get; init; }
-	}
+        /// <summary>
+        /// Rewards granted by faction standing/rank advancement.
+        /// </summary>
+        public IReadOnlyList<FactionRewardRecord> RewardTrack { get; init; }
+    }
 }

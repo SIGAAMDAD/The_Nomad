@@ -18,9 +18,9 @@ using Nomad.Game.Sdk.Events.Multiplayer;
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	public interface IGameMode
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer" )]
-		IGameEvent<GameStartEventArgs> GameStart { get; }
-	}
+    public interface IGameMode
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer")]
+        IGameEvent<GameStartEventArgs> GameStart { get; }
+    }
 }

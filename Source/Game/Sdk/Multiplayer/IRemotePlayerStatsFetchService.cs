@@ -20,8 +20,8 @@ using Nomad.Game.Sdk.Multiplayer.Profile;
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public interface IRemotePlayerStatsFetchService
-	{
-		ValueTask<PlayerStatsRecord> FetchStatsAsync( PeerId peerId, CancellationToken ct = default );
-	}
+    public interface IRemotePlayerStatsFetchService
+    {
+        ValueTask<PlayerStatsRecord> FetchStatsAsync(PeerId peerId, CancellationToken ct = default);
+    }
 }

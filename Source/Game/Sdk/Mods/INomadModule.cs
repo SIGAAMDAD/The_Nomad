@@ -15,10 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public interface INomadModule
-	{
-		string Id { get; }
+    public interface INomadModule
+    {
+        string Id { get; }
 
-		void OnPreLoad();
-	}
+        void OnPreLoad(IModuleContext context);
+        void OnInitialized(IModuleContext context);
+        void OnShutdown(IModuleContext context);
+    }
 }

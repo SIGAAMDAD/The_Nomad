@@ -15,12 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public enum DifficultyPreset
-	{
-		Standard = 0,
-		Hard,
-		Custom,
+    public enum DifficultyPreset
+    {
+        Standard = 0,
+        Hard,
+        Custom,
 
-		Count
-	}
+        Count
+    }
 }

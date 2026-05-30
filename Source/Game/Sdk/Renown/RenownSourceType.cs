@@ -15,17 +15,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Renown
 {
-	public enum RenownSourceType : byte
-	{
-		Quest,
-		Contract,
-		Kill,
-		WitnessedCrime,
-		Mercy,
-		Newspaper,
-		Rumor,
-		HistoricalEvent,
-		Decay,
-		Spread
-	}
+    public enum RenownSourceType : byte
+    {
+        Quest,
+        Contract,
+        Kill,
+        WitnessedCrime,
+        Mercy,
+        Newspaper,
+        Rumor,
+        HistoricalEvent,
+        Decay,
+        Spread
+    }
 }

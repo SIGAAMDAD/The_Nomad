@@ -17,54 +17,54 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/*
+    /*
 	===================================================================================
 
 	WikiEntry
 
 	===================================================================================
 	*/
-	/// <summary>
-	///
-	/// </summary>
+    /// <summary>
+    ///
+    /// </summary>
 
-	public sealed class WikiEntry
-	{
-		public InternString Name { get; init; }
-		public InternString Description { get; init; }
+    public sealed class WikiEntry
+    {
+        public InternString Name { get; init; }
+        public InternString Description { get; init; }
 
-		public bool Unlocked { get; private set; } = false;
+        public bool Unlocked { get; private set; } = false;
 
-		/*
+        /*
 		===============
 		WikiEntry
 		===============
 		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="id"></param>
-		public WikiEntry( InternString id )
-		{
-			Name = new InternString( string.Concat( (string)id, ".name" ) );
-			Description = new InternString( string.Concat( (string)id, ".description" ) );
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="id"></param>
+        public WikiEntry(InternString id)
+        {
+            Name = new InternString(string.Concat((string)id, ".name"));
+            Description = new InternString(string.Concat((string)id, ".description"));
+        }
 
-		/*
+        /*
 		===============
 		TryUnlock
 		===============
 		*/
-		/// summary>
-		///
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public bool TryUnlock()
-		{
-			bool locked = !Unlocked;
-			Unlocked = true;
-			return locked;
-		}
-	}
+        /// summary>
+        ///
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryUnlock()
+        {
+            bool locked = !Unlocked;
+            Unlocked = true;
+            return locked;
+        }
+    }
 }

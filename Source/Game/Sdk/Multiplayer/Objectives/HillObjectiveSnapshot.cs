@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Objectives
 {
-	public readonly struct HillObjectiveSnapshot
-	{
-		public uint Version { get; init; }
-	}
+    public readonly struct HillObjectiveSnapshot
+    {
+        public uint Version { get; init; }
+    }
 }

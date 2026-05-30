@@ -17,8 +17,8 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Items
 {
-	public interface IWeaponInstance : IItemInstance<WeaponDefinition>
-	{
-		public WeaponDefinition WeaponDefinition { get; }
-	}
+    public interface IWeaponInstance : IItemInstance
+    {
+        public WeaponDefinition WeaponDefinition { get; }
+    }
 }

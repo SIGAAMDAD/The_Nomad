@@ -13,5 +13,22 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Modding {
+namespace Nomad.Game.Sdk.Mods
+{
+    public abstract class NomadModule : INomadModule
+    {
+        public abstract string Id { get; }
+
+        public virtual void OnPreLoad(IModuleContext context)
+        {
+        }
+
+        public virtual void OnInitialized(IModuleContext context)
+        {
+        }
+
+        public virtual void OnShutdown(IModuleContext context)
+        {
+        }
+    }
 }

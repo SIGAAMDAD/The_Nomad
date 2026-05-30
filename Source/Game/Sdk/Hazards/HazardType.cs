@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Hazards
 {
-	public enum HazardType : byte
-	{
-		Lava,
-		PoisonGas,
-		Blizzard
-	}
+    public enum HazardType : byte
+    {
+        Lava,
+        PoisonGas,
+        Blizzard
+    }
 }

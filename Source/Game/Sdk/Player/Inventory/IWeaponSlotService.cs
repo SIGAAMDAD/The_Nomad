@@ -22,63 +22,63 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IWeaponSlotService : IDisposable
-	{
-		/// <summary>
-		///
-		/// </summary>
-		WeaponSlotIndex Current { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IWeaponSlotService : IDisposable
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        WeaponSlotIndex Current { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "PreviousSlot", typeof( WeaponSlotIndex ), Order = 2 )]
-		[EventPayload( "CurrentSlot", typeof( WeaponSlotIndex ), Order = 3 )]
-		IGameEvent<WeaponSlotChangedEventArgs> WeaponSlotChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("PreviousSlot", typeof(WeaponSlotIndex), Order = 2)]
+        [EventPayload("CurrentSlot", typeof(WeaponSlotIndex), Order = 3)]
+        IGameEvent<WeaponSlotChangedEventArgs> WeaponSlotChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "PreviousWeaponId", typeof( ItemInstanceId ), Order = 2 )]
-		[EventPayload( "CurrentWeaponId", typeof( ItemInstanceId ), Order = 3 )]
-		IGameEvent<WeaponSlotContentsChangedEventArgs> WeaponSlotContentsChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("PreviousWeaponId", typeof(ItemInstanceId), Order = 2)]
+        [EventPayload("CurrentWeaponId", typeof(ItemInstanceId), Order = 3)]
+        IGameEvent<WeaponSlotContentsChangedEventArgs> WeaponSlotContentsChanged { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="slot"></param>
-		/// <returns></returns>
-		bool IsOccupied( WeaponSlotIndex slot );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        bool IsOccupied(WeaponSlotIndex slot);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="slot"></param>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		bool TryGetSlot( WeaponSlotIndex slot, out ItemInstanceId weapon );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="weapon"></param>
+        /// <returns></returns>
+        bool TryGetSlot(WeaponSlotIndex slot, out ItemInstanceId weapon);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="slot"></param>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		bool TrySetSlot( WeaponSlotIndex slot, ItemInstanceId weapon );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="weapon"></param>
+        /// <returns></returns>
+        bool TrySetSlot(WeaponSlotIndex slot, ItemInstanceId weapon);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
-		bool TrySwapSlots( WeaponSlotIndex a, WeaponSlotIndex b );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        bool TrySwapSlots(WeaponSlotIndex a, WeaponSlotIndex b);
 
-		/// <summary>
-		/// Attempts to clear all weapon slots.
-		/// </summary>
-		/// <returns></returns>
-		bool TryClearSlots();
-	}
+        /// <summary>
+        /// Attempts to clear all weapon slots.
+        /// </summary>
+        /// <returns></returns>
+        bool TryClearSlots();
+    }
 }

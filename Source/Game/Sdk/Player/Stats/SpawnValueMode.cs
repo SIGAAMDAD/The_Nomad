@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public enum SpawnValueMode : byte
-	{
-		Preserve,
-		Full,
-		PercentOfMax,
-		Absolute,
-		Zero,
+    public enum SpawnValueMode : byte
+    {
+        Preserve,
+        Full,
+        PercentOfMax,
+        Absolute,
+        Zero,
 
-		Count
-	}
+        Count
+    }
 }

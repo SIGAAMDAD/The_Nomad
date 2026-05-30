@@ -21,31 +21,31 @@ using Nomad.Game.Sdk.Events.Renown;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IRenownTrackerService
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Renown" )]
-		[EventPayload( "RegionId", typeof( InternString ), Order = 1 )]
-		[EventPayload( "OldValue", typeof( float ), Order = 2 )]
-		[EventPayload( "NewValue", typeof( float ), Order = 3 )]
-		IGameEvent<RenownScoreChangedEventArgs> RenownScoreChanged { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IRenownTrackerService
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Renown")]
+        [EventPayload("RegionId", typeof(InternString), Order = 1)]
+        [EventPayload("OldValue", typeof(float), Order = 2)]
+        [EventPayload("NewValue", typeof(float), Order = 3)]
+        IGameEvent<RenownScoreChangedEventArgs> RenownScoreChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Renown" )]
-		[EventPayload( "RegionId", typeof( InternString ), Order = 1 )]
-		[EventPayload( "OldValue", typeof( RenownTier ), Order = 2 )]
-		[EventPayload( "NewValue", typeof( RenownTier ), Order = 3 )]
-		IGameEvent<RenownTierChangedEventArgs> RenownTierChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Renown")]
+        [EventPayload("RegionId", typeof(InternString), Order = 1)]
+        [EventPayload("OldValue", typeof(RenownTier), Order = 2)]
+        [EventPayload("NewValue", typeof(RenownTier), Order = 3)]
+        IGameEvent<RenownTierChangedEventArgs> RenownTierChanged { get; }
 
-		RenownStatus GetStatus( InternString regionId );
-		IReadOnlyDictionary<InternString, RenownStatus> GetAllStatuses();
+        RenownStatus GetStatus(InternString regionId);
+        IReadOnlyDictionary<InternString, RenownStatus> GetAllStatuses();
 
-		void ApplyDelta( RenownDelta delta );
-		void ApplyDecay( InternString regionId, float amount, int worldDay );
-		void SetHistoricalFloor( InternString regionId, InternString sourceId, float floorValue );
+        void ApplyDelta(RenownDelta delta);
+        void ApplyDecay(InternString regionId, float amount, int worldDay);
+        void SetHistoricalFloor(InternString regionId, InternString sourceId, float floorValue);
 
-		RenownTier GetTier( InternString regionId );
-		float GetRenownRatio( InternString regionId );
-	}
+        RenownTier GetTier(InternString regionId);
+        float GetRenownRatio(InternString regionId);
+    }
 }

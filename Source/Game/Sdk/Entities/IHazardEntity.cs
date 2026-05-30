@@ -17,31 +17,31 @@ using Nomad.Game.Sdk.Hazards;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	/*
+    /*
 	===================================================================================
 
 	IHazardEntity
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Optional capability for hazards such as fire, poison gas, traps, radiation,
-	/// cursed zones, weather volumes, or environmental damage sources.
-	/// </summary>
+    /// <summary>
+    /// Optional capability for hazards such as fire, poison gas, traps, radiation,
+    /// cursed zones, weather volumes, or environmental damage sources.
+    /// </summary>
 
-	public interface IHazardEntity : IEntityBase
-	{
-		HazardInstanceId HazardId { get; }
+    public interface IHazardEntity : IEntityBase
+    {
+        HazardInstanceId HazardId { get; }
 
-		HazardType HazardType { get; }
+        HazardType HazardType { get; }
 
-		bool IsHazardActive { get; }
+        bool IsHazardActive { get; }
 
-		uint HazardRevision { get; }
+        uint HazardRevision { get; }
 
-		bool CanApplyHazard( EntityId targetId );
-		bool ApplyHazard( EntityId targetId, uint tick );
-		void EnableHazard();
-		void DisableHazard();
-	}
+        bool CanApplyHazard(EntityId targetId);
+        bool ApplyHazard(EntityId targetId, uint tick);
+        void EnableHazard();
+        void DisableHazard();
+    }
 }

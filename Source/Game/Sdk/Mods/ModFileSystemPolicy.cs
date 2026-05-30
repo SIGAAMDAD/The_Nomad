@@ -17,20 +17,20 @@ using System.Text.Json;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModFileSystemPolicy
-	{
-		public long MaxReadBytes { get; init; } = 8 * 1024 * 1024;
-		public long MaxWriteBytes { get; init; } = 8 * 1024 * 1024;
-		public int MaxEnumeratedFiles { get; init; } = 4096;
+    public sealed record ModFileSystemPolicy
+    {
+        public long MaxReadBytes { get; init; } = 8 * 1024 * 1024;
+        public long MaxWriteBytes { get; init; } = 8 * 1024 * 1024;
+        public int MaxEnumeratedFiles { get; init; } = 4096;
 
-		public bool AllowRecursiveEnumeration { get; init; } = true;
-		public bool CreateWriteDirectories { get; init; } = true;
+        public bool AllowRecursiveEnumeration { get; init; } = true;
+        public bool CreateWriteDirectories { get; init; } = true;
 
-		public JsonSerializerOptions JsonOptions { get; init; } = new JsonSerializerOptions
-		{
-			AllowTrailingCommas = true,
-			ReadCommentHandling = JsonCommentHandling.Skip,
-			WriteIndented = true
-		};
-	}
+        public JsonSerializerOptions JsonOptions { get; init; } = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            WriteIndented = true
+        };
+    }
 }

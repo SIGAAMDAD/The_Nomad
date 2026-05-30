@@ -20,25 +20,25 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.State
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IPlayerStateReader
-	{
-		PlayerStateId Current { get; }
-		bool IsIdle { get; }
-		bool IsMoving { get; }
-		bool IsDead { get; }
-		bool IsRestingAtCheckpoint { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IPlayerStateReader
+    {
+        PlayerStateId Current { get; }
+        bool IsIdle { get; }
+        bool IsMoving { get; }
+        bool IsDead { get; }
+        bool IsRestingAtCheckpoint { get; }
 
-		bool CanMove { get; }
-		bool CanTakeInput { get; }
-		bool CanTakeDamage { get; }
+        bool CanMove { get; }
+        bool CanTakeInput { get; }
+        bool CanTakeDamage { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerStateChangedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldState", typeof( PlayerStateId ), Order = 2 )]
-		[EventPayload( "NewState", typeof( PlayerStateId ), Order = 3 )]
-		IGameEvent<PlayerStateChangedEventArgs> StateChanged { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerStateChangedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldState", typeof(PlayerStateId), Order = 2)]
+        [EventPayload("NewState", typeof(PlayerStateId), Order = 3)]
+        IGameEvent<PlayerStateChangedEventArgs> StateChanged { get; }
+    }
 }

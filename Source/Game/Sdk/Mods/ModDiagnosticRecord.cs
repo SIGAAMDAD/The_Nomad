@@ -17,39 +17,39 @@ using System;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModDiagnosticRecord
-	{
-		public DateTimeOffset Timestamp { get; }
-		public ModuleManifest Mod { get; }
-		public ModDiagnosticSeverity Severity { get; }
-		public ModDiagnosticKind Kind { get; }
-		public string Code { get; }
-		public string Message { get; }
-		public string? Operation { get; }
-		public string? ExceptionType { get; }
-		public string? ExceptionMessage { get; }
-		public string? StackTrace { get; }
+    public sealed record ModDiagnosticRecord
+    {
+        public DateTimeOffset Timestamp { get; }
+        public ModuleManifest Mod { get; }
+        public ModDiagnosticSeverity Severity { get; }
+        public ModDiagnosticKind Kind { get; }
+        public string Code { get; }
+        public string Message { get; }
+        public string? Operation { get; }
+        public string? ExceptionType { get; }
+        public string? ExceptionMessage { get; }
+        public string? StackTrace { get; }
 
-		public ModDiagnosticRecord(
-			ModuleManifest mod,
-			ModDiagnosticSeverity severity,
-			ModDiagnosticKind kind,
-			string code,
-			string message,
-			string? operation = null,
-			Exception? exception = null
-		)
-		{
-			Timestamp = DateTimeOffset.UtcNow;
-			Mod = mod;
-			Severity = severity;
-			Kind = kind;
-			Code = code;
-			Message = message;
-			Operation = operation;
-			ExceptionType = exception?.GetType().FullName;
-			ExceptionMessage = exception?.Message;
-			StackTrace = exception?.StackTrace;
-		}
-	}
+        public ModDiagnosticRecord(
+            ModuleManifest mod,
+            ModDiagnosticSeverity severity,
+            ModDiagnosticKind kind,
+            string code,
+            string message,
+            string? operation = null,
+            Exception? exception = null
+        )
+        {
+            Timestamp = DateTimeOffset.UtcNow;
+            Mod = mod;
+            Severity = severity;
+            Kind = kind;
+            Code = code;
+            Message = message;
+            Operation = operation;
+            ExceptionType = exception?.GetType().FullName;
+            ExceptionMessage = exception?.Message;
+            StackTrace = exception?.StackTrace;
+        }
+    }
 }

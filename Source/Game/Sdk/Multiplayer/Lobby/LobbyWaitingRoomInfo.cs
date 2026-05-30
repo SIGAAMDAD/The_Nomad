@@ -17,19 +17,19 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Lobby
 {
-	public sealed record LobbyWaitingRoomInfo
-	{
-		public Guid LobbyId { get; init; }
-		public LobbyWaitingRoomState State { get; init; }
-		public int MinPlayers { get; init; }
-		public int MaxPlayers { get; init; }
-		public int PlayerCount { get; init; }
-		public int ReadyCount { get; init; }
-		public bool CanStart { get; init; }
-		public bool CanReady { get; init; }
-		public bool LateJoinAllowed { get; init; }
-		public int CountdownSecondsRemaining { get; init; }
-		public uint StateVersion { get; init; }
-		public uint RosterVersion { get; init; }
-	}
+    public sealed record LobbyWaitingRoomInfo
+    {
+        public Guid LobbyId { get; init; }
+        public LobbyWaitingRoomState State { get; init; }
+        public int MinPlayers { get; init; }
+        public int MaxPlayers { get; init; }
+        public int PlayerCount { get; init; }
+        public int ReadyCount { get; init; }
+        public bool CanStart { get; init; }
+        public bool CanReady { get; init; }
+        public bool LateJoinAllowed { get; init; }
+        public int CountdownSecondsRemaining { get; init; }
+        public uint StateVersion { get; init; }
+        public uint RosterVersion { get; init; }
+    }
 }

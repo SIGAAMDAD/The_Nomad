@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IAmmoCounterView : IHudComponentView
-	{
-		void SetAmmoText( string text );
-	}
+    public interface IAmmoCounterView : IHudComponentView
+    {
+        void SetAmmoText(string text);
+    }
 }

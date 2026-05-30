@@ -19,17 +19,17 @@ using Nomad.Game.Sdk.Multiplayer.Team;
 
 namespace Nomad.Game.Sdk.Multiplayer.Objectives
 {
-	public readonly struct FlagObjectiveSnapshot
-	{
-		public TeamId TeamId { get; init; }
-		public FlagStatus Status { get; init; }
+    public readonly struct FlagObjectiveSnapshot
+    {
+        public TeamId TeamId { get; init; }
+        public FlagStatus Status { get; init; }
 
-		public PeerId Carrier { get; init; }
+        public PeerId Carrier { get; init; }
 
-		public Vector2 HomePosition { get; init; }
-		public Vector2 CurrentPosition { get; init; }
-		public Vector2 DroppedPosition { get; init; }
+        public Vector2 HomePosition { get; init; }
+        public Vector2 CurrentPosition { get; init; }
+        public Vector2 DroppedPosition { get; init; }
 
-		public uint Version { get; init; }
-	}
+        public uint Version { get; init; }
+    }
 }

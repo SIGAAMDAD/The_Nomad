@@ -17,16 +17,16 @@ using Nomad.Game.Sdk.Configuration.Gameplay;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/// <summary>
-	///
-	/// </summary>
-	public sealed record GameplayConfiguration
-	{
-		public EnemyTacticalIntelligence EnemyTacticalIntelligence { get; init; }
-		public ContractPayoutScaling ContractPayoutScaling { get; init; }
-		public EnemyDamageOutput EnemyDamageOutput { get; init; }
-		public RuneAttunementStability RuneAttunementStability { get; init; }
-		public int MaximumFirelinkCharges { get; init; }
-		public bool NPCPermaDeath { get; init; }
-	}
+    /// <summary>
+    ///
+    /// </summary>
+    public sealed record GameplayConfiguration
+    {
+        public EnemyTacticalIntelligence EnemyTacticalIntelligence { get; init; }
+        public ContractPayoutScaling ContractPayoutScaling { get; init; }
+        public EnemyDamageOutput EnemyDamageOutput { get; init; }
+        public RuneAttunementStability RuneAttunementStability { get; init; }
+        public int MaximumFirelinkCharges { get; init; }
+        public bool NPCPermaDeath { get; init; }
+    }
 }

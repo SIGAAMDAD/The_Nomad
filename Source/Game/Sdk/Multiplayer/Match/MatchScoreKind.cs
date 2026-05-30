@@ -15,17 +15,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public enum MatchScoreKind : byte
-	{
-		Kill,
-		Assist,
-		Objective,
-		RoundWin,
-		MatchWin,
-		Capture,
-		Extraction,
-		BountyClaim,
-		HoldTime,
-		Custom
-	}
+    public enum MatchScoreKind : byte
+    {
+        Kill,
+        Assist,
+        Objective,
+        RoundWin,
+        MatchWin,
+        Capture,
+        Extraction,
+        BountyClaim,
+        HoldTime,
+        Custom
+    }
 }

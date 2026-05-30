@@ -21,21 +21,21 @@ using Nomad.Game.Sdk.Multiplayer.Profile;
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface ILocalPlayerProfileService : IDisposable
-	{
-		PeerId LocalPeerId { get; }
-		PlayerProfileRecord CurrentProfile { get; }
-		PlayerStatsRecord CurrentStats { get; }
-		uint LocalRevision { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface ILocalPlayerProfileService : IDisposable
+    {
+        PeerId LocalPeerId { get; }
+        PlayerProfileRecord CurrentProfile { get; }
+        PlayerStatsRecord CurrentStats { get; }
+        uint LocalRevision { get; }
 
-		void SetLocalPlayer( PeerId peerId, string callsign );
-		PlayerStatsRecord UpdateStats( Func<PlayerStatsRecord, PlayerStatsRecord> update );
-		void SetStats( PlayerStatsRecord stats );
+        void SetLocalPlayer(PeerId peerId, string callsign);
+        PlayerStatsRecord UpdateStats(Func<PlayerStatsRecord, PlayerStatsRecord> update);
+        void SetStats(PlayerStatsRecord stats);
 
-		ValueTask<PlayerProfileRecord> RefreshStatsFromOnlineAsync( CancellationToken ct = default );
-		ValueTask<bool> PushStatsToOnlineAsync( CancellationToken ct = default );
-	}
+        ValueTask<PlayerProfileRecord> RefreshStatsFromOnlineAsync(CancellationToken ct = default);
+        ValueTask<bool> PushStatsToOnlineAsync(CancellationToken ct = default);
+    }
 }

@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.State
 {
-	public enum PlayerStateChangeReason : byte
-	{
-		None = 0,
+    public enum PlayerStateChangeReason : byte
+    {
+        None = 0,
 
-		Input,
-		Movement,
-		Slide,
-		Combat,
-		Death,
-		Revive,
-		Checkpoint,
-		Respawn,
-		Cutscene,
-		NetworkCorrection,
-		Scripted
-	}
+        Input,
+        Movement,
+        Slide,
+        Combat,
+        Death,
+        Revive,
+        Checkpoint,
+        Respawn,
+        Cutscene,
+        NetworkCorrection,
+        Scripted
+    }
 }

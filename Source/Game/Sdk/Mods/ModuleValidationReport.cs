@@ -18,21 +18,21 @@ using System.Linq;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed class ModuleValidationReport
-	{
-		private readonly List<ModuleValidationIssue> _issues = new();
+    public sealed class ModuleValidationReport
+    {
+        private readonly List<ModuleValidationIssue> _issues = new();
 
-		public IReadOnlyList<ModuleValidationIssue> Issues => _issues;
-		public bool IsAllowed => !_issues.Any( issue => issue.Severity == ModuleValidationSeverity.Error );
+        public IReadOnlyList<ModuleValidationIssue> Issues => _issues;
+        public bool IsAllowed => !_issues.Any(issue => issue.Severity == ModuleValidationSeverity.Error);
 
-		public void Error( string code, string message, string? location = null )
-		{
-			_issues.Add( new ModuleValidationIssue( ModuleValidationSeverity.Error, code, message, location ) );
-		}
+        public void Error(string code, string message, string? location = null)
+        {
+            _issues.Add(new ModuleValidationIssue(ModuleValidationSeverity.Error, code, message, location));
+        }
 
-		public void Warning( string code, string message, string? location = null )
-		{
-			_issues.Add( new ModuleValidationIssue( ModuleValidationSeverity.Warning, code, message, location ) );
-		}
-	}
+        public void Warning(string code, string message, string? location = null)
+        {
+            _issues.Add(new ModuleValidationIssue(ModuleValidationSeverity.Warning, code, message, location));
+        }
+    }
 }

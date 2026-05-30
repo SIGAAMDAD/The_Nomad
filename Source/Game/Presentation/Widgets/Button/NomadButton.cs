@@ -166,6 +166,8 @@ namespace Nomad.Game.Presentation.Widgets.NomadButton
 
 			FocusEntered += OnFocused;
 			FocusExited += OnUnfocused;
+			MouseEntered += OnFocused;
+			MouseExited += OnUnfocused;
 		}
 
 		/*

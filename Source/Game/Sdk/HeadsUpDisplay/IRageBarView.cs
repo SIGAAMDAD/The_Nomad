@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IRageBarView : IHudComponentView
-	{
-		void SetValue( float value );
-		void SetSizeParameters();
-		void SetTrail( float value );
+    public interface IRageBarView : IHudComponentView
+    {
+        void SetValue(float value);
+        void SetSizeParameters();
+        void SetTrail(float value);
 
-		float GetRage();
-		float GetTrail();
-	}
+        float GetRage();
+        float GetTrail();
+    }
 }

@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public static class StatusEffectIds
-	{
-	}
+    public static class StatusEffectIds
+    {
+    }
 }

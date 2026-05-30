@@ -15,38 +15,38 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public enum StatusEffectStackingPolicy
-	{
-		None = 0,
+    public enum StatusEffectStackingPolicy
+    {
+        None = 0,
 
-		/// <summary>
-		/// If the effect already exists, ignore the new application.
-		/// </summary>
-		Ignore,
+        /// <summary>
+        /// If the effect already exists, ignore the new application.
+        /// </summary>
+        Ignore,
 
-		/// <summary>
-		/// Reset the duration, but do not increase stacks.
-		/// </summary>
-		RefreshDuration,
+        /// <summary>
+        /// Reset the duration, but do not increase stacks.
+        /// </summary>
+        RefreshDuration,
 
-		/// <summary>
-		/// Add stack count up to MaxStacks.
-		/// </summary>
-		AddStack,
+        /// <summary>
+        /// Add stack count up to MaxStacks.
+        /// </summary>
+        AddStack,
 
-		/// <summary>
-		/// Add stack and refresh duration.
-		/// </summary>
-		AddStackAndRefresh,
+        /// <summary>
+        /// Add stack and refresh duration.
+        /// </summary>
+        AddStackAndRefresh,
 
-		/// <summary>
-		/// Replace old instance entirely.
-		/// </summary>
-		Replace,
+        /// <summary>
+        /// Replace old instance entirely.
+        /// </summary>
+        Replace,
 
-		/// <summary>
-		/// Keep the instance with the strongest magnitude
-		/// </summary>
-		StrongestOnly
-	}
+        /// <summary>
+        /// Keep the instance with the strongest magnitude
+        /// </summary>
+        StrongestOnly
+    }
 }

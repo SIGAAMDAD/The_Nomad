@@ -15,31 +15,31 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum GameplayMode : byte
-	{
-		/// <summary>
-		/// Single player campaign.
-		/// </summary>
-		Single,
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum GameplayMode : byte
+    {
+        /// <summary>
+        /// Single player campaign.
+        /// </summary>
+        Single,
 
-		/// <summary>
-		/// Multiplayer mode.
-		/// </summary>
-		Network,
+        /// <summary>
+        /// Multiplayer mode.
+        /// </summary>
+        Network,
 
-		/// <summary>
-		/// Arkham style challenge mode.
-		/// </summary>
-		ChallengeMode,
+        /// <summary>
+        /// Arkham style challenge mode.
+        /// </summary>
+        ChallengeMode,
 
-		/// <summary>
-		/// Split-screen coop mode.
-		/// </summary>
-		Coop,
+        /// <summary>
+        /// Split-screen coop mode.
+        /// </summary>
+        Coop,
 
-		Count
-	}
+        Count
+    }
 }

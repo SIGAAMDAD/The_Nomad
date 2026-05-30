@@ -18,39 +18,39 @@ using System.Collections.Generic;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record WeeklyContractDefinitionRecord
-	{
-		public string ContractId { get; init; }
+    public sealed record WeeklyContractDefinitionRecord
+    {
+        public string ContractId { get; init; }
 
-		public FactionId FactionId { get; init; }
+        public FactionId FactionId { get; init; }
 
-		public string Name { get; init; }
+        public string Name { get; init; }
 
-		public string Description { get; init; }
+        public string Description { get; init; }
 
-		public ContractRefreshCadence Cadence { get; init; }
+        public ContractRefreshCadence Cadence { get; init; }
 
-		public IReadOnlyList<ContractObjectiveRecord> Objectives { get; init; }
+        public IReadOnlyList<ContractObjectiveRecord> Objectives { get; init; }
 
-		/// <summary>
-		/// Global mercenary XP granted on completion.
-		/// </summary>
-		public uint MercenaryExperienceReward { get; init; }
+        /// <summary>
+        /// Global mercenary XP granted on completion.
+        /// </summary>
+        public uint MercenaryExperienceReward { get; init; }
 
-		/// <summary>
-		/// Standing gained when the player is currently representing this faction.
-		/// </summary>
-		public uint MemberStandingReward { get; init; }
+        /// <summary>
+        /// Standing gained when the player is currently representing this faction.
+        /// </summary>
+        public uint MemberStandingReward { get; init; }
 
-		/// <summary>
-		/// Standing gained when the player completes the contract while not pledged to this faction.
-		/// </summary>
-		public uint NonMemberStandingReward { get; init; }
+        /// <summary>
+        /// Standing gained when the player completes the contract while not pledged to this faction.
+        /// </summary>
+        public uint NonMemberStandingReward { get; init; }
 
-		public IReadOnlyList<FactionRewardRecord> BonusRewards { get; init; }
+        public IReadOnlyList<FactionRewardRecord> BonusRewards { get; init; }
 
-		public DateTimeOffset? StartsAtUtc { get; init; }
+        public DateTimeOffset? StartsAtUtc { get; init; }
 
-		public DateTimeOffset? ExpiresAtUtc { get; init; }
-	}
+        public DateTimeOffset? ExpiresAtUtc { get; init; }
+    }
 }

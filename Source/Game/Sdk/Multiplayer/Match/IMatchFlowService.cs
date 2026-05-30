@@ -20,34 +20,34 @@ using Nomad.Game.Sdk.Events.Multiplayer.Match;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public interface IMatchFlowService : IDisposable
-	{
-		MatchPhase Phase { get; }
+    public interface IMatchFlowService : IDisposable
+    {
+        MatchPhase Phase { get; }
 
-		uint MatchRevision { get; }
-		uint PhaseStartTick { get; }
-		uint PhaseEndTick { get; }
+        uint MatchRevision { get; }
+        uint PhaseStartTick { get; }
+        uint PhaseEndTick { get; }
 
-		bool IsMatchActive { get; }
-		bool IsMatchEnding { get; }
+        bool IsMatchActive { get; }
+        bool IsMatchEnding { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match", PayloadName = "MatchPhaseChangedEventArgs" )]
-		[EventPayload( "PreviousPhase", typeof( MatchPhase ), Order = 1 )]
-		[EventPayload( "NewPhase", typeof( MatchPhase ), Order = 2 )]
-		IGameEvent<MatchPhaseChangedEventArgs> PhaseChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match", PayloadName = "MatchPhaseChangedEventArgs")]
+        [EventPayload("PreviousPhase", typeof(MatchPhase), Order = 1)]
+        [EventPayload("NewPhase", typeof(MatchPhase), Order = 2)]
+        IGameEvent<MatchPhaseChangedEventArgs> PhaseChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match" )]
-		[EventPayload( "MatchRevision", typeof( uint ), Order = 1 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 2 )]
-		[EventPayload( "Rules", typeof( MatchRules ), Order = 3 )]
-		IGameEvent<MatchStartedEventArgs> MatchStarted { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match")]
+        [EventPayload("MatchRevision", typeof(uint), Order = 1)]
+        [EventPayload("ServerTick", typeof(uint), Order = 2)]
+        [EventPayload("Rules", typeof(MatchRules), Order = 3)]
+        IGameEvent<MatchStartedEventArgs> MatchStarted { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match" )]
-		[EventPayload( "Reason", typeof( MatchEndReason ), Order = 1 )]
-		[EventPayload( "MatchRevision", typeof( uint ), Order = 2 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 3 )]
-		IGameEvent<MatchEndedEventArgs> MatchEnded { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer.Match")]
+        [EventPayload("Reason", typeof(MatchEndReason), Order = 1)]
+        [EventPayload("MatchRevision", typeof(uint), Order = 2)]
+        [EventPayload("ServerTick", typeof(uint), Order = 3)]
+        IGameEvent<MatchEndedEventArgs> MatchEnded { get; }
 
-		void BeginCountdown( uint serverTick );
-	}
+        void BeginCountdown(uint serverTick);
+    }
 }

@@ -17,21 +17,21 @@ using Nomad.Core.OnlineServices;
 
 namespace Nomad.Game.Sdk.Multiplayer.Lobby
 {
-	public readonly struct LobbyPeerStatus
-	{
-		public PeerId PeerId { get; }
-		public LobbyReadyState ReadyState { get; }
-		public bool IsHost { get; }
-		public bool IsLocal { get; }
-		public bool IsConnected { get; }
+    public readonly struct LobbyPeerStatus
+    {
+        public PeerId PeerId { get; }
+        public LobbyReadyState ReadyState { get; }
+        public bool IsHost { get; }
+        public bool IsLocal { get; }
+        public bool IsConnected { get; }
 
-		public LobbyPeerStatus( PeerId peerId, LobbyReadyState readyState, bool isHost, bool isLocal, bool isConnected )
-		{
-			PeerId = peerId;
-			ReadyState = readyState;
-			IsHost = isHost;
-			IsLocal = isLocal;
-			IsConnected = isConnected;
-		}
-	}
+        public LobbyPeerStatus(PeerId peerId, LobbyReadyState readyState, bool isHost, bool isLocal, bool isConnected)
+        {
+            PeerId = peerId;
+            ReadyState = readyState;
+            IsHost = isHost;
+            IsLocal = isLocal;
+            IsConnected = isConnected;
+        }
+    }
 }

@@ -29,6 +29,7 @@ using Nomad.Core.Logger;
 using Nomad.Game.Application.Multiplayer;
 using Nomad.Core.Events;
 using Nomad.Core.CVars;
+using Nomad.Game.Infrastructure.Mods;
 
 namespace Nomad.Game.Application
 {
@@ -53,6 +54,7 @@ namespace Nomad.Game.Application
 		private SaveGameController _saveController;
 		private MultiplayerCoordinator _multiplayerCoordinator;
 		private GameplayApplicationCoordinator _gameplayCoordinator;
+		private ModuleBoot _moduleBoot;
 
 		/*
 		===============
@@ -88,6 +90,9 @@ namespace Nomad.Game.Application
 			ServiceRegistry.AddSingleton( _gameStateService );
 			ServiceRegistry.AddSingleton( _worldLoader );
 			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
+
+			_moduleBoot = new ModuleBoot();
+			_moduleBoot.Initialize( ServiceRegistry.Instance, locator );
 		}
 
 		/*
@@ -102,6 +107,7 @@ namespace Nomad.Game.Application
 		{
 			base.OnShutdown();
 
+			_moduleBoot?.Shutdown();
 			_gameFlowCoordinator?.Dispose();
 			_gameplayCoordinator?.Dispose();
 			_menuManager?.Dispose();

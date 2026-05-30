@@ -15,50 +15,50 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.State
 {
-	public readonly struct PlayerStateTransitionResult
-	{
-		public bool Success { get; }
-		public PlayerStateId OldState { get; }
-		public PlayerStateId NewState { get; }
-		public string? FailureReason { get; }
+    public readonly struct PlayerStateTransitionResult
+    {
+        public bool Success { get; }
+        public PlayerStateId OldState { get; }
+        public PlayerStateId NewState { get; }
+        public string? FailureReason { get; }
 
-		public PlayerStateTransitionResult(
-			bool success,
-			PlayerStateId oldState,
-			PlayerStateId newState,
-			string? failureReason = null
-		)
-		{
-			Success = success;
-			OldState = oldState;
-			NewState = newState;
-			FailureReason = failureReason;
-		}
+        public PlayerStateTransitionResult(
+            bool success,
+            PlayerStateId oldState,
+            PlayerStateId newState,
+            string? failureReason = null
+        )
+        {
+            Success = success;
+            OldState = oldState;
+            NewState = newState;
+            FailureReason = failureReason;
+        }
 
-		public static PlayerStateTransitionResult Succeeded(
-			PlayerStateId oldState,
-			PlayerStateId newState
-		)
-		{
-			return new PlayerStateTransitionResult(
-				true,
-				oldState,
-				newState
-			);
-		}
+        public static PlayerStateTransitionResult Succeeded(
+            PlayerStateId oldState,
+            PlayerStateId newState
+        )
+        {
+            return new PlayerStateTransitionResult(
+                true,
+                oldState,
+                newState
+            );
+        }
 
-		public static PlayerStateTransitionResult Failed(
-			PlayerStateId oldState,
-			PlayerStateId newState,
-			string reason
-		)
-		{
-			return new PlayerStateTransitionResult(
-				false,
-				oldState,
-				newState,
-				reason
-			);
-		}
-	}
+        public static PlayerStateTransitionResult Failed(
+            PlayerStateId oldState,
+            PlayerStateId newState,
+            string reason
+        )
+        {
+            return new PlayerStateTransitionResult(
+                false,
+                oldState,
+                newState,
+                reason
+            );
+        }
+    }
 }

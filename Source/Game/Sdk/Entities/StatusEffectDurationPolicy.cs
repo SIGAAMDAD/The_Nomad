@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public enum StatusEffectDurationPolicy : byte
-	{
-		Fixed,
-		RefreshOnReapply,
-		ExtendOnReapply
-	}
+    public enum StatusEffectDurationPolicy : byte
+    {
+        Fixed,
+        RefreshOnReapply,
+        ExtendOnReapply
+    }
 }

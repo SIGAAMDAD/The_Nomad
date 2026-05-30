@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum MercTier : byte
-	{
-		None = 0,
+    public enum MercTier : byte
+    {
+        None = 0,
 
-		Recruit,
-		Regular,
-		Veteran,
-		Elite,
-		Champion
-	}
+        Recruit,
+        Regular,
+        Veteran,
+        Elite,
+        Champion
+    }
 }

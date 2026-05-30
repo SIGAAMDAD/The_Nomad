@@ -17,10 +17,10 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public interface IPlayerProfile : IDisposable
-	{
-		int Level { get; }
-		int ExperiencePoints { get; }
-		IFaction Faction { get; }
-	}
+    public interface IPlayerProfile : IDisposable
+    {
+        int Level { get; }
+        int ExperiencePoints { get; }
+        IFaction Faction { get; }
+    }
 }

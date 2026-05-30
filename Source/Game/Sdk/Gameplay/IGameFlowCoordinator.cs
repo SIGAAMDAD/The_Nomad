@@ -20,7 +20,7 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public interface IGameFlowCoordinator : IDisposable
-	{
-	}
+    public interface IGameFlowCoordinator : IDisposable
+    {
+    }
 }

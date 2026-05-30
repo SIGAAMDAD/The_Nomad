@@ -18,17 +18,17 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public interface IArmAttachment
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "ArmAttachmentEquippedEventArgs" )]
-		IGameEvent<ArmAttachmentEquippedEventArgs> Equipped { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IArmAttachment
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "ArmAttachmentEquippedEventArgs")]
+        IGameEvent<ArmAttachmentEquippedEventArgs> Equipped { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "ArmAttachmentUsedEventArgs" )]
-		IGameEvent<ArmAttachmentUsedEventArgs> Used { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "ArmAttachmentUsedEventArgs")]
+        IGameEvent<ArmAttachmentUsedEventArgs> Used { get; }
 
-		void Use();
-	}
+        void Use();
+    }
 }

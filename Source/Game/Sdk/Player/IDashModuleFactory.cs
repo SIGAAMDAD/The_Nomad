@@ -17,31 +17,31 @@ using System;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/*
+    /*
 	===================================================================================
 	
 	IDashModuleFactory
 	
 	===================================================================================
 	*/
-	/// <summary>
-	/// 
-	/// </summary>
+    /// <summary>
+    /// 
+    /// </summary>
 
-	public interface IDashModuleFactory
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="moduleType"></param>
-		/// <param name="factory"></param>
-		void RegisterModuleFactory( Type moduleType, Func<IDashModule> factory );
+    public interface IDashModuleFactory
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <param name="factory"></param>
+        void RegisterModuleFactory(Type moduleType, Func<IDashModule> factory);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="moduleType"></param>
-		/// <returns></returns>
-		IDashModule CreateModule( Type moduleType );
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <returns></returns>
+        IDashModule CreateModule(Type moduleType);
+    }
 }

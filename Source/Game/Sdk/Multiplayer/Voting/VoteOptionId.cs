@@ -17,50 +17,50 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Voting
 {
-	public readonly struct VoteOptionId : IEquatable<VoteOptionId>
-	{
-		public readonly ushort Value;
+    public readonly struct VoteOptionId : IEquatable<VoteOptionId>
+    {
+        public readonly ushort Value;
 
-		public static readonly VoteOptionId None = new VoteOptionId( 0 );
-		public static readonly VoteOptionId Yes = new VoteOptionId( 1 );
-		public static readonly VoteOptionId No = new VoteOptionId( 2 );
-		public static readonly VoteOptionId Abstain = new VoteOptionId( 3 );
+        public static readonly VoteOptionId None = new VoteOptionId(0);
+        public static readonly VoteOptionId Yes = new VoteOptionId(1);
+        public static readonly VoteOptionId No = new VoteOptionId(2);
+        public static readonly VoteOptionId Abstain = new VoteOptionId(3);
 
-		public bool IsValid => Value != 0;
+        public bool IsValid => Value != 0;
 
-		public VoteOptionId( ushort value )
-		{
-			Value = value;
-		}
+        public VoteOptionId(ushort value)
+        {
+            Value = value;
+        }
 
-		public bool Equals( VoteOptionId other )
-		{
-			return Value == other.Value;
-		}
+        public bool Equals(VoteOptionId other)
+        {
+            return Value == other.Value;
+        }
 
-		public override bool Equals( object obj )
-		{
-			return obj is VoteOptionId other && Equals( other );
-		}
+        public override bool Equals(object obj)
+        {
+            return obj is VoteOptionId other && Equals(other);
+        }
 
-		public override int GetHashCode()
-		{
-			return Value;
-		}
+        public override int GetHashCode()
+        {
+            return Value;
+        }
 
-		public override string ToString()
-		{
-			return Value.ToString();
-		}
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
 
-		public static bool operator ==( VoteOptionId left, VoteOptionId right )
-		{
-			return left.Equals( right );
-		}
+        public static bool operator ==(VoteOptionId left, VoteOptionId right)
+        {
+            return left.Equals(right);
+        }
 
-		public static bool operator !=( VoteOptionId left, VoteOptionId right )
-		{
-			return !left.Equals( right );
-		}
-	}
+        public static bool operator !=(VoteOptionId left, VoteOptionId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

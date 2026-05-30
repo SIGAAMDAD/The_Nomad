@@ -22,26 +22,26 @@ using Nomad.Game.Sdk.Events.Multiplayer;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public interface IMatchScoreService
-	{
-		uint ScoreRevision { get; }
+    public interface IMatchScoreService
+    {
+        uint ScoreRevision { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer", PayloadName = "MatchScoreChangedEventArgs" )]
-		[EventPayload( "ScoreRevision", typeof( uint ), Order = 1 )]
-		[EventPayload( "Delta", typeof( MatchScoreDelta ), Order = 2 )]
-		[EventPayload( "NewPlayerScore", typeof( uint ), Order = 3 )]
-		[EventPayload( "NewTeamScore", typeof( uint ), Order = 4 )]
-		IGameEvent<MatchScoreChangedEventArgs> ScoreChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer", PayloadName = "MatchScoreChangedEventArgs")]
+        [EventPayload("ScoreRevision", typeof(uint), Order = 1)]
+        [EventPayload("Delta", typeof(MatchScoreDelta), Order = 2)]
+        [EventPayload("NewPlayerScore", typeof(uint), Order = 3)]
+        [EventPayload("NewTeamScore", typeof(uint), Order = 4)]
+        IGameEvent<MatchScoreChangedEventArgs> ScoreChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer", PayloadName = "MatchScoreLimitReachedEventArgs" )]
-		[EventPayload( "ScoreRevision", typeof( uint ), Order = 1 )]
-		[EventPayload( "PlayerId", typeof( PeerId ), Order = 2 )]
-		[EventPayload( "Team", typeof( TeamId ), Order = 3 )]
-		[EventPayload( "Score", typeof( int ), Order = 4 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 5 )]
-		IGameEvent<MatchScoreLimitReachedEventArgs> ScoreLimitReached { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer", PayloadName = "MatchScoreLimitReachedEventArgs")]
+        [EventPayload("ScoreRevision", typeof(uint), Order = 1)]
+        [EventPayload("PlayerId", typeof(PeerId), Order = 2)]
+        [EventPayload("Team", typeof(TeamId), Order = 3)]
+        [EventPayload("Score", typeof(int), Order = 4)]
+        [EventPayload("ServerTick", typeof(uint), Order = 5)]
+        IGameEvent<MatchScoreLimitReachedEventArgs> ScoreLimitReached { get; }
 
-		void Initialize( MatchRules rules, IReadOnlyList<PeerId> players );
-		void AddPlayerScore( MatchScoreDelta delta );
-	}
+        void Initialize(MatchRules rules, IReadOnlyList<PeerId> players);
+        void AddPlayerScore(MatchScoreDelta delta);
+    }
 }

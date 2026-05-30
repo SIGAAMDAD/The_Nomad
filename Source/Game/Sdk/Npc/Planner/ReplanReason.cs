@@ -17,16 +17,16 @@ using System;
 
 namespace Nomad.Game.Sdk.Npc.Planner
 {
-	[Flags]
-	public enum ReplanReason : uint
-	{
-		None = 0,
-		NoPlan = 1 << 0,
-		ActionFailed = 1 << 1,
-		GoalChanged = 1 << 2,
-		ContextInvalid = 1 << 3,
-		TargetLost = 1 << 4,
-		TookHeavyDamage = 1 << 5,
-		PeriodicRefresh = 1 << 6
-	}
+    [Flags]
+    public enum ReplanReason : uint
+    {
+        None = 0,
+        NoPlan = 1 << 0,
+        ActionFailed = 1 << 1,
+        GoalChanged = 1 << 2,
+        ContextInvalid = 1 << 3,
+        TargetLost = 1 << 4,
+        TookHeavyDamage = 1 << 5,
+        PeriodicRefresh = 1 << 6
+    }
 }

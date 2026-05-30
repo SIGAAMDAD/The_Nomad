@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModuleDependency
-	{
-		public string Id { get; init; }
-		public string? Version { get; init; }
-		public bool Optional { get; init; } = false;
-	}
+    public sealed record ModuleDependency
+    {
+        public string Id { get; init; }
+        public string? Version { get; init; }
+        public bool Optional { get; init; } = false;
+    }
 }

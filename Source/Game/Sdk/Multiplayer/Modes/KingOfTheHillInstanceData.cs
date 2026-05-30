@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	public readonly struct KingOfTheHillInstanceData
-	{
-		public float RedTeamHoldTime { get; init; }
-		public float BlueTeamHoldTime { get; init; }
-	}
+    public readonly struct KingOfTheHillInstanceData
+    {
+        public float RedTeamHoldTime { get; init; }
+        public float BlueTeamHoldTime { get; init; }
+    }
 }

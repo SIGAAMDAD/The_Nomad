@@ -19,50 +19,50 @@ using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	/// <summary>
-	/// A blackbox recorder + circuit breaker for modules.
-	/// </summary>
-	public interface IModDiagnostics
-	{
-		void ReportInfo(
-			ModuleManifest mod,
-			string code,
-			string message,
-			string? operation = null
-		);
+    /// <summary>
+    /// A blackbox recorder + circuit breaker for modules.
+    /// </summary>
+    public interface IModDiagnostics
+    {
+        void ReportInfo(
+            ModuleManifest mod,
+            string code,
+            string message,
+            string? operation = null
+        );
 
-		void ReportWarning(
-			ModuleManifest mod,
-			string code,
-			string message,
-			string? operation = null
-		);
+        void ReportWarning(
+            ModuleManifest mod,
+            string code,
+            string message,
+            string? operation = null
+        );
 
-		void ReportException(
-			ModuleManifest mod,
-			Exception exception,
-			string operation
-		);
+        void ReportException(
+            ModuleManifest mod,
+            Exception exception,
+            string operation
+        );
 
-		void ReportPolicyViolation(
-			ModuleManifest mod,
-			string code,
-			string message,
-			string? operation = null
-		);
+        void ReportPolicyViolation(
+            ModuleManifest mod,
+            string code,
+            string message,
+            string? operation = null
+        );
 
-		void ReportValidationFailure(
-			ModuleManifest mod,
-			string code,
-			string message,
-			string? operation = null
-		);
+        void ReportValidationFailure(
+            ModuleManifest mod,
+            string code,
+            string message,
+            string? operation = null
+        );
 
-		bool ShouldDisable( ModuleManifest mod );
-		void Disable( ModuleManifest mod, string reason );
+        bool ShouldDisable(ModuleManifest mod);
+        void Disable(ModuleManifest mod, string reason);
 
-		ModDiagnosticSnapshot GetSnapshot( ModuleManifest mod );
+        ModDiagnosticSnapshot GetSnapshot(ModuleManifest mod);
 
-		IReadOnlyList<ModDiagnosticRecord> GetRecentRecords( ModuleManifest mod );
-	}
+        IReadOnlyList<ModDiagnosticRecord> GetRecentRecords(ModuleManifest mod);
+    }
 }

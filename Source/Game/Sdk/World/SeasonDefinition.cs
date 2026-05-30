@@ -19,21 +19,21 @@ using Godot;
 
 namespace Nomad.Game.Sdk.World
 {
-	public sealed record SeasonDefinition
-	{
-		public SeasonDefinitionId Id { get; init; }
+    public sealed record SeasonDefinition
+    {
+        public SeasonDefinitionId Id { get; init; }
 
-		public float DaylightHours { get; init; }
-		public float TwilightHours { get; init; }
+        public float DaylightHours { get; init; }
+        public float TwilightHours { get; init; }
 
-		public int MinWeatherDurationHours { get; init; }
-		public int MaxWeatherDurationHours { get; init; }
+        public int MinWeatherDurationHours { get; init; }
+        public int MaxWeatherDurationHours { get; init; }
 
-		public IReadOnlyList<WeatherWeight> WeatherTable { get; init; }
+        public IReadOnlyList<WeatherWeight> WeatherTable { get; init; }
 
-		public Color NightAmbient { get; init; }
-		public Color DawnAmbient { get; init; }
-		public Color DayAmbient { get; init; }
-		public Color DuskAmbient { get; init; }
-	}
+        public Color NightAmbient { get; init; }
+        public Color DawnAmbient { get; init; }
+        public Color DayAmbient { get; init; }
+        public Color DuskAmbient { get; init; }
+    }
 }

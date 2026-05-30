@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	public enum AnimationQuality : uint
-	{
-		Low,
-		Medium,
-		High,
+    public enum AnimationQuality : uint
+    {
+        Low,
+        Medium,
+        High,
 
-		Count,
+        Count,
 
-		Default = Medium
-	}
+        Default = Medium
+    }
 }

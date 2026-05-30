@@ -15,24 +15,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Objectives
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum HillStatus : byte
-	{
-		/// <summary>
-		/// The hill is currently not generating points for either team.
-		/// </summary>
-		Unclaimed,
+    /// <summary>
+    ///
+    /// </summary>
+    public enum HillStatus : byte
+    {
+        /// <summary>
+        /// The hill is currently not generating points for either team.
+        /// </summary>
+        Unclaimed,
 
-		/// <summary>
-		/// One team is holding the hill.
-		/// </summary>
-		Claimed,
+        /// <summary>
+        /// One team is holding the hill.
+        /// </summary>
+        Claimed,
 
-		/// <summary>
-		/// Two teams on the same hill.
-		/// </summary>
-		Contested
-	}
+        /// <summary>
+        /// Two teams on the same hill.
+        /// </summary>
+        Contested
+    }
 }

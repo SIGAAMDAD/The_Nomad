@@ -15,18 +15,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public struct PlayerStatModifierSet
-	{
-		public float FlatAdd { get; set; }
-		public float AddPercent { get; set; }
-		public float MulPercent { get; set; }
+    public struct PlayerStatModifierSet
+    {
+        public float FlatAdd { get; set; }
+        public float AddPercent { get; set; }
+        public float MulPercent { get; set; }
 
-		public float Apply( float baseValue )
-		{
-			float value = baseValue + FlatAdd;
-			value *= 1.0f + AddPercent;
-			value *= 1.0f + MulPercent;
-			return value;
-		}
-	}
+        public float Apply(float baseValue)
+        {
+            float value = baseValue + FlatAdd;
+            value *= 1.0f + AddPercent;
+            value *= 1.0f + MulPercent;
+            return value;
+        }
+    }
 }

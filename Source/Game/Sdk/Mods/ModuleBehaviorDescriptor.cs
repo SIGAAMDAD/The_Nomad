@@ -18,10 +18,10 @@ using System.Reflection;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModuleBehaviorDescriptor
-	{
-		public string Id { get; init; }
-		public Type Type { get; init; }
-		public Assembly Assembly { get; init; }
-	}
+    public sealed record ModuleBehaviorDescriptor
+    {
+        public string Id { get; init; }
+        public Type Type { get; init; }
+        public Assembly Assembly { get; init; }
+    }
 }

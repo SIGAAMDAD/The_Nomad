@@ -14,27 +14,54 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Nomad.Game.Sdk.Renown
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct TraitInstanceId : IEquatable<TraitInstanceId>
-	{
-		public static readonly TraitInstanceId Invalid = new TraitInstanceId( Guid.Empty );
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct TraitInstanceId
+    {
+        public static readonly TraitInstanceId Invalid = new TraitInstanceId(Guid.Empty);
 
-		public readonly Guid Value;
-		public bool IsValid => Value != Guid.Empty;
+        public bool IsValid => Value != Guid.Empty;
 
-		public TraitInstanceId( Guid value )
-		{
-			Value = value;
-		}
+        public readonly Guid Value;
 
-		public bool Equals( TraitInstanceId other )
-		{
-			return Value == other.Value;
-		}
-	}
+        public TraitInstanceId(Guid value)
+        {
+            Value = value;
+        }
+
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is TraitInstanceId other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public bool Equals(TraitInstanceId other)
+        {
+            return other.Value == Value;
+        }
+
+        public static implicit operator Guid(TraitInstanceId value)
+        {
+            return value.Value;
+        }
+
+        public static bool operator ==(TraitInstanceId left, TraitInstanceId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(TraitInstanceId left, TraitInstanceId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

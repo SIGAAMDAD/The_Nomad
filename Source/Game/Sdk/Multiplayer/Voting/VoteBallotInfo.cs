@@ -17,17 +17,17 @@ using Nomad.Core.OnlineServices;
 
 namespace Nomad.Game.Sdk.Multiplayer.Voting
 {
-	public readonly struct VoteBallotInfo
-	{
-		public PeerId PeerId { get; }
-		public VoteOptionId OptionId { get; }
-		public uint Version { get; }
+    public readonly struct VoteBallotInfo
+    {
+        public PeerId PeerId { get; }
+        public VoteOptionId OptionId { get; }
+        public uint Version { get; }
 
-		public VoteBallotInfo( PeerId peerId, VoteOptionId optionId, uint version )
-		{
-			PeerId = peerId;
-			OptionId = optionId;
-			Version = version;
-		}
-	}
+        public VoteBallotInfo(PeerId peerId, VoteOptionId optionId, uint version)
+        {
+            PeerId = peerId;
+            OptionId = optionId;
+            Version = version;
+        }
+    }
 }

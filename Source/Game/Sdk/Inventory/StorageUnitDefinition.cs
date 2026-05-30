@@ -17,11 +17,11 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public sealed record StorageUnitDefinition
-	{
-		public InternString Id { get; init; }
-		public InternString DisplayName { get; init; }
-		public InventoryRules Rules { get; init; }
-		public InventoryContainerType Type { get; init; }
-	}
+    public sealed record StorageUnitDefinition
+    {
+        public InternString Id { get; init; }
+        public InternString DisplayName { get; init; }
+        public InventoryRules Rules { get; init; }
+        public InventoryContainerType Type { get; init; }
+    }
 }

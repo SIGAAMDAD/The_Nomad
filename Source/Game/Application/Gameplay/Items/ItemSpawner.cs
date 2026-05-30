@@ -21,26 +21,31 @@ using Nomad.EngineUtils;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Events.Items;
 using Nomad.Game.Prefabs;
+using Nomad.Game.Sdk.Gameplay;
 
 namespace Nomad.Game.Application.Gameplay.Items
 {
 	internal sealed class ItemSpawner : IItemSpawnService
 	{
-		private const string PickupPrefabPath = "Assets/Prefabs/ItemPickup/PickupRoot.tscn";
+		private const string PICKUP_PREFAB_PATH = "Assets/Prefabs/ItemPickup/PickupRoot.tscn";
 
 		private readonly ISceneManager _sceneManager;
 		private readonly IItemCatalog _catalog;
 		private readonly IDisposable _itemSpawnRequested;
+		private readonly INomadBehaviorRegistry _behaviorRegistry;
 
 		private bool _isDisposed = false;
 
 		public IGameEvent<ItemSpawnRequestEventArgs> ItemSpawnRequest => _itemSpawnRequest;
 		private readonly IGameEvent<ItemSpawnRequestEventArgs> _itemSpawnRequest = null;
 
-		public ItemSpawner( ISceneManager sceneManager, IItemCatalog catalog, IGameEventRegistryService eventFactory )
+		public ItemSpawner( ISceneManager sceneManager, IItemCatalog catalog, INomadBehaviorRegistry behaviorRegistry, IGameEventRegistryService eventFactory )
 		{
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
+			_behaviorRegistry = behaviorRegistry ?? throw new ArgumentNullException( nameof( behaviorRegistry ) );
+
+			ArgumentNullException.ThrowIfNull( eventFactory );
 
 			_itemSpawnRequest = eventFactory.GetEvent<ItemSpawnRequestEventArgs>(
 				ItemSpawnRequestEventArgs.Name,
@@ -71,7 +76,7 @@ namespace Nomad.Game.Application.Gameplay.Items
 				return;
 			}
 
-			var packedScene = ResourceLoader.Load<PackedScene>( $"res://{PickupPrefabPath}" );
+			var packedScene = ResourceLoader.Load<PackedScene>( $"res://{PICKUP_PREFAB_PATH}" );
 			var pickup = packedScene.Instantiate<PickupRoot>();
 			pickup.Configure( args.ItemId, args.Amount );
 

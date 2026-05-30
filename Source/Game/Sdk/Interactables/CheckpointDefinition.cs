@@ -17,10 +17,10 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	public sealed record CheckpointDefinition
-	{
-		public CheckpointDefinitionId Id { get; init; }
-		public InternString DisplayName { get; init; }
-		public bool IsTemporary { get; init; }
-	}
+    public sealed record CheckpointDefinition
+    {
+        public CheckpointDefinitionId Id { get; init; }
+        public InternString DisplayName { get; init; }
+        public bool IsTemporary { get; init; }
+    }
 }

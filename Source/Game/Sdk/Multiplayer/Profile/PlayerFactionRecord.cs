@@ -17,43 +17,43 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record PlayerFactionRecord
-	{
-		public FactionId FactionId { get; init; }
+    public sealed record PlayerFactionRecord
+    {
+        public FactionId FactionId { get; init; }
 
-		/// <summary>
-		/// Faction reputation points.
-		/// Increased by representing the faction, completing faction contracts,
-		/// and completing non-member contracts at reduced standing gain.
-		/// </summary>
-		public ulong Standing { get; init; }
+        /// <summary>
+        /// Faction reputation points.
+        /// Increased by representing the faction, completing faction contracts,
+        /// and completing non-member contracts at reduced standing gain.
+        /// </summary>
+        public ulong Standing { get; init; }
 
-		/// <summary>
-		/// Rank index inside this faction's reward track.
-		/// Example: GnG Chicken -> Jockey -> Golden Boy -> Mercenary Master.
-		/// </summary>
-		public byte RankIndex { get; init; }
+        /// <summary>
+        /// Rank index inside this faction's reward track.
+        /// Example: GnG Chicken -> Jockey -> Golden Boy -> Mercenary Master.
+        /// </summary>
+        public byte RankIndex { get; init; }
 
-		/// <summary>
-		/// Derived from RankIndex or Standing.
-		/// Used only for faction reward gates, not global player level.
-		/// </summary>
-		public MercTier MercTier { get; init; }
+        /// <summary>
+        /// Derived from RankIndex or Standing.
+        /// Used only for faction reward gates, not global player level.
+        /// </summary>
+        public MercTier MercTier { get; init; }
 
-		/// <summary>
-		/// Weekly faction contract currently accepted from this faction.
-		/// Null if none.
-		/// </summary>
-		public ActiveWeeklyContractRecord? ActiveWeeklyContract { get; init; }
+        /// <summary>
+        /// Weekly faction contract currently accepted from this faction.
+        /// Null if none.
+        /// </summary>
+        public ActiveWeeklyContractRecord? ActiveWeeklyContract { get; init; }
 
-		/// <summary>
-		/// Last weekly contract completed for this faction.
-		/// Useful for preventing repeat reward exploits.
-		/// </summary>
-		public string? LastCompletedWeeklyContractId { get; init; }
+        /// <summary>
+        /// Last weekly contract completed for this faction.
+        /// Useful for preventing repeat reward exploits.
+        /// </summary>
+        public string? LastCompletedWeeklyContractId { get; init; }
 
-		public DateTimeOffset? JoinedAtUtc { get; init; }
+        public DateTimeOffset? JoinedAtUtc { get; init; }
 
-		public DateTimeOffset? LastContractCompletedAtUtc { get; init; }
-	}
+        public DateTimeOffset? LastContractCompletedAtUtc { get; init; }
+    }
 }

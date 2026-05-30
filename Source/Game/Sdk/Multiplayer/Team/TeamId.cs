@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Team
 {
-	public enum TeamId : byte
-	{
-		None = 0,
-		Spectator,
-		Red,
-		Blue,
+    public enum TeamId : byte
+    {
+        None = 0,
+        Spectator,
+        Red,
+        Blue,
 
-		Count
-	}
+        Count
+    }
 }

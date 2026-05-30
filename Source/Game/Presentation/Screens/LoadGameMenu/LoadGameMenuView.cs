@@ -17,7 +17,6 @@ using Godot;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Save.Services;
 using Nomad.Save.ValueObjects;
-using Nomad.UI;
 using System;
 
 namespace Nomad.Game.Presentation.Screens.LoadGameMenu
@@ -33,11 +32,16 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 	///
 	/// </summary>
 
-	public partial class LoadGameMenuView : Control
+	internal sealed partial class LoadGameMenuView : Control
 	{
 		public event Action<int> SlotSelected;
 		public event Action Back;
 		public event Action LoadSlot;
+		public event Action DeleteSlot;
+
+		private Label _nameLabel;
+		private Label _difficultyLabel;
+		private Label _lastAccessedTime;
 
 		private VBoxContainer _slotList;
 
@@ -51,13 +55,30 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="metadata"></param>
-		public void AddSlot( SaveFileMetadata metadata )
+		/// <param name="slotName"></param>
+		/// <param name="slotIndex"></param>
+		public void AddSlot( string slotName, int slotIndex )
 		{
 			NomadButton button = new NomadButton() {
-				Text = $"{metadata.SaveName} {metadata.LastAccessDay}:{metadata.LastAccessMonth}:{metadata.LastAccessYear}"
+				Text = slotName
 			};
+			button.Pressed += () => SlotSelected?.Invoke( slotIndex );
 			_slotList.AddChild( button );
+		}
+
+		public void SetSlotName( string name )
+		{
+			_nameLabel.Text = name;
+		}
+
+		public void SetSlotDifficulty( string difficulty )
+		{
+			_difficultyLabel.Text = difficulty;
+		}
+
+		public void SetLastAccessedTime( string time )
+		{
+			_lastAccessedTime.Text = time;
 		}
 
 		/*
@@ -72,10 +93,31 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		{
 			base._Ready();
 
-			_slotList = GetNode<VBoxContainer>( "MarginContainer/ScrollContainer/SlotList" );
+			_slotList = GetNode<VBoxContainer>( "MarginContainer/HBoxContainer/ScrollContainer/SlotList" );
+			GetNode<Button>( "ButtonContainer/BackButton" ).Pressed += () => Back?.Invoke();
+			GetNode<Button>( "ButtonContainer/DeleteSlotButton" ).Pressed += () => DeleteSlot?.Invoke();
+			GetNode<Button>( "ButtonContainer/LoadSlotButton" ).Pressed += () => LoadSlot?.Invoke();
 
-			var dataProvider = ServiceLocator.GetService<ISaveDataProvider>();
-			_presenter = new LoadGameMenuPresenter( this, new LoadGameMenuModel( dataProvider ), dataProvider );
+			_nameLabel = GetNode<Label>( "MarginContainer/HBoxContainer/InfoContainer/NameLabel" );
+			_difficultyLabel = GetNode<Label>( "MarginContainer/HBoxContainer/InfoContainer/DifficultyLabel" );
+			_lastAccessedTime = GetNode<Label>( "MarginContainer/HBoxContainer/InfoContainer/LastAccessedDate" );
+
+			_presenter = ScreenPresenterFactory.CreateLoadGameMenuPresenter( this );
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_presenter.Dispose();
 		}
 	};
 };

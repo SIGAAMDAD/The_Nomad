@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum FactionId
-	{
-		None,
+    public enum FactionId
+    {
+        None,
 
-		GunsNGrenades,
-		SwordsOfSortior,
-		BloodMoonCult,
-		HalliganGang,
-		AbazanFederation,
-		GalakanOligarchy
-	}
+        GunsNGrenades,
+        SwordsOfSortior,
+        BloodMoonCult,
+        HalliganGang,
+        AbazanFederation,
+        GalakanOligarchy
+    }
 }

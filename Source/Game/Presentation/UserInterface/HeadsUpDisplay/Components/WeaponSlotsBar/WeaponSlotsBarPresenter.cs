@@ -120,7 +120,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Weapon
 				return;
 			}
 
-			if ( !_itemCatalog.TryGet<WeaponDefinition>( instanceId, out var instance ) ) {
+			if ( !_itemCatalog.TryGet( instanceId, out var instance ) ) {
 				return;
 			}
 

@@ -18,16 +18,16 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public sealed record BiomeDefinition
-	{
-		public InternString Id { get; init; }
-		public InternString DisplayName { get; init; }
-		public InternString JournalEntryId { get; init; }
-		public InternString WikiEntryId { get; init; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed record BiomeDefinition
+    {
+        public InternString Id { get; init; }
+        public InternString DisplayName { get; init; }
+        public InternString JournalEntryId { get; init; }
+        public InternString WikiEntryId { get; init; }
 
-		public IReadOnlyList<InternString> Meliora { get; init; }
-	}
+        public IReadOnlyList<InternString> Meliora { get; init; }
+    }
 }

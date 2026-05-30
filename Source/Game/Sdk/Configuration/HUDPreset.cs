@@ -15,31 +15,31 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	/// <summary>
-	/// The amount of the Heads Up Display that is shown during gameplay
-	/// </summary>
-	public enum HUDPreset : uint
-	{
-		/// <summary>
-		/// Everything is shown at all times.
-		/// </summary>
-		Full,
+    /// <summary>
+    /// The amount of the Heads Up Display that is shown during gameplay
+    /// </summary>
+    public enum HUDPreset : uint
+    {
+        /// <summary>
+        /// Everything is shown at all times.
+        /// </summary>
+        Full,
 
-		/// <summary>
-		/// Elements are only shown when they are being used then fade away after a short delay.
-		/// </summary>
-		Partial,
+        /// <summary>
+        /// Elements are only shown when they are being used then fade away after a short delay.
+        /// </summary>
+        Partial,
 
-		/// <summary>
-		/// The HUD is completely hidden.
-		/// </summary>
-		Hidden,
+        /// <summary>
+        /// The HUD is completely hidden.
+        /// </summary>
+        Hidden,
 
-		/// <summary>
-		/// Custom setup that the user can configure.
-		/// </summary>
-		Custom,
+        /// <summary>
+        /// Custom setup that the user can configure.
+        /// </summary>
+        Custom,
 
-		Count
-	}
+        Count
+    }
 }

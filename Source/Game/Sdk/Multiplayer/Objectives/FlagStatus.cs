@@ -15,21 +15,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Objectives
 {
-	public enum FlagStatus : byte
-	{
-		/// <summary>
-		/// At homebase, safe and sound.
-		/// </summary>
-		Home,
+    public enum FlagStatus : byte
+    {
+        /// <summary>
+        /// At homebase, safe and sound.
+        /// </summary>
+        Home,
 
-		/// <summary>
-		/// The flag has been picked up by a player and is being carried.
-		/// </summary>
-		Taken,
+        /// <summary>
+        /// The flag has been picked up by a player and is being carried.
+        /// </summary>
+        Taken,
 
-		/// <summary>
-		/// The flag has been dropped and is waiting to be returned to homebase.
-		/// </summary>
-		Unclaimed
-	}
+        /// <summary>
+        /// The flag has been dropped and is waiting to be returned to homebase.
+        /// </summary>
+        Unclaimed
+    }
 }

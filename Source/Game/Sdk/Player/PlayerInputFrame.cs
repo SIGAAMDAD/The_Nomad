@@ -18,115 +18,115 @@ using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/*
+    /*
 	===================================================================================
 
 	PlayerInputFrame
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// A compact, serializable snapshot of one player's gameplay input for a single
-	/// network/game tick.
-	/// </summary>
+    /// <summary>
+    /// A compact, serializable snapshot of one player's gameplay input for a single
+    /// network/game tick.
+    /// </summary>
 
-	public readonly struct PlayerInputFrame
-	{
-		public static readonly PlayerInputFrame Empty = new PlayerInputFrame(
-			PlayerId.Invalid,
-			0,
-			0,
-			Vector2.Zero,
-			Vector2.Zero,
-			0.0f,
-			PlayerInputButtons.None,
-			PlayerInputButtons.None
-		);
+    public readonly struct PlayerInputFrame
+    {
+        public static readonly PlayerInputFrame Empty = new PlayerInputFrame(
+            PlayerId.Invalid,
+            0,
+            0,
+            Vector2.Zero,
+            Vector2.Zero,
+            0.0f,
+            PlayerInputButtons.None,
+            PlayerInputButtons.None
+        );
 
-		public readonly PlayerId PlayerId;
-		public readonly uint Tick;
-		public readonly ushort Sequence;
-		public readonly Vector2 Move;
-		public readonly Vector2 AimDirection;
-		public readonly float AimAngle;
-		public readonly PlayerInputButtons ButtonsDown;
-		public readonly PlayerInputButtons ButtonsPressed;
+        public readonly PlayerId PlayerId;
+        public readonly uint Tick;
+        public readonly ushort Sequence;
+        public readonly Vector2 Move;
+        public readonly Vector2 AimDirection;
+        public readonly float AimAngle;
+        public readonly PlayerInputButtons ButtonsDown;
+        public readonly PlayerInputButtons ButtonsPressed;
 
-		public bool IsMoving => Move.LengthSquared() > 0.0001f;
-		public bool SlidePressed => IsPressed( PlayerInputButtons.Slide );
-		public bool SlideDown => IsDown( PlayerInputButtons.Slide );
+        public bool IsMoving => Move.LengthSquared() > 0.0001f;
+        public bool SlidePressed => IsPressed(PlayerInputButtons.Slide);
+        public bool SlideDown => IsDown(PlayerInputButtons.Slide);
 
-		public PlayerInputFrame(
-			PlayerId playerId,
-			uint tick,
-			ushort sequence,
-			Vector2 move,
-			Vector2 aimDirection,
-			float aimAngle,
-			PlayerInputButtons buttonsDown,
-			PlayerInputButtons buttonsPressed
-		)
-		{
-			PlayerId = playerId;
-			Tick = tick;
-			Sequence = sequence;
-			Move = move;
-			AimDirection = aimDirection;
-			AimAngle = aimAngle;
-			ButtonsDown = buttonsDown;
-			ButtonsPressed = buttonsPressed;
-		}
+        public PlayerInputFrame(
+            PlayerId playerId,
+            uint tick,
+            ushort sequence,
+            Vector2 move,
+            Vector2 aimDirection,
+            float aimAngle,
+            PlayerInputButtons buttonsDown,
+            PlayerInputButtons buttonsPressed
+        )
+        {
+            PlayerId = playerId;
+            Tick = tick;
+            Sequence = sequence;
+            Move = move;
+            AimDirection = aimDirection;
+            AimAngle = aimAngle;
+            ButtonsDown = buttonsDown;
+            ButtonsPressed = buttonsPressed;
+        }
 
-		public bool IsDown( PlayerInputButtons button )
-		{
-			return (ButtonsDown & button) != 0;
-		}
+        public bool IsDown(PlayerInputButtons button)
+        {
+            return (ButtonsDown & button) != 0;
+        }
 
-		public bool IsPressed( PlayerInputButtons button )
-		{
-			return (ButtonsPressed & button) != 0;
-		}
+        public bool IsPressed(PlayerInputButtons button)
+        {
+            return (ButtonsPressed & button) != 0;
+        }
 
-		public PlayerInputFrame WithPeer( PlayerId playerId )
-		{
-			return new PlayerInputFrame(
-				playerId,
-				Tick,
-				Sequence,
-				Move,
-				AimDirection,
-				AimAngle,
-				ButtonsDown,
-				ButtonsPressed
-			);
-		}
+        public PlayerInputFrame WithPeer(PlayerId playerId)
+        {
+            return new PlayerInputFrame(
+                playerId,
+                Tick,
+                Sequence,
+                Move,
+                AimDirection,
+                AimAngle,
+                ButtonsDown,
+                ButtonsPressed
+            );
+        }
 
-		public PlayerInputFrame WithTick( uint tick )
-		{
-			return new PlayerInputFrame(
-				PlayerId,
-				tick,
-				Sequence,
-				Move,
-				AimDirection,
-				AimAngle,
-				ButtonsDown,
-				ButtonsPressed
-			);
-		}
+        public PlayerInputFrame WithTick(uint tick)
+        {
+            return new PlayerInputFrame(
+                PlayerId,
+                tick,
+                Sequence,
+                Move,
+                AimDirection,
+                AimAngle,
+                ButtonsDown,
+                ButtonsPressed
+            );
+        }
 
-		public PlayerInputFrame WithoutTransientButtons( uint tick )
-		{
-			return new PlayerInputFrame(
-				PlayerId,
-				tick,
-				Sequence,
-				Move,
-				AimDirection,
-				AimAngle,
-				ButtonsDown,
-				PlayerInputButtons.None
-			);
-		}
-	}
+        public PlayerInputFrame WithoutTransientButtons(uint tick)
+        {
+            return new PlayerInputFrame(
+                PlayerId,
+                tick,
+                Sequence,
+                Move,
+                AimDirection,
+                AimAngle,
+                ButtonsDown,
+                PlayerInputButtons.None
+            );
+        }
+    }
 }

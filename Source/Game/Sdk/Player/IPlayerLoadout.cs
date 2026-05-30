@@ -19,18 +19,18 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IPlayerLoadout : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		IGameEvent<RuneEquippedEventArgs> RuneEquipped { get; }
+    public interface IPlayerLoadout : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        IGameEvent<RuneEquippedEventArgs> RuneEquipped { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		IGameEvent<RuneUnequippedEventArgs> RuneUnequipped { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        IGameEvent<RuneUnequippedEventArgs> RuneUnequipped { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		IGameEvent<TotemEquippedEventArgs> TotemEquipped { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        IGameEvent<TotemEquippedEventArgs> TotemEquipped { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		IGameEvent<TotemUnequippedEventArgs> TotemUnequipped { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        IGameEvent<TotemUnequippedEventArgs> TotemUnequipped { get; }
+    }
 }

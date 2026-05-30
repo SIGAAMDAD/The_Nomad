@@ -21,44 +21,44 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IPlayerResourceService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerResourceChangedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldValue", typeof( float ), Order = 2 )]
-		[EventPayload( "NewValue", typeof( float ), Order = 3 )]
-		[EventPayload( "Resource", typeof( PlayerResourceType ), Order = 4 )]
-		IGameEvent<PlayerResourceChangedEventArgs> ResourceChanged { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IPlayerResourceService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerResourceChangedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldValue", typeof(float), Order = 2)]
+        [EventPayload("NewValue", typeof(float), Order = 3)]
+        [EventPayload("Resource", typeof(PlayerResourceType), Order = 4)]
+        IGameEvent<PlayerResourceChangedEventArgs> ResourceChanged { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		float GetValue( PlayerResourceType type );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        float GetValue(PlayerResourceType type);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="value"></param>
-		void SetValue( PlayerResourceType type, float value );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        void SetValue(PlayerResourceType type, float value);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="delta"></param>
-		void AddValue( PlayerResourceType type, float delta );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="delta"></param>
+        void AddValue(PlayerResourceType type, float delta);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		float GetMaxValue( PlayerResourceType type );
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        float GetMaxValue(PlayerResourceType type);
+    }
 }

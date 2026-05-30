@@ -17,8 +17,8 @@ using System.Collections.Generic;
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public sealed record PlayerStatBlockDefinition
-	{
-		public Dictionary<BaseStatType, float> BaseStats { get; init; } = new();
-	}
+    public sealed record PlayerStatBlockDefinition
+    {
+        public Dictionary<BaseStatType, float> BaseStats { get; init; } = new();
+    }
 }

@@ -24,41 +24,41 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IBackpackService : IItemInstance<ItemDefinition>, IStorageUnit, IDisposable
-	{
-		Vector2 DroppedOrigin { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IBackpackService : IItemInstance, IStorageUnit, IDisposable
+    {
+        Vector2 DroppedOrigin { get; }
 
-		BackpackLocationKind LocationKind { get; }
-		EntityId LocationEntityId { get; }
+        BackpackLocationKind LocationKind { get; }
+        EntityId LocationEntityId { get; }
 
-		IStorageUnit Storage { get; }
+        IStorageUnit Storage { get; }
 
-		BackpackStatus Status { get; }
+        BackpackStatus Status { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackStatusChangedEventArgs" )]
-		[EventPayload( "PreviousStatus", typeof( BackpackStatus ), Order = 1 )]
-		[EventPayload( "CurrentStatus", typeof( BackpackStatus ), Order = 2 )]
-		IGameEvent<BackpackStatusChangedEventArgs> StateChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackStatusChangedEventArgs")]
+        [EventPayload("PreviousStatus", typeof(BackpackStatus), Order = 1)]
+        [EventPayload("CurrentStatus", typeof(BackpackStatus), Order = 2)]
+        IGameEvent<BackpackStatusChangedEventArgs> StateChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackUnequipRequestedEventArgs" )]
-		IGameEvent<BackpackUnequipRequestedEventArgs> UnequipRequested { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackUnequipRequestedEventArgs")]
+        IGameEvent<BackpackUnequipRequestedEventArgs> UnequipRequested { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackUnequippedEventArgs" )]
-		IGameEvent<BackpackUnequippedEventArgs> Unequipped { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "BackpackUnequippedEventArgs")]
+        IGameEvent<BackpackUnequippedEventArgs> Unequipped { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		bool TryEquip();
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        bool TryEquip();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		bool TryUnequip();
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        bool TryUnequip();
+    }
 }

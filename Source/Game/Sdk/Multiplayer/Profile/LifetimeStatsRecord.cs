@@ -15,18 +15,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record LifetimeStatsRecord
-	{
-		public uint MatchesPlayed { get; init; }
-		public uint MatchesWon { get; init; }
-		public uint MatchesLost { get; init; }
-		public uint MatchesAbandoned { get; init; }
-		public uint MvpAwards { get; init; }
+    public sealed record LifetimeStatsRecord
+    {
+        public uint MatchesPlayed { get; init; }
+        public uint MatchesWon { get; init; }
+        public uint MatchesLost { get; init; }
+        public uint MatchesAbandoned { get; init; }
+        public uint MvpAwards { get; init; }
 
-		public ulong TotalScore { get; init; }
-		public ulong TotalMercenaryXpEarned { get; init; }
-		public ulong TotalFactionStandingEarned { get; init; }
+        public ulong TotalScore { get; init; }
+        public ulong TotalMercenaryXpEarned { get; init; }
+        public ulong TotalFactionStandingEarned { get; init; }
 
-		public float WinRate => MatchesPlayed == 0 ? 0f : (float)MatchesWon / MatchesPlayed;
-	}
+        public float WinRate => MatchesPlayed == 0 ? 0f : (float)MatchesWon / MatchesPlayed;
+    }
 }

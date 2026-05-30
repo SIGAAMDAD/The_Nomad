@@ -15,59 +15,59 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public interface IDashModule
-	{
-		/// <summary>
-		/// The name of this dash module/upgrade.
-		/// </summary>
-		string Name { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IDashModule
+    {
+        /// <summary>
+        /// The name of this dash module/upgrade.
+        /// </summary>
+        string Name { get; }
 
-		/// <summary>
-		/// The upgrade's description.
-		/// </summary>
-		string Description { get; }
+        /// <summary>
+        /// The upgrade's description.
+        /// </summary>
+        string Description { get; }
 
-		/// <summary>
-		/// The maximum amount of burnout that is allowed before overcharge.
-		/// </summary>
-		float BurnoutMax { get; }
+        /// <summary>
+        /// The maximum amount of burnout that is allowed before overcharge.
+        /// </summary>
+        float BurnoutMax { get; }
 
-		/// <summary>
-		/// How much burnout accumulates per usage of the jumpkit.
-		/// </summary>
-		float DashBurnoutIncrease { get; }
+        /// <summary>
+        /// How much burnout accumulates per usage of the jumpkit.
+        /// </summary>
+        float DashBurnoutIncrease { get; }
 
-		/// <summary>
-		/// The amount of time in milliseconds that each dash gets.
-		/// </summary>
-		float DashDuration { get; }
+        /// <summary>
+        /// The amount of time in milliseconds that each dash gets.
+        /// </summary>
+        float DashDuration { get; }
 
-		/// <summary>
-		/// The amount of time before the dashkit cools down after being used.
-		/// </summary>
-		float BurnoutCooldown { get; }
+        /// <summary>
+        /// The amount of time before the dashkit cools down after being used.
+        /// </summary>
+        float BurnoutCooldown { get; }
 
-		/// <summary>
-		/// The cooldown length after an overcharge before the dashkit can be used again.
-		/// </summary>
-		float BurnoutResetDuration { get; }
+        /// <summary>
+        /// The cooldown length after an overcharge before the dashkit can be used again.
+        /// </summary>
+        float BurnoutResetDuration { get; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		float DashVelocity { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        float DashVelocity { get; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		int BaseIFrames { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        int BaseIFrames { get; }
 
-		/// <summary>
-		/// The module's audio pitch curve.
-		/// </summary>
-		float EnginePitchPerChain { get; }
-	}
+        /// <summary>
+        /// The module's audio pitch curve.
+        /// </summary>
+        float EnginePitchPerChain { get; }
+    }
 }

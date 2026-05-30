@@ -18,29 +18,29 @@ using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/*
+    /*
 	===================================================================================
 
 	RuneBehavior
 
 	===================================================================================
 	*/
-	/// <summary>
-	///
-	/// </summary>
+    /// <summary>
+    ///
+    /// </summary>
 
-	public abstract class RuneBehavior
-	{
-		protected readonly IPlayerDerivedStatService derivedStatService;
-		protected readonly IPlayerResourceService resourceService;
+    public abstract class RuneBehavior
+    {
+        protected readonly IPlayerDerivedStatService derivedStatService;
+        protected readonly IPlayerResourceService resourceService;
 
-		public RuneBehavior( IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService )
-		{
-			this.derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
-			this.resourceService = resourceService ?? throw new ArgumentNullException( nameof( resourceService ) );
-		}
+        public RuneBehavior(IPlayerDerivedStatService derivedStatService, IPlayerResourceService resourceService)
+        {
+            this.derivedStatService = derivedStatService ?? throw new ArgumentNullException(nameof(derivedStatService));
+            this.resourceService = resourceService ?? throw new ArgumentNullException(nameof(resourceService));
+        }
 
-		public abstract void Activate();
-		public abstract void Deactivate();
-	}
+        public abstract void Activate();
+        public abstract void Deactivate();
+    }
 }

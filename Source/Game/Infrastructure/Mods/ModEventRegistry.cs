@@ -38,10 +38,19 @@ namespace Nomad.Game.Infrastructure.Mods
 		private int _publishesThisFrame = 0;
 		private bool _isDisposed = false;
 
-		public ModEventRegistry( IGameEventRegistryService eventFactory, ModSecurityPolicy policy, IEnumerable<string> allowedGameEventKeys )
+		public ModEventRegistry(
+			ModuleManifest identity,
+			IGameEventRegistryService eventFactory,
+			IModDiagnostics diagnostics,
+			ModSecurityPolicy policy,
+			IEnumerable<string> allowedGameEventKeys
+		)
 		{
+			_identity = identity ?? throw new ArgumentNullException( nameof( identity ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+			_diagnostics = diagnostics ?? throw new ArgumentNullException( nameof( diagnostics ) );
 			_policy = policy ?? throw new ArgumentNullException( nameof( policy ) );
+			_subscriptions = new SubscriptionScope();
 
 			foreach ( var key in allowedGameEventKeys ) {
 				_allowedGameEvents.Add( key );

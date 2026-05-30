@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Renown
 {
-	public enum RenownTier : byte
-	{
-		WhisperInTheWinds = 0,
-		TavernTalk,
-		HeroFromTheHills,
-		LocalLegend,
-		WanderingWarrior,
-		TheNomad,
+    public enum RenownTier : byte
+    {
+        WhisperInTheWinds = 0,
+        TavernTalk,
+        HeroFromTheHills,
+        LocalLegend,
+        WanderingWarrior,
+        TheNomad,
 
-		Count
-	}
+        Count
+    }
 }

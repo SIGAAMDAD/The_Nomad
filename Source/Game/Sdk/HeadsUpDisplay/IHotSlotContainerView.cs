@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IHotSlotContainerView : IHudComponentView
-	{
-		void SetSelectedHotSlot( int index );
-		void FadeOut( float fadeOutSpeedSeconds = 1.0f );
-	}
+    public interface IHotSlotContainerView : IHudComponentView
+    {
+        void SetSelectedHotSlot(int index);
+        void FadeOut(float fadeOutSpeedSeconds = 1.0f);
+    }
 }

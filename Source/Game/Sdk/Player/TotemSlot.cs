@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public sealed class TotemSlot
-	{
+    public sealed class TotemSlot
+    {
 
-	}
+    }
 }

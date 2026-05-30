@@ -15,29 +15,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/// <summary>
-	/// The relation of the player to an interactable object.
-	/// </summary>
-	public enum PlayerInteractionStatus : byte
-	{
-		/// <summary>
-		/// Player is not within processing range.
-		/// </summary>
-		None,
+    /// <summary>
+    /// The relation of the player to an interactable object.
+    /// </summary>
+    public enum PlayerInteractionStatus : byte
+    {
+        /// <summary>
+        /// Player is not within processing range.
+        /// </summary>
+        None,
 
-		/// <summary>
-		/// In range to show the "Press [button] to interact" prompt.
-		/// </summary>
-		InRange,
+        /// <summary>
+        /// In range to show the "Press [button] to interact" prompt.
+        /// </summary>
+        InRange,
 
-		/// <summary>
-		/// The player is currently interacting with the object.
-		/// </summary>
-		Interacting,
+        /// <summary>
+        /// The player is currently interacting with the object.
+        /// </summary>
+        Interacting,
 
-		/// <summary>
-		/// The number of interaction statuses.
-		/// </summary>
-		Count
-	}
+        /// <summary>
+        /// The number of interaction statuses.
+        /// </summary>
+        Count
+    }
 }

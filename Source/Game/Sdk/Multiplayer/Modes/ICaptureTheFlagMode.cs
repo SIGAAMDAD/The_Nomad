@@ -23,28 +23,28 @@ using Nomad.Game.Sdk.Events.Multiplayer;
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface ICaptureTheFlagMode : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer" )]
-		[EventPayload( "PeerId", typeof( PeerId ), Order = 1 )]
-		[EventPayload( "PreviousStatus", typeof( FlagStatus ), Order = 2 )]
-		[EventPayload( "CurrentStatus", typeof( FlagStatus ), Order = 3 )]
-		IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface ICaptureTheFlagMode : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer")]
+        [EventPayload("PeerId", typeof(PeerId), Order = 1)]
+        [EventPayload("PreviousStatus", typeof(FlagStatus), Order = 2)]
+        [EventPayload("CurrentStatus", typeof(FlagStatus), Order = 3)]
+        IGameEvent<FlagStatusChangedEventArgs> FlagStatusChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer" )]
-		IGameEvent<CTFRoundBeginEventArgs> CTFRoundBegin { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer")]
+        IGameEvent<CTFRoundBeginEventArgs> CTFRoundBegin { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer" )]
-		IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer")]
+        IGameEvent<CTFRoundEndEventArgs> CTFRoundEnd { get; }
 
-		CaptureTheFlagSnapshot Snapshot { get; }
+        CaptureTheFlagSnapshot Snapshot { get; }
 
-		bool TryBeginRound();
-		bool TryEndRound( CaptureTheFlagRoundEndReason reason );
+        bool TryBeginRound();
+        bool TryEndRound(CaptureTheFlagRoundEndReason reason);
 
-		bool TryGetTeamScore( TeamId teamId, out int score );
-	}
+        bool TryGetTeamScore(TeamId teamId, out int score);
+    }
 }

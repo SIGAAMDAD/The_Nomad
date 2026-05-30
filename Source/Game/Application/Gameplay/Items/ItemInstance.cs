@@ -17,12 +17,9 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Game.Application.Gameplay.Entity;
 using Nomad.Game.Sdk.Entities;
-using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Events.Items;
 using Nomad.Game.Sdk.Inventory;
 using Nomad.Game.Sdk.Items;
-using Nomad.Save.Interfaces;
-using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.Items
 {
@@ -37,7 +34,7 @@ namespace Nomad.Game.Application.Gameplay.Items
 	///
 	/// </summary>
 
-	internal abstract class ItemInstance : EntityBase, IItemInstance<ItemDefinition>
+	internal abstract class ItemInstance : EntityBase, IItemInstance
 	{
 		public ItemType BaseType => _definition.BaseType;
 

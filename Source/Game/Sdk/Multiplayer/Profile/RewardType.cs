@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum RewardType : byte
-	{
-		Cosmetic,
-		Badge,
-		Emblem,
-		Banner,
-		WeaponSkin,
-		ArmorDye,
-		ProfileFrame
-	}
+    public enum RewardType : byte
+    {
+        Cosmetic,
+        Badge,
+        Emblem,
+        Banner,
+        WeaponSkin,
+        ArmorDye,
+        ProfileFrame
+    }
 }

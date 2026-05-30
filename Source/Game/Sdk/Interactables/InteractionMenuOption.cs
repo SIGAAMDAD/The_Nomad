@@ -17,19 +17,19 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/// <summary>
-	/// Lightweight HUD-facing description of an interaction menu entry.
-	/// The interactable still owns execution through EntityInteractionKind.
-	/// </summary>
-	public readonly struct InteractionMenuOption
-	{
-		public readonly InternString Prompt;
-		public readonly EntityInteractionKind Kind;
+    /// <summary>
+    /// Lightweight HUD-facing description of an interaction menu entry.
+    /// The interactable still owns execution through EntityInteractionKind.
+    /// </summary>
+    public readonly struct InteractionMenuOption
+    {
+        public readonly InternString Prompt;
+        public readonly EntityInteractionKind Kind;
 
-		public InteractionMenuOption( InternString prompt, EntityInteractionKind kind )
-		{
-			Prompt = prompt;
-			Kind = kind;
-		}
-	}
+        public InteractionMenuOption(InternString prompt, EntityInteractionKind kind)
+        {
+            Prompt = prompt;
+            Kind = kind;
+        }
+    }
 }

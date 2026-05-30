@@ -34,6 +34,7 @@ layout_mode = 2
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer" unique_id=1608206486]
 use_parent_material = true
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="SlotList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ScrollContainer" unique_id=445401441]
 use_parent_material = true
@@ -42,6 +43,20 @@ size_flags_horizontal = 2
 size_flags_vertical = 3
 
 [node name="InfoContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=233836188]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer" unique_id=646752915]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/InfoContainer" unique_id=918958014]
+layout_mode = 2
+
+[node name="DifficultyLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer" unique_id=1027188038]
+layout_mode = 2
+
+[node name="LastAccessedDate" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer" unique_id=1655666779]
 layout_mode = 2
 
 [node name="ButtonContainer" type="HBoxContainer" parent="." unique_id=519372721]

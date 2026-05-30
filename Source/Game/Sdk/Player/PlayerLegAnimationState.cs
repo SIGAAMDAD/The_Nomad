@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public enum PlayerLegAnimationState : byte
-	{
-		Idle,
+    public enum PlayerLegAnimationState : byte
+    {
+        Idle,
 
-		Moving,
-		MovingSuddenStop,
+        Moving,
+        MovingSuddenStop,
 
-		Sliding,
-	}
+        Sliding,
+    }
 }

@@ -69,7 +69,7 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 				if ( _instanceRepository != null ) {
 					foreach ( var instance in _instances ) {
-						var item = _instanceRepository.Get<ItemDefinition>( instance );
+						var item = _instanceRepository.Get( instance );
 						if ( item != null ) {
 							weight += item.Definition.Weight;
 						}

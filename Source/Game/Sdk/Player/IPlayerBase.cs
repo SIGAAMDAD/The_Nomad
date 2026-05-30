@@ -20,13 +20,13 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IPlayerBase : IEntityBase
-	{
-		PlayerId PlayerId { get; }
+    public interface IPlayerBase : IEntityBase
+    {
+        PlayerId PlayerId { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDieEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "KillerId", typeof( EntityId ), Order = 2 )]
-		IGameEvent<PlayerDieEventArgs> Die { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDieEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("KillerId", typeof(EntityId), Order = 2)]
+        IGameEvent<PlayerDieEventArgs> Die { get; }
+    }
 }

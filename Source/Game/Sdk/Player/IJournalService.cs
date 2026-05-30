@@ -20,10 +20,10 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IJournalService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "JournalPageFoundEventArgs" )]
-		[EventPayload( "PageId", typeof( InternString ) )]
-		IGameEvent<JournalPageFoundEventArgs> PageFound { get; }
-	}
+    public interface IJournalService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "JournalPageFoundEventArgs")]
+        [EventPayload("PageId", typeof(InternString))]
+        IGameEvent<JournalPageFoundEventArgs> PageFound { get; }
+    }
 }

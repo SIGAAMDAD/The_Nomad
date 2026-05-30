@@ -18,17 +18,17 @@ using Nomad.Core.OnlineServices;
 
 namespace Nomad.Game.Sdk.Multiplayer.Voting
 {
-	public sealed record VoteInfo
-	{
-		public VoteId Id { get; init; }
-		public VoteKind Kind { get; init; }
-		public PeerId StartedBy { get; init; }
-		public PeerId TargetPeer { get; init; }
-		public int RequiredVotes { get; init; }
-		public int EligibleVoters { get; init; }
-		public int VotesCast { get; init; }
-		public uint Version { get; init; }
-		public DateTime StartedUtc { get; init; }
-		public DateTime EndsUtc { get; init; }
-	}
+    public sealed record VoteInfo
+    {
+        public VoteId Id { get; init; }
+        public VoteKind Kind { get; init; }
+        public PeerId StartedBy { get; init; }
+        public PeerId TargetPeer { get; init; }
+        public int RequiredVotes { get; init; }
+        public int EligibleVoters { get; init; }
+        public int VotesCast { get; init; }
+        public uint Version { get; init; }
+        public DateTime StartedUtc { get; init; }
+        public DateTime EndsUtc { get; init; }
+    }
 }

@@ -117,6 +117,7 @@ Title = "UI_SETTINGS_DISPLAY_ASPECT_RATIO"
 
 [node name="MaxFpsSlider" parent="TabContainer/Display/Basic" unique_id=233075417 instance=ExtResource("5_yx041")]
 layout_mode = 2
+offset_transform_enabled = true
 ConfigVarName = "display.MaxFps"
 Title = "UI_SETTINGS_DISPLAY_MAXIMUM_FRAMERATE"
 

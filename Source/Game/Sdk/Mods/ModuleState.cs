@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public enum ModuleState : byte
-	{
-		Discovered,
-		Validated,
-		Loaded,
-		Registered,
-		Initialized,
-		Started,
-		Stopped,
-		Unloaded,
-		Failed
-	}
+    public enum ModuleState : byte
+    {
+        Discovered,
+        Validated,
+        Loaded,
+        Registered,
+        Initialized,
+        Started,
+        Stopped,
+        Unloaded,
+        Failed
+    }
 }

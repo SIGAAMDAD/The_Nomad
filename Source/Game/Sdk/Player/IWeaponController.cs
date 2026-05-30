@@ -19,9 +19,9 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IWeaponController : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		IGameEvent<WeaponUsedEventArgs> WeaponUsed { get; }
-	}
+    public interface IWeaponController : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        IGameEvent<WeaponUsedEventArgs> WeaponUsed { get; }
+    }
 }

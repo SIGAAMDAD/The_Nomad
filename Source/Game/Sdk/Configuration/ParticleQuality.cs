@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	public enum ParticleQuality : uint
-	{
-		Low,
-		High,
+    public enum ParticleQuality : uint
+    {
+        Low,
+        High,
 
-		Count,
+        Count,
 
-		Default = Low
-	}
+        Default = Low
+    }
 }

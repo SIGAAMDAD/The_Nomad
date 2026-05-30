@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public readonly struct ReplicatedTableEntry<TKey, TValue>
-	{
-		public readonly TKey Key;
-		public readonly TValue Value;
+    public readonly struct ReplicatedTableEntry<TKey, TValue>
+    {
+        public readonly TKey Key;
+        public readonly TValue Value;
 
-		public ReplicatedTableEntry( TKey key, TValue value )
-		{
-			Key = key;
-			Value = value;
-		}
-	}
+        public ReplicatedTableEntry(TKey key, TValue value)
+        {
+            Key = key;
+            Value = value;
+        }
+    }
 }

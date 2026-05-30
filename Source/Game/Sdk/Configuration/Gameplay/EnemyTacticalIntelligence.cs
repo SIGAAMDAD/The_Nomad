@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration.Gameplay
 {
-	public enum EnemyTacticalIntelligence : byte
-	{
-		Basic,
-		Adaptive
-	}
+    public enum EnemyTacticalIntelligence : byte
+    {
+        Basic,
+        Adaptive
+    }
 }

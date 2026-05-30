@@ -55,6 +55,20 @@ namespace Nomad.Game.Application.Gameplay.Combat
 			return true;
 		}
 
+		public bool TryInstallMod( FirearmModDefinition mod )
+		{
+			if ( !CanInstallMod( mod ) ) {
+				return false;
+			}
+
+			_modSlots[ (int)mod.Slot ] = new InstalledFirearmMod(
+				mod.Slot,
+				mod.Id
+			);
+
+			return true;
+		}
+
 		private bool SupportsSlot( FirearmModSlot slot )
 		{
 			return slot switch {

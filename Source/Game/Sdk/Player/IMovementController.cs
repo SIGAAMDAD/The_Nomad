@@ -19,18 +19,18 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IMovementController
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerLocomotionCueEventArgs" )]
-		[EventPayload( "Cue", typeof( PlayerLocomotionCue ), Order = 1 )]
-		[EventPayload( "OldVelocity", typeof( Vector2 ), Order = 2 )]
-		[EventPayload( "NewVelocity", typeof( Vector2 ), Order = 3 )]
-		[EventPayload( "IsMoving", typeof( bool ), Order = 4 )]
-		[EventPayload( "MoveInput", typeof( Vector2 ), Order = 5 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 6 )]
-		IGameEvent<PlayerLocomotionCueEventArgs> LocomotionCue { get; }
-	}
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IMovementController
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerLocomotionCueEventArgs")]
+        [EventPayload("Cue", typeof(PlayerLocomotionCue), Order = 1)]
+        [EventPayload("OldVelocity", typeof(Vector2), Order = 2)]
+        [EventPayload("NewVelocity", typeof(Vector2), Order = 3)]
+        [EventPayload("IsMoving", typeof(bool), Order = 4)]
+        [EventPayload("MoveInput", typeof(Vector2), Order = 5)]
+        [EventPayload("ServerTick", typeof(uint), Order = 6)]
+        IGameEvent<PlayerLocomotionCueEventArgs> LocomotionCue { get; }
+    }
 }

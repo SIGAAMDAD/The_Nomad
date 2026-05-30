@@ -15,12 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.JumpKit
 {
-	public enum DashStartStatus : byte
-	{
-		Rejected,
-		Started,
-		BurnedOut,
+    public enum DashStartStatus : byte
+    {
+        Rejected,
+        Started,
+        BurnedOut,
 
-		Count
-	}
+        Count
+    }
 }

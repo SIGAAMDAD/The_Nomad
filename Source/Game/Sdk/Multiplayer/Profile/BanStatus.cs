@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum BanStatus
-	{
-		Active,
-		UnderReview,
-		Revoked
-	}
+    public enum BanStatus
+    {
+        Active,
+        UnderReview,
+        Revoked
+    }
 }

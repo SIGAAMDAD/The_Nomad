@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	public readonly struct DuelInstanceData
-	{
-		public byte Player1Score { get; init; }
-		public byte Player2Score { get; init; }
-		public byte RoundIndex { get; init; }
-	}
+    public readonly struct DuelInstanceData
+    {
+        public byte Player1Score { get; init; }
+        public byte Player2Score { get; init; }
+        public byte RoundIndex { get; init; }
+    }
 }

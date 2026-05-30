@@ -17,9 +17,9 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record FactionDefinition
-	{
-		public InternString Name { get; init; }
-		public InternString Description { get; init; }
-	}
+    public sealed record FactionDefinition
+    {
+        public InternString Name { get; init; }
+        public InternString Description { get; init; }
+    }
 }

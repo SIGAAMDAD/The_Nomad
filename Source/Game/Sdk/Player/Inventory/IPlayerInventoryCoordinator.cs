@@ -18,17 +18,17 @@ using Nomad.Game.Sdk.Inventory;
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	public interface IPlayerInventoryCoordinator : IInventoryCoordinator
-	{
-		IBackpackService Backpack { get; }
-		IWeaponSlotService WeaponSlots { get; }
+    public interface IPlayerInventoryCoordinator : IInventoryCoordinator
+    {
+        IBackpackService Backpack { get; }
+        IWeaponSlotService WeaponSlots { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="firearm"></param>
-		/// <returns></returns>
-		bool TryGetFirearm( ItemInstanceId itemId, out FirearmDefinition firearm );
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="firearm"></param>
+        /// <returns></returns>
+        bool TryGetFirearm(ItemInstanceId itemId, out FirearmDefinition firearm);
+    }
 }

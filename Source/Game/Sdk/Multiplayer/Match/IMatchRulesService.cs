@@ -17,28 +17,28 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public interface IMatchRulesService
-	{
-		MatchRules? Current { get; }
-		bool HasRules { get; }
+    public interface IMatchRulesService
+    {
+        MatchRules? Current { get; }
+        bool HasRules { get; }
 
-		void SetRules( MatchRules rules );
-		MatchRules CreateDefaultRules( MultiplayerMode mode, string mapId );
+        void SetRules(MatchRules rules);
+        MatchRules CreateDefaultRules(MultiplayerMode mode, string mapId);
 
-		[ResultObject( "MatchRulesValidationResult", Namespace = "Nomad.Game.Sdk.Multiplayer.Match" )]
-		[ResultObjectPayload( "Error", typeof( string ), order: 1 )]
-		[ResultObjectSuccess( MethodName = "Ok" )]
-		[ResultObjectFailure( "Error", MethodName = "Fail" )]
-		MatchRulesValidationResult ValidateOrThrow( MatchRules rules );
+        [ResultObject("MatchRulesValidationResult", Namespace = "Nomad.Game.Sdk.Multiplayer.Match")]
+        [ResultObjectPayload("Error", typeof(string), order: 1)]
+        [ResultObjectSuccess(MethodName = "Ok")]
+        [ResultObjectFailure("Error", MethodName = "Fail")]
+        MatchRulesValidationResult ValidateOrThrow(MatchRules rules);
 
-		bool IsRespawnAllowed();
-		bool IsSpectatingAllowed();
-		bool IsLateJoinAllowed();
-		bool IsFriendlyFireEnabled();
-		bool IsRanked();
-		bool IsScoreLimitReached( int score );
-		bool IsRoundLimitReached( byte roundIndex );
-		bool IsMatchTimeLimitEnabled();
-		bool IsRoundTimeLimitEnabled();
-	}
+        bool IsRespawnAllowed();
+        bool IsSpectatingAllowed();
+        bool IsLateJoinAllowed();
+        bool IsFriendlyFireEnabled();
+        bool IsRanked();
+        bool IsScoreLimitReached(int score);
+        bool IsRoundLimitReached(byte roundIndex);
+        bool IsMatchTimeLimitEnabled();
+        bool IsRoundTimeLimitEnabled();
+    }
 }

@@ -13,18 +13,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Util;
-
 namespace Nomad.Game.Sdk.Items
 {
     public readonly struct InstalledFirearmMod
     {
         public readonly FirearmModSlot Slot;
-        public readonly InternString ModId;
+        public readonly ItemDefinitionId ModId;
 
-        public bool IsValid => Slot != FirearmModSlot.None && !string.IsNullOrEmpty(ModId);
+        public bool IsValid => Slot != FirearmModSlot.None && !string.IsNullOrEmpty(ModId.ToString());
 
-        public InstalledFirearmMod(FirearmModSlot slot, InternString modId)
+        public InstalledFirearmMod(FirearmModSlot slot, ItemDefinitionId modId)
         {
             Slot = slot;
             ModId = modId;

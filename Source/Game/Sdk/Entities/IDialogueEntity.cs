@@ -19,24 +19,24 @@ using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	/*
+    /*
 	===================================================================================
 
 	IDialogueEntity
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Optional capability for entities that can initiate dialogue.
-	/// </summary>
+    /// <summary>
+    /// Optional capability for entities that can initiate dialogue.
+    /// </summary>
 
-	public interface IDialogueEntity : IInteractableEntity
-	{
-		InternString DialogueId { get; }
+    public interface IDialogueEntity : IInteractableEntity
+    {
+        InternString DialogueId { get; }
 
-		uint DialogueRevision { get; }
+        uint DialogueRevision { get; }
 
-		bool CanTalk( EntityId speakerId );
-		bool BeginDialogue( EntityId speakerId );
-	}
+        bool CanTalk(EntityId speakerId);
+        bool BeginDialogue(EntityId speakerId);
+    }
 }

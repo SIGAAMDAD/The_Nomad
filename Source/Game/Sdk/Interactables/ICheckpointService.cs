@@ -21,66 +21,66 @@ using Nomad.Game.Sdk.Entities;
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface ICheckpointService : IDisposable
-	{
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		List<ICheckpointEntity> GetActivatedCheckpoints();
+    /// <summary>
+    ///
+    /// </summary>
+    public interface ICheckpointService : IDisposable
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        List<ICheckpointEntity> GetActivatedCheckpoints();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		List<ICheckpointEntity> GetTemporaryCheckpoints();
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        List<ICheckpointEntity> GetTemporaryCheckpoints();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="checkpoint"></param>
-		/// <returns></returns>
-		bool IsPermanentCheckpoint( CheckpointInstanceId checkpoint );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="checkpoint"></param>
+        /// <returns></returns>
+        bool IsPermanentCheckpoint(CheckpointInstanceId checkpoint);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="definition"></param>
-		/// <param name="checkpoint"></param>
-		/// <returns></returns>
-		bool TryRegisterPermanent( CheckpointDefinition definition, CheckpointInstanceId checkpoint );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="definition"></param>
+        /// <param name="checkpoint"></param>
+        /// <returns></returns>
+        bool TryRegisterPermanent(CheckpointDefinition definition, CheckpointInstanceId checkpoint);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="playerId"></param>
-		/// <returns></returns>
-		bool TryCreateTemporary( PlayerId playerId, out CheckpointInstanceId checkpoint );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
+        bool TryCreateTemporary(PlayerId playerId, out CheckpointInstanceId checkpoint);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="playerId"></param>
-		/// <param name="checkpoint"></param>
-		/// <returns></returns>
-		bool TryActivateCheckpoint( PlayerId playerId, CheckpointInstanceId checkpoint );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="checkpoint"></param>
+        /// <returns></returns>
+        bool TryActivateCheckpoint(PlayerId playerId, CheckpointInstanceId checkpoint);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="playerId"></param>
-		/// <param name="checkpoint"></param>
-		/// <returns></returns>
-		bool TryRest( PlayerId playerId, CheckpointInstanceId checkpoint );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="checkpoint"></param>
+        /// <returns></returns>
+        bool TryRest(PlayerId playerId, CheckpointInstanceId checkpoint);
 
-		/// <summary>
-		/// Sends a request to the checkpoint service to attempt to leave the given PlayerId's current checkpoint.
-		/// </summary>
-		/// <param name="playerId"></param>
-		/// <returns></returns>
-		bool TryLeave( PlayerId playerId );
-	}
+        /// <summary>
+        /// Sends a request to the checkpoint service to attempt to leave the given PlayerId's current checkpoint.
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
+        bool TryLeave(PlayerId playerId);
+    }
 }

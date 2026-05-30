@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public sealed record StatusEffectModifier
-	{
-		public StatusEffectModifierTarget Target { get; init; }
-		public StatusEffectModifierOperation Operation { get; init; }
-		public float Value { get; init; }
-		public bool ScalesWithStacks { get; init; } = true;
-	}
+    public sealed record StatusEffectModifier
+    {
+        public StatusEffectModifierTarget Target { get; init; }
+        public StatusEffectModifierOperation Operation { get; init; }
+        public float Value { get; init; }
+        public bool ScalesWithStacks { get; init; } = true;
+    }
 }

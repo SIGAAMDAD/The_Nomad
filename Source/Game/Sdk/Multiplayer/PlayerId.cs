@@ -59,6 +59,11 @@ namespace Nomad.Game.Sdk.Multiplayer
             return Value.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
         public bool Equals(PlayerId other)
         {
             return Value == other.Value;

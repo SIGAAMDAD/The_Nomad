@@ -15,48 +15,48 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public enum MultiplayerMode : byte
-	{
-		None = 0,
+    public enum MultiplayerMode : byte
+    {
+        None = 0,
 
-		/// <summary>
-		/// "Bloodbath" mode.
-		/// </summary>
-		Deathmatch,
+        /// <summary>
+        /// "Bloodbath" mode.
+        /// </summary>
+        Deathmatch,
 
-		/// <summary>
-		///
-		/// </summary>
-		TeamBrawl,
+        /// <summary>
+        ///
+        /// </summary>
+        TeamBrawl,
 
-		/// <summary>
-		///
-		/// </summary>
-		KingOfTheHill,
+        /// <summary>
+        ///
+        /// </summary>
+        KingOfTheHill,
 
-		/// <summary>
-		///
-		/// </summary>
-		CaptureTheFlag,
+        /// <summary>
+        ///
+        /// </summary>
+        CaptureTheFlag,
 
-		/// <summary>
-		///
-		/// </summary>
-		BountyHunt,
+        /// <summary>
+        ///
+        /// </summary>
+        BountyHunt,
 
-		/// <summary>
-		///
-		/// </summary>
-		HoldTheLine,
+        /// <summary>
+        ///
+        /// </summary>
+        HoldTheLine,
 
-		/// <summary>
-		///
-		/// </summary>
-		SplinterCell,
+        /// <summary>
+        ///
+        /// </summary>
+        SplinterCell,
 
-		/// <summary>
-		///
-		/// </summary>
-		Duel
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        Duel
+    }
 }

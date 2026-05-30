@@ -17,15 +17,15 @@ using System.Numerics;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public readonly struct EntityBounds
-	{
-		public readonly Vector2 Center;
-		public readonly Vector2 Extents;
+    public readonly struct EntityBounds
+    {
+        public readonly Vector2 Center;
+        public readonly Vector2 Extents;
 
-		public EntityBounds( Vector2 center, Vector2 extents )
-		{
-			Center = center;
-			Extents = extents;
-		}
-	}
+        public EntityBounds(Vector2 center, Vector2 extents)
+        {
+            Center = center;
+            Extents = extents;
+        }
+    }
 }

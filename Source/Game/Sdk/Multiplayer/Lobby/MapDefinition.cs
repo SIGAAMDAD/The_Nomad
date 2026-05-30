@@ -18,12 +18,12 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Multiplayer.Lobby
 {
-	public sealed record MapDefinition
-	{
-		public InternString DisplayName { get; init; }
-		public InternString Id { get; init; }
+    public sealed record MapDefinition
+    {
+        public InternString DisplayName { get; init; }
+        public InternString Id { get; init; }
 
-		public string ResourcePath { get; init; }
-		public IReadOnlyList<MultiplayerMode> AvailableGameModes { get; init; }
-	}
+        public string ResourcePath { get; init; }
+        public IReadOnlyList<MultiplayerMode> AvailableGameModes { get; init; }
+    }
 }

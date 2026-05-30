@@ -17,13 +17,13 @@ using System.Numerics;
 
 namespace Nomad.Game.Sdk.Player.Input
 {
-	public interface IAimWriter
-	{
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="direction"></param>
-		/// <param name="serverTick"></param>
-		void SetAimDirection( Vector2 direction, uint serverTick = 0 );
-	}
+    public interface IAimWriter
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="serverTick"></param>
+        void SetAimDirection(Vector2 direction, uint serverTick = 0);
+    }
 }

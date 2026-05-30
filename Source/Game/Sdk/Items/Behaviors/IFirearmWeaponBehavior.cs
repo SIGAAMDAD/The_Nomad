@@ -13,11 +13,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu
+namespace Nomad.Game.Sdk.Items.Behaviors
 {
-	public enum NewGameMenuState : byte
-	{
-		Options,
-		CustomDifficulty
-	}
+    public interface IFirearmWeaponBehavior
+    {
+        void OnEquipped();
+        void OnUnequipped();
+        void OnBeforeCanFire();
+        void OnAfterFire();
+        void OnBeforeReload();
+        void OnAfterReload();
+    }
 }

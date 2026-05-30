@@ -22,21 +22,21 @@ using Nomad.Game.Sdk.Events.Items;
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public interface IInventoryApplicationCoordinator : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Items", PayloadName = "ItemPickupRequestedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "ItemId", typeof( ItemDefinitionId ), Order = 2 )]
-		[EventPayload( "Amount", typeof( int ), Order = 3 )]
-		[EventPayload( "PickupEntityId", typeof( EntityId ), Order = 4 )]
-		IGameEvent<ItemPickupRequestedEventArgs> ItemPickupRequested { get; }
+    public interface IInventoryApplicationCoordinator : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Items", PayloadName = "ItemPickupRequestedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("ItemId", typeof(ItemDefinitionId), Order = 2)]
+        [EventPayload("Amount", typeof(int), Order = 3)]
+        [EventPayload("PickupEntityId", typeof(EntityId), Order = 4)]
+        IGameEvent<ItemPickupRequestedEventArgs> ItemPickupRequested { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Items", PayloadName = "ItemPickupCompletedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "ItemId", typeof( ItemDefinitionId ), Order = 2 )]
-		[EventPayload( "Amount", typeof( int ), Order = 3 )]
-		[EventPayload( "PickupEntityId", typeof( EntityId ), Order = 4 )]
-		[EventPayload( "Success", typeof( bool ), Order = 5 )]
-		IGameEvent<ItemPickupCompletedEventArgs> ItemPickupCompleted { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Items", PayloadName = "ItemPickupCompletedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("ItemId", typeof(ItemDefinitionId), Order = 2)]
+        [EventPayload("Amount", typeof(int), Order = 3)]
+        [EventPayload("PickupEntityId", typeof(EntityId), Order = 4)]
+        [EventPayload("Success", typeof(bool), Order = 5)]
+        IGameEvent<ItemPickupCompletedEventArgs> ItemPickupCompleted { get; }
+    }
 }

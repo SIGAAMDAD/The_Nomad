@@ -21,26 +21,26 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Input
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IAimReader : IDisposable
-	{
-		float AimAngleRadians { get; }
-		float AimAngleDegrees { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IAimReader : IDisposable
+    {
+        float AimAngleRadians { get; }
+        float AimAngleDegrees { get; }
 
-		Vector2 AimDirection { get; }
+        Vector2 AimDirection { get; }
 
-		/// <summary>
-		/// Event that triggers whenever the player's aim angle has changed, publishes angles in radians.
-		/// </summary>
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldAngle", typeof( float ), Order = 2 )]
-		[EventPayload( "NewAngle", typeof( float ), Order = 3 )]
-		[EventPayload( "OldDirection", typeof( Vector2 ), Order = 4 )]
-		[EventPayload( "NewDirection", typeof( Vector2 ), Order = 5 )]
-		[EventPayload( "ServerTick", typeof( uint ), Order = 6 )]
-		IGameEvent<AimAngleChangedEventArgs> AimAngleChanged { get; }
-	}
+        /// <summary>
+        /// Event that triggers whenever the player's aim angle has changed, publishes angles in radians.
+        /// </summary>
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldAngle", typeof(float), Order = 2)]
+        [EventPayload("NewAngle", typeof(float), Order = 3)]
+        [EventPayload("OldDirection", typeof(Vector2), Order = 4)]
+        [EventPayload("NewDirection", typeof(Vector2), Order = 5)]
+        [EventPayload("ServerTick", typeof(uint), Order = 6)]
+        IGameEvent<AimAngleChangedEventArgs> AimAngleChanged { get; }
+    }
 }

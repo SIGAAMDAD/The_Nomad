@@ -20,18 +20,18 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public interface IGameStateService : IDisposable
-	{
-		GameState Current { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IGameStateService : IDisposable
+    {
+        GameState Current { get; set; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "GameStateChangedEventArgs" )]
-		[EventPayload( "PrevState", typeof( GameState ), Order = 1 )]
-		[EventPayload( "CurrentState", typeof( GameState ), Order = 2 )]
-		IGameEvent<GameStateChangedEventArgs> StateChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "GameStateChangedEventArgs")]
+        [EventPayload("PrevState", typeof(GameState), Order = 1)]
+        [EventPayload("CurrentState", typeof(GameState), Order = 2)]
+        IGameEvent<GameStateChangedEventArgs> StateChanged { get; }
 
-		void SetState( GameState state );
-	}
+        void SetState(GameState state);
+    }
 }

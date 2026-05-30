@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct PlayerAnimationIntent
-	{
-		public readonly float AimAngleRadians;
-		public readonly bool FlipX;
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct PlayerAnimationIntent
+    {
+        public readonly float AimAngleRadians;
+        public readonly bool FlipX;
 
-		public readonly bool LockLowerBody;
-		public readonly bool LockUpperBody;
-	}
+        public readonly bool LockLowerBody;
+        public readonly bool LockUpperBody;
+    }
 }

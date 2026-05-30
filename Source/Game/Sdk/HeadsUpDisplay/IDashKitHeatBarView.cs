@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IDashKitHeatBarView : IHudComponentView
-	{
-		void SetValue( float value );
-		void ShowOverlayVisibility( bool visible );
-	}
+    public interface IDashKitHeatBarView : IHudComponentView
+    {
+        void SetValue(float value);
+        void ShowOverlayVisibility(bool visible);
+    }
 }

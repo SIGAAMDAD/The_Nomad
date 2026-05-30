@@ -15,17 +15,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public enum PlayerSpawnReason : byte
-	{
-		NewGame,
-		LoadSave,
-		FirelinkRespawn,
-		MelioraRespawn,
-		SceneTransition,
-		CutsceneReturn,
-		MultiplayerJoin,
-		DebugSpawn,
+    public enum PlayerSpawnReason : byte
+    {
+        NewGame,
+        LoadSave,
+        FirelinkRespawn,
+        MelioraRespawn,
+        SceneTransition,
+        CutsceneReturn,
+        MultiplayerJoin,
+        DebugSpawn,
 
-		Count
-	}
+        Count
+    }
 }

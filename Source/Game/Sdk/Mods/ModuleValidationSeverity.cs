@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public enum ModuleValidationSeverity : byte
-	{
-		Info,
-		Warning,
-		Error
-	}
+    public enum ModuleValidationSeverity : byte
+    {
+        Info,
+        Warning,
+        Error
+    }
 }

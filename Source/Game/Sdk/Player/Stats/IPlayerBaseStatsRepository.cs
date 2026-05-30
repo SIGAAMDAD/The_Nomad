@@ -20,34 +20,34 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	/// <summary>
-	/// The base abstraction contract for managing player related numbers.
-	/// </summary>
-	public interface IPlayerBaseStatsRepository
-	{
-		/// <summary>
-		///
-		/// </summary>
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerBaseStatChangedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldValue", typeof( float ), Order = 2 )]
-		[EventPayload( "NewValue", typeof( float ), Order = 3 )]
-		[EventPayload( "StatId", typeof( BaseStatType ), Order = 4 )]
-		IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged { get; }
+    /// <summary>
+    /// The base abstraction contract for managing player related numbers.
+    /// </summary>
+    public interface IPlayerBaseStatsRepository
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerBaseStatChangedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldValue", typeof(float), Order = 2)]
+        [EventPayload("NewValue", typeof(float), Order = 3)]
+        [EventPayload("StatId", typeof(BaseStatType), Order = 4)]
+        IGameEvent<PlayerBaseStatChangedEventArgs> BaseStatChanged { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		void SetBaseStatValue( BaseStatType type, float value );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        void SetBaseStatValue(BaseStatType type, float value);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		float GetBaseStatValue( BaseStatType type );
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        float GetBaseStatValue(BaseStatType type);
+    }
 }

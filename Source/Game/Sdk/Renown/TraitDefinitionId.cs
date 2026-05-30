@@ -13,29 +13,60 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Renown
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct TraitDefinitionId : IEquatable<TraitDefinitionId>
-	{
-		public static readonly TraitDefinitionId Invalid = new TraitDefinitionId( InternString.Empty );
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct TraitDefinitionId
+    {
+        public static readonly TraitDefinitionId Invalid = new TraitDefinitionId(InternString.Empty);
 
-		public readonly InternString Value;
-		public bool IsValid => Value != InternString.Empty;
+        public bool IsValid => Value != InternString.Empty;
 
-		public TraitDefinitionId( InternString value )
-		{
-			Value = value;
-		}
+        public readonly InternString Value;
 
-		public bool Equals( TraitDefinitionId other )
-		{
-			return Value == other.Value;
-		}
-	}
+        public TraitDefinitionId(InternString value)
+        {
+            Value = value;
+        }
+
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is TraitDefinitionId other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public bool Equals(TraitDefinitionId other)
+        {
+            return other.Value == Value;
+        }
+
+        public static implicit operator InternString(TraitDefinitionId value)
+        {
+            return value.Value;
+        }
+
+        public static bool operator ==(TraitDefinitionId left, TraitDefinitionId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(TraitDefinitionId left, TraitDefinitionId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

@@ -23,14 +23,14 @@ namespace Nomad.Game.Sdk.Items
     {
         public override ItemType BaseType => ItemType.Consumable;
 
-        public PlayerResourceType Resource { get; init; }
+        public PlayerResourceType? Resource { get; init; }
         public float Amount { get; init; }
 
         public static ConsumableDefinition Load(JsonElement json)
         {
             return new ConsumableDefinition
             {
-                Resource = JsonLoader.GetRequired<PlayerResourceType>(json, nameof(Resource)),
+                Resource = JsonLoader.TryGet<PlayerResourceType>(json, nameof(Resource), out var resource) ? resource : null,
                 Amount = JsonLoader.GetRequired<float>(json, nameof(Amount))
             };
         }

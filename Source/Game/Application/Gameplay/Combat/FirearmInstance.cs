@@ -21,6 +21,7 @@ using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Events.Combat;
 using Nomad.Game.Sdk.Inventory;
+using Nomad.Core.Compatibility.Guards;
 
 namespace Nomad.Game.Application.Gameplay.Combat
 {
@@ -52,21 +53,34 @@ namespace Nomad.Game.Application.Gameplay.Combat
 		public IGameEvent<FirearmReloadedEventArgs> FirearmReloaded => _reloaded;
 		private readonly IGameEvent<FirearmReloadedEventArgs> _reloaded = null;
 
+		public IGameEvent<FirearmUsedEventArgs> FirearmUsed => _used;
+		private readonly IGameEvent<FirearmUsedEventArgs> _used = null;
+
 		public FirearmInstance( ItemInstanceId id, IGameEventRegistryService eventFactory, FirearmDefinition definition )
 			: base( new EntityId( id.Value ), id, eventFactory, definition )
 		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
 			_modService = new FirearmModService( definition );
 			_resolvedStats = _modService.Resolve( Array.Empty<FirearmModDefinition>() );
 
-			_jammed = eventFactory.GetEvent<FirearmJammedEventArgs>(
-				$"{Id}:{FirearmJammedEventArgs.Name}",
-				FirearmJammedEventArgs.NameSpace
-			);
+			_jammed = eventFactory
+				.GetEvent<FirearmJammedEventArgs>(
+					FirearmJammedEventArgs.Name,
+					FirearmJammedEventArgs.NameSpace
+				);
 
-			_reloaded = eventFactory.GetEvent<FirearmReloadedEventArgs>(
-				$"{Id}:{FirearmReloadedEventArgs.Name}",
-				FirearmReloadedEventArgs.NameSpace
-			);
+			_reloaded = eventFactory
+				.GetEvent<FirearmReloadedEventArgs>(
+					FirearmReloadedEventArgs.Name,
+					FirearmReloadedEventArgs.NameSpace
+				);
+
+			_used = eventFactory
+				.GetEvent<FirearmUsedEventArgs>(
+					FirearmUsedEventArgs.Name,
+					FirearmUsedEventArgs.NameSpace
+				);
 		}
 
 		protected override void Dispose( bool disposing )
@@ -79,6 +93,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 			_jammed.Dispose();
 			_reloaded.Dispose();
+			_used.Dispose();
 		}
 
 		public bool TryReload( IStorageUnit inventory )
@@ -96,17 +111,17 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 		public bool TryEndUse()
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public bool TryAddMod( FirearmModSlot slot, FirearmModDefinition mod )
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public bool TryRemoveMod( FirearmModSlot slot )
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 	};
 };

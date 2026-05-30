@@ -17,7 +17,6 @@ using Nomad.Core.Events;
 using Nomad.Game.Sdk.Combat;
 using Nomad.Game.Sdk.Events.Combat;
 using Nomad.Game.Sdk.Inventory;
-using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Items
 {
@@ -39,6 +38,10 @@ namespace Nomad.Game.Sdk.Items
         [EventPayload("FirearmId", typeof(ItemInstanceId), Order = 1)]
         [EventPayload("AmmoCount", typeof(int), Order = 2)]
         IGameEvent<FirearmReloadedEventArgs> FirearmReloaded { get; }
+
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Combat")]
+        [EventPayload("FirearmId", typeof(ItemInstanceId), Order = 1)]
+        IGameEvent<FirearmUsedEventArgs> FirearmUsed { get; }
 
         bool TryReload(IStorageUnit inventory);
 

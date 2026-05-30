@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Team
 {
-	public enum TeamServiceState : byte
-	{
-		Disabled = 0,
-		Open,
-		Locked,
-		MatchActive,
-		Closed,
+    public enum TeamServiceState : byte
+    {
+        Disabled = 0,
+        Open,
+        Locked,
+        MatchActive,
+        Closed,
 
-		Count
-	}
+        Count
+    }
 }

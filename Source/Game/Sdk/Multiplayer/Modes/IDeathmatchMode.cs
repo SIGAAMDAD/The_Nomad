@@ -19,9 +19,9 @@ using Nomad.Game.Sdk.Events.Multiplayer;
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	public interface IDeathmatchMode : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Multiplayer" )]
-		IGameEvent<NewDeathmatchLeaderEventArgs> NewDeathmatchLeader { get; }
-	}
+    public interface IDeathmatchMode : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Multiplayer")]
+        IGameEvent<NewDeathmatchLeaderEventArgs> NewDeathmatchLeader { get; }
+    }
 }

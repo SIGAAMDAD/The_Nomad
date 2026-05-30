@@ -20,21 +20,22 @@ using Nomad.Game.Sdk.Player.Inventory;
 
 namespace Nomad.Game.Sdk.Items
 {
-	/// <summary>
-	///
-	/// </summary>
-	public abstract record WeaponDefinition : ItemDefinition
-	{
-		public abstract WeaponType WeaponType { get; }
-		public float BaseDurability { get; init; }
-		public WeaponSlotIndex Slot { get; init; }
+    /// <summary>
+    ///
+    /// </summary>
+    public abstract record WeaponDefinition : ItemDefinition
+    {
+        public abstract WeaponType WeaponType { get; }
+        public float BaseDurability { get; init; }
+        public WeaponSlotIndex Slot { get; init; }
 
-		protected virtual WeaponDefinition LoadBase( JsonElement json )
-		{
-			return this with {
-				BaseDurability = json.GetRequired<float>( nameof( BaseDurability ) ),
-				Slot = Enum.Parse<WeaponSlotIndex>( json.GetRequired<string>( nameof( Slot ) ) )
-			};
-		}
-	}
+        protected virtual WeaponDefinition LoadBase(JsonElement json)
+        {
+            return this with
+            {
+                BaseDurability = json.GetRequired<float>(nameof(BaseDurability)),
+                Slot = Enum.Parse<WeaponSlotIndex>(json.GetRequired<string>(nameof(Slot)))
+            };
+        }
+    }
 }

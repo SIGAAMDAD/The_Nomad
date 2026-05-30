@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile.Badges
 {
-	public enum BadgeRarity : byte
-	{
-		Common,
-		Uncommon,
-		Rare,
-		Epic,
-		Legendary,
-		Mythic
-	}
+    public enum BadgeRarity : byte
+    {
+        Common,
+        Uncommon,
+        Rare,
+        Epic,
+        Legendary,
+        Mythic
+    }
 }

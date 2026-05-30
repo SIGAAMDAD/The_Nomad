@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public sealed record PlayerSpawnResourceProfile
-	{
-		public float HealthFillPercent { get; init; } = 1.0f;
-		public float RageFillPercent { get; init; } = 1.0f;
-		public float SanityFillPercent { get; init; } = 1.0f;
-	}
+    public sealed record PlayerSpawnResourceProfile
+    {
+        public float HealthFillPercent { get; init; } = 1.0f;
+        public float RageFillPercent { get; init; } = 1.0f;
+        public float SanityFillPercent { get; init; } = 1.0f;
+    }
 }

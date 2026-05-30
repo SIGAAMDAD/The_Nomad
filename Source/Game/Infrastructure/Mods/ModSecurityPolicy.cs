@@ -41,7 +41,7 @@ namespace Nomad.Game.Infrastructure.Mods
 
 		public string[] AllowedSharedAssemblies { get; init; } = new string[] {
 			"Nomad.Modding",
-			"Nomad.Game.ModSdk",
+			"Nomad.Game.Sdk",
 
 			"System.Runtime",
 			"System.Private.CoreLib",
@@ -49,7 +49,6 @@ namespace Nomad.Game.Infrastructure.Mods
 		};
 
 		public string[] ForbiddenAssemblyPrefixes { get; init; } = new string[] {
-			"Nomad.Core",
 			"Nomad.Save",
 			"Nomad.Events",
 			"Nomad.Input",
@@ -63,8 +62,6 @@ namespace Nomad.Game.Infrastructure.Mods
 			"System.IO.Directory",
 			"System.Diagnostics.Process",
 			"System.Environment",
-			"System.Reflection",
-			"System.Runtime.InteropServices",
 			"System.Threading.Thread",
 			"System.Runtime.Loader.AssemblyLoadContext",
 			"System.Threading.ThreadPool",

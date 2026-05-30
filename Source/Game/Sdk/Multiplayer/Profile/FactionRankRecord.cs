@@ -15,17 +15,17 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record FactionRankRecord
-	{
-		public byte RankIndex { get; init; }
-		public string Name { get; init; }
-		public MercTier Tier { get; init; }
+    public sealed record FactionRankRecord
+    {
+        public byte RankIndex { get; init; }
+        public string Name { get; init; }
+        public MercTier Tier { get; init; }
 
-		/// <summary>
-		/// Required faction standing to reach this rank.
-		/// </summary>
-		public ulong RequiredStanding { get; init; }
+        /// <summary>
+        /// Required faction standing to reach this rank.
+        /// </summary>
+        public ulong RequiredStanding { get; init; }
 
-		public string? Description { get; init; }
-	}
+        public string? Description { get; init; }
+    }
 }

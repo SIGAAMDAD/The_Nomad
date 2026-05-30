@@ -17,17 +17,17 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public readonly struct StatEvent
-	{
-		public Guid PlayerId { get; init; }
-		public StatEventType Type { get; init; }
+    public readonly struct StatEvent
+    {
+        public Guid PlayerId { get; init; }
+        public StatEventType Type { get; init; }
 
-		public FactionId ActingFaction { get; init; }
-		public FactionId ContractFaction { get; init; }
+        public FactionId ActingFaction { get; init; }
+        public FactionId ContractFaction { get; init; }
 
-		public string? ContractId { get; init; }
-		public ulong Amount { get; init; }
+        public string? ContractId { get; init; }
+        public ulong Amount { get; init; }
 
-		public DateTimeOffset OccurredAtUtc { get; init; }
-	}
+        public DateTimeOffset OccurredAtUtc { get; init; }
+    }
 }

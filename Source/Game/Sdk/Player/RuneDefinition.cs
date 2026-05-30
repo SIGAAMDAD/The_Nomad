@@ -15,9 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public record RuneDefinition
-	{
-		public string Name { get; init; }
-		public string Description { get; init; }
-	}
+    public record RuneDefinition
+    {
+        public string Name { get; init; }
+        public string Description { get; init; }
+    }
 }

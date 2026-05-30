@@ -17,21 +17,21 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Renown
 {
-	public sealed record RenownTierDefinition
-	{
-		public readonly InternString Id;
-		public readonly RenownTier Tier;
-		public readonly float MinimumRenownScore;
-		public readonly float MaximumRenownScore;
+    public sealed record RenownTierDefinition
+    {
+        public readonly InternString Id;
+        public readonly RenownTier Tier;
+        public readonly float MinimumRenownScore;
+        public readonly float MaximumRenownScore;
 
-		public float RequiredRenown => MinimumRenownScore;
+        public float RequiredRenown => MinimumRenownScore;
 
-		public RenownTierDefinition( InternString id, RenownTier tier, float minimumRenownScore, float maximumRenownScore )
-		{
-			Id = id;
-			Tier = tier;
-			MinimumRenownScore = minimumRenownScore;
-			MaximumRenownScore = maximumRenownScore;
-		}
-	}
+        public RenownTierDefinition(InternString id, RenownTier tier, float minimumRenownScore, float maximumRenownScore)
+        {
+            Id = id;
+            Tier = tier;
+            MinimumRenownScore = minimumRenownScore;
+            MaximumRenownScore = maximumRenownScore;
+        }
+    }
 }

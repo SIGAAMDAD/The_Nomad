@@ -15,19 +15,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum WeaponSlotIndex : byte
-	{
-		LightSidearm,
-		LightPrimary,
-		HeavySidearm,
-		HeavyPrimary,
+    /// <summary>
+    ///
+    /// </summary>
+    public enum WeaponSlotIndex : byte
+    {
+        LightSidearm,
+        LightPrimary,
+        HeavySidearm,
+        HeavyPrimary,
 
-		Count,
+        Count,
 
-		Min = LightSidearm,
-		Max = HeavyPrimary
-	}
+        Min = LightSidearm,
+        Max = HeavyPrimary
+    }
 }

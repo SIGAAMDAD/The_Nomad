@@ -15,29 +15,30 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModuleInfo
-	{
-		public string Id { get; init; } = string.Empty;
-		public string Name { get; init; } = string.Empty;
-		public string Version { get; init; } = string.Empty;
-		public string ApiVersion { get; init; } = string.Empty;
-		public string Author { get; init; } = string.Empty;
-		public bool Official { get; init; }
-		public int LoadPriority { get; init; }
-		public ModCapabilities Capabilities { get; init; }
+    public sealed record ModuleInfo
+    {
+        public string Id { get; init; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
+        public string Version { get; init; } = string.Empty;
+        public string ApiVersion { get; init; } = string.Empty;
+        public string Author { get; init; } = string.Empty;
+        public bool Official { get; init; }
+        public int LoadPriority { get; init; }
+        public ModCapabilities Capabilities { get; init; }
 
-		public static ModuleInfo FromManifest( ModuleManifest manifest )
-		{
-			return new ModuleInfo {
-				Id = manifest.Id,
-				Name = manifest.Name,
-				Version = manifest.Version,
-				ApiVersion = manifest.ApiVersion,
-				Author = manifest.Author,
-				Official = manifest.Official,
-				LoadPriority = manifest.LoadPriority,
-				Capabilities = manifest.Capabilities
-			};
-		}
-	}
+        public static ModuleInfo FromManifest(ModuleManifest manifest)
+        {
+            return new ModuleInfo
+            {
+                Id = manifest.Id,
+                Name = manifest.Name,
+                Version = manifest.Version,
+                ApiVersion = manifest.ApiVersion,
+                Author = manifest.Author,
+                Official = manifest.Official,
+                LoadPriority = manifest.LoadPriority,
+                Capabilities = manifest.Capabilities
+            };
+        }
+    }
 }

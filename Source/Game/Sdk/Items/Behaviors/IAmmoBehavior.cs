@@ -13,11 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Modding
+namespace Nomad.Game.Sdk.Items.Behaviors
 {
-	public interface IConsumableBehavior
-	{
-		void Use();
-		void Drop();
-	}
+    public interface IAmmoBehavior
+    {
+        void OnBeforeShot();
+        void OnEntityHit();
+        void OnHitboxHit();
+        void OnWallHit();
+        void OnParried();
+    }
 }

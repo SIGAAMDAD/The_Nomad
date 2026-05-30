@@ -18,9 +18,9 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	public sealed record TotemDefinition : ItemDefinition
-	{
-		public override ItemType BaseType => ItemType.Totem;
-		public InternString ValdensBook { get; init; }
-	}
+    public sealed record TotemDefinition : ItemDefinition
+    {
+        public override ItemType BaseType => ItemType.Totem;
+        public InternString ValdensBook { get; init; }
+    }
 }

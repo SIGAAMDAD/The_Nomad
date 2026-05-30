@@ -18,17 +18,17 @@ using System.Collections.Generic;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record ActiveWeeklyContractRecord
-	{
-		public string ContractId { get; init; }
-		public FactionId FactionId { get; init; }
+    public sealed record ActiveWeeklyContractRecord
+    {
+        public string ContractId { get; init; }
+        public FactionId FactionId { get; init; }
 
-		public DateTimeOffset AcceptedAtUtc { get; init; }
-		public DateTimeOffset ExpiresAtUtc { get; init; }
+        public DateTimeOffset AcceptedAtUtc { get; init; }
+        public DateTimeOffset ExpiresAtUtc { get; init; }
 
-		public IReadOnlyDictionary<ContractObjectiveType, ulong> ObjectiveProgress { get; init; } =
-			new Dictionary<ContractObjectiveType, ulong>();
+        public IReadOnlyDictionary<ContractObjectiveType, ulong> ObjectiveProgress { get; init; } =
+            new Dictionary<ContractObjectiveType, ulong>();
 
-		public bool Completed { get; init; }
-	}
+        public bool Completed { get; init; }
+    }
 }

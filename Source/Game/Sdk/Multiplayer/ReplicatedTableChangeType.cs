@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public enum ReplicatedTableChangeType : byte
-	{
-		None = 0,
-		Set,
-		Remove,
-		Clear
-	}
+    public enum ReplicatedTableChangeType : byte
+    {
+        None = 0,
+        Set,
+        Remove,
+        Clear
+    }
 }

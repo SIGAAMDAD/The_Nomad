@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Nomad.Game.Sdk.Mods;
@@ -49,13 +50,14 @@ namespace Nomad.Game.Infrastructure.Mods
 				return report;
 			}
 
-			ReaderParameters readerParameters = new ReaderParameters {
-				ReadSymbols = false,
-				ReadingMode = ReadingMode.Deferred,
-				AssemblyResolver = new DefaultAssemblyResolver()
-			};
-
 			try {
+				using DefaultAssemblyResolver resolver = CreateAssemblyResolver( assemblyPath );
+				ReaderParameters readerParameters = new ReaderParameters {
+					ReadSymbols = false,
+					ReadingMode = ReadingMode.Deferred,
+					AssemblyResolver = resolver
+				};
+
 				using AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly( assemblyPath, readerParameters );
 
 				ValidateAssemblyReferences( assembly, report );
@@ -75,6 +77,41 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 
 			return report;
+		}
+
+		private static DefaultAssemblyResolver CreateAssemblyResolver( string assemblyPath )
+		{
+			var resolver = new DefaultAssemblyResolver();
+
+			string? moduleDirectory = Path.GetDirectoryName( Path.GetFullPath( assemblyPath ) );
+			if ( !string.IsNullOrWhiteSpace( moduleDirectory ) ) {
+				resolver.AddSearchDirectory( moduleDirectory );
+			}
+
+			string appDirectory = AppContext.BaseDirectory;
+			if ( !string.IsNullOrWhiteSpace( appDirectory ) ) {
+				resolver.AddSearchDirectory( appDirectory );
+			}
+
+			foreach ( Assembly loadedAssembly in AppDomain.CurrentDomain.GetAssemblies() ) {
+				string? location = null;
+
+				try {
+					location = loadedAssembly.Location;
+				} catch ( NotSupportedException ) {
+				}
+
+				if ( string.IsNullOrWhiteSpace( location ) ) {
+					continue;
+				}
+
+				string? directory = Path.GetDirectoryName( location );
+				if ( !string.IsNullOrWhiteSpace( directory ) ) {
+					resolver.AddSearchDirectory( directory );
+				}
+			}
+
+			return resolver;
 		}
 
 		private void ValidateAssemblyReferences(

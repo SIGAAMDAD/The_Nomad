@@ -13,17 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
-
-namespace Nomad.Game.Presentation.Screens.NewGameMenu
+namespace Nomad.Game.Sdk.Items.Behaviors
 {
-	public interface IOptionsContainerView
-	{
-		event Action StandardModeRequested;
-		event Action HardModeRequested;
-		event Action CustomModeRequested;
-		event Action BackRequested;
-
-		void SetVisibility( bool visible );
-	}
+    public interface IRuneBehavior
+    {
+        void OnAttuned();
+        void OnUnattuned();
+    }
 }

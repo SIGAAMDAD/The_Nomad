@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record ContractObjectiveRecord
-	{
-		public ContractObjectiveType Type { get; init; }
-		public ulong RequiredValue { get; init; }
-		public string? TargetId { get; init; }
-		public string? Description { get; init; }
-	}
+    public sealed record ContractObjectiveRecord
+    {
+        public ContractObjectiveType Type { get; init; }
+        public ulong RequiredValue { get; init; }
+        public string? TargetId { get; init; }
+        public string? Description { get; init; }
+    }
 }

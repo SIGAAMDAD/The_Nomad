@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.7.0-beta.2">
+<Project Sdk="Godot.NET.Sdk/4.7.0-beta.4">
   <PropertyGroup>
     <!-- Build Configuration -->
     <TargetFramework>net10.0</TargetFramework>
@@ -34,11 +34,7 @@
     <Compile Remove="**/obj/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Source/Modding/Nomad.Modding.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-
+    <ProjectReference Include="Source/Modding/Nomad.Modding.csproj" />
     <ProjectReference Include="Source/Game/Sdk/Nomad.Game.Sdk.csproj" />
 
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
